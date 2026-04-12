@@ -8,35 +8,35 @@ using Bodu.Extensions;
 
 namespace Bodu.Extensions
 {
-	public partial class DateOnlyExtensionsTests
-	{
+    public partial class DateOnlyExtensionsTests
+    {
 
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.LastDayOfMonthDataTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-		public void LastDayOfMonth_WhenCalled_ShouldReturnExpectedDay(DateTime inputDateTime, DateTime expectedDateTime)
-		{
-			var input = DateOnly.FromDateTime(inputDateTime);
-			var expected = DateOnly.FromDateTime(expectedDateTime);
-			DateOnly actual = input.LastDayOfMonth();
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.LastDayOfMonthDataTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+        public void LastDayOfMonth_WhenCalled_ShouldReturnExpectedDay(DateTime inputDateTime, DateTime expectedDateTime)
+        {
+            var input = DateOnly.FromDateTime(inputDateTime);
+            var expected = DateOnly.FromDateTime(expectedDateTime);
+            DateOnly actual = input.LastDayOfMonth();
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void LastDayOfMonth_WhenMinValue_ShouldReturnExpectedDay()
-		{
-			DateOnly actual = DateOnly.MinValue.LastDayOfMonth();
+        [TestMethod]
+        public void LastDayOfMonth_WhenMinValue_ShouldReturnExpectedDay()
+        {
+            DateOnly actual = DateOnly.MinValue.LastDayOfMonth();
 
-			Assert.AreEqual(new DateOnly(1, 1, 31), actual);
-		}
+            Assert.AreEqual(new DateOnly(1, 1, 31), actual);
+        }
 
-		[TestMethod]
-		public void LastDayOfMonth_WhenMaxValue_ShouldReturnExpectedDay()
-		{
-			DateOnly max = DateOnly.MaxValue;
-			DateOnly actual = max.LastDayOfMonth();
+        [TestMethod]
+        public void LastDayOfMonth_WhenMaxValue_ShouldReturnExpectedDay()
+        {
+            DateOnly max = DateOnly.MaxValue;
+            DateOnly actual = max.LastDayOfMonth();
 
-			Assert.AreEqual(new DateOnly(9999, 12, 31), actual);
-		}
-	}
+            Assert.AreEqual(new DateOnly(9999, 12, 31), actual);
+        }
+    }
 }

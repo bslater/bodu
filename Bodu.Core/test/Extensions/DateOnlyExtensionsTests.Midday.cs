@@ -8,71 +8,71 @@ using Bodu.Extensions;
 
 namespace Bodu.Extensions
 {
-	public partial class DateOnlyExtensionsTests
-	{
+    public partial class DateOnlyExtensionsTests
+    {
 
-		[DataTestMethod]
-		[DataRow("2024-04-18T00:00:00", "2024-04-18T12:00:00")]
-		[DataRow("2024-04-18T23:59:59", "2024-04-18T12:00:00")]
-		[DataRow("2000-01-01T05:45:00", "2000-01-01T12:00:00")]
-		[DataRow("9999-12-31T11:59:59", "9999-12-31T12:00:00")]
-		[DataRow("0001-01-01T03:00:00", "0001-01-01T12:00:00")]
-		public void Midday_WhenCalled_ShouldSetTimeToNoon(string inputDate, string expectedDate)
-		{
-			DateTime input = DateTime.Parse(inputDate);
-			DateTime expected = DateTime.Parse(expectedDate);
-			DateTime actual = input.Midday();
+        [TestMethod]
+        [DataRow("2024-04-18T00:00:00", "2024-04-18T12:00:00")]
+        [DataRow("2024-04-18T23:59:59", "2024-04-18T12:00:00")]
+        [DataRow("2000-01-01T05:45:00", "2000-01-01T12:00:00")]
+        [DataRow("9999-12-31T11:59:59", "9999-12-31T12:00:00")]
+        [DataRow("0001-01-01T03:00:00", "0001-01-01T12:00:00")]
+        public void Midday_WhenCalled_ShouldSetTimeToNoon(string inputDate, string expectedDate)
+        {
+            DateTime input = DateTime.Parse(inputDate);
+            DateTime expected = DateTime.Parse(expectedDate);
+            DateTime actual = input.Midday();
 
-			Assert.AreEqual(expected, actual);
-			Assert.AreEqual(input.Kind, actual.Kind);
-		}
+            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(input.Kind, actual.Kind);
+        }
 
-		[TestMethod]
-		public void Midday_WhenKindIsUtc_ShouldPreserveKind()
-		{
-			DateTime input = new DateTime(2024, 4, 18, 5, 0, 0, DateTimeKind.Utc);
-			DateTime actual = input.Midday();
+        [TestMethod]
+        public void Midday_WhenKindIsUtc_ShouldPreserveKind()
+        {
+            DateTime input = new DateTime(2024, 4, 18, 5, 0, 0, DateTimeKind.Utc);
+            DateTime actual = input.Midday();
 
-			Assert.AreEqual(DateTimeKind.Utc, actual.Kind);
-			Assert.AreEqual(new DateTime(2024, 4, 18, 12, 0, 0, DateTimeKind.Utc), actual);
-		}
+            Assert.AreEqual(DateTimeKind.Utc, actual.Kind);
+            Assert.AreEqual(new DateTime(2024, 4, 18, 12, 0, 0, DateTimeKind.Utc), actual);
+        }
 
-		[TestMethod]
-		public void Midday_WhenKindIsLocal_ShouldPreserveKind()
-		{
-			DateTime input = new DateTime(2024, 4, 18, 7, 30, 0, DateTimeKind.Local);
-			DateTime actual = input.Midday();
+        [TestMethod]
+        public void Midday_WhenKindIsLocal_ShouldPreserveKind()
+        {
+            DateTime input = new DateTime(2024, 4, 18, 7, 30, 0, DateTimeKind.Local);
+            DateTime actual = input.Midday();
 
-			Assert.AreEqual(DateTimeKind.Local, actual.Kind);
-			Assert.AreEqual(new DateTime(2024, 4, 18, 12, 0, 0, DateTimeKind.Local), actual);
-		}
+            Assert.AreEqual(DateTimeKind.Local, actual.Kind);
+            Assert.AreEqual(new DateTime(2024, 4, 18, 12, 0, 0, DateTimeKind.Local), actual);
+        }
 
-		[TestMethod]
-		public void Midday_WhenKindIsUnspecified_ShouldPreserveKind()
-		{
-			DateTime input = new DateTime(2024, 4, 18, 10, 15, 0, DateTimeKind.Unspecified);
-			DateTime actual = input.Midday();
+        [TestMethod]
+        public void Midday_WhenKindIsUnspecified_ShouldPreserveKind()
+        {
+            DateTime input = new DateTime(2024, 4, 18, 10, 15, 0, DateTimeKind.Unspecified);
+            DateTime actual = input.Midday();
 
-			Assert.AreEqual(DateTimeKind.Unspecified, actual.Kind);
-			Assert.AreEqual(new DateTime(2024, 4, 18, 12, 0, 0, DateTimeKind.Unspecified), actual);
-		}
+            Assert.AreEqual(DateTimeKind.Unspecified, actual.Kind);
+            Assert.AreEqual(new DateTime(2024, 4, 18, 12, 0, 0, DateTimeKind.Unspecified), actual);
+        }
 
-		[TestMethod]
-		public void Midday_WhenUsingMinDate_ShouldReturnNoonOnThatDay()
-		{
-			DateTime input = DateTime.MinValue.Date;
-			DateTime actual = input.Midday();
+        [TestMethod]
+        public void Midday_WhenUsingMinDate_ShouldReturnNoonOnThatDay()
+        {
+            DateTime input = DateTime.MinValue.Date;
+            DateTime actual = input.Midday();
 
-			Assert.AreEqual(new DateTime(1, 1, 1, 12, 0, 0), actual);
-		}
+            Assert.AreEqual(new DateTime(1, 1, 1, 12, 0, 0), actual);
+        }
 
-		[TestMethod]
-		public void Midday_WhenUsingMaxDate_ShouldReturnNoonOnThatDay()
-		{
-			DateTime input = DateTime.MaxValue.Date;
-			DateTime actual = input.Midday();
+        [TestMethod]
+        public void Midday_WhenUsingMaxDate_ShouldReturnNoonOnThatDay()
+        {
+            DateTime input = DateTime.MaxValue.Date;
+            DateTime actual = input.Midday();
 
-			Assert.AreEqual(new DateTime(9999, 12, 31, 12, 0, 0), actual);
-		}
-	}
+            Assert.AreEqual(new DateTime(9999, 12, 31, 12, 0, 0), actual);
+        }
+    }
 }

@@ -19,7 +19,7 @@ namespace Bodu {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class ResourceStrings {
@@ -79,7 +79,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The provided array has zero length. Length must be greater than zero..
+        ///   Looks up a localized string similar to The array must not be empty..
         /// </summary>
         internal static string Arg_Invalid_ArrayIsZeroLength {
             get {
@@ -106,7 +106,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Length of the array must be a multiple of {0}..
+        ///   Looks up a localized string similar to The length of the array must be a multiple of {0}..
         /// </summary>
         internal static string Arg_Invalid_ArrayLengthMultipleOf {
             get {
@@ -115,7 +115,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The lower bound of target array must be zero..
+        ///   Looks up a localized string similar to The lower bound of the target array must be zero..
         /// </summary>
         internal static string Arg_Invalid_ArrayNonZeroLowerBound {
             get {
@@ -124,7 +124,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The value must zero or positive, and less than the number of elements in the {0}..
+        ///   Looks up a localized string similar to The value must be zero or positive, and less than the number of elements in the {0}..
         /// </summary>
         internal static string Arg_Invalid_ArrayOffset {
             get {
@@ -142,7 +142,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Array is too short. Required minimum is {0} from a specified index..
+        ///   Looks up a localized string similar to The array is too short. The minimum required length from the specified index is {0}..
         /// </summary>
         internal static string Arg_Invalid_ArrayTooShort {
             get {
@@ -160,7 +160,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Collection contains insufficient elements..
+        ///   Looks up a localized string similar to The collection contains insufficient elements..
         /// </summary>
         internal static string Arg_Invalid_CollectionTooSmall {
             get {
@@ -178,20 +178,11 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The destination {0} must be at least as long as the source {0}.
+        ///   Looks up a localized string similar to The destination {0} must be at least as long as the source {1}..
         /// </summary>
         internal static string Arg_Invalid_DestinationTooSmall {
             get {
                 return ResourceManager.GetString("Arg_Invalid_DestinationTooSmall", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid format string specified..
-        /// </summary>
-        internal static string Arg_Invalid_FormatSpecification {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_FormatSpecification", resourceCulture);
             }
         }
         
@@ -241,7 +232,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The max length of the string is less than the length of the suffix..
+        ///   Looks up a localized string similar to The maximum length of the string is less than the length of the suffix..
         /// </summary>
         internal static string Arg_Invalid_MaxIsLessThanSuffixLength {
             get {
@@ -268,7 +259,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The ordinal &apos;{0}&apos; does not exist for {1} in {2}.&quot;.
+        ///   Looks up a localized string similar to The ordinal &apos;{0}&apos; does not exist for {1} in {2}..
         /// </summary>
         internal static string Arg_Invalid_OrdinalDoesNotExistForMonth {
             get {
@@ -295,6 +286,24 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The length of the span must be a multiple of {0}..
+        /// </summary>
+        internal static string Arg_Invalid_SpanLengthMultipleOf {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_SpanLengthMultipleOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The span is too short. The minimum required length from the specified index is {0}..
+        /// </summary>
+        internal static string Arg_Invalid_SpanTooShort {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_SpanTooShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The string comparison type is not supported..
         /// </summary>
         internal static string Arg_Invalid_StringComparison {
@@ -304,7 +313,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The string was either empty or contained only whitespace..
+        ///   Looks up a localized string similar to The value cannot be empty or consist only of white-space characters..
         /// </summary>
         internal static string Arg_Invalid_StringEmptyOrWhitespace {
             get {
@@ -313,7 +322,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The string must only contain numerical digits..
+        ///   Looks up a localized string similar to The string must contain numeric digits only..
         /// </summary>
         internal static string Arg_Invalid_StringMustBeDigits {
             get {
@@ -322,7 +331,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The string was either null or empty..
+        ///   Looks up a localized string similar to The value cannot be null or empty..
         /// </summary>
         internal static string Arg_Invalid_StringNullOrEmpty {
             get {
@@ -340,7 +349,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Constructor supports only the &apos;{string action1}&apos; or &apos;{string action2} actions..
+        ///   Looks up a localized string similar to Constructor supports only the &apos;{0}&apos; or &apos;{1}&apos; actions..
         /// </summary>
         internal static string Arg_Invalid_WrongAction2ForCtor {
             get {
@@ -349,7 +358,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Constructor supports only the &apos;{string action1}&apos;, &apos;{string action2} or &apos;{string action3} actions..
+        ///   Looks up a localized string similar to Constructor supports only the &apos;{0}&apos;, &apos;{1}&apos;, or &apos;{2}&apos; actions..
         /// </summary>
         internal static string Arg_Invalid_WrongAction3ForCtor {
             get {
@@ -358,7 +367,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Constructor supports only the &apos;{string action}&apos; action..
+        ///   Looks up a localized string similar to Constructor supports only the &apos;{0}&apos; action..
         /// </summary>
         internal static string Arg_Invalid_WrongActionForCtor {
             get {
@@ -367,7 +376,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hour, Minute, and Second parameters describe an un-representable DateTime..
+        ///   Looks up a localized string similar to Hour, Minute, and Second parameters describe an unrepresentable DateTime..
         /// </summary>
         internal static string Arg_OutOfRange_BadHourMinuteSecond {
             get {
@@ -376,7 +385,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Year, Month, and Day parameters describe an un-representable DateTime..
+        ///   Looks up a localized string similar to Year, Month, and Day parameters describe an unrepresentable DateTime..
         /// </summary>
         internal static string Arg_OutOfRange_BadYearMonthDay {
             get {
@@ -385,7 +394,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Count must be non-negative and not exceed the number of available items ({0})..
+        ///   Looks up a localized string similar to The count must be non-negative and must not exceed the number of available items ({0})..
         /// </summary>
         internal static string Arg_OutOfRange_CountExceedsAvailable {
             get {
@@ -394,7 +403,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Source has fewer elements than requested..
+        ///   Looks up a localized string similar to The source has fewer elements than requested..
         /// </summary>
         internal static string Arg_OutOfRange_CountGreaterThanSource {
             get {
@@ -439,7 +448,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The value cannot be greater than the value for {0}..
+        ///   Looks up a localized string similar to The value cannot be greater than the value of &apos;{0}&apos;..
         /// </summary>
         internal static string Arg_OutOfRange_MinCannotExceedMax {
             get {
@@ -565,7 +574,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The specified sequence range would exceed the allowable value for {0}..
+        ///   Looks up a localized string similar to The specified sequence range would exceed the maximum allowed value for {0}..
         /// </summary>
         internal static string Arg_OutOfRange_SequenceRangeOverflow {
             get {
@@ -637,7 +646,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Input string contained an invalid character &apos;{0}&apos; at position {1}..
+        ///   Looks up a localized string similar to Input string contains an invalid character &apos;{0}&apos; at position {1}..
         /// </summary>
         internal static string Format_Invalid_Character {
             get {
@@ -655,7 +664,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Input string was not in the correct format. Must be {0} characters in length..
+        ///   Looks up a localized string similar to Input string was not in the correct format. The value must be {0} characters in length..
         /// </summary>
         internal static string Format_Invalid_StringLength {
             get {
@@ -664,7 +673,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Input unselected day character must be consistent. Found &apos;{0}&apos; vs expected &apos;{1}&apos;..
+        ///   Looks up a localized string similar to The unselected day character must be consistent. Found &apos;{0}&apos; but expected &apos;{1}&apos;..
         /// </summary>
         internal static string Format_Invalid_UnselectedCharacter {
             get {
@@ -709,7 +718,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The operation could not be completed because the sequence is empty..
+        ///   Looks up a localized string similar to The sequence is empty..
         /// </summary>
         internal static string InvalidOperation_EmptySequence {
             get {
@@ -727,7 +736,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enumeration has not started or has already ended..
+        ///   Looks up a localized string similar to Enumeration has either not started or has already finished..
         /// </summary>
         internal static string InvalidOperation_EnumeratorNotOnElement {
             get {
@@ -835,7 +844,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Negating the minimum value of a two&apos;s complement number is invalid..
+        ///   Looks up a localized string similar to Negating the minimum value of a twos complement number is invalid..
         /// </summary>
         internal static string Overflow_NegatingTwosComplementNumber {
             get {
@@ -844,7 +853,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only single dimension arrays are supported here..
+        ///   Looks up a localized string similar to Only single-dimension arrays are supported..
         /// </summary>
         internal static string Rank_MultiDimensionArrayNotSupported {
             get {
@@ -943,20 +952,20 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fifth.
+        /// </summary>
+        internal static string String_Ordinal_Fifth {
+            get {
+                return ResourceManager.GetString("String_Ordinal_Fifth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to First.
         /// </summary>
         internal static string String_Ordinal_First {
             get {
                 return ResourceManager.GetString("String_Ordinal_First", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Fifth.
-        /// </summary>
-        internal static string String_Ordinal_Fith {
-            get {
-                return ResourceManager.GetString("String_Ordinal_Fith", resourceCulture);
             }
         }
         

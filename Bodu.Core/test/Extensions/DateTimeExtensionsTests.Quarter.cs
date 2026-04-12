@@ -9,58 +9,58 @@ using System.Globalization;
 
 namespace Bodu.Extensions
 {
-	public partial class DateTimeExtensionsTests
-	{
-		[DataTestMethod]
-		[DynamicData(nameof(QuarterTestData), DynamicDataSourceType.Method)]
-		public void GetQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedQuarter(DateTime input, CalendarQuarterDefinition definition, int expected)
-		{
-			int actual = input.Quarter(definition);
+    public partial class DateTimeExtensionsTests
+    {
+        [TestMethod]
+        [DynamicData(nameof(QuarterTestData), DynamicDataSourceType.Method)]
+        public void GetQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedQuarter(DateTime input, CalendarQuarterDefinition definition, int expected)
+        {
+            int actual = input.Quarter(definition);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
 
-		[DataTestMethod]
-		[DynamicData(nameof(QuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
-		public void GetQuarter_WhenOnlyDateTime_ShouldReturnExpectedQuarter(DateTime input, int expected)
-		{
-			int actual = input.Quarter();
+        [TestMethod]
+        [DynamicData(nameof(QuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
+        public void GetQuarter_WhenOnlyDateTime_ShouldReturnExpectedQuarter(DateTime input, int expected)
+        {
+            int actual = input.Quarter();
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.QuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
-		public void GetQuarter_WhenUsingValidProvider_ShouldReturnExpectedQuarter(DateTime input, int expected)
-		{
-			var provider = new DateTimeExtensionsTests.ValidQuarterProvider();
-			int actual = input.Quarter(provider);
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.QuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
+        public void GetQuarter_WhenUsingValidProvider_ShouldReturnExpectedQuarter(DateTime input, int expected)
+        {
+            var provider = new DateTimeExtensionsTests.ValidQuarterProvider();
+            int actual = input.Quarter(provider);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void GetQuarter_WhenUsingInvalidProvider_ShouldThrowExactly()
-		{
-			var input = new DateTime(2024, 4, 20);
-			var provider = new DateTimeExtensionsTests.InValidQuarterProvider();
+        [TestMethod]
+        public void GetQuarter_WhenUsingInvalidProvider_ShouldThrowExactly()
+        {
+            var input = new DateTime(2024, 4, 20);
+            var provider = new DateTimeExtensionsTests.InValidQuarterProvider();
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = input.Quarter(provider);
-			});
-		}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = input.Quarter(provider);
+            });
+        }
 
-		[TestMethod]
-		public void GetQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowExactly()
-		{
-			var input = new DateTime(2024, 4, 20);
+        [TestMethod]
+        public void GetQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowExactly()
+        {
+            var input = new DateTime(2024, 4, 20);
 
-			Assert.ThrowsExactly<InvalidOperationException>(() =>
-			{
-				_ = input.Quarter(CalendarQuarterDefinition.Custom);
-			});
-		}
-	}
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
+            {
+                _ = input.Quarter(CalendarQuarterDefinition.Custom);
+            });
+        }
+    }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Bodu.Security.Cryptography
 {
-	public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm>
-	{
-	}
+    public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm>
+    {
+    }
 }

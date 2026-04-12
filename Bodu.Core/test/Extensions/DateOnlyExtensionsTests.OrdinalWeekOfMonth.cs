@@ -8,26 +8,26 @@ using Bodu.Extensions;
 
 namespace Bodu.Extensions
 {
-	public partial class DateOnlyExtensionsTests
-	{
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.DayOfWeekOccurrenceInMonthTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]
-		public void DayOfWeekOccurrenceInMonth_WhenCalled_ShouldReturnExpectedOrdinal(DateTime inputDateTime, WeekOfMonthOrdinal expected)
-		{
-			var input = DateOnly.FromDateTime(inputDateTime);
+    public partial class DateOnlyExtensionsTests
+    {
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.DayOfWeekOccurrenceInMonthTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]
+        public void DayOfWeekOccurrenceInMonth_WhenCalled_ShouldReturnExpectedOrdinal(DateTime inputDateTime, WeekOfMonthOrdinal expected)
+        {
+            var input = DateOnly.FromDateTime(inputDateTime);
 
-			var actual = input.OrdinalWeekOfMonth();
+            var actual = input.OrdinalWeekOfMonth();
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void DayOfWeekOccurrenceInMonth_WhenLeapDay_ShouldReturnCorrectOrdinal()
-		{
-			var leapDay = new DateOnly(2024, 2, 29); // Thursday
-			WeekOfMonthOrdinal actual = leapDay.OrdinalWeekOfMonth();
+        [TestMethod]
+        public void DayOfWeekOccurrenceInMonth_WhenLeapDay_ShouldReturnCorrectOrdinal()
+        {
+            var leapDay = new DateOnly(2024, 2, 29); // Thursday
+            WeekOfMonthOrdinal actual = leapDay.OrdinalWeekOfMonth();
 
-			Assert.AreEqual(WeekOfMonthOrdinal.Fifth, actual); // 1st = 1st, 8th = 2nd, ..., 29th = 5th Thursday
-		}
-	}
+            Assert.AreEqual(WeekOfMonthOrdinal.Fifth, actual); // 1st = 1st, 8th = 2nd, ..., 29th = 5th Thursday
+        }
+    }
 }

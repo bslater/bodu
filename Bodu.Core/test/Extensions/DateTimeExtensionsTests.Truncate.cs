@@ -8,72 +8,72 @@ using Bodu.Extensions;
 
 namespace Bodu.Extensions
 {
-	public partial class DateTimeExtensionsTests
-	{
-		private static readonly DateTime Sample = new DateTime(2024, 4, 18, 14, 37, 56, 789).AddTicks(1234); // 7891234 ticks
+    public partial class DateTimeExtensionsTests
+    {
+        private static readonly DateTime Sample = new DateTime(2024, 4, 18, 14, 37, 56, 789).AddTicks(1234); // 7891234 ticks
 
-		[DataTestMethod]
-		[DataRow(DateTimeResolution.Year, "2024-01-01T00:00:00.0000000")]
-		[DataRow(DateTimeResolution.Month, "2024-04-01T00:00:00.0000000")]
-		[DataRow(DateTimeResolution.Day, "2024-04-18T00:00:00.0000000")]
-		[DataRow(DateTimeResolution.Hour, "2024-04-18T14:00:00.0000000")]
-		[DataRow(DateTimeResolution.Minute, "2024-04-18T14:37:00.0000000")]
-		[DataRow(DateTimeResolution.Second, "2024-04-18T14:37:56.0000000")]
-		[DataRow(DateTimeResolution.Millisecond, "2024-04-18T14:37:56.7890000")]
-		[DataRow(DateTimeResolution.Tick, "2024-04-18T14:37:56.7891234")]
-		public void Truncate_WhenCalledWithResolution_ShouldReturnExpected(DateTimeResolution resolution, string expectedDate)
-		{
-			var expected = DateTime.Parse(expectedDate);
-			DateTime actual = Sample.Truncate(resolution);
+        [TestMethod]
+        [DataRow(DateTimeResolution.Year, "2024-01-01T00:00:00.0000000")]
+        [DataRow(DateTimeResolution.Month, "2024-04-01T00:00:00.0000000")]
+        [DataRow(DateTimeResolution.Day, "2024-04-18T00:00:00.0000000")]
+        [DataRow(DateTimeResolution.Hour, "2024-04-18T14:00:00.0000000")]
+        [DataRow(DateTimeResolution.Minute, "2024-04-18T14:37:00.0000000")]
+        [DataRow(DateTimeResolution.Second, "2024-04-18T14:37:56.0000000")]
+        [DataRow(DateTimeResolution.Millisecond, "2024-04-18T14:37:56.7890000")]
+        [DataRow(DateTimeResolution.Tick, "2024-04-18T14:37:56.7891234")]
+        public void Truncate_WhenCalledWithResolution_ShouldReturnExpected(DateTimeResolution resolution, string expectedDate)
+        {
+            var expected = DateTime.Parse(expectedDate);
+            DateTime actual = Sample.Truncate(resolution);
 
-			Assert.AreEqual(expected, actual);
-			Assert.AreEqual(Sample.Kind, actual.Kind, "Kind should be preserved.");
-		}
+            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(Sample.Kind, actual.Kind, "Kind should be preserved.");
+        }
 
-		[TestMethod]
-		public void Truncate_WhenResolutionIsInvalid_ShouldThrowExactly()
-		{
-			DateTimeResolution invalid = (DateTimeResolution)999;
+        [TestMethod]
+        public void Truncate_WhenResolutionIsInvalid_ShouldThrowExactly()
+        {
+            DateTimeResolution invalid = (DateTimeResolution)999;
 
-			Assert.ThrowsExactly<ArgumentException>(() =>
-			{
-				_ = Sample.Truncate(invalid);
-			});
-		}
+            Assert.ThrowsExactly<ArgumentException>(() =>
+            {
+                _ = Sample.Truncate(invalid);
+            });
+        }
 
-		[TestMethod]
-		public void Truncate_WhenInputIsMinValue_ShouldNotThrow()
-		{
-			foreach (DateTimeResolution res in Enum.GetValues(typeof(DateTimeResolution)))
-			{
-				DateTime actual = DateTime.MinValue.Truncate(res);
+        [TestMethod]
+        public void Truncate_WhenInputIsMinValue_ShouldNotThrow()
+        {
+            foreach (DateTimeResolution res in Enum.GetValues(typeof(DateTimeResolution)))
+            {
+                DateTime actual = DateTime.MinValue.Truncate(res);
 
-				Assert.IsTrue(actual <= DateTime.MinValue.AddDays(1), $"Failed at {res}");
-			}
-		}
+                Assert.IsTrue(actual <= DateTime.MinValue.AddDays(1), $"Failed at {res}");
+            }
+        }
 
-		[TestMethod]
-		public void Truncate_WhenInputIsMaxValue_ShouldNotThrow()
-		{
-			foreach (DateTimeResolution res in Enum.GetValues(typeof(DateTimeResolution)))
-			{
-				DateTime actual = DateTime.MaxValue.Truncate(res);
+        [TestMethod]
+        public void Truncate_WhenInputIsMaxValue_ShouldNotThrow()
+        {
+            foreach (DateTimeResolution res in Enum.GetValues(typeof(DateTimeResolution)))
+            {
+                DateTime actual = DateTime.MaxValue.Truncate(res);
 
-				Assert.IsTrue(actual <= DateTime.MaxValue, $"Failed at {res}");
-			}
-		}
+                Assert.IsTrue(actual <= DateTime.MaxValue, $"Failed at {res}");
+            }
+        }
 
-		[TestMethod]
-		public void Truncate_WhenKindIsPreserved_ShouldMatchOriginalKind()
-		{
-			var kinds = new[] { DateTimeKind.Utc, DateTimeKind.Local, DateTimeKind.Unspecified };
-			foreach (var kind in kinds)
-			{
-				DateTime input = DateTime.SpecifyKind(Sample, kind);
-				DateTime actual = input.Truncate(DateTimeResolution.Minute);
+        [TestMethod]
+        public void Truncate_WhenKindIsPreserved_ShouldMatchOriginalKind()
+        {
+            var kinds = new[] { DateTimeKind.Utc, DateTimeKind.Local, DateTimeKind.Unspecified };
+            foreach (var kind in kinds)
+            {
+                DateTime input = DateTime.SpecifyKind(Sample, kind);
+                DateTime actual = input.Truncate(DateTimeResolution.Minute);
 
-				Assert.AreEqual(kind, actual.Kind);
-			}
-		}
-	}
+                Assert.AreEqual(kind, actual.Kind);
+            }
+        }
+    }
 }

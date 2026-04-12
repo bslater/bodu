@@ -9,39 +9,39 @@ using System.Globalization;
 
 namespace Bodu.Extensions
 {
-	public partial class DateOnlyExtensionsTests
-	{
+    public partial class DateOnlyExtensionsTests
+    {
 
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.FromUnixTimeSecondsTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Property)]
-		public void FromUnixTimeSeconds_WhenValidInput_ShouldReturnExpected(long input, DateTime expectedDateTime)
-		{
-			var expected = DateOnly.FromDateTime(expectedDateTime);
-			var actual = DateOnlyExtensions.FromUnixTimeSeconds(input);
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.FromUnixTimeSecondsTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Property)]
+        public void FromUnixTimeSeconds_WhenValidInput_ShouldReturnExpected(long input, DateTime expectedDateTime)
+        {
+            var expected = DateOnly.FromDateTime(expectedDateTime);
+            var actual = DateOnlyExtensions.FromUnixTimeSeconds(input);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void FromUnixTimeSeconds_WhenBelowMinimum_ShouldThrowExactly()
-		{
-			long belowMin = -62135596801; // 1 second before DateTime.MinValue
+        [TestMethod]
+        public void FromUnixTimeSeconds_WhenBelowMinimum_ShouldThrowExactly()
+        {
+            long belowMin = -62135596801; // 1 second before DateTime.MinValue
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = DateTimeExtensions.FromUnixTimeSeconds(belowMin);
-			});
-		}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = DateTimeExtensions.FromUnixTimeSeconds(belowMin);
+            });
+        }
 
-		[TestMethod]
-		public void FromUnixTimeSeconds_WhenAboveMaximum_ShouldThrowExactly()
-		{
-			long aboveMax = 253402300800; // 1 second after DateTime.MaxValue
+        [TestMethod]
+        public void FromUnixTimeSeconds_WhenAboveMaximum_ShouldThrowExactly()
+        {
+            long aboveMax = 253402300800; // 1 second after DateTime.MaxValue
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = DateTimeExtensions.FromUnixTimeSeconds(aboveMax);
-			});
-		}
-	}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = DateTimeExtensions.FromUnixTimeSeconds(aboveMax);
+            });
+        }
+    }
 }

@@ -8,87 +8,87 @@ using Bodu.Extensions;
 
 namespace Bodu.Extensions
 {
-	public partial class DateTimeExtensionsTests
-	{
+    public partial class DateTimeExtensionsTests
+    {
 
-		[DataTestMethod]
-		[DynamicData(nameof(NthDayOfWeekInMonthTestData),  DynamicDataSourceType.Method)]
-		public void NthDayOfWeekInMonth_WhenCalled_ShouldReturnExpected(DateTime input, DayOfWeek dayOfWeek, WeekOfMonthOrdinal ordinal, DateTime expected)
-		{
-			var actual = input.NthDayOfWeekInMonth(dayOfWeek, ordinal);
+        [TestMethod]
+        [DynamicData(nameof(NthDayOfWeekInMonthTestData),  DynamicDataSourceType.Method)]
+        public void NthDayOfWeekInMonth_WhenCalled_ShouldReturnExpected(DateTime input, DayOfWeek dayOfWeek, WeekOfMonthOrdinal ordinal, DateTime expected)
+        {
+            var actual = input.NthDayOfWeekInMonth(dayOfWeek, ordinal);
 
-			Assert.AreEqual(expected, actual);
-		}
-
-
-		[DataTestMethod]
-		[DynamicData(nameof(NthDayOfWeekInMonthTestData),  DynamicDataSourceType.Method)]
-		public void NthDayOfWeekInMonth_WhenUsingYearMonth_ShouldReturnExpected(DateTime input, DayOfWeek dayOfWeek, WeekOfMonthOrdinal ordinal, DateTime expected)
-		{
-			int year = input.Year, month = input.Month;
-
-			var actual = DateTimeExtensions.GetNthDayOfWeekInMonth(year, month, dayOfWeek, ordinal);
-
-			Assert.AreEqual(expected, actual);
-		}
-
-		[TestMethod]
-		public void NthDayOfWeekInMonth_WhenGivenDateIsInFuture_ShouldReturnExpectedDateInGivenMonth()
-		{
-			var input = new DateTime(2024, 1, 30);
-
-			var actual = input.NthDayOfWeekInMonth(DayOfWeek.Sunday, WeekOfMonthOrdinal.First);
-
-			Assert.IsTrue(actual < input);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
 
-		[TestMethod]
-		public void NthDayOfWeekInMonth_WhenFifthDoesNotExist_ShouldThrowExactly()
-		{
-			DateTime input = new DateTime(2023, 2, 1); // February 2023 has only 4 Wednesdays
+        [TestMethod]
+        [DynamicData(nameof(NthDayOfWeekInMonthTestData),  DynamicDataSourceType.Method)]
+        public void NthDayOfWeekInMonth_WhenUsingYearMonth_ShouldReturnExpected(DateTime input, DayOfWeek dayOfWeek, WeekOfMonthOrdinal ordinal, DateTime expected)
+        {
+            int year = input.Year, month = input.Month;
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				input.NthDayOfWeekInMonth(DayOfWeek.Wednesday, WeekOfMonthOrdinal.Fifth);
-			});
-		}
+            var actual = DateTimeExtensions.GetNthDayOfWeekInMonth(year, month, dayOfWeek, ordinal);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void NthDayOfWeekInMonth_WhenGivenDateIsInFuture_ShouldReturnExpectedDateInGivenMonth()
+        {
+            var input = new DateTime(2024, 1, 30);
+
+            var actual = input.NthDayOfWeekInMonth(DayOfWeek.Sunday, WeekOfMonthOrdinal.First);
+
+            Assert.IsTrue(actual < input);
+        }
 
 
-		[DataTestMethod]
-		[DataRow(DateTimeKind.Unspecified)]
-		[DataRow(DateTimeKind.Utc)]
-		[DataRow(DateTimeKind.Local)]
-		public void NthDayOfWeekInMonth_WhenKindIsSet_ShouldPreserveKind(DateTimeKind kind)
-		{
-			var input = new DateTime(2024, 4, 18, 10, 0, 0, kind);
-			var actual = input.NthDayOfWeekInMonth(DayOfWeek.Wednesday, WeekOfMonthOrdinal.Second);
+        [TestMethod]
+        public void NthDayOfWeekInMonth_WhenFifthDoesNotExist_ShouldThrowExactly()
+        {
+            DateTime input = new DateTime(2023, 2, 1); // February 2023 has only 4 Wednesdays
 
-			Assert.AreEqual(kind, actual.Kind);
-		}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                input.NthDayOfWeekInMonth(DayOfWeek.Wednesday, WeekOfMonthOrdinal.Fifth);
+            });
+        }
 
-		[TestMethod]
-		public void NthDayOfWeekInMonth_WhenOrdinalIsInvalidEnum_ShouldThrowExactly()
-		{
-			var input = new DateTime(2024, 1, 1);
-			WeekOfMonthOrdinal invalidOrdinal = (WeekOfMonthOrdinal)999;
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				input.NthDayOfWeekInMonth(DayOfWeek.Monday, invalidOrdinal);
-			});
-		}
+        [TestMethod]
+        [DataRow(DateTimeKind.Unspecified)]
+        [DataRow(DateTimeKind.Utc)]
+        [DataRow(DateTimeKind.Local)]
+        public void NthDayOfWeekInMonth_WhenKindIsSet_ShouldPreserveKind(DateTimeKind kind)
+        {
+            var input = new DateTime(2024, 4, 18, 10, 0, 0, kind);
+            var actual = input.NthDayOfWeekInMonth(DayOfWeek.Wednesday, WeekOfMonthOrdinal.Second);
 
-		[TestMethod]
-		public void NthDayOfWeekInMonth_WhenDayOfWeekIsInvalidEnum_ShouldThrowExactly()
-		{
-			var input = new DateTime(2024, 1, 1);
-			DayOfWeek invalidDay = (DayOfWeek)999;
+            Assert.AreEqual(kind, actual.Kind);
+        }
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				input.NthDayOfWeekInMonth(invalidDay, WeekOfMonthOrdinal.First);
-			});
-		}
-	}
+        [TestMethod]
+        public void NthDayOfWeekInMonth_WhenOrdinalIsInvalidEnum_ShouldThrowExactly()
+        {
+            var input = new DateTime(2024, 1, 1);
+            WeekOfMonthOrdinal invalidOrdinal = (WeekOfMonthOrdinal)999;
+
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                input.NthDayOfWeekInMonth(DayOfWeek.Monday, invalidOrdinal);
+            });
+        }
+
+        [TestMethod]
+        public void NthDayOfWeekInMonth_WhenDayOfWeekIsInvalidEnum_ShouldThrowExactly()
+        {
+            var input = new DateTime(2024, 1, 1);
+            DayOfWeek invalidDay = (DayOfWeek)999;
+
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                input.NthDayOfWeekInMonth(invalidDay, WeekOfMonthOrdinal.First);
+            });
+        }
+    }
 }

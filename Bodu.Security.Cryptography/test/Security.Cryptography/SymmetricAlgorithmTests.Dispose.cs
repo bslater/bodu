@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Bodu.Security.Cryptography
 {
-	public abstract partial class SymmetricAlgorithmTests<T>
-	{
-	}
+    public abstract partial class SymmetricAlgorithmTests<T>
+    {
+    }
 }

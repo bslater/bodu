@@ -1,7 +1,7 @@
 ﻿namespace Bodu.Extensions
 {
-	[TestClass]
-	public partial class DateOnlyExtensionsTests
-	{
-	}
+    [TestClass]
+    public partial class DateOnlyExtensionsTests
+    {
+    }
 }

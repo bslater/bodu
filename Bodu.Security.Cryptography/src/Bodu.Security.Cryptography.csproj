@@ -11,7 +11,7 @@
     <OutputType>Library</OutputType>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
@@ -30,13 +30,30 @@
     <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(AllowUnsafeBlocks)' == 'true'">
+    <DefineConstants>$(DefineConstants);ALLOW_UNSAFE</DefineConstants>
+  </PropertyGroup>
+  
   <ItemGroup>
+    <Compile Remove="Security.Cryptography.Extensions\ICryptoTransformExtensions.cs" />
+    <Compile Remove="Security.Cryptography.Extensions\ICryptoTransformExtensions.Transform.cs" />
+    <Compile Remove="Security.Cryptography.Extensions\ICryptoTransformExtensions.TransformAsync.cs" />
+    <Compile Remove="Security.Cryptography.Extensions\ICryptoTransformExtensions.TransformBlock.cs" />
+    <Compile Remove="Security.Cryptography.Extensions\ICryptoTransformExtensions.TransformFinalBlock.cs" />
     <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithm.Decrypt.cs" />
     <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithm.DecryptAsync.cs" />
     <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithm.EncryptAsync.cs" />
     <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithm.TransformHelpers.cs" />
+    <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithmExtensions.cs" />
+    <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithmExtensions.Decrypt.cs" />
+    <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithmExtensions.DecryptAsync.cs" />
+    <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithmExtensions.Encrypt.cs" />
+    <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithmExtensions.EncryptAsync.cs" />
+    <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithmExtensions.TryCreateDecryptor.cs" />
+    <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithmExtensions.TryCreateEncryptor.cs" />
     <Compile Remove="Security.Cryptography\Blowfish.cs" />
     <Compile Remove="Security.Cryptography\BlowfishTransform.cs" />
+    <Compile Remove="Security.Cryptography\Crc.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -62,6 +79,37 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AsyncFixer" Version="1.6.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="4.14.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.14.15">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="MSTest.Analyzers" Version="3.10.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Roslynator.Analyzers" Version="4.14.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.14.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

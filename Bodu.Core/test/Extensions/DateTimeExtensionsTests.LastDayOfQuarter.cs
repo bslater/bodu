@@ -9,183 +9,183 @@ using System.Globalization;
 
 namespace Bodu.Extensions
 {
-	public partial class DateTimeExtensionsTests
-	{
+    public partial class DateTimeExtensionsTests
+    {
 
 
-		[DataTestMethod]
-		[DynamicData(nameof(LastDayOfQuarterDateTimeTestData),DynamicDataSourceType.Method)]
-		public void LastDayOfQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedDate(DateTime input, CalendarQuarterDefinition definition,  DateTime expected)
-		{
-			var actual = input.LastDayOfQuarter(definition);
+        [TestMethod]
+        [DynamicData(nameof(LastDayOfQuarterDateTimeTestData),DynamicDataSourceType.Method)]
+        public void LastDayOfQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedDate(DateTime input, CalendarQuarterDefinition definition,  DateTime expected)
+        {
+            var actual = input.LastDayOfQuarter(definition);
 
-			Assert.AreEqual(expected, actual);
-		}
-
-
-		[DataTestMethod]
-		[DynamicData(nameof(LastDayOfQuarterDateTimeJanuaryDecemberTestData), DynamicDataSourceType.Method)]
-		public void LastDayOfQuarter_WhenUsingDateOnly_ShouldReturnExpectedStartOfCalendarQuarter(DateTime input, DateTime expected)
-		{
-			var actual = input.LastDayOfQuarter();
-
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
 
-		[DataTestMethod]
-		[DynamicData(nameof(LastDayOfQuarterTestData), DynamicDataSourceType.Method)]
-		public void LastDayOfQuarter_WhenUsingQuarterAndDefinition_ShouldReturnExpectedDate(int year,int quarter, CalendarQuarterDefinition definition, DateTime expected)
-		{
-			var actual = DateTimeExtensions.GetLastDayOfQuarter(year, quarter, definition);
+        [TestMethod]
+        [DynamicData(nameof(LastDayOfQuarterDateTimeJanuaryDecemberTestData), DynamicDataSourceType.Method)]
+        public void LastDayOfQuarter_WhenUsingDateOnly_ShouldReturnExpectedStartOfCalendarQuarter(DateTime input, DateTime expected)
+        {
+            var actual = input.LastDayOfQuarter();
 
-			Assert.AreEqual(expected, actual);
-		}
-
-		[DataTestMethod]
-		[DataRow(DateTimeKind.Unspecified)]
-		[DataRow(DateTimeKind.Utc)]
-		[DataRow(DateTimeKind.Local)]
-		public void LastDayOfQuarter_WhenKindIsSet_ShouldPreserveKind(DateTimeKind kind)
-		{
-			DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
-			DateTime actual = input.LastDayOfQuarter();
-
-			Assert.AreEqual(kind, actual.Kind);
-		}
-
-		[DataTestMethod]
-		[DynamicData(nameof(CalendarQuarterDefinitionDateTimeKindTestData), DynamicDataSourceType.Method)]
-		public void LastDayOfQuarter_WhenQuarterAndDefinitionAndKindIsSet_ShouldPreserveKind(CalendarQuarterDefinition definition, DateTimeKind kind)
-		{
-			DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
-			DateTime actual = input.LastDayOfQuarter(definition);
-
-			Assert.AreEqual(kind, actual.Kind);
-		}
-
-		[DataTestMethod]
-		[DynamicData(nameof(LastDayOfQuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
-		public void LastDayOfQuarter_WhenUsingQuarterAndCalendarDefinition_ShouldReturnExpectedDate(int year, int quarter, DateTime expected)
-		{
-			var actual = DateTimeExtensions.GetLastDayOfQuarter(year, quarter);
-
-			Assert.AreEqual(expected, actual);
-		}
-
-		[TestMethod]
-		public void LastDayOfQuarter_WhenUsingInvalidProvider_ShouldThrowArgumentOutOfRange()
-		{
-			var input = new DateTime(2024, 4, 20);
-			var provider = new InValidQuarterProvider();
-
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = input.LastDayOfQuarter(provider);
-			});
-		}
-
-		[TestMethod]
-		public void LastDayOfQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowInvalidOperation()
-		{
-			var input = new DateTime(2024, 4, 20);
-
-			Assert.ThrowsExactly<InvalidOperationException>(() =>
-			{
-				_ = input.LastDayOfQuarter(CalendarQuarterDefinition.Custom);
-			});
-		}
-
-		[TestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.LastDayOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
-		public void LastDayOfQuarter_WhenUsingValidQuarterProvider_ShouldReturnExpectedDate(DateTime input, DateTime expected)
-		{
-			var provider = new DateTimeExtensionsTests.ValidQuarterProvider();
-
-			var actual = input.LastDayOfQuarter(provider);
-
-			Assert.AreEqual(expected, actual);
-		}
-
-		[TestMethod]
-		public void LastDayOfQuarter_WhenInputIsMinValue_ShouldReturnExpectedDate()
-		{
-			var actual = DateTime.MinValue.LastDayOfQuarter(CalendarQuarterDefinition.JanuaryToDecember);
-			Assert.AreEqual(new DateTime(1, 3, 31), actual);
-		}
-
-		[TestMethod]
-		public void LastDayOfQuarter_WhenDefinitionIsInvalid_ShouldThrowExactly()
-		{
-			var input = new DateTime(2024, 4, 20);
-			var definition = (CalendarQuarterDefinition)999;
-
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = input.LastDayOfQuarter(definition);
-			});
-		}
-
-		[TestMethod]
-		public void LastDayOfQuarter_WhenDefinitionIsInvalid_WithYearAndQuarter_ShouldThrowExactly()
-		{
-			var definition = (CalendarQuarterDefinition)999;
-
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = DateTimeExtensions.GetLastDayOfQuarter(2025, 1, definition);
-			});
-		}
-
-		[DataTestMethod]
-		[DataRow(-1)]
-		[DataRow(0)]
-		[DataRow(5)]
-		public void LastDayOfQuarter_WhenQuarterIsOutOfRange_WithDefinition_ShouldThrowExactly(int quarter)
-		{
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = DateTimeExtensions.GetLastDayOfQuarter(2025, quarter, CalendarQuarterDefinition.JanuaryToDecember);
-			});
-		}
-
-		[DataTestMethod]
-		[DataRow(-1)]
-		[DataRow(0)]
-		[DataRow(5)]
-		public void LastDayOfQuarter_WhenQuarterIsOutOfRange_ShouldThrowExactly(int quarter)
-		{
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = DateTimeExtensions.GetLastDayOfQuarter(2025, quarter);
-			});
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
 
+        [TestMethod]
+        [DynamicData(nameof(LastDayOfQuarterTestData), DynamicDataSourceType.Method)]
+        public void LastDayOfQuarter_WhenUsingQuarterAndDefinition_ShouldReturnExpectedDate(int year,int quarter, CalendarQuarterDefinition definition, DateTime expected)
+        {
+            var actual = DateTimeExtensions.GetLastDayOfQuarter(year, quarter, definition);
 
-		[DataTestMethod]
-		[DataRow(-1)]
-		[DataRow(0)]
-		[DataRow(10_000)]
-		public void GetLastDayOfQuarter_WhenYearIsOutOfRange_WithDefinition_ShouldThrowExactly(int year)
-		{
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = DateTimeExtensions.GetLastDayOfQuarter(year, 1, CalendarQuarterDefinition.JanuaryToDecember);
-			});
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[DataTestMethod]
-		[DataRow(-1)]
-		[DataRow(0)]
-		[DataRow(10_000)]
-		public void GetLastDayOfQuarter_WhenYearIsOutOfRange_ShouldThrowExactly(int year)
-		{
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = DateTimeExtensions.GetLastDayOfQuarter(year, 1);
-			});
-		}
+        [TestMethod]
+        [DataRow(DateTimeKind.Unspecified)]
+        [DataRow(DateTimeKind.Utc)]
+        [DataRow(DateTimeKind.Local)]
+        public void LastDayOfQuarter_WhenKindIsSet_ShouldPreserveKind(DateTimeKind kind)
+        {
+            DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
+            DateTime actual = input.LastDayOfQuarter();
 
-	}
+            Assert.AreEqual(kind, actual.Kind);
+        }
+
+        [TestMethod]
+        [DynamicData(nameof(CalendarQuarterDefinitionDateTimeKindTestData), DynamicDataSourceType.Method)]
+        public void LastDayOfQuarter_WhenQuarterAndDefinitionAndKindIsSet_ShouldPreserveKind(CalendarQuarterDefinition definition, DateTimeKind kind)
+        {
+            DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
+            DateTime actual = input.LastDayOfQuarter(definition);
+
+            Assert.AreEqual(kind, actual.Kind);
+        }
+
+        [TestMethod]
+        [DynamicData(nameof(LastDayOfQuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
+        public void LastDayOfQuarter_WhenUsingQuarterAndCalendarDefinition_ShouldReturnExpectedDate(int year, int quarter, DateTime expected)
+        {
+            var actual = DateTimeExtensions.GetLastDayOfQuarter(year, quarter);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void LastDayOfQuarter_WhenUsingInvalidProvider_ShouldThrowArgumentOutOfRange()
+        {
+            var input = new DateTime(2024, 4, 20);
+            var provider = new InValidQuarterProvider();
+
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = input.LastDayOfQuarter(provider);
+            });
+        }
+
+        [TestMethod]
+        public void LastDayOfQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowInvalidOperation()
+        {
+            var input = new DateTime(2024, 4, 20);
+
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
+            {
+                _ = input.LastDayOfQuarter(CalendarQuarterDefinition.Custom);
+            });
+        }
+
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.LastDayOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
+        public void LastDayOfQuarter_WhenUsingValidQuarterProvider_ShouldReturnExpectedDate(DateTime input, DateTime expected)
+        {
+            var provider = new DateTimeExtensionsTests.ValidQuarterProvider();
+
+            var actual = input.LastDayOfQuarter(provider);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void LastDayOfQuarter_WhenInputIsMinValue_ShouldReturnExpectedDate()
+        {
+            var actual = DateTime.MinValue.LastDayOfQuarter(CalendarQuarterDefinition.JanuaryToDecember);
+            Assert.AreEqual(new DateTime(1, 3, 31), actual);
+        }
+
+        [TestMethod]
+        public void LastDayOfQuarter_WhenDefinitionIsInvalid_ShouldThrowExactly()
+        {
+            var input = new DateTime(2024, 4, 20);
+            var definition = (CalendarQuarterDefinition)999;
+
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = input.LastDayOfQuarter(definition);
+            });
+        }
+
+        [TestMethod]
+        public void LastDayOfQuarter_WhenDefinitionIsInvalid_WithYearAndQuarter_ShouldThrowExactly()
+        {
+            var definition = (CalendarQuarterDefinition)999;
+
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = DateTimeExtensions.GetLastDayOfQuarter(2025, 1, definition);
+            });
+        }
+
+        [TestMethod]
+        [DataRow(-1)]
+        [DataRow(0)]
+        [DataRow(5)]
+        public void LastDayOfQuarter_WhenQuarterIsOutOfRange_WithDefinition_ShouldThrowExactly(int quarter)
+        {
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = DateTimeExtensions.GetLastDayOfQuarter(2025, quarter, CalendarQuarterDefinition.JanuaryToDecember);
+            });
+        }
+
+        [TestMethod]
+        [DataRow(-1)]
+        [DataRow(0)]
+        [DataRow(5)]
+        public void LastDayOfQuarter_WhenQuarterIsOutOfRange_ShouldThrowExactly(int quarter)
+        {
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = DateTimeExtensions.GetLastDayOfQuarter(2025, quarter);
+            });
+        }
+
+
+
+        [TestMethod]
+        [DataRow(-1)]
+        [DataRow(0)]
+        [DataRow(10_000)]
+        public void GetLastDayOfQuarter_WhenYearIsOutOfRange_WithDefinition_ShouldThrowExactly(int year)
+        {
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = DateTimeExtensions.GetLastDayOfQuarter(year, 1, CalendarQuarterDefinition.JanuaryToDecember);
+            });
+        }
+
+        [TestMethod]
+        [DataRow(-1)]
+        [DataRow(0)]
+        [DataRow(10_000)]
+        public void GetLastDayOfQuarter_WhenYearIsOutOfRange_ShouldThrowExactly(int year)
+        {
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = DateTimeExtensions.GetLastDayOfQuarter(year, 1);
+            });
+        }
+
+    }
 }

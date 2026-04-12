@@ -8,46 +8,46 @@ using Bodu.Extensions;
 
 namespace Bodu.Extensions
 {
-	public partial class DateOnlyExtensionsTests
-	{
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfWeekInMonthTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-		public void FirstDayOfWeekInMonth_WhenCalled_ShouldReturnExpectedDate(DateTime inputDateTime, DayOfWeek dayOfWeek, DateTime expectedDateTime)
-		{
-			DateOnly input = DateOnly.FromDateTime(inputDateTime);
-			DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
+    public partial class DateOnlyExtensionsTests
+    {
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfWeekInMonthTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+        public void FirstDayOfWeekInMonth_WhenCalled_ShouldReturnExpectedDate(DateTime inputDateTime, DayOfWeek dayOfWeek, DateTime expectedDateTime)
+        {
+            DateOnly input = DateOnly.FromDateTime(inputDateTime);
+            DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
 
-			DateOnly actual = input.FirstDayOfWeekInMonth(dayOfWeek);
+            DateOnly actual = input.FirstDayOfWeekInMonth(dayOfWeek);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void FirstDayOfWeekInMonth_WhenInvalidDayOfWeek_ShouldThrowExactly()
-		{
-			DateOnly input = new DateOnly(2024, 4, 1);
-			var invalidDay = (DayOfWeek)999;
+        [TestMethod]
+        public void FirstDayOfWeekInMonth_WhenInvalidDayOfWeek_ShouldThrowExactly()
+        {
+            DateOnly input = new DateOnly(2024, 4, 1);
+            var invalidDay = (DayOfWeek)999;
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = input.FirstDayOfWeekInMonth(invalidDay);
-			});
-		}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = input.FirstDayOfWeekInMonth(invalidDay);
+            });
+        }
 
-		[TestMethod]
-		public void FirstDayOfWeekInMonth_WhenUsingMinValue_ShouldReturnValidResult()
-		{
-			DateOnly actual = DateOnly.MinValue.FirstDayOfWeekInMonth(DayOfWeek.Monday);
+        [TestMethod]
+        public void FirstDayOfWeekInMonth_WhenUsingMinValue_ShouldReturnValidResult()
+        {
+            DateOnly actual = DateOnly.MinValue.FirstDayOfWeekInMonth(DayOfWeek.Monday);
 
-			Assert.IsTrue(actual >= DateOnly.MinValue && actual <= DateOnly.MinValue.AddMonths(1).AddDays(-1));
-		}
+            Assert.IsTrue(actual >= DateOnly.MinValue && actual <= DateOnly.MinValue.AddMonths(1).AddDays(-1));
+        }
 
-		[TestMethod]
-		public void FirstDayOfWeekInMonth_WhenUsingMaxValue_ShouldReturnValidResult()
-		{
-			DateOnly actual = DateOnly.MaxValue.FirstDayOfWeekInMonth(DayOfWeek.Friday);
+        [TestMethod]
+        public void FirstDayOfWeekInMonth_WhenUsingMaxValue_ShouldReturnValidResult()
+        {
+            DateOnly actual = DateOnly.MaxValue.FirstDayOfWeekInMonth(DayOfWeek.Friday);
 
-			Assert.IsTrue(actual <= DateOnly.MaxValue);
-		}
-	}
+            Assert.IsTrue(actual <= DateOnly.MaxValue);
+        }
+    }
 }

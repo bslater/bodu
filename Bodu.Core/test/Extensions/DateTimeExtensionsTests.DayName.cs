@@ -10,35 +10,35 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Bodu.Extensions
 {
-	public partial class DateTimeExtensionsTests
-	{
+    public partial class DateTimeExtensionsTests
+    {
 
-		[DataTestMethod]
-		[DynamicData(nameof(DayNameTestData), DynamicDataSourceType.Method)]
-		public void DayName_WithCulture_ShouldReturnLocalizedName(DateTime input, CultureInfo culture, string expected)
-		{
-			string actual = input.DayName(culture);
+        [TestMethod]
+        [DynamicData(nameof(DayNameTestData), DynamicDataSourceType.Method)]
+        public void DayName_WithCulture_ShouldReturnLocalizedName(DateTime input, CultureInfo culture, string expected)
+        {
+            string actual = input.DayName(culture);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[DataTestMethod]
-		[DynamicData(nameof(DayNameFrenchTestData), DynamicDataSourceType.Method)]
-		public void DayName_WhenCultureIsNull_ShouldFallbackToCurrentCulture(DateTime input, string expected)
-		{
-			var original = CultureInfo.CurrentCulture;
-			try
-			{
-				CultureInfo.CurrentCulture = new CultureInfo("fr-FR");
+        [TestMethod]
+        [DynamicData(nameof(DayNameFrenchTestData), DynamicDataSourceType.Method)]
+        public void DayName_WhenCultureIsNull_ShouldFallbackToCurrentCulture(DateTime input, string expected)
+        {
+            var original = CultureInfo.CurrentCulture;
+            try
+            {
+                CultureInfo.CurrentCulture = new CultureInfo("fr-FR");
 
-				string actual = input.DayName(null!);
+                string actual = input.DayName(null!);
 
-				Assert.AreEqual(expected, actual);
-			}
-			finally
-			{
-				CultureInfo.CurrentCulture = original;
-			}
-		}
-	}
+                Assert.AreEqual(expected, actual);
+            }
+            finally
+            {
+                CultureInfo.CurrentCulture = original;
+            }
+        }
+    }
 }

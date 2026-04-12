@@ -8,24 +8,24 @@ using Bodu.Extensions;
 
 namespace Bodu.Extensions
 {
-	public partial class DateTimeExtensionsTests
-	{
-		[DataTestMethod]
-		[DynamicData(nameof(DayOfWeekOccurrenceInMonthTestData), DynamicDataSourceType.Method)]		
-		public void DayOfWeekOccurrenceInMonth_WhenCalled_ShouldReturnExpectedOrdinal(DateTime input, WeekOfMonthOrdinal expected)
-		{
-			var actual = input.OrdinalWeekOfMonth();
+    public partial class DateTimeExtensionsTests
+    {
+        [TestMethod]
+        [DynamicData(nameof(DayOfWeekOccurrenceInMonthTestData), DynamicDataSourceType.Method)]        
+        public void DayOfWeekOccurrenceInMonth_WhenCalled_ShouldReturnExpectedOrdinal(DateTime input, WeekOfMonthOrdinal expected)
+        {
+            var actual = input.OrdinalWeekOfMonth();
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void DayOfWeekOccurrenceInMonth_WhenLeapDay_ShouldReturnCorrectOrdinal()
-		{
-			DateTime leapDay = new DateTime(2024, 2, 29); // Thursday
-			WeekOfMonthOrdinal actual = leapDay.OrdinalWeekOfMonth();
+        [TestMethod]
+        public void DayOfWeekOccurrenceInMonth_WhenLeapDay_ShouldReturnCorrectOrdinal()
+        {
+            DateTime leapDay = new DateTime(2024, 2, 29); // Thursday
+            WeekOfMonthOrdinal actual = leapDay.OrdinalWeekOfMonth();
 
-			Assert.AreEqual(WeekOfMonthOrdinal.Fifth, actual); // 1st = 1st, 8th = 2nd, ..., 29th = 5th Thursday
-		}
-	}
+            Assert.AreEqual(WeekOfMonthOrdinal.Fifth, actual); // 1st = 1st, 8th = 2nd, ..., 29th = 5th Thursday
+        }
+    }
 }

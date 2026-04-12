@@ -9,67 +9,67 @@ using Bodu.Extensions;
 namespace Bodu.Extensions
 {
 #if NET6_0_OR_GREATER
-	public partial class DateTimeExtensionsTests
-	{
-		public static IEnumerable<object[]> ToDateOnlyTestData()
-		{
-			yield return new object[] { new DateTime(2024, 04, 18, 00, 00, 00), new DateTime(2024, 4, 18) };
-			yield return new object[] { new DateTime(2024, 04, 18, 12, 34, 56), new DateTime(2024, 4, 18) };
-			yield return new object[] { new DateTime(2000, 01, 01, 23, 59, 59), new DateTime(2000, 1, 1) };
-			yield return new object[] { new DateTime(2024, 02, 29, 12, 59, 59), new DateTime(2024, 2, 29) };
-			yield return new object[] { DateTime.MaxValue, DateTime.MaxValue.Date };
-			yield return new object[] { DateTime.MinValue, DateTime.MinValue.Date };
-		}
+    public partial class DateTimeExtensionsTests
+    {
+        public static IEnumerable<object[]> ToDateOnlyTestData()
+        {
+            yield return new object[] { new DateTime(2024, 04, 18, 00, 00, 00), new DateTime(2024, 4, 18) };
+            yield return new object[] { new DateTime(2024, 04, 18, 12, 34, 56), new DateTime(2024, 4, 18) };
+            yield return new object[] { new DateTime(2000, 01, 01, 23, 59, 59), new DateTime(2000, 1, 1) };
+            yield return new object[] { new DateTime(2024, 02, 29, 12, 59, 59), new DateTime(2024, 2, 29) };
+            yield return new object[] { DateTime.MaxValue, DateTime.MaxValue.Date };
+            yield return new object[] { DateTime.MinValue, DateTime.MinValue.Date };
+        }
 
-		[DataTestMethod]
-		[DynamicData(nameof(ToDateOnlyTestData), DynamicDataSourceType.Method)]
-		public void ToDateOnly_WhenCalled_ShouldReturnExpectedDateOnly(DateTime input, DateTime expectedDateTime)
-		{
-			var expected = DateOnly.FromDateTime(expectedDateTime);
+        [TestMethod]
+        [DynamicData(nameof(ToDateOnlyTestData), DynamicDataSourceType.Method)]
+        public void ToDateOnly_WhenCalled_ShouldReturnExpectedDateOnly(DateTime input, DateTime expectedDateTime)
+        {
+            var expected = DateOnly.FromDateTime(expectedDateTime);
 
-			var actual = input.ToDateOnly();
+            var actual = input.ToDateOnly();
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[DataTestMethod]
-		[DataRow(DateTimeKind.Unspecified)]
-		[DataRow(DateTimeKind.Utc)]
-		[DataRow(DateTimeKind.Local)]
-		public void ToDateOnly_WhenKindIsSet_ShouldIgnoreKind(DateTimeKind kind)
-		{
-			var input = new DateTime(2024, 4, 18, 18, 30, 0, kind);
-			var actual = input.ToDateOnly();
+        [TestMethod]
+        [DataRow(DateTimeKind.Unspecified)]
+        [DataRow(DateTimeKind.Utc)]
+        [DataRow(DateTimeKind.Local)]
+        public void ToDateOnly_WhenKindIsSet_ShouldIgnoreKind(DateTimeKind kind)
+        {
+            var input = new DateTime(2024, 4, 18, 18, 30, 0, kind);
+            var actual = input.ToDateOnly();
 
-			Assert.AreEqual(new DateOnly(2024, 4, 18), actual);
-		}
+            Assert.AreEqual(new DateOnly(2024, 4, 18), actual);
+        }
 
-		[TestMethod]
-		public void ToDateOnly_WhenKindIsUtc_ShouldIgnoreKind()
-		{
-			var input = new DateTime(2024, 4, 18, 18, 30, 0, DateTimeKind.Utc);
-			var actual = input.ToDateOnly();
+        [TestMethod]
+        public void ToDateOnly_WhenKindIsUtc_ShouldIgnoreKind()
+        {
+            var input = new DateTime(2024, 4, 18, 18, 30, 0, DateTimeKind.Utc);
+            var actual = input.ToDateOnly();
 
-			Assert.AreEqual(new DateOnly(2024, 4, 18), actual);
-		}
+            Assert.AreEqual(new DateOnly(2024, 4, 18), actual);
+        }
 
-		[TestMethod]
-		public void ToDateOnly_WhenUsingMinValue_ShouldReturnEarliestDate()
-		{
-			var input = DateTime.MinValue;
-			var actual = input.ToDateOnly();
+        [TestMethod]
+        public void ToDateOnly_WhenUsingMinValue_ShouldReturnEarliestDate()
+        {
+            var input = DateTime.MinValue;
+            var actual = input.ToDateOnly();
 
-			Assert.AreEqual(new DateOnly(1, 1, 1), actual);
-		}
+            Assert.AreEqual(new DateOnly(1, 1, 1), actual);
+        }
 
-		[TestMethod]
-		public void ToDateOnly_WhenUsingMaxValue_ShouldReturnLatestDate()
-		{
-			var input = DateTime.MaxValue;
-			var actual = input.ToDateOnly();
+        [TestMethod]
+        public void ToDateOnly_WhenUsingMaxValue_ShouldReturnLatestDate()
+        {
+            var input = DateTime.MaxValue;
+            var actual = input.ToDateOnly();
 
-			Assert.AreEqual(new DateOnly(9999, 12, 31), actual);
-		}
-	}
+            Assert.AreEqual(new DateOnly(9999, 12, 31), actual);
+        }
+    }
 #endif
 }

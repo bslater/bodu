@@ -1,130 +1,184 @@
 namespace Bodu.Collections.Generic
 {
-	public partial class CircularBufferTests
-	{
-		/// <summary>
-		/// Verifies that TrimExcess reduces the internal capacity to match Count when the buffer is not full.
-		/// </summary>
-		[TestMethod]
-		public void TrimExcess_WhenBufferIsNotFull_ShouldReduceCapacityToCount()
-		{
-			var buffer = new CircularBuffer<int>(10);
-			buffer.Enqueue(1);
-			buffer.Enqueue(2);
-			buffer.TrimExcess();
+    public partial class CircularBufferTests
+    {
+        /// <summary>
+        /// Verifies that TrimExcess is a no-op when the buffer is completely full, leaving capacity and contents
+        /// unchanged.
+        /// </summary>
+        [TestMethod]
+        public void TrimExcess_WhenBufferIsAtCapacity_ShouldBeNoOp()
+        {
+            var buffer = new CircularBuffer<int>(3);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
+            buffer.Enqueue(3);
 
-			Assert.AreEqual(2, buffer.Capacity);
-			Assert.AreEqual(buffer.Count, buffer.Capacity);
-			CollectionAssert.AreEqual(new[] { 1, 2 }, buffer.ToArray());
-		}
+            buffer.TrimExcess();
 
-		/// <summary>
-		/// Verifies that TrimExcess does not change capacity when the buffer is full.
-		/// </summary>
-		[TestMethod]
-		public void TrimExcess_WhenBufferIsFull_ShouldNotChangeCapacity()
-		{
-			var buffer = new CircularBuffer<int>(3);
-			buffer.Enqueue(1);
-			buffer.Enqueue(2);
-			buffer.Enqueue(3);
-			buffer.TrimExcess();
+            Assert.AreEqual(3, buffer.Capacity);
+            Assert.AreEqual(3, buffer.Count);
+            CollectionAssert.AreEqual(new[] { 1, 2, 3 }, buffer.ToArray());
+        }
 
-			Assert.AreEqual(3, buffer.Capacity);
-		}
+        /// <summary>
+        /// Verifies that TrimExcess is a no-op when the buffer is empty and its capacity is already one,
+        /// which is the minimum permitted size. This exercises the fixed early-exit condition that previously
+        /// allocated a new array unnecessarily in this state.
+        /// </summary>
+        [TestMethod]
+        public void TrimExcess_WhenBufferIsEmptyAndCapacityIsOne_ShouldBeNoOp()
+        {
+            var buffer = new CircularBuffer<int>(1);
 
-		/// <summary>
-		/// Verifies that TrimExcess on an empty buffer does not throw and preserves usability.
-		/// </summary>
-		[TestMethod]
-		public void TrimExcess_WhenBufferIsEmpty_ShouldNotThrowAndRemainUsable()
-		{
-			var buffer = new CircularBuffer<int>(5);
-			buffer.TrimExcess();
+            Assert.AreEqual(0, buffer.Count);
+            Assert.AreEqual(1, buffer.Capacity);
 
-			Assert.AreEqual(0, buffer.Count);
+            buffer.TrimExcess();
 
-			buffer.Enqueue(123);
-			Assert.AreEqual(1, buffer.Count);
-			Assert.AreEqual(123, buffer.Dequeue());
-		}
+            Assert.AreEqual(1, buffer.Capacity, "Capacity should remain 1 when already at the minimum.");
+            Assert.AreEqual(0, buffer.Count);
+        }
 
-		/// <summary>
-		/// Verifies that TrimExcess does nothing when capacity already equals the current item count.
-		/// </summary>
-		[TestMethod]
-		public void TrimExcess_WhenCapacityEqualsCount_ShouldDoNothing()
-		{
-			var buffer = new CircularBuffer<string>(3);
-			buffer.Enqueue("X");
-			buffer.Enqueue("Y");
-			buffer.Enqueue("Z");
+        /// <summary>
+        /// Verifies that TrimExcess reduces the capacity to one when the buffer is empty and its capacity is
+        /// greater than one.
+        /// </summary>
+        [TestMethod]
+        public void TrimExcess_WhenBufferIsEmpty_ShouldReduceCapacityToOne()
+        {
+            var buffer = new CircularBuffer<string>(10);
 
-			buffer.TrimExcess();
+            buffer.TrimExcess();
 
-			Assert.AreEqual(3, buffer.Capacity);
-			CollectionAssert.AreEqual(new[] { "X", "Y", "Z" }, buffer.ToArray());
-		}
+            Assert.AreEqual(1, buffer.Capacity);
+            Assert.AreEqual(0, buffer.Count);
+            CollectionAssert.AreEqual(Array.Empty<string>(), buffer.ToArray());
+        }
 
-		/// <summary>
-		/// Verifies that TrimExcess never reduces capacity below the number of stored items.
-		/// </summary>
-		[TestMethod]
-		public void TrimExcess_WhenCalled_ShouldEnsureCapacityNotLessThanCount()
-		{
-			var buffer = new CircularBuffer<int>(5);
-			buffer.Enqueue(100);
-			buffer.Enqueue(200);
-			buffer.Dequeue(); // count = 1
-			buffer.TrimExcess();
+        /// <summary>
+        /// Verifies that TrimExcess reduces the capacity to match the current element count when the buffer is
+        /// partially filled.
+        /// </summary>
+        [TestMethod]
+        public void TrimExcess_WhenBufferIsPartiallyFilled_ShouldReduceCapacityToCount()
+        {
+            var buffer = new CircularBuffer<int>(10);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
+            buffer.Enqueue(3);
 
-			Assert.IsTrue(buffer.Capacity >= buffer.Count);
-		}
+            buffer.TrimExcess();
 
-		/// <summary>
-		/// Verifies that TrimExcess preserves all elements and their logical order.
-		/// </summary>
-		[TestMethod]
-		public void TrimExcess_WhenCalled_ShouldPreserveAllElementsAndOrder()
-		{
-			var buffer = new CircularBuffer<int>(10);
-			buffer.Enqueue(1);
-			buffer.Enqueue(2);
-			buffer.Enqueue(3);
-			buffer.Enqueue(4);
-			buffer.Dequeue();         // remove 1
-			buffer.Enqueue(5);
+            Assert.AreEqual(3, buffer.Capacity);
+            Assert.AreEqual(3, buffer.Count);
+            CollectionAssert.AreEqual(new[] { 1, 2, 3 }, buffer.ToArray());
+        }
 
-			buffer.TrimExcess();
-			CollectionAssert.AreEqual(new[] { 2, 3, 4, 5 }, buffer.ToArray());
+        /// <summary>
+        /// Verifies that TrimExcess preserves FIFO element order when the buffer is wrapped (head &gt;= tail)
+        /// prior to trimming.
+        /// </summary>
+        [TestMethod]
+        public void TrimExcess_WhenBufferIsWrapped_ShouldPreserveFifoOrder()
+        {
+            // After setup: capacity=4, head=2, tail=1 (wrapped).
+            // Logical FIFO order: 3, 4, 5.
+            var buffer = new CircularBuffer<int>(4);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
+            buffer.Enqueue(3);
+            buffer.Enqueue(4);
+            buffer.Dequeue(); // removes 1; head=1
+            buffer.Dequeue(); // removes 2; head=2
+            buffer.Enqueue(5); // wraps into slot 0; tail=1
 
-			buffer.Dequeue();         // remove 2
-			buffer.TrimExcess();      // capacity should reduce to 3
-			buffer.Enqueue(6);        // wrap
+            buffer.TrimExcess();
 
-			CollectionAssert.AreEqual(new[] { 4, 5, 6 }, buffer.ToArray());
-		}
+            Assert.AreEqual(3, buffer.Capacity);
+            Assert.AreEqual(3, buffer.Count);
+            CollectionAssert.AreEqual(new[] { 3, 4, 5 }, buffer.ToArray());
+        }
 
-		/// <summary>
-		/// Verifies that TrimExcess preserves the last item.
-		/// </summary>
-		[TestMethod]
-		public void TrimExcess_WhenCalled_ShouldPreservePeek()
-		{
-			var buffer = new CircularBuffer<int>(10);
-			buffer.Enqueue(1);
-			buffer.Enqueue(2);
-			buffer.Enqueue(3);
-			buffer.Enqueue(4);
-			buffer.Dequeue();         // remove 1
-			buffer.Enqueue(5);        // buffer: [2, 3, 4, 5]
+        /// <summary>
+        /// Verifies that calling TrimExcess a second time on an already-trimmed buffer is a no-op, leaving
+        /// capacity and contents unchanged.
+        /// </summary>
+        [TestMethod]
+        public void TrimExcess_WhenCalledMultipleTimes_ShouldBeIdempotent()
+        {
+            var buffer = new CircularBuffer<int>(10);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
 
-			int peek = buffer.Peek(); // should be 2
-			Assert.AreEqual(2, peek);
+            buffer.TrimExcess();
+            buffer.TrimExcess(); // second call — count == capacity, should short-circuit
 
-			buffer.TrimExcess();
+            Assert.AreEqual(2, buffer.Capacity);
+            Assert.AreEqual(2, buffer.Count);
+            CollectionAssert.AreEqual(new[] { 1, 2 }, buffer.ToArray());
+        }
 
-			Assert.AreEqual(peek, buffer.Peek()); // still 2
-		}
-	}
+        /// <summary>
+        /// Verifies that TrimExcess increments the internal version token when trimming actually occurs, so
+        /// that any active enumerator is correctly invalidated.
+        /// </summary>
+        [TestMethod]
+        public void TrimExcess_WhenTrimmingOccurs_ShouldInvalidateActiveEnumerator()
+        {
+            var buffer = new CircularBuffer<int>(10);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
+            buffer.Enqueue(3);
+
+            var enumerator = buffer.GetEnumerator();
+            enumerator.MoveNext(); // advance to element 1
+
+            buffer.TrimExcess(); // capacity reduced from 10 to 3 — version must be bumped
+
+            Assert.ThrowsExactly<InvalidOperationException>(() => enumerator.MoveNext());
+        }
+
+        /// <summary>
+        /// Verifies that TrimExcess does not invalidate an active enumerator when the buffer is already at
+        /// capacity and no reallocation occurs.
+        /// </summary>
+        [TestMethod]
+        public void TrimExcess_WhenNoTrimmingOccurs_ShouldNotInvalidateActiveEnumerator()
+        {
+            var buffer = new CircularBuffer<int>(3);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
+            buffer.Enqueue(3); // buffer is full — count == capacity
+
+            var enumerator = buffer.GetEnumerator();
+            enumerator.MoveNext(); // advance to element 1
+
+            buffer.TrimExcess(); // no-op; version must NOT be bumped
+
+            // MoveNext should succeed, not throw
+            Assert.IsTrue(enumerator.MoveNext());
+            Assert.AreEqual(2, enumerator.Current);
+        }
+
+        /// <summary>
+        /// Verifies that elements enqueued after TrimExcess are correctly stored and the buffer operates
+        /// normally following a trim.
+        /// </summary>
+        [TestMethod]
+        public void TrimExcess_WhenItemsEnqueuedAfterTrim_ShouldAcceptNewItems()
+        {
+            var buffer = new CircularBuffer<int>(10, allowOverwrite: true);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
+
+            buffer.TrimExcess(); // capacity is now 2
+
+            buffer.Enqueue(3); // evicts 1 (allowOverwrite: true, capacity: 2)
+
+            Assert.AreEqual(2, buffer.Capacity);
+            Assert.AreEqual(2, buffer.Count);
+            CollectionAssert.AreEqual(new[] { 2, 3 }, buffer.ToArray());
+        }
+    }
 }

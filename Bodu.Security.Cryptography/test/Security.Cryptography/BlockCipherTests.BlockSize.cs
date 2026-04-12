@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace Bodu.Security.Cryptography
 {
-	public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
-	{
-		[TestMethod]
-		public void BlockSize_WhenAccessed_ShouldReturnExpected()
-		{
-			var engine = CreateBlockCipher();
-			var actual = engine.BlockSize;
+    public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
+    {
+        [TestMethod]
+        public void BlockSize_WhenAccessed_ShouldReturnExpected()
+        {
+            var engine = CreateBlockCipher();
+            var actual = engine.BlockSize;
 
-			Assert.AreEqual(ExpectedBlockSize, actual);
-		}
-	}
+            Assert.AreEqual(ExpectedBlockSize, actual);
+        }
+    }
 }

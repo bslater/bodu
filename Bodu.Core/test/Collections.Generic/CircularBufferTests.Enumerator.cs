@@ -1,212 +1,267 @@
 namespace Bodu.Collections.Generic
 {
-	public partial class CircularBufferTests
-	{
-		/// <summary>
-		/// Verifies that enumeration remains consistent after multiple wraparounds and mutations.
-		/// </summary>
-		[TestMethod]
-		public void Enumerator_AfterMultipleStateChanges_ShouldYieldCorrectSequence()
-		{
-			var buffer = new CircularBuffer<int>(3);
-			buffer.Enqueue(10);
-			buffer.Enqueue(20);
-			buffer.Enqueue(30);
-			buffer.Dequeue();         // 10 removed
-			buffer.Enqueue(40);       // wrap
-			buffer.Dequeue();         // 20 removed
-			buffer.Enqueue(50);       // wrap again
+    public partial class CircularBufferTests
+    {
+        /// <summary>
+        /// Verifies that the enumerator iterates all elements in FIFO order when the buffer is contiguous
+        /// (head &lt; tail).
+        /// </summary>
+        [TestMethod]
+        public void Enumerator_WhenBufferIsContiguous_ShouldIterateInFifoOrder()
+        {
+            var buffer = new CircularBuffer<int>(5);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
+            buffer.Enqueue(3);
 
-			var actual = buffer.ToList();
+            CollectionAssert.AreEqual(new[] { 1, 2, 3 }, buffer.ToList());
+        }
 
-			CollectionAssert.AreEqual(new[] { 30, 40, 50 }, actual);
-		}
+        /// <summary>
+        /// Verifies that the enumerator iterates all elements in FIFO order when the buffer is wrapped
+        /// (head &gt;= tail).
+        /// </summary>
+        [TestMethod]
+        public void Enumerator_WhenBufferIsWrapped_ShouldIterateInFifoOrder()
+        {
+            var buffer = new CircularBuffer<int>(3);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
+            buffer.Enqueue(3);
+            buffer.Dequeue();        // head advances to 1
+            buffer.Enqueue(4);       // wraps into slot 0
 
-		/// <summary>
-		/// Verifies that enumeration does not fail when the head is at index 0, ensuring the enumerator does not access a negative array
-		/// index when initialized with head - 1.
-		/// </summary>
-		[TestMethod]
-		public void Enumerator_WhenHeadIsZero_ShouldEnumerateCorrectly()
-		{
-			var buffer = new CircularBuffer<int>(3);
-			buffer.Enqueue(10); // Head will be at 0
-			buffer.Enqueue(20);
-			buffer.Enqueue(30);
+            CollectionAssert.AreEqual(new[] { 2, 3, 4 }, buffer.ToList());
+        }
 
-			buffer.Dequeue();   // Remove 10, head now at 1
-			buffer.Dequeue();   // Remove 20, head now at 2
-			buffer.Enqueue(40); // Head wraps to 2, then tail at 0
-			buffer.Enqueue(50); // Head wraps to 0 again
+        /// <summary>
+        /// Verifies that the enumerator yields no elements when the buffer is empty.
+        /// </summary>
+        [TestMethod]
+        public void Enumerator_WhenBufferIsEmpty_ShouldYieldNoElements()
+        {
+            var buffer = new CircularBuffer<string>(4);
+            Assert.AreEqual(0, buffer.ToList().Count);
+        }
 
-			// Final state: buffer contains [30, 40, 50] in circular order Head is now at 0, and this triggers the head - 1 = -1 logic in
-			// old design
-			var actual = buffer.ToList();
+        /// <summary>
+        /// Verifies that Reset repositions the enumerator to before the first element, allowing iteration
+        /// to restart from the beginning without modification.
+        /// </summary>
+        [TestMethod]
+        public void Enumerator_WhenResetCalledWithoutModification_ShouldRestartIteration()
+        {
+            var buffer = new CircularBuffer<int>(3);
+            buffer.Enqueue(10);
+            buffer.Enqueue(20);
+            buffer.Enqueue(30);
 
-			CollectionAssert.AreEqual(new[] { 30, 40, 50 }, actual);
-		}
+            var enumerator = buffer.GetEnumerator();
 
-		/// <summary>
-		/// Verifies that accessing Current before calling MoveNext throws an InvalidOperationException.
-		/// </summary>
-		[TestMethod]
-		public void Enumerator_WhenAccessingCurrentBeforeMoveNext_ShouldThrow()
-		{
-			var buffer = new CircularBuffer<int>(3);
-			buffer.Enqueue(1);
+            // First pass
+            var firstPass = new List<int>();
+            while (enumerator.MoveNext())
+                firstPass.Add(enumerator.Current);
 
-			using var enumerator = buffer.GetEnumerator();
-			Assert.ThrowsException<InvalidOperationException>(() =>
-			{
-				_ = enumerator.Current;
-			});
-		}
+            enumerator.Reset();
 
-		/// <summary>
-		/// Verifies that null values are preserved in enumeration in correct order.
-		/// </summary>
-		[TestMethod]
-		public void Enumerator_WhenBufferContainsNulls_ShouldYieldNullsInCorrectOrder()
-		{
-			var buffer = new CircularBuffer<string>(3);
-			buffer.Enqueue("X");
-			buffer.Enqueue(null);
-			buffer.Enqueue("Y");
+            // Second pass
+            var secondPass = new List<int>();
+            while (enumerator.MoveNext())
+                secondPass.Add(enumerator.Current);
 
-			var actual = buffer.ToArray();
-			CollectionAssert.AreEqual(new[] { "X", null, "Y" }, actual);
-		}
+            CollectionAssert.AreEqual(new[] { 10, 20, 30 }, firstPass);
+            CollectionAssert.AreEqual(firstPass, secondPass);
+        }
 
-		/// <summary>
-		/// Verifies that enumerator yields null values if they are present in the buffer.
-		/// </summary>
-		[TestMethod]
-		public void Enumerator_WhenBufferContainsNulls_ShouldYieldNullValues()
-		{
-			var buffer = new CircularBuffer<string>(2);
-			buffer.Enqueue("A");
-			buffer.Enqueue(null);
+        /// <summary>
+        /// Verifies that accessing Current before the first MoveNext call throws <see cref="InvalidOperationException" />.
+        /// </summary>
+        [TestMethod]
+        public void Enumerator_WhenCurrentAccessedBeforeMoveNext_ShouldThrowInvalidOperationException()
+        {
+            var buffer = new CircularBuffer<int>(3);
+            buffer.Enqueue(1);
 
-			var actual = buffer.ToArray();
-			Assert.AreEqual("A", actual[0]);
-			Assert.IsNull(actual[1]);
-		}
+            var enumerator = buffer.GetEnumerator();
 
-		/// <summary>
-		/// Verifies that enumerator iterates over buffer elements in FirstInFirstOut (First-In, First-Out) order.
-		/// </summary>
-		[TestMethod]
-		public void Enumerator_WhenBufferHasItems_ShouldIterateInFifoOrder()
-		{
-			var buffer = new CircularBuffer<int>(3);
-			buffer.Enqueue(1);
-			buffer.Enqueue(2);
-			buffer.Enqueue(3);
+            Assert.ThrowsExactly<InvalidOperationException>(() => { _ = enumerator.Current; });
+        }
 
-			var items = buffer.ToList();
-			CollectionAssert.AreEqual(new[] { 1, 2, 3 }, items);
-		}
+        /// <summary>
+        /// Verifies that accessing Current after MoveNext has returned false throws <see cref="InvalidOperationException" />.
+        /// </summary>
+        [TestMethod]
+        public void Enumerator_WhenCurrentAccessedAfterExhaustion_ShouldThrowInvalidOperationException()
+        {
+            var buffer = new CircularBuffer<int>(2);
+            buffer.Enqueue(1);
 
-		/// <summary>
-		/// Verifies that enumerator yields no elements when the buffer is empty.
-		/// </summary>
-		[TestMethod]
-		public void Enumerator_WhenBufferIsEmpty_ShouldYieldNoItems()
-		{
-			var buffer = new CircularBuffer<string>(5);
-			var items = buffer.ToList();
-			Assert.AreEqual(0, items.Count);
-		}
+            var enumerator = buffer.GetEnumerator();
+            while (enumerator.MoveNext()) { }   // exhaust the enumerator
 
-		/// <summary>
-		/// Verifies that enumeration returns correct order of elements after the buffer wraps around.
-		/// </summary>
-		[TestMethod]
-		public void Enumerator_WhenBufferIsWrapped_ShouldYieldCorrectOrder()
-		{
-			var buffer = new CircularBuffer<int>(3);
-			buffer.Enqueue(1);
-			buffer.Enqueue(2);
-			buffer.Enqueue(3);
-			buffer.Dequeue();       // remove 1
-			buffer.Enqueue(4);      // wraps around
+            Assert.ThrowsExactly<InvalidOperationException>(() => { _ = enumerator.Current; });
+        }
 
-			var actual = buffer.ToList();
-			CollectionAssert.AreEqual(new[] { 2, 3, 4 }, actual);
-		}
+        // -----------------------------------------------------------------------------------------
+        // Enumerator invalidation — Issue 1: Clear() was missing _version++
+        // -----------------------------------------------------------------------------------------
 
-		/// <summary>
-		/// Verifies that MoveNext returns false when enumerating an empty buffer.
-		/// </summary>
-		[TestMethod]
-		public void Enumerator_WhenEmpty_ShouldReturnFalseImmediately()
-		{
-			var buffer = new CircularBuffer<int>(3);
-			using var enumerator = buffer.GetEnumerator();
+        /// <summary>
+        /// Verifies that calling Clear during an active enumeration causes the next MoveNext call to throw
+        /// <see cref="InvalidOperationException" />, confirming that Clear increments the version token.
+        /// </summary>
+        [TestMethod]
+        public void Enumerator_WhenClearCalledDuringEnumeration_ShouldThrowOnMoveNext()
+        {
+            var buffer = new CircularBuffer<int>(5);
+            for (int i = 1; i <= 5; i++) buffer.Enqueue(i);
 
-			Assert.IsFalse(enumerator.MoveNext());
-		}
+            var enumerator = buffer.GetEnumerator();
+            enumerator.MoveNext(); // advance to element 1
 
-		/// <summary>
-		/// Verifies that modifying the buffer during enumeration throws InvalidOperationException.
-		/// </summary>
-		[TestMethod]
-		public void Enumerator_WhenModifiedDuringIteration_ShouldThrowExactly()
-		{
-			var buffer = new CircularBuffer<int>(3);
-			buffer.Enqueue(1);
-			buffer.Enqueue(2);
+            buffer.Clear();
 
-			var enumerator = buffer.GetEnumerator();
-			Assert.ThrowsExactly<InvalidOperationException>(() =>
-			{
-				while (enumerator.MoveNext())
-				{
-					buffer.Enqueue(3); // Modification during iteration
-				}
-			});
-		}
+            Assert.ThrowsExactly<InvalidOperationException>(() => enumerator.MoveNext());
+        }
 
-		/// <summary>
-		/// Verifies that accessing Current after the enumerator has passed the end throws an InvalidOperationException.
-		/// </summary>
-		[TestMethod]
-		public void Enumerator_WhenPastEnd_ShouldThrowOnCurrent()
-		{
-			var buffer = new CircularBuffer<int>(1);
-			buffer.Enqueue(1);
+        /// <summary>
+        /// Verifies that calling Clear before the enumerator is advanced causes the first MoveNext call to throw
+        /// <see cref="InvalidOperationException" />.
+        /// </summary>
+        [TestMethod]
+        public void Enumerator_WhenClearCalledBeforeFirstMoveNext_ShouldThrowOnMoveNext()
+        {
+            var buffer = new CircularBuffer<int>(3);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
 
-			using var enumerator = buffer.GetEnumerator();
-			Assert.IsTrue(enumerator.MoveNext());
-			Assert.AreEqual(1, enumerator.Current);
+            var enumerator = buffer.GetEnumerator();
 
-			Assert.IsFalse(enumerator.MoveNext());
-			Assert.ThrowsException<InvalidOperationException>(() =>
-			{
-				_ = enumerator.Current;
-			});
-		}
+            buffer.Clear(); // invalidate before any advance
 
-		/// <summary>
-		/// Verifies that Reset positions the enumerator before the first element.
-		/// </summary>
-		[TestMethod]
-		public void Enumerator_WhenResetCalled_ShouldStartFromBeginning()
-		{
-			var buffer = new CircularBuffer<int>(3);
-			buffer.Enqueue(10);
-			buffer.Enqueue(20);
-			buffer.Enqueue(30);
+            Assert.ThrowsExactly<InvalidOperationException>(() => enumerator.MoveNext());
+        }
 
-			var enumerator = buffer.GetEnumerator();
+        /// <summary>
+        /// Verifies that calling Clear during enumeration causes Reset to throw <see cref="InvalidOperationException" />.
+        /// </summary>
+        [TestMethod]
+        public void Enumerator_WhenClearCalledDuringEnumeration_ShouldThrowOnReset()
+        {
+            var buffer = new CircularBuffer<int>(3);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
+            buffer.Enqueue(3);
 
-			Assert.IsTrue(enumerator.MoveNext());
-			Assert.AreEqual(10, enumerator.Current);
+            var enumerator = buffer.GetEnumerator();
+            enumerator.MoveNext();
 
-			enumerator.Reset();
+            buffer.Clear();
 
-			Assert.IsTrue(enumerator.MoveNext());
-			Assert.AreEqual(10, enumerator.Current);
-		}
-	}
+            Assert.ThrowsExactly<InvalidOperationException>(() => enumerator.Reset());
+        }
+
+        // -----------------------------------------------------------------------------------------
+        // Enumerator invalidation — Issue 2: TryDequeueInternal was missing _version++
+        // -----------------------------------------------------------------------------------------
+
+        /// <summary>
+        /// Verifies that calling Dequeue during an active enumeration causes the next MoveNext call to throw
+        /// <see cref="InvalidOperationException" />, confirming that Dequeue increments the version token.
+        /// </summary>
+        [TestMethod]
+        public void Enumerator_WhenDequeueCalledDuringEnumeration_ShouldThrowOnMoveNext()
+        {
+            var buffer = new CircularBuffer<int>(5);
+            for (int i = 1; i <= 5; i++) buffer.Enqueue(i);
+
+            var enumerator = buffer.GetEnumerator();
+            enumerator.MoveNext(); // advance to element 1
+
+            buffer.Dequeue(); // removes element 1; advances head
+
+            Assert.ThrowsExactly<InvalidOperationException>(() => enumerator.MoveNext());
+        }
+
+        /// <summary>
+        /// Verifies that calling TryDequeue during an active enumeration causes the next MoveNext call to throw
+        /// <see cref="InvalidOperationException" />.
+        /// </summary>
+        [TestMethod]
+        public void Enumerator_WhenTryDequeueCalledDuringEnumeration_ShouldThrowOnMoveNext()
+        {
+            var buffer = new CircularBuffer<int>(5);
+            for (int i = 1; i <= 5; i++) buffer.Enqueue(i);
+
+            var enumerator = buffer.GetEnumerator();
+            enumerator.MoveNext();
+
+            buffer.TryDequeue(out _);
+
+            Assert.ThrowsExactly<InvalidOperationException>(() => enumerator.MoveNext());
+        }
+
+        /// <summary>
+        /// Verifies that calling Dequeue before the enumerator is advanced causes the first MoveNext call to throw
+        /// <see cref="InvalidOperationException" />.
+        /// </summary>
+        [TestMethod]
+        public void Enumerator_WhenDequeueCalledBeforeFirstMoveNext_ShouldThrowOnMoveNext()
+        {
+            var buffer = new CircularBuffer<int>(3);
+            buffer.Enqueue(10);
+            buffer.Enqueue(20);
+
+            var enumerator = buffer.GetEnumerator();
+
+            buffer.Dequeue(); // invalidate before any advance
+
+            Assert.ThrowsExactly<InvalidOperationException>(() => enumerator.MoveNext());
+        }
+
+        /// <summary>
+        /// Verifies that calling Dequeue during enumeration causes Reset to throw
+        /// <see cref="InvalidOperationException" />.
+        /// </summary>
+        [TestMethod]
+        public void Enumerator_WhenDequeueCalledDuringEnumeration_ShouldThrowOnReset()
+        {
+            var buffer = new CircularBuffer<int>(3);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
+            buffer.Enqueue(3);
+
+            var enumerator = buffer.GetEnumerator();
+            enumerator.MoveNext();
+
+            buffer.Dequeue();
+
+            Assert.ThrowsExactly<InvalidOperationException>(() => enumerator.Reset());
+        }
+
+        /// <summary>
+        /// Verifies that a successful TryDequeue from an empty buffer — which returns false and makes no structural
+        /// change — does not invalidate an active enumerator.
+        /// </summary>
+        [TestMethod]
+        public void Enumerator_WhenTryDequeueFailsOnEmptyBuffer_ShouldNotInvalidateEnumerator()
+        {
+            var buffer = new CircularBuffer<int>(3);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
+
+            // Drain the buffer first
+            buffer.Dequeue();
+            buffer.Dequeue();
+
+            // Now start enumerating the empty buffer, then attempt a no-op TryDequeue
+            var enumerator = buffer.GetEnumerator();
+
+            buffer.TryDequeue(out _); // returns false; no version change
+
+            // MoveNext on an empty buffer should return false, not throw
+            Assert.IsFalse(enumerator.MoveNext());
+        }
+    }
 }

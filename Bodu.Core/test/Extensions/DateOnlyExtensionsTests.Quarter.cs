@@ -9,64 +9,64 @@ using System.Globalization;
 
 namespace Bodu.Extensions
 {
-	public partial class DateOnlyExtensionsTests
-	{
+    public partial class DateOnlyExtensionsTests
+    {
 
 
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.QuarterTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-		public void GetQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedQuarter(DateTime inputDateTime, CalendarQuarterDefinition definition, int expected)
-		{
-			var input = DateOnly.FromDateTime(inputDateTime);
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.QuarterTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+        public void GetQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedQuarter(DateTime inputDateTime, CalendarQuarterDefinition definition, int expected)
+        {
+            var input = DateOnly.FromDateTime(inputDateTime);
 
-			int actual = input.Quarter(definition);
+            int actual = input.Quarter(definition);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.QuarterJanuaryDecemberTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-		public void GetQuarter_WhenOnlyDateOnly_ShouldReturnExpectedQuarter(DateTime inputDateTime, int expected)
-		{
-			var input = DateOnly.FromDateTime(inputDateTime);
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.QuarterJanuaryDecemberTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+        public void GetQuarter_WhenOnlyDateOnly_ShouldReturnExpectedQuarter(DateTime inputDateTime, int expected)
+        {
+            var input = DateOnly.FromDateTime(inputDateTime);
 
-			int actual = input.Quarter();
+            int actual = input.Quarter();
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.QuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
-		public void GetQuarter_WhenUsingValidProvider_ShouldReturnExpectedQuarter(DateTime inputDate, int expected)
-		{
-			var input = DateOnly.FromDateTime(inputDate);
-			var provider = new DateTimeExtensionsTests.ValidQuarterProvider();
-			int actual = input.Quarter(provider);
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.QuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
+        public void GetQuarter_WhenUsingValidProvider_ShouldReturnExpectedQuarter(DateTime inputDate, int expected)
+        {
+            var input = DateOnly.FromDateTime(inputDate);
+            var provider = new DateTimeExtensionsTests.ValidQuarterProvider();
+            int actual = input.Quarter(provider);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void GetQuarter_WhenUsingInvalidProvider_ShouldThrowExactly()
-		{
-			var input = new DateOnly(2024, 4, 20);
-			var provider = new DateTimeExtensionsTests.InValidQuarterProvider();
+        [TestMethod]
+        public void GetQuarter_WhenUsingInvalidProvider_ShouldThrowExactly()
+        {
+            var input = new DateOnly(2024, 4, 20);
+            var provider = new DateTimeExtensionsTests.InValidQuarterProvider();
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = input.Quarter(provider);
-			});
-		}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = input.Quarter(provider);
+            });
+        }
 
-		[TestMethod]
-		public void GetQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowExactly()
-		{
-			var input = new DateOnly(2024, 4, 20);
+        [TestMethod]
+        public void GetQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowExactly()
+        {
+            var input = new DateOnly(2024, 4, 20);
 
-			Assert.ThrowsExactly<InvalidOperationException>(() =>
-			{
-				_ = input.Quarter(CalendarQuarterDefinition.Custom);
-			});
-		}
-	}
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
+            {
+                _ = input.Quarter(CalendarQuarterDefinition.Custom);
+            });
+        }
+    }
 }

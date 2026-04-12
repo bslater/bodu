@@ -9,48 +9,48 @@ using System.Globalization;
 
 namespace Bodu.Extensions
 {
-	public partial class DateTimeExtensionsTests
-	{
+    public partial class DateTimeExtensionsTests
+    {
 
-		[DataTestMethod]
-		[DynamicData(nameof(WeekOfYearCalendarWeekTestData), DynamicDataSourceType.Method)]
-		public void WeekOfYear_WithCulture_ShouldReturnExpected(DateTime input, CalendarWeekRule rule, DayOfWeek firstDay, int expected)
-		{
-			int actual = input.WeekOfYear(rule, firstDay);
+        [TestMethod]
+        [DynamicData(nameof(WeekOfYearCalendarWeekTestData), DynamicDataSourceType.Method)]
+        public void WeekOfYear_WithCulture_ShouldReturnExpected(DateTime input, CalendarWeekRule rule, DayOfWeek firstDay, int expected)
+        {
+            int actual = input.WeekOfYear(rule, firstDay);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[DataTestMethod]
-		[DynamicData(nameof(WeekOfYearCultureTestData), DynamicDataSourceType.Method)]
-		public void WeekOfYear_WithCalendarWeek_ShouldReturnExpected(DateTime input, CultureInfo culture, int expected)
-		{
-			int actual = input.WeekOfYear(culture);
+        [TestMethod]
+        [DynamicData(nameof(WeekOfYearCultureTestData), DynamicDataSourceType.Method)]
+        public void WeekOfYear_WithCalendarWeek_ShouldReturnExpected(DateTime input, CultureInfo culture, int expected)
+        {
+            int actual = input.WeekOfYear(culture);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void WeekOfYear_WhenCultureIsNull_ShouldUseCurrentCulture()
-		{
-			DateTime input = new DateTime(2024, 1, 3); // Mid-week input
-			int expected = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(
-				input,
-				CultureInfo.CurrentCulture.DateTimeFormat.CalendarWeekRule,
-				CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek);
-			int actual = input.WeekOfYear(null!);
+        [TestMethod]
+        public void WeekOfYear_WhenCultureIsNull_ShouldUseCurrentCulture()
+        {
+            DateTime input = new DateTime(2024, 1, 3); // Mid-week input
+            int expected = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(
+                input,
+                CultureInfo.CurrentCulture.DateTimeFormat.CalendarWeekRule,
+                CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek);
+            int actual = input.WeekOfYear(null!);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void WeekOfYear_DefaultOverload_ShouldDelegateToCurrentCulture()
-		{
-			DateTime input = new DateTime(2024, 4, 18);
-			int expected = input.WeekOfYear(CultureInfo.CurrentCulture);
-			int actual = input.WeekOfYear();
+        [TestMethod]
+        public void WeekOfYear_DefaultOverload_ShouldDelegateToCurrentCulture()
+        {
+            DateTime input = new DateTime(2024, 4, 18);
+            int expected = input.WeekOfYear(CultureInfo.CurrentCulture);
+            int actual = input.WeekOfYear();
 
-			Assert.AreEqual(expected, actual);
-		}
-	}
+            Assert.AreEqual(expected, actual);
+        }
+    }
 }

@@ -8,28 +8,28 @@ using Bodu.Extensions;
 
 namespace Bodu.Extensions
 {
-	public partial class DateTimeExtensionsTests
-	{
+    public partial class DateTimeExtensionsTests
+    {
 
-		[DataTestMethod]
-		[DynamicData(nameof(FirstDayOfMonthDataTestData), DynamicDataSourceType.Method)]
-		public void FirstDayOfMonth_WhenCalled_ShouldReturnExpectedDate(DateTime input, DateTime expected)
-		{
-			DateTime actual = input.FirstDayOfMonth();
+        [TestMethod]
+        [DynamicData(nameof(FirstDayOfMonthDataTestData), DynamicDataSourceType.Method)]
+        public void FirstDayOfMonth_WhenCalled_ShouldReturnExpectedDate(DateTime input, DateTime expected)
+        {
+            DateTime actual = input.FirstDayOfMonth();
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[DataTestMethod]
-		[DataRow(DateTimeKind.Unspecified)]
-		[DataRow(DateTimeKind.Utc)]
-		[DataRow(DateTimeKind.Local)]
-		public void FirstDayOfMonth_ShouldPreserveDateTimeKind(DateTimeKind kind)
-		{
-			var input = new DateTime(2024, 4, 18, 10, 0, 0, kind);
-			var actual = input.FirstDayOfMonth();
+        [TestMethod]
+        [DataRow(DateTimeKind.Unspecified)]
+        [DataRow(DateTimeKind.Utc)]
+        [DataRow(DateTimeKind.Local)]
+        public void FirstDayOfMonth_ShouldPreserveDateTimeKind(DateTimeKind kind)
+        {
+            var input = new DateTime(2024, 4, 18, 10, 0, 0, kind);
+            var actual = input.FirstDayOfMonth();
 
-			Assert.AreEqual(kind, actual.Kind);
-		}
-	}
+            Assert.AreEqual(kind, actual.Kind);
+        }
+    }
 }

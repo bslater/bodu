@@ -9,88 +9,88 @@ using System.Globalization;
 
 namespace Bodu.Extensions
 {
-	public partial class DateTimeExtensionsTests
-	{
+    public partial class DateTimeExtensionsTests
+    {
 
-		public static IEnumerable<object[]> IsoWeekTestCases => new[]
-		{
-			new object[] { 2024, 1, new DateTime(2024, 1, 1) },  // Monday
-			new object[] { 2024, 2, new DateTime(2024, 1, 8) },
-			new object[] { 2024, 3, new DateTime(2024, 1, 15) },
-			new object[] { 2024, 4, new DateTime(2024, 1, 22) },
-			new object[] { 2024, 52, new DateTime(2024, 12, 23) },
-			new object[] { 2024, 53, new DateTime(2024, 12, 30) }
-		};
+        public static IEnumerable<object[]> IsoWeekTestCases => new[]
+        {
+            new object[] { 2024, 1, new DateTime(2024, 1, 1) },  // Monday
+            new object[] { 2024, 2, new DateTime(2024, 1, 8) },
+            new object[] { 2024, 3, new DateTime(2024, 1, 15) },
+            new object[] { 2024, 4, new DateTime(2024, 1, 22) },
+            new object[] { 2024, 52, new DateTime(2024, 12, 23) },
+            new object[] { 2024, 53, new DateTime(2024, 12, 30) }
+        };
 
-		[TestMethod]
-		[DynamicData(nameof(IsoWeekTestCases))]
-		public void GetStartDateOfWeek_WithCultureInfo_ShouldReturnExpectedDate(int year, int week, DateTime expected)
-		{
-			CultureInfo culture = CultureInfo.GetCultureInfo("en-GB"); // ISO-8601 based calendar rule
-			DateTime actual = DateTimeExtensions.GetStartDateOfWeek(year, week, culture);
+        [TestMethod]
+        [DynamicData(nameof(IsoWeekTestCases))]
+        public void GetStartDateOfWeek_WithCultureInfo_ShouldReturnExpectedDate(int year, int week, DateTime expected)
+        {
+            CultureInfo culture = CultureInfo.GetCultureInfo("en-GB"); // ISO-8601 based calendar rule
+            DateTime actual = DateTimeExtensions.GetStartDateOfWeek(year, week, culture);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void GetStartDateOfWeek_WithInvalidWeekNumber_ShouldThrowExactly()
-		{
-			// en-US: Week 54 does not exist
-			CultureInfo culture = CultureInfo.GetCultureInfo("en-US");
+        [TestMethod]
+        public void GetStartDateOfWeek_WithInvalidWeekNumber_ShouldThrowExactly()
+        {
+            // en-US: Week 54 does not exist
+            CultureInfo culture = CultureInfo.GetCultureInfo("en-US");
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				DateTimeExtensions.GetStartDateOfWeek(2024, 54, culture);
-			});
-		}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                DateTimeExtensions.GetStartDateOfWeek(2024, 54, culture);
+            });
+        }
 
-		[DataTestMethod]
-		[DataRow(0)] //DateTime.MinValue.Year-1
-		[DataRow(10000)] //DateTime.MaxValue.Year+1
-		public void GetStartDateOfWeek_WithInvalidYear_ShouldThrowExactly(int year)
-		{
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				DateTimeExtensions.GetStartDateOfWeek(year, 1);
-			});
-		}
+        [TestMethod]
+        [DataRow(0)] //DateTime.MinValue.Year-1
+        [DataRow(10000)] //DateTime.MaxValue.Year+1
+        public void GetStartDateOfWeek_WithInvalidYear_ShouldThrowExactly(int year)
+        {
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                DateTimeExtensions.GetStartDateOfWeek(year, 1);
+            });
+        }
 
-		[DataTestMethod]
-		[DataRow(0)] //DateTime.MinValue.Year-1
-		[DataRow(10000)] //DateTime.MaxValue.Year+1
-		public void GetStartDateOfWeek_WithCultureAndInvalidYear_ShouldThrowExactly(int year)
-		{
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				DateTimeExtensions.GetStartDateOfWeek(year, 1, CultureInfo.CurrentCulture);
-			});
-		}
+        [TestMethod]
+        [DataRow(0)] //DateTime.MinValue.Year-1
+        [DataRow(10000)] //DateTime.MaxValue.Year+1
+        public void GetStartDateOfWeek_WithCultureAndInvalidYear_ShouldThrowExactly(int year)
+        {
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                DateTimeExtensions.GetStartDateOfWeek(year, 1, CultureInfo.CurrentCulture);
+            });
+        }
 
-		/// <summary>
-		/// Verifies that the current culture is used when the culture argument is null.
-		/// </summary>
-		[TestMethod]
-		public void GetStartDateOfWeek_WhenCultureIsNull_ShouldUseCurrentCulture()
-		{
-			var knownCulture = new CultureInfo("en-GB"); // Week starts on Monday, FirstFourDayWeek
-			var year = 2024;
-			var week = 1;
+        /// <summary>
+        /// Verifies that the current culture is used when the culture argument is null.
+        /// </summary>
+        [TestMethod]
+        public void GetStartDateOfWeek_WhenCultureIsNull_ShouldUseCurrentCulture()
+        {
+            var knownCulture = new CultureInfo("en-GB"); // Week starts on Monday, FirstFourDayWeek
+            var year = 2024;
+            var week = 1;
 
-			var originalCulture = CultureInfo.CurrentCulture;
-			try
-			{
-				CultureInfo.CurrentCulture = knownCulture;
-				var resultWithNull = DateTimeExtensions.GetStartDateOfWeek(year, week, null);
-				var resultWithExplicit = DateTimeExtensions.GetStartDateOfWeek(year, week, knownCulture);
+            var originalCulture = CultureInfo.CurrentCulture;
+            try
+            {
+                CultureInfo.CurrentCulture = knownCulture;
+                var resultWithNull = DateTimeExtensions.GetStartDateOfWeek(year, week, null);
+                var resultWithExplicit = DateTimeExtensions.GetStartDateOfWeek(year, week, knownCulture);
 
-				// Assert
-				Assert.AreEqual(resultWithExplicit, resultWithNull, "The method should default to CultureInfo.CurrentCulture when null is passed.");
-			}
-			finally
-			{
-				CultureInfo.CurrentCulture = originalCulture;
-			}
-		}
-	}
+                // Assert
+                Assert.AreEqual(resultWithExplicit, resultWithNull, "The method should default to CultureInfo.CurrentCulture when null is passed.");
+            }
+            finally
+            {
+                CultureInfo.CurrentCulture = originalCulture;
+            }
+        }
+    }
 
 }

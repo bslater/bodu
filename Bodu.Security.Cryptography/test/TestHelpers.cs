@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Bodu
 {
-	public static partial class TestHelpers
-	{
-	}
+    public static partial class TestHelpers
+    {
+    }
 }

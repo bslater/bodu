@@ -6,27 +6,27 @@
 
 namespace Bodu.Core.Test
 {
-	public sealed partial class ThrowHelperTests
-	{
-		[DataTestMethod]
-		[DataRow(0)]
-		public void ThrowIfArrayLengthIsZero_WhenArrayLengthIsZero_ShouldThrowExactly(int length)
-		{
-			var array = new int[length];
-			Assert.ThrowsExactly<ArgumentException>(() =>
-			{
-				ThrowHelper.ThrowIfArrayLengthIsZero(array);
-			});
-		}
+    public sealed partial class ThrowHelperTests
+    {
+        [TestMethod]
+        [DataRow(0)]
+        public void ThrowIfArrayLengthIsZero_WhenArrayLengthIsZero_ShouldThrowExactly(int length)
+        {
+            var array = new int[length];
+            Assert.ThrowsExactly<ArgumentException>(() =>
+            {
+                ThrowHelper.ThrowIfArrayLengthIsZero(array);
+            });
+        }
 
-		[DataTestMethod]
-		[DataRow(1)]
-		[DataRow(5)]
-		[DataRow(100)]
-		public void ThrowIfArrayLengthIsZero_WhenArrayLengthIsNonZero_ShouldNotThrow(int length)
-		{
-			var array = new int[length];
-			ThrowHelper.ThrowIfArrayLengthIsZero(array);
-		}
-	}
+        [TestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(100)]
+        public void ThrowIfArrayLengthIsZero_WhenArrayLengthIsNonZero_ShouldNotThrow(int length)
+        {
+            var array = new int[length];
+            ThrowHelper.ThrowIfArrayLengthIsZero(array);
+        }
+    }
 }

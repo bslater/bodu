@@ -17,26 +17,24 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.9.3" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.9.3" />
+    <PackageReference Include="MSTest.Analyzers" Version="3.10.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="MSTest.TestAdapter" Version="3.10.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.10.2" />
+    <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.14.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <!-- Exclude files that are not supported in .net standards -->
 
   <ItemGroup>
-    <Compile Remove="Collections.Generic.Concurrent\**" />
-    <EmbeddedResource Remove="Collections.Generic.Concurrent\**" />
-    <None Remove="Collections.Generic.Concurrent\**" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <Compile Remove="Collections.Generic.Concurrent\ConcurrentCircularBufferTests.TrimExcess.cs" />
+    <Compile Remove="DaysOfWeekSetTests.Comparable.cs" />
     <Compile Remove="Extensions\DateOnlyExtensionsTests.NextOccurrence.cs" />
-    <Compile Remove="Extensions\Fiscal544QuarterProviderTests.cs" />
-    <Compile Remove="Extensions\Fiscal544QuarterProviderTests.GetEndDate.cs" />
-    <Compile Remove="Extensions\Fiscal544QuarterProviderTests.GetQuarter - Copy.cs" />
-    <Compile Remove="Extensions\Fiscal544QuarterProviderTests.GetQuarter.cs" />
-    <Compile Remove="Extensions\Fiscal544QuarterProviderTests.GetStartDate.cs" />
-    <Compile Remove="Extensions\Fiscal544QuarterProviderTests.Is53WeekFiscalYear.cs" />
   </ItemGroup>
 
   <!-- Exclude files that are incompatible with netstandard2.0 -->

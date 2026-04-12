@@ -8,59 +8,59 @@ using Bodu.Extensions;
 
 namespace Bodu.Extensions
 {
-	public partial class DateTimeExtensionsTests
-	{
-		[DataTestMethod]
-		[DynamicData(nameof(LastDayOfWeekInYearTestData), DynamicDataSourceType.Method)]
-		public void LastDayOfWeekInYear_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
-		{
-			DateTime actual = input.LastDayOfWeekInYear(dayOfWeek);
+    public partial class DateTimeExtensionsTests
+    {
+        [TestMethod]
+        [DynamicData(nameof(LastDayOfWeekInYearTestData), DynamicDataSourceType.Method)]
+        public void LastDayOfWeekInYear_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
+        {
+            DateTime actual = input.LastDayOfWeekInYear(dayOfWeek);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void LastDayOfWeekInYear_WhenDayOfWeekIsInvalid_ShouldThrowExactly()
-		{
-			DateTime input = new DateTime(2024, 1, 1);
-			var invalidDay = (DayOfWeek)999;
+        [TestMethod]
+        public void LastDayOfWeekInYear_WhenDayOfWeekIsInvalid_ShouldThrowExactly()
+        {
+            DateTime input = new DateTime(2024, 1, 1);
+            var invalidDay = (DayOfWeek)999;
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = input.LastDayOfWeekInYear(invalidDay);
-			});
-		}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = input.LastDayOfWeekInYear(invalidDay);
+            });
+        }
 
-		[TestMethod]
-		public void LastDayOfWeekInYear_WhenUsingMinValue_ShouldReturnInYear1()
-		{
-			DateTime input = DateTime.MinValue;
-			DateTime actual = input.LastDayOfWeekInYear(DayOfWeek.Monday);
+        [TestMethod]
+        public void LastDayOfWeekInYear_WhenUsingMinValue_ShouldReturnInYear1()
+        {
+            DateTime input = DateTime.MinValue;
+            DateTime actual = input.LastDayOfWeekInYear(DayOfWeek.Monday);
 
-			Assert.IsTrue(actual.Year == 1);
-			Assert.IsTrue(actual <= new DateTime(1, 12, 31));
-		}
+            Assert.IsTrue(actual.Year == 1);
+            Assert.IsTrue(actual <= new DateTime(1, 12, 31));
+        }
 
-		[TestMethod]
-		public void LastDayOfWeekInYear_WhenUsingMaxValue_ShouldReturnValidDate()
-		{
-			DateTime input = DateTime.MaxValue;
-			DateTime actual = input.LastDayOfWeekInYear(DayOfWeek.Friday);
+        [TestMethod]
+        public void LastDayOfWeekInYear_WhenUsingMaxValue_ShouldReturnValidDate()
+        {
+            DateTime input = DateTime.MaxValue;
+            DateTime actual = input.LastDayOfWeekInYear(DayOfWeek.Friday);
 
-			Assert.IsTrue(actual <= DateTime.MaxValue);
-		}
+            Assert.IsTrue(actual <= DateTime.MaxValue);
+        }
 
-		[DataTestMethod]
-		[DataRow(DateTimeKind.Unspecified)]
-		[DataRow(DateTimeKind.Utc)]
-		[DataRow(DateTimeKind.Local)]
-		public void LastDayOfWeekInYear_WhenKindIsLocal_ShouldPreserveKind(DateTimeKind kind)
-		{
-			DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
-			DateTime actual = input.LastDayOfWeekInYear(DayOfWeek.Saturday);
+        [TestMethod]
+        [DataRow(DateTimeKind.Unspecified)]
+        [DataRow(DateTimeKind.Utc)]
+        [DataRow(DateTimeKind.Local)]
+        public void LastDayOfWeekInYear_WhenKindIsLocal_ShouldPreserveKind(DateTimeKind kind)
+        {
+            DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
+            DateTime actual = input.LastDayOfWeekInYear(DayOfWeek.Saturday);
 
-			Assert.AreEqual(kind, actual.Kind);
-		}
+            Assert.AreEqual(kind, actual.Kind);
+        }
 
-	}
+    }
 }

@@ -8,64 +8,64 @@ using Bodu.Extensions;
 
 namespace Bodu.Extensions
 {
-	public partial class DateTimeExtensionsTests
-	{
+    public partial class DateTimeExtensionsTests
+    {
 
-		[DataTestMethod]
-		[DynamicData(nameof(FirstDayOfWeekInMonthTestData), DynamicDataSourceType.Method)]
-		public void FirstDayOfWeekInMonth_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
-		{
-			DateTime actual = input.FirstDayOfWeekInMonth(dayOfWeek);
+        [TestMethod]
+        [DynamicData(nameof(FirstDayOfWeekInMonthTestData), DynamicDataSourceType.Method)]
+        public void FirstDayOfWeekInMonth_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
+        {
+            DateTime actual = input.FirstDayOfWeekInMonth(dayOfWeek);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void FirstDayOfWeekInMonth_WhenInvalidDayOfWeek_ShouldThrowExactly()
-		{
-			DateTime input = new DateTime(2024, 4, 1);
-			var invalidDay = (DayOfWeek)999;
+        [TestMethod]
+        public void FirstDayOfWeekInMonth_WhenInvalidDayOfWeek_ShouldThrowExactly()
+        {
+            DateTime input = new DateTime(2024, 4, 1);
+            var invalidDay = (DayOfWeek)999;
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = input.FirstDayOfWeekInMonth(invalidDay);
-			});
-		}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = input.FirstDayOfWeekInMonth(invalidDay);
+            });
+        }
 
-		public void FirstDayOfWeekInMonth_WhenCalled_ShouldTruncateTime()
-		{
-			DateTime input = new DateTime(2024, 7, 5, 10, 5, 0, DateTimeKind.Local);
-			DateTime actual = input.FirstDayOfWeekInMonth(DayOfWeek.Saturday);
+        public void FirstDayOfWeekInMonth_WhenCalled_ShouldTruncateTime()
+        {
+            DateTime input = new DateTime(2024, 7, 5, 10, 5, 0, DateTimeKind.Local);
+            DateTime actual = input.FirstDayOfWeekInMonth(DayOfWeek.Saturday);
 
-			Assert.AreEqual(TimeSpan.Zero, actual.TimeOfDay);
-		}
+            Assert.AreEqual(TimeSpan.Zero, actual.TimeOfDay);
+        }
 
-		[DataTestMethod]
-		[DataRow(DateTimeKind.Unspecified)]
-		[DataRow(DateTimeKind.Utc)]
-		[DataRow(DateTimeKind.Local)]
-		public void FirstDayOfWeekInMonth_WhenCalled_ShouldPreserveDateTimeKind(DateTimeKind kind)
-		{
-			DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
-			DateTime actual = input.FirstDayOfWeekInMonth(DayOfWeek.Saturday);
+        [TestMethod]
+        [DataRow(DateTimeKind.Unspecified)]
+        [DataRow(DateTimeKind.Utc)]
+        [DataRow(DateTimeKind.Local)]
+        public void FirstDayOfWeekInMonth_WhenCalled_ShouldPreserveDateTimeKind(DateTimeKind kind)
+        {
+            DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
+            DateTime actual = input.FirstDayOfWeekInMonth(DayOfWeek.Saturday);
 
-			Assert.AreEqual(kind, actual.Kind);
-		}
+            Assert.AreEqual(kind, actual.Kind);
+        }
 
-		[TestMethod]
-		public void FirstDayOfWeekInMonth_WhenUsingMinValue_ShouldReturnValidResult()
-		{
-			DateTime actual = DateTime.MinValue.FirstDayOfWeekInMonth(DayOfWeek.Monday);
+        [TestMethod]
+        public void FirstDayOfWeekInMonth_WhenUsingMinValue_ShouldReturnValidResult()
+        {
+            DateTime actual = DateTime.MinValue.FirstDayOfWeekInMonth(DayOfWeek.Monday);
 
-			Assert.IsTrue(actual >= DateTime.MinValue && actual <= DateTime.MinValue.AddMonths(1).AddDays(-1));
-		}
+            Assert.IsTrue(actual >= DateTime.MinValue && actual <= DateTime.MinValue.AddMonths(1).AddDays(-1));
+        }
 
-		[TestMethod]
-		public void FirstDayOfWeekInMonth_WhenUsingMaxValue_ShouldReturnValidResult()
-		{
-			DateTime actual = DateTime.MaxValue.FirstDayOfWeekInMonth(DayOfWeek.Friday);
+        [TestMethod]
+        public void FirstDayOfWeekInMonth_WhenUsingMaxValue_ShouldReturnValidResult()
+        {
+            DateTime actual = DateTime.MaxValue.FirstDayOfWeekInMonth(DayOfWeek.Friday);
 
-			Assert.IsTrue(actual <= DateTime.MaxValue);
-		}
-	}
+            Assert.IsTrue(actual <= DateTime.MaxValue);
+        }
+    }
 }

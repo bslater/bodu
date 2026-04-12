@@ -8,49 +8,49 @@ using Bodu.Extensions;
 
 namespace Bodu.Extensions
 {
-	public partial class DateOnlyExtensionsTests
-	{
+    public partial class DateOnlyExtensionsTests
+    {
 
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.FromUnixTimeMillisecondsTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Property)]
-		public void ToUnixTimeMilliseconds_WhenCalledWithUtc_ShouldReturnExpected(long expected, DateTime inputDateTime)
-		{
-			DateOnly input = DateOnly.FromDateTime(inputDateTime);
-			long remainder = expected % 86400000L;
-			long flooredExpected = expected >= 0
-				? expected - remainder											// floor to 00:00 UTC
-				: expected - remainder - (remainder != 0 ? 86400000L : 0);      // ceil toward earlier day
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.FromUnixTimeMillisecondsTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Property)]
+        public void ToUnixTimeMilliseconds_WhenCalledWithUtc_ShouldReturnExpected(long expected, DateTime inputDateTime)
+        {
+            DateOnly input = DateOnly.FromDateTime(inputDateTime);
+            long remainder = expected % 86400000L;
+            long flooredExpected = expected >= 0
+                ? expected - remainder                                            // floor to 00:00 UTC
+                : expected - remainder - (remainder != 0 ? 86400000L : 0);      // ceil toward earlier day
 
-			long actual = input.ToUnixTimeMilliseconds();
+            long actual = input.ToUnixTimeMilliseconds();
 
-			Assert.AreEqual(flooredExpected, actual);
-		}
+            Assert.AreEqual(flooredExpected, actual);
+        }
 
-		[TestMethod]
-		public void ToUnixTimeMilliseconds_WhenUsingMinValue_ShouldBeNegativeLarge()
-		{
-			long actual = DateOnly.MinValue.ToUnixTimeMilliseconds();
+        [TestMethod]
+        public void ToUnixTimeMilliseconds_WhenUsingMinValue_ShouldBeNegativeLarge()
+        {
+            long actual = DateOnly.MinValue.ToUnixTimeMilliseconds();
 
-			Assert.IsTrue(actual < 0);
-		}
+            Assert.IsTrue(actual < 0);
+        }
 
-		[TestMethod]
-		public void ToUnixTimeMilliseconds_WhenUsingMaxValue_ShouldBePositiveLarge()
-		{
-			long actual = DateOnly.MaxValue.ToUnixTimeMilliseconds();
+        [TestMethod]
+        public void ToUnixTimeMilliseconds_WhenUsingMaxValue_ShouldBePositiveLarge()
+        {
+            long actual = DateOnly.MaxValue.ToUnixTimeMilliseconds();
 
-			Assert.IsTrue(actual > 0);
-		}
+            Assert.IsTrue(actual > 0);
+        }
 
-		[TestMethod]
-		public void ToUnixTimeMilliseconds_RoundTripWithFromUnixTimeMilliseconds_ShouldMatchUtc()
-		{
-			DateOnly input = new DateOnly(2024, 4, 18);
-			long millis = input.ToUnixTimeMilliseconds();
+        [TestMethod]
+        public void ToUnixTimeMilliseconds_RoundTripWithFromUnixTimeMilliseconds_ShouldMatchUtc()
+        {
+            DateOnly input = new DateOnly(2024, 4, 18);
+            long millis = input.ToUnixTimeMilliseconds();
 
-			DateOnly roundTrip = DateOnlyExtensions.FromUnixTimeMilliseconds(millis);
+            DateOnly roundTrip = DateOnlyExtensions.FromUnixTimeMilliseconds(millis);
 
-			Assert.AreEqual(input, roundTrip);
-		}
-	}
+            Assert.AreEqual(input, roundTrip);
+        }
+    }
 }

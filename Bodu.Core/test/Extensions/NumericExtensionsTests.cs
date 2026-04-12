@@ -1,6 +1,6 @@
 ﻿namespace Bodu.Extensions
 {
-	[TestClass]
-	public partial class NumericExtensionsTests
-	{ }
+    [TestClass]
+    public partial class NumericExtensionsTests
+    { }
 }

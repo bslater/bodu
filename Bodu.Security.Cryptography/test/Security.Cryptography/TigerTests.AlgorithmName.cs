@@ -10,15 +10,15 @@ using System.Text;
 
 namespace Bodu.Security.Cryptography
 {
-	public partial class TigerTests
-	{
-		[DataTestMethod]
-		[DynamicData(nameof(HashAlgorithmVariants), DynamicDataSourceType.Method)]
-		public void AlgorithmName_WhenUsingVariant_ShouldReturnCorrectlyFormattedString(TigerVariant variant)
-		{
-			using var algorithm = this.CreateAlgorithm(variant);
+    public partial class TigerTests
+    {
+        [DataTestMethod]
+        [DynamicData(nameof(HashAlgorithmVariants), DynamicDataSourceType.Method)]
+        public void AlgorithmName_WhenUsingVariant_ShouldReturnCorrectlyFormattedString(TigerVariant variant)
+        {
+            using var algorithm = this.CreateAlgorithm(variant);
 
-			Assert.AreEqual($"Tiger/{algorithm.HashSize}", algorithm.AlgorithmName);
-		}
-	}
+            Assert.AreEqual($"Tiger/{algorithm.HashSize}", algorithm.AlgorithmName);
+        }
+    }
 }

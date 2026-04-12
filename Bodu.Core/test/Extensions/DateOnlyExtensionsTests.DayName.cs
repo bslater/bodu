@@ -10,38 +10,38 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Bodu.Extensions
 {
-	public partial class DateOnlyExtensionsTests
-	{
+    public partial class DateOnlyExtensionsTests
+    {
 
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.DayNameTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]
-		public void DayName_WithCulture_ShouldReturnLocalizedName(DateTime inputDateTime, CultureInfo culture, string expected)
-		{
-			var input=DateOnly.FromDateTime(inputDateTime);
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.DayNameTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]
+        public void DayName_WithCulture_ShouldReturnLocalizedName(DateTime inputDateTime, CultureInfo culture, string expected)
+        {
+            var input=DateOnly.FromDateTime(inputDateTime);
 
-			string actual = input.DayName(culture);
+            string actual = input.DayName(culture);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.DayNameFrenchTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]
-		public void DayName_WhenCultureIsNull_ShouldFallbackToCurrentCulture(DateTime inputDateTime, string expected)
-		{
-			var original = CultureInfo.CurrentCulture;
-			try
-			{
-				CultureInfo.CurrentCulture = new CultureInfo("fr-FR");
-				var input = DateOnly.FromDateTime(inputDateTime);
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.DayNameFrenchTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]
+        public void DayName_WhenCultureIsNull_ShouldFallbackToCurrentCulture(DateTime inputDateTime, string expected)
+        {
+            var original = CultureInfo.CurrentCulture;
+            try
+            {
+                CultureInfo.CurrentCulture = new CultureInfo("fr-FR");
+                var input = DateOnly.FromDateTime(inputDateTime);
 
-				string actual = input.DayName(null!);
+                string actual = input.DayName(null!);
 
-				Assert.AreEqual(expected, actual);
-			}
-			finally
-			{
-				CultureInfo.CurrentCulture = original;
-			}
-		}
-	}
+                Assert.AreEqual(expected, actual);
+            }
+            finally
+            {
+                CultureInfo.CurrentCulture = original;
+            }
+        }
+    }
 }

@@ -8,49 +8,49 @@ using Bodu.Extensions;
 
 namespace Bodu.Extensions
 {
-	public partial class DateOnlyExtensionsTests
-	{
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.LastDayOfWeekInYearTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-		public void LastDayOfWeekInYear_WhenCalled_ShouldReturnExpectedDate(DateTime inputDateTime, DayOfWeek dayOfWeek, DateTime expectedDateTime)
-		{
-			var input = DateOnly.FromDateTime(inputDateTime);
-			var expected = DateOnly.FromDateTime(expectedDateTime);
+    public partial class DateOnlyExtensionsTests
+    {
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.LastDayOfWeekInYearTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+        public void LastDayOfWeekInYear_WhenCalled_ShouldReturnExpectedDate(DateTime inputDateTime, DayOfWeek dayOfWeek, DateTime expectedDateTime)
+        {
+            var input = DateOnly.FromDateTime(inputDateTime);
+            var expected = DateOnly.FromDateTime(expectedDateTime);
 
-			var actual = input.LastDayOfWeekInYear(dayOfWeek);
+            var actual = input.LastDayOfWeekInYear(dayOfWeek);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void LastDayOfWeekInYear_WhenDayOfWeekIsInvalid_ShouldThrowExactly()
-		{
-			var input = new DateOnly(2024, 1, 1);
-			var invalidDay = (DayOfWeek)999;
+        [TestMethod]
+        public void LastDayOfWeekInYear_WhenDayOfWeekIsInvalid_ShouldThrowExactly()
+        {
+            var input = new DateOnly(2024, 1, 1);
+            var invalidDay = (DayOfWeek)999;
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = input.LastDayOfWeekInYear(invalidDay);
-			});
-		}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = input.LastDayOfWeekInYear(invalidDay);
+            });
+        }
 
-		[TestMethod]
-		public void LastDayOfWeekInYear_WhenUsingMinValue_ShouldReturnInYear1()
-		{
-			var input = DateOnly.MinValue;
-			var actual = input.LastDayOfWeekInYear(DayOfWeek.Monday);
+        [TestMethod]
+        public void LastDayOfWeekInYear_WhenUsingMinValue_ShouldReturnInYear1()
+        {
+            var input = DateOnly.MinValue;
+            var actual = input.LastDayOfWeekInYear(DayOfWeek.Monday);
 
-			Assert.IsTrue(actual.Year == 1);
-			Assert.IsTrue(actual <= new DateOnly(1, 12, 31));
-		}
+            Assert.IsTrue(actual.Year == 1);
+            Assert.IsTrue(actual <= new DateOnly(1, 12, 31));
+        }
 
-		[TestMethod]
-		public void LastDayOfWeekInYear_WhenUsingMaxValue_ShouldReturnValidDate()
-		{
-			var input = DateOnly.MaxValue;
-			var actual = input.LastDayOfWeekInYear(DayOfWeek.Friday);
+        [TestMethod]
+        public void LastDayOfWeekInYear_WhenUsingMaxValue_ShouldReturnValidDate()
+        {
+            var input = DateOnly.MaxValue;
+            var actual = input.LastDayOfWeekInYear(DayOfWeek.Friday);
 
-			Assert.IsTrue(actual <= DateOnly.MaxValue);
-		}
-	}
+            Assert.IsTrue(actual <= DateOnly.MaxValue);
+        }
+    }
 }

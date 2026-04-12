@@ -9,127 +9,127 @@ using System.Globalization;
 
 namespace Bodu.Extensions
 {
-	public partial class DateOnlyExtensionsTests
-	{
+    public partial class DateOnlyExtensionsTests
+    {
 
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.LastDayOfWeekCultureInfoTestData),typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-		public void LastDayOfWeek_WhenCurrentCultureSet_ShouldReturnExpectedStart(DateTime inputDateTime, CultureInfo culture, DateTime expectedDateTime)
-		{
-			var input = DateOnly.FromDateTime(inputDateTime);
-			var expected = DateOnly.FromDateTime(expectedDateTime);
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.LastDayOfWeekCultureInfoTestData),typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+        public void LastDayOfWeek_WhenCurrentCultureSet_ShouldReturnExpectedStart(DateTime inputDateTime, CultureInfo culture, DateTime expectedDateTime)
+        {
+            var input = DateOnly.FromDateTime(inputDateTime);
+            var expected = DateOnly.FromDateTime(expectedDateTime);
 
-			var actual = input.LastDayOfWeek(culture);
+            var actual = input.LastDayOfWeek(culture);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.LastDayOfWeekCultureInfoTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-		public void LastDayOfWeek_WhenCultureIsNull_ShouldUseCurrentCulture(DateTime inputDateTime, CultureInfo culture, DateTime expectedDateTime)
-		{
-			var originalCulture = CultureInfo.CurrentCulture;
-			try
-			{
-				CultureInfo.CurrentCulture = culture;
-				var input = DateOnly.FromDateTime(inputDateTime);
-				var expected = DateOnly.FromDateTime(expectedDateTime);
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.LastDayOfWeekCultureInfoTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+        public void LastDayOfWeek_WhenCultureIsNull_ShouldUseCurrentCulture(DateTime inputDateTime, CultureInfo culture, DateTime expectedDateTime)
+        {
+            var originalCulture = CultureInfo.CurrentCulture;
+            try
+            {
+                CultureInfo.CurrentCulture = culture;
+                var input = DateOnly.FromDateTime(inputDateTime);
+                var expected = DateOnly.FromDateTime(expectedDateTime);
 
-				var actual = input.LastDayOfWeek(null!);
+                var actual = input.LastDayOfWeek(null!);
 
-				Assert.AreEqual(expected, actual, $"Failed for culture: {culture.Name}");
-			}
-			finally
-			{
-				CultureInfo.CurrentCulture = originalCulture; // Always restore
-			}
-		}
+                Assert.AreEqual(expected, actual, $"Failed for culture: {culture.Name}");
+            }
+            finally
+            {
+                CultureInfo.CurrentCulture = originalCulture; // Always restore
+            }
+        }
 
-		[TestMethod]
-		public void LastDayOfWeek_WhenUsingMinValue_ShouldSucceed()
-		{
-			DateOnly input = DateOnly.MinValue;
-			DateOnly actual = input.LastDayOfWeek(CultureInfo.InvariantCulture);
+        [TestMethod]
+        public void LastDayOfWeek_WhenUsingMinValue_ShouldSucceed()
+        {
+            DateOnly input = DateOnly.MinValue;
+            DateOnly actual = input.LastDayOfWeek(CultureInfo.InvariantCulture);
 
-			Assert.IsTrue(actual >= DateOnly.MinValue);
-		}
+            Assert.IsTrue(actual >= DateOnly.MinValue);
+        }
 
 
-		[TestMethod]
-		public void LastDayOfWeek_WhenMinValueAndCultureIsUS_ShouldReturnThrowArgumentOutOfRangeException()
-		{
-			DateOnly min = DateOnly.MaxValue;
-			var culture = new CultureInfo("en-US");// Sunday is first day
+        [TestMethod]
+        public void LastDayOfWeek_WhenMinValueAndCultureIsUS_ShouldReturnThrowArgumentOutOfRangeException()
+        {
+            DateOnly min = DateOnly.MaxValue;
+            var culture = new CultureInfo("en-US");// Sunday is first day
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = min.LastDayOfWeek(culture); // is outside the range for a DateOnly value
-			});
-		}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = min.LastDayOfWeek(culture); // is outside the range for a DateOnly value
+            });
+        }
 
-		[TestMethod]
-		public void LastDayOfWeek_WhenUsingMaxValue_ShouldSucceed()
-		{
-			DateOnly max = DateOnly.MaxValue;
-			var actual = max.LastDayOfWeek(new CultureInfo("fa-IR")); // Friday is last day of week
+        [TestMethod]
+        public void LastDayOfWeek_WhenUsingMaxValue_ShouldSucceed()
+        {
+            DateOnly max = DateOnly.MaxValue;
+            var actual = max.LastDayOfWeek(new CultureInfo("fa-IR")); // Friday is last day of week
 
-			Assert.AreEqual(max, actual);
-		}
+            Assert.AreEqual(max, actual);
+        }
 
-		/// <summary>
-		/// Verifies that <see cref="DateOnlyExtensions.LastDayOfWeek"/> returns the expected actual based on the specified weekend definition.
-		/// </summary>
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.GetLastDayOfWeekWithDefinitionTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-		public void LastDayOfWeek_WhenUsingWeekendDefinition_ShouldReturnExpectedEnd(DateTime inputDateTime, CalendarWeekendDefinition weekend,  DateTime expectedDateTime)
-		{
-			var input = DateOnly.FromDateTime(inputDateTime);
-			var expected = DateOnly.FromDateTime(expectedDateTime);
-			var actual = input.LastDayOfWeek(weekend);
-			Assert.AreEqual(expected, actual);
-		}
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfWeek"/> returns the expected actual based on the specified weekend definition.
+        /// </summary>
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.GetLastDayOfWeekWithDefinitionTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+        public void LastDayOfWeek_WhenUsingWeekendDefinition_ShouldReturnExpectedEnd(DateTime inputDateTime, CalendarWeekendDefinition weekend,  DateTime expectedDateTime)
+        {
+            var input = DateOnly.FromDateTime(inputDateTime);
+            var expected = DateOnly.FromDateTime(expectedDateTime);
+            var actual = input.LastDayOfWeek(weekend);
+            Assert.AreEqual(expected, actual);
+        }
 
-		/// <summary>
-		/// Verifies that <see cref="DateOnlyExtensions.LastDayOfWeek"/> throws when given an undefined <see cref="CalendarWeekendDefinition"/>.
-		/// </summary>
-		[TestMethod]
-		public void LastDayOfWeek_WhenWeekendIsUndefined_ShouldThrowArgumentOutOfRangeException()
-		{
-			var date = new DateOnly(2024, 1, 1);
-			var invalidWeekend = (CalendarWeekendDefinition)(-5);
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfWeek"/> throws when given an undefined <see cref="CalendarWeekendDefinition"/>.
+        /// </summary>
+        [TestMethod]
+        public void LastDayOfWeek_WhenWeekendIsUndefined_ShouldThrowArgumentOutOfRangeException()
+        {
+            var date = new DateOnly(2024, 1, 1);
+            var invalidWeekend = (CalendarWeekendDefinition)(-5);
 
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-			{
-				_ = date.LastDayOfWeek(invalidWeekend);
-			});
-		}
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+            {
+                _ = date.LastDayOfWeek(invalidWeekend);
+            });
+        }
 
-		/// <summary>
-		/// Verifies that <see cref="DateOnlyExtensions.LastDayOfWeek"/> throws if the calculated actual exceeds <see cref="DateOnly.MaxValue"/>.
-		/// </summary>
-		[TestMethod]
-		public void LastDayOfWeek_WhenResultExceedsMaxValue_ShouldThrowArgumentOutOfRangeException()
-		{
-			var nearMax = DateOnly.MaxValue.AddDays(-1); // e.g., Dec 30, 9999
-			var weekend = CalendarWeekendDefinition.SaturdaySunday; // Start of week = Monday → end = Sunday
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfWeek"/> throws if the calculated actual exceeds <see cref="DateOnly.MaxValue"/>.
+        /// </summary>
+        [TestMethod]
+        public void LastDayOfWeek_WhenResultExceedsMaxValue_ShouldThrowArgumentOutOfRangeException()
+        {
+            var nearMax = DateOnly.MaxValue.AddDays(-1); // e.g., Dec 30, 9999
+            var weekend = CalendarWeekendDefinition.SaturdaySunday; // Start of week = Monday → end = Sunday
 
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-			{
-				_ = nearMax.LastDayOfWeek(weekend);
-			});
-		}
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+            {
+                _ = nearMax.LastDayOfWeek(weekend);
+            });
+        }
 
-		/// <summary>
-		/// Verifies that <see cref="DateOnlyExtensions.LastDayOfWeek"/> works near <see cref="DateOnly.MaxValue"/> without throwing.
-		/// </summary>
-		[TestMethod]
-		public void LastDayOfWeek_WhenNearMaxValue_ShouldReturnValidResult()
-		{
-			var date = DateOnly.MaxValue.AddDays(-6); // 9999-12-25
-			var actual = date.LastDayOfWeek(CalendarWeekendDefinition.SaturdaySunday);
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfWeek"/> works near <see cref="DateOnly.MaxValue"/> without throwing.
+        /// </summary>
+        [TestMethod]
+        public void LastDayOfWeek_WhenNearMaxValue_ShouldReturnValidResult()
+        {
+            var date = DateOnly.MaxValue.AddDays(-6); // 9999-12-25
+            var actual = date.LastDayOfWeek(CalendarWeekendDefinition.SaturdaySunday);
 
-			Assert.IsTrue(actual <= DateOnly.MaxValue);
-			Assert.AreEqual(DayOfWeek.Sunday, actual.DayOfWeek);
-		}
-	}
+            Assert.IsTrue(actual <= DateOnly.MaxValue);
+            Assert.AreEqual(DayOfWeek.Sunday, actual.DayOfWeek);
+        }
+    }
 }

@@ -9,76 +9,76 @@ using System.Globalization;
 
 namespace Bodu.Extensions
 {
-	public partial class DateTimeExtensionsTests
-	{
-		[DataTestMethod]
-		[DynamicData(nameof(NextDayOfWeekTestData), DynamicDataSourceType.Method)]
-		public void NextDayOfWeek_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek targetDay, DateTime expected)
-		{
-				var actual = input.NextDayOfWeek(targetDay);
+    public partial class DateTimeExtensionsTests
+    {
+        [TestMethod]
+        [DynamicData(nameof(NextDayOfWeekTestData), DynamicDataSourceType.Method)]
+        public void NextDayOfWeek_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek targetDay, DateTime expected)
+        {
+                var actual = input.NextDayOfWeek(targetDay);
 
-				Assert.AreEqual(expected, actual);
-		}
+                Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void NextDayOfWeek_WhenTimeIsSet_ShouldPreserveTime()
-		{
-			var input = DateTime.Now;
-			var actual = input.NextDayOfWeek(input.DayOfWeek); // Move one week
+        [TestMethod]
+        public void NextDayOfWeek_WhenTimeIsSet_ShouldPreserveTime()
+        {
+            var input = DateTime.Now;
+            var actual = input.NextDayOfWeek(input.DayOfWeek); // Move one week
 
-			Assert.AreEqual(input.TimeOfDay, actual.TimeOfDay);
-		}
+            Assert.AreEqual(input.TimeOfDay, actual.TimeOfDay);
+        }
 
-		[TestMethod]
-		public void NextDayOfWeek_WhenInvalidEnum_ShouldThrowExactly()
-		{
-			DateTime input = new DateTime(2024, 4, 18);
+        [TestMethod]
+        public void NextDayOfWeek_WhenInvalidEnum_ShouldThrowExactly()
+        {
+            DateTime input = new DateTime(2024, 4, 18);
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = input.NextDayOfWeek((DayOfWeek)999);
-			});
-		}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = input.NextDayOfWeek((DayOfWeek)999);
+            });
+        }
 
-		[DataTestMethod]
-		[DataRow(DateTimeKind.Unspecified)]
-		[DataRow(DateTimeKind.Utc)]
-		[DataRow(DateTimeKind.Local)]
-		public void NextDayOfWeekr_WhenKindIsSet_ShouldPreserveKind(DateTimeKind kind)
-		{
-			DateTime input = new DateTime(2024, 4, 18, 10, 0, 0, kind);
-			DateTime actual = input.NextDayOfWeek(DayOfWeek.Wednesday);
+        [TestMethod]
+        [DataRow(DateTimeKind.Unspecified)]
+        [DataRow(DateTimeKind.Utc)]
+        [DataRow(DateTimeKind.Local)]
+        public void NextDayOfWeekr_WhenKindIsSet_ShouldPreserveKind(DateTimeKind kind)
+        {
+            DateTime input = new DateTime(2024, 4, 18, 10, 0, 0, kind);
+            DateTime actual = input.NextDayOfWeek(DayOfWeek.Wednesday);
 
-			Assert.AreEqual(kind, actual.Kind);
-		}
+            Assert.AreEqual(kind, actual.Kind);
+        }
 
 
-		[TestMethod]
-		public void NextDayOfWeek_WhenTimeIsSet_ShouldPreserveTimed()
-		{
-			var time = new TimeSpan(0, 12, 32, 55, 34, 903);
-			var input = new DateTime(2024, 4, 18).Add(time);
+        [TestMethod]
+        public void NextDayOfWeek_WhenTimeIsSet_ShouldPreserveTimed()
+        {
+            var time = new TimeSpan(0, 12, 32, 55, 34, 903);
+            var input = new DateTime(2024, 4, 18).Add(time);
 
-			var actual = input.NextDayOfWeek(DayOfWeek.Monday).TimeOfDay;
+            var actual = input.NextDayOfWeek(DayOfWeek.Monday).TimeOfDay;
 
-			Assert.AreEqual(time, actual);
-		}
+            Assert.AreEqual(time, actual);
+        }
 
-		[TestMethod]
-		public void NextDayOfWeek_WhenUsingMinValue_ShouldReturnNextValidDate()
-		{
-			DateTime actual = DateTime.MinValue.NextDayOfWeek(DayOfWeek.Friday);
+        [TestMethod]
+        public void NextDayOfWeek_WhenUsingMinValue_ShouldReturnNextValidDate()
+        {
+            DateTime actual = DateTime.MinValue.NextDayOfWeek(DayOfWeek.Friday);
 
-			Assert.IsTrue(actual >= DateTime.MinValue);
-		}
+            Assert.IsTrue(actual >= DateTime.MinValue);
+        }
 
-		[TestMethod]
-		public void NextDayOfWeek_WhenUsingMaxValueMinus7_ShouldReturnWithinRange()
-		{
-			DateTime input = DateTime.MaxValue.AddDays(-7);
-			DateTime actual = input.NextDayOfWeek(input.DayOfWeek);
+        [TestMethod]
+        public void NextDayOfWeek_WhenUsingMaxValueMinus7_ShouldReturnWithinRange()
+        {
+            DateTime input = DateTime.MaxValue.AddDays(-7);
+            DateTime actual = input.NextDayOfWeek(input.DayOfWeek);
 
-			Assert.IsTrue(actual <= DateTime.MaxValue);
-		}
-	}
+            Assert.IsTrue(actual <= DateTime.MaxValue);
+        }
+    }
 }

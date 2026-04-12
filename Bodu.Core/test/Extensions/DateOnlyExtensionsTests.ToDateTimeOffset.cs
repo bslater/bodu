@@ -8,90 +8,90 @@ using Bodu.Extensions;
 
 namespace Bodu.Extensions
 {
-	public partial class DateOnlyExtensionsTests
-	{
+    public partial class DateOnlyExtensionsTests
+    {
 
-		[TestMethod]
-		public void ToDateTimeOffset_WhenKindIsUtc_ShouldReturnZeroOffset()
-		{
-			DateTime input = new DateTime(2024, 4, 18, 10, 0, 0, DateTimeKind.Utc);
-			DateTimeOffset actual = input.ToDateTimeOffset();
+        [TestMethod]
+        public void ToDateTimeOffset_WhenKindIsUtc_ShouldReturnZeroOffset()
+        {
+            DateTime input = new DateTime(2024, 4, 18, 10, 0, 0, DateTimeKind.Utc);
+            DateTimeOffset actual = input.ToDateTimeOffset();
 
-			Assert.AreEqual(TimeSpan.Zero, actual.Offset);
-			Assert.AreEqual(input, actual.UtcDateTime);
-		}
+            Assert.AreEqual(TimeSpan.Zero, actual.Offset);
+            Assert.AreEqual(input, actual.UtcDateTime);
+        }
 
-		[TestMethod]
-		public void ToDateTimeOffset_WhenKindIsLocal_ShouldReturnLocalOffset()
-		{
-			DateTime input = new DateTime(2024, 4, 18, 10, 0, 0, DateTimeKind.Local);
-			DateTimeOffset actual = input.ToDateTimeOffset();
+        [TestMethod]
+        public void ToDateTimeOffset_WhenKindIsLocal_ShouldReturnLocalOffset()
+        {
+            DateTime input = new DateTime(2024, 4, 18, 10, 0, 0, DateTimeKind.Local);
+            DateTimeOffset actual = input.ToDateTimeOffset();
 
-			Assert.AreEqual(input, actual.LocalDateTime);
-		}
+            Assert.AreEqual(input, actual.LocalDateTime);
+        }
 
-		[TestMethod]
-		public void ToDateTimeOffset_WhenKindIsUnspecified_ShouldAssumeLocal()
-		{
-			DateTime input = new DateTime(2024, 4, 18, 10, 0, 0, DateTimeKind.Unspecified);
-			DateTimeOffset actual = input.ToDateTimeOffset();
+        [TestMethod]
+        public void ToDateTimeOffset_WhenKindIsUnspecified_ShouldAssumeLocal()
+        {
+            DateTime input = new DateTime(2024, 4, 18, 10, 0, 0, DateTimeKind.Unspecified);
+            DateTimeOffset actual = input.ToDateTimeOffset();
 
-			Assert.AreEqual(input, actual.DateTime);
-		}
+            Assert.AreEqual(input, actual.DateTime);
+        }
 
-		[DataTestMethod]
-		[DataRow(0, 0)]
-		[DataRow(2, 30)]
-		[DataRow(-3, 0)]
-		[DataRow(13, 45)]
-		[DataRow(-14, 0)]
-		public void ToDateTimeOffset_WithValidOffset_ShouldApplyOffset(int hours, int minutes)
-		{
-			var offset = new TimeSpan(hours, minutes, 0);
-			DateTime input = new DateTime(2024, 4, 18, 12, 0, 0);
-			DateTimeOffset actual = input.ToDateTimeOffset(offset);
+        [TestMethod]
+        [DataRow(0, 0)]
+        [DataRow(2, 30)]
+        [DataRow(-3, 0)]
+        [DataRow(13, 45)]
+        [DataRow(-14, 0)]
+        public void ToDateTimeOffset_WithValidOffset_ShouldApplyOffset(int hours, int minutes)
+        {
+            var offset = new TimeSpan(hours, minutes, 0);
+            DateTime input = new DateTime(2024, 4, 18, 12, 0, 0);
+            DateTimeOffset actual = input.ToDateTimeOffset(offset);
 
-			Assert.AreEqual(offset, actual.Offset);
-			Assert.AreEqual(input, actual.DateTime);
-		}
+            Assert.AreEqual(offset, actual.Offset);
+            Assert.AreEqual(input, actual.DateTime);
+        }
 
-		[DataTestMethod]
-		[DataRow(15, 0)]
-		[DataRow(-15, 0)]
-		[DataRow(14, 1)]
-		public void ToDateTimeOffset_WithOffsetOutsideRange_ShouldThrowExactly(int hours, int minutes)
-		{
-			var offset = new TimeSpan(hours, minutes, 0);
-			DateTime input = new DateTime(2024, 4, 18, 12, 0, 0);
+        [TestMethod]
+        [DataRow(15, 0)]
+        [DataRow(-15, 0)]
+        [DataRow(14, 1)]
+        public void ToDateTimeOffset_WithOffsetOutsideRange_ShouldThrowExactly(int hours, int minutes)
+        {
+            var offset = new TimeSpan(hours, minutes, 0);
+            DateTime input = new DateTime(2024, 4, 18, 12, 0, 0);
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = input.ToDateTimeOffset(offset);
-			});
-		}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = input.ToDateTimeOffset(offset);
+            });
+        }
 
-		[TestMethod]
-		public void ToDateTimeOffset_WhenResultTooEarly_ShouldThrowExactly()
-		{
-			DateTime input = DateTime.MinValue.AddHours(1);
-			var offset = TimeSpan.FromHours(2); // UTC = MinValue - 1 hour (underflow)
+        [TestMethod]
+        public void ToDateTimeOffset_WhenResultTooEarly_ShouldThrowExactly()
+        {
+            DateTime input = DateTime.MinValue.AddHours(1);
+            var offset = TimeSpan.FromHours(2); // UTC = MinValue - 1 hour (underflow)
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = input.ToDateTimeOffset(offset);
-			});
-		}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = input.ToDateTimeOffset(offset);
+            });
+        }
 
-		[TestMethod]
-		public void ToDateTimeOffset_WhenResultTooLate_ShouldThrowExactly()
-		{
-			DateTime input = DateTime.MaxValue.AddHours(-1);
-			var offset = TimeSpan.FromHours(-2); // UTC = MaxValue + 1 hour (overflow)
+        [TestMethod]
+        public void ToDateTimeOffset_WhenResultTooLate_ShouldThrowExactly()
+        {
+            DateTime input = DateTime.MaxValue.AddHours(-1);
+            var offset = TimeSpan.FromHours(-2); // UTC = MaxValue + 1 hour (overflow)
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = input.ToDateTimeOffset(offset);
-			});
-		}
-	}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = input.ToDateTimeOffset(offset);
+            });
+        }
+    }
 }

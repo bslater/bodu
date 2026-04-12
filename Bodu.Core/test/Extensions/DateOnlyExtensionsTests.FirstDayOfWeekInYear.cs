@@ -8,47 +8,47 @@ using Bodu.Extensions;
 
 namespace Bodu.Extensions
 {
-	public partial class DateOnlyExtensionsTests
-	{
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests. FirstDayOfWeekInYearTestData),typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-		public void FirstDayOfWeekInYear_ShouldReturnExpectedDay(DateTime inputDateTime, DayOfWeek targetDay, DateTime expectedDateTime)
-		{
-			var input = DateOnly.FromDateTime(inputDateTime);
-			var expected = DateOnly.FromDateTime(expectedDateTime);
+    public partial class DateOnlyExtensionsTests
+    {
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests. FirstDayOfWeekInYearTestData),typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+        public void FirstDayOfWeekInYear_ShouldReturnExpectedDay(DateTime inputDateTime, DayOfWeek targetDay, DateTime expectedDateTime)
+        {
+            var input = DateOnly.FromDateTime(inputDateTime);
+            var expected = DateOnly.FromDateTime(expectedDateTime);
 
-			var actual = input.FirstDayOfWeekInYear(targetDay);
+            var actual = input.FirstDayOfWeekInYear(targetDay);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void FirstDayOfWeekInYear_WhenEnumInvalid_ShouldThrowExactly()
-		{
-			var input = new DateOnly(2024, 1, 1);
-			var invalidDay = (DayOfWeek)999;
+        [TestMethod]
+        public void FirstDayOfWeekInYear_WhenEnumInvalid_ShouldThrowExactly()
+        {
+            var input = new DateOnly(2024, 1, 1);
+            var invalidDay = (DayOfWeek)999;
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = input.FirstDayOfWeekInYear(invalidDay);
-			});
-		}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = input.FirstDayOfWeekInYear(invalidDay);
+            });
+        }
 
-		[TestMethod]
-		public void FirstDayOfWeekInYear_WhenMinValue_ShouldReturnValidDate()
-		{
-			var actual = DateOnly.MinValue.FirstDayOfWeekInYear(DayOfWeek.Monday);
+        [TestMethod]
+        public void FirstDayOfWeekInYear_WhenMinValue_ShouldReturnValidDate()
+        {
+            var actual = DateOnly.MinValue.FirstDayOfWeekInYear(DayOfWeek.Monday);
 
-			Assert.AreEqual(new DateOnly(1, 1, 1), actual); // 0001-01-01 is a Monday
-		}
+            Assert.AreEqual(new DateOnly(1, 1, 1), actual); // 0001-01-01 is a Monday
+        }
 
-		[TestMethod]
-		public void FirstDayOfWeekInYear_WhenMaxYear_ShouldReturnExpected()
-		{
-			var input = new DateOnly(9999, 12, 31);
-			var actual = input.FirstDayOfWeekInYear(DayOfWeek.Saturday); // 9999-01-02 is a Saturday
+        [TestMethod]
+        public void FirstDayOfWeekInYear_WhenMaxYear_ShouldReturnExpected()
+        {
+            var input = new DateOnly(9999, 12, 31);
+            var actual = input.FirstDayOfWeekInYear(DayOfWeek.Saturday); // 9999-01-02 is a Saturday
 
-			Assert.AreEqual(new DateOnly(9999, 1, 2), actual);
-		}
-	}
+            Assert.AreEqual(new DateOnly(9999, 1, 2), actual);
+        }
+    }
 }

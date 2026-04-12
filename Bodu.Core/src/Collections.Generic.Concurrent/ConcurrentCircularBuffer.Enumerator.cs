@@ -1,81 +1,85 @@
-﻿// // ---------------------------------------------------------------------------------------------------------------
-// // <copyright file="ConcurrentCircularBuffer.Enumerator.cs" company="PlaceholderCompany">
-// //     Copyright (c) PlaceholderCompany. All rights reserved.
-// // </copyright>
-// // ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ConcurrentCircularBuffer.Enumerator.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
 
 using System;
 using System.Collections;
 
-namespace Bodu.Collections.Generic.Concurrent
+namespace Bodu.Collections.Generic.Concurrent;
+
+public sealed partial class ConcurrentCircularBuffer<T> :
+    System.Collections.Generic.IReadOnlyCollection<T>
 {
-	public sealed partial class ConcurrentCircularBuffer<T>
-		: System.Collections.Generic.IReadOnlyCollection<T>
-	{
-		/// <summary>
-		/// Provides a snapshot-based enumerator for <see cref="ConcurrentCircularBuffer{T}" /> that supports allocation-free enumeration in
-		/// foreach loops.
-		/// </summary>
-		[Serializable]
-		public struct Enumerator
-			: System.Collections.Generic.IEnumerator<T>
-		{
-			private readonly T[] snapshot;
-			private int index;
-			private T current;
+    /// <summary>
+    /// Provides a snapshot-based enumerator for <see cref="ConcurrentCircularBuffer{T}" /> that iterates over a stable point-in-time
+    /// copy of the buffer's contents.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The enumerator captures a snapshot of the buffer's elements at the time of construction by calling
+    /// <see cref="ConcurrentCircularBuffer{T}.ToArray" />. All subsequent iteration operates over this static copy and is unaffected
+    /// by concurrent enqueue, dequeue, or eviction operations on the originating buffer.
+    /// </para>
+    /// <para>
+    /// Because the snapshot is taken eagerly, creating the enumerator allocates a backing array proportional to the number of
+    /// elements present at that moment. This is the same allocation that a direct call to <see cref="ToArray" /> would produce.
+    /// </para>
+    /// </remarks>
+    [Serializable]
+    public struct Enumerator :
+       System.Collections.Generic.IEnumerator<T>
+    {
+        private readonly T[] _snapshot;
+        private T? _current;
+        private int _index;
 
-			/// <summary>
-			/// Initializes a new instance of the <see cref="Enumerator" /> struct using a snapshot of the buffer's contents at the time of enumeration.
-			/// </summary>
-			/// <param name="circularBuffer">The <see cref="ConcurrentCircularBuffer{T}" /> instance to enumerate. Must not be <see langword="null" />.</param>
-			/// <remarks>
-			/// <para>
-			/// This constructor captures a snapshot of the buffer's elements via <see cref="ConcurrentCircularBuffer{T}.ToArray" />. It
-			/// allows safe iteration even if the buffer is concurrently modified during enumeration.
-			/// </para>
-			/// <para>The enumerator operates over a static copy and does not reflect subsequent changes made to the buffer.</para>
-			/// </remarks>
-			/// <exception cref="ArgumentNullException">Thrown if <paramref name="circularBuffer" /> is <see langword="null" />.</exception>
-			internal Enumerator(ConcurrentCircularBuffer<T> circularBuffer)
-			{
-				ThrowHelper.ThrowIfNull(circularBuffer);
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Enumerator" /> struct by capturing a snapshot of the buffer's contents.
+        /// </summary>
+        /// <param name="owner">The <see cref="ConcurrentCircularBuffer{T}" /> instance to enumerate. Must not be <see langword="null" />.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="owner" /> is <see langword="null" />.</exception>
+        internal Enumerator(ConcurrentCircularBuffer<T> owner)
+        {
+            ThrowHelper.ThrowIfNull(owner);
+            _snapshot = owner.ToArray();
+            _index = -1;
+            _current = default;
+        }
 
-				snapshot = circularBuffer.ToArray();
-				index = -1;
-				current = default!;
-			}
+        /// <inheritdoc />
+        public T Current => _current!;
 
-			/// <inheritdoc />
-			public T Current => current;
+        /// <inheritdoc />
+        object IEnumerator.Current => _current!;
 
-			/// <inheritdoc />
-			object IEnumerator.Current => current!;
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            // No resources to dispose.
+        }
 
-			/// <inheritdoc />
-			public bool MoveNext()
-			{
-				if (++index < snapshot.Length)
-				{
-					current = snapshot[index];
-					return true;
-				}
+        /// <inheritdoc />
+        public bool MoveNext()
+        {
+            int next = _index + 1;
+            if (next < _snapshot.Length)
+            {
+                _current = _snapshot[next];
+                _index = next;
+                return true;
+            }
 
-				current = default!;
-				return false;
-			}
+            _current = default;
+            return false;
+        }
 
-			/// <inheritdoc />
-			public void Reset()
-			{
-				index = -1;
-				current = default!;
-			}
-
-			/// <inheritdoc />
-			public void Dispose()
-			{
-				// No resources to dispose.
-			}
-		}
-	}
+        /// <inheritdoc />
+        public void Reset()
+        {
+            _index = -1;
+            _current = default;
+        }
+    }
 }

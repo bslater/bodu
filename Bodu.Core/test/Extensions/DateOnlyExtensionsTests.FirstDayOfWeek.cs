@@ -10,150 +10,150 @@ using System.Collections.Generic;
 
 namespace Bodu.Extensions
 {
-	public partial class DateOnlyExtensionsTests
-	{
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfWeekCultureInfoTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]
-		public void FirstDayOfWeek_WhenCurrentCultureSet_ShouldReturnExpectedStart(DateTime inputDateTime, CultureInfo culture, DateTime expectedDateTime)
-		{
-			var originalCulture = CultureInfo.CurrentCulture;
+    public partial class DateOnlyExtensionsTests
+    {
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfWeekCultureInfoTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]
+        public void FirstDayOfWeek_WhenCurrentCultureSet_ShouldReturnExpectedStart(DateTime inputDateTime, CultureInfo culture, DateTime expectedDateTime)
+        {
+            var originalCulture = CultureInfo.CurrentCulture;
 
-			try
-			{
-				CultureInfo.CurrentCulture = culture;
-				DateOnly input = DateOnly.FromDateTime(inputDateTime);
-				DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
+            try
+            {
+                CultureInfo.CurrentCulture = culture;
+                DateOnly input = DateOnly.FromDateTime(inputDateTime);
+                DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
 
-				DateOnly actual = input.FirstDayOfWeek();
+                DateOnly actual = input.FirstDayOfWeek();
 
-				Assert.AreEqual(expected, actual, $"Failed for culture: {culture.Name}");
-			}
-			finally
-			{
-				CultureInfo.CurrentCulture = originalCulture;
-			}
-		}
+                Assert.AreEqual(expected, actual, $"Failed for culture: {culture.Name}");
+            }
+            finally
+            {
+                CultureInfo.CurrentCulture = originalCulture;
+            }
+        }
 
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfWeekCultureInfoTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-		public void FirstDayOfWeek_WhenCulture_ShouldReturnExpectedStart(DateTime inputDateTime, CultureInfo culture, DateTime expectedDateTime)
-		{
-			DateOnly input = DateOnly.FromDateTime(inputDateTime);
-			DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfWeekCultureInfoTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+        public void FirstDayOfWeek_WhenCulture_ShouldReturnExpectedStart(DateTime inputDateTime, CultureInfo culture, DateTime expectedDateTime)
+        {
+            DateOnly input = DateOnly.FromDateTime(inputDateTime);
+            DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
 
-			DateOnly actual = input.FirstDayOfWeek(culture);
+            DateOnly actual = input.FirstDayOfWeek(culture);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void FirstDayOfWeek_WhenCultureIsNull_ShouldUseCurrentCulture()
-		{
-			var originalCulture = CultureInfo.CurrentCulture;
-			try
-			{
-				CultureInfo.CurrentCulture = DateTimeExtensionsTests.TestCulture;
-				DateOnly input = new DateOnly(2024, 4, 18); // Thursday
-															// Backtrack to previous Wednesday → 2024-04-17
-				DateOnly expected = new DateOnly(2024, 4, 17);
+        [TestMethod]
+        public void FirstDayOfWeek_WhenCultureIsNull_ShouldUseCurrentCulture()
+        {
+            var originalCulture = CultureInfo.CurrentCulture;
+            try
+            {
+                CultureInfo.CurrentCulture = DateTimeExtensionsTests.TestCulture;
+                DateOnly input = new DateOnly(2024, 4, 18); // Thursday
+                                                            // Backtrack to previous Wednesday → 2024-04-17
+                DateOnly expected = new DateOnly(2024, 4, 17);
 
-				DateOnly actual = input.FirstDayOfWeek(null!);
+                DateOnly actual = input.FirstDayOfWeek(null!);
 
-				Assert.AreEqual(expected, actual, "Expected fallback to CultureInfo.CurrentCulture with Wednesday as start of week.");
-			}
-			finally
-			{
-				CultureInfo.CurrentCulture = originalCulture; // Always restore
-			}
-		}
+                Assert.AreEqual(expected, actual, "Expected fallback to CultureInfo.CurrentCulture with Wednesday as start of week.");
+            }
+            finally
+            {
+                CultureInfo.CurrentCulture = originalCulture; // Always restore
+            }
+        }
 
-		[TestMethod]
-		public void FirstDayOfWeek_WhenMinValue_ShouldReturnMin()
-		{
-			DateOnly min = DateOnly.MinValue;
-			DateOnly actual = min.FirstDayOfWeek(new CultureInfo("en-GB")); // Monday is first day
+        [TestMethod]
+        public void FirstDayOfWeek_WhenMinValue_ShouldReturnMin()
+        {
+            DateOnly min = DateOnly.MinValue;
+            DateOnly actual = min.FirstDayOfWeek(new CultureInfo("en-GB")); // Monday is first day
 
-			Assert.AreEqual(min, actual);
-		}
+            Assert.AreEqual(min, actual);
+        }
 
-		[TestMethod]
-		public void FirstDayOfWeek_WhenMinValueAndCultureIsUS_ShouldReturnThrowArgumentOutOfRangeException()
-		{
-			DateOnly min = DateOnly.MinValue;
-			var culture = new CultureInfo("en-US"); // Sunday is first day
+        [TestMethod]
+        public void FirstDayOfWeek_WhenMinValueAndCultureIsUS_ShouldReturnThrowArgumentOutOfRangeException()
+        {
+            DateOnly min = DateOnly.MinValue;
+            var culture = new CultureInfo("en-US"); // Sunday is first day
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = min.FirstDayOfWeek(culture); // is outside the range for a DateOnly value
-			});
-		}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = min.FirstDayOfWeek(culture); // is outside the range for a DateOnly value
+            });
+        }
 
-		[TestMethod]
-		public void FirstDayOfWeek_WhenMaxValue_ShouldReturnStartOfWeek()
-		{
-			DateOnly max = DateOnly.MaxValue;
-			DateOnly actual = max.FirstDayOfWeek(new CultureInfo("en-US"));
+        [TestMethod]
+        public void FirstDayOfWeek_WhenMaxValue_ShouldReturnStartOfWeek()
+        {
+            DateOnly max = DateOnly.MaxValue;
+            DateOnly actual = max.FirstDayOfWeek(new CultureInfo("en-US"));
 
-			Assert.IsTrue(actual <= max);
-		}
+            Assert.IsTrue(actual <= max);
+        }
 
 
-		/// <summary>
-		/// Verifies that <see cref="DateOnlyExtensions.FirstDayOfWeek"/> returns the expected actual based on the specified weekend definition.
-		/// </summary>
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfWeekDefinitionTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-		public void FirstDayOfWeek_WhenUsingWeekendDefinition_ShouldReturnExpectedStart(DateTime inputDateTime, CalendarWeekendDefinition weekend, DateTime expectedDateTime)
-		{
-			var input = DateOnly.FromDateTime(inputDateTime);
-			var expected = DateOnly.FromDateTime(expectedDateTime);
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.FirstDayOfWeek"/> returns the expected actual based on the specified weekend definition.
+        /// </summary>
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfWeekDefinitionTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+        public void FirstDayOfWeek_WhenUsingWeekendDefinition_ShouldReturnExpectedStart(DateTime inputDateTime, CalendarWeekendDefinition weekend, DateTime expectedDateTime)
+        {
+            var input = DateOnly.FromDateTime(inputDateTime);
+            var expected = DateOnly.FromDateTime(expectedDateTime);
 
-			var actual = input.FirstDayOfWeek(weekend);
+            var actual = input.FirstDayOfWeek(weekend);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		/// <summary>
-		/// Verifies that <see cref="DateOnlyExtensions.FirstDayOfWeek"/> throws when given an undefined <see cref="CalendarWeekendDefinition"/>.
-		/// </summary>
-		[TestMethod]
-		public void FirstDayOfWeek_WhenWeekendIsUndefined_ShouldThrowArgumentOutOfRangeException()
-		{
-			var date = new DateOnly(2024, 1, 1);
-			var invalidWeekend = (CalendarWeekendDefinition)999;
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.FirstDayOfWeek"/> throws when given an undefined <see cref="CalendarWeekendDefinition"/>.
+        /// </summary>
+        [TestMethod]
+        public void FirstDayOfWeek_WhenWeekendIsUndefined_ShouldThrowArgumentOutOfRangeException()
+        {
+            var date = new DateOnly(2024, 1, 1);
+            var invalidWeekend = (CalendarWeekendDefinition)999;
 
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-			{
-				_ = date.FirstDayOfWeek(invalidWeekend);
-			});
-		}
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+            {
+                _ = date.FirstDayOfWeek(invalidWeekend);
+            });
+        }
 
-		/// <summary>
-		/// Verifies that <see cref="DateOnlyExtensions.FirstDayOfWeek"/> throws if the calculated actual underflows <see cref="DateOnly.MinValue"/>.
-		/// </summary>
-		[TestMethod]
-		public void FirstDayOfWeek_WhenResultUnderflowsMinValue_ShouldThrowArgumentOutOfRangeException()
-		{
-			var nearMin = DateOnly.MinValue.AddDays(1); // e.g., Jan 2, 0001
-			var weekend = CalendarWeekendDefinition.FridaySaturday; // Start of week = Sunday → offset = -1
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.FirstDayOfWeek"/> throws if the calculated actual underflows <see cref="DateOnly.MinValue"/>.
+        /// </summary>
+        [TestMethod]
+        public void FirstDayOfWeek_WhenResultUnderflowsMinValue_ShouldThrowArgumentOutOfRangeException()
+        {
+            var nearMin = DateOnly.MinValue.AddDays(1); // e.g., Jan 2, 0001
+            var weekend = CalendarWeekendDefinition.FridaySaturday; // Start of week = Sunday → offset = -1
 
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-			{
-				_ = nearMin.FirstDayOfWeek(weekend);
-			});
-		}
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+            {
+                _ = nearMin.FirstDayOfWeek(weekend);
+            });
+        }
 
-		/// <summary>
-		/// Verifies that <see cref="DateOnlyExtensions.FirstDayOfWeek"/> works near <see cref="DateOnly.MinValue"/> without throwing.
-		/// </summary>
-		[TestMethod]
-		public void FirstDayOfWeek_WhenNearMinValue_ShouldReturnValidResult()
-		{
-			var date = DateOnly.MinValue.AddDays(6); // 0001-01-07
-			var actual = date.FirstDayOfWeek(CalendarWeekendDefinition.SaturdaySunday);
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.FirstDayOfWeek"/> works near <see cref="DateOnly.MinValue"/> without throwing.
+        /// </summary>
+        [TestMethod]
+        public void FirstDayOfWeek_WhenNearMinValue_ShouldReturnValidResult()
+        {
+            var date = DateOnly.MinValue.AddDays(6); // 0001-01-07
+            var actual = date.FirstDayOfWeek(CalendarWeekendDefinition.SaturdaySunday);
 
-			Assert.IsTrue(actual >= DateOnly.MinValue);
-			Assert.AreEqual(DayOfWeek.Monday, actual.DayOfWeek);
-		}
-	}
+            Assert.IsTrue(actual >= DateOnly.MinValue);
+            Assert.AreEqual(DayOfWeek.Monday, actual.DayOfWeek);
+        }
+    }
 }

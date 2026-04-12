@@ -3,64 +3,64 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Security.Cryptography
 {
-	public abstract partial class SipHashTests<TTest, TAlgorithm>
-	{
-		/// <summary>
-		/// Verifies that setting an invalid hashValue for <see cref="SipHash.FinalizationRounds" /> throws <see cref="ArgumentOutOfRangeException" />.
-		/// </summary>
-		[DataTestMethod]
-		[DataRow(-1)]
-		[DataRow(0)]
-		[DataRow(1)]
-		public void FinalizationRounds_WhenSetToInvalidValue_ShouldThrowExactly(int value)
-		{
-			using var algorithm = this.CreateAlgorithm();
+    public abstract partial class SipHashTests<TTest, TAlgorithm>
+    {
+        /// <summary>
+        /// Verifies that setting an invalid hashValue for <see cref="SipHash.FinalizationRounds" /> throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
+        [DataTestMethod]
+        [DataRow(-1)]
+        [DataRow(0)]
+        [DataRow(1)]
+        public void FinalizationRounds_WhenSetToInvalidValue_ShouldThrowExactly(int value)
+        {
+            using var algorithm = this.CreateAlgorithm();
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				algorithm.FinalizationRounds = value;
-			});
-		}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                algorithm.FinalizationRounds = value;
+            });
+        }
 
-		/// <summary>
-		/// Verifies that setting a valid hashValue for <see cref="SipHash.FinalizationRounds" /> updates the internal state.
-		/// </summary>
-		[DataTestMethod]
-		[DataRow(16)]
-		[DataRow(32)]
-		public void FinalizationRounds_WhenSetToValidValue_ShouldUpdateCorrectly(int size)
-		{
-			using var algorithm = this.CreateAlgorithm();
-			int original = algorithm.FinalizationRounds;
-			algorithm.FinalizationRounds = size;
+        /// <summary>
+        /// Verifies that setting a valid hashValue for <see cref="SipHash.FinalizationRounds" /> updates the internal state.
+        /// </summary>
+        [DataTestMethod]
+        [DataRow(16)]
+        [DataRow(32)]
+        public void FinalizationRounds_WhenSetToValidValue_ShouldUpdateCorrectly(int size)
+        {
+            using var algorithm = this.CreateAlgorithm();
+            int original = algorithm.FinalizationRounds;
+            algorithm.FinalizationRounds = size;
 
-			Assert.AreEqual(size, algorithm.FinalizationRounds);
-			Assert.AreNotEqual(original, algorithm.FinalizationRounds);
-		}
+            Assert.AreEqual(size, algorithm.FinalizationRounds);
+            Assert.AreNotEqual(original, algorithm.FinalizationRounds);
+        }
 
-		/// <summary>
-		/// Verifies that using different <see cref="SipHash.FinalizationRounds" /> values results in different hash outputs for the same input.
-		/// </summary>
-		[TestMethod]
-		public void FinalizationRounds_WhenDifferent_ShouldProduceDifferentHash()
-		{
-			byte[] input = Enumerable.Range(0, 32).Select(i => (byte)i).ToArray();
-			byte[] hashWithRounds4;
-			byte[] hashWithRounds8;
+        /// <summary>
+        /// Verifies that using different <see cref="SipHash.FinalizationRounds" /> values results in different hash outputs for the same input.
+        /// </summary>
+        [TestMethod]
+        public void FinalizationRounds_WhenDifferent_ShouldProduceDifferentHash()
+        {
+            byte[] input = Enumerable.Range(0, 32).Select(i => (byte)i).ToArray();
+            byte[] hashWithRounds4;
+            byte[] hashWithRounds8;
 
-			using (var algorithm = this.CreateAlgorithm())
-			{
-				algorithm.FinalizationRounds = 4;
-				hashWithRounds4 = algorithm.ComputeHash(input);
-			}
+            using (var algorithm = this.CreateAlgorithm())
+            {
+                algorithm.FinalizationRounds = 4;
+                hashWithRounds4 = algorithm.ComputeHash(input);
+            }
 
-			using (var algorithm = this.CreateAlgorithm())
-			{
-				algorithm.FinalizationRounds = 8;
-				hashWithRounds8 = algorithm.ComputeHash(input);
-			}
+            using (var algorithm = this.CreateAlgorithm())
+            {
+                algorithm.FinalizationRounds = 8;
+                hashWithRounds8 = algorithm.ComputeHash(input);
+            }
 
-			CollectionAssert.AreNotEqual(hashWithRounds4, hashWithRounds8, "Hashes should differ when finalization rounds are different.");
-		}
-	}
+            CollectionAssert.AreNotEqual(hashWithRounds4, hashWithRounds8, "Hashes should differ when finalization rounds are different.");
+        }
+    }
 }

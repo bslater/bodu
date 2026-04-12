@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Bodu.Security.Cryptography.Extensions
 {
-	[TestClass]
-	public partial class ICryptoTransformExtensionsTests
-	{
-		private SymmetricAlgorithm CreateAlgorithm() => new SimpleReversingSymmetricAlgorithm();
-	}
+    [TestClass]
+    public partial class ICryptoTransformExtensionsTests
+    {
+        private SymmetricAlgorithm CreateAlgorithm() => new SimpleReversingSymmetricAlgorithm();
+    }
 }

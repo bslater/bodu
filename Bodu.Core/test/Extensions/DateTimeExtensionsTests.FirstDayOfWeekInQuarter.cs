@@ -9,207 +9,207 @@ using System.Globalization;
 
 namespace Bodu.Extensions
 {
-	public partial class DateTimeExtensionsTests
-	{
+    public partial class DateTimeExtensionsTests
+    {
 
-		[DataTestMethod]
-		[DynamicData(nameof(FirstDayOfWeekInQuarterDateTimeTestData), DynamicDataSourceType.Method)]
-		public void FirstDayOfWeekInQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedDate(DateTime input, CalendarQuarterDefinition definition, DayOfWeek dayOfWeek, DateTime expected)
-		{
-			var actual = input.FirstDayOfWeekInQuarter(dayOfWeek, definition);
-			Assert.AreEqual(expected, actual);
-		}
+        [TestMethod]
+        [DynamicData(nameof(FirstDayOfWeekInQuarterDateTimeTestData), DynamicDataSourceType.Method)]
+        public void FirstDayOfWeekInQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedDate(DateTime input, CalendarQuarterDefinition definition, DayOfWeek dayOfWeek, DateTime expected)
+        {
+            var actual = input.FirstDayOfWeekInQuarter(dayOfWeek, definition);
+            Assert.AreEqual(expected, actual);
+        }
 
-		[DataTestMethod]
-		[DynamicData(nameof(FirstDayOfWeekInQuarterDateTimeJanuaryDecemberTestData), DynamicDataSourceType.Method)]
-		public void FirstDayOfWeekInQuarter_WhenUsingDateOnly_ShouldReturnExpectedStartOfCalendarQuarter(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
-		{
-			var actual = input.FirstDayOfWeekInQuarter(dayOfWeek);
-			Assert.AreEqual(expected, actual);
-		}
+        [TestMethod]
+        [DynamicData(nameof(FirstDayOfWeekInQuarterDateTimeJanuaryDecemberTestData), DynamicDataSourceType.Method)]
+        public void FirstDayOfWeekInQuarter_WhenUsingDateOnly_ShouldReturnExpectedStartOfCalendarQuarter(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
+        {
+            var actual = input.FirstDayOfWeekInQuarter(dayOfWeek);
+            Assert.AreEqual(expected, actual);
+        }
 
-		[DataTestMethod]
-		[DynamicData(nameof(FirstDayOfWeekInQuarterTestData), DynamicDataSourceType.Method)]
-		public void FirstDayOfWeekInQuarter_WhenUsingQuarterAndDefinition_ShouldReturnExpectedDate(int year, int quarter, CalendarQuarterDefinition definition, DayOfWeek dayOfWeek, DateTime expected)
-		{
-			var actual = DateTimeExtensions.GetFirstDayOfWeekInQuarter(year, quarter, dayOfWeek, definition);
-			Assert.AreEqual(expected, actual);
-		}
+        [TestMethod]
+        [DynamicData(nameof(FirstDayOfWeekInQuarterTestData), DynamicDataSourceType.Method)]
+        public void FirstDayOfWeekInQuarter_WhenUsingQuarterAndDefinition_ShouldReturnExpectedDate(int year, int quarter, CalendarQuarterDefinition definition, DayOfWeek dayOfWeek, DateTime expected)
+        {
+            var actual = DateTimeExtensions.GetFirstDayOfWeekInQuarter(year, quarter, dayOfWeek, definition);
+            Assert.AreEqual(expected, actual);
+        }
 
-		[DataTestMethod]
-		[DynamicData(nameof(FirstDayOfWeekInQuarterYearQuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
-		public void FirstDayOfWeekInQuarter_WhenUsingQuarterAndCalendarDefinition_ShouldReturnExpectedDate(int year, int quarter, DayOfWeek dayOfWeek, DateTime expected)
-		{
-			var actual = DateTimeExtensions.GetFirstDayOfWeekInQuarter(year, quarter, dayOfWeek);
-			Assert.AreEqual(expected, actual);
-		}
+        [TestMethod]
+        [DynamicData(nameof(FirstDayOfWeekInQuarterYearQuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
+        public void FirstDayOfWeekInQuarter_WhenUsingQuarterAndCalendarDefinition_ShouldReturnExpectedDate(int year, int quarter, DayOfWeek dayOfWeek, DateTime expected)
+        {
+            var actual = DateTimeExtensions.GetFirstDayOfWeekInQuarter(year, quarter, dayOfWeek);
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void FirstDayOfWeekInQuarter_WhenUsingInvalidProvider_ShouldThrowArgumentOutOfRange()
-		{
-			var input = new DateTime(2024, 4, 20);
-			var provider = new InValidQuarterProvider();
+        [TestMethod]
+        public void FirstDayOfWeekInQuarter_WhenUsingInvalidProvider_ShouldThrowArgumentOutOfRange()
+        {
+            var input = new DateTime(2024, 4, 20);
+            var provider = new InValidQuarterProvider();
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = input.FirstDayOfWeekInQuarter(DayOfWeek.Monday, provider);
-			});
-		}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = input.FirstDayOfWeekInQuarter(DayOfWeek.Monday, provider);
+            });
+        }
 
-		[TestMethod]
-		public void FirstDayOfWeekInQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowInvalidOperation()
-		{
-			var input = new DateTime(2024, 4, 20);
+        [TestMethod]
+        public void FirstDayOfWeekInQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowInvalidOperation()
+        {
+            var input = new DateTime(2024, 4, 20);
 
-			Assert.ThrowsExactly<InvalidOperationException>(() =>
-			{
-				_ = input.FirstDayOfWeekInQuarter(DayOfWeek.Monday, CalendarQuarterDefinition.Custom);
-			});
-		}
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
+            {
+                _ = input.FirstDayOfWeekInQuarter(DayOfWeek.Monday, CalendarQuarterDefinition.Custom);
+            });
+        }
 
-		/// <summary>
-		/// Verifies that FirstDayOfWeekInQuarter returns the correct date using a valid quarter provider.
-		/// </summary>
-		[TestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.FirstDayOfWeekInQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
-		public void FirstDayOfWeekInQuarter_WhenUsingValidQuarterProvider_ShouldReturnExpectedDate(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
-		{
-			var provider = new ValidQuarterProvider();
-			var actual = input.FirstDayOfWeekInQuarter(dayOfWeek, provider);
-			Assert.AreEqual(expected, actual);
-		}
+        /// <summary>
+        /// Verifies that FirstDayOfWeekInQuarter returns the correct date using a valid quarter provider.
+        /// </summary>
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.FirstDayOfWeekInQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
+        public void FirstDayOfWeekInQuarter_WhenUsingValidQuarterProvider_ShouldReturnExpectedDate(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
+        {
+            var provider = new ValidQuarterProvider();
+            var actual = input.FirstDayOfWeekInQuarter(dayOfWeek, provider);
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void FirstDayOfWeekInQuarter_WhenInputIsMinValue_ShouldReturnExpectedDate()
-		{
-			var actual = DateTime.MinValue.FirstDayOfWeekInQuarter(DayOfWeek.Monday, CalendarQuarterDefinition.JanuaryToDecember);
-			Assert.AreEqual(new DateTime(1, 1, 1), actual);
-		}
+        [TestMethod]
+        public void FirstDayOfWeekInQuarter_WhenInputIsMinValue_ShouldReturnExpectedDate()
+        {
+            var actual = DateTime.MinValue.FirstDayOfWeekInQuarter(DayOfWeek.Monday, CalendarQuarterDefinition.JanuaryToDecember);
+            Assert.AreEqual(new DateTime(1, 1, 1), actual);
+        }
 
-		[TestMethod]
-		public void FirstDayOfWeekInQuarter_WhenInputIsMaxValue_ShouldReturnExpectedDate()
-		{
-			var actual = DateTime.MaxValue.FirstDayOfWeekInQuarter(DayOfWeek.Friday, CalendarQuarterDefinition.JanuaryToDecember);
-			Assert.AreEqual(new DateTime(9999, 10, 1), actual); // Q4 of 9999
-		}
+        [TestMethod]
+        public void FirstDayOfWeekInQuarter_WhenInputIsMaxValue_ShouldReturnExpectedDate()
+        {
+            var actual = DateTime.MaxValue.FirstDayOfWeekInQuarter(DayOfWeek.Friday, CalendarQuarterDefinition.JanuaryToDecember);
+            Assert.AreEqual(new DateTime(9999, 10, 1), actual); // Q4 of 9999
+        }
 
-		[TestMethod]
-		public void FirstDayOfWeekInQuarter_WhenDefinitionIsInvalid_ShouldThrowExactly()
-		{
-			var input = new DateTime(2024, 4, 20);
-			var definition = (CalendarQuarterDefinition)999;
+        [TestMethod]
+        public void FirstDayOfWeekInQuarter_WhenDefinitionIsInvalid_ShouldThrowExactly()
+        {
+            var input = new DateTime(2024, 4, 20);
+            var definition = (CalendarQuarterDefinition)999;
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = input.FirstDayOfWeekInQuarter(DayOfWeek.Sunday, definition);
-			});
-		}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = input.FirstDayOfWeekInQuarter(DayOfWeek.Sunday, definition);
+            });
+        }
 
-		[TestMethod]
-		public void FirstDayOfWeekInQuarter_WhenDefinitionIsInvalidAndQuarterIsValid_ShouldThrowExactly()
-		{
-			var definition = (CalendarQuarterDefinition)999;
+        [TestMethod]
+        public void FirstDayOfWeekInQuarter_WhenDefinitionIsInvalidAndQuarterIsValid_ShouldThrowExactly()
+        {
+            var definition = (CalendarQuarterDefinition)999;
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = DateTimeExtensions.GetFirstDayOfWeekInQuarter(2025, 1, DayOfWeek.Sunday, definition);
-			});
-		}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = DateTimeExtensions.GetFirstDayOfWeekInQuarter(2025, 1, DayOfWeek.Sunday, definition);
+            });
+        }
 
-		[DataTestMethod]
-		[DataRow(-1)]
-		[DataRow(0)]
-		[DataRow(5)]
-		public void FirstDayOfWeekInQuarter_WhenQuarterIsOutOfRangeAndDefinitionIsValid_ShouldThrowExactly(int quarter)
-		{
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = DateTimeExtensions.GetFirstDayOfWeekInQuarter(2025, quarter, DayOfWeek.Sunday, CalendarQuarterDefinition.JanuaryToDecember);
-			});
-		}
+        [TestMethod]
+        [DataRow(-1)]
+        [DataRow(0)]
+        [DataRow(5)]
+        public void FirstDayOfWeekInQuarter_WhenQuarterIsOutOfRangeAndDefinitionIsValid_ShouldThrowExactly(int quarter)
+        {
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = DateTimeExtensions.GetFirstDayOfWeekInQuarter(2025, quarter, DayOfWeek.Sunday, CalendarQuarterDefinition.JanuaryToDecember);
+            });
+        }
 
-		[DataTestMethod]
-		[DataRow(-1)]
-		[DataRow(0)]
-		[DataRow(5)]
-		public void FirstDayOfWeekInQuarter_WhenQuarterIsOutOfRange_ShouldThrowExactly(int quarter)
-		{
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = DateTimeExtensions.GetFirstDayOfWeekInQuarter(2025, quarter, DayOfWeek.Sunday);
-			});
-		}
+        [TestMethod]
+        [DataRow(-1)]
+        [DataRow(0)]
+        [DataRow(5)]
+        public void FirstDayOfWeekInQuarter_WhenQuarterIsOutOfRange_ShouldThrowExactly(int quarter)
+        {
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = DateTimeExtensions.GetFirstDayOfWeekInQuarter(2025, quarter, DayOfWeek.Sunday);
+            });
+        }
 
-		[DataTestMethod]
-		[DataRow(DateTimeKind.Unspecified)]
-		[DataRow(DateTimeKind.Utc)]
-		[DataRow(DateTimeKind.Local)]
-		public void FirstDayOfWeekInQuarter_WhenKindIsSet_ShouldPreserveKind(DateTimeKind kind)
-		{
-			DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
-			DateTime actual = input.FirstDayOfWeekInQuarter(DayOfWeek.Sunday);
+        [TestMethod]
+        [DataRow(DateTimeKind.Unspecified)]
+        [DataRow(DateTimeKind.Utc)]
+        [DataRow(DateTimeKind.Local)]
+        public void FirstDayOfWeekInQuarter_WhenKindIsSet_ShouldPreserveKind(DateTimeKind kind)
+        {
+            DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
+            DateTime actual = input.FirstDayOfWeekInQuarter(DayOfWeek.Sunday);
 
-			Assert.AreEqual(kind, actual.Kind);
-		}
+            Assert.AreEqual(kind, actual.Kind);
+        }
 
-		[DataTestMethod]
-		[DataRow(DateTimeKind.Unspecified)]
-		[DataRow(DateTimeKind.Utc)]
-		[DataRow(DateTimeKind.Local)]
-		public void FirstDayOfWeekInQuarter_WhenKindIsSet_WithValidQuarterProvider_ShouldPreserveKind(DateTimeKind kind)
-		{
-			var provider = new ValidQuarterProvider();
-			DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
-			DateTime actual = input.FirstDayOfWeekInQuarter(DayOfWeek.Sunday, provider);
+        [TestMethod]
+        [DataRow(DateTimeKind.Unspecified)]
+        [DataRow(DateTimeKind.Utc)]
+        [DataRow(DateTimeKind.Local)]
+        public void FirstDayOfWeekInQuarter_WhenKindIsSet_WithValidQuarterProvider_ShouldPreserveKind(DateTimeKind kind)
+        {
+            var provider = new ValidQuarterProvider();
+            DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
+            DateTime actual = input.FirstDayOfWeekInQuarter(DayOfWeek.Sunday, provider);
 
-			Assert.AreEqual(kind, actual.Kind);
-		}
+            Assert.AreEqual(kind, actual.Kind);
+        }
 
-		[DataTestMethod]
-		[DynamicData(nameof(CalendarQuarterDefinitionDateTimeKindTestData), DynamicDataSourceType.Method)]
-		public void FirstDayOfWeekInQuarter_WhenQuarterAndDefinitionAndKindIsSet_ShouldPreserveKind(CalendarQuarterDefinition definition, DateTimeKind kind)
-		{
-			DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
-			DateTime actual = input.FirstDayOfWeekInQuarter(DayOfWeek.Sunday, definition);
+        [TestMethod]
+        [DynamicData(nameof(CalendarQuarterDefinitionDateTimeKindTestData), DynamicDataSourceType.Method)]
+        public void FirstDayOfWeekInQuarter_WhenQuarterAndDefinitionAndKindIsSet_ShouldPreserveKind(CalendarQuarterDefinition definition, DateTimeKind kind)
+        {
+            DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
+            DateTime actual = input.FirstDayOfWeekInQuarter(DayOfWeek.Sunday, definition);
 
-			Assert.AreEqual(kind, actual.Kind);
-		}
+            Assert.AreEqual(kind, actual.Kind);
+        }
 
 
-		[TestMethod]
-		public void FirstDayOfWeekInQuarter_WhenDayOfWeekIsInvalidAndQuarterAndDefinitionIsValid_ShouldThrowExactly()
-		{
-			var dayOfWeek = (DayOfWeek)999;
+        [TestMethod]
+        public void FirstDayOfWeekInQuarter_WhenDayOfWeekIsInvalidAndQuarterAndDefinitionIsValid_ShouldThrowExactly()
+        {
+            var dayOfWeek = (DayOfWeek)999;
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = DateTimeExtensions.GetFirstDayOfWeekInQuarter(2025, 1, dayOfWeek, CalendarQuarterDefinition.JanuaryToDecember);
-			});
-		}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = DateTimeExtensions.GetFirstDayOfWeekInQuarter(2025, 1, dayOfWeek, CalendarQuarterDefinition.JanuaryToDecember);
+            });
+        }
 
-		[DataTestMethod]
-		[DataRow(-1)]
-		[DataRow(0)]
-		[DataRow(10_000)]
-		public void GetFirstDayOfWeekInQuarter_WhenYearIsInvalid_WithDefinition_ShouldThrowExactly(int year)
-		{
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = DateTimeExtensions.GetFirstDayOfWeekInQuarter(year, 1, DayOfWeek.Monday, CalendarQuarterDefinition.JanuaryToDecember);
-			});
-		}
+        [TestMethod]
+        [DataRow(-1)]
+        [DataRow(0)]
+        [DataRow(10_000)]
+        public void GetFirstDayOfWeekInQuarter_WhenYearIsInvalid_WithDefinition_ShouldThrowExactly(int year)
+        {
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = DateTimeExtensions.GetFirstDayOfWeekInQuarter(year, 1, DayOfWeek.Monday, CalendarQuarterDefinition.JanuaryToDecember);
+            });
+        }
 
-		[DataTestMethod]
-		[DataRow(-1)]
-		[DataRow(0)]
-		[DataRow(10_000)]
-		public void GetFirstDayOfWeekInQuarter_WhenYearIsInvalid_ShouldThrowExactly(int year)
-		{
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = DateTimeExtensions.GetFirstDayOfWeekInQuarter(year, 1, DayOfWeek.Monday);
-			});
-		}
+        [TestMethod]
+        [DataRow(-1)]
+        [DataRow(0)]
+        [DataRow(10_000)]
+        public void GetFirstDayOfWeekInQuarter_WhenYearIsInvalid_ShouldThrowExactly(int year)
+        {
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = DateTimeExtensions.GetFirstDayOfWeekInQuarter(year, 1, DayOfWeek.Monday);
+            });
+        }
 
-	}
+    }
 }

@@ -8,18 +8,18 @@ using Bodu.Extensions;
 
 namespace Bodu.Extensions
 {
-	public partial class DateOnlyExtensionTests
-	{
+    public partial class DateOnlyExtensionTests
+    {
 
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.DaysInMonthTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]
-		public void DaysInMonth_WhenCalled_ShouldReturnDaysInMonth(DateTime inputDateTime, int expected)
-		{
-			var input = DateOnly.FromDateTime(inputDateTime);
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.DaysInMonthTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]
+        public void DaysInMonth_WhenCalled_ShouldReturnDaysInMonth(DateTime inputDateTime, int expected)
+        {
+            var input = DateOnly.FromDateTime(inputDateTime);
 
-			var actual = input.DaysInMonth();
-			Assert.AreEqual(expected, actual);
-		}
+            var actual = input.DaysInMonth();
+            Assert.AreEqual(expected, actual);
+        }
 
-	}
+    }
 }

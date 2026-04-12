@@ -8,17 +8,17 @@ using Bodu.Extensions;
 
 namespace Bodu.Extensions
 {
-	public partial class DateTimeExtensionsTests
-	{
+    public partial class DateTimeExtensionsTests
+    {
 
-		[DataTestMethod]
-		[DynamicData(nameof(LeapYearTestData), DynamicDataSourceType.Method)]
-		public void IsLeapYear_WhenCalled_ShouldReturnExpected(int year, bool expected)
-		{
-			DateTime input = new DateTime(year, 1, 1);
-			bool actual = input.IsLeapYear();
+        [TestMethod]
+        [DynamicData(nameof(LeapYearTestData), DynamicDataSourceType.Method)]
+        public void IsLeapYear_WhenCalled_ShouldReturnExpected(int year, bool expected)
+        {
+            DateTime input = new DateTime(year, 1, 1);
+            bool actual = input.IsLeapYear();
 
-			Assert.AreEqual(expected, actual, $"Expected leap year check for {year} to be {expected}.");
-		}
-	}
+            Assert.AreEqual(expected, actual, $"Expected leap year check for {year} to be {expected}.");
+        }
+    }
 }

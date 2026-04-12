@@ -8,37 +8,37 @@ using Bodu.Extensions;
 
 namespace Bodu.Extensions
 {
-	public partial class DateOnlyExtensionsTests
-	{
+    public partial class DateOnlyExtensionsTests
+    {
 
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests. FirstDayOfYearTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-		public void FirstDayOfYear_WhenCalled_ShouldReturnExpectedStartOfYear(DateTime inputDateTime, DateTime expectedDateTime)
-		{
-			DateOnly input = DateOnly.FromDateTime(inputDateTime);
-			DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests. FirstDayOfYearTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+        public void FirstDayOfYear_WhenCalled_ShouldReturnExpectedStartOfYear(DateTime inputDateTime, DateTime expectedDateTime)
+        {
+            DateOnly input = DateOnly.FromDateTime(inputDateTime);
+            DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
 
-			DateOnly actual = input.FirstDayOfYear();
+            DateOnly actual = input.FirstDayOfYear();
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void FirstDayOfYear_WhenMinValue_ShouldReturnExpected()
-		{
-			DateOnly min = DateOnly.MinValue; // 0001-01-01
-			DateOnly actual = min.FirstDayOfYear();
+        [TestMethod]
+        public void FirstDayOfYear_WhenMinValue_ShouldReturnExpected()
+        {
+            DateOnly min = DateOnly.MinValue; // 0001-01-01
+            DateOnly actual = min.FirstDayOfYear();
 
-			Assert.AreEqual(new DateOnly(1, 1, 1), actual);
-		}
+            Assert.AreEqual(new DateOnly(1, 1, 1), actual);
+        }
 
-		[TestMethod]
-		public void FirstDayOfYear_WhenMaxValue_ShouldReturnExpected()
-		{
-			DateOnly max = DateOnly.MaxValue; // 9999-12-31
-			DateOnly actual = max.FirstDayOfYear();
+        [TestMethod]
+        public void FirstDayOfYear_WhenMaxValue_ShouldReturnExpected()
+        {
+            DateOnly max = DateOnly.MaxValue; // 9999-12-31
+            DateOnly actual = max.FirstDayOfYear();
 
-			Assert.AreEqual(new DateOnly(9999, 1, 1), actual);
-		}
-	}
+            Assert.AreEqual(new DateOnly(9999, 1, 1), actual);
+        }
+    }
 }

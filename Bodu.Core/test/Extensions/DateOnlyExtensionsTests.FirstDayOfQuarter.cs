@@ -9,158 +9,158 @@ using System.Globalization;
 
 namespace Bodu.Extensions
 {
-	public partial class DateOnlyExtensionsTests
-	{
+    public partial class DateOnlyExtensionsTests
+    {
 
 
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfQuarterDateTimeTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-		public void FirstDayOfQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedDate(DateTime inputDateTime, CalendarQuarterDefinition definition, DateTime expectedDateTime)
-		{
-			DateOnly input = DateOnly.FromDateTime(inputDateTime);
-			DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfQuarterDateTimeTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+        public void FirstDayOfQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedDate(DateTime inputDateTime, CalendarQuarterDefinition definition, DateTime expectedDateTime)
+        {
+            DateOnly input = DateOnly.FromDateTime(inputDateTime);
+            DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
 
-			var actual = input.FirstDayOfQuarter(definition);
+            var actual = input.FirstDayOfQuarter(definition);
 
-			Assert.AreEqual(expected, actual);
-		}
-
-
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfQuarterDateTimeJanuaryDecemberTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-		public void FirstDayOfQuarter_WhenUsingDateOnly_ShouldReturnExpectedStartOfCalendarQuarter(DateTime inputDateTime, DateTime expectedDateTime)
-		{
-			DateOnly input = DateOnly.FromDateTime(inputDateTime);
-			DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
-
-			var actual = input.FirstDayOfQuarter();
-
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
 
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfQuarterTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-		public void FirstDayOfQuarter_WhenUsingQuarterAndDefinition_ShouldReturnExpectedDate(int year, int quarter, CalendarQuarterDefinition definition, DateTime expectedDateTime)
-		{
-			DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfQuarterDateTimeJanuaryDecemberTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+        public void FirstDayOfQuarter_WhenUsingDateOnly_ShouldReturnExpectedStartOfCalendarQuarter(DateTime inputDateTime, DateTime expectedDateTime)
+        {
+            DateOnly input = DateOnly.FromDateTime(inputDateTime);
+            DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
 
-			var actual = DateOnlyExtensions.FirstDayOfQuarter(definition, quarter, year);
+            var actual = input.FirstDayOfQuarter();
 
-			Assert.AreEqual(expected, actual);
-		}
-
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfQuarterYearQuarterJanuaryDecemberTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-		public void FirstDayOfQuarter_WhenUsingQuarterAndCalendarDefinition_ShouldReturnExpectedDate(int year, int quarter, DateTime expectedDateTime)
-			{
-			DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
-
-			var actual = DateOnlyExtensions.FirstDayOfQuarter(quarter, year);
-
-			Assert.AreEqual(expected, actual);
-		}
-
-		[TestMethod]
-		public void FirstDayOfQuarter_WhenUsingInvalidProvider_ShouldThrowArgumentOutOfRange()
-		{
-			var input = new DateOnly(2024, 4, 20);
-			var provider = new DateTimeExtensionsTests.InValidQuarterProvider();
-
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = input.FirstDayOfQuarter(provider);
-			});
-		}
-
-		[TestMethod]
-		public void FirstDayOfQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowInvalidOperation()
-		{
-			var input = new DateOnly(2024, 4, 20);
-
-			Assert.ThrowsExactly<InvalidOperationException>(() =>
-			{
-				_ = input.FirstDayOfQuarter(CalendarQuarterDefinition.Custom);
-			});
-		}
-
-		/// <summary>
-		/// Verifies that FirstDayOfQuarter returns the correct date using a valid quarter provider.
-		/// </summary>
-		[TestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.FirstDayOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
-		public void FirstDayOfQuarter_WhenUsingValidQuarterProvider_ShouldReturnExpectedDate(DateTime inputDateTime, DateTime expectedDateTime)
-		{
-			var input = DateOnly.FromDateTime(inputDateTime);
-			var expected = DateOnly.FromDateTime(expectedDateTime);
-			var provider = new DateTimeExtensionsTests.ValidQuarterProvider();
-
-			var actual = input.FirstDayOfQuarter(provider);
-
-			Assert.AreEqual(expected, actual);
-		}
-
-		[TestMethod]
-		public void FirstDayOfQuarter_WhenInputIsMinValue_ShouldReturnExpectedDate()
-		{
-			var actual = DateOnly.MinValue.FirstDayOfQuarter(CalendarQuarterDefinition.JanuaryToDecember);
-			Assert.AreEqual(new DateOnly(1, 1, 1), actual);
-		}
-
-		[TestMethod]
-		public void FirstDayOfQuarter_WhenInputIsMaxValue_ShouldReturnExpectedDate()
-		{
-			var actual = DateOnly.MaxValue.FirstDayOfQuarter(CalendarQuarterDefinition.JanuaryToDecember);
-			Assert.AreEqual(new DateOnly(9999, 10, 1), actual); // Q4 of 9999
-		}
-
-		[TestMethod]
-		public void FirstDayOfQuarter_WhenDefinitionIsInvalid_ShouldThrowExactly()
-		{
-			var input = new DateOnly(2024, 4, 20);
-			var definition = (CalendarQuarterDefinition)999;
-
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = input.FirstDayOfQuarter(definition);
-			});
-		}
-
-		[TestMethod]
-		public void FirstDayOfQuarter_WhenDefinitionIsInvalidAndQuarterIsValid_ShouldThrowExactly()
-		{
-			var definition = (CalendarQuarterDefinition)999;
-
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = DateOnlyExtensions.FirstDayOfQuarter(definition, 1, 2025);
-			});
-		}
-
-		[DataTestMethod]
-		[DataRow(-1)]
-		[DataRow(0)]
-		[DataRow(5)]
-		public void FirstDayOfQuarter_WhenQuarterIsOutOfRangeAndDefinitionIsValid_ShouldThrowExactly(int quarter)
-		{
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = DateOnlyExtensions.FirstDayOfQuarter(CalendarQuarterDefinition.JanuaryToDecember, quarter, 2025);
-			});
-		}
-
-		[DataTestMethod]
-		[DataRow(-1)]
-		[DataRow(0)]
-		[DataRow(5)]
-		public void FirstDayOfQuarter_WhenQuarterIsOutOfRange_ShouldThrowExactly(int quarter)
-		{
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = DateOnlyExtensions.FirstDayOfQuarter(quarter, 2025);
-			});
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
 
-	}
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfQuarterTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+        public void FirstDayOfQuarter_WhenUsingQuarterAndDefinition_ShouldReturnExpectedDate(int year, int quarter, CalendarQuarterDefinition definition, DateTime expectedDateTime)
+        {
+            DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
+
+            var actual = DateOnlyExtensions.FirstDayOfQuarter(definition, quarter, year);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfQuarterYearQuarterJanuaryDecemberTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+        public void FirstDayOfQuarter_WhenUsingQuarterAndCalendarDefinition_ShouldReturnExpectedDate(int year, int quarter, DateTime expectedDateTime)
+            {
+            DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
+
+            var actual = DateOnlyExtensions.FirstDayOfQuarter(quarter, year);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void FirstDayOfQuarter_WhenUsingInvalidProvider_ShouldThrowArgumentOutOfRange()
+        {
+            var input = new DateOnly(2024, 4, 20);
+            var provider = new DateTimeExtensionsTests.InValidQuarterProvider();
+
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = input.FirstDayOfQuarter(provider);
+            });
+        }
+
+        [TestMethod]
+        public void FirstDayOfQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowInvalidOperation()
+        {
+            var input = new DateOnly(2024, 4, 20);
+
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
+            {
+                _ = input.FirstDayOfQuarter(CalendarQuarterDefinition.Custom);
+            });
+        }
+
+        /// <summary>
+        /// Verifies that FirstDayOfQuarter returns the correct date using a valid quarter provider.
+        /// </summary>
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.FirstDayOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
+        public void FirstDayOfQuarter_WhenUsingValidQuarterProvider_ShouldReturnExpectedDate(DateTime inputDateTime, DateTime expectedDateTime)
+        {
+            var input = DateOnly.FromDateTime(inputDateTime);
+            var expected = DateOnly.FromDateTime(expectedDateTime);
+            var provider = new DateTimeExtensionsTests.ValidQuarterProvider();
+
+            var actual = input.FirstDayOfQuarter(provider);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void FirstDayOfQuarter_WhenInputIsMinValue_ShouldReturnExpectedDate()
+        {
+            var actual = DateOnly.MinValue.FirstDayOfQuarter(CalendarQuarterDefinition.JanuaryToDecember);
+            Assert.AreEqual(new DateOnly(1, 1, 1), actual);
+        }
+
+        [TestMethod]
+        public void FirstDayOfQuarter_WhenInputIsMaxValue_ShouldReturnExpectedDate()
+        {
+            var actual = DateOnly.MaxValue.FirstDayOfQuarter(CalendarQuarterDefinition.JanuaryToDecember);
+            Assert.AreEqual(new DateOnly(9999, 10, 1), actual); // Q4 of 9999
+        }
+
+        [TestMethod]
+        public void FirstDayOfQuarter_WhenDefinitionIsInvalid_ShouldThrowExactly()
+        {
+            var input = new DateOnly(2024, 4, 20);
+            var definition = (CalendarQuarterDefinition)999;
+
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = input.FirstDayOfQuarter(definition);
+            });
+        }
+
+        [TestMethod]
+        public void FirstDayOfQuarter_WhenDefinitionIsInvalidAndQuarterIsValid_ShouldThrowExactly()
+        {
+            var definition = (CalendarQuarterDefinition)999;
+
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = DateOnlyExtensions.FirstDayOfQuarter(definition, 1, 2025);
+            });
+        }
+
+        [TestMethod]
+        [DataRow(-1)]
+        [DataRow(0)]
+        [DataRow(5)]
+        public void FirstDayOfQuarter_WhenQuarterIsOutOfRangeAndDefinitionIsValid_ShouldThrowExactly(int quarter)
+        {
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = DateOnlyExtensions.FirstDayOfQuarter(CalendarQuarterDefinition.JanuaryToDecember, quarter, 2025);
+            });
+        }
+
+        [TestMethod]
+        [DataRow(-1)]
+        [DataRow(0)]
+        [DataRow(5)]
+        public void FirstDayOfQuarter_WhenQuarterIsOutOfRange_ShouldThrowExactly(int quarter)
+        {
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = DateOnlyExtensions.FirstDayOfQuarter(quarter, 2025);
+            });
+        }
+
+
+    }
 }

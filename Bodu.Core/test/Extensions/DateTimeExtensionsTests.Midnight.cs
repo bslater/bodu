@@ -8,45 +8,45 @@ using Bodu.Extensions;
 
 namespace Bodu.Extensions
 {
-	public partial class DateTimeExtensionsTests
-	{
-		[DataTestMethod]
-		[DynamicData(nameof(MidnightTestData), DynamicDataSourceType.Method)]
-		public void Midnight_WhenCalled_ShouldSetTimeToNoon(DateTime input, DateTime expected)
-		{
-			DateTime actual = input.Midnight();
+    public partial class DateTimeExtensionsTests
+    {
+        [TestMethod]
+        [DynamicData(nameof(MidnightTestData), DynamicDataSourceType.Method)]
+        public void Midnight_WhenCalled_ShouldSetTimeToNoon(DateTime input, DateTime expected)
+        {
+            DateTime actual = input.Midnight();
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[DataTestMethod]
-		[DataRow(DateTimeKind.Unspecified)]
-		[DataRow(DateTimeKind.Utc)]
-		[DataRow(DateTimeKind.Local)]
-		public void Midnight_WhenKindIsSet_ShouldPreserveKind(DateTimeKind kind)
-		{
-			var input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
-			var actual = input.Midnight();
+        [TestMethod]
+        [DataRow(DateTimeKind.Unspecified)]
+        [DataRow(DateTimeKind.Utc)]
+        [DataRow(DateTimeKind.Local)]
+        public void Midnight_WhenKindIsSet_ShouldPreserveKind(DateTimeKind kind)
+        {
+            var input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
+            var actual = input.Midnight();
 
-			Assert.AreEqual(kind, actual.Kind);
-		}
+            Assert.AreEqual(kind, actual.Kind);
+        }
 
-		[TestMethod]
-		public void Midnight_WhenUsingMinValue_ShouldReturnMidnight()
-		{
-			DateTime input = DateTime.MinValue.Date;
-			DateTime actual = input.Midnight();
+        [TestMethod]
+        public void Midnight_WhenUsingMinValue_ShouldReturnMidnight()
+        {
+            DateTime input = DateTime.MinValue.Date;
+            DateTime actual = input.Midnight();
 
-			Assert.AreEqual(new DateTime(1, 1, 1, 0, 0, 0), actual);
-		}
+            Assert.AreEqual(new DateTime(1, 1, 1, 0, 0, 0), actual);
+        }
 
-		[TestMethod]
-		public void Midnight_WhenUsingMaxValue_ShouldReturnMidnight()
-		{
-			DateTime input = DateTime.MaxValue.Date;
-			DateTime actual = input.Midnight();
+        [TestMethod]
+        public void Midnight_WhenUsingMaxValue_ShouldReturnMidnight()
+        {
+            DateTime input = DateTime.MaxValue.Date;
+            DateTime actual = input.Midnight();
 
-			Assert.AreEqual(new DateTime(9999, 12, 31, 0, 0, 0), actual);
-		}
-	}
+            Assert.AreEqual(new DateTime(9999, 12, 31, 0, 0, 0), actual);
+        }
+    }
 }

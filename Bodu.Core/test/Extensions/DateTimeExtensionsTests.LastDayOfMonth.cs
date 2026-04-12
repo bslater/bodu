@@ -8,46 +8,46 @@ using Bodu.Extensions;
 
 namespace Bodu.Extensions
 {
-	public partial class DateTimeExtensionsTests
-	{
+    public partial class DateTimeExtensionsTests
+    {
 
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.LastDayOfMonthDataTestData), DynamicDataSourceType.Method)]
-		public void LastDayOfMonth_WhenCalled_ShouldReturnExpectedDay(DateTime input, DateTime expected)
-		{
-			DateTime actual = input.LastDayOfMonth();
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.LastDayOfMonthDataTestData), DynamicDataSourceType.Method)]
+        public void LastDayOfMonth_WhenCalled_ShouldReturnExpectedDay(DateTime input, DateTime expected)
+        {
+            DateTime actual = input.LastDayOfMonth();
 
-			Assert.AreEqual(expected, actual);
-			Assert.AreEqual(input.Kind, actual.Kind);
-		}
+            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(input.Kind, actual.Kind);
+        }
 
-		[DataTestMethod]
-		[DataRow(DateTimeKind.Unspecified)]
-		[DataRow(DateTimeKind.Utc)]
-		[DataRow(DateTimeKind.Local)]
-		public void LastDayOfMonth__WhenKindIsSet_ShouldPreserveKind(DateTimeKind kind)
-		{
-			DateTime input = new DateTime(2024, 6, 10, 12, 0, 0, kind);
-			DateTime actual = input.LastDayOfMonth();
+        [TestMethod]
+        [DataRow(DateTimeKind.Unspecified)]
+        [DataRow(DateTimeKind.Utc)]
+        [DataRow(DateTimeKind.Local)]
+        public void LastDayOfMonth__WhenKindIsSet_ShouldPreserveKind(DateTimeKind kind)
+        {
+            DateTime input = new DateTime(2024, 6, 10, 12, 0, 0, kind);
+            DateTime actual = input.LastDayOfMonth();
 
-			Assert.AreEqual(kind, actual.Kind);
-		}
+            Assert.AreEqual(kind, actual.Kind);
+        }
 
-		[TestMethod]
-		public void LastDayOfMonth_WhenMinValue_ShouldReturnExpectedDay()
-		{
-			DateTime actual = DateTime.MinValue.LastDayOfMonth();
+        [TestMethod]
+        public void LastDayOfMonth_WhenMinValue_ShouldReturnExpectedDay()
+        {
+            DateTime actual = DateTime.MinValue.LastDayOfMonth();
 
-			Assert.AreEqual(new DateTime(1, 1, 31), actual);
-		}
+            Assert.AreEqual(new DateTime(1, 1, 31), actual);
+        }
 
-		[TestMethod]
-		public void LastDayOfMonth_WhenMaxValue_ShouldReturnExpectedDay()
-		{
-			DateTime max = DateTime.MaxValue;
-			DateTime actual = max.LastDayOfMonth();
+        [TestMethod]
+        public void LastDayOfMonth_WhenMaxValue_ShouldReturnExpectedDay()
+        {
+            DateTime max = DateTime.MaxValue;
+            DateTime actual = max.LastDayOfMonth();
 
-			Assert.AreEqual(new DateTime(9999, 12, 31), actual);
-		}
-	}
+            Assert.AreEqual(new DateTime(9999, 12, 31), actual);
+        }
+    }
 }

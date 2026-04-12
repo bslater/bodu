@@ -1,116 +1,274 @@
 using System.Collections.Concurrent;
 
-namespace Bodu.Collections.Generic.Concurrent
+namespace Bodu.Collections.Generic.Concurrent;
+
+public partial class ConcurrentCircularBufferTests
 {
-	public partial class ConcurrentCircularBufferTests
-	{
-		[TestMethod]
-		public void Peek_WhenBufferHasItems_ShouldReturnOldestWithoutRemoving()
-		{
-			var buffer = new ConcurrentCircularBuffer<TestItem>(3);
-			buffer.Enqueue(new TestItem(100));
+    [TestMethod]
+    public void Peek_WhenAllowOverwriteFalseAndBufferFull_ShouldContinueToReturnOldestUntilDequeue()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(2, allowOverwrite: false);
+        buffer.Enqueue(new TestItem(10));
+        buffer.Enqueue(new TestItem(20));
 
-			var peeked = buffer.Peek();
-			Assert.AreEqual(100, peeked.Value);
-			Assert.AreEqual(1, buffer.Count);
-		}
+        var p1 = buffer.Peek();
+        Assert.AreEqual(10, p1.Value);
 
-		[TestMethod]
-		public void Peek_WhenBufferHasWrapped_ShouldReturnOldestItem()
-		{
-			var buffer = new ConcurrentCircularBuffer<TestItem>(3);
-			buffer.Enqueue(new TestItem(1));
-			buffer.Enqueue(new TestItem(2));
-			buffer.Enqueue(new TestItem(3));
-			buffer.Dequeue(); // Remove 1
-			buffer.Enqueue(new TestItem(4)); // Wraparound
+        // Enqueue will fail; Peek should still show 10
+        Assert.ThrowsException<InvalidOperationException>(() => buffer.Enqueue(new TestItem(30)));
+        var p2 = buffer.Peek();
+        Assert.AreEqual(10, p2.Value, "Oldest should not change when enqueue fails.");
+    }
 
-			var peeked = buffer.Peek();
-			Assert.AreEqual(2, peeked.Value);
-		}
+    [TestMethod]
+    public void Peek_WhenAllowOverwriteTrueAndBufferFull_ShouldReturnOldestBeforeOverwrite()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(3, allowOverwrite: true);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2));
+        buffer.Enqueue(new TestItem(3));
 
-		[TestMethod]
-		public void Peek_WhenBufferIsEmpty_ShouldThrowExactly()
-		{
-			var buffer = new ConcurrentCircularBuffer<TestItem>(3);
+        // Oldest = 1
+        var seen = buffer.Peek();
+        Assert.AreEqual(1, seen.Value, "Peek should see current oldest when full.");
 
-			Assert.ThrowsException<InvalidOperationException>(() =>
-			{
-				_ = buffer.Peek();
-			});
-		}
+        buffer.Enqueue(new TestItem(4)); // overwrites 1
+        var after = buffer.Peek();
+        Assert.AreEqual(2, after.Value, "After overwrite, new oldest should be 2.");
+    }
 
-		[TestMethod]
-		public void Peek_WhenReadDuringConcurrentEnqueue_ShouldRemainSafe()
-		{
-			var buffer = new ConcurrentCircularBuffer<TestItem>(10);
-			for (int i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
+    [TestMethod]
+    public void Peek_WhenBufferHasItems_ShouldReturnOldestWithoutRemoving()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
+        buffer.Enqueue(new TestItem(100));
 
-			var exceptions = new ConcurrentBag<Exception>();
+        var peeked = buffer.Peek();
+        Assert.AreEqual(100, peeked.Value, "Peek should return oldest value.");
+        Assert.AreEqual(1, buffer.Count, "Peek must not remove the item.");
+    }
 
-			var peekReader = Task.Run(() =>
-			{
-				for (int i = 0; i < 100; i++)
-				{
-					try
-					{
-						var item = buffer.Peek();
-						Assert.IsNotNull(item);
-					}
-					catch (Exception ex)
-					{
-						exceptions.Add(ex);
-					}
-				}
-			});
+    [TestMethod]
+    public void Peek_WhenBufferHasWrapped_ShouldReturnOldestItem()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2));
+        buffer.Enqueue(new TestItem(3));
+        buffer.Dequeue(); // evict 1
+        buffer.Enqueue(new TestItem(4)); // wrap
 
-			var writer = Task.Run(() =>
-			{
-				for (int i = 10; i < 110; i++)
-					buffer.Enqueue(new TestItem(i));
-			});
+        var peeked = buffer.Peek();
+        Assert.AreEqual(2, peeked.Value, "After wrap, oldest should be 2.");
+    }
 
-			Task.WaitAll(peekReader, writer);
-			Assert.AreEqual(0, exceptions.Count, "Peek threw during concurrent mutation.");
-		}
+    [TestMethod]
+    public void Peek_WhenBufferIsEmpty_ShouldThrowInvalidOperation()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
+        Assert.ThrowsException<InvalidOperationException>(() => _ = buffer.Peek());
+    }
 
-		[TestMethod]
-		public void Peek_WhenCalledDuringDraining_ShouldNotThrow()
-		{
-			var buffer = new ConcurrentCircularBuffer<TestItem>(10);
+    [TestMethod]
+    public void Peek_WhenCalledDuringDraining_ShouldSometimesSucceedBeforeEmpty()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(10);
+        for (int i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
 
-			// Preload
-			for (int i = 0; i < 10; i++)
-				buffer.Enqueue(new TestItem(i));
+        var start = new ManualResetEventSlim(false);
+        int success = 0;
+        int attempts = 0;
 
-			var success = 0;
-			var peekFailures = 0;
+        var peeker = Task.Run(() =>
+        {
+            start.Set(); // signal: peeker is alive
+            for (int i = 0; i < 1000 && Volatile.Read(ref success) == 0; i++)
+            {
+                try
+                {
+                    _ = buffer.Peek();                // throws only if empty
+                    Interlocked.Exchange(ref success, 1);
+                }
+                catch (InvalidOperationException)
+                {
+                    // empty at this instant — try again
+                }
+                Thread.SpinWait(50);
+                Interlocked.Increment(ref attempts);
+            }
+        });
 
-			var peeker = Task.Run(() =>
-			{
-				for (int attempts = 0; attempts < 500 && Volatile.Read(ref success) == 0; attempts++)
-				{
-					try
-					{
-						var _ = buffer.Peek();
-						Interlocked.Exchange(ref success, 1);
-					}
-					catch (InvalidOperationException)
-					{
-						Interlocked.Increment(ref peekFailures);
-					}
-					Thread.SpinWait(50);
-				}
-			});
+        // Ensure peeker is running before drain begins
+        start.Wait();
 
-			var consumer = Task.Run(() =>
-			{
-				while (buffer.TryDequeue(out _)) { }
-			});
+        // Tiny yield so the peeker can attempt at least once
+        Thread.Yield();
 
-			Task.WaitAll(peeker, consumer);
+        var consumer = Task.Run(() =>
+        {
+            while (buffer.TryDequeue(out _)) { /* drain */ Thread.SpinWait(10); }
+        });
 
-			Assert.IsTrue(success == 1, "Peek never succeeded before buffer was emptied.");
-		}
-	}
+        Task.WaitAll(peeker, consumer);
+        Assert.AreEqual(1, success, "Peek should succeed at least once before buffer empties.");
+        Assert.IsTrue(attempts > 0, "Peeker never attempted.");
+    }
+
+    [TestMethod]
+    public void Peek_WhenCalledRepeatedly_ShouldNotChangeCount()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(5);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2));
+        var before = buffer.Count;
+
+        for (int i = 0; i < 100; i++)
+            _ = buffer.Peek();
+
+        Assert.AreEqual(before, buffer.Count, "Peek must be non-destructive.");
+    }
+
+    [TestMethod]
+    public void Peek_WhenInterleavedWithClear_ShouldNotThrowAndMayReturnNewHead()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(8, allowOverwrite: true);
+        for (int i = 0; i < 4; i++) buffer.Enqueue(new TestItem(i));
+
+        var exceptions = new ConcurrentBag<Exception>();
+        var observedValues = new ConcurrentBag<int?>();
+
+        var clearer = Task.Run(() =>
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                buffer.Clear();
+                Thread.SpinWait(20);
+                buffer.TryEnqueue(new TestItem(100 + i));
+            }
+        });
+
+        var peeker = Task.Run(() =>
+        {
+            for (int i = 0; i < 200; i++)
+            {
+                try
+                {
+                    var x = buffer.Peek();
+                    observedValues.Add(x?.Value);
+                }
+                catch (InvalidOperationException)
+                {
+                    // OK: buffer might be empty between Clear/Enqueue
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                }
+            }
+        });
+
+        Task.WaitAll(clearer, peeker);
+        Assert.AreEqual(0, exceptions.Count, "Peek should only throw InvalidOperation when empty.");
+        Assert.IsTrue(observedValues.Count >= 0);
+    }
+
+    [TestMethod]
+    public void Peek_WhenManyThreadsPeekConcurrently_ShouldNeverThrowUnlessEmpty()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(16, allowOverwrite: true);
+        for (int i = 0; i < 8; i++) buffer.Enqueue(new TestItem(i));
+
+        var errors = new ConcurrentBag<Exception>();
+
+        Parallel.For(0, 1000, _ =>
+        {
+            try
+            {
+                TestItem? item = buffer.Peek();
+            }
+            catch (InvalidOperationException)
+            {
+                // acceptable if another thread drained the buffer
+            }
+            catch (Exception ex)
+            {
+                errors.Add(ex);
+            }
+        });
+
+        Assert.AreEqual(0, errors.Count, "No exceptions other than InvalidOperation (empty) are expected.");
+    }
+
+    [TestMethod]
+    public void Peek_WhenOldestChangesDueToDequeue_ShouldReflectNewOldest()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
+        buffer.Enqueue(new TestItem(10));
+        buffer.Enqueue(new TestItem(20));
+        buffer.Enqueue(new TestItem(30));
+
+        Assert.AreEqual(10, buffer.Peek().Value);
+        buffer.Dequeue();
+        Assert.AreEqual(20, buffer.Peek().Value);
+        buffer.Dequeue();
+        Assert.AreEqual(30, buffer.Peek().Value);
+    }
+
+    [TestMethod]
+    public void Peek_WhenOldestIsNull_ShouldReturnNullWithoutRemoving()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem?>(3);
+        buffer.Enqueue(null);
+        buffer.Enqueue(new TestItem(2));
+
+        var peeked = buffer.Peek();
+        Assert.IsNull(peeked, "Peek should return null if oldest is null.");
+        Assert.AreEqual(2, buffer.Count, "Peek must not remove null.");
+    }
+
+    [TestMethod]
+    public void Peek_WhenReadDuringConcurrentEnqueue_ShouldNotThrow()
+    {
+        // Capacity covers all pre-filled items plus everything the writer adds, so the buffer
+        // never reaches full and no evictions occur. Without concurrent evictions TryPeek's
+        // sequence-check-then-value-read is uncontested and the non-null assertion is valid.
+        // Using the default allowOverwrite: true with a full buffer would cause EvictOne to
+        // null slot.Value between TryPeek's sequence check and its value read, making null
+        // a legitimately observable (and correct) result that the assertion incorrectly rejects.
+        const int prefilledCount = 10;
+        const int writerCount = 100;
+        var buffer = new ConcurrentCircularBuffer<TestItem>(prefilledCount + writerCount + 10);
+
+        for (int i = 0; i < prefilledCount; i++) buffer.Enqueue(new TestItem(i));
+
+        var exceptions = new ConcurrentBag<Exception>();
+        var peekedItems = new ConcurrentBag<TestItem?>();
+
+        var reader = Task.Run(() =>
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                try
+                {
+                    peekedItems.Add(buffer.Peek());
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                }
+            }
+        });
+
+        var writer = Task.Run(() =>
+        {
+            for (int i = prefilledCount; i < prefilledCount + writerCount; i++)
+                buffer.Enqueue(new TestItem(i));
+        });
+
+        Task.WaitAll(reader, writer);
+
+        Assert.AreEqual(0, exceptions.Count, "Peek should not throw while producers mutate.");
+        Assert.IsTrue(peekedItems.All(x => x != null),
+            "Peek returned null for a non-null item during concurrent enqueue.");
+    }
 }

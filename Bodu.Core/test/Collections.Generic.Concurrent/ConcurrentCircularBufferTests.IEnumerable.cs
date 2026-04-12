@@ -1,98 +1,120 @@
 using System.Collections.Concurrent;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace Bodu.Collections.Generic.Concurrent
+namespace Bodu.Collections.Generic.Concurrent;
+
+public partial class ConcurrentCircularBufferTests
 {
-	public partial class ConcurrentCircularBufferTests
-	{
-		[TestMethod]
-		public void IEnumerable_WhenBufferIsEnumerated_ShouldYieldAllItemsInOrder()
-		{
-			var buffer = new ConcurrentCircularBuffer<TestItem>(3);
-			buffer.Enqueue(new TestItem(1));
-			buffer.Enqueue(new TestItem(2));
-			buffer.Enqueue(new TestItem(3));
+    [TestMethod]
+    public void GetEnumerator_WhenBufferContainsNull_ShouldIncludeNull()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem?>(3);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(null);
+        buffer.Enqueue(new TestItem(3));
 
-			var values = buffer.Select(x => x?.Value).ToArray();
-			CollectionAssert.AreEqual(new[] { 1, 2, 3 }, values);
-		}
+        var items = buffer.ToArray();
+        Assert.AreEqual(3, items.Length);
+        Assert.IsTrue(items.Any(i => i is null));
+    }
 
-		[TestMethod]
-		public void IEnumerable_WhenBufferContainsNull_ShouldIncludeNull()
-		{
-			var buffer = new ConcurrentCircularBuffer<TestItem?>(3);
-			buffer.Enqueue(new TestItem(1));
-			buffer.Enqueue(null);
-			buffer.Enqueue(new TestItem(3));
+    [TestMethod]
+    public void GetEnumerator_WhenBufferEmpty_ShouldYieldNoItems()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(5);
+        var snapshot = buffer.ToArray();
+        Assert.AreEqual(0, snapshot.Length);
+    }
 
-			var items = buffer.ToArray();
-			Assert.AreEqual(3, items.Length);
-			Assert.IsTrue(items.Any(i => i is null));
-		}
+    [TestMethod]
+    public void GetEnumerator_WhenConcurrentDequeueInProgress_ShouldReturnBoundedSnapshotAndNotThrow()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(10);
+        for (int i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
 
-		[TestMethod]
-		public void IEnumerable_WhenBufferIsEmpty_ShouldYieldNothing()
-		{
-			var buffer = new ConcurrentCircularBuffer<TestItem>(5);
-			var result = buffer.ToArray();
-			Assert.AreEqual(0, result.Length);
-		}
+        var errors = new ConcurrentBag<Exception>();
+        var start = new ManualResetEventSlim(false);
 
-		[TestMethod]
-		public void IEnumerable_WhenEnumeratedDuringEnqueue_ShouldNotThrow()
-		{
-			var buffer = new ConcurrentCircularBuffer<TestItem>(50);
-			var snapshotLengths = new ConcurrentBag<int>();
+        var dequeuer = Task.Run(() =>
+        {
+            try
+            {
+                start.Wait();
+                for (int i = 0; i < 10; i++)
+                    buffer.TryDequeue(out TestItem? _);
+            }
+            catch (Exception ex) { errors.Add(ex); }
+        });
 
-			var writer = Task.Run(() =>
-			{
-				for (int i = 0; i < 100; i++)
-					buffer.Enqueue(new TestItem(i));
-			});
+        var enumerator = Task.Run(() =>
+        {
+            try
+            {
+                start.Wait();
+                var snapshot = buffer.ToArray();
+                Assert.IsTrue(snapshot.Length <= buffer.Capacity);
+            }
+            catch (Exception ex) { errors.Add(ex); }
+        });
 
-			var reader = Task.Run(() =>
-			{
-				for (int i = 0; i < 10; i++)
-				{
-					var snapshot = buffer.ToArray();
-					snapshotLengths.Add(snapshot.Length);
-					Thread.SpinWait(10);
-				}
-			});
+        start.Set();
+        Task.WaitAll(dequeuer, enumerator);
 
-			Task.WaitAll(writer, reader);
-			Assert.IsTrue(snapshotLengths.All(len => len <= buffer.Capacity));
-		}
+        Assert.AreEqual(0, errors.Count, $"Unexpected exceptions: {string.Join(", ", errors.Select(e => e.GetType().Name))}");
+    }
 
-		[TestMethod]
-		public void IEnumerable_WhenEnumeratedDuringDequeue_ShouldYieldStableSnapshot()
-		{
-			var buffer = new ConcurrentCircularBuffer<TestItem>(10);
-			for (int i = 0; i < 10; i++)
-				buffer.Enqueue(new TestItem(i));
+    [TestMethod]
+    public void GetEnumerator_WhenConcurrentEnqueueInProgress_ShouldNotThrowAndReturnBoundedSnapshot()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(50);
+        var snapshotLengths = new ConcurrentBag<int>();
+        var errors = new ConcurrentBag<Exception>();
+        var start = new ManualResetEventSlim(false);
 
-			var exceptionThrown = false;
+        var writer = Task.Run(() =>
+        {
+            try
+            {
+                start.Wait();
+                for (int i = 0; i < 100; i++)
+                    buffer.Enqueue(new TestItem(i));
+            }
+            catch (Exception ex) { errors.Add(ex); }
+        });
 
-			var dequeuer = Task.Run(() =>
-			{
-				for (int i = 0; i < 10; i++)
-					buffer.TryDequeue(out _);
-			});
+        var reader = Task.Run(() =>
+        {
+            try
+            {
+                start.Wait();
+                for (int i = 0; i < 20; i++)
+                {
+                    var snapshot = buffer.ToArray();
+                    snapshotLengths.Add(snapshot.Length);
+                    Thread.SpinWait(10);
+                }
+            }
+            catch (Exception ex) { errors.Add(ex); }
+        });
 
-			var enumerator = Task.Run(() =>
-			{
-				try
-				{
-					var snapshot = buffer.ToArray();
-					Assert.IsTrue(snapshot.Length <= buffer.Capacity);
-				}
-				catch
-				{
-					exceptionThrown = true;
-				}
-			});
+        start.Set();
+        Task.WaitAll(writer, reader);
 
-			Task.WaitAll(dequeuer, enumerator);
-			Assert.IsFalse(exceptionThrown, "Enumeration threw during concurrent dequeue.");
-		}
-	}
+        Assert.AreEqual(0, errors.Count, $"Unexpected exceptions: {string.Join(", ", errors.Select(e => e.GetType().Name))}");
+        Assert.IsTrue(snapshotLengths.All(len => len <= buffer.Capacity));
+    }
+
+    [TestMethod]
+    public void GetEnumerator_WhenEnumerated_ShouldYieldAllItemsInFifoOrder()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2));
+        buffer.Enqueue(new TestItem(3));
+
+        var values = buffer.Select(x => x?.Value).ToArray();
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, values);
+    }
 }

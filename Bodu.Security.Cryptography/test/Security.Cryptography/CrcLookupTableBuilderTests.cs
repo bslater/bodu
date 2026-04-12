@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Bodu.Security.Cryptography
 {
-	[TestClass]
-	public partial class CrcLookupTableBuilderTests
-	{
-	}
+    [TestClass]
+    public partial class CrcLookupTableBuilderTests
+    {
+    }
 }

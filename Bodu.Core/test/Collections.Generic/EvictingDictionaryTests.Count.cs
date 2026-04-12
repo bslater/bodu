@@ -1,58 +1,58 @@
 namespace Bodu.Collections.Generic
 {
-	public partial class EvictingDictionaryTests
-	{
-		/// <summary>
-		/// Verifies that Count is zero for a newly constructed dictionary.
-		/// </summary>
-		[TestMethod]
-		public void Count_WhenConstructed_ShouldBeZero()
-		{
-			var dictionary = new EvictingDictionary<string, int>(4);
-			Assert.AreEqual(0, dictionary.Count);
-		}
+    public partial class EvictingDictionaryTests
+    {
+        /// <summary>
+        /// Verifies that Count is zero for a newly constructed dictionary.
+        /// </summary>
+        [TestMethod]
+        public void Count_WhenConstructed_ShouldBeZero()
+        {
+            var dictionary = new EvictingDictionary<string, int>(4);
+            Assert.AreEqual(0, dictionary.Count);
+        }
 
-		/// <summary>
-		/// Verifies that Count increases to reflect the number of items added.
-		/// </summary>
-		[TestMethod]
-		public void Count_WhenItemsAreAdded_ShouldReflectCorrectCount()
-		{
-			var dictionary = new EvictingDictionary<string, int>(5);
-			dictionary.Add("one", 1);
-			dictionary.Add("two", 2);
-			dictionary.Add("three", 3);
+        /// <summary>
+        /// Verifies that Count increases to reflect the number of items added.
+        /// </summary>
+        [TestMethod]
+        public void Count_WhenItemsAreAdded_ShouldReflectCorrectCount()
+        {
+            var dictionary = new EvictingDictionary<string, int>(5);
+            dictionary.Add("one", 1);
+            dictionary.Add("two", 2);
+            dictionary.Add("three", 3);
 
-			Assert.AreEqual(3, dictionary.Count);
-		}
+            Assert.AreEqual(3, dictionary.Count);
+        }
 
-		/// <summary>
-		/// Verifies that Count decreases when an item is removed from the dictionary.
-		/// </summary>
-		[TestMethod]
-		public void Count_WhenItemIsRemoved_ShouldDecrease()
-		{
-			var dictionary = new EvictingDictionary<string, int>(5);
-			dictionary.Add("one", 1);
-			dictionary.Add("two", 2);
-			dictionary.Add("three", 3);
-			dictionary.Remove("two");
+        /// <summary>
+        /// Verifies that Count decreases when an item is removed from the dictionary.
+        /// </summary>
+        [TestMethod]
+        public void Count_WhenItemIsRemoved_ShouldDecrease()
+        {
+            var dictionary = new EvictingDictionary<string, int>(5);
+            dictionary.Add("one", 1);
+            dictionary.Add("two", 2);
+            dictionary.Add("three", 3);
+            dictionary.Remove("two");
 
-			Assert.AreEqual(2, dictionary.Count);
-		}
+            Assert.AreEqual(2, dictionary.Count);
+        }
 
-		/// <summary>
-		/// Verifies that Count becomes zero after calling Clear on the dictionary.
-		/// </summary>
-		[TestMethod]
-		public void Count_WhenCleared_ShouldBeZero()
-		{
-			var dictionary = new EvictingDictionary<string, int>(4);
-			dictionary.Add("one", 1);
-			dictionary.Add("two", 2);
-			dictionary.Clear();
+        /// <summary>
+        /// Verifies that Count becomes zero after calling Clear on the dictionary.
+        /// </summary>
+        [TestMethod]
+        public void Count_WhenCleared_ShouldBeZero()
+        {
+            var dictionary = new EvictingDictionary<string, int>(4);
+            dictionary.Add("one", 1);
+            dictionary.Add("two", 2);
+            dictionary.Clear();
 
-			Assert.AreEqual(0, dictionary.Count);
-		}
-	}
+            Assert.AreEqual(0, dictionary.Count);
+        }
+    }
 }

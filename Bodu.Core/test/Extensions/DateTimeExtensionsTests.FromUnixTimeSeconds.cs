@@ -9,60 +9,60 @@ using System.Globalization;
 
 namespace Bodu.Extensions
 {
-	public partial class DateTimeExtensionsTests
-	{
+    public partial class DateTimeExtensionsTests
+    {
 
-		public static IEnumerable<object[]> FromUnixTimeSecondsTestData => new[]
-		{
-			new object[] { 0L, new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc) },								// Epoch
-			new object[] { 1L, new DateTime(1970, 1, 1, 0, 0, 1, DateTimeKind.Utc) },								// +1 second
-			new object[] { 60L, new DateTime(1970, 1, 1, 0, 1, 0, DateTimeKind.Utc) },								// +1 minute
-			new object[] { 3600L, new DateTime(1970, 1, 1, 1, 0, 0, DateTimeKind.Utc) },							// +1 hour
-			new object[] { -1L, new DateTime(1969, 12, 31, 23, 59, 59, DateTimeKind.Utc) },							// -1 second
-			new object[] { 946684800L, new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc) },						// Y2K
-			new object[] { 2147483647L, new DateTime(2038, 1, 19, 3, 14, 7, DateTimeKind.Utc) },					// Int32.MaxValue
-			new object[] { -62135596800L, DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc) },				// DateTime.MinValue
-			new object[] { -62135596799L, new DateTime(0001, 1, 1, 0, 0, 1, DateTimeKind.Utc) },					// MinValue + 1 second
-			new object[] { 253402300799L, new DateTime(9999, 12, 31, 23, 59, 59, DateTimeKind.Utc) },				// DateTime.MaxValue
-			new object[] { 253402300798L, new DateTime(9999, 12, 31, 23, 59, 58, DateTimeKind.Utc) },				// MaxValue - 1 second
-		};
+        public static IEnumerable<object[]> FromUnixTimeSecondsTestData => new[]
+        {
+            new object[] { 0L, new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc) },                                // Epoch
+            new object[] { 1L, new DateTime(1970, 1, 1, 0, 0, 1, DateTimeKind.Utc) },                                // +1 second
+            new object[] { 60L, new DateTime(1970, 1, 1, 0, 1, 0, DateTimeKind.Utc) },                                // +1 minute
+            new object[] { 3600L, new DateTime(1970, 1, 1, 1, 0, 0, DateTimeKind.Utc) },                            // +1 hour
+            new object[] { -1L, new DateTime(1969, 12, 31, 23, 59, 59, DateTimeKind.Utc) },                            // -1 second
+            new object[] { 946684800L, new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc) },                        // Y2K
+            new object[] { 2147483647L, new DateTime(2038, 1, 19, 3, 14, 7, DateTimeKind.Utc) },                    // Int32.MaxValue
+            new object[] { -62135596800L, DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc) },                // DateTime.MinValue
+            new object[] { -62135596799L, new DateTime(0001, 1, 1, 0, 0, 1, DateTimeKind.Utc) },                    // MinValue + 1 second
+            new object[] { 253402300799L, new DateTime(9999, 12, 31, 23, 59, 59, DateTimeKind.Utc) },                // DateTime.MaxValue
+            new object[] { 253402300798L, new DateTime(9999, 12, 31, 23, 59, 58, DateTimeKind.Utc) },                // MaxValue - 1 second
+        };
 
-		[DataTestMethod]
-		[DynamicData(nameof(FromUnixTimeSecondsTestData), DynamicDataSourceType.Property)]
-		public void FromUnixTimeSeconds_WhenValidInput_ShouldReturnExpected(long input, DateTime expected)
-		{
-			DateTime actual = DateTimeExtensions.FromUnixTimeSeconds(input);
+        [TestMethod]
+        [DynamicData(nameof(FromUnixTimeSecondsTestData), DynamicDataSourceType.Property)]
+        public void FromUnixTimeSeconds_WhenValidInput_ShouldReturnExpected(long input, DateTime expected)
+        {
+            DateTime actual = DateTimeExtensions.FromUnixTimeSeconds(input);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		public void FromUnixTimeSeconds_WhenCalled_ShouldReturnUtcKind()
-		{
-			DateTime actual = DateTimeExtensions.FromUnixTimeSeconds(0);
+        public void FromUnixTimeSeconds_WhenCalled_ShouldReturnUtcKind()
+        {
+            DateTime actual = DateTimeExtensions.FromUnixTimeSeconds(0);
 
-			Assert.AreEqual(DateTimeKind.Utc, actual.Kind);
-		}
+            Assert.AreEqual(DateTimeKind.Utc, actual.Kind);
+        }
 
-		[TestMethod]
-		public void FromUnixTimeSeconds_WhenBelowMinimum_ShouldThrowExactly()
-		{
-			long belowMin = -62135596801; // 1 second before DateTime.MinValue
+        [TestMethod]
+        public void FromUnixTimeSeconds_WhenBelowMinimum_ShouldThrowExactly()
+        {
+            long belowMin = -62135596801; // 1 second before DateTime.MinValue
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = DateTimeExtensions.FromUnixTimeSeconds(belowMin);
-			});
-		}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = DateTimeExtensions.FromUnixTimeSeconds(belowMin);
+            });
+        }
 
-		[TestMethod]
-		public void FromUnixTimeSeconds_WhenAboveMaximum_ShouldThrowExactly()
-		{
-			long aboveMax = 253402300800; // 1 second after DateTime.MaxValue
+        [TestMethod]
+        public void FromUnixTimeSeconds_WhenAboveMaximum_ShouldThrowExactly()
+        {
+            long aboveMax = 253402300800; // 1 second after DateTime.MaxValue
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = DateTimeExtensions.FromUnixTimeSeconds(aboveMax);
-			});
-		}
-	}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = DateTimeExtensions.FromUnixTimeSeconds(aboveMax);
+            });
+        }
+    }
 }

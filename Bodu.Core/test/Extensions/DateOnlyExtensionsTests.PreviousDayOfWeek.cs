@@ -9,47 +9,47 @@ using System.Globalization;
 
 namespace Bodu.Extensions
 {
-	public partial class DateOnlyExtensionsTests
-	{
+    public partial class DateOnlyExtensionsTests
+    {
 
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.PreviousDayOfWeekTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-		public void PreviousDayOfWeek_WhenCalled_ShouldReturnExpectedDate(DateTime inputDateOnly, DayOfWeek targetDay, DateTime expectedDateOnly)
-		{
-			var input = DateOnly.FromDateTime(inputDateOnly);
-			var expected = DateOnly.FromDateTime(expectedDateOnly);
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.PreviousDayOfWeekTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+        public void PreviousDayOfWeek_WhenCalled_ShouldReturnExpectedDate(DateTime inputDateOnly, DayOfWeek targetDay, DateTime expectedDateOnly)
+        {
+            var input = DateOnly.FromDateTime(inputDateOnly);
+            var expected = DateOnly.FromDateTime(expectedDateOnly);
 
-			var actual = input.PreviousDayOfWeek(targetDay);
+            var actual = input.PreviousDayOfWeek(targetDay);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void PreviousDayOfWeek_WhenEnumIsInvalid_ShouldThrowExactly()
-		{
-			var input = new DateOnly(2024, 4, 18);
+        [TestMethod]
+        public void PreviousDayOfWeek_WhenEnumIsInvalid_ShouldThrowExactly()
+        {
+            var input = new DateOnly(2024, 4, 18);
 
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-			{
-				_ = input.PreviousDayOfWeek((DayOfWeek)999);
-			});
-		}
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = input.PreviousDayOfWeek((DayOfWeek)999);
+            });
+        }
 
-		[TestMethod]
-		public void PreviousDayOfWeek_WhenUsingMinValue_ShouldReturnSameOrGreater()
-		{
-			var actual = DateOnly.MinValue.AddDays(7).PreviousDayOfWeek(DayOfWeek.Monday);
+        [TestMethod]
+        public void PreviousDayOfWeek_WhenUsingMinValue_ShouldReturnSameOrGreater()
+        {
+            var actual = DateOnly.MinValue.AddDays(7).PreviousDayOfWeek(DayOfWeek.Monday);
 
-			Assert.IsTrue(actual >= DateOnly.MinValue);
-		}
+            Assert.IsTrue(actual >= DateOnly.MinValue);
+        }
 
-		[TestMethod]
-		public void PreviousDayOfWeek_WhenUsingMaxValue_ShouldSucceed()
-		{
-			var input = DateOnly.MaxValue;
-			var actual = input.PreviousDayOfWeek(DayOfWeek.Saturday);
+        [TestMethod]
+        public void PreviousDayOfWeek_WhenUsingMaxValue_ShouldSucceed()
+        {
+            var input = DateOnly.MaxValue;
+            var actual = input.PreviousDayOfWeek(DayOfWeek.Saturday);
 
-			Assert.IsTrue(actual <= DateOnly.MaxValue);
-		}
-	}
+            Assert.IsTrue(actual <= DateOnly.MaxValue);
+        }
+    }
 }

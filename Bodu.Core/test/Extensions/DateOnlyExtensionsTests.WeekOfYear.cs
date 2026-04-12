@@ -9,54 +9,54 @@ using System.Globalization;
 
 namespace Bodu.Extensions
 {
-	public partial class DateOnlyExtensionsTests
-	{
+    public partial class DateOnlyExtensionsTests
+    {
 
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.WeekOfYearCalendarWeekTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-		public void WeekOfYear_WithCulture_ShouldReturnExpected(DateTime inputDateTime, CalendarWeekRule rule, DayOfWeek firstDay, int expected)
-		{
-			var input = DateOnly.FromDateTime(inputDateTime);
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.WeekOfYearCalendarWeekTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+        public void WeekOfYear_WithCulture_ShouldReturnExpected(DateTime inputDateTime, CalendarWeekRule rule, DayOfWeek firstDay, int expected)
+        {
+            var input = DateOnly.FromDateTime(inputDateTime);
 
-			int actual = input.WeekOfYear(rule, firstDay);
+            int actual = input.WeekOfYear(rule, firstDay);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[DataTestMethod]
-		[DynamicData(nameof(DateTimeExtensionsTests.WeekOfYearCultureTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-		public void WeekOfYear_WithCalendarWeek_ShouldReturnExpected(DateTime inputDateTime, CultureInfo culture, int expected)
-		{
-			var input = DateOnly.FromDateTime(inputDateTime);
+        [TestMethod]
+        [DynamicData(nameof(DateTimeExtensionsTests.WeekOfYearCultureTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+        public void WeekOfYear_WithCalendarWeek_ShouldReturnExpected(DateTime inputDateTime, CultureInfo culture, int expected)
+        {
+            var input = DateOnly.FromDateTime(inputDateTime);
 
-			int actual = input.WeekOfYear(culture);
+            int actual = input.WeekOfYear(culture);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void WeekOfYear_WhenCultureIsNull_ShouldUseCurrentCulture()
-		{
-			DateTime dateTime = new DateTime(2024, 1, 3); // Mid-week input
-			int expected = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(
-				dateTime,
-				CultureInfo.CurrentCulture.DateTimeFormat.CalendarWeekRule,
-				CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek);
+        [TestMethod]
+        public void WeekOfYear_WhenCultureIsNull_ShouldUseCurrentCulture()
+        {
+            DateTime dateTime = new DateTime(2024, 1, 3); // Mid-week input
+            int expected = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(
+                dateTime,
+                CultureInfo.CurrentCulture.DateTimeFormat.CalendarWeekRule,
+                CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek);
 
-			var input = DateOnly.FromDateTime(dateTime);
-			int actual = input.WeekOfYear(null!);
+            var input = DateOnly.FromDateTime(dateTime);
+            int actual = input.WeekOfYear(null!);
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void WeekOfYear_DefaultOverload_ShouldDelegateToCurrentCulture()
-		{
-			DateOnly input = new DateOnly(2024, 4, 18);
-			int expected = input.WeekOfYear(CultureInfo.CurrentCulture);
-			int actual = input.WeekOfYear();
+        [TestMethod]
+        public void WeekOfYear_DefaultOverload_ShouldDelegateToCurrentCulture()
+        {
+            DateOnly input = new DateOnly(2024, 4, 18);
+            int expected = input.WeekOfYear(CultureInfo.CurrentCulture);
+            int actual = input.WeekOfYear();
 
-			Assert.AreEqual(expected, actual);
-		}
-	}
+            Assert.AreEqual(expected, actual);
+        }
+    }
 }

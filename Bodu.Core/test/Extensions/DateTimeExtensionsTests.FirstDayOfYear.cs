@@ -8,45 +8,45 @@ using Bodu.Extensions;
 
 namespace Bodu.Extensions
 {
-	public partial class DateTimeExtensionsTests
-	{
-		[DataTestMethod]
-		[DynamicData(nameof(FirstDayOfYearTestData), DynamicDataSourceType.Method)]
-		public void FirstDayOfYear_WhenCalled_ShouldReturnExpectedStartOfYear(DateTime input, DateTime expected)
-		{
-			DateTime actual = input.FirstDayOfYear();
+    public partial class DateTimeExtensionsTests
+    {
+        [TestMethod]
+        [DynamicData(nameof(FirstDayOfYearTestData), DynamicDataSourceType.Method)]
+        public void FirstDayOfYear_WhenCalled_ShouldReturnExpectedStartOfYear(DateTime input, DateTime expected)
+        {
+            DateTime actual = input.FirstDayOfYear();
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[DataTestMethod]
-		[DataRow(DateTimeKind.Unspecified)]
-		[DataRow(DateTimeKind.Utc)]
-		[DataRow(DateTimeKind.Local)]
-		public void FirstDayOfYear_ShouldPreserveDateTimeKind(DateTimeKind kind)
-		{
-			var input = new DateTime(2024, 4, 18, 12, 0, 0, kind);
-			var actual = input.FirstDayOfYear();
+        [TestMethod]
+        [DataRow(DateTimeKind.Unspecified)]
+        [DataRow(DateTimeKind.Utc)]
+        [DataRow(DateTimeKind.Local)]
+        public void FirstDayOfYear_ShouldPreserveDateTimeKind(DateTimeKind kind)
+        {
+            var input = new DateTime(2024, 4, 18, 12, 0, 0, kind);
+            var actual = input.FirstDayOfYear();
 
-			Assert.AreEqual(kind, actual.Kind);
-		}
+            Assert.AreEqual(kind, actual.Kind);
+        }
 
-		[TestMethod]
-		public void FirstDayOfYear_WhenMinValue_ShouldReturnExpected()
-		{
-			DateTime min = DateTime.MinValue; // 0001-01-01
-			DateTime actual = min.FirstDayOfYear();
+        [TestMethod]
+        public void FirstDayOfYear_WhenMinValue_ShouldReturnExpected()
+        {
+            DateTime min = DateTime.MinValue; // 0001-01-01
+            DateTime actual = min.FirstDayOfYear();
 
-			Assert.AreEqual(new DateTime(1, 1, 1), actual);
-		}
+            Assert.AreEqual(new DateTime(1, 1, 1), actual);
+        }
 
-		[TestMethod]
-		public void FirstDayOfYear_WhenMaxValue_ShouldReturnExpected()
-		{
-			DateTime max = DateTime.MaxValue; // 9999-12-31
-			DateTime actual = max.FirstDayOfYear();
+        [TestMethod]
+        public void FirstDayOfYear_WhenMaxValue_ShouldReturnExpected()
+        {
+            DateTime max = DateTime.MaxValue; // 9999-12-31
+            DateTime actual = max.FirstDayOfYear();
 
-			Assert.AreEqual(new DateTime(9999, 1, 1), actual);
-		}
-	}
+            Assert.AreEqual(new DateTime(9999, 1, 1), actual);
+        }
+    }
 }

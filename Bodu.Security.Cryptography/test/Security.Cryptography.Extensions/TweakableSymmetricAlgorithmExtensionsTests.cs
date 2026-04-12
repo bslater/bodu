@@ -8,9 +8,9 @@ using Bodu.Infrastructure;
 
 namespace Bodu.Security.Cryptography.Extensions
 {
-	[TestClass]
-	public partial class TweakableSymmetricAlgorithmExtensionsTests
-	{
-		private TweakableSymmetricAlgorithm CreateAlgorithm() => new SimpleReversingTweakableSymmetricAlgorithm();
-	}
+    [TestClass]
+    public partial class TweakableSymmetricAlgorithmExtensionsTests
+    {
+        private TweakableSymmetricAlgorithm CreateAlgorithm() => new SimpleReversingTweakableSymmetricAlgorithm();
+    }
 }

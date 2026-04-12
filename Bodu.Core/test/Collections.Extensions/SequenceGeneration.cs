@@ -1,6 +1,6 @@
 ﻿namespace Bodu.Collections.Extensions.SequenceGenerationTests
 {
-	public class SequenceGeneration
-	{
-	}
+    public class SequenceGeneration
+    {
+    }
 }

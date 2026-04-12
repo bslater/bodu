@@ -8,77 +8,77 @@ using Bodu.Extensions;
 
 namespace Bodu.Extensions
 {
-	public partial class DateTimeExtensionsTests
-	{
+    public partial class DateTimeExtensionsTests
+    {
 
-		[DataTestMethod]
-		[DynamicData(nameof(FromUnixTimeMillisecondsTestData), DynamicDataSourceType.Property)]
-		public void ToUnixTimeMilliseconds_WhenCalledWithUtc_ShouldReturnExpected(long expected, DateTime input)
-		{
-			long actual = input.ToUnixTimeMilliseconds();
+        [TestMethod]
+        [DynamicData(nameof(FromUnixTimeMillisecondsTestData), DynamicDataSourceType.Property)]
+        public void ToUnixTimeMilliseconds_WhenCalledWithUtc_ShouldReturnExpected(long expected, DateTime input)
+        {
+            long actual = input.ToUnixTimeMilliseconds();
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void ToUnixTimeMilliseconds_WhenKindIsUtc_ShouldReturnCorrectMilliseconds()
-		{
-			DateTime input = new DateTime(1970, 1, 1, 0, 0, 1, DateTimeKind.Utc); // +1 sec
-			long actual = input.ToUnixTimeMilliseconds();
+        [TestMethod]
+        public void ToUnixTimeMilliseconds_WhenKindIsUtc_ShouldReturnCorrectMilliseconds()
+        {
+            DateTime input = new DateTime(1970, 1, 1, 0, 0, 1, DateTimeKind.Utc); // +1 sec
+            long actual = input.ToUnixTimeMilliseconds();
 
-			Assert.AreEqual(1000, actual);
-		}
+            Assert.AreEqual(1000, actual);
+        }
 
-		[TestMethod]
-		public void ToUnixTimeMilliseconds_WhenKindIsLocal_ShouldConvertToUtc()
-		{
-			DateTime utc = new DateTime(2024, 4, 18, 12, 0, 0, DateTimeKind.Utc);
-			DateTime local = utc.ToLocalTime();
-			long expected = utc.ToUnixTimeMilliseconds();
+        [TestMethod]
+        public void ToUnixTimeMilliseconds_WhenKindIsLocal_ShouldConvertToUtc()
+        {
+            DateTime utc = new DateTime(2024, 4, 18, 12, 0, 0, DateTimeKind.Utc);
+            DateTime local = utc.ToLocalTime();
+            long expected = utc.ToUnixTimeMilliseconds();
 
-			long actual = local.ToUnixTimeMilliseconds();
+            long actual = local.ToUnixTimeMilliseconds();
 
-			Assert.AreEqual(expected, actual);
-		}
+            Assert.AreEqual(expected, actual);
+        }
 
-		[TestMethod]
-		public void ToUnixTimeMilliseconds_WhenKindIsUnspecified_ShouldAssumeLocalTime()
-		{
-			DateTime localNow = DateTime.Now;
-			DateTime unspecified = DateTime.SpecifyKind(localNow, DateTimeKind.Unspecified);
+        [TestMethod]
+        public void ToUnixTimeMilliseconds_WhenKindIsUnspecified_ShouldAssumeLocalTime()
+        {
+            DateTime localNow = DateTime.Now;
+            DateTime unspecified = DateTime.SpecifyKind(localNow, DateTimeKind.Unspecified);
 
-			long resultUnspecified = unspecified.ToUnixTimeMilliseconds();
-			long resultLocal = localNow.ToUnixTimeMilliseconds();
+            long resultUnspecified = unspecified.ToUnixTimeMilliseconds();
+            long resultLocal = localNow.ToUnixTimeMilliseconds();
 
-			// Allow small difference due to processing time
-			Assert.IsTrue(Math.Abs(resultUnspecified - resultLocal) < 1000);
-		}
+            // Allow small difference due to processing time
+            Assert.IsTrue(Math.Abs(resultUnspecified - resultLocal) < 1000);
+        }
 
-		[TestMethod]
-		public void ToUnixTimeMilliseconds_WhenUsingMinValue_ShouldBeNegativeLarge()
-		{
-			long actual = DateTime.MinValue.ToUnixTimeMilliseconds();
+        [TestMethod]
+        public void ToUnixTimeMilliseconds_WhenUsingMinValue_ShouldBeNegativeLarge()
+        {
+            long actual = DateTime.MinValue.ToUnixTimeMilliseconds();
 
-			Assert.IsTrue(actual < 0);
-		}
+            Assert.IsTrue(actual < 0);
+        }
 
-		[TestMethod]
-		public void ToUnixTimeMilliseconds_WhenUsingMaxValue_ShouldBePositiveLarge()
-		{
-			long actual = DateTime.MaxValue.ToUnixTimeMilliseconds();
+        [TestMethod]
+        public void ToUnixTimeMilliseconds_WhenUsingMaxValue_ShouldBePositiveLarge()
+        {
+            long actual = DateTime.MaxValue.ToUnixTimeMilliseconds();
 
-			Assert.IsTrue(actual > 0);
-		}
+            Assert.IsTrue(actual > 0);
+        }
 
-		[TestMethod]
-		public void ToUnixTimeMilliseconds_RoundTripWithFromUnixTimeMilliseconds_ShouldMatchUtc()
-		{
-			DateTime input = new DateTime(2024, 4, 18, 14, 0, 0, DateTimeKind.Utc);
-			long millis = input.ToUnixTimeMilliseconds();
+        [TestMethod]
+        public void ToUnixTimeMilliseconds_RoundTripWithFromUnixTimeMilliseconds_ShouldMatchUtc()
+        {
+            DateTime input = new DateTime(2024, 4, 18, 14, 0, 0, DateTimeKind.Utc);
+            long millis = input.ToUnixTimeMilliseconds();
 
-			DateTime roundTrip = DateTimeExtensions.FromUnixTimeMilliseconds(millis);
+            DateTime roundTrip = DateTimeExtensions.FromUnixTimeMilliseconds(millis);
 
-			Assert.AreEqual(input, roundTrip);
-		}
-	}
+            Assert.AreEqual(input, roundTrip);
+        }
+    }
 }
