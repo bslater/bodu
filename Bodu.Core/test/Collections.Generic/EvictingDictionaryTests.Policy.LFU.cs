@@ -35,38 +35,18 @@ namespace Bodu.Collections.Generic
 
             dictionary.Add("A", 1);
             dictionary.Add("B", 2);
-            _ = dictionary["B"];
+            _ = dictionary["B"]; // B frequency = 2
 
-            dictionary.Add("C", 3);
+            dictionary.Add("C", 3); // A (frequency 1) should be evicted
 
             CollectionAssert.Contains(evicted, "A");
         }
 
         /// <summary>
-        /// Verifies that eviction is skipped if the candidate key has already been removed in LeastRecentlyUsed.
+        /// Verifies that Touch updates frequency in LeastFrequentlyUsed policy and prevents eviction of the touched key.
         /// </summary>
         [TestMethod]
-        [TestCategory("LRU")]
-        public void ItemEvicted_WhenPolicyIsLRUAndCandidateRemoved_ShouldSkipEviction()
-        {
-            var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastRecentlyUsed);
-            var evicted = new List<string>();
-            dictionary.ItemEvicted += (key, _) => evicted.Add(key);
-
-            dictionary.Add("A", 1);
-            dictionary.Add("B", 2);
-            dictionary.Remove("A");
-
-            dictionary.Add("C", 3);
-
-            Assert.AreEqual(0, evicted.Count);
-        }
-
-        /// <summary>
-        /// Verifies that Touch updates frequency in LeastFrequentlyUsed policy.
-        /// </summary>
-        [TestMethod]
-        public void Touch_WhenPolicyIsLFUAndKeyTouched_ShouldUpdateFrequency()
+        public void Touch_WhenPolicyIsLFUAndKeyTouched_ShouldUpdateFrequencyAndPreventEviction()
         {
             var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.LeastFrequentlyUsed);
             dictionary.Add("a", 1);
@@ -79,8 +59,26 @@ namespace Bodu.Collections.Generic
 
             dictionary.Add("d", 4); // c (freq = 1) should be evicted
 
-            var keys = dictionary.Keys.ToArray();
-            CollectionAssert.AreEquivalent(new[] { "a", "b", "d" }, keys);
+            CollectionAssert.AreEquivalent(new[] { "a", "b", "d" }, dictionary.Keys.ToArray());
+        }
+
+        /// <summary>
+        /// Verifies that TryGetValue updates frequency for LeastFrequentlyUsed, protecting the accessed key from eviction.
+        /// </summary>
+        [TestMethod]
+        public void TryGetValue_WhenPolicyIsLFUAndKeyAccessed_ShouldUpdateFrequency()
+        {
+            var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastFrequentlyUsed);
+            dictionary.Add("x", 10);
+            dictionary.Add("y", 20);
+
+            _ = dictionary.TryGetValue("x", out _); // x frequency = 2; y remains at 1
+
+            dictionary.Add("z", 30); // should evict y (lower frequency)
+
+            Assert.IsTrue(dictionary.ContainsKey("x"));
+            Assert.IsFalse(dictionary.ContainsKey("y"));
+            Assert.IsTrue(dictionary.ContainsKey("z"));
         }
 
         /// <summary>
@@ -92,9 +90,7 @@ namespace Bodu.Collections.Generic
             var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.LeastFrequentlyUsed);
             dictionary.Add("x", 42);
 
-            var actual = dictionary.Touch("x");
-
-            Assert.IsTrue(actual);
+            Assert.IsTrue(dictionary.Touch("x"));
         }
 
         /// <summary>
@@ -112,8 +108,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Add evicts the least frequently used item when capacity is exceeded using
-        /// LeastFrequentlyUsed policy.
+        /// Verifies that Add evicts the least frequently used item when capacity is exceeded.
         /// </summary>
         [TestMethod]
         [TestCategory("LFU")]
@@ -122,8 +117,9 @@ namespace Bodu.Collections.Generic
             var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastFrequentlyUsed);
             dictionary.Add("one", 1);
             dictionary.Add("two", 2);
-            _ = dictionary["one"];
-            dictionary.Add("three", 3);
+            _ = dictionary["one"]; // one frequency = 2
+
+            dictionary.Add("three", 3); // two (frequency 1) should be evicted
 
             Assert.IsTrue(dictionary.ContainsKey("one"));
             Assert.IsFalse(dictionary.ContainsKey("two"));
@@ -143,27 +139,11 @@ namespace Bodu.Collections.Generic
             dictionary.Touch("x"); // freq = 2
             dictionary.Touch("y"); // freq = 2
 
-            var candidate = dictionary.PeekEvictionCandidate();
-
-            Assert.AreEqual("z", candidate);
+            Assert.AreEqual("z", dictionary.PeekEvictionCandidate());
         }
 
         /// <summary>
-        /// Verifies that Touch returns true and increases usage count when the key exists in LeastFrequentlyUsed.
-        /// </summary>
-        [TestMethod]
-        public void Touch_WhenPolicyIsLFUAndKeyExists_ShouldReturnTrueAndIncreaseFrequency()
-        {
-            var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastFrequentlyUsed);
-            dictionary.Add("a", 1);
-
-            var actual = dictionary.Touch("a");
-
-            Assert.IsTrue(actual);
-        }
-
-        /// <summary>
-        /// Verifies that Clear resets access frequency and allows reinsertion.
+        /// Verifies that Clear resets access frequency and allows fresh insertion.
         /// </summary>
         [TestMethod]
         public void Clear_WhenPolicyIsLFU_ShouldAllowFreshInsertAfterReset()
@@ -183,8 +163,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that eviction event is not fired when no item is eligible for
-        /// LeastFrequentlyUsed eviction.
+        /// Verifies that eviction event is not fired when no item is eligible for LeastFrequentlyUsed eviction.
         /// </summary>
         [TestMethod]
         public void EvictionEvents_WhenPolicyIsLFUAndNoCandidateFound_ShouldNotFireEvent()

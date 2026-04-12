@@ -2,7 +2,7 @@
 // <copyright file="EvictingDictionary.DictionaryEnumerator.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
-// ---------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------- //
 
 using System;
 using System.Collections;
@@ -13,7 +13,7 @@ namespace Bodu.Collections.Generic;
 public partial class EvictingDictionary<TKey, TValue>
 {
     /// <summary>
-    /// Enumerates the elements of a <see cref="EvictingDictionary{TKey, TValue}" />.
+    /// Enumerates the elements of an <see cref="EvictingDictionary{TKey, TValue}" />.
     /// </summary>
     /// <remarks>
     /// <para>Use the <see langword="foreach" /> statement to simplify the enumeration process instead of directly using this enumerator.</para>
@@ -29,13 +29,14 @@ public partial class EvictingDictionary<TKey, TValue>
         private IEnumerator<KeyValuePair<TKey, TValue>> _inner;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DictionaryEnumerator" /> struct.
+        /// Initialises a new instance of the <see cref="DictionaryEnumerator" /> struct.
         /// </summary>
-        /// <param name="dictionary">The dictionary to enumerate.</param>
+        /// <param name="dictionary">The dictionary to enumerate. Must not be <see langword="null" />.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="dictionary" /> is <see langword="null" />.</exception>
         public DictionaryEnumerator(EvictingDictionary<TKey, TValue> dictionary)
         {
             _dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
-            _inner = dictionary.GetEnumerator(); // Assume internal method to access the entry sequence
+            _inner = dictionary.GetEnumerator();
         }
 
         /// <inheritdoc />
@@ -57,7 +58,7 @@ public partial class EvictingDictionary<TKey, TValue>
         public void Reset()
         {
             _inner.Dispose();
-            _inner = _dictionary.GetEnumerator(); // Refreshes the enumerator from current state
+            _inner = _dictionary.GetEnumerator();
         }
     }
 }

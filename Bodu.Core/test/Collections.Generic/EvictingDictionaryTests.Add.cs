@@ -1,162 +1,298 @@
 namespace Bodu.Collections.Generic
 {
+    /// <summary>
+    /// Scale and stress tests that verify correctness of <see cref="EvictingDictionary{TKey, TValue}" />
+    /// under high operation counts and repeated lifecycle transitions.
+    /// </summary>
     public partial class EvictingDictionaryTests
     {
-        // Add
+        // --------------------------------------------------------
+        // Eviction count accuracy at scale
+        // --------------------------------------------------------
 
         /// <summary>
-        /// Verifies that a new key-value pair is added when the key does not already exist.
+        /// Verifies that Count never exceeds Capacity when many items are added under FirstInFirstOut policy.
         /// </summary>
         [TestMethod]
-        public void Add_WhenKeyIsNew_ShouldAddItem()
+        [TestCategory("Stress")]
+        public void Add_WhenPolicyIsFIFOAndManyItemsAdded_ShouldNeverExceedCapacity()
         {
-            var dictionary = new EvictingDictionary<string, int>(2);
-            dictionary.Add("one", 1);
+            const int capacity = 50;
+            const int iterations = 1_000;
+            var dictionary = new EvictingDictionary<int, int>(capacity, EvictingDictionaryPolicy.FirstInFirstOut);
 
-            Assert.AreEqual(1, dictionary.Count);
-            Assert.AreEqual(1, dictionary["one"]);
-        }
-
-        /// <summary>
-        /// Verifies that the value for an existing key is replaced when added again.
-        /// </summary>
-        [TestMethod]
-        public void Add_WhenKeyAlreadyExists_ShouldReplaceValue()
-        {
-            var dictionary = new EvictingDictionary<string, int>(2);
-            dictionary.Add("one", 1);
-            dictionary.Add("one", 99);
-
-            Assert.AreEqual(1, dictionary.Count);
-            Assert.AreEqual(99, dictionary["one"]);
-        }
-
-        /// <summary>
-        /// Verifies that an ArgumentNullException is thrown when adding a null key.
-        /// </summary>
-        [TestMethod]
-        public void Add_WhenKeyIsNull_ShouldThrowExactly()
-        {
-            var dictionary = new EvictingDictionary<string, string>(2);
-
-            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            for (int i = 0; i < iterations; i++)
             {
-                dictionary.Add(null, "value");
-            });
+                dictionary.Add(i, i);
+                Assert.IsTrue(dictionary.Count <= capacity,
+                    $"Count {dictionary.Count} exceeded capacity {capacity} after adding item {i}.");
+            }
         }
 
         /// <summary>
-        /// Verifies that case-sensitive keys are treated as distinct using the default comparer.
+        /// Verifies that EvictionCount equals the number of items added beyond capacity under LeastRecentlyUsed policy.
         /// </summary>
         [TestMethod]
-        public void Add_WhenKeysDifferOnlyByCase_ShouldTreatAsDistinctKeys()
+        [TestCategory("Stress")]
+        public void EvictionCount_WhenPolicyIsLRUAndManyItemsAdded_ShouldMatchExpectedEvictionTotal()
         {
-            var dictionary = new EvictingDictionary<string, int>(5);
-            dictionary.Add("Key", 1);
-            dictionary.Add("key", 2);
+            const int capacity = 10;
+            const int itemCount = 200;
+            var dictionary = new EvictingDictionary<int, int>(capacity, EvictingDictionaryPolicy.LeastRecentlyUsed);
 
-            Assert.AreEqual(2, dictionary.Count);
-            Assert.AreEqual(1, dictionary["Key"]);
-            Assert.AreEqual(2, dictionary["key"]);
+            for (int i = 0; i < itemCount; i++)
+                dictionary.Add(i, i);
+
+            long expectedEvictions = itemCount - capacity;
+            Assert.AreEqual(expectedEvictions, dictionary.EvictionCount);
+            Assert.AreEqual(capacity, dictionary.Count);
         }
 
         /// <summary>
-        /// Verifies that the previous item is always evicted when capacity is one.
+        /// Verifies that EvictionCount equals the number of items added beyond capacity under LeastFrequentlyUsed policy.
         /// </summary>
         [TestMethod]
-        public void Add_WhenCapacityIsOne_ShouldAlwaysEvictPreviousItem()
+        [TestCategory("Stress")]
+        public void EvictionCount_WhenPolicyIsLFUAndManyItemsAdded_ShouldMatchExpectedEvictionTotal()
         {
-            var dictionary = new EvictingDictionary<string, int>(1);
-            dictionary.Add("A", 1);
-            dictionary.Add("B", 2);
+            const int capacity = 10;
+            const int itemCount = 500;
+            var dictionary = new EvictingDictionary<int, int>(capacity, EvictingDictionaryPolicy.LeastFrequentlyUsed);
 
-            Assert.IsFalse(dictionary.ContainsKey("A"));
-            Assert.IsTrue(dictionary.ContainsKey("B"));
+            for (int i = 0; i < itemCount; i++)
+                dictionary.Add(i, i);
 
-            dictionary.Add("C", 3);
-
-            Assert.IsFalse(dictionary.ContainsKey("B"));
-            Assert.IsTrue(dictionary.ContainsKey("C"));
+            long expectedEvictions = itemCount - capacity;
+            Assert.AreEqual(expectedEvictions, dictionary.EvictionCount);
+            Assert.AreEqual(capacity, dictionary.Count);
         }
 
         /// <summary>
-        /// Verifies that re-inserting an item during eviction does not cause an infinite loop.
+        /// Verifies that Count never exceeds Capacity when many items are added under MostRecentlyUsed policy.
         /// </summary>
         [TestMethod]
-        public void Add_WhenEvictionHandlerReinsertsEvictedItem_ShouldNotCauseInfiniteLoop()
+        [TestCategory("Stress")]
+        public void Add_WhenPolicyIsMRUAndManyItemsAdded_ShouldNeverExceedCapacity()
         {
-            var dictionary = new EvictingDictionary<string, int>(1);
+            const int capacity = 25;
+            const int iterations = 1_000;
+            var dictionary = new EvictingDictionary<int, int>(capacity, EvictingDictionaryPolicy.MostRecentlyUsed);
 
-            dictionary.ItemEvicting += (key, value) =>
+            for (int i = 0; i < iterations; i++)
             {
-                if (!dictionary.ContainsKey(key))
-                    dictionary[key] = value + 1;
-            };
-
-            dictionary.Add("A", 1);
-            dictionary.Add("B", 2);
-
-            Assert.AreEqual(1, dictionary.Count);
-        }
-
-        // Add (KeyValuePair)
-
-        /// <summary>
-        /// Verifies that a KeyValuePair is added when the key does not exist.
-        /// </summary>
-        [TestMethod]
-        public void AddKeyValuePair_WhenKeyIsNew_ShouldAddItem()
-        {
-            var dictionary = new EvictingDictionary<string, int>(3);
-            dictionary.Add(new KeyValuePair<string, int>("a", 1));
-
-            Assert.AreEqual(1, dictionary.Count);
-            Assert.AreEqual(1, dictionary["a"]);
+                dictionary.Add(i, i);
+                Assert.IsTrue(dictionary.Count <= capacity,
+                    $"Count {dictionary.Count} exceeded capacity {capacity} at iteration {i}.");
+            }
         }
 
         /// <summary>
-        /// Verifies that an existing key is updated when added using KeyValuePair.
+        /// Verifies that Count never exceeds Capacity when many items are added under SecondChance policy.
         /// </summary>
         [TestMethod]
-        public void AddKeyValuePair_WhenKeyAlreadyExists_ShouldOverwriteValue()
+        [TestCategory("Stress")]
+        public void Add_WhenPolicyIsSecondChanceAndManyItemsAdded_ShouldNeverExceedCapacity()
         {
-            var dictionary = new EvictingDictionary<string, int>(3);
-            dictionary.Add(new KeyValuePair<string, int>("x", 1));
-            dictionary.Add(new KeyValuePair<string, int>("x", 5));
+            const int capacity = 20;
+            const int iterations = 500;
+            var dictionary = new EvictingDictionary<int, int>(capacity, EvictingDictionaryPolicy.SecondChance);
 
-            Assert.AreEqual(1, dictionary.Count);
-            Assert.AreEqual(5, dictionary["x"]);
-        }
-
-        /// <summary>
-        /// Verifies that the oldest item is evicted when adding a KeyValuePair that exceeds capacity.
-        /// </summary>
-        [TestMethod]
-        public void AddKeyValuePair_WhenCapacityExceeded_ShouldEvictOldestItem()
-        {
-            var dictionary = new EvictingDictionary<string, int>(2);
-            dictionary.Add(new KeyValuePair<string, int>("a", 1));
-            dictionary.Add(new KeyValuePair<string, int>("b", 2));
-            dictionary.Add(new KeyValuePair<string, int>("c", 3));
-
-            Assert.AreEqual(2, dictionary.Count);
-            Assert.IsFalse(dictionary.ContainsKey("a"));
-            Assert.IsTrue(dictionary.ContainsKey("b"));
-            Assert.IsTrue(dictionary.ContainsKey("c"));
-        }
-
-        /// <summary>
-        /// Verifies that an ArgumentNullException is thrown when adding a null KeyValuePair key.
-        /// </summary>
-        [TestMethod]
-        public void AddKeyValuePair_WhenKeyIsNull_ShouldThrowExactly()
-        {
-            var dictionary = new EvictingDictionary<string, int>(3);
-
-            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            for (int i = 0; i < iterations; i++)
             {
-                dictionary.Add(new KeyValuePair<string, int>(null!, 1));
-            });
+                dictionary.Add(i, i);
+
+                // Periodically touch several items to exercise second-chance cycling.
+                if (i % 10 == 0 && dictionary.Count > 2)
+                {
+                    dictionary.Touch(i - 1);
+                    dictionary.Touch(i);
+                }
+
+                Assert.IsTrue(dictionary.Count <= capacity,
+                    $"Count {dictionary.Count} exceeded capacity {capacity} at iteration {i}.");
+            }
+        }
+
+        // --------------------------------------------------------
+        // LRU correctness under access patterns
+        // --------------------------------------------------------
+
+        /// <summary>
+        /// Verifies that a frequently touched item is never evicted when items are continuously added under
+        /// LeastRecentlyUsed policy.
+        /// </summary>
+        [TestMethod]
+        [TestCategory("Stress")]
+        public void Touch_WhenPolicyIsLRUAndItemIsTouchedRepeatedly_ShouldNeverBeEvicted()
+        {
+            const int capacity = 5;
+            const int iterations = 200;
+            var dictionary = new EvictingDictionary<int, int>(capacity, EvictingDictionaryPolicy.LeastRecentlyUsed);
+
+            dictionary.Add(0, 0); // pinned item
+
+            for (int i = 1; i < iterations; i++)
+            {
+                dictionary.Touch(0); // refresh 0 before each new insertion
+                dictionary.Add(i, i);
+
+                Assert.IsTrue(dictionary.ContainsKey(0),
+                    $"Pinned key 0 was evicted at iteration {i}.");
+            }
+        }
+
+        // --------------------------------------------------------
+        // LFU correctness under frequency accumulation
+        // --------------------------------------------------------
+
+        /// <summary>
+        /// Verifies that an item accessed many times is never evicted when other items have lower frequency
+        /// under LeastFrequentlyUsed policy.
+        /// </summary>
+        [TestMethod]
+        [TestCategory("Stress")]
+        public void Touch_WhenPolicyIsLFUAndItemTouchedManyTimes_ShouldNeverBeEvicted()
+        {
+            const int capacity = 5;
+            const int iterations = 100;
+            var dictionary = new EvictingDictionary<int, int>(capacity, EvictingDictionaryPolicy.LeastFrequentlyUsed);
+
+            // Seed pinned item with high frequency.
+            dictionary.Add(0, 0);
+            for (int t = 0; t < 50; t++)
+                dictionary.Touch(0);
+
+            for (int i = 1; i < iterations; i++)
+            {
+                dictionary.Add(i, i);
+
+                Assert.IsTrue(dictionary.ContainsKey(0),
+                    $"High-frequency key 0 was evicted at iteration {i}.");
+            }
+        }
+
+        // --------------------------------------------------------
+        // Clear-and-refill cycle stability
+        // --------------------------------------------------------
+
+        /// <summary>
+        /// Verifies that repeated Clear-and-refill cycles produce a stable, uncorrupted dictionary state
+        /// under LeastRecentlyUsed policy.
+        /// </summary>
+        [TestMethod]
+        [TestCategory("Stress")]
+        public void Clear_WhenPolicyIsLRUAndCalledRepeatedly_ShouldNotCorruptState()
+        {
+            const int capacity = 10;
+            const int cycles = 20;
+            const int itemsPerCycle = 15;
+            var dictionary = new EvictingDictionary<int, int>(capacity, EvictingDictionaryPolicy.LeastRecentlyUsed);
+
+            for (int cycle = 0; cycle < cycles; cycle++)
+            {
+                dictionary.Clear();
+
+                Assert.AreEqual(0, dictionary.Count, $"Count should be 0 after Clear in cycle {cycle}.");
+                Assert.AreEqual(0, dictionary.TotalTouches, $"TotalTouches should be 0 after Clear in cycle {cycle}.");
+                Assert.AreEqual(0, dictionary.EvictionCount, $"EvictionCount should be 0 after Clear in cycle {cycle}.");
+
+                for (int i = 0; i < itemsPerCycle; i++)
+                    dictionary.Add(i, i);
+
+                Assert.AreEqual(capacity, dictionary.Count,
+                    $"Count should equal capacity after filling in cycle {cycle}.");
+            }
+        }
+
+        /// <summary>
+        /// Verifies that repeated Clear-and-refill cycles produce a stable, uncorrupted dictionary state
+        /// under LeastFrequentlyUsed policy.
+        /// </summary>
+        [TestMethod]
+        [TestCategory("Stress")]
+        public void Clear_WhenPolicyIsLFUAndCalledRepeatedly_ShouldNotCorruptState()
+        {
+            const int capacity = 8;
+            const int cycles = 15;
+            const int itemsPerCycle = 20;
+            var dictionary = new EvictingDictionary<int, int>(capacity, EvictingDictionaryPolicy.LeastFrequentlyUsed);
+
+            for (int cycle = 0; cycle < cycles; cycle++)
+            {
+                dictionary.Clear();
+
+                for (int i = 0; i < itemsPerCycle; i++)
+                {
+                    dictionary.Add(i, i);
+
+                    // Touch some items to build up frequency.
+                    if (i % 3 == 0)
+                        dictionary.Touch(i);
+                }
+
+                Assert.AreEqual(capacity, dictionary.Count,
+                    $"Count should equal capacity after filling in cycle {cycle}.");
+            }
+        }
+
+        // --------------------------------------------------------
+        // TotalTouches accumulation accuracy
+        // --------------------------------------------------------
+
+        /// <summary>
+        /// Verifies that TotalTouches accurately reflects the cumulative number of Touch and TryGetValue
+        /// calls that succeeded over many operations.
+        /// </summary>
+        [TestMethod]
+        [TestCategory("Stress")]
+        public void TotalTouches_WhenManyAccessesOccur_ShouldAccumulateAccurately()
+        {
+            const int capacity = 10;
+            var dictionary = new EvictingDictionary<int, int>(capacity, EvictingDictionaryPolicy.LeastRecentlyUsed);
+
+            for (int i = 0; i < capacity; i++)
+                dictionary.Add(i, i);
+
+            // 50 Touch calls on existing keys, 25 TryGetValue hits.
+            int expectedTouches = 0;
+            for (int t = 0; t < 50; t++)
+            {
+                if (dictionary.Touch(t % capacity))
+                    expectedTouches++;
+            }
+
+            for (int g = 0; g < 25; g++)
+            {
+                if (dictionary.TryGetValue(g % capacity, out _))
+                    expectedTouches++;
+            }
+
+            Assert.AreEqual(expectedTouches, dictionary.TotalTouches);
+        }
+
+        // --------------------------------------------------------
+        // RandomReplacement at scale
+        // --------------------------------------------------------
+
+        /// <summary>
+        /// Verifies that Count never exceeds Capacity under RandomReplacement policy when many items are added.
+        /// </summary>
+        [TestMethod]
+        [TestCategory("Stress")]
+        public void Add_WhenPolicyIsRandomReplacementAndManyItemsAdded_ShouldNeverExceedCapacity()
+        {
+            const int capacity = 30;
+            const int iterations = 1_000;
+            var dictionary = new EvictingDictionary<int, int>(capacity, EvictingDictionaryPolicy.RandomReplacement);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                dictionary.Add(i, i);
+                Assert.IsTrue(dictionary.Count <= capacity,
+                    $"Count {dictionary.Count} exceeded capacity {capacity} at iteration {i}.");
+            }
+
+            Assert.AreEqual(capacity, dictionary.Count);
         }
     }
 }

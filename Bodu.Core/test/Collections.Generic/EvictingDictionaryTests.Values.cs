@@ -3,14 +3,109 @@ namespace Bodu.Collections.Generic
     public partial class EvictingDictionaryTests
     {
         /// <summary>
-        /// Verifies that the Values collection returns an empty collection when the dictionary has
-        /// no entries.
+        /// Verifies that Values returns an empty collection when the dictionary has no entries.
         /// </summary>
         [TestMethod]
         public void Values_WhenDictionaryIsEmpty_ShouldReturnEmptyCollection()
         {
             var dictionary = new EvictingDictionary<string, int>(3);
+
             Assert.AreEqual(0, dictionary.Values.Count);
+        }
+
+        /// <summary>
+        /// Verifies that Values contains all values for inserted items when capacity is not exceeded.
+        /// </summary>
+        [TestMethod]
+        public void Values_WhenItemsAdded_ShouldContainAllValues()
+        {
+            var dictionary = new EvictingDictionary<string, int>(5);
+            dictionary.Add("A", 10);
+            dictionary.Add("B", 20);
+            dictionary.Add("C", 30);
+
+            var values = dictionary.Values;
+
+            Assert.AreEqual(3, values.Count);
+            CollectionAssert.Contains(values.ToList(), 10);
+            CollectionAssert.Contains(values.ToList(), 20);
+            CollectionAssert.Contains(values.ToList(), 30);
+        }
+
+        /// <summary>
+        /// Verifies that Values does not contain the value of an explicitly removed key.
+        /// </summary>
+        [TestMethod]
+        public void Values_WhenItemIsRemoved_ShouldNotContainRemovedValue()
+        {
+            var dictionary = new EvictingDictionary<string, int>(3);
+            dictionary.Add("A", 10);
+            dictionary.Add("B", 20);
+
+            dictionary.Remove("A");
+
+            CollectionAssert.DoesNotContain(dictionary.Values.ToList(), 10);
+            CollectionAssert.Contains(dictionary.Values.ToList(), 20);
+        }
+
+        /// <summary>
+        /// Verifies that Values does not contain the value of a key that was evicted when capacity was exceeded.
+        /// </summary>
+        [TestMethod]
+        public void Values_WhenItemIsEvicted_ShouldNotContainEvictedValue()
+        {
+            var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.FirstInFirstOut);
+            dictionary.Add("A", 10);
+            dictionary.Add("B", 20);
+            dictionary.Add("C", 30); // evicts A
+
+            CollectionAssert.DoesNotContain(dictionary.Values.ToList(), 10);
+            CollectionAssert.Contains(dictionary.Values.ToList(), 20);
+            CollectionAssert.Contains(dictionary.Values.ToList(), 30);
+        }
+
+        /// <summary>
+        /// Verifies that Values returns an empty collection after the dictionary is cleared.
+        /// </summary>
+        [TestMethod]
+        public void Values_WhenDictionaryIsCleared_ShouldBeEmpty()
+        {
+            var dictionary = new EvictingDictionary<string, int>(3);
+            dictionary.Add("A", 10);
+            dictionary.Add("B", 20);
+
+            dictionary.Clear();
+
+            Assert.AreEqual(0, dictionary.Values.Count);
+        }
+
+        /// <summary>
+        /// Verifies that Values reflects the updated value when a key is replaced via the indexer.
+        /// </summary>
+        [TestMethod]
+        public void Values_WhenValueIsUpdatedViaIndexer_ShouldReflectNewValue()
+        {
+            var dictionary = new EvictingDictionary<string, int>(3);
+            dictionary.Add("A", 10);
+            dictionary["A"] = 99;
+
+            CollectionAssert.Contains(dictionary.Values.ToList(), 99);
+            CollectionAssert.DoesNotContain(dictionary.Values.ToList(), 10);
+        }
+
+        /// <summary>
+        /// Verifies that Values can contain duplicate values across different keys.
+        /// </summary>
+        [TestMethod]
+        public void Values_WhenMultipleKeysHaveSameValue_ShouldContainDuplicateValues()
+        {
+            var dictionary = new EvictingDictionary<string, int>(5);
+            dictionary.Add("A", 42);
+            dictionary.Add("B", 42);
+
+            var values = dictionary.Values.ToList();
+
+            Assert.AreEqual(2, values.Count(v => v == 42));
         }
     }
 }
