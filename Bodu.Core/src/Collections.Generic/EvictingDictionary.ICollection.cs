@@ -1,8 +1,8 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------- //
 // <copyright file="EvictingDictionary.ICollection.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
-// ---------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------- //
 
 using System;
 using System.Collections;
@@ -24,7 +24,7 @@ public partial class EvictingDictionary<TKey, TValue> :
     {
         get
         {
-            // Thread-safe lazy initialization
+            // Lazy initialisation using a compare-and-swap to avoid allocating under contention.
             return _syncRoot ?? Interlocked.CompareExchange(ref _syncRoot, new object(), null) ?? _syncRoot!;
         }
     }
@@ -39,8 +39,6 @@ public partial class EvictingDictionary<TKey, TValue> :
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index, _store.Count);
 
         foreach (System.Collections.Generic.KeyValuePair<TKey, TValue> kvp in GetOrderedItems())
-        {
             array.SetValue(new DictionaryEntry(kvp.Key, kvp.Value), index++);
-        }
     }
 }

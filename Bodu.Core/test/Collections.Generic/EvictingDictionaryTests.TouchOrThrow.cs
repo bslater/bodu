@@ -10,14 +10,11 @@ namespace Bodu.Collections.Generic
         {
             var dictionary = new EvictingDictionary<string, int>(3);
 
-            Assert.ThrowsExactly<KeyNotFoundException>(() =>
-            {
-                dictionary.TouchOrThrow("not-found");
-            });
+            Assert.ThrowsExactly<KeyNotFoundException>(() => dictionary.TouchOrThrow("not-found"));
         }
 
         /// <summary>
-        /// Verifies that TouchOrThrow increments the TotalTouches counter when the key exists.
+        /// Verifies that TouchOrThrow increments TotalTouches when the key exists.
         /// </summary>
         [TestMethod]
         public void TouchOrThrow_WhenKeyExists_ShouldIncrementTotalTouches()
@@ -32,7 +29,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TouchOrThrow does not increment the TotalTouches counter when the key is missing and an exception is thrown.
+        /// Verifies that TouchOrThrow does not increment TotalTouches when the key is missing and the exception is thrown.
         /// </summary>
         [TestMethod]
         public void TouchOrThrow_WhenKeyIsMissing_ShouldNotIncrementTotalTouches()
@@ -40,14 +37,7 @@ namespace Bodu.Collections.Generic
             var dictionary = new EvictingDictionary<string, int>(3);
             var before = dictionary.TotalTouches;
 
-            try
-            {
-                dictionary.TouchOrThrow("ghost");
-            }
-            catch (KeyNotFoundException)
-            {
-                // Expected
-            }
+            Assert.ThrowsExactly<KeyNotFoundException>(() => dictionary.TouchOrThrow("ghost"));
 
             Assert.AreEqual(before, dictionary.TotalTouches);
         }

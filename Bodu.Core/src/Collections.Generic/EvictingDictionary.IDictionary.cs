@@ -2,7 +2,7 @@
 // <copyright file="EvictingDictionary.IDictionary.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
-// ---------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------- //
 
 using System;
 using System.Collections;
@@ -50,10 +50,7 @@ public partial class EvictingDictionary<TKey, TValue> :
             throw new KeyNotFoundException();
         }
 
-        set
-        {
-            Add(key, value);
-        }
+        set => Add(key, value);
     }
 
     /// <inheritdoc />
@@ -75,38 +72,29 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// </summary>
     /// <param name="key">The key of the element to add.</param>
     /// <param name="value">The value of the element to add.</param>
-    /// <exception cref="ArgumentNullException">
-    /// If <paramref name="key" /> is <see langword="null" /> and the key type is a reference type.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     public void Add(TKey key, TValue value)
     {
         ThrowHelper.ThrowIfNull(key);
 
-        // Remove existing key to ensure replacement is clean
+        // Remove an existing entry for this key so that the replacement is tracked correctly
+        // by the eviction policy (position and frequency are reset on re-insertion).
         if (_store.ContainsKey(key))
             Remove(key);
 
-        // If at capacity, evict one item based on the active policy
         if (_store.Count >= _capacity)
             EvictOne();
 
-        // Create the cache item
         CacheItem item = new CacheItem(value);
 
-        // For order-sensitive policies, add to order list
         if (_evictingPolicy is EvictingDictionaryPolicy.FirstInFirstOut
             || _evictingPolicy is EvictingDictionaryPolicy.LeastRecentlyUsed
             || _evictingPolicy is EvictingDictionaryPolicy.MostRecentlyUsed
             || _evictingPolicy is EvictingDictionaryPolicy.SecondChance)
             item.Node = _order.AddLast(key);
 
-        // For LFU, initialize and track frequency
         if (_evictingPolicy == EvictingDictionaryPolicy.LeastFrequentlyUsed)
             AddToFrequencyList(item.Frequency, key);
-
-        // For SecondChance, ensure flag starts as false
-        if (_evictingPolicy == EvictingDictionaryPolicy.SecondChance)
-            item.SecondChance = false;
 
         _store[key] = item;
     }
@@ -116,15 +104,16 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// according to the configured <see cref="EvictingDictionaryPolicy" />.
     /// </summary>
     /// <param name="item">The key/value pair to add to the dictionary.</param>
-    /// <exception cref="ArgumentNullException">If <c>item.Key</c> is <see langword="null" /> and the key type is a reference type.</exception>
+    /// <exception cref="ArgumentNullException"><c>item.Key</c> is <see langword="null" />.</exception>
     public void Add(KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
 
     /// <summary>
     /// Removes all entries from the dictionary and resets internal tracking counters.
     /// </summary>
     /// <remarks>
-    /// This operation clears the dictionary and resets all internal eviction metadata, including access order (for LeastRecentlyUsed),
-    /// frequency tracking (for LeastFrequentlyUsed), and counters such as <see cref="EvictingDictionary{TKey, TValue}.TotalTouches" /> and <see cref="EvictingDictionary{TKey, TValue}.EvictionCount" />.
+    /// Clears the dictionary and resets all internal eviction metadata, including access order (for LeastRecentlyUsed and MostRecentlyUsed),
+    /// frequency tracking (for LeastFrequentlyUsed), and counters such as <see cref="EvictingDictionary{TKey, TValue}.TotalTouches" /> and
+    /// <see cref="EvictingDictionary{TKey, TValue}.EvictionCount" />.
     /// </remarks>
     public void Clear()
     {
@@ -135,7 +124,8 @@ public partial class EvictingDictionary<TKey, TValue> :
     }
 
     /// <inheritdoc />
-    public bool Contains(KeyValuePair<TKey, TValue> item) => TryGetValue(item.Key, out TValue? val) && EqualityComparer<TValue>.Default.Equals(val, item.Value);
+    public bool Contains(KeyValuePair<TKey, TValue> item) =>
+        TryGetValue(item.Key, out TValue? val) && EqualityComparer<TValue>.Default.Equals(val, item.Value);
 
     /// <inheritdoc />
     public bool ContainsKey(TKey key) => _store.ContainsKey(key);
@@ -161,8 +151,10 @@ public partial class EvictingDictionary<TKey, TValue> :
     {
         if (_store.TryGetValue(key, out CacheItem? item))
         {
-            if (_evictingPolicy == EvictingDictionaryPolicy.FirstInFirstOut || _evictingPolicy == EvictingDictionaryPolicy.LeastRecentlyUsed)
-                _order.Remove(item.Node!);
+            // Use the stored node reference for O(1) removal from the order list for all
+            // order-tracked policies (FIFO, LRU, MRU, SecondChance).
+            if (_order is not null && item.Node is not null)
+                _order.Remove(item.Node);
 
             if (_evictingPolicy == EvictingDictionaryPolicy.LeastFrequentlyUsed)
                 RemoveFromFrequencyList(item.Frequency, key);
@@ -195,8 +187,11 @@ public partial class EvictingDictionary<TKey, TValue> :
         if (_store.TryGetValue(key, out CacheItem? item))
         {
             value = item.Value;
-            if (_evictingPolicy == EvictingDictionaryPolicy.LeastRecentlyUsed) TouchInternal(key, item);
-            if (_evictingPolicy == EvictingDictionaryPolicy.LeastFrequentlyUsed) TouchInternal(key, item);
+
+            if (_evictingPolicy is EvictingDictionaryPolicy.LeastRecentlyUsed
+                or EvictingDictionaryPolicy.LeastFrequentlyUsed)
+                TouchInternal(key, item);
+
             _totalTouches++;
             return true;
         }

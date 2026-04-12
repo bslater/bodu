@@ -3,8 +3,7 @@ namespace Bodu.Collections.Generic
     public partial class EvictingDictionaryTests
     {
         /// <summary>
-        /// Verifies that Add evicts the most recently used item when capacity is exceeded using
-        /// MostRecentlyUsed policy.
+        /// Verifies that Add evicts the most recently used item when capacity is exceeded using MostRecentlyUsed policy.
         /// </summary>
         [TestMethod]
         [TestCategory("MRU")]
@@ -13,7 +12,8 @@ namespace Bodu.Collections.Generic
             var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.MostRecentlyUsed);
             dictionary.Add("one", 1);
             dictionary.Add("two", 2);
-            dictionary["two"] = 22;
+            dictionary["two"] = 22; // touch two, making it MRU
+
             dictionary.Add("three", 3); // "two" should be evicted
 
             Assert.IsTrue(dictionary.ContainsKey("one"));
@@ -32,22 +32,17 @@ namespace Bodu.Collections.Generic
             dictionary.Add("b", 2);
             dictionary.Add("c", 3);
 
-            dictionary.Touch("c"); // becomes MRU
+            dictionary.Touch("c"); // c becomes MRU
+
             dictionary.Add("d", 4); // "c" should be evicted
 
-            var expected = new Dictionary<string, int>
-            {
-                ["a"] = 1,
-                ["b"] = 2,
-                ["d"] = 4
-            };
-
-            CollectionAssert.AreEquivalent(expected, dictionary.ToArray());
+            CollectionAssert.AreEquivalent(
+                new Dictionary<string, int> { ["a"] = 1, ["b"] = 2, ["d"] = 4 },
+                dictionary.ToArray());
         }
 
         /// <summary>
-        /// Verifies that PeekEvictionCandidate returns the most recently used key using
-        /// MostRecentlyUsed policy.
+        /// Verifies that PeekEvictionCandidate returns the most recently used key.
         /// </summary>
         [TestMethod]
         public void PeekEvictionCandidate_WhenPolicyIsMRU_ShouldReturnMostRecentlyUsedKey()
@@ -62,8 +57,33 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ItemEvicted is triggered with the correct key and value when an item is
-        /// evicted using MostRecentlyUsed policy.
+        /// Verifies that PeekEvictionCandidate returns a live key when the previously tracked MRU key
+        /// has been removed from the dictionary.
+        /// </summary>
+        /// <remarks>
+        /// Before the Remove fix, removing the MRU key left its node orphaned at the tail of the order
+        /// list, causing PeekEvictionCandidate to return the removed key.
+        /// </remarks>
+        [TestMethod]
+        public void PeekEvictionCandidate_WhenPolicyIsMRUAndCurrentMRUIsRemoved_ShouldReturnNextMRU()
+        {
+            var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.MostRecentlyUsed);
+            dictionary.Add("A", 1);
+            dictionary.Add("B", 2);
+            dictionary.Add("C", 3); // C is MRU
+
+            dictionary.Remove("C"); // before fix: C's node remained at _order.Last
+
+            var candidate = dictionary.PeekEvictionCandidate();
+
+            Assert.IsNotNull(candidate);
+            Assert.IsTrue(dictionary.ContainsKey(candidate!),
+                $"PeekEvictionCandidate returned '{candidate}' which is not present in the dictionary.");
+            Assert.AreEqual("B", candidate); // B is now the MRU
+        }
+
+        /// <summary>
+        /// Verifies that ItemEvicted is raised with the correct key and value when an item is evicted using MostRecentlyUsed policy.
         /// </summary>
         [TestMethod]
         [TestCategory("MRU")]
@@ -76,7 +96,7 @@ namespace Bodu.Collections.Generic
             dictionary.Add("A", 1);
             dictionary.Add("B", 2);
             dictionary.Touch("B");
-            dictionary.Add("C", 3); // "B" should be evicted
+            dictionary.Add("C", 3); // B should be evicted
 
             CollectionAssert.AreEqual(new[] { "B:2" }, evicted);
         }
@@ -109,12 +129,12 @@ namespace Bodu.Collections.Generic
         public void IEnumerable_GetEnumerator_WhenPolicyIsMRU_ShouldRespectRecencyOrder()
         {
             var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.MostRecentlyUsed);
-            dictionary.Add("a", 1); // oldest
+            dictionary.Add("a", 1);
             dictionary.Add("b", 2);
-            dictionary.Add("c", 3); // newest
-            dictionary.Touch("a");  // now "a" is most recent
+            dictionary.Add("c", 3);
+            dictionary.Touch("a"); // a is now MRU
 
-            var actual = dictionary.ToArray();
+            // MRU enumerates from most-recent to least-recent: a, c, b.
             var expected = new[]
             {
                 new KeyValuePair<string, int>("a", 1),
@@ -122,7 +142,7 @@ namespace Bodu.Collections.Generic
                 new KeyValuePair<string, int>("b", 2),
             };
 
-            CollectionAssert.AreEqual(expected, actual);
+            CollectionAssert.AreEqual(expected, dictionary.ToArray());
         }
 
         /// <summary>
@@ -136,10 +156,9 @@ namespace Bodu.Collections.Generic
             dictionary.Add("1", 1);
             dictionary.Add("2", 2);
             dictionary.Add("3", 3);
-            dictionary.Touch("2");
+            dictionary.Touch("2"); // 2 is now MRU; order tail→head: 2, 3, 1
 
-            var expected = new[] { "2", "3", "1" };
-            CollectionAssert.AreEqual(expected, dictionary.Keys.ToList());
+            CollectionAssert.AreEqual(new[] { "2", "3", "1" }, dictionary.Keys.ToList());
         }
     }
 }

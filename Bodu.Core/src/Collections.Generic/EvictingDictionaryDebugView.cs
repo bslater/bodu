@@ -1,8 +1,8 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------- //
 // <copyright file="EvictingDictionaryDebugView.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
-// ---------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------- //
 
 using System;
 using System.Collections.Generic;
@@ -15,19 +15,20 @@ namespace Bodu.Collections.Generic;
 /// Provides a debugger view for <see cref="EvictingDictionary{TKey, TValue}" /> that displays the dictionary's key/value pairs directly in
 /// the debugger.
 /// </summary>
-/// <typeparam name="TKey">The type of keys in the dictionary. Keys are non-null and comparable ( <see cref="IComparable{T}" />).</typeparam>
+/// <typeparam name="TKey">The type of keys in the dictionary.</typeparam>
 /// <typeparam name="TValue">The type of values in the dictionary.</typeparam>
 /// <remarks>
-/// This type is intended to be used as a debugger proxy (e.g., via <c>[DebuggerTypeProxy]</c>) so that the dictionary’s contents appear as
+/// This type is intended to be used as a debugger proxy (e.g., via <c>[DebuggerTypeProxy]</c>) so that the dictionary's contents appear as
 /// a flat list in the watch/locals window.
 /// </remarks>
 internal sealed class EvictingDictionaryDebugView<TKey, TValue>
-    where TKey : notnull, IComparable<TKey>
+    where TKey : notnull
 {
     private readonly EvictingDictionary<TKey, TValue> _dictionary;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EvictingDictionaryDebugView{TKey, TValue}" /> class for the specified <paramref name="dictionary" />.
+    /// Initialises a new instance of the <see cref="EvictingDictionaryDebugView{TKey, TValue}" /> class for the specified
+    /// <paramref name="dictionary" />.
     /// </summary>
     /// <param name="dictionary">The dictionary to expose in the debugger view.</param>
     /// <exception cref="ArgumentNullException"><paramref name="dictionary" /> is <see langword="null" />.</exception>

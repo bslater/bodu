@@ -3,8 +3,7 @@ namespace Bodu.Collections.Generic
     public partial class EvictingDictionaryTests
     {
         /// <summary>
-        /// Verifies that Add evicts the first item without second chance when capacity is exceeded
-        /// using SecondChance policy.
+        /// Verifies that Add evicts the first item without a second-chance flag when capacity is exceeded.
         /// </summary>
         [TestMethod]
         [TestCategory("SecondChance")]
@@ -13,8 +12,9 @@ namespace Bodu.Collections.Generic
             var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.SecondChance);
             dictionary.Add("A", 1);
             dictionary.Add("B", 2);
-            dictionary.Touch("A"); // Give A a second chance
-            dictionary.Add("C", 3); // B should be evicted
+            dictionary.Touch("A"); // A gets second chance
+
+            dictionary.Add("C", 3); // B (no second chance) should be evicted
 
             Assert.IsTrue(dictionary.ContainsKey("A"));
             Assert.IsFalse(dictionary.ContainsKey("B"));
@@ -49,13 +49,11 @@ namespace Bodu.Collections.Generic
             var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.SecondChance);
             dictionary.Add("key", 42);
 
-            var actual = dictionary.Touch("key");
-
-            Assert.IsTrue(actual);
+            Assert.IsTrue(dictionary.Touch("key"));
         }
 
         /// <summary>
-        /// Verifies that TouchOrThrow does not throw and sets second chance flag under SecondChance policy.
+        /// Verifies that TouchOrThrow does not throw and sets the second-chance flag under SecondChance policy.
         /// </summary>
         [TestMethod]
         public void TouchOrThrow_WhenPolicyIsSCAndKeyExists_ShouldSetSecondChance()
@@ -69,8 +67,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that PeekEvictionCandidate skips items with second chance and returns the
-        /// correct candidate.
+        /// Verifies that PeekEvictionCandidate skips items with the second-chance flag and returns the correct candidate.
         /// </summary>
         [TestMethod]
         public void PeekEvictionCandidate_WhenPolicyIsSC_ShouldSkipSecondChanceItems()
@@ -79,15 +76,34 @@ namespace Bodu.Collections.Generic
             dictionary.Add("a", 1);
             dictionary.Add("b", 2);
             dictionary.Add("c", 3);
-            dictionary.Touch("a");
+            dictionary.Touch("a"); // a has second chance; b should be next candidate
 
-            var candidate = dictionary.PeekEvictionCandidate();
-
-            Assert.AreEqual("b", candidate);
+            Assert.AreEqual("b", dictionary.PeekEvictionCandidate());
         }
 
         /// <summary>
-        /// Verifies that Clear resets second chance tracking in SecondChance policy.
+        /// Verifies that PeekEvictionCandidate falls back to the oldest item when all items have the second-chance flag set.
+        /// </summary>
+        [TestMethod]
+        public void PeekEvictionCandidate_WhenPolicyIsSCAndAllItemsHaveSecondChance_ShouldReturnOldestKey()
+        {
+            var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.SecondChance);
+            dictionary.Add("a", 1);
+            dictionary.Add("b", 2);
+            dictionary.Add("c", 3);
+            dictionary.Touch("a");
+            dictionary.Touch("b");
+            dictionary.Touch("c"); // all have second chance
+
+            // All items have the second-chance flag; peek should return the oldest (first in order).
+            var candidate = dictionary.PeekEvictionCandidate();
+
+            Assert.IsNotNull(candidate);
+            Assert.IsTrue(dictionary.ContainsKey(candidate!));
+        }
+
+        /// <summary>
+        /// Verifies that Clear resets second-chance tracking in SecondChance policy.
         /// </summary>
         [TestMethod]
         public void Clear_WhenPolicyIsSC_ShouldResetSecondChanceFlags()
@@ -105,21 +121,57 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that items with second chance are cycled to the back of the queue during eviction.
+        /// Verifies that items with the second-chance flag are cycled to the back of the queue during eviction,
+        /// and the first item without the flag is ultimately evicted.
         /// </summary>
         [TestMethod]
-        public void Add_WhenPolicyIsSCAndAllHaveSecondChance_ShouldEvictAfterClearingFlags()
+        public void Add_WhenPolicyIsSCAndAllHaveSecondChance_ShouldEvictOldestAfterClearingFlags()
         {
             var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.SecondChance);
             dictionary.Add("A", 1);
             dictionary.Add("B", 2);
             dictionary.Touch("A");
             dictionary.Touch("B");
-            dictionary.Add("C", 3); // A and B cycle, A evicted
+
+            dictionary.Add("C", 3); // cycles A then B; A (oldest after cycling) is evicted
 
             Assert.IsFalse(dictionary.ContainsKey("A"));
             Assert.IsTrue(dictionary.ContainsKey("B"));
             Assert.IsTrue(dictionary.ContainsKey("C"));
+        }
+
+        /// <summary>
+        /// Verifies that removing an item under SecondChance policy after it was cycled during a prior eviction
+        /// succeeds correctly and does not corrupt the internal order list.
+        /// </summary>
+        /// <remarks>
+        /// This test guards against two related bugs: Remove not unlinking the node for SecondChance items,
+        /// and GetSecondChanceCandidate not updating item.Node after cycling an item to the tail.
+        /// </remarks>
+        [TestMethod]
+        public void Remove_WhenPolicyIsSCAndItemWasCycledInPriorEviction_ShouldSucceedAndNotCorruptOrder()
+        {
+            var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.SecondChance);
+            dictionary.Add("A", 1);
+            dictionary.Add("B", 2);
+            dictionary.Touch("A");
+            dictionary.Touch("B");
+
+            dictionary.Add("C", 3); // cycles A and B; A is evicted
+
+            // B was cycled to the tail — its node reference must have been updated.
+            var result = dictionary.Remove("B");
+
+            Assert.IsTrue(result);
+            Assert.AreEqual(1, dictionary.Count);
+            Assert.IsTrue(dictionary.ContainsKey("C"));
+            Assert.IsFalse(dictionary.ContainsKey("B"));
+
+            // Confirm the order list is not corrupted by performing a further add and eviction.
+            dictionary.Add("D", 4);
+            dictionary.Add("E", 5); // should evict C without error
+
+            Assert.AreEqual(2, dictionary.Count);
         }
 
         /// <summary>
@@ -132,10 +184,9 @@ namespace Bodu.Collections.Generic
             dictionary.Add("a", 1);
             dictionary.Add("b", 2);
             dictionary.Touch("a");
-            dictionary.Add("c", 3); // b should be evicted next
+            dictionary.Add("c", 3); // b evicted; a given second chance, then c added
 
-            var expectedKeys = new[] { "a", "c" };
-            CollectionAssert.AreEquivalent(expectedKeys, dictionary.Keys.ToList());
+            CollectionAssert.AreEquivalent(new[] { "a", "c" }, dictionary.Keys.ToList());
         }
     }
 }
