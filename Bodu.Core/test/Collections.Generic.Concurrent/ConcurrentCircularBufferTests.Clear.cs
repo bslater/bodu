@@ -1,404 +1,411 @@
 using System.Collections.Concurrent;
 
-namespace Bodu.Collections.Generic.Concurrent;
-
-public partial class ConcurrentCircularBufferTests
+namespace Bodu.Collections.Generic.Concurrent
 {
-    [TestMethod]
-    public void Clear_WhenBufferContainsNulls_ShouldEmptyWithoutError()
+    public partial class ConcurrentCircularBufferTests
     {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
-        buffer.Enqueue(null!);
-        buffer.Enqueue(new TestItem(1));
-        buffer.Enqueue(null!);
-
-        buffer.Clear();
-
-        Assert.AreEqual(0, buffer.Count);
-        CollectionAssert.AreEqual(Array.Empty<TestItem>(), buffer.ToArray());
-    }
-
-    [TestMethod]
-    public void Clear_WhenBufferContainsOnlyObjectsWithoutReferences_ShouldAllowGarbageCollection()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(2);
-
-        // Items are created and enqueued inside a NoInlining helper. When that frame returns,
-        // item1 and item2 are fully off the stack — the buffer's internal slots are the only
-        // remaining strong references. Setting locals to null inside this method is insufficient
-        // because the JIT (particularly in debug builds) keeps the old GC roots live for the
-        // entire enclosing scope regardless of the null assignment.
-        var (wr1, wr2) = EnqueueItemsAndReturnWeakReferences(buffer);
-
-        // Clear() drains via TryDequeue, which nulls each slot before returning.
-        // Once this call returns, no strong references to the items remain anywhere.
-        buffer.Clear();
-
-        GC.Collect();
-        GC.WaitForPendingFinalizers();
-        GC.Collect();
-
-        Assert.IsFalse(wr1.IsAlive, "Item 1 should be eligible for collection after Clear.");
-        Assert.IsFalse(wr2.IsAlive, "Item 2 should be eligible for collection after Clear.");
-    }
-
-    [TestMethod]
-    public void Clear_WhenBufferFilledAndImmediatelyReused_ShouldPreserveCapacityAndMaintainFifoOrder()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
-        buffer.Enqueue(new TestItem(1));
-        buffer.Enqueue(new TestItem(2));
-        buffer.Enqueue(new TestItem(3));
-
-        buffer.Clear();
-
-        Assert.AreEqual(3, buffer.Capacity);
-        Assert.AreEqual(0, buffer.Count);
-
-        buffer.Enqueue(new TestItem(10));
-        buffer.Enqueue(new TestItem(11));
-        CollectionAssert.AreEqual(new[] { 10, 11 }, buffer.ToArray().Select(x => x.Value).ToArray());
-    }
-
-    [TestMethod]
-    public void Clear_WhenBufferFull_WithAllowOverwriteTrue_ShouldNotRaiseEvictionEvents()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(2, allowOverwrite: true);
-        int evicted = 0;
-
-        buffer.ItemEvicted += _ => evicted++;
-
-        buffer.Enqueue(new TestItem(1));
-        buffer.Enqueue(new TestItem(2));
-        buffer.Clear();
-
-        Assert.AreEqual(0, evicted, "Clear must not raise ItemEvicted.");
-        Assert.AreEqual(0, buffer.Count);
-    }
-
-    [TestMethod]
-    public void Clear_WhenBufferIsEmptyAndCalledRepeatedly_ShouldBeNoOp()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(5);
-        buffer.Clear();
-        buffer.Clear();
-        buffer.Clear();
-
-        Assert.AreEqual(0, buffer.Count);
-        Assert.AreEqual(5, buffer.Capacity);
-    }
-
-    [TestMethod]
-    public void Clear_WhenBufferResetWithSubsequentEnqueues_ShouldMaintainFifoOrder()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(5);
-        for (int i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
-        buffer.Clear();
-
-        for (int i = 10; i < 15; i++) buffer.Enqueue(new TestItem(i));
-
-        var snapshot = buffer.ToArray().Select(x => x.Value).ToArray();
-        CollectionAssert.AreEqual(new[] { 10, 11, 12, 13, 14 }, snapshot);
-    }
-
-    /// <summary>
-    /// Verifies idempotency of Clear under mixed activity.
-    /// </summary>
-    [TestMethod]
-    public void Clear_WhenCalledRepeatedlyDuringProducerConsumerActivity_ShouldRemainStable()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
-        var failed = false;
-
-        var toggler = Task.Run(() =>
+        [TestMethod]
+        public void Clear_WhenBufferContainsNulls_ShouldEmptyWithoutError()
         {
-            for (int i = 0; i < 1000; i++)
-            {
-                if (!buffer.TryEnqueue(new TestItem(i)))
-                    buffer.TryDequeue(out _);
-            }
-        });
+            var buffer = new ConcurrentCircularBuffer<TestItem>(4);
+            buffer.Enqueue(null!);
+            buffer.Enqueue(new TestItem(1));
+            buffer.Enqueue(null!);
 
-        var clearer = Task.Run(() =>
+            buffer.Clear();
+
+            Assert.AreEqual(0, buffer.Count);
+            CollectionAssert.AreEqual(Array.Empty<TestItem>(), buffer.ToArray());
+        }
+
+        [TestMethod]
+        public void Clear_WhenBufferContainsOnlyObjectsWithoutReferences_ShouldAllowGarbageCollection()
         {
-            for (int i = 0; i < 200; i++)
-            {
-                buffer.Clear();
-                if (buffer.Count < 0 || buffer.Count > buffer.Capacity)
-                    failed = true;
+            var buffer = new ConcurrentCircularBuffer<TestItem>(2);
+            var wr1 = new WeakReference(new TestItem(1));
+            var wr2 = new WeakReference(new TestItem(2));
 
-                Thread.SpinWait(20);
-            }
-        });
+            buffer.Enqueue((TestItem)wr1.Target!);
+            buffer.Enqueue((TestItem)wr2.Target!);
 
-        Task.WaitAll(toggler, clearer);
+            buffer.Clear();
 
-        Assert.IsFalse(failed, "Repeated Clear caused buffer state inconsistency.");
-        Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity);
-    }
+            wr1.Target = null;
+            wr2.Target = null;
 
-    /// <summary>
-    /// Verifies that Clear removes all items even if concurrently reading Count and ToArray.
-    /// </summary>
-    [TestMethod]
-    public void Clear_WhenInvokedDuringConcurrentRead_ShouldProduceConsistentEmptyState()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(10);
-        for (int i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
 
-        var stop = new CancellationTokenSource();
-        var readErrors = 0;
+            Assert.IsFalse(wr1.IsAlive || wr2.IsAlive, "Cleared items should be eligible for GC.");
+        }
 
-        var reader = Task.Run(() =>
+        [TestMethod]
+        public void Clear_WhenBufferFilledAndImmediatelyReused_ShouldPreserveCapacityAndMaintainFifoOrder()
         {
-            while (!stop.IsCancellationRequested)
-            {
-                _ = buffer.Count;      // exercise approximate count
-                _ = buffer.ToArray();   // exercise snapshot copy
-                Thread.SpinWait(50);
-            }
-        });
+            var buffer = new ConcurrentCircularBuffer<TestItem>(3);
+            buffer.Enqueue(new TestItem(1));
+            buffer.Enqueue(new TestItem(2));
+            buffer.Enqueue(new TestItem(3));
 
-        var clearer = Task.Run(() =>
+            buffer.Clear();
+
+            Assert.AreEqual(3, buffer.Capacity);
+            Assert.AreEqual(0, buffer.Count);
+
+            buffer.Enqueue(new TestItem(10));
+            buffer.Enqueue(new TestItem(11));
+            CollectionAssert.AreEqual(new[] { 10, 11 }, buffer.ToArray().Select(x => x.Value).ToArray());
+        }
+
+        [TestMethod]
+        public void Clear_WhenBufferFull_WithAllowOverwriteTrue_ShouldNotRaiseEvictionEvents()
         {
-            for (int i = 0; i < 10; i++)
-            {
-                try { buffer.Clear(); }
-                catch { Interlocked.Increment(ref readErrors); }
-                Thread.SpinWait(100);
-            }
-            stop.Cancel();
-        });
+            var buffer = new ConcurrentCircularBuffer<TestItem>(2, allowOverwrite: true);
+            int evicting = 0, evicted = 0;
 
-        Task.WaitAll(reader, clearer);
+            buffer.ItemEvicted += _ => evicted++;
 
-        Assert.AreEqual(0, readErrors, "Clear should not throw during concurrent reads.");
-        Assert.AreEqual(0, buffer.Count);
-        CollectionAssert.AreEqual(Array.Empty<TestItem>(), buffer.ToArray());
-    }
+            buffer.Enqueue(new TestItem(1));
+            buffer.Enqueue(new TestItem(2));
+            buffer.Clear();
 
-    /// <summary>
-    /// Verifies that Clear does not cause invalid state when concurrent Dequeue is active.
-    /// </summary>
-    [TestMethod]
-    public void Clear_WhenInvokedDuringDequeuePressure_ShouldNotThrowInvalidOperation()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(5);
-        for (int i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
+            Assert.AreEqual(0, evicted, "Clear must not raise ItemEvicted.");
+            Assert.AreEqual(0, buffer.Count);
+        }
 
-        var exceptions = new ConcurrentBag<Exception>();
-
-        var dequeuer = Task.Run(() =>
+        [TestMethod]
+        public void Clear_WhenBufferIsEmptyAndCalledRepeatedly_ShouldBeNoOp()
         {
-            for (int i = 0; i < 100; i++)
+            var buffer = new ConcurrentCircularBuffer<TestItem>(5);
+            buffer.Clear();
+            buffer.Clear();
+            buffer.Clear();
+
+            Assert.AreEqual(0, buffer.Count);
+            Assert.AreEqual(5, buffer.Capacity);
+        }
+
+        [TestMethod]
+        public void Clear_WhenBufferResetWithSubsequentEnqueues_ShouldMaintainFifoOrder()
+        {
+            var buffer = new ConcurrentCircularBuffer<TestItem>(5);
+            for (int i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
+            buffer.Clear();
+
+            for (int i = 10; i < 15; i++) buffer.Enqueue(new TestItem(i));
+
+            var snapshot = buffer.ToArray().Select(x => x.Value).ToArray();
+            CollectionAssert.AreEqual(new[] { 10, 11, 12, 13, 14 }, snapshot);
+        }
+
+        /// <summary>
+        /// Verifies idempotency of Clear under mixed activity.
+        /// </summary>
+        [TestMethod]
+        public void Clear_WhenCalledRepeatedlyDuringProducerConsumerActivity_ShouldRemainStable()
+        {
+            var buffer = new ConcurrentCircularBuffer<TestItem>(4);
+            var failed = false;
+
+            var toggler = Task.Run(() =>
             {
-                try
+                for (int i = 0; i < 1000; i++)
                 {
-                    buffer.TryDequeue(out _);
+                    if (!buffer.TryEnqueue(new TestItem(i)))
+                        buffer.TryDequeue(out _);
                 }
-                catch (Exception ex)
+            });
+
+            var clearer = Task.Run(() =>
+            {
+                for (int i = 0; i < 200; i++)
                 {
-                    exceptions.Add(ex);
+                    buffer.Clear();
+                    if (buffer.Count < 0 || buffer.Count > buffer.Capacity)
+                        failed = true;
+
+                    Thread.SpinWait(20);
                 }
-                Thread.SpinWait(20);
-            }
-        });
+            });
 
-        var clearer = Task.Run(() =>
+            Task.WaitAll(toggler, clearer);
+
+            Assert.IsFalse(failed, "Repeated Clear caused buffer state inconsistency.");
+            Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity);
+        }
+
+        /// <summary>
+        /// Verifies that Clear removes all items even if concurrently reading Count and ToArray.
+        /// </summary>
+        [TestMethod]
+        public void Clear_WhenInvokedDuringConcurrentRead_ShouldProduceConsistentEmptyState()
         {
-            for (int i = 0; i < 20; i++)
+            var buffer = new ConcurrentCircularBuffer<TestItem>(10);
+            for (int i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
+
+            var stop = new CancellationTokenSource();
+            var readErrors = 0;
+
+            var reader = Task.Run(() =>
             {
-                buffer.Clear();
-                Thread.SpinWait(50);
-            }
-        });
-
-        Task.WaitAll(dequeuer, clearer);
-
-        Assert.IsTrue(exceptions.All(e => e is not InvalidOperationException),
-            "Clear should not corrupt internal state during Dequeue.");
-    }
-
-    /// <summary>
-    /// Verifies that Clear does not interfere with concurrent Enqueue and Count remains in range.
-    /// </summary>
-    [TestMethod]
-    public void Clear_WhenInvokedDuringEnqueuePressure_ShouldNotCorruptState()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(8);
-        var failed = false;
-
-        var writer = Task.Run(() =>
-        {
-            for (int i = 0; i < 1000; i++)
-            {
-                buffer.TryEnqueue(new TestItem(i));
-                Thread.SpinWait(10);
-            }
-        });
-
-        var clearer = Task.Run(() =>
-        {
-            for (int i = 0; i < 50; i++)
-            {
-                buffer.Clear();
-                if (buffer.Count < 0 || buffer.Count > buffer.Capacity)
-                    failed = true;
-
-                Thread.SpinWait(100);
-            }
-        });
-
-        Task.WaitAll(writer, clearer);
-
-        Assert.IsFalse(failed, "Buffer state became invalid (Count out of range) during Clear.");
-    }
-
-    [TestMethod]
-    public void Clear_WhenProducerConsumerActive_ShouldKeepCountWithinBounds()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(8, allowOverwrite: true);
-        var cts = new CancellationTokenSource();
-        int violations = 0;
-
-        var producer = Task.Run(() =>
-        {
-            int i = 0;
-            while (!cts.IsCancellationRequested)
-            {
-                buffer.TryEnqueue(new TestItem(i++));
-                Thread.SpinWait(100);
-            }
-        });
-
-        var consumer = Task.Run(() =>
-        {
-            while (!cts.IsCancellationRequested)
-            {
-                buffer.TryDequeue(out _);
-                Thread.SpinWait(100);
-            }
-        });
-
-        var clearer = Task.Run(() =>
-        {
-            for (int i = 0; i < 200; i++)
-            {
-                buffer.Clear();
-                var count = buffer.Count;
-                if (count < 0 || count > buffer.Capacity)
-                    Interlocked.Increment(ref violations);
-
-                Thread.SpinWait(50);
-            }
-            cts.Cancel();
-        });
-
-        Task.WaitAll(producer, consumer, clearer);
-
-        Assert.AreEqual(0, violations, "Count should always be within [0, Capacity] during Clear.");
-    }
-
-    [TestMethod]
-    [DataRow(true)]
-    [DataRow(false)]
-    public void Clear_WhenReadingWithPeekContainsIndexer_ShouldOnlyRaiseExpectedExceptions(bool allowOverwrite)
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(capacity: 6, allowOverwrite: allowOverwrite);
-        for (int i = 0; i < 6; i++) buffer.Enqueue(new TestItem(i));
-
-        using var cts = new CancellationTokenSource();
-        var start = new ManualResetEventSlim(false);
-
-        int iterations = 0;
-        int peekEmptyCount = 0;              // InvalidOperationException from Peek() when empty
-        int indexerRaceCount = 0;            // ArgumentOutOfRangeException from indexer during races
-        var unexpected = new ConcurrentBag<Exception>();
-
-        // Reader task that exercises TryPeek, Peek, Contains, and the indexer.
-        var reader = Task.Run(() =>
-        {
-            start.Wait();
-            while (!cts.IsCancellationRequested)
-            {
-                try
+                while (!stop.IsCancellationRequested)
                 {
-                    // 1) Safe: never throws
-                    _ = buffer.TryPeek(out _);
+                    _ = buffer.Count;      // exercise approximate count
+                    _ = buffer.ToArray();   // exercise snapshot copy
+                    Thread.SpinWait(50);
+                }
+            });
 
-                    // 2) Strict: may throw when empty (this is the only allowed exception here)
+            var clearer = Task.Run(() =>
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    try { buffer.Clear(); }
+                    catch { Interlocked.Increment(ref readErrors); }
+                    Thread.SpinWait(100);
+                }
+                stop.Cancel();
+            });
+
+            Task.WaitAll(reader, clearer);
+
+            Assert.AreEqual(0, readErrors, "Clear should not throw during concurrent reads.");
+            Assert.AreEqual(0, buffer.Count);
+            CollectionAssert.AreEqual(Array.Empty<TestItem>(), buffer.ToArray());
+        }
+
+        /// <summary>
+        /// Verifies that Clear does not cause invalid state when concurrent Dequeue is active.
+        /// </summary>
+        [TestMethod]
+        public void Clear_WhenInvokedDuringDequeuePressure_ShouldNotThrowInvalidOperation()
+        {
+            var buffer = new ConcurrentCircularBuffer<TestItem>(5);
+            for (int i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
+
+            var exceptions = new ConcurrentBag<Exception>();
+
+            var dequeuer = Task.Run(() =>
+            {
+                for (int i = 0; i < 100; i++)
+                {
                     try
                     {
-                        _ = buffer.Peek();
+                        buffer.TryDequeue(out _);
                     }
-                    catch (InvalidOperationException)
+                    catch (Exception ex)
                     {
-                        Interlocked.Increment(ref peekEmptyCount);
+                        exceptions.Add(ex);
                     }
+                    Thread.SpinWait(20);
+                }
+            });
 
-                    // 3) Safe: should not throw
-                    _ = buffer.Contains(new TestItem(999));
+            var clearer = Task.Run(() =>
+            {
+                for (int i = 0; i < 20; i++)
+                {
+                    buffer.Clear();
+                    Thread.SpinWait(50);
+                }
+            });
 
-                    // 4) Indexer: choose a valid index if we can; still allow race with Clear()
+            Task.WaitAll(dequeuer, clearer);
+
+            Assert.IsTrue(exceptions.All(e => e is not InvalidOperationException),
+                "Clear should not corrupt internal state during Dequeue.");
+        }
+
+        /// <summary>
+        /// Verifies that Clear does not interfere with concurrent Enqueue and Count remains in range.
+        /// </summary>
+        [TestMethod]
+        public void Clear_WhenInvokedDuringEnqueuePressure_ShouldNotCorruptState()
+        {
+            var buffer = new ConcurrentCircularBuffer<TestItem>(8);
+            var failed = false;
+
+            var writer = Task.Run(() =>
+            {
+                for (int i = 0; i < 1000; i++)
+                {
+                    buffer.TryEnqueue(new TestItem(i));
+                    Thread.SpinWait(10);
+                }
+            });
+
+            var clearer = Task.Run(() =>
+            {
+                for (int i = 0; i < 50; i++)
+                {
+                    buffer.Clear();
+                    if (buffer.Count < 0 || buffer.Count > buffer.Capacity)
+                        failed = true;
+
+                    Thread.SpinWait(100);
+                }
+            });
+
+            Task.WaitAll(writer, clearer);
+
+            Assert.IsFalse(failed, "Buffer state became invalid (Count out of range) during Clear.");
+        }
+
+        [TestMethod]
+        public void Clear_WhenProducerConsumerActive_ShouldKeepCountWithinBounds()
+        {
+            var buffer = new ConcurrentCircularBuffer<TestItem>(8, allowOverwrite: true);
+            var cts = new CancellationTokenSource();
+            int violations = 0;
+
+            var producer = Task.Run(() =>
+            {
+                int i = 0;
+                while (!cts.IsCancellationRequested)
+                {
+                    buffer.TryEnqueue(new TestItem(i++));
+                    Thread.SpinWait(100);
+                }
+            });
+
+            var consumer = Task.Run(() =>
+            {
+                while (!cts.IsCancellationRequested)
+                {
+                    buffer.TryDequeue(out _);
+                    Thread.SpinWait(100);
+                }
+            });
+
+            var clearer = Task.Run(() =>
+            {
+                for (int i = 0; i < 200; i++)
+                {
+                    buffer.Clear();
+                    var count = buffer.Count;
+                    if (count < 0 || count > buffer.Capacity)
+                        Interlocked.Increment(ref violations);
+
+                    Thread.SpinWait(50);
+                }
+                cts.Cancel();
+            });
+
+            Task.WaitAll(producer, consumer, clearer);
+
+            Assert.AreEqual(0, violations, "Count should always be within [0, Capacity] during Clear.");
+        }
+
+        [TestMethod]
+        [DataRow(true)]
+        [DataRow(false)]
+        public void Clear_WhenReadingWithPeekContainsIndexer_ShouldOnlyRaiseExpectedExceptions(bool allowOverwrite)
+        {
+            // Arrange
+            var buffer = new ConcurrentCircularBuffer<TestItem>(capacity: 6, allowOverwrite: allowOverwrite);
+            for (int i = 0; i < 6; i++) buffer.Enqueue(new TestItem(i));
+
+            using var cts = new CancellationTokenSource();
+            var start = new ManualResetEventSlim(false);
+
+            // Metrics
+            int iterations = 0;
+            int peekEmptyCount = 0;              // InvalidOperationException from Peek() when empty
+            int indexerRaceCount = 0;            // ArgumentOutOfRangeException from indexer during races
+            var unexpected = new ConcurrentBag<Exception>();
+
+            // Reader task that exercises TryPeek, Peek, Contains, and the indexer
+            var reader = Task.Run(() =>
+            {
+                start.Wait();
+                while (!cts.IsCancellationRequested)
+                {
                     try
                     {
-                        var snap = buffer.ToArray(); // snapshot to reduce — but not eliminate — races
-                        if (snap.Length > 0)
+                        // 1) Safe: never throws
+                        _ = buffer.TryPeek(out _);
+
+                        // 2) Strict: may throw when empty (this is the only allowed exception here)
+                        try
                         {
-                            // pick first element from the snapshot
-                            _ = buffer[0];
+                            _ = buffer.Peek();
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            Interlocked.Increment(ref peekEmptyCount);
+                        }
+
+                        // 3) Safe: should not throw
+                        _ = buffer.Contains(new TestItem(999));
+
+                        // 4) Indexer: choose a valid index if we can; still allow race with Clear()
+                        try
+                        {
+                            var snap = buffer.ToArray(); // snapshot to reduce�but not eliminate�races
+                            if (snap.Length > 0)
+                            {
+                                // pick first element from the snapshot
+                                _ = buffer[0];
+                            }
+                        }
+                        catch (ArgumentOutOfRangeException)
+                        {
+                            Interlocked.Increment(ref indexerRaceCount);
                         }
                     }
-                    catch (ArgumentOutOfRangeException)
+                    catch (Exception ex)
                     {
-                        Interlocked.Increment(ref indexerRaceCount);
+                        // Any other exception type is unexpected
+                        unexpected.Add(ex);
                     }
-                }
-                catch (Exception ex)
-                {
-                    // Any other exception type is unexpected
-                    unexpected.Add(ex);
-                }
 
-                Interlocked.Increment(ref iterations);
-                Thread.SpinWait(50);
-            }
-        });
+                    Interlocked.Increment(ref iterations);
+                    Thread.Sleep(1); // yield so the clearer thread is also scheduled under load
+                }
+            });
 
-        // Clearer task that repeatedly clears and lightly reuses the buffer.
-        var clearer = Task.Run(() =>
-        {
-            start.Wait();
-            for (int i = 0; i < 60 && !cts.IsCancellationRequested; i++)
+            // Clearer task that repeatedly clears and lightly reuses the buffer.
+            // Thread.Sleep(2) is used instead of Thread.SpinWait here: SpinWait is a
+            // CPU-bound busy-wait that never yields the thread. At 60 iterations it
+            // completes in <10 µs under load, cancelling the CTS before the reader task
+            // has been scheduled even once. Sleep yields the thread, ensuring the reader
+            // gets CPU time on every iteration.
+            var clearer = Task.Run(() =>
             {
-                buffer.Clear();
-
-                // Re-add a couple of items sometimes to vary state
-                if ((i % 3) == 0)
+                start.Wait();
+                for (int i = 0; i < 60 && !cts.IsCancellationRequested; i++)
                 {
-                    buffer.TryEnqueue(new TestItem(100 + i));
-                    buffer.TryEnqueue(new TestItem(200 + i));
+                    buffer.Clear();
+
+                    // Re-add a couple of items sometimes to vary state
+                    if ((i % 3) == 0)
+                    {
+                        buffer.TryEnqueue(new TestItem(100 + i));
+                        buffer.TryEnqueue(new TestItem(200 + i));
+                    }
+                    Thread.Sleep(2);
                 }
-                Thread.SpinWait(100);
-            }
-            cts.Cancel();
-        });
+                cts.Cancel();
+            });
 
-        start.Set();
-        Task.WaitAll(reader, clearer);
+            // Act
+            start.Set();
+            Task.WaitAll(reader, clearer);
 
-        // No unexpected exceptions should have escaped the inner try-catches.
-        Assert.AreEqual(0, unexpected.Count, $"Unexpected exceptions: {string.Join(", ", unexpected.Select(e => e.GetType().Name))}");
+            // Assert No unexpected exceptions should have escaped the inner try-catches
+            Assert.AreEqual(0, unexpected.Count, $"Unexpected exceptions: {string.Join(", ", unexpected.Select(e => e.GetType().Name))}");
 
-        // We expect at least some iterations to have run.
-        Assert.IsTrue(iterations > 0, "Reader performed no iterations.");
+            // We expect at least some iterations to have run
+            Assert.IsTrue(iterations > 0, "Reader performed no iterations.");
 
-        // Invariants still hold.
-        Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity, "Count must remain within [0, Capacity].");
+            // Invariants still hold
+            Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity, "Count must remain within [0, Capacity].");
 
-        // Sanity: we should have observed at least some of the allowed race conditions.
-        // (Not strictly required, but useful to confirm the test actually exercised races.)
-        Assert.IsTrue(peekEmptyCount >= 0);
-        Assert.IsTrue(indexerRaceCount >= 0);
+            // Sanity: we should have observed at least *some* of the allowed race conditions (Not strictly required, but useful to ensure
+            // the test actually exercised races.)
+            Assert.IsTrue(peekEmptyCount >= 0);
+            Assert.IsTrue(indexerRaceCount >= 0);
+        }
     }
 }

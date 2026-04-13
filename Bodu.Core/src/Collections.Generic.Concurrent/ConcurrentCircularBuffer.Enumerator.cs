@@ -43,16 +43,16 @@ public sealed partial class ConcurrentCircularBuffer<T> :
         internal Enumerator(ConcurrentCircularBuffer<T> owner)
         {
             ThrowHelper.ThrowIfNull(owner);
-            _snapshot = owner.ToArray();
-            _index = -1;
-            _current = default;
+            this._snapshot = owner.ToArray();
+            this._index = -1;
+            this._current = default;
         }
 
         /// <inheritdoc />
-        public T Current => _current!;
+        public T Current => this._current!;
 
         /// <inheritdoc />
-        object IEnumerator.Current => _current!;
+        object IEnumerator.Current => this._current!;
 
         /// <inheritdoc />
         public void Dispose()
@@ -63,23 +63,23 @@ public sealed partial class ConcurrentCircularBuffer<T> :
         /// <inheritdoc />
         public bool MoveNext()
         {
-            int next = _index + 1;
-            if (next < _snapshot.Length)
+            int next = this._index + 1;
+            if (next < this._snapshot.Length)
             {
-                _current = _snapshot[next];
-                _index = next;
+                this._current = this._snapshot[next];
+                this._index = next;
                 return true;
             }
 
-            _current = default;
+            this._current = default;
             return false;
         }
 
         /// <inheritdoc />
         public void Reset()
         {
-            _index = -1;
-            _current = default;
+            this._index = -1;
+            this._current = default;
         }
     }
 }

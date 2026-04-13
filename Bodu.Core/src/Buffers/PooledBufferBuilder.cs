@@ -31,8 +31,8 @@ public sealed class PooledBufferBuilder<T> :
     /// <param name="initialCapacity">The initial capacity of the pooled buffer. Defaults to 256.</param>
     public PooledBufferBuilder(int initialCapacity = 256)
     {
-        _internalBuffer = ArrayPool<T>.Shared.Rent(initialCapacity);
-        _count = 0;
+        this._internalBuffer = ArrayPool<T>.Shared.Rent(initialCapacity);
+        this._count = 0;
     }
 
     /// <summary>
@@ -43,8 +43,8 @@ public sealed class PooledBufferBuilder<T> :
     {
         get
         {
-            ThrowIfDisposed();
-            return _count;
+            this.ThrowIfDisposed();
+            return this._count;
         }
     }
 
@@ -55,12 +55,12 @@ public sealed class PooledBufferBuilder<T> :
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
     public void Append(T item)
     {
-        ThrowIfDisposed();
+        this.ThrowIfDisposed();
 
-        if (_count >= _internalBuffer.Length)
-            Grow();
+        if (this._count >= this._internalBuffer.Length)
+            this.Grow();
 
-        _internalBuffer[_count++] = item;
+        this._internalBuffer[this._count++] = item;
     }
 
     /// <summary>
@@ -71,15 +71,15 @@ public sealed class PooledBufferBuilder<T> :
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
     public void AppendRange(IEnumerable<T> source)
     {
-        ThrowIfDisposed();
+        this.ThrowIfDisposed();
         ThrowHelper.ThrowIfNull(source);
 
         foreach (T item in source)
         {
-            if (_count >= _internalBuffer.Length)
-                Grow();
+            if (this._count >= this._internalBuffer.Length)
+                this.Grow();
 
-            _internalBuffer[_count++] = item;
+            this._internalBuffer[this._count++] = item;
         }
     }
 
@@ -91,8 +91,8 @@ public sealed class PooledBufferBuilder<T> :
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
     public T[] AsArray()
     {
-        ThrowIfDisposed();
-        return _internalBuffer;
+        this.ThrowIfDisposed();
+        return this._internalBuffer;
     }
 
     /// <summary>
@@ -102,8 +102,8 @@ public sealed class PooledBufferBuilder<T> :
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
     public Span<T> AsSpan()
     {
-        ThrowIfDisposed();
-        return _internalBuffer.AsSpan(0, _count);
+        this.ThrowIfDisposed();
+        return this._internalBuffer.AsSpan(0, this._count);
     }
 
     /// <summary>
@@ -112,12 +112,12 @@ public sealed class PooledBufferBuilder<T> :
     /// <remarks>After calling this method, further operations on the instance will throw <see cref="ObjectDisposedException" />.</remarks>
     public void Dispose()
     {
-        if (!_disposed)
+        if (!this._disposed)
         {
-            ReturnBufferIfNeeded();
-            _internalBuffer = Array.Empty<T>();
-            _count = 0;
-            _disposed = true;
+            this.ReturnBufferIfNeeded();
+            this._internalBuffer = Array.Empty<T>();
+            this._count = 0;
+            this._disposed = true;
         }
     }
 
@@ -131,15 +131,15 @@ public sealed class PooledBufferBuilder<T> :
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
     public bool TryCopyFrom(IReadOnlyCollection<T> source)
     {
-        ThrowIfDisposed();
+        this.ThrowIfDisposed();
         ThrowHelper.ThrowIfNull(source);
 
         if (source is ICollection<T> col)
         {
-            ReturnBufferIfNeeded();
-            _count = col.Count;
-            _internalBuffer = ArrayPool<T>.Shared.Rent(_count);
-            col.CopyTo(_internalBuffer, 0);
+            this.ReturnBufferIfNeeded();
+            this._count = col.Count;
+            this._internalBuffer = ArrayPool<T>.Shared.Rent(this._count);
+            col.CopyTo(this._internalBuffer, 0);
             return true;
         }
 
@@ -149,26 +149,26 @@ public sealed class PooledBufferBuilder<T> :
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void Grow()
     {
-        T[] newBuffer = ArrayPool<T>.Shared.Rent(_internalBuffer.Length * 2);
-        Array.Copy(_internalBuffer, 0, newBuffer, 0, _count);
-        ReturnBufferIfNeeded();
-        _internalBuffer = newBuffer;
+        T[] newBuffer = ArrayPool<T>.Shared.Rent(this._internalBuffer.Length * 2);
+        Array.Copy(this._internalBuffer, 0, newBuffer, 0, this._count);
+        this.ReturnBufferIfNeeded();
+        this._internalBuffer = newBuffer;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ReturnBufferIfNeeded()
     {
-        if (_internalBuffer.Length > 0)
+        if (this._internalBuffer.Length > 0)
         {
             bool clear = RuntimeHelpers.IsReferenceOrContainsReferences<T>();
-            ArrayPool<T>.Shared.Return(_internalBuffer, clear);
+            ArrayPool<T>.Shared.Return(this._internalBuffer, clear);
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed()
     {
-        if (_disposed)
+        if (this._disposed)
             throw new ObjectDisposedException(nameof(PooledBufferBuilder<T>), "Cannot access _internalBuffer after it has been _disposed.");
     }
 }

@@ -130,14 +130,14 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
         ThrowHelper.ThrowIfEnumValueIsUndefined(pattern);
 
-        _pattern = pattern;
+        this._pattern = pattern;
 
         // When isFiscalYearEnd is true, the fiscal year begins in the month following the anchor month.
         // The first day of each fiscal week is therefore one day after the anchor day-of-week.
         int startMonth = month + (isFiscalYearEnd ? 1 : 0);
-        _firstDayOfWeek = isFiscalYearEnd ? (DayOfWeek)(((int)dayOfWeek + 1) % 7) : dayOfWeek;
+        this._firstDayOfWeek = isFiscalYearEnd ? (DayOfWeek)(((int)dayOfWeek + 1) % 7) : dayOfWeek;
 
-        _fiscalYearStartTicks = useNearestDayOfWeek
+        this._fiscalYearStartTicks = useNearestDayOfWeek
             ? AlignToNearestDayOfWeek(
                 DateTimeExtensions.GetDateTicks(year, startMonth, 1),
                 dayOfWeek)
@@ -145,7 +145,7 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
                 DateTimeExtensions.GetDateTicks(year, startMonth, 1),
                 dayOfWeek);
 
-        _is53WeekFiscalYear = ComputeIs53WeekYear(_fiscalYearStartTicks, year, startMonth, _firstDayOfWeek, useNearestDayOfWeek);
+        this._is53WeekFiscalYear = ComputeIs53WeekYear(this._fiscalYearStartTicks, year, startMonth, this._firstDayOfWeek, useNearestDayOfWeek);
     }
 
     /// <summary>
@@ -156,7 +156,7 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
     /// <see langword="true" /> if the fiscal year spans 371 days (53 complete weeks);
     /// <see langword="false" /> if it spans 364 days (52 complete weeks).
     /// </value>
-    public bool Is53WeekFiscalYear => _is53WeekFiscalYear;
+    public bool Is53WeekFiscalYear => this._is53WeekFiscalYear;
 
     /// <summary>
     /// Gets the week distribution pattern applied to the three fiscal periods within each quarter.
@@ -165,20 +165,20 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
     /// One of the <see cref="FiscalWeekPattern" /> values that describes how the 13 weeks of each
     /// quarter are divided into fiscal periods.
     /// </value>
-    public FiscalWeekPattern Pattern => _pattern;
+    public FiscalWeekPattern Pattern => this._pattern;
 
     /// <summary>
     /// Gets the total number of weeks in the fiscal year.
     /// </summary>
     /// <value>53 in a 53-week fiscal year; otherwise, 52.</value>
-    public int WeeksInFiscalYear => _is53WeekFiscalYear ? 53 : 52;
+    public int WeeksInFiscalYear => this._is53WeekFiscalYear ? 53 : 52;
 
     /// <inheritdoc />
     public int GetQuarter(DateTime dateTime)
     {
-        ValidateDateInFiscalYear(dateTime);
+        this.ValidateDateInFiscalYear(dateTime);
 
-        int weeksFromStart = (int)((dateTime.Ticks - _fiscalYearStartTicks) / DateTimeExtensions.TicksPerWeek);
+        int weeksFromStart = (int)((dateTime.Ticks - this._fiscalYearStartTicks) / DateTimeExtensions.TicksPerWeek);
         int quarter = (weeksFromStart / 13) + 1;
 
         // In a 53-week year the final week computes as quarter 5; clamp it back to Q4.
@@ -189,34 +189,34 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
     }
 
     /// <inheritdoc />
-    public int GetQuarter(DateOnly dateOnly) => GetQuarter(dateOnly.ToDateTime(TimeOnly.MinValue));
+    public int GetQuarter(DateOnly dateOnly) => this.GetQuarter(dateOnly.ToDateTime(TimeOnly.MinValue));
 
     /// <inheritdoc />
-    public DateTime GetQuarterEnd(DateTime dateTime) => GetQuarterEnd(GetQuarter(dateTime));
+    public DateTime GetQuarterEnd(DateTime dateTime) => this.GetQuarterEnd(this.GetQuarter(dateTime));
 
     /// <inheritdoc />
     public DateTime GetQuarterEnd(int quarter)
     {
-        DateTime start = GetQuarterStart(quarter);
+        DateTime start = this.GetQuarterStart(quarter);
 
         // Q4 absorbs the additional week in a 53-week fiscal year; all other quarters are exactly 13 weeks.
-        int weeks = (quarter == 4 && _is53WeekFiscalYear) ? 14 : 13;
+        int weeks = (quarter == 4 && this._is53WeekFiscalYear) ? 14 : 13;
         long endTicks = start.Ticks + ((long)weeks * DateTimeExtensions.TicksPerWeek) - DateTimeExtensions.TicksPerDay;
 
         return new DateTime(DateTimeExtensions.GetDateAsTicks(endTicks), DateTimeKind.Unspecified);
     }
 
     /// <inheritdoc />
-    public DateOnly GetQuarterEndDate(DateOnly dateOnly) => GetQuarterEnd(dateOnly.ToDateTime(TimeOnly.MinValue)).ToDateOnly();
+    public DateOnly GetQuarterEndDate(DateOnly dateOnly) => this.GetQuarterEnd(dateOnly.ToDateTime(TimeOnly.MinValue)).ToDateOnly();
 
     /// <inheritdoc />
-    public DateOnly GetQuarterEndDate(int quarter) => GetQuarterEnd(quarter).ToDateOnly();
+    public DateOnly GetQuarterEndDate(int quarter) => this.GetQuarterEnd(quarter).ToDateOnly();
 
     /// <inheritdoc />
     public DateTime GetQuarterStart(DateTime dateTime)
     {
-        ValidateDateInFiscalYear(dateTime);
-        return GetQuarterStart(GetQuarter(dateTime));
+        this.ValidateDateInFiscalYear(dateTime);
+        return this.GetQuarterStart(this.GetQuarter(dateTime));
     }
 
     /// <inheritdoc />
@@ -225,16 +225,16 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
         ThrowHelper.ThrowIfOutOfRange(quarter, 1, 4);
 
         long offsetTicks = (long)(quarter - 1) * 13L * DateTimeExtensions.TicksPerWeek;
-        long startTicks = _fiscalYearStartTicks + offsetTicks;
+        long startTicks = this._fiscalYearStartTicks + offsetTicks;
 
         return new DateTime(DateTimeExtensions.GetDateAsTicks(startTicks), DateTimeKind.Unspecified);
     }
 
     /// <inheritdoc />
-    public DateOnly GetQuarterStartDate(DateOnly dateOnly) => GetQuarterStart(dateOnly.ToDateTime(TimeOnly.MinValue)).ToDateOnly();
+    public DateOnly GetQuarterStartDate(DateOnly dateOnly) => this.GetQuarterStart(dateOnly.ToDateTime(TimeOnly.MinValue)).ToDateOnly();
 
     /// <inheritdoc />
-    public DateOnly GetQuarterStartDate(int quarter) => GetQuarterStart(quarter).ToDateOnly();
+    public DateOnly GetQuarterStartDate(int quarter) => this.GetQuarterStart(quarter).ToDateOnly();
 
     /// <summary>
     /// Returns the tick value of the nearest occurrence of <paramref name="weekStart" /> on or before the
@@ -318,10 +318,10 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
         // Align the input date back to the start of its fiscal week. A date belongs to a fiscal year
         // if the week in which it falls begins within [fiscalYearStart, fiscalYearStart + yearLength).
         long weekStartTicks = dateTime.Ticks
-            - DateTimeExtensions.GetTicksSincePreviousOrSameDayOfWeek(dateTime.Ticks, _firstDayOfWeek);
+            - DateTimeExtensions.GetTicksSincePreviousOrSameDayOfWeek(dateTime.Ticks, this._firstDayOfWeek);
 
-        long deltaDays = (weekStartTicks - _fiscalYearStartTicks) / DateTimeExtensions.TicksPerDay;
-        int fiscalYearLengthDays = _is53WeekFiscalYear ? 371 : 364;
+        long deltaDays = (weekStartTicks - this._fiscalYearStartTicks) / DateTimeExtensions.TicksPerDay;
+        int fiscalYearLengthDays = this._is53WeekFiscalYear ? 371 : 364;
 
         if (deltaDays < 0 || deltaDays >= fiscalYearLengthDays)
         {
@@ -330,7 +330,7 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
                 string.Format(
                     ResourceStrings.Arg_OutOfRange_DateOutsideFiscalYear,
                     dateTime,
-                    new DateTime(_fiscalYearStartTicks, DateTimeKind.Unspecified)));
+                    new DateTime(this._fiscalYearStartTicks, DateTimeKind.Unspecified)));
         }
     }
 }

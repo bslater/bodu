@@ -36,21 +36,21 @@ public partial class CircularBuffer<T>
         /// <param name="circularBuffer">The buffer to enumerate.</param>
         internal Enumerator(CircularBuffer<T> circularBuffer)
         {
-            _circularBuffer = circularBuffer;
-            _version = circularBuffer._version;
-            _currentIndex = -1;
-            _current = default!;
-            _iteratedCount = 0;
+            this._circularBuffer = circularBuffer;
+            this._version = circularBuffer._version;
+            this._currentIndex = -1;
+            this._current = default!;
+            this._iteratedCount = 0;
         }
 
         /// <inheritdoc />
         public T Current =>
-            _currentIndex == -1
+            this._currentIndex == -1
                 ? throw new InvalidOperationException(ResourceStrings.InvalidOperation_EnumeratorNotOnElement)
-                : _current;
+                : this._current;
 
         /// <inheritdoc />
-        object System.Collections.IEnumerator.Current => Current!;
+        object System.Collections.IEnumerator.Current => this.Current!;
 
         /// <inheritdoc />
         public void Dispose()
@@ -61,19 +61,19 @@ public partial class CircularBuffer<T>
         /// <inheritdoc />
         public bool MoveNext()
         {
-            if (_version != _circularBuffer._version)
+            if (this._version != this._circularBuffer._version)
                 throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
 
-            if (_iteratedCount >= _circularBuffer._count)
+            if (this._iteratedCount >= this._circularBuffer._count)
             {
-                _current = default!;
-                _currentIndex = -1; // Ended
+                this._current = default!;
+                this._currentIndex = -1; // Ended
                 return false;
             }
 
-            _currentIndex = (_circularBuffer._head + _iteratedCount) % _circularBuffer._capacity;
-            _current = _circularBuffer._internalBuffer[_currentIndex];
-            _iteratedCount++;
+            this._currentIndex = (this._circularBuffer._head + this._iteratedCount) % this._circularBuffer._capacity;
+            this._current = this._circularBuffer._internalBuffer[this._currentIndex];
+            this._iteratedCount++;
 
             return true;
         }
@@ -81,12 +81,12 @@ public partial class CircularBuffer<T>
         /// <inheritdoc />
         public void Reset()
         {
-            if (_version != _circularBuffer._version)
+            if (this._version != this._circularBuffer._version)
                 throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
 
-            _currentIndex = -1;
-            _current = default!;
-            _iteratedCount = 0;
+            this._currentIndex = -1;
+            this._current = default!;
+            this._iteratedCount = 0;
         }
     }
 }

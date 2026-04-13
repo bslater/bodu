@@ -35,7 +35,7 @@ internal sealed class EvictingDictionaryDebugView<TKey, TValue>
     public EvictingDictionaryDebugView(EvictingDictionary<TKey, TValue> dictionary)
     {
         ThrowHelper.ThrowIfNull(dictionary);
-        _dictionary = dictionary;
+        this._dictionary = dictionary;
     }
 
     /// <summary>
@@ -46,5 +46,5 @@ internal sealed class EvictingDictionaryDebugView<TKey, TValue>
     /// directly under the parent node in the debugger rather than as a nested <c>Items</c> property.
     /// </remarks>
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-    public KeyValuePair<TKey, TValue>[] Items => _dictionary.ToArray();
+    public KeyValuePair<TKey, TValue>[] Items => this._dictionary.ToArray();
 }

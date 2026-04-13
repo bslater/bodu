@@ -598,10 +598,17 @@ public partial class ConcurrentCircularBufferTests
             Assert.IsTrue(expectedEnqFaults > 0,
                 "Some Enqueue calls must have been rejected when AllowOverwrite is false and the buffer is full.");
 
-        // With aggressive concurrent writers, readers will encounter an empty buffer at some
-        // point regardless of the allowOverwrite setting.
-        Assert.IsTrue(expectedDeqFaults > 0,
-            "Some Dequeue calls must have observed an empty buffer during concurrent load.");
+        // Note: expectedDeqFaults > 0 is intentionally not asserted here.
+        //
+        // The purpose of this test is to prove that Dequeue() only ever throws
+        // InvalidOperationException — never a different exception type arising from state
+        // corruption. Whether that path is exercised zero or many times during the run is not
+        // relevant to that proof and cannot be reliably guaranteed: with threadCount writers
+        // (each firing every ~100 ns) and capacity=10, the buffer stays populated throughout
+        // the 2-second window under typical load, so readers may never observe an empty buffer.
+        //
+        // The empty-buffer throw path is verified deterministically by:
+        //   Dequeue_WhenBufferIsEmpty_ShouldThrowInvalidOperation
     }
 
     // -----------------------------------------------------------------------------------------

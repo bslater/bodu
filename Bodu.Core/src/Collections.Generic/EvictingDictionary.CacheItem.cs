@@ -46,6 +46,6 @@ public partial class EvictingDictionary<TKey, TValue>
         /// Initialises a new instance of the <see cref="CacheItem" /> class with the specified value.
         /// </summary>
         /// <param name="value">The value to store in the cache entry.</param>
-        public CacheItem(TValue value) => Value = value;
+        public CacheItem(TValue value) => this.Value = value;
     }
 }

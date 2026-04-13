@@ -16,16 +16,16 @@ public partial class EvictingDictionary<TKey, TValue> :
     System.Collections.IDictionary
 {
     /// <inheritdoc />
-    public int Count => _store.Count;
+    public int Count => this._store.Count;
 
     /// <inheritdoc />
     public bool IsReadOnly => false;
 
     /// <inheritdoc />
-    public ICollection<TKey> Keys => GetOrderedItems().Select(kvp => kvp.Key).ToList();
+    public ICollection<TKey> Keys => this.GetOrderedItems().Select(kvp => kvp.Key).ToList();
 
     /// <inheritdoc />
-    public ICollection<TValue> Values => GetOrderedItems().Select(item => item.Value).ToList();
+    public ICollection<TValue> Values => this.GetOrderedItems().Select(item => item.Value).ToList();
 
     /// <inheritdoc />
     bool IDictionary.IsFixedSize => false;
@@ -34,29 +34,29 @@ public partial class EvictingDictionary<TKey, TValue> :
     bool IDictionary.IsReadOnly => false;
 
     /// <inheritdoc />
-    ICollection IDictionary.Keys => (ICollection)Keys;
+    ICollection IDictionary.Keys => (ICollection)this.Keys;
 
     /// <inheritdoc />
-    ICollection IDictionary.Values => (ICollection)Values;
+    ICollection IDictionary.Values => (ICollection)this.Values;
 
     /// <inheritdoc cref="System.Collections.Generic.IDictionary{TKey, TValue}.this" />
     public TValue this[TKey key]
     {
         get
         {
-            if (TryGetValue(key, out TValue? value))
+            if (this.TryGetValue(key, out TValue? value))
                 return value;
 
             throw new KeyNotFoundException();
         }
 
-        set => Add(key, value);
+        set => this.Add(key, value);
     }
 
     /// <inheritdoc />
     object? IDictionary.this[object key]
     {
-        get => key is TKey typedKey && TryGetValue(typedKey, out TValue? value) ? value : null;
+        get => key is TKey typedKey && this.TryGetValue(typedKey, out TValue? value) ? value : null;
 
         set
         {
@@ -79,24 +79,24 @@ public partial class EvictingDictionary<TKey, TValue> :
 
         // Remove an existing entry for this key so that the replacement is tracked correctly
         // by the eviction policy (position and frequency are reset on re-insertion).
-        if (_store.ContainsKey(key))
-            Remove(key);
+        if (this._store.ContainsKey(key))
+            this.Remove(key);
 
-        if (_store.Count >= _capacity)
-            EvictOne();
+        if (this._store.Count >= this._capacity)
+            this.EvictOne();
 
         CacheItem item = new CacheItem(value);
 
-        if (_evictingPolicy is EvictingDictionaryPolicy.FirstInFirstOut
-            || _evictingPolicy is EvictingDictionaryPolicy.LeastRecentlyUsed
-            || _evictingPolicy is EvictingDictionaryPolicy.MostRecentlyUsed
-            || _evictingPolicy is EvictingDictionaryPolicy.SecondChance)
-            item.Node = _order.AddLast(key);
+        if (this._evictingPolicy is EvictingDictionaryPolicy.FirstInFirstOut
+            || this._evictingPolicy is EvictingDictionaryPolicy.LeastRecentlyUsed
+            || this._evictingPolicy is EvictingDictionaryPolicy.MostRecentlyUsed
+            || this._evictingPolicy is EvictingDictionaryPolicy.SecondChance)
+            item.Node = this._order.AddLast(key);
 
-        if (_evictingPolicy == EvictingDictionaryPolicy.LeastFrequentlyUsed)
-            AddToFrequencyList(item.Frequency, key);
+        if (this._evictingPolicy == EvictingDictionaryPolicy.LeastFrequentlyUsed)
+            this.AddToFrequencyList(item.Frequency, key);
 
-        _store[key] = item;
+        this._store[key] = item;
     }
 
     /// <summary>
@@ -105,7 +105,7 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// </summary>
     /// <param name="item">The key/value pair to add to the dictionary.</param>
     /// <exception cref="ArgumentNullException"><c>item.Key</c> is <see langword="null" />.</exception>
-    public void Add(KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
+    public void Add(KeyValuePair<TKey, TValue> item) => this.Add(item.Key, item.Value);
 
     /// <summary>
     /// Removes all entries from the dictionary and resets internal tracking counters.
@@ -117,18 +117,18 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// </remarks>
     public void Clear()
     {
-        _store.Clear();
-        _order?.Clear();
-        _frequencyList?.Clear();
-        _totalTouches = _evictionCount = 0;
+        this._store.Clear();
+        this._order?.Clear();
+        this._frequencyList?.Clear();
+        this._totalTouches = this._evictionCount = 0;
     }
 
     /// <inheritdoc />
     public bool Contains(KeyValuePair<TKey, TValue> item) =>
-        TryGetValue(item.Key, out TValue? val) && EqualityComparer<TValue>.Default.Equals(val, item.Value);
+        this.TryGetValue(item.Key, out TValue? val) && EqualityComparer<TValue>.Default.Equals(val, item.Value);
 
     /// <inheritdoc />
-    public bool ContainsKey(TKey key) => _store.ContainsKey(key);
+    public bool ContainsKey(TKey key) => this._store.ContainsKey(key);
 
     /// <inheritdoc />
     public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
@@ -137,29 +137,29 @@ public partial class EvictingDictionary<TKey, TValue> :
         ThrowHelper.ThrowIfArrayIsNotSingleDimension(array);
         ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
         ThrowHelper.ThrowIfLessThan(arrayIndex, 0);
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, arrayIndex, Count);
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, arrayIndex, this.Count);
 
-        foreach (KeyValuePair<TKey, TValue> kvp in GetOrderedItems())
+        foreach (KeyValuePair<TKey, TValue> kvp in this.GetOrderedItems())
             array[arrayIndex++] = kvp;
     }
 
     /// <inheritdoc />
-    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => GetOrderedItems().GetEnumerator();
+    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => this.GetOrderedItems().GetEnumerator();
 
     /// <inheritdoc />
     public bool Remove(TKey key)
     {
-        if (_store.TryGetValue(key, out CacheItem? item))
+        if (this._store.TryGetValue(key, out CacheItem? item))
         {
             // Use the stored node reference for O(1) removal from the order list for all
             // order-tracked policies (FIFO, LRU, MRU, SecondChance).
-            if (_order is not null && item.Node is not null)
-                _order.Remove(item.Node);
+            if (this._order is not null && item.Node is not null)
+                this._order.Remove(item.Node);
 
-            if (_evictingPolicy == EvictingDictionaryPolicy.LeastFrequentlyUsed)
-                RemoveFromFrequencyList(item.Frequency, key);
+            if (this._evictingPolicy == EvictingDictionaryPolicy.LeastFrequentlyUsed)
+                this.RemoveFromFrequencyList(item.Frequency, key);
 
-            _store.Remove(key);
+            this._store.Remove(key);
             return true;
         }
 
@@ -167,7 +167,7 @@ public partial class EvictingDictionary<TKey, TValue> :
     }
 
     /// <inheritdoc />
-    public bool Remove(KeyValuePair<TKey, TValue> item) => Contains(item) && Remove(item.Key);
+    public bool Remove(KeyValuePair<TKey, TValue> item) => this.Contains(item) && this.Remove(item.Key);
 
     /// <summary>
     /// Attempts to retrieve the value associated with the specified key.
@@ -184,15 +184,15 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// </remarks>
     public bool TryGetValue(TKey key, out TValue value)
     {
-        if (_store.TryGetValue(key, out CacheItem? item))
+        if (this._store.TryGetValue(key, out CacheItem? item))
         {
             value = item.Value;
 
-            if (_evictingPolicy is EvictingDictionaryPolicy.LeastRecentlyUsed
+            if (this._evictingPolicy is EvictingDictionaryPolicy.LeastRecentlyUsed
                 or EvictingDictionaryPolicy.LeastFrequentlyUsed)
-                TouchInternal(key, item);
+                this.TouchInternal(key, item);
 
-            _totalTouches++;
+            this._totalTouches++;
             return true;
         }
 
@@ -206,23 +206,23 @@ public partial class EvictingDictionary<TKey, TValue> :
         ThrowHelper.ThrowIfNotOfType<TKey>(key);
         ThrowHelper.ThrowIfNotOfType<TValue>(value);
 
-        Add((TKey)key, (TValue)value!);
+        this.Add((TKey)key, (TValue)value!);
     }
 
     /// <inheritdoc />
-    bool IDictionary.Contains(object key) => key is TKey typedKey && ContainsKey(typedKey);
+    bool IDictionary.Contains(object key) => key is TKey typedKey && this.ContainsKey(typedKey);
 
     /// <inheritdoc />
     IDictionaryEnumerator IDictionary.GetEnumerator() => new DictionaryEnumerator(this);
 
     /// <inheritdoc />
-    IEnumerator IEnumerable.GetEnumerator() => GetOrderedItems().GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => this.GetOrderedItems().GetEnumerator();
 
     /// <inheritdoc />
     void IDictionary.Remove(object key)
     {
         ThrowHelper.ThrowIfNotOfType<TKey>(key);
 
-        Remove((TKey)key);
+        this.Remove((TKey)key);
     }
 }

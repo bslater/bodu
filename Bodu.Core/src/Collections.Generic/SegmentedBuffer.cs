@@ -61,15 +61,15 @@ public sealed class SegmentedBuffer<T> :
     {
         ThrowHelper.ThrowIfLessThan(segmentSize, 1);
 
-        _segmentSize = segmentSize;
-        _segments = new List<T[]>();
+        this._segmentSize = segmentSize;
+        this._segments = new List<T[]>();
     }
 
     /// <summary>
     /// Gets the number of elements contained in the buffer.
     /// </summary>
     /// <remarks>The value returned reflects the total number of elements added via <see cref="Add" />.</remarks>
-    public int Count => _count;
+    public int Count => this._count;
 
     /// <summary>
     /// Gets or sets the element at the specified zero-based index.
@@ -84,22 +84,22 @@ public sealed class SegmentedBuffer<T> :
     {
         get
         {
-            if ((uint)index >= (uint)_count)
+            if ((uint)index >= (uint)this._count)
                 throw new ArgumentOutOfRangeException(nameof(index));
 
-            int segmentIndex = index / _segmentSize;
-            int offset = index % _segmentSize;
-            return _segments[segmentIndex][offset];
+            int segmentIndex = index / this._segmentSize;
+            int offset = index % this._segmentSize;
+            return this._segments[segmentIndex][offset];
         }
 
         set
         {
-            if ((uint)index >= (uint)_count)
+            if ((uint)index >= (uint)this._count)
                 throw new ArgumentOutOfRangeException(nameof(index));
 
-            int segmentIndex = index / _segmentSize;
-            int offset = index % _segmentSize;
-            _segments[segmentIndex][offset] = value;
+            int segmentIndex = index / this._segmentSize;
+            int offset = index % this._segmentSize;
+            this._segments[segmentIndex][offset] = value;
         }
     }
 
@@ -110,14 +110,14 @@ public sealed class SegmentedBuffer<T> :
     /// <remarks>This operation executes in amortized constant time and does not require reallocation or copying of existing elements.</remarks>
     public void Add(T item)
     {
-        if (_count % _segmentSize == 0)
-            _segments.Add(new T[_segmentSize]);
+        if (this._count % this._segmentSize == 0)
+            this._segments.Add(new T[this._segmentSize]);
 
-        int segmentIndex = _count / _segmentSize;
-        int offset = _count % _segmentSize;
-        _segments[segmentIndex][offset] = item;
+        int segmentIndex = this._count / this._segmentSize;
+        int offset = this._count % this._segmentSize;
+        this._segments[segmentIndex][offset] = item;
 
-        _count++;
+        this._count++;
     }
 
     /// <summary>
@@ -130,25 +130,25 @@ public sealed class SegmentedBuffer<T> :
     /// </remarks>
     public IEnumerator<T> GetEnumerator()
     {
-        int count = _count;
-        int fullSegments = count / _segmentSize;
-        int lastSegmentCount = count % _segmentSize;
+        int count = this._count;
+        int fullSegments = count / this._segmentSize;
+        int lastSegmentCount = count % this._segmentSize;
 
         for (int i = 0; i < fullSegments; i++)
         {
-            T[] segment = _segments[i];
-            for (int j = 0; j < _segmentSize; j++)
+            T[] segment = this._segments[i];
+            for (int j = 0; j < this._segmentSize; j++)
                 yield return segment[j];
         }
 
         if (lastSegmentCount > 0)
         {
-            T[] lastSegment = _segments[fullSegments];
+            T[] lastSegment = this._segments[fullSegments];
             for (int j = 0; j < lastSegmentCount; j++)
                 yield return lastSegment[j];
         }
     }
 
     /// <inheritdoc />
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 }

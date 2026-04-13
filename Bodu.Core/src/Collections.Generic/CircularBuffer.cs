@@ -146,12 +146,12 @@ public partial class CircularBuffer<T>
 #else
         ThrowHelper.ThrowIfOutOfRange(capacity, 1, MaxArrayLength);
 #endif
-        _internalBuffer = new T[capacity];
-        _capacity = capacity;
-        AllowOverwrite = allowOverwrite;
-        _count = 0;
-        _head = 0;
-        _tail = 0;
+        this._internalBuffer = new T[capacity];
+        this._capacity = capacity;
+        this.AllowOverwrite = allowOverwrite;
+        this._count = 0;
+        this._head = 0;
+        this._tail = 0;
     }
 
     /// <summary>
@@ -216,24 +216,24 @@ public partial class CircularBuffer<T>
         if (items.Length > capacity && !allowOverwrite)
             throw new InvalidOperationException(ResourceStrings.Arg_Invalid_ArrayLengthExceedsCapacity);
 
-        _internalBuffer = new T[capacity];
-        _capacity = capacity;
-        AllowOverwrite = allowOverwrite;
+        this._internalBuffer = new T[capacity];
+        this._capacity = capacity;
+        this.AllowOverwrite = allowOverwrite;
 
         if (items.Length > capacity)
         {
             // Retain the most recent elements that fit in the buffer.
-            Array.Copy(items, items.Length - capacity, _internalBuffer, 0, capacity);
-            _count = capacity;
+            Array.Copy(items, items.Length - capacity, this._internalBuffer, 0, capacity);
+            this._count = capacity;
         }
         else
         {
-            Array.Copy(items, _internalBuffer, items.Length);
-            _count = items.Length;
+            Array.Copy(items, this._internalBuffer, items.Length);
+            this._count = items.Length;
         }
 
-        _head = 0;
-        _tail = _count % capacity;
+        this._head = 0;
+        this._tail = this._count % capacity;
     }
 
     /// <summary>
@@ -325,7 +325,7 @@ public partial class CircularBuffer<T>
     /// </para>
     /// <para>To reduce memory usage after elements are removed, use <see cref="TrimExcess" /> to shrink the buffer.</para>
     /// </remarks>
-    public int Capacity => _capacity;
+    public int Capacity => this._capacity;
 
     /// <summary>
     /// Gets the element at the specified zero-based index from the oldest to the newest element.
@@ -348,10 +348,10 @@ public partial class CircularBuffer<T>
         get
         {
             ThrowHelper.ThrowIfLessThan(index, 0);
-            ThrowHelper.ThrowIfGreaterThanOrEqual(index, _count);
+            ThrowHelper.ThrowIfGreaterThanOrEqual(index, this._count);
 
-            int actualIndex = (_head + index) % _capacity;
-            return _internalBuffer[actualIndex];
+            int actualIndex = (this._head + index) % this._capacity;
+            return this._internalBuffer[actualIndex];
         }
     }
 
@@ -370,20 +370,20 @@ public partial class CircularBuffer<T>
     /// </remarks>
     public void Clear()
     {
-        if (_count > 0)
+        if (this._count > 0)
         {
-            if (_head < _tail)
+            if (this._head < this._tail)
             {
-                Array.Clear(_internalBuffer, _head, _count);
+                Array.Clear(this._internalBuffer, this._head, this._count);
             }
             else
             {
-                Array.Clear(_internalBuffer, _head, _capacity - _head);
-                Array.Clear(_internalBuffer, 0, _tail);
+                Array.Clear(this._internalBuffer, this._head, this._capacity - this._head);
+                Array.Clear(this._internalBuffer, 0, this._tail);
             }
 
-            _head = _tail = _count = 0;
-            _version++;
+            this._head = this._tail = this._count = 0;
+            this._version++;
         }
     }
 
@@ -398,22 +398,22 @@ public partial class CircularBuffer<T>
     /// </remarks>
     public bool Contains(T item)
     {
-        if (_count == 0)
+        if (this._count == 0)
             return false;
 
-        if (_head < _tail)
+        if (this._head < this._tail)
         {
             // Contiguous segment — delegate to Array.IndexOf which uses EqualityComparer<T>.Default
             // and can be JIT-vectorised on supported runtimes.
-            return Array.IndexOf(_internalBuffer, item, _head, _count) >= 0;
+            return Array.IndexOf(this._internalBuffer, item, this._head, this._count) >= 0;
         }
 
         // Wrapped layout: [_head .. end) then [0 .. _tail)
-        int firstSegmentLength = _capacity - _head;
-        if (Array.IndexOf(_internalBuffer, item, _head, firstSegmentLength) >= 0)
+        int firstSegmentLength = this._capacity - this._head;
+        if (Array.IndexOf(this._internalBuffer, item, this._head, firstSegmentLength) >= 0)
             return true;
 
-        return _tail > 0 && Array.IndexOf(_internalBuffer, item, 0, _tail) >= 0;
+        return this._tail > 0 && Array.IndexOf(this._internalBuffer, item, 0, this._tail) >= 0;
     }
 
     /// <summary>
@@ -436,9 +436,9 @@ public partial class CircularBuffer<T>
     public void CopyTo(T[] array, int index)
     {
         ThrowHelper.ThrowIfNull(array);
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index, _count);
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index, this._count);
 
-        CopyToInternal(array, index);
+        this.CopyToInternal(array, index);
     }
 
     /// <summary>
@@ -455,7 +455,7 @@ public partial class CircularBuffer<T>
     /// </remarks>
     public T Dequeue()
     {
-        TryDequeueInternal(out T? item, throwIfEmpty: true);
+        this.TryDequeueInternal(out T? item, throwIfEmpty: true);
         return item;
     }
 
@@ -471,7 +471,7 @@ public partial class CircularBuffer<T>
     /// </para>
     /// <para>To avoid exceptions when the buffer may be full, use <see cref="TryEnqueue(T)" /> instead.</para>
     /// </remarks>
-    public void Enqueue(T item) => _ = TryEnqueueInternal(item, throwIfFull: true);
+    public void Enqueue(T item) => _ = this.TryEnqueueInternal(item, throwIfFull: true);
 
     /// <summary>
     /// Returns the oldest element in the <see cref="CircularBuffer{T}" /> without removing it.
@@ -484,10 +484,10 @@ public partial class CircularBuffer<T>
     /// </remarks>
     public T Peek()
     {
-        if (_count == 0)
+        if (this._count == 0)
             throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionEmpty);
 
-        return _internalBuffer[_head];
+        return this._internalBuffer[this._head];
     }
 
     /// <summary>
@@ -511,9 +511,9 @@ public partial class CircularBuffer<T>
     /// </example>
     public T[] ToArray()
     {
-        T[] result = new T[_count];
-        if (_count > 0)
-            CopyToInternal(result, 0);
+        T[] result = new T[this._count];
+        if (this._count > 0)
+            this.CopyToInternal(result, 0);
 
         return result;
     }
@@ -546,16 +546,16 @@ public partial class CircularBuffer<T>
     /// </example>
     public void TrimExcess()
     {
-        int newCapacity = Math.Max(_count, 1);
-        if (newCapacity == _capacity)
+        int newCapacity = Math.Max(this._count, 1);
+        if (newCapacity == this._capacity)
             return;
         T[] trimmed = new T[newCapacity];
-        CopyTo(trimmed, 0);
+        this.CopyTo(trimmed, 0);
 
-        _internalBuffer = trimmed;
-        _capacity = newCapacity;
-        _head = _tail = 0;
-        _version++;
+        this._internalBuffer = trimmed;
+        this._capacity = newCapacity;
+        this._head = this._tail = 0;
+        this._version++;
     }
 
     /// <summary>
@@ -584,7 +584,7 @@ public partial class CircularBuffer<T>
     ///]]>
     /// </code>
     /// </example>
-    public bool TryDequeue(out T item) => TryDequeueInternal(out item, throwIfEmpty: false);
+    public bool TryDequeue(out T item) => this.TryDequeueInternal(out item, throwIfEmpty: false);
 
     /// <summary>
     /// Attempts to add an element to the end of the <see cref="CircularBuffer{T}" /> without throwing an exception.
@@ -610,7 +610,7 @@ public partial class CircularBuffer<T>
     ///]]>
     /// </code>
     /// </example>
-    public bool TryEnqueue(T item) => TryEnqueueInternal(item, throwIfFull: false);
+    public bool TryEnqueue(T item) => this.TryEnqueueInternal(item, throwIfFull: false);
 
     /// <summary>
     /// Attempts to retrieve the oldest element from the <see cref="CircularBuffer{T}" /> without removing it.
@@ -638,13 +638,13 @@ public partial class CircularBuffer<T>
     /// </example>
     public bool TryPeek(out T item)
     {
-        if (_count == 0)
+        if (this._count == 0)
         {
             item = default!;
             return false;
         }
 
-        item = _internalBuffer[_head];
+        item = this._internalBuffer[this._head];
         return true;
     }
 
@@ -668,18 +668,18 @@ public partial class CircularBuffer<T>
     /// </remarks>
     private void CopyToInternal(Array destination, int destinationIndex)
     {
-        if (_count == 0)
+        if (this._count == 0)
             return;
 
-        if (_head < _tail)
+        if (this._head < this._tail)
         {
-            Array.Copy(_internalBuffer, _head, destination, destinationIndex, _count);
+            Array.Copy(this._internalBuffer, this._head, destination, destinationIndex, this._count);
         }
         else
         {
-            int firstSegmentLength = _capacity - _head;
-            Array.Copy(_internalBuffer, _head, destination, destinationIndex, firstSegmentLength);
-            Array.Copy(_internalBuffer, 0, destination, destinationIndex + firstSegmentLength, _tail);
+            int firstSegmentLength = this._capacity - this._head;
+            Array.Copy(this._internalBuffer, this._head, destination, destinationIndex, firstSegmentLength);
+            Array.Copy(this._internalBuffer, 0, destination, destinationIndex + firstSegmentLength, this._tail);
         }
     }
 
@@ -706,7 +706,7 @@ public partial class CircularBuffer<T>
     /// </remarks>
     private bool TryDequeueInternal(out T item, bool throwIfEmpty)
     {
-        if (_count == 0)
+        if (this._count == 0)
         {
             if (throwIfEmpty)
                 throw new InvalidOperationException(ResourceStrings.InvalidOperation_EmptySequence);
@@ -715,11 +715,11 @@ public partial class CircularBuffer<T>
             return false;
         }
 
-        item = _internalBuffer[_head];
-        _internalBuffer[_head] = default!;
-        _head = (_head + 1) % _capacity;
-        _count--;
-        _version++;
+        item = this._internalBuffer[this._head];
+        this._internalBuffer[this._head] = default!;
+        this._head = (this._head + 1) % this._capacity;
+        this._count--;
+        this._version++;
 
         return true;
     }
@@ -751,9 +751,9 @@ public partial class CircularBuffer<T>
     /// </remarks>
     private bool TryEnqueueInternal(T item, bool throwIfFull)
     {
-        if (_count == _internalBuffer.Length)
+        if (this._count == this._internalBuffer.Length)
         {
-            if (!AllowOverwrite)
+            if (!this.AllowOverwrite)
             {
                 if (throwIfFull)
                     throw new InvalidOperationException(ResourceStrings.InvalidOperation_CapacityExhausted);
@@ -761,22 +761,22 @@ public partial class CircularBuffer<T>
                 return false;
             }
 
-            T overwritten = _internalBuffer[_tail];
-            ItemEvicting?.Invoke(overwritten);
+            T overwritten = this._internalBuffer[this._tail];
+            this.ItemEvicting?.Invoke(overwritten);
 
-            _internalBuffer[_tail] = item;
-            _head = _tail = (_tail + 1) % _capacity;
+            this._internalBuffer[this._tail] = item;
+            this._head = this._tail = (this._tail + 1) % this._capacity;
 
-            ItemEvicted?.Invoke(overwritten);
+            this.ItemEvicted?.Invoke(overwritten);
         }
         else
         {
-            _internalBuffer[_tail] = item;
-            _tail = (_tail + 1) % _capacity;
-            _count++;
+            this._internalBuffer[this._tail] = item;
+            this._tail = (this._tail + 1) % this._capacity;
+            this._count++;
         }
 
-        _version++;
+        this._version++;
 
         return true;
     }

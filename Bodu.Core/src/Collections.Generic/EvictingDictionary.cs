@@ -140,23 +140,23 @@ public partial class EvictingDictionary<TKey, TValue>
     {
         ThrowHelper.ThrowIfZeroOrNegative(capacity);
 
-        _capacity = capacity;
-        _evictingPolicy = policy;
-        _comparer = comparer ?? EqualityComparer<TKey>.Default;
+        this._capacity = capacity;
+        this._evictingPolicy = policy;
+        this._comparer = comparer ?? EqualityComparer<TKey>.Default;
 
-        _store = new Dictionary<TKey, CacheItem>(_comparer);
+        this._store = new Dictionary<TKey, CacheItem>(this._comparer);
 
-        switch (_evictingPolicy)
+        switch (this._evictingPolicy)
         {
             case EvictingDictionaryPolicy.FirstInFirstOut:
             case EvictingDictionaryPolicy.LeastRecentlyUsed:
             case EvictingDictionaryPolicy.MostRecentlyUsed:
             case EvictingDictionaryPolicy.SecondChance:
-                _order = new LinkedList<TKey>();
+                this._order = new LinkedList<TKey>();
                 break;
 
             case EvictingDictionaryPolicy.LeastFrequentlyUsed:
-                _frequencyList = new SortedDictionary<int, LinkedList<TKey>>();
+                this._frequencyList = new SortedDictionary<int, LinkedList<TKey>>();
                 break;
 
             case EvictingDictionaryPolicy.RandomReplacement:
@@ -249,7 +249,7 @@ public partial class EvictingDictionary<TKey, TValue>
         ThrowHelper.ThrowIfNull(source);
 
         foreach (KeyValuePair<TKey, TValue> kvp in source)
-            Add(kvp.Key, kvp.Value);
+            this.Add(kvp.Key, kvp.Value);
     }
 
     /// <summary>
@@ -315,22 +315,22 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <summary>
     /// Gets the maximum number of items that can be stored in the dictionary before eviction occurs.
     /// </summary>
-    public int Capacity => _capacity;
+    public int Capacity => this._capacity;
 
     /// <summary>
     /// Gets the total number of items evicted from the dictionary since creation.
     /// </summary>
-    public long EvictionCount => _evictionCount;
+    public long EvictionCount => this._evictionCount;
 
     /// <summary>
     /// Gets the eviction policy configured for this dictionary.
     /// </summary>
-    public EvictingDictionaryPolicy Policy => _evictingPolicy;
+    public EvictingDictionaryPolicy Policy => this._evictingPolicy;
 
     /// <summary>
     /// Gets the total number of times any key has been accessed or touched.
     /// </summary>
-    public long TotalTouches => _totalTouches;
+    public long TotalTouches => this._totalTouches;
 
     /// <summary>
     /// Returns the key that would be evicted next based on the current eviction policy and internal state.
@@ -363,22 +363,22 @@ public partial class EvictingDictionary<TKey, TValue>
     /// </remarks>
     public TKey? PeekEvictionCandidate()
     {
-        return _evictingPolicy switch
+        return this._evictingPolicy switch
         {
             EvictingDictionaryPolicy.FirstInFirstOut or EvictingDictionaryPolicy.LeastRecentlyUsed
-                when _order?.First is not null => _order.First.Value,
+                when this._order?.First is not null => this._order.First.Value,
 
             EvictingDictionaryPolicy.MostRecentlyUsed
-                when _order?.Last is not null => _order.Last.Value,
+                when this._order?.Last is not null => this._order.Last.Value,
 
             EvictingDictionaryPolicy.LeastFrequentlyUsed
-                when _frequencyList?.Count > 0 && _frequencyList.First().Value.First is not null
-                => _frequencyList.First().Value.First!.Value,
+                when this._frequencyList?.Count > 0 && this._frequencyList.First().Value.First is not null
+                => this._frequencyList.First().Value.First!.Value,
 
             EvictingDictionaryPolicy.RandomReplacement
-                when _store.Count > 0 => _store.Keys.First(),
+                when this._store.Count > 0 => this._store.Keys.First(),
 
-            EvictingDictionaryPolicy.SecondChance when _order is not null => PeekSecondChanceCandidate(),
+            EvictingDictionaryPolicy.SecondChance when this._order is not null => this.PeekSecondChanceCandidate(),
 
             _ => default
         };
@@ -392,10 +392,10 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <returns><see langword="true" /> if the key exists and was marked as accessed; otherwise, <see langword="false" />.</returns>
     public bool Touch(TKey key)
     {
-        if (_store.TryGetValue(key, out CacheItem? item))
+        if (this._store.TryGetValue(key, out CacheItem? item))
         {
-            TouchInternal(key, item);
-            _totalTouches++;
+            this.TouchInternal(key, item);
+            this._totalTouches++;
             return true;
         }
 
@@ -413,7 +413,7 @@ public partial class EvictingDictionary<TKey, TValue>
     /// </remarks>
     public void TouchOrThrow(TKey key)
     {
-        if (!Touch(key))
+        if (!this.Touch(key))
             throw new KeyNotFoundException($"The key '{key}' was not found in the dictionary.");
     }
 
@@ -424,10 +424,10 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <param name="key">The key to add.</param>
     private void AddToFrequencyList(int frequency, TKey key)
     {
-        if (!_frequencyList.TryGetValue(frequency, out LinkedList<TKey>? list))
+        if (!this._frequencyList.TryGetValue(frequency, out LinkedList<TKey>? list))
         {
             list = new LinkedList<TKey>();
-            _frequencyList[frequency] = list;
+            this._frequencyList[frequency] = list;
         }
 
         list.AddLast(key);
@@ -439,33 +439,33 @@ public partial class EvictingDictionary<TKey, TValue>
     /// </summary>
     private void EvictOne()
     {
-        TKey? keyToRemove = _evictingPolicy switch
+        TKey? keyToRemove = this._evictingPolicy switch
         {
             EvictingDictionaryPolicy.FirstInFirstOut or EvictingDictionaryPolicy.LeastRecentlyUsed
-                when _order?.First is not null => _order.First.Value,
+                when this._order?.First is not null => this._order.First.Value,
 
             EvictingDictionaryPolicy.MostRecentlyUsed
-                when _order?.Last is not null => _order.Last.Value,
+                when this._order?.Last is not null => this._order.Last.Value,
 
             EvictingDictionaryPolicy.LeastFrequentlyUsed
-                when _frequencyList?.Count > 0 &&
-                     _frequencyList.First().Value?.First is LinkedListNode<TKey> node => node.Value,
+                when this._frequencyList?.Count > 0 &&
+                     this._frequencyList.First().Value?.First is LinkedListNode<TKey> node => node.Value,
 
             EvictingDictionaryPolicy.RandomReplacement
-                when _store.Count > 0 => _store.Keys.First(),
+                when this._store.Count > 0 => this._store.Keys.First(),
 
-            EvictingDictionaryPolicy.SecondChance when _order is not null =>
-                GetSecondChanceCandidate(),
+            EvictingDictionaryPolicy.SecondChance when this._order is not null =>
+                this.GetSecondChanceCandidate(),
 
             _ => default
         };
 
-        if (keyToRemove is not null && _store.TryGetValue(keyToRemove, out CacheItem? item))
+        if (keyToRemove is not null && this._store.TryGetValue(keyToRemove, out CacheItem? item))
         {
-            ItemEvicting?.Invoke(keyToRemove, item.Value);
-            _evictionCount++;
-            Remove(keyToRemove);
-            ItemEvicted?.Invoke(keyToRemove, item.Value);
+            this.ItemEvicting?.Invoke(keyToRemove, item.Value);
+            this._evictionCount++;
+            this.Remove(keyToRemove);
+            this.ItemEvicted?.Invoke(keyToRemove, item.Value);
         }
     }
 
@@ -482,45 +482,45 @@ public partial class EvictingDictionary<TKey, TValue>
     /// </remarks>
     private IEnumerable<KeyValuePair<TKey, TValue>> GetOrderedItems()
     {
-        switch (_evictingPolicy)
+        switch (this._evictingPolicy)
         {
             case EvictingDictionaryPolicy.FirstInFirstOut:
             case EvictingDictionaryPolicy.LeastRecentlyUsed:
             case EvictingDictionaryPolicy.SecondChance:
-                if (_order is null)
+                if (this._order is null)
                     yield break;
 
-                foreach (TKey key in _order)
+                foreach (TKey key in this._order)
                 {
-                    if (_store.TryGetValue(key, out CacheItem? item))
+                    if (this._store.TryGetValue(key, out CacheItem? item))
                         yield return new KeyValuePair<TKey, TValue>(key, item.Value);
                 }
 
                 break;
 
             case EvictingDictionaryPolicy.MostRecentlyUsed:
-                if (_order is null)
+                if (this._order is null)
                     yield break;
 
                 // MRU: iterate from most recently used (tail) to least (head).
-                for (LinkedListNode<TKey>? node = _order.Last; node is not null; node = node.Previous)
+                for (LinkedListNode<TKey>? node = this._order.Last; node is not null; node = node.Previous)
                 {
-                    if (_store.TryGetValue(node.Value, out CacheItem? item))
+                    if (this._store.TryGetValue(node.Value, out CacheItem? item))
                         yield return new KeyValuePair<TKey, TValue>(node.Value, item.Value);
                 }
 
                 break;
 
             case EvictingDictionaryPolicy.LeastFrequentlyUsed:
-                if (_frequencyList is null)
+                if (this._frequencyList is null)
                     yield break;
 
                 // SortedDictionary is already in ascending key order; no secondary sort is required.
-                foreach (KeyValuePair<int, LinkedList<TKey>> freq in _frequencyList)
+                foreach (KeyValuePair<int, LinkedList<TKey>> freq in this._frequencyList)
                 {
                     foreach (TKey key in freq.Value)
                     {
-                        if (_store.TryGetValue(key, out CacheItem? item))
+                        if (this._store.TryGetValue(key, out CacheItem? item))
                             yield return new KeyValuePair<TKey, TValue>(key, item.Value);
                     }
                 }
@@ -532,13 +532,13 @@ public partial class EvictingDictionary<TKey, TValue>
                 foreach (var pair in _store)
                     yield return new KeyValuePair<TKey, TValue>(pair.Key, pair.Value.Value);
 #else
-                foreach ((TKey key, CacheItem item) in _store)
+                foreach ((TKey key, CacheItem item) in this._store)
                     yield return new KeyValuePair<TKey, TValue>(key, item.Value);
 #endif
                 break;
 
             default:
-                throw new InvalidOperationException($"Unknown eviction policy: {_evictingPolicy}");
+                throw new InvalidOperationException($"Unknown eviction policy: {this._evictingPolicy}");
         }
     }
 
@@ -550,19 +550,19 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <exception cref="InvalidOperationException">The internal order list is empty.</exception>
     private TKey GetSecondChanceCandidate()
     {
-        if (_order is null || _order.Count == 0)
+        if (this._order is null || this._order.Count == 0)
             throw new InvalidOperationException("No eviction candidate available: the order list is empty.");
 
         // Walk the list using explicit node references so we can perform O(1) removal and re-insertion
         // without allocating a snapshot copy via ToList().
-        LinkedListNode<TKey>? node = _order.First;
+        LinkedListNode<TKey>? node = this._order.First;
         while (node is not null)
         {
             TKey key = node.Value;
             LinkedListNode<TKey> current = node;
             node = node.Next;
 
-            if (!_store.TryGetValue(key, out CacheItem? item))
+            if (!this._store.TryGetValue(key, out CacheItem? item))
                 continue;
 
             if (!item.SecondChance)
@@ -570,13 +570,13 @@ public partial class EvictingDictionary<TKey, TValue>
 
             // Give the item a second chance: clear the flag and cycle it to the tail.
             item.SecondChance = false;
-            _order.Remove(current);
-            item.Node = _order.AddLast(key);
+            this._order.Remove(current);
+            item.Node = this._order.AddLast(key);
         }
 
         // All items had their second-chance flag set; fall back to the oldest remaining entry.
-        if (_order.First is not null)
-            return _order.First.Value;
+        if (this._order.First is not null)
+            return this._order.First.Value;
 
         throw new InvalidOperationException("No eviction candidate found after second-chance evaluation.");
     }
@@ -587,13 +587,13 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <returns>The candidate key for eviction, or the oldest key if all items have their second-chance flag set.</returns>
     private TKey? PeekSecondChanceCandidate()
     {
-        foreach (TKey key in _order)
+        foreach (TKey key in this._order)
         {
-            if (_store.TryGetValue(key, out CacheItem? item) && !item.SecondChance)
+            if (this._store.TryGetValue(key, out CacheItem? item) && !item.SecondChance)
                 return key;
         }
 
-        return _order.First is not null ? _order.First.Value : default;
+        return this._order.First is not null ? this._order.First.Value : default;
     }
 
     /// <summary>
@@ -603,12 +603,12 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <param name="key">The key to remove.</param>
     private void RemoveFromFrequencyList(int frequency, TKey key)
     {
-        if (_frequencyList.TryGetValue(frequency, out LinkedList<TKey>? list))
+        if (this._frequencyList.TryGetValue(frequency, out LinkedList<TKey>? list))
         {
             list.Remove(key);
 
             if (list.Count == 0)
-                _frequencyList.Remove(frequency);
+                this._frequencyList.Remove(frequency);
         }
     }
 
@@ -619,24 +619,24 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <param name="item">The associated cache item for the key.</param>
     private void TouchInternal(TKey key, CacheItem item)
     {
-        switch (_evictingPolicy)
+        switch (this._evictingPolicy)
         {
             case EvictingDictionaryPolicy.LeastRecentlyUsed:
             case EvictingDictionaryPolicy.MostRecentlyUsed:
-                if (_order is not null)
+                if (this._order is not null)
                 {
                     if (item.Node is not null)
-                        _order.Remove(item.Node);
+                        this._order.Remove(item.Node);
 
-                    item.Node = _order.AddLast(key);
+                    item.Node = this._order.AddLast(key);
                 }
 
                 break;
 
             case EvictingDictionaryPolicy.LeastFrequentlyUsed:
-                RemoveFromFrequencyList(item.Frequency, key);
+                this.RemoveFromFrequencyList(item.Frequency, key);
                 item.Frequency++;
-                AddToFrequencyList(item.Frequency, key);
+                this.AddToFrequencyList(item.Frequency, key);
                 break;
 
             case EvictingDictionaryPolicy.SecondChance:

@@ -126,17 +126,17 @@ public sealed partial class ConcurrentCircularBuffer<T>
         // causing a permanent consumer livelock. See the class remarks for a full explanation.
         ThrowHelper.ThrowIfLessThan(capacity, MinCapacity);
 
-        _buffer = new Slot[capacity];
-        _capacity = capacity;
-        _allowOverwrite = allowOverwrite;
+        this._buffer = new Slot[capacity];
+        this._capacity = capacity;
+        this._allowOverwrite = allowOverwrite;
 
         // Initialize slot sequences so that slot i is initially "free" for tail == i.
         for (int i = 0; i < capacity; i++)
-            _buffer[i].Sequence = i;
+            this._buffer[i].Sequence = i;
 
-        _head = 0;
-        _tail = 0;
-        _version = 0;
+        this._head = 0;
+        this._tail = 0;
+        this._version = 0;
     }
 
     /// <summary>
@@ -173,7 +173,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
         // Enqueue in order using the lock-free path (no concurrency during construction).
         foreach (var item in items.Skip(Math.Max(0, items.Length - capacity)))
-            InternalEnqueue(item, throwIfFull: !allowOverwrite);
+            this.InternalEnqueue(item, throwIfFull: !allowOverwrite);
     }
 
     /// <summary>
@@ -188,14 +188,14 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// </summary>
     public bool AllowOverwrite
     {
-        get => Volatile.Read(ref _allowOverwrite);
-        set => Volatile.Write(ref _allowOverwrite, value);
+        get => Volatile.Read(ref this._allowOverwrite);
+        set => Volatile.Write(ref this._allowOverwrite, value);
     }
 
     /// <summary>
     /// Gets the fixed capacity of the buffer.
     /// </summary>
-    public int Capacity => _capacity;
+    public int Capacity => this._capacity;
 
     /// <summary>
     /// Gets the element at the specified zero-based logical index relative to the oldest element (snapshot-based).
@@ -210,7 +210,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
         get
         {
             ThrowHelper.ThrowIfLessThan(index, 0);
-            var snapshot = ToArray();
+            var snapshot = this.ToArray();
             ThrowHelper.ThrowIfGreaterThanOrEqual(index, snapshot.Length);
             return snapshot[index];
         }
@@ -230,12 +230,12 @@ public sealed partial class ConcurrentCircularBuffer<T>
     {
         // Bound the drain to the element count observed at call time. This prevents
         // unbounded spinning when producers are continuously enqueueing into the buffer.
-        int head = Volatile.Read(ref _head);
-        int tail = Volatile.Read(ref _tail);
-        int count = Math.Clamp(tail - head, 0, _capacity);
+        int head = Volatile.Read(ref this._head);
+        int tail = Volatile.Read(ref this._tail);
+        int count = Math.Clamp(tail - head, 0, this._capacity);
 
         T? _;
-        for (int i = 0; i < count && TryDequeue(out _); i++) { }
+        for (int i = 0; i < count && this.TryDequeue(out _); i++) { }
     }
 
     /// <summary>
@@ -246,7 +246,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     public bool Contains(T? item)
     {
         var comparer = EqualityComparer<T?>.Default;
-        foreach (var x in ToArray())
+        foreach (var x in this.ToArray())
         {
             if (comparer.Equals(x, item))
                 return true;
@@ -266,7 +266,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     public void CopyTo(T[] array, int index)
     {
         ThrowHelper.ThrowIfNull(array);
-        var snap = ToArray();
+        var snap = this.ToArray();
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index, snap.Length);
         Array.Copy(snap, 0, array, index, snap.Length);
     }
@@ -278,7 +278,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// <exception cref="InvalidOperationException">The buffer is empty.</exception>
     public T Dequeue()
     {
-        if (TryDequeue(out var item))
+        if (this.TryDequeue(out var item))
             return item!;
         throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionEmpty);
     }
@@ -288,7 +288,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// </summary>
     /// <param name="item">The element to add. May be <see langword="null" />.</param>
     /// <exception cref="InvalidOperationException">The buffer is full and <see cref="AllowOverwrite" /> is <see langword="false" />.</exception>
-    public void Enqueue(T item) => InternalEnqueue(item, throwIfFull: true);
+    public void Enqueue(T item) => this.InternalEnqueue(item, throwIfFull: true);
 
     /// <summary>
     /// Returns the oldest element without removing it.
@@ -297,7 +297,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// <exception cref="InvalidOperationException">The buffer is empty.</exception>
     public T Peek()
     {
-        if (TryPeek(out var item))
+        if (this.TryPeek(out var item))
             return item!;
         throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionEmpty);
     }
@@ -321,30 +321,30 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
         for (int attempt = 0; attempt < 64; attempt++)
         {
-            int v1 = Volatile.Read(ref _version);
-            int head = Volatile.Read(ref _head);
-            int tail = Volatile.Read(ref _tail);
+            int v1 = Volatile.Read(ref this._version);
+            int head = Volatile.Read(ref this._head);
+            int tail = Volatile.Read(ref this._tail);
 
             int count = tail - head;
             if (count <= 0) return Array.Empty<T>();
-            if (count > _capacity) count = _capacity; // defensive clamp
+            if (count > this._capacity) count = this._capacity; // defensive clamp
 
             var result = new T[count];
             for (int i = 0; i < count; i++)
-                result[i] = Volatile.Read(ref _buffer[SlotIndex(head + i)].Value)!;
+                result[i] = Volatile.Read(ref this._buffer[this.SlotIndex(head + i)].Value)!;
 
-            int v2 = Volatile.Read(ref _version);
+            int v2 = Volatile.Read(ref this._version);
             if (v1 == v2) return result;
             spinner.SpinOnce();
         }
 
         // Fallback best-effort snapshot after exhausting retry budget
-        int h = Volatile.Read(ref _head);
-        int t = Volatile.Read(ref _tail);
-        int c = Math.Clamp(t - h, 0, _capacity);
+        int h = Volatile.Read(ref this._head);
+        int t = Volatile.Read(ref this._tail);
+        int c = Math.Clamp(t - h, 0, this._capacity);
         var res = new T[c];
         for (int i = 0; i < c; i++)
-            res[i] = Volatile.Read(ref _buffer[SlotIndex(h + i)].Value)!;
+            res[i] = Volatile.Read(ref this._buffer[this.SlotIndex(h + i)].Value)!;
         return res;
     }
 
@@ -355,7 +355,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// When this method returns <see langword="true" />, contains the removed element; otherwise, <see langword="null" />.
     /// </param>
     /// <returns><see langword="true" /> if an element was successfully removed; <see langword="false" /> if the buffer was empty.</returns>
-    public bool TryDequeue(out T? item) => InternalDequeue(out item, throwIfEmpty: false);
+    public bool TryDequeue(out T? item) => this.InternalDequeue(out item, throwIfEmpty: false);
 
     /// <summary>
     /// Attempts to add an element to the end of the buffer without throwing when full.
@@ -365,7 +365,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// <see langword="true" /> if the element was enqueued; <see langword="false" /> if the buffer is full and
     /// <see cref="AllowOverwrite" /> is <see langword="false" />.
     /// </returns>
-    public bool TryEnqueue(T item) => InternalEnqueue(item, throwIfFull: false);
+    public bool TryEnqueue(T item) => this.InternalEnqueue(item, throwIfFull: false);
 
     /// <summary>
     /// Attempts to return the oldest element without removing it.
@@ -386,8 +386,8 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
         while (true)
         {
-            int head = Volatile.Read(ref _head);
-            ref var slot = ref _buffer[SlotIndex(head)];
+            int head = Volatile.Read(ref this._head);
+            ref var slot = ref this._buffer[this.SlotIndex(head)];
 
             int seq = Volatile.Read(ref slot.Sequence);
             int diff = seq - (head + 1);
@@ -419,7 +419,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// where plain <c>position % _capacity</c> would yield a negative index in C#.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private int SlotIndex(int position) => (int)((uint)position % (uint)_capacity);
+    private int SlotIndex(int position) => (int)((uint)position % (uint)this._capacity);
 
     /// <summary>
     /// Evicts exactly one item from the head (used when overwriting). Fires <see cref="ItemEvicted" /> after removal. Handler exceptions
@@ -432,8 +432,8 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
         while (true)
         {
-            int head = Volatile.Read(ref _head);
-            ref var slot = ref _buffer[SlotIndex(head)];
+            int head = Volatile.Read(ref this._head);
+            ref var slot = ref this._buffer[this.SlotIndex(head)];
 
             int seq = Volatile.Read(ref slot.Sequence);
             int diff = seq - (head + 1);
@@ -441,7 +441,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
             if (diff == 0)
             {
                 // claim head
-                if (Interlocked.CompareExchange(ref _head, head + 1, head) != head)
+                if (Interlocked.CompareExchange(ref this._head, head + 1, head) != head)
                 {
                     spinner.SpinOnce();
                     continue;
@@ -450,12 +450,12 @@ public sealed partial class ConcurrentCircularBuffer<T>
                 // read value, clear, publish free
                 T? value = Volatile.Read(ref slot.Value);
                 Volatile.Write(ref slot.Value, default!);
-                Volatile.Write(ref slot.Sequence, head + _capacity);
-                Interlocked.Increment(ref _version);
+                Volatile.Write(ref slot.Sequence, head + this._capacity);
+                Interlocked.Increment(ref this._version);
 
                 // AFTER removal: fire event; each handler is guarded independently so a throwing
                 // subscriber cannot prevent subsequent subscribers from receiving the notification.
-                var onEvicted = ItemEvicted;
+                var onEvicted = this.ItemEvicted;
                 if (onEvicted != null)
                 {
                     foreach (Action<T> handler in onEvicted.GetInvocationList())
@@ -488,8 +488,8 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
         while (true)
         {
-            int head = Volatile.Read(ref _head);
-            ref var slot = ref _buffer[SlotIndex(head)];
+            int head = Volatile.Read(ref this._head);
+            ref var slot = ref this._buffer[this.SlotIndex(head)];
 
             int seq = Volatile.Read(ref slot.Sequence);
             int diff = seq - (head + 1);
@@ -497,7 +497,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
             if (diff == 0)
             {
                 // claim head
-                if (Interlocked.CompareExchange(ref _head, head + 1, head) != head)
+                if (Interlocked.CompareExchange(ref this._head, head + 1, head) != head)
                 {
                     spinner.SpinOnce();
                     continue;
@@ -506,9 +506,9 @@ public sealed partial class ConcurrentCircularBuffer<T>
                 // read value, clear, publish free
                 item = Volatile.Read(ref slot.Value);
                 Volatile.Write(ref slot.Value, default!);
-                Volatile.Write(ref slot.Sequence, head + _capacity);
+                Volatile.Write(ref slot.Sequence, head + this._capacity);
 
-                Interlocked.Increment(ref _version);
+                Interlocked.Increment(ref this._version);
                 return true;
             }
             else if (diff < 0)
@@ -544,8 +544,8 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
         while (true)
         {
-            int tail = Volatile.Read(ref _tail);
-            ref var slot = ref _buffer[SlotIndex(tail)];
+            int tail = Volatile.Read(ref this._tail);
+            ref var slot = ref this._buffer[this.SlotIndex(tail)];
 
             int seq = Volatile.Read(ref slot.Sequence);
             int diff = seq - tail;
@@ -553,7 +553,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
             if (diff == 0)
             {
                 // claim tail
-                if (Interlocked.CompareExchange(ref _tail, tail + 1, tail) != tail)
+                if (Interlocked.CompareExchange(ref this._tail, tail + 1, tail) != tail)
                 {
                     spinner.SpinOnce();
                     continue;
@@ -562,13 +562,13 @@ public sealed partial class ConcurrentCircularBuffer<T>
                 // write and publish
                 Volatile.Write(ref slot.Value, item);
                 Volatile.Write(ref slot.Sequence, tail + 1);
-                Interlocked.Increment(ref _version);
+                Interlocked.Increment(ref this._version);
                 return true;
             }
             else if (diff < 0)
             {
                 // looks full wrt this slot
-                if (!AllowOverwrite)
+                if (!this.AllowOverwrite)
                 {
                     if (throwIfFull)
                         throw new InvalidOperationException(ResourceStrings.InvalidOperation_CapacityExhausted);
@@ -576,7 +576,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
                 }
 
                 // overwrite mode: evict oldest, then retry
-                if (!EvictOne())
+                if (!this.EvictOne())
                 {
                     // briefly empty / race
                     spinner.SpinOnce();

@@ -33,7 +33,6 @@
 
   <ItemGroup>
     <Compile Remove="Collections.Generic.Concurrent\ConcurrentCircularBufferTests.TrimExcess.cs" />
-    <Compile Remove="DaysOfWeekSetTests.Comparable.cs" />
     <Compile Remove="Extensions\DateOnlyExtensionsTests.NextOccurrence.cs" />
   </ItemGroup>
 

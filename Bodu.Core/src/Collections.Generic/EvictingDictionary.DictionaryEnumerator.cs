@@ -35,30 +35,30 @@ public partial class EvictingDictionary<TKey, TValue>
         /// <exception cref="ArgumentNullException"><paramref name="dictionary" /> is <see langword="null" />.</exception>
         public DictionaryEnumerator(EvictingDictionary<TKey, TValue> dictionary)
         {
-            _dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
-            _inner = dictionary.GetEnumerator();
+            this._dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
+            this._inner = dictionary.GetEnumerator();
         }
 
         /// <inheritdoc />
-        public object Current => Entry;
+        public object Current => this.Entry;
 
         /// <inheritdoc />
-        public DictionaryEntry Entry => new DictionaryEntry(_inner.Current.Key!, _inner.Current.Value);
+        public DictionaryEntry Entry => new DictionaryEntry(this._inner.Current.Key!, this._inner.Current.Value);
 
         /// <inheritdoc />
-        public object Key => _inner.Current.Key!;
+        public object Key => this._inner.Current.Key!;
 
         /// <inheritdoc />
-        public object? Value => _inner.Current.Value;
+        public object? Value => this._inner.Current.Value;
 
         /// <inheritdoc />
-        public bool MoveNext() => _inner.MoveNext();
+        public bool MoveNext() => this._inner.MoveNext();
 
         /// <inheritdoc />
         public void Reset()
         {
-            _inner.Dispose();
-            _inner = _dictionary.GetEnumerator();
+            this._inner.Dispose();
+            this._inner = this._dictionary.GetEnumerator();
         }
     }
 }
