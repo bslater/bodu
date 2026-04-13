@@ -629,7 +629,7 @@ public partial class CircularBuffer<T>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
-    /// var buffer = new CircularBuffer<string>(2);
+    /// var buffer = new CircularBuffer<int>(2);
     /// buffer.Enqueue(10);
     /// if (buffer.TryPeek(out int value))
     ///     Console.WriteLine($"Peeked: {value}");

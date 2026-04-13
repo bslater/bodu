@@ -19,7 +19,7 @@ public static partial class DateOnlyExtensions
     /// <param name="date">The input <see cref="DateOnly" /> for which to determine the end of the week.</param>
     /// <returns>A <see cref="DateOnly" /> representing the last day of the week that includes <paramref name="date" />.</returns>
     /// <remarks>This method uses <see cref="CultureInfo.CurrentCulture" /> to determine the last day of the week, inferred from <see cref="DateTimeFormatInfo.FirstDayOfWeek" />.</remarks>
-    public static DateOnly LastDayOfWeek(this DateOnly date) => date.LastDayOfWeek(null!);
+    public static DateOnly LastDayOfWeek(this DateOnly date) => date.LastDayOfWeek((CultureInfo?)null);
 
     /// <summary>
     /// Returns the last day of the week that contains the specified <see cref="DateOnly" />, using the provided or current culture.
@@ -35,7 +35,7 @@ public static partial class DateOnlyExtensions
     /// The result is validated to ensure it falls within the valid range of <see cref="DateOnly" />.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the calculated result exceeds the supported range for <see cref="DateOnly" />.</exception>
-    public static DateOnly LastDayOfWeek(this DateOnly date, CultureInfo culture)
+    public static DateOnly LastDayOfWeek(this DateOnly date, CultureInfo? culture)
     {
         culture ??= Thread.CurrentThread.CurrentCulture;
         DayOfWeek lastDayOfWeek = culture.DateTimeFormat.LastDayOfWeek();

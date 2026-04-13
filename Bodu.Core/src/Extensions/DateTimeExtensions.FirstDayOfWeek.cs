@@ -23,7 +23,7 @@ public static partial class DateTimeExtensions
     /// <para>This overload uses <see cref="CultureInfo.CurrentCulture" /> to determine the first day of the week, based on <see cref="DateTimeFormatInfo.FirstDayOfWeek" />.</para>
     /// <para>The <see cref="DateTime.Kind" /> property of the returned instance matches that of the original <paramref name="dateTime" />.</para>
     /// </remarks>
-    public static DateTime FirstDayOfWeek(this DateTime dateTime) => dateTime.FirstDayOfWeek(null!);
+    public static DateTime FirstDayOfWeek(this DateTime dateTime) => dateTime.FirstDayOfWeek((CultureInfo?)null);
 
     /// <summary>
     /// Returns a new <see cref="DateTime" /> representing the first day of the week that contains the specified instance, using the first
@@ -45,7 +45,7 @@ public static partial class DateTimeExtensions
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if the resulting date is earlier than <see cref="DateTime.MinValue" /> or later than <see cref="DateTime.MaxValue" />.
     /// </exception>
-    public static DateTime FirstDayOfWeek(this DateTime dateTime, CultureInfo culture)
+    public static DateTime FirstDayOfWeek(this DateTime dateTime, CultureInfo? culture)
     {
         culture ??= Thread.CurrentThread.CurrentCulture;
         DayOfWeek firstDayOfWeek = culture.DateTimeFormat.FirstDayOfWeek;

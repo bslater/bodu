@@ -131,6 +131,8 @@ public static partial class BufferConverter
     /// <remarks>
     /// This method reverses the byte order of each element individually while copying from <paramref name="source" /> to
     /// <paramref name="destination" />. It assumes platform-native layout and performs the swap without allocating additional memory.
+    /// <paramref name="source" /> and <paramref name="destination" /> may refer to the same underlying memory, in which case the
+    /// swap is performed in place.
     /// </remarks>
     public static void SwapEndian(ReadOnlySpan<byte> source, Span<byte> destination, int elementSize)
     {
@@ -145,8 +147,9 @@ public static partial class BufferConverter
         {
             for (int left = 0, right = elementSize - 1; left <= right; left++, right--)
             {
-                destination[i + left] = source[i + right];
-                destination[i + right] = source[i + left];
+                // Read both source values before writing so that the swap is correct even when
+                // <paramref name="source" /> and <paramref name="destination" /> refer to the same memory.
+                (destination[i + left], destination[i + right]) = (source[i + right], source[i + left]);
             }
         }
     }

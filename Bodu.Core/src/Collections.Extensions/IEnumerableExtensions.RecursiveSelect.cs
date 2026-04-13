@@ -200,7 +200,8 @@ public static partial class IEnumerableExtensions
     /// terminate the traversal entirely.
     /// </param>
     /// <returns>
-    /// A sequence of projected elements, where children are included only if <paramref name="recursionControl" /> returns <see langword="true" />.
+    /// A sequence of projected elements. Each element is yielded, skipped, recursed into, or causes traversal to stop according to the
+    /// <see cref="RecursiveSelectControl" /> value returned by <paramref name="recursionControl" />.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="source" />, <paramref name="childSelector" />, <paramref name="selector" />, or

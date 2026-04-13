@@ -212,8 +212,8 @@ public partial struct DaysOfWeekSet
     /// </summary>
     /// <param name="obj">The object to compare with the current instance.</param>
     /// <returns>
-    /// <see langword="true" /> if <paramref name="obj" /> is a <see cref="DaysOfWeekSet" /> or <see cref="byte" /> with the same
-    /// selected days; otherwise, <see langword="false" />.
+    /// <see langword="true" /> if <paramref name="obj" /> is a <see cref="DaysOfWeekSet" /> with the same selected days;
+    /// otherwise, <see langword="false" />.
     /// </returns>
     public override bool Equals(object? obj) => obj is DaysOfWeekSet other && this._selectedDays == other._selectedDays;
 

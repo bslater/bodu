@@ -20,7 +20,7 @@ public static partial class DateOnlyExtensions
     /// <remarks>
     /// This method retrieves the month name from <see cref="DateTimeFormatInfo.MonthNames" /> using the current culture's formatting.
     /// </remarks>
-    public static string MonthName(this DateOnly date) => date.MonthName(null!);
+    public static string MonthName(this DateOnly date) => date.MonthName((CultureInfo?)null);
 
     /// <summary>
     /// Returns the full name of the month for the specified <see cref="DateOnly" />, using the formatting rules of the specified <see cref="CultureInfo" />.
@@ -34,5 +34,5 @@ public static partial class DateOnlyExtensions
     /// This method retrieves the month name from the <see cref="DateTimeFormatInfo.MonthNames" /> collection of the specified or
     /// current culture.
     /// </remarks>
-    public static string MonthName(this DateOnly date, CultureInfo culture) => (culture ?? System.Globalization.CultureInfo.CurrentCulture).DateTimeFormat.GetMonthName(date.Month);
+    public static string MonthName(this DateOnly date, CultureInfo? culture) => (culture ?? System.Globalization.CultureInfo.CurrentCulture).DateTimeFormat.GetMonthName(date.Month);
 }

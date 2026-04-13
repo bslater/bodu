@@ -21,7 +21,8 @@ public sealed class XmlNamespaceResolver
     /// Initializes a new instance of the <see cref="XmlNamespaceResolver" /> class with the specified root element.
     /// </summary>
     /// <param name="root">The root element from which to extract the default namespace.</param>
-    /// <exception cref="InvalidOperationException">Thrown if the root element is <see langword="null" /> or has no namespace.</exception>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="root" /> is <see langword="null" />.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if <paramref name="root" /> has no namespace.</exception>
     public XmlNamespaceResolver(XElement root)
     {
         ThrowHelper.ThrowIfNull(root);

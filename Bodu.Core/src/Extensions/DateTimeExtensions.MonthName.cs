@@ -24,7 +24,7 @@ public static partial class DateTimeExtensions
     /// This method uses the <see cref="DateTimeFormatInfo.GetMonthName(int)" /> method of the current culture to retrieve the full name of
     /// the specified month.
     /// </remarks>
-    public static string GetMonthName(int month) => GetMonthName(month, null!);
+    public static string GetMonthName(int month) => GetMonthName(month, (CultureInfo?)null);
 
     /// <summary>
     /// Returns the full name of the specified calendar month, using the formatting rules of the provided culture.
@@ -44,7 +44,7 @@ public static partial class DateTimeExtensions
     /// This method uses the <see cref="DateTimeFormatInfo.GetMonthName(int)" /> method of the specified or current culture to retrieve the
     /// full name of the specified month.
     /// </remarks>
-    public static string GetMonthName(int month, CultureInfo culture)
+    public static string GetMonthName(int month, CultureInfo? culture)
     {
         ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
         return (culture ?? CultureInfo.CurrentCulture).DateTimeFormat.GetMonthName(month);
@@ -61,7 +61,7 @@ public static partial class DateTimeExtensions
     /// </para>
     /// <para>For culture-specific results, use the <see cref="MonthName(DateTime, CultureInfo)" /> overload.</para>
     /// </remarks>
-    public static string MonthName(this DateTime dateTime) => dateTime.MonthName(null!);
+    public static string MonthName(this DateTime dateTime) => dateTime.MonthName((CultureInfo?)null);
 
     /// <summary>
     /// Returns the full name of the month for the specified <see cref="DateTime" />, using the formatting rules of the provided <see cref="CultureInfo" />.
@@ -76,5 +76,5 @@ public static partial class DateTimeExtensions
     /// This method uses the <see cref="DateTimeFormatInfo.GetMonthName(int)" /> method of the specified or current culture to retrieve the
     /// full name of the month represented by <paramref name="dateTime" />.
     /// </remarks>
-    public static string MonthName(this DateTime dateTime, CultureInfo culture) => (culture ?? CultureInfo.CurrentCulture).DateTimeFormat.GetMonthName(dateTime.Month);
+    public static string MonthName(this DateTime dateTime, CultureInfo? culture) => (culture ?? CultureInfo.CurrentCulture).DateTimeFormat.GetMonthName(dateTime.Month);
 }

@@ -33,13 +33,21 @@ public static partial class IEnumerableExtensions
     /// <returns>A randomised sequence of <typeparamref name="T" />.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="source" /> or <paramref name="rng" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="count" /> is negative, exceeds the number of available elements, or if <paramref name="mode" /> is not
-    /// a defined <see cref="RandomizationMode" /> value.
+    /// Thrown if <paramref name="count" /> is negative, or if <paramref name="mode" /> is not a defined <see cref="RandomizationMode" />
+    /// value. An <see cref="ArgumentOutOfRangeException" /> is also raised when <paramref name="count" /> exceeds the number of
+    /// available elements in <paramref name="source" />, but that check is performed lazily while the returned sequence is enumerated
+    /// rather than at the point this method is called.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown if <paramref name="count" /> is <see langword="null" /> and <paramref name="mode" /> requires a count (i.e.
     /// <see cref="RandomizationMode.ReservoirSample" /> or <see cref="RandomizationMode.LazyShuffle" />).
     /// </exception>
+    /// <remarks>
+    /// Execution is deferred until the returned sequence is enumerated. Null checks for <paramref name="source" /> and
+    /// <paramref name="rng" />, validation that <paramref name="count" /> is not negative, and the <paramref name="mode" />-dependent
+    /// requirement for a non-<see langword="null" /> <paramref name="count" /> are performed eagerly; validation that
+    /// <paramref name="count" /> does not exceed the number of available elements is performed during enumeration.
+    /// </remarks>
     public static IEnumerable<T> Randomize<T>(
         this IEnumerable<T> source,
         RandomizationMode mode,

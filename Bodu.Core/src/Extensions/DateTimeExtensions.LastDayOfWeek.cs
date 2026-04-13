@@ -23,7 +23,7 @@ public static partial class DateTimeExtensions
     /// <para>This overload uses <see cref="CultureInfo.CurrentCulture" /> to determine the last day of the week, based on <see cref="DateTimeFormatInfo.FirstDayOfWeek" />.</para>
     /// <para>The <see cref="DateTime.Kind" /> property of the returned instance matches that of the original <paramref name="dateTime" />.</para>
     /// </remarks>
-    public static DateTime LastDayOfWeek(this DateTime dateTime) => dateTime.LastDayOfWeek(null!);
+    public static DateTime LastDayOfWeek(this DateTime dateTime) => dateTime.LastDayOfWeek((CultureInfo?)null);
 
     /// <summary>
     /// Returns a new <see cref="DateTime" /> representing the last day of the week that contains the specified instance, using the last day
@@ -45,7 +45,7 @@ public static partial class DateTimeExtensions
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if the resulting date is earlier than <see cref="DateTime.MinValue" /> or later than <see cref="DateTime.MaxValue" />.
     /// </exception>
-    public static DateTime LastDayOfWeek(this DateTime dateTime, CultureInfo culture)
+    public static DateTime LastDayOfWeek(this DateTime dateTime, CultureInfo? culture)
     {
         culture ??= Thread.CurrentThread.CurrentCulture;
         DayOfWeek lastDayOfWeek = culture.DateTimeFormat.LastDayOfWeek();

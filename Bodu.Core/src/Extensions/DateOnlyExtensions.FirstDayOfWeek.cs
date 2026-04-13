@@ -19,7 +19,7 @@ public static partial class DateOnlyExtensions
     /// <param name="date">The input <see cref="DateOnly" /> for which to determine the start of the week.</param>
     /// <returns>A <see cref="DateOnly" /> representing the first day of the week that includes <paramref name="date" />.</returns>
     /// <remarks>This method uses <see cref="CultureInfo.CurrentCulture" /> to determine the first day of the week, based on <see cref="DateTimeFormatInfo.FirstDayOfWeek" />.</remarks>
-    public static DateOnly FirstDayOfWeek(this DateOnly date) => date.FirstDayOfWeek(null!);
+    public static DateOnly FirstDayOfWeek(this DateOnly date) => date.FirstDayOfWeek((CultureInfo?)null);
 
     /// <summary>
     /// Returns the first day of the week that contains the specified <see cref="DateOnly" />, using the provided culture or the current culture.
@@ -35,7 +35,7 @@ public static partial class DateOnlyExtensions
     /// the specified or current culture. The result is validated to ensure it falls within the valid range of <see cref="DateOnly" />.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the calculated date is outside the valid range supported by <see cref="DateOnly" />.</exception>
-    public static DateOnly FirstDayOfWeek(this DateOnly date, CultureInfo culture)
+    public static DateOnly FirstDayOfWeek(this DateOnly date, CultureInfo? culture)
     {
         culture ??= Thread.CurrentThread.CurrentCulture;
         DayOfWeek firstDayOfWeek = culture.DateTimeFormat.FirstDayOfWeek;

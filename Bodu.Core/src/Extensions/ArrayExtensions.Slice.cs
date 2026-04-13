@@ -47,15 +47,18 @@ public static partial class ArrayExtensions
     }
 
     /// <summary>
-    /// Takes a slice of the specified array starting from a given index and extending for a specified number of elements. This method
-    /// does not perform any validation checks (use with caution).
+    /// Takes a slice of the specified array starting from a given index and extending for a specified number of elements.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the array.</typeparam>
     /// <param name="array">The one-dimensional array that contains the values to copy.</param>
     /// <param name="index">The starting index in the <paramref name="array" /> from which copying begins.</param>
     /// <param name="count">The number of elements to copy from the <paramref name="array" />.</param>
     /// <returns>A new array containing the copied elements from the <paramref name="array" /> starting from <paramref name="index" />.</returns>
-    /// <remarks>This method is optimized and does not perform validation. Ensure the inputs are valid.</remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="array" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="index" /> or <paramref name="count" /> is less than zero, or when
+    /// <paramref name="index" /> and <paramref name="count" /> describe an invalid range within <paramref name="array" />.
+    /// </exception>
     public static T[] SliceInternal<T>(this T[] array, int index, int count)
     {
         ThrowHelper.ThrowIfNull(array);
