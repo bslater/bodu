@@ -61,6 +61,12 @@ public partial struct WeekPattern
     /// <returns><see langword="true"/> if parsing succeeded; otherwise, <see langword="false"/>.</returns>
     public static bool TryParse(string input, out WeekPattern result)
     {
+        if (input is null)
+        {
+            result = WeekPattern.Empty;
+            return false;
+        }
+
         try
         {
             result = ParseCore(input, formatInfo: null);
@@ -89,6 +95,12 @@ public partial struct WeekPattern
     /// <returns><see langword="true"/> if parsing succeeded; otherwise, <see langword="false"/>.</returns>
     public static bool TryParseExact(string input, string format, out WeekPattern result)
     {
+        if (input is null)
+        {
+            result = WeekPattern.Empty;
+            return false;
+        }
+
         try
         {
             result = ParseCore(input, ParseFormatForParse(format));

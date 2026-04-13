@@ -258,7 +258,7 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
     /// The tick value of the most recent <paramref name="weekStart"/> day on or before the input date.
     /// </returns>
     private static long AlignToOnOrBeforeDayOfWeek(long ticks, DayOfWeek weekStart) =>
-        ticks- DateTimeExtensions.GetTicksSincePreviousOrSameDayOfWeek(ticks, weekStart);
+        ticks - DateTimeExtensions.GetTicksSincePreviousOrSameDayOfWeek(ticks, weekStart);
 
     /// <summary>
     /// Determines whether the fiscal year that begins at <paramref name="fiscalYearStartTicks"/> spans
