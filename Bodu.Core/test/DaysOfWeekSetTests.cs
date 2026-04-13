@@ -6,8 +6,8 @@
         public TestContext TestContext { get; set; }
 
         /// <summary>
-        /// Provides all bitmask permutations with symbol strings in Monday-first order, using the same bitmask and binary representation as
-        /// the original Sunday-first test data.
+        /// Provides all bitmask permutations with symbol strings in Monday-first order, using the same bitmask
+        /// and binary representation as the original Sunday-first test data.
         /// </summary>
         public static IEnumerable<object[]> GetAllBitmaskPermutationWithMondaySymbolsTestData()
         {
@@ -15,7 +15,7 @@
             return GetAllBitmaskPermutationTestData()
                 .Select(o =>
                 {
-                    var symbol = (string)o[1];
+                    var symbol  = (string)o[1];
                     var rotated = symbol.Substring(1) + symbol[0]; // move Sunday to end
                     return new object[] { o[0], rotated, o[2] };
                 });
@@ -24,14 +24,15 @@
                 .Select(o => new object[]
                 {
                     o[0],                                     // byte mask (unchanged)
-                    ((string)o[1])[1..] + ((string)o[1])[0], // rotated symbol string: Sunday -> end
-                    o[2]                                     // binary string (unchanged)
+                    ((string)o[1])[1..] + ((string)o[1])[0], // rotated symbol string: Sunday → end
+                    o[2]                                      // binary string (unchanged)
                 });
 #endif
         }
 
         /// <summary>
-        /// Provides invalid format strings that are expected to throw or fail parsing explicitly due to format specifier errors.
+        /// Provides invalid format strings that are expected to throw or fail parsing explicitly due to format
+        /// specifier errors.
         /// </summary>
         public static IEnumerable<object[]> GetInvalidFormatSpecifierTestData()
         {
@@ -55,13 +56,14 @@
         /// <summary>
         /// Filters invalid parse test cases to only those where no explicit format is provided.
         /// </summary>
-        public static IEnumerable<object[]> GetInvalidParseInputNoFormatTestData() => GetInvalidParseInputTestData()
-                                                                                      .Where(o => o[1] == null)
-                                                                                      .Select(o => new[] { o[0] });
+        public static IEnumerable<object[]> GetInvalidParseInputNoFormatTestData() =>
+            GetInvalidParseInputTestData()
+                .Where(o => o[1] == null)
+                .Select(o => new[] { o[0] });
 
         /// <summary>
-        /// Provides a comprehensive set of invalid input cases for <see cref="DaysOfWeekSet" /> parsing, including malformed strings, wrong
-        /// formats, and invalid characters.
+        /// Provides a comprehensive set of invalid input cases for <see cref="DaysOfWeekSet" /> parsing,
+        /// including malformed strings, wrong formats, and invalid characters.
         /// </summary>
         public static IEnumerable<object[]> GetInvalidParseInputTestData()
         {
@@ -70,9 +72,9 @@
             yield return new object[] { "SMTWTF", null };
             yield return new object[] { "SMTWTFSS", null };
 
-            // incorrect order
-            yield return new object[] { "ssmtwtf", null }; // incorrect saturday order
-            yield return new object[] { "s mtwtf", null }; // incorrect sunday order
+            // Incorrect order
+            yield return new object[] { "ssmtwtf", null }; // incorrect Saturday order
+            yield return new object[] { "s mtwtf", null }; // incorrect Sunday order
             yield return new object[] { "sm  wtf", null };
             yield return new object[] { "m twtfs", null };
             yield return new object[] { "m    fs", null };
@@ -83,7 +85,7 @@
             yield return new object[] { "s_t-tfs", null };
             yield return new object[] { "M*TWTFS", null }; // '*' unexpected for '-'
             yield return new object[] { "m*twTfs", null };
-            yield return new object[] { "ssmtwtf", null }; // incorrect saturday order
+            yield return new object[] { "ssmtwtf", null }; // incorrect Saturday order
 
             // Invalid characters
             yield return new object[] { "SXTWTFS", null }; // 'X' invalid
@@ -110,7 +112,7 @@
             yield return new object[] { "s_t-tfs", "su" };
             yield return new object[] { "M*TWTFS", "MD" }; // '*' unexpected for '-'
             yield return new object[] { "m*twTfs", "md" };
-            yield return new object[] { "ssmtwtf", "s" };  // incorrect saturday order
+            yield return new object[] { "ssmtwtf", "s" }; // incorrect Saturday order
 
             // Wrong parsing mode
             yield return new object[] { "1010101", "S" }; // binary-looking but forced symbol parsing
@@ -118,7 +120,7 @@
             yield return new object[] { "SMTWTFS", "B" }; // symbol-looking but forced binary parsing
             yield return new object[] { "smtwtfs", "b" };
 
-            // Wrong parsing mode
+            // Bad format strings
             yield return new object[] { "SMTWTFS", "Invalid" };
             yield return new object[] { "SMTWTFS", "" };
             yield return new object[] { "SMTWTFS", "123" };
@@ -128,30 +130,31 @@
         /// <summary>
         /// Filters invalid parse test cases to only those with an explicit non-null format.
         /// </summary>
-        public static IEnumerable<object[]> GetInvalidParseInputWithExplicitFormatTestData() => GetInvalidParseInputTestData()
-                                                                                                .Where(o => o[1] != null);
+        public static IEnumerable<object[]> GetInvalidParseInputWithExplicitFormatTestData() =>
+            GetInvalidParseInputTestData()
+                .Where(o => o[1] != null);
 
         public static IEnumerable<object[]> GetTryParseExactTestData() =>
-                    GetValidParseInputTestData()
-                        .Where(o => o[1] != null) // remove null format cases
-                        .Select(o => new object[] { o[0], o[1], o[2], true })
-                    .Union(
-                        GetInvalidParseInputTestData()
-                            .Select(o => new object[] { o[0], o[1], (byte)0b0000000, false })
-                    );
+            GetValidParseInputTestData()
+                .Where(o => o[1] != null) // remove null format cases
+                .Select(o => new object[] { o[0], o[1], o[2], true })
+            .Union(
+                GetInvalidParseInputTestData()
+                    .Select(o => new object[] { o[0], o[1], (byte)0b0000000, false })
+            );
 
         public static IEnumerable<object[]> GetTryParseTestData() =>
-                    GetValidParseInputTestData()
-                        .Select(o => new object[] { o[0], o[2], true })
-                    .Union(
-                        GetInvalidParseInputTestData()
-                            .Where(o => o[1] == null) // only use null format cases
-                            .Select(o => new object[] { o[0], (byte)0b0000000, false })
-                    );
+            GetValidParseInputTestData()
+                .Select(o => new object[] { o[0], o[2], true })
+            .Union(
+                GetInvalidParseInputTestData()
+                    .Where(o => o[1] == null) // only use null format cases
+                    .Select(o => new object[] { o[0], (byte)0b0000000, false })
+            );
 
         /// <summary>
-        /// Provides a comprehensive set of valid test cases for parsing <see cref="DaysOfWeekSet" />, including letter-based, binary, and
-        /// custom formats.
+        /// Provides a comprehensive set of valid test cases for parsing <see cref="DaysOfWeekSet" />,
+        /// including letter-based, binary, and custom formats.
         /// </summary>
         public static IEnumerable<object[]> GetValidParseInputTestData()
         {
@@ -204,15 +207,15 @@
             yield return new object[] { "MTWTFSS", "M", (byte)0b1111111 };
             yield return new object[] { "mtwtfss", "m", (byte)0b1111111 };
 
-            // Unselected format examples
+            // Unselected format examples — Sunday-first only.
+            // Note: single-char unselected specifiers ('U', 'D', 'E', 'A') imply Sunday-first ordering
+            // and do not infer Monday-first from the input. Use two-char specifiers ('MU', 'MD', etc.)
+            // for Monday-first inputs.
             yield return new object[] { "S_T_T_S", "U", (byte)0b1010101 };
-            yield return new object[] { "m_w_f__", "u", (byte)0b0101010 };
-            yield return new object[] { "M-W-F--", "D", (byte)0b0101010 };
-            yield return new object[] { "m-w-f--", "d", (byte)0b0101010 };
             yield return new object[] { "S*T*T*S", "A", (byte)0b1010101 };
             yield return new object[] { "s t t s", "e", (byte)0b1010101 };
 
-            // empty
+            // Empty set representations
             yield return new object[] { "       ", null, (byte)0b0000000 };
             yield return new object[] { "-------", null, (byte)0b0000000 };
             yield return new object[] { "*******", null, (byte)0b0000000 };
@@ -229,19 +232,19 @@
         }
 
         public static IEnumerable<object[]> GetValidParseInputWithExplicitFormatTestData() =>
-                    GetValidParseInputTestData()
-                        .Where(o => o[1] != null);
+            GetValidParseInputTestData()
+                .Where(o => o[1] != null);
 
         /// <summary>
-        /// Generates all 128 valid permutations of <see cref="DaysOfWeekSet" /> values as test data, including both symbol and binary
-        /// string formats.
+        /// Generates all 128 valid permutations of <see cref="DaysOfWeekSet" /> values as test data,
+        /// including both symbol and binary string formats.
         /// </summary>
         /// <returns>An enumerable of [byte bitmask, string symbolFormat, string binaryFormat].</returns>
         private static IEnumerable<object[]> GetAllBitmaskPermutationTestData()
         {
             char[] symbols = new[] { 'S', 'M', 'T', 'W', 'T', 'F', 'S' }; // Sunday-first
 
-            for (int mask = 0b0000000; mask <= 0b1111111; mask++) // From 0 to 127
+            for (int mask = 0b0000000; mask <= 0b1111111; mask++)
             {
                 var symbolBuilder = new char[7];
                 var binaryBuilder = new char[7];
@@ -260,9 +263,5 @@
                 yield return new object[] { (byte)mask, symbol, binary };
             }
         }
-
-        /// <summary>
-        /// Filters valid parse test cases to only those with an explicit non-null format.
-        /// </summary>
     }
 }

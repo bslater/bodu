@@ -1,7 +1,17 @@
-﻿namespace Bodu
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="DaysOfWeekSetTests.GetHashCode.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu
 {
     public partial class DaysOfWeekSetTests
     {
+        /// <summary>
+        /// Verifies that two <see cref="DaysOfWeekSet" /> instances with identical selected days return the
+        /// same hash code.
+        /// </summary>
         [TestMethod]
         public void GetHashCode_WhenSameDays_ShouldReturnSameHash()
         {
@@ -11,6 +21,10 @@
             Assert.AreEqual(set1.GetHashCode(), set2.GetHashCode());
         }
 
+        /// <summary>
+        /// Verifies that two <see cref="DaysOfWeekSet" /> instances with different selected days return
+        /// different hash codes.
+        /// </summary>
         [TestMethod]
         public void GetHashCode_WhenDifferentDays_ShouldReturnDifferentHash()
         {
@@ -20,6 +34,10 @@
             Assert.AreNotEqual(set1.GetHashCode(), set2.GetHashCode());
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DaysOfWeekSet.GetHashCode" /> returns the same value as the hash code of
+        /// its underlying <see cref="byte" /> bitmask across all 128 valid permutations.
+        /// </summary>
         [TestMethod]
         public void GetHashCode_WhenCalled_ShouldMatchInternalByteHashCode()
         {
