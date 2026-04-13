@@ -11,20 +11,13 @@ namespace Bodu.Security.Cryptography
     using Bodu.Extensions;
 
     /// <summary>
-    /// Computes the hash for the input data using the <c>ELF-64</c> (Executable and Linkable Format) hash algorithm. This variant applies a
-    /// non-cryptographic bitwise transformation commonly used in Unix object file processing and hash table indexing. This class cannot be inherited.
+    /// Computes a 64-bit non-cryptographic hash using the ELF (Executable and Linkable Format) hash algorithm originally used in UNIX System
+    /// V object files. This class cannot be inherited.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// ELF hashing is a simple, non-cryptographic routine originally used in the UNIX System V ELF object file format. It processes each
-    /// byte of input by shifting and mixing bits to produce a pseudo-random but repeatable hash output.
-    /// </para>
-    /// <para>
-    /// This implementation uses a 64-bit internal state and is intended for fast hashing of byte sequences such as identifiers or text
-    /// keys. It is <b>not suitable</b> for cryptographic purposes.
-    /// </para>
-    /// <para>
-    /// An optional <see cref="Seed" /> value may be specified to alter the initial state. The seed cannot be changed once hashing begins.
+    /// ELF hashing shifts and folds the running hash for each byte of input, periodically XORing the high bits back into the low bits. An
+    /// optional <see cref="Seed" /> can be supplied to alter the initial state; it cannot be changed once hashing has begun.
     /// </para>
     /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for password hashing,
     /// digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -53,29 +46,10 @@ namespace Bodu.Security.Cryptography
             this.Initialize();
         }
 
-        /// <summary>
-        /// Gets a value indicating whether this transform instance can be reused after a hash operation is completed.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if the transform supports multiple hash computations via <see cref="HashAlgorithm.Initialize" />;
-        /// otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Reusable transforms allow the internal state to be reset for subsequent operations using the same instance. One-shot algorithms
-        /// that clear sensitive key material after finalization typically return <see langword="false" />.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanReuseTransform => true;
 
-        /// <summary>
-        /// Gets a value indicating whether this transform supports processing multiple blocks of data in a single operation.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if multiple input blocks can be transformed in sequence without intermediate finalization; otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Most hash algorithms and block ciphers support multi-block transformations for streaming input. If <see langword="false" />, the
-        /// transform must be invoked one block at a time.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanTransformMultipleBlocks => true;
 
         /// <summary>
