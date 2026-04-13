@@ -23,9 +23,9 @@ public static partial class IEnumerableExtensions
     /// <typeparam name="T">The type of elements in the sequences.</typeparam>
     /// <param name="source">The source sequence to search.</param>
     /// <param name="items">The items to verify against the source sequence.</param>
-    /// <param name="comparer">An optional equality comparer to use; if <see langword="null" />, the default comparer is used.</param>
-    /// <returns><see langword="true" /> if all items exist in <paramref name="source" />; otherwise, <see langword="false" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if either <paramref name="source" /> or <paramref name="items" /> is <see langword="null" />.</exception>
+    /// <param name="comparer">An optional equality comparer to use; if <see langword="null"/>, the default comparer is used.</param>
+    /// <returns><see langword="true"/> if all items exist in <paramref name="source"/>; otherwise, <see langword="false"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if either <paramref name="source"/> or <paramref name="items"/> is <see langword="null"/>.</exception>
     public static bool ContainsAll<T>(
         this IEnumerable<T> source,
         IEnumerable<T> items,

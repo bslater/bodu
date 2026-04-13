@@ -29,10 +29,10 @@ public static partial class DateTimeExtensions
     /// <para>All other years contain exactly 52 weeks.</para>
     /// <para>
     /// The implementation determines these conditions by computing the weekday of January 1 for the specified year and for the following
-    /// year, using <see cref="GetDayOfWeekForJanuary1" />.
+    /// year, using <see cref="GetDayOfWeekForJanuary1"/>.
     /// </para>
     /// </remarks>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="year" /> is less than 1 or greater than 9999.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="year"/> is less than 1 or greater than 9999.</exception>
     public static int GetIsoWeeksInYear(int year)
     {
         ThrowHelper.ThrowIfOutOfRange(year, DateTime.MinValue.Year, DateTime.MaxValue.Year);

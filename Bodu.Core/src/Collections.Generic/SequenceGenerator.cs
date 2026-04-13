@@ -7,7 +7,7 @@
 namespace Bodu.Collections.Generic;
 
 /// <content>
-/// Provides a set of <see langword="static" /> ( <c>Shared</c> in Visual Basic) methods that generate different sequences of elements.
+/// Provides a set of <see langword="static"/> ( <c>Shared</c> in Visual Basic) methods that generate different sequences of elements.
 /// </content>
 public static partial class SequenceGenerator
 {

@@ -13,8 +13,8 @@ using System.Threading.Tasks;
 namespace Bodu.Extensions;
 
 /// <summary>
-/// Provides a set of <see langword="static" /> ( <see langword="Shared" /> in Visual Basic) methods that extend classes that inherit
-/// from the <see cref="System.IComparable" /> interface.
+/// Provides a set of <see langword="static"/> ( <see langword="Shared"/> in Visual Basic) methods that extend classes that inherit
+/// from the <see cref="System.IComparable"/> interface.
 /// </summary>
 public static partial class IComparableExtensions
 {

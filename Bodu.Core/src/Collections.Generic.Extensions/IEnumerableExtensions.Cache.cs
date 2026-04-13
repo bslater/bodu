@@ -21,9 +21,9 @@ public static partial class IEnumerableExtensions
     /// <typeparam name="T">The type of the elements in the source sequence.</typeparam>
     /// <param name="source">The sequence whose elements should be cached.</param>
     /// <returns>
-    /// An <see cref="IEnumerable{T}" /> that caches the source's elements on first enumeration and returns cached results on all subsequent enumerations.
+    /// An <see cref="IEnumerable{T}"/> that caches the source's elements on first enumeration and returns cached results on all subsequent enumerations.
     /// </returns>
-    /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <remarks>
     /// This method uses deferred execution. The caching begins only when the resulting sequence is enumerated. If the source is already a
     /// collection or an existing cached sequence, no additional wrapping is performed.
@@ -44,7 +44,7 @@ public static partial class IEnumerableExtensions
     /// A sequence that caches its elements as they are enumerated, allowing subsequent replays without re-enumerating the source.
     /// </summary>
     /// <typeparam name="T">The type of elements in the cached sequence.</typeparam>
-    /// <remarks>This type is used internally by <see cref="Cache{T}" /> and is thread-safe for concurrent enumeration.</remarks>
+    /// <remarks>This type is used internally by <see cref="Cache{T}"/> and is thread-safe for concurrent enumeration.</remarks>
     private sealed class CacheEnumerable<T> :
        System.Collections.Generic.IEnumerable<T>,
        System.IDisposable
@@ -57,7 +57,7 @@ public static partial class IEnumerableExtensions
         private int _initializationState; // 0 = not initialised, 1 = initialising, 2 = initialised
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="CacheEnumerable{T}" /> class.
+        /// Initializes a new instance of the <see cref="CacheEnumerable{T}"/> class.
         /// </summary>
         /// <param name="source">The original sequence to cache during iteration.</param>
         public CacheEnumerable(IEnumerable<T> source)
@@ -69,7 +69,7 @@ public static partial class IEnumerableExtensions
         /// Disposes internal state and releases the source enumerator and cached items.
         /// </summary>
         /// <remarks>
-        /// Field resets are performed via <see cref="Volatile.Write" /> to ensure that concurrent enumerators observing these fields
+        /// Field resets are performed via <see cref="Volatile.Write"/> to ensure that concurrent enumerators observing these fields
         /// always see the post-dispose state, preventing use of freed resources on weakly-ordered architectures.
         /// </remarks>
         public void Dispose()
@@ -137,9 +137,9 @@ public static partial class IEnumerableExtensions
             private int _index;
 
             /// <summary>
-            /// Initialises a new instance of the <see cref="Enumerator" /> class.
+            /// Initializes a new instance of the <see cref="Enumerator"/> class.
             /// </summary>
-            /// <param name="parent">The parent <see cref="CacheEnumerable{T}" /> instance.</param>
+            /// <param name="parent">The parent <see cref="CacheEnumerable{T}"/> instance.</param>
             public Enumerator(CacheEnumerable<T> parent)
             {
                 _parent = parent;

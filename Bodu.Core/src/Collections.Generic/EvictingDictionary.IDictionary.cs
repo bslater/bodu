@@ -39,7 +39,7 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// <inheritdoc />
     ICollection IDictionary.Values => (ICollection)Values;
 
-    /// <inheritdoc cref="System.Collections.Generic.IDictionary{TKey, TValue}.this" />
+    /// <inheritdoc cref="System.Collections.Generic.IDictionary{TKey, TValue}.this"/>
     public TValue this[TKey key]
     {
         get
@@ -68,11 +68,11 @@ public partial class EvictingDictionary<TKey, TValue> :
 
     /// <summary>
     /// Adds the specified key and value to the dictionary. If the dictionary has reached its capacity, an existing entry will be evicted
-    /// according to the configured <see cref="EvictingDictionaryPolicy" />.
+    /// according to the configured <see cref="EvictingDictionaryPolicy"/>.
     /// </summary>
     /// <param name="key">The key of the element to add.</param>
     /// <param name="value">The value of the element to add.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     public void Add(TKey key, TValue value)
     {
         ThrowHelper.ThrowIfNull(key);
@@ -101,10 +101,10 @@ public partial class EvictingDictionary<TKey, TValue> :
 
     /// <summary>
     /// Adds the specified key/value pair to the dictionary. If the dictionary has reached its capacity, an existing entry will be evicted
-    /// according to the configured <see cref="EvictingDictionaryPolicy" />.
+    /// according to the configured <see cref="EvictingDictionaryPolicy"/>.
     /// </summary>
     /// <param name="item">The key/value pair to add to the dictionary.</param>
-    /// <exception cref="ArgumentNullException"><c>item.Key</c> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException"><c>item.Key</c> is <see langword="null"/>.</exception>
     public void Add(KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
 
     /// <summary>
@@ -112,8 +112,8 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// </summary>
     /// <remarks>
     /// Clears the dictionary and resets all internal eviction metadata, including access order (for LeastRecentlyUsed and MostRecentlyUsed),
-    /// frequency tracking (for LeastFrequentlyUsed), and counters such as <see cref="EvictingDictionary{TKey, TValue}.TotalTouches" /> and
-    /// <see cref="EvictingDictionary{TKey, TValue}.EvictionCount" />.
+    /// frequency tracking (for LeastFrequentlyUsed), and counters such as <see cref="EvictingDictionary{TKey, TValue}.TotalTouches"/> and
+    /// <see cref="EvictingDictionary{TKey, TValue}.EvictionCount"/>.
     /// </remarks>
     public void Clear()
     {
@@ -177,10 +177,10 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// When this method returns, contains the value associated with the specified key, if the key is found; otherwise, the default value
     /// for the type of the value parameter.
     /// </param>
-    /// <returns><see langword="true" /> if the dictionary contains an element with the specified key; otherwise, <see langword="false" />.</returns>
+    /// <returns><see langword="true"/> if the dictionary contains an element with the specified key; otherwise, <see langword="false"/>.</returns>
     /// <remarks>
-    /// If the eviction policy is <see cref="EvictingDictionaryPolicy.LeastRecentlyUsed" /> or
-    /// <see cref="EvictingDictionaryPolicy.LeastFrequentlyUsed" />, accessing a key through this method will update its usage metadata.
+    /// If the eviction policy is <see cref="EvictingDictionaryPolicy.LeastRecentlyUsed"/> or
+    /// <see cref="EvictingDictionaryPolicy.LeastFrequentlyUsed"/>, accessing a key through this method will update its usage metadata.
     /// </remarks>
     public bool TryGetValue(TKey key, out TValue value)
     {

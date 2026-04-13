@@ -16,7 +16,7 @@ public static partial class SequenceGenerator
     /// </summary>
     /// <typeparam name="T">The type of the repeated value.</typeparam>
     /// <param name="value">The value to repeat in the sequence.</param>
-    /// <returns>An infinite sequence of <paramref name="value" />.</returns>
+    /// <returns>An infinite sequence of <paramref name="value"/>.</returns>
     /// <remarks>This method yields the same value forever and is lazily evaluated.</remarks>
     public static IEnumerable<T> Repeat<T>(T value)
     {
@@ -30,8 +30,8 @@ public static partial class SequenceGenerator
     /// <typeparam name="T">The type of the repeated value.</typeparam>
     /// <param name="value">The value to repeat.</param>
     /// <param name="count">The number of repetitions.</param>
-    /// <returns>A sequence of <paramref name="value" /> repeated <paramref name="count" /> times.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="count" /> is negative.</exception>
+    /// <returns>A sequence of <paramref name="value"/> repeated <paramref name="count"/> times.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="count"/> is negative.</exception>
     public static IEnumerable<T> Repeat<T>(T value, int count)
     {
         ThrowHelper.ThrowIfLessThan(count, 0);

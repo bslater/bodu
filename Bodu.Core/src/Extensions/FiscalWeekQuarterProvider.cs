@@ -10,12 +10,12 @@ namespace Bodu.Extensions;
 
 /// <summary>
 /// Provides quarter boundary logic for a week-based retail fiscal calendar using a configurable
-/// <see cref="FiscalWeekPattern" /> (5–4–4, 4–5–4, or 4–4–5 week distribution).
+/// <see cref="FiscalWeekPattern"/> (5–4–4, 4–5–4, or 4–4–5 week distribution).
 /// </summary>
 /// <remarks>
 /// <para>
 /// This provider implements a fiscal calendar in which each quarter consists of exactly 13 weeks, divided
-/// into three fiscal periods according to the <see cref="FiscalWeekPattern" /> supplied at construction.
+/// into three fiscal periods according to the <see cref="FiscalWeekPattern"/> supplied at construction.
 /// Quarters are defined as contiguous 13-week blocks measured from the configured fiscal year start:
 /// </para>
 /// <list type="bullet">
@@ -37,9 +37,9 @@ namespace Bodu.Extensions;
 /// </item>
 /// </list>
 /// <para>
-/// The <see cref="FiscalWeekPattern" /> controls how the 13 weeks within each quarter are divided into
+/// The <see cref="FiscalWeekPattern"/> controls how the 13 weeks within each quarter are divided into
 /// three fiscal periods (fiscal months). It does not affect quarter start or end boundaries, but is
-/// exposed via the <see cref="Pattern" /> property for consumers that require intra-quarter period logic.
+/// exposed via the <see cref="Pattern"/> property for consumers that require intra-quarter period logic.
 /// </para>
 /// <para>
 /// The fiscal year may contain a 53rd week when the span between the computed fiscal year start and the
@@ -47,7 +47,7 @@ namespace Bodu.Extensions;
 /// appended to Q4.
 /// </para>
 /// <para>
-/// The fiscal week start day is governed by the <see cref="DayOfWeek" /> supplied to the constructor.
+/// The fiscal week start day is governed by the <see cref="DayOfWeek"/> supplied to the constructor.
 /// The anchor date is automatically aligned to the nearest occurrence of that day on or before the
 /// computed start of the fiscal year.
 /// </para>
@@ -60,7 +60,7 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
     private readonly FiscalWeekPattern _pattern;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="FiscalWeekQuarterProvider" /> class using the
+    /// Initializes a new instance of the <see cref="FiscalWeekQuarterProvider"/> class using the
     /// specified fiscal year anchor parameters and aligning the fiscal year start to the configured
     /// fiscal week start day.
     /// </summary>
@@ -68,25 +68,25 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
     /// <param name="month">The calendar month (1–12) of the fiscal year anchor.</param>
     /// <param name="dayOfWeek">
     /// The day of the week on which each fiscal week begins. Common values are
-    /// <see cref="DayOfWeek.Sunday" /> and <see cref="DayOfWeek.Saturday" />.
-    /// Defaults to <see cref="DayOfWeek.Saturday" />.
+    /// <see cref="DayOfWeek.Sunday"/> and <see cref="DayOfWeek.Saturday"/>.
+    /// Defaults to <see cref="DayOfWeek.Saturday"/>.
     /// </param>
     /// <param name="isFiscalYearEnd">
-    /// When <see langword="true" />, the <paramref name="year" /> and <paramref name="month" /> identify
+    /// When <see langword="true"/>, the <paramref name="year"/> and <paramref name="month"/> identify
     /// the fiscal year's closing month, and the actual fiscal start date is derived from the month that
-    /// follows. When <see langword="false" />, they identify the fiscal year's opening month directly.
-    /// Defaults to <see langword="true" />.
+    /// follows. When <see langword="false"/>, they identify the fiscal year's opening month directly.
+    /// Defaults to <see langword="true"/>.
     /// </param>
     /// <param name="useNearestDayOfWeek">
-    /// <see langword="true" /> to align the fiscal year start to the occurrence of
-    /// <paramref name="dayOfWeek" /> nearest to the computed anchor date;
-    /// <see langword="false" /> to align it to the occurrence of <paramref name="dayOfWeek" />
+    /// <see langword="true"/> to align the fiscal year start to the occurrence of
+    /// <paramref name="dayOfWeek"/> nearest to the computed anchor date;
+    /// <see langword="false"/> to align it to the occurrence of <paramref name="dayOfWeek"/>
     /// on or before the computed anchor date.
-    /// Defaults to <see langword="true" />.
+    /// Defaults to <see langword="true"/>.
     /// </param>
     /// <param name="pattern">
     /// The week distribution pattern applied to the three fiscal periods within each quarter.
-    /// Defaults to <see cref="FiscalWeekPattern.Weeks445" />.
+    /// Defaults to <see cref="FiscalWeekPattern.Weeks445"/>.
     /// </param>
     /// <remarks>
     /// <para>
@@ -96,28 +96,28 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
     /// <list type="bullet">
     /// <item>
     /// <description>
-    /// When <paramref name="useNearestDayOfWeek" /> is <see langword="true" />, the start date is aligned
-    /// to the occurrence of <paramref name="dayOfWeek" /> nearest to the computed anchor date. This
+    /// When <paramref name="useNearestDayOfWeek"/> is <see langword="true"/>, the start date is aligned
+    /// to the occurrence of <paramref name="dayOfWeek"/> nearest to the computed anchor date. This
     /// aligned date may fall up to three days before or after the anchor, depending on which occurrence
     /// is closer.
     /// </description>
     /// </item>
     /// <item>
     /// <description>
-    /// When <paramref name="useNearestDayOfWeek" /> is <see langword="false" />, the start date is aligned
-    /// to the occurrence of <paramref name="dayOfWeek" /> on or before the computed anchor date.
+    /// When <paramref name="useNearestDayOfWeek"/> is <see langword="false"/>, the start date is aligned
+    /// to the occurrence of <paramref name="dayOfWeek"/> on or before the computed anchor date.
     /// </description>
     /// </item>
     /// </list>
     /// <para>
-    /// When <paramref name="isFiscalYearEnd" /> is <see langword="true" />, the anchor is the first day
-    /// of the month following <paramref name="month" />, and the first day of the fiscal week is shifted
-    /// forward by one day relative to <paramref name="dayOfWeek" />.
+    /// When <paramref name="isFiscalYearEnd"/> is <see langword="true"/>, the anchor is the first day
+    /// of the month following <paramref name="month"/>, and the first day of the fiscal week is shifted
+    /// forward by one day relative to <paramref name="dayOfWeek"/>.
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="dayOfWeek" /> is not a defined <see cref="DayOfWeek" /> value,
-    /// -or- <paramref name="pattern" /> is not a defined <see cref="FiscalWeekPattern" /> value.
+    /// Thrown when <paramref name="dayOfWeek"/> is not a defined <see cref="DayOfWeek"/> value,
+    /// -or- <paramref name="pattern"/> is not a defined <see cref="FiscalWeekPattern"/> value.
     /// </exception>
     public FiscalWeekQuarterProvider(
         int year,
@@ -153,8 +153,8 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
     /// standard 52.
     /// </summary>
     /// <value>
-    /// <see langword="true" /> if the fiscal year spans 371 days (53 complete weeks);
-    /// <see langword="false" /> if it spans 364 days (52 complete weeks).
+    /// <see langword="true"/> if the fiscal year spans 371 days (53 complete weeks);
+    /// <see langword="false"/> if it spans 364 days (52 complete weeks).
     /// </value>
     public bool Is53WeekFiscalYear => _is53WeekFiscalYear;
 
@@ -162,7 +162,7 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
     /// Gets the week distribution pattern applied to the three fiscal periods within each quarter.
     /// </summary>
     /// <value>
-    /// One of the <see cref="FiscalWeekPattern" /> values that describes how the 13 weeks of each
+    /// One of the <see cref="FiscalWeekPattern"/> values that describes how the 13 weeks of each
     /// quarter are divided into fiscal periods.
     /// </value>
     public FiscalWeekPattern Pattern => _pattern;
@@ -237,31 +237,31 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
     public DateOnly GetQuarterStartDate(int quarter) => GetQuarterStart(quarter).ToDateOnly();
 
     /// <summary>
-    /// Returns the tick value of the nearest occurrence of <paramref name="weekStart" /> on or before the
-    /// date represented by <paramref name="ticks" />.
+    /// Returns the tick value of the nearest occurrence of <paramref name="weekStart"/> on or before the
+    /// date represented by <paramref name="ticks"/>.
     /// </summary>
     /// <param name="ticks">The tick value of the reference date.</param>
-    /// <param name="weekStart">The target <see cref="DayOfWeek" /> to align to.</param>
+    /// <param name="weekStart">The target <see cref="DayOfWeek"/> to align to.</param>
     /// <returns>
-    /// The tick value of the most recent <paramref name="weekStart" /> day on or before the input date.
+    /// The tick value of the most recent <paramref name="weekStart"/> day on or before the input date.
     /// </returns>
     private static long AlignToNearestDayOfWeek(long ticks, DayOfWeek weekStart) =>
         DateTimeExtensions.GetTicksForNearestDayOfWeek(ticks, weekStart);
 
     /// <summary>
-    /// Returns the tick value of the nearest occurrence of <paramref name="weekStart" /> on or before the
-    /// date represented by <paramref name="ticks" />.
+    /// Returns the tick value of the nearest occurrence of <paramref name="weekStart"/> on or before the
+    /// date represented by <paramref name="ticks"/>.
     /// </summary>
     /// <param name="ticks">The tick value of the reference date.</param>
-    /// <param name="weekStart">The target <see cref="DayOfWeek" /> to align to.</param>
+    /// <param name="weekStart">The target <see cref="DayOfWeek"/> to align to.</param>
     /// <returns>
-    /// The tick value of the most recent <paramref name="weekStart" /> day on or before the input date.
+    /// The tick value of the most recent <paramref name="weekStart"/> day on or before the input date.
     /// </returns>
     private static long AlignToOnOrBeforeDayOfWeek(long ticks, DayOfWeek weekStart) =>
         ticks- DateTimeExtensions.GetTicksSincePreviousOrSameDayOfWeek(ticks, weekStart);
 
     /// <summary>
-    /// Determines whether the fiscal year that begins at <paramref name="fiscalYearStartTicks" /> spans
+    /// Determines whether the fiscal year that begins at <paramref name="fiscalYearStartTicks"/> spans
     /// more than 52 weeks (i.e., contains a 53rd week).
     /// </summary>
     /// <param name="fiscalYearStartTicks">The tick value of the first day of the current fiscal year.</param>
@@ -273,15 +273,15 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
     /// The fiscal week start day, used to align the equivalent anchor in the following year.
     /// </param>
     /// <param name="useNearestDayOfWeek">
-    /// <see langword="true" /> to align the fiscal year start to the occurrence of
-    /// <paramref name="firstDayOfWeek" /> nearest to the computed anchor date;
-    /// <see langword="false" /> to align it to the occurrence of <paramref name="firstDayOfWeek" />
+    /// <see langword="true"/> to align the fiscal year start to the occurrence of
+    /// <paramref name="firstDayOfWeek"/> nearest to the computed anchor date;
+    /// <see langword="false"/> to align it to the occurrence of <paramref name="firstDayOfWeek"/>
     /// on or before the computed anchor date.
-    /// Defaults to <see langword="true" />.
+    /// Defaults to <see langword="true"/>.
     /// </param>
     /// <returns>
-    /// <see langword="true" /> if the fiscal year spans more than 364 days; otherwise,
-    /// <see langword="false" />.
+    /// <see langword="true"/> if the fiscal year spans more than 364 days; otherwise,
+    /// <see langword="false"/>.
     /// </returns>
     private static bool ComputeIs53WeekYear(
         long fiscalYearStartTicks,
@@ -305,12 +305,12 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
     }
 
     /// <summary>
-    /// Validates that <paramref name="dateTime" /> falls within the bounds of the fiscal year configured
+    /// Validates that <paramref name="dateTime"/> falls within the bounds of the fiscal year configured
     /// for this provider instance.
     /// </summary>
     /// <param name="dateTime">The date and time to validate.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="dateTime" /> does not fall within the fiscal year defined by this
+    /// Thrown when <paramref name="dateTime"/> does not fall within the fiscal year defined by this
     /// provider.
     /// </exception>
     private void ValidateDateInFiscalYear(DateTime dateTime)

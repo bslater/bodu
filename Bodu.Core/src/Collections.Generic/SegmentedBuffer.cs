@@ -19,8 +19,8 @@ namespace Bodu.Collections.Generic;
 /// <typeparam name="T">The type of elements stored in the buffer.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="SegmentedBuffer{T}" /> is designed for high-performance buffering scenarios where the number of elements is not known in
-/// advance and large contiguous memory allocations (e.g., via <see cref="List{T}" />) may lead to excessive memory copying or large object
+/// <see cref="SegmentedBuffer{T}"/> is designed for high-performance buffering scenarios where the number of elements is not known in
+/// advance and large contiguous memory allocations (e.g., via <see cref="List{T}"/>) may lead to excessive memory copying or large object
 /// heap allocations.
 /// </para>
 /// <para>
@@ -41,7 +41,7 @@ public sealed class SegmentedBuffer<T> :
     private int _count;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SegmentedBuffer{T}" /> class using the default segment size.
+    /// Initializes a new instance of the <see cref="SegmentedBuffer{T}"/> class using the default segment size.
     /// </summary>
     /// <remarks>The default segment size is 512 items. New segments are allocated only as needed.</remarks>
     public SegmentedBuffer()
@@ -49,10 +49,10 @@ public sealed class SegmentedBuffer<T> :
     { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SegmentedBuffer{T}" /> class using the specified segment size.
+    /// Initializes a new instance of the <see cref="SegmentedBuffer{T}"/> class using the specified segment size.
     /// </summary>
     /// <param name="segmentSize">The number of elements per segment.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="segmentSize" /> is less than 1.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="segmentSize"/> is less than 1.</exception>
     /// <remarks>
     /// A smaller segment size reduces memory per segment but may incur higher overhead for larger data sets. Larger segment sizes reduce
     /// segment management cost but increase memory fragmentation.
@@ -68,7 +68,7 @@ public sealed class SegmentedBuffer<T> :
     /// <summary>
     /// Gets the number of elements contained in the buffer.
     /// </summary>
-    /// <remarks>The value returned reflects the total number of elements added via <see cref="Add" />.</remarks>
+    /// <remarks>The value returned reflects the total number of elements added via <see cref="Add"/>.</remarks>
     public int Count => _count;
 
     /// <summary>
@@ -77,7 +77,7 @@ public sealed class SegmentedBuffer<T> :
     /// <param name="index">The zero-based index of the element to retrieve or assign.</param>
     /// <returns>The element at the specified index.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="index" /> is less than 0 or greater than or equal to <see cref="Count" />.
+    /// Thrown if <paramref name="index"/> is less than 0 or greater than or equal to <see cref="Count"/>.
     /// </exception>
     /// <remarks>This property provides O(1) access to buffered items, backed by segmented storage.</remarks>
     public T this[int index]

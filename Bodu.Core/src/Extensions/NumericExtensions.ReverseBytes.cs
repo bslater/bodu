@@ -11,11 +11,11 @@ namespace Bodu.Extensions;
 public static partial class NumericExtensions
 {
     /// <summary>
-    /// Reverses the byte order of the specified <see cref="ushort" /> value.
+    /// Reverses the byte order of the specified <see cref="ushort"/> value.
     /// </summary>
     /// <param name="value">The 16-bit unsigned integer whose byte order is to be reversed.</param>
     /// <returns>
-    /// A <see cref="ushort" /> whose bytes are in the reverse order of <paramref name="value" />, converting
+    /// A <see cref="ushort"/> whose bytes are in the reverse order of <paramref name="value"/>, converting
     /// between big-endian and little-endian representations.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -23,11 +23,11 @@ public static partial class NumericExtensions
         (ushort)((value & 0xFFU) << 8 | (value & 0xFF00U) >> 8);
 
     /// <summary>
-    /// Reverses the byte order of the specified <see cref="uint" /> value.
+    /// Reverses the byte order of the specified <see cref="uint"/> value.
     /// </summary>
     /// <param name="value">The 32-bit unsigned integer whose byte order is to be reversed.</param>
     /// <returns>
-    /// A <see cref="uint" /> whose bytes are in the reverse order of <paramref name="value" />, converting
+    /// A <see cref="uint"/> whose bytes are in the reverse order of <paramref name="value"/>, converting
     /// between big-endian and little-endian representations.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -36,11 +36,11 @@ public static partial class NumericExtensions
         (value & 0x00FF0000U) >> 0x08 | (value & 0xFF000000U) >> 0x18;
 
     /// <summary>
-    /// Reverses the byte order of the specified <see cref="ulong" /> value.
+    /// Reverses the byte order of the specified <see cref="ulong"/> value.
     /// </summary>
     /// <param name="value">The 64-bit unsigned integer whose byte order is to be reversed.</param>
     /// <returns>
-    /// A <see cref="ulong" /> whose bytes are in the reverse order of <paramref name="value" />, converting
+    /// A <see cref="ulong"/> whose bytes are in the reverse order of <paramref name="value"/>, converting
     /// between big-endian and little-endian representations.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -1,5 +1,5 @@
-<Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="..\..\bld\Bodu.props" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="..\..\bld\Bodu.props"/>
     <PropertyGroup>
         <TargetFrameworks>net8.0</TargetFrameworks>
         <LangVersion>latest</LangVersion>
@@ -17,11 +17,11 @@
     </PropertyGroup>
     <!-- Exclude files that are not supported in .NET Standard 2.0 -->
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-        <Compile Remove="Buffers\PooledBufferBuilder*.cs" />
+        <Compile Remove="Buffers\PooledBufferBuilder*.cs"/>
     </ItemGroup>
     <!-- Exclude files that are not supported in .NET Standard -->
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'">
-        <Compile Remove="Extensions\DateOnly*.cs" />
+        <Compile Remove="Extensions\DateOnly*.cs"/>
     </ItemGroup>
     <!--
     ThrowHelper is split into two partial files to avoid #if guards in C# source:
@@ -31,14 +31,14 @@
                                           CallerArgumentExpressionAttribute is supported.
   -->
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'">
-        <Compile Remove="ThrowHelper.CallerExpression.cs" />
+        <Compile Remove="ThrowHelper.CallerExpression.cs"/>
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0' And '$(TargetFramework)' != 'netstandard2.1'">
-        <Compile Remove="ThrowHelper.NetStandard.cs" />
+        <Compile Remove="ThrowHelper.NetStandard.cs"/>
     </ItemGroup>
     <ItemGroup>
-        <Compile Remove="Text\**" />
-        <None Remove="Text\**" />
+        <Compile Remove="Text\**"/>
+        <None Remove="Text\**"/>
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="AsyncFixer" Version="1.6.0">
@@ -49,7 +49,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0" PrivateAssets="all"/>
         <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.14.15">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -86,7 +86,7 @@
         </EmbeddedResource>
     </ItemGroup>
     <ItemGroup>
-        <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+        <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}"/>
     </ItemGroup>
     <ItemGroup>
         <Compile Update="ResourceStrings.Designer.cs">

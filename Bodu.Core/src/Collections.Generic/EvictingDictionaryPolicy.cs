@@ -7,10 +7,10 @@
 namespace Bodu.Collections.Generic;
 
 /// <summary>
-/// Specifies the eviction strategy used by an <see cref="EvictingDictionary{TKey, TValue}" /> when its capacity is exceeded.
+/// Specifies the eviction strategy used by an <see cref="EvictingDictionary{TKey, TValue}"/> when its capacity is exceeded.
 /// </summary>
 /// <remarks>
-/// The <see cref="EvictingDictionaryPolicy" /> enumeration defines how items are selected for removal when the dictionary reaches
+/// The <see cref="EvictingDictionaryPolicy"/> enumeration defines how items are selected for removal when the dictionary reaches
 /// its maximum capacity. The selected policy determines whether the dictionary behaves like a queue, cache, or frequency-based store.
 ///
 /// <para>
@@ -27,7 +27,7 @@ namespace Bodu.Collections.Generic;
 ///]]>
 /// </code>
 /// <para>
-/// The item that is evicted varies depending on the selected <see cref="EvictingDictionaryPolicy" />:
+/// The item that is evicted varies depending on the selected <see cref="EvictingDictionaryPolicy"/>:
 /// </para>
 /// <list type="table">
 ///   <listheader>
@@ -35,27 +35,27 @@ namespace Bodu.Collections.Generic;
 ///     <description>Item Evicted</description>
 ///   </listheader>
 ///   <item>
-///     <term><see cref="FirstInFirstOut" /></term>
+///     <term><see cref="FirstInFirstOut"/></term>
 ///     <description><c>"A"</c> - the first item added, regardless of access.</description>
 ///   </item>
 ///   <item>
-///     <term><see cref="LeastRecentlyUsed" /></term>
+///     <term><see cref="LeastRecentlyUsed"/></term>
 ///     <description><c>"C"</c> - the item least recently accessed (A was accessed, C was not).</description>
 ///   </item>
 ///   <item>
-///     <term><see cref="LeastFrequentlyUsed" /></term>
+///     <term><see cref="LeastFrequentlyUsed"/></term>
 ///     <description><c>"B"</c> - the first item with the lowest access count.</description>
 ///   </item>
 ///   <item>
-///     <term><see cref="MostRecentlyUsed" /></term>
+///     <term><see cref="MostRecentlyUsed"/></term>
 ///     <description><c>"A"</c> - the most recently accessed item.</description>
 ///   </item>
 ///   <item>
-///     <term><see cref="RandomReplacement" /></term>
+///     <term><see cref="RandomReplacement"/></term>
 ///     <description>A randomly chosen item from <c>"A"</c>, <c>"B"</c>, or <c>"C"</c>.</description>
 ///   </item>
 ///   <item>
-///     <term><see cref="SecondChance" /></term>
+///     <term><see cref="SecondChance"/></term>
 ///     <description><c>"B"</c> - evicted after its reference bit is cleared; <c>"A"</c> is spared due to recent access.</description>
 ///   </item>
 /// </list>

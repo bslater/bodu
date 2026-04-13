@@ -18,12 +18,12 @@ internal static class SequenceUtility
     /// Ensures that the given sequence can be safely enumerated more than once by materializing it if needed.
     /// </summary>
     /// <typeparam name="T">The type of elements in the sequence.</typeparam>
-    /// <param name="sequence">The sequence to evaluate. Must not be <see langword="null" />.</param>
+    /// <param name="sequence">The sequence to evaluate. Must not be <see langword="null"/>.</param>
     /// <returns>The original sequence if it is already a collection; otherwise, a materialized array.</returns>
     /// <remarks>
-    /// <para>This method assumes <paramref name="sequence" /> is non-null. The caller is responsible for validating the input.</para>
+    /// <para>This method assumes <paramref name="sequence"/> is non-null. The caller is responsible for validating the input.</para>
     /// <para>
-    /// On .NET 6.0 or later, <see cref="System.Linq.Enumerable.TryGetNonEnumeratedCount{TSource}(IEnumerable{TSource}, out int)" /> is used
+    /// On .NET 6.0 or later, <see cref="System.Linq.Enumerable.TryGetNonEnumeratedCount{TSource}(IEnumerable{TSource}, out int)"/> is used
     /// to avoid unnecessary allocations for known-length sequences.
     /// </para>
     /// </remarks>

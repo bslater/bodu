@@ -17,12 +17,12 @@ namespace Bodu;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="WeekPattern" /> provides a compact bitmask representation of selected days, supporting
+/// <see cref="WeekPattern"/> provides a compact bitmask representation of selected days, supporting
 /// non-destructive composition, parsing, formatting, comparison, and enumeration.
 /// </para>
 /// <para>
-/// Because <see cref="WeekPattern" /> is a value type, all operations that change the selection return a
-/// new instance rather than modifying the receiver. Use <see cref="With" /> and <see cref="Without" />
+/// Because <see cref="WeekPattern"/> is a value type, all operations that change the selection return a
+/// new instance rather than modifying the receiver. Use <see cref="With"/> and <see cref="Without"/>
 /// to build patterns incrementally, and the bitwise operators to combine or intersect them.
 /// </para>
 /// <code language="csharp">
@@ -52,18 +52,18 @@ public partial struct WeekPattern : IEnumerable<DayOfWeek>
 #pragma warning disable IDE1006
 
     /// <summary>
-    /// Represents a <see cref="WeekPattern" /> with no days selected.
+    /// Represents a <see cref="WeekPattern"/> with no days selected.
     /// </summary>
     public static readonly WeekPattern Empty;
 
     /// <summary>
-    /// Represents a <see cref="WeekPattern" /> with Monday through Friday selected.
+    /// Represents a <see cref="WeekPattern"/> with Monday through Friday selected.
     /// </summary>
     public static readonly WeekPattern Weekdays = new WeekPattern(
         DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday);
 
     /// <summary>
-    /// Represents a <see cref="WeekPattern" /> with Saturday and Sunday selected.
+    /// Represents a <see cref="WeekPattern"/> with Saturday and Sunday selected.
     /// </summary>
     public static readonly WeekPattern Weekend = new WeekPattern(DayOfWeek.Saturday, DayOfWeek.Sunday);
 
@@ -80,11 +80,11 @@ public partial struct WeekPattern : IEnumerable<DayOfWeek>
     private byte _selectedDays;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="WeekPattern" /> structure with the specified selected days.
+    /// Initializes a new instance of the <see cref="WeekPattern"/> struct with the specified selected days.
     /// </summary>
-    /// <param name="daysOfWeek">An array of <see cref="DayOfWeek" /> values to mark as selected.</param>
+    /// <param name="daysOfWeek">An array of <see cref="DayOfWeek"/> values to mark as selected.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if any value in <paramref name="daysOfWeek" /> is outside the valid <see cref="DayOfWeek" /> range.
+    /// Thrown if any value in <paramref name="daysOfWeek"/> is outside the valid <see cref="DayOfWeek"/> range.
     /// </exception>
     /// <example>
     /// <code language="csharp">
@@ -105,16 +105,16 @@ public partial struct WeekPattern : IEnumerable<DayOfWeek>
     }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="WeekPattern" /> structure by parsing the specified string.
+    /// Initializes a new instance of the <see cref="WeekPattern"/> struct by parsing the specified string.
     /// </summary>
-    /// <param name="input">The input string representing selected days. Must not be <see langword="null" />.</param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="input" /> is <see langword="null" />.</exception>
+    /// <param name="input">The input string representing selected days. Must not be <see langword="null"/>.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="input"/> is <see langword="null"/>.</exception>
     /// <exception cref="FormatException">
-    /// Thrown if <paramref name="input" /> is not exactly seven characters long or contains invalid characters.
+    /// Thrown if <paramref name="input"/> is not exactly seven characters long or contains invalid characters.
     /// </exception>
     /// <remarks>
-    /// This constructor behaves identically to <see cref="Parse(string)" />, automatically inferring the
-    /// format from the input string. Use <see cref="ParseExact(string, string)" /> when the format must
+    /// This constructor behaves identically to <see cref="Parse(string)"/>, automatically inferring the
+    /// format from the input string. Use <see cref="ParseExact(string, string)"/> when the format must
     /// be specified explicitly.
     /// </remarks>
     public WeekPattern(string input)
@@ -130,17 +130,17 @@ public partial struct WeekPattern : IEnumerable<DayOfWeek>
     /// <summary>
     /// Gets the number of days currently selected.
     /// </summary>
-    /// <value>An <see cref="int" /> in the range [0, 7] representing the total number of selected days.</value>
+    /// <value>An <see cref="int"/> in the range [0, 7] representing the total number of selected days.</value>
     public int Count =>
         BitOperations.PopCount(_selectedDays);
 
     /// <summary>
-    /// Gets whether the specified <see cref="DayOfWeek" /> is selected.
+    /// Gets whether the specified <see cref="DayOfWeek"/> is selected.
     /// </summary>
     /// <param name="day">The day to query.</param>
-    /// <returns><see langword="true" /> if <paramref name="day" /> is selected; otherwise, <see langword="false" />.</returns>
+    /// <returns><see langword="true"/> if <paramref name="day"/> is selected; otherwise, <see langword="false"/>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="day" /> is outside the valid <see cref="DayOfWeek" /> range.
+    /// Thrown if <paramref name="day"/> is outside the valid <see cref="DayOfWeek"/> range.
     /// </exception>
     public bool this[DayOfWeek day]
     {
@@ -152,26 +152,26 @@ public partial struct WeekPattern : IEnumerable<DayOfWeek>
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="DayOfWeek" /> is selected in this pattern.
+    /// Determines whether the specified <see cref="DayOfWeek"/> is selected in this pattern.
     /// </summary>
-    /// <param name="day">The day to test. Must be a valid <see cref="DayOfWeek" /> value.</param>
-    /// <returns><see langword="true" /> if <paramref name="day" /> is selected; otherwise, <see langword="false" />.</returns>
+    /// <param name="day">The day to test. Must be a valid <see cref="DayOfWeek"/> value.</param>
+    /// <returns><see langword="true"/> if <paramref name="day"/> is selected; otherwise, <see langword="false"/>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="day" /> is outside the valid <see cref="DayOfWeek" /> range.
+    /// Thrown if <paramref name="day"/> is outside the valid <see cref="DayOfWeek"/> range.
     /// </exception>
     public bool Contains(DayOfWeek day) => this[day];
 
     /// <summary>
-    /// Returns a new <see cref="WeekPattern" /> that includes the specified day in addition to those already
-    /// selected. If <paramref name="day" /> is already selected the returned instance is equal to the current one.
+    /// Returns a new <see cref="WeekPattern"/> that includes the specified day in addition to those already
+    /// selected. If <paramref name="day"/> is already selected the returned instance is equal to the current one.
     /// </summary>
-    /// <param name="day">The <see cref="DayOfWeek" /> to add.</param>
+    /// <param name="day">The <see cref="DayOfWeek"/> to add.</param>
     /// <returns>
-    /// A new <see cref="WeekPattern" /> with <paramref name="day" /> selected alongside all previously
+    /// A new <see cref="WeekPattern"/> with <paramref name="day"/> selected alongside all previously
     /// selected days.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="day" /> is outside the valid <see cref="DayOfWeek" /> range.
+    /// Thrown if <paramref name="day"/> is outside the valid <see cref="DayOfWeek"/> range.
     /// </exception>
     public WeekPattern With(DayOfWeek day)
     {
@@ -180,16 +180,16 @@ public partial struct WeekPattern : IEnumerable<DayOfWeek>
     }
 
     /// <summary>
-    /// Returns a new <see cref="WeekPattern" /> that excludes the specified day. If <paramref name="day" />
+    /// Returns a new <see cref="WeekPattern"/> that excludes the specified day. If <paramref name="day"/>
     /// is not selected the returned instance is equal to the current one.
     /// </summary>
-    /// <param name="day">The <see cref="DayOfWeek" /> to remove.</param>
+    /// <param name="day">The <see cref="DayOfWeek"/> to remove.</param>
     /// <returns>
-    /// A new <see cref="WeekPattern" /> with <paramref name="day" /> unselected and all other previously
+    /// A new <see cref="WeekPattern"/> with <paramref name="day"/> unselected and all other previously
     /// selected days retained.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="day" /> is outside the valid <see cref="DayOfWeek" /> range.
+    /// Thrown if <paramref name="day"/> is outside the valid <see cref="DayOfWeek"/> range.
     /// </exception>
     public WeekPattern Without(DayOfWeek day)
     {
@@ -198,33 +198,33 @@ public partial struct WeekPattern : IEnumerable<DayOfWeek>
     }
 
     /// <summary>
-    /// Returns a <see cref="byte" /> representation of the selected days.
+    /// Returns a <see cref="byte"/> representation of the selected days.
     /// </summary>
-    /// <returns>A <see cref="byte" /> whose bits correspond to the selected days in Sunday-first order.</returns>
+    /// <returns>A <see cref="byte"/> whose bits correspond to the selected days in Sunday-first order.</returns>
     public byte ToByte() => _selectedDays;
 
     /// <summary>
-    /// Returns an <see cref="int" /> representation of the selected days, for contexts where an integer
+    /// Returns an <see cref="int"/> representation of the selected days, for contexts where an integer
     /// type is required.
     /// </summary>
-    /// <returns>An <see cref="int" /> whose value equals the underlying bitmask.</returns>
+    /// <returns>An <see cref="int"/> whose value equals the underlying bitmask.</returns>
     public int ToInt32() => _selectedDays;
 
     /// <summary>
-    /// Creates a <see cref="WeekPattern" /> from the specified bitmask byte value.
+    /// Creates a <see cref="WeekPattern"/> from the specified bitmask byte value.
     /// </summary>
     /// <param name="value">
-    /// A <see cref="byte" /> in the range [0, 127] where each bit represents a day of the week in
+    /// A <see cref="byte"/> in the range [0, 127] where each bit represents a day of the week in
     /// Sunday-first order.
     /// </param>
-    /// <returns>A <see cref="WeekPattern" /> corresponding to the supplied bitmask.</returns>
+    /// <returns>A <see cref="WeekPattern"/> corresponding to the supplied bitmask.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="value" /> exceeds 127.
+    /// Thrown if <paramref name="value"/> exceeds 127.
     /// </exception>
     public static WeekPattern FromByte(byte value) => new WeekPattern((int)value);
 
     /// <summary>
-    /// Returns an enumerator that yields each selected <see cref="DayOfWeek" /> in Sunday-first order.
+    /// Returns an enumerator that yields each selected <see cref="DayOfWeek"/> in Sunday-first order.
     /// </summary>
     /// <returns>An enumerator over the selected days.</returns>
     public IEnumerator<DayOfWeek> GetEnumerator()

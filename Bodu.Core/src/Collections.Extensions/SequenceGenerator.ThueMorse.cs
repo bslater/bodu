@@ -15,9 +15,9 @@ public static partial class SequenceGenerator
     /// Generates the Thue–Morse sequence as a binary sequence of 0s and 1s.
     /// </summary>
     /// <param name="count">The number of terms to generate. Must be non-negative.</param>
-    /// <returns>A sequence of <see cref="int" /> values where each term is 0 or 1, representing the Thue–Morse sequence.</returns>
+    /// <returns>A sequence of <see cref="int"/> values where each term is 0 or 1, representing the Thue–Morse sequence.</returns>
     /// <remarks>The n-th value is the parity of the number of 1s in the binary representation of <c>n: T(n) = bitcount(n) % 2</c>.</remarks>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count" /> is negative.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> is negative.</exception>
     public static IEnumerable<int> ThueMorse(int count)
     {
         ThrowHelper.ThrowIfLessThan(count, 0);

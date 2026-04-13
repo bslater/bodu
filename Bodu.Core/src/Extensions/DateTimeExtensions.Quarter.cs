@@ -12,28 +12,28 @@ namespace Bodu.Extensions;
 public static partial class DateTimeExtensions
 {
     /// <summary>
-    /// Gets the quarter number (1–4) of the year for the specified <see cref="DateTime" />, using the standard calendar quarter definition
-    /// ( <see cref="CalendarQuarterDefinition.JanuaryToDecember" />).
+    /// Gets the quarter number (1–4) of the year for the specified <see cref="DateTime"/>, using the standard calendar quarter definition
+    /// ( <see cref="CalendarQuarterDefinition.JanuaryToDecember"/>).
     /// </summary>
-    /// <param name="dateTime">The <see cref="DateTime" /> to evaluate.</param>
-    /// <returns>An integer between 1 and 4 representing the calendar quarter that contains <paramref name="dateTime" />.</returns>
+    /// <param name="dateTime">The <see cref="DateTime"/> to evaluate.</param>
+    /// <returns>An integer between 1 and 4 representing the calendar quarter that contains <paramref name="dateTime"/>.</returns>
     /// <remarks>
-    /// <para>This method uses the standard calendar alignment defined by <see cref="CalendarQuarterDefinition.JanuaryToDecember" />.</para>
+    /// <para>This method uses the standard calendar alignment defined by <see cref="CalendarQuarterDefinition.JanuaryToDecember"/>.</para>
     /// </remarks>
     public static int Quarter(this DateTime dateTime) => GetQuarterForDate(dateTime, GetQuarterDefinition(CalendarQuarterDefinition.JanuaryToDecember));
 
     /// <summary>
-    /// Gets the quarter number (1–4) for the specified <see cref="DateTime" />, using a predefined <see cref="CalendarQuarterDefinition" />.
+    /// Gets the quarter number (1–4) for the specified <see cref="DateTime"/>, using a predefined <see cref="CalendarQuarterDefinition"/>.
     /// </summary>
-    /// <param name="dateTime">The <see cref="DateTime" /> to evaluate.</param>
+    /// <param name="dateTime">The <see cref="DateTime"/> to evaluate.</param>
     /// <param name="definition">The quarter definition that determines how the year is segmented into quarters.</param>
-    /// <returns>An integer between 1 and 4 representing the quarter that contains the given <paramref name="dateTime" />.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="definition" /> is not a valid enum value or is <see cref="CalendarQuarterDefinition.Custom" />.</exception>
+    /// <returns>An integer between 1 and 4 representing the quarter that contains the given <paramref name="dateTime"/>.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="definition"/> is not a valid enum value or is <see cref="CalendarQuarterDefinition.Custom"/>.</exception>
     /// <remarks>
     /// <para>
     /// This method supports various standard calendar and financial quarter alignments by unpacking the encoded anchor month and day.
     /// </para>
-    /// <para>For custom models, use <see cref="Quarter(DateTime, IQuarterDefinitionProvider)" /> instead.</para>
+    /// <para>For custom models, use <see cref="Quarter(DateTime, IQuarterDefinitionProvider)"/> instead.</para>
     /// </remarks>
     public static int Quarter(this DateTime dateTime, CalendarQuarterDefinition definition)
     {
@@ -47,16 +47,16 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Gets the quarter number (1–4) for the specified <see cref="DateTime" />, using a custom quarter definition provider.
+    /// Gets the quarter number (1–4) for the specified <see cref="DateTime"/>, using a custom quarter definition provider.
     /// </summary>
-    /// <param name="dateTime">The <see cref="DateTime" /> to evaluate.</param>
-    /// <param name="provider">An <see cref="IQuarterDefinitionProvider" /> that defines how quarters are structured.</param>
-    /// <returns>An integer between 1 and 4 representing the quarter that contains <paramref name="dateTime" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="provider" /> is <see langword="null" />.</exception>
+    /// <param name="dateTime">The <see cref="DateTime"/> to evaluate.</param>
+    /// <param name="provider">An <see cref="IQuarterDefinitionProvider"/> that defines how quarters are structured.</param>
+    /// <returns>An integer between 1 and 4 representing the quarter that contains <paramref name="dateTime"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="provider"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the quarter returned by the provider is not in the range 1–4.</exception>
     /// <remarks>
     /// <para>Use this overload to support complex fiscal models such as 4-4-5 retail calendars or non-month-aligned systems.</para>
-    /// <para>This method calls <see cref="IQuarterDefinitionProvider.GetQuarter(DateTime)" /> to resolve the quarter.</para>
+    /// <para>This method calls <see cref="IQuarterDefinitionProvider.GetQuarter(DateTime)"/> to resolve the quarter.</para>
     /// </remarks>
     public static int Quarter(this DateTime dateTime, IQuarterDefinitionProvider provider)
     {
@@ -123,13 +123,13 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Determines the fiscal year and quarter that include the specified <paramref name="referenceDate" /> using the given quarter definition.
+    /// Determines the fiscal year and quarter that include the specified <paramref name="referenceDate"/> using the given quarter definition.
     /// </summary>
-    /// <param name="definition">The <see cref="CalendarQuarterDefinition" /> that defines quarter anchor points.</param>
+    /// <param name="definition">The <see cref="CalendarQuarterDefinition"/> that defines quarter anchor points.</param>
     /// <param name="referenceDate">The date to evaluate.</param>
     /// <returns>A tuple containing the resolved year and quarter number (1–4).</returns>
     /// <remarks>
-    /// If the calculated start of the resolved quarter is after <paramref name="referenceDate" />, the year is decremented to reflect the
+    /// If the calculated start of the resolved quarter is after <paramref name="referenceDate"/>, the year is decremented to reflect the
     /// prior fiscal year.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -158,11 +158,11 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Extracts the anchor month and day components from a <see cref="CalendarQuarterDefinition" /> value.
+    /// Extracts the anchor month and day components from a <see cref="CalendarQuarterDefinition"/> value.
     /// </summary>
-    /// <param name="definition">A <see cref="CalendarQuarterDefinition" /> value encoded as MMDD (e.g., 406 for April 6).</param>
+    /// <param name="definition">A <see cref="CalendarQuarterDefinition"/> value encoded as MMDD (e.g., 406 for April 6).</param>
     /// <returns>A tuple <c>(defMonth, defDay)</c> representing the anchor month and day that define the start of Q1.</returns>
-    /// <remarks>This method unpacks the encoded <see cref="CalendarQuarterDefinition" /> value for internal use in modular calculations.</remarks>
+    /// <remarks>This method unpacks the encoded <see cref="CalendarQuarterDefinition"/> value for internal use in modular calculations.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static (uint defMonth, uint defDay) GetQuarterDefinition(CalendarQuarterDefinition definition)
     {
@@ -175,13 +175,13 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Determines the quarter number (1–4) that includes the specified <see cref="DateTime" />, based on a month-day anchor definition.
+    /// Determines the quarter number (1–4) that includes the specified <see cref="DateTime"/>, based on a month-day anchor definition.
     /// </summary>
     /// <param name="dateTime">The date to evaluate.</param>
     /// <param name="definition">A tuple representing the start of Q1, encoded as (month, day).</param>
     /// <returns>An integer between 1 and 4 representing the resolved quarter number.</returns>
     /// <remarks>
-    /// If <paramref name="dateTime" /> falls before the anchor day in the quarter's first month, it is considered part of the previous quarter.
+    /// If <paramref name="dateTime"/> falls before the anchor day in the quarter's first month, it is considered part of the previous quarter.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int GetQuarterForDate(this DateTime dateTime, (uint defMonth, uint defDay) definition)

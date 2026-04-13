@@ -14,7 +14,7 @@ namespace Bodu.Collections.Extensions;
 public static partial class IEnumerableExtensions
 {
     /// <summary>
-    /// Gets the number of elements in a non-generic <see cref="IEnumerable" /> sequence, using collection fast-paths where possible.
+    /// Gets the number of elements in a non-generic <see cref="IEnumerable"/> sequence, using collection fast-paths where possible.
     /// </summary>
     /// <param name="source">The sequence to count.</param>
     /// <returns>The number of elements in the sequence.</returns>

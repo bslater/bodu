@@ -100,8 +100,8 @@ public partial struct WeekPattern
     }
 
     /// <summary>
-    /// Parses the format string for use in <see cref="ParseExact" /> or <see cref="TryParseExact" />,
-    /// throwing <see cref="FormatException" /> if the format is unrecognised or <see langword="null" />.
+    /// Parses the format string for use in <see cref="ParseExact"/> or <see cref="TryParseExact"/>,
+    /// throwing <see cref="FormatException"/> if the format is unrecognised or <see langword="null"/>.
     /// </summary>
     private static (char? startDay, char? unselectedChar, bool isBinary) ParseFormatForParse(string format)
     {
@@ -113,10 +113,10 @@ public partial struct WeekPattern
     }
 
     /// <summary>
-    /// Parses the format string for use in <see cref="ToString(string, IFormatProvider)" />,
-    /// throwing <see cref="ArgumentException" /> if the format is unrecognised.
+    /// Parses the format string for use in <see cref="ToString(string, IFormatProvider)"/>,
+    /// throwing <see cref="ArgumentException"/> if the format is unrecognised.
     /// </summary>
-    private static (char? startDay, char? unselectedChar, bool isBinary) ParseFormatForToString(string format)
+    private static (char? startDay, char? unselectedChar, bool isBinary) ParseFormatForToString(string? format)
     {
         format ??= "S";
         if (!TryParseFormatInfo(format, out var info))
@@ -127,15 +127,15 @@ public partial struct WeekPattern
 
     /// <summary>
     /// Attempts to parse the format string into its constituent parts for use in formatting or parsing a
-    /// <see cref="WeekPattern" />.
+    /// <see cref="WeekPattern"/>.
     /// </summary>
     /// <param name="format">The format string (one or two characters).</param>
     /// <param name="info">
-    /// When this method returns <see langword="true" />, contains the parsed format tuple:
+    /// When this method returns <see langword="true"/>, contains the parsed format tuple:
     /// <c>startDay</c> is <c>'S'</c> or <c>'M'</c>; <c>unselectedChar</c> is the placeholder symbol;
     /// <c>isBinary</c> indicates binary output mode.
     /// </param>
-    /// <returns><see langword="true" /> if the format is recognised; otherwise, <see langword="false" />.</returns>
+    /// <returns><see langword="true"/> if the format is recognised; otherwise, <see langword="false"/>.</returns>
     private static bool TryParseFormatInfo(string format, out (char? startDay, char? unselectedChar, bool isBinary) info)
     {
         info = default;

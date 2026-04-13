@@ -11,10 +11,10 @@ namespace Bodu.Collections.Generic;
 public partial class CircularBuffer<T>
 {
     /// <summary>
-    /// Enumerates the elements of a <see cref="CircularBuffer{T}" />.
+    /// Enumerates the elements of a <see cref="CircularBuffer{T}"/>.
     /// </summary>
     /// <remarks>
-    /// <para>Use the <see langword="foreach" /> statement to simplify the enumeration process instead of directly using this enumerator.</para>
+    /// <para>Use the <see langword="foreach"/> statement to simplify the enumeration process instead of directly using this enumerator.</para>
     /// <para>
     /// The enumerator provides read-only access to the collection's elements. Modifying the underlying collection while enumerating
     /// invalidates the enumerator.
@@ -31,7 +31,7 @@ public partial class CircularBuffer<T>
         private int _iteratedCount;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Enumerator" /> struct.
+        /// Initializes a new instance of the <see cref="Enumerator"/> struct.
         /// </summary>
         /// <param name="circularBuffer">The buffer to enumerate.</param>
         internal Enumerator(CircularBuffer<T> circularBuffer)

@@ -17,7 +17,7 @@ public static partial class SequenceGenerator
     /// <param name="order">The order of the Farey sequence. Must be positive.</param>
     /// <returns>A sequence of tuples representing simplified fractions (numerator, denominator) in ascending order.</returns>
     /// <remarks>The Farey sequence of order n includes all unique fractions a/b such that: 0 ≤ a ≤ b ≤ n, GCD(a, b) = 1.</remarks>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="order" /> is less than 1.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="order"/> is less than 1.</exception>
     public static IEnumerable<(int Numerator, int Denominator)> Farey(int order)
     {
         ThrowHelper.ThrowIfLessThan(order, 1);

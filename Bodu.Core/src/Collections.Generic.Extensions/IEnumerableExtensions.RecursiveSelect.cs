@@ -45,7 +45,7 @@ public static partial class IEnumerableExtensions
     /// <param name="childSelector">A function that returns child elements for a given element.</param>
     /// <returns>A flattened sequence of all elements including their children.</returns>
     /// <exception cref="System.ArgumentNullException">
-    /// Thrown if <paramref name="source" /> or <paramref name="childSelector" /> is <see langword="null" />.
+    /// Thrown if <paramref name="source"/> or <paramref name="childSelector"/> is <see langword="null"/>.
     /// </exception>
     /// <example>
     /// <code language="csharp"><![CDATA[
@@ -76,8 +76,8 @@ public static partial class IEnumerableExtensions
     /// A flattened and projected sequence of results from all elements including children.
     /// </returns>
     /// <exception cref="System.ArgumentNullException">
-    /// Thrown if <paramref name="source" />, <paramref name="childSelector" />, or
-    /// <paramref name="selector" /> is <see langword="null" />.
+    /// Thrown if <paramref name="source"/>, <paramref name="childSelector"/>, or
+    /// <paramref name="selector"/> is <see langword="null"/>.
     /// </exception>
     /// <example>
     /// <code language="csharp"><![CDATA[
@@ -112,8 +112,8 @@ public static partial class IEnumerableExtensions
     /// A flattened and projected sequence of results from all elements including children.
     /// </returns>
     /// <exception cref="System.ArgumentNullException">
-    /// Thrown if <paramref name="source" />, <paramref name="childSelector" />, or
-    /// <paramref name="selector" /> is <see langword="null" />.
+    /// Thrown if <paramref name="source"/>, <paramref name="childSelector"/>, or
+    /// <paramref name="selector"/> is <see langword="null"/>.
     /// </exception>
     /// <example>
     /// <code language="csharp"><![CDATA[
@@ -146,8 +146,8 @@ public static partial class IEnumerableExtensions
     /// <param name="selector">A transform applied to each element, receiving index and depth.</param>
     /// <returns>A flattened and projected sequence from all elements including children.</returns>
     /// <exception cref="System.ArgumentNullException">
-    /// Thrown if <paramref name="source" />, <paramref name="childSelector" />, or
-    /// <paramref name="selector" /> is <see langword="null" />.
+    /// Thrown if <paramref name="source"/>, <paramref name="childSelector"/>, or
+    /// <paramref name="selector"/> is <see langword="null"/>.
     /// </exception>
     /// <example>
     /// <code language="csharp"><![CDATA[
@@ -188,8 +188,8 @@ public static partial class IEnumerableExtensions
     /// recursion is allowed.
     /// </returns>
     /// <exception cref="System.ArgumentNullException">
-    /// Thrown if <paramref name="source" />, <paramref name="childSelector" />,
-    /// <paramref name="selector" />, or <paramref name="recursionControl" /> is <see langword="null" />.
+    /// Thrown if <paramref name="source"/>, <paramref name="childSelector"/>,
+    /// <paramref name="selector"/>, or <paramref name="recursionControl"/> is <see langword="null"/>.
     /// </exception>
     /// <example>
     /// <code language="csharp"><![CDATA[
@@ -216,7 +216,7 @@ public static partial class IEnumerableExtensions
 
     /// <summary>
     /// Recursively traverses a tree-like structure, yielding transformed elements with access to index and depth, and controlling behaviour
-    /// at each node using a <see cref="RecursiveSelectControl" /> value.
+    /// at each node using a <see cref="RecursiveSelectControl"/> value.
     /// </summary>
     /// <typeparam name="TSource">The type of input elements in the source sequence.</typeparam>
     /// <typeparam name="TResult">The type of elements yielded by the selector.</typeparam>
@@ -229,15 +229,15 @@ public static partial class IEnumerableExtensions
     /// the recursion depth (starting at 0).
     /// </param>
     /// <param name="recursionControl">
-    /// A delegate that returns a <see cref="RecursiveSelectControl" /> value for the given element, indicating whether to yield it, recurse
+    /// A delegate that returns a <see cref="RecursiveSelectControl"/> value for the given element, indicating whether to yield it, recurse
     /// into its children, or halt traversal.
     /// </param>
     /// <param name="depth">The current recursion depth (zero for top-level elements).</param>
     /// <param name="state">
-    /// A shared <see cref="RecursionState" /> object used to track whether a global exit has been requested. This enables short-circuiting
+    /// A shared <see cref="RecursionState"/> object used to track whether a global exit has been requested. This enables short-circuiting
     /// traversal across recursive calls when <c>Exit</c> is encountered.
     /// </param>
-    /// <returns>An <see cref="IEnumerable{T}" /> of transformed elements, yielded according to the specified selector and control logic.</returns>
+    /// <returns>An <see cref="IEnumerable{T}"/> of transformed elements, yielded according to the specified selector and control logic.</returns>
     /// <remarks>
     /// <para>
     /// This method is designed for internal use and does not perform parameter validation. It assumes all inputs are non-null and

@@ -18,7 +18,7 @@ public static partial class SequenceGenerator
     /// <param name="count">The number of terms to generate. Must be positive.</param>
     /// <returns>A sequence of strings, each representing a term in the Look-and-Say sequence.</returns>
     /// <remarks>Each term describes the digits of the previous one, e.g.: 1, 11, 21, 1211, 111221, ...</remarks>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count" /> is less than 1.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> is less than 1.</exception>
     public static IEnumerable<string> LookAndSay(int count)
     {
         ThrowHelper.ThrowIfLessThan(count, 1);

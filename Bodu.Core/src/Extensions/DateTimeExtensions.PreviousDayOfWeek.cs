@@ -11,21 +11,21 @@ namespace Bodu.Extensions;
 public static partial class DateTimeExtensions
 {
     /// <summary>
-    /// Returns a new <see cref="DateTime" /> representing the previous calendar occurrence of the specified <paramref name="dayOfWeek" />
-    /// before the given <paramref name="dateTime" />.
+    /// Returns a new <see cref="DateTime"/> representing the previous calendar occurrence of the specified <paramref name="dayOfWeek"/>
+    /// before the given <paramref name="dateTime"/>.
     /// </summary>
-    /// <param name="dateTime">The starting <see cref="DateTime" /> from which to search backwards.</param>
-    /// <param name="dayOfWeek">The <see cref="DayOfWeek" /> value to locate.</param>
+    /// <param name="dateTime">The starting <see cref="DateTime"/> from which to search backwards.</param>
+    /// <param name="dayOfWeek">The <see cref="DayOfWeek"/> value to locate.</param>
     /// <returns>
-    /// An object whose value is set to the previous occurrence of <paramref name="dayOfWeek" /> preceeding <paramref name="dateTime" />.
-    /// The result maintains the original time-of-day and <see cref="DateTime.Kind" /> of <paramref name="dateTime" />.
+    /// An object whose value is set to the previous occurrence of <paramref name="dayOfWeek"/> preceeding <paramref name="dateTime"/>.
+    /// The result maintains the original time-of-day and <see cref="DateTime.Kind"/> of <paramref name="dateTime"/>.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="dayOfWeek" /> is not a valid value of the <see cref="DayOfWeek" /> enumeration.
+    /// Thrown if <paramref name="dayOfWeek"/> is not a valid value of the <see cref="DayOfWeek"/> enumeration.
     /// </exception>
     /// <remarks>
     /// <para>
-    /// If <paramref name="dateTime" /> already falls on the specified <paramref name="dayOfWeek" />, the result is exactly 7 days earlier.
+    /// If <paramref name="dateTime"/> already falls on the specified <paramref name="dayOfWeek"/>, the result is exactly 7 days earlier.
     /// </para>
     /// <para>This method advances backwards in time and does not return the current date, even if it matches the requested day of the week.</para>
     /// </remarks>

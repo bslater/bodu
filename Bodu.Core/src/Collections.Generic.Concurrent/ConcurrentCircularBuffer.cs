@@ -90,34 +90,34 @@ public sealed partial class ConcurrentCircularBuffer<T>
     private int _version;
 
     /// <summary>
-    /// Initializes a new instance with default capacity and overwriting enabled.
+    /// Initializes a new instance of the <see cref="ConcurrentCircularBuffer{T}"/> class with default capacity and overwriting enabled.
     /// </summary>
     public ConcurrentCircularBuffer()
         : this(DefaultCapacity, allowOverwrite: true) { }
 
     /// <summary>
-    /// Initializes a new instance with the specified capacity and overwriting enabled.
+    /// Initializes a new instance of the <see cref="ConcurrentCircularBuffer{T}"/> class with the specified capacity and overwriting enabled.
     /// </summary>
     /// <param name="capacity">
     /// The maximum number of elements the buffer can hold. Must be at least 2. See the class remarks for an
     /// explanation of why the Vyukov MPMC protocol requires a minimum capacity of 2.
     /// </param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> &lt; 2.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity"/> &lt; 2.</exception>
     public ConcurrentCircularBuffer(int capacity)
         : this(capacity, allowOverwrite: true) { }
 
     /// <summary>
-    /// Initializes a new instance with the specified capacity and overwrite behavior.
+    /// Initializes a new instance of the <see cref="ConcurrentCircularBuffer{T}"/> class with the specified capacity and overwrite behavior.
     /// </summary>
     /// <param name="capacity">
     /// The maximum number of elements the buffer can hold. Must be at least 2. See the class remarks for an
     /// explanation of why the Vyukov MPMC protocol requires a minimum capacity of 2.
     /// </param>
     /// <param name="allowOverwrite">
-    /// <see langword="true" /> to evict the oldest element when the buffer is full; <see langword="false" /> to
-    /// throw or return <see langword="false" /> instead.
+    /// <see langword="true"/> to evict the oldest element when the buffer is full; <see langword="false"/> to
+    /// throw or return <see langword="false"/> instead.
     /// </param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> &lt; 2.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity"/> &lt; 2.</exception>
     public ConcurrentCircularBuffer(int capacity, bool allowOverwrite)
     {
         // The Vyukov MPMC sequence protocol requires at least two slots to be correct. With a single slot the
@@ -140,27 +140,28 @@ public sealed partial class ConcurrentCircularBuffer<T>
     }
 
     /// <summary>
-    /// Initializes a new instance by copying from <paramref name="collection" />, using the specified capacity
+    /// Initializes a new instance of the <see cref="ConcurrentCircularBuffer{T}"/> class.
+    /// Initializes a new instance by copying from <paramref name="collection"/>, using the specified capacity
     /// and overwrite behavior.
     /// </summary>
     /// <param name="collection">
-    /// The collection whose elements are copied into the buffer. Must not be <see langword="null" />.
+    /// The collection whose elements are copied into the buffer. Must not be <see langword="null"/>.
     /// </param>
     /// <param name="capacity">
     /// The maximum number of elements the buffer can hold. Must be at least 2. See the class remarks for an
     /// explanation of why the Vyukov MPMC protocol requires a minimum capacity of 2.
     /// </param>
     /// <param name="allowOverwrite">
-    /// <see langword="true" /> to evict the oldest element when the buffer is full; <see langword="false" /> to
-    /// throw on overflow. Defaults to <see langword="true" />.
+    /// <see langword="true"/> to evict the oldest element when the buffer is full; <see langword="false"/> to
+    /// throw on overflow. Defaults to <see langword="true"/>.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="collection" /> is <see langword="null" />.
+    /// <paramref name="collection"/> is <see langword="null"/>.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> &lt; 2.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity"/> &lt; 2.</exception>
     /// <exception cref="InvalidOperationException">
-    /// <paramref name="allowOverwrite" /> is <see langword="false" /> and the number of items in
-    /// <paramref name="collection" /> exceeds <paramref name="capacity" />.
+    /// <paramref name="allowOverwrite"/> is <see langword="false"/> and the number of items in
+    /// <paramref name="collection"/> exceeds <paramref name="capacity"/>.
     /// </exception>
     public ConcurrentCircularBuffer(IEnumerable<T> collection, int capacity, bool allowOverwrite = true)
         : this(capacity, allowOverwrite)
@@ -178,13 +179,13 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
     /// <summary>
     /// Occurs immediately <b>after</b> an item has been evicted because a new item was enqueued into a full buffer while
-    /// <see cref="AllowOverwrite" /> is <see langword="true" />.
+    /// <see cref="AllowOverwrite"/> is <see langword="true"/>.
     /// </summary>
     /// <remarks>Exceptions thrown by handlers are caught and ignored.</remarks>
     public event Action<T>? ItemEvicted;
 
     /// <summary>
-    /// Gets or sets whether enqueuing into a full buffer evicts the oldest element.
+    /// Gets or sets a value indicating whether enqueuing into a full buffer evicts the oldest element.
     /// </summary>
     public bool AllowOverwrite
     {
@@ -203,7 +204,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// <param name="index">The zero-based index of the element to retrieve. Must be non-negative and less than <see cref="Count"/>.</param>
     /// <returns>The element at the specified logical index within the snapshot.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="index" /> is less than zero, or greater than or equal to the number of elements in the buffer at the time of the call.
+    /// <paramref name="index"/> is less than zero, or greater than or equal to the number of elements in the buffer at the time of the call.
     /// </exception>
     public T this[int index]
     {
@@ -221,9 +222,9 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This method drains at most the number of elements observed when <see cref="Clear" /> is called. Elements added by concurrent
-    /// producers after this point are not removed. This bounding prevents an indefinite loop when <see cref="AllowOverwrite" /> is
-    /// <see langword="true" /> and producers are continuously enqueueing.
+    /// This method drains at most the number of elements observed when <see cref="Clear"/> is called. Elements added by concurrent
+    /// producers after this point are not removed. This bounding prevents an indefinite loop when <see cref="AllowOverwrite"/> is
+    /// <see langword="true"/> and producers are continuously enqueueing.
     /// </para>
     /// </remarks>
     public void Clear()
@@ -241,8 +242,8 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// <summary>
     /// Determines whether a snapshot of the buffer contains the specified element.
     /// </summary>
-    /// <param name="item">The element to locate. May be <see langword="null" />.</param>
-    /// <returns><see langword="true" /> if the element was found in the snapshot; otherwise, <see langword="false" />.</returns>
+    /// <param name="item">The element to locate. May be <see langword="null"/>.</param>
+    /// <returns><see langword="true"/> if the element was found in the snapshot; otherwise, <see langword="false"/>.</returns>
     public bool Contains(T? item)
     {
         var comparer = EqualityComparer<T?>.Default;
@@ -255,13 +256,13 @@ public sealed partial class ConcurrentCircularBuffer<T>
     }
 
     /// <summary>
-    /// Copies a snapshot of the buffer to <paramref name="array" /> starting at <paramref name="index" />.
+    /// Copies a snapshot of the buffer to <paramref name="array"/> starting at <paramref name="index"/>.
     /// </summary>
-    /// <param name="array">The destination array. Must not be <see langword="null" />.</param>
-    /// <param name="index">The zero-based index in <paramref name="array" /> at which copying begins.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="array" /> is <see langword="null" />.</exception>
+    /// <param name="array">The destination array. Must not be <see langword="null"/>.</param>
+    /// <param name="index">The zero-based index in <paramref name="array"/> at which copying begins.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
-    /// The number of elements in the buffer exceeds the available space in <paramref name="array" /> from <paramref name="index" /> onward.
+    /// The number of elements in the buffer exceeds the available space in <paramref name="array"/> from <paramref name="index"/> onward.
     /// </exception>
     public void CopyTo(T[] array, int index)
     {
@@ -286,8 +287,8 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// <summary>
     /// Adds an element to the end of the buffer, throwing when full if overwriting is disabled.
     /// </summary>
-    /// <param name="item">The element to add. May be <see langword="null" />.</param>
-    /// <exception cref="InvalidOperationException">The buffer is full and <see cref="AllowOverwrite" /> is <see langword="false" />.</exception>
+    /// <param name="item">The element to add. May be <see langword="null"/>.</param>
+    /// <exception cref="InvalidOperationException">The buffer is full and <see cref="AllowOverwrite"/> is <see langword="false"/>.</exception>
     public void Enqueue(T item) => InternalEnqueue(item, throwIfFull: true);
 
     /// <summary>
@@ -317,7 +318,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// </remarks>
     public T[] ToArray()
     {
-        var spinner = new SpinWait();
+        var spinner = default(SpinWait);
 
         for (int attempt = 0; attempt < 64; attempt++)
         {
@@ -352,18 +353,18 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// Attempts to remove and return the oldest element.
     /// </summary>
     /// <param name="item">
-    /// When this method returns <see langword="true" />, contains the removed element; otherwise, <see langword="null" />.
+    /// When this method returns <see langword="true"/>, contains the removed element; otherwise, <see langword="null"/>.
     /// </param>
-    /// <returns><see langword="true" /> if an element was successfully removed; <see langword="false" /> if the buffer was empty.</returns>
+    /// <returns><see langword="true"/> if an element was successfully removed; <see langword="false"/> if the buffer was empty.</returns>
     public bool TryDequeue(out T? item) => InternalDequeue(out item, throwIfEmpty: false);
 
     /// <summary>
     /// Attempts to add an element to the end of the buffer without throwing when full.
     /// </summary>
-    /// <param name="item">The element to add. May be <see langword="null" />.</param>
+    /// <param name="item">The element to add. May be <see langword="null"/>.</param>
     /// <returns>
-    /// <see langword="true" /> if the element was enqueued; <see langword="false" /> if the buffer is full and
-    /// <see cref="AllowOverwrite" /> is <see langword="false" />.
+    /// <see langword="true"/> if the element was enqueued; <see langword="false"/> if the buffer is full and
+    /// <see cref="AllowOverwrite"/> is <see langword="false"/>.
     /// </returns>
     public bool TryEnqueue(T item) => InternalEnqueue(item, throwIfFull: false);
 
@@ -371,18 +372,18 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// Attempts to return the oldest element without removing it.
     /// </summary>
     /// <param name="item">
-    /// When this method returns <see langword="true" />, contains the oldest element; otherwise, <see langword="null" />.
+    /// When this method returns <see langword="true"/>, contains the oldest element; otherwise, <see langword="null"/>.
     /// </param>
-    /// <returns><see langword="true" /> if an element was found; <see langword="false" /> if the buffer was empty.</returns>
+    /// <returns><see langword="true"/> if an element was found; <see langword="false"/> if the buffer was empty.</returns>
     /// <remarks>
     /// <para>
     /// This method retries on transient races where another thread concurrently dequeues the head element between the head position
-    /// read and the slot sequence check. It returns <see langword="false" /> only when the buffer is observed to be empty.
+    /// read and the slot sequence check. It returns <see langword="false"/> only when the buffer is observed to be empty.
     /// </para>
     /// </remarks>
     public bool TryPeek(out T? item)
     {
-        var spinner = new SpinWait();
+        var spinner = default(SpinWait);
 
         while (true)
         {
@@ -415,20 +416,20 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// Computes a non-negative slot index from a monotonically increasing counter position.
     /// </summary>
     /// <remarks>
-    /// Uses unsigned modulo to guarantee a non-negative result even after <see cref="int" /> counter overflow,
+    /// Uses unsigned modulo to guarantee a non-negative result even after <see cref="int"/> counter overflow,
     /// where plain <c>position % _capacity</c> would yield a negative index in C#.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private int SlotIndex(int position) => (int)((uint)position % (uint)_capacity);
 
     /// <summary>
-    /// Evicts exactly one item from the head (used when overwriting). Fires <see cref="ItemEvicted" /> after removal. Handler exceptions
-    /// are swallowed. Returns <see langword="false" /> if the buffer was empty.
+    /// Evicts exactly one item from the head (used when overwriting). Fires <see cref="ItemEvicted"/> after removal. Handler exceptions
+    /// are swallowed. Returns <see langword="false"/> if the buffer was empty.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool EvictOne()
     {
-        var spinner = new SpinWait();
+        var spinner = default(SpinWait);
 
         while (true)
         {
@@ -484,7 +485,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// </summary>
     private bool InternalDequeue(out T? item, bool throwIfEmpty)
     {
-        var spinner = new SpinWait();
+        var spinner = default(SpinWait);
 
         while (true)
         {
@@ -530,17 +531,17 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// <summary>
     /// Adds an element using the lock-free producer protocol.
     /// </summary>
-    /// <param name="item">The element to add. The value may be <see langword="null" />.</param>
+    /// <param name="item">The element to add. The value may be <see langword="null"/>.</param>
     /// <param name="throwIfFull">
-    /// When <see langword="true" /> and <see cref="AllowOverwrite" /> is <see langword="false" />, a full buffer throws; when
-    /// <see langword="false" /> the method returns <see langword="false" /> instead.
+    /// When <see langword="true"/> and <see cref="AllowOverwrite"/> is <see langword="false"/>, a full buffer throws; when
+    /// <see langword="false"/> the method returns <see langword="false"/> instead.
     /// </param>
     /// <returns>
-    /// <see langword="true" /> if the element was enqueued; otherwise <see langword="false" /> when the buffer is full and overwriting is disabled.
+    /// <see langword="true"/> if the element was enqueued; otherwise <see langword="false"/> when the buffer is full and overwriting is disabled.
     /// </returns>
     private bool InternalEnqueue(T item, bool throwIfFull)
     {
-        var spinner = new SpinWait();
+        var spinner = default(SpinWait);
 
         while (true)
         {
@@ -599,13 +600,13 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Each <see cref="Slot" /> is sized to 64 bytes — a typical CPU cache line — via sequential layout with explicit padding fields.
+    /// Each <see cref="Slot"/> is sized to 64 bytes — a typical CPU cache line — via sequential layout with explicit padding fields.
     /// This eliminates false sharing between concurrently accessed producer and consumer slots, which would otherwise cause unnecessary
     /// cache coherence traffic and reduce throughput on multi-core systems.
     /// </para>
     /// <para>
-    /// <see cref="LayoutKind.Explicit" /> cannot be used here because the CLR prohibits explicit layout on structs nested within
-    /// generic types. <see cref="LayoutKind.Sequential" /> with padding fields is the correct alternative and produces an equivalent
+    /// <see cref="LayoutKind.Explicit"/> cannot be used here because the CLR prohibits explicit layout on structs nested within
+    /// generic types. <see cref="LayoutKind.Sequential"/> with padding fields is the correct alternative and produces an equivalent
     /// in-memory footprint.
     /// </para>
     /// </remarks>
@@ -622,6 +623,11 @@ public sealed partial class ConcurrentCircularBuffer<T>
         public T? Value;
 
         // Pads the struct to 64 bytes: 4 (Sequence) + 4 (pad) + 8 (Value ref) + 6×8 (pad) = 64.
-        private readonly long _pad0, _pad1, _pad2, _pad3, _pad4, _pad5;
+        private readonly long _pad0;
+        private readonly long _pad1;
+        private readonly long _pad2;
+        private readonly long _pad3;
+        private readonly long _pad4;
+        private readonly long _pad5;
     }
 }

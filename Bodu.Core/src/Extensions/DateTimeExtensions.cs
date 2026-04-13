@@ -11,8 +11,8 @@ using System.Runtime.CompilerServices;
 namespace Bodu.Extensions;
 
 /// <summary>
-/// Provides a set of <see langword="static" /> ( <see langword="Shared" /> in Visual Basic) methods that extend the
-/// <see cref="System.DateTime" /> class.
+/// Provides a set of <see langword="static"/> ( <see langword="Shared"/> in Visual Basic) methods that extend the
+/// <see cref="System.DateTime"/> class.
 /// </summary>
 public static partial class DateTimeExtensions
 {
@@ -23,7 +23,7 @@ public static partial class DateTimeExtensions
     internal const double Epsilon = 1e-10;
 
     /// <summary>
-    /// The maximum year supported by <see cref="DateTime" />.
+    /// The maximum year supported by <see cref="DateTime"/>.
     /// </summary>
     internal const int MaxYear = 9999;
 
@@ -48,7 +48,7 @@ public static partial class DateTimeExtensions
     internal const int MillisecondsPerSecond = 1000;
 
     /// <summary>
-    /// The minimum year supported by <see cref="DateTime" />.
+    /// The minimum year supported by <see cref="DateTime"/>.
     /// </summary>
     internal const int MinYear = 1;
 
@@ -153,12 +153,12 @@ public static partial class DateTimeExtensions
     private const long MinTicks = 0;
 
     /// <summary>
-    /// Computes the day number corresponding to the specified <see cref="DateTime" />, representing the number of days since 0001-01-01.
+    /// Computes the day number corresponding to the specified <see cref="DateTime"/>, representing the number of days since 0001-01-01.
     /// </summary>
-    /// <param name="dateTime">The <see cref="DateTime" /> value to convert.</param>
+    /// <param name="dateTime">The <see cref="DateTime"/> value to convert.</param>
     /// <returns>The number of days elapsed since 0001-01-01, where that date is treated as day 0.</returns>
     /// <remarks>
-    /// This method performs a fast, allocation-free conversion by dividing the <see cref="DateTime.Ticks" /> value by the number of ticks
+    /// This method performs a fast, allocation-free conversion by dividing the <see cref="DateTime.Ticks"/> value by the number of ticks
     /// per day.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -170,9 +170,9 @@ public static partial class DateTimeExtensions
     /// <param name="year">The year component, which must be between 1 and 9999 inclusive.</param>
     /// <param name="month">The month component, which must be between 1 and 12 inclusive.</param>
     /// <param name="day">The day component, which must be valid for the specified year and month.</param>
-    /// <returns>An <see cref="int" /> representing the number of days since 0001-01-01, where that date is treated as day 0.</returns>
+    /// <returns>An <see cref="int"/> representing the number of days since 0001-01-01, where that date is treated as day 0.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="year" />, <paramref name="month" />, or <paramref name="day" /> is outside the valid range of the
+    /// Thrown if <paramref name="year"/>, <paramref name="month"/>, or <paramref name="day"/> is outside the valid range of the
     /// Gregorian calendar, or if the combination does not form a valid date.
     /// </exception>
     /// <remarks>
@@ -207,8 +207,8 @@ public static partial class DateTimeExtensions
     /// A tick count representing a date and time, where one tick equals 100 nanoseconds since 0001-01-01 00:00:00.000 in the Gregorian calendar.
     /// </param>
     /// <returns>
-    /// The number of ticks corresponding to the start of the day (midnight) for the given <paramref name="ticks" />. This value is a
-    /// multiple of <see cref="DateTimeExtensions.TicksPerDay" />.
+    /// The number of ticks corresponding to the start of the day (midnight) for the given <paramref name="ticks"/>. This value is a
+    /// multiple of <see cref="DateTimeExtensions.TicksPerDay"/>.
     /// </returns>
     /// <remarks>
     /// <para>
@@ -216,8 +216,8 @@ public static partial class DateTimeExtensions
     /// <c>DateTime.Date.Ticks</c> but avoids object allocations and is optimized for internal calendar or performance-sensitive usage.
     /// </para>
     /// <para>
-    /// No validation is performed. The caller is responsible for ensuring that <paramref name="ticks" /> falls within the valid
-    /// <see cref="DateTime" /> range.
+    /// No validation is performed. The caller is responsible for ensuring that <paramref name="ticks"/> falls within the valid
+    /// <see cref="DateTime"/> range.
     /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -230,21 +230,21 @@ public static partial class DateTimeExtensions
     /// <param name="ticks">
     /// The number of ticks representing the date, where one tick equals 100 nanoseconds since 0001-01-01T00:00:00.000 (Gregorian calendar).
     /// </param>
-    /// <param name="year">When this method returns, contains the year component (1–9999) corresponding to the specified <paramref name="ticks" />.</param>
-    /// <param name="month">When this method returns, contains the month component (1–12) corresponding to the specified <paramref name="ticks" />.</param>
-    /// <param name="day">When this method returns, contains the day component (1–31) corresponding to the specified <paramref name="ticks" />.</param>
+    /// <param name="year">When this method returns, contains the year component (1–9999) corresponding to the specified <paramref name="ticks"/>.</param>
+    /// <param name="month">When this method returns, contains the month component (1–12) corresponding to the specified <paramref name="ticks"/>.</param>
+    /// <param name="day">When this method returns, contains the day component (1–31) corresponding to the specified <paramref name="ticks"/>.</param>
     /// <remarks>
     /// <para>
     /// This method performs a tick-based decomposition of a date using Gregorian calendar rules, without instantiating a
-    /// <see cref="DateTime" /> object. It is intended for performance-critical scenarios where object allocations must be avoided, or where
+    /// <see cref="DateTime"/> object. It is intended for performance-critical scenarios where object allocations must be avoided, or where
     /// calendar field extraction is required from raw tick values.
     /// </para>
     /// <para>
-    /// The calculation is equivalent to accessing the <see cref="DateTime.Year" />, <see cref="DateTime.Month" />, and
-    /// <see cref="DateTime.Day" /> properties, but uses optimized integer arithmetic to reduce overhead.
+    /// The calculation is equivalent to accessing the <see cref="DateTime.Year"/>, <see cref="DateTime.Month"/>, and
+    /// <see cref="DateTime.Day"/> properties, but uses optimized integer arithmetic to reduce overhead.
     /// </para>
     /// <para>
-    /// The input tick value must fall within the valid range supported by <see cref="DateTime" />, which spans from
+    /// The input tick value must fall within the valid range supported by <see cref="DateTime"/>, which spans from
     /// <c>DateTime.MinValue.Ticks</c> to <c>DateTime.MaxValue.Ticks</c>. No validation is performed on this input.
     /// </para>
     /// <para>
@@ -304,38 +304,38 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Extracts the year, month, and day components from the specified <paramref name="dateTime" /> using tick-based computation.
+    /// Extracts the year, month, and day components from the specified <paramref name="dateTime"/> using tick-based computation.
     /// </summary>
-    /// <param name="dateTime">The <see cref="System.DateTime" /> instance whose date components are to be extracted.</param>
-    /// <param name="year">When this method returns, contains the year component of the specified <paramref name="dateTime" />.</param>
-    /// <param name="month">When this method returns, contains the month component (1–12) of the specified <paramref name="dateTime" />.</param>
-    /// <param name="day">When this method returns, contains the day component (1–31) of the specified <paramref name="dateTime" />.</param>
+    /// <param name="dateTime">The <see cref="System.DateTime"/> instance whose date components are to be extracted.</param>
+    /// <param name="year">When this method returns, contains the year component of the specified <paramref name="dateTime"/>.</param>
+    /// <param name="month">When this method returns, contains the month component (1–12) of the specified <paramref name="dateTime"/>.</param>
+    /// <param name="day">When this method returns, contains the day component (1–31) of the specified <paramref name="dateTime"/>.</param>
     /// <remarks>
     /// <para>
-    /// This method computes the date parts directly from the <see cref="DateTime.Ticks" /> value, using Gregorian calendar math. It avoids
-    /// calling the standard <see cref="DateTime.Year" />, <see cref="DateTime.Month" />, or <see cref="DateTime.Day" /> properties to
+    /// This method computes the date parts directly from the <see cref="DateTime.Ticks"/> value, using Gregorian calendar math. It avoids
+    /// calling the standard <see cref="DateTime.Year"/>, <see cref="DateTime.Month"/>, or <see cref="DateTime.Day"/> properties to
     /// reduce overhead in high-performance scenarios.
     /// </para>
     /// <para>
-    /// The result is equivalent to the values returned by the standard <see cref="DateTime" /> accessors, but the method is optimized for
+    /// The result is equivalent to the values returned by the standard <see cref="DateTime"/> accessors, but the method is optimized for
     /// scenarios where multiple components are needed and maximum efficiency is desired.
     /// </para>
-    /// <para>This method assumes the input is within the valid <see cref="DateTime" /> range and uses no internal validation.</para>
+    /// <para>This method assumes the input is within the valid <see cref="DateTime"/> range and uses no internal validation.</para>
     /// </remarks>
     internal static void GetDateParts(this DateTime dateTime, out int year, out int month, out int day) => GetDateParts(dateTime.Ticks, out year, out month, out day);
 
     /// <summary>
-    /// Returns the number of ticks representing the date portion (midnight) of the specified <see cref="DateTime" />.
+    /// Returns the number of ticks representing the date portion (midnight) of the specified <see cref="DateTime"/>.
     /// </summary>
-    /// <param name="dateTime">The <see cref="System.DateTime" /> instance from which to extract the date portion as a tick count.</param>
+    /// <param name="dateTime">The <see cref="System.DateTime"/> instance from which to extract the date portion as a tick count.</param>
     /// <returns>
-    /// A <see cref="long" /> representing the number of ticks at midnight (00:00:00.000) on the day of <paramref name="dateTime" />. This
-    /// value is a multiple of <see cref="DateTimeExtensions.TicksPerDay" /> and falls within the valid <see cref="DateTime" /> range.
+    /// A <see cref="long"/> representing the number of ticks at midnight (00:00:00.000) on the day of <paramref name="dateTime"/>. This
+    /// value is a multiple of <see cref="DateTimeExtensions.TicksPerDay"/> and falls within the valid <see cref="DateTime"/> range.
     /// </returns>
     /// <remarks>
     /// <para>
-    /// This method truncates the time component of the input <paramref name="dateTime" /> by rounding down to the nearest whole day
-    /// boundary. It is equivalent to <c>dateTime.Date.Ticks</c> but avoids allocation of a new <see cref="DateTime" /> instance and is
+    /// This method truncates the time component of the input <paramref name="dateTime"/> by rounding down to the nearest whole day
+    /// boundary. It is equivalent to <c>dateTime.Date.Ticks</c> but avoids allocation of a new <see cref="DateTime"/> instance and is
     /// optimized for internal use.
     /// </para>
     /// </remarks>
@@ -353,12 +353,12 @@ public static partial class DateTimeExtensions
     /// <remarks>
     /// <para>
     /// This method uses Gregorian calendar rules and a precomputed day-of-year lookup table to account for leap years. It performs no
-    /// validation on the input parameters and assumes that <paramref name="year" />, <paramref name="month" />, and <paramref name="day" />
+    /// validation on the input parameters and assumes that <paramref name="year"/>, <paramref name="month"/>, and <paramref name="day"/>
     /// form a valid calendar date.
     /// </para>
     /// <para>
     /// This method is intended for trusted, performance-critical internal use where input correctness is guaranteed by the caller. It
-    /// avoids allocating <see cref="DateTime" /> instances and is suitable for inlining.
+    /// avoids allocating <see cref="DateTime"/> instances and is suitable for inlining.
     /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -377,21 +377,21 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Calculates the <see cref="System.DayOfWeek" /> for a date represented as a tick count.
+    /// Calculates the <see cref="System.DayOfWeek"/> for a date represented as a tick count.
     /// </summary>
     /// <param name="ticks">
     /// A date and time expressed as the number of 100-nanosecond intervals (ticks) that have elapsed since January 1, 0001 at 00:00:00.000,
     /// based on the proleptic Gregorian calendar.
     /// </param>
-    /// <returns>A <see cref="DayOfWeek" /> value indicating the day of the week corresponding to the specified <paramref name="ticks" />.</returns>
+    /// <returns>A <see cref="DayOfWeek"/> value indicating the day of the week corresponding to the specified <paramref name="ticks"/>.</returns>
     /// <remarks>
     /// <para>
     /// This method computes the day of the week using modulo arithmetic based on the number of days since 0001-01-01. It is equivalent in
-    /// result to <see cref="DateTime.DayOfWeek" /> but avoids object instantiation and is optimized for tick-level operations.
+    /// result to <see cref="DateTime.DayOfWeek"/> but avoids object instantiation and is optimized for tick-level operations.
     /// </para>
     /// <para>
-    /// No argument validation is performed. The caller is responsible for ensuring that the input <paramref name="ticks" /> value is valid
-    /// within the supported <see cref="DateTime" /> range.
+    /// No argument validation is performed. The caller is responsible for ensuring that the input <paramref name="ticks"/> value is valid
+    /// within the supported <see cref="DateTime"/> range.
     /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -404,17 +404,17 @@ public static partial class DateTimeExtensions
     /// A value representing whole and/or fractional days. This value may be positive or negative and supports sub-day precision.
     /// </param>
     /// <returns>
-    /// A <see cref="long" /> representing the number of ticks that correspond to the specified number of days. One day equals
+    /// A <see cref="long"/> representing the number of ticks that correspond to the specified number of days. One day equals
     /// 864,000,000,000 ticks.
     /// </returns>
     /// <remarks>
     /// <para>
-    /// This method multiplies the input <paramref name="days" /> by the number of ticks per day, rounding to the nearest whole tick using
+    /// This method multiplies the input <paramref name="days"/> by the number of ticks per day, rounding to the nearest whole tick using
     /// symmetric arithmetic rounding (midpoint rounding away from zero).
     /// </para>
-    /// <para>It is equivalent in purpose to <see cref="TimeSpan.FromDays(double)" /> but optimized for internal use and avoids allocations.</para>
+    /// <para>It is equivalent in purpose to <see cref="TimeSpan.FromDays(double)"/> but optimized for internal use and avoids allocations.</para>
     /// <para>
-    /// No argument validation is performed; it is the caller's responsibility to ensure that <paramref name="days" /> is within a valid range.
+    /// No argument validation is performed; it is the caller's responsibility to ensure that <paramref name="days"/> is within a valid range.
     /// </para>
     /// </remarks>
     internal static long GetDaysToTicks(double days)
@@ -428,8 +428,8 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Returns the tick count that represents the date nearest to the specified <paramref name="dayOfWeek" /> relative to the provided
-    /// <paramref name="ticks" /> value.
+    /// Returns the tick count that represents the date nearest to the specified <paramref name="dayOfWeek"/> relative to the provided
+    /// <paramref name="ticks"/> value.
     /// </summary>
     internal static long GetTicksForNearestDayOfWeek(long ticks, DayOfWeek dayOfWeek)
     {
@@ -438,28 +438,28 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Calculates the number of ticks between the specified <paramref name="dateTime" /> and the
-    /// next occurrence of <paramref name="dayOfWeek" />, including the current day when it already matches.
+    /// Calculates the number of ticks between the specified <paramref name="dateTime"/> and the
+    /// next occurrence of <paramref name="dayOfWeek"/>, including the current day when it already matches.
     /// </summary>
     /// <param name="dateTime">
-    /// The <see cref="DateTime" /> from which to calculate the forward offset.
+    /// The <see cref="DateTime"/> from which to calculate the forward offset.
     /// </param>
     /// <param name="dayOfWeek">
-    /// A <see cref="DayOfWeek" /> value representing the target day of the week.
+    /// A <see cref="DayOfWeek"/> value representing the target day of the week.
     /// </param>
     /// <returns>
-    /// A non-negative <see cref="long" /> value representing the number of ticks between the specified
-    /// <paramref name="dateTime" /> and the next occurrence of <paramref name="dayOfWeek" />, including
+    /// A non-negative <see cref="long"/> value representing the number of ticks between the specified
+    /// <paramref name="dateTime"/> and the next occurrence of <paramref name="dayOfWeek"/>, including
     /// the current day when it already matches. This value is a non-negative multiple of
-    /// <see cref="DateTimeExtensions.TicksPerDay" />.
+    /// <see cref="DateTimeExtensions.TicksPerDay"/>.
     /// </returns>
     /// <remarks>
     /// <para>
-    /// If <paramref name="dateTime" /> already falls on <paramref name="dayOfWeek" />, this method returns <c>0</c>.
+    /// If <paramref name="dateTime"/> already falls on <paramref name="dayOfWeek"/>, this method returns <c>0</c>.
     /// </para>
     /// <para>
-    /// This method performs no validation and assumes that <paramref name="dayOfWeek" /> is a valid
-    /// <see cref="DayOfWeek" /> value.
+    /// This method performs no validation and assumes that <paramref name="dayOfWeek"/> is a valid
+    /// <see cref="DayOfWeek"/> value.
     /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -467,8 +467,8 @@ public static partial class DateTimeExtensions
         DateTimeExtensions.TicksPerDay * (((int)dayOfWeek - (int)dateTime.DayOfWeek + 7) % 7);
 
     /// <summary>
-    /// Calculates the number of ticks between the specified <paramref name="ticks" /> value and the
-    /// next occurrence of the given <paramref name="dayOfWeek" />, including the current day when it
+    /// Calculates the number of ticks between the specified <paramref name="ticks"/> value and the
+    /// next occurrence of the given <paramref name="dayOfWeek"/>, including the current day when it
     /// already matches.
     /// </summary>
     /// <param name="ticks">
@@ -476,23 +476,23 @@ public static partial class DateTimeExtensions
     /// 0001-01-01T00:00:00.000 in the Gregorian calendar.
     /// </param>
     /// <param name="dayOfWeek">
-    /// A <see cref="DayOfWeek" /> value representing the target day of the week to compute forward to.
+    /// A <see cref="DayOfWeek"/> value representing the target day of the week to compute forward to.
     /// </param>
     /// <returns>
-    /// A <see cref="long" /> value representing the number of ticks between the specified
-    /// <paramref name="ticks" /> value and the next occurrence of <paramref name="dayOfWeek" />,
+    /// A <see cref="long"/> value representing the number of ticks between the specified
+    /// <paramref name="ticks"/> value and the next occurrence of <paramref name="dayOfWeek"/>,
     /// including the current day when it already matches. This value is a non-negative multiple of
-    /// <see cref="DateTimeExtensions.TicksPerDay" />.
+    /// <see cref="DateTimeExtensions.TicksPerDay"/>.
     /// </returns>
     /// <remarks>
     /// <para>
-    /// If the date represented by <paramref name="ticks" /> already falls on
-    /// <paramref name="dayOfWeek" />, this method returns <c>0</c>.
+    /// If the date represented by <paramref name="ticks"/> already falls on
+    /// <paramref name="dayOfWeek"/>, this method returns <c>0</c>.
     /// </para>
     /// <para>
     /// This method performs no argument validation. The caller must ensure that
-    /// <paramref name="ticks" /> falls within the valid range for <see cref="DateTime" />, and that
-    /// <paramref name="dayOfWeek" /> is a valid <see cref="DayOfWeek" /> enum value.
+    /// <paramref name="ticks"/> falls within the valid range for <see cref="DateTime"/>, and that
+    /// <paramref name="dayOfWeek"/> is a valid <see cref="DayOfWeek"/> enum value.
     /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -503,28 +503,28 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Calculates the number of ticks that must be added to the specified <paramref name="dateTime" />
-    /// to reach the previous occurrence of the specified <paramref name="dayOfWeek" />.
+    /// Calculates the number of ticks that must be added to the specified <paramref name="dateTime"/>
+    /// to reach the previous occurrence of the specified <paramref name="dayOfWeek"/>.
     /// </summary>
     /// <param name="dateTime">
-    /// The <see cref="DateTime" /> instance from which to calculate the backward offset.
+    /// The <see cref="DateTime"/> instance from which to calculate the backward offset.
     /// </param>
     /// <param name="dayOfWeek">
-    /// A <see cref="DayOfWeek" /> value representing the target day of the week.
+    /// A <see cref="DayOfWeek"/> value representing the target day of the week.
     /// </param>
     /// <returns>
-    /// A negative <see cref="long" /> value representing the number of ticks between the specified
-    /// <paramref name="dateTime" /> and the previous occurrence of <paramref name="dayOfWeek" />.
-    /// This value is a negative multiple of <see cref="DateTimeExtensions.TicksPerDay" />.
+    /// A negative <see cref="long"/> value representing the number of ticks between the specified
+    /// <paramref name="dateTime"/> and the previous occurrence of <paramref name="dayOfWeek"/>.
+    /// This value is a negative multiple of <see cref="DateTimeExtensions.TicksPerDay"/>.
     /// </returns>
     /// <remarks>
     /// <para>
-    /// If <paramref name="dateTime" /> already falls on <paramref name="dayOfWeek" />, this method
+    /// If <paramref name="dateTime"/> already falls on <paramref name="dayOfWeek"/>, this method
     /// returns a 7-day negative tick interval, representing the corresponding day in the previous week.
     /// </para>
     /// <para>
-    /// This method performs no validation and assumes that <paramref name="dayOfWeek" /> is a valid
-    /// <see cref="DayOfWeek" /> value.
+    /// This method performs no validation and assumes that <paramref name="dayOfWeek"/> is a valid
+    /// <see cref="DayOfWeek"/> value.
     /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -532,8 +532,8 @@ public static partial class DateTimeExtensions
         DateTimeExtensions.TicksPerDay * ((((((int)dayOfWeek - (int)dateTime.DayOfWeek) - 7) % 7) - 7) % 7);
 
     /// <summary>
-    /// Calculates the number of ticks between the specified <paramref name="ticks" /> value and the
-    /// most recent occurrence of the given <paramref name="dayOfWeek" />, including the current day
+    /// Calculates the number of ticks between the specified <paramref name="ticks"/> value and the
+    /// most recent occurrence of the given <paramref name="dayOfWeek"/>, including the current day
     /// when it already matches.
     /// </summary>
     /// <param name="ticks">
@@ -541,22 +541,22 @@ public static partial class DateTimeExtensions
     /// 0001-01-01T00:00:00.000 in the Gregorian calendar.
     /// </param>
     /// <param name="dayOfWeek">
-    /// A <see cref="DayOfWeek" /> value representing the target day of the week to compute backward to.
+    /// A <see cref="DayOfWeek"/> value representing the target day of the week to compute backward to.
     /// </param>
     /// <returns>
-    /// A <see cref="long" /> value representing the number of ticks between the specified
-    /// <paramref name="ticks" /> and the most recent occurrence of <paramref name="dayOfWeek" />.
-    /// This value is a non-negative multiple of <see cref="DateTimeExtensions.TicksPerDay" />.
+    /// A <see cref="long"/> value representing the number of ticks between the specified
+    /// <paramref name="ticks"/> and the most recent occurrence of <paramref name="dayOfWeek"/>.
+    /// This value is a non-negative multiple of <see cref="DateTimeExtensions.TicksPerDay"/>.
     /// </returns>
     /// <remarks>
     /// <para>
-    /// If the date represented by <paramref name="ticks" /> already falls on
-    /// <paramref name="dayOfWeek" />, this method returns <c>0</c>.
+    /// If the date represented by <paramref name="ticks"/> already falls on
+    /// <paramref name="dayOfWeek"/>, this method returns <c>0</c>.
     /// </para>
     /// <para>
-    /// This method performs no validation. The caller must ensure that <paramref name="ticks" />
-    /// falls within the valid <see cref="DateTime" /> range, and that <paramref name="dayOfWeek" />
-    /// is a valid <see cref="DayOfWeek" /> enum value.
+    /// This method performs no validation. The caller must ensure that <paramref name="ticks"/>
+    /// falls within the valid <see cref="DateTime"/> range, and that <paramref name="dayOfWeek"/>
+    /// is a valid <see cref="DayOfWeek"/> enum value.
     /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -573,10 +573,10 @@ public static partial class DateTimeExtensions
     /// <param name="month">The month component, which must be between 1 and 12 inclusive.</param>
     /// <param name="day">The day component, which must be valid for the specified year and month.</param>
     /// <returns>
-    /// A <see cref="long" /> value representing the number of ticks since 0001-01-01T00:00:00.000 that correspond to the specified date.
+    /// A <see cref="long"/> value representing the number of ticks since 0001-01-01T00:00:00.000 that correspond to the specified date.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="year" />, <paramref name="month" />, or <paramref name="day" /> is outside the valid range of the
+    /// Thrown when <paramref name="year"/>, <paramref name="month"/>, or <paramref name="day"/> is outside the valid range of the
     /// Gregorian calendar or does not form a valid date.
     /// </exception>
     /// <remarks>
@@ -594,17 +594,17 @@ public static partial class DateTimeExtensions
         DateTimeExtensions.GetDayNumberUnchecked(year, month, day) * TicksPerDay;
 
     /// <summary>
-    /// Returns the <see cref="DayOfWeek" /> corresponding to January 1st of the specified year, using Gregorian calendar rules.
+    /// Returns the <see cref="DayOfWeek"/> corresponding to January 1st of the specified year, using Gregorian calendar rules.
     /// </summary>
     /// <param name="year">The year for which to calculate the weekday of January 1st.</param>
-    /// <returns>A <see cref="DayOfWeek" /> value indicating the weekday of January 1st in the specified year.</returns>
+    /// <returns>A <see cref="DayOfWeek"/> value indicating the weekday of January 1st in the specified year.</returns>
     /// <remarks>
     /// <para>
-    /// This method uses a fast arithmetic formula to determine the weekday of January 1st without allocating a <see cref="DateTime" />
+    /// This method uses a fast arithmetic formula to determine the weekday of January 1st without allocating a <see cref="DateTime"/>
     /// instance. It is equivalent in result to: <c>new DateTime(year, 1, 1).DayOfWeek</c>.
     /// </para>
     /// <para>
-    /// The returned value corresponds to the <see cref="DayOfWeek" /> enumeration, where <c>0 = Sunday</c>, <c>1 = Monday</c>, ..., <c>6 = Saturday</c>.
+    /// The returned value corresponds to the <see cref="DayOfWeek"/> enumeration, where <c>0 = Sunday</c>, <c>1 = Monday</c>, ..., <c>6 = Saturday</c>.
     /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -620,11 +620,11 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="ticks">The number of ticks representing the target date (100ns intervals since 0001-01-01T00:00:00.000).</param>
     /// <param name="rule">
-    /// A <see cref="CalendarWeekRule" /> value that determines how the first week of the year is defined (FirstDay, FirstFullWeek, FirstFourDayWeek).
+    /// A <see cref="CalendarWeekRule"/> value that determines how the first week of the year is defined (FirstDay, FirstFullWeek, FirstFourDayWeek).
     /// </param>
-    /// <param name="firstDayOfWeek">A <see cref="DayOfWeek" /> value indicating the first day of the week (e.g., Sunday, Monday).</param>
+    /// <param name="firstDayOfWeek">A <see cref="DayOfWeek"/> value indicating the first day of the week (e.g., Sunday, Monday).</param>
     /// <returns>The 1-based week number of the year that contains the specified tick value, based on the specified rule.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="rule" /> is not a valid <see cref="CalendarWeekRule" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="rule"/> is not a valid <see cref="CalendarWeekRule"/>.</exception>
     internal static int GetWeekOfYear(long ticks, CalendarWeekRule rule, DayOfWeek firstDayOfWeek)
     {
         // Convert ticks into a date for computing day-of-year
@@ -649,11 +649,11 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Returns the day of the week considered the start of the week for a given <see cref="CalendarWeekendDefinition" /> definition.
+    /// Returns the day of the week considered the start of the week for a given <see cref="CalendarWeekendDefinition"/> definition.
     /// </summary>
     /// <param name="weekend">The weekend configuration to evaluate.</param>
-    /// <returns>The inferred <see cref="DayOfWeek" /> that begins the week.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if the provided <paramref name="weekend" /> is not supported.</exception>
+    /// <returns>The inferred <see cref="DayOfWeek"/> that begins the week.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the provided <paramref name="weekend"/> is not supported.</exception>
     internal static DayOfWeek GetWeekStartDay(CalendarWeekendDefinition weekend) => weekend switch
     {
         CalendarWeekendDefinition.SaturdaySunday => DayOfWeek.Monday,
@@ -671,9 +671,9 @@ public static partial class DateTimeExtensions
     /// Returns the number of ticks at midnight on the first day of the specified month.
     /// </summary>
     /// <param name="dateTime">
-    /// The <see cref="System.DateTime" /> value from which to extract the year and month for computing the first day.
+    /// The <see cref="System.DateTime"/> value from which to extract the year and month for computing the first day.
     /// </param>
-    /// <returns>A <see cref="long" /> value representing the number of ticks at 00:00:00.000 on the first day of the month of <paramref name="dateTime" />.</returns>
+    /// <returns>A <see cref="long"/> value representing the number of ticks at 00:00:00.000 on the first day of the month of <paramref name="dateTime"/>.</returns>
     /// <remarks>
     /// <para>
     /// This method is equivalent in result to <c>new DateTime(dateTime.Year, dateTime.Month, 1).Ticks</c> but avoids object allocation and
@@ -685,16 +685,16 @@ public static partial class DateTimeExtensions
     /// <summary>
     /// Returns the number of ticks at midnight on the first specified weekday in the given month.
     /// </summary>
-    /// <param name="dateTime">A <see cref="System.DateTime" /> from which to extract the target month and year.</param>
-    /// <param name="dayOfWeek">The <see cref="System.DayOfWeek" /> value to locate within the month.</param>
+    /// <param name="dateTime">A <see cref="System.DateTime"/> from which to extract the target month and year.</param>
+    /// <param name="dayOfWeek">The <see cref="System.DayOfWeek"/> value to locate within the month.</param>
     /// <returns>
-    /// A <see cref="long" /> value representing the number of ticks at 00:00:00.000 on the first <paramref name="dayOfWeek" /> occurring in
-    /// the same month as <paramref name="dateTime" />.
+    /// A <see cref="long"/> value representing the number of ticks at 00:00:00.000 on the first <paramref name="dayOfWeek"/> occurring in
+    /// the same month as <paramref name="dateTime"/>.
     /// </returns>
     /// <remarks>
-    /// <para>The calculation starts at the first day of the month and advances forward to the first matching <paramref name="dayOfWeek" />.</para>
+    /// <para>The calculation starts at the first day of the month and advances forward to the first matching <paramref name="dayOfWeek"/>.</para>
     /// <para>
-    /// This method performs no validation on <paramref name="dayOfWeek" /> and assumes it is a valid <see cref="DayOfWeek" /> enumeration value.
+    /// This method performs no validation on <paramref name="dayOfWeek"/> and assumes it is a valid <see cref="DayOfWeek"/> enumeration value.
     /// </para>
     /// <para>It avoids allocation by returning a raw tick count and is suitable for high-performance date logic.</para>
     /// </remarks>
@@ -710,20 +710,20 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="year">The year component of the target month (expected to be in the range 1 through 9999).</param>
     /// <param name="month">The month component of the target month (expected to be in the range 1 through 12).</param>
-    /// <param name="dayOfWeek">The <see cref="System.DayOfWeek" /> to locate within the specified month.</param>
+    /// <param name="dayOfWeek">The <see cref="System.DayOfWeek"/> to locate within the specified month.</param>
     /// <returns>
-    /// A <see cref="long" /> value representing the number of ticks at midnight on the first occurrence of <paramref name="dayOfWeek" /> in
+    /// A <see cref="long"/> value representing the number of ticks at midnight on the first occurrence of <paramref name="dayOfWeek"/> in
     /// the specified month and year.
     /// </returns>
     /// <remarks>
     /// <para>
-    /// The method starts from the first day of the given month and advances to the first matching <paramref name="dayOfWeek" /> using
+    /// The method starts from the first day of the given month and advances to the first matching <paramref name="dayOfWeek"/> using
     /// modulo arithmetic.
     /// </para>
     /// <para>The returned tick count corresponds to 00:00:00.000 of the computed date.</para>
     /// <para>
-    /// This method performs no validation. It assumes the specified <paramref name="year" />, <paramref name="month" />, and
-    /// <paramref name="dayOfWeek" /> are within valid ranges and form a valid calendar month.
+    /// This method performs no validation. It assumes the specified <paramref name="year"/>, <paramref name="month"/>, and
+    /// <paramref name="dayOfWeek"/> are within valid ranges and form a valid calendar month.
     /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -735,7 +735,7 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Computes the week number of the year using the <see cref="CalendarWeekRule.FirstDay" /> rule.
+    /// Computes the week number of the year using the <see cref="CalendarWeekRule.FirstDay"/> rule.
     /// </summary>
     /// <param name="dayOfYear">Zero-based day index within the year (e.g., Jan 1 = 0).</param>
     /// <param name="dayOfWeek">The day of the week of the specified date.</param>
@@ -756,9 +756,9 @@ public static partial class DateTimeExtensions
     /// <summary>
     /// Returns the number of ticks at midnight on the last specified weekday in the given month.
     /// </summary>
-    /// <param name="dateTime">The <see cref="System.DateTime" /> value from which to determine the year and month.</param>
+    /// <param name="dateTime">The <see cref="System.DateTime"/> value from which to determine the year and month.</param>
     /// <returns>
-    /// A <see cref="long" /> value representing the number of ticks at 00:00:00.000 on the last day of the month for the given <paramref name="dateTime" />.
+    /// A <see cref="long"/> value representing the number of ticks at 00:00:00.000 on the last day of the month for the given <paramref name="dateTime"/>.
     /// </returns>
     /// <remarks>
     /// <para>
@@ -773,7 +773,7 @@ public static partial class DateTimeExtensions
     private static long GetLastDayOfMonthTicks(DateTime dateTime) => DateTimeExtensions.GetDateTicks(dateTime.Year, dateTime.Month, dateTime.DaysInMonth());
 
     /// <summary>
-    /// Returns the tick count that represents the last day of week in the current month of the <see cref="System.DateTime" />.
+    /// Returns the tick count that represents the last day of week in the current month of the <see cref="System.DateTime"/>.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static long GetLastDayOfWeekInMonth(long ticks, DayOfWeek dayOfWeek)
@@ -783,7 +783,7 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Returns the tick count that represents the last day of week in the current month of the <see cref="System.DateTime" />.
+    /// Returns the tick count that represents the last day of week in the current month of the <see cref="System.DateTime"/>.
     /// </summary>
     private static long GetLastDayOfWeekInMonthAsTicks(DateTime dateTime, DayOfWeek dayOfWeek) => DateTimeExtensions.GetLastDayOfWeekInMonth(DateTimeExtensions.GetLastDayOfMonthTicks(dateTime), dayOfWeek);
 
@@ -792,13 +792,13 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="year">The calendar year (1 through 9999).</param>
     /// <param name="month">The calendar month (1 through 12).</param>
-    /// <param name="dayOfWeek">The <see cref="System.DayOfWeek" /> to locate within the month.</param>
+    /// <param name="dayOfWeek">The <see cref="System.DayOfWeek"/> to locate within the month.</param>
     /// <returns>
-    /// A <see cref="long" /> value representing the number of ticks at 00:00:00.000 on the last occurrence of <paramref name="dayOfWeek" />
-    /// in the specified <paramref name="year" /> and <paramref name="month" />.
+    /// A <see cref="long"/> value representing the number of ticks at 00:00:00.000 on the last occurrence of <paramref name="dayOfWeek"/>
+    /// in the specified <paramref name="year"/> and <paramref name="month"/>.
     /// </returns>
     /// <remarks>
-    /// <para>This method starts from the last day of the given month and steps backward to find the final occurrence of the specified <paramref name="dayOfWeek" />.</para>
+    /// <para>This method starts from the last day of the given month and steps backward to find the final occurrence of the specified <paramref name="dayOfWeek"/>.</para>
     /// <para>The result is a tick value normalized to midnight and avoids object allocation.</para>
     /// <para>No validation is performed; the caller is responsible for ensuring all parameters are within valid calendar ranges.</para>
     /// </remarks>
@@ -817,11 +817,11 @@ public static partial class DateTimeExtensions
     /// <param name="minute">The minute component, in the range 0 through 59 inclusive.</param>
     /// <param name="second">The second component, in the range 0 through 59 inclusive.</param>
     /// <returns>
-    /// A <see cref="long" /> value representing the number of ticks since midnight (00:00:00.000) for the specified time components. The
+    /// A <see cref="long"/> value representing the number of ticks since midnight (00:00:00.000) for the specified time components. The
     /// result is always between 0 and <c>DateTimeExtensions.TicksPerDay - 1</c>.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="hour" /> is not between 0 and 23, or <paramref name="minute" /> or <paramref name="second" /> is not
+    /// Thrown if <paramref name="hour"/> is not between 0 and 23, or <paramref name="minute"/> or <paramref name="second"/> is not
     /// between 0 and 59.
     /// </exception>
     /// <remarks>
@@ -843,16 +843,16 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Returns the number of ticks representing the time-of-day portion of the specified <see cref="DateTime" />.
+    /// Returns the number of ticks representing the time-of-day portion of the specified <see cref="DateTime"/>.
     /// </summary>
-    /// <param name="dateTime">The <see cref="System.DateTime" /> instance from which to extract the time portion.</param>
+    /// <param name="dateTime">The <see cref="System.DateTime"/> instance from which to extract the time portion.</param>
     /// <returns>
-    /// A <see cref="long" /> value representing the number of ticks since midnight (00:00:00.000) on the given
-    /// <paramref name="dateTime" />. The result is always in the range 0 to <c>DateTimeExtensions.TicksPerDay - 1</c>.
+    /// A <see cref="long"/> value representing the number of ticks since midnight (00:00:00.000) on the given
+    /// <paramref name="dateTime"/>. The result is always in the range 0 to <c>DateTimeExtensions.TicksPerDay - 1</c>.
     /// </returns>
     /// <remarks>
     /// <para>
-    /// This method removes the date component from the <paramref name="dateTime" /> and returns only the fractional portion corresponding
+    /// This method removes the date component from the <paramref name="dateTime"/> and returns only the fractional portion corresponding
     /// to the time of day. It is equivalent to <c>dateTime.TimeOfDay.Ticks</c> but avoids allocations.
     /// </para>
     /// </remarks>
@@ -860,14 +860,14 @@ public static partial class DateTimeExtensions
     private static long GetTimeTicks(DateTime dateTime) => dateTime.Ticks % DateTimeExtensions.TicksPerDay;
 
     /// <summary>
-    /// Computes the calendar week number of the year for a given date using either <see cref="CalendarWeekRule.FirstFullWeek" /> or
-    /// <see cref="CalendarWeekRule.FirstFourDayWeek" />, depending on the <paramref name="fullDays" /> parameter.
+    /// Computes the calendar week number of the year for a given date using either <see cref="CalendarWeekRule.FirstFullWeek"/> or
+    /// <see cref="CalendarWeekRule.FirstFourDayWeek"/>, depending on the <paramref name="fullDays"/> parameter.
     /// </summary>
     /// <param name="ticks">The tick count representing the target date.</param>
     /// <param name="dayOfYear">Zero-based day-of-year index of the target date.</param>
     /// <param name="firstDayOfWeek">The starting day of the week as an integer (0–6).</param>
     /// <param name="fullDays">The minimum number of days required in the first week (7 for FirstFullWeek, 4 for FirstFourDayWeek).</param>
-    /// <returns>The 1-based week number for the date specified by <paramref name="ticks" />.</returns>
+    /// <returns>The 1-based week number for the date specified by <paramref name="ticks"/>.</returns>
     private static int GetWeekOfYearFullDays(long ticks, int dayOfYear, int firstDayOfWeek, int fullDays)
     {
         // Get the day of the week for the current date

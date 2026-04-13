@@ -19,10 +19,10 @@ public static partial class SequenceGenerator
     /// </param>
     /// <param name="max">
     /// The maximum absolute value (exclusive) a term may have before generation stops. Must be greater than or equal to 0 and not less
-    /// than <paramref name="min" />.
+    /// than <paramref name="min"/>.
     /// </param>
     /// <returns>
-    /// A lazily-evaluated sequence of <see cref="double" /> values from the Leibniz series, each within the specified range of absolute values.
+    /// A lazily-evaluated sequence of <see cref="double"/> values from the Leibniz series, each within the specified range of absolute values.
     /// </returns>
     /// <remarks>
     /// <para>The Leibniz series is an infinite alternating series defined as:
@@ -40,9 +40,9 @@ public static partial class SequenceGenerator
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="min" /> or <paramref name="max" /> is less than 0.
+    /// Thrown when <paramref name="min"/> or <paramref name="max"/> is less than 0.
     /// </exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="min" /> is greater than <paramref name="max" />.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="min"/> is greater than <paramref name="max"/>.</exception>
     public static IEnumerable<double> Leibniz(double min, double max)
     {
         ThrowHelper.ThrowIfLessThan(min, 0);

@@ -9,7 +9,7 @@ using System;
 namespace Bodu.Extensions;
 
 /// <summary>
-/// Provides static helper methods for comparing values that implement the <see cref="IComparable{T}" /> interface.
+/// Provides static helper methods for comparing values that implement the <see cref="IComparable{T}"/> interface.
 /// </summary>
 public static partial class ComparableHelper
 {

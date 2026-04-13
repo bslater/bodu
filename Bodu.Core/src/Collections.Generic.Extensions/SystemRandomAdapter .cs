@@ -9,10 +9,10 @@ using System;
 namespace Bodu.Collections.Generic.Extensions;
 
 /// <summary>
-/// Adapts a <see cref="System.Random" /> instance to the <see cref="IRandomGenerator" /> interface.
+/// Adapts a <see cref="System.Random"/> instance to the <see cref="IRandomGenerator"/> interface.
 /// </summary>
 /// <remarks>
-/// This adapter allows <see cref="System.Random" /> to be used wherever code depends on the <see cref="IRandomGenerator" /> abstraction,
+/// This adapter allows <see cref="System.Random"/> to be used wherever code depends on the <see cref="IRandomGenerator"/> abstraction,
 /// enabling straightforward substitution for testing or alternative generators.
 /// </remarks>
 public sealed class SystemRandomAdapter :
@@ -21,17 +21,17 @@ public sealed class SystemRandomAdapter :
     private readonly Random _random;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="SystemRandomAdapter" /> class with a default <see cref="System.Random" /> instance.
+    /// Initializes a new instance of the <see cref="SystemRandomAdapter"/> class with a default <see cref="System.Random"/> instance.
     /// </summary>
-    /// <remarks>The <see cref="System.Random" /> default constructor is used, which seeds the generator from the system clock.</remarks>
+    /// <remarks>The <see cref="System.Random"/> default constructor is used, which seeds the generator from the system clock.</remarks>
     public SystemRandomAdapter()
         : this(new Random()) { }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="SystemRandomAdapter" /> class with the specified <see cref="System.Random" /> instance.
+    /// Initializes a new instance of the <see cref="SystemRandomAdapter"/> class with the specified <see cref="System.Random"/> instance.
     /// </summary>
-    /// <param name="random">The <see cref="System.Random" /> instance to wrap. Must not be <see langword="null" />.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="random" /> is <see langword="null" />.</exception>
+    /// <param name="random">The <see cref="System.Random"/> instance to wrap. Must not be <see langword="null"/>.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="random"/> is <see langword="null"/>.</exception>
     public SystemRandomAdapter(Random random) =>
         _random = random ?? throw new ArgumentNullException(nameof(random));
 

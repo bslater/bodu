@@ -11,7 +11,7 @@ namespace Bodu.Extensions;
 public static partial class DateTimeExtensions
 {
     /// <summary>
-    /// Returns a new <see cref="DateTime" /> representing the first day of the same month and year as the specified instance.
+    /// Returns a new <see cref="DateTime"/> representing the first day of the same month and year as the specified instance.
     /// </summary>
     /// <param name="dateTime">The date and time value whose year and month are used to determine the result.</param>
     /// <returns>
@@ -19,10 +19,10 @@ public static partial class DateTimeExtensions
     /// </returns>
     /// <remarks>
     /// <para>
-    /// This method returns a <see cref="DateTime" /> with the day component set to 1 and the time component set to midnight (00:00:00).
+    /// This method returns a <see cref="DateTime"/> with the day component set to 1 and the time component set to midnight (00:00:00).
     /// </para>
     /// <para>
-    /// The <see cref="DateTime.Kind" /> property of the returned instance matches that of the original <paramref name="dateTime" />.
+    /// The <see cref="DateTime.Kind"/> property of the returned instance matches that of the original <paramref name="dateTime"/>.
     /// </para>
     /// <para><b>Example:</b></para>
     /// <code>
@@ -35,7 +35,7 @@ public static partial class DateTimeExtensions
     public static DateTime FirstDayOfMonth(this DateTime dateTime) => new DateTime(GetFirstDayOfMonthTicks(dateTime), dateTime.Kind);
 
     /// <summary>
-    /// Returns a new <see cref="DateTime" /> representing the first day of the specified month and year.
+    /// Returns a new <see cref="DateTime"/> representing the first day of the specified month and year.
     /// </summary>
     /// <param name="year">The calendar year of the result. Must be between 1 and 9999, inclusive.</param>
     /// <param name="month">The calendar month of the result, where 1 represents January and 12 represents December.</param>
@@ -44,11 +44,11 @@ public static partial class DateTimeExtensions
     /// </returns>
     /// <remarks>
     /// <para>
-    /// This method constructs a <see cref="DateTime" /> from the specified <paramref name="year" /> and <paramref name="month" /> with the day
+    /// This method constructs a <see cref="DateTime"/> from the specified <paramref name="year"/> and <paramref name="month"/> with the day
     /// component set to 1 and the time component set to midnight (00:00:00).
     /// </para>
     /// <para>
-    /// The <see cref="DateTime.Kind" /> property of the returned instance is <see cref="DateTimeKind.Unspecified" />.
+    /// The <see cref="DateTime.Kind"/> property of the returned instance is <see cref="DateTimeKind.Unspecified"/>.
     /// </para>
     /// <para><b>Example:</b></para>
     /// <code>
@@ -58,8 +58,8 @@ public static partial class DateTimeExtensions
     /// </code>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="year" /> is less than 1 or greater than 9999,
-    /// -or- if <paramref name="month" /> is less than 1 or greater than 12.
+    /// Thrown if <paramref name="year"/> is less than 1 or greater than 9999,
+    /// -or- if <paramref name="month"/> is less than 1 or greater than 12.
     /// </exception>
     public static DateTime GetFirstDayOfMonth(int year, int month)
     {

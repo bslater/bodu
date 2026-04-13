@@ -26,7 +26,7 @@ public sealed class PooledBufferBuilder<T> :
     private T[] _internalBuffer;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PooledBufferBuilder{T}" /> class with the specified initial capacity.
+    /// Initializes a new instance of the <see cref="PooledBufferBuilder{T}"/> class with the specified initial capacity.
     /// </summary>
     /// <param name="initialCapacity">The initial capacity of the pooled buffer. Defaults to 256.</param>
     public PooledBufferBuilder(int initialCapacity = 256)
@@ -64,10 +64,10 @@ public sealed class PooledBufferBuilder<T> :
     }
 
     /// <summary>
-    /// Appends a sequence of elements from the specified <see cref="IEnumerable{T}" /> source, growing the buffer as needed.
+    /// Appends a sequence of elements from the specified <see cref="IEnumerable{T}"/> source, growing the buffer as needed.
     /// </summary>
     /// <param name="source">The sequence of elements to append.</param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source" /> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is <c>null</c>.</exception>
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
     public void AppendRange(IEnumerable<T> source)
     {
@@ -86,7 +86,7 @@ public sealed class PooledBufferBuilder<T> :
     /// <summary>
     /// Returns the internal array used by the buffer.
     /// </summary>
-    /// <returns>A pooled array containing all buffered elements. Only the first <see cref="Count" /> elements are valid.</returns>
+    /// <returns>A pooled array containing all buffered elements. Only the first <see cref="Count"/> elements are valid.</returns>
     /// <remarks>The returned array is not a copy; modifying it directly may corrupt the internal state.</remarks>
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
     public T[] AsArray()
@@ -98,7 +98,7 @@ public sealed class PooledBufferBuilder<T> :
     /// <summary>
     /// Returns a span representing the valid portion of the buffered data.
     /// </summary>
-    /// <returns>A <see cref="Span{T}" /> containing the first <see cref="Count" /> buffered elements.</returns>
+    /// <returns>A <see cref="Span{T}"/> containing the first <see cref="Count"/> buffered elements.</returns>
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
     public Span<T> AsSpan()
     {
@@ -109,7 +109,7 @@ public sealed class PooledBufferBuilder<T> :
     /// <summary>
     /// Releases the pooled buffer and resets the internal state of the builder.
     /// </summary>
-    /// <remarks>After calling this method, further operations on the instance will throw <see cref="ObjectDisposedException" />.</remarks>
+    /// <remarks>After calling this method, further operations on the instance will throw <see cref="ObjectDisposedException"/>.</remarks>
     public void Dispose()
     {
         if (!_disposed)
@@ -122,12 +122,12 @@ public sealed class PooledBufferBuilder<T> :
     }
 
     /// <summary>
-    /// Attempts to populate the buffer from the specified <see cref="IReadOnlyCollection{T}" /> using a fast-path <c>CopyTo</c> method.
+    /// Attempts to populate the buffer from the specified <see cref="IReadOnlyCollection{T}"/> using a fast-path <c>CopyTo</c> method.
     /// </summary>
     /// <param name="source">The source collection to copy from.</param>
-    /// <returns><c>true</c> if the copy was performed using <see cref="ICollection{T}.CopyTo" />; otherwise, <c>false</c>.</returns>
+    /// <returns><c>true</c> if the copy was performed using <see cref="ICollection{T}.CopyTo"/>; otherwise, <c>false</c>.</returns>
     /// <remarks>If successful, the internal buffer is replaced and any previously buffered data is discarded.</remarks>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source" /> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is <c>null</c>.</exception>
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
     public bool TryCopyFrom(IReadOnlyCollection<T> source)
     {

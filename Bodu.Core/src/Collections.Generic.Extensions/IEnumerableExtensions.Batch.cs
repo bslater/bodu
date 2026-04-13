@@ -24,11 +24,11 @@ public static partial class IEnumerableExtensions
     /// <param name="source">The source sequence to batch.</param>
     /// <param name="size">The size of each batch. Must be greater than 0.</param>
     /// <returns>
-    /// An <see cref="IEnumerable{T}" /> where each inner <see cref="IEnumerable{T}" /> contains up to <paramref name="size" /> elements
-    /// from the source sequence. The final batch may contain fewer than <paramref name="size" /> elements.
+    /// An <see cref="IEnumerable{T}"/> where each inner <see cref="IEnumerable{T}"/> contains up to <paramref name="size"/> elements
+    /// from the source sequence. The final batch may contain fewer than <paramref name="size"/> elements.
     /// </returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="source" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="size" /> is less than or equal to 0.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="source"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="size"/> is less than or equal to 0.</exception>
     /// <remarks>
     /// This method uses deferred execution. Enumeration of the source sequence and batches occurs only when the result is enumerated.
     /// </remarks>
@@ -44,11 +44,11 @@ public static partial class IEnumerableExtensions
     /// <param name="size">The size of each batch. Must be greater than 0.</param>
     /// <param name="selector">A projection function to apply to each element.</param>
     /// <returns>
-    /// An <see cref="IEnumerable{T}" /> where each inner <see cref="IEnumerable{T}" /> contains up to <paramref name="size" />
+    /// An <see cref="IEnumerable{T}"/> where each inner <see cref="IEnumerable{T}"/> contains up to <paramref name="size"/>
     /// transformed elements.
     /// </returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="source" /> or <paramref name="selector" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="size" /> is less than or equal to 0.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="source"/> or <paramref name="selector"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="size"/> is less than or equal to 0.</exception>
     /// <remarks>This method uses deferred execution. The transformation and batching occur only during enumeration.</remarks>
     public static IEnumerable<IEnumerable<TResult>> Batch<TSource, TResult>(this IEnumerable<TSource> source, int size, Func<TSource, TResult> selector)
     {
@@ -66,11 +66,11 @@ public static partial class IEnumerableExtensions
     /// <param name="size">The size of each batch. Must be greater than 0.</param>
     /// <param name="selector">A projection function that receives the item and its index.</param>
     /// <returns>
-    /// An <see cref="IEnumerable{T}" /> where each inner <see cref="IEnumerable{T}" /> contains up to <paramref name="size" />
+    /// An <see cref="IEnumerable{T}"/> where each inner <see cref="IEnumerable{T}"/> contains up to <paramref name="size"/>
     /// transformed elements.
     /// </returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="source" /> or <paramref name="selector" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="size" /> is less than or equal to 0.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="source"/> or <paramref name="selector"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="size"/> is less than or equal to 0.</exception>
     /// <remarks>This method uses deferred execution. The projection and batching occur only during enumeration.</remarks>
     public static IEnumerable<IEnumerable<TResult>> Batch<TSource, TResult>(
         this IEnumerable<TSource> source,
@@ -122,11 +122,11 @@ public static partial class IEnumerableExtensions
     /// <param name="size">The maximum number of items per batch.</param>
     /// <param name="selector">A projection function that receives the source item and its index.</param>
     /// <returns>
-    /// An <see cref="IEnumerable{T}" /> of <see cref="ReadOnlyMemory{TResult}" /> batches, backed by a pooled buffer to reduce
+    /// An <see cref="IEnumerable{T}"/> of <see cref="ReadOnlyMemory{TResult}"/> batches, backed by a pooled buffer to reduce
     /// per-batch allocations.
     /// </returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="source" /> or <paramref name="selector" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="size" /> is less than or equal to 0.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="source"/> or <paramref name="selector"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="size"/> is less than or equal to 0.</exception>
     /// <remarks>
     /// <para>
     /// Each yielded batch is a snapshot copied from the pooled buffer at the point of yield. If you need to retain a batch beyond the
@@ -213,14 +213,14 @@ public static partial class IEnumerableExtensions
     /// <param name="source">The source sequence to batch.</param>
     /// <param name="size">The maximum number of items per batch.</param>
     /// <returns>
-    /// An <see cref="IEnumerable{T}" /> of <see cref="ReadOnlyMemory{TSource}" /> batches, backed by a pooled buffer to reduce
+    /// An <see cref="IEnumerable{T}"/> of <see cref="ReadOnlyMemory{TSource}"/> batches, backed by a pooled buffer to reduce
     /// per-batch allocations.
     /// </returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="source" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="size" /> is less than or equal to 0.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="source"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="size"/> is less than or equal to 0.</exception>
     /// <remarks>
     /// This overload returns untransformed batches of the original element type. See
-    /// <see cref="BatchPooled{TSource,TResult}(IEnumerable{TSource},int,Func{TSource,int,TResult})" /> for a variant that applies a
+    /// <see cref="BatchPooled{TSource,TResult}(IEnumerable{TSource},int,Func{TSource,int,TResult})"/> for a variant that applies a
     /// projection.
     /// </remarks>
     /// <example>

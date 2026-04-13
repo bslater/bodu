@@ -11,7 +11,7 @@ namespace Bodu;
 public partial struct WeekPattern : System.IFormattable
 {
     /// <summary>
-    /// Returns a string representation of the current <see cref="WeekPattern" /> using the default
+    /// Returns a string representation of the current <see cref="WeekPattern"/> using the default
     /// Sunday-first format with underscore for unselected days.
     /// </summary>
     /// <returns>
@@ -21,29 +21,29 @@ public partial struct WeekPattern : System.IFormattable
     public override string ToString() => ToString("S", null!);
 
     /// <summary>
-    /// Returns a string representation of the current <see cref="WeekPattern" /> using the specified format.
+    /// Returns a string representation of the current <see cref="WeekPattern"/> using the specified format.
     /// </summary>
     /// <param name="format">
     /// A format string that defines the day ordering and the character used for unselected days. See
-    /// <see cref="ToString(string, IFormatProvider)" /> for supported values.
+    /// <see cref="ToString(string, IFormatProvider)"/> for supported values.
     /// </param>
     /// <returns>A formatted string representing the selected days.</returns>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="format" /> is not recognised.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="format"/> is not recognised.</exception>
     public string ToString(string format) => ToString(format, null!);
 
     /// <summary>
-    /// Returns a string representation of the current <see cref="WeekPattern" /> using the default format
+    /// Returns a string representation of the current <see cref="WeekPattern"/> using the default format
     /// and the specified culture-specific formatting information.
     /// </summary>
     /// <param name="provider">
-    /// An <see cref="IFormatProvider" /> supplying culture-specific formatting information (currently
+    /// An <see cref="IFormatProvider"/> supplying culture-specific formatting information (currently
     /// ignored).
     /// </param>
     /// <returns>A string representing the selected days in Sunday-to-Saturday order with <c>'_'</c> for unselected days.</returns>
     public string ToString(IFormatProvider provider) => ToString("S", provider);
 
     /// <summary>
-    /// Returns a string representation of the current <see cref="WeekPattern" /> using the specified format
+    /// Returns a string representation of the current <see cref="WeekPattern"/> using the specified format
     /// and culture-specific formatting information.
     /// </summary>
     /// <param name="format">
@@ -66,10 +66,10 @@ public partial struct WeekPattern : System.IFormattable
     /// </item>
     /// </list>
     /// </param>
-    /// <param name="provider">An <see cref="IFormatProvider" /> (currently ignored).</param>
+    /// <param name="provider">An <see cref="IFormatProvider"/> (currently ignored).</param>
     /// <returns>A formatted seven-character string representing the selected days.</returns>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="format" /> is not recognised.</exception>
-    public string ToString(string format, IFormatProvider provider)
+    /// <exception cref="ArgumentException">Thrown if <paramref name="format"/> is not recognised.</exception>
+    public string ToString(string? format, IFormatProvider? provider)
     {
         (char? startDay, char? unselectedChar, bool isBinary) = ParseFormatForToString(format);
         unselectedChar ??= '_';

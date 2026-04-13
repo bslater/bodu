@@ -13,25 +13,28 @@ namespace Bodu;
 /// Represents a high-performance, non-cryptographic pseudo-random number generator based on the XOR-shift algorithm.
 /// </summary>
 /// <remarks>
-/// This class is designed as a drop-in replacement for <see cref="System.Random" /> with better performance characteristics. It is not
+/// This class is designed as a drop-in replacement for <see cref="System.Random"/> with better performance characteristics. It is not
 /// suitable for cryptographic purposes.
 /// </remarks>
 public sealed class XorShiftRandom :
     System.Random,
     IRandomGenerator
 {
-    private uint x, y, z, w;
+    private uint _x;
+    private uint _y;
+    private uint _z;
+    private uint _w;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="XorShiftRandom" /> class using a system-generated seed.
+    /// Initializes a new instance of the <see cref="XorShiftRandom"/> class using a system-generated seed.
     /// </summary>
-    /// <remarks>The default seed is derived from <see cref="Environment.TickCount" /> at the time of construction.</remarks>
+    /// <remarks>The default seed is derived from <see cref="Environment.TickCount"/> at the time of construction.</remarks>
     public XorShiftRandom()
         : this((uint)Environment.TickCount)
     { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="XorShiftRandom" /> class with a 32-bit signed integer seed.
+    /// Initializes a new instance of the <see cref="XorShiftRandom"/> class with a 32-bit signed integer seed.
     /// </summary>
     /// <param name="seed">The seed used to initialize the random generator.</param>
     public XorShiftRandom(int seed)
@@ -39,16 +42,16 @@ public sealed class XorShiftRandom :
     { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="XorShiftRandom" /> class with a 32-bit unsigned seed.
+    /// Initializes a new instance of the <see cref="XorShiftRandom"/> class with a 32-bit unsigned seed.
     /// </summary>
     /// <param name="seed">The seed used to initialize the random generator.</param>
     public XorShiftRandom(uint seed)
     {
         // Initialize four internal states with XOR-variations of the seed for better distribution
-        x = seed;
-        y = seed ^ 0x6C8E9CF5U;
-        z = seed ^ 0x94D049BBU;
-        w = seed ^ 0x5A17D7F9U;
+        _x = seed;
+        _y = seed ^ 0x6C8E9CF5U;
+        _z = seed ^ 0x94D049BBU;
+        _w = seed ^ 0x5A17D7F9U;
     }
 
     /// <inheritdoc />
@@ -98,11 +101,11 @@ public sealed class XorShiftRandom :
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private uint NextUInt32()
     {
-        uint t = x ^ (x << 11);
-        x = y;
-        y = z;
-        z = w;
-        w ^= (w >> 19) ^ t ^ (t >> 8);
-        return w;
+        uint t = _x ^ (_x << 11);
+        _x = _y;
+        _y = _z;
+        _z = _w;
+        _w ^= (_w >> 19) ^ t ^ (t >> 8);
+        return _w;
     }
 }
