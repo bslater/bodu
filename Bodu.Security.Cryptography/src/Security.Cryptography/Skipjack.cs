@@ -10,16 +10,21 @@ namespace Bodu.Security.Cryptography
     using System.Security.Cryptography;
 
     /// <summary>
-    /// Managed <c>Skipjack</c> symmetric‐algorithm wrapper that plugs the <see cref="SkipjackBlockCipher" /> engine into the standard
-    /// <see cref="SymmetricAlgorithm" /> façade. It exposes CBC and ECB modes with any .NET <see cref="PaddingMode" /> scheme (default PKCS#7).
+    /// Provides a managed implementation of the Skipjack symmetric block cipher, exposing the <see cref="SkipjackBlockCipher" /> engine
+    /// through the standard <see cref="SymmetricAlgorithm" /> interface. Skipjack uses a fixed 80-bit key and a 64-bit block and is
+    /// supported here for legacy and research scenarios only.
     /// </summary>
     /// <remarks>
-    /// Skipjack has an 80‑bit key and 64‑bit block, giving <b>no</b> modern security margin. This class is provided only for legacy or
-    /// research scenarios.
+    /// Because of its 80-bit key and 64-bit block, Skipjack offers no modern security margin and must not be used to protect sensitive
+    /// data in new applications. Prefer a modern cipher such as AES.
     /// </remarks>
     public sealed class Skipjack
         : System.Security.Cryptography.SymmetricAlgorithm
     {
+        /// <summary>
+        /// Initialises a new instance of the <see cref="Skipjack" /> class with the fixed 80-bit key size and 64-bit block size, CBC
+        /// cipher mode, and PKCS7 padding.
+        /// </summary>
         public Skipjack()
         {
             // Set up legal sizes according to the original spec (80‑bit key, 64‑bit block).
@@ -34,8 +39,13 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Gets or sets the extended cipher‑mode enumeration used across Bodu algorithms (CBC default).
+        /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
         /// </summary>
+        /// <value>One of the <see cref="CipherBlockMode" /> values. The default is <see cref="CipherBlockMode.CBC" />.</value>
+        /// <remarks>
+        /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode" /> property when used with
+        /// <see cref="BlockCipherModeFactory" /> and the extended set of modes it supports.
+        /// </remarks>
         public CipherBlockMode BlockMode { get; set; } = CipherBlockMode.CBC;
 
         private int BlockSizeBytes => this.BlockSizeValue / 8;
@@ -69,8 +79,11 @@ namespace Bodu.Security.Cryptography
         private static IBlockCipher CreateCipher(byte[] key) => new SkipjackBlockCipher(key);
 
         /// <summary>
-        /// Throws if <paramref name="key" /> or <paramref name="iv" /> size do not match the fixed Skipjack requirements.
+        /// Throws a <see cref="CryptographicException" /> if <paramref name="key" /> or <paramref name="iv" /> does not match the fixed
+        /// Skipjack key and block lengths.
         /// </summary>
+        /// <param name="key">The key to validate.</param>
+        /// <param name="iv">The initialisation vector to validate.</param>
         private void Validate(byte[] key, byte[] iv)
         {
             ThrowHelper.ThrowIfNull(key);

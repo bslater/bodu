@@ -9,7 +9,8 @@ namespace Bodu.Security.Cryptography
     using System.Runtime.CompilerServices;
 
     /// <summary>
-    /// Represents a fixed-capacity byte buffer for sequential writes and zero-copy retrieval.
+    /// Represents a fixed-capacity, append-only byte buffer used to accumulate input for block-based cryptographic
+    /// transforms, supporting sequential writes and zero-copy retrieval of the underlying storage once full.
     /// </summary>
     internal sealed class ByteBuffer
     {
@@ -98,9 +99,9 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Returns the contents of the buffer as an array of bytes.
+        /// Returns the underlying byte array and resets the buffer state to empty.
         /// </summary>
-        /// <returns>An array of bytes representing the full buffer contents.</returns>
+        /// <returns>The internal byte array containing the buffered data. This is not a copy.</returns>
         /// <exception cref="InvalidOperationException">The buffer is not yet full.</exception>
         public byte[] GetBytes()
         {
@@ -112,9 +113,9 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Returns the contents of the buffer as an array of bytes, zero-padding the unused portion.
+        /// Returns the underlying byte array after clearing any unused trailing capacity to zero, and resets the buffer state to empty.
         /// </summary>
-        /// <returns>An array of bytes representing the buffer, with remaining capacity cleared.</returns>
+        /// <returns>The internal byte array with the written bytes in place and all remaining trailing bytes set to zero. This is not a copy.</returns>
         public byte[] GetBytesZeroPadded()
         {
             int count = this.Count;
@@ -143,7 +144,10 @@ namespace Bodu.Security.Cryptography
         /// <param name="count">The number of bytes to copy.</param>
         /// <exception cref="ArgumentNullException"><paramref name="array" /> is <see langword="null" />.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> or <paramref name="count" /> is less than 0.</exception>
-        /// <exception cref="ArgumentException">NextWhile or capacity validation fails.</exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="index" /> and <paramref name="count" /> specify an invalid range in <paramref name="array" />. <br />
+        /// -or- <br /><paramref name="count" /> exceeds the remaining capacity of the buffer.
+        /// </exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EnsureAddIsValid(byte[] array, int index, int count)
         {

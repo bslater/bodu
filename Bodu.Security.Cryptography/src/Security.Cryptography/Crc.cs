@@ -13,13 +13,14 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography
 {
     /// <summary>
-    /// Implementation of the <c>CRC</c> (Cyclic Redundancy Check) error-detecting algorithm. This class cannot be inherited.
+    /// Computes CRC (Cyclic Redundancy Check) values for arbitrary input data using a configurable <see cref="CrcStandard" />. This class
+    /// cannot be inherited.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The <see cref="Crc" /> class computes CRC hashes based on various CRC standards, including CRC32. This class uses CRC parameters
-    /// defined in the <see cref="CrcStandard" /> class, such as the polynomial, initial value, reflection settings, and XOR out value. It
-    /// provides methods for CRC calculation and updates using byte arrays.
+    /// <see cref="Crc" /> supports CRC widths from 1 to 64 bits and honours the polynomial, initial value, input/output reflection, and
+    /// final XOR value supplied by <see cref="CrcStandard" />. Precomputed lookup tables are cached via <see cref="GlobalCache" /> and shared
+    /// across instances that use identical parameters.
     /// </para>
     /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for password hashing,
     /// digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -45,47 +46,21 @@ namespace Bodu.Security.Cryptography
         /// Initializes a new instance of the <see cref="Crc" /> class using the default CRC standard (CRC32_ISOHDLC).
         /// </summary>
         /// <remarks>
-        /// The default CRC standard is CRC32 with the following parameters:
-        /// <list type="permutationTable">
-        /// <item>
-        /// <term>Width</term>
-        /// <description>32</description>
-        /// </item>
-        /// <item>
-        /// <term>Polynomial</term>
-        /// <description>0x04C11DB7</description>
-        /// </item>
-        /// <item>
-        /// <term>Initial Value</term>
-        /// <description>0xFFFFFFFF</description>
-        /// </item>
-        /// <item>
-        /// <term>Reflect In</term>
-        /// <description>true</description>
-        /// </item>
-        /// <item>
-        /// <term>Reflect Out</term>
-        /// <description>true</description>
-        /// </item>
-        /// <item>
-        /// <term>XOR Out</term>
-        /// <description>0xFFFFFFFF</description>
-        /// </item>
-        /// </list>
+        /// The default standard is CRC-32 (ISO-HDLC) with width 32, polynomial <c>0x04C11DB7</c>, initial value <c>0xFFFFFFFF</c>, reflected
+        /// input and output, and final XOR <c>0xFFFFFFFF</c>.
         /// </remarks>
         public Crc()
             : this(CrcStandard.CRC32_ISOHDLC)
         { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Crc" /> class using the specified CRC parameters.
+        /// Initializes a new instance of the <see cref="Crc" /> class using the specified <see cref="CrcStandard" />.
         /// </summary>
-        /// <param name="crcStandard">The <see cref="CrcStandard" /> to use in creating the CRC value.</param>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="crcStandard" /> is <see langword="null" />.</exception>
+        /// <param name="crcStandard">The CRC parameters (polynomial, width, reflection, initial value, final XOR) to use.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="crcStandard" /> is <see langword="null" />.</exception>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// Thrown when the <paramref name="crcStandard" /> size is outside the supported range (1 to 64 bits).
+        /// The <see cref="CrcStandard.Size" /> of <paramref name="crcStandard" /> is outside the supported range (1 to 64 bits).
         /// </exception>
-        /// <remarks>Initializes the CRC with the given parameters for a customizable CRC computation.</remarks>
         public Crc(CrcStandard crcStandard)
         {
             ThrowHelper.ThrowIfNull(crcStandard);
@@ -110,14 +85,10 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Gets or sets the global cache used to manage CRC lookup tables.
+        /// Gets or sets the process-wide cache used to share CRC lookup tables across <see cref="Crc" /> instances.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown when setting the <see cref="GlobalCache" /> as <see langword="null" />.</exception>
-        /// <remarks>
-        /// This static property allows users to set a global cache that can be shared across all instances of <see cref="Crc" />. If not
-        /// set, a default cache will be used. Setting this property allows the user to manage the cache externally and reuse lookup tables
-        /// across multiple CRC instances.
-        /// </remarks>
+        /// <value>The active <see cref="CrcLookupTableCache" />. A default cache is lazily created when first accessed.</value>
+        /// <exception cref="InvalidOperationException">The value being assigned is <see langword="null" />.</exception>
         public static CrcLookupTableCache GlobalCache
         {
             get => globalLookupTableCache.Value;

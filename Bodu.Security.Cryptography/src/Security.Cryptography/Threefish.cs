@@ -5,23 +5,21 @@
     using System.Security.Cryptography;
 
     /// <summary>
-    /// Serves as the abstract base class for managed implementations of the Threefish symmetric block cipher family.
+    /// Serves as the abstract base class for managed implementations of the Threefish tweakable symmetric block cipher family
+    /// (Threefish-256, Threefish-512, and Threefish-1024).
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This base class provides common functionality for Threefish variants, including support for tweakable keys, custom cipher block
-    /// modes (e.g., CBC, CFB, OFB, CTR), and integration with the .NET <see cref="SymmetricAlgorithm" /> cryptographic framework.
+    /// Threefish is the tweakable block cipher used as the core primitive of the Skein hash function. Each variant operates on a block
+    /// whose size in bits matches its key size (256, 512, or 1024 bits) together with a 128-bit tweak. Derived classes must implement
+    /// <see cref="CreateCipher(byte[], byte[])" /> to instantiate the appropriate concrete engine.
     /// </para>
     /// <para>
-    /// Derived classes must implement the <see cref="CreateCipher(byte[], byte[])" /> method to instantiate the appropriate
-    /// <c>Threefish-256</c>, <c>Threefish-512</c>, or <c>Threefish-1024</c> block cipher engine.
+    /// The <see cref="BlockMode" /> property replaces the standard <see cref="SymmetricAlgorithm.Mode" /> property, enabling the use of
+    /// additional or non-standard block cipher modes such as <see cref="CipherBlockMode.CTR" /> and <see cref="CipherBlockMode.OFB" />.
     /// </para>
-    /// <para>
-    /// The <see cref="BlockMode" /> property replaces the standard <see cref="SymmetricAlgorithm.Mode" /> property, enabling use of
-    /// additional or non-standard block cipher modes.
-    /// </para>
-    /// <note type="important">This class is not intended to be instantiated directly. Use a derived class such as
-    /// <c>Threefish256Algorithm</c> or <c>Threefish512Algorithm</c>.</note>
+    /// <note type="important">This class is not intended to be instantiated directly. Use <see cref="Threefish256" />,
+    /// <see cref="Threefish512" />, or <see cref="Threefish1024" /> instead.</note>
     /// </remarks>
     public abstract class Threefish
         : TweakableSymmetricAlgorithm
@@ -39,10 +37,10 @@
         private readonly int DefaultTweakSizeBytes;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Threefish" /> class with the specified block, key, and tweak sizes.
+        /// Initialises a new instance of the <see cref="Threefish" /> class with the specified block and tweak sizes.
         /// </summary>
-        /// <param name="blockSizeBits">The block size in bits. Must match the Threefish variant block size.</param>
-        /// <param name="tweakSizeBits">The tweak size in bits. Typically 128 bits for all Threefish variants.</param>
+        /// <param name="blockSizeBits">The block size in bits. Must match the Threefish variant block size (256, 512, or 1024).</param>
+        /// <param name="tweakSizeBits">The tweak size in bits. 128 bits for all Threefish variants.</param>
         protected Threefish(int blockSizeBits, int tweakSizeBits)
         {
             this.BlockSizeValue = this.KeySizeValue = blockSizeBits;
@@ -60,10 +58,13 @@
         }
 
         /// <summary>
-        /// Gets or sets the block cipher mode to be used by the Threefish transform.
+        /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
         /// </summary>
+        /// <value>One of the <see cref="CipherBlockMode" /> values. The default is <see cref="CipherBlockMode.CBC" />.</value>
         /// <remarks>
-        /// This property replaces the base class <see cref="SymmetricAlgorithm.Mode" /> and supports additional non-standard modes.
+        /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode" /> property when used with
+        /// <see cref="BlockCipherModeFactory" /> and the extended set of modes it supports, including <see cref="CipherBlockMode.CTR" />
+        /// and <see cref="CipherBlockMode.OFB" />.
         /// </remarks>
         public CipherBlockMode BlockMode { get; set; } = CipherBlockMode.CBC;
 

@@ -5,18 +5,21 @@
     using System.Security.Cryptography;
 
     /// <summary>
-    /// Provides general-purpose utility methods used by cryptographic components and implementations. This includes bit manipulation,
-    /// secure random byte generation, and helper functions to ensure compliance with cryptographic constraints such as non-zero padding,
-    /// key generation, or exclusion of reserved byte values.
+    /// Provides general-purpose utility methods used by cryptographic components and implementations within
+    /// <c>Bodu.Security.Cryptography</c>, including secure memory clearing, block padding and depadding, cryptographically
+    /// secure random byte generation, bit reflection, and argument validation helpers.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This helper class is intended for internal cryptographic infrastructure, test scaffolding, and algorithm development. It supports
-    /// efficient and secure primitives such as span-based zero-allocation random generation and bit reflection.
+    /// This class is implemented as a partial type, with each file documenting a distinct facet of the surface: memory
+    /// clearing (<c>CryptoHelpers.DisposeHelpers.cs</c>), extension utilities such as bit reflection
+    /// (<c>CryptoHelpers.Extensions.cs</c>), block padding (<c>CryptoHelpers.Padding.cs</c>), secure random byte generation
+    /// (<c>CryptoHelpers.RandomNumberGenerator.cs</c>), and internal argument validation helpers
+    /// (<c>CryptoHelpers.ThrowHelper.cs</c>).
     /// </para>
     /// <para>
-    /// All random methods use <see cref="RandomNumberGenerator.Fill(Span{byte})" /> and are optimized for repeatable use in critical paths,
-    /// including optional inlining for performance.
+    /// Random byte generation methods use <see cref="RandomNumberGenerator" /> and operate on <see cref="Span{T}" /> where
+    /// possible to minimise allocations in performance-sensitive paths.
     /// </para>
     /// </remarks>
     public static partial class CryptoHelpers

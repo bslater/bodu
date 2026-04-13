@@ -4,14 +4,19 @@
     using System.Security.Cryptography;
 
     /// <summary>
-    /// Performs cryptographic transformations using the Skipjack block cipher algorithm. Supports encryption and decryption in CBC mode
-    /// with configurable padding.
+    /// Performs a cryptographic transformation of data using the <see cref="Skipjack" /> algorithm. This class cannot be inherited.
     /// </summary>
     /// <remarks>
-    /// This class integrates a block cipher engine ( <see cref="IBlockCipher" />) with a cipher mode (
-    /// <see cref="IBlockCipherModeTransform" />) and padding scheme ( <see cref="IPaddingStrategy" />). It supports both streaming (via
-    /// <see cref="TransformBlock" />) and final block processing (via <see cref="TransformFinalBlock" />), following the
-    /// <see cref="ICryptoTransform" /> contract.
+    /// <para>
+    /// This class integrates a <see cref="SkipjackBlockCipher" /> engine with an <see cref="IBlockCipherModeTransform" /> and an
+    /// <see cref="IPaddingStrategy" />. Block-aligned streaming data is processed via <see cref="TransformBlock" />, and the final
+    /// (potentially partial) block, including padding application or removal, is handled by <see cref="TransformFinalBlock" />.
+    /// </para>
+    /// <para>
+    /// Instances of this class are returned by <see cref="Skipjack.CreateEncryptor(byte[], byte[])" /> and
+    /// <see cref="Skipjack.CreateDecryptor(byte[], byte[])" />. Using this class directly is not recommended; prefer using
+    /// <see cref="Skipjack" /> with a <see cref="CryptoStream" />, which handles padding and block alignment automatically.
+    /// </para>
     /// </remarks>
     public sealed class SkipjackTransform : ICryptoTransform
     {
@@ -22,15 +27,15 @@
         private byte[]? deferredInput;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SkipjackTransform" /> class using the specified cipher, mode, padding, and
-        /// initialization vector.
+        /// Initialises a new instance of the <see cref="SkipjackTransform" /> class using the specified cipher, mode, padding, and
+        /// initialisation vector.
         /// </summary>
-        /// <param name="cipher">The block cipher engine to use for encryption or decryption.</param>
-        /// <param name="cipherMode">The block cipher mode of operation (e.g., CBC, CFB).</param>
-        /// <param name="paddingMode">The padding scheme to apply to input data.</param>
-        /// <param name="iv">The initialization vector to use for the block cipher mode.</param>
-        /// <param name="encrypt"><c>true</c> to encrypt; <c>false</c> to decrypt.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
+        /// <param name="cipher">The configured <see cref="IBlockCipher" /> engine to use. Must not be <see langword="null" />.</param>
+        /// <param name="cipherMode">The block cipher mode of operation (for example, <see cref="CipherBlockMode.CBC" />).</param>
+        /// <param name="paddingMode">The padding scheme to apply to the final block.</param>
+        /// <param name="iv">The initialisation vector for the cipher mode. Must match the cipher block size.</param>
+        /// <param name="encrypt"><see langword="true" /> to configure for encryption; <see langword="false" /> for decryption.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="cipher" /> is <see langword="null" />.</exception>
         public SkipjackTransform(IBlockCipher cipher, CipherBlockMode cipherMode, PaddingMode paddingMode, byte[] iv, bool encrypt)
         {
             this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
@@ -57,17 +62,23 @@
             GC.SuppressFinalize(this);
         }
 
-        /// <inheritdoc />
         /// <summary>
-        /// Transforms a block of bytes and writes the output to the specified buffer.
+        /// Transforms a block-aligned region of the input byte array and writes the result to the output buffer.
         /// </summary>
-        /// <param name="inputBuffer">The input data buffer.</param>
-        /// <param name="inputOffset">The byte offset into <paramref name="inputBuffer" /> to begin reading from.</param>
-        /// <param name="inputCount">The number of bytes to read from <paramref name="inputBuffer" />.</param>
-        /// <param name="outputBuffer">The buffer to write the transformed data to.</param>
-        /// <param name="outputOffset">The byte offset into <paramref name="outputBuffer" /> to begin writing at.</param>
+        /// <param name="inputBuffer">The input data buffer. Must not be <see langword="null" />.</param>
+        /// <param name="inputOffset">The byte offset within <paramref name="inputBuffer" /> at which to begin reading.</param>
+        /// <param name="inputCount">The number of bytes to process. Must be a multiple of <see cref="InputBlockSize" />.</param>
+        /// <param name="outputBuffer">The buffer to write the transformed data into. Must not be <see langword="null" />.</param>
+        /// <param name="outputOffset">The byte offset within <paramref name="outputBuffer" /> at which to begin writing.</param>
         /// <returns>The number of bytes written to <paramref name="outputBuffer" />.</returns>
-        /// <exception cref="ArgumentException">Thrown if the input or output spans are invalid or insufficient in length.</exception>
+        /// <exception cref="ArgumentException">
+        /// The input or output buffer span is invalid or insufficient in length for the requested operation.
+        /// </exception>
+        /// <remarks>
+        /// When decrypting with a strippable padding mode (for example <see cref="PaddingMode.PKCS7" />), the last complete block of input
+        /// is deferred and not written to the output until <see cref="TransformFinalBlock" /> is called. This allows correct padding
+        /// removal at the end of the stream.
+        /// </remarks>
         public int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount,
                                   byte[] outputBuffer, int outputOffset)
         {

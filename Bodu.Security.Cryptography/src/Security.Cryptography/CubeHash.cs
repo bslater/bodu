@@ -13,26 +13,15 @@ namespace Bodu.Security.Cryptography
     using System.Security.Cryptography;
 
     /// <summary>
-    /// Computes the hash for the input data using the <c>CubeHash</c> cryptographic hash algorithm. This implementation applies a
-    /// permutation-based transformation over a 1024-bit internal state using configurable initialization, processing, and finalization
-    /// rounds. This class cannot be inherited.
+    /// Computes a hash using the <c>CubeHash</c> permutation-based hash algorithm designed by Daniel J. Bernstein and submitted to the
+    /// NIST SHA-3 competition. This class cannot be inherited.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <see cref="CubeHash" /> is a cryptographic hash function designed by Daniel J. Bernstein and submitted as a candidate to the NIST
-    /// SHA-3 competition. It uses a simple and highly parallelizable structure based on a fixed-size internal state that is updated through
-    /// a series of ARX-style (Addition, Rotation, XOR) operations.
+    /// <see cref="CubeHash" /> operates on a 1024-bit internal state updated through a sequence of ARX (Addition, Rotation, XOR)
+    /// operations. The number of initialisation, transformation, and finalisation rounds, the hash output size, and the input block size
+    /// are all configurable. See <a href="https://en.wikipedia.org/wiki/CubeHash">Wikipedia</a> for an overview.
     /// </para>
-    /// <para>
-    /// This implementation supports parameterized configuration of the number of initialization rounds, transformation rounds, and
-    /// finalization rounds, as well as variable hash output sizes and input block sizes. It is suitable for scenarios requiring
-    /// flexibility, performance, and cryptographic strength.
-    /// </para>
-    /// <para>
-    /// CubeHash is intended for use in security-sensitive contexts such as digital signatures, message authentication codes, and
-    /// general-purpose integrity verification where cryptographic strength is a requirement.
-    /// </para>
-    /// <para>For more information, see: <a href="https://en.wikipedia.org/wiki/CubeHash">https://en.wikipedia.org/wiki/CubeHash</a>.</para>
     /// </remarks>
     public sealed class CubeHash
         : System.Security.Cryptography.HashAlgorithm
@@ -128,29 +117,10 @@ namespace Bodu.Security.Cryptography
         public string AlgorithmName =>
             $"CubeHash{this.InitializationRounds}+{this.Rounds}/{this.TransformBlockSize}+{this.FinalizationRounds}-{this.HashSize}";
 
-        /// <summary>
-        /// Gets a value indicating whether this transform instance can be reused after a hash operation is completed.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if the transform supports multiple hash computations via <see cref="HashAlgorithm.Initialize" />;
-        /// otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Reusable transforms allow the internal state to be reset for subsequent operations using the same instance. One-shot algorithms
-        /// that clear sensitive key material after finalization typically return <see langword="false" />.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanReuseTransform => true;
 
-        /// <summary>
-        /// Gets a value indicating whether this transform supports processing multiple blocks of data in a single operation.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if multiple input blocks can be transformed in sequence without intermediate finalization; otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Most hash algorithms and block ciphers support multi-block transformations for streaming input. If <see langword="false" />, the
-        /// transform must be invoked one block at a time.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanTransformMultipleBlocks => true;
 
         /// <summary>
@@ -442,35 +412,11 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Finalizes the hash computation and returns the resulting <see cref="CubeHash" /> hash in little-endian format. This method reflects
-        /// all input previously processed via <see cref="HashAlgorithm.HashCore(byte[], int, int)" /> or
-        /// <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" /> and produces a final, stable hash output.
+        /// Finalises the hash computation and returns the computed digest in little-endian byte order.
         /// </summary>
         /// <returns>
-        /// A byte array representing the computed hash value. The size of the array is determined by the algorithm's configured
-        /// <see cref="HashAlgorithm.HashSize" /> and is encoded in <b>little-endian</b> byte order.
+        /// A byte array containing the computed hash value. Its length is <see cref="HashAlgorithm.HashSize" /> divided by 8.
         /// </returns>
-        /// <remarks>
-        /// <para>
-        /// This method completes the internal state of the hashing algorithm and serializes the final hash value into a
-        /// platform-independent format. It is invoked automatically by <see cref="HashAlgorithm.ComputeHash(byte[])" /> and related methods
-        /// once all data has been processed.
-        /// </para>
-        /// <para>After this method returns, the internal state is considered finalized and the computed hash is stable.</para>
-        /// <para>
-        /// In .NET 6.0 and later, the algorithm is automatically reset by invoking <see cref="HashAlgorithm.Initialize" />, allowing the
-        /// instance to be reused immediately.
-        /// </para>
-        /// <para>
-        /// In earlier versions of .NET, the internal state is marked as finalized, and any subsequent calls to
-        /// <see cref="HashAlgorithm.HashCore(byte[], int, int)" />, <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" />, or
-        /// <see cref="HashAlgorithm.HashFinal" /> will throw a <see cref="CryptographicUnexpectedOperationException" />. To compute another
-        /// hash, you must explicitly call <see cref="HashAlgorithm.Initialize" /> to reset the algorithm.
-        /// </para>
-        /// <para>
-        /// Implementations should ensure all residual or pending data is processed and integrated into the final hash value before returning.
-        /// </para>
-        /// </remarks>
         protected override byte[] HashFinal()
         {
             this.ThrowIfDisposed();

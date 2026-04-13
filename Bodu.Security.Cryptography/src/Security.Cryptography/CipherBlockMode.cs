@@ -1,23 +1,25 @@
 ﻿namespace Bodu.Security.Cryptography
 {
     /// <summary>
-    /// Specifies the standard block cipher chaining modes used to apply encryption to multi-block data.
+    /// Identifies the standard block cipher chaining modes used when encrypting or decrypting multi-block messages.
     /// </summary>
     /// <remarks>
-    /// Each cipher mode defines a different strategy for combining block cipher operations with feedback or sequencing logic. Modes differ
-    /// in security characteristics, performance trade-offs, and requirements such as initialization vectors.
+    /// Each value selects a different strategy for combining block cipher operations with feedback or sequencing logic. Modes differ in
+    /// security properties, parallelism, and whether they require an initialisation vector or nonce. Use
+    /// <see cref="BlockCipherModeFactory.Create" /> to obtain an <see cref="IBlockCipherModeTransform" /> for a given value.
     /// </remarks>
     public enum CipherBlockMode
     {
         /// <summary>
-        /// Electronic Codebook (ECB) mode. Each block is encrypted independently without feedback.
+        /// Electronic Codebook (ECB) mode. Each block is encrypted independently with no feedback.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// ECB is the simplest mode and allows parallel encryption/decryption of blocks. However, it is insecure for most applications
-        /// because identical plaintext blocks yield identical ciphertext blocks, revealing patterns in the data.
+        /// ECB is trivially parallelisable but leaks structural information: identical plaintext blocks always produce identical
+        /// ciphertext blocks. It is insecure for virtually all real-world messages and should only be used as a primitive inside a
+        /// higher-level construction.
         /// </para>
-        /// <para>This mode does not require an initialization vector (IV).</para>
+        /// <para>This mode does not require an initialisation vector.</para>
         /// </remarks>
         ECB,
 
@@ -59,14 +61,17 @@
         OFB,
 
         /// <summary>
-        /// Counter (CTR) mode. Uses a counter value that is encrypted to produce a keystream, which is XORed with plaintext or ciphertext.
+        /// Counter (CTR) mode. Encrypts successive counter values to produce a keystream that is XORed with plaintext or ciphertext.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// CTR transforms a block cipher into a stream cipher by encrypting a monotonically incremented counter (usually seeded with an
-        /// IV). It allows parallel encryption and decryption and is suitable for high-performance applications.
+        /// CTR transforms a block cipher into a parallelisable stream cipher with random access. It requires a nonce (or initial counter
+        /// value) equal in length to the cipher block size.
         /// </para>
-        /// <para>This mode requires a nonce or IV of block size length to initialize the counter.</para>
+        /// <para>
+        /// Reusing a (key, nonce) pair across messages is catastrophic: the XOR of two ciphertexts encrypted with the same keystream
+        /// recovers the XOR of the plaintexts. Callers must ensure that every counter value is used at most once per key.
+        /// </para>
         /// </remarks>
         CTR
     }

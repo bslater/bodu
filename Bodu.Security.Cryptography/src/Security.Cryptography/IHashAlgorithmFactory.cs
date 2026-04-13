@@ -7,9 +7,9 @@
     /// </summary>
     /// <typeparam name="T">The concrete type of <see cref="HashAlgorithm" /> this factory creates. Must inherit from <see cref="HashAlgorithm" />.</typeparam>
     /// <remarks>
-    /// This interface is used to decouple the creation and configuration of hash algorithm instances from the logic that consumes them. It
-    /// enables reusable, testable, and extensible one-shot hash operations via the <see cref="HashAlgorithmHelper" /> utility class. ///
-    /// Implementations can return newly constructed or pooled algorithm instances, depending on lifecycle management requirements.
+    /// This interface decouples the creation and configuration of hash algorithm instances from the logic that consumes them,
+    /// enabling reusable, testable, and extensible one-shot hash operations via the <see cref="HashAlgorithmHelper" /> utility class.
+    /// Implementations may return newly constructed or pooled algorithm instances depending on lifecycle management requirements.
     /// </remarks>
     public interface IHashAlgorithmFactory<out T>
         where T : System.Security.Cryptography.HashAlgorithm

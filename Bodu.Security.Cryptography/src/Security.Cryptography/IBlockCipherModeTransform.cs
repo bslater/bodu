@@ -3,29 +3,31 @@
     using System;
 
     /// <summary>
-    /// Provides a basic interface for applying a cipher mode transformation to a block cipher algorithm.
+    /// Defines a stateful block cipher mode transformation that applies a chaining strategy (such as ECB, CBC, CFB, OFB, or CTR) over a
+    /// block cipher primitive.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Cipher modes determine how blocks of plaintext or ciphertext are processed in sequence using a block cipher. Implementations of this
-    /// interface are responsible for managing the internal state required by the mode, such as initialization vectors (IVs) or feedback registers.
+    /// Implementations wrap an <see cref="IBlockCipher" /> and own any mode state required between calls, such as the evolving
+    /// initialisation vector, feedback register, or counter. Successive calls to <see cref="Transform" /> continue the stream from the
+    /// state left by the previous call.
     /// </para>
     /// <para>
-    /// This interface is intended to be used in conjunction with an <see cref="IBlockCipher" /> implementation. Padding of the input data,
-    /// if required, must be handled separately.
+    /// Padding is not handled by this interface. Callers must align input to the cipher block size using an
+    /// <see cref="IPaddingStrategy" /> before invoking <see cref="Transform" />.
     /// </para>
     /// </remarks>
     public interface IBlockCipherModeTransform
     {
         /// <summary>
-        /// Transforms the specified region of the input span and copies the result to the specified region of the output span.
+        /// Transforms <paramref name="input" /> under the mode's chaining strategy and writes the result to <paramref name="output" />.
         /// </summary>
-        /// <param name="input">The input data to transform. The length must be a multiple of the block size.</param>
-        /// <param name="output">The location to store the output data. Must be at least as long as the input span.</param>
+        /// <param name="input">The input data to transform. Its length must be a positive multiple of the underlying cipher block size.</param>
+        /// <param name="output">The destination span. Its length must be greater than or equal to the length of <paramref name="input" />.</param>
         /// <param name="encrypt"><see langword="true" /> to encrypt the input; <see langword="false" /> to decrypt.</param>
-        /// <returns>The number of bytes written to the output span.</returns>
+        /// <returns>The number of bytes written to <paramref name="output" />.</returns>
         /// <exception cref="ArgumentException">
-        /// Thrown when the input length is not a multiple of the block size or the output span is too small.
+        /// Thrown when <paramref name="input" />'s length is not a multiple of the block size or when <paramref name="output" /> is too small.
         /// </exception>
         int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt);
     }

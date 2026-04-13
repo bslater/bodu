@@ -13,50 +13,20 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography
 {
     /// <summary>
-    /// Computes the hash for the input data using the 64-bit variant of the <c>CityHash</c> algorithm, developed by Google. Produces an
-    /// 8-byte (64-bit) hash value. This class cannot be inherited.
+    /// Computes a 64-bit (8-byte) non-cryptographic hash using the <c>CityHash64</c> variant by Google. This class cannot be inherited.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <see cref="CityHash64" /> applies a series of multiply-rotate-XOR mixing steps that are optimised for both small and large inputs on
-    /// 64-bit platforms. The algorithm selects one of four internal paths depending on the length of the input:
-    /// </para>
-    /// <list type="bullet">
-    /// <item>
-    /// <description>0–16 bytes: A compact path mixing up to two 64-bit words and the input length.</description>
-    /// </item>
-    /// <item>
-    /// <description>17–32 bytes: A four-word path reading from the start and end of the input.</description>
-    /// </item>
-    /// <item>
-    /// <description>33–64 bytes: An eight-word path sampling the full span with byte-swap finalisation.</description>
-    /// </item>
-    /// <item>
-    /// <description>65 or more bytes: A full iterative path consuming 64-byte blocks using two pairs of seeded
-    /// 32-byte weak hash accumulators (<see cref="WeakHashLen32WithSeeds" />).</description>
-    /// </item>
-    /// </list>
-    /// <para>
-    /// Across all paths, output quality is ensured by the <c>HashLen16</c> finaliser, a Murmur-inspired 64-bit mixing function that applies
-    /// two rounds of multiply-shift-XOR to thoroughly distribute entropy.
-    /// </para>
-    /// <para>
-    /// <see cref="CityHash64" /> integrates with the standard <see cref="HashAlgorithm" /> pipeline and may be used directly with
-    /// <see cref="HashAlgorithm.ComputeHash(byte[])" /> or via <see cref="System.IO.Stream" />-based overloads. Because the algorithm is
-    /// inherently non-streaming, the full input is consumed and hashed in a single pass.
+    /// <see cref="CityHash64" /> selects one of four internal mixing paths depending on the input length: a compact path for 0–16 bytes,
+    /// a four-word path for 17–32 bytes, an eight-word path with byte-swap finalisation for 33–64 bytes, and a full iterative path that
+    /// consumes 64-byte blocks using two pairs of seeded weak hash accumulators for inputs of 65 bytes or more. All paths converge through
+    /// the internal <c>HashLen16</c> finaliser, which applies two rounds of multiply-shift-XOR to distribute entropy across all output bits.
     /// </para>
     /// <note type="important">
     /// This algorithm is <b>not</b> cryptographically secure and must <b>not</b> be used for password hashing, digital signatures, or any
     /// application requiring adversarial collision resistance.
     /// </note>
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    /// using var cityHash = new CityHash64();
-    /// byte[] hash = cityHash.ComputeHash(Encoding.UTF8.GetBytes("Hello, world!"));
-    /// Console.WriteLine(Convert.ToHexString(hash)); // Outputs the 16-character hex representation
-    /// </code>
-    /// </example>
     public sealed class CityHash64
         : CityHash<CityHash64>
     {

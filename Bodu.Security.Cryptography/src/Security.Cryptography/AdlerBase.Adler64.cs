@@ -9,22 +9,13 @@ namespace Bodu.Security.Cryptography
     using System;
 
     /// <summary>
-    /// Computes the hash for the input data using the <c>Adler-64</c> checksum algorithm. This variant calculates two running sums over the
-    /// input bytes modulo 4294967291 and combines them into a 64-bit result. This class cannot be inherited.
+    /// Computes a 64-bit Adler-style checksum using the prime modulus 4294967291. This class cannot be inherited.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Adler-64 is a non-cryptographic checksum algorithm that extends the principles of Adler-32 into a 64-bit domain. It maintains two
-    /// 64-bit running sums (A and B), which are updated for each byte of input and combined into a final 64-bit checksum as <c><![CDATA[(B
-    /// << 32) | A]]></c>.
-    /// </para>
-    /// <para>
-    /// This implementation uses the prime number 4294967291 (the largest 32-bit unsigned prime) as the modulus, reducing the likelihood of
-    /// overflow and improving checksum stability over large inputs compared to Adler-32.
-    /// </para>
-    /// <para>
-    /// This class derives from <see cref="Adler64Base" />, which provides the reusable logic for Adler-style checksum accumulation and
-    /// modular reduction.
+    /// Adler-64 extends the Adler-32 construction into the 64-bit domain. It maintains two 64-bit running sums (A and B) and combines them
+    /// as <c><![CDATA[(B << 32) | A]]></c>. The modulus 4294967291 (the largest prime less than 2<sup>32</sup>) reduces overflow pressure
+    /// and improves checksum stability over large inputs compared to Adler-32.
     /// </para>
     /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for password hashing,
     /// digital signatures, or integrity validation in security-sensitive applications.</note>

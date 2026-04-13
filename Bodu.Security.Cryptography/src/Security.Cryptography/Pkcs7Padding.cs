@@ -4,23 +4,22 @@
     using System.Security.Cryptography;
 
     /// <summary>
-    /// Represents a padding strategy that performs no padding.
+    /// Represents a pass-through padding strategy that adds and removes no bytes, requiring the caller to provide data whose length is
+    /// already a multiple of the cipher block size.
     /// </summary>
     /// <remarks>
-    /// <para>
-    /// The input must already be aligned to the block size. No padding bytes are added or removed. This strategy is suitable when data is
-    /// known to already match the block size requirements.
-    /// </para>
+    /// Use this strategy only when the plaintext length is guaranteed to be block-aligned, for example when encrypting fixed-size records
+    /// or when another framing layer already handles length information.
     /// </remarks>
     public sealed class NoPadding : IPaddingStrategy
     {
         /// <summary>
-        /// Returns the original input unchanged, validating that it is already a multiple of the block size.
+        /// Returns a copy of <paramref name="input" /> after verifying that its length is a multiple of <paramref name="blockSize" />.
         /// </summary>
-        /// <param name="input">The input data to pad.</param>
+        /// <param name="input">The input data to validate and return.</param>
         /// <param name="blockSize">The required block size in bytes.</param>
-        /// <returns>The original input as a byte array if it is properly aligned.</returns>
-        /// <exception cref="ArgumentException">Thrown if the input length is not a multiple of the block size.</exception>
+        /// <returns>A new byte array containing the same bytes as <paramref name="input" />.</returns>
+        /// <exception cref="ArgumentException">Thrown if the length of <paramref name="input" /> is not a multiple of <paramref name="blockSize" />.</exception>
         public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
         {
             if (input.Length % blockSize != 0)
@@ -29,22 +28,21 @@
         }
 
         /// <summary>
-        /// Returns the input unchanged. No padding bytes are removed.
+        /// Returns a copy of <paramref name="input" /> unchanged, since no padding is ever added by this strategy.
         /// </summary>
-        /// <param name="input">The input data to unpad.</param>
-        /// <param name="blockSize">The block size in bytes (not used).</param>
-        /// <returns>The input data with no modification.</returns>
+        /// <param name="input">The input data to return.</param>
+        /// <param name="blockSize">The block size in bytes. This value is ignored.</param>
+        /// <returns>A new byte array containing the same bytes as <paramref name="input" />.</returns>
         public byte[] Unpad(ReadOnlySpan<byte> input, int blockSize) => input.ToArray();
     }
 
     /// <summary>
-    /// Represents the PKCS#7 padding scheme.
+    /// Implements the PKCS#7 padding scheme (RFC 5652), which appends <c>N</c> bytes of value <c>N</c> to align the input to the cipher
+    /// block size.
     /// </summary>
     /// <remarks>
-    /// <para>
-    /// PKCS#7 padding ensures that the length of the final block is equal to the cipher's block size. It appends N bytes of value N, where
-    /// N is the number of padding bytes needed.
-    /// </para>
+    /// A full block of padding is always added when the input length is already a multiple of the block size, so that <see cref="Unpad" />
+    /// can unambiguously recover the original plaintext length. Valid values of <c>N</c> lie in the range <c>1..blockSize</c>.
     /// </remarks>
     public sealed class Pkcs7Padding : IPaddingStrategy
     {
@@ -101,13 +99,11 @@
     }
 
     /// <summary>
-    /// Represents a zero-byte padding scheme.
+    /// Implements zero-byte padding, appending <c>0x00</c> bytes until the input aligns with the cipher block size.
     /// </summary>
     /// <remarks>
-    /// <para>
-    /// This padding method appends zero bytes ( <c>0x00</c>) to the input until it reaches the required block size. Because it is not
-    /// self-describing, this method should only be used when the length of the original data is known externally.
-    /// </para>
+    /// Zero padding is not self-describing and cannot be unambiguously removed when the plaintext itself may end in zero bytes. Use this
+    /// strategy only when the original plaintext length is recorded out-of-band or the data is known never to contain trailing zeros.
     /// </remarks>
     public sealed class ZeroPadding : IPaddingStrategy
     {

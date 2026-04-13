@@ -3,19 +3,13 @@
     using System;
 
     /// <summary>
-    /// Performs encryption and decryption using Cipher Feedback (CFB) mode for a given block cipher.
+    /// Applies the Cipher Feedback (CFB) mode transformation to an underlying <see cref="IBlockCipher" />, turning it into a
+    /// self-synchronising stream cipher.
     /// </summary>
     /// <remarks>
-    /// CFB mode turns a block cipher into a self-synchronizing stream cipher. It uses the encryption function of the block cipher in both
-    /// encryption and decryption. For each block:
-    /// <list type="bullet">
-    /// <item>
-    /// <description>In encryption: <c>Cᵢ = Pᵢ ⊕ E(IVᵢ)</c>, and then <c>IVᵢ₊₁ = Cᵢ</c></description>
-    /// </item>
-    /// <item>
-    /// <description>In decryption: <c>Pᵢ = Cᵢ ⊕ E(IVᵢ)</c>, and then <c>IVᵢ₊₁ = Cᵢ</c></description>
-    /// </item>
-    /// </list>
+    /// Both directions use the cipher's encryption primitive: encryption computes <c>Cᵢ = Pᵢ ⊕ E(IVᵢ)</c> and decryption
+    /// <c>Pᵢ = Cᵢ ⊕ E(IVᵢ)</c>, with <c>IV₀</c> supplied by the caller and <c>IVᵢ₊₁ = Cᵢ</c> for subsequent blocks. The initialisation
+    /// vector must equal the cipher block size in length and should be unique and unpredictable per message under a given key.
     /// </remarks>
     public sealed class CfbModeTransform : IBlockCipherModeTransform
     {

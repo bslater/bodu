@@ -89,16 +89,7 @@ namespace Bodu.Security.Cryptography
         /// </remarks>
         public override bool CanReuseTransform => false;
 
-        /// <summary>
-        /// Gets a value indicating whether this transform supports processing multiple blocks of data in a single operation.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if multiple input blocks can be transformed in sequence without intermediate finalization; otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Most hash algorithms and block ciphers support multi-block transformations for streaming input. If <see langword="false" />, the
-        /// transform must be invoked one block at a time.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanTransformMultipleBlocks => true;
 
         /// <inheritdoc />
@@ -170,10 +161,6 @@ namespace Bodu.Security.Cryptography
             this.disposed = true;
             base.Dispose(disposing);
         }
-
-        /// <summary>
-        /// Initializes internal key parameters from the <see cref="Key" /> value.
-        /// </summary>
 
         /// <inheritdoc />
         protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength) => throw new NotImplementedException();

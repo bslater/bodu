@@ -144,8 +144,8 @@ namespace Bodu.Security.Cryptography
         /// <param name="cancellationToken">The optional cancellation token for async operations.</param>
         /// <returns>A task representing the completion of the data append operation.</returns>
         /// <remarks>
-        /// This method is used by both <see cref="HashData(Stream)" /> and <see cref="HashDataAsync(Stream, CancellationToken)" /> to
-        /// centralize the stream-to-hash logic.
+        /// This method is used by both <see cref="HashData{T}(IHashAlgorithmFactory{T}, Stream)" /> and
+        /// <see cref="HashDataAsync{T}(IHashAlgorithmFactory{T}, Stream, CancellationToken)" /> to centralise the stream-to-hash logic.
         /// </remarks>
         private static async ValueTask AppendDataFromStreamInternal(HashAlgorithm algorithm, Stream stream, bool isAsync, CancellationToken cancellationToken)
         {
