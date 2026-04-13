@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Buffers;
 using System.IO;
 using System.Security.Cryptography;
 
@@ -124,21 +125,49 @@ namespace Bodu.Security.Cryptography.Extensions
             ThrowHelper.ThrowIfNull(targetStream);
             ThrowHelper.ThrowIfLessThanOrEqual(bufferSize, 0);
 
-            byte[] buffer = new byte[bufferSize];
-            int totalBytesRead = 0;
-
-            // leaveOpen: true because targetStream is caller-owned and must not be disposed here.
-            using CryptoStream cryptoStream = new CryptoStream(targetStream, transform, CryptoStreamMode.Write, leaveOpen: true);
-            int bytesRead;
-
-            while ((bytesRead = sourceStream.Read(buffer, 0, buffer.Length)) > 0)
+            // Use a pooled buffer cleared on return so plaintext read from sourceStream cannot leak
+            // to a subsequent pool consumer.
+            byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
+            try
             {
-                cryptoStream.Write(buffer, 0, bytesRead);
-                totalBytesRead += bytesRead;
-            }
+                // leaveOpen: true because targetStream is caller-owned and must not be disposed here.
+                CryptoStream cryptoStream = new CryptoStream(targetStream, transform, CryptoStreamMode.Write, leaveOpen: true);
+                bool completed = false;
+                try
+                {
+                    int totalBytesRead = 0;
+                    int bytesRead;
 
-            cryptoStream.FlushFinalBlock();
-            return totalBytesRead;
+                    while ((bytesRead = sourceStream.Read(buffer, 0, bufferSize)) > 0)
+                    {
+                        cryptoStream.Write(buffer, 0, bytesRead);
+                        totalBytesRead += bytesRead;
+                    }
+
+                    cryptoStream.FlushFinalBlock();
+                    completed = true;
+                    return totalBytesRead;
+                }
+                finally
+                {
+                    if (completed)
+                    {
+                        cryptoStream.Dispose();
+                    }
+                    else
+                    {
+                        // The primary flow failed before FlushFinalBlock completed, so Dispose will
+                        // attempt to finalise an incomplete transform and raise a CryptographicException
+                        // of its own. Swallow that secondary exception so the original cause propagates.
+                        try { cryptoStream.Dispose(); }
+                        catch { }
+                    }
+                }
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(buffer, clearArray: true);
+            }
         }
 
         /// <summary>
