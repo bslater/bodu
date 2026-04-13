@@ -185,12 +185,11 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Releases the unmanaged resources used by the algorithm and clears the key from memory.
+        /// Releases resources used by the algorithm and clears the internal state variables.
         /// </summary>
         /// <param name="disposing">
         /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release only unmanaged resources.
         /// </param>
-        /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
         protected override void Dispose(bool disposing)
         {
             if (this.disposed) return;
@@ -242,10 +241,9 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Finalizes the hash computation and produces the output hash value.
+        /// Finalises the hash computation and returns the digest, truncated to <see cref="HashSize" /> / 8 bytes where applicable.
         /// </summary>
-        /// <returns>A byte array containing the final hash value (8 or 16 bytes).</returns>
-        /// <remarks>Combines all partial input and applies the finalization round logic based on the configured output size.</remarks>
+        /// <returns>A byte array of 16, 20, or 24 bytes corresponding to the configured hash size (128, 160, or 192 bits).</returns>
         protected override byte[] ProcessFinalBlock()
         {
             Span<byte> output = stackalloc byte[MaxOutputBits / 8];

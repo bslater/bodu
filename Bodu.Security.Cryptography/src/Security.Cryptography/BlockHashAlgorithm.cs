@@ -6,29 +6,22 @@
     using Bodu.Security.Cryptography;
 
     /// <summary>
-    /// Computes the hash for the input data using a block-oriented hash algorithm. This implementation processes input in fixed-size chunks
-    /// and handles residual buffering, alignment, and final block padding.
+    /// Base class for hash algorithms that consume input in fixed-size blocks. Handles residual buffering, block alignment, total-length
+    /// tracking, and final block padding on behalf of derived implementations.
     /// </summary>
+    /// <typeparam name="T">The concrete hash algorithm derived from this class. Must expose a public parameterless constructor.</typeparam>
     /// <remarks>
     /// <para>
-    /// <see cref="BlockHashAlgorithm{T}" /> is designed for hash algorithms that consume input data in uniformly sized blocks. It
-    /// automatically handles residual data between calls, ensuring only full blocks are passed to the underlying algorithm for processing.
+    /// Input data is accumulated into an internal buffer until a complete block of <see cref="BlockSizeBytes" /> is available, at which
+    /// point it is passed to <see cref="ProcessBlock" />. Any residual bytes left over at <see cref="HashAlgorithm.HashFinal" /> are
+    /// padded via <see cref="PadBlock" /> before a final call to <see cref="ProcessFinalBlock" /> produces the digest.
     /// </para>
-    /// <para>
-    /// Input data is accumulated into an internal buffer until a complete block of <see cref="BlockSizeBytes" /> is available. Once filled,
-    /// the buffer is passed to the abstract <see cref="ProcessBlock" /> method for algorithm-specific transformation. Any remaining bytes
-    /// are preserved across calls and finalized using <see cref="PadBlock" /> during <see cref="HashAlgorithm.HashFinal" />.
-    /// </para>
-    /// <para>Implementing classes must override the following abstract methods:</para>
+    /// <para>Derived classes must implement the following:</para>
     /// <list type="bullet">
-    /// <item><see cref="ProcessBlock" /> – Processes a single complete block of input data.</item>
-    /// <item><see cref="PadBlock" /> – Pads the final input segment and encodes total message length.</item>
-    /// <item><see cref="ProcessFinalBlock" /> – Finalizes the hash computation and returns the final hash value.</item>
+    /// <item><description><see cref="ProcessBlock" /> processes a single complete block of input data.</description></item>
+    /// <item><description><see cref="PadBlock" /> pads the final input segment and encodes the total message length.</description></item>
+    /// <item><description><see cref="ProcessFinalBlock" /> finalises the hash computation and returns the resulting digest.</description></item>
     /// </list>
-    /// <para>
-    /// This class provides compatibility with both span-based and byte-array-based input pipelines, allowing integration with streaming
-    /// data, cryptographic transforms, and legacy interfaces.
-    /// </para>
     /// </remarks>
     public abstract class BlockHashAlgorithm<T>
         : HashAlgorithm
@@ -193,37 +186,13 @@
         }
 
         /// <summary>
-        /// Finalizes the hash computation and returns the resulting hash value. This method reflects all input previously processed via
-        /// <see cref="HashAlgorithm.HashCore(byte[], int, int)" /> or <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" /> and
-        /// produces a final, stable hash output.
+        /// Finalises the hash computation by padding and processing any residual data, and returns the resulting digest.
         /// </summary>
-        /// <returns>
-        /// A byte array representing the final computed hash value. The result is encoded in the platform’s native byte order unless
-        /// explicitly converted to big-endian or little-endian as required by the algorithm.
-        /// </returns>
-        /// <remarks>
-        /// <para>
-        /// This method completes the internal state of the hashing algorithm and serializes the final hash value into a
-        /// platform-independent format. It is invoked automatically by <see cref="HashAlgorithm.ComputeHash(byte[])" /> and related methods
-        /// once all data has been processed.
-        /// </para>
-        /// <para>
-        /// After this method returns, the internal state is considered finalized, and the computed hash value is stable and ready for use.
-        /// </para>
-        /// <para>
-        /// In .NET 6.0 and later, the algorithm is automatically reset by invoking <see cref="HashAlgorithm.Initialize" />, allowing the
-        /// instance to be reused immediately.
-        /// </para>
-        /// <para>
-        /// In earlier versions of .NET, the internal state is marked as finalized, and any subsequent calls to
-        /// <see cref="HashAlgorithm.HashCore(byte[], int, int)" />, <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" />, or
-        /// <see cref="HashAlgorithm.HashFinal" /> will throw a <see cref="CryptographicUnexpectedOperationException" />. To compute another
-        /// hash, you must explicitly call <see cref="HashAlgorithm.Initialize" /> to reset the algorithm.
-        /// </para>
-        /// <para>
-        /// Implementations should ensure all residual or pending data is processed and integrated into the final hash value before returning.
-        /// </para>
-        /// </remarks>
+        /// <returns>A byte array containing the final computed hash value.</returns>
+        /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
+        /// <exception cref="CryptographicUnexpectedOperationException">
+        /// On target frameworks prior to .NET 6, the hash computation has already been finalised.
+        /// </exception>
         protected override byte[] HashFinal()
         {
             this.ThrowIfDisposed();

@@ -11,33 +11,15 @@ namespace Bodu.Security.Cryptography
     using System.Security.Cryptography;
 
     /// <summary>
-    /// Computes the hash for the input data using the <c>Bernstein</c> (djb2) hash algorithm. This variant performs a non-cryptographic
-    /// 32-bit hash using iterative multiplication and addition for fast, well-distributed string hashing. This class cannot be inherited.
+    /// Computes a 32-bit non-cryptographic hash using Daniel J. Bernstein's djb2 algorithm, optionally using the XOR-modified variant. This
+    /// class cannot be inherited.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The <see cref="Bernstein" /> class implements the non-cryptographic hash function known as djb2, created by Daniel J. Bernstein. It
-    /// is widely used in hash tables, data indexing, and similar scenarios where speed and simplicity are preferred over cryptographic guarantees.
+    /// The default algorithm computes <c>hash = (hash * 33) + c</c> for each input byte <c>c</c>. Setting
+    /// <see cref="UseModifiedAlgorithm" /> to <see langword="true" /> selects the XOR-modified form, <c>hash = (hash * 33) ^ c</c>, which
+    /// may give better distribution in some hash-table workloads.
     /// </para>
-    /// <para>
-    /// This implementation includes an optional variant of the algorithm that uses an XOR instead of addition when combining characters
-    /// into the hash. You can control this behavior with the <see cref="UseModifiedAlgorithm" /> property:
-    /// </para>
-    /// <list type="bullet">
-    /// <item>
-    /// <description>
-    /// Set <see cref="UseModifiedAlgorithm" /> to <see langword="false" /> (default) to use the standard djb2 logic: <c>hash = (hash * 33)
-    /// + c</c>.
-    /// </description>
-    /// </item>
-    /// <item>
-    /// <description>
-    /// Set <see cref="UseModifiedAlgorithm" /> to <see langword="true" /> to use the XOR-modified variant: <c>hash = (hash * 33) ^ c</c>.
-    /// This version may offer improved distribution properties in certain hash permutationTable implementations.
-    /// </description>
-    /// </item>
-    /// </list>
-    /// <para>Both versions produce a 32-bit integer hash from the input stream of bytes.</para>
     /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for password hashing,
     /// digital signatures, or integrity validation in security-sensitive applications.</note>
     /// </remarks>
@@ -70,29 +52,10 @@ namespace Bodu.Security.Cryptography
             this.useModified = false;
         }
 
-        /// <summary>
-        /// Gets a value indicating whether this transform instance can be reused after a hash operation is completed.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if the transform supports multiple hash computations via <see cref="HashAlgorithm.Initialize" />;
-        /// otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Reusable transforms allow the internal state to be reset for subsequent operations using the same instance. One-shot algorithms
-        /// that clear sensitive key material after finalization typically return <see langword="false" />.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanReuseTransform => true;
 
-        /// <summary>
-        /// Gets a value indicating whether this transform supports processing multiple blocks of data in a single operation.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if multiple input blocks can be transformed in sequence without intermediate finalization; otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Most hash algorithms and block ciphers support multi-block transformations for streaming input. If <see langword="false" />, the
-        /// transform must be invoked one block at a time.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanTransformMultipleBlocks => true;
 
         /// <summary>
@@ -242,34 +205,9 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Finalizes the hash computation and returns the resulting 32-bit <see cref="Bernstein" /> hash in big-endian format. This method
-        /// reflects all input previously processed via <see cref="HashAlgorithm.HashCore(byte[], int, int)" /> or
-        /// <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" /> and produces a final, stable hash output.
+        /// Finalises the Bernstein hash computation and returns the result as a 4-byte big-endian array.
         /// </summary>
-        /// <returns>
-        /// A 4-byte array representing the computed <c>Bernstein</c> hash value. The result is encoded in <b>big-endian</b> byte order.
-        /// </returns>
-        /// <remarks>
-        /// <para>
-        /// This method completes the internal state of the hashing algorithm and serializes the final hash value into a
-        /// platform-independent format. It is invoked automatically by <see cref="HashAlgorithm.ComputeHash(byte[])" /> and related methods
-        /// once all data has been processed.
-        /// </para>
-        /// <para>After this method returns, the internal state is considered finalized and the computed hash is stable.</para>
-        /// <para>
-        /// In .NET 6.0 and later, the algorithm is automatically reset by invoking <see cref="HashAlgorithm.Initialize" />, allowing the
-        /// instance to be reused immediately.
-        /// </para>
-        /// <para>
-        /// In earlier versions of .NET, the internal state is marked as finalized, and any subsequent calls to
-        /// <see cref="HashAlgorithm.HashCore(byte[], int, int)" />, <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" />, or
-        /// <see cref="HashAlgorithm.HashFinal" /> will throw a <see cref="CryptographicUnexpectedOperationException" />. To compute another
-        /// hash, you must explicitly call <see cref="HashAlgorithm.Initialize" /> to reset the algorithm.
-        /// </para>
-        /// <para>
-        /// Implementations should ensure all residual or pending data is processed and integrated into the final hash value before returning.
-        /// </para>
-        /// </remarks>
+        /// <returns>A 4-byte array containing the 32-bit hash value in <b>big-endian</b> byte order.</returns>
         protected override byte[] HashFinal()
         {
             this.ThrowIfDisposed();
