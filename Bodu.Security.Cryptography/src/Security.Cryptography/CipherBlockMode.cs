@@ -29,9 +29,9 @@
         /// <remarks>
         /// <para>
         /// CBC provides confidentiality by chaining ciphertext blocks, so identical plaintext blocks produce different ciphertexts
-        /// (assuming different IVs). The first block uses an initialization vector (IV) instead of a previous ciphertext block.
+        /// (assuming different IVs). The first block uses an initialisation vector (IV) instead of a previous ciphertext block.
         /// </para>
-        /// <para>This mode requires an IV of block size length.</para>
+        /// <para>This mode requires an IV equal in length to the cipher block size, which should be unpredictable for each message.</para>
         /// </remarks>
         CBC,
 
@@ -41,10 +41,11 @@
         /// </summary>
         /// <remarks>
         /// <para>
-        /// CFB turns a block cipher into a self-synchronizing stream cipher. It supports partial block encryption and can recover from bit
-        /// errors after a few blocks. The IV is used to seed the encryption for the first block.
+        /// CFB turns a block cipher into a self-synchronising stream cipher. It can recover from bit errors after a few blocks and uses
+        /// the cipher's encryption primitive for both encryption and decryption. The IV is used to seed the feedback register for the
+        /// first block.
         /// </para>
-        /// <para>This mode requires an IV of block size length.</para>
+        /// <para>This mode requires an IV equal in length to the cipher block size.</para>
         /// </remarks>
         CFB,
 
@@ -53,10 +54,10 @@
         /// </summary>
         /// <remarks>
         /// <para>
-        /// OFB is similar to CFB but uses the previous keystream block rather than ciphertext, making it immune to bit-flip propagation. It
-        /// operates like a synchronous stream cipher. The IV seeds the initial encryption.
+        /// OFB is similar to CFB but feeds the previous keystream block back into the cipher rather than the ciphertext, making it
+        /// immune to bit-flip propagation. It operates like a synchronous stream cipher. The IV seeds the initial feedback register.
         /// </para>
-        /// <para>This mode requires an IV of block size length.</para>
+        /// <para>This mode requires an IV equal in length to the cipher block size, which must never be reused under the same key.</para>
         /// </remarks>
         OFB,
 

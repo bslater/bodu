@@ -11,8 +11,7 @@ namespace Bodu.Security.Cryptography
     using System.Xml.Linq;
 
     /// <summary>
-    /// Represents the configuration settings for a CRC algorithm, including parameters like polynomial, initial value, reflection settings,
-    /// and more.
+    /// Represents an immutable set of parameters (polynomial, width, reflection, initial value, final XOR) that describe a specific CRC algorithm.
     /// </summary>
     [Serializable]
     public sealed partial class CrcStandard
@@ -39,8 +38,10 @@ namespace Bodu.Security.Cryptography
         /// <param name="reflectIn">Indicates whether to reflect the input during the CRC calculation.</param>
         /// <param name="reflectOut">Indicates whether to reflect the output during the CRC calculation.</param>
         /// <param name="xOrOut">The value to XOR the final output with.</param>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="name" /><see langword="null" /> or empty.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="size" /> is outside the valid range.</exception>
+        /// <exception cref="ArgumentException"><paramref name="name" /> is <see langword="null" /> or empty.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="size" /> is less than <see cref="MinSize" /> or greater than <see cref="MaxSize" />.
+        /// </exception>
         public CrcStandard(string name, int size, ulong polynomial, ulong initialValue, bool reflectIn, bool reflectOut, ulong xOrOut)
         {
             ThrowHelper.ThrowIfNullOrEmpty(name);

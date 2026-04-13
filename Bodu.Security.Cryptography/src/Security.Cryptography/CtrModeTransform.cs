@@ -20,13 +20,13 @@
         private readonly byte[] counter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CtrModeTransform" /> class with the specified cipher and initial counter.
+        /// Initialises a new instance of the <see cref="CtrModeTransform" /> class with the specified cipher and initial counter block.
         /// </summary>
         /// <param name="cipher">The block cipher used to generate the keystream.</param>
-        /// <param name="initialCounter">The initial counter value. Must match the cipher's block size in length.</param>
+        /// <param name="initialCounter">The initial counter block. Its length must equal the cipher's block size. A defensive copy is taken.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher" /> or <paramref name="initialCounter" /> is <see langword="null" />.</exception>
         /// <exception cref="ArgumentException">
-        /// Thrown if <paramref name="initialCounter" /> length does not match the cipher's block size.
+        /// Thrown if the length of <paramref name="initialCounter" /> does not match the cipher's block size.
         /// </exception>
         public CtrModeTransform(IBlockCipher cipher, byte[] initialCounter)
         {
@@ -36,14 +36,7 @@
             this.counter = (byte[])initialCounter.Clone();
         }
 
-        /// <summary>
-        /// Transforms the input buffer using CTR mode. Encryption and decryption are identical in CTR mode.
-        /// </summary>
-        /// <param name="input">The input data to transform. Must be a multiple of the cipher's block size.</param>
-        /// <param name="output">The buffer to write the transformed result. Must be at least as long as <paramref name="input" />.</param>
-        /// <param name="encrypt"><c>true</c> for encryption, <c>false</c> for decryption (same operation).</param>
-        /// <returns>The number of bytes written to <paramref name="output" />.</returns>
-        /// <exception cref="ArgumentException">Thrown if the input is not a multiple of the block size, or the output is too small.</exception>
+        /// <inheritdoc />
         public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
         {
             int blockSize = this.cipher.BlockSize;

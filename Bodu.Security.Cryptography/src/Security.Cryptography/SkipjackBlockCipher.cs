@@ -10,17 +10,17 @@ namespace Bodu.Security.Cryptography
     using System.Runtime.CompilerServices;
 
     /// <summary>
-    /// Fully managed implementation of the <c>Skipjack</c> block cipher that is binary-compatible with the key schedule used by Bouncy
-    /// Castle, OpenSSL, and the original NSA reference implementation.
+    /// Provides a managed implementation of the <c>Skipjack</c> block cipher engine, operating on 64-bit blocks with an 80-bit key
+    /// over 32 rounds. The key schedule is binary-compatible with Bouncy Castle, OpenSSL, and the original NSA reference implementation.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Skipjack is a legacy symmetric block cipher that encrypts 64-bit blocks using an 80-bit key over 32 rounds. The rounds alternate
-    /// between two nonlinear rules known as <em>Rule A</em> and <em>Rule B</em>. This implementation matches the behavior of OpenSSL and
-    /// Bouncy Castle in key scheduling: the round key advances one byte per round, and each round uses a constant equal to <c>k + 1</c>.
+    /// Skipjack is a legacy symmetric block cipher whose 32 rounds alternate between two nonlinear rules known as <em>Rule A</em> and
+    /// <em>Rule B</em>. In this implementation the round-key byte pointer advances by one per round and each round uses a constant
+    /// equal to <c>k + 1</c>.
     /// </para>
     /// <para>
-    /// This cipher is included for compatibility or historical purposes only. Due to its small key and block sizes, Skipjack is not
+    /// This cipher is included for compatibility and historical purposes only. Due to its small key and block sizes, Skipjack is not
     /// considered secure for use in new systems or applications.
     /// </para>
     /// <list type="bullet">

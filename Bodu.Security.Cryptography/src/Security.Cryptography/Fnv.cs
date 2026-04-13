@@ -12,29 +12,17 @@ namespace Bodu.Security.Cryptography
     using System.Security.Cryptography;
 
     /// <summary>
-    /// Base class for computing hashes using the <c>FNV</c> (Fowler-Noll-Vo) hash algorithm family (FNV-1, FNV-1a). This class cannot be
-    /// inherited directly.
+    /// Provides a base class for the Fowler-Noll-Vo (FNV) hash family, supporting both the FNV-1 and FNV-1a variants at 32-bit and 64-bit widths.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The Fowler�Noll�Vo (FNV) family of hash functions is designed to efficiently compute non-cryptographic hash values over input data
-    /// using simple bitwise and multiplicative operations. The algorithm maintains a running hash value initialized with a predefined
-    /// <c>offset basis</c>, and processes each byte of input by combining multiplication with a large <c>FNV prime</c> and XOR operations.
+    /// FNV maintains a running hash initialised from an <c>offset basis</c> and processes each input byte by combining multiplication with a
+    /// large <c>FNV prime</c> and a bitwise XOR. Derived types select the width and variant:
     /// </para>
-    /// <para>
-    /// This implementation serves as the foundation for specific hash widths and variants of the FNV hash family. Variants differ by output
-    /// size, with 32-bit and 64-bit being common, and by the order of operations used to process each byte:
     /// <list type="bullet">
-    /// <item>
-    /// <term>FNV-1</term>
-    /// <description>Performs multiplication followed by XOR</description>
-    /// </item>
-    /// <item>
-    /// <term>FNV-1a</term>
-    /// <description>Performs XOR followed by multiplication</description>
-    /// </item>
+    /// <item><term>FNV-1</term><description>multiplication followed by XOR</description></item>
+    /// <item><term>FNV-1a</term><description>XOR followed by multiplication</description></item>
     /// </list>
-    /// </para>
     /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for password hashing,
     /// digital signatures, or integrity validation in security-sensitive applications.</note>
     /// </remarks>
@@ -93,45 +81,15 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Gets the fully qualified algorithm name, including the variant and hash output size.
+        /// Gets the algorithm name in the form <c>FNV-{variant}-{bits}</c>, e.g. <c>FNV-1-32</c> or <c>FNV-1a-64</c>.
         /// </summary>
-        /// <value>
-        /// A string representation in the format <c>FNV-1-32</c> or <c>FNV-1a-64</c>, where:
-        /// <list type="bullet">
-        /// <item>
-        /// <description><c>1</c> or <c>1a</c> indicates the FNV variant used (FNV-1 or FNV-1a).</description>
-        /// </item>
-        /// <item>
-        /// <description>The trailing number indicates the hash output size in bits (e.g., 32, 64).</description>
-        /// </item>
-        /// </list>
-        /// </value>
         public string AlgorithmName
             => $"FNV-{(this.useFnv1a ? "1a" : "1")}-{this.HashSizeValue}";
 
-        /// <summary>
-        /// Gets a value indicating whether this transform instance can be reused after a hash operation is completed.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if the transform supports multiple hash computations via <see cref="HashAlgorithm.Initialize" />;
-        /// otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Reusable transforms allow the internal state to be reset for subsequent operations using the same instance. One-shot algorithms
-        /// that clear sensitive key material after finalization typically return <see langword="false" />.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanReuseTransform => true;
 
-        /// <summary>
-        /// Gets a value indicating whether this transform supports processing multiple blocks of data in a single operation.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if multiple input blocks can be transformed in sequence without intermediate finalization; otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Most hash algorithms and block ciphers support multi-block transformations for streaming input. If <see langword="false" />, the
-        /// transform must be invoked one block at a time.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanTransformMultipleBlocks => true;
 
         /// <inheritdoc />
@@ -224,34 +182,11 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Finalizes the hash computation and returns the resulting 64-bit <see cref="Fnv" /> hash in big-endian format. This method
-        /// reflects all input previously processed via <see cref="HashAlgorithm.HashCore(byte[], int, int)" /> or
-        /// <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" /> and produces a final, stable hash output.
+        /// Finalises the FNV hash computation and returns the result as a big-endian byte array.
         /// </summary>
         /// <returns>
-        /// A 8-byte array representing the computed <c>Bernstein</c> hash value. The result is encoded in <b>big-endian</b> byte order.
+        /// A byte array containing the computed FNV hash (4 bytes for a 32-bit hash, 8 bytes for a 64-bit hash) in <b>big-endian</b> byte order.
         /// </returns>
-        /// <remarks>
-        /// <para>
-        /// This method completes the internal state of the hashing algorithm and serializes the final hash value into a
-        /// platform-independent format. It is invoked automatically by <see cref="HashAlgorithm.ComputeHash(byte[])" /> and related methods
-        /// once all data has been processed.
-        /// </para>
-        /// <para>After this method returns, the internal state is considered finalized and the computed hash is stable.</para>
-        /// <para>
-        /// In .NET 6.0 and later, the algorithm is automatically reset by invoking <see cref="HashAlgorithm.Initialize" />, allowing the
-        /// instance to be reused immediately.
-        /// </para>
-        /// <para>
-        /// In earlier versions of .NET, the internal state is marked as finalized, and any subsequent calls to
-        /// <see cref="HashAlgorithm.HashCore(byte[], int, int)" />, <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" />, or
-        /// <see cref="HashAlgorithm.HashFinal" /> will throw a <see cref="CryptographicUnexpectedOperationException" />. To compute another
-        /// hash, you must explicitly call <see cref="HashAlgorithm.Initialize" /> to reset the algorithm.
-        /// </para>
-        /// <para>
-        /// Implementations should ensure all residual or pending data is processed and integrated into the final hash value before returning.
-        /// </para>
-        /// </remarks>
         protected override byte[] HashFinal()
         {
             this.ThrowIfDisposed();

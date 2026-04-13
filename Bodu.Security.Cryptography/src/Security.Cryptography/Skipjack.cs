@@ -11,8 +11,8 @@ namespace Bodu.Security.Cryptography
 
     /// <summary>
     /// Provides a managed implementation of the Skipjack symmetric block cipher, exposing the <see cref="SkipjackBlockCipher" /> engine
-    /// through the standard <see cref="SymmetricAlgorithm" /> interface. Skipjack uses a fixed 80-bit key and a 64-bit block and is
-    /// supported here for legacy and research scenarios only.
+    /// through the standard <see cref="SymmetricAlgorithm" /> framework. Skipjack uses a fixed 80-bit key and 64-bit block and is
+    /// supported here for legacy and research scenarios only. This class cannot be inherited.
     /// </summary>
     /// <remarks>
     /// Because of its 80-bit key and 64-bit block, Skipjack offers no modern security margin and must not be used to protect sensitive

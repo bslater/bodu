@@ -3,25 +3,16 @@
     using System;
 
     /// <summary>
-    /// Computes the hash for the input data using the <c>Snefru-128</c> hash algorithm. This variant applies a symmetric, non-keyed block
-    /// transformation using a fixed sequence of S-box and bit rotation rounds. This class cannot be inherited.
+    /// Computes a 128-bit (16-byte) hash using the <c>Snefru</c> hash algorithm by Ralph Merkle. This class cannot be inherited.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <see cref="Snefru128" /> computes a 128-bit (16-byte) hash using 8 rounds of transformation over a 512-bit working buffer. The
-    /// algorithm uses a 4-word (32-bit unsigned integer) internal state and processes input data in fixed 64-byte blocks.
+    /// <see cref="Snefru128" /> maintains a 4-word internal state and absorbs input in 48-byte blocks into a 512-bit working buffer,
+    /// applying 8 rounds of S-box substitution and word rotation per block. On finalisation the state is XOR-folded from the permuted
+    /// buffer and serialised in big-endian byte order. See <see cref="Snefru{T}" /> for shared background.
     /// </para>
-    /// <para>
-    /// Each round consists of an S-box substitution stage followed by a word-wise circular rotation phase. The S-box logic uses precomputed
-    /// lookup tables to inject non-linearity, while rotations ensure data diffusion across the buffer. After all rounds, the result is
-    /// XORed back into the internal state.
-    /// </para>
-    /// <para>
-    /// Input blocks are padded using double-length padding (2 × block size), with the total bit length encoded in the final 8 bytes. The
-    /// final state is serialized in big-endian byte order to produce the resulting hash.
-    /// </para>
-    /// <note type="important">This algorithm is <b>not</b> suitable for cryptographic applications such as password hashing, digital
-    /// signatures, or secure data integrity checks.</note>
+    /// <note type="important">Snefru is considered broken and <b>not</b> suitable for password hashing, digital signatures, or secure
+    /// data integrity checks.</note>
     /// </remarks>
     public sealed class Snefru128 : Snefru<Snefru128>
     {
