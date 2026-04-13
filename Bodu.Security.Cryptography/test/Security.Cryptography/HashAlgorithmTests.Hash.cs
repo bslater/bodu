@@ -25,7 +25,7 @@ namespace Bodu.Security.Cryptography
         /// </summary>
         /// <param name="offset">The starting position in the input buffer.</param>
         /// <param name="count">The number of bytes to process.</param>
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(0, 0)]
         [DataRow(0, 100)]
         [DataRow(10, 10)]

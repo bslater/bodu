@@ -21,23 +21,9 @@ namespace Bodu.Security.Cryptography.Extensions
             using var input = new MemoryStream();
             using var output = new MemoryStream();
 
-            await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(async () =>
+            await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(async () =>
             {
                 await algorithm.EncryptAsync(input, output, -1);
-            });
-        }
-
-        [TestMethod]
-        public async Task EncryptAsync_WhenCancelled_ShouldThrowOperationCanceledException()
-        {
-            using var algorithm = CreateAlgorithm();
-            var input = new ThrottledIncrementingByteStream(512);
-            using var output = new ThrottledOutputMemoryStream();
-            using var cts = new CancellationTokenSource(millisecondsDelay: 250);
-
-            await Assert.ThrowsExceptionAsync<OperationCanceledException>(async () =>
-            {
-                await algorithm.EncryptAsync(input, output, bufferSize: 32, cts.Token);
             });
         }
 
@@ -45,33 +31,40 @@ namespace Bodu.Security.Cryptography.Extensions
         public async Task EncryptAsync_WhenCancelled_ShouldThrowTaskCanceledException()
         {
             using var algorithm = CreateAlgorithm();
-            using var input = new ThrottledIncrementingByteStream(128); // 128 bytes
-            using var output = new MemoryStream();
-            using var cts = new CancellationTokenSource(millisecondsDelay: 100); // cancel before read completes
+            var input = new ThrottledIncrementingByteStream(512);
+            using var output = new ThrottledOutputMemoryStream();
+            using var cts = new CancellationTokenSource(millisecondsDelay: 250);
 
-            await Assert.ThrowsExceptionAsync<TaskCanceledException>(() =>
-                algorithm.EncryptAsync(input, output, 64, cts.Token));
+            await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () =>
+            {
+                await algorithm.EncryptAsync(input, output, bufferSize: 32, cts.Token);
+            });
         }
 
         [TestMethod]
         public async Task EncryptAsync_WhenInputIsEmptyStream_ShouldProduceEmptyOutput()
         {
             using var algorithm = CreateAlgorithm();
+            algorithm.Padding = PaddingMode.None;  // no padding → empty in, empty out
+
             using var input = new MemoryStream(Array.Empty<byte>());
             using var output = new MemoryStream();
 
             await algorithm.EncryptAsync(input, output);
+
             Assert.AreEqual(0, output.Length);
         }
 
         [TestMethod]
-        public async Task EncryptAsync_WhenOutputIsStreamNull_ShouldThrow()
+        public async Task EncryptAsync_WhenTargetStreamIsNull_ShouldThrow()
         {
             using var algorithm = CreateAlgorithm();
             using var input = new MemoryStream(new byte[] { 1, 2, 3 });
 
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(() =>
-                algorithm.EncryptAsync(input, Stream.Null, CancellationToken.None));
+            await Assert.ThrowsExactlyAsync<ArgumentNullException>(() =>
+            {
+                return algorithm.EncryptAsync(input, null!);
+            });  // was Stream.Null — that is a valid stream, not null
         }
 
         [TestMethod]
@@ -88,18 +81,6 @@ namespace Bodu.Security.Cryptography.Extensions
 
             byte[] decrypted = algorithm.Decrypt(throttledOutput.ToArray());
             CollectionAssert.AreEqual(inputBytes, decrypted);
-        }
-
-        [TestMethod]
-        public async Task EncryptAsync_WhenTargetStreamIsNull_ShouldThrow()
-        {
-            using var algorithm = CreateAlgorithm();
-            using var input = new MemoryStream();
-
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () =>
-            {
-                await algorithm.EncryptAsync(input, null!);
-            });
         }
 
         [TestMethod]

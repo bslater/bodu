@@ -1,187 +1,302 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Security.Cryptography.Extensions;
-using Bodu.Infrastructure;
-using Bodu.Security.Cryptography;
-using System.Security.Cryptography;
+// --------------------------------------------------------------------------------------------------------------- //
+// <copyright file="HashAlgorithmExtensions_TryVerifyHash.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Security.Cryptography.Extensions
 {
-    public partial class HashAlgorithmExtensionsTests
+    using System;
+    using System.IO;
+    using System.Security.Cryptography;
+    using System.Text;
+
+    public static partial class HashAlgorithmExtensions
     {
         /// <summary>
-        /// Verifies that TryVerifyHash returns true when span input matches the expected hash.
+        /// Attempts to compute and verify the hash of a byte array, reporting both whether the operation succeeded and whether the hash
+        /// matched.
         /// </summary>
-        [TestMethod]
-        public void TryVerifyHash_WhenSpanMatches_ShouldReturnTrue()
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="input">
+        /// The input data to hash. A <see langword="null" /> value causes the method to return <see langword="false" />.
+        /// </param>
+        /// <param name="expectedHash">
+        /// The expected hash value to compare against. A <see langword="null" /> value causes the method to return
+        /// <see langword="false" />.
+        /// </param>
+        /// <param name="result">
+        /// When this method returns <see langword="true" />, contains <see langword="true" /> if the computed hash matched
+        /// <paramref name="expectedHash" />; otherwise, <see langword="false" />. Always <see langword="false" /> when the method itself
+        /// returns <see langword="false" />.
+        /// </param>
+        /// <returns>
+        /// <see langword="true" /> if the hash computation and comparison completed without error; <see langword="false" /> if
+        /// <paramref name="input" /> or <paramref name="expectedHash" /> is <see langword="null" />, or an internal exception occurred.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="algorithm" /> is <see langword="null" />.</exception>
+        /// <remarks>
+        /// Unlike <see cref="VerifyHash(HashAlgorithm, byte[], byte[])" />, this overload distinguishes between a failed operation
+        /// (return value <see langword="false" />) and a successful but non-matching comparison (<paramref name="result" /> =
+        /// <see langword="false" />). Both <see langword="null" /> inputs are treated as an operation failure rather than an error,
+        /// making this overload suitable for defensive validation where inputs may be absent.
+        /// </remarks>
+        public static bool TryVerifyHash(this HashAlgorithm algorithm, byte[] input, byte[] expectedHash, out bool result)
         {
-            using var algorithm = CreateAlgorithm();
-            ReadOnlySpan<byte> spanInput = SampleData;
-            ReadOnlySpan<byte> expected = SampleHash;
-            Assert.IsTrue(algorithm.TryVerifyHash(spanInput, expected));
-        }
+            ThrowHelper.ThrowIfNull(algorithm);
 
-        /// <summary>
-        /// Verifies that TryVerifyHash returns true when memory input matches the expected hash.
-        /// </summary>
-        [TestMethod]
-        public void TryVerifyHash_WhenMemoryMatches_ShouldReturnTrue()
-        {
-            using var algorithm = CreateAlgorithm();
-            ReadOnlyMemory<byte> memory = SampleData;
-            Assert.IsTrue(algorithm.TryVerifyHash(memory, SampleHash));
-        }
+            result = false;
 
-        /// <summary>
-        /// Verifies that TryVerifyHash returns true when the stream content matches the expected hex string.
-        /// </summary>
-        [TestMethod]
-        public void TryVerifyHash_WhenStreamMatchesHex_ShouldReturnTrue()
-        {
-            using var algorithm = CreateAlgorithm();
-            using var stream = new MemoryStream(SampleData);
-            Assert.IsTrue(algorithm.TryVerifyHash(stream, SampleHex));
-        }
+            // Treat absent inputs as an operation failure rather than a programming error.
+            if (input == null || expectedHash == null)
+                return false;
 
-        /// <summary>
-        /// Verifies that TryVerifyHash returns true when the stream matches the expected hash.
-        /// </summary>
-        [TestMethod]
-        public void TryVerifyHash_WhenStreamMatchesMemory_ShouldReturnTrue()
-        {
-            using var algorithm = CreateAlgorithm();
-            using var stream = new MemoryStream(SampleData);
-            ReadOnlyMemory<byte> expected = SampleHash;
-            Assert.IsTrue(algorithm.TryVerifyHash(stream, expected.ToArray()));
-        }
-
-        /// <summary>
-        /// Verifies that TryVerifyHash returns true when the byte array input matches the expected hash.
-        /// </summary>
-        [TestMethod]
-        public void TryVerifyHash_WhenByteArrayMatches_ShouldReturnTrue()
-        {
-            using var algorithm = CreateAlgorithm();
-            Assert.IsTrue(algorithm.TryVerifyHash(SampleData, SampleHash));
-        }
-
-        /// <summary>
-        /// Verifies that TryVerifyHash returns true when the byte array input matches the expected hex string.
-        /// </summary>
-        [TestMethod]
-        public void TryVerifyHash_WhenByteArrayMatchesHex_ShouldReturnTrue()
-        {
-            using var algorithm = CreateAlgorithm();
-            Assert.IsTrue(algorithm.TryVerifyHash(SampleData, SampleHex));
-        }
-
-        /// <summary>
-        /// Verifies that TryVerifyHash returns true when string and encoding match the expected hash.
-        /// </summary>
-        [TestMethod]
-        public void TryVerifyHash_WhenStringEncodedMatches_ShouldReturnTrue()
-        {
-            using var algorithm = CreateAlgorithm();
-            Assert.IsTrue(algorithm.TryVerifyHash(SampleString, SampleEncoding, SampleStringHash));
-        }
-
-        /// <summary>
-        /// Verifies that TryVerifyHash returns false for empty input.
-        /// </summary>
-        [TestMethod]
-        public void TryVerifyHash_WhenInputIsEmpty_ShouldReturnFalse()
-        {
-            using var algorithm = CreateAlgorithm();
-            Assert.IsFalse(algorithm.TryVerifyHash(Array.Empty<byte>(), SampleHash));
-        }
-
-        /// <summary>
-        /// Verifies that TryVerifyHash returns false for mismatched hash values.
-        /// </summary>
-        [TestMethod]
-        public void TryVerifyHash_WhenHashDoesNotMatch_ShouldReturnFalse()
-        {
-            using var algorithm = CreateAlgorithm();
-            byte[] badHash = BitConverter.GetBytes((uint)999);
-            Assert.IsFalse(algorithm.TryVerifyHash(SampleData, badHash));
-        }
-
-        /// <summary>
-        /// Verifies that TryVerifyHash returns false when the expected hash is null.
-        /// </summary>
-        [TestMethod]
-        public void TryVerifyHash_WhenExpectedHashIsNull__ShouldThrowExactly()
-        {
-            HashAlgorithm? algorithm = null;
-            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            try
             {
-                algorithm.TryVerifyHash(SampleData, (byte[])null!);
-            });
-        }
-
-        /// <summary>
-        /// Verifies that TryVerifyHash returns false when the input is null.
-        /// </summary>
-        [TestMethod]
-        public void TryVerifyHash_WhenInputIsNull_ShouldReturnFalse()
-        {
-            using var algorithm = CreateAlgorithm();
-            Assert.IsFalse(algorithm.TryVerifyHash((byte[])null!, SampleHash));
-        }
-
-        /// <summary>
-        /// Verifies that TryVerifyHash throws ArgumentNullException when the algorithm is null.
-        /// </summary>
-        [TestMethod]
-        public void TryVerifyHash_WhenAlgorithmIsNull_ShouldThrowExactly()
-        {
-            HashAlgorithm? algorithm = null;
-            Assert.ThrowsExactly<ArgumentNullException>(() =>
+                result = algorithm.VerifyHash(input, expectedHash);
+                return true;
+            }
+            catch
             {
-                algorithm!.TryVerifyHash(SampleData, SampleHash);
-            });
+                return false;
+            }
         }
 
         /// <summary>
-        /// Verifies that TryVerifyHash throws ArgumentNullException when the algorithm is null.
+        /// Attempts to compute and verify the hash of a byte array against the expected hash value.
         /// </summary>
-        [TestMethod]
-        public void TryVerifyHash_WhenAStringInputIsNull_ShouldThrowExactly()
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="input">The input data to hash. A <see langword="null" /> value causes the method to return <see langword="false" />.</param>
+        /// <param name="expectedHash">
+        /// The expected hash value to compare against. Must not be <see langword="null" />.
+        /// </param>
+        /// <returns>
+        /// <see langword="true" /> if the computed hash matches <paramref name="expectedHash" />; otherwise, <see langword="false" />.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="algorithm" /> or <paramref name="expectedHash" /> is <see langword="null" />.
+        /// </exception>
+        public static bool TryVerifyHash(this HashAlgorithm algorithm, byte[] input, byte[] expectedHash)
         {
-            using var algorithm = CreateAlgorithm();
-            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            ThrowHelper.ThrowIfNull(algorithm);
+            ThrowHelper.ThrowIfNull(expectedHash);
+
+            if (input == null)
+                return false;
+
+            try
             {
-                algorithm.TryVerifyHash(null!, SampleEncoding, SampleStringHash);
-            });
+                return algorithm.VerifyHash(input, expectedHash);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         /// <summary>
-        /// Verifies that TryVerifyHash throws ArgumentNullException when the encoding is null.
+        /// Attempts to compute and verify the hash of a byte array against an expected hexadecimal hash string.
         /// </summary>
-        [TestMethod]
-        public void TryVerifyHash_WhenEncodingIsNull_ShouldThrowExactly()
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="input">The input data to hash. A <see langword="null" /> value causes the method to return <see langword="false" />.</param>
+        /// <param name="expectedHex">
+        /// The expected hash as a hexadecimal string. Must not be <see langword="null" />.
+        /// </param>
+        /// <returns>
+        /// <see langword="true" /> if the computed hash matches <paramref name="expectedHex" />; otherwise, <see langword="false" />.
+        /// Returns <see langword="false" /> if <paramref name="expectedHex" /> is not a valid hexadecimal string.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="algorithm" /> or <paramref name="expectedHex" /> is <see langword="null" />.
+        /// </exception>
+        public static bool TryVerifyHash(this HashAlgorithm algorithm, byte[] input, string expectedHex)
         {
-            using var algorithm = CreateAlgorithm();
-            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            ThrowHelper.ThrowIfNull(algorithm);
+            ThrowHelper.ThrowIfNull(expectedHex);
+
+            if (input == null)
+                return false;
+
+            try
             {
-                algorithm.TryVerifyHash(SampleString, null!, SampleStringHash);
-            });
+                return algorithm.VerifyHash(input, expectedHex);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         /// <summary>
-        /// Verifies that TryVerifyHash throws ArgumentNullException when the encoding is null.
+        /// Attempts to compute and verify the hash of an encoded string against the expected hash value.
         /// </summary>
-        [TestMethod]
-        public void TryVerifyHash_WhenExpectedHashIsNul_ShouldThrowExactly()
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="input">
+        /// The plain-text string to encode and hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="encoding">
+        /// The encoding used to convert <paramref name="input" /> to bytes. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="expectedHash">
+        /// The expected hash value as a byte array. Must not be <see langword="null" />.
+        /// </param>
+        /// <returns>
+        /// <see langword="true" /> if the computed hash matches <paramref name="expectedHash" />; otherwise, <see langword="false" />.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="algorithm" />, <paramref name="input" />, <paramref name="encoding" />, or
+        /// <paramref name="expectedHash" /> is <see langword="null" />.
+        /// </exception>
+        public static bool TryVerifyHash(this HashAlgorithm algorithm, string input, Encoding encoding, byte[] expectedHash)
         {
-            using var algorithm = CreateAlgorithm();
-            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            ThrowHelper.ThrowIfNull(algorithm);
+            ThrowHelper.ThrowIfNull(input);
+            ThrowHelper.ThrowIfNull(encoding);
+            ThrowHelper.ThrowIfNull(expectedHash);
+
+            try
             {
-                algorithm.TryVerifyHash(SampleString, SampleEncoding, null!);
-            });
+                return algorithm.VerifyHash(input, encoding, expectedHash);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Attempts to compute and verify the hash of a span of bytes against the expected hash span.
+        /// </summary>
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="input">The span of input bytes to hash.</param>
+        /// <param name="expectedHash">The expected hash as a read-only byte span.</param>
+        /// <returns>
+        /// <see langword="true" /> if the computed hash matches <paramref name="expectedHash" />; otherwise, <see langword="false" />.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="algorithm" /> is <see langword="null" />.</exception>
+        public static bool TryVerifyHash(this HashAlgorithm algorithm, ReadOnlySpan<byte> input, ReadOnlySpan<byte> expectedHash)
+        {
+            ThrowHelper.ThrowIfNull(algorithm);
+
+            try
+            {
+                return algorithm.VerifyHash(input, expectedHash);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Attempts to compute and verify the hash of a memory buffer against the expected hash value.
+        /// </summary>
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="input">The memory buffer containing the input data to hash.</param>
+        /// <param name="expectedHash">
+        /// The expected hash value as a byte array. Must not be <see langword="null" />.
+        /// </param>
+        /// <returns>
+        /// <see langword="true" /> if the computed hash matches <paramref name="expectedHash" />; otherwise, <see langword="false" />.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="algorithm" /> or <paramref name="expectedHash" /> is <see langword="null" />.
+        /// </exception>
+        public static bool TryVerifyHash(this HashAlgorithm algorithm, ReadOnlyMemory<byte> input, byte[] expectedHash)
+        {
+            ThrowHelper.ThrowIfNull(algorithm);
+            ThrowHelper.ThrowIfNull(expectedHash);
+
+            try
+            {
+                return algorithm.VerifyHash(input, expectedHash);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Attempts to compute and verify the hash of a stream against the expected hash value.
+        /// </summary>
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="stream">
+        /// The input stream to read and hash. A <see langword="null" /> value causes the method to return <see langword="false" />.
+        /// </param>
+        /// <param name="expectedHash">
+        /// The expected hash value as a byte array. A <see langword="null" /> value causes the method to return <see langword="false" />.
+        /// </param>
+        /// <returns>
+        /// <see langword="true" /> if the stream produces a matching hash; otherwise, <see langword="false" />.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="algorithm" /> is <see langword="null" />.</exception>
+        public static bool TryVerifyHash(this HashAlgorithm algorithm, Stream stream, byte[] expectedHash)
+        {
+            ThrowHelper.ThrowIfNull(algorithm);
+
+            if (stream == null || expectedHash == null)
+                return false;
+
+            try
+            {
+                return algorithm.VerifyHash(stream, expectedHash);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Attempts to compute and verify the hash of a stream against the expected hexadecimal hash string.
+        /// </summary>
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="stream">
+        /// The input stream to read and hash. A <see langword="null" /> value causes the method to return <see langword="false" />.
+        /// </param>
+        /// <param name="expectedHex">
+        /// The expected hash value as a hexadecimal string. Must not be <see langword="null" />.
+        /// </param>
+        /// <returns>
+        /// <see langword="true" /> if the stream hash matches <paramref name="expectedHex" />; otherwise, <see langword="false" />.
+        /// Returns <see langword="false" /> if <paramref name="expectedHex" /> is not a valid hexadecimal string.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="algorithm" /> or <paramref name="expectedHex" /> is <see langword="null" />.
+        /// </exception>
+        public static bool TryVerifyHash(this HashAlgorithm algorithm, Stream stream, string expectedHex)
+        {
+            ThrowHelper.ThrowIfNull(algorithm);
+            ThrowHelper.ThrowIfNull(expectedHex);
+
+            if (stream == null)
+                return false;
+
+            try
+            {
+                return algorithm.VerifyHash(stream, expectedHex);
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

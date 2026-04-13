@@ -1,8 +1,8 @@
-﻿using System;
-using System.Security.Cryptography;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+    using System.Security.Cryptography;
+
     /// <summary>
     /// Provides a delegate-based implementation of <see cref="IHashAlgorithmFactory{T}" /> for constructing hash algorithm instances.
     /// </summary>
@@ -34,6 +34,6 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <inheritdoc />
-        public T Create() => builder();
+        public T Create() => this.builder();
     }
 }

@@ -4,16 +4,16 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Security.Cryptography.Extensions;
-using System;
-using System.Buffers;
-using System.IO;
-using System.Security.Cryptography;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace Bodu.Security.Cryptography
 {
+    using System;
+    using System.Buffers;
+    using System.IO;
+    using System.Security.Cryptography;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Bodu.Security.Cryptography.Extensions;
+
     /// <summary>
     /// Provides high-performance utility methods for one-shot hashing using factory-created <see cref="HashAlgorithm" /> instances.
     /// </summary>

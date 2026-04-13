@@ -1,15 +1,15 @@
-﻿using Bodu.Extensions;
-using System;
-using System.Buffers.Binary;
-using System.Diagnostics;
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Text;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+    using System.Buffers.Binary;
+    using System.Diagnostics;
+    using System.Numerics;
+    using System.Runtime.CompilerServices;
+    using System.Runtime.InteropServices;
+    using System.Security.Cryptography;
+    using System.Text;
+    using Bodu.Extensions;
+
     /// <summary>
     /// Implements the <c>Threefish-1024</c> block cipher algorithm, which is part of the Skein family of cryptographic functions. This
     /// cipher operates on 1024-bit (128-byte) blocks and uses a 1024-bit key with a 128-bit tweak for enhanced security and flexibility.
@@ -64,18 +64,18 @@ namespace Bodu.Security.Cryptography
         public override void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
         {
             this.ThrowIfDisposed();
-            if (input.Length != BlockSize || output.Length != BlockSize)
+            if (input.Length != this.BlockSize || output.Length != this.BlockSize)
                 throw new ArgumentException(
-                    string.Format(ResourceStrings.CryptographicException_InvalidBlockLength, BlockSize));
+                    string.Format(ResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize));
 
-            Span<ulong> block = stackalloc ulong[BlockWords];
+            Span<ulong> block = stackalloc ulong[this.BlockWords];
             MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);
 
-            var key = KeySchedule;
-            var tweak = TweakSchedule;
-            var rot = RotationSchedule;
+            var key = this.KeySchedule;
+            var tweak = this.TweakSchedule;
+            var rot = this.RotationSchedule;
 
-            for (int d = (Rounds / 4) - 1; d >= 1; d -= 2)
+            for (int d = (this.Rounds / 4) - 1; d >= 1; d -= 2)
             {
                 int dm17 = d % 17, dm3 = d % 3;
 
@@ -216,16 +216,16 @@ namespace Bodu.Security.Cryptography
         public override void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
         {
             this.ThrowIfDisposed();
-            if (input.Length != BlockSize || output.Length != BlockSize)
+            if (input.Length != this.BlockSize || output.Length != this.BlockSize)
                 throw new ArgumentException(
-                    string.Format(ResourceStrings.CryptographicException_InvalidBlockLength, BlockSize));
+                    string.Format(ResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize));
 
-            Span<ulong> block = stackalloc ulong[BlockWords];
+            Span<ulong> block = stackalloc ulong[this.BlockWords];
             MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);
 
-            var key = KeySchedule;
-            var tweak = TweakSchedule;
-            var rot = RotationSchedule;
+            var key = this.KeySchedule;
+            var tweak = this.TweakSchedule;
+            var rot = this.RotationSchedule;
 
             block[0] += key[0];
             block[1] += key[1];
@@ -244,7 +244,7 @@ namespace Bodu.Security.Cryptography
             block[14] += key[14] + tweak[1];
             block[15] += key[15];
 
-            for (int d = 1; d < Rounds / 4; d += 2)
+            for (int d = 1; d < this.Rounds / 4; d += 2)
             {
                 int dm17 = d % 17, dm3 = d % 3;
 

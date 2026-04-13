@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+
     /// <summary>
     /// Performs encryption and decryption using Output Feedback (OFB) mode for a given block cipher.
     /// </summary>
@@ -46,7 +46,7 @@ namespace Bodu.Security.Cryptography
             int blockSize = this.cipher.BlockSize;
 
             ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize);
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(output, 0, input.Length);
+            ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 
             Span<byte> keystream = stackalloc byte[blockSize];
 

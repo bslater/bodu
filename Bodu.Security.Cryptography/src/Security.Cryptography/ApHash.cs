@@ -3,12 +3,12 @@
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography
 {
+    using System.Runtime.CompilerServices;
+    using System.Runtime.InteropServices;
+    using System.Security.Cryptography;
+
     /// <summary>
     /// Computes the hash for the input data using the <c>APHash</c> algorithm. This variant generates a 32-bit non-cryptographic hash by
     /// alternating arithmetic and bitwise operations based on character index parity. This class cannot be inherited.
@@ -49,8 +49,8 @@ namespace Bodu.Security.Cryptography
         /// </summary>
         public ApHash()
         {
-            HashSizeValue = 32;
-            Initialize();
+            this.HashSizeValue = 32;
+            this.Initialize();
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace Bodu.Security.Cryptography
 
             if (disposing)
             {
-                CryptoHelpers.ClearAndNullify(ref HashValue);
+                CryptoHelpers.ClearAndNullify(ref this.HashValue);
                 this.workingHash = 0;
             }
 
@@ -141,7 +141,7 @@ namespace Bodu.Security.Cryptography
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
-            HashCore(array.AsSpan(ibStart, cbSize));
+            this.HashCore(array.AsSpan(ibStart, cbSize));
         }
 
         /// <summary>
@@ -166,6 +166,7 @@ namespace Bodu.Security.Cryptography
 
                 this.size++;
             }
+
             this.workingHash = v;
         }
 
@@ -246,7 +247,7 @@ namespace Bodu.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ThrowIfInvalidState()
         {
-            if (State != 0)
+            if (this.State != 0)
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
         }
     }

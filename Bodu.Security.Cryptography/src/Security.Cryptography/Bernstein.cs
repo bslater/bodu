@@ -4,12 +4,12 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Buffers.Binary;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography
 {
+    using System.Buffers.Binary;
+    using System.Runtime.CompilerServices;
+    using System.Security.Cryptography;
+
     /// <summary>
     /// Computes the hash for the input data using the <c>Bernstein</c> (djb2) hash algorithm. This variant performs a non-cryptographic
     /// 32-bit hash using iterative multiplication and addition for fast, well-distributed string hashing. This class cannot be inherited.
@@ -51,13 +51,13 @@ namespace Bodu.Security.Cryptography
 
         private bool disposed = false;
 
-        // Required for .NET Standard 2.0 or older frameworks
-        private bool finalized;
 
         private uint initialValue;
         private bool useModified;
         private uint workingHash;
 #if !NET6_0_OR_GREATER
+        // Required for .NET Standard 2.0 or older frameworks
+        private bool finalized;
 #endif
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Bodu.Security.Cryptography
         /// </summary>
         public Bernstein()
         {
-            HashSizeValue = 32;
+            this.HashSizeValue = 32;
             this.initialValue = this.workingHash = DefaultInitialValue;
             this.useModified = false;
         }
@@ -113,10 +113,10 @@ namespace Bodu.Security.Cryptography
             set
             {
                 this.ThrowIfDisposed();
-                ThrowIfInvalidState();
+                this.ThrowIfInvalidState();
 
                 this.initialValue = value;
-                Initialize();
+                this.Initialize();
             }
         }
 
@@ -141,10 +141,10 @@ namespace Bodu.Security.Cryptography
             set
             {
                 this.ThrowIfDisposed();
-                ThrowIfInvalidState();
+                this.ThrowIfInvalidState();
 
                 this.useModified = value;
-                Initialize();
+                this.Initialize();
             }
         }
 
@@ -172,7 +172,7 @@ namespace Bodu.Security.Cryptography
 
             if (disposing)
             {
-                CryptoHelpers.ClearAndNullify(ref HashValue);
+                CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
                 this.initialValue = this.workingHash = 0;
             }
@@ -213,9 +213,9 @@ namespace Bodu.Security.Cryptography
 #endif
 
             if (this.useModified)
-                HashModified(array.AsSpan(ibStart, cbSize));
+                this.HashModified(array.AsSpan(ibStart, cbSize));
             else
-                HashOriginal(array.AsSpan(ibStart, cbSize));
+                this.HashOriginal(array.AsSpan(ibStart, cbSize));
         }
 
         /// <summary>
@@ -236,9 +236,9 @@ namespace Bodu.Security.Cryptography
 #endif
 
             if (this.useModified)
-                HashModified(source);
+                this.HashModified(source);
             else
-                HashOriginal(source);
+                this.HashOriginal(source);
         }
 
         /// <summary>
@@ -303,6 +303,7 @@ namespace Bodu.Security.Cryptography
             {
                 v = ((v << 5) + v) ^ b;
             }
+
             this.workingHash = v;
         }
 
@@ -321,6 +322,7 @@ namespace Bodu.Security.Cryptography
             {
                 v = ((v << 5) + v) + b;
             }
+
             this.workingHash = v;
         }
 
@@ -356,7 +358,7 @@ namespace Bodu.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ThrowIfInvalidState()
         {
-            if (State != 0)
+            if (this.State != 0)
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
         }
     }

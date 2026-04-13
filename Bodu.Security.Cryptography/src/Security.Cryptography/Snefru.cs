@@ -1,4 +1,11 @@
-﻿using System.Buffers.Binary;
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="Snefru.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Buffers.Binary;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -42,7 +49,7 @@ namespace Bodu.Security.Cryptography
     /// <description>An S-box substitution step based on precomputed 8-bit lookup tables.</description>
     /// </item>
     /// <item>
-    /// <description>Multiple circular left bitwise rotations on 32-bit words.</description>
+    /// <description>Multiple circular right bitwise rotations on 32-bit words.</description>
     /// </item>
     /// </list>
     /// These operations introduce non-linearity and diffusion to the internal buffer.
@@ -62,16 +69,13 @@ namespace Bodu.Security.Cryptography
         where T : Snefru<T>, new()
     {
         private const int TotalWords = 16;                              // number of 32-bit words in the working buffer.
-        private static readonly int Mask = TotalWords - 1;
+        private const int Mask = TotalWords - 1;                        // bitmask to constrain index calculations to the buffer length; inlined as an immediate by the JIT.
         private static readonly int[] Shifts = [16, 8, 16, 24];         // fixed bitwise rotation amounts applied after each S-box round.
         private static readonly int[] ValidHashSizes = { 128, 256 };
 
-        // bitmask to constrain index calculations to the buffer length.
-        private readonly uint[] buffer = new uint[TotalWords];         // internal working buffer used for permutation and round processing.
+        private readonly uint[] buffer = new uint[TotalWords];          // internal working buffer used for permutation and round processing.
+        private readonly uint[] state;                                  // internal state used to accumulate the hash output across input blocks.
 
-        private readonly uint[] state;                                 // internal state used to accumulate the hash output across input blocks.
-
-        // valid Snefru hash sizes (in bits).
         private bool disposed = false;
 
 #if !NET6_0_OR_GREATER
@@ -169,8 +173,10 @@ namespace Bodu.Security.Cryptography
         /// </remarks>
         protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
         {
+            // paddedLength is always ≤ 96 for Snefru128 (2 × 48) and ≤ 64 for Snefru256 (2 × 32),
+            // so stackalloc is always safe and appropriately sized here.
             int paddedLength = 2 * BlockSizeBytes;
-            Span<byte> padded = paddedLength <= 128 ? stackalloc byte[128] : new byte[paddedLength];
+            Span<byte> padded = stackalloc byte[paddedLength];
             block.CopyTo(padded);
             BinaryPrimitives.WriteUInt64BigEndian(padded.Slice(paddedLength - 8), messageLength << 3);
             return padded.Slice(0, paddedLength).ToArray();
@@ -198,9 +204,7 @@ namespace Bodu.Security.Cryptography
             }
 
             for (int i = 0; i < this.state.Length; i++)
-            {
                 this.state[i] ^= this.buffer[Mask - i];
-            }
         }
 
         /// <summary>
@@ -223,11 +227,9 @@ namespace Bodu.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void LoadBlockToBuffer(ReadOnlySpan<byte> block, Span<uint> destination)
         {
-            var inputWords = MemoryMarshal.Cast<byte, uint>(block);
+            ReadOnlySpan<uint> inputWords = MemoryMarshal.Cast<byte, uint>(block);
             for (int i = 0; i < destination.Length; i++)
-            {
                 destination[i] = BinaryPrimitives.ReverseEndianness(inputWords[i]);
-            }
         }
 
         /// <summary>
@@ -238,10 +240,10 @@ namespace Bodu.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void WriteStateBigEndian(ReadOnlySpan<uint> source, Span<byte> destination)
         {
+            // Cast the destination to uint words to avoid per-element Slice calls and their associated bounds checks.
+            Span<uint> dest = MemoryMarshal.Cast<byte, uint>(destination);
             for (int i = 0; i < source.Length; i++)
-            {
-                BinaryPrimitives.WriteUInt32BigEndian(destination.Slice(i * 4, 4), source[i]);
-            }
+                dest[i] = BinaryPrimitives.ReverseEndianness(source[i]);
         }
 
         /// <summary>
@@ -251,13 +253,20 @@ namespace Bodu.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ApplySBoxRounds(int round)
         {
-            for (int kk = 0; kk < this.buffer.Length; kk++)
+            // Hoist the round-invariant portion of the S-box index out of the inner loop.
+            // sBoxNumber alternates between baseBox and baseBox+1 every two iterations of kk,
+            // so only the low bit of (kk >> 1) varies; baseBox accounts for the round offset.
+            int baseBox = round << 1;
+
+            for (int kk = 0; kk < TotalWords; kk++)
             {
                 int next = (kk + 1) & Mask;
                 int last = (kk + Mask) & Mask;
-                int sBoxNumber = (round << 1) + ((kk >> 1) & 0x01);
 
-                uint sboxEntry = Constants[sBoxNumber][this.buffer[kk] & 0xff];
+                // Flat array layout: each table occupies 256 consecutive entries.
+                // Index = (tableIndex << 8) | byteValue, avoiding the double indirection of a jagged array.
+                int sBoxIndex = ((baseBox + ((kk >> 1) & 0x01)) << 8) | (int)(this.buffer[kk] & 0xff);
+                uint sboxEntry = Constants[sBoxIndex];
 
                 this.buffer[next] ^= sboxEntry;
                 this.buffer[last] ^= sboxEntry;
@@ -271,16 +280,14 @@ namespace Bodu.Security.Cryptography
         private void InitializeState() => Array.Clear(this.state);
 
         /// <summary>
-        /// Performs a circular left bitwise rotation on each word in the internal buffer.
+        /// Performs a circular right bitwise rotation on each word in the internal buffer.
         /// </summary>
-        /// <param name="shiftAmount">The number of bits to rotate left by.</param>
+        /// <param name="shiftAmount">The number of bits to rotate right by.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void RotateWords(int shiftAmount)
         {
-            for (int i = 0; i < this.buffer.Length; i++)
-            {
-                this.buffer[i] = (this.buffer[i] >> shiftAmount) | (this.buffer[i] << (32 - shiftAmount));
-            }
+            for (int i = 0; i < TotalWords; i++)
+                this.buffer[i] = BitOperations.RotateRight(this.buffer[i], shiftAmount);
         }
     }
 }

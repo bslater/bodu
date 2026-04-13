@@ -1,15 +1,15 @@
-﻿using System;
-using System.Buffers.Binary;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Numerics;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+    using System.Buffers.Binary;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Numerics;
+    using System.Security.Cryptography;
+    using System.Text;
+    using System.Threading.Tasks;
+
     /// <summary>
     /// Provides a reusable base class for <c>Adler-64</c> style checksum algorithms using <see cref="ulong" /> accumulators.
     /// </summary>
@@ -74,7 +74,7 @@ namespace Bodu.Security.Cryptography
 #endif
             this.ThrowIfDisposed();
 
-            ulong hash = (PartB << 32) | PartA;
+            ulong hash = (this.PartB << 32) | this.PartA;
             Span<byte> span = stackalloc byte[8];
             BinaryPrimitives.WriteUInt64BigEndian(span, hash); // Explicit big-endian output
             return span.ToArray();

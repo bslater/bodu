@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography
             Assert.AreEqual(8, hash.HashSize, "Default hash size should be 8 bits.");
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(8)]
         [DataRow(64)]
         [DataRow(128)]
@@ -34,7 +34,7 @@ namespace Bodu.Security.Cryptography
             Assert.AreEqual(bits, hash.HashSize, $"HashSize should be set to {bits} bits.");
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(8)]
         [DataRow(64)]
         [DataRow(128)]
@@ -55,7 +55,7 @@ namespace Bodu.Security.Cryptography
             Assert.AreEqual(expectedLength, result.Length, $"Expected hash length for {bits} bits is {expectedLength} bytes.");
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(0)]
         [DataRow(7)]
         [DataRow(9)]

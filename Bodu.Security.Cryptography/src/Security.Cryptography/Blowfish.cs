@@ -6,179 +6,182 @@
 
 using System.Security.Cryptography;
 
-using Bodu.Extensions;
-
 namespace Bodu.Security.Cryptography
 {
-	/// <summary>
-	/// Implementation of the <see cref="Bodu.Security.Cryptography.Blowfish" /> tweakable large block cipher. This class cannot be inherited.
-	/// </summary>
-	/// <remarks>
-	/// <para>
-	/// This algorithm is a symmetric-key tweakable large block cipher that supports key lengths of 256, 512, or 1024 bits; defaulting to
-	/// 256 bites. The block size is the same size as the key, and the tweak value is 128-bits for all block sizes.
-	/// </para>
-	/// <para>
-	/// The <see cref="Bodu.Security.Cryptography.Blowfish" /> algorithm was designed by Bruce Schneier, Niels Ferguson, Stefan Lucks, Doug
-	/// Whiting, Mihir Bellare, Tadayoshi Kohno, Jon Callas, and Jesse Walker. For further details see <a href="https://en.wikipedia.org/wiki/Blowfish">https://en.wikipedia.org/wiki/Blowfish</a>.
-	/// </para>
-	/// </remarks>
-	public sealed class Blowfish
-		: System.Security.Cryptography.SymmetricAlgorithm
-	{
-		private const int CipherBlockSize = 0x40; // 64 bits
-		private const int CipherKeySize = 0x1C0; // 448 bits
-		private static readonly KeySizes[] BlockSizesValue = new[] { new KeySizes(0x40, 0x40, 0x00) };
-		private static readonly KeySizes[] KeySizesValue = new[] { new KeySizes(0x20, Blowfish.CipherKeySize, 0x01) };
+    /// <summary>
+    /// Provides a managed implementation of the Blowfish symmetric block cipher. This class cannot be inherited.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Blowfish is a symmetric-key block cipher designed by Bruce Schneier in 1993. It operates on 64-bit (8-byte) blocks and accepts a
+    /// variable-length key of between 32 and 448 bits (4 to 56 bytes). The cipher applies a 16-round Feistel network using four 256-entry
+    /// S-boxes and an 18-entry P-array, all initialised from the hexadecimal digits of pi (π). The key schedule is computationally
+    /// intensive by design, making brute-force attacks significantly more expensive.
+    /// </para>
+    /// <para>
+    /// This class integrates with the .NET <see cref="SymmetricAlgorithm" /> framework and supports standard block cipher modes via the
+    /// <see cref="BlockMode" /> property. The default mode is <see cref="CipherBlockMode.CBC" /> with
+    /// <see cref="PaddingMode.PKCS7" /> padding.
+    /// </para>
+    /// <para>
+    /// For further details on the algorithm, see
+    /// <a href="https://www.schneier.com/academic/blowfish/">https://www.schneier.com/academic/blowfish/</a>.
+    /// </para>
+    /// <note type="important">
+    /// Blowfish has a 64-bit block size, which makes it vulnerable to birthday-bound attacks (SWEET32) when large volumes of data are
+    /// encrypted under the same key. For new applications, a cipher with a 128-bit or larger block size (such as AES) should be preferred.
+    /// </note>
+    /// </remarks>
+    public sealed class Blowfish
+        : SymmetricAlgorithm
+    {
+        /// <summary>
+        /// The Blowfish block size in bits.
+        /// </summary>
+        internal const int BlockSizeBits = 64;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Bodu.Security.Cryptography.Blowfish" /> class.
-		/// </summary>
-#if FEATURE_CRYPTO
+        /// <summary>
+        /// The Blowfish block size in bytes.
+        /// </summary>
+        internal const int BlockSizeBytes = 8;
 
-       /// <exception cref="System.InvalidOperationException">
-       /// This implementation is not part of the Windows Platform FIPS-validated cryptographic algorithms.
-       /// </exception>
-#endif // FEATURE_CRYPTO
+        /// <summary>
+        /// The minimum permitted key size in bytes (32 bits).
+        /// </summary>
+        internal const int MinKeySizeBytes = 4;
 
-		public Blowfish()
-		{
-#if FEATURE_CRYPTO
-         if (CryptoConfig.AllowOnlyFipsAlgorithms) throw new InvalidOperationException(Resources.Cryptography_NonCompliantFIPSAlgorithm);
-#endif // FEATURE_CRYPTO
+        /// <summary>
+        /// The maximum permitted key size in bytes (448 bits).
+        /// </summary>
+        internal const int MaxKeySizeBytes = 56;
 
-			this.BlockSizeValue = Blowfish.CipherBlockSize;
-			this.LegalBlockSizesValue = Blowfish.BlockSizesValue;
-			this.KeySizeValue = Blowfish.CipherKeySize;
-			this.LegalKeySizesValue = Blowfish.KeySizesValue;
-			this.FeedbackSizeValue = Blowfish.CipherBlockSize;
-		}
+        private static readonly KeySizes[] BlowfishBlockSizes = { new KeySizes(BlockSizeBits, BlockSizeBits, 0) };
+        private static readonly KeySizes[] BlowfishKeySizes = { new KeySizes(MinKeySizeBytes * 8, MaxKeySizeBytes * 8, 8) };
 
-		/// <summary>
-		/// Gets or sets the mode for operation of the cryptographic algorithm.
-		/// </summary>
-		/// <returns>One of the enumeration values that specifies the block cipher mode to use for encryption. The default is <see cref="System.Security.Cryptography.CipherMode.CBC" />.</returns>
-		/// <remarks>
-		/// <para>See <see cref="System.Security.Cryptography.CipherMode" /> enumeration for a description of specific modes.</para>
-		/// </remarks>
-		/// <exception cref="System.Security.Cryptography.CryptographicException">
-		/// <see cref="Bodu.Security.Cryptography.Blowfish.Mode" /> is set to <see cref="System.Security.Cryptography.CipherMode.CTS" />.
-		/// </exception>
-		public override CipherMode Mode
-		{
-			get => this.ModeValue;
+        /// <summary>
+        /// Initialises a new instance of the <see cref="Blowfish" /> class with default parameters.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The default configuration uses a 64-bit block, a 128-bit (16-byte) key, CBC cipher mode, and PKCS7 padding. Call
+        /// <see cref="SymmetricAlgorithm.GenerateKey" /> and <see cref="SymmetricAlgorithm.GenerateIV" /> to produce random key material,
+        /// or assign <see cref="SymmetricAlgorithm.Key" /> and <see cref="SymmetricAlgorithm.IV" /> directly before calling
+        /// <see cref="CreateEncryptor(byte[], byte[])" /> or <see cref="CreateDecryptor(byte[], byte[])" />.
+        /// </para>
+        /// </remarks>
+        public Blowfish()
+        {
+            this.BlockSizeValue = BlockSizeBits;
+            this.LegalBlockSizesValue = BlowfishBlockSizes;
 
-			set
-			{
-				if (value.Equals(CipherMode.CTS)) throw new CryptographicException(Resources.Cryptography_Invalid_Value(nameof(System.Security.Cryptography.CipherMode).Humanize()));
+            // Default to a 128-bit key, which is within the legal range.
+            this.KeySizeValue = 128;
+            this.LegalKeySizesValue = BlowfishKeySizes;
 
-				this.ModeValue = value;
-			}
-		}
+            this.FeedbackSizeValue = BlockSizeBits;
+            this.ModeValue = CipherMode.CBC;
+            this.PaddingValue = PaddingMode.PKCS7;
+        }
 
-		/// <summary>
-		/// Creates a cryptographic object to perform the <see cref="Bodu.Security.Cryptography.Blowfish" /> algorithm.
-		/// </summary>
-		/// <returns>A cryptographic object.</returns>
-#if FEATURE_CRYPTO
+        /// <summary>
+        /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
+        /// </summary>
+        /// <value>
+        /// One of the <see cref="CipherBlockMode" /> values. The default is <see cref="CipherBlockMode.CBC" />.
+        /// </value>
+        /// <remarks>
+        /// <para>
+        /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode" /> property for use with
+        /// <see cref="BlockCipherModeFactory" /> and the extended set of modes it supports, including
+        /// <see cref="CipherBlockMode.CTR" /> and <see cref="CipherBlockMode.OFB" />, which are not available via the standard
+        /// <see cref="CipherMode" /> enumeration.
+        /// </para>
+        /// </remarks>
+        public CipherBlockMode BlockMode { get; set; } = CipherBlockMode.CBC;
 
-      /// <exception cref="System.Reflection.TargetInvocationException">
-      /// The algorithm was used with Federal Information Processing Standards (FIPS) mode enabled, but is not FIPS compatible.
-      /// </exception>
-#endif // FEATURE_CRYPTO
+        /// <summary>
+        /// Creates a new <see cref="Blowfish" /> instance with default parameters.
+        /// </summary>
+        /// <returns>A new <see cref="Blowfish" /> instance.</returns>
+        public new static Blowfish Create() => new Blowfish();
 
-		public new static Blowfish Create()
-		{
-			return Create(typeof(Blowfish).FullName);
-		}
+        /// <summary>
+        /// Creates a symmetric <see cref="Blowfish" /> decryptor using the specified key and initialisation vector.
+        /// </summary>
+        /// <param name="rgbKey">
+        /// The secret key for the symmetric algorithm. Must be between <see cref="MinKeySizeBytes" /> and
+        /// <see cref="MaxKeySizeBytes" /> bytes in length. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="rgbIV">
+        /// The initialisation vector. Must be exactly <see cref="BlockSizeBytes" /> bytes in length. Must not be
+        /// <see langword="null" /> for any cipher mode other than ECB.
+        /// </param>
+        /// <returns>A symmetric <see cref="Blowfish" /> decryptor object implementing <see cref="ICryptoTransform" />.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// <paramref name="rgbKey" /> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="System.ArgumentException">
+        /// <paramref name="rgbKey" /> is not within the permitted key size range, or <paramref name="rgbIV" /> has an invalid length for
+        /// the configured <see cref="BlockMode" />.
+        /// </exception>
+        public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
+        {
+            if (rgbKey == null) throw new System.ArgumentNullException(nameof(rgbKey));
 
-		/// <summary>
-		/// Creates a cryptographic object to perform the specified implementation of the <see cref="Bodu.Security.Cryptography.Blowfish" /> algorithm.
-		/// </summary>
-		/// <param name="algName">The name of the specific implementation of <see cref="Bodu.Security.Cryptography.Blowfish" /> to create.</param>
-		/// <returns>A cryptographic object.</returns>
-#if FEATURE_CRYPTO
+            var engine = new BlowfishBlockCipher(rgbKey);
+            return new BlowfishTransform(engine, this.BlockMode, this.PaddingValue, rgbIV!, false);
+        }
 
-       /// <exception cref="System.Reflection.TargetInvocationException">
-       /// The algorithm described by the <paramref name="algName" /> parameter was used with Federal Information Processing Standards
-       /// (FIPS) mode enabled, but is not FIPS compatible.
-       /// </exception>
-#endif // FEATURE_CRYPTO
+        /// <summary>
+        /// Creates a symmetric <see cref="Blowfish" /> encryptor using the specified key and initialisation vector.
+        /// </summary>
+        /// <param name="rgbKey">
+        /// The secret key for the symmetric algorithm. Must be between <see cref="MinKeySizeBytes" /> and
+        /// <see cref="MaxKeySizeBytes" /> bytes in length. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="rgbIV">
+        /// The initialisation vector. Must be exactly <see cref="BlockSizeBytes" /> bytes in length. Must not be
+        /// <see langword="null" /> for any cipher mode other than ECB.
+        /// </param>
+        /// <returns>A symmetric <see cref="Blowfish" /> encryptor object implementing <see cref="ICryptoTransform" />.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// <paramref name="rgbKey" /> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="System.ArgumentException">
+        /// <paramref name="rgbKey" /> is not within the permitted key size range, or <paramref name="rgbIV" /> has an invalid length for
+        /// the configured <see cref="BlockMode" />.
+        /// </exception>
+        public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
+        {
+            if (rgbKey == null) throw new System.ArgumentNullException(nameof(rgbKey));
 
-		public new static Blowfish Create(string algName)
-		{
-			return (Blowfish)CryptoConfig.CreateFromName(algName);
-		}
+            var engine = new BlowfishBlockCipher(rgbKey);
+            return new BlowfishTransform(engine, this.BlockMode, this.PaddingValue, rgbIV!, true);
+        }
 
-		/// <summary>
-		/// Creates a symmetric <see cref="Bodu.Security.Cryptography.Blowfish" /> decryptor object with the specified
-		/// <see cref="System.Security.Cryptography.SymmetricAlgorithm.Key" /> and initialization vector ( <see cref="System.Security.Cryptography.SymmetricAlgorithm.IV" />).
-		/// </summary>
-		/// <param name="rgbKey">The secret key to be used for the symmetric algorithm.</param>
-		/// <param name="rgbIV">The IV to be used for the symmetric algorithm.</param>
-		/// <returns>A symmetric <see cref="Bodu.Security.Cryptography.Blowfish" /> decryptor object.</returns>
-		/// <exception cref="System.ArgumentNullException">
-		/// <paramref name="rgbKey" /> or <paramref name="rgbIV" /> is <see langword="null" /> (Nothing in Visual Basic).
-		/// </exception>
-		/// <exception cref="System.Security.Cryptography.CryptographicException">
-		/// The value of the <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Mode" /> property is not
-		/// <see cref="System.Security.Cryptography.CipherMode.ECB" />, <see cref="System.Security.Cryptography.CipherMode.CBC" />, or <see cref="System.Security.Cryptography.CipherMode.CFB" />.
-		/// </exception>
-		public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV)
-			=> this.NewEncryptor(this.ModeValue, rgbKey, rgbIV, this.FeedbackSizeValue, TransformMode.Decrypt);
+        /// <summary>
+        /// Generates a random initialisation vector (<see cref="SymmetricAlgorithm.IV" />) suitable for use with the Blowfish algorithm.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The generated IV is cryptographically random and contains no zero bytes. A new IV should be generated for each independent
+        /// encryption operation when reusing a <see cref="Blowfish" /> instance with the same key.
+        /// </para>
+        /// </remarks>
+        public override void GenerateIV()
+            => this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(BlockSizeBytes);
 
-		/// <summary>
-		/// Creates a symmetric <see cref="Bodu.Security.Cryptography.Blowfish" /> encryptor object with the specified
-		/// <see cref="System.Security.Cryptography.SymmetricAlgorithm.Key" /> and initialization vector ( <see cref="System.Security.Cryptography.SymmetricAlgorithm.IV" />).
-		/// </summary>
-		/// <param name="rgbKey">The secret key to be used for the symmetric algorithm.</param>
-		/// <param name="rgbIV">The IV to be used for the symmetric algorithm.</param>
-		/// <returns>A symmetric <see cref="System.Security.Cryptography.Rijndael" /> encryptor object.</returns>
-		/// <exception cref="System.ArgumentNullException">
-		/// <paramref name="rgbKey" /> or <paramref name="rgbIV" /> is <see langword="null" /> (Nothing in Visual Basic).
-		/// </exception>
-		/// <exception cref="System.Security.Cryptography.CryptographicException">
-		/// The value of the <see cref="System.Security.Cryptography.SymmetricAlgorithm.Mode" /> property is not
-		/// <see cref="System.Security.Cryptography.CipherMode.ECB" />, <see cref="System.Security.Cryptography.CipherMode.CBC" />, or <see cref="System.Security.Cryptography.CipherMode.CFB" />.
-		/// </exception>
-		public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV)
-			=> this.NewEncryptor(this.ModeValue, rgbKey, rgbIV, this.FeedbackSizeValue, TransformMode.Encrypt);
-
-		/// <summary>
-		/// Generates a random initialization vector ( <see cref="System.Security.Cryptography.SymmetricAlgorithm.IV" />) to be used for the algorithm.
-		/// </summary>
-		/// <remarks>
-		/// <para>
-		/// In general, there is no reason to use this method, because the
-		/// <see cref="O:Bodu.Security.Cryptography.Blowfish.CreateEncryptor" /> overload methods will automatically generates an
-		/// initialization vector, key and tweak. However, you may want to use the
-		/// <see cref="Bodu.Security.Cryptography.Blowfish.GenerateIV" /> method to reuse a symmetric algorithm instance with a different
-		/// initialization vector.
-		/// </para>
-		/// </remarks>
-		public override void GenerateIV()
-			=> this.IVValue = CryptoUtilities.GetRandomNonZeroBytes(this.BlockSizeValue / 8);
-
-		/// <summary>
-		/// Generates a random <see cref="System.Security.Cryptography.SymmetricAlgorithm.Key" /> to be used for the algorithm.
-		/// </summary>
-		/// <remarks>
-		/// <para>
-		/// In general, there is no reason to use this method, because the
-		/// <see cref="O:Bodu.Security.Cryptography.Blowfish.CreateEncryptor" /> overload methods will automatically generates an
-		/// initialization vector, key and tweak. However, you may want to use the
-		/// <see cref="Bodu.Security.Cryptography.Blowfish.GenerateKey" /> method to reuse a symmetric algorithm instance with a different key.
-		/// </para>
-		/// </remarks>
-		public override void GenerateKey()
-			=> this.KeyValue = CryptoUtilities.GetRandomNonZeroBytes(this.KeySizeValue / 8);
-
-		private ICryptoTransform NewEncryptor(CipherMode cipherMode, byte[] rgbKey, byte[] rgbIV, int feedbackSize, TransformMode encryptMode)
-		{
-			if (rgbKey == null) rgbKey = CryptoUtilities.GetRandomNonZeroBytes(this.KeySizeValue / 8);
-			if (rgbIV == null) rgbIV = CryptoUtilities.GetRandomNonZeroBytes(this.BlockSizeValue / 8);
-
-			return new BlowfishTransform(rgbKey, rgbIV, cipherMode, this.PaddingValue, encryptMode);
-		}
-	}
+        /// <summary>
+        /// Generates a random key (<see cref="SymmetricAlgorithm.Key" />) of the currently configured key size for use with the Blowfish
+        /// algorithm.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The generated key is cryptographically random and contains no zero bytes. The length is determined by
+        /// <see cref="SymmetricAlgorithm.KeySize" />, which defaults to 128 bits (16 bytes) unless explicitly changed.
+        /// </para>
+        /// </remarks>
+        public override void GenerateKey()
+            => this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeValue / 8);
+    }
 }

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Security.Cryptography;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+    using System.Linq;
+    using System.Security.Cryptography;
+
     /// <summary>
     /// Serves as the abstract base class for managed implementations of the Threefish symmetric block cipher family.
     /// </summary>
@@ -45,18 +45,18 @@ namespace Bodu.Security.Cryptography
         /// <param name="tweakSizeBits">The tweak size in bits. Typically 128 bits for all Threefish variants.</param>
         protected Threefish(int blockSizeBits, int tweakSizeBits)
         {
-            BlockSizeValue = KeySizeValue = blockSizeBits;
-            FeedbackSizeValue = 8;
+            this.BlockSizeValue = this.KeySizeValue = blockSizeBits;
+            this.FeedbackSizeValue = 8;
 
-            BlockSizeBytes = KeySizeBytes = blockSizeBits / 8;
-            DefaultTweakSizeBytes = tweakSizeBits / 8;
+            this.BlockSizeBytes = this.KeySizeBytes = blockSizeBits / 8;
+            this.DefaultTweakSizeBytes = tweakSizeBits / 8;
 
-            LegalBlockSizesValue = new[] { new KeySizes(blockSizeBits, blockSizeBits, 0) };
-            LegalKeySizesValue = new[] { new KeySizes(blockSizeBits, blockSizeBits, 0) };
-            LegalTweakSizesValue = new[] { new KeySizes(tweakSizeBits, tweakSizeBits, 0) };
+            this.LegalBlockSizesValue = new[] { new KeySizes(blockSizeBits, blockSizeBits, 0) };
+            this.LegalKeySizesValue = new[] { new KeySizes(blockSizeBits, blockSizeBits, 0) };
+            this.LegalTweakSizesValue = new[] { new KeySizes(tweakSizeBits, tweakSizeBits, 0) };
 
-            ModeValue = CipherMode.CBC;
-            Padding = PaddingMode.PKCS7;
+            this.ModeValue = CipherMode.CBC;
+            this.Padding = PaddingMode.PKCS7;
         }
 
         /// <summary>
@@ -70,30 +70,30 @@ namespace Bodu.Security.Cryptography
         /// <inheritdoc />
         public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak)
         {
-            Validate(rgbKey, rgbIV, tweak);
-            var engine = CreateCipher(rgbKey, tweak);
-            return new ThreefishTransform(engine, BlockMode, Padding, rgbIV, false);
+            this.Validate(rgbKey, rgbIV, tweak);
+            var engine = this.CreateCipher(rgbKey, tweak);
+            return new ThreefishTransform(engine, this.BlockMode, this.Padding, rgbIV, false);
         }
 
         /// <inheritdoc />
         public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak)
         {
-            Validate(rgbKey, rgbIV, tweak);
-            var engine = CreateCipher(rgbKey, tweak);
-            return new ThreefishTransform(engine, BlockMode, Padding, rgbIV, true);
+            this.Validate(rgbKey, rgbIV, tweak);
+            var engine = this.CreateCipher(rgbKey, tweak);
+            return new ThreefishTransform(engine, this.BlockMode, this.Padding, rgbIV, true);
         }
 
         /// <inheritdoc />
         public override void GenerateIV() =>
-            IVValue = CryptoHelpers.GetRandomNonZeroBytes(BlockSizeBytes);
+            this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeBytes);
 
         /// <inheritdoc />
         public override void GenerateKey() =>
-            KeyValue = CryptoHelpers.GetRandomNonZeroBytes(KeySizeBytes);
+            this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeBytes);
 
         /// <inheritdoc />
         public override void GenerateTweak() =>
-            TweakValue = CryptoHelpers.GetRandomNonZeroBytes(DefaultTweakSizeBytes);
+            this.TweakValue = CryptoHelpers.GetRandomNonZeroBytes(this.DefaultTweakSizeBytes);
 
         /// <summary>
         /// Instantiates the concrete Threefish block cipher with the specified key and tweak.
@@ -112,17 +112,17 @@ namespace Bodu.Security.Cryptography
         /// <exception cref="CryptographicException">Thrown when any input does not match the required length.</exception>
         protected void Validate(byte[] key, byte[] iv, byte[] tweak)
         {
-            if (key.Length != KeySizeBytes)
+            if (key.Length != this.KeySizeBytes)
                 throw new CryptographicException(
-                    string.Format(ResourceStrings.CryptographicException_InvalidKeySize, key.Length * 8, CryptoHelpers.FormatLegalSizes(LegalKeySizesValue)));
+                    string.Format(ResourceStrings.CryptographicException_InvalidKeySize, key.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)));
 
-            if (iv.Length != BlockSizeBytes)
+            if (iv.Length != this.BlockSizeBytes)
                 throw new CryptographicException(
-                    string.Format(ResourceStrings.CryptographicException_InvalidIVSize, key.Length * 8, CryptoHelpers.FormatLegalSizes(LegalBlockSizes)));
+                    string.Format(ResourceStrings.CryptographicException_InvalidIVSize, key.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalBlockSizes)));
 
-            if (tweak.Length != DefaultTweakSizeBytes)
+            if (tweak.Length != this.DefaultTweakSizeBytes)
                 throw new CryptographicException(
-                    string.Format(ResourceStrings.CryptographicException_InvalidTweakSize, key.Length * 8, CryptoHelpers.FormatLegalSizes(LegalTweakSizes)));
+                    string.Format(ResourceStrings.CryptographicException_InvalidTweakSize, key.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalTweakSizes)));
         }
     }
 }

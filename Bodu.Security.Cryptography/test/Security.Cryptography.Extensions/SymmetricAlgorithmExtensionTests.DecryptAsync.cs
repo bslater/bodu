@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography.Extensions
 {
 	public partial class SymmetricAlgorithmExtensionTests
 	{
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(PaddingMode.None, true)]
 		[DataRow(PaddingMode.PKCS7, false)]
 		[DataRow(PaddingMode.ANSIX923, false)]
@@ -37,7 +37,10 @@ namespace Bodu.Security.Cryptography.Extensions
 				}
 				else
 				{
-					await Assert.ThrowsExceptionAsync<CryptographicException>(() => algorithm.DecryptAsync(input, output));
+					await Assert.ThrowsExactlyAsync<CryptographicException>(() =>
+					{
+						return algorithm.DecryptAsync(input, output);
+					});
 				}
 			}
 			finally
@@ -53,7 +56,7 @@ namespace Bodu.Security.Cryptography.Extensions
 			using var input = new MemoryStream();
 			using var output = new MemoryStream();
 
-			await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(async () =>
+			await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(async () =>
 			{
 				await algorithm.DecryptAsync(input, output, 0);
 			});
@@ -84,55 +87,60 @@ namespace Bodu.Security.Cryptography.Extensions
 			}
 		}
 
-		[TestMethod]
-		public async Task DecryptAsync_WhenCancelled_ShouldThrowTaskCanceledException()
-		{
-			using var algorithm = CreateAlgorithm();
-			byte[] plainText = Enumerable.Range(0, 128).Select(i => (byte)i).ToArray();
-			byte[] encrypted = algorithm.Encrypt(plainText);
+        [TestMethod]
+        public async Task DecryptAsync_WhenCancelled_ShouldThrowTaskCanceledException()
+        {
+            using var algorithm = CreateAlgorithm();
+            byte[] plainText = Enumerable.Range(0, 512).Select(i => (byte)i).ToArray();
+            byte[] encrypted = algorithm.Encrypt(plainText);
 
-			using var input = new ThrottledIncrementingByteStream(encrypted.Length);
-			using var output = new MemoryStream();
-			using var cts = new CancellationTokenSource(millisecondsDelay: 100);
+            // Valid ciphertext in a plain MemoryStream — no cryptographic errors.
+            using var input = new MemoryStream(encrypted);
 
-			await Assert.ThrowsExceptionAsync<TaskCanceledException>(() =>
-				algorithm.DecryptAsync(input, output, 64, cts.Token));
-		}
+            // Throttle the output writes so the cancellation deadline fires first.
+            using var output = new ThrottledOutputMemoryStream(delayMilliseconds: 1000);
+            using var cts = new CancellationTokenSource(millisecondsDelay: 100);
 
-		[TestMethod]
+            await Assert.ThrowsExactlyAsync<TaskCanceledException>(() =>
+			{
+				return algorithm.DecryptAsync(input, output, 64, cts.Token);
+			});
+        }
+
+        [TestMethod]
 		public async Task DecryptAsync_WhenOutputIsStreamNull_ShouldThrow()
 		{
 			using var algorithm = CreateAlgorithm();
 			using var input = new MemoryStream(Enumerable.Range(0, algorithm.BlockSize / 8).Select(b => (byte)b).ToArray());
 
 			await Assert.ThrowsExactlyAsync<ArgumentNullException>(() =>
-				algorithm.DecryptAsync(input, null, CancellationToken.None));
+			{
+				return algorithm.DecryptAsync(input, null, CancellationToken.None);
+			});
 		}
 
-		[TestMethod]
-		public async Task DecryptAsync_WhenOutputIsThrottled_ShouldStillProduceResult()
-		{
-			using var algorithm = CreateAlgorithm();
-			byte[] original = Enumerable.Range(0, 128).Select(i => (byte)i).ToArray();
-			byte[] encrypted = algorithm.Encrypt(original);
+        [TestMethod]
+        public async Task DecryptAsync_WhenOutputIsThrottled_ShouldStillProduceResult()
+        {
+            using var algorithm = CreateAlgorithm();
+            byte[] original = Enumerable.Range(0, 128).Select(i => (byte)i).ToArray();
+            byte[] encrypted = algorithm.Encrypt(original);
 
-			using var input = new MemoryStream(encrypted);
-			using var throttledOutput = new ThrottledIncrementingByteStream(8192);
+            using var input = new MemoryStream(encrypted);
+            using var throttledOutput = new ThrottledOutputMemoryStream(delayMilliseconds: 50);
 
-			await algorithm.DecryptAsync(input, throttledOutput, 32);
-			throttledOutput.Position = 0;
+            await algorithm.DecryptAsync(input, throttledOutput, 32);
 
-			byte[] decrypted = throttledOutput.ToArray();
-			CollectionAssert.AreEqual(original, decrypted);
-		}
+            CollectionAssert.AreEqual(original, throttledOutput.ToArray());
+        }
 
-		[TestMethod]
+        [TestMethod]
 		public async Task DecryptAsync_WhenSourceStreamIsNull_ShouldThrow()
 		{
 			using var algorithm = CreateAlgorithm();
 			using var output = new MemoryStream();
 
-			await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () =>
+			await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
 			{
 				await algorithm.DecryptAsync(null!, output);
 			});

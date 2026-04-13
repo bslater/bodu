@@ -9,8 +9,8 @@ namespace Bodu.Security.Cryptography
         {
             "HashSizeValue",
             "State",
-            "this.disposed",
             "disposed",
+            "_disposed",
         };
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace Bodu.Security.Cryptography
         /// This test uses reflection to reassign the property's current hashValue after calling <see cref="HashAlgorithm.Dispose" />. This
         /// ensures concrete <see cref="HashAlgorithm" /> implementations enforce correct disposal behavior.
         /// </remarks>
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(GetWritableProperties), DynamicDataSourceType.Method)]
         public void Dispose_WhenAssigningProperty_ShouldThrowExactly(PropertyInfo property)
         {
@@ -77,7 +77,7 @@ namespace Bodu.Security.Cryptography
         /// Verifies that a disposable algorithm properly zeroes or nullifies its internal fields after disposal.
         /// </summary>
         /// <param name="field">The field to inspect for zeroed or null state.</param>
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(GetDisposableFields), DynamicDataSourceType.Method)]
         public void Dispose_WhenCalled_ShouldZeroPrivateField(FieldInfo field)
         {

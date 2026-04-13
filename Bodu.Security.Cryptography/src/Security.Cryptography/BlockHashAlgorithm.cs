@@ -1,10 +1,10 @@
-﻿using Bodu;
-using Bodu.Security.Cryptography;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System.Runtime.CompilerServices;
+    using System.Security.Cryptography;
+    using Bodu;
+    using Bodu.Security.Cryptography;
+
     /// <summary>
     /// Computes the hash for the input data using a block-oriented hash algorithm. This implementation processes input in fixed-size chunks
     /// and handles residual buffering, alignment, and final block padding.
@@ -80,8 +80,8 @@ namespace Bodu.Security.Cryptography
         protected BlockHashAlgorithm(int blockSize)
         {
             ThrowHelper.ThrowIfLessThanOrEqual(blockSize, 0);
-            BlockSizeBytes = blockSize;
-            this.residualByteBuffer = new byte[BlockSizeBytes];
+            this.BlockSizeBytes = blockSize;
+            this.residualByteBuffer = new byte[this.BlockSizeBytes];
         }
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace Bodu.Security.Cryptography
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
-            ProcessBlocks(array.AsSpan(ibStart, cbSize));
+            this.ProcessBlocks(array.AsSpan(ibStart, cbSize));
         }
 
         /// <summary>
@@ -189,7 +189,7 @@ namespace Bodu.Security.Cryptography
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
-            ProcessBlocks(source);
+            this.ProcessBlocks(source);
         }
 
         /// <summary>
@@ -233,26 +233,26 @@ namespace Bodu.Security.Cryptography
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
-            if (ShouldPadFinalBlock())
+            if (this.ShouldPadFinalBlock())
             {
-                var finalBlock = PadBlock(this.residualByteBuffer.Span.Slice(0, this.residualBytes), this.totalLength);
+                var finalBlock = this.PadBlock(this.residualByteBuffer.Span.Slice(0, this.residualBytes), this.totalLength);
 
-                if (AllowUnalignedFinalBlock)
+                if (this.AllowUnalignedFinalBlock)
                 {
-                    ProcessBlock(finalBlock);
+                    this.ProcessBlock(finalBlock);
                 }
                 else
                 {
-                    for (int i = 0; i < finalBlock.Length; i += BlockSizeBytes)
-                        ProcessBlock(finalBlock.AsSpan(i, BlockSizeBytes));
+                    for (int i = 0; i < finalBlock.Length; i += this.BlockSizeBytes)
+                        this.ProcessBlock(finalBlock.AsSpan(i, this.BlockSizeBytes));
                 }
             }
             else if (this.residualBytes > 0)
             {
-                ProcessBlock(this.residualByteBuffer.Span.Slice(0, this.residualBytes));
+                this.ProcessBlock(this.residualByteBuffer.Span.Slice(0, this.residualBytes));
             }
 
-            return ProcessFinalBlock();
+            return this.ProcessFinalBlock();
         }
 
         /// <summary>
@@ -327,7 +327,7 @@ namespace Bodu.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void ThrowIfInvalidState()
         {
-            if (State != 0)
+            if (this.State != 0)
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
         }
 
@@ -349,13 +349,13 @@ namespace Bodu.Security.Cryptography
             // Attempt to fill a partial residual block if it exists
             if (this.residualBytes > 0)
             {
-                int remaining = BlockSizeBytes - this.residualBytes;
+                int remaining = this.BlockSizeBytes - this.residualBytes;
 
                 if (buffer.Length >= remaining)
                 {
                     // Complete residual block and process it
                     buffer.Slice(pos, remaining).CopyTo(residualSpan[this.residualBytes..]);
-                    ProcessBlock(this.residualByteBuffer.Span);
+                    this.ProcessBlock(this.residualByteBuffer.Span);
                     this.residualBytes = 0;
                     pos += remaining;
                 }
@@ -369,10 +369,10 @@ namespace Bodu.Security.Cryptography
             }
 
             // Process complete blocks from input span
-            while (pos + BlockSizeBytes <= buffer.Length)
+            while (pos + this.BlockSizeBytes <= buffer.Length)
             {
-                ProcessBlock(buffer.Slice(pos, BlockSizeBytes));
-                pos += BlockSizeBytes;
+                this.ProcessBlock(buffer.Slice(pos, this.BlockSizeBytes));
+                pos += this.BlockSizeBytes;
             }
 
             // Buffer any trailing bytes that form an incomplete block

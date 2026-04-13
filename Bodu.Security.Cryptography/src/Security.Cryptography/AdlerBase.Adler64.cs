@@ -4,10 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-
 namespace Bodu.Security.Cryptography
 {
+    using System;
+
     /// <summary>
     /// Computes the hash for the input data using the <c>Adler-64</c> checksum algorithm. This variant calculates two running sums over the
     /// input bytes modulo 4294967291 and combines them into a 64-bit result. This class cannot be inherited.

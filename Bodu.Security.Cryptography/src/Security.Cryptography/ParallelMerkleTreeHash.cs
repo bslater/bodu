@@ -22,21 +22,34 @@ namespace Bodu.Security.Cryptography
     /// continued leaf production.
     /// </para>
     /// <para>
+    /// <b>Reuse:</b> the same instance may be used for multiple sequential hash computations.
+    /// At the start of each call, all per-computation state is reset: the level channels and their
+    /// worker tasks are discarded and recreated, the input buffer position is cleared, the leaf
+    /// index is reset to zero, and the previous root hash is discarded. The algorithm factory,
+    /// block size, and fan-out are fixed at construction and are not affected by reset. The
+    /// internal block buffer is allocated once at construction and reused across calls; its
+    /// contents beyond the current write position are always explicitly zeroed before hashing,
+    /// so no data from a previous computation can influence the next.
+    /// </para>
+    /// <para>
+    /// <b>Thread safety:</b> concurrent calls from multiple threads on the same instance produce
+    /// undefined behaviour and are not supported. The <c>ComputeHash*</c> APIs must be called
+    /// sequentially. If concurrent hashing is required, construct an independent instance per
+    /// thread or task; instances do not share any mutable state with one another.
+    /// </para>
+    /// <para>
+    /// <b>Diagnostics:</b> an optional <see cref="MerkleTreeDiagnostics"/> instance may be
+    /// supplied to each <c>ComputeHash</c> call. When present, every leaf and internal node is
+    /// recorded as it is produced, enabling post-computation inspection and independent hash
+    /// re-validation. Passing distinct instances across calls ensures each computation's trace
+    /// remains isolated. Recording incurs additional allocation and should not be enabled in
+    /// production paths.
+    /// </para>
+    /// <para>
     /// <b>Shutdown contract:</b> channels are completed strictly bottom-up — level N's channel is
     /// closed only after level N's worker has fully exited. This guarantees that every node a worker
     /// promotes into level N+1 arrives before level N+1's channel is closed, eliminating the
     /// lost-node race that would otherwise cause finalisation to deadlock.
-    /// </para>
-    /// <para>
-    /// <b>Diagnostics:</b> an optional <see cref="MerkleTreeDiagnostics"/> instance may be supplied
-    /// at construction. When present, every leaf and internal node is recorded as it is produced,
-    /// enabling post-computation inspection and independent hash re-validation. Recording incurs
-    /// additional allocation and should not be enabled in production paths.
-    /// </para>
-    /// <para>
-    /// <b>Single-use:</b> each instance is intended for one hash computation. Construct a new
-    /// instance for each input. The <c>ComputeHash*</c> APIs are not thread-safe and must not be
-    /// called concurrently.
     /// </para>
     /// </remarks>
     public sealed class ParallelMerkleTreeHash : IDisposable
@@ -44,31 +57,36 @@ namespace Bodu.Security.Cryptography
         private readonly int _blockSize;
         private readonly int _fanOut;
         private readonly Func<HashAlgorithm> _algorithmFactory;
-        private readonly MerkleTreeDiagnostics? _diagnostics;
         private readonly CancellationTokenSource _cts = new();
 
         // One channel and one worker task per tree level, created lazily as the tree grows.
-        // Each channel has a single writer (the level below's worker, or the producer for level 0)
-        // and a single reader (its own worker), so UnboundedChannelOptions can be tuned accordingly.
+        // Both dictionaries are cleared and rebuilt by Reset() at the start of each computation.
         private readonly ConcurrentDictionary<int, Channel<byte[]>> _levelChannels = new();
         private readonly ConcurrentDictionary<int, Task> _levelWorkers = new();
         private readonly object _levelCreationLock = new();
 
         // Raw-byte accumulation buffer. Single-caller only; not thread-safe.
+        // Allocated once and reused across calls; Reset() zeroes _bufferLength without clearing the
+        // buffer contents, since FinalizeAsync always explicitly pads before hashing any tail block.
         private readonly byte[] _blockBuffer;
         private int _bufferLength;
 
         // Incremented each time a leaf is submitted; used to assign stable indices for diagnostics.
         // Only accessed from the producer thread — no atomic operation required.
+        // Reset to 0 by Reset() at the start of each computation.
         private int _leafIndex;
 
+        // Set per-call via Reset(); null when diagnostics are not requested for the current call.
+        private MerkleTreeDiagnostics? _diagnostics;
+
         // Written by whichever level worker identifies the final surviving node as the root.
+        // Cleared to null by Reset() at the start of each computation.
         private byte[]? _rootHash;
         private bool _disposed;
 
         /// <summary>
         /// Initialises a new <see cref="ParallelMerkleTreeHash"/> instance with the specified hash
-        /// algorithm factory, block size, fan-out, and optional diagnostics.
+        /// algorithm factory, block size, and fan-out.
         /// </summary>
         /// <param name="algorithmFactory">
         ///   Factory that returns a fresh, independent <see cref="HashAlgorithm"/> on each call.
@@ -83,10 +101,6 @@ namespace Bodu.Security.Cryptography
         ///   Must be at least 2. Defaults to 2. Larger values produce shallower trees but wider
         ///   internal nodes.
         /// </param>
-        /// <param name="diagnostics">
-        ///   An optional <see cref="MerkleTreeDiagnostics"/> instance that records each node as it
-        ///   is produced. Pass <see langword="null"/> to disable diagnostic recording.
-        /// </param>
         /// <exception cref="ArgumentNullException">
         ///   <paramref name="algorithmFactory"/> is <see langword="null"/>.
         /// </exception>
@@ -97,17 +111,12 @@ namespace Bodu.Security.Cryptography
         public ParallelMerkleTreeHash(
             Func<HashAlgorithm> algorithmFactory,
             int blockSize = 4096,
-            int fanOut = 2,
-            MerkleTreeDiagnostics? diagnostics = null)
+            int fanOut = 2)
         {
-            _algorithmFactory = algorithmFactory ?? throw new ArgumentNullException(nameof(algorithmFactory));
-            _blockSize = blockSize > 0 ? blockSize : throw new ArgumentOutOfRangeException(nameof(blockSize), "Block size must be greater than zero.");
-            _fanOut = fanOut >= 2 ? fanOut : throw new ArgumentOutOfRangeException(nameof(fanOut), "Fan-out must be at least 2.");
-            _diagnostics = diagnostics;
-            _blockBuffer = new byte[blockSize];
-
-            // Level 0 is always required; create it eagerly so the producer can write immediately.
-            EnsureLevelExists(0);
+            this._algorithmFactory = algorithmFactory ?? throw new ArgumentNullException(nameof(algorithmFactory));
+            this._blockSize = blockSize > 0 ? blockSize : throw new ArgumentOutOfRangeException(nameof(blockSize), "Block size must be greater than zero.");
+            this._fanOut = fanOut >= 2 ? fanOut : throw new ArgumentOutOfRangeException(nameof(fanOut), "Fan-out must be at least 2.");
+            this._blockBuffer = new byte[blockSize];
         }
 
         /// <summary>
@@ -115,6 +124,11 @@ namespace Bodu.Security.Cryptography
         /// the tree pipeline, and returns the Merkle root hash once all data has been processed.
         /// </summary>
         /// <param name="input">The readable stream to hash. Must not be <see langword="null"/>.</param>
+        /// <param name="diagnostics">
+        ///   An optional <see cref="MerkleTreeDiagnostics"/> instance that records each node produced
+        ///   during this computation. Pass <see langword="null"/> to disable diagnostic recording.
+        ///   Supplying a fresh instance per call ensures each computation's trace is isolated.
+        /// </param>
         /// <param name="cancellationToken">
         ///   Token used to cancel the read loop. Cancellation stops further reads but does not
         ///   interrupt level workers already in progress; those are cancelled via <see cref="Dispose"/>.
@@ -130,45 +144,68 @@ namespace Bodu.Security.Cryptography
         /// <exception cref="OperationCanceledException">
         ///   <paramref name="cancellationToken"/> was cancelled before all data could be read.
         /// </exception>
-        public async Task<byte[]> ComputeHashAsync(Stream input, CancellationToken cancellationToken = default)
+        public async Task<byte[]> ComputeHashAsync(
+            Stream input,
+            MerkleTreeDiagnostics? diagnostics = null,
+            CancellationToken cancellationToken = default)
         {
-            ObjectDisposedException.ThrowIf(_disposed, this);
             ArgumentNullException.ThrowIfNull(input);
+            this.Reset(diagnostics);
 
-            using var linked = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, cancellationToken);
+            using var linked = CancellationTokenSource.CreateLinkedTokenSource(this._cts.Token, cancellationToken);
 
             // Read in chunks larger than one block so that a single ReadAsync can feed several leaves,
             // keeping the I/O system ahead of the hashing pipeline.
-            byte[] readBuffer = ArrayPool<byte>.Shared.Rent(_blockSize * 8);
+            byte[] readBuffer = ArrayPool<byte>.Shared.Rent(this._blockSize * 8);
             try
             {
                 int bytesRead;
                 while ((bytesRead = await input.ReadAsync(readBuffer.AsMemory(0, readBuffer.Length), linked.Token)) > 0)
-                    ProcessBytes(readBuffer.AsSpan(0, bytesRead));
+                    this.ProcessBytes(readBuffer.AsSpan(0, bytesRead));
             }
             finally
             {
                 ArrayPool<byte>.Shared.Return(readBuffer, clearArray: true);
             }
 
-            return await FinalizeAsync();
+            return await this.FinalizeAsync();
         }
 
         /// <summary>
         /// Synchronously computes the Merkle root hash of <paramref name="data"/>.
         /// </summary>
         /// <param name="data">The byte span to hash.</param>
+        /// <param name="diagnostics">
+        ///   An optional <see cref="MerkleTreeDiagnostics"/> instance that records each node produced
+        ///   during this computation. Pass <see langword="null"/> to disable diagnostic recording.
+        /// </param>
         /// <returns>
         ///   A byte array containing the Merkle root hash of <paramref name="data"/>.
         /// </returns>
         /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
         /// <exception cref="InvalidOperationException">No input data was provided.</exception>
-        public byte[] ComputeHash(ReadOnlySpan<byte> data)
+        public byte[] ComputeHash(ReadOnlySpan<byte> data, MerkleTreeDiagnostics? diagnostics = null)
         {
-            ObjectDisposedException.ThrowIf(_disposed, this);
-            ProcessBytes(data);
-            return FinalizeAsync().GetAwaiter().GetResult();
+            this.Reset(diagnostics);
+            this.ProcessBytes(data);
+            return this.FinalizeAsync().GetAwaiter().GetResult();
         }
+
+        /// <summary>
+        /// Synchronously computes the Merkle root hash of <paramref name="data"/>.
+        /// </summary>
+        /// <param name="data">The source byte array. Must not be <see langword="null"/>.</param>
+        /// <param name="diagnostics">
+        ///   An optional <see cref="MerkleTreeDiagnostics"/> instance that records each node produced
+        ///   during this computation. Pass <see langword="null"/> to disable diagnostic recording.
+        /// </param>
+        /// <returns>
+        ///   A byte array containing the Merkle root hash of <paramref name="data"/>.
+        /// </returns>
+        /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+        /// <exception cref="InvalidOperationException">No input data was provided.</exception>
+        public byte[] ComputeHash(byte[] data, MerkleTreeDiagnostics? diagnostics = null) =>
+            this.ComputeHash(new ReadOnlySpan<byte>(data), diagnostics);
 
         /// <summary>
         /// Synchronously computes the Merkle root hash of a region within <paramref name="data"/>.
@@ -176,6 +213,10 @@ namespace Bodu.Security.Cryptography
         /// <param name="data">The source byte array. Must not be <see langword="null"/>.</param>
         /// <param name="offset">The zero-based index at which to begin reading.</param>
         /// <param name="count">The number of bytes to hash.</param>
+        /// <param name="diagnostics">
+        ///   An optional <see cref="MerkleTreeDiagnostics"/> instance that records each node produced
+        ///   during this computation. Pass <see langword="null"/> to disable diagnostic recording.
+        /// </param>
         /// <returns>
         ///   A byte array containing the Merkle root hash of the specified region.
         /// </returns>
@@ -188,12 +229,46 @@ namespace Bodu.Security.Cryptography
         ///   <paramref name="offset"/> + <paramref name="count"/> exceeds the length of <paramref name="data"/>.
         /// </exception>
         /// <exception cref="InvalidOperationException">No input data was provided.</exception>
-        public byte[] ComputeHash(byte[] data, int offset, int count) =>
-            ComputeHash(new ReadOnlySpan<byte>(data, offset, count));
+        public byte[] ComputeHash(byte[] data, int offset, int count, MerkleTreeDiagnostics? diagnostics = null) =>
+            this.ComputeHash(new ReadOnlySpan<byte>(data, offset, count), diagnostics);
 
-        /// <inheritdoc cref="ComputeHash(ReadOnlySpan{byte})"/>
-        public byte[] ComputeHash(byte[] data) =>
-            ComputeHash(new ReadOnlySpan<byte>(data));
+        // -----------------------------------------------------------------------------------------
+        // Reset — restores the instance to a clean state for the next computation
+        // -----------------------------------------------------------------------------------------
+
+        /// <summary>
+        /// Resets all per-computation state so the instance can be reused for a new hash operation.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Clears the level channel and worker dictionaries, resets the input buffer position, leaf
+        /// index, root hash, and active diagnostics reference, then recreates the level-0 channel and
+        /// its worker so the producer can begin writing immediately.
+        /// </para>
+        /// <para>
+        /// This method is always the first thing called by every public <c>ComputeHash</c> overload,
+        /// even on the very first use, which avoids the need for any eager initialisation in the
+        /// constructor.
+        /// </para>
+        /// </remarks>
+        private void Reset(MerkleTreeDiagnostics? diagnostics)
+        {
+            ObjectDisposedException.ThrowIf(this._disposed, this);
+
+            // Discard all channels and workers from the previous computation. By the time Reset is
+            // called, FinalizeAsync has already awaited every worker to completion, so clearing these
+            // dictionaries releases the completed tasks without risking a concurrent write.
+            this._levelChannels.Clear();
+            this._levelWorkers.Clear();
+
+            this._bufferLength = 0;
+            this._leafIndex = 0;
+            this._rootHash = null;
+            this._diagnostics = diagnostics;
+
+            // Recreate level 0 immediately so the producer can submit leaves without waiting.
+            this.EnsureLevelExists(0);
+        }
 
         // -----------------------------------------------------------------------------------------
         // Input ingestion
@@ -207,15 +282,15 @@ namespace Bodu.Security.Cryptography
         {
             while (!data.IsEmpty)
             {
-                int toWrite = Math.Min(_blockSize - _bufferLength, data.Length);
-                data.Slice(0, toWrite).CopyTo(_blockBuffer.AsSpan(_bufferLength));
-                _bufferLength += toWrite;
+                int toWrite = Math.Min(this._blockSize - this._bufferLength, data.Length);
+                data.Slice(0, toWrite).CopyTo(this._blockBuffer.AsSpan(this._bufferLength));
+                this._bufferLength += toWrite;
                 data = data.Slice(toWrite);
 
-                if (_bufferLength == _blockSize)
+                if (this._bufferLength == this._blockSize)
                 {
-                    SubmitLeaf(_blockBuffer, _blockSize);
-                    _bufferLength = 0;
+                    this.SubmitLeaf(this._blockBuffer, this._blockSize);
+                    this._bufferLength = 0;
                 }
             }
         }
@@ -226,10 +301,10 @@ namespace Bodu.Security.Cryptography
         /// </summary>
         private void SubmitLeaf(byte[] data, int length)
         {
-            var hash = HashSpan(data.AsSpan(0, length));
-            _diagnostics?.RecordLeaf(_leafIndex, hash);
-            WriteToLevel(0, hash);
-            _leafIndex++;
+            var hash = this.HashSpan(data.AsSpan(0, length));
+            this._diagnostics?.RecordLeaf(this._leafIndex, hash);
+            this.WriteToLevel(0, hash);
+            this._leafIndex++;
         }
 
         // -----------------------------------------------------------------------------------------
@@ -240,7 +315,7 @@ namespace Bodu.Security.Cryptography
         {
             // TryWrite on an unbounded channel fails only if the channel has already been completed.
             // Under the correct bottom-up shutdown sequence this path must never be reached.
-            if (!_levelChannels[level].Writer.TryWrite(hash))
+            if (!this._levelChannels[level].Writer.TryWrite(hash))
                 throw new InvalidOperationException(
                     $"Write to level-{level} channel failed. The channel was completed before all nodes were submitted.");
         }
@@ -248,12 +323,12 @@ namespace Bodu.Security.Cryptography
         private void EnsureLevelExists(int level)
         {
             // Fast path — no lock required once the entry is visible in the dictionary.
-            if (_levelChannels.ContainsKey(level))
+            if (this._levelChannels.ContainsKey(level))
                 return;
 
-            lock (_levelCreationLock)
+            lock (this._levelCreationLock)
             {
-                if (_levelChannels.ContainsKey(level))
+                if (this._levelChannels.ContainsKey(level))
                     return;
 
                 // SingleReader  = this level's worker.
@@ -269,8 +344,8 @@ namespace Bodu.Security.Cryptography
                 };
 
                 var channel = Channel.CreateUnbounded<byte[]>(options);
-                _levelChannels[level] = channel;
-                _levelWorkers[level] = Task.Run(() => RunLevelWorkerAsync(level, channel, _cts.Token));
+                this._levelChannels[level] = channel;
+                this._levelWorkers[level] = Task.Run(() => this.RunLevelWorkerAsync(level, channel, this._cts.Token));
             }
         }
 
@@ -301,7 +376,7 @@ namespace Bodu.Security.Cryptography
         /// </remarks>
         private async Task RunLevelWorkerAsync(int level, Channel<byte[]> channel, CancellationToken token)
         {
-            var pending = new List<byte[]>(_fanOut);
+            var pending = new List<byte[]>(this._fanOut);
             int parentIndex = 0;
 
             // Drain the channel. The worker below runs concurrently, so tree reduction at this
@@ -310,13 +385,13 @@ namespace Bodu.Security.Cryptography
             {
                 pending.Add(hash);
 
-                if (pending.Count == _fanOut)
+                if (pending.Count == this._fanOut)
                 {
-                    var parentHash = CombineAndHash(pending, level, parentIndex);
+                    var parentHash = this.CombineAndHash(pending, level, parentIndex);
                     parentIndex++;
                     pending.Clear();
-                    EnsureLevelExists(level + 1);
-                    WriteToLevel(level + 1, parentHash);
+                    this.EnsureLevelExists(level + 1);
+                    this.WriteToLevel(level + 1, parentHash);
                 }
             }
 
@@ -327,17 +402,17 @@ namespace Bodu.Security.Cryptography
                     // All nodes were promoted in full groups; nothing left to handle here.
                     break;
 
-                case 1 when !_levelChannels.ContainsKey(level + 1):
+                case 1 when !this._levelChannels.ContainsKey(level + 1):
                     // Single surviving node with no higher level: this is the Merkle root.
-                    _rootHash = pending[0];
+                    this._rootHash = pending[0];
                     break;
 
                 default:
                     // Partial group, or a lone node alongside a pre-existing higher level:
                     // combine and promote so the next worker can make the root determination.
-                    var remainderHash = CombineAndHash(pending, level, parentIndex);
-                    EnsureLevelExists(level + 1);
-                    WriteToLevel(level + 1, remainderHash);
+                    var remainderHash = this.CombineAndHash(pending, level, parentIndex);
+                    this.EnsureLevelExists(level + 1);
+                    this.WriteToLevel(level + 1, remainderHash);
                     break;
             }
         }
@@ -366,22 +441,22 @@ namespace Bodu.Security.Cryptography
             // Zero-pad the partial tail block to a full block size before hashing, so that every
             // leaf is the same width regardless of input alignment. The bytes beyond _bufferLength
             // in _blockBuffer are cleared explicitly since the buffer is reused across calls.
-            if (_bufferLength > 0)
+            if (this._bufferLength > 0)
             {
-                Array.Clear(_blockBuffer, _bufferLength, _blockSize - _bufferLength);
-                SubmitLeaf(_blockBuffer, _blockSize);
-                _bufferLength = 0;
+                Array.Clear(this._blockBuffer, this._bufferLength, this._blockSize - this._bufferLength);
+                this.SubmitLeaf(this._blockBuffer, this._blockSize);
+                this._bufferLength = 0;
             }
 
             // Complete → await → advance: each iteration closes one level and waits for its
             // worker to finish all promotions before the next level's channel is closed.
-            for (int level = 0; _levelChannels.TryGetValue(level, out var channel); level++)
+            for (int level = 0; this._levelChannels.TryGetValue(level, out var channel); level++)
             {
                 channel.Writer.Complete();
-                await _levelWorkers[level];
+                await this._levelWorkers[level];
             }
 
-            return _rootHash ?? throw new InvalidOperationException("No input data was provided.");
+            return this._rootHash ?? throw new InvalidOperationException("No input data was provided.");
         }
 
         // -----------------------------------------------------------------------------------------
@@ -397,7 +472,7 @@ namespace Bodu.Security.Cryptography
         /// </remarks>
         private byte[] HashSpan(ReadOnlySpan<byte> data)
         {
-            using var hasher = _algorithmFactory();
+            using var hasher = this._algorithmFactory();
             var result = new byte[hasher.HashSize / 8];
             if (!hasher.TryComputeHash(data, result, out _))
                 throw new CryptographicException("TryComputeHash returned false; the output buffer may be too small.");
@@ -426,7 +501,7 @@ namespace Bodu.Security.Cryptography
         /// <param name="parentIndex">The index of the resulting parent node within level <paramref name="sourceLevel"/> + 1.</param>
         private byte[] CombineAndHash(List<byte[]> hashes, int sourceLevel, int parentIndex)
         {
-            using var hasher = _algorithmFactory();
+            using var hasher = this._algorithmFactory();
 
             // Feed all but the last child via TransformBlock — purely state accumulation, no output.
             for (int i = 0; i < hashes.Count - 1; i++)
@@ -440,10 +515,10 @@ namespace Bodu.Security.Cryptography
             // Snapshot child hashes and record the node only when diagnostics are active.
             // Keeping the snapshot and the recording in the same guarded block makes the
             // nullability relationship self-evident and avoids any suppression operator.
-            if (_diagnostics is not null)
+            if (this._diagnostics is not null)
             {
                 var childSnapshots = hashes.ConvertAll(static h => (byte[])h.Clone()).ToArray();
-                _diagnostics.RecordInternal(sourceLevel + 1, parentIndex, childSnapshots, result);
+                this._diagnostics.RecordInternal(sourceLevel + 1, parentIndex, childSnapshots, result);
             }
 
             return result;
@@ -456,10 +531,10 @@ namespace Bodu.Security.Cryptography
         /// <inheritdoc />
         public void Dispose()
         {
-            if (_disposed) return;
-            _disposed = true;
-            _cts.Cancel();
-            _cts.Dispose();
+            if (this._disposed) return;
+            this._disposed = true;
+            this._cts.Cancel();
+            this._cts.Dispose();
         }
     }
 }

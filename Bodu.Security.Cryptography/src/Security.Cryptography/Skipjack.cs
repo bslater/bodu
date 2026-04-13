@@ -4,11 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography
 {
+    using System;
+    using System.Security.Cryptography;
+
     /// <summary>
     /// Managed <c>Skipjack</c> symmetric‐algorithm wrapper that plugs the <see cref="SkipjackBlockCipher" /> engine into the standard
     /// <see cref="SymmetricAlgorithm" /> façade. It exposes CBC and ECB modes with any .NET <see cref="PaddingMode" /> scheme (default PKCS#7).
@@ -23,14 +23,14 @@ namespace Bodu.Security.Cryptography
         public Skipjack()
         {
             // Set up legal sizes according to the original spec (80‑bit key, 64‑bit block).
-            LegalKeySizesValue = new[] { new KeySizes(80, 80, 0) };
-            LegalBlockSizesValue = new[] { new KeySizes(64, 64, 0) };
+            this.LegalKeySizesValue = new[] { new KeySizes(80, 80, 0) };
+            this.LegalBlockSizesValue = new[] { new KeySizes(64, 64, 0) };
 
-            KeySizeValue = 80;      // bits
-            BlockSizeValue = 64;      // bits
+            this.KeySizeValue = 80;      // bits
+            this.BlockSizeValue = 64;      // bits
 
-            Padding = PaddingMode.PKCS7;
-            Mode = CipherMode.CBC;   // base property (not used directly - see BlockMode)
+            this.Padding = PaddingMode.PKCS7;
+            this.Mode = CipherMode.CBC;   // base property (not used directly - see BlockMode)
         }
 
         /// <summary>
@@ -38,33 +38,33 @@ namespace Bodu.Security.Cryptography
         /// </summary>
         public CipherBlockMode BlockMode { get; set; } = CipherBlockMode.CBC;
 
-        private int BlockSizeBytes => BlockSizeValue / 8;
+        private int BlockSizeBytes => this.BlockSizeValue / 8;
 
-        private int KeySizeBytes => KeySizeValue / 8;
+        private int KeySizeBytes => this.KeySizeValue / 8;
 
         /// <inheritdoc />
         public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV)
         {
-            Validate(rgbKey, rgbIV);
+            this.Validate(rgbKey, rgbIV);
             IBlockCipher engine = CreateCipher(rgbKey);
-            return new SkipjackTransform(engine, BlockMode, Padding, rgbIV, false);
+            return new SkipjackTransform(engine, this.BlockMode, this.Padding, rgbIV, false);
         }
 
         /// <inheritdoc />
         public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV)
         {
-            Validate(rgbKey, rgbIV);
+            this.Validate(rgbKey, rgbIV);
             IBlockCipher engine = CreateCipher(rgbKey);
-            return new SkipjackTransform(engine, BlockMode, Padding, rgbIV, true);
+            return new SkipjackTransform(engine, this.BlockMode, this.Padding, rgbIV, true);
         }
 
         /// <inheritdoc />
         public override void GenerateIV() =>
-            IVValue = CryptoHelpers.GetRandomNonZeroBytes(BlockSizeBytes);
+            this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeBytes);
 
         /// <inheritdoc />
         public override void GenerateKey() =>
-            KeyValue = CryptoHelpers.GetRandomNonZeroBytes(KeySizeBytes);
+            this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeBytes);
 
         private static IBlockCipher CreateCipher(byte[] key) => new SkipjackBlockCipher(key);
 
@@ -76,15 +76,15 @@ namespace Bodu.Security.Cryptography
             ThrowHelper.ThrowIfNull(key);
             ThrowHelper.ThrowIfNull(iv);
 
-            if (key.Length != KeySizeBytes)
+            if (key.Length != this.KeySizeBytes)
                 throw new CryptographicException(
                     string.Format(ResourceStrings.CryptographicException_InvalidKeySize,
-                                  key.Length * 8, CryptoHelpers.FormatLegalSizes(LegalKeySizesValue)));
+                                  key.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)));
 
-            if (iv.Length != BlockSizeBytes)
+            if (iv.Length != this.BlockSizeBytes)
                 throw new CryptographicException(
                     string.Format(ResourceStrings.CryptographicException_InvalidIVSize,
-                                  iv.Length * 8, CryptoHelpers.FormatLegalSizes(LegalBlockSizesValue)));
+                                  iv.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalBlockSizesValue)));
         }
     }
 }

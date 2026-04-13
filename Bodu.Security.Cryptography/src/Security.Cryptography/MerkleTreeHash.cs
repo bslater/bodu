@@ -1,12 +1,12 @@
-﻿using System;
-using System.Buffers;
-using System.Collections.Generic;
-using System.IO;
-using System.Security.Cryptography;
-using Bodu.Buffers;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+    using System.Buffers;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Security.Cryptography;
+    using Bodu.Buffers;
+
     /// <summary>
     /// Provides a single-threaded Merkle tree hash implementation with configurable hash algorithm,
     /// block size, and fan-out.
@@ -27,15 +27,15 @@ namespace Bodu.Security.Cryptography
     /// </remarks>
     public sealed class MerkleTreeHash : IDisposable
     {
-        private readonly int _blockSize;
-        private readonly int _fanOut;
-        private readonly Func<HashAlgorithm> _algorithmFactory;
+        private readonly int blockSize;
+        private readonly int fanOut;
+        private readonly Func<HashAlgorithm> algorithmFactory;
 
         // Accumulates raw bytes for the current partial block; reused across ComputeHash calls.
-        private readonly MemoryStream _buffer;
+        private readonly MemoryStream buffer;
 
         // Holds the hash values produced at the current tree level during reduction.
-        private List<byte[]> _currentLevel;
+        private List<byte[]> currentLevel;
 
         /// <summary>
         /// Initialises a new <see cref="MerkleTreeHash"/> instance with the specified hash algorithm
@@ -62,11 +62,11 @@ namespace Bodu.Security.Cryptography
         /// </exception>
         public MerkleTreeHash(Func<HashAlgorithm> algorithmFactory, int blockSize = 1024, int fanOut = 3)
         {
-            _algorithmFactory = algorithmFactory ?? throw new ArgumentNullException(nameof(algorithmFactory));
-            _blockSize = blockSize > 0 ? blockSize : throw new ArgumentOutOfRangeException(nameof(blockSize), "Block size must be greater than zero.");
-            _fanOut = fanOut >= 2 ? fanOut : throw new ArgumentOutOfRangeException(nameof(fanOut), "Fan-out must be at least 2.");
-            _buffer = new MemoryStream(blockSize);
-            _currentLevel = new List<byte[]>();
+            this.algorithmFactory = algorithmFactory ?? throw new ArgumentNullException(nameof(algorithmFactory));
+            this.blockSize = blockSize > 0 ? blockSize : throw new ArgumentOutOfRangeException(nameof(blockSize), "Block size must be greater than zero.");
+            this.fanOut = fanOut >= 2 ? fanOut : throw new ArgumentOutOfRangeException(nameof(fanOut), "Fan-out must be at least 2.");
+            this.buffer = new MemoryStream(blockSize);
+            this.currentLevel = new List<byte[]>();
         }
 
         /// <summary>
@@ -82,21 +82,21 @@ namespace Bodu.Security.Cryptography
         public byte[] ComputeHash(Stream input)
         {
             ArgumentNullException.ThrowIfNull(input);
-            Reset();
+            this.Reset();
 
-            byte[] buffer = ArrayPool<byte>.Shared.Rent(_blockSize * 4);
+            byte[] buffer = ArrayPool<byte>.Shared.Rent(this.blockSize * 4);
             try
             {
                 int bytesRead;
                 while ((bytesRead = input.Read(buffer, 0, buffer.Length)) > 0)
-                    ProcessInput(buffer.AsSpan(0, bytesRead));
+                    this.ProcessInput(buffer.AsSpan(0, bytesRead));
             }
             finally
             {
                 ArrayPool<byte>.Shared.Return(buffer, clearArray: true);
             }
 
-            return ComputeFinalHash();
+            return this.ComputeFinalHash();
         }
 
         /// <summary>
@@ -108,9 +108,9 @@ namespace Bodu.Security.Cryptography
         /// </returns>
         public byte[] ComputeHash(ReadOnlySpan<byte> data)
         {
-            Reset();
-            ProcessInput(data);
-            return ComputeFinalHash();
+            this.Reset();
+            this.ProcessInput(data);
+            return this.ComputeFinalHash();
         }
 
         /// <summary>
@@ -130,11 +130,11 @@ namespace Bodu.Security.Cryptography
         ///   <paramref name="offset"/> + <paramref name="count"/> exceeds the length of <paramref name="data"/>.
         /// </exception>
         public byte[] ComputeHash(byte[] data, int offset, int count) =>
-            ComputeHash(new ReadOnlySpan<byte>(data, offset, count));
+            this.ComputeHash(new ReadOnlySpan<byte>(data, offset, count));
 
         /// <inheritdoc cref="ComputeHash(ReadOnlySpan{byte})"/>
         public byte[] ComputeHash(byte[] data) =>
-            ComputeHash(new ReadOnlySpan<byte>(data));
+            this.ComputeHash(new ReadOnlySpan<byte>(data));
 
         // -----------------------------------------------------------------------------------------
         // Internal pipeline
@@ -142,22 +142,22 @@ namespace Bodu.Security.Cryptography
 
         private void Reset()
         {
-            _buffer.SetLength(0);
-            _currentLevel.Clear();
+            this.buffer.SetLength(0);
+            this.currentLevel.Clear();
         }
 
         private void ProcessInput(ReadOnlySpan<byte> data)
         {
             while (!data.IsEmpty)
             {
-                int toWrite = Math.Min(_blockSize - (int)_buffer.Length, data.Length);
-                _buffer.Write(data.Slice(0, toWrite));
+                int toWrite = Math.Min(this.blockSize - (int)this.buffer.Length, data.Length);
+                this.buffer.Write(data.Slice(0, toWrite));
                 data = data.Slice(toWrite);
 
-                if (_buffer.Length == _blockSize)
+                if (this.buffer.Length == this.blockSize)
                 {
-                    _currentLevel.Add(ComputeLeafHash(_buffer));
-                    _buffer.SetLength(0);
+                    this.currentLevel.Add(this.ComputeLeafHash(this.buffer));
+                    this.buffer.SetLength(0);
                 }
             }
         }
@@ -167,34 +167,34 @@ namespace Bodu.Security.Cryptography
             // Zero-pad the partial tail block to a full block size before hashing, so that every
             // leaf is the same width regardless of input alignment. MemoryStream.SetLength fills
             // the extended region with zeros when growing.
-            if (_buffer.Length > 0)
+            if (this.buffer.Length > 0)
             {
-                _buffer.SetLength(_blockSize);
-                _currentLevel.Add(ComputeLeafHash(_buffer));
-                _buffer.SetLength(0);
+                this.buffer.SetLength(this.blockSize);
+                this.currentLevel.Add(this.ComputeLeafHash(this.buffer));
+                this.buffer.SetLength(0);
             }
 
             // Reduce level by level until a single root hash remains.
-            while (_currentLevel.Count > 1)
+            while (this.currentLevel.Count > 1)
             {
-                int hashLength = _currentLevel[0].Length;
-                var nextLevel = new List<byte[]>(_currentLevel.Count / _fanOut + 1);
+                int hashLength = this.currentLevel[0].Length;
+                var nextLevel = new List<byte[]>(this.currentLevel.Count / this.fanOut + 1);
 
-                for (int i = 0; i < _currentLevel.Count; i += _fanOut)
+                for (int i = 0; i < this.currentLevel.Count; i += this.fanOut)
                 {
-                    int groupSize = Math.Min(_fanOut, _currentLevel.Count - i);
+                    int groupSize = Math.Min(this.fanOut, this.currentLevel.Count - i);
 
                     using var bufferBuilder = new PooledBufferBuilder<byte>(hashLength * groupSize);
                     for (int j = 0; j < groupSize; j++)
-                        bufferBuilder.AppendRange(_currentLevel[i + j]);
+                        bufferBuilder.AppendRange(this.currentLevel[i + j]);
 
-                    nextLevel.Add(ComputeLeafHash(bufferBuilder.AsSpan()));
+                    nextLevel.Add(this.ComputeLeafHash(bufferBuilder.AsSpan()));
                 }
 
-                _currentLevel = nextLevel;
+                this.currentLevel = nextLevel;
             }
 
-            return _currentLevel[0];
+            return this.currentLevel[0];
         }
 
         // -----------------------------------------------------------------------------------------
@@ -204,13 +204,13 @@ namespace Bodu.Security.Cryptography
         private byte[] ComputeLeafHash(MemoryStream stream)
         {
             stream.Position = 0;
-            using var hasher = _algorithmFactory();
+            using var hasher = this.algorithmFactory();
             return hasher.ComputeHash(stream);
         }
 
         private byte[] ComputeLeafHash(ReadOnlySpan<byte> span)
         {
-            using var hasher = _algorithmFactory();
+            using var hasher = this.algorithmFactory();
             byte[] temp = ArrayPool<byte>.Shared.Rent(span.Length);
             try
             {
@@ -230,7 +230,7 @@ namespace Bodu.Security.Cryptography
         /// <inheritdoc />
         public void Dispose()
         {
-            _buffer.Dispose();
+            this.buffer.Dispose();
         }
     }
 }

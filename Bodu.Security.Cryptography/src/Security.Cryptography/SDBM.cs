@@ -3,12 +3,12 @@
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-using System.Buffers.Binary;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography
 {
+    using System.Buffers.Binary;
+    using System.Runtime.CompilerServices;
+    using System.Security.Cryptography;
+
     /// <summary>
     /// Computes the hash for the input data using the <c>SDBM</c> hash algorithm. This variant applies a simple, non-cryptographic
     /// polynomial hashing technique originally derived from the NDBM database library. This class cannot be inherited.
@@ -47,7 +47,7 @@ namespace Bodu.Security.Cryptography
         /// </summary>
         public SDBM()
         {
-            HashSizeValue = 32;
+            this.HashSizeValue = 32;
         }
 
         /// <summary>
@@ -98,10 +98,11 @@ namespace Bodu.Security.Cryptography
             if (this.disposed) return;
             if (disposing)
             {
-                CryptoHelpers.ClearAndNullify(ref HashValue);
+                CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
                 this.workingHash = 0;
             }
+
             this.disposed = true;
             base.Dispose(disposing);
         }
@@ -137,7 +138,7 @@ namespace Bodu.Security.Cryptography
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
-            HashCore(array.AsSpan(ibStart, cbSize));
+            this.HashCore(array.AsSpan(ibStart, cbSize));
         }
 
         /// <summary>
@@ -160,6 +161,7 @@ namespace Bodu.Security.Cryptography
             {
                 v = b + (v << 6) + (v << 16) - v;
             }
+
             this.workingHash = v;
         }
 
@@ -238,7 +240,7 @@ namespace Bodu.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ThrowIfInvalidState()
         {
-            if (State != 0)
+            if (this.State != 0)
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
         }
     }

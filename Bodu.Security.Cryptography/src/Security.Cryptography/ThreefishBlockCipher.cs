@@ -1,15 +1,15 @@
-﻿using Bodu.Extensions;
-using System;
-using System.Buffers.Binary;
-using System.Diagnostics;
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Text;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+    using System.Buffers.Binary;
+    using System.Diagnostics;
+    using System.Numerics;
+    using System.Runtime.CompilerServices;
+    using System.Runtime.InteropServices;
+    using System.Security.Cryptography;
+    using System.Text;
+    using Bodu.Extensions;
+
     /// <summary>
     /// Represents the base implementation for Threefish block ciphers. This class provides the core infrastructure for Threefish encryption
     /// and decryption operations, including key and tweak scheduling, resource disposal, and core mixing functions.
@@ -51,34 +51,34 @@ namespace Bodu.Security.Cryptography
         /// <exception cref="ArgumentException">Thrown if <paramref name="key" /> or <paramref name="tweak" /> has an invalid length.</exception>
         protected ThreefishBlockCipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
         {
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(key, BlockSize);
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(tweak, 16);
+            ThrowHelper.ThrowIfSpanLengthIsInsufficient(key, this.BlockSize);
+            ThrowHelper.ThrowIfSpanLengthIsInsufficient(tweak, 16);
 
             // Key schedule initialization: 4 words + parity + duplicated key
-            KeySchedule = new ulong[BlockWords * 2 + 1];
-            MemoryMarshal.Cast<byte, ulong>(key).CopyTo(KeySchedule);
+            this.KeySchedule = new ulong[this.BlockWords * 2 + 1];
+            MemoryMarshal.Cast<byte, ulong>(key).CopyTo(this.KeySchedule);
             ulong parity = KeyParityValue;
-            for (int i = 0; i < BlockWords; i++)
+            for (int i = 0; i < this.BlockWords; i++)
             {
-                ulong word = KeySchedule[i];
+                ulong word = this.KeySchedule[i];
                 parity ^= word;
-                KeySchedule[BlockWords + 1 + i] = word; // repeat key word
+                this.KeySchedule[this.BlockWords + 1 + i] = word; // repeat key word
             }
 
-            KeySchedule[BlockWords] = parity;
+            this.KeySchedule[this.BlockWords] = parity;
 
             // Tweak schedule initialization: T0, T1, T2 = T0^T1, then duplicate T0/T1
-            TweakSchedule = new ulong[5];
-            MemoryMarshal.Cast<byte, ulong>(tweak).CopyTo(TweakSchedule);
-            TweakSchedule[2] = TweakSchedule[0] ^ TweakSchedule[1];
-            TweakSchedule[3] = TweakSchedule[0];
-            TweakSchedule[4] = TweakSchedule[1];
+            this.TweakSchedule = new ulong[5];
+            MemoryMarshal.Cast<byte, ulong>(tweak).CopyTo(this.TweakSchedule);
+            this.TweakSchedule[2] = this.TweakSchedule[0] ^ this.TweakSchedule[1];
+            this.TweakSchedule[3] = this.TweakSchedule[0];
+            this.TweakSchedule[4] = this.TweakSchedule[1];
         }
 
         /// <inheritdoc />
         ~ThreefishBlockCipher()
         {
-            Dispose(false);
+            this.Dispose(false);
         }
 
         /// <inheritdoc />
@@ -109,7 +109,7 @@ namespace Bodu.Security.Cryptography
         /// <inheritdoc />
         public void Dispose()
         {
-            Dispose(true);
+            this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
@@ -157,8 +157,8 @@ namespace Bodu.Security.Cryptography
 
             if (disposing)
             {
-                CryptoHelpers.Clear(KeySchedule);  // Securely zeros content
-                CryptoHelpers.Clear(TweakSchedule);
+                CryptoHelpers.Clear(this.KeySchedule);  // Securely zeros content
+                CryptoHelpers.Clear(this.TweakSchedule);
             }
 
             this.disposed = true;

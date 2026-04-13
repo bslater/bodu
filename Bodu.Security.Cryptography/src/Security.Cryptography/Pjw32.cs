@@ -50,8 +50,8 @@ namespace Bodu.Security.Cryptography
         /// </summary>
         public Pjw32()
         {
-            HashSizeValue = 32;
-            Initialize();
+            this.HashSizeValue = 32;
+            this.Initialize();
         }
 
         /// <summary>
@@ -102,10 +102,11 @@ namespace Bodu.Security.Cryptography
             if (this.disposed) return;
             if (disposing)
             {
-                CryptoHelpers.ClearAndNullify(ref HashValue);
+                CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
                 this.workingHash = 0;
             }
+
             this.disposed = true;
             base.Dispose(disposing);
         }
@@ -141,7 +142,7 @@ namespace Bodu.Security.Cryptography
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
-            HashCore(array.AsSpan(ibStart, cbSize));
+            this.HashCore(array.AsSpan(ibStart, cbSize));
         }
 
         /// <summary>
@@ -174,6 +175,7 @@ namespace Bodu.Security.Cryptography
                 v ^= high >> Shift;
                 v &= LowBitsMask;
             }
+
             this.workingHash = v;
         }
 
@@ -252,7 +254,7 @@ namespace Bodu.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ThrowIfInvalidState()
         {
-            if (State != 0)
+            if (this.State != 0)
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
         }
     }

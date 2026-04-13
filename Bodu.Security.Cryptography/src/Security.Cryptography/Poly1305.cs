@@ -4,13 +4,13 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
-using System.Buffers.Binary;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography
 {
+    using System.Buffers.Binary;
+    using System.Runtime.CompilerServices;
+    using System.Security.Cryptography;
+    using Bodu.Extensions;
+
     /// <summary>
     /// Computes the message authentication code (MAC) for the input data using the <c>Poly1305</c> algorithm. This implementation enforces
     /// one-time key usage and produces a fixed 16-byte (128-bit) tag from a 256-bit key, as specified in RFC 8439.
@@ -65,10 +65,10 @@ namespace Bodu.Security.Cryptography
         public Poly1305()
             : base(BlockSize)
         {
-            HashSizeValue = 128;
-            KeyValue = new byte[KeySize];
-            CryptoHelpers.FillWithRandomNonZeroBytes(KeyValue);
-            InitializeKey();
+            this.HashSizeValue = 128;
+            this.KeyValue = new byte[KeySize];
+            CryptoHelpers.FillWithRandomNonZeroBytes(this.KeyValue);
+            this.InitializeKey();
         }
 
         /// <summary>
@@ -110,20 +110,20 @@ namespace Bodu.Security.Cryptography
             get
             {
                 this.ThrowIfDisposed();
-                return KeyValue.Copy();
+                return this.KeyValue.Copy();
             }
 
             set
             {
                 this.ThrowIfDisposed();
-                ThrowIfInvalidState();
+                this.ThrowIfInvalidState();
                 ThrowHelper.ThrowIfNull(value);
 
                 if (value.Length != KeySize)
                     throw new CryptographicException(string.Format(ResourceStrings.CryptographicException_InvalidKeySize, value.Length, KeySize));
 
-                KeyValue = value.Copy();
-                InitializeKey();
+                this.KeyValue = value.Copy();
+                this.InitializeKey();
             }
         }
 
@@ -138,13 +138,13 @@ namespace Bodu.Security.Cryptography
             Array.Clear(this.acc);
 
             // If KeyValue was not explicitly set or was cleared, regenerate a random key
-            if (KeyValue is null || KeyValue.Length != KeySize)
+            if (this.KeyValue is null || this.KeyValue.Length != KeySize)
             {
-                KeyValue = new byte[KeySize];
-                CryptoHelpers.FillWithRandomNonZeroBytes(KeyValue);
+                this.KeyValue = new byte[KeySize];
+                CryptoHelpers.FillWithRandomNonZeroBytes(this.KeyValue);
             }
 
-            InitializeKey();
+            this.InitializeKey();
         }
 
         /// <summary>
@@ -160,7 +160,7 @@ namespace Bodu.Security.Cryptography
 
             if (disposing)
             {
-                CryptoHelpers.ClearAndNullify(ref HashValue);
+                CryptoHelpers.ClearAndNullify(ref this.HashValue);
                 Array.Clear(this.acc);
                 Array.Clear(this.r);
                 Array.Clear(this.key);
@@ -274,7 +274,7 @@ namespace Bodu.Security.Cryptography
             BinaryPrimitives.WriteUInt32LittleEndian(tag.Slice(12), (uint)f3);
 
             // Clear key immediately after use to prevent reuse
-            CryptoHelpers.ClearAndNullify(ref KeyValue!);
+            CryptoHelpers.ClearAndNullify(ref this.KeyValue!);
 
             return tag.ToArray();
         }
@@ -285,7 +285,7 @@ namespace Bodu.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void InitializeKey()
         {
-            ReadOnlySpan<byte> key = KeyValue;
+            ReadOnlySpan<byte> key = this.KeyValue;
 
             // Load and clamp the first 128 bits of the key as the polynomial 'r' key Clamp 'r' by setting/clearing specific bits to avoid
             // vulnerabilities as per RFC 8439, Section 2.5.1

@@ -50,7 +50,7 @@ namespace Bodu.Security.Cryptography
         /// <summary>
         /// Verifies that setting an invalid hashValue for <see cref="Tiger.HashSize" /> throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(-1)]
         [DataRow(0)]
         [DataRow(1)]
@@ -70,7 +70,7 @@ namespace Bodu.Security.Cryptography
         /// <summary>
         /// Verifies that setting a valid hashValue for <see cref="Tiger.HashSize" />.
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(128)]
         [DataRow(160)]
         [DataRow(192)]

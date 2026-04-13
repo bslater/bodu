@@ -4,10 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-
 namespace Bodu.Security.Cryptography
 {
+    using System;
+
     /// <summary>
     /// Computes the hash for the input data using the <c>Adler-32</c> hash algorithm. This variant uses a modulus of 65521 and follows the
     /// standard Adler checksum specification for computing 32-bit checksums. This class cannot be inherited.

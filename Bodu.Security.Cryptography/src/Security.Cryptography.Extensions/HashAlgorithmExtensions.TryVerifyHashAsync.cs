@@ -1,34 +1,49 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+// --------------------------------------------------------------------------------------------------------------- //
+// <copyright file="HashAlgorithmExtensions_TryVerifyHashAsync.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Security.Cryptography.Extensions
 {
+    using System;
+    using System.IO;
+    using System.Security.Cryptography;
+    using System.Text;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public static partial class HashAlgorithmExtensions
     {
         /// <summary>
-        /// Attempts to asynchronously verify that the computed hash of a stream matches the expected hash value.
+        /// Attempts to asynchronously compute and verify the hash of a stream against the expected hash value.
         /// </summary>
-        /// <param name="algorithm">The <see cref="HashAlgorithm" /> instance used to compute the hash.</param>
-        /// <param name="stream">The stream to read and hash. Must be readable.</param>
-        /// <param name="expectedHash">The expected hash value as a byte array.</param>
-        /// <param name="cancellationToken">Token used to cancel the operation.</param>
-        /// <returns><c>true</c> if the computed hash matches; otherwise, <c>false</c>.</returns>
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="stream">
+        /// The stream to read and hash. A <see langword="null" /> value causes the task to resolve to <see langword="false" />.
+        /// </param>
+        /// <param name="expectedHash">
+        /// The expected hash value as a byte array. A <see langword="null" /> value causes the task to resolve to
+        /// <see langword="false" />.
+        /// </param>
+        /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+        /// <returns>
+        /// A task that evaluates to <see langword="true" /> if the computed hash matches <paramref name="expectedHash" />;
+        /// otherwise, <see langword="false" />.
+        /// </returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="algorithm" /> is <see langword="null" />.</exception>
-        /// <remarks>This method safely validates a stream against a known hash, handling any internal errors gracefully.</remarks>
         public static async Task<bool> TryVerifyHashAsync(this HashAlgorithm algorithm, Stream stream, byte[] expectedHash, CancellationToken cancellationToken = default)
         {
             ThrowHelper.ThrowIfNull(algorithm);
-            if (expectedHash == null || stream == null)
+
+            if (stream == null || expectedHash == null)
                 return false;
 
             try
             {
-                return await algorithm.VerifyHashAsync(stream, expectedHash, cancellationToken);
+                return await algorithm.VerifyHashAsync(stream, expectedHash, cancellationToken).ConfigureAwait(false);
             }
             catch
             {
@@ -37,23 +52,38 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Attempts to asynchronously verify that the computed hash of a stream matches the expected hexadecimal string.
+        /// Attempts to asynchronously compute and verify the hash of a stream against the expected hexadecimal hash string.
         /// </summary>
-        /// <param name="algorithm">The <see cref="HashAlgorithm" /> used to compute the hash.</param>
-        /// <param name="stream">The readable stream to hash.</param>
-        /// <param name="expectedHex">The expected hash as a hexadecimal string.</param>
-        /// <param name="cancellationToken">Token used to cancel the operation.</param>
-        /// <returns><c>true</c> if the computed hash matches the expected hex; otherwise, <c>false</c>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="algorithm" /> or <paramref name="expectedHex" /> is <see langword="null" />.</exception>
-        /// <remarks>Used for verifying hashes from test vectors or external sources represented as hex strings.</remarks>
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="stream">
+        /// The readable stream to hash asynchronously. A <see langword="null" /> value causes the task to resolve to
+        /// <see langword="false" />.
+        /// </param>
+        /// <param name="expectedHex">
+        /// The expected hash as a hexadecimal string. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+        /// <returns>
+        /// A task that evaluates to <see langword="true" /> if the computed hash matches <paramref name="expectedHex" />;
+        /// otherwise, <see langword="false" />.
+        /// Returns <see langword="false" /> if <paramref name="expectedHex" /> is not a valid hexadecimal string.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="algorithm" /> or <paramref name="expectedHex" /> is <see langword="null" />.
+        /// </exception>
         public static async Task<bool> TryVerifyHashAsync(this HashAlgorithm algorithm, Stream stream, string expectedHex, CancellationToken cancellationToken = default)
         {
             ThrowHelper.ThrowIfNull(algorithm);
             ThrowHelper.ThrowIfNull(expectedHex);
 
+            if (stream == null)
+                return false;
+
             try
             {
-                return await algorithm.VerifyHashAsync(stream, expectedHex, cancellationToken);
+                return await algorithm.VerifyHashAsync(stream, expectedHex, cancellationToken).ConfigureAwait(false);
             }
             catch
             {
@@ -62,22 +92,32 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Attempts to asynchronously verify that the computed hash of a stream matches the expected memory buffer.
+        /// Attempts to asynchronously compute and verify the hash of a stream against the expected hash value held in a memory buffer.
         /// </summary>
-        /// <param name="algorithm">The <see cref="HashAlgorithm" /> used to compute the hash.</param>
-        /// <param name="stream">The stream to read and hash asynchronously.</param>
-        /// <param name="expectedHash">The expected hash value as a memory buffer.</param>
-        /// <param name="cancellationToken">Token to cancel the operation.</param>
-        /// <returns><c>true</c> if the computed hash matches; otherwise, <c>false</c>.</returns>
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="stream">
+        /// The stream to read and hash asynchronously. A <see langword="null" /> value causes the task to resolve to
+        /// <see langword="false" />.
+        /// </param>
+        /// <param name="expectedHash">The expected hash value as a <see cref="ReadOnlyMemory{T}" /> of bytes.</param>
+        /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+        /// <returns>
+        /// A task that evaluates to <see langword="true" /> if the computed hash matches <paramref name="expectedHash" />;
+        /// otherwise, <see langword="false" />.
+        /// </returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="algorithm" /> is <see langword="null" />.</exception>
-        /// <remarks>This overload supports memory-friendly comparison of hashes from stream input.</remarks>
         public static async Task<bool> TryVerifyHashAsync(this HashAlgorithm algorithm, Stream stream, ReadOnlyMemory<byte> expectedHash, CancellationToken cancellationToken = default)
         {
             ThrowHelper.ThrowIfNull(algorithm);
 
+            if (stream == null)
+                return false;
+
             try
             {
-                return await algorithm.VerifyHashAsync(stream, expectedHash, cancellationToken);
+                return await algorithm.VerifyHashAsync(stream, expectedHash, cancellationToken).ConfigureAwait(false);
             }
             catch
             {
@@ -86,15 +126,30 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Attempts to asynchronously verify that the computed hash of a byte array matches the expected hash.
+        /// Attempts to asynchronously compute and verify the hash of a byte array against the expected hash value.
         /// </summary>
-        /// <param name="algorithm">The <see cref="HashAlgorithm" /> used to compute the hash.</param>
-        /// <param name="input">The input data as a byte array.</param>
-        /// <param name="expectedHash">The expected hash to compare against.</param>
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="input">
+        /// The input data to hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="expectedHash">
+        /// The expected hash value as a byte array. Must not be <see langword="null" />.
+        /// </param>
         /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
-        /// <returns><c>true</c> if the computed hash matches the expected value; otherwise, <c>false</c>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if any argument is <see langword="null" />.</exception>
-        /// <remarks>Converts the input to a stream internally for compatibility with async hash APIs.</remarks>
+        /// <returns>
+        /// A task that evaluates to <see langword="true" /> if the computed hash matches <paramref name="expectedHash" />;
+        /// otherwise, <see langword="false" />.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="algorithm" />, <paramref name="input" />, or <paramref name="expectedHash" /> is
+        /// <see langword="null" />.
+        /// </exception>
+        /// <remarks>
+        /// <paramref name="input" /> is wrapped in a non-allocating <see cref="MemoryStream" /> and passed to the stream-based
+        /// <see cref="VerifyHashAsync(HashAlgorithm, Stream, byte[], CancellationToken)" /> overload.
+        /// </remarks>
         public static async Task<bool> TryVerifyHashAsync(this HashAlgorithm algorithm, byte[] input, byte[] expectedHash, CancellationToken cancellationToken = default)
         {
             ThrowHelper.ThrowIfNull(algorithm);
@@ -103,8 +158,8 @@ namespace Bodu.Security.Cryptography.Extensions
 
             try
             {
-                var stream = new MemoryStream(input, writable: false);
-                return await algorithm.VerifyHashAsync(stream, expectedHash, cancellationToken);
+                using var stream = new MemoryStream(input, writable: false);
+                return await algorithm.VerifyHashAsync(stream, expectedHash, cancellationToken).ConfigureAwait(false);
             }
             catch
             {
@@ -113,15 +168,31 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Attempts to asynchronously verify that the computed hash of a byte array matches the expected hexadecimal hash.
+        /// Attempts to asynchronously compute and verify the hash of a byte array against the expected hexadecimal hash string.
         /// </summary>
-        /// <param name="algorithm">The <see cref="HashAlgorithm" /> used for hashing.</param>
-        /// <param name="input">The input data to hash.</param>
-        /// <param name="expectedHex">The expected hash in hexadecimal format.</param>
-        /// <param name="cancellationToken">Optional cancellation token.</param>
-        /// <returns><c>true</c> if the hash matches the hex string; otherwise, <c>false</c>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if any argument is <see langword="null" />.</exception>
-        /// <remarks>This method enables secure comparison against external sources or stored hashes in hex format.</remarks>
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="input">
+        /// The input data to hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="expectedHex">
+        /// The expected hash as a hexadecimal string. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+        /// <returns>
+        /// A task that evaluates to <see langword="true" /> if the computed hash matches <paramref name="expectedHex" />;
+        /// otherwise, <see langword="false" />.
+        /// Returns <see langword="false" /> if <paramref name="expectedHex" /> is not a valid hexadecimal string.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="algorithm" />, <paramref name="input" />, or <paramref name="expectedHex" /> is
+        /// <see langword="null" />.
+        /// </exception>
+        /// <remarks>
+        /// <paramref name="input" /> is wrapped in a non-allocating <see cref="MemoryStream" /> and passed to the stream-based
+        /// <see cref="VerifyHashAsync(HashAlgorithm, Stream, string, CancellationToken)" /> overload.
+        /// </remarks>
         public static async Task<bool> TryVerifyHashAsync(this HashAlgorithm algorithm, byte[] input, string expectedHex, CancellationToken cancellationToken = default)
         {
             ThrowHelper.ThrowIfNull(algorithm);
@@ -130,8 +201,8 @@ namespace Bodu.Security.Cryptography.Extensions
 
             try
             {
-                var stream = new MemoryStream(input, writable: false);
-                return await algorithm.VerifyHashAsync(stream, expectedHex, cancellationToken);
+                using var stream = new MemoryStream(input, writable: false);
+                return await algorithm.VerifyHashAsync(stream, expectedHex, cancellationToken).ConfigureAwait(false);
             }
             catch
             {
@@ -140,16 +211,33 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Attempts to asynchronously verify that the computed hash of a string (after encoding) matches the expected value.
+        /// Attempts to asynchronously compute and verify the hash of an encoded string against the expected hash value.
         /// </summary>
-        /// <param name="algorithm">The <see cref="HashAlgorithm" /> instance.</param>
-        /// <param name="input">The input string to encode and hash.</param>
-        /// <param name="encoding">The character encoding used to convert the string to bytes.</param>
-        /// <param name="expectedHash">The expected hash byte array.</param>
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="input">
+        /// The input string to encode and hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="encoding">
+        /// The character encoding used to convert <paramref name="input" /> to bytes. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="expectedHash">
+        /// The expected hash value as a byte array. Must not be <see langword="null" />.
+        /// </param>
         /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
-        /// <returns><c>true</c> if the computed hash matches <paramref name="expectedHash" />; otherwise, <c>false</c>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if any argument is <see langword="null" />.</exception>
-        /// <remarks>Used when comparing user-entered or stored strings after encoding to binary form for hashing.</remarks>
+        /// <returns>
+        /// A task that evaluates to <see langword="true" /> if the computed hash matches <paramref name="expectedHash" />;
+        /// otherwise, <see langword="false" />.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="algorithm" />, <paramref name="input" />, <paramref name="encoding" />, or
+        /// <paramref name="expectedHash" /> is <see langword="null" />.
+        /// </exception>
+        /// <remarks>
+        /// The encoded bytes are wrapped in a non-allocating <see cref="MemoryStream" /> and passed to the stream-based
+        /// <see cref="VerifyHashAsync(HashAlgorithm, Stream, byte[], CancellationToken)" /> overload.
+        /// </remarks>
         public static async Task<bool> TryVerifyHashAsync(this HashAlgorithm algorithm, string input, Encoding encoding, byte[] expectedHash, CancellationToken cancellationToken = default)
         {
             ThrowHelper.ThrowIfNull(algorithm);
@@ -160,8 +248,8 @@ namespace Bodu.Security.Cryptography.Extensions
             try
             {
                 byte[] inputBytes = encoding.GetBytes(input);
-                var stream = new MemoryStream(inputBytes, writable: false);
-                return await algorithm.VerifyHashAsync(stream, expectedHash, cancellationToken);
+                using var stream = new MemoryStream(inputBytes, writable: false);
+                return await algorithm.VerifyHashAsync(stream, expectedHash, cancellationToken).ConfigureAwait(false);
             }
             catch
             {

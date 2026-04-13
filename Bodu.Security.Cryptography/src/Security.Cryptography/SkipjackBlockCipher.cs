@@ -4,11 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Runtime.CompilerServices;
-
 namespace Bodu.Security.Cryptography
 {
+    using System;
+    using System.Runtime.CompilerServices;
+
     /// <summary>
     /// Fully managed implementation of the <c>Skipjack</c> block cipher that is binary-compatible with the key schedule used by Bouncy
     /// Castle, OpenSSL, and the original NSA reference implementation.
@@ -101,8 +101,8 @@ namespace Bodu.Security.Cryptography
         /// <remarks>Mirrors the BC/OpenSSL decrypt sequence, including the word-order swap in the input/output stages.</remarks>
         public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
         {
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(input, BlockBytes);
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(output, BlockBytes);
+            ThrowHelper.ThrowIfSpanLengthIsInsufficient(input, BlockBytes);
+            ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, BlockBytes);
             this.ThrowIfDisposed();
 
             // BC decrypt swaps words W1↔W2 and W3↔W4 on input
@@ -122,7 +122,7 @@ namespace Bodu.Security.Cryptography
                     ushort tmp = w4;
                     w4 = w3;
                     w3 = (ushort)(w1 ^ w2 ^ rc);
-                    w2 = H(k, w1);
+                    w2 = this.H(k, w1);
                     w1 = tmp;
                 }
                 else // inverse RULE A
@@ -130,7 +130,7 @@ namespace Bodu.Security.Cryptography
                     ushort tmp = w4;
                     w4 = w3;
                     w3 = w2;
-                    w2 = H(k, w1);
+                    w2 = this.H(k, w1);
                     w1 = (ushort)(w2 ^ tmp ^ rc);
                 }
 
@@ -169,8 +169,8 @@ namespace Bodu.Security.Cryptography
         /// </remarks>
         public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
         {
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(input, BlockBytes);
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(output, BlockBytes);
+            ThrowHelper.ThrowIfSpanLengthIsInsufficient(input, BlockBytes);
+            ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, BlockBytes);
             this.ThrowIfDisposed();
 
             ushort w1 = ReadBE16(input, 0);
@@ -186,7 +186,7 @@ namespace Bodu.Security.Cryptography
 
                 if ((round / 8 & 1) == 0) // RULE A (rounds 0-7,16-23)
                 {
-                    ushort t = G(k, w1);
+                    ushort t = this.G(k, w1);
                     w1 = (ushort)(t ^ w4 ^ rc);
                     (w2, w3, w4) = (t, w2, w3);
                 }
@@ -195,7 +195,7 @@ namespace Bodu.Security.Cryptography
                     ushort t = w4;
                     w4 = w3;
                     w3 = (ushort)(w1 ^ w2 ^ rc);
-                    w2 = G(k, w1);
+                    w2 = this.G(k, w1);
                     w1 = t;
                 }
 

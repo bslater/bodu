@@ -68,7 +68,7 @@ namespace Bodu.Security.Cryptography
         /// <summary>
         /// Verifies that setting an invalid hashValue for <see cref="CubeHash.InitializationRounds" /> throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(-1)]
         [DataRow(0)]
         [DataRow(4097)]
@@ -83,7 +83,7 @@ namespace Bodu.Security.Cryptography
         /// <summary>
         /// Verifies that setting a valid hashValue for <see cref="CubeHash.InitializationRounds" />.
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(1)]
         [DataRow(4)]
         [DataRow(8)]

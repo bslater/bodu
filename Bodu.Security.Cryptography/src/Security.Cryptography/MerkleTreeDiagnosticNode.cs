@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Security.Cryptography;
+
     /// <summary>
     /// Represents a single node captured during a Merkle tree hash computation, recording the child
     /// hashes used as input and the hash value produced as output.
@@ -67,7 +67,7 @@ namespace Bodu.Security.Cryptography
     /// </example>
     public sealed class MerkleTreeDiagnostics
     {
-        private readonly ConcurrentBag<MerkleTreeDiagnosticNode> _nodes = new();
+        private readonly ConcurrentBag<MerkleTreeDiagnosticNode> nodes = new();
 
         // -----------------------------------------------------------------------------------------
         // Internal recording — called by ParallelMerkleTreeHash during computation
@@ -75,7 +75,7 @@ namespace Bodu.Security.Cryptography
 
         /// <summary>Records a leaf node produced from an input block.</summary>
         internal void RecordLeaf(int index, byte[] hash) =>
-            _nodes.Add(new MerkleTreeDiagnosticNode(
+            this.nodes.Add(new MerkleTreeDiagnosticNode(
                 Level: 0,
                 Index: index,
                 IsLeaf: true,
@@ -88,7 +88,7 @@ namespace Bodu.Security.Cryptography
         /// <param name="childHashes">Snapshots of the child hash values used as input.</param>
         /// <param name="hash">The resulting parent hash.</param>
         internal void RecordInternal(int level, int index, byte[][] childHashes, byte[] hash) =>
-            _nodes.Add(new MerkleTreeDiagnosticNode(
+            this.nodes.Add(new MerkleTreeDiagnosticNode(
                 Level: level,
                 Index: index,
                 IsLeaf: false,
@@ -106,7 +106,7 @@ namespace Bodu.Security.Cryptography
         ///   A list of all <see cref="MerkleTreeDiagnosticNode"/> instances recorded during the computation.
         /// </returns>
         public IReadOnlyList<MerkleTreeDiagnosticNode> GetAllNodes() =>
-            _nodes.OrderBy(n => n.Level).ThenBy(n => n.Index).ToList();
+            this.nodes.OrderBy(n => n.Level).ThenBy(n => n.Index).ToList();
 
         /// <summary>
         /// Gets the number of distinct levels recorded in the tree, including the leaf level.
@@ -115,7 +115,7 @@ namespace Bodu.Security.Cryptography
         ///   The total number of levels, or zero if no nodes have been recorded.
         /// </returns>
         public int GetLevelCount() =>
-            _nodes.Count == 0 ? 0 : _nodes.Max(n => n.Level) + 1;
+            this.nodes.Count == 0 ? 0 : this.nodes.Max(n => n.Level) + 1;
 
         /// <summary>
         /// Returns all nodes at the specified <paramref name="level"/>, sorted by index ascending.
@@ -125,14 +125,14 @@ namespace Bodu.Security.Cryptography
         ///   A list of nodes at <paramref name="level"/>, or an empty list if none exist.
         /// </returns>
         public IReadOnlyList<MerkleTreeDiagnosticNode> GetLevel(int level) =>
-            _nodes.Where(n => n.Level == level).OrderBy(n => n.Index).ToList();
+            this.nodes.Where(n => n.Level == level).OrderBy(n => n.Index).ToList();
 
         /// <summary>
         /// Gets the root node — the sole node at the highest recorded level — or
         /// <see langword="null"/> if no nodes have been recorded.
         /// </summary>
         public MerkleTreeDiagnosticNode? Root =>
-            _nodes.Count == 0 ? null : _nodes.MaxBy(n => n.Level);
+            this.nodes.Count == 0 ? null : this.nodes.MaxBy(n => n.Level);
 
         // -----------------------------------------------------------------------------------------
         // Validation
@@ -172,7 +172,7 @@ namespace Bodu.Security.Cryptography
 
             var issues = new List<string>();
 
-            foreach (var node in _nodes.Where(n => !n.IsLeaf).OrderBy(n => n.Level).ThenBy(n => n.Index))
+            foreach (var node in this.nodes.Where(n => !n.IsLeaf).OrderBy(n => n.Level).ThenBy(n => n.Index))
             {
                 var recomputed = CombineHashes(node.ChildHashes, algorithmFactory);
                 if (!recomputed.SequenceEqual(node.Hash))
@@ -211,9 +211,9 @@ namespace Bodu.Security.Cryptography
         {
             ArgumentNullException.ThrowIfNull(writer);
 
-            var allNodes = GetAllNodes();
-            int levelCount = GetLevelCount();
-            var root = Root;
+            var allNodes = this.GetAllNodes();
+            int levelCount = this.GetLevelCount();
+            var root = this.Root;
 
             // Build a reverse lookup from hex-encoded hash to node, used to annotate child
             // references in the tree display. Duplicate hashes resolve to the lowest-level match.
@@ -241,7 +241,7 @@ namespace Bodu.Security.Cryptography
 
             for (int level = 0; level < levelCount; level++)
             {
-                var levelNodes = GetLevel(level);
+                var levelNodes = this.GetLevel(level);
                 bool isRoot = level == levelCount - 1;
                 string label = level == 0 ? "leaf" : "internal";
                 string rootTag = isRoot ? "  ★  root" : string.Empty;
@@ -277,7 +277,7 @@ namespace Bodu.Security.Cryptography
             // Optional validation summary.
             if (algorithmFactory is not null)
             {
-                bool valid = Validate(algorithmFactory, out var validationErrors);
+                bool valid = this.Validate(algorithmFactory, out var validationErrors);
                 int internalCount = allNodes.Count(n => !n.IsLeaf);
 
                 writer.WriteLine(heavy);

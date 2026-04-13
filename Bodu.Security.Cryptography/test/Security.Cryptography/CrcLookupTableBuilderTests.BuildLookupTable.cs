@@ -90,7 +90,7 @@ namespace Bodu.Security.Cryptography
             }
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(int.MinValue)]
         [DataRow(-1)]
         [DataRow(0)]
@@ -114,7 +114,7 @@ namespace Bodu.Security.Cryptography
             }
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(1, 2)]     // Less than 8 bits: table size = 2
         [DataRow(2, 2)]
         [DataRow(4, 2)]

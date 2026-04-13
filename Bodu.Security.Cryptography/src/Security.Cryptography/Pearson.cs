@@ -1,9 +1,9 @@
-﻿using Bodu.Extensions;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System.Runtime.CompilerServices;
+    using System.Security.Cryptography;
+    using Bodu.Extensions;
+
     /// <summary>
     /// Computes the hash for the input data using the <c>Pearson</c> hash algorithm. This variant applies a non-cryptographic
     /// permutation-based transformation using a 256-byte lookup table to produce compact hash values. This class cannot be inherited.
@@ -57,8 +57,8 @@ namespace Bodu.Security.Cryptography
         public Pearson()
         {
             this.permutationTable = GetPermutationTable(PearsonTableType.Pearson);
-            HashSizeValue = MinHashSize;
-            this.workingHash = new byte[HashSizeValue / 8];
+            this.HashSizeValue = MinHashSize;
+            this.workingHash = new byte[this.HashSizeValue / 8];
             this.isFirstByte = true;
         }
 
@@ -156,18 +156,18 @@ namespace Bodu.Security.Cryptography
             {
                 this.ThrowIfDisposed();
 
-                return HashSizeValue;
+                return this.HashSizeValue;
             }
 
             set
             {
                 this.ThrowIfDisposed();
-                ThrowIfInvalidState();
+                this.ThrowIfInvalidState();
                 ThrowHelper.ThrowIfOutOfRange(value, MinHashSize, MaxHashSize);
                 ThrowHelper.ThrowIfNotPositiveMultipleOf(value, 8);
 
-                HashSizeValue = value;
-                Initialize();
+                this.HashSizeValue = value;
+                this.Initialize();
             }
         }
 
@@ -187,7 +187,7 @@ namespace Bodu.Security.Cryptography
             set
             {
                 this.ThrowIfDisposed();
-                ThrowIfInvalidState();
+                this.ThrowIfInvalidState();
                 if (value == null || value.Length != 256 || value.Distinct().Count() != 256)
                     throw new ArgumentException("Table must contain 256 unique bytes.", nameof(value));
 
@@ -225,7 +225,7 @@ namespace Bodu.Security.Cryptography
             set
             {
                 this.ThrowIfDisposed();
-                ThrowIfInvalidState();
+                this.ThrowIfInvalidState();
 
                 this.tableType = value;
 
@@ -249,7 +249,7 @@ namespace Bodu.Security.Cryptography
             State = 0;
             finalized = false;
 #endif
-            this.workingHash = new byte[HashSizeValue / 8];
+            this.workingHash = new byte[this.HashSizeValue / 8];
             this.isFirstByte = true;
         }
 
@@ -266,7 +266,7 @@ namespace Bodu.Security.Cryptography
 
             if (disposing)
             {
-                CryptoHelpers.ClearAndNullify(ref HashValue);
+                CryptoHelpers.ClearAndNullify(ref this.HashValue);
                 CryptoHelpers.ClearAndNullify(ref this.permutationTable!);
                 CryptoHelpers.ClearAndNullify(ref this.workingHash!);
 
@@ -300,7 +300,7 @@ namespace Bodu.Security.Cryptography
         {
             ThrowHelper.ThrowIfNull(array);
             this.ThrowIfDisposed();
-            ThrowIfTableNotConfigured();
+            this.ThrowIfTableNotConfigured();
 
 #if !NET6_0_OR_GREATER
     ThrowHelper.ThrowIfLessThan(ibStart, 0);
@@ -311,7 +311,7 @@ namespace Bodu.Security.Cryptography
 #endif
 
             // Delegate to the span-based overload
-            HashCore(array.AsSpan(ibStart, cbSize));
+            this.HashCore(array.AsSpan(ibStart, cbSize));
         }
 
         /// <summary>
@@ -326,7 +326,7 @@ namespace Bodu.Security.Cryptography
         protected override void HashCore(ReadOnlySpan<byte> source)
         {
             this.ThrowIfDisposed();
-            ThrowIfTableNotConfigured();
+            this.ThrowIfTableNotConfigured();
 
             ReadOnlySpan<byte> t = this.permutationTable.AsSpan();
             var v = this.workingHash;
@@ -384,7 +384,7 @@ namespace Bodu.Security.Cryptography
         protected override byte[] HashFinal()
         {
             this.ThrowIfDisposed();
-            ThrowIfTableNotConfigured();
+            this.ThrowIfTableNotConfigured();
 
 #if !NET6_0_OR_GREATER
             if (finalized)
@@ -450,7 +450,7 @@ namespace Bodu.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ThrowIfInvalidState()
         {
-            if (State != 0)
+            if (this.State != 0)
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
         }
 
@@ -468,7 +468,7 @@ namespace Bodu.Security.Cryptography
             {
                 throw new CryptographicUnexpectedOperationException(
                     $"A valid 256-byte permutation t must be set before hashing. " +
-                    $"Ensure that the {nameof(Table)} property is explicitly assigned if using {nameof(PearsonTableType.UserDefined)}.");
+                    $"Ensure that the {nameof(this.Table)} property is explicitly assigned if using {nameof(PearsonTableType.UserDefined)}.");
             }
         }
     }

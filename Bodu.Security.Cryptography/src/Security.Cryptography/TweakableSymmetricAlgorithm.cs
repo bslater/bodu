@@ -1,11 +1,11 @@
-﻿using Bodu.Extensions;
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Runtime.CompilerServices;
+    using System.Security.Cryptography;
+    using Bodu.Extensions;
+
     /// <summary>
     /// Represents a symmetric encryption algorithm that supports an additional tweak value in addition to the encryption key and
     /// initialization vector (IV).
@@ -67,7 +67,7 @@ namespace Bodu.Security.Cryptography
         /// property in derived types to define custom tweak size support for a specific algorithm.
         /// </remarks>
         public virtual KeySizes[] LegalTweakSizes =>
-            (KeySizes[])LegalTweakSizesValue.Clone();
+            (KeySizes[])this.LegalTweakSizesValue.Clone();
 
         /// <summary>
         /// Gets or sets the tweak value for the symmetric algorithm.
@@ -87,10 +87,10 @@ namespace Bodu.Security.Cryptography
             {
                 this.ThrowIfDisposed();
 
-                if (TweakValue == null)
-                    GenerateTweak();
+                if (this.TweakValue == null)
+                    this.GenerateTweak();
 
-                return TweakValue.Copy()!; // defensive copy
+                return this.TweakValue.Copy()!; // defensive copy
             }
 
             set
@@ -98,10 +98,10 @@ namespace Bodu.Security.Cryptography
                 this.ThrowIfDisposed();
                 ArgumentNullException.ThrowIfNull(value);
 
-                ThrowIfInvalidTweakSize(value.Length * 8);
+                this.ThrowIfInvalidTweakSize(value.Length * 8);
 
-                TweakValue = value.Copy(); // defensive copy
-                TweakSizeValue = value.Length * 8;
+                this.TweakValue = value.Copy(); // defensive copy
+                this.TweakSizeValue = value.Length * 8;
             }
         }
 
@@ -116,26 +116,26 @@ namespace Bodu.Security.Cryptography
             get
             {
                 this.ThrowIfDisposed();
-                return TweakSizeValue;
+                return this.TweakSizeValue;
             }
 
             set
             {
                 this.ThrowIfDisposed();
-                ThrowIfInvalidTweakSize(value);
+                this.ThrowIfInvalidTweakSize(value);
 
-                TweakSizeValue = value;
-                TweakValue = null; // Clear previous tweak
+                this.TweakSizeValue = value;
+                this.TweakValue = null; // Clear previous tweak
             }
         }
 
         /// <inheritdoc />
         public override ICryptoTransform CreateDecryptor() =>
-            CreateDecryptor(Key, IV, Tweak);
+            this.CreateDecryptor(this.Key, this.IV, this.Tweak);
 
         /// <inheritdoc />
         public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV) =>
-            CreateDecryptor(rgbKey, rgbIV, Tweak);
+            this.CreateDecryptor(rgbKey, rgbIV, this.Tweak);
 
         /// <summary>
         /// Creates a symmetric decryptor using the specified key, initialization vector (IV), and tweak value.
@@ -158,11 +158,11 @@ namespace Bodu.Security.Cryptography
 
         /// <inheritdoc />
         public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV) =>
-            CreateEncryptor(rgbKey, rgbIV, Tweak);
+            this.CreateEncryptor(rgbKey, rgbIV, this.Tweak);
 
         /// <inheritdoc />
         public override ICryptoTransform CreateEncryptor() =>
-            CreateEncryptor(Key, IV, Tweak);
+            this.CreateEncryptor(this.Key, this.IV, this.Tweak);
 
         /// <summary>
         /// Creates a symmetric encryptor using the specified key, initialization vector (IV), and tweak value.
@@ -211,7 +211,7 @@ namespace Bodu.Security.Cryptography
         /// </remarks>
         public bool ValidTweakSize(int length)
         {
-            foreach (var size in LegalTweakSizes)
+            foreach (var size in this.LegalTweakSizes)
             {
                 if (length < size.MinSize || length > size.MaxSize)
                     continue;
@@ -233,13 +233,13 @@ namespace Bodu.Security.Cryptography
             {
                 if (disposing)
                 {
-                    if (TweakValue is not null && TweakValue.Length > 0)
+                    if (this.TweakValue is not null && this.TweakValue.Length > 0)
                     {
-                        CryptographicOperations.ZeroMemory(TweakValue);
-                        TweakValue = Array.Empty<byte>();
+                        CryptographicOperations.ZeroMemory(this.TweakValue);
+                        this.TweakValue = Array.Empty<byte>();
                     }
 
-                    TweakSizeValue = 0;
+                    this.TweakSizeValue = 0;
                 }
 
                 this.disposed = true;
@@ -261,7 +261,7 @@ namespace Bodu.Security.Cryptography
             [CallerArgumentExpression("TweakSchedule")] string? paramName = null)
         {
             ArgumentNullException.ThrowIfNull(tweak, paramName);
-            ThrowIfInvalidTweakSize(tweak.Length * 8, paramName);
+            this.ThrowIfInvalidTweakSize(tweak.Length * 8, paramName);
         }
 
         /// <summary>
@@ -276,9 +276,9 @@ namespace Bodu.Security.Cryptography
             int bitLength,
             [CallerArgumentExpression("bitLength")] string? paramName = null)
         {
-            if (!ValidTweakSize(bitLength))
+            if (!this.ValidTweakSize(bitLength))
                 throw new CryptographicException(
-                    string.Format(ResourceStrings.CryptographicException_InvalidTweakSize, bitLength, CryptoHelpers.FormatLegalSizes(LegalTweakSizes)));
+                    string.Format(ResourceStrings.CryptographicException_InvalidTweakSize, bitLength, CryptoHelpers.FormatLegalSizes(this.LegalTweakSizes)));
         }
 
         /// <summary>
@@ -291,7 +291,7 @@ namespace Bodu.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void ThrowIfTweakNotSet()
         {
-            if (TweakValue is null || TweakValue.Length == 0)
+            if (this.TweakValue is null || this.TweakValue.Length == 0)
                 throw new CryptographicException(ResourceStrings.CryptographicException_TweakNotSet);
         }
 
@@ -299,7 +299,7 @@ namespace Bodu.Security.Cryptography
         private void ThrowIfDisposed()
         {
             if (this.disposed)
-                throw new ObjectDisposedException(GetType().Name);
+                throw new ObjectDisposedException(this.GetType().Name);
         }
     }
 }

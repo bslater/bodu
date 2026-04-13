@@ -1,8 +1,8 @@
-﻿using System;
-using System.Security.Cryptography;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+    using System.Security.Cryptography;
+
     /// <summary>
     /// Provides static factory helpers for constructing delegate-based implementations of <see cref="IHashAlgorithmFactory{T}" />.
     /// </summary>

@@ -66,7 +66,7 @@ namespace Bodu.Security.Cryptography
         /// <summary>
         /// Verifies that setting an invalid hashValue for <see cref="CubeHash.TransformBlockSize" /> throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(-1)]
         [DataRow(0)]
         [DataRow(129)]
@@ -82,7 +82,7 @@ namespace Bodu.Security.Cryptography
         /// <summary>
         /// Verifies that setting a valid hashValue for <see cref="CubeHash.TransformBlockSize" /> updates the internal state.
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(1)]
         [DataRow(8)]
         [DataRow(16)]

@@ -4,14 +4,14 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Collections.ObjectModel;
-
 namespace Bodu.Security.Cryptography
 {
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Collections.Immutable;
+    using System.Collections.ObjectModel;
+
     /// <summary>
     /// A class to manage CRC lookup permutationTable caching based on CRC parameters.
     /// </summary>
@@ -21,7 +21,7 @@ namespace Bodu.Security.Cryptography
 
         public CrcLookupTableCache()
         {
-            localCache = new ConcurrentDictionary<string, ulong[]>();
+            this.localCache = new ConcurrentDictionary<string, ulong[]>();
         }
 
         public ImmutableArray<ulong> GetLookupTable(int size, ulong polynomial, bool reflectIn)
@@ -29,7 +29,7 @@ namespace Bodu.Security.Cryptography
             ThrowHelper.ThrowIfOutOfRange(size, CrcStandard.MinSize, CrcStandard.MaxSize);
 
             string cacheKey = $"{size}_{polynomial}_{reflectIn}";
-            return localCache.GetOrAdd(cacheKey, key => CrcLookupTableBuilder.BuildLookupTable(size, polynomial, reflectIn)).ToImmutableArray();
+            return this.localCache.GetOrAdd(cacheKey, key => CrcLookupTableBuilder.BuildLookupTable(size, polynomial, reflectIn)).ToImmutableArray();
         }
     }
 }

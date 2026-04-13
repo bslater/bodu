@@ -22,7 +22,7 @@ namespace Bodu.Security.Cryptography
             algorithm.Dispose();
 
             using var stream = new MemoryStream(new byte[16]);
-            await Assert.ThrowsExceptionAsync<ObjectDisposedException>(async () =>
+            await Assert.ThrowsExactlyAsync<ObjectDisposedException>(async () =>
             {
                 await algorithm.ComputeHashAsync(stream);
             });
@@ -39,7 +39,7 @@ namespace Bodu.Security.Cryptography
             using var cts = new CancellationTokenSource();
             cts.Cancel();
 
-            await Assert.ThrowsExceptionAsync<TaskCanceledException>(async () =>
+            await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () =>
             {
                 await algorithm.ComputeHashAsync(stream, cts.Token);
             });
@@ -52,7 +52,7 @@ namespace Bodu.Security.Cryptography
         public async Task ComputeHashAsync_ComputeHashAsync_WithNullStream_ShouldThrowExactly()
         {
             using var algorithm = this.CreateAlgorithm();
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () =>
+            await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
             {
                 await algorithm.ComputeHashAsync(null!);
             });
@@ -62,7 +62,7 @@ namespace Bodu.Security.Cryptography
         /// Verifies that computing the hash over various long stream sizes works consistently.
         /// </summary>
         /// <param name="length">The length of the test input stream.</param>
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(1_000)]
         [DataRow(100_000)]
         [DataRow(1_000_000)]
@@ -108,7 +108,7 @@ namespace Bodu.Security.Cryptography
             using var algorithm = this.CreateAlgorithm();
 
             await Task.WhenAny(
-                Assert.ThrowsExceptionAsync<OperationCanceledException>(() =>
+                Assert.ThrowsExactlyAsync<OperationCanceledException>(() =>
                 {
                     return algorithm.ComputeHashAsync(stream, cancellationSource.Token);
                 }),
@@ -133,7 +133,7 @@ namespace Bodu.Security.Cryptography
 #endif
             var task = algorithm.ComputeHashAsync(stream, cancellationTokenSource.Token);
 
-            await Assert.ThrowsExceptionAsync<TaskCanceledException>(() => task);
+            await Assert.ThrowsExactlyAsync<TaskCanceledException>(() => task);
 
             Assert.IsTrue(task.IsCanceled, "Task should be marked as canceled.");
             Assert.AreEqual(0, stream.Position, "Stream position should not have advanced.");
@@ -151,7 +151,7 @@ namespace Bodu.Security.Cryptography
             using var cts = new CancellationTokenSource();
             cts.Cancel();
 
-            await Assert.ThrowsExceptionAsync<TaskCanceledException>(async () =>
+            await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () =>
             {
                 await algorithm.ComputeHashAsync(stream, cts.Token);
             });
@@ -228,13 +228,13 @@ namespace Bodu.Security.Cryptography
         public async Task ComputeHashAsync_WhenStreamIsNull_ShouldThrowExactly()
         {
             using var algorithm = this.CreateAlgorithm();
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () =>
+            await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
             {
                 await algorithm.ComputeHashAsync(null!);
             });
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(HashAlgorithmVariants))]
         public async Task ComputeHashAsync_WhenUsingIncrementalInput_ShouldMatchExpected(TVariant variant)
         {
@@ -262,7 +262,7 @@ namespace Bodu.Security.Cryptography
             }
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(ComputeHashNamedInputTestData))]
         public async Task ComputeHashAsync_WhenUsingNamedInput_ShouldMatchExpected(TVariant variant, string testName, byte[] input, byte[] expected)
         {

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Buffers.Binary;
-using System.Runtime.InteropServices;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+    using System.Buffers.Binary;
+    using System.Runtime.InteropServices;
+
     /// <summary>
     /// Performs encryption and decryption using Counter (CTR) mode for a given block cipher.
     /// </summary>
@@ -47,7 +47,7 @@ namespace Bodu.Security.Cryptography
             int blockSize = this.cipher.BlockSize;
 
             ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize);
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(output, 0, input.Length);
+            ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 
             Span<byte> keystreamBlock = stackalloc byte[blockSize];
             Span<byte> counterBlock = stackalloc byte[blockSize];
@@ -62,7 +62,7 @@ namespace Bodu.Security.Cryptography
                 for (int i = 0; i < blockSize; i++)
                     output[offset + i] ^= keystreamBlock[i];
 
-                IncrementCounter();
+                this.IncrementCounter();
             }
 
             return input.Length;

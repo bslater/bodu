@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+
     /// <summary>
     /// Performs encryption and decryption using Cipher Feedback (CFB) mode for a given block cipher.
     /// </summary>
@@ -49,7 +49,7 @@ namespace Bodu.Security.Cryptography
             int blockSize = this.cipher.BlockSize;
 
             ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize);
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(output, 0, input.Length);
+            ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 
             Span<byte> feedback = stackalloc byte[blockSize];
 

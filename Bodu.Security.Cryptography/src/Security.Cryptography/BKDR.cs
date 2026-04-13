@@ -3,12 +3,12 @@
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-using System.Buffers.Binary;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography
 {
+    using System.Buffers.Binary;
+    using System.Runtime.CompilerServices;
+    using System.Security.Cryptography;
+
     /// <summary>
     /// Computes the hash for the input data using the <c>BKDR</c> hash algorithm. This variant uses a simple polynomial rolling technique
     /// with a fixed seed multiplier to produce fast, non-cryptographic 32-bit hashes. This class cannot be inherited.
@@ -54,9 +54,9 @@ namespace Bodu.Security.Cryptography
         /// </summary>
         public BKDR()
         {
-            seedValue = DefaultSeed;
-            HashSizeValue = 32;
-            Initialize();
+            this.seedValue = DefaultSeed;
+            this.HashSizeValue = 32;
+            this.Initialize();
         }
 
         /// <summary>
@@ -96,20 +96,20 @@ namespace Bodu.Security.Cryptography
             get
             {
                 this.ThrowIfDisposed();
-                return seedValue;
+                return this.seedValue;
             }
 
             set
             {
                 this.ThrowIfDisposed();
-                ThrowIfInvalidState();
+                this.ThrowIfInvalidState();
 
                 if (Array.IndexOf(ValidSeedValues, value) == -1)
                     throw new ArgumentException(
-                        string.Format(ResourceStrings.CryptographicException_InvalidPropertyValue, nameof(Seed)), nameof(value));
+                        string.Format(ResourceStrings.CryptographicException_InvalidPropertyValue, nameof(this.Seed)), nameof(value));
 
-                seedValue = value;
-                Initialize();
+                this.seedValue = value;
+                this.Initialize();
             }
         }
 
@@ -121,7 +121,7 @@ namespace Bodu.Security.Cryptography
             State = 0;
             finalized = false;
 #endif
-            workingHash = seedValue;
+            this.workingHash = this.seedValue;
         }
 
         /// <summary>
@@ -133,14 +133,15 @@ namespace Bodu.Security.Cryptography
         /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
         protected override void Dispose(bool disposing)
         {
-            if (disposed) return;
+            if (this.disposed) return;
             if (disposing)
             {
-                CryptoHelpers.ClearAndNullify(ref HashValue);
+                CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
-                workingHash = seedValue = 0;
+                this.workingHash = this.seedValue = 0;
             }
-            disposed = true;
+
+            this.disposed = true;
             base.Dispose(disposing);
         }
 
@@ -174,7 +175,7 @@ namespace Bodu.Security.Cryptography
             if (finalized)
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
-            HashCore(array.AsSpan(ibStart, cbSize));
+            this.HashCore(array.AsSpan(ibStart, cbSize));
         }
 
         /// <summary>
@@ -192,12 +193,13 @@ namespace Bodu.Security.Cryptography
             if (finalized)
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
-            uint v = workingHash;
+            uint v = this.workingHash;
             foreach (var b in source)
             {
-                v = (v * seedValue) + b;
+                v = (v * this.seedValue) + b;
             }
-            workingHash = v;
+
+            this.workingHash = v;
         }
 
         /// <summary>
@@ -239,7 +241,7 @@ namespace Bodu.Security.Cryptography
             State = 2;
 #endif
             Span<byte> span = stackalloc byte[4];
-            BinaryPrimitives.WriteUInt32BigEndian(span, workingHash);
+            BinaryPrimitives.WriteUInt32BigEndian(span, this.workingHash);
             return span.ToArray();
         }
 
@@ -253,7 +255,7 @@ namespace Bodu.Security.Cryptography
         private void ThrowIfDisposed()
         {
 #if NET8_0_OR_GREATER
-            ObjectDisposedException.ThrowIf(disposed, this);
+            ObjectDisposedException.ThrowIf(this.disposed, this);
 #else
             if (disposed)
                 throw new ObjectDisposedException(nameof(BKDR));
@@ -275,7 +277,7 @@ namespace Bodu.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ThrowIfInvalidState()
         {
-            if (State != 0)
+            if (this.State != 0)
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
         }
     }

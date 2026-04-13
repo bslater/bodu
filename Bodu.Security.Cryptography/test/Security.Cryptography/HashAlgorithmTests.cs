@@ -131,7 +131,7 @@ namespace Bodu.Security.Cryptography
         /// This ensures consistency between fixed test vectors (e.g., "Empty") and the incremental output series, where the first
         /// incremental hash corresponds to hashing zero bytes.
         /// </remarks>
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(HashAlgorithmVariants), DynamicDataSourceType.Method)]
         public void HashAlgorithm_TestData_Check(TVariant variant)
         {

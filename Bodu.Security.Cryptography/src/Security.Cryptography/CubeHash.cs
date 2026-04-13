@@ -4,12 +4,14 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography
 {
+    using System.Buffers.Binary;
+    using System.Numerics;
+    using System.Runtime.CompilerServices;
+    using System.Runtime.InteropServices;
+    using System.Security.Cryptography;
+
     /// <summary>
     /// Computes the hash for the input data using the <c>CubeHash</c> cryptographic hash algorithm. This implementation applies a
     /// permutation-based transformation over a 1024-bit internal state using configurable initialization, processing, and finalization
@@ -30,7 +32,7 @@ namespace Bodu.Security.Cryptography
     /// CubeHash is intended for use in security-sensitive contexts such as digital signatures, message authentication codes, and
     /// general-purpose integrity verification where cryptographic strength is a requirement.
     /// </para>
-    /// <para>For more information, see: <a href="https://en.wikipedia.org/wiki/CubeHash">https://en.wikipedia.org/wiki/CubeHash</a></para>
+    /// <para>For more information, see: <a href="https://en.wikipedia.org/wiki/CubeHash">https://en.wikipedia.org/wiki/CubeHash</a>.</para>
     /// </remarks>
     public sealed class CubeHash
         : System.Security.Cryptography.HashAlgorithm
@@ -65,26 +67,24 @@ namespace Bodu.Security.Cryptography
         /// </summary>
         public const int MinRounds = 1;
 
-        private readonly uint[] scratch = new uint[16];
-
-        private int bitLength;
-
         private bool disposed = false;
 
         // Internal algorithm parameters
         private int finalizationRounds;
-#if !NET6_0_OR_GREATER
-        private bool finalized; // flag to block reuse in older .NET
 
         private int initializationRounds;
         private uint[] initializedState;
-        private int inputBlockSizeBits;
+        private int inputBlockSizeBytes;
         private bool isInitializedStateCached = false;
 
-        // tracks number of bits consumed
-        private int rounds;
+        // Number of bytes accumulated in the current partial block
+        private int pendingBytes;
 
+        private int rounds;
         private uint[] state;
+
+#if !NET6_0_OR_GREATER
+        private bool finalized; // flag to block reuse in older .NET
 #endif
 
         /// <summary>
@@ -92,12 +92,13 @@ namespace Bodu.Security.Cryptography
         /// </summary>
         public CubeHash()
         {
-            HashSize = 512;
-            TransformBlockSize = 32;
-            Rounds = InitializationRounds = 16;
-            FinalizationRounds = 32;
-            bitLength = 0;
-            state = initializedState = new uint[32];
+            this.state = new uint[32];
+            this.initializedState = new uint[32];
+            this.HashSizeValue = 512;
+            this.inputBlockSizeBytes = 32;
+            this.rounds = 16;
+            this.initializationRounds = 16;
+            this.finalizationRounds = 32;
         }
 
         /// <summary>
@@ -122,10 +123,10 @@ namespace Bodu.Security.Cryptography
         /// <description><c>h</c> = hash size in bits</description>
         /// </item>
         /// </list>
-        /// <para>Example: <c>CubeHash16+32/32+32-256</c></para>
+        /// <para>Example: <c>CubeHash16+32/32+32-256</c>.</para>
         /// </remarks>
         public string AlgorithmName =>
-            $"CubeHash{InitializationRounds}+{Rounds}/{TransformBlockSize}+{FinalizationRounds}-{HashSize}";
+            $"CubeHash{this.InitializationRounds}+{this.Rounds}/{this.TransformBlockSize}+{this.FinalizationRounds}-{this.HashSize}";
 
         /// <summary>
         /// Gets a value indicating whether this transform instance can be reused after a hash operation is completed.
@@ -167,16 +168,16 @@ namespace Bodu.Security.Cryptography
             get
             {
                 this.ThrowIfDisposed();
-                return finalizationRounds;
+                return this.finalizationRounds;
             }
 
             set
             {
                 this.ThrowIfDisposed();
-                ThrowIfInvalidState();
+                this.ThrowIfInvalidState();
                 ThrowHelper.ThrowIfOutOfRange(value, MinRounds, MaxRounds);
-                finalizationRounds = value;
-                isInitializedStateCached = false;
+                this.finalizationRounds = value;
+                this.isInitializedStateCached = false;
             }
         }
 
@@ -197,17 +198,17 @@ namespace Bodu.Security.Cryptography
             get
             {
                 this.ThrowIfDisposed();
-                return HashSizeValue;
+                return this.HashSizeValue;
             }
 
             set
             {
                 this.ThrowIfDisposed();
-                ThrowIfInvalidState();
+                this.ThrowIfInvalidState();
                 ThrowHelper.ThrowIfOutOfRange(value, MinHashSize, MaxHashSize);
                 ThrowHelper.ThrowIfNotPositiveMultipleOf(value, 8);
-                HashSizeValue = value;
-                isInitializedStateCached = false;
+                this.HashSizeValue = value;
+                this.isInitializedStateCached = false;
             }
         }
 
@@ -226,16 +227,16 @@ namespace Bodu.Security.Cryptography
             get
             {
                 this.ThrowIfDisposed();
-                return initializationRounds;
+                return this.initializationRounds;
             }
 
             set
             {
                 this.ThrowIfDisposed();
-                ThrowIfInvalidState();
+                this.ThrowIfInvalidState();
                 ThrowHelper.ThrowIfOutOfRange(value, MinRounds, MaxRounds);
-                initializationRounds = value;
-                isInitializedStateCached = false;
+                this.initializationRounds = value;
+                this.isInitializedStateCached = false;
             }
         }
 
@@ -247,7 +248,7 @@ namespace Bodu.Security.Cryptography
         /// transformation round is triggered internally. While this value does not impact the correctness of the hash, feeding data in
         /// aligned blocks may improve performance in stream-based scenarios.
         /// </remarks>
-        public override int InputBlockSize => TransformBlockSize;
+        public override int InputBlockSize => this.TransformBlockSize;
 
         /// <summary>
         /// Gets the output block size, in bytes, of the final computed hash value.
@@ -256,7 +257,7 @@ namespace Bodu.Security.Cryptography
         /// This is equal to the configured <see cref="HashSize" /> divided by 8. For example, a 512-bit hash will produce an output block
         /// of 64 bytes. This value corresponds to the full digest returned after <see cref="HashAlgorithm.HashFinal" /> is called.
         /// </remarks>
-        public override int OutputBlockSize => HashSize / 8;
+        public override int OutputBlockSize => this.HashSize / 8;
 
         /// <summary>
         /// Gets or sets the number of transformation rounds applied to each full input block.
@@ -272,16 +273,16 @@ namespace Bodu.Security.Cryptography
             get
             {
                 this.ThrowIfDisposed();
-                return rounds;
+                return this.rounds;
             }
 
             set
             {
                 this.ThrowIfDisposed();
-                ThrowIfInvalidState();
+                this.ThrowIfInvalidState();
                 ThrowHelper.ThrowIfOutOfRange(value, MinRounds, MaxRounds);
-                rounds = value;
-                isInitializedStateCached = false;
+                this.rounds = value;
+                this.isInitializedStateCached = false;
             }
         }
 
@@ -301,16 +302,16 @@ namespace Bodu.Security.Cryptography
             get
             {
                 this.ThrowIfDisposed();
-                return inputBlockSizeBits / 8;
+                return this.inputBlockSizeBytes;
             }
 
             set
             {
                 this.ThrowIfDisposed();
-                ThrowIfInvalidState();
+                this.ThrowIfInvalidState();
                 ThrowHelper.ThrowIfOutOfRange(value, MinInputBlockSize, MaxInputBlockSize);
-                inputBlockSizeBits = value * 8;
-                isInitializedStateCached = false;
+                this.inputBlockSizeBytes = value;
+                this.isInitializedStateCached = false;
             }
         }
 
@@ -322,10 +323,10 @@ namespace Bodu.Security.Cryptography
             State = 0;
             finalized = false;
 #endif
-            bitLength = 0;
+            this.pendingBytes = 0;
 
-            EnsureInitialized();
-            InitializeVectors();
+            this.EnsureInitialized();
+            this.InitializeVectors();
         }
 
         /// <summary>
@@ -337,21 +338,22 @@ namespace Bodu.Security.Cryptography
         /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
         protected override void Dispose(bool disposing)
         {
-            if (disposed) return;
+            if (this.disposed) return;
+
             if (disposing)
             {
-                finalizationRounds = initializationRounds = rounds = inputBlockSizeBits = bitLength = 0;
-                if (state != null)
+                this.finalizationRounds = this.initializationRounds = this.rounds = this.inputBlockSizeBytes = this.pendingBytes = 0;
+
+                if (this.state != null)
                 {
-                    CryptoHelpers.ClearAndNullify(ref HashValue);
-                    CryptoHelpers.ClearAndNullify(ref state!);
-                    CryptoHelpers.ClearAndNullify(ref initializedState!);
-                    CryptoHelpers.Clear(scratch.AsSpan());
-                    isInitializedStateCached = false;
+                    CryptoHelpers.ClearAndNullify(ref this.HashValue);
+                    CryptoHelpers.ClearAndNullify(ref this.state!);
+                    CryptoHelpers.ClearAndNullify(ref this.initializedState!);
+                    this.isInitializedStateCached = false;
                 }
             }
 
-            disposed = true;
+            this.disposed = true;
             base.Dispose(disposing);
         }
 
@@ -379,14 +381,14 @@ namespace Bodu.Security.Cryptography
             ThrowHelper.ThrowIfNull(array);
             this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
-            ThrowHelper.ThrowIfLessThan(offset, 0);
-            ThrowHelper.ThrowIfLessThan(length, 0);
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, offset, length);
+            ThrowHelper.ThrowIfLessThan(ibStart, 0);
+            ThrowHelper.ThrowIfLessThan(cbSize, 0);
+            ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
             if (finalized)
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
-            EnsureInitialized();
-            HashCore(array.AsSpan(ibStart, cbSize));
+            this.EnsureInitialized();
+            this.HashCore(array.AsSpan(ibStart, cbSize));
         }
 
         /// <summary>
@@ -400,28 +402,53 @@ namespace Bodu.Security.Cryptography
         protected override void HashCore(ReadOnlySpan<byte> source)
         {
             this.ThrowIfDisposed();
-            EnsureInitialized();
+            this.EnsureInitialized();
 
-            foreach (var b in source)
+            int blockSize = this.inputBlockSizeBytes;
+
+            // Complete any in-flight partial block first
+            if (this.pendingBytes > 0)
             {
-                // XOR byte into current 32-bit word based on bit offset
-                state[bitLength / 32] ^= (uint)b << (8 * ((bitLength / 8) % 4));
-                if ((bitLength += 8) == inputBlockSizeBits)
+                int needed = blockSize - this.pendingBytes;
+
+                if (source.Length < needed)
                 {
-                    PerformRounds(rounds);
-                    bitLength = 0;
+                    // Not enough data to complete the block — buffer and return
+                    this.XorBytesIntoState(source, this.pendingBytes);
+                    this.pendingBytes += source.Length;
+                    return;
                 }
+
+                this.XorBytesIntoState(source.Slice(0, needed), this.pendingBytes);
+                source = source.Slice(needed);
+                this.pendingBytes = 0;
+                this.PerformRounds(this.rounds);
+            }
+
+            // Process full blocks directly
+            while (source.Length >= blockSize)
+            {
+                this.XorBlockIntoState(source.Slice(0, blockSize));
+                this.PerformRounds(this.rounds);
+                source = source.Slice(blockSize);
+            }
+
+            // Buffer any remaining partial block
+            if (source.Length > 0)
+            {
+                this.XorBytesIntoState(source, 0);
+                this.pendingBytes = source.Length;
             }
         }
 
         /// <summary>
-        /// Finalizes the hash computation and returns the resulting <see cref="CubeHash" /> hash in big-endian format. This method reflects
+        /// Finalizes the hash computation and returns the resulting <see cref="CubeHash" /> hash in little-endian format. This method reflects
         /// all input previously processed via <see cref="HashAlgorithm.HashCore(byte[], int, int)" /> or
         /// <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" /> and produces a final, stable hash output.
         /// </summary>
         /// <returns>
-        /// A byte array representing the computed hash value. The size of the array is determined by the algorithm�s configured
-        /// <see cref="HashAlgorithm.HashSize" /> and is encoded in <b>big-endian</b> byte order.
+        /// A byte array representing the computed hash value. The size of the array is determined by the algorithm's configured
+        /// <see cref="HashAlgorithm.HashSize" /> and is encoded in <b>little-endian</b> byte order.
         /// </returns>
         /// <remarks>
         /// <para>
@@ -453,105 +480,136 @@ namespace Bodu.Security.Cryptography
             finalized = true;
             State = 2;
 #endif
-            EnsureInitialized();
+            this.EnsureInitialized();
 
-            // Add padding bit to current word
-            uint pad = (uint)(128 >> (bitLength % 8));
-            pad <<= 8 * ((bitLength / 8) % 4);
-            state[bitLength / 32] ^= pad;
-            PerformRounds(rounds);
+            // Append the 0x80 padding byte at the current pending-byte position within the state
+            this.state[this.pendingBytes / 4] ^= 0x80u << (8 * (this.pendingBytes % 4));
+            this.PerformRounds(this.rounds);
 
-            // Finalization flag
-            state[31] ^= 1U;
-            PerformRounds(finalizationRounds);
+            // Set the finalization flag and apply finalization rounds
+            this.state[31] ^= 1U;
+            this.PerformRounds(this.finalizationRounds);
 
-            int byteLength = HashSize / 8;
+            int byteLength = this.HashSize / 8;
             byte[] result = GC.AllocateUninitializedArray<byte>(byteLength);
             for (int i = 0; i < byteLength; i++)
-            {
-                result[i] = (byte)(state[i / 4] >> (8 * (i % 4)));
-            }
+                result[i] = (byte)(this.state[i / 4] >> (8 * (i % 4)));
 
             return result;
         }
 
         /// <summary>
-        /// Initializes the CubeHash internal state vector with parameters.
+        /// Ensures the initial state is computed and cached. Reinitialises the existing state array in-place to avoid allocation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EnsureInitialized()
         {
-            if (isInitializedStateCached)
+            if (this.isInitializedStateCached)
                 return;
 
-            state = new uint[32];
-            state[0] = (uint)HashSize / 8;
-            state[1] = (uint)TransformBlockSize;
-            state[2] = (uint)Rounds;
-            PerformRounds(initializationRounds);
-            initializedState = state.ToArray();
-            isInitializedStateCached = true;
+            // Zero and seed the state with algorithm parameters, then apply initialization rounds
+            Array.Clear(this.state, 0, this.state.Length);
+            this.state[0] = (uint)(this.HashSizeValue / 8);
+            this.state[1] = (uint)this.inputBlockSizeBytes;
+            this.state[2] = (uint)this.rounds;
+            this.PerformRounds(this.initializationRounds);
+
+            // Cache the post-initialization state for fast resets
+            this.state.CopyTo(this.initializedState, 0);
+            this.isInitializedStateCached = true;
         }
 
-        private void InitializeVectors()
-        {
-            state = initializedState.ToArray();
-        }
+        /// <summary>
+        /// Resets the working state to the cached post-initialization snapshot.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void InitializeVectors() => this.initializedState.CopyTo(this.state, 0);
 
         /// <summary>
         /// Executes the specified number of CubeHash transformation rounds on the state vector.
         /// </summary>
-        /// <param name="rounds">The number of rounds to perform.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void PerformRounds(int rounds)
+        /// <param name="roundCount">The number of rounds to perform.</param>
+        private void PerformRounds(int roundCount)
         {
-            Span<uint> stateSpan = state;
-            Span<uint> temp = scratch;
+            Span<uint> s = this.state;
+            Span<uint> lower = s.Slice(0, 16);
+            Span<uint> upper = s.Slice(16, 16);
 
-            for (int r = 0; r < rounds; r++)
+            // temp is used as a scratch permutation buffer; allocated once on the stack for the full call
+            Span<uint> temp = stackalloc uint[16];
+
+            for (int r = 0; r < roundCount; r++)
             {
-                // Step 1: Add lower and upper halves
+                // Steps 1+2: add lower into upper; scatter lower into temp via XOR-8 permutation
                 for (int i = 0; i < 16; i++)
-                    stateSpan[i + 16] += stateSpan[i];
+                {
+                    upper[i] += lower[i];
+                    temp[i ^ 8] = lower[i];
+                }
 
-                // Step 2: XOR permutation (XOR with 8)
+                // Steps 3+4: rotate temp left by 7 into lower; XOR lower with upper
                 for (int i = 0; i < 16; i++)
-                    temp[i ^ 8] = stateSpan[i];
+                    lower[i] = BitOperations.RotateLeft(temp[i], 7) ^ upper[i];
 
-                // Step 3: Rotate left by 7
+                // Step 5: scatter upper into temp via XOR-2 permutation; copy back to upper
                 for (int i = 0; i < 16; i++)
-                    stateSpan[i] = BitOperations.RotateLeft(temp[i], 7);
+                    temp[i ^ 2] = upper[i];
+                temp.CopyTo(upper);
 
-                // Step 4: XOR lower with upper again
+                // Steps 6+7: add lower into upper; scatter lower into temp via XOR-4 permutation
                 for (int i = 0; i < 16; i++)
-                    stateSpan[i] ^= stateSpan[i + 16];
+                {
+                    upper[i] += lower[i];
+                    temp[i ^ 4] = lower[i];
+                }
 
-                // Step 5: Second permutation (XOR with 2)
+                // Steps 8+9: rotate temp left by 11 into lower; XOR lower with upper
                 for (int i = 0; i < 16; i++)
-                    temp[i ^ 2] = stateSpan[i + 16];
-                temp.CopyTo(stateSpan.Slice(16));
+                    lower[i] = BitOperations.RotateLeft(temp[i], 11) ^ upper[i];
 
-                // Step 6: Add again
+                // Step 10: scatter upper into temp via XOR-1 permutation; copy back to upper
                 for (int i = 0; i < 16; i++)
-                    stateSpan[i + 16] += stateSpan[i];
+                    temp[i ^ 1] = upper[i];
+                temp.CopyTo(upper);
+            }
+        }
 
-                // Step 7: Permute lower (XOR with 4)
-                for (int i = 0; i < 16; i++)
-                    temp[i ^ 4] = stateSpan[i];
+        /// <summary>
+        /// XORs a full input block into the state starting at word zero. Uses a direct reinterpretation cast on
+        /// little-endian platforms with word-aligned block sizes; falls back to byte-by-byte XOR otherwise.
+        /// </summary>
+        /// <param name="block">The input block to XOR into the state. Must have length equal to <see cref="inputBlockSizeBytes" />.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void XorBlockIntoState(ReadOnlySpan<byte> block)
+        {
+            // Fast path: little-endian platform with a word-aligned block size avoids per-byte arithmetic entirely
+            if (BitConverter.IsLittleEndian && (block.Length & 3) == 0)
+            {
+                ReadOnlySpan<uint> words = MemoryMarshal.Cast<byte, uint>(block);
+                Span<uint> stateSpan = this.state;
+                for (int i = 0; i < words.Length; i++)
+                    stateSpan[i] ^= words[i];
 
-                // Step 8: Rotate left by 11
-                for (int i = 0; i < 16; i++)
-                    stateSpan[i] = BitOperations.RotateLeft(temp[i], 11);
+                return;
+            }
 
-                // Step 9: Final XOR
-                for (int i = 0; i < 16; i++)
-                    stateSpan[i] ^= stateSpan[i + 16];
+            // General path: handles big-endian platforms or non-word-aligned block sizes
+            this.XorBytesIntoState(block, 0);
+        }
 
-                // Step 10: Final permutation (XOR with 1)
-                for (int i = 0; i < 16; i++)
-                    temp[i ^ 1] = stateSpan[i + 16];
-
-                temp.CopyTo(stateSpan.Slice(16));
+        /// <summary>
+        /// XORs bytes from <paramref name="source" /> into the state, treating the first byte of <paramref name="source" /> as
+        /// residing at <paramref name="stateByteOffset" /> bytes into the current block.
+        /// </summary>
+        /// <param name="source">The bytes to XOR into the state.</param>
+        /// <param name="stateByteOffset">The byte offset within the current block at which to begin writing.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void XorBytesIntoState(ReadOnlySpan<byte> source, int stateByteOffset)
+        {
+            for (int i = 0; i < source.Length; i++)
+            {
+                int pos = stateByteOffset + i;
+                this.state[pos >> 2] ^= (uint)source[i] << (8 * (pos & 3));
             }
         }
 
@@ -562,7 +620,7 @@ namespace Bodu.Security.Cryptography
         private void ThrowIfDisposed()
         {
 #if NET8_0_OR_GREATER
-            ObjectDisposedException.ThrowIf(disposed, this);
+            ObjectDisposedException.ThrowIf(this.disposed, this);
 #else
             if (disposed)
                 throw new ObjectDisposedException(nameof(CubeHash));
@@ -575,7 +633,7 @@ namespace Bodu.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ThrowIfInvalidState()
         {
-            if (State != 0)
+            if (this.State != 0)
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
         }
     }

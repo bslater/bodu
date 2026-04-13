@@ -1,8 +1,8 @@
-﻿using System;
-using System.Security.Cryptography;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+    using System.Security.Cryptography;
+
     /// <summary>
     /// Performs cryptographic transformations using the Threefish block cipher algorithm. Supports encryption and decryption in CBC mode
     /// with configurable padding.

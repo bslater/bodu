@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography
         /// Validates that setting an invalid feedback size throws a CryptographicException.
         /// </summary>
         /// <param name="feedbackSize">The feedback size to test.</param>
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(-1)]
         [DataRow(0)]
         [DataRow(null)]

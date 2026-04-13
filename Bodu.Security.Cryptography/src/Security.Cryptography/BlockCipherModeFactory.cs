@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+
     /// <summary>
     /// Provides factory methods to create <see cref="IBlockCipherModeTransform" /> instances for standard cipher modes.
     /// </summary>

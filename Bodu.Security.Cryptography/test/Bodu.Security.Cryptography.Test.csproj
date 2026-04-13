@@ -12,13 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Security.Cryptography.Extensions\**" />
-    <EmbeddedResource Remove="Security.Cryptography.Extensions\**" />
-    <None Remove="Security.Cryptography.Extensions\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Security.Cryptography\CityHashTests.cs" />
     <Compile Remove="Security.Cryptography\CrcLookupTableCacheTests.cs" />
     <Compile Remove="Security.Cryptography\CrcTests.ComputeHash.cs" />
     <Compile Remove="Security.Cryptography\CrcTests.ComputeHashAsync.cs" />

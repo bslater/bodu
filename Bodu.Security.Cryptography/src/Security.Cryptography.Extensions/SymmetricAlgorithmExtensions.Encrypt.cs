@@ -1,8 +1,11 @@
-using System;
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="SymmetricAlgorithmExtensions_Encrypt.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using System.IO;
 using System.Security.Cryptography;
-using System.Threading;
-using System.Threading.Tasks;
 using Bodu;
 
 namespace Bodu.Security.Cryptography.Extensions
@@ -10,45 +13,55 @@ namespace Bodu.Security.Cryptography.Extensions
     public static partial class SymmetricAlgorithmExtensions
     {
         /// <summary>
-        /// Defines the default buffer size, in bytes, to be used when reading from or writing to streams during encryption.
+        /// Encrypts the entire contents of a byte array using the specified symmetric algorithm.
         /// </summary>
-        public const int DefaultBufferSize = 81920;
-
-        /// <summary>
-        /// Encrypts the entire input byte array using the specified symmetric algorithm.
-        /// </summary>
-        /// <param name="algorithm">The symmetric algorithm to use for encryption.</param>
-        /// <param name="array">The input byte array to encrypt.</param>
+        /// <param name="algorithm">The symmetric algorithm to use for encryption. Must not be <see langword="null" />.</param>
+        /// <param name="array">The input byte array to encrypt. Must not be <see langword="null" />.</param>
         /// <returns>A new byte array containing the encrypted output.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="algorithm" /> or <paramref name="array" /> is <see langword="null" />.</exception>
-        /// <remarks>This is equivalent to calling <c>Encrypt(array, 0, array.Length)</c>.</remarks>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="algorithm" /> is <see langword="null" />.
+        /// <para>-or-</para>
+        /// <paramref name="array" /> is <see langword="null" />.
+        /// </exception>
+        /// <remarks>Equivalent to calling <c>Encrypt(array, 0, array.Length)</c>.</remarks>
         public static byte[] Encrypt(this SymmetricAlgorithm algorithm, byte[] array)
             => algorithm.Encrypt(array, 0, array?.Length ?? 0);
 
         /// <summary>
-        /// Encrypts a portion of a byte array from the specified offset to the end using the given symmetric algorithm.
+        /// Encrypts a portion of a byte array beginning at the specified offset and continuing to the end of the array.
         /// </summary>
-        /// <param name="algorithm">The symmetric algorithm to use for encryption.</param>
-        /// <param name="array">The input byte array to encrypt.</param>
-        /// <param name="offset">The zero-based byte offset in <paramref name="array" /> to begin reading from.</param>
+        /// <param name="algorithm">The symmetric algorithm to use for encryption. Must not be <see langword="null" />.</param>
+        /// <param name="array">The input byte array to encrypt. Must not be <see langword="null" />.</param>
+        /// <param name="offset">The zero-based byte offset in <paramref name="array" /> at which to begin reading.</param>
         /// <returns>A new byte array containing the encrypted output.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="algorithm" /> or <paramref name="array" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="algorithm" /> is <see langword="null" />.
+        /// <para>-or-</para>
+        /// <paramref name="array" /> is <see langword="null" />.
+        /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// Thrown if <paramref name="offset" /> is negative or exceeds the bounds of <paramref name="array" />.
+        /// <paramref name="offset" /> is negative or exceeds the length of <paramref name="array" />.
         /// </exception>
         public static byte[] Encrypt(this SymmetricAlgorithm algorithm, byte[] array, int offset)
-            => algorithm.Encrypt(array, offset, array?.Length - offset ?? 0);
+            => algorithm.Encrypt(array, offset, (array?.Length - offset) ?? 0);
 
         /// <summary>
-        /// Encrypts a portion of a byte array using the specified symmetric algorithm.
+        /// Encrypts a contiguous region of a byte array using the specified symmetric algorithm.
         /// </summary>
-        /// <param name="algorithm">The symmetric algorithm to use for encryption.</param>
-        /// <param name="array">The input byte array to encrypt.</param>
-        /// <param name="offset">The starting offset within the byte array.</param>
+        /// <param name="algorithm">The symmetric algorithm to use for encryption. Must not be <see langword="null" />.</param>
+        /// <param name="array">The input byte array to encrypt. Must not be <see langword="null" />.</param>
+        /// <param name="offset">The zero-based byte offset in <paramref name="array" /> at which to begin reading.</param>
         /// <param name="count">The number of bytes to encrypt.</param>
         /// <returns>A new byte array containing the encrypted output.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="algorithm"/> or <paramref name="array"/> is <see langword="null" />.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="offset"/> or <paramref name="count"/> is out of bounds.</exception>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="algorithm" /> is <see langword="null" />.
+        /// <para>-or-</para>
+        /// <paramref name="array" /> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="offset" /> or <paramref name="count" /> is negative, or the range defined by <paramref name="offset" /> and
+        /// <paramref name="count" /> exceeds the bounds of <paramref name="array" />.
+        /// </exception>
         /// <example>
         /// <code>
         ///<![CDATA[
@@ -67,63 +80,69 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Encrypts a span of bytes using the specified symmetric algorithm.
+        /// Encrypts a read-only span of bytes using the specified symmetric algorithm.
         /// </summary>
-        /// <param name="algorithm">The symmetric algorithm to use for encryption.</param>
+        /// <param name="algorithm">The symmetric algorithm to use for encryption. Must not be <see langword="null" />.</param>
         /// <param name="input">The span of input bytes to encrypt.</param>
         /// <returns>A new byte array containing the encrypted output.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="algorithm" /> is <see langword="null" />.</exception>
-        /// <remarks>This method is optimized for performance by avoiding temporary buffer allocations.</remarks>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="algorithm" /> is <see langword="null" />.
+        /// </exception>
         public static byte[] Encrypt(this SymmetricAlgorithm algorithm, ReadOnlySpan<byte> input)
         {
             ThrowHelper.ThrowIfNull(algorithm);
 
             using ICryptoTransform transform = algorithm.CreateEncryptor();
-            return ICryptoTransformExtensions.Transform(transform, input);
+            return transform.Transform(input);
         }
 
         /// <summary>
-        /// Encrypts a memory region using the specified symmetric algorithm.
+        /// Encrypts a read-only memory region using the specified symmetric algorithm.
         /// </summary>
-        /// <param name="algorithm">The symmetric algorithm to use for encryption.</param>
-        /// <param name="input">The input memory region to encrypt.</param>
+        /// <param name="algorithm">The symmetric algorithm to use for encryption. Must not be <see langword="null" />.</param>
+        /// <param name="input">The memory region containing the bytes to encrypt.</param>
         /// <returns>A new byte array containing the encrypted output.</returns>
-        /// <remarks>This overload simply delegates to <see cref="Encrypt(SymmetricAlgorithm, ReadOnlySpan{byte})" />.</remarks>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="algorithm" /> is <see langword="null" />.
+        /// </exception>
+        /// <remarks>Delegates to <see cref="Encrypt(SymmetricAlgorithm, ReadOnlySpan{byte})" />.</remarks>
         public static byte[] Encrypt(this SymmetricAlgorithm algorithm, ReadOnlyMemory<byte> input)
             => algorithm.Encrypt(input.Span);
 
         /// <summary>
-        /// Encrypts data from a source stream and writes the encrypted result to a target stream using a default buffer size.
+        /// Encrypts data read from a source stream and writes the encrypted output to a target stream, using the default buffer size.
         /// </summary>
-        /// <param name="algorithm">The symmetric algorithm to use for encryption.</param>
-        /// <param name="sourceStream">The stream to read plaintext from.</param>
-        /// <param name="targetStream">The stream to write the encrypted output to.</param>
-        /// <returns>The total number of bytes read and encrypted.</returns>
+        /// <param name="algorithm">The symmetric algorithm to use for encryption. Must not be <see langword="null" />.</param>
+        /// <param name="sourceStream">The stream to read plaintext from. Must not be <see langword="null" />.</param>
+        /// <param name="targetStream">The stream to write the encrypted output to. Must not be <see langword="null" />.</param>
+        /// <returns>The total number of plaintext bytes read from <paramref name="sourceStream" />.</returns>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="algorithm" />, <paramref name="sourceStream" />, or <paramref name="targetStream" /> is <see langword="null" />.
+        /// <paramref name="algorithm" />, <paramref name="sourceStream" />, or <paramref name="targetStream" /> is <see langword="null" />.
         /// </exception>
         public static int Encrypt(this SymmetricAlgorithm algorithm, Stream sourceStream, Stream targetStream)
             => algorithm.Encrypt(sourceStream, targetStream, DefaultBufferSize);
 
         /// <summary>
-        /// Encrypts data from a source stream and writes the encrypted result to a target stream using the specified buffer size.
+        /// Encrypts data read from a source stream and writes the encrypted output to a target stream, using the specified buffer size.
         /// </summary>
-        /// <param name="algorithm">The symmetric algorithm to use for encryption.</param>
-        /// <param name="sourceStream">The stream to read plaintext from.</param>
-        /// <param name="targetStream">The stream to write the encrypted output to.</param>
-        /// <param name="bufferSize">The size of the buffer used for reading and writing. Must be greater than zero.</param>
-        /// <returns>The total number of bytes read and encrypted.</returns>
+        /// <param name="algorithm">The symmetric algorithm to use for encryption. Must not be <see langword="null" />.</param>
+        /// <param name="sourceStream">The stream to read plaintext from. Must not be <see langword="null" />.</param>
+        /// <param name="targetStream">The stream to write the encrypted output to. Must not be <see langword="null" />.</param>
+        /// <param name="bufferSize">The size, in bytes, of the read buffer. Must be greater than zero.</param>
+        /// <returns>The total number of plaintext bytes read from <paramref name="sourceStream" />.</returns>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="algorithm"/>, <paramref name="sourceStream"/>, or <paramref name="targetStream"/> is <see langword="null" />.
+        /// <paramref name="algorithm" />, <paramref name="sourceStream" />, or <paramref name="targetStream" /> is <see langword="null" />.
         /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="bufferSize"/> is less than or equal to zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="bufferSize" /> is less than or equal to zero.
+        /// </exception>
         /// <example>
         /// <code>
         ///<![CDATA[
         /// using var aes = Aes.Create();
         /// using var input = File.OpenRead("input.txt");
         /// using var output = File.Create("output.enc");
-        /// aes.Encrypt(input, output, 4096);
+        /// int bytesRead = aes.Encrypt(input, output, 4096);
         ///]]>
         /// </code>
         /// </example>
@@ -135,7 +154,7 @@ namespace Bodu.Security.Cryptography.Extensions
             ThrowHelper.ThrowIfLessThanOrEqual(bufferSize, 0);
 
             using ICryptoTransform transform = algorithm.CreateEncryptor();
-            return ICryptoTransformExtensions.Transform(transform, sourceStream, targetStream, bufferSize);
+            return transform.Transform(sourceStream, targetStream, bufferSize);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography
 {
     public partial class TigerTests
     {
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(HashAlgorithmVariants), DynamicDataSourceType.Method)]
         public void AlgorithmName_WhenUsingVariant_ShouldReturnCorrectlyFormattedString(TigerVariant variant)
         {

@@ -32,7 +32,7 @@ namespace Bodu.Security.Cryptography
         /// It is intended to enforce correct behavior in concrete <see cref="HashAlgorithm" /> or <see cref="KeyedHashAlgorithm" />
         /// implementations where configuration changes are no longer allowed once data has been processed.
         /// </remarks>
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(GetWritableProperties), DynamicDataSourceType.Method)]
         public void TransformBlock_WhenPropertySetAfterTransform_ShouldThrowExactly(PropertyInfo property)
         {

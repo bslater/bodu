@@ -1,7 +1,7 @@
-﻿using System.Security.Cryptography;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System.Security.Cryptography;
+
     /// <summary>
     /// Defines a factory that produces configured instances of a specific <see cref="HashAlgorithm" /> implementation.
     /// </summary>

@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography
 {
     public abstract partial class SipHashTests<TTest, TAlgorithm>
     {
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(HashAlgorithmVariants), DynamicDataSourceType.Method)]
         public void AlgorithmName_WhenUsingVariant_ShouldReturnCorrectlyFormattedString(SipHashVariant variant)
         {

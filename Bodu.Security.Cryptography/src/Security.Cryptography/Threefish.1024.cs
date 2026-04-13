@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Security.Cryptography;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+    using System.Linq;
+    using System.Security.Cryptography;
+
     /// <summary>
     /// Provides a managed implementation of the <c>Threefish-1024</c> symmetric block cipher algorithm.
     /// </summary>

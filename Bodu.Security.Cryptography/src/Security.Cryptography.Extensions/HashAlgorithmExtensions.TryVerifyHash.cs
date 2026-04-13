@@ -1,33 +1,55 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+// --------------------------------------------------------------------------------------------------------------- //
+// <copyright file="HashAlgorithmExtensions_TryVerifyHash.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Security.Cryptography.Extensions
 {
+    using System;
+    using System.IO;
+    using System.Security.Cryptography;
+    using System.Text;
+
     public static partial class HashAlgorithmExtensions
     {
         /// <summary>
-        /// Attempts to compute the hash of the specified input and compare it against the expected hash.
+        /// Attempts to compute and verify the hash of a byte array, reporting both whether the operation succeeded and whether the hash
+        /// matched.
         /// </summary>
-        /// <param name="algorithm">The <see cref="HashAlgorithm" /> instance used for computing the hash.</param>
-        /// <param name="input">The byte array input to hash.</param>
-        /// <param name="expectedHash">The expected hash value for comparison.</param>
-        /// <param name="result">Outputs <c>true</c> if the computed hash matches <paramref name="expectedHash" />; otherwise, <c>false</c>.</param>
-        /// <returns><c>true</c> if hashing and comparison completed without exception; otherwise, <c>false</c>.</returns>
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="input">
+        /// The input data to hash. A <see langword="null" /> value causes the method to return <see langword="false" />.
+        /// </param>
+        /// <param name="expectedHash">
+        /// The expected hash value to compare against. A <see langword="null" /> value causes the method to return
+        /// <see langword="false" />.
+        /// </param>
+        /// <param name="result">
+        /// When this method returns <see langword="true" />, contains <see langword="true" /> if the computed hash matched
+        /// <paramref name="expectedHash" />; otherwise, <see langword="false" />. Always <see langword="false" /> when the method itself
+        /// returns <see langword="false" />.
+        /// </param>
+        /// <returns>
+        /// <see langword="true" /> if the hash computation and comparison completed without error; <see langword="false" /> if
+        /// <paramref name="input" /> or <paramref name="expectedHash" /> is <see langword="null" />, or an internal exception occurred.
+        /// </returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="algorithm" /> is <see langword="null" />.</exception>
         /// <remarks>
-        /// This method is useful for defensive validation when inputs may be malformed or optional. Unlike <c>VerifyHash</c>, it avoids
-        /// exceptions during failure.
+        /// Unlike <see cref="VerifyHash(HashAlgorithm, byte[], byte[])" />, this overload distinguishes between a failed operation
+        /// (return value <see langword="false" />) and a successful but non-matching comparison (<paramref name="result" /> =
+        /// <see langword="false" />). Both <see langword="null" /> inputs are treated as an operation failure rather than an error,
+        /// making this overload suitable for defensive validation where inputs may be absent.
         /// </remarks>
         public static bool TryVerifyHash(this HashAlgorithm algorithm, byte[] input, byte[] expectedHash, out bool result)
         {
             ThrowHelper.ThrowIfNull(algorithm);
+
             result = false;
 
+            // Treat absent inputs as an operation failure rather than a programming error.
             if (input == null || expectedHash == null)
                 return false;
 
@@ -43,12 +65,18 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Attempts to compute and verify the hash of a byte array against an expected hash value.
+        /// Attempts to compute and verify the hash of a byte array against the expected hash value.
         /// </summary>
-        /// <param name="algorithm">The <see cref="HashAlgorithm" /> instance used for hashing.</param>
-        /// <param name="input">The input data as a byte array.</param>
-        /// <param name="expectedHash">The expected hash value.</param>
-        /// <returns><c>true</c> if the hash matches; otherwise, <c>false</c>.</returns>
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="input">The input data to hash. A <see langword="null" /> value causes the method to return <see langword="false" />.</param>
+        /// <param name="expectedHash">
+        /// The expected hash value to compare against. Must not be <see langword="null" />.
+        /// </param>
+        /// <returns>
+        /// <see langword="true" /> if the computed hash matches <paramref name="expectedHash" />; otherwise, <see langword="false" />.
+        /// </returns>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="algorithm" /> or <paramref name="expectedHash" /> is <see langword="null" />.
         /// </exception>
@@ -56,6 +84,9 @@ namespace Bodu.Security.Cryptography.Extensions
         {
             ThrowHelper.ThrowIfNull(algorithm);
             ThrowHelper.ThrowIfNull(expectedHash);
+
+            if (input == null)
+                return false;
 
             try
             {
@@ -68,18 +99,29 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Attempts to verify the computed hash of the byte array input against a hexadecimal hash string.
+        /// Attempts to compute and verify the hash of a byte array against an expected hexadecimal hash string.
         /// </summary>
-        /// <param name="algorithm">The hashing algorithm.</param>
-        /// <param name="input">The data to hash.</param>
-        /// <param name="expectedHex">The expected hexadecimal hash string.</param>
-        /// <returns><c>true</c> if the computed hash matches the expected hex string; otherwise, <c>false</c>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="algorithm" /> or <paramref name="expectedHex" /> is <see langword="null" />.</exception>
-        /// <remarks>This is useful for verifying known test vectors stored in hexadecimal format.</remarks>
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="input">The input data to hash. A <see langword="null" /> value causes the method to return <see langword="false" />.</param>
+        /// <param name="expectedHex">
+        /// The expected hash as a hexadecimal string. Must not be <see langword="null" />.
+        /// </param>
+        /// <returns>
+        /// <see langword="true" /> if the computed hash matches <paramref name="expectedHex" />; otherwise, <see langword="false" />.
+        /// Returns <see langword="false" /> if <paramref name="expectedHex" /> is not a valid hexadecimal string.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="algorithm" /> or <paramref name="expectedHex" /> is <see langword="null" />.
+        /// </exception>
         public static bool TryVerifyHash(this HashAlgorithm algorithm, byte[] input, string expectedHex)
         {
             ThrowHelper.ThrowIfNull(algorithm);
             ThrowHelper.ThrowIfNull(expectedHex);
+
+            if (input == null)
+                return false;
 
             try
             {
@@ -92,13 +134,23 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Attempts to verify that the computed hash of a UTF-encoded string matches the expected hash.
+        /// Attempts to compute and verify the hash of an encoded string against the expected hash value.
         /// </summary>
-        /// <param name="algorithm">The hash algorithm instance.</param>
-        /// <param name="input">The plain text input string.</param>
-        /// <param name="encoding">The encoding used to convert the string into bytes.</param>
-        /// <param name="expectedHash">The expected hash byte array.</param>
-        /// <returns><c>true</c> if the hash matches the expected value; otherwise, <c>false</c>.</returns>
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="input">
+        /// The plain-text string to encode and hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="encoding">
+        /// The encoding used to convert <paramref name="input" /> to bytes. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="expectedHash">
+        /// The expected hash value as a byte array. Must not be <see langword="null" />.
+        /// </param>
+        /// <returns>
+        /// <see langword="true" /> if the computed hash matches <paramref name="expectedHash" />; otherwise, <see langword="false" />.
+        /// </returns>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="algorithm" />, <paramref name="input" />, <paramref name="encoding" />, or
         /// <paramref name="expectedHash" /> is <see langword="null" />.
@@ -121,12 +173,16 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Attempts to verify that the hash computed from a span of bytes matches the expected span value.
+        /// Attempts to compute and verify the hash of a span of bytes against the expected hash span.
         /// </summary>
-        /// <param name="algorithm">The algorithm used for hashing.</param>
-        /// <param name="input">The span of input bytes.</param>
-        /// <param name="expectedHash">The expected hash as a span.</param>
-        /// <returns><c>true</c> if the spans match; otherwise, <c>false</c>.</returns>
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="input">The span of input bytes to hash.</param>
+        /// <param name="expectedHash">The expected hash as a read-only byte span.</param>
+        /// <returns>
+        /// <see langword="true" /> if the computed hash matches <paramref name="expectedHash" />; otherwise, <see langword="false" />.
+        /// </returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="algorithm" /> is <see langword="null" />.</exception>
         public static bool TryVerifyHash(this HashAlgorithm algorithm, ReadOnlySpan<byte> input, ReadOnlySpan<byte> expectedHash)
         {
@@ -143,12 +199,18 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Attempts to verify that the hash of a memory buffer matches the expected byte array value.
+        /// Attempts to compute and verify the hash of a memory buffer against the expected hash value.
         /// </summary>
-        /// <param name="algorithm">The hashing algorithm instance.</param>
-        /// <param name="input">The memory buffer containing input data.</param>
-        /// <param name="expectedHash">The expected hash result.</param>
-        /// <returns><c>true</c> if the memory contents produce a matching hash; otherwise, <c>false</c>.</returns>
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="input">The memory buffer containing the input data to hash.</param>
+        /// <param name="expectedHash">
+        /// The expected hash value as a byte array. Must not be <see langword="null" />.
+        /// </param>
+        /// <returns>
+        /// <see langword="true" /> if the computed hash matches <paramref name="expectedHash" />; otherwise, <see langword="false" />.
+        /// </returns>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="algorithm" /> or <paramref name="expectedHash" /> is <see langword="null" />.
         /// </exception>
@@ -168,19 +230,27 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Attempts to verify that the hash of a stream matches the expected byte array.
+        /// Attempts to compute and verify the hash of a stream against the expected hash value.
         /// </summary>
-        /// <param name="algorithm">The hashing algorithm used to compute the hash.</param>
-        /// <param name="stream">The input stream to hash. The stream must be readable and ideally seekable.</param>
-        /// <param name="expectedHash">The expected hash value.</param>
-        /// <returns><c>true</c> if the stream produces a matching hash; otherwise, <c>false</c>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown if <paramref name="algorithm" /> or <paramref name="expectedHash" /> is <see langword="null" />.
-        /// </exception>
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="stream">
+        /// The input stream to read and hash. A <see langword="null" /> value causes the method to return <see langword="false" />.
+        /// </param>
+        /// <param name="expectedHash">
+        /// The expected hash value as a byte array. A <see langword="null" /> value causes the method to return <see langword="false" />.
+        /// </param>
+        /// <returns>
+        /// <see langword="true" /> if the stream produces a matching hash; otherwise, <see langword="false" />.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="algorithm" /> is <see langword="null" />.</exception>
         public static bool TryVerifyHash(this HashAlgorithm algorithm, Stream stream, byte[] expectedHash)
         {
             ThrowHelper.ThrowIfNull(algorithm);
-            ThrowHelper.ThrowIfNull(expectedHash);
+
+            if (stream == null || expectedHash == null)
+                return false;
 
             try
             {
@@ -193,17 +263,31 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Attempts to verify that the hash of a stream matches the expected hexadecimal hash value.
+        /// Attempts to compute and verify the hash of a stream against the expected hexadecimal hash string.
         /// </summary>
-        /// <param name="algorithm">The hashing algorithm used to compute the hash.</param>
-        /// <param name="stream">The input stream to hash. The stream must be readable and ideally seekable.</param>
-        /// <param name="expectedHex">The expected hash value in hexadecimal format.</param>
-        /// <returns><c>true</c> if the stream hash matches the expected hex; otherwise, <c>false</c>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="algorithm" /> or <paramref name="expectedHex" /> is <see langword="null" />.</exception>
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="stream">
+        /// The input stream to read and hash. A <see langword="null" /> value causes the method to return <see langword="false" />.
+        /// </param>
+        /// <param name="expectedHex">
+        /// The expected hash value as a hexadecimal string. Must not be <see langword="null" />.
+        /// </param>
+        /// <returns>
+        /// <see langword="true" /> if the stream hash matches <paramref name="expectedHex" />; otherwise, <see langword="false" />.
+        /// Returns <see langword="false" /> if <paramref name="expectedHex" /> is not a valid hexadecimal string.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="algorithm" /> or <paramref name="expectedHex" /> is <see langword="null" />.
+        /// </exception>
         public static bool TryVerifyHash(this HashAlgorithm algorithm, Stream stream, string expectedHex)
         {
             ThrowHelper.ThrowIfNull(algorithm);
             ThrowHelper.ThrowIfNull(expectedHex);
+
+            if (stream == null)
+                return false;
 
             try
             {

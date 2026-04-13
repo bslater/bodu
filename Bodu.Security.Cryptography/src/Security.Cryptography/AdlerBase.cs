@@ -4,12 +4,12 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography
 {
+    using System.Numerics;
+    using System.Runtime.CompilerServices;
+    using System.Security.Cryptography;
+
     /// <summary>
     /// Provides a generic base class for <c>Adler</c> style checksum algorithms.
     /// </summary>
@@ -49,14 +49,14 @@ namespace Bodu.Security.Cryptography
         protected AdlerBase(T modulo)
         {
             this.modulo = modulo;
-            HashSizeValue = typeof(T) switch
+            this.HashSizeValue = typeof(T) switch
             {
                 var t when t == typeof(uint) => 32,
                 var t when t == typeof(ulong) => 64,
                 _ => throw new NotSupportedException($"Unsupported hash length for type {typeof(T)}.")
             };
-            PartA = T.One;
-            PartB = T.Zero;
+            this.PartA = T.One;
+            this.PartB = T.Zero;
         }
 
         /// <summary>
@@ -98,8 +98,8 @@ namespace Bodu.Security.Cryptography
             finalized = false;
 #endif
             this.ThrowIfDisposed();
-            PartA = T.One;
-            PartB = T.Zero;
+            this.PartA = T.One;
+            this.PartB = T.Zero;
         }
 
         /// <summary>
@@ -115,9 +115,9 @@ namespace Bodu.Security.Cryptography
 
             if (disposing)
             {
-                CryptoHelpers.ClearAndNullify(ref HashValue);
+                CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
-                PartA = PartB = T.Zero;
+                this.PartA = this.PartB = T.Zero;
             }
 
             this.disposed = true;
@@ -154,7 +154,7 @@ namespace Bodu.Security.Cryptography
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
-            HashCore(array.AsSpan(ibStart, cbSize));
+            this.HashCore(array.AsSpan(ibStart, cbSize));
         }
 
         /// <summary>
@@ -172,7 +172,7 @@ namespace Bodu.Security.Cryptography
             const int NMAX = 5552;
             int length = source.Length;
             int index = 0;
-            T pA = PartA, pB = PartB;
+            T pA = this.PartA, pB = this.PartB;
 
             // SIMD path (512+ bytes and hardware available)
             if (Vector.IsHardwareAccelerated && length >= 512)
@@ -218,8 +218,8 @@ namespace Bodu.Security.Cryptography
                 }
             }
 
-            PartA = pA;
-            PartB = pB;
+            this.PartA = pA;
+            this.PartB = pB;
         }
 
         /// <summary>
@@ -254,7 +254,7 @@ namespace Bodu.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void ThrowIfInvalidState()
         {
-            if (State != 0)
+            if (this.State != 0)
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
         }
     }

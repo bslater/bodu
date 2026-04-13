@@ -1,31 +1,48 @@
-using System;
-using System.Security.Cryptography;
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="TweakableSymmetricAlgorithmExtensions_TryCreateDecryptor.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Security.Cryptography.Extensions
 {
+    using System;
+    using System.Security.Cryptography;
+
+    using Bodu.Security.Cryptography;
+
     public static partial class TweakableSymmetricAlgorithmExtensions
     {
         /// <summary>
         /// Attempts to create a decryptor using the current <see cref="SymmetricAlgorithm.Key" />, <see cref="SymmetricAlgorithm.IV" />,
-        /// and <see cref="TweakableSymmetricAlgorithm.Tweak" /> values.
+        /// and <see cref="TweakableSymmetricAlgorithm.Tweak" /> values of the algorithm.
         /// </summary>
-        /// <param name="algorithm">The tweakable symmetric algorithm to use for decryption.</param>
+        /// <param name="algorithm">The tweakable symmetric algorithm to use for decryption. Must not be <see langword="null" />.</param>
         /// <param name="transform">
-        /// When this method returns, contains the created <see cref="ICryptoTransform" /> if successful; otherwise, <see langword="null" />.
+        /// When this method returns, contains the created <see cref="ICryptoTransform" /> if the operation succeeded; otherwise,
+        /// <see langword="null" />.
         /// </param>
         /// <returns><see langword="true" /> if the decryptor was successfully created; otherwise, <see langword="false" />.</returns>
-        /// <exception cref="CryptographicException">Thrown if the key, IV, or tweak values are invalid or uninitialized.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="algorithm" /> is <see langword="null" />.</exception>
         /// <remarks>
-        /// This method uses the configured <see cref="TweakableSymmetricAlgorithm.Key" />, <see cref="TweakableSymmetricAlgorithm.IV" />,
-        /// and <see cref="TweakableSymmetricAlgorithm.Tweak" />.
+        /// <para>
+        /// This method wraps <see cref="TweakableSymmetricAlgorithm.CreateDecryptor()" /> in a try/catch block, returning
+        /// <see langword="false" /> if the operation fails due to an invalid or uninitialised key, IV, or tweak.
+        /// </para>
+        /// <para>
+        /// Use this overload when the algorithm has already been fully configured. To supply keying material explicitly, use
+        /// <see cref="TryCreateDecryptor(TweakableSymmetricAlgorithm, byte[], byte[], byte[], out ICryptoTransform)" />.
+        /// </para>
         /// </remarks>
         public static bool TryCreateDecryptor(
             this TweakableSymmetricAlgorithm algorithm,
             out ICryptoTransform? transform)
         {
+            ArgumentNullException.ThrowIfNull(algorithm);
+
             try
             {
-                transform = algorithm.CreateDecryptor(algorithm.Key, algorithm.IV, algorithm.Tweak);
+                transform = algorithm.CreateDecryptor();
                 return true;
             }
             catch
@@ -38,16 +55,21 @@ namespace Bodu.Security.Cryptography.Extensions
         /// <summary>
         /// Attempts to create a decryptor using the specified key, initialization vector, and tweak.
         /// </summary>
-        /// <param name="algorithm">The tweakable symmetric algorithm to use for decryption.</param>
+        /// <param name="algorithm">The tweakable symmetric algorithm to use for decryption. Must not be <see langword="null" />.</param>
         /// <param name="key">The decryption key.</param>
         /// <param name="iv">The initialization vector.</param>
-        /// <param name="tweak">The tweak value to use for decryption.</param>
+        /// <param name="tweak">The tweak value to apply during decryption.</param>
         /// <param name="transform">
-        /// When this method returns, contains the created <see cref="ICryptoTransform" /> if successful; otherwise, <see langword="null" />.
+        /// When this method returns, contains the created <see cref="ICryptoTransform" /> if the operation succeeded; otherwise,
+        /// <see langword="null" />.
         /// </param>
         /// <returns><see langword="true" /> if the decryptor was successfully created; otherwise, <see langword="false" />.</returns>
-        /// <exception cref="CryptographicException">Thrown if the key, IV, or tweak do not meet algorithm constraints.</exception>
-        /// <remarks>Use this overload when you need to explicitly supply all decryption parameters including a custom tweak.</remarks>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="algorithm" /> is <see langword="null" />.</exception>
+        /// <remarks>
+        /// This method wraps <see cref="TweakableSymmetricAlgorithm.CreateDecryptor(byte[], byte[], byte[])" /> in a try/catch block,
+        /// returning <see langword="false" /> if the operation fails due to an invalid key, IV, or tweak. Use this overload when all
+        /// keying material must be supplied explicitly.
+        /// </remarks>
         public static bool TryCreateDecryptor(
             this TweakableSymmetricAlgorithm algorithm,
             byte[] key,
@@ -55,6 +77,8 @@ namespace Bodu.Security.Cryptography.Extensions
             byte[] tweak,
             out ICryptoTransform? transform)
         {
+            ArgumentNullException.ThrowIfNull(algorithm);
+
             try
             {
                 transform = algorithm.CreateDecryptor(key, iv, tweak);

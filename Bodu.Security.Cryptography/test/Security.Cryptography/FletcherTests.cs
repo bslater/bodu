@@ -26,7 +26,7 @@ namespace Bodu.Security.Cryptography
         {
             var list = new List<string>(base.GetFieldsToExcludeFromDisposeValidation());
             list.AddRange([
-                "this.modulus",
+                //"modulus",
                 "BlockSizeBytes"
             ]);
 

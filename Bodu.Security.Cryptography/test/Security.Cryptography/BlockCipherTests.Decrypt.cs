@@ -50,7 +50,7 @@ namespace Bodu.Security.Cryptography
         /// Verifies that repeated calls to <see cref="IBlockCipher.Decrypt(ReadOnlySpan{byte}, Span{byte})" /> across diferent instances
         /// with the same input produce the same result.
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(BlockCipherVariants))]
         public void Decrypt_WhenCalled_WithDiferentInstances_ShouldBeDeterministic(TVariant variant)
         {
@@ -70,7 +70,7 @@ namespace Bodu.Security.Cryptography
         /// Verifies that repeated calls to <see cref="IBlockCipher.Decrypt(ReadOnlySpan{byte}, Span{byte})" /> using the same instances and
         /// input produce the same result.
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(BlockCipherVariants))]
         public void Decrypt_WhenCalled_WithSameInstsnce_ShouldBeDeterministic(TVariant variant)
         {
@@ -85,7 +85,7 @@ namespace Bodu.Security.Cryptography
             CollectionAssert.AreEqual(output1, output2);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(DecryptTestData))]
         public void Decrypt_WhenKnownInput_ShouldMatchExpected(TVariant variant, string testName, byte[] input, byte[] expected)
         {
@@ -101,7 +101,7 @@ namespace Bodu.Security.Cryptography
         /// <summary>
         /// Verifies that cedryption throws ArgumentException when input size is invalid.
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(GetInvalidBlockSizes), DynamicDataSourceType.Method)]
         public void Decrypt_WithInvalidInputSize_ShouldThrowExactly(byte[] input)
         {
@@ -115,7 +115,7 @@ namespace Bodu.Security.Cryptography
         /// <summary>
         /// Verifies that cedryption throws ArgumentException when output size is invalid.
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(GetInvalidBlockSizes), DynamicDataSourceType.Method)]
         public void Decrypt_WithInvalidOutSize_ShouldThrowExactly(byte[] output)
         {

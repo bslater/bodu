@@ -4,10 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography
 {
+    using System.Security.Cryptography;
+
     /// <summary>
     /// Provides cryptographic utility functions for applying and removing block padding.
     /// </summary>
@@ -145,7 +145,7 @@ namespace Bodu.Security.Cryptography
                 padCount = 0;
 
             int totalLen = source.Length + padCount;
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(destination, source.Length, padCount);
+            ThrowHelper.ThrowIfSpanLengthIsInsufficient(destination, source.Length, padCount);
 
             source.CopyTo(destination);
             Span<byte> padSpan = destination.Slice(source.Length, padCount);

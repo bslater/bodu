@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+
     /// <summary>
     /// Performs encryption and decryption using Electronic Codebook (ECB) mode for a given block cipher.
     /// </summary>
@@ -42,7 +42,7 @@ namespace Bodu.Security.Cryptography
             int blockSize = this.cipher.BlockSize;
 
             ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize);
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(output, 0, input.Length);
+            ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 
             for (int offset = 0; offset < input.Length; offset += blockSize)
             {

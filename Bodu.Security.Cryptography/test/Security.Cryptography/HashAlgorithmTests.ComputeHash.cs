@@ -49,7 +49,7 @@ namespace Bodu.Security.Cryptography
         /// <summary>
         /// Verifies that repeated calls to <see cref="HashAlgorithm.ComputeHash(byte[])" /> with the same input produce the same result.
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void ComputeHash_ShouldBeDeterministic(TVariant variant)
         {
@@ -65,7 +65,7 @@ namespace Bodu.Security.Cryptography
         /// <summary>
         /// Verifies that hashing a zero-length region in a buffer matches the empty input hash using <see cref="HashAlgorithm.ComputeHash(byte[], int, int)" />.
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(128, 128, 0)]
         [DataRow(128, 0, 0)]
         public void ComputeHash_ShouldReturnEmptyHash_WhenOffsetAndCountAreZero(int size, int offset, int count)
@@ -87,7 +87,7 @@ namespace Bodu.Security.Cryptography
         /// Verifies that <see cref="HashAlgorithm.ComputeHash(byte[], int, int)" /> throws <see cref="ArgumentException" /> when the cound
         /// or segment is invalid.
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(0, 0, -1)]
         [DataRow(0, 1, 0)]
         [DataRow(3, 0, 4)]
@@ -142,7 +142,7 @@ namespace Bodu.Security.Cryptography
         /// <summary>
         /// Verifies that <see cref="HashAlgorithm.ComputeHash(byte[])" /> produces consistent output for repeated identical input.
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(0)]
         [DataRow(7)]
         [DataRow(64)]
@@ -166,7 +166,7 @@ namespace Bodu.Security.Cryptography
         /// <summary>
         /// Verifies that repeated calls to <see cref="HashAlgorithm.ComputeHash(byte[])" /> with the same input produce the same result.
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void ComputeHash_WhenUsingIncrementalInput_ShouldMatchExpected(TVariant variant)
         {
@@ -192,7 +192,7 @@ namespace Bodu.Security.Cryptography
             }
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(ComputeHashNamedInputTestData))]
         public void ComputeHash_WhenUsingNamedInput_ShouldMatchExpected(TVariant variant, string testName, byte[] input, byte[] expected)
         {

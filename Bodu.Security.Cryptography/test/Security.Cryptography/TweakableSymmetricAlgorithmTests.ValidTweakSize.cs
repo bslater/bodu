@@ -45,7 +45,7 @@ namespace Bodu.Security.Cryptography
         /// <summary>
         /// Verifies that ValidTweakSize returns true for supported sizes.
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(ValidTweakSizesTestData), DynamicDataSourceType.Method)]
         public void ValidTweakSize_WhenSupportedSize_ShouldReturnTrue(int size)
         {

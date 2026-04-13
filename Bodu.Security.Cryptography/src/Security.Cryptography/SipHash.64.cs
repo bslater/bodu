@@ -4,10 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography
 {
+    using System.Security.Cryptography;
+
     /// <summary>
     /// Computes the hash for the input data using the <c>SipHash-64</c> hash algorithm. This implementation uses a keyed Add-Rotate-XOR
     /// (ARX) construction optimized for short messages. See the official <a href="https://131002.net/siphash/">SipHash specification</a>

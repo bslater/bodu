@@ -1,9 +1,9 @@
-﻿using Bodu.Extensions;
-using System;
-using System.Security.Cryptography;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+    using System.Security.Cryptography;
+    using Bodu.Extensions;
+
     /// <summary>
     /// Represents the abstract base class for hash algorithms that require a secret key and process data in fixed-size blocks.
     /// </summary>
@@ -59,7 +59,7 @@ namespace Bodu.Security.Cryptography
         /// <exception cref="ArgumentNullException">Thrown if the assigned key value is <see langword="null" />.</exception>
         public virtual byte[] Key
         {
-            get => KeyValue.ToArray(); // Return a copy to maintain immutability
+            get => this.KeyValue.ToArray(); // Return a copy to maintain immutability
 
             set
             {
@@ -67,7 +67,7 @@ namespace Bodu.Security.Cryptography
                     throw new ArgumentNullException(nameof(value));
 
                 // Defensive copy ensures external references cannot mutate internal key
-                KeyValue = value.ToArray();
+                this.KeyValue = value.ToArray();
             }
         }
 
@@ -85,9 +85,9 @@ namespace Bodu.Security.Cryptography
             if (disposing)
             {
                 // Zero out the key material to avoid leaking secrets in memory
-                if (KeyValue is not null)
+                if (this.KeyValue is not null)
                 {
-                    CryptoHelpers.ClearAndNullify(ref KeyValue!);
+                    CryptoHelpers.ClearAndNullify(ref this.KeyValue!);
                 }
             }
 

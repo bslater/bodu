@@ -4,10 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Runtime.CompilerServices;
-
 namespace Bodu.Security.Cryptography
 {
+    using System.Runtime.CompilerServices;
+
     /// <summary>
     /// Represents a fixed-capacity byte buffer for sequential writes and zero-copy retrieval.
     /// </summary>
@@ -26,7 +26,7 @@ namespace Bodu.Security.Cryptography
         {
             ThrowHelper.ThrowIfLessThan(capacity, 0);
             this.internalBuffer = new byte[capacity];
-            Initialize();
+            this.Initialize();
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace Bodu.Security.Cryptography
         public bool IsFull
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Count == this.internalBuffer.Length; }
+            get { return this.Count == this.internalBuffer.Length; }
         }
 
         /// <summary>
@@ -76,10 +76,10 @@ namespace Bodu.Security.Cryptography
         /// </exception>
         public bool Add(byte[] array, int index, int count)
         {
-            EnsureAddIsValid(array, index, count);
-            Buffer.BlockCopy(array, index, this.internalBuffer, Count, count);
+            this.EnsureAddIsValid(array, index, count);
+            Buffer.BlockCopy(array, index, this.internalBuffer, this.Count, count);
             this.index += count;
-            return IsFull;
+            return this.IsFull;
         }
 
         /// <summary>
@@ -90,11 +90,11 @@ namespace Bodu.Security.Cryptography
         /// <exception cref="ArgumentException">The input span exceeds the remaining capacity of the buffer.</exception>
         public bool Add(ReadOnlySpan<byte> span)
         {
-            int currentCount = Count;
+            int currentCount = this.Count;
             ThrowHelper.ThrowIfGreaterThan(span.Length, this.internalBuffer.Length - currentCount, nameof(span));
             span.CopyTo(new Span<byte>(this.internalBuffer, currentCount, span.Length));
             this.index += span.Length;
-            return IsFull;
+            return this.IsFull;
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace Bodu.Security.Cryptography
         /// <exception cref="InvalidOperationException">The buffer is not yet full.</exception>
         public byte[] GetBytes()
         {
-            if (!IsFull)
+            if (!this.IsFull)
                 throw new InvalidOperationException(ResourceStrings.InvalidOperation_BufferNotFull);
 
             this.index = EmptyIndex;
@@ -117,7 +117,7 @@ namespace Bodu.Security.Cryptography
         /// <returns>An array of bytes representing the buffer, with remaining capacity cleared.</returns>
         public byte[] GetBytesZeroPadded()
         {
-            int count = Count;
+            int count = this.Count;
             Array.Clear(this.internalBuffer, count, this.internalBuffer.Length - count);
             this.index = EmptyIndex;
             return this.internalBuffer;
@@ -151,7 +151,7 @@ namespace Bodu.Security.Cryptography
             ThrowHelper.ThrowIfLessThan(index, 0);
             ThrowHelper.ThrowIfLessThan(count, 0);
             ThrowHelper.ThrowIfGreaterThan(count, array.Length - index, nameof(count));
-            ThrowHelper.ThrowIfGreaterThan(Count + count, this.internalBuffer.Length, nameof(count));
+            ThrowHelper.ThrowIfGreaterThan(this.Count + count, this.internalBuffer.Length, nameof(count));
         }
     }
 }

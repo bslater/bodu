@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+
     /// <summary>
     /// Defines methods for applying and removing padding to data blocks in block cipher operations.
     /// </summary>

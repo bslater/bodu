@@ -1,8 +1,8 @@
-﻿using System;
-using Bodu.Security.Cryptography;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+    using Bodu.Security.Cryptography;
+
     /// <summary>
     /// Implements the Cipher Block Chaining (CBC) mode transformation for a block cipher.
     /// </summary>
@@ -44,7 +44,7 @@ namespace Bodu.Security.Cryptography
             int blockSize = this.cipher.BlockSize;
 
             ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(output, 0, input.Length);
+            ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 
             Span<byte> tempBlock = stackalloc byte[blockSize];
 

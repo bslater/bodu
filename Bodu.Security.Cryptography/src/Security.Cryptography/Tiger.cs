@@ -3,13 +3,13 @@
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-using System.Buffers.Binary;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography
 {
+    using System.Buffers.Binary;
+    using System.Runtime.CompilerServices;
+    using System.Runtime.InteropServices;
+    using System.Security.Cryptography;
+
     /// <summary>
     /// Computes the hash for the input data using the <c>Tiger</c> hash algorithm. This implementation uses a block-based transformation
     /// optimized for 64-bit platforms and supports multiple output lengths (128, 160, or 192 bits). This class cannot be inherited.
@@ -63,7 +63,7 @@ namespace Bodu.Security.Cryptography
                 throw new ArgumentOutOfRangeException(nameof(hashSize),
                     string.Format(ResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
 
-            HashSizeValue = hashSize;
+            this.HashSizeValue = hashSize;
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace Bodu.Security.Cryptography
         /// </para>
         /// </remarks>
         public string AlgorithmName =>
-            $"Tiger/{HashSizeValue}";
+            $"Tiger/{this.HashSizeValue}";
 
         /// <summary>
         /// Gets a value indicating whether this transform instance can be reused after a hash operation is completed.
@@ -123,19 +123,19 @@ namespace Bodu.Security.Cryptography
             get
             {
                 this.ThrowIfDisposed();
-                return HashSizeValue;
+                return this.HashSizeValue;
             }
 
             set
             {
                 this.ThrowIfDisposed();
-                ThrowIfInvalidState();
+                this.ThrowIfInvalidState();
 
                 if (Array.IndexOf(ValidHashSizes, value) == -1)
                     throw new ArgumentOutOfRangeException(nameof(value),
                         string.Format(ResourceStrings.CryptographicException_InvalidHashSize, value, string.Join(", ", ValidHashSizes)));
 
-                HashSizeValue = value;
+                this.HashSizeValue = value;
             }
         }
 
@@ -175,7 +175,7 @@ namespace Bodu.Security.Cryptography
             set
             {
                 this.ThrowIfDisposed();
-                ThrowIfInvalidState();
+                this.ThrowIfInvalidState();
                 ThrowHelper.ThrowIfEnumValueIsUndefined(value);
 
                 this.variant = value;
@@ -208,10 +208,11 @@ namespace Bodu.Security.Cryptography
             if (this.disposed) return;
             if (disposing)
             {
-                CryptoHelpers.ClearAndNullify(ref HashValue);
+                CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
                 this.state0 = this.state1 = this.state2 = 0;
             }
+
             this.disposed = true;
             base.Dispose(disposing);
         }
@@ -220,8 +221,8 @@ namespace Bodu.Security.Cryptography
         protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
         {
             int inputLength = block.Length;
-            bool needsSecondBlock = inputLength >= BlockSizeBytes - 8;
-            int totalLength = needsSecondBlock ? BlockSizeBytes * 2 : BlockSizeBytes;
+            bool needsSecondBlock = inputLength >= this.BlockSizeBytes - 8;
+            int totalLength = needsSecondBlock ? this.BlockSizeBytes * 2 : this.BlockSizeBytes;
 
             // Use stackalloc if small enough; fallback to heap if larger
             Span<byte> padded = totalLength <= 128
@@ -249,7 +250,7 @@ namespace Bodu.Security.Cryptography
         {
             Span<ulong> blockWords = stackalloc ulong[8];
             MemoryMarshal.Cast<byte, ulong>(block).CopyTo(blockWords);
-            TransformBlock(blockWords);
+            this.TransformBlock(blockWords);
         }
 
         /// <summary>
@@ -264,7 +265,7 @@ namespace Bodu.Security.Cryptography
             BinaryPrimitives.WriteUInt64LittleEndian(output[8..16], this.state1);
             BinaryPrimitives.WriteUInt64LittleEndian(output[16..24], this.state2);
 
-            return output.Slice(0, HashSizeValue / 8).ToArray();
+            return output.Slice(0, this.HashSizeValue / 8).ToArray();
         }
 
         /// <summary>

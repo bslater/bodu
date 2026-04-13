@@ -15,7 +15,7 @@ namespace Bodu.Security.Cryptography
         /// that the algorithm output is the correct length for the current <see cref="HashAlgorithm.HashSize" />.
         /// </summary>
         /// <param name="variant">The table type to test.</param>
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(HashAlgorithmVariants), DynamicDataSourceType.Method)]
         public void Variant_Set_WhenValid_ShouldProduceExpectedHash(TigerVariant variant)
         {

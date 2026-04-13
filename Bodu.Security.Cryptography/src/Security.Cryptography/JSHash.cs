@@ -1,8 +1,8 @@
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography
 {
+    using System.Runtime.InteropServices;
+    using System.Security.Cryptography;
+
     /// <summary>
     /// Computes the hash for the input data using the <c>JSHash</c> hash algorithm. This variant applies a non-cryptographic bitwise mixing
     /// function developed by Justin Sobel to produce a 32-bit hash value. This class cannot be inherited.
@@ -41,8 +41,8 @@ namespace Bodu.Security.Cryptography
         /// <remarks>This constructor initializes the hash algorithm to a default 32-bit output with a seed value of <c>0x4E67C6A7</c>.</remarks>
         public JSHash()
         {
-            HashSizeValue = 32;
-            Initialize();
+            this.HashSizeValue = 32;
+            this.Initialize();
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace Bodu.Security.Cryptography
 
             if (disposing)
             {
-                CryptoHelpers.ClearAndNullify(ref HashValue);
+                CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
                 this.workingHash = 0;
             }
@@ -135,7 +135,7 @@ namespace Bodu.Security.Cryptography
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
-            HashCore(array.AsSpan(ibStart, cbSize));
+            this.HashCore(array.AsSpan(ibStart, cbSize));
         }
 
         /// <summary>
@@ -155,6 +155,7 @@ namespace Bodu.Security.Cryptography
             {
                 v ^= (v << 5) + (v >> 2) + b;
             }
+
             this.workingHash = v;
         }
 

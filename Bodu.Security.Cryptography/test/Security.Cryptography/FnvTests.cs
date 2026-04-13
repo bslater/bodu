@@ -26,9 +26,9 @@ namespace Bodu.Security.Cryptography
         {
             var list = new List<string>(base.GetFieldsToExcludeFromDisposeValidation());
             list.AddRange([
-                "this.offsetBasis",
-                "this.prime",
-                "this.useFnv1a",
+                "offsetBasis",
+                "prime",
+                "useFnv1a",
             ]);
 
             return list;

@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+
     /// <summary>
     /// Provides the interface for a symmetric block cipher algorithm that processes data in fixed-size blocks.
     /// </summary>

@@ -7,7 +7,7 @@ namespace Bodu.Security.Cryptography
     {
         /// <summary> <summary> Verifies that setting an invalid hashValue for <see cref="SipHash.CompressionRounds"/> throws <see
         /// cref="ArgumentOutOfRangeException"/>. </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(-1)]
         [DataRow(0)]
         [DataRow(1)]
@@ -24,7 +24,7 @@ namespace Bodu.Security.Cryptography
         /// <summary>
         /// Verifies that setting a valid hashValue for <see cref="SipHash.CompressionRounds" /> updates the internal state.
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(16)]
         [DataRow(32)]
         public void CompressionRounds_WhenSetToValidValue_ShouldUpdateCorrectly(int size)

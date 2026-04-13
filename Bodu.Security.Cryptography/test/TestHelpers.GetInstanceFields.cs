@@ -18,20 +18,21 @@ namespace Bodu
         /// <returns>An enumerable of object arrays, each containing a single <see cref="FieldInfo" />.</returns>
         public static IEnumerable<object[]> GetFieldInfoForType<T>(
             string[]? ignore = null,
+            bool excludeReadOnly = true,
             BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
         {
             ignore ??= Array.Empty<string>();
             Type type = typeof(T);
             var visited = new HashSet<string>(StringComparer.Ordinal);
 
-            // Walk inheritance chain from most derived type up
             while (type != null && type != typeof(object))
             {
                 foreach (var field in type.GetFields(flags))
                 {
                     if (field.IsStatic || field.FieldType.IsEnum || !visited.Add(field.Name))
                         continue;
-
+                    if (excludeReadOnly && field.IsInitOnly)
+                        continue;
                     if (ignore.Contains(field.Name))
                         continue;
 

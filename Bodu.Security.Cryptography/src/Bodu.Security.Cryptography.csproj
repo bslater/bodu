@@ -35,24 +35,10 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <Compile Remove="Security.Cryptography.Extensions\ICryptoTransformExtensions.cs" />
-    <Compile Remove="Security.Cryptography.Extensions\ICryptoTransformExtensions.Transform.cs" />
-    <Compile Remove="Security.Cryptography.Extensions\ICryptoTransformExtensions.TransformAsync.cs" />
-    <Compile Remove="Security.Cryptography.Extensions\ICryptoTransformExtensions.TransformBlock.cs" />
-    <Compile Remove="Security.Cryptography.Extensions\ICryptoTransformExtensions.TransformFinalBlock.cs" />
     <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithm.Decrypt.cs" />
     <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithm.DecryptAsync.cs" />
     <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithm.EncryptAsync.cs" />
     <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithm.TransformHelpers.cs" />
-    <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithmExtensions.cs" />
-    <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithmExtensions.Decrypt.cs" />
-    <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithmExtensions.DecryptAsync.cs" />
-    <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithmExtensions.Encrypt.cs" />
-    <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithmExtensions.EncryptAsync.cs" />
-    <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithmExtensions.TryCreateDecryptor.cs" />
-    <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithmExtensions.TryCreateEncryptor.cs" />
-    <Compile Remove="Security.Cryptography\Blowfish.cs" />
-    <Compile Remove="Security.Cryptography\BlowfishTransform.cs" />
     <Compile Remove="Security.Cryptography\Crc.cs" />
   </ItemGroup>
 

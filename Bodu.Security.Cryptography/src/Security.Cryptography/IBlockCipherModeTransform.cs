@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+
     /// <summary>
     /// Provides a basic interface for applying a cipher mode transformation to a block cipher algorithm.
     /// </summary>

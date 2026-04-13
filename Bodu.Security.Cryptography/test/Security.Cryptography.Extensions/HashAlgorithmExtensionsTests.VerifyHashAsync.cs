@@ -1,100 +1,167 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Security.Cryptography.Extensions;
-using Bodu.Infrastructure;
-using Bodu.Security.Cryptography;
-using System.Security.Cryptography;
+// --------------------------------------------------------------------------------------------------------------- //
+// <copyright file="HashAlgorithmExtensions_VerifyHashAsync.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Security.Cryptography.Extensions
 {
-    public partial class HashAlgorithmExtensionsTests
+    using System;
+    using System.IO;
+    using System.Security.Cryptography;
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    public static partial class HashAlgorithmExtensions
     {
         /// <summary>
-        /// Verifies that VerifyHashAsync returns true when stream content matches expected hex string.
+        /// Asynchronously verifies that the computed hash of a stream matches the expected hash value.
         /// </summary>
-        [TestMethod]
-        public async Task VerifyHashAsync_WhenStreamMatchesHex_ShouldReturnTrue()
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="stream">
+        /// The stream to read and hash asynchronously. Must not be <see langword="null" /> and must be readable.
+        /// </param>
+        /// <param name="expectedHash">
+        /// The expected hash value as a byte array. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+        /// <returns>
+        /// A task that evaluates to <see langword="true" /> if the computed hash equals <paramref name="expectedHash" />;
+        /// otherwise, <see langword="false" />.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="algorithm" />, <paramref name="stream" />, or <paramref name="expectedHash" /> is
+        /// <see langword="null" />.
+        /// </exception>
+        /// <remarks>
+        /// <para>
+        /// Comparison is performed using <see cref="CryptographicOperations.FixedTimeEquals" /> to mitigate timing side-channel attacks.
+        /// </para>
+        /// <para>
+        /// If <paramref name="cancellationToken" /> is already cancelled on entry, an <see cref="OperationCanceledException" /> is thrown
+        /// immediately before any I/O begins.
+        /// </para>
+        /// </remarks>
+        public static async Task<bool> VerifyHashAsync(this HashAlgorithm algorithm, Stream stream, byte[] expectedHash, CancellationToken cancellationToken = default)
         {
-            using var algorithm = CreateAlgorithm();
-            using var stream = new MemoryStream(SampleData);
-            Assert.IsTrue(await algorithm.VerifyHashAsync(stream, SampleHex));
+            ThrowHelper.ThrowIfNull(algorithm);
+            ThrowHelper.ThrowIfNull(stream);
+            ThrowHelper.ThrowIfNull(expectedHash);
+
+            // Throw OperationCanceledException directly for an already-cancelled token.
+            // ComputeHashAsync would otherwise throw the derived TaskCanceledException.
+            cancellationToken.ThrowIfCancellationRequested();
+
+            byte[] actualHash = await algorithm.ComputeHashAsync(stream, cancellationToken).ConfigureAwait(false);
+
+            return CryptographicOperations.FixedTimeEquals(actualHash, expectedHash);
         }
 
         /// <summary>
-        /// Verifies that VerifyHashAsync returns true when stream content matches expected ReadOnlyMemory hash.
+        /// Asynchronously verifies that the computed hash of a stream matches the expected hexadecimal hash string.
         /// </summary>
-        [TestMethod]
-        public async Task VerifyHashAsync_WhenStreamMatchesMemory_ShouldReturnTrue()
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="stream">
+        /// The readable stream to hash asynchronously. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="expectedHex">
+        /// The expected hash as a hexadecimal string. Case-insensitive. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+        /// <returns>
+        /// A task that evaluates to <see langword="true" /> if the computed hash matches <paramref name="expectedHex" />;
+        /// otherwise, <see langword="false" />.
+        /// Returns <see langword="false" /> if <paramref name="expectedHex" /> is not a valid hexadecimal string.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="algorithm" />, <paramref name="stream" />, or <paramref name="expectedHex" /> is
+        /// <see langword="null" />.
+        /// </exception>
+        /// <remarks>
+        /// <para>
+        /// <paramref name="expectedHex" /> is decoded to bytes before comparison. The comparison is then performed using
+        /// <see cref="CryptographicOperations.FixedTimeEquals" /> to mitigate timing side-channel attacks.
+        /// </para>
+        /// <para>
+        /// A malformed <paramref name="expectedHex" /> string is treated as a non-match and returns <see langword="false" />.
+        /// </para>
+        /// <para>
+        /// If <paramref name="cancellationToken" /> is already cancelled on entry, an <see cref="OperationCanceledException" /> is thrown
+        /// immediately before any I/O begins.
+        /// </para>
+        /// </remarks>
+        public static async Task<bool> VerifyHashAsync(this HashAlgorithm algorithm, Stream stream, string expectedHex, CancellationToken cancellationToken = default)
         {
-            using var algorithm = CreateAlgorithm();
-            using var stream = new MemoryStream(SampleData);
-            ReadOnlyMemory<byte> expected = SampleHash;
-            Assert.IsTrue(await algorithm.VerifyHashAsync(stream, expected));
-        }
+            ThrowHelper.ThrowIfNull(algorithm);
+            ThrowHelper.ThrowIfNull(stream);
+            ThrowHelper.ThrowIfNull(expectedHex);
 
-        /// <summary>
-        /// Verifies that VerifyHashAsync throws ArgumentNullException when expected hash is null.
-        /// </summary>
-        [TestMethod]
-        public async Task VerifyHashAsync_WhenExpectedHashIsNull_ShouldThrow()
-        {
-            using var algorithm = CreateAlgorithm();
-            using var stream = new MemoryStream(SampleData);
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () =>
+            // Throw OperationCanceledException directly for an already-cancelled token.
+            // ComputeHashAsync would otherwise throw the derived TaskCanceledException.
+            cancellationToken.ThrowIfCancellationRequested();
+
+            // Decode the expected hex to bytes for a constant-time binary comparison.
+            // A malformed hex string cannot represent a valid hash, so treat it as a non-match.
+            byte[] expectedBytes;
+            try
             {
-                await algorithm.VerifyHashAsync(stream, (byte[])null!);
-            });
+                expectedBytes = Convert.FromHexString(expectedHex);
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+
+            byte[] actualHash = await algorithm.ComputeHashAsync(stream, cancellationToken).ConfigureAwait(false);
+
+            return CryptographicOperations.FixedTimeEquals(actualHash, expectedBytes);
         }
 
         /// <summary>
-        /// Verifies that VerifyHashAsync returns true when stream matches the expected byte array hash.
+        /// Asynchronously verifies that the computed hash of a stream matches the expected hash value held in a memory buffer.
         /// </summary>
-        [TestMethod]
-        public async Task VerifyHashAsync_WhenStreamMatchesHash_ShouldReturnTrue()
+        /// <param name="algorithm">
+        /// The <see cref="HashAlgorithm" /> instance used to compute the hash. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="stream">
+        /// The readable stream to hash asynchronously. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="expectedHash">The expected hash value as a <see cref="ReadOnlyMemory{T}" /> of bytes.</param>
+        /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+        /// <returns>
+        /// A task that evaluates to <see langword="true" /> if the computed hash equals <paramref name="expectedHash" />;
+        /// otherwise, <see langword="false" />.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="algorithm" /> or <paramref name="stream" /> is <see langword="null" />.
+        /// </exception>
+        /// <remarks>
+        /// <para>
+        /// This overload supports allocation-reduced verification when the expected hash is already held in a
+        /// <see cref="ReadOnlyMemory{T}" /> buffer. Comparison is performed using
+        /// <see cref="CryptographicOperations.FixedTimeEquals" /> to mitigate timing side-channel attacks.
+        /// </para>
+        /// <para>
+        /// If <paramref name="cancellationToken" /> is already cancelled on entry, an <see cref="OperationCanceledException" /> is thrown
+        /// immediately before any I/O begins.
+        /// </para>
+        /// </remarks>
+        public static async Task<bool> VerifyHashAsync(this HashAlgorithm algorithm, Stream stream, ReadOnlyMemory<byte> expectedHash, CancellationToken cancellationToken = default)
         {
-            using var algorithm = CreateAlgorithm();
-            using var stream = new MemoryStream(SampleData);
-            Assert.IsTrue(await algorithm.VerifyHashAsync(stream, SampleHash));
-        }
+            ThrowHelper.ThrowIfNull(algorithm);
+            ThrowHelper.ThrowIfNull(stream);
 
-        /// <summary>
-        /// Verifies that VerifyHashAsync returns true when stream matches the expected hex string.
-        /// </summary>
-        [TestMethod]
-        public async Task VerifyHashAsync_WhenStreamMatchesHexDuplicate_ShouldReturnTrue()
-        {
-            using var algorithm = CreateAlgorithm();
-            using var stream = new MemoryStream(SampleData);
-            Assert.IsTrue(await algorithm.VerifyHashAsync(stream, SampleHex));
-        }
+            // Throw OperationCanceledException directly for an already-cancelled token.
+            // ComputeHashAsync would otherwise throw the derived TaskCanceledException.
+            cancellationToken.ThrowIfCancellationRequested();
 
-        /// <summary>
-        /// Verifies that VerifyHashAsync returns true when stream matches the expected ReadOnlyMemory hash.
-        /// </summary>
-        [TestMethod]
-        public async Task VerifyHashAsync_WhenStreamMatchesReadOnlyMemory_ShouldReturnTrue()
-        {
-            using var algorithm = CreateAlgorithm();
-            using var stream = new MemoryStream(SampleData);
-            Assert.IsTrue(await algorithm.VerifyHashAsync(stream, new ReadOnlyMemory<byte>(SampleHash)));
-        }
+            byte[] actualHash = await algorithm.ComputeHashAsync(stream, cancellationToken).ConfigureAwait(false);
 
-        /// <summary>
-        /// Verifies that VerifyHashAsync returns true and stream reads are tracked when using MonitoringStream.
-        /// </summary>
-        [TestMethod]
-        public async Task VerifyHashAsync_WhenUsingMonitoringStream_ShouldTrackReadsAndReturnTrue()
-        {
-            using var algorithm = CreateAlgorithm();
-            using var baseStream = new MemoryStream(new byte[] { 2, 3 });
-            using var monitored = new MonitoringStream(baseStream);
-            byte[] expected = BitConverter.GetBytes((uint)5);
-            bool result = await algorithm.VerifyHashAsync(monitored, expected);
-            Assert.IsTrue(result);
-            Assert.IsTrue(monitored.Reads.Count > 0);
+            return CryptographicOperations.FixedTimeEquals(actualHash, expectedHash.Span);
         }
     }
 }

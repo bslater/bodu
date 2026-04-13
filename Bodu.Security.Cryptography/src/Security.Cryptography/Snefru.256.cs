@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+
     /// <summary>
     /// Computes the hash for the input data using the <c>Snefru-256</c> hash algorithm. This variant performs block-based permutation using
     /// S-boxes and rotations across a 512-bit buffer and an 8-word internal state. This class cannot be inherited.

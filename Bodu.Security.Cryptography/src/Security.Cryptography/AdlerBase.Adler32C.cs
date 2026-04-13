@@ -4,10 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-
 namespace Bodu.Security.Cryptography
 {
+    using System;
+
     /// <summary>
     /// Computes the hash for the input data using the <c>Adler-32</c> hash algorithm. This variant uses a modulus of 65536 and is optimized
     /// for alignment and performance in SIMD-capable environments. This class cannot be inherited.

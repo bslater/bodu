@@ -4,12 +4,12 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography
 {
+    using System.Runtime.CompilerServices;
+    using System.Security.Cryptography;
+    using Bodu.Extensions;
+
     /// <summary>
     /// Base class for computing hash using the <c>Fletcher</c> hash algorithm family (Fletcher-16, Fletcher-32, Fletcher-64). This class
     /// cannot be inherited.
@@ -55,7 +55,7 @@ namespace Bodu.Security.Cryptography
                     nameof(hashSize)))
         {
             this.modulus = (1UL << (hashSize / 2)) - 1;
-            HashSizeValue = hashSize;
+            this.HashSizeValue = hashSize;
             this.partA = this.partB = 0;
         }
 
@@ -70,7 +70,7 @@ namespace Bodu.Security.Cryptography
         /// The naming convention follows the established Fletcher standard, where the suffix indicates the bit-width of the resulting checksum:
         /// </remarks>
         public string AlgorithmName =>
-            $"Fletcher-{HashSizeValue}";
+            $"Fletcher-{this.HashSizeValue}";
 
         /// <summary>
         /// Gets a value indicating whether this transform instance can be reused after a hash operation is completed.
@@ -98,10 +98,10 @@ namespace Bodu.Security.Cryptography
         public override bool CanTransformMultipleBlocks => true;
 
         /// <inheritdoc />
-        public override int InputBlockSize => BlockSizeBytes;
+        public override int InputBlockSize => this.BlockSizeBytes;
 
         /// <inheritdoc />
-        public override int OutputBlockSize => BlockSizeBytes;
+        public override int OutputBlockSize => this.BlockSizeBytes;
 
         /// <inheritdoc />
         public override void Initialize()
@@ -128,7 +128,7 @@ namespace Bodu.Security.Cryptography
 
             if (disposing)
             {
-                CryptoHelpers.ClearAndNullify(ref HashValue);
+                CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
                 this.partA = this.partB = 0;
             }
@@ -140,7 +140,7 @@ namespace Bodu.Security.Cryptography
         /// <inheritdoc />
         protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
         {
-            Span<byte> buffer = stackalloc byte[BlockSizeBytes];
+            Span<byte> buffer = stackalloc byte[this.BlockSizeBytes];
             block.CopyTo(buffer);
             return buffer.ToArray();
         }
@@ -150,9 +150,9 @@ namespace Bodu.Security.Cryptography
         protected override void ProcessBlock(ReadOnlySpan<byte> block)
         {
             ulong b = 0;
-            for (int i = 0; i < block.Length && i < BlockSizeBytes; i++)
+            for (int i = 0; i < block.Length && i < this.BlockSizeBytes; i++)
             {
-                b |= ((ulong)block[i]) << ((BlockSizeBytes - (i + 1)) << 3);
+                b |= ((ulong)block[i]) << ((this.BlockSizeBytes - (i + 1)) << 3);
             }
 
             // Update the internal state (partA and partB)
@@ -164,10 +164,10 @@ namespace Bodu.Security.Cryptography
         protected override byte[] ProcessFinalBlock()
         {
             // Combine partA and partB into the final hash value
-            ulong finalHash = (this.partA << (HashSizeValue / 2)) | this.partB;
+            ulong finalHash = (this.partA << (this.HashSizeValue / 2)) | this.partB;
 
             // Convert to a byte array and take the size
-            return finalHash.GetBytes().SliceInternal(0, HashSizeValue / 8);
+            return finalHash.GetBytes().SliceInternal(0, this.HashSizeValue / 8);
         }
 
         /// <inheritdoc />

@@ -78,7 +78,7 @@ namespace Bodu.Security.Cryptography
         /// Verifies that repeated calls to <see cref="IBlockCipher.Encrypt(ReadOnlySpan{byte}, Span{byte})" /> across diferent instances
         /// with the same input produce the same result.
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(BlockCipherVariants))]
         public void Encrypt_WhenCalled_WithDiferentInstances_ShouldBeDeterministic(TVariant variant)
         {
@@ -98,7 +98,7 @@ namespace Bodu.Security.Cryptography
         /// Verifies that repeated calls to <see cref="IBlockCipher.Encrypt(ReadOnlySpan{byte}, Span{byte})" /> using the same instances and
         /// input produce the same result.
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(BlockCipherVariants))]
         public void Encrypt_WhenCalled_WithSameInstsnce_ShouldBeDeterministic(TVariant variant)
         {
@@ -113,7 +113,7 @@ namespace Bodu.Security.Cryptography
             CollectionAssert.AreEqual(output1, output2);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(EncryptTestData))]
         public void Encrypt_WhenKnownInput_ShouldMatchExpected(TVariant variant, string testName, byte[] input, byte[] expected)
         {
@@ -129,7 +129,7 @@ namespace Bodu.Security.Cryptography
         /// <summary>
         /// Verifies that encryption throws ArgumentException when input size is invalid.
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(GetInvalidBlockSizes), DynamicDataSourceType.Method)]
         public void Encrypt_WithInvalidInputSize_ShouldThrowExactly(byte[] input)
         {
@@ -143,7 +143,7 @@ namespace Bodu.Security.Cryptography
         /// <summary>
         /// Verifies that encryption throws ArgumentException when output size is invalid.
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(GetInvalidBlockSizes), DynamicDataSourceType.Method)]
         public void Encrypt_WithInvalidOutSize_ShouldThrowExactly(byte[] output)
         {
@@ -157,7 +157,7 @@ namespace Bodu.Security.Cryptography
         /// <summary>
         /// Verifies that encryption and decryption can operate on the same buffer (in-place).
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(BlockCipherVariants), DynamicDataSourceType.Method)]
         public void EncryptDecrypt_WithInPlaceBuffer_ShoulSucceed(TVariant variant)
         {
@@ -172,7 +172,7 @@ namespace Bodu.Security.Cryptography
         /// <summary>
         /// Verifies that encryption and decryption of valid blocks succeeds without exceptions.
         /// </summary>
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(GetValidSingleBlockData), DynamicDataSourceType.Method)]
         public void EncryptDecrypt_WithValidInput_ShouldRoundtrip(TVariant variant, string testName, byte[] input)
         {

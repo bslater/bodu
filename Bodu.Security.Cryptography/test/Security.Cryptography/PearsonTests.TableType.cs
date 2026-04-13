@@ -24,7 +24,7 @@ namespace Bodu.Security.Cryptography
         /// that the hash output is the correct length for the current <see cref="HashAlgorithm.HashSize" />.
         /// </summary>
         /// <param name="type">The table type to test.</param>
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(TableTypeTestData))]
         public void TableType_Set_WhenValid_ShouldProduceExpectedHash(Pearson.PearsonTableType type)
         {

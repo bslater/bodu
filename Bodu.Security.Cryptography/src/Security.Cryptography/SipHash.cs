@@ -4,15 +4,15 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
-using System.Buffers.Binary;
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography
 {
+    using System.Buffers.Binary;
+    using System.Numerics;
+    using System.Runtime.CompilerServices;
+    using System.Runtime.InteropServices;
+    using System.Security.Cryptography;
+    using Bodu.Extensions;
+
     /// <summary>
     /// Provides the base implementation of the <c>SipHash</c> cryptographic hash algorithm - a fast, secure, and keyed pseudorandom
     /// function optimized for short input messages. See the official <a href="https://131002.net/siphash/">SipHash specification</a> for details.
@@ -105,12 +105,12 @@ namespace Bodu.Security.Cryptography
                 throw new ArgumentOutOfRangeException(nameof(hashSize),
                     string.Format(ResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
 
-            KeyValue = new byte[KeySize];
-            CryptoHelpers.FillWithRandomNonZeroBytes(KeyValue);
+            this.KeyValue = new byte[KeySize];
+            CryptoHelpers.FillWithRandomNonZeroBytes(this.KeyValue);
             this.compressionRounds = MinCompressionRounds;
             this.finalizationRounds = MinFinalizationRounds;
-            HashSizeValue = hashSize;
-            InitializeVectors();
+            this.HashSizeValue = hashSize;
+            this.InitializeVectors();
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace Bodu.Security.Cryptography
         /// </list>
         /// </remarks>
         public string AlgorithmName =>
-            $"SipHash-{CompressionRounds}-{FinalizationRounds}-{HashSizeValue}";
+            $"SipHash-{this.CompressionRounds}-{this.FinalizationRounds}-{this.HashSizeValue}";
 
         /// <summary>
         /// Gets a value indicating whether this transform instance can be reused after a hash operation is completed.
@@ -182,7 +182,7 @@ namespace Bodu.Security.Cryptography
             set
             {
                 this.ThrowIfDisposed();
-                ThrowIfInvalidState();
+                this.ThrowIfInvalidState();
                 ThrowHelper.ThrowIfLessThan(value, MinCompressionRounds);
 
                 this.compressionRounds = value;
@@ -213,7 +213,7 @@ namespace Bodu.Security.Cryptography
             set
             {
                 this.ThrowIfDisposed();
-                ThrowIfInvalidState();
+                this.ThrowIfInvalidState();
                 ThrowHelper.ThrowIfLessThan(value, MinFinalizationRounds);
 
                 this.finalizationRounds = value;
@@ -229,19 +229,19 @@ namespace Bodu.Security.Cryptography
             get
             {
                 this.ThrowIfDisposed();
-                return KeyValue.Copy();
+                return this.KeyValue.Copy();
             }
 
             set
             {
                 this.ThrowIfDisposed();
-                ThrowIfInvalidState();
+                this.ThrowIfInvalidState();
                 ThrowHelper.ThrowIfNull(value);
                 if (value.Length != KeySize)
                     throw new CryptographicException(string.Format(ResourceStrings.CryptographicException_InvalidKeySize, value.Length, SipHash<T>.KeySize));
 
-                KeyValue = value.Copy();
-                InitializeVectors();
+                this.KeyValue = value.Copy();
+                this.InitializeVectors();
             }
         }
 
@@ -257,7 +257,7 @@ namespace Bodu.Security.Cryptography
             State = 0;
             finalized = false;
 #endif
-            InitializeVectors();
+            this.InitializeVectors();
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace Bodu.Security.Cryptography
 
             if (disposing)
             {
-                CryptoHelpers.ClearAndNullify(ref HashValue);
+                CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
                 this.v0 = this.v1 = this.v2 = this.v3 = 0;
                 this.compressionRounds = this.finalizationRounds = 0;
@@ -305,7 +305,7 @@ namespace Bodu.Security.Cryptography
         {
             var b = BinaryPrimitives.ReadUInt64LittleEndian(block);
             this.v3 ^= b;
-            PerformSipRounds(this.compressionRounds);
+            this.PerformSipRounds(this.compressionRounds);
             this.v0 ^= b;
         }
 
@@ -321,20 +321,20 @@ namespace Bodu.Security.Cryptography
         /// <remarks>Combines all partial input and applies the finalization round logic based on the configured output size.</remarks>
         protected override byte[] ProcessFinalBlock()
         {
-            this.v2 ^= (HashSizeValue == 64) ? 0xffUL : 0xeeUL;
-            PerformSipRounds(this.finalizationRounds);
+            this.v2 ^= (this.HashSizeValue == 64) ? 0xffUL : 0xeeUL;
+            this.PerformSipRounds(this.finalizationRounds);
 
-            byte[] hash = new byte[HashSizeValue / 8];
+            byte[] hash = new byte[this.HashSizeValue / 8];
 
             // First 64-bit output
             ulong h0 = this.v0 ^ this.v1 ^ this.v2 ^ this.v3;
             MemoryMarshal.Write(hash.AsSpan(0, 8), in h0);
 
             // Optional second block for SipHash-128
-            if (HashSizeValue == 128)
+            if (this.HashSizeValue == 128)
             {
                 this.v1 ^= 0xdd;
-                PerformSipRounds(this.finalizationRounds);
+                this.PerformSipRounds(this.finalizationRounds);
 
                 ulong h1 = this.v0 ^ this.v1 ^ this.v2 ^ this.v3;
                 MemoryMarshal.Write(hash.AsSpan(8, 8), in h1);
@@ -349,14 +349,14 @@ namespace Bodu.Security.Cryptography
         /// <remarks>This method XORs the <see cref="Key" /> with predefined constants to initialize the internal state.</remarks>
         private void InitializeVectors()
         {
-            ulong k0 = BitConverter.ToUInt64(KeyValue, 0);
-            ulong k1 = BitConverter.ToUInt64(KeyValue, 8);
+            ulong k0 = BitConverter.ToUInt64(this.KeyValue, 0);
+            ulong k1 = BitConverter.ToUInt64(this.KeyValue, 8);
             this.v0 = InitialStates[0] ^ k0;
             this.v1 = InitialStates[1] ^ k1;
             this.v2 = InitialStates[2] ^ k0;
             this.v3 = InitialStates[3] ^ k1;
 
-            if (HashSizeValue == 128) this.v1 ^= 0xee;
+            if (this.HashSizeValue == 128) this.v1 ^= 0xee;
         }
 
         /// <summary>

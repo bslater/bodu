@@ -48,11 +48,11 @@ namespace Bodu.Security.Cryptography
         private readonly ulong prime;
         private readonly bool useFnv1a;
         private bool disposed = false;
+        private ulong workingHash;
 #if !NET6_0_OR_GREATER
 
         // Required for .NET Standard 2.0 or older frameworks
         private bool finalized;
-        private ulong workingHash;
 #endif
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace Bodu.Security.Cryptography
                     string.Format(ResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)),
                     nameof(hashSize));
 
-            HashSizeValue = hashSize;
+            this.HashSizeValue = hashSize;
             this.prime = prime;
             this.offsetBasis = this.workingHash = offsetBasis;
             this.useFnv1a = useFnv1a;
@@ -107,7 +107,7 @@ namespace Bodu.Security.Cryptography
         /// </list>
         /// </value>
         public string AlgorithmName
-            => $"FNV-{(this.useFnv1a ? "1a" : "1")}-{HashSizeValue}";
+            => $"FNV-{(this.useFnv1a ? "1a" : "1")}-{this.HashSizeValue}";
 
         /// <summary>
         /// Gets a value indicating whether this transform instance can be reused after a hash operation is completed.
@@ -158,7 +158,7 @@ namespace Bodu.Security.Cryptography
 
             if (disposing)
             {
-                CryptoHelpers.ClearAndNullify(ref HashValue);
+                CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
                 this.workingHash = 0;
             }
@@ -198,7 +198,7 @@ namespace Bodu.Security.Cryptography
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
-            HashCore(array.AsSpan(ibStart, cbSize));
+            this.HashCore(array.AsSpan(ibStart, cbSize));
         }
 
         /// <summary>
@@ -218,9 +218,9 @@ namespace Bodu.Security.Cryptography
         throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
             if (this.useFnv1a)
-                HashCoreFNV1a(source);
+                this.HashCoreFNV1a(source);
             else
-                HashCoreFNV1(source);
+                this.HashCoreFNV1(source);
         }
 
         /// <summary>
@@ -266,11 +266,11 @@ namespace Bodu.Security.Cryptography
             Span<byte> buffer = stackalloc byte[8];
             BinaryPrimitives.WriteUInt64BigEndian(buffer, this.workingHash);
 
-            return HashSizeValue switch
+            return this.HashSizeValue switch
             {
                 32 => [buffer[4], buffer[5], buffer[6], buffer[7]],
                 64 => buffer.ToArray(),
-                _ => throw new NotSupportedException($"Unsupported hash this.size: {HashSizeValue} bits.")
+                _ => throw new NotSupportedException($"Unsupported hash this.size: {this.HashSizeValue} bits.")
             };
         }
 
@@ -292,6 +292,7 @@ namespace Bodu.Security.Cryptography
                 hash *= this.prime;
                 hash ^= source[i];
             }
+
             this.workingHash = hash;
         }
 
@@ -313,6 +314,7 @@ namespace Bodu.Security.Cryptography
                 hash ^= source[i];
                 hash *= this.prime;
             }
+
             this.workingHash = hash;
         }
 
@@ -348,7 +350,7 @@ namespace Bodu.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ThrowIfInvalidState()
         {
-            if (State != 0)
+            if (this.State != 0)
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
         }
     }

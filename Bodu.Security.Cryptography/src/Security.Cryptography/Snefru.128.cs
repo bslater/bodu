@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+
     /// <summary>
     /// Computes the hash for the input data using the <c>Snefru-128</c> hash algorithm. This variant applies a symmetric, non-keyed block
     /// transformation using a fixed sequence of S-box and bit rotation rounds. This class cannot be inherited.

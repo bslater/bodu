@@ -1,9 +1,9 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
+    using System;
+    using System.Runtime.CompilerServices;
+    using System.Security.Cryptography;
+
     /// <summary>
     /// Provides general-purpose utility methods used by cryptographic components and implementations. This includes bit manipulation,
     /// secure random byte generation, and helper functions to ensure compliance with cryptographic constraints such as non-zero padding,

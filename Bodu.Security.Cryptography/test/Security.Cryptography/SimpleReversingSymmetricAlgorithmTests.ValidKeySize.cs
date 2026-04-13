@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography
         /// be valid tweak sizes.
         /// </summary>
         /// <param name="length">A valid tweak size in bits.</param>
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(128)]
         [DataRow(192)]
         [DataRow(256)]
@@ -33,7 +33,7 @@ namespace Bodu.Security.Cryptography
         // <summary>
         /// Verifies that <see cref="TweakableSymmetricAlgorithm.ValidKeySize(int)"/> returns <c>false</c> for values that are not
         /// considered valid tweak sizes. </summary> <param name="length">An invalid tweak size in bits.</param>
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(int.MinValue)]
         [DataRow(int.MaxValue)]
         [DataRow(0)]
