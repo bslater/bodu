@@ -27,7 +27,9 @@ namespace Bodu.Security.Cryptography.Extensions
         /// </para>
         /// <para>
         /// An <see cref="ArrayPool{T}" /> buffer is used internally to bridge the span into the array-based
-        /// <see cref="HashAlgorithm.TransformBlock" /> API. The buffer is always returned to the pool, even if an exception occurs.
+        /// <see cref="HashAlgorithm.TransformBlock" /> API. The buffer is cleared and returned to the pool in a <c>finally</c>
+        /// block so the input data cannot be observed by a subsequent pool consumer even if
+        /// <see cref="HashAlgorithm.TransformBlock" /> throws.
         /// </para>
         /// <para>
         /// If <paramref name="data" /> is empty, this method returns without performing any work.
@@ -49,8 +51,10 @@ namespace Bodu.Security.Cryptography.Extensions
             }
             finally
             {
-                // Always return the rented buffer so it is not permanently lost if TransformBlock throws.
-                ArrayPool<byte>.Shared.Return(buffer);
+                // The rented buffer may contain a copy of the caller's input (potentially sensitive, e.g. a password).
+                // Clear the used region before returning the array to the shared pool so a subsequent renter cannot
+                // observe the plaintext. 'clearArray: true' also zeros the entire rented array.
+                ArrayPool<byte>.Shared.Return(buffer, clearArray: true);
             }
         }
     }
