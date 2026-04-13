@@ -283,7 +283,7 @@
         /// </summary>
         /// <exception cref="CryptographicException">Thrown if the internal tweak value is <see langword="null" /> or empty.</exception>
         /// <remarks>
-        /// Call this method before using the <see cref="Tweak" /> or <see cref="TweakSpan" /> properties to ensure that the tweak has been initialized.
+        /// Call this method before using the <see cref="Tweak" /> property to ensure that the tweak has been initialised.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void ThrowIfTweakNotSet()
