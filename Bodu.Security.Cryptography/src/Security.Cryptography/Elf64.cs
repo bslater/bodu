@@ -179,34 +179,9 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Finalises the hash computation and returns the resulting 64-bit <see cref="Elf64" /> hash in big-endian format. This method
-        /// reflects all input previously processed via <see cref="HashAlgorithm.HashCore(byte[], int, int)" /> or
-        /// <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" /> and produces a final, stable hash output.
+        /// Finalises the ELF-64 hash computation and returns the 64-bit result as an 8-byte big-endian array.
         /// </summary>
-        /// <returns>
-        /// An 8-byte array representing the computed <c>Elf64</c> hash value. The result is encoded in <b>big-endian</b> byte order.
-        /// </returns>
-        /// <remarks>
-        /// <para>
-        /// This method completes the internal state of the hashing algorithm and serialises the final hash value into a
-        /// platform-independent format. It is invoked automatically by <see cref="HashAlgorithm.ComputeHash(byte[])" /> and related methods
-        /// once all data has been processed.
-        /// </para>
-        /// <para>After this method returns, the internal state is considered finalised and the computed hash is stable.</para>
-        /// <para>
-        /// In .NET 6.0 and later, the algorithm is automatically reset by invoking <see cref="HashAlgorithm.Initialize" />, allowing the
-        /// instance to be reused immediately.
-        /// </para>
-        /// <para>
-        /// In earlier versions of .NET, the internal state is marked as finalised, and any subsequent calls to
-        /// <see cref="HashAlgorithm.HashCore(byte[], int, int)" />, <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" />, or
-        /// <see cref="HashAlgorithm.HashFinal" /> will throw a <see cref="CryptographicUnexpectedOperationException" />. To compute another
-        /// hash, you must explicitly call <see cref="HashAlgorithm.Initialize" /> to reset the algorithm.
-        /// </para>
-        /// <para>
-        /// Implementations should ensure all residual or pending data is processed and integrated into the final hash value before returning.
-        /// </para>
-        /// </remarks>
+        /// <returns>An 8-byte array containing the hash value in <b>big-endian</b> byte order.</returns>
         protected override byte[] HashFinal()
         {
             this.ThrowIfDisposed();
