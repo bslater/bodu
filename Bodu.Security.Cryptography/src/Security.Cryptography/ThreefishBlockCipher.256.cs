@@ -11,15 +11,12 @@
     using Bodu.Extensions;
 
     /// <summary>
-    /// Implements the <c>Threefish-256</c> block cipher algorithm, which is part of the Skein family of cryptographic functions. This
-    /// cipher operates on 256-bit (32-byte) blocks and uses a 256-bit key with a 128-bit tweak for enhanced security and flexibility.
+    /// Implements the <c>Threefish-256</c> block cipher, which operates on 256-bit (32-byte) blocks using a 256-bit key and a 128-bit
+    /// tweak.
     /// </summary>
     /// <remarks>
-    /// <para>
-    /// Threefish is a tweakable block cipher optimized for 64-bit platforms and forms the core primitive of the Skein hash function. The
-    /// <c>Threefish-256</c> variant operates on four 64-bit words, using a mix of modular addition, bitwise rotation, and XOR operations.
-    /// </para>
-    /// <para>This implementation supports both encryption and decryption of fixed-size blocks.</para>
+    /// Threefish is a tweakable block cipher optimised for 64-bit platforms and forms the core primitive of the Skein hash function.
+    /// The <c>Threefish-256</c> variant operates on four 64-bit words over 72 rounds using modular addition, bitwise rotation, and XOR.
     /// </remarks>
     internal sealed class Threefish256Cipher
         : ThreefishBlockCipher

@@ -17,10 +17,10 @@
         private readonly byte[] currentIv;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CfbModeTransform" /> class with the specified block cipher and initialization vector.
+        /// Initialises a new instance of the <see cref="CfbModeTransform" /> class with the specified cipher and initialisation vector.
         /// </summary>
-        /// <param name="cipher">The block cipher used for transformation.</param>
-        /// <param name="iv">The initialization vector used for the first block.</param>
+        /// <param name="cipher">The block cipher over which CFB is applied.</param>
+        /// <param name="iv">The initialisation vector used as the feedback register for the first block. A defensive copy is taken.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
         public CfbModeTransform(IBlockCipher cipher, byte[] iv)
         {
@@ -28,16 +28,7 @@
             this.currentIv = (byte[])iv.Clone();
         }
 
-        /// <summary>
-        /// Transforms data using CFB mode for either encryption or decryption.
-        /// </summary>
-        /// <param name="input">The input data to transform. Must be a multiple of the cipher block size.</param>
-        /// <param name="output">The buffer to receive the transformed output. Must be at least <paramref name="input" /> length.</param>
-        /// <param name="encrypt"><c>true</c> to encrypt the input; <c>false</c> to decrypt.</param>
-        /// <returns>The number of bytes written to <paramref name="output" />.</returns>
-        /// <exception cref="ArgumentException">
-        /// Thrown if <paramref name="input" /> length is not a multiple of the block size, or if <paramref name="output" /> is too small.
-        /// </exception>
+        /// <inheritdoc />
         public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
         {
             int blockSize = this.cipher.BlockSize;

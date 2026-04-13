@@ -5,12 +5,14 @@
     using System.Runtime.InteropServices;
 
     /// <summary>
-    /// Performs encryption and decryption using Counter (CTR) mode for a given block cipher.
+    /// Applies the Counter (CTR) mode transformation to an underlying <see cref="IBlockCipher" />, turning it into a parallelisable
+    /// stream cipher in which encryption and decryption are identical operations.
     /// </summary>
     /// <remarks>
-    /// CTR mode turns a block cipher into a stream cipher by encrypting successive values of a counter and XORing them with the input. The
-    /// counter value is typically formed from a nonce and an incrementing counter per block.
-    /// <para>CTR mode supports parallelism, random access to encrypted blocks, and symmetrical encryption/decryption.</para>
+    /// The keystream is produced by encrypting a running counter block: <c>Kᵢ = E(counter + i)</c>, and the output is
+    /// <c>Pᵢ ⊕ Kᵢ</c>. The initial counter block must equal the cipher block size in length and is typically split into a nonce and a
+    /// counter portion by the caller. Reusing a <c>(key, counter)</c> pair across messages is catastrophic: the XOR of the two
+    /// ciphertexts recovers the XOR of the plaintexts, so callers must ensure that every counter value is used at most once per key.
     /// </remarks>
     public sealed class CtrModeTransform : IBlockCipherModeTransform
     {

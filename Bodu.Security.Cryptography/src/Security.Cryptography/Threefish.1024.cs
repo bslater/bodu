@@ -20,18 +20,18 @@
         : Threefish
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Threefish1024" /> class using a 1024-bit block size, 1024-bit key, and 128-bit tweak.
+        /// Initialises a new instance of the <see cref="Threefish1024" /> class using a 1024-bit block size, 1024-bit key, and 128-bit tweak.
         /// </summary>
         public Threefish1024()
             : base(1024, 128) { }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="Threefish1024" /> class with the default configuration.
+        /// Creates a new <see cref="Threefish1024" /> instance with default parameters.
         /// </summary>
-        /// <returns>A new instance of <see cref="Threefish1024" />.</returns>
+        /// <returns>A new <see cref="Threefish1024" /> instance.</returns>
         /// <remarks>
-        /// The newly created algorithm instance will have its key, initialization vector (IV), and tweak generated automatically as needed
-        /// upon first use.
+        /// The key, initialisation vector, and tweak are generated on demand the first time they are accessed unless assigned explicitly
+        /// via <see cref="SymmetricAlgorithm.Key" />, <see cref="SymmetricAlgorithm.IV" />, or <see cref="TweakableSymmetricAlgorithm.Tweak" />.
         /// </remarks>
         public new static Threefish1024 Create()
         {

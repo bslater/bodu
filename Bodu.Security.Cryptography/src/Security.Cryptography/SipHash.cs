@@ -14,45 +14,43 @@ namespace Bodu.Security.Cryptography
     using Bodu.Extensions;
 
     /// <summary>
-    /// Provides the base implementation of the <c>SipHash</c> cryptographic hash algorithm - a fast, secure, and keyed pseudorandom
-    /// function optimized for short input messages. See the official <a href="https://131002.net/siphash/">SipHash specification</a> for details.
+    /// Base class for the <c>SipHash</c> family of keyed pseudorandom functions, a fast keyed hash designed by Aumasson and Bernstein
+    /// for short input messages. See the official <a href="https://131002.net/siphash/">SipHash specification</a> for details.
     /// </summary>
+    /// <typeparam name="T">The concrete SipHash variant derived from this class. Must expose a public parameterless constructor.</typeparam>
     /// <remarks>
     /// <para>
-    /// <see cref="SipHash{T}" /> is a keyed hash function that requires a 128-bit (16-byte) secret key. It operates on short messages using
-    /// a sequence of Add-Rotate-XOR (ARX) mixing steps across four 64-bit state variables ( <c>v0</c> through <c>v3</c>). The algorithm is
-    /// resistant to hash-flooding attacks and is particularly effective for securing hash tables.
+    /// <see cref="SipHash{T}" /> is a keyed hash function that requires a 128-bit (16-byte) secret key. It mixes each input block into
+    /// four 64-bit state variables (<c>v0</c> through <c>v3</c>) using Add-Rotate-XOR (ARX) steps, and is designed to resist
+    /// hash-flooding attacks against hash tables.
     /// </para>
-    /// <para>
-    /// This abstract base class defines the core SipHash logic and exposes configuration options such as the number of compression and
-    /// finalization rounds. It is extended by:
-    /// </para>
+    /// <para>This base class is extended by:</para>
     /// <list type="bullet">
     /// <item>
-    /// <description><see cref="SipHash64" /> � Produces a 64-bit hash output suitable for compact keyed checksums.</description>
+    /// <description><see cref="SipHash64" /> produces a 64-bit hash output suitable for compact keyed checksums.</description>
     /// </item>
     /// <item>
-    /// <description><see cref="SipHash128" /> � Produces a 128-bit hash output offering increased collision resistance.</description>
+    /// <description><see cref="SipHash128" /> produces a 128-bit hash output offering increased collision resistance.</description>
     /// </item>
     /// </list>
-    /// <para>The algorithm proceeds in two primary phases:</para>
-    /// <list type="number">
-    /// <item>
-    /// <description>
-    /// <b>Compression:</b> Each 64-bit block of the input is mixed into the internal state using a configurable number of compression
-    /// rounds, as defined by <see cref="CompressionRounds" />.
-    /// </description>
-    /// </item>
-    /// <item>
-    /// <description>
-    /// <b>Finalization:</b> After processing all input, a configurable number of finalization rounds-specified via
-    /// <see cref="FinalizationRounds" />-are applied to produce the final hash output.
-    /// </description>
-    /// </item>
-    /// </list>
-    /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for password hashing,
-    /// digital signatures, or integrity validation in security-sensitive applications.</note>
+    /// <para>
+    /// Each 64-bit input block is absorbed during a compression phase consisting of <see cref="CompressionRounds" /> rounds. Once all
+    /// input has been processed, <see cref="FinalizationRounds" /> rounds are applied to produce the final digest. The defaults
+    /// (<c>c = 2</c>, <c>d = 4</c>) correspond to the standard <c>SipHash-2-4</c> parameterisation.
+    /// </para>
     /// </remarks>
+    /// <example>
+    /// The following example configures a <see cref="SipHash64" /> instance to use the stronger <c>SipHash-4-8</c> parameter set.
+    /// <code language="csharp">
+    /// using var sipHash = new SipHash64
+    /// {
+    ///     Key = myKey,
+    ///     CompressionRounds = 4,
+    ///     FinalizationRounds = 8,
+    /// };
+    /// byte[] tag = sipHash.ComputeHash(message);
+    /// </code>
+    /// </example>
     public abstract class SipHash<T>
         : KeyedBlockHashAlgorithm<T>
         where T : SipHash<T>, new()
@@ -133,29 +131,10 @@ namespace Bodu.Security.Cryptography
         public string AlgorithmName =>
             $"SipHash-{this.CompressionRounds}-{this.FinalizationRounds}-{this.HashSizeValue}";
 
-        /// <summary>
-        /// Gets a value indicating whether this transform instance can be reused after a hash operation is completed.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if the transform supports multiple hash computations via <see cref="HashAlgorithm.Initialize" />;
-        /// otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Reusable transforms allow the internal state to be reset for subsequent operations using the same instance. One-shot algorithms
-        /// that clear sensitive key material after finalization typically return <see langword="false" />.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanReuseTransform => true;
 
-        /// <summary>
-        /// Gets a value indicating whether this transform supports processing multiple blocks of data in a single operation.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if multiple input blocks can be transformed in sequence without intermediate finalization; otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Most hash algorithms and block ciphers support multi-block transformations for streaming input. If <see langword="false" />, the
-        /// transform must be invoked one block at a time.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanTransformMultipleBlocks => true;
 
         /// <summary>

@@ -102,39 +102,16 @@ namespace Bodu.Security.Cryptography
             }
         }
 
-        /// <summary>
-        /// Gets a value indicating whether this transform instance can be reused after a hash operation is completed.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if the transform supports multiple hash computations via <see cref="HashAlgorithm.Initialize" />;
-        /// otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Reusable transforms allow the internal state to be reset for subsequent operations using the same instance. One-shot algorithms
-        /// that clear sensitive key material after finalization typically return <see langword="false" />.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanReuseTransform => true;
 
-        /// <summary>
-        /// Gets a value indicating whether this transform supports processing multiple blocks of data in a single operation.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if multiple input blocks can be transformed in sequence without intermediate finalization; otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Most hash algorithms and block ciphers support multi-block transformations for streaming input. If <see langword="false" />, the
-        /// transform must be invoked one block at a time.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanTransformMultipleBlocks => true;
 
         /// <summary>
-        /// Gets the <see cref="CrcStandard" /> used by this instance to perform the CRC operation.
+        /// Gets a snapshot of the <see cref="CrcStandard" /> parameters that configure this instance.
         /// </summary>
-        /// <value>The CRC parameters containing details such as polynomial, size, and reflection settings.</value>
-        /// <remarks>
-        /// This property gives access to the configuration used for CRC calculation. The user can inspect the CRC parameters, including the
-        /// polynomial, initial value, and reflection settings.
-        /// </remarks>
+        /// <value>A <see cref="CrcStandard" /> containing the polynomial, width, reflection settings, initial value, and final XOR.</value>
         public CrcStandard CrcStandard => new CrcStandard(Name, Size, Polynomial, InitialValue, ReflectIn, ReflectOut, XOrOut);
 
         /// <summary>
@@ -156,9 +133,9 @@ namespace Bodu.Security.Cryptography
         public ulong Polynomial { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating whether the data data is reflected during the CRC calculation.
+        /// Gets a value indicating whether input bytes are reflected (bit-reversed) before being processed.
         /// </summary>
-        /// <value><see langword="true" /> if data data is reflected; otherwise, <see langword="false" />.</value>
+        /// <value><see langword="true" /> if input bytes are reflected; otherwise, <see langword="false" />.</value>
         public bool ReflectIn { get; private set; }
 
         /// <summary>
@@ -180,15 +157,10 @@ namespace Bodu.Security.Cryptography
         public ulong XOrOut { get; private set; }
 
         /// <summary>
-        /// Computes the CRC hash of the specified input data contained in the provided <see cref="ReadOnlySpan{Byte}" />.
+        /// Computes and returns the CRC hash of the specified input in a single call, resetting internal state first.
         /// </summary>
-        /// <param name="data">The input data to compute the hash for.</param>
-        /// <returns>A byte array containing the computed CRC hash value.</returns>
-        /// <remarks>
-        /// This method initializes the internal CRC state, processes the input data using the configured CRC variant, and finalizes the
-        /// result into a hash of the appropriate size. It supports both reflected and unreflected input, and will apply bytewise or bitwise
-        /// logic based on the parameters defined in <see cref="CrcStandard" />.
-        /// </remarks>
+        /// <param name="data">The input data to hash.</param>
+        /// <returns>A byte array containing the finalized CRC value, sized according to <see cref="Size" />.</returns>
         public byte[] ComputeHash(ReadOnlySpan<byte> data)
         {
             Initialize();
@@ -447,9 +419,9 @@ namespace Bodu.Security.Cryptography
         /// Processes the data using a bitwise CRC algorithm without data reflection. Each bit is processed individually, MSB first, using
         /// 1-bit shifts and permutationTable lookups.
         /// </summary>
-        /// <param name="data">The data data to be processed.</param>
+        /// <param name="data">The input data to be processed.</param>
         /// <param name="crc">The initial CRC state value.</param>
-        /// <param name="table">The CRC lookup permutationTable to use.</param>
+        /// <param name="table">The CRC lookup table to use.</param>
         /// <param name="shift">The number of bits to shift to extract the high bit of the CRC.</param>
         /// <returns>The updated CRC value.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -471,9 +443,9 @@ namespace Bodu.Security.Cryptography
         /// Processes the data using a bitwise CRC algorithm with data reflection. Each bit is processed individually, LSB first, using
         /// 1-bit shifts and permutationTable lookups.
         /// </summary>
-        /// <param name="data">The data data to be processed.</param>
+        /// <param name="data">The input data to be processed.</param>
         /// <param name="crc">The initial CRC state value.</param>
-        /// <param name="table">The CRC lookup permutationTable to use.</param>
+        /// <param name="table">The CRC lookup table to use.</param>
         /// <returns>The updated CRC value.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static ulong ProcessBitwiseReflected(ReadOnlySpan<byte> data, ulong crc, ulong[] table)
@@ -494,9 +466,9 @@ namespace Bodu.Security.Cryptography
         /// Processes the data using a bytewise CRC algorithm without data reflection. The index is computed from the top bits of the CRC
         /// XORed with the data byte.
         /// </summary>
-        /// <param name="data">The data data to be processed.</param>
+        /// <param name="data">The input data to be processed.</param>
         /// <param name="crc">The initial CRC state value.</param>
-        /// <param name="table">The CRC lookup permutationTable to use.</param>
+        /// <param name="table">The CRC lookup table to use.</param>
         /// <param name="shift">The number of bits to shift to extract the high byte of the CRC.</param>
         /// <returns>The updated CRC value.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -513,9 +485,9 @@ namespace Bodu.Security.Cryptography
         /// Processes the data using a bytewise CRC algorithm with data reflection. Each byte is XORed with the low byte of the current CRC
         /// value, then used as a permutationTable index.
         /// </summary>
-        /// <param name="data">The data data to be processed.</param>
+        /// <param name="data">The input data to be processed.</param>
         /// <param name="crc">The initial CRC state value.</param>
-        /// <param name="table">The CRC lookup permutationTable to use.</param>
+        /// <param name="table">The CRC lookup table to use.</param>
         /// <returns>The updated CRC value.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static ulong ProcessBytewiseReflected(ReadOnlySpan<byte> data, ulong crc, ulong[] table)
