@@ -28,13 +28,13 @@ public static partial class SequenceGenerator
         /// <param name="createEnumerator">The delegate used to generate the enumerator.</param>
         internal AnonymousEnumerable(Func<IEnumerator<TResult>> createEnumerator)
         {
-            this._createEnumerator = createEnumerator ?? throw new ArgumentNullException(nameof(createEnumerator));
+            _createEnumerator = createEnumerator ?? throw new ArgumentNullException(nameof(createEnumerator));
         }
 
         /// <inheritdoc />
-        public IEnumerator<TResult> GetEnumerator() => this._createEnumerator();
+        public IEnumerator<TResult> GetEnumerator() => _createEnumerator();
 
         /// <inheritdoc />
-        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

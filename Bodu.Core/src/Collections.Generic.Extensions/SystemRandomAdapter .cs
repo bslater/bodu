@@ -33,8 +33,8 @@ public sealed class SystemRandomAdapter :
     /// <param name="random">The <see cref="System.Random" /> instance to wrap. Must not be <see langword="null" />.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="random" /> is <see langword="null" />.</exception>
     public SystemRandomAdapter(Random random) =>
-        this._random = random ?? throw new ArgumentNullException(nameof(random));
+        _random = random ?? throw new ArgumentNullException(nameof(random));
 
     /// <inheritdoc />
-    public int Next(int maxValue) => this._random.Next(maxValue);
+    public int Next(int maxValue) => _random.Next(maxValue);
 }

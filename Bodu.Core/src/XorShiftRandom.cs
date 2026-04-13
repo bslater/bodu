@@ -45,20 +45,20 @@ public sealed class XorShiftRandom :
     public XorShiftRandom(uint seed)
     {
         // Initialize four internal states with XOR-variations of the seed for better distribution
-        this.x = seed;
-        this.y = seed ^ 0x6C8E9CF5U;
-        this.z = seed ^ 0x94D049BBU;
-        this.w = seed ^ 0x5A17D7F9U;
+        x = seed;
+        y = seed ^ 0x6C8E9CF5U;
+        z = seed ^ 0x94D049BBU;
+        w = seed ^ 0x5A17D7F9U;
     }
 
     /// <inheritdoc />
-    public override int Next() => this.Next(int.MaxValue);
+    public override int Next() => Next(int.MaxValue);
 
     /// <inheritdoc />
     public override int Next(int maxValue)
     {
         ThrowHelper.ThrowIfLessThanOrEqual(maxValue, 0);
-        return (int)(this.NextUInt32() % (uint)maxValue);
+        return (int)(NextUInt32() % (uint)maxValue);
     }
 
     /// <inheritdoc />
@@ -66,7 +66,7 @@ public sealed class XorShiftRandom :
     {
         ThrowHelper.ThrowIfGreaterThanOrEqualOther(minValue, maxValue);
         uint range = (uint)(maxValue - minValue);
-        return minValue + (int)(this.NextUInt32() % range);
+        return minValue + (int)(NextUInt32() % range);
     }
 
     /// <inheritdoc />
@@ -79,7 +79,7 @@ public sealed class XorShiftRandom :
         {
             if ((i & 3) == 0)
             {
-                uint rnd = this.NextUInt32();
+                uint rnd = NextUInt32();
                 buffer[i++] = (byte)(rnd & 0xFF);
                 if (i < buffer.Length) buffer[i++] = (byte)((rnd >> 8) & 0xFF);
                 if (i < buffer.Length) buffer[i++] = (byte)((rnd >> 16) & 0xFF);
@@ -90,7 +90,7 @@ public sealed class XorShiftRandom :
     }
 
     /// <inheritdoc />
-    public override double NextDouble() => this.NextUInt32() / (double)uint.MaxValue;
+    public override double NextDouble() => NextUInt32() / (double)uint.MaxValue;
 
     /// <summary>
     /// Generates the next 32-bit random number using XOR-shift algorithm.
@@ -98,11 +98,11 @@ public sealed class XorShiftRandom :
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private uint NextUInt32()
     {
-        uint t = this.x ^ (this.x << 11);
-        this.x = this.y;
-        this.y = this.z;
-        this.z = this.w;
-        this.w ^= (this.w >> 19) ^ t ^ (t >> 8);
-        return this.w;
+        uint t = x ^ (x << 11);
+        x = y;
+        y = z;
+        z = w;
+        w ^= (w >> 19) ^ t ^ (t >> 8);
+        return w;
     }
 }

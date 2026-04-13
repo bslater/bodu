@@ -27,12 +27,12 @@ internal sealed class CircularBufferDebugView<T>
     /// <param name="circularBuffer">The circular buffer instance to debug.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="circularBuffer" /> is <see langword="null" />.</exception>
     public CircularBufferDebugView(CircularBuffer<T> circularBuffer) =>
-        this._circularBuffer = circularBuffer ?? throw new ArgumentNullException(nameof(circularBuffer));
+        _circularBuffer = circularBuffer ?? throw new ArgumentNullException(nameof(circularBuffer));
 
     /// <summary>
     /// Gets the items currently contained within the <see cref="CircularBuffer{T}" /> as an array.
     /// </summary>
     /// <remarks>This property is hidden from the debugger display root to directly expand the items for quick inspection.</remarks>
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-    public T[] Items => this._circularBuffer.ToArray();
+    public T[] Items => _circularBuffer.ToArray();
 }

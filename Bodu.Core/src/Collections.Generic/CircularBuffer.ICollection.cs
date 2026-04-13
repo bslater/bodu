@@ -22,7 +22,7 @@ public partial class CircularBuffer<T> :
     private object? _syncRoot;
 
     /// <inheritdoc />
-    public int Count => this._count;
+    public int Count => _count;
 
     /// <summary>
     /// Gets a value indicating whether access to the <see cref="CircularBuffer{T}" /> is synchronized (thread safe).
@@ -48,7 +48,7 @@ public partial class CircularBuffer<T> :
         get
         {
             // Thread-safe lazy initialization
-            return this._syncRoot ?? Interlocked.CompareExchange(ref this._syncRoot, new object(), null) ?? this._syncRoot!;
+            return _syncRoot ?? Interlocked.CompareExchange(ref _syncRoot, new object(), null) ?? _syncRoot!;
         }
     }
 
@@ -73,11 +73,11 @@ public partial class CircularBuffer<T> :
         ThrowHelper.ThrowIfNull(array);
         ThrowHelper.ThrowIfArrayIsNotSingleDimension(array);
         ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index, this._count);
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index, _count);
 
         try
         {
-            this.CopyToInternal(array, index);
+            CopyToInternal(array, index);
         }
         catch (ArrayTypeMismatchException ex)
         {

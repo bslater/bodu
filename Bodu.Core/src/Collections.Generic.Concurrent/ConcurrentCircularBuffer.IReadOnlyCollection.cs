@@ -34,11 +34,11 @@ public sealed partial class ConcurrentCircularBuffer<T> :
     {
         get
         {
-            int head = Volatile.Read(ref this._head);
-            int tail = Volatile.Read(ref this._tail);
+            int head = Volatile.Read(ref _head);
+            int tail = Volatile.Read(ref _tail);
             int diff = tail - head;
             if (diff < 0) diff = 0; // correct under signed counter wrapping; also guards transient races
-            if (diff > this._capacity) diff = this._capacity; // clamp to capacity
+            if (diff > _capacity) diff = _capacity; // clamp to capacity
             return diff;
         }
     }

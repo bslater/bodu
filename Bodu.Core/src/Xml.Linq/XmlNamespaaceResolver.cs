@@ -26,7 +26,7 @@ public sealed class XmlNamespaceResolver
     {
         ThrowHelper.ThrowIfNull(root);
 
-        this._xNamespace = root.Name.Namespace ?? throw new InvalidOperationException("Missing XML _xNamespace on root element.");
+        _xNamespace = root.Name.Namespace ?? throw new InvalidOperationException("Missing XML _xNamespace on root element.");
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public sealed class XmlNamespaceResolver
     /// <param name="parent">The parent element.</param>
     /// <param name="localName">The local name of the child element.</param>
     /// <returns>The matching child XElement, or null if not found.</returns>
-    public XElement? Element(XElement parent, string localName) => parent.Element(this.Name(localName));
+    public XElement? Element(XElement parent, string localName) => parent.Element(Name(localName));
 
     /// <summary>
     /// Safely gets all child elements with the specified local name in the current namespace.
@@ -43,12 +43,12 @@ public sealed class XmlNamespaceResolver
     /// <param name="parent">The parent element.</param>
     /// <param name="localName">The local name of the child elements.</param>
     /// <returns>An enumerable of matching XElement objects.</returns>
-    public IEnumerable<XElement> Elements(XElement parent, string localName) => parent.Elements(this.Name(localName));
+    public IEnumerable<XElement> Elements(XElement parent, string localName) => parent.Elements(Name(localName));
 
     /// <summary>
     /// Gets the fully qualified XName for the given local name in the current namespace.
     /// </summary>
     /// <param name="localName">The local (unqualified) element or attribute name.</param>
     /// <returns>The namespaced XName.</returns>
-    public XName Name(string localName) => this._xNamespace + localName;
+    public XName Name(string localName) => _xNamespace + localName;
 }
