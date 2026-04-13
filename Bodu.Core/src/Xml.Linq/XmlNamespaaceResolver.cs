@@ -35,7 +35,11 @@ public sealed class XmlNamespaceResolver
     /// <param name="parent">The parent element.</param>
     /// <param name="localName">The local name of the child element.</param>
     /// <returns>The matching child XElement, or null if not found.</returns>
-    public XElement? Element(XElement parent, string localName) => parent.Element(Name(localName));
+    public XElement? Element(XElement parent, string localName)
+    {
+        ThrowHelper.ThrowIfNull(parent);
+        return parent.Element(Name(localName));
+    }
 
     /// <summary>
     /// Safely gets all child elements with the specified local name in the current namespace.
@@ -43,7 +47,11 @@ public sealed class XmlNamespaceResolver
     /// <param name="parent">The parent element.</param>
     /// <param name="localName">The local name of the child elements.</param>
     /// <returns>An enumerable of matching XElement objects.</returns>
-    public IEnumerable<XElement> Elements(XElement parent, string localName) => parent.Elements(Name(localName));
+    public IEnumerable<XElement> Elements(XElement parent, string localName)
+    {
+        ThrowHelper.ThrowIfNull(parent);
+        return parent.Elements(Name(localName));
+    }
 
     /// <summary>
     /// Gets the fully qualified XName for the given local name in the current namespace.

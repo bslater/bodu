@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------- //
-// <copyright file="ThrowHelper_CallerExpression.cs" company="PlaceholderCompany">
+// <copyright file="ThrowHelper.CallerExpression.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -454,6 +454,7 @@ public static partial class ThrowHelper
         ICollection<T> collection, int minCount,
         [CallerArgumentExpression(nameof(collection))] string? paramName = null)
     {
+        ThrowIfNull(collection, paramName);
         if (collection.Count < minCount)
             throw new ArgumentException(ResourceStrings.Arg_Invalid_CollectionTooSmall, paramName);
     }

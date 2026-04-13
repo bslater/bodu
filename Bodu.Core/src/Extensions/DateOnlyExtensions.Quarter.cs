@@ -189,7 +189,7 @@ public static partial class DateOnlyExtensions
         uint defMonth = def / 100U;
         uint defDay = def % 100U;
 
-        return new(defMonth, defDay);
+        return new (defMonth, defDay);
     }
 
     /// <summary>
