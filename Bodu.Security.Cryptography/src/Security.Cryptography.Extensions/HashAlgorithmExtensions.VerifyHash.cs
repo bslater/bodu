@@ -71,10 +71,9 @@ namespace Bodu.Security.Cryptography.Extensions
             ThrowHelper.ThrowIfNull(input);
             ThrowHelper.ThrowIfNull(expectedHex);
 
-            byte[] actualHash = algorithm.ComputeHash(input);
-
-            // Decode the expected hex to bytes for a constant-time binary comparison.
-            // A malformed hex string cannot represent a valid hash, so treat it as a non-match.
+            // Decode the expected hex to bytes BEFORE computing the hash so a malformed hex string fails fast
+            // without wasting work hashing the input. A malformed hex string cannot represent a valid hash,
+            // so treat it as a non-match.
             byte[] expectedBytes;
             try
             {
@@ -84,6 +83,8 @@ namespace Bodu.Security.Cryptography.Extensions
             {
                 return false;
             }
+
+            byte[] actualHash = algorithm.ComputeHash(input);
 
             return CryptographicOperations.FixedTimeEquals(actualHash, expectedBytes);
         }
@@ -148,10 +149,10 @@ namespace Bodu.Security.Cryptography.Extensions
             ThrowHelper.ThrowIfNull(stream);
             ThrowHelper.ThrowIfNull(expectedHex);
 
-            byte[] actualHash = algorithm.ComputeHash(stream);
-
-            // Decode the expected hex to bytes for a constant-time binary comparison.
-            // A malformed hex string cannot represent a valid hash, so treat it as a non-match.
+            // Decode the expected hex to bytes BEFORE reading and hashing the stream so a malformed hex string
+            // fails fast without consuming stream data or wasting the hash computation. A malformed hex string
+            // cannot represent a valid hash, so treat it as a non-match. This matches the behavior of the
+            // asynchronous stream overload.
             byte[] expectedBytes;
             try
             {
@@ -161,6 +162,8 @@ namespace Bodu.Security.Cryptography.Extensions
             {
                 return false;
             }
+
+            byte[] actualHash = algorithm.ComputeHash(stream);
 
             return CryptographicOperations.FixedTimeEquals(actualHash, expectedBytes);
         }
