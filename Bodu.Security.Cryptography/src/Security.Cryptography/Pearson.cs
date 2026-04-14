@@ -370,8 +370,8 @@
                 PearsonTableType.CRC32HighByte => CRC32HighByteTable.Value.ToArray(),
                 PearsonTableType.SHA256Constants => SHA256ConstantsTable.Value.ToArray(),
                 PearsonTableType.UserDefined => throw new InvalidOperationException(
-                    "UserDefined t type requires an explicit 256-byte permutation t to be set using the Table property."),
-                _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Unknown PearsonTableType this.workingHash.")
+                    "The UserDefined table type requires an explicit 256-byte permutation table to be set via the Table property."),
+                _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Unknown PearsonTableType value.")
             };
 
         /// <summary>
@@ -387,7 +387,7 @@
             ObjectDisposedException.ThrowIf(this.disposed, this);
 #else
             if (disposed)
-                throw new ObjectDisposedException(nameof(Elf64));
+                throw new ObjectDisposedException(nameof(Pearson));
 #endif
         }
 
@@ -423,7 +423,7 @@
             if (this.permutationTable == null || this.permutationTable.Length != 256)
             {
                 throw new CryptographicUnexpectedOperationException(
-                    $"A valid 256-byte permutation t must be set before hashing. " +
+                    $"A valid 256-byte permutation table must be set before hashing can proceed. " +
                     $"Ensure that the {nameof(this.Table)} property is explicitly assigned if using {nameof(PearsonTableType.UserDefined)}.");
             }
         }
