@@ -52,8 +52,7 @@ public static partial class DateOnlyExtensions
             default:
                 int dayNumber = DateTimeExtensions.GetDayNumberUnchecked(date.Year, date.Month, 1);
                 DateOnly result = DateOnly.FromDayNumber(
-                    dayNumber + (((int)dayOfWeek - (int)GetDayOfWeekFromDayNumber(dayNumber) + 7) % 7) + (((int)ordinal - 1) * 7)
-                );
+                    dayNumber + (((int)dayOfWeek - (int)GetDayOfWeekFromDayNumber(dayNumber) + 7) % 7) + (((int)ordinal - 1) * 7));
 
                 if (result.Month != date.Month)
                     throw new ArgumentOutOfRangeException(

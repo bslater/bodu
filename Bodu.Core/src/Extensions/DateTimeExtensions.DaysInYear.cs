@@ -25,7 +25,7 @@ public static partial class DateTimeExtensions
     /// </remarks>
     public static int DaysInYear(this DateTime dateTime)
     {
-        return dateTime.DaysInYear(null!);
+        return dateTime.DaysInYear((Calendar?)null);
     }
 
     /// <summary>
@@ -41,7 +41,7 @@ public static partial class DateTimeExtensions
     /// <see cref="HebrewCalendar"/>). If <paramref name="calendar"/> is <see langword="null"/>, the calendar from
     /// <see cref="CultureInfo.CurrentCulture"/> is used.
     /// </remarks>
-    public static int DaysInYear(this DateTime dateTime, Calendar calendar)
+    public static int DaysInYear(this DateTime dateTime, Calendar? calendar)
     {
         return (calendar ?? CultureInfo.CurrentCulture.Calendar).GetDaysInYear(dateTime.Year);
     }

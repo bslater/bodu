@@ -431,12 +431,9 @@ public static partial class DateTimeExtensions
     /// Returns the tick count that represents the date nearest to the specified <paramref name="dayOfWeek"/> relative to the provided
     /// <paramref name="ticks"/> value.
     /// </summary>
-    /// <param name="ticks">The tick count representing the reference date from which the nearest day of week is calculated.</param>
-    /// <param name="dayOfWeek">The day of the week to find the nearest occurrence of.</param>
-    /// <returns>
-    /// A <see cref="long"/> representing the tick count of the nearest occurrence of <paramref name="dayOfWeek"/> relative to
-    /// <paramref name="ticks"/>. If the target day is more than 3 days ahead, the previous occurrence is returned instead.
-    /// </returns>
+    /// <param name="ticks">The reference tick count.</param>
+    /// <param name="dayOfWeek">The target <see cref="DayOfWeek"/> to align to.</param>
+    /// <returns>The tick count for the date nearest to <paramref name="dayOfWeek"/>.</returns>
     internal static long GetTicksForNearestDayOfWeek(long ticks, DayOfWeek dayOfWeek)
     {
         int delta = ((int)dayOfWeek - (int)GetDayOfWeekFromTicks(ticks) + 7) % 7;

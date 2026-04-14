@@ -33,5 +33,5 @@ public static partial class DateOnlyExtensions
     /// <remarks>
     /// This method retrieves the day name from the <see cref="DateTimeFormatInfo.DayNames"/> collection of the specified or current culture.
     /// </remarks>
-    public static string DayName(this DateOnly date, CultureInfo culture) => (culture ?? CultureInfo.CurrentCulture).DateTimeFormat.GetDayName(date.DayOfWeek);
+    public static string DayName(this DateOnly date, CultureInfo? culture) => (culture ?? CultureInfo.CurrentCulture).DateTimeFormat.GetDayName(date.DayOfWeek);
 }

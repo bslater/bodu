@@ -62,6 +62,12 @@ public partial struct WeekPattern
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "Argument validation is performed centrally in ParseCore.")]
     public static bool TryParse(string input, out WeekPattern result)
     {
+        if (input is null)
+        {
+            result = WeekPattern.Empty;
+            return false;
+        }
+
         try
         {
             result = ParseCore(input, formatInfo: null);
@@ -91,6 +97,12 @@ public partial struct WeekPattern
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "Argument validation is performed centrally in ParseCore.")]
     public static bool TryParseExact(string input, string format, out WeekPattern result)
     {
+        if (input is null)
+        {
+            result = WeekPattern.Empty;
+            return false;
+        }
+
         try
         {
             result = ParseCore(input, ParseFormatForParse(format));

@@ -119,7 +119,7 @@ public static partial class IEnumerableExtensions
     /// <code language="csharp"><![CDATA[
     /// var indexedNames = rootNodes.RecursiveSelect(
     ///     node => node.Children,
-    ///     (node, index) => $\"{index}: {node.Name}\");
+    ///     (node, index) => $"{index}: {node.Name}");
     ///]]>
     /// </code>
     /// </example>
@@ -170,8 +170,8 @@ public static partial class IEnumerableExtensions
     }
 
     /// <summary>
-    /// Recursively flattens and transforms a hierarchical sequence with depth/index tracking
-    /// and a predicate to control recursion.
+    /// Recursively flattens and transforms a hierarchical sequence with depth/index tracking and a delegate that returns a
+    /// <see cref="RecursiveSelectControl" /> value to control yielding, recursion, and termination at each node.
     /// </summary>
     /// <typeparam name="TSource">The type of the source elements.</typeparam>
     /// <typeparam name="TResult">The type of the result elements.</typeparam>
@@ -181,11 +181,12 @@ public static partial class IEnumerableExtensions
     /// A transform function applied to each element with index and depth.
     /// </param>
     /// <param name="recursionControl">
-    /// A predicate that determines whether to continue recursion for a given element.
+    /// A delegate that returns a <see cref="RecursiveSelectControl" /> value for each element, indicating whether to yield it, recurse
+    /// into its children, stop processing sibling elements at the current level, or terminate traversal entirely.
     /// </param>
     /// <returns>
-    /// A flattened and projected sequence of results, including only elements for which
-    /// recursion is allowed.
+    /// A flattened and projected sequence of results. Each element is yielded, skipped, recursed into, or causes traversal to stop
+    /// according to the <see cref="RecursiveSelectControl" /> value returned by <paramref name="recursionControl" />.
     /// </returns>
     /// <exception cref="System.ArgumentNullException">
     /// Thrown if <paramref name="source"/>, <paramref name="childSelector"/>,
@@ -194,9 +195,11 @@ public static partial class IEnumerableExtensions
     /// <example>
     /// <code language="csharp"><![CDATA[
     /// var filtered = rootNodes.RecursiveSelect(
-    /// node => node.Children,
+    ///     node => node.Children,
     ///     (node, index, depth) => node.Name,
-    ///     node => node.Children.Count > 0);
+    ///     node => node.Children.Count > 0
+    ///         ? RecursiveSelectControl.YieldAndRecurse
+    ///         : RecursiveSelectControl.YieldOnly);
     ///]]>
     /// </code>
     /// </example>

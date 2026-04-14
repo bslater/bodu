@@ -47,8 +47,7 @@ public static partial class ArrayExtensions
     }
 
     /// <summary>
-    /// Takes a slice of the specified array starting from a given index and extending for a specified number of elements. This method
-    /// does not perform any validation checks (use with caution).
+    /// Takes a slice of the specified array starting from a given index and extending for a specified number of elements.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the array.</typeparam>
     /// <param name="array">The one-dimensional array that contains the values to copy.</param>

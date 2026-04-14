@@ -40,6 +40,12 @@ public static partial class IEnumerableExtensions
     /// Thrown if <paramref name="count"/> is <see langword="null"/> and <paramref name="mode"/> requires a count (i.e.
     /// <see cref="RandomizationMode.ReservoirSample"/> or <see cref="RandomizationMode.LazyShuffle"/>).
     /// </exception>
+    /// <remarks>
+    /// Execution is deferred until the returned sequence is enumerated. Null checks for <paramref name="source" /> and
+    /// <paramref name="rng" />, validation that <paramref name="count" /> is not negative, and the <paramref name="mode" />-dependent
+    /// requirement for a non-<see langword="null" /> <paramref name="count" /> are performed eagerly; validation that
+    /// <paramref name="count" /> does not exceed the number of available elements is performed during enumeration.
+    /// </remarks>
     public static IEnumerable<T> Randomize<T>(
         this IEnumerable<T> source,
         RandomizationMode mode,

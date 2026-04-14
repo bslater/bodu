@@ -27,7 +27,7 @@ public enum DateTimeResolution
     Day,
 
     /// <summary>
-    /// Indicates resolution to a whole hours.
+    /// Indicates resolution to a whole hour.
     /// </summary>
     Hour,
 
