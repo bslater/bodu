@@ -1,8 +1,7 @@
 ﻿namespace Bodu.Security.Cryptography
 {
     using System;
-    using System.Buffers.Binary;
-    using System.Runtime.InteropServices;
+    using System.Security.Cryptography;
 
     /// <summary>
     /// Applies the Counter (CTR) mode transformation to an underlying <see cref="IBlockCipher" />, turning it into a parallelisable
@@ -18,6 +17,15 @@
     {
         private readonly IBlockCipher cipher;
         private readonly byte[] counter;
+
+        // Set when the in-place little-endian increment carries out of the most-significant byte,
+        // meaning the counter has returned to its initial value. We use a flag (rather than
+        // storing the original IV) because the in-place increment loses the original value, and
+        // detecting the carry-out at the moment of wrap is both simple and constant-time.
+        // The flag is checked at the start of every block in Transform, so the consumer can
+        // safely use all 2^(blockSize*8) distinct counter values before the next Transform call
+        // refuses to produce a colliding keystream.
+        private bool counterWrapped;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="CtrModeTransform" /> class with the specified cipher and initial counter block.
@@ -49,6 +57,10 @@
 
             for (int offset = 0; offset < input.Length; offset += blockSize)
             {
+                if (this.counterWrapped)
+                    throw new CryptographicException(
+                        "CTR counter has wrapped back to its initial value; keystream reuse would occur.");
+
                 input.Slice(offset, blockSize).CopyTo(output.Slice(offset, blockSize));
 
                 this.counter.AsSpan().CopyTo(counterBlock);
@@ -64,17 +76,27 @@
         }
 
         /// <summary>
-        /// Increments the counter in-place in little-endian order.
+        /// Increments the counter in-place in little-endian order. If the in-place increment
+        /// carries out of the most-significant byte, every byte has wrapped to its starting value
+        /// and the next keystream block would collide with the first one; we set the
+        /// <see cref="counterWrapped" /> flag so the next <see cref="Transform" /> call refuses
+        /// to produce a colliding keystream.
         /// </summary>
         private void IncrementCounter()
         {
+            // Approach: detect wrap via the carry-out of the in-place little-endian increment.
+            // This avoids storing the original IV and works uniformly for any block size.
             Span<byte> span = this.counter;
-
-            for (int i = 0; i < span.Length; i++)
+            bool carry = true;
+            for (int i = 0; i < span.Length && carry; i++)
             {
-                if (++span[i] != 0)
-                    break;
+                carry = (++span[i] == 0);
             }
+
+            // If a carry remains after walking the whole counter, every byte has wrapped to its
+            // starting value and the next keystream block would collide with the first one.
+            if (carry)
+                this.counterWrapped = true;
         }
     }
 }

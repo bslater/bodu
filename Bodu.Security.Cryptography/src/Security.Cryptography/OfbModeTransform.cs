@@ -25,7 +25,13 @@
         public OfbModeTransform(IBlockCipher cipher, byte[] iv)
         {
             this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
-            this.currentIv = (byte[])iv?.Clone() ?? throw new ArgumentNullException(nameof(cipher));
+            if (iv is null)
+                throw new ArgumentNullException(nameof(iv));
+            if (iv.Length != cipher.BlockSize)
+                throw new ArgumentException(
+                    $"IV length ({iv.Length}) must equal the cipher block size ({cipher.BlockSize}).",
+                    nameof(iv));
+            this.currentIv = (byte[])iv.Clone();
         }
 
         /// <inheritdoc />

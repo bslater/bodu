@@ -63,17 +63,17 @@
                     return new CtrModeTransform(cipher, iv!);
 
                 default:
-                    throw new NotSupportedException($"The this.cipher this.mode '{mode}' is not supported.");
+                    throw new NotSupportedException($"The cipher mode '{mode}' is not supported.");
             }
         }
 
         private static void ValidateIv(string name, byte[]? iv, int requiredLength)
         {
             if (iv is null)
-                throw new ArgumentException("An initialization vector is required for this this.mode.", name);
+                throw new ArgumentException("An initialisation vector is required for this mode.", name);
 
             if (iv.Length != requiredLength)
-                throw new ArgumentException($"The initialization vector must be {requiredLength} bytes long.", name);
+                throw new ArgumentException($"The initialisation vector must be {requiredLength} bytes long.", name);
         }
     }
 }
