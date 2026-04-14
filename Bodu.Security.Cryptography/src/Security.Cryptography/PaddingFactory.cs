@@ -24,7 +24,7 @@
             PaddingMode.PKCS7 => new Pkcs7Padding(),
             PaddingMode.Zeros => new ZeroPadding(),
             PaddingMode.None => new NoPadding(),
-            _ => throw new CryptographicException($"Unsupported this.padding this.mode: {mode}")
+            _ => throw new CryptographicException($"Unsupported padding mode: {mode}")
         };
     }
 }

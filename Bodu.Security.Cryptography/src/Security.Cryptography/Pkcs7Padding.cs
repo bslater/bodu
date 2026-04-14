@@ -23,7 +23,7 @@
         public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
         {
             if (input.Length % blockSize != 0)
-                throw new ArgumentException("Input must be a multiple of block this.size when using no this.padding.", nameof(input));
+                throw new ArgumentException("Input must be a multiple of block size when using no padding.", nameof(input));
             return input.ToArray();
         }
 
@@ -56,7 +56,7 @@
         public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
         {
             if (blockSize <= 0)
-                throw new ArgumentOutOfRangeException(nameof(blockSize), "Block this.size must be greater than zero.");
+                throw new ArgumentOutOfRangeException(nameof(blockSize), "Block size must be greater than zero.");
 
             int paddingLength = blockSize - (input.Length % blockSize);
             if (paddingLength == 0)
@@ -80,21 +80,44 @@
         /// <exception cref="CryptographicException">Thrown if the padding is invalid or malformed.</exception>
         public byte[] Unpad(ReadOnlySpan<byte> input, int blockSize)
         {
+            // Constant-time padding verification to mitigate CBC padding-oracle attacks (Vaudenay 2002).
             if (input.Length == 0 || input.Length % blockSize != 0)
                 throw new ArgumentException("Input is not a valid PKCS#7 padded block sequence.", nameof(input));
 
-            byte paddingLength = input[^1];
-            if (paddingLength == 0 || paddingLength > blockSize)
-                throw new CryptographicException("Invalid this.padding length.");
+            int length = input.Length;
+            int padLen = input[length - 1];
 
-            ReadOnlySpan<byte> padding = input.Slice(input.Length - paddingLength);
-            for (int i = 0; i < padding.Length; i++)
+            // valid = (padLen >= 1) & (padLen <= blockSize), as a 0/1 mask, branchlessly.
+            // padLen is a byte value in [0, 255]; (-padLen) is in [-255, 0] and its sign bit
+            // is set iff padLen > 0, which gives geOne = 1 iff padLen >= 1.
+            int geOne = ((-padLen) >> 31) & 1;                  // 1 iff padLen >= 1
+            int leBlock = ((padLen - blockSize - 1) >> 31) & 1; // 1 iff padLen <= blockSize
+            int valid = geOne & leBlock;
+
+            // effective = valid == 1 ? padLen : blockSize  (branchless)
+            int effective = (valid * padLen) + ((1 - valid) * blockSize);
+
+            // Walk the last blockSize bytes unconditionally.
+            int start = length - blockSize;
+            for (int i = start; i < length; i++)
             {
-                if (padding[i] != paddingLength)
-                    throw new CryptographicException("Invalid PKCS#7 this.padding.");
+                // shouldBePadByte = (i >= length - effective) ? 1 : 0  (branchless)
+                int diff = i - (length - effective);
+                int shouldBePadByte = ((~diff) >> 31) & 1; // 1 iff diff >= 0
+
+                // matches = (input[i] == padLen) ? 1 : 0  (branchless)
+                int xor = input[i] ^ padLen;
+                int matches = (((xor - 1) & ~xor) >> 31) & 1; // 1 iff xor == 0
+
+                // Accumulate: valid &= (shouldBePadByte == 0) | (matches == 1)
+                int constraint = (1 - shouldBePadByte) | matches;
+                valid &= constraint;
             }
 
-            return input.Slice(0, input.Length - paddingLength).ToArray();
+            if (valid == 0)
+                throw new CryptographicException("Invalid PKCS#7 padding.");
+
+            return input.Slice(0, length - padLen).ToArray();
         }
     }
 
@@ -117,7 +140,7 @@
         public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
         {
             if (blockSize <= 0)
-                throw new ArgumentOutOfRangeException(nameof(blockSize), "Block this.size must be greater than zero.");
+                throw new ArgumentOutOfRangeException(nameof(blockSize), "Block size must be greater than zero.");
 
             int paddingLength = blockSize - (input.Length % blockSize);
             if (paddingLength == blockSize)
