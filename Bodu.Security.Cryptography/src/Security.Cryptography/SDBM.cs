@@ -10,23 +10,13 @@ namespace Bodu.Security.Cryptography
     using System.Security.Cryptography;
 
     /// <summary>
-    /// Computes the hash for the input data using the <c>SDBM</c> hash algorithm. This variant applies a simple, non-cryptographic
-    /// polynomial hashing technique originally derived from the NDBM database library. This class cannot be inherited.
+    /// Computes a 32-bit non-cryptographic hash using the SDBM algorithm popularised by the public-domain NDBM database library. This class
+    /// cannot be inherited.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <see cref="SDBM" /> is a classic string hashing algorithm that updates the internal state using the formula: <c><![CDATA[hash =
-    /// data[i] + (hash << 6) + (hash << 16) - hash]]></c>. This expression multiplies the previous hash by a large prime-like factor and
-    /// incorporates the new byte in a way that causes a strong avalanche effect for short and medium-length strings.
-    /// </para>
-    /// <para>
-    /// The algorithm gained popularity from its use in the public-domain NDBM (New Database Manager) library and is often cited in
-    /// discussions on hash table design. It produces good key distribution with minimal computational cost and is well-suited for in-memory
-    /// data structures, symbol resolution, and lookup tables.
-    /// </para>
-    /// <para>
-    /// For additional background, see the <a href="http://www.cse.yorku.ca/~oz/hash.html">Hash Functions page by Arash Partow</a>, which
-    /// describes the origin and comparative performance of the SDBM and other related hash functions.
+    /// For each input byte, the running hash is updated as <c><![CDATA[hash = byte + (hash << 6) + (hash << 16) - hash]]></c>, producing
+    /// good distribution for short and medium-length keys at minimal cost.
     /// </para>
     /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for password hashing,
     /// digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -50,29 +40,10 @@ namespace Bodu.Security.Cryptography
             this.HashSizeValue = 32;
         }
 
-        /// <summary>
-        /// Gets a value indicating whether this transform instance can be reused after a hash operation is completed.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if the transform supports multiple hash computations via <see cref="HashAlgorithm.Initialize" />;
-        /// otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Reusable transforms allow the internal state to be reset for subsequent operations using the same instance. One-shot algorithms
-        /// that clear sensitive key material after finalization typically return <see langword="false" />.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanReuseTransform => true;
 
-        /// <summary>
-        /// Gets a value indicating whether this transform supports processing multiple blocks of data in a single operation.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if multiple input blocks can be transformed in sequence without intermediate finalization; otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Most hash algorithms and block ciphers support multi-block transformations for streaming input. If <see langword="false" />, the
-        /// transform must be invoked one block at a time.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanTransformMultipleBlocks => true;
 
         /// <inheritdoc />
@@ -133,7 +104,7 @@ namespace Bodu.Security.Cryptography
 #if !NET6_0_OR_GREATER
             ThrowHelper.ThrowIfLessThan(ibStart, 0);
             ThrowHelper.ThrowIfLessThan(cbSize, 0);
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, offset, cbSize);
+            ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
             if (finalized)
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
@@ -166,34 +137,9 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Finalizes the hash computation and returns the resulting 32-bit <see cref="SDBM" /> hash in big-endian format. This method
-        /// reflects all input previously processed via <see cref="HashAlgorithm.HashCore(byte[], int, int)" /> or
-        /// <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" /> and produces a final, stable hash output.
+        /// Finalises the SDBM hash computation and returns the 32-bit result as a 4-byte big-endian array.
         /// </summary>
-        /// <returns>
-        /// A 4-byte array representing the computed <c>SDBM</c> hash value. The result is encoded in <b>big-endian</b> byte order.
-        /// </returns>
-        /// <remarks>
-        /// <para>
-        /// This method completes the internal state of the hashing algorithm and serializes the final hash value into a
-        /// platform-independent format. It is invoked automatically by <see cref="HashAlgorithm.ComputeHash(byte[])" /> and related methods
-        /// once all data has been processed.
-        /// </para>
-        /// <para>After this method returns, the internal state is considered finalized and the computed hash is stable.</para>
-        /// <para>
-        /// In .NET 6.0 and later, the algorithm is automatically reset by invoking <see cref="HashAlgorithm.Initialize" />, allowing the
-        /// instance to be reused immediately.
-        /// </para>
-        /// <para>
-        /// In earlier versions of .NET, the internal state is marked as finalized, and any subsequent calls to
-        /// <see cref="HashAlgorithm.HashCore(byte[], int, int)" />, <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" />, or
-        /// <see cref="HashAlgorithm.HashFinal" /> will throw a <see cref="CryptographicUnexpectedOperationException" />. To compute another
-        /// hash, you must explicitly call <see cref="HashAlgorithm.Initialize" /> to reset the algorithm.
-        /// </para>
-        /// <para>
-        /// Implementations should ensure all residual or pending data is processed and integrated into the final hash value before returning.
-        /// </para>
-        /// </remarks>
+        /// <returns>A 4-byte array containing the hash value in <b>big-endian</b> byte order.</returns>
         protected override byte[] HashFinal()
         {
             this.ThrowIfDisposed();

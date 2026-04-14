@@ -4,12 +4,13 @@
     using Bodu.Security.Cryptography;
 
     /// <summary>
-    /// Implements the Cipher Block Chaining (CBC) mode transformation for a block cipher.
+    /// Applies the Cipher Block Chaining (CBC) mode transformation to an underlying <see cref="IBlockCipher" />.
     /// </summary>
     /// <remarks>
-    /// CBC mode XORs each plaintext block with the previous ciphertext block before encryption. The first block uses the initialization
-    /// vector (IV) in place of a previous ciphertext block. On decryption, the reverse is applied: the decrypted block is XORed with the
-    /// previous ciphertext.
+    /// Encryption computes <c>Cᵢ = E(Pᵢ ⊕ Cᵢ₋₁)</c> with <c>C₋₁ = IV</c>, and decryption inverts this as <c>Pᵢ = D(Cᵢ) ⊕ Cᵢ₋₁</c>. The
+    /// initialisation vector must equal the cipher block size in length and should be unpredictable for each message; repeating an IV
+    /// under the same key weakens confidentiality. The instance retains the most recent ciphertext block as the chaining value, so
+    /// successive calls to <see cref="Transform" /> continue the stream.
     /// </remarks>
     public sealed class CbcModeTransform
         : IBlockCipherModeTransform
@@ -18,27 +19,24 @@
         private readonly byte[] currentIv;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CbcModeTransform" /> class with the specified cipher and initialization vector (IV).
+        /// Initialises a new instance of the <see cref="CbcModeTransform" /> class with the specified cipher and initialisation vector.
         /// </summary>
-        /// <param name="cipher">The block cipher to apply CBC mode to.</param>
-        /// <param name="iv">The initialization vector (IV) to use for the first block.</param>
+        /// <param name="cipher">The block cipher over which CBC is applied.</param>
+        /// <param name="iv">The initialisation vector used as the chaining value for the first block. A defensive copy is taken.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
         public CbcModeTransform(IBlockCipher cipher, byte[] iv)
         {
             this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
+            if (iv is null)
+                throw new ArgumentNullException(nameof(iv));
+            if (iv.Length != cipher.BlockSize)
+                throw new ArgumentException(
+                    $"IV length ({iv.Length}) must equal the cipher block size ({cipher.BlockSize}).",
+                    nameof(iv));
             this.currentIv = (byte[])iv.Clone(); // Used to track the evolving IV during transformation
         }
 
-        /// <summary>
-        /// Transforms the input data using CBC mode, performing either encryption or decryption.
-        /// </summary>
-        /// <param name="input">The input data to transform. Must be a multiple of the block size.</param>
-        /// <param name="output">The buffer to write the transformed data to. Must be at least the size of <paramref name="input" />.</param>
-        /// <param name="encrypt"><c>true</c> to encrypt; <c>false</c> to decrypt.</param>
-        /// <returns>The number of bytes written to <paramref name="output" />.</returns>
-        /// <exception cref="ArgumentException">
-        /// Thrown if the input length is not a multiple of the block size, or the output buffer is too small.
-        /// </exception>
+        /// <inheritdoc />
         public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
         {
             int blockSize = this.cipher.BlockSize;

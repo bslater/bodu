@@ -11,26 +11,33 @@ namespace Bodu.Security.Cryptography
     using System.Security.Cryptography;
 
     /// <summary>
-    /// Computes the hash for the input data using the <c>Tiger</c> hash algorithm. This implementation uses a block-based transformation
-    /// optimized for 64-bit platforms and supports multiple output lengths (128, 160, or 192 bits). This class cannot be inherited.
+    /// Computes a hash using the <c>Tiger</c> cryptographic hash algorithm by Ross Anderson and Eli Biham, optimised for 64-bit
+    /// platforms. Supports output sizes of 128, 160, or 192 bits and both the original <c>Tiger</c> and <c>Tiger2</c> padding variants.
+    /// This class cannot be inherited.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <see cref="Tiger" /> is a non-cryptographic hash function designed for high-speed hashing on 64-bit architectures. It processes
-    /// input in 512-bit (64-byte) blocks using three 64-bit internal state variables and applies three rounds of transformations. Each
-    /// round includes eight S-box�driven mixing steps and word-level permutations to ensure diffusion.
+    /// <see cref="Tiger" /> processes input in 512-bit (64-byte) blocks using three 64-bit internal state variables. Each block is
+    /// mixed into the state by three passes, and each pass performs eight S-box driven mixing rounds separated by a key schedule
+    /// applied to the block words.
     /// </para>
     /// <para>
-    /// This implementation supports configurable output sizes corresponding to the standard Tiger variants: <c>Tiger/128</c>,
-    /// <c>Tiger/160</c>, and <c>Tiger/192</c>. The full 192-bit hash is always computed internally, and shorter outputs are produced by truncation.
+    /// The full 192-bit digest is always computed internally; shorter outputs (<c>Tiger/128</c> and <c>Tiger/160</c>) are produced by
+    /// truncation after finalisation. The padding byte is selected via <see cref="Variant" />:
+    /// <see cref="TigerHashingVariant.Tiger" /> uses <c>0x01</c> (the original specification) and
+    /// <see cref="TigerHashingVariant.Tiger2" /> uses <c>0x80</c>.
     /// </para>
     /// <para>
-    /// Tiger is well suited for fast, non-cryptographic checksums, fingerprinting, and hash table indexing. It is not intended for secure
-    /// integrity validation or cryptographic use.
+    /// Although no longer recommended for new security-sensitive applications, Tiger has not been broken in the classical collision
+    /// sense and is still useful for legacy interoperability and as a fast integrity hash.
     /// </para>
-    /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for password hashing,
-    /// digital signatures, or integrity validation in security-sensitive applications.</note>
     /// </remarks>
+    /// <example>
+    /// <code language="csharp">
+    /// using var tiger = new Tiger(192) { Variant = TigerHashingVariant.Tiger2 };
+    /// byte[] digest = tiger.ComputeHash(message);
+    /// </code>
+    /// </example>
     public sealed partial class Tiger
         : BlockHashAlgorithm<Tiger>
     {
@@ -83,29 +90,10 @@ namespace Bodu.Security.Cryptography
         public string AlgorithmName =>
             $"Tiger/{this.HashSizeValue}";
 
-        /// <summary>
-        /// Gets a value indicating whether this transform instance can be reused after a hash operation is completed.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if the transform supports multiple hash computations via <see cref="HashAlgorithm.Initialize" />;
-        /// otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Reusable transforms allow the internal state to be reset for subsequent operations using the same instance. One-shot algorithms
-        /// that clear sensitive key material after finalization typically return <see langword="false" />.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanReuseTransform => true;
 
-        /// <summary>
-        /// Gets a value indicating whether this transform supports processing multiple blocks of data in a single operation.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if multiple input blocks can be transformed in sequence without intermediate finalization; otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Most hash algorithms and block ciphers support multi-block transformations for streaming input. If <see langword="false" />, the
-        /// transform must be invoked one block at a time.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanTransformMultipleBlocks => true;
 
         /// <summary>
@@ -197,12 +185,11 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Releases the unmanaged resources used by the algorithm and clears the key from memory.
+        /// Releases resources used by the algorithm and clears the internal state variables.
         /// </summary>
         /// <param name="disposing">
         /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release only unmanaged resources.
         /// </param>
-        /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
         protected override void Dispose(bool disposing)
         {
             if (this.disposed) return;
@@ -254,10 +241,9 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Finalizes the hash computation and produces the output hash value.
+        /// Finalises the hash computation and returns the digest, truncated to <see cref="HashSize" /> / 8 bytes where applicable.
         /// </summary>
-        /// <returns>A byte array containing the final hash value (8 or 16 bytes).</returns>
-        /// <remarks>Combines all partial input and applies the finalization round logic based on the configured output size.</remarks>
+        /// <returns>A byte array of 16, 20, or 24 bytes corresponding to the configured hash size (128, 160, or 192 bits).</returns>
         protected override byte[] ProcessFinalBlock()
         {
             Span<byte> output = stackalloc byte[MaxOutputBits / 8];

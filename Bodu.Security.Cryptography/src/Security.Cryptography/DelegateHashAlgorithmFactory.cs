@@ -30,7 +30,7 @@
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="builder" /> is <see langword="null" />.</exception>
         public DelegateHashAlgorithmFactory(Func<T> builder)
         {
-            builder = builder ?? throw new ArgumentNullException(nameof(builder));
+            this.builder = builder ?? throw new ArgumentNullException(nameof(builder));
         }
 
         /// <inheritdoc />

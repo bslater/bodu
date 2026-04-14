@@ -3,20 +3,34 @@
     using System;
 
     /// <summary>
-    /// Provides factory methods to create <see cref="IBlockCipherModeTransform" /> instances for standard cipher modes.
+    /// Creates <see cref="IBlockCipherModeTransform" /> instances that wrap an <see cref="IBlockCipher" /> with a standard chaining mode.
     /// </summary>
+    /// <example>
+    /// The following example composes a block cipher, a CBC mode transform, and PKCS#7 padding to encrypt a message:
+    /// <code>
+    /// using IBlockCipher cipher = /* construct an IBlockCipher, e.g. an AES wrapper */;
+    /// IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherBlockMode.CBC, cipher, iv);
+    /// IPaddingStrategy padding = PaddingFactory.Create(PaddingMode.PKCS7);
+    ///
+    /// byte[] padded = padding.Pad(plaintext, cipher.BlockSize);
+    /// byte[] ciphertext = new byte[padded.Length];
+    /// mode.Transform(padded, ciphertext, encrypt: true);
+    /// </code>
+    /// </example>
     public static class BlockCipherModeFactory
     {
         /// <summary>
         /// Creates a new <see cref="IBlockCipherModeTransform" /> instance for the specified block cipher mode.
         /// </summary>
-        /// <param name="mode">The cipher mode to use (e.g., CBC, CFB, OFB, ECB, CTR).</param>
-        /// <param name="cipher">The underlying block cipher to apply the mode to.</param>
-        /// <param name="iv">The initialization vector (IV) or counter, where applicable. Not required for ECB mode.</param>
-        /// <returns>An <see cref="IBlockCipherModeTransform" /> instance for the specified mode and cipher.</returns>
+        /// <param name="mode">The cipher mode to apply (for example <see cref="CipherBlockMode.CBC" />, <see cref="CipherBlockMode.CFB" />,
+        /// <see cref="CipherBlockMode.OFB" />, <see cref="CipherBlockMode.ECB" />, or <see cref="CipherBlockMode.CTR" />).</param>
+        /// <param name="cipher">The underlying block cipher to wrap.</param>
+        /// <param name="iv">The initialisation vector or initial counter. Required by all modes except <see cref="CipherBlockMode.ECB" />
+        /// and must have the same length as <see cref="IBlockCipher.BlockSize" />.</param>
+        /// <returns>An <see cref="IBlockCipherModeTransform" /> that applies <paramref name="mode" /> over <paramref name="cipher" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher" /> is <see langword="null" />.</exception>
-        /// <exception cref="ArgumentException">Thrown if an IV is required but missing or invalid.</exception>
-        /// <exception cref="NotSupportedException">Thrown if the specified cipher mode is not supported.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="iv" /> is required but <see langword="null" /> or of the wrong length.</exception>
+        /// <exception cref="NotSupportedException">Thrown if <paramref name="mode" /> is not a supported <see cref="CipherBlockMode" /> value.</exception>
         public static IBlockCipherModeTransform Create(
             CipherBlockMode mode,
             IBlockCipher cipher,
@@ -49,17 +63,17 @@
                     return new CtrModeTransform(cipher, iv!);
 
                 default:
-                    throw new NotSupportedException($"The this.cipher this.mode '{mode}' is not supported.");
+                    throw new NotSupportedException($"The cipher mode '{mode}' is not supported.");
             }
         }
 
         private static void ValidateIv(string name, byte[]? iv, int requiredLength)
         {
             if (iv is null)
-                throw new ArgumentException("An initialization vector is required for this this.mode.", name);
+                throw new ArgumentException("An initialisation vector is required for this mode.", name);
 
             if (iv.Length != requiredLength)
-                throw new ArgumentException($"The initialization vector must be {requiredLength} bytes long.", name);
+                throw new ArgumentException($"The initialisation vector must be {requiredLength} bytes long.", name);
         }
     }
 }

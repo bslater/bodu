@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CityHashBase.cs" company="PlaceholderCompany">
+// <copyright file="CityHash.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -13,30 +13,24 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography
 {
     /// <summary>
-    /// Provides the abstract base implementation for the <c>CityHash</c> family of non-cryptographic hash algorithms, developed by Google.
-    /// See the <a href="https://github.com/google/cityhash">CityHash repository</a> for the reference specification.
+    /// Base class for the <c>CityHash</c> family of non-cryptographic hash algorithms developed by Google. See the
+    /// <a href="https://github.com/google/cityhash">CityHash reference repository</a> for the specification.
     /// </summary>
     /// <typeparam name="T">
     /// The concrete CityHash variant derived from this class. Must expose a public parameterless constructor.
     /// </typeparam>
     /// <remarks>
     /// <para>
-    /// <see cref="CityHash{T}" /> integrates with the standard <see cref="HashAlgorithm" /> pipeline. The CityHash algorithms are
-    /// inherently designed to consume their full input in a single pass; however, the <see cref="HashAlgorithm" /> contract requires support
-    /// for incremental input delivery via <see cref="HashCore(byte[], int, int)" /> and <see cref="HashCore(ReadOnlySpan{byte})" />. This
-    /// base class satisfies that contract by accumulating all data delivered through <c>HashCore</c> calls into an internal buffer, then
-    /// invoking the concrete variant's one-shot <see cref="ComputeHashCore" /> implementation in <see cref="HashFinal" /> once all input is
-    /// available.
+    /// CityHash is a one-shot algorithm. To satisfy the incremental input contract of <see cref="HashAlgorithm" />, this base class
+    /// accumulates all bytes delivered through <c>HashCore</c> into an internal buffer and invokes the derived variant's
+    /// <see cref="ComputeHashCore(ReadOnlySpan{byte})" /> from <see cref="HashFinal" /> once all input is available.
     /// </para>
     /// <para>
-    /// Shared low-level primitives — including the <see cref="Mix" />, <see cref="Mur" />, and <see cref="Permute3" /> operations, along
-    /// with the algorithm constants — are defined here and available to all derived variants.
-    /// </para>
-    /// <para>
-    /// This class supports hash output sizes of 32, 64, or 128 bits, validated at construction time.
+    /// Shared mixing primitives (<see cref="Mix(uint)" />, <see cref="Mur(uint, uint)" />, <see cref="Permute3(ref uint, ref uint, ref uint)" />)
+    /// and the algorithm constants are defined here and are available to all derived variants. Supported output sizes are 32, 64, and 128 bits.
     /// </para>
     /// <note type="important">
-    /// CityHash is <b>not</b> a cryptographic algorithm. It must <b>not</b> be used for password hashing, digital signatures, or any
+    /// CityHash is <b>not</b> cryptographically secure. It must <b>not</b> be used for password hashing, digital signatures, or any
     /// application that requires collision resistance under adversarial conditions.
     /// </note>
     /// </remarks>
@@ -102,9 +96,7 @@ namespace Bodu.Security.Cryptography
         // Public API
         // ---------------------------------------------------------------------------------------------------------------
 
-        /// <summary>
-        /// Resets the algorithm to its initial state so that a new hash computation can begin.
-        /// </summary>
+        /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
         public override void Initialize()
         {
@@ -159,13 +151,12 @@ namespace Bodu.Security.Cryptography
         // ---------------------------------------------------------------------------------------------------------------
 
         /// <summary>
-        /// Performs the full hash computation over the complete accumulated input span.
+        /// Performs the full hash computation over the complete accumulated input in a single pass.
         /// </summary>
-        /// <param name="source">The complete input bytes to hash in a single pass.</param>
+        /// <param name="source">The complete input bytes to hash.</param>
         /// <returns>A byte array containing the final hash output.</returns>
         /// <remarks>
-        /// Called exactly once per hash operation from <see cref="HashFinal" />, after all input
-        /// delivered through one or more <c>HashCore</c> calls has been accumulated into the internal
+        /// Called exactly once per hash operation from <see cref="HashFinal" />, after all input has been accumulated into the internal
         /// buffer. Derived classes must implement this method to provide the variant-specific algorithm.
         /// </remarks>
         protected abstract byte[] ComputeHashCore(ReadOnlySpan<byte> source);
@@ -210,25 +201,11 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Appends the contents of <paramref name="source" /> to the internal accumulation buffer.
-        /// The actual hash computation is deferred until <see cref="HashFinal" /> is called.
+        /// Appends the contents of <paramref name="source" /> to the internal accumulation buffer. The actual hash computation is deferred
+        /// until <see cref="HashFinal" /> is called.
         /// </summary>
         /// <param name="source">The input bytes to accumulate.</param>
         /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
-        /// <remarks>
-        /// <para>
-        /// CityHash processes its full input in a single pass; it has no internal streaming state.
-        /// To satisfy the <see cref="HashAlgorithm" /> contract — which allows callers to deliver
-        /// data incrementally via repeated <c>HashCore</c> calls — this method accumulates all
-        /// delivered data in a managed buffer. <see cref="HashFinal" /> then invokes
-        /// <see cref="ComputeHashCore" /> once on the complete buffer.
-        /// </para>
-        /// <para>
-        /// This design means that streaming use (e.g. through <see cref="HashAlgorithm.TransformBlock" />
-        /// or <see cref="HashAlgorithm.ComputeHashAsync(Stream)" />) is fully supported and produces
-        /// results identical to the equivalent single-call <see cref="HashAlgorithm.ComputeHash(byte[])" />.
-        /// </para>
-        /// </remarks>
         protected override void HashCore(ReadOnlySpan<byte> source)
         {
             ThrowIfDisposed();
@@ -246,12 +223,11 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Finalises the hash computation by invoking <see cref="ComputeHashCore" /> on the complete
-        /// accumulated input and returning the result.
+        /// Finalises the hash computation by invoking <see cref="ComputeHashCore(ReadOnlySpan{byte})" /> on the complete accumulated input.
         /// </summary>
         /// <returns>
-        /// A byte array containing the hash of all data delivered via preceding <c>HashCore</c> calls.
-        /// For an empty input the result is algorithm-defined (e.g. the <c>K2</c> constant for CityHash64).
+        /// A byte array containing the hash of all data delivered via preceding <c>HashCore</c> calls. For an empty input the result is
+        /// algorithm-defined (for example, the <c>K2</c> constant for CityHash64).
         /// </returns>
         /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
         protected override byte[] HashFinal()

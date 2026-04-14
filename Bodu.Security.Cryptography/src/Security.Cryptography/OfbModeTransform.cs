@@ -3,16 +3,13 @@
     using System;
 
     /// <summary>
-    /// Performs encryption and decryption using Output Feedback (OFB) mode for a given block cipher.
+    /// Applies the Output Feedback (OFB) mode transformation to an underlying <see cref="IBlockCipher" />, turning it into a synchronous
+    /// stream cipher in which encryption and decryption are identical operations.
     /// </summary>
     /// <remarks>
-    /// OFB mode converts a block cipher into a synchronous stream cipher. It repeatedly encrypts the IV (or feedback register) and XORs the
-    /// result with the plaintext or ciphertext to produce output. Since encryption and decryption are symmetric, the same operation is
-    /// applied in both directions.
-    /// <para>
-    /// OFB mode preserves error propagation and allows for parallelizable keystream generation, but requires that IVs be unique and
-    /// unpredictable for each encryption session.
-    /// </para>
+    /// The keystream is produced by repeatedly encrypting the feedback register: <c>Oᵢ = E(Oᵢ₋₁)</c> with <c>O₀ = IV</c>, and the output
+    /// is <c>Pᵢ ⊕ Oᵢ</c>. The initialisation vector must equal the cipher block size in length and must never be reused under the same
+    /// key, otherwise keystreams collide and confidentiality is lost.
     /// </remarks>
     public sealed class OfbModeTransform : IBlockCipherModeTransform
     {
@@ -20,27 +17,24 @@
         private readonly byte[] currentIv;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OfbModeTransform" /> class with the specified cipher and initialization vector.
+        /// Initialises a new instance of the <see cref="OfbModeTransform" /> class with the specified cipher and initialisation vector.
         /// </summary>
-        /// <param name="cipher">The block cipher used for encryption and decryption.</param>
-        /// <param name="iv">The initialization vector used to generate the keystream.</param>
+        /// <param name="cipher">The block cipher used to generate the keystream.</param>
+        /// <param name="iv">The initialisation vector used to seed the feedback register. A defensive copy is taken.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
         public OfbModeTransform(IBlockCipher cipher, byte[] iv)
         {
             this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
-            this.currentIv = (byte[])iv?.Clone() ?? throw new ArgumentNullException(nameof(cipher));
+            if (iv is null)
+                throw new ArgumentNullException(nameof(iv));
+            if (iv.Length != cipher.BlockSize)
+                throw new ArgumentException(
+                    $"IV length ({iv.Length}) must equal the cipher block size ({cipher.BlockSize}).",
+                    nameof(iv));
+            this.currentIv = (byte[])iv.Clone();
         }
 
-        /// <summary>
-        /// Transforms the input buffer using OFB mode. This method applies the same operation for both encryption and decryption.
-        /// </summary>
-        /// <param name="input">The input buffer to transform. Must be a multiple of the cipher block size.</param>
-        /// <param name="output">The buffer to receive the transformed data. Must be at least as long as <paramref name="input" />.</param>
-        /// <param name="encrypt"><c>true</c> for encryption, <c>false</c> for decryption (identical operation).</param>
-        /// <returns>The number of bytes written to <paramref name="output" />.</returns>
-        /// <exception cref="ArgumentException">
-        /// Thrown if the input length is not a positive multiple of the block size, or if the output span is too small.
-        /// </exception>
+        /// <inheritdoc />
         public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
         {
             int blockSize = this.cipher.BlockSize;

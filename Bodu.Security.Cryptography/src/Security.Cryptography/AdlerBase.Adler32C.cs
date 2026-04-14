@@ -9,18 +9,13 @@ namespace Bodu.Security.Cryptography
     using System;
 
     /// <summary>
-    /// Computes the hash for the input data using the <c>Adler-32</c> hash algorithm. This variant uses a modulus of 65536 and is optimized
-    /// for alignment and performance in SIMD-capable environments. This class cannot be inherited.
+    /// Computes a 32-bit Adler-style checksum using the power-of-two modulus 65536 for SIMD-friendly alignment. This class cannot be inherited.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Adler-32 is a non-cryptographic checksum algorithm developed by Mark Adler for use in the zlib compression library. It produces a
-    /// 32-bit checksum by maintaining two running sums (A and B), which are updated while reading input data and then combined into the
-    /// final result as <c><![CDATA[(B << 16) | A]]></c>.
-    /// </para>
-    /// <para>
-    /// This variant uses a modulus of 65536 (rather than the standard 65521) to enable more efficient vectorized operations in performance-
-    /// critical scenarios. It inherits from the abstract <see cref="Adler32Base" /> base class, which provides shared Adler-style logic.
+    /// This variant maintains two running sums (A and B) and combines them as <c><![CDATA[(B << 16) | A]]></c>, but uses a modulus of 65536
+    /// rather than the standard 65521 to enable cheaper modular reductions in vectorised code paths. Outputs differ from standard
+    /// <see cref="Adler32" /> and are not interchangeable.
     /// </para>
     /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for password hashing,
     /// digital signatures, or integrity validation in security-sensitive applications.</note>

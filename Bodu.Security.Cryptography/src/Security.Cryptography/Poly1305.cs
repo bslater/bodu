@@ -89,16 +89,7 @@ namespace Bodu.Security.Cryptography
         /// </remarks>
         public override bool CanReuseTransform => false;
 
-        /// <summary>
-        /// Gets a value indicating whether this transform supports processing multiple blocks of data in a single operation.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if multiple input blocks can be transformed in sequence without intermediate finalization; otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Most hash algorithms and block ciphers support multi-block transformations for streaming input. If <see langword="false" />, the
-        /// transform must be invoked one block at a time.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanTransformMultipleBlocks => true;
 
         /// <inheritdoc />
@@ -137,11 +128,13 @@ namespace Bodu.Security.Cryptography
             base.Initialize();
             Array.Clear(this.acc);
 
-            // If KeyValue was not explicitly set or was cleared, regenerate a random key
+            // Refuse to silently regenerate a key. Callers must explicitly supply a key
+            // (via the Key setter) or call GenerateKey() before re-initialising. This
+            // preserves the keyed-MAC contract: finalising and re-initialising must not
+            // swap keys behind the caller's back.
             if (this.KeyValue is null || this.KeyValue.Length != KeySize)
             {
-                this.KeyValue = new byte[KeySize];
-                CryptoHelpers.FillWithRandomNonZeroBytes(this.KeyValue);
+                throw new CryptographicException("Poly1305 key must be assigned before initialisation. Set Key explicitly or call GenerateKey().");
             }
 
             this.InitializeKey();
@@ -171,12 +164,8 @@ namespace Bodu.Security.Cryptography
             base.Dispose(disposing);
         }
 
-        /// <summary>
-        /// Initializes internal key parameters from the <see cref="Key" /> value.
-        /// </summary>
-
         /// <inheritdoc />
-        protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength) => throw new NotImplementedException();
+        protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength) => throw new NotSupportedException("Poly1305 does not use block padding.");
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

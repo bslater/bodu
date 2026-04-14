@@ -13,56 +13,31 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography
 {
     /// <summary>
-    /// Provides the base implementation of the <c>Snefru</c> cryptographic hash algorithm - a symmetric, permutation-based hash function
-    /// designed by Ralph Merkle. This class implements the core Snefru compression logic using a fixed number of S-box and rotation rounds
-    /// over 512-bit blocks.
+    /// Base class for the <c>Snefru</c> family of unkeyed hash functions designed by Ralph Merkle, implementing the core compression
+    /// routine using S-box substitutions and word rotations over 512-bit blocks.
     /// </summary>
-    /// <typeparam name="T">The concrete Snefru type implementing this algorithm.</typeparam>
+    /// <typeparam name="T">The concrete Snefru variant derived from this class. Must expose a public parameterless constructor.</typeparam>
     /// <remarks>
     /// <para>
-    /// <see cref="Snefru{T}" /> is a non-keyed hash function that produces fixed-size digests of either 128 or 256 bits. It was one of the
-    /// earliest cryptographic hash functions developed and was submitted to the NIST hash function competition in the early 1990s. Though
-    /// no longer considered secure by modern cryptographic standards, it remains an academically significant design due to its simplicity
-    /// and early influence.
+    /// <see cref="Snefru{T}" /> is one of the earliest cryptographic hash functions developed and is now considered broken: collision
+    /// attacks against the two- and four-pass variants are known, and it should not be used for any new security-sensitive application.
+    /// It remains implemented here for interoperability with legacy data and academic study.
     /// </para>
-    /// <para>This abstract base class defines the core Snefru block transformation logic and is extended by:</para>
+    /// <para>This base class is extended by:</para>
     /// <list type="bullet">
     /// <item>
-    /// <description><see cref="Snefru128" /> – Produces a 128-bit (16-byte) hash output with 4 words of internal state.</description>
+    /// <description><see cref="Snefru128" /> produces a 128-bit (16-byte) hash with a 4-word internal state.</description>
     /// </item>
     /// <item>
-    /// <description><see cref="Snefru256" /> – Produces a 256-bit (32-byte) hash output with 8 words of internal state.</description>
+    /// <description><see cref="Snefru256" /> produces a 256-bit (32-byte) hash with an 8-word internal state.</description>
     /// </item>
     /// </list>
-    /// <para>The algorithm operates in the following stages:</para>
-    /// <list type="number">
-    /// <item>
-    /// <description>
-    /// <b>Initialization:</b> The internal state is cleared to all zeros, and each input block is padded to double the block size to
-    /// facilitate buffer mixing.
-    /// </description>
-    /// </item>
-    /// <item>
-    /// <description><b>Permutation Rounds:</b> For each block, 8 rounds of transformation are applied. Each round consists of:
-    /// <list type="bullet">
-    /// <item>
-    /// <description>An S-box substitution step based on precomputed 8-bit lookup tables.</description>
-    /// </item>
-    /// <item>
-    /// <description>Multiple circular right bitwise rotations on 32-bit words.</description>
-    /// </item>
-    /// </list>
-    /// These operations introduce non-linearity and diffusion to the internal buffer.
-    /// </description>
-    /// </item>
-    /// <item>
-    /// <description>
-    /// <b>Finalization:</b> After all input is processed, the internal state is serialized in big-endian format to produce the final hash.
-    /// </description>
-    /// </item>
-    /// </list>
-    /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for password hashing,
-    /// digital signatures, or integrity validation in security-sensitive applications.</note>
+    /// <para>
+    /// Each input block is processed by 8 rounds consisting of an S-box substitution step followed by a word-wise circular rotation.
+    /// After all input has been absorbed, the internal state is serialised in big-endian byte order to produce the final digest.
+    /// </para>
+    /// <note type="important">This algorithm is <b>not</b> considered secure by modern cryptographic standards and should <b>not</b> be
+    /// used for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
     /// </remarks>
     public abstract partial class Snefru<T>
         : BlockHashAlgorithm<T>
@@ -102,29 +77,10 @@ namespace Bodu.Security.Cryptography
             InitializeState();
         }
 
-        /// <summary>
-        /// Gets a value indicating whether this transform instance can be reused after a hash operation is completed.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if the transform supports multiple hash computations via <see cref="HashAlgorithm.Initialize" />;
-        /// otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Reusable transforms allow the internal state to be reset for subsequent operations using the same instance. One-shot algorithms
-        /// that clear sensitive key material after finalization typically return <see langword="false" />.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanReuseTransform => true;
 
-        /// <summary>
-        /// Gets a value indicating whether this transform supports processing multiple blocks of data in a single operation.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if multiple input blocks can be transformed in sequence without intermediate finalization; otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Most hash algorithms and block ciphers support multi-block transformations for streaming input. If <see langword="false" />, the
-        /// transform must be invoked one block at a time.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanTransformMultipleBlocks => true;
 
         /// <inheritdoc />
@@ -137,12 +93,11 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Releases the unmanaged resources used by the algorithm and clears the key from memory.
+        /// Releases resources used by the algorithm and clears the internal state and working buffer.
         /// </summary>
         /// <param name="disposing">
         /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release only unmanaged resources.
         /// </param>
-        /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
         protected override void Dispose(bool disposing)
         {
             if (this.disposed) return;

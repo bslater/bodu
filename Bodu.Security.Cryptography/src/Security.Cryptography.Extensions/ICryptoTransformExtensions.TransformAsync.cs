@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Buffers;
 using System.IO;
 using System.Security.Cryptography;
 using System.Threading;
@@ -68,60 +69,63 @@ namespace Bodu.Security.Cryptography.Extensions
             ThrowHelper.ThrowIfNull(targetStream);
             ThrowHelper.ThrowIfLessThanOrEqual(bufferSize, 0);
 
-            byte[] buffer = new byte[bufferSize];
-
-            var cryptoStream = new CryptoStream(targetStream, transform, CryptoStreamMode.Write, leaveOpen: true);
-
-            bool wasCancelled = false;
-
+            // Use a pooled buffer cleared on return so plaintext read from sourceStream cannot leak
+            // to a subsequent pool consumer.
+            byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
             try
             {
-                int bytesRead;
-                while (true)
+                var cryptoStream = new CryptoStream(targetStream, transform, CryptoStreamMode.Write, leaveOpen: true);
+                bool completed = false;
+
+                try
                 {
-                    try
+                    int bytesRead;
+                    while (true)
                     {
-                        bytesRead = await sourceStream.ReadAsync(buffer.AsMemory(0, bufferSize), cancellationToken)
+                        try
+                        {
+                            bytesRead = await sourceStream.ReadAsync(buffer.AsMemory(0, bufferSize), cancellationToken)
+                                .ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            throw new TaskCanceledException();
+                        }
+
+                        cancellationToken.ThrowIfCancellationRequested();
+                        if (bytesRead == 0)
+                            break;
+
+                        await cryptoStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken)
                             .ConfigureAwait(false);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        throw new TaskCanceledException();
                     }
 
                     cancellationToken.ThrowIfCancellationRequested();
-                    if (bytesRead == 0)
-                        break;
 
-                    await cryptoStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken)
-                        .ConfigureAwait(false);
+                    await cryptoStream.FlushFinalBlockAsync(cancellationToken).ConfigureAwait(false);
+                    completed = true;
                 }
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                await cryptoStream.FlushFinalBlockAsync(cancellationToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                // Record that cancellation occurred so the finally block can suppress the
-                // CryptographicException that CryptoStream.Dispose() would otherwise raise
-                // by attempting FlushFinalBlock on an incomplete transform state.
-                wasCancelled = true;
-                throw;
+                finally
+                {
+                    if (completed)
+                    {
+                        cryptoStream.Dispose();
+                    }
+                    else
+                    {
+                        // Any failure before FlushFinalBlockAsync completed leaves the transform in
+                        // an incomplete state; CryptoStream.Dispose() will attempt to finalise the
+                        // block and raise a secondary CryptographicException that would mask the
+                        // original cause (cancellation or I/O failure). Swallow that secondary
+                        // exception so the primary exception propagates.
+                        try { cryptoStream.Dispose(); }
+                        catch { }
+                    }
+                }
             }
             finally
             {
-                if (wasCancelled)
-                {
-                    // FlushFinalBlock was never called; suppress the CryptographicException
-                    // that would otherwise mask the cancellation exception.
-                    try { cryptoStream.Dispose(); }
-                    catch (CryptographicException) { }
-                }
-                else
-                {
-                    cryptoStream.Dispose();
-                }
+                ArrayPool<byte>.Shared.Return(buffer, clearArray: true);
             }
         }
 
@@ -181,12 +185,13 @@ namespace Bodu.Security.Cryptography.Extensions
             ThrowHelper.ThrowIfSpanLengthIsInsufficient(destination.Span, 0, input.Length + transform.OutputBlockSize);
 
             MemoryStream ms = new MemoryStream(input.Length + transform.OutputBlockSize);
-            CryptoStream cryptoStream = new CryptoStream(ms, transform, CryptoStreamMode.Write, leaveOpen: true);
-
-            bool wasCancelled = false;
+            CryptoStream? cryptoStream = null;
+            bool completed = false;
 
             try
             {
+                cryptoStream = new CryptoStream(ms, transform, CryptoStreamMode.Write, leaveOpen: true);
+
                 await cryptoStream.WriteAsync(input, cancellationToken).ConfigureAwait(false);
 
                 // Guard against cancellation between the write and finalisation.
@@ -198,24 +203,27 @@ namespace Bodu.Security.Cryptography.Extensions
                     throw new InvalidOperationException("Failed to access the internal transformed data buffer.");
 
                 segment.AsSpan().CopyTo(destination.Span);
-
+                completed = true;
                 return segment.Count;
-            }
-            catch (OperationCanceledException)
-            {
-                wasCancelled = true;
-                throw;
             }
             finally
             {
-                if (wasCancelled)
+                // Dispose the CryptoStream (if it was successfully constructed) first, suppressing
+                // any secondary CryptographicException from Dispose-triggered finalisation when the
+                // primary flow failed. Then always dispose the backing MemoryStream, even if
+                // construction of the CryptoStream itself threw before the using block could
+                // take ownership of it.
+                if (cryptoStream is not null)
                 {
-                    try { cryptoStream.Dispose(); }
-                    catch (CryptographicException) { }
-                }
-                else
-                {
-                    cryptoStream.Dispose();
+                    if (completed)
+                    {
+                        cryptoStream.Dispose();
+                    }
+                    else
+                    {
+                        try { cryptoStream.Dispose(); }
+                        catch { }
+                    }
                 }
 
                 ms.Dispose();

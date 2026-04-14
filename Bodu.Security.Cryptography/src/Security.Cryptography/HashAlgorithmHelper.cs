@@ -53,8 +53,16 @@ namespace Bodu.Security.Cryptography
             ThrowHelper.ThrowIfNull(factory);
 
             using var algorithm = factory.Create();
+            int hashSizeBytes = algorithm.HashSize >> 3;
+            byte[] result = new byte[hashSizeBytes];
+            if (!algorithm.TryComputeHash(input, result, out int bytesWritten))
+                throw new CryptographicException("The hash algorithm's destination buffer was too small.");
+            if (bytesWritten == result.Length)
+                return result;
 
-            return algorithm.ComputeHash(input.ToArray());
+            byte[] trimmed = new byte[bytesWritten];
+            Buffer.BlockCopy(result, 0, trimmed, 0, bytesWritten);
+            return trimmed;
         }
 
         /// <summary>
@@ -74,7 +82,7 @@ namespace Bodu.Security.Cryptography
             using var algorithm = factory.Create();
             AppendDataFromStreamInternal(algorithm, stream, isAsync: false, default).GetAwaiter().GetResult();
 
-            return algorithm.Hash;
+            return algorithm.Hash ?? throw new CryptographicException("Hash algorithm did not produce a value.");
         }
 
         /// <summary>
@@ -98,7 +106,7 @@ namespace Bodu.Security.Cryptography
             using var algorithm = factory.Create();
             await AppendDataFromStreamInternal(algorithm, stream, isAsync: true, cancellationToken).ConfigureAwait(false);
 
-            return algorithm.Hash;
+            return algorithm.Hash ?? throw new CryptographicException("Hash algorithm did not produce a value.");
         }
 
         /// <summary>
@@ -121,18 +129,7 @@ namespace Bodu.Security.Cryptography
             ThrowHelper.ThrowIfNull(factory);
 
             using var algorithm = factory.Create();
-            byte[] result = algorithm.ComputeHash(input.ToArray());
-
-            if (result.Length > destination.Length)
-            {
-                bytesWritten = 0;
-                return false;
-            }
-
-            result.CopyTo(destination);
-            bytesWritten = result.Length;
-
-            return true;
+            return algorithm.TryComputeHash(input, destination, out bytesWritten);
         }
 
         /// <summary>
@@ -144,8 +141,8 @@ namespace Bodu.Security.Cryptography
         /// <param name="cancellationToken">The optional cancellation token for async operations.</param>
         /// <returns>A task representing the completion of the data append operation.</returns>
         /// <remarks>
-        /// This method is used by both <see cref="HashData(Stream)" /> and <see cref="HashDataAsync(Stream, CancellationToken)" /> to
-        /// centralize the stream-to-hash logic.
+        /// This method is used by both <see cref="HashData{T}(IHashAlgorithmFactory{T}, Stream)" /> and
+        /// <see cref="HashDataAsync{T}(IHashAlgorithmFactory{T}, Stream, CancellationToken)" /> to centralise the stream-to-hash logic.
         /// </remarks>
         private static async ValueTask AppendDataFromStreamInternal(HashAlgorithm algorithm, Stream stream, bool isAsync, CancellationToken cancellationToken)
         {
@@ -177,8 +174,9 @@ namespace Bodu.Security.Cryptography
             }
             finally
             {
-                // Always return buffer to the pool
-                ArrayPool<byte>.Shared.Return(buffer);
+                // Always return buffer to the pool, clearing any plaintext to prevent leaking
+                // caller secrets to the next pool consumer.
+                ArrayPool<byte>.Shared.Return(buffer, clearArray: true);
             }
         }
     }

@@ -10,21 +10,13 @@ namespace Bodu.Security.Cryptography
     using System.Security.Cryptography;
 
     /// <summary>
-    /// Computes the hash for the input data using the <c>BKDR</c> hash algorithm. This variant uses a simple polynomial rolling technique
-    /// with a fixed seed multiplier to produce fast, non-cryptographic 32-bit hashes. This class cannot be inherited.
+    /// Computes a 32-bit non-cryptographic hash using the BKDR polynomial rolling algorithm from Kernighan and Ritchie's "The C Programming
+    /// Language". This class cannot be inherited.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The <see cref="BKDR" /> class implements a simple non-cryptographic hash algorithm described by Brian Kernighan and Dennis Ritchie
-    /// in "The C Programming Language". It is widely used for string hashing in data indexing and lookup scenarios.
-    /// </para>
-    /// <para>
-    /// This implementation uses a multiplicative scheme based on selectable seed values. The algorithm iteratively computes: <c>hash =
-    /// (hash * seed) + c</c> where <c>c</c> is the current byte.
-    /// </para>
-    /// <para>
-    /// Supported seeds include: 31, 131, 1313, 13131, 131313, 1313131, 13131313, 131313131, 1313131313. These values follow a pattern
-    /// derived from alternating 1s and 3s to tune the distribution.
+    /// For each input byte <c>c</c> the hash is updated as <c>hash = (hash * seed) + c</c>. The <see cref="Seed" /> multiplier must be one
+    /// of the supported values (31, 131, 1313, 13131, 131313, 1313131, 13131313, 131313131, 1313131313).
     /// </para>
     /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for password hashing,
     /// digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -59,29 +51,10 @@ namespace Bodu.Security.Cryptography
             this.Initialize();
         }
 
-        /// <summary>
-        /// Gets a value indicating whether this transform instance can be reused after a hash operation is completed.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if the transform supports multiple hash computations via <see cref="HashAlgorithm.Initialize" />;
-        /// otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Reusable transforms allow the internal state to be reset for subsequent operations using the same instance. One-shot algorithms
-        /// that clear sensitive key material after finalization typically return <see langword="false" />.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanReuseTransform => true;
 
-        /// <summary>
-        /// Gets a value indicating whether this transform supports processing multiple blocks of data in a single operation.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if multiple input blocks can be transformed in sequence without intermediate finalization; otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Most hash algorithms and block ciphers support multi-block transformations for streaming input. If <see langword="false" />, the
-        /// transform must be invoked one block at a time.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanTransformMultipleBlocks => true;
 
         /// <summary>
@@ -203,34 +176,9 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Finalizes the hash computation and returns the resulting 32-bit <see cref="BKDR" /> hash in big-endian format. This method
-        /// reflects all input previously processed via <see cref="HashAlgorithm.HashCore(byte[], int, int)" /> or
-        /// <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" /> and produces a final, stable hash output.
+        /// Finalises the BKDR hash computation and returns the 32-bit result as a 4-byte big-endian array.
         /// </summary>
-        /// <returns>
-        /// A 4-byte array representing the computed <c>BKDR</c> hash value. The result is encoded in <b>big-endian</b> byte order.
-        /// </returns>
-        /// <remarks>
-        /// <para>
-        /// This method completes the internal state of the hashing algorithm and serializes the final hash value into a
-        /// platform-independent format. It is invoked automatically by <see cref="HashAlgorithm.ComputeHash(byte[])" /> and related methods
-        /// once all data has been processed.
-        /// </para>
-        /// <para>After this method returns, the internal state is considered finalized and the computed hash is stable.</para>
-        /// <para>
-        /// In .NET 6.0 and later, the algorithm is automatically reset by invoking <see cref="HashAlgorithm.Initialize" />, allowing the
-        /// instance to be reused immediately.
-        /// </para>
-        /// <para>
-        /// In earlier versions of .NET, the internal state is marked as finalized, and any subsequent calls to
-        /// <see cref="HashAlgorithm.HashCore(byte[], int, int)" />, <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" />, or
-        /// <see cref="HashAlgorithm.HashFinal" /> will throw a <see cref="CryptographicUnexpectedOperationException" />. To compute another
-        /// hash, you must explicitly call <see cref="HashAlgorithm.Initialize" /> to reset the algorithm.
-        /// </para>
-        /// <para>
-        /// Implementations should ensure all residual or pending data is processed and integrated into the final hash value before returning.
-        /// </para>
-        /// </remarks>
+        /// <returns>A 4-byte array containing the hash value in <b>big-endian</b> byte order.</returns>
         protected override byte[] HashFinal()
         {
             this.ThrowIfDisposed();

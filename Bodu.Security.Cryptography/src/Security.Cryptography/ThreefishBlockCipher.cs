@@ -11,27 +11,27 @@
     using Bodu.Extensions;
 
     /// <summary>
-    /// Represents the base implementation for Threefish block ciphers. This class provides the core infrastructure for Threefish encryption
-    /// and decryption operations, including key and tweak scheduling, resource disposal, and core mixing functions.
+    /// Serves as the abstract base class for managed Threefish block cipher engines, providing shared key and tweak scheduling,
+    /// resource disposal, and the core MIX/UNMIX primitives used by the <c>Threefish-256</c>, <c>Threefish-512</c>, and
+    /// <c>Threefish-1024</c> variants.
     /// </summary>
     /// <remarks>
-    /// <para>
-    /// This base class supports 64-bit word operations and defines the common structure required for <c>Threefish-256</c>,
-    /// <c>Threefish-512</c>, and <c>Threefish-1024</c> variants. The cipher relies on XOR, addition, and bitwise rotation, with
-    /// configurable rounds and rotation constants.
-    /// </para>
+    /// Derived classes supply the block size, word count, rotation schedule, and round count for a specific Threefish variant, along
+    /// with their own <see cref="Encrypt" /> and <see cref="Decrypt" /> implementations.
     /// </remarks>
     internal abstract partial class ThreefishBlockCipher
         : IBlockCipher
     {
         /// <summary>
-        /// Gets the expanded key schedule including parity and repeated key words.
+        /// The expanded key schedule, containing the original key words, the parity word, and the repeated key words used during
+        /// subkey injection.
         /// </summary>
         // KeySchedule: [K0, K1, K2, K3, K4=parity, K0, K1, K2, K3]
         protected readonly ulong[] KeySchedule;
 
         /// <summary>
-        /// Gets the expanded tweak schedule including derived and repeated tweak words.
+        /// The expanded tweak schedule, containing the two tweak words, their XOR, and the repeated tweak words used during subkey
+        /// injection.
         /// </summary>
         // TweakSchedule: [T0, T1, T2=T0^T1, T0, T1]
         protected readonly ulong[] TweakSchedule;
@@ -44,11 +44,15 @@
         private const ulong KeyParityValue = 0x1BD11BDAA9FC1A22;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ThreefishBlockCipher" /> class using the specified key and tweak.
+        /// Initialises a new instance of the <see cref="ThreefishBlockCipher" /> class using the specified key and tweak.
         /// </summary>
-        /// <param name="key">A 32-byte (256-bit) encryption key.</param>
-        /// <param name="tweak">A 16-byte (128-bit) tweak value.</param>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="key" /> or <paramref name="tweak" /> has an invalid length.</exception>
+        /// <param name="key">
+        /// The encryption key. Its length in bytes must equal the variant block size (32, 64, or 128 bytes).
+        /// </param>
+        /// <param name="tweak">The 16-byte (128-bit) tweak value.</param>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="key" /> or <paramref name="tweak" /> has an invalid length.
+        /// </exception>
         protected ThreefishBlockCipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
         {
             ThrowHelper.ThrowIfSpanLengthIsInsufficient(key, this.BlockSize);
@@ -75,7 +79,9 @@
             this.TweakSchedule[4] = this.TweakSchedule[1];
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Finalises the instance by releasing unmanaged resources before it is reclaimed by garbage collection.
+        /// </summary>
         ~ThreefishBlockCipher()
         {
             this.Dispose(false);
@@ -175,7 +181,7 @@
             ObjectDisposedException.ThrowIf(this.disposed, this);
 #else
         if (disposed)
-            throw new ObjectDisposedException(nameof(T));
+            throw new ObjectDisposedException(this.GetType().Name);
 #endif
         }
     }

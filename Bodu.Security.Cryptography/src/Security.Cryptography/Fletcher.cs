@@ -11,17 +11,13 @@ namespace Bodu.Security.Cryptography
     using Bodu.Extensions;
 
     /// <summary>
-    /// Base class for computing hash using the <c>Fletcher</c> hash algorithm family (Fletcher-16, Fletcher-32, Fletcher-64). This class
-    /// cannot be inherited.
+    /// Provides a base class for the Fletcher checksum family (Fletcher-16, Fletcher-32, Fletcher-64).
     /// </summary>
+    /// <typeparam name="TSelf">The concrete derived type (CRTP) used for block-hash reuse.</typeparam>
     /// <remarks>
     /// <para>
-    /// The Fletcher algorithm is used to generate non-cryptographic hash values for a given byte sequence. It operates by computing two
-    /// components (partA and partB) over the input data and produces a hash based on these.
-    /// </para>
-    /// <para>
-    /// This implementation handles Fletcher hash sizes of 16, 32, and 64 bits. Derived classes (see <see cref="Fletcher16" />,
-    /// <see cref="Fletcher32" />, <see cref="Fletcher64" />) can implement specific hash sizes.
+    /// Fletcher is a non-cryptographic position-dependent checksum that maintains two running accumulators (A and B) and combines them into
+    /// the final hash. Derived types <see cref="Fletcher16" />, <see cref="Fletcher32" />, and <see cref="Fletcher64" /> select the output width.
     /// </para>
     /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for password hashing,
     /// digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -60,41 +56,16 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Gets the fully qualified algorithm name, including the variant and hash output size.
+        /// Gets the algorithm name in the form <c>Fletcher-N</c>, where <c>N</c> is the output width in bits.
         /// </summary>
-        /// <value>
-        /// A string in the form <c>Fletcher-N</c>, where <c>N</c> is the number of bits in the final hash output (e.g., <c>Fletcher-32</c>
-        /// or <c>Fletcher-64</c>).
-        /// </value>
-        /// <remarks>
-        /// The naming convention follows the established Fletcher standard, where the suffix indicates the bit-width of the resulting checksum:
-        /// </remarks>
+        /// <value>A string such as <c>Fletcher-16</c>, <c>Fletcher-32</c>, or <c>Fletcher-64</c>.</value>
         public string AlgorithmName =>
             $"Fletcher-{this.HashSizeValue}";
 
-        /// <summary>
-        /// Gets a value indicating whether this transform instance can be reused after a hash operation is completed.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if the transform supports multiple hash computations via <see cref="HashAlgorithm.Initialize" />;
-        /// otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Reusable transforms allow the internal state to be reset for subsequent operations using the same instance. One-shot algorithms
-        /// that clear sensitive key material after finalization typically return <see langword="false" />.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanReuseTransform => true;
 
-        /// <summary>
-        /// Gets a value indicating whether this transform supports processing multiple blocks of data in a single operation.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if multiple input blocks can be transformed in sequence without intermediate finalization; otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Most hash algorithms and block ciphers support multi-block transformations for streaming input. If <see langword="false" />, the
-        /// transform must be invoked one block at a time.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanTransformMultipleBlocks => true;
 
         /// <inheritdoc />
