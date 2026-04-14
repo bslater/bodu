@@ -431,6 +431,12 @@ public static partial class DateTimeExtensions
     /// Returns the tick count that represents the date nearest to the specified <paramref name="dayOfWeek"/> relative to the provided
     /// <paramref name="ticks"/> value.
     /// </summary>
+    /// <param name="ticks">The tick count representing the reference date from which the nearest day of week is calculated.</param>
+    /// <param name="dayOfWeek">The day of the week to find the nearest occurrence of.</param>
+    /// <returns>
+    /// A <see cref="long"/> representing the tick count of the nearest occurrence of <paramref name="dayOfWeek"/> relative to
+    /// <paramref name="ticks"/>. If the target day is more than 3 days ahead, the previous occurrence is returned instead.
+    /// </returns>
     internal static long GetTicksForNearestDayOfWeek(long ticks, DayOfWeek dayOfWeek)
     {
         int delta = ((int)dayOfWeek - (int)GetDayOfWeekFromTicks(ticks) + 7) % 7;
@@ -643,8 +649,8 @@ public static partial class DateTimeExtensions
                 GetWeekOfYearFullDays(ticks, dayOfYear, (int)firstDayOfWeek, 4),
 
             _ => throw new ArgumentOutOfRangeException(
-                    string.Format(ResourceStrings.Arg_OutOfRangeException_EnumValue, rule, nameof(CalendarWeekRule),
-                    nameof(rule))),
+                    nameof(rule),
+                    string.Format(ResourceStrings.Arg_OutOfRangeException_EnumValue, rule, nameof(CalendarWeekRule))),
         };
     }
 

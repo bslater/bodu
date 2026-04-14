@@ -59,6 +59,7 @@ public partial struct WeekPattern
     /// otherwise, contains <see cref="WeekPattern.Empty"/>.
     /// </param>
     /// <returns><see langword="true"/> if parsing succeeded; otherwise, <see langword="false"/>.</returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "Argument validation is performed centrally in ParseCore.")]
     public static bool TryParse(string input, out WeekPattern result)
     {
         try
@@ -87,6 +88,7 @@ public partial struct WeekPattern
     /// otherwise, contains <see cref="WeekPattern.Empty"/>.
     /// </param>
     /// <returns><see langword="true"/> if parsing succeeded; otherwise, <see langword="false"/>.</returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "Argument validation is performed centrally in ParseCore.")]
     public static bool TryParseExact(string input, string format, out WeekPattern result)
     {
         try

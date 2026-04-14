@@ -260,6 +260,3 @@ dotnet_analyzer_diagnostic.category-StyleCop.CSharp.MaintainabilityRules.severit
 
 # SA1312: Variable names should begin with lower-case letter
 dotnet_diagnostic.SA1312.severity = silent
-
-[ThrowHelper**.cs]
-dotnet_diagnostic.SA0117.severity = none

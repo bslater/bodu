@@ -1,10 +1,11 @@
 ﻿// --------------------------------------------------------------------------------------------------------------- //
-// <copyright file="ThrowHelper_CallerExpression.cs" company="PlaceholderCompany">
+// <copyright file="ThrowHelper.CallerExpression.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 #if !NETSTANDARD2_0_OR_GREATER
+#pragma warning disable SA1117 // Parameters should be on same line or separate lines
 
 using System;
 using System.Collections.Generic;
@@ -1312,4 +1313,5 @@ public static partial class ThrowHelper
     }
 }
 
+#pragma warning restore SA1117
 #endif

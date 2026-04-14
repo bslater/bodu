@@ -40,7 +40,8 @@ public partial struct WeekPattern :
         if (obj is byte b) return CompareTo(b);
 
         throw new ArgumentException(
-            string.Format(ResourceStrings.Arg_Invalid_MustBeComparableType,
+            string.Format(
+                ResourceStrings.Arg_Invalid_MustBeComparableType,
                 string.Join(" or ", nameof(WeekPattern), nameof(Byte))),
             nameof(obj));
     }
