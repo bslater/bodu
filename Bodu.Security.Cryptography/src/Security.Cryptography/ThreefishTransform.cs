@@ -65,6 +65,13 @@
         /// <inheritdoc />
         public void Dispose()
         {
+            if (this.deferredInput is not null)
+            {
+                CryptographicOperations.ZeroMemory(this.deferredInput);
+                this.deferredInput = null;
+            }
+
+            this.cipher.Dispose();
             GC.SuppressFinalize(this);
         }
 

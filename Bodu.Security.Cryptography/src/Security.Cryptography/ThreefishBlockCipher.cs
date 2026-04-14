@@ -181,7 +181,7 @@
             ObjectDisposedException.ThrowIf(this.disposed, this);
 #else
         if (disposed)
-            throw new ObjectDisposedException(nameof(T));
+            throw new ObjectDisposedException(this.GetType().Name);
 #endif
         }
     }

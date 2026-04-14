@@ -255,7 +255,7 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void ThrowIfInvalidTweakSize(
             byte[] tweak,
-            [CallerArgumentExpression("TweakSchedule")] string? paramName = null)
+            [CallerArgumentExpression("tweak")] string? paramName = null)
         {
             ArgumentNullException.ThrowIfNull(tweak, paramName);
             this.ThrowIfInvalidTweakSize(tweak.Length * 8, paramName);

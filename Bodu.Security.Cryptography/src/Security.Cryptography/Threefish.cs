@@ -119,11 +119,11 @@
 
             if (iv.Length != this.BlockSizeBytes)
                 throw new CryptographicException(
-                    string.Format(ResourceStrings.CryptographicException_InvalidIVSize, key.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalBlockSizes)));
+                    string.Format(ResourceStrings.CryptographicException_InvalidIVSize, iv.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalBlockSizes)));
 
             if (tweak.Length != this.DefaultTweakSizeBytes)
                 throw new CryptographicException(
-                    string.Format(ResourceStrings.CryptographicException_InvalidTweakSize, key.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalTweakSizes)));
+                    string.Format(ResourceStrings.CryptographicException_InvalidTweakSize, tweak.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalTweakSizes)));
         }
     }
 }

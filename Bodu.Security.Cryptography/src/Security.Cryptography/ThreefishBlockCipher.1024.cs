@@ -127,7 +127,7 @@
                 Unmix(ref block[6], ref block[7], rot[35]);
                 Unmix(ref block[4], ref block[5], rot[34]);
                 Unmix(ref block[2], ref block[3], rot[33]);
-                Unmix(ref block[0], ref block[1], rot[128]);
+                Unmix(ref block[0], ref block[1], rot[32]);
 
                 block[0] -= key[dm17];
                 block[1] -= key[dm17 + 1];
@@ -295,7 +295,7 @@
                 block[14] += key[dm17 + 14] + tweak[dm3 + 1];
                 block[15] += key[dm17 + 15] + (uint)d;
 
-                Mix(ref block[0], ref block[1], rot[128]);
+                Mix(ref block[0], ref block[1], rot[32]);
                 Mix(ref block[2], ref block[3], rot[33]);
                 Mix(ref block[4], ref block[5], rot[34]);
                 Mix(ref block[6], ref block[7], rot[35]);
