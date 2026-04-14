@@ -27,6 +27,36 @@ namespace Bodu.Security.Cryptography
         }
 
         [TestMethod]
+        public void TryFillWithRandomNonZeroBytes_RepeatedCalls_ShouldProduceIndependentDraws()
+        {
+            // Behavioural guard for the NETSTANDARD2_0 finally-block that clears the
+            // internal `temp` buffer after copying. If the clear were to corrupt the
+            // result on the success path, the first and second draws would produce
+            // identical buffers (or one would contain zeros). We assert neither.
+            byte[] first = new byte[64];
+            byte[] second = new byte[64];
+
+            Assert.IsTrue(CryptoHelpers.TryFillWithRandomNonZeroBytes(first.AsSpan()));
+            Assert.IsTrue(CryptoHelpers.TryFillWithRandomNonZeroBytes(second.AsSpan()));
+
+            for (int i = 0; i < first.Length; i++)
+                Assert.AreNotEqual((byte)0, first[i]);
+            for (int i = 0; i < second.Length; i++)
+                Assert.AreNotEqual((byte)0, second[i]);
+
+            bool identical = true;
+            for (int i = 0; i < first.Length; i++)
+            {
+                if (first[i] != second[i])
+                {
+                    identical = false;
+                    break;
+                }
+            }
+            Assert.IsFalse(identical, "Consecutive calls should not produce identical buffers; temp-clear must not corrupt the output path.");
+        }
+
+        [TestMethod]
         public void TryFillWithRandomNonZeroBytes_BufferBytes_ShouldNotContainZero()
         {
             byte[] buffer = new byte[64];

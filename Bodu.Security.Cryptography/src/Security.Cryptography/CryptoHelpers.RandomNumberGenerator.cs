@@ -52,14 +52,23 @@
     {
         byte[] temp = new byte[buffer.Length];
 
-        for (int i = 0; i < maxAttempts; i++)
+        try
         {
-            rng.GetBytes(temp);
-            if (Array.IndexOf(temp, (byte)0) < 0)
+            for (int i = 0; i < maxAttempts; i++)
             {
-                temp.CopyTo(buffer);
-                return true;
+                rng.GetBytes(temp);
+                if (Array.IndexOf(temp, (byte)0) < 0)
+                {
+                    temp.CopyTo(buffer);
+                    return true;
+                }
             }
+        }
+        finally
+        {
+            // Wipe temp so any random bytes that were drawn (on the successful copy
+            // path as well as the retry-exhaustion path) do not linger on the managed heap.
+            Array.Clear(temp, 0, temp.Length);
         }
     }
 #else
