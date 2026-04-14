@@ -132,24 +132,24 @@ namespace Bodu.Security.Cryptography
             uint g = h * C1;
             uint f = g;
 
-            uint a0 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 4, 4)).RotateBitsRight(17) * C2;
-            uint a1 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 8, 4)).RotateBitsRight(17) * C2;
-            uint a2 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 16, 4)).RotateBitsRight(17) * C2;
-            uint a3 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 12, 4)).RotateBitsRight(17) * C2;
-            uint a4 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 20, 4)).RotateBitsRight(17) * C2;
+            uint a0 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 4, 4)).RotateBitsRightUnchecked(17) * C2;
+            uint a1 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 8, 4)).RotateBitsRightUnchecked(17) * C2;
+            uint a2 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 16, 4)).RotateBitsRightUnchecked(17) * C2;
+            uint a3 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 12, 4)).RotateBitsRightUnchecked(17) * C2;
+            uint a4 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 20, 4)).RotateBitsRightUnchecked(17) * C2;
 
             h ^= a0;
-            h = h.RotateBitsRight(19) * 5 + HashMagic;
+            h = h.RotateBitsRightUnchecked(19) * 5 + HashMagic;
             h ^= a2;
-            h = h.RotateBitsRight(19) * 5 + HashMagic;
+            h = h.RotateBitsRightUnchecked(19) * 5 + HashMagic;
 
             g ^= a1;
-            g = g.RotateBitsRight(19) * 5 + HashMagic;
+            g = g.RotateBitsRightUnchecked(19) * 5 + HashMagic;
             g ^= a3;
-            g = g.RotateBitsRight(19) * 5 + HashMagic;
+            g = g.RotateBitsRightUnchecked(19) * 5 + HashMagic;
 
             f += a4;
-            f = f.RotateBitsRight(19) * 5 + HashMagic;
+            f = f.RotateBitsRightUnchecked(19) * 5 + HashMagic;
 
             // Iteratively consume 20-byte blocks from the start of the input.
             int iters = (len - 1) / 20;
@@ -158,23 +158,23 @@ namespace Bodu.Security.Cryptography
             {
                 int offset = i * 20;
 
-                uint b0 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(offset + 0, 4)).RotateBitsRight(17) * C2;
+                uint b0 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(offset + 0, 4)).RotateBitsRightUnchecked(17) * C2;
                 uint b1 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(offset + 4, 4));
-                uint b2 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(offset + 8, 4)).RotateBitsRight(17) * C2;
-                uint b3 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(offset + 12, 4)).RotateBitsRight(17) * C2;
+                uint b2 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(offset + 8, 4)).RotateBitsRightUnchecked(17) * C2;
+                uint b3 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(offset + 12, 4)).RotateBitsRightUnchecked(17) * C2;
                 uint b4 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(offset + 16, 4));
 
                 h ^= b0;
-                h = h.RotateBitsRight(18) * 5 + HashMagic;
+                h = h.RotateBitsRightUnchecked(18) * 5 + HashMagic;
 
                 f += b1;
-                f = f.RotateBitsRight(19) * C1;
+                f = f.RotateBitsRightUnchecked(19) * C1;
 
                 g += b2;
-                g = g.RotateBitsRight(18) * 5 + HashMagic;
+                g = g.RotateBitsRightUnchecked(18) * 5 + HashMagic;
 
                 h ^= b3 + b1;
-                h = h.RotateBitsRight(19) * 5 + HashMagic;
+                h = h.RotateBitsRightUnchecked(19) * 5 + HashMagic;
 
                 g ^= b4;
                 g = BinaryPrimitives.ReverseEndianness(g) * 5;
@@ -189,16 +189,16 @@ namespace Bodu.Security.Cryptography
             }
 
             // Finalise each accumulator with a double rotate-multiply pass.
-            g = g.RotateBitsRight(11) * C1;
-            g = g.RotateBitsRight(17) * C1;
+            g = g.RotateBitsRightUnchecked(11) * C1;
+            g = g.RotateBitsRightUnchecked(17) * C1;
 
-            f = f.RotateBitsRight(11) * C1;
-            f = f.RotateBitsRight(17) * C1;
+            f = f.RotateBitsRightUnchecked(11) * C1;
+            f = f.RotateBitsRightUnchecked(17) * C1;
 
-            h = (h + g).RotateBitsRight(19) * 5 + HashMagic;
-            h = h.RotateBitsRight(17) * C1;
-            h = (h + f).RotateBitsRight(19) * 5 + HashMagic;
-            h = h.RotateBitsRight(17) * C1;
+            h = (h + g).RotateBitsRightUnchecked(19) * 5 + HashMagic;
+            h = h.RotateBitsRightUnchecked(17) * C1;
+            h = (h + f).RotateBitsRightUnchecked(19) * 5 + HashMagic;
+            h = h.RotateBitsRightUnchecked(17) * C1;
 
             return h;
         }

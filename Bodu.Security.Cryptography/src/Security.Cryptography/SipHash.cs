@@ -351,19 +351,19 @@ namespace Bodu.Security.Cryptography
             for (int i = 0; i < iterations; i++)
             {
                 r0 += r1;
-                r1 = r1.RotateBitsLeft(13);
+                r1 = r1.RotateBitsLeftUnchecked(13);
                 r1 ^= r0;
-                r0 = r0.RotateBitsLeft(32);
+                r0 = r0.RotateBitsLeftUnchecked(32);
                 r2 += r3;
-                r3 = r3.RotateBitsLeft(16);
+                r3 = r3.RotateBitsLeftUnchecked(16);
                 r3 ^= r2;
                 r0 += r3;
-                r3 = r3.RotateBitsLeft(21);
+                r3 = r3.RotateBitsLeftUnchecked(21);
                 r3 ^= r0;
                 r2 += r1;
-                r1 = r1.RotateBitsLeft(17);
+                r1 = r1.RotateBitsLeftUnchecked(17);
                 r1 ^= r2;
-                r2 = r2.RotateBitsLeft(32);
+                r2 = r2.RotateBitsLeftUnchecked(32);
             }
 
             this.v0 = r0; this.v1 = r1; this.v2 = r2; this.v3 = r3;

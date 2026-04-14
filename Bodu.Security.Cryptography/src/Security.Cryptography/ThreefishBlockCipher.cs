@@ -135,7 +135,7 @@
         protected static void Mix(ref ulong a, ref ulong b, int rotation)
         {
             a += b;
-            b = b.RotateBitsLeft(rotation) ^ a;
+            b = b.RotateBitsLeftUnchecked(rotation) ^ a;
         }
 
         /// <summary>
@@ -148,7 +148,7 @@
         protected static void Unmix(ref ulong a, ref ulong b, int rotation)
         {
             b ^= a;
-            b = b.RotateBitsRight(rotation);
+            b = b.RotateBitsRightUnchecked(rotation);
             a -= b;
         }
 
