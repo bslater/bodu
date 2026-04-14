@@ -11,22 +11,22 @@ namespace Bodu.Extensions;
 public static partial class DateTimeExtensions
 {
     /// <summary>
-    /// Returns a new <see cref="DateTime" /> representing the specified <paramref name="dateTime" /> truncated to the given
-    /// <paramref name="resolution" />, with all smaller time components set to zero.
+    /// Returns a new <see cref="DateTime"/> representing the specified <paramref name="dateTime"/> truncated to the given
+    /// <paramref name="resolution"/>, with all smaller time components set to zero.
     /// </summary>
-    /// <param name="dateTime">The <see cref="DateTime" /> value to truncate.</param>
-    /// <param name="resolution">The <see cref="DateTimeResolution" /> level to truncate to.</param>
+    /// <param name="dateTime">The <see cref="DateTime"/> value to truncate.</param>
+    /// <param name="resolution">The <see cref="DateTimeResolution"/> level to truncate to.</param>
     /// <returns>
-    /// An object whose value is set to the <paramref name="dateTime" /> truncated to the specified <paramref name="resolution" />,
-    /// preserving the original <see cref="DateTime.Kind" />.
+    /// An object whose value is set to the <paramref name="dateTime"/> truncated to the specified <paramref name="resolution"/>,
+    /// preserving the original <see cref="DateTime.Kind"/>.
     /// </returns>
     /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="resolution" /> is not a valid member of the <see cref="DateTimeResolution" /> enumeration.
+    /// Thrown if <paramref name="resolution"/> is not a valid member of the <see cref="DateTimeResolution"/> enumeration.
     /// </exception>
     /// <remarks>
     /// <para>
     /// Truncation resets all components smaller than the specified resolution to their minimum values. For example, truncating to
-    /// <see cref="DateTimeResolution.Minute" /> clears seconds and fractional seconds.
+    /// <see cref="DateTimeResolution.Minute"/> clears seconds and fractional seconds.
     /// </para>
     /// <para>The following examples show the result of truncating <c>2024-04-18T14:37:56.7891234</c>:</para>
     /// <list type="table">
@@ -35,35 +35,35 @@ public static partial class DateTimeExtensions
     /// <description>Result</description>
     /// </listheader>
     /// <item>
-    /// <term><see cref="DateTimeResolution.Year" /></term>
+    /// <term><see cref="DateTimeResolution.Year"/></term>
     /// <description><c>2024-01-01T00:00:00.0000000</c></description>
     /// </item>
     /// <item>
-    /// <term><see cref="DateTimeResolution.Month" /></term>
+    /// <term><see cref="DateTimeResolution.Month"/></term>
     /// <description><c>2024-04-01T00:00:00.0000000</c></description>
     /// </item>
     /// <item>
-    /// <term><see cref="DateTimeResolution.Day" /></term>
+    /// <term><see cref="DateTimeResolution.Day"/></term>
     /// <description><c>2024-04-18T00:00:00.0000000</c></description>
     /// </item>
     /// <item>
-    /// <term><see cref="DateTimeResolution.Hour" /></term>
+    /// <term><see cref="DateTimeResolution.Hour"/></term>
     /// <description><c>2024-04-18T14:00:00.0000000</c></description>
     /// </item>
     /// <item>
-    /// <term><see cref="DateTimeResolution.Minute" /></term>
+    /// <term><see cref="DateTimeResolution.Minute"/></term>
     /// <description><c>2024-04-18T14:37:00.0000000</c></description>
     /// </item>
     /// <item>
-    /// <term><see cref="DateTimeResolution.Second" /></term>
+    /// <term><see cref="DateTimeResolution.Second"/></term>
     /// <description><c>2024-04-18T14:37:56.0000000</c></description>
     /// </item>
     /// <item>
-    /// <term><see cref="DateTimeResolution.Millisecond" /></term>
+    /// <term><see cref="DateTimeResolution.Millisecond"/></term>
     /// <description><c>2024-04-18T14:37:56.7890000</c></description>
     /// </item>
     /// <item>
-    /// <term><see cref="DateTimeResolution.Tick" /></term>
+    /// <term><see cref="DateTimeResolution.Tick"/></term>
     /// <description><c>2024-04-18T14:37:56.7891234</c> (unchanged)</description>
     /// </item>
     /// </list>

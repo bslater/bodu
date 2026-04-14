@@ -11,11 +11,11 @@ namespace Bodu.Extensions;
 public static partial class DateTimeExtensions
 {
     /// <summary>
-    /// Returns an indication whether the year component of the specified <see cref="DateTime" /> is a leap year, according to the proleptic
+    /// Returns an indication whether the year component of the specified <see cref="DateTime"/> is a leap year, according to the proleptic
     /// Gregorian calendar.
     /// </summary>
-    /// <param name="dateTime">The <see cref="DateTime" /> whose <c>Year</c> value is evaluated.</param>
-    /// <returns><see langword="true" /> if the year contains February 29; otherwise, <see langword="false" />.</returns>
+    /// <param name="dateTime">The <see cref="DateTime"/> whose <c>Year</c> value is evaluated.</param>
+    /// <returns><see langword="true"/> if the year contains February 29; otherwise, <see langword="false"/>.</returns>
     /// <remarks>
     /// <para>This method applies the Gregorian leap year rules:</para>
     /// <list type="bullet">

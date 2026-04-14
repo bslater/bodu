@@ -10,15 +10,15 @@ using System.Runtime.CompilerServices;
 namespace Bodu.Extensions;
 
 /// <summary>
-/// Provides a set of <see langword="static" /> ( <see langword="Shared" /> in Visual Basic) methods that extend the
-/// <see cref="System.DateOnly" /> class.
+/// Provides a set of <see langword="static"/> ( <see langword="Shared"/> in Visual Basic) methods that extend the
+/// <see cref="System.DateOnly"/> class.
 /// </summary>
 public static partial class DateOnlyExtensions
 {
     /// <summary>
-    /// Extracts the year, month, and day components from the specified <see cref="DateOnly" /> instance.
+    /// Extracts the year, month, and day components from the specified <see cref="DateOnly"/> instance.
     /// </summary>
-    /// <param name="date">The <see cref="DateOnly" /> value to extract components from.</param>
+    /// <param name="date">The <see cref="DateOnly"/> value to extract components from.</param>
     /// <param name="year">Outputs the year component.</param>
     /// <param name="month">Outputs the month component (1–12).</param>
     /// <param name="day">Outputs the day component (1–31, depending on the month).</param>
@@ -31,36 +31,36 @@ public static partial class DateOnlyExtensions
     }
 
     /// <summary>
-    /// Calculates the <see cref="System.DayOfWeek" /> for a date represented as a day number since 0001-01-01.
+    /// Calculates the <see cref="System.DayOfWeek"/> for a date represented as a day number since 0001-01-01.
     /// </summary>
     /// <param name="days">The number of days since January 1, 0001 (day 0), in the proleptic Gregorian calendar.</param>
     /// <returns>
-    /// A <see cref="DayOfWeek" /> value indicating the day of the week corresponding to the specified <paramref name="days" /> value, where
+    /// A <see cref="DayOfWeek"/> value indicating the day of the week corresponding to the specified <paramref name="days"/> value, where
     /// 0 represents Sunday and 6 represents Saturday.
     /// </returns>
     /// <remarks>
     /// <para>
-    /// This method computes the day of the week using modulo arithmetic and is equivalent in result to <see cref="DateTime.DayOfWeek" />,
-    /// but operates directly on day numbers without allocating a <see cref="DateTime" /> object.
+    /// This method computes the day of the week using modulo arithmetic and is equivalent in result to <see cref="DateTime.DayOfWeek"/>,
+    /// but operates directly on day numbers without allocating a <see cref="DateTime"/> object.
     /// </para>
     /// <para>
-    /// No argument validation is performed. The caller must ensure that <paramref name="days" /> falls within the valid
-    /// <see cref="DateTime" /> range (0 to <c>DateTime.MaxValue.Ticks / TimeSpan.TicksPerDay</c>).
+    /// No argument validation is performed. The caller must ensure that <paramref name="days"/> falls within the valid
+    /// <see cref="DateTime"/> range (0 to <c>DateTime.MaxValue.Ticks / TimeSpan.TicksPerDay</c>).
     /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static DayOfWeek GetDayOfWeekFromDayNumber(int days) => (DayOfWeek)((days + 1) % 7);
 
     /// <summary>
-    /// Calculates the day number of the first occurrence of a specified <see cref="DayOfWeek" /> in the given month and year.
+    /// Calculates the day number of the first occurrence of a specified <see cref="DayOfWeek"/> in the given month and year.
     /// </summary>
     /// <param name="year">The calendar year.</param>
     /// <param name="month">The calendar month (1 through 12).</param>
     /// <param name="dayOfWeek">
-    /// The <see cref="DayOfWeek" /> value to locate (e.g., <see cref="DayOfWeek.Monday" /> for the first Monday of the month).
+    /// The <see cref="DayOfWeek"/> value to locate (e.g., <see cref="DayOfWeek.Monday"/> for the first Monday of the month).
     /// </param>
     /// <returns>
-    /// The day number (number of days since 0001-01-01) of the first occurrence of <paramref name="dayOfWeek" /> within the specified month
+    /// The day number (number of days since 0001-01-01) of the first occurrence of <paramref name="dayOfWeek"/> within the specified month
     /// and year.
     /// </returns>
     /// <remarks>
@@ -72,15 +72,15 @@ public static partial class DateOnlyExtensions
             + (((int)dayOfWeek - (int)GetDayOfWeekFromDayNumber(DateTimeExtensions.GetDayNumberUnchecked(year, month, 1)) + 7) % 7);
 
     /// <summary>
-    /// Calculates the day number of the last occurrence of a specified <see cref="DayOfWeek" /> in the given month and year.
+    /// Calculates the day number of the last occurrence of a specified <see cref="DayOfWeek"/> in the given month and year.
     /// </summary>
     /// <param name="year">The calendar year.</param>
     /// <param name="month">The calendar month (1 through 12).</param>
     /// <param name="dayOfWeek">
-    /// The <see cref="DayOfWeek" /> value to locate (e.g., <see cref="DayOfWeek.Friday" /> for the last Friday of the month).
+    /// The <see cref="DayOfWeek"/> value to locate (e.g., <see cref="DayOfWeek.Friday"/> for the last Friday of the month).
     /// </param>
     /// <returns>
-    /// The day number (number of days since 0001-01-01) of the last occurrence of <paramref name="dayOfWeek" /> within the specified month
+    /// The day number (number of days since 0001-01-01) of the last occurrence of <paramref name="dayOfWeek"/> within the specified month
     /// and year.
     /// </returns>
     /// <remarks>
@@ -92,12 +92,12 @@ public static partial class DateOnlyExtensions
             - (((int)GetDayOfWeekFromDayNumber(DateTimeExtensions.GetDayNumberUnchecked(year, month, DateTime.DaysInMonth(year, month))) - (int)dayOfWeek + 7) % 7);
 
     /// <summary>
-    /// Calculates the day number corresponding to the date nearest to the specified <paramref name="dayOfWeek" />, relative to the given <paramref name="dayNumber" />.
+    /// Calculates the day number corresponding to the date nearest to the specified <paramref name="dayOfWeek"/>, relative to the given <paramref name="dayNumber"/>.
     /// </summary>
     /// <param name="dayNumber">The day number (in the system's continuous day count) to compare against.</param>
-    /// <param name="dayOfWeek">The target <see cref="DayOfWeek" /> to locate.</param>
+    /// <param name="dayOfWeek">The target <see cref="DayOfWeek"/> to locate.</param>
     /// <returns>
-    /// The day number of the nearest date that falls on the specified <paramref name="dayOfWeek" />. If two dates are equally near (e.g., 3
+    /// The day number of the nearest date that falls on the specified <paramref name="dayOfWeek"/>. If two dates are equally near (e.g., 3
     /// days before and after), the earlier date is returned.
     /// </returns>
     /// <remarks>
@@ -112,13 +112,13 @@ public static partial class DateOnlyExtensions
     }
 
     /// <summary>
-    /// Calculates the number of days to add to a given day number to reach the next occurrence of the specified <see cref="DayOfWeek" />.
+    /// Calculates the number of days to add to a given day number to reach the next occurrence of the specified <see cref="DayOfWeek"/>.
     /// </summary>
     /// <param name="days">The reference day number (number of days since 0001-01-01).</param>
-    /// <param name="dayOfWeek">The <see cref="DayOfWeek" /> to locate (e.g., <see cref="DayOfWeek.Friday" /> to find the next Friday).</param>
+    /// <param name="dayOfWeek">The <see cref="DayOfWeek"/> to locate (e.g., <see cref="DayOfWeek.Friday"/> to find the next Friday).</param>
     /// <returns>
-    /// An integer in the range 0–6 representing the number of days to add to <paramref name="days" /> to reach the next occurrence of
-    /// <paramref name="dayOfWeek" />. Returns 0 if <paramref name="days" /> already falls on <paramref name="dayOfWeek" />; callers that
+    /// An integer in the range 0–6 representing the number of days to add to <paramref name="days"/> to reach the next occurrence of
+    /// <paramref name="dayOfWeek"/>. Returns 0 if <paramref name="days"/> already falls on <paramref name="dayOfWeek"/>; callers that
     /// require a strictly forward result must substitute 7 when 0 is returned.
     /// </returns>
     /// <remarks>
@@ -129,14 +129,14 @@ public static partial class DateOnlyExtensions
     internal static int GetNextDayOfWeekFromDayNumber(int days, DayOfWeek dayOfWeek) => ((int)dayOfWeek - (int)GetDayOfWeekFromDayNumber(days) + 7) % 7;
 
     /// <summary>
-    /// Calculates the number of days to subtract from a given day number to reach the previous occurrence of the specified <see cref="DayOfWeek" />.
+    /// Calculates the number of days to subtract from a given day number to reach the previous occurrence of the specified <see cref="DayOfWeek"/>.
     /// </summary>
     /// <param name="days">The reference day number (number of days since 0001-01-01).</param>
-    /// <param name="dayOfWeek">The <see cref="DayOfWeek" /> to locate (e.g., <see cref="DayOfWeek.Monday" /> to find the previous Monday).</param>
+    /// <param name="dayOfWeek">The <see cref="DayOfWeek"/> to locate (e.g., <see cref="DayOfWeek.Monday"/> to find the previous Monday).</param>
     /// <returns>
-    /// A negative integer in the range −7 to −1 representing the number of days to subtract from <paramref name="days" /> to reach the
-    /// previous occurrence of <paramref name="dayOfWeek" />. Returns −7 when <paramref name="days" /> already falls on
-    /// <paramref name="dayOfWeek" />, consistent with the convention that the previous occurrence is always at least one day earlier.
+    /// A negative integer in the range −7 to −1 representing the number of days to subtract from <paramref name="days"/> to reach the
+    /// previous occurrence of <paramref name="dayOfWeek"/>. Returns −7 when <paramref name="days"/> already falls on
+    /// <paramref name="dayOfWeek"/>, consistent with the convention that the previous occurrence is always at least one day earlier.
     /// </returns>
     /// <remarks>
     /// This method is useful for backward-aligned date calculations, such as determining the most recent occurrence of a specific weekday

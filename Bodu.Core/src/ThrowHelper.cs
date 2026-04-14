@@ -13,20 +13,20 @@ namespace Bodu;
 /// <remarks>
 /// <para>
 /// This class is split across two target-framework-specific partial files to accommodate differences in compiler
-/// support for <see cref="System.Runtime.CompilerServices.CallerArgumentExpressionAttribute" />:
+/// support for <see cref="System.Runtime.CompilerServices.CallerArgumentExpressionAttribute"/>:
 /// </para>
 /// <list type="bullet">
 /// <item>
 /// <description>
 /// <c>ThrowHelper_NetStandard.cs</c> — compiled when targeting <c>netstandard2.0</c> or <c>netstandard2.1</c>,
-/// where <see cref="System.Runtime.CompilerServices.CallerArgumentExpressionAttribute" /> is unavailable. Parameter
-/// names are resolved at the declaration site using <see langword="nameof" />.
+/// where <see cref="System.Runtime.CompilerServices.CallerArgumentExpressionAttribute"/> is unavailable. Parameter
+/// names are resolved at the declaration site using <see langword="nameof"/>.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
 /// <c>ThrowHelper_CallerExpression.cs</c> — compiled when targeting modern .NET runtimes that support
-/// <see cref="System.Runtime.CompilerServices.CallerArgumentExpressionAttribute" />, allowing the compiler to
+/// <see cref="System.Runtime.CompilerServices.CallerArgumentExpressionAttribute"/>, allowing the compiler to
 /// automatically capture argument expressions at the call site.
 /// </description>
 /// </item>

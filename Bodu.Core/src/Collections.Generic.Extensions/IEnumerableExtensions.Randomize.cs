@@ -18,7 +18,7 @@ namespace Bodu.Collections.Generic.Extensions;
 
 public static partial class IEnumerableExtensions
 {
-    /// <inheritdoc cref="Randomize{T}(IEnumerable{T}, RandomizationMode, IRandomGenerator, int?)" />
+    /// <inheritdoc cref="Randomize{T}(IEnumerable{T}, RandomizationMode, IRandomGenerator, int?)"/>
     public static IEnumerable<T> Randomize<T>(this IEnumerable<T> source) =>
         source.Randomize(RandomizationMode.BufferAll, new SystemRandomAdapter(), null);
 
@@ -29,18 +29,16 @@ public static partial class IEnumerableExtensions
     /// <param name="source">The sequence to randomise.</param>
     /// <param name="mode">The randomisation strategy to apply.</param>
     /// <param name="rng">The random number generator to use.</param>
-    /// <param name="count">The number of items to return; returns all items when <see langword="null" />.</param>
-    /// <returns>A randomised sequence of <typeparamref name="T" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source" /> or <paramref name="rng" /> is <see langword="null" />.</exception>
+    /// <param name="count">The number of items to return; returns all items when <see langword="null"/>.</param>
+    /// <returns>A randomised sequence of <typeparamref name="T"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> or <paramref name="rng"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="count" /> is negative, or if <paramref name="mode" /> is not a defined <see cref="RandomizationMode" />
-    /// value. An <see cref="ArgumentOutOfRangeException" /> is also raised when <paramref name="count" /> exceeds the number of
-    /// available elements in <paramref name="source" />, but that check is performed lazily while the returned sequence is enumerated
-    /// rather than at the point this method is called.
+    /// Thrown if <paramref name="count"/> is negative, exceeds the number of available elements, or if <paramref name="mode"/> is not
+    /// a defined <see cref="RandomizationMode"/> value.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="count" /> is <see langword="null" /> and <paramref name="mode" /> requires a count (i.e.
-    /// <see cref="RandomizationMode.ReservoirSample" /> or <see cref="RandomizationMode.LazyShuffle" />).
+    /// Thrown if <paramref name="count"/> is <see langword="null"/> and <paramref name="mode"/> requires a count (i.e.
+    /// <see cref="RandomizationMode.ReservoirSample"/> or <see cref="RandomizationMode.LazyShuffle"/>).
     /// </exception>
     /// <remarks>
     /// Execution is deferred until the returned sequence is enumerated. Null checks for <paramref name="source" /> and
@@ -76,15 +74,15 @@ public static partial class IEnumerableExtensions
 
     /// <summary>
     /// Fills a fixed-size reservoir array from the supplied enumerator and applies standard reservoir sampling
-    /// to ensure a uniform random selection when the source contains more than <paramref name="count" /> elements.
+    /// to ensure a uniform random selection when the source contains more than <paramref name="count"/> elements.
     /// </summary>
     /// <typeparam name="T">The element type.</typeparam>
     /// <param name="enumerator">An open enumerator positioned before the first element to consume.</param>
     /// <param name="rng">The random number generator.</param>
     /// <param name="count">The number of elements to select into the reservoir.</param>
-    /// <returns>A <typeparamref name="T" /> array of length <paramref name="count" /> containing the sampled elements.</returns>
+    /// <returns>A <typeparamref name="T"/> array of length <paramref name="count"/> containing the sampled elements.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if the source sequence contains fewer than <paramref name="count" /> elements.
+    /// Thrown if the source sequence contains fewer than <paramref name="count"/> elements.
     /// </exception>
     /// <remarks>
     /// The caller is responsible for opening and disposing the enumerator. This method consumes the enumerator to exhaustion.
@@ -115,14 +113,14 @@ public static partial class IEnumerableExtensions
     }
 
     /// <summary>
-    /// Lazily builds a reservoir sample of <paramref name="count" /> elements from the source sequence and yields them in shuffled order.
+    /// Lazily builds a reservoir sample of <paramref name="count"/> elements from the source sequence and yields them in shuffled order.
     /// </summary>
     /// <typeparam name="T">The element type.</typeparam>
     /// <param name="source">The sequence to sample from.</param>
     /// <param name="rng">The random number generator.</param>
     /// <param name="count">The number of elements to return.</param>
-    /// <returns>A lazily shuffled sequence of <paramref name="count" /> elements selected with uniform probability.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count" /> exceeds the number of available elements.</exception>
+    /// <returns>A lazily shuffled sequence of <paramref name="count"/> elements selected with uniform probability.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> exceeds the number of available elements.</exception>
     private static IEnumerable<T> LazyShuffle<T>(IEnumerable<T> source, IRandomGenerator rng, int count)
     {
         if (count <= 0)
@@ -141,9 +139,9 @@ public static partial class IEnumerableExtensions
     /// <typeparam name="T">The element type.</typeparam>
     /// <param name="source">The sequence to randomise.</param>
     /// <param name="rng">The random number generator.</param>
-    /// <param name="count">The number of items to return; all items when <see langword="null" />.</param>
+    /// <param name="count">The number of items to return; all items when <see langword="null"/>.</param>
     /// <returns>A shuffled subset of the source sequence.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count" /> exceeds the number of available items.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> exceeds the number of available items.</exception>
     private static IEnumerable<T> RandomizeBuffered<T>(IEnumerable<T> source, IRandomGenerator rng, int? count)
     {
         IList<T> buffer;
@@ -179,15 +177,15 @@ public static partial class IEnumerableExtensions
     }
 
     /// <summary>
-    /// Performs reservoir sampling to select a uniformly random subset of <paramref name="count" /> elements from the source sequence,
+    /// Performs reservoir sampling to select a uniformly random subset of <paramref name="count"/> elements from the source sequence,
     /// then yields them in shuffled order.
     /// </summary>
     /// <typeparam name="T">The element type.</typeparam>
     /// <param name="source">The source sequence to sample from.</param>
     /// <param name="rng">The random number generator.</param>
     /// <param name="count">The number of elements to sample.</param>
-    /// <returns>A shuffled sequence of <paramref name="count" /> uniformly sampled elements.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count" /> exceeds the number of available items.</exception>
+    /// <returns>A shuffled sequence of <paramref name="count"/> uniformly sampled elements.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> exceeds the number of available items.</exception>
     private static IEnumerable<T> ReservoirSample<T>(IEnumerable<T> source, IRandomGenerator rng, int count)
     {
         using IEnumerator<T> enumerator = source.GetEnumerator();
@@ -206,10 +204,10 @@ public static partial class IEnumerableExtensions
     /// first element is yielded. Defaults to 64. Must be greater than zero.
     /// </param>
     /// <returns>A randomised sequence of elements produced using a sliding window strategy.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="windowSize" /> is zero or negative.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="windowSize"/> is zero or negative.</exception>
     /// <remarks>
     /// <para>
-    /// The window is filled with the first <paramref name="windowSize" /> elements before any output is produced. Thereafter, for each
+    /// The window is filled with the first <paramref name="windowSize"/> elements before any output is produced. Thereafter, for each
     /// incoming element a random slot in the window is selected, its current occupant is yielded, and the new element takes its place.
     /// This approach avoids any per-element allocation inside the streaming loop.
     /// </para>

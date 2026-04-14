@@ -25,7 +25,7 @@ public partial class EvictingDictionary<TKey, TValue> :
         get
         {
             // Lazy initialisation using a compare-and-swap to avoid allocating under contention.
-            return this._syncRoot ?? Interlocked.CompareExchange(ref this._syncRoot, new object(), null) ?? this._syncRoot!;
+            return _syncRoot ?? Interlocked.CompareExchange(ref _syncRoot, new object(), null) ?? _syncRoot!;
         }
     }
 
@@ -36,9 +36,9 @@ public partial class EvictingDictionary<TKey, TValue> :
         ThrowHelper.ThrowIfArrayIsNotSingleDimension(array);
         ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
         ThrowHelper.ThrowIfLessThan(index, 0);
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index, this._store.Count);
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index, _store.Count);
 
-        foreach (System.Collections.Generic.KeyValuePair<TKey, TValue> kvp in this.GetOrderedItems())
+        foreach (System.Collections.Generic.KeyValuePair<TKey, TValue> kvp in GetOrderedItems())
             array.SetValue(new DictionaryEntry(kvp.Key, kvp.Value), index++);
     }
 }

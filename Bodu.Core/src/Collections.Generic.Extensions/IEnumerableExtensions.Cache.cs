@@ -21,9 +21,9 @@ public static partial class IEnumerableExtensions
     /// <typeparam name="T">The type of the elements in the source sequence.</typeparam>
     /// <param name="source">The sequence whose elements should be cached.</param>
     /// <returns>
-    /// An <see cref="IEnumerable{T}" /> that caches the source's elements on first enumeration and returns cached results on all subsequent enumerations.
+    /// An <see cref="IEnumerable{T}"/> that caches the source's elements on first enumeration and returns cached results on all subsequent enumerations.
     /// </returns>
-    /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <remarks>
     /// This method uses deferred execution. The caching begins only when the resulting sequence is enumerated. If the source is already a
     /// collection or an existing cached sequence, no additional wrapping is performed.
@@ -44,7 +44,7 @@ public static partial class IEnumerableExtensions
     /// A sequence that caches its elements as they are enumerated, allowing subsequent replays without re-enumerating the source.
     /// </summary>
     /// <typeparam name="T">The type of elements in the cached sequence.</typeparam>
-    /// <remarks>This type is used internally by <see cref="Cache{T}" /> and is thread-safe for concurrent enumeration.</remarks>
+    /// <remarks>This type is used internally by <see cref="Cache{T}"/> and is thread-safe for concurrent enumeration.</remarks>
     private sealed class CacheEnumerable<T> :
        System.Collections.Generic.IEnumerable<T>,
        System.IDisposable
@@ -57,38 +57,38 @@ public static partial class IEnumerableExtensions
         private int _initializationState; // 0 = not initialised, 1 = initialising, 2 = initialised
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="CacheEnumerable{T}" /> class.
+        /// Initializes a new instance of the <see cref="CacheEnumerable{T}"/> class.
         /// </summary>
         /// <param name="source">The original sequence to cache during iteration.</param>
         public CacheEnumerable(IEnumerable<T> source)
         {
-            this._source = source ?? throw new ArgumentNullException(nameof(source));
+            _source = source ?? throw new ArgumentNullException(nameof(source));
         }
 
         /// <summary>
         /// Disposes internal state and releases the source enumerator and cached items.
         /// </summary>
         /// <remarks>
-        /// Field resets are performed via <see cref="Volatile.Write" /> to ensure that concurrent enumerators observing these fields
+        /// Field resets are performed via <see cref="Volatile.Write"/> to ensure that concurrent enumerators observing these fields
         /// always see the post-dispose state, preventing use of freed resources on weakly-ordered architectures.
         /// </remarks>
         public void Dispose()
         {
-            Interlocked.Exchange(ref this._enumerator, null)?.Dispose();
+            Interlocked.Exchange(ref _enumerator, null)?.Dispose();
 
             // Use volatile writes so that concurrent MoveNext callers on other threads
             // immediately observe the disposed state without stale-read false negatives.
-            Volatile.Write(ref this._cache, null);
-            this._exception = null;                        // already a volatile field; plain write is sufficient
-            Volatile.Write(ref this._exceptionIndex, -1);
-            Volatile.Write(ref this._initializationState, 0);
+            Volatile.Write(ref _cache, null);
+            _exception = null;                        // already a volatile field; plain write is sufficient
+            Volatile.Write(ref _exceptionIndex, -1);
+            Volatile.Write(ref _initializationState, 0);
         }
 
         /// <inheritdoc />
         public IEnumerator<T> GetEnumerator() => new Enumerator(this);
 
         /// <inheritdoc />
-        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <summary>
         /// Ensures the cache is initialised and the source enumerator is safely acquired.
@@ -96,22 +96,22 @@ public static partial class IEnumerableExtensions
         private void EnsureInitialized()
         {
             // Fast path: already initialised
-            if (Volatile.Read(ref this._cache) != null)
+            if (Volatile.Read(ref _cache) != null)
                 return;
 
             // Try to claim initialisation responsibility
-            if (Interlocked.CompareExchange(ref this._initializationState, 1, 0) == 0)
+            if (Interlocked.CompareExchange(ref _initializationState, 1, 0) == 0)
             {
                 try
                 {
-                    this._enumerator = this._source.GetEnumerator(); // May throw
-                    this._cache = new List<T>();
-                    Interlocked.Exchange(ref this._initializationState, 2); // Mark as complete
+                    _enumerator = _source.GetEnumerator(); // May throw
+                    _cache = new List<T>();
+                    Interlocked.Exchange(ref _initializationState, 2); // Mark as complete
                 }
                 catch (Exception ex)
                 {
-                    this._exception = ExceptionDispatchInfo.Capture(ex);
-                    Interlocked.Exchange(ref this._initializationState, 2); // Mark as complete (with failure)
+                    _exception = ExceptionDispatchInfo.Capture(ex);
+                    Interlocked.Exchange(ref _initializationState, 2); // Mark as complete (with failure)
                     throw;
                 }
             }
@@ -119,11 +119,11 @@ public static partial class IEnumerableExtensions
             {
                 // Spin until the initialising thread finishes (success or failure)
                 SpinWait spin = default;
-                while (Volatile.Read(ref this._initializationState) != 2)
+                while (Volatile.Read(ref _initializationState) != 2)
                     spin.SpinOnce();
 
                 // Re-throw any exception captured during initialisation
-                this._exception?.Throw();
+                _exception?.Throw();
             }
         }
 
@@ -137,14 +137,14 @@ public static partial class IEnumerableExtensions
             private int _index;
 
             /// <summary>
-            /// Initialises a new instance of the <see cref="Enumerator" /> class.
+            /// Initializes a new instance of the <see cref="Enumerator"/> class.
             /// </summary>
-            /// <param name="parent">The parent <see cref="CacheEnumerable{T}" /> instance.</param>
+            /// <param name="parent">The parent <see cref="CacheEnumerable{T}"/> instance.</param>
             public Enumerator(CacheEnumerable<T> parent)
             {
-                this._parent = parent;
-                this._index = -1;
-                this._parent.EnsureInitialized();
+                _parent = parent;
+                _index = -1;
+                _parent.EnsureInitialized();
             }
 
             /// <inheritdoc />
@@ -152,16 +152,16 @@ public static partial class IEnumerableExtensions
             {
                 get
                 {
-                    List<T> cache = this._parent._cache ?? throw new ObjectDisposedException(nameof(CacheEnumerable<T>));
-                    if (this._index < 0 || this._index >= cache.Count)
+                    List<T> cache = _parent._cache ?? throw new ObjectDisposedException(nameof(CacheEnumerable<T>));
+                    if (_index < 0 || _index >= cache.Count)
                         throw new InvalidOperationException(ResourceStrings.InvalidOperation_EnumeratorNotOnElement);
 
-                    return cache[this._index];
+                    return cache[_index];
                 }
             }
 
             /// <inheritdoc />
-            object IEnumerator.Current => this.Current!;
+            object IEnumerator.Current => Current!;
 
             /// <summary>
             /// Disposes the enumerator. No-op for this implementation.
@@ -172,19 +172,19 @@ public static partial class IEnumerableExtensions
             /// <inheritdoc />
             public bool MoveNext()
             {
-                this._index++;
+                _index++;
 
-                List<T> cache = this._parent._cache ?? throw new ObjectDisposedException(nameof(CacheEnumerable<T>));
+                List<T> cache = _parent._cache ?? throw new ObjectDisposedException(nameof(CacheEnumerable<T>));
 
                 // Return from the cache if the element at this index is already populated.
-                if (this._index < cache.Count)
+                if (_index < cache.Count)
                     return true;
 
                 // Re-throw any exception previously captured at this index position.
-                if (this._parent._exceptionIndex == this._index)
-                    this._parent._exception?.Throw();
+                if (_parent._exceptionIndex == _index)
+                    _parent._exception?.Throw();
 
-                IEnumerator<T>? enumerator = this._parent._enumerator;
+                IEnumerator<T>? enumerator = _parent._enumerator;
                 if (enumerator == null)
                     return false;
 
@@ -199,10 +199,10 @@ public static partial class IEnumerableExtensions
                     {
                         // Use Volatile.Read to avoid stale cache-count observations on weakly-ordered
                         // architectures where the publishing write from another thread may not yet be visible.
-                        if (this._index < (Volatile.Read(ref this._parent._cache)?.Count ?? 0))
+                        if (_index < (Volatile.Read(ref _parent._cache)?.Count ?? 0))
                             return true;
 
-                        if (Volatile.Read(ref this._parent._enumerator) == null)
+                        if (Volatile.Read(ref _parent._enumerator) == null)
                             return false;
 
                         spin.SpinOnce();
@@ -219,15 +219,15 @@ public static partial class IEnumerableExtensions
 
                     // End of source sequence; release the enumerator.
                     enumerator.Dispose();
-                    this._parent._enumerator = null;
+                    _parent._enumerator = null;
                     return false;
                 }
                 catch (Exception ex)
                 {
-                    this._parent._exception = ExceptionDispatchInfo.Capture(ex);
-                    this._parent._exceptionIndex = this._index;
+                    _parent._exception = ExceptionDispatchInfo.Capture(ex);
+                    _parent._exceptionIndex = _index;
                     enumerator.Dispose();
-                    this._parent._enumerator = null;
+                    _parent._enumerator = null;
                     throw;
                 }
                 finally

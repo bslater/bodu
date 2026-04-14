@@ -42,7 +42,7 @@ public enum CalendarWeekendDefinition
     None = 5,
 
     /// <summary>
-    /// Custom definition provided via an <see cref="IWeekendDefinitionProvider" />.
+    /// Custom definition provided via an <see cref="IWeekendDefinitionProvider"/>.
     /// </summary>
     Custom = 6,
 }

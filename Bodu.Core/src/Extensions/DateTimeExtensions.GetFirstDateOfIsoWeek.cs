@@ -12,7 +12,7 @@ namespace Bodu.Extensions;
 public static partial class DateTimeExtensions
 {
     /// <summary>
-    /// Returns a new <see cref="DateTime" /> representing the first day (Monday) of the specified ISO 8601 week and year.
+    /// Returns a new <see cref="DateTime"/> representing the first day (Monday) of the specified ISO 8601 week and year.
     /// </summary>
     /// <param name="isoYear">
     /// The ISO 8601 year, defined as the year containing the Thursday of the first ISO week. This may differ from the calendar year for
@@ -37,11 +37,11 @@ public static partial class DateTimeExtensions
     /// <description>Years may contain either 52 or 53 weeks.</description>
     /// </item>
     /// </list>
-    /// <para>The <see cref="DateTime.Kind" /> property of the returned instance is <see cref="DateTimeKind.Unspecified" />.</para>
+    /// <para>The <see cref="DateTime.Kind"/> property of the returned instance is <see cref="DateTimeKind.Unspecified"/>.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="isoYear" /> is less than 1 or greater than 9999,
-    /// -or- <paramref name="isoWeek" /> is less than 1 or greater than the number of ISO weeks in the given year.
+    /// Thrown if <paramref name="isoYear"/> is less than 1 or greater than 9999,
+    /// -or- <paramref name="isoWeek"/> is less than 1 or greater than the number of ISO weeks in the given year.
     /// </exception>
     public static DateTime GetFirstDateOfIsoWeek(int isoYear, int isoWeek)
     {

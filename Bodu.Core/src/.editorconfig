@@ -196,6 +196,7 @@ dotnet_diagnostic.CS8603.severity = warning   # Possible null reference return
 dotnet_diagnostic.CS8604.severity = warning   # Possible null reference argument for parameter
 dotnet_diagnostic.CS8618.severity = warning   # Non-nullable field or property is uninitialized
 dotnet_diagnostic.CS8625.severity = warning   # Cannot convert null literal to non-nullable reference type
+dotnet_diagnostic.SA1101.severity = none
 
 # ---------------------------------------------------------------------------------------------------------------
 # Public API safety (Code Analysis)
@@ -236,6 +237,7 @@ dotnet_diagnostic.SA1413.severity = warning
 dotnet_diagnostic.CS1591.severity = warning     # Missing XML comment for publicly visible type or member
 dotnet_diagnostic.SA1600.severity = warning     # Elements must be documented
 dotnet_diagnostic.SA1601.severity = none        # Partial elements must be documented (suppressed; handled per-file)
+dotnet_diagnostic.SA1004.severity = none        # Partial elements must be documented (suppressed; handled per-file)
 
 # Comma spacing
 dotnet_diagnostic.SA1001.severity = warning     # Commas should be spaced correctly
@@ -255,3 +257,9 @@ file_header_template = // ------------------------------------------------------
 dotnet_analyzer_diagnostic.category-StyleCop.CSharp.LayoutRules.severity        = none
 dotnet_analyzer_diagnostic.category-StyleCop.CSharp.OrderingRules.severity       = none
 dotnet_analyzer_diagnostic.category-StyleCop.CSharp.MaintainabilityRules.severity = none
+
+# SA1312: Variable names should begin with lower-case letter
+dotnet_diagnostic.SA1312.severity = silent
+
+[ThrowHelper**.cs]
+dotnet_diagnostic.SA0117.severity = none

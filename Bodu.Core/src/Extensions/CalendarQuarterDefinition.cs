@@ -10,7 +10,7 @@ namespace Bodu.Extensions;
 /// Specifies how quarters (Q1–Q4) are defined within a given calendar-based system.
 /// </summary>
 /// <remarks>
-/// This enumeration supports standard, regional, and historical calendar quarter systems. Use <see cref="Custom" /> for externally defined
+/// This enumeration supports standard, regional, and historical calendar quarter systems. Use <see cref="Custom"/> for externally defined
 /// or non-standard quarter rules.
 /// </remarks>
 public enum CalendarQuarterDefinition

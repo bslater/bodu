@@ -13,18 +13,18 @@ public sealed partial class ConcurrentCircularBuffer<T> :
     System.Collections.Generic.IReadOnlyCollection<T>
 {
     /// <summary>
-    /// Provides a snapshot-based enumerator for <see cref="ConcurrentCircularBuffer{T}" /> that iterates over a stable point-in-time
+    /// Provides a snapshot-based enumerator for <see cref="ConcurrentCircularBuffer{T}"/> that iterates over a stable point-in-time
     /// copy of the buffer's contents.
     /// </summary>
     /// <remarks>
     /// <para>
     /// The enumerator captures a snapshot of the buffer's elements at the time of construction by calling
-    /// <see cref="ConcurrentCircularBuffer{T}.ToArray" />. All subsequent iteration operates over this static copy and is unaffected
+    /// <see cref="ConcurrentCircularBuffer{T}.ToArray"/>. All subsequent iteration operates over this static copy and is unaffected
     /// by concurrent enqueue, dequeue, or eviction operations on the originating buffer.
     /// </para>
     /// <para>
     /// Because the snapshot is taken eagerly, creating the enumerator allocates a backing array proportional to the number of
-    /// elements present at that moment. This is the same allocation that a direct call to <see cref="ToArray" /> would produce.
+    /// elements present at that moment. This is the same allocation that a direct call to <see cref="ToArray"/> would produce.
     /// </para>
     /// </remarks>
     [Serializable]
@@ -36,23 +36,23 @@ public sealed partial class ConcurrentCircularBuffer<T> :
         private int _index;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Enumerator" /> struct by capturing a snapshot of the buffer's contents.
+        /// Initializes a new instance of the <see cref="Enumerator"/> struct by capturing a snapshot of the buffer's contents.
         /// </summary>
-        /// <param name="owner">The <see cref="ConcurrentCircularBuffer{T}" /> instance to enumerate. Must not be <see langword="null" />.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="owner" /> is <see langword="null" />.</exception>
+        /// <param name="owner">The <see cref="ConcurrentCircularBuffer{T}"/> instance to enumerate. Must not be <see langword="null"/>.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="owner"/> is <see langword="null"/>.</exception>
         internal Enumerator(ConcurrentCircularBuffer<T> owner)
         {
             ThrowHelper.ThrowIfNull(owner);
-            this._snapshot = owner.ToArray();
-            this._index = -1;
-            this._current = default;
+            _snapshot = owner.ToArray();
+            _index = -1;
+            _current = default;
         }
 
         /// <inheritdoc />
-        public T Current => this._current!;
+        public T Current => _current!;
 
         /// <inheritdoc />
-        object IEnumerator.Current => this._current!;
+        object IEnumerator.Current => _current!;
 
         /// <inheritdoc />
         public void Dispose()
@@ -63,23 +63,23 @@ public sealed partial class ConcurrentCircularBuffer<T> :
         /// <inheritdoc />
         public bool MoveNext()
         {
-            int next = this._index + 1;
-            if (next < this._snapshot.Length)
+            int next = _index + 1;
+            if (next < _snapshot.Length)
             {
-                this._current = this._snapshot[next];
-                this._index = next;
+                _current = _snapshot[next];
+                _index = next;
                 return true;
             }
 
-            this._current = default;
+            _current = default;
             return false;
         }
 
         /// <inheritdoc />
         public void Reset()
         {
-            this._index = -1;
-            this._current = default;
+            _index = -1;
+            _current = default;
         }
     }
 }

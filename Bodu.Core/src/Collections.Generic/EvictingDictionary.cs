@@ -19,13 +19,13 @@ namespace Bodu.Collections.Generic;
 /// <typeparam name="TValue">Specifies the type of values in the dictionary.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="EvictingDictionary{TKey, TValue}" /> maintains a maximum number of key-value pairs and automatically evicts items when
-/// capacity is exceeded. Eviction is determined by a specified <see cref="EvictingDictionaryPolicy" />, allowing this dictionary to behave like a
+/// <see cref="EvictingDictionary{TKey, TValue}"/> maintains a maximum number of key-value pairs and automatically evicts items when
+/// capacity is exceeded. Eviction is determined by a specified <see cref="EvictingDictionaryPolicy"/>, allowing this dictionary to behave like a
 /// queue, an access-order cache, or a frequency-based cache.
 /// </para>
 /// <para>
-/// <see cref="EvictingDictionary{TKey, TValue}" /> allows <see langword="null" /> keys and values (for reference types) and supports
-/// custom key equality via <see cref="System.Collections.Generic.IEqualityComparer{T}" />.
+/// <see cref="EvictingDictionary{TKey, TValue}"/> allows <see langword="null"/> keys and values (for reference types) and supports
+/// custom key equality via <see cref="System.Collections.Generic.IEqualityComparer{T}"/>.
 /// </para>
 /// <example>
 /// <code language="csharp">
@@ -73,62 +73,62 @@ public partial class EvictingDictionary<TKey, TValue>
     private long _totalTouches;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}" /> class, with the default capacity and eviction policy.
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with the default capacity and eviction policy.
     /// </summary>
     /// <remarks>
-    /// Creates an empty dictionary with a capacity of <see cref="DefaultCapacity" /> items, using <see cref="DefaultPolicy" /> for eviction
-    /// when capacity is exceeded, and the default key comparer ( <see cref="EqualityComparer{TKey}.Default" />).
+    /// Creates an empty dictionary with a capacity of <see cref="DefaultCapacity"/> items, using <see cref="DefaultPolicy"/> for eviction
+    /// when capacity is exceeded, and the default key comparer ( <see cref="EqualityComparer{TKey}.Default"/>).
     /// </remarks>
     public EvictingDictionary()
         : this(DefaultCapacity, DefaultPolicy, null) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}" /> class, with the specified capacity and the default
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with the specified capacity and the default
     /// eviction policy.
     /// </summary>
     /// <param name="capacity">The maximum number of key/value pairs the dictionary can contain. Must be positive.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than or equal to zero.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity"/> is less than or equal to zero.</exception>
     /// <remarks>
-    /// Creates an empty dictionary with the specified capacity, using <see cref="DefaultPolicy" /> for eviction when capacity is exceeded,
-    /// and the default key comparer ( <see cref="EqualityComparer{TKey}.Default" />).
+    /// Creates an empty dictionary with the specified capacity, using <see cref="DefaultPolicy"/> for eviction when capacity is exceeded,
+    /// and the default key comparer ( <see cref="EqualityComparer{TKey}.Default"/>).
     /// </remarks>
     public EvictingDictionary(int capacity)
         : this(capacity, DefaultPolicy, null) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}" /> class, with the specified capacity and eviction policy.
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with the specified capacity and eviction policy.
     /// </summary>
     /// <param name="capacity">The maximum number of key/value pairs the dictionary can contain. Must be positive.</param>
     /// <param name="policy">The eviction policy used when capacity is exceeded.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than or equal to zero.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity"/> is less than or equal to zero.</exception>
     /// <remarks>
-    /// Creates an empty dictionary with the specified capacity, using the specified eviction policy, and the default key comparer ( <see cref="EqualityComparer{TKey}.Default" />).
+    /// Creates an empty dictionary with the specified capacity, using the specified eviction policy, and the default key comparer ( <see cref="EqualityComparer{TKey}.Default"/>).
     /// </remarks>
     public EvictingDictionary(int capacity, EvictingDictionaryPolicy policy)
         : this(capacity, policy, null) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}" /> class, with the specified capacity, using the
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with the specified capacity, using the
     /// default eviction policy and the specified key comparer.
     /// </summary>
     /// <param name="capacity">The maximum number of key/value pairs the dictionary can contain. Must be positive.</param>
-    /// <param name="comparer">The equality comparer to use for keys, or <see langword="null" /> to use the default comparer.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than or equal to zero.</exception>
+    /// <param name="comparer">The equality comparer to use for keys, or <see langword="null"/> to use the default comparer.</param>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity"/> is less than or equal to zero.</exception>
     /// <remarks>
-    /// Creates an empty dictionary with the specified capacity, using <see cref="DefaultPolicy" /> for eviction when capacity is exceeded,
-    /// and the specified key comparer (or <see cref="EqualityComparer{TKey}.Default" /> if <paramref name="comparer" /> is <see langword="null" />).
+    /// Creates an empty dictionary with the specified capacity, using <see cref="DefaultPolicy"/> for eviction when capacity is exceeded,
+    /// and the specified key comparer (or <see cref="EqualityComparer{TKey}.Default"/> if <paramref name="comparer"/> is <see langword="null"/>).
     /// </remarks>
     public EvictingDictionary(int capacity, IEqualityComparer<TKey>? comparer)
         : this(capacity, DefaultPolicy, comparer) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}" /> class, with the specified capacity, eviction
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with the specified capacity, eviction
     /// policy, and key comparer.
     /// </summary>
     /// <param name="capacity">The maximum number of key/value pairs the dictionary can contain. Must be positive.</param>
     /// <param name="policy">The eviction policy used when capacity is exceeded.</param>
-    /// <param name="comparer">The equality comparer to use for keys, or <see langword="null" /> to use the default comparer.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than or equal to zero.</exception>
+    /// <param name="comparer">The equality comparer to use for keys, or <see langword="null"/> to use the default comparer.</param>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity"/> is less than or equal to zero.</exception>
     /// <remarks>
     /// <para>Creates an empty dictionary with the specified capacity and eviction policy, using the specified key comparer.</para>
     /// <para>
@@ -140,23 +140,23 @@ public partial class EvictingDictionary<TKey, TValue>
     {
         ThrowHelper.ThrowIfZeroOrNegative(capacity);
 
-        this._capacity = capacity;
-        this._evictingPolicy = policy;
-        this._comparer = comparer ?? EqualityComparer<TKey>.Default;
+        _capacity = capacity;
+        _evictingPolicy = policy;
+        _comparer = comparer ?? EqualityComparer<TKey>.Default;
 
-        this._store = new Dictionary<TKey, CacheItem>(this._comparer);
+        _store = new Dictionary<TKey, CacheItem>(_comparer);
 
-        switch (this._evictingPolicy)
+        switch (_evictingPolicy)
         {
             case EvictingDictionaryPolicy.FirstInFirstOut:
             case EvictingDictionaryPolicy.LeastRecentlyUsed:
             case EvictingDictionaryPolicy.MostRecentlyUsed:
             case EvictingDictionaryPolicy.SecondChance:
-                this._order = new LinkedList<TKey>();
+                _order = new LinkedList<TKey>();
                 break;
 
             case EvictingDictionaryPolicy.LeastFrequentlyUsed:
-                this._frequencyList = new SortedDictionary<int, LinkedList<TKey>>();
+                _frequencyList = new SortedDictionary<int, LinkedList<TKey>>();
                 break;
 
             case EvictingDictionaryPolicy.RandomReplacement:
@@ -165,15 +165,15 @@ public partial class EvictingDictionary<TKey, TValue>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}" /> class, with elements copied from the specified
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with elements copied from the specified
     /// sequence, using the default capacity and eviction policy.
     /// </summary>
-    /// <param name="source">The sequence of key/value pairs to copy. Must not be <see langword="null" />.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
+    /// <param name="source">The sequence of key/value pairs to copy. Must not be <see langword="null"/>.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <remarks>
-    /// <para>Creates a dictionary containing the elements from <paramref name="source" />.</para>
+    /// <para>Creates a dictionary containing the elements from <paramref name="source"/>.</para>
     /// <para>
-    /// Uses a capacity of <see cref="DefaultCapacity" />, <see cref="DefaultPolicy" /> for eviction, and the default key comparer. If more
+    /// Uses a capacity of <see cref="DefaultCapacity"/>, <see cref="DefaultPolicy"/> for eviction, and the default key comparer. If more
     /// elements are provided than the capacity allows, entries are evicted according to the policy.
     /// </para>
     /// </remarks>
@@ -181,17 +181,17 @@ public partial class EvictingDictionary<TKey, TValue>
         : this(DefaultCapacity, source, DefaultPolicy, null) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}" /> class, with elements copied from the specified
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with elements copied from the specified
     /// sequence, using the specified capacity and the default eviction policy.
     /// </summary>
     /// <param name="capacity">The maximum number of key/value pairs the dictionary can contain. Must be positive.</param>
-    /// <param name="source">The sequence of key/value pairs to copy. Must not be <see langword="null" />.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than or equal to zero.</exception>
+    /// <param name="source">The sequence of key/value pairs to copy. Must not be <see langword="null"/>.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity"/> is less than or equal to zero.</exception>
     /// <remarks>
-    /// <para>Creates a dictionary containing the elements from <paramref name="source" />.</para>
+    /// <para>Creates a dictionary containing the elements from <paramref name="source"/>.</para>
     /// <para>
-    /// Uses the specified capacity, <see cref="DefaultPolicy" /> for eviction, and the default key comparer. If more elements are provided
+    /// Uses the specified capacity, <see cref="DefaultPolicy"/> for eviction, and the default key comparer. If more elements are provided
     /// than the capacity allows, entries are evicted according to the policy.
     /// </para>
     /// </remarks>
@@ -199,28 +199,28 @@ public partial class EvictingDictionary<TKey, TValue>
         : this(capacity, source, DefaultPolicy, null) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}" /> class, with elements copied from the specified
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with elements copied from the specified
     /// sequence, using the default capacity and the specified eviction policy.
     /// </summary>
-    /// <param name="source">The sequence of key/value pairs to copy. Must not be <see langword="null" />.</param>
+    /// <param name="source">The sequence of key/value pairs to copy. Must not be <see langword="null"/>.</param>
     /// <param name="policy">The eviction policy used when capacity is exceeded.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     /// <remarks>
-    /// Uses a capacity of <see cref="DefaultCapacity" />, the specified eviction policy, and the default key comparer. If more elements are
+    /// Uses a capacity of <see cref="DefaultCapacity"/>, the specified eviction policy, and the default key comparer. If more elements are
     /// provided than the capacity allows, entries are evicted according to the policy.
     /// </remarks>
     public EvictingDictionary(IEnumerable<KeyValuePair<TKey, TValue>> source, EvictingDictionaryPolicy policy)
         : this(DefaultCapacity, source, policy, null) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}" /> class, with elements copied from the specified
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with elements copied from the specified
     /// sequence, using the specified capacity and eviction policy.
     /// </summary>
     /// <param name="capacity">The maximum number of key/value pairs the dictionary can contain. Must be positive.</param>
-    /// <param name="source">The sequence of key/value pairs to copy. Must not be <see langword="null" />.</param>
+    /// <param name="source">The sequence of key/value pairs to copy. Must not be <see langword="null"/>.</param>
     /// <param name="policy">The eviction policy used when capacity is exceeded.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than or equal to zero.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity"/> is less than or equal to zero.</exception>
     /// <remarks>
     /// Uses the specified capacity, the specified eviction policy, and the default key comparer. If more elements are provided than the
     /// capacity allows, entries are evicted according to the policy.
@@ -229,18 +229,18 @@ public partial class EvictingDictionary<TKey, TValue>
         : this(capacity, source, policy, null) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}" /> class, with elements copied from the specified
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with elements copied from the specified
     /// sequence, using the specified capacity, eviction policy, and key comparer.
     /// </summary>
     /// <param name="capacity">The maximum number of key/value pairs the dictionary can contain. Must be positive.</param>
-    /// <param name="source">The sequence of key/value pairs to copy. Must not be <see langword="null" />.</param>
+    /// <param name="source">The sequence of key/value pairs to copy. Must not be <see langword="null"/>.</param>
     /// <param name="policy">The eviction policy used when capacity is exceeded.</param>
-    /// <param name="comparer">The equality comparer to use for keys, or <see langword="null" /> to use the default comparer.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than or equal to zero.</exception>
+    /// <param name="comparer">The equality comparer to use for keys, or <see langword="null"/> to use the default comparer.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity"/> is less than or equal to zero.</exception>
     /// <remarks>
     /// Uses the specified capacity, the specified eviction policy, and the specified key comparer (or
-    /// <see cref="EqualityComparer{TKey}.Default" /> if <paramref name="comparer" /> is <see langword="null" />). If more elements are
+    /// <see cref="EqualityComparer{TKey}.Default"/> if <paramref name="comparer"/> is <see langword="null"/>). If more elements are
     /// provided than the capacity allows, entries are evicted according to the policy.
     /// </remarks>
     public EvictingDictionary(int capacity, IEnumerable<KeyValuePair<TKey, TValue>> source, EvictingDictionaryPolicy policy, IEqualityComparer<TKey>? comparer)
@@ -249,17 +249,17 @@ public partial class EvictingDictionary<TKey, TValue>
         ThrowHelper.ThrowIfNull(source);
 
         foreach (KeyValuePair<TKey, TValue> kvp in source)
-            this.Add(kvp.Key, kvp.Value);
+            Add(kvp.Key, kvp.Value);
     }
 
     /// <summary>
     /// Occurs immediately <b>after</b> an item is evicted from the
-    /// <see cref="EvictingDictionary{TKey, TValue}" /> due to capacity limits.
+    /// <see cref="EvictingDictionary{TKey, TValue}"/> due to capacity limits.
     /// </summary>
     /// <remarks>
     /// <para>
     /// This event is raised after the item has been removed from the collection, based on the
-    /// configured <see cref="EvictingDictionaryPolicy" /> (e.g., FirstInFirstOut, LeastRecentlyUsed, or LeastFrequentlyUsed).
+    /// configured <see cref="EvictingDictionaryPolicy"/> (e.g., FirstInFirstOut, LeastRecentlyUsed, or LeastFrequentlyUsed).
     /// </para>
     /// <para>
     /// Consumers can use this event to record historical data, notify observers, or synchronise
@@ -284,7 +284,7 @@ public partial class EvictingDictionary<TKey, TValue>
 
     /// <summary>
     /// Occurs immediately <b>before</b> an item is evicted from the
-    /// <see cref="EvictingDictionary{TKey, TValue}" /> due to capacity limits.
+    /// <see cref="EvictingDictionary{TKey, TValue}"/> due to capacity limits.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -315,29 +315,29 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <summary>
     /// Gets the maximum number of items that can be stored in the dictionary before eviction occurs.
     /// </summary>
-    public int Capacity => this._capacity;
+    public int Capacity => _capacity;
 
     /// <summary>
     /// Gets the total number of items evicted from the dictionary since creation.
     /// </summary>
-    public long EvictionCount => this._evictionCount;
+    public long EvictionCount => _evictionCount;
 
     /// <summary>
     /// Gets the eviction policy configured for this dictionary.
     /// </summary>
-    public EvictingDictionaryPolicy Policy => this._evictingPolicy;
+    public EvictingDictionaryPolicy Policy => _evictingPolicy;
 
     /// <summary>
     /// Gets the total number of times any key has been accessed or touched.
     /// </summary>
-    public long TotalTouches => this._totalTouches;
+    public long TotalTouches => _totalTouches;
 
     /// <summary>
     /// Returns the key that would be evicted next based on the current eviction policy and internal state.
     /// </summary>
-    /// <returns>The key that is next in line for eviction, or <see langword="default" /> if the dictionary is empty.</returns>
+    /// <returns>The key that is next in line for eviction, or <see langword="default"/> if the dictionary is empty.</returns>
     /// <remarks>
-    /// The eviction candidate depends on the selected <see cref="EvictingDictionaryPolicy" />:
+    /// The eviction candidate depends on the selected <see cref="EvictingDictionaryPolicy"/>:
     /// <list type="bullet">
     /// <item>
     /// <description><b>FirstInFirstOut</b>: returns the oldest inserted key.</description>
@@ -363,22 +363,22 @@ public partial class EvictingDictionary<TKey, TValue>
     /// </remarks>
     public TKey? PeekEvictionCandidate()
     {
-        return this._evictingPolicy switch
+        return _evictingPolicy switch
         {
             EvictingDictionaryPolicy.FirstInFirstOut or EvictingDictionaryPolicy.LeastRecentlyUsed
-                when this._order?.First is not null => this._order.First.Value,
+                when _order?.First is not null => _order.First.Value,
 
             EvictingDictionaryPolicy.MostRecentlyUsed
-                when this._order?.Last is not null => this._order.Last.Value,
+                when _order?.Last is not null => _order.Last.Value,
 
             EvictingDictionaryPolicy.LeastFrequentlyUsed
-                when this._frequencyList?.Count > 0 && this._frequencyList.First().Value.First is not null
-                => this._frequencyList.First().Value.First!.Value,
+                when _frequencyList?.Count > 0 && _frequencyList.First().Value.First is not null
+                => _frequencyList.First().Value.First!.Value,
 
             EvictingDictionaryPolicy.RandomReplacement
-                when this._store.Count > 0 => this._store.Keys.First(),
+                when _store.Count > 0 => _store.Keys.First(),
 
-            EvictingDictionaryPolicy.SecondChance when this._order is not null => this.PeekSecondChanceCandidate(),
+            EvictingDictionaryPolicy.SecondChance when _order is not null => PeekSecondChanceCandidate(),
 
             _ => default
         };
@@ -389,13 +389,13 @@ public partial class EvictingDictionary<TKey, TValue>
     /// updates the internal usage metadata.
     /// </summary>
     /// <param name="key">The key to touch.</param>
-    /// <returns><see langword="true" /> if the key exists and was marked as accessed; otherwise, <see langword="false" />.</returns>
+    /// <returns><see langword="true"/> if the key exists and was marked as accessed; otherwise, <see langword="false"/>.</returns>
     public bool Touch(TKey key)
     {
-        if (this._store.TryGetValue(key, out CacheItem? item))
+        if (_store.TryGetValue(key, out CacheItem? item))
         {
-            this.TouchInternal(key, item);
-            this._totalTouches++;
+            TouchInternal(key, item);
+            _totalTouches++;
             return true;
         }
 
@@ -406,14 +406,14 @@ public partial class EvictingDictionary<TKey, TValue>
     /// Marks the specified key as recently accessed without retrieving its value, and throws an exception if the key does not exist in the dictionary.
     /// </summary>
     /// <param name="key">The key to touch.</param>
-    /// <exception cref="KeyNotFoundException">The specified <paramref name="key" /> does not exist in the dictionary.</exception>
+    /// <exception cref="KeyNotFoundException">The specified <paramref name="key"/> does not exist in the dictionary.</exception>
     /// <remarks>
-    /// If the eviction policy is <see cref="EvictingDictionaryPolicy.LeastRecentlyUsed" /> or
-    /// <see cref="EvictingDictionaryPolicy.LeastFrequentlyUsed" />, this updates the internal usage metadata.
+    /// If the eviction policy is <see cref="EvictingDictionaryPolicy.LeastRecentlyUsed"/> or
+    /// <see cref="EvictingDictionaryPolicy.LeastFrequentlyUsed"/>, this updates the internal usage metadata.
     /// </remarks>
     public void TouchOrThrow(TKey key)
     {
-        if (!this.Touch(key))
+        if (!Touch(key))
             throw new KeyNotFoundException($"The key '{key}' was not found in the dictionary.");
     }
 
@@ -424,48 +424,48 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <param name="key">The key to add.</param>
     private void AddToFrequencyList(int frequency, TKey key)
     {
-        if (!this._frequencyList.TryGetValue(frequency, out LinkedList<TKey>? list))
+        if (!_frequencyList.TryGetValue(frequency, out LinkedList<TKey>? list))
         {
             list = new LinkedList<TKey>();
-            this._frequencyList[frequency] = list;
+            _frequencyList[frequency] = list;
         }
 
         list.AddLast(key);
     }
 
     /// <summary>
-    /// Removes the next item to be evicted based on the current eviction policy. Raises the <see cref="ItemEvicting" /> and
-    /// <see cref="ItemEvicted" /> events and updates eviction metrics.
+    /// Removes the next item to be evicted based on the current eviction policy. Raises the <see cref="ItemEvicting"/> and
+    /// <see cref="ItemEvicted"/> events and updates eviction metrics.
     /// </summary>
     private void EvictOne()
     {
-        TKey? keyToRemove = this._evictingPolicy switch
+        TKey? keyToRemove = _evictingPolicy switch
         {
             EvictingDictionaryPolicy.FirstInFirstOut or EvictingDictionaryPolicy.LeastRecentlyUsed
-                when this._order?.First is not null => this._order.First.Value,
+                when _order?.First is not null => _order.First.Value,
 
             EvictingDictionaryPolicy.MostRecentlyUsed
-                when this._order?.Last is not null => this._order.Last.Value,
+                when _order?.Last is not null => _order.Last.Value,
 
             EvictingDictionaryPolicy.LeastFrequentlyUsed
-                when this._frequencyList?.Count > 0 &&
-                     this._frequencyList.First().Value?.First is LinkedListNode<TKey> node => node.Value,
+                when _frequencyList?.Count > 0 &&
+                     _frequencyList.First().Value?.First is LinkedListNode<TKey> node => node.Value,
 
             EvictingDictionaryPolicy.RandomReplacement
-                when this._store.Count > 0 => this._store.Keys.First(),
+                when _store.Count > 0 => _store.Keys.First(),
 
-            EvictingDictionaryPolicy.SecondChance when this._order is not null =>
-                this.GetSecondChanceCandidate(),
+            EvictingDictionaryPolicy.SecondChance when _order is not null =>
+                GetSecondChanceCandidate(),
 
             _ => default
         };
 
-        if (keyToRemove is not null && this._store.TryGetValue(keyToRemove, out CacheItem? item))
+        if (keyToRemove is not null && _store.TryGetValue(keyToRemove, out CacheItem? item))
         {
-            this.ItemEvicting?.Invoke(keyToRemove, item.Value);
-            this._evictionCount++;
-            this.Remove(keyToRemove);
-            this.ItemEvicted?.Invoke(keyToRemove, item.Value);
+            ItemEvicting?.Invoke(keyToRemove, item.Value);
+            _evictionCount++;
+            Remove(keyToRemove);
+            ItemEvicted?.Invoke(keyToRemove, item.Value);
         }
     }
 
@@ -473,7 +473,7 @@ public partial class EvictingDictionary<TKey, TValue>
     /// Returns an ordered enumeration of key-value pairs based on the current eviction policy and internal tracking state.
     /// </summary>
     /// <returns>
-    /// An <see cref="IEnumerable{T}" /> of <see cref="KeyValuePair{TKey, TValue}" /> in the order determined by the current eviction policy.
+    /// An <see cref="IEnumerable{T}"/> of <see cref="KeyValuePair{TKey, TValue}"/> in the order determined by the current eviction policy.
     /// </returns>
     /// <exception cref="InvalidOperationException">The eviction policy is unrecognised or unsupported for ordering.</exception>
     /// <remarks>
@@ -482,45 +482,45 @@ public partial class EvictingDictionary<TKey, TValue>
     /// </remarks>
     private IEnumerable<KeyValuePair<TKey, TValue>> GetOrderedItems()
     {
-        switch (this._evictingPolicy)
+        switch (_evictingPolicy)
         {
             case EvictingDictionaryPolicy.FirstInFirstOut:
             case EvictingDictionaryPolicy.LeastRecentlyUsed:
             case EvictingDictionaryPolicy.SecondChance:
-                if (this._order is null)
+                if (_order is null)
                     yield break;
 
-                foreach (TKey key in this._order)
+                foreach (TKey key in _order)
                 {
-                    if (this._store.TryGetValue(key, out CacheItem? item))
+                    if (_store.TryGetValue(key, out CacheItem? item))
                         yield return new KeyValuePair<TKey, TValue>(key, item.Value);
                 }
 
                 break;
 
             case EvictingDictionaryPolicy.MostRecentlyUsed:
-                if (this._order is null)
+                if (_order is null)
                     yield break;
 
                 // MRU: iterate from most recently used (tail) to least (head).
-                for (LinkedListNode<TKey>? node = this._order.Last; node is not null; node = node.Previous)
+                for (LinkedListNode<TKey>? node = _order.Last; node is not null; node = node.Previous)
                 {
-                    if (this._store.TryGetValue(node.Value, out CacheItem? item))
+                    if (_store.TryGetValue(node.Value, out CacheItem? item))
                         yield return new KeyValuePair<TKey, TValue>(node.Value, item.Value);
                 }
 
                 break;
 
             case EvictingDictionaryPolicy.LeastFrequentlyUsed:
-                if (this._frequencyList is null)
+                if (_frequencyList is null)
                     yield break;
 
                 // SortedDictionary is already in ascending key order; no secondary sort is required.
-                foreach (KeyValuePair<int, LinkedList<TKey>> freq in this._frequencyList)
+                foreach (KeyValuePair<int, LinkedList<TKey>> freq in _frequencyList)
                 {
                     foreach (TKey key in freq.Value)
                     {
-                        if (this._store.TryGetValue(key, out CacheItem? item))
+                        if (_store.TryGetValue(key, out CacheItem? item))
                             yield return new KeyValuePair<TKey, TValue>(key, item.Value);
                     }
                 }
@@ -532,13 +532,13 @@ public partial class EvictingDictionary<TKey, TValue>
                 foreach (var pair in _store)
                     yield return new KeyValuePair<TKey, TValue>(pair.Key, pair.Value.Value);
 #else
-                foreach ((TKey key, CacheItem item) in this._store)
+                foreach ((TKey key, CacheItem item) in _store)
                     yield return new KeyValuePair<TKey, TValue>(key, item.Value);
 #endif
                 break;
 
             default:
-                throw new InvalidOperationException($"Unknown eviction policy: {this._evictingPolicy}");
+                throw new InvalidOperationException($"Unknown eviction policy: {_evictingPolicy}");
         }
     }
 
@@ -550,19 +550,19 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <exception cref="InvalidOperationException">The internal order list is empty.</exception>
     private TKey GetSecondChanceCandidate()
     {
-        if (this._order is null || this._order.Count == 0)
+        if (_order is null || _order.Count == 0)
             throw new InvalidOperationException("No eviction candidate available: the order list is empty.");
 
         // Walk the list using explicit node references so we can perform O(1) removal and re-insertion
         // without allocating a snapshot copy via ToList().
-        LinkedListNode<TKey>? node = this._order.First;
+        LinkedListNode<TKey>? node = _order.First;
         while (node is not null)
         {
             TKey key = node.Value;
             LinkedListNode<TKey> current = node;
             node = node.Next;
 
-            if (!this._store.TryGetValue(key, out CacheItem? item))
+            if (!_store.TryGetValue(key, out CacheItem? item))
                 continue;
 
             if (!item.SecondChance)
@@ -570,13 +570,13 @@ public partial class EvictingDictionary<TKey, TValue>
 
             // Give the item a second chance: clear the flag and cycle it to the tail.
             item.SecondChance = false;
-            this._order.Remove(current);
-            item.Node = this._order.AddLast(key);
+            _order.Remove(current);
+            item.Node = _order.AddLast(key);
         }
 
         // All items had their second-chance flag set; fall back to the oldest remaining entry.
-        if (this._order.First is not null)
-            return this._order.First.Value;
+        if (_order.First is not null)
+            return _order.First.Value;
 
         throw new InvalidOperationException("No eviction candidate found after second-chance evaluation.");
     }
@@ -587,13 +587,13 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <returns>The candidate key for eviction, or the oldest key if all items have their second-chance flag set.</returns>
     private TKey? PeekSecondChanceCandidate()
     {
-        foreach (TKey key in this._order)
+        foreach (TKey key in _order)
         {
-            if (this._store.TryGetValue(key, out CacheItem? item) && !item.SecondChance)
+            if (_store.TryGetValue(key, out CacheItem? item) && !item.SecondChance)
                 return key;
         }
 
-        return this._order.First is not null ? this._order.First.Value : default;
+        return _order.First is not null ? _order.First.Value : default;
     }
 
     /// <summary>
@@ -603,12 +603,12 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <param name="key">The key to remove.</param>
     private void RemoveFromFrequencyList(int frequency, TKey key)
     {
-        if (this._frequencyList.TryGetValue(frequency, out LinkedList<TKey>? list))
+        if (_frequencyList.TryGetValue(frequency, out LinkedList<TKey>? list))
         {
             list.Remove(key);
 
             if (list.Count == 0)
-                this._frequencyList.Remove(frequency);
+                _frequencyList.Remove(frequency);
         }
     }
 
@@ -619,24 +619,24 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <param name="item">The associated cache item for the key.</param>
     private void TouchInternal(TKey key, CacheItem item)
     {
-        switch (this._evictingPolicy)
+        switch (_evictingPolicy)
         {
             case EvictingDictionaryPolicy.LeastRecentlyUsed:
             case EvictingDictionaryPolicy.MostRecentlyUsed:
-                if (this._order is not null)
+                if (_order is not null)
                 {
                     if (item.Node is not null)
-                        this._order.Remove(item.Node);
+                        _order.Remove(item.Node);
 
-                    item.Node = this._order.AddLast(key);
+                    item.Node = _order.AddLast(key);
                 }
 
                 break;
 
             case EvictingDictionaryPolicy.LeastFrequentlyUsed:
-                this.RemoveFromFrequencyList(item.Frequency, key);
+                RemoveFromFrequencyList(item.Frequency, key);
                 item.Frequency++;
-                this.AddToFrequencyList(item.Frequency, key);
+                AddToFrequencyList(item.Frequency, key);
                 break;
 
             case EvictingDictionaryPolicy.SecondChance:

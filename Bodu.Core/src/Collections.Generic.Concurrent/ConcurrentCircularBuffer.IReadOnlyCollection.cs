@@ -18,7 +18,7 @@ public sealed partial class ConcurrentCircularBuffer<T> :
     /// </summary>
     /// <value>
     /// The number of elements observed at the time of the call. Under concurrency, the value may be transiently stale. For a stable
-    /// point-in-time count, call <see cref="ToArray" /> and use its length.
+    /// point-in-time count, call <see cref="ToArray"/> and use its length.
     /// </value>
     /// <remarks>
     /// <para>
@@ -34,11 +34,11 @@ public sealed partial class ConcurrentCircularBuffer<T> :
     {
         get
         {
-            int head = Volatile.Read(ref this._head);
-            int tail = Volatile.Read(ref this._tail);
+            int head = Volatile.Read(ref _head);
+            int tail = Volatile.Read(ref _tail);
             int diff = tail - head;
             if (diff < 0) diff = 0; // correct under signed counter wrapping; also guards transient races
-            if (diff > this._capacity) diff = this._capacity; // clamp to capacity
+            if (diff > _capacity) diff = _capacity; // clamp to capacity
             return diff;
         }
     }
@@ -46,10 +46,10 @@ public sealed partial class ConcurrentCircularBuffer<T> :
     /// <summary>
     /// Returns an enumerator that iterates over a snapshot of the buffer's contents.
     /// </summary>
-    /// <returns>An <see cref="Enumerator" /> that iterates through the buffer in order from oldest to newest.</returns>
+    /// <returns>An <see cref="Enumerator"/> that iterates through the buffer in order from oldest to newest.</returns>
     /// <remarks>
     /// <para>
-    /// The enumerator captures a snapshot at the moment of creation via <see cref="ToArray" />. Modifications to the buffer after the
+    /// The enumerator captures a snapshot at the moment of creation via <see cref="ToArray"/>. Modifications to the buffer after the
     /// enumerator is created are not reflected in the enumerated results.
     /// </para>
     /// </remarks>

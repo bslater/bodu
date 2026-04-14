@@ -11,10 +11,10 @@ namespace Bodu.Collections.Generic;
 public partial class CircularBuffer<T>
 {
     /// <summary>
-    /// Enumerates the elements of a <see cref="CircularBuffer{T}" />.
+    /// Enumerates the elements of a <see cref="CircularBuffer{T}"/>.
     /// </summary>
     /// <remarks>
-    /// <para>Use the <see langword="foreach" /> statement to simplify the enumeration process instead of directly using this enumerator.</para>
+    /// <para>Use the <see langword="foreach"/> statement to simplify the enumeration process instead of directly using this enumerator.</para>
     /// <para>
     /// The enumerator provides read-only access to the collection's elements. Modifying the underlying collection while enumerating
     /// invalidates the enumerator.
@@ -31,26 +31,26 @@ public partial class CircularBuffer<T>
         private int _iteratedCount;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Enumerator" /> struct.
+        /// Initializes a new instance of the <see cref="Enumerator"/> struct.
         /// </summary>
         /// <param name="circularBuffer">The buffer to enumerate.</param>
         internal Enumerator(CircularBuffer<T> circularBuffer)
         {
-            this._circularBuffer = circularBuffer;
-            this._version = circularBuffer._version;
-            this._currentIndex = -1;
-            this._current = default!;
-            this._iteratedCount = 0;
+            _circularBuffer = circularBuffer;
+            _version = circularBuffer._version;
+            _currentIndex = -1;
+            _current = default!;
+            _iteratedCount = 0;
         }
 
         /// <inheritdoc />
         public T Current =>
-            this._currentIndex == -1
+            _currentIndex == -1
                 ? throw new InvalidOperationException(ResourceStrings.InvalidOperation_EnumeratorNotOnElement)
-                : this._current;
+                : _current;
 
         /// <inheritdoc />
-        object System.Collections.IEnumerator.Current => this.Current!;
+        object System.Collections.IEnumerator.Current => Current!;
 
         /// <inheritdoc />
         public void Dispose()
@@ -61,19 +61,19 @@ public partial class CircularBuffer<T>
         /// <inheritdoc />
         public bool MoveNext()
         {
-            if (this._version != this._circularBuffer._version)
+            if (_version != _circularBuffer._version)
                 throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
 
-            if (this._iteratedCount >= this._circularBuffer._count)
+            if (_iteratedCount >= _circularBuffer._count)
             {
-                this._current = default!;
-                this._currentIndex = -1; // Ended
+                _current = default!;
+                _currentIndex = -1; // Ended
                 return false;
             }
 
-            this._currentIndex = (this._circularBuffer._head + this._iteratedCount) % this._circularBuffer._capacity;
-            this._current = this._circularBuffer._internalBuffer[this._currentIndex];
-            this._iteratedCount++;
+            _currentIndex = (_circularBuffer._head + _iteratedCount) % _circularBuffer._capacity;
+            _current = _circularBuffer._internalBuffer[_currentIndex];
+            _iteratedCount++;
 
             return true;
         }
@@ -81,12 +81,12 @@ public partial class CircularBuffer<T>
         /// <inheritdoc />
         public void Reset()
         {
-            if (this._version != this._circularBuffer._version)
+            if (_version != _circularBuffer._version)
                 throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
 
-            this._currentIndex = -1;
-            this._current = default!;
-            this._iteratedCount = 0;
+            _currentIndex = -1;
+            _current = default!;
+            _iteratedCount = 0;
         }
     }
 }

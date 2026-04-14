@@ -12,7 +12,7 @@ namespace Bodu.Collections.Extensions;
 /// <remarks>
 /// This enum defines composable control flags that determine whether an element should be yielded, whether its children should be
 /// traversed, and whether recursion should stop after the current element. These values are intended to be treated as bitmasks using
-/// <see cref="int" /> values (not [Flags]).
+/// <see cref="int"/> values (not [Flags]).
 /// <para>
 /// Typical usage includes returning one of these values from a <c>Func&lt;T, RecursiveSelectControl&gt;</c> to control behavior
 /// dynamically within a recursive traversal method.
@@ -27,63 +27,63 @@ namespace Bodu.Collections.Extensions;
 /// <description>Exit All</description>
 /// </listheader>
 /// <item>
-/// <term><see cref="SkipOnly" /></term>
+/// <term><see cref="SkipOnly"/></term>
 /// <description>No</description>
 /// <description>No</description>
 /// <description>No</description>
 /// <description>No</description>
 /// </item>
 /// <item>
-/// <term><see cref="YieldOnly" /></term>
+/// <term><see cref="YieldOnly"/></term>
 /// <description>Yes</description>
 /// <description>No</description>
 /// <description>No</description>
 /// <description>No</description>
 /// </item>
 /// <item>
-/// <term><see cref="YieldAndRecurse" /></term>
+/// <term><see cref="YieldAndRecurse"/></term>
 /// <description>Yes</description>
 /// <description>Yes</description>
 /// <description>No</description>
 /// <description>No</description>
 /// </item>
 /// <item>
-/// <term><see cref="YieldAndBreak" /></term>
+/// <term><see cref="YieldAndBreak"/></term>
 /// <description>Yes</description>
 /// <description>No</description>
 /// <description>Yes</description>
 /// <description>No</description>
 /// </item>
 /// <item>
-/// <term><see cref="YieldAndExit" /></term>
+/// <term><see cref="YieldAndExit"/></term>
 /// <description>Yes</description>
 /// <description>No</description>
 /// <description>No</description>
 /// <description>Yes</description>
 /// </item>
 /// <item>
-/// <term><see cref="RecurseOnly" /></term>
+/// <term><see cref="RecurseOnly"/></term>
 /// <description>No</description>
 /// <description>Yes</description>
 /// <description>No</description>
 /// <description>No</description>
 /// </item>
 /// <item>
-/// <term><see cref="SkipAndRecurse" /></term>
+/// <term><see cref="SkipAndRecurse"/></term>
 /// <description>No</description>
 /// <description>Yes</description>
 /// <description>No</description>
 /// <description>No</description>
 /// </item>
 /// <item>
-/// <term><see cref="SkipAndBreak" /></term>
+/// <term><see cref="SkipAndBreak"/></term>
 /// <description>No</description>
 /// <description>No</description>
 /// <description>Yes</description>
 /// <description>No</description>
 /// </item>
 /// <item>
-/// <term><see cref="SkipAndExit" /></term>
+/// <term><see cref="SkipAndExit"/></term>
 /// <description>No</description>
 /// <description>No</description>
 /// <description>No</description>

@@ -24,17 +24,17 @@ public static partial class IEnumerableExtensions
     /// <param name="source">The source sequence to search.</param>
     /// <param name="items">The items to locate within the source sequence.</param>
     /// <param name="comparer">
-    /// An optional equality comparer to use for element comparisons; if <see langword="null" />, the default comparer is used.
+    /// An optional equality comparer to use for element comparisons; if <see langword="null"/>, the default comparer is used.
     /// </param>
-    /// <returns><see langword="true" /> if any item in <paramref name="items" /> exists in <paramref name="source" />; otherwise, <see langword="false" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if either <paramref name="source" /> or <paramref name="items" /> is <see langword="null" />.</exception>
+    /// <returns><see langword="true"/> if any item in <paramref name="items"/> exists in <paramref name="source"/>; otherwise, <see langword="false"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if either <paramref name="source"/> or <paramref name="items"/> is <see langword="null"/>.</exception>
     /// <remarks>
     /// <para>
-    /// This method avoids repeated enumeration of either sequence by building a <see cref="HashSet{T}" /> for O(1) membership lookups.
+    /// This method avoids repeated enumeration of either sequence by building a <see cref="HashSet{T}"/> for O(1) membership lookups.
     /// </para>
     /// <para>
     /// The set is built from whichever collection has fewer elements, when both sizes are known, to minimise allocation and fill cost.
-    /// When sizes are unknown or equal, the set is built from <paramref name="items" />, which is always materialised and is typically
+    /// When sizes are unknown or equal, the set is built from <paramref name="items"/>, which is always materialised and is typically
     /// the smaller "needle" set in common usage.
     /// </para>
     /// </remarks>

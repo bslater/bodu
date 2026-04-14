@@ -84,13 +84,13 @@ public static partial class BufferConverter
     }
 
     /// <summary>
-    /// Reverses the elements of type <typeparamref name="T" /> in a span in place.
+    /// Reverses the elements of type <typeparamref name="T"/> in a span in place.
     /// </summary>
     /// <typeparam name="T">The unmanaged type of elements to reverse.</typeparam>
     /// <param name="span">The span containing elements to reverse.</param>
     /// <remarks>
     /// This method reverses the order of elements within the span without allocating additional memory. It operates directly on the
-    /// provided memory and assumes platform-native layout for <typeparamref name="T" />. No exception is thrown for empty or
+    /// provided memory and assumes platform-native layout for <typeparamref name="T"/>. No exception is thrown for empty or
     /// single-element spans; they are treated as no-op.
     /// </remarks>
     public static void Reverse<T>(this Span<T> span)
@@ -120,7 +120,7 @@ public static partial class BufferConverter
     public static void Reverse(this Memory<byte> memory) => memory.Span.Reverse();
 
     /// <summary>
-    /// Reverses the elements in a memory block of unmanaged type <typeparamref name="T" /> in place.
+    /// Reverses the elements in a memory block of unmanaged type <typeparamref name="T"/> in place.
     /// </summary>
     /// <typeparam name="T">The unmanaged type to reverse.</typeparam>
     /// <param name="memory">The memory block to reverse.</param>

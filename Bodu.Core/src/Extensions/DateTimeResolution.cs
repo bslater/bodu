@@ -7,7 +7,7 @@
 namespace Bodu.Extensions;
 
 /// <summary>
-/// Specifies the resolution level for a <see cref="System.DateTime" /> value.
+/// Specifies the resolution level for a <see cref="System.DateTime"/> value.
 /// </summary>
 public enum DateTimeResolution
 {

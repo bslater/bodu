@@ -11,22 +11,22 @@ namespace Bodu.Extensions;
 public static partial class DateOnlyExtensions
 {
     /// <summary>
-    /// Returns a new <see cref="DateOnly" /> representing the previous calendar weekday before the given <paramref name="date" />,
-    /// based on the specified <paramref name="weekend" /> definition.
+    /// Returns a new <see cref="DateOnly"/> representing the previous calendar weekday before the given <paramref name="date"/>,
+    /// based on the specified <paramref name="weekend"/> definition.
     /// </summary>
-    /// <param name="date">The starting <see cref="DateOnly" /> from which to search backward.</param>
-    /// <param name="weekend">The <see cref="CalendarWeekendDefinition" /> that defines which days are considered weekends.</param>
+    /// <param name="date">The starting <see cref="DateOnly"/> from which to search backward.</param>
+    /// <param name="weekend">The <see cref="CalendarWeekendDefinition"/> that defines which days are considered weekends.</param>
     /// <returns>
-    /// A <see cref="DateOnly" /> representing the previous weekday prior to <paramref name="date" />, excluding days defined as
-    /// weekends by <paramref name="weekend" />.
+    /// A <see cref="DateOnly"/> representing the previous weekday prior to <paramref name="date"/>, excluding days defined as
+    /// weekends by <paramref name="weekend"/>.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="weekend" /> is not a valid <see cref="CalendarWeekendDefinition" /> value.
+    /// Thrown if <paramref name="weekend"/> is not a valid <see cref="CalendarWeekendDefinition"/> value.
     /// </exception>
     /// <remarks>
     /// <para>
-    /// If <paramref name="date" /> falls on a weekday, the result will be the previous calendar day that is also a weekday according to
-    /// the specified <paramref name="weekend" /> pattern.
+    /// If <paramref name="date"/> falls on a weekday, the result will be the previous calendar day that is also a weekday according to
+    /// the specified <paramref name="weekend"/> pattern.
     /// </para>
     /// <para>The returned value does not include any time or kind metadata and is purely a calendar date.</para>
     /// </remarks>
@@ -45,26 +45,26 @@ public static partial class DateOnlyExtensions
     }
 
     /// <summary>
-    /// Returns a new <see cref="DateOnly" /> representing the previous calendar weekday before the given <paramref name="date" />,
-    /// based on the specified <paramref name="weekend" /> definition and optional <paramref name="provider" />.
+    /// Returns a new <see cref="DateOnly"/> representing the previous calendar weekday before the given <paramref name="date"/>,
+    /// based on the specified <paramref name="weekend"/> definition and optional <paramref name="provider"/>.
     /// </summary>
-    /// <param name="date">The starting <see cref="DateOnly" /> from which to search backward.</param>
-    /// <param name="weekend">The <see cref="CalendarWeekendDefinition" /> that defines the default pattern of weekend days.</param>
+    /// <param name="date">The starting <see cref="DateOnly"/> from which to search backward.</param>
+    /// <param name="weekend">The <see cref="CalendarWeekendDefinition"/> that defines the default pattern of weekend days.</param>
     /// <param name="provider">
-    /// An optional <see cref="IWeekendDefinitionProvider" /> that can override the weekend definition with custom logic. If
-    /// <c>null</c>, the default behavior based on <paramref name="weekend" /> is used.
+    /// An optional <see cref="IWeekendDefinitionProvider"/> that can override the weekend definition with custom logic. If
+    /// <c>null</c>, the default behavior based on <paramref name="weekend"/> is used.
     /// </param>
     /// <returns>
-    /// A <see cref="DateOnly" /> representing the previous weekday according to the specified <paramref name="weekend" /> definition
-    /// and optional <paramref name="provider" />.
+    /// A <see cref="DateOnly"/> representing the previous weekday according to the specified <paramref name="weekend"/> definition
+    /// and optional <paramref name="provider"/>.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="weekend" /> is not a valid <see cref="CalendarWeekendDefinition" /> value.
+    /// Thrown if <paramref name="weekend"/> is not a valid <see cref="CalendarWeekendDefinition"/> value.
     /// </exception>
     /// <remarks>
     /// <para>
-    /// If <paramref name="date" /> falls on a weekday, the result will be the previous calendar day that is also a weekday according to
-    /// the specified <paramref name="weekend" /> pattern or the custom rules provided by <paramref name="provider" />.
+    /// If <paramref name="date"/> falls on a weekday, the result will be the previous calendar day that is also a weekday according to
+    /// the specified <paramref name="weekend"/> pattern or the custom rules provided by <paramref name="provider"/>.
     /// </para>
     /// <para>The returned value is a pure calendar date and does not include any time or kind metadata.</para>
     /// </remarks>

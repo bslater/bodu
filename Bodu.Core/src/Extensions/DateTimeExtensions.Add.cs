@@ -11,19 +11,19 @@ namespace Bodu.Extensions;
 public static partial class DateTimeExtensions
 {
     /// <summary>
-    /// Returns a new <see cref="DateTime" /> that adds the specified number of years, months, and fractional days to the value of the specified instance.
+    /// Returns a new <see cref="DateTime"/> that adds the specified number of years, months, and fractional days to the value of the specified instance.
     /// </summary>
     /// <param name="dateTime">The date and time value to add to.</param>
     /// <param name="years">The number of years to add.</param>
     /// <param name="months">The number of months to add.</param>
     /// <param name="days">The number of days to add, including fractional values.</param>
     /// <returns>
-    /// An object whose value is the sum of the date and time represented by <paramref name="dateTime" /> and the specified number of years, months, and days.
+    /// An object whose value is the sum of the date and time represented by <paramref name="dateTime"/> and the specified number of years, months, and days.
     /// </returns>
     /// <remarks>
     /// <para>
-    /// This method returns a new <see cref="DateTime" /> whose value is the result of adding the specified number of calendar years, calendar months,
-    /// and fractional days to <paramref name="dateTime" />. The original instance is not modified.
+    /// This method returns a new <see cref="DateTime"/> whose value is the result of adding the specified number of calendar years, calendar months,
+    /// and fractional days to <paramref name="dateTime"/>. The original instance is not modified.
     /// </para>
     /// <para>
     /// Adjustments are performed in the following order: years, then months, then days.
@@ -34,15 +34,15 @@ public static partial class DateTimeExtensions
     /// The method accounts for leap years and the varying number of days in each month.
     /// </para>
     /// <para>
-    /// The <paramref name="days" /> parameter supports fractional values, which are applied with tick-level precision. Values smaller than 1e-10 are ignored.
-    /// The original time-of-day is preserved unless <paramref name="days" /> includes a fractional component, in which case the time is adjusted accordingly.
+    /// The <paramref name="days"/> parameter supports fractional values, which are applied with tick-level precision. Values smaller than 1e-10 are ignored.
+    /// The original time-of-day is preserved unless <paramref name="days"/> includes a fractional component, in which case the time is adjusted accordingly.
     /// </para>
     /// <para>
-    /// This method performs all adjustments using tick arithmetic and does not rely on <see cref="DateTime.AddYears(int)" />,
-    /// <see cref="DateTime.AddMonths(int)" />, or <see cref="DateTime.AddDays(double)" />, making it suitable for performance-critical paths.
+    /// This method performs all adjustments using tick arithmetic and does not rely on <see cref="DateTime.AddYears(int)"/>,
+    /// <see cref="DateTime.AddMonths(int)"/>, or <see cref="DateTime.AddDays(double)"/>, making it suitable for performance-critical paths.
     /// </para>
     /// <para>
-    /// The <see cref="DateTime.Kind" /> property of the returned instance matches that of the original <paramref name="dateTime" />.
+    /// The <see cref="DateTime.Kind"/> property of the returned instance matches that of the original <paramref name="dateTime"/>.
     /// </para>
     /// <para>
     /// <b>Examples:</b>
@@ -67,7 +67,7 @@ public static partial class DateTimeExtensions
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The resulting date is earlier than <see cref="DateTime.MinValue" /> or later than <see cref="DateTime.MaxValue" />.
+    /// The resulting date is earlier than <see cref="DateTime.MinValue"/> or later than <see cref="DateTime.MaxValue"/>.
     /// </exception>
     public static DateTime Add(this DateTime dateTime, int years, int months, double days)
     {
@@ -96,9 +96,11 @@ public static partial class DateTimeExtensions
             totalTicks += GetDaysToTicks(days);
 
         if (totalTicks < DateTime.MinValue.Ticks || totalTicks > DateTime.MaxValue.Ticks)
+        {
             throw new ArgumentOutOfRangeException(
                 nameof(dateTime),
                 string.Format(ResourceStrings.Arg_OutOfRange_ResultingValueOutOfRangeForType, nameof(DateTime)));
+        }
 
         return new DateTime(totalTicks, dateTime.Kind);
     }

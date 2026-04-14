@@ -12,11 +12,11 @@ namespace Bodu.Extensions;
 public static partial class NumericExtensions
 {
     /// <summary>
-    /// Reverses the order of all bits in the specified <see cref="byte" /> value.
+    /// Reverses the order of all bits in the specified <see cref="byte"/> value.
     /// </summary>
     /// <param name="value">The 8-bit unsigned value whose bits are to be reversed.</param>
     /// <returns>
-    /// A <see cref="byte" /> whose bits appear in the reverse order of those in <paramref name="value" />.
+    /// A <see cref="byte"/> whose bits appear in the reverse order of those in <paramref name="value"/>.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte ReverseBits(this byte value)
@@ -28,11 +28,11 @@ public static partial class NumericExtensions
     }
 
     /// <summary>
-    /// Reverses the order of all bits in the specified <see cref="ushort" /> value.
+    /// Reverses the order of all bits in the specified <see cref="ushort"/> value.
     /// </summary>
     /// <param name="value">The 16-bit unsigned integer whose bits are to be reversed.</param>
     /// <returns>
-    /// A <see cref="ushort" /> whose bits appear in the reverse order of those in <paramref name="value" />.
+    /// A <see cref="ushort"/> whose bits appear in the reverse order of those in <paramref name="value"/>.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ushort ReverseBits(this ushort value)
@@ -45,11 +45,11 @@ public static partial class NumericExtensions
     }
 
     /// <summary>
-    /// Reverses the order of all bits in the specified <see cref="uint" /> value.
+    /// Reverses the order of all bits in the specified <see cref="uint"/> value.
     /// </summary>
     /// <param name="value">The 32-bit unsigned integer whose bits are to be reversed.</param>
     /// <returns>
-    /// A <see cref="uint" /> whose bits appear in the reverse order of those in <paramref name="value" />.
+    /// A <see cref="uint"/> whose bits appear in the reverse order of those in <paramref name="value"/>.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint ReverseBits(this uint value)
@@ -63,11 +63,11 @@ public static partial class NumericExtensions
     }
 
     /// <summary>
-    /// Reverses the order of all bits in the specified <see cref="ulong" /> value.
+    /// Reverses the order of all bits in the specified <see cref="ulong"/> value.
     /// </summary>
     /// <param name="value">The 64-bit unsigned integer whose bits are to be reversed.</param>
     /// <returns>
-    /// A <see cref="ulong" /> whose bits appear in the reverse order of those in <paramref name="value" />.
+    /// A <see cref="ulong"/> whose bits appear in the reverse order of those in <paramref name="value"/>.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong ReverseBits(this ulong value)
@@ -84,19 +84,19 @@ public static partial class NumericExtensions
     /// <summary>
     /// Reverses the bits within each byte of the specified byte array and returns a new array.
     /// </summary>
-    /// <param name="bytes">The byte array to process. Must not be <see langword="null" />.</param>
+    /// <param name="bytes">The byte array to process. Must not be <see langword="null"/>.</param>
     /// <returns>
     /// A new byte array in which the bits of each element have been reversed. The original array
     /// is not modified.
     /// </returns>
     /// <remarks>
     /// <para>
-    /// Each byte is reversed independently using <see cref="ReverseBits(byte)" />. The relative
+    /// Each byte is reversed independently using <see cref="ReverseBits(byte)"/>. The relative
     /// order of bytes within the array is preserved.
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="bytes" /> is <see langword="null" />.
+    /// <paramref name="bytes"/> is <see langword="null"/>.
     /// </exception>
     public static byte[] ReverseBits(this byte[] bytes)
     {

@@ -12,7 +12,7 @@ namespace Bodu.Extensions;
 public static partial class DateTimeExtensions
 {
     /// <summary>
-    /// Returns a new <see cref="DateTime" /> representing the last date (Sunday) of the specified ISO 8601 week and year.
+    /// Returns a new <see cref="DateTime"/> representing the last date (Sunday) of the specified ISO 8601 week and year.
     /// </summary>
     /// <param name="isoYear">
     /// The ISO 8601 year, which corresponds to the calendar year containing the Thursday of the first ISO week (e.g., 2024).
@@ -36,11 +36,11 @@ public static partial class DateTimeExtensions
     /// This method calculates the target Sunday by anchoring on January 4th, backtracking to the Monday of ISO week 1, advancing by the
     /// specified number of weeks, and adding six days to reach the Sunday of that week.
     /// </para>
-    /// <note type="tip">For the corresponding start of the week, use <see cref="GetFirstDateOfIsoWeek" />.</note>
-    /// <para>The result has its time component normalized to midnight (00:00:00), and the original <see cref="DateTime.Kind" /> is retained.</para>
+    /// <note type="tip">For the corresponding start of the week, use <see cref="GetFirstDateOfIsoWeek"/>.</note>
+    /// <para>The result has its time component normalized to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="isoYear" /> is outside the valid range, or if <paramref name="isoWeek" /> is less than 1 or greater than
+    /// Thrown if <paramref name="isoYear"/> is outside the valid range, or if <paramref name="isoWeek"/> is less than 1 or greater than
     /// the number of ISO weeks in the year.
     /// </exception>
     public static DateTime LastDateOfIsoWeek(int isoYear, int isoWeek)

@@ -16,9 +16,9 @@ public static partial class SequenceGenerator
     /// </summary>
     /// <param name="min">The inclusive minimum value for the sequence.</param>
     /// <param name="max">The exclusive maximum value for the sequence.</param>
-    /// <returns>An enumerable of Fibonacci numbers between <paramref name="min" /> and <paramref name="max" />.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if either <paramref name="min" /> or <paramref name="max" /> is negative.</exception>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="min" /> is greater than <paramref name="max" />.</exception>
+    /// <returns>An enumerable of Fibonacci numbers between <paramref name="min"/> and <paramref name="max"/>.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if either <paramref name="min"/> or <paramref name="max"/> is negative.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="min"/> is greater than <paramref name="max"/>.</exception>
     public static IEnumerable<long> Fibonacci(long min, long max)
     {
         ThrowHelper.ThrowIfLessThan(min, 0);

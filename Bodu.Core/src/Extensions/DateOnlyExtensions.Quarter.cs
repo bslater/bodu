@@ -12,11 +12,11 @@ namespace Bodu.Extensions;
 public static partial class DateOnlyExtensions
 {
     /// <summary>
-    /// Returns the quarter number (1–4) of the year for the specified <see cref="DateOnly" />, using the standard calendar quarter
-    /// definition ( <see cref="CalendarQuarterDefinition.JanuaryToDecember" />).
+    /// Returns the quarter number (1–4) of the year for the specified <see cref="DateOnly"/>, using the standard calendar quarter
+    /// definition ( <see cref="CalendarQuarterDefinition.JanuaryToDecember"/>).
     /// </summary>
-    /// <param name="date">The <see cref="DateOnly" /> value to evaluate.</param>
-    /// <returns>An integer between 1 and 4 representing the calendar quarter that includes <paramref name="date" />.</returns>
+    /// <param name="date">The <see cref="DateOnly"/> value to evaluate.</param>
+    /// <returns>An integer between 1 and 4 representing the calendar quarter that includes <paramref name="date"/>.</returns>
     /// <remarks>
     /// This method uses the standard Gregorian calendar quarter structure aligned to the calendar year:
     /// <list type="bullet">
@@ -37,20 +37,20 @@ public static partial class DateOnlyExtensions
     /// <description>1 October – 31 December</description>
     /// </item>
     /// </list>
-    /// The quarter number returned is based on the month of <paramref name="date" />, regardless of the day or time.
+    /// The quarter number returned is based on the month of <paramref name="date"/>, regardless of the day or time.
     /// </remarks>
     public static int Quarter(this DateOnly date) => GetQuarterForDate(date, GetQuarterDefinition(CalendarQuarterDefinition.JanuaryToDecember));
 
     /// <summary>
-    /// Returns the quarter number (1–4) for the specified <see cref="DateOnly" />, using the given <see cref="CalendarQuarterDefinition" />
+    /// Returns the quarter number (1–4) for the specified <see cref="DateOnly"/>, using the given <see cref="CalendarQuarterDefinition"/>
     /// to determine the fiscal calendar structure.
     /// </summary>
-    /// <param name="date">The <see cref="DateOnly" /> value to evaluate.</param>
+    /// <param name="date">The <see cref="DateOnly"/> value to evaluate.</param>
     /// <param name="definition">Specifies the quarter definition used to determine the quarter.</param>
-    /// <returns>An integer between 1 and 4 representing the quarter that includes the specified <paramref name="date" />.</returns>
+    /// <returns>An integer between 1 and 4 representing the quarter that includes the specified <paramref name="date"/>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="definition" /> is not a valid value of the <see cref="CalendarQuarterDefinition" /> enum, or if it is
-    /// <see cref="CalendarQuarterDefinition.Custom" />. Use the <see cref="Quarter(DateOnly, IQuarterDefinitionProvider)" /> overload to
+    /// Thrown if <paramref name="definition"/> is not a valid value of the <see cref="CalendarQuarterDefinition"/> enum, or if it is
+    /// <see cref="CalendarQuarterDefinition.Custom"/>. Use the <see cref="Quarter(DateOnly, IQuarterDefinitionProvider)"/> overload to
     /// support custom definitions.
     /// </exception>
     /// <remarks>
@@ -69,24 +69,24 @@ public static partial class DateOnlyExtensions
     }
 
     /// <summary>
-    /// Returns the quarter number (1–4) for the specified <see cref="DateOnly" />, using a custom <see cref="IQuarterDefinitionProvider" /> implementation.
+    /// Returns the quarter number (1–4) for the specified <see cref="DateOnly"/>, using a custom <see cref="IQuarterDefinitionProvider"/> implementation.
     /// </summary>
-    /// <param name="date">The <see cref="DateOnly" /> value to evaluate.</param>
+    /// <param name="date">The <see cref="DateOnly"/> value to evaluate.</param>
     /// <param name="provider">
-    /// An implementation of <see cref="IQuarterDefinitionProvider" /> that determines the quarter based on custom logic.
+    /// An implementation of <see cref="IQuarterDefinitionProvider"/> that determines the quarter based on custom logic.
     /// </param>
-    /// <returns>An integer between 1 and 4 representing the quarter that includes the specified <paramref name="date" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="provider" /> is <see langword="null" />.</exception>
+    /// <returns>An integer between 1 and 4 representing the quarter that includes the specified <paramref name="date"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="provider"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if the quarter value returned by the provider is outside the valid range of 1 through 4.
     /// </exception>
     /// <remarks>
     /// Use this overload to support advanced or non-standard fiscal calendars, such as 4-4-5 financial periods, retail accounting
-    /// calendars, or region-specific quarter models not covered by <see cref="CalendarQuarterDefinition" />.
+    /// calendars, or region-specific quarter models not covered by <see cref="CalendarQuarterDefinition"/>.
     /// <para>
-    /// This method delegates to <see cref="IQuarterDefinitionProvider.GetQuarter(DateOnly)" /> and can be used in conjunction with
-    /// <see cref="FirstDayOfQuarter(DateOnly, IQuarterDefinitionProvider)" /> and
-    /// <see cref="LastDayOfQuarter(DateOnly, IQuarterDefinitionProvider)" /> for complete custom quarter boundary resolution.
+    /// This method delegates to <see cref="IQuarterDefinitionProvider.GetQuarter(DateOnly)"/> and can be used in conjunction with
+    /// <see cref="FirstDayOfQuarter(DateOnly, IQuarterDefinitionProvider)"/> and
+    /// <see cref="LastDayOfQuarter(DateOnly, IQuarterDefinitionProvider)"/> for complete custom quarter boundary resolution.
     /// </para>
     /// </remarks>
     public static int Quarter(this DateOnly date, IQuarterDefinitionProvider provider)
@@ -148,14 +148,14 @@ public static partial class DateOnlyExtensions
     }
 
     /// <summary>
-    /// Determines the fiscal or calendar year and quarter number for a given <see cref="DateOnly" /> based on a custom quarter definition.
+    /// Determines the fiscal or calendar year and quarter number for a given <see cref="DateOnly"/> based on a custom quarter definition.
     /// </summary>
-    /// <param name="definition">The <see cref="CalendarQuarterDefinition" /> that defines how quarters are anchored.</param>
+    /// <param name="definition">The <see cref="CalendarQuarterDefinition"/> that defines how quarters are anchored.</param>
     /// <param name="referenceDate">The date to evaluate.</param>
-    /// <returns>A tuple containing the resolved <c>Year</c> and <c>Quarter</c> (1–4) that include the <paramref name="referenceDate" />.</returns>
+    /// <returns>A tuple containing the resolved <c>Year</c> and <c>Quarter</c> (1–4) that include the <paramref name="referenceDate"/>.</returns>
     /// <remarks>
     /// This method supports both standard and non-standard quarter definitions by calculating the appropriate year and quarter number for
-    /// the given <paramref name="referenceDate" />. If the computed start date of the quarter is after the reference date, the year is
+    /// the given <paramref name="referenceDate"/>. If the computed start date of the quarter is after the reference date, the year is
     /// decremented to represent the previous fiscal year.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -176,9 +176,9 @@ public static partial class DateOnlyExtensions
     }
 
     /// <summary>
-    /// Extracts the anchor month and day components from a <see cref="CalendarQuarterDefinition" /> value.
+    /// Extracts the anchor month and day components from a <see cref="CalendarQuarterDefinition"/> value.
     /// </summary>
-    /// <param name="definition">A <see cref="CalendarQuarterDefinition" /> enum value encoded as MMDD (e.g., 401 for 1 April).</param>
+    /// <param name="definition">A <see cref="CalendarQuarterDefinition"/> enum value encoded as MMDD (e.g., 401 for 1 April).</param>
     /// <returns>A tuple <c>(defMonth, defDay)</c> representing the anchor month and day of Q1.</returns>
     /// <remarks>Used as a normalized form of the quarter definition for modular math calculations.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -189,11 +189,11 @@ public static partial class DateOnlyExtensions
         uint defMonth = def / 100U;
         uint defDay = def % 100U;
 
-        return new(defMonth, defDay);
+        return new (defMonth, defDay);
     }
 
     /// <summary>
-    /// Determines the fiscal or calendar quarter number (1–4) that contains the specified <see cref="DateOnly" />, based on the supplied
+    /// Determines the fiscal or calendar quarter number (1–4) that contains the specified <see cref="DateOnly"/>, based on the supplied
     /// quarter definition anchor.
     /// </summary>
     /// <param name="date">The date to evaluate.</param>
