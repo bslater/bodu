@@ -102,14 +102,44 @@
             using (var rng = RandomNumberGenerator.Create())
             {
                 byte[] temp = new byte[buffer.Length];
-                do rng.GetBytes(temp);
-                while (Array.IndexOf(temp, forbidden) >= 0);
+                try
+                {
+                    rng.GetBytes(temp);
 
-                temp.CopyTo(buffer);
+                    // Targeted per-byte replacement: only re-draw for the bytes that
+                    // matched the forbidden value, rather than re-filling the whole buffer.
+                    byte[] single = new byte[1];
+                    for (int i = 0; i < temp.Length; i++)
+                    {
+                        while (temp[i] == forbidden)
+                        {
+                            rng.GetBytes(single);
+                            temp[i] = single[0];
+                        }
+                    }
+
+                    single[0] = 0;
+                    temp.CopyTo(buffer);
+                }
+                finally
+                {
+                    Array.Clear(temp, 0, temp.Length);
+                }
             }
 #else
-            do RandomNumberGenerator.Fill(buffer);
-            while (buffer.IndexOf(forbidden) >= 0);
+            RandomNumberGenerator.Fill(buffer);
+
+            // Targeted per-byte replacement: only re-draw for the bytes that
+            // matched the forbidden value, rather than re-filling the whole buffer.
+            Span<byte> single = stackalloc byte[1];
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                while (buffer[i] == forbidden)
+                {
+                    RandomNumberGenerator.Fill(single);
+                    buffer[i] = single[0];
+                }
+            }
 #endif
         }
 
