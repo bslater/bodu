@@ -60,8 +60,9 @@
         {
             if (array is null) return;
 
+            // ZeroMemory already overwrites every byte with 0; the subsequent Array.Clear
+            // would be a redundant second pass over the same buffer.
             CryptographicOperations.ZeroMemory(MemoryMarshal.AsBytes(array.AsSpan()));
-            Array.Clear(array, 0, array.Length);
             array = null;
         }
     }
