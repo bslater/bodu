@@ -130,7 +130,7 @@ namespace Bodu.Security.Cryptography
 #if !NET6_0_OR_GREATER
             ThrowHelper.ThrowIfLessThan(ibStart, 0);
             ThrowHelper.ThrowIfLessThan(cbSize, 0);
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, offset, cbSize);
+            ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
             if (finalized)
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
@@ -215,7 +215,7 @@ namespace Bodu.Security.Cryptography
             ObjectDisposedException.ThrowIf(this.disposed, this);
 #else
             if (disposed)
-                throw new ObjectDisposedException(nameof(Adler));
+                throw new ObjectDisposedException(this.GetType().Name);
 #endif
         }
 

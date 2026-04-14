@@ -151,7 +151,7 @@ namespace Bodu.Security.Cryptography
 #if !NET6_0_OR_GREATER
             ThrowHelper.ThrowIfLessThan(ibStart, 0);
             ThrowHelper.ThrowIfLessThan(cbSize, 0);
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, offset, cbSize);
+            ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
             if (finalized)
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
@@ -205,7 +205,7 @@ namespace Bodu.Security.Cryptography
             {
                 32 => [buffer[4], buffer[5], buffer[6], buffer[7]],
                 64 => buffer.ToArray(),
-                _ => throw new NotSupportedException($"Unsupported hash this.size: {this.HashSizeValue} bits.")
+                _ => throw new NotSupportedException($"Unsupported hash size: {this.HashSizeValue} bits.")
             };
         }
 
