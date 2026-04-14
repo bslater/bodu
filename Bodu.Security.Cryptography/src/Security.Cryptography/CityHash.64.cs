@@ -189,12 +189,12 @@ namespace Bodu.Security.Cryptography
 
             ulong u = (a + g).RotateBitsRight(43) + (b.RotateBitsRight(30) + c) * 9;
             ulong v = ((a + g) ^ d) + f + 1;
-            ulong w = BinaryPrimitives.ReverseEndianness(u + v) * mul;
+            ulong w = (u + v).ReverseBytes() * mul;
             ulong x = (e + f).RotateBitsRight(42) + c;
-            ulong y = (BinaryPrimitives.ReverseEndianness(v + w) + h) * mul;
+            ulong y = ((v + w).ReverseBytes() + h) * mul;
             ulong z = e + f + c;
 
-            a = BinaryPrimitives.ReverseEndianness((x + z) * mul + y) + b;
+            a = ((x + z) * mul + y).ReverseBytes() + b;
             b = ShiftMix((z + a) * mul + d + h) * mul;
 
             return b + x;

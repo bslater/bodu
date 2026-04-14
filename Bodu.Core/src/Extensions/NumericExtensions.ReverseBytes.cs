@@ -1,9 +1,10 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NumericExtensions.ReverseBytes.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 
 namespace Bodu.Extensions;
@@ -18,9 +19,13 @@ public static partial class NumericExtensions
     /// A <see cref="ushort"/> whose bytes are in the reverse order of <paramref name="value"/>, converting
     /// between big-endian and little-endian representations.
     /// </returns>
+    /// <remarks>
+    /// Delegates to <see cref="BinaryPrimitives.ReverseEndianness(ushort)"/>, allowing the JIT to lower
+    /// the operation to a single byte-swap instruction on supported platforms.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ushort ReverseBytes(this ushort value) =>
-        (ushort)((value & 0xFFU) << 8 | (value & 0xFF00U) >> 8);
+        BinaryPrimitives.ReverseEndianness(value);
 
     /// <summary>
     /// Reverses the byte order of the specified <see cref="uint"/> value.
@@ -30,10 +35,13 @@ public static partial class NumericExtensions
     /// A <see cref="uint"/> whose bytes are in the reverse order of <paramref name="value"/>, converting
     /// between big-endian and little-endian representations.
     /// </returns>
+    /// <remarks>
+    /// Delegates to <see cref="BinaryPrimitives.ReverseEndianness(uint)"/>, allowing the JIT to lower
+    /// the operation to a single byte-swap instruction on supported platforms.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint ReverseBytes(this uint value) =>
-        (value & 0x000000FFU) << 0x18 | (value & 0x0000FF00U) << 0x08 |
-        (value & 0x00FF0000U) >> 0x08 | (value & 0xFF000000U) >> 0x18;
+        BinaryPrimitives.ReverseEndianness(value);
 
     /// <summary>
     /// Reverses the byte order of the specified <see cref="ulong"/> value.
@@ -43,10 +51,11 @@ public static partial class NumericExtensions
     /// A <see cref="ulong"/> whose bytes are in the reverse order of <paramref name="value"/>, converting
     /// between big-endian and little-endian representations.
     /// </returns>
+    /// <remarks>
+    /// Delegates to <see cref="BinaryPrimitives.ReverseEndianness(ulong)"/>, allowing the JIT to lower
+    /// the operation to a single byte-swap instruction on supported platforms.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong ReverseBytes(this ulong value) =>
-        (value & 0x00000000000000FFUL) << 0x38 | (value & 0x000000000000FF00UL) << 0x28 |
-        (value & 0x0000000000FF0000UL) << 0x18 | (value & 0x00000000FF000000UL) << 0x08 |
-        (value & 0x000000FF00000000UL) >> 0x08 | (value & 0x0000FF0000000000UL) >> 0x18 |
-        (value & 0x00FF000000000000UL) >> 0x28 | (value & 0xFF00000000000000UL) >> 0x38;
+        BinaryPrimitives.ReverseEndianness(value);
 }
