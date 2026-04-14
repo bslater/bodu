@@ -9,13 +9,15 @@ namespace Bodu.Security.Cryptography
         /// finalizing the hash computation throws a <see cref="CryptographicUnexpectedOperationException" />.
         /// </summary>
         [TestMethod]
-        [ExpectedException(typeof(CryptographicUnexpectedOperationException))]
         public void Hash_Get_WhenInitializedAfterTransformBlock_ShouldThrowExactly()
         {
             using var algorithm = this.CreateAlgorithm();
             algorithm.TransformBlock(CryptoTestUtilities.ByteSequence0To255, 0, 256, null, 0);
             algorithm.Initialize();
-            _ = algorithm.Hash;
+            Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
+            {
+                _ = algorithm.Hash;
+            });
         }
 
         /// <summary>
@@ -29,12 +31,14 @@ namespace Bodu.Security.Cryptography
         [DataRow(0, 0)]
         [DataRow(0, 100)]
         [DataRow(10, 10)]
-        [ExpectedException(typeof(CryptographicUnexpectedOperationException))]
         public void Hash_Get_WhenTransformFinalBlockNotCalled_ShouldThrowExactly(int offset, int count)
         {
             using var algorithm = this.CreateAlgorithm();
             algorithm.TransformBlock(CryptoTestUtilities.ByteSequence0To255, offset, count, null, 0);
-            _ = algorithm.Hash;
+            Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
+            {
+                _ = algorithm.Hash;
+            });
         }
     }
 }

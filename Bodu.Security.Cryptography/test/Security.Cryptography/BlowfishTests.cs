@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Bodu.Security.Cryptography
+{
+    [TestClass]
+    public sealed partial class BlowfishTests 
+        : SymmetricAlgorithmTests<Blowfish>
+    {
+        protected override Blowfish CreateAlgorithm() => Blowfish.Create();
+    }
+}

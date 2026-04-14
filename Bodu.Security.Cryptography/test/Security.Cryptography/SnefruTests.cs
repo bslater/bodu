@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography
     /// </summary>
     [TestClass]
     public abstract partial class SnefruTests<TTest, TAlgorithm>
-        : Security.Cryptography.HashAlgorithmTests<TTest, TAlgorithm, SingleTestVariant>
+        : Security.Cryptography.BlockHashAlgorithmTests<TTest, TAlgorithm, SingleTestVariant>
         where TTest : SnefruTests<TTest, TAlgorithm>, new()
         where TAlgorithm : Snefru<TAlgorithm>, new()
     {
@@ -27,7 +27,7 @@ namespace Bodu.Security.Cryptography
         {
             var list = new List<string>(base.GetFieldsToExcludeFromDisposeValidation());
             list.AddRange([
-                "BlockSizeBytes"
+                "ExpectedBlockSize"
             ]);
 
             return list;

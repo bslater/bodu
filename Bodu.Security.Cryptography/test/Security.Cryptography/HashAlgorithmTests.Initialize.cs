@@ -117,5 +117,28 @@ namespace Bodu.Security.Cryptography
                 algorithm.Initialize();
             });
         }
+
+        /// <summary>
+        /// Verifies that <see cref="HashAlgorithm.Initialize" /> resets the algorithm's
+        /// <see cref="HashAlgorithm.State" /> so that a hash computation can be started immediately
+        /// afterwards without a <see cref="CryptographicUnexpectedOperationException" /> being raised.
+        /// Regression guard for <see cref="CubeHash" />, where the .NET-6+ branch of
+        /// <c>Initialize()</c> previously did not reset <c>State</c>.
+        /// </summary>
+        [TestMethod]
+        public void Initialize_AfterHashing_ShouldResetStateForReuse()
+        {
+            using var algorithm = this.CreateAlgorithm();
+
+            byte[] first = algorithm.ComputeHash(new byte[] { 1, 2, 3, 4 });
+            Assert.IsNotNull(first);
+
+            algorithm.Initialize();
+
+            // Must not throw — State should be back to its idle value.
+            byte[] second = algorithm.ComputeHash(new byte[] { 5, 6, 7, 8 });
+            Assert.IsNotNull(second);
+        }
+
     }
 }

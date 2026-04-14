@@ -16,6 +16,9 @@ namespace Bodu.Security.Cryptography
     public partial class SipHash64Tests
         : Security.Cryptography.SipHashTests<SipHash64Tests, SipHash64>
     {
+
+        protected override int ExpectedBlockSizeBytes => 8;
+
         /// <inheritdoc />
         protected override int ExpectedInputBlockSize => 8;
 

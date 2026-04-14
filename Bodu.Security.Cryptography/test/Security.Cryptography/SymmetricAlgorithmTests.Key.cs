@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Bodu.Security.Cryptography
 {
-    public abstract partial class SymmetricAlgorithmTests<T>
+    public abstract partial class SymmetricAlgorithmTests<TAlgorithm>
     {
         /// <summary>
         /// Validates that the Key property is not null upon algorithm creation.
@@ -15,7 +15,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Key_WhenAccessed_ShouldNotBeNull()
         {
-            using T algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = this.CreateAlgorithm();
             Assert.IsNotNull(algorithm.Key);
         }
 
@@ -25,7 +25,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Key_WhenAccessedAfterDispose_ShouldReturnDifferentValue()
         {
-            T algorithm = this.CreateAlgorithm();
+            TAlgorithm algorithm = this.CreateAlgorithm();
             byte[] ivBeforeDispose = algorithm.Key;
             algorithm.Dispose();
             byte[] ivAfterDispose = algorithm.Key;
@@ -38,7 +38,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Key_WhenSetToNull_ShouldThrowExactly()
         {
-            using T algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = this.CreateAlgorithm();
             Assert.ThrowsExactly<ArgumentNullException>(() => algorithm.Key = null);
         }
 
@@ -48,7 +48,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Key_WhenSetToInvalidSize_ShouldThrowExactly()
         {
-            using T algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = this.CreateAlgorithm();
             byte[] invalidKey = new byte[algorithm.BlockSize - 1];
             Assert.ThrowsExactly<CryptographicException>(() => algorithm.Key = invalidKey);
         }
@@ -59,7 +59,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Key_WhenSet_ShouldReturnSameValueOnGet()
         {
-            using T algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = this.CreateAlgorithm();
             byte[] iv = new byte[algorithm.BlockSize / 8];
             CryptoHelpers.FillWithRandomNonZeroBytes(iv);
 
@@ -73,7 +73,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Key_WhenSet_ShouldReturnDefensiveCopy()
         {
-            using T algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = this.CreateAlgorithm();
             byte[] iv = new byte[algorithm.BlockSize / 8];
             CryptoHelpers.FillWithRandomNonZeroBytes(iv);
 
@@ -87,7 +87,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Key_WhenModifiedAfterGet_ShouldNotAffectInternalState()
         {
-            using T algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = this.CreateAlgorithm();
             byte[] iv = new byte[algorithm.BlockSize / 8];
             CryptoHelpers.FillWithRandomNonZeroBytes(iv);
 
@@ -104,7 +104,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void GenerateKey_WhenCalled_ShouldChangeKey()
         {
-            using T algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = this.CreateAlgorithm();
             byte[] initialKey = algorithm.Key;
 
             algorithm.GenerateKey();

@@ -168,5 +168,47 @@ namespace Bodu.Security.Cryptography
                 algorithm.Tweak = null!;
             });
         }
+
+        /// <summary>
+        /// Verifies that setting <see cref="TweakableSymmetricAlgorithm.Tweak" /> to a wrongly-sized
+        /// byte array throws <see cref="CryptographicException" /> whose message does not reference
+        /// the unrelated literal "TweakSchedule" that the original
+        /// <c>[CallerArgumentExpression]</c> declared.
+        /// </summary>
+        [TestMethod]
+        public void Tweak_WhenSetToInvalidSize_ShouldThrowWithoutReferencingTweakSchedule()
+        {
+            using var algo = Threefish256.Create();
+
+            var ex = Assert.ThrowsExactly<CryptographicException>(() =>
+                algo.Tweak = new byte[5]);
+
+            Assert.IsFalse(string.IsNullOrEmpty(ex.Message), "Expected non-empty exception message.");
+            Assert.IsFalse(ex.Message.Contains("TweakSchedule"),
+                "Exception message must not reference the unrelated 'TweakSchedule' symbol.");
+        }
+
+        /// <summary>
+        /// Verifies that setting <see cref="TweakableSymmetricAlgorithm.Tweak" /> to a wrongly-sized
+        /// byte array throws <see cref="CryptographicException" /> whose message contains no
+        /// rename-refactor artefacts (such as the unrelated literal <c>"TweakSchedule"</c> that the
+        /// original <c>[CallerArgumentExpression]</c> attribute on
+        /// <c>ThrowIfInvalidTweakSize</c> referenced).
+        /// </summary>
+        [TestMethod]
+        public void Tweak_WhenSetToInvalidSize_ShouldThrowWithCleanMessage()
+        {
+            using var algorithm = this.CreateAlgorithm();
+
+            var ex = Assert.ThrowsExactly<CryptographicException>(() =>
+                algorithm.Tweak = new byte[5]);
+
+            Assert.IsFalse(string.IsNullOrEmpty(ex.Message), "Expected non-empty exception message.");
+            Assert.IsFalse(ex.Message.Contains("TweakSchedule"),
+                "Exception message must not reference the unrelated 'TweakSchedule' symbol.");
+            Assert.IsFalse(ex.Message.Contains("this."),
+                "Exception message must not contain stray 'this.' refactor artefacts.");
+        }
+
     }
 }

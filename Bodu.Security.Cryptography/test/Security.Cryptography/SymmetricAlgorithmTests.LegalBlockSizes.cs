@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Bodu.Security.Cryptography
 {
-    public abstract partial class SymmetricAlgorithmTests<T>
+    public abstract partial class SymmetricAlgorithmTests<TAlgorithm>
     {
         /// <summary>
         /// Verifies that LegalBlockSizes returns a new instance each call.
@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void LegalBlockSizes_WhenCalledMultipleTimes_ShouldReturnNewArrayInstances()
         {
-            using T algorithm = CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
             Assert.AreNotSame(algorithm.LegalBlockSizes, algorithm.LegalBlockSizes);
         }
 

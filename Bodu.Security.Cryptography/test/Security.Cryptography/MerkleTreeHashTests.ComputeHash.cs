@@ -34,7 +34,7 @@ namespace Bodu.Security.Cryptography
         public void ComputeHash_WhenArrayIsNullWithNonZeroCount_ShouldThrowExactly()
         {
             using var hasher = new MerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
-            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
             {
                 hasher.ComputeHash(null!, 0, 1);
             });

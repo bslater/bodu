@@ -18,6 +18,8 @@ namespace Bodu.Security.Cryptography
             SingleTestVariant.Default
         };
 
+        protected override int ExpectedBlockSizeBytes => 64 - (128 >> 3); // 48
+
         /// <inheritdoc />
         protected override Snefru128 CreateAlgorithm() => new Snefru128();
 

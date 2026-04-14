@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Security.Cryptography
 {
-    public abstract partial class KeyedHashAlgorithmTests<TTest, TAlgorithm, TVariant>
+    public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TVariant>
     {
         protected virtual int ExpectedKeySize => 16;
 

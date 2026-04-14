@@ -14,8 +14,11 @@ namespace Bodu.Security.Cryptography
     /// </summary>
     [TestClass]
     public partial class TigerTests
-        : Security.Cryptography.HashAlgorithmTests<TigerTests, Tiger, TigerTests.TigerVariant>
+        : Security.Cryptography.BlockHashAlgorithmTests<TigerTests, Tiger, TigerTests.TigerVariant>
     {
+
+        protected override int ExpectedBlockSizeBytes => 64;
+
         public enum TigerVariant
         {
             Tiger_192,
@@ -40,7 +43,7 @@ namespace Bodu.Security.Cryptography
         {
             var list = new List<string>(base.GetFieldsToExcludeFromDisposeValidation());
             list.AddRange([
-                "BlockSizeBytes"
+                "ExpectedBlockSize"
             ]);
 
             return list;

@@ -170,5 +170,34 @@ namespace Bodu.Security.Cryptography
 
 			Assert.IsTrue(output.Any(b => b != 0));
 		}
-	}
+
+        /// <summary>
+        /// Verifies that a mode transform that guards against keystream reuse throws
+        /// <see cref="CryptographicException" /> when the counter would wrap back to its
+        /// initial value. Test uses a 1-byte block cipher so the wrap occurs after 256 calls.
+        /// </summary>
+        [TestMethod]
+        public void Transform_WhenCounterWouldWrap_ShouldThrowCryptographicException()
+        {
+            if (!this.GuardsAgainstKeystreamReuse)
+            {
+                Assert.Inconclusive($"{typeof(TMode).Name} does not guard against keystream reuse.");
+                return;
+            }
+
+            var cipher = new MonitoringBlockCipher(1);
+            var transform = this.CreateTransform(cipher, new byte[1] { 0 });
+
+            byte[] inputBlock = new byte[1];
+            byte[] outputBlock = new byte[1];
+
+            for (int i = 0; i < 256; i++)
+            {
+                transform.Transform(inputBlock, outputBlock, encrypt: true);
+            }
+
+            Assert.ThrowsExactly<CryptographicException>(
+                () => transform.Transform(inputBlock, outputBlock, encrypt: true));
+        }
+    }
 }

@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography
     }
 
     public abstract partial class SipHashTests<TTest, TAlgorithm>
-        : KeyedHashAlgorithmTests<TTest, TAlgorithm, SipHashVariant>
+        : KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, SipHashVariant>
         where TTest : HashAlgorithmTests<TTest, TAlgorithm, SipHashVariant>, new()
         where TAlgorithm : SipHash<TAlgorithm>, new()
     {
@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography
         {
             var list = new List<string>(base.GetFieldsToExcludeFromDisposeValidation());
             list.AddRange([
-                "BlockSizeBytes"
+                "ExpectedBlockSize"
             ]);
 
             return list;

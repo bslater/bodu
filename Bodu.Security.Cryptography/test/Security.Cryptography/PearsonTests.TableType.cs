@@ -116,5 +116,29 @@ namespace Bodu.Security.Cryptography
                 var _ = hash.TableType;
             });
         }
+
+        /// <summary>
+        /// Verifies that hashing with <see cref="Pearson.PearsonTableType.UserDefined" /> selected
+        /// but no table assigned throws an exception whose message does not contain any
+        /// refactor artefacts ("this." prefixes or stray " t " tokens).
+        /// </summary>
+        [TestMethod]
+        public void TableType_WhenSetToUserDefinedWithoutTable_ShouldThrowWithCleanMessage()
+        {
+            using var hash = new Pearson
+            {
+                TableType = Pearson.PearsonTableType.UserDefined
+            };
+
+            var ex = Assert.ThrowsException<Exception>(() => hash.ComputeHash(new byte[] { 1, 2, 3 }));
+
+            Assert.IsFalse(
+                ex.Message.Contains(" t "),
+                $"Exception message should not contain the bare token ' t '. Actual: {ex.Message}");
+            Assert.IsFalse(
+                ex.Message.Contains("this."),
+                $"Exception message should not contain a 'this.' artefact. Actual: {ex.Message}");
+        }
+
     }
 }

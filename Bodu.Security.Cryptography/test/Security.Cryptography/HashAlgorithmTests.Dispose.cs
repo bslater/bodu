@@ -253,5 +253,25 @@ namespace Bodu.Security.Cryptography
             }
             return false;
         }
+
+        /// <summary>
+        /// Verifies that calling <see cref="HashAlgorithm.ComputeHash(byte[])" /> on a disposed
+        /// instance surfaces <see cref="ObjectDisposedException.ObjectName" /> carrying the concrete
+        /// algorithm type name. Regression guard for defects where <c>nameof(T)</c> on a non-generic
+        /// base class, or a copy-pasted <c>nameof(OtherType)</c>, produced an incorrect ObjectName.
+        /// </summary>
+        [TestMethod]
+        public void Dispose_WhenComputeHashCalledAfterDispose_ShouldReportConcreteTypeNameInObjectName()
+        {
+            var algorithm = this.CreateAlgorithm();
+            algorithm.Dispose();
+
+            var ex = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+                _ = algorithm.ComputeHash(new byte[] { 1 }));
+
+            Assert.AreEqual(typeof(TAlgorithm).FullName, ex.ObjectName,
+                $"ObjectDisposedException.ObjectName must match the concrete type name '{typeof(TAlgorithm).FullName}'.");
+        }
+
     }
 }

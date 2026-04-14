@@ -42,6 +42,15 @@
             : base(blockSize)
         { }
 
+        /// <inheritdocs/>
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            if (this.KeyValue == null)
+                throw new CryptographicException(ResourceStrings.CryptographicException_KeyNotSet);
+        }
+
         /// <summary>
         /// Gets or sets the secret key used by the keyed hash algorithm to compute the message authentication code (MAC).
         /// </summary>

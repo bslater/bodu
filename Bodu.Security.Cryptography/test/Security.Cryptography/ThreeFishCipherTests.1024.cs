@@ -14,6 +14,30 @@ namespace Bodu.Security.Cryptography
     {
         protected override int ExpectedBlockSize => 128;
 
+
+        protected override Threefish CreateInitialisedAlgorithm()
+        {
+            var algo = Threefish1024.Create(); 
+            algo.GenerateKey();
+            algo.GenerateIV();
+            algo.GenerateTweak();
+            return algo;
+        }
+
+        /// <summary>
+        /// Verifies that encrypting a full block does not throw. Critical regression guard for
+        /// Threefish-1024, where <c>rot[128]</c> out-of-bounds previously broke every call.
+        /// </summary>
+        [TestMethod]
+        public void Encrypt_WhenFullBlockIsTransformed_ShouldNotThrow()
+            => this.VerifyEncryptFullBlockDoesNotThrow();
+
+        /// <summary>
+        /// Verifies that encrypt/decrypt round-trips return the original plaintext.
+        /// </summary>
+        [TestMethod]
+        public void EncryptDecrypt_RoundTrip_ShouldReturnOriginalPlaintext()
+            => this.VerifyEncryptDecryptRoundTripReturnsOriginalPlaintext();
         protected override Threefish1024Cipher CreateBlockCipher(ThreeFishCipherTestVariant variant) =>
             variant switch
             {

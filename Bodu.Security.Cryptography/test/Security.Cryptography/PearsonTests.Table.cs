@@ -84,5 +84,37 @@ namespace Bodu.Security.Cryptography
             table[0] ^= 0xFF; // Modify the copy
             Assert.AreNotEqual(table[0], hash.Table[0], "Modifying the returned table should not affect internal state.");
         }
+
+        /// <summary>
+        /// Verifies that the built-in <see cref="Pearson.PearsonTableType.Pearson" /> permutation
+        /// table contains every byte value 0..255 exactly once, as required by the Pearson hashing
+        /// algorithm.
+        /// </summary>
+        [TestMethod]
+        public void Table_WhenBuiltInPearsonSelected_ShouldBeA256ByteUniquePermutation()
+        {
+            using var hash = new Pearson { TableType = Pearson.PearsonTableType.Pearson };
+            byte[] table = hash.Table;
+
+            Assert.AreEqual(256, table.Length, "The Pearson table must be exactly 256 bytes long.");
+            Assert.AreEqual(256, table.Distinct().Count(), "The Pearson table must contain 256 unique byte values.");
+        }
+
+        /// <summary>
+        /// Verifies that reading <see cref="Pearson.Table" /> after the instance has been disposed
+        /// throws <see cref="ObjectDisposedException" /> and reports the <see cref="Pearson" /> type
+        /// name rather than a copy-paste artefact from another type.
+        /// </summary>
+        [TestMethod]
+        public void Table_WhenAccessedAfterDispose_ShouldThrowObjectDisposedExceptionWithPearsonTypeName()
+        {
+            var hash = new Pearson();
+            hash.Dispose();
+
+            var ex = Assert.ThrowsExactly<ObjectDisposedException>(() => _ = hash.Table);
+
+            Assert.AreEqual(nameof(Pearson), ex.ObjectName);
+        }
+
     }
 }

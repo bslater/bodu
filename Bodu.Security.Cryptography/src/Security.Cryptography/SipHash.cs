@@ -236,6 +236,7 @@ namespace Bodu.Security.Cryptography
             State = 0;
             finalized = false;
 #endif
+
             this.InitializeVectors();
         }
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Bodu.Security.Cryptography
 {
-    public abstract partial class SymmetricAlgorithmTests<T>
+    public abstract partial class SymmetricAlgorithmTests<TAlgorithm>
     {
         /// <summary>
         /// Validates that the IV property is not null upon algorithm creation.
@@ -15,7 +15,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void IV_WhenAccessed_ShouldNotBeNull()
         {
-            using T algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = this.CreateAlgorithm();
             Assert.IsNotNull(algorithm.IV);
         }
 
@@ -25,7 +25,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void IV_WhenAccessedAfterDispose_ShouldReturnDifferentValue()
         {
-            T algorithm = this.CreateAlgorithm();
+            TAlgorithm algorithm = this.CreateAlgorithm();
             byte[] ivBeforeDispose = algorithm.IV;
             algorithm.Dispose();
             byte[] ivAfterDispose = algorithm.IV;
@@ -38,7 +38,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void IV_WhenSetToNull_ShouldThrowExactly()
         {
-            using T algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = this.CreateAlgorithm();
             Assert.ThrowsExactly<ArgumentNullException>(() => algorithm.IV = null);
         }
 
@@ -48,7 +48,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void IV_WhenSetToInvalidSize_ShouldThrowExactly()
         {
-            using T algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = this.CreateAlgorithm();
             byte[] invalidIV = new byte[algorithm.BlockSize - 1];
             Assert.ThrowsExactly<CryptographicException>(() => algorithm.IV = invalidIV);
         }
@@ -59,7 +59,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void IV_WhenSet_ShouldReturnSameValueOnGet()
         {
-            using T algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = this.CreateAlgorithm();
             byte[] iv = new byte[algorithm.BlockSize / 8];
             CryptoHelpers.FillWithRandomNonZeroBytes(iv);
 
@@ -73,7 +73,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void IV_WhenSet_ShouldReturnDefensiveCopy()
         {
-            using T algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = this.CreateAlgorithm();
             byte[] iv = new byte[algorithm.BlockSize / 8];
             CryptoHelpers.FillWithRandomNonZeroBytes(iv);
 
@@ -87,7 +87,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void IV_WhenModifiedAfterGet_ShouldNotAffectInternalState()
         {
-            using T algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = this.CreateAlgorithm();
             byte[] iv = new byte[algorithm.BlockSize / 8];
             CryptoHelpers.FillWithRandomNonZeroBytes(iv);
 
@@ -104,11 +104,38 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void GenerateIV_WhenCalled_ShouldChangeIV()
         {
-            using T algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = this.CreateAlgorithm();
             byte[] initialIV = algorithm.IV;
 
             algorithm.GenerateIV();
             CollectionAssert.AreNotEqual(initialIV, algorithm.IV);
         }
+
+        /// <summary>
+        /// Verifies that creating an encryptor with a wrong-length IV throws
+        /// <see cref="CryptographicException" /> whose message reports the offending IV bit-length
+        /// rather than an unrelated value (e.g. the key length). Regression guard for a copy-paste
+        /// in <see cref="Threefish" />'s validation diagnostics.
+        /// </summary>
+        [TestMethod]
+        public void CreateEncryptor_WithInvalidIvLength_ShouldThrowArgumentException()
+        {
+            using var algorithm = this.CreateAlgorithm();
+            algorithm.GenerateKey();
+
+            int blockSizeBytes = algorithm.BlockSize / 8;
+            byte[] badIv = new byte[blockSizeBytes - 1];
+            int expectedBitLength = badIv.Length * 8;
+
+            var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+            {
+                using var _ = algorithm.CreateEncryptor(algorithm.Key, badIv);
+            });
+
+            Assert.IsTrue(
+                ex.Message.Contains(expectedBitLength.ToString()),
+                $"Expected IV bit-length {expectedBitLength} in message but got: {ex.Message}");
+        }
+
     }
 }

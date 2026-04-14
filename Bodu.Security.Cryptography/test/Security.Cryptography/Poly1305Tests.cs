@@ -16,8 +16,12 @@ namespace Bodu.Security.Cryptography
     /// </summary>
     [TestClass]
     public partial class Poly1305Tests
-        : KeyedHashAlgorithmTests<Poly1305Tests, Poly1305, SingleTestVariant>
+        : KeyedBlockHashAlgorithmTests<Poly1305Tests, Poly1305, SingleTestVariant>
     {
+
+        protected override int ExpectedBlockSizeBytes => 16;
+
+
         protected override int ExpectedKeySize => 32;
 
         /// <inheritdoc />
@@ -89,7 +93,7 @@ namespace Bodu.Security.Cryptography
         {
             var list = new List<string>(base.GetFieldsToExcludeFromDisposeValidation());
             list.AddRange([
-                "BlockSizeBytes"
+                "ExpectedBlockSize"
             ]);
 
             return list;

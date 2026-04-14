@@ -186,4 +186,7 @@
   <data name="InvalidOperation_CacheValueCannotBeNull" xml:space="preserve">
     <value>The global CRC cache cannot be set to null.</value>
   </data>
+    <data name="CryptographicException_KeyNotSet" xml:space="preserve">
+        <value>The keyed hash algorithm cannot be initialized because its key has been cleared and must not be regenerated automatically.</value>
+    </data>
 </root>

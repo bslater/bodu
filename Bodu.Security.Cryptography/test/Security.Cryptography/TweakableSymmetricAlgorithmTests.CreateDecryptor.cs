@@ -78,5 +78,32 @@ namespace Bodu.Security.Cryptography
             using var decryptor = algorithm.CreateDecryptor();
             Assert.IsNotNull(decryptor);
         }
+
+        /// <summary>
+        /// Verifies that creating an encryptor with a wrong-length tweak throws
+        /// <see cref="CryptographicException" /> whose message reports the offending tweak
+        /// bit-length rather than the key bit-length. Regression guard for a copy-paste in
+        /// <see cref="Threefish" />'s validation diagnostics.
+        /// </summary>
+        [TestMethod]
+        public void CreateEncryptor_WithInvalidTweakLength_ShouldReportTweakLengthInExceptionMessage()
+        {
+            using var algorithm = this.CreateAlgorithm();
+            algorithm.GenerateKey();
+            algorithm.GenerateIV();
+
+            byte[] badTweak = new byte[5];
+            int expectedBitLength = badTweak.Length * 8;
+
+            var ex = Assert.ThrowsExactly<CryptographicException>(() =>
+            {
+                using var _ = algorithm.CreateEncryptor(algorithm.Key, algorithm.IV, badTweak);
+            });
+
+            Assert.IsTrue(
+                ex.Message.Contains(expectedBitLength.ToString()),
+                $"Expected tweak bit-length {expectedBitLength} in message but got: {ex.Message}");
+        }
+
     }
 }
