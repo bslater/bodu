@@ -128,11 +128,13 @@ namespace Bodu.Security.Cryptography
             base.Initialize();
             Array.Clear(this.acc);
 
-            // If KeyValue was not explicitly set or was cleared, regenerate a random key
+            // Refuse to silently regenerate a key. Callers must explicitly supply a key
+            // (via the Key setter) or call GenerateKey() before re-initialising. This
+            // preserves the keyed-MAC contract: finalising and re-initialising must not
+            // swap keys behind the caller's back.
             if (this.KeyValue is null || this.KeyValue.Length != KeySize)
             {
-                this.KeyValue = new byte[KeySize];
-                CryptoHelpers.FillWithRandomNonZeroBytes(this.KeyValue);
+                throw new CryptographicException("Poly1305 key must be assigned before initialisation. Set Key explicitly or call GenerateKey().");
             }
 
             this.InitializeKey();
@@ -163,7 +165,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <inheritdoc />
-        protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength) => throw new NotImplementedException();
+        protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength) => throw new NotSupportedException("Poly1305 does not use block padding.");
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

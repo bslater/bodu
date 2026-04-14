@@ -41,10 +41,10 @@
 
 #if !NET6_0_OR_GREATER
 
-    /// <summary>
-    /// Indicates whether the hash computation has been finalized. Used in .NET Standard environments.
-    /// </summary>
-    protected bool this.finalized;
+        /// <summary>
+        /// Indicates whether the hash computation has been finalized. Used in .NET Standard environments.
+        /// </summary>
+        protected bool finalized;
 #endif
 
         /// <summary>
@@ -283,7 +283,7 @@
             ObjectDisposedException.ThrowIf(this.disposed, this);
 #else
         if (disposed)
-            throw new ObjectDisposedException(nameof(T));
+            throw new ObjectDisposedException(this.GetType().Name);
 #endif
         }
 

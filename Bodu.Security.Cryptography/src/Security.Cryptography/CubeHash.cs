@@ -292,6 +292,8 @@ namespace Bodu.Security.Cryptography
 #if !NET6_0_OR_GREATER
             State = 0;
             finalized = false;
+#else
+            this.State = 0;
 #endif
             this.pendingBytes = 0;
 
