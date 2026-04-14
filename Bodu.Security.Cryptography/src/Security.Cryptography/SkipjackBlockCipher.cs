@@ -82,7 +82,7 @@ namespace Bodu.Security.Cryptography
         public SkipjackBlockCipher(ReadOnlySpan<byte> keyBytes)
         {
             if (keyBytes.Length != KeySize)
-                throw new ArgumentException("Skipjack requires an 80-bit this.key (10 bytes).", nameof(keyBytes));
+                throw new ArgumentException("Skipjack requires an 80-bit key (10 bytes).", nameof(keyBytes));
 
             keyBytes.CopyTo(this.key);
         }
