@@ -145,8 +145,9 @@ public static partial class BufferConverter
         {
             for (int left = 0, right = elementSize - 1; left <= right; left++, right--)
             {
-                destination[i + left] = source[i + right];
-                destination[i + right] = source[i + left];
+                // Read both source values before writing so that the swap is correct even when
+                // <paramref name="source" /> and <paramref name="destination" /> refer to the same memory.
+                (destination[i + left], destination[i + right]) = (source[i + right], source[i + left]);
             }
         }
     }

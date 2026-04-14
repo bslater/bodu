@@ -23,7 +23,7 @@ public static partial class DateTimeExtensions
     /// </remarks>
     public static string DayName(this DateTime dateTime)
     {
-        return dateTime.DayName(null!);
+        return dateTime.DayName((CultureInfo?)null);
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public static partial class DateTimeExtensions
     /// This method uses the <see cref="DateTimeFormatInfo.DayNames"/> method of the specified or current culture to return the day name.
     /// </para>
     /// </remarks>
-    public static string DayName(this DateTime dateTime, CultureInfo culture)
+    public static string DayName(this DateTime dateTime, CultureInfo? culture)
     {
         return (culture ?? CultureInfo.CurrentCulture).DateTimeFormat.GetDayName(dateTime.DayOfWeek);
     }
