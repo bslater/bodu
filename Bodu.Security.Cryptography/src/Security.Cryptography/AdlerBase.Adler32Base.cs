@@ -34,35 +34,11 @@
         { }
 
         /// <summary>
-        /// Finalizes the hash computation and returns the resulting 32-bit <see cref="Adler32Base" /> hash in big-endian format. This
-        /// method reflects all input previously processed via <see cref="HashAlgorithm.HashCore(byte[], int, int)" /> or
-        /// <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" /> and produces a final, stable hash output.
+        /// Finalises the Adler checksum and returns it as a 4-byte array.
         /// </summary>
         /// <returns>
-        /// A 4-byte array representing the computed <c>Adler</c> hash value. The result is encoded in <b>big-endian</b> byte order as
-        /// <c><![CDATA[(B << 16) | A]]></c>.
+        /// A 4-byte array containing the checksum encoded in <b>big-endian</b> byte order as <c><![CDATA[(B << 16) | A]]></c>.
         /// </returns>
-        /// <remarks>
-        /// <para>
-        /// This method completes the internal state of the hashing algorithm and serializes the final hash value into a
-        /// platform-independent format. It is invoked automatically by <see cref="HashAlgorithm.ComputeHash(byte[])" /> and related methods
-        /// once all data has been processed.
-        /// </para>
-        /// <para>After this method returns, the internal state is considered finalized and the computed hash is stable.</para>
-        /// <para>
-        /// In .NET 6.0 and later, the algorithm is automatically reset by invoking <see cref="HashAlgorithm.Initialize" />, allowing the
-        /// instance to be reused immediately.
-        /// </para>
-        /// <para>
-        /// In earlier versions of .NET, the internal state is marked as finalized, and any subsequent calls to
-        /// <see cref="HashAlgorithm.HashCore(byte[], int, int)" />, <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" />, or
-        /// <see cref="HashAlgorithm.HashFinal" /> will throw a <see cref="CryptographicUnexpectedOperationException" />. To compute another
-        /// hash, you must explicitly call <see cref="HashAlgorithm.Initialize" /> to reset the algorithm.
-        /// </para>
-        /// <para>
-        /// Implementations should ensure all residual or pending data is processed and integrated into the final hash value before returning.
-        /// </para>
-        /// </remarks>
         protected override byte[] HashFinal()
         {
 #if !NET6_0_OR_GREATER

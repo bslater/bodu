@@ -3,16 +3,17 @@
     using System;
 
     /// <summary>
-    /// Provides the interface for a symmetric block cipher algorithm that processes data in fixed-size blocks.
+    /// Defines a symmetric block cipher that encrypts and decrypts data one fixed-size block at a time.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Implementations of this interface represent symmetric encryption algorithms such as AES, Threefish, or others that operate on blocks
-    /// of data of a specific size. The interface supports both encryption and decryption of blocks.
+    /// Implementations represent primitives such as AES or Threefish and operate on buffers whose length equals <see cref="BlockSize" />.
+    /// This interface intentionally exposes only the raw block primitive; chaining modes, padding, and IV management are the responsibility
+    /// of higher-level components such as <see cref="IBlockCipherModeTransform" /> and <see cref="IPaddingStrategy" />.
     /// </para>
     /// <para>
-    /// Implementations must ensure correct handling of fixed-size input and output spans and maintain consistent behavior across multiple
-    /// calls. Implementations must also release all sensitive resources when <see cref="IDisposable.Dispose" /> is called.
+    /// Implementations must release all sensitive key material when <see cref="IDisposable.Dispose" /> is called and should be safe to
+    /// invoke repeatedly for the lifetime of the instance.
     /// </para>
     /// </remarks>
     public interface IBlockCipher
@@ -25,26 +26,30 @@
         int BlockSize { get; }
 
         /// <summary>
-        /// Performs the decryption of a single block of input data into the specified output span.
+        /// Decrypts a single block of ciphertext into the specified output span.
         /// </summary>
-        /// <param name="input">A read-only span containing the encrypted input block. The length must match <see cref="BlockSize" />.</param>
-        /// <param name="output">A writable span where the decrypted block will be written. The length must match <see cref="BlockSize" />.</param>
-        /// <exception cref="ArgumentException">Thrown if the input or output span does not match the expected block size.</exception>
+        /// <param name="input">A read-only span containing the ciphertext block. Its length must equal <see cref="BlockSize" />.</param>
+        /// <param name="output">A writable span that receives the plaintext block. Its length must equal <see cref="BlockSize" />.</param>
+        /// <exception cref="ArgumentException">
+        /// Thrown if the length of <paramref name="input" /> or <paramref name="output" /> does not match <see cref="BlockSize" />.
+        /// </exception>
         /// <remarks>
-        /// The method performs in-place decryption if the same buffer is used for both <paramref name="input" /> and
-        /// <paramref name="output" />, assuming the implementation permits it.
+        /// In-place decryption (passing the same buffer as both <paramref name="input" /> and <paramref name="output" />) is supported only
+        /// when the implementation explicitly permits it; otherwise the spans must not overlap.
         /// </remarks>
         void Decrypt(ReadOnlySpan<byte> input, Span<byte> output);
 
         /// <summary>
-        /// Performs the encryption of a single block of input data into the specified output span.
+        /// Encrypts a single block of plaintext into the specified output span.
         /// </summary>
-        /// <param name="input">A read-only span containing the plaintext input block. The length must match <see cref="BlockSize" />.</param>
-        /// <param name="output">A writable span where the encrypted block will be written. The length must match <see cref="BlockSize" />.</param>
-        /// <exception cref="ArgumentException">Thrown if the input or output span does not match the expected block size.</exception>
+        /// <param name="input">A read-only span containing the plaintext block. Its length must equal <see cref="BlockSize" />.</param>
+        /// <param name="output">A writable span that receives the ciphertext block. Its length must equal <see cref="BlockSize" />.</param>
+        /// <exception cref="ArgumentException">
+        /// Thrown if the length of <paramref name="input" /> or <paramref name="output" /> does not match <see cref="BlockSize" />.
+        /// </exception>
         /// <remarks>
-        /// The method performs in-place encryption if the same buffer is used for both <paramref name="input" /> and
-        /// <paramref name="output" />, assuming the implementation permits it.
+        /// In-place encryption (passing the same buffer as both <paramref name="input" /> and <paramref name="output" />) is supported only
+        /// when the implementation explicitly permits it; otherwise the spans must not overlap.
         /// </remarks>
         void Encrypt(ReadOnlySpan<byte> input, Span<byte> output);
     }

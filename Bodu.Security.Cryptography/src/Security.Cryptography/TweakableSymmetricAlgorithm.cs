@@ -7,21 +7,18 @@
     using Bodu.Extensions;
 
     /// <summary>
-    /// Represents a symmetric encryption algorithm that supports an additional tweak value in addition to the encryption key and
-    /// initialization vector (IV).
+    /// Serves as the abstract base class for tweakable symmetric algorithms, which accept an additional tweak value in addition to
+    /// the key and initialisation vector.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This abstract class extends the <see cref="SymmetricAlgorithm" /> base class to support tweakable ciphers, such as Threefish, which
-    /// use an additional tweak input to influence encryption.
+    /// This class extends <see cref="SymmetricAlgorithm" /> with a <see cref="Tweak" /> property, a <see cref="LegalTweakSizes" />
+    /// enumeration, and tweak-aware <c>CreateEncryptor</c> / <c>CreateDecryptor</c> overloads. It is intended for ciphers such as
+    /// Threefish that take a tweak input as part of their cryptographic contract.
     /// </para>
     /// <para>
-    /// The tweak is provided as a byte array and may vary in size depending on the algorithm implementation. Valid tweak sizes are
-    /// specified via the <see cref="LegalTweakSizes" /> property.
-    /// </para>
-    /// <para>
-    /// Derived classes must override the encryptor and decryptor creation methods to incorporate the tweak into the encryption or
-    /// decryption process.
+    /// Derived classes must override <see cref="CreateEncryptor(byte[], byte[], byte[])" />,
+    /// <see cref="CreateDecryptor(byte[], byte[], byte[])" />, and <see cref="GenerateTweak" />.
     /// </para>
     /// </remarks>
     public abstract class TweakableSymmetricAlgorithm
@@ -258,7 +255,7 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void ThrowIfInvalidTweakSize(
             byte[] tweak,
-            [CallerArgumentExpression("TweakSchedule")] string? paramName = null)
+            [CallerArgumentExpression("tweak")] string? paramName = null)
         {
             ArgumentNullException.ThrowIfNull(tweak, paramName);
             this.ThrowIfInvalidTweakSize(tweak.Length * 8, paramName);
@@ -286,7 +283,7 @@
         /// </summary>
         /// <exception cref="CryptographicException">Thrown if the internal tweak value is <see langword="null" /> or empty.</exception>
         /// <remarks>
-        /// Call this method before using the <see cref="Tweak" /> or <see cref="TweakSpan" /> properties to ensure that the tweak has been initialized.
+        /// Call this method before using the <see cref="Tweak" /> property to ensure that the tweak has been initialised.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void ThrowIfTweakNotSet()

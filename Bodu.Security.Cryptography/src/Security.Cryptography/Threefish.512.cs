@@ -5,40 +5,33 @@
     using System.Security.Cryptography;
 
     /// <summary>
-    /// Provides a managed implementation of the <c>Threefish-512</c> symmetric block cipher algorithm.
+    /// Provides a managed implementation of the <c>Threefish-512</c> tweakable symmetric block cipher, which operates on 512-bit
+    /// (64-byte) blocks using a 512-bit key and a 128-bit tweak. This class cannot be inherited.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This class derives from <see cref="Threefish" /> and configures the algorithm for the <c>Threefish-512</c> variant, which operates
-    /// on 512-bit blocks using a 512-bit key and a 128-bit tweak.
+    /// Threefish is the tweakable block cipher underlying the Skein hash function. This variant supports a variety of cipher block modes
+    /// (CBC, CFB, OFB, CTR) via the <see cref="Threefish.BlockMode" /> property, and is suitable for scenarios such as disk encryption
+    /// or format-preserving encryption where a tweak is useful.
     /// </para>
-    /// <para>
-    /// It supports a variety of cipher block modes (e.g., CBC, CFB, OFB, CTR) via the <see cref="Threefish.BlockMode" /> property,
-    /// replacing the standard <see cref="SymmetricAlgorithm.Mode" /> property to allow for custom or non-standard modes.
-    /// </para>
-    /// <para>
-    /// This implementation is designed to integrate with the .NET cryptographic framework and supports tweakable encryption for enhanced
-    /// security scenarios such as disk encryption or format-preserving encryption.
-    /// </para>
-    /// <note type="important">This class is sealed and specific to the <c>Threefish-512</c> variant. Use <see cref="Threefish512" /> or
-    /// <see cref="Threefish1024" /> for other block sizes.</note>
+    /// <para>For other block sizes, see <see cref="Threefish256" /> and <see cref="Threefish1024" />.</para>
     /// </remarks>
     public sealed class Threefish512
         : Threefish
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Threefish512" /> class using a 512-bit block size, 512-bit key, and 128-bit tweak.
+        /// Initialises a new instance of the <see cref="Threefish512" /> class using a 512-bit block size, 512-bit key, and 128-bit tweak.
         /// </summary>
         public Threefish512()
             : base(512, 128) { }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="Threefish512" /> class with the default configuration.
+        /// Creates a new <see cref="Threefish512" /> instance with default parameters.
         /// </summary>
-        /// <returns>A new instance of <see cref="Threefish512" />.</returns>
+        /// <returns>A new <see cref="Threefish512" /> instance.</returns>
         /// <remarks>
-        /// The newly created algorithm instance will have its key, initialization vector (IV), and tweak generated automatically as needed
-        /// upon first use.
+        /// The key, initialisation vector, and tweak are generated on demand the first time they are accessed unless assigned explicitly
+        /// via <see cref="SymmetricAlgorithm.Key" />, <see cref="SymmetricAlgorithm.IV" />, or <see cref="TweakableSymmetricAlgorithm.Tweak" />.
         /// </remarks>
         public new static Threefish512 Create()
         {

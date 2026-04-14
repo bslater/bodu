@@ -7,12 +7,12 @@
     public static partial class CryptoHelpers
     {
         /// <summary>
-        /// Fills the provided byte array with cryptographically secure random bytes, ensuring that no byte is equal to <c>0x00</c>.
+        /// Fills the specified byte array with cryptographically secure random bytes, ensuring that no byte is equal to <c>0x00</c>.
         /// </summary>
         /// <param name="buffer">The byte array to fill.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="buffer" /> is <see langword="null" />.</exception>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="buffer" /> is empty.</exception>
-        /// <remarks>Delegates to the span-based overload. Repeats random generation until the buffer contains no zero bytes.</remarks>
+        /// <exception cref="ArgumentNullException"><paramref name="buffer" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentException"><paramref name="buffer" /> is empty.</exception>
+        /// <remarks>Delegates to the span-based overload. Random generation is repeated until the buffer contains no zero bytes.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void FillWithRandomNonZeroBytes(byte[] buffer)
         {
@@ -33,12 +33,13 @@
         }
 
         /// <summary>
-        /// Attempts to fill the provided span with cryptographically secure random bytes that do not include <c>0x00</c>. Retries a limited
-        /// number of times.
+        /// Attempts to fill the provided span with cryptographically secure random bytes that do not include <c>0x00</c>, retrying
+        /// a bounded number of times.
         /// </summary>
         /// <param name="buffer">The span to fill.</param>
         /// <returns>
-        /// <c>true</c> if the buffer was filled successfully without any zero bytes; otherwise, <c>false</c> after the retry limit is reached.
+        /// <see langword="true" /> if the buffer was filled successfully without any zero bytes; otherwise, <see langword="false" />
+        /// once the retry limit has been reached.
         /// </returns>
         /// <remarks>Intended for performance-sensitive scenarios where indefinite retry is undesirable.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -51,14 +52,23 @@
     {
         byte[] temp = new byte[buffer.Length];
 
-        for (int i = 0; i < maxAttempts; i++)
+        try
         {
-            rng.GetBytes(temp);
-            if (Array.IndexOf(temp, (byte)0) < 0)
+            for (int i = 0; i < maxAttempts; i++)
             {
-                temp.CopyTo(buffer);
-                return true;
+                rng.GetBytes(temp);
+                if (Array.IndexOf(temp, (byte)0) < 0)
+                {
+                    temp.CopyTo(buffer);
+                    return true;
+                }
             }
+        }
+        finally
+        {
+            // Wipe temp so any random bytes that were drawn (on the successful copy
+            // path as well as the retry-exhaustion path) do not linger on the managed heap.
+            Array.Clear(temp, 0, temp.Length);
         }
     }
 #else
@@ -74,11 +84,11 @@
         }
 
         /// <summary>
-        /// Returns a new byte array filled with cryptographically secure random bytes that are guaranteed to be non-zero.
+        /// Returns a new byte array filled with cryptographically secure random bytes, none of which are zero.
         /// </summary>
-        /// <param name="length">The number of random bytes to generate.</param>
-        /// <returns>A <see cref="byte" /> array of the specified length with only non-zero values.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="length" /> is less than or equal to zero.</exception>
+        /// <param name="length">The number of random bytes to generate. Must be greater than zero.</param>
+        /// <returns>A <see cref="byte" /> array of the specified length containing only non-zero values.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="length" /> is less than or equal to zero.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static byte[] GetRandomNonZeroBytes(int length)
         {
@@ -101,25 +111,55 @@
             using (var rng = RandomNumberGenerator.Create())
             {
                 byte[] temp = new byte[buffer.Length];
-                do rng.GetBytes(temp);
-                while (Array.IndexOf(temp, forbidden) >= 0);
+                try
+                {
+                    rng.GetBytes(temp);
 
-                temp.CopyTo(buffer);
+                    // Targeted per-byte replacement: only re-draw for the bytes that
+                    // matched the forbidden value, rather than re-filling the whole buffer.
+                    byte[] single = new byte[1];
+                    for (int i = 0; i < temp.Length; i++)
+                    {
+                        while (temp[i] == forbidden)
+                        {
+                            rng.GetBytes(single);
+                            temp[i] = single[0];
+                        }
+                    }
+
+                    single[0] = 0;
+                    temp.CopyTo(buffer);
+                }
+                finally
+                {
+                    Array.Clear(temp, 0, temp.Length);
+                }
             }
 #else
-            do RandomNumberGenerator.Fill(buffer);
-            while (buffer.IndexOf(forbidden) >= 0);
+            RandomNumberGenerator.Fill(buffer);
+
+            // Targeted per-byte replacement: only re-draw for the bytes that
+            // matched the forbidden value, rather than re-filling the whole buffer.
+            Span<byte> single = stackalloc byte[1];
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                while (buffer[i] == forbidden)
+                {
+                    RandomNumberGenerator.Fill(single);
+                    buffer[i] = single[0];
+                }
+            }
 #endif
         }
 
         /// <summary>
-        /// Returns a new array of random bytes of the specified <paramref name="length" />, excluding any occurrences of the
-        /// <paramref name="forbidden" /> byte.
+        /// Returns a new array of cryptographically secure random bytes of the specified <paramref name="length" />, excluding any
+        /// occurrences of the <paramref name="forbidden" /> byte value.
         /// </summary>
-        /// <param name="forbidden">The byte value to exclude.</param>
-        /// <param name="length">The number of bytes to generate.</param>
+        /// <param name="forbidden">The byte value to exclude from the output.</param>
+        /// <param name="length">The number of bytes to generate. Must be greater than zero.</param>
         /// <returns>A <see cref="byte" /> array filled with random bytes that do not include <paramref name="forbidden" />.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="length" /> is less than or equal to zero.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="length" /> is less than or equal to zero.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static byte[] GetRandomBytesExcluding(byte forbidden, int length)
         {

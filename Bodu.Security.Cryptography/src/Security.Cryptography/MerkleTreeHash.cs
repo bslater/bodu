@@ -129,12 +129,18 @@
         ///   <paramref name="offset"/> or <paramref name="count"/> is negative, or
         ///   <paramref name="offset"/> + <paramref name="count"/> exceeds the length of <paramref name="data"/>.
         /// </exception>
-        public byte[] ComputeHash(byte[] data, int offset, int count) =>
-            this.ComputeHash(new ReadOnlySpan<byte>(data, offset, count));
+        public byte[] ComputeHash(byte[] data, int offset, int count)
+        {
+            ArgumentNullException.ThrowIfNull(data);
+            return this.ComputeHash(new ReadOnlySpan<byte>(data, offset, count));
+        }
 
         /// <inheritdoc cref="ComputeHash(ReadOnlySpan{byte})"/>
-        public byte[] ComputeHash(byte[] data) =>
-            this.ComputeHash(new ReadOnlySpan<byte>(data));
+        public byte[] ComputeHash(byte[] data)
+        {
+            ArgumentNullException.ThrowIfNull(data);
+            return this.ComputeHash(new ReadOnlySpan<byte>(data));
+        }
 
         // -----------------------------------------------------------------------------------------
         // Internal pipeline
@@ -211,16 +217,15 @@
         private byte[] ComputeLeafHash(ReadOnlySpan<byte> span)
         {
             using var hasher = this.algorithmFactory();
-            byte[] temp = ArrayPool<byte>.Shared.Rent(span.Length);
-            try
-            {
-                span.CopyTo(temp);
-                return hasher.ComputeHash(temp, 0, span.Length);
-            }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(temp, clearArray: true);
-            }
+            byte[] result = new byte[hasher.HashSize >> 3];
+            if (!hasher.TryComputeHash(span, result, out int bytesWritten))
+                throw new CryptographicException("The hash algorithm's destination buffer was too small.");
+            if (bytesWritten == result.Length)
+                return result;
+
+            byte[] trimmed = new byte[bytesWritten];
+            Buffer.BlockCopy(result, 0, trimmed, 0, bytesWritten);
+            return trimmed;
         }
 
         // -----------------------------------------------------------------------------------------

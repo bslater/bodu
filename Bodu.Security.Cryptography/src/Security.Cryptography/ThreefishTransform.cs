@@ -4,14 +4,21 @@
     using System.Security.Cryptography;
 
     /// <summary>
-    /// Performs cryptographic transformations using the Threefish block cipher algorithm. Supports encryption and decryption in CBC mode
-    /// with configurable padding.
+    /// Performs a cryptographic transformation of data using a <see cref="Threefish" /> block cipher engine. This class cannot be
+    /// inherited.
     /// </summary>
     /// <remarks>
-    /// This class integrates a block cipher engine ( <see cref="IBlockCipher" />) with a cipher mode (
-    /// <see cref="IBlockCipherModeTransform" />) and padding scheme ( <see cref="IPaddingStrategy" />). It supports both streaming (via
-    /// <see cref="TransformBlock" />) and final block processing (via <see cref="TransformFinalBlock" />), following the
-    /// <see cref="ICryptoTransform" /> contract.
+    /// <para>
+    /// This class integrates an <see cref="IBlockCipher" /> engine with an <see cref="IBlockCipherModeTransform" /> and an
+    /// <see cref="IPaddingStrategy" /> to implement the <see cref="ICryptoTransform" /> contract. Block-aligned streaming data is
+    /// processed via <see cref="TransformBlock" />, and the final (potentially partial) block — including padding application or
+    /// removal — is handled by <see cref="TransformFinalBlock" />.
+    /// </para>
+    /// <para>
+    /// Instances of this class are returned by <see cref="Threefish.CreateEncryptor(byte[], byte[], byte[])" /> and
+    /// <see cref="Threefish.CreateDecryptor(byte[], byte[], byte[])" />. Using this class directly is not recommended; prefer using a
+    /// concrete <see cref="Threefish" /> algorithm with a <see cref="CryptoStream" />.
+    /// </para>
     /// </remarks>
     public sealed class ThreefishTransform : ICryptoTransform
     {
@@ -26,15 +33,15 @@
         private byte[]? deferredInput;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ThreefishTransform" /> class using the specified cipher, mode, padding, and
-        /// initialization vector.
+        /// Initialises a new instance of the <see cref="ThreefishTransform" /> class using the specified cipher, mode, padding, and
+        /// initialisation vector.
         /// </summary>
-        /// <param name="cipher">The block cipher engine to use for encryption or decryption.</param>
-        /// <param name="cipherMode">The block cipher mode of operation (e.g., CBC, CFB).</param>
-        /// <param name="paddingMode">The padding scheme to apply to input data.</param>
-        /// <param name="iv">The initialization vector to use for the block cipher mode.</param>
-        /// <param name="encrypt"><c>true</c> to encrypt; <c>false</c> to decrypt.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
+        /// <param name="cipher">The configured <see cref="IBlockCipher" /> engine to use. Must not be <see langword="null" />.</param>
+        /// <param name="cipherMode">The block cipher mode of operation (for example, <see cref="CipherBlockMode.CBC" />).</param>
+        /// <param name="paddingMode">The padding scheme to apply to the final block.</param>
+        /// <param name="iv">The initialisation vector for the cipher mode. Must match the cipher block size.</param>
+        /// <param name="encrypt"><see langword="true" /> to configure for encryption; <see langword="false" /> for decryption.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="cipher" /> is <see langword="null" />.</exception>
         public ThreefishTransform(IBlockCipher cipher, CipherBlockMode cipherMode, PaddingMode paddingMode, byte[] iv, bool encrypt)
         {
             this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
@@ -58,10 +65,16 @@
         /// <inheritdoc />
         public void Dispose()
         {
+            if (this.deferredInput is not null)
+            {
+                CryptographicOperations.ZeroMemory(this.deferredInput);
+                this.deferredInput = null;
+            }
+
+            this.cipher.Dispose();
             GC.SuppressFinalize(this);
         }
 
-        /// <inheritdoc />
         /// <summary>
         /// Transforms a block of bytes and writes the output to the specified buffer.
         /// </summary>
@@ -107,7 +120,6 @@
             }
         }
 
-        /// <inheritdoc />
         /// <summary>
         /// Transforms the final block of data, applying padding (or removing it, if decrypting).
         /// </summary>

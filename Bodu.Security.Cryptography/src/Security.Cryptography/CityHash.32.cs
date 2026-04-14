@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CityHashBase_32.cs" company="PlaceholderCompany">
+// <copyright file="CityHash.32.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -13,49 +13,20 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography
 {
     /// <summary>
-    /// Computes the hash for the input data using the 32-bit variant of the <c>CityHash</c> algorithm, developed by Google. Produces a
-    /// 4-byte (32-bit) hash value. This class cannot be inherited.
+    /// Computes a 32-bit (4-byte) non-cryptographic hash using the <c>CityHash32</c> variant by Google. This class cannot be inherited.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <see cref="CityHash32" /> applies a series of multiply-rotate-XOR mixing steps optimised for small inputs. The algorithm selects
-    /// one of four internal paths depending on the length of the input:
-    /// </para>
-    /// <list type="bullet">
-    /// <item>
-    /// <description>0–4 bytes: A compact loop-based mixing path over individual bytes.</description>
-    /// </item>
-    /// <item>
-    /// <description>5–12 bytes: A four-word path reading from the start, middle, and end of the input.</description>
-    /// </item>
-    /// <item>
-    /// <description>13–24 bytes: A six-word path that samples evenly across the span.</description>
-    /// </item>
-    /// <item>
-    /// <description>25 or more bytes: A full iterative path consuming 20-byte blocks with three interleaved accumulators.</description>
-    /// </item>
-    /// </list>
-    /// <para>
-    /// All paths converge through the <c>Mur</c> and <c>Mix</c> primitives defined in <see cref="CityHash{T}" /> to produce a
-    /// well-distributed 32-bit output.
-    /// </para>
-    /// <para>
-    /// <see cref="CityHash32" /> integrates with the standard <see cref="HashAlgorithm" /> pipeline and may be used directly with
-    /// <see cref="HashAlgorithm.ComputeHash(byte[])" /> or via <see cref="System.IO.Stream" />-based overloads. Because the algorithm
-    /// is inherently non-streaming, the full input is consumed and hashed in a single pass.
+    /// <see cref="CityHash32" /> dispatches to one of four internal mixing paths based on input length: a loop over individual bytes for
+    /// 0–4 bytes; a four-word path for 5–12 bytes; a six-word path for 13–24 bytes; and a full iterative path consuming 20-byte blocks with
+    /// three interleaved accumulators for 25 or more bytes. All paths converge through the <c>Mur</c> and <c>Mix</c> primitives defined in
+    /// <see cref="CityHash{T}" />.
     /// </para>
     /// <note type="important">
     /// This algorithm is <b>not</b> cryptographically secure and must <b>not</b> be used for password hashing, digital signatures, or
     /// any application requiring adversarial collision resistance.
     /// </note>
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    /// using var cityHash = new CityHash32();
-    /// byte[] hash = cityHash.ComputeHash(Encoding.UTF8.GetBytes("Hello, world!"));
-    /// Console.WriteLine(Convert.ToHexString(hash)); // Outputs the 8-character hex representation
-    /// </code>
-    /// </example>
     public sealed class CityHash32
         : CityHash<CityHash32>
     {

@@ -39,9 +39,9 @@
     /// </summary>
     /// <remarks>
     /// <para>
-    /// An instance is passed to the <see cref="ParallelMerkleTreeHash"/> constructor. As the tree
-    /// is built, each leaf and internal node is recorded concurrently by the level workers. Once
-    /// <c>ComputeHash</c> returns, the complete trace is available for inspection.
+    /// An instance is passed to a <see cref="ParallelMerkleTreeHash"/> <c>ComputeHash</c> call. As the
+    /// tree is built, each leaf and internal node is recorded concurrently by the level workers. Once
+    /// the call returns, the complete trace is available for inspection.
     /// </para>
     /// <para>
     /// Storing child hash snapshots for every internal node incurs additional allocation proportional
@@ -49,16 +49,16 @@
     /// for diagnostic use but should not be enabled in production paths.
     /// </para>
     /// <para>
-    /// The <see cref="Validate"/> method independently re-computes each internal node's hash from
-    /// its recorded children and confirms the result matches the value stored in the node. It does
-    /// not re-validate leaf hashes against the original input bytes, as raw blocks are not retained.
+    /// The <see cref="Validate"/> method independently re-computes each internal node's hash from its
+    /// recorded children and confirms the result matches the value stored in the node. Leaf hashes are
+    /// not re-validated against the original input bytes, as raw blocks are not retained.
     /// </para>
     /// </remarks>
     /// <example>
     /// <code>
     /// var diagnostics = new MerkleTreeDiagnostics();
-    /// using var hasher = new ParallelMerkleTreeHash(() => SHA256.Create(), blockSize: 64, fanOut: 2, diagnostics);
-    /// byte[] root = hasher.ComputeHash(data);
+    /// using var hasher = new ParallelMerkleTreeHash(() => SHA256.Create(), blockSize: 64, fanOut: 2);
+    /// byte[] root = hasher.ComputeHash(data, diagnostics);
     ///
     /// diagnostics.WriteTo(Console.Out);
     ///

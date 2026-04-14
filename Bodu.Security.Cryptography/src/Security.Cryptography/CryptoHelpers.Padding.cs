@@ -8,20 +8,21 @@ namespace Bodu.Security.Cryptography
 {
     using System.Security.Cryptography;
 
-    /// <summary>
-    /// Provides cryptographic utility functions for applying and removing block padding.
-    /// </summary>
     public static partial class CryptoHelpers
     {
         /// <summary>
-        /// Removes padding from a block and returns a newly allocated array.
+        /// Removes padding from a block and returns the depadded data as a newly allocated array.
         /// </summary>
-        /// <param name="padding">The padding mode used in the block.</param>
-        /// <param name="blockSizeBytes">The block size in bytes.</param>
-        /// <param name="block">The input padded block.</param>
-        /// <param name="offset">Offset in the input buffer.</param>
-        /// <param name="count">Number of bytes to process.</param>
-        /// <returns>A new byte array with padding removed.</returns>
+        /// <param name="padding">The <see cref="PaddingMode" /> that was applied to <paramref name="block" />.</param>
+        /// <param name="blockSizeBytes">The block size, in bytes, used when the input was padded.</param>
+        /// <param name="block">The input buffer containing the padded block or blocks.</param>
+        /// <param name="offset">The zero-based offset in <paramref name="block" /> at which the padded data begins.</param>
+        /// <param name="count">The number of bytes to read from <paramref name="block" /> starting at <paramref name="offset" />.</param>
+        /// <returns>A newly allocated <see cref="byte" /> array containing the input data with padding removed.</returns>
+        /// <exception cref="CryptographicException">
+        /// The padding is invalid, the specified range is not a positive multiple of <paramref name="blockSizeBytes" />,
+        /// or the padding mode is unsupported.
+        /// </exception>
         public static byte[] DepadBlock(PaddingMode padding, int blockSizeBytes, byte[] block, int offset, int count)
         {
             byte[] temp = new byte[count];
@@ -32,15 +33,16 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Removes padding from a block and writes the depadded data into the destination span.
+        /// Removes padding from a block and writes the depadded data into the specified destination span.
         /// </summary>
-        /// <param name="padding">The padding mode applied to the input data.</param>
-        /// <param name="blockSizeBytes">The block size in bytes for validation.</param>
-        /// <param name="source">The padded input data.</param>
-        /// <param name="destination">The destination span to receive depadded data.</param>
-        /// <returns>The number of unpadded bytes written to <paramref name="destination" />.</returns>
+        /// <param name="padding">The <see cref="PaddingMode" /> applied to <paramref name="source" />.</param>
+        /// <param name="blockSizeBytes">The block size, in bytes, used when the input was padded.</param>
+        /// <param name="source">The padded input data. Its length must be a positive multiple of <paramref name="blockSizeBytes" />.</param>
+        /// <param name="destination">The destination span that receives the depadded data.</param>
+        /// <returns>The number of bytes written to <paramref name="destination" /> after padding has been removed.</returns>
         /// <exception cref="CryptographicException">
-        /// Thrown if the padding is invalid, the source is not block-aligned, or the padding mode is unsupported.
+        /// The padding is invalid, <paramref name="source" /> is not a positive multiple of <paramref name="blockSizeBytes" />,
+        /// or the padding mode is unsupported.
         /// </exception>
         public static int DepadBlock(
             PaddingMode padding,
@@ -88,14 +90,18 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Applies padding to a block and returns a newly allocated array.
+        /// Applies the specified padding mode to a block and returns the padded data as a newly allocated array.
         /// </summary>
-        /// <param name="padding">The padding mode to apply.</param>
-        /// <param name="blockSizeBytes">The block size in bytes.</param>
-        /// <param name="block">The input buffer to pad.</param>
-        /// <param name="offset">The offset within the buffer to start reading.</param>
-        /// <param name="count">The number of bytes to read from the buffer.</param>
-        /// <returns>A new padded byte array.</returns>
+        /// <param name="padding">The <see cref="PaddingMode" /> to apply.</param>
+        /// <param name="blockSizeBytes">The block size in bytes used to align the output.</param>
+        /// <param name="block">The input buffer containing the data to pad.</param>
+        /// <param name="offset">The zero-based offset in <paramref name="block" /> at which to begin reading.</param>
+        /// <param name="count">The number of bytes to read from <paramref name="block" /> starting at <paramref name="offset" />.</param>
+        /// <returns>A newly allocated <see cref="byte" /> array containing the input data with padding applied.</returns>
+        /// <exception cref="CryptographicException">
+        /// The padding mode is invalid, or <paramref name="padding" /> is <see cref="PaddingMode.None" /> and the input length is
+        /// not block-aligned.
+        /// </exception>
         public static byte[] PadBlock(PaddingMode padding, int blockSizeBytes, byte[] block, int offset, int count)
         {
             ThrowHelper.ThrowIfLessThan(blockSizeBytes, 1);
@@ -106,15 +112,18 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Applies padding to a block using the specified padding mode and writes to the destination span.
+        /// Applies the specified padding mode to a block and writes the padded result into the destination span.
         /// </summary>
-        /// <param name="padding">Padding mode to apply.</param>
-        /// <param name="blockSizeBytes">The block size in bytes.</param>
-        /// <param name="source">Input data to pad.</param>
-        /// <param name="destination">Destination span for the padded result.</param>
-        /// <returns>Total bytes written to the destination span.</returns>
-        /// <exception cref="ArgumentException">Thrown when the destination span is too small.</exception>
-        /// <exception cref="CryptographicException">Thrown if the padding mode is invalid or the input is not aligned.</exception>
+        /// <param name="padding">The <see cref="PaddingMode" /> to apply.</param>
+        /// <param name="blockSizeBytes">The block size in bytes used to align the output.</param>
+        /// <param name="source">The input data to pad.</param>
+        /// <param name="destination">The destination span that receives the padded result.</param>
+        /// <returns>The total number of bytes written to <paramref name="destination" />.</returns>
+        /// <exception cref="ArgumentException"><paramref name="destination" /> is too small to hold the padded result.</exception>
+        /// <exception cref="CryptographicException">
+        /// The padding mode is invalid, or <paramref name="padding" /> is <see cref="PaddingMode.None" /> and the input length is
+        /// not a multiple of <paramref name="blockSizeBytes" />.
+        /// </exception>
         public static int PadBlock(
             PaddingMode padding,
             int blockSizeBytes,
@@ -176,14 +185,14 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Attempts to remove padding from the given input buffer using the specified mode.
+        /// Attempts to remove padding from the specified input buffer using the given padding mode.
         /// </summary>
-        /// <param name="padding">The padding mode to validate and remove.</param>
-        /// <param name="blockSizeBytes">The block size in bytes.</param>
+        /// <param name="padding">The <see cref="PaddingMode" /> to validate and remove.</param>
+        /// <param name="blockSizeBytes">The block size in bytes used when the input was padded.</param>
         /// <param name="source">The padded input buffer.</param>
         /// <param name="destination">The destination span that receives the depadded data.</param>
-        /// <param name="bytesWritten">The number of bytes written to <paramref name="destination" />.</param>
-        /// <returns><c>true</c> if depadding was successful; otherwise, <c>false</c>.</returns>
+        /// <param name="bytesWritten">When this method returns, contains the number of bytes written to <paramref name="destination" />.</param>
+        /// <returns><see langword="true" /> if depadding was successful; otherwise, <see langword="false" />.</returns>
         public static bool TryDepadBlock(
             PaddingMode padding,
             int blockSizeBytes,
@@ -204,14 +213,14 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Attempts to apply padding to the given input buffer using the specified mode.
+        /// Attempts to apply padding to the specified input buffer using the given padding mode.
         /// </summary>
-        /// <param name="padding">The padding mode to apply.</param>
-        /// <param name="blockSizeBytes">The block size in bytes.</param>
+        /// <param name="padding">The <see cref="PaddingMode" /> to apply.</param>
+        /// <param name="blockSizeBytes">The block size in bytes used to align the output.</param>
         /// <param name="source">The input buffer to pad.</param>
         /// <param name="destination">The destination span that receives the padded data.</param>
-        /// <param name="bytesWritten">The number of bytes written to <paramref name="destination" />.</param>
-        /// <returns><c>true</c> if padding was successfully applied; otherwise, <c>false</c>.</returns>
+        /// <param name="bytesWritten">When this method returns, contains the number of bytes written to <paramref name="destination" />.</param>
+        /// <returns><see langword="true" /> if padding was successfully applied; otherwise, <see langword="false" />.</returns>
         public static bool TryPadBlock(
             PaddingMode padding,
             int blockSizeBytes,
@@ -232,11 +241,11 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Checks whether a span consists entirely of a single repeated value.
+        /// Checks whether a span consists entirely of a single repeated byte value.
         /// </summary>
         /// <param name="span">The span to validate.</param>
         /// <param name="expected">The expected uniform byte value.</param>
-        /// <returns><c>true</c> if all bytes match the expected value; otherwise, <c>false</c>.</returns>
+        /// <returns><see langword="true" /> if every byte in <paramref name="span" /> equals <paramref name="expected" />; otherwise, <see langword="false" />.</returns>
         private static bool IsUniformPadding(ReadOnlySpan<byte> span, byte expected)
         {
             foreach (byte b in span)

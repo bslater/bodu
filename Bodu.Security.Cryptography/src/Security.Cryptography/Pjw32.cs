@@ -12,24 +12,13 @@ namespace Bodu.Security.Cryptography
     using System.Security.Cryptography;
 
     /// <summary>
-    /// Computes the hash for the input data using the <c>PJW</c> hash algorithm. This variant applies a non-cryptographic shifting and
-    /// masking technique developed by Peter J. Weinberger for generating 32-bit hash codes. This class cannot be inherited.
+    /// Computes a 32-bit non-cryptographic hash using Peter J. Weinberger's PJW shift-and-fold algorithm (as described in the "Dragon
+    /// Book"). This class cannot be inherited.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The <see cref="Pjw32" /> algorithm computes a 32-bit hash value by iteratively mixing input bytes using a shifting and masking
-    /// strategy that isolates high-order bits and folds them back into the result. It is derived from the original algorithm described in
-    /// the "Dragon Book" (Compilers: Principles, Techniques, and Tools) and was later adapted by Peter J. Weinberger for use in compilers
-    /// and symbol tables.
-    /// </para>
-    /// <para>
-    /// The hashing process involves shifting the result left by a fixed amount (typically 4 bits), adding the current byte, and then
-    /// folding any overflow bits back into the hash using XOR. This provides a reasonably well-distributed hash for small-to-medium strings
-    /// and identifier-style data.
-    /// </para>
-    /// <para>
-    /// This implementation is suitable for general-purpose use cases that require fast, deterministic hashing such as hash tables, string
-    /// interning, and symbol indexing.
+    /// For each input byte, the hash is shifted left by 4 bits and the byte added; any overflow into the top 4 bits is then XOR-folded
+    /// back into the low-order bits, producing a well-distributed hash for identifier and symbol-table use.
     /// </para>
     /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for password hashing,
     /// digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -54,29 +43,10 @@ namespace Bodu.Security.Cryptography
             this.Initialize();
         }
 
-        /// <summary>
-        /// Gets a value indicating whether this transform instance can be reused after a hash operation is completed.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if the transform supports multiple hash computations via <see cref="HashAlgorithm.Initialize" />;
-        /// otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Reusable transforms allow the internal state to be reset for subsequent operations using the same instance. One-shot algorithms
-        /// that clear sensitive key material after finalization typically return <see langword="false" />.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanReuseTransform => true;
 
-        /// <summary>
-        /// Gets a value indicating whether this transform supports processing multiple blocks of data in a single operation.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if multiple input blocks can be transformed in sequence without intermediate finalization; otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Most hash algorithms and block ciphers support multi-block transformations for streaming input. If <see langword="false" />, the
-        /// transform must be invoked one block at a time.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanTransformMultipleBlocks => true;
 
         /// <inheritdoc />
@@ -137,7 +107,7 @@ namespace Bodu.Security.Cryptography
 #if !NET6_0_OR_GREATER
             ThrowHelper.ThrowIfLessThan(ibStart, 0);
             ThrowHelper.ThrowIfLessThan(cbSize, 0);
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, offset, cbSize);
+            ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
             if (finalized)
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
@@ -180,34 +150,9 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Finalizes the hash computation and returns the resulting 32-bit <see cref="Pjw32" /> hash in big-endian format. This method
-        /// reflects all input previously processed via <see cref="HashAlgorithm.HashCore(byte[], int, int)" /> or
-        /// <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" /> and produces a final, stable hash output.
+        /// Finalises the PJW hash computation and returns the 32-bit result as a 4-byte big-endian array.
         /// </summary>
-        /// <returns>
-        /// A 4-byte array representing the computed <c>Pjw32</c> hash value. The result is encoded in <b>big-endian</b> byte order.
-        /// </returns>
-        /// <remarks>
-        /// <para>
-        /// This method completes the internal state of the hashing algorithm and serializes the final hash value into a
-        /// platform-independent format. It is invoked automatically by <see cref="HashAlgorithm.ComputeHash(byte[])" /> and related methods
-        /// once all data has been processed.
-        /// </para>
-        /// <para>After this method returns, the internal state is considered finalized and the computed hash is stable.</para>
-        /// <para>
-        /// In .NET 6.0 and later, the algorithm is automatically reset by invoking <see cref="HashAlgorithm.Initialize" />, allowing the
-        /// instance to be reused immediately.
-        /// </para>
-        /// <para>
-        /// In earlier versions of .NET, the internal state is marked as finalized, and any subsequent calls to
-        /// <see cref="HashAlgorithm.HashCore(byte[], int, int)" />, <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" />, or
-        /// <see cref="HashAlgorithm.HashFinal" /> will throw a <see cref="CryptographicUnexpectedOperationException" />. To compute another
-        /// hash, you must explicitly call <see cref="HashAlgorithm.Initialize" /> to reset the algorithm.
-        /// </para>
-        /// <para>
-        /// Implementations should ensure all residual or pending data is processed and integrated into the final hash value before returning.
-        /// </para>
-        /// </remarks>
+        /// <returns>A 4-byte array containing the hash value in <b>big-endian</b> byte order.</returns>
         protected override byte[] HashFinal()
         {
             this.ThrowIfDisposed();
@@ -235,7 +180,7 @@ namespace Bodu.Security.Cryptography
             ObjectDisposedException.ThrowIf(this.disposed, this);
 #else
             if (disposed)
-                throw new ObjectDisposedException(nameof(PjW32));
+                throw new ObjectDisposedException(nameof(Pjw32));
 #endif
         }
 

@@ -11,17 +11,14 @@ namespace Bodu.Security.Cryptography
     using System.Security.Cryptography;
 
     /// <summary>
-    /// Provides a generic base class for <c>Adler</c> style checksum algorithms.
+    /// Provides a generic base class for Adler-style checksum algorithms parameterised by the accumulator type.
     /// </summary>
-    /// <typeparam name="T">The unsigned numeric type used for internal state accumulation (e.g., <see cref="uint" />, <see cref="ulong" />).</typeparam>
+    /// <typeparam name="T">The unsigned numeric type used for internal state accumulation (e.g., <see cref="uint" /> or <see cref="ulong" />).</typeparam>
     /// <remarks>
     /// <para>
-    /// Adler checksum algorithms maintain two internal accumulators (A and B) and combine them to form a final checksum value. This generic
-    /// base class implements the core checksum logic in a type-safe and reusable form, enabling 32-bit and 64-bit variants.
-    /// </para>
-    /// <para>Implementations must supply a modulus appropriate to the desired bit width (e.g., 65521 for Adler-32, or 4294967291 for Adler-64).</para>
-    /// <para>
-    /// This class is designed for reuse, supports incremental block processing, and provides SIMD-accelerated and scalar fallback paths.
+    /// Adler checksums maintain two accumulators (A and B) and combine them to form the final checksum. Derived classes supply the modulus
+    /// appropriate to the desired bit width (e.g., 65521 for Adler-32, or 4294967291 for Adler-64). The core hashing loop provides both a
+    /// SIMD-accelerated path and a scalar fallback.
     /// </para>
     /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for password hashing,
     /// digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -31,12 +28,12 @@ namespace Bodu.Security.Cryptography
         where T : unmanaged, INumber<T>
     {
         /// <summary>
-        /// The first part of the Adler checksum accumulator, typically initialized to 1.
+        /// The A accumulator, initialised to one and updated with each input byte.
         /// </summary>
         protected T PartA;
 
         /// <summary>
-        /// The second part of the Adler checksum accumulator, which accumulates the cumulative sum of <see cref="PartA" />.
+        /// The B accumulator, which holds the running sum of <see cref="PartA" /> across all processed bytes.
         /// </summary>
         protected T PartB;
 
@@ -44,8 +41,12 @@ namespace Bodu.Security.Cryptography
         private bool disposed = false;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AdlerBase{T}" /> class.
+        /// Initializes a new instance of the <see cref="AdlerBase{T}" /> class with the specified modulus.
         /// </summary>
+        /// <param name="modulo">The modulus applied to the accumulators after each reduction step.</param>
+        /// <exception cref="NotSupportedException">
+        /// <typeparamref name="T" /> is not one of the supported accumulator types (<see cref="uint" /> or <see cref="ulong" />).
+        /// </exception>
         protected AdlerBase(T modulo)
         {
             this.modulo = modulo;
@@ -59,29 +60,10 @@ namespace Bodu.Security.Cryptography
             this.PartB = T.Zero;
         }
 
-        /// <summary>
-        /// Gets a value indicating whether this transform instance can be reused after a hash operation is completed.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if the transform supports multiple hash computations via <see cref="HashAlgorithm.Initialize" />;
-        /// otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Reusable transforms allow the internal state to be reset for subsequent operations using the same instance. One-shot algorithms
-        /// that clear sensitive key material after finalization typically return <see langword="false" />.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanReuseTransform => true;
 
-        /// <summary>
-        /// Gets a value indicating whether this transform supports processing multiple blocks of data in a single operation.
-        /// </summary>
-        /// <value>
-        /// <see langword="true" /> if multiple input blocks can be transformed in sequence without intermediate finalization; otherwise, <see langword="false" />.
-        /// </value>
-        /// <remarks>
-        /// Most hash algorithms and block ciphers support multi-block transformations for streaming input. If <see langword="false" />, the
-        /// transform must be invoked one block at a time.
-        /// </remarks>
+        /// <inheritdoc />
         public override bool CanTransformMultipleBlocks => true;
 
 #if !NET6_0_OR_GREATER
@@ -103,12 +85,11 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Releases the unmanaged resources used by the algorithm and clears the key from memory.
+        /// Releases resources used by the algorithm and clears internal accumulators.
         /// </summary>
         /// <param name="disposing">
         /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release only unmanaged resources.
         /// </param>
-        /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
         protected override void Dispose(bool disposing)
         {
             if (this.disposed) return;
@@ -125,8 +106,8 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Processes a segment of the input byte array and feeds it into the <see cref="AdlerBase{T}" /> hashing algorithm. This method
-        /// updates the internal state by processing <paramref name="cbSize" /> bytes starting at the specified <paramref name="ibStart" /> offset.
+        /// Feeds <paramref name="cbSize" /> bytes from <paramref name="array" /> (starting at <paramref name="ibStart" />) into the
+        /// checksum computation.
         /// </summary>
         /// <param name="array">The input byte array containing the data to hash.</param>
         /// <param name="ibStart">The zero-based index in <paramref name="array" /> at which to begin reading data.</param>
@@ -149,7 +130,7 @@ namespace Bodu.Security.Cryptography
 #if !NET6_0_OR_GREATER
             ThrowHelper.ThrowIfLessThan(ibStart, 0);
             ThrowHelper.ThrowIfLessThan(cbSize, 0);
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, offset, cbSize);
+            ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
             if (finalized)
                 throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
@@ -158,8 +139,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Processes the entirety of the input <paramref name="source" /> and feeds it into the <see cref="AdlerBase{T}" /> hashing
-        /// algorithm. This method updates the internal hash state accordingly by consuming the entire input span.
+        /// Feeds the contents of <paramref name="source" /> into the checksum computation.
         /// </summary>
         /// <param name="source">The input byte span containing the data to hash.</param>
         /// <exception cref="CryptographicUnexpectedOperationException">
@@ -235,18 +215,13 @@ namespace Bodu.Security.Cryptography
             ObjectDisposedException.ThrowIf(this.disposed, this);
 #else
             if (disposed)
-                throw new ObjectDisposedException(nameof(Adler));
+                throw new ObjectDisposedException(this.GetType().Name);
 #endif
         }
 
         /// <summary>
-        /// Throws a <see cref="CryptographicUnexpectedOperationException" /> if the hash algorithm has already started processing data,
-        /// indicating that the instance is in a finalized or non-configurable state.
+        /// Throws if the algorithm has already begun processing data, preventing reconfiguration of parameters after hashing has started.
         /// </summary>
-        /// <remarks>
-        /// This method is used to prevent reconfiguration of algorithm parameters such as the key, number of rounds, or other settings once
-        /// hashing has begun. It ensures settings are immutable after initialization.
-        /// </remarks>
         /// <exception cref="CryptographicUnexpectedOperationException">
         /// Thrown when an attempt is made to modify the algorithm after it has entered a non-zero state, which indicates that hashing has
         /// started or been finalized.
