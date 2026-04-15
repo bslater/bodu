@@ -83,8 +83,10 @@ namespace Bodu.Security.Cryptography
         /// for multiple messages violates the security guarantees of the algorithm and may lead to forgery attacks.
         /// </para>
         /// <para>
-        /// This implementation clears the key material after finalization to prevent accidental reuse. To compute a new MAC, a new instance
-        /// must be created with a fresh key.
+        /// The framework-invoked automatic re-initialisation that occurs at the end of <see cref="HashAlgorithm.ComputeHash(byte[])" /> and
+        /// related APIs is tolerated so that callers can read <see cref="HashAlgorithm.Hash" /> without tripping the key-set guard. However,
+        /// explicit reuse of a finalised instance — for example, a second <see cref="HashAlgorithm.ComputeHash(byte[])" /> call — is rejected
+        /// by the inherited finalised-state guard on frameworks prior to .NET 6. A fresh instance should be created for each message.
         /// </para>
         /// </remarks>
         public override bool CanReuseTransform => false;
@@ -127,6 +129,13 @@ namespace Bodu.Security.Cryptography
             this.ThrowIfDisposed();
             base.Initialize();
             Array.Clear(this.acc);
+
+#if !NET6_0_OR_GREATER
+            // Reset state and finalised flag so a freshly-initialised instance may accept
+            // new input. On .NET 6+ the framework manages these transitions automatically.
+            this.State = 0;
+            this.finalized = false;
+#endif
 
             // Refuse to silently regenerate a key. Callers must explicitly supply a key
             // (via the Key setter) or call GenerateKey() before re-initialising. This
@@ -262,8 +271,15 @@ namespace Bodu.Security.Cryptography
             BinaryPrimitives.WriteUInt32LittleEndian(tag.Slice(8), (uint)f2);
             BinaryPrimitives.WriteUInt32LittleEndian(tag.Slice(12), (uint)f3);
 
-            // Clear key immediately after use to prevent reuse
-            CryptoHelpers.ClearAndNullify(ref this.KeyValue!);
+#if !NET6_0_OR_GREATER
+            // Mark the instance as finalised so the base-class HashCore/HashFinal guards
+            // reject subsequent streaming after the MAC has been produced. The key itself
+            // is retained until Dispose so that the framework's automatic re-initialisation
+            // (invoked by ComputeHash via CaptureHashCodeAndReinitialize) can succeed without
+            // tripping the key-set check in Initialize.
+            this.finalized = true;
+            this.State = 2;
+#endif
 
             return tag.ToArray();
         }
