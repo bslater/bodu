@@ -1,201 +1,212 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <!-- JANUARY -->
   <NotableDate name="New Year's Day">
-    <Definition type="Holiday" nonWorking="true">
+    <Rule category="Holiday" nonWorking="true">
       <Fixed day="1" month="January" />
-      <AdjustmentRule when="IfWeekend" action="MoveToNextWeekday" />
-    </Definition>
+      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
   </NotableDate>
 
   <!-- FEBRUARY -->
   <NotableDate name="Valentine's Day">
-    <Definition type="Observance">
+    <Rule category="Observance">
       <Fixed day="14" month="February" />
-    </Definition>
+    </Rule>
   </NotableDate>
 
   <!-- MARCH -->
   <NotableDate name="International Women's Day">
-    <Definition type="Observance">
+    <Rule category="Observance">
       <Fixed day="8" month="March" />
-    </Definition>
+    </Rule>
   </NotableDate>
 
   <!-- APRIL -->
   <NotableDate name="April Fool's Day">
-    <Definition type="Cultural">
+    <Rule category="Cultural">
       <Fixed day="1" month="April" />
-    </Definition>
+    </Rule>
   </NotableDate>
-  <NotableDate name="ANZAC Day">
-    <Definition type="Remembrance" territory="AU,NZ" nonWorking="true">
+  <NotableDate name="Anzac Day">
+    <Rule category="Remembrance" territory="AU,NZ" nonWorking="true">
       <Fixed day="25" month="April" />
-      <AdjustmentRule when="IfWeekend" action="MoveToNextWeekday" territory="AU-WA,AU-NT" />
-    </Definition>
+      <Adjustment when="IfWeekend" action="MoveToNextWeekday" territory="AU-WA,AU-NT" />
+    </Rule>
   </NotableDate>
 
   <!-- MAY -->
   <NotableDate name="International Workers' Day">
-    <Definition type="Holiday" nonWorking="true">
+    <Rule category="Holiday" nonWorking="true">
       <Fixed day="1" month="May" />
-    </Definition>
+    </Rule>
   </NotableDate>
   <NotableDate name="Mother's Day">
-    <Definition type="Observance">
-      <Rule month="May" dayOfWeek="Sunday" weekOrdinal="Second" />
-    </Definition>
+    <Rule category="Observance">
+      <DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Second" />
+    </Rule>
   </NotableDate>
 
   <!-- JUNE -->
   <NotableDate name="Father's Day">
-    <Definition type="Observance">
-      <Rule month="June" dayOfWeek="Sunday" weekOrdinal="Third" />
-    </Definition>
+    <Rule category="Observance">
+      <DayOfWeekInMonth month="June" dayOfWeek="Sunday" weekOrdinal="Third" />
+    </Rule>
   </NotableDate>
 
   <!-- EASTER RELATED DATES -->
   <NotableDate name="Ash Wednesday">
-    <Definition type="Christian Observance" firstYear="1583">
-      <OffsetFrom name="Easter Sunday" offset="-46" />
-    </Definition>
+    <Rule category="Observance" firstYear="1583">
+      <Tag>Christian</Tag>
+      <OffsetFromAnchor name="Easter Sunday" offset="-46" />
+    </Rule>
   </NotableDate>
 
   <NotableDate name="Palm Sunday">
-    <Definition type="Christian Observance" firstYear="1583">
-      <OffsetFrom name="Easter Sunday" offset="-7" />
-    </Definition>
+    <Rule category="Observance" firstYear="1583">
+      <Tag>Christian</Tag>
+      <OffsetFromAnchor name="Easter Sunday" offset="-7" />
+    </Rule>
   </NotableDate>
 
   <NotableDate name="Maundy Thursday">
-    <Definition type="Christian Observance" firstYear="1583">
-      <OffsetFrom name="Easter Sunday" offset="-3" />
-    </Definition>
+    <Rule category="Observance" firstYear="1583">
+      <Tag>Christian</Tag>
+      <OffsetFromAnchor name="Easter Sunday" offset="-3" />
+    </Rule>
   </NotableDate>
 
   <NotableDate name="Good Friday">
-    <Definition type="Holiday Christian" firstYear="1583" nonWorking="true">
-      <OffsetFrom name="Easter Sunday" offset="-2" />
-    </Definition>
+    <Rule category="Holiday" firstYear="1583" nonWorking="true">
+      <Tag>Christian</Tag>
+      <OffsetFromAnchor name="Easter Sunday" offset="-2" />
+    </Rule>
   </NotableDate>
 
   <NotableDate name="Easter Saturday">
-    <Definition type="Christian Observance" firstYear="1583">
-      <OffsetFrom name="Easter Sunday" offset="-1" />
-    </Definition>
+    <Rule category="Observance" firstYear="1583">
+      <Tag>Christian</Tag>
+      <OffsetFromAnchor name="Easter Sunday" offset="-1" />
+    </Rule>
   </NotableDate>
 
   <NotableDate name="Easter Sunday">
-    <Definition type="Christian Observance" firstYear="1583">
-      <Dynamic providerType="Bodu.Globalization.Calendar.Calculators.EasterSundayNotableDateCalculator" />
-    </Definition>
+    <Rule category="Observance" firstYear="1583">
+      <Tag>Christian</Tag>
+      <Calculator key="easter-sunday" type="Bodu.Globalization.Calendar.Calculators.EasterSundayNotableDateCalculator, Bodu.Globalization.Calendar" />
+    </Rule>
   </NotableDate>
 
   <NotableDate name="Easter Monday">
-    <Definition type="Holiday Christian" firstYear="1583" nonWorking="true">
-      <OffsetFrom name="Easter Sunday" offset="1" />
-    </Definition>
+    <Rule category="Holiday" firstYear="1583" nonWorking="true">
+      <Tag>Christian</Tag>
+      <OffsetFromAnchor name="Easter Sunday" offset="1" />
+    </Rule>
   </NotableDate>
 
   <NotableDate name="Ascension Day">
-    <Definition type="Christian Observance" firstYear="1583">
-      <OffsetFrom name="Easter Sunday" offset="39" />
-    </Definition>
+    <Rule category="Observance" firstYear="1583">
+      <Tag>Christian</Tag>
+      <OffsetFromAnchor name="Easter Sunday" offset="39" />
+    </Rule>
   </NotableDate>
 
   <NotableDate name="Pentecost Sunday">
-    <Definition type="Christian Observance" firstYear="1583">
-      <OffsetFrom name="Easter Sunday" offset="49" />
-    </Definition>
+    <Rule category="Observance" firstYear="1583">
+      <Tag>Christian</Tag>
+      <OffsetFromAnchor name="Easter Sunday" offset="49" />
+    </Rule>
   </NotableDate>
 
   <NotableDate name="Whit Monday">
-    <Definition type="Holiday Christian" firstYear="1583" nonWorking="true">
-      <OffsetFrom name="Easter Sunday" offset="50" />
-    </Definition>
+    <Rule category="Holiday" firstYear="1583" nonWorking="true">
+      <Tag>Christian</Tag>
+      <OffsetFromAnchor name="Easter Sunday" offset="50" />
+    </Rule>
   </NotableDate>
 
   <!-- JULY -->
   <NotableDate name="Bastille Day">
-    <Definition type="Holiday" territory="FR" nonWorking="true">
+    <Rule category="Holiday" territory="FR" nonWorking="true">
       <Fixed day="14" month="July" />
-    </Definition>
+    </Rule>
   </NotableDate>
 
   <!-- AUGUST -->
   <NotableDate name="International Youth Day">
-    <Definition type="Observance">
+    <Rule category="Observance">
       <Fixed day="12" month="August" />
-    </Definition>
+    </Rule>
   </NotableDate>
 
   <!-- SEPTEMBER -->
-  <NotableDate name="Father's Day">
-    <Definition type="Observance" territory="AU,US">
-      <Rule month="September" dayOfWeek="Sunday" weekOrdinal="First" />
-    </Definition>
+  <NotableDate name="Father's Day (AU/US)">
+    <Rule name="Father's Day" category="Observance" territory="AU,US">
+      <DayOfWeekInMonth month="September" dayOfWeek="Sunday" weekOrdinal="First" />
+    </Rule>
   </NotableDate>
 
   <!-- OCTOBER -->
   <NotableDate name="Halloween">
-    <Definition type="Cultural">
+    <Rule category="Cultural">
       <Fixed day="31" month="October" />
-    </Definition>
+    </Rule>
   </NotableDate>
 
   <!-- NOVEMBER -->
   <NotableDate name="Remembrance Day">
-    <Definition type="Remembrance">
+    <Rule category="Remembrance">
       <Fixed day="11" month="November" />
-    </Definition>
+    </Rule>
   </NotableDate>
   <NotableDate name="Thanksgiving">
-    <Definition type="Holiday" territory="US" nonWorking="true">
-      <Rule month="November" dayOfWeek="Thursday" weekOrdinal="Fourth" />
-    </Definition>
+    <Rule category="Holiday" territory="US" nonWorking="true">
+      <DayOfWeekInMonth month="November" dayOfWeek="Thursday" weekOrdinal="Fourth" />
+    </Rule>
   </NotableDate>
 
   <!-- DECEMBER -->
   <NotableDate name="Christmas Day">
-    <Definition type="Holiday Christian" nonWorking="true">
+    <Rule category="Holiday" nonWorking="true">
+      <Tag>Christian</Tag>
       <Fixed day="25" month="December" />
-      <AdjustmentRule when="IfNonWorkingDay" action="MoveToNextNonWorkingDay" />
-    </Definition>
+      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
   </NotableDate>
   <NotableDate name="Boxing Day">
-    <Definition type="Holiday Christian" nonWorking="true">
+    <Rule category="Holiday" nonWorking="true">
+      <Tag>Christian</Tag>
       <Fixed day="26" month="December" />
-      <AdjustmentRule when="IfNonWorkingDay" action="MoveToNextNonWorkingDay" />
-    </Definition>
+      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
   </NotableDate>
 
   <NotableDate name="Labour Day">
-
     <!-- NSW/SA: Labour Day -->
-    <Definition type="Holiday" nonWorking="true" territory="AU-NSW,AU-SA">
-      <Rule month="October" dayOfWeek="Monday" weekOrdinal="First" />
-    </Definition>
+    <Rule category="Holiday" nonWorking="true" territory="AU-NSW,AU-SA">
+      <DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="First" />
+    </Rule>
 
     <!-- VIC: Labour Day -->
-    <Definition type="Holiday" nonWorking="true" territory="AU-VIC">
-      <Rule month="March" dayOfWeek="Monday" weekOrdinal="Second" />
-    </Definition>
+    <Rule category="Holiday" nonWorking="true" territory="AU-VIC">
+      <DayOfWeekInMonth month="March" dayOfWeek="Monday" weekOrdinal="Second" />
+    </Rule>
 
     <!-- WA: Labour Day -->
-    <Definition type="Holiday" nonWorking="true" territory="AU-WA">
-      <Rule month="March" dayOfWeek="Monday" weekOrdinal="First" />
-    </Definition>
+    <Rule category="Holiday" nonWorking="true" territory="AU-WA">
+      <DayOfWeekInMonth month="March" dayOfWeek="Monday" weekOrdinal="First" />
+    </Rule>
 
     <!-- QLD: Labour Day -->
-    <Definition type="Holiday" nonWorking="true" territory="AU-QLD">
-      <Rule month="May" dayOfWeek="Monday" weekOrdinal="First" />
-    </Definition>
+    <Rule category="Holiday" nonWorking="true" territory="AU-QLD">
+      <DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="First" />
+    </Rule>
 
     <!-- NT: May Day -->
-    <Definition type="Holiday" nonWorking="true" territory="AU-NT" name="May Day">
-      <Rule month="May" dayOfWeek="Monday" weekOrdinal="First" />
-    </Definition>
+    <Rule name="May Day" category="Holiday" nonWorking="true" territory="AU-NT">
+      <DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="First" />
+    </Rule>
   </NotableDate>
 </NotableDates>
