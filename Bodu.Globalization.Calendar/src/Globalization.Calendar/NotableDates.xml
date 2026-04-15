@@ -1,31 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Default universal resource. Imports the cross-cultural Common set and
-  the Christian liturgical set, producing a calendar that is appropriate
-  for consumers calling `new NotableDateService()` who do not need
-  country-specific observances.
+  Default universal resource. Pulls in every rule from the
+  Common and Christian sets via UseAll, producing a calendar
+  that is appropriate for consumers calling
+  `new NotableDateService()` who do not need country-specific
+  observances.
 
-  To restrict the active set to a single country, construct an
-  XmlResourceNotableDateRuleProvider that points directly at one of the
-  country-specific resources instead. For example:
-
-      var providers = new[]
-      {
-          new XmlResourceNotableDateRuleProvider("Bodu.Globalization.Calendar.Resources.US.xml"),
-      };
-      var service = new NotableDateService(providers, CalendarWeekendDefinition.SaturdaySunday);
-
-  Country files apply their own suppressions on top of the imported
-  universal sets (for example, France redefines International Workers'
-  Day as "Fête du Travail"). Because suppressions inside one country file
-  cannot be safely combined with another country file under a single
-  flattened rule set, this composite intentionally does not import the
-  country files; create a separate provider per country instead.
+  UseAll is a deliberate opt-in for "every rule from this
+  resource" and is the only place in the project where wildcard
+  inheritance is used. To restrict the active set to a single
+  country, construct an XmlResourceNotableDateRuleProvider that
+  points directly at one of the country-specific resources
+  (US.xml, GB.xml, FR.xml) — those files cherry-pick rules
+  individually so that adding new entries to Common or Christian
+  never cascades into them.
 -->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-  <Import resource="Bodu.Globalization.Calendar.Resources.Common.xml" />
-  <Import resource="Bodu.Globalization.Calendar.Resources.Christian.xml" />
+  <UseFrom resource="Bodu.Globalization.Calendar.Resources.Common.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="Bodu.Globalization.Calendar.Resources.Christian.xml">
+    <UseAll />
+  </UseFrom>
 
 </NotableDates>

@@ -97,23 +97,42 @@ namespace Bodu.Globalization.Calendar
 
 		private static ParsedNotableDateDocument ParseDocumentInternal(XDocument document)
 		{
-			var imports = document.Descendants(Namespace + "Import")
-				.Select(e => GetRequiredAttribute(e, "resource"))
-				.Where(s => !string.IsNullOrWhiteSpace(s))
-				.ToImmutableArray();
-
-			var suppressions = document.Descendants(Namespace + "Suppress")
-				.Select(e => new NotableDateRuleSuppression(
-					GetRequiredAttribute(e, "name"),
-					GetOptionalAttribute(e, "territory")))
+			var useGroups = document.Descendants(Namespace + "UseFrom")
+				.Select(ParseUseGroup)
 				.ToImmutableArray();
 
 			var rules = document.Descendants(Namespace + "NotableDate")
 				.SelectMany(ParseNotableDate)
 				.ToImmutableArray();
 
-			return new ParsedNotableDateDocument(imports, suppressions, rules);
+			return new ParsedNotableDateDocument(useGroups, rules);
 		}
+
+		private static NotableDateRuleUseGroup ParseUseGroup(XElement useFromElement)
+		{
+			var resource = GetRequiredAttribute(useFromElement, "resource");
+			bool useAll = useFromElement.Element(Namespace + "UseAll") is not null;
+
+			var uses = useFromElement.Elements(Namespace + "Use")
+				.Select(ParseUseDirective)
+				.ToImmutableArray();
+
+			return new NotableDateRuleUseGroup(resource, useAll, uses);
+		}
+
+		private static NotableDateRuleUseDirective ParseUseDirective(XElement useElement) =>
+			new(
+				SourceRuleName: GetRequiredAttribute(useElement, "name"),
+				LocalName: GetOptionalAttribute(useElement, "as"),
+				Category: ParseOptionalEnum<NotableDateCategory>(useElement, "category"),
+				TerritoryCode: GetOptionalAttribute(useElement, "territory"),
+				IsNonWorkingDay: ParseOptionalBool(useElement, "nonWorking"),
+				FirstYear: ParseOptionalInt(useElement, "firstYear"),
+				LastYear: ParseOptionalInt(useElement, "lastYear"),
+				OccurrenceYears: ParseOptionalInt(useElement, "occurrenceYears"),
+				DurationDays: ParseOptionalInt(useElement, "durationDays"),
+				Priority: ParseOptionalInt(useElement, "priority"),
+				Comment: GetOptionalAttribute(useElement, "comment"));
 
 		private static IEnumerable<NotableDateRule> ParseNotableDate(XElement notableDateElement)
 		{

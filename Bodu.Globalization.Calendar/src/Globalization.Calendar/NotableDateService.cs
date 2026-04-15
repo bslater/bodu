@@ -312,23 +312,32 @@ namespace Bodu.Globalization.Calendar
 			if (overrideProviders.Count == 0)
 				return baseRules.IsDefault ? (IReadOnlyList<NotableDateRule>)Array.Empty<NotableDateRule>() : baseRules;
 
-			// Apply additions first by name, replacing base rules; removals are evaluated per-year inside GenerateYear so they can be
-			// scoped to specific years and territories.
+			// Apply additions by composite (name, territory) key so that regional variants of the same notable date (e.g. multiple
+			// Labour Day variants across Australian states) survive instead of collapsing into a single entry. Removals are evaluated
+			// per-year inside GenerateYear so they can be scoped to specific years and territories.
 			IEnumerable<NotableDateRule> source = baseRules.IsDefault
 				? Enumerable.Empty<NotableDateRule>()
 				: baseRules;
-			var byName = source.ToDictionary(r => r.Name, StringComparer.OrdinalIgnoreCase);
+
+			var byKey = new Dictionary<(string Name, string Territory), NotableDateRule>();
+			foreach (var rule in source)
+			{
+				byKey[CompositeKey(rule)] = rule;
+			}
 
 			foreach (var provider in overrideProviders)
 			{
 				foreach (var addition in provider.GetAdditions())
 				{
-					byName[addition.Name] = addition;
+					byKey[CompositeKey(addition)] = addition;
 				}
 			}
 
-			return byName.Values.ToList();
+			return byKey.Values.ToList();
 		}
+
+		private static (string Name, string Territory) CompositeKey(NotableDateRule rule) =>
+			(rule.Name ?? string.Empty, rule.TerritoryCode ?? string.Empty);
 
 		private bool IsRemovedByOverride(NotableDateRule rule, int year, string? territory)
 		{

@@ -3,21 +3,22 @@ using System.Reflection;
 namespace Bodu.Globalization.Calendar
 {
 	/// <summary>
-	/// Loads a graph of <see cref="NotableDateRule" /> instances from an embedded XML resource, recursively resolving any
-	/// <c>&lt;Import&gt;</c> directives and applying any <c>&lt;Suppress&gt;</c> directives.
+	/// Loads a graph of <see cref="NotableDateRule" /> instances from an embedded XML resource, recursively resolving every cherry-pick
+	/// directive declared via <c>&lt;UseFrom&gt;</c> / <c>&lt;Use&gt;</c> / <c>&lt;UseAll&gt;</c>.
 	/// </summary>
 	/// <remarks>
 	/// <para>
-	/// The provider implements the project's import/override semantics:
+	/// The provider implements the project's explicit cherry-pick semantics:
 	/// </para>
 	/// <list type="number">
 	/// <item><description>The supplied root resource is parsed.</description></item>
-	/// <item><description>Each <c>&lt;Import&gt;</c> directive is resolved recursively, depth-first, with cycle detection.</description></item>
-	/// <item><description>The flattened rule set is built by walking the import order from deepest to shallowest. When two rules share a name, the rule defined latest (typically in the importing document) replaces the earlier one.</description></item>
-	/// <item><description>Suppression directives remove inherited rules from the flattened set. A suppression with no <see cref="NotableDateRuleSuppression.TerritoryCode" /> removes every variant of the named rule; a territory-scoped suppression removes only matching variants.</description></item>
+	/// <item><description>Each referenced source resource is loaded and recursively flattened, with cycle detection.</description></item>
+	/// <item><description>For every <c>&lt;UseFrom&gt;</c> directive, the provider pulls the named rules (or every rule, when <c>&lt;UseAll&gt;</c> is present) from the source's flattened set, applies any per-directive scalar overrides, and adds the resulting rules to the local set.</description></item>
+	/// <item><description>Locally declared <c>&lt;NotableDate&gt;</c> entries are added last and override any inherited rules with the same name.</description></item>
 	/// </list>
 	/// <para>
-	/// The flattened result is computed once on first access and cached behind a thread-safe <see cref="Lazy{T}" />.
+	/// Adding a new rule to a source resource never cascades into its consumers: every consumer must explicitly list the rule in a
+	/// <c>&lt;Use&gt;</c> directive (or opt in via <c>&lt;UseAll /&gt;</c>) for that rule to appear in the consumer's flattened set.
 	/// </para>
 	/// </remarks>
 	public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvider
@@ -48,40 +49,70 @@ namespace Bodu.Globalization.Calendar
 
 		private List<NotableDateRule> LoadAndFlatten()
 		{
-			var loaded = new Dictionary<string, ParsedNotableDateDocument>(StringComparer.OrdinalIgnoreCase);
+			var documentCache = new Dictionary<string, ParsedNotableDateDocument>(StringComparer.OrdinalIgnoreCase);
+			var flattenedCache = new Dictionary<string, IReadOnlyDictionary<RuleKey, NotableDateRule>>(StringComparer.OrdinalIgnoreCase);
 			var inProgress = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-			LoadDocumentRecursive(_rootResourceName, loaded, inProgress);
-
-			// Walk the import graph depth-first, so that each document sees only the rules contributed by its descendants when it
-			// applies its own suppressions and additions. This ensures that suppressions remove inherited content but never the
-			// suppressing document's own local rules.
-			var byName = new Dictionary<string, NotableDateRule>(StringComparer.OrdinalIgnoreCase);
-			ApplyDocument(_rootResourceName, loaded, byName, new HashSet<string>(StringComparer.OrdinalIgnoreCase));
-
-			return byName.Values.ToList();
+			var byKey = FlattenResource(_rootResourceName, documentCache, flattenedCache, inProgress);
+			return byKey.Values.ToList();
 		}
 
-		private void LoadDocumentRecursive(
+		private IReadOnlyDictionary<RuleKey, NotableDateRule> FlattenResource(
 			string resourceName,
-			Dictionary<string, ParsedNotableDateDocument> loaded,
+			Dictionary<string, ParsedNotableDateDocument> documentCache,
+			Dictionary<string, IReadOnlyDictionary<RuleKey, NotableDateRule>> flattenedCache,
 			HashSet<string> inProgress)
 		{
-			if (loaded.ContainsKey(resourceName))
-				return;
+			if (flattenedCache.TryGetValue(resourceName, out var cachedFlattened))
+				return cachedFlattened;
 
 			if (!inProgress.Add(resourceName))
-				throw new InvalidOperationException($"Circular import detected while loading '{resourceName}'.");
+				throw new InvalidOperationException(
+					$"Circular reference detected while flattening notable date resource '{resourceName}'.");
 
 			try
 			{
-				var document = LoadAndParse(resourceName);
-				loaded[resourceName] = document;
+				var document = LoadDocument(resourceName, documentCache);
+				var byKey = new Dictionary<RuleKey, NotableDateRule>();
 
-				foreach (var import in document.Imports)
+				foreach (var group in document.UseGroups)
 				{
-					LoadDocumentRecursive(import, loaded, inProgress);
+					var sourceRules = FlattenResource(group.SourceResource, documentCache, flattenedCache, inProgress);
+
+					if (group.UseAll)
+					{
+						// Wildcard: copy every rule. Explicit Use directives below may then override individual entries.
+						foreach (var pair in sourceRules)
+						{
+							byKey[pair.Key] = pair.Value;
+						}
+					}
+
+					foreach (var directive in group.Uses)
+					{
+						// Source lookup is by name only; if multiple rules share the same name in the source (e.g. regional variants
+						// of "Labour Day"), the first match is used. Authors who need finer-grained selection should rename the
+						// source rule or scope it to a unique territory.
+						var sourceRule = FindSourceRule(sourceRules, directive.SourceRuleName)
+							?? throw new InvalidOperationException(
+								$"Notable date rule '{directive.SourceRuleName}' was not found in source resource '{group.SourceResource}' (referenced from '{resourceName}').");
+
+						var localised = ApplyOverrides(sourceRule, directive);
+						byKey[KeyOf(localised)] = localised;
+					}
 				}
+
+				// Locally-declared rules always win over inherited ones with the same (name, territory) key.
+				foreach (var rule in document.LocalRules)
+				{
+					if (string.IsNullOrWhiteSpace(rule.Name))
+						continue;
+
+					byKey[KeyOf(rule)] = rule;
+				}
+
+				flattenedCache[resourceName] = byKey;
+				return byKey;
 			}
 			finally
 			{
@@ -89,77 +120,71 @@ namespace Bodu.Globalization.Calendar
 			}
 		}
 
-		private static void ApplyDocument(
+		private static NotableDateRule? FindSourceRule(IReadOnlyDictionary<RuleKey, NotableDateRule> sourceRules, string name)
+		{
+			foreach (var pair in sourceRules)
+			{
+				if (string.Equals(pair.Key.Name, name, StringComparison.OrdinalIgnoreCase))
+					return pair.Value;
+			}
+
+			return null;
+		}
+
+		private static RuleKey KeyOf(NotableDateRule rule) =>
+			new(rule.Name, rule.TerritoryCode);
+
+		private static NotableDateRule ApplyOverrides(NotableDateRule source, NotableDateRuleUseDirective directive)
+		{
+			return source with
+			{
+				Name = string.IsNullOrWhiteSpace(directive.LocalName) ? source.Name : directive.LocalName!,
+				Category = directive.Category ?? source.Category,
+				TerritoryCode = directive.TerritoryCode ?? source.TerritoryCode,
+				IsNonWorkingDay = directive.IsNonWorkingDay ?? source.IsNonWorkingDay,
+				FirstYear = directive.FirstYear ?? source.FirstYear,
+				LastYear = directive.LastYear ?? source.LastYear,
+				OccurrenceYears = directive.OccurrenceYears ?? source.OccurrenceYears,
+				DurationDays = directive.DurationDays ?? source.DurationDays,
+				Priority = directive.Priority ?? source.Priority,
+				Comment = directive.Comment ?? source.Comment,
+			};
+		}
+
+		/// <summary>
+		/// Compound dedupe key used inside the flatten pipeline. Two rules with the same name but different territories survive as
+		/// independent entries so that regional variants (for example, the Scotland-only Summer Bank Holiday alongside the
+		/// England/Wales/Northern-Ireland one) are not collapsed.
+		/// </summary>
+		private readonly record struct RuleKey(string Name, string? Territory)
+		{
+			public bool Equals(RuleKey other) =>
+				string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase)
+				&& string.Equals(Territory ?? string.Empty, other.Territory ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+
+			public override int GetHashCode() =>
+				HashCode.Combine(
+					StringComparer.OrdinalIgnoreCase.GetHashCode(Name ?? string.Empty),
+					StringComparer.OrdinalIgnoreCase.GetHashCode(Territory ?? string.Empty));
+		}
+
+		private ParsedNotableDateDocument LoadDocument(
 			string resourceName,
-			IReadOnlyDictionary<string, ParsedNotableDateDocument> loaded,
-			Dictionary<string, NotableDateRule> byName,
-			HashSet<string> applied)
+			Dictionary<string, ParsedNotableDateDocument> documentCache)
 		{
-			if (!applied.Add(resourceName))
-				return;
+			if (documentCache.TryGetValue(resourceName, out var cached))
+				return cached;
 
-			var document = loaded[resourceName];
-
-			// 1. Imported documents contribute first so the importing document can override them by name.
-			foreach (var import in document.Imports)
-			{
-				ApplyDocument(import, loaded, byName, applied);
-			}
-
-			// 2. The importing document's suppressions remove inherited rules now, before its own rules are added. This guarantees that a
-			//    document never accidentally suppresses its own local rules.
-			foreach (var suppression in document.Suppressions)
-			{
-				ApplySuppression(byName, suppression);
-			}
-
-			// 3. Local rules are added (or replace any that survived suppression). Locally-declared rules always win over inherited ones.
-			foreach (var rule in document.Rules)
-			{
-				if (string.IsNullOrWhiteSpace(rule.Name))
-					continue;
-
-				byName[rule.Name] = rule;
-			}
-		}
-
-		private static void ApplySuppression(Dictionary<string, NotableDateRule> byName, NotableDateRuleSuppression suppression)
-		{
-			if (!byName.TryGetValue(suppression.Name, out var existing))
-				return;
-
-			if (string.IsNullOrEmpty(suppression.TerritoryCode))
-			{
-				byName.Remove(suppression.Name);
-				return;
-			}
-
-			// Territory-scoped suppression: remove only when the rule's territory contains the suppression scope.
-			if (string.IsNullOrEmpty(existing.TerritoryCode))
-				return;
-
-			if (!TerritoryCode.TryParse(suppression.TerritoryCode, out var suppressionScope))
-				return;
-
-			foreach (var territory in TerritoryCode.ParseList(existing.TerritoryCode))
-			{
-				if (suppressionScope.Contains(territory))
-				{
-					byName.Remove(suppression.Name);
-					return;
-				}
-			}
-		}
-
-		private ParsedNotableDateDocument LoadAndParse(string resourceName)
-		{
 			using var stream = _assembly.GetManifestResourceStream(resourceName)
 				?? throw new FileNotFoundException(
 					$"Embedded XML resource '{resourceName}' was not found in assembly '{_assembly.FullName}'.");
 
 			using var reader = new StreamReader(stream);
 			var xml = reader.ReadToEnd();
-			return NotableDateRuleParser.ParseDocument(xml);
+			var document = NotableDateRuleParser.ParseDocument(xml);
+
+			documentCache[resourceName] = document;
+			return document;
 		}
 	}
 }

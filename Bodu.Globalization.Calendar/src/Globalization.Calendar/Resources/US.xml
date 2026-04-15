@@ -1,23 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   United States federal holidays and widely observed cultural dates.
-  Imports the universal Common set and the Christian liturgical set;
-  adds only US-specific entries.
+
+  Every inherited rule is cherry-picked explicitly from a source
+  resource via <UseFrom> / <Use>. Adding a new rule to Common.xml or
+  Christian.xml does not cascade into this file: only the rules listed
+  below are inherited.
+
+  Where inherited rules need to be retagged with a US territory, mark
+  them as non-working, or follow a US-specific naming convention, the
+  override attributes on each <Use> apply scalar changes without
+  forking the source rule. Tags and Adjustments are inherited
+  unchanged; to override those, declare a local <NotableDate> instead.
 -->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-  <Import resource="Bodu.Globalization.Calendar.Resources.Common.xml" />
-  <Import resource="Bodu.Globalization.Calendar.Resources.Christian.xml" />
+  <UseFrom resource="Bodu.Globalization.Calendar.Resources.Common.xml">
+    <Use name="New Year's Day" territory="US" />
+    <Use name="Valentine's Day" territory="US" />
+    <Use name="Halloween" territory="US" />
+  </UseFrom>
 
-  <!-- The US does not officially observe these as public holidays. -->
-  <Suppress name="International Workers' Day" />
-  <Suppress name="Whit Monday" />
-  <Suppress name="Easter Monday" />
-  <Suppress name="Easter Saturday" />
-  <Suppress name="Maundy Thursday" />
-  <Suppress name="Ascension Day" />
-  <Suppress name="All Saints' Day" />
+  <UseFrom resource="Bodu.Globalization.Calendar.Resources.Christian.xml">
+    <Use name="Easter Sunday" territory="US" />
+    <Use name="Good Friday" territory="US" />
+    <Use name="Christmas Eve" territory="US" />
+    <Use name="Christmas Day" territory="US" nonWorking="true" />
+  </UseFrom>
 
   <!-- JANUARY -->
   <NotableDate name="Martin Luther King Jr. Day">

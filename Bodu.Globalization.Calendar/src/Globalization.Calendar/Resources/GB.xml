@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   United Kingdom public holidays and widely observed cultural dates.
-  Imports the universal Common set and the Christian liturgical set;
-  adds only UK-specific entries.
+
+  Cherry-picks each inherited rule explicitly. Locally declared rules
+  override their inherited namesake. New rules added to Common.xml or
+  Christian.xml do not appear here unless added to the <UseFrom> lists
+  below.
 -->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-  <Import resource="Bodu.Globalization.Calendar.Resources.Common.xml" />
-  <Import resource="Bodu.Globalization.Calendar.Resources.Christian.xml" />
+  <UseFrom resource="Bodu.Globalization.Calendar.Resources.Common.xml">
+    <Use name="Valentine's Day" territory="GB" />
+    <Use name="International Women's Day" territory="GB" />
+    <Use name="April Fool's Day" territory="GB" />
+    <Use name="Halloween" territory="GB" />
+    <Use name="Remembrance Day" territory="GB" />
+  </UseFrom>
 
-  <!-- The UK does not officially observe these as public holidays. -->
-  <Suppress name="Whit Monday" />
-  <Suppress name="Ascension Day" />
-  <Suppress name="Pentecost Sunday" />
-  <Suppress name="All Saints' Day" />
-  <Suppress name="International Workers' Day" />
+  <UseFrom resource="Bodu.Globalization.Calendar.Resources.Christian.xml">
+    <Use name="Easter Sunday" territory="GB" />
+    <Use name="Good Friday" territory="GB" nonWorking="true" />
+    <Use name="Easter Monday" territory="GB" nonWorking="true" />
+    <Use name="Christmas Eve" territory="GB" />
+    <Use name="Christmas Day" territory="GB" nonWorking="true" />
+  </UseFrom>
 
   <!-- New Year's Day in the UK rolls forward to the following Monday when it falls on a weekend. -->
   <NotableDate name="New Year's Day">
@@ -27,8 +36,8 @@
   </NotableDate>
 
   <!-- January (Scotland) -->
-  <NotableDate name="2 January (Scotland)">
-    <Rule name="2 January" category="Holiday" territory="GB-SCT" nonWorking="true">
+  <NotableDate name="2 January">
+    <Rule category="Holiday" territory="GB-SCT" nonWorking="true">
       <Tag>BankHoliday</Tag>
       <Fixed month="January" day="2" />
       <Adjustment when="IfWeekend" action="MoveToNextWeekday" />

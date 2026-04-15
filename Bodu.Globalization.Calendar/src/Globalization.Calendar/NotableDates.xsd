@@ -9,39 +9,57 @@
   xmlns:nd="urn:bodu:globalization:calendar">
 
   <!-- ============================================================
-       Root: an optional list of imports, optional suppressions,
-       and any number of NotableDate entries.
+       Root: zero or more UseFrom directives that cherry-pick rules
+       from other resources, followed by zero or more locally
+       declared NotableDate entries.
        ============================================================ -->
   <xs:element name="NotableDates">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="Import" type="nd:Import" minOccurs="0" maxOccurs="unbounded" />
-        <xs:element name="Suppress" type="nd:Suppress" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="UseFrom" type="nd:UseFrom" minOccurs="0" maxOccurs="unbounded" />
         <xs:element name="NotableDate" type="nd:NotableDate" minOccurs="0" maxOccurs="unbounded" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
 
   <!-- ============================================================
-       Import: pulls in another notable date resource by manifest
-       resource name. Imports are resolved depth-first; rules from
-       later imports override earlier ones with the same name, and
-       any rules declared locally always override imported rules.
+       UseFrom: cherry-picks one or more notable date rules from
+       another manifest resource. Each child Use element selects a
+       single named rule and may override scalar properties on the
+       inherited rule; UseAll is a deliberate opt-in for "every
+       rule in this resource". A document never inherits a rule it
+       has not explicitly listed, so adding a new rule to a source
+       file never cascades into its consumers.
        ============================================================ -->
-  <xs:complexType name="Import">
+  <xs:complexType name="UseFrom">
+    <xs:choice minOccurs="1" maxOccurs="unbounded">
+      <xs:element name="UseAll">
+        <xs:complexType />
+      </xs:element>
+      <xs:element name="Use" type="nd:Use" />
+    </xs:choice>
     <xs:attribute name="resource" type="xs:string" use="required" />
   </xs:complexType>
 
   <!-- ============================================================
-       Suppress: removes an inherited rule from this file's view.
-       Use to opt out of a rule contributed by an imported resource.
-       The optional territory attribute scopes the suppression so
-       that, for example, only the AU-NSW variant is removed while
-       AU-VIC remains.
+       Use: cherry-picks a single notable date rule by name from
+       the enclosing UseFrom's source resource. Any scalar attribute
+       declared here overrides the inherited value; tags and
+       adjustments are inherited unchanged. The optional 'as'
+       attribute renames the rule locally.
        ============================================================ -->
-  <xs:complexType name="Suppress">
+  <xs:complexType name="Use">
     <xs:attribute name="name" type="xs:string" use="required" />
+    <xs:attribute name="as" type="xs:string" use="optional" />
+    <xs:attribute name="category" type="nd:notableDateCategory" use="optional" />
     <xs:attribute name="territory" type="nd:territory" use="optional" />
+    <xs:attribute name="nonWorking" type="xs:boolean" use="optional" />
+    <xs:attribute name="firstYear" type="xs:unsignedShort" use="optional" />
+    <xs:attribute name="lastYear" type="xs:unsignedShort" use="optional" />
+    <xs:attribute name="occurrenceYears" type="xs:positiveInteger" use="optional" />
+    <xs:attribute name="durationDays" type="xs:positiveInteger" use="optional" />
+    <xs:attribute name="priority" type="xs:int" use="optional" />
+    <xs:attribute name="comment" type="xs:string" use="optional" />
   </xs:complexType>
 
   <!-- ============================================================

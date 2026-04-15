@@ -1,26 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   France public holidays (jours fériés) and widely observed cultural
-  dates. Imports the universal Common set and the Christian liturgical
-  set; adds only French-specific entries.
+  dates.
+
+  Cherry-picks each inherited rule explicitly. Rules not listed in
+  the <UseFrom> blocks are not inherited, so adding a new rule to
+  Common.xml or Christian.xml has no effect on this file.
 -->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-  <Import resource="Bodu.Globalization.Calendar.Resources.Common.xml" />
-  <Import resource="Bodu.Globalization.Calendar.Resources.Christian.xml" />
+  <UseFrom resource="Bodu.Globalization.Calendar.Resources.Common.xml">
+    <Use name="New Year's Day" territory="FR" nonWorking="true" />
+    <Use name="Valentine's Day" territory="FR" />
+    <Use name="International Women's Day" territory="FR" />
+    <Use name="April Fool's Day" territory="FR" />
+  </UseFrom>
 
-  <!-- France does not officially observe these. -->
-  <Suppress name="Halloween" />
-  <Suppress name="Ash Wednesday" />
-  <Suppress name="Palm Sunday" />
-  <Suppress name="Maundy Thursday" />
-  <Suppress name="Easter Saturday" />
+  <UseFrom resource="Bodu.Globalization.Calendar.Resources.Christian.xml">
+    <Use name="Easter Sunday" territory="FR" />
+    <Use name="Easter Monday" territory="FR" nonWorking="true" />
+    <Use name="Ascension Day" territory="FR" nonWorking="true" />
+    <Use name="Pentecost Sunday" territory="FR" />
+    <Use name="Whit Monday" territory="FR" nonWorking="true" />
+    <Use name="Christmas Eve" territory="FR" />
+    <Use name="Christmas Day" territory="FR" nonWorking="true" />
+  </UseFrom>
 
-  <!-- France's International Workers' Day is locally re-named "Fête du Travail" but kept on 1 May. -->
-  <Suppress name="International Workers' Day" />
+  <!-- France's International Workers' Day is locally re-named "Fête du Travail". -->
   <NotableDate name="Fête du Travail">
     <Rule category="Holiday" territory="FR" nonWorking="true">
+      <Tag>National</Tag>
       <Fixed month="May" day="1" />
     </Rule>
   </NotableDate>
@@ -64,7 +74,8 @@
     </Rule>
   </NotableDate>
 
-  <!-- ALSACE-MOSELLE local holidays -->
+  <!-- ALSACE-MOSELLE local holidays. These are additional regional rules that
+       extend the FR-wide set rather than override it. -->
   <NotableDate name="Good Friday (Alsace-Moselle)">
     <Rule name="Good Friday" category="Holiday" territory="FR-67,FR-68,FR-57" nonWorking="true">
       <Tag>Christian</Tag>

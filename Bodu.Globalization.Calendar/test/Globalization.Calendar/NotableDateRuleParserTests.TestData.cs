@@ -75,17 +75,27 @@ namespace Bodu.Globalization.Calendar
 				</NotableDate>
 			</NotableDates>";
 
-		public const string ImportAndSuppressXml = @"
+		public const string CherryPickXml = @"
 			<NotableDates xmlns=""urn:bodu:globalization:calendar"">
-				<Import resource=""Bodu.Globalization.Calendar.Resources.Common.xml"" />
-				<Import resource=""Bodu.Globalization.Calendar.Resources.Christian.xml"" />
-				<Suppress name=""Halloween"" />
-				<Suppress name=""Easter Monday"" territory=""US"" />
+				<UseFrom resource=""Bodu.Globalization.Calendar.Resources.Common.xml"">
+					<Use name=""New Year's Day"" territory=""US"" />
+					<Use name=""Halloween"" />
+				</UseFrom>
+				<UseFrom resource=""Bodu.Globalization.Calendar.Resources.Christian.xml"">
+					<Use name=""Christmas Day"" as=""Christmas"" territory=""US"" nonWorking=""true"" priority=""5"" />
+				</UseFrom>
 				<NotableDate name=""Independence Day"">
 					<Rule category=""Holiday"" territory=""US"" nonWorking=""true"">
 						<Fixed month=""July"" day=""4"" />
 					</Rule>
 				</NotableDate>
+			</NotableDates>";
+
+		public const string UseAllXml = @"
+			<NotableDates xmlns=""urn:bodu:globalization:calendar"">
+				<UseFrom resource=""Bodu.Globalization.Calendar.Resources.Common.xml"">
+					<UseAll />
+				</UseFrom>
 			</NotableDates>";
 	}
 }
