@@ -129,7 +129,7 @@ namespace Bodu.Security.Cryptography
         /// <returns>The result of the Murmur mixing step.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected static uint Mur(uint a, uint h) =>
-            unchecked((a * C1) ^ h.RotateBitsRight(17));
+            unchecked((a * C1) ^ h.RotateBitsRightUnchecked(17));
 
         /// <summary>
         /// Performs a cyclic three-way permutation of the given values, assigning <c>a ← c</c>, <c>c ← b</c>, <c>b ← a</c>.

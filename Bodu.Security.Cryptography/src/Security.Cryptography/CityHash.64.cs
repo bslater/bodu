@@ -121,8 +121,8 @@ namespace Bodu.Security.Cryptography
                 ulong mul = K2 + (ulong)(len * 2);
                 ulong a = BinaryPrimitives.ReadUInt64LittleEndian(s) + K2;
                 ulong b = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 8));
-                ulong c = b.RotateBitsRight(37) * mul + a;
-                ulong d = (a.RotateBitsRight(25) + b) * mul;
+                ulong c = b.RotateBitsRightUnchecked(37) * mul + a;
+                ulong d = (a.RotateBitsRightUnchecked(25) + b) * mul;
                 return HashLen16(c, d, mul);
             }
 
@@ -163,8 +163,8 @@ namespace Bodu.Security.Cryptography
             ulong d = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 16)) * K2;
 
             return HashLen16(
-                u: (a + b).RotateBitsRight(43) + c.RotateBitsRight(30) + d,
-                v: a + (b + K2).RotateBitsRight(18) + c,
+                u: (a + b).RotateBitsRightUnchecked(43) + c.RotateBitsRightUnchecked(30) + d,
+                v: a + (b + K2).RotateBitsRightUnchecked(18) + c,
                 mul: mul);
         }
 
@@ -187,14 +187,14 @@ namespace Bodu.Security.Cryptography
             ulong g = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 8));
             ulong h = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 16)) * mul;
 
-            ulong u = (a + g).RotateBitsRight(43) + (b.RotateBitsRight(30) + c) * 9;
+            ulong u = (a + g).RotateBitsRightUnchecked(43) + (b.RotateBitsRightUnchecked(30) + c) * 9;
             ulong v = ((a + g) ^ d) + f + 1;
-            ulong w = BinaryPrimitives.ReverseEndianness(u + v) * mul;
-            ulong x = (e + f).RotateBitsRight(42) + c;
-            ulong y = (BinaryPrimitives.ReverseEndianness(v + w) + h) * mul;
+            ulong w = (u + v).ReverseBytesUnchecked() * mul;
+            ulong x = (e + f).RotateBitsRightUnchecked(42) + c;
+            ulong y = ((v + w).ReverseBytesUnchecked() + h) * mul;
             ulong z = e + f + c;
 
-            a = BinaryPrimitives.ReverseEndianness((x + z) * mul + y) + b;
+            a = ((x + z) * mul + y).ReverseBytesUnchecked() + b;
             b = ShiftMix((z + a) * mul + d + h) * mul;
 
             return b + x;
@@ -222,12 +222,12 @@ namespace Bodu.Security.Cryptography
             ulong w, ulong x, ulong y, ulong z, ulong a, ulong b)
         {
             a += w;
-            b = (b + a + z).RotateBitsRight(21);
+            b = (b + a + z).RotateBitsRightUnchecked(21);
 
             ulong c = a;
             a += x;
             a += y;
-            b += a.RotateBitsRight(44);
+            b += a.RotateBitsRightUnchecked(44);
 
             return (a + z, b + c);
         }
@@ -293,12 +293,12 @@ namespace Bodu.Security.Cryptography
 
             do
             {
-                x = (x + y + v0 + BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(offset + 8))).RotateBitsRight(37) * K1;
-                y = (y + v1 + BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(offset + 48))).RotateBitsRight(42) * K1;
+                x = (x + y + v0 + BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(offset + 8))).RotateBitsRightUnchecked(37) * K1;
+                y = (y + v1 + BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(offset + 48))).RotateBitsRightUnchecked(42) * K1;
 
                 x ^= w1;
                 y += v0 + BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(offset + 40));
-                z = (z + w0).RotateBitsRight(33) * K1;
+                z = (z + w0).RotateBitsRightUnchecked(33) * K1;
 
                 (v0, v1) = WeakHashLen32WithSeeds(s.Slice(offset), v1 * K1, x + w0);
                 (w0, w1) = WeakHashLen32WithSeeds(s.Slice(offset + 32), z + w1, y + BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(offset + 16)));

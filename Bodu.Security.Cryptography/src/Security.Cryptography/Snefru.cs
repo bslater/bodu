@@ -5,10 +5,10 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography
 {
@@ -184,7 +184,7 @@ namespace Bodu.Security.Cryptography
         {
             ReadOnlySpan<uint> inputWords = MemoryMarshal.Cast<byte, uint>(block);
             for (int i = 0; i < destination.Length; i++)
-                destination[i] = BinaryPrimitives.ReverseEndianness(inputWords[i]);
+                destination[i] = inputWords[i].ReverseBytesUnchecked();
         }
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace Bodu.Security.Cryptography
             // Cast the destination to uint words to avoid per-element Slice calls and their associated bounds checks.
             Span<uint> dest = MemoryMarshal.Cast<byte, uint>(destination);
             for (int i = 0; i < source.Length; i++)
-                dest[i] = BinaryPrimitives.ReverseEndianness(source[i]);
+                dest[i] = source[i].ReverseBytesUnchecked();
         }
 
         /// <summary>
@@ -242,7 +242,7 @@ namespace Bodu.Security.Cryptography
         private void RotateWords(int shiftAmount)
         {
             for (int i = 0; i < TotalWords; i++)
-                this.buffer[i] = BitOperations.RotateRight(this.buffer[i], shiftAmount);
+                this.buffer[i] = this.buffer[i].RotateBitsRightUnchecked(shiftAmount);
         }
     }
 }

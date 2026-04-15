@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 namespace Bodu.Extensions;
@@ -64,11 +65,15 @@ public static partial class NumericExtensions
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="count"/> is less than 0 or greater than 32.
     /// </exception>
+    /// <remarks>
+    /// Delegates to <see cref="BitOperations.RotateLeft(uint, int)"/> after validation, allowing
+    /// the JIT to lower the rotation to a single CPU instruction on supported platforms.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint RotateBitsLeft(this uint value, int count)
     {
         ThrowHelper.ThrowIfOutOfRange(count, 0, 32);
-        return (value << count) | (value >> (32 - count));
+        return BitOperations.RotateLeft(value, count);
     }
 
     /// <summary>
@@ -84,10 +89,14 @@ public static partial class NumericExtensions
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="count"/> is less than 0 or greater than 64.
     /// </exception>
+    /// <remarks>
+    /// Delegates to <see cref="BitOperations.RotateLeft(ulong, int)"/> after validation, allowing
+    /// the JIT to lower the rotation to a single CPU instruction on supported platforms.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong RotateBitsLeft(this ulong value, int count)
     {
         ThrowHelper.ThrowIfOutOfRange(count, 0, 64);
-        return (value << count) | (value >> (64 - count));
+        return BitOperations.RotateLeft(value, count);
     }
 }
