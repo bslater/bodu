@@ -85,11 +85,6 @@ namespace Bodu.Security.Cryptography
         private bool disposed = false;
         private int finalizationRounds;
         private ulong v0, v1, v2, v3;
-#if !NET6_0_OR_GREATER
-
-        // Required for .NET Standard 2.0 or older frameworks
-        private bool finalized;
-#endif
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SipHash{T}" /> class with a specified hash size.
@@ -97,7 +92,7 @@ namespace Bodu.Security.Cryptography
         /// <param name="hashSize">The desired size of the final hash in bits. Supported values are 64 or 128.</param>
         /// <exception cref="ArgumentException">Thrown if <paramref name="hashSize" /> is not supported.</exception>
         protected SipHash(int hashSize)
-            : base(BlockSize)
+            : base(BlockSize, KeySize)
         {
             if (Array.IndexOf(ValidHashSizes, hashSize) == -1)
                 throw new ArgumentOutOfRangeException(nameof(hashSize),
@@ -108,7 +103,7 @@ namespace Bodu.Security.Cryptography
             this.compressionRounds = MinCompressionRounds;
             this.finalizationRounds = MinFinalizationRounds;
             this.HashSizeValue = hashSize;
-            this.InitializeVectors();
+            this.OnKeyChanged();
         }
 
         /// <summary>
@@ -203,42 +198,7 @@ namespace Bodu.Security.Cryptography
         public override int InputBlockSize => BlockSize;
 
         /// <inheritdoc />
-        public override byte[] Key
-        {
-            get
-            {
-                this.ThrowIfDisposed();
-                return this.KeyValue.Copy();
-            }
-
-            set
-            {
-                this.ThrowIfDisposed();
-                this.ThrowIfInvalidState();
-                ThrowHelper.ThrowIfNull(value);
-                if (value.Length != KeySize)
-                    throw new CryptographicException(string.Format(ResourceStrings.CryptographicException_InvalidKeySize, value.Length, SipHash<T>.KeySize));
-
-                this.KeyValue = value.Copy();
-                this.InitializeVectors();
-            }
-        }
-
-        /// <inheritdoc />
         public override int OutputBlockSize => BlockSize;
-
-        /// <inheritdoc />
-        public override void Initialize()
-        {
-            this.ThrowIfDisposed();
-            base.Initialize();
-#if !NET6_0_OR_GREATER
-            State = 0;
-            finalized = false;
-#endif
-
-            this.InitializeVectors();
-        }
 
         /// <summary>
         /// Releases the unmanaged resources used by the algorithm and clears the key from memory.
@@ -324,10 +284,11 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Initializes the internal SipHash state vectors based on the current key value and hash size.
+        /// Rebuilds the internal SipHash state vectors from the current key whenever the key is assigned or the instance is re-initialised.
         /// </summary>
-        /// <remarks>This method XORs the <see cref="Key" /> with predefined constants to initialize the internal state.</remarks>
-        private void InitializeVectors()
+        /// <remarks>XORs the key halves with the SipHash initial constants, then applies the SipHash-128 finalisation tweak if required.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected override void OnKeyChanged()
         {
             ulong k0 = BitConverter.ToUInt64(this.KeyValue, 0);
             ulong k1 = BitConverter.ToUInt64(this.KeyValue, 8);
