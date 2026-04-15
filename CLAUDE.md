@@ -104,8 +104,16 @@ Every `.cs` file begins with the standard banner — preserve the separator line
 
 ### Namespace Style
 
-- `Bodu.Core` and `Bodu.Globalization.Calendar` use **file-scoped** namespaces (`namespace Bodu.Collections.Generic;`).
-- `Bodu.Security.Cryptography` uses **block-scoped** nested namespaces. Match the style of the file you're editing; do not convert existing files.
+- Use **file-scoped** namespaces — terminate the namespace declaration with `;` and do **not** wrap the file contents in `{ }`.
+
+  ```csharp
+  namespace Bodu.Collections.Generic;
+
+  public sealed class CircularBuffer<T> { ... }
+  ```
+
+- `Bodu.Core` and `Bodu.Globalization.Calendar` already follow this convention throughout.
+- `Bodu.Security.Cryptography` historically uses block-scoped nested namespaces. Match the style of the file you're editing; do not convert existing files solely for style, but new files should prefer the file-scoped `;` form.
 
 ### Naming
 
