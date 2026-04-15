@@ -1,0 +1,78 @@
+namespace Bodu.Globalization.Calendar
+{
+	public partial class NotableDateRuleParserTests
+	{
+		public const string FixedRuleXml = @"
+			<NotableDates xmlns=""urn:bodu:globalization:calendar"">
+				<NotableDate name=""Fixed Rule Test"">
+					<Rule category=""Holiday""
+					      firstYear=""2000""
+					      lastYear=""2100""
+					      occurrenceYears=""4""
+					      durationDays=""1""
+					      priority=""5""
+					      nonWorking=""true""
+					      territory=""AU-NSW""
+					      calendarType=""System.Globalization.GregorianCalendar""
+					      comment=""Fixed rule comment."">
+						<Tag>Public</Tag>
+						<Tag>Civic</Tag>
+						<Fixed month=""January"" day=""1"" />
+						<Adjustment when=""IfWeekend"" action=""MoveToNextWeekday"" priority=""10"" />
+					</Rule>
+				</NotableDate>
+			</NotableDates>";
+
+		public const string DayOfWeekInMonthRuleXml = @"
+			<NotableDates xmlns=""urn:bodu:globalization:calendar"">
+				<NotableDate name=""Mother's Day Test"">
+					<Rule category=""Observance"">
+						<DayOfWeekInMonth month=""May"" dayOfWeek=""Sunday"" weekOrdinal=""Second"" />
+					</Rule>
+				</NotableDate>
+			</NotableDates>";
+
+		public const string CalculatorRuleXml = @"
+			<NotableDates xmlns=""urn:bodu:globalization:calendar"">
+				<NotableDate name=""Easter Sunday Test"">
+					<Rule category=""Observance"" firstYear=""1583"">
+						<Calculator key=""easter-sunday"" />
+					</Rule>
+				</NotableDate>
+			</NotableDates>";
+
+		public const string OffsetFromAnchorRuleXml = @"
+			<NotableDates xmlns=""urn:bodu:globalization:calendar"">
+				<NotableDate name=""Good Friday Test"">
+					<Rule category=""Holiday"">
+						<OffsetFromAnchor name=""Easter Sunday"" offset=""-2"" />
+					</Rule>
+				</NotableDate>
+			</NotableDates>";
+
+		public const string MultiRuleXml = @"
+			<NotableDates xmlns=""urn:bodu:globalization:calendar"">
+				<NotableDate name=""New Year's Day"">
+					<Rule category=""Holiday"" nonWorking=""true"">
+						<Fixed month=""January"" day=""1"" />
+						<Adjustment when=""IfWeekend"" action=""MoveToNextWeekday"" priority=""1"" />
+					</Rule>
+				</NotableDate>
+				<NotableDate name=""Easter Sunday"">
+					<Rule category=""Observance"" firstYear=""1583"">
+						<Calculator key=""easter-sunday"" />
+					</Rule>
+				</NotableDate>
+				<NotableDate name=""Good Friday"">
+					<Rule category=""Holiday"" firstYear=""1583"" nonWorking=""true"">
+						<OffsetFromAnchor name=""Easter Sunday"" offset=""-2"" />
+					</Rule>
+				</NotableDate>
+				<NotableDate name=""Anzac Day"">
+					<Rule category=""Remembrance"" territory=""AU,NZ"" nonWorking=""true"">
+						<Fixed month=""April"" day=""25"" />
+					</Rule>
+				</NotableDate>
+			</NotableDates>";
+	}
+}

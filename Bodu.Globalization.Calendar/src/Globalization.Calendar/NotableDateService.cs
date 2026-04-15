@@ -310,12 +310,14 @@ namespace Bodu.Globalization.Calendar
 			IReadOnlyList<INotableDateRuleOverrideProvider> overrideProviders)
 		{
 			if (overrideProviders.Count == 0)
-				return baseRules.IsDefault ? Array.Empty<NotableDateRule>() : baseRules;
+				return baseRules.IsDefault ? (IReadOnlyList<NotableDateRule>)Array.Empty<NotableDateRule>() : baseRules;
 
 			// Apply additions first by name, replacing base rules; removals are evaluated per-year inside GenerateYear so they can be
 			// scoped to specific years and territories.
-			var byName = (baseRules.IsDefault ? Enumerable.Empty<NotableDateRule>() : baseRules)
-				.ToDictionary(r => r.Name, StringComparer.OrdinalIgnoreCase);
+			IEnumerable<NotableDateRule> source = baseRules.IsDefault
+				? Enumerable.Empty<NotableDateRule>()
+				: baseRules;
+			var byName = source.ToDictionary(r => r.Name, StringComparer.OrdinalIgnoreCase);
 
 			foreach (var provider in overrideProviders)
 			{

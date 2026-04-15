@@ -102,7 +102,7 @@ namespace Bodu.Globalization.Calendar
 			if (string.IsNullOrWhiteSpace(rule.AnchorRuleName))
 				return null;
 
-			if (!_rulesByName.TryGetValue(rule.AnchorRuleName, out var anchorRule))
+			if (!_rulesByName.TryGetValue(rule.AnchorRuleName!, out var anchorRule))
 				throw new InvalidOperationException($"Anchor rule '{rule.AnchorRuleName}' referenced by '{rule.Name}' was not found.");
 
 			var anchorDate = ResolveInternal(anchorRule, year, resolving);

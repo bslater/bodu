@@ -74,10 +74,13 @@ namespace Bodu.Globalization.Calendar
 
 			if (!string.IsNullOrEmpty(adjustment.TerritoryCode) && !string.IsNullOrEmpty(territoryCode))
 			{
+				if (!TerritoryCode.TryParse(territoryCode, out var requested))
+					return false;
+
 				bool matched = false;
 				foreach (var scoped in TerritoryCode.ParseList(adjustment.TerritoryCode))
 				{
-					if (Globalization.Calendar.TerritoryCode.TryParse(territoryCode, out var requested) && scoped.Contains(requested))
+					if (scoped.Contains(requested))
 					{
 						matched = true;
 						break;
