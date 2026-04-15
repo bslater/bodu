@@ -1,128 +1,220 @@
-C# Code Style Guidelines
-File and Header Formatting
+# CLAUDE.md
 
-Include the copyright header in the standard format with separator banner lines.
-Preserve consistent spacing and alignment within the header.
-Follow the established file presentation style for partial classes and related files.
+Guidance for AI assistants working in this repository. Read this file before making changes.
 
+## Repository Overview
 
-XML Documentation
-All documentation must be in British English
+**Bodu** is a multi-project C# utility library solution focused on high-performance, well-documented, framework-style building blocks. The solution (`Bodu.sln`) contains three independent projects:
 
-<summary>
-Write a concise, professional summary describing the purpose, intent, or responsibility of the type or member.
-Keep the tone factual and API-consumer focused.
-Do not mechanically repeat the member name.
-Prefer strong verb-led phrasing: Provides…, Gets…, Initializes…, Attempts to…, Returns…, Removes…, Adds…
+| Project | Path | Responsibility |
+|---|---|---|
+| `Bodu.Core` | `Bodu.Core/` | Buffers, generic collections (circular buffer, evicting dictionary), extensions, text, XML, argument validation helpers. |
+| `Bodu.Security.Cryptography` | `Bodu.Security.Cryptography/` | Block ciphers (Threefish 256/512/1024, Skipjack), hashes/checksums (Fletcher, Adler, SipHash, FNV1a, Tiger), crypto helpers. |
+| `Bodu.Globalization.Calendar` | `Bodu.Globalization.Calendar/` | Calendar/notable date calculations (Easter, Lunar New Year) and date resolvers. |
 
-<param>
-Add a <param> for every parameter.
-Keep descriptions concise — ideally a single line.
-Describe the parameter in the context of the member's behavior.
-Use "Must not be <see langword="null" />." style wording where applicable.
+Each project has the layout:
 
-<returns>
-Add <returns> for every non-void member.
-Describe the result in the context of the method's purpose, not merely the raw type.
+```
+<Project>/
+  src/   # production code, grouped by namespace folder
+  test/  # MSTest project mirroring src structure
+```
 
-<exception>
-Document all exceptions the member can throw, including ArgumentNullException, ArgumentException, ArgumentOutOfRangeException, and InvalidOperationException.
-Describe the exact condition that causes each exception using the established style:
+### Target Frameworks
 
-<paramref name="capacity" /> ≤ 0.
-The buffer is empty.
-Thrown if <paramref name="owner" /> is <see langword="null" />.
+- `Bodu.Core` — `net8.0`
+- `Bodu.Security.Cryptography` — `net8.0`
+- `Bodu.Globalization.Calendar` — `net6.0; net7.0; net8.0` (multi-targeted)
 
+Nullable reference types are enabled everywhere. `ImplicitUsings` is enabled for Cryptography and Calendar but **disabled** for `Bodu.Core` — when editing files in `Bodu.Core/`, add explicit `using` directives.
 
-<remarks>
-Add <remarks> when it materially helps the consumer understand concurrency behavior, snapshot semantics, ordering guarantees, side effects, edge cases, stability caveats, performance trade-offs, or design intent.
-Use <para> blocks within remarks where appropriate to maintain visual structure.
+## Key Types
 
-<example>
-Add examples when they improve usability or remove ambiguity.
-Keep examples minimal, realistic, and consumer-focused.
-Prefer examples for public types or members where usage is not immediately obvious.
+- **Bodu.Core**: `CircularBuffer<T>`, `ConcurrentCircularBuffer<T>`, `EvictingDictionary<TKey, TValue>`, `EvictingDictionaryPolicy`, `IRandomGenerator`, `BufferConverter`, `ArrayExtensions`, `BaseEncoding`, `ThrowHelper`.
+- **Bodu.Security.Cryptography**: `Threefish256` / `Threefish512` / `Threefish1024`, `Fletcher32`, `Adler32`, `SipHash`, `FNV1a`, `Skipjack`, `Tiger`, `CryptoHelpers`.
+- **Bodu.Globalization.Calendar**: `NotableDateService`, `NotableDateResolver`, `NotableDate`, `NotableDateKind`, `EasterSundayNotableDateCalculator`, `LunarNewYearNotableDateCalculator`.
 
-<value>
-Include <value> on properties where the semantics require clarification beyond the summary.
+## Build & Tooling
 
-<inheritdoc />
-Use <inheritdoc /> where the implementation intentionally inherits interface or base member documentation and no further clarification is needed.
+- Shared MSBuild configuration lives in `bld/Bodu.props` (Authors, MIT licence, deterministic builds, package metadata, doc-comment warnings as errors — e.g. CS1591).
+- `.editorconfig` lives under `Bodu.Core/src/.editorconfig` and drives formatter settings.
+- Analyzers in use: **StyleCop.Analyzers**, **Roslynator.Analyzers**, **Microsoft.CodeAnalysis.NetAnalyzers**, **AsyncFixer**, **VisualStudio.Threading.Analyzers**. Treat analyzer warnings as actionable — fix rather than suppress unless there is a strong reason.
+- Licence header template: `Bodu.sln.licenseheader` (the `PlaceholderCompany` string is the project template placeholder — preserve the banner exactly as used in existing files).
+- `.filenesting.json` nests partial-class files: any `<Base>.<Part>.cs` file nests under `<Base>.cs`. Keep partial splits consistent with this pattern.
+- CI: `.github/workflows/docfx-build-publish.yml` builds DocFX documentation on pushes to `master` and publishes to GitHub Pages.
 
+### Common Commands
 
-Documentation Tone
+```bash
+dotnet build Bodu.sln
+dotnet test  Bodu.sln --settings test.runsettings
+dotnet test  Bodu.Core/test/Bodu.Core.UnitTests.csproj --settings test.runsettings
+```
+
+`test.runsettings` enables parallel execution (`MaxCpuCount=0`) and disables AppDomains.
+
+## Test Conventions
+
+- Framework: **MSTest** (`Microsoft.VisualStudio.TestTools.UnitTesting`, `[TestClass]` / `[TestMethod]`). Do **not** introduce xUnit or NUnit.
+- Tests live in `<Project>/test/` and are organised as **partial classes** that mirror the source layout — e.g. `CircularBuffer.cs` → `CircularBufferTests.Enqueue.cs`, `CircularBufferTests.Dequeue.cs`. Extend the existing partial class when adding tests for an existing type.
+- No shared test base classes; each test is self-contained.
+
+### Test Method Naming
+
+Convention: `<MethodOrProperty>_When<Condition>[_For<TypedCondition>]_Should<ExpectedResult>`
+
+- `When<Condition>` — the input or state under test.
+- `_For<TypedCondition>` — optional qualifier for a type/overload variant.
+- `Should<ExpectedResult>` — the observable outcome.
+
+Examples:
+
+```csharp
+Enqueue_WhenFull_ShouldThrowInvalidOperationException()
+Parse_WhenInputIsEmpty_ForNullableInt_ShouldReturnNull()
+Capacity_WhenSetToZero_ShouldThrowArgumentOutOfRangeException()
+```
+
+### Test Method Documentation
+
+Every test method has an XML `<summary>` starting with **"Verifies that ..."**, describing scenario and expected outcome in 1–2 sentences so intent is clear without reading the body.
+
+```csharp
+/// <summary>
+/// Verifies that enqueueing an item into a full buffer throws
+/// <see cref="InvalidOperationException" />.
+/// </summary>
+[TestMethod]
+public void Enqueue_WhenFull_ShouldThrowInvalidOperationException() { ... }
+```
+
+## Source File Conventions
+
+### File Header
+
+Every `.cs` file begins with the standard banner — preserve the separator lines and the `file=` / `company=` attributes exactly:
+
+```csharp
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="FileName.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+```
+
+### Namespace Style
+
+- `Bodu.Core` and `Bodu.Globalization.Calendar` use **file-scoped** namespaces (`namespace Bodu.Collections.Generic;`).
+- `Bodu.Security.Cryptography` uses **block-scoped** nested namespaces. Match the style of the file you're editing; do not convert existing files.
+
+### Naming
+
+- Private instance fields: `_camelCase`.
+- Private static fields: `s_camelCase`.
+- Explicit types preferred over `var`.
+- No primary constructors on documented public types (they conflict with `<param>` XML documentation).
+- Expression-bodied members only for trivial properties/accessors; use block bodies for anything with meaningful logic.
+- Public argument validation goes through `ThrowHelper` (in `Bodu.Core`).
+
+## C# Code Style Guidelines
+
+### File and Header Formatting
+
+- Include the copyright header in the standard format with separator banner lines.
+- Preserve consistent spacing and alignment within the header.
+- Follow the established file presentation style for partial classes and related files.
+
+### XML Documentation
+
+**All documentation must be in British English.**
+
+**`<summary>`**
+- Write a concise, professional summary describing the purpose, intent, or responsibility of the type or member.
+- Keep the tone factual and API-consumer focused.
+- Do not mechanically repeat the member name.
+- Prefer strong verb-led phrasing: *Provides…*, *Gets…*, *Initializes…*, *Attempts to…*, *Returns…*, *Removes…*, *Adds…*.
+
+**`<param>`**
+- Add a `<param>` for every parameter.
+- Keep descriptions concise — ideally a single line.
+- Describe the parameter in the context of the member's behaviour.
+- Use `Must not be <see langword="null" />.` style wording where applicable.
+
+**`<returns>`**
+- Add `<returns>` for every non-void member.
+- Describe the result in the context of the method's purpose, not merely the raw type.
+
+**`<exception>`**
+- Document all exceptions the member can throw, including `ArgumentNullException`, `ArgumentException`, `ArgumentOutOfRangeException`, and `InvalidOperationException`.
+- Describe the exact condition that causes each exception using the established style:
+  - `<paramref name="capacity" /> ≤ 0.`
+  - `The buffer is empty.`
+  - `Thrown if <paramref name="owner" /> is <see langword="null" />.`
+
+**`<remarks>`**
+- Add `<remarks>` when it materially helps the consumer understand concurrency behaviour, snapshot semantics, ordering guarantees, side effects, edge cases, stability caveats, performance trade-offs, or design intent.
+- Use `<para>` blocks within remarks where appropriate to maintain visual structure.
+
+**`<example>`**
+- Add examples when they improve usability or remove ambiguity.
+- Keep examples minimal, realistic, and consumer-focused.
+- Prefer examples for public types or members where usage is not immediately obvious.
+
+**`<value>`**
+- Include `<value>` on properties where the semantics require clarification beyond the summary.
+
+**`<inheritdoc />`**
+- Use `<inheritdoc />` where the implementation intentionally inherits interface or base member documentation and no further clarification is needed.
+
+### Documentation Tone
+
 - Be concise, but not abrupt.
 - Be precise, but not overly academic.
-- Explain observable behavior, guarantees, and limitations.
+- Explain observable behaviour, guarantees, and limitations.
 - Use standard XML documentation idioms consistently.
 - Do not write vague or filler summaries.
 - Do not repeat obvious type information unnecessarily.
 - Do not over-explain trivial members.
 - Do not use casual or conversational wording.
 
+### Inline Comments
 
-Inline Comments
 - Add inline comments only where they provide real value.
-- Use them to explain non-obvious logic, concurrency coordination, lock-free or low-level - state transitions, defensive clamping, important sequencing requirements, or why a block exists when it is not self-evident.
-- Explain why, the protocol intent, or subtle state meaning — not basic syntax.
+- Use them to explain non-obvious logic, concurrency coordination, lock-free or low-level state transitions, defensive clamping, important sequencing requirements, or why a block exists when it is not self-evident.
+- Explain *why*, the protocol intent, or subtle state meaning — not basic syntax.
 - Do not add comments that merely narrate obvious code.
 
+### Formatting and Layout
 
-Formatting and Layout
-Blank Lines
+**Blank Lines**
 - Insert blank lines between logical groups of code to make structure visually clear.
 - Separate guard clauses and validation, field assignments, setup and initialization, core logic branches, success and failure paths, event invocation or side effects, and return statements.
 
-Member Layout
+**Member Layout**
 - Maintain consistent spacing between members.
 - Group related members logically.
 - Use expression-bodied members where the body is trivially concise.
 - Use block bodies for members with meaningful logic.
 
-Braces and Wrapping
+**Braces and Wrapping**
 - Follow standard modern C# brace style as shown in the examples.
 - Wrap long XML documentation lines and remarks sensibly for readability.
 
-Naming and Qualification
+**Naming and Qualification**
 - Use consistent naming and qualification patterns aligned to the examples.
 - Retain explicit interface qualification where it improves clarity.
 - Use framework types and language keywords consistently.
 
+### Code Quality
 
-Code Quality
 - Write code that is clear, maintainable, consistent, review-friendly, defensive where appropriate, and idiomatic C#.
 - Prefer clarity over cleverness.
 - All code must be suitable for shared library or framework-style use.
 
+### Updating Existing Code
 
-Updating Existing Code
-- Preserve the original intent and behavior unless explicitly instructed otherwise.
+- Preserve the original intent and behaviour unless explicitly instructed otherwise.
 - Improve documentation, formatting, naming clarity, and readability without introducing unnecessary rewrites.
 - Keep style consistent across the file — do not mix documentation styles.
 - Avoid excessive comments or overlong XML documentation.
 - Extend an established style consistently rather than replacing it.
-
-
-Test Method Naming
-- Follow the convention: <MethodOrPropertyName>_When<Condition>[_For<TypedCondition>]_Should<ExpectedResult>
-- When<Condition> describes the state or input that sets up the scenario.
-- _For<TypedCondition> is optional — include only when the condition is specific to a particular type, overload, or variant.
-- Should<ExpectedResult> describes the expected observable outcome.
-
-Examples:
-csharpEnqueue_WhenFull_ShouldThrowInvalidOperationException()
-Parse_WhenInputIsEmpty_ForNullableInt_ShouldReturnNull()
-Capacity_WhenSetToZero_ShouldThrowArgumentOutOfRangeException()
-
-Test Method Documentation
-- Include a <summary> on every test method.
-- Provide a short 1–2 sentence description of the scenario under test and the expected result.
-- Write the summary so the test's intent is immediately clear without requiring the reader to inspect the body.
-- Summaries should start with 'Verifies that ...'
-Example:
-csharp/// <summary>
-/// Verifies that enqueueing an item into a full buffer throws
-/// <see cref="InvalidOperationException" />.
-/// </summary>
-[Fact]
-public void Enqueue_WhenFull_ShouldThrowInvalidOperationException() { ... }
