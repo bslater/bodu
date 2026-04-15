@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  United States federal holidays and widely observed cultural dates.
+  Imports the universal Common set and the Christian liturgical set;
+  adds only US-specific entries.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <Import resource="Bodu.Globalization.Calendar.Resources.Common.xml" />
+  <Import resource="Bodu.Globalization.Calendar.Resources.Christian.xml" />
+
+  <!-- The US does not officially observe these as public holidays. -->
+  <Suppress name="International Workers' Day" />
+  <Suppress name="Whit Monday" />
+  <Suppress name="Easter Monday" />
+  <Suppress name="Easter Saturday" />
+  <Suppress name="Maundy Thursday" />
+  <Suppress name="Ascension Day" />
+  <Suppress name="All Saints' Day" />
+
+  <!-- JANUARY -->
+  <NotableDate name="Martin Luther King Jr. Day">
+    <Rule category="Holiday" territory="US" nonWorking="true" firstYear="1986">
+      <DayOfWeekInMonth month="January" dayOfWeek="Monday" weekOrdinal="Third" />
+    </Rule>
+  </NotableDate>
+
+  <!-- FEBRUARY -->
+  <NotableDate name="Presidents' Day">
+    <Rule category="Holiday" territory="US" nonWorking="true">
+      <DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" />
+    </Rule>
+  </NotableDate>
+
+  <!-- MAY -->
+  <NotableDate name="Mother's Day">
+    <Rule category="Observance" territory="US">
+      <DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Second" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Memorial Day">
+    <Rule category="Holiday" territory="US" nonWorking="true">
+      <DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="Last" />
+    </Rule>
+  </NotableDate>
+
+  <!-- JUNE -->
+  <NotableDate name="Juneteenth">
+    <Rule category="Holiday" territory="US" nonWorking="true" firstYear="2021">
+      <Fixed month="June" day="19" />
+      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Father's Day">
+    <Rule category="Observance" territory="US">
+      <DayOfWeekInMonth month="June" dayOfWeek="Sunday" weekOrdinal="Third" />
+    </Rule>
+  </NotableDate>
+
+  <!-- JULY -->
+  <NotableDate name="Independence Day">
+    <Rule category="Holiday" territory="US" nonWorking="true">
+      <Fixed month="July" day="4" />
+      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+  </NotableDate>
+
+  <!-- SEPTEMBER -->
+  <NotableDate name="Labor Day">
+    <Rule category="Holiday" territory="US" nonWorking="true">
+      <DayOfWeekInMonth month="September" dayOfWeek="Monday" weekOrdinal="First" />
+    </Rule>
+  </NotableDate>
+
+  <!-- OCTOBER -->
+  <NotableDate name="Columbus Day">
+    <Rule category="Holiday" territory="US" nonWorking="true">
+      <DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" />
+    </Rule>
+  </NotableDate>
+
+  <!-- NOVEMBER -->
+  <NotableDate name="Veterans Day">
+    <Rule category="Holiday" territory="US" nonWorking="true">
+      <Fixed month="November" day="11" />
+      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Thanksgiving">
+    <Rule category="Holiday" territory="US" nonWorking="true">
+      <DayOfWeekInMonth month="November" dayOfWeek="Thursday" weekOrdinal="Fourth" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Black Friday">
+    <Rule category="Cultural" territory="US">
+      <OffsetFromAnchor name="Thanksgiving" offset="1" />
+    </Rule>
+  </NotableDate>
+</NotableDates>

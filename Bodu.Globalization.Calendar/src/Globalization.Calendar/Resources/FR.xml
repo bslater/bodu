@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  France public holidays (jours fériés) and widely observed cultural
+  dates. Imports the universal Common set and the Christian liturgical
+  set; adds only French-specific entries.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <Import resource="Bodu.Globalization.Calendar.Resources.Common.xml" />
+  <Import resource="Bodu.Globalization.Calendar.Resources.Christian.xml" />
+
+  <!-- France does not officially observe these. -->
+  <Suppress name="Halloween" />
+  <Suppress name="Ash Wednesday" />
+  <Suppress name="Palm Sunday" />
+  <Suppress name="Maundy Thursday" />
+  <Suppress name="Easter Saturday" />
+
+  <!-- France's International Workers' Day is locally re-named "Fête du Travail" but kept on 1 May. -->
+  <Suppress name="International Workers' Day" />
+  <NotableDate name="Fête du Travail">
+    <Rule category="Holiday" territory="FR" nonWorking="true">
+      <Fixed month="May" day="1" />
+    </Rule>
+  </NotableDate>
+
+  <!-- MAY -->
+  <NotableDate name="Victory in Europe Day">
+    <Rule category="Holiday" territory="FR" nonWorking="true">
+      <Tag>National</Tag>
+      <Fixed month="May" day="8" />
+    </Rule>
+  </NotableDate>
+
+  <!-- JULY -->
+  <NotableDate name="Bastille Day">
+    <Rule category="Holiday" territory="FR" nonWorking="true">
+      <Tag>National</Tag>
+      <Fixed month="July" day="14" />
+    </Rule>
+  </NotableDate>
+
+  <!-- AUGUST -->
+  <NotableDate name="Assumption of Mary">
+    <Rule category="Holiday" territory="FR" nonWorking="true">
+      <Tag>Christian</Tag>
+      <Fixed month="August" day="15" />
+    </Rule>
+  </NotableDate>
+
+  <!-- NOVEMBER -->
+  <NotableDate name="All Saints' Day">
+    <Rule category="Holiday" territory="FR" nonWorking="true">
+      <Tag>Christian</Tag>
+      <Fixed month="November" day="1" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Armistice Day">
+    <Rule category="Holiday" territory="FR" nonWorking="true">
+      <Tag>National</Tag>
+      <Fixed month="November" day="11" />
+    </Rule>
+  </NotableDate>
+
+  <!-- ALSACE-MOSELLE local holidays -->
+  <NotableDate name="Good Friday (Alsace-Moselle)">
+    <Rule name="Good Friday" category="Holiday" territory="FR-67,FR-68,FR-57" nonWorking="true">
+      <Tag>Christian</Tag>
+      <OffsetFromAnchor name="Easter Sunday" offset="-2" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Saint Stephen's Day">
+    <Rule category="Holiday" territory="FR-67,FR-68,FR-57" nonWorking="true">
+      <Tag>Christian</Tag>
+      <Fixed month="December" day="26" />
+    </Rule>
+  </NotableDate>
+</NotableDates>

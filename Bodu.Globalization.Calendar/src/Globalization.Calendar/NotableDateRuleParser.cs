@@ -34,17 +34,16 @@ namespace Bodu.Globalization.Calendar
 		/// </summary>
 		/// <param name="xml">The XML payload. Must not be <see langword="null" /> or whitespace.</param>
 		/// <returns>The parsed rules.</returns>
+		/// <remarks>
+		/// This convenience overload returns only the rules and discards any <c>Import</c> or <c>Suppress</c> directives. To resolve a
+		/// document graph including imports, call <see cref="ParseDocument(string)" /> instead and feed the result to a loader such as
+		/// <see cref="XmlResourceNotableDateRuleProvider" />.
+		/// </remarks>
 		/// <exception cref="ArgumentNullException">Thrown when <paramref name="xml" /> is <see langword="null" />, empty, or whitespace.</exception>
 		/// <exception cref="XmlSchemaValidationException">Thrown when the XML does not conform to the embedded schema.</exception>
 		public static List<NotableDateRule> ParseXml(string xml)
 		{
-			if (string.IsNullOrWhiteSpace(xml))
-				throw new ArgumentNullException(nameof(xml));
-
-			using var stringReader = new StringReader(xml);
-			using var xmlReader = XmlReader.Create(stringReader, CreateValidationSettings());
-			var document = XDocument.Load(xmlReader);
-			return ParseInternal(document);
+			return ParseDocument(xml).Rules.ToList();
 		}
 
 		/// <summary>
@@ -55,21 +54,66 @@ namespace Bodu.Globalization.Calendar
 		/// <exception cref="ArgumentNullException">Thrown when <paramref name="document" /> is <see langword="null" />.</exception>
 		public static List<NotableDateRule> ParseXml(XDocument document)
 		{
+			return ParseDocument(document).Rules.ToList();
+		}
+
+		/// <summary>
+		/// Parses the supplied XML string into a <see cref="ParsedNotableDateDocument" />, exposing local rules together with any
+		/// <c>Import</c> and <c>Suppress</c> directives.
+		/// </summary>
+		/// <param name="xml">The XML payload. Must not be <see langword="null" /> or whitespace.</param>
+		/// <returns>The parsed document, including imports, suppressions, and rules.</returns>
+		/// <exception cref="ArgumentNullException">Thrown when <paramref name="xml" /> is <see langword="null" />, empty, or whitespace.</exception>
+		/// <exception cref="XmlSchemaValidationException">Thrown when the XML does not conform to the embedded schema.</exception>
+		public static ParsedNotableDateDocument ParseDocument(string xml)
+		{
+			if (string.IsNullOrWhiteSpace(xml))
+				throw new ArgumentNullException(nameof(xml));
+
+			using var stringReader = new StringReader(xml);
+			using var xmlReader = XmlReader.Create(stringReader, CreateValidationSettings());
+			var document = XDocument.Load(xmlReader);
+			return ParseDocumentInternal(document);
+		}
+
+		/// <summary>
+		/// Parses the supplied <see cref="XDocument" /> into a <see cref="ParsedNotableDateDocument" />.
+		/// </summary>
+		/// <param name="document">The XML document. Must not be <see langword="null" />.</param>
+		/// <returns>The parsed document.</returns>
+		/// <exception cref="ArgumentNullException">Thrown when <paramref name="document" /> is <see langword="null" />.</exception>
+		public static ParsedNotableDateDocument ParseDocument(XDocument document)
+		{
 			if (document is null)
 				throw new ArgumentNullException(nameof(document));
 
 			ValidateDocument(document);
-			return ParseInternal(document);
+			return ParseDocumentInternal(document);
 		}
 
 		// ----------------------------------------------------------------------------
 		// Per-element parsing
 		// ----------------------------------------------------------------------------
 
-		private static List<NotableDateRule> ParseInternal(XDocument document) =>
-			document.Descendants(Namespace + "NotableDate")
+		private static ParsedNotableDateDocument ParseDocumentInternal(XDocument document)
+		{
+			var imports = document.Descendants(Namespace + "Import")
+				.Select(e => GetRequiredAttribute(e, "resource"))
+				.Where(s => !string.IsNullOrWhiteSpace(s))
+				.ToImmutableArray();
+
+			var suppressions = document.Descendants(Namespace + "Suppress")
+				.Select(e => new NotableDateRuleSuppression(
+					GetRequiredAttribute(e, "name"),
+					GetOptionalAttribute(e, "territory")))
+				.ToImmutableArray();
+
+			var rules = document.Descendants(Namespace + "NotableDate")
 				.SelectMany(ParseNotableDate)
-				.ToList();
+				.ToImmutableArray();
+
+			return new ParsedNotableDateDocument(imports, suppressions, rules);
+		}
 
 		private static IEnumerable<NotableDateRule> ParseNotableDate(XElement notableDateElement)
 		{

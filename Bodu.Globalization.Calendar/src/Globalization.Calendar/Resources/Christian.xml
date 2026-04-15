@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Christian liturgical calendar. Country files that observe these days
+  import this resource. Easter Sunday is the dynamic anchor; everything
+  else is computed via OffsetFromAnchor against it.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <NotableDate name="Easter Sunday">
+    <Rule category="Observance" firstYear="1583">
+      <Tag>Christian</Tag>
+      <Calculator key="easter-sunday"
+                  type="Bodu.Globalization.Calendar.Calculators.EasterSundayNotableDateCalculator, Bodu.Globalization.Calendar" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Ash Wednesday">
+    <Rule category="Observance" firstYear="1583">
+      <Tag>Christian</Tag>
+      <OffsetFromAnchor name="Easter Sunday" offset="-46" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Palm Sunday">
+    <Rule category="Observance" firstYear="1583">
+      <Tag>Christian</Tag>
+      <OffsetFromAnchor name="Easter Sunday" offset="-7" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Maundy Thursday">
+    <Rule category="Observance" firstYear="1583">
+      <Tag>Christian</Tag>
+      <OffsetFromAnchor name="Easter Sunday" offset="-3" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Good Friday">
+    <Rule category="Holiday" firstYear="1583" nonWorking="true">
+      <Tag>Christian</Tag>
+      <OffsetFromAnchor name="Easter Sunday" offset="-2" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Easter Saturday">
+    <Rule category="Observance" firstYear="1583">
+      <Tag>Christian</Tag>
+      <OffsetFromAnchor name="Easter Sunday" offset="-1" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Easter Monday">
+    <Rule category="Holiday" firstYear="1583" nonWorking="true">
+      <Tag>Christian</Tag>
+      <OffsetFromAnchor name="Easter Sunday" offset="1" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Ascension Day">
+    <Rule category="Observance" firstYear="1583">
+      <Tag>Christian</Tag>
+      <OffsetFromAnchor name="Easter Sunday" offset="39" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Pentecost Sunday">
+    <Rule category="Observance" firstYear="1583">
+      <Tag>Christian</Tag>
+      <OffsetFromAnchor name="Easter Sunday" offset="49" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Whit Monday">
+    <Rule category="Holiday" firstYear="1583" nonWorking="true">
+      <Tag>Christian</Tag>
+      <OffsetFromAnchor name="Easter Sunday" offset="50" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="All Saints' Day">
+    <Rule category="Observance">
+      <Tag>Christian</Tag>
+      <Fixed month="November" day="1" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Christmas Eve">
+    <Rule category="Observance">
+      <Tag>Christian</Tag>
+      <Fixed month="December" day="24" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Christmas Day">
+    <Rule category="Holiday" nonWorking="true">
+      <Tag>Christian</Tag>
+      <Fixed month="December" day="25" />
+      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+  </NotableDate>
+</NotableDates>

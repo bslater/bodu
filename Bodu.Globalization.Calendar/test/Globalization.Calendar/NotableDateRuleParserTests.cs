@@ -232,5 +232,47 @@ namespace Bodu.Globalization.Calendar
 		{
 			Assert.ThrowsExactly<ArgumentNullException>(() => NotableDateRuleParser.ParseXml("   "));
 		}
+
+		/// <summary>
+		/// Verifies that <see cref="NotableDateRuleParser.ParseDocument(string)" /> exposes import directives in declaration order.
+		/// </summary>
+		[TestMethod]
+		public void ParseDocument_WhenImportsPresent_ShouldExposeImportsInOrder()
+		{
+			var doc = NotableDateRuleParser.ParseDocument(ImportAndSuppressXml);
+
+			Assert.AreEqual(2, doc.Imports.Length);
+			Assert.AreEqual("Bodu.Globalization.Calendar.Resources.Common.xml", doc.Imports[0]);
+			Assert.AreEqual("Bodu.Globalization.Calendar.Resources.Christian.xml", doc.Imports[1]);
+		}
+
+		/// <summary>
+		/// Verifies that <see cref="NotableDateRuleParser.ParseDocument(string)" /> exposes suppression directives, including the optional
+		/// territory scope.
+		/// </summary>
+		[TestMethod]
+		public void ParseDocument_WhenSuppressionsPresent_ShouldExposeNamesAndTerritories()
+		{
+			var doc = NotableDateRuleParser.ParseDocument(ImportAndSuppressXml);
+
+			Assert.AreEqual(2, doc.Suppressions.Length);
+			Assert.AreEqual("Halloween", doc.Suppressions[0].Name);
+			Assert.IsNull(doc.Suppressions[0].TerritoryCode);
+			Assert.AreEqual("Easter Monday", doc.Suppressions[1].Name);
+			Assert.AreEqual("US", doc.Suppressions[1].TerritoryCode);
+		}
+
+		/// <summary>
+		/// Verifies that <see cref="NotableDateRuleParser.ParseDocument(string)" /> still parses the local rules alongside imports and
+		/// suppressions.
+		/// </summary>
+		[TestMethod]
+		public void ParseDocument_WhenLocalRulesPresent_ShouldExposeLocalRules()
+		{
+			var doc = NotableDateRuleParser.ParseDocument(ImportAndSuppressXml);
+
+			Assert.AreEqual(1, doc.Rules.Length);
+			Assert.AreEqual("Independence Day", doc.Rules[0].Name);
+		}
 	}
 }

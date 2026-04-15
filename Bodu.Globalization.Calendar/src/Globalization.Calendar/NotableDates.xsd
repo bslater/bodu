@@ -9,15 +9,40 @@
   xmlns:nd="urn:bodu:globalization:calendar">
 
   <!-- ============================================================
-       Root: a list of NotableDate entries.
+       Root: an optional list of imports, optional suppressions,
+       and any number of NotableDate entries.
        ============================================================ -->
   <xs:element name="NotableDates">
     <xs:complexType>
       <xs:sequence>
+        <xs:element name="Import" type="nd:Import" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="Suppress" type="nd:Suppress" minOccurs="0" maxOccurs="unbounded" />
         <xs:element name="NotableDate" type="nd:NotableDate" minOccurs="0" maxOccurs="unbounded" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+
+  <!-- ============================================================
+       Import: pulls in another notable date resource by manifest
+       resource name. Imports are resolved depth-first; rules from
+       later imports override earlier ones with the same name, and
+       any rules declared locally always override imported rules.
+       ============================================================ -->
+  <xs:complexType name="Import">
+    <xs:attribute name="resource" type="xs:string" use="required" />
+  </xs:complexType>
+
+  <!-- ============================================================
+       Suppress: removes an inherited rule from this file's view.
+       Use to opt out of a rule contributed by an imported resource.
+       The optional territory attribute scopes the suppression so
+       that, for example, only the AU-NSW variant is removed while
+       AU-VIC remains.
+       ============================================================ -->
+  <xs:complexType name="Suppress">
+    <xs:attribute name="name" type="xs:string" use="required" />
+    <xs:attribute name="territory" type="nd:territory" use="optional" />
+  </xs:complexType>
 
   <!-- ============================================================
        NotableDate: one notable date with one or more authoring rules.

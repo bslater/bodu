@@ -74,5 +74,18 @@ namespace Bodu.Globalization.Calendar
 					</Rule>
 				</NotableDate>
 			</NotableDates>";
+
+		public const string ImportAndSuppressXml = @"
+			<NotableDates xmlns=""urn:bodu:globalization:calendar"">
+				<Import resource=""Bodu.Globalization.Calendar.Resources.Common.xml"" />
+				<Import resource=""Bodu.Globalization.Calendar.Resources.Christian.xml"" />
+				<Suppress name=""Halloween"" />
+				<Suppress name=""Easter Monday"" territory=""US"" />
+				<NotableDate name=""Independence Day"">
+					<Rule category=""Holiday"" territory=""US"" nonWorking=""true"">
+						<Fixed month=""July"" day=""4"" />
+					</Rule>
+				</NotableDate>
+			</NotableDates>";
 	}
 }

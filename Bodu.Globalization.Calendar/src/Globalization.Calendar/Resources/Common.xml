@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Universal civic observances and international days that have no single
+  country owner. Country-specific files import this resource and may
+  Suppress entries they do not observe.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <NotableDate name="New Year's Day">
+    <Rule category="Holiday" nonWorking="true">
+      <Fixed month="January" day="1" />
+      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Valentine's Day">
+    <Rule category="Observance">
+      <Fixed month="February" day="14" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Women's Day">
+    <Rule category="Observance">
+      <Fixed month="March" day="8" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="April Fool's Day">
+    <Rule category="Cultural">
+      <Fixed month="April" day="1" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Workers' Day">
+    <Rule category="Holiday" nonWorking="true">
+      <Fixed month="May" day="1" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Youth Day">
+    <Rule category="Observance">
+      <Fixed month="August" day="12" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Halloween">
+    <Rule category="Cultural">
+      <Fixed month="October" day="31" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Remembrance Day">
+    <Rule category="Remembrance">
+      <Fixed month="November" day="11" />
+    </Rule>
+  </NotableDate>
+</NotableDates>

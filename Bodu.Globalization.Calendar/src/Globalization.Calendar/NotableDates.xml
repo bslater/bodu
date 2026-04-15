@@ -1,212 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Default universal resource. Imports the cross-cultural Common set and
+  the Christian liturgical set, producing a calendar that is appropriate
+  for consumers calling `new NotableDateService()` who do not need
+  country-specific observances.
+
+  To restrict the active set to a single country, construct an
+  XmlResourceNotableDateRuleProvider that points directly at one of the
+  country-specific resources instead. For example:
+
+      var providers = new[]
+      {
+          new XmlResourceNotableDateRuleProvider("Bodu.Globalization.Calendar.Resources.US.xml"),
+      };
+      var service = new NotableDateService(providers, CalendarWeekendDefinition.SaturdaySunday);
+
+  Country files apply their own suppressions on top of the imported
+  universal sets (for example, France redefines International Workers'
+  Day as "Fête du Travail"). Because suppressions inside one country file
+  cannot be safely combined with another country file under a single
+  flattened rule set, this composite intentionally does not import the
+  country files; create a separate provider per country instead.
+-->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-  <!-- JANUARY -->
-  <NotableDate name="New Year's Day">
-    <Rule category="Holiday" nonWorking="true">
-      <Fixed day="1" month="January" />
-      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
-    </Rule>
-  </NotableDate>
+  <Import resource="Bodu.Globalization.Calendar.Resources.Common.xml" />
+  <Import resource="Bodu.Globalization.Calendar.Resources.Christian.xml" />
 
-  <!-- FEBRUARY -->
-  <NotableDate name="Valentine's Day">
-    <Rule category="Observance">
-      <Fixed day="14" month="February" />
-    </Rule>
-  </NotableDate>
-
-  <!-- MARCH -->
-  <NotableDate name="International Women's Day">
-    <Rule category="Observance">
-      <Fixed day="8" month="March" />
-    </Rule>
-  </NotableDate>
-
-  <!-- APRIL -->
-  <NotableDate name="April Fool's Day">
-    <Rule category="Cultural">
-      <Fixed day="1" month="April" />
-    </Rule>
-  </NotableDate>
-  <NotableDate name="Anzac Day">
-    <Rule category="Remembrance" territory="AU,NZ" nonWorking="true">
-      <Fixed day="25" month="April" />
-      <Adjustment when="IfWeekend" action="MoveToNextWeekday" territory="AU-WA,AU-NT" />
-    </Rule>
-  </NotableDate>
-
-  <!-- MAY -->
-  <NotableDate name="International Workers' Day">
-    <Rule category="Holiday" nonWorking="true">
-      <Fixed day="1" month="May" />
-    </Rule>
-  </NotableDate>
-  <NotableDate name="Mother's Day">
-    <Rule category="Observance">
-      <DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Second" />
-    </Rule>
-  </NotableDate>
-
-  <!-- JUNE -->
-  <NotableDate name="Father's Day">
-    <Rule category="Observance">
-      <DayOfWeekInMonth month="June" dayOfWeek="Sunday" weekOrdinal="Third" />
-    </Rule>
-  </NotableDate>
-
-  <!-- EASTER RELATED DATES -->
-  <NotableDate name="Ash Wednesday">
-    <Rule category="Observance" firstYear="1583">
-      <Tag>Christian</Tag>
-      <OffsetFromAnchor name="Easter Sunday" offset="-46" />
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Palm Sunday">
-    <Rule category="Observance" firstYear="1583">
-      <Tag>Christian</Tag>
-      <OffsetFromAnchor name="Easter Sunday" offset="-7" />
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Maundy Thursday">
-    <Rule category="Observance" firstYear="1583">
-      <Tag>Christian</Tag>
-      <OffsetFromAnchor name="Easter Sunday" offset="-3" />
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Good Friday">
-    <Rule category="Holiday" firstYear="1583" nonWorking="true">
-      <Tag>Christian</Tag>
-      <OffsetFromAnchor name="Easter Sunday" offset="-2" />
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Easter Saturday">
-    <Rule category="Observance" firstYear="1583">
-      <Tag>Christian</Tag>
-      <OffsetFromAnchor name="Easter Sunday" offset="-1" />
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Easter Sunday">
-    <Rule category="Observance" firstYear="1583">
-      <Tag>Christian</Tag>
-      <Calculator key="easter-sunday" type="Bodu.Globalization.Calendar.Calculators.EasterSundayNotableDateCalculator, Bodu.Globalization.Calendar" />
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Easter Monday">
-    <Rule category="Holiday" firstYear="1583" nonWorking="true">
-      <Tag>Christian</Tag>
-      <OffsetFromAnchor name="Easter Sunday" offset="1" />
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Ascension Day">
-    <Rule category="Observance" firstYear="1583">
-      <Tag>Christian</Tag>
-      <OffsetFromAnchor name="Easter Sunday" offset="39" />
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Pentecost Sunday">
-    <Rule category="Observance" firstYear="1583">
-      <Tag>Christian</Tag>
-      <OffsetFromAnchor name="Easter Sunday" offset="49" />
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Whit Monday">
-    <Rule category="Holiday" firstYear="1583" nonWorking="true">
-      <Tag>Christian</Tag>
-      <OffsetFromAnchor name="Easter Sunday" offset="50" />
-    </Rule>
-  </NotableDate>
-
-  <!-- JULY -->
-  <NotableDate name="Bastille Day">
-    <Rule category="Holiday" territory="FR" nonWorking="true">
-      <Fixed day="14" month="July" />
-    </Rule>
-  </NotableDate>
-
-  <!-- AUGUST -->
-  <NotableDate name="International Youth Day">
-    <Rule category="Observance">
-      <Fixed day="12" month="August" />
-    </Rule>
-  </NotableDate>
-
-  <!-- SEPTEMBER -->
-  <NotableDate name="Father's Day (AU/US)">
-    <Rule name="Father's Day" category="Observance" territory="AU,US">
-      <DayOfWeekInMonth month="September" dayOfWeek="Sunday" weekOrdinal="First" />
-    </Rule>
-  </NotableDate>
-
-  <!-- OCTOBER -->
-  <NotableDate name="Halloween">
-    <Rule category="Cultural">
-      <Fixed day="31" month="October" />
-    </Rule>
-  </NotableDate>
-
-  <!-- NOVEMBER -->
-  <NotableDate name="Remembrance Day">
-    <Rule category="Remembrance">
-      <Fixed day="11" month="November" />
-    </Rule>
-  </NotableDate>
-  <NotableDate name="Thanksgiving">
-    <Rule category="Holiday" territory="US" nonWorking="true">
-      <DayOfWeekInMonth month="November" dayOfWeek="Thursday" weekOrdinal="Fourth" />
-    </Rule>
-  </NotableDate>
-
-  <!-- DECEMBER -->
-  <NotableDate name="Christmas Day">
-    <Rule category="Holiday" nonWorking="true">
-      <Tag>Christian</Tag>
-      <Fixed day="25" month="December" />
-      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
-    </Rule>
-  </NotableDate>
-  <NotableDate name="Boxing Day">
-    <Rule category="Holiday" nonWorking="true">
-      <Tag>Christian</Tag>
-      <Fixed day="26" month="December" />
-      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Labour Day">
-    <!-- NSW/SA: Labour Day -->
-    <Rule category="Holiday" nonWorking="true" territory="AU-NSW,AU-SA">
-      <DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="First" />
-    </Rule>
-
-    <!-- VIC: Labour Day -->
-    <Rule category="Holiday" nonWorking="true" territory="AU-VIC">
-      <DayOfWeekInMonth month="March" dayOfWeek="Monday" weekOrdinal="Second" />
-    </Rule>
-
-    <!-- WA: Labour Day -->
-    <Rule category="Holiday" nonWorking="true" territory="AU-WA">
-      <DayOfWeekInMonth month="March" dayOfWeek="Monday" weekOrdinal="First" />
-    </Rule>
-
-    <!-- QLD: Labour Day -->
-    <Rule category="Holiday" nonWorking="true" territory="AU-QLD">
-      <DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="First" />
-    </Rule>
-
-    <!-- NT: May Day -->
-    <Rule name="May Day" category="Holiday" nonWorking="true" territory="AU-NT">
-      <DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="First" />
-    </Rule>
-  </NotableDate>
 </NotableDates>
