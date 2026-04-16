@@ -98,7 +98,12 @@ namespace Bodu.Security.Cryptography
 		public void Transform_WithMaxValueInput_ShouldSucceed()
 		{
 			var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-			var iv = Enumerable.Repeat((byte)0xFF, ExpectedBlockSize).ToArray();
+
+			// Use an all-zero seed rather than an all-0xFF seed so CTR's counter does not wrap on the
+			// very first increment (which would cause IncrementCounter to set counterWrapped=true and
+			// throw on the second block). The purpose of this test is to saturate the *input* bytes,
+			// not the IV.
+			var iv = new byte[ExpectedBlockSize];
 			var transform = CreateTransform(cipher, iv);
 
 			var input = Enumerable.Repeat((byte)0xFF, ExpectedBlockSize * 2).ToArray();
