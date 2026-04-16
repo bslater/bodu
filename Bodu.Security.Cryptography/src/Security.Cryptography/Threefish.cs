@@ -118,8 +118,9 @@
                     string.Format(ResourceStrings.CryptographicException_InvalidKeySize, key.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)));
 
             if (iv.Length != this.BlockSizeBytes)
-                throw new CryptographicException(
-                    string.Format(ResourceStrings.CryptographicException_InvalidIVSize, iv.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalBlockSizes)));
+                throw new ArgumentException(
+                    string.Format(ResourceStrings.CryptographicException_InvalidIVSize, iv.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalBlockSizes)),
+                    nameof(iv));
 
             if (tweak.Length != this.DefaultTweakSizeBytes)
                 throw new CryptographicException(

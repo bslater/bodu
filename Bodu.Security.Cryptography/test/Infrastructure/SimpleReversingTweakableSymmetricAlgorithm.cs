@@ -66,7 +66,19 @@ namespace Bodu.Infrastructure
         private ICryptoTransform NewEncryptor(CipherMode cipherMode, byte[]? rgbKey, byte[]? rgbIV, byte[]? tweak, int feedbackSize, TransformMode encryptMode)
         {
             ThrowHelper.ThrowIfArrayLengthIsInsufficient(rgbKey, KeySizeValue / 8);
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(rgbIV, BlockSizeValue / 8);
+
+            // Validate IV length with a message that carries the offending bit-length so
+            // SymmetricAlgorithmTests.CreateEncryptor_WithInvalidIvLength_ShouldThrowArgumentException
+            // can confirm the validator reports the right quantity.
+            if (rgbIV is null)
+                throw new ArgumentNullException(nameof(rgbIV));
+
+            int expectedIvBytes = BlockSizeValue / 8;
+            if (rgbIV.Length != expectedIvBytes)
+                throw new ArgumentException(
+                    $"The IV must be {expectedIvBytes * 8} bits ({expectedIvBytes} bytes) long; the supplied IV is {rgbIV.Length * 8} bits ({rgbIV.Length} bytes).",
+                    nameof(rgbIV));
+
             ThrowHelper.ThrowIfArrayLengthIsInsufficient(tweak, TweakSizeValue / 8);
             ThrowHelper.ThrowIfLessThanOrEqual(feedbackSize, 0);
 

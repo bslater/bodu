@@ -135,7 +135,18 @@ namespace Bodu.Infrastructure
             IsCryptoTransformDisposed = false;
 
             ThrowHelper.ThrowIfArrayLengthIsInsufficient(key, KeySizeValue / 8);
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(iv, BlockSizeValue / 8);
+
+            // Validate IV length with a message that carries the offending bit-length so
+            // SymmetricAlgorithmTests.CreateEncryptor_WithInvalidIvLength_ShouldThrowArgumentException
+            // can confirm the validator reports the right quantity.
+            if (iv is null)
+                throw new ArgumentNullException(nameof(iv));
+
+            int expectedIvBytes = BlockSizeValue / 8;
+            if (iv.Length != expectedIvBytes)
+                throw new ArgumentException(
+                    $"The IV must be {expectedIvBytes * 8} bits ({expectedIvBytes} bytes) long; the supplied IV is {iv.Length * 8} bits ({iv.Length} bytes).",
+                    nameof(iv));
 
             var transform = new SimpleReversingCryptoTransform(
                 BlockSizeValue,
