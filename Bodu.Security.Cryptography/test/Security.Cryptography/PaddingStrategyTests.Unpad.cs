@@ -28,7 +28,14 @@ namespace Bodu.Security.Cryptography
 
             byte[] plaintext = this.CreatePlaintextWithResidual(this.BlockSize - 4);
             byte[] padded = padding.Pad(plaintext, this.BlockSize);
-            padded[padded.Length - this.BlockSize + 1] ^= 0xFF; // tamper with a padding byte
+
+            // Tamper with a byte inside the padding region. PKCS#7 padding occupies the last
+            // padLen bytes of the final block, where padLen is the trailing length byte. Flipping
+            // the first padding byte preserves the declared length but corrupts the content so
+            // the constant-time padding verifier rejects the block.
+            int padLen = padded[padded.Length - 1];
+            int firstPaddingByteIndex = padded.Length - padLen;
+            padded[firstPaddingByteIndex] ^= 0xFF;
 
             var ex = Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(padded, this.BlockSize));
             Assert.IsFalse(ex.Message.Contains("this."), "Exception message must not contain 'this.' artifact.");
