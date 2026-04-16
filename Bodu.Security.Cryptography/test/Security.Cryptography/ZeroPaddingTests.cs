@@ -14,6 +14,14 @@ namespace Bodu.Security.Cryptography
 
         protected override bool ValidatesPaddingOnUnpad => false;
 
+        /// <inheritdoc />
+        /// <remarks>
+        /// <see cref="ZeroPadding.Unpad" /> cannot distinguish padding zero bytes from legitimate trailing zero bytes in the
+        /// plaintext, so it cannot recover the original length for residuals greater than zero. The round-trip test only
+        /// exercises residual 0 (where Pad and Unpad are both no-ops).
+        /// </remarks>
+        protected override bool SupportsUnalignedInput => false;
+
         protected override byte[] CreatePlaintextWithResidual(int residualBytes)
         {
             byte[] buf = new byte[residualBytes];
