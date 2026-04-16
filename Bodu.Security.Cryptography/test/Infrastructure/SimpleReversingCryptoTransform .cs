@@ -13,16 +13,18 @@ using System.Threading.Tasks;
 namespace Bodu.Infrastructure
 {
     /// <summary>
-    /// A test-only <see cref="ICryptoTransform" /> that runs a <see cref="SimpleReversingBlockCipher" /> primitive through
-    /// the library's standard <see cref="BlockCipherModeFactory" /> and <see cref="PaddingFactory" /> pipelines. It exists
-    /// so tests can exercise the same block-cipher / mode / padding composition path used by production algorithms such as
-    /// <see cref="Skipjack" /> and <see cref="Threefish" /> without depending on a real cipher engine.
+    /// A test-only <see cref="ICryptoTransform" /> that coordinates a caller-supplied <see cref="IBlockCipher" /> engine,
+    /// <see cref="IBlockCipherModeTransform" /> chaining mode, and <see cref="IPaddingStrategy" /> to exercise the same
+    /// block-cipher / mode / padding composition pipeline used by production algorithms such as <see cref="Skipjack" /> and
+    /// <see cref="Threefish" />, without depending on a real cipher engine.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The transform owns the configured <see cref="IBlockCipher" />, the selected <see cref="IBlockCipherModeTransform" />,
-    /// and the selected <see cref="IPaddingStrategy" />. Streaming blocks flow through <see cref="TransformBlock" />; the
-    /// final block is handled by <see cref="TransformFinalBlock" /> which applies (or removes) padding.
+    /// This class deliberately does not call <see cref="BlockCipherModeFactory" /> or <see cref="PaddingFactory" /> itself.
+    /// Callers (typically the <see cref="SimpleReversingSymmetricAlgorithm" /> and
+    /// <see cref="SimpleReversingTweakableSymmetricAlgorithm" /> harnesses) construct the pipeline components explicitly and
+    /// hand them in, so factory usage remains visible at the algorithm layer and the transform has a single responsibility:
+    /// coordinate streaming and finalisation across the mode and the padding strategy.
     /// </para>
     /// </remarks>
     public sealed class SimpleReversingCryptoTransform : ICryptoTransform, IAsyncDisposable
@@ -35,34 +37,28 @@ namespace Bodu.Infrastructure
         private bool disposed;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="SimpleReversingCryptoTransform" /> class.
+        /// Initialises a new instance of the <see cref="SimpleReversingCryptoTransform" /> class from pre-built pipeline
+        /// components.
         /// </summary>
-        /// <param name="blockSizeBits">The block size in bits. Must be a positive multiple of 8.</param>
-        /// <param name="feedbackSizeBits">The feedback size in bits. Accepted for compatibility and currently ignored.</param>
-        /// <param name="key">The key. Not used by the reversing primitive but validated so tests can exercise key handling.</param>
-        /// <param name="iv">The initialisation vector, passed to <see cref="BlockCipherModeFactory" /> for chaining modes that require one.</param>
-        /// <param name="tweak">An optional tweak forwarded to <see cref="SimpleReversingBlockCipher" />.</param>
-        /// <param name="cipherMode">The standard <see cref="CipherMode" /> to apply via <see cref="BlockCipherModeFactory" />.</param>
-        /// <param name="paddingMode">The padding scheme to apply via <see cref="PaddingFactory" />.</param>
+        /// <param name="cipher">
+        /// The block cipher engine to drive. Typically a <see cref="SimpleReversingBlockCipher" />, but any
+        /// <see cref="IBlockCipher" /> is accepted.
+        /// </param>
+        /// <param name="mode">The block chaining mode, usually obtained from <see cref="BlockCipherModeFactory.Create" />.</param>
+        /// <param name="padding">The padding strategy, usually obtained from <see cref="PaddingFactory.Create" />.</param>
         /// <param name="transformMode">The direction (<see cref="TransformMode.Encrypt" /> or <see cref="TransformMode.Decrypt" />).</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="cipher" />, <paramref name="mode" />, or <paramref name="padding" /> is <see langword="null" />.
+        /// </exception>
         public SimpleReversingCryptoTransform(
-            int blockSizeBits,
-            int feedbackSizeBits,
-            byte[] key,
-            byte[] iv,
-            byte[]? tweak,
-            CipherMode cipherMode,
-            PaddingMode paddingMode,
+            IBlockCipher cipher,
+            IBlockCipherModeTransform mode,
+            IPaddingStrategy padding,
             TransformMode transformMode)
         {
-            if (blockSizeBits <= 0 || blockSizeBits % 8 != 0)
-                throw new ArgumentOutOfRangeException(nameof(blockSizeBits), "Block size must be a positive multiple of 8.");
-
-            int blockSizeBytes = blockSizeBits / 8;
-
-            this.cipher = new SimpleReversingBlockCipher(blockSizeBytes, tweak);
-            this.mode = BlockCipherModeFactory.Create(ConvertMode(cipherMode), this.cipher, iv);
-            this.padding = PaddingFactory.Create(paddingMode);
+            this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
+            this.mode = mode ?? throw new ArgumentNullException(nameof(mode));
+            this.padding = padding ?? throw new ArgumentNullException(nameof(padding));
             this.transformMode = transformMode;
         }
 
@@ -181,19 +177,6 @@ namespace Bodu.Infrastructure
             this.mode.Transform(combined, decrypted, false);
             return this.padding.Unpad(decrypted, blockSize);
         }
-
-        /// <summary>
-        /// Maps a standard <see cref="CipherMode" /> onto the library's <see cref="CipherBlockMode" /> enum so the transform
-        /// can plug into <see cref="BlockCipherModeFactory.Create" />.
-        /// </summary>
-        private static CipherBlockMode ConvertMode(CipherMode mode) => mode switch
-        {
-            CipherMode.ECB => CipherBlockMode.ECB,
-            CipherMode.CBC => CipherBlockMode.CBC,
-            CipherMode.CFB => CipherBlockMode.CFB,
-            CipherMode.OFB => CipherBlockMode.OFB,
-            _ => throw new NotSupportedException($"Cipher mode '{mode}' is not supported by {nameof(SimpleReversingCryptoTransform)}."),
-        };
 
         /// <summary>
         /// Concatenates a deferred buffer (if any) with a fresh input span, returning a contiguous array.

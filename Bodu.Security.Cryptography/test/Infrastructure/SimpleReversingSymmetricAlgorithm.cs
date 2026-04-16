@@ -124,40 +124,38 @@ namespace Bodu.Infrastructure
         }
 
         /// <summary>
-        /// Creates a new <see cref="SimpleReversingCryptoTransform" /> with the specified parameters.
+        /// Creates a new <see cref="SimpleReversingCryptoTransform" /> by assembling a
+        /// <see cref="SimpleReversingBlockCipher" /> primitive, a <see cref="BlockCipherModeFactory" />-built chaining mode,
+        /// and a <see cref="PaddingFactory" />-built padding strategy, in that order.
         /// </summary>
-        /// <param name="key">The encryption/decryption key. If null, one will be generated.</param>
-        /// <param name="iv">The initialization vector. If null, one will be generated.</param>
-        /// <param name="mode">The transform mode (Encrypt or Decrypt).</param>
-        /// <returns>An initialized <see cref="ICryptoTransform" /> instance.</returns>
+        /// <param name="key">The key. The reversing primitive does not consume it; the length check here exists so tests can exercise key-length validation.</param>
+        /// <param name="iv">The initialisation vector. Passed to <see cref="BlockCipherModeFactory.Create" />, which validates length for chaining modes that require one.</param>
+        /// <param name="mode">The transform direction (<see cref="TransformMode.Encrypt" /> or <see cref="TransformMode.Decrypt" />).</param>
+        /// <returns>An <see cref="ICryptoTransform" /> wired up for the caller-supplied key and IV.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="key" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentException"><paramref name="key" /> has a length other than <c>KeySize / 8</c>, or <paramref name="iv" /> has a length other than <c>BlockSize / 8</c> for a mode that requires an IV.</exception>
         private ICryptoTransform CreateTransform(byte[]? key, byte[]? iv, TransformMode mode)
         {
             IsCryptoTransformDisposed = false;
 
+            // Validate the key length at the algorithm boundary. The reversing primitive itself ignores the key,
+            // but this check keeps the SymmetricAlgorithm contract honest for callers and test harnesses.
             ThrowHelper.ThrowIfArrayLengthIsInsufficient(key, KeySizeValue / 8);
 
-            // Validate IV length with a message that carries the offending bit-length so
-            // SymmetricAlgorithmTests.CreateEncryptor_WithInvalidIvLength_ShouldThrowArgumentException
-            // can confirm the validator reports the right quantity.
+            // Pre-check null IV so the stricter ArgumentNullException type is raised for the conventional case.
+            // The length check is then delegated to BlockCipherModeFactory, which produces an ArgumentException
+            // whose message carries both the required and offending IV bit-lengths.
             if (iv is null)
                 throw new ArgumentNullException(nameof(iv));
 
-            int expectedIvBytes = BlockSizeValue / 8;
-            if (iv.Length != expectedIvBytes)
-                throw new ArgumentException(
-                    $"The IV must be {expectedIvBytes * 8} bits ({expectedIvBytes} bytes) long; the supplied IV is {iv.Length * 8} bits ({iv.Length} bytes).",
-                    nameof(iv));
+            // Build the pipeline via the production factories so the test harness exercises the same
+            // composition path the real algorithms use.
+            var cipher = new SimpleReversingBlockCipher(BlockSizeValue / 8);
+            IBlockCipherModeTransform modeTransform = BlockCipherModeFactory.Create(
+                ToCipherBlockMode(ModeValue), cipher, iv);
+            IPaddingStrategy paddingStrategy = PaddingFactory.Create(PaddingValue);
 
-            var transform = new SimpleReversingCryptoTransform(
-                BlockSizeValue,
-                FeedbackSizeValue,
-                key,
-                iv,
-                tweak: null,
-                cipherMode: ModeValue,
-                paddingMode: PaddingValue,
-                transformMode: mode
-            );
+            var transform = new SimpleReversingCryptoTransform(cipher, modeTransform, paddingStrategy, mode);
 
             transform.Disposed += (_, _) =>
             {
@@ -167,5 +165,18 @@ namespace Bodu.Infrastructure
 
             return transform;
         }
+
+        /// <summary>
+        /// Maps the framework <see cref="CipherMode" /> exposed by <see cref="SymmetricAlgorithm" /> onto the library's
+        /// <see cref="CipherBlockMode" /> enum so the algorithm can plug straight into <see cref="BlockCipherModeFactory" />.
+        /// </summary>
+        private static CipherBlockMode ToCipherBlockMode(CipherMode mode) => mode switch
+        {
+            CipherMode.ECB => CipherBlockMode.ECB,
+            CipherMode.CBC => CipherBlockMode.CBC,
+            CipherMode.CFB => CipherBlockMode.CFB,
+            CipherMode.OFB => CipherBlockMode.OFB,
+            _ => throw new NotSupportedException($"Cipher mode '{mode}' is not supported by {nameof(SimpleReversingSymmetricAlgorithm)}."),
+        };
     }
 }
