@@ -84,6 +84,10 @@ namespace Bodu.Security.Cryptography
         private byte[]? _rootHash;
         private bool _disposed;
 
+        // Set per-call by ComputeHash* methods; links the disposal token with any user-supplied
+        // cancellation token so that level workers respond to external cancellation.
+        private CancellationToken _activeToken;
+
         /// <summary>
         /// Initialises a new <see cref="ParallelMerkleTreeHash"/> instance with the specified hash
         /// algorithm factory, block size, and fan-out.
@@ -130,8 +134,8 @@ namespace Bodu.Security.Cryptography
         ///   Supplying a fresh instance per call ensures each computation's trace is isolated.
         /// </param>
         /// <param name="cancellationToken">
-        ///   Token used to cancel the read loop. Cancellation stops further reads but does not
-        ///   interrupt level workers already in progress; those are cancelled via <see cref="Dispose"/>.
+        ///   Token used to cancel the operation. When signalled, the read loop is stopped and all
+        ///   active level workers are drained before the exception is propagated.
         /// </param>
         /// <returns>
         ///   A byte array containing the Merkle root hash of all data read from <paramref name="input"/>.
@@ -150,25 +154,38 @@ namespace Bodu.Security.Cryptography
             CancellationToken cancellationToken = default)
         {
             ArgumentNullException.ThrowIfNull(input);
-            this.Reset(diagnostics);
+            ObjectDisposedException.ThrowIf(this._disposed, this);
 
-            using var linked = CancellationTokenSource.CreateLinkedTokenSource(this._cts.Token, cancellationToken);
-
-            // Read in chunks larger than one block so that a single ReadAsync can feed several leaves,
-            // keeping the I/O system ahead of the hashing pipeline.
-            byte[] readBuffer = ArrayPool<byte>.Shared.Rent(this._blockSize * 8);
+            var linked = CancellationTokenSource.CreateLinkedTokenSource(this._cts.Token, cancellationToken);
             try
             {
-                int bytesRead;
-                while ((bytesRead = await input.ReadAsync(readBuffer.AsMemory(0, readBuffer.Length), linked.Token)) > 0)
-                    this.ProcessBytes(readBuffer.AsSpan(0, bytesRead));
+                this.Reset(diagnostics, linked.Token);
+
+                // Read in chunks larger than one block so that a single ReadAsync can feed several leaves,
+                // keeping the I/O system ahead of the hashing pipeline.
+                byte[] readBuffer = ArrayPool<byte>.Shared.Rent(this._blockSize * 8);
+                try
+                {
+                    int bytesRead;
+                    while ((bytesRead = await input.ReadAsync(readBuffer.AsMemory(0, readBuffer.Length), linked.Token)) > 0)
+                        this.ProcessBytes(readBuffer.AsSpan(0, bytesRead));
+                }
+                catch (OperationCanceledException)
+                {
+                    await this.DrainWorkersAsync();
+                    throw;
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(readBuffer, clearArray: true);
+                }
+
+                return await this.FinalizeAsync();
             }
             finally
             {
-                ArrayPool<byte>.Shared.Return(readBuffer, clearArray: true);
+                linked.Dispose();
             }
-
-            return await this.FinalizeAsync();
         }
 
         /// <summary>
@@ -186,7 +203,7 @@ namespace Bodu.Security.Cryptography
         /// <exception cref="InvalidOperationException">No input data was provided.</exception>
         public byte[] ComputeHash(ReadOnlySpan<byte> data, MerkleTreeDiagnostics? diagnostics = null)
         {
-            this.Reset(diagnostics);
+            this.Reset(diagnostics, this._cts.Token);
             this.ProcessBytes(data);
             return this.FinalizeAsync().GetAwaiter().GetResult();
         }
@@ -251,7 +268,7 @@ namespace Bodu.Security.Cryptography
         /// constructor.
         /// </para>
         /// </remarks>
-        private void Reset(MerkleTreeDiagnostics? diagnostics)
+        private void Reset(MerkleTreeDiagnostics? diagnostics, CancellationToken activeToken)
         {
             ObjectDisposedException.ThrowIf(this._disposed, this);
 
@@ -265,6 +282,7 @@ namespace Bodu.Security.Cryptography
             this._leafIndex = 0;
             this._rootHash = null;
             this._diagnostics = diagnostics;
+            this._activeToken = activeToken;
 
             // Recreate level 0 immediately so the producer can submit leaves without waiting.
             this.EnsureLevelExists(0);
@@ -345,7 +363,7 @@ namespace Bodu.Security.Cryptography
 
                 var channel = Channel.CreateUnbounded<byte[]>(options);
                 this._levelChannels[level] = channel;
-                this._levelWorkers[level] = Task.Run(() => this.RunLevelWorkerAsync(level, channel, this._cts.Token));
+                this._levelWorkers[level] = Task.Run(() => this.RunLevelWorkerAsync(level, channel, this._activeToken));
             }
         }
 
@@ -457,6 +475,22 @@ namespace Bodu.Security.Cryptography
             }
 
             return this._rootHash ?? throw new InvalidOperationException("No input data was provided.");
+        }
+
+        /// <summary>
+        /// Completes all level channels and awaits their workers, suppressing any exceptions that
+        /// arise from cancelled tokens or completed channels during cancellation teardown.
+        /// </summary>
+        private async Task DrainWorkersAsync()
+        {
+            foreach (var channel in this._levelChannels.Values)
+                channel.Writer.TryComplete();
+
+            foreach (var worker in this._levelWorkers.Values)
+            {
+                try { await worker; }
+                catch { }
+            }
         }
 
         // -----------------------------------------------------------------------------------------
