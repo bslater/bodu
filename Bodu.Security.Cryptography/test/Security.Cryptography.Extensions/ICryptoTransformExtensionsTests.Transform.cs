@@ -493,22 +493,20 @@ namespace Bodu.Security.Cryptography.Extensions
 
         private static SimpleReversingCryptoTransform CreateTransform(KnownAnswerTest kat)
         {
-            int blockSize = kat.TryGet("BlockSize", out int bs) ? bs : 32;
-            PaddingMode padding = kat.TryGet("Padding", out PaddingMode p) ? p : PaddingMode.None;
-            TransformMode mode = kat.TryGet("Mode", out TransformMode m) ? m : TransformMode.Encrypt;
-            byte[] key = kat.TryGet("Key", out byte[]? k) ? k! : new byte[blockSize / 8];
-            byte[] iv = kat.TryGet("IV", out byte[]? i) ? i! : new byte[blockSize / 8];
+            int blockSizeBits = kat.TryGet("BlockSize", out int bs) ? bs : 32;
+            PaddingMode paddingMode = kat.TryGet("Padding", out PaddingMode p) ? p : PaddingMode.None;
+            TransformMode transformMode = kat.TryGet("Mode", out TransformMode m) ? m : TransformMode.Encrypt;
+            byte[] iv = kat.TryGet("IV", out byte[]? i) ? i! : new byte[blockSizeBits / 8];
             byte[]? tweak = kat.TryGet("Tweak", out byte[]? t) ? t : null;
 
-            return new SimpleReversingCryptoTransform(
-                blockSizeBits: blockSize,
-                feedbackSizeBits: blockSize,
-                key: key,
-                iv: iv,
-                tweak: tweak,
-                cipherMode: CipherMode.ECB,
-                paddingMode: padding,
-                transformMode: mode);
+            // Compose the pipeline via the production factories, matching the pattern used by the
+            // SimpleReversingSymmetricAlgorithm harness. The known-answer tests intentionally use ECB so
+            // each block is transformed independently and the expected outputs are simple per-block reversals.
+            var cipher = new SimpleReversingBlockCipher(blockSizeBits / 8, tweak);
+            IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherBlockMode.ECB, cipher, iv);
+            IPaddingStrategy padding = PaddingFactory.Create(paddingMode);
+
+            return new SimpleReversingCryptoTransform(cipher, mode, padding, transformMode);
         }
     }
 }

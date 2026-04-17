@@ -14,6 +14,13 @@ namespace Bodu.Security.Cryptography
 
         protected override bool ValidatesPaddingOnUnpad => false;
 
+        /// <inheritdoc />
+        /// <remarks>
+        /// <see cref="NoPadding.Pad" /> rejects input whose length is not already a multiple of the block size, so the
+        /// round-trip test only exercises residual 0.
+        /// </remarks>
+        protected override bool SupportsUnalignedInput => false;
+
         protected override byte[] CreatePlaintextWithResidual(int residualBytes)
         {
             byte[] buf = new byte[residualBytes];

@@ -35,6 +35,15 @@ namespace Bodu.Security.Cryptography
         protected abstract bool ValidatesPaddingOnUnpad { get; }
 
         /// <summary>
+        /// Gets a value indicating whether this padding strategy accepts input whose length is not a multiple of
+        /// <see cref="BlockSize" /> and can recover the original plaintext through <c>Pad</c>/<c>Unpad</c>. Returns
+        /// <see langword="true" /> for self-describing schemes such as PKCS#7 that can faithfully round-trip any residual length.
+        /// Returns <see langword="false" /> for pass-through schemes (<c>NoPadding</c>, which rejects unaligned input) and
+        /// for non-self-describing schemes (<c>ZeroPadding</c>, which cannot distinguish padding bytes from legitimate data).
+        /// </summary>
+        protected virtual bool SupportsUnalignedInput => true;
+
+        /// <summary>
         /// Gets a sample plaintext that is shorter than <see cref="BlockSize" /> by the
         /// specified <paramref name="residualBytes" /> count. Used by the single-byte padding
         /// and round-trip tests.

@@ -61,25 +61,48 @@ namespace Bodu.Infrastructure
             => TweakSizeValue = size;
 
         /// <summary>
-        /// Creates a transform using byte[] fallbacks.
+        /// Creates a new <see cref="SimpleReversingCryptoTransform" /> by assembling a
+        /// <see cref="SimpleReversingBlockCipher" /> primitive (seeded with the supplied tweak), a
+        /// <see cref="BlockCipherModeFactory" />-built chaining mode, and a <see cref="PaddingFactory" />-built padding
+        /// strategy, in that order.
         /// </summary>
         private ICryptoTransform NewEncryptor(CipherMode cipherMode, byte[]? rgbKey, byte[]? rgbIV, byte[]? tweak, int feedbackSize, TransformMode encryptMode)
         {
+            // Validate key and tweak lengths at the algorithm boundary. The reversing primitive ignores the key
+            // and tolerates any tweak length, but honouring the declared sizes keeps the harness aligned with
+            // the TweakableSymmetricAlgorithm contract that tests depend on.
             ThrowHelper.ThrowIfArrayLengthIsInsufficient(rgbKey, KeySizeValue / 8);
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(rgbIV, BlockSizeValue / 8);
+
+            // Pre-check null IV so the conventional ArgumentNullException type is raised. The length check is
+            // delegated to BlockCipherModeFactory, whose message carries both the required and offending IV
+            // bit-lengths for the regression guard in SymmetricAlgorithmTests.
+            if (rgbIV is null)
+                throw new ArgumentNullException(nameof(rgbIV));
+
             ThrowHelper.ThrowIfArrayLengthIsInsufficient(tweak, TweakSizeValue / 8);
             ThrowHelper.ThrowIfLessThanOrEqual(feedbackSize, 0);
 
-            return new SimpleReversingCryptoTransform(
-                BlockSizeValue,
-                feedbackSize,
-                rgbKey,
-                rgbIV,
-                tweak,
-                cipherMode,
-                PaddingValue,
-                encryptMode
-            );
+            // Build the pipeline via the production factories so the tweakable harness exercises the same
+            // composition path as the real algorithms.
+            var cipher = new SimpleReversingBlockCipher(BlockSizeValue / 8, tweak);
+            IBlockCipherModeTransform modeTransform = BlockCipherModeFactory.Create(
+                ToCipherBlockMode(cipherMode), cipher, rgbIV);
+            IPaddingStrategy paddingStrategy = PaddingFactory.Create(PaddingValue);
+
+            return new SimpleReversingCryptoTransform(cipher, modeTransform, paddingStrategy, encryptMode);
         }
+
+        /// <summary>
+        /// Maps the framework <see cref="CipherMode" /> exposed by <see cref="SymmetricAlgorithm" /> onto the library's
+        /// <see cref="CipherBlockMode" /> enum so the algorithm can plug straight into <see cref="BlockCipherModeFactory" />.
+        /// </summary>
+        private static CipherBlockMode ToCipherBlockMode(CipherMode mode) => mode switch
+        {
+            CipherMode.ECB => CipherBlockMode.ECB,
+            CipherMode.CBC => CipherBlockMode.CBC,
+            CipherMode.CFB => CipherBlockMode.CFB,
+            CipherMode.OFB => CipherBlockMode.OFB,
+            _ => throw new NotSupportedException($"Cipher mode '{mode}' is not supported by {nameof(SimpleReversingTweakableSymmetricAlgorithm)}."),
+        };
     }
 }

@@ -63,12 +63,12 @@ namespace Bodu.Security.Cryptography
         /// Initializes a new instance of the <see cref="Poly1305" /> class.
         /// </summary>
         public Poly1305()
-            : base(BlockSize)
+            : base(BlockSize, KeySize)
         {
             this.HashSizeValue = 128;
             this.KeyValue = new byte[KeySize];
             CryptoHelpers.FillWithRandomNonZeroBytes(this.KeyValue);
-            this.InitializeKey();
+            this.OnKeyChanged();
         }
 
         /// <summary>
@@ -83,8 +83,10 @@ namespace Bodu.Security.Cryptography
         /// for multiple messages violates the security guarantees of the algorithm and may lead to forgery attacks.
         /// </para>
         /// <para>
-        /// This implementation clears the key material after finalization to prevent accidental reuse. To compute a new MAC, a new instance
-        /// must be created with a fresh key.
+        /// The framework-invoked automatic re-initialisation that occurs at the end of <see cref="HashAlgorithm.ComputeHash(byte[])" /> and
+        /// related APIs is tolerated so that callers can read <see cref="HashAlgorithm.Hash" /> without tripping the key-set guard. However,
+        /// explicit reuse of a finalised instance — for example, a second <see cref="HashAlgorithm.ComputeHash(byte[])" /> call — is rejected
+        /// by the inherited finalised-state guard on frameworks prior to .NET 6. A fresh instance should be created for each message.
         /// </para>
         /// </remarks>
         public override bool CanReuseTransform => false;
@@ -96,49 +98,7 @@ namespace Bodu.Security.Cryptography
         public override int InputBlockSize => BlockSize;
 
         /// <inheritdoc />
-        public override byte[] Key
-        {
-            get
-            {
-                this.ThrowIfDisposed();
-                return this.KeyValue.Copy();
-            }
-
-            set
-            {
-                this.ThrowIfDisposed();
-                this.ThrowIfInvalidState();
-                ThrowHelper.ThrowIfNull(value);
-
-                if (value.Length != KeySize)
-                    throw new CryptographicException(string.Format(ResourceStrings.CryptographicException_InvalidKeySize, value.Length, KeySize));
-
-                this.KeyValue = value.Copy();
-                this.InitializeKey();
-            }
-        }
-
-        /// <inheritdoc />
         public override int OutputBlockSize => BlockSize;
-
-        /// <inheritdoc />
-        public override void Initialize()
-        {
-            this.ThrowIfDisposed();
-            base.Initialize();
-            Array.Clear(this.acc);
-
-            // Refuse to silently regenerate a key. Callers must explicitly supply a key
-            // (via the Key setter) or call GenerateKey() before re-initialising. This
-            // preserves the keyed-MAC contract: finalising and re-initialising must not
-            // swap keys behind the caller's back.
-            if (this.KeyValue is null || this.KeyValue.Length != KeySize)
-            {
-                throw new CryptographicException("Poly1305 key must be assigned before initialisation. Set Key explicitly or call GenerateKey().");
-            }
-
-            this.InitializeKey();
-        }
 
         /// <summary>
         /// Releases the unmanaged resources used by the algorithm and clears the key from memory.
@@ -262,8 +222,15 @@ namespace Bodu.Security.Cryptography
             BinaryPrimitives.WriteUInt32LittleEndian(tag.Slice(8), (uint)f2);
             BinaryPrimitives.WriteUInt32LittleEndian(tag.Slice(12), (uint)f3);
 
-            // Clear key immediately after use to prevent reuse
-            CryptoHelpers.ClearAndNullify(ref this.KeyValue!);
+#if !NET6_0_OR_GREATER
+            // Mark the instance as finalised so the base-class HashCore/HashFinal guards
+            // reject subsequent streaming after the MAC has been produced. The key itself
+            // is retained until Dispose so that the framework's automatic re-initialisation
+            // (invoked by ComputeHash via CaptureHashCodeAndReinitialize) can succeed without
+            // tripping the key-set check in Initialize.
+            this.finalized = true;
+            this.State = 2;
+#endif
 
             return tag.ToArray();
         }
@@ -271,9 +238,21 @@ namespace Bodu.Security.Cryptography
         /// <inheritdoc />
         protected override bool ShouldPadFinalBlock() => false;
 
+        /// <summary>
+        /// Rebuilds the polynomial key schedule and resets the accumulator whenever the key is assigned or the instance is re-initialised.
+        /// </summary>
+        /// <remarks>
+        /// Loads and clamps <c>r</c>, precomputes the <c>5 * r[i]</c> helpers, and captures the second half of the key <c>s</c> used in
+        /// the final tag calculation. The polynomial accumulator is reset so that the next hash computation starts from a clean state.
+        /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void InitializeKey()
+        protected override void OnKeyChanged()
         {
+            // Reset accumulator so the next computation starts clean — correct whether this
+            // hook runs in response to an explicit Key assignment, from Initialize, or from
+            // the constructor's default-key setup.
+            Array.Clear(this.acc);
+
             ReadOnlySpan<byte> key = this.KeyValue;
 
             // Load and clamp the first 128 bits of the key as the polynomial 'r' key Clamp 'r' by setting/clearing specific bits to avoid

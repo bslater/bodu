@@ -95,9 +95,10 @@ namespace Bodu.Security.Cryptography
                                   key.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)));
 
             if (iv.Length != this.BlockSizeBytes)
-                throw new CryptographicException(
+                throw new ArgumentException(
                     string.Format(ResourceStrings.CryptographicException_InvalidIVSize,
-                                  iv.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalBlockSizesValue)));
+                                  iv.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalBlockSizesValue)),
+                    nameof(iv));
         }
     }
 }

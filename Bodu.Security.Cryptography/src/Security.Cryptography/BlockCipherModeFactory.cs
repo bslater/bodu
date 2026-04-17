@@ -73,7 +73,9 @@
                 throw new ArgumentException("An initialisation vector is required for this mode.", name);
 
             if (iv.Length != requiredLength)
-                throw new ArgumentException($"The initialisation vector must be {requiredLength} bytes long.", name);
+                throw new ArgumentException(
+                    $"The initialisation vector must be {requiredLength * 8} bits ({requiredLength} bytes) long; the supplied IV is {iv.Length * 8} bits ({iv.Length} bytes).",
+                    name);
         }
     }
 }

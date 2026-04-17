@@ -12,8 +12,9 @@ namespace Bodu.Security.Cryptography
     {
         /// <summary>
         /// Verifies that a round-trip of <see cref="IPaddingStrategy.Pad" /> followed by
-        /// <see cref="IPaddingStrategy.Unpad" /> returns the original plaintext for a range of
-        /// residual lengths from 0 to <see cref="BlockSize" /> - 1.
+        /// <see cref="IPaddingStrategy.Unpad" /> returns the original plaintext for every residual length the strategy
+        /// claims to support. Strategies that do not accept unaligned input (see <see cref="SupportsUnalignedInput" />)
+        /// are exercised only at residual 0, which every padding strategy must handle.
         /// </summary>
         [TestMethod]
         public void PadUnpad_RoundTrip_ShouldReturnOriginalForAllResidualLengths()
@@ -22,6 +23,12 @@ namespace Bodu.Security.Cryptography
 
             for (int residual = 0; residual < this.BlockSize; residual++)
             {
+                // Skip unaligned residuals for strategies that cannot round-trip them. NoPadding rejects unaligned input
+                // outright, and ZeroPadding cannot distinguish its own padding from legitimate trailing zero bytes, so
+                // exercising residuals other than 0 would test behaviour the strategy does not support.
+                if (residual > 0 && !this.SupportsUnalignedInput)
+                    continue;
+
                 byte[] plaintext = this.CreatePlaintextWithResidual(residual);
                 byte[] padded = padding.Pad(plaintext, this.BlockSize);
                 Assert.AreEqual(0, padded.Length % this.BlockSize,
