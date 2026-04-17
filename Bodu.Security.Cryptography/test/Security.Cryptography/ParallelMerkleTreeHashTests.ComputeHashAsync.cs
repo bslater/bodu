@@ -143,23 +143,18 @@ namespace Bodu.Security.Cryptography
         {
             using var cts = new CancellationTokenSource();
 
-            // A large stream ensures at least one Read completes before cancellation fires.
             const int length = 1_000_000;
             using var hasher = new ParallelMerkleTreeHash(Factory, blockSize: 256, fanOut: 2);
 
-            // Cancel after a short delay.
-            var cancel = Task.Run(async () =>
-            {
-                await Task.Delay(15);
-                cts.Cancel();
-            });
+            // CancellationTriggerStream cancels the CTS after exactly 3 successful reads,
+            // making the test deterministic — the next ReadAsync detects the cancelled token.
+            using var stream = new CancellationTriggerStream(
+                new IncrementingByteStream(length), cts, cancelAfterRead: 3);
 
-            var compute = Assert.ThrowsExactlyAsync<TaskCanceledException>(async () =>
+            await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () =>
             {
-                await hasher.ComputeHashAsync(new IncrementingByteStream(length), cancellationToken: cts.Token);
+                await hasher.ComputeHashAsync(stream, cancellationToken: cts.Token);
             });
-
-            await Task.WhenAll(cancel, compute);
         }
 
         // -----------------------------------------------------------------------------------------
