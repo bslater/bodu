@@ -135,5 +135,47 @@ namespace Bodu.Collections.Generic
             Assert.IsFalse(result);
             Assert.IsNull(value);
         }
+
+        /// <summary>
+        /// Verifies that TryGetValue repositions the accessed key to the most-recently-used end under
+        /// MostRecentlyUsed policy, so the next eviction targets it rather than an older entry.
+        /// </summary>
+        [TestMethod]
+        public void TryGetValue_WhenPolicyIsMRUAndKeyAccessed_ShouldUpdateRecencyAndBeNextEvictionCandidate()
+        {
+            var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.MostRecentlyUsed);
+            dictionary.Add("A", 1);
+            dictionary.Add("B", 2);
+
+            // Access "A" — under MRU this should make it the most recently used and the next eviction candidate.
+            _ = dictionary.TryGetValue("A", out _);
+
+            dictionary.Add("C", 3); // Should evict "A" (most recently used).
+
+            Assert.IsFalse(dictionary.ContainsKey("A"));
+            Assert.IsTrue(dictionary.ContainsKey("B"));
+            Assert.IsTrue(dictionary.ContainsKey("C"));
+        }
+
+        /// <summary>
+        /// Verifies that TryGetValue sets the second-chance flag on the accessed key under SecondChance
+        /// policy, sparing it from eviction on the next pass.
+        /// </summary>
+        [TestMethod]
+        public void TryGetValue_WhenPolicyIsSecondChanceAndKeyAccessed_ShouldSpareKeyFromEviction()
+        {
+            var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.SecondChance);
+            dictionary.Add("A", 1);
+            dictionary.Add("B", 2);
+
+            // Access "A" so its second-chance flag is set; the algorithm should spare it and evict "B" instead.
+            _ = dictionary.TryGetValue("A", out _);
+
+            dictionary.Add("C", 3);
+
+            Assert.IsTrue(dictionary.ContainsKey("A"));
+            Assert.IsFalse(dictionary.ContainsKey("B"));
+            Assert.IsTrue(dictionary.ContainsKey("C"));
+        }
     }
 }

@@ -179,19 +179,23 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// </param>
     /// <returns><see langword="true"/> if the dictionary contains an element with the specified key; otherwise, <see langword="false"/>.</returns>
     /// <remarks>
-    /// If the eviction policy is <see cref="EvictingDictionaryPolicy.LeastRecentlyUsed"/> or
-    /// <see cref="EvictingDictionaryPolicy.LeastFrequentlyUsed"/>, accessing a key through this method will update its usage metadata.
+    /// <para>
+    /// A successful read counts as an access for the configured <see cref="EvictingDictionaryPolicy"/>: recency-tracked policies
+    /// ( <see cref="EvictingDictionaryPolicy.LeastRecentlyUsed"/> and <see cref="EvictingDictionaryPolicy.MostRecentlyUsed"/>) reposition the key,
+    /// <see cref="EvictingDictionaryPolicy.LeastFrequentlyUsed"/> increments its frequency, and <see cref="EvictingDictionaryPolicy.SecondChance"/>
+    /// sets its reference flag. <see cref="EvictingDictionaryPolicy.FirstInFirstOut"/> and <see cref="EvictingDictionaryPolicy.RandomReplacement"/>
+    /// are unaffected by reads.
+    /// </para>
+    /// <para>
+    /// <see cref="EvictingDictionary{TKey, TValue}.TotalTouches"/> is incremented on every successful lookup regardless of policy.
+    /// </para>
     /// </remarks>
     public bool TryGetValue(TKey key, out TValue value)
     {
         if (_store.TryGetValue(key, out CacheItem? item))
         {
             value = item.Value;
-
-            if (_evictingPolicy is EvictingDictionaryPolicy.LeastRecentlyUsed
-                or EvictingDictionaryPolicy.LeastFrequentlyUsed)
-                TouchInternal(key, item);
-
+            TouchInternal(key, item);
             _totalTouches++;
             return true;
         }
