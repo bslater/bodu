@@ -13,7 +13,6 @@ namespace Bodu.Collections.Generic;
 public partial class EvictingDictionary<TKey, TValue> :
     System.Collections.ICollection
 {
-    [NonSerialized]
     private object? _syncRoot;
 
     /// <inheritdoc />

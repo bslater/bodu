@@ -65,7 +65,6 @@ namespace Bodu.Collections.Generic;
 /// </remarks>
 [DebuggerDisplay("Count: {Count}, Capacity: {_capacity}, Policy: {_evictingPolicy}")]
 [DebuggerTypeProxy(typeof(EvictingDictionaryDebugView<,>))]
-[Serializable]
 public partial class EvictingDictionary<TKey, TValue>
     where TKey : notnull
 {
@@ -78,8 +77,15 @@ public partial class EvictingDictionary<TKey, TValue>
     private readonly SortedDictionary<int, LinkedList<TKey>> _frequencyList = null!;
     private readonly Dictionary<TKey, CacheItem> _store;
     private long _evictionCount;
+    private bool _isEvicting;
+    private KeyCollection? _keys;
     private LinkedList<TKey> _order = null!;
     private long _totalTouches;
+    private ValueCollection? _values;
+
+    // Incremented on every mutation (Add, Remove, Clear, in-place replace) so enumerators can detect
+    // concurrent modification and fail fast rather than produce undefined ordering.
+    private int _version;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with the default capacity and eviction policy.
@@ -509,10 +515,31 @@ public partial class EvictingDictionary<TKey, TValue>
 
         if (found && _store.TryGetValue(keyToRemove, out CacheItem? item))
         {
-            ItemEvicting?.Invoke(keyToRemove, item.Value);
+            // Mark eviction in progress around each event so a handler attempting to mutate the dictionary
+            // fails fast via ThrowIfEvicting rather than corrupting internal state mid-eviction.
+            try
+            {
+                _isEvicting = true;
+                ItemEvicting?.Invoke(keyToRemove, item.Value);
+            }
+            finally
+            {
+                _isEvicting = false;
+            }
+
             _evictionCount++;
             Remove(keyToRemove);
-            ItemEvicted?.Invoke(keyToRemove, item.Value);
+
+            try
+            {
+                _isEvicting = true;
+                ItemEvicted?.Invoke(keyToRemove, item.Value);
+            }
+            finally
+            {
+                _isEvicting = false;
+            }
+
             return;
         }
 
@@ -521,6 +548,17 @@ public partial class EvictingDictionary<TKey, TValue>
         if (_store.Count >= _capacity)
             throw new InvalidOperationException(
                 $"Eviction policy '{_evictingPolicy}' produced no candidate while the dictionary is at capacity.");
+    }
+
+    /// <summary>
+    /// Throws <see cref="InvalidOperationException"/> if called while an eviction event is being dispatched. Prevents handlers from
+    /// re-entering the dictionary and corrupting its state.
+    /// </summary>
+    private void ThrowIfEvicting()
+    {
+        if (_isEvicting)
+            throw new InvalidOperationException(
+                "The dictionary cannot be mutated from within an ItemEvicting or ItemEvicted event handler.");
     }
 
     /// <summary>
@@ -536,6 +574,8 @@ public partial class EvictingDictionary<TKey, TValue>
     /// </remarks>
     private IEnumerable<KeyValuePair<TKey, TValue>> GetOrderedItems()
     {
+        int version = _version;
+
         switch (_evictingPolicy)
         {
             case EvictingDictionaryPolicy.FirstInFirstOut:
@@ -546,6 +586,8 @@ public partial class EvictingDictionary<TKey, TValue>
 
                 foreach (TKey key in _order)
                 {
+                    ThrowIfVersionChanged(version);
+
                     if (_store.TryGetValue(key, out CacheItem? item))
                         yield return new KeyValuePair<TKey, TValue>(key, item.Value);
                 }
@@ -556,9 +598,10 @@ public partial class EvictingDictionary<TKey, TValue>
                 if (_order is null)
                     yield break;
 
-                // MRU: iterate from most recently used (tail) to least (head).
                 for (LinkedListNode<TKey>? node = _order.Last; node is not null; node = node.Previous)
                 {
+                    ThrowIfVersionChanged(version);
+
                     if (_store.TryGetValue(node.Value, out CacheItem? item))
                         yield return new KeyValuePair<TKey, TValue>(node.Value, item.Value);
                 }
@@ -569,11 +612,12 @@ public partial class EvictingDictionary<TKey, TValue>
                 if (_frequencyList is null)
                     yield break;
 
-                // SortedDictionary is already in ascending key order; no secondary sort is required.
                 foreach (KeyValuePair<int, LinkedList<TKey>> freq in _frequencyList)
                 {
                     foreach (TKey key in freq.Value)
                     {
+                        ThrowIfVersionChanged(version);
+
                         if (_store.TryGetValue(key, out CacheItem? item))
                             yield return new KeyValuePair<TKey, TValue>(key, item.Value);
                     }
@@ -584,16 +628,33 @@ public partial class EvictingDictionary<TKey, TValue>
             case EvictingDictionaryPolicy.RandomReplacement:
 #if NETSTANDARD2_0
                 foreach (var pair in _store)
+                {
+                    ThrowIfVersionChanged(version);
                     yield return new KeyValuePair<TKey, TValue>(pair.Key, pair.Value.Value);
+                }
 #else
                 foreach ((TKey key, CacheItem item) in _store)
+                {
+                    ThrowIfVersionChanged(version);
                     yield return new KeyValuePair<TKey, TValue>(key, item.Value);
+                }
 #endif
                 break;
 
             default:
                 throw new InvalidOperationException($"Unknown eviction policy: {_evictingPolicy}");
         }
+    }
+
+    /// <summary>
+    /// Throws <see cref="InvalidOperationException"/> if <paramref name="capturedVersion"/> no longer matches the current
+    /// <see cref="_version"/>, signalling that the dictionary was modified during enumeration.
+    /// </summary>
+    /// <param name="capturedVersion">The version observed at the start of enumeration.</param>
+    private void ThrowIfVersionChanged(int capturedVersion)
+    {
+        if (_version != capturedVersion)
+            throw new InvalidOperationException("Collection was modified; enumeration operation may not execute.");
     }
 
     /// <summary>
@@ -607,8 +668,6 @@ public partial class EvictingDictionary<TKey, TValue>
         if (_order is null || _order.Count == 0)
             throw new InvalidOperationException("No eviction candidate available: the order list is empty.");
 
-        // Walk the list using explicit node references so we can perform O(1) removal and re-insertion
-        // without allocating a snapshot copy via ToList().
         LinkedListNode<TKey>? node = _order.First;
         while (node is not null)
         {
@@ -622,13 +681,12 @@ public partial class EvictingDictionary<TKey, TValue>
             if (!item.SecondChance)
                 return key;
 
-            // Give the item a second chance: clear the flag and cycle it to the tail.
+            // Clock algorithm: clear the reference bit and cycle the item to the tail, giving it one extra pass before eviction.
             item.SecondChance = false;
             _order.Remove(current);
             item.Node = _order.AddLast(key);
         }
 
-        // All items had their second-chance flag set; fall back to the oldest remaining entry.
         if (_order.First is not null)
             return _order.First.Value;
 

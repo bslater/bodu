@@ -21,9 +21,9 @@ public partial class EvictingDictionary<TKey, TValue>
 #endif
     {
         /// <summary>
-        /// Gets the value associated with the cache entry.
+        /// Gets or sets the value associated with the cache entry.
         /// </summary>
-        public TValue Value { get; private set; }
+        public TValue Value { get; set; }
 
         /// <summary>
         /// Gets or sets the linked list node that represents the key in the ordering structure. Used by recency- and access-order-based

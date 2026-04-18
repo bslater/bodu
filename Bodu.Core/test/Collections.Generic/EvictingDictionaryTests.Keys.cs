@@ -91,5 +91,49 @@ namespace Bodu.Collections.Generic
 
             Assert.AreEqual(1, dictionary.Keys.Count);
         }
+
+        /// <summary>
+        /// Verifies that the Keys property returns the same cached instance on successive reads, so callers
+        /// observing only the reference do not pay an allocation per access.
+        /// </summary>
+        [TestMethod]
+        public void Keys_Get_WhenReadTwice_ShouldReturnSameInstance()
+        {
+            var dictionary = new EvictingDictionary<string, int>(3);
+            dictionary.Add("A", 1);
+
+            var first = dictionary.Keys;
+            var second = dictionary.Keys;
+
+            Assert.AreSame(first, second);
+        }
+
+        /// <summary>
+        /// Verifies that the Keys view reflects mutations to the owning dictionary without requiring a fresh property read.
+        /// </summary>
+        [TestMethod]
+        public void Keys_WhenDictionaryIsMutatedAfterRead_ShouldReflectLiveState()
+        {
+            var dictionary = new EvictingDictionary<string, int>(5);
+            dictionary.Add("A", 1);
+
+            var keys = dictionary.Keys;
+            dictionary.Add("B", 2);
+
+            Assert.AreEqual(2, keys.Count);
+            CollectionAssert.Contains(keys.ToList(), "B");
+        }
+
+        /// <summary>
+        /// Verifies that mutating the dictionary through the Keys collection is not supported and throws.
+        /// </summary>
+        [TestMethod]
+        public void Keys_Add_ShouldThrowNotSupportedException()
+        {
+            var dictionary = new EvictingDictionary<string, int>(3);
+            ICollection<string> keys = dictionary.Keys;
+
+            Assert.ThrowsExactly<NotSupportedException>(() => keys.Add("Z"));
+        }
     }
 }

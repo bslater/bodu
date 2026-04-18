@@ -55,5 +55,57 @@ namespace Bodu.Collections.Generic
 
             Assert.IsFalse(enumerator.MoveNext());
         }
+
+        /// <summary>
+        /// Verifies that mutating the dictionary via Add during enumeration invalidates the active enumerator and
+        /// causes the next <c>MoveNext</c> to throw <see cref="InvalidOperationException"/>.
+        /// </summary>
+        [TestMethod]
+        public void GetEnumerator_WhenDictionaryIsMutatedByAddDuringEnumeration_ShouldThrowInvalidOperationException()
+        {
+            var dictionary = new EvictingDictionary<int, int>(10);
+            for (int i = 0; i < 5; i++)
+                dictionary.Add(i, i);
+
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
+            {
+                foreach (KeyValuePair<int, int> kvp in dictionary)
+                    dictionary.Add(kvp.Key + 100, kvp.Value);
+            });
+        }
+
+        /// <summary>
+        /// Verifies that mutating the dictionary via Remove during enumeration invalidates the active enumerator.
+        /// </summary>
+        [TestMethod]
+        public void GetEnumerator_WhenDictionaryIsMutatedByRemoveDuringEnumeration_ShouldThrowInvalidOperationException()
+        {
+            var dictionary = new EvictingDictionary<int, int>(10);
+            for (int i = 0; i < 5; i++)
+                dictionary.Add(i, i);
+
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
+            {
+                foreach (KeyValuePair<int, int> kvp in dictionary)
+                    dictionary.Remove(kvp.Key);
+            });
+        }
+
+        /// <summary>
+        /// Verifies that mutating the dictionary via Clear during enumeration invalidates the active enumerator.
+        /// </summary>
+        [TestMethod]
+        public void GetEnumerator_WhenDictionaryIsClearedDuringEnumeration_ShouldThrowInvalidOperationException()
+        {
+            var dictionary = new EvictingDictionary<int, int>(10);
+            for (int i = 0; i < 3; i++)
+                dictionary.Add(i, i);
+
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
+            {
+                foreach (KeyValuePair<int, int> _ in dictionary)
+                    dictionary.Clear();
+            });
+        }
     }
 }

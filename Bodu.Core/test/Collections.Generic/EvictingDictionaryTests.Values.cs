@@ -107,5 +107,46 @@ namespace Bodu.Collections.Generic
 
             Assert.AreEqual(2, values.Count(v => v == 42));
         }
+
+        /// <summary>
+        /// Verifies that the Values property returns the same cached instance on successive reads.
+        /// </summary>
+        [TestMethod]
+        public void Values_Get_WhenReadTwice_ShouldReturnSameInstance()
+        {
+            var dictionary = new EvictingDictionary<string, int>(3);
+            dictionary.Add("A", 1);
+
+            var first = dictionary.Values;
+            var second = dictionary.Values;
+
+            Assert.AreSame(first, second);
+        }
+
+        /// <summary>
+        /// Verifies that Values.Contains uses the default equality comparer for the value type.
+        /// </summary>
+        [TestMethod]
+        public void Values_Contains_WhenValuePresent_ShouldReturnTrue()
+        {
+            var dictionary = new EvictingDictionary<string, int>(3);
+            dictionary.Add("A", 10);
+            dictionary.Add("B", 20);
+
+            Assert.IsTrue(dictionary.Values.Contains(20));
+            Assert.IsFalse(dictionary.Values.Contains(99));
+        }
+
+        /// <summary>
+        /// Verifies that mutating the dictionary through the Values collection is not supported.
+        /// </summary>
+        [TestMethod]
+        public void Values_Add_ShouldThrowNotSupportedException()
+        {
+            var dictionary = new EvictingDictionary<string, int>(3);
+            ICollection<int> values = dictionary.Values;
+
+            Assert.ThrowsExactly<NotSupportedException>(() => values.Add(42));
+        }
     }
 }
