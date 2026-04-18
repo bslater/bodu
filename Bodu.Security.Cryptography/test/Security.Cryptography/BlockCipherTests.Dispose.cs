@@ -16,8 +16,7 @@ namespace Bodu.Security.Cryptography
         /// <summary>
         /// Enumerates all instance fields in the algorithm and its base types to validate disposal state.
         /// </summary>
-        public static IEnumerable<object[]> GetDisposableFields()
-            => TestHelpers.GetFieldInfoForType<TCipher>(ignore: IgnoreFieldNames.Union(new TTest().GetFieldsToExcludeFromDisposeValidation()).ToArray());
+        public static IEnumerable<object[]> GetDisposableFields() => TestHelpers.GetFieldInfoForType<TCipher>(excludeFileds: "disposed");
 
         /// <summary>
         /// Verifies that writable public properties on a hash algorithm throw an <see cref="ObjectDisposedException" /> when set after the
@@ -81,8 +80,15 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(GetDisposableFields), DynamicDataSourceType.Method)]
         public void Dispose_WhenCalled_ShouldZeroPrivateField(FieldInfo field)
         {
+            if (field is null)
+            {
+                Assert.Inconclusive($"Type '{typeof(TCipher).Name}' has no writable fields - test passes by default.");
+                return;
+            }
+
             using var cipher = CreateBlockCipher();
-            cipher.Encrypt(new byte[ExpectedBlockSize], new byte[ExpectedBlockSize]);
+            var buffer = new byte[cipher.BlockSize];
+            cipher.Encrypt(buffer, buffer);
             cipher.Dispose();
 
             object? value = field.GetValue(cipher);
@@ -97,14 +103,17 @@ namespace Bodu.Security.Cryptography
         /// Verifies that calling <see cref="HashAlgorithm.ComputeHash(byte[], int, int)" /> after disposal throws an <see cref="ObjectDisposedException" />.
         /// </summary>
         [TestMethod]
-        public void Dispose_WhenDecryptCalledAfterDispose_ShouldThrowExactly()
+        [DynamicData(nameof(BlockCipherVariants))]
+        public void Dispose_WhenDecryptCalledAfterDispose_ShouldThrowExactly(TVariant variant)
         {
-            using var cipher = CreateBlockCipher();
+            var specification = this.GetSpecification(variant);
+            using var cipher = CreateBlockCipher(variant);
             cipher.Dispose();
 
+            var buffer = new byte[specification.BlockSize];
             Assert.ThrowsExactly<ObjectDisposedException>(() =>
             {
-                cipher.Decrypt(new byte[ExpectedBlockSize], new byte[ExpectedBlockSize]);
+                cipher.Decrypt(buffer, buffer);
             });
         }
 
@@ -112,18 +121,18 @@ namespace Bodu.Security.Cryptography
         /// Verifies that calling <see cref="HashAlgorithm.ComputeHash(byte[])" /> after disposal throws an <see cref="ObjectDisposedException" />.
         /// </summary>
         [TestMethod]
-        public void Dispose_WhenEncryptCalledAfterDispose_ShouldThrowExactly()
+        [DynamicData(nameof(BlockCipherVariants))]
+        public void Dispose_WhenEncryptCalledAfterDispose_ShouldThrowExactly(TVariant variant)
         {
-            using var cipher = CreateBlockCipher();
+            var specification = this.GetSpecification(variant);
+            using var cipher = CreateBlockCipher(variant);
             cipher.Dispose();
 
+            var buffer = new byte[specification.BlockSize];
             Assert.ThrowsExactly<ObjectDisposedException>(() =>
             {
-                cipher.Encrypt(new byte[ExpectedBlockSize], new byte[ExpectedBlockSize]);
+                cipher.Encrypt(buffer, buffer);
             });
         }
-
-        protected virtual IEnumerable<string> GetFieldsToExcludeFromDisposeValidation() =>
-            Array.Empty<string>();
     }
 }

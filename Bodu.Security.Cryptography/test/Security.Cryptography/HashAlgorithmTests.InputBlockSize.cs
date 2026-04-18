@@ -14,10 +14,12 @@ namespace Bodu.Security.Cryptography
         /// Verifies that <see cref="HashAlgorithm.InputBlockSize" /> returns the expected default block size.
         /// </summary>
         [TestMethod]
-        public void InputBlockSize_ShouldBeExpectedInputBlockSize()
+        [DynamicData(nameof(HashAlgorithmVariants))]
+        public void InputBlockSize_ShouldBeExpectedInputBlockSize(TVariant variant)
         {
-            using var algorithm = this.CreateAlgorithm();
-            Assert.AreEqual(this.ExpectedInputBlockSize, algorithm.InputBlockSize, $"{typeof(TAlgorithm).Name} InputBlockSize should be {this.ExpectedInputBlockSize}.");
+            var specification = GetSpecification(variant);
+            using var algorithm = this.CreateAlgorithm(variant);
+            Assert.AreEqual(specification.InputBlockSize, algorithm.InputBlockSize, $"{typeof(TAlgorithm).Name} InputBlockSize should be {specification.InputBlockSize}.");
         }
     }
 }

@@ -29,6 +29,11 @@
         public Threefish256Cipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
             : base(key, tweak) { }
 
+        /// <summary>
+        /// Length of a Threefish-256 key (bytes).
+        /// </summary>
+        public const int KeySize = 32;
+
         /// <inheritdoc />
         public override int BlockSize => 32;
 

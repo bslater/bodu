@@ -6,7 +6,6 @@
 
 using System;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Bodu.Infrastructure;
@@ -14,15 +13,17 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Security.Cryptography.Extensions
 {
+    /// <summary>
+    /// Tests for the synchronous <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm, byte[])" />
+    /// family — covering byte-array, offset/range, span, memory, and stream overloads.
+    /// </summary>
     public partial class SymmetricAlgorithmExtensionTests
     {
-        // ---------------------------------------------------------------------------------------------------------------
-        // Decrypt(byte[])
-        // ---------------------------------------------------------------------------------------------------------------
+        // ─── Decrypt(byte[]) ──────────────────────────────────────────────────────────────────────
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,byte[])" /> throws
-        /// <see cref="ArgumentNullException" /> when <paramref name="algorithm" /> is <see langword="null" />.
+        /// Verifies that the byte-array overload throws <see cref="ArgumentNullException" /> when
+        /// the algorithm receiver is <see langword="null" />.
         /// </summary>
         [TestMethod]
         public void Decrypt_ByteArray_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
@@ -34,8 +35,8 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,byte[])" /> throws
-        /// <see cref="ArgumentNullException" /> when <paramref name="array" /> is <see langword="null" />.
+        /// Verifies that the byte-array overload throws <see cref="ArgumentNullException" /> when
+        /// the input array is <see langword="null" />.
         /// </summary>
         [TestMethod]
         public void Decrypt_ByteArray_WhenArrayIsNull_ShouldThrowArgumentNullException()
@@ -47,8 +48,8 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,byte[])" /> correctly
-        /// decrypts ciphertext produced by <see cref="SymmetricAlgorithmExtensions.Encrypt(SymmetricAlgorithm,byte[])" />.
+        /// Verifies that the byte-array overload correctly decrypts ciphertext produced by the
+        /// matching <c>Encrypt</c> overload.
         /// </summary>
         [TestMethod]
         public void Decrypt_ByteArray_WhenRoundTripped_ShouldProduceOriginalPlaintext()
@@ -62,13 +63,11 @@ namespace Bodu.Security.Cryptography.Extensions
             CollectionAssert.AreEqual(plainText, decrypted);
         }
 
-        // ---------------------------------------------------------------------------------------------------------------
-        // Decrypt(byte[], int) — from-offset overload
-        // ---------------------------------------------------------------------------------------------------------------
+        // ─── Decrypt(byte[], int) — offset-to-end overload ────────────────────────────────────────
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,byte[],int)" /> throws
-        /// <see cref="ArgumentNullException" /> when <paramref name="array" /> is <see langword="null" />.
+        /// Verifies that the offset overload throws <see cref="ArgumentNullException" /> when the
+        /// input array is <see langword="null" />.
         /// </summary>
         [TestMethod]
         public void Decrypt_ByteArrayOffset_WhenArrayIsNull_ShouldThrowArgumentNullException()
@@ -80,22 +79,8 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,byte[],int)" /> throws
-        /// <see cref="ArgumentOutOfRangeException" /> when <paramref name="offset" /> exceeds the array bounds.
-        /// </summary>
-        [TestMethod]
-        public void Decrypt_ByteArrayOffset_WhenOffsetExceedsBounds_ShouldThrowArgumentOutOfRangeException()
-        {
-            using var algorithm = CreateAlgorithm();
-            byte[] data = new byte[10];
-
-            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-                algorithm.Decrypt(data, 20));
-        }
-
-        /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,byte[],int)" /> throws
-        /// <see cref="ArgumentOutOfRangeException" /> when <paramref name="offset" /> is negative.
+        /// Verifies that the offset overload throws <see cref="ArgumentOutOfRangeException" /> when
+        /// the offset is negative.
         /// </summary>
         [TestMethod]
         public void Decrypt_ByteArrayOffset_WhenOffsetIsNegative_ShouldThrowArgumentOutOfRangeException()
@@ -108,8 +93,22 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,byte[],int)" />
-        /// correctly decrypts from offset zero to the end of the array.
+        /// Verifies that the offset overload throws <see cref="ArgumentOutOfRangeException" /> when
+        /// the offset exceeds the array bounds.
+        /// </summary>
+        [TestMethod]
+        public void Decrypt_ByteArrayOffset_WhenOffsetExceedsBounds_ShouldThrowArgumentOutOfRangeException()
+        {
+            using var algorithm = CreateAlgorithm();
+            byte[] data = new byte[10];
+
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+                algorithm.Decrypt(data, 20));
+        }
+
+        /// <summary>
+        /// Verifies that the offset overload with <c>offset = 0</c> correctly decrypts the full
+        /// array.
         /// </summary>
         [TestMethod]
         public void Decrypt_ByteArrayOffset_WhenOffsetIsZero_ShouldRoundTripCorrectly()
@@ -123,13 +122,11 @@ namespace Bodu.Security.Cryptography.Extensions
             CollectionAssert.AreEqual(plainText, decrypted);
         }
 
-        // ---------------------------------------------------------------------------------------------------------------
-        // Decrypt(byte[], int, int)
-        // ---------------------------------------------------------------------------------------------------------------
+        // ─── Decrypt(byte[], int, int) — offset+count overload ────────────────────────────────────
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,byte[],int,int)" /> throws
-        /// <see cref="ArgumentNullException" /> when <paramref name="array" /> is <see langword="null" />.
+        /// Verifies that the range overload throws <see cref="ArgumentNullException" /> when the
+        /// input array is <see langword="null" />.
         /// </summary>
         [TestMethod]
         public void Decrypt_ByteArrayRange_WhenArrayIsNull_ShouldThrowArgumentNullException()
@@ -141,8 +138,8 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,byte[],int,int)" /> throws
-        /// <see cref="ArgumentOutOfRangeException" /> when <paramref name="offset" /> is negative.
+        /// Verifies that the range overload throws <see cref="ArgumentOutOfRangeException" /> when
+        /// the offset is negative.
         /// </summary>
         [TestMethod]
         public void Decrypt_ByteArrayRange_WhenOffsetIsNegative_ShouldThrowArgumentOutOfRangeException()
@@ -155,8 +152,8 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,byte[],int,int)" /> throws
-        /// <see cref="ArgumentOutOfRangeException" /> when <paramref name="count" /> is negative.
+        /// Verifies that the range overload throws <see cref="ArgumentOutOfRangeException" /> when
+        /// the count is negative.
         /// </summary>
         [TestMethod]
         public void Decrypt_ByteArrayRange_WhenCountIsNegative_ShouldThrowArgumentOutOfRangeException()
@@ -169,8 +166,8 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,byte[],int,int)" /> throws
-        /// <see cref="ArgumentOutOfRangeException" /> when the offset and count combination exceeds the array length.
+        /// Verifies that the range overload throws <see cref="ArgumentOutOfRangeException" /> when
+        /// <c>offset + count</c> exceeds the array length.
         /// </summary>
         [TestMethod]
         public void Decrypt_ByteArrayRange_WhenOffsetPlusCountExceedsLength_ShouldThrowArgumentOutOfRangeException()
@@ -183,8 +180,7 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,byte[],int,int)" />
-        /// correctly decrypts the specified range and round-trips to the original plaintext.
+        /// Verifies that a valid (offset, count) range correctly decrypts the specified slice.
         /// </summary>
         [TestMethod]
         public void Decrypt_ByteArrayRange_WhenValid_ShouldRoundTripCorrectly()
@@ -198,13 +194,11 @@ namespace Bodu.Security.Cryptography.Extensions
             CollectionAssert.AreEqual(plainText, decrypted);
         }
 
-        // ---------------------------------------------------------------------------------------------------------------
-        // Decrypt(ReadOnlySpan<byte>)
-        // ---------------------------------------------------------------------------------------------------------------
+        // ─── Decrypt(ReadOnlySpan<byte>) ──────────────────────────────────────────────────────────
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,ReadOnlySpan{byte})" />
-        /// throws <see cref="ArgumentNullException" /> when <paramref name="algorithm" /> is <see langword="null" />.
+        /// Verifies that the span overload throws <see cref="ArgumentNullException" /> when the
+        /// algorithm receiver is <see langword="null" />.
         /// </summary>
         [TestMethod]
         public void Decrypt_Span_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
@@ -216,8 +210,8 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,ReadOnlySpan{byte})" />
-        /// correctly decrypts span-wrapped ciphertext back to the original plaintext.
+        /// Verifies that the span overload correctly decrypts span-wrapped ciphertext back to the
+        /// original plaintext.
         /// </summary>
         [TestMethod]
         public void Decrypt_Span_WhenRoundTripped_ShouldProduceOriginalPlaintext()
@@ -232,8 +226,8 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,ReadOnlySpan{byte})" />
-        /// produces output identical to the byte-array overload for the same ciphertext input.
+        /// Verifies that the span overload produces output identical to the byte-array overload
+        /// for the same ciphertext input.
         /// </summary>
         [TestMethod]
         public void Decrypt_Span_WhenComparedToByteArrayOverload_ShouldProduceIdenticalOutput()
@@ -248,13 +242,11 @@ namespace Bodu.Security.Cryptography.Extensions
             CollectionAssert.AreEqual(fromArray, fromSpan);
         }
 
-        // ---------------------------------------------------------------------------------------------------------------
-        // Decrypt(ReadOnlyMemory<byte>)
-        // ---------------------------------------------------------------------------------------------------------------
+        // ─── Decrypt(ReadOnlyMemory<byte>) ────────────────────────────────────────────────────────
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,ReadOnlyMemory{byte})" />
-        /// throws <see cref="ArgumentNullException" /> when <paramref name="algorithm" /> is <see langword="null" />.
+        /// Verifies that the memory overload throws <see cref="ArgumentNullException" /> when the
+        /// algorithm receiver is <see langword="null" />.
         /// </summary>
         [TestMethod]
         public void Decrypt_Memory_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
@@ -266,8 +258,8 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,ReadOnlyMemory{byte})" />
-        /// correctly decrypts memory-wrapped ciphertext back to the original plaintext.
+        /// Verifies that the memory overload correctly decrypts memory-wrapped ciphertext back to
+        /// the original plaintext.
         /// </summary>
         [TestMethod]
         public void Decrypt_Memory_WhenRoundTripped_ShouldProduceOriginalPlaintext()
@@ -282,8 +274,8 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,ReadOnlyMemory{byte})" />
-        /// produces output identical to the span overload for the same ciphertext input.
+        /// Verifies that the memory overload produces output identical to the span overload for
+        /// the same ciphertext input.
         /// </summary>
         [TestMethod]
         public void Decrypt_Memory_WhenComparedToSpanOverload_ShouldProduceIdenticalOutput()
@@ -298,13 +290,11 @@ namespace Bodu.Security.Cryptography.Extensions
             CollectionAssert.AreEqual(fromSpan, fromMemory);
         }
 
-        // ---------------------------------------------------------------------------------------------------------------
-        // Decrypt(Stream, Stream) — default buffer size overload
-        // ---------------------------------------------------------------------------------------------------------------
+        // ─── Decrypt(Stream, Stream) — default buffer size overload ───────────────────────────────
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,Stream,Stream)" /> throws
-        /// <see cref="ArgumentNullException" /> when <paramref name="algorithm" /> is <see langword="null" />.
+        /// Verifies that the default-buffer stream overload throws <see cref="ArgumentNullException" />
+        /// when the algorithm receiver is <see langword="null" />.
         /// </summary>
         [TestMethod]
         public void Decrypt_Stream_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
@@ -318,8 +308,8 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,Stream,Stream)" /> throws
-        /// <see cref="ArgumentNullException" /> when <paramref name="sourceStream" /> is <see langword="null" />.
+        /// Verifies that the default-buffer stream overload throws <see cref="ArgumentNullException" />
+        /// when the source stream is <see langword="null" />.
         /// </summary>
         [TestMethod]
         public void Decrypt_Stream_WhenSourceStreamIsNull_ShouldThrowArgumentNullException()
@@ -332,8 +322,8 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,Stream,Stream)" /> throws
-        /// <see cref="ArgumentNullException" /> when <paramref name="targetStream" /> is <see langword="null" />.
+        /// Verifies that the default-buffer stream overload throws <see cref="ArgumentNullException" />
+        /// when the target stream is <see langword="null" />.
         /// </summary>
         [TestMethod]
         public void Decrypt_Stream_WhenTargetStreamIsNull_ShouldThrowArgumentNullException()
@@ -346,8 +336,8 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,Stream,Stream)" />
-        /// correctly decrypts stream content and round-trips to the original plaintext.
+        /// Verifies that the default-buffer stream overload correctly decrypts stream content and
+        /// round-trips to the original plaintext.
         /// </summary>
         [TestMethod]
         public void Decrypt_Stream_WhenRoundTripped_ShouldProduceOriginalPlaintext()
@@ -364,13 +354,11 @@ namespace Bodu.Security.Cryptography.Extensions
             CollectionAssert.AreEqual(plainText, target.ToArray());
         }
 
-        // ---------------------------------------------------------------------------------------------------------------
-        // Decrypt(Stream, Stream, int) — explicit buffer size overload
-        // ---------------------------------------------------------------------------------------------------------------
+        // ─── Decrypt(Stream, Stream, int) — explicit buffer size overload ─────────────────────────
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,Stream,Stream,int)" /> throws
-        /// <see cref="ArgumentNullException" /> when <paramref name="sourceStream" /> is <see langword="null" />.
+        /// Verifies that the buffer-size stream overload throws <see cref="ArgumentNullException" />
+        /// when the source stream is <see langword="null" />.
         /// </summary>
         [TestMethod]
         public void Decrypt_StreamWithBufferSize_WhenSourceStreamIsNull_ShouldThrowArgumentNullException()
@@ -383,8 +371,8 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,Stream,Stream,int)" /> throws
-        /// <see cref="ArgumentOutOfRangeException" /> when <paramref name="bufferSize" /> is zero.
+        /// Verifies that the buffer-size stream overload throws <see cref="ArgumentOutOfRangeException" />
+        /// when the buffer size is zero.
         /// </summary>
         [TestMethod]
         public void Decrypt_StreamWithBufferSize_WhenBufferSizeIsZero_ShouldThrowArgumentOutOfRangeException()
@@ -398,8 +386,8 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithmExtensions.Decrypt(SymmetricAlgorithm,Stream,Stream,int)" />
-        /// correctly decrypts stream data and round-trips to the original plaintext.
+        /// Verifies that the buffer-size stream overload correctly decrypts stream data and
+        /// round-trips to the original plaintext.
         /// </summary>
         [TestMethod]
         public void Decrypt_StreamWithBufferSize_WhenRoundTripped_ShouldProduceOriginalPlaintext()
@@ -414,6 +402,101 @@ namespace Bodu.Security.Cryptography.Extensions
             algorithm.Decrypt(source, target, bufferSize: 64);
 
             CollectionAssert.AreEqual(plainText, target.ToArray());
+        }
+
+        // ─── Stream-shape coverage ────────────────────────────────────────────────────────────────
+        // The following tests exercise the sync decrypt read-accumulation loop against every
+        // test-infrastructure stream shape that doesn't require a CancellationToken (the sync
+        // overloads do not accept one). PaddingMode.None with block-aligned input isolates
+        // stream-delivery behaviour from padding concerns.
+
+        /// <summary>
+        /// Verifies that a <see cref="FixedChunkStream" /> delivering ciphertext 1 byte at a time
+        /// still recovers the original plaintext after decryption.
+        /// </summary>
+        [TestMethod]
+        public void Decrypt_Stream_WhenSourceIsFixedChunkStream_OneBytePerRead_ShouldProduceCorrectResult()
+        {
+            using var algorithm = CreateAlgorithm();
+            algorithm.Padding = PaddingMode.None;
+
+            byte[] plainText = CryptoTestUtilities.ByteSequence64;
+            byte[] cipherText = algorithm.Encrypt(plainText);
+
+            using var input = new FixedChunkStream(cipherText, chunkSize: 1);
+            using var output = new MemoryStream();
+
+            algorithm.Decrypt(input, output, bufferSize: 16);
+
+            CollectionAssert.AreEqual(plainText, output.ToArray(),
+                "Decrypt must recover original plaintext from a 1-byte-per-read ciphertext source.");
+        }
+
+        /// <summary>
+        /// Verifies that a <see cref="FixedChunkStream" /> delivering ciphertext in non-block-aligned
+        /// chunks still recovers the original plaintext after decryption.
+        /// </summary>
+        [TestMethod]
+        public void Decrypt_Stream_WhenSourceIsFixedChunkStream_NonBlockAlignedChunk_ShouldProduceCorrectResult()
+        {
+            using var algorithm = CreateAlgorithm();
+            algorithm.Padding = PaddingMode.None;
+
+            byte[] plainText = CryptoTestUtilities.ByteSequence128;
+            byte[] cipherText = algorithm.Encrypt(plainText);
+
+            using var input = new FixedChunkStream(cipherText, chunkSize: 5);
+            using var output = new MemoryStream();
+
+            algorithm.Decrypt(input, output, bufferSize: 32);
+
+            CollectionAssert.AreEqual(plainText, output.ToArray(),
+                "Decrypt must recover original plaintext from a non-block-aligned chunk ciphertext source.");
+        }
+
+        /// <summary>
+        /// Verifies that a <see cref="NonSeekableStream" /> is accepted, confirming the sync
+        /// decrypt path never calls seek-related members on its source.
+        /// </summary>
+        [TestMethod]
+        public void Decrypt_Stream_WhenSourceIsNonSeekable_ShouldProduceCorrectResult()
+        {
+            using var algorithm = CreateAlgorithm();
+            algorithm.Padding = PaddingMode.None;
+
+            byte[] plainText = CryptoTestUtilities.ByteSequence128;
+            byte[] cipherText = algorithm.Encrypt(plainText);
+
+            using var input = new NonSeekableStream(cipherText);
+            using var output = new MemoryStream();
+
+            algorithm.Decrypt(input, output, bufferSize: 32);
+
+            CollectionAssert.AreEqual(plainText, output.ToArray(),
+                "Decrypt from a NonSeekableStream must recover the original plaintext.");
+        }
+
+        // ─── Error propagation ────────────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Verifies that an <see cref="IOException" /> raised mid-read by a
+        /// <see cref="FaultingStream" /> propagates out of the sync decrypt overload unmodified.
+        /// </summary>
+        [TestMethod]
+        public void Decrypt_Stream_WhenSourceFaultsMidRead_ShouldPropagateIOException()
+        {
+            using var algorithm = CreateAlgorithm();
+            algorithm.Padding = PaddingMode.None;
+
+            byte[] cipherText = algorithm.Encrypt(CryptoTestUtilities.ByteSequence128);
+
+            // Fault after 32 bytes — mid-way through the ciphertext stream.
+            using var input = new FaultingStream(cipherText, throwAfterBytes: 32);
+            using var output = new MemoryStream();
+
+            Assert.ThrowsExactly<IOException>(() =>
+                algorithm.Decrypt(input, output, bufferSize: 16),
+                "Decrypt must propagate IOException from a faulting ciphertext stream.");
         }
     }
 }

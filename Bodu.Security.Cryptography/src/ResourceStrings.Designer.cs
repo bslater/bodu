@@ -61,6 +61,33 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid block size {0}. Size of block must be {1}..
+        /// </summary>
+        internal static string ArgumentException_InvalidBlockLength {
+            get {
+                return ResourceManager.GetString("ArgumentException_InvalidBlockLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid IV size {0}. Size of IV must be {1}..
+        /// </summary>
+        internal static string ArgumentException_InvalidIvLength {
+            get {
+                return ResourceManager.GetString("ArgumentException_InvalidIvLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid tweak size {0}. Size of tweak must be {1}..
+        /// </summary>
+        internal static string ArgumentException_InvalidTweakLength {
+            get {
+                return ResourceManager.GetString("ArgumentException_InvalidTweakLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown CRC crcParameters specified..
         /// </summary>
         internal static string CrcSpecificationNotFound_Unknown {

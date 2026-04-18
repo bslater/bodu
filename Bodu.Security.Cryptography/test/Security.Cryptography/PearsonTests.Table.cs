@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 namespace Bodu.Security.Cryptography
 {
     public partial class PearsonTests
-        : Security.Cryptography.HashAlgorithmTests<PearsonTests, Pearson, SingleTestVariant>
     {
         /// <summary>
         /// Verifies that a valid user-defined table with 256 unique bytes can be assigned successfully.
@@ -17,13 +16,13 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Table_WhenAssignedValidPermutation_ShouldUpdateSuccessfully()
         {
-            var hash = new Pearson();
+            var algorithm = new Pearson();
             byte[] validTable = Enumerable.Range(0, 256).Select(i => (byte)i).ToArray();
 
-            hash.Table = validTable;
+            algorithm.Table = validTable;
 
-            CollectionAssert.AreEqual(validTable, hash.Table);
-            Assert.AreEqual(Pearson.PearsonTableType.UserDefined, hash.TableType);
+            CollectionAssert.AreEqual(validTable, algorithm.Table);
+            Assert.AreEqual(Pearson.PearsonTableType.UserDefined, algorithm.TableType);
         }
 
         /// <summary>
@@ -32,12 +31,12 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Table_WhenAssignedTooShort_ShouldThrowExactly()
         {
-            var hash = new Pearson();
+            var algorithm = new Pearson();
             byte[] invalidTable = Enumerable.Range(0, 100).Select(i => (byte)i).ToArray();
 
             Assert.ThrowsExactly<ArgumentException>(() =>
             {
-                hash.Table = invalidTable;
+                algorithm.Table = invalidTable;
             });
         }
 
@@ -47,12 +46,12 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Table_WhenAssignedWithDuplicates_ShouldThrowExactly()
         {
-            var hash = new Pearson();
+            var algorithm = new Pearson();
             byte[] duplicateTable = Enumerable.Repeat((byte)42, 256).ToArray(); // All elements are the same
 
             Assert.ThrowsExactly<ArgumentException>(() =>
             {
-                hash.Table = duplicateTable;
+                algorithm.Table = duplicateTable;
             });
         }
 
@@ -62,13 +61,13 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Table_WhenModifiedAfterHashing_ShouldThrowExactly()
         {
-            var hash = new Pearson();
-            hash.TransformBlock(new byte[] { 1, 2, 3 }, 0, 3, null, 0);
+            var algorithm = new Pearson();
+            algorithm.TransformBlock(new byte[] { 1, 2, 3 }, 0, 3, null, 0);
 
             byte[] validTable = Enumerable.Range(0, 256).Select(i => (byte)i).ToArray();
             Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
             {
-                hash.Table = validTable;
+                algorithm.Table = validTable;
             });
         }
 
@@ -78,11 +77,11 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Table_WhenAccessed_ShouldReturnCopy()
         {
-            var hash = new Pearson();
-            byte[] table = hash.Table;
+            var algorithm = new Pearson();
+            byte[] table = algorithm.Table;
 
             table[0] ^= 0xFF; // Modify the copy
-            Assert.AreNotEqual(table[0], hash.Table[0], "Modifying the returned table should not affect internal state.");
+            Assert.AreNotEqual(table[0], algorithm.Table[0], "Modifying the returned table should not affect internal state.");
         }
 
         /// <summary>
@@ -93,8 +92,8 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Table_WhenBuiltInPearsonSelected_ShouldBeA256ByteUniquePermutation()
         {
-            using var hash = new Pearson { TableType = Pearson.PearsonTableType.Pearson };
-            byte[] table = hash.Table;
+            using var algorithm = new Pearson { TableType = Pearson.PearsonTableType.Pearson };
+            byte[] table = algorithm.Table;
 
             Assert.AreEqual(256, table.Length, "The Pearson table must be exactly 256 bytes long.");
             Assert.AreEqual(256, table.Distinct().Count(), "The Pearson table must contain 256 unique byte values.");
@@ -108,13 +107,31 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Table_WhenAccessedAfterDispose_ShouldThrowObjectDisposedExceptionWithPearsonTypeName()
         {
-            var hash = new Pearson();
-            hash.Dispose();
+            var algorithm = new Pearson();
+            algorithm.Dispose();
 
-            var ex = Assert.ThrowsExactly<ObjectDisposedException>(() => _ = hash.Table);
+            var ex = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+            {
+                _ = algorithm.Table;
+            });
 
-            Assert.AreEqual(nameof(Pearson), ex.ObjectName);
+            Assert.AreEqual(typeof(Pearson).FullName, ex.ObjectName,
+                $"ObjectDisposedException.ObjectName must match the concrete type name '{typeof(Pearson).FullName}'.");
         }
 
+        [TestMethod]
+        [DynamicData(nameof(HashAlgorithmVariants))]
+        public void TableType_WhenInternallyDefined_ShouldBeValidPermutation(Pearson.PearsonTableType variant)
+        {
+            using var algorithm = CreateAlgorithm(variant);
+            var table = algorithm.Table;
+
+            Assert.AreEqual(256, table.Length,
+                $"{variant}: table must have exactly 256 entries");
+
+            var distinct = table.Distinct().Count();
+            Assert.AreEqual(256, distinct,
+                $"{variant}: table must be a valid permutation (found {distinct} unique values, expected 256)");
+        }
     }
 }

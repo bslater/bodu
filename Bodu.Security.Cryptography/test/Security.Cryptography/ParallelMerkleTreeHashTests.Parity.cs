@@ -1,77 +1,84 @@
-﻿using System;
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ParallelMerkleTreeHashTests.Parity.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Bodu.Security.Cryptography.MerkleTestData;
 
 namespace Bodu.Security.Cryptography
 {
     /// <summary>
-    /// Parity tests that verify <see cref="ParallelMerkleTreeHash"/> produces output that is
-    /// byte-for-byte identical to <see cref="MerkleTreeHash"/> for the same input, block size,
-    /// and fan-out. These tests establish that both implementations share the same tree semantics,
-    /// padding strategy, and combination algorithm.
+    /// Parity tests that verify <see cref="ParallelMerkleTreeHash" /> produces output that is
+    /// byte-for-byte identical to <see cref="MerkleTreeHash" /> for the same input, block size,
+    /// and fan-out.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// These tests establish that both implementations share the same tree semantics, padding
+    /// strategy, and combination algorithm. They live here rather than in
+    /// <see cref="MerkleTreeHashTestsBase{THasher}" /> because they intrinsically need both
+    /// implementation types simultaneously — the base class is generic over a single hasher type.
+    /// </para>
+    /// </remarks>
     public partial class ParallelMerkleTreeHashTests
     {
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // Core parity — sync vs sync
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
         /// Verifies that a single full block produces the same root in both implementations.
         /// </summary>
         [TestMethod]
-        public void Parity_WhenSingleFullBlock_ShouldMatchSequentialResult()
-        {
+        public void Parity_WhenSingleFullBlock_ShouldMatchSequentialResult() =>
             AssertParityWithSequential(MakeData(4), blockSize: 4, fanOut: 2);
-        }
 
         /// <summary>
         /// Verifies that two full blocks produce the same root in both implementations.
         /// </summary>
         [TestMethod]
-        public void Parity_WhenTwoFullBlocks_ShouldMatchSequentialResult()
-        {
+        public void Parity_WhenTwoFullBlocks_ShouldMatchSequentialResult() =>
             AssertParityWithSequential(MakeData(8), blockSize: 4, fanOut: 2);
-        }
 
         /// <summary>
         /// Verifies that a partial tail block is handled identically by both implementations,
         /// confirming that zero-padding is applied consistently.
         /// </summary>
         [TestMethod]
-        public void Parity_WhenPartialTailBlock_ShouldMatchSequentialResult()
-        {
+        public void Parity_WhenPartialTailBlock_ShouldMatchSequentialResult() =>
             AssertParityWithSequential(MakeData(9), blockSize: 4, fanOut: 2);
-        }
 
         /// <summary>
-        /// Verifies parity for a range of input lengths, block sizes, and fan-out values that
-        /// exercise every tree shape: single leaf, exact groups, uneven remainders, and deep trees.
+        /// Verifies parity across a wide range of input lengths, block sizes, and fan-out values —
+        /// exercising every tree shape: single leaf, exact groups, uneven remainders, and deep trees.
         /// </summary>
         [TestMethod]
-        [DataRow(1, 2, 1)]   // single byte — only a tail block
-        [DataRow(4, 2, 1)]   // one-byte input padded into 1 full block
-        [DataRow(4, 2, 4)]   // single exact block
-        [DataRow(4, 2, 5)]   // 1 full + 1 partial
-        [DataRow(4, 2, 8)]   // 2 exact blocks
-        [DataRow(4, 2, 9)]   // 2 full + 1 partial (remainder at level 1)
-        [DataRow(4, 2, 12)]   // 3 exact blocks (2+1 at level 1)
+        [DataRow(1, 2, 1)]    // single byte — only a tail block
+        [DataRow(4, 2, 1)]    // one byte zero-padded into one full leaf
+        [DataRow(4, 2, 4)]    // exactly one block
+        [DataRow(4, 2, 5)]    // 1 full + 1 partial
+        [DataRow(4, 2, 8)]    // 2 exact blocks
+        [DataRow(4, 2, 9)]    // 2 full + 1 partial (remainder at level 1)
+        [DataRow(4, 2, 12)]   // 3 exact blocks (2 + 1 remainder at level 1)
         [DataRow(4, 2, 16)]   // perfect 4-leaf binary tree
-        [DataRow(4, 2, 17)]   // 4 full + 1 partial (complex remainder propagation)
+        [DataRow(4, 2, 17)]   // 4 full + 1 partial — complex remainder propagation
         [DataRow(4, 3, 12)]   // 3 leaves in one fanOut=3 group
         [DataRow(4, 3, 13)]   // 3 full + 1 partial with fanOut=3
         [DataRow(4, 4, 16)]   // 4 leaves in one fanOut=4 group
         [DataRow(8, 2, 25)]   // prime length with blockSize=8
-        [DataRow(16, 3, 100)]  // larger blocks, multi-level tree
+        [DataRow(16, 3, 100)] // larger blocks, multi-level tree
         public void Parity_WhenVariousConfigurationsUsed_ShouldMatchSequentialResult(
-            int blockSize, int fanOut, int dataLength)
-        {
+            int blockSize, int fanOut, int dataLength) =>
             AssertParityWithSequential(MakeData(dataLength), blockSize, fanOut);
-        }
 
-        // -----------------------------------------------------------------------------------------
-        // Parity — multi-use
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
+        // Multi-use — parity preserved across repeated calls
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
         /// Verifies that a reused parallel instance produces the same root as a fresh sequential
@@ -89,8 +96,8 @@ namespace Bodu.Security.Cryptography
                 MakeData(8),
                 MakeData(9),
                 MakeData(12),
-                MakeData(4),   // same as first — ensures no contamination from longer runs
-			};
+                MakeData(4), // repeat of first — confirms no contamination from longer runs
+            };
 
             using var parallel = new ParallelMerkleTreeHash(Factory, blockSize, fanOut);
 
@@ -106,13 +113,14 @@ namespace Bodu.Security.Cryptography
             }
         }
 
-        // -----------------------------------------------------------------------------------------
-        // Parity — async vs sequential
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
+        // Async parity
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
-        /// Verifies that ComputeHashAsync produces the same result as the sequential
-        /// <see cref="MerkleTreeHash"/> implementation for data delivered via a MemoryStream.
+        /// Verifies that <c>ComputeHashAsync</c> produces the same result as the sequential
+        /// <see cref="MerkleTreeHash" /> implementation for data delivered via a
+        /// <see cref="MemoryStream" />.
         /// </summary>
         [TestMethod]
         [DataRow(4, 2, 8)]
@@ -134,13 +142,13 @@ namespace Bodu.Security.Cryptography
                 $"Async parity mismatch: blockSize={blockSize}, fanOut={fanOut}, length={dataLength}");
         }
 
-        // -----------------------------------------------------------------------------------------
-        // Parity — with per-call diagnostics
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
+        // Diagnostics — must not perturb the result
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
-        /// Verifies that attaching a <see cref="MerkleTreeDiagnostics"/> instance per call does not
-        /// alter the root hash compared to the sequential reference implementation.
+        /// Verifies that attaching a <see cref="MerkleTreeDiagnostics" /> instance to the parallel
+        /// hasher does not alter the root compared to the sequential reference.
         /// </summary>
         [TestMethod]
         [DataRow(4, 2, 8)]
@@ -162,36 +170,39 @@ namespace Bodu.Security.Cryptography
                 "Diagnostics must not affect the computed root hash.");
         }
 
-        // -----------------------------------------------------------------------------------------
-        // Parity — large input
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
+        // Large-input parity
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
-        /// Verifies parity between both implementations for a large, intentionally uneven input
-        /// that forces multi-level tree reduction with a padded tail block.
+        /// Verifies parity for a large, intentionally uneven input that forces multi-level tree
+        /// reduction with a padded tail block.
         /// </summary>
+        /// <remarks>
+        /// 10,007 bytes at <c>blockSize=256</c>: 39 full blocks plus a 23-byte tail. With
+        /// <c>fanOut=4</c> this produces a 3-level tree: 40 → 10 → 3 → 1 root.
+        /// </remarks>
         [TestMethod]
-        public void Parity_WhenLargeUnevenInput_ShouldMatchSequentialResult()
-        {
-            // 10,007 bytes at blockSize=256: 39 full blocks + 1 tail block of 23 bytes.
-            // fanOut=4 produces a 3-level tree: 40 → 10 → 3 → 1 root.
+        public void Parity_WhenLargeUnevenInput_ShouldMatchSequentialResult() =>
             AssertParityWithSequential(MakeData(10_007), blockSize: 256, fanOut: 4);
-        }
 
         /// <summary>
-        /// Verifies parity for an input whose length is an exact multiple of blockSize.
+        /// Verifies parity for an input whose length is an exact multiple of <c>blockSize</c> but
+        /// whose leaf count (17, prime) produces uneven groups at every level with <c>fanOut=3</c>.
         /// </summary>
         [TestMethod]
-        public void Parity_WhenInputIsExactMultipleOfBlockSize_ShouldMatchSequentialResult()
-        {
-            // 17 leaves (prime) with fanOut=3 produces uneven groups at every level.
+        public void Parity_WhenInputIsExactMultipleOfBlockSize_ShouldMatchSequentialResult() =>
             AssertParityWithSequential(MakeData(64 * 17), blockSize: 64, fanOut: 3);
-        }
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // Helper
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
+        /// <summary>
+        /// Computes the root via <see cref="MerkleTreeHash" /> (the reference implementation) and
+        /// asserts that <see cref="ParallelMerkleTreeHash" /> produces a byte-identical result for
+        /// the same input and configuration.
+        /// </summary>
         private static void AssertParityWithSequential(byte[] data, int blockSize, int fanOut)
         {
             using var sequential = new MerkleTreeHash(Factory, blockSize, fanOut);

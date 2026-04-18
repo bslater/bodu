@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FNV.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -78,13 +78,13 @@ namespace Bodu.Security.Cryptography
             this.prime = prime;
             this.offsetBasis = this.workingHash = offsetBasis;
             this.useFnv1a = useFnv1a;
+            this.AlgorithmName = $"FNV-{(this.useFnv1a ? "1a" : "1")}-{this.HashSizeValue}";
         }
 
         /// <summary>
         /// Gets the algorithm name in the form <c>FNV-{variant}-{bits}</c>, e.g. <c>FNV-1-32</c> or <c>FNV-1a-64</c>.
         /// </summary>
-        public string AlgorithmName
-            => $"FNV-{(this.useFnv1a ? "1a" : "1")}-{this.HashSizeValue}";
+        public readonly string AlgorithmName;
 
         /// <inheritdoc />
         public override bool CanReuseTransform => true;
@@ -119,6 +119,7 @@ namespace Bodu.Security.Cryptography
                 CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
                 this.workingHash = 0;
+                this.HashSizeValue = 0;
             }
 
             this.disposed = true;

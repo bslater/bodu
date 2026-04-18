@@ -14,10 +14,16 @@ namespace Bodu.Security.Cryptography
         : Security.Cryptography.FletcherTests<Fletcher64Tests, Fletcher64>
     {
         /// <inheritdoc />
-        protected override int ExpectedInputBlockSize => 4;
-
-        /// <inheritdoc />
-        protected override int ExpectedOutputBlockSize => 4;
+        protected override HashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => new()
+        {
+            HashSize = 64,
+            InputBlockSize = 4,
+            OutputBlockSize = 4,
+            IsStateless = false,
+            LongInputLength = 200,
+            MinNonZeroBytesForLongInput = 4,   // 8 output bytes; both sum1 and sum2 should be non-zero for varied input
+            BoundaryLengths = [4, 16, 32, 64],
+        };
 
         /// <inheritdoc />
         protected override Fletcher64 CreateAlgorithm() => new Fletcher64();
@@ -26,16 +32,16 @@ namespace Bodu.Security.Cryptography
 
         protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
         {
-            "0000000000000000",
-            "0000000000000000",
-            "0000010000000100",
-            "0002010000020100",
-            "0302010003020100",
-            "0604020403020104",
-            "0604070403020604",
-            "060A070403080604",
-            "0D0A07040A080604",
-            "17120D100A08060C",
+            "0000000000000000",  // []
+            "0000000000000000",  // [0x00]
+            "0000010000000100",  // [0x00, 0x01]
+            "0002010000020100",  // [0x00, 0x01, 0x02]
+            "0302010003020100",  // [0x00, 0x01, 0x02, 0x03]
+            "0604020403020104",  // [0x00, 0x01, 0x02, 0x03, 0x04]
+            "0604070403020604",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05]
+            "060A070403080604",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
+            "0D0A07040A080604",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]
+            "17120D100A08060C",  // ...
             "171216100A080F0C",
             "171C16100A120F0C",
             "221C161015120F0C",

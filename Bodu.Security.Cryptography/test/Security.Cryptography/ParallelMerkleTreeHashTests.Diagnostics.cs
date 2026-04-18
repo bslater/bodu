@@ -1,15 +1,39 @@
-﻿using System;
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ParallelMerkleTreeHashTests.Diagnostics.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Bodu.Security.Cryptography.MerkleTestData;
 
 namespace Bodu.Security.Cryptography
 {
+    /// <summary>
+    /// Tests for the <see cref="MerkleTreeDiagnostics" /> capture and reporting facility — a
+    /// feature exposed only by <see cref="ParallelMerkleTreeHash" /> that records every node
+    /// produced during a computation so callers can inspect tree shape, validate hashes, and
+    /// render a human-readable trace.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Scenarios covered here fall into seven groups: node-count and level-structure recording,
+    /// leaf vs internal node classification, index ordering, root exposure, child-hash accuracy,
+    /// structural validation (<c>Validate</c>), and textual output (<c>WriteTo</c>). Tests for
+    /// per-call isolation and computation-result invariance under diagnostic attachment live in
+    /// <c>ParallelMerkleTreeHashTests.ComputeHash.cs</c> and <c>ParallelMerkleTreeHashTests.Parity.cs</c>
+    /// respectively.
+    /// </para>
+    /// </remarks>
     public partial class ParallelMerkleTreeHashTests
     {
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // Recording — node counts and level structure
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
         /// Verifies that after a computation with two exact blocks and fanOut=2, exactly two leaf
@@ -82,8 +106,8 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that the root property returns the node at the highest recorded level and that
-        /// its hash matches the value returned by ComputeHash.
+        /// Verifies that the <c>Root</c> property returns the node at the highest recorded level
+        /// and that its hash matches the value returned by <c>ComputeHash</c>.
         /// </summary>
         [TestMethod]
         public void Diagnostics_WhenComputationComplete_ShouldExposeRootNodeAtHighestLevel()
@@ -99,7 +123,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that GetLevelCount returns the correct number of levels for a two-level tree.
+        /// Verifies that <c>GetLevelCount</c> returns the correct number of levels for a two-level tree.
         /// </summary>
         [TestMethod]
         public void Diagnostics_WhenTwoLevelTreeProduced_ShouldReturnCorrectLevelCount()
@@ -113,7 +137,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that GetLevel returns an empty list for a level that does not exist.
+        /// Verifies that <c>GetLevel</c> returns an empty list for a level that does not exist.
         /// </summary>
         [TestMethod]
         public void Diagnostics_WhenLevelDoesNotExist_ShouldReturnEmptyList()
@@ -126,7 +150,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that passing null as the diagnostics argument records nothing.
+        /// Verifies that a diagnostics instance detached from any call records no nodes.
         /// </summary>
         [TestMethod]
         public void Diagnostics_WhenNullPassedPerCall_ShouldNotRecordAnyNodes()
@@ -139,9 +163,9 @@ namespace Bodu.Security.Cryptography
                 "A detached diagnostics instance must record nothing.");
         }
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // Child hash accuracy
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
         /// Verifies that the child hashes stored in an internal diagnostic node exactly match the
@@ -163,12 +187,13 @@ namespace Bodu.Security.Cryptography
                     $"Child hash {i} does not match leaf {i}.");
         }
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // Validate
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
-        /// Verifies that Validate returns true and produces no errors after a correctly computed tree.
+        /// Verifies that <c>Validate</c> returns <see langword="true" /> and produces no errors
+        /// after a correctly computed tree.
         /// </summary>
         [TestMethod]
         public void Diagnostics_Validate_WhenTreeIsCorrect_ShouldReturnTrueWithNoErrors()
@@ -184,7 +209,8 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Validate with a null factory throws <see cref="ArgumentNullException"/>.
+        /// Verifies that <c>Validate</c> with a <see langword="null" /> factory throws
+        /// <see cref="ArgumentNullException" />.
         /// </summary>
         [TestMethod]
         public void Diagnostics_Validate_WhenFactoryIsNull_ShouldThrowExactly()
@@ -200,8 +226,8 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Validate returns false and reports errors when an internal node hash is
-        /// corrupted after the computation.
+        /// Verifies that <c>Validate</c> returns <see langword="false" /> and reports errors when
+        /// an internal node hash is corrupted after the computation.
         /// </summary>
         [TestMethod]
         public void Diagnostics_Validate_WhenNodeHashCorrupted_ShouldReturnFalseWithErrors()
@@ -220,8 +246,8 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Validate passes for a tree with three leaves and an uneven remainder,
-        /// confirming that single-child internal nodes are correctly handled.
+        /// Verifies that <c>Validate</c> passes for a tree with three leaves and an uneven
+        /// remainder, confirming that single-child internal nodes are correctly handled.
         /// </summary>
         [TestMethod]
         public void Diagnostics_Validate_WhenTreeHasUnevenRemainder_ShouldPassValidation()
@@ -234,12 +260,13 @@ namespace Bodu.Security.Cryptography
             Assert.IsTrue(valid, string.Join("; ", errors));
         }
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // WriteTo
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
-        /// Verifies that WriteTo with a null writer throws <see cref="ArgumentNullException"/>.
+        /// Verifies that <c>WriteTo</c> with a <see langword="null" /> writer throws
+        /// <see cref="ArgumentNullException" />.
         /// </summary>
         [TestMethod]
         public void Diagnostics_WriteTo_WhenWriterIsNull_ShouldThrowExactly()
@@ -255,7 +282,8 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that WriteTo produces output that references at least one node hash and the root.
+        /// Verifies that <c>WriteTo</c> produces output that references at least one node hash and
+        /// the root.
         /// </summary>
         [TestMethod]
         public void Diagnostics_WriteTo_WhenTreeIsComplete_ShouldProduceNonEmptyOutput()
@@ -274,8 +302,8 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that WriteTo with a non-null factory appends a validation summary that
-        /// confirms the tree is valid.
+        /// Verifies that <c>WriteTo</c> with a non-<see langword="null" /> factory appends a
+        /// validation summary that confirms the tree is valid.
         /// </summary>
         [TestMethod]
         public void Diagnostics_WriteTo_WhenFactoryProvided_ShouldAppendValidationSummary()
@@ -291,12 +319,12 @@ namespace Bodu.Security.Cryptography
                 "WriteTo output should contain a PASS validation summary.");
         }
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // GetAllNodes ordering
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
-        /// Verifies that GetAllNodes returns nodes in level-ascending, index-ascending order.
+        /// Verifies that <c>GetAllNodes</c> returns nodes in level-ascending, index-ascending order.
         /// </summary>
         [TestMethod]
         public void Diagnostics_GetAllNodes_WhenCalled_ShouldReturnNodesSortedByLevelThenIndex()
@@ -316,12 +344,13 @@ namespace Bodu.Security.Cryptography
             }
         }
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // Root / GetLevelCount before computation
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
-        /// Verifies that the Root property on a freshly constructed diagnostics instance is null.
+        /// Verifies that the <c>Root</c> property on a freshly constructed diagnostics instance
+        /// is <see langword="null" />.
         /// </summary>
         [TestMethod]
         public void Diagnostics_Root_WhenNoNodesRecorded_ShouldBeNull()
@@ -330,7 +359,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that GetLevelCount returns zero when no nodes have been recorded.
+        /// Verifies that <c>GetLevelCount</c> returns zero when no nodes have been recorded.
         /// </summary>
         [TestMethod]
         public void Diagnostics_GetLevelCount_WhenNoNodesRecorded_ShouldReturnZero()
@@ -338,9 +367,9 @@ namespace Bodu.Security.Cryptography
             Assert.AreEqual(0, new MerkleTreeDiagnostics().GetLevelCount());
         }
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // Per-call isolation — multi-use with diagnostics
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
         /// Verifies that supplying a fresh diagnostics instance per call results in each instance

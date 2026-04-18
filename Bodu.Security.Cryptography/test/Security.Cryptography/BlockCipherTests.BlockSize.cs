@@ -9,13 +9,22 @@ namespace Bodu.Security.Cryptography
 {
     public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     {
+        /// <summary>
+        /// Verifies that <see cref="IBlockCipher.BlockSize" /> returns the value declared in the
+        /// <see cref="BlockCipherSpecification" /> for the given variant.
+        /// </summary>
+        /// <param name="variant">The cipher variant that determines the expected block size.</param>
         [TestMethod]
-        public void BlockSize_WhenAccessed_ShouldReturnExpected()
+        [DynamicData(nameof(BlockCipherVariants))]
+        public void BlockSize_WhenAccessed_ShouldReturnExpected(TVariant variant)
         {
-            var engine = CreateBlockCipher();
-            var actual = engine.BlockSize;
+            var specification = this.GetSpecification(variant);
+            using var engine = this.CreateBlockCipher(variant);
 
-            Assert.AreEqual(ExpectedBlockSize, actual);
+            Assert.AreEqual(
+                specification.BlockSize,
+                engine.BlockSize,
+                $"[{variant}] Expected BlockSize of {specification.BlockSize} bytes but got {engine.BlockSize}.");
         }
     }
 }

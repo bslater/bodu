@@ -1,4 +1,4 @@
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
     using System.Runtime.InteropServices;
     using System.Security.Cryptography;
@@ -72,6 +72,7 @@ namespace Bodu.Security.Cryptography
                 CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
                 this.workingHash = 0;
+                this.HashSizeValue = 0;
             }
 
             this.disposed = true;

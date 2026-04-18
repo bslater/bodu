@@ -185,6 +185,7 @@ namespace Bodu.Infrastructure
                 CryptographicOperations.ZeroMemory(HashValue);
                 HashValue = null;
                 this.hashValue = 0;
+                this.HashSizeValue = 0;
                 this.bytesProcessed = 0;
                 InitializeCallCount = HashCoreCallCount = HashAccessCount = HashCoreSpanCallCount =
                     HashFinalCallCount = HashSizeAccessCount = TryHashFinalCallCount = 0;

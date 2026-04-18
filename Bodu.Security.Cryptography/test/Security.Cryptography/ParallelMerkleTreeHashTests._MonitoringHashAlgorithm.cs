@@ -1,16 +1,24 @@
-﻿using System;
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ParallelMerkleTreeHashTests.MonitoringHashAlgorithm.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System;
 using System.Collections.Concurrent;
 using System.Security.Cryptography;
 using System.Threading;
 using Bodu.Infrastructure;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Bodu.Security.Cryptography.MerkleTestData;
 
 namespace Bodu.Security.Cryptography
 {
     /// <summary>
-    /// Tests that validate the exact invocation pattern of <see cref="MonitoringHashAlgorithm"/>
-    /// within <see cref="ParallelMerkleTreeHash"/>, verifying which <see cref="HashAlgorithm"/>
-    /// methods are called, how many times, with how many bytes, and that the incremental byte sums
-    /// accumulate to the correct hash values.
+    /// Tests that validate the exact invocation pattern of <see cref="MonitoringHashAlgorithm" />
+    /// within <see cref="ParallelMerkleTreeHash" />, verifying which <see cref="HashAlgorithm" />
+    /// methods are called, how many times, with how many bytes, and that the incremental byte
+    /// sums accumulate to the correct hash values.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -18,36 +26,37 @@ namespace Bodu.Security.Cryptography
     /// <list type="bullet">
     ///   <item>
     ///     <b>Leaf hashers</b> are created by <c>HashSpan</c>, which calls
-    ///     <see cref="HashAlgorithm.TryComputeHash"/>. The runtime dispatches through
+    ///     <see cref="HashAlgorithm.TryComputeHash" />. The runtime dispatches through
     ///     <c>HashCore(ReadOnlySpan&lt;byte&gt;)</c> then <c>TryHashFinal</c>. The <c>HashSize</c>
     ///     property is accessed once to size the result buffer. <c>HashFinal</c> and
     ///     <c>HashCore(byte[], int, int)</c> are never called.
     ///   </item>
     ///   <item>
     ///     <b>Internal node hashers</b> are created by <c>CombineAndHash</c>, which calls
-    ///     <c>TransformBlock</c> for each non-last child and <c>TransformFinalBlock</c> for the last.
-    ///     Both dispatch through <c>HashCore(byte[], int, int)</c>. <c>TransformFinalBlock</c>
-    ///     additionally calls <c>HashFinal</c>, and <c>hasher.Hash</c> is read once after that.
-    ///     <c>TryHashFinal</c> and <c>HashCore(ReadOnlySpan&lt;byte&gt;)</c> are never called.
+    ///     <c>TransformBlock</c> for each non-last child and <c>TransformFinalBlock</c> for the
+    ///     last. Both dispatch through <c>HashCore(byte[], int, int)</c>.
+    ///     <c>TransformFinalBlock</c> additionally calls <c>HashFinal</c>, and <c>hasher.Hash</c>
+    ///     is read once after that. <c>TryHashFinal</c> and <c>HashCore(ReadOnlySpan&lt;byte&gt;)</c>
+    ///     are never called.
     ///   </item>
     /// </list>
     /// </para>
     /// <para>
-    /// <b>Counter safety:</b> <see cref="MonitoringHashAlgorithm.Dispose"/> zeroes all counters
-    /// before <c>DisposeCalled</c> fires. All counter captures therefore happen inside event handlers
-    /// that fire during the computation — <c>TryHashFinalCalled</c> for leaf hashers and
+    /// <b>Counter safety:</b> <see cref="MonitoringHashAlgorithm.Dispose" /> zeroes all counters
+    /// before <c>DisposeCalled</c> fires. All counter captures therefore happen inside event
+    /// handlers that fire during the computation — <c>TryHashFinalCalled</c> for leaf hashers and
     /// <c>HashFinalCalled</c> for internal node hashers — where the instance is still live.
     /// </para>
     /// <para>
     /// <b>Thread safety:</b> level workers run concurrently, so all accumulation uses
-    /// <see cref="Interlocked"/> operations.
+    /// <see cref="Interlocked" /> operations.
     /// </para>
     /// </remarks>
     public partial class ParallelMerkleTreeHashTests
     {
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // Factory call count — total instances created equals leaves + internal nodes
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
         /// Verifies that the factory is called exactly once per leaf when a single-block input
@@ -116,14 +125,14 @@ namespace Bodu.Security.Cryptography
                 "Three blocks with fanOut=2 require 3 leaf + 3 internal hashers (6 total).");
         }
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // Path discrimination — leaf hashers use the span path exclusively
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
         /// Verifies that leaf hashers invoke <c>HashCore(ReadOnlySpan&lt;byte&gt;)</c> and
         /// <c>TryHashFinal</c>, confirming that <c>HashSpan</c> routes through
-        /// <see cref="HashAlgorithm.TryComputeHash"/>.
+        /// <see cref="HashAlgorithm.TryComputeHash" />.
         /// </summary>
         [TestMethod]
         public void MonitoringAlgorithm_LeafHashers_ShouldUseSpanCoreAndTryHashFinalPath()
@@ -199,9 +208,9 @@ namespace Bodu.Security.Cryptography
                 "Leaf hashers must not access the Hash property; TryComputeHash writes to the span.");
         }
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // Path discrimination — internal node hashers use the array path exclusively
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
         /// Verifies that internal node hashers invoke <c>HashCore(byte[], int, int)</c> and
@@ -289,9 +298,9 @@ namespace Bodu.Security.Cryptography
                 "Internal node hashers must not access HashSize; they have no result buffer to allocate.");
         }
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // BytesProcessed — leaf hashers process exactly blockSize bytes
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
         /// Verifies that each leaf hasher processes exactly <c>blockSize</c> bytes, confirming
@@ -301,7 +310,7 @@ namespace Bodu.Security.Cryptography
         [DataRow(4, 2, 8, 4)]   // 2 full blocks — both leaves process 4 bytes
         [DataRow(4, 2, 5, 4)]   // 1 full + 1 partial (padded) — both leaves process 4 bytes
         [DataRow(4, 2, 1, 4)]   // single-byte input padded to 4 — leaf processes 4 bytes
-        [DataRow(8, 2, 17, 8)]   // 2 full + 1 partial padded to 8
+        [DataRow(8, 2, 17, 8)]  // 2 full + 1 partial padded to 8
         public void MonitoringAlgorithm_LeafHashers_ShouldEachProcessExactlyBlockSizeBytes(
             int blockSize, int fanOut, int dataLength, int expectedLeafBytes)
         {
@@ -324,14 +333,14 @@ namespace Bodu.Security.Cryptography
                     $"(blockSize={blockSize}, dataLength={dataLength}).");
         }
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // BytesProcessed — internal hashers process exactly (childCount × hashOutputSize) bytes
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
         /// Verifies that each internal node hasher processes exactly the number of bytes equal to
         /// its child count multiplied by the hash output size (4 bytes for
-        /// <see cref="MonitoringHashAlgorithm"/>), confirming that child hashes are fed in full
+        /// <see cref="MonitoringHashAlgorithm" />), confirming that child hashes are fed in full
         /// without truncation or padding.
         /// </summary>
         [TestMethod]
@@ -395,9 +404,9 @@ namespace Bodu.Security.Cryptography
             Assert.AreEqual(2 * hashOutputSize, sorted[2], "Third internal should be 8 bytes (two children).");
         }
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // HashCoreCallCount per internal hasher — equals child count (fanOut or remainder size)
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
         /// Verifies that an internal hasher combining a full fan-out group calls
@@ -431,9 +440,9 @@ namespace Bodu.Security.Cryptography
                 $"Internal hasher must call HashCore exactly {fanOut} times (once per child).");
         }
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // InitializeCallCount — each instance starts with exactly one Initialize call
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
         /// Verifies that each hasher instance records exactly one <c>Initialize</c> call,
@@ -467,9 +476,9 @@ namespace Bodu.Security.Cryptography
                     "Every hasher instance must call Initialize exactly once (from the constructor).");
         }
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // Incremental sum correctness — byte accumulation matches expected root
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
         /// Verifies that the hash values produced by the level workers — captured via
@@ -478,8 +487,8 @@ namespace Bodu.Security.Cryptography
         /// at every stage is correct.
         /// </summary>
         [TestMethod]
-        [DataRow(4, 2, 8)]  // 2 full blocks
-        [DataRow(4, 2, 5)]  // 1 full + 1 partial
+        [DataRow(4, 2, 8)]   // 2 full blocks
+        [DataRow(4, 2, 5)]   // 1 full + 1 partial
         [DataRow(4, 2, 12)]  // 3 full blocks (uneven reduction)
         [DataRow(4, 3, 12)]  // 3 full blocks, single group with fanOut=3
         [DataRow(4, 2, 16)]  // 4 full blocks (perfect binary tree)
@@ -527,11 +536,9 @@ namespace Bodu.Security.Cryptography
                 {
                     var m = (MonitoringHashAlgorithm)sender!;
                     // At this point, BytesProcessed == blockSize and hashValue == sum of block bytes.
-                    // We don't have direct access to hashValue (private), but we can infer it:
-                    // sum = BytesProcessed contributes 0 for padding, so read the sum from
-                    // the event context. The captured BytesProcessed IS the number of bytes fed.
-                    // The actual hash value will be visible in the root hash comparison below.
-                    capturedLeafHashes.Add((uint)m.BytesProcessed); // placeholder for structure check
+                    // hashValue is private, so we capture BytesProcessed as a structure check and
+                    // verify the root-level sum independently below.
+                    capturedLeafHashes.Add((uint)m.BytesProcessed);
                 };
 
                 algo.HashFinalCalled += (sender, _) =>

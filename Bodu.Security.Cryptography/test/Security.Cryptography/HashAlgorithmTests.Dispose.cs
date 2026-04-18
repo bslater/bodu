@@ -6,28 +6,58 @@ namespace Bodu.Security.Cryptography
 {
     public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     {
-        private static string[] IgnoreFieldNames => new[]
-                {
-            "HashSizeValue",
-            "State",
-            "_disposed",
-            "disposed",
-        };
-
         /// <summary>
-        /// Enumerates all instance fields in the algorithm and its base types to validate disposal state.
+        /// Verifies that readable public properties on a hash algorithm throw an <see cref="ObjectDisposedException" /> when
+        /// accessed after the algorithm instance has been disposed.
         /// </summary>
-        public static IEnumerable<object[]> GetDisposableFields()
-            => TestHelpers.GetFieldInfoForType<TAlgorithm>(ignore: IgnoreFieldNames.Union(new TTest().GetFieldsToExcludeFromDisposeValidation()).ToArray());
-
-        /// <summary>
-        /// Verifies that writable public properties on a hash algorithm throw an <see cref="ObjectDisposedException" /> when set after the
-        /// algorithm instance has been disposed.
-        /// </summary>
-        /// <param name="property">The property to test for post-disposal access.</param>
+        /// <param name="property">The property to test for post-disposal read access.</param>
         /// <remarks>
-        /// This test uses reflection to reassign the property's current hashValue after calling <see cref="HashAlgorithm.Dispose" />. This
-        /// ensures concrete <see cref="HashAlgorithm" /> implementations enforce correct disposal behavior.
+        /// This test uses reflection to invoke each property getter after calling <see cref="HashAlgorithm.Dispose" />. This
+        /// ensures concrete <see cref="HashAlgorithm" /> implementations enforce correct disposal behaviour on all readable
+        /// properties, and that the thrown <see cref="ObjectDisposedException" /> correctly identifies the disposed type.
+        /// </remarks>
+        [TestMethod]
+        [DynamicData(nameof(GetReadableProperties), DynamicDataSourceType.Method)]
+        public void Dispose_WhenReadingProperty_ShouldThrowExactly(PropertyInfo property)
+        {
+            if (property is null)
+            {
+                Assert.Inconclusive($"Type '{typeof(TAlgorithm).Name}' has no readable properties - test passes by default.");
+                return;
+            }
+
+            using var algorithm = this.CreateAlgorithm();
+            algorithm.Dispose();
+
+            try
+            {
+                _ = property.GetValue(algorithm);
+                Assert.Fail($"Expected ObjectDisposedException when reading property '{property.Name}' after disposal.");
+            }
+            catch (TargetInvocationException tie) when (tie.InnerException is ObjectDisposedException ex)
+            {
+                // ✅ Expected: disposed object should not allow property reads
+                Assert.AreEqual(
+                    typeof(TAlgorithm).FullName,
+                    ex.ObjectName,
+                    $"ObjectDisposedException.ObjectName must match the concrete type name '{typeof(TAlgorithm).FullName}'.");
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"Unexpected exception when reading property '{property.Name}' after disposal: {ex.GetType().Name} - {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Verifies that writable public properties on a hash algorithm throw an <see cref="ObjectDisposedException" /> when
+        /// assigned after the algorithm instance has been disposed.
+        /// </summary>
+        /// <param name="property">The property to test for post-disposal write access.</param>
+        /// <remarks>
+        /// This test uses reflection to read each property's current value before disposal, then attempts to reassign that
+        /// same value after calling <see cref="HashAlgorithm.Dispose" />. This ensures concrete <see cref="HashAlgorithm" />
+        /// implementations enforce correct disposal behaviour on all writable properties, and that the thrown
+        /// <see cref="ObjectDisposedException" /> correctly identifies the disposed type.
         /// </remarks>
         [TestMethod]
         [DynamicData(nameof(GetWritableProperties), DynamicDataSourceType.Method)]
@@ -59,16 +89,19 @@ namespace Bodu.Security.Cryptography
                 property.SetValue(algorithm, currentValue);
                 Assert.Fail($"Expected ObjectDisposedException when setting property '{property.Name}' after disposal.");
             }
-            catch (TargetInvocationException tie) when (tie.InnerException is ObjectDisposedException)
+            catch (TargetInvocationException tie) when (tie.InnerException is ObjectDisposedException ex)
             {
                 // ✅ Expected: disposed object should not allow configuration
+                Assert.AreEqual(
+                    typeof(TAlgorithm).FullName,
+                    ex.ObjectName,
+                    $"ObjectDisposedException.ObjectName must match the concrete type name '{typeof(TAlgorithm).FullName}'.");
             }
             catch (Exception ex)
             {
                 Assert.Fail($"Unexpected exception when setting property '{property.Name}' after disposal: {ex.GetType().Name} - {ex.Message}");
             }
         }
-
         /// <summary>
         /// Verifies that all fields of a disposed hash algorithm instance have been properly cleared or zeroed.
         /// </summary>
@@ -81,6 +114,12 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(GetDisposableFields), DynamicDataSourceType.Method)]
         public void Dispose_WhenCalled_ShouldZeroPrivateField(FieldInfo field)
         {
+            if (field is null)
+            {
+                Assert.Inconclusive($"Type '{typeof(TAlgorithm).Name}' has no writable fields - test passes by default.");
+                return;
+            }
+
             using TAlgorithm instance = CreateAlgorithm();
             instance.ComputeHash(Array.Empty<byte>());
             instance.Dispose();
@@ -166,9 +205,6 @@ namespace Bodu.Security.Cryptography
                 _ = algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
             });
         }
-
-        protected virtual IEnumerable<string> GetFieldsToExcludeFromDisposeValidation() =>
-            Array.Empty<string>();
 
         private static bool AssertMemorySpan(Type fieldType, object? value, string label)
         {

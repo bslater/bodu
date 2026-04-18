@@ -11,15 +11,16 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Security.Cryptography.Extensions
 {
+    /// <summary>
+    /// Tests for <see cref="HashAlgorithmExtensions.AppendData" />.
+    /// </summary>
     public partial class HashAlgorithmExtensionsTests
     {
-        // ---------------------------------------------------------------------------------------------------------------
-        // AppendData(ReadOnlySpan<byte>)
-        // ---------------------------------------------------------------------------------------------------------------
+        // ─── Argument validation ──────────────────────────────────────────────────────────────────
 
         /// <summary>
-        /// Verifies that <see cref="HashAlgorithmExtensions.AppendData" /> throws <see cref="ArgumentNullException" />
-        /// when the algorithm argument is <see langword="null" />.
+        /// Verifies that <see cref="HashAlgorithmExtensions.AppendData" /> throws
+        /// <see cref="ArgumentNullException" /> when the algorithm argument is <see langword="null" />.
         /// </summary>
         [TestMethod]
         public void AppendData_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
@@ -30,9 +31,10 @@ namespace Bodu.Security.Cryptography.Extensions
                 algorithm!.AppendData(new ReadOnlySpan<byte>(new byte[] { 1, 2, 3 })));
         }
 
+        // ─── Accumulation behaviour ───────────────────────────────────────────────────────────────
+
         /// <summary>
-        /// Verifies that <see cref="HashAlgorithmExtensions.AppendData" /> does not alter the accumulated state
-        /// when called with an empty span.
+        /// Verifies that an empty span does not alter the accumulated state.
         /// </summary>
         [TestMethod]
         public void AppendData_WhenSpanIsEmpty_ShouldNotContributeToHash()
@@ -47,8 +49,23 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that <see cref="HashAlgorithmExtensions.AppendData" /> contributes the supplied bytes to the
-        /// final computed hash when the transform is subsequently finalised.
+        /// Verifies that a single-byte span contributes exactly that byte value to the computed hash.
+        /// </summary>
+        [TestMethod]
+        public void AppendData_WhenSpanHasSingleByte_ShouldHashCorrectly()
+        {
+            using var algorithm = CreateAlgorithm();
+
+            algorithm.AppendData(new ReadOnlySpan<byte>(new byte[] { 0xFF }));
+            algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+
+            byte[] expected = BitConverter.GetBytes((uint)0xFF);
+            CollectionAssert.AreEqual(expected, algorithm.Hash);
+        }
+
+        /// <summary>
+        /// Verifies that the supplied bytes contribute to the final hash when the transform is
+        /// subsequently finalised.
         /// </summary>
         [TestMethod]
         public void AppendData_WhenSpanContainsData_ShouldContributeToFinalHash()
@@ -59,14 +76,13 @@ namespace Bodu.Security.Cryptography.Extensions
             algorithm.AppendData(new ReadOnlySpan<byte>(data));
             algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
 
-            // MonitoringHashAlgorithm accumulates bytes as a uint sum.
+            // MonitoringHashAlgorithm accumulates input bytes as an unsigned 32-bit sum.
             byte[] expected = BitConverter.GetBytes((uint)(1 + 2 + 3 + 4));
             CollectionAssert.AreEqual(expected, algorithm.Hash);
         }
 
         /// <summary>
-        /// Verifies that calling <see cref="HashAlgorithmExtensions.AppendData" /> multiple times accumulates all
-        /// supplied bytes correctly in the final hash, matching a single <c>ComputeHash</c> call over the concatenated input.
+        /// Verifies that multiple calls accumulate all supplied bytes correctly in the final hash.
         /// </summary>
         [TestMethod]
         public void AppendData_WhenCalledMultipleTimes_ShouldAccumulateAllBytes()
@@ -81,9 +97,11 @@ namespace Bodu.Security.Cryptography.Extensions
             CollectionAssert.AreEqual(expected, algorithm.Hash);
         }
 
+        // ─── Equivalence & invocation tracking ────────────────────────────────────────────────────
+
         /// <summary>
-        /// Verifies that <see cref="HashAlgorithmExtensions.AppendData" /> produces a hash identical to
-        /// <see cref="HashAlgorithm.ComputeHash(byte[])" /> when given the same input.
+        /// Verifies that <see cref="HashAlgorithmExtensions.AppendData" /> produces a hash identical
+        /// to <see cref="HashAlgorithm.ComputeHash(byte[])" /> when given the same input.
         /// </summary>
         [TestMethod]
         public void AppendData_WhenHashFinalised_ShouldMatchComputeHash()
@@ -104,7 +122,7 @@ namespace Bodu.Security.Cryptography.Extensions
         /// <summary>
         /// Verifies that <see cref="HashAlgorithmExtensions.AppendData" /> increments the algorithm's
         /// <see cref="MonitoringHashAlgorithm.HashCoreCallCount" />, confirming the underlying
-        /// <c>TransformBlock</c> path is exercised.
+        /// <c>TransformBlock</c> path is exercised exactly once per call.
         /// </summary>
         [TestMethod]
         public void AppendData_WhenCalled_ShouldInvokeHashCoreOnce()
@@ -115,21 +133,6 @@ namespace Bodu.Security.Cryptography.Extensions
             algorithm.AppendData(new ReadOnlySpan<byte>(new byte[] { 1, 2, 3 }));
 
             Assert.AreEqual(before + 1, algorithm.HashCoreCallCount);
-        }
-
-        /// <summary>
-        /// Verifies that a single-byte span contributes exactly that byte value to the computed hash.
-        /// </summary>
-        [TestMethod]
-        public void AppendData_WhenSpanHasSingleByte_ShouldHashCorrectly()
-        {
-            using var algorithm = CreateAlgorithm();
-
-            algorithm.AppendData(new ReadOnlySpan<byte>(new byte[] { 0xFF }));
-            algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
-
-            byte[] expected = BitConverter.GetBytes((uint)0xFF);
-            CollectionAssert.AreEqual(expected, algorithm.Hash);
         }
     }
 }

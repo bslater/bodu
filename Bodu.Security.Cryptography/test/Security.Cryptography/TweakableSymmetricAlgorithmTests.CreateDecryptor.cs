@@ -17,7 +17,7 @@ namespace Bodu.Security.Cryptography
         public void CreateDecryptor_WhenIVIsNull_ShouldThrowArgumentNullException()
         {
             using var algorithm = CreateAlgorithm();
-            Assert.ThrowsException<ArgumentNullException>(() =>
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
             {
                 algorithm.CreateDecryptor(new byte[algorithm.KeySize / 8], null!, new byte[algorithm.TweakSize / 8]);
             });
@@ -31,7 +31,7 @@ namespace Bodu.Security.Cryptography
         public void CreateDecryptor_WhenKeyIsNull_ShouldThrowArgumentNullException()
         {
             using var algorithm = CreateAlgorithm();
-            Assert.ThrowsException<ArgumentNullException>(() =>
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
             {
                 algorithm.CreateDecryptor(null!, new byte[algorithm.BlockSize / 8], new byte[algorithm.TweakSize / 8]);
             });
@@ -45,7 +45,7 @@ namespace Bodu.Security.Cryptography
         public void CreateDecryptor_WhenTweakIsNull_ShouldThrowArgumentNullException()
         {
             using var algorithm = CreateAlgorithm();
-            Assert.ThrowsException<ArgumentNullException>(() =>
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
             {
                 algorithm.CreateDecryptor(new byte[algorithm.KeySize / 8], new byte[algorithm.BlockSize / 8], null!);
             });

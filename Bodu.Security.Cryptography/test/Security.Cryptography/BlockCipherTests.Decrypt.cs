@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bodu.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace Bodu.Security.Cryptography
                 var testVectors = instance.GetKnownAnswerTests(variant);
                 foreach (var vector in testVectors)
                 {
-                    yield return new object[] { variant, vector.Name, vector.ExpectedOutput, vector.Input };
+                    yield return new object[] { variant, vector.Name, vector.ExpectedOutput, vector.Input, vector.CipherFactory! };
                 }
             }
         }
@@ -37,7 +38,7 @@ namespace Bodu.Security.Cryptography
         public void Decrypt_WhenCalled_ShouldNotModifyInputBuffer()
         {
             using var cipher = CreateBlockCipher();
-            byte[] original = Enumerable.Range(0, cipher.BlockSize).Select(i => (byte)i).ToArray();
+            byte[] original = CryptoTestUtilities.GetRandomNonZeroBytes(cipher.BlockSize);
             byte[] input = original.ToArray();
             byte[] output = new byte[cipher.BlockSize];
 
@@ -54,11 +55,14 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(BlockCipherVariants))]
         public void Decrypt_WhenCalled_WithDiferentInstances_ShouldBeDeterministic(TVariant variant)
         {
-            byte[] input = Enumerable.Range(0, 128).Select(i => (byte)(i % 256)).ToArray();
+            var specification = this.GetSpecification(variant);
             using var cipher1 = this.CreateBlockCipher(variant);
             using var cipher2 = this.CreateBlockCipher(variant);
-            byte[] output1 = new byte[ExpectedBlockSize];
-            byte[] output2 = new byte[ExpectedBlockSize];
+
+            byte[] input = CryptoTestUtilities.GetRandomNonZeroBytes(cipher1.BlockSize);
+
+            byte[] output1 = new byte[specification.BlockSize];
+            byte[] output2 = new byte[specification.BlockSize];
 
             cipher1.Decrypt(input, output1);
             cipher2.Decrypt(input, output2);
@@ -74,10 +78,13 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(BlockCipherVariants))]
         public void Decrypt_WhenCalled_WithSameInstsnce_ShouldBeDeterministic(TVariant variant)
         {
-            byte[] input = Enumerable.Range(0, 128).Select(i => (byte)(i % 256)).ToArray();
+            var specification = this.GetSpecification(variant);
             using var cipher = this.CreateBlockCipher(variant);
-            byte[] output1 = new byte[ExpectedBlockSize];
-            byte[] output2 = new byte[ExpectedBlockSize];
+
+            byte[] input = CryptoTestUtilities.GetRandomNonZeroBytes(cipher.BlockSize);
+
+            byte[] output1 = new byte[specification.BlockSize];
+            byte[] output2 = new byte[specification.BlockSize];
 
             cipher.Decrypt(input, output1);
             cipher.Decrypt(input, output2);
@@ -87,9 +94,9 @@ namespace Bodu.Security.Cryptography
 
         [TestMethod]
         [DynamicData(nameof(DecryptTestData))]
-        public void Decrypt_WhenKnownInput_ShouldMatchExpected(TVariant variant, string testName, byte[] input, byte[] expected)
+        public void Decrypt_WhenKnownInput_ShouldMatchExpected(TVariant variant, string testName, byte[] input, byte[] expected, Func<IBlockCipher>? factory)
         {
-            var engine = CreateBlockCipher(variant);
+            var engine = factory?.Invoke() ?? CreateBlockCipher(variant);
             byte[] actual = new byte[expected.Length];
             engine.Decrypt(input, actual);
 
@@ -103,9 +110,9 @@ namespace Bodu.Security.Cryptography
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetInvalidBlockSizes), DynamicDataSourceType.Method)]
-        public void Decrypt_WithInvalidInputSize_ShouldThrowExactly(byte[] input)
+        public void Decrypt_WithInvalidInputSize_ShouldThrowExactly(TVariant variant, byte[] input)
         {
-            using var cipher = CreateBlockCipher();
+            using var cipher = CreateBlockCipher(variant);
             Assert.ThrowsExactly<ArgumentException>(() =>
             {
                 cipher.Decrypt(input, new byte[cipher.BlockSize]);
@@ -117,9 +124,9 @@ namespace Bodu.Security.Cryptography
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetInvalidBlockSizes), DynamicDataSourceType.Method)]
-        public void Decrypt_WithInvalidOutSize_ShouldThrowExactly(byte[] output)
+        public void Decrypt_WithInvalidOutSize_ShouldThrowExactly(TVariant variant, byte[] output)
         {
-            using var cipher = CreateBlockCipher();
+            using var cipher = CreateBlockCipher(variant);
             Assert.ThrowsExactly<ArgumentException>(() =>
             {
                 cipher.Decrypt(new byte[cipher.BlockSize], output);

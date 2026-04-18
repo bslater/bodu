@@ -20,16 +20,19 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Validates that accessing the Key after disposing the algorithm returns a different hashValue.
+        /// Validates that accessing <see cref="SymmetricAlgorithm.Key" /> after the algorithm has been disposed throws
+        /// an <see cref="ObjectDisposedException" />.
         /// </summary>
         [TestMethod]
-        public void Key_WhenAccessedAfterDispose_ShouldReturnDifferentValue()
+        public void Key_WhenAccessedAfterDispose_ShouldThrowObjectDisposedException()
         {
             TAlgorithm algorithm = this.CreateAlgorithm();
-            byte[] ivBeforeDispose = algorithm.Key;
             algorithm.Dispose();
-            byte[] ivAfterDispose = algorithm.Key;
-            CollectionAssert.AreNotEqual(ivBeforeDispose, ivAfterDispose);
+
+            Assert.ThrowsExactly<ObjectDisposedException>(() =>
+            {
+                _ = algorithm.Key;
+            });
         }
 
         /// <summary>
@@ -43,14 +46,28 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Validates that setting an invalid Key size throws a CryptographicException.
+        /// Verifies that assigning a key whose length in bits is not among <see cref="SymmetricAlgorithm.LegalKeySizes" />
+        /// throws <see cref="CryptographicException" />.
         /// </summary>
         [TestMethod]
         public void Key_WhenSetToInvalidSize_ShouldThrowExactly()
         {
-            using TAlgorithm algorithm = this.CreateAlgorithm();
-            byte[] invalidKey = new byte[algorithm.BlockSize - 1];
-            Assert.ThrowsExactly<CryptographicException>(() => algorithm.Key = invalidKey);
+            using var algorithm = this.CreateAlgorithm();
+
+            byte[]? invalidKey = CryptoTestUtilities.FindInvalidKey(algorithm.LegalKeySizes);
+
+            if (invalidKey is null)
+            {
+                Assert.Inconclusive(
+                    $"{typeof(TAlgorithm).Name} accepts all byte-aligned key lengths — " +
+                    "no invalid size can be constructed for this test.");
+                return;
+            }
+
+            Assert.ThrowsExactly<CryptographicException>(
+                () => algorithm.Key = invalidKey,
+                $"Setting a {invalidKey.Length * 8}-bit key should throw CryptographicException " +
+                $"for {typeof(TAlgorithm).Name}.");
         }
 
         /// <summary>
@@ -60,11 +77,12 @@ namespace Bodu.Security.Cryptography
         public void Key_WhenSet_ShouldReturnSameValueOnGet()
         {
             using TAlgorithm algorithm = this.CreateAlgorithm();
-            byte[] iv = new byte[algorithm.BlockSize / 8];
-            CryptoHelpers.FillWithRandomNonZeroBytes(iv);
+            int size = algorithm.LegalKeySizes[0].MinSize;
+            byte[] key = new byte[size / 8];
+            CryptoHelpers.FillWithRandomNonZeroBytes(key);
 
-            algorithm.Key = iv;
-            CollectionAssert.AreEqual(iv, algorithm.Key);
+            algorithm.Key = key;
+            CollectionAssert.AreEqual(key, algorithm.Key);
         }
 
         /// <summary>
@@ -74,28 +92,35 @@ namespace Bodu.Security.Cryptography
         public void Key_WhenSet_ShouldReturnDefensiveCopy()
         {
             using TAlgorithm algorithm = this.CreateAlgorithm();
-            byte[] iv = new byte[algorithm.BlockSize / 8];
-            CryptoHelpers.FillWithRandomNonZeroBytes(iv);
+            int size = algorithm.LegalKeySizes[0].MinSize;
+            byte[] key = new byte[size / 8];
+            CryptoHelpers.FillWithRandomNonZeroBytes(key);
 
-            algorithm.Key = iv;
-            Assert.AreNotSame(iv, algorithm.Key);
+            algorithm.Key = key;
+            Assert.AreNotSame(key, algorithm.Key);
         }
 
         /// <summary>
-        /// Verifies that modifying a retrieved Key does not affect the internal state.
+        /// Verifies that modifying the array returned by <see cref="SymmetricAlgorithm.Key" />
+        /// does not mutate the algorithm's internal key state.
         /// </summary>
         [TestMethod]
-        public void Key_WhenModifiedAfterGet_ShouldNotAffectInternalState()
+        public void Key_WhenReturnedArrayIsModified_ShouldNotChangeInternalValue()
         {
-            using TAlgorithm algorithm = this.CreateAlgorithm();
-            byte[] iv = new byte[algorithm.BlockSize / 8];
-            CryptoHelpers.FillWithRandomNonZeroBytes(iv);
+            using var algorithm = CreateAlgorithm();
+            int size = algorithm.LegalKeySizes[0].MinSize;
+            byte[] expected = Enumerable.Range(1, size / 8).Select(i => (byte)i).ToArray();
 
-            algorithm.Key = iv;
-            byte[] ivCopy = algorithm.Key;
-            ivCopy[0]++; // mutate
+            algorithm.KeySize = size;
+            algorithm.Key = expected;
 
-            CollectionAssert.AreNotEqual(ivCopy, algorithm.Key);
+            byte[] returned = algorithm.Key;
+            returned[0] ^= 0xFF;
+
+            byte[] actual = algorithm.Key;
+
+            CollectionAssert.AreEqual(expected, actual);
+            CollectionAssert.AreNotEqual(returned, actual);
         }
 
         /// <summary>

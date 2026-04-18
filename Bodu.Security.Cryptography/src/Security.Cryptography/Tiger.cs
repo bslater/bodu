@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Tiger.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -87,14 +87,26 @@ namespace Bodu.Security.Cryptography
         /// finalization to match the configured <see cref="HashSize" />.
         /// </para>
         /// </remarks>
-        public string AlgorithmName =>
-            $"Tiger/{this.HashSizeValue}";
+        public string AlgorithmName
+        {
+            get
+            {
+                this.ThrowIfDisposed();
+                return $"Tiger/{this.HashSizeValue}";
+            }
+        }
 
         /// <inheritdoc />
         public override bool CanReuseTransform => true;
 
         /// <inheritdoc />
         public override bool CanTransformMultipleBlocks => true;
+
+        /// <inheritdoc />
+        public override int InputBlockSize => 64;
+
+        /// <inheritdoc />
+        public override int OutputBlockSize => this.HashSizeValue / 8;
 
         /// <summary>
         /// Gets or sets the size, in bits, of the final computed hash output.
@@ -198,6 +210,7 @@ namespace Bodu.Security.Cryptography
                 CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
                 this.state0 = this.state1 = this.state2 = 0;
+                this.HashSizeValue = 0;
             }
 
             this.disposed = true;

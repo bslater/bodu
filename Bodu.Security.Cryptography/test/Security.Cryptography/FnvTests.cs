@@ -23,18 +23,5 @@ namespace Bodu.Security.Cryptography
         };
 
         protected override string? UnsupportedHashSizeMessageFragment => "Unsupported hash size";
-
-
-        protected override IEnumerable<string> GetFieldsToExcludeFromDisposeValidation()
-        {
-            var list = new List<string>(base.GetFieldsToExcludeFromDisposeValidation());
-            list.AddRange([
-                "offsetBasis",
-                "prime",
-                "useFnv1a",
-            ]);
-
-            return list;
-        }
     }
 }

@@ -163,7 +163,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TransformBlockAndFinalBlock_WithPartialBlockInputs_ShouldReturnExpectedHash()
         {
-            var input = CryptoTestUtilities.ByteSequence0To255;
+            var input = CryptoTestUtilities.ByteSequence256;
             byte[] expected;
 
             using (var reference = this.CreateAlgorithm())
@@ -206,7 +206,7 @@ namespace Bodu.Security.Cryptography
             var firstHash = algorithm.Hash;
 
             // Second pass with different data
-            var newBuffer = CryptoTestUtilities.ByteSequence0To255;
+            var newBuffer = CryptoTestUtilities.ByteSequence256;
             algorithm.TransformBlock(newBuffer, 0, newBuffer.Length - 1, null, 0);
             algorithm.TransformFinalBlock(newBuffer, newBuffer.Length - 1, 1);
             var secondHash = algorithm.Hash;

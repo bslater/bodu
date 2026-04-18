@@ -37,12 +37,12 @@ namespace Bodu.Security.Cryptography
             using var algorithm = this.CreateAlgorithm();
 
             // Begin a partial stream operation
-            algorithm.TransformBlock(CryptoTestUtilities.ByteSequence0To255, 0, 128, null, 0);
+            algorithm.TransformBlock(CryptoTestUtilities.ByteSequence256, 0, 128, null, 0);
 
             // Call ComputeHash independently
-            var hash = algorithm.ComputeHash(CryptoTestUtilities.ByteSequence0To255);
+            var hash = algorithm.ComputeHash(CryptoTestUtilities.ByteSequence256);
 
-            Assert.IsNotNull(hash);
+            Assert.IsNotNull(algorithm);
             Assert.AreEqual(algorithm.HashSize / 8, hash.Length);
         }
 
@@ -164,30 +164,45 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that repeated calls to <see cref="HashAlgorithm.ComputeHash(byte[])" /> with the same input produce the same result.
+        /// Verifies that <see cref="HashAlgorithm.ComputeHash(byte[], int, int)"/> produces the correct
+        /// hash value for incrementally growing inputs, stepping one byte at a time from empty through
+        /// either <c>InputBlockSize * 8</c> bytes (for block-based algorithms) or 8 bytes (for
+        /// byte-at-a-time algorithms such as Pearson), ensuring correctness across sub-block, full-block,
+        /// and multi-block input lengths.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void ComputeHash_WhenUsingIncrementalInput_ShouldMatchExpected(TVariant variant)
         {
+            var specification = GetSpecification(variant);
             var algorithm = CreateAlgorithm(variant);
             var expectedHashes = GetExpectedHashesForIncrementalInput(variant).ToArray();
 
             if (expectedHashes.Length == 0)
                 Assert.Inconclusive($"No expected hashes defined for variant {variant}.");
 
-            byte[] input = new byte[expectedHashes.Length];
+            int stepCount = algorithm.InputBlockSize > 1
+                ? algorithm.InputBlockSize * 8
+                : 16;
 
-            for (int i = 0; i < expectedHashes.Length; i++)
+            Assert.AreEqual(stepCount, expectedHashes.Length,
+                $"Expected {stepCount} algorithm entries for variant '{variant}' " +
+                $"(InputBlockSize={algorithm.InputBlockSize}), but got {expectedHashes.Length}.");
+
+            byte[] input = new byte[stepCount];
+            for (int i = 0; i < stepCount; i++)
             {
                 byte[] expected = Convert.FromHexString(expectedHashes[i]);
-                input[i] = (byte)i;
-                var actual = algorithm.ComputeHash(input, 0, i);
 
+                input[i] = (byte)i;
+
+                var actual = algorithm.ComputeHash(input, 0, i);
                 TestHelpers.TraceWriteIfNotEqual(expected, actual);
 
-                CollectionAssert.AreEqual(expected, actual, $"Hash mismatch for variant '{variant}' at incremental length {i + 1}.");
-                if (!algorithm.CanReuseTransform)
+                CollectionAssert.AreEqual(expected, actual,
+                    $"Hash mismatch for variant '{variant}' at incremental length {i}.");
+
+                if (!specification.CanReuseTransform)
                     algorithm = CreateAlgorithm(variant);
             }
         }
@@ -295,5 +310,93 @@ namespace Bodu.Security.Cryptography
                 $"ObjectDisposedException.ObjectName must match the concrete type name '{typeof(TAlgorithm).FullName}'.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ComputeHash" /> always produces output whose length matches <see cref="HashAlgorithm.HashSize" />
+        /// for a representative range of input lengths.
+        /// </summary>
+        [TestMethod]
+        [DynamicData(nameof(HashAlgorithmVariants))]
+        public void ComputeHash_WhenCalled_ShouldAlwaysReturnCorrectHashSize(TVariant variant)
+        {
+            using var algorithm = this.CreateAlgorithm(variant);
+            int expectedBytes = algorithm.HashSize / 8;
+
+            foreach (int len in new[] { 0, 1, 4, 5, 12, 13, 24, 25, 100 })
+            {
+                byte[] hash = algorithm.ComputeHash(new byte[len]);
+                Assert.AreEqual(
+                    expectedBytes,
+                    hash.Length,
+                    $"Expected {expectedBytes}-byte output (HashSize={algorithm.HashSize}) for input length {len}.");
+            }
+        }
+
+        /// <summary>
+        /// Verifies that representative input lengths produce distinct, non-trivial hash values, confirming that each
+        /// internal algorithm path is exercised correctly and produces well-distributed output.
+        /// </summary>
+        [TestMethod]
+        [DynamicData(nameof(HashAlgorithmVariants))]
+        public void ComputeHash_AtBoundaryLengths_ShouldProduceDistinctNonZeroHashes(TVariant variant)
+        {
+            var specification = this.GetSpecification(variant);
+
+            var hashes = new List<byte[]>(specification.BoundaryLengths.Count);
+
+            foreach (int len in specification.BoundaryLengths)
+            {
+                using var algorithm = this.CreateAlgorithm(variant);
+                byte[] input = Enumerable.Range(1, len).Select(i => (byte)(i * 7)).ToArray();
+                byte[] hash = algorithm.ComputeHash(input);
+
+                Assert.IsTrue(
+                    hash.Any(b => b != 0),
+                    $"[{variant}] Length {len}: must not produce an all-zero hash for varied input.");
+
+                hashes.Add(hash);
+            }
+
+            for (int i = 0; i < hashes.Count; i++)
+            {
+                for (int j = i + 1; j < hashes.Count; j++)
+                {
+                    CollectionAssert.AreNotEqual(
+                        hashes[i],
+                        hashes[j],
+                        $"[{variant}] Lengths {specification.BoundaryLengths[i]} and {specification.BoundaryLengths[j]} produced identical hashes.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Verifies that a long, varied input exercises the iterative internal path and produces a hash with broad entropy
+        /// spread across the output bytes. The minimum non-zero byte threshold is declared in the algorithm specification.
+        /// </summary>
+        [TestMethod]
+        [DynamicData(nameof(HashAlgorithmVariants))]
+        public void ComputeHash_WhenInputIsLong_ShouldDistributeEntropyAcrossAllBytes(TVariant variant)
+        {
+            var specification = this.GetSpecification(variant);
+            using var algorithm = this.CreateAlgorithm(variant);
+
+            int outputBytes = specification.HashSize / 8;
+            int threshold = specification.MinNonZeroBytesForLongInput ?? Math.Max(1, outputBytes / 2);
+
+            byte[] input = Enumerable.Range(0, specification.LongInputLength)
+                .Select(i => (byte)(i * 31 + 7))
+                .ToArray();
+
+            byte[] hash = algorithm.ComputeHash(input);
+
+            Assert.AreEqual(
+                outputBytes,
+                hash.Length,
+                $"[{variant}] Expected {outputBytes}-byte output for long input.");
+
+            int nonZeroCount = hash.Count(b => b != 0);
+            Assert.IsTrue(
+                nonZeroCount >= threshold,
+                $"[{variant}] Expected at least {threshold} of {outputBytes} output bytes to be non-zero; got {nonZeroCount}.");
+        }
     }
 }

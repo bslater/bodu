@@ -14,10 +14,16 @@ namespace Bodu.Security.Cryptography
         : Security.Cryptography.FnvTests<Fnv132Tests, Fnv132>
     {
         /// <inheritdoc />
-        protected override int ExpectedInputBlockSize => 1;
-
-        /// <inheritdoc />
-        protected override int ExpectedOutputBlockSize => 1;
+        protected override HashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => new()
+        {
+            HashSize = 32,
+            InputBlockSize = 1,
+            OutputBlockSize = 1,
+            IsStateless = false,
+            LongInputLength = 200,
+            MinNonZeroBytesForLongInput = 3,   // 4 output bytes; FNV has good avalanche so most bytes should be non-zero
+            BoundaryLengths = [1, 8, 16, 64],
+        };
 
         /// <inheritdoc />
         protected override Fnv132 CreateAlgorithm() => new Fnv132();
@@ -26,16 +32,16 @@ namespace Bodu.Security.Cryptography
 
         protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
         {
-            "811C9DC5",
-            "050C5D1F",
-            "117697CC",
-            "49B0F626",
-            "27937DD1",
-            "1E2F1007",
-            "8B163B00",
-            "F3FEE106",
-            "203C3C75",
-            "33D32C27",
+            "811C9DC5",  // []
+            "050C5D1F",  // [0x00]
+            "117697CC",  // [0x00, 0x01]
+            "49B0F626",  // [0x00, 0x01, 0x02]
+            "27937DD1",  // [0x00, 0x01, 0x02, 0x03]
+            "1E2F1007",  // [0x00, 0x01, 0x02, 0x03, 0x04]
+            "8B163B00",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05]
+            "F3FEE106",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
+            "203C3C75",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]
+            "33D32C27",  // ...
             "BC6E816C",
             "0DF5BD0E",
             "07D89D01",

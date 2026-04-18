@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SDBM.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -72,6 +72,7 @@ namespace Bodu.Security.Cryptography
                 CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
                 this.workingHash = 0;
+                this.HashSizeValue = 0;
             }
 
             this.disposed = true;

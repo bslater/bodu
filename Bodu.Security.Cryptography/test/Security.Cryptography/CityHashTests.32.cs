@@ -31,169 +31,53 @@ namespace Bodu.Security.Cryptography
     public partial class CityHash32Tests
         : Security.Cryptography.CityHashTests<CityHash32Tests, CityHash32>
     {
-        // ---------------------------------------------------------------------------------------------------------------
-        // HashAlgorithm contract properties
-        // ---------------------------------------------------------------------------------------------------------------
-
-        /// <inheritdoc />
-        /// <remarks>
-        /// <see cref="CityHash32" /> is not a block algorithm. <see cref="System.Security.Cryptography.HashAlgorithm" />
-        /// returns 1 as its default input block size.
-        /// </remarks>
-        protected override int ExpectedInputBlockSize => 1;
-
-        /// <inheritdoc />
-        /// <remarks>
-        /// <see cref="CityHash32" /> is not a block algorithm. <see cref="System.Security.Cryptography.HashAlgorithm" />
-        /// returns 1 as its default output block size.
-        /// </remarks>
-        protected override int ExpectedOutputBlockSize => 1;
-
-        // ---------------------------------------------------------------------------------------------------------------
-        // Factory
-        // ---------------------------------------------------------------------------------------------------------------
-
         /// <inheritdoc />
         protected override CityHash32 CreateAlgorithm() => new CityHash32();
 
         /// <inheritdoc />
-        protected override CityHash32 CreateAlgorithm(CityHashVariant variant) =>
-            variant switch
-            {
-                CityHashVariant.Default => this.CreateAlgorithm(),
-                _ => throw new ArgumentOutOfRangeException(nameof(variant))
-            };
-
-        // ---------------------------------------------------------------------------------------------------------------
-        // Known-answer tests — named inputs
-        // ---------------------------------------------------------------------------------------------------------------
+        protected override CityHash32 CreateAlgorithm(SingleTestVariant variant) => this.CreateAlgorithm();
 
         /// <inheritdoc />
-        /// <remarks>
-        /// <para>
-        /// All KAT values represent the little-endian hex encoding of the 32-bit unsigned integer
-        /// produced by <see cref="CityHash32" /> for each named input.
-        /// </para>
-        /// <para><b>Derivation notes:</b></para>
-        /// <list type="bullet">
-        /// <item>
-        /// <description>
-        /// <b>Empty</b> — No bytes are processed; the loop in <c>Hash32Len0to4</c> does not execute.
-        /// With b=0, c=9, len=0 the chain resolves analytically:
-        /// <c>Mix(Mur(0, Mur(0, 9)))</c> = <c>0x40004002</c> → little-endian <c>02400040</c>.
-        /// </description>
-        /// </item>
-        /// <item>
-        /// <description>
-        /// <b>ABC</b> — Three bytes {0x41, 0x42, 0x43} through the 0–4 byte path. Value derived
-        /// by tracing the byte accumulation loop and the three-level Mur chain.
-        /// </description>
-        /// </item>
-        /// <item>
-        /// <description>
-        /// <b>Zeros_16</b> — Sixteen zero bytes through the 13–24 byte path. All six sampled
-        /// 32-bit words are zero; only the length term (h = 16) propagates through the six-deep
-        /// Mur chain: <c>Mix(Mur(0, …Mur(0, 16)…))</c> = <c>0x40004000</c> → <c>00400040</c>.
-        /// </description>
-        /// </item>
-        /// <item>
-        /// <description>
-        /// <b>Sequential_0_255</b> — 255 bytes {0x00…0xFE} through the 25+ byte iterative path,
-        /// using three interleaved 32-bit accumulators seeded from the tail of the input.
-        /// Value confirmed against the reference implementation.
-        /// </description>
-        /// </item>
-        /// </list>
-        /// </remarks>
-        protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(CityHashVariant variant) =>
-            variant switch
+        protected override HashAlgorithmSpecification GetSpecification(SingleTestVariant variant) =>
+            new HashAlgorithmSpecification
             {
-                CityHashVariant.Default => new Dictionary<string, string>
-                {
-                    // 0 bytes — analytically verified from first principles.
-                    ["Empty"] = "02400040",
-
-                    // 3 bytes {0x41, 0x42, 0x43} — 0–4 byte path.
-                    ["ABC"] = "57211EBE",
-
-                    // 16 zero bytes — 13–24 byte path; all sampled words are zero.
-                    ["Zeros_16"] = "00400040",
-
-                    // 255 bytes {0x00…0xFE} — 25+ byte iterative path.
-                    ["Sequential_0_255"] = "3CB48141",
-                },
-                _ => throw new ArgumentOutOfRangeException(nameof(variant))
+                HashSize = 32,
+                InputBlockSize = 1,
+                OutputBlockSize = 1,
             };
-
-        // ---------------------------------------------------------------------------------------------------------------
-        // Known-answer tests — incremental inputs
-        // ---------------------------------------------------------------------------------------------------------------
 
         /// <inheritdoc />
-        /// <remarks>
-        /// <para>
-        /// Each entry is the CityHash32 of the byte sequence <c>{0, 1, …, i-1}</c> where <c>i</c>
-        /// is the zero-based position in the list (i.e. entry at index 0 is the empty-input hash).
-        /// </para>
-        /// <list type="table">
-        /// <listheader>
-        /// <term>Index (length)</term>
-        /// <description>Algorithm path exercised</description>
-        /// </listheader>
-        /// <item><term>0 — empty</term>     <description>0–4 byte path</description></item>
-        /// <item><term>1 — {0x00}</term>    <description>0–4 byte path</description></item>
-        /// <item><term>2 — {0x00,0x01}</term><description>0–4 byte path</description></item>
-        /// <item><term>3 — {0x00–0x02}</term><description>0–4 byte path (boundary)</description></item>
-        /// </list>
-        /// <para>
-        /// The empty-input value is analytically exact. All other values were computed from the
-        /// reference implementation and cross-checked for consistency.
-        /// </para>
-        /// </remarks>
-        protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(CityHashVariant variant) =>
-            variant switch
+        protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(SingleTestVariant variant) =>
+             new Dictionary<string, string>
             {
-                CityHashVariant.Default => new[]
-                {
-                    "02400040", // len=0  empty         — analytically verified
-                    "E530A856", // len=1  {0x00}
-                    "0280CFE1", // len=2  {0x00, 0x01}
-                    "F6FFE329", // len=3  {0x00, 0x01, 0x02}
-                },
-                _ => throw new ArgumentOutOfRangeException(nameof(variant))
+                ["Empty"] = "02400040",
+                ["ABC"] = "CB5A67A8",
+                ["Zeros_16"] = "00400040",
+                ["Sequential_0_255"] = "3CB48141",
             };
 
-        // ---------------------------------------------------------------------------------------------------------------
-        // CityHash32-specific structural tests
-        // ---------------------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Verifies that <see cref="CityHash32" /> reports a <see cref="System.Security.Cryptography.HashAlgorithm.HashSize" />
-        /// of exactly 32 bits.
-        /// </summary>
-        [TestMethod]
-        public void HashSize_WhenDefaultConstructed_ShouldBe32Bits()
-        {
-            using var algorithm = this.CreateAlgorithm();
-            Assert.AreEqual(32, algorithm.HashSize);
-        }
-
-        /// <summary>
-        /// Verifies that <see cref="CityHash32" /> always produces exactly 4 bytes of output for a representative
-        /// range of input lengths that span all four internal algorithm paths.
-        /// </summary>
-        [TestMethod]
-        public void ComputeHash_WhenCalled_ShouldAlwaysReturn4Bytes()
-        {
-            using var algorithm = this.CreateAlgorithm();
-
-            // 0–4 path, 5–12 path, 13–24 path, 25+ path.
-            foreach (int len in new[] { 0, 1, 4, 5, 12, 13, 24, 25, 100 })
+        /// <inheritdoc />
+        protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
+            new[]
             {
-                byte[] hash = algorithm.ComputeHash(new byte[len]);
-                Assert.AreEqual(4, hash.Length, $"Expected 4-byte output for input length {len}.");
-            }
-        }
+                "02400040",  // [0x]
+                "E5B0A856",  // [0x00]
+                "0280CFE1",  // [0x00, 0x01]
+                "1BCEE319",  // [0x00, 0x01, 0x02]
+                "B91E6445",  // [0x00, 0x01, 0x02, 0x03]
+                "EA55F979",  // [0x00, 0x01, 0x02, 0x03, 0x04]
+                "84122C7E",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05]
+                "67F85183",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
+                "107293FA",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]
+                "D5996B59",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08]
+                "CD20F5EB",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09]
+                "B59EBF6C",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A]
+                "973A5B10",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B]
+                "5220AAAB",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C]
+                "5CA20E63",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D]
+                "AE1B9001",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E]
+            };
+
 
         /// <summary>
         /// Verifies that boundary inputs at each algorithm-path transition produce distinct, non-trivial

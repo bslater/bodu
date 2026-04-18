@@ -10,27 +10,65 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Bodu.Security.Cryptography
 {
     public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVariant>
-        : HashAlgorithmTests<TTest, TAlgorithm, TVariant>
-        where TTest : HashAlgorithmTests<TTest, TAlgorithm, TVariant>, new()
-        where TAlgorithm : BlockHashAlgorithm<TAlgorithm>, new()
-        where TVariant : Enum
     {
-        /// <summary>
-        /// Verifies that <see cref="HashAlgorithm.Initialize" /> clears the residual buffer and
-        /// total-length tracking so the instance can be reused cleanly after a completed hash.
-        /// </summary>
-        /// <remarks>
-        /// Regression coverage for the family of defects in which residual bytes from a prior
-        /// computation leak into the accumulator for the next hash. Hashing identical input twice,
-        /// separated by <see cref="HashAlgorithm.Initialize" />, must produce identical digests.
-        /// </remarks>
-        [TestMethod]
-        public virtual void Initialize_AfterHashing_ShouldClearResidualBlockState()
-        {
-            using var algorithm = this.CreateAlgorithm();
 
-            byte[] input = Enumerable.Range(0, this.ExpectedBlockSizeBytes + (this.ExpectedBlockSizeBytes / 2))
-                                     .Select(i => (byte)i)
+
+        /// <summary>
+        /// Verifies that <see cref="HashAlgorithm.Initialize" /> resets the internal accumulator so that
+        /// a fresh hash computation starts from a clean state, regardless of whether the algorithm
+        /// supports reuse.
+        /// </summary>
+        [TestMethod]
+        [DynamicData(nameof(HashAlgorithmVariants))]
+        public virtual void Initialize_AfterHashing_ShouldResetInternalState(TVariant variant)
+        {
+            var specification = this.GetSpecification(variant);
+            using var algorithm = this.CreateAlgorithm(variant);
+            int blockSize = specification.InputBlockSize;
+
+            // Feed partial input — do NOT finalise — then reset
+            byte[] input = Enumerable.Range(0, blockSize + (blockSize / 2))
+                                     .Select(i => (byte)((i * 31) + 7))
+                                     .ToArray();
+
+            algorithm.TransformBlock(input, 0, input.Length, null, 0);
+            algorithm.Initialize();
+
+            // After Initialize, finalising with empty input should equal a clean empty-input hash
+            algorithm.TransformFinalBlock([], 0, 0);
+
+            using var reference = this.CreateAlgorithm(variant);
+            reference.TransformFinalBlock([], 0, 0);
+
+            CollectionAssert.AreEqual(
+                reference.Hash,
+                algorithm.Hash,
+                $"[{variant}] Initialize did not fully reset internal accumulator — residual bytes leaked into the next computation.");
+        }
+
+        /// <summary>
+        /// Verifies that <see cref="HashAlgorithm.Initialize" /> allows the algorithm to be reused,
+        /// producing identical output for identical input across consecutive calls.
+        /// Skipped for algorithms where <see cref="HashAlgorithmSpecification.CanReuseTransform" />
+        /// is <see langword="false" />.
+        /// </summary>
+        [TestMethod]
+        [DynamicData(nameof(HashAlgorithmVariants))]
+        public virtual void Initialize_AfterHashing_ShouldClearResidualBlockState(TVariant variant)
+        {
+            var specification = this.GetSpecification(variant);
+
+            if (!specification.CanReuseTransform)
+            {
+                Assert.Inconclusive(
+                    $"[{variant}] Algorithm does not support reuse after a completed transform; skipping residual state check.");
+                return;
+            }
+
+            using var algorithm = this.CreateAlgorithm(variant);
+            int blockSize = specification.InputBlockSize;
+            byte[] input = Enumerable.Range(0, blockSize + (blockSize / 2))
+                                     .Select(i => (byte)((i * 31) + 7))
                                      .ToArray();
 
             byte[] first = algorithm.ComputeHash(input);
@@ -40,7 +78,7 @@ namespace Bodu.Security.Cryptography
             CollectionAssert.AreEqual(
                 first,
                 second,
-                "Residual block state was not reset by Initialize — identical inputs produced different digests.");
+                $"[{variant}] Residual block state was not reset by Initialize — identical inputs produced different digests.");
         }
     }
 }

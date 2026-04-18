@@ -3,6 +3,7 @@
     using System;
     using System.Buffers.Binary;
     using System.Diagnostics;
+    using System.Numerics;
     using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
     using System.Security.Cryptography;
@@ -135,7 +136,7 @@
         protected static void Mix(ref ulong a, ref ulong b, int rotation)
         {
             a += b;
-            b = b.RotateBitsLeftUnchecked(rotation) ^ a;
+            b = BitOperations.RotateLeft(b, rotation) ^ a;
         }
 
         /// <summary>
@@ -148,7 +149,7 @@
         protected static void Unmix(ref ulong a, ref ulong b, int rotation)
         {
             b ^= a;
-            b = b.RotateBitsRightUnchecked(rotation);
+            b = BitOperations.RotateRight(b, rotation);
             a -= b;
         }
 

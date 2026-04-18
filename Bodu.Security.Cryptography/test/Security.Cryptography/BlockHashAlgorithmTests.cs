@@ -34,22 +34,10 @@ namespace Bodu.Security.Cryptography
     /// </remarks>
     public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVariant>
         : HashAlgorithmTests<TTest, TAlgorithm, TVariant>
-        where TTest : HashAlgorithmTests<TTest, TAlgorithm, TVariant>, new()
+        where TTest : BlockHashAlgorithmTests<TTest, TAlgorithm, TVariant>, new()
         where TAlgorithm : BlockHashAlgorithm<TAlgorithm>, new()
-        where TVariant : Enum
+        where TVariant : struct, Enum
     {
-        /// <summary>
-        /// Gets the internal block size, in bytes, that the algorithm under test buffers into complete
-        /// blocks before dispatching to <c>ProcessBlock</c>.
-        /// </summary>
-        /// <value>A positive integer matching the algorithm's configured <c>BlockSizeBytes</c> field.</value>
-        /// <remarks>
-        /// Derived test classes must override this property to return the exact block size declared by
-        /// the concrete algorithm (for example, <c>64</c> for Tiger or <c>16</c> for SipHash). The value
-        /// drives block-aligned and unaligned streaming scenarios.
-        /// </remarks>
-        protected abstract int ExpectedBlockSizeBytes { get; }
-
         /// <summary>
         /// Gets the set of chunk sizes used to verify that streaming input across arbitrary segment
         /// boundaries produces the same result as hashing the input in a single pass.
@@ -61,15 +49,23 @@ namespace Bodu.Security.Cryptography
         /// <see cref="BlockHashAlgorithm{T}" />. Override to narrow or extend the matrix for a specific
         /// algorithm.
         /// </remarks>
-        protected virtual IEnumerable<int> StreamingChunkSizes =>
+        protected virtual IEnumerable<int> StreamingChunkSizes(HashAlgorithmSpecification specification) =>
             new[]
             {
                 1,
-                this.ExpectedBlockSizeBytes - 1,
-                this.ExpectedBlockSizeBytes,
-                this.ExpectedBlockSizeBytes + 1,
-                (this.ExpectedBlockSizeBytes * 2) + 3,
-            };
+                specification.InputBlockSize - 1,
+                specification.InputBlockSize,
+                specification.InputBlockSize + 1,
+                (specification.InputBlockSize * 2) + 3,
+            }
+            .Where(size => size > 0)
+            .Distinct();
+
+        /// <inheritdocs/>
+        protected override IReadOnlyCollection<string> ExcludedReadablePropertyNames =>
+        [
+            "AllowUnalignedFinalBlock"
+        ];
 
         /// <summary>
         /// Gets the set of input lengths used to verify padding of the final partial block.
@@ -80,16 +76,17 @@ namespace Bodu.Security.Cryptography
         /// exercise the full residual-length domain accepted by
         /// <see cref="BlockHashAlgorithm{T}.PadBlock" />.
         /// </remarks>
-        protected virtual IEnumerable<int> UnalignedInputLengths =>
+        protected virtual IEnumerable<int> UnalignedInputLengths(HashAlgorithmSpecification specification) =>
             new[]
             {
                 0,
                 1,
-                this.ExpectedBlockSizeBytes - 1,
-                this.ExpectedBlockSizeBytes,
-                this.ExpectedBlockSizeBytes + 1,
-                (this.ExpectedBlockSizeBytes * 2) + (this.ExpectedBlockSizeBytes / 2),
-            };
+                specification.InputBlockSize - 1,
+                specification.InputBlockSize,
+                specification.InputBlockSize + 1,
+                (specification.InputBlockSize * 2) + (specification.InputBlockSize / 2),
+            }
+            .Distinct();
 
     }
 }

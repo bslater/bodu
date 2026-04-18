@@ -19,7 +19,7 @@ namespace Bodu.Security.Cryptography
             using var algorithm = this.CreateAlgorithm();
 
             byte[] input1 = CryptoTestUtilities.SimpleTextAsciiBytes;
-            byte[] input2 = CryptoTestUtilities.ByteSequence0To255;
+            byte[] input2 = CryptoTestUtilities.ByteSequence256;
 
             byte[] hash1 = algorithm.ComputeHash(input1);
 
@@ -55,7 +55,7 @@ namespace Bodu.Security.Cryptography
         {
             using var algorithm = this.CreateAlgorithm();
 
-            byte[] input = CryptoTestUtilities.ByteSequence0To255;
+            byte[] input = CryptoTestUtilities.ByteSequence256;
             algorithm.TransformFinalBlock(input, 0, input.Length);
             byte[] hash1 = algorithm.Hash!;
 

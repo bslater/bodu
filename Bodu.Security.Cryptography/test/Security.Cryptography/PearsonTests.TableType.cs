@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 namespace Bodu.Security.Cryptography
 {
     public partial class PearsonTests
-        : Security.Cryptography.HashAlgorithmTests<PearsonTests, Pearson, SingleTestVariant>
     {
         /// <summary>
         /// Provides test data for each predefined <see cref="Pearson.PearsonTableType" /> (excluding UserDefined).
@@ -28,7 +27,7 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(TableTypeTestData))]
         public void TableType_Set_WhenValid_ShouldProduceExpectedHash(Pearson.PearsonTableType type)
         {
-            using var hash = new Pearson
+            using var algorithm = new Pearson
             {
                 TableType = type,
                 HashSize = 64
@@ -36,19 +35,19 @@ namespace Bodu.Security.Cryptography
 
             byte[] input = Encoding.ASCII.GetBytes("Test input");
 
-            byte[] result = hash.ComputeHash(input);
+            byte[] result = algorithm.ComputeHash(input);
 
             Assert.IsNotNull(result, $"Result should not be null for table type {type}.");
-            Assert.AreEqual(hash.HashSize / 8, result.Length, $"Hash length should match expected size for type {type}.");
+            Assert.AreEqual(algorithm.HashSize / 8, result.Length, $"Hash length should match expected size for type {type}.");
             Assert.IsTrue(result.Any(b => b != 0), $"Hash result should not be all zeros for type {type}.");
         }
 
         [TestMethod]
         public void TableType_Get_WhenDefault_ShouldReturnPearson()
         {
-            using var hash = new Pearson();
+            using var algorithm = new Pearson();
 
-            var type = hash.TableType;
+            var type = algorithm.TableType;
 
             Assert.AreEqual(Pearson.PearsonTableType.Pearson, type, "Default TableType should be Pearson.");
         }
@@ -56,13 +55,13 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TableType_Set_WhenNotStarted_ShouldLoadExpectedPresetTable()
         {
-            using var hash = new Pearson();
+            using var algorithm = new Pearson();
             var lazy = typeof(Pearson)
                 .GetField("AESSBoxTable", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
                 .GetValue(null) as Lazy<byte[]>;
             var expected = lazy?.Value ?? Array.Empty<byte>();
-            hash.TableType = Pearson.PearsonTableType.AESSBox;
-            var table = hash.Table;
+            algorithm.TableType = Pearson.PearsonTableType.AESSBox;
+            var table = algorithm.Table;
 
             Assert.AreEqual(256, table.Length, "Table length should be 256.");
             CollectionAssert.AreEqual(expected, table, "Table contents should match AESSBox preset.");
@@ -71,49 +70,49 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TableType_Set_ToUserDefined_ShouldRequireManualTableAssignment()
         {
-            using var hash = new Pearson();
+            using var algorithm = new Pearson();
 
-            hash.TableType = Pearson.PearsonTableType.UserDefined;
+            algorithm.TableType = Pearson.PearsonTableType.UserDefined;
 
             Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
             {
-                hash.ComputeHash(new byte[] { 1, 2, 3 });
+                algorithm.ComputeHash(new byte[] { 1, 2, 3 });
             }, "Using UserDefined table type without a valid table should throw.");
         }
 
         [TestMethod]
         public void TableType_Set_WhenHashingStarted_ShouldThrowExactly()
         {
-            using var hash = new Pearson();
-            hash.TransformBlock(new byte[] { 1, 2, 3 }, 0, 3, null, 0);
+            using var algorithm = new Pearson();
+            algorithm.TransformBlock(new byte[] { 1, 2, 3 }, 0, 3, null, 0);
 
             Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
             {
-                hash.TableType = Pearson.PearsonTableType.SHA256Constants;
+                algorithm.TableType = Pearson.PearsonTableType.SHA256Constants;
             });
         }
 
         [TestMethod]
         public void TableType_Set_WhenDisposed_ShouldThrowExactly()
         {
-            var hash = new Pearson();
-            hash.Dispose();
+            var algorithm = new Pearson();
+            algorithm.Dispose();
 
             Assert.ThrowsExactly<ObjectDisposedException>(() =>
             {
-                hash.TableType = Pearson.PearsonTableType.CRC32HighByte;
+                algorithm.TableType = Pearson.PearsonTableType.CRC32HighByte;
             });
         }
 
         [TestMethod]
         public void TableType_Get_WhenDisposed_ShouldThrowExactly()
         {
-            var hash = new Pearson();
-            hash.Dispose();
+            var algorithm = new Pearson();
+            algorithm.Dispose();
 
             Assert.ThrowsExactly<ObjectDisposedException>(() =>
             {
-                var _ = hash.TableType;
+                var _ = algorithm.TableType;
             });
         }
 
@@ -125,12 +124,15 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TableType_WhenSetToUserDefinedWithoutTable_ShouldThrowWithCleanMessage()
         {
-            using var hash = new Pearson
+            using var algorithm = new Pearson
             {
                 TableType = Pearson.PearsonTableType.UserDefined
             };
 
-            var ex = Assert.ThrowsException<Exception>(() => hash.ComputeHash(new byte[] { 1, 2, 3 }));
+            var ex = Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
+            {
+                algorithm.ComputeHash(new byte[] { 1, 2, 3 });
+            });
 
             Assert.IsFalse(
                 ex.Message.Contains(" t "),

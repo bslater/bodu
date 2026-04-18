@@ -29,6 +29,11 @@
         public Threefish512Cipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
             : base(key, tweak) { }
 
+        /// <summary>
+        /// Length of a Threefish-512 key (bytes).
+        /// </summary>
+        public const int KeySize = 64;
+
         /// <inheritdoc />
         public override int BlockSize => 64;
 

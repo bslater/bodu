@@ -1,3 +1,9 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="BlockCipherModeTests.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -6,42 +12,41 @@ using Bodu.Testing.Security;
 
 namespace Bodu.Security.Cryptography
 {
+    /// <summary>
+    /// Base test class for <see cref="IBlockCipherModeTransform" /> implementations, providing
+    /// constructor validation (via <see cref="CipherModeTestsBase{TTransform}" />) together with
+    /// <c>Transform</c>-level argument, round-trip, and pattern tests.
+    /// </summary>
+    /// <remarks>
+    /// The constructor-validation tests (<c>Ctor_*</c>) and the shared properties
+    /// (<see cref="CipherModeTestsBase{TTransform}.ExpectedBlockSize" />,
+    /// <see cref="CipherModeTestsBase{TTransform}.IvParameterName" />,
+    /// <see cref="CipherModeTestsBase{TTransform}.UsesInitializationVector" />) live in
+    /// <see cref="CipherModeTestsBase{TTransform}" /> and are inherited here.
+    /// <c>BlockCipherModeTests.Ctors.cs</c> is therefore superseded and should be removed.
+    /// </remarks>
+    /// <typeparam name="TMode">The <see cref="IBlockCipherModeTransform" /> type under test.</typeparam>
     [TestClass]
     public abstract partial class BlockCipherModeTests<TMode>
+        : CipherModeTestsBase<TMode>
         where TMode : IBlockCipherModeTransform
     {
-        protected const int ExpectedBlockSize = 8;
+        // ExpectedBlockSize  → inherited as 8  (correct for generic block-cipher mode tests)
+        // IvParameterName    → inherited as "iv" (CTR overrides to "initialCounter")
+        // UsesInitializationVector → inherited as true (ECB overrides to false)
 
         /// <summary>
-        /// Creates a concrete mode transform wrapping the supplied cipher and initialisation vector. Implementations whose mode
-        /// does not use an initialisation vector (for example, ECB) may ignore <paramref name="iv" />.
-        /// </summary>
-        protected abstract TMode CreateTransform(IBlockCipher cipher, byte[] iv);
-
-        /// <summary>
-        /// Gets a value indicating whether this mode transform accepts a caller-supplied initialisation vector (or equivalent
-        /// seed such as CTR's initial counter) and validates its length against <see cref="IBlockCipher.BlockSize" /> at
-        /// construction time. ECB has no IV and therefore overrides this to <see langword="false" />.
-        /// </summary>
-        protected virtual bool UsesInitializationVector => true;
-
-        /// <summary>
-        /// Gets the constructor parameter name used for the initialisation vector (or equivalent seed). Most modes name this
-        /// parameter <c>iv</c>; CTR names it <c>initialCounter</c>. The value is used by constructor-validation tests to assert
-        /// that thrown exceptions expose the correct <see cref="ArgumentException.ParamName" />.
-        /// </summary>
-        protected virtual string IvParameterName => "iv";
-
-        /// <summary>
-        /// Gets a value indicating whether this mode alters the relationship between plaintext and ciphertext across block
-        /// positions (for example via chaining, feedback, or a counter). ECB returns <see langword="false" /> because each block
-        /// is transformed independently and identical plaintext blocks always yield identical ciphertext blocks.
+        /// Gets a value indicating whether this mode alters the relationship between plaintext and
+        /// ciphertext across block positions (via chaining, feedback, or a counter). ECB returns
+        /// <see langword="false" /> because identical plaintext blocks always yield identical
+        /// ciphertext blocks.
         /// </summary>
         protected virtual bool UsesChaining => true;
 
         /// <summary>
-        /// Gets a value indicating whether this mode transform guards against counter overflow or some other form of keystream
-        /// reuse. Only CTR currently implements this; other modes return <see langword="false" />.
+        /// Gets a value indicating whether this mode transform guards against counter overflow or
+        /// keystream reuse. Only CTR currently implements this; all other modes return
+        /// <see langword="false" />.
         /// </summary>
         protected virtual bool GuardsAgainstKeystreamReuse => false;
     }

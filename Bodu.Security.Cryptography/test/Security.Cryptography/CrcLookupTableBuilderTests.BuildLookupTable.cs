@@ -98,7 +98,7 @@ namespace Bodu.Security.Cryptography
         [DataRow(int.MaxValue)]
         public void BuildLookupTable_WhenSizeIsInvalid_ShouldThrow(int size)
         {
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             {
                 _ = CrcLookupTableBuilder.BuildLookupTable(size, 0x1UL, false);
             });

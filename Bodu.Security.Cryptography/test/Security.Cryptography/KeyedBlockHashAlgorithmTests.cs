@@ -26,9 +26,9 @@ namespace Bodu.Security.Cryptography
     /// </remarks>
     public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TVariant>
         : BlockHashAlgorithmTests<TTest, TAlgorithm, TVariant>
-        where TTest : HashAlgorithmTests<TTest, TAlgorithm, TVariant>, new()
+        where TTest : KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TVariant>, new()
         where TAlgorithm : KeyedBlockHashAlgorithm<TAlgorithm>, new()
-        where TVariant : Enum
+        where TVariant : struct, Enum
     {
         /// <summary>
         /// Creates a new instance of the hash algorithm under test, preconfigured with a deterministic key.
@@ -44,7 +44,7 @@ namespace Bodu.Security.Cryptography
         protected override TAlgorithm CreateAlgorithm() =>
             new TAlgorithm
             {
-                Key = GetDeterministicKey()
+                Key = ((KeyedAlgorithmSpecification)GetSpecification(DefaultVariant)).TestKey
             };
 
         /// <summary>
@@ -55,33 +55,11 @@ namespace Bodu.Security.Cryptography
         /// Used by test cases that verify key-dependent behaviour, such as confirming that different
         /// keys yield different hash outputs or that key isolation is preserved across instances.
         /// </remarks>
-        protected virtual byte[] GenerateUniqueKey()
+        protected virtual byte[] GenerateUniqueKey(int size)
         {
-            byte[] key = new byte[ExpectedKeySize];
+            byte[] key = new byte[size];
             CryptoHelpers.FillWithRandomNonZeroBytes(key);
             return key;
         }
-
-        /// <summary>
-        /// Returns a fixed, deterministic key for use in tests that require stable hash output across runs.
-        /// </summary>
-        /// <returns>A non-null <see cref="byte" /> array with a repeatable, algorithm-appropriate pattern.</returns>
-        /// <remarks>
-        /// The default implementation returns a sequence of incrementing byte values from <c>0</c> to
-        /// <c>ExpectedKeySize - 1</c>. Override this method if the algorithm requires special clamping,
-        /// formatting, or structure for valid key material.
-        /// </remarks>
-        protected virtual byte[] GetDeterministicKey() =>
-            Enumerable.Range(0, ExpectedKeySize).Select(i => (byte)i).ToArray();
-
-        /// <summary>
-        /// Gets the list of valid key lengths, in bytes, supported by the algorithm under test.
-        /// </summary>
-        /// <value>A non-null, read-only list of supported key lengths, expressed in bytes.</value>
-        /// <remarks>
-        /// Fixed-key algorithms (for example, <c>Poly1305</c>) should return a single-entry list, while
-        /// algorithms that accept a range of key sizes (for example, <c>HMAC</c>) may return multiple.
-        /// </remarks>
-        protected abstract IReadOnlyList<int> ValidKeyLengths { get; }
     }
 }

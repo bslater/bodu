@@ -26,6 +26,15 @@ namespace Bodu.Security.Cryptography
         };
 
         /// <inheritdoc />
+        protected override HashAlgorithmSpecification GetSpecification(SingleTestVariant variant) =>
+            new HashAlgorithmSpecification
+            {
+                HashSize = 32,
+                InputBlockSize = 1,
+                OutputBlockSize = 1,
+            };
+
+        /// <inheritdoc />
         protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(SingleTestVariant variant) =>
             new Dictionary<string, string>
             {
@@ -39,16 +48,16 @@ namespace Bodu.Security.Cryptography
         /// <inheritdoc />
         protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
         {
-            "AAAAAAAA",
-            "FFAAAAEA",
-            "56F85747",
-            "5E2C41E4",
-            "C02AFE15",
-            "9C8F54E8",
-            "1A3495B4",
-            "9F9F9DE8",
-            "9B74DAFC",
-            "80777B8E",
+            "AAAAAAAA",  // []
+            "FFAAAAEA",  // [0x00]
+            "56F85747",  // [0x00, 0x01]
+            "5E2C41E4",  // [0x00, 0x01, 0x02]
+            "C02AFE15",  // [0x00, 0x01, 0x02, 0x03]
+            "9C8F54E8",  // [0x00, 0x01, 0x02, 0x03, 0x04]
+            "1A3495B4",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05]
+            "9F9F9DE8",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
+            "9B74DAFC",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]
+            "80777B8E",  // ...
             "CA534BAE",
             "B9DC2B9E",
             "A8B5C03B",

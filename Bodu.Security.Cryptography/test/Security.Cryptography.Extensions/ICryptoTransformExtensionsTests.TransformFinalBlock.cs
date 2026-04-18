@@ -5,7 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using Bodu.Infrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -78,23 +78,23 @@ namespace Bodu.Security.Cryptography.Extensions
 
         /// <summary>
         /// Verifies that <see cref="ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform,byte[])" />
-        /// transforms the entire array and returns the correct output.
+        /// transforms the entire array and returns the expected output.
         /// </summary>
         [TestMethod]
-        public void TransformFinalBlock_ByteArray_WhenArrayIsValid_ShouldReturnTransformedOutput()
+        [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+        public void TransformFinalBlock_ByteArray_WhenArrayIsValid_ShouldReturnTransformedOutput(KnownAnswerTest kat)
         {
-            using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
-            byte[] input = { 1, 2, 3, 4 };
-            byte[] expected = { 4, 3, 2, 1 };
+            using var transform = CreateTransform(kat);
 
-            byte[] result = transform.TransformFinalBlock(input);
+            byte[] result = transform.TransformFinalBlock(kat.Input);
 
-            CollectionAssert.AreEqual(expected, result);
+            CollectionAssert.AreEqual(kat.ExpectedOutput, result,
+                $"[{kat.Name}] TransformFinalBlock did not produce the expected output.");
         }
 
         /// <summary>
         /// Verifies that <see cref="ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform,byte[])" />
-        /// returns a non-null, empty-or-padded result when given an empty array.
+        /// returns a non-null result when given an empty array.
         /// </summary>
         [TestMethod]
         public void TransformFinalBlock_ByteArray_WhenArrayIsEmpty_ShouldReturnNonNullResult()
@@ -165,18 +165,24 @@ namespace Bodu.Security.Cryptography.Extensions
 
         /// <summary>
         /// Verifies that <see cref="ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform,byte[],int)" />
-        /// transforms from the given offset to the end of the array and returns the correct output.
+        /// with offset zero transforms the entire array and returns the same output as the no-offset overload.
         /// </summary>
         [TestMethod]
-        public void TransformFinalBlock_ByteArrayOffset_WhenOffsetIsZero_ShouldTransformEntireArray()
+        [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+        public void TransformFinalBlock_ByteArrayOffset_WhenOffsetIsZero_ShouldTransformEntireArray(KnownAnswerTest kat)
         {
-            using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
-            byte[] input = { 1, 2, 3, 4 };
-            byte[] expected = { 4, 3, 2, 1 };
+            byte[] fromOffset;
+            using (var transformA = CreateTransform(kat))
+                fromOffset = transformA.TransformFinalBlock(kat.Input, 0);
 
-            byte[] result = transform.TransformFinalBlock(input, 0);
+            byte[] fromArray;
+            using (var transformB = CreateTransform(kat))
+                fromArray = transformB.TransformFinalBlock(kat.Input);
 
-            CollectionAssert.AreEqual(expected, result);
+            CollectionAssert.AreEqual(kat.ExpectedOutput, fromOffset,
+                $"[{kat.Name}] Offset=0 result does not match expected output.");
+            CollectionAssert.AreEqual(fromArray, fromOffset,
+                $"[{kat.Name}] Offset=0 result does not match the no-offset overload.");
         }
 
         // ---------------------------------------------------------------------------------------------------------------
@@ -202,15 +208,15 @@ namespace Bodu.Security.Cryptography.Extensions
         /// correctly transforms a valid input span and returns the expected output.
         /// </summary>
         [TestMethod]
-        public void TransformFinalBlock_Span_WhenSpanIsValid_ShouldReturnTransformedOutput()
+        [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+        public void TransformFinalBlock_Span_WhenSpanIsValid_ShouldReturnTransformedOutput(KnownAnswerTest kat)
         {
-            using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
-            ReadOnlySpan<byte> input = new byte[] { 1, 2, 3, 4 };
-            byte[] expected = { 4, 3, 2, 1 };
+            using var transform = CreateTransform(kat);
 
-            byte[] result = transform.TransformFinalBlock(input);
+            byte[] result = transform.TransformFinalBlock((ReadOnlySpan<byte>)kat.Input);
 
-            CollectionAssert.AreEqual(expected, result);
+            CollectionAssert.AreEqual(kat.ExpectedOutput, result,
+                $"[{kat.Name}] Span overload did not produce the expected output.");
         }
 
         /// <summary>
@@ -228,23 +234,23 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that the span overload of <c>TransformFinalBlock</c> produces output identical to the
-        /// equivalent byte-array overload for the same input data.
+        /// Verifies that the span overload produces output identical to the byte-array overload for the same input.
         /// </summary>
         [TestMethod]
-        public void TransformFinalBlock_Span_WhenComparedToByteArrayOverload_ShouldProduceIdenticalOutput()
+        [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+        public void TransformFinalBlock_Span_WhenComparedToByteArrayOverload_ShouldProduceIdenticalOutput(
+            KnownAnswerTest kat)
         {
-            byte[] input = { 1, 2, 3, 4 };
-
             byte[] fromArray;
-            using (var transformA = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest))
-                fromArray = transformA.TransformFinalBlock(input);
+            using (var transformA = CreateTransform(kat))
+                fromArray = transformA.TransformFinalBlock(kat.Input);
 
             byte[] fromSpan;
-            using (var transformB = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest))
-                fromSpan = transformB.TransformFinalBlock((ReadOnlySpan<byte>)input);
+            using (var transformB = CreateTransform(kat))
+                fromSpan = transformB.TransformFinalBlock((ReadOnlySpan<byte>)kat.Input);
 
-            CollectionAssert.AreEqual(fromArray, fromSpan);
+            CollectionAssert.AreEqual(fromArray, fromSpan,
+                $"[{kat.Name}] Span and byte-array overloads produced different output.");
         }
 
         // ---------------------------------------------------------------------------------------------------------------
@@ -267,38 +273,38 @@ namespace Bodu.Security.Cryptography.Extensions
 
         /// <summary>
         /// Verifies that <see cref="ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform,ReadOnlyMemory{byte})" />
-        /// transforms the memory region and returns the correct output.
+        /// transforms the memory region and returns the expected output.
         /// </summary>
         [TestMethod]
-        public void TransformFinalBlock_Memory_WhenMemoryIsValid_ShouldReturnTransformedOutput()
+        [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+        public void TransformFinalBlock_Memory_WhenMemoryIsValid_ShouldReturnTransformedOutput(KnownAnswerTest kat)
         {
-            using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
-            var input = new ReadOnlyMemory<byte>(new byte[] { 1, 2, 3, 4 });
-            byte[] expected = { 4, 3, 2, 1 };
+            using var transform = CreateTransform(kat);
 
-            byte[] result = transform.TransformFinalBlock(input);
+            byte[] result = transform.TransformFinalBlock(new ReadOnlyMemory<byte>(kat.Input));
 
-            CollectionAssert.AreEqual(expected, result);
+            CollectionAssert.AreEqual(kat.ExpectedOutput, result,
+                $"[{kat.Name}] Memory overload did not produce the expected output.");
         }
 
         /// <summary>
-        /// Verifies that the memory overload of <c>TransformFinalBlock</c> produces output identical to the span
-        /// overload for the same input, confirming the two overloads delegate consistently.
+        /// Verifies that the memory overload produces output identical to the span overload for the same input.
         /// </summary>
         [TestMethod]
-        public void TransformFinalBlock_Memory_WhenComparedToSpanOverload_ShouldProduceIdenticalOutput()
+        [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+        public void TransformFinalBlock_Memory_WhenComparedToSpanOverload_ShouldProduceIdenticalOutput(
+            KnownAnswerTest kat)
         {
-            byte[] input = { 1, 2, 3, 4 };
-
             byte[] fromMemory;
-            using (var transformA = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest))
-                fromMemory = transformA.TransformFinalBlock(new ReadOnlyMemory<byte>(input));
+            using (var transformA = CreateTransform(kat))
+                fromMemory = transformA.TransformFinalBlock(new ReadOnlyMemory<byte>(kat.Input));
 
             byte[] fromSpan;
-            using (var transformB = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest))
-                fromSpan = transformB.TransformFinalBlock((ReadOnlySpan<byte>)input);
+            using (var transformB = CreateTransform(kat))
+                fromSpan = transformB.TransformFinalBlock((ReadOnlySpan<byte>)kat.Input);
 
-            CollectionAssert.AreEqual(fromMemory, fromSpan);
+            CollectionAssert.AreEqual(fromMemory, fromSpan,
+                $"[{kat.Name}] Memory and span overloads produced different output.");
         }
     }
 }

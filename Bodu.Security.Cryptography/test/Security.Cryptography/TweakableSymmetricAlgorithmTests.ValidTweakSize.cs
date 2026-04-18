@@ -9,59 +9,98 @@ namespace Bodu.Security.Cryptography
 {
     public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm>
     {
-        public static IEnumerable<object[]> ValidTweakSizesTestData()
+        /// <summary>
+        /// Verifies that <see cref="TweakableSymmetricAlgorithm.ValidTweakSize(int)" /> returns
+        /// <see langword="true" /> for every bit length that falls within <see cref="TweakableSymmetricAlgorithm.LegalTweakSizes" />.
+        /// </summary>
+        [TestMethod]
+        public void ValidTweakSize_WhenLengthIsValid_ShouldReturnTrue()
         {
-            using var instance = new TTest().CreateAlgorithm();
+            using var algorithm = this.CreateAlgorithm();
 
-            foreach (var size in instance.LegalTweakSizes)
+            foreach (var range in algorithm.LegalTweakSizes)
             {
-                for (int i = size.MinSize; i < size.MaxSize; i += size.SkipSize == 0 ? int.MaxValue : size.SkipSize)
+                int step = range.SkipSize == 0 ? range.MaxSize - range.MinSize : range.SkipSize;
+
+                for (int bits = range.MinSize; bits <= range.MaxSize; bits += step)
                 {
-                    yield return new object[] { i };
+                    Assert.IsTrue(
+                        algorithm.ValidTweakSize(bits),
+                        $"ValidTweakSize({bits}) should return true for {typeof(TAlgorithm).Name}.");
+
+                    if (range.SkipSize == 0) break; // single legal value in this range
                 }
             }
         }
 
         /// <summary>
-        /// Verifies that <see cref="TweakableSymmetricAlgorithm.ValidTweakSize(int)" /> returns true when the specified length matches
-        /// <c>MinSize</c> and <c>SkipSize</c> is 0.
+        /// Verifies that <see cref="TweakableSymmetricAlgorithm.ValidTweakSize(int)" /> returns
+        /// <see langword="false" /> for bit lengths that fall outside all ranges in
+        /// <see cref="TweakableSymmetricAlgorithm.LegalTweakSizes" />.
+        /// Skips with <see cref="Assert.Inconclusive" /> when the algorithm accepts every
+        /// byte-aligned length and no invalid size can be constructed.
         /// </summary>
         [TestMethod]
-        public void ValidTweakSize_WhenSkipSizeIsZeroAndLengthMatchesMinSize_ShouldReturnTrue()
+        public void ValidTweakSize_WhenLengthIsInvalid_ShouldReturnFalse()
         {
-            using var algorithm = CreateAlgorithm();
+            using var algorithm = this.CreateAlgorithm();
 
-            var keySize = algorithm.LegalTweakSizes.FirstOrDefault(k => k.SkipSize == 0);
-            if (keySize is null)
+            // Boundary sentinels that must always be invalid regardless of algorithm.
+            foreach (int sentinel in new[] { int.MinValue, -1, 0, int.MaxValue })
             {
-                Assert.Inconclusive("This algorithm does not define any KeySizes with SkipSize == 0.");
+                Assert.IsFalse(
+                    algorithm.ValidTweakSize(sentinel),
+                    $"ValidTweakSize({sentinel}) should always return false.");
             }
 
-            bool isValid = algorithm.ValidTweakSize(keySize.MinSize);
+            // Derive an invalid byte-aligned size from the algorithm's own legal ranges.
+            int? invalidBits = FindInvalidTweakSize(algorithm.LegalTweakSizes);
 
-            Assert.IsTrue(isValid, $"Expected ValidTweakSize({keySize.MinSize}) to be true when SkipSize is 0.");
+            if (invalidBits is null)
+            {
+                Assert.Inconclusive(
+                    $"{typeof(TAlgorithm).Name} accepts every byte-aligned tweak length — " +
+                    "no invalid byte-aligned size can be constructed for this test.");
+                return;
+            }
+
+            Assert.IsFalse(
+                algorithm.ValidTweakSize(invalidBits.Value),
+                $"ValidTweakSize({invalidBits.Value}) should return false for {typeof(TAlgorithm).Name}.");
         }
 
         /// <summary>
-        /// Verifies that ValidTweakSize returns true for supported sizes.
+        /// Returns the first byte-aligned bit length that falls outside all ranges in
+        /// <paramref name="legalSizes" />, or <see langword="null" /> when every byte-aligned length
+        /// from 8 to 4096 bits is covered.
         /// </summary>
-        [TestMethod]
-        [DynamicData(nameof(ValidTweakSizesTestData), DynamicDataSourceType.Method)]
-        public void ValidTweakSize_WhenSupportedSize_ShouldReturnTrue(int size)
+        private static int? FindInvalidTweakSize(KeySizes[] legalSizes)
         {
-            using var algorithm = CreateAlgorithm();
+            for (int bytes = 1; bytes <= 512; bytes++)
+            {
+                int bits = bytes * 8;
+                if (!IsLegalKeySize(bits, legalSizes))
+                    return bits;
+            }
 
-            Assert.IsTrue(algorithm.ValidTweakSize(size), $"Expected valid tweak size: {size}");
+            return null;
         }
 
-        /// <summary>
-        /// Verifies that ValidTweakSize returns false for unsupported sizes.
-        /// </summary>
-        [TestMethod]
-        public void ValidTweakSize_WhenUnsupportedSize_ShouldReturnFalse()
+        private static bool IsLegalKeySize(int bits, KeySizes[] legalSizes)
         {
-            using var algorithm = CreateAlgorithm();
-            Assert.IsFalse(algorithm.ValidTweakSize(999)); // intentionally unsupported
+            foreach (var range in legalSizes)
+            {
+                if (bits < range.MinSize || bits > range.MaxSize)
+                    continue;
+
+                if (range.SkipSize == 0)
+                    return bits == range.MinSize;
+
+                if ((bits - range.MinSize) % range.SkipSize == 0)
+                    return true;
+            }
+
+            return false;
         }
     }
 }

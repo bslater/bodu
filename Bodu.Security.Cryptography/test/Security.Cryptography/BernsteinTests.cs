@@ -28,6 +28,15 @@ namespace Bodu.Security.Cryptography
             BernsteinHashVariant.Modified
         };
 
+        /// <inheritdoc />
+        protected override HashAlgorithmSpecification GetSpecification(BernsteinHashVariant variant) =>
+            new HashAlgorithmSpecification
+            {
+                HashSize = 32,
+                InputBlockSize = 1,
+                OutputBlockSize = 1,
+            };
+
         protected override Bernstein CreateAlgorithm(BernsteinHashVariant variant) =>
             variant switch
             {
@@ -66,35 +75,35 @@ namespace Bodu.Security.Cryptography
             {
                 BernsteinHashVariant.Default => new[]
                 {
-                    "00001505",
-                    "0002B5A5",
-                    "00596A46",
-                    "0B86B308",
-                    "7C5D140B",
-                    "07FF956F",
-                    "07F24354",
-                    "063AADDA",
-                    "CD906921",
-                    "7F9D8D49",
+                    "00001505",  // []
+                    "0002B5A5",  // [0x00]
+                    "00596A46",  // [0x00, 0x01]
+                    "0B86B308",  // [0x00, 0x01, 0x02]
+                    "7C5D140B",  // [0x00, 0x01, 0x02, 0x03]
+                    "07FF956F",  // [0x00, 0x01, 0x02, 0x03, 0x04]
+                    "07F24354",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05]
+                    "063AADDA",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
+                    "CD906921",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]
+                    "7F9D8D49",  // ...
                     "734F3672",
                     "DD3604BC",
                     "83F69C47",
                     "02CA2533",
                     "5C0ECBA0",
-                    "DDE83FAE"
+                    "DDE83FAE",
                 },
                 BernsteinHashVariant.Modified => new[]
                 {
-                    "00001505",
-                    "0002B5A5",
-                    "00596A44",
-                    "0B86B2C6",
-                    "7C5D0B85",
-                    "07FE7C21",
-                    "07CE0044",
-                    "018E08C2",
-                    "334F2105",
-                    "9D3341AD",
+                    "00001505",  // []
+                    "0002B5A5",  // [0x00]
+                    "00596A44",  // [0x00, 0x01]
+                    "0B86B2C6",  // [0x00, 0x01, 0x02]
+                    "7C5D0B85",  // [0x00, 0x01, 0x02, 0x03]
+                    "07FE7C21",  // [0x00, 0x01, 0x02, 0x03, 0x04]
+                    "07CE0044",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05]
+                    "018E08C2",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
+                    "334F2105",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]
+                    "9D3341AD",  // ...
                     "439B7744",
                     "B70A5FCE",
                     "98565985",

@@ -20,16 +20,19 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Validates that accessing the IV after disposing the algorithm returns a different hashValue.
+        /// Validates that accessing <see cref="SymmetricAlgorithm.IV" /> after the algorithm has been disposed throws
+        /// an <see cref="ObjectDisposedException" />.
         /// </summary>
         [TestMethod]
-        public void IV_WhenAccessedAfterDispose_ShouldReturnDifferentValue()
+        public void IV_WhenAccessedAfterDispose_ShouldThrowObjectDisposedException()
         {
             TAlgorithm algorithm = this.CreateAlgorithm();
-            byte[] ivBeforeDispose = algorithm.IV;
             algorithm.Dispose();
-            byte[] ivAfterDispose = algorithm.IV;
-            CollectionAssert.AreNotEqual(ivBeforeDispose, ivAfterDispose);
+
+            Assert.ThrowsExactly<ObjectDisposedException>(() =>
+            {
+                _ = algorithm.IV;
+            });
         }
 
         /// <summary>
@@ -82,20 +85,25 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that modifying a retrieved IV does not affect the internal state.
+        /// Verifies that modifying the array returned by <see cref="SymmetricAlgorithm.IV" />
+        /// does not mutate the algorithm's internal IV state.
         /// </summary>
         [TestMethod]
-        public void IV_WhenModifiedAfterGet_ShouldNotAffectInternalState()
+        public void IV_WhenReturnedArrayIsModified_ShouldNotChangeInternalValue()
         {
-            using TAlgorithm algorithm = this.CreateAlgorithm();
-            byte[] iv = new byte[algorithm.BlockSize / 8];
-            CryptoHelpers.FillWithRandomNonZeroBytes(iv);
+            using var algorithm = CreateAlgorithm();
+            int size = algorithm.BlockSize;
+            byte[] expected = Enumerable.Range(1, size / 8).Select(i => (byte)i).ToArray();
 
-            algorithm.IV = iv;
-            byte[] ivCopy = algorithm.IV;
-            ivCopy[0]++; // mutate
+            algorithm.IV = expected;
 
-            CollectionAssert.AreNotEqual(ivCopy, algorithm.IV);
+            byte[] returned = algorithm.IV;
+            returned[0] ^= 0xFF;
+
+            byte[] actual = algorithm.IV;
+
+            CollectionAssert.AreEqual(expected, actual);
+            CollectionAssert.AreNotEqual(returned, actual);
         }
 
         /// <summary>
@@ -127,7 +135,7 @@ namespace Bodu.Security.Cryptography
             byte[] badIv = new byte[blockSizeBytes - 1];
             int expectedBitLength = badIv.Length * 8;
 
-            var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+            var ex = Assert.ThrowsExactly<CryptographicException>(() =>
             {
                 using var _ = algorithm.CreateEncryptor(algorithm.Key, badIv);
             });

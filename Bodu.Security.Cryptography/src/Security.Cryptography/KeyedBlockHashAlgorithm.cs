@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KeyedBlockHashAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -178,9 +178,7 @@ namespace Bodu.Security.Cryptography
 
             if (disposing)
             {
-                // Zero out the key material to avoid leaking secrets in memory.
-                if (this.KeyValue is not null)
-                    CryptoHelpers.ClearAndNullify(ref this.KeyValue!);
+                CryptoHelpers.ClearAndNullify(ref this.KeyValue!);
             }
 
             this.disposed = true;

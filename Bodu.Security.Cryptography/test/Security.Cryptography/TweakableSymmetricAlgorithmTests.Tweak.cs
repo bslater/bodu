@@ -22,7 +22,7 @@ namespace Bodu.Security.Cryptography
 
             algorithm.Dispose();
 
-            Assert.ThrowsException<ObjectDisposedException>(() =>
+            Assert.ThrowsExactly<ObjectDisposedException>(() =>
             {
                 var _ = algorithm.Tweak;
             });
@@ -149,7 +149,7 @@ namespace Bodu.Security.Cryptography
             using var algorithm = CreateAlgorithm();
             var invalid = new byte[7]; // 56 bits is uncommon
 
-            Assert.ThrowsException<CryptographicException>(() =>
+            Assert.ThrowsExactly<CryptographicException>(() =>
             {
                 algorithm.Tweak = invalid;
             });
@@ -163,7 +163,7 @@ namespace Bodu.Security.Cryptography
         {
             using var algorithm = CreateAlgorithm();
 
-            Assert.ThrowsException<ArgumentNullException>(() =>
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
             {
                 algorithm.Tweak = null!;
             });
@@ -181,7 +181,9 @@ namespace Bodu.Security.Cryptography
             using var algo = Threefish256.Create();
 
             var ex = Assert.ThrowsExactly<CryptographicException>(() =>
-                algo.Tweak = new byte[5]);
+            {
+                algo.Tweak = new byte[5];
+            });
 
             Assert.IsFalse(string.IsNullOrEmpty(ex.Message), "Expected non-empty exception message.");
             Assert.IsFalse(ex.Message.Contains("TweakSchedule"),
@@ -201,7 +203,10 @@ namespace Bodu.Security.Cryptography
             using var algorithm = this.CreateAlgorithm();
 
             var ex = Assert.ThrowsExactly<CryptographicException>(() =>
-                algorithm.Tweak = new byte[5]);
+            {
+                algorithm.Tweak = new byte[5];
+
+            });
 
             Assert.IsFalse(string.IsNullOrEmpty(ex.Message), "Expected non-empty exception message.");
             Assert.IsFalse(ex.Message.Contains("TweakSchedule"),
@@ -210,5 +215,36 @@ namespace Bodu.Security.Cryptography
                 "Exception message must not contain stray 'this.' refactor artefacts.");
         }
 
+        /// <summary>
+        /// Verifies that assigning a tweak whose length in bits is not among
+        /// <see cref="TweakableSymmetricAlgorithm.LegalTweakSizes" /> throws
+        /// <see cref="CryptographicException" />.
+        /// Skips with <see cref="Assert.Inconclusive" /> when the algorithm accepts every
+        /// byte-aligned length and no invalid size can be constructed.
+        /// </summary>
+        [TestMethod]
+        public void Tweak_WhenSetToInvalidSize_ShouldThrowExactly()
+        {
+            using var algorithm = this.CreateAlgorithm();
+
+            int? invalidBits = FindInvalidTweakSize(algorithm.LegalTweakSizes);
+
+            if (invalidBits is null)
+            {
+                Assert.Inconclusive(
+                    $"{typeof(TAlgorithm).Name} accepts every byte-aligned tweak length — " +
+                    "no invalid size can be constructed for this test.");
+                return;
+            }
+
+            byte[] invalidTweak = new byte[invalidBits.Value / 8];
+
+            Assert.ThrowsExactly<CryptographicException>(() =>
+            {
+                algorithm.Tweak = invalidTweak;
+            },
+                $"Setting a {invalidBits.Value}-bit tweak should throw CryptographicException " +
+                $"for {typeof(TAlgorithm).Name}.");
+        }
     }
 }

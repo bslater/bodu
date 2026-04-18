@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CityHash.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -264,10 +264,10 @@ namespace Bodu.Security.Cryptography
 
             if (disposing)
             {
-                _inputBuffer?.Dispose();
-                _inputBuffer = null;
-
                 CryptoHelpers.ClearAndNullify(ref HashValue);
+                CryptoHelpers.ClearAndNullify(_inputBuffer!);
+
+                this.HashSizeValue = 0;
             }
 
             disposed = true;

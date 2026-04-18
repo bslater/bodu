@@ -14,10 +14,16 @@ namespace Bodu.Security.Cryptography
         : Security.Cryptography.FletcherTests<Fletcher16Tests, Fletcher16>
     {
         /// <inheritdoc />
-        protected override int ExpectedInputBlockSize => 1;
-
-        /// <inheritdoc />
-        protected override int ExpectedOutputBlockSize => 1;
+        protected override HashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => new()
+        {
+            HashSize = 16,
+            InputBlockSize = 1,
+            OutputBlockSize = 1,
+            IsStateless = false,
+            LongInputLength = 200,
+            MinNonZeroBytesForLongInput = 1,   // conservative — only 2 output bytes total
+            BoundaryLengths = [1, 8, 16, 64],
+        };
 
         /// <inheritdoc />
         protected override Fletcher16 CreateAlgorithm() => new Fletcher16();
@@ -26,14 +32,22 @@ namespace Bodu.Security.Cryptography
 
         protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
         {
-            "0000",
-            "0000",
-            "0101",
-            "0403",
-            "0A06",
-            "140A",
-            "230F",
-            "3815",
+            "0000",  // []
+            "0000",  // [0x00]
+            "0101",  // [0x00, 0x01]
+            "0403",  // [0x00, 0x01, 0x02]
+            "0A06",  // [0x00, 0x01, 0x02, 0x03]
+            "140A",  // [0x00, 0x01, 0x02, 0x03, 0x04]
+            "230F",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05]
+            "3815",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
+            "541C",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]
+            "7824",  // ...
+            "A52D",
+            "DC37",
+            "1F42",
+            "6D4E",
+            "C85B",
+            "3269",
         };
 
         protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(SingleTestVariant variant) => new Dictionary<string, string>

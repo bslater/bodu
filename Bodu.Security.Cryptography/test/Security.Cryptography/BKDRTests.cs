@@ -29,6 +29,15 @@ namespace Bodu.Security.Cryptography
             BKDRVariant.Seed1313,
         };
 
+        /// <inheritdoc />
+        protected override HashAlgorithmSpecification GetSpecification(BKDRVariant variant) =>
+            new HashAlgorithmSpecification
+            {
+                HashSize = 32,
+                InputBlockSize = 1,
+                OutputBlockSize = 1,
+            };
+
         protected override BKDR CreateAlgorithm() => new BKDR();
 
         protected override BKDR CreateAlgorithm(BKDRVariant variant) =>
@@ -81,16 +90,16 @@ namespace Bodu.Security.Cryptography
             {
                 BKDRVariant.Default => new[]
                 {
-                    "00000083",
-                    "00004309",
-                    "00224D9C",
-                    "118DB6D6",
-                    "FB848F85",
-                    "B4D57113",
-                    "8938DCBE",
-                    "3818F540",
-                    "B4C57FC7",
-                    "811062DD",
+                    "00000083",  // []
+                    "00004309",  // [0x00]
+                    "00224D9C",  // [0x00, 0x01]
+                    "118DB6D6",  // [0x00, 0x01, 0x02]
+                    "FB848F85",  // [0x00, 0x01, 0x02, 0x03]
+                    "B4D57113",  // [0x00, 0x01, 0x02, 0x03, 0x04]
+                    "8938DCBE",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05]
+                    "3818F540",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
+                    "B4C57FC7",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]
+                    "811062DD",  // ...
                     "0B629720",
                     "D373556A",
                     "3404B549",
@@ -100,16 +109,16 @@ namespace Bodu.Security.Cryptography
                 },
                 BKDRVariant.Seed31 => new[]
                 {
-                    "0000001F",
-                    "000003C1",
-                    "00007460",
-                    "000E17A2",
-                    "01B4DCA1",
-                    "34E6B783",
-                    "67F038E2",
-                    "9616E364",
-                    "2CC58923",
-                    "6BEB9B45",
+                    "0000001F",  // []
+                    "000003C1",  // [0x00]
+                    "00007460",  // [0x00, 0x01]
+                    "000E17A2",  // [0x00, 0x01, 0x02]
+                    "01B4DCA1",  // [0x00, 0x01, 0x02, 0x03]
+                    "34E6B783",  // [0x00, 0x01, 0x02, 0x03, 0x04]
+                    "67F038E2",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05]
+                    "9616E364",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
+                    "2CC58923",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]
+                    "6BEB9B45",  // ...
                     "1187CD64",
                     "1F71DF26",
                     "CECA05A5",
@@ -119,16 +128,16 @@ namespace Bodu.Security.Cryptography
                 },
                 BKDRVariant.Seed1313 => new[]
                 {
-                    "00000521",
-                    "001A4E41",
-                    "86EB5B62",
-                    "FD1FB1A4",
-                    "3F8E1A27",
-                    "F7D4220B",
-                    "17029A70",
-                    "045A1876",
-                    "5217753D",
-                    "0A504DE5",
+                    "00000521",  // []
+                    "001A4E41",  // [0x00]
+                    "86EB5B62",  // [0x00, 0x01]
+                    "FD1FB1A4",  // [0x00, 0x01, 0x02]
+                    "3F8E1A27",  // [0x00, 0x01, 0x02, 0x03]
+                    "F7D4220B",  // [0x00, 0x01, 0x02, 0x03, 0x04]
+                    "17029A70",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05]
+                    "045A1876",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
+                    "5217753D",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]
+                    "0A504DE5",  // ...
                     "E5DF838E",
                     "FF61BB58",
                     "D441DE63",

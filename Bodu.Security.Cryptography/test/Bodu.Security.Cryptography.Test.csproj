@@ -12,7 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Security.Cryptography\CrcLookupTableCacheTests.cs" />
     <Compile Remove="Security.Cryptography\CrcTests.ComputeHash.cs" />
     <Compile Remove="Security.Cryptography\CrcTests.ComputeHashAsync.cs" />
     <Compile Remove="Security.Cryptography\CrcTests.ComputeHashFrom.cs" />

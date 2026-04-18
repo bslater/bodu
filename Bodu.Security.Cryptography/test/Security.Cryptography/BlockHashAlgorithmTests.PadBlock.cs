@@ -44,11 +44,13 @@ namespace Bodu.Security.Cryptography
         /// <c>PadBlock</c> error message.
         /// </summary>
         [TestMethod]
-        public void HashPipeline_ExceptionMessages_ShouldContainOnlyPrintableAscii()
+        [DynamicData(nameof(HashAlgorithmVariants))]
+        public void HashPipeline_ExceptionMessages_ShouldContainOnlyPrintableAscii(TVariant variant)
         {
+            var specification = GetSpecification(variant);
             // Exercise every residual length from 0 up to 2x the configured input block size
             // so we hit every branch of any residual-handling PadBlock path.
-            int limit = Math.Max(16, this.ExpectedInputBlockSize * 2);
+            int limit = Math.Max(16, specification.InputBlockSize * 2);
             for (int len = 0; len < limit; len++)
             {
                 using var algo = this.CreateAlgorithm();

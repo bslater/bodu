@@ -13,28 +13,38 @@ namespace Bodu.Security.Cryptography
     public partial class SDBMTests
         : Security.Cryptography.HashAlgorithmTests<SDBMTests, SDBM, SingleTestVariant>
     {
-        public override IEnumerable<SingleTestVariant> GetHashAlgorithmVariants() => new[]
-        {
-            SingleTestVariant.Default
-        };
 
         /// <inheritdoc />
         protected override SDBM CreateAlgorithm() => new SDBM();
 
+        /// <inheritdoc />
         protected override SDBM CreateAlgorithm(SingleTestVariant variant) => new SDBM();
 
+        /// <inheritdoc />
+        protected override HashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => new()
+        {
+            HashSize = 32,
+            InputBlockSize = 1,
+            OutputBlockSize = 1,
+            IsStateless = false,
+            LongInputLength = 200,
+            MinNonZeroBytesForLongInput = 2,   // 4 output bytes; SDBM has moderate avalanche, zero initialisation means short inputs may produce sparse output
+            BoundaryLengths = [1, 8, 16, 64],
+        };
+
+        /// <inheritdoc />
         protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
         {
-            "00000000",
-            "00000000",
-            "00000001",
-            "00010041",
-            "00801002",
-            "2F85F082",
-            "A2783003",
-            "2B96D0C3",
-            "8AE06004",
-            "8D3BA104",
+            "00000000",  // []
+            "00000000",  // [0x00]
+            "00000001",  // [0x00, 0x01]
+            "00010041",  // [0x00, 0x01, 0x02]
+            "00801002",  // [0x00, 0x01, 0x02, 0x03]
+            "2F85F082",  // [0x00, 0x01, 0x02, 0x03, 0x04]
+            "A2783003",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05]
+            "2B96D0C3",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
+            "8AE06004",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]
+            "8D3BA104",  // ...
             "62B0A005",
             "E97C6145",
             "D6E0F006",
@@ -43,6 +53,7 @@ namespace Bodu.Security.Cryptography
             "D1F1B1C7",
         };
 
+        /// <inheritdoc />
         protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(SingleTestVariant variant) => new Dictionary<string, string>
         {
             ["Empty"] = "00000000",

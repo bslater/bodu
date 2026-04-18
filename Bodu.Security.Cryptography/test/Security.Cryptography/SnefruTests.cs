@@ -23,16 +23,6 @@ namespace Bodu.Security.Cryptography
             SingleTestVariant.Default
         };
 
-        protected override IEnumerable<string> GetFieldsToExcludeFromDisposeValidation()
-        {
-            var list = new List<string>(base.GetFieldsToExcludeFromDisposeValidation());
-            list.AddRange([
-                "ExpectedBlockSize"
-            ]);
-
-            return list;
-        }
-
         private static readonly IReadOnlyDictionary<string, byte[]> CustomInputs = new Dictionary<string, byte[]>
         {
             ["a"] = Encoding.UTF8.GetBytes("a"),

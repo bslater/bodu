@@ -11,26 +11,46 @@ namespace Bodu.Security.Cryptography
     public partial class MonitoringHashAlgorithmTests
         : Security.Cryptography.HashAlgorithmTests<MonitoringHashAlgorithmTests, MonitoringHashAlgorithm, SingleTestVariant>
     {
-        public override IEnumerable<SingleTestVariant> GetHashAlgorithmVariants() => new[]
+
+        /// <inheritdoc />
+        protected override HashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => new()
         {
-            SingleTestVariant.Default
+            HashSize = 32,
+            InputBlockSize = 1,
+            OutputBlockSize = 1,
+            MinNonZeroBytesForLongInput=2,
         };
 
-        protected override IEnumerable<string> GetFieldsToExcludeFromDisposeValidation()
-        {
-            var list = new List<string>(base.GetFieldsToExcludeFromDisposeValidation());
-            list.AddRange([
-                "<DisposeCallCount>k__BackingField"
-            ]);
+        /// <inheritdoc />
+        protected override IReadOnlyCollection<string> ExcludedFieldNames => [
+            "<DisposeCallCount>k__BackingField",
+            ];
 
-            return list;
-        }
+        private static IReadOnlyCollection<string> ExcludedPropertyName= [
+            "BytesProcessed",
+            "InitializeCallCount",
+            "HashCoreCallCount",
+            "HashFinalCallCount",
+            "DisposeCallCount",
+            "TryHashFinalCallCount",
+            "HashSizeAccessCount",
+            "HashAccessCount",
+            "HashCoreSpanCallCount",
+            ];
+
+        /// <inheritdoc />
+        protected override IReadOnlyCollection<string> ExcludedWriteablePropertyNames => ExcludedPropertyName;
+
+        /// <inheritdoc />
+        protected override IReadOnlyCollection<string> ExcludedReadablePropertyNames => ExcludedPropertyName;
 
         /// <inheritdoc />
         protected override MonitoringHashAlgorithm CreateAlgorithm() => new MonitoringHashAlgorithm();
 
+        /// <inheritdoc />
         protected override MonitoringHashAlgorithm CreateAlgorithm(SingleTestVariant variant) => new MonitoringHashAlgorithm();
 
+        /// <inheritdoc />
         protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
         {
             "00000000",
@@ -51,6 +71,7 @@ namespace Bodu.Security.Cryptography
             "69000000",
         };
 
+        /// <inheritdoc />
         protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(SingleTestVariant variant) => new Dictionary<string, string>
         {
             ["Empty"] = "00000000",

@@ -19,33 +19,29 @@ namespace Bodu.Security.Cryptography
         : KeyedBlockHashAlgorithmTests<Poly1305Tests, Poly1305, SingleTestVariant>
     {
 
-        protected override int ExpectedBlockSizeBytes => 16;
-
-
-        protected override int ExpectedKeySize => 32;
-
-        /// <inheritdoc />
-        protected override byte[] GenerateUniqueKey()
+        private static readonly byte[] Poly1305TestKey = new byte[32]
         {
-            byte[] key = new byte[ExpectedKeySize];
-            CryptoHelpers.FillWithRandomNonZeroBytes(key);
-            return key;
-        }
+            0x85, 0xd6, 0xbe, 0x78, 0x57, 0x55, 0x6d, 0x33,
+            0x7f, 0x44, 0x52, 0xfe, 0x42, 0xd5, 0x06, 0xa8,
+            0x01, 0x03, 0x80, 0x8a, 0xfb, 0x0d, 0xb2, 0xfd,
+            0x4a, 0xbf, 0xf6, 0xaf, 0x41, 0x49, 0xf5, 0x1b,
+        };
 
         /// <inheritdoc />
-        protected override int ExpectedInputBlockSize => 16;
-
-        /// <inheritdoc />
-        protected override int ExpectedOutputBlockSize => 16;
-
-        /// <inheritdoc />
-        protected override int MaximumLegalKeyLength => ExpectedKeySize;
-
-        /// <inheritdoc />
-        protected override int MinimumLegalKeyLength => ExpectedKeySize;
-
-        /// <inheritdoc />
-        protected override IReadOnlyList<int> ValidKeyLengths => new[] { ExpectedKeySize };
+        protected override HashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => new KeyedAlgorithmSpecification
+        {
+            HashSize = 128,
+            InputBlockSize = 16,
+            OutputBlockSize = 16,
+            IsStateless = false,
+            LongInputLength = 208,
+            MinNonZeroBytesForLongInput = 8,
+            BoundaryLengths = [16, 32, 48, 64],
+            MinKeyLength = 32,
+            MaxKeyLength = 32,
+            CanReuseTransform=false,
+            TestKey = Poly1305TestKey,
+        };
 
         [TestMethod]
         public void Poly1305_WhenUsingRfcTestVector_ShouldMatch()
@@ -65,118 +61,155 @@ namespace Bodu.Security.Cryptography
 
         protected override Poly1305 CreateAlgorithm(SingleTestVariant variant) => this.CreateAlgorithm();
 
-        private static readonly IReadOnlyDictionary<string, byte[]> CustomInputs = new Dictionary<string, byte[]>
-        {
-        };
-
         protected override IEnumerable<KnownAnswerTest> GetTestVectors(SingleTestVariant variant)
         {
             foreach (var vector in base.GetTestVectors(variant))
                 yield return vector;
 
-            var expected = GetExpectedHashesForNamedInputs(variant);
-            foreach (var (name, input) in CustomInputs)
-            {
-                if (expected.TryGetValue(name, out var hex))
-                {
-                    yield return new KnownAnswerTest
-                    {
-                        Name = name,
-                        Input = input,
-                        ExpectedOutput = Convert.FromHexString(hex)
-                    };
-                }
-            }
-        }
-
-        protected override IEnumerable<string> GetFieldsToExcludeFromDisposeValidation()
-        {
-            var list = new List<string>(base.GetFieldsToExcludeFromDisposeValidation());
-            list.AddRange([
-                "ExpectedBlockSize"
-            ]);
-
-            return list;
         }
 
         protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(SingleTestVariant variant) =>
              new Dictionary<string, string>
              {
-                 ["Empty"] = "101112131415161718191A1B1C1D1E1F",
-                 ["ABC"] = "5315EE9D662FF8C089521BE4AC753E07",
-                 ["Zeros_16"] = "5092D416599BDD1F62A4E6286BADEF31",
-                 ["QuickBrownFox"] = "83E7092E4BFAE6BD64E6AD70EF279E1B",
-                 ["Sequential_0_255"] = "4816CA3A2F556AFDF5D1A395518DA0FE",
+                 ["Empty"] = "0103808AFB0DB2FD4ABFF6AF4149F51B",
+                 ["ABC"] = "22701EA05B6B7BB59C6EFAF002047EF8",
+                 ["Zeros_16"] = "268F6E95A4B8FA01E694DDC1D1D3FD25",
+                 ["QuickBrownFox"] = "2458137FE6781FB38D3782CE0D70BCA6",
+                 ["Sequential_0_255"] = "1212245DC131EF863720469237C5F17B",
              };
 
         protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
-             new[]
-                {
-                    "101112131415161718191A1B1C1D1E1F",
-                    "1F11131517191B1D1F21232527292B2D",
-                    "F3231316191C1F2225282B2E3134373A",
-                    "560826171C21262B30353A3F44494E53",
-                    "C33B1D2A1E262E363E464E565E666E76",
-                    "BF3B2234312935414D5965717D8995A1",
-                    "C085B20A4D3C394A5B6C7D8E9FB0C1D2",
-                    "4B974B2BF66B4C4F667D94ABC2D9F007",
-                    "DBED6A13A7E58E626C8AA8C6E402213F",
-                    "EB068E40DE26DAB77F91B7DD032A5076",
-                    "F65F323019ADABD4E7A4BFEE1D4D7CAB",
-                    "8176D55FD5F58036D61FD3F7306AA3DC",
-                    "02C8F44C907ED75AC8DF600B3B7FC307",
-                    "FED10D75C7C42CBF3B62F2AB4E8ADA2A",
-                    "F0119E55F845FEE0AD24050F029EE643",
-                    "5305236CA07FC93D9CA416B23664FA50",
-                    "A2291A363DEF0B53845FA4126A6AD364",
-                    "F735C97F7308FD79222447FE76A96872",
-                    "F749D9A0A54B51DF98ABDFA731754560",
-                    "725BEDB1C880983804296F49E53A1D4A",
-                    "E8A711C6DAA5D083629AF3E08FF8ED2D",
-                    "D4AC2FFDEEB8F7BEB1FD6A6C2FACB509",
-                    "B1E7C4EC38CD0BE8EF50D3E9C15372DB",
-                    "04D64E12F92920FD1A922A5745ED21A1",
-                    "48F54AEBAFBC8F1131BF6EB2B776C258",
-                    "F8C236F5D702F49345D69DF916EE5100",
-                    "94BC8FADEF79CAC9DAEAB52A6151CE95",
-                    "925FD391749F9030E292CA43949E3517",
-                    "7C297F1FE4F0C345D96B8558AED38582",
-                    "C89710D4BBEBE1863DF32F26C3EEBCD5",
-                    "F127052D790D68718CA647A2A303D90E",
-                    "7C57DAA799D3D38243034A4AF1F6ED2B",
-                    "E4A30DC29ABBA238E086B49B2916F440",
-                    "45B320CBEFF5D7B485F3487C4D74DADD",
-                    "71C8400C51797C7A6CFB71C6B80088AC",
-                    "0407562D95DE032438E981F80C772067",
-                    "7E6CA742B7236CAFE6BA761048D5A10B",
-                    "5A76DEA6CC46B31A766E4E0C68190A98",
-                    "18A278AF435CD763E40107EA6A41570A",
-                    "336DF3D91DE6EC882F739EA74E4B8760",
-                    "2B55CCA3D891899E55C0124311359898",
-                    "7BD7808AF1DC064E6BE761BAB0FC87B0",
-                    "A3718E0BE544E29C2DFD890B2BA054A6",
-                    "1EA172A4334799084ED29F347E1DFC77",
-                    "6CE3AAD25761A90E4AC4874AA8727C23",
-                    "03B6B413D010902C9F504B45BE9DD3A6",
-                    "6D960DE519D3CADFCAF467DACBB3FFFF",
-                    "200233C4B225D7A54A2E5B8732D4152D",
-                    "9776A22E188632FC9B7AA2C96F0C4943",
-                    "302FCFAB563EA5172989C7683708755E",
-                    "8845FF0CE8019A3D801181535355F30D",
-                    "38B1153E4C976137AC6F1116487C4C99",
-                    "B62F94547EFCF902ABA176AE137B7EFE",
-                    "823EE4E5942F619E7AA5AE1AB44F873B",
-                    "1C5B8307384695071979B75827F8644E",
-                    "0403EF362CFDAB3C841A8F666B721535",
-                    "ABB3A4F1EBC17553BA8733427EBC96ED",
-                    "A0EA21B5F5110C30D1BEA2E95DD4E675",
-                    "4F25E4FEC66AEC97C0D5DA5A08B803CC",
-                    "42E1684CDD499408FAD7F1937B65EBED",
-                    "F49B2D1BB62C81FFFAE206ABB5DA9BD9",
-                    "E0D2AFE8CE9030FA4074E3D2CC15138D",
-                    "86036D32A5F31F7649090581072D4F06",
-                    "61ABE275B6D2CCF0911FE932877A6643",
-                };
+            new[]
+            {
+                "0103808AFB0DB2FD4ABFF6AF4149F51B",  // []
+                "0B8856490362076B4E3B3B025089CA22",  // [0x00]
+                "1092DB1FC26A5BC0BB3EB746A2970AF8",  // [0x00, 0x01]
+                "A3A46A7B5732B8697EAF360739F8580D",  // [0x00, 0x01, 0x02]
+                "4A40878F8A86881A7DDFAA023EE1C79B",  // [0x00, 0x01, 0x02, 0x03]
+                "09702BB6238F9BF38133487AB52A0319",  // [0x00, 0x01, 0x02, 0x03, 0x04]
+                "38C2E56253AD7AC5638CF184301E91A6",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05]
+                "9002C8A709E81D7BF4769E83A89C0079",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
+                "2E411A1AD8A562A380C69184FC818264",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]
+                "70B33F7EDAFF28F22D29A080512BD5E9",  // ...
+                "DA8F878A51920DC1865BD94D56D4D3A9",
+                "11FFFEA7441A30305EBE905DE2E1D0FD",
+                "688072BA37F4C9E2579EFD99C82CE74E",
+                "B57E3C32E4BC8A8E9A22E6108AE9F06D",
+                "2776E5446005293658F5F4010B308436",
+                "D1F28598BC850CAAE6C4579B04BB4FA0",
+                "A18A0DE2BA299128303A398E28BDE4F0",
+                "37477D65150C3CA0466AAC5780785EF5",
+                "E1A16A296055E5CAEA2D70C0B787F237",
+                "00554AEDE3A882C982D5AFC872CD41A1",
+                "4B7907527DEADEBAD6DA5A84BFDA9530",
+                "0F523419675BDF1F1C84CD32F76BF592",
+                "5BA5974E38CA26DF891DCC12A91FCB44",
+                "20047B3C76A51AFD0794B966F6D4FA5E",
+                "18B0EBAFEFEBFF75FCD038A89F8FB30A",
+                "0A7C7E32F2EE4E65FA9B3430358EDBC6",
+                "BA0820AC8782DCBCF31ED6EAC5772F5C",
+                "7ABC4723E72800D55322DE623F116D05",
+                "7AC8FFE53470B888F68AEBEF8D490F97",
+                "5C7154A29292E6523AB85C07A06E0642",
+                "78F9A73F528BDE67168C1481C10502F8",
+                "0E25D93D38507235127A78C343311ECA",
+                "A0A50F18E17E3B64B55C78B710BC536B",
+                "4B43C889BF67C2FA13A0F416F5B91D74",
+                "95EE1D3B96F1C0FAEE2300A411CA0524",
+                "36424E6706D19E4E5C0200F4F0F455E1",
+                "2FEFAB1C0900878005DDE16F85268F71",
+                "F370618443D974718BDB29557DFF12B9",
+                "5CC56D42B598241E85B57D0A6673308F",
+                "8E4252D97C1469A4F0B7ABB3885F20F1",
+                "E05BE14D9DE3EE6D4DE2B63587EF0F5D",
+                "8281E1EEA28FC6FD9B15A0495D430D50",
+                "78BEDCD55524FDDD35E9A9F1796DB6BA",
+                "C6B6B4A623E9219F1E8D02D2E09234B9",
+                "6F4DB119C99DF8536A7EB0AF97B8628B",
+                "DCA0901AD719943CAF54AA67FA4547C2",
+                "ACB98E42DCC2E5BEA9290B6ABC2DAB65",
+                "299450EB4DCC29E612367055C7F917A0",
+                "7DFD3556A08537C50F868E4A3D0DEE91",
+                "2A65A2C7B8B9B488D2E37AC46C67C7E3",
+                "146160661A84085EE427CE756E780301",
+                "4155E1FA78EF2607273D8E0D72885412",
+                "E38ADF00E30B9B7925EDA6494EDE72A3",
+                "A7B51D096E4D76F6EB40C46506FF1AD0",
+                "320BD34F805D8E90715B6DF0253380CA",
+                "D1A6B88FD079237FCAE9DBEE1D563074",
+                "7D2D66059AD149998F0173B171BB56A0",
+                "CFACD3C4A026AAC92E9D4951886429CA",
+                "069A281971BC893269C1BBE630CF270A",
+                "DDD6B043AC9FAF9CDA05652F8580E65D",
+                "34F8F166ACC1A452CF7FB35DA493A070",
+                "31F65BAC6B97AD5915FF35B657897233",
+                "B09F045FB4F058492ED53F41BAC13EC4",
+                "142957B2B03E4DCA0400A6D54D2EFC66",
+                "2A7BEBADAE829F595BBDE2CB6CCA72A9",
+                "F800520A419D0741EA4785E22D8B2AF4",
+                "824D789630A8B0EB324C20B8149DBA7E",
+                "36E249937B9F0FEA4A98A0973C920CE4",
+                "81A0E8E94EA90F9D9E1DF093600C1076",
+                "4574AF922A53D8A5A5C6E2E6D874DC87",
+                "EDCA0D62DCB3582DB721E1462F6989A6",
+                "FE84F44AB4703E84FD3B909AFCC2F997",
+                "FF78C0C1285105EF2A41B39DA5FD5684",
+                "01529B9F2F4FEEBF1A4577C9FCFBFEE4",
+                "7EEF49611EE676B1F5B9514C31A752FA",
+                "E37082E5C7E79DC4EF9E4BFD72E451A3",
+                "DE1C08B92177B17B8DA13A7CFAE497F6",
+                "70C5FC428FA627A1D4C94575FE425745",
+                "9EFF4F801DB02CFE0BA1F88801CC8BC3",
+                "E937337EA342D1D84FEA5FC61DD999CE",
+                "C672760A4C1168180015BBBDE5FDB061",
+                "5D652CDF571CEB2D2C606C2A4A0D14F7",
+                "8702BB58D167E9ADAB244F241620F8EE",
+                "C737DDBD0AEB880199A78F4B62FA4AA8",
+                "BB7E1C6545E214F541021608CE98333B",
+                "7FFB6BAE72F4CA898900DE9106492432",
+                "49537306C5A5B3FE269C31C793FD1875",
+                "C22B5B982603EABD5A422170368E49AE",
+                "1D8D4510426C5179F034D0B3349EDD5A",
+                "CFBF8D0C4A13C3EA30A1816BCCF15AF2",
+                "920D963B58ABF464AC66C4DB8CDD03DD",
+                "80D37E196ECB1C212FEC0EF5BBA643DB",
+                "290A499D22C84ED975779EC4AB94156F",
+                "4B5DC86B4051321DBE48325E005BC249",
+                "2828C633130B91E713218EFAA3345FB5",
+                "5F0F3ADC24E2E51BC588F6E048E2BD28",
+                "F9322CF9773BC10BCF2070D9B98F750C",
+                "58271EF16D9C9BCB30074A1B81028E75",
+                "221515587328EF20E78B74393216C6DA",
+                "E9EA87259937CFC9A94575A8A2D519E8",
+                "86BA671D3D1CE7FDA77532255698E77B",
+                "4FE03F07BA968A1E30C9CFE54E90FC57",
+                "3139F0E7AE98DB8059A578F0120539BF",
+                "1C30D922979662A87AD7A8EE8ACC2940",
+                "D1FEE19B5D886AB478B7E372DEB1F4AC",
+                "338B97B666D864C6098C82B6B65A477B",
+                "3C89F95292713FC925A22D140387453B",
+                "B393928A16B0682E31C8C8951FDCC58E",
+                "0555A1BE231AB9E720DCF8B577B72363",
+                "B752ABD1F2FC094A6A5615F01CE6BDC9",
+                "43AE53240967C281DE2F1A156110C322",
+                "61445877A482C70FFDB583A48E5E72FE",
+                "C250F924A266E7AF60BB1B9EA894CA32",
+                "4986253EFE9496F476A0EB4BCC109574",
+                "B8C4849291613F1F64E55D8E62252147",
+                "063B48C8A4FC5F1DFCD51E45F7C975A8",
+                "4C93C810B0CE03924FDB1282F2B0283D",
+                "1562299B7EB1943E18848579ABF061FE",
+                "19BC820412044E8ECDA08359A625E689",
+                "6CD16CE884A2251EDC5EF4ACF3239752",
+                "7B0D9462F21CCE7A422CBB719CDE987F",
+                "92F3B69BFD15512D24694741B5DCC084",
+                "DCA172A548B0D4B8E0CF5A8C8D49141A",
+                "DCF0BB36380DFFC674964676972AD5C2",
+                "DC3C0F1B9FE46D810D3317E757F3BED7",
+                "1EE5A3721E212C025856BCC14D8A46CA",
+                "59D1F64F7A3B3EA7EA306A6F3205B410",
+                "5E168C4DA09BF38E76D5D4A7E8F3B354",
+            };
 
         public override IEnumerable<SingleTestVariant> GetHashAlgorithmVariants() => new[]
         {

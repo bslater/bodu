@@ -17,28 +17,27 @@ namespace Bodu.Security.Cryptography
     public partial class SipHash128Tests
         : Security.Cryptography.SipHashTests<SipHash128Tests, SipHash128>
     {
-        protected override int ExpectedBlockSizeBytes => 8;
-        /// <inheritdoc />
-        protected override int ExpectedInputBlockSize => 8;
-
-        /// <inheritdoc />
-        protected override int ExpectedOutputBlockSize => 8;
-
-        /// <inheritdoc />
-        protected override int MaximumLegalKeyLength => ExpectedKeySize;
-
-        /// <inheritdoc />
-        protected override int MinimumLegalKeyLength => ExpectedKeySize;
-
-        /// <inheritdoc />
-        protected override IReadOnlyList<int> ValidKeyLengths => new[] { ExpectedKeySize };
-
         /// <inheritdoc />
         protected override SipHash128 CreateAlgorithm() => new SipHash128
         {
-            Key = GetDeterministicKey(),
+            Key = SipHashTestKey,
             CompressionRounds = 2,
             FinalizationRounds = 4,
+        };
+
+        protected override HashAlgorithmSpecification GetSpecification(SipHashVariant variant) => new KeyedAlgorithmSpecification
+        {
+            HashSize = 128,
+            InputBlockSize = 8,
+            OutputBlockSize = 8,
+            IsStateless = false,
+            LongInputLength = 200,
+            MinNonZeroBytesForLongInput = 8,   // 16 output bytes; SipHash has strong PRF properties so most bytes should be non-zero
+            BoundaryLengths = [1, 8, 16, 64],
+            MinKeyLength = 16,
+            MaxKeyLength = 16,
+            ValidKeyLengths = [16],
+            TestKey = SipHashTestKey,
         };
 
         protected override SipHash128 CreateAlgorithm(SipHashVariant variant) =>
@@ -47,7 +46,7 @@ namespace Bodu.Security.Cryptography
                 SipHashVariant.SipHash_2_4 => this.CreateAlgorithm(),
                 SipHashVariant.SipHash_4_8 => new SipHash128
                 {
-                    Key = GetDeterministicKey(),
+                    Key = SipHashTestKey,
                     CompressionRounds = 4,
                     FinalizationRounds = 8,
                 },
@@ -107,16 +106,16 @@ namespace Bodu.Security.Cryptography
             {
                 SipHashVariant.SipHash_2_4 => new[]
                 {
-                    "A3817F04BA25A8E66DF67214C7550293",
-                    "DA87C1D86B99AF44347659119B22FC45",
-                    "8177228DA4A45DC7FCA38BDEF60AFFE4",
-                    "9C70B60C5267A94E5F33B6B02985ED51",
-                    "F88164C12D9C8FAF7D0F6E7C7BCD5579",
-                    "1368875980776F8854527A07690E9627",
-                    "14EECA338B208613485EA0308FD7A15E",
-                    "A1F1EBBED8DBC153C0B84AA61FF08239",
-                    "3B62A9BA6258F5610F83E264F31497B4",
-                    "264499060AD9BAABC47F8B02BB6D71ED",
+                    "A3817F04BA25A8E66DF67214C7550293",  // []
+                    "DA87C1D86B99AF44347659119B22FC45",  // [0x00]
+                    "8177228DA4A45DC7FCA38BDEF60AFFE4",  // [0x00, 0x01]
+                    "9C70B60C5267A94E5F33B6B02985ED51",  // [0x00, 0x01, 0x02]
+                    "F88164C12D9C8FAF7D0F6E7C7BCD5579",  // [0x00, 0x01, 0x02, 0x03]
+                    "1368875980776F8854527A07690E9627",  // [0x00, 0x01, 0x02, 0x03, 0x04]
+                    "14EECA338B208613485EA0308FD7A15E",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05]
+                    "A1F1EBBED8DBC153C0B84AA61FF08239",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
+                    "3B62A9BA6258F5610F83E264F31497B4",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]
+                    "264499060AD9BAABC47F8B02BB6D71ED",  // ...
                     "00110DC378146956C95447D3F3D0FBBA",
                     "0151C568386B6677A2B4DC6F81E5DC18",
                     "D626B266905EF35882634DF68532C125",
@@ -174,16 +173,16 @@ namespace Bodu.Security.Cryptography
                 },
                 SipHashVariant.SipHash_4_8 => new[]
                 {
-                    "1F64CE586DA904E9CFECE85483A70A6C",
-                    "47345DA8EF4C79476AF27CA791C7A280",
-                    "E1495FA396CA2DC62273815F188221A4",
-                    "C7A273844AC54E835A9CB67F81057602",
-                    "541F52BBF43ECE4E2A95C8E01F656DEF",
-                    "17973BD40DF34815244F990CBF12BE5D",
-                    "6B0B360D563280CDB17D56C908E1F5FF",
-                    "ED00E13B184BF1C2726B8B54FFD2EEE0",
-                    "A7D946138FF9EDF5364A5A23AFCAE063",
-                    "9E7314B7545CECA38B9A5549E4FB0BE8",
+                    "1F64CE586DA904E9CFECE85483A70A6C",  // []
+                    "47345DA8EF4C79476AF27CA791C7A280",  // [0x00]
+                    "E1495FA396CA2DC62273815F188221A4",  // [0x00, 0x01]
+                    "C7A273844AC54E835A9CB67F81057602",  // [0x00, 0x01, 0x02]
+                    "541F52BBF43ECE4E2A95C8E01F656DEF",  // [0x00, 0x01, 0x02, 0x03]
+                    "17973BD40DF34815244F990CBF12BE5D",  // [0x00, 0x01, 0x02, 0x03, 0x04]
+                    "6B0B360D563280CDB17D56C908E1F5FF",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05]
+                    "ED00E13B184BF1C2726B8B54FFD2EEE0",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
+                    "A7D946138FF9EDF5364A5A23AFCAE063",  // [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]
+                    "9E7314B7545CECA38B9A5549E4FB0BE8",  // ...
                     "586C62C68489D168AEE65B889AB91275",
                     "E67152A64CA3D147C4AB841E2F2E7A99",
                     "7F1C7AEA908DE52E3E9E0883EEA816AF",

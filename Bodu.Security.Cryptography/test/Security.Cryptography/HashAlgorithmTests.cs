@@ -32,7 +32,7 @@ namespace Bodu.Security.Cryptography
         : Security.Cryptography.CryptoTransformTests<TAlgorithm>
         where TTest : HashAlgorithmTests<TTest, TAlgorithm, TVariant>, new()
         where TAlgorithm : HashAlgorithm, new()
-        where TVariant : Enum
+        where TVariant : struct, Enum
     {
         /// <summary>
         /// Defines shared named input vectors used across all hash algorithm test cases.
@@ -60,13 +60,10 @@ namespace Bodu.Security.Cryptography
         public virtual bool HandlePartialBlocks => true;
 
         /// <summary>
-        /// Gets a value indicating whether the algorithm maintains state across transform operations.
+        /// Returns the <see cref="HashAlgorithmSpecification" /> describing the expected properties of
+        /// <typeparamref name="TAlgorithm" /> when constructed for the given <paramref name="variant" />.
         /// </summary>
-        /// <remarks>
-        /// Stateless algorithms return <see langword="true" /> to indicate that each hash computation is independent of prior state.
-        /// Stateful algorithms must ensure correctness across reinitialization and partial block input.
-        /// </remarks>
-        public virtual bool IsStateless => false;
+        protected abstract HashAlgorithmSpecification GetSpecification(TVariant variant);
 
         /// <summary>
         /// Gets the default variant to use in non-parameterized test scenarios.
@@ -93,18 +90,6 @@ namespace Bodu.Security.Cryptography
                         $"Expected hash for \"Empty\" input is not defined for variant '{DefaultVariant}'."));
 
         /// <summary>
-        /// Gets or sets the expected value of <see cref="HashAlgorithm.InputBlockSize" /> for the algorithm under test. Default is 1 for
-        /// streaming hash algorithms.
-        /// </summary>
-        protected virtual int ExpectedInputBlockSize { get; init; } = 1;
-
-        /// <summary>
-        /// Gets or sets the expected value of <see cref="HashAlgorithm.OutputBlockSize" /> for the algorithm under test. Default is 1 for
-        /// most hash algorithms.
-        /// </summary>
-        protected virtual int ExpectedOutputBlockSize { get; init; } = 1;
-
-        /// <summary>
         /// Returns test case parameters for each defined algorithm variant.
         /// </summary>
         /// <returns>An enumerable of <see cref="TVariant" /> values wrapped in object arrays.</returns>
@@ -121,7 +106,7 @@ namespace Bodu.Security.Cryptography
         /// This method drives variant-specific tests. Each variant may represent a change in output size, internal round configuration, or
         /// other algorithm-specific mode flags.
         /// </remarks>
-        public abstract IEnumerable<TVariant> GetHashAlgorithmVariants();
+        public virtual IEnumerable<TVariant> GetHashAlgorithmVariants() => Enum.GetValues<TVariant>();
 
         /// <summary>
         /// Verifies that the expected hash for the "Empty" named input matches the first entry in the incremental hash vector set.
@@ -138,36 +123,6 @@ namespace Bodu.Security.Cryptography
             var emptyA = this.GetExpectedHashesForNamedInputs(variant)["Empty"];
             var emptyB = this.GetExpectedHashesForIncrementalInput(variant)[0];
             Assert.AreEqual(emptyA, emptyB, "Expected hash value for 'Empty' named input should equal the first item of incremental input.");
-        }
-
-        /// <summary>
-        /// Returns public writable properties of the algorithm under test for use in dynamic property validation.
-        /// </summary>
-        /// <returns>
-        /// A collection of <see cref="PropertyInfo" /> arrays, each containing a single writable property. If no writable properties are
-        /// found, a single <see langword="null" /> entry is returned to indicate an inconclusive test case.
-        /// </returns>
-        /// <remarks>
-        /// This method supports validation of runtime immutability rules for cryptographic algorithms. It is commonly used to test whether
-        /// modifying certain properties after hashing has begun results in an exception.
-        /// </remarks>
-        protected static IEnumerable<object[]> GetWritableProperties()
-        {
-            var algorithmType = typeof(TAlgorithm);
-            var properties = algorithmType
-                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p => p.CanRead && p.CanWrite && p.GetIndexParameters().Length == 0)
-                .Where(p => p.SetMethod?.IsPublic == true)
-                .ToList();
-
-            if (properties.Count == 0)
-            {
-                yield return new object[] { null! };
-                yield break;
-            }
-
-            foreach (var prop in properties)
-                yield return new object[] { prop };
         }
 
         /// <summary>
@@ -197,6 +152,90 @@ namespace Bodu.Security.Cryptography
         /// <param name="variant">The algorithm variant to retrieve expected results for.</param>
         /// <returns>A dictionary mapping input names to their expected hexadecimal hash strings for the specified variant.</returns>
         protected abstract IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(TVariant variant);
+
+        /// <summary>
+        /// Gets the property names excluded from disposal validation tests. Override in a derived class to suppress
+        /// properties that are intentionally accessible after disposal.
+        /// </summary>
+        protected virtual IReadOnlyCollection<string> ExcludedFieldNames => [];
+
+        /// <summary>
+        /// The default set of property names excluded from disposal validation. Shared by the static
+        /// <see cref="DynamicDataAttribute" /> data sources, which cannot access virtual instance members.
+        /// </summary>
+        private  IReadOnlyCollection<string> GetExcludedFieldNames() =>
+            this.ExcludedFieldNames
+                .Concat([
+                    // excluded field names that are exposed in Bodu and .Net HashAlgorithm types
+                    "disposed",
+                    "_disposed"
+                ])
+                .Distinct()
+                .ToArray();
+
+        /// <summary>
+        /// Enumerates all instance fields in the algorithm and its base types to validate disposal state.
+        /// </summary>
+        public static IEnumerable<object[]> GetDisposableFields()=>
+            TestHelpers.GetFieldInfoForType<TAlgorithm>(
+                excludeFileds: new TTest().GetExcludedFieldNames()?.ToArray() ?? []);
+
+        /// <summary>
+        /// Gets the property names excluded from disposal validation tests. Override in a derived class to suppress
+        /// properties that are intentionally accessible after disposal.
+        /// </summary>
+        private IReadOnlyCollection<string> GetExcludedReadablePropertyNames() => 
+            this.ExcludedReadablePropertyNames
+                .Concat([
+                    // excluded property names that are exposed .Net HashAlgorithm types
+                    "CanReuseTransform",
+                    "CanTransformMultipleBlocks",
+                    "HashSize",
+                    "InputBlockSize",
+                    "OutputBlockSize",
+                ])
+                .Distinct()
+                .ToArray();
+
+        /// <summary>
+        /// Gets the property names excluded from disposal validation tests. Override in a derived class to suppress
+        /// properties that are intentionally accessible after disposal.
+        /// </summary>
+        private IReadOnlyCollection<string> GetExcludedWriteablePropertyNames() =>
+            this.ExcludedWriteablePropertyNames
+                .Concat([
+                    // excluded property names that are exposed .Net HashAlgorithm types
+                ])
+                .Distinct()
+                .ToArray();
+
+        /// <summary>
+        /// The default set of property names excluded from disposal validation. Shared by the static
+        /// <see cref="DynamicDataAttribute" /> data sources, which cannot access virtual instance members.
+        /// </summary>
+        protected virtual IReadOnlyCollection<string> ExcludedReadablePropertyNames => [];
+
+        /// <summary>
+        /// The default set of property names excluded from disposal validation. Shared by the static
+        /// <see cref="DynamicDataAttribute" /> data sources, which cannot access virtual instance members.
+        /// </summary>
+        protected virtual IReadOnlyCollection<string> ExcludedWriteablePropertyNames => [];
+
+        /// <summary>
+        /// Returns all publicly readable properties on <typeparamref name="TAlgorithm" /> as test data for disposal validation.
+        /// </summary>
+        public static IEnumerable<object[]> GetReadableProperties() =>
+            TestHelpers.GetPropertyInfoForType<TAlgorithm>(
+                TestHelpers.PropertyAccessMode.Read,
+                excludeProperties: new TTest().GetExcludedReadablePropertyNames()?.ToArray() ?? []);
+
+        /// <summary>
+        /// Returns all publicly writable properties on <typeparamref name="TAlgorithm" /> as test data for disposal validation.
+        /// </summary>
+        public static IEnumerable<object[]> GetWritableProperties()            => 
+            TestHelpers.GetPropertyInfoForType<TAlgorithm>(
+                TestHelpers.PropertyAccessMode.Write,
+                excludeProperties: new TTest().GetExcludedWriteablePropertyNames()?.ToArray() ?? []);
 
         /// <summary>
         /// Combines shared input vectors with expected output values to generate test vectors for a specific variant.

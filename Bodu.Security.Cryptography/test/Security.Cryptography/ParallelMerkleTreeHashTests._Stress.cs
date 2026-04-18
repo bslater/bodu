@@ -1,33 +1,45 @@
-﻿using System;
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ParallelMerkleTreeHashTests.Stress.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Bodu.Security.Cryptography.MerkleTestData;
 
 namespace Bodu.Security.Cryptography
 {
     /// <summary>
-    /// Stress tests for <see cref="ParallelMerkleTreeHash"/>.
-    /// These tests run many independent instances concurrently to verify that instances are
-    /// genuinely isolated — sharing a factory but not algorithm state, channels, or buffers —
-    /// and that results are deterministic and correct under concurrent load.
+    /// Stress tests for <see cref="ParallelMerkleTreeHash" />. These tests run many independent
+    /// instances concurrently to verify that instances are genuinely isolated — sharing a factory
+    /// but not algorithm state, channels, or buffers — and that results are deterministic and
+    /// correct under concurrent load.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Note that <see cref="ParallelMerkleTreeHash"/> is a single-instance, single-use class.
-    /// Concurrent stress is achieved by running many independent instances simultaneously, not
-    /// by calling a single instance from multiple threads. The factory function is the only shared
-    /// resource; it must be safe to invoke from multiple threads simultaneously.
+    /// <see cref="ParallelMerkleTreeHash" /> is a single-instance, single-use class. Concurrent
+    /// stress is achieved by running many independent instances simultaneously, not by calling a
+    /// single instance from multiple threads. The factory function is the only shared resource; it
+    /// must be safe to invoke from multiple threads simultaneously.
     /// </para>
     /// </remarks>
     public partial class ParallelMerkleTreeHashTests
     {
+        /// <summary>
+        /// Generous upper bound for the entire stress run. A correct implementation finishes well
+        /// within this on any reasonable hardware; exceeding it indicates a deadlock, livelock, or
+        /// a catastrophic regression.
+        /// </summary>
         private const int StressDeadlockTimeoutMs = 30_000;
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // Concurrent independent instances — correctness invariant
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
         /// Verifies that many independent instances running concurrently each produce the correct
@@ -79,9 +91,9 @@ namespace Bodu.Security.Cryptography
                 string.Join("\n", errors));
         }
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // Concurrent instances — varying data per instance
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
         /// Verifies that concurrent instances with different inputs each produce independent
@@ -134,13 +146,14 @@ namespace Bodu.Security.Cryptography
             }
         }
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // High parallelism — deadlock detection
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
-        /// Verifies that a high number of concurrent instances — scaled to Environment.ProcessorCount
-        /// — all complete within the timeout, guarding against deadlock or livelock at scale.
+        /// Verifies that a high number of concurrent instances — scaled to
+        /// <see cref="Environment.ProcessorCount" /> — all complete within the timeout, guarding
+        /// against deadlock or livelock at scale.
         /// </summary>
         [TestMethod]
         public async Task StressTest_WhenHighConcurrency_ShouldNotDeadlockOrLivelock()
@@ -188,9 +201,9 @@ namespace Bodu.Security.Cryptography
                 $"{faults} instance(s) produced incorrect results or threw exceptions.");
         }
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // Repeated computation wave — factory shared across waves
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
         /// Verifies that running multiple waves of concurrent instances, each wave fully completing
@@ -227,9 +240,9 @@ namespace Bodu.Security.Cryptography
             }
         }
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // Large-input concurrent instances
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
         /// Verifies that concurrent instances hashing large inputs — each spanning multiple tree
@@ -278,9 +291,9 @@ namespace Bodu.Security.Cryptography
             Assert.AreEqual(0, errors.Count, string.Join("\n", errors));
         }
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // Diagnostics under concurrent load
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
         /// Verifies that attaching independent diagnostics instances to each concurrent hasher

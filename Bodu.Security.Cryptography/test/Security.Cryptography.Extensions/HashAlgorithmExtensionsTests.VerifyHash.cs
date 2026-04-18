@@ -1,19 +1,33 @@
-﻿using System;
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="HashAlgorithmExtensionsTests_VerifyHash.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System;
 using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Security.Cryptography.Extensions;
-using Bodu.Infrastructure;
-using Bodu.Security.Cryptography;
 using System.Security.Cryptography;
+using System.Text;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Security.Cryptography.Extensions
 {
+    /// <summary>
+    /// Tests for the synchronous <see cref="HashAlgorithmExtensions.VerifyHash" /> overloads covering
+    /// byte-array, span, memory, string-with-encoding, and stream inputs.
+    /// </summary>
+    /// <remarks>
+    /// <c>VerifyHash</c> throws on any null argument (algorithm, input, expected hash, encoding) and
+    /// returns a simple <see langword="true" />/<see langword="false" /> result for valid inputs;
+    /// exception-swallowing behaviour belongs to the <c>TryVerifyHash</c> family instead.
+    /// </remarks>
     public partial class HashAlgorithmExtensionsTests
     {
+        // ─── Byte-array, span, and memory overloads — matching input ──────────────────────────────
+
         /// <summary>
-        /// Verifies that VerifyHash returns true when the byte array input matches the expected hash.
+        /// Verifies that the byte-array overload returns <see langword="true" /> when the input
+        /// matches the expected hash.
         /// </summary>
         [TestMethod]
         public void VerifyHash_WhenByteArrayMatches_ShouldReturnTrue()
@@ -25,7 +39,7 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that VerifyHash returns true when the byte array hash matches the expected hex string.
+        /// Verifies that the byte-array overload accepts an expected hash supplied as a hex string.
         /// </summary>
         [TestMethod]
         public void VerifyHash_WhenByteArrayMatchesHex_ShouldReturnTrue()
@@ -37,7 +51,41 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that VerifyHash returns true when the stream content matches the expected hash.
+        /// Verifies that both the <see cref="ReadOnlySpan{T}" /> and <see cref="ReadOnlyMemory{T}" />
+        /// overloads accept the same input and produce the same verification result.
+        /// </summary>
+        [TestMethod]
+        public void VerifyHash_WhenSpanAndMemoryMatch_ShouldReturnTrue()
+        {
+            using var algorithm = CreateAlgorithm();
+            ReadOnlySpan<byte> input = new byte[] { 6, 6 };
+            ReadOnlyMemory<byte> memory = input.ToArray();
+            byte[] expected = BitConverter.GetBytes((uint)12);
+
+            Assert.IsTrue(algorithm.VerifyHash(input, expected));
+            Assert.IsTrue(algorithm.VerifyHash(memory, expected));
+        }
+
+        // ─── String-with-encoding overload ────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Verifies that the string overload encodes the input with the supplied encoding before
+        /// hashing and returns <see langword="true" /> when the result matches.
+        /// </summary>
+        [TestMethod]
+        public void VerifyHash_WhenEncodedStringMatches_ShouldReturnTrue()
+        {
+            using var algorithm = CreateAlgorithm();
+            string input = "ABC"; // ASCII bytes sum to 65 + 66 + 67 = 198
+            byte[] expected = BitConverter.GetBytes((uint)198);
+            Assert.IsTrue(algorithm.VerifyHash(input, Encoding.ASCII, expected));
+        }
+
+        // ─── Stream overload ──────────────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Verifies that the stream overload reads the entire stream and returns
+        /// <see langword="true" /> when the accumulated hash matches.
         /// </summary>
         [TestMethod]
         public void VerifyHash_WhenStreamMatchesHash_ShouldReturnTrue()
@@ -48,35 +96,11 @@ namespace Bodu.Security.Cryptography.Extensions
             Assert.IsTrue(algorithm.VerifyHash(stream, expected));
         }
 
-        /// <summary>
-        /// Verifies that VerifyHash returns true when the span and memory inputs match the expected hash.
-        /// </summary>
-        [TestMethod]
-        public void VerifyHash_WhenSpanAndMemoryMatch_ShouldReturnTrue()
-        {
-            using var algorithm = CreateAlgorithm();
-            ReadOnlySpan<byte> input = new byte[] { 6, 6 };
-            ReadOnlyMemory<byte> memory = input.ToArray();
-            byte[] expected = BitConverter.GetBytes((uint)12);
-            Assert.IsTrue(algorithm.VerifyHash(input, expected));
-            Assert.IsTrue(algorithm.VerifyHash(memory, expected));
-        }
+        // ─── Mismatch and edge cases ──────────────────────────────────────────────────────────────
 
         /// <summary>
-        /// Verifies that VerifyHash returns true when the encoded string matches the expected hash.
-        /// </summary>
-        [TestMethod]
-        public void VerifyHash_WhenEncodedStringMatches_ShouldReturnTrue()
-        {
-            using var algorithm = CreateAlgorithm();
-            string input = "ABC";
-            Encoding encoding = Encoding.ASCII;
-            byte[] expected = BitConverter.GetBytes((uint)198);
-            Assert.IsTrue(algorithm.VerifyHash(input, encoding, expected));
-        }
-
-        /// <summary>
-        /// Verifies that VerifyHash returns false for mismatched hash values.
+        /// Verifies that the method returns <see langword="false" /> when the expected hash does not
+        /// match the computed hash of the input.
         /// </summary>
         [TestMethod]
         public void VerifyHash_WhenHashDoesNotMatch_ShouldReturnFalse()
@@ -87,7 +111,8 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that VerifyHash returns false for an empty input.
+        /// Verifies that an empty input produces a hash of 0, which does not match
+        /// <see cref="SampleHash" />.
         /// </summary>
         [TestMethod]
         public void VerifyHash_WhenInputIsEmpty_ShouldReturnFalse()
@@ -96,24 +121,27 @@ namespace Bodu.Security.Cryptography.Extensions
             Assert.IsFalse(algorithm.VerifyHash(Array.Empty<byte>(), SampleHash));
         }
 
+        // ─── Argument validation ──────────────────────────────────────────────────────────────────
+
         /// <summary>
-        /// Verifies that VerifyHash throws ArgumentNullException for null algorithm.
+        /// Verifies that a <see langword="null" /> algorithm receiver raises
+        /// <see cref="ArgumentNullException" />.
         /// </summary>
         [TestMethod]
-        public void VerifyHash_WhenAlgorithmIsNull_ShouldThrow()
+        public void VerifyHash_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
         {
             Assert.ThrowsExactly<ArgumentNullException>(() =>
             {
                 HashAlgorithm? algorithm = null;
-                algorithm.VerifyHash(SampleData, SampleHash);
+                algorithm!.VerifyHash(SampleData, SampleHash);
             });
         }
 
         /// <summary>
-        /// Verifies that VerifyHash throws ArgumentNullException for null expected hash.
+        /// Verifies that a null expected hash byte array raises <see cref="ArgumentNullException" />.
         /// </summary>
         [TestMethod]
-        public void VerifyHash_WhenExpectedHashIsNull_ShouldThrow()
+        public void VerifyHash_WhenExpectedHashIsNull_ShouldThrowArgumentNullException()
         {
             using var algorithm = CreateAlgorithm();
             Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -123,10 +151,10 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that VerifyHash throws ArgumentNullException for null expected hex string.
+        /// Verifies that a null expected hex string raises <see cref="ArgumentNullException" />.
         /// </summary>
         [TestMethod]
-        public void VerifyHash_WhenExpectedHexIsNull_ShouldThrow()
+        public void VerifyHash_WhenExpectedHexIsNull_ShouldThrowArgumentNullException()
         {
             using var algorithm = CreateAlgorithm();
             Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -136,10 +164,11 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that VerifyHash throws ArgumentNullException for null stream hash.
+        /// Verifies that a null expected byte array raises <see cref="ArgumentNullException" /> on
+        /// the stream overload.
         /// </summary>
         [TestMethod]
-        public void VerifyHash_WhenStreamExpectedHashIsNull_ShouldThrow()
+        public void VerifyHash_WhenStreamExpectedHashIsNull_ShouldThrowArgumentNullException()
         {
             using var algorithm = CreateAlgorithm();
             using var stream = new MemoryStream(SampleData);
@@ -150,10 +179,11 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that VerifyHash throws ArgumentNullException for null stream hex.
+        /// Verifies that a null expected hex string raises <see cref="ArgumentNullException" /> on
+        /// the stream overload.
         /// </summary>
         [TestMethod]
-        public void VerifyHash_WhenStreamExpectedHexIsNull_ShouldThrow()
+        public void VerifyHash_WhenStreamExpectedHexIsNull_ShouldThrowArgumentNullException()
         {
             using var algorithm = CreateAlgorithm();
             using var stream = new MemoryStream(SampleData);
@@ -164,10 +194,11 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that VerifyHash throws ArgumentNullException when string input is null.
+        /// Verifies that a null string input raises <see cref="ArgumentNullException" /> on the
+        /// string+encoding overload.
         /// </summary>
         [TestMethod]
-        public void VerifyHash_WhenStringInputIsNull_ShouldThrow()
+        public void VerifyHash_WhenStringInputIsNull_ShouldThrowArgumentNullException()
         {
             using var algorithm = CreateAlgorithm();
             Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -177,10 +208,11 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that VerifyHash throws ArgumentNullException when encoding is null.
+        /// Verifies that a null encoding raises <see cref="ArgumentNullException" /> on the
+        /// string+encoding overload.
         /// </summary>
         [TestMethod]
-        public void VerifyHash_WhenEncodingIsNull_ShouldThrow()
+        public void VerifyHash_WhenEncodingIsNull_ShouldThrowArgumentNullException()
         {
             using var algorithm = CreateAlgorithm();
             Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -190,10 +222,11 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that VerifyHash throws ArgumentNullException when expected hash is null for string input.
+        /// Verifies that a null expected hash raises <see cref="ArgumentNullException" /> on the
+        /// string+encoding overload.
         /// </summary>
         [TestMethod]
-        public void VerifyHash_WhenExpectedHashIsNullForString_ShouldThrow()
+        public void VerifyHash_WhenExpectedHashIsNullForString_ShouldThrowArgumentNullException()
         {
             using var algorithm = CreateAlgorithm();
             Assert.ThrowsExactly<ArgumentNullException>(() =>

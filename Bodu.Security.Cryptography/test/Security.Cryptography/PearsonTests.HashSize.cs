@@ -9,13 +9,12 @@ using System.Threading.Tasks;
 namespace Bodu.Security.Cryptography
 {
     public partial class PearsonTests
-        : Security.Cryptography.HashAlgorithmTests<PearsonTests, Pearson, SingleTestVariant>
     {
         [TestMethod]
         public void HashSize_Get_WhenDefault_ShouldReturn8()
         {
-            using var hash = new Pearson();
-            Assert.AreEqual(8, hash.HashSize, "Default hash size should be 8 bits.");
+            using var algorithm = new Pearson();
+            Assert.AreEqual(8, algorithm.HashSize, "Default algorithm size should be 8 bits.");
         }
 
         [TestMethod]
@@ -26,12 +25,12 @@ namespace Bodu.Security.Cryptography
         [DataRow(2048)]
         public void HashSize_Set_WhenValid_ShouldUpdateSize(int bits)
         {
-            using var hash = new Pearson
+            using var algorithm = new Pearson
             {
                 HashSize = bits
             };
 
-            Assert.AreEqual(bits, hash.HashSize, $"HashSize should be set to {bits} bits.");
+            Assert.AreEqual(bits, algorithm.HashSize, $"HashSize should be set to {bits} bits.");
         }
 
         [TestMethod]
@@ -42,17 +41,17 @@ namespace Bodu.Security.Cryptography
         [DataRow(2048)]
         public void ComputeHash_WhenHashSizeSet_ShouldReturnExpectedByteLength(int bits)
         {
-            using var hash = new Pearson
+            using var algorithm = new Pearson
             {
                 HashSize = bits
             };
 
             byte[] input = Encoding.ASCII.GetBytes("abc");
 
-            byte[] result = hash.ComputeHash(input);
+            byte[] result = algorithm.ComputeHash(input);
 
             int expectedLength = bits / 8;
-            Assert.AreEqual(expectedLength, result.Length, $"Expected hash length for {bits} bits is {expectedLength} bytes.");
+            Assert.AreEqual(expectedLength, result.Length, $"Expected algorithm length for {bits} bits is {expectedLength} bytes.");
         }
 
         [TestMethod]
@@ -63,46 +62,46 @@ namespace Bodu.Security.Cryptography
         [DataRow(-8)]
         public void HashSize_Set_WhenOutOfRange_ShouldThrow(int bits)
         {
-            using var hash = new Pearson();
+            using var algorithm = new Pearson();
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             {
-                hash.HashSize = bits;
+                algorithm.HashSize = bits;
             });
         }
 
         [TestMethod]
         public void HashSize_Set_WhenHashingStarted_ShouldThrowExactly()
         {
-            using var hash = new Pearson();
-            _ = hash.TransformBlock(new byte[] { 1, 2, 3 }, 0, 3, null, 0);
+            using var algorithm = new Pearson();
+            _ = algorithm.TransformBlock(new byte[] { 1, 2, 3 }, 0, 3, null, 0);
 
             Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
             {
-                hash.HashSize = 64;
+                algorithm.HashSize = 64;
             });
         }
 
         [TestMethod]
         public void HashSize_Get_WhenDisposed_ShouldThrowExactly()
         {
-            var hash = new Pearson();
-            hash.Dispose();
+            var algorithm = new Pearson();
+            algorithm.Dispose();
 
             Assert.ThrowsExactly<ObjectDisposedException>(() =>
             {
-                _ = hash.HashSize;
+                _ = algorithm.HashSize;
             });
         }
 
         [TestMethod]
         public void HashSize_Set_WhenDisposed_ShouldThrowExactly()
         {
-            var hash = new Pearson();
-            hash.Dispose();
+            var algorithm = new Pearson();
+            algorithm.Dispose();
 
             Assert.ThrowsExactly<ObjectDisposedException>(() =>
             {
-                hash.HashSize = 64;
+                algorithm.HashSize = 64;
             });
         }
     }

@@ -114,10 +114,12 @@ namespace Bodu.Security.Cryptography
             if (disposing)
             {
                 CryptoHelpers.ClearAndNullify(ref this.HashValue);
-                Array.Clear(this.acc);
-                Array.Clear(this.r);
-                Array.Clear(this.key);
-                Array.Clear(this.s);
+                CryptoHelpers.Clear(this.acc);
+                CryptoHelpers.Clear(this.r);
+                CryptoHelpers.Clear(this.key);
+                CryptoHelpers.Clear(this.s);
+
+                this.HashSizeValue = 0;
             }
 
             this.disposed = true;
@@ -231,6 +233,9 @@ namespace Bodu.Security.Cryptography
             this.finalized = true;
             this.State = 2;
 #endif
+            // Key material is no longer needed — zero it immediately to enforce
+            // Poly1305's one-time-use guarantee and limit key exposure in memory.
+            CryptoHelpers.Clear(this.KeyValue);
 
             return tag.ToArray();
         }

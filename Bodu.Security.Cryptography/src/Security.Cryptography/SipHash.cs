@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SipHash.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -121,9 +121,15 @@ namespace Bodu.Security.Cryptography
         /// <description><c>x</c>: output hash size in bits</description>
         /// </item>
         /// </list>
-        /// </remarks>
-        public string AlgorithmName =>
-            $"SipHash-{this.CompressionRounds}-{this.FinalizationRounds}-{this.HashSizeValue}";
+        /// </remarks>          
+        public string AlgorithmName
+        {
+            get
+            {
+                this.ThrowIfDisposed();
+                return $"SipHash-{this.CompressionRounds}-{this.FinalizationRounds}-{this.HashSizeValue}";
+            }
+        }
 
         /// <inheritdoc />
         public override bool CanReuseTransform => true;
@@ -215,7 +221,9 @@ namespace Bodu.Security.Cryptography
                 CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
                 this.v0 = this.v1 = this.v2 = this.v3 = 0;
-                this.compressionRounds = this.finalizationRounds = 0;
+                this.compressionRounds = 0;
+                this.finalizationRounds = 0;
+                this.HashSizeValue = 0;
             }
 
             this.disposed = true;

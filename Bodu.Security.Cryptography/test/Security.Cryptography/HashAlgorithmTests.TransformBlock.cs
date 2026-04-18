@@ -17,8 +17,8 @@ namespace Bodu.Security.Cryptography
             algorithm.Initialize();
 
             // Should work fine as new hash cycle
-            algorithm.TransformBlock(CryptoTestUtilities.ByteSequence0To255, 0, 16, null, 0);
-            algorithm.TransformFinalBlock(CryptoTestUtilities.ByteSequence0To255, 16, 16);
+            algorithm.TransformBlock(CryptoTestUtilities.ByteSequence256, 0, 16, null, 0);
+            algorithm.TransformFinalBlock(CryptoTestUtilities.ByteSequence256, 16, 16);
             Assert.IsNotNull(algorithm.Hash);
         }
 

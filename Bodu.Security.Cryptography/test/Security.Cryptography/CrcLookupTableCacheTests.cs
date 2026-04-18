@@ -48,7 +48,7 @@ namespace Bodu.Security.Cryptography
 			var result2 = cache.GetLookupTable(size2, polynomial2, reflectIn2);
 
 			// Ensure different lookup tables are cached for different parameters
-			Assert.AreNotSame(result1, result2);
+			Assert.AreNotEqual(result1, result2);
 		}
 
 		/// <summary>
@@ -233,9 +233,10 @@ namespace Bodu.Security.Cryptography
 			else
 			{
 				// If the size is invalid, we expect an exception
-				Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-					cache.GetLookupTable(size, polynomial, reflectIn)
-				);
+				Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+				{
+					cache.GetLookupTable(size, polynomial, reflectIn);
+				});
 			}
 		}
 

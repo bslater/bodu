@@ -162,7 +162,7 @@
             get
             {
                 this.ThrowIfDisposed();
-                return this.permutationTable.Copy();
+                return this.permutationTable.ToArray();
             }
 
             set
@@ -172,7 +172,7 @@
                 if (value == null || value.Length != 256 || value.Distinct().Count() != 256)
                     throw new ArgumentException("Table must contain 256 unique bytes.", nameof(value));
 
-                this.permutationTable = value.Copy();
+                this.permutationTable = value.ToArray();
                 this.tableType = PearsonTableType.UserDefined;
             }
         }
@@ -252,6 +252,7 @@
                 CryptoHelpers.ClearAndNullify(ref this.workingHash!);
 
                 this.isFirstByte = false;
+                this.HashSizeValue = default;
             }
 
             this.disposed = true;

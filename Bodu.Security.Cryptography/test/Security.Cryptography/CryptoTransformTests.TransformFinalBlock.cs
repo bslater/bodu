@@ -33,7 +33,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TransformFinalBlock_WhenCalledWithValidInput_ShouldReturnInputUnchanged()
         {
-            byte[] input = CryptoTestUtilities.ByteSequence0To255;
+            byte[] input = CryptoTestUtilities.ByteSequence256;
             using var algorithm = this.CreateAlgorithm();
             byte[] result = algorithm.TransformFinalBlock(input, 0, input.Length);
             CollectionAssert.AreEqual(input, result);

@@ -104,9 +104,11 @@ namespace Bodu.Security.Cryptography
 
             if (disposing)
             {
-                CryptoHelpers.Clear(MemoryMarshal.AsBytes(this.buffer.AsSpan()));
-                CryptoHelpers.Clear(MemoryMarshal.AsBytes(this.state.AsSpan()));
+                CryptoHelpers.Clear(this.buffer);
+                CryptoHelpers.Clear(this.state);
                 CryptoHelpers.ClearAndNullify(ref HashValue);
+
+                this.HashSizeValue = 0;
             }
 
             this.disposed = true;

@@ -65,5 +65,51 @@
             CryptographicOperations.ZeroMemory(MemoryMarshal.AsBytes(array.AsSpan()));
             array = null;
         }
+
+        /// <summary>
+        /// Securely clears the contents of a <see cref="MemoryStream" /> by overwriting its underlying buffer with zeros,
+        /// resetting its length, and disposing the stream.
+        /// </summary>
+        /// <param name="stream">
+        /// The <see cref="MemoryStream" /> whose buffer is to be cleared.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="stream" /> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// The supplied <see cref="MemoryStream" /> does not expose its underlying buffer and therefore cannot be securely cleared
+        /// by this method.
+        /// </exception>
+        /// <remarks>
+        /// <para>
+        /// This method attempts to clear the entire underlying buffer, not just the active portion of the stream, because sensitive
+        /// data may remain in unused capacity beyond the current <see cref="MemoryStream.Length" />.
+        /// </para>
+        /// <para>
+        /// This method does not guarantee that all historical copies of the data have been removed from memory. Additional copies may
+        /// exist if the stream was resized, if <see cref="MemoryStream.ToArray" /> was called, or if the data was converted into other
+        /// managed objects such as strings.
+        /// </para>
+        /// <para>
+        /// For sensitive cryptographic material, prefer directly managed byte buffers where possible so they can be cleared with
+        /// <see cref="CryptographicOperations.ZeroMemory(System.Span{byte})" /> without relying on <see cref="MemoryStream" />.
+        /// </para>
+        /// </remarks>
+        public static void ClearAndNullify(MemoryStream stream)
+        {
+            ArgumentNullException.ThrowIfNull(stream);
+
+            if (!stream.TryGetBuffer(out ArraySegment<byte> segment) || segment.Array is null)
+            {
+                throw new InvalidOperationException(
+                    "The MemoryStream does not expose its underlying buffer.");
+            }
+
+            CryptographicOperations.ZeroMemory(segment.Array.AsSpan(0, segment.Array.Length));
+
+            stream.Position = 0;
+            stream.SetLength(0);
+            stream.Dispose();
+        }
     }
 }

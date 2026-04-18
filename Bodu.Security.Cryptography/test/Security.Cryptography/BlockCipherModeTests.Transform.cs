@@ -1,191 +1,220 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Cryptography;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bodu.Security.Cryptography;
 using Bodu.Testing.Security;
-using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography
 {
-	public abstract partial class BlockCipherModeTests<TMode>
-	{
-		[TestMethod]
-		public void Transform_WhenInputNotBlockAligned_ShouldThrow()
-		{
-			var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-			var iv = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize);
-			var transform = CreateTransform(cipher, iv);
+    public abstract partial class BlockCipherModeTests<TMode>
+    {
+        /// <summary>
+        /// Gets a value indicating whether this mode requires all input to be a multiple of the block size.
+        /// Defaults to <see langword="true" />. Override to <see langword="false" /> for modes such as
+        /// <see cref="CtsModeTransform" /> that explicitly accept non-block-aligned input.
+        /// </summary>
+        protected virtual bool RequiresBlockAlignedInput => true;
 
-			var input = new byte[ExpectedBlockSize + 1];
-			var output = new byte[input.Length];
+        [TestMethod]
+        public void Transform_WhenInputNotBlockAligned_ShouldThrow()
+        {
+            if (!this.RequiresBlockAlignedInput)
+            {
+                Assert.Inconclusive($"{typeof(TMode).Name} accepts non-block-aligned input by design — block-alignment is not enforced.");
+                return;
+            }
 
-			Assert.ThrowsExactly<ArgumentException>(() =>
-			{
-				transform.Transform(input, output, encrypt: true);
-			});
-		}
+            var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
+            var iv = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize);
+            var transform = CreateTransform(cipher, iv);
 
-		[TestMethod]
-		public void Transform_WhenOutputTooSmall_ShouldThrow()
-		{
-			var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-			var iv = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize);
-			var transform = CreateTransform(cipher, iv);
+            var input = new byte[ExpectedBlockSize + 1];
+            var output = new byte[input.Length];
 
-			var input = new byte[ExpectedBlockSize];
-			var output = new byte[ExpectedBlockSize - 1];
+            Assert.ThrowsExactly<ArgumentException>(() =>
+            {
+                transform.Transform(input, output, encrypt: true);
+            });
+        }
 
-			Assert.ThrowsExactly<ArgumentException>(() =>
-			{
-				transform.Transform(input, output, encrypt: true);
-			});
-		}
+        [TestMethod]
+        public void Transform_WhenOutputTooSmall_ShouldThrow()
+        {
+            var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
+            var iv = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize);
+            var transform = CreateTransform(cipher, iv);
 
-		[TestMethod]
-		public void Transform_WhenRoundTripped_ShouldReturnOriginal()
-		{
-			var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-			var iv = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize);
+            var input = new byte[ExpectedBlockSize];
+            var output = new byte[ExpectedBlockSize - 1];
 
-			var transformEncrypt = CreateTransform(cipher, (byte[])iv.Clone());
-			var transformDecrypt = CreateTransform(cipher, (byte[])iv.Clone());
+            Assert.ThrowsExactly<ArgumentException>(() =>
+            {
+                transform.Transform(input, output, encrypt: true);
+            });
+        }
 
-			var plaintext = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize * 2);
-			var ciphertext = new byte[plaintext.Length];
-			var decrypted = new byte[plaintext.Length];
+        [TestMethod]
+        public void Transform_WhenRoundTripped_ShouldReturnOriginal()
+        {
+            var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
+            var iv = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize);
 
-			transformEncrypt.Transform(plaintext, ciphertext, encrypt: true);
-			transformDecrypt.Transform(ciphertext, decrypted, encrypt: false);
+            var transformEncrypt = CreateTransform(cipher, (byte[])iv.Clone());
+            var transformDecrypt = CreateTransform(cipher, (byte[])iv.Clone());
 
-			CollectionAssert.AreEqual(plaintext, decrypted);
-		}
+            var plaintext = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize * 2);
+            var ciphertext = new byte[plaintext.Length];
+            var decrypted = new byte[plaintext.Length];
 
-		[TestMethod]
-		public void Transform_WithAllZeroInput_ShouldProcessCorrectly()
-		{
-			var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x00);
-			var iv = Enumerable.Repeat((byte)0x00, ExpectedBlockSize).ToArray();
-			var transform = CreateTransform(cipher, iv);
+            transformEncrypt.Transform(plaintext, ciphertext, encrypt: true);
+            transformDecrypt.Transform(ciphertext, decrypted, encrypt: false);
 
-			var input = new byte[ExpectedBlockSize * 2];
-			var output = new byte[input.Length];
+            CollectionAssert.AreEqual(plaintext, decrypted);
+        }
 
-			transform.Transform(input, output, encrypt: true);
+        [TestMethod]
+        public void Transform_WithAllZeroInput_ShouldProcessCorrectly()
+        {
+            var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x00);
+            var iv = Enumerable.Repeat((byte)0x00, ExpectedBlockSize).ToArray();
+            var transform = CreateTransform(cipher, iv);
 
-			// The precise output varies by mode (CTR, for example, XORs with an incrementing counter, so the
-			// second block is non-zero even for an all-zero plaintext and an identity cipher). The purpose of
-			// this test is to verify that Transform completes without throwing and produces the expected number
-			// of output bytes; mode-specific output shapes are asserted by the per-mode test partials.
-			Assert.AreEqual(input.Length, output.Length);
-		}
+            var input = new byte[ExpectedBlockSize * 2];
+            var output = new byte[input.Length];
 
-		[TestMethod]
-		public void Transform_WithAlternatingBitsAA55_ShouldSucceed()
-		{
-			var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-			var iv = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize);
-			var transform = CreateTransform(cipher, iv);
+            transform.Transform(input, output, encrypt: true);
 
-			var input = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)(i % 2 == 0 ? 0xAA : 0x55)).ToArray();
-			var output = new byte[input.Length];
+            // The precise output varies by mode (CTR, for example, XORs with an incrementing counter, so the
+            // second block is non-zero even for an all-zero plaintext and an identity cipher). The purpose of
+            // this test is to verify that Transform completes without throwing and produces the expected number
+            // of output bytes; mode-specific output shapes are asserted by the per-mode test partials.
+            Assert.AreEqual(input.Length, output.Length);
+        }
 
-			transform.Transform(input, output, encrypt: true);
+        [TestMethod]
+        public void Transform_WithAlternatingBitsAA55_ShouldSucceed()
+        {
+            var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
+            var iv = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize);
+            var transform = CreateTransform(cipher, iv);
 
-			Assert.IsTrue(output.Any(b => b != 0));
-		}
+            var input = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)(i % 2 == 0 ? 0xAA : 0x55)).ToArray();
+            var output = new byte[input.Length];
 
-		[TestMethod]
-		public void Transform_WithMaxValueInput_ShouldSucceed()
-		{
-			var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
+            transform.Transform(input, output, encrypt: true);
 
-			// Use an all-zero seed rather than an all-0xFF seed so CTR's counter does not wrap on the
-			// very first increment (which would cause IncrementCounter to set counterWrapped=true and
-			// throw on the second block). The purpose of this test is to saturate the *input* bytes,
-			// not the IV.
-			var iv = new byte[ExpectedBlockSize];
-			var transform = CreateTransform(cipher, iv);
+            Assert.IsTrue(output.Any(b => b != 0));
+        }
 
-			var input = Enumerable.Repeat((byte)0xFF, ExpectedBlockSize * 2).ToArray();
-			var output = new byte[input.Length];
+        [TestMethod]
+        public void Transform_WithMaxValueInput_ShouldSucceed()
+        {
+            var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
 
-			transform.Transform(input, output, encrypt: true);
+            // Use an all-zero seed rather than an all-0xFF seed so CTR's counter does not wrap on the
+            // very first increment (which would cause IncrementCounter to set counterWrapped=true and
+            // throw on the second block). The purpose of this test is to saturate the *input* bytes,
+            // not the IV.
+            var iv = new byte[ExpectedBlockSize];
+            var transform = CreateTransform(cipher, iv);
 
-			// Smoke test: Transform must accept a fully-saturated input and produce output of the expected
-			// length. A stronger "all bytes non-zero" assertion is unsafe because OFB with an involutive test
-			// cipher collapses to zero on alternating blocks; mode-specific byte-level assertions belong in
-			// the per-mode test partials.
-			Assert.AreEqual(input.Length, output.Length);
-		}
+            var input = Enumerable.Repeat((byte)0xFF, ExpectedBlockSize * 2).ToArray();
+            var output = new byte[input.Length];
 
-		[TestMethod]
-		public void Transform_WithMirroredPattern_ShouldSucceed()
-		{
-			var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-			var iv = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize);
-			var transform = CreateTransform(cipher, iv);
+            transform.Transform(input, output, encrypt: true);
 
-			var input = Enumerable.Range(0, ExpectedBlockSize * 2)
-				.Select(i => (byte)(i < ExpectedBlockSize ? i : ExpectedBlockSize * 2 - i - 1))
-				.ToArray();
-			var output = new byte[input.Length];
+            // Smoke test: Transform must accept a fully-saturated input and produce output of the expected
+            // length. A stronger "all bytes non-zero" assertion is unsafe because OFB with an involutive test
+            // cipher collapses to zero on alternating blocks; mode-specific byte-level assertions belong in
+            // the per-mode test partials.
+            Assert.AreEqual(input.Length, output.Length);
+        }
 
-			transform.Transform(input, output, encrypt: true);
+        [TestMethod]
+        public void Transform_WithMirroredPattern_ShouldSucceed()
+        {
+            var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
+            var iv = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize);
+            var transform = CreateTransform(cipher, iv);
 
-			Assert.IsTrue(output.Any(b => b != 0));
-		}
+            var input = Enumerable.Range(0, ExpectedBlockSize * 2)
+                .Select(i => (byte)(i < ExpectedBlockSize ? i : ExpectedBlockSize * 2 - i - 1))
+                .ToArray();
+            var output = new byte[input.Length];
 
-		[TestMethod]
-		public void Transform_WithNibblePatternF00F_ShouldSucceed()
-		{
-			var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-			var iv = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize);
-			var transform = CreateTransform(cipher, iv);
+            transform.Transform(input, output, encrypt: true);
 
-			var input = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)(i % 2 == 0 ? 0xF0 : 0x0F)).ToArray();
-			var output = new byte[input.Length];
+            Assert.IsTrue(output.Any(b => b != 0));
+        }
 
-			transform.Transform(input, output, encrypt: true);
+        [TestMethod]
+        public void Transform_WithNibblePatternF00F_ShouldSucceed()
+        {
+            var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
+            var iv = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize);
+            var transform = CreateTransform(cipher, iv);
 
-			Assert.IsTrue(output.Any(b => b != 0));
-		}
+            var input = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)(i % 2 == 0 ? 0xF0 : 0x0F)).ToArray();
+            var output = new byte[input.Length];
 
-		[TestMethod]
-		public void Transform_WithRepeatingPatternInput_ShouldProcessEachBlockIndependently()
-		{
-			if (!this.UsesChaining)
-			{
-				Assert.Inconclusive($"{typeof(TMode).Name} does not alter repeating blocks.");
-				return;
-			}
+            transform.Transform(input, output, encrypt: true);
 
-			var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xFF);
-			var iv = Enumerable.Range(0, ExpectedBlockSize).Select(i => (byte)i).ToArray();
-			var transform = CreateTransform(cipher, (byte[])iv.Clone());
+            Assert.IsTrue(output.Any(b => b != 0));
+        }
 
-			var block = Enumerable.Repeat((byte)0xAA, ExpectedBlockSize).ToArray();
-			var input = block.Concat(block).ToArray();
-			var output = new byte[input.Length];
+        /// <summary>
+        /// Verifies that a chaining mode feeds the underlying cipher distinct inputs for two
+        /// identical plaintext blocks — the structural signal that chaining (or offset advancement)
+        /// is active. This is checked on the cipher's input log rather than the ciphertext because
+        /// <see cref="MonitoringBlockCipher" />'s XOR transform is linear, and some modes (notably
+        /// OCB) surround the cipher call with pre- and post-XOR operations that cancel under a linear
+        /// transform.
+        /// </summary>
+        [TestMethod]
+        public void Transform_WithRepeatingPatternInput_ShouldFeedCipherDistinctInputsPerBlock()
+        {
+            if (!this.UsesChaining)
+            {
+                Assert.Inconclusive($"{typeof(TMode).Name} does not alter repeating blocks.");
+                return;
+            }
 
-			transform.Transform(input, output, encrypt: true);
+            var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xFF);
+            var iv = Enumerable.Range(0, ExpectedBlockSize).Select(i => (byte)i).ToArray();
+            var transform = CreateTransform(cipher, (byte[])iv.Clone());
 
-			Assert.AreNotEqual(BitConverter.ToString(output[..ExpectedBlockSize]), BitConverter.ToString(output[ExpectedBlockSize..]));
-		}
+            var block = Enumerable.Repeat((byte)0xAA, ExpectedBlockSize).ToArray();
+            var input = block.Concat(block).ToArray();
+            var output = new byte[input.Length];
 
-		[TestMethod]
-		public void Transform_WithSawtoothPattern_ShouldSucceed()
-		{
-			var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
-			var iv = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize);
-			var transform = CreateTransform(cipher, iv);
+            transform.Transform(input, output, encrypt: true);
 
-			var input = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)(i % 16)).ToArray();
-			var output = new byte[input.Length];
+            Assert.IsTrue(cipher.EncryptInputs.Count >= 2,
+                $"Expected the underlying cipher to be invoked at least twice for a two-block input; " +
+                $"got {cipher.EncryptInputs.Count} call(s).");
 
-			transform.Transform(input, output, encrypt: true);
+            CollectionAssert.AreNotEqual(
+                cipher.EncryptInputs[0],
+                cipher.EncryptInputs[1],
+                $"{typeof(TMode).Name} reports UsesChaining=true but fed the underlying cipher " +
+                "identical inputs for two identical plaintext blocks — chaining is not active.");
+        }
 
-			Assert.IsTrue(output.Any(b => b != 0));
-		}
+        [TestMethod]
+        public void Transform_WithSawtoothPattern_ShouldSucceed()
+        {
+            var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
+            var iv = CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize);
+            var transform = CreateTransform(cipher, iv);
+
+            var input = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)(i % 16)).ToArray();
+            var output = new byte[input.Length];
+
+            transform.Transform(input, output, encrypt: true);
+
+            Assert.IsTrue(output.Any(b => b != 0));
+        }
 
         /// <summary>
         /// Verifies that a mode transform that guards against keystream reuse throws

@@ -1,33 +1,40 @@
-﻿using System;
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ParallelMerkleTreeHashTests.Performance.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Bodu.Security.Cryptography.MerkleTestData;
 
 namespace Bodu.Security.Cryptography
 {
     /// <summary>
-    /// Performance tests for <see cref="ParallelMerkleTreeHash"/>.
-    /// These tests do not enforce strict timing constraints — they assert that results are correct
-    /// and that operations complete within a generous wall-clock bound, which catches hangs and
-    /// catastrophic regressions without making assertions that would fail on slow CI hardware.
+    /// Performance tests for <see cref="ParallelMerkleTreeHash" />.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// These tests do not enforce strict timing constraints — they assert that results are correct
+    /// and that operations complete within a generous wall-clock bound. That catches hangs and
+    /// catastrophic regressions without making assertions that would flake on slow CI hardware.
+    /// </para>
+    /// </remarks>
     public partial class ParallelMerkleTreeHashTests
     {
-        // -----------------------------------------------------------------------------------------
-        // Constants
-        // -----------------------------------------------------------------------------------------
-
         /// <summary>
-        /// Generous upper bound for any single-instance synchronous operation.
-        /// A correct implementation should complete well within this on any reasonable hardware;
-        /// failure indicates a deadlock, livelock, or catastrophic regression.
+        /// Generous upper bound for any single-instance synchronous operation. A correct
+        /// implementation should complete well within this on any reasonable hardware; failure
+        /// indicates a deadlock, livelock, or catastrophic regression.
         /// </summary>
         private const int SingleOperationTimeoutMs = 15_000;
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // Throughput — correctness under load
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
         /// Verifies that the parallel implementation produces a correct result for a large input
@@ -59,8 +66,8 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that ComputeHashAsync completes within the allowed timeout for a large stream
-        /// and produces a correct result.
+        /// Verifies that <c>ComputeHashAsync</c> completes within the allowed timeout for a large
+        /// stream and produces a correct result.
         /// </summary>
         [TestMethod]
         [DataRow(1, 256, 2)]
@@ -86,13 +93,13 @@ namespace Bodu.Security.Cryptography
             CollectionAssert.AreEqual(expected, actual, "Result incorrect under async performance load.");
         }
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // Throughput — many sequential instances
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
-        /// Verifies that constructing and computing hashes on many independent instances in sequence
-        /// remains correct and completes within the timeout.
+        /// Verifies that constructing and computing hashes on many independent instances in
+        /// sequence remains correct and completes within the timeout.
         /// </summary>
         [TestMethod]
         [DataRow(100, 4, 2, 8)]
@@ -124,13 +131,13 @@ namespace Bodu.Security.Cryptography
                 $"Sequential instance loop exceeded timeout: {sw.ElapsedMilliseconds} ms");
         }
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // Throughput — many parallel instances
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
-        /// Verifies that hashing on many independent instances concurrently produces correct results
-        /// for all of them and completes within the timeout.
+        /// Verifies that hashing on many independent instances concurrently produces correct
+        /// results for all of them and completes within the timeout.
         /// </summary>
         [TestMethod]
         [DataRow(50, 4, 2, 8)]
@@ -170,9 +177,9 @@ namespace Bodu.Security.Cryptography
                     $"Result mismatch on parallel instance {i}.");
         }
 
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
         // Fan-out comparison
-        // -----------------------------------------------------------------------------------------
+        // ═══════════════════════════════════════════════════════════════════════════════════════════
 
         /// <summary>
         /// Verifies that all fan-out values from 2 to 8 produce correct results on the same input,

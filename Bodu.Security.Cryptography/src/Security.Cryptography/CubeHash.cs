@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CubeHash.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -113,9 +113,15 @@ namespace Bodu.Security.Cryptography
         /// </item>
         /// </list>
         /// <para>Example: <c>CubeHash16+32/32+32-256</c>.</para>
-        /// </remarks>
-        public string AlgorithmName =>
-            $"CubeHash{this.InitializationRounds}+{this.Rounds}/{this.TransformBlockSize}+{this.FinalizationRounds}-{this.HashSize}";
+        /// </remarks>           
+        public string AlgorithmName
+        {
+            get
+            {
+                this.ThrowIfDisposed();
+                return $"CubeHash{this.InitializationRounds}+{this.Rounds}/{this.TransformBlockSize}+{this.FinalizationRounds}-{this.HashSize}";
+            }
+        }
 
         /// <inheritdoc />
         public override bool CanReuseTransform => true;
@@ -211,23 +217,25 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Gets the input block size, in bytes, used by consumers of the <see cref="CubeHash" /> algorithm, such as <see cref="System.Security.Cryptography.CryptoStream" />.
+        /// Gets the input block size, in bytes, used by consumers of the <see cref="CubeHash" /> algorithm, such as
+        /// <see cref="System.Security.Cryptography.CryptoStream" />.
         /// </summary>
         /// <remarks>
-        /// This value reflects the configured <see cref="TransformBlockSize" />, which determines how many bytes are accumulated before a
-        /// transformation round is triggered internally. While this value does not impact the correctness of the hash, feeding data in
-        /// aligned blocks may improve performance in stream-based scenarios.
+        /// This value reflects the configured <see cref="TransformBlockSize" />, which determines how many bytes are
+        /// accumulated before a transformation round is triggered internally. While this value does not impact the
+        /// correctness of the hash, feeding data in aligned blocks may improve performance in stream-based scenarios.
         /// </remarks>
         public override int InputBlockSize => this.TransformBlockSize;
 
         /// <summary>
-        /// Gets the output block size, in bytes, of the final computed hash value.
+        /// Gets the output block size, in bytes, produced per transformation step — equal to <see cref="InputBlockSize" />.
         /// </summary>
         /// <remarks>
-        /// This is equal to the configured <see cref="HashSize" /> divided by 8. For example, a 512-bit hash will produce an output block
-        /// of 64 bytes. This value corresponds to the full digest returned after <see cref="HashAlgorithm.HashFinal" /> is called.
+        /// CubeHash is based on a sponge construction in which the same block size governs both input absorption and
+        /// output production. This value therefore mirrors <see cref="TransformBlockSize" /> rather than the final digest
+        /// length, which is expressed separately through <see cref="System.Security.Cryptography.HashAlgorithm.HashSize" />.
         /// </remarks>
-        public override int OutputBlockSize => this.HashSize / 8;
+        public override int OutputBlockSize => this.TransformBlockSize;
 
         /// <summary>
         /// Gets or sets the number of transformation rounds applied to each full input block.
@@ -292,8 +300,6 @@ namespace Bodu.Security.Cryptography
 #if !NET6_0_OR_GREATER
             State = 0;
             finalized = false;
-#else
-            this.State = 0;
 #endif
             this.pendingBytes = 0;
 
@@ -321,7 +327,9 @@ namespace Bodu.Security.Cryptography
                     CryptoHelpers.ClearAndNullify(ref this.HashValue);
                     CryptoHelpers.ClearAndNullify(ref this.state!);
                     CryptoHelpers.ClearAndNullify(ref this.initializedState!);
+
                     this.isInitializedStateCached = false;
+                    this.HashSizeValue = 0;
                 }
             }
 

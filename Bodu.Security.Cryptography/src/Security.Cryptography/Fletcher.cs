@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Fletcher64.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -53,14 +53,14 @@ namespace Bodu.Security.Cryptography
             this.modulus = (1UL << (hashSize / 2)) - 1;
             this.HashSizeValue = hashSize;
             this.partA = this.partB = 0;
+            this.AlgorithmName = $"Fletcher-{this.HashSizeValue}";
         }
 
         /// <summary>
         /// Gets the algorithm name in the form <c>Fletcher-N</c>, where <c>N</c> is the output width in bits.
         /// </summary>
         /// <value>A string such as <c>Fletcher-16</c>, <c>Fletcher-32</c>, or <c>Fletcher-64</c>.</value>
-        public string AlgorithmName =>
-            $"Fletcher-{this.HashSizeValue}";
+        public readonly string AlgorithmName;
 
         /// <inheritdoc />
         public override bool CanReuseTransform => true;
@@ -101,7 +101,9 @@ namespace Bodu.Security.Cryptography
             {
                 CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
-                this.partA = this.partB = 0;
+                this.partA = 0;
+                this.partB = 0;
+                this.HashSizeValue = 0;
             }
 
             this.disposed = true;

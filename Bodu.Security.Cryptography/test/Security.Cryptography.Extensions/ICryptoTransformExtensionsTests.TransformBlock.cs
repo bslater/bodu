@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Linq;
 using System.Security.Cryptography;
 using Bodu.Infrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -48,53 +49,58 @@ namespace Bodu.Security.Cryptography.Extensions
         /// the transformed output in-place and returns the number of bytes written.
         /// </summary>
         [TestMethod]
-        public void TransformBlock_WhenArrayIsValid_ShouldTransformInPlaceAndReturnByteCount()
+        [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+        public void TransformBlock_WhenArrayIsValid_ShouldTransformInPlaceAndReturnByteCount(KnownAnswerTest kat)
         {
-            // BlockSize = 32 bits = 4 bytes; reversal of {1,2,3,4} → {4,3,2,1}
-            byte[] block = { 1, 2, 3, 4 };
-            byte[] expected = { 4, 3, 2, 1 };
+            // Take a fresh copy since TransformBlock modifies the array in-place.
+            byte[] block = (byte[])kat.Input.Clone();
 
-            using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
-
+            using var transform = CreateTransform(kat);
             int written = transform.TransformBlock(block);
 
-            Assert.AreEqual(block.Length, written);
-            CollectionAssert.AreEqual(expected, block);
+            Assert.AreEqual(kat.Input.Length, written,
+                $"[{kat.Name}] Written byte count must equal input length.");
+            CollectionAssert.AreEqual(kat.ExpectedOutput, block,
+                $"[{kat.Name}] In-place transform did not produce the expected output.");
         }
 
         /// <summary>
-        /// Verifies that <see cref="ICryptoTransformExtensions.TransformBlock(ICryptoTransform,byte[])" /> returns
-        /// zero when given an empty array, with no side effects.
+        /// Verifies that <see cref="ICryptoTransformExtensions.TransformBlock(ICryptoTransform,byte[])" />
+        /// throws <see cref="ArgumentException" /> when given an empty array, since a zero-length block
+        /// is not a meaningful input for any block cipher operation.
         /// </summary>
         [TestMethod]
-        public void TransformBlock_WhenArrayIsEmpty_ShouldReturnZero()
+        public void TransformBlock_WhenArrayIsEmpty_ShouldThrowArgumentException()
         {
             using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
-            byte[] empty = Array.Empty<byte>();
 
-            int written = transform.TransformBlock(empty);
-
-            Assert.AreEqual(0, written);
+            Assert.ThrowsExactly<ArgumentException>(() =>
+                transform.TransformBlock(Array.Empty<byte>()));
         }
 
         /// <summary>
         /// Verifies that consecutive calls to
         /// <see cref="ICryptoTransformExtensions.TransformBlock(ICryptoTransform,byte[])" /> each independently
-        /// transform the supplied block, confirming the transform processes each call in isolation.
+        /// transform the supplied block, confirming that ECB mode produces no cross-call state leakage —
+        /// the same input always yields the same output regardless of previous calls.
         /// </summary>
         [TestMethod]
-        public void TransformBlock_WhenCalledRepeatedly_ShouldTransformEachBlockIndependently()
+        [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+        public void TransformBlock_WhenCalledRepeatedly_ShouldTransformEachBlockIndependently(KnownAnswerTest kat)
         {
-            using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
+            // Two independent copies of the same input — the transform must produce identical
+            // output for each, confirming there is no state leakage between consecutive calls.
+            byte[] blockA = (byte[])kat.Input.Clone();
+            byte[] blockB = (byte[])kat.Input.Clone();
 
-            byte[] blockA = { 1, 2, 3, 4 };
-            byte[] blockB = { 5, 6, 7, 8 };
-
+            using var transform = CreateTransform(kat);
             transform.TransformBlock(blockA);
             transform.TransformBlock(blockB);
 
-            CollectionAssert.AreEqual(new byte[] { 4, 3, 2, 1 }, blockA);
-            CollectionAssert.AreEqual(new byte[] { 8, 7, 6, 5 }, blockB);
+            CollectionAssert.AreEqual(kat.ExpectedOutput, blockA,
+                $"[{kat.Name}] First TransformBlock call produced wrong output.");
+            CollectionAssert.AreEqual(kat.ExpectedOutput, blockB,
+                $"[{kat.Name}] Second TransformBlock call produced wrong output — possible state leakage from first call.");
         }
     }
 }

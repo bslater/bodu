@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bodu.Security.Cryptography;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,5 +42,16 @@ namespace Bodu.Infrastructure
         /// Gets or sets optional parameters used for the test case (e.g., Key, Tweak, IV, Flags, Lengths).
         /// </summary>
         public IDictionary<string, object> Parameters { get; init; } = new Dictionary<string, object>();
+
+        /// <summary>
+        /// Gets or sets an optional factory used to create a specifically configured
+        /// <see cref="ICryptoTransform" /> for this known-answer test case.
+        /// </summary>
+        /// <remarks>
+        /// When <see langword="null" />, the test harness should create the transform using its default
+        /// algorithm setup. When provided, the delegate can apply test-specific configuration such as a
+        /// custom key, IV, cipher mode, padding mode, or tweak before returning the transform to use.
+        /// </remarks>
+        public Func<IBlockCipher>? CipherFactory { get; init; }
     }
 }

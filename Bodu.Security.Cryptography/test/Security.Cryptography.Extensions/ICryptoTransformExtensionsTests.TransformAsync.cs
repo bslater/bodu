@@ -6,6 +6,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
@@ -97,28 +98,28 @@ namespace Bodu.Security.Cryptography.Extensions
             using var source = new MemoryStream(new byte[] { 1, 2, 3, 4 });
             using var target = new MemoryStream();
 
-            await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(async () => {
+            await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(async () =>
+            {
                 await transform.TransformAsync(source, target, -1);
             });
         }
 
         /// <summary>
         /// Verifies that <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform,Stream,Stream,int,CancellationToken)" />
-        /// reads all bytes from the source, applies the transform, and writes the result to the target stream.
+        /// reads all bytes from the source, applies the transform, and writes the expected output to the target stream.
         /// </summary>
         [TestMethod]
-        public async Task TransformAsync_Stream_WhenInputIsValid_ShouldWriteTransformedBytesToTarget()
+        [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+        public async Task TransformAsync_Stream_WhenInputIsValid_ShouldWriteTransformedBytesToTarget(KnownAnswerTest kat)
         {
-            byte[] input = { 1, 2, 3, 4 };
-            byte[] expected = { 4, 3, 2, 1 };
-
-            using var source = new MemoryStream(input);
+            using var source = new MemoryStream(kat.Input);
             using var target = new MemoryStream();
-            using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
+            using var transform = CreateTransform(kat);
 
-            await transform.TransformAsync(source, target, bufferSize: 4);
+            await transform.TransformAsync(source, target, bufferSize: kat.Input.Length);
 
-            CollectionAssert.AreEqual(expected, target.ToArray());
+            CollectionAssert.AreEqual(kat.ExpectedOutput, target.ToArray(),
+                $"[{kat.Name}] Target stream content does not match expected output.");
         }
 
         /// <summary>
@@ -134,7 +135,8 @@ namespace Bodu.Security.Cryptography.Extensions
 
             await transform.TransformAsync(source, target, bufferSize: 16);
 
-            Assert.AreEqual(0, target.Length);
+            Assert.AreEqual(0, target.Length,
+                "Target stream must remain empty when the source stream contains no data.");
         }
 
         /// <summary>
@@ -142,17 +144,17 @@ namespace Bodu.Security.Cryptography.Extensions
         /// does not dispose the target stream after completing the operation.
         /// </summary>
         [TestMethod]
-        public async Task TransformAsync_Stream_WhenCompleted_ShouldLeaveTargetStreamOpen()
+        [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+        public async Task TransformAsync_Stream_WhenCompleted_ShouldLeaveTargetStreamOpen(KnownAnswerTest kat)
         {
-            byte[] input = { 1, 2, 3, 4 };
-
-            using var source = new MemoryStream(input);
+            using var source = new MemoryStream(kat.Input);
             var target = new MemoryStream();
-            using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
+            using var transform = CreateTransform(kat);
 
-            await transform.TransformAsync(source, target, bufferSize: 4);
+            await transform.TransformAsync(source, target, bufferSize: kat.Input.Length);
 
-            Assert.IsTrue(target.CanWrite, "Target stream should remain open after TransformAsync.");
+            Assert.IsTrue(target.CanWrite,
+                $"[{kat.Name}] Target stream should remain open after TransformAsync.");
         }
 
         /// <summary>
@@ -187,18 +189,19 @@ namespace Bodu.Security.Cryptography.Extensions
         /// throws immediately when the cancellation token is already cancelled before the call.
         /// </summary>
         [TestMethod]
-        public async Task TransformAsync_Stream_WhenAlreadyCancelled_ShouldThrowImmediately()
+        [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+        public async Task TransformAsync_Stream_WhenAlreadyCancelled_ShouldThrowImmediately(KnownAnswerTest kat)
         {
-            using var source = new MemoryStream(new byte[] { 1, 2, 3, 4 });
+            using var source = new MemoryStream(kat.Input);
             using var target = new MemoryStream();
-            using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
+            using var transform = CreateTransform(kat);
             using var cts = new CancellationTokenSource();
             cts.Cancel();
 
             try
             {
-                await transform.TransformAsync(source, target, bufferSize: 4, cts.Token);
-                Assert.Fail("Expected OperationCanceledException.");
+                await transform.TransformAsync(source, target, bufferSize: kat.Input.Length, cts.Token);
+                Assert.Fail($"[{kat.Name}] Expected OperationCanceledException.");
             }
             catch (OperationCanceledException)
             {
@@ -229,7 +232,8 @@ namespace Bodu.Security.Cryptography.Extensions
             using (var decryptor = algorithm.CreateDecryptor())
                 await decryptor.TransformAsync(encryptedStream, decryptedStream, bufferSize: 32);
 
-            CollectionAssert.AreEqual(plainText, decryptedStream.ToArray());
+            CollectionAssert.AreEqual(plainText, decryptedStream.ToArray(),
+                "Round-trip encrypt+decrypt must recover the original plaintext.");
         }
 
         // ---------------------------------------------------------------------------------------------------------------
@@ -255,64 +259,77 @@ namespace Bodu.Security.Cryptography.Extensions
 
         /// <summary>
         /// Verifies that <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform,ReadOnlyMemory{byte},Memory{byte},CancellationToken)" />
-        /// transforms the input memory region and writes the result into the destination, returning the byte count.
+        /// transforms the input memory region and writes the result into the destination, returning the
+        /// correct byte count and producing the expected output.
         /// </summary>
         [TestMethod]
-        public async Task TransformAsync_Memory_WhenInputIsValid_ShouldWriteTransformedBytesToDestination()
+        [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+        public async Task TransformAsync_Memory_WhenInputIsValid_ShouldWriteTransformedBytesToDestination(
+            KnownAnswerTest kat)
         {
-            byte[] raw = { 1, 2, 3, 4 };
-            byte[] expected = { 4, 3, 2, 1 };
-            byte[] dest = new byte[64];
-
-            using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
+            byte[] dest = new byte[kat.Input.Length + 16];
+            using var transform = CreateTransform(kat);
 
             int written = await transform.TransformAsync(
-                new ReadOnlyMemory<byte>(raw),
+                new ReadOnlyMemory<byte>(kat.Input),
                 new Memory<byte>(dest));
 
-            Assert.AreEqual(expected.Length, written);
-            CollectionAssert.AreEqual(expected, dest[..written]);
+            Assert.AreEqual(kat.ExpectedOutput.Length, written,
+                $"[{kat.Name}] Written byte count does not match expected output length.");
+            CollectionAssert.AreEqual(kat.ExpectedOutput, dest[..written],
+                $"[{kat.Name}] Transformed output does not match expected.");
         }
 
         /// <summary>
         /// Verifies that <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform,ReadOnlyMemory{byte},Memory{byte},CancellationToken)" />
-        /// produces output identical to the synchronous <c>Transform(ReadOnlySpan, Span)</c> overload for the same input.
+        /// produces output identical to the synchronous <c>Transform(ReadOnlySpan, Span)</c> overload
+        /// for the same input.
         /// </summary>
         [TestMethod]
-        public async Task TransformAsync_Memory_WhenComparedToSyncOverload_ShouldProduceIdenticalOutput()
+        [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+        public async Task TransformAsync_Memory_WhenComparedToSyncOverload_ShouldProduceIdenticalOutput(
+            KnownAnswerTest kat)
         {
-            byte[] input = { 1, 2, 3, 4 };
-
-            byte[] syncDest = new byte[64];
+            byte[] syncDest = new byte[kat.Input.Length + 16];
             int syncWritten;
-            using (var syncTransform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest))
-                syncWritten = syncTransform.Transform(input.AsSpan(), syncDest.AsSpan());
+            using (var syncTransform = CreateTransform(kat))
+                syncWritten = syncTransform.Transform(kat.Input.AsSpan(), syncDest.AsSpan());
 
-            byte[] asyncDest = new byte[64];
+            byte[] asyncDest = new byte[kat.Input.Length + 16];
             int asyncWritten;
-            using (var asyncTransform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest))
-                asyncWritten = await asyncTransform.TransformAsync(new ReadOnlyMemory<byte>(input), new Memory<byte>(asyncDest));
+            using (var asyncTransform = CreateTransform(kat))
+                asyncWritten = await asyncTransform.TransformAsync(
+                    new ReadOnlyMemory<byte>(kat.Input),
+                    new Memory<byte>(asyncDest));
 
-            Assert.AreEqual(syncWritten, asyncWritten);
-            CollectionAssert.AreEqual(syncDest[..syncWritten], asyncDest[..asyncWritten]);
+            Assert.AreEqual(syncWritten, asyncWritten,
+                $"[{kat.Name}] Byte counts differ between sync and async overloads.");
+            CollectionAssert.AreEqual(
+                syncDest[..syncWritten],
+                asyncDest[..asyncWritten],
+                $"[{kat.Name}] Sync and async overloads produced different output.");
         }
 
         /// <summary>
         /// Verifies that <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform,ReadOnlyMemory{byte},Memory{byte},CancellationToken)" />
-        /// throws <see cref="OperationCanceledException" /> when the token is cancelled before the operation begins.
+        /// throws <see cref="TaskCanceledException" /> when the token is already cancelled before the operation begins.
         /// </summary>
         [TestMethod]
-        public async Task TransformAsync_Memory_WhenAlreadyCancelled_ShouldThrowTaskCanceledException()
+        [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+        public async Task TransformAsync_Memory_WhenAlreadyCancelled_ShouldThrowTaskCanceledException(
+            KnownAnswerTest kat)
         {
-            using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
-            var input = new ReadOnlyMemory<byte>(new byte[] { 1, 2, 3, 4 });
-            var destination = new Memory<byte>(new byte[64]);
+            using var transform = CreateTransform(kat);
+            var destination = new Memory<byte>(new byte[kat.Input.Length + 16]);
             using var cts = new CancellationTokenSource();
             cts.Cancel();
 
             await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () =>
             {
-                await transform.TransformAsync(input, destination, cts.Token);
+                await transform.TransformAsync(
+                    new ReadOnlyMemory<byte>(kat.Input),
+                    destination,
+                    cts.Token);
             });
         }
 
@@ -321,15 +338,20 @@ namespace Bodu.Security.Cryptography.Extensions
         /// throws <see cref="ArgumentException" /> when the destination buffer is too small to hold the output.
         /// </summary>
         [TestMethod]
-        public async Task TransformAsync_Memory_WhenDestinationIsTooSmall_ShouldThrowArgumentException()
+        [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+        public async Task TransformAsync_Memory_WhenDestinationIsTooSmall_ShouldThrowArgumentException(
+            KnownAnswerTest kat)
         {
-            using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
-            var input = new ReadOnlyMemory<byte>(new byte[] { 1, 2, 3, 4 });
+            using var transform = CreateTransform(kat);
+
+            // A 1-byte destination is always too small for any block-sized input.
             var tooSmall = new Memory<byte>(new byte[1]);
 
             await Assert.ThrowsExactlyAsync<ArgumentException>(async () =>
             {
-                await transform.TransformAsync(input, tooSmall);
+                await transform.TransformAsync(
+                    new ReadOnlyMemory<byte>(kat.Input),
+                    tooSmall);
             });
         }
     }

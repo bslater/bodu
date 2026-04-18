@@ -53,6 +53,24 @@ namespace Bodu
                 return true;
             }
 
+            if (fieldType == typeof(MemoryStream))
+            {
+                var stream = (MemoryStream)value;
+
+                // Must be disposed — Length will throw ObjectDisposedException if so,
+                // which we treat as correctly nullified/zeroed.
+                try
+                {
+                    byte[] buffer = stream.ToArray();
+                    return buffer.Length == 0 || buffer.All(b => b == 0);
+                }
+                catch (ObjectDisposedException)
+                {
+                    // Stream has been disposed — considered correctly cleaned up.
+                    return true;
+                }
+            }
+
             if (fieldType.IsGenericType)
             {
                 var genericDef = fieldType.GetGenericTypeDefinition();
