@@ -1,18 +1,15 @@
-using System;
-using System.Linq;
-using System.Security.Cryptography;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Security.Cryptography;
-using Bodu.Testing.Security;
-
 namespace Bodu.Security.Cryptography
 {
+    using System.Linq;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Bodu.Testing.Security;
+
     public sealed partial class CtrModeTransformTests
     {
         /// <summary>
-        /// Verifies that CTR encryption computes <c>Cᵢ = Pᵢ ⊕ E(counter + i)</c> with the counter incrementing in
-        /// little-endian order after every block. Uses an identity cipher (xorMask 0x00) so <c>E(x) = x</c>, which makes the
-        /// keystream equal to the successive counter values.
+        /// Verifies that CTR increments the counter in big-endian order (rightmost byte first) per
+        /// NIST SP 800-38A Section 6.5. Uses an identity cipher so E(x) = x, making the keystream
+        /// equal to the successive counter values.
         /// </summary>
         [TestMethod]
         public void Transform_WhenEncrypting_ShouldXorWithIncrementingCounterKeystream()
@@ -26,24 +23,22 @@ namespace Bodu.Security.Cryptography
 
             transform.Transform(plaintext, output, encrypt: true);
 
-            // Identity cipher + all-zero initial counter:
-            //   keystream_0 = [0, 0, 0, 0, 0, 0, 0, 0]
-            //   keystream_1 = [1, 0, 0, 0, 0, 0, 0, 0]  (little-endian increment)
+            // NIST big-endian increment: rightmost byte first.
+            //   keystream_0 = [0, 0, …, 0]
+            //   keystream_1 = [0, 0, …, 0, 1]  (last byte incremented)
             var keystream0 = new byte[ExpectedBlockSize];
             var keystream1 = new byte[ExpectedBlockSize];
-            keystream1[0] = 1;
+            keystream1[ExpectedBlockSize - 1] = 1;
 
-            var expectedBlock0 = plaintext[..ExpectedBlockSize].Zip(keystream0, (a, b) => (byte)(a ^ b)).ToArray();
-            var expectedBlock1 = plaintext[ExpectedBlockSize..].Zip(keystream1, (a, b) => (byte)(a ^ b)).ToArray();
+            var exp0 = plaintext[..ExpectedBlockSize].Zip(keystream0, (a, b) => (byte)(a ^ b)).ToArray();
+            var exp1 = plaintext[ExpectedBlockSize..].Zip(keystream1, (a, b) => (byte)(a ^ b)).ToArray();
 
-            CollectionAssert.AreEqual(expectedBlock0, output[..ExpectedBlockSize].ToArray(), "First CTR block did not match expected counter keystream.");
-            CollectionAssert.AreEqual(expectedBlock1, output[ExpectedBlockSize..].ToArray(), "Second CTR block did not match expected counter keystream.");
+            CollectionAssert.AreEqual(exp0, output[..ExpectedBlockSize].ToArray(),
+                "First CTR block did not match expected counter keystream.");
+            CollectionAssert.AreEqual(exp1, output[ExpectedBlockSize..].ToArray(),
+                "Second CTR block must reflect big-endian counter increment.");
         }
 
-        /// <summary>
-        /// Verifies that in CTR mode encryption and decryption are the same operation — XORing with the counter-derived
-        /// keystream — and that a round trip through two fresh transforms recovers the plaintext.
-        /// </summary>
         [TestMethod]
         public void Transform_EncryptAndDecrypt_ShouldBeSymmetric()
         {
@@ -52,104 +47,76 @@ namespace Bodu.Security.Cryptography
 
             var encrypt = CreateTransform(cipher, (byte[])counter.Clone());
             var decrypt = CreateTransform(cipher, (byte[])counter.Clone());
-
             var plaintext = Enumerable.Range(0, ExpectedBlockSize * 3).Select(i => (byte)i).ToArray();
-            var ciphertext = new byte[plaintext.Length];
+            var ct = new byte[plaintext.Length];
             var recovered = new byte[plaintext.Length];
 
-            encrypt.Transform(plaintext, ciphertext, encrypt: true);
-            decrypt.Transform(ciphertext, recovered, encrypt: false);
+            encrypt.Transform(plaintext, ct, encrypt: true);
+            decrypt.Transform(ct, recovered, encrypt: false);
 
-            CollectionAssert.AreEqual(plaintext, recovered, "CTR decryption did not recover the original plaintext.");
+            CollectionAssert.AreEqual(plaintext, recovered);
         }
 
-        /// <summary>
-        /// Verifies that encrypting in CTR mode does not mutate the caller-supplied initial counter array.
-        /// </summary>
         [TestMethod]
         public void Transform_WhenEncrypting_ShouldNotMutateInitialCounter()
         {
             var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
             var initialCounter = Enumerable.Repeat((byte)0x99, ExpectedBlockSize).ToArray();
-            var initialCounterCopy = (byte[])initialCounter.Clone();
+            var counterCopy = (byte[])initialCounter.Clone();
             var transform = CreateTransform(cipher, initialCounter);
 
-            var plaintext = new byte[ExpectedBlockSize * 2];
-            var output = new byte[plaintext.Length];
+            transform.Transform(new byte[ExpectedBlockSize * 2], new byte[ExpectedBlockSize * 2], encrypt: true);
 
-            transform.Transform(plaintext, output, encrypt: true);
-
-            CollectionAssert.AreEqual(initialCounterCopy, initialCounter, "CTR must not mutate the caller-supplied initial counter array.");
+            CollectionAssert.AreEqual(counterCopy, initialCounter,
+                "CTR must not mutate the caller-supplied initial counter array.");
         }
 
-        /// <summary>
-        /// Verifies that CTR uses the cipher's encrypt primitive on both the encryption and decryption paths. CTR derives its
-        /// keystream by encrypting the counter; the decrypt primitive is never needed.
-        /// </summary>
         [TestMethod]
         public void Transform_WhenDecrypting_ShouldUseCipherEncryptPrimitive()
         {
             var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-            var initialCounter = new byte[ExpectedBlockSize];
-            var transform = CreateTransform(cipher, initialCounter);
-
-            var input = new byte[ExpectedBlockSize * 3];
-            var output = new byte[input.Length];
-
-            transform.Transform(input, output, encrypt: false);
-
-            Assert.AreEqual(3, cipher.EncryptBlockCount, "CTR decryption must use the cipher's encrypt primitive for every block.");
-            Assert.AreEqual(0, cipher.DecryptBlockCount, "CTR decryption must never call the cipher's decrypt primitive.");
+            var transform = CreateTransform(cipher, new byte[ExpectedBlockSize]);
+            transform.Transform(new byte[ExpectedBlockSize * 3], new byte[ExpectedBlockSize * 3], encrypt: false);
+            Assert.AreEqual(3, cipher.EncryptBlockCount, "CTR must use encrypt primitive for decryption.");
+            Assert.AreEqual(0, cipher.DecryptBlockCount, "CTR must never call decrypt primitive.");
         }
 
-        /// <summary>
-        /// Verifies that successive <see cref="CtrModeTransform.Transform" /> calls continue the counter rather than resetting
-        /// it — encrypting two blocks in two calls must produce the same ciphertext as encrypting them in a single call.
-        /// </summary>
         [TestMethod]
         public void Transform_WhenCalledTwice_ShouldContinueCounterAcrossCalls()
         {
             var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-            var initialCounter = new byte[ExpectedBlockSize];
+            var ic = new byte[ExpectedBlockSize];
+            var single = CreateTransform(cipher, (byte[])ic.Clone());
+            var streamed = CreateTransform(cipher, (byte[])ic.Clone());
+            var pt = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)i).ToArray();
+            var sOut = new byte[pt.Length];
+            var dOut = new byte[pt.Length];
 
-            var single = CreateTransform(cipher, (byte[])initialCounter.Clone());
-            var streamed = CreateTransform(cipher, (byte[])initialCounter.Clone());
+            single.Transform(pt, sOut, encrypt: true);
+            streamed.Transform(pt.AsSpan(0, ExpectedBlockSize), dOut.AsSpan(0, ExpectedBlockSize), encrypt: true);
+            streamed.Transform(pt.AsSpan(ExpectedBlockSize), dOut.AsSpan(ExpectedBlockSize), encrypt: true);
 
-            var plaintext = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)i).ToArray();
-            var singleOutput = new byte[plaintext.Length];
-            var streamedOutput = new byte[plaintext.Length];
-
-            single.Transform(plaintext, singleOutput, encrypt: true);
-            streamed.Transform(plaintext.AsSpan(0, ExpectedBlockSize), streamedOutput.AsSpan(0, ExpectedBlockSize), encrypt: true);
-            streamed.Transform(plaintext.AsSpan(ExpectedBlockSize, ExpectedBlockSize), streamedOutput.AsSpan(ExpectedBlockSize, ExpectedBlockSize), encrypt: true);
-
-            CollectionAssert.AreEqual(singleOutput, streamedOutput, "CTR must carry the counter state across successive Transform calls.");
+            CollectionAssert.AreEqual(sOut, dOut, "CTR must preserve counter across successive calls.");
         }
 
-        /// <summary>
-        /// Verifies that two CTR transforms seeded with different initial counters produce different ciphertext for the same
-        /// plaintext input, even when the underlying block cipher is identical.
-        /// </summary>
         [TestMethod]
         public void Transform_WithDifferentInitialCounters_ShouldProduceDifferentCiphertext()
         {
             var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-
             var counterA = new byte[ExpectedBlockSize];
             var counterB = new byte[ExpectedBlockSize];
-            counterB[0] = 0x80;
+            counterB[ExpectedBlockSize - 1] = 0x80;
 
             var a = CreateTransform(cipher, counterA);
             var b = CreateTransform(cipher, counterB);
+            var pt = new byte[ExpectedBlockSize];
+            var oA = new byte[ExpectedBlockSize];
+            var oB = new byte[ExpectedBlockSize];
 
-            var plaintext = Enumerable.Repeat((byte)0x00, ExpectedBlockSize).ToArray();
-            var outputA = new byte[ExpectedBlockSize];
-            var outputB = new byte[ExpectedBlockSize];
+            a.Transform(pt, oA, encrypt: true);
+            b.Transform(pt, oB, encrypt: true);
 
-            a.Transform(plaintext, outputA, encrypt: true);
-            b.Transform(plaintext, outputB, encrypt: true);
-
-            CollectionAssert.AreNotEqual(outputA, outputB, "CTR with distinct initial counters must produce distinct ciphertext.");
+            CollectionAssert.AreNotEqual(oA, oB);
         }
     }
 }

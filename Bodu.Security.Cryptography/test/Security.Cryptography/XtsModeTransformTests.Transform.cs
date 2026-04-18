@@ -52,11 +52,12 @@ namespace Bodu.Security.Cryptography
 
             transform.Transform(input, output, encrypt: true);
 
-            // 1 (T_0 init) + 2 (block 0, block 1) = 3 total encrypt calls.
-            Assert.AreEqual(3, cipher.EncryptBlockCount,
-                "XTS encryption must call the cipher's encrypt primitive once per block plus once for T_0.");
+            // T_0 = tweakCipher.Encrypt(iv) — counted against tweakCipher, not dataCipher.
+            // dataCipher encrypts once per data block: 2 blocks → 2 calls.
+            Assert.AreEqual(2, cipher.EncryptBlockCount,
+                "XTS encryption must call the dataCipher's encrypt primitive once per data block.");
             Assert.AreEqual(0, cipher.DecryptBlockCount,
-                "XTS encryption must never call the cipher's decrypt primitive.");
+                "XTS encryption must never call the dataCipher's decrypt primitive.");
         }
 
         /// <summary>
@@ -76,10 +77,11 @@ namespace Bodu.Security.Cryptography
 
             transform.Transform(input, output, encrypt: false);
 
-            Assert.AreEqual(1, cipher.EncryptBlockCount,
-                "XTS decryption must use the encrypt primitive only for T_0 initialisation in the constructor.");
+            // T_0 = tweakCipher.Encrypt(iv) — not counted against cipher (dataCipher).
+            Assert.AreEqual(0, cipher.EncryptBlockCount,
+                "XTS decryption must not call the dataCipher's encrypt primitive (T_0 is on tweakCipher).");
             Assert.AreEqual(2, cipher.DecryptBlockCount,
-                "XTS decryption must call the cipher's decrypt primitive once per ciphertext block.");
+                "XTS decryption must call the dataCipher's decrypt primitive once per ciphertext block.");
         }
 
         /// <summary>
@@ -103,49 +105,28 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that two consecutive identical plaintext blocks cause XTS to feed the underlying
-        /// cipher distinct inputs on every call, confirming that the GF(2^128)-multiplied tweak
-        /// advances between blocks.
+        /// Verifies that the tweak advances between blocks so that two identical plaintext blocks
+        /// produce different ciphertext. Uses real AES rather than MonitoringBlockCipher because an
+        /// XOR-based cipher satisfies E(P ⊕ T) ⊕ T = P ⊕ mask for all T, making the tweak cancel
+        /// entirely and producing identical output regardless of tweak advancement.
         /// </summary>
-        /// <remarks>
-        /// <para>
-        /// XTS encrypts each block as <c>c = tweak XOR E(plaintext XOR tweak)</c>. Against an XOR
-        /// test cipher <c>E(x) = x XOR mask</c> the tweak cancels on both sides and ciphertext
-        /// reduces to <c>plaintext XOR mask</c> — so identical plaintext produces identical
-        /// ciphertext even when the tweak is genuinely advancing. The input log is the correct
-        /// place to assert tweak advancement.
-        /// </para>
-        /// <para>
-        /// XTS also makes a setup call (encrypting the tweak IV with the tweak key) before the
-        /// plaintext-block encryptions. Asserting that <i>every</i> cipher input is distinct covers
-        /// all of these calls uniformly: a tweak that fails to advance between two identical
-        /// plaintext blocks collapses two entries in the log into one, and the distinct-count check
-        /// fires.
-        /// </para>
-        /// </remarks>
         [TestMethod]
-        public void Transform_WithTwoIdenticalPlaintextBlocks_ShouldAdvanceTweakBetweenBlocks()
+        public void Transform_WithTwoIdenticalPlaintextBlocks_ShouldProduceDifferentCiphertextBlocks()
         {
-            var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
+            using var dataCipher = new AesBlockCipherFixture(new byte[ExpectedBlockSize]);
+            using var tweakCipher = new AesBlockCipherFixture(new byte[ExpectedBlockSize]);
             var iv = Enumerable.Repeat((byte)0x01, ExpectedBlockSize).ToArray();
-            var encrypt = CreateTransform(cipher, (byte[])iv.Clone());
+            var transform = new XtsModeTransform(dataCipher, tweakCipher, iv);
 
             var plaintext = Enumerable.Repeat((byte)0x42, ExpectedBlockSize * 2).ToArray();
             var ciphertext = new byte[plaintext.Length];
-            encrypt.Transform(plaintext, ciphertext, encrypt: true);
 
-            Assert.IsTrue(cipher.EncryptInputs.Count >= 2,
-                $"XTS should have invoked the underlying cipher at least twice for a two-block input; " +
-                $"got {cipher.EncryptInputs.Count} call(s).");
+            transform.Transform(plaintext, ciphertext, encrypt: true);
 
-            var distinctInputs = cipher.EncryptInputs
-                .Select(b => Convert.ToHexString(b))
-                .ToHashSet();
-
-            Assert.AreEqual(cipher.EncryptInputs.Count, distinctInputs.Count,
-                $"XTS fed the underlying cipher duplicate inputs across its {cipher.EncryptInputs.Count} " +
-                $"call(s) ({distinctInputs.Count} distinct). The most likely cause is a tweak that " +
-                "failed to advance (GF(2^128) multiplication by α) between identical plaintext blocks.");
+            CollectionAssert.AreNotEqual(
+                ciphertext[..ExpectedBlockSize],
+                ciphertext[ExpectedBlockSize..],
+                "XTS must produce different ciphertext for identical plaintext blocks due to tweak advancement.");
         }
 
         /// <summary>

@@ -14,6 +14,6 @@ namespace Bodu.Security.Cryptography
         : AeadBlockCipherModeTests<GcmSivModeTransform>
     {
         protected override GcmSivModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
-            => new GcmSivModeTransform(cipher, iv);
+            => new GcmSivModeTransform(cipher, k => new AesBlockCipherFixture(k), iv);
     }
 }

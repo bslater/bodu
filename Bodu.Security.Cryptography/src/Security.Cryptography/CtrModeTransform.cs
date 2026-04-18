@@ -1,101 +1,102 @@
-﻿namespace Bodu.Security.Cryptography
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="CtrModeTransform.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Security.Cryptography
 {
     using System;
     using System.Security.Cryptography;
 
     /// <summary>
-    /// Applies the Counter (CTR) mode transformation to an underlying <see cref="IBlockCipher" />, turning it into a parallelisable
-    /// stream cipher in which encryption and decryption are identical operations.
+    /// Applies Counter (CTR) mode to an underlying <see cref="IBlockCipher" />, turning it into a
+    /// synchronous stream cipher. The counter is incremented in big-endian order (rightmost byte first),
+    /// matching NIST SP 800-38A Section 6.5.
     /// </summary>
     /// <remarks>
-    /// The keystream is produced by encrypting a running counter block: <c>Kᵢ = E(counter + i)</c>, and the output is
-    /// <c>Pᵢ ⊕ Kᵢ</c>. The initial counter block must equal the cipher block size in length and is typically split into a nonce and a
-    /// counter portion by the caller. Reusing a <c>(key, counter)</c> pair across messages is catastrophic: the XOR of the two
-    /// ciphertexts recovers the XOR of the plaintexts, so callers must ensure that every counter value is used at most once per key.
+    /// <para>
+    /// CTR is self-inverse: the same <see cref="Transform" /> operation is applied for both
+    /// encryption and decryption. The cipher's <em>encrypt</em> primitive is always used; the
+    /// decrypt primitive is never called.
+    /// </para>
+    /// <para>
+    /// To protect against keystream reuse, the transform tracks counter wrap-around. If the
+    /// counter increments back to its initial value, the next call to <see cref="Transform" />
+    /// throws <see cref="CryptographicException" />.
+    /// </para>
     /// </remarks>
     public sealed class CtrModeTransform : IBlockCipherModeTransform
     {
         private readonly IBlockCipher cipher;
+        private readonly byte[] initialCounter;
         private readonly byte[] counter;
-
-        // Set when the in-place little-endian increment carries out of the most-significant byte,
-        // meaning the counter has returned to its initial value. We use a flag (rather than
-        // storing the original IV) because the in-place increment loses the original value, and
-        // detecting the carry-out at the moment of wrap is both simple and constant-time.
-        // The flag is checked at the start of every block in Transform, so the consumer can
-        // safely use all 2^(blockSize*8) distinct counter values before the next Transform call
-        // refuses to produce a colliding keystream.
         private bool counterWrapped;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="CtrModeTransform" /> class with the specified cipher and initial counter block.
+        /// Initialises a new instance of the <see cref="CtrModeTransform" /> class.
         /// </summary>
-        /// <param name="cipher">The block cipher used to generate the keystream.</param>
-        /// <param name="initialCounter">The initial counter block. Its length must equal the cipher's block size. A defensive copy is taken.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher" /> or <paramref name="initialCounter" /> is <see langword="null" />.</exception>
+        /// <param name="cipher">The block cipher whose encrypt primitive generates the keystream.</param>
+        /// <param name="initialCounter">
+        /// The starting counter block. Must equal the cipher block size. A defensive copy is taken.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="cipher" /> or <paramref name="initialCounter" /> is <see langword="null" />.
+        /// </exception>
         /// <exception cref="ArgumentException">
-        /// Thrown if the length of <paramref name="initialCounter" /> does not match the cipher's block size.
+        /// <paramref name="initialCounter" /> length does not equal the cipher block size.
         /// </exception>
         public CtrModeTransform(IBlockCipher cipher, byte[] initialCounter)
         {
             this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(initialCounter, cipher.BlockSize);
+            if (initialCounter is null) throw new ArgumentNullException(nameof(initialCounter));
+            if (initialCounter.Length != cipher.BlockSize)
+                throw new ArgumentException(
+                    $"initialCounter length ({initialCounter.Length}) must equal the cipher block size ({cipher.BlockSize}).",
+                    nameof(initialCounter));
 
+            this.initialCounter = (byte[])initialCounter.Clone();
             this.counter = (byte[])initialCounter.Clone();
         }
 
         /// <inheritdoc />
         public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
         {
-            int blockSize = this.cipher.BlockSize;
-
-            ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize);
             ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 
-            Span<byte> keystreamBlock = stackalloc byte[blockSize];
-            Span<byte> counterBlock = stackalloc byte[blockSize];
+            int blockSize = this.cipher.BlockSize;
+            Span<byte> keystream = stackalloc byte[blockSize];
 
             for (int offset = 0; offset < input.Length; offset += blockSize)
             {
                 if (this.counterWrapped)
                     throw new CryptographicException(
-                        "CTR counter has wrapped back to its initial value; keystream reuse would occur.");
+                        "The CTR counter has wrapped to its initial value. Continuing would reuse the keystream.");
 
-                input.Slice(offset, blockSize).CopyTo(output.Slice(offset, blockSize));
-
-                this.counter.AsSpan().CopyTo(counterBlock);
-                this.cipher.Encrypt(counterBlock, keystreamBlock);
-
-                for (int i = 0; i < blockSize; i++)
-                    output[offset + i] ^= keystreamBlock[i];
-
+                this.cipher.Encrypt(this.counter, keystream);
                 this.IncrementCounter();
+
+                int len = Math.Min(blockSize, input.Length - offset);
+                for (int i = 0; i < len; i++)
+                    output[offset + i] = (byte)(input[offset + i] ^ keystream[i]);
             }
 
             return input.Length;
         }
 
+        // ── Private helpers ────────────────────────────────────────────────────────────────────────
+
         /// <summary>
-        /// Increments the counter in-place in little-endian order. If the in-place increment
-        /// carries out of the most-significant byte, every byte has wrapped to its starting value
-        /// and the next keystream block would collide with the first one; we set the
-        /// <see cref="counterWrapped" /> flag so the next <see cref="Transform" /> call refuses
-        /// to produce a colliding keystream.
+        /// Increments the counter in big-endian (rightmost-byte-first) order, matching NIST SP 800-38A,
+        /// then detects wrap-around.
         /// </summary>
         private void IncrementCounter()
         {
-            // Approach: detect wrap via the carry-out of the in-place little-endian increment.
-            // This avoids storing the original IV and works uniformly for any block size.
-            Span<byte> span = this.counter;
-            bool carry = true;
-            for (int i = 0; i < span.Length && carry; i++)
-            {
-                carry = (++span[i] == 0);
-            }
+            for (int i = this.counter.Length - 1; i >= 0; i--)
+                if (++this.counter[i] != 0) break;
 
-            // If a carry remains after walking the whole counter, every byte has wrapped to its
-            // starting value and the next keystream block would collide with the first one.
-            if (carry)
+            // Wrap detected: counter has returned to its initial value.
+            if (this.counter.AsSpan().SequenceEqual(this.initialCounter))
                 this.counterWrapped = true;
         }
     }

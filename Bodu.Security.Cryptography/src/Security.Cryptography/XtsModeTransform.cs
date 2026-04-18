@@ -9,116 +9,125 @@ namespace Bodu.Security.Cryptography
     using System;
 
     /// <summary>
-    /// Applies the XEX-based Tweaked-Codebook mode with Ciphertext Stealing (XTS) transformation to an
-    /// underlying <see cref="IBlockCipher" />, providing per-block tweaking suited to storage encryption.
+    /// Applies XEX-based Tweaked CodeBook mode with ciphertext Stealing (XTS) to an underlying
+    /// pair of <see cref="IBlockCipher" /> instances, per IEEE Std 1619-2007 / NIST SP 800-38E.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// XTS processes each block with an independent tweak T_i derived from an IV (representing the sector
-    /// number) and updated between consecutive blocks via GF(2^n) multiplication by α:
+    /// XTS requires two independent ciphers keyed with different material:
     /// <list type="bullet">
-    /// <item><description>Encrypt: C_i = E(P_i ⊕ T_i) ⊕ T_i</description></item>
-    /// <item><description>Decrypt: P_i = D(C_i ⊕ T_i) ⊕ T_i</description></item>
+    /// <item><description><paramref name="dataCipher" /> (Key₁) — encrypts or decrypts the data.</description></item>
+    /// <item><description><paramref name="tweakCipher" /> (Key₂) — encrypts the sector number (tweak).</description></item>
     /// </list>
+    /// Using the same key for both reduces XTS to a single-key construction and weakens security.
     /// </para>
     /// <para>
-    /// The initial tweak T_0 is derived by encrypting the IV: T_0 = E(IV). In a spec-compliant XTS
-    /// implementation this uses a second independent key; here a single cipher instance is used for both
-    /// the tweak derivation and the data transform. The encrypt primitive is used to compute T_0 and to
-    /// encrypt each plaintext block; the decrypt primitive is used to decrypt each ciphertext block.
+    /// For each 128-bit block j in a sector, the XEX construction is:
+    /// <code>
+    /// T_j  = α^j ⊗ tweakCipher.Encrypt(tweak)     // Galois field multiplication
+    /// C_j  = dataCipher.Encrypt(P_j ⊕ T_j) ⊕ T_j  // encrypt
+    /// P_j  = dataCipher.Decrypt(C_j ⊕ T_j) ⊕ T_j  // decrypt
+    /// </code>
     /// </para>
     /// <para>
-    /// This implementation targets 128-bit (16-byte) blocks. The GF(2^128) reduction polynomial is
-    /// x^128 + x^7 + x^2 + x + 1 (constant 0x87), with bytes stored in little-endian order as required
-    /// by IEEE 1619-2007.
+    /// GF(2^128) multiplication uses the primitive polynomial x^128 + x^7 + x^2 + x + 1 with
+    /// little-endian bit representation (byte 0, bit 0 = coefficient of x^0), identical to IEEE 1619.
     /// </para>
     /// </remarks>
     public sealed class XtsModeTransform : IBlockCipherModeTransform
     {
-        private readonly IBlockCipher cipher;
-        private readonly byte[] tweak; // current T_i, updated via GF multiplication after each block
+        private readonly IBlockCipher dataCipher;
+        private readonly IBlockCipher tweakCipher;
+        private readonly byte[] tweak; // sector number / tweak value
 
         /// <summary>
         /// Initialises a new instance of the <see cref="XtsModeTransform" /> class.
         /// </summary>
-        /// <param name="cipher">The block cipher used for both tweak derivation and data transformation.</param>
-        /// <param name="iv">
-        /// The initialisation vector representing the sector number. Must equal the cipher block size. A
-        /// defensive copy is taken; the caller's array is not modified.
+        /// <param name="dataCipher">
+        /// The cipher keyed with Key₁, used to encrypt or decrypt data blocks.
         /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.
-        /// </exception>
+        /// <param name="tweakCipher">
+        /// The cipher keyed with Key₂, used to encrypt the sector number. Must have the same
+        /// block size as <paramref name="dataCipher" />.
+        /// </param>
+        /// <param name="tweak">
+        /// The sector number encoded as a block-size byte array in little-endian order.
+        /// A defensive copy is taken.
+        /// </param>
+        /// <exception cref="ArgumentNullException">Any argument is <see langword="null" />.</exception>
         /// <exception cref="ArgumentException">
-        /// <paramref name="iv" /> length does not equal the cipher block size.
+        /// Block sizes differ, or <paramref name="tweak" /> length does not equal the block size.
         /// </exception>
-        public XtsModeTransform(IBlockCipher cipher, byte[] iv)
+        public XtsModeTransform(IBlockCipher dataCipher, IBlockCipher tweakCipher, byte[] tweak)
         {
-            this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
-            if (iv is null) throw new ArgumentNullException(nameof(iv));
-            if (iv.Length != cipher.BlockSize)
+            this.dataCipher = dataCipher ?? throw new ArgumentNullException(nameof(dataCipher));
+            this.tweakCipher = tweakCipher ?? throw new ArgumentNullException(nameof(tweakCipher));
+            if (tweak is null) throw new ArgumentNullException(nameof(tweak));
+            if (tweakCipher.BlockSize != dataCipher.BlockSize)
                 throw new ArgumentException(
-                    $"IV length ({iv.Length}) must equal the cipher block size ({cipher.BlockSize}).",
-                    nameof(iv));
+                    $"tweakCipher block size ({tweakCipher.BlockSize}) must equal dataCipher block size ({dataCipher.BlockSize}).",
+                    nameof(tweakCipher));
+            if (tweak.Length != dataCipher.BlockSize)
+                throw new ArgumentException(
+                    $"Tweak length ({tweak.Length}) must equal the cipher block size ({dataCipher.BlockSize}).",
+                    nameof(tweak));
 
-            // T_0 = E(IV) — the IV plays the role of the sector/tweak number.
-            this.tweak = new byte[cipher.BlockSize];
-            cipher.Encrypt(iv, this.tweak);
+            this.tweak = (byte[])tweak.Clone();
         }
 
         /// <inheritdoc />
         public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
         {
-            int blockSize = this.cipher.BlockSize;
-            ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize);
+            int blockSize = this.dataCipher.BlockSize;
+            if (input.Length % blockSize != 0)
+                throw new ArgumentException(
+                    $"XTS requires block-aligned input; {input.Length} is not a multiple of {blockSize}.", nameof(input));
             ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 
-            Span<byte> tweaked = stackalloc byte[blockSize];
+            // T_0 = tweakCipher.Encrypt(sector_number)
+            Span<byte> T = stackalloc byte[blockSize];
+            this.tweakCipher.Encrypt(this.tweak, T);
+
+            Span<byte> buf = stackalloc byte[blockSize];
 
             for (int offset = 0; offset < input.Length; offset += blockSize)
             {
                 ReadOnlySpan<byte> inBlock = input.Slice(offset, blockSize);
                 Span<byte> outBlock = output.Slice(offset, blockSize);
 
-                // Step 1: XOR input block with current tweak.
-                for (int i = 0; i < blockSize; i++)
-                    tweaked[i] = (byte)(inBlock[i] ^ this.tweak[i]);
-
-                // Step 2: Apply cipher primitive (encrypt uses E, decrypt uses D).
+                // XEX: out = cipher(in XOR T) XOR T
+                for (int i = 0; i < blockSize; i++) buf[i] = (byte)(inBlock[i] ^ T[i]);
                 if (encrypt)
-                    this.cipher.Encrypt(tweaked, outBlock);
+                    this.dataCipher.Encrypt(buf, outBlock);
                 else
-                    this.cipher.Decrypt(tweaked, outBlock);
+                    this.dataCipher.Decrypt(buf, outBlock);
+                for (int i = 0; i < blockSize; i++) outBlock[i] ^= T[i];
 
-                // Step 3: XOR output with current tweak.
-                for (int i = 0; i < blockSize; i++)
-                    outBlock[i] ^= this.tweak[i];
-
-                // Step 4: Advance tweak T_{i+1} = T_i * α in GF(2^128), little-endian.
-                GfMultiplyAlpha(this.tweak);
+                // Advance tweak: T = α ⊗ T in GF(2^128), little-endian, poly 0x87 reduction.
+                GfDouble(T);
             }
 
             return input.Length;
         }
 
+        // ── Private helpers ────────────────────────────────────────────────────────────────────────
+
         /// <summary>
-        /// Multiplies <paramref name="t" /> by the generator α in GF(2^128) using the IEEE 1619-2007
-        /// reduction polynomial x^128 + x^7 + x^2 + x + 1 (constant 0x87). Bytes are treated as a
-        /// 128-bit value in little-endian order: <c>t[0]</c> is the least significant byte.
+        /// Multiplies <paramref name="T" /> by α in GF(2^128) using the IEEE 1619 polynomial
+        /// x^128 + x^7 + x^2 + x + 1, with little-endian bit ordering (byte 0 = x^0..x^7).
         /// </summary>
-        private static void GfMultiplyAlpha(byte[] t)
+        private static void GfDouble(Span<byte> T)
         {
-            // The carry bit is the MSB of the most-significant byte (last byte in little-endian).
-            bool carry = (t[t.Length - 1] & 0x80) != 0;
-
-            // Left-shift the entire value by 1 bit (little-endian left = towards higher indices).
-            for (int i = t.Length - 1; i > 0; i--)
-                t[i] = (byte)((t[i] << 1) | (t[i - 1] >> 7));
-            t[0] <<= 1;
-
-            // If the carry bit was set, reduce by XOR-ing the low byte with the field constant.
-            if (carry)
-                t[0] ^= 0x87;
+            // Left-shift the 128-bit little-endian value. Carry propagates from byte[0] upward.
+            int carry = 0;
+            for (int i = 0; i < T.Length; i++)
+            {
+                int t = T[i];
+                T[i] = (byte)((t << 1) | carry);
+                carry = t >> 7;
+            }
+            // If the MSB of byte[15] was set (= x^127 coefficient), reduce by 0x87 (= x^7+x^2+x+1).
+            if (carry != 0) T[0] ^= 0x87;
         }
     }
 }
