@@ -1,4 +1,10 @@
-﻿namespace Bodu.Security.Cryptography
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="SkipjackTransform.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Security.Cryptography
 {
     using System;
     using System.Security.Cryptography;
@@ -25,6 +31,8 @@
         private readonly IBlockCipherModeTransform mode;
         private readonly IPaddingStrategy padding;
         private byte[]? deferredInput;
+
+        private bool disposed;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SkipjackTransform" /> class using the specified cipher, mode, padding, and
@@ -59,6 +67,9 @@
         /// <inheritdoc />
         public void Dispose()
         {
+            if (this.disposed)
+                return;
+
             if (this.deferredInput is not null)
             {
                 CryptographicOperations.ZeroMemory(this.deferredInput);
@@ -66,6 +77,7 @@
             }
 
             this.cipher.Dispose();
+            this.disposed = true;
             GC.SuppressFinalize(this);
         }
 
@@ -89,6 +101,12 @@
         public int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount,
                                   byte[] outputBuffer, int outputOffset)
         {
+            ObjectDisposedException.ThrowIf(this.disposed, this);
+
+            // Fix: enforce ICryptoTransform null-argument contract (previously threw NullReferenceException via .AsSpan).
+            ThrowHelper.ThrowIfNull(inputBuffer);
+            ThrowHelper.ThrowIfNull(outputBuffer);
+
             ReadOnlySpan<byte> input = inputBuffer.AsSpan(inputOffset, inputCount);
             Span<byte> output = outputBuffer.AsSpan(outputOffset, inputCount);
 
@@ -132,6 +150,11 @@
         /// <exception cref="CryptographicException">Thrown if the padding is invalid during decryption.</exception>
         public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
         {
+            ObjectDisposedException.ThrowIf(this.disposed, this);
+
+            // Fix: enforce ICryptoTransform null-argument contract (previously threw NullReferenceException via .AsSpan).
+            ThrowHelper.ThrowIfNull(inputBuffer);
+
             ReadOnlySpan<byte> input = inputBuffer.AsSpan(inputOffset, inputCount);
 
             if (this.encrypt)

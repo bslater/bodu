@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ThreefishTransformTests.cs" company="PlaceholderCompany">
+// <copyright file="BlowfishTransformTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,20 +8,19 @@ namespace Bodu.Security.Cryptography
 {
     /// <summary>
     /// Concrete test class that exercises the <see cref="CryptoTransformTests{TCryptoTransform}" /> base tests
-    /// against the <see cref="ThreefishTransform" /> implementation.
+    /// against the <see cref="BlowfishTransform" /> implementation.
     /// </summary>
     [TestClass]
-    public sealed class ThreefishTransformTests
-        : CryptoTransformTests<ThreefishTransform>
+    public sealed class BlowfishTransformTests
+        : CryptoTransformTests<BlowfishTransform>
     {
         /// <inheritdoc />
-        protected override ThreefishTransform CreateTransform()
+        protected override BlowfishTransform CreateTransform()
         {
-            var algorithm = new Threefish256();
+            var algorithm = new Blowfish();
             algorithm.GenerateKey();
             algorithm.GenerateIV();
-            algorithm.GenerateTweak();
-            return (ThreefishTransform)algorithm.CreateEncryptor(algorithm.Key, algorithm.IV, algorithm.Tweak);
+            return (BlowfishTransform)algorithm.CreateEncryptor(algorithm.Key, algorithm.IV);
         }
     }
 }

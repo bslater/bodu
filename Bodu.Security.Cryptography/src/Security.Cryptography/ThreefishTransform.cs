@@ -38,6 +38,8 @@ namespace Bodu.Security.Cryptography
 
         private byte[]? deferredInput;
 
+        private bool disposed;
+
         /// <summary>
         /// Initialises a new instance of the <see cref="ThreefishTransform" /> class using the specified cipher, mode, padding, and
         /// initialisation vector.
@@ -71,6 +73,9 @@ namespace Bodu.Security.Cryptography
         /// <inheritdoc />
         public void Dispose()
         {
+            if (this.disposed)
+                return;
+
             if (this.deferredInput is not null)
             {
                 CryptographicOperations.ZeroMemory(this.deferredInput);
@@ -78,6 +83,7 @@ namespace Bodu.Security.Cryptography
             }
 
             this.cipher.Dispose();
+            this.disposed = true;
             GC.SuppressFinalize(this);
         }
 
@@ -95,6 +101,8 @@ namespace Bodu.Security.Cryptography
         public int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount,
                                   byte[] outputBuffer, int outputOffset)
         {
+            ObjectDisposedException.ThrowIf(this.disposed, this);
+
             // Fix: enforce ICryptoTransform null-argument contract (previously threw NullReferenceException via .AsSpan).
             ThrowHelper.ThrowIfNull(inputBuffer);
             ThrowHelper.ThrowIfNull(outputBuffer);
@@ -142,6 +150,8 @@ namespace Bodu.Security.Cryptography
         /// <exception cref="CryptographicException">Thrown if the padding is invalid during decryption.</exception>
         public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
         {
+            ObjectDisposedException.ThrowIf(this.disposed, this);
+
             // Fix: enforce ICryptoTransform null-argument contract (previously threw NullReferenceException via .AsSpan).
             ThrowHelper.ThrowIfNull(inputBuffer);
 

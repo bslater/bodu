@@ -44,6 +44,8 @@ namespace Bodu.Security.Cryptography
         // deferred until TransformFinalBlock can confirm and remove padding correctly.
         private byte[]? deferredInput;
 
+        private bool disposed;
+
         /// <summary>
         /// Initialises a new instance of the <see cref="BlowfishTransform" /> class.
         /// </summary>
@@ -97,6 +99,9 @@ namespace Bodu.Security.Cryptography
         /// </summary>
         public void Dispose()
         {
+            if (this.disposed)
+                return;
+
             if (this.deferredInput is not null)
             {
                 CryptographicOperations.ZeroMemory(this.deferredInput);
@@ -104,6 +109,7 @@ namespace Bodu.Security.Cryptography
             }
 
             this.cipher.Dispose();
+            this.disposed = true;
             GC.SuppressFinalize(this);
         }
 
@@ -133,6 +139,12 @@ namespace Bodu.Security.Cryptography
             byte[] outputBuffer,
             int outputOffset)
         {
+            ObjectDisposedException.ThrowIf(this.disposed, this);
+
+            // Fix: enforce ICryptoTransform null-argument contract (previously threw NullReferenceException via .AsSpan).
+            ThrowHelper.ThrowIfNull(inputBuffer);
+            ThrowHelper.ThrowIfNull(outputBuffer);
+
             ReadOnlySpan<byte> input = inputBuffer.AsSpan(inputOffset, inputCount);
             Span<byte> output = outputBuffer.AsSpan(outputOffset, inputCount);
 
@@ -182,6 +194,11 @@ namespace Bodu.Security.Cryptography
         /// </remarks>
         public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
         {
+            ObjectDisposedException.ThrowIf(this.disposed, this);
+
+            // Fix: enforce ICryptoTransform null-argument contract (previously threw NullReferenceException via .AsSpan).
+            ThrowHelper.ThrowIfNull(inputBuffer);
+
             ReadOnlySpan<byte> input = inputBuffer.AsSpan(inputOffset, inputCount);
 
             if (this.encrypt)
