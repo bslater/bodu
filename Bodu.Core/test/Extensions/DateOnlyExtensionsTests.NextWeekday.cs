@@ -1,0 +1,99 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="DateOnlyExtensionsTests.NextWeekday.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace Bodu.Extensions
+{
+    public partial class DateOnlyExtensionsTests
+    {
+        // =========================================================================
+        // NextWeekday(this DateOnly, CalendarWeekendDefinition)
+        // =========================================================================
+
+        /// <summary>
+        /// Provides cases for NextWeekday under the Saturday/Sunday weekend model.
+        /// </summary>
+        public static IEnumerable<object[]> NextWeekdaySaturdaySundayTestData()
+        {
+            // Fri 19 Apr 2024 → next weekday skips Sat/Sun → Mon 22 Apr.
+            yield return new object[] { new DateOnly(2024, 4, 19), new DateOnly(2024, 4, 22) };
+            // Sat 20 Apr 2024 → Mon 22 Apr.
+            yield return new object[] { new DateOnly(2024, 4, 20), new DateOnly(2024, 4, 22) };
+            // Sun 21 Apr 2024 → Mon 22 Apr.
+            yield return new object[] { new DateOnly(2024, 4, 21), new DateOnly(2024, 4, 22) };
+            // Mon 22 Apr 2024 → Tue 23 Apr.
+            yield return new object[] { new DateOnly(2024, 4, 22), new DateOnly(2024, 4, 23) };
+            // Wed 17 Apr 2024 → Thu 18 Apr.
+            yield return new object[] { new DateOnly(2024, 4, 17), new DateOnly(2024, 4, 18) };
+        }
+
+        [TestMethod]
+        [DynamicData(nameof(NextWeekdaySaturdaySundayTestData), DynamicDataSourceType.Method)]
+        public void NextWeekday_WhenWeekendIsSaturdaySunday_ShouldReturnExpectedDate(DateOnly date, DateOnly expected)
+        {
+            DateOnly actual = date.NextWeekday(CalendarWeekendDefinition.SaturdaySunday);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void NextWeekday_WhenWeekendIsFridaySaturday_ShouldSkipFridayAndSaturday()
+        {
+            // Thu 18 Apr 2024 → skip Fri/Sat → Sun 21 Apr.
+            DateOnly input = new DateOnly(2024, 4, 18);
+            DateOnly actual = input.NextWeekday(CalendarWeekendDefinition.FridaySaturday);
+            Assert.AreEqual(new DateOnly(2024, 4, 21), actual);
+        }
+
+        [TestMethod]
+        public void NextWeekday_WhenWeekendIsNone_ShouldThrowArgumentOutOfRangeException()
+        {
+            // IsWeekend's switch does not handle CalendarWeekendDefinition.None explicitly, so it
+            // falls into the default AOOR branch during the search loop.
+            DateOnly input = new DateOnly(2024, 4, 20);
+
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = input.NextWeekday(CalendarWeekendDefinition.None);
+            });
+        }
+
+        [TestMethod]
+        public void NextWeekday_WhenWeekendIsInvalid_ShouldThrowArgumentOutOfRangeException()
+        {
+            DateOnly input = new DateOnly(2024, 4, 20);
+
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = input.NextWeekday((CalendarWeekendDefinition)999);
+            });
+        }
+
+        // =========================================================================
+        // NextWeekday(this DateOnly, CalendarWeekendDefinition, IWeekendDefinitionProvider?)
+        // =========================================================================
+
+        [TestMethod]
+        public void NextWeekday_WhenProviderIsNull_ShouldUseWeekendEnum()
+        {
+            DateOnly input = new DateOnly(2024, 4, 19); // Friday
+            DateOnly actual = input.NextWeekday(CalendarWeekendDefinition.SaturdaySunday, provider: null);
+            Assert.AreEqual(new DateOnly(2024, 4, 22), actual);
+        }
+
+        [TestMethod]
+        public void NextWeekday_WhenProviderOverload_WeekendIsInvalid_ShouldThrowArgumentOutOfRangeException()
+        {
+            DateOnly input = new DateOnly(2024, 4, 20);
+
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                _ = input.NextWeekday((CalendarWeekendDefinition)999, provider: null);
+            });
+        }
+    }
+}
