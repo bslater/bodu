@@ -419,5 +419,43 @@ namespace Bodu.Security.Cryptography
                 algorithm.Key = newKey;
             });
         }
+
+        /// <summary>
+        /// Verifies that byte-reversing the key produces a distinct digest. Regression guard for the SipHash
+        /// endianness fix — a key loader that treated the key as byte-order-agnostic (or otherwise lost ordering)
+        /// would produce identical digests for reversed keys.
+        /// </summary>
+        [TestMethod]
+        [DynamicData(nameof(HashAlgorithmVariants))]
+        public void Key_WhenKeyBytesReversed_ShouldProduceDistinctDigest_fix(TVariant variant)
+        {
+            if (this.GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
+            {
+                Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping invalid test case.");
+                return;
+            }
+
+            byte[] key = Enumerable.Range(1, specification.MinKeyLength).Select(i => (byte)i).ToArray();
+            byte[] reversed = key.Reverse().ToArray();
+            byte[] data = (byte[])CryptoTestUtilities.ByteSequence256.Clone();
+
+            byte[] hash1;
+            byte[] hash2;
+
+            using (var algorithm = this.CreateAlgorithm(variant))
+            {
+                algorithm.Key = key;
+                hash1 = algorithm.ComputeHash(data);
+            }
+
+            using (var algorithm = this.CreateAlgorithm(variant))
+            {
+                algorithm.Key = reversed;
+                hash2 = algorithm.ComputeHash(data);
+            }
+
+            Assert.AreNotEqual(Convert.ToHexString(hash1), Convert.ToHexString(hash2),
+                $"[{variant}] Reversing the key bytes must yield a different digest.");
+        }
     }
 }

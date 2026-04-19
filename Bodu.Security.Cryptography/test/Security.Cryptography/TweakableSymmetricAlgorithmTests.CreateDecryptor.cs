@@ -105,5 +105,25 @@ namespace Bodu.Security.Cryptography
                 $"Expected tweak bit-length {expectedBitLength} in message but got: {ex.Message}");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="TweakableSymmetricAlgorithm.CreateDecryptor(byte[], byte[], byte[])" /> throws
+        /// <see cref="CryptographicException" /> (not <see cref="ArgumentException" />) when the IV length does not
+        /// match the configured block size. Regression guard for the Threefish IV validation branch previously
+        /// throwing <see cref="ArgumentException" /> inconsistently with the key and tweak branches.
+        /// </summary>
+        [TestMethod]
+        public void CreateDecryptor_WhenIvLengthIsInvalid_ShouldThrowCryptographicException_fix()
+        {
+            using var algorithm = this.CreateAlgorithm();
+
+            byte[] key = new byte[algorithm.KeySize / 8];
+            byte[] tweak = new byte[algorithm.TweakSize / 8];
+            byte[] badIv = new byte[(algorithm.BlockSize / 8) + 1];
+
+            Assert.ThrowsExactly<CryptographicException>(() =>
+            {
+                using var _ = algorithm.CreateDecryptor(key, badIv, tweak);
+            });
+        }
     }
 }

@@ -297,8 +297,9 @@ namespace Bodu.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected override void OnKeyChanged()
         {
-            ulong k0 = BitConverter.ToUInt64(this.KeyValue, 0);
-            ulong k1 = BitConverter.ToUInt64(this.KeyValue, 8);
+            // Fix: use little-endian reads to match the SipHash specification and ProcessBlock; prior code used host-endian BitConverter, which would produce incorrect digests on big-endian hosts.
+            ulong k0 = BinaryPrimitives.ReadUInt64LittleEndian(this.KeyValue.AsSpan(0));
+            ulong k1 = BinaryPrimitives.ReadUInt64LittleEndian(this.KeyValue.AsSpan(8));
             this.v0 = InitialStates[0] ^ k0;
             this.v1 = InitialStates[1] ^ k1;
             this.v2 = InitialStates[2] ^ k0;
