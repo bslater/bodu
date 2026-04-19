@@ -1,4 +1,10 @@
-﻿namespace Bodu.Security.Cryptography
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ThreefishTransform.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Security.Cryptography
 {
     using System;
     using System.Security.Cryptography;
@@ -84,10 +90,15 @@
         /// <param name="outputBuffer">The buffer to write the transformed data to.</param>
         /// <param name="outputOffset">The byte offset into <paramref name="outputBuffer" /> to begin writing at.</param>
         /// <returns>The number of bytes written to <paramref name="outputBuffer" />.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="inputBuffer" /> or <paramref name="outputBuffer" /> is <see langword="null" />.</exception>
         /// <exception cref="ArgumentException">Thrown if the input or output spans are invalid or insufficient in length.</exception>
         public int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount,
                                   byte[] outputBuffer, int outputOffset)
         {
+            // Fix: enforce ICryptoTransform null-argument contract (previously threw NullReferenceException via .AsSpan).
+            ThrowHelper.ThrowIfNull(inputBuffer);
+            ThrowHelper.ThrowIfNull(outputBuffer);
+
             ReadOnlySpan<byte> input = inputBuffer.AsSpan(inputOffset, inputCount);
             Span<byte> output = outputBuffer.AsSpan(outputOffset, inputCount);
 
@@ -127,9 +138,13 @@
         /// <param name="inputOffset">The byte offset in the input buffer to begin reading from.</param>
         /// <param name="inputCount">The number of bytes to read from <paramref name="inputBuffer" />.</param>
         /// <returns>A new array containing the transformed final block.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="inputBuffer" /> is <see langword="null" />.</exception>
         /// <exception cref="CryptographicException">Thrown if the padding is invalid during decryption.</exception>
         public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
         {
+            // Fix: enforce ICryptoTransform null-argument contract (previously threw NullReferenceException via .AsSpan).
+            ThrowHelper.ThrowIfNull(inputBuffer);
+
             ReadOnlySpan<byte> input = inputBuffer.AsSpan(inputOffset, inputCount);
 
             if (this.encrypt)
