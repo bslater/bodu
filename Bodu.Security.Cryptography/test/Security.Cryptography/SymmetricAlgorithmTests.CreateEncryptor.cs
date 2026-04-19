@@ -49,5 +49,35 @@ namespace Bodu.Security.Cryptography
                     $"ObjectDisposedException.ObjectName must match the concrete type name '{typeof(TAlgorithm).FullName}'.");
             }
         }
+
+        /// <summary>
+        /// Verifies that <see cref="SymmetricAlgorithm.CreateEncryptor(byte[], byte[])" /> throws
+        /// <see cref="ArgumentNullException" /> when the key is <see langword="null" />.
+        /// </summary>
+        [TestMethod]
+        public void CreateEncryptor_WhenKeyIsNull_ShouldThrowArgumentNullException_fix()
+        {
+            using var algorithm = this.CreateAlgorithm();
+
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                _ = algorithm.CreateEncryptor(null!, new byte[algorithm.BlockSize / 8]);
+            });
+        }
+
+        /// <summary>
+        /// Verifies that <see cref="SymmetricAlgorithm.CreateEncryptor(byte[], byte[])" /> throws
+        /// <see cref="ArgumentNullException" /> when the IV is <see langword="null" />.
+        /// </summary>
+        [TestMethod]
+        public void CreateEncryptor_WhenIvIsNull_ShouldThrowArgumentNullException_fix()
+        {
+            using var algorithm = this.CreateAlgorithm();
+
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                _ = algorithm.CreateEncryptor(new byte[algorithm.KeySize / 8], null!);
+            });
+        }
     }
 }
