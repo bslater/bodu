@@ -34,7 +34,7 @@ public partial class ConcurrentCircularBufferTests
         var buffer = new ConcurrentCircularBuffer<TestItem>(3);
         buffer.Enqueue(new TestItem(1));
 
-        Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             var _ = buffer[-1];
         });
@@ -46,7 +46,7 @@ public partial class ConcurrentCircularBufferTests
         var buffer = new ConcurrentCircularBuffer<TestItem>(3);
         buffer.Enqueue(new TestItem(1)); // snapshot length at least 1
 
-        Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             var _ = buffer[1]; // out of range for the point-in-time snapshot
         });
