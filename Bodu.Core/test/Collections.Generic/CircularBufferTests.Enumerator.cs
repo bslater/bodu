@@ -78,7 +78,7 @@ namespace Bodu.Collections.Generic
         /// Verifies that accessing Current before the first MoveNext call throws <see cref="InvalidOperationException" />.
         /// </summary>
         [TestMethod]
-        public void Enumerator_WhenCurrentAccessedBeforeMoveNext_ShouldThrowInvalidOperationException()
+        public void Enumerator_WhenCurrentAccessedBeforeMoveNext_ShouldThrowException()
         {
             var buffer = new CircularBuffer<int>(3);
             buffer.Enqueue(1);
@@ -92,7 +92,7 @@ namespace Bodu.Collections.Generic
         /// Verifies that accessing Current after MoveNext has returned false throws <see cref="InvalidOperationException" />.
         /// </summary>
         [TestMethod]
-        public void Enumerator_WhenCurrentAccessedAfterExhaustion_ShouldThrowInvalidOperationException()
+        public void Enumerator_WhenCurrentAccessedAfterExhaustion_ShouldThrowException()
         {
             var buffer = new CircularBuffer<int>(2);
             buffer.Enqueue(1);

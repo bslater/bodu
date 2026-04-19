@@ -146,7 +146,7 @@ namespace Bodu.Extensions
         /// <see cref="ArgumentOutOfRangeException" /> when the date falls before the fiscal year start.
         /// </summary>
         [TestMethod]
-        public void GetQuarterStart_WhenDateTimeIsBeforeFiscalYearStart_ShouldThrowArgumentOutOfRangeException()
+        public void GetQuarterStart_WhenDateTimeIsBeforeFiscalYearStart_ShouldThrowException()
         {
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
                 Sunday52.GetQuarterStart(new DateTime(2022, 12, 31)));
@@ -157,7 +157,7 @@ namespace Bodu.Extensions
         /// <see cref="ArgumentOutOfRangeException" /> when the date falls after the fiscal year end.
         /// </summary>
         [TestMethod]
-        public void GetQuarterStart_WhenDateTimeIsAfterFiscalYearEnd_ShouldThrowArgumentOutOfRangeException()
+        public void GetQuarterStart_WhenDateTimeIsAfterFiscalYearEnd_ShouldThrowException()
         {
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
                 Sunday52.GetQuarterStart(new DateTime(2023, 12, 31)));
@@ -169,7 +169,7 @@ namespace Bodu.Extensions
         /// the <see cref="Saturday52" /> provider.
         /// </summary>
         [TestMethod]
-        public void GetQuarterStart_WhenDateTimeIsBeforeAprilStartFiscalYear_ShouldThrowArgumentOutOfRangeException()
+        public void GetQuarterStart_WhenDateTimeIsBeforeAprilStartFiscalYear_ShouldThrowException()
         {
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
                 Saturday52.GetQuarterStart(new DateTime(2023, 3, 31)));

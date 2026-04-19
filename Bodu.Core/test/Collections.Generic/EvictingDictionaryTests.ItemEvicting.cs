@@ -47,7 +47,7 @@ namespace Bodu.Collections.Generic
         /// re-entrant mutation from corrupting internal state mid-eviction.
         /// </summary>
         [TestMethod]
-        public void Add_WhenCalledFromItemEvictingHandler_ShouldThrowInvalidOperationException()
+        public void Add_WhenCalledFromItemEvictingHandler_ShouldThrowException()
         {
             var dictionary = new EvictingDictionary<string, int>(2);
             dictionary.Add("A", 1);
@@ -69,7 +69,7 @@ namespace Bodu.Collections.Generic
         /// Verifies that calling Remove from an ItemEvicting handler throws InvalidOperationException.
         /// </summary>
         [TestMethod]
-        public void Remove_WhenCalledFromItemEvictingHandler_ShouldThrowInvalidOperationException()
+        public void Remove_WhenCalledFromItemEvictingHandler_ShouldThrowException()
         {
             var dictionary = new EvictingDictionary<string, int>(2);
             dictionary.Add("A", 1);
@@ -91,7 +91,7 @@ namespace Bodu.Collections.Generic
         /// Verifies that calling Clear from an ItemEvicted handler throws InvalidOperationException.
         /// </summary>
         [TestMethod]
-        public void Clear_WhenCalledFromItemEvictedHandler_ShouldThrowInvalidOperationException()
+        public void Clear_WhenCalledFromItemEvictedHandler_ShouldThrowException()
         {
             var dictionary = new EvictingDictionary<string, int>(2);
             dictionary.Add("A", 1);

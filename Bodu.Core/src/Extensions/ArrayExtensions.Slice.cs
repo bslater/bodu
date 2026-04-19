@@ -60,7 +60,7 @@ public static partial class ArrayExtensions
         ThrowHelper.ThrowIfNull(array);
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, index, count);
 
-        T[] result = new T[count];
+        var result = new T[count];
         Array.Copy(array, index, result, 0, count);
         return result;
     }

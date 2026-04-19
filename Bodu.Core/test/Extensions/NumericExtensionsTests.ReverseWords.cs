@@ -170,7 +170,7 @@ public partial class NumericExtensionsTests
     /// <see cref="ArgumentNullException" /> when the input array is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ReverseWords_WhenByteArrayIsNull_ShouldThrowArgumentNullException() =>
+    public void ReverseWords_WhenByteArrayIsNull_ShouldThrowException() =>
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             ((byte[])null!).ReverseWords();
@@ -194,7 +194,7 @@ public partial class NumericExtensionsTests
     /// <see cref="ArgumentException" /> when the input array is empty (length 0 is not a positive multiple of 2).
     /// </summary>
     [TestMethod]
-    public void ReverseWords_WhenByteArrayIsEmpty_ShouldThrowArgumentException() =>
+    public void ReverseWords_WhenByteArrayIsEmpty_ShouldThrowException() =>
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             Array.Empty<byte>().ReverseWords();
@@ -266,7 +266,7 @@ public partial class NumericExtensionsTests
     /// <see cref="ArgumentException" /> when the span is empty.
     /// </summary>
     [TestMethod]
-    public void ReverseWords_WhenSpanIsEmpty_ShouldThrowArgumentException() =>
+    public void ReverseWords_WhenSpanIsEmpty_ShouldThrowException() =>
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             Span<byte>.Empty.ReverseWords();

@@ -67,7 +67,7 @@ public static partial class DateTimeExtensions
                 return new DateTime(GetLastDayOfWeekInMonthAsTicks(year, month, dayOfWeek), DateTimeKind.Unspecified);
 
             default:
-                DateTime result = new DateTime(GetFirstDayOfWeekInMonthTicks(year, month, dayOfWeek) + (((int)ordinal - 1) * TicksPerWeek), DateTimeKind.Unspecified);
+                var result = new DateTime(GetFirstDayOfWeekInMonthTicks(year, month, dayOfWeek) + (((int)ordinal - 1) * TicksPerWeek), DateTimeKind.Unspecified);
 
                 if (result.Month != month)
                     throw new ArgumentOutOfRangeException(
@@ -123,7 +123,7 @@ public static partial class DateTimeExtensions
                 return dateTime.LastDayOfWeekInMonth(dayOfWeek);
 
             default:
-                DateTime result = new DateTime(GetFirstDayOfWeekInMonthTicks(dateTime, dayOfWeek) + (((int)ordinal - 1) * TicksPerWeek), dateTime.Kind);
+                var result = new DateTime(GetFirstDayOfWeekInMonthTicks(dateTime, dayOfWeek) + (((int)ordinal - 1) * TicksPerWeek), dateTime.Kind);
 
                 if (result.Month != dateTime.Month)
                     throw new ArgumentOutOfRangeException(

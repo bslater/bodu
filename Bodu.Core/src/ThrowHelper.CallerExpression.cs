@@ -6,7 +6,9 @@
 
 #if !NETSTANDARD2_0_OR_GREATER
 #pragma warning disable SA1117 // Parameters should be on same line or separate lines
+#pragma warning disable IDE0011 // Add braces
 
+using Bodu.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -77,7 +79,7 @@ public static partial class ThrowHelper
     /// Thrown when <paramref name="array"/> has a rank other than 1.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfArrayIsNotSingleDimension(
+    public static void ThrowIfArrayMultidimensional(
         Array? array,
         [CallerArgumentExpression(nameof(array))] string? paramName = null)
     {
@@ -128,7 +130,7 @@ public static partial class ThrowHelper
     /// (e.g. 16 bytes for a cipher block, 32 bytes for a key).
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfArrayLengthIsInsufficient(
+    public static void ThrowIfArrayLengthIsNotEqualTo(
         Array? array, int expectedLength,
         [CallerArgumentExpression(nameof(array))] string? paramName = null)
     {
@@ -142,65 +144,39 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> if the array is <see langword="null"/>, an
-    /// <see cref="ArgumentOutOfRangeException"/> if <paramref name="index"/> is negative, or an
-    /// <see cref="ArgumentException"/> if the array does not have enough elements from <paramref name="index"/> to
-    /// accommodate <paramref name="requiredLength"/> elements.
+    /// Throws an exception if the specified <paramref name="array"/> has fewer than
+    /// <paramref name="minimumLength"/> elements.
     /// </summary>
     /// <param name="array">The array to validate. Must not be <see langword="null"/>.</param>
-    /// <param name="index">The zero-based starting index within the array. Must be zero or greater.</param>
-    /// <param name="requiredLength">The number of elements required starting from <paramref name="index"/>.</param>
-    /// <param name="paramArrayName">The name of the array parameter. Supplied automatically by the compiler.</param>
-    /// <param name="paramIndexName">The name of the index parameter. Supplied automatically by the compiler.</param>
+    /// <param name="minimumLength">
+    /// The minimum number of elements that <paramref name="array"/> must contain.
+    /// </param>
+    /// <param name="paramName">
+    /// The name of the array parameter. Supplied automatically by the compiler via
+    /// <see cref="CallerArgumentExpressionAttribute"/>.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="array"/> is <see langword="null"/>.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="index"/> is negative.</exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <c>array.Length - index &lt; requiredLength</c>.
+    /// Thrown when <c>array.Length</c> is less than <paramref name="minimumLength"/>.
     /// </exception>
     /// <remarks>
-    /// Ensures that a caller can safely access a contiguous block of <paramref name="requiredLength"/> elements
-    /// starting at <paramref name="index"/> without exceeding array bounds.
+    /// Use this overload when the caller may supply a larger array than required and the
+    /// excess elements are simply ignored — for example, a buffer that must hold at least
+    /// a full cipher block but may be larger. When the length must be exact, use
+    /// <see cref="ThrowIfArrayLengthIsNotEqualTo"/> instead.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfArrayLengthIsInsufficient(
-        Array? array, int index, int requiredLength,
-        [CallerArgumentExpression(nameof(array))] string? paramArrayName = null,
-        [CallerArgumentExpression(nameof(index))] string? paramIndexName = null)
+        Array? array, int minimumLength,
+        [CallerArgumentExpression(nameof(array))] string? paramName = null)
     {
         if (array is null)
-            throw new ArgumentNullException(paramArrayName);
-
-        if (index < 0)
-            throw new ArgumentOutOfRangeException(
-                paramIndexName,
-                string.Format(ResourceStrings.Arg_OutOfRange_IndexValidRange, paramArrayName));
-
-        if (array.Length - index < requiredLength)
+            throw new ArgumentNullException(paramName);
+        if (array.Length < minimumLength)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_ArrayTooShort, requiredLength),
-                paramArrayName);
-    }
-
-    /// <summary>
-    /// Throws an exception if the span does not have exactly <paramref name="expectedLength"/> elements.
-    /// </summary>
-    /// <typeparam name="T">The element type of the span.</typeparam>
-    /// <param name="span">The span to validate.</param>
-    /// <param name="expectedLength">The exact number of elements that <paramref name="span"/> must contain.</param>
-    /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <c>span.Length</c> does not equal <paramref name="expectedLength"/>.
-    /// </exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfSpanLengthIsInsufficient<T>(
-        Span<T> span, int expectedLength,
-        [CallerArgumentExpression(nameof(span))] string? paramName = null)
-    {
-        if (span.Length != expectedLength)
-            throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_ArrayLength, expectedLength),
+                string.Format(ResourceStrings.Arg_Invalid_ArrayTooShort, minimumLength),
                 paramName);
     }
 
@@ -215,13 +191,106 @@ public static partial class ThrowHelper
     /// Thrown when <c>span.Length</c> does not equal <paramref name="expectedLength"/>.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfSpanLengthIsNotEqualTo<T>(
+        Span<T> span, int expectedLength,
+        [CallerArgumentExpression(nameof(span))] string? paramName = null)
+    {
+        if (span.Length != expectedLength)
+            throw new ArgumentException(
+                string.Format(ResourceStrings.Arg_Invalid_SpanLength, expectedLength),
+                paramName);
+    }
+
+    /// <summary>
+    /// Throws an exception if the specified <paramref name="span"/> has fewer than
+    /// <paramref name="minimumLength"/> elements.
+    /// </summary>
+    /// <typeparam name="T">The element type of the span.</typeparam>
+    /// <param name="span">The array to validate. Must not be <see langword="null"/>.</param>
+    /// <param name="minimumLength">
+    /// The minimum number of elements that <paramref name="span"/> must contain.
+    /// </param>
+    /// <param name="paramName">
+    /// The name of the span parameter. Supplied automatically by the compiler via
+    /// <see cref="CallerArgumentExpressionAttribute"/>.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="span"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <c>span.Length</c> is less than <paramref name="minimumLength"/>.
+    /// </exception>
+    /// <remarks>
+    /// Use this overload when the caller may supply a larger span than required and the
+    /// excess elements are simply ignored — for example, a buffer that must hold at least
+    /// a full cipher block but may be larger. When the length must be exact, use
+    /// <see cref="ThrowIfSpanLengthIsNotEqualTo{T}"/> instead.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfSpanLengthIsInsufficient<T>(
+        Span<T> span, int minimumLength,
+        [CallerArgumentExpression(nameof(span))] string? paramName = null)
+    {
+        if (span.Length < minimumLength)
+            throw new ArgumentException(
+                string.Format(ResourceStrings.Arg_Invalid_SpanTooShort, minimumLength),
+                paramName);
+    }
+
+    /// <summary>
+    /// Throws an exception if the span does not have exactly <paramref name="expectedLength"/> elements.
+    /// </summary>
+    /// <typeparam name="T">The element type of the span.</typeparam>
+    /// <param name="span">The span to validate.</param>
+    /// <param name="expectedLength">The exact number of elements that <paramref name="span"/> must contain.</param>
+    /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <c>span.Length</c> does not equal <paramref name="expectedLength"/>.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfSpanLengthIsNotEqualTo<T>(
         ReadOnlySpan<T> span, int expectedLength,
         [CallerArgumentExpression(nameof(span))] string? paramName = null)
     {
         if (span.Length != expectedLength)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_ArrayLength, expectedLength),
+                string.Format(ResourceStrings.Arg_Invalid_SpanLength, expectedLength),
+                paramName);
+    }
+
+    /// <summary>
+    /// Throws an exception if the specified <paramref name="span"/> has fewer than
+    /// <paramref name="minimumLength"/> elements.
+    /// </summary>
+    /// <typeparam name="T">The element type of the span.</typeparam>
+    /// <param name="span">The array to validate. Must not be <see langword="null"/>.</param>
+    /// <param name="minimumLength">
+    /// The minimum number of elements that <paramref name="span"/> must contain.
+    /// </param>
+    /// <param name="paramName">
+    /// The name of the span parameter. Supplied automatically by the compiler via
+    /// <see cref="CallerArgumentExpressionAttribute"/>.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="span"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <c>span.Length</c> is less than <paramref name="minimumLength"/>.
+    /// </exception>
+    /// <remarks>
+    /// Use this overload when the caller may supply a larger span than required and the
+    /// excess elements are simply ignored — for example, a buffer that must hold at least
+    /// a full cipher block but may be larger. When the length must be exact, use
+    /// <see cref="ThrowIfSpanLengthIsNotEqualTo{T}"/> instead.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfSpanLengthIsInsufficient<T>(
+        ReadOnlySpan<T> span, int minimumLength,
+        [CallerArgumentExpression(nameof(span))] string? paramName = null)
+    {
+        if (span.Length < minimumLength)
+            throw new ArgumentException(
+                string.Format(ResourceStrings.Arg_Invalid_SpanTooShort, minimumLength),
                 paramName);
     }
 
@@ -364,13 +433,13 @@ public static partial class ThrowHelper
 
     /// <summary>
     /// Throws an <see cref="ArgumentNullException"/> if the array is <see langword="null"/>, an
-    /// <see cref="ArgumentOutOfRangeException"/> if <paramref name="index"/> or <paramref name="count"/> is out of
+    /// <see cref="ArgumentOutOfRangeException"/> if <paramref name="offset"/> or <paramref name="count"/> is out of
     /// range, or an <see cref="ArgumentException"/> if the segment they define exceeds the bounds of
     /// <paramref name="array"/>.
     /// </summary>
     /// <param name="array">The array to validate. Must not be <see langword="null"/>.</param>
-    /// <param name="index">The zero-based starting index within the array.</param>
-    /// <param name="count">The number of elements to access from <paramref name="index"/>.</param>
+    /// <param name="offset">The zero-based starting index within the array.</param>
+    /// <param name="count">The number of elements to access from <paramref name="offset"/>.</param>
     /// <param name="paramArrayName">The name of the array parameter. Supplied automatically by the compiler.</param>
     /// <param name="paramIndexName">The name of the index parameter. Supplied automatically by the compiler.</param>
     /// <param name="paramCountName">The name of the count parameter. Supplied automatically by the compiler.</param>
@@ -378,22 +447,22 @@ public static partial class ThrowHelper
     /// Thrown when <paramref name="array"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="index"/> or <paramref name="count"/> is negative or exceeds
+    /// Thrown when <paramref name="offset"/> or <paramref name="count"/> is negative or exceeds
     /// <c>array.Length</c>.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when <c>index + count</c> exceeds <c>array.Length</c>.
     /// </exception>
     public static void ThrowIfArrayOffsetOrCountInvalid(
-        Array array, int index, int count,
+        Array array, int offset, int count,
         [CallerArgumentExpression(nameof(array))] string? paramArrayName = null,
-        [CallerArgumentExpression(nameof(index))] string? paramIndexName = null,
+        [CallerArgumentExpression(nameof(offset))] string? paramIndexName = null,
         [CallerArgumentExpression(nameof(count))] string? paramCountName = null)
     {
         if (array is null)
             throw new ArgumentNullException(paramArrayName);
 
-        if (index < 0 || index > array.Length)
+        if (offset < 0 || offset > array.Length)
             throw new ArgumentOutOfRangeException(
                 paramIndexName,
                 string.Format(ResourceStrings.Arg_Invalid_ArrayOffset, paramArrayName));
@@ -403,12 +472,144 @@ public static partial class ThrowHelper
                 paramCountName,
                 string.Format(ResourceStrings.Arg_Invalid_ArrayOffset, paramArrayName));
 
-        if (count > array.Length - index)
+        if (count > array.Length - offset)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_ArrayOffsetOrLength,
-                    paramIndexName, paramCountName, paramArrayName));
+                string.Format(
+                    ResourceStrings.Arg_Invalid_ArrayOffsetOrLength,
+                    paramIndexName,
+                    paramCountName,
+                    paramArrayName));
     }
 
+    /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="offset"/> or
+    /// <paramref name="count"/> is out of range, or an <see cref="ArgumentException"/> if the
+    /// segment they define exceeds the bounds of <paramref name="span"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the span.</typeparam>
+    /// <param name="span">The span to validate.</param>
+    /// <param name="offset">The zero-based starting index within the span.</param>
+    /// <param name="count">The number of elements to access from <paramref name="offset"/>.</param>
+    /// <param name="paramSpanName">
+    /// The name of the span parameter. Supplied automatically by the compiler via
+    /// <see cref="CallerArgumentExpressionAttribute"/>.
+    /// </param>
+    /// <param name="paramIndexName">
+    /// The name of the index parameter. Supplied automatically by the compiler via
+    /// <see cref="CallerArgumentExpressionAttribute"/>.
+    /// </param>
+    /// <param name="paramCountName">
+    /// The name of the count parameter. Supplied automatically by the compiler via
+    /// <see cref="CallerArgumentExpressionAttribute"/>.
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="offset"/> or <paramref name="count"/> is negative or
+    /// exceeds <see cref="ReadOnlySpan{T}.Length"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <c>index + count</c> exceeds <see cref="ReadOnlySpan{T}.Length"/>.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// Unlike the array equivalent (<c>ThrowIfArrayOffsetOrCountInvalid</c>), this overload
+    /// does not check for <see langword="null"/> and does not throw
+    /// <see cref="ArgumentNullException"/>. <see cref="Span{T}"/> is a value type and can
+    /// never be <see langword="null"/>; a default <see cref="Span{T}"/> is equivalent to an
+    /// empty span with <see cref="ReadOnlySpan{T}.Length"/> of zero.
+    /// </para>
+    /// <para>
+    /// Implicitly converts <paramref name="span"/> to <see cref="ReadOnlySpan{T}"/> and
+    /// delegates to
+    /// <see cref="ThrowIfSpanOffsetOrCountInvalid{T}(ReadOnlySpan{T}, int, int, string, string, string)"/>,
+    /// which is the canonical implementation. <paramref name="paramSpanName"/>,
+    /// <paramref name="paramIndexName"/>, and <paramref name="paramCountName"/> are forwarded
+    /// explicitly to preserve the call-site argument expressions in any exception messages.
+    /// </para>
+    /// </remarks>
+    public static void ThrowIfSpanOffsetOrCountInvalid<T>(
+        Span<T> span, int offset, int count,
+        [CallerArgumentExpression(nameof(span))] string? paramSpanName = null,
+        [CallerArgumentExpression(nameof(offset))] string? paramIndexName = null,
+        [CallerArgumentExpression(nameof(count))] string? paramCountName = null)
+        => ThrowIfSpanOffsetOrCountInvalid(
+            (ReadOnlySpan<T>)span, offset, count,
+            paramSpanName, paramIndexName, paramCountName);
+
+    /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="offset"/> or
+    /// <paramref name="count"/> is out of range, or an <see cref="ArgumentException"/> if the
+    /// segment they define exceeds the bounds of <paramref name="span"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the span.</typeparam>
+    /// <param name="span">The read-only span to validate.</param>
+    /// <param name="offset">The zero-based starting index within the span.</param>
+    /// <param name="count">The number of elements to access from <paramref name="offset"/>.</param>
+    /// <param name="paramSpanName">
+    /// The name of the span parameter. Supplied automatically by the compiler via
+    /// <see cref="CallerArgumentExpressionAttribute"/>.
+    /// </param>
+    /// <param name="paramIndexName">
+    /// The name of the index parameter. Supplied automatically by the compiler via
+    /// <see cref="CallerArgumentExpressionAttribute"/>.
+    /// </param>
+    /// <param name="paramCountName">
+    /// The name of the count parameter. Supplied automatically by the compiler via
+    /// <see cref="CallerArgumentExpressionAttribute"/>.
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="offset"/> or <paramref name="count"/> is negative or
+    /// exceeds <see cref="ReadOnlySpan{T}.Length"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <c>index + count</c> exceeds <see cref="ReadOnlySpan{T}.Length"/>.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// This is the canonical implementation. The <see cref="Span{T}"/> overload
+    /// (<see cref="ThrowIfSpanOffsetOrCountInvalid{T}(Span{T}, int, int, string, string, string)"/>)
+    /// converts its argument and delegates here, forwarding all
+    /// <see cref="CallerArgumentExpressionAttribute"/> values explicitly so that exception
+    /// messages always reflect the original call-site expressions.
+    /// </para>
+    /// <para>
+    /// Unlike the array equivalent (<c>ThrowIfArrayOffsetOrCountInvalid</c>), this overload
+    /// does not check for <see langword="null"/> and does not throw
+    /// <see cref="ArgumentNullException"/>. <see cref="ReadOnlySpan{T}"/> is a value type and
+    /// can never be <see langword="null"/>; a default <see cref="ReadOnlySpan{T}"/> is
+    /// equivalent to an empty span with <see cref="ReadOnlySpan{T}.Length"/> of zero.
+    /// </para>
+    /// <para>
+    /// Although the index and count validations are expressed as two-part conditions
+    /// (<c>&lt; 0 || &gt; span.Length</c>) rather than the single unsigned-cast trick used
+    /// in <see cref="SpanExtensions"/>, the explicit form is preferred here because this is a
+    /// guard method whose primary purpose is clarity of intent. The unsigned-cast form trades
+    /// readability for a marginal branch reduction that is irrelevant on an error path.
+    /// </para>
+    /// </remarks>
+    public static void ThrowIfSpanOffsetOrCountInvalid<T>(
+        ReadOnlySpan<T> span, int offset, int count,
+        [CallerArgumentExpression(nameof(span))] string? paramSpanName = null,
+        [CallerArgumentExpression(nameof(offset))] string? paramIndexName = null,
+        [CallerArgumentExpression(nameof(count))] string? paramCountName = null)
+    {
+        if (offset < 0 || offset > span.Length)
+            throw new ArgumentOutOfRangeException(
+                paramIndexName,
+                string.Format(ResourceStrings.Arg_Invalid_ArrayOffset, paramSpanName));
+
+        if (count < 0 || count > span.Length)
+            throw new ArgumentOutOfRangeException(
+                paramCountName,
+                string.Format(ResourceStrings.Arg_Invalid_ArrayOffset, paramSpanName));
+
+        if (count > span.Length - offset)
+            throw new ArgumentException(
+                string.Format(
+                    ResourceStrings.Arg_Invalid_ArrayOffsetOrLength,
+                    paramIndexName,
+                    paramCountName,
+                    paramSpanName));
+    }
     /// <summary>
     /// Throws an <see cref="ArgumentNullException"/> if the array is <see langword="null"/>, or an
     /// <see cref="ArgumentException"/> if it is not assignable to <typeparamref name="TExpected"/>[].
@@ -491,8 +692,11 @@ public static partial class ThrowHelper
         if (EqualityComparer<TCondition>.Default.Equals(conditionalParam, conditionalValue) && value is null)
         {
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Required_ParameterRequiredIf,
-                    paramName, conditionalParamName, conditionalValue),
+                string.Format(
+                    ResourceStrings.Arg_Required_ParameterRequiredIf,
+                    paramName,
+                    conditionalParamName,
+                    conditionalValue),
                 paramName);
         }
     }
@@ -552,7 +756,7 @@ public static partial class ThrowHelper
 
         if (destination.Length < source.Length)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_DestinationTooSmall, "array", destination.Length),
+                string.Format(ResourceStrings.Arg_Invalid_DestinationTooSmall, "span", destination.Length),
                 paramDestinationName);
     }
 
@@ -1314,5 +1518,6 @@ public static partial class ThrowHelper
     }
 }
 
+#pragma warning restore IDE0011 // Add braces
 #pragma warning restore SA1117
 #endif

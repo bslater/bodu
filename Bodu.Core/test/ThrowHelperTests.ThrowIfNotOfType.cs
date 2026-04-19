@@ -9,7 +9,7 @@ namespace Bodu
     public partial class ThrowHelperTests
     {
         [TestMethod]
-        public void ThrowIfNotOfType_WhenStringValueIsNotInt_ShouldThrowArgumentException()
+        public void ThrowIfNotOfType_WhenStringValueIsNotInt_ShouldThrowException()
         {
             object value = "string";
 
@@ -20,7 +20,7 @@ namespace Bodu
         }
 
         [TestMethod]
-        public void ThrowIfNotOfType_WhenNullValueAndTargetIsNonNullable_ShouldThrowArgumentException()
+        public void ThrowIfNotOfType_WhenNullValueAndTargetIsNonNullable_ShouldThrowException()
         {
             object? value = null;
 
@@ -31,7 +31,7 @@ namespace Bodu
         }
 
         [TestMethod]
-        public void ThrowIfNotOfType_WhenIntValueIsString_ShouldThrowArgumentException()
+        public void ThrowIfNotOfType_WhenIntValueIsString_ShouldThrowException()
         {
             object value = 42;
 

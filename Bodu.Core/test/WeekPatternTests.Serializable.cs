@@ -47,7 +47,7 @@ namespace Bodu
         /// when a <see langword="null" /> <see cref="SerializationInfo" /> is supplied.
         /// </summary>
         [TestMethod]
-        public void GetObjectData_WhenInfoIsNull_ShouldThrowArgumentNullException()
+        public void GetObjectData_WhenInfoIsNull_ShouldThrowException()
         {
             var pattern = new WeekPattern(DayOfWeek.Monday);
             var context = new StreamingContext(StreamingContextStates.All);
@@ -61,7 +61,7 @@ namespace Bodu
         /// when the stored bitmask value exceeds the valid range of 0–127.
         /// </summary>
         [TestMethod]
-        public void SerializationConstructor_WhenStoredValueIsOutOfRange_ShouldThrowSerializationException()
+        public void SerializationConstructor_WhenStoredValueIsOutOfRange_ShouldThrowException()
         {
             var info = new SerializationInfo(typeof(WeekPattern), new FormatterConverter());
             var context = new StreamingContext(StreamingContextStates.All);

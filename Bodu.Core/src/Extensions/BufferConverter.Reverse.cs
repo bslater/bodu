@@ -129,7 +129,7 @@ public static partial class BufferConverter
     /// on the underlying span.
     /// </remarks>
     public static void Reverse<T>(this Memory<T> memory)
-        where T : unmanaged => memory.Span.Reverse();
+        where T : unmanaged => Reverse(memory.Span);
 
 #endif
 }

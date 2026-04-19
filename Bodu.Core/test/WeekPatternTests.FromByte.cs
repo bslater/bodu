@@ -45,7 +45,7 @@ namespace Bodu
         /// when the supplied value exceeds the maximum valid bitmask of 127.
         /// </summary>
         [TestMethod]
-        public void FromByte_WhenValueGreaterThanMax_ShouldThrowArgumentOutOfRangeException()
+        public void FromByte_WhenValueGreaterThanMax_ShouldThrowException()
         {
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => WeekPattern.FromByte(128));
         }

@@ -89,7 +89,7 @@ public static partial class IEnumerableExtensions
     /// </remarks>
     private static T[] FillReservoir<T>(IEnumerator<T> enumerator, IRandomGenerator rng, int count)
     {
-        T[] reservoir = new T[count];
+        var reservoir = new T[count];
         int index = 0;
 
         // Fill the reservoir with the first 'count' elements from the source
@@ -152,7 +152,7 @@ public static partial class IEnumerableExtensions
         buffer = list;
         availableCount = list.Count;
 #else
-        using PooledBufferBuilder<T> builder = new PooledBufferBuilder<T>();
+        using var builder = new PooledBufferBuilder<T>();
 
         if (source is IReadOnlyCollection<T> collection && builder.TryCopyFrom(collection))
         {
@@ -220,7 +220,7 @@ public static partial class IEnumerableExtensions
         // Guard: a window of zero or fewer elements is meaningless and would cause rng.Next(0) to throw.
         ThrowHelper.ThrowIfZeroOrNegative(windowSize);
 
-        T[] window = new T[windowSize];
+        var window = new T[windowSize];
         int count = 0;
 
         using IEnumerator<T> enumerator = source.GetEnumerator();

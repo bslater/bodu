@@ -225,19 +225,44 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsFalse(buffer.Contains("z"));
     }
 
+    /// <summary>
+    /// Verifies that Contains returns true for a different instance that has the same value as an enqueued element,
+    /// because TestItem overrides Equals to compare by value and EqualityComparer{T}.Default delegates to Equals.
+    /// </summary>
     [TestMethod]
-    public void Contains_WhenReferenceTypesShareValue_ShouldUseReferenceEquality()
+    public void Contains_WhenReferenceTypeOverridesEquals_ShouldUseValueEquality()
     {
-        // TestItem uses reference equality by default (no custom Equals/GetHashCode)
-        var buffer = new ConcurrentCircularBuffer<TestItem>(5);
-        var a = new TestItem(7);
-        var bSameValueDifferentRef = new TestItem(7);
+        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2));
 
-        buffer.Enqueue(a);
+        var differentInstanceSameValue = new TestItem(1);
 
-        Assert.IsTrue(buffer.Contains(a), "Contains should find the exact reference present.");
-        Assert.IsFalse(buffer.Contains(bSameValueDifferentRef),
-            "Contains should not consider equal-by-value references equal without custom equality.");
+        Assert.IsTrue(buffer.Contains(differentInstanceSameValue),
+            "Contains should return true for a different instance with the same value because TestItem.Equals " +
+            "compares by value and EqualityComparer<T>.Default delegates to Equals.");
+    }
+
+    /// <summary>
+    /// Verifies that Contains uses reference equality for types that do not override Equals, meaning two distinct
+    /// instances with equivalent state are not considered equal.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenReferenceTypeDoesNotOverrideEquals_ShouldUseReferenceEquality()
+    {
+        // Use a local type that does not override Equals — equality falls back to reference identity
+        var buffer = new ConcurrentCircularBuffer<ReferenceItem>(3);
+        var enqueued = new ReferenceItem(1);
+        buffer.Enqueue(enqueued);
+
+        var differentInstanceSameValue = new ReferenceItem(1);
+
+        Assert.IsFalse(buffer.Contains(differentInstanceSameValue),
+            "Contains should return false for a different instance with the same state when Equals is not overridden, " +
+            "because EqualityComparer<T>.Default falls back to reference identity.");
+
+        Assert.IsTrue(buffer.Contains(enqueued),
+            "Contains should return true for the exact same instance that was enqueued.");
     }
 
     [TestMethod]

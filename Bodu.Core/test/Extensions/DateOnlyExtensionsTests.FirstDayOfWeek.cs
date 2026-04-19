@@ -117,7 +117,7 @@ namespace Bodu.Extensions
         /// Verifies that <see cref="DateOnlyExtensions.FirstDayOfWeek"/> throws when given an undefined <see cref="CalendarWeekendDefinition"/>.
         /// </summary>
         [TestMethod]
-        public void FirstDayOfWeek_WhenWeekendIsUndefined_ShouldThrowArgumentOutOfRangeException()
+        public void FirstDayOfWeek_WhenWeekendIsUndefined_ShouldThrowException()
         {
             var date = new DateOnly(2024, 1, 1);
             var invalidWeekend = (CalendarWeekendDefinition)999;
@@ -132,7 +132,7 @@ namespace Bodu.Extensions
         /// Verifies that <see cref="DateOnlyExtensions.FirstDayOfWeek"/> throws if the calculated actual underflows <see cref="DateOnly.MinValue"/>.
         /// </summary>
         [TestMethod]
-        public void FirstDayOfWeek_WhenResultUnderflowsMinValue_ShouldThrowArgumentOutOfRangeException()
+        public void FirstDayOfWeek_WhenResultUnderflowsMinValue_ShouldThrowException()
         {
             var nearMin = DateOnly.MinValue.AddDays(1); // e.g., Jan 2, 0001
             var weekend = CalendarWeekendDefinition.FridaySaturday; // Start of week = Sunday → offset = -1

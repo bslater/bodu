@@ -80,7 +80,7 @@ public static partial class DateOnlyExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(weekend);
         DayOfWeek startOfWeek = DateTimeExtensions.GetWeekStartDay(weekend);
-        DayOfWeek endOfWeek = (DayOfWeek)(((int)startOfWeek + 6) % 7);
+        var endOfWeek = (DayOfWeek)(((int)startOfWeek + 6) % 7);
 
         int dayNumber = date.DayNumber + (((int)endOfWeek - (int)date.DayOfWeek + 7) % 7);
 

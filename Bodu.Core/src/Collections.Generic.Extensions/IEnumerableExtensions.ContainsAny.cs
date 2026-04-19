@@ -64,7 +64,7 @@ public static partial class IEnumerableExtensions
 
         if (sourceIsSmaller)
         {
-            HashSet<T> sourceSet = new HashSet<T>(source, comparer);
+            var sourceSet = new HashSet<T>(source, comparer);
             if (sourceSet.Count == 0)
                 return false;
 
@@ -80,7 +80,7 @@ public static partial class IEnumerableExtensions
         }
         else
         {
-            HashSet<T> itemSet = new HashSet<T>(items, comparer);
+            var itemSet = new HashSet<T>(items, comparer);
 
             // Guard against the case where items was a non-ICollection empty sequence that
             // bypassed the earlier count check (itemsCount was null, so the == 0 fast path

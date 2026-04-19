@@ -60,7 +60,7 @@ namespace Bodu
         /// <see cref="ArgumentNullException" /> when the input is <see langword="null" />.
         /// </summary>
         [TestMethod]
-        public void ParseExact_WhenInputIsNull_ShouldThrowArgumentNullException()
+        public void ParseExact_WhenInputIsNull_ShouldThrowException()
         {
             Assert.ThrowsExactly<ArgumentNullException>(() => { _ = WeekPattern.ParseExact(null!, "S"); });
         }
@@ -70,7 +70,7 @@ namespace Bodu
         /// <see cref="ArgumentNullException" /> when the format is <see langword="null" />.
         /// </summary>
         [TestMethod]
-        public void ParseExact_WhenFormatIsNull_ShouldThrowArgumentNullException()
+        public void ParseExact_WhenFormatIsNull_ShouldThrowException()
         {
             Assert.ThrowsExactly<ArgumentNullException>(() => { _ = WeekPattern.ParseExact("_M_W_F_", null); });
         }
@@ -80,7 +80,7 @@ namespace Bodu
         /// <see cref="FormatException" /> when the format string is unrecognised.
         /// </summary>
         [TestMethod]
-        public void ParseExact_WhenFormatIsUnrecognised_ShouldThrowFormatException()
+        public void ParseExact_WhenFormatIsUnrecognised_ShouldThrowException()
         {
             Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.ParseExact("_M_W_F_", "Z"); });
         }
@@ -90,7 +90,7 @@ namespace Bodu
         /// <see cref="FormatException" /> when the format string is empty.
         /// </summary>
         [TestMethod]
-        public void ParseExact_WhenFormatIsEmpty_ShouldThrowFormatException()
+        public void ParseExact_WhenFormatIsEmpty_ShouldThrowException()
         {
             Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.ParseExact("_M_W_F_", string.Empty); });
         }
@@ -228,7 +228,7 @@ namespace Bodu
         /// <see cref="FormatException" /> when a binary input contains an invalid character.
         /// </summary>
         [TestMethod]
-        public void ParseExact_WhenBinaryInputContainsInvalidCharacter_ShouldThrowFormatException()
+        public void ParseExact_WhenBinaryInputContainsInvalidCharacter_ShouldThrowException()
         {
             Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.ParseExact("0111X10", "0"); });
         }

@@ -133,7 +133,7 @@ namespace Bodu.Extensions
         /// <see cref="ArgumentOutOfRangeException" /> when the date falls before the fiscal year start.
         /// </summary>
         [TestMethod]
-        public void GetQuarterEndDate_WhenDateOnlyIsBeforeFiscalYearStart_ShouldThrowArgumentOutOfRangeException()
+        public void GetQuarterEndDate_WhenDateOnlyIsBeforeFiscalYearStart_ShouldThrowException()
         {
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
                 Sunday52.GetQuarterEndDate(new DateOnly(2022, 12, 31)));
@@ -144,7 +144,7 @@ namespace Bodu.Extensions
         /// <see cref="ArgumentOutOfRangeException" /> when the date falls after the fiscal year end.
         /// </summary>
         [TestMethod]
-        public void GetQuarterEndDate_WhenDateOnlyIsAfterFiscalYearEnd_ShouldThrowArgumentOutOfRangeException()
+        public void GetQuarterEndDate_WhenDateOnlyIsAfterFiscalYearEnd_ShouldThrowException()
         {
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
                 Sunday52.GetQuarterEndDate(new DateOnly(2023, 12, 31)));
@@ -156,7 +156,7 @@ namespace Bodu.Extensions
         /// <see cref="Sunday53" /> fiscal year, which begins in December of the prior calendar year.
         /// </summary>
         [TestMethod]
-        public void GetQuarterEndDate_WhenDateOnlyIsBeforeFiscalYearStartAcrossCalendarYear_ShouldThrowArgumentOutOfRangeException()
+        public void GetQuarterEndDate_WhenDateOnlyIsBeforeFiscalYearStartAcrossCalendarYear_ShouldThrowException()
         {
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
                 Sunday53.GetQuarterEndDate(new DateOnly(2019, 12, 28)));
@@ -168,7 +168,7 @@ namespace Bodu.Extensions
         /// the 53-week <see cref="Sunday53" /> provider.
         /// </summary>
         [TestMethod]
-        public void GetQuarterEndDate_WhenDateOnlyIsFirstDayOfNextFiscalYearIn53WeekYear_ShouldThrowArgumentOutOfRangeException()
+        public void GetQuarterEndDate_WhenDateOnlyIsFirstDayOfNextFiscalYearIn53WeekYear_ShouldThrowException()
         {
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
                 Sunday53.GetQuarterEndDate(new DateOnly(2021, 1, 3)));

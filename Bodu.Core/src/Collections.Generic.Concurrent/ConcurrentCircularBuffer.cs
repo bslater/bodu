@@ -261,14 +261,17 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// <param name="array">The destination array. Must not be <see langword="null"/>.</param>
     /// <param name="index">The zero-based index in <paramref name="array"/> at which copying begins.</param>
     /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is less than zero.</exception>
     /// <exception cref="ArgumentException">
     /// The number of elements in the buffer exceeds the available space in <paramref name="array"/> from <paramref name="index"/> onward.
     /// </exception>
     public void CopyTo(T[] array, int index)
     {
         ThrowHelper.ThrowIfNull(array);
+        ThrowHelper.ThrowIfNegative(index, nameof(index));
         var snap = ToArray();
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index, snap.Length);
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index + snap.Length);
+
         Array.Copy(snap, 0, array, index, snap.Length);
     }
 

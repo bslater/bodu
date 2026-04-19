@@ -128,7 +128,7 @@ namespace Bodu.Collections.Generic
         /// Verifies that mutating the dictionary through the Keys collection is not supported and throws.
         /// </summary>
         [TestMethod]
-        public void Keys_Add_ShouldThrowNotSupportedException()
+        public void Keys_Add_ShouldThrowException()
         {
             var dictionary = new EvictingDictionary<string, int>(3);
             ICollection<string> keys = dictionary.Keys;

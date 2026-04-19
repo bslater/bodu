@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------- //
+﻿// --------------------------------------------------------------------------------------------------------------- //
 // <copyright file="EvictingDictionary.KeyCollection.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -59,7 +59,7 @@ public partial class EvictingDictionary<TKey, TValue>
         {
             ThrowHelper.ThrowIfNull(array);
             ThrowHelper.ThrowIfLessThan(arrayIndex, 0);
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, arrayIndex, Count);
+            ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, arrayIndex, Count);
 
             foreach (KeyValuePair<TKey, TValue> kvp in _dictionary.GetOrderedItems())
                 array[arrayIndex++] = kvp.Key;
@@ -79,10 +79,10 @@ public partial class EvictingDictionary<TKey, TValue>
         void ICollection.CopyTo(Array array, int index)
         {
             ThrowHelper.ThrowIfNull(array);
-            ThrowHelper.ThrowIfArrayIsNotSingleDimension(array);
+            ThrowHelper.ThrowIfArrayMultidimensional(array);
             ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
             ThrowHelper.ThrowIfLessThan(index, 0);
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index, Count);
+            ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, index, Count);
 
             foreach (KeyValuePair<TKey, TValue> kvp in _dictionary.GetOrderedItems())
                 array.SetValue(kvp.Key, index++);

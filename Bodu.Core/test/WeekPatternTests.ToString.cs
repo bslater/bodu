@@ -41,7 +41,7 @@ namespace Bodu
         /// when an unrecognised format specifier is provided.
         /// </summary>
         [TestMethod]
-        public void ToString_WhenInvalidFormat_ShouldThrowArgumentException()
+        public void ToString_WhenInvalidFormat_ShouldThrowException()
         {
             var pattern = new WeekPattern(DayOfWeek.Monday);
             Assert.ThrowsExactly<ArgumentException>(() => pattern.ToString("X"));
@@ -217,7 +217,7 @@ namespace Bodu
         /// when the format string is unrecognised.
         /// </summary>
         [TestMethod]
-        public void ToString_WhenFormatIsUnrecognised_ShouldThrowArgumentException()
+        public void ToString_WhenFormatIsUnrecognised_ShouldThrowException()
         {
             Assert.ThrowsExactly<ArgumentException>(() =>
             {

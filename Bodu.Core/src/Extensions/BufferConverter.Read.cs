@@ -30,7 +30,7 @@ public static partial class BufferConverter
 #else
         int elementSize = Marshal.SizeOf<T>();
 #endif
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(sourceArray, index, elementSize);
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(sourceArray, index, elementSize);
 
 #if NETSTANDARD2_0
         var handle = GCHandle.Alloc(sourceArray, GCHandleType.Pinned);

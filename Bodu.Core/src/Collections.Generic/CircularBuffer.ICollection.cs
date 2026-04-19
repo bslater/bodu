@@ -71,9 +71,10 @@ public partial class CircularBuffer<T> :
     void ICollection.CopyTo(Array array, int index)
     {
         ThrowHelper.ThrowIfNull(array);
-        ThrowHelper.ThrowIfArrayIsNotSingleDimension(array);
+        ThrowHelper.ThrowIfArrayMultidimensional(array);
         ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index, _count);
+        ThrowHelper.ThrowIfNegative(index, nameof(index));
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index + _count);
 
         try
         {

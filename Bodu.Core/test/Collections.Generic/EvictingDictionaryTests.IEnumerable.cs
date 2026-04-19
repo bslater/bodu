@@ -61,7 +61,7 @@ namespace Bodu.Collections.Generic
         /// causes the next <c>MoveNext</c> to throw <see cref="InvalidOperationException"/>.
         /// </summary>
         [TestMethod]
-        public void GetEnumerator_WhenDictionaryIsMutatedByAddDuringEnumeration_ShouldThrowInvalidOperationException()
+        public void GetEnumerator_WhenDictionaryIsMutatedByAddDuringEnumeration_ShouldThrowException()
         {
             var dictionary = new EvictingDictionary<int, int>(10);
             for (int i = 0; i < 5; i++)
@@ -78,7 +78,7 @@ namespace Bodu.Collections.Generic
         /// Verifies that mutating the dictionary via Remove during enumeration invalidates the active enumerator.
         /// </summary>
         [TestMethod]
-        public void GetEnumerator_WhenDictionaryIsMutatedByRemoveDuringEnumeration_ShouldThrowInvalidOperationException()
+        public void GetEnumerator_WhenDictionaryIsMutatedByRemoveDuringEnumeration_ShouldThrowException()
         {
             var dictionary = new EvictingDictionary<int, int>(10);
             for (int i = 0; i < 5; i++)
@@ -95,7 +95,7 @@ namespace Bodu.Collections.Generic
         /// Verifies that mutating the dictionary via Clear during enumeration invalidates the active enumerator.
         /// </summary>
         [TestMethod]
-        public void GetEnumerator_WhenDictionaryIsClearedDuringEnumeration_ShouldThrowInvalidOperationException()
+        public void GetEnumerator_WhenDictionaryIsClearedDuringEnumeration_ShouldThrowException()
         {
             var dictionary = new EvictingDictionary<int, int>(10);
             for (int i = 0; i < 3; i++)

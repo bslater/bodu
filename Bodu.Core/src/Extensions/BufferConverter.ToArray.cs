@@ -36,7 +36,7 @@ public static partial class BufferConverter
 #endif
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(sourceArray, sourceIndex, count * elementSize);
 
-        T[] result = new T[count];
+        var result = new T[count];
         sourceArray.CopyTo(sourceIndex, result, 0, count);
         return result;
     }
@@ -62,7 +62,7 @@ public static partial class BufferConverter
 #endif
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(sourceSpan, 0, count * elementSize);
 
-        T[] result = new T[count];
+        var result = new T[count];
         sourceSpan.CopyTo(result.AsSpan(), count);
         return result;
     }

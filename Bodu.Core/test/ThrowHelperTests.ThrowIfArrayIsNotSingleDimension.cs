@@ -14,7 +14,7 @@ namespace Bodu
         {
             Assert.ThrowsExactly<ArgumentException>(() =>
             {
-                ThrowHelper.ThrowIfArrayIsNotSingleDimension(array);
+                ThrowHelper.ThrowIfArrayMultidimensional(array);
             });
         }
 
@@ -22,7 +22,7 @@ namespace Bodu
         [DynamicData(nameof(GetSingleDimensionalArrayTestData), DynamicDataSourceType.Method)]
         public void ThrowIfArrayIsNotSingleDimension_WhenArrayIsSingleDimension_ShouldNotThrow(Array array)
         {
-            ThrowHelper.ThrowIfArrayIsNotSingleDimension(array);
+            ThrowHelper.ThrowIfArrayMultidimensional(array);
         }
 
         private static IEnumerable<object[]> GetMultiDimensionalArrayTestData()

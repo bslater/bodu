@@ -141,7 +141,7 @@ namespace Bodu.Collections.Generic
         /// Verifies that mutating the dictionary through the Values collection is not supported.
         /// </summary>
         [TestMethod]
-        public void Values_Add_ShouldThrowNotSupportedException()
+        public void Values_Add_ShouldThrowException()
         {
             var dictionary = new EvictingDictionary<string, int>(3);
             ICollection<int> values = dictionary.Values;

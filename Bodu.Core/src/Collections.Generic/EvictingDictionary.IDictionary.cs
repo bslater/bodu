@@ -97,6 +97,7 @@ public partial class EvictingDictionary<TKey, TValue> :
         if (_store.TryGetValue(key, out CacheItem? existing))
         {
             existing.Value = value;
+            TouchInternal(key, existing);
             _version++;
             return;
         }
@@ -104,13 +105,16 @@ public partial class EvictingDictionary<TKey, TValue> :
         if (_store.Count >= _capacity)
             EvictOne();
 
-        CacheItem item = new CacheItem(value);
+        var item = new CacheItem(value);
 
-        if (_evictingPolicy is EvictingDictionaryPolicy.FirstInFirstOut
-            or EvictingDictionaryPolicy.LeastRecentlyUsed
-            or EvictingDictionaryPolicy.MostRecentlyUsed
-            or EvictingDictionaryPolicy.SecondChance)
+        if (_evictingPolicy is
+            EvictingDictionaryPolicy.FirstInFirstOut or
+            EvictingDictionaryPolicy.LeastRecentlyUsed or
+            EvictingDictionaryPolicy.MostRecentlyUsed or
+            EvictingDictionaryPolicy.SecondChance)
+        {
             item.Node = _order.AddLast(key);
+        }
 
         if (_evictingPolicy == EvictingDictionaryPolicy.LeastFrequentlyUsed)
             AddToFrequencyList(item.Frequency, key);
@@ -160,10 +164,10 @@ public partial class EvictingDictionary<TKey, TValue> :
     public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
     {
         ThrowHelper.ThrowIfNull(array);
-        ThrowHelper.ThrowIfArrayIsNotSingleDimension(array);
+        ThrowHelper.ThrowIfArrayMultidimensional(array);
         ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
         ThrowHelper.ThrowIfLessThan(arrayIndex, 0);
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, arrayIndex, Count);
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, arrayIndex+ Count);
 
         foreach (KeyValuePair<TKey, TValue> kvp in GetOrderedItems())
             array[arrayIndex++] = kvp;

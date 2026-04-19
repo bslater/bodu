@@ -16,13 +16,24 @@ namespace Bodu.Collections.Generic.Concurrent
         private const int MinCapacity = 2;
         private const int DefaultCapacity = 16;
 
-        private sealed class TestItem
+        private sealed record TestItem
         {
             public int Value { get; set; }
 
-            public TestItem(int value) => Value = value;
+            public TestItem(int value) { Value = value; }
 
             public override string ToString() => $"Item({Value})";
+        }
+
+        /// <summary>
+        /// A reference type that intentionally does not override Equals or GetHashCode,
+        /// so that equality falls back to reference identity. Used to test Contains behaviour
+        /// for types without custom equality.
+        /// </summary>
+        private sealed class ReferenceItem
+        {
+            public int Value { get; }
+            public ReferenceItem(int value) => Value = value;
         }
 
         private static void AssertBufferContainsExactlyValues(

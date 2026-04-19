@@ -170,7 +170,7 @@ namespace Bodu.Collections.Generic.Extensions
         }
 
         [TestMethod]
-        public void Enumerator_Current_WhenAfterEnd_ShouldThrowInvalidOperationException()
+        public void Enumerator_Current_WhenAfterEnd_ShouldThrowException()
         {
             var actual = YieldingSequence().Cache();
             var enumerator = actual.GetEnumerator();
@@ -183,7 +183,7 @@ namespace Bodu.Collections.Generic.Extensions
         }
 
         [TestMethod]
-        public void Enumerator_Current_WhenBeforeMoveNext_ShouldThrowInvalidOperationException()
+        public void Enumerator_Current_WhenBeforeMoveNext_ShouldThrowException()
         {
             var actual = YieldingSequence().Cache();
             var enumerator = actual.GetEnumerator();
@@ -195,7 +195,7 @@ namespace Bodu.Collections.Generic.Extensions
         }
 
         [TestMethod]
-        public void Enumerator_Reset_ShouldThrowNotSupportedException()
+        public void Enumerator_Reset_ShouldThrowException()
         {
             var actual = YieldingSequence().Cache();
             var enumerator = actual.GetEnumerator();

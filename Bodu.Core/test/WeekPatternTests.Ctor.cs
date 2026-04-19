@@ -44,7 +44,7 @@ namespace Bodu
         /// <see langword="null" /> string is provided.
         /// </summary>
         [TestMethod]
-        public void Constructor_WhenNullStringProvided_ShouldThrowArgumentNullException()
+        public void Constructor_WhenNullStringProvided_ShouldThrowException()
         {
             string input = null;
             Assert.ThrowsExactly<ArgumentNullException>(() =>

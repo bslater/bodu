@@ -436,7 +436,8 @@ public partial class CircularBuffer<T>
     public void CopyTo(T[] array, int index)
     {
         ThrowHelper.ThrowIfNull(array);
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index, _count);
+        ThrowHelper.ThrowIfNegative(index, nameof(index));
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index + _count);
 
         CopyToInternal(array, index);
     }
@@ -511,7 +512,7 @@ public partial class CircularBuffer<T>
     /// </example>
     public T[] ToArray()
     {
-        T[] result = new T[_count];
+        var result = new T[_count];
         if (_count > 0)
             CopyToInternal(result, 0);
 
@@ -549,7 +550,7 @@ public partial class CircularBuffer<T>
         int newCapacity = Math.Max(_count, 1);
         if (newCapacity == _capacity)
             return;
-        T[] trimmed = new T[newCapacity];
+        var trimmed = new T[newCapacity];
         CopyTo(trimmed, 0);
 
         _internalBuffer = trimmed;

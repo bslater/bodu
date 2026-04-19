@@ -13,7 +13,7 @@ namespace Bodu
         /// when the input is <see langword="null" />.
         /// </summary>
         [TestMethod]
-        public void Parse_WhenInputIsNull_ShouldThrowArgumentNullException()
+        public void Parse_WhenInputIsNull_ShouldThrowException()
         {
             Assert.ThrowsExactly<ArgumentNullException>(() => { _ = WeekPattern.Parse(null!); });
         }
@@ -72,7 +72,7 @@ namespace Bodu
         /// when the input is not exactly seven characters long.
         /// </summary>
         [TestMethod]
-        public void Parse_WhenInputLengthIsNot7_ShouldThrowFormatException()
+        public void Parse_WhenInputLengthIsNot7_ShouldThrowException()
         {
             Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.Parse("SMTWTF"); });
         }
@@ -82,7 +82,7 @@ namespace Bodu
         /// when the input contains an unrecognised character.
         /// </summary>
         [TestMethod]
-        public void Parse_WhenInputContainsInvalidCharacter_ShouldThrowFormatException()
+        public void Parse_WhenInputContainsInvalidCharacter_ShouldThrowException()
         {
             Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.Parse("SMTWTFX"); });
         }

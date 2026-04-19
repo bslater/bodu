@@ -44,8 +44,8 @@ public static partial class BufferConverter
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(targetArray, targetIndex, byteCount);
 
 #if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
-        ReadOnlySpan<byte> sourceSpan = new ReadOnlySpan<byte>(sourceArray, sourceIndex, byteCount);
-        Span<T> targetSpan = new Span<T>(targetArray, targetIndex, count);
+        var sourceSpan = new ReadOnlySpan<byte>(sourceArray, sourceIndex, byteCount);
+        var targetSpan = new Span<T>(targetArray, targetIndex, count);
         MemoryMarshal.Cast<byte, T>(sourceSpan).CopyTo(targetSpan);
 #else
         var handle = GCHandle.Alloc(targetArray, GCHandleType.Pinned);
@@ -134,7 +134,7 @@ public static partial class BufferConverter
 #else
         int elementSize = Marshal.SizeOf<T>();
 #endif
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(targetArray, index, elementSize);
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(targetArray, index, elementSize);
 
 #if NETSTANDARD2_0
 

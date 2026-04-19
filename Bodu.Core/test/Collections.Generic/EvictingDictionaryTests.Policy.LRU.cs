@@ -13,12 +13,15 @@ namespace Bodu.Collections.Generic
             var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastRecentlyUsed);
             dictionary.Add("one", 1);
             dictionary.Add("two", 2);
-            dictionary["one"] = 11;
-            dictionary.Add("three", 3);
+            dictionary["one"] = 11;   // access "one" so "two" becomes least recently used
+            dictionary.Add("three", 3); // capacity exceeded — "two" should be evicted
 
-            Assert.IsTrue(dictionary.ContainsKey("one"));
-            Assert.IsFalse(dictionary.ContainsKey("two"));
-            Assert.IsTrue(dictionary.ContainsKey("three"));
+            Assert.IsTrue(dictionary.ContainsKey("one"),
+                "'one' should be retained because it was accessed most recently before capacity was exceeded.");
+            Assert.IsFalse(dictionary.ContainsKey("two"),
+                "'two' should have been evicted as it was the least recently used entry at the time capacity was exceeded.");
+            Assert.IsTrue(dictionary.ContainsKey("three"),
+                "'three' should be present as it was the item that triggered eviction and must be successfully added.");
         }
 
         /// <summary>

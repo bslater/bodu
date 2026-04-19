@@ -186,7 +186,7 @@ namespace Bodu.Extensions
         /// <see cref="ArgumentOutOfRangeException" /> when the date falls before the fiscal year start.
         /// </summary>
         [TestMethod]
-        public void GetQuarterEnd_WhenDateTimeIsBeforeFiscalYearStart_ShouldThrowArgumentOutOfRangeException()
+        public void GetQuarterEnd_WhenDateTimeIsBeforeFiscalYearStart_ShouldThrowException()
         {
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
                 Sunday52.GetQuarterEnd(new DateTime(2022, 12, 31)));
@@ -197,7 +197,7 @@ namespace Bodu.Extensions
         /// <see cref="ArgumentOutOfRangeException" /> when the date falls after the fiscal year end.
         /// </summary>
         [TestMethod]
-        public void GetQuarterEnd_WhenDateTimeIsAfterFiscalYearEnd_ShouldThrowArgumentOutOfRangeException()
+        public void GetQuarterEnd_WhenDateTimeIsAfterFiscalYearEnd_ShouldThrowException()
         {
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
                 Sunday52.GetQuarterEnd(new DateTime(2023, 12, 31)));
@@ -209,7 +209,7 @@ namespace Bodu.Extensions
         /// 53-week provider, confirming the 371-day upper boundary is enforced.
         /// </summary>
         [TestMethod]
-        public void GetQuarterEnd_WhenDateTimeIsFirstDayOfNextFiscalYearIn53WeekYear_ShouldThrowArgumentOutOfRangeException()
+        public void GetQuarterEnd_WhenDateTimeIsFirstDayOfNextFiscalYearIn53WeekYear_ShouldThrowException()
         {
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
                 Sunday53.GetQuarterEnd(new DateTime(2021, 1, 3)));

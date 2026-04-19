@@ -47,7 +47,7 @@ namespace Bodu.Extensions
         /// <see cref="ArgumentOutOfRangeException" /> when the date falls before the fiscal year start.
         /// </summary>
         [TestMethod]
-        public void GetQuarter_WhenDateTimeIsBeforeFiscalYearStart_ShouldThrowArgumentOutOfRangeException()
+        public void GetQuarter_WhenDateTimeIsBeforeFiscalYearStart_ShouldThrowException()
         {
             // Dec 31, 2022 is one week before the Sunday52 fiscal year that starts Jan 1, 2023.
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -59,7 +59,7 @@ namespace Bodu.Extensions
         /// <see cref="ArgumentOutOfRangeException" /> when the date falls after the fiscal year end.
         /// </summary>
         [TestMethod]
-        public void GetQuarter_WhenDateTimeIsAfterFiscalYearEnd_ShouldThrowArgumentOutOfRangeException()
+        public void GetQuarter_WhenDateTimeIsAfterFiscalYearEnd_ShouldThrowException()
         {
             // Dec 31, 2023 is the first day of the next fiscal year for Sunday52 (which starts on that Sunday).
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -72,7 +72,7 @@ namespace Bodu.Extensions
         /// that follows the 53-week <see cref="Sunday53" /> provider.
         /// </summary>
         [TestMethod]
-        public void GetQuarter_WhenDateTimeIsFirstDayOfNextFiscalYearIn53WeekYear_ShouldThrowArgumentOutOfRangeException()
+        public void GetQuarter_WhenDateTimeIsFirstDayOfNextFiscalYearIn53WeekYear_ShouldThrowException()
         {
             // Jan 3, 2021 is the next fiscal year start for Sunday53 (nearest Sunday to Jan 1, 2021).
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -85,7 +85,7 @@ namespace Bodu.Extensions
         /// a provider whose fiscal year begins in a prior calendar year.
         /// </summary>
         [TestMethod]
-        public void GetQuarter_WhenDateTimeIsBeforeFiscalYearStartAcrossCalendarYear_ShouldThrowArgumentOutOfRangeException()
+        public void GetQuarter_WhenDateTimeIsBeforeFiscalYearStartAcrossCalendarYear_ShouldThrowException()
         {
             // Dec 28, 2019 is one week before the Sunday53 fiscal year that starts Dec 29, 2019.
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -98,7 +98,7 @@ namespace Bodu.Extensions
         /// the <see cref="Saturday52" /> provider, whose fiscal year ends in March of the following year.
         /// </summary>
         [TestMethod]
-        public void GetQuarter_WhenDateTimeIsAfterFiscalYearEndAcrossCalendarYear_ShouldThrowArgumentOutOfRangeException()
+        public void GetQuarter_WhenDateTimeIsAfterFiscalYearEndAcrossCalendarYear_ShouldThrowException()
         {
             // Mar 30, 2024 is the first day of the fiscal year following Saturday52.
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -129,7 +129,7 @@ namespace Bodu.Extensions
         /// <see cref="ArgumentOutOfRangeException" /> when the date falls before the fiscal year start.
         /// </summary>
         [TestMethod]
-        public void GetQuarter_WhenDateOnlyIsBeforeFiscalYearStart_ShouldThrowArgumentOutOfRangeException()
+        public void GetQuarter_WhenDateOnlyIsBeforeFiscalYearStart_ShouldThrowException()
         {
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             {
@@ -142,7 +142,7 @@ namespace Bodu.Extensions
         /// <see cref="ArgumentOutOfRangeException" /> when the date falls after the fiscal year end.
         /// </summary>
         [TestMethod]
-        public void GetQuarter_WhenDateOnlyIsAfterFiscalYearEnd_ShouldThrowArgumentOutOfRangeException()
+        public void GetQuarter_WhenDateOnlyIsAfterFiscalYearEnd_ShouldThrowException()
         {
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             {

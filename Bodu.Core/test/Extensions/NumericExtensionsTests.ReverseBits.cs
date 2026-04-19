@@ -199,7 +199,7 @@ public partial class NumericExtensionsTests
     /// <see cref="ArgumentNullException" /> when the input array is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ReverseBits_WhenByteArrayIsNull_ShouldThrowArgumentNullException() =>
+    public void ReverseBits_WhenByteArrayIsNull_ShouldThrowException() =>
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             ((byte[])null!).ReverseBits();

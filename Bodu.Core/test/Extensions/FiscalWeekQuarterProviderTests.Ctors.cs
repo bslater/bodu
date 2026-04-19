@@ -16,7 +16,7 @@ namespace Bodu.Extensions
         /// <c>dayOfWeek</c> is not a defined <see cref="DayOfWeek" /> value.
         /// </summary>
         [TestMethod]
-        public void Constructor_WhenDayOfWeekIsUndefined_ShouldThrowArgumentOutOfRangeException()
+        public void Constructor_WhenDayOfWeekIsUndefined_ShouldThrowException()
         {
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
                 new FiscalWeekQuarterProvider(2023, 1, (DayOfWeek)99));
@@ -27,7 +27,7 @@ namespace Bodu.Extensions
         /// <c>pattern</c> is not a defined <see cref="FiscalWeekPattern" /> value.
         /// </summary>
         [TestMethod]
-        public void Constructor_WhenPatternIsUndefined_ShouldThrowArgumentOutOfRangeException()
+        public void Constructor_WhenPatternIsUndefined_ShouldThrowException()
         {
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
                 new FiscalWeekQuarterProvider(2023, 1, DayOfWeek.Sunday, isFiscalYearEnd: false, pattern: (FiscalWeekPattern)99));

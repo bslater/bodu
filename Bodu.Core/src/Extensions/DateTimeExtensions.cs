@@ -631,7 +631,7 @@ public static partial class DateTimeExtensions
     internal static int GetWeekOfYear(long ticks, CalendarWeekRule rule, DayOfWeek firstDayOfWeek)
     {
         // Convert ticks into a date for computing day-of-year
-        DateTime date = new DateTime(ticks, DateTimeKind.Unspecified);
+        var date = new DateTime(ticks, DateTimeKind.Unspecified);
         int dayOfYear = date.DayOfYear - 1; // Convert to 0-based day index
 
         return rule switch

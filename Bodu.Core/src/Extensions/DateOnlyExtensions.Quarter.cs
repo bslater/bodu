@@ -167,7 +167,7 @@ public static partial class DateOnlyExtensions
 
         uint startMonth = ((((uint)(q - 1) * 3U) + defMonthDay.defMonth - 1U) % 12U) + 1U;
         int startYear = (startMonth < defMonthDay.defMonth) ? y + 1 : y;
-        DateOnly startDate = new DateOnly(startYear, (int)startMonth, (int)defMonthDay.defDay);
+        var startDate = new DateOnly(startYear, (int)startMonth, (int)defMonthDay.defDay);
 
         if (startDate.DayNumber > referenceDate.DayNumber)
             y--;

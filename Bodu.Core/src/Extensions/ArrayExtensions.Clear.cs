@@ -59,7 +59,7 @@ public static partial class ArrayExtensions
     {
         ThrowHelper.ThrowIfNull(array);
         ThrowHelper.ThrowIfIndexOutOfRange(index, array);
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index, count);
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, index, count);
         ClearInternal(array, index, count);
     }
 
@@ -76,9 +76,9 @@ public static partial class ArrayExtensions
     public static void Clear(this Array array)
     {
         ThrowHelper.ThrowIfNull(array);
-        ThrowHelper.ThrowIfArrayIsNotSingleDimension(array);
+        ThrowHelper.ThrowIfArrayMultidimensional(array);
         ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
-        ClearInternal(array, 0, array.Length);
+        ClearCore(array, 0, array.Length);
     }
 
     /// <summary>
@@ -97,10 +97,10 @@ public static partial class ArrayExtensions
     public static void Clear(this Array array, int index)
     {
         ThrowHelper.ThrowIfNull(array);
-        ThrowHelper.ThrowIfArrayIsNotSingleDimension(array);
+        ThrowHelper.ThrowIfArrayMultidimensional(array);
         ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
         ThrowHelper.ThrowIfIndexOutOfRange(index, array);
-        ClearInternal(array, index, array.Length - index);
+        ClearCore(array, index, array.Length - index);
     }
 
     /// <summary>
@@ -122,11 +122,11 @@ public static partial class ArrayExtensions
     public static void Clear(this Array array, int index, int count)
     {
         ThrowHelper.ThrowIfNull(array);
-        ThrowHelper.ThrowIfArrayIsNotSingleDimension(array);
+        ThrowHelper.ThrowIfArrayMultidimensional(array);
         ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
         ThrowHelper.ThrowIfIndexOutOfRange(index, array);
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index, count);
-        ClearInternal(array, index, count);
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, index, count);
+        ClearCore(array, index, count);
     }
 
     /// <summary>
@@ -140,7 +140,8 @@ public static partial class ArrayExtensions
     /// This method assumes all parameters are valid and skips all validation checks. Intended for internal use where input validity is
     /// already ensured.
     /// </remarks>
-    internal static void ClearInternal<T>(T[] array, int index, int count) => Array.Clear(array, index, count);
+    internal static void ClearInternal<T>(T[] array, int index, int count) =>
+        Array.Clear(array, index, count);
 
     /// <summary>
     /// Clears a range of elements in a <see cref="System.Array"/> without performing any validation on the parameters.
@@ -152,5 +153,6 @@ public static partial class ArrayExtensions
     /// This method assumes all parameters are valid and skips all validation checks. Intended for internal use where input validity is
     /// already ensured.
     /// </remarks>
-    internal static void ClearInternal(Array array, int index, int count) => Array.Clear(array, index, count);
+    internal static void ClearCore(Array array, int index, int count) =>
+        Array.Clear(array, index, count);
 }

@@ -420,7 +420,7 @@ public partial class NumericExtensionsTests
     /// when called with a type that is not a supported numeric type.
     /// </summary>
     [TestMethod]
-    public void GetBytes_WhenTypeIsUnsupported_ShouldThrowInvalidOperationException() =>
+    public void GetBytes_WhenTypeIsUnsupported_ShouldThrowException() =>
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             1.0m.GetBytes();

@@ -93,7 +93,7 @@ public static partial class IEnumerableExtensions
             while (enumerator.MoveNext())
             {
                 // Allocate a fixed-size array for the current batch; size is known up-front.
-                TResult[] batch = new TResult[size];
+                var batch = new TResult[size];
                 int count = 0;
 
                 do
@@ -171,7 +171,7 @@ public static partial class IEnumerableExtensions
         IEnumerable<ReadOnlyMemory<TResult>> BatchIterator()
         {
             using IEnumerator<TSource> enumerator = source.GetEnumerator();
-            PooledBufferBuilder<TResult> buffer = new PooledBufferBuilder<TResult>(size);
+            var buffer = new PooledBufferBuilder<TResult>(size);
             int index = 0;
 
             try

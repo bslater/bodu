@@ -32,10 +32,10 @@ public partial class EvictingDictionary<TKey, TValue> :
     void ICollection.CopyTo(Array array, int index)
     {
         ThrowHelper.ThrowIfNull(array);
-        ThrowHelper.ThrowIfArrayIsNotSingleDimension(array);
+        ThrowHelper.ThrowIfArrayMultidimensional(array);
         ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
         ThrowHelper.ThrowIfLessThan(index, 0);
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index, _store.Count);
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index + _store.Count);
 
         foreach (System.Collections.Generic.KeyValuePair<TKey, TValue> kvp in GetOrderedItems())
             array.SetValue(new DictionaryEntry(kvp.Key, kvp.Value), index++);

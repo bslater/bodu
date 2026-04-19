@@ -286,6 +286,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The span length must be exactly {0}..
+        /// </summary>
+        internal static string Arg_Invalid_SpanLength {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_SpanLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The length of the span must be a multiple of {0}..
         /// </summary>
         internal static string Arg_Invalid_SpanLengthMultipleOf {
@@ -840,6 +849,15 @@ namespace Bodu {
         internal static string IO_Error_StreamReadBeyondEnd {
             get {
                 return ResourceManager.GetString("IO_Error_StreamReadBeyondEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The SyncRoot property may not be used for the synchronization of concurrent collections..
+        /// </summary>
+        internal static string NotSupported_ConcurrentSyncRoot {
+            get {
+                return ResourceManager.GetString("NotSupported_ConcurrentSyncRoot", resourceCulture);
             }
         }
         

@@ -28,7 +28,7 @@ public static partial class SequenceGenerator
         {
             yield return current;
 
-            StringBuilder next = new StringBuilder();
+            var next = new StringBuilder();
             int j = 0;
             while (j < current.Length)
             {

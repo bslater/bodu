@@ -93,7 +93,7 @@ namespace Bodu.Extensions
         /// Verifies that <see cref="DateOnlyExtensions.LastDayOfWeek"/> throws when given an undefined <see cref="CalendarWeekendDefinition"/>.
         /// </summary>
         [TestMethod]
-        public void LastDayOfWeek_WhenWeekendIsUndefined_ShouldThrowArgumentOutOfRangeException()
+        public void LastDayOfWeek_WhenWeekendIsUndefined_ShouldThrowException()
         {
             var date = new DateOnly(2024, 1, 1);
             var invalidWeekend = (CalendarWeekendDefinition)(-5);
@@ -108,7 +108,7 @@ namespace Bodu.Extensions
         /// Verifies that <see cref="DateOnlyExtensions.LastDayOfWeek"/> throws if the calculated actual exceeds <see cref="DateOnly.MaxValue"/>.
         /// </summary>
         [TestMethod]
-        public void LastDayOfWeek_WhenResultExceedsMaxValue_ShouldThrowArgumentOutOfRangeException()
+        public void LastDayOfWeek_WhenResultExceedsMaxValue_ShouldThrowException()
         {
             var nearMax = DateOnly.MaxValue.AddDays(-1); // e.g., Dec 30, 9999
             var weekend = CalendarWeekendDefinition.SaturdaySunday; // Start of week = Monday → end = Sunday

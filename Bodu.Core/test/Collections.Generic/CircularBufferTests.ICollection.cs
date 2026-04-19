@@ -4,206 +4,222 @@ namespace Bodu.Collections.Generic
 {
     public partial class CircularBufferTests
     {
-        private static ICollection CreateWrappedBuffer()
+        /// <summary>
+        /// Verifies that CopyTo correctly copies all elements to the destination array starting at index zero.
+        /// </summary>
+        [TestMethod]
+        public void ICollection_CopyTo_WhenBufferHasElements_ShouldCopyElementsToArray()
         {
-            var buffer = new CircularBuffer<int>(5);
+            var buffer = new CircularBuffer<char>(3);
+            buffer.Enqueue('a');
+            buffer.Enqueue('b');
+            var target = new char[3];
+            ((ICollection)buffer).CopyTo(target, 0);
+            Assert.AreEqual('a', target[0]);
+            Assert.AreEqual('b', target[1]);
+        }
+
+        /// <summary>
+        /// Verifies that CopyTo throws ArgumentNullException when the destination array is null.
+        /// </summary>
+        [TestMethod]
+        public void ICollection_CopyTo_WhenArrayIsNull_ShouldThrowException()
+        {
+            var buffer = new CircularBuffer<string>(1);
+            buffer.Enqueue("a");
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                ((ICollection)buffer).CopyTo(null, 0);
+            });
+        }
+
+        /// <summary>
+        /// Verifies that CopyTo throws ArgumentException when the destination is a multidimensional array.
+        /// </summary>
+        [TestMethod]
+        public void ICollection_CopyTo_WhenArrayIsMultiDimensional_ShouldThrowException()
+        {
+            var buffer = new CircularBuffer<int>(1);
             buffer.Enqueue(1);
-            buffer.Enqueue(2);
-            buffer.Enqueue(3);
-            buffer.Enqueue(4);
-            buffer.Enqueue(5);
-            buffer.Dequeue();
-            buffer.Enqueue(6);
-            return buffer;
+            var multiDim = new int[2, 2];
+            Assert.ThrowsExactly<ArgumentException>(() =>
+            {
+                ((ICollection)buffer).CopyTo(multiDim, 0);
+            });
         }
 
         /// <summary>
-        /// Verifies that ICollection.CopyTo copies elements correctly.
+        /// Verifies that CopyTo throws ArgumentException when the destination array has a non-zero lower bound.
         /// </summary>
         [TestMethod]
-        public void ICollection_CopyTo_WhenBufferPopulated_ShouldCopyElements()
+        public void ICollection_CopyTo_WhenArrayIsNotZeroBased_ShouldThrowException()
         {
-            ICollection collection = new CircularBuffer<int>(3);
-            ((CircularBuffer<int>)collection).Enqueue(10);
-            ((CircularBuffer<int>)collection).Enqueue(20);
+            var buffer = new CircularBuffer<int>(1);
+            buffer.Enqueue(1);
+            var nonZeroBased = Array.CreateInstance(typeof(int), lengths: [4], lowerBounds: [1]);
+            Assert.ThrowsExactly<ArgumentException>(() =>
+            {
+                ((ICollection)buffer).CopyTo(nonZeroBased, 0);
+            });
+        }
 
+        /// <summary>
+        /// Verifies that CopyTo throws ArgumentOutOfRangeException when the target index is negative.
+        /// </summary>
+        [TestMethod]
+        public void ICollection_CopyTo_WhenIndexIsNegative_ShouldThrowException()
+        {
+            var buffer = new CircularBuffer<int>(2);
+            buffer.Enqueue(1);
             var array = new int[3];
-            collection.CopyTo(array, 0);
-
-            Assert.AreEqual(10, array[0]);
-            Assert.AreEqual(20, array[1]);
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                ((ICollection)buffer).CopyTo(array, -1);
+            });
         }
 
         /// <summary>
-        /// Verifies that ICollection.SyncRoot is not null and IsSynchronized is false.
+        /// Verifies that CopyTo throws ArgumentException when the target index equals the array length, leaving no addressable position.
         /// </summary>
         [TestMethod]
-        public void ICollection_SyncRootAndIsSynchronized_WhenAccessed_ShouldReturnExpectedValues()
-        {
-            ICollection collection = new CircularBuffer<string>(1);
-            Assert.IsNotNull(collection.SyncRoot);
-            Assert.IsFalse(collection.IsSynchronized);
-        }
-
-        /// <summary>
-        /// Verifies that ICollection.Count returns correct value.
-        /// </summary>
-        [TestMethod]
-        public void ICollection_Count_WhenQueried_ShouldMatchEnqueuedItemCount()
-        {
-            ICollection collection = new CircularBuffer<int>(3);
-            ((CircularBuffer<int>)collection).Enqueue(100);
-            ((CircularBuffer<int>)collection).Enqueue(200);
-
-            Assert.AreEqual(2, collection.Count);
-        }
-
-        /// <summary>
-        /// Verifies that ICollection.Count matches CircularBuffer.Count.
-        /// </summary>
-        [TestMethod]
-        public void ICollection_Count_WhenComparedToBuffer_ShouldBeEqual()
+        public void ICollection_CopyTo_WhenIndexEqualsArrayLength_ShouldThrowException()
         {
             var buffer = new CircularBuffer<int>(3);
             buffer.Enqueue(1);
             buffer.Enqueue(2);
-            ICollection collection = buffer;
-
-            Assert.AreEqual(buffer.Count, collection.Count);
+            buffer.Enqueue(3);
+            var array = new int[6];
+            Assert.ThrowsExactly<ArgumentException>(() =>
+            {
+                ((ICollection)buffer).CopyTo(array, 6);
+            });
         }
 
         /// <summary>
-        /// Verifies that ICollection.CopyTo throws ArgumentNullException if target array is null.
+        /// Verifies that CopyTo throws ArgumentException when the destination array is too small to hold all elements.
         /// </summary>
         [TestMethod]
-        public void ICollection_CopyTo_WhenTargetArrayIsNull_ShouldThrowExactly()
+        public void ICollection_CopyTo_WhenArrayIsTooSmall_ShouldThrowException()
         {
-            ICollection buffer = new CircularBuffer<string>(2);
-            Assert.ThrowsExactly<ArgumentNullException>(() => buffer.CopyTo(null, 0));
-        }
-
-        /// <summary>
-        /// Verifies that ICollection.CopyTo throws ArgumentException for multi-dimensional arrays.
-        /// </summary>
-        [TestMethod]
-        public void ICollection_CopyTo_WhenTargetArrayIsMultiDimensional_ShouldThrowExactly()
-        {
-            ICollection buffer = new CircularBuffer<int>(2);
-            var multidim = new int[2, 2];
-            Assert.ThrowsExactly<ArgumentException>(() => buffer.CopyTo(multidim, 0));
-        }
-
-        /// <summary>
-        /// Verifies that ICollection.CopyTo throws ArgumentException for non-zero lower-bound arrays.
-        /// </summary>
-        [TestMethod]
-        public void ICollection_CopyTo_WhenArrayHasNonZeroLowerBound_ShouldThrowExactly()
-        {
-            ICollection buffer = new CircularBuffer<int>(2);
-            Array array = Array.CreateInstance(typeof(int), new[] { 5 }, new[] { 1 });
-            Assert.ThrowsExactly<ArgumentException>(() => buffer.CopyTo(array, 0));
-        }
-
-        /// <summary>
-        /// Verifies that ICollection.CopyTo throws ArgumentOutOfRangeException for negative index.
-        /// </summary>
-        [TestMethod]
-        public void ICollection_CopyTo_WhenIndexIsNegative_ShouldThrowExactly()
-        {
-            ICollection buffer = new CircularBuffer<int>(2);
-            var array = new int[3];
-            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => buffer.CopyTo(array, -1));
-        }
-
-        /// <summary>
-        /// Verifies that ICollection.CopyTo throws ArgumentException when the array is too small.
-        /// </summary>
-        [TestMethod]
-        public void ICollection_CopyTo_WhenArrayTooSmall_ShouldThrowExactly()
-        {
-            ICollection buffer = new CircularBuffer<int>(3);
-            ((CircularBuffer<int>)buffer).Enqueue(1);
-            ((CircularBuffer<int>)buffer).Enqueue(2);
-
+            var buffer = new CircularBuffer<int>(2);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
             var array = new int[1];
-            Assert.ThrowsExactly<ArgumentException>(() => buffer.CopyTo(array, 0));
+            Assert.ThrowsExactly<ArgumentException>(() =>
+            {
+                ((ICollection)buffer).CopyTo(array, 0);
+            });
         }
 
         /// <summary>
-        /// Verifies that ICollection.CopyTo on an empty buffer does not throw.
+        /// Verifies that CopyTo throws ArgumentException when the target index offset leaves insufficient space for all elements.
         /// </summary>
         [TestMethod]
-        public void ICollection_CopyTo_WhenBufferIsEmpty_ShouldNotThrow()
+        public void ICollection_CopyTo_WhenIndexOffsetLeavesInsufficientSpace_ShouldThrowException()
         {
-            ICollection buffer = new CircularBuffer<int>(3);
-            var array = new int[5];
-            buffer.CopyTo(array, 0);
-            Assert.AreEqual(0, ((CircularBuffer<int>)buffer).Count);
-        }
-
-        /// <summary>
-        /// Verifies that ICollection.CopyTo handles wrapped buffers correctly.
-        /// </summary>
-        [TestMethod]
-        public void ICollection_CopyTo_WhenBufferIsWrapped_ShouldCopyCorrectly()
-        {
-            ICollection buffer = CreateWrappedBuffer();
-            var actual = new int[5];
-            buffer.CopyTo(actual, 0);
-
-            CollectionAssert.AreEqual(new[] { 2, 3, 4, 5, 6 }, actual);
-        }
-
-        /// <summary>
-        /// Verifies that ICollection.CopyTo throws if destination array type does not match buffer
-        /// element type.
-        /// </summary>
-        [TestMethod]
-        public void ICollection_CopyTo_WhenArrayTypeMismatch_ShouldThrowExactly()
-        {
-            ICollection buffer = new CircularBuffer<string>(2);
-            ((CircularBuffer<string>)buffer).Enqueue("test");
-
-            var wrongTypeArray = new int[5];
-            Assert.ThrowsExactly<ArgumentException>(() => buffer.CopyTo(wrongTypeArray, 0));
-        }
-
-        /// <summary>
-        /// Verifies that ICollection.CopyTo copies all elements when buffer is contiguous.
-        /// </summary>
-        [TestMethod]
-        public void ICollection_CopyTo_WhenContiguous_ShouldCopyAllElements()
-        {
-            var buffer = new CircularBuffer<int>(5);
-            buffer.Enqueue(10);
-            buffer.Enqueue(20);
-            buffer.Enqueue(30);
-
-            var array = new int[3];
-            ((ICollection)buffer).CopyTo(array, 0);
-
-            CollectionAssert.AreEqual(new[] { 10, 20, 30 }, array);
-        }
-
-        /// <summary>
-        /// Verifies that ICollection.CopyTo works when buffer is full and wrapped (head == tail).
-        /// </summary>
-        [TestMethod]
-        public void ICollection_CopyTo_WhenWrappedAndFull_ShouldCopyAllElements()
-        {
-            var buffer = new CircularBuffer<int>(5);
+            var buffer = new CircularBuffer<int>(3);
             buffer.Enqueue(1);
             buffer.Enqueue(2);
             buffer.Enqueue(3);
-            buffer.Enqueue(4);
-            buffer.Enqueue(5);
-            buffer.Dequeue();
-            buffer.Enqueue(6);
+            var array = new int[4];
+            Assert.ThrowsExactly<ArgumentException>(() =>
+            {
+                ((ICollection)buffer).CopyTo(array, 2);
+            });
+        }
 
-            var array = new int[5];
+        /// <summary>
+        /// Verifies that CopyTo throws ArgumentException when the destination array element type is incompatible with the buffer element type.
+        /// </summary>
+        [TestMethod]
+        public void ICollection_CopyTo_WhenArrayIsWrongType_ShouldThrowException()
+        {
+            var buffer = new CircularBuffer<int>(1);
+            buffer.Enqueue(1);
+            var wrongType = new string[2];
+            Assert.ThrowsExactly<ArgumentException>(() =>
+            {
+                ((ICollection)buffer).CopyTo(wrongType, 0);
+            });
+        }
+
+        /// <summary>
+        /// Verifies that CopyTo succeeds and copies elements to the correct positions when the destination array is larger than required.
+        /// </summary>
+        [TestMethod]
+        public void ICollection_CopyTo_WhenArrayIsLargerThanRequired_ShouldCopyWithoutThrowing()
+        {
+            var buffer = new CircularBuffer<int>(3);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
+            buffer.Enqueue(3);
+            var array = new int[10];
             ((ICollection)buffer).CopyTo(array, 0);
+            Assert.AreEqual(1, array[0]);
+            Assert.AreEqual(2, array[1]);
+            Assert.AreEqual(3, array[2]);
+            Assert.AreEqual(0, array[9]);
+        }
 
-            CollectionAssert.AreEqual(new[] { 2, 3, 4, 5, 6 }, array);
+        /// <summary>
+        /// Verifies that CopyTo does not modify the destination array when the buffer is empty.
+        /// </summary>
+        [TestMethod]
+        public void ICollection_CopyTo_WhenBufferIsEmpty_ShouldLeaveArrayUnchanged()
+        {
+            var buffer = new CircularBuffer<int>(3);
+            var array = new[] { 9, 8, 7 };
+            ((ICollection)buffer).CopyTo(array, 0);
+            CollectionAssert.AreEqual(new[] { 9, 8, 7 }, array);
+        }
+
+        /// <summary>
+        /// Verifies that CopyTo writes elements at the correct offset when a non-zero index is supplied.
+        /// </summary>
+        [TestMethod]
+        public void ICollection_CopyTo_WhenIndexIsNonZero_ShouldCopyToCorrectOffset()
+        {
+            var buffer = new CircularBuffer<int>(2);
+            buffer.Enqueue(10);
+            buffer.Enqueue(20);
+            var array = new int[4];
+            ((ICollection)buffer).CopyTo(array, 2);
+            Assert.AreEqual(0, array[0]);
+            Assert.AreEqual(0, array[1]);
+            Assert.AreEqual(10, array[2]);
+            Assert.AreEqual(20, array[3]);
+        }
+
+        /// <summary>
+        /// Verifies that CopyTo preserves logical enqueue order when the internal buffer has wrapped around.
+        /// </summary>
+        [TestMethod]
+        public void ICollection_CopyTo_WhenBufferHasWrappedAround_ShouldCopyInEnqueueOrder()
+        {
+            var buffer = new CircularBuffer<int>(3);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
+            buffer.Enqueue(3);
+            buffer.Dequeue();
+            buffer.Enqueue(4);
+            var array = new int[3];
+            ((ICollection)buffer).CopyTo(array, 0);
+            CollectionAssert.AreEqual(new[] { 2, 3, 4 }, array);
+        }
+
+        /// <summary>
+        /// Verifies that CopyTo accepts and correctly copies elements into an object array when the buffer element type is assignment-compatible.
+        /// </summary>
+        [TestMethod]
+        public void ICollection_CopyTo_WhenArrayIsCompatibleObjectArray_ShouldCopySuccessfully()
+        {
+            var buffer = new CircularBuffer<string>(2);
+            buffer.Enqueue("hello");
+            buffer.Enqueue("world");
+            var array = new object[2];
+            ((ICollection)buffer).CopyTo(array, 0);
+            Assert.AreEqual("hello", array[0]);
+            Assert.AreEqual("world", array[1]);
         }
     }
 }

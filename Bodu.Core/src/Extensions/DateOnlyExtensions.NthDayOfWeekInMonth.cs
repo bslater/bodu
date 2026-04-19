@@ -51,7 +51,7 @@ public static partial class DateOnlyExtensions
 
             default:
                 int dayNumber = DateTimeExtensions.GetDayNumberUnchecked(date.Year, date.Month, 1);
-                DateOnly result = DateOnly.FromDayNumber(
+                var result = DateOnly.FromDayNumber(
                     dayNumber + (((int)dayOfWeek - (int)GetDayOfWeekFromDayNumber(dayNumber) + 7) % 7) + (((int)ordinal - 1) * 7));
 
                 if (result.Month != date.Month)
@@ -103,7 +103,7 @@ public static partial class DateOnlyExtensions
                 return DateOnly.FromDayNumber(DateOnlyExtensions.GetLastDayOfWeekInMonthDayNumber(year, month, dayOfWeek));
 
             default:
-                DateOnly result = DateOnly.FromDayNumber(DateOnlyExtensions.GetFirstDayOfWeekInMonthDayNumber(year, month, dayOfWeek) + (((int)ordinal - 1) * 7));
+                var result = DateOnly.FromDayNumber(DateOnlyExtensions.GetFirstDayOfWeekInMonthDayNumber(year, month, dayOfWeek) + (((int)ordinal - 1) * 7));
 
                 if (result.Month != month)
                     throw new ArgumentOutOfRangeException(

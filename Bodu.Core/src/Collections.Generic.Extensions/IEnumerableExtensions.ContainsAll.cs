@@ -42,7 +42,7 @@ public static partial class IEnumerableExtensions
             return true;
 
         // Materialise the source into a HashSet for O(1) membership lookups.
-        HashSet<T> sourceSet = new HashSet<T>(source, comparer);
+        var sourceSet = new HashSet<T>(source, comparer);
         if (sourceSet.Count == 0)
             return false;
 

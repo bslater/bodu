@@ -90,7 +90,7 @@ public static partial class DateTimeExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(weekend);
         DayOfWeek startOfWeek = GetWeekStartDay(weekend);
-        DayOfWeek endOfWeek = (DayOfWeek)(((int)startOfWeek + 6) % 7);
+        var endOfWeek = (DayOfWeek)(((int)startOfWeek + 6) % 7);
 
         int offsetDays = ((int)endOfWeek - (int)dateTime.DayOfWeek + 7) % 7;
         long dateTicks = dateTime.Ticks + (offsetDays * TicksPerDay);
