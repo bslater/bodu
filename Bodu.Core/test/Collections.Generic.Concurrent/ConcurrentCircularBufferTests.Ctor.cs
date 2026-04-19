@@ -234,7 +234,7 @@ public partial class ConcurrentCircularBufferTests
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = new ConcurrentCircularBuffer<int>(Array.Empty<int>(), -1);
+            _ = new ConcurrentCircularBuffer<TestItem>(Array.Empty<TestItem>(), -1);
         });
     }
 
@@ -245,7 +245,7 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void Ctor_WhenEmptyCollectionAndValidCapacity_ShouldCreateEmptyBuffer()
     {
-        var buffer = new ConcurrentCircularBuffer<int>(Array.Empty<int>(), 5);
+        var buffer = new ConcurrentCircularBuffer<TestItem>(Array.Empty<TestItem>(), 5);
 
         Assert.AreEqual(0, buffer.Count);
         Assert.AreEqual(5, buffer.Capacity);

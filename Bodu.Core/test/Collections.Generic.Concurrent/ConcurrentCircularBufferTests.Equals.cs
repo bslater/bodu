@@ -14,9 +14,9 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void Equals_WhenComparingSameReference_ShouldReturnTrue()
     {
-        var buffer = new ConcurrentCircularBuffer<int>(3);
-        buffer.Enqueue(1);
-        buffer.Enqueue(2);
+        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2));
 
         Assert.IsTrue(buffer.Equals(buffer));
     }
@@ -27,8 +27,8 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void Equals_WhenComparingWithNull_ShouldReturnFalse()
     {
-        var buffer = new ConcurrentCircularBuffer<int>(3);
-        buffer.Enqueue(1);
+        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
+        buffer.Enqueue(new TestItem(1));
 
         Assert.IsFalse(buffer.Equals(null));
     }

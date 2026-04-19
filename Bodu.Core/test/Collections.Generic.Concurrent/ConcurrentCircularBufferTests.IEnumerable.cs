@@ -125,14 +125,14 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void GetEnumerator_WhenContiguous_ShouldMatchCopyToOutput()
     {
-        var buffer = new ConcurrentCircularBuffer<int>(5);
-        buffer.Enqueue(10);
-        buffer.Enqueue(20);
-        buffer.Enqueue(30);
+        var buffer = new ConcurrentCircularBuffer<TestItem>(5);
+        buffer.Enqueue(new TestItem(10));
+        buffer.Enqueue(new TestItem(20));
+        buffer.Enqueue(new TestItem(30));
 
-        int[] fromToArray = buffer.ToArray();
+        TestItem[] fromToArray = buffer.ToArray();
 
-        int[] fromCopyTo = new int[buffer.Count];
+        TestItem[] fromCopyTo = new TestItem[buffer.Count];
         buffer.CopyTo(fromCopyTo, 0);
 
         CollectionAssert.AreEqual(fromToArray, fromCopyTo);
@@ -145,16 +145,16 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void GetEnumerator_WhenWrapped_ShouldMatchCopyToOutput()
     {
-        var buffer = new ConcurrentCircularBuffer<int>(3);
-        buffer.Enqueue(1);
-        buffer.Enqueue(2);
-        buffer.Enqueue(3);
+        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2));
+        buffer.Enqueue(new TestItem(3));
         buffer.Dequeue();       // removes 1
-        buffer.Enqueue(4);      // wraps: logical order is [2, 3, 4]
+        buffer.Enqueue(new TestItem(4));      // wraps: logical order is [2, 3, 4]
 
-        int[] fromToArray = buffer.ToArray();
+        TestItem[] fromToArray = buffer.ToArray();
 
-        int[] fromCopyTo = new int[buffer.Count];
+        TestItem[] fromCopyTo = new TestItem[buffer.Count];
         buffer.CopyTo(fromCopyTo, 0);
 
         CollectionAssert.AreEqual(fromToArray, fromCopyTo);

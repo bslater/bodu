@@ -17,7 +17,7 @@ public partial class ConcurrentCircularBufferTests
     [TestCategory("Structural")]
     public void StructureOf_ConcurrentCircularBufferEnumerator_ShouldBeStructType()
     {
-        var enumeratorType = typeof(ConcurrentCircularBuffer<int>.Enumerator);
+        var enumeratorType = typeof(ConcurrentCircularBuffer<TestItem>.Enumerator);
         Assert.IsTrue(enumeratorType.IsValueType, "Enumerator must be a value type (struct).");
     }
 
@@ -29,7 +29,7 @@ public partial class ConcurrentCircularBufferTests
     [TestCategory("Structural")]
     public void StructureOf_ConcurrentCircularBufferEnumerator_ShouldExposeOnlyImmutablePublicProperties()
     {
-        var enumeratorType = typeof(ConcurrentCircularBuffer<int>.Enumerator);
+        var enumeratorType = typeof(ConcurrentCircularBuffer<TestItem>.Enumerator);
 
         var mutableProperties = enumeratorType
             .GetProperties(BindingFlags.Instance | BindingFlags.Public)

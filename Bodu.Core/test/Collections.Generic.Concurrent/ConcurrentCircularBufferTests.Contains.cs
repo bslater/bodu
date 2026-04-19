@@ -294,12 +294,12 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void Contains_WhenUsingValueTypes_ShouldUseDefaultEquality()
     {
-        var buffer = new ConcurrentCircularBuffer<int>(5);
-        buffer.Enqueue(10);
-        buffer.Enqueue(20);
-        buffer.Enqueue(30);
+        var buffer = new ConcurrentCircularBuffer<TestItem>(5);
+        buffer.Enqueue(new TestItem(10));
+        buffer.Enqueue(new TestItem(20));
+        buffer.Enqueue(new TestItem(30));
 
-        Assert.IsTrue(buffer.Contains(20));
-        Assert.IsFalse(buffer.Contains(99));
+        Assert.IsTrue(buffer.Contains(new TestItem(20)));
+        Assert.IsFalse(buffer.Contains(new TestItem(99)));
     }
 }

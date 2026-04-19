@@ -141,12 +141,12 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void Enumerator_WhenCurrentAccessedBeforeMoveNext_ShouldReturnDefault()
     {
-        var buffer = new ConcurrentCircularBuffer<int>(3);
-        buffer.Enqueue(10);
-        buffer.Enqueue(20);
+        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
+        buffer.Enqueue(new TestItem(10));
+        buffer.Enqueue(new TestItem(20));
 
         var enumerator = buffer.GetEnumerator();
-        Assert.AreEqual(default(int), enumerator.Current);
+        Assert.AreEqual(default(TestItem), enumerator.Current);
     }
 
     /// <summary>
@@ -156,10 +156,10 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void Enumerator_WhenCurrentAccessedAfterExhaustion_ShouldReturnDefault()
     {
-        var buffer = new ConcurrentCircularBuffer<int>(3);
-        buffer.Enqueue(1);
-        buffer.Enqueue(2);
-        buffer.Enqueue(3);
+        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2));
+        buffer.Enqueue(new TestItem(3));
 
         var enumerator = buffer.GetEnumerator();
         while (enumerator.MoveNext())
@@ -167,7 +167,7 @@ public partial class ConcurrentCircularBufferTests
             // Consume all items.
         }
 
-        Assert.AreEqual(default(int), enumerator.Current);
+        Assert.AreEqual(default(TestItem), enumerator.Current);
     }
 
     /// <summary>
@@ -177,20 +177,20 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void Enumerator_WhenResetCalled_ShouldRestartIteration()
     {
-        var buffer = new ConcurrentCircularBuffer<int>(4);
-        buffer.Enqueue(100);
-        buffer.Enqueue(200);
-        buffer.Enqueue(300);
+        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
+        buffer.Enqueue(new TestItem(100));
+        buffer.Enqueue(new TestItem(200));
+        buffer.Enqueue(new TestItem(300));
 
         var enumerator = buffer.GetEnumerator();
 
-        var firstPass = new List<int>();
+        var firstPass = new List<TestItem>();
         while (enumerator.MoveNext())
             firstPass.Add(enumerator.Current);
 
         enumerator.Reset();
 
-        var secondPass = new List<int>();
+        var secondPass = new List<TestItem>();
         while (enumerator.MoveNext())
             secondPass.Add(enumerator.Current);
 

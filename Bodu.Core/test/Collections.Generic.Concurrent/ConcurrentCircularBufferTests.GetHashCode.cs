@@ -14,9 +14,9 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void GetHashCode_WhenCalledMultipleTimes_ShouldReturnStableValue()
     {
-        var buffer = new ConcurrentCircularBuffer<int>(2);
-        buffer.Enqueue(1);
-        buffer.Enqueue(2);
+        var buffer = new ConcurrentCircularBuffer<TestItem>(2);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2));
 
         int hash1 = buffer.GetHashCode();
         int hash2 = buffer.GetHashCode();
@@ -31,11 +31,11 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void GetHashCode_WhenCalledOnDistinctInstances_ShouldLikelyDiffer()
     {
-        var buffer1 = new ConcurrentCircularBuffer<int>(2);
-        var buffer2 = new ConcurrentCircularBuffer<int>(2);
+        var buffer1 = new ConcurrentCircularBuffer<TestItem>(2);
+        var buffer2 = new ConcurrentCircularBuffer<TestItem>(2);
 
-        buffer1.Enqueue(1);
-        buffer2.Enqueue(1);
+        buffer1.Enqueue(new TestItem(1));
+        buffer2.Enqueue(new TestItem(1));
 
         Assert.AreNotEqual(buffer1.GetHashCode(), buffer2.GetHashCode(),
             "Hash codes matched but should ideally differ for different instances.");
