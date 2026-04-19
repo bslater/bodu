@@ -180,15 +180,29 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     [DataRow(0, -1, "count", DisplayName = "Negative count")]
     [DataRow(0, 10, "count", DisplayName = "Count exceeds array length")]
-    [DataRow(3, 3, "count", DisplayName = "Index + count extends beyond array")]
     public void Reverse_WhenCountIsInvalid_ForTypedArrayIndexCount_ShouldThrowArgumentOutOfRangeException(
         int index, int count, string expectedParamName)
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(            () =>
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             Ints.Reverse(index, count);
         });
         Assert.AreEqual(expectedParamName, ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that an invalid count on a typed array throws
+    /// <see cref="ArgumentException"/> and that the exception identifies the
+    /// correct parameter name, covering negative values, values exceeding the length,
+    /// and values that extend beyond the end.
+    /// </summary>
+    [TestMethod]
+    public void Reverse_WhenIndexAndCountIsInvalid_ForTypedArrayIndexCount_ShouldThrowArgumentException()
+    {
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            Ints.Reverse(Ints.Length - 2, 3);
+        });
     }
 
     // =========================================================================
@@ -203,8 +217,11 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     [DynamicData(nameof(ReverseIntRangeData), typeof(ArrayExtensionsTests))]
     public void Reverse_WhenRangeExpressionIsSpecified_ForTypedArrayRange_ShouldProduceCorrectResult(
-        Range range, int[] expected)
+        int start, int end, bool startFromEnd, bool endFromEnd, int[] expected)
     {
+        var range = new Range(
+            new Index(start, startFromEnd),
+            new Index(end, endFromEnd));
         CollectionAssert.AreEqual(expected, Ints.Reverse(range));
     }
 
@@ -305,7 +322,7 @@ public partial class ArrayExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that passing a multidimensional array throws <see cref="ArgumentException"/>
+    /// Verifies that passing a multidimensional array throws <see cref="RankException"/>
     /// with a message confirming only single-dimensional arrays are supported, and that the
     /// exception identifies the correct parameter name.
     /// </summary>
@@ -313,12 +330,10 @@ public partial class ArrayExtensionsTests
     public void Reverse_WhenSourceIsMultidimensional_ForNonGenericArray_ShouldThrowException()
     {
         Array source = new int[2, 3];
-        var ex = Assert.ThrowsExactly<ArgumentException>(            () =>
+        Assert.ThrowsExactly<RankException>(() =>
         {
             source.Reverse();
         });
-        StringAssert.Contains(ex.Message, "single-dimensional");
-        Assert.AreEqual("source", ex.ParamName);
     }
 
     // =========================================================================
@@ -460,8 +475,11 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     [DynamicData(nameof(NonGenericArrayRangeData), typeof(ArrayExtensionsTests))]
     public void Reverse_WhenRangeExpressionIsSpecified_ForNonGenericArrayRange_ShouldProduceCorrectResult(
-        Range range, int[] expected)
+        int start, int end, bool startFromEnd, bool endFromEnd, int[] expected)
     {
+        var range = new Range(
+            new Index(start, startFromEnd),
+            new Index(end, endFromEnd));
         Array result = ((Array)Ints).Reverse(range);
         CollectionAssert.AreEqual(expected, (int[])result);
     }

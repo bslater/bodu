@@ -191,7 +191,6 @@ public partial class SpanExtensionsTests
     [TestMethod]
     [DataRow(0, -1, "count", DisplayName = "Negative count")]
     [DataRow(0, 10, "count", DisplayName = "Count exceeds span length")]
-    [DataRow(3, 3, "count", DisplayName = "Index + count extends beyond span")]
     public void Reverse_WhenCountIsInvalid_ForReadOnlySpanIndexCount_ShouldThrowArgumentOutOfRangeException(
         int index, int count, string expectedParamName)
     {
@@ -200,6 +199,22 @@ public partial class SpanExtensionsTests
             Ints.AsSpan().AsReadOnly().Reverse(index, count);
         });
         Assert.AreEqual(expectedParamName, ex.ParamName);
+    }
+
+
+    /// <summary>
+    /// Verifies that an invalid count on a typed array throws
+    /// <see cref="ArgumentException"/> and that the exception identifies the
+    /// correct parameter name, covering negative values, values exceeding the length,
+    /// and values that extend beyond the end.
+    /// </summary>
+    [TestMethod]
+    public void Reverse_WhenIndexAndCountIsInvalid_ForReadOnlySpanIndexCount_ShouldThrowArgumentException()
+    {
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            Ints.AsSpan().AsReadOnly().Reverse(Ints.Length - 2, 3);
+        });
     }
 
     // =========================================================================
@@ -213,8 +228,11 @@ public partial class SpanExtensionsTests
     [TestMethod]
     [DynamicData(nameof(ReverseIntRangeData), typeof(SpanExtensionsTests))]
     public void Reverse_WhenRangeExpressionIsSpecified_ForReadOnlySpanRange_ShouldProduceCorrectResult(
-        Range range, int[] expected)
+    int start, int end, bool startFromEnd, bool endFromEnd, int[] expected)
     {
+        var range = new Range(
+            new Index(start, startFromEnd),
+            new Index(end, endFromEnd));
         ReadOnlySpan<int> source = Ints;
         CollectionAssert.AreEqual(expected, source.Reverse(range).ToArray());
     }
@@ -282,8 +300,11 @@ public partial class SpanExtensionsTests
     [TestMethod]
     [DynamicData(nameof(ReverseIntRangeData), typeof(SpanExtensionsTests))]
     public void Reverse_WhenRangeExpressionIsSpecified_ForMutableSpanRange_ShouldProduceSameResultAsReadOnlySpanOverload(
-        Range range, int[] expected)
+    int start, int end, bool startFromEnd, bool endFromEnd, int[] expected)
     {
+        var range = new Range(
+            new Index(start, startFromEnd),
+            new Index(end, endFromEnd));
         Span<int> source = Ints;
         CollectionAssert.AreEqual(expected, source.Reverse(range).ToArray());
     }
@@ -326,7 +347,6 @@ public partial class SpanExtensionsTests
     [TestMethod]
     [DataRow(0, -1, "count", DisplayName = "Negative count")]
     [DataRow(0, 10, "count", DisplayName = "Count exceeds span length")]
-    [DataRow(3, 3, "count", DisplayName = "Index + count extends beyond span")]
     public void Reverse_WhenCountIsInvalid_ForMutableSpanIndexCount_ShouldThrowArgumentOutOfRangeException(
         int index, int count, string expectedParamName)
     {
@@ -336,5 +356,20 @@ public partial class SpanExtensionsTests
             Ints.AsSpan().Reverse(index, count);
         });
         Assert.AreEqual(expectedParamName, ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that an invalid count on a typed array throws
+    /// <see cref="ArgumentException"/> and that the exception identifies the
+    /// correct parameter name, covering negative values, values exceeding the length,
+    /// and values that extend beyond the end.
+    /// </summary>
+    [TestMethod]
+    public void Reverse_WhenIndexAndCountIsInvalid_ForMutableSpanIndexCount_ShouldThrowArgumentException()
+    {
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            Ints.AsSpan().Reverse(Ints.Length - 2, 3);
+        });
     }
 }

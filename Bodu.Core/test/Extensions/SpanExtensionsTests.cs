@@ -123,13 +123,13 @@ public partial class SpanExtensionsTests
     public static IEnumerable<object[]> ReverseIntRangeData =>
         new[]
         {
-            new object[] { 1..4,   new[] { 1, 4, 3, 2, 5 } }, // start-relative, middle
-            new object[] { ^4..^1, new[] { 1, 4, 3, 2, 5 } }, // end-relative, equivalent
-            new object[] { ..,     new[] { 5, 4, 3, 2, 1 } }, // full span
-            new object[] { 0..3,   new[] { 3, 2, 1, 4, 5 } }, // first section
-            new object[] { 2..5,   new[] { 1, 2, 5, 4, 3 } }, // last section
-            new object[] { 2..2,   new[] { 1, 2, 3, 4, 5 } }, // empty range — straight copy
-            new object[] { 2..3,   new[] { 1, 2, 3, 4, 5 } }, // single element — straight copy
+        new object[] { 1, 4, false, false, new[] { 1, 4, 3, 2, 5 } }, // 1..4   start-relative, middle
+        new object[] { 4, 1, true,  true,  new[] { 1, 4, 3, 2, 5 } }, // ^4..^1 end-relative, equivalent
+        new object[] { 0, 0, false, true,  new[] { 5, 4, 3, 2, 1 } }, // 0..^0  full array
+        new object[] { 0, 3, false, false, new[] { 3, 2, 1, 4, 5 } }, // 0..3   first section
+        new object[] { 2, 5, false, false, new[] { 1, 2, 5, 4, 3 } }, // 2..5   last section
+        new object[] { 2, 2, false, false, new[] { 1, 2, 3, 4, 5 } }, // 2..2   empty range — straight copy
+        new object[] { 2, 3, false, false, new[] { 1, 2, 3, 4, 5 } }, // 2..3   single element — straight copy
         };
 
     // -------------------------------------------------------------------------

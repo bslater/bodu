@@ -399,7 +399,7 @@ public static partial class ArrayExtensions
         source.CopyTo(result);
 
         if (count > 1)
-            ((Span<T>)result).Slice(index, count).Reverse();
+            MemoryExtensions.Reverse(((Span<T>)result).Slice(index, count));
 
         return result;
     }
