@@ -68,9 +68,8 @@ public static partial class DateOnlyExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(weekRule);
         ThrowHelper.ThrowIfEnumValueIsUndefined(weekStart);
-
-        return DateTimeExtensions.GetWeekOfYear(date.DayNumber * DateTimeExtensions.TicksPerDay, weekRule, weekStart)
-            - DateTimeExtensions.GetWeekOfYear(DateTimeExtensions.GetDateTicks(date.Year, date.Month, 1), weekRule, weekStart)
-            + 1;
+        DateOnly firstOfMonth = new DateOnly(date.Year, date.Month, 1);
+        int offsetDays = ((int)firstOfMonth.DayOfWeek - (int)weekStart + 7) % 7;
+        return (date.Day + offsetDays - 1) / 7 + 1;
     }
 }

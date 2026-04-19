@@ -183,7 +183,7 @@ public static partial class DateTimeExtensions
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
         DateTime dt = provider.GetQuarterEnd(dateTime);
-        return new DateTime(dt.Ticks - DateTimeExtensions.GetTicksToPreviousDayOfWeek(dt, dayOfWeek), dateTime.Kind);
+        return new DateTime(dt.Ticks + DateTimeExtensions.GetTicksToPreviousDayOfWeek(dt, dayOfWeek), dateTime.Kind);
     }
 
     /// <summary>

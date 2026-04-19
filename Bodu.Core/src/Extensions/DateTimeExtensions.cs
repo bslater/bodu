@@ -873,42 +873,40 @@ public static partial class DateTimeExtensions
     /// <returns>The 1-based week number for the date specified by <paramref name="ticks"/>.</returns>
     private static int GetWeekOfYearFullDays(long ticks, int dayOfYear, int firstDayOfWeek, int fullDays)
     {
-        // Get the day of the week for the current date
         int dayOfWeek = (int)DateTimeExtensions.GetDayOfWeekFromTicks(ticks);
-
-        // Derive the day of week for Jan 1 from current date and day offset
         int dayForJan1 = dayOfWeek - (dayOfYear % 7);
-
-        // Compute offset between Jan 1 and the first day of the week
         int offset = (firstDayOfWeek - dayForJan1 + 14) % 7;
 
-        // If the first week has fewer than the required full days, adjust the start of the first valid week
         if (offset != 0 && offset >= fullDays)
             offset -= 7;
 
-        // Calculate how many days into the year the target week starts
         int adjustedDay = dayOfYear - offset;
 
-        // If the adjusted day is non-negative, it's within the current year
         if (adjustedDay >= 0)
-            return (adjustedDay / 7) + 1;
+        {
+            int weekNum = (adjustedDay / 7) + 1;
 
-        // Otherwise, the date falls in the last week of the previous year Shift backwards by the number of days since Jan 1 to reach last
-        // day of previous year
+            // Check if this week straddles the year boundary and enough days
+            // fall in the next year to make it belong to next year's week 1.
+            var date = new DateTime(ticks, DateTimeKind.Unspecified);
+            int daysInYear = DateTime.IsLeapYear(date.Year) ? 366 : 365;
+            int daysInNextYear = (offset + weekNum * 7) - daysInYear;
+            if (daysInNextYear >= fullDays)
+                return 1;
+
+            return weekNum;
+        }
+
+        // Date falls in the last week of the previous year — recurse backward.
         long previousTicks = ticks - ((dayOfYear + 1L) * DateTimeExtensions.TicksPerDay);
 
-        // If the adjusted date is earlier than the minimum representable tick, return week 1 as fallback
         if (previousTicks < DateTimeExtensions.MinTicks)
             return 1;
 
-        // Recalculate the day-of-year for the previous date using date decomposition
         DateTimeExtensions.GetDateParts(previousTicks, out int prevYear, out int prevMonth, out int prevDay);
-
-        // Calculate 0-based day-of-year index for the previous date
         int prevDayOfYear = DateTimeExtensions.GetDayNumber(prevYear, prevMonth, prevDay)
             - DateTimeExtensions.GetDayNumber(prevYear, 1, 1);
 
-        // Recurse into previous year to determine final week number
         return GetWeekOfYearFullDays(previousTicks, prevDayOfYear, firstDayOfWeek, fullDays);
     }
 }

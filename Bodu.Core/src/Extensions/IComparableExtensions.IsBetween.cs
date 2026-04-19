@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Bodu.Extensions;
@@ -19,15 +20,15 @@ public static partial class IComparableExtensions
     /// <param name="value1">The first boundary.</param>
     /// <param name="value2">The second boundary.</param>
     /// <returns>
-    /// <c>true</c> if <paramref name="value"/> falls between <paramref name="value1"/> and <paramref name="value2"/> inclusively;
-    /// otherwise, <c>false</c>.
+    /// <see langword="true"/> if <paramref name="value"/> falls between <paramref name="value1"/> and <paramref name="value2"/>
+    /// inclusively; otherwise, <see langword="false"/>.
     /// </returns>
     /// <remarks>
-    /// <para>If any of the parameters are <c>null</c>, the method returns <c>false</c>.</para>
+    /// <para>If any parameter is <see langword="null"/>, the method returns <see langword="false"/>.</para>
     /// <para>The order of <paramref name="value1"/> and <paramref name="value2"/> does not matter.</para>
     /// </remarks>
-    public static bool IsBetween<T>(this T? value, T? value1, T? value2)
-        where T : IComparable<T> => value is not null && value1 is not null && value2 is not null &&
+    public static bool IsBetween<T>(this T value, T? value1, T? value2)
+        where T : IComparable<T> => value1 is not null && value2 is not null &&
             (value1.CompareTo(value2) > 0
                 ? value.CompareTo(value2) >= 0 && value.CompareTo(value1) <= 0
                 : value.CompareTo(value1) >= 0 && value.CompareTo(value2) <= 0);
@@ -41,24 +42,20 @@ public static partial class IComparableExtensions
     /// <param name="value2">The second boundary.</param>
     /// <param name="comparer">The comparer to use for comparing values.</param>
     /// <returns>
-    /// <c>true</c> if <paramref name="value"/> falls between <paramref name="value1"/> and <paramref name="value2"/> inclusively based
-    /// on the specified comparer; otherwise, <c>false</c>.
+    /// <see langword="true"/> if <paramref name="value"/> falls between <paramref name="value1"/> and <paramref name="value2"/>
+    /// inclusively based on the specified comparer; otherwise, <see langword="false"/>.
     /// </returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="comparer"/> is <see langword="null"/>.</exception>
     /// <remarks>
-    /// <para>If any of the parameters are <c>null</c>, the method returns <c>false</c>.</para>
+    /// <para>If <paramref name="value1"/> or <paramref name="value2"/> is <see langword="null"/>, the method returns <see langword="false"/>.</para>
     /// <para>The order of <paramref name="value1"/> and <paramref name="value2"/> does not matter.</para>
     /// </remarks>
-    public static bool IsBetween<T>(this T? value, T? value1, T? value2, IComparer<T> comparer)
-    {
-        if (comparer is null)
-            throw new ArgumentNullException(nameof(comparer));
-
-        if (value is null || value1 is null || value2 is null)
-            return false;
-
-        return comparer.Compare(value1, value2) > 0
-            ? comparer.Compare(value, value2) >= 0 && comparer.Compare(value, value1) <= 0
-            : comparer.Compare(value, value1) >= 0 && comparer.Compare(value, value2) <= 0;
-    }
+    public static bool IsBetween<T>(this T value, T? value1, T? value2, IComparer<T> comparer)
+        where T : struct =>
+            comparer is null
+                ? throw new ArgumentNullException(nameof(comparer))
+                : value1 is null || value2 is null ? false
+                : comparer.Compare(value1.Value, value2.Value) > 0
+                    ? comparer.Compare(value, value2.Value) >= 0 && comparer.Compare(value, value1.Value) <= 0
+                    : comparer.Compare(value, value1.Value) >= 0 && comparer.Compare(value, value2.Value) <= 0;
 }

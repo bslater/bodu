@@ -38,8 +38,8 @@ public static partial class IComparableExtensions
     /// <para>If any of the parameters are <c>null</c>, the method returns <c>false</c>.</para>
     /// <para>The order of <paramref name="value1"/> and <paramref name="value2"/> does not matter.</para>
     /// </remarks>
-    public static bool IsOutside<T>(this T? value, T? value1, T? value2)
-        where T : IComparable<T> => value is not null && value1 is not null && value2 is not null &&
+    public static bool IsOutside<T>(this T value, T? value1, T? value2)
+        where T : IComparable<T> => value1 is not null && value2 is not null &&
             (value1.CompareTo(value2) > 0
                 ? value.CompareTo(value2) < 0 || value.CompareTo(value1) > 0
                 : value.CompareTo(value1) < 0 || value.CompareTo(value2) > 0);
@@ -61,16 +61,12 @@ public static partial class IComparableExtensions
     /// <para>If any of the parameters are <c>null</c>, the method returns <c>false</c>.</para>
     /// <para>The order of <paramref name="value1"/> and <paramref name="value2"/> does not matter.</para>
     /// </remarks>
-    public static bool IsOutside<T>(this T? value, T? value1, T? value2, IComparer<T> comparer)
-    {
-        if (comparer is null)
-            throw new ArgumentNullException(nameof(comparer));
-
-        if (value is null || value1 is null || value2 is null)
-            return false;
-
-        return comparer.Compare(value1, value2) > 0
-            ? comparer.Compare(value, value2) < 0 || comparer.Compare(value, value1) > 0
-            : comparer.Compare(value, value1) < 0 || comparer.Compare(value, value2) > 0;
-    }
+    public static bool IsOutside<T>(this T value, T? value1, T? value2, IComparer<T> comparer)
+        where T : struct =>
+            comparer is null
+                ? throw new ArgumentNullException(nameof(comparer))
+                : value1 is null || value2 is null ? false
+                : comparer.Compare(value1.Value, value2.Value) > 0
+                    ? comparer.Compare(value, value2.Value) < 0 && comparer.Compare(value, value1.Value) > 0
+                    : comparer.Compare(value, value1.Value) < 0 && comparer.Compare(value, value2.Value) > 0;
 }

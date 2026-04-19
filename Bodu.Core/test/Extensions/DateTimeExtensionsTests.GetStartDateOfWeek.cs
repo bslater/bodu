@@ -14,12 +14,13 @@ namespace Bodu.Extensions
 
         public static IEnumerable<object[]> IsoWeekTestCases => new[]
         {
-            new object[] { 2024, 1, new DateTime(2024, 1, 1) },  // Monday
-            new object[] { 2024, 2, new DateTime(2024, 1, 8) },
-            new object[] { 2024, 3, new DateTime(2024, 1, 15) },
-            new object[] { 2024, 4, new DateTime(2024, 1, 22) },
-            new object[] { 2024, 52, new DateTime(2024, 12, 23) },
-            new object[] { 2024, 53, new DateTime(2024, 12, 30) }
+            new object[] { 2024, 1,  new DateTime(2024, 1, 1)  },  // ISO week 1 starts Mon Jan 1
+            new object[] { 2024, 2,  new DateTime(2024, 1, 8)  },
+            new object[] { 2024, 3,  new DateTime(2024, 1, 15) },
+            new object[] { 2024, 4,  new DateTime(2024, 1, 22) },
+            new object[] { 2024, 52, new DateTime(2024, 12, 23) }, // last ISO week of 2024
+            new object[] { 2015, 53, new DateTime(2015, 12, 28) }, // 2015 has 53 ISO weeks; Jan 1 is Thursday
+            new object[] { 2026, 1,  new DateTime(2025, 12, 29) }, // ISO week 1 of 2026 starts in Dec 2025
         };
 
         [TestMethod]

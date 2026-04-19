@@ -2461,271 +2461,242 @@ namespace Bodu.Extensions
 
         public static IEnumerable<object[]> WeekOfYearCalendarWeekTestData()
         {
-            yield return new object[] { new DateTime(2024, 03, 01), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 9 };
+            // FirstDay + Sunday
+            yield return new object[] { new DateTime(2024, 02, 01), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 5 };
+            yield return new object[] { new DateTime(2024, 02, 08), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 6 };
+            yield return new object[] { new DateTime(2024, 02, 15), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 7 };
+            yield return new object[] { new DateTime(2024, 02, 22), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 8 };
+            yield return new object[] { new DateTime(2024, 02, 29), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 9 };
             yield return new object[] { new DateTime(2024, 03, 01), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 9 };
             yield return new object[] { new DateTime(2024, 03, 08), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 10 };
             yield return new object[] { new DateTime(2024, 03, 15), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 11 };
             yield return new object[] { new DateTime(2024, 03, 22), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 12 };
             yield return new object[] { new DateTime(2024, 03, 29), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 13 };
             yield return new object[] { new DateTime(2024, 03, 31), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 14 };
-            yield return new object[] { new DateTime(2024, 02, 01), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 5 };
-            yield return new object[] { new DateTime(2024, 02, 01), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 5 };
-            yield return new object[] { new DateTime(2024, 02, 08), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 6 };
-            yield return new object[] { new DateTime(2024, 02, 15), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 7 };
-            yield return new object[] { new DateTime(2024, 02, 22), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 8 };
-            yield return new object[] { new DateTime(2024, 02, 29), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 9 };
-            yield return new object[] { new DateTime(2024, 02, 29), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 9 };
-            yield return new object[] { new DateTime(2024, 12, 01), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 49 };
             yield return new object[] { new DateTime(2024, 12, 01), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 49 };
             yield return new object[] { new DateTime(2024, 12, 08), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 50 };
             yield return new object[] { new DateTime(2024, 12, 15), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 51 };
             yield return new object[] { new DateTime(2024, 12, 22), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 52 };
-            yield return new object[] { new DateTime(2024, 12, 29), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 53 };
+            yield return new object[] { new DateTime(2024, 12, 29), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 53 }; // FirstDay never crosses year boundary
             yield return new object[] { new DateTime(2024, 12, 31), CalendarWeekRule.FirstDay, DayOfWeek.Sunday, 53 };
-            yield return new object[] { new DateTime(2024, 03, 01), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 9 };
+
+            // FirstDay + Monday
+            yield return new object[] { new DateTime(2024, 02, 01), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 5 };
+            yield return new object[] { new DateTime(2024, 02, 08), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 6 };
+            yield return new object[] { new DateTime(2024, 02, 15), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 7 };
+            yield return new object[] { new DateTime(2024, 02, 22), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 8 };
+            yield return new object[] { new DateTime(2024, 02, 29), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 9 };
             yield return new object[] { new DateTime(2024, 03, 01), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 9 };
             yield return new object[] { new DateTime(2024, 03, 08), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 10 };
             yield return new object[] { new DateTime(2024, 03, 15), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 11 };
             yield return new object[] { new DateTime(2024, 03, 22), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 12 };
             yield return new object[] { new DateTime(2024, 03, 29), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 13 };
             yield return new object[] { new DateTime(2024, 03, 31), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 13 };
-            yield return new object[] { new DateTime(2024, 02, 01), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 5 };
-            yield return new object[] { new DateTime(2024, 02, 01), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 5 };
-            yield return new object[] { new DateTime(2024, 02, 08), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 6 };
-            yield return new object[] { new DateTime(2024, 02, 15), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 7 };
-            yield return new object[] { new DateTime(2024, 02, 22), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 8 };
-            yield return new object[] { new DateTime(2024, 02, 29), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 9 };
-            yield return new object[] { new DateTime(2024, 02, 29), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 9 };
-            yield return new object[] { new DateTime(2024, 12, 01), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 48 };
             yield return new object[] { new DateTime(2024, 12, 01), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 48 };
             yield return new object[] { new DateTime(2024, 12, 08), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 49 };
             yield return new object[] { new DateTime(2024, 12, 15), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 50 };
             yield return new object[] { new DateTime(2024, 12, 22), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 51 };
             yield return new object[] { new DateTime(2024, 12, 29), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 52 };
             yield return new object[] { new DateTime(2024, 12, 31), CalendarWeekRule.FirstDay, DayOfWeek.Monday, 53 };
-            yield return new object[] { new DateTime(2024, 03, 01), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 8 };
+
+            // FirstFullWeek + Sunday
+            yield return new object[] { new DateTime(2024, 02, 01), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 4 };
+            yield return new object[] { new DateTime(2024, 02, 08), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 5 };
+            yield return new object[] { new DateTime(2024, 02, 15), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 6 };
+            yield return new object[] { new DateTime(2024, 02, 22), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 7 };
+            yield return new object[] { new DateTime(2024, 02, 29), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 8 };
             yield return new object[] { new DateTime(2024, 03, 01), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 8 };
             yield return new object[] { new DateTime(2024, 03, 08), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 9 };
             yield return new object[] { new DateTime(2024, 03, 15), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 10 };
             yield return new object[] { new DateTime(2024, 03, 22), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 11 };
             yield return new object[] { new DateTime(2024, 03, 29), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 12 };
             yield return new object[] { new DateTime(2024, 03, 31), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 13 };
-            yield return new object[] { new DateTime(2024, 02, 01), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 4 };
-            yield return new object[] { new DateTime(2024, 02, 01), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 4 };
-            yield return new object[] { new DateTime(2024, 02, 08), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 5 };
-            yield return new object[] { new DateTime(2024, 02, 15), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 6 };
-            yield return new object[] { new DateTime(2024, 02, 22), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 7 };
-            yield return new object[] { new DateTime(2024, 02, 29), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 8 };
-            yield return new object[] { new DateTime(2024, 02, 29), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 8 };
-            yield return new object[] { new DateTime(2024, 12, 01), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 48 };
             yield return new object[] { new DateTime(2024, 12, 01), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 48 };
             yield return new object[] { new DateTime(2024, 12, 08), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 49 };
             yield return new object[] { new DateTime(2024, 12, 15), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 50 };
             yield return new object[] { new DateTime(2024, 12, 22), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 51 };
-            yield return new object[] { new DateTime(2024, 12, 29), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 52 };
+            yield return new object[] { new DateTime(2024, 12, 29), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 52 }; // Dec 29-Jan 4 not fully in 2025 → last week of 2024
             yield return new object[] { new DateTime(2024, 12, 31), CalendarWeekRule.FirstFullWeek, DayOfWeek.Sunday, 52 };
-            yield return new object[] { new DateTime(2024, 03, 01), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 9 };
+
+            // FirstFullWeek + Monday
+            yield return new object[] { new DateTime(2024, 02, 01), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 5 };
+            yield return new object[] { new DateTime(2024, 02, 08), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 6 };
+            yield return new object[] { new DateTime(2024, 02, 15), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 7 };
+            yield return new object[] { new DateTime(2024, 02, 22), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 8 };
+            yield return new object[] { new DateTime(2024, 02, 29), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 9 };
             yield return new object[] { new DateTime(2024, 03, 01), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 9 };
             yield return new object[] { new DateTime(2024, 03, 08), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 10 };
             yield return new object[] { new DateTime(2024, 03, 15), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 11 };
             yield return new object[] { new DateTime(2024, 03, 22), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 12 };
             yield return new object[] { new DateTime(2024, 03, 29), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 13 };
             yield return new object[] { new DateTime(2024, 03, 31), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 13 };
-            yield return new object[] { new DateTime(2024, 02, 01), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 5 };
-            yield return new object[] { new DateTime(2024, 02, 01), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 5 };
-            yield return new object[] { new DateTime(2024, 02, 08), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 6 };
-            yield return new object[] { new DateTime(2024, 02, 15), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 7 };
-            yield return new object[] { new DateTime(2024, 02, 22), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 8 };
-            yield return new object[] { new DateTime(2024, 02, 29), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 9 };
-            yield return new object[] { new DateTime(2024, 02, 29), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 9 };
-            yield return new object[] { new DateTime(2024, 12, 01), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 48 };
             yield return new object[] { new DateTime(2024, 12, 01), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 48 };
             yield return new object[] { new DateTime(2024, 12, 08), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 49 };
             yield return new object[] { new DateTime(2024, 12, 15), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 50 };
             yield return new object[] { new DateTime(2024, 12, 22), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 51 };
             yield return new object[] { new DateTime(2024, 12, 29), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 52 };
-            yield return new object[] { new DateTime(2024, 12, 31), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 53 };
-            yield return new object[] { new DateTime(2024, 03, 01), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 9 };
+            yield return new object[] { new DateTime(2024, 12, 31), CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday, 53 }; // Dec 30-31 partial, stays in last week of 2024
+
+            // FirstFourDayWeek + Sunday
+            yield return new object[] { new DateTime(2024, 02, 01), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 5 };
+            yield return new object[] { new DateTime(2024, 02, 08), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 6 };
+            yield return new object[] { new DateTime(2024, 02, 15), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 7 };
+            yield return new object[] { new DateTime(2024, 02, 22), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 8 };
+            yield return new object[] { new DateTime(2024, 02, 29), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 9 };
             yield return new object[] { new DateTime(2024, 03, 01), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 9 };
             yield return new object[] { new DateTime(2024, 03, 08), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 10 };
             yield return new object[] { new DateTime(2024, 03, 15), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 11 };
             yield return new object[] { new DateTime(2024, 03, 22), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 12 };
             yield return new object[] { new DateTime(2024, 03, 29), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 13 };
             yield return new object[] { new DateTime(2024, 03, 31), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 14 };
-            yield return new object[] { new DateTime(2024, 02, 01), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 5 };
-            yield return new object[] { new DateTime(2024, 02, 01), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 5 };
-            yield return new object[] { new DateTime(2024, 02, 08), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 6 };
-            yield return new object[] { new DateTime(2024, 02, 15), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 7 };
-            yield return new object[] { new DateTime(2024, 02, 22), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 8 };
-            yield return new object[] { new DateTime(2024, 02, 29), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 9 };
-            yield return new object[] { new DateTime(2024, 02, 29), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 9 };
-            yield return new object[] { new DateTime(2024, 12, 01), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 49 };
             yield return new object[] { new DateTime(2024, 12, 01), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 49 };
             yield return new object[] { new DateTime(2024, 12, 08), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 50 };
             yield return new object[] { new DateTime(2024, 12, 15), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 51 };
             yield return new object[] { new DateTime(2024, 12, 22), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 52 };
-            yield return new object[] { new DateTime(2024, 12, 29), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 53 };
-            yield return new object[] { new DateTime(2024, 12, 31), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 53 };
-            yield return new object[] { new DateTime(2024, 03, 01), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 9 };
+            yield return new object[] { new DateTime(2024, 12, 29), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 1 };  // week Dec 29-Jan 4 has 4 days in 2025 → week 1 of 2025
+            yield return new object[] { new DateTime(2024, 12, 31), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday, 1 };  // same week → week 1 of 2025
+
+            // FirstFourDayWeek + Monday
+            yield return new object[] { new DateTime(2024, 02, 01), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 5 };
+            yield return new object[] { new DateTime(2024, 02, 08), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 6 };
+            yield return new object[] { new DateTime(2024, 02, 15), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 7 };
+            yield return new object[] { new DateTime(2024, 02, 22), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 8 };
+            yield return new object[] { new DateTime(2024, 02, 29), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 9 };
             yield return new object[] { new DateTime(2024, 03, 01), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 9 };
             yield return new object[] { new DateTime(2024, 03, 08), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 10 };
             yield return new object[] { new DateTime(2024, 03, 15), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 11 };
             yield return new object[] { new DateTime(2024, 03, 22), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 12 };
             yield return new object[] { new DateTime(2024, 03, 29), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 13 };
             yield return new object[] { new DateTime(2024, 03, 31), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 13 };
-            yield return new object[] { new DateTime(2024, 02, 01), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 5 };
-            yield return new object[] { new DateTime(2024, 02, 01), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 5 };
-            yield return new object[] { new DateTime(2024, 02, 08), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 6 };
-            yield return new object[] { new DateTime(2024, 02, 15), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 7 };
-            yield return new object[] { new DateTime(2024, 02, 22), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 8 };
-            yield return new object[] { new DateTime(2024, 02, 29), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 9 };
-            yield return new object[] { new DateTime(2024, 02, 29), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 9 };
-            yield return new object[] { new DateTime(2024, 12, 01), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 48 };
             yield return new object[] { new DateTime(2024, 12, 01), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 48 };
             yield return new object[] { new DateTime(2024, 12, 08), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 49 };
             yield return new object[] { new DateTime(2024, 12, 15), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 50 };
             yield return new object[] { new DateTime(2024, 12, 22), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 51 };
-            yield return new object[] { new DateTime(2024, 12, 29), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 52 };
-            yield return new object[] { new DateTime(2024, 12, 31), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 53 };
+            yield return new object[] { new DateTime(2024, 12, 29), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 52 }; // week Dec 23-29, all in 2024 → week 52
+            yield return new object[] { new DateTime(2024, 12, 31), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday, 1 };  // week Dec 30-Jan 5 has 5 days in 2025 → week 1 of 2025
         }
 
         public static IEnumerable<object[]> WeekOfYearCultureTestData()
         {
+            // en-US: FirstDay + Sunday
             yield return new object[] { new DateTime(2024, 01, 01), CultureInfo.CreateSpecificCulture("en-US"), 1 };
-            yield return new object[] { new DateTime(2024, 03, 01), CultureInfo.CreateSpecificCulture("en-US"), 9 };
+            yield return new object[] { new DateTime(2024, 02, 01), CultureInfo.CreateSpecificCulture("en-US"), 5 };
+            yield return new object[] { new DateTime(2024, 02, 08), CultureInfo.CreateSpecificCulture("en-US"), 6 };
+            yield return new object[] { new DateTime(2024, 02, 15), CultureInfo.CreateSpecificCulture("en-US"), 7 };
+            yield return new object[] { new DateTime(2024, 02, 22), CultureInfo.CreateSpecificCulture("en-US"), 8 };
+            yield return new object[] { new DateTime(2024, 02, 29), CultureInfo.CreateSpecificCulture("en-US"), 9 };
             yield return new object[] { new DateTime(2024, 03, 01), CultureInfo.CreateSpecificCulture("en-US"), 9 };
             yield return new object[] { new DateTime(2024, 03, 08), CultureInfo.CreateSpecificCulture("en-US"), 10 };
             yield return new object[] { new DateTime(2024, 03, 15), CultureInfo.CreateSpecificCulture("en-US"), 11 };
             yield return new object[] { new DateTime(2024, 03, 22), CultureInfo.CreateSpecificCulture("en-US"), 12 };
             yield return new object[] { new DateTime(2024, 03, 29), CultureInfo.CreateSpecificCulture("en-US"), 13 };
             yield return new object[] { new DateTime(2024, 03, 31), CultureInfo.CreateSpecificCulture("en-US"), 14 };
-            yield return new object[] { new DateTime(2024, 02, 01), CultureInfo.CreateSpecificCulture("en-US"), 5 };
-            yield return new object[] { new DateTime(2024, 02, 01), CultureInfo.CreateSpecificCulture("en-US"), 5 };
-            yield return new object[] { new DateTime(2024, 02, 08), CultureInfo.CreateSpecificCulture("en-US"), 6 };
-            yield return new object[] { new DateTime(2024, 02, 15), CultureInfo.CreateSpecificCulture("en-US"), 7 };
-            yield return new object[] { new DateTime(2024, 02, 22), CultureInfo.CreateSpecificCulture("en-US"), 8 };
-            yield return new object[] { new DateTime(2024, 02, 29), CultureInfo.CreateSpecificCulture("en-US"), 9 };
-            yield return new object[] { new DateTime(2024, 02, 29), CultureInfo.CreateSpecificCulture("en-US"), 9 };
-            yield return new object[] { new DateTime(2024, 12, 01), CultureInfo.CreateSpecificCulture("en-US"), 49 };
             yield return new object[] { new DateTime(2024, 12, 01), CultureInfo.CreateSpecificCulture("en-US"), 49 };
             yield return new object[] { new DateTime(2024, 12, 08), CultureInfo.CreateSpecificCulture("en-US"), 50 };
             yield return new object[] { new DateTime(2024, 12, 15), CultureInfo.CreateSpecificCulture("en-US"), 51 };
             yield return new object[] { new DateTime(2024, 12, 22), CultureInfo.CreateSpecificCulture("en-US"), 52 };
             yield return new object[] { new DateTime(2024, 12, 29), CultureInfo.CreateSpecificCulture("en-US"), 53 };
-            yield return new object[] { new DateTime(2024, 12, 31), CultureInfo.CreateSpecificCulture("en-US"), 53 };
+            yield return new object[] { new DateTime(2024, 12, 31), CultureInfo.CreateSpecificCulture("en-US"), 53 }; // Tuesday, FirstDay+Sunday stays in week 53
 
+            // en-GB: FirstFourDayWeek + Monday (ISO-like)
             yield return new object[] { new DateTime(2024, 01, 01), CultureInfo.CreateSpecificCulture("en-GB"), 1 };
-            yield return new object[] { new DateTime(2024, 03, 01), CultureInfo.CreateSpecificCulture("en-GB"), 9 };
+            yield return new object[] { new DateTime(2024, 02, 01), CultureInfo.CreateSpecificCulture("en-GB"), 5 };
+            yield return new object[] { new DateTime(2024, 02, 08), CultureInfo.CreateSpecificCulture("en-GB"), 6 };
+            yield return new object[] { new DateTime(2024, 02, 15), CultureInfo.CreateSpecificCulture("en-GB"), 7 };
+            yield return new object[] { new DateTime(2024, 02, 22), CultureInfo.CreateSpecificCulture("en-GB"), 8 };
+            yield return new object[] { new DateTime(2024, 02, 29), CultureInfo.CreateSpecificCulture("en-GB"), 9 };
             yield return new object[] { new DateTime(2024, 03, 01), CultureInfo.CreateSpecificCulture("en-GB"), 9 };
             yield return new object[] { new DateTime(2024, 03, 08), CultureInfo.CreateSpecificCulture("en-GB"), 10 };
             yield return new object[] { new DateTime(2024, 03, 15), CultureInfo.CreateSpecificCulture("en-GB"), 11 };
             yield return new object[] { new DateTime(2024, 03, 22), CultureInfo.CreateSpecificCulture("en-GB"), 12 };
             yield return new object[] { new DateTime(2024, 03, 29), CultureInfo.CreateSpecificCulture("en-GB"), 13 };
             yield return new object[] { new DateTime(2024, 03, 31), CultureInfo.CreateSpecificCulture("en-GB"), 13 };
-            yield return new object[] { new DateTime(2024, 02, 01), CultureInfo.CreateSpecificCulture("en-GB"), 5 };
-            yield return new object[] { new DateTime(2024, 02, 01), CultureInfo.CreateSpecificCulture("en-GB"), 5 };
-            yield return new object[] { new DateTime(2024, 02, 08), CultureInfo.CreateSpecificCulture("en-GB"), 6 };
-            yield return new object[] { new DateTime(2024, 02, 15), CultureInfo.CreateSpecificCulture("en-GB"), 7 };
-            yield return new object[] { new DateTime(2024, 02, 22), CultureInfo.CreateSpecificCulture("en-GB"), 8 };
-            yield return new object[] { new DateTime(2024, 02, 29), CultureInfo.CreateSpecificCulture("en-GB"), 9 };
-            yield return new object[] { new DateTime(2024, 02, 29), CultureInfo.CreateSpecificCulture("en-GB"), 9 };
-            yield return new object[] { new DateTime(2024, 12, 01), CultureInfo.CreateSpecificCulture("en-GB"), 48 };
             yield return new object[] { new DateTime(2024, 12, 01), CultureInfo.CreateSpecificCulture("en-GB"), 48 };
             yield return new object[] { new DateTime(2024, 12, 08), CultureInfo.CreateSpecificCulture("en-GB"), 49 };
             yield return new object[] { new DateTime(2024, 12, 15), CultureInfo.CreateSpecificCulture("en-GB"), 50 };
             yield return new object[] { new DateTime(2024, 12, 22), CultureInfo.CreateSpecificCulture("en-GB"), 51 };
             yield return new object[] { new DateTime(2024, 12, 29), CultureInfo.CreateSpecificCulture("en-GB"), 52 };
-            yield return new object[] { new DateTime(2024, 12, 31), CultureInfo.CreateSpecificCulture("en-GB"), 53 };
+            yield return new object[] { new DateTime(2024, 12, 31), CultureInfo.CreateSpecificCulture("en-GB"), 1 };  // Tuesday → ISO week 1 of 2025
 
+            // de-DE: FirstFourDayWeek + Monday (ISO)
             yield return new object[] { new DateTime(2024, 01, 01), CultureInfo.CreateSpecificCulture("de-DE"), 1 };
-            yield return new object[] { new DateTime(2024, 03, 01), CultureInfo.CreateSpecificCulture("de-DE"), 9 };
+            yield return new object[] { new DateTime(2024, 02, 01), CultureInfo.CreateSpecificCulture("de-DE"), 5 };
+            yield return new object[] { new DateTime(2024, 02, 08), CultureInfo.CreateSpecificCulture("de-DE"), 6 };
+            yield return new object[] { new DateTime(2024, 02, 15), CultureInfo.CreateSpecificCulture("de-DE"), 7 };
+            yield return new object[] { new DateTime(2024, 02, 22), CultureInfo.CreateSpecificCulture("de-DE"), 8 };
+            yield return new object[] { new DateTime(2024, 02, 29), CultureInfo.CreateSpecificCulture("de-DE"), 9 };
             yield return new object[] { new DateTime(2024, 03, 01), CultureInfo.CreateSpecificCulture("de-DE"), 9 };
             yield return new object[] { new DateTime(2024, 03, 08), CultureInfo.CreateSpecificCulture("de-DE"), 10 };
             yield return new object[] { new DateTime(2024, 03, 15), CultureInfo.CreateSpecificCulture("de-DE"), 11 };
             yield return new object[] { new DateTime(2024, 03, 22), CultureInfo.CreateSpecificCulture("de-DE"), 12 };
             yield return new object[] { new DateTime(2024, 03, 29), CultureInfo.CreateSpecificCulture("de-DE"), 13 };
             yield return new object[] { new DateTime(2024, 03, 31), CultureInfo.CreateSpecificCulture("de-DE"), 13 };
-            yield return new object[] { new DateTime(2024, 02, 01), CultureInfo.CreateSpecificCulture("de-DE"), 5 };
-            yield return new object[] { new DateTime(2024, 02, 01), CultureInfo.CreateSpecificCulture("de-DE"), 5 };
-            yield return new object[] { new DateTime(2024, 02, 08), CultureInfo.CreateSpecificCulture("de-DE"), 6 };
-            yield return new object[] { new DateTime(2024, 02, 15), CultureInfo.CreateSpecificCulture("de-DE"), 7 };
-            yield return new object[] { new DateTime(2024, 02, 22), CultureInfo.CreateSpecificCulture("de-DE"), 8 };
-            yield return new object[] { new DateTime(2024, 02, 29), CultureInfo.CreateSpecificCulture("de-DE"), 9 };
-            yield return new object[] { new DateTime(2024, 02, 29), CultureInfo.CreateSpecificCulture("de-DE"), 9 };
-            yield return new object[] { new DateTime(2024, 12, 01), CultureInfo.CreateSpecificCulture("de-DE"), 48 };
             yield return new object[] { new DateTime(2024, 12, 01), CultureInfo.CreateSpecificCulture("de-DE"), 48 };
             yield return new object[] { new DateTime(2024, 12, 08), CultureInfo.CreateSpecificCulture("de-DE"), 49 };
             yield return new object[] { new DateTime(2024, 12, 15), CultureInfo.CreateSpecificCulture("de-DE"), 50 };
             yield return new object[] { new DateTime(2024, 12, 22), CultureInfo.CreateSpecificCulture("de-DE"), 51 };
             yield return new object[] { new DateTime(2024, 12, 29), CultureInfo.CreateSpecificCulture("de-DE"), 52 };
-            yield return new object[] { new DateTime(2024, 12, 31), CultureInfo.CreateSpecificCulture("de-DE"), 53 };
+            yield return new object[] { new DateTime(2024, 12, 31), CultureInfo.CreateSpecificCulture("de-DE"), 1 };  // Tuesday → ISO week 1 of 2025
 
+            // fr-FR: FirstFourDayWeek + Monday (ISO)
             yield return new object[] { new DateTime(2024, 01, 01), CultureInfo.CreateSpecificCulture("fr-FR"), 1 };
-            yield return new object[] { new DateTime(2024, 03, 01), CultureInfo.CreateSpecificCulture("fr-FR"), 9 };
+            yield return new object[] { new DateTime(2024, 02, 01), CultureInfo.CreateSpecificCulture("fr-FR"), 5 };
+            yield return new object[] { new DateTime(2024, 02, 08), CultureInfo.CreateSpecificCulture("fr-FR"), 6 };
+            yield return new object[] { new DateTime(2024, 02, 15), CultureInfo.CreateSpecificCulture("fr-FR"), 7 };
+            yield return new object[] { new DateTime(2024, 02, 22), CultureInfo.CreateSpecificCulture("fr-FR"), 8 };
+            yield return new object[] { new DateTime(2024, 02, 29), CultureInfo.CreateSpecificCulture("fr-FR"), 9 };
             yield return new object[] { new DateTime(2024, 03, 01), CultureInfo.CreateSpecificCulture("fr-FR"), 9 };
             yield return new object[] { new DateTime(2024, 03, 08), CultureInfo.CreateSpecificCulture("fr-FR"), 10 };
             yield return new object[] { new DateTime(2024, 03, 15), CultureInfo.CreateSpecificCulture("fr-FR"), 11 };
             yield return new object[] { new DateTime(2024, 03, 22), CultureInfo.CreateSpecificCulture("fr-FR"), 12 };
             yield return new object[] { new DateTime(2024, 03, 29), CultureInfo.CreateSpecificCulture("fr-FR"), 13 };
             yield return new object[] { new DateTime(2024, 03, 31), CultureInfo.CreateSpecificCulture("fr-FR"), 13 };
-            yield return new object[] { new DateTime(2024, 02, 01), CultureInfo.CreateSpecificCulture("fr-FR"), 5 };
-            yield return new object[] { new DateTime(2024, 02, 01), CultureInfo.CreateSpecificCulture("fr-FR"), 5 };
-            yield return new object[] { new DateTime(2024, 02, 08), CultureInfo.CreateSpecificCulture("fr-FR"), 6 };
-            yield return new object[] { new DateTime(2024, 02, 15), CultureInfo.CreateSpecificCulture("fr-FR"), 7 };
-            yield return new object[] { new DateTime(2024, 02, 22), CultureInfo.CreateSpecificCulture("fr-FR"), 8 };
-            yield return new object[] { new DateTime(2024, 02, 29), CultureInfo.CreateSpecificCulture("fr-FR"), 9 };
-            yield return new object[] { new DateTime(2024, 02, 29), CultureInfo.CreateSpecificCulture("fr-FR"), 9 };
-            yield return new object[] { new DateTime(2024, 12, 01), CultureInfo.CreateSpecificCulture("fr-FR"), 48 };
             yield return new object[] { new DateTime(2024, 12, 01), CultureInfo.CreateSpecificCulture("fr-FR"), 48 };
             yield return new object[] { new DateTime(2024, 12, 08), CultureInfo.CreateSpecificCulture("fr-FR"), 49 };
             yield return new object[] { new DateTime(2024, 12, 15), CultureInfo.CreateSpecificCulture("fr-FR"), 50 };
             yield return new object[] { new DateTime(2024, 12, 22), CultureInfo.CreateSpecificCulture("fr-FR"), 51 };
             yield return new object[] { new DateTime(2024, 12, 29), CultureInfo.CreateSpecificCulture("fr-FR"), 52 };
-            yield return new object[] { new DateTime(2024, 12, 31), CultureInfo.CreateSpecificCulture("fr-FR"), 53 };
+            yield return new object[] { new DateTime(2024, 12, 31), CultureInfo.CreateSpecificCulture("fr-FR"), 1 };  // Tuesday → ISO week 1 of 2025
 
+            // ar-SA: FirstDay + Saturday
             yield return new object[] { new DateTime(2024, 01, 01), CultureInfo.CreateSpecificCulture("ar-SA"), 1 };
+            yield return new object[] { new DateTime(2024, 02, 01), CultureInfo.CreateSpecificCulture("ar-SA"), 5 };
+            yield return new object[] { new DateTime(2024, 02, 08), CultureInfo.CreateSpecificCulture("ar-SA"), 6 };
+            yield return new object[] { new DateTime(2024, 02, 15), CultureInfo.CreateSpecificCulture("ar-SA"), 7 };
+            yield return new object[] { new DateTime(2024, 02, 22), CultureInfo.CreateSpecificCulture("ar-SA"), 8 };
+            yield return new object[] { new DateTime(2024, 02, 29), CultureInfo.CreateSpecificCulture("ar-SA"), 9 };
             yield return new object[] { new DateTime(2024, 03, 01), CultureInfo.CreateSpecificCulture("ar-SA"), 9 };
             yield return new object[] { new DateTime(2024, 03, 08), CultureInfo.CreateSpecificCulture("ar-SA"), 10 };
             yield return new object[] { new DateTime(2024, 03, 15), CultureInfo.CreateSpecificCulture("ar-SA"), 11 };
             yield return new object[] { new DateTime(2024, 03, 22), CultureInfo.CreateSpecificCulture("ar-SA"), 12 };
             yield return new object[] { new DateTime(2024, 03, 29), CultureInfo.CreateSpecificCulture("ar-SA"), 13 };
             yield return new object[] { new DateTime(2024, 03, 31), CultureInfo.CreateSpecificCulture("ar-SA"), 14 };
-            yield return new object[] { new DateTime(2024, 02, 01), CultureInfo.CreateSpecificCulture("ar-SA"), 5 };
-            yield return new object[] { new DateTime(2024, 02, 01), CultureInfo.CreateSpecificCulture("ar-SA"), 5 };
-            yield return new object[] { new DateTime(2024, 02, 08), CultureInfo.CreateSpecificCulture("ar-SA"), 6 };
-            yield return new object[] { new DateTime(2024, 02, 15), CultureInfo.CreateSpecificCulture("ar-SA"), 7 };
-            yield return new object[] { new DateTime(2024, 02, 22), CultureInfo.CreateSpecificCulture("ar-SA"), 8 };
-            yield return new object[] { new DateTime(2024, 02, 29), CultureInfo.CreateSpecificCulture("ar-SA"), 9 };
-            yield return new object[] { new DateTime(2024, 02, 29), CultureInfo.CreateSpecificCulture("ar-SA"), 9 };
-            yield return new object[] { new DateTime(2024, 12, 01), CultureInfo.CreateSpecificCulture("ar-SA"), 49 };
             yield return new object[] { new DateTime(2024, 12, 01), CultureInfo.CreateSpecificCulture("ar-SA"), 49 };
             yield return new object[] { new DateTime(2024, 12, 08), CultureInfo.CreateSpecificCulture("ar-SA"), 50 };
             yield return new object[] { new DateTime(2024, 12, 15), CultureInfo.CreateSpecificCulture("ar-SA"), 51 };
             yield return new object[] { new DateTime(2024, 12, 22), CultureInfo.CreateSpecificCulture("ar-SA"), 52 };
             yield return new object[] { new DateTime(2024, 12, 29), CultureInfo.CreateSpecificCulture("ar-SA"), 53 };
-            yield return new object[] { new DateTime(2024, 12, 31), CultureInfo.CreateSpecificCulture("ar-SA"), 53 };
+            yield return new object[] { new DateTime(2024, 12, 31), CultureInfo.CreateSpecificCulture("ar-SA"), 53 }; // FirstDay+Saturday stays in week 53
 
+            // he-IL: FirstDay + Sunday
             yield return new object[] { new DateTime(2024, 01, 01), CultureInfo.CreateSpecificCulture("he-IL"), 1 };
+            yield return new object[] { new DateTime(2024, 02, 01), CultureInfo.CreateSpecificCulture("he-IL"), 5 };
+            yield return new object[] { new DateTime(2024, 02, 08), CultureInfo.CreateSpecificCulture("he-IL"), 6 };
+            yield return new object[] { new DateTime(2024, 02, 15), CultureInfo.CreateSpecificCulture("he-IL"), 7 };
+            yield return new object[] { new DateTime(2024, 02, 22), CultureInfo.CreateSpecificCulture("he-IL"), 8 };
+            yield return new object[] { new DateTime(2024, 02, 29), CultureInfo.CreateSpecificCulture("he-IL"), 9 };
             yield return new object[] { new DateTime(2024, 03, 01), CultureInfo.CreateSpecificCulture("he-IL"), 9 };
             yield return new object[] { new DateTime(2024, 03, 08), CultureInfo.CreateSpecificCulture("he-IL"), 10 };
             yield return new object[] { new DateTime(2024, 03, 15), CultureInfo.CreateSpecificCulture("he-IL"), 11 };
             yield return new object[] { new DateTime(2024, 03, 22), CultureInfo.CreateSpecificCulture("he-IL"), 12 };
             yield return new object[] { new DateTime(2024, 03, 29), CultureInfo.CreateSpecificCulture("he-IL"), 13 };
             yield return new object[] { new DateTime(2024, 03, 31), CultureInfo.CreateSpecificCulture("he-IL"), 14 };
-            yield return new object[] { new DateTime(2024, 02, 01), CultureInfo.CreateSpecificCulture("he-IL"), 5 };
-            yield return new object[] { new DateTime(2024, 02, 01), CultureInfo.CreateSpecificCulture("he-IL"), 5 };
-            yield return new object[] { new DateTime(2024, 02, 08), CultureInfo.CreateSpecificCulture("he-IL"), 6 };
-            yield return new object[] { new DateTime(2024, 02, 15), CultureInfo.CreateSpecificCulture("he-IL"), 7 };
-            yield return new object[] { new DateTime(2024, 02, 22), CultureInfo.CreateSpecificCulture("he-IL"), 8 };
-            yield return new object[] { new DateTime(2024, 02, 29), CultureInfo.CreateSpecificCulture("he-IL"), 9 };
-            yield return new object[] { new DateTime(2024, 02, 29), CultureInfo.CreateSpecificCulture("he-IL"), 9 };
-            yield return new object[] { new DateTime(2024, 12, 01), CultureInfo.CreateSpecificCulture("he-IL"), 49 };
             yield return new object[] { new DateTime(2024, 12, 01), CultureInfo.CreateSpecificCulture("he-IL"), 49 };
             yield return new object[] { new DateTime(2024, 12, 08), CultureInfo.CreateSpecificCulture("he-IL"), 50 };
             yield return new object[] { new DateTime(2024, 12, 15), CultureInfo.CreateSpecificCulture("he-IL"), 51 };
             yield return new object[] { new DateTime(2024, 12, 22), CultureInfo.CreateSpecificCulture("he-IL"), 52 };
             yield return new object[] { new DateTime(2024, 12, 29), CultureInfo.CreateSpecificCulture("he-IL"), 53 };
-            yield return new object[] { new DateTime(2024, 12, 31), CultureInfo.CreateSpecificCulture("he-IL"), 53 };
+            yield return new object[] { new DateTime(2024, 12, 31), CultureInfo.CreateSpecificCulture("he-IL"), 53 }; // FirstDay+Sunday stays in week 53
         }
     }
 }

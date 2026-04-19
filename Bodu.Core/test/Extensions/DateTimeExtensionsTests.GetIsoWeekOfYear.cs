@@ -54,9 +54,21 @@ namespace Bodu.Extensions
         }
 
         [TestMethod]
-        public void GetIsoWeekOfYear_WhenCalled_ShouldMatchIsoWeekCalculatorForLateDecember()
+        [DataRow(2024, 12, 30, DisplayName = "Late December Monday belonging to week 1 of next year")]
+        [DataRow(2024, 12, 31, DisplayName = "Late December Tuesday belonging to week 1 of next year")]
+        [DataRow(2025, 1, 1, DisplayName = "New Year's Day belonging to week 1 of same year")]
+        [DataRow(2021, 1, 1, DisplayName = "New Year's Day belonging to week 53 of previous year")]
+        [DataRow(2021, 1, 3, DisplayName = "Early January Sunday belonging to week 53 of previous year")]
+        [DataRow(2021, 1, 4, DisplayName = "Early January Monday starting week 1 of current year")]
+        [DataRow(2020, 12, 28, DisplayName = "Late December Monday in last week of same year")]
+        [DataRow(2015, 12, 31, DisplayName = "Late December Thursday belonging to week 53 of same year")]
+        [DataRow(2009, 12, 31, DisplayName = "Late December Thursday belonging to week 53 of same year")]
+        [DataRow(2010, 1, 1, DisplayName = "New Year's Friday belonging to week 53 of previous year")]
+        [DataRow(2024, 6, 15, DisplayName = "Mid-year date in unambiguous week")]
+        [DataRow(2024, 1, 1, DisplayName = "New Year's Day in week 1 of same year")]
+        public void GetIsoWeekOfYear_WhenCalled_ShouldMatchIsoWeekCalculator(int year, int month, int day)
         {
-            DateTime input = new DateTime(2024, 12, 30); // Monday → start of ISO week 1 of 2025.
+            DateTime input = new DateTime(year, month, day);
             int expected = ISOWeek.GetWeekOfYear(input);
             int actual = input.GetIsoWeekOfYear();
             Assert.AreEqual(expected, actual);

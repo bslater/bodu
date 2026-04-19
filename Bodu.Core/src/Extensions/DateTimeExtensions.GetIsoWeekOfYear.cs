@@ -31,5 +31,6 @@ public static partial class DateTimeExtensions
     /// date portion of <paramref name="dateTime"/>. Any time-of-day component is discarded before the calculation.
     /// </para>
     /// </remarks>
-    public static int GetIsoWeekOfYear(this DateTime dateTime) => GetWeekOfYear(TruncateToDateTicks(dateTime), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+    public static int GetIsoWeekOfYear(this DateTime dateTime) => 
+        GetWeekOfYear(TruncateToDateTicks(dateTime), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
 }

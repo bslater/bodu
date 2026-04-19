@@ -32,8 +32,10 @@ public static partial class DateTimeExtensions
     /// calculate the start of the specified week.
     /// </para>
     /// <para>
-    /// The result is validated by recalculating the week number for the computed date using
-    /// <see cref="Calendar.GetWeekOfYear(DateTime, CalendarWeekRule, DayOfWeek)"/> and comparing it to <paramref name="week"/>.
+    /// The result is validated by recalculating the week number for the computed date using the
+    /// internal week-of-year calculation and comparing it to <paramref name="week"/>. Dates that
+    /// fall in the previous calendar year (such as the start of ISO week 1 in late December) are
+    /// handled correctly.
     /// </para>
     /// <para>The <see cref="DateTime.Kind"/> property of the returned instance is <see cref="DateTimeKind.Unspecified"/>.</para>
     /// </remarks>
@@ -52,8 +54,8 @@ public static partial class DateTimeExtensions
         long ticks = GetDateTicks(year, 1, 1);
 
         // Compute the ticks from the first week start
-        ticks += GetTicksSincePreviousOrSameDayOfWeek(ticks, dfi.FirstDayOfWeek)
-            + ((week - 1) * 7L * TimeSpan.TicksPerDay);
+        ticks -= GetTicksSincePreviousOrSameDayOfWeek(ticks, dfi.FirstDayOfWeek);
+        ticks += (week - 1) * 7L * TimeSpan.TicksPerDay;
 
         // Validate week number
         int resultWeek = GetWeekOfYear(ticks, dfi.CalendarWeekRule, dfi.FirstDayOfWeek);

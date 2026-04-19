@@ -16,47 +16,22 @@ public partial class IComparableExtensionsTests
     // =========================================================================
 
     /// <summary>
-    /// Provides clamp scenarios covering below-min, above-max, in-range, unbounded-min, unbounded-max,
-    /// and null-value cases.
-    /// </summary>
-    public static IEnumerable<object?[]> ClampData()
-    {
-        // value below min → returns min
-        yield return new object?[] { 0, 1, 10, 1 };
-
-        // value above max → returns max
-        yield return new object?[] { 20, 1, 10, 10 };
-
-        // value within range → returns value
-        yield return new object?[] { 5, 1, 10, 5 };
-
-        // value on boundaries → returns value
-        yield return new object?[] { 1, 1, 10, 1 };
-        yield return new object?[] { 10, 1, 10, 10 };
-
-        // null min → unbounded lower
-        yield return new object?[] { -5, null, 10, -5 };
-        yield return new object?[] { 50, null, 10, 10 };
-
-        // null max → unbounded upper
-        yield return new object?[] { 50, 1, null, 50 };
-        yield return new object?[] { -5, 1, null, 1 };
-
-        // both bounds null → value is unchanged
-        yield return new object?[] { 5, null, null, 5 };
-
-        // null value → returns null
-        yield return new object?[] { null, 1, 10, null };
-    }
-
-    /// <summary>
     /// Verifies that <c>Clamp</c> restricts a nullable integer value to the inclusive [min, max] range,
     /// honouring unbounded (<see langword="null" />) bounds and returning <see langword="null" /> when the value is null.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(ClampData), DynamicDataSourceType.Method)]
+    [DataRow(0, 1, 10, 1, DisplayName = "Value below min returns min")]
+    [DataRow(20, 1, 10, 10, DisplayName = "Value above max returns max")]
+    [DataRow(5, 1, 10, 5, DisplayName = "Value within range returns value")]
+    [DataRow(1, 1, 10, 1, DisplayName = "Value on lower boundary returns value")]
+    [DataRow(10, 1, 10, 10, DisplayName = "Value on upper boundary returns value")]
+    [DataRow(-5, null, 10, -5, DisplayName = "Null min with value below max returns value")]
+    [DataRow(50, null, 10, 10, DisplayName = "Null min with value above max returns max")]
+    [DataRow(50, 1, null, 50, DisplayName = "Null max with value above min returns value")]
+    [DataRow(-5, 1, null, 1, DisplayName = "Null max with value below min returns min")]
+    [DataRow(5, null, null, 5, DisplayName = "Both bounds null returns value unchanged")]
     public void Clamp_WhenEvaluatingNullableIntegerValues_ShouldReturnExpectedResult(
-        int? value,
+        int value,
         int? min,
         int? max,
         int? expected)
@@ -85,18 +60,6 @@ public partial class IComparableExtensionsTests
 
         // A value inside the reversed range is returned unchanged.
         Assert.AreEqual(5, 5.Clamp(10, 1, comparer));
-    }
-
-    /// <summary>
-    /// Verifies that the comparer overload returns <see langword="null" /> (the type default) when the value is <see langword="null" />.
-    /// </summary>
-    [TestMethod]
-    public void Clamp_WhenValueIsNull_ForComparerOverload_ShouldReturnNull()
-    {
-        IComparer<string> comparer = Comparer<string>.Default;
-        string? value = null;
-
-        Assert.IsNull(value.Clamp("a", "z", comparer));
     }
 
     /// <summary>

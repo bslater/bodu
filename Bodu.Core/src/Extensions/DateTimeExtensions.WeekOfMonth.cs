@@ -90,7 +90,10 @@ public static partial class DateTimeExtensions
     /// <summary>
     /// Calculates the 1-based week-of-month using raw tick data and specified calendar rules.
     /// </summary>
-    private static int GetWeekOfMonth(DateTime dateTime, CalendarWeekRule weekRule, DayOfWeek weekStart) => GetWeekOfYear(dateTime.Ticks, weekRule, weekStart)
-            - GetWeekOfYear(GetDateTicks(dateTime.Year, dateTime.Month, 1), weekRule, weekStart)
-            + 1;
+    private static int GetWeekOfMonth(DateTime dateTime, CalendarWeekRule weekRule, DayOfWeek weekStart)
+    {
+        DateTime firstOfMonth = new DateTime(dateTime.Year, dateTime.Month, 1);
+        int offsetDays = ((int)firstOfMonth.DayOfWeek - (int)weekStart + 7) % 7;
+        return (dateTime.Day + offsetDays - 1) / 7 + 1;
+    }
 }

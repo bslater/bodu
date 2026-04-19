@@ -68,7 +68,12 @@ public static partial class IEnumerableExtensions
                 ? throw new ArgumentException(
                     string.Format(ResourceStrings.Arg_Required_ParameterRequiredIf, nameof(count), nameof(mode), nameof(RandomizationMode.LazyShuffle)), nameof(count))
                 : LazyShuffle(source, rng, count.Value),
-            _ => throw new ArgumentOutOfRangeException(nameof(mode), string.Format(ResourceStrings.Arg_OutOfRangeException_EnumValue, nameof(RandomizationMode)))
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(mode),
+                string.Format(
+                    ResourceStrings.Arg_OutOfRangeException_EnumValue,
+                    mode,
+                    nameof(RandomizationMode)))
         };
     }
 
@@ -144,36 +149,28 @@ public static partial class IEnumerableExtensions
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> exceeds the number of available items.</exception>
     private static IEnumerable<T> RandomizeBuffered<T>(IEnumerable<T> source, IRandomGenerator rng, int? count)
     {
-        IList<T> buffer;
         int availableCount;
-
+        T[] buffer;
 #if NETSTANDARD2_0
-        var list = source is ICollection<T> col ? new List<T>(col) : new List<T>(source);
-        buffer = list;
-        availableCount = list.Count;
+    var list = source is ICollection<T> col ? new List<T>(col) : new List<T>(source);
+    buffer = list.ToArray();
+    availableCount = buffer.Length;
 #else
         using var builder = new PooledBufferBuilder<T>();
-
         if (source is IReadOnlyCollection<T> collection && builder.TryCopyFrom(collection))
-        {
-            buffer = builder.AsArray();
             availableCount = builder.Count;
-        }
         else
         {
             builder.AppendRange(source);
-            buffer = builder.AsArray();
             availableCount = builder.Count;
         }
+        // Slice to valid elements only — the pooled array is over-allocated
+        // and ShuffleAndYield uses buffer.Length to bound the shuffle
+        buffer = builder.AsArray()[..availableCount];
 #endif
-
         int takeCount = count ?? availableCount;
         ThrowHelper.ThrowIfGreaterThanOther(takeCount, availableCount);
-
-        if (takeCount == availableCount)
-            return ShuffleHelpers.ShuffleAndYield(buffer, rng);
-        else
-            return ShuffleHelpers.ShuffleAndYield(buffer.ToArray(), rng, takeCount);
+        return ShuffleHelpers.ShuffleAndYield(buffer, rng, takeCount);
     }
 
     /// <summary>
@@ -217,12 +214,9 @@ public static partial class IEnumerableExtensions
     /// </remarks>
     private static IEnumerable<T> StreamWindowedShuffle<T>(IEnumerable<T> source, IRandomGenerator rng, int windowSize = 64)
     {
-        // Guard: a window of zero or fewer elements is meaningless and would cause rng.Next(0) to throw.
         ThrowHelper.ThrowIfZeroOrNegative(windowSize);
-
         var window = new T[windowSize];
         int count = 0;
-
         using IEnumerator<T> enumerator = source.GetEnumerator();
 
         // Fill the initial window up to windowSize elements before streaming begins.
@@ -238,8 +232,9 @@ public static partial class IEnumerableExtensions
             window[i] = enumerator.Current;
         }
 
-        // Flush all remaining window elements with a final in-place shuffle.
-        foreach (T item in ShuffleHelpers.ShuffleAndYield(window, rng, count))
+        // Flush only the occupied portion of the window with a final in-place shuffle.
+        // Slice to count to prevent ShuffleAndYield from seeing uninitialized tail elements.
+        foreach (T item in ShuffleHelpers.ShuffleAndYield(window[..count], rng, count))
             yield return item;
     }
 }
