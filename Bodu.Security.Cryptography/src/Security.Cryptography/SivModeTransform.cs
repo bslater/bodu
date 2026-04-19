@@ -88,10 +88,12 @@ namespace Bodu.Security.Cryptography
             // SIV = S2V(K1, AAD, plaintext).
             byte[] siv = S2V(this.aad.AsSpan(), plaintext);
 
-            // Encrypt plaintext with CTR (K2) seeded from SIV with bits 31 and 63 cleared.
+            // Encrypt plaintext with CTR (K2) seeded from SIV with bits 31 and 63 cleared
+            // (RFC 5297 Section 2.6: "the rightmost bit is the 0th", so bit 63 = byte[8] bit 7,
+            // bit 31 = byte[12] bit 7 in a 16-byte big-endian representation).
             byte[] ctrSeed = (byte[])siv.Clone();
-            ctrSeed[3] &= 0x7F;
-            ctrSeed[7] &= 0x7F;
+            ctrSeed[8] &= 0x7F;   // clear bit 63 from right (byte index 15 − 63÷8 = 8)
+            ctrSeed[12] &= 0x7F;   // clear bit 31 from right (byte index 15 − 31÷8 = 12)
             CtrEncrypt(plaintext, output.Slice(0, plaintext.Length), ctrSeed);
 
             // Output: ciphertext || SIV tag.
@@ -112,10 +114,10 @@ namespace Bodu.Security.Cryptography
             ReadOnlySpan<byte> ciphertext = ciphertextWithTag.Slice(0, plaintextLength);
             ReadOnlySpan<byte> receivedSiv = ciphertextWithTag.Slice(plaintextLength);
 
-            // Decrypt with CTR seeded from received SIV.
+            // Decrypt with CTR seeded from received SIV (bits 31 and 63 cleared, same as encrypt).
             byte[] ctrSeed = receivedSiv.ToArray();
-            ctrSeed[3] &= 0x7F;
-            ctrSeed[7] &= 0x7F;
+            ctrSeed[8] &= 0x7F;   // clear bit 63 from right
+            ctrSeed[12] &= 0x7F;   // clear bit 31 from right
             CtrEncrypt(ciphertext, output.Slice(0, plaintextLength), ctrSeed);
 
             // Verify SIV.
