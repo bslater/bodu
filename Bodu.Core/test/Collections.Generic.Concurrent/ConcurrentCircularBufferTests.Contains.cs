@@ -287,4 +287,19 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(buffer.Contains(d));
         Assert.IsFalse(buffer.Contains(a)); // was dequeued
     }
+
+    /// <summary>
+    /// Verifies that Contains uses the default equality comparer for value types.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenUsingValueTypes_ShouldUseDefaultEquality()
+    {
+        var buffer = new ConcurrentCircularBuffer<int>(5);
+        buffer.Enqueue(10);
+        buffer.Enqueue(20);
+        buffer.Enqueue(30);
+
+        Assert.IsTrue(buffer.Contains(20));
+        Assert.IsFalse(buffer.Contains(99));
+    }
 }

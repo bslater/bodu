@@ -407,5 +407,51 @@ namespace Bodu.Collections.Generic.Concurrent
             Assert.IsTrue(peekEmptyCount >= 0);
             Assert.IsTrue(indexerRaceCount >= 0);
         }
+
+    /// <summary>
+    /// Verifies that enqueuing items after clearing a previously full buffer behaves correctly
+    /// and maintains FIFO order.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenBufferWasFullAndNewItemsEnqueued_ShouldMaintainFifoOrder()
+    {
+        var buffer = new ConcurrentCircularBuffer<int>(3, allowOverwrite: true);
+        buffer.Enqueue(1);
+        buffer.Enqueue(2);
+        buffer.Enqueue(3);
+
+        Assert.AreEqual(3, buffer.Count);
+        buffer.Clear();
+        Assert.AreEqual(0, buffer.Count);
+
+        buffer.Enqueue(10);
+        buffer.Enqueue(20);
+        buffer.Enqueue(30);
+
+        CollectionAssert.AreEqual(new[] { 10, 20, 30 }, buffer.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that draining all items via TryDequeue and then refilling the buffer preserves
+    /// FIFO order across the cycle.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenDrainedViaTryDequeueAndRefilled_ShouldPreserveFifoOrder()
+    {
+        var buffer = new ConcurrentCircularBuffer<int>(3);
+        buffer.Enqueue(1);
+        buffer.Enqueue(2);
+        buffer.Enqueue(3);
+
+        buffer.TryDequeue(out _);
+        buffer.TryDequeue(out _);
+        buffer.TryDequeue(out _);
+
+        Assert.AreEqual(0, buffer.Count);
+
+        buffer.Enqueue(10);
+        buffer.Enqueue(20);
+
+        CollectionAssert.AreEqual(new[] { 10, 20 }, buffer.ToArray());
     }
 }

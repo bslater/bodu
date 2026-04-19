@@ -150,5 +150,97 @@ namespace Bodu.Collections.Generic
             Assert.AreEqual(0, buffer.Count);
             CollectionAssert.AreEqual(Array.Empty<int>(), buffer.ToArray());
         }
+
+        /// <summary>
+        /// Verifies that clearing a full buffer does not raise any eviction events.
+        /// </summary>
+        [TestMethod]
+        public void Clear_WhenBufferFull_ShouldNotRaiseEvictionEvents()
+        {
+            int evictingCount = 0;
+            int evictedCount = 0;
+
+            var buffer = new CircularBuffer<int>(3, allowOverwrite: true);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
+            buffer.Enqueue(3);
+
+            buffer.ItemEvicting += _ => evictingCount++;
+            buffer.ItemEvicted += _ => evictedCount++;
+
+            buffer.Clear();
+
+            Assert.AreEqual(0, evictingCount);
+            Assert.AreEqual(0, evictedCount);
+        }
+
+        /// <summary>
+        /// Verifies that clearing and immediately reusing the buffer preserves its capacity and maintains
+        /// correct FIFO ordering for subsequently enqueued items.
+        /// </summary>
+        [TestMethod]
+        public void Clear_WhenCalledAndImmediatelyReused_ShouldPreserveCapacityAndMaintainFifoOrder()
+        {
+            var buffer = new CircularBuffer<int>(3);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
+            buffer.Enqueue(3);
+
+            buffer.Clear();
+
+            buffer.Enqueue(10);
+            buffer.Enqueue(20);
+
+            Assert.AreEqual(3, buffer.Capacity);
+            Assert.AreEqual(2, buffer.Count);
+            CollectionAssert.AreEqual(new[] { 10, 20 }, buffer.ToArray());
+        }
+
+        /// <summary>
+        /// Verifies that enqueuing items after clearing a previously full buffer behaves correctly
+        /// and maintains FIFO order.
+        /// </summary>
+        [TestMethod]
+        public void Clear_WhenBufferWasFullAndNewItemsEnqueued_ShouldMaintainFifoOrder()
+        {
+            var buffer = new CircularBuffer<int>(3, allowOverwrite: true);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
+            buffer.Enqueue(3);
+
+            Assert.AreEqual(3, buffer.Count);
+            buffer.Clear();
+            Assert.AreEqual(0, buffer.Count);
+
+            buffer.Enqueue(10);
+            buffer.Enqueue(20);
+            buffer.Enqueue(30);
+
+            CollectionAssert.AreEqual(new[] { 10, 20, 30 }, buffer.ToArray());
+        }
+
+        /// <summary>
+        /// Verifies that draining all items and then refilling the buffer preserves FIFO order
+        /// across the cycle.
+        /// </summary>
+        [TestMethod]
+        public void Clear_WhenDrainedAndRefilled_ShouldPreserveFifoOrder()
+        {
+            var buffer = new CircularBuffer<int>(3);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
+            buffer.Enqueue(3);
+
+            buffer.Dequeue();
+            buffer.Dequeue();
+            buffer.Dequeue();
+
+            Assert.AreEqual(0, buffer.Count);
+
+            buffer.Enqueue(10);
+            buffer.Enqueue(20);
+
+            CollectionAssert.AreEqual(new[] { 10, 20 }, buffer.ToArray());
+        }
     }
 }

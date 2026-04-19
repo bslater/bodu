@@ -224,4 +224,30 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new[] { 6, 7, 8, 9, 10 }, buffer.ToArray().Select(x => x.Value).ToArray());
         Assert.AreEqual(0, evicted);
     }
+
+    /// <summary>
+    /// Verifies that constructing a <see cref="ConcurrentCircularBuffer{T}"/> with an empty collection and a negative
+    /// capacity throws <see cref="ArgumentOutOfRangeException"/>.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenEmptyCollectionAndInvalidCapacity_ShouldThrowArgumentOutOfRangeException()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new ConcurrentCircularBuffer<int>(Array.Empty<int>(), -1);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that constructing a <see cref="ConcurrentCircularBuffer{T}"/> with an empty collection and a valid capacity
+    /// creates an empty buffer with the specified capacity.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenEmptyCollectionAndValidCapacity_ShouldCreateEmptyBuffer()
+    {
+        var buffer = new ConcurrentCircularBuffer<int>(Array.Empty<int>(), 5);
+
+        Assert.AreEqual(0, buffer.Count);
+        Assert.AreEqual(5, buffer.Capacity);
+    }
 }

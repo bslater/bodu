@@ -116,5 +116,52 @@
 
             CollectionAssert.AreEqual(new[] { "X" }, evictedItems);
         }
+
+        /// <summary>
+        /// Verifies that an unsubscribed ItemEvicted handler does not receive further eviction events.
+        /// </summary>
+        [TestMethod]
+        public void ItemEvicted_WhenHandlerUnsubscribed_ShouldNotReceiveFurtherEvents()
+        {
+            int callCount = 0;
+            var buffer = new CircularBuffer<int>(1, allowOverwrite: true);
+
+            Action<int> handler = _ => callCount++;
+            buffer.ItemEvicted += handler;
+
+            buffer.Enqueue(1);
+            buffer.Enqueue(2); // evicts 1 — handler fires
+
+            Assert.AreEqual(1, callCount);
+
+            buffer.ItemEvicted -= handler;
+
+            buffer.Enqueue(3); // evicts 2 — handler should not fire
+
+            Assert.AreEqual(1, callCount);
+        }
+
+        /// <summary>
+        /// Verifies that the ItemEvicted handler receives a null argument when a null item is evicted.
+        /// </summary>
+        [TestMethod]
+        public void ItemEvicted_WhenNullItemIsEvicted_ShouldReceiveNullArgument()
+        {
+            string? received = "sentinel";
+            bool handlerCalled = false;
+
+            var buffer = new CircularBuffer<string?>(1, allowOverwrite: true);
+            buffer.ItemEvicted += item =>
+            {
+                received = item;
+                handlerCalled = true;
+            };
+
+            buffer.Enqueue(null);
+            buffer.Enqueue("X"); // evicts null
+
+            Assert.IsTrue(handlerCalled);
+            Assert.IsNull(received);
+        }
     }
 }

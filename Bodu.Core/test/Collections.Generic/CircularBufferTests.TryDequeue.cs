@@ -88,5 +88,26 @@ namespace Bodu.Collections.Generic
             CollectionAssert.AreEqual(Array.Empty<string>(), events);
             CollectionAssert.AreEqual(new[] { "B" }, buffer.ToArray());
         }
+
+        /// <summary>
+        /// Verifies that TryDequeue returns false after all items have been removed from the buffer.
+        /// </summary>
+        [TestMethod]
+        public void TryDequeue_WhenBufferTransitionsToEmpty_ShouldReturnFalseAfterLastItem()
+        {
+            var buffer = new CircularBuffer<int>(3);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
+
+            bool first = buffer.TryDequeue(out int value1);
+            bool second = buffer.TryDequeue(out int value2);
+            bool third = buffer.TryDequeue(out int value3);
+
+            Assert.IsTrue(first);
+            Assert.AreEqual(1, value1);
+            Assert.IsTrue(second);
+            Assert.AreEqual(2, value2);
+            Assert.IsFalse(third);
+        }
     }
 }
