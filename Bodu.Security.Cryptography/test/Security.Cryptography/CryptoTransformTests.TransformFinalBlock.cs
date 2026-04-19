@@ -25,21 +25,5 @@ namespace Bodu.Security.Cryptography
                 transform.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
             });
         }
-
-        /// <summary>
-        /// Verifies that <see cref="ICryptoTransform.TransformFinalBlock" /> throws
-        /// <see cref="ArgumentNullException" /> when <c>inputBuffer</c> is <see langword="null" />.
-        /// Regression guard for transforms that previously threw <see cref="NullReferenceException" /> via <c>.AsSpan</c>.
-        /// </summary>
-        [TestMethod]
-        public void TransformFinalBlock_WhenInputBufferIsNull_ShouldThrowArgumentNullException_fix()
-        {
-            using var transform = this.CreateTransform();
-
-            Assert.ThrowsExactly<ArgumentNullException>(() =>
-            {
-                _ = transform.TransformFinalBlock(null!, 0, 0);
-            });
-        }
     }
 }

@@ -7,12 +7,12 @@
 namespace Bodu.Security.Cryptography
 {
     /// <summary>
-    /// Concrete test class that exercises the <see cref="CryptoTransformTests{TCryptoTransform}" /> base tests
+    /// Concrete test class that exercises the <see cref="BlockCipherTransformTests{TCryptoTransform}" /> base tests
     /// against the <see cref="ThreefishTransform" /> implementation.
     /// </summary>
     [TestClass]
     public sealed class ThreefishTransformTests
-        : CryptoTransformTests<ThreefishTransform>
+        : BlockCipherTransformTests<ThreefishTransform>
     {
         /// <inheritdoc />
         protected override ThreefishTransform CreateTransform()
