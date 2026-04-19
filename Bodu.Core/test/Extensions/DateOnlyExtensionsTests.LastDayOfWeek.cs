@@ -98,7 +98,7 @@ namespace Bodu.Extensions
             var date = new DateOnly(2024, 1, 1);
             var invalidWeekend = (CalendarWeekendDefinition)(-5);
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             {
                 _ = date.LastDayOfWeek(invalidWeekend);
             });
@@ -113,7 +113,7 @@ namespace Bodu.Extensions
             var nearMax = DateOnly.MaxValue.AddDays(-1); // e.g., Dec 30, 9999
             var weekend = CalendarWeekendDefinition.SaturdaySunday; // Start of week = Monday → end = Sunday
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             {
                 _ = nearMax.LastDayOfWeek(weekend);
             });

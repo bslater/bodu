@@ -15,7 +15,10 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(10, p1.Value);
 
         // Enqueue will fail; Peek should still show 10
-        Assert.ThrowsException<InvalidOperationException>(() => buffer.Enqueue(new TestItem(30)));
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            buffer.Enqueue(new TestItem(30));
+        });
         var p2 = buffer.Peek();
         Assert.AreEqual(10, p2.Value, "Oldest should not change when enqueue fails.");
     }
@@ -66,7 +69,10 @@ public partial class ConcurrentCircularBufferTests
     public void Peek_WhenBufferIsEmpty_ShouldThrowInvalidOperation()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(3);
-        Assert.ThrowsException<InvalidOperationException>(() => _ = buffer.Peek());
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = buffer.Peek();
+        });
     }
 
     [TestMethod]

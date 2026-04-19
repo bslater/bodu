@@ -61,10 +61,7 @@ public partial class IComparableExtensionsTests
         int? max,
         int? expected)
     {
-        // Explicit type parameter is required because the 3-argument overload has a
-        // 'where T : IComparable<T>' constraint, and int? cannot satisfy an interface
-        // constraint — type inference would otherwise pick T = int? and fail.
-        Assert.AreEqual(expected, value.Clamp<int>(min, max));
+        Assert.AreEqual(expected, value.Clamp(min, max));
     }
 
     // =========================================================================
@@ -110,11 +107,8 @@ public partial class IComparableExtensionsTests
     {
         IComparer<int> comparer = Comparer<int>.Default;
 
-        // Explicit type parameter and int? cast on 'null' are required so the compiler binds
-        // to IComparableExtensions.Clamp<T>(this T? value, T? min, T? max, IComparer<T> comparer)
-        // with T = int, rather than picking an unrelated Clamp overload during type inference.
-        Assert.AreEqual(50, ((int?)50).Clamp<int>(1, null, comparer));
-        Assert.AreEqual(-5, ((int?)(-5)).Clamp<int>(null, 10, comparer));
+        Assert.AreEqual(50, 50.Clamp(1, null, comparer));
+        Assert.AreEqual(-5, (-5).Clamp(null, 10, comparer));
     }
 
     /// <summary>

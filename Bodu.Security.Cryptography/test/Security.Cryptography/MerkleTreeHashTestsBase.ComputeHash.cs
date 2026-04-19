@@ -44,7 +44,7 @@ namespace Bodu.Security.Cryptography
         /// </list>
         /// <para>
         /// The test uses a plain <c>try</c>/<c>catch</c> rather than
-        /// <see cref="Assert.ThrowsException{T}(Action)" /> because newer MSTest versions require an
+        /// <see cref="Assert.ThrowsExactly{T}(Action)" /> because newer MSTest versions require an
         /// exact type match on <c>T</c> — which would reject every derived type even when <c>T</c>
         /// is <see cref="Exception" />. A generous <see cref="TimeoutAttribute" /> guards against a
         /// regression where the implementation hangs awaiting workers whose factory call has failed.

@@ -13,7 +13,7 @@ namespace Bodu
         {
             object value = "string";
 
-            Assert.ThrowsException<ArgumentException>(() =>
+            Assert.ThrowsExactly<ArgumentException>(() =>
             {
                 ThrowHelper.ThrowIfNotOfType<int>(value);
             });
@@ -24,7 +24,7 @@ namespace Bodu
         {
             object? value = null;
 
-            Assert.ThrowsException<ArgumentException>(() =>
+            Assert.ThrowsExactly<ArgumentException>(() =>
             {
                 ThrowHelper.ThrowIfNotOfType<int>(value);
             });
@@ -35,7 +35,7 @@ namespace Bodu
         {
             object value = 42;
 
-            Assert.ThrowsException<ArgumentException>(() =>
+            Assert.ThrowsExactly<ArgumentException>(() =>
             {
                 ThrowHelper.ThrowIfNotOfType<string>(value);
             });

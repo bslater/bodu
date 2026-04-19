@@ -49,7 +49,10 @@ namespace Bodu.Extensions
         [DynamicData(nameof(GetAddExceptionCases), DynamicDataSourceType.Method)]
         public void Add_WhenOutOfRange_ShouldThrowArgumentOutOfRangeException(DateTime input, int years, int months, double days)
         {
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => input.Add(years, months, days));
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                input.Add(years, months, days);
+            });
         }
 
         public static IEnumerable<object[]> GetAddExceptionCases()

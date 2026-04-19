@@ -114,11 +114,14 @@ namespace Bodu.Collections.Generic.Extensions
             }
 
             // Assert: Re-enumerating throws the same exception again
-            Assert.ThrowsException<InvalidOperationException>(() =>
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
             {
-                foreach (var _ in cached)
                 {
+                    foreach (var _ in cached)
+                    {
+                    }
                 }
+                ;
             });
         }
 
@@ -135,9 +138,12 @@ namespace Bodu.Collections.Generic.Extensions
             Assert.AreEqual(1, enumerator.Current);
 
             // Assert: Second item throws
-            Assert.ThrowsException<InvalidOperationException>(() =>
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
             {
-                enumerator.MoveNext();
+                {
+                    enumerator.MoveNext();
+                }
+                ;
             });
         }
 
@@ -176,9 +182,12 @@ namespace Bodu.Collections.Generic.Extensions
             var enumerator = actual.GetEnumerator();
             while (enumerator.MoveNext()) { }
 
-            Assert.ThrowsException<InvalidOperationException>(() =>
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
             {
-                _ = enumerator.Current;
+                {
+                    _ = enumerator.Current;
+                }
+                ;
             });
         }
 
@@ -188,9 +197,12 @@ namespace Bodu.Collections.Generic.Extensions
             var actual = YieldingSequence().Cache();
             var enumerator = actual.GetEnumerator();
 
-            Assert.ThrowsException<InvalidOperationException>(() =>
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
             {
-                _ = enumerator.Current;
+                {
+                    _ = enumerator.Current;
+                }
+                ;
             });
         }
 
