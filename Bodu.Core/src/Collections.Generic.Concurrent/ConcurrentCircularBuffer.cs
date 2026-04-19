@@ -226,6 +226,9 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// producers after this point are not removed. This bounding prevents an indefinite loop when <see cref="AllowOverwrite"/> is
     /// <see langword="true"/> and producers are continuously enqueueing.
     /// </para>
+    /// <para>
+    /// The <see cref="ItemEvicted"/> event is not raised by this operation, as clearing the buffer is not considered an eviction.
+    /// </para>
     /// </remarks>
     public void Clear()
     {

@@ -133,4 +133,67 @@ public partial class ConcurrentCircularBufferTests
         var result = buffer.ToArray().Select(x => x.Value).ToArray();
         CollectionAssert.AreEqual(new[] { 2, 3, 4 }, result);
     }
+
+    /// <summary>
+    /// Verifies that accessing <see cref="ConcurrentCircularBuffer{T}.Enumerator.Current"/> before the first call to
+    /// <see cref="ConcurrentCircularBuffer{T}.Enumerator.MoveNext"/> returns the default value for the element type.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_WhenCurrentAccessedBeforeMoveNext_ShouldReturnDefault()
+    {
+        var buffer = new ConcurrentCircularBuffer<int>(3);
+        buffer.Enqueue(10);
+        buffer.Enqueue(20);
+
+        var enumerator = buffer.GetEnumerator();
+        Assert.AreEqual(default(int), enumerator.Current);
+    }
+
+    /// <summary>
+    /// Verifies that accessing <see cref="ConcurrentCircularBuffer{T}.Enumerator.Current"/> after the enumerator has been
+    /// fully exhausted returns the default value for the element type.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_WhenCurrentAccessedAfterExhaustion_ShouldReturnDefault()
+    {
+        var buffer = new ConcurrentCircularBuffer<int>(3);
+        buffer.Enqueue(1);
+        buffer.Enqueue(2);
+        buffer.Enqueue(3);
+
+        var enumerator = buffer.GetEnumerator();
+        while (enumerator.MoveNext())
+        {
+            // Consume all items.
+        }
+
+        Assert.AreEqual(default(int), enumerator.Current);
+    }
+
+    /// <summary>
+    /// Verifies that calling <see cref="ConcurrentCircularBuffer{T}.Enumerator.Reset"/> after full enumeration allows the
+    /// enumerator to iterate over the same snapshot again, yielding identical items in the same order.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_WhenResetCalled_ShouldRestartIteration()
+    {
+        var buffer = new ConcurrentCircularBuffer<int>(4);
+        buffer.Enqueue(100);
+        buffer.Enqueue(200);
+        buffer.Enqueue(300);
+
+        var enumerator = buffer.GetEnumerator();
+
+        var firstPass = new List<int>();
+        while (enumerator.MoveNext())
+            firstPass.Add(enumerator.Current);
+
+        enumerator.Reset();
+
+        var secondPass = new List<int>();
+        while (enumerator.MoveNext())
+            secondPass.Add(enumerator.Current);
+
+        CollectionAssert.AreEqual(firstPass, secondPass);
+    }
 }

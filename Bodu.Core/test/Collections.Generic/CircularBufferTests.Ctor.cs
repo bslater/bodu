@@ -280,5 +280,35 @@ namespace Bodu.Collections.Generic
             var buffer = new CircularBuffer<int>(source, 5);
             CollectionAssert.AreEqual(new[] { 10, 20, 30 }, buffer.ToArray());
         }
+
+        /// <summary>
+        /// Verifies that constructing from a collection containing null elements retains nulls at the correct positions.
+        /// </summary>
+        [TestMethod]
+        public void Constructor_WhenCollectionContainsNulls_ShouldRetainNulls()
+        {
+            var source = new string?[] { "A", null, "B" };
+            var buffer = new CircularBuffer<string?>(source, 5);
+
+            Assert.AreEqual(3, buffer.Count);
+
+            string?[] result = buffer.ToArray();
+            Assert.AreEqual("A", result[0]);
+            Assert.IsNull(result[1]);
+            Assert.AreEqual("B", result[2]);
+        }
+
+        /// <summary>
+        /// Verifies that constructing from an empty collection with a valid capacity creates an empty buffer
+        /// with the specified capacity.
+        /// </summary>
+        [TestMethod]
+        public void Constructor_WhenEmptyCollectionAndValidCapacity_ShouldCreateEmptyBuffer()
+        {
+            var buffer = new CircularBuffer<int>(Array.Empty<int>(), 5);
+
+            Assert.AreEqual(0, buffer.Count);
+            Assert.AreEqual(5, buffer.Capacity);
+        }
     }
 }

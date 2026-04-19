@@ -136,5 +136,53 @@ namespace Bodu.Collections.Generic
             Assert.IsTrue(buffer.Contains(40));
             Assert.IsFalse(buffer.Contains(99));
         }
+
+        /// <summary>
+        /// Verifies that Contains returns false for previously present items after the buffer has been cleared.
+        /// </summary>
+        [TestMethod]
+        public void Contains_AfterClear_ShouldReturnFalseForPreviouslyPresentItems()
+        {
+            var buffer = new CircularBuffer<string>(3);
+            buffer.Enqueue("A");
+            buffer.Enqueue("B");
+
+            buffer.Clear();
+
+            Assert.IsFalse(buffer.Contains("A"));
+            Assert.IsFalse(buffer.Contains("B"));
+        }
+
+        /// <summary>
+        /// Verifies that Contains returns false for an item that has been evicted by an overwrite and true
+        /// for the item that replaced it.
+        /// </summary>
+        [TestMethod]
+        public void Contains_WhenItemEvictedByOverwrite_ShouldReturnFalse()
+        {
+            var buffer = new CircularBuffer<int>(2, allowOverwrite: true);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
+            buffer.Enqueue(3); // evicts 1
+
+            Assert.IsFalse(buffer.Contains(1));
+            Assert.IsTrue(buffer.Contains(3));
+        }
+
+        /// <summary>
+        /// Verifies that Contains returns true when duplicate items are present and at least one instance remains
+        /// after a dequeue.
+        /// </summary>
+        [TestMethod]
+        public void Contains_WhenDuplicatesPresent_ShouldReturnTrueWhileAnyInstanceExists()
+        {
+            var buffer = new CircularBuffer<string>(3);
+            buffer.Enqueue("X");
+            buffer.Enqueue("X");
+
+            buffer.Dequeue(); // removes first "X"
+
+            Assert.IsTrue(buffer.Contains("X"));
+        }
     }
 }

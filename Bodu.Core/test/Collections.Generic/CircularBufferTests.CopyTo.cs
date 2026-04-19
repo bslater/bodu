@@ -258,5 +258,25 @@ namespace Bodu.Collections.Generic
             Assert.AreEqual(2, verify[1]?.Value,
                 "Buffer's second element should be unaffected as only the first element's property was mutated.");
         }
+
+        /// <summary>
+        /// Verifies that CopyTo with a non-zero destination offset places elements at the correct position.
+        /// </summary>
+        [TestMethod]
+        public void CopyTo_WhenDestinationHasNonZeroOffset_ShouldPlaceElementsAtIndex()
+        {
+            var buffer = new CircularBuffer<int>(3);
+            buffer.Enqueue(10);
+            buffer.Enqueue(20);
+
+            var array = new int[5];
+            buffer.CopyTo(array, 2);
+
+            Assert.AreEqual(0, array[0]);
+            Assert.AreEqual(0, array[1]);
+            Assert.AreEqual(10, array[2]);
+            Assert.AreEqual(20, array[3]);
+            Assert.AreEqual(0, array[4]);
+        }
     }
 }
