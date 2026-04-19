@@ -41,5 +41,72 @@ namespace Bodu.Collections.Generic
             dictionary.Clear();
             Assert.IsFalse(eventFired);
         }
+
+        /// <summary>
+        /// Verifies that calling Add from an ItemEvicting handler throws InvalidOperationException to prevent
+        /// re-entrant mutation from corrupting internal state mid-eviction.
+        /// </summary>
+        [TestMethod]
+        public void Add_WhenCalledFromItemEvictingHandler_ShouldThrowInvalidOperationException()
+        {
+            var dictionary = new EvictingDictionary<string, int>(2);
+            dictionary.Add("A", 1);
+            dictionary.Add("B", 2);
+
+            Exception? captured = null;
+            dictionary.ItemEvicting += (_, _) =>
+            {
+                try { dictionary.Add("Z", 99); }
+                catch (Exception ex) { captured = ex; }
+            };
+
+            dictionary.Add("C", 3); // triggers eviction → handler attempts re-entrant Add.
+
+            Assert.IsInstanceOfType<InvalidOperationException>(captured);
+        }
+
+        /// <summary>
+        /// Verifies that calling Remove from an ItemEvicting handler throws InvalidOperationException.
+        /// </summary>
+        [TestMethod]
+        public void Remove_WhenCalledFromItemEvictingHandler_ShouldThrowInvalidOperationException()
+        {
+            var dictionary = new EvictingDictionary<string, int>(2);
+            dictionary.Add("A", 1);
+            dictionary.Add("B", 2);
+
+            Exception? captured = null;
+            dictionary.ItemEvicting += (_, _) =>
+            {
+                try { dictionary.Remove("B"); }
+                catch (Exception ex) { captured = ex; }
+            };
+
+            dictionary.Add("C", 3);
+
+            Assert.IsInstanceOfType<InvalidOperationException>(captured);
+        }
+
+        /// <summary>
+        /// Verifies that calling Clear from an ItemEvicted handler throws InvalidOperationException.
+        /// </summary>
+        [TestMethod]
+        public void Clear_WhenCalledFromItemEvictedHandler_ShouldThrowInvalidOperationException()
+        {
+            var dictionary = new EvictingDictionary<string, int>(2);
+            dictionary.Add("A", 1);
+            dictionary.Add("B", 2);
+
+            Exception? captured = null;
+            dictionary.ItemEvicted += (_, _) =>
+            {
+                try { dictionary.Clear(); }
+                catch (Exception ex) { captured = ex; }
+            };
+
+            dictionary.Add("C", 3);
+
+            Assert.IsInstanceOfType<InvalidOperationException>(captured);
+        }
     }
 }

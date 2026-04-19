@@ -122,5 +122,41 @@ namespace Bodu.Collections.Generic
             Assert.AreEqual(2, dictionary.Keys.Count);
             Assert.IsTrue(dictionary.ContainsKey("c"));
         }
+
+        /// <summary>
+        /// Verifies that RandomReplacement actually selects different victims across many independent runs,
+        /// rather than deterministically evicting the same key each time.
+        /// </summary>
+        [TestMethod]
+        [TestCategory("Random")]
+        public void Add_WhenPolicyIsRandomAndCapacityExceededAcrossManyRuns_ShouldEvictDifferentKeysOverTime()
+        {
+            const int trials = 200;
+            var evictedKeys = new HashSet<string>();
+
+            for (int i = 0; i < trials; i++)
+            {
+                var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.RandomReplacement);
+                dictionary.Add("A", 1);
+                dictionary.Add("B", 2);
+                dictionary.Add("C", 3);
+
+                string? evicted = null;
+                dictionary.ItemEvicted += (key, _) => evicted = key;
+
+                dictionary.Add("D", 4);
+
+                Assert.IsNotNull(evicted);
+                evictedKeys.Add(evicted!);
+
+                // Once we have observed at least two distinct victims we are confident the selection is non-deterministic.
+                if (evictedKeys.Count >= 2)
+                    return;
+            }
+
+            Assert.Fail(
+                $"RandomReplacement evicted the same key in all {trials} trials (observed: {string.Join(',', evictedKeys)}); " +
+                "expected non-deterministic victim selection.");
+        }
     }
 }

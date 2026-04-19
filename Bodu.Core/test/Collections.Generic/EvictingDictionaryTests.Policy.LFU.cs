@@ -181,5 +181,33 @@ namespace Bodu.Collections.Generic
 
             Assert.IsFalse(eventFired);
         }
+
+        /// <summary>
+        /// Verifies that replacing an existing key under LeastFrequentlyUsed preserves its accumulated frequency,
+        /// so a well-used key is not knocked back to a cold state by a subsequent value update.
+        /// </summary>
+        [TestMethod]
+        [TestCategory("LFU")]
+        public void Add_WhenReplacingExistingKeyUnderLFU_ShouldPreserveFrequency()
+        {
+            var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastFrequentlyUsed);
+            dictionary.Add("A", 1);
+            dictionary.Add("B", 2);
+
+            // Accumulate frequency on "A".
+            for (int i = 0; i < 5; i++)
+                _ = dictionary["A"];
+
+            // Replace "A"'s value. Under the old behaviour this reset its frequency, making it a cold candidate.
+            dictionary.Add("A", 999);
+
+            // Adding a new key should evict "B" (low frequency), not "A" (which retained its high frequency).
+            dictionary.Add("C", 3);
+
+            Assert.IsTrue(dictionary.ContainsKey("A"));
+            Assert.IsFalse(dictionary.ContainsKey("B"));
+            Assert.IsTrue(dictionary.ContainsKey("C"));
+            Assert.AreEqual(999, dictionary["A"]);
+        }
     }
 }
