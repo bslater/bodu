@@ -67,7 +67,10 @@ public partial class IComparableExtensionsTests
         int? upper,
         bool expected)
     {
-        Assert.AreEqual(expected, value.IsBetween(lower, upper));
+        // Explicit type parameter is required because the 3-argument overload has a
+        // 'where T : IComparable<T>' constraint, and int? cannot satisfy an interface
+        // constraint — type inference would otherwise pick T = int? and fail.
+        Assert.AreEqual(expected, value.IsBetween<int>(lower, upper));
     }
 
     /// <summary>
