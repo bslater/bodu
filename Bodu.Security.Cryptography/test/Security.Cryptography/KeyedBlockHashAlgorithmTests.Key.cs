@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography
 {
@@ -436,7 +437,7 @@ namespace Bodu.Security.Cryptography
             }
 
             byte[] key = Enumerable.Range(1, specification.MinKeyLength).Select(i => (byte)i).ToArray();
-            byte[] reversed = key.Reverse().ToArray();
+            byte[] reversed = key.Reverse();
             byte[] data = (byte[])CryptoTestUtilities.ByteSequence256.Clone();
 
             byte[] hash1;

@@ -82,7 +82,7 @@ namespace Bodu.Security.Cryptography
         /// This property is used to verify that the algorithm under test produces the correct result when hashing an empty input. Expected
         /// results are sourced from <see cref="GetExpectedHashesForNamedInputs(TVariant)" />.
         /// </remarks>
-        protected override byte[] ExpectedEmptyInputHash =>
+        protected virtual byte[] ExpectedEmptyInputHash =>
             Convert.FromHexString(
                 GetExpectedHashesForNamedInputs(DefaultVariant).TryGetValue("Empty", out var hex)
                     ? hex

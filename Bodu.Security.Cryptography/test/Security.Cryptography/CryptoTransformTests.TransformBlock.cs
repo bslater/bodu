@@ -17,10 +17,10 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TransformBlock_WhenDisposed_ShouldThrowExactly()
         {
-            using var transform = this.CreateTransform();
-            transform.Dispose();
-
+            using var transform = this.CreateAlgorithm();
             byte[] buffer = new byte[transform.InputBlockSize];
+
+            transform.Dispose();
 
             Assert.ThrowsExactly<ObjectDisposedException>(() =>
             {

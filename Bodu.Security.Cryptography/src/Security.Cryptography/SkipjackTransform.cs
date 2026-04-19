@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SkipjackTransform.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,8 @@ namespace Bodu.Security.Cryptography
     /// <see cref="Skipjack" /> with a <see cref="CryptoStream" />, which handles padding and block alignment automatically.
     /// </para>
     /// </remarks>
-    public sealed class SkipjackTransform : BlockCipherTransform
+    internal sealed class SkipjackTransform
+        : BlockCipherTransform
     {
         /// <summary>
         /// Initialises a new instance of the <see cref="SkipjackTransform" /> class using the specified cipher, mode, padding, and

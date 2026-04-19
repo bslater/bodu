@@ -11,11 +11,11 @@ namespace Bodu.Security.Cryptography
     /// against the <see cref="SkipjackTransform" /> implementation.
     /// </summary>
     [TestClass]
-    public sealed class SkipjackTransformTests
+    internal sealed class SkipjackTransformTests
         : BlockCipherTransformTests<SkipjackTransform>
     {
         /// <inheritdoc />
-        protected override SkipjackTransform CreateTransform()
+        protected override SkipjackTransform CreateAlgorithm()
         {
             var algorithm = new Skipjack();
             algorithm.GenerateKey();

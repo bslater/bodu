@@ -11,11 +11,11 @@ namespace Bodu.Security.Cryptography
     /// against the <see cref="ThreefishTransform" /> implementation.
     /// </summary>
     [TestClass]
-    public sealed class ThreefishTransformTests
+    internal sealed class ThreefishTransformTests
         : BlockCipherTransformTests<ThreefishTransform>
     {
         /// <inheritdoc />
-        protected override ThreefishTransform CreateTransform()
+        protected override ThreefishTransform CreateAlgorithm()
         {
             var algorithm = new Threefish256();
             algorithm.GenerateKey();

@@ -117,4 +117,46 @@ public partial class ConcurrentCircularBufferTests
         var values = buffer.Select(x => x?.Value).ToArray();
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, values);
     }
+
+    /// <summary>
+    /// Verifies that the enumerator output from <see cref="Enumerable.ToArray{TSource}"/> matches the output from
+    /// <see cref="ConcurrentCircularBuffer{T}.CopyTo"/> when the buffer is in a contiguous (non-wrapped) state.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenContiguous_ShouldMatchCopyToOutput()
+    {
+        var buffer = new ConcurrentCircularBuffer<int>(5);
+        buffer.Enqueue(10);
+        buffer.Enqueue(20);
+        buffer.Enqueue(30);
+
+        int[] fromToArray = buffer.ToArray();
+
+        int[] fromCopyTo = new int[buffer.Count];
+        buffer.CopyTo(fromCopyTo, 0);
+
+        CollectionAssert.AreEqual(fromToArray, fromCopyTo);
+    }
+
+    /// <summary>
+    /// Verifies that the enumerator output from <see cref="Enumerable.ToArray{TSource}"/> matches the output from
+    /// <see cref="ConcurrentCircularBuffer{T}.CopyTo"/> when the internal buffer has wrapped around.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenWrapped_ShouldMatchCopyToOutput()
+    {
+        var buffer = new ConcurrentCircularBuffer<int>(3);
+        buffer.Enqueue(1);
+        buffer.Enqueue(2);
+        buffer.Enqueue(3);
+        buffer.Dequeue();       // removes 1
+        buffer.Enqueue(4);      // wraps: logical order is [2, 3, 4]
+
+        int[] fromToArray = buffer.ToArray();
+
+        int[] fromCopyTo = new int[buffer.Count];
+        buffer.CopyTo(fromCopyTo, 0);
+
+        CollectionAssert.AreEqual(fromToArray, fromCopyTo);
+    }
 }

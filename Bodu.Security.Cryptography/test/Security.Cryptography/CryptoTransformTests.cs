@@ -19,6 +19,6 @@ namespace Bodu.Security.Cryptography
         /// <returns>
         /// A newly constructed and fully initialised instance of <typeparamref name="TCryptoTransform" />, ready for use in test scenarios.
         /// </returns>
-        protected abstract TCryptoTransform CreateTransform();
+        protected abstract TCryptoTransform CreateAlgorithm();
     }
 }

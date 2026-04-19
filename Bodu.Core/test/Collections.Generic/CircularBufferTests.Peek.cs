@@ -47,5 +47,43 @@ namespace Bodu.Collections.Generic
                 _ = buffer.Peek();
             });
         }
+
+        /// <summary>
+        /// Verifies that calling Peek repeatedly does not change the count of the buffer.
+        /// </summary>
+        [TestMethod]
+        public void Peek_WhenCalledRepeatedly_ShouldNotChangeCount()
+        {
+            var buffer = new CircularBuffer<int>(5);
+            buffer.Enqueue(1);
+            buffer.Enqueue(2);
+            buffer.Enqueue(3);
+
+            int expectedCount = buffer.Count;
+
+            for (int i = 0; i < 100; i++)
+            {
+                buffer.Peek();
+            }
+
+            Assert.AreEqual(expectedCount, buffer.Count);
+        }
+
+        /// <summary>
+        /// Verifies that Peek reflects the new oldest item after a dequeue operation.
+        /// </summary>
+        [TestMethod]
+        public void Peek_WhenOldestChangesDueToDequeue_ShouldReflectNewOldest()
+        {
+            var buffer = new CircularBuffer<string>(3);
+            buffer.Enqueue("A");
+            buffer.Enqueue("B");
+
+            Assert.AreEqual("A", buffer.Peek());
+
+            buffer.Dequeue();
+
+            Assert.AreEqual("B", buffer.Peek());
+        }
     }
 }

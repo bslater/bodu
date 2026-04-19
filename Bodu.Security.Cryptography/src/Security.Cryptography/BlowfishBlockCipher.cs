@@ -391,8 +391,8 @@ namespace Bodu.Security.Cryptography
         public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
         {
             this.ThrowIfDisposed();
-            ThrowHelper.ThrowIfSpanLengthIsInsufficient(input, BlockSizeInBytes);
-            ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, BlockSizeInBytes);
+            ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeInBytes);
+            ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeInBytes);
 
             uint xl = BinaryPrimitives.ReadUInt32BigEndian(input);
             uint xr = BinaryPrimitives.ReadUInt32BigEndian(input.Slice(4));
@@ -421,8 +421,8 @@ namespace Bodu.Security.Cryptography
         public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
         {
             this.ThrowIfDisposed();
-            ThrowHelper.ThrowIfSpanLengthIsInsufficient(input, BlockSizeInBytes);
-            ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, BlockSizeInBytes);
+            ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeInBytes);
+            ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeInBytes);
 
             uint xl = BinaryPrimitives.ReadUInt32BigEndian(input);
             uint xr = BinaryPrimitives.ReadUInt32BigEndian(input.Slice(4));

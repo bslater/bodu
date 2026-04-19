@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlowfishTransform.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,8 @@ namespace Bodu.Security.Cryptography
     /// <see cref="Blowfish" /> with a <see cref="CryptoStream" />, which handles padding and block alignment automatically.
     /// </para>
     /// </remarks>
-    public sealed class BlowfishTransform : BlockCipherTransform
+    internal sealed class BlowfishTransform
+        : BlockCipherTransform
     {
         /// <summary>
         /// Initialises a new instance of the <see cref="BlowfishTransform" /> class.

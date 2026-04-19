@@ -43,5 +43,23 @@ namespace Bodu.Collections.Generic
 
             CollectionAssert.AreEqual(new[] { 20, 30, 40 }, buffer.ToArray());
         }
+
+        /// <summary>
+        /// Verifies that modifying the array returned by ToArray does not affect the contents of the buffer.
+        /// </summary>
+        [TestMethod]
+        public void ToArray_WhenSnapshotIsModified_ShouldNotAffectBuffer()
+        {
+            var buffer = new CircularBuffer<int>(3);
+            buffer.Enqueue(10);
+            buffer.Enqueue(20);
+            buffer.Enqueue(30);
+
+            int[] snapshot = buffer.ToArray();
+            snapshot[0] = 999;
+
+            int[] actual = buffer.ToArray();
+            Assert.AreEqual(10, actual[0]);
+        }
     }
 }

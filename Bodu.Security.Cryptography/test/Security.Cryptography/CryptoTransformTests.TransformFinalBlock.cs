@@ -17,7 +17,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TransformFinalBlock_WhenDisposed_ShouldThrowExactly()
         {
-            using var transform = this.CreateTransform();
+            using var transform = this.CreateAlgorithm();
             transform.Dispose();
 
             Assert.ThrowsExactly<ObjectDisposedException>(() =>

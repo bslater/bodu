@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThreefishTransform.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,7 +19,8 @@ namespace Bodu.Security.Cryptography
     /// concrete <see cref="Threefish" /> algorithm with a <see cref="CryptoStream" />.
     /// </para>
     /// </remarks>
-    public sealed class ThreefishTransform : BlockCipherTransform
+    internal sealed class ThreefishTransform
+        : BlockCipherTransform
     {
         /// <summary>
         /// Initialises a new instance of the <see cref="ThreefishTransform" /> class using the specified cipher, mode, padding, and

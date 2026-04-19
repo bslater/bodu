@@ -117,8 +117,8 @@ namespace Bodu.Security.Cryptography
         /// <remarks>Mirrors the BC/OpenSSL decrypt sequence, including the word-order swap in the input/output stages.</remarks>
         public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
         {
-            ThrowHelper.ThrowIfSpanLengthIsInsufficient(input, BlockBytes);
-            ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, BlockBytes);
+            ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockBytes);
+            ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockBytes);
             this.ThrowIfDisposed();
 
             int w2 = (input[0] << 8) + (input[1] & 0xff);
@@ -190,8 +190,8 @@ namespace Bodu.Security.Cryptography
         /// </remarks>
         public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
         {
-            ThrowHelper.ThrowIfSpanLengthIsInsufficient(input, BlockBytes);
-            ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, BlockBytes);
+            ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockBytes);
+            ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockBytes);
             this.ThrowIfDisposed();
 
             int w1 = (input[0] << 8) + (input[1] & 0xff);

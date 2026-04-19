@@ -106,8 +106,9 @@ namespace Bodu.Security.Cryptography
             byte[] checksum = new byte[blockSize];
             byte[] block = new byte[blockSize];
             int m = (plaintext.Length + blockSize - 1) / blockSize;
-            if (m == 0) m = 1;
-            int j = 0;
+            // Do NOT force m=1 for empty plaintext. When plaintext.Length == 0, m == 0 and
+            // no block processing occurs — tag uses Offset_0 and zero checksum directly,
+            // matching RFC 7253 Appendix B (C reference implementation).
 
             // All full blocks except the last.
             for (int blockIdx = 1; blockIdx <= m - 1; blockIdx++)
@@ -120,38 +121,41 @@ namespace Bodu.Security.Cryptography
                 Xor(block, offset, block);
                 block.CopyTo(output.Slice(src));
                 Xor(checksum, plaintext.Slice(src, blockSize), checksum);
-                j = blockIdx;
             }
 
-            // Last block.
-            int lastSrc = (m - 1) * blockSize;
-            int lastLen = plaintext.Length - lastSrc;
-            Xor(offset, this.lArray[Ntz(m)], offset);
+            // Last block — only when plaintext is non-empty.
+            if (plaintext.Length > 0)
+            {
+                int lastSrc = (m - 1) * blockSize;
+                int lastLen = plaintext.Length - lastSrc;
 
-            if (lastLen == blockSize)
-            {
-                // Complete last block.
-                plaintext.Slice(lastSrc, blockSize).CopyTo(block);
-                Xor(block, offset, block);
-                this.cipher.Encrypt(block, block);
-                Xor(block, offset, block);
-                block.CopyTo(output.Slice(lastSrc));
-                Xor(checksum, plaintext.Slice(lastSrc, blockSize), checksum);
+                if (lastLen == blockSize)
+                {
+                    // Full last block: Offset_m = Offset_{m-1} XOR L[ntz(m)]
+                    Xor(offset, this.lArray[Ntz(m)], offset);
+                    plaintext.Slice(lastSrc, blockSize).CopyTo(block);
+                    Xor(block, offset, block);
+                    this.cipher.Encrypt(block, block);
+                    Xor(block, offset, block);
+                    block.CopyTo(output.Slice(lastSrc));
+                    Xor(checksum, plaintext.Slice(lastSrc, blockSize), checksum);
+                }
+                else
+                {
+                    // Partial last block: Offset_* = Offset_{m-1} XOR L_*
+                    Xor(offset, this.lStar, offset);
+                    byte[] pad = new byte[blockSize];
+                    this.cipher.Encrypt(offset, pad);
+                    for (int i = 0; i < lastLen; i++)
+                        output[lastSrc + i] = (byte)(plaintext[lastSrc + i] ^ pad[i]);
+                    // Checksum: P_* || 1 || 0...
+                    byte[] padBlock = new byte[blockSize];
+                    plaintext.Slice(lastSrc, lastLen).CopyTo(padBlock);
+                    padBlock[lastLen] = 0x80;
+                    Xor(checksum, padBlock, checksum);
+                }
             }
-            else
-            {
-                // Partial last block: Pad = E(L_* XOR Offset_m).
-                byte[] pad = new byte[blockSize];
-                Xor(this.lStar, offset, pad);
-                this.cipher.Encrypt(pad, pad);
-                for (int i = 0; i < lastLen; i++)
-                    output[lastSrc + i] = (byte)(plaintext[lastSrc + i] ^ pad[i]);
-                // Checksum update: P_m || 1 || 0...0
-                byte[] padBlock = new byte[blockSize];
-                plaintext.Slice(lastSrc, lastLen).CopyTo(padBlock);
-                padBlock[lastLen] = 0x80;
-                Xor(checksum, padBlock, checksum);
-            }
+            // Empty plaintext: offset stays at Offset_0, checksum stays at 0^128.
 
             // Tag = E(L_$ XOR Offset_m XOR Checksum) XOR HASH(A).
             byte[] tagInput = new byte[blockSize];
@@ -183,7 +187,6 @@ namespace Bodu.Security.Cryptography
             byte[] checksum = new byte[blockSize];
             byte[] block = new byte[blockSize];
             int m = (plaintextLength + blockSize - 1) / blockSize;
-            if (m == 0) m = 1;
 
             for (int blockIdx = 1; blockIdx <= m - 1; blockIdx++)
             {
@@ -197,31 +200,37 @@ namespace Bodu.Security.Cryptography
                 Xor(checksum, output.Slice(src, blockSize), checksum);
             }
 
-            int lastSrc = (m - 1) * blockSize;
-            int lastLen = plaintextLength - lastSrc;
-            Xor(offset, this.lArray[Ntz(m)], offset);
+            if (plaintextLength > 0)
+            {
+                int lastSrc = (m - 1) * blockSize;
+                int lastLen = plaintextLength - lastSrc;
 
-            if (lastLen == blockSize)
-            {
-                ciphertext.Slice(lastSrc, blockSize).CopyTo(block);
-                Xor(block, offset, block);
-                this.cipher.Decrypt(block, block);
-                Xor(block, offset, block);
-                block.CopyTo(output.Slice(lastSrc));
-                Xor(checksum, output.Slice(lastSrc, blockSize), checksum);
+                if (lastLen == blockSize)
+                {
+                    // Full last block: Offset_m = Offset_{m-1} XOR L[ntz(m)]
+                    Xor(offset, this.lArray[Ntz(m)], offset);
+                    ciphertext.Slice(lastSrc, blockSize).CopyTo(block);
+                    Xor(block, offset, block);
+                    this.cipher.Decrypt(block, block);
+                    Xor(block, offset, block);
+                    block.CopyTo(output.Slice(lastSrc));
+                    Xor(checksum, output.Slice(lastSrc, blockSize), checksum);
+                }
+                else
+                {
+                    // Partial last block: Offset_* = Offset_{m-1} XOR L_*
+                    Xor(offset, this.lStar, offset);
+                    byte[] pad = new byte[blockSize];
+                    this.cipher.Encrypt(offset, pad);
+                    for (int i = 0; i < lastLen; i++)
+                        output[lastSrc + i] = (byte)(ciphertext[lastSrc + i] ^ pad[i]);
+                    byte[] padBlock = new byte[blockSize];
+                    output.Slice(lastSrc, lastLen).CopyTo(padBlock);
+                    padBlock[lastLen] = 0x80;
+                    Xor(checksum, padBlock, checksum);
+                }
             }
-            else
-            {
-                byte[] pad = new byte[blockSize];
-                Xor(this.lStar, offset, pad);
-                this.cipher.Encrypt(pad, pad);
-                for (int i = 0; i < lastLen; i++)
-                    output[lastSrc + i] = (byte)(ciphertext[lastSrc + i] ^ pad[i]);
-                byte[] padBlock = new byte[blockSize];
-                output.Slice(lastSrc, lastLen).CopyTo(padBlock);
-                padBlock[lastLen] = 0x80;
-                Xor(checksum, padBlock, checksum);
-            }
+            // Empty ciphertext: offset stays at Offset_0, checksum stays at 0^128.
 
             // Recompute tag and verify.
             byte[] tagInput = new byte[blockSize];

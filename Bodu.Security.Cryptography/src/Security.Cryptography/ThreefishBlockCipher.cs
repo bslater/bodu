@@ -55,8 +55,8 @@
         /// </exception>
         protected ThreefishBlockCipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
         {
-            ThrowHelper.ThrowIfSpanLengthIsInsufficient(key, this.BlockSize);
-            ThrowHelper.ThrowIfSpanLengthIsInsufficient(tweak, 16);
+            ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(key, this.BlockSize);
+            ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(tweak, 16);
 
             // Key schedule initialization: 4 words + parity + duplicated key
             this.KeySchedule = new ulong[this.BlockWords * 2 + 1];

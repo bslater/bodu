@@ -11,11 +11,11 @@ namespace Bodu.Security.Cryptography
     /// against the <see cref="BlowfishTransform" /> implementation.
     /// </summary>
     [TestClass]
-    public sealed class BlowfishTransformTests
+    internal sealed class BlowfishTransformTests
         : BlockCipherTransformTests<BlowfishTransform>
     {
         /// <inheritdoc />
-        protected override BlowfishTransform CreateTransform()
+        protected override BlowfishTransform CreateAlgorithm()
         {
             var algorithm = new Blowfish();
             algorithm.GenerateKey();
