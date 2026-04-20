@@ -1,0 +1,10 @@
+{
+  "solution": {
+    "path": "Bodu.sln",
+    "projects": [
+      "Bodu.Core\\test\\Bodu.Core.Test.csproj",
+      "Bodu.Security.Cryptography\\test\\Bodu.Security.Cryptography.Test.csproj",
+      "Bodu.Globalization.Calendar\\test\\Bodu.Globalization.Calendar.Test.csproj"
+    ]
+  }
+}

@@ -29,14 +29,14 @@ jobs:
             8.0.x
 
       - name: Restore
-        run: dotnet restore Bodu.sln
+        run: dotnet restore Bodu.CI.slnf
 
       - name: Build
-        run: dotnet build Bodu.sln --configuration Release --no-restore
+        run: dotnet build Bodu.CI.slnf --configuration Release --no-restore
 
       - name: Test
         run: >
-          dotnet test Bodu.sln
+          dotnet test Bodu.CI.slnf
           --configuration Release
           --no-build
           --settings test.runsettings
