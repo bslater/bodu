@@ -27,8 +27,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>3</c></description></item>
         /// <item><description>Polynomial: <c>0x3</c></description></item>
         /// <item><description>Initial Value: <c>0x0</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x7</c></description></item>
         /// </list>
         /// </para>
@@ -38,8 +38,8 @@ namespace Bodu.Security.Cryptography
             size: 3,
             polynomial: 0x3UL,
             initialValue: 0x0UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x7UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-3/ROHC</c> cyclic redundancy check algorithm standard.</summary>
@@ -109,8 +109,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>4</c></description></item>
         /// <item><description>Polynomial: <c>0x3</c></description></item>
         /// <item><description>Initial Value: <c>0xF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0xF</c></description></item>
         /// </list>
         /// </para>
@@ -120,8 +120,8 @@ namespace Bodu.Security.Cryptography
             size: 4,
             polynomial: 0x3UL,
             initialValue: 0xFUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0xFUL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-5/EPC-C1G2</c> cyclic redundancy check algorithm standard.</summary>
@@ -133,8 +133,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>5</c></description></item>
         /// <item><description>Polynomial: <c>0x09</c></description></item>
         /// <item><description>Initial Value: <c>0x09</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x00</c></description></item>
         /// </list>
         /// </para>
@@ -146,8 +146,8 @@ namespace Bodu.Security.Cryptography
             size: 5,
             polynomial: 0x09UL,
             initialValue: 0x09UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x00UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-5/EPC</c> cyclic redundancy check algorithm standard.</summary>
@@ -225,8 +225,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>6</c></description></item>
         /// <item><description>Polynomial: <c>0x27</c></description></item>
         /// <item><description>Initial Value: <c>0x3F</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x00</c></description></item>
         /// </list>
         /// </para>
@@ -236,8 +236,8 @@ namespace Bodu.Security.Cryptography
             size: 6,
             polynomial: 0x27UL,
             initialValue: 0x3FUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x00UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-6/CDMA2000-B</c> cyclic redundancy check algorithm standard.</summary>
@@ -249,8 +249,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>6</c></description></item>
         /// <item><description>Polynomial: <c>0x07</c></description></item>
         /// <item><description>Initial Value: <c>0x3F</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x00</c></description></item>
         /// </list>
         /// </para>
@@ -260,8 +260,8 @@ namespace Bodu.Security.Cryptography
             size: 6,
             polynomial: 0x07UL,
             initialValue: 0x3FUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x00UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-6/DARC</c> cyclic redundancy check algorithm standard.</summary>
@@ -331,8 +331,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>6</c></description></item>
         /// <item><description>Polynomial: <c>0x2F</c></description></item>
         /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x3F</c></description></item>
         /// </list>
         /// </para>
@@ -342,8 +342,8 @@ namespace Bodu.Security.Cryptography
             size: 6,
             polynomial: 0x2FUL,
             initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x3FUL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-7/MMC</c> cyclic redundancy check algorithm standard.</summary>
@@ -355,8 +355,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>7</c></description></item>
         /// <item><description>Polynomial: <c>0x09</c></description></item>
         /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x00</c></description></item>
         /// </list>
         /// </para>
@@ -368,8 +368,8 @@ namespace Bodu.Security.Cryptography
             size: 7,
             polynomial: 0x09UL,
             initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x00UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-7</c> cyclic redundancy check algorithm standard.</summary>
@@ -413,8 +413,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>7</c></description></item>
         /// <item><description>Polynomial: <c>0x45</c></description></item>
         /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x00</c></description></item>
         /// </list>
         /// </para>
@@ -424,8 +424,8 @@ namespace Bodu.Security.Cryptography
             size: 7,
             polynomial: 0x45UL,
             initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x00UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/AUTOSAR</c> cyclic redundancy check algorithm standard.</summary>
@@ -437,8 +437,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>8</c></description></item>
         /// <item><description>Polynomial: <c>0x2F</c></description></item>
         /// <item><description>Initial Value: <c>0xFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0xFF</c></description></item>
         /// </list>
         /// </para>
@@ -448,8 +448,8 @@ namespace Bodu.Security.Cryptography
             size: 8,
             polynomial: 0x2FUL,
             initialValue: 0xFFUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0xFFUL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/CDMA2000</c> cyclic redundancy check algorithm standard.</summary>
@@ -461,8 +461,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>8</c></description></item>
         /// <item><description>Polynomial: <c>0x9B</c></description></item>
         /// <item><description>Initial Value: <c>0xFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x00</c></description></item>
         /// </list>
         /// </para>
@@ -472,8 +472,8 @@ namespace Bodu.Security.Cryptography
             size: 8,
             polynomial: 0x9BUL,
             initialValue: 0xFFUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x00UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/DARC</c> cyclic redundancy check algorithm standard.</summary>
@@ -509,8 +509,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>8</c></description></item>
         /// <item><description>Polynomial: <c>0xD5</c></description></item>
         /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x00</c></description></item>
         /// </list>
         /// </para>
@@ -520,8 +520,8 @@ namespace Bodu.Security.Cryptography
             size: 8,
             polynomial: 0xD5UL,
             initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x00UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/GSM-A</c> cyclic redundancy check algorithm standard.</summary>
@@ -533,8 +533,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>8</c></description></item>
         /// <item><description>Polynomial: <c>0x1D</c></description></item>
         /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x00</c></description></item>
         /// </list>
         /// </para>
@@ -544,8 +544,8 @@ namespace Bodu.Security.Cryptography
             size: 8,
             polynomial: 0x1DUL,
             initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x00UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/GSM-B</c> cyclic redundancy check algorithm standard.</summary>
@@ -557,8 +557,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>8</c></description></item>
         /// <item><description>Polynomial: <c>0x49</c></description></item>
         /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0xFF</c></description></item>
         /// </list>
         /// </para>
@@ -568,8 +568,8 @@ namespace Bodu.Security.Cryptography
             size: 8,
             polynomial: 0x49UL,
             initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0xFFUL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/HITAG</c> cyclic redundancy check algorithm standard.</summary>
@@ -581,8 +581,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>8</c></description></item>
         /// <item><description>Polynomial: <c>0x1D</c></description></item>
         /// <item><description>Initial Value: <c>0xFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x00</c></description></item>
         /// </list>
         /// </para>
@@ -592,8 +592,8 @@ namespace Bodu.Security.Cryptography
             size: 8,
             polynomial: 0x1DUL,
             initialValue: 0xFFUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x00UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/I-432-1</c> cyclic redundancy check algorithm standard.</summary>
@@ -605,8 +605,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>8</c></description></item>
         /// <item><description>Polynomial: <c>0x07</c></description></item>
         /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x55</c></description></item>
         /// </list>
         /// </para>
@@ -618,8 +618,8 @@ namespace Bodu.Security.Cryptography
             size: 8,
             polynomial: 0x07UL,
             initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x55UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/ITU</c> cyclic redundancy check algorithm standard.</summary>
@@ -639,8 +639,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>8</c></description></item>
         /// <item><description>Polynomial: <c>0x1D</c></description></item>
         /// <item><description>Initial Value: <c>0xFD</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x00</c></description></item>
         /// </list>
         /// </para>
@@ -650,8 +650,8 @@ namespace Bodu.Security.Cryptography
             size: 8,
             polynomial: 0x1DUL,
             initialValue: 0xFDUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x00UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/LTE</c> cyclic redundancy check algorithm standard.</summary>
@@ -663,8 +663,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>8</c></description></item>
         /// <item><description>Polynomial: <c>0x9B</c></description></item>
         /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x00</c></description></item>
         /// </list>
         /// </para>
@@ -674,8 +674,8 @@ namespace Bodu.Security.Cryptography
             size: 8,
             polynomial: 0x9BUL,
             initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x00UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/MAXIM-DOW</c> cyclic redundancy check algorithm standard.</summary>
@@ -732,8 +732,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>8</c></description></item>
         /// <item><description>Polynomial: <c>0x1D</c></description></item>
         /// <item><description>Initial Value: <c>0xC7</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x00</c></description></item>
         /// </list>
         /// </para>
@@ -743,8 +743,8 @@ namespace Bodu.Security.Cryptography
             size: 8,
             polynomial: 0x1DUL,
             initialValue: 0xC7UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x00UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/NRSC-5</c> cyclic redundancy check algorithm standard.</summary>
@@ -756,8 +756,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>8</c></description></item>
         /// <item><description>Polynomial: <c>0x31</c></description></item>
         /// <item><description>Initial Value: <c>0xFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x00</c></description></item>
         /// </list>
         /// </para>
@@ -767,8 +767,8 @@ namespace Bodu.Security.Cryptography
             size: 8,
             polynomial: 0x31UL,
             initialValue: 0xFFUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x00UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/OPENSAFETY</c> cyclic redundancy check algorithm standard.</summary>
@@ -780,8 +780,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>8</c></description></item>
         /// <item><description>Polynomial: <c>0x2F</c></description></item>
         /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x00</c></description></item>
         /// </list>
         /// </para>
@@ -791,8 +791,8 @@ namespace Bodu.Security.Cryptography
             size: 8,
             polynomial: 0x2FUL,
             initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x00UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/ROHC</c> cyclic redundancy check algorithm standard.</summary>
@@ -828,8 +828,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>8</c></description></item>
         /// <item><description>Polynomial: <c>0x1D</c></description></item>
         /// <item><description>Initial Value: <c>0xFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0xFF</c></description></item>
         /// </list>
         /// </para>
@@ -839,8 +839,8 @@ namespace Bodu.Security.Cryptography
             size: 8,
             polynomial: 0x1DUL,
             initialValue: 0xFFUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0xFFUL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/SMBUS</c> cyclic redundancy check algorithm standard.</summary>
@@ -852,8 +852,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>8</c></description></item>
         /// <item><description>Polynomial: <c>0x07</c></description></item>
         /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x00</c></description></item>
         /// </list>
         /// </para>
@@ -865,8 +865,8 @@ namespace Bodu.Security.Cryptography
             size: 8,
             polynomial: 0x07UL,
             initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x00UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8</c> cyclic redundancy check algorithm standard.</summary>
@@ -955,8 +955,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>10</c></description></item>
         /// <item><description>Polynomial: <c>0x233</c></description></item>
         /// <item><description>Initial Value: <c>0x000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x000</c></description></item>
         /// </list>
         /// </para>
@@ -969,8 +969,8 @@ namespace Bodu.Security.Cryptography
             size: 10,
             polynomial: 0x233UL,
             initialValue: 0x000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-10</c> cyclic redundancy check algorithm standard.</summary>
@@ -1000,8 +1000,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>10</c></description></item>
         /// <item><description>Polynomial: <c>0x3D9</c></description></item>
         /// <item><description>Initial Value: <c>0x3FF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x000</c></description></item>
         /// </list>
         /// </para>
@@ -1011,8 +1011,8 @@ namespace Bodu.Security.Cryptography
             size: 10,
             polynomial: 0x3D9UL,
             initialValue: 0x3FFUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-10/GSM</c> cyclic redundancy check algorithm standard.</summary>
@@ -1024,8 +1024,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>10</c></description></item>
         /// <item><description>Polynomial: <c>0x175</c></description></item>
         /// <item><description>Initial Value: <c>0x000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x3FF</c></description></item>
         /// </list>
         /// </para>
@@ -1035,8 +1035,8 @@ namespace Bodu.Security.Cryptography
             size: 10,
             polynomial: 0x175UL,
             initialValue: 0x000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x3FFUL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-11/FLEXRAY</c> cyclic redundancy check algorithm standard.</summary>
@@ -1048,8 +1048,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>11</c></description></item>
         /// <item><description>Polynomial: <c>0x385</c></description></item>
         /// <item><description>Initial Value: <c>0x01A</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x000</c></description></item>
         /// </list>
         /// </para>
@@ -1061,8 +1061,8 @@ namespace Bodu.Security.Cryptography
             size: 11,
             polynomial: 0x385UL,
             initialValue: 0x01AUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-11</c> cyclic redundancy check algorithm standard.</summary>
@@ -1082,8 +1082,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>11</c></description></item>
         /// <item><description>Polynomial: <c>0x307</c></description></item>
         /// <item><description>Initial Value: <c>0x000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x000</c></description></item>
         /// </list>
         /// </para>
@@ -1093,8 +1093,8 @@ namespace Bodu.Security.Cryptography
             size: 11,
             polynomial: 0x307UL,
             initialValue: 0x000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-12/CDMA2000</c> cyclic redundancy check algorithm standard.</summary>
@@ -1106,8 +1106,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>12</c></description></item>
         /// <item><description>Polynomial: <c>0xF13</c></description></item>
         /// <item><description>Initial Value: <c>0xFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x000</c></description></item>
         /// </list>
         /// </para>
@@ -1117,8 +1117,8 @@ namespace Bodu.Security.Cryptography
             size: 12,
             polynomial: 0xF13UL,
             initialValue: 0xFFFUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-12/DECT</c> cyclic redundancy check algorithm standard.</summary>
@@ -1130,8 +1130,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>12</c></description></item>
         /// <item><description>Polynomial: <c>0x80F</c></description></item>
         /// <item><description>Initial Value: <c>0x000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x000</c></description></item>
         /// </list>
         /// </para>
@@ -1143,8 +1143,8 @@ namespace Bodu.Security.Cryptography
             size: 12,
             polynomial: 0x80FUL,
             initialValue: 0x000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>X-CRC-12</c> cyclic redundancy check algorithm standard.</summary>
@@ -1164,8 +1164,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>12</c></description></item>
         /// <item><description>Polynomial: <c>0xD31</c></description></item>
         /// <item><description>Initial Value: <c>0x000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0xFFF</c></description></item>
         /// </list>
         /// </para>
@@ -1175,8 +1175,8 @@ namespace Bodu.Security.Cryptography
             size: 12,
             polynomial: 0xD31UL,
             initialValue: 0x000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0xFFFUL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-12/UMTS</c> cyclic redundancy check algorithm standard.</summary>
@@ -1188,7 +1188,7 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>12</c></description></item>
         /// <item><description>Polynomial: <c>0x80F</c></description></item>
         /// <item><description>Initial Value: <c>0x000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
         /// <item><description>Reflect Out: <c>true</c></description></item>
         /// <item><description>XOR Out: <c>0x000</c></description></item>
         /// </list>
@@ -1201,7 +1201,7 @@ namespace Bodu.Security.Cryptography
             size: 12,
             polynomial: 0x80FUL,
             initialValue: 0x000UL,
-            reflectIn: true,
+            reflectIn: false,
             reflectOut: true,
             xOrOut: 0x000UL);
 
@@ -1222,8 +1222,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>13</c></description></item>
         /// <item><description>Polynomial: <c>0x1CF5</c></description></item>
         /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x0000</c></description></item>
         /// </list>
         /// </para>
@@ -1233,8 +1233,8 @@ namespace Bodu.Security.Cryptography
             size: 13,
             polynomial: 0x1CF5UL,
             initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x0000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-14/DARC</c> cyclic redundancy check algorithm standard.</summary>
@@ -1270,8 +1270,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>14</c></description></item>
         /// <item><description>Polynomial: <c>0x202D</c></description></item>
         /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x3FFF</c></description></item>
         /// </list>
         /// </para>
@@ -1281,8 +1281,8 @@ namespace Bodu.Security.Cryptography
             size: 14,
             polynomial: 0x202DUL,
             initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x3FFFUL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-15/CAN</c> cyclic redundancy check algorithm standard.</summary>
@@ -1294,8 +1294,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>15</c></description></item>
         /// <item><description>Polynomial: <c>0x4599</c></description></item>
         /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x0000</c></description></item>
         /// </list>
         /// </para>
@@ -1307,8 +1307,8 @@ namespace Bodu.Security.Cryptography
             size: 15,
             polynomial: 0x4599UL,
             initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x0000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-15</c> cyclic redundancy check algorithm standard.</summary>
@@ -1328,8 +1328,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>15</c></description></item>
         /// <item><description>Polynomial: <c>0x6815</c></description></item>
         /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x0001</c></description></item>
         /// </list>
         /// </para>
@@ -1339,8 +1339,8 @@ namespace Bodu.Security.Cryptography
             size: 15,
             polynomial: 0x6815UL,
             initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x0001UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/ARC</c> cyclic redundancy check algorithm standard.</summary>
@@ -1425,8 +1425,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>16</c></description></item>
         /// <item><description>Polynomial: <c>0xC867</c></description></item>
         /// <item><description>Initial Value: <c>0xFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x0000</c></description></item>
         /// </list>
         /// </para>
@@ -1436,8 +1436,8 @@ namespace Bodu.Security.Cryptography
             size: 16,
             polynomial: 0xC867UL,
             initialValue: 0xFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x0000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/CMS</c> cyclic redundancy check algorithm standard.</summary>
@@ -1449,8 +1449,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>16</c></description></item>
         /// <item><description>Polynomial: <c>0x8005</c></description></item>
         /// <item><description>Initial Value: <c>0xFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x0000</c></description></item>
         /// </list>
         /// </para>
@@ -1460,8 +1460,8 @@ namespace Bodu.Security.Cryptography
             size: 16,
             polynomial: 0x8005UL,
             initialValue: 0xFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x0000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/DDS-110</c> cyclic redundancy check algorithm standard.</summary>
@@ -1473,8 +1473,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>16</c></description></item>
         /// <item><description>Polynomial: <c>0x8005</c></description></item>
         /// <item><description>Initial Value: <c>0x800D</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x0000</c></description></item>
         /// </list>
         /// </para>
@@ -1484,8 +1484,8 @@ namespace Bodu.Security.Cryptography
             size: 16,
             polynomial: 0x8005UL,
             initialValue: 0x800DUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x0000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/DECT-R</c> cyclic redundancy check algorithm standard.</summary>
@@ -1497,8 +1497,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>16</c></description></item>
         /// <item><description>Polynomial: <c>0x0589</c></description></item>
         /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x0001</c></description></item>
         /// </list>
         /// </para>
@@ -1510,8 +1510,8 @@ namespace Bodu.Security.Cryptography
             size: 16,
             polynomial: 0x0589UL,
             initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x0001UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>R-CRC-16</c> cyclic redundancy check algorithm standard.</summary>
@@ -1531,8 +1531,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>16</c></description></item>
         /// <item><description>Polynomial: <c>0x0589</c></description></item>
         /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x0000</c></description></item>
         /// </list>
         /// </para>
@@ -1544,8 +1544,8 @@ namespace Bodu.Security.Cryptography
             size: 16,
             polynomial: 0x0589UL,
             initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x0000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>X-CRC-16</c> cyclic redundancy check algorithm standard.</summary>
@@ -1589,8 +1589,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>16</c></description></item>
         /// <item><description>Polynomial: <c>0x3D65</c></description></item>
         /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0xFFFF</c></description></item>
         /// </list>
         /// </para>
@@ -1600,8 +1600,8 @@ namespace Bodu.Security.Cryptography
             size: 16,
             polynomial: 0x3D65UL,
             initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0xFFFFUL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/GENIBUS</c> cyclic redundancy check algorithm standard.</summary>
@@ -1613,8 +1613,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>16</c></description></item>
         /// <item><description>Polynomial: <c>0x1021</c></description></item>
         /// <item><description>Initial Value: <c>0xFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0xFFFF</c></description></item>
         /// </list>
         /// </para>
@@ -1629,8 +1629,8 @@ namespace Bodu.Security.Cryptography
             size: 16,
             polynomial: 0x1021UL,
             initialValue: 0xFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0xFFFFUL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/DARC</c> cyclic redundancy check algorithm standard.</summary>
@@ -1686,8 +1686,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>16</c></description></item>
         /// <item><description>Polynomial: <c>0x1021</c></description></item>
         /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0xFFFF</c></description></item>
         /// </list>
         /// </para>
@@ -1697,8 +1697,8 @@ namespace Bodu.Security.Cryptography
             size: 16,
             polynomial: 0x1021UL,
             initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0xFFFFUL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/IBM-3740</c> cyclic redundancy check algorithm standard.</summary>
@@ -1710,8 +1710,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>16</c></description></item>
         /// <item><description>Polynomial: <c>0x1021</c></description></item>
         /// <item><description>Initial Value: <c>0xFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x0000</c></description></item>
         /// </list>
         /// </para>
@@ -1724,8 +1724,8 @@ namespace Bodu.Security.Cryptography
             size: 16,
             polynomial: 0x1021UL,
             initialValue: 0xFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x0000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/AUTOSAR</c> cyclic redundancy check algorithm standard.</summary>
@@ -1988,8 +1988,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>16</c></description></item>
         /// <item><description>Polynomial: <c>0x6F63</c></description></item>
         /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x0000</c></description></item>
         /// </list>
         /// </para>
@@ -1999,8 +1999,8 @@ namespace Bodu.Security.Cryptography
             size: 16,
             polynomial: 0x6F63UL,
             initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x0000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/M17</c> cyclic redundancy check algorithm standard.</summary>
@@ -2012,8 +2012,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>16</c></description></item>
         /// <item><description>Polynomial: <c>0x5935</c></description></item>
         /// <item><description>Initial Value: <c>0xFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x0000</c></description></item>
         /// </list>
         /// </para>
@@ -2023,8 +2023,8 @@ namespace Bodu.Security.Cryptography
             size: 16,
             polynomial: 0x5935UL,
             initialValue: 0xFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x0000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/MAXIM-DOW</c> cyclic redundancy check algorithm standard.</summary>
@@ -2152,8 +2152,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>16</c></description></item>
         /// <item><description>Polynomial: <c>0x5935</c></description></item>
         /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x0000</c></description></item>
         /// </list>
         /// </para>
@@ -2163,8 +2163,8 @@ namespace Bodu.Security.Cryptography
             size: 16,
             polynomial: 0x5935UL,
             initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x0000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/OPENSAFETY-B</c> cyclic redundancy check algorithm standard.</summary>
@@ -2176,8 +2176,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>16</c></description></item>
         /// <item><description>Polynomial: <c>0x755B</c></description></item>
         /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x0000</c></description></item>
         /// </list>
         /// </para>
@@ -2187,8 +2187,8 @@ namespace Bodu.Security.Cryptography
             size: 16,
             polynomial: 0x755BUL,
             initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x0000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/PROFIBUS</c> cyclic redundancy check algorithm standard.</summary>
@@ -2200,8 +2200,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>16</c></description></item>
         /// <item><description>Polynomial: <c>0x1DCF</c></description></item>
         /// <item><description>Initial Value: <c>0xFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0xFFFF</c></description></item>
         /// </list>
         /// </para>
@@ -2213,8 +2213,8 @@ namespace Bodu.Security.Cryptography
             size: 16,
             polynomial: 0x1DCFUL,
             initialValue: 0xFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0xFFFFUL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/IEC-61158-2</c> cyclic redundancy check algorithm standard.</summary>
@@ -2258,8 +2258,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>16</c></description></item>
         /// <item><description>Polynomial: <c>0x1021</c></description></item>
         /// <item><description>Initial Value: <c>0x1D0F</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x0000</c></description></item>
         /// </list>
         /// </para>
@@ -2271,8 +2271,8 @@ namespace Bodu.Security.Cryptography
             size: 16,
             polynomial: 0x1021UL,
             initialValue: 0x1D0FUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x0000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/AUG-CCITT</c> cyclic redundancy check algorithm standard.</summary>
@@ -2292,8 +2292,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>16</c></description></item>
         /// <item><description>Polynomial: <c>0x8BB7</c></description></item>
         /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x0000</c></description></item>
         /// </list>
         /// </para>
@@ -2303,8 +2303,8 @@ namespace Bodu.Security.Cryptography
             size: 16,
             polynomial: 0x8BB7UL,
             initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x0000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/TELEDISK</c> cyclic redundancy check algorithm standard.</summary>
@@ -2316,8 +2316,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>16</c></description></item>
         /// <item><description>Polynomial: <c>0xA097</c></description></item>
         /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x0000</c></description></item>
         /// </list>
         /// </para>
@@ -2327,8 +2327,8 @@ namespace Bodu.Security.Cryptography
             size: 16,
             polynomial: 0xA097UL,
             initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x0000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/TMS37157</c> cyclic redundancy check algorithm standard.</summary>
@@ -2364,8 +2364,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>16</c></description></item>
         /// <item><description>Polynomial: <c>0x8005</c></description></item>
         /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x0000</c></description></item>
         /// </list>
         /// </para>
@@ -2378,8 +2378,8 @@ namespace Bodu.Security.Cryptography
             size: 16,
             polynomial: 0x8005UL,
             initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x0000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/BUYPASS</c> cyclic redundancy check algorithm standard.</summary>
@@ -2433,8 +2433,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>16</c></description></item>
         /// <item><description>Polynomial: <c>0x1021</c></description></item>
         /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x0000</c></description></item>
         /// </list>
         /// </para>
@@ -2450,8 +2450,8 @@ namespace Bodu.Security.Cryptography
             size: 16,
             polynomial: 0x1021UL,
             initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x0000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/ACORN</c> cyclic redundancy check algorithm standard.</summary>
@@ -2523,8 +2523,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>17</c></description></item>
         /// <item><description>Polynomial: <c>0x1685B</c></description></item>
         /// <item><description>Initial Value: <c>0x00000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x00000</c></description></item>
         /// </list>
         /// </para>
@@ -2534,8 +2534,8 @@ namespace Bodu.Security.Cryptography
             size: 17,
             polynomial: 0x1685BUL,
             initialValue: 0x00000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x00000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-21/CAN-FD</c> cyclic redundancy check algorithm standard.</summary>
@@ -2547,8 +2547,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>21</c></description></item>
         /// <item><description>Polynomial: <c>0x102899</c></description></item>
         /// <item><description>Initial Value: <c>0x000000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x000000</c></description></item>
         /// </list>
         /// </para>
@@ -2558,8 +2558,8 @@ namespace Bodu.Security.Cryptography
             size: 21,
             polynomial: 0x102899UL,
             initialValue: 0x000000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x000000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-24/BLE</c> cyclic redundancy check algorithm standard.</summary>
@@ -2595,8 +2595,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>24</c></description></item>
         /// <item><description>Polynomial: <c>0x5D6DCB</c></description></item>
         /// <item><description>Initial Value: <c>0xFEDCBA</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x000000</c></description></item>
         /// </list>
         /// </para>
@@ -2606,8 +2606,8 @@ namespace Bodu.Security.Cryptography
             size: 24,
             polynomial: 0x5D6DCBUL,
             initialValue: 0xFEDCBAUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x000000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-24/FLEXRAY-B</c> cyclic redundancy check algorithm standard.</summary>
@@ -2619,8 +2619,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>24</c></description></item>
         /// <item><description>Polynomial: <c>0x5D6DCB</c></description></item>
         /// <item><description>Initial Value: <c>0xABCDEF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x000000</c></description></item>
         /// </list>
         /// </para>
@@ -2630,8 +2630,8 @@ namespace Bodu.Security.Cryptography
             size: 24,
             polynomial: 0x5D6DCBUL,
             initialValue: 0xABCDEFUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x000000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-24/INTERLAKEN</c> cyclic redundancy check algorithm standard.</summary>
@@ -2643,8 +2643,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>24</c></description></item>
         /// <item><description>Polynomial: <c>0x328B63</c></description></item>
         /// <item><description>Initial Value: <c>0xFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0xFFFFFF</c></description></item>
         /// </list>
         /// </para>
@@ -2654,8 +2654,8 @@ namespace Bodu.Security.Cryptography
             size: 24,
             polynomial: 0x328B63UL,
             initialValue: 0xFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0xFFFFFFUL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-24/LTE-A</c> cyclic redundancy check algorithm standard.</summary>
@@ -2667,8 +2667,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>24</c></description></item>
         /// <item><description>Polynomial: <c>0x864CFB</c></description></item>
         /// <item><description>Initial Value: <c>0x000000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x000000</c></description></item>
         /// </list>
         /// </para>
@@ -2678,8 +2678,8 @@ namespace Bodu.Security.Cryptography
             size: 24,
             polynomial: 0x864CFBUL,
             initialValue: 0x000000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x000000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-24/LTE-B</c> cyclic redundancy check algorithm standard.</summary>
@@ -2691,8 +2691,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>24</c></description></item>
         /// <item><description>Polynomial: <c>0x800063</c></description></item>
         /// <item><description>Initial Value: <c>0x000000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x000000</c></description></item>
         /// </list>
         /// </para>
@@ -2702,8 +2702,8 @@ namespace Bodu.Security.Cryptography
             size: 24,
             polynomial: 0x800063UL,
             initialValue: 0x000000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x000000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-24/OPENPGP</c> cyclic redundancy check algorithm standard.</summary>
@@ -2715,8 +2715,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>24</c></description></item>
         /// <item><description>Polynomial: <c>0x864CFB</c></description></item>
         /// <item><description>Initial Value: <c>0xB704CE</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x000000</c></description></item>
         /// </list>
         /// </para>
@@ -2728,8 +2728,8 @@ namespace Bodu.Security.Cryptography
             size: 24,
             polynomial: 0x864CFBUL,
             initialValue: 0xB704CEUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x000000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-24</c> cyclic redundancy check algorithm standard.</summary>
@@ -2749,8 +2749,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>24</c></description></item>
         /// <item><description>Polynomial: <c>0x800063</c></description></item>
         /// <item><description>Initial Value: <c>0xFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0xFFFFFF</c></description></item>
         /// </list>
         /// </para>
@@ -2760,8 +2760,8 @@ namespace Bodu.Security.Cryptography
             size: 24,
             polynomial: 0x800063UL,
             initialValue: 0xFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0xFFFFFFUL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-30/CDMA</c> cyclic redundancy check algorithm standard.</summary>
@@ -2773,8 +2773,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>30</c></description></item>
         /// <item><description>Polynomial: <c>0x2030B9C7</c></description></item>
         /// <item><description>Initial Value: <c>0x3FFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x3FFFFFFF</c></description></item>
         /// </list>
         /// </para>
@@ -2784,8 +2784,8 @@ namespace Bodu.Security.Cryptography
             size: 30,
             polynomial: 0x2030B9C7UL,
             initialValue: 0x3FFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x3FFFFFFFUL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-31/PHILIPS</c> cyclic redundancy check algorithm standard.</summary>
@@ -2797,8 +2797,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>31</c></description></item>
         /// <item><description>Polynomial: <c>0x04C11DB7</c></description></item>
         /// <item><description>Initial Value: <c>0x7FFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x7FFFFFFF</c></description></item>
         /// </list>
         /// </para>
@@ -2808,8 +2808,8 @@ namespace Bodu.Security.Cryptography
             size: 31,
             polynomial: 0x04C11DB7UL,
             initialValue: 0x7FFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x7FFFFFFFUL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/AIXM</c> cyclic redundancy check algorithm standard.</summary>
@@ -2821,8 +2821,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>32</c></description></item>
         /// <item><description>Polynomial: <c>0x814141AB</c></description></item>
         /// <item><description>Initial Value: <c>0x00000000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x00000000</c></description></item>
         /// </list>
         /// </para>
@@ -2834,8 +2834,8 @@ namespace Bodu.Security.Cryptography
             size: 32,
             polynomial: 0x814141ABUL,
             initialValue: 0x00000000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x00000000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32Q</c> cyclic redundancy check algorithm standard.</summary>
@@ -2913,8 +2913,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>32</c></description></item>
         /// <item><description>Polynomial: <c>0x04C11DB7</c></description></item>
         /// <item><description>Initial Value: <c>0xFFFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0xFFFFFFFF</c></description></item>
         /// </list>
         /// </para>
@@ -2928,8 +2928,8 @@ namespace Bodu.Security.Cryptography
             size: 32,
             polynomial: 0x04C11DB7UL,
             initialValue: 0xFFFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0xFFFFFFFFUL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/AAL5</c> cyclic redundancy check algorithm standard.</summary>
@@ -2995,8 +2995,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>32</c></description></item>
         /// <item><description>Polynomial: <c>0x04C11DB7</c></description></item>
         /// <item><description>Initial Value: <c>0x00000000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0xFFFFFFFF</c></description></item>
         /// </list>
         /// </para>
@@ -3009,8 +3009,8 @@ namespace Bodu.Security.Cryptography
             size: 32,
             polynomial: 0x04C11DB7UL,
             initialValue: 0x00000000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0xFFFFFFFFUL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CKSUM</c> cyclic redundancy check algorithm standard.</summary>
@@ -3248,8 +3248,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>32</c></description></item>
         /// <item><description>Polynomial: <c>0x04C11DB7</c></description></item>
         /// <item><description>Initial Value: <c>0xFFFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x00000000</c></description></item>
         /// </list>
         /// </para>
@@ -3259,8 +3259,8 @@ namespace Bodu.Security.Cryptography
             size: 32,
             polynomial: 0x04C11DB7UL,
             initialValue: 0xFFFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x00000000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/XFER</c> cyclic redundancy check algorithm standard.</summary>
@@ -3272,8 +3272,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>32</c></description></item>
         /// <item><description>Polynomial: <c>0x000000AF</c></description></item>
         /// <item><description>Initial Value: <c>0x00000000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x00000000</c></description></item>
         /// </list>
         /// </para>
@@ -3285,8 +3285,8 @@ namespace Bodu.Security.Cryptography
             size: 32,
             polynomial: 0x000000AFUL,
             initialValue: 0x00000000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x00000000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>XFER</c> cyclic redundancy check algorithm standard.</summary>
@@ -3306,8 +3306,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>40</c></description></item>
         /// <item><description>Polynomial: <c>0x0004820009</c></description></item>
         /// <item><description>Initial Value: <c>0x0000000000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0xFFFFFFFFFF</c></description></item>
         /// </list>
         /// </para>
@@ -3317,8 +3317,8 @@ namespace Bodu.Security.Cryptography
             size: 40,
             polynomial: 0x0004820009UL,
             initialValue: 0x0000000000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0xFFFFFFFFFFUL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-64/ECMA-182</c> cyclic redundancy check algorithm standard.</summary>
@@ -3330,8 +3330,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>64</c></description></item>
         /// <item><description>Polynomial: <c>0x42F0E1EBA9EA3693</c></description></item>
         /// <item><description>Initial Value: <c>0x0000000000000000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0x0000000000000000</c></description></item>
         /// </list>
         /// </para>
@@ -3343,8 +3343,8 @@ namespace Bodu.Security.Cryptography
             size: 64,
             polynomial: 0x42F0E1EBA9EA3693UL,
             initialValue: 0x0000000000000000UL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0x0000000000000000UL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-64</c> cyclic redundancy check algorithm standard.</summary>
@@ -3484,8 +3484,8 @@ namespace Bodu.Security.Cryptography
         /// <item><description>Width: <c>64</c></description></item>
         /// <item><description>Polynomial: <c>0x42F0E1EBA9EA3693</c></description></item>
         /// <item><description>Initial Value: <c>0xFFFFFFFFFFFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>Reflect In: <c>false</c></description></item>
+        /// <item><description>Reflect Out: <c>false</c></description></item>
         /// <item><description>XOR Out: <c>0xFFFFFFFFFFFFFFFF</c></description></item>
         /// </list>
         /// </para>
@@ -3495,8 +3495,8 @@ namespace Bodu.Security.Cryptography
             size: 64,
             polynomial: 0x42F0E1EBA9EA3693UL,
             initialValue: 0xFFFFFFFFFFFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
+            reflectIn: false,
+            reflectOut: false,
             xOrOut: 0xFFFFFFFFFFFFFFFFUL);
 
         /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-64/XZ</c> cyclic redundancy check algorithm standard.</summary>
