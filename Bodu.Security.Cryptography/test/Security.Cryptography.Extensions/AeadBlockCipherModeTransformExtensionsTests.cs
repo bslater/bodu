@@ -6,6 +6,7 @@
 
 using System;
 using System.Security.Cryptography;
+using Bodu.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Security.Cryptography.Extensions
@@ -40,11 +41,11 @@ namespace Bodu.Security.Cryptography.Extensions
 
             byte[] cipherWithTag;
             using (var cipher = new AesBlockCipher(key))
-                cipherWithTag = new GcmModeTransform(cipher, iv).Encrypt(Plaintext, AssociatedData);
+                cipherWithTag = new GcmModeTransform(cipher, iv).Encrypt(Plaintext, AssociatedData.AsSpan().AsReadOnly());
 
             byte[] recovered;
             using (var cipher = new AesBlockCipher(key))
-                recovered = new GcmModeTransform(cipher, iv).Decrypt(cipherWithTag, AssociatedData);
+                recovered = new GcmModeTransform(cipher, iv).Decrypt(cipherWithTag, AssociatedData.AsSpan().AsReadOnly());
 
             CollectionAssert.AreEqual(Plaintext, recovered);
         }
@@ -82,11 +83,11 @@ namespace Bodu.Security.Cryptography.Extensions
 
             byte[] cipherWithTag;
             using (var cipher = new AesBlockCipher(key))
-                cipherWithTag = new CcmModeTransform(cipher, iv).Encrypt(Plaintext, AssociatedData);
+                cipherWithTag = new CcmModeTransform(cipher, iv).Encrypt(Plaintext, AssociatedData.AsSpan().AsReadOnly());
 
             byte[] recovered;
             using (var cipher = new AesBlockCipher(key))
-                recovered = new CcmModeTransform(cipher, iv).Decrypt(cipherWithTag, AssociatedData);
+                recovered = new CcmModeTransform(cipher, iv).Decrypt(cipherWithTag, AssociatedData.AsSpan().AsReadOnly());
 
             CollectionAssert.AreEqual(Plaintext, recovered);
         }
@@ -103,11 +104,11 @@ namespace Bodu.Security.Cryptography.Extensions
 
             byte[] cipherWithTag;
             using (var cipher = new AesBlockCipher(key))
-                cipherWithTag = new OcbModeTransform(cipher, iv).Encrypt(Plaintext, AssociatedData);
+                cipherWithTag = new OcbModeTransform(cipher, iv).Encrypt(Plaintext, AssociatedData.AsSpan().AsReadOnly());
 
             byte[] recovered;
             using (var cipher = new AesBlockCipher(key))
-                recovered = new OcbModeTransform(cipher, iv).Decrypt(cipherWithTag, AssociatedData);
+                recovered = new OcbModeTransform(cipher, iv).Decrypt(cipherWithTag, AssociatedData.AsSpan().AsReadOnly());
 
             CollectionAssert.AreEqual(Plaintext, recovered);
         }
@@ -127,12 +128,12 @@ namespace Bodu.Security.Cryptography.Extensions
             byte[] cipherWithTag;
             using (var s2v = new AesBlockCipher(s2vKey))
             using (var ctr = new AesBlockCipher(ctrKey))
-                cipherWithTag = new SivModeTransform(s2v, ctr, iv).Encrypt(Plaintext, AssociatedData);
+                cipherWithTag = new SivModeTransform(s2v, ctr, iv).Encrypt(Plaintext, AssociatedData.AsSpan().AsReadOnly());
 
             byte[] recovered;
             using (var s2v = new AesBlockCipher(s2vKey))
             using (var ctr = new AesBlockCipher(ctrKey))
-                recovered = new SivModeTransform(s2v, ctr, iv).Decrypt(cipherWithTag, AssociatedData);
+                recovered = new SivModeTransform(s2v, ctr, iv).Decrypt(cipherWithTag, AssociatedData.AsSpan().AsReadOnly());
 
             CollectionAssert.AreEqual(Plaintext, recovered);
         }
@@ -150,12 +151,12 @@ namespace Bodu.Security.Cryptography.Extensions
             byte[] cipherWithTag;
             using (var master = new AesBlockCipher(masterKey))
                 cipherWithTag = new GcmSivModeTransform(master, static k => new AesBlockCipher(k), iv)
-                    .Encrypt(Plaintext, AssociatedData);
+                    .Encrypt(Plaintext, AssociatedData.AsSpan().AsReadOnly());
 
             byte[] recovered;
             using (var master = new AesBlockCipher(masterKey))
                 recovered = new GcmSivModeTransform(master, static k => new AesBlockCipher(k), iv)
-                    .Decrypt(cipherWithTag, AssociatedData);
+                    .Decrypt(cipherWithTag, AssociatedData.AsSpan().AsReadOnly());
 
             CollectionAssert.AreEqual(Plaintext, recovered);
         }
@@ -173,15 +174,17 @@ namespace Bodu.Security.Cryptography.Extensions
 
             byte[] cipherWithTag;
             using (var cipher = new AesBlockCipher(key))
-                cipherWithTag = new GcmModeTransform(cipher, iv).Encrypt(Plaintext, AssociatedData);
+                cipherWithTag = new GcmModeTransform(cipher, iv).Encrypt(Plaintext, AssociatedData.AsSpan().AsReadOnly());
 
             // Flip the last bit of the tag.
             cipherWithTag[^1] ^= 0x01;
 
             using var cipher2 = new AesBlockCipher(key);
             var aead = new GcmModeTransform(cipher2, iv);
-            Assert.ThrowsException<CryptographicException>(() =>
-                aead.Decrypt(cipherWithTag, AssociatedData));
+            Assert.ThrowsExactly<CryptographicException>(() =>
+            {
+                aead.Decrypt(cipherWithTag, AssociatedData);
+            });
         }
 
         /// <summary>
@@ -196,14 +199,16 @@ namespace Bodu.Security.Cryptography.Extensions
 
             byte[] cipherWithTag;
             using (var cipher = new AesBlockCipher(key))
-                cipherWithTag = new GcmModeTransform(cipher, iv).Encrypt(Plaintext, AssociatedData);
+                cipherWithTag = new GcmModeTransform(cipher, iv).Encrypt(Plaintext, AssociatedData.AsSpan().AsReadOnly());
 
             byte[] otherAad = System.Text.Encoding.UTF8.GetBytes("different-context");
 
             using var cipher2 = new AesBlockCipher(key);
             var aead = new GcmModeTransform(cipher2, iv);
-            Assert.ThrowsException<CryptographicException>(() =>
-                aead.Decrypt(cipherWithTag, otherAad));
+            Assert.ThrowsExactly<CryptographicException>(() =>
+            {
+                aead.Decrypt(cipherWithTag, otherAad);
+            });
         }
 
         /// <summary>
@@ -213,8 +218,10 @@ namespace Bodu.Security.Cryptography.Extensions
         [TestMethod]
         public void Encrypt_WhenTransformIsNull_ShouldThrowArgumentNullException()
         {
-            Assert.ThrowsException<ArgumentNullException>(() =>
-                AeadBlockCipherModeTransformExtensions.Encrypt(null!, Plaintext, AssociatedData));
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                AeadBlockCipherModeTransformExtensions.Encrypt(null!, Plaintext, AssociatedData);
+            });
         }
 
         /// <summary>
@@ -224,8 +231,10 @@ namespace Bodu.Security.Cryptography.Extensions
         [TestMethod]
         public void Decrypt_WhenTransformIsNull_ShouldThrowArgumentNullException()
         {
-            Assert.ThrowsException<ArgumentNullException>(() =>
-                AeadBlockCipherModeTransformExtensions.Decrypt(null!, new byte[32], AssociatedData));
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                AeadBlockCipherModeTransformExtensions.Decrypt(null!, new byte[32], AssociatedData);
+            });
         }
 
         /// <summary>
@@ -241,8 +250,10 @@ namespace Bodu.Security.Cryptography.Extensions
             var aead = new GcmModeTransform(cipher, iv);
 
             byte[] tooShort = new byte[aead.TagSize - 1];
-            Assert.ThrowsException<ArgumentException>(() =>
-                aead.Decrypt(tooShort, AssociatedData));
+            Assert.ThrowsExactly<ArgumentException>(() =>
+            {
+                aead.Decrypt(tooShort, AssociatedData);
+            });
         }
     }
 }
