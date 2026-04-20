@@ -15,22 +15,45 @@ namespace Bodu.Security.Cryptography
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <img src="../images/diagrams/merkle-tree.svg" alt="Merkle tree construction — the input is sliced into blocks, each block is hashed to a leaf, leaves are grouped by fan-out F and reduced level-by-level until a single root hash remains." />
+    /// <img src="../images/diagrams/parallel-merkle-tree.svg" alt="Swim-lane diagram showing the Dispatcher thread reading input chunks, slicing them into blocks, hashing each block into a leaf, and submitting leaves into ch L₀; one worker task per tree level consumes from its own channel, groups F incoming nodes, hashes them, and submits the parent to the next level's channel. Adjacent lanes are shown active at the same timestep to emphasise parallelism." />
     /// </para>
     /// <para>
-    /// Input bytes are divided into fixed-size blocks. Each block is hashed independently to form a
-    /// leaf node at <em>Level 0</em> (the first row of circular nodes in the diagram above). A dedicated
-    /// async worker per tree level groups incoming nodes by <c>fanOut</c> (<b>F</b> in the diagram,
-    /// shown as 3), hashes each full group into a parent node, and writes it to the next level's
-    /// channel. Workers at adjacent levels run concurrently, so tree reduction <em>overlaps</em> with
-    /// continued leaf production — conceptually, each row of the diagram is a different worker
-    /// running at the same time as the rows above and below it, communicating through bounded channels.
+    /// The swim-lane diagram above traces a single <c>ComputeHashAsync</c> call across wall-clock time.
+    /// Each horizontal band is a <em>distinct .NET thread or async Task</em>, and each vertical column
+    /// (<c>t₁…t₄</c>) is a point in time:
+    /// <list type="number">
+    /// <item><description>
+    ///   <b>Dispatcher lane (producer).</b> The caller's thread inside <c>ComputeHashAsync</c> reads the
+    ///   input stream in 8×<c>blockSize</c> chunks, slices each chunk into <c>blockSize</c>-wide blocks,
+    ///   invokes <c>_algorithmFactory()</c> to compute one leaf hash per block, and writes each leaf into
+    ///   <b>ch L₀</b> — the purple arrows leaving the amber boxes at the top of the diagram.
+    /// </description></item>
+    /// <item><description>
+    ///   <b>Level-worker lanes (consumers).</b> One <see cref="Channel{T}" /> and one background
+    ///   <see cref="Task" /> are created lazily per tree level as the input grows. Each worker awaits on
+    ///   its channel, accumulates nodes until it has <c>fanOut</c> of them, concatenates and hashes that
+    ///   group, and enqueues the parent into the next level's channel — the blue and teal boxes, with
+    ///   purple channel arrows crossing the lane boundaries.
+    /// </description></item>
+    /// <item><description>
+    ///   <b>Parallelism.</b> The key insight is the <em>column</em> at <c>t₃</c>: the Dispatcher is still
+    ///   hashing leaves while the Level 0 worker is hashing its second pair <em>and</em> the Level 1 worker
+    ///   has already produced its first internal node. Three lanes are active simultaneously — indicated
+    ///   by the "three lanes active" brace beneath the time axis. Tree reduction therefore <em>overlaps</em>
+    ///   with continued leaf production rather than running after it.
+    /// </description></item>
+    /// <item><description>
+    ///   <b>Root extraction.</b> The bottom lane activates only at the end: the last surviving node on
+    ///   <c>ch L₂</c> is recognised as the root and returned to the caller.
+    /// </description></item>
+    /// </list>
     /// </para>
     /// <para>
-    /// A short tail block (the dashed <b>B₇</b> cell in the diagram) is zero-padded up to a full block
-    /// before hashing, so every leaf is the same width regardless of input alignment. A short final group
-    /// at any internal level — for example the single-child reduction of <b>L₇</b> into <b>N₃</b> —
-    /// is promoted with its surviving children only.
+    /// A short tail block is zero-padded to a full <c>blockSize</c> before hashing, so every leaf is the
+    /// same width regardless of input alignment — the Dispatcher's <c>L₆</c> event in the diagram above
+    /// is the tail case. A short final group at any internal level is promoted with its surviving children
+    /// only; the Level 1 <c>hash(M₁, N₃)</c> event at <c>t₄</c> is exactly this case (two children, one of
+    /// which was itself promoted from a short group).
     /// </para>
     /// <para>
     /// <b>Reuse:</b> the same instance may be used for multiple sequential hash computations.
@@ -58,9 +81,11 @@ namespace Bodu.Security.Cryptography
     /// </para>
     /// <para>
     /// <b>Shutdown contract:</b> channels are completed strictly bottom-up — level N's channel is
-    /// closed only after level N's worker has fully exited. This guarantees that every node a worker
-    /// promotes into level N+1 arrives before level N+1's channel is closed, eliminating the
-    /// lost-node race that would otherwise cause finalisation to deadlock.
+    /// closed only after level N's worker has fully exited. The dashed "EOF · close ch L₀" box at
+    /// <c>t₄</c> in the Dispatcher lane closes the lowest channel first; the Level 0 worker then
+    /// drains, emits its final parent, and closes <c>ch L₁</c>, and so on up the tree. This ordering
+    /// guarantees that every node a worker promotes into level N+1 arrives before level N+1's channel
+    /// is closed, eliminating the lost-node race that would otherwise cause finalisation to deadlock.
     /// </para>
     /// </remarks>
     public sealed class ParallelMerkleTreeHash : IDisposable
