@@ -37,6 +37,9 @@ namespace Bodu.Security.Cryptography
     /// message.
     /// </para>
     /// </remarks>
+    /// <seealso href="../guides/cryptography/aead-modes.html">Using AEAD modes (guide with GCM, CCM, OCB3, SIV, and GCM-SIV examples)</seealso>
+    /// <seealso cref="AesBlockCipher" />
+    /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />
     public interface IAeadBlockCipherModeTransform
     {
         /// <summary>Gets the size of the authentication tag produced by this mode, in bytes.</summary>

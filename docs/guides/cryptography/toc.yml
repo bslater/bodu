@@ -5,6 +5,8 @@
   href: encryption-basics.md
 - name: Cipher block modes
   href: cipher-modes.md
+- name: AEAD modes
+  href: aead-modes.md
 - name: Padding
   href: padding.md
 - name: Hashing and checksums

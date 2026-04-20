@@ -8,6 +8,8 @@
       href: cryptography/encryption-basics.md
     - name: Cipher block modes
       href: cryptography/cipher-modes.md
+    - name: AEAD modes
+      href: cryptography/aead-modes.md
     - name: Padding
       href: cryptography/padding.md
     - name: Hashing and checksums

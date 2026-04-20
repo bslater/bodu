@@ -42,6 +42,9 @@ namespace Bodu.Security.Cryptography
     /// counter J0; for standard GCM with 96-bit nonces, the caller should pad to blockSize.
     /// </para>
     /// </remarks>
+    /// <seealso href="../guides/cryptography/aead-modes.html#gcm--the-workhorse">GCM walk-through in the AEAD-modes guide</seealso>
+    /// <seealso cref="AesBlockCipher" />
+    /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />
     public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
     {
         private const int DefaultTagSize = 16;

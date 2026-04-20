@@ -38,6 +38,9 @@ namespace Bodu.Security.Cryptography
     /// AAD length is encoded as a 2-byte big-endian prefix (supports up to 65 279 bytes).
     /// </para>
     /// </remarks>
+    /// <seealso href="../guides/cryptography/aead-modes.html#ccm--a-two-pass-alternative">CCM walk-through in the AEAD-modes guide</seealso>
+    /// <seealso cref="AesBlockCipher" />
+    /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />
     public sealed class CcmModeTransform : IAeadBlockCipherModeTransform
     {
         private const int NonceLengthBytes = 12;
