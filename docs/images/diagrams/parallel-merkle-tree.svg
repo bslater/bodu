@@ -1,0 +1,315 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" role="img" aria-labelledby="pmerkle-title pmerkle-desc">
+  <title id="pmerkle-title">ParallelMerkleTreeHash — concurrent level-worker pipeline</title>
+  <desc id="pmerkle-desc">Swim-lane diagram showing the producer/dispatcher thread reading the input stream, slicing it into blocks, hashing leaves, and submitting them to level 0's channel; one dedicated worker task per tree level consumes from its own Channel&lt;byte[]&gt;, groups incoming nodes by fan-out F, hashes each full group, and submits the parent to the next level's channel. Adjacent lanes are active at the same wall-clock timestep, demonstrating parallelism across levels.</desc>
+
+  <defs>
+    <style>
+      .bg { fill: #0F172A; }
+      .panel { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .header { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .title { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .formula { fill: #94A3B8; font: italic 12px/1 "Cambria",Georgia,serif; }
+      .lane-label { fill: #F8FAFC; font: 700 13px/1 "Segoe UI",Arial,sans-serif; }
+      .lane-sub { fill: #94A3B8; font: 400 11px/1 "Segoe UI",Arial,sans-serif; }
+      .sub { fill: #CBD5E1; font: 400 11px/1 "Segoe UI",Arial,sans-serif; }
+      .sub-muted { fill: #94A3B8; font: 400 10.5px/1 "Segoe UI",Arial,sans-serif; }
+
+      .lane-alt { fill: #233044; }
+
+      .stream { fill: #64748B; stroke: #94A3B8; stroke-width: 1; }
+      .ev-dispatch { fill: #F59E0B; stroke: #FBBF24; stroke-width: 1; }
+      .ev-hash-l0  { fill: #3B82F6; stroke: #60A5FA; stroke-width: 1; }
+      .ev-hash-l1  { fill: #14B8A6; stroke: #2DD4BF; stroke-width: 1; }
+      .ev-hash-l2  { fill: #F43F5E; stroke: #FDA4AF; stroke-width: 1.2; }
+      .ev-close    { fill: #0F172A; stroke: #94A3B8; stroke-width: 1.4; stroke-dasharray: 4 3; }
+      .ev-idle     { fill: #0F172A; stroke: #475569; stroke-width: 1; stroke-dasharray: 2 3; }
+
+      .ev-text { fill: #0F172A; font: 700 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .ev-text-light { fill: #F8FAFC; font: 700 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .ev-sub  { fill: #0F172A; font: 400 10px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .ev-sub-light { fill: #F8FAFC; font: 400 10px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .ev-close-text { fill: #CBD5E1; font: 400 10.5px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .ev-idle-text { fill: #64748B; font: italic 10.5px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+
+      .ch { stroke: #A78BFA; stroke-width: 1.6; fill: none; }
+      .ch-label { fill: #A78BFA; font: 600 10.5px/1 "Consolas",Menlo,monospace; }
+
+      .tick { stroke: #475569; stroke-width: 1; }
+      .tick-label { fill: #94A3B8; font: 600 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+
+      .input-chunk { fill: #F59E0B; stroke: #FBBF24; stroke-width: 1; }
+      .input-label { fill: #0F172A; font: 700 10.5px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .root-badge { fill: #F43F5E; stroke: #FDA4AF; stroke-width: 1.5; }
+      .root-text { fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+
+      .brace { stroke: #94A3B8; stroke-width: 1.2; fill: none; }
+    </style>
+    <marker id="pmerkle-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#A78BFA"/>
+    </marker>
+    <marker id="pmerkle-arr-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#CBD5E1"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="900" height="560"/>
+
+  <g transform="translate(10 10)">
+    <rect class="panel" width="880" height="540" rx="8"/>
+    <rect class="header" width="880" height="32" rx="8"/>
+    <rect class="header" y="24" width="880" height="8"/>
+    <text class="title" x="16" y="21">ParallelMerkleTreeHash — concurrent level-worker pipeline</text>
+    <text class="formula" x="880" y="21" text-anchor="end" dx="-16">one Channel&lt;byte[]&gt; + one worker Task per tree level · adjacent lanes run in parallel</text>
+
+    <!-- ================================================================ -->
+    <!-- Input stream across the top (one chunk per timestep)              -->
+    <!-- ================================================================ -->
+    <g transform="translate(0 52)">
+      <text class="lane-label" x="18" y="10">Input stream</text>
+      <text class="lane-sub"   x="18" y="26">ReadAsync in 8× B chunks</text>
+
+      <!-- 4 chunk blocks aligned with timesteps at x = 210, 360, 510, 660 -->
+      <rect class="input-chunk" x="170" y="4" width="80" height="22" rx="3"/>
+      <text class="input-label" x="210" y="19">B₁ · B₂</text>
+
+      <rect class="input-chunk" x="320" y="4" width="80" height="22" rx="3"/>
+      <text class="input-label" x="360" y="19">B₃ · B₄</text>
+
+      <rect class="input-chunk" x="470" y="4" width="80" height="22" rx="3"/>
+      <text class="input-label" x="510" y="19">B₅ · B₆(tail)</text>
+
+      <rect class="input-chunk" x="620" y="4" width="80" height="22" rx="3"/>
+      <text class="input-label" x="660" y="19">EOF</text>
+
+      <!-- arrows down into the dispatcher lane -->
+      <line class="tick" x1="210" y1="28" x2="210" y2="46" stroke="#64748B" marker-end="url(#pmerkle-arr-grey)"/>
+      <line class="tick" x1="360" y1="28" x2="360" y2="46" stroke="#64748B" marker-end="url(#pmerkle-arr-grey)"/>
+      <line class="tick" x1="510" y1="28" x2="510" y2="46" stroke="#64748B" marker-end="url(#pmerkle-arr-grey)"/>
+      <line class="tick" x1="660" y1="28" x2="660" y2="46" stroke="#64748B" marker-end="url(#pmerkle-arr-grey)"/>
+    </g>
+
+    <!-- ================================================================ -->
+    <!-- Lane strips (alternating subtle tint) -->
+    <!-- Lane heights:                                                     -->
+    <!--   Dispatcher   y = 110..200  (height 90)                          -->
+    <!--   Level 0      y = 205..295  (height 90)                          -->
+    <!--   Level 1      y = 300..390  (height 90)                          -->
+    <!--   Level 2      y = 395..470  (height 75) — narrower, only active late -->
+    <!-- ================================================================ -->
+    <g>
+      <rect class="lane-alt" x="8" y="110" width="864" height="90"/>
+      <rect class="panel"    x="8" y="205" width="864" height="90"/>
+      <rect class="lane-alt" x="8" y="300" width="864" height="90"/>
+      <rect class="panel"    x="8" y="395" width="864" height="75"/>
+    </g>
+
+    <!-- Lane labels (left gutter) -->
+    <g>
+      <!-- Dispatcher -->
+      <g transform="translate(16 128)">
+        <rect x="0" y="0" width="148" height="62" rx="6" fill="#F59E0B" opacity="0.12"/>
+        <text class="lane-label" x="10" y="18">Dispatcher</text>
+        <text class="lane-sub"   x="10" y="34">producer thread</text>
+        <text class="lane-sub"   x="10" y="49">slice → hash leaf</text>
+        <text class="lane-sub"   x="10" y="60">→ ch L₀</text>
+      </g>
+      <!-- Level 0 worker -->
+      <g transform="translate(16 218)">
+        <rect x="0" y="0" width="148" height="64" rx="6" fill="#3B82F6" opacity="0.12"/>
+        <text class="lane-label" x="10" y="18">Level 0 worker</text>
+        <text class="lane-sub"   x="10" y="34">await ch L₀</text>
+        <text class="lane-sub"   x="10" y="49">group F=2, hash</text>
+        <text class="lane-sub"   x="10" y="62">→ ch L₁</text>
+      </g>
+      <!-- Level 1 worker -->
+      <g transform="translate(16 313)">
+        <rect x="0" y="0" width="148" height="64" rx="6" fill="#14B8A6" opacity="0.12"/>
+        <text class="lane-label" x="10" y="18">Level 1 worker</text>
+        <text class="lane-sub"   x="10" y="34">await ch L₁</text>
+        <text class="lane-sub"   x="10" y="49">group F=2, hash</text>
+        <text class="lane-sub"   x="10" y="62">→ ch L₂</text>
+      </g>
+      <!-- Level 2 (root) -->
+      <g transform="translate(16 405)">
+        <rect x="0" y="0" width="148" height="53" rx="6" fill="#F43F5E" opacity="0.12"/>
+        <text class="lane-label" x="10" y="18">Level 2 (root)</text>
+        <text class="lane-sub"   x="10" y="34">await ch L₂</text>
+        <text class="lane-sub"   x="10" y="49">last survivor = root</text>
+      </g>
+    </g>
+
+    <!-- ================================================================ -->
+    <!-- Timestep column markers (vertical guides) -->
+    <!-- Timestep centers: t1=210, t2=360, t3=510, t4=660                   -->
+    <!-- ================================================================ -->
+    <g>
+      <line class="tick" x1="210" y1="110" x2="210" y2="470"/>
+      <line class="tick" x1="360" y1="110" x2="360" y2="470"/>
+      <line class="tick" x1="510" y1="110" x2="510" y2="470"/>
+      <line class="tick" x1="660" y1="110" x2="660" y2="470"/>
+    </g>
+
+    <!-- ================================================================ -->
+    <!-- Lane 1 (Dispatcher) events                                         -->
+    <!-- y center = 155; box 120w × 40h → box y = 135..175                  -->
+    <!-- ================================================================ -->
+    <g>
+      <!-- t1 -->
+      <rect class="ev-dispatch" x="152" y="135" width="116" height="42" rx="6"/>
+      <text class="ev-text" x="210" y="152">hash L₁, L₂</text>
+      <text class="ev-sub"  x="210" y="168">→ ch L₀</text>
+      <!-- t2 -->
+      <rect class="ev-dispatch" x="302" y="135" width="116" height="42" rx="6"/>
+      <text class="ev-text" x="360" y="152">hash L₃, L₄</text>
+      <text class="ev-sub"  x="360" y="168">→ ch L₀</text>
+      <!-- t3 -->
+      <rect class="ev-dispatch" x="452" y="135" width="116" height="42" rx="6"/>
+      <text class="ev-text" x="510" y="152">hash L₅, L₆</text>
+      <text class="ev-sub"  x="510" y="168">(tail padded) → ch L₀</text>
+      <!-- t4: close ch L0 -->
+      <rect class="ev-close" x="602" y="135" width="116" height="42" rx="6"/>
+      <text class="ev-close-text" x="660" y="152">EOF</text>
+      <text class="ev-close-text" x="660" y="168">close ch L₀</text>
+    </g>
+
+    <!-- ================================================================ -->
+    <!-- Lane 2 (Level 0 worker) events                                     -->
+    <!-- y center = 250; box y = 230..272                                   -->
+    <!-- ================================================================ -->
+    <g>
+      <!-- t1: idle -->
+      <rect class="ev-idle" x="170" y="230" width="80" height="42" rx="6"/>
+      <text class="ev-idle-text" x="210" y="255">(awaiting)</text>
+      <!-- t2: hash (L1,L2) -->
+      <rect class="ev-hash-l0" x="302" y="230" width="116" height="42" rx="6"/>
+      <text class="ev-text-light" x="360" y="247">hash(L₁,L₂) = N₁</text>
+      <text class="ev-sub-light" x="360" y="263">→ ch L₁</text>
+      <!-- t3: hash (L3,L4) -->
+      <rect class="ev-hash-l0" x="452" y="230" width="116" height="42" rx="6"/>
+      <text class="ev-text-light" x="510" y="247">hash(L₃,L₄) = N₂</text>
+      <text class="ev-sub-light" x="510" y="263">→ ch L₁</text>
+      <!-- t4: hash(L5,L6) + close ch L1 -->
+      <rect class="ev-hash-l0" x="602" y="230" width="116" height="42" rx="6"/>
+      <text class="ev-text-light" x="660" y="247">hash(L₅,L₆) = N₃</text>
+      <text class="ev-sub-light" x="660" y="263">→ ch L₁ · close</text>
+    </g>
+
+    <!-- ================================================================ -->
+    <!-- Lane 3 (Level 1 worker) events                                     -->
+    <!-- y center = 345; box y = 325..367                                   -->
+    <!-- ================================================================ -->
+    <g>
+      <!-- t1 idle -->
+      <rect class="ev-idle" x="170" y="325" width="80" height="42" rx="6"/>
+      <text class="ev-idle-text" x="210" y="350">(awaiting)</text>
+      <!-- t2 idle (needs 2 nodes at L1) -->
+      <rect class="ev-idle" x="320" y="325" width="80" height="42" rx="6"/>
+      <text class="ev-idle-text" x="360" y="350">(awaiting)</text>
+      <!-- t3: pair(N1,N2)=M1 -->
+      <rect class="ev-hash-l1" x="452" y="325" width="116" height="42" rx="6"/>
+      <text class="ev-text-light" x="510" y="342">hash(N₁,N₂) = M₁</text>
+      <text class="ev-sub-light" x="510" y="358">→ ch L₂</text>
+      <!-- t4: hash(M1,N3)=Root (short group) + close ch L2 -->
+      <rect class="ev-hash-l1" x="602" y="325" width="116" height="42" rx="6"/>
+      <text class="ev-text-light" x="660" y="342">hash(M₁,N₃) = Root</text>
+      <text class="ev-sub-light" x="660" y="358">→ ch L₂ · close</text>
+    </g>
+
+    <!-- ================================================================ -->
+    <!-- Lane 4 (Level 2 worker = root extraction)                          -->
+    <!-- y center = 430; box y = 412..448                                   -->
+    <!-- ================================================================ -->
+    <g>
+      <!-- idle across t1..t3 -->
+      <rect class="ev-idle" x="170" y="414" width="520" height="36" rx="6"/>
+      <text class="ev-idle-text" x="430" y="437">(awaiting last surviving node on ch L₂)</text>
+      <!-- t4: return Root -->
+      <rect class="ev-hash-l2" x="702" y="412" width="120" height="40" rx="6"/>
+      <text class="ev-text-light" x="762" y="430">Root ready</text>
+      <text class="ev-sub-light" x="762" y="444">return to caller</text>
+    </g>
+
+    <!-- ================================================================ -->
+    <!-- Channel handoff arrows (diagonal down-right) with labels          -->
+    <!-- From lane-N t_k bottom-right → lane-N+1 t_{k+1} top-left          -->
+    <!-- Lane 1 → Lane 2:                                                   -->
+    <!--   (210,177) → (302..., 230) for t1 → t2                            -->
+    <!--   (360,177) → (452, 230) for t2 → t3                               -->
+    <!--   (510,177) → (602, 230) for t3 → t4                               -->
+    <!-- Lane 2 → Lane 3:                                                   -->
+    <!--   (360,272) → (452, 325) for t2 → t3 (L1 needs 2; first arrives)   -->
+    <!--   (510,272) → (452, 325) for t3 → t3 (pair complete at t3)        -->
+    <!--   actually draw: arrows from both L0 events at t2,t3 into L1 t3    -->
+    <!--   and from L0 t4 into L1 t4                                        -->
+    <!-- Lane 3 → Lane 4:                                                   -->
+    <!--   (510,367) → (762,412) for t3 → t4 (root finalisation)            -->
+    <!-- ================================================================ -->
+    <g>
+      <!-- Dispatcher → L0 worker (one per timestep) -->
+      <path class="ch" d="M 250 177 C 280 200, 280 210, 302 230" marker-end="url(#pmerkle-arr)"/>
+      <path class="ch" d="M 400 177 C 430 200, 430 210, 452 230" marker-end="url(#pmerkle-arr)"/>
+      <path class="ch" d="M 550 177 C 580 200, 580 210, 602 230" marker-end="url(#pmerkle-arr)"/>
+      <text class="ch-label" x="260" y="202">ch L₀</text>
+      <text class="ch-label" x="410" y="202">ch L₀</text>
+      <text class="ch-label" x="560" y="202">ch L₀</text>
+
+      <!-- L0 worker → L1 worker (arrows converge where L1 finally fires) -->
+      <!-- Arrow from L0 t2 (right edge 418,251) queued; consumed at L1 t3 (left edge 452, 346). Bend. -->
+      <path class="ch" d="M 418 268 C 436 290, 436 310, 452 334" marker-end="url(#pmerkle-arr)"/>
+      <path class="ch" d="M 510 272 C 510 300, 510 310, 510 325" marker-end="url(#pmerkle-arr)"/>
+      <text class="ch-label" x="428" y="298">ch L₁</text>
+      <text class="ch-label" x="518" y="302">ch L₁</text>
+      <!-- L0 t4 → L1 t4 -->
+      <path class="ch" d="M 660 272 C 660 300, 660 310, 660 325" marker-end="url(#pmerkle-arr)"/>
+      <text class="ch-label" x="668" y="302">ch L₁</text>
+
+      <!-- L1 worker → Root (L1 t3 → L2 t4) -->
+      <path class="ch" d="M 568 367 C 660 392, 720 402, 762 412" marker-end="url(#pmerkle-arr)"/>
+      <text class="ch-label" x="650" y="388">ch L₂</text>
+      <!-- L1 t4 → Root (root candidate) -->
+      <path class="ch" d="M 660 367 C 700 385, 730 400, 762 412" marker-end="url(#pmerkle-arr)"/>
+    </g>
+
+    <!-- ================================================================ -->
+    <!-- Time axis at the bottom                                           -->
+    <!-- ================================================================ -->
+    <g transform="translate(0 478)">
+      <line class="tick" x1="170" y1="6" x2="730" y2="6" stroke="#64748B" marker-end="url(#pmerkle-arr-grey)"/>
+      <text class="tick-label" x="210" y="22">t₁</text>
+      <text class="tick-label" x="360" y="22">t₂</text>
+      <text class="tick-label" x="510" y="22">t₃</text>
+      <text class="tick-label" x="660" y="22">t₄</text>
+      <text class="lane-sub"   x="740" y="10">wall-clock time →</text>
+
+      <!-- Parallelism brace: show that t₃ has THREE concurrent lanes active -->
+      <path class="brace" d="M 460 30 Q 460 36 470 36 L 550 36 Q 560 36 560 30" />
+      <text class="lane-sub" x="510" y="52" text-anchor="middle">three lanes active simultaneously at t₃</text>
+    </g>
+
+    <!-- ================================================================ -->
+    <!-- Legend (bottom-right)                                             -->
+    <!-- ================================================================ -->
+    <g transform="translate(16 516)">
+      <rect class="ev-dispatch" x="0" y="-6" width="16" height="10" rx="2"/>
+      <text class="sub" x="20" y="2">dispatcher (hash leaf)</text>
+
+      <rect class="ev-hash-l0" x="150" y="-6" width="16" height="10" rx="2"/>
+      <text class="sub" x="170" y="2">L₀ worker</text>
+
+      <rect class="ev-hash-l1" x="240" y="-6" width="16" height="10" rx="2"/>
+      <text class="sub" x="260" y="2">L₁ worker</text>
+
+      <rect class="ev-hash-l2" x="330" y="-6" width="16" height="10" rx="2"/>
+      <text class="sub" x="350" y="2">root</text>
+
+      <rect class="ev-close" x="394" y="-6" width="16" height="10" rx="2"/>
+      <text class="sub" x="414" y="2">close ch (EOF)</text>
+
+      <rect class="ev-idle" x="514" y="-6" width="16" height="10" rx="2"/>
+      <text class="sub" x="534" y="2">await (idle)</text>
+
+      <line class="ch" x1="610" y1="-1" x2="634" y2="-1"/>
+      <text class="sub" x="640" y="2">Channel&lt;byte[]&gt; handoff</text>
+    </g>
+  </g>
+</svg>
