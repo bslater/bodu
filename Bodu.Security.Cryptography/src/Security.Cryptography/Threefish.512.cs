@@ -16,6 +16,10 @@
     /// </para>
     /// <para>For other block sizes, see <see cref="Threefish256" /> and <see cref="Threefish1024" />.</para>
     /// </remarks>
+    /// <seealso href="../guides/cryptography/threefish-512.html">Using Threefish-512 (guide with full encrypt / decrypt examples)</seealso>
+    /// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
+    /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>
+    /// <seealso href="../guides/cryptography/padding.html">Padding</seealso>
     public sealed class Threefish512
         : Threefish
     {

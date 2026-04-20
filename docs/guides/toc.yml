@@ -1,0 +1,26 @@
+# ./<Project Root Dir>/docs/guides/toc.yml
+- name: Cryptography
+  href: cryptography/
+  items:
+    - name: Overview
+      href: cryptography/index.md
+    - name: Encryption basics
+      href: cryptography/encryption-basics.md
+    - name: Cipher block modes
+      href: cryptography/cipher-modes.md
+    - name: Padding
+      href: cryptography/padding.md
+    - name: Hashing and checksums
+      href: cryptography/hashing.md
+    - name: Symmetric algorithms
+      items:
+        - name: Threefish-256
+          href: cryptography/threefish-256.md
+        - name: Threefish-512
+          href: cryptography/threefish-512.md
+        - name: Threefish-1024
+          href: cryptography/threefish-1024.md
+        - name: Skipjack
+          href: cryptography/skipjack.md
+        - name: Blowfish
+          href: cryptography/blowfish.md

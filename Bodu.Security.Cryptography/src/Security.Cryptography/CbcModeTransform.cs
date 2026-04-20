@@ -21,6 +21,7 @@
     /// successive calls to <see cref="Transform" /> continue the stream.
     /// </para>
     /// </remarks>
+    /// <seealso href="../guides/cryptography/cipher-modes.html#cbc--the-default">CBC walk-through in the cipher-modes guide</seealso>
     public sealed class CbcModeTransform
         : IBlockCipherModeTransform
     {

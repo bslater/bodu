@@ -32,6 +32,9 @@ namespace Bodu.Security.Cryptography
     /// <see cref="IBlockCipherModeTransform" /> for a given value.
     /// </para>
     /// </remarks>
+    /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes (guide with per-mode worked examples)</seealso>
+    /// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
+    /// <seealso href="../guides/cryptography/padding.html">Padding</seealso>
     public enum CipherBlockMode
     {
         /// <summary>

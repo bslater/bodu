@@ -21,6 +21,7 @@
     /// The initialisation vector must equal the cipher block size in length and should be unique and unpredictable per message under a given key.
     /// </para>
     /// </remarks>
+    /// <seealso href="../guides/cryptography/cipher-modes.html#cfb--self-synchronising-stream-cipher">CFB walk-through in the cipher-modes guide</seealso>
     public sealed class CfbModeTransform : IBlockCipherModeTransform
     {
         private readonly IBlockCipher cipher;

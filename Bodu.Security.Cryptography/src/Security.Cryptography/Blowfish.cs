@@ -33,6 +33,10 @@ namespace Bodu.Security.Cryptography
     /// encrypted under the same key. For new applications, a cipher with a 128-bit or larger block size (such as AES) should be preferred.
     /// </note>
     /// </remarks>
+    /// <seealso href="../guides/cryptography/blowfish.html">Using Blowfish (guide with full encrypt / decrypt examples)</seealso>
+    /// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
+    /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>
+    /// <seealso href="../guides/cryptography/padding.html">Padding</seealso>
     public sealed class Blowfish
         : SymmetricAlgorithm
     {

@@ -38,6 +38,7 @@
     /// <see cref="ParallelMerkleTreeHash" />.
     /// </para>
     /// </remarks>
+    /// <seealso href="../guides/cryptography/hashing.html#pattern-6--merkle-trees">Merkle-tree recipes in the hashing guide</seealso>
     public sealed class MerkleTreeHash : IDisposable
     {
         private readonly int blockSize;

@@ -88,6 +88,7 @@ namespace Bodu.Security.Cryptography
     /// is closed, eliminating the lost-node race that would otherwise cause finalisation to deadlock.
     /// </para>
     /// </remarks>
+    /// <seealso href="../guides/cryptography/hashing.html#pattern-6--merkle-trees">Merkle-tree recipes in the hashing guide</seealso>
     public sealed class ParallelMerkleTreeHash : IDisposable
     {
         private readonly int _blockSize;
