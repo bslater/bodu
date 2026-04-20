@@ -38,6 +38,7 @@ namespace Bodu.Security.Cryptography
     /// byte[] digest = tiger.ComputeHash(message);
     /// </code>
     /// </example>
+    /// <seealso href="../guides/cryptography/hashing.html#pattern-3--a-cryptographic-digest">Cryptographic digest guide</seealso>
     public sealed partial class Tiger
         : BlockHashAlgorithm<Tiger>
     {

@@ -19,6 +19,7 @@ namespace Bodu.Security.Cryptography
     /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for password hashing,
     /// digital signatures, or integrity validation in security-sensitive applications.</note>
     /// </remarks>
+    /// <seealso href="../guides/cryptography/hashing.html#pattern-1--a-non-cryptographic-checksum">Non-cryptographic checksum guide</seealso>
     public sealed class Fletcher32
         : Security.Cryptography.Fletcher<Fletcher32>
     {

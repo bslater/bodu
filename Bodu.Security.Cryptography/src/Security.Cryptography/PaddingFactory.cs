@@ -10,6 +10,7 @@
     /// <summary>
     /// Creates <see cref="IPaddingStrategy" /> instances for the standard <see cref="PaddingMode" /> values.
     /// </summary>
+    /// <seealso href="../guides/cryptography/padding.html">Padding guide — PKCS7, Zeros, and None with worked examples</seealso>
     public static class PaddingFactory
     {
         /// <summary>

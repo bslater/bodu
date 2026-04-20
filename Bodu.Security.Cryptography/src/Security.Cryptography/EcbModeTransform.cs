@@ -21,6 +21,7 @@
     /// authenticated mode unless ECB is required as a primitive inside a larger construction.
     /// </para>
     /// </remarks>
+    /// <seealso href="../guides/cryptography/cipher-modes.html#ecb--almost-never">ECB walk-through in the cipher-modes guide</seealso>
     public sealed class EcbModeTransform : IBlockCipherModeTransform
     {
         private readonly IBlockCipher cipher;

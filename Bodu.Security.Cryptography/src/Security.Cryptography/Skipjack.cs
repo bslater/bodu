@@ -30,6 +30,10 @@ namespace Bodu.Security.Cryptography
     /// are encrypted under the same key. Prefer a modern cipher such as AES.
     /// </note>
     /// </remarks>
+    /// <seealso href="../guides/cryptography/skipjack.html">Using Skipjack (guide with full encrypt / decrypt examples)</seealso>
+    /// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
+    /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>
+    /// <seealso href="../guides/cryptography/padding.html">Padding</seealso>
     public sealed class Skipjack
         : SymmetricAlgorithm
     {

@@ -35,6 +35,7 @@ namespace Bodu.Security.Cryptography
     /// most once per key.
     /// </para>
     /// </remarks>
+    /// <seealso href="../guides/cryptography/cipher-modes.html#ctr--parallel-seekable-stream-shaped">CTR walk-through in the cipher-modes guide</seealso>
     public sealed class CtrModeTransform : IBlockCipherModeTransform
     {
         private readonly IBlockCipher cipher;

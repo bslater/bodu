@@ -22,6 +22,7 @@
     /// key, otherwise keystreams collide and confidentiality is lost.
     /// </para>
     /// </remarks>
+    /// <seealso href="../guides/cryptography/cipher-modes.html#ofb--synchronous-stream-cipher">OFB walk-through in the cipher-modes guide</seealso>
     public sealed class OfbModeTransform : IBlockCipherModeTransform
     {
         private readonly IBlockCipher cipher;

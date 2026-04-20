@@ -22,6 +22,7 @@ namespace Bodu.Security.Cryptography
     /// </para>
     /// <para>See <see cref="SipHash{T}" /> for a description of the round structure.</para>
     /// </remarks>
+    /// <seealso href="../guides/cryptography/hashing.html#pattern-2--a-keyed-hash-siphash">Keyed-hash (SipHash) guide</seealso>
     public sealed class SipHash64
         : SipHash<SipHash64>
     {
