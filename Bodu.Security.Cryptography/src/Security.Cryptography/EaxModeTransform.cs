@@ -14,6 +14,14 @@ namespace Bodu.Security.Cryptography
     /// </summary>
     /// <remarks>
     /// <para>
+    /// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — EAX instantiates the top pipeline as CTR mode and the bottom pipeline as three OMAC invocations over the nonce, associated data, and ciphertext." />
+    /// </para>
+    /// <para>
+    /// EAX is the <b>CTR + OMAC(N ‖ A ‖ C)</b> instantiation of the generic AEAD shape above. The top
+    /// pipeline is the keystream generator shown in the diagram; the bottom pipeline is the MAC, specialised
+    /// to three independent OMAC invocations whose outputs are XOR-combined to form the tag.
+    /// </para>
+    /// <para>
     /// EAX (Bellare, Rogaway, Wagner) is a two-pass authenticated encryption mode. The encryption component
     /// is CTR mode, where successive counter values are encrypted and XORed with the plaintext or ciphertext:
     /// <list type="bullet">

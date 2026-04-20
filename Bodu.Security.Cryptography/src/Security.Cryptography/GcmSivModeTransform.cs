@@ -15,6 +15,15 @@ namespace Bodu.Security.Cryptography
     /// </summary>
     /// <remarks>
     /// <para>
+    /// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — GCM-SIV runs a POLYVAL-based MAC over nonce, associated data, and plaintext to derive a synthetic tag, then uses that tag as the CTR initial counter." />
+    /// </para>
+    /// <para>
+    /// GCM-SIV shares SIV's misuse-resistant ordering — the MAC pipeline runs before the keystream
+    /// pipeline so that the tag doubles as the CTR counter base — but swaps GHASH for <b>POLYVAL</b>,
+    /// which is GHASH composed with a byte/bit reflection that makes little-endian processing efficient
+    /// on modern processors.
+    /// </para>
+    /// <para>
     /// GCM-SIV derives per-message authentication and encryption keys from the master key and a
     /// 12-byte nonce using four cipher calls with little-endian counters (RFC 8452 Section 4):
     /// <code>

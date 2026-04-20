@@ -7,9 +7,19 @@
     /// each block independently with no chaining.
     /// </summary>
     /// <remarks>
-    /// Encryption computes <c>Cᵢ = E(Pᵢ)</c> and decryption <c>Pᵢ = D(Cᵢ)</c>; no initialisation vector is used. ECB leaks structural
-    /// information because identical plaintext blocks always yield identical ciphertext blocks, and it is insecure for virtually all
-    /// real-world messages. Prefer CBC, CTR, or an authenticated mode unless ECB is required as a primitive inside a larger construction.
+    /// <para>
+    /// <img src="../images/diagrams/classic-modes.svg" alt="ECB panel — each plaintext block is encrypted independently to its ciphertext block with no feedback." />
+    /// </para>
+    /// <para>
+    /// Encryption computes <c>Cᵢ = E(Pᵢ)</c> and decryption <c>Pᵢ = D(Cᵢ)</c>; no initialisation vector is used.
+    /// See <b>panel 1</b> of the diagram above: each column is entirely self-contained, so the three cells carry
+    /// no arrows between them.
+    /// </para>
+    /// <para>
+    /// That independence is exactly what makes ECB insecure for virtually all real-world messages: identical plaintext
+    /// blocks always yield identical ciphertext blocks, leaking structural information. Prefer CBC, CTR, or an
+    /// authenticated mode unless ECB is required as a primitive inside a larger construction.
+    /// </para>
     /// </remarks>
     public sealed class EcbModeTransform : IBlockCipherModeTransform
     {

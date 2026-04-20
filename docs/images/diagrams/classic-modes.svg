@@ -1,0 +1,351 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 960" role="img" aria-labelledby="classic-title classic-desc">
+  <title id="classic-title">Classic block cipher modes of operation</title>
+  <desc id="classic-desc">Data-flow diagrams for ECB, CBC, CFB, OFB, and CTR encryption modes, showing the role of the cipher primitive, feedback, and XOR in each.</desc>
+
+  <defs>
+    <style>
+      .bg { fill: #0F172A; }
+      .panel { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .header { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .title { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .formula { fill: #94A3B8; font: italic 12px/1 "Cambria",Georgia,serif; }
+      .label { fill: #F8FAFC; font: 700 13px/1 "Segoe UI",Arial,sans-serif; }
+      .sub { fill: #CBD5E1; font: 400 11px/1 "Segoe UI",Arial,sans-serif; }
+      .cipher-e { fill: #3B82F6; stroke: #60A5FA; stroke-width: 1; }
+      .cipher-d { fill: #2563EB; stroke: #60A5FA; stroke-width: 1; }
+      .cipher-text { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .plain { fill: #F59E0B; }
+      .cipher-out { fill: #14B8A6; }
+      .counter { fill: #A78BFA; }
+      .wire { stroke: #CBD5E1; stroke-width: 1.6; fill: none; }
+      .wire-feedback { stroke: #A78BFA; stroke-width: 1.6; fill: none; stroke-dasharray: 0; }
+      .xor { fill: #0F172A; stroke: #F8FAFC; stroke-width: 1.6; }
+      .xor-sym { fill: #F8FAFC; font: 700 14px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .iv { fill: #64748B; stroke: #94A3B8; stroke-width: 1; }
+    </style>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#CBD5E1"/>
+    </marker>
+    <marker id="arrv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#A78BFA"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="820" height="960"/>
+
+  <!-- =========================================================== -->
+  <!-- ECB panel: y = 10..185 -->
+  <!-- =========================================================== -->
+  <g transform="translate(10 10)">
+    <rect class="panel" width="800" height="175" rx="8"/>
+    <rect class="header" width="800" height="30" rx="8"/>
+    <rect class="header" y="22" width="800" height="8"/>
+    <text class="title" x="16" y="20">1. ECB — Electronic Codebook</text>
+    <text class="formula" x="800" y="20" text-anchor="end" dx="-16">Cᵢ = E(Pᵢ)</text>
+
+    <!-- 3 independent cells; no feedback -->
+    <g transform="translate(0 46)">
+      <!-- cell 1 -->
+      <g transform="translate(220 0)">
+        <rect class="plain" x="-22" y="0" width="44" height="18" rx="3"/>
+        <text class="label" x="0" y="13" text-anchor="middle" fill="#0F172A">P₁</text>
+        <line class="wire" x1="0" y1="18" x2="0" y2="46" marker-end="url(#arr)"/>
+        <rect class="cipher-e" x="-30" y="50" width="60" height="34" rx="5"/>
+        <text class="cipher-text" x="0" y="72">E</text>
+        <line class="wire" x1="0" y1="84" x2="0" y2="108" marker-end="url(#arr)"/>
+        <rect class="cipher-out" x="-22" y="112" width="44" height="18" rx="3"/>
+        <text class="label" x="0" y="125" text-anchor="middle" fill="#0F172A">C₁</text>
+      </g>
+      <!-- cell 2 -->
+      <g transform="translate(400 0)">
+        <rect class="plain" x="-22" y="0" width="44" height="18" rx="3"/>
+        <text class="label" x="0" y="13" text-anchor="middle" fill="#0F172A">P₂</text>
+        <line class="wire" x1="0" y1="18" x2="0" y2="46" marker-end="url(#arr)"/>
+        <rect class="cipher-e" x="-30" y="50" width="60" height="34" rx="5"/>
+        <text class="cipher-text" x="0" y="72">E</text>
+        <line class="wire" x1="0" y1="84" x2="0" y2="108" marker-end="url(#arr)"/>
+        <rect class="cipher-out" x="-22" y="112" width="44" height="18" rx="3"/>
+        <text class="label" x="0" y="125" text-anchor="middle" fill="#0F172A">C₂</text>
+      </g>
+      <!-- cell 3 -->
+      <g transform="translate(580 0)">
+        <rect class="plain" x="-22" y="0" width="44" height="18" rx="3"/>
+        <text class="label" x="0" y="13" text-anchor="middle" fill="#0F172A">P₃</text>
+        <line class="wire" x1="0" y1="18" x2="0" y2="46" marker-end="url(#arr)"/>
+        <rect class="cipher-e" x="-30" y="50" width="60" height="34" rx="5"/>
+        <text class="cipher-text" x="0" y="72">E</text>
+        <line class="wire" x1="0" y1="84" x2="0" y2="108" marker-end="url(#arr)"/>
+        <rect class="cipher-out" x="-22" y="112" width="44" height="18" rx="3"/>
+        <text class="label" x="0" y="125" text-anchor="middle" fill="#0F172A">C₃</text>
+      </g>
+      <text class="sub" x="20" y="68">Blocks encrypt independently — identical Pᵢ ⇒ identical Cᵢ (structural leak).</text>
+    </g>
+  </g>
+
+  <!-- =========================================================== -->
+  <!-- CBC panel: y = 195..370 -->
+  <!-- =========================================================== -->
+  <g transform="translate(10 195)">
+    <rect class="panel" width="800" height="175" rx="8"/>
+    <rect class="header" width="800" height="30" rx="8"/>
+    <rect class="header" y="22" width="800" height="8"/>
+    <text class="title" x="16" y="20">2. CBC — Cipher Block Chaining</text>
+    <text class="formula" x="800" y="20" text-anchor="end" dx="-16">Cᵢ = E(Pᵢ ⊕ Cᵢ₋₁),    C₀ = IV</text>
+
+    <g transform="translate(0 46)">
+      <!-- IV box -->
+      <g transform="translate(60 60)">
+        <rect class="iv" x="-18" y="-10" width="36" height="20" rx="3"/>
+        <text class="sub" x="0" y="4" text-anchor="middle" fill="#F8FAFC">IV</text>
+      </g>
+
+      <!-- cell 1 -->
+      <g transform="translate(220 0)">
+        <rect class="plain" x="-22" y="0" width="44" height="18" rx="3"/>
+        <text class="label" x="0" y="13" text-anchor="middle" fill="#0F172A">P₁</text>
+        <line class="wire" x1="0" y1="18" x2="0" y2="50" marker-end="url(#arr)"/>
+        <circle class="xor" cx="0" cy="60" r="10"/>
+        <text class="xor-sym" x="0" y="65">⊕</text>
+        <line class="wire-feedback" x1="78" y1="60" x2="-10" y2="60" marker-end="url(#arrv)"/>
+        <rect class="cipher-e" x="-30" y="76" width="60" height="34" rx="5"/>
+        <text class="cipher-text" x="0" y="98">E</text>
+        <line class="wire" x1="0" y1="110" x2="0" y2="124"/>
+        <rect class="cipher-out" x="-22" y="124" width="44" height="18" rx="3"/>
+        <text class="label" x="0" y="137" text-anchor="middle" fill="#0F172A">C₁</text>
+      </g>
+      <!-- cell 2 -->
+      <g transform="translate(400 0)">
+        <rect class="plain" x="-22" y="0" width="44" height="18" rx="3"/>
+        <text class="label" x="0" y="13" text-anchor="middle" fill="#0F172A">P₂</text>
+        <line class="wire" x1="0" y1="18" x2="0" y2="50" marker-end="url(#arr)"/>
+        <circle class="xor" cx="0" cy="60" r="10"/>
+        <text class="xor-sym" x="0" y="65">⊕</text>
+        <!-- feedback from previous C₁: run a line from C₁ (at x=220,y=133) to (x=400,y=60). Offset by parent translate(0 46): in parent coords C₁ bottom-right ≈ (242, 142); XOR of cell2 at (400,60). We'll draw a routed feedback line in parent coords. Use inner path below. -->
+        <rect class="cipher-e" x="-30" y="76" width="60" height="34" rx="5"/>
+        <text class="cipher-text" x="0" y="98">E</text>
+        <line class="wire" x1="0" y1="110" x2="0" y2="124"/>
+        <rect class="cipher-out" x="-22" y="124" width="44" height="18" rx="3"/>
+        <text class="label" x="0" y="137" text-anchor="middle" fill="#0F172A">C₂</text>
+      </g>
+      <!-- cell 3 -->
+      <g transform="translate(580 0)">
+        <rect class="plain" x="-22" y="0" width="44" height="18" rx="3"/>
+        <text class="label" x="0" y="13" text-anchor="middle" fill="#0F172A">P₃</text>
+        <line class="wire" x1="0" y1="18" x2="0" y2="50" marker-end="url(#arr)"/>
+        <circle class="xor" cx="0" cy="60" r="10"/>
+        <text class="xor-sym" x="0" y="65">⊕</text>
+        <rect class="cipher-e" x="-30" y="76" width="60" height="34" rx="5"/>
+        <text class="cipher-text" x="0" y="98">E</text>
+        <line class="wire" x1="0" y1="110" x2="0" y2="124"/>
+        <rect class="cipher-out" x="-22" y="124" width="44" height="18" rx="3"/>
+        <text class="label" x="0" y="137" text-anchor="middle" fill="#0F172A">C₃</text>
+      </g>
+      <!-- Feedback from C₁ → XOR₂ and C₂ → XOR₃ via a bottom routing path -->
+      <path class="wire-feedback" d="M 220 142 L 220 156 L 400 156 L 400 68 L 390 68" marker-end="url(#arrv)"/>
+      <path class="wire-feedback" d="M 400 142 L 400 166 L 580 166 L 580 68 L 570 68" marker-end="url(#arrv)"/>
+    </g>
+  </g>
+
+  <!-- =========================================================== -->
+  <!-- CFB panel: y = 380..555 -->
+  <!-- =========================================================== -->
+  <g transform="translate(10 380)">
+    <rect class="panel" width="800" height="175" rx="8"/>
+    <rect class="header" width="800" height="30" rx="8"/>
+    <rect class="header" y="22" width="800" height="8"/>
+    <text class="title" x="16" y="20">3. CFB — Cipher Feedback</text>
+    <text class="formula" x="800" y="20" text-anchor="end" dx="-16">Cᵢ = Pᵢ ⊕ E(IVᵢ),    IVᵢ₊₁ = Cᵢ</text>
+
+    <g transform="translate(0 46)">
+      <!-- IV box feeds first E -->
+      <g transform="translate(70 60)">
+        <rect class="iv" x="-18" y="-10" width="36" height="20" rx="3"/>
+        <text class="sub" x="0" y="4" text-anchor="middle" fill="#F8FAFC">IV</text>
+      </g>
+      <!-- cells: E(IVᵢ) at top, Pᵢ ⊕ E() gives Cᵢ; feedback Cᵢ → IVᵢ₊₁ -->
+      <g transform="translate(220 0)">
+        <rect class="cipher-e" x="-30" y="10" width="60" height="34" rx="5"/>
+        <text class="cipher-text" x="0" y="32">E</text>
+        <line class="wire-feedback" x1="-150" y1="27" x2="-30" y2="27" marker-end="url(#arrv)"/>
+        <line class="wire" x1="0" y1="44" x2="0" y2="66" marker-end="url(#arr)"/>
+        <circle class="xor" cx="0" cy="76" r="10"/>
+        <text class="xor-sym" x="0" y="81">⊕</text>
+        <rect class="plain" x="40" y="66" width="44" height="18" rx="3"/>
+        <text class="label" x="62" y="79" text-anchor="middle" fill="#0F172A">P₁</text>
+        <line class="wire" x1="40" y1="76" x2="10" y2="76" marker-end="url(#arr)"/>
+        <line class="wire" x1="0" y1="86" x2="0" y2="112"/>
+        <rect class="cipher-out" x="-22" y="112" width="44" height="18" rx="3"/>
+        <text class="label" x="0" y="125" text-anchor="middle" fill="#0F172A">C₁</text>
+      </g>
+      <g transform="translate(400 0)">
+        <rect class="cipher-e" x="-30" y="10" width="60" height="34" rx="5"/>
+        <text class="cipher-text" x="0" y="32">E</text>
+        <line class="wire" x1="0" y1="44" x2="0" y2="66" marker-end="url(#arr)"/>
+        <circle class="xor" cx="0" cy="76" r="10"/>
+        <text class="xor-sym" x="0" y="81">⊕</text>
+        <rect class="plain" x="40" y="66" width="44" height="18" rx="3"/>
+        <text class="label" x="62" y="79" text-anchor="middle" fill="#0F172A">P₂</text>
+        <line class="wire" x1="40" y1="76" x2="10" y2="76" marker-end="url(#arr)"/>
+        <line class="wire" x1="0" y1="86" x2="0" y2="112"/>
+        <rect class="cipher-out" x="-22" y="112" width="44" height="18" rx="3"/>
+        <text class="label" x="0" y="125" text-anchor="middle" fill="#0F172A">C₂</text>
+      </g>
+      <g transform="translate(580 0)">
+        <rect class="cipher-e" x="-30" y="10" width="60" height="34" rx="5"/>
+        <text class="cipher-text" x="0" y="32">E</text>
+        <line class="wire" x1="0" y1="44" x2="0" y2="66" marker-end="url(#arr)"/>
+        <circle class="xor" cx="0" cy="76" r="10"/>
+        <text class="xor-sym" x="0" y="81">⊕</text>
+        <rect class="plain" x="40" y="66" width="44" height="18" rx="3"/>
+        <text class="label" x="62" y="79" text-anchor="middle" fill="#0F172A">P₃</text>
+        <line class="wire" x1="40" y1="76" x2="10" y2="76" marker-end="url(#arr)"/>
+        <line class="wire" x1="0" y1="86" x2="0" y2="112"/>
+        <rect class="cipher-out" x="-22" y="112" width="44" height="18" rx="3"/>
+        <text class="label" x="0" y="125" text-anchor="middle" fill="#0F172A">C₃</text>
+      </g>
+      <!-- Feedback: C₁ → E₂ input, C₂ → E₃ input -->
+      <path class="wire-feedback" d="M 220 130 L 220 140 L 400 140 L 400 27 L 370 27" marker-end="url(#arrv)"/>
+      <path class="wire-feedback" d="M 400 130 L 400 148 L 580 148 L 580 27 L 550 27" marker-end="url(#arrv)"/>
+    </g>
+  </g>
+
+  <!-- =========================================================== -->
+  <!-- OFB panel: y = 565..740 -->
+  <!-- =========================================================== -->
+  <g transform="translate(10 565)">
+    <rect class="panel" width="800" height="175" rx="8"/>
+    <rect class="header" width="800" height="30" rx="8"/>
+    <rect class="header" y="22" width="800" height="8"/>
+    <text class="title" x="16" y="20">4. OFB — Output Feedback</text>
+    <text class="formula" x="800" y="20" text-anchor="end" dx="-16">Oᵢ = E(Oᵢ₋₁),   Cᵢ = Pᵢ ⊕ Oᵢ,   O₀ = IV</text>
+
+    <g transform="translate(0 46)">
+      <g transform="translate(70 27)">
+        <rect class="iv" x="-18" y="-10" width="36" height="20" rx="3"/>
+        <text class="sub" x="0" y="4" text-anchor="middle" fill="#F8FAFC">IV</text>
+      </g>
+      <g transform="translate(220 0)">
+        <rect class="cipher-e" x="-30" y="10" width="60" height="34" rx="5"/>
+        <text class="cipher-text" x="0" y="32">E</text>
+        <line class="wire-feedback" x1="-150" y1="27" x2="-30" y2="27" marker-end="url(#arrv)"/>
+        <line class="wire" x1="0" y1="44" x2="0" y2="66" marker-end="url(#arr)"/>
+        <circle class="xor" cx="0" cy="76" r="10"/>
+        <text class="xor-sym" x="0" y="81">⊕</text>
+        <rect class="plain" x="40" y="66" width="44" height="18" rx="3"/>
+        <text class="label" x="62" y="79" text-anchor="middle" fill="#0F172A">P₁</text>
+        <line class="wire" x1="40" y1="76" x2="10" y2="76" marker-end="url(#arr)"/>
+        <line class="wire" x1="0" y1="86" x2="0" y2="112"/>
+        <rect class="cipher-out" x="-22" y="112" width="44" height="18" rx="3"/>
+        <text class="label" x="0" y="125" text-anchor="middle" fill="#0F172A">C₁</text>
+      </g>
+      <g transform="translate(400 0)">
+        <rect class="cipher-e" x="-30" y="10" width="60" height="34" rx="5"/>
+        <text class="cipher-text" x="0" y="32">E</text>
+        <line class="wire" x1="0" y1="44" x2="0" y2="66" marker-end="url(#arr)"/>
+        <circle class="xor" cx="0" cy="76" r="10"/>
+        <text class="xor-sym" x="0" y="81">⊕</text>
+        <rect class="plain" x="40" y="66" width="44" height="18" rx="3"/>
+        <text class="label" x="62" y="79" text-anchor="middle" fill="#0F172A">P₂</text>
+        <line class="wire" x1="40" y1="76" x2="10" y2="76" marker-end="url(#arr)"/>
+        <line class="wire" x1="0" y1="86" x2="0" y2="112"/>
+        <rect class="cipher-out" x="-22" y="112" width="44" height="18" rx="3"/>
+        <text class="label" x="0" y="125" text-anchor="middle" fill="#0F172A">C₂</text>
+      </g>
+      <g transform="translate(580 0)">
+        <rect class="cipher-e" x="-30" y="10" width="60" height="34" rx="5"/>
+        <text class="cipher-text" x="0" y="32">E</text>
+        <line class="wire" x1="0" y1="44" x2="0" y2="66" marker-end="url(#arr)"/>
+        <circle class="xor" cx="0" cy="76" r="10"/>
+        <text class="xor-sym" x="0" y="81">⊕</text>
+        <rect class="plain" x="40" y="66" width="44" height="18" rx="3"/>
+        <text class="label" x="62" y="79" text-anchor="middle" fill="#0F172A">P₃</text>
+        <line class="wire" x1="40" y1="76" x2="10" y2="76" marker-end="url(#arr)"/>
+        <line class="wire" x1="0" y1="86" x2="0" y2="112"/>
+        <rect class="cipher-out" x="-22" y="112" width="44" height="18" rx="3"/>
+        <text class="label" x="0" y="125" text-anchor="middle" fill="#0F172A">C₃</text>
+      </g>
+      <!-- Feedback: E₁ output → E₂ input, E₂ output → E₃ input -->
+      <path class="wire-feedback" d="M 250 27 L 270 27 L 270 4 L 400 4 L 400 17 L 380 27" marker-end="url(#arrv)"/>
+      <path class="wire-feedback" d="M 430 27 L 450 27 L 450 4 L 580 4 L 580 17 L 560 27" marker-end="url(#arrv)"/>
+      <text class="sub" x="14" y="10">Keystream feeds forward (independent of plaintext) — encrypt = decrypt.</text>
+    </g>
+  </g>
+
+  <!-- =========================================================== -->
+  <!-- CTR panel: y = 750..925 -->
+  <!-- =========================================================== -->
+  <g transform="translate(10 750)">
+    <rect class="panel" width="800" height="175" rx="8"/>
+    <rect class="header" width="800" height="30" rx="8"/>
+    <rect class="header" y="22" width="800" height="8"/>
+    <text class="title" x="16" y="20">5. CTR — Counter</text>
+    <text class="formula" x="800" y="20" text-anchor="end" dx="-16">Cᵢ = Pᵢ ⊕ E(nonce ‖ i)</text>
+
+    <g transform="translate(0 46)">
+      <g transform="translate(220 0)">
+        <rect class="counter" x="-30" y="-8" width="60" height="22" rx="3"/>
+        <text class="label" x="0" y="7" text-anchor="middle" fill="#0F172A">CTR₁</text>
+        <line class="wire" x1="0" y1="14" x2="0" y2="24" marker-end="url(#arr)"/>
+        <rect class="cipher-e" x="-30" y="28" width="60" height="34" rx="5"/>
+        <text class="cipher-text" x="0" y="50">E</text>
+        <line class="wire" x1="0" y1="62" x2="0" y2="84" marker-end="url(#arr)"/>
+        <circle class="xor" cx="0" cy="94" r="10"/>
+        <text class="xor-sym" x="0" y="99">⊕</text>
+        <rect class="plain" x="40" y="84" width="44" height="18" rx="3"/>
+        <text class="label" x="62" y="97" text-anchor="middle" fill="#0F172A">P₁</text>
+        <line class="wire" x1="40" y1="94" x2="10" y2="94" marker-end="url(#arr)"/>
+        <line class="wire" x1="0" y1="104" x2="0" y2="124"/>
+        <rect class="cipher-out" x="-22" y="124" width="44" height="18" rx="3"/>
+        <text class="label" x="0" y="137" text-anchor="middle" fill="#0F172A">C₁</text>
+      </g>
+      <g transform="translate(400 0)">
+        <rect class="counter" x="-30" y="-8" width="60" height="22" rx="3"/>
+        <text class="label" x="0" y="7" text-anchor="middle" fill="#0F172A">CTR₂</text>
+        <line class="wire" x1="0" y1="14" x2="0" y2="24" marker-end="url(#arr)"/>
+        <rect class="cipher-e" x="-30" y="28" width="60" height="34" rx="5"/>
+        <text class="cipher-text" x="0" y="50">E</text>
+        <line class="wire" x1="0" y1="62" x2="0" y2="84" marker-end="url(#arr)"/>
+        <circle class="xor" cx="0" cy="94" r="10"/>
+        <text class="xor-sym" x="0" y="99">⊕</text>
+        <rect class="plain" x="40" y="84" width="44" height="18" rx="3"/>
+        <text class="label" x="62" y="97" text-anchor="middle" fill="#0F172A">P₂</text>
+        <line class="wire" x1="40" y1="94" x2="10" y2="94" marker-end="url(#arr)"/>
+        <line class="wire" x1="0" y1="104" x2="0" y2="124"/>
+        <rect class="cipher-out" x="-22" y="124" width="44" height="18" rx="3"/>
+        <text class="label" x="0" y="137" text-anchor="middle" fill="#0F172A">C₂</text>
+      </g>
+      <g transform="translate(580 0)">
+        <rect class="counter" x="-30" y="-8" width="60" height="22" rx="3"/>
+        <text class="label" x="0" y="7" text-anchor="middle" fill="#0F172A">CTR₃</text>
+        <line class="wire" x1="0" y1="14" x2="0" y2="24" marker-end="url(#arr)"/>
+        <rect class="cipher-e" x="-30" y="28" width="60" height="34" rx="5"/>
+        <text class="cipher-text" x="0" y="50">E</text>
+        <line class="wire" x1="0" y1="62" x2="0" y2="84" marker-end="url(#arr)"/>
+        <circle class="xor" cx="0" cy="94" r="10"/>
+        <text class="xor-sym" x="0" y="99">⊕</text>
+        <rect class="plain" x="40" y="84" width="44" height="18" rx="3"/>
+        <text class="label" x="62" y="97" text-anchor="middle" fill="#0F172A">P₃</text>
+        <line class="wire" x1="40" y1="94" x2="10" y2="94" marker-end="url(#arr)"/>
+        <line class="wire" x1="0" y1="104" x2="0" y2="124"/>
+        <rect class="cipher-out" x="-22" y="124" width="44" height="18" rx="3"/>
+        <text class="label" x="0" y="137" text-anchor="middle" fill="#0F172A">C₃</text>
+      </g>
+      <text class="sub" x="20" y="10">Counters are independent — trivially parallelisable and random-access seekable.</text>
+    </g>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(10 930)">
+    <text class="sub" x="0" y="10">Legend:</text>
+    <rect class="plain" x="60" y="2" width="14" height="10" rx="2"/>
+    <text class="sub" x="80" y="10">plaintext</text>
+    <rect class="cipher-out" x="150" y="2" width="14" height="10" rx="2"/>
+    <text class="sub" x="170" y="10">ciphertext</text>
+    <rect class="counter" x="240" y="2" width="14" height="10" rx="2"/>
+    <text class="sub" x="260" y="10">counter</text>
+    <rect class="cipher-e" x="310" y="2" width="14" height="10" rx="2"/>
+    <text class="sub" x="330" y="10">cipher E</text>
+    <line class="wire-feedback" x1="390" y1="7" x2="410" y2="7"/>
+    <text class="sub" x="415" y="10">feedback</text>
+  </g>
+</svg>

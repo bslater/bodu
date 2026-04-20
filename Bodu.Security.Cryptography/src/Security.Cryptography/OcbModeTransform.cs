@@ -15,6 +15,16 @@ namespace Bodu.Security.Cryptography
     /// </summary>
     /// <remarks>
     /// <para>
+    /// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — OCB3 realises both the keystream and the MAC pipelines as a single offset-driven pass over each block." />
+    /// </para>
+    /// <para>
+    /// OCB3 collapses the two pipelines of the generic AEAD shape above into a <em>single pass</em>: the
+    /// keystream and the MAC chain share the same per-block offset Δ<sub>i</sub>, so each block is touched
+    /// by the cipher exactly once. In the diagram, this corresponds to merging the top and bottom arrows
+    /// that reach the MAC — the ciphertext output is simultaneously the next input to the authentication
+    /// accumulator.
+    /// </para>
+    /// <para>
     /// The nonce is derived from the first 12 bytes of the IV supplied to the constructor.
     /// The tag length defaults to 16 bytes (TAGLEN = 128) and may be set to any value from
     /// 1 to 16 bytes via the <paramref name="tagLen" /> constructor parameter.

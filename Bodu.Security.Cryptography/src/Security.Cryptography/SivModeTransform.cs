@@ -15,6 +15,16 @@ namespace Bodu.Security.Cryptography
     /// </summary>
     /// <remarks>
     /// <para>
+    /// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — SIV inverts the usual order by running the MAC pipeline first (S2V) to derive a synthetic IV, which is then used as the CTR counter." />
+    /// </para>
+    /// <para>
+    /// SIV <em>inverts</em> the order shown in the generic AEAD diagram: the bottom pipeline runs <b>first</b>
+    /// — S2V/CMAC over the associated data and plaintext produces the synthetic IV (which is both the tag and
+    /// the CTR counter base) — and only then does the top pipeline encrypt the plaintext under that derived
+    /// counter. That reversal is what makes SIV misuse-resistant: re-encrypting the same message yields the
+    /// same ciphertext, but confidentiality is not lost beyond confirming message equality.
+    /// </para>
+    /// <para>
     /// SIV requires two independent ciphers keyed with different material (each half of a doubled key):
     /// <list type="bullet">
     /// <item><description><c>s2vCipher</c> (K₁) — used by CMAC and S2V to derive the synthetic IV.</description></item>

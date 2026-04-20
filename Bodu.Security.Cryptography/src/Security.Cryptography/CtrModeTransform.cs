@@ -16,14 +16,23 @@ namespace Bodu.Security.Cryptography
     /// </summary>
     /// <remarks>
     /// <para>
+    /// <img src="../images/diagrams/classic-modes.svg" alt="CTR panel — independent counter blocks are encrypted to form a keystream, then XORed with plaintext." />
+    /// </para>
+    /// <para>
     /// CTR is self-inverse: the same <see cref="Transform" /> operation is applied for both
     /// encryption and decryption. The cipher's <em>encrypt</em> primitive is always used; the
     /// decrypt primitive is never called.
+    /// See <b>panel 5</b> of the diagram above: each cell has its own counter block <c>CTRᵢ</c> and
+    /// no arrows connect one cell to the next — meaning the keystream is trivially parallelisable and
+    /// supports random-access seeking into the middle of a message.
     /// </para>
     /// <para>
-    /// To protect against keystream reuse, the transform tracks counter wrap-around. If the
-    /// counter increments back to its initial value, the next call to <see cref="Transform" />
-    /// throws <see cref="CryptographicException" />.
+    /// That independence is also where the sharpest pitfall lives. To protect against keystream reuse,
+    /// the transform tracks counter wrap-around: if the counter increments back to its initial value,
+    /// the next call to <see cref="Transform" /> throws <see cref="CryptographicException" />. Reusing
+    /// a <c>(key, nonce)</c> pair across messages is catastrophic — the XOR of two ciphertexts
+    /// recovers the XOR of the two plaintexts — so callers must ensure each counter value is used at
+    /// most once per key.
     /// </para>
     /// </remarks>
     public sealed class CtrModeTransform : IBlockCipherModeTransform

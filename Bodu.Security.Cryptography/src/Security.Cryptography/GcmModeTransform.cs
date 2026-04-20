@@ -15,6 +15,16 @@ namespace Bodu.Security.Cryptography
     /// </summary>
     /// <remarks>
     /// <para>
+    /// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — a CTR-style keystream produces ciphertext from plaintext, and a polynomial MAC computed over nonce, associated data, and ciphertext yields the authentication tag." />
+    /// </para>
+    /// <para>
+    /// GCM is the canonical instance of the generic AEAD shape shown above: the top pipeline is the
+    /// <b>Keystream Generator (CTR)</b> panel, and the bottom pipeline is the <b>MAC / polynomial hash</b>
+    /// panel specialised to GHASH. The nonce feeds both pipelines (<c>J0</c> on the top for the counter base
+    /// and implicitly on the bottom as the tag-finalising key), and the resulting <em>ciphertext</em> output is
+    /// routed into the MAC alongside the <em>associated data</em>.
+    /// </para>
+    /// <para>
     /// GCM combines CTR-mode encryption with GHASH authentication over GF(2^128):
     /// <list type="bullet">
     /// <item><description>Hash key: H = E(0^128)</description></item>
