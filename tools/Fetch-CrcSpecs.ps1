@@ -99,12 +99,14 @@ function Get-LabelledList {
         [string]$Label
     )
     # Collects every "<Label>: <value>" line in the block (so multiple "Alias: X" / "Codeword: Y"
-    # entries are all captured).
+    # entries are all captured). Returns a [string[]] and uses the comma trick to prevent
+    # PowerShell from unwrapping an empty array to $null on function return.
     $rx = [regex]("(?im)\b" + [regex]::Escape($Label) + "\s*[:：]\s*(?<v>[^<\n\r;]+)")
     $results = foreach ($m in $rx.Matches($Block)) {
         $m.Groups['v'].Value.Trim()
     }
-    return @($results | Where-Object { $_ })
+    $filtered = @($results | Where-Object { $_ })
+    return ,[string[]]$filtered
 }
 
 function Format-Hex {
@@ -126,12 +128,16 @@ $entries = foreach ($m in $matches) {
     if (-not $class   -and $prior -and $prior.PSObject.Properties['class'])   { $class   = [string]$prior.class }
     if (-not $created -and $prior -and $prior.PSObject.Properties['created']) { $created = [string]$prior.created }
     if (-not $updated -and $prior -and $prior.PSObject.Properties['updated']) { $updated = [string]$prior.updated }
-    if (-not $aliases -and $prior -and $prior.PSObject.Properties['aliases'] -and $prior.aliases) {
-        $aliases = @($prior.aliases)
+    if ((($null -eq $aliases) -or ($aliases.Count -eq 0)) -and $prior -and $prior.PSObject.Properties['aliases'] -and $prior.aliases) {
+        $aliases = [string[]]@($prior.aliases)
     }
-    if (-not $codewords -and $prior -and $prior.PSObject.Properties['codewords'] -and $prior.codewords) {
-        $codewords = @($prior.codewords)
+    if ((($null -eq $codewords) -or ($codewords.Count -eq 0)) -and $prior -and $prior.PSObject.Properties['codewords'] -and $prior.codewords) {
+        $codewords = [string[]]@($prior.codewords)
     }
+
+    # Normalise to empty [string[]] so the emitted JSON contains `[]` (not `null` or `[null]`).
+    if ($null -eq $aliases)   { $aliases   = [string[]]@() }
+    if ($null -eq $codewords) { $codewords = [string[]]@() }
 
     [ordered]@{
         name         = $name

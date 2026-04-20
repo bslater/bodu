@@ -61,6 +61,18 @@ function Format-AnchorSlug {
     return 'crc.cat.' + ($Name -replace '/', '-').ToLowerInvariant()
 }
 
+function Get-AliasesFrom {
+    param($Spec)
+    # Always return a [string[]] — never $null, never a one-null array — so .Count is safe
+    # regardless of how ConvertFrom-Json materialised the JSON "aliases" member. The leading
+    # comma prevents PowerShell from unwrapping an empty array to $null on function return.
+    if (-not $Spec.PSObject.Properties['aliases']) { return ,[string[]]@() }
+    $value = $Spec.aliases
+    if ($null -eq $value) { return ,[string[]]@() }
+    $arr = @($value | Where-Object { $null -ne $_ })
+    return ,[string[]]$arr
+}
+
 $specs = Get-Content -LiteralPath $SpecsPath -Raw | ConvertFrom-Json
 $excludeSet = [System.Collections.Generic.HashSet[string]]::new([string[]]$Exclude, [System.StringComparer]::Ordinal)
 
@@ -123,7 +135,7 @@ $skipped   = @($specs | Where-Object { $_.size -gt $MaxSize })
 foreach ($spec in $supported) {
     $c = ConvertTo-ConstantName $spec.name
     $cls = if ($spec.PSObject.Properties['class']) { [string]$spec.class } else { '' }
-    $aliases = if ($spec.PSObject.Properties['aliases'] -and $spec.aliases) { @($spec.aliases) } else { @() }
+    $aliases = Get-AliasesFrom $spec
     $aliasCell = if ($aliases.Count -eq 0) {
         '—'
     }

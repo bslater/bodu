@@ -77,11 +77,23 @@ function Format-AnchorSlug {
 
 function Format-EnglishList {
     param([string[]]$Items)
-    if (-not $Items -or $Items.Count -eq 0) { return '' }
+    if ($null -eq $Items -or $Items.Count -eq 0) { return '' }
     if ($Items.Count -eq 1) { return "<c>$($Items[0])</c>" }
     if ($Items.Count -eq 2) { return "<c>$($Items[0])</c> and <c>$($Items[1])</c>" }
     $head = ($Items[0..($Items.Count - 2)] | ForEach-Object { "<c>$_</c>" }) -join ', '
     return "$head, and <c>$($Items[-1])</c>"
+}
+
+function Get-AliasesFrom {
+    param($Spec)
+    # Always return a [string[]] — never $null, never a one-null array — so .Count is safe
+    # regardless of how ConvertFrom-Json materialised the JSON "aliases" member. The leading
+    # comma prevents PowerShell from unwrapping an empty array to $null on function return.
+    if (-not $Spec.PSObject.Properties['aliases']) { return ,[string[]]@() }
+    $value = $Spec.aliases
+    if ($null -eq $value) { return ,[string[]]@() }
+    $arr = @($value | Where-Object { $null -ne $_ })
+    return ,[string[]]$arr
 }
 
 $specs = Get-Content -LiteralPath $SpecsPath -Raw | ConvertFrom-Json
@@ -106,14 +118,12 @@ foreach ($spec in $supported) {
         throw "Constant name collision: '$c' is claimed by both '$($nameMap[$c])' and '$($spec.name)'."
     }
     $nameMap[$c] = $spec.name
-    if ($spec.PSObject.Properties['aliases'] -and $spec.aliases) {
-        foreach ($a in $spec.aliases) {
-            $ac = ConvertTo-ConstantName $a
-            if ($nameMap.Contains($ac)) {
-                throw "Constant name collision: alias '$a' maps to '$ac' which is already claimed by '$($nameMap[$ac])'."
-            }
-            $nameMap[$ac] = $a
+    foreach ($a in (Get-AliasesFrom $spec)) {
+        $ac = ConvertTo-ConstantName $a
+        if ($nameMap.Contains($ac)) {
+            throw "Constant name collision: alias '$a' maps to '$ac' which is already claimed by '$($nameMap[$ac])'."
         }
+        $nameMap[$ac] = $a
     }
 }
 
@@ -142,7 +152,7 @@ $sb = [System.Text.StringBuilder]::new()
 foreach ($spec in $supported) {
     $canonicalConst = ConvertTo-ConstantName $spec.name
     $anchor = Format-AnchorSlug $spec.name
-    $aliases = if ($spec.PSObject.Properties['aliases'] -and $spec.aliases) { @($spec.aliases) } else { @() }
+    $aliases = Get-AliasesFrom $spec
     $aliasConsts = @($aliases | ForEach-Object { ConvertTo-ConstantName $_ })
 
     $datesPart = ''
@@ -189,8 +199,7 @@ foreach ($spec in $supported) {
     }
 
     # Emit alias constants pointing at the canonical (whether it's declared here or externally).
-    foreach ($i in 0..($aliases.Count - 1)) {
-        if ($aliases.Count -eq 0) { break }
+    for ($i = 0; $i -lt $aliases.Count; $i++) {
         $alias = $aliases[$i]
         $aliasConst = $aliasConsts[$i]
         $otherAliases = @($aliases | Where-Object { $_ -ne $alias })
@@ -271,7 +280,7 @@ foreach ($spec in $supported) {
 foreach ($spec in $supported) {
     $c = ConvertTo-ConstantName $spec.name
     [void]$sb.AppendLine("            map[`"$($spec.name)`"] = $c;")
-    $aliases = if ($spec.PSObject.Properties['aliases'] -and $spec.aliases) { @($spec.aliases) } else { @() }
+    $aliases = Get-AliasesFrom $spec
     foreach ($a in $aliases) {
         [void]$sb.AppendLine("            map[`"$a`"] = $c;")
     }
@@ -285,9 +294,10 @@ foreach ($spec in $supported) {
 Set-Content -LiteralPath $OutputPath -Value $sb.ToString() -Encoding utf8
 
 $emitted = @($supported | Where-Object { -not $excludeSet.Contains($_.name) }).Count
-$aliasCount = ($supported | ForEach-Object {
-    if ($_.PSObject.Properties['aliases'] -and $_.aliases) { @($_.aliases).Count } else { 0 }
-} | Measure-Object -Sum).Sum
+$aliasCount = 0
+foreach ($spec in $supported) {
+    $aliasCount += (Get-AliasesFrom $spec).Count
+}
 
 Write-Host "Wrote $OutputPath"
 Write-Host "  Canonicals emitted:   $emitted"
