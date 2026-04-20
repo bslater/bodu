@@ -17,135 +17,138 @@ namespace Bodu.Security.Cryptography
         private static readonly byte[] CatalogCheckInput = Encoding.ASCII.GetBytes("123456789");
 
         /// <summary>
-        /// Yields one test row per catalogue CRC standard: the <see cref="CrcStandard" /> instance and the expected
+        /// Yields one test row per catalogue CRC standard: the <see cref="CrcStandards" /> enum value and the expected
         /// <c>check</c> value from the RevEng catalogue (the CRC of the ASCII bytes <c>"123456789"</c>).
         /// </summary>
         /// <returns>Test data rows for use with <c>[DynamicData]</c>.</returns>
         public static IEnumerable<object[]> CatalogCheckVectors()
         {
-            yield return new object[] { CrcStandard.CRC3_GSM, 0x4UL };
-            yield return new object[] { CrcStandard.CRC3_ROHC, 0x6UL };
-            yield return new object[] { CrcStandard.CRC4_G704, 0x7UL };
-            yield return new object[] { CrcStandard.CRC4_INTERLAKEN, 0xBUL };
-            yield return new object[] { CrcStandard.CRC5_EPCC1G2, 0x00UL };
-            yield return new object[] { CrcStandard.CRC5_G704, 0x07UL };
-            yield return new object[] { CrcStandard.CRC5_USB, 0x19UL };
-            yield return new object[] { CrcStandard.CRC6_CDMA2000A, 0x0DUL };
-            yield return new object[] { CrcStandard.CRC6_CDMA2000B, 0x3BUL };
-            yield return new object[] { CrcStandard.CRC6_DARC, 0x26UL };
-            yield return new object[] { CrcStandard.CRC6_G704, 0x06UL };
-            yield return new object[] { CrcStandard.CRC6_GSM, 0x13UL };
-            yield return new object[] { CrcStandard.CRC7_MMC, 0x75UL };
-            yield return new object[] { CrcStandard.CRC7_ROHC, 0x53UL };
-            yield return new object[] { CrcStandard.CRC7_UMTS, 0x61UL };
-            yield return new object[] { CrcStandard.CRC8_AUTOSAR, 0xDFUL };
-            yield return new object[] { CrcStandard.CRC8_CDMA2000, 0xDAUL };
-            yield return new object[] { CrcStandard.CRC8_DARC, 0x15UL };
-            yield return new object[] { CrcStandard.CRC8_DVBS2, 0xBCUL };
-            yield return new object[] { CrcStandard.CRC8_GSMA, 0x37UL };
-            yield return new object[] { CrcStandard.CRC8_GSMB, 0x94UL };
-            yield return new object[] { CrcStandard.CRC8_HITAG, 0xB4UL };
-            yield return new object[] { CrcStandard.CRC8_I4321, 0xA1UL };
-            yield return new object[] { CrcStandard.CRC8_ICODE, 0x7EUL };
-            yield return new object[] { CrcStandard.CRC8_LTE, 0xEAUL };
-            yield return new object[] { CrcStandard.CRC8_MAXIMDOW, 0xA1UL };
-            yield return new object[] { CrcStandard.CRC8_MIFAREMAD, 0x99UL };
-            yield return new object[] { CrcStandard.CRC8_NRSC5, 0xF7UL };
-            yield return new object[] { CrcStandard.CRC8_OPENSAFETY, 0x3EUL };
-            yield return new object[] { CrcStandard.CRC8_ROHC, 0xD0UL };
-            yield return new object[] { CrcStandard.CRC8_SAEJ1850, 0x4BUL };
-            yield return new object[] { CrcStandard.CRC8_SMBUS, 0xF4UL };
-            yield return new object[] { CrcStandard.CRC8_TECH3250, 0x97UL };
-            yield return new object[] { CrcStandard.CRC8_WCDMA, 0x25UL };
-            yield return new object[] { CrcStandard.CRC10_ATM, 0x199UL };
-            yield return new object[] { CrcStandard.CRC10_CDMA2000, 0x233UL };
-            yield return new object[] { CrcStandard.CRC10_GSM, 0x12AUL };
-            yield return new object[] { CrcStandard.CRC11_FLEXRAY, 0x5A3UL };
-            yield return new object[] { CrcStandard.CRC11_UMTS, 0x061UL };
-            yield return new object[] { CrcStandard.CRC12_CDMA2000, 0xD4DUL };
-            yield return new object[] { CrcStandard.CRC12_DECT, 0xF5BUL };
-            yield return new object[] { CrcStandard.CRC12_GSM, 0xB34UL };
-            yield return new object[] { CrcStandard.CRC12_UMTS, 0xDAFUL };
-            yield return new object[] { CrcStandard.CRC13_BBC, 0x04FAUL };
-            yield return new object[] { CrcStandard.CRC14_DARC, 0x082DUL };
-            yield return new object[] { CrcStandard.CRC14_GSM, 0x30AEUL };
-            yield return new object[] { CrcStandard.CRC15_CAN, 0x059EUL };
-            yield return new object[] { CrcStandard.CRC15_MPT1327, 0x2566UL };
-            yield return new object[] { CrcStandard.CRC16_ARC, 0xBB3DUL };
-            yield return new object[] { CrcStandard.CRC16_CDMA2000, 0x4C06UL };
-            yield return new object[] { CrcStandard.CRC16_CMS, 0xAEE7UL };
-            yield return new object[] { CrcStandard.CRC16_DDS110, 0x9ECFUL };
-            yield return new object[] { CrcStandard.CRC16_DECTR, 0x007EUL };
-            yield return new object[] { CrcStandard.CRC16_DECTX, 0x007FUL };
-            yield return new object[] { CrcStandard.CRC16_DNP, 0xEA82UL };
-            yield return new object[] { CrcStandard.CRC16_EN13757, 0xC2B7UL };
-            yield return new object[] { CrcStandard.CRC16_GENIBUS, 0xD64EUL };
-            yield return new object[] { CrcStandard.CRC16_GSM, 0xCE3CUL };
-            yield return new object[] { CrcStandard.CRC16_IBM3740, 0x29B1UL };
-            yield return new object[] { CrcStandard.CRC16_IBMSDLC, 0x906EUL };
-            yield return new object[] { CrcStandard.CRC16_ISOIEC144433A, 0xBF05UL };
-            yield return new object[] { CrcStandard.CRC16_KERMIT, 0x2189UL };
-            yield return new object[] { CrcStandard.CRC16_LJ1200, 0xBDF4UL };
-            yield return new object[] { CrcStandard.CRC16_M17, 0x772BUL };
-            yield return new object[] { CrcStandard.CRC16_MAXIMDOW, 0x44C2UL };
-            yield return new object[] { CrcStandard.CRC16_MCRF4XX, 0x6F91UL };
-            yield return new object[] { CrcStandard.CRC16_MODBUS, 0x4B37UL };
-            yield return new object[] { CrcStandard.CRC16_NRSC5, 0xA066UL };
-            yield return new object[] { CrcStandard.CRC16_OPENSAFETYA, 0x5D38UL };
-            yield return new object[] { CrcStandard.CRC16_OPENSAFETYB, 0x20FEUL };
-            yield return new object[] { CrcStandard.CRC16_PROFIBUS, 0xA819UL };
-            yield return new object[] { CrcStandard.CRC16_RIELLO, 0x63D0UL };
-            yield return new object[] { CrcStandard.CRC16_SPIFUJITSU, 0xE5CCUL };
-            yield return new object[] { CrcStandard.CRC16_T10DIF, 0xD0DBUL };
-            yield return new object[] { CrcStandard.CRC16_TELEDISK, 0x0FB3UL };
-            yield return new object[] { CrcStandard.CRC16_TMS37157, 0x26B1UL };
-            yield return new object[] { CrcStandard.CRC16_UMTS, 0xFEE8UL };
-            yield return new object[] { CrcStandard.CRC16_USB, 0xB4C8UL };
-            yield return new object[] { CrcStandard.CRC16_XMODEM, 0x31C3UL };
-            yield return new object[] { CrcStandard.CRC17_CANFD, 0x04F03UL };
-            yield return new object[] { CrcStandard.CRC21_CANFD, 0x0ED841UL };
-            yield return new object[] { CrcStandard.CRC24_BLE, 0xC25A56UL };
-            yield return new object[] { CrcStandard.CRC24_FLEXRAYA, 0x7979BDUL };
-            yield return new object[] { CrcStandard.CRC24_FLEXRAYB, 0x1F23B8UL };
-            yield return new object[] { CrcStandard.CRC24_INTERLAKEN, 0xB4F3E6UL };
-            yield return new object[] { CrcStandard.CRC24_LTEA, 0xCDE703UL };
-            yield return new object[] { CrcStandard.CRC24_LTEB, 0x23EF52UL };
-            yield return new object[] { CrcStandard.CRC24_OPENPGP, 0x21CF02UL };
-            yield return new object[] { CrcStandard.CRC24_OS9, 0x200FA5UL };
-            yield return new object[] { CrcStandard.CRC30_CDMA, 0x04C34ABFUL };
-            yield return new object[] { CrcStandard.CRC31_PHILIPS, 0x0CE9E46CUL };
-            yield return new object[] { CrcStandard.CRC32_AIXM, 0x3010BF7FUL };
-            yield return new object[] { CrcStandard.CRC32_AUTOSAR, 0x1697D06AUL };
-            yield return new object[] { CrcStandard.CRC32_BASE91D, 0x87315576UL };
-            yield return new object[] { CrcStandard.CRC32_BZIP2, 0xFC891918UL };
-            yield return new object[] { CrcStandard.CRC32_CDROMEDC, 0x6EC2EDC4UL };
-            yield return new object[] { CrcStandard.CRC32_CKSUM, 0x765E7680UL };
-            yield return new object[] { CrcStandard.CRC32_ISCSI, 0xE3069283UL };
-            yield return new object[] { CrcStandard.CRC32_JAMCRC, 0x340BC6D9UL };
-            yield return new object[] { CrcStandard.CRC32_MEF, 0xD2C22F51UL };
-            yield return new object[] { CrcStandard.CRC32_MPEG2, 0x0376E6E7UL };
-            yield return new object[] { CrcStandard.CRC32_XFER, 0xBD0BE338UL };
-            yield return new object[] { CrcStandard.CRC40_GSM, 0xD4164FC646UL };
-            yield return new object[] { CrcStandard.CRC64_ECMA182, 0x6C40DF5F0B497347UL };
-            yield return new object[] { CrcStandard.CRC64_GOISO, 0xB90956C775A41001UL };
-            yield return new object[] { CrcStandard.CRC64_JONES, 0xCAA717168609F281UL };
-            yield return new object[] { CrcStandard.CRC64_MS, 0x75D4B74F024ECEEAUL };
-            yield return new object[] { CrcStandard.CRC64_NVME, 0xAE8B14860A799888UL };
-            yield return new object[] { CrcStandard.CRC64_REDIS, 0xE9C6D914C4B8D9CAUL };
-            yield return new object[] { CrcStandard.CRC64_WE, 0x62EC59E3F1A4F00AUL };
-            yield return new object[] { CrcStandard.CRC64_XZ, 0x995DC9BBDF1939FAUL };
+            yield return new object[] { CrcStandards.CRC3_GSM, 0x4UL };
+            yield return new object[] { CrcStandards.CRC3_ROHC, 0x6UL };
+            yield return new object[] { CrcStandards.CRC4_G704, 0x7UL };
+            yield return new object[] { CrcStandards.CRC4_INTERLAKEN, 0xBUL };
+            yield return new object[] { CrcStandards.CRC5_EPCC1G2, 0x00UL };
+            yield return new object[] { CrcStandards.CRC5_G704, 0x07UL };
+            yield return new object[] { CrcStandards.CRC5_USB, 0x19UL };
+            yield return new object[] { CrcStandards.CRC6_CDMA2000A, 0x0DUL };
+            yield return new object[] { CrcStandards.CRC6_CDMA2000B, 0x3BUL };
+            yield return new object[] { CrcStandards.CRC6_DARC, 0x26UL };
+            yield return new object[] { CrcStandards.CRC6_G704, 0x06UL };
+            yield return new object[] { CrcStandards.CRC6_GSM, 0x13UL };
+            yield return new object[] { CrcStandards.CRC7_MMC, 0x75UL };
+            yield return new object[] { CrcStandards.CRC7_ROHC, 0x53UL };
+            yield return new object[] { CrcStandards.CRC7_UMTS, 0x61UL };
+            yield return new object[] { CrcStandards.CRC8_AUTOSAR, 0xDFUL };
+            yield return new object[] { CrcStandards.CRC8_CDMA2000, 0xDAUL };
+            yield return new object[] { CrcStandards.CRC8_DARC, 0x15UL };
+            yield return new object[] { CrcStandards.CRC8_DVBS2, 0xBCUL };
+            yield return new object[] { CrcStandards.CRC8_GSMA, 0x37UL };
+            yield return new object[] { CrcStandards.CRC8_GSMB, 0x94UL };
+            yield return new object[] { CrcStandards.CRC8_HITAG, 0xB4UL };
+            yield return new object[] { CrcStandards.CRC8_I4321, 0xA1UL };
+            yield return new object[] { CrcStandards.CRC8_ICODE, 0x7EUL };
+            yield return new object[] { CrcStandards.CRC8_LTE, 0xEAUL };
+            yield return new object[] { CrcStandards.CRC8_MAXIMDOW, 0xA1UL };
+            yield return new object[] { CrcStandards.CRC8_MIFAREMAD, 0x99UL };
+            yield return new object[] { CrcStandards.CRC8_NRSC5, 0xF7UL };
+            yield return new object[] { CrcStandards.CRC8_OPENSAFETY, 0x3EUL };
+            yield return new object[] { CrcStandards.CRC8_ROHC, 0xD0UL };
+            yield return new object[] { CrcStandards.CRC8_SAEJ1850, 0x4BUL };
+            yield return new object[] { CrcStandards.CRC8_SMBUS, 0xF4UL };
+            yield return new object[] { CrcStandards.CRC8_TECH3250, 0x97UL };
+            yield return new object[] { CrcStandards.CRC8_WCDMA, 0x25UL };
+            yield return new object[] { CrcStandards.CRC10_ATM, 0x199UL };
+            yield return new object[] { CrcStandards.CRC10_CDMA2000, 0x233UL };
+            yield return new object[] { CrcStandards.CRC10_GSM, 0x12AUL };
+            yield return new object[] { CrcStandards.CRC11_FLEXRAY, 0x5A3UL };
+            yield return new object[] { CrcStandards.CRC11_UMTS, 0x061UL };
+            yield return new object[] { CrcStandards.CRC12_CDMA2000, 0xD4DUL };
+            yield return new object[] { CrcStandards.CRC12_DECT, 0xF5BUL };
+            yield return new object[] { CrcStandards.CRC12_GSM, 0xB34UL };
+            yield return new object[] { CrcStandards.CRC12_UMTS, 0xDAFUL };
+            yield return new object[] { CrcStandards.CRC13_BBC, 0x04FAUL };
+            yield return new object[] { CrcStandards.CRC14_DARC, 0x082DUL };
+            yield return new object[] { CrcStandards.CRC14_GSM, 0x30AEUL };
+            yield return new object[] { CrcStandards.CRC15_CAN, 0x059EUL };
+            yield return new object[] { CrcStandards.CRC15_MPT1327, 0x2566UL };
+            yield return new object[] { CrcStandards.CRC16_ARC, 0xBB3DUL };
+            yield return new object[] { CrcStandards.CRC16_CDMA2000, 0x4C06UL };
+            yield return new object[] { CrcStandards.CRC16_CMS, 0xAEE7UL };
+            yield return new object[] { CrcStandards.CRC16_DDS110, 0x9ECFUL };
+            yield return new object[] { CrcStandards.CRC16_DECTR, 0x007EUL };
+            yield return new object[] { CrcStandards.CRC16_DECTX, 0x007FUL };
+            yield return new object[] { CrcStandards.CRC16_DNP, 0xEA82UL };
+            yield return new object[] { CrcStandards.CRC16_EN13757, 0xC2B7UL };
+            yield return new object[] { CrcStandards.CRC16_GENIBUS, 0xD64EUL };
+            yield return new object[] { CrcStandards.CRC16_GSM, 0xCE3CUL };
+            yield return new object[] { CrcStandards.CRC16_IBM3740, 0x29B1UL };
+            yield return new object[] { CrcStandards.CRC16_IBMSDLC, 0x906EUL };
+            yield return new object[] { CrcStandards.CRC16_ISOIEC144433A, 0xBF05UL };
+            yield return new object[] { CrcStandards.CRC16_KERMIT, 0x2189UL };
+            yield return new object[] { CrcStandards.CRC16_LJ1200, 0xBDF4UL };
+            yield return new object[] { CrcStandards.CRC16_M17, 0x772BUL };
+            yield return new object[] { CrcStandards.CRC16_MAXIMDOW, 0x44C2UL };
+            yield return new object[] { CrcStandards.CRC16_MCRF4XX, 0x6F91UL };
+            yield return new object[] { CrcStandards.CRC16_MODBUS, 0x4B37UL };
+            yield return new object[] { CrcStandards.CRC16_NRSC5, 0xA066UL };
+            yield return new object[] { CrcStandards.CRC16_OPENSAFETYA, 0x5D38UL };
+            yield return new object[] { CrcStandards.CRC16_OPENSAFETYB, 0x20FEUL };
+            yield return new object[] { CrcStandards.CRC16_PROFIBUS, 0xA819UL };
+            yield return new object[] { CrcStandards.CRC16_RIELLO, 0x63D0UL };
+            yield return new object[] { CrcStandards.CRC16_SPIFUJITSU, 0xE5CCUL };
+            yield return new object[] { CrcStandards.CRC16_T10DIF, 0xD0DBUL };
+            yield return new object[] { CrcStandards.CRC16_TELEDISK, 0x0FB3UL };
+            yield return new object[] { CrcStandards.CRC16_TMS37157, 0x26B1UL };
+            yield return new object[] { CrcStandards.CRC16_UMTS, 0xFEE8UL };
+            yield return new object[] { CrcStandards.CRC16_USB, 0xB4C8UL };
+            yield return new object[] { CrcStandards.CRC16_XMODEM, 0x31C3UL };
+            yield return new object[] { CrcStandards.CRC17_CANFD, 0x04F03UL };
+            yield return new object[] { CrcStandards.CRC21_CANFD, 0x0ED841UL };
+            yield return new object[] { CrcStandards.CRC24_BLE, 0xC25A56UL };
+            yield return new object[] { CrcStandards.CRC24_FLEXRAYA, 0x7979BDUL };
+            yield return new object[] { CrcStandards.CRC24_FLEXRAYB, 0x1F23B8UL };
+            yield return new object[] { CrcStandards.CRC24_INTERLAKEN, 0xB4F3E6UL };
+            yield return new object[] { CrcStandards.CRC24_LTEA, 0xCDE703UL };
+            yield return new object[] { CrcStandards.CRC24_LTEB, 0x23EF52UL };
+            yield return new object[] { CrcStandards.CRC24_OPENPGP, 0x21CF02UL };
+            yield return new object[] { CrcStandards.CRC24_OS9, 0x200FA5UL };
+            yield return new object[] { CrcStandards.CRC30_CDMA, 0x04C34ABFUL };
+            yield return new object[] { CrcStandards.CRC31_PHILIPS, 0x0CE9E46CUL };
+            yield return new object[] { CrcStandards.CRC32_AIXM, 0x3010BF7FUL };
+            yield return new object[] { CrcStandards.CRC32_AUTOSAR, 0x1697D06AUL };
+            yield return new object[] { CrcStandards.CRC32_BASE91D, 0x87315576UL };
+            yield return new object[] { CrcStandards.CRC32_BZIP2, 0xFC891918UL };
+            yield return new object[] { CrcStandards.CRC32_CDROMEDC, 0x6EC2EDC4UL };
+            yield return new object[] { CrcStandards.CRC32_CKSUM, 0x765E7680UL };
+            yield return new object[] { CrcStandards.CRC32_ISCSI, 0xE3069283UL };
+            yield return new object[] { CrcStandards.CRC32_ISOHDLC, 0xCBF43926UL };
+            yield return new object[] { CrcStandards.CRC32_JAMCRC, 0x340BC6D9UL };
+            yield return new object[] { CrcStandards.CRC32_MEF, 0xD2C22F51UL };
+            yield return new object[] { CrcStandards.CRC32_MPEG2, 0x0376E6E7UL };
+            yield return new object[] { CrcStandards.CRC32_XFER, 0xBD0BE338UL };
+            yield return new object[] { CrcStandards.CRC40_GSM, 0xD4164FC646UL };
+            yield return new object[] { CrcStandards.CRC64_ECMA182, 0x6C40DF5F0B497347UL };
+            yield return new object[] { CrcStandards.CRC64_GOISO, 0xB90956C775A41001UL };
+            yield return new object[] { CrcStandards.CRC64_JONES, 0xCAA717168609F281UL };
+            yield return new object[] { CrcStandards.CRC64_MS, 0x75D4B74F024ECEEAUL };
+            yield return new object[] { CrcStandards.CRC64_NVME, 0xAE8B14860A799888UL };
+            yield return new object[] { CrcStandards.CRC64_REDIS, 0xE9C6D914C4B8D9CAUL };
+            yield return new object[] { CrcStandards.CRC64_WE, 0x62EC59E3F1A4F00AUL };
+            yield return new object[] { CrcStandards.CRC64_XZ, 0x995DC9BBDF1939FAUL };
         }
 
         /// <summary>
         /// Verifies that every catalogue CRC standard hashes the reference input <c>"123456789"</c> to the
-        /// <c>check</c> value published in the RevEng catalogue.
+        /// <c>check</c> value published in the RevEng catalogue. The standard is materialised on demand via
+        /// <see cref="CrcStandard.Get(CrcStandards)" />.
         /// </summary>
-        /// <param name="standard">The catalogue <see cref="CrcStandard" /> under test.</param>
+        /// <param name="standardId">The catalogue entry under test, identified by <see cref="CrcStandards" />.</param>
         /// <param name="expectedCheck">The expected CRC value, packed little-endian from the CRC width.</param>
         [DataTestMethod]
         [DynamicData(nameof(CatalogCheckVectors), DynamicDataSourceType.Method)]
-        public void ComputeHash_WhenInputIsCheckVector_ForCatalogStandard_ShouldMatchPublishedCheck(CrcStandard standard, ulong expectedCheck)
+        public void ComputeHash_WhenInputIsCheckVector_ForCatalogStandard_ShouldMatchPublishedCheck(CrcStandards standardId, ulong expectedCheck)
         {
+            CrcStandard standard = CrcStandard.Get(standardId);
             using var crc = new Crc(standard);
             byte[] hash = crc.ComputeHash(CatalogCheckInput);
 

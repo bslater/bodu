@@ -26,36 +26,57 @@ namespace Bodu.Security.Cryptography
         /// </summary>
         public const int MinSize = 1;
 
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/ISO-HDLC</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/ISO-HDLC</c> definition.</value>
+        /// <summary>Gets the <c>CRC-8/SMBUS</c> CRC standard (alias <c>CRC-8</c>). Width 8, polynomial <c>0x07</c>, initial value <c>0x00</c>, no reflection, XOR out <c>0x00</c>.</summary>
+        /// <remarks>The canonical "CRC-8" used by SMBus (System Management Bus) and the de-facto generic 8-bit CRC.</remarks>
+        /// <seealso cref="CrcStandards.CRC8_SMBUS" />
+        public static CrcStandard CRC8_SMBUS => Get(CrcStandards.CRC8_SMBUS);
+
+        /// <summary>Gets the <c>CRC-8/MAXIM-DOW</c> CRC standard (aliases <c>CRC-8/MAXIM</c>, <c>DOW-CRC</c>). Used by Maxim / Dallas 1-Wire devices.</summary>
+        /// <seealso cref="CrcStandards.CRC8_MAXIMDOW" />
+        public static CrcStandard CRC8_MAXIMDOW => Get(CrcStandards.CRC8_MAXIMDOW);
+
+        /// <summary>Gets the <c>CRC-16/ARC</c> CRC standard (aliases include <c>CRC-16</c>, <c>CRC-IBM</c>, <c>CRC-16/LHA</c>). The de-facto generic 16-bit CRC.</summary>
+        /// <seealso cref="CrcStandards.CRC16_ARC" />
+        public static CrcStandard CRC16_ARC => Get(CrcStandards.CRC16_ARC);
+
+        /// <summary>Gets the <c>CRC-16/IBM-3740</c> CRC standard (aliases <c>CRC-16/AUTOSAR</c>, <c>CRC-16/CCITT-FALSE</c>). The widely-used "CCITT-false" variant.</summary>
+        /// <seealso cref="CrcStandards.CRC16_IBM3740" />
+        public static CrcStandard CRC16_IBM3740 => Get(CrcStandards.CRC16_IBM3740);
+
+        /// <summary>Gets the <c>CRC-16/KERMIT</c> CRC standard (aliases <c>CRC-16/BLUETOOTH</c>, <c>CRC-16/CCITT</c>, <c>CRC-CCITT</c>). Used by Kermit and Bluetooth.</summary>
+        /// <seealso cref="CrcStandards.CRC16_KERMIT" />
+        public static CrcStandard CRC16_KERMIT => Get(CrcStandards.CRC16_KERMIT);
+
+        /// <summary>Gets the <c>CRC-16/MODBUS</c> CRC standard (alias <c>MODBUS</c>). Used by Modbus RTU over serial.</summary>
+        /// <seealso cref="CrcStandards.CRC16_MODBUS" />
+        public static CrcStandard CRC16_MODBUS => Get(CrcStandards.CRC16_MODBUS);
+
+        /// <summary>Gets the <c>CRC-16/XMODEM</c> CRC standard (aliases <c>CRC-16/ACORN</c>, <c>XMODEM</c>, <c>ZMODEM</c>). Used by XMODEM and ZMODEM.</summary>
+        /// <seealso cref="CrcStandards.CRC16_XMODEM" />
+        public static CrcStandard CRC16_XMODEM => Get(CrcStandards.CRC16_XMODEM);
+
+        /// <summary>Gets the <c>CRC-32/ISO-HDLC</c> CRC standard (aliases <c>CRC-32</c>, <c>PKZIP</c>, <c>CRC-32/XZ</c>, <c>CRC-32/ADCCP</c>, <c>CRC-32/V-42</c>). The canonical CRC-32 used by zlib, PNG, Ethernet, PKZIP, and the default standard used by <see cref="Crc.Crc()" />.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-32/ISO-HDLC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-iso-hdlc">CRC RevEng catalogue</a>, with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>32</c></description></item>
-        /// <item><description>Polynomial: <c>0x04C11DB7</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFFFFFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-32/ISO-HDLC</c> standard is also known by the aliases <c>CRC-32</c>, <c>CRC-32/ADCCP</c>, <c>CRC-32/V-42</c>, <c>CRC-32/XZ</c>, and <c>PKZIP</c>.</para>
-        /// <para>This entry is maintained in <c>CrcStandard.cs</c> rather than the auto-generated <c>CrcStandard.Catalog.cs</c> because it is the default standard used by <see cref="Crc.Crc()" />. The generated catalogue still references it from <see cref="All" /> and exposes the aliases above.</para>
+        /// <para>Width 32, polynomial <c>0x04C11DB7</c>, initial value <c>0xFFFFFFFF</c>, reflected input and output, final XOR <c>0xFFFFFFFF</c>.</para>
         /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32" />
-        /// <seealso cref="CrcStandard.CRC32_ADCCP" />
-        /// <seealso cref="CrcStandard.CRC32_V42" />
-        /// <seealso cref="CrcStandard.CRC32_XZ" />
-        /// <seealso cref="CrcStandard.PKZIP" />
-        public static readonly CrcStandard CRC32_ISOHDLC = new CrcStandard(
-            name: "CRC-32/ISO-HDLC",
-            size: 32,
-            polynomial: 0x04C11DB7UL,
-            initialValue: 0xFFFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFFFFFFFUL);
+        /// <seealso cref="CrcStandards.CRC32_ISOHDLC" />
+        public static CrcStandard CRC32_ISOHDLC => Get(CrcStandards.CRC32_ISOHDLC);
+
+        /// <summary>Gets the <c>CRC-32/ISCSI</c> CRC standard (aliases <c>CRC-32C</c>, <c>CRC-32/CASTAGNOLI</c>, <c>CRC-32/NVME</c>, <c>CRC-32/BASE91-C</c>, <c>CRC-32/INTERLAKEN</c>). Castagnoli polynomial used by iSCSI, SCTP, Btrfs, ext4, NVMe, and many modern protocols.</summary>
+        /// <seealso cref="CrcStandards.CRC32_ISCSI" />
+        public static CrcStandard CRC32_ISCSI => Get(CrcStandards.CRC32_ISCSI);
+
+        /// <summary>Gets the <c>CRC-32/BZIP2</c> CRC standard (aliases <c>CRC-32/AAL5</c>, <c>CRC-32/DECT-B</c>, <c>B-CRC-32</c>). Used by bzip2 and AAL5.</summary>
+        /// <seealso cref="CrcStandards.CRC32_BZIP2" />
+        public static CrcStandard CRC32_BZIP2 => Get(CrcStandards.CRC32_BZIP2);
+
+        /// <summary>Gets the <c>CRC-64/ECMA-182</c> CRC standard (alias <c>CRC-64</c>). Specified by ECMA-182 for DLT tape formats.</summary>
+        /// <seealso cref="CrcStandards.CRC64_ECMA182" />
+        public static CrcStandard CRC64_ECMA182 => Get(CrcStandards.CRC64_ECMA182);
+
+        /// <summary>Gets the <c>CRC-64/XZ</c> CRC standard (alias <c>CRC-64/GO-ECMA</c>). Used by the XZ compressed file format and the Go <c>crc64</c> ECMA table.</summary>
+        /// <seealso cref="CrcStandards.CRC64_XZ" />
+        public static CrcStandard CRC64_XZ => Get(CrcStandards.CRC64_XZ);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CrcStandard" /> class with the specified parameters.
