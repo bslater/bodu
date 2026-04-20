@@ -41,7 +41,7 @@ namespace Bodu.Security.Cryptography
         /// input in <see cref="ReferenceInputs" /> under the supplied catalogue <paramref name="standard" />.
         /// </summary>
         /// <param name="standard">The catalogue <see cref="CrcStandard" /> under test.</param>
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(CatalogStandards), DynamicDataSourceType.Method)]
         public void ComputeHash_ForCatalogStandard_ShouldMatchReferenceImplementation(CrcStandard standard)
         {
@@ -72,7 +72,7 @@ namespace Bodu.Security.Cryptography
         /// <see cref="Crc.ComputeHash(byte[])" /> call, across every catalogue standard.
         /// </summary>
         /// <param name="standard">The catalogue <see cref="CrcStandard" /> under test.</param>
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(CatalogStandards), DynamicDataSourceType.Method)]
         public void ComputeHash_WhenStreamedInOneByteChunks_ForCatalogStandard_ShouldMatchSingleCall(CrcStandard standard)
         {
