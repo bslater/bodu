@@ -16,6 +16,11 @@ jobs:
   build-test:
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    env:
+      TEST_PROJECTS: >-
+        Bodu.Core/test/Bodu.Core.Test.csproj
+        Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.csproj
+        Bodu.Globalization.Calendar/test/Bodu.Globalization.Calendar.Test.csproj
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,20 +34,37 @@ jobs:
             8.0.x
 
       - name: Restore
-        run: dotnet restore Bodu.CI.slnf
+        run: |
+          for proj in $TEST_PROJECTS; do
+            echo "::group::Restore $proj"
+            dotnet restore "$proj"
+            echo "::endgroup::"
+          done
 
       - name: Build
-        run: dotnet build Bodu.CI.slnf --configuration Release --no-restore
+        run: |
+          for proj in $TEST_PROJECTS; do
+            echo "::group::Build $proj"
+            dotnet build "$proj" --configuration Release --no-restore
+            echo "::endgroup::"
+          done
 
       - name: Test
-        run: >
-          dotnet test Bodu.CI.slnf
-          --configuration Release
-          --no-build
-          --settings test.runsettings
-          --results-directory "${{ github.workspace }}/TestResults"
-          --logger "trx;LogFileName=test-results.trx"
-          --logger "console;verbosity=normal"
+        run: |
+          status=0
+          for proj in $TEST_PROJECTS; do
+            name=$(basename "$proj" .csproj)
+            echo "::group::Test $name"
+            dotnet test "$proj" \
+              --configuration Release \
+              --no-build \
+              --settings test.runsettings \
+              --results-directory "${{ github.workspace }}/TestResults/$name" \
+              --logger "trx;LogFileName=$name.trx" \
+              --logger "console;verbosity=normal" || status=$?
+            echo "::endgroup::"
+          done
+          exit $status
 
       - name: Upload TRX artifact
         if: always()
