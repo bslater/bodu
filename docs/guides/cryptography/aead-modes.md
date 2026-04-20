@@ -18,7 +18,7 @@ title: Using AEAD modes
 
 ## Prerequisites — an AES `IBlockCipher`
 
-Every mode transform in this family takes an <xref:Bodu.Security.Cryptography.IBlockCipher> as its primitive. The library ships one public implementation, <xref:Bodu.Security.Cryptography.AesBlockCipher>, which wraps the BCL's hardware-accelerated `Aes`.
+Every mode transform in this family takes an <xref:Bodu.Security.Cryptography.IBlockCipher> as its primitive **and assumes a 16-byte (128-bit) block size**. That assumption is baked into the counter formats, the GHASH/POLYVAL field, and the offset schedules — so the library's other primitives (Skipjack and Blowfish at 8 bytes, Threefish-256/512/1024 at 32/64/128 bytes) are not eligible. <xref:Bodu.Security.Cryptography.AesBlockCipher>, which wraps the BCL's hardware-accelerated `Aes`, is the only primitive that fits.
 
 ```csharp
 using System.Security.Cryptography;
@@ -29,6 +29,8 @@ using var cipher = new AesBlockCipher(key);
 ```
 
 `AesBlockCipher` implements `IBlockCipher`, exposes a 16-byte block size, and forwards single-block encrypt / decrypt calls to `Aes.EncryptEcb` / `Aes.DecryptEcb`. It is the glue that makes every mode transform below usable.
+
+If you need authenticated encryption with one of the *non-128-bit* ciphers (Skipjack, Blowfish, or Threefish), see the [composing primitives guide](composing-primitives.md) — you can still use the classic mode transforms (CBC, CTR, etc.) directly with their primitives, and layer your own MAC (HMAC, Poly1305) over the resulting ciphertext for an encrypt-then-MAC construction.
 
 ## Prerequisites — the extension methods
 

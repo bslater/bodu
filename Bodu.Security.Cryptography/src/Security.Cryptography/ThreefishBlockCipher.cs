@@ -16,10 +16,21 @@
     /// <c>Threefish-1024</c> variants.
     /// </summary>
     /// <remarks>
-    /// Derived classes supply the block size, word count, rotation schedule, and round count for a specific Threefish variant, along
-    /// with their own <see cref="Encrypt" /> and <see cref="Decrypt" /> implementations.
+    /// <para>
+    /// Derived classes — <see cref="Threefish256Cipher" />, <see cref="Threefish512Cipher" />, and
+    /// <see cref="Threefish1024Cipher" /> — supply the block size, word count, rotation schedule, and round count for a
+    /// specific Threefish variant, along with their own <see cref="Encrypt" /> and <see cref="Decrypt" /> implementations.
+    /// </para>
+    /// <para>
+    /// External callers cannot derive new variants: the constructor and protected members are scoped <c>private protected</c>,
+    /// limiting derivation to the three variants that ship with this library. Use <see cref="Threefish256Cipher" />,
+    /// <see cref="Threefish512Cipher" />, or <see cref="Threefish1024Cipher" /> for the raw block primitive, or one of the
+    /// higher-level <see cref="Threefish256" />, <see cref="Threefish512" />, or <see cref="Threefish1024" /> wrappers for
+    /// the standard <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract.
+    /// </para>
     /// </remarks>
-    internal abstract partial class ThreefishBlockCipher
+    /// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs. SymmetricAlgorithm</seealso>
+    public abstract partial class ThreefishBlockCipher
         : IBlockCipher
     {
         /// <summary>
@@ -27,19 +38,19 @@
         /// subkey injection.
         /// </summary>
         // KeySchedule: [K0, K1, K2, K3, K4=parity, K0, K1, K2, K3]
-        protected readonly ulong[] KeySchedule;
+        private protected readonly ulong[] KeySchedule;
 
         /// <summary>
         /// The expanded tweak schedule, containing the two tweak words, their XOR, and the repeated tweak words used during subkey
         /// injection.
         /// </summary>
         // TweakSchedule: [T0, T1, T2=T0^T1, T0, T1]
-        protected readonly ulong[] TweakSchedule;
+        private protected readonly ulong[] TweakSchedule;
 
         /// <summary>
         /// Indicates whether the instance has been disposed.
         /// </summary>
-        protected bool disposed = false;
+        private protected bool disposed = false;
 
         private const ulong KeyParityValue = 0x1BD11BDAA9FC1A22;
 
@@ -53,7 +64,7 @@
         /// <exception cref="ArgumentException">
         /// <paramref name="key" /> or <paramref name="tweak" /> has an invalid length.
         /// </exception>
-        protected ThreefishBlockCipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
+        private protected ThreefishBlockCipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
         {
             ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(key, this.BlockSize);
             ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(tweak, 16);

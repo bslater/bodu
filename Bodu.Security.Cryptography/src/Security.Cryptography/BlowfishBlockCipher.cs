@@ -24,11 +24,15 @@ namespace Bodu.Security.Cryptography
     /// material and expanded S-box state are zeroed securely on disposal.
     /// </para>
     /// <para>
-    /// This class is intended for internal use only. Callers should use <see cref="Blowfish" /> with a
-    /// <see cref="System.Security.Cryptography.CryptoStream" /> rather than invoking this class directly.
+    /// Most callers should prefer the higher-level <see cref="Blowfish" /> class, which exposes the standard
+    /// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract. Use <see cref="BlowfishBlockCipher" /> directly only
+    /// when composing the raw block primitive with an <see cref="IBlockCipherModeTransform" /> (for example via
+    /// <see cref="BlockCipherModeFactory" />) or with an <see cref="IPaddingStrategy" />.
     /// </para>
     /// </remarks>
-    internal sealed class BlowfishBlockCipher
+    /// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs. SymmetricAlgorithm</seealso>
+    /// <seealso cref="Blowfish" />
+    public sealed class BlowfishBlockCipher
         : IBlockCipher
     {
         private const int BlockSizeInBytes = 8;

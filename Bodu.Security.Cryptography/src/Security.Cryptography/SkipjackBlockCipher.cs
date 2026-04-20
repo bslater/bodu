@@ -39,8 +39,16 @@ namespace Bodu.Security.Cryptography
     /// This implementation is constant-time in its control flow, but the S-box lookup table remains data-dependent. As such, this
     /// implementation is <b>not</b> hardened against timing or cache-based side-channel attacks.
     /// </para>
+    /// <para>
+    /// Most callers should prefer the higher-level <see cref="Skipjack" /> class, which exposes the standard
+    /// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract. Use <see cref="SkipjackBlockCipher" /> directly only
+    /// when composing the raw block primitive with an <see cref="IBlockCipherModeTransform" /> (for example via
+    /// <see cref="BlockCipherModeFactory" />) or with an <see cref="IPaddingStrategy" />.
+    /// </para>
     /// </remarks>
-    internal sealed class SkipjackBlockCipher
+    /// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs. SymmetricAlgorithm</seealso>
+    /// <seealso cref="Skipjack" />
+    public sealed class SkipjackBlockCipher
         : IBlockCipher
     {
         /// <summary>

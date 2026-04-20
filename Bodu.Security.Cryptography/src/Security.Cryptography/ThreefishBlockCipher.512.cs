@@ -15,10 +15,20 @@
     /// tweak.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// Threefish is a tweakable block cipher optimised for 64-bit platforms and forms the core primitive of the Skein hash function.
     /// The <c>Threefish-512</c> variant operates on eight 64-bit words over 72 rounds using modular addition, bitwise rotation, and XOR.
+    /// </para>
+    /// <para>
+    /// Most callers should prefer the higher-level <see cref="Threefish512" /> class, which exposes the standard
+    /// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract. Use <see cref="Threefish512Cipher" /> directly only
+    /// when composing the raw block primitive with an <see cref="IBlockCipherModeTransform" /> (for example via
+    /// <see cref="BlockCipherModeFactory" />) or with an <see cref="IPaddingStrategy" />.
+    /// </para>
     /// </remarks>
-    internal sealed class Threefish512Cipher
+    /// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs. SymmetricAlgorithm</seealso>
+    /// <seealso cref="Threefish512" />
+    public sealed class Threefish512Cipher
         : ThreefishBlockCipher
     {
         /// <summary>
