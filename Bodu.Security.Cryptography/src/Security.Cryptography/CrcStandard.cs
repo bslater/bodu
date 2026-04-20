@@ -27,6 +27,24 @@ namespace Bodu.Security.Cryptography
         public const int MinSize = 1;
 
         /// <summary>
+        /// Represents the <c>CRC-32/ISO-HDLC</c> standard — the 32-bit polynomial <c>0x04C11DB7</c> with reflected input and output and
+        /// a final XOR of <c>0xFFFFFFFF</c>. This is the default standard used by the parameterless <see cref="Crc" /> constructor.
+        /// </summary>
+        /// <remarks>
+        /// Maintained as part of the core <see cref="CrcStandard" /> type rather than the auto-generated catalogue because it is the
+        /// default standard and is referenced directly from <see cref="Crc" />. Also appears in <see cref="All" /> so catalogue iteration
+        /// still covers it.
+        /// </remarks>
+        public static readonly CrcStandard CRC32_ISOHDLC = new CrcStandard(
+            name: "CRC-32/ISO-HDLC",
+            size: 32,
+            polynomial: 0x04C11DB7UL,
+            initialValue: 0xFFFFFFFFUL,
+            reflectIn: true,
+            reflectOut: true,
+            xOrOut: 0xFFFFFFFFUL);
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="CrcStandard" /> class with the specified parameters.
         /// </summary>
         /// <param name="name">The name of the CRC standard.</param>
