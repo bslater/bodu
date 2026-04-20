@@ -19,6 +19,11 @@ public partial class ConcurrentCircularBufferTests
         AssertBufferContainsExactlyValues(buffer, 10, 11);
     }
 
+    /// <summary>
+    /// Verifies that when <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" /> is toggled concurrently with
+    /// enqueueing into a full buffer, at least one enqueue throws <see cref="InvalidOperationException" /> while
+    /// overwriting is disabled, and the buffer never exceeds its configured capacity.
+    /// </summary>
     [TestMethod]
     public void Enqueue_WhenAllowOverwriteToggledDuringEnqueue_ShouldAlternateBetweenThrowsAndEvictions()
     {
@@ -28,8 +33,15 @@ public partial class ConcurrentCircularBufferTests
 
         var exceptions = new ConcurrentBag<Exception>();
 
+        // Handshake: the toggler confirms AllowOverwrite = false before the writer's first
+        // Enqueue, guaranteeing at least one deterministic InvalidOperationException against
+        // the full buffer. Concurrent toggling then proceeds for the remainder of both loops.
+        using var togglerPrimed = new ManualResetEventSlim(initialState: false);
+
         var writer = Task.Run(() =>
         {
+            togglerPrimed.Wait();
+
             for (int i = 0; i < 200; i++)
             {
                 try { buffer.Enqueue(new TestItem(100 + i)); }
@@ -40,16 +52,21 @@ public partial class ConcurrentCircularBufferTests
 
         var toggler = Task.Run(() =>
         {
-            for (int i = 0; i < 200; i++)
+            buffer.AllowOverwrite = false;
+            togglerPrimed.Set();
+
+            // Continue flipping starting from i = 1 so the next write remains false,
+            // preserving the original "true on i % 3 == 0" cadence after the primed state.
+            for (int i = 1; i < 200; i++)
             {
-                buffer.AllowOverwrite = (i % 3 == 0); // flip sometimes
+                buffer.AllowOverwrite = (i % 3 == 0);
                 Thread.SpinWait(50);
             }
         });
 
         Task.WaitAll(writer, toggler);
 
-        // We expect a mix: some throws (when flag false and full), some evictions (when flag true)
+        // We expect a mix: some throws (when flag false and full), some evictions (when flag true).
         Assert.IsTrue(exceptions.Count > 0, "Expected some InvalidOperationExceptions while overwrite was disabled.");
         Assert.IsTrue(buffer.Count <= buffer.Capacity);
     }
