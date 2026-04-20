@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Threading.Tasks;
 
 namespace Bodu.Security.Cryptography
@@ -156,10 +155,10 @@ namespace Bodu.Security.Cryptography
 		}
 
 		/// <summary>
-		/// Verifies that the <see cref="CrcLookupTableCache" /> returns the different instances for the same parameters.
+		/// Verifies that repeated lookups with identical parameters return the same shared array reference from the cache.
 		/// </summary>
 		[TestMethod]
-		public void GetLookupTable_WhenCalledWithSameParameters_ShouldReturnDifferentInstance()
+		public void GetLookupTable_WhenCalledWithSameParameters_ShouldReturnCachedInstance()
 		{
 			int size = 32;
 			ulong polynomial = 0x04C11DB7;
@@ -168,8 +167,8 @@ namespace Bodu.Security.Cryptography
 			var firstCallResult = cache.GetLookupTable(size, polynomial, reflectIn);
 			var secondCallResult = cache.GetLookupTable(size, polynomial, reflectIn);
 
-			// Assert that the result from the second call is not the same as the first call (cache hit)
-			Assert.AreNotSame(firstCallResult, secondCallResult);
+			// Cache hits share a single underlying table across callers.
+			Assert.AreSame(firstCallResult, secondCallResult);
 		}
 
 		/// <summary>
@@ -241,18 +240,20 @@ namespace Bodu.Security.Cryptography
 		}
 
 		/// <summary>
-		/// Verifies that the byte array returned from the cache cannot be modified directly.
+		/// Verifies that the cache returns a <see cref="ulong" /> array whose contents match the shared precomputed table.
 		/// </summary>
 		[TestMethod]
-		public void GetLookupTable_ShouldReturnImmutableResults()
+		public void GetLookupTable_ShouldReturnSharedArray()
 		{
 			int size = 32;
 			ulong polynomial = 0x04C11DB7;
 			bool reflectIn = true;
 
-			var cachedResult = cache.GetLookupTable(size, polynomial, reflectIn);
+			ulong[] cachedResult = cache.GetLookupTable(size, polynomial, reflectIn);
 
-			Assert.IsInstanceOfType<ImmutableArray<ulong>>(cachedResult);
+			Assert.IsNotNull(cachedResult);
+			Assert.AreEqual(256, cachedResult.Length);
+			Assert.AreSame(cachedResult, cache.GetLookupTable(size, polynomial, reflectIn));
 		}
 	}
 }

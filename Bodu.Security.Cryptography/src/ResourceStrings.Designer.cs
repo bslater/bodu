@@ -294,13 +294,5 @@ namespace Bodu {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to The global CRC cache cannot be set to null..
-        /// </summary>
-        internal static string InvalidOperation_CacheValueCannotBeNull {
-            get {
-                return ResourceManager.GetString("InvalidOperation_CacheValueCannotBeNull", resourceCulture);
-            }
-        }
     }
 }
