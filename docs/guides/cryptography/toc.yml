@@ -7,6 +7,8 @@
   href: cipher-modes.md
 - name: AEAD modes
   href: aead-modes.md
+- name: Composing primitives
+  href: composing-primitives.md
 - name: Padding
   href: padding.md
 - name: Hashing and checksums

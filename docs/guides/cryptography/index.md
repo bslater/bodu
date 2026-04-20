@@ -32,6 +32,11 @@ If you're looking for the generated API reference, see the [Bodu.Security.Crypto
   <p>PKCS7, Zeros, and None — how each one pads, when it round-trips cleanly, and when it silently loses bytes.</p>
 </div>
 
+<div class="bodu-card">
+  <h3><a href="composing-primitives.html">Composing primitives</a></h3>
+  <p>The two patterns side by side — manual <code>IBlockCipher</code> + <code>BlockCipherModeFactory</code> + <code>PaddingFactory</code>, and the equivalent through the <code>SymmetricAlgorithm</code> wrappers.</p>
+</div>
+
 </div>
 
 ## Symmetric ciphers

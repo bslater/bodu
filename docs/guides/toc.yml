@@ -10,6 +10,8 @@
       href: cryptography/cipher-modes.md
     - name: AEAD modes
       href: cryptography/aead-modes.md
+    - name: Composing primitives
+      href: cryptography/composing-primitives.md
     - name: Padding
       href: cryptography/padding.md
     - name: Hashing and checksums
