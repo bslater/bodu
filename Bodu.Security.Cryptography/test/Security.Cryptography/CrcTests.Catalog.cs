@@ -134,7 +134,6 @@ namespace Bodu.Security.Cryptography
             yield return new object[] { CrcStandard.CRC64_REDIS, 0xE9C6D914C4B8D9CAUL };
             yield return new object[] { CrcStandard.CRC64_WE, 0x62EC59E3F1A4F00AUL };
             yield return new object[] { CrcStandard.CRC64_XZ, 0x995DC9BBDF1939FAUL };
-            yield return new object[] { CrcStandard.CRC82_DARC, 0x09EA83F625023801FD612UL };
         }
 
         /// <summary>

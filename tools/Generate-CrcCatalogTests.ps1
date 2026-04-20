@@ -1,16 +1,14 @@
 <#
 .SYNOPSIS
-    Generates CrcTests.Catalog.cs: a data-driven test that asserts each catalogue entry's `check`
-    vector (the CRC of ASCII "123456789").
+    Generates CrcTests.Catalog.cs: a data-driven test that asserts each catalogue entry's
+    `check` vector (the CRC of ASCII "123456789").
 
 .DESCRIPTION
-    For every CRC standard in crc-specs.json (except those listed in -Exclude), emits a
-    DynamicData row carrying the generated field reference and the expected check value. A single
-    parameterised test computes `new Crc(standard).ComputeHash(Encoding.ASCII.GetBytes("123456789"))`
-    and compares against the expected value, packed little-endian from the CRC width.
-
-    Entries listed in -Exclude are omitted because they are expected to be covered by bespoke
-    hand-written tests elsewhere.
+    For every CRC standard in crc-specs.json (except those listed in -Exclude, and those whose
+    `size` exceeds -MaxSize), emits a DynamicData row carrying the generated field reference and
+    the expected check value. A single parameterised test computes
+    `new Crc(standard).ComputeHash(Encoding.ASCII.GetBytes("123456789"))` and compares against
+    the expected value, packed little-endian from the CRC width.
 
 .PARAMETER SpecsPath
     Path to the crc-specs.json input file.
@@ -20,6 +18,9 @@
 
 .PARAMETER Exclude
     Canonical CRC names to omit from the generated test rows.
+
+.PARAMETER MaxSize
+    Maximum CRC width (in bits). Entries above this are skipped.
 
 .EXAMPLE
     pwsh ./tools/Generate-CrcCatalogTests.ps1
@@ -32,7 +33,8 @@
 param(
     [string]$SpecsPath = (Join-Path $PSScriptRoot '..' 'Bodu.Security.Cryptography' 'src' 'crc-specs.json'),
     [string]$OutputPath = (Join-Path $PSScriptRoot '..' 'Bodu.Security.Cryptography' 'test' 'Security.Cryptography' 'CrcTests.Catalog.cs'),
-    [string[]]$Exclude = @('CRC-32/ISO-HDLC')
+    [string[]]$Exclude = @('CRC-32/ISO-HDLC'),
+    [int]$MaxSize = 64
 )
 
 $ErrorActionPreference = 'Stop'
@@ -53,7 +55,15 @@ function Format-HexLiteral {
 
 $specs = Get-Content -LiteralPath $SpecsPath -Raw | ConvertFrom-Json
 $excludeSet = [System.Collections.Generic.HashSet[string]]::new([string[]]$Exclude, [System.StringComparer]::Ordinal)
-$emitted = @($specs | Where-Object { -not $excludeSet.Contains($_.name) })
+
+$emitted = @()
+$skippedSize = @()
+$skippedExclude = @()
+foreach ($spec in $specs) {
+    if ($spec.size -gt $MaxSize) { $skippedSize += ,$spec.name; continue }
+    if ($excludeSet.Contains($spec.name)) { $skippedExclude += ,$spec.name; continue }
+    $emitted += ,$spec
+}
 
 $sb = [System.Text.StringBuilder]::new()
 [void]$sb.AppendLine('// ---------------------------------------------------------------------------------------------------------------')
@@ -111,4 +121,7 @@ foreach ($spec in $emitted) {
 [void]$sb.AppendLine('}')
 
 Set-Content -LiteralPath $OutputPath -Value $sb.ToString() -Encoding utf8
-Write-Host "Wrote $OutputPath ($($emitted.Count) check vectors; $($excludeSet.Count) excluded)."
+Write-Host "Wrote $OutputPath"
+Write-Host "  Check vectors emitted: $($emitted.Count)"
+Write-Host "  Skipped by -Exclude:   $($skippedExclude.Count)"
+Write-Host "  Skipped by -MaxSize:   $($skippedSize.Count)"

@@ -16,6 +16,8 @@
       href: cryptography/padding.md
     - name: Hashing and checksums
       href: cryptography/hashing.md
+    - name: CRC catalogue
+      href: cryptography/crc-catalogue.md
     - name: Symmetric algorithms
       items:
         - name: Threefish-256

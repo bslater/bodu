@@ -26,15 +26,28 @@ namespace Bodu.Security.Cryptography
         /// </summary>
         public const int MinSize = 1;
 
-        /// <summary>
-        /// Represents the <c>CRC-32/ISO-HDLC</c> standard — the 32-bit polynomial <c>0x04C11DB7</c> with reflected input and output and
-        /// a final XOR of <c>0xFFFFFFFF</c>. This is the default standard used by the parameterless <see cref="Crc" /> constructor.
-        /// </summary>
+        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/ISO-HDLC</c> cyclic redundancy check algorithm standard.</summary>
+        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/ISO-HDLC</c> definition.</value>
         /// <remarks>
-        /// Maintained as part of the core <see cref="CrcStandard" /> type rather than the auto-generated catalogue because it is the
-        /// default standard and is referenced directly from <see cref="Crc" />. Also appears in <see cref="All" /> so catalogue iteration
-        /// still covers it.
+        /// <para>The <c>CRC-32/ISO-HDLC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-iso-hdlc">CRC RevEng catalogue</a>, with the following definition.</para>
+        /// <para>
+        /// <list type="bullet">
+        /// <item><description>Width: <c>32</c></description></item>
+        /// <item><description>Polynomial: <c>0x04C11DB7</c></description></item>
+        /// <item><description>Initial Value: <c>0xFFFFFFFF</c></description></item>
+        /// <item><description>Reflect In: <c>true</c></description></item>
+        /// <item><description>Reflect Out: <c>true</c></description></item>
+        /// <item><description>XOR Out: <c>0xFFFFFFFF</c></description></item>
+        /// </list>
+        /// </para>
+        /// <para>The <c>CRC-32/ISO-HDLC</c> standard is also known by the aliases <c>CRC-32</c>, <c>CRC-32/ADCCP</c>, <c>CRC-32/V-42</c>, <c>CRC-32/XZ</c>, and <c>PKZIP</c>.</para>
+        /// <para>This entry is maintained in <c>CrcStandard.cs</c> rather than the auto-generated <c>CrcStandard.Catalog.cs</c> because it is the default standard used by <see cref="Crc.Crc()" />. The generated catalogue still references it from <see cref="All" /> and exposes the aliases above.</para>
         /// </remarks>
+        /// <seealso cref="CrcStandard.CRC32" />
+        /// <seealso cref="CrcStandard.CRC32_ADCCP" />
+        /// <seealso cref="CrcStandard.CRC32_V42" />
+        /// <seealso cref="CrcStandard.CRC32_XZ" />
+        /// <seealso cref="CrcStandard.PKZIP" />
         public static readonly CrcStandard CRC32_ISOHDLC = new CrcStandard(
             name: "CRC-32/ISO-HDLC",
             size: 32,
