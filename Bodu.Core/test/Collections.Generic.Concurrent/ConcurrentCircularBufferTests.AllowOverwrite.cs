@@ -131,6 +131,12 @@ public partial class ConcurrentCircularBufferTests
         // At minimum, the read path must not have thrown; reaching this line confirms stability.
     }
 
+    /// <summary>
+    /// Verifies that a write to <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" /> is observed by a
+    /// concurrently running enqueuer, such that at least one enqueue against a full buffer throws
+    /// <see cref="InvalidOperationException" /> while overwriting is disabled, and ongoing toggling between
+    /// <see langword="true" /> and <see langword="false" /> continues without corrupting the buffer.
+    /// </summary>
     [TestMethod]
     public void AllowOverwrite_WhenToggledDuringEnqueue_ShouldAffectBehaviorImmediately()
     {
@@ -141,9 +147,17 @@ public partial class ConcurrentCircularBufferTests
 
         var exceptions = new ConcurrentBag<Exception>();
 
+        // Handshake: the toggler establishes AllowOverwrite = false before the writer's first
+        // Enqueue, guaranteeing at least one observation of the disabled state against a full
+        // buffer. Concurrent toggling then proceeds for the remainder of both loops so the test
+        // still exercises inter-thread visibility under contention.
+        using var togglerPrimed = new ManualResetEventSlim(initialState: false);
+
         var writer = Task.Run(() =>
         {
-            for (int i = 0; i < 200; i++) // more iterations
+            togglerPrimed.Wait();
+
+            for (int i = 0; i < 200; i++)
             {
                 try
                 {
@@ -154,17 +168,22 @@ public partial class ConcurrentCircularBufferTests
                     exceptions.Add(ex);
                 }
 
-                // Introduce random delay to vary interleaving
+                // Introduce variable delay to broaden interleaving with the toggler.
                 Thread.SpinWait(1000 + (i % 5) * 100);
             }
         });
 
         var toggler = Task.Run(() =>
         {
-            for (int i = 0; i < 200; i++)
+            buffer.AllowOverwrite = false;
+            togglerPrimed.Set();
+
+            // Continue alternating starting from i = 1 so the next write is true, preserving
+            // the original true/false cadence after the primed false state.
+            for (int i = 1; i < 200; i++)
             {
                 buffer.AllowOverwrite = (i % 2 == 0);
-                Thread.SpinWait(2000); // longer delay to keep setting stable
+                Thread.SpinWait(2000);
             }
         });
 
