@@ -1,0 +1,18 @@
+# DocFX build output
+_site/
+obj/
+
+# Auto-generated API metadata (docfx metadata phase)
+api/
+
+# Generated TOC artifacts (DocFX emits these alongside source markdown)
+**/toc.html
+**/toc.json
+
+# Generated HTML sidecars from build output leaking into source tree
+docs/*.html
+articles/*.html
+apidoc/*.html
+
+# Node bits from local SCSS compilation (if developer runs sass locally)
+node_modules/
