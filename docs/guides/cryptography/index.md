@@ -23,6 +23,11 @@ If you're looking for the generated API reference, see the [Bodu.Security.Crypto
 </div>
 
 <div class="bodu-card">
+  <h3><a href="aead-modes.html">AEAD modes</a></h3>
+  <p>GCM, CCM, OCB3, SIV, GCM-SIV — authenticated encryption with AES, using <code>AesBlockCipher</code> plus the one-shot extension methods.</p>
+</div>
+
+<div class="bodu-card">
   <h3><a href="padding.html">Padding</a></h3>
   <p>PKCS7, Zeros, and None — how each one pads, when it round-trips cleanly, and when it silently loses bytes.</p>
 </div>
@@ -53,8 +58,6 @@ All five share the same high-level shape: a `SymmetricAlgorithm` (or `TweakableS
 - [AEAD modes overview](../../api/Bodu.Security.Cryptography.GcmModeTransform.html) — how GCM, CCM, OCB, EAX, SIV, and GCM-SIV relate.
 - [Merkle tree construction](../../api/Bodu.Security.Cryptography.MerkleTreeHash.html) and the [parallel pipeline diagram](../../api/Bodu.Security.Cryptography.ParallelMerkleTreeHash.html).
 
-## A note on AEAD
+## Authenticated encryption
 
-This library ships a family of AEAD mode transforms — `GcmModeTransform`, `CcmModeTransform`, `OcbModeTransform`, `EaxModeTransform`, `SivModeTransform`, `GcmSivModeTransform` — implemented against the internal `IBlockCipher` engines. They are currently consumed by the library's own tests rather than directly by external callers.
-
-If you need authenticated encryption in an application today, use the BCL's <xref:System.Security.Cryptography.AesGcm?displayProperty=nameWithType> or <xref:System.Security.Cryptography.AesCcm?displayProperty=nameWithType>, which are hardware-accelerated and FIPS-validated on supported platforms.
+For authenticated-encryption-with-associated-data (AEAD), pair the public <xref:Bodu.Security.Cryptography.AesBlockCipher> with one of the mode transforms — `GcmModeTransform`, `CcmModeTransform`, `OcbModeTransform`, `SivModeTransform`, or `GcmSivModeTransform` — and call through the one-shot <xref:Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions> helpers. The [AEAD modes guide](aead-modes.md) walks through each mode end-to-end.

@@ -45,6 +45,9 @@ namespace Bodu.Security.Cryptography
     /// <see cref="IAeadBlockCipherModeTransform" /> convention.
     /// </para>
     /// </remarks>
+    /// <seealso href="../guides/cryptography/aead-modes.html#gcm-siv--the-modern-replacement-for-gcm">GCM-SIV walk-through in the AEAD-modes guide</seealso>
+    /// <seealso cref="AesBlockCipher" />
+    /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />
     public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
     {
         private const int TagLengthBytes = 16;

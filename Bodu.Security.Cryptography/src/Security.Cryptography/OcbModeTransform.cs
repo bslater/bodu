@@ -44,6 +44,9 @@ namespace Bodu.Security.Cryptography
     /// The L array uses GF(2^128) doubling with polynomial x^128 + x^7 + x^2 + x + 1 (big-endian).
     /// </para>
     /// </remarks>
+    /// <seealso href="../guides/cryptography/aead-modes.html#ocb3--single-pass-rfc-7253">OCB3 walk-through in the AEAD-modes guide</seealso>
+    /// <seealso cref="AesBlockCipher" />
+    /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />
     public sealed class OcbModeTransform
         : IAeadBlockCipherModeTransform
     {
