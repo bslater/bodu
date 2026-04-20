@@ -10,10 +10,27 @@ namespace Bodu.Security.Cryptography
     /// Identifies the block cipher chaining modes used when encrypting or decrypting multi-block messages.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// <img src="../images/diagrams/classic-modes.svg" alt="ECB, CBC, CFB, OFB, and CTR data-flow panels." />
+    /// </para>
+    /// <para>
     /// Each value selects a different strategy for combining block cipher operations with feedback or sequencing
-    /// logic. Modes differ in security properties, parallelism, and whether they require an initialisation vector
-    /// or nonce. Use <see cref="BlockCipherModeFactory.Create" /> to obtain an
+    /// logic. The five panels above show the classic, non-authenticated modes:
+    /// <list type="number">
+    /// <item><description><b>ECB</b> — no feedback. Identical plaintext blocks produce identical ciphertext blocks.</description></item>
+    /// <item><description><b>CBC</b> — previous ciphertext block XORed into the next plaintext before encryption; the first block uses the IV.</description></item>
+    /// <item><description><b>CFB</b> — encrypted previous ciphertext (or IV) acts as keystream; self-synchronising.</description></item>
+    /// <item><description><b>OFB</b> — encrypted previous keystream block feeds forward; plaintext is independent of the keystream chain.</description></item>
+    /// <item><description><b>CTR</b> — successive counter values are encrypted to produce an independent, random-access keystream.</description></item>
+    /// </list>
+    /// </para>
+    /// <para>
+    /// Modes differ in security properties, parallelism, and whether they require an initialisation vector
+    /// or nonce. The remaining values (<see cref="XTS" />, <see cref="OCB" />, <see cref="EAX" />,
+    /// <see cref="SIV" />) extend these building blocks with per-block tweaks or authenticated-encryption tags.
+    /// Use <see cref="BlockCipherModeFactory.Create" /> to obtain an
     /// <see cref="IBlockCipherModeTransform" /> for a given value.
+    /// </para>
     /// </remarks>
     public enum CipherBlockMode
     {

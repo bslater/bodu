@@ -15,11 +15,22 @@ namespace Bodu.Security.Cryptography
     /// </summary>
     /// <remarks>
     /// <para>
+    /// <img src="../images/diagrams/merkle-tree.svg" alt="Merkle tree construction — the input is sliced into blocks, each block is hashed to a leaf, leaves are grouped by fan-out F and reduced level-by-level until a single root hash remains." />
+    /// </para>
+    /// <para>
     /// Input bytes are divided into fixed-size blocks. Each block is hashed independently to form a
-    /// leaf node at level 0. A dedicated async worker per tree level groups incoming nodes by
-    /// <c>fanOut</c>, hashes each full group into a parent node, and writes it to the next level's
-    /// channel. Workers at adjacent levels run concurrently, so tree reduction overlaps with
-    /// continued leaf production.
+    /// leaf node at <em>Level 0</em> (the first row of circular nodes in the diagram above). A dedicated
+    /// async worker per tree level groups incoming nodes by <c>fanOut</c> (<b>F</b> in the diagram,
+    /// shown as 3), hashes each full group into a parent node, and writes it to the next level's
+    /// channel. Workers at adjacent levels run concurrently, so tree reduction <em>overlaps</em> with
+    /// continued leaf production — conceptually, each row of the diagram is a different worker
+    /// running at the same time as the rows above and below it, communicating through bounded channels.
+    /// </para>
+    /// <para>
+    /// A short tail block (the dashed <b>B₇</b> cell in the diagram) is zero-padded up to a full block
+    /// before hashing, so every leaf is the same width regardless of input alignment. A short final group
+    /// at any internal level — for example the single-child reduction of <b>L₇</b> into <b>N₃</b> —
+    /// is promoted with its surviving children only.
     /// </para>
     /// <para>
     /// <b>Reuse:</b> the same instance may be used for multiple sequential hash computations.

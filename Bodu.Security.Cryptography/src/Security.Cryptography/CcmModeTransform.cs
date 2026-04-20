@@ -15,6 +15,15 @@ namespace Bodu.Security.Cryptography
     /// </summary>
     /// <remarks>
     /// <para>
+    /// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — a CTR-style keystream produces ciphertext and a MAC over nonce, associated data, and ciphertext produces the tag. In CCM the MAC is CBC-MAC." />
+    /// </para>
+    /// <para>
+    /// CCM is the <b>CTR + CBC-MAC</b> instantiation of the generic AEAD shape above: the top pipeline is the
+    /// plain CTR keystream generator (panel labelled <em>Keystream Generator (CTR)</em>), and the bottom
+    /// pipeline is a CBC-MAC chain over the formatted nonce, associated data, and ciphertext that produces
+    /// the tag.
+    /// </para>
+    /// <para>
     /// Fixed parameters (matching the most common deployment profile):
     /// <list type="bullet">
     /// <item><description>Nonce (Nlen): 12 bytes — first 12 bytes of the IV.</description></item>

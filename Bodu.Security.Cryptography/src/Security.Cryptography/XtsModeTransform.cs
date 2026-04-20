@@ -14,10 +14,13 @@ namespace Bodu.Security.Cryptography
     /// </summary>
     /// <remarks>
     /// <para>
+    /// <img src="../images/diagrams/xts-mode.svg" alt="XTS data flow — the tweak cipher encrypts the sector number, successive α multiplications in GF(2^128) derive per-block tweaks T_j, and each block is XORed with T_j before and after the data cipher." />
+    /// </para>
+    /// <para>
     /// XTS requires two independent ciphers keyed with different material:
     /// <list type="bullet">
-    /// <item><description><paramref name="dataCipher" /> (Key₁) — encrypts or decrypts the data.</description></item>
-    /// <item><description><paramref name="tweakCipher" /> (Key₂) — encrypts the sector number (tweak).</description></item>
+    /// <item><description><paramref name="dataCipher" /> (Key₁) — encrypts or decrypts the data. Shown as <b>E_K₁</b> in the central column of the diagram.</description></item>
+    /// <item><description><paramref name="tweakCipher" /> (Key₂) — encrypts the sector number (tweak). Shown as <b>E_K₂</b> on the left.</description></item>
     /// </list>
     /// Using the same key for both reduces XTS to a single-key construction and weakens security.
     /// </para>
@@ -28,6 +31,10 @@ namespace Bodu.Security.Cryptography
     /// C_j  = dataCipher.Encrypt(P_j ⊕ T_j) ⊕ T_j  // encrypt
     /// P_j  = dataCipher.Decrypt(C_j ⊕ T_j) ⊕ T_j  // decrypt
     /// </code>
+    /// The horizontal tweak bus in the diagram corresponds to this successive <c>·α</c> multiplication:
+    /// each <b>·α</b> box doubles the tweak in GF(2¹²⁸) so the Tⱼ arriving at cell <em>j</em> is αʲ times the
+    /// base tweak. The two XOR nodes inside each cell — before and after the data cipher — realise the
+    /// <c>⊕ T_j</c> pairs in the equation above.
     /// </para>
     /// <para>
     /// GF(2^128) multiplication uses the primitive polynomial x^128 + x^7 + x^2 + x + 1 with

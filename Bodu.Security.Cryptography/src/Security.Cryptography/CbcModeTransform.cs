@@ -7,10 +7,19 @@
     /// Applies the Cipher Block Chaining (CBC) mode transformation to an underlying <see cref="IBlockCipher" />.
     /// </summary>
     /// <remarks>
-    /// Encryption computes <c>Cᵢ = E(Pᵢ ⊕ Cᵢ₋₁)</c> with <c>C₋₁ = IV</c>, and decryption inverts this as <c>Pᵢ = D(Cᵢ) ⊕ Cᵢ₋₁</c>. The
-    /// initialisation vector must equal the cipher block size in length and should be unpredictable for each message; repeating an IV
+    /// <para>
+    /// <img src="../images/diagrams/classic-modes.svg" alt="CBC panel — each plaintext block is XORed with the previous ciphertext before encryption; the first block uses the IV." />
+    /// </para>
+    /// <para>
+    /// Encryption computes <c>Cᵢ = E(Pᵢ ⊕ Cᵢ₋₁)</c> with <c>C₋₁ = IV</c>, and decryption inverts this as <c>Pᵢ = D(Cᵢ) ⊕ Cᵢ₋₁</c>.
+    /// See <b>panel 2</b> of the diagram above: the dashed feedback line feeds each ciphertext block forward into the
+    /// XOR that precedes the next encryption, and the IV supplies that feedback for the very first block.
+    /// </para>
+    /// <para>
+    /// The initialisation vector must equal the cipher block size in length and should be unpredictable for each message; repeating an IV
     /// under the same key weakens confidentiality. The instance retains the most recent ciphertext block as the chaining value, so
     /// successive calls to <see cref="Transform" /> continue the stream.
+    /// </para>
     /// </remarks>
     public sealed class CbcModeTransform
         : IBlockCipherModeTransform

@@ -7,9 +7,20 @@
     /// stream cipher in which encryption and decryption are identical operations.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// <img src="../images/diagrams/classic-modes.svg" alt="OFB panel — the cipher's output keystream feeds forward into the next cipher input, independent of plaintext." />
+    /// </para>
+    /// <para>
     /// The keystream is produced by repeatedly encrypting the feedback register: <c>Oᵢ = E(Oᵢ₋₁)</c> with <c>O₀ = IV</c>, and the output
-    /// is <c>Pᵢ ⊕ Oᵢ</c>. The initialisation vector must equal the cipher block size in length and must never be reused under the same
+    /// is <c>Pᵢ ⊕ Oᵢ</c>.
+    /// See <b>panel 4</b> of the diagram above: the dashed feedback arrows run between cipher <em>output</em> and the next cipher
+    /// <em>input</em> — in contrast to CFB (panel 3), where feedback runs from ciphertext. That structural difference is what
+    /// makes OFB a synchronous stream cipher — the keystream is independent of the plaintext — and immune to bit-flip propagation.
+    /// </para>
+    /// <para>
+    /// The initialisation vector must equal the cipher block size in length and must never be reused under the same
     /// key, otherwise keystreams collide and confidentiality is lost.
+    /// </para>
     /// </remarks>
     public sealed class OfbModeTransform : IBlockCipherModeTransform
     {

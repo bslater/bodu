@@ -13,9 +13,20 @@
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Input bytes are divided into fixed-size blocks. Each block is hashed independently to form a
-    /// leaf node. Leaf hashes are then grouped by <c>fanOut</c> and combined into parent nodes,
-    /// repeating level by level until a single root hash remains.
+    /// <img src="../images/diagrams/merkle-tree.svg" alt="Merkle tree construction — the input is sliced into blocks, each block is hashed to a leaf, leaves are grouped by fan-out F and reduced level-by-level until a single root hash remains; a partial tail block is zero-padded to the full block size before hashing." />
+    /// </para>
+    /// <para>
+    /// Input bytes are divided into fixed-size blocks — the top row of the diagram above, with <c>blockSize</c>
+    /// labelled <b>B</b>. Each block is hashed independently to form a leaf node (<em>Level 0</em>). Leaf hashes
+    /// are then grouped by <c>fanOut</c> (labelled <b>F</b>, shown as 3 in the diagram) and combined into
+    /// parent nodes, repeating level by level until a single root hash remains at the top.
+    /// </para>
+    /// <para>
+    /// When the input length is not a multiple of <c>blockSize</c>, the partial tail (the dashed orange <b>B₇</b>
+    /// block in the diagram) is zero-padded up to a full block before hashing, so every leaf is the same width
+    /// regardless of input alignment. If the final group at any internal level contains fewer than <c>fanOut</c>
+    /// children, that short group is promoted with its surviving children only — shown in the diagram as the
+    /// single-edged reduction of <b>L₇</b> into <b>N₃</b>.
     /// </para>
     /// <para>
     /// Each call to a <c>ComputeHash</c> overload resets internal state, so the same instance may be
@@ -23,6 +34,8 @@
     /// </para>
     /// <para>
     /// This class is not thread-safe. Concurrent calls from multiple threads produce undefined results.
+    /// For a concurrent level-worker pipeline over the same tree structure, see
+    /// <see cref="ParallelMerkleTreeHash" />.
     /// </para>
     /// </remarks>
     public sealed class MerkleTreeHash : IDisposable
