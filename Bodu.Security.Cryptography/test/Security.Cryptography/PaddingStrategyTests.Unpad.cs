@@ -18,9 +18,9 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Unpad_WhenPaddingIsCorrupted_ShouldThrowCryptographicExceptionWithCleanMessage()
         {
-            if (!this.ValidatesPaddingOnUnpad)
+            if (!this.ValidatesPaddingOnUnpad || !this.ValidatesInteriorPaddingOnUnpad || !this.HasLengthByte)
             {
-                Assert.Inconclusive($"{typeof(TPadding).Name} does not validate padding on Unpad.");
+                Assert.Inconclusive($"{typeof(TPadding).Name} does not validate interior padding bytes via a length-byte layout.");
                 return;
             }
 

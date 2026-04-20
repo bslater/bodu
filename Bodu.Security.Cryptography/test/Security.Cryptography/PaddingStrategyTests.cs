@@ -44,6 +44,21 @@ namespace Bodu.Security.Cryptography
         protected virtual bool SupportsUnalignedInput => true;
 
         /// <summary>
+        /// Gets a value indicating whether <c>Unpad</c> validates the contents of the interior
+        /// pad bytes (not just the trailing length byte or terminator). PKCS#7, ANSI X.923 and
+        /// ISO/IEC 7816-4 all validate interior bytes; ISO 10126 does not because its interior
+        /// bytes are random and cannot be reconstructed during decryption.
+        /// </summary>
+        protected virtual bool ValidatesInteriorPaddingOnUnpad => true;
+
+        /// <summary>
+        /// Gets a value indicating whether the padding scheme encodes its pad length in the
+        /// final byte of the padded block. PKCS#7, ANSI X.923 and ISO 10126 do; ISO/IEC 7816-4
+        /// uses a terminator pattern instead and returns <see langword="false" />.
+        /// </summary>
+        protected virtual bool HasLengthByte => true;
+
+        /// <summary>
         /// Gets a sample plaintext that is shorter than <see cref="BlockSize" /> by the
         /// specified <paramref name="residualBytes" /> count. Used by the single-byte padding
         /// and round-trip tests.

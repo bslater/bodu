@@ -62,6 +62,32 @@ namespace Bodu.Security.Cryptography
             this.padding = PaddingFactory.Create(paddingMode);
         }
 
+        /// <summary>
+        /// Initialises a new instance of the <see cref="BlockCipherTransform" /> class using
+        /// the specified cipher engine, mode, extended padding scheme, initialisation vector,
+        /// and transform direction.
+        /// </summary>
+        /// <param name="cipher">
+        /// The configured <see cref="IBlockCipher" /> engine to use. Must not be <see langword="null" />.
+        /// </param>
+        /// <param name="cipherMode">The block cipher mode of operation (for example, <see cref="CipherBlockMode.CBC" />).</param>
+        /// <param name="paddingMode">
+        /// The extended padding scheme to apply to the final block. Accepts values beyond the
+        /// framework <see cref="PaddingMode" /> enum, including <see cref="BoduPaddingMode.ISO7816_4" />.
+        /// </param>
+        /// <param name="iv">The initialisation vector for the cipher mode. Must match the cipher block size.</param>
+        /// <param name="encrypt">
+        /// <see langword="true" /> to configure for encryption; <see langword="false" /> for decryption.
+        /// </param>
+        /// <exception cref="ArgumentNullException"><paramref name="cipher" /> is <see langword="null" />.</exception>
+        protected BlockCipherTransform(IBlockCipher cipher, CipherBlockMode cipherMode, BoduPaddingMode paddingMode, byte[] iv, bool encrypt)
+        {
+            this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
+            this.encrypt = encrypt;
+            this.mode = BlockCipherModeFactory.Create(cipherMode, cipher, iv);
+            this.padding = PaddingFactory.Create(paddingMode);
+        }
+
         /// <inheritdoc />
         public bool CanReuseTransform => false;
 
@@ -123,7 +149,7 @@ namespace Bodu.Security.Cryptography
             }
             else
             {
-                bool stripPadding = this.padding is Pkcs7Padding;
+                bool stripPadding = this.padding.StripsPaddingOnUnpad;
 
                 if (stripPadding && input.Length <= this.cipher.BlockSize)
                 {

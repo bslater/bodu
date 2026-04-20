@@ -18,6 +18,19 @@
     public interface IPaddingStrategy
     {
         /// <summary>
+        /// Gets a value indicating whether <see cref="Unpad" /> inspects the final block
+        /// and may return fewer bytes than it received. Self-describing schemes such as
+        /// PKCS#7, ANSI X.923, ISO 10126 and ISO/IEC 7816-4 return <see langword="true" />;
+        /// pass-through schemes such as zero padding and no padding return <see langword="false" />.
+        /// </summary>
+        /// <remarks>
+        /// Streaming block-cipher transforms use this flag to decide whether the final
+        /// ciphertext block must be deferred during decryption so that padding validation
+        /// and removal can happen at the stream boundary.
+        /// </remarks>
+        bool StripsPaddingOnUnpad { get; }
+
+        /// <summary>
         /// Applies padding to the input data to align it with the specified block size.
         /// </summary>
         /// <param name="input">The input data to be padded.</param>
