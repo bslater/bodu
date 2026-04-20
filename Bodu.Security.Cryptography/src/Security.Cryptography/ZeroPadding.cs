@@ -12,6 +12,9 @@
     /// </remarks>
     public sealed class ZeroPadding : IPaddingStrategy
     {
+        /// <inheritdoc />
+        public bool StripsPaddingOnUnpad => false;
+
         /// <summary>
         /// Pads the input with zero bytes to align its length to a multiple of the block size.
         /// </summary>

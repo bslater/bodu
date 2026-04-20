@@ -13,6 +13,9 @@
     /// </remarks>
     public sealed class Pkcs7Padding : IPaddingStrategy
     {
+        /// <inheritdoc />
+        public bool StripsPaddingOnUnpad => true;
+
         /// <summary>
         /// Applies PKCS#7 padding to the input data, ensuring the total output is a multiple of the block size.
         /// </summary>

@@ -13,6 +13,9 @@
     /// </remarks>
     public sealed class NoPadding : IPaddingStrategy
     {
+        /// <inheritdoc />
+        public bool StripsPaddingOnUnpad => false;
+
         /// <summary>
         /// Returns a copy of <paramref name="input" /> after verifying that its length is a multiple of <paramref name="blockSize" />.
         /// </summary>
