@@ -1,0 +1,63 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            6.0.x
+            7.0.x
+            8.0.x
+
+      - name: Restore
+        run: dotnet restore Bodu.sln
+
+      - name: Build
+        run: dotnet build Bodu.sln --configuration Release --no-restore
+
+      - name: Test
+        run: >
+          dotnet test Bodu.sln
+          --configuration Release
+          --no-build
+          --settings test.runsettings
+          --results-directory "${{ github.workspace }}/TestResults"
+          --logger "trx;LogFileName=test-results.trx"
+          --logger "console;verbosity=normal"
+
+      - name: Upload TRX artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-trx
+          path: TestResults/**/*.trx
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Publish test report
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: MSTest Results
+          path: TestResults/**/*.trx
+          reporter: dotnet-trx
+          fail-on-error: false
