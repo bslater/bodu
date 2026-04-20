@@ -193,6 +193,12 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(exceptions.All(e => e is InvalidOperationException));
     }
 
+    /// <summary>
+    /// Verifies that under sustained concurrent load with <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" />
+    /// toggling between <see langword="true" /> and <see langword="false" />, the enqueuer observes at least one
+    /// success (while overwriting is enabled) and at least one <see cref="InvalidOperationException" /> (while
+    /// overwriting is disabled), and no unexpected exception type escapes.
+    /// </summary>
     [TestMethod]
     public void AllowOverwrite_WhenToggledUnderLoad_ShouldProduceMixedEnqueueResultsWithoutCrashing()
     {
@@ -204,8 +210,16 @@ public partial class ConcurrentCircularBufferTests
         var exceptions = new ConcurrentBag<Exception>();
         int successes = 0;
 
+        // Handshake: the toggler establishes AllowOverwrite = false before the writer's first
+        // Enqueue, guaranteeing at least one deterministic InvalidOperationException against
+        // the full buffer. The subsequent toggle loop still exercises both true and false
+        // states concurrently, so the "some successes" assertion remains meaningful.
+        using var togglerPrimed = new ManualResetEventSlim(initialState: false);
+
         var writer = Task.Run(() =>
         {
+            togglerPrimed.Wait();
+
             for (int i = 0; i < 2000; i++)
             {
                 try
@@ -224,7 +238,12 @@ public partial class ConcurrentCircularBufferTests
 
         var toggler = Task.Run(() =>
         {
-            for (int i = 0; i < 2000; i++)
+            buffer.AllowOverwrite = false;
+            togglerPrimed.Set();
+
+            // Continue alternating starting from i = 1 so the next write is true, preserving
+            // the original true/false cadence after the primed false state.
+            for (int i = 1; i < 2000; i++)
             {
                 buffer.AllowOverwrite = (i % 2 == 0);
                 Thread.SpinWait(400);
