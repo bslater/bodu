@@ -1,18 +1,11 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Fletcher64.cs" company="PlaceholderCompany">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="CrcLookupTableBuilder.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Security.Cryptography
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-
     /// <summary>
     /// A utility class for handling CRC operations such as generating CRC lookup tables.
     /// </summary>

@@ -1,5 +1,5 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Fletcher64.cs" company="PlaceholderCompany">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="Crc.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,7 +7,6 @@
 using Bodu.Extensions;
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography
@@ -29,21 +28,16 @@ namespace Bodu.Security.Cryptography
         : System.Security.Cryptography.HashAlgorithm
         , IResumableHashAlgorithm
     {
-        // Static thread-safe global cache property
         private static Lazy<CrcLookupTableCache> globalLookupTableCache = new Lazy<CrcLookupTableCache>(() => new CrcLookupTableCache());
 
+        private readonly CrcStandard standard;
         private readonly int hashSizeBytes;
-        private bool disposed = false;
         private ulong[] lookupTable;
         private ulong workingHash;
-#if !NET6_0_OR_GREATER
-
-        // Required for .NET Standard 2.0 or older frameworks
-        private bool finalized;
-#endif
+        private bool disposed;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Crc" /> class using the default CRC standard (CRC32_ISOHDLC).
+        /// Initializes a new instance of the <see cref="Crc" /> class using the default CRC standard (CRC-32/ISO-HDLC).
         /// </summary>
         /// <remarks>
         /// The default standard is CRC-32 (ISO-HDLC) with width 32, polynomial <c>0x04C11DB7</c>, initial value <c>0xFFFFFFFF</c>, reflected
@@ -65,39 +59,26 @@ namespace Bodu.Security.Cryptography
         {
             ThrowHelper.ThrowIfNull(crcStandard);
 
-            // store the crc specification
-            Name = crcStandard.Name;
-            Size = crcStandard.Size;
-            Polynomial = crcStandard.Polynomial;
-            InitialValue = crcStandard.InitialValue;
-            ReflectIn = crcStandard.ReflectIn;
-            ReflectOut = crcStandard.ReflectOut;
-            XOrOut = crcStandard.XOrOut;
-            this.lookupTable = Crc.GlobalCache?.GetLookupTable(crcStandard.Size, crcStandard.Polynomial, crcStandard.ReflectIn).ToArray()
-                ?? CrcLookupTableBuilder.BuildLookupTable(crcStandard.Size, crcStandard.Polynomial, crcStandard.ReflectIn);
+            this.standard = crcStandard;
+            this.lookupTable = GlobalCache.GetLookupTable(crcStandard.Size, crcStandard.Polynomial, crcStandard.ReflectIn);
 
             HashSizeValue = crcStandard.Size;
             this.hashSizeBytes = (HashSizeValue + 7) / 8;
-
-            this.workingHash = ReflectIn
-                ? CryptoHelpers.ReflectBits(InitialValue, HashSizeValue)
-                : InitialValue;
+            this.workingHash = ComputeInitialState();
         }
 
         /// <summary>
         /// Gets or sets the process-wide cache used to share CRC lookup tables across <see cref="Crc" /> instances.
         /// </summary>
         /// <value>The active <see cref="CrcLookupTableCache" />. A default cache is lazily created when first accessed.</value>
-        /// <exception cref="InvalidOperationException">The value being assigned is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException">The value being assigned is <see langword="null" />.</exception>
         public static CrcLookupTableCache GlobalCache
         {
             get => globalLookupTableCache.Value;
 
             set
             {
-                if (value == null)
-                    throw new InvalidOperationException(ResourceStrings.InvalidOperation_CacheValueCannotBeNull);
-
+                ThrowHelper.ThrowIfNull(value);
                 globalLookupTableCache = new Lazy<CrcLookupTableCache>(() => value);
             }
         }
@@ -109,52 +90,52 @@ namespace Bodu.Security.Cryptography
         public override bool CanTransformMultipleBlocks => true;
 
         /// <summary>
-        /// Gets a snapshot of the <see cref="CrcStandard" /> parameters that configure this instance.
+        /// Gets the <see cref="CrcStandard" /> parameters that configure this instance.
         /// </summary>
-        /// <value>A <see cref="CrcStandard" /> containing the polynomial, width, reflection settings, initial value, and final XOR.</value>
-        public CrcStandard CrcStandard => new CrcStandard(Name, Size, Polynomial, InitialValue, ReflectIn, ReflectOut, XOrOut);
+        /// <value>The immutable <see cref="CrcStandard" /> supplied to the constructor.</value>
+        public CrcStandard CrcStandard => this.standard;
 
         /// <summary>
         /// Gets the initial value used in the CRC calculation.
         /// </summary>
         /// <value>The initial value for the CRC calculation.</value>
-        public ulong InitialValue { get; private set; }
+        public ulong InitialValue => this.standard.InitialValue;
 
         /// <summary>
         /// Gets the name of the CRC standard.
         /// </summary>
         /// <value>The name of the CRC algorithm.</value>
-        public string Name { get; private set; }
+        public string Name => this.standard.Name;
 
         /// <summary>
         /// Gets the polynomial used in the CRC calculation.
         /// </summary>
         /// <value>The polynomial value used in the CRC calculation.</value>
-        public ulong Polynomial { get; private set; }
+        public ulong Polynomial => this.standard.Polynomial;
 
         /// <summary>
         /// Gets a value indicating whether input bytes are reflected (bit-reversed) before being processed.
         /// </summary>
         /// <value><see langword="true" /> if input bytes are reflected; otherwise, <see langword="false" />.</value>
-        public bool ReflectIn { get; private set; }
+        public bool ReflectIn => this.standard.ReflectIn;
 
         /// <summary>
         /// Gets a value indicating whether the CRC result is reflected before XORing with <see cref="XOrOut" />.
         /// </summary>
         /// <value><see langword="true" /> if the result is reflected; otherwise, <see langword="false" />.</value>
-        public bool ReflectOut { get; private set; }
+        public bool ReflectOut => this.standard.ReflectOut;
 
         /// <summary>
         /// Gets the size, in bits, of the CRC checksum.
         /// </summary>
         /// <value>The size of the CRC in bits.</value>
-        public int Size { get; private set; }
+        public int Size => this.standard.Size;
 
         /// <summary>
         /// Gets the value to XOR the final CRC result with.
         /// </summary>
         /// <value>The XOR value for the final CRC result.</value>
-        public ulong XOrOut { get; private set; }
+        public ulong XOrOut => this.standard.XOrOut;
 
         /// <summary>
         /// Computes and returns the CRC hash of the specified input in a single call, resetting internal state first.
@@ -212,42 +193,17 @@ namespace Bodu.Security.Cryptography
 
         /// <inheritdoc />
         public override bool Equals(object? obj)
-        {
-            return obj is Crc other &&
-                   string.Equals(Name, other.Name, StringComparison.Ordinal) &&
-                   Size == other.Size &&
-                   Polynomial == other.Polynomial &&
-                   InitialValue == other.InitialValue &&
-                   ReflectIn == other.ReflectIn &&
-                   ReflectOut == other.ReflectOut &&
-                   XOrOut == other.XOrOut;
-        }
+            => obj is Crc other && this.standard.Equals(other.standard);
 
         /// <inheritdoc />
         public override int GetHashCode()
-        {
-            return HashCode.Combine(
-                Name,
-                Size,
-                Polynomial,
-                InitialValue,
-                ReflectIn,
-                ReflectOut,
-                XOrOut
-            );
-        }
+            => this.standard.GetHashCode();
 
         /// <inheritdoc />
         public override void Initialize()
         {
             this.ThrowIfDisposed();
-#if !NET6_0_OR_GREATER
-            State = 0;
-            finalized = false;
-#endif
-            this.workingHash = ReflectIn
-                ? CryptoHelpers.ReflectBits(InitialValue, HashSizeValue)
-                : InitialValue;
+            this.workingHash = ComputeInitialState();
         }
 
         /// <inheritdoc />
@@ -262,17 +218,17 @@ namespace Bodu.Security.Cryptography
             if (previousHash.Length != this.hashSizeBytes)
                 throw new ArgumentException("Hash length does not match the expected length.", nameof(previousHash));
 
-            // Deserialize prior hash value
+            // Deserialise prior hash value.
             this.workingHash = HashSizeValue <= 32
                 ? BinaryPrimitives.ReadUInt32LittleEndian(previousHash)
                 : BinaryPrimitives.ReadUInt64LittleEndian(previousHash);
 
-            // Undo finalization
-            this.workingHash ^= XOrOut;
-            if (ReflectIn ^ ReflectOut)
+            // Undo finalisation (XOR first, then reflect back to the working-state orientation).
+            this.workingHash ^= this.standard.XOrOut;
+            if (this.standard.ReflectIn ^ this.standard.ReflectOut)
                 this.workingHash = CryptoHelpers.ReflectBits(this.workingHash, HashSizeValue);
 
-            // Continue hashing and finalize again
+            // Continue hashing and finalise again.
             ProcessBlocks(newData);
             return TryFinalizeHash(destination, out bytesWritten);
         }
@@ -291,13 +247,7 @@ namespace Bodu.Security.Cryptography
         {
             this.ThrowIfDisposed();
 
-            // Reflect final value if needed
-            if (ReflectIn ^ ReflectOut)
-                this.workingHash = CryptoHelpers.ReflectBits(this.workingHash, HashSizeValue);
-
-            // Apply XOR and mask to match the width
-            this.workingHash ^= XOrOut;
-            this.workingHash &= ulong.MaxValue >> (64 - HashSizeValue);
+            this.workingHash = FoldOutputState(this.workingHash);
 
             if (destination.Length < this.hashSizeBytes)
             {
@@ -305,23 +255,25 @@ namespace Bodu.Security.Cryptography
                 return false;
             }
 
-            // Write to temp span using little-endian layout
+            // Write to a temp span using little-endian layout; slice to match the configured CRC width.
             Span<byte> temp = stackalloc byte[8];
             Unsafe.WriteUnaligned(ref temp[0], this.workingHash);
-
-            // Slice from end so we always get correct width regardless of endian
             temp.Slice(0, this.hashSizeBytes).CopyTo(destination);
+
             bytesWritten = this.hashSizeBytes;
             return true;
         }
 
         /// <summary>
-        /// Releases the unmanaged resources used by the algorithm and clears the key from memory.
+        /// Releases the unmanaged resources used by the algorithm and clears transient state from memory.
         /// </summary>
         /// <param name="disposing">
         /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release only unmanaged resources.
         /// </param>
-        /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
+        /// <remarks>
+        /// The lookup table is owned by <see cref="GlobalCache" /> and shared across instances, so it is only released (not zeroed) here.
+        /// Per-instance transient state is cleared.
+        /// </remarks>
         protected override void Dispose(bool disposing)
         {
             if (this.disposed) return;
@@ -329,74 +281,27 @@ namespace Bodu.Security.Cryptography
             if (disposing)
             {
                 this.workingHash = 0;
-                if (this.lookupTable is not null)
-                {
-                    CryptoHelpers.ClearAndNullify(ref HashValue);
-                    CryptoHelpers.Clear(this.lookupTable.AsSpan());
-                    this.lookupTable = null!;
-                }
+                CryptoHelpers.ClearAndNullify(ref HashValue);
+                this.lookupTable = null!;
             }
 
             this.disposed = true;
             base.Dispose(disposing);
         }
 
-        /// <summary>
-        /// Processes a segment of the input byte array and feeds it into the <see cref="Crc" /> hashing algorithm. This method updates the
-        /// internal state by processing <paramref name="cbSize" /> bytes starting at the specified <paramref name="ibStart" /> offset.
-        /// </summary>
-        /// <param name="array">The input byte array containing the data to hash.</param>
-        /// <param name="ibStart">The zero-based index in <paramref name="array" /> at which to begin reading data.</param>
-        /// <param name="cbSize">The number of bytes to process from <paramref name="array" />.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="array" /> is <see langword="null" />.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <para><paramref name="ibStart" /> is less than 0.</para>
-        /// <para>-or-</para>
-        /// <para><paramref name="cbSize" /> is less than 0.</para>
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="ibStart" /> and <paramref name="cbSize" /> specify a range that exceeds the length of <paramref name="array" />.
-        /// </exception>
-        /// <exception cref="CryptographicUnexpectedOperationException">
-        /// The hash algorithm has already been finalized and cannot accept more input data.
-        /// </exception>
+        /// <inheritdoc />
         protected override void HashCore(byte[] array, int ibStart, int cbSize)
         {
             ThrowHelper.ThrowIfNull(array);
             this.ThrowIfDisposed();
-#if !NET6_0_OR_GREATER
-            ThrowHelper.ThrowIfLessThan(ibStart, 0);
-            ThrowHelper.ThrowIfLessThan(cbSize, 0);
-            ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, offset, cbSize);
-            if (finalized)
-                throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
-#endif
 
             Span<byte> span = array.AsSpan().Slice(ibStart, cbSize);
             ProcessBlocks(span);
         }
 
-        /// <summary>
-        /// Finalizes the CRC (Cyclic Redundancy Check) computation after all input data has been processed, and returns the resulting
-        /// checksum value.
-        /// </summary>
-        /// <returns>
-        /// A byte array containing the CRC result. The length depends on the configured <see cref="HashAlgorithm.HashSize" />, which is
-        /// determined by the CRC standard supplied when the instance was created (e.g., 8 bits = 1 byte, 32 bits = 4 bytes, 64 bits = 8 bytes).
-        /// </returns>
-        /// <remarks>
-        /// The hash reflects all data previously supplied via <see cref="HashCore(byte[], int, int)" />. Once finalized, the internal state
-        /// is invalidated and <see cref="HashAlgorithm.Initialize" /> must be called before reusing the instance.
-        /// </remarks>
+        /// <inheritdoc />
         protected override byte[] HashFinal()
         {
-#if !NET6_0_OR_GREATER
-            if (finalized)
-                throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
-            finalized = true;
-            State = 2;
-#endif
-
             byte[] result = new byte[this.hashSizeBytes];
             TryFinalizeHash(result, out _);
             return result;
@@ -404,26 +309,31 @@ namespace Bodu.Security.Cryptography
 
         /// <inheritdoc />
         protected override bool TryHashFinal(Span<byte> destination, out int bytesWritten)
-        {
-#if !NET6_0_OR_GREATER
-                if (finalized)
-                    throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
-                finalized = true;
-                State = 2;
-#endif
-
-            return TryFinalizeHash(destination, out bytesWritten);
-        }
+            => TryFinalizeHash(destination, out bytesWritten);
 
         /// <summary>
-        /// Processes the data using a bitwise CRC algorithm without data reflection. Each bit is processed individually, MSB first, using
-        /// 1-bit shifts and permutationTable lookups.
+        /// Returns the working-state representation of <see cref="CrcStandard.InitialValue" />, applying input reflection when required.
         /// </summary>
-        /// <param name="data">The input data to be processed.</param>
-        /// <param name="crc">The initial CRC state value.</param>
-        /// <param name="table">The CRC lookup table to use.</param>
-        /// <param name="shift">The number of bits to shift to extract the high bit of the CRC.</param>
-        /// <returns>The updated CRC value.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private ulong ComputeInitialState()
+            => this.standard.ReflectIn
+                ? CryptoHelpers.ReflectBits(this.standard.InitialValue, HashSizeValue)
+                : this.standard.InitialValue;
+
+        /// <summary>
+        /// Applies final output reflection, XOR, and width-mask to the supplied working CRC value.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private ulong FoldOutputState(ulong value)
+        {
+            if (this.standard.ReflectIn ^ this.standard.ReflectOut)
+                value = CryptoHelpers.ReflectBits(value, HashSizeValue);
+
+            value ^= this.standard.XOrOut;
+            value &= ulong.MaxValue >> (64 - HashSizeValue);
+            return value;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static ulong ProcessBitwiseNormal(ReadOnlySpan<byte> data, ulong crc, ulong[] table, int shift)
         {
@@ -439,14 +349,6 @@ namespace Bodu.Security.Cryptography
             return crc;
         }
 
-        /// <summary>
-        /// Processes the data using a bitwise CRC algorithm with data reflection. Each bit is processed individually, LSB first, using
-        /// 1-bit shifts and permutationTable lookups.
-        /// </summary>
-        /// <param name="data">The input data to be processed.</param>
-        /// <param name="crc">The initial CRC state value.</param>
-        /// <param name="table">The CRC lookup table to use.</param>
-        /// <returns>The updated CRC value.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static ulong ProcessBitwiseReflected(ReadOnlySpan<byte> data, ulong crc, ulong[] table)
         {
@@ -462,15 +364,6 @@ namespace Bodu.Security.Cryptography
             return crc;
         }
 
-        /// <summary>
-        /// Processes the data using a bytewise CRC algorithm without data reflection. The index is computed from the top bits of the CRC
-        /// XORed with the data byte.
-        /// </summary>
-        /// <param name="data">The input data to be processed.</param>
-        /// <param name="crc">The initial CRC state value.</param>
-        /// <param name="table">The CRC lookup table to use.</param>
-        /// <param name="shift">The number of bits to shift to extract the high byte of the CRC.</param>
-        /// <returns>The updated CRC value.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static ulong ProcessBytewiseNormal(ReadOnlySpan<byte> data, ulong crc, ulong[] table, int shift)
         {
@@ -481,14 +374,6 @@ namespace Bodu.Security.Cryptography
             return crc;
         }
 
-        /// <summary>
-        /// Processes the data using a bytewise CRC algorithm with data reflection. Each byte is XORed with the low byte of the current CRC
-        /// value, then used as a permutationTable index.
-        /// </summary>
-        /// <param name="data">The input data to be processed.</param>
-        /// <param name="crc">The initial CRC state value.</param>
-        /// <param name="table">The CRC lookup table to use.</param>
-        /// <returns>The updated CRC value.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static ulong ProcessBytewiseReflected(ReadOnlySpan<byte> data, ulong crc, ulong[] table)
         {
@@ -499,67 +384,32 @@ namespace Bodu.Security.Cryptography
             return crc;
         }
 
-        /// <summary>
-        /// Processes the data in the provided <see cref="ReadOnlySpan{Byte}" /> and calculates the CRC hash value based on the CRC standard
-        /// and reflection option.
-        /// </summary>
-        /// <param name="data">The array of bytes to process for CRC hashing.</param>
-        /// <remarks>
-        /// This method performs the core CRC calculation by iterating over the byte array, applying bitwise operations based on the CRC
-        /// reflection settings. If reflection is enabled, the method processes the data with a different approach than when reflection is
-        /// disabled. The CRC value is updated incrementally with each byte in the array.
-        /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ProcessBlocks(ReadOnlySpan<byte> data)
         {
             if (HashSizeValue >= 8)
             {
-                this.workingHash = ReflectIn
+                this.workingHash = this.standard.ReflectIn
                     ? ProcessBytewiseReflected(data, this.workingHash, this.lookupTable)
                     : ProcessBytewiseNormal(data, this.workingHash, this.lookupTable, HashSizeValue - 8);
             }
             else
             {
-                this.workingHash = ReflectIn
+                this.workingHash = this.standard.ReflectIn
                     ? ProcessBitwiseReflected(data, this.workingHash, this.lookupTable)
                     : ProcessBitwiseNormal(data, this.workingHash, this.lookupTable, HashSizeValue - 1);
             }
         }
 
-        /// <summary>
-        /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
-        /// </summary>
-        /// <exception cref="ObjectDisposedException">
-        /// Thrown when any public method or property is accessed after the instance has been disposed.
-        /// </exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ThrowIfDisposed()
         {
 #if NET8_0_OR_GREATER
             ObjectDisposedException.ThrowIf(this.disposed, this);
 #else
-            if (disposed)
+            if (this.disposed)
                 throw new ObjectDisposedException(nameof(Crc));
 #endif
-        }
-
-        /// <summary>
-        /// Throws a <see cref="CryptographicUnexpectedOperationException" /> if the hash algorithm has already started processing data,
-        /// indicating that the instance is in a finalized or non-configurable state.
-        /// </summary>
-        /// <remarks>
-        /// This method is used to prevent reconfiguration of algorithm parameters such as the key, number of rounds, or other settings once
-        /// hashing has begun. It ensures settings are immutable after initialization.
-        /// </remarks>
-        /// <exception cref="CryptographicUnexpectedOperationException">
-        /// Thrown when an attempt is made to modify the algorithm after it has entered a non-zero state, which indicates that hashing has
-        /// started or been finalized.
-        /// </exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ThrowIfInvalidState()
-        {
-            if (State != 0)
-                throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
         }
     }
 }

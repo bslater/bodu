@@ -1,16 +1,12 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Fletcher64.cs" company="PlaceholderCompany">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="CrcLookupTableCache.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Security.Cryptography
 {
-    using System;
     using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.Collections.ObjectModel;
 
     /// <summary>
     /// Thread-safe cache of precomputed CRC lookup tables keyed by width, polynomial, and input reflection.
@@ -33,14 +29,18 @@ namespace Bodu.Security.Cryptography
         /// <param name="size">The CRC width in bits (between <see cref="CrcStandard.MinSize" /> and <see cref="CrcStandard.MaxSize" />).</param>
         /// <param name="polynomial">The CRC polynomial.</param>
         /// <param name="reflectIn"><see langword="true" /> if input bytes are reflected during CRC processing.</param>
-        /// <returns>An immutable view over the cached lookup table.</returns>
+        /// <returns>The shared lookup table array for the supplied parameter set.</returns>
+        /// <remarks>
+        /// The returned array is shared across all callers with the same parameters and <b>must not</b> be mutated. Callers should treat it
+        /// as read-only.
+        /// </remarks>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is outside the supported range.</exception>
-        public ImmutableArray<ulong> GetLookupTable(int size, ulong polynomial, bool reflectIn)
+        public ulong[] GetLookupTable(int size, ulong polynomial, bool reflectIn)
         {
             ThrowHelper.ThrowIfOutOfRange(size, CrcStandard.MinSize, CrcStandard.MaxSize);
 
             string cacheKey = $"{size}_{polynomial}_{reflectIn}";
-            return this.localCache.GetOrAdd(cacheKey, key => CrcLookupTableBuilder.BuildLookupTable(size, polynomial, reflectIn)).ToImmutableArray();
+            return this.localCache.GetOrAdd(cacheKey, _ => CrcLookupTableBuilder.BuildLookupTable(size, polynomial, reflectIn));
         }
     }
 }

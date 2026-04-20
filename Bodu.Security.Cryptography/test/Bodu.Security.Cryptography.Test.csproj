@@ -12,16 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Security.Cryptography\CrcTests.ComputeHash.cs" />
-    <Compile Remove="Security.Cryptography\CrcTests.ComputeHashAsync.cs" />
-    <Compile Remove="Security.Cryptography\CrcTests.ComputeHashFrom.cs" />
-    <Compile Remove="Security.Cryptography\CrcTests.cs" />
-    <Compile Remove="Security.Cryptography\CrcTests.Equals.cs" />
-    <Compile Remove="Security.Cryptography\CrcTests.GetHashCode.cs" />
-    <Compile Remove="Security.Cryptography\CrcTests.TryComputeHashFrom.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

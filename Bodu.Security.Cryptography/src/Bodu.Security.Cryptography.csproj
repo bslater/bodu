@@ -39,7 +39,6 @@
     <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithm.DecryptAsync.cs" />
     <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithm.EncryptAsync.cs" />
     <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithm.TransformHelpers.cs" />
-    <Compile Remove="Security.Cryptography\Crc.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -6,9 +6,7 @@
 
 namespace Bodu.Security.Cryptography
 {
-    using System.Drawing;
     using System.Runtime.Serialization;
-    using System.Xml.Linq;
 
     /// <summary>
     /// Represents an immutable set of parameters (polynomial, width, reflection, initial value, final XOR) that describe a specific CRC algorithm.
@@ -58,7 +56,7 @@ namespace Bodu.Security.Cryptography
 
         private CrcStandard(SerializationInfo info, StreamingContext context)
         {
-            if (info == null) throw new ArgumentNullException(nameof(info));
+            ThrowHelper.ThrowIfNull(info);
 
             this.Name = info.GetString(nameof(this.Name))!;
             this.Size = info.GetInt32(nameof(this.Size));
@@ -115,9 +113,13 @@ namespace Bodu.Security.Cryptography
         /// Determines whether the current <see cref="CrcStandard" /> object is equal to another <see cref="CrcStandard" /> object.
         /// </summary>
         /// <param name="other">The other <see cref="CrcStandard" /> object to compare.</param>
-        /// <returns><see langword="true" /> if the two objects are equal; otherwise, <see langword="false" />.</returns>
+        /// <returns>
+        /// <see langword="true" /> if <paramref name="other" /> has the same <see cref="Name" /> (ordinal comparison) and the same parameter
+        /// set as this instance; otherwise, <see langword="false" />.
+        /// </returns>
         public bool Equals(CrcStandard? other)
             => other is not null &&
+               string.Equals(this.Name, other.Name, StringComparison.Ordinal) &&
                this.Size == other.Size &&
                this.Polynomial == other.Polynomial &&
                this.InitialValue == other.InitialValue &&
@@ -131,12 +133,12 @@ namespace Bodu.Security.Cryptography
 
         /// <inheritdoc />
         public override int GetHashCode()
-            => HashCode.Combine(this.Size, this.Polynomial, this.InitialValue, this.ReflectIn, this.ReflectOut, this.XOrOut);
+            => HashCode.Combine(this.Name, this.Size, this.Polynomial, this.InitialValue, this.ReflectIn, this.ReflectOut, this.XOrOut);
 
         /// <inheritdoc />
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            if (info == null) throw new ArgumentNullException(nameof(info));
+            ThrowHelper.ThrowIfNull(info);
 
             info.AddValue(nameof(this.Name), this.Name);
             info.AddValue(nameof(this.Size), this.Size);
