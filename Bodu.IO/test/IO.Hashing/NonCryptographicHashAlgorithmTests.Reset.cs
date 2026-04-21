@@ -20,7 +20,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     public void Reset_AfterAppend_ShouldRestoreInitialState(TVariant variant)
     {
         NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
-        algorithm.Append(SharedInputs["QuickBrownFox"]);
+        algorithm.Append(NonCryptographicHashSharedInputs.QuickBrownFox);
         algorithm.Reset();
 
         NonCryptographicHashAlgorithm baseline = CreateAlgorithm(variant);
@@ -55,12 +55,12 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     public void Reset_BetweenAppends_ShouldDiscardAccumulatedInput(TVariant variant)
     {
         NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
-        algorithm.Append(SharedInputs["Sequential_0_255"]);
+        algorithm.Append(NonCryptographicHashSharedInputs.Sequential0To255);
         algorithm.Reset();
-        algorithm.Append(SharedInputs["ABC"]);
+        algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
         NonCryptographicHashAlgorithm direct = CreateAlgorithm(variant);
-        direct.Append(SharedInputs["ABC"]);
+        direct.Append(NonCryptographicHashSharedInputs.Abc);
 
         CollectionAssert.AreEqual(direct.GetCurrentHash(), algorithm.GetCurrentHash());
     }

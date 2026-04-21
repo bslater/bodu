@@ -18,8 +18,8 @@ namespace Bodu.IO.Hashing;
 /// The shared behaviour captured here — empty input producing an all-zero checksum, the <c>Fletcher-</c> name
 /// prefix, and sixteen-zero input stability — holds for every derived Fletcher variant. Size-specific known
 /// answers are supplied by the concrete test classes through
-/// <see cref="NonCryptographicHashAlgorithmTests{TTest, TAlgorithm, TVariant}.GetExpectedHashesForNamedInputs(TVariant)" />
-/// and <see cref="NonCryptographicHashAlgorithmTests{TTest, TAlgorithm, TVariant}.GetIncrementalHashValue(TVariant)" />.
+/// <see cref="NonCryptographicHashAlgorithmSpecification.KnownAnswers" /> and
+/// <see cref="NonCryptographicHashAlgorithmTests{TTest, TAlgorithm, TVariant}.GetIncrementalHashValue(TVariant)" />.
 /// </remarks>
 public abstract partial class FletcherTests<TTest, TAlgorithm>
     : NonCryptographicHashAlgorithmTests<TTest, TAlgorithm, SingleTestVariant>

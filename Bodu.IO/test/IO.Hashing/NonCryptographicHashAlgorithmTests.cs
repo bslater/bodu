@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.IO.Hashing;
-using System.Text;
 
 namespace Bodu.IO.Hashing;
 
@@ -31,8 +30,8 @@ public enum SingleTestVariant
 /// <typeparam name="TVariant">The enumeration type used to represent algorithm configuration variants.</typeparam>
 /// <remarks>
 /// This class supplies a standardised infrastructure for testing non-cryptographic hash algorithms across one or
-/// more configurations — shared input vectors, variant differentiation, incremental-append parity, reset
-/// semantics, and named known-answer evaluation.
+/// more configurations — variant differentiation, incremental-append parity, reset semantics, and data-driven
+/// known-answer evaluation via the typed <see cref="NonCryptographicHashKnownAnswers" /> record.
 /// </remarks>
 public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorithm, TVariant>
     where TTest : NonCryptographicHashAlgorithmTests<TTest, TAlgorithm, TVariant>, new()
@@ -40,55 +39,45 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     where TVariant : struct, Enum
 {
     /// <summary>
-    /// Defines shared named input vectors used across all non-cryptographic hash algorithm test cases.
-    /// </summary>
-    /// <remarks>
-    /// Each entry maps a semantic name (for example, <c>Empty</c>, <c>ABC</c>, <c>Zeros_16</c>) to a
-    /// representative input payload. These inputs are paired with expected output values supplied by
-    /// <see cref="GetExpectedHashesForNamedInputs(TVariant)" /> to drive known-answer assertions.
-    /// </remarks>
-    protected static readonly IReadOnlyDictionary<string, byte[]> SharedInputs = new Dictionary<string, byte[]>
-    {
-        ["Empty"] = Array.Empty<byte>(),
-        ["ABC"] = Encoding.ASCII.GetBytes("ABC"),
-        ["QuickBrownFox"] = Encoding.ASCII.GetBytes("The quick brown fox jumps over the lazy dog"),
-        ["Zeros_16"] = new byte[16],
-        ["Sequential_0_255"] = Enumerable.Range(0, 255).Select(i => (byte)i).ToArray(),
-    };
-
-    /// <summary>
     /// Returns the <see cref="NonCryptographicHashAlgorithmSpecification" /> describing the expected properties
-    /// of <typeparamref name="TAlgorithm" /> when constructed for the given <paramref name="variant" />.
+    /// of <typeparamref name="TAlgorithm" /> — including its known-answer test vectors — when constructed for
+    /// the given <paramref name="variant" />.
     /// </summary>
     /// <param name="variant">The variant under test.</param>
-    /// <returns>A specification describing expected output width, block size, and distribution parameters.</returns>
+    /// <returns>A specification describing expected output width, block size, distribution parameters, and KATs.</returns>
     protected abstract NonCryptographicHashAlgorithmSpecification GetSpecification(TVariant variant);
 
     /// <summary>
     /// Gets the default variant to use in non-parameterised test scenarios.
     /// </summary>
     /// <remarks>
-    /// The default variant represents the canonical or most common configuration of the algorithm under test. It
-    /// is used for tests that do not require variant-specific logic.
+    /// The default variant represents the canonical or most common configuration of the algorithm under test.
+    /// It is used for tests that do not require variant-specific logic.
     /// </remarks>
     protected virtual TVariant DefaultVariant => GetNonCryptographicHashAlgorithmVariants().First();
 
     /// <summary>
     /// Gets the expected hash result for an empty input using <see cref="DefaultVariant" />.
     /// </summary>
-    /// <exception cref="KeyNotFoundException">
-    /// Thrown if no expected hash is defined for the <c>Empty</c> named input under the default variant.
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if the default variant's <see cref="NonCryptographicHashKnownAnswers.Empty" /> slot is unset.
     /// </exception>
     /// <remarks>
-    /// Expected results are sourced from <see cref="GetExpectedHashesForNamedInputs(TVariant)" />. Override in a
-    /// derived class to supply an alternative computation when no <c>Empty</c> entry is provided.
+    /// Override in a derived class to supply an alternative computation when the algorithm does not declare a
+    /// published empty-input KAT.
     /// </remarks>
-    protected virtual byte[] ExpectedEmptyInputHash =>
-        Convert.FromHexString(
-            GetExpectedHashesForNamedInputs(DefaultVariant).TryGetValue("Empty", out var hex)
-                ? hex
-                : throw new KeyNotFoundException(
-                    $"Expected hash for \"Empty\" input is not defined for variant '{DefaultVariant}'."));
+    protected virtual byte[] ExpectedEmptyInputHash
+    {
+        get
+        {
+            var knownAnswers = GetSpecification(DefaultVariant).KnownAnswers;
+            if (knownAnswers.Empty is { } hex)
+                return Convert.FromHexString(hex);
+
+            throw new InvalidOperationException(
+                $"Expected hash for the empty input is not defined for variant '{DefaultVariant}'.");
+        }
+    }
 
     /// <summary>
     /// Returns test case parameters for each defined algorithm variant.
@@ -130,9 +119,8 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// <param name="variant">The variant under test.</param>
     /// <returns>
     /// A sequence of expected hex-encoded hash values. The entry at index <c>i</c> is the hash of the first
-    /// <c>i</c> bytes of the incremental sequence (so index 0 is the empty-input hash). Derived classes may
-    /// supply as many or as few entries as they wish; an empty sequence causes the incremental test to be
-    /// marked inconclusive.
+    /// <c>i</c> bytes of the incremental sequence (so index 0 is the empty-input hash). An empty sequence
+    /// causes the incremental test to be marked inconclusive.
     /// </returns>
     /// <remarks>
     /// The incremental test iterates once per entry, appending one further byte at each step and comparing the
@@ -142,40 +130,40 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     protected abstract IEnumerable<string> GetIncrementalHashValue(TVariant variant);
 
     /// <summary>
-    /// Returns a dictionary of expected hash outputs for well-known named inputs such as <c>Empty</c>,
-    /// <c>ABC</c>, or <c>Zeros_16</c>.
-    /// </summary>
-    /// <param name="variant">The variant to retrieve expected results for.</param>
-    /// <returns>
-    /// A dictionary mapping input names (from <see cref="SharedInputs" />) to their expected hex-encoded hash
-    /// strings. Sparse dictionaries are permitted — inputs with no matching entry are skipped by
-    /// <see cref="GetTestVectors" /> rather than failing.
-    /// </returns>
-    protected abstract IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(TVariant variant);
-
-    /// <summary>
-    /// Combines shared input vectors with expected output values to generate test vectors for a specific variant.
+    /// Yields the known-answer vectors declared by the specification for the given <paramref name="variant" />:
+    /// each populated typed slot on <see cref="NonCryptographicHashKnownAnswers" /> paired with its
+    /// corresponding shared input, followed by every algorithm-specific entry in
+    /// <see cref="NonCryptographicHashKnownAnswers.Additional" />.
     /// </summary>
     /// <param name="variant">The variant to generate test vectors for.</param>
-    /// <returns>
-    /// A sequence of <see cref="KnownAnswerTest" /> instances representing named test inputs and their expected
-    /// hash results. Inputs without a matching expected entry in
-    /// <see cref="GetExpectedHashesForNamedInputs(TVariant)" /> are omitted.
-    /// </returns>
+    /// <returns>A sequence of <see cref="KnownAnswerTest" /> records driving named-input assertions.</returns>
     protected virtual IEnumerable<KnownAnswerTest> GetTestVectors(TVariant variant)
     {
-        var expected = GetExpectedHashesForNamedInputs(variant);
-        foreach (var (name, input) in SharedInputs)
+        var knownAnswers = GetSpecification(variant).KnownAnswers;
+
+        if (knownAnswers.Empty is { } empty)
+            yield return CreateVector(nameof(knownAnswers.Empty), NonCryptographicHashSharedInputs.Empty, empty);
+
+        if (knownAnswers.Abc is { } abc)
+            yield return CreateVector(nameof(knownAnswers.Abc), NonCryptographicHashSharedInputs.Abc, abc);
+
+        if (knownAnswers.QuickBrownFox is { } qbf)
+            yield return CreateVector(nameof(knownAnswers.QuickBrownFox), NonCryptographicHashSharedInputs.QuickBrownFox, qbf);
+
+        if (knownAnswers.Zeros16 is { } zeros)
+            yield return CreateVector(nameof(knownAnswers.Zeros16), NonCryptographicHashSharedInputs.Zeros16, zeros);
+
+        if (knownAnswers.Sequential0To255 is { } sequential)
+            yield return CreateVector(nameof(knownAnswers.Sequential0To255), NonCryptographicHashSharedInputs.Sequential0To255, sequential);
+
+        foreach (var extra in knownAnswers.Additional)
         {
-            if (expected.TryGetValue(name, out var hex))
+            yield return new KnownAnswerTest
             {
-                yield return new KnownAnswerTest
-                {
-                    Name = name,
-                    Input = input,
-                    ExpectedOutput = Convert.FromHexString(hex),
-                };
-            }
+                Name = extra.Name,
+                Input = extra.Input,
+                ExpectedOutput = Convert.FromHexString(extra.ExpectedHex),
+            };
         }
     }
 
@@ -195,4 +183,12 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
             }
         }
     }
+
+    private static KnownAnswerTest CreateVector(string name, byte[] input, string expectedHex) =>
+        new()
+        {
+            Name = name,
+            Input = input,
+            ExpectedOutput = Convert.FromHexString(expectedHex),
+        };
 }

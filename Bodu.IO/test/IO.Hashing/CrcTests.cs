@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace Bodu.IO.Hashing;
@@ -38,7 +37,7 @@ public enum CrcTestVariant
 public partial class CrcTests
     : NonCryptographicHashAlgorithmTests<CrcTests, Crc, CrcTestVariant>
 {
-    private static readonly byte[] CheckInput = Encoding.ASCII.GetBytes("123456789");
+    private static readonly byte[] RevEngCheckInput = Encoding.ASCII.GetBytes("123456789");
 
     /// <inheritdoc />
     protected override CrcTestVariant DefaultVariant => CrcTestVariant.Crc32_IsoHdlc;
@@ -47,63 +46,93 @@ public partial class CrcTests
     protected override Crc CreateAlgorithm(CrcTestVariant variant) => new(StandardFor(variant));
 
     /// <inheritdoc />
+    /// <remarks>
+    /// Each variant seeds <see cref="NonCryptographicHashKnownAnswers.Empty" /> with the algorithm's empty-input
+    /// digest and contributes the RevEng catalogue <c>"123456789"</c> check vector via
+    /// <see cref="NonCryptographicHashKnownAnswers.Additional" />. Broader shared-input coverage for CRC is
+    /// deferred to <c>CrcTests.Catalog.cs</c>, which exercises every catalogued CRC standard in one pass.
+    /// </remarks>
     protected override NonCryptographicHashAlgorithmSpecification GetSpecification(CrcTestVariant variant) => variant switch
     {
         CrcTestVariant.Crc8_SMBUS => new()
         {
             HashLengthInBytes = 1,
             IsResumable = true,
+            KnownAnswers = new()
+            {
+                Empty = "00",
+                Additional =
+                [
+                    new()
+                    {
+                        Name = "RevEng/123456789",
+                        Input = RevEngCheckInput,
+                        ExpectedHex = "F4",
+                    },
+                ],
+            },
         },
         CrcTestVariant.Crc16_ARC => new()
         {
             HashLengthInBytes = 2,
             IsResumable = true,
+            KnownAnswers = new()
+            {
+                Empty = "0000",
+                Additional =
+                [
+                    new()
+                    {
+                        Name = "RevEng/123456789",
+                        Input = RevEngCheckInput,
+                        ExpectedHex = "3DBB",
+                    },
+                ],
+            },
         },
         CrcTestVariant.Crc32_IsoHdlc => new()
         {
             HashLengthInBytes = 4,
             IsResumable = true,
+            KnownAnswers = new()
+            {
+                Empty = "00000000",
+                Additional =
+                [
+                    new()
+                    {
+                        Name = "RevEng/123456789",
+                        Input = RevEngCheckInput,
+                        ExpectedHex = "2639F4CB",
+                    },
+                ],
+            },
         },
         CrcTestVariant.Crc64_Ecma182 => new()
         {
             HashLengthInBytes = 8,
             IsResumable = true,
+            KnownAnswers = new()
+            {
+                Empty = "0000000000000000",
+                Additional =
+                [
+                    new()
+                    {
+                        Name = "RevEng/123456789",
+                        Input = RevEngCheckInput,
+                        ExpectedHex = "4773490B5FDF406C",
+                    },
+                ],
+            },
         },
         _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
     };
 
     /// <inheritdoc />
     /// <remarks>
-    /// Only the <c>Empty</c> named input and the canonical RevEng check value (computed against
-    /// <c>"123456789"</c>, not a <see cref="SharedInputs" /> entry) are seeded here. The full catalogue check is
-    /// carried out in <c>CrcTests.Catalog.cs</c>, so variant-agnostic known answers for other shared inputs are
-    /// deliberately omitted to keep the parameterised test matrix tractable.
-    /// </remarks>
-    protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(CrcTestVariant variant) => variant switch
-    {
-        CrcTestVariant.Crc8_SMBUS => new Dictionary<string, string>
-        {
-            ["Empty"] = "00",
-        },
-        CrcTestVariant.Crc16_ARC => new Dictionary<string, string>
-        {
-            ["Empty"] = "0000",
-        },
-        CrcTestVariant.Crc32_IsoHdlc => new Dictionary<string, string>
-        {
-            ["Empty"] = "00000000",
-        },
-        CrcTestVariant.Crc64_Ecma182 => new Dictionary<string, string>
-        {
-            ["Empty"] = "0000000000000000",
-        },
-        _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
-    };
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// The common incremental test is skipped for CRC; the catalogue partial provides exhaustive coverage of the
-    /// canonical check vectors against all 100+ RevEng standards instead.
+    /// The common incremental test is skipped for CRC; the catalogue partial provides exhaustive coverage of
+    /// the canonical check vectors against all 100+ RevEng standards instead.
     /// </remarks>
     protected override IEnumerable<string> GetIncrementalHashValue(CrcTestVariant variant) => Array.Empty<string>();
 
@@ -160,7 +189,7 @@ public partial class CrcTests
         Crc resumer = new(CrcStandard.CRC32_ISOHDLC);
         byte[] resumed = resumer.ComputeHashFrom(firstHash, rest);
 
-        byte[] combined = new Crc(CrcStandard.CRC32_ISOHDLC).ComputeHash(CheckInput);
+        byte[] combined = new Crc(CrcStandard.CRC32_ISOHDLC).ComputeHash(RevEngCheckInput);
         CollectionAssert.AreEqual(combined, resumed);
     }
 
