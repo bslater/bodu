@@ -53,7 +53,7 @@ namespace Bodu.Globalization.Calendar
 
 					case NotableDateDefinitionType.Rule:
 						if (definition.Month.HasValue && definition.WeekOrdinal.HasValue && definition.DayOfWeek.HasValue)
-							return DateTimeExtensions.NthDayOfWeekInMonth(year, definition.Month.Value, definition.DayOfWeek.Value, definition.WeekOrdinal.Value);
+							return DateTimeExtensions.GetNthDayOfWeekInMonth(year, definition.Month.Value, definition.DayOfWeek.Value, definition.WeekOrdinal.Value);
 						break;
 
 					case NotableDateDefinitionType.OffsetFrom:

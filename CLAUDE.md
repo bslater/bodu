@@ -24,7 +24,7 @@ Each project has the layout:
 
 - `Bodu.Core` — `net8.0`
 - `Bodu.Security.Cryptography` — `net8.0`
-- `Bodu.Globalization.Calendar` — `net6.0; net7.0; net8.0` (multi-targeted)
+- `Bodu.Globalization.Calendar` — `net8.0`
 
 Nullable reference types are enabled everywhere. `ImplicitUsings` is enabled for Cryptography and Calendar but **disabled** for `Bodu.Core` — when editing files in `Bodu.Core/`, add explicit `using` directives.
 
