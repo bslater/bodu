@@ -236,6 +236,38 @@
         }
 
         /// <summary>
+        /// Verifies that invalid <paramref name="size" /> values surface an <see cref="ArgumentOutOfRangeException" />
+        /// whose <c>ParamName</c> is <c>size</c>, confirming the <see cref="ThrowHelper" /> contract propagates
+        /// through the cache lookup path.
+        /// </summary>
+        [DataTestMethod]
+        [DataRow(-1)]
+        [DataRow(0)]
+        [DataRow(65)]
+        [DataRow(int.MaxValue)]
+        public void GetLookupTable_WhenSizeIsInvalid_ShouldReportSizeParamName(int size)
+        {
+            var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(
+                () => cache.GetLookupTable(size, 0x04C11DB7UL, reflectIn: false));
+            Assert.AreEqual("size", ex.ParamName);
+        }
+
+        /// <summary>
+        /// Verifies that <see cref="CrcLookupTableCache.GetLookupTable" /> succeeds at the inclusive boundary
+        /// values <see cref="CrcStandard.MinSize" /> (1-bit) and <see cref="CrcStandard.MaxSize" /> (64-bit).
+        /// </summary>
+        [DataTestMethod]
+        [DataRow(1, 2)]
+        [DataRow(64, 256)]
+        public void GetLookupTable_WhenSizeIsBoundaryValue_ShouldReturnExpectedTable(int size, int expectedLength)
+        {
+            ulong[] table = cache.GetLookupTable(size, 0x1UL, reflectIn: false);
+
+            Assert.IsNotNull(table);
+            Assert.AreEqual(expectedLength, table.Length);
+        }
+
+        /// <summary>
         /// Verifies that the cache returns a <see cref="ulong" /> array whose contents match the shared precomputed table.
         /// </summary>
         [TestMethod]
