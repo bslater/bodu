@@ -54,9 +54,14 @@ namespace Bodu.Security.Cryptography
             };
 
         /// <inheritdoc />
+        /// <remarks>
+        /// Exactly 16 entries — one per prefix length 0..15 — because the base test computes
+        /// <c>stepCount = InputBlockSize * 8</c> for <c>InputBlockSize &gt; 1</c> and falls back to <c>16</c> otherwise,
+        /// and CRC reports <c>InputBlockSize == 1</c>.
+        /// </remarks>
         protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
         {
-            "00000000",  // []
+            "00000000",  // [] (length 0)
             "8DEF02D2",  // [0x00]
             "6922DE36",  // [0x00, 0x01]
             "7F895408",  // [0x00, 0x01, 0x02]
@@ -71,8 +76,7 @@ namespace Bodu.Security.Cryptography
             "65C97092",
             "B846FEE6",
             "C856EF69",
-            "5E676CA0",
-            "88E2CECE",
+            "5E676CA0",  // [0x00..0x0E] (length 15)
         };
 
         /// <summary>
