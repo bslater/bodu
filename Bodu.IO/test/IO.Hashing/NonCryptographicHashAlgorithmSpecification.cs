@@ -78,4 +78,14 @@ public record NonCryptographicHashAlgorithmSpecification
     /// Defaults to <see langword="false" />.
     /// </value>
     public bool IsResumable { get; init; } = false;
+
+    /// <summary>
+    /// Gets the known-answer test vectors associated with this variant.
+    /// </summary>
+    /// <value>
+    /// A <see cref="NonCryptographicHashKnownAnswers" /> record carrying the expected digests for the shared
+    /// inputs and any algorithm-specific extension vectors. Defaults to an empty record, in which case the
+    /// harness emits no named-input assertions for this variant.
+    /// </value>
+    public NonCryptographicHashKnownAnswers KnownAnswers { get; init; } = new();
 }

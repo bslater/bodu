@@ -20,16 +20,13 @@ public sealed partial class Fletcher32Tests
             HashLengthInBytes = 4,
             AlgorithmName = "Fletcher-32",
             BlockSizeBytes = 2,
-        };
-
-    /// <inheritdoc />
-    protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(SingleTestVariant variant) =>
-        new Dictionary<string, string>
-        {
-            ["Empty"] = "00000000",
-            ["ABC"] = "84C54284",
-            ["QuickBrownFox"] = "53CD5B8D",
-            ["Zeros_16"] = "00000000",
+            KnownAnswers = new()
+            {
+                Empty = "00000000",
+                Abc = "84C54284",
+                QuickBrownFox = "53CD5B8D",
+                Zeros16 = "00000000",
+            },
         };
 
     /// <inheritdoc />

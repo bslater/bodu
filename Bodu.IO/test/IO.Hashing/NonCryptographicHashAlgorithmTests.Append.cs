@@ -37,7 +37,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void Append_WhenCalledInChunks_ShouldMatchSingleAppend(TVariant variant)
     {
-        byte[] data = SharedInputs["Sequential_0_255"];
+        byte[] data = NonCryptographicHashSharedInputs.Sequential0To255;
 
         NonCryptographicHashAlgorithm whole = CreateAlgorithm(variant);
         whole.Append(data);
@@ -60,7 +60,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void Append_WhenCalledOneByteAtATime_ShouldMatchSingleAppend(TVariant variant)
     {
-        byte[] data = SharedInputs["QuickBrownFox"];
+        byte[] data = NonCryptographicHashSharedInputs.QuickBrownFox;
 
         NonCryptographicHashAlgorithm whole = CreateAlgorithm(variant);
         whole.Append(data);
