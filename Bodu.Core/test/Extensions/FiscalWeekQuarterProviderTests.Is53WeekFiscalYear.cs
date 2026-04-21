@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
+// --------------------------------------------------------------------------------------------------------------- //
 // <copyright file="FiscalWeekQuarterProviderTests_Is53WeekFiscalYear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -125,8 +125,8 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that <see cref="FiscalWeekQuarterProvider.Is53WeekFiscalYear" /> returns the correct value
-        /// across a range of 52-week and 53-week fiscal year configurations.
+        /// Verifies that <see cref="FiscalWeekQuarterProvider.Is53WeekFiscalYear(int)" /> returns the
+        /// correct value across a range of 52-week and 53-week fiscal year configurations.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(Get53WeekYearTestData), DynamicDataSourceType.Method)]
@@ -138,62 +138,62 @@ namespace Bodu.Extensions
             bool useNearestDayOfWeek,
             bool expected)
         {
-            var provider = new FiscalWeekQuarterProvider(year, month, dayOfWeek, isFiscalYearEnd, useNearestDayOfWeek);
-            Assert.AreEqual(expected, provider.Is53WeekFiscalYear);
+            var provider = new FiscalWeekQuarterProvider(month, dayOfWeek, isFiscalYearEnd, useNearestDayOfWeek);
+            Assert.AreEqual(expected, provider.Is53WeekFiscalYear(year));
         }
 
         /// <summary>
-        /// Verifies that <see cref="FiscalWeekQuarterProvider.Is53WeekFiscalYear" /> returns
-        /// <see langword="false" /> for the shared <see cref="Sunday52" /> provider.
+        /// Verifies that <see cref="FiscalWeekQuarterProvider.Is53WeekFiscalYear(int)" /> returns
+        /// <see langword="false" /> for the shared <see cref="Sunday52" /> provider in fiscal year 2023.
         /// </summary>
         [TestMethod]
         public void Is53WeekFiscalYear_WhenFiscalYearIs52Weeks_ShouldReturnFalse()
         {
-            Assert.IsFalse(Sunday52.Is53WeekFiscalYear);
+            Assert.IsFalse(Sunday52.Is53WeekFiscalYear(Sunday52FiscalYear));
         }
 
         /// <summary>
-        /// Verifies that <see cref="FiscalWeekQuarterProvider.Is53WeekFiscalYear" /> returns
-        /// <see langword="true" /> for the shared <see cref="Sunday53" /> provider.
+        /// Verifies that <see cref="FiscalWeekQuarterProvider.Is53WeekFiscalYear(int)" /> returns
+        /// <see langword="true" /> for the shared <see cref="Sunday53" /> provider in fiscal year 2020.
         /// </summary>
         [TestMethod]
         public void Is53WeekFiscalYear_WhenFiscalYearIs53Weeks_ShouldReturnTrue()
         {
-            Assert.IsTrue(Sunday53.Is53WeekFiscalYear);
+            Assert.IsTrue(Sunday53.Is53WeekFiscalYear(Sunday53FiscalYear));
         }
 
         /// <summary>
-        /// Verifies that <see cref="FiscalWeekQuarterProvider.WeeksInFiscalYear" /> returns 52 for a
-        /// standard 52-week fiscal year.
+        /// Verifies that <see cref="FiscalWeekQuarterProvider.GetWeeksInFiscalYear(int)" /> returns 52
+        /// for a standard 52-week fiscal year.
         /// </summary>
         [TestMethod]
-        public void WeeksInFiscalYear_When52WeekYear_ShouldReturn52()
+        public void GetWeeksInFiscalYear_When52WeekYear_ShouldReturn52()
         {
-            Assert.AreEqual(52, Sunday52.WeeksInFiscalYear);
+            Assert.AreEqual(52, Sunday52.GetWeeksInFiscalYear(Sunday52FiscalYear));
         }
 
         /// <summary>
-        /// Verifies that <see cref="FiscalWeekQuarterProvider.WeeksInFiscalYear" /> returns 53 for a
-        /// 53-week fiscal year.
+        /// Verifies that <see cref="FiscalWeekQuarterProvider.GetWeeksInFiscalYear(int)" /> returns 53
+        /// for a 53-week fiscal year.
         /// </summary>
         [TestMethod]
-        public void WeeksInFiscalYear_When53WeekYear_ShouldReturn53()
+        public void GetWeeksInFiscalYear_When53WeekYear_ShouldReturn53()
         {
-            Assert.AreEqual(53, Sunday53.WeeksInFiscalYear);
+            Assert.AreEqual(53, Sunday53.GetWeeksInFiscalYear(Sunday53FiscalYear));
         }
 
         /// <summary>
-        /// Verifies that <see cref="FiscalWeekQuarterProvider.WeeksInFiscalYear" /> and
-        /// <see cref="FiscalWeekQuarterProvider.Is53WeekFiscalYear" /> are consistent with each other for
-        /// both 52-week and 53-week providers.
+        /// Verifies that <see cref="FiscalWeekQuarterProvider.GetWeeksInFiscalYear(int)" /> and
+        /// <see cref="FiscalWeekQuarterProvider.Is53WeekFiscalYear(int)" /> agree for every shared
+        /// fixture provider.
         /// </summary>
         [TestMethod]
-        public void WeeksInFiscalYear_ShouldBeConsistentWithIs53WeekFiscalYear()
+        public void GetWeeksInFiscalYear_ShouldBeConsistentWithIs53WeekFiscalYear()
         {
-            Assert.AreEqual(Sunday52.Is53WeekFiscalYear ? 53 : 52, Sunday52.WeeksInFiscalYear);
-            Assert.AreEqual(Monday52Leap.Is53WeekFiscalYear ? 53 : 52, Monday52Leap.WeeksInFiscalYear);
-            Assert.AreEqual(Sunday53.Is53WeekFiscalYear ? 53 : 52, Sunday53.WeeksInFiscalYear);
-            Assert.AreEqual(Saturday52.Is53WeekFiscalYear ? 53 : 52, Saturday52.WeeksInFiscalYear);
+            Assert.AreEqual(Sunday52.Is53WeekFiscalYear(Sunday52FiscalYear) ? 53 : 52, Sunday52.GetWeeksInFiscalYear(Sunday52FiscalYear));
+            Assert.AreEqual(Monday52Leap.Is53WeekFiscalYear(Monday52LeapFiscalYear) ? 53 : 52, Monday52Leap.GetWeeksInFiscalYear(Monday52LeapFiscalYear));
+            Assert.AreEqual(Sunday53.Is53WeekFiscalYear(Sunday53FiscalYear) ? 53 : 52, Sunday53.GetWeeksInFiscalYear(Sunday53FiscalYear));
+            Assert.AreEqual(Saturday52.Is53WeekFiscalYear(Saturday52FiscalYear) ? 53 : 52, Saturday52.GetWeeksInFiscalYear(Saturday52FiscalYear));
         }
     }
 }

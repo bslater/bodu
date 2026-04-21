@@ -216,6 +216,36 @@ namespace Bodu.Extensions
             {
                 throw new ArgumentOutOfRangeException(nameof(quarter), "This provider intentionally returns invalid quarter mappings.");
             }
+
+            public DateTime GetQuarterStart(int quarter, int fiscalYear)
+            {
+                throw new ArgumentOutOfRangeException(nameof(quarter), "This provider intentionally returns invalid quarter mappings.");
+            }
+
+            public DateTime GetQuarterEnd(int quarter, int fiscalYear)
+            {
+                throw new ArgumentOutOfRangeException(nameof(quarter), "This provider intentionally returns invalid quarter mappings.");
+            }
+
+            public DateOnly GetQuarterStartDate(int quarter, int fiscalYear)
+            {
+                throw new ArgumentOutOfRangeException(nameof(quarter), "This provider intentionally returns invalid quarter mappings.");
+            }
+
+            public DateOnly GetQuarterEndDate(int quarter, int fiscalYear)
+            {
+                throw new ArgumentOutOfRangeException(nameof(quarter), "This provider intentionally returns invalid quarter mappings.");
+            }
+
+            public bool Is53WeekFiscalYear(int fiscalYear)
+            {
+                throw new ArgumentOutOfRangeException(nameof(fiscalYear), "This provider intentionally returns invalid quarter mappings.");
+            }
+
+            public int GetWeeksInFiscalYear(int fiscalYear)
+            {
+                throw new ArgumentOutOfRangeException(nameof(fiscalYear), "This provider intentionally returns invalid quarter mappings.");
+            }
         }
 
         public sealed class ValidQuarterProvider : IQuarterDefinitionProvider
@@ -365,6 +395,20 @@ namespace Bodu.Extensions
             public DateOnly GetQuarterStartDate(DateOnly dateOnly) => GetQuarterStart(dateOnly.ToDateTime(TimeOnly.MinValue)).ToDateOnly();
 
             public DateOnly GetQuarterStartDate(int quarter) => GetQuarterStartDate(GetQuarterStart(quarter).ToDateOnly());
+
+#pragma warning disable CS0618 // intentional: delegate the fiscal-year overloads to the existing fixed-year implementations
+            public DateTime GetQuarterStart(int quarter, int fiscalYear) => GetQuarterStart(quarter);
+
+            public DateTime GetQuarterEnd(int quarter, int fiscalYear) => GetQuarterEnd(quarter);
+
+            public DateOnly GetQuarterStartDate(int quarter, int fiscalYear) => GetQuarterStartDate(quarter);
+
+            public DateOnly GetQuarterEndDate(int quarter, int fiscalYear) => GetQuarterEndDate(quarter);
+#pragma warning restore CS0618
+
+            public bool Is53WeekFiscalYear(int fiscalYear) => false;
+
+            public int GetWeeksInFiscalYear(int fiscalYear) => 52;
         }
     }
 }
