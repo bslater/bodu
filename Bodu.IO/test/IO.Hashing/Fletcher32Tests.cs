@@ -27,7 +27,7 @@ namespace Bodu.IO.Hashing
         [TestMethod]
         public void HashLengthInBytes_WhenConstructed_ShouldBeFour()
         {
-            using Fletcher32 hash = new();
+            Fletcher32 hash = new();
             Assert.AreEqual(4, hash.HashLengthInBytes);
         }
 
@@ -37,7 +37,7 @@ namespace Bodu.IO.Hashing
         [TestMethod]
         public void AlgorithmName_WhenConstructed_ShouldBeFletcher32()
         {
-            using Fletcher32 hash = new();
+            Fletcher32 hash = new();
             Assert.AreEqual("Fletcher-32", hash.AlgorithmName);
         }
 
@@ -47,7 +47,7 @@ namespace Bodu.IO.Hashing
         [TestMethod]
         public void GetCurrentHash_WhenInputIsEmpty_ShouldReturnAllZero()
         {
-            using Fletcher32 hash = new();
+            Fletcher32 hash = new();
             Assert.AreEqual("00000000", ToHex(hash.GetCurrentHash()));
         }
 
@@ -59,7 +59,7 @@ namespace Bodu.IO.Hashing
         {
             for (int length = 0; length < IncrementalExpected.Length; length++)
             {
-                using Fletcher32 hash = new();
+                Fletcher32 hash = new();
                 hash.Append(IncrementingBytes(length));
                 string actual = ToHex(hash.GetCurrentHash());
                 Assert.AreEqual(
@@ -75,7 +75,7 @@ namespace Bodu.IO.Hashing
         [TestMethod]
         public void GetCurrentHash_WhenInputIsABC_ShouldMatchKnownAnswer()
         {
-            using Fletcher32 hash = new();
+            Fletcher32 hash = new();
             hash.Append(Utf8("ABC"));
             Assert.AreEqual("84C54284", ToHex(hash.GetCurrentHash()));
         }
@@ -87,7 +87,7 @@ namespace Bodu.IO.Hashing
         [TestMethod]
         public void GetCurrentHash_WhenInputIsQuickBrownFox_ShouldMatchKnownAnswer()
         {
-            using Fletcher32 hash = new();
+            Fletcher32 hash = new();
             hash.Append(Utf8(QuickBrownFox));
             Assert.AreEqual("53CD5B8D", ToHex(hash.GetCurrentHash()));
         }
@@ -98,7 +98,7 @@ namespace Bodu.IO.Hashing
         [TestMethod]
         public void GetCurrentHash_WhenInputIsSixteenZeros_ShouldReturnAllZero()
         {
-            using Fletcher32 hash = new();
+            Fletcher32 hash = new();
             hash.Append(new byte[16]);
             Assert.AreEqual("00000000", ToHex(hash.GetCurrentHash()));
         }
@@ -112,10 +112,10 @@ namespace Bodu.IO.Hashing
         {
             byte[] data = Utf8(QuickBrownFox);
 
-            using Fletcher32 whole = new();
+            Fletcher32 whole = new();
             whole.Append(data);
 
-            using Fletcher32 chunked = new();
+            Fletcher32 chunked = new();
             chunked.Append(data.AsSpan(0, 10));
             chunked.Append(data.AsSpan(10, 15));
             chunked.Append(data.AsSpan(25, data.Length - 25));
@@ -130,7 +130,7 @@ namespace Bodu.IO.Hashing
         [TestMethod]
         public void GetCurrentHash_WhenCalledRepeatedly_ShouldReturnSameDigest()
         {
-            using Fletcher32 hash = new();
+            Fletcher32 hash = new();
             hash.Append(Utf8("ABC"));
 
             byte[] first = hash.GetCurrentHash();
@@ -146,7 +146,7 @@ namespace Bodu.IO.Hashing
         [TestMethod]
         public void Reset_AfterAppend_ShouldReturnToInitialState()
         {
-            using Fletcher32 hash = new();
+            Fletcher32 hash = new();
             hash.Append(Utf8(QuickBrownFox));
             hash.Reset();
 
@@ -160,7 +160,7 @@ namespace Bodu.IO.Hashing
         [TestMethod]
         public void GetHashAndReset_AfterAppend_ShouldReturnHashAndResetState()
         {
-            using Fletcher32 hash = new();
+            Fletcher32 hash = new();
             hash.Append(Utf8("ABC"));
 
             byte[] first = hash.GetHashAndReset();
