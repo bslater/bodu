@@ -371,7 +371,7 @@ public partial class ConcurrentCircularBufferTests
                     }
 
                     var count = buffer.Count;
-                    if (count < 0 || count > 1)
+                    if (count < 0 || count > MinCapacity)
                         Interlocked.Increment(ref countViolations);
                 }
             }));
@@ -388,7 +388,7 @@ public partial class ConcurrentCircularBufferTests
             $"Faults={faults}, CountViolations={countViolations}");
 
         Assert.IsTrue(completed, $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock or livelock.");
-        Assert.AreEqual(0, faults, "No exceptions expected from TryEnqueue or TryDequeue under capacity-1 churn.");
+        Assert.AreEqual(0, faults, "No exceptions expected from TryEnqueue or TryDequeue under capacity-churn.");
         Assert.AreEqual(0, countViolations, $"Count must remain within [0, {MinCapacity}] at all times.");
         Assert.AreEqual(MinCapacity, buffer.Capacity, $"Capacity must remain {MinCapacity} throughout.");
     }
