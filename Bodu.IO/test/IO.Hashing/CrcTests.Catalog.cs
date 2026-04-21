@@ -10,7 +10,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Bodu.Security.Cryptography
+namespace Bodu.IO.Hashing
 {
     public partial class CrcTests
     {
@@ -149,7 +149,7 @@ namespace Bodu.Security.Cryptography
         public void ComputeHash_WhenInputIsCheckVector_ForCatalogStandard_ShouldMatchPublishedCheck(CrcStandards standardId, ulong expectedCheck)
         {
             CrcStandard standard = CrcStandard.Get(standardId);
-            using var crc = new Crc(standard);
+            var crc = new Crc(standard);
             byte[] hash = crc.ComputeHash(CatalogCheckInput);
 
             ulong actual = 0UL;
