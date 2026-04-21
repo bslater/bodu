@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Bodu.Security.Cryptography
+namespace Bodu.IO.Hashing
 {
 	[TestClass]
 	public class CrcLookupTableCacheTests

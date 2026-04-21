@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography
+namespace Bodu.IO.Hashing
 {
     /// <summary>
     /// A utility class for handling CRC operations such as generating CRC lookup tables.
@@ -44,7 +44,7 @@ namespace Bodu.Security.Cryptography
 
                 // Optionally reflect the bits of the input value
                 if (reflectIn)
-                    value = CryptoHelpers.ReflectBits(value, bitsPerTableEntry);
+                    value = CrcHelpers.ReflectBits(value, bitsPerTableEntry);
 
                 // Left-align the value to match the CRC size
                 value <<= size - bitsPerTableEntry;
@@ -58,7 +58,7 @@ namespace Bodu.Security.Cryptography
 
                 // Optionally reflect the result and truncate to the desired CRC size
                 if (reflectIn)
-                    value = CryptoHelpers.ReflectBits(value, size);
+                    value = CrcHelpers.ReflectBits(value, size);
 
                 // Mask off any bits beyond the desired CRC size
                 value &= ulong.MaxValue >> (64 - size);

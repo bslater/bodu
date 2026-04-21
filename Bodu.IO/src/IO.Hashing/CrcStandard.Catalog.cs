@@ -8,7 +8,7 @@
 //     Source: Bodu.Security.Cryptography/src/crc-specs.json (derived from https://reveng.sourceforge.io/crc-catalogue/all.htm).
 // </auto-generated>
 
-namespace Bodu.Security.Cryptography
+namespace Bodu.IO.Hashing
 {
     using System;
     using System.Collections.Generic;

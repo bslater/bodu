@@ -8,7 +8,7 @@
 //     Source: Bodu.Security.Cryptography/src/crc-specs.json (derived from https://reveng.sourceforge.io/crc-catalogue/all.htm).
 // </auto-generated>
 
-namespace Bodu.Security.Cryptography
+namespace Bodu.IO.Hashing
 {
     /// <summary>
     /// Identifies a CRC parameter set defined in the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm">CRC RevEng catalogue</a>.
