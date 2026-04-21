@@ -22,6 +22,8 @@ namespace Bodu.Extensions
         /// between the nearest-Saturday alignments of consecutive 1 February anchors.
         /// </remarks>
         [TestMethod]
+        [DataRow(2005, true)]
+        [DataRow(2011, true)]
         [DataRow(2016, true)]
         [DataRow(2022, true)]
         [DataRow(2028, true)]
