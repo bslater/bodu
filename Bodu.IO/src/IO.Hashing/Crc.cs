@@ -11,6 +11,7 @@ using System.Buffers.Binary;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
 using Bodu;
+using Bodu.Extensions;
 
 /// <summary>
 /// Computes CRC (Cyclic Redundancy Check) values for arbitrary input data using a configurable <see cref="CrcStandard" />.
@@ -223,7 +224,7 @@ public sealed class Crc
         // XOR-reflected output.
         this.workingHash ^= this.standard.XOrOut;
         if (this.standard.ReflectIn ^ this.standard.ReflectOut)
-            this.workingHash = CrcHelpers.ReflectBits(this.workingHash, this.hashSizeBits);
+            this.workingHash = NumericExtensions.ReverseBitsUnchecked(this.workingHash, this.hashSizeBits);
 
         // Continue hashing and finalise again.
         this.ProcessBlocks(newData);
@@ -244,10 +245,6 @@ public sealed class Crc
     public override bool Equals(object? obj)
         => obj is Crc other && this.standard.Equals(other.standard);
 
-    /// <inheritdoc />
-    public override int GetHashCode()
-        => this.standard.GetHashCode();
-
     /// <summary>
     /// Returns the working-state representation of <see cref="CrcStandard.InitialValue" />, applying input reflection
     /// when required.
@@ -255,7 +252,7 @@ public sealed class Crc
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private ulong ComputeInitialState()
         => this.standard.ReflectIn
-            ? CrcHelpers.ReflectBits(this.standard.InitialValue, this.hashSizeBits)
+            ? NumericExtensions.ReverseBitsUnchecked(this.standard.InitialValue, this.hashSizeBits)
             : this.standard.InitialValue;
 
     /// <summary>
@@ -269,7 +266,7 @@ public sealed class Crc
     private ulong FoldOutputState(ulong value)
     {
         if (this.standard.ReflectIn ^ this.standard.ReflectOut)
-            value = CrcHelpers.ReflectBits(value, this.hashSizeBits);
+            value = NumericExtensions.ReverseBitsUnchecked(value, this.hashSizeBits);
 
         value ^= this.standard.XOrOut;
         value &= ulong.MaxValue >> (64 - this.hashSizeBits);
