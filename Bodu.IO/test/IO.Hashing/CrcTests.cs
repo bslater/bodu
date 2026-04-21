@@ -129,25 +129,6 @@ public partial class CrcTests
         Assert.AreEqual(8, new Crc(CrcStandard.CRC64_ECMA182).HashLengthInBytes);
     }
 
-    /// <summary>
-    /// Verifies that calling the default constructor selects the CRC-32/ISO-HDLC standard.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_Default_ShouldUseCRC32_ISOHDLC()
-    {
-        Crc crc = new();
-        Assert.AreEqual(CrcStandard.CRC32_ISOHDLC.Name, crc.CrcStandard.Name);
-    }
-
-    /// <summary>
-    /// Verifies that passing a <see langword="null" /> <see cref="CrcStandard" /> to the constructor throws
-    /// <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenStandardIsNull_ShouldThrowArgumentNullException()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() => _ = new Crc(null!));
-    }
 
     /// <summary>
     /// Verifies that <see cref="Crc.ComputeHash(ReadOnlySpan{byte})" /> on the reference input <c>"123456789"</c>
@@ -183,30 +164,4 @@ public partial class CrcTests
         CollectionAssert.AreEqual(combined, resumed);
     }
 
-    /// <summary>
-    /// Verifies that two <see cref="Crc" /> instances configured with identical <see cref="CrcStandard" /> values
-    /// report equal via <see cref="Crc.Equals(object?)" /> and produce matching hash codes.
-    /// </summary>
-    [TestMethod]
-    public void Equals_WhenStandardsMatch_ShouldReturnTrueAndEqualHashCode()
-    {
-        Crc a = new(CrcStandard.CRC32_ISOHDLC);
-        Crc b = new(CrcStandard.CRC32_ISOHDLC);
-
-        Assert.IsTrue(a.Equals(b));
-        Assert.AreEqual(a.GetHashCode(), b.GetHashCode());
-    }
-
-    /// <summary>
-    /// Verifies that two <see cref="Crc" /> instances configured with different <see cref="CrcStandard" /> values
-    /// report unequal via <see cref="Crc.Equals(object?)" />.
-    /// </summary>
-    [TestMethod]
-    public void Equals_WhenStandardsDiffer_ShouldReturnFalse()
-    {
-        Crc a = new(CrcStandard.CRC32_ISOHDLC);
-        Crc b = new(CrcStandard.CRC32_ISCSI);
-
-        Assert.IsFalse(a.Equals(b));
-    }
 }

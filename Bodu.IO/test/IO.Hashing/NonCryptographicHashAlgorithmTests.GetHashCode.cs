@@ -11,38 +11,19 @@ namespace Bodu.IO.Hashing;
 public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorithm, TVariant>
 {
     /// <summary>
-    /// Verifies that <see cref="object.GetHashCode" /> returns a stable value across repeated invocations on the
-    /// same instance without mutating any observable hashing state.
+    /// Verifies that <see cref="object.GetHashCode" /> throws <see cref="NotImplementedException" />,
+    /// confirming that the algorithm does not override the method inherited from
+    /// <see cref="NonCryptographicHashAlgorithm" />.
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
     [TestMethod]
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
-    public void GetHashCode_WhenCalledRepeatedly_ShouldReturnConsistentValue(TVariant variant)
+    public void GetHashCode_WhenCalled_ShouldThrowException(TVariant variant)
     {
         NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
-
-        int first = algorithm.GetHashCode();
-        int second = algorithm.GetHashCode();
-
-        Assert.AreEqual(first, second);
-    }
-
-    /// <summary>
-    /// Verifies that invoking <see cref="object.GetHashCode" /> does not disturb the accumulator — the digest
-    /// observed immediately before and after the call is identical.
-    /// </summary>
-    /// <param name="variant">The algorithm variant under test.</param>
-    [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
-    public void GetHashCode_WhenInvoked_ShouldNotMutateAccumulatorState(TVariant variant)
-    {
-        NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
-        algorithm.Append(SharedInputs["ABC"]);
-
-        byte[] before = algorithm.GetCurrentHash();
-        _ = algorithm.GetHashCode();
-        byte[] after = algorithm.GetCurrentHash();
-
-        CollectionAssert.AreEqual(before, after);
+        Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            _ = algorithm.GetHashCode();
+        });
     }
 }

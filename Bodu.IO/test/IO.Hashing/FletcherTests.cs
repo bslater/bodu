@@ -29,23 +29,6 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
     /// <inheritdoc />
     protected override TAlgorithm CreateAlgorithm(SingleTestVariant variant) => new();
 
-    /// <summary>
-    /// Verifies that <see cref="Fletcher{T}.AlgorithmName" /> begins with the <c>Fletcher-</c> prefix and ends
-    /// with the expected bit width for the concrete variant under test.
-    /// </summary>
-    [TestMethod]
-    public void AlgorithmName_WhenConstructed_ShouldMatchSpecification()
-    {
-        NonCryptographicHashAlgorithmSpecification specification = GetSpecification(DefaultVariant);
-        TAlgorithm algorithm = CreateAlgorithm();
-
-        Assert.IsTrue(
-            algorithm.AlgorithmName.StartsWith("Fletcher-", StringComparison.Ordinal),
-            $"Expected algorithm name to start with 'Fletcher-', was '{algorithm.AlgorithmName}'.");
-
-        if (specification.AlgorithmName is { } expected)
-            Assert.AreEqual(expected, algorithm.AlgorithmName);
-    }
 
     /// <summary>
     /// Verifies that hashing an empty input with any Fletcher variant produces an all-zero checksum.

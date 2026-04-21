@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Extensions;
+
 namespace Bodu.IO.Hashing
 {
     /// <summary>
@@ -44,7 +46,7 @@ namespace Bodu.IO.Hashing
 
                 // Optionally reflect the bits of the input value
                 if (reflectIn)
-                    value = CrcHelpers.ReflectBits(value, bitsPerTableEntry);
+                    value = NumericExtensions.ReverseBitsUnchecked(value, bitsPerTableEntry);
 
                 // Left-align the value to match the CRC size
                 value <<= size - bitsPerTableEntry;
@@ -58,7 +60,7 @@ namespace Bodu.IO.Hashing
 
                 // Optionally reflect the result and truncate to the desired CRC size
                 if (reflectIn)
-                    value = CrcHelpers.ReflectBits(value, size);
+                    value = NumericExtensions.ReverseBitsUnchecked(value, size);
 
                 // Mask off any bits beyond the desired CRC size
                 value &= ulong.MaxValue >> (64 - size);
