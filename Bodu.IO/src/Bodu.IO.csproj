@@ -24,22 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="ResourceStrings.resx">
-      <LastGenOutput>ResourceStrings.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="ResourceStrings.Designer.cs">
-      <DependentUpon>ResourceStrings.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
   </ItemGroup>
 
   <ItemGroup>
