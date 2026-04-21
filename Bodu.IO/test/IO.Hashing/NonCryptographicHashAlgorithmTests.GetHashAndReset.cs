@@ -20,11 +20,11 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     public void GetHashAndReset_AfterAppend_ShouldReturnFinalDigest(TVariant variant)
     {
         NonCryptographicHashAlgorithm snapshot = CreateAlgorithm(variant);
-        snapshot.Append(SharedInputs["ABC"]);
+        snapshot.Append(NonCryptographicHashSharedInputs.Abc);
         byte[] expected = snapshot.GetCurrentHash();
 
         NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
-        algorithm.Append(SharedInputs["ABC"]);
+        algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
         byte[] actual = algorithm.GetHashAndReset();
 
@@ -41,7 +41,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     public void GetHashAndReset_AfterAppend_ShouldResetInstance(TVariant variant)
     {
         NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
-        algorithm.Append(SharedInputs["QuickBrownFox"]);
+        algorithm.Append(NonCryptographicHashSharedInputs.QuickBrownFox);
         _ = algorithm.GetHashAndReset();
 
         NonCryptographicHashAlgorithm baseline = CreateAlgorithm(variant);
@@ -59,7 +59,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     public void GetHashAndReset_WhenWritingToSpan_ShouldReturnHashAndResetInstance(TVariant variant)
     {
         NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
-        algorithm.Append(SharedInputs["Sequential_0_255"]);
+        algorithm.Append(NonCryptographicHashSharedInputs.Sequential0To255);
 
         byte[] destination = new byte[algorithm.HashLengthInBytes];
         int written = algorithm.GetHashAndReset(destination);

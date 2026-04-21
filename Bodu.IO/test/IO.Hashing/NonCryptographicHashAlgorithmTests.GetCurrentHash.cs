@@ -60,7 +60,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     public void GetCurrentHash_WhenCalledRepeatedly_ShouldReturnSameDigest(TVariant variant)
     {
         NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
-        algorithm.Append(SharedInputs["ABC"]);
+        algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
         byte[] first = algorithm.GetCurrentHash();
         byte[] second = algorithm.GetCurrentHash();
@@ -80,7 +80,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     public void GetCurrentHash_WhenWritingToSpan_ShouldMatchArrayOverload(TVariant variant)
     {
         NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
-        algorithm.Append(SharedInputs["QuickBrownFox"]);
+        algorithm.Append(NonCryptographicHashSharedInputs.QuickBrownFox);
 
         byte[] expected = algorithm.GetCurrentHash();
 

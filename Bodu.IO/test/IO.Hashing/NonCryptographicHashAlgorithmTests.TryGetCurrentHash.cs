@@ -21,7 +21,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     public void TryGetCurrentHash_WhenDestinationIsExactSize_ShouldReturnTrueAndWriteHash(TVariant variant)
     {
         NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
-        algorithm.Append(SharedInputs["ABC"]);
+        algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
         byte[] expected = algorithm.GetCurrentHash();
         byte[] destination = new byte[algorithm.HashLengthInBytes];
@@ -43,7 +43,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     public void TryGetCurrentHash_WhenDestinationIsTooSmall_ShouldReturnFalse(TVariant variant)
     {
         NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
-        algorithm.Append(SharedInputs["ABC"]);
+        algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
         byte[] destination = new byte[algorithm.HashLengthInBytes - 1];
         if (destination.Length == 0)
@@ -68,7 +68,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     public void TryGetCurrentHash_WhenSuccessful_ShouldNotMutateAccumulatorState(TVariant variant)
     {
         NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
-        algorithm.Append(SharedInputs["QuickBrownFox"]);
+        algorithm.Append(NonCryptographicHashSharedInputs.QuickBrownFox);
 
         byte[] first = new byte[algorithm.HashLengthInBytes];
         Assert.IsTrue(algorithm.TryGetCurrentHash(first, out _));

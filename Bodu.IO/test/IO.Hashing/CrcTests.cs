@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace Bodu.IO.Hashing;
@@ -38,7 +37,7 @@ public enum CrcTestVariant
 public partial class CrcTests
     : NonCryptographicHashAlgorithmTests<CrcTests, Crc, CrcTestVariant>
 {
-    private static readonly byte[] CheckInput = Encoding.ASCII.GetBytes("123456789");
+    private static readonly byte[] RevEngCheckInput = Encoding.ASCII.GetBytes("123456789");
 
     /// <inheritdoc />
     protected override CrcTestVariant DefaultVariant => CrcTestVariant.Crc32_IsoHdlc;
@@ -47,63 +46,93 @@ public partial class CrcTests
     protected override Crc CreateAlgorithm(CrcTestVariant variant) => new(StandardFor(variant));
 
     /// <inheritdoc />
+    /// <remarks>
+    /// Each variant seeds <see cref="NonCryptographicHashKnownAnswers.Empty" /> with the algorithm's empty-input
+    /// digest and contributes the RevEng catalogue <c>"123456789"</c> check vector via
+    /// <see cref="NonCryptographicHashKnownAnswers.Additional" />. Broader shared-input coverage for CRC is
+    /// deferred to <c>CrcTests.Catalog.cs</c>, which exercises every catalogued CRC standard in one pass.
+    /// </remarks>
     protected override NonCryptographicHashAlgorithmSpecification GetSpecification(CrcTestVariant variant) => variant switch
     {
         CrcTestVariant.Crc8_SMBUS => new()
         {
             HashLengthInBytes = 1,
             IsResumable = true,
+            KnownAnswers = new()
+            {
+                Empty = "00",
+                Additional =
+                [
+                    new()
+                    {
+                        Name = "RevEng/123456789",
+                        Input = RevEngCheckInput,
+                        ExpectedHex = "F4",
+                    },
+                ],
+            },
         },
         CrcTestVariant.Crc16_ARC => new()
         {
             HashLengthInBytes = 2,
             IsResumable = true,
+            KnownAnswers = new()
+            {
+                Empty = "0000",
+                Additional =
+                [
+                    new()
+                    {
+                        Name = "RevEng/123456789",
+                        Input = RevEngCheckInput,
+                        ExpectedHex = "3DBB",
+                    },
+                ],
+            },
         },
         CrcTestVariant.Crc32_IsoHdlc => new()
         {
             HashLengthInBytes = 4,
             IsResumable = true,
+            KnownAnswers = new()
+            {
+                Empty = "00000000",
+                Additional =
+                [
+                    new()
+                    {
+                        Name = "RevEng/123456789",
+                        Input = RevEngCheckInput,
+                        ExpectedHex = "2639F4CB",
+                    },
+                ],
+            },
         },
         CrcTestVariant.Crc64_Ecma182 => new()
         {
             HashLengthInBytes = 8,
             IsResumable = true,
+            KnownAnswers = new()
+            {
+                Empty = "0000000000000000",
+                Additional =
+                [
+                    new()
+                    {
+                        Name = "RevEng/123456789",
+                        Input = RevEngCheckInput,
+                        ExpectedHex = "4773490B5FDF406C",
+                    },
+                ],
+            },
         },
         _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
     };
 
     /// <inheritdoc />
     /// <remarks>
-    /// Only the <c>Empty</c> named input and the canonical RevEng check value (computed against
-    /// <c>"123456789"</c>, not a <see cref="SharedInputs" /> entry) are seeded here. The full catalogue check is
-    /// carried out in <c>CrcTests.Catalog.cs</c>, so variant-agnostic known answers for other shared inputs are
-    /// deliberately omitted to keep the parameterised test matrix tractable.
-    /// </remarks>
-    protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(CrcTestVariant variant) => variant switch
-    {
-        CrcTestVariant.Crc8_SMBUS => new Dictionary<string, string>
-        {
-            ["Empty"] = "00",
-        },
-        CrcTestVariant.Crc16_ARC => new Dictionary<string, string>
-        {
-            ["Empty"] = "0000",
-        },
-        CrcTestVariant.Crc32_IsoHdlc => new Dictionary<string, string>
-        {
-            ["Empty"] = "00000000",
-        },
-        CrcTestVariant.Crc64_Ecma182 => new Dictionary<string, string>
-        {
-            ["Empty"] = "0000000000000000",
-        },
-        _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
-    };
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// The common incremental test is skipped for CRC; the catalogue partial provides exhaustive coverage of the
-    /// canonical check vectors against all 100+ RevEng standards instead.
+    /// The common incremental test is skipped for CRC; the catalogue partial provides exhaustive coverage of
+    /// the canonical check vectors against all 100+ RevEng standards instead.
     /// </remarks>
     protected override IEnumerable<string> GetIncrementalHashValue(CrcTestVariant variant) => Array.Empty<string>();
 
@@ -150,23 +179,9 @@ public partial class CrcTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Crc.ComputeHash(ReadOnlySpan{byte})" /> on the reference input <c>"123456789"</c>
-    /// under CRC-32/ISO-HDLC produces the documented check value <c>0xCBF43926</c>.
-    /// </summary>
-    [TestMethod]
-    public void ComputeHash_WhenInputIs123456789_UnderCRC32_ISOHDLC_ShouldMatchPublishedCheck()
-    {
-        Crc crc = new(CrcStandard.CRC32_ISOHDLC);
-        byte[] hash = crc.ComputeHash(CheckInput);
-
-        // CRC-32/ISO-HDLC stores little-endian; 0xCBF43926 → bytes [26, 39, F4, CB].
-        CollectionAssert.AreEqual(new byte[] { 0x26, 0x39, 0xF4, 0xCB }, hash);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Crc.ComputeHashFrom(ReadOnlySpan{byte}, ReadOnlySpan{byte})" /> continues a prior
-    /// hash by undoing finalisation and hashing additional data, yielding the same digest as a single-shot hash
-    /// over the combined input.
+    /// Verifies that <see cref="Crc.ComputeHashFrom(ReadOnlySpan{byte}, ReadOnlySpan{byte})" /> continues a
+    /// prior hash by undoing finalisation and hashing additional data, yielding the same digest as a
+    /// single-shot hash over the combined input.
     /// </summary>
     [TestMethod]
     public void ComputeHashFrom_WhenResumedWithAdditionalInput_ShouldMatchSingleShotCombinedHash()
@@ -179,13 +194,13 @@ public partial class CrcTests
         Crc resumer = new(CrcStandard.CRC32_ISOHDLC);
         byte[] resumed = resumer.ComputeHashFrom(firstHash, rest);
 
-        byte[] combined = new Crc(CrcStandard.CRC32_ISOHDLC).ComputeHash(CheckInput);
+        byte[] combined = new Crc(CrcStandard.CRC32_ISOHDLC).ComputeHash(RevEngCheckInput);
         CollectionAssert.AreEqual(combined, resumed);
     }
 
     /// <summary>
-    /// Verifies that two <see cref="Crc" /> instances configured with identical <see cref="CrcStandard" /> values
-    /// report equal via <see cref="Crc.Equals(object?)" /> and produce matching hash codes.
+    /// Verifies that two <see cref="Crc" /> instances configured with identical <see cref="CrcStandard" />
+    /// values report equal via <see cref="Crc.Equals(object?)" /> and produce matching hash codes.
     /// </summary>
     [TestMethod]
     public void Equals_WhenStandardsMatch_ShouldReturnTrueAndEqualHashCode()
@@ -198,8 +213,8 @@ public partial class CrcTests
     }
 
     /// <summary>
-    /// Verifies that two <see cref="Crc" /> instances configured with different <see cref="CrcStandard" /> values
-    /// report unequal via <see cref="Crc.Equals(object?)" />.
+    /// Verifies that two <see cref="Crc" /> instances configured with different <see cref="CrcStandard" />
+    /// values report unequal via <see cref="Crc.Equals(object?)" />.
     /// </summary>
     [TestMethod]
     public void Equals_WhenStandardsDiffer_ShouldReturnFalse()

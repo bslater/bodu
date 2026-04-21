@@ -37,7 +37,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     public void GetHashCode_WhenInvoked_ShouldNotMutateAccumulatorState(TVariant variant)
     {
         NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
-        algorithm.Append(SharedInputs["ABC"]);
+        algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
         byte[] before = algorithm.GetCurrentHash();
         _ = algorithm.GetHashCode();
