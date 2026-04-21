@@ -4,20 +4,17 @@
     `check` vector (the CRC of ASCII "123456789").
 
 .DESCRIPTION
-    For every CRC standard in crc-specs.json (except those listed in -Exclude, and those whose
-    `size` exceeds -MaxSize), emits a DynamicData row carrying the generated field reference and
-    the expected check value. A single parameterised test computes
-    `new Crc(standard).ComputeHash(Encoding.ASCII.GetBytes("123456789"))` and compares against
-    the expected value, packed little-endian from the CRC width.
+    For every CRC standard in crc-specs.json (whose `size` is within -MaxSize), emits a
+    DynamicData row carrying the `CrcStandards` enum value and the expected check value. The
+    test method materialises the CrcStandard via `CrcStandard.Get(CrcStandards)` and compares
+    `new Crc(standard).ComputeHash("123456789")` against the expected value, packed
+    little-endian from the CRC width.
 
 .PARAMETER SpecsPath
     Path to the crc-specs.json input file.
 
 .PARAMETER OutputPath
     Path of the C# file to write. Overwritten in place.
-
-.PARAMETER Exclude
-    Canonical CRC names to omit from the generated test rows.
 
 .PARAMETER MaxSize
     Maximum CRC width (in bits). Entries above this are skipped.
@@ -31,9 +28,8 @@
 #Requires -Version 7
 [CmdletBinding()]
 param(
-    [string]$SpecsPath = (Join-Path $PSScriptRoot '..' 'Bodu.Security.Cryptography' 'src' 'crc-specs.json'),
+    [string]$SpecsPath  = (Join-Path $PSScriptRoot '..' 'Bodu.Security.Cryptography' 'src' 'crc-specs.json'),
     [string]$OutputPath = (Join-Path $PSScriptRoot '..' 'Bodu.Security.Cryptography' 'test' 'Security.Cryptography' 'CrcTests.Catalog.cs'),
-    [string[]]$Exclude = @('CRC-32/ISO-HDLC'),
     [int]$MaxSize = 64
 )
 
@@ -54,16 +50,8 @@ function Format-HexLiteral {
 }
 
 $specs = Get-Content -LiteralPath $SpecsPath -Raw | ConvertFrom-Json
-$excludeSet = [System.Collections.Generic.HashSet[string]]::new([string[]]$Exclude, [System.StringComparer]::Ordinal)
-
-$emitted = @()
-$skippedSize = @()
-$skippedExclude = @()
-foreach ($spec in $specs) {
-    if ($spec.size -gt $MaxSize) { $skippedSize += ,$spec.name; continue }
-    if ($excludeSet.Contains($spec.name)) { $skippedExclude += ,$spec.name; continue }
-    $emitted += ,$spec
-}
+$emitted = @($specs | Where-Object { $_.size -le $MaxSize })
+$skippedSize = @($specs | Where-Object { $_.size -gt $MaxSize })
 
 $sb = [System.Text.StringBuilder]::new()
 [void]$sb.AppendLine('// ---------------------------------------------------------------------------------------------------------------')
@@ -85,7 +73,7 @@ $sb = [System.Text.StringBuilder]::new()
 [void]$sb.AppendLine('        private static readonly byte[] CatalogCheckInput = Encoding.ASCII.GetBytes("123456789");')
 [void]$sb.AppendLine()
 [void]$sb.AppendLine('        /// <summary>')
-[void]$sb.AppendLine('        /// Yields one test row per catalogue CRC standard: the <see cref="CrcStandard" /> instance and the expected')
+[void]$sb.AppendLine('        /// Yields one test row per catalogue CRC standard: the <see cref="CrcStandards" /> enum value and the expected')
 [void]$sb.AppendLine('        /// <c>check</c> value from the RevEng catalogue (the CRC of the ASCII bytes <c>"123456789"</c>).')
 [void]$sb.AppendLine('        /// </summary>')
 [void]$sb.AppendLine('        /// <returns>Test data rows for use with <c>[DynamicData]</c>.</returns>')
@@ -94,20 +82,22 @@ $sb = [System.Text.StringBuilder]::new()
 foreach ($spec in $emitted) {
     $constName = ConvertTo-ConstantName $spec.name
     $expected = Format-HexLiteral $spec.check
-    [void]$sb.AppendLine("            yield return new object[] { CrcStandard.$constName, $expected };")
+    [void]$sb.AppendLine("            yield return new object[] { CrcStandards.$constName, $expected };")
 }
 [void]$sb.AppendLine('        }')
 [void]$sb.AppendLine()
 [void]$sb.AppendLine('        /// <summary>')
 [void]$sb.AppendLine('        /// Verifies that every catalogue CRC standard hashes the reference input <c>"123456789"</c> to the')
-[void]$sb.AppendLine('        /// <c>check</c> value published in the RevEng catalogue.')
+[void]$sb.AppendLine('        /// <c>check</c> value published in the RevEng catalogue. The standard is materialised on demand via')
+[void]$sb.AppendLine('        /// <see cref="CrcStandard.Get(CrcStandards)" />.')
 [void]$sb.AppendLine('        /// </summary>')
-[void]$sb.AppendLine('        /// <param name="standard">The catalogue <see cref="CrcStandard" /> under test.</param>')
+[void]$sb.AppendLine('        /// <param name="standardId">The catalogue entry under test, identified by <see cref="CrcStandards" />.</param>')
 [void]$sb.AppendLine('        /// <param name="expectedCheck">The expected CRC value, packed little-endian from the CRC width.</param>')
 [void]$sb.AppendLine('        [DataTestMethod]')
 [void]$sb.AppendLine('        [DynamicData(nameof(CatalogCheckVectors), DynamicDataSourceType.Method)]')
-[void]$sb.AppendLine('        public void ComputeHash_WhenInputIsCheckVector_ForCatalogStandard_ShouldMatchPublishedCheck(CrcStandard standard, ulong expectedCheck)')
+[void]$sb.AppendLine('        public void ComputeHash_WhenInputIsCheckVector_ForCatalogStandard_ShouldMatchPublishedCheck(CrcStandards standardId, ulong expectedCheck)')
 [void]$sb.AppendLine('        {')
+[void]$sb.AppendLine('            CrcStandard standard = CrcStandard.Get(standardId);')
 [void]$sb.AppendLine('            using var crc = new Crc(standard);')
 [void]$sb.AppendLine('            byte[] hash = crc.ComputeHash(CatalogCheckInput);')
 [void]$sb.AppendLine()
@@ -123,5 +113,4 @@ foreach ($spec in $emitted) {
 Set-Content -LiteralPath $OutputPath -Value $sb.ToString() -Encoding utf8
 Write-Host "Wrote $OutputPath"
 Write-Host "  Check vectors emitted: $($emitted.Count)"
-Write-Host "  Skipped by -Exclude:   $($skippedExclude.Count)"
 Write-Host "  Skipped by -MaxSize:   $($skippedSize.Count)"

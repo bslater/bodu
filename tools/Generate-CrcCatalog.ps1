@@ -1,37 +1,39 @@
 <#
 .SYNOPSIS
-    Regenerates CrcStandard.Catalog.cs from crc-specs.json.
+    Regenerates the CRC catalogue C# files (CrcStandards enum and CrcStandard.Catalog.cs) from
+    crc-specs.json.
 
 .DESCRIPTION
-    Emits a rich `public static readonly CrcStandard FOO = new CrcStandard(...)` declaration per
-    catalogue entry, plus alias shortcuts (`public static readonly CrcStandard BAR = FOO;`) for
-    every alias listed in the source JSON. Each emitted field carries a full XML doc block with
-    `<summary>`, `<value>`, `<remarks>` describing the width/polynomial/initial value/reflection/
-    XOR output plus the RevEng source URL with anchor and the catalogue's Created/Updated dates,
-    and `<seealso>` cross-references to every sibling alias.
+    Emits two files:
+      * `CrcStandards.cs` — a `public enum CrcStandards` with one value per canonical catalogue
+        entry, ordered to match the JSON. Published aliases are not exposed as enum values;
+        they resolve to their canonical instance through `CrcStandard.FromName`.
+      * `CrcStandard.Catalog.cs` — the packed data table (`CatalogEntry[] s_catalog`) and the
+        lazy lookup plumbing: `Get(CrcStandards)`, `FromName(string)`, `TryFromName`, `All`.
+        A per-entry cache publishes the first materialised `CrcStandard` via
+        `Interlocked.CompareExchange` so reference equality is stable across threads.
 
     Filtering:
-      -Exclude      Canonical names whose field declarations are owned elsewhere (typically by
-                    hand in CrcStandard.cs). They are NOT re-emitted as declarations, but their
-                    aliases are still emitted (pointing to the externally declared canonical),
-                    and the canonical is still referenced from `All` and the name lookup.
-                    Default: `CRC-32/ISO-HDLC`.
-      -MaxSize      Upper bound on CRC width. Entries whose `size` exceeds this value are
-                    skipped entirely: no field, no aliases, no `All` entry, no lookup entry.
-                    Default: 64 (matches `CrcStandard.MaxSize`, the widest ulong that
-                    `CrcStandard` can represent).
+      -MaxSize    Upper bound on CRC width (default 64, matching `CrcStandard.MaxSize`).
+                  Entries whose `size` exceeds this value are skipped entirely: no enum member,
+                  no catalogue row, no name-lookup entry.
+                  Currently only `CRC-82/DARC` is excluded by the default limit.
+
+    Unlike the previous generator, this script no longer emits per-entry `public static readonly
+    CrcStandard` fields or alias shortcut fields. Strongly-typed properties for the common
+    standards are hand-maintained on `CrcStandard` itself (in `CrcStandard.cs`).
 
 .PARAMETER SpecsPath
     Path to the crc-specs.json input file.
 
-.PARAMETER OutputPath
-    Path of the C# file to write. Overwritten in place.
+.PARAMETER EnumOutputPath
+    Path of the enum C# file to write. Overwritten in place.
 
-.PARAMETER Exclude
-    Canonical CRC names to omit from emitted field declarations.
+.PARAMETER CatalogOutputPath
+    Path of the catalogue C# file to write. Overwritten in place.
 
 .PARAMETER MaxSize
-    Maximum CRC width (in bits). Entries above this are excluded entirely.
+    Maximum CRC width (in bits).
 
 .EXAMPLE
     pwsh ./tools/Generate-CrcCatalog.ps1
@@ -42,9 +44,9 @@
 #Requires -Version 7
 [CmdletBinding()]
 param(
-    [string]$SpecsPath = (Join-Path $PSScriptRoot '..' 'Bodu.Security.Cryptography' 'src' 'crc-specs.json'),
-    [string]$OutputPath = (Join-Path $PSScriptRoot '..' 'Bodu.Security.Cryptography' 'src' 'Security.Cryptography' 'CrcStandard.Catalog.cs'),
-    [string[]]$Exclude = @('CRC-32/ISO-HDLC'),
+    [string]$SpecsPath          = (Join-Path $PSScriptRoot '..' 'Bodu.Security.Cryptography' 'src' 'crc-specs.json'),
+    [string]$EnumOutputPath     = (Join-Path $PSScriptRoot '..' 'Bodu.Security.Cryptography' 'src' 'Security.Cryptography' 'CrcStandards.cs'),
+    [string]$CatalogOutputPath  = (Join-Path $PSScriptRoot '..' 'Bodu.Security.Cryptography' 'src' 'Security.Cryptography' 'CrcStandard.Catalog.cs'),
     [int]$MaxSize = 64
 )
 
@@ -64,31 +66,8 @@ function Format-HexLiteral {
     return "0x$hex" + 'UL'
 }
 
-function Format-HexDoc {
-    param([string]$Value)
-    $hex = ($Value -replace '^0[xX]', '').ToUpperInvariant()
-    return "0x$hex"
-}
-
-function Format-AnchorSlug {
-    param([string]$Name)
-    return 'crc.cat.' + ($Name -replace '/', '-').ToLowerInvariant()
-}
-
-function Format-EnglishList {
-    param([string[]]$Items)
-    if ($null -eq $Items -or $Items.Count -eq 0) { return '' }
-    if ($Items.Count -eq 1) { return "<c>$($Items[0])</c>" }
-    if ($Items.Count -eq 2) { return "<c>$($Items[0])</c> and <c>$($Items[1])</c>" }
-    $head = ($Items[0..($Items.Count - 2)] | ForEach-Object { "<c>$_</c>" }) -join ', '
-    return "$head, and <c>$($Items[-1])</c>"
-}
-
 function Get-AliasesFrom {
     param($Spec)
-    # Always return a [string[]] — never $null, never a one-null array — so .Count is safe
-    # regardless of how ConvertFrom-Json materialised the JSON "aliases" member. The leading
-    # comma prevents PowerShell from unwrapping an empty array to $null on function return.
     if (-not $Spec.PSObject.Properties['aliases']) { return ,[string[]]@() }
     $value = $Spec.aliases
     if ($null -eq $value) { return ,[string[]]@() }
@@ -97,213 +76,240 @@ function Get-AliasesFrom {
 }
 
 $specs = Get-Content -LiteralPath $SpecsPath -Raw | ConvertFrom-Json
-$excludeSet = [System.Collections.Generic.HashSet[string]]::new([string[]]$Exclude, [System.StringComparer]::Ordinal)
+$supported = @($specs | Where-Object { $_.size -le $MaxSize })
 
-# Pass 1: filter out oversize entries and precompute aliases and constant names.
-$supported = @()
-$skippedBySize = @()
-foreach ($spec in $specs) {
-    if ($spec.size -gt $MaxSize) {
-        $skippedBySize += ,$spec.name
-        continue
-    }
-    $supported += ,$spec
+# ----- CrcStandards.cs -----
+$enumBuilder = [System.Text.StringBuilder]::new()
+[void]$enumBuilder.AppendLine('// ---------------------------------------------------------------------------------------------------------------')
+[void]$enumBuilder.AppendLine('// <copyright file="CrcStandards.cs" company="PlaceholderCompany">')
+[void]$enumBuilder.AppendLine('//     Copyright (c) PlaceholderCompany. All rights reserved.')
+[void]$enumBuilder.AppendLine('// </copyright>')
+[void]$enumBuilder.AppendLine('// ---------------------------------------------------------------------------------------------------------------')
+[void]$enumBuilder.AppendLine('// <auto-generated>')
+[void]$enumBuilder.AppendLine('//     This file is regenerated by tools/Generate-CrcCatalog.ps1. Do not edit by hand.')
+[void]$enumBuilder.AppendLine('//     Source: Bodu.Security.Cryptography/src/crc-specs.json (derived from https://reveng.sourceforge.io/crc-catalogue/all.htm).')
+[void]$enumBuilder.AppendLine('// </auto-generated>')
+[void]$enumBuilder.AppendLine()
+[void]$enumBuilder.AppendLine('namespace Bodu.Security.Cryptography')
+[void]$enumBuilder.AppendLine('{')
+[void]$enumBuilder.AppendLine('    /// <summary>')
+[void]$enumBuilder.AppendLine('    /// Identifies a CRC parameter set defined in the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm">CRC RevEng catalogue</a>.')
+[void]$enumBuilder.AppendLine('    /// Pass to <see cref="CrcStandard.Get(CrcStandards)" /> to materialise the corresponding <see cref="CrcStandard" /> on demand.')
+[void]$enumBuilder.AppendLine('    /// </summary>')
+[void]$enumBuilder.AppendLine('    /// <remarks>')
+[void]$enumBuilder.AppendLine('    /// <para>The enum covers only canonical names. Published aliases (for example <c>CRC-32</c> or <c>PKZIP</c>) are not separate')
+[void]$enumBuilder.AppendLine('    /// values — they resolve to their canonical instance through <see cref="CrcStandard.FromName(string)" />. Standards whose width')
+[void]$enumBuilder.AppendLine('    /// exceeds 64 bits (currently only <c>CRC-82/DARC</c>) are omitted because they cannot be represented in a <see cref="ulong" />.</para>')
+[void]$enumBuilder.AppendLine('    /// </remarks>')
+[void]$enumBuilder.AppendLine('    public enum CrcStandards')
+[void]$enumBuilder.AppendLine('    {')
+for ($i = 0; $i -lt $supported.Count; $i++) {
+    $spec = $supported[$i]
+    $c = ConvertTo-ConstantName $spec.name
+    [void]$enumBuilder.AppendLine("        /// <summary>Represents the <c>$($spec.name)</c> CRC standard.</summary>")
+    [void]$enumBuilder.AppendLine("        $c = $i,")
+    [void]$enumBuilder.AppendLine()
+}
+[void]$enumBuilder.AppendLine('    }')
+[void]$enumBuilder.AppendLine('}')
+
+Set-Content -LiteralPath $EnumOutputPath -Value $enumBuilder.ToString() -Encoding utf8
+Write-Host "Wrote $EnumOutputPath ($($supported.Count) enum members)"
+
+# ----- CrcStandard.Catalog.cs -----
+$catBuilder = [System.Text.StringBuilder]::new()
+[void]$catBuilder.AppendLine('// ---------------------------------------------------------------------------------------------------------------')
+[void]$catBuilder.AppendLine('// <copyright file="CrcStandard.Catalog.cs" company="PlaceholderCompany">')
+[void]$catBuilder.AppendLine('//     Copyright (c) PlaceholderCompany. All rights reserved.')
+[void]$catBuilder.AppendLine('// </copyright>')
+[void]$catBuilder.AppendLine('// ---------------------------------------------------------------------------------------------------------------')
+[void]$catBuilder.AppendLine('// <auto-generated>')
+[void]$catBuilder.AppendLine('//     This file is regenerated by tools/Generate-CrcCatalog.ps1. Do not edit by hand.')
+[void]$catBuilder.AppendLine('//     Source: Bodu.Security.Cryptography/src/crc-specs.json (derived from https://reveng.sourceforge.io/crc-catalogue/all.htm).')
+[void]$catBuilder.AppendLine('// </auto-generated>')
+[void]$catBuilder.AppendLine()
+[void]$catBuilder.AppendLine('namespace Bodu.Security.Cryptography')
+[void]$catBuilder.AppendLine('{')
+[void]$catBuilder.AppendLine('    using System;')
+[void]$catBuilder.AppendLine('    using System.Collections.Generic;')
+[void]$catBuilder.AppendLine('    using System.Collections.ObjectModel;')
+[void]$catBuilder.AppendLine('    using System.Threading;')
+[void]$catBuilder.AppendLine()
+[void]$catBuilder.AppendLine('    public sealed partial class CrcStandard')
+[void]$catBuilder.AppendLine('    {')
+[void]$catBuilder.AppendLine('        /// <summary>Compact value-type row in the packed catalogue data table. Indexed by <see cref="CrcStandards" /> ordinal.</summary>')
+[void]$catBuilder.AppendLine('        private readonly struct CatalogEntry')
+[void]$catBuilder.AppendLine('        {')
+[void]$catBuilder.AppendLine('            public CatalogEntry(string name, int size, ulong polynomial, ulong initialValue, bool reflectIn, bool reflectOut, ulong xOrOut)')
+[void]$catBuilder.AppendLine('            {')
+[void]$catBuilder.AppendLine('                Name = name;')
+[void]$catBuilder.AppendLine('                Size = size;')
+[void]$catBuilder.AppendLine('                Polynomial = polynomial;')
+[void]$catBuilder.AppendLine('                InitialValue = initialValue;')
+[void]$catBuilder.AppendLine('                XOrOut = xOrOut;')
+[void]$catBuilder.AppendLine('                ReflectIn = reflectIn;')
+[void]$catBuilder.AppendLine('                ReflectOut = reflectOut;')
+[void]$catBuilder.AppendLine('            }')
+[void]$catBuilder.AppendLine()
+[void]$catBuilder.AppendLine('            public readonly string Name;')
+[void]$catBuilder.AppendLine('            public readonly int Size;')
+[void]$catBuilder.AppendLine('            public readonly ulong Polynomial;')
+[void]$catBuilder.AppendLine('            public readonly ulong InitialValue;')
+[void]$catBuilder.AppendLine('            public readonly ulong XOrOut;')
+[void]$catBuilder.AppendLine('            public readonly bool ReflectIn;')
+[void]$catBuilder.AppendLine('            public readonly bool ReflectOut;')
+[void]$catBuilder.AppendLine('        }')
+[void]$catBuilder.AppendLine()
+[void]$catBuilder.AppendLine('        private static readonly CatalogEntry[] s_catalog = new CatalogEntry[]')
+[void]$catBuilder.AppendLine('        {')
+foreach ($spec in $supported) {
+    $refIn  = $spec.reflectIn.ToString().ToLowerInvariant()
+    $refOut = $spec.reflectOut.ToString().ToLowerInvariant()
+    [void]$catBuilder.AppendLine("            new CatalogEntry(`"$($spec.name)`", $($spec.size), $(Format-HexLiteral $spec.polynomial), $(Format-HexLiteral $spec.initialValue), $refIn, $refOut, $(Format-HexLiteral $spec.xorOut)),")
+}
+[void]$catBuilder.AppendLine('        };')
+[void]$catBuilder.AppendLine()
+[void]$catBuilder.AppendLine('        /// <summary>Lazy per-entry cache: index by <c>(int)CrcStandards</c> ordinal, materialised on first <see cref="Get(CrcStandards)" />.</summary>')
+[void]$catBuilder.AppendLine('        private static readonly CrcStandard?[] s_cache = new CrcStandard?[s_catalog.Length];')
+[void]$catBuilder.AppendLine()
+[void]$catBuilder.AppendLine('        /// <summary>Lazy map from canonical name or alias to the enum ordinal. Built on first <see cref="FromName(string)" /> call.</summary>')
+[void]$catBuilder.AppendLine('        private static Dictionary<string, CrcStandards>? s_nameToEnum;')
+[void]$catBuilder.AppendLine()
+[void]$catBuilder.AppendLine('        /// <summary>Lazy snapshot of every catalogue <see cref="CrcStandard" /> instance; materialised on first <see cref="All" /> access.</summary>')
+[void]$catBuilder.AppendLine('        private static IReadOnlyList<CrcStandard>? s_all;')
+[void]$catBuilder.AppendLine()
+[void]$catBuilder.AppendLine('        /// <summary>')
+[void]$catBuilder.AppendLine('        /// Gets a snapshot of every supported CRC standard in the catalogue, in declaration order.')
+[void]$catBuilder.AppendLine('        /// </summary>')
+[void]$catBuilder.AppendLine('        /// <value>A read-only list containing one <see cref="CrcStandard" /> per canonical entry.</value>')
+[void]$catBuilder.AppendLine('        /// <remarks>')
+[void]$catBuilder.AppendLine('        /// <para>The backing array is built lazily on first access and then memoised, so merely loading this type does not construct any')
+[void]$catBuilder.AppendLine('        /// <see cref="CrcStandard" /> instances. Aliases are not included as separate entries; use <see cref="FromName(string)" /> to')
+[void]$catBuilder.AppendLine('        /// resolve an alias to its canonical instance.</para>')
+[void]$catBuilder.AppendLine('        /// </remarks>')
+[void]$catBuilder.AppendLine('        public static IReadOnlyList<CrcStandard> All')
+[void]$catBuilder.AppendLine('        {')
+[void]$catBuilder.AppendLine('            get')
+[void]$catBuilder.AppendLine('            {')
+[void]$catBuilder.AppendLine('                IReadOnlyList<CrcStandard>? cached = Volatile.Read(ref s_all);')
+[void]$catBuilder.AppendLine('                if (cached is not null) return cached;')
+[void]$catBuilder.AppendLine('                return BuildAll();')
+[void]$catBuilder.AppendLine('            }')
+[void]$catBuilder.AppendLine('        }')
+[void]$catBuilder.AppendLine()
+[void]$catBuilder.AppendLine('        /// <summary>')
+[void]$catBuilder.AppendLine('        /// Materialises — or retrieves from cache — the <see cref="CrcStandard" /> identified by the given enum value.')
+[void]$catBuilder.AppendLine('        /// </summary>')
+[void]$catBuilder.AppendLine('        /// <param name="standard">The catalogue entry to resolve. Must be a defined <see cref="CrcStandards" /> value.</param>')
+[void]$catBuilder.AppendLine('        /// <returns>The shared <see cref="CrcStandard" /> instance for <paramref name="standard" />.</returns>')
+[void]$catBuilder.AppendLine('        /// <exception cref="ArgumentOutOfRangeException"><paramref name="standard" /> is not a defined enum value.</exception>')
+[void]$catBuilder.AppendLine('        /// <remarks>')
+[void]$catBuilder.AppendLine('        /// <para>The first call for a given value constructs a new <see cref="CrcStandard" /> from the packed catalogue data and races')
+[void]$catBuilder.AppendLine('        /// to publish it into the per-entry cache. Subsequent calls — including concurrent calls — return the same instance, so')
+[void]$catBuilder.AppendLine('        /// reference equality is stable.</para>')
+[void]$catBuilder.AppendLine('        /// </remarks>')
+[void]$catBuilder.AppendLine('        public static CrcStandard Get(CrcStandards standard)')
+[void]$catBuilder.AppendLine('        {')
+[void]$catBuilder.AppendLine('            int index = (int)standard;')
+[void]$catBuilder.AppendLine('            if ((uint)index >= (uint)s_catalog.Length)')
+[void]$catBuilder.AppendLine('                throw new ArgumentOutOfRangeException(nameof(standard), standard, "The specified CrcStandards value is not defined.");')
+[void]$catBuilder.AppendLine()
+[void]$catBuilder.AppendLine('            CrcStandard? cached = Volatile.Read(ref s_cache[index]);')
+[void]$catBuilder.AppendLine('            if (cached is not null) return cached;')
+[void]$catBuilder.AppendLine()
+[void]$catBuilder.AppendLine('            ref readonly CatalogEntry entry = ref s_catalog[index];')
+[void]$catBuilder.AppendLine('            CrcStandard created = new CrcStandard(')
+[void]$catBuilder.AppendLine('                name: entry.Name,')
+[void]$catBuilder.AppendLine('                size: entry.Size,')
+[void]$catBuilder.AppendLine('                polynomial: entry.Polynomial,')
+[void]$catBuilder.AppendLine('                initialValue: entry.InitialValue,')
+[void]$catBuilder.AppendLine('                reflectIn: entry.ReflectIn,')
+[void]$catBuilder.AppendLine('                reflectOut: entry.ReflectOut,')
+[void]$catBuilder.AppendLine('                xOrOut: entry.XOrOut);')
+[void]$catBuilder.AppendLine()
+[void]$catBuilder.AppendLine('            // Race-resolve: first writer wins; losers discard their copy and return the cached one for reference-equality stability.')
+[void]$catBuilder.AppendLine('            CrcStandard? winner = Interlocked.CompareExchange(ref s_cache[index], created, null);')
+[void]$catBuilder.AppendLine('            return winner ?? created;')
+[void]$catBuilder.AppendLine('        }')
+[void]$catBuilder.AppendLine()
+[void]$catBuilder.AppendLine('        /// <summary>')
+[void]$catBuilder.AppendLine('        /// Resolves a catalogue entry by its canonical name or any of its published aliases.')
+[void]$catBuilder.AppendLine('        /// </summary>')
+[void]$catBuilder.AppendLine('        /// <param name="name">The canonical CRC standard name, or an alias. Comparison is ordinal and case-sensitive.</param>')
+[void]$catBuilder.AppendLine('        /// <returns>The shared <see cref="CrcStandard" /> instance for <paramref name="name" />.</returns>')
+[void]$catBuilder.AppendLine('        /// <exception cref="ArgumentNullException"><paramref name="name" /> is <see langword="null" />.</exception>')
+[void]$catBuilder.AppendLine('        /// <exception cref="KeyNotFoundException">No catalogue entry matching <paramref name="name" /> exists.</exception>')
+[void]$catBuilder.AppendLine('        public static CrcStandard FromName(string name)')
+[void]$catBuilder.AppendLine('        {')
+[void]$catBuilder.AppendLine('            ThrowHelper.ThrowIfNull(name);')
+[void]$catBuilder.AppendLine('            var map = GetNameToEnumMap();')
+[void]$catBuilder.AppendLine('            if (!map.TryGetValue(name, out CrcStandards standard))')
+[void]$catBuilder.AppendLine('                throw new KeyNotFoundException($"No CRC standard with the name ''{name}'' exists in the catalogue.");')
+[void]$catBuilder.AppendLine('            return Get(standard);')
+[void]$catBuilder.AppendLine('        }')
+[void]$catBuilder.AppendLine()
+[void]$catBuilder.AppendLine('        /// <summary>')
+[void]$catBuilder.AppendLine('        /// Attempts to resolve a catalogue entry by its canonical name or alias without throwing.')
+[void]$catBuilder.AppendLine('        /// </summary>')
+[void]$catBuilder.AppendLine('        /// <param name="name">The canonical CRC standard name or alias to look up.</param>')
+[void]$catBuilder.AppendLine('        /// <param name="standard">When this method returns, contains the matching <see cref="CrcStandard" /> if found; otherwise, <see langword="null" />.</param>')
+[void]$catBuilder.AppendLine('        /// <returns><see langword="true" /> if a catalogue entry was found; otherwise, <see langword="false" />.</returns>')
+[void]$catBuilder.AppendLine('        public static bool TryFromName(string? name, out CrcStandard? standard)')
+[void]$catBuilder.AppendLine('        {')
+[void]$catBuilder.AppendLine('            if (name is not null && GetNameToEnumMap().TryGetValue(name, out CrcStandards id))')
+[void]$catBuilder.AppendLine('            {')
+[void]$catBuilder.AppendLine('                standard = Get(id);')
+[void]$catBuilder.AppendLine('                return true;')
+[void]$catBuilder.AppendLine('            }')
+[void]$catBuilder.AppendLine()
+[void]$catBuilder.AppendLine('            standard = null;')
+[void]$catBuilder.AppendLine('            return false;')
+[void]$catBuilder.AppendLine('        }')
+[void]$catBuilder.AppendLine()
+[void]$catBuilder.AppendLine('        private static Dictionary<string, CrcStandards> GetNameToEnumMap()')
+[void]$catBuilder.AppendLine('        {')
+[void]$catBuilder.AppendLine('            Dictionary<string, CrcStandards>? map = Volatile.Read(ref s_nameToEnum);')
+[void]$catBuilder.AppendLine('            if (map is not null) return map;')
+[void]$catBuilder.AppendLine('            return BuildNameLookup();')
+[void]$catBuilder.AppendLine('        }')
+[void]$catBuilder.AppendLine()
+
+$entryCount = 0
+foreach ($spec in $supported) {
+    $entryCount++
+    foreach ($a in (Get-AliasesFrom $spec)) { $entryCount++ }
 }
 
-# Collision detection on emitted constant names (canonicals + aliases).
-$nameMap = [ordered]@{}
+[void]$catBuilder.AppendLine('        private static Dictionary<string, CrcStandards> BuildNameLookup()')
+[void]$catBuilder.AppendLine('        {')
+[void]$catBuilder.AppendLine("            var map = new Dictionary<string, CrcStandards>($entryCount, StringComparer.Ordinal);")
 foreach ($spec in $supported) {
     $c = ConvertTo-ConstantName $spec.name
-    if ($nameMap.Contains($c)) {
-        throw "Constant name collision: '$c' is claimed by both '$($nameMap[$c])' and '$($spec.name)'."
-    }
-    $nameMap[$c] = $spec.name
+    [void]$catBuilder.AppendLine("            map[`"$($spec.name)`"] = CrcStandards.$c;")
     foreach ($a in (Get-AliasesFrom $spec)) {
-        $ac = ConvertTo-ConstantName $a
-        if ($nameMap.Contains($ac)) {
-            throw "Constant name collision: alias '$a' maps to '$ac' which is already claimed by '$($nameMap[$ac])'."
-        }
-        $nameMap[$ac] = $a
+        [void]$catBuilder.AppendLine("            map[`"$a`"] = CrcStandards.$c;")
     }
 }
+[void]$catBuilder.AppendLine()
+[void]$catBuilder.AppendLine('            Dictionary<string, CrcStandards>? winner = Interlocked.CompareExchange(ref s_nameToEnum, map, null);')
+[void]$catBuilder.AppendLine('            return winner ?? map;')
+[void]$catBuilder.AppendLine('        }')
+[void]$catBuilder.AppendLine()
+[void]$catBuilder.AppendLine('        private static IReadOnlyList<CrcStandard> BuildAll()')
+[void]$catBuilder.AppendLine('        {')
+[void]$catBuilder.AppendLine('            var array = new CrcStandard[s_catalog.Length];')
+[void]$catBuilder.AppendLine('            for (int i = 0; i < array.Length; i++)')
+[void]$catBuilder.AppendLine('                array[i] = Get((CrcStandards)i);')
+[void]$catBuilder.AppendLine()
+[void]$catBuilder.AppendLine('            var readOnly = new ReadOnlyCollection<CrcStandard>(array);')
+[void]$catBuilder.AppendLine('            IReadOnlyList<CrcStandard>? winner = Interlocked.CompareExchange(ref s_all, readOnly, null);')
+[void]$catBuilder.AppendLine('            return winner ?? readOnly;')
+[void]$catBuilder.AppendLine('        }')
+[void]$catBuilder.AppendLine('    }')
+[void]$catBuilder.AppendLine('}')
 
-$sb = [System.Text.StringBuilder]::new()
-[void]$sb.AppendLine('// ---------------------------------------------------------------------------------------------------------------')
-[void]$sb.AppendLine('// <copyright file="CrcStandard.Catalog.cs" company="PlaceholderCompany">')
-[void]$sb.AppendLine('//     Copyright (c) PlaceholderCompany. All rights reserved.')
-[void]$sb.AppendLine('// </copyright>')
-[void]$sb.AppendLine('// ---------------------------------------------------------------------------------------------------------------')
-[void]$sb.AppendLine('// <auto-generated>')
-[void]$sb.AppendLine('//     This file is regenerated by tools/Generate-CrcCatalog.ps1. Do not edit by hand.')
-[void]$sb.AppendLine('//     Source: Bodu.Security.Cryptography/src/crc-specs.json (derived from https://reveng.sourceforge.io/crc-catalogue/all.htm).')
-[void]$sb.AppendLine('// </auto-generated>')
-[void]$sb.AppendLine()
-[void]$sb.AppendLine('namespace Bodu.Security.Cryptography')
-[void]$sb.AppendLine('{')
-[void]$sb.AppendLine('    using System.Collections.Generic;')
-[void]$sb.AppendLine()
-[void]$sb.AppendLine('    /// <summary>')
-[void]$sb.AppendLine('    /// Provides the catalogue of well-known CRC parameter sets sourced from the CRC RevEng reference at')
-[void]$sb.AppendLine('    /// <see href="https://reveng.sourceforge.io/crc-catalogue/all.htm">reveng.sourceforge.io</see>.')
-[void]$sb.AppendLine('    /// </summary>')
-[void]$sb.AppendLine('    public sealed partial class CrcStandard')
-[void]$sb.AppendLine('    {')
+Set-Content -LiteralPath $CatalogOutputPath -Value $catBuilder.ToString() -Encoding utf8
 
-foreach ($spec in $supported) {
-    $canonicalConst = ConvertTo-ConstantName $spec.name
-    $anchor = Format-AnchorSlug $spec.name
-    $aliases = Get-AliasesFrom $spec
-    $aliasConsts = @($aliases | ForEach-Object { ConvertTo-ConstantName $_ })
-
-    $datesPart = ''
-    $created = if ($spec.PSObject.Properties['created']) { [string]$spec.created } else { '' }
-    $updated = if ($spec.PSObject.Properties['updated']) { [string]$spec.updated } else { '' }
-    if ($created -and $updated) { $datesPart = " (Created: $created; Updated: $updated)" }
-    elseif ($created)           { $datesPart = " (Created: $created)" }
-    elseif ($updated)           { $datesPart = " (Updated: $updated)" }
-
-    $isExcluded = $excludeSet.Contains($spec.name)
-    if (-not $isExcluded) {
-        [void]$sb.AppendLine("        /// <summary>Gets the <see cref=`"CrcStandard`" /> that defines the <c>$($spec.name)</c> cyclic redundancy check algorithm standard.</summary>")
-        [void]$sb.AppendLine("        /// <value>A <see cref=`"CrcStandard`" /> object whose properties are set to the <c>$($spec.name)</c> definition.</value>")
-        [void]$sb.AppendLine('        /// <remarks>')
-        [void]$sb.AppendLine("        /// <para>The <c>$($spec.name)</c> standard is taken from the <a href=`"https://reveng.sourceforge.io/crc-catalogue/all.htm#$anchor`">CRC RevEng catalogue</a>$datesPart, with the following definition.</para>")
-        [void]$sb.AppendLine('        /// <para>')
-        [void]$sb.AppendLine('        /// <list type="bullet">')
-        [void]$sb.AppendLine("        /// <item><description>Width: <c>$($spec.size)</c></description></item>")
-        [void]$sb.AppendLine("        /// <item><description>Polynomial: <c>$(Format-HexDoc $spec.polynomial)</c></description></item>")
-        [void]$sb.AppendLine("        /// <item><description>Initial Value: <c>$(Format-HexDoc $spec.initialValue)</c></description></item>")
-        [void]$sb.AppendLine("        /// <item><description>Reflect In: <c>$($spec.reflectIn.ToString().ToLowerInvariant())</c></description></item>")
-        [void]$sb.AppendLine("        /// <item><description>Reflect Out: <c>$($spec.reflectOut.ToString().ToLowerInvariant())</c></description></item>")
-        [void]$sb.AppendLine("        /// <item><description>XOR Out: <c>$(Format-HexDoc $spec.xorOut)</c></description></item>")
-        [void]$sb.AppendLine('        /// </list>')
-        [void]$sb.AppendLine('        /// </para>')
-        if ($aliases.Count -gt 0) {
-            $aliasList = Format-EnglishList -Items $aliases
-            $verb = if ($aliases.Count -eq 1) { 'the alias' } else { 'the aliases' }
-            [void]$sb.AppendLine("        /// <para>The <c>$($spec.name)</c> standard is also known by $verb $aliasList.</para>")
-        }
-        [void]$sb.AppendLine('        /// </remarks>')
-        foreach ($ac in $aliasConsts) {
-            [void]$sb.AppendLine("        /// <seealso cref=`"CrcStandard.$ac`" />")
-        }
-        [void]$sb.AppendLine("        public static readonly CrcStandard $canonicalConst = new CrcStandard(")
-        [void]$sb.AppendLine("            name: `"$($spec.name)`",")
-        [void]$sb.AppendLine("            size: $($spec.size),")
-        [void]$sb.AppendLine("            polynomial: $(Format-HexLiteral $spec.polynomial),")
-        [void]$sb.AppendLine("            initialValue: $(Format-HexLiteral $spec.initialValue),")
-        [void]$sb.AppendLine("            reflectIn: $($spec.reflectIn.ToString().ToLowerInvariant()),")
-        [void]$sb.AppendLine("            reflectOut: $($spec.reflectOut.ToString().ToLowerInvariant()),")
-        [void]$sb.AppendLine("            xOrOut: $(Format-HexLiteral $spec.xorOut));")
-        [void]$sb.AppendLine()
-    }
-
-    # Emit alias constants pointing at the canonical (whether it's declared here or externally).
-    for ($i = 0; $i -lt $aliases.Count; $i++) {
-        $alias = $aliases[$i]
-        $aliasConst = $aliasConsts[$i]
-        $otherAliases = @($aliases | Where-Object { $_ -ne $alias })
-        [void]$sb.AppendLine("        /// <summary>Gets the <see cref=`"CrcStandard`" /> that defines the <c>$alias</c> cyclic redundancy check algorithm standard.</summary>")
-        [void]$sb.AppendLine("        /// <value>A <see cref=`"CrcStandard`" /> object whose properties are set to the <c>$alias</c> definition.</value>")
-        [void]$sb.AppendLine('        /// <remarks>')
-        [void]$sb.AppendLine("        /// <para><c>$alias</c> is an alias of the <see cref=`"CrcStandard.$canonicalConst`" /> standard.</para>")
-        [void]$sb.AppendLine('        /// </remarks>')
-        [void]$sb.AppendLine("        /// <seealso cref=`"CrcStandard.$canonicalConst`" />")
-        foreach ($other in $otherAliases) {
-            $oc = ConvertTo-ConstantName $other
-            [void]$sb.AppendLine("        /// <seealso cref=`"CrcStandard.$oc`" />")
-        }
-        [void]$sb.AppendLine("        public static readonly CrcStandard $aliasConst = $canonicalConst;")
-        [void]$sb.AppendLine()
-    }
-}
-
-# s_all — canonical instances in declaration order (supported only).
-[void]$sb.AppendLine('        private static readonly CrcStandard[] s_all = new[]')
-[void]$sb.AppendLine('        {')
-foreach ($spec in $supported) {
-    $c = ConvertTo-ConstantName $spec.name
-    [void]$sb.AppendLine("            $c,")
-}
-[void]$sb.AppendLine('        };')
-[void]$sb.AppendLine()
-
-# Name lookup — includes both canonical names and every alias.
-[void]$sb.AppendLine('        private static readonly Dictionary<string, CrcStandard> s_byName = BuildNameLookup();')
-[void]$sb.AppendLine()
-[void]$sb.AppendLine('        /// <summary>')
-[void]$sb.AppendLine('        /// Gets an immutable snapshot of every supported CRC standard in the catalogue, in declaration order.')
-[void]$sb.AppendLine('        /// </summary>')
-[void]$sb.AppendLine('        /// <value>A read-only list containing every supported <see cref="CrcStandard" /> entry.</value>')
-[void]$sb.AppendLine('        /// <remarks>')
-[void]$sb.AppendLine("        /// <para>Aliases are not included as separate entries; an alias and its canonical share a single <see cref=`"CrcStandard`" />")
-[void]$sb.AppendLine('        /// instance and therefore appear once. Entries whose width exceeds <see cref="MaxSize" /> are omitted from the catalogue.</para>')
-[void]$sb.AppendLine('        /// </remarks>')
-[void]$sb.AppendLine('        public static IReadOnlyList<CrcStandard> All => s_all;')
-[void]$sb.AppendLine()
-[void]$sb.AppendLine('        /// <summary>')
-[void]$sb.AppendLine('        /// Resolves a catalogue entry by its canonical name or any of its published aliases.')
-[void]$sb.AppendLine('        /// </summary>')
-[void]$sb.AppendLine('        /// <param name="name">The canonical CRC standard name, or an alias. Comparison is ordinal and case-sensitive.</param>')
-[void]$sb.AppendLine('        /// <returns>The matching <see cref="CrcStandard" /> instance.</returns>')
-[void]$sb.AppendLine('        /// <exception cref="ArgumentNullException"><paramref name="name" /> is <see langword="null" />.</exception>')
-[void]$sb.AppendLine('        /// <exception cref="KeyNotFoundException">No catalogue entry with the specified <paramref name="name" /> exists.</exception>')
-[void]$sb.AppendLine('        public static CrcStandard FromName(string name)')
-[void]$sb.AppendLine('        {')
-[void]$sb.AppendLine('            ThrowHelper.ThrowIfNull(name);')
-[void]$sb.AppendLine('            if (!s_byName.TryGetValue(name, out CrcStandard? result))')
-[void]$sb.AppendLine("                throw new KeyNotFoundException(`$`"No CRC standard with the name '{name}' exists in the catalogue.`");")
-[void]$sb.AppendLine('            return result;')
-[void]$sb.AppendLine('        }')
-[void]$sb.AppendLine()
-[void]$sb.AppendLine('        /// <summary>')
-[void]$sb.AppendLine('        /// Attempts to resolve a catalogue entry by its canonical name or alias without throwing.')
-[void]$sb.AppendLine('        /// </summary>')
-[void]$sb.AppendLine('        /// <param name="name">The canonical CRC standard name or alias to look up.</param>')
-[void]$sb.AppendLine('        /// <param name="standard">When this method returns, contains the matching <see cref="CrcStandard" /> if found; otherwise, <see langword="null" />.</param>')
-[void]$sb.AppendLine('        /// <returns><see langword="true" /> if a catalogue entry was found; otherwise, <see langword="false" />.</returns>')
-[void]$sb.AppendLine('        public static bool TryFromName(string? name, out CrcStandard? standard)')
-[void]$sb.AppendLine('        {')
-[void]$sb.AppendLine('            if (name is null)')
-[void]$sb.AppendLine('            {')
-[void]$sb.AppendLine('                standard = null;')
-[void]$sb.AppendLine('                return false;')
-[void]$sb.AppendLine('            }')
-[void]$sb.AppendLine()
-[void]$sb.AppendLine('            return s_byName.TryGetValue(name, out standard);')
-[void]$sb.AppendLine('        }')
-[void]$sb.AppendLine()
-[void]$sb.AppendLine('        private static Dictionary<string, CrcStandard> BuildNameLookup()')
-[void]$sb.AppendLine('        {')
-[void]$sb.AppendLine('            var map = new Dictionary<string, CrcStandard>(StringComparer.Ordinal);')
-
-foreach ($spec in $supported) {
-    $c = ConvertTo-ConstantName $spec.name
-    [void]$sb.AppendLine("            map[`"$($spec.name)`"] = $c;")
-    $aliases = Get-AliasesFrom $spec
-    foreach ($a in $aliases) {
-        [void]$sb.AppendLine("            map[`"$a`"] = $c;")
-    }
-}
-
-[void]$sb.AppendLine('            return map;')
-[void]$sb.AppendLine('        }')
-[void]$sb.AppendLine('    }')
-[void]$sb.AppendLine('}')
-
-Set-Content -LiteralPath $OutputPath -Value $sb.ToString() -Encoding utf8
-
-$emitted = @($supported | Where-Object { -not $excludeSet.Contains($_.name) }).Count
-$aliasCount = 0
-foreach ($spec in $supported) {
-    $aliasCount += (Get-AliasesFrom $spec).Count
-}
-
-Write-Host "Wrote $OutputPath"
-Write-Host "  Canonicals emitted:   $emitted"
-Write-Host "  Canonicals referenced (including -Exclude): $($supported.Count)"
-Write-Host "  Aliases emitted:      $aliasCount"
-Write-Host "  Skipped by -MaxSize ($MaxSize): $($skippedBySize.Count)"
-if ($skippedBySize.Count -gt 0) {
-    foreach ($n in $skippedBySize) { Write-Host "    - $n" }
-}
+Write-Host "Wrote $CatalogOutputPath"
+Write-Host "  Catalogue rows:     $($supported.Count)"
+Write-Host "  Name-lookup entries: $entryCount"
