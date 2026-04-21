@@ -46,15 +46,22 @@ public partial class ConcurrentCircularBufferTests
         var buffer = new ConcurrentCircularBuffer<TestItem?>(5);
         int nullSeen = 0;
 
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+
         var writer = Task.Run(() =>
         {
-            for (int i = 0; i < 200; i++)             // more churn to rotate head
+            int i = 0;
+            while (!cts.IsCancellationRequested)
+            {
                 buffer.Enqueue(i % 3 == 0 ? null : new TestItem(i));
+                i++;
+                Thread.SpinWait(10);
+            }
         });
 
         var peeker = Task.Run(() =>
         {
-            for (int i = 0; i < 1000; i++)            // more opportunities to observe
+            while (!cts.IsCancellationRequested && Volatile.Read(ref nullSeen) == 0)
             {
                 if (buffer.TryPeek(out var item) && item is null)
                     Interlocked.Increment(ref nullSeen);
@@ -63,7 +70,7 @@ public partial class ConcurrentCircularBufferTests
         });
 
         Task.WaitAll(writer, peeker);
-        Assert.IsTrue(nullSeen > 0, "Expected TryPeek to observe null items.");
+        Assert.IsTrue(nullSeen > 0, "Expected TryPeek to observe null items within the time budget.");
     }
 
     [TestMethod]
