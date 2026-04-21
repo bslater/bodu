@@ -181,7 +181,7 @@ namespace Bodu.Security.Cryptography.Extensions
             var aead = new GcmModeTransform(cipher2, iv);
             Assert.ThrowsExactly<CryptographicException>(() =>
             {
-                aead.Decrypt(cipherWithTag, AssociatedData);
+                aead.Decrypt(cipherWithTag, AssociatedData.AsSpan().AsReadOnly());
             });
         }
 
@@ -205,7 +205,7 @@ namespace Bodu.Security.Cryptography.Extensions
             var aead = new GcmModeTransform(cipher2, iv);
             Assert.ThrowsExactly<CryptographicException>(() =>
             {
-                aead.Decrypt(cipherWithTag, otherAad);
+                aead.Decrypt(cipherWithTag, otherAad.AsSpan().AsReadOnly());
             });
         }
 

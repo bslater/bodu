@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
+// --------------------------------------------------------------------------------------------------------------- //
 // <copyright file="FiscalWeekQuarterProviderTests_GetQuarterEndDate.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,39 +12,40 @@ namespace Bodu.Extensions
     public partial class FiscalWeekQuarterProviderTests
     {
         // -----------------------------------------------------------------------
-        // GetQuarterEndDate(int)
+        // GetQuarterEndDate(int, int)
         // -----------------------------------------------------------------------
 
         /// <summary>
-        /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterEndDate(int)" /> returns a result
-        /// equal to <see cref="FiscalWeekQuarterProvider.GetQuarterEnd(int)" /> converted to
-        /// <see cref="DateOnly" />, for all quarters and all providers.
+        /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterEndDate(int, int)" /> returns a
+        /// result equal to <see cref="FiscalWeekQuarterProvider.GetQuarterEnd(int, int)" /> converted to
+        /// <see cref="DateOnly" />, for all quarters, fiscal years, and providers.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetQuarterBoundaryTestData), DynamicDataSourceType.Method)]
-        public void GetQuarterEndDate_WhenCalledWithQuarterNumber_ShouldMatchGetQuarterEndConvertedToDateOnly(
+        public void GetQuarterEndDate_WhenCalledWithQuarterAndFiscalYear_ShouldMatchGetQuarterEndConvertedToDateOnly(
             FiscalWeekQuarterProvider provider,
             int quarter,
+            int fiscalYear,
             DateTime _,
             DateTime __)
         {
             Assert.AreEqual(
-                DateOnly.FromDateTime(provider.GetQuarterEnd(quarter)),
-                provider.GetQuarterEndDate(quarter));
+                DateOnly.FromDateTime(provider.GetQuarterEnd(quarter, fiscalYear)),
+                provider.GetQuarterEndDate(quarter, fiscalYear));
         }
 
         /// <summary>
-        /// Verifies that the Q4 end date for <see cref="Sunday53" /> is 2 January 2021, confirming the
-        /// 53rd week end is correctly represented as a <see cref="DateOnly" />.
+        /// Verifies that the Q4 end date for <see cref="Sunday53" /> in fiscal year 2020 is 2 January 2021,
+        /// confirming the 53rd week end is correctly represented as a <see cref="DateOnly" />.
         /// </summary>
         [TestMethod]
         public void GetQuarterEndDate_WhenFiscalYearIs53Weeks_Q4ShouldEndOnCorrectDate()
         {
-            Assert.AreEqual(new DateOnly(2021, 1, 2), Sunday53.GetQuarterEndDate(4));
+            Assert.AreEqual(new DateOnly(2021, 1, 2), Sunday53.GetQuarterEndDate(4, Sunday53FiscalYear));
         }
 
         /// <summary>
-        /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterEndDate(int)" /> throws
+        /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterEndDate(int, int)" /> throws
         /// <see cref="ArgumentOutOfRangeException" /> when <c>quarter</c> is outside the valid range.
         /// </summary>
         [TestMethod]
@@ -53,8 +54,25 @@ namespace Bodu.Extensions
         public void GetQuarterEndDate_WhenQuarterIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int quarter)
         {
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-                Sunday52.GetQuarterEndDate(quarter));
+                Sunday52.GetQuarterEndDate(quarter, Sunday52FiscalYear));
         }
+
+        // -----------------------------------------------------------------------
+        // GetQuarterEndDate(int) — obsolete single-arg overload
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Verifies that the obsolete single-argument
+        /// <see cref="FiscalWeekQuarterProvider.GetQuarterEndDate(int)" /> overload throws
+        /// <see cref="NotSupportedException" />.
+        /// </summary>
+        [TestMethod]
+#pragma warning disable CS0618 // intentional: we verify the obsolete overload still throws
+        public void GetQuarterEndDate_ObsoleteSingleArgOverload_ShouldThrowNotSupportedException()
+        {
+            Assert.ThrowsExactly<NotSupportedException>(() => Sunday52.GetQuarterEndDate(1));
+        }
+#pragma warning restore CS0618
 
         // -----------------------------------------------------------------------
         // GetQuarterEndDate(DateOnly)
@@ -62,14 +80,14 @@ namespace Bodu.Extensions
 
         /// <summary>
         /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterEndDate(DateOnly)" /> returns the
-        /// correct quarter end date when the input is the first day of each quarter, for all four providers.
-        /// First days are always the fiscal week start day and are always valid.
+        /// correct quarter end date when the input is the first day of each quarter.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetQuarterBoundaryTestData), DynamicDataSourceType.Method)]
         public void GetQuarterEndDate_WhenCalledWithFirstDayOfQuarter_ShouldReturnExpectedEndDate(
             FiscalWeekQuarterProvider provider,
-            int quarter,
+            int _,
+            int __,
             DateTime expectedStart,
             DateTime expectedEnd)
         {
@@ -80,19 +98,20 @@ namespace Bodu.Extensions
 
         /// <summary>
         /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterEndDate(DateOnly)" /> and
-        /// <see cref="FiscalWeekQuarterProvider.GetQuarterEndDate(int)" /> return the same result when
-        /// supplied with the first day of each quarter.
+        /// <see cref="FiscalWeekQuarterProvider.GetQuarterEndDate(int, int)" /> return the same result
+        /// when supplied with the first day of each quarter.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetQuarterBoundaryTestData), DynamicDataSourceType.Method)]
         public void GetQuarterEndDate_WhenCalledWithFirstDayOfQuarter_ShouldMatchIntOverload(
             FiscalWeekQuarterProvider provider,
             int quarter,
+            int fiscalYear,
             DateTime expectedStart,
             DateTime _)
         {
             Assert.AreEqual(
-                provider.GetQuarterEndDate(quarter),
+                provider.GetQuarterEndDate(quarter, fiscalYear),
                 provider.GetQuarterEndDate(DateOnly.FromDateTime(expectedStart)));
         }
 
@@ -109,7 +128,7 @@ namespace Bodu.Extensions
         /// <summary>
         /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterEndDate(DateOnly)" /> returns the
         /// Q4 end date (2 January 2021) for a date in the 53rd week of the <see cref="Sunday53" />
-        /// provider. 28 December 2020 (first day of week 53) is used as the input.
+        /// provider.
         /// </summary>
         [TestMethod]
         public void GetQuarterEndDate_WhenDateOnlyIsInThe53rdWeek_ShouldReturnQ4EndDate()
@@ -129,49 +148,48 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterEndDate(DateOnly)" /> throws
-        /// <see cref="ArgumentOutOfRangeException" /> when the date falls before the fiscal year start.
+        /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterEndDate(DateOnly)" /> resolves a
+        /// date before the anchor fiscal year into the preceding fiscal year.
         /// </summary>
         [TestMethod]
-        public void GetQuarterEndDate_WhenDateOnlyIsBeforeFiscalYearStart_ShouldThrowException()
+        public void GetQuarterEndDate_WhenDateOnlyIsBeforeAnchorFiscalYear_ShouldResolveToPriorFiscalYear()
         {
-            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-                Sunday52.GetQuarterEndDate(new DateOnly(2022, 12, 31)));
+            // Dec 31, 2022 → FY 2022 Q4 end = Dec 31, 2022.
+            Assert.AreEqual(new DateOnly(2022, 12, 31), Sunday52.GetQuarterEndDate(new DateOnly(2022, 12, 31)));
         }
 
         /// <summary>
-        /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterEndDate(DateOnly)" /> throws
-        /// <see cref="ArgumentOutOfRangeException" /> when the date falls after the fiscal year end.
+        /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterEndDate(DateOnly)" /> resolves a
+        /// date after the anchor fiscal year into the following fiscal year.
         /// </summary>
         [TestMethod]
-        public void GetQuarterEndDate_WhenDateOnlyIsAfterFiscalYearEnd_ShouldThrowException()
+        public void GetQuarterEndDate_WhenDateOnlyIsAfterAnchorFiscalYear_ShouldResolveToNextFiscalYear()
         {
-            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-                Sunday52.GetQuarterEndDate(new DateOnly(2023, 12, 31)));
+            // Dec 31, 2023 → FY 2024 Q1 end = Mar 30, 2024.
+            Assert.AreEqual(new DateOnly(2024, 3, 30), Sunday52.GetQuarterEndDate(new DateOnly(2023, 12, 31)));
         }
 
         /// <summary>
-        /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterEndDate(DateOnly)" /> throws
-        /// <see cref="ArgumentOutOfRangeException" /> when the date falls before the
-        /// <see cref="Sunday53" /> fiscal year, which begins in December of the prior calendar year.
+        /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterEndDate(DateOnly)" /> resolves a
+        /// date prior to the 53-week fiscal year (<see cref="Sunday53" />) into the preceding fiscal year.
         /// </summary>
         [TestMethod]
-        public void GetQuarterEndDate_WhenDateOnlyIsBeforeFiscalYearStartAcrossCalendarYear_ShouldThrowException()
+        public void GetQuarterEndDate_WhenDateOnlyIsBeforeAnchorFiscalYearAcrossCalendarYear_ShouldResolveToPriorFiscalYear()
         {
-            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-                Sunday53.GetQuarterEndDate(new DateOnly(2019, 12, 28)));
+            // Dec 28, 2019 resolves into FY 2019 (starts Dec 30, 2018, 52 weeks); Q4 end = Dec 28, 2019.
+            Assert.AreEqual(new DateOnly(2019, 12, 28), Sunday53.GetQuarterEndDate(new DateOnly(2019, 12, 28)));
         }
 
         /// <summary>
-        /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterEndDate(DateOnly)" /> throws
-        /// <see cref="ArgumentOutOfRangeException" /> for the first day of the next fiscal year following
-        /// the 53-week <see cref="Sunday53" /> provider.
+        /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterEndDate(DateOnly)" /> maps the
+        /// first day of the next fiscal year following the 53-week <see cref="Sunday53" /> provider into
+        /// Q1 end of that next year.
         /// </summary>
         [TestMethod]
-        public void GetQuarterEndDate_WhenDateOnlyIsFirstDayOfNextFiscalYearIn53WeekYear_ShouldThrowException()
+        public void GetQuarterEndDate_WhenDateOnlyIsFirstDayOfNextFiscalYearAfter53WeekYear_ShouldReturnQ1EndOfNextYear()
         {
-            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-                Sunday53.GetQuarterEndDate(new DateOnly(2021, 1, 3)));
+            // Jan 3, 2021 = first day of FY 2021 under Sunday53; Q1 ends Apr 3, 2021.
+            Assert.AreEqual(new DateOnly(2021, 4, 3), Sunday53.GetQuarterEndDate(new DateOnly(2021, 1, 3)));
         }
     }
 }
