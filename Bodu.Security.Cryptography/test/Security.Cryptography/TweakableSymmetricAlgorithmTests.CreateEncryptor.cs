@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography
 {
@@ -88,7 +83,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void CreateEncryptor_WhenIvLengthIsInvalid_ShouldThrowCryptographicException_fix()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             byte[] key = new byte[algorithm.KeySize / 8];
             byte[] tweak = new byte[algorithm.TweakSize / 8];

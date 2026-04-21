@@ -4,9 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Infrastructure;
 using System.Text;
-using static Bodu.Security.Cryptography.SipHash128Tests;
 
 namespace Bodu.Security.Cryptography
 {
@@ -43,7 +41,7 @@ namespace Bodu.Security.Cryptography
         protected override SipHash128 CreateAlgorithm(SipHashVariant variant) =>
             variant switch
             {
-                SipHashVariant.SipHash_2_4 => this.CreateAlgorithm(),
+                SipHashVariant.SipHash_2_4 => CreateAlgorithm(),
                 SipHashVariant.SipHash_4_8 => new SipHash128
                 {
                     Key = SipHashTestKey,

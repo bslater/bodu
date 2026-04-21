@@ -5,8 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
-using Bodu.Infrastructure;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Security.Cryptography.Extensions
 {

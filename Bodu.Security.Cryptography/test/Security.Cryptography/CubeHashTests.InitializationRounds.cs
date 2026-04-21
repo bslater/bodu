@@ -4,8 +4,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography
 {
     public partial class CubeHashTests
@@ -75,7 +73,7 @@ namespace Bodu.Security.Cryptography
         [DataRow(int.MaxValue)]
         public void InitializationRounds_WhenSetToInvalidValue_ShouldThrowExactly(int value)
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => algorithm.InitializationRounds = value);
         }
@@ -93,7 +91,7 @@ namespace Bodu.Security.Cryptography
         [DataRow(4096)]
         public void InitializationRounds_WhenSetToValidValue_ShouldBeAssigned(int size)
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             int original = algorithm.InitializationRounds;
             algorithm.InitializationRounds = size;
 
@@ -106,7 +104,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void InitializationRounds_WhenSetToValidValue_ShouldUpdateCorrectly()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             int round = 100;
             int original = algorithm.InitializationRounds;
             algorithm.InitializationRounds = round;

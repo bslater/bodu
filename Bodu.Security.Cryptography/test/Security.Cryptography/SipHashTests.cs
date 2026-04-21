@@ -1,7 +1,4 @@
-﻿using System.Security.Cryptography;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
     public enum SipHashVariant
     {

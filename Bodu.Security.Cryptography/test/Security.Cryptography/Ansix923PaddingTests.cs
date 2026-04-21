@@ -29,12 +29,12 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Pad_WhenInputHasResidual_ShouldWriteZeroInteriorAndTrailingLength()
         {
-            var padding = this.CreatePadding();
-            byte[] plaintext = this.CreatePlaintextWithResidual(this.BlockSize - 5);
+            var padding = CreatePadding();
+            byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 5);
 
-            byte[] padded = padding.Pad(plaintext, this.BlockSize);
+            byte[] padded = padding.Pad(plaintext, BlockSize);
 
-            Assert.AreEqual(this.BlockSize, padded.Length);
+            Assert.AreEqual(BlockSize, padded.Length);
             Assert.AreEqual((byte)5, padded[padded.Length - 1]);
 
             for (int i = plaintext.Length; i < padded.Length - 1; i++)

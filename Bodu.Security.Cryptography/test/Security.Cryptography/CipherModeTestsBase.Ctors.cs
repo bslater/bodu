@@ -4,10 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using Bodu.Testing.Security;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Bodu.Security.Cryptography
 {
     public abstract partial class CipherModeTestsBase<TTransform>
@@ -22,7 +18,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Ctor_WhenIvIsNull_ShouldThrowArgumentNullExceptionWithIvParamName()
         {
-            if (!this.UsesInitializationVector)
+            if (!UsesInitializationVector)
             {
                 Assert.Inconclusive($"{typeof(TTransform).Name} does not accept an initialisation vector.");
                 return;
@@ -31,9 +27,9 @@ namespace Bodu.Security.Cryptography
             var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
 
             var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
-                _ = this.CreateTransform(cipher, null!));
+                _ = CreateTransform(cipher, null!));
 
-            Assert.AreEqual(this.IvParameterName, ex.ParamName);
+            Assert.AreEqual(IvParameterName, ex.ParamName);
         }
 
         /// <summary>
@@ -45,7 +41,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Ctor_WhenIvLengthDoesNotMatchBlockSize_ShouldThrowArgumentException()
         {
-            if (!this.UsesInitializationVector)
+            if (!UsesInitializationVector)
             {
                 Assert.Inconclusive($"{typeof(TTransform).Name} does not accept an initialisation vector.");
                 return;
@@ -55,9 +51,9 @@ namespace Bodu.Security.Cryptography
             var iv = new byte[ExpectedBlockSize - 1];
 
             var ex = Assert.ThrowsExactly<ArgumentException>(() =>
-                _ = this.CreateTransform(cipher, iv));
+                _ = CreateTransform(cipher, iv));
 
-            Assert.AreEqual(this.IvParameterName, ex.ParamName);
+            Assert.AreEqual(IvParameterName, ex.ParamName);
         }
 
         /// <summary>
@@ -69,7 +65,7 @@ namespace Bodu.Security.Cryptography
         {
             var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
             var iv = new byte[ExpectedBlockSize];
-            var transform = this.CreateTransform(cipher, iv);
+            var transform = CreateTransform(cipher, iv);
 
             Assert.IsNotNull(transform);
         }

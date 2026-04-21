@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Security.Cryptography;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Security.Cryptography;
-using Bodu.Testing.Security;
+﻿using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography
 {
@@ -19,7 +14,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Transform_WhenInputNotBlockAligned_ShouldThrow()
         {
-            if (!this.RequiresBlockAlignedInput)
+            if (!RequiresBlockAlignedInput)
             {
                 Assert.Inconclusive($"{typeof(TMode).Name} accepts non-block-aligned input by design — block-alignment is not enforced.");
                 return;
@@ -174,7 +169,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Transform_WithRepeatingPatternInput_ShouldFeedCipherDistinctInputsPerBlock()
         {
-            if (!this.UsesChaining)
+            if (!UsesChaining)
             {
                 Assert.Inconclusive($"{typeof(TMode).Name} does not alter repeating blocks.");
                 return;
@@ -224,14 +219,14 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Transform_WhenCounterWouldWrap_ShouldThrowCryptographicException()
         {
-            if (!this.GuardsAgainstKeystreamReuse)
+            if (!GuardsAgainstKeystreamReuse)
             {
                 Assert.Inconclusive($"{typeof(TMode).Name} does not guard against keystream reuse.");
                 return;
             }
 
             var cipher = new MonitoringBlockCipher(1);
-            var transform = this.CreateTransform(cipher, new byte[1] { 0 });
+            var transform = CreateTransform(cipher, new byte[1] { 0 });
 
             byte[] inputBlock = new byte[1];
             byte[] outputBlock = new byte[1];

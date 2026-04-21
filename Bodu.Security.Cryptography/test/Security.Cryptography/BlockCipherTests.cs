@@ -1,11 +1,4 @@
-﻿using Bodu.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 
 namespace Bodu.Security.Cryptography
 {
@@ -84,7 +77,7 @@ namespace Bodu.Security.Cryptography
         /// </summary>
         /// <returns>A fully initialized instance of <typeparamref name="TCipher" /> configured with <see cref="DefaultVariant" />.</returns>
         protected virtual TCipher CreateBlockCipher() =>
-            this.CreateBlockCipher(DefaultVariant);
+            CreateBlockCipher(DefaultVariant);
 
         /// <summary>
         /// Creates a new instance of the block cipher for the specified <paramref name="variant" />.

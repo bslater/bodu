@@ -4,10 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Security.Cryptography;
 using Bodu.Extensions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography.Extensions
 {
@@ -26,7 +24,7 @@ namespace Bodu.Security.Cryptography.Extensions
 
         // Predictable keys and nonces keep the tests deterministic under failure triage.
         private static byte[] NewKey() => new byte[16] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
-        private static byte[] NewIv()  => new byte[16] { 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11,
+        private static byte[] NewIv() => new byte[16] { 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11,
                                                          0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19 };
 
         /// <summary>
@@ -37,7 +35,7 @@ namespace Bodu.Security.Cryptography.Extensions
         public void Gcm_RoundTrip_WithAssociatedData_ShouldRecoverPlaintext()
         {
             byte[] key = NewKey();
-            byte[] iv  = NewIv();
+            byte[] iv = NewIv();
 
             byte[] cipherWithTag;
             using (var cipher = new AesBlockCipher(key))
@@ -58,7 +56,7 @@ namespace Bodu.Security.Cryptography.Extensions
         public void Gcm_RoundTrip_NoAssociatedData_ShouldRecoverPlaintext()
         {
             byte[] key = NewKey();
-            byte[] iv  = NewIv();
+            byte[] iv = NewIv();
 
             byte[] cipherWithTag;
             using (var cipher = new AesBlockCipher(key))
@@ -79,7 +77,7 @@ namespace Bodu.Security.Cryptography.Extensions
         public void Ccm_RoundTrip_ShouldRecoverPlaintext()
         {
             byte[] key = NewKey();
-            byte[] iv  = NewIv();
+            byte[] iv = NewIv();
 
             byte[] cipherWithTag;
             using (var cipher = new AesBlockCipher(key))
@@ -100,7 +98,7 @@ namespace Bodu.Security.Cryptography.Extensions
         public void Ocb_RoundTrip_ShouldRecoverPlaintext()
         {
             byte[] key = NewKey();
-            byte[] iv  = NewIv();
+            byte[] iv = NewIv();
 
             byte[] cipherWithTag;
             using (var cipher = new AesBlockCipher(key))
@@ -170,7 +168,7 @@ namespace Bodu.Security.Cryptography.Extensions
         public void Decrypt_WhenTagIsTampered_ShouldThrowCryptographicException()
         {
             byte[] key = NewKey();
-            byte[] iv  = NewIv();
+            byte[] iv = NewIv();
 
             byte[] cipherWithTag;
             using (var cipher = new AesBlockCipher(key))
@@ -195,7 +193,7 @@ namespace Bodu.Security.Cryptography.Extensions
         public void Decrypt_WhenAssociatedDataDiffers_ShouldThrowCryptographicException()
         {
             byte[] key = NewKey();
-            byte[] iv  = NewIv();
+            byte[] iv = NewIv();
 
             byte[] cipherWithTag;
             using (var cipher = new AesBlockCipher(key))
@@ -245,7 +243,7 @@ namespace Bodu.Security.Cryptography.Extensions
         public void Decrypt_WhenInputShorterThanTag_ShouldThrowArgumentException()
         {
             byte[] key = NewKey();
-            byte[] iv  = NewIv();
+            byte[] iv = NewIv();
             using var cipher = new AesBlockCipher(key);
             var aead = new GcmModeTransform(cipher, iv);
 

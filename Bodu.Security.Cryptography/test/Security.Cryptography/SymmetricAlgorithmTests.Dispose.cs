@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography
 {
@@ -19,7 +14,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Dispose_WhenCreateEncryptorCalledAfterDispose_ShouldReportConcreteTypeName()
         {
-            var algorithm = this.CreateAlgorithm();
+            var algorithm = CreateAlgorithm();
             algorithm.Dispose();
 
             try
@@ -42,7 +37,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Dispose_WhenTransformIsDisposedAndReused_ShouldNotBeReusable()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             algorithm.GenerateIV();
             algorithm.GenerateKey();
 
@@ -73,7 +68,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Dispose_WhenTransformIsDisposedTwice_ShouldNotThrow()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             algorithm.GenerateIV();
             algorithm.GenerateKey();
 

@@ -4,10 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Text;
-using Bodu.Infrastructure;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Security.Cryptography.Extensions
 {

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
     public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     {
@@ -18,8 +11,8 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(BlockCipherVariants))]
         public void BlockSize_WhenAccessed_ShouldReturnExpected(TVariant variant)
         {
-            var specification = this.GetSpecification(variant);
-            using var engine = this.CreateBlockCipher(variant);
+            var specification = GetSpecification(variant);
+            using var engine = CreateBlockCipher(variant);
 
             Assert.AreEqual(
                 specification.BlockSize,

@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Hash_Get_WhenInitializedAfterTransformBlock_ShouldThrowExactly()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             algorithm.TransformBlock(CryptoTestUtilities.ByteSequence256, 0, 256, null, 0);
             algorithm.Initialize();
             Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
@@ -33,7 +33,7 @@ namespace Bodu.Security.Cryptography
         [DataRow(10, 10)]
         public void Hash_Get_WhenTransformFinalBlockNotCalled_ShouldThrowExactly(int offset, int count)
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             algorithm.TransformBlock(CryptoTestUtilities.ByteSequence256, offset, count, null, 0);
             Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
             {

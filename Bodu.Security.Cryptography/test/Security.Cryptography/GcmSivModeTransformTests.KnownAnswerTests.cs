@@ -1,9 +1,9 @@
 ﻿namespace Bodu.Security.Cryptography
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using System.Collections.Generic;
     using System.Security.Cryptography;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
     /// Known-answer tests for <see cref="GcmSivModeTransform" /> against RFC 8452 Appendix C.

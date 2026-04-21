@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Numerics;
-
 namespace Bodu.Security.Cryptography
 {
     /// <summary>

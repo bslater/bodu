@@ -1,10 +1,4 @@
-﻿using System;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Security.Cryptography;
-using Bodu.Testing.Security;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
     public sealed partial class CbcModeTransformTests
     {

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography
 {
@@ -16,7 +11,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void CreateDecryptor_WhenSetAfterDispose_ShouldThrowObjectDisposedException()
         {
-            TAlgorithm algorithm = this.CreateAlgorithm();
+            TAlgorithm algorithm = CreateAlgorithm();
             algorithm.Dispose();
 
             Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -35,7 +30,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void CreateDecryptor_WhenDisposes_ShouldReportConcreteTypeName()
         {
-            var algorithm = this.CreateAlgorithm();
+            var algorithm = CreateAlgorithm();
             algorithm.Dispose();
 
             try
@@ -57,7 +52,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void CreateDecryptor_WhenKeyIsNull_ShouldThrowArgumentNullException_fix()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             Assert.ThrowsExactly<ArgumentNullException>(() =>
             {
@@ -72,7 +67,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void CreateDecryptor_WhenIvIsNull_ShouldThrowArgumentNullException_fix()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             Assert.ThrowsExactly<ArgumentNullException>(() =>
             {

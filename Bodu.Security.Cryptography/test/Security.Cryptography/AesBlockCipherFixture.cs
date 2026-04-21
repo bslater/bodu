@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography
@@ -34,35 +33,35 @@ namespace Bodu.Security.Cryptography
         public AesBlockCipherFixture(byte[] key)
         {
             if (key is null) throw new ArgumentNullException(nameof(key));
-            this.aes = Aes.Create();
-            this.aes.Key = key;
+            aes = Aes.Create();
+            aes.Key = key;
         }
 
         /// <inheritdoc />
         /// <value>Always 16 (128 bits), the fixed AES block size.</value>
-        public int BlockSize => this.aes.BlockSize / 8;
+        public int BlockSize => aes.BlockSize / 8;
 
         /// <inheritdoc />
         public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
         {
-            ObjectDisposedException.ThrowIf(this.disposed, this);
-            this.aes.EncryptEcb(input, output, PaddingMode.None);
+            ObjectDisposedException.ThrowIf(disposed, this);
+            aes.EncryptEcb(input, output, PaddingMode.None);
         }
 
         /// <inheritdoc />
         public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
         {
-            ObjectDisposedException.ThrowIf(this.disposed, this);
-            this.aes.DecryptEcb(input, output, PaddingMode.None);
+            ObjectDisposedException.ThrowIf(disposed, this);
+            aes.DecryptEcb(input, output, PaddingMode.None);
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            if (!this.disposed)
+            if (!disposed)
             {
-                this.aes.Dispose();
-                this.disposed = true;
+                aes.Dispose();
+                disposed = true;
             }
         }
     }

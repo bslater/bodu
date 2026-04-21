@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Bodu.Security.Cryptography;
+﻿namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Describes the expected observable properties of a single <typeparamref name="TBlockCipher" /> variant
@@ -31,7 +25,7 @@ public sealed record BlockCipherSpecification
     public int TweakSize { get; init; } = 0;
 
     /// <summary>Gets a value indicating whether this cipher requires a tweak.</summary>
-    public bool IsTweakable => this.TweakSize > 0;
+    public bool IsTweakable => TweakSize > 0;
 
     /// <summary>
     /// Gets a deterministic test tweak of <see cref="TweakSize" /> bytes, or all-zero when
@@ -63,6 +57,6 @@ public sealed record BlockCipherSpecification
     /// <see cref="BlockSize" /> when <see cref="BoundaryLengths" /> is <see langword="null" />.
     /// </summary>
     public IReadOnlyList<int> GetBoundaryLengths() =>
-        this.BoundaryLengths ??
-        [this.BlockSize - 1, this.BlockSize, this.BlockSize * 2, this.BlockSize * 3 + 1];
+        BoundaryLengths ??
+        [BlockSize - 1, BlockSize, BlockSize * 2, BlockSize * 3 + 1];
 }

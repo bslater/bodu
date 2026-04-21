@@ -4,9 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Security.Cryptography;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Security.Cryptography
 {
@@ -75,7 +73,7 @@ namespace Bodu.Security.Cryptography
             RandomNumberGenerator.Fill(plaintext);
 
             byte[] ciphertext = new byte[16];
-            byte[] recovered  = new byte[16];
+            byte[] recovered = new byte[16];
 
             using (var cipher = new AesBlockCipher(key))
                 cipher.Encrypt(plaintext, ciphertext);

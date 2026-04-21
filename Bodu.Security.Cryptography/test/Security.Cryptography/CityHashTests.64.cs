@@ -4,9 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Infrastructure;
 using System.Text;
-using static Bodu.Security.Cryptography.CityHash64Tests;
 
 namespace Bodu.Security.Cryptography
 {
@@ -45,7 +43,7 @@ namespace Bodu.Security.Cryptography
         protected override CityHash64 CreateAlgorithm() => new CityHash64();
 
         /// <inheritdoc />
-        protected override CityHash64 CreateAlgorithm(SingleTestVariant variant) => this.CreateAlgorithm();
+        protected override CityHash64 CreateAlgorithm(SingleTestVariant variant) => CreateAlgorithm();
 
         /// <inheritdoc />
         protected override HashAlgorithmSpecification GetSpecification(SingleTestVariant variant) =>

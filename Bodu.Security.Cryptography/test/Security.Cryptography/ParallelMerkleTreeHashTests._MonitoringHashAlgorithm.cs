@@ -4,12 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Collections.Concurrent;
 using System.Security.Cryptography;
-using System.Threading;
-using Bodu.Infrastructure;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Bodu.Security.Cryptography.MerkleTestData;
 
 namespace Bodu.Security.Cryptography

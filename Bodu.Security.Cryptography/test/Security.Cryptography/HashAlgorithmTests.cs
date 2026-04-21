@@ -4,12 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Diagnostics;
-using System.Reflection;
+using Bodu.Test;
 using System.Security.Cryptography;
 using System.Text;
-using Bodu.Infrastructure;
-using Newtonsoft.Json.Linq;
 
 namespace Bodu.Security.Cryptography
 {
@@ -120,8 +117,8 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants), DynamicDataSourceType.Method)]
         public void HashAlgorithm_TestData_Check(TVariant variant)
         {
-            var emptyA = this.GetExpectedHashesForNamedInputs(variant)["Empty"];
-            var emptyB = this.GetExpectedHashesForIncrementalInput(variant)[0];
+            var emptyA = GetExpectedHashesForNamedInputs(variant)["Empty"];
+            var emptyB = GetExpectedHashesForIncrementalInput(variant)[0];
             Assert.AreEqual(emptyA, emptyB, "Expected hash value for 'Empty' named input should equal the first item of incremental input.");
         }
 
@@ -130,7 +127,7 @@ namespace Bodu.Security.Cryptography
         /// </summary>
         /// <returns>A fully initialized instance of <typeparamref name="TAlgorithm" /> configured with <see cref="DefaultVariant" />.</returns>
         protected override TAlgorithm CreateAlgorithm() =>
-            this.CreateAlgorithm(DefaultVariant);
+            CreateAlgorithm(DefaultVariant);
 
         /// <summary>
         /// Creates a new instance of the algorithm for the specified <paramref name="variant" />.
@@ -163,8 +160,8 @@ namespace Bodu.Security.Cryptography
         /// The default set of property names excluded from disposal validation. Shared by the static
         /// <see cref="DynamicDataAttribute" /> data sources, which cannot access virtual instance members.
         /// </summary>
-        private  IReadOnlyCollection<string> GetExcludedFieldNames() =>
-            this.ExcludedFieldNames
+        private IReadOnlyCollection<string> GetExcludedFieldNames() =>
+            ExcludedFieldNames
                 .Concat([
                     // excluded field names that are exposed in Bodu and .Net HashAlgorithm types
                     "disposed",
@@ -176,7 +173,7 @@ namespace Bodu.Security.Cryptography
         /// <summary>
         /// Enumerates all instance fields in the algorithm and its base types to validate disposal state.
         /// </summary>
-        public static IEnumerable<object[]> GetDisposableFields()=>
+        public static IEnumerable<object[]> GetDisposableFields() =>
             TestHelpers.GetFieldInfoForType<TAlgorithm>(
                 excludeFileds: new TTest().GetExcludedFieldNames()?.ToArray() ?? []);
 
@@ -184,8 +181,8 @@ namespace Bodu.Security.Cryptography
         /// Gets the property names excluded from disposal validation tests. Override in a derived class to suppress
         /// properties that are intentionally accessible after disposal.
         /// </summary>
-        private IReadOnlyCollection<string> GetExcludedReadablePropertyNames() => 
-            this.ExcludedReadablePropertyNames
+        private IReadOnlyCollection<string> GetExcludedReadablePropertyNames() =>
+            ExcludedReadablePropertyNames
                 .Concat([
                     // excluded property names that are exposed .Net HashAlgorithm types
                     "CanReuseTransform",
@@ -202,7 +199,7 @@ namespace Bodu.Security.Cryptography
         /// properties that are intentionally accessible after disposal.
         /// </summary>
         private IReadOnlyCollection<string> GetExcludedWriteablePropertyNames() =>
-            this.ExcludedWriteablePropertyNames
+            ExcludedWriteablePropertyNames
                 .Concat([
                     // excluded property names that are exposed .Net HashAlgorithm types
                 ])
@@ -232,7 +229,7 @@ namespace Bodu.Security.Cryptography
         /// <summary>
         /// Returns all publicly writable properties on <typeparamref name="TAlgorithm" /> as test data for disposal validation.
         /// </summary>
-        public static IEnumerable<object[]> GetWritableProperties()            => 
+        public static IEnumerable<object[]> GetWritableProperties() =>
             TestHelpers.GetPropertyInfoForType<TAlgorithm>(
                 TestHelpers.PropertyAccessMode.Write,
                 excludeProperties: new TTest().GetExcludedWriteablePropertyNames()?.ToArray() ?? []);

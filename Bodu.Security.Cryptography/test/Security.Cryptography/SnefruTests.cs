@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Infrastructure;
 using System.Text;
 
 namespace Bodu.Security.Cryptography

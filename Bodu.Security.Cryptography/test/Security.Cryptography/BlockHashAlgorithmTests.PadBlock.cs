@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 
 namespace Bodu.Security.Cryptography
 {
@@ -19,7 +14,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void PadBlock_OnHappyPath_ShouldNeverRaiseNotImplementedException()
         {
-            using var algo = this.CreateAlgorithm();
+            using var algo = CreateAlgorithm();
             try
             {
                 byte[] tag = algo.ComputeHash(new byte[] { 1, 2, 3, 4, 5 });
@@ -53,7 +48,7 @@ namespace Bodu.Security.Cryptography
             int limit = Math.Max(16, specification.InputBlockSize * 2);
             for (int len = 0; len < limit; len++)
             {
-                using var algo = this.CreateAlgorithm();
+                using var algo = CreateAlgorithm();
                 byte[] data = new byte[len];
                 try
                 {

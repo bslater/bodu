@@ -1,7 +1,4 @@
-﻿using System.Security.Cryptography;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
     public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TVariant>
     {
@@ -12,14 +9,14 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void ComputeHash_WhenHashing_ShouldRespectKeyRetentionPolicy(TVariant variant)
         {
-            if (this.GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
+            if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
             {
                 Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping valid key length validation.");
                 return;
             }
 
-            using var algorithm = this.CreateAlgorithm(variant);
-            byte[] key = this.GenerateUniqueKey(specification.MinKeyLength);
+            using var algorithm = CreateAlgorithm(variant);
+            byte[] key = GenerateUniqueKey(specification.MinKeyLength);
             byte[] data = new byte[256];
 
             algorithm.Key = key;
@@ -44,17 +41,17 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void ComputeHash_WhenSameKeyAndInputUsed_ShouldReturnIdenticalResults(TVariant variant)
         {
-            if (this.GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
+            if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
             {
                 Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping valid key length validation.");
                 return;
             }
 
-            byte[] key = this.GenerateUniqueKey(specification.MinKeyLength);
+            byte[] key = GenerateUniqueKey(specification.MinKeyLength);
             byte[] data = new byte[256];
 
-            using var algorithm1 = this.CreateAlgorithm(variant);
-            using var algorithm2 = this.CreateAlgorithm(variant);
+            using var algorithm1 = CreateAlgorithm(variant);
+            using var algorithm2 = CreateAlgorithm(variant);
             algorithm1.Key = algorithm2.Key = key;
 
             byte[] hash1 = algorithm1.ComputeHash(data);
@@ -70,23 +67,23 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void ComputeHash_WhenDifferentKeysUsed_ShouldReturnDifferentResults(TVariant variant)
         {
-            if (this.GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
+            if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
             {
                 Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping valid key length validation.");
                 return;
             }
 
-            byte[] key1 = this.GenerateUniqueKey(specification.MinKeyLength);
-            byte[] key2 = this.GenerateUniqueKey(specification.MinKeyLength);
+            byte[] key1 = GenerateUniqueKey(specification.MinKeyLength);
+            byte[] key2 = GenerateUniqueKey(specification.MinKeyLength);
             byte[] data = new byte[256];
 
             byte[] hash1, hash2;
 
-            using var algorithm1 = this.CreateAlgorithm(variant);
+            using var algorithm1 = CreateAlgorithm(variant);
             algorithm1.Key = key1;
             hash1 = algorithm1.ComputeHash(data);
 
-            using var algorithm2 = this.CreateAlgorithm(variant);
+            using var algorithm2 = CreateAlgorithm(variant);
             algorithm2.Key = key2;
             hash2 = algorithm2.ComputeHash(data);
 

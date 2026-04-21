@@ -40,7 +40,7 @@ namespace Bodu.Security.Cryptography
         protected override Bernstein CreateAlgorithm(BernsteinHashVariant variant) =>
             variant switch
             {
-                BernsteinHashVariant.Default => this.CreateAlgorithm(),
+                BernsteinHashVariant.Default => CreateAlgorithm(),
                 BernsteinHashVariant.Modified => new Bernstein
                 {
                     UseModifiedAlgorithm = true

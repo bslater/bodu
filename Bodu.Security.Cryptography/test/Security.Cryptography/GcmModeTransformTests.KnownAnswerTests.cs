@@ -4,10 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Bodu.Security.Cryptography
 {
     // Known-answer vectors — NIST SP 800-38D, Appendix B Test Case 4 (AES-128-GCM, no AAD)

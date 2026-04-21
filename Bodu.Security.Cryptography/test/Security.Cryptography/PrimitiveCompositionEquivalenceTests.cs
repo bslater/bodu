@@ -4,11 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Linq;
-using System.Security.Cryptography;
 using Bodu.Security.Cryptography.Extensions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography
 {
@@ -34,7 +31,7 @@ namespace Bodu.Security.Cryptography
         public void Skipjack_DirectAndWrapper_ShouldProduceIdenticalCiphertext()
         {
             byte[] key = RandomNumberGenerator.GetBytes(10);
-            byte[] iv  = RandomNumberGenerator.GetBytes(8);
+            byte[] iv = RandomNumberGenerator.GetBytes(8);
 
             byte[] direct = EncryptDirect_Skipjack(key, iv, CipherBlockMode.CBC, PaddingMode.PKCS7, Plaintext);
             byte[] viaAlg = EncryptViaWrapper_Skipjack(key, iv, CipherBlockMode.CBC, PaddingMode.PKCS7, Plaintext);
@@ -50,7 +47,7 @@ namespace Bodu.Security.Cryptography
         public void Blowfish_DirectAndWrapper_ShouldProduceIdenticalCiphertext()
         {
             byte[] key = RandomNumberGenerator.GetBytes(16);  // 128-bit Blowfish key (default)
-            byte[] iv  = RandomNumberGenerator.GetBytes(8);
+            byte[] iv = RandomNumberGenerator.GetBytes(8);
 
             byte[] direct = EncryptDirect_Blowfish(key, iv, CipherBlockMode.CBC, PaddingMode.PKCS7, Plaintext);
             byte[] viaAlg = EncryptViaWrapper_Blowfish(key, iv, CipherBlockMode.CBC, PaddingMode.PKCS7, Plaintext);
@@ -65,8 +62,8 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Threefish256_DirectAndWrapper_ShouldProduceIdenticalCiphertext()
         {
-            byte[] key   = RandomNumberGenerator.GetBytes(32);
-            byte[] iv    = RandomNumberGenerator.GetBytes(32);
+            byte[] key = RandomNumberGenerator.GetBytes(32);
+            byte[] iv = RandomNumberGenerator.GetBytes(32);
             byte[] tweak = RandomNumberGenerator.GetBytes(16);
 
             byte[] direct = EncryptDirect_Threefish(
@@ -77,10 +74,10 @@ namespace Bodu.Security.Cryptography
             using (var alg = new Threefish256
             {
                 BlockMode = CipherBlockMode.CTR,
-                Padding   = PaddingMode.None,
-                Key       = key,
-                IV        = iv,
-                Tweak     = tweak,
+                Padding = PaddingMode.None,
+                Key = key,
+                IV = iv,
+                Tweak = tweak,
             })
             {
                 viaAlg = alg.Encrypt(Plaintext);
@@ -96,8 +93,8 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Threefish512_DirectAndWrapper_ShouldProduceIdenticalCiphertext()
         {
-            byte[] key   = RandomNumberGenerator.GetBytes(64);
-            byte[] iv    = RandomNumberGenerator.GetBytes(64);
+            byte[] key = RandomNumberGenerator.GetBytes(64);
+            byte[] iv = RandomNumberGenerator.GetBytes(64);
             byte[] tweak = RandomNumberGenerator.GetBytes(16);
 
             byte[] direct = EncryptDirect_Threefish(
@@ -108,10 +105,10 @@ namespace Bodu.Security.Cryptography
             using (var alg = new Threefish512
             {
                 BlockMode = CipherBlockMode.CBC,
-                Padding   = PaddingMode.PKCS7,
-                Key       = key,
-                IV        = iv,
-                Tweak     = tweak,
+                Padding = PaddingMode.PKCS7,
+                Key = key,
+                IV = iv,
+                Tweak = tweak,
             })
             {
                 viaAlg = alg.Encrypt(Plaintext);
@@ -127,8 +124,8 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Threefish1024_DirectAndWrapper_ShouldProduceIdenticalCiphertext()
         {
-            byte[] key   = RandomNumberGenerator.GetBytes(128);
-            byte[] iv    = RandomNumberGenerator.GetBytes(128);
+            byte[] key = RandomNumberGenerator.GetBytes(128);
+            byte[] iv = RandomNumberGenerator.GetBytes(128);
             byte[] tweak = RandomNumberGenerator.GetBytes(16);
 
             byte[] direct = EncryptDirect_Threefish(
@@ -139,10 +136,10 @@ namespace Bodu.Security.Cryptography
             using (var alg = new Threefish1024
             {
                 BlockMode = CipherBlockMode.CBC,
-                Padding   = PaddingMode.PKCS7,
-                Key       = key,
-                IV        = iv,
-                Tweak     = tweak,
+                Padding = PaddingMode.PKCS7,
+                Key = key,
+                IV = iv,
+                Tweak = tweak,
             })
             {
                 viaAlg = alg.Encrypt(Plaintext);
@@ -165,7 +162,7 @@ namespace Bodu.Security.Cryptography
             // intra-assembly derivation still works after the visibility narrowing.
             byte[] key = new byte[32], iv = new byte[32], tweak = new byte[16];
             using var cipher = new Threefish256Cipher(key, tweak);
-            byte[] block  = new byte[32];
+            byte[] block = new byte[32];
             byte[] output = new byte[32];
             cipher.Encrypt(block, output);
             Assert.AreEqual(32, cipher.BlockSize);
@@ -207,9 +204,9 @@ namespace Bodu.Security.Cryptography
             using var alg = new Skipjack
             {
                 BlockMode = mode,
-                Padding   = padding,
-                Key       = key,
-                IV        = iv,
+                Padding = padding,
+                Key = key,
+                IV = iv,
             };
             return alg.Encrypt(plaintext);
         }
@@ -219,9 +216,9 @@ namespace Bodu.Security.Cryptography
             using var alg = new Blowfish
             {
                 BlockMode = mode,
-                Padding   = padding,
-                Key       = key,
-                IV        = iv,
+                Padding = padding,
+                Key = key,
+                IV = iv,
             };
             return alg.Encrypt(plaintext);
         }

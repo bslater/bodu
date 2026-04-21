@@ -4,11 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Bodu.Security.Cryptography.MerkleTestData;
 
 namespace Bodu.Security.Cryptography
@@ -183,7 +178,7 @@ namespace Bodu.Security.Cryptography
 
             Assert.AreEqual(leaves.Count, internal_.ChildHashes.Count);
             for (int i = 0; i < leaves.Count; i++)
-                CollectionAssert.AreEqual(leaves[i].Hash, (byte[])internal_.ChildHashes[i],
+                CollectionAssert.AreEqual(leaves[i].Hash, internal_.ChildHashes[i],
                     $"Child hash {i} does not match leaf {i}.");
         }
 

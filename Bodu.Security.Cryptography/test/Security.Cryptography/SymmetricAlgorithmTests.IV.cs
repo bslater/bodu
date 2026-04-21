@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography
 {
@@ -15,7 +10,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void IV_WhenAccessed_ShouldNotBeNull()
         {
-            using TAlgorithm algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
             Assert.IsNotNull(algorithm.IV);
         }
 
@@ -26,7 +21,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void IV_WhenAccessedAfterDispose_ShouldThrowObjectDisposedException()
         {
-            TAlgorithm algorithm = this.CreateAlgorithm();
+            TAlgorithm algorithm = CreateAlgorithm();
             algorithm.Dispose();
 
             Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -41,7 +36,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void IV_WhenSetToNull_ShouldThrowExactly()
         {
-            using TAlgorithm algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
             Assert.ThrowsExactly<ArgumentNullException>(() => algorithm.IV = null);
         }
 
@@ -51,7 +46,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void IV_WhenSetToInvalidSize_ShouldThrowExactly()
         {
-            using TAlgorithm algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
             byte[] invalidIV = new byte[algorithm.BlockSize - 1];
             Assert.ThrowsExactly<CryptographicException>(() => algorithm.IV = invalidIV);
         }
@@ -62,7 +57,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void IV_WhenSet_ShouldReturnSameValueOnGet()
         {
-            using TAlgorithm algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
             byte[] iv = new byte[algorithm.BlockSize / 8];
             CryptoHelpers.FillWithRandomNonZeroBytes(iv);
 
@@ -76,7 +71,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void IV_WhenSet_ShouldReturnDefensiveCopy()
         {
-            using TAlgorithm algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
             byte[] iv = new byte[algorithm.BlockSize / 8];
             CryptoHelpers.FillWithRandomNonZeroBytes(iv);
 
@@ -112,7 +107,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void GenerateIV_WhenCalled_ShouldChangeIV()
         {
-            using TAlgorithm algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
             byte[] initialIV = algorithm.IV;
 
             algorithm.GenerateIV();
@@ -128,7 +123,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void CreateEncryptor_WithInvalidIvLength_ShouldThrowArgumentException()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             algorithm.GenerateKey();
 
             int blockSizeBytes = algorithm.BlockSize / 8;

@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography
 {
     public abstract partial class PaddingStrategyTests<TPadding>
@@ -19,22 +17,22 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void PadUnpad_RoundTrip_ShouldReturnOriginalForAllResidualLengths()
         {
-            var padding = this.CreatePadding();
+            var padding = CreatePadding();
 
-            for (int residual = 0; residual < this.BlockSize; residual++)
+            for (int residual = 0; residual < BlockSize; residual++)
             {
                 // Skip unaligned residuals for strategies that cannot round-trip them. NoPadding rejects unaligned input
                 // outright, and ZeroPadding cannot distinguish its own padding from legitimate trailing zero bytes, so
                 // exercising residuals other than 0 would test behaviour the strategy does not support.
-                if (residual > 0 && !this.SupportsUnalignedInput)
+                if (residual > 0 && !SupportsUnalignedInput)
                     continue;
 
-                byte[] plaintext = this.CreatePlaintextWithResidual(residual);
-                byte[] padded = padding.Pad(plaintext, this.BlockSize);
-                Assert.AreEqual(0, padded.Length % this.BlockSize,
+                byte[] plaintext = CreatePlaintextWithResidual(residual);
+                byte[] padded = padding.Pad(plaintext, BlockSize);
+                Assert.AreEqual(0, padded.Length % BlockSize,
                     $"Padded output must be a multiple of the block size (residual {residual}).");
 
-                byte[] unpadded = padding.Unpad(padded, this.BlockSize);
+                byte[] unpadded = padding.Unpad(padded, BlockSize);
                 CollectionAssert.AreEqual(plaintext, unpadded,
                     $"Round-trip should return the original plaintext (residual {residual}).");
             }

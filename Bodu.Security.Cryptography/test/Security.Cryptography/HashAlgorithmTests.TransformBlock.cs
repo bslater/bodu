@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TransformBlock_AfterComputeHashAndInitialize_ShouldNotThrow()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             _ = algorithm.ComputeHash(CryptoTestUtilities.SimpleTextAsciiBytes);
             algorithm.Initialize();
@@ -42,7 +42,7 @@ namespace Bodu.Security.Cryptography
                 return;
             }
 
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             // Begin the hashing operation
             byte[] buffer = new byte[8];

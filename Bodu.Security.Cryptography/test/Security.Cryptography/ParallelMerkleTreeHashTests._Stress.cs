@@ -4,12 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Collections.Concurrent;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Bodu.Security.Cryptography.MerkleTestData;
 
 namespace Bodu.Security.Cryptography

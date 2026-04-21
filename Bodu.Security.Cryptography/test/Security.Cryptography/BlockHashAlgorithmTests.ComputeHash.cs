@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Security.Cryptography
 {
@@ -25,7 +24,7 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public virtual void ComputeHash_WhenInputStreamedInChunks_ShouldMatchSinglePassResult(TVariant variant)
         {
-            var specification = this.GetSpecification(variant);
+            var specification = GetSpecification(variant);
 
             // Cover sub-block, exact-block, and multi-block boundaries deterministically.
             int inputLength = (specification.InputBlockSize * 3) + (specification.InputBlockSize / 2) + 1;
@@ -34,12 +33,12 @@ namespace Bodu.Security.Cryptography
                                      .ToArray();
 
             byte[] expected;
-            using (var reference = this.CreateAlgorithm(variant))
+            using (var reference = CreateAlgorithm(variant))
                 expected = reference.ComputeHash(input);
 
-            foreach (int chunkSize in this.StreamingChunkSizes(specification))
+            foreach (int chunkSize in StreamingChunkSizes(specification))
             {
-                using var algorithm = this.CreateAlgorithm(variant);
+                using var algorithm = CreateAlgorithm(variant);
                 int offset = 0;
 
                 while (offset < input.Length)
@@ -73,14 +72,14 @@ namespace Bodu.Security.Cryptography
         {
             var specification = GetSpecification(variant);
             int expectedLength;
-            using (var reference = this.CreateAlgorithm())
+            using (var reference = CreateAlgorithm())
             {
                 expectedLength = reference.HashSize / 8;
             }
 
-            foreach (int length in this.UnalignedInputLengths(specification))
+            foreach (int length in UnalignedInputLengths(specification))
             {
-                using var algorithm = this.CreateAlgorithm();
+                using var algorithm = CreateAlgorithm();
                 byte[] input = Enumerable.Range(0, length).Select(i => (byte)i).ToArray();
 
                 byte[] hash = algorithm.ComputeHash(input);
@@ -108,7 +107,7 @@ namespace Bodu.Security.Cryptography
         public virtual void ComputeHash_WhenInputIsBlockAligned_ShouldMatchAcrossTransformSplits(TVariant variant)
         {
             const int blockCount = 4;
-            var specification = this.GetSpecification(variant);
+            var specification = GetSpecification(variant);
             int blockSize = specification.InputBlockSize;
 
             byte[] input = Enumerable.Range(0, blockSize * blockCount)
@@ -116,10 +115,10 @@ namespace Bodu.Security.Cryptography
                                      .ToArray();
 
             byte[] expected;
-            using (var reference = this.CreateAlgorithm(variant))
+            using (var reference = CreateAlgorithm(variant))
                 expected = reference.ComputeHash(input);
 
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
 
             for (int i = 0; i < blockCount; i++)
                 algorithm.TransformBlock(input, i * blockSize, blockSize, null, 0);

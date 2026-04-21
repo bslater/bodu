@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
     public abstract partial class SymmetricAlgorithmTests<TAlgorithm>
     {
@@ -24,7 +18,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void LegalBlockSizes_WhenDefined_ShouldHaveValidRanges()
         {
-            var blockSizes = this.CreateAlgorithm().LegalBlockSizes;
+            var blockSizes = CreateAlgorithm().LegalBlockSizes;
 
             foreach (var blockSize in blockSizes)
             {
@@ -39,7 +33,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void LegalBlockSizes_WhenDefined_ShouldHaveNonOverlappingValues()
         {
-            var blockSizes = this.CreateAlgorithm().LegalBlockSizes;
+            var blockSizes = CreateAlgorithm().LegalBlockSizes;
             HashSet<int> uniqueSizes = new();
 
             foreach (var blockSize in blockSizes)

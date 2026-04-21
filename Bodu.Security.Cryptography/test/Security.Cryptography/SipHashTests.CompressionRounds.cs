@@ -1,7 +1,4 @@
-﻿using System.Security.Cryptography;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
     public abstract partial class SipHashTests<TTest, TAlgorithm>
     {
@@ -13,7 +10,7 @@ namespace Bodu.Security.Cryptography
         [DataRow(1)]
         public void CompressionRounds_WhenSetToInvalidValue_ShouldThrowExactly(int value)
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             {
@@ -29,7 +26,7 @@ namespace Bodu.Security.Cryptography
         [DataRow(32)]
         public void CompressionRounds_WhenSetToValidValue_ShouldUpdateCorrectly(int size)
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             int original = algorithm.CompressionRounds;
             algorithm.CompressionRounds = size;
 
@@ -47,13 +44,13 @@ namespace Bodu.Security.Cryptography
             byte[] hashWithRounds4;
             byte[] hashWithRounds8;
 
-            using (var algorithm = this.CreateAlgorithm())
+            using (var algorithm = CreateAlgorithm())
             {
                 algorithm.CompressionRounds = 4;
                 hashWithRounds4 = algorithm.ComputeHash(input);
             }
 
-            using (var algorithm = this.CreateAlgorithm())
+            using (var algorithm = CreateAlgorithm())
             {
                 algorithm.CompressionRounds = 8;
                 hashWithRounds8 = algorithm.ComputeHash(input);

@@ -1,12 +1,4 @@
-﻿using Bodu.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Bodu.Security.Cryptography.PearsonTests;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
     [TestClass]
     public partial class PearsonTests

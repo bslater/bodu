@@ -16,7 +16,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void HashSize_Get_DeclaredHashSize_ShouldMatchComputedHashLength()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             byte[] result = algorithm.ComputeHash(Array.Empty<byte>());
             int computedBitLength = result.ToBitLength();
             Assert.AreEqual(computedBitLength, algorithm.HashSize);

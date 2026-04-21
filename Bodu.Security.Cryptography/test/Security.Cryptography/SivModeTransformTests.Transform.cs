@@ -1,10 +1,9 @@
 ﻿namespace Bodu.Security.Cryptography
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using System.Linq;
     using System.Security.Cryptography;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Bodu.Testing.Security;
 
     public sealed partial class SivModeTransformTests
     {

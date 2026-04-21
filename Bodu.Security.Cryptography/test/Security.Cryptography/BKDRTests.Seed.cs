@@ -19,7 +19,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Seed_WhenDefaultConstructed_ShouldBeZero()
         {
-            var algorithm = this.CreateAlgorithm();
+            var algorithm = CreateAlgorithm();
             Assert.AreEqual<uint>(131, algorithm.Seed);
         }
 
@@ -39,7 +39,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Seed_WhenSetAfterHashingStarted_ShouldThrow()
         {
-            var algorithm = this.CreateAlgorithm();
+            var algorithm = CreateAlgorithm();
             byte[] input = new byte[] { 1, 2, 3 };
             algorithm.TransformBlock(input, 0, input.Length, input, 0);
 
@@ -52,7 +52,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Seed_WhenSetAfterHashing_ShouldNotThrow()
         {
-            var algorithm = this.CreateAlgorithm();
+            var algorithm = CreateAlgorithm();
             byte[] input = new byte[] { 1, 2, 3 };
 
             algorithm.ComputeHash(input);
@@ -93,7 +93,7 @@ namespace Bodu.Security.Cryptography
             byte[] fresh = algorithm.ComputeHash(Array.Empty<byte>());
 
             // Should match seed state as algorithm result
-            var expected = BitConverter.GetBytes((uint)13131U);
+            var expected = BitConverter.GetBytes(13131U);
             if (BitConverter.IsLittleEndian) Array.Reverse(expected);
 
             CollectionAssert.AreEqual(expected, fresh);

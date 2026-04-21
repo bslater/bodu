@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
     public abstract partial class SymmetricAlgorithmTests<TAlgorithm>
     {
@@ -24,7 +18,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void LegalKeySizes_WhenDefined_ShouldHaveValidRanges()
         {
-            var keySizes = this.CreateAlgorithm().LegalKeySizes;
+            var keySizes = CreateAlgorithm().LegalKeySizes;
 
             foreach (var keySize in keySizes)
             {
@@ -39,7 +33,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void LegalKeySizes_WhenDefined_ShouldHaveNonOverlappingValues()
         {
-            var keySizes = this.CreateAlgorithm().LegalKeySizes;
+            var keySizes = CreateAlgorithm().LegalKeySizes;
             HashSet<int> uniqueSizes = new();
 
             foreach (var keySize in keySizes)

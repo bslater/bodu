@@ -1,10 +1,4 @@
-﻿using Bodu.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography
 {
@@ -16,7 +10,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Seed_WhenDefaultConstructed_ShouldBeZero()
         {
-            var algorithm = this.CreateAlgorithm();
+            var algorithm = CreateAlgorithm();
             Assert.AreEqual<ulong>(0, algorithm.Seed);
         }
 
@@ -36,7 +30,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Seed_WhenSetAfterHashingStarted_ShouldThrow()
         {
-            var algorithm = this.CreateAlgorithm();
+            var algorithm = CreateAlgorithm();
             byte[] input = new byte[] { 1, 2, 3 };
             algorithm.TransformBlock(input, 0, input.Length, input, 0);
 
@@ -49,7 +43,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Seed_WhenSetAfterHashing_ShouldNotThrow()
         {
-            var algorithm = this.CreateAlgorithm();
+            var algorithm = CreateAlgorithm();
             byte[] input = new byte[] { 1, 2, 3 };
 
             algorithm.ComputeHash(input);

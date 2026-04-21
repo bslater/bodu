@@ -39,12 +39,12 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Pad_WhenInputHasResidual_ShouldWriteTerminatorFollowedByZeroBytes()
         {
-            var padding = this.CreatePadding();
-            byte[] plaintext = this.CreatePlaintextWithResidual(this.BlockSize - 5);
+            var padding = CreatePadding();
+            byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 5);
 
-            byte[] padded = padding.Pad(plaintext, this.BlockSize);
+            byte[] padded = padding.Pad(plaintext, BlockSize);
 
-            Assert.AreEqual(this.BlockSize, padded.Length);
+            Assert.AreEqual(BlockSize, padded.Length);
             Assert.AreEqual((byte)0x80, padded[plaintext.Length], "First pad byte must be 0x80.");
 
             for (int i = plaintext.Length + 1; i < padded.Length; i++)
@@ -59,12 +59,12 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Pad_WhenInputIsBlockAligned_ShouldAppendFullBlockOfPadding()
         {
-            var padding = this.CreatePadding();
-            byte[] plaintext = this.CreatePlaintextWithResidual(0);
+            var padding = CreatePadding();
+            byte[] plaintext = CreatePlaintextWithResidual(0);
 
-            byte[] padded = padding.Pad(plaintext, this.BlockSize);
+            byte[] padded = padding.Pad(plaintext, BlockSize);
 
-            Assert.AreEqual(plaintext.Length + this.BlockSize, padded.Length);
+            Assert.AreEqual(plaintext.Length + BlockSize, padded.Length);
             Assert.AreEqual((byte)0x80, padded[plaintext.Length], "Terminator must sit at the start of the appended block.");
 
             for (int i = plaintext.Length + 1; i < padded.Length; i++)
@@ -79,15 +79,15 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Unpad_WhenPlaintextEndsWithTerminatorValue_ShouldReturnOriginal()
         {
-            var padding = this.CreatePadding();
+            var padding = CreatePadding();
 
-            byte[] plaintext = new byte[this.BlockSize - 3];
+            byte[] plaintext = new byte[BlockSize - 3];
             for (int i = 0; i < plaintext.Length - 1; i++)
                 plaintext[i] = (byte)(0x30 + i);
             plaintext[plaintext.Length - 1] = 0x80;
 
-            byte[] padded = padding.Pad(plaintext, this.BlockSize);
-            byte[] unpadded = padding.Unpad(padded, this.BlockSize);
+            byte[] padded = padding.Pad(plaintext, BlockSize);
+            byte[] unpadded = padding.Unpad(padded, BlockSize);
 
             CollectionAssert.AreEqual(plaintext, unpadded);
         }
@@ -99,10 +99,10 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Unpad_WhenFinalBlockHasNoTerminator_ShouldThrowCryptographicException()
         {
-            var padding = this.CreatePadding();
-            byte[] input = new byte[this.BlockSize];
+            var padding = CreatePadding();
+            byte[] input = new byte[BlockSize];
 
-            Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(input, this.BlockSize));
+            Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(input, BlockSize));
         }
 
         /// <summary>
@@ -112,14 +112,14 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Unpad_WhenBytesAfterTerminatorAreNonZero_ShouldThrowCryptographicException()
         {
-            var padding = this.CreatePadding();
+            var padding = CreatePadding();
 
-            byte[] input = new byte[this.BlockSize];
-            input[this.BlockSize - 3] = 0x80;
-            input[this.BlockSize - 2] = 0x00;
-            input[this.BlockSize - 1] = 0xFF;
+            byte[] input = new byte[BlockSize];
+            input[BlockSize - 3] = 0x80;
+            input[BlockSize - 2] = 0x00;
+            input[BlockSize - 1] = 0xFF;
 
-            Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(input, this.BlockSize));
+            Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(input, BlockSize));
         }
     }
 }

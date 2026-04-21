@@ -1,7 +1,6 @@
 ﻿namespace Bodu.Security.Cryptography
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Bodu.Testing.Security;
 
     /// <summary>
     /// Tests for <see cref="XtsModeTransform" /> (IEEE Std 1619-2007 / NIST SP 800-38E).

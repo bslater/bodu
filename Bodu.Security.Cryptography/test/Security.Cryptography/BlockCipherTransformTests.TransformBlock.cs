@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TransformBlock_WhenInputBufferIsNull_ShouldThrowArgumentNullException_fix()
         {
-            using var transform = this.CreateAlgorithm();
+            using var transform = CreateAlgorithm();
             byte[] output = new byte[transform.OutputBlockSize];
 
             Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -35,7 +35,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TransformBlock_WhenOutputBufferIsNull_ShouldThrowArgumentNullException_fix()
         {
-            using var transform = this.CreateAlgorithm();
+            using var transform = CreateAlgorithm();
             byte[] input = new byte[transform.InputBlockSize];
 
             Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -50,7 +50,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void InputBlockSize_ShouldBeGreaterThanZero()
         {
-            using var transform = this.CreateAlgorithm();
+            using var transform = CreateAlgorithm();
             Assert.IsTrue(transform.InputBlockSize > 0);
         }
 
@@ -61,7 +61,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void InputBlockSize_ShouldEqualOutputBlockSize()
         {
-            using var transform = this.CreateAlgorithm();
+            using var transform = CreateAlgorithm();
             Assert.AreEqual(transform.InputBlockSize, transform.OutputBlockSize);
         }
 
@@ -71,7 +71,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void CanReuseTransform_ShouldReturnFalse()
         {
-            using var transform = this.CreateAlgorithm();
+            using var transform = CreateAlgorithm();
             Assert.IsFalse(transform.CanReuseTransform);
         }
 
@@ -81,7 +81,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void CanTransformMultipleBlocks_ShouldReturnTrue()
         {
-            using var transform = this.CreateAlgorithm();
+            using var transform = CreateAlgorithm();
             Assert.IsTrue(transform.CanTransformMultipleBlocks);
         }
     }

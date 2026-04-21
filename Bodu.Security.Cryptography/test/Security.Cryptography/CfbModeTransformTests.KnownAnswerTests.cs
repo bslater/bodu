@@ -4,10 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Bodu.Security.Cryptography
 {
     // Known-answer vectors — NIST SP 800-38A, Appendix F.3.13 (CFB128 mode, AES-128)

@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void HashSize_WhenDefaultConstructed_ShouldBeExpectedBitLength(TVariant variant)
         {
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
             var specification = GetSpecification(variant);
             Assert.AreEqual(specification.HashSize, algorithm.HashSize);
         }
@@ -25,7 +25,7 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void InputBlockSize_WhenDefaultConstructed_ShouldBePositive(TVariant variant)
         {
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
             var specification = GetSpecification(variant);
             Assert.AreEqual(specification.InputBlockSize, algorithm.InputBlockSize);
         }
@@ -38,7 +38,7 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void OutputBlockSize_WhenDefaultConstructed_ShouldBePositive(TVariant variant)
         {
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
             var specification = GetSpecification(variant);
             Assert.AreEqual(specification.OutputBlockSize, algorithm.OutputBlockSize);
         }
@@ -51,7 +51,7 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void CanReuseTransform_WhenDefaultConstructed_ShouldBeTrue(TVariant variant)
         {
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
             var specification = GetSpecification(variant);
             Assert.AreEqual(specification.CanReuseTransform, algorithm.CanReuseTransform);
         }
@@ -64,7 +64,7 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void CanTransformMultipleBlocks_WhenDefaultConstructed_ShouldBeTrue(TVariant variant)
         {
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
             var specification = GetSpecification(variant);
             Assert.AreEqual(specification.CanTransformMultipleBlocks, algorithm.CanTransformMultipleBlocks);
         }
@@ -77,7 +77,7 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void Hash_WhenDefaultConstructed_ShouldBeNull(TVariant variant)
         {
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
             Assert.IsNull(algorithm.Hash);
         }
     }

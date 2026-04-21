@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography
 {
@@ -30,7 +25,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void GenerateKey_WhenSetAfterDispose_ShouldThrowObjectDisposedException()
         {
-            TAlgorithm algorithm = this.CreateAlgorithm();
+            TAlgorithm algorithm = CreateAlgorithm();
             algorithm.Dispose();
 
             Assert.ThrowsExactly<ObjectDisposedException>(() =>

@@ -1,8 +1,7 @@
 ﻿namespace Bodu.Security.Cryptography
 {
-    using System;
-    using System.Collections.Generic;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;
 
     /// <summary>
     /// Tests for <see cref="SivModeTransform" /> (RFC 5297 — AES-SIV with CMAC and S2V).

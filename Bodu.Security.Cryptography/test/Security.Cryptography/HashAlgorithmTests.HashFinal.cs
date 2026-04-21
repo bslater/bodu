@@ -21,7 +21,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void HashFinal_UnsupportedHashSizeMessage_ShouldNotContainRefactorArtefacts()
         {
-            string? fragment = this.UnsupportedHashSizeMessageFragment;
+            string? fragment = UnsupportedHashSizeMessageFragment;
             if (fragment is null)
             {
                 Assert.Inconclusive(

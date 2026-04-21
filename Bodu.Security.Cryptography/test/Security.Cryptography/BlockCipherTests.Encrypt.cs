@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Bodu.Test;
 
 namespace Bodu.Security.Cryptography
 {
@@ -41,7 +36,7 @@ namespace Bodu.Security.Cryptography
                 yield return new object[] { variant, new byte[blockSize - 1] };
                 yield return new object[] { variant, new byte[blockSize + 1] };
             }
-        }   
+        }
 
         public static IEnumerable<object[]> GetValidSingleBlockData()
         {
@@ -85,9 +80,9 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(BlockCipherVariants))]
         public void Encrypt_WhenCalled_WithDiferentInstances_ShouldBeDeterministic(TVariant variant)
         {
-            var specification = this.GetSpecification(variant);
-            using var cipher1 = this.CreateBlockCipher(variant);
-            using var cipher2 = this.CreateBlockCipher(variant);
+            var specification = GetSpecification(variant);
+            using var cipher1 = CreateBlockCipher(variant);
+            using var cipher2 = CreateBlockCipher(variant);
 
             byte[] input = CryptoTestUtilities.GetRandomNonZeroBytes(cipher1.BlockSize);
 
@@ -108,8 +103,8 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(BlockCipherVariants))]
         public void Encrypt_WhenCalled_WithSameInstsnce_ShouldBeDeterministic(TVariant variant)
         {
-            var specification = this.GetSpecification(variant);
-            using var cipher = this.CreateBlockCipher(variant);
+            var specification = GetSpecification(variant);
+            using var cipher = CreateBlockCipher(variant);
 
             byte[] input = CryptoTestUtilities.GetRandomNonZeroBytes(cipher.BlockSize);
 

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using Bodu.Test;
 using System.Reflection;
 using System.Security.Cryptography;
 
@@ -26,7 +26,7 @@ namespace Bodu.Security.Cryptography
                 return;
             }
 
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             algorithm.Dispose();
 
             try
@@ -69,7 +69,7 @@ namespace Bodu.Security.Cryptography
                 return;
             }
 
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             object? currentValue;
             try
@@ -138,7 +138,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Dispose_WhenComputeHashWithBufferCalledAfterDispose_ShouldThrowExactly()
         {
-            var algorithm = this.CreateAlgorithm();
+            var algorithm = CreateAlgorithm();
             algorithm.Dispose();
 
             Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -153,7 +153,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Dispose_WhenComputeHashWithBufferRangeCalledAfterDispose_ShouldThrowExactly()
         {
-            var algorithm = this.CreateAlgorithm();
+            var algorithm = CreateAlgorithm();
             algorithm.Dispose();
 
             Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -168,7 +168,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Dispose_WhenComputeHashWithStreamCalledAfterDispose_ShouldThrowExactly()
         {
-            var algorithm = this.CreateAlgorithm();
+            var algorithm = CreateAlgorithm();
             algorithm.Dispose();
 
             Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -182,7 +182,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Dispose_WhenTransformBlockCalledAfterDispose_ShouldThrowExactly()
         {
-            var algorithm = this.CreateAlgorithm();
+            var algorithm = CreateAlgorithm();
             algorithm.Dispose();
 
             Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -197,7 +197,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Dispose_WhenTransformFinalBlockCalledAfterDispose_ShouldThrowExactly()
         {
-            var algorithm = this.CreateAlgorithm();
+            var algorithm = CreateAlgorithm();
             algorithm.Dispose();
 
             Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -299,7 +299,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Dispose_WhenComputeHashCalledAfterDispose_ShouldReportConcreteTypeNameInObjectName()
         {
-            var algorithm = this.CreateAlgorithm();
+            var algorithm = CreateAlgorithm();
             algorithm.Dispose();
 
             var ex = Assert.ThrowsExactly<ObjectDisposedException>(() =>

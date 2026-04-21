@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography
 {
@@ -16,7 +11,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void ValidTweakSize_WhenLengthIsValid_ShouldReturnTrue()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             foreach (var range in algorithm.LegalTweakSizes)
             {
@@ -43,7 +38,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void ValidTweakSize_WhenLengthIsInvalid_ShouldReturnFalse()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             // Boundary sentinels that must always be invalid regardless of algorithm.
             foreach (int sentinel in new[] { int.MinValue, -1, 0, int.MaxValue })

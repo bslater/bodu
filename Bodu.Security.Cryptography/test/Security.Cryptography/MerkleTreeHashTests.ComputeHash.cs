@@ -4,10 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.IO;
-using Bodu.Infrastructure;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Bodu.Test.IO;
 using static Bodu.Security.Cryptography.MerkleTestData;
 
 namespace Bodu.Security.Cryptography

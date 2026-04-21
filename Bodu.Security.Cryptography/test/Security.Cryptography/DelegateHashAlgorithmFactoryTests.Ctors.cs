@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography
 {
@@ -18,7 +13,7 @@ namespace Bodu.Security.Cryptography
         {
             var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
             {
-                _ = new DelegateHashAlgorithmFactory<MD5>((Func<MD5>)null!);
+                _ = new DelegateHashAlgorithmFactory<MD5>(null!);
             });
 
             Assert.AreEqual("builder", ex.ParamName);

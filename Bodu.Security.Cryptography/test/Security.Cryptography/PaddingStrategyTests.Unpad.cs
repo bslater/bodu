@@ -18,16 +18,16 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Unpad_WhenPaddingIsCorrupted_ShouldThrowCryptographicExceptionWithCleanMessage()
         {
-            if (!this.ValidatesPaddingOnUnpad || !this.ValidatesInteriorPaddingOnUnpad || !this.HasLengthByte)
+            if (!ValidatesPaddingOnUnpad || !ValidatesInteriorPaddingOnUnpad || !HasLengthByte)
             {
                 Assert.Inconclusive($"{typeof(TPadding).Name} does not validate interior padding bytes via a length-byte layout.");
                 return;
             }
 
-            var padding = this.CreatePadding();
+            var padding = CreatePadding();
 
-            byte[] plaintext = this.CreatePlaintextWithResidual(this.BlockSize - 4);
-            byte[] padded = padding.Pad(plaintext, this.BlockSize);
+            byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 4);
+            byte[] padded = padding.Pad(plaintext, BlockSize);
 
             // Tamper with a byte inside the padding region. PKCS#7 padding occupies the last
             // padLen bytes of the final block, where padLen is the trailing length byte. Flipping
@@ -37,7 +37,7 @@ namespace Bodu.Security.Cryptography
             int firstPaddingByteIndex = padded.Length - padLen;
             padded[firstPaddingByteIndex] ^= 0xFF;
 
-            var ex = Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(padded, this.BlockSize));
+            var ex = Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(padded, BlockSize));
             Assert.IsFalse(ex.Message.Contains("this."), "Exception message must not contain 'this.' artifact.");
             Assert.IsFalse(ex.Message.Contains(" t "), "Exception message must not contain stray ' t ' sequence.");
         }
@@ -48,20 +48,20 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Unpad_WhenPaddingLengthByteIsZero_ShouldThrowCryptographicException()
         {
-            if (!this.ValidatesPaddingOnUnpad)
+            if (!ValidatesPaddingOnUnpad)
             {
                 Assert.Inconclusive($"{typeof(TPadding).Name} does not validate padding on Unpad.");
                 return;
             }
 
-            var padding = this.CreatePadding();
+            var padding = CreatePadding();
 
-            byte[] input = new byte[this.BlockSize];
-            for (int i = 0; i < this.BlockSize - 1; i++)
+            byte[] input = new byte[BlockSize];
+            for (int i = 0; i < BlockSize - 1; i++)
                 input[i] = 0xAA;
-            input[this.BlockSize - 1] = 0x00;
+            input[BlockSize - 1] = 0x00;
 
-            Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(input, this.BlockSize));
+            Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(input, BlockSize));
         }
 
         /// <summary>
@@ -70,20 +70,20 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Unpad_WhenPaddingLengthExceedsBlockSize_ShouldThrowCryptographicException()
         {
-            if (!this.ValidatesPaddingOnUnpad)
+            if (!ValidatesPaddingOnUnpad)
             {
                 Assert.Inconclusive($"{typeof(TPadding).Name} does not validate padding on Unpad.");
                 return;
             }
 
-            var padding = this.CreatePadding();
+            var padding = CreatePadding();
 
-            byte[] input = new byte[this.BlockSize];
-            for (int i = 0; i < this.BlockSize - 1; i++)
+            byte[] input = new byte[BlockSize];
+            for (int i = 0; i < BlockSize - 1; i++)
                 input[i] = 0xAA;
-            input[this.BlockSize - 1] = 0xFF;
+            input[BlockSize - 1] = 0xFF;
 
-            Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(input, this.BlockSize));
+            Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(input, BlockSize));
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography
         public void InputBlockSize_ShouldBeExpectedInputBlockSize(TVariant variant)
         {
             var specification = GetSpecification(variant);
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
             Assert.AreEqual(specification.InputBlockSize, algorithm.InputBlockSize, $"{typeof(TAlgorithm).Name} InputBlockSize should be {specification.InputBlockSize}.");
         }
     }

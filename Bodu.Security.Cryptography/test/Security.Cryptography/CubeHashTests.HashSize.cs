@@ -4,8 +4,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography
 {
     public partial class CubeHashTests
@@ -80,7 +78,7 @@ namespace Bodu.Security.Cryptography
         [DataRow(int.MaxValue)]
         public void HashSize_WhenSetToInvalidValue_ShouldThrowExactly(int value)
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => algorithm.HashSize = value);
         }
@@ -98,7 +96,7 @@ namespace Bodu.Security.Cryptography
         [DataRow(512)]
         public void HashSize_WhenSetToValidValue_ShouldBeAssigned(int size)
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             int original = algorithm.HashSize;
             algorithm.HashSize = size;
 
@@ -111,7 +109,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void HashSize_WhenSetToValidValue_ShouldUpdateCorrectly()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             int size = 256;
             int original = algorithm.HashSize;
             algorithm.HashSize = size;

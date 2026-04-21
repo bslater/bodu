@@ -4,8 +4,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography
 {
     public partial class TigerTests
@@ -16,7 +14,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void HashSize_WhenDefaultConstructed_ShouldBe192()
         {
-            var algorithm = this.CreateAlgorithm();
+            var algorithm = CreateAlgorithm();
             Assert.AreEqual(192, algorithm.HashSize);
         }
 
@@ -36,7 +34,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void HashSize_WhenSetAfterHashing_ShouldNotThrow()
         {
-            var algorithm = this.CreateAlgorithm();
+            var algorithm = CreateAlgorithm();
             byte[] input = new byte[] { 1, 2, 3 };
 
             algorithm.ComputeHash(input);
@@ -62,7 +60,7 @@ namespace Bodu.Security.Cryptography
         [DataRow(int.MaxValue)]
         public void HashSize_WhenSetToInvalidValue_ShouldThrowExactly(int value)
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => algorithm.HashSize = value);
         }
@@ -76,7 +74,7 @@ namespace Bodu.Security.Cryptography
         [DataRow(192)]
         public void HashSize_WhenSetToValidValue_ShouldBeAssigned(int size)
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             algorithm.HashSize = size;
 
             Assert.AreEqual(size, algorithm.HashSize);
@@ -88,7 +86,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void HashSize_WhenSetToValidValue_ShouldUpdateCorrectly()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             int size = 160;
             int original = algorithm.HashSize;
             algorithm.HashSize = size;

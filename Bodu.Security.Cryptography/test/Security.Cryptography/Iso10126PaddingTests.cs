@@ -36,12 +36,12 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Pad_WhenInputHasResidual_ShouldWritePadLengthInTrailingByte()
         {
-            var padding = this.CreatePadding();
-            byte[] plaintext = this.CreatePlaintextWithResidual(this.BlockSize - 5);
+            var padding = CreatePadding();
+            byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 5);
 
-            byte[] padded = padding.Pad(plaintext, this.BlockSize);
+            byte[] padded = padding.Pad(plaintext, BlockSize);
 
-            Assert.AreEqual(this.BlockSize, padded.Length);
+            Assert.AreEqual(BlockSize, padded.Length);
             Assert.AreEqual((byte)5, padded[padded.Length - 1]);
         }
 
@@ -55,11 +55,11 @@ namespace Bodu.Security.Cryptography
         {
             // Residual leaves 10 pad bytes (9 random interior + 1 length) — enough room that
             // a repeat collision across two draws is astronomically unlikely.
-            var padding = this.CreatePadding();
-            byte[] plaintext = this.CreatePlaintextWithResidual(this.BlockSize - 10);
+            var padding = CreatePadding();
+            byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 10);
 
-            byte[] first = padding.Pad(plaintext, this.BlockSize);
-            byte[] second = padding.Pad(plaintext, this.BlockSize);
+            byte[] first = padding.Pad(plaintext, BlockSize);
+            byte[] second = padding.Pad(plaintext, BlockSize);
 
             bool interiorDiffers = false;
             for (int i = plaintext.Length; i < first.Length - 1; i++)

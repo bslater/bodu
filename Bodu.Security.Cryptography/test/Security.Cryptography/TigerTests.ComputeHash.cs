@@ -1,12 +1,4 @@
-﻿using Bodu.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
     public partial class TigerTests
     {
@@ -21,7 +13,7 @@ namespace Bodu.Security.Cryptography
             var actual = new List<byte[]>();
             foreach (var variant in variants)
             {
-                using var algorithm = this.CreateAlgorithm();
+                using var algorithm = CreateAlgorithm();
                 algorithm.Variant = variant;
 
                 actual.Add(algorithm.ComputeHash(input));

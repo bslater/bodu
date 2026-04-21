@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography
 {
@@ -19,7 +14,7 @@ namespace Bodu.Security.Cryptography
         [DataRow(null)]
         public void FeedbackSize_WhenInvalid_ShouldThrowExactly(int? feedbackSize)
         {
-            using TAlgorithm algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
             int sizeToTest = feedbackSize ?? algorithm.BlockSize + 1;
             Assert.ThrowsExactly<CryptographicException>(() => algorithm.FeedbackSize = sizeToTest);
         }

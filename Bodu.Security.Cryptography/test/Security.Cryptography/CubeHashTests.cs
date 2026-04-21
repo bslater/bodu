@@ -65,7 +65,7 @@ namespace Bodu.Security.Cryptography
         protected override CubeHash CreateAlgorithm(CubeHashVariants variant) =>
             variant switch
             {
-                CubeHashVariants.CubeHash16_16_32_32_512 => this.CreateAlgorithm(),
+                CubeHashVariants.CubeHash16_16_32_32_512 => CreateAlgorithm(),
                 CubeHashVariants.CubeHash160_16_32_160_512 => new CubeHash
                 {
                     InitializationRounds = 160,

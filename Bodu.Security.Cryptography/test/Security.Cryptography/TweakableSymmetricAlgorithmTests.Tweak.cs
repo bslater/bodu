@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography
 {
@@ -200,7 +194,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Tweak_WhenSetToInvalidSize_ShouldThrowWithCleanMessage()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             var ex = Assert.ThrowsExactly<CryptographicException>(() =>
             {
@@ -225,7 +219,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Tweak_WhenSetToInvalidSize_ShouldThrowExactly()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             int? invalidBits = FindInvalidTweakSize(algorithm.LegalTweakSizes);
 

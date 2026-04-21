@@ -6,11 +6,9 @@
 
 namespace Bodu.Security.Cryptography
 {
-    using System;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System.Linq;
     using System.Security.Cryptography;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Bodu.Testing.Security;
 
     public sealed partial class GcmSivModeTransformTests
     {
@@ -57,7 +55,7 @@ namespace Bodu.Security.Cryptography
             ct[0] ^= 0xFF; // corrupt first byte of ciphertext
 
             var dec = CreateTransform(new AesBlockCipherFixture(new byte[16]), (byte[])iv.Clone());
-            Assert.ThrowsExactly<CryptographicException>(                () =>
+            Assert.ThrowsExactly<CryptographicException>(() =>
             {
                 dec.Decrypt(ct, new byte[plaintext.Length]);
             },
@@ -80,7 +78,7 @@ namespace Bodu.Security.Cryptography
             ct[ct.Length - 1] ^= 0x01; // corrupt last byte of tag
 
             var dec = CreateTransform(new AesBlockCipherFixture(new byte[16]), (byte[])iv.Clone());
-            Assert.ThrowsExactly<CryptographicException>(                () =>
+            Assert.ThrowsExactly<CryptographicException>(() =>
             {
                 dec.Decrypt(ct, new byte[plaintext.Length]);
             },
@@ -103,7 +101,7 @@ namespace Bodu.Security.Cryptography
             enc.Encrypt(plaintext, ct);
 
             var dec = CreateTransform(new AesBlockCipherFixture(new byte[16]), ivDec);
-            Assert.ThrowsExactly<CryptographicException>(                () =>
+            Assert.ThrowsExactly<CryptographicException>(() =>
             {
                 dec.Decrypt(ct, new byte[plaintext.Length]);
             },
@@ -130,7 +128,7 @@ namespace Bodu.Security.Cryptography
 
             var dec = CreateTransform(new AesBlockCipherFixture(new byte[16]), (byte[])iv.Clone());
             dec.ProcessAssociatedData(tamperedAad);
-            Assert.ThrowsExactly<CryptographicException>(                () =>
+            Assert.ThrowsExactly<CryptographicException>(() =>
             {
                 dec.Decrypt(ct, new byte[plaintext.Length]);
             },

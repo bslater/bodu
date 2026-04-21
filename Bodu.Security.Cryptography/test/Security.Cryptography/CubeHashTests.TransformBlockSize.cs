@@ -74,7 +74,7 @@ namespace Bodu.Security.Cryptography
         [DataRow(int.MaxValue)]
         public void TransformBlockSize_WhenSetToInvalidValue_ShouldThrowExactly(int value)
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => algorithm.TransformBlockSize = value);
         }
@@ -91,7 +91,7 @@ namespace Bodu.Security.Cryptography
         [DataRow(128)]
         public void TransformBlockSize_WhenSetToValidValue_ShouldBeAssigned(int size)
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             algorithm.TransformBlockSize = size;
 
             Assert.AreEqual(size, algorithm.TransformBlockSize);
@@ -103,7 +103,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TransformBlockSize_WhenSetToValidValue_ShouldUpdateCorrectly()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             int size = 64;
             int original = algorithm.TransformBlockSize;
             algorithm.TransformBlockSize = size;

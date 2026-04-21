@@ -4,10 +4,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using Bodu.Infrastructure;
-
-using System.Text;
-
 namespace Bodu.Security.Cryptography
 {
     public abstract partial class FnvTests<TTest, TAlgorithm>
@@ -16,7 +12,7 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants), DynamicDataSourceType.Method)]
         public void AlgorithmName_WhenUsingVariant_ShouldReturnCorrectlyFormattedString(SingleTestVariant variant)
         {
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
             string typeName = algorithm.GetType().Name;
 
             // Infer whether this is FNV-1a based on the type name

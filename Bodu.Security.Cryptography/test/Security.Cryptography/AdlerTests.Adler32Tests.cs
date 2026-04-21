@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Numerics;
-
 namespace Bodu.Security.Cryptography
 {
     /// <summary>
@@ -30,6 +28,6 @@ namespace Bodu.Security.Cryptography
                 InputBlockSize = 1,
                 OutputBlockSize = 1,
             };
-        
+
     }
 }

@@ -1,6 +1,5 @@
-﻿using System.Security.Cryptography;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
+﻿using Bodu.Extensions;
+using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography
 {
@@ -12,7 +11,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Key_WhenSetToNull_ShouldThrowExactly()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             Assert.ThrowsExactly<ArgumentNullException>(() =>
             {
@@ -26,7 +25,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Key_WhenSetToInvalidKey_ShouldThrowExactly()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             Assert.ThrowsExactly<CryptographicException>(() =>
             {
@@ -42,13 +41,13 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void Key_WhenSetToInvalidLength_ShouldThrowExactly(TVariant variant)
         {
-            if (this.GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
+            if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
             {
                 Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping invalid test case.");
                 return;
             }
 
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
 
             foreach (int invalidLength in specification.GetRejectedKeyLengths())
             {
@@ -67,13 +66,13 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void Key_WhenSetToValidLength_ShouldNotThrow(TVariant variant)
         {
-            if (this.GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
+            if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
             {
                 Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping valid key length validation.");
                 return;
             }
 
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
 
             foreach (int validLength in specification.GetAcceptedKeyLengths())
             {
@@ -98,7 +97,7 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void Key_WhenDefaultConstructed_ShouldNotBeNull(TVariant variant)
         {
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
 
             Assert.IsNotNull(algorithm.Key,
                 $"[{variant}] Expected a non-null default key on construction.");
@@ -111,13 +110,13 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void Key_WhenSetAndRetrieved_ShouldBehaveAsExpected(TVariant variant)
         {
-            if (this.GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
+            if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
             {
                 Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping invalid test case.");
                 return;
             }
 
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
 
 
             byte[] key = Enumerable.Range(0, specification.MinKeyLength).Select(i => (byte)i).ToArray();
@@ -143,13 +142,13 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void Key_WhenOriginalKeyIsMutated_ShouldNotAffectInternalKey(TVariant variant)
         {
-            if (this.GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
+            if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
             {
                 Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping invalid test case.");
                 return;
             }
 
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
 
             byte[] key = Enumerable.Range(0, specification.MinKeyLength).Select(i => (byte)i).ToArray();
             algorithm.Key = key;
@@ -168,13 +167,13 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void Key_WhenAccessedMultipleTimes_ShouldReturnDistinctInstances(TVariant variant)
         {
-            if (this.GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
+            if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
             {
                 Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping invalid test case.");
                 return;
             }
 
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
 
             var first = algorithm.Key;
             var second = algorithm.Key;
@@ -191,17 +190,17 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void Key_WhenChangedAfterHash_ShouldNotAffectPreviousResult(TVariant variant)
         {
-            if (this.GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
+            if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
             {
                 Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping invalid test case.");
                 return;
             }
 
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
 
             byte[] data = new byte[128];
-            byte[] key1 = this.GenerateUniqueKey(specification.MinKeyLength);
-            byte[] key2 = this.GenerateUniqueKey(specification.MinKeyLength);
+            byte[] key1 = GenerateUniqueKey(specification.MinKeyLength);
+            byte[] key2 = GenerateUniqueKey(specification.MinKeyLength);
 
             byte[] hash1, hash2;
 
@@ -221,15 +220,15 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void Key_WhenSetToSameValueMultipleTimes_ShouldNotThrow(TVariant variant)
         {
-            if (this.GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
+            if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
             {
                 Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping invalid test case.");
                 return;
             }
 
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
 
-            byte[] key = this.GenerateUniqueKey(specification.MinKeyLength);
+            byte[] key = GenerateUniqueKey(specification.MinKeyLength);
 
             algorithm.Key = key;
             algorithm.Key = key; // Reassign
@@ -243,7 +242,7 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void Key_WhenInitializeCalled_ShouldNotResetKey(TVariant variant)
         {
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
             byte[] originalKey = algorithm.Key;
             algorithm.Initialize();
 
@@ -257,15 +256,15 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void Key_WhenCallingComputeHashUsingSameKeyAndDifferentInputs_ShouldReturnDifferentHashes(TVariant variant)
         {
-            if (this.GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
+            if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
             {
                 Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping invalid test case.");
                 return;
             }
 
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
 
-            byte[] key = this.GenerateUniqueKey(specification.TestKey.Length);
+            byte[] key = GenerateUniqueKey(specification.TestKey.Length);
             algorithm.Key = key;
 
             byte[] input1 = (byte[])CryptoTestUtilities.ByteSequence256.Clone();
@@ -286,15 +285,15 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void Key_WhenModifiedAfterAssignment_ShouldNotAffectInternalState(TVariant variant)
         {
-            if (this.GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
+            if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
             {
                 Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping invalid test case.");
                 return;
             }
 
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
 
-            byte[] key = this.GenerateUniqueKey(specification.MinKeyLength);
+            byte[] key = GenerateUniqueKey(specification.MinKeyLength);
             byte[] data = Enumerable.Repeat((byte)0x42, 64).ToArray();
 
             algorithm.Key = key;
@@ -308,8 +307,8 @@ namespace Bodu.Security.Cryptography
             if (!specification.CanReuseTransform)
             {
                 // For one-shot MACs like Poly1305, the second hash must use a new instance and key
-                using var algorithm2 = this.CreateAlgorithm();
-                byte[] newKey = this.GenerateUniqueKey(specification.MinKeyLength);
+                using var algorithm2 = CreateAlgorithm();
+                byte[] newKey = GenerateUniqueKey(specification.MinKeyLength);
                 algorithm2.Key = newKey;
                 byte[] hash2 = algorithm2.ComputeHash(data);
 
@@ -333,15 +332,15 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void Key_WhenInputArrayModified_ShouldNotMutateInternalKey(TVariant variant)
         {
-            if (this.GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
+            if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
             {
                 Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping invalid test case.");
                 return;
             }
 
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
 
-            byte[] key = this.GenerateUniqueKey(specification.MinKeyLength);
+            byte[] key = GenerateUniqueKey(specification.MinKeyLength);
             algorithm.Key = key;
 
             byte[] snapshot = algorithm.Key.ToArray();
@@ -358,13 +357,13 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void Key_WhenAboveMaximumLength_ShouldThrow(TVariant variant)
         {
-            if (this.GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
+            if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
             {
                 Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping invalid test case.");
                 return;
             }
 
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
 
             byte[] tooLong = new byte[specification.MaxKeyLength + 1];
             Assert.ThrowsExactly<CryptographicException>(() =>
@@ -377,13 +376,13 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void Key_WhenBelowMinimumLength_ShouldThrow(TVariant variant)
         {
-            if (this.GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
+            if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
             {
                 Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping invalid test case.");
                 return;
             }
 
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
 
             byte[] tooShort = new byte[specification.MinKeyLength - 1];
 
@@ -400,15 +399,15 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void Key_WhenSetAfterHashingBegins_ShouldThrow(TVariant variant)
         {
-            if (this.GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
+            if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
             {
                 Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping invalid test case.");
                 return;
             }
 
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
 
-            byte[] newKey = this.GenerateUniqueKey(specification.MinKeyLength);
+            byte[] newKey = GenerateUniqueKey(specification.MinKeyLength);
             byte[] input = new byte[1024];
 
             // Begin processing
@@ -430,7 +429,7 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void Key_WhenKeyBytesReversed_ShouldProduceDistinctDigest_fix(TVariant variant)
         {
-            if (this.GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
+            if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
             {
                 Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping invalid test case.");
                 return;
@@ -443,13 +442,13 @@ namespace Bodu.Security.Cryptography
             byte[] hash1;
             byte[] hash2;
 
-            using (var algorithm = this.CreateAlgorithm(variant))
+            using (var algorithm = CreateAlgorithm(variant))
             {
                 algorithm.Key = key;
                 hash1 = algorithm.ComputeHash(data);
             }
 
-            using (var algorithm = this.CreateAlgorithm(variant))
+            using (var algorithm = CreateAlgorithm(variant))
             {
                 algorithm.Key = reversed;
                 hash2 = algorithm.ComputeHash(data);

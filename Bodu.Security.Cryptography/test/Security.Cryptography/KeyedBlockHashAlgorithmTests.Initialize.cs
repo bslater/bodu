@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography
 {
@@ -19,13 +14,13 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Initialize_WhenKeyValueIsMissing_ShouldThrowCryptographicException()
         {
-            if (this.AllowsKeyRegenerationOnInitialize)
+            if (AllowsKeyRegenerationOnInitialize)
             {
                 Assert.Inconclusive($"{typeof(TAlgorithm).Name} permits silent key regeneration on Initialize.");
                 return;
             }
 
-            var algo = this.CreateAlgorithm();
+            var algo = CreateAlgorithm();
 
             // Clear the constructor-seeded random key via the inherited protected KeyValue field.
             System.Reflection.FieldInfo? keyValueField = null;

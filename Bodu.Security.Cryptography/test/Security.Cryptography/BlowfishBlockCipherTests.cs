@@ -4,9 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Infrastructure;
-using static System.Net.Mime.MediaTypeNames;
-
 namespace Bodu.Security.Cryptography
 {
     [TestClass]

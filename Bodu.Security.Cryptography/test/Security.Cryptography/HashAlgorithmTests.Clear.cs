@@ -16,7 +16,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Clear_WhenCalled_ShouldDisposeAndThrowOnFurtherUse()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             algorithm.Clear();
 
             byte[] buffer = new byte[1];

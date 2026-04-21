@@ -1,8 +1,7 @@
 namespace Bodu.Security.Cryptography
 {
-    using System.Linq;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Bodu.Testing.Security;
+    using System.Linq;
 
     public sealed partial class CtrModeTransformTests
     {

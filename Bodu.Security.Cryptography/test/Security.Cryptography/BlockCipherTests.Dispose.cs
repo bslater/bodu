@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Bodu.Test;
+using System.Reflection;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography
@@ -106,7 +107,7 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(BlockCipherVariants))]
         public void Dispose_WhenDecryptCalledAfterDispose_ShouldThrowExactly(TVariant variant)
         {
-            var specification = this.GetSpecification(variant);
+            var specification = GetSpecification(variant);
             using var cipher = CreateBlockCipher(variant);
             cipher.Dispose();
 
@@ -124,7 +125,7 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(BlockCipherVariants))]
         public void Dispose_WhenEncryptCalledAfterDispose_ShouldThrowExactly(TVariant variant)
         {
-            var specification = this.GetSpecification(variant);
+            var specification = GetSpecification(variant);
             using var cipher = CreateBlockCipher(variant);
             cipher.Dispose();
 

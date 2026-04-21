@@ -15,14 +15,14 @@ namespace Bodu.Security.Cryptography
             byte[] input = CryptoTestUtilities.SimpleTextAsciiBytes;
 
             byte[] computeHashResult;
-            using (var computeAlg = this.CreateAlgorithm())
+            using (var computeAlg = CreateAlgorithm())
             {
                 computeHashResult = computeAlg.ComputeHash(input);
             }
 
-            if (this.CreateAlgorithm().CanReuseTransform)
+            if (CreateAlgorithm().CanReuseTransform)
             {
-                using var algorithm = this.CreateAlgorithm();
+                using var algorithm = CreateAlgorithm();
 
                 algorithm.TransformBlock(input, 0, input.Length - 1, null, 0);
                 algorithm.TransformFinalBlock(input, input.Length - 1, 1);
@@ -32,7 +32,7 @@ namespace Bodu.Security.Cryptography
             }
             else
             {
-                using var transformAlg = this.CreateAlgorithm();
+                using var transformAlg = CreateAlgorithm();
 
                 transformAlg.TransformBlock(input, 0, input.Length - 1, null, 0);
                 transformAlg.TransformFinalBlock(input, input.Length - 1, 1);
@@ -49,11 +49,11 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TransformBlockAndFinalBlock_WhenInputIsEmpty_ShouldProduceExpectedHash()
         {
-            byte[] expected = this.ExpectedEmptyInputHash;
+            byte[] expected = ExpectedEmptyInputHash;
 
-            if (this.CreateAlgorithm().CanReuseTransform)
+            if (CreateAlgorithm().CanReuseTransform)
             {
-                using var algorithm = this.CreateAlgorithm();
+                using var algorithm = CreateAlgorithm();
 
                 // Case 1: TransformBlock followed by TransformFinalBlock
                 algorithm.TransformBlock(Array.Empty<byte>(), 0, 0, null, 0);
@@ -68,12 +68,12 @@ namespace Bodu.Security.Cryptography
             else
             {
                 // One-shot case: use separate instances
-                using var algorithm1 = this.CreateAlgorithm();
+                using var algorithm1 = CreateAlgorithm();
                 algorithm1.TransformBlock(Array.Empty<byte>(), 0, 0, null, 0);
                 algorithm1.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
                 CollectionAssert.AreEqual(expected, algorithm1.Hash, "TransformBlock followed by TransformFinalBlock on empty input should match expected hash.");
 
-                using var algorithm2 = this.CreateAlgorithm();
+                using var algorithm2 = CreateAlgorithm();
                 algorithm2.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
                 CollectionAssert.AreEqual(expected, algorithm2.Hash, "TransformFinalBlock alone on empty input should match expected hash.");
             }
@@ -90,7 +90,7 @@ namespace Bodu.Security.Cryptography
             byte[] input;
 
             // Use a fresh instance to generate expected hash and determine block size
-            using (var initial = this.CreateAlgorithm())
+            using (var initial = CreateAlgorithm())
             {
                 blockSize = initial.InputBlockSize;
                 input = new byte[Math.Max(blockSize * 2, 8)];
@@ -100,16 +100,16 @@ namespace Bodu.Security.Cryptography
             byte[] expected;
 
             // Compute the expected result via single-call ComputeHash
-            using (var reference = this.CreateAlgorithm())
+            using (var reference = CreateAlgorithm())
                 expected = reference.ComputeHash(input);
 
             // Split and hash using TransformBlock/TransformFinalBlock
-            if (this.CreateAlgorithm().CanReuseTransform)
+            if (CreateAlgorithm().CanReuseTransform)
             {
-                using var algorithm = this.CreateAlgorithm();
+                using var algorithm = CreateAlgorithm();
                 algorithm.Initialize();
 
-                if (this.HandlePartialBlocks)
+                if (HandlePartialBlocks)
                 {
                     byte[] first = input.Take(blockSize).ToArray();
                     byte[] second = input.Skip(blockSize).ToArray();
@@ -130,9 +130,9 @@ namespace Bodu.Security.Cryptography
             else
             {
                 // One-shot MAC: Use a fresh instance for split input
-                using var splitAlg = this.CreateAlgorithm();
+                using var splitAlg = CreateAlgorithm();
 
-                if (this.HandlePartialBlocks)
+                if (HandlePartialBlocks)
                 {
                     byte[] first = input.Take(blockSize).ToArray();
                     byte[] second = input.Skip(blockSize).ToArray();
@@ -166,15 +166,15 @@ namespace Bodu.Security.Cryptography
             var input = CryptoTestUtilities.ByteSequence256;
             byte[] expected;
 
-            using (var reference = this.CreateAlgorithm())
+            using (var reference = CreateAlgorithm())
             {
                 expected = reference.ComputeHash(input);
             }
 
             // One-shot vs. reusable path
-            if (this.CreateAlgorithm().CanReuseTransform)
+            if (CreateAlgorithm().CanReuseTransform)
             {
-                using var algorithm = this.CreateAlgorithm();
+                using var algorithm = CreateAlgorithm();
                 algorithm.Initialize();
 
                 FeedWithPartialBlocks(algorithm, input);
@@ -183,7 +183,7 @@ namespace Bodu.Security.Cryptography
             }
             else
             {
-                using var algorithm = this.CreateAlgorithm();
+                using var algorithm = CreateAlgorithm();
                 FeedWithPartialBlocks(algorithm, input);
 
                 CollectionAssert.AreEqual(expected, algorithm.Hash, "Streamed hash with partial blocks should match expected result.");
@@ -197,7 +197,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TransformFinalBlock_WhenCalledTwice_ShouldResetAndProduceValidHashes()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             var buffer = CryptoTestUtilities.SimpleTextAsciiBytes;
 
             // First pass
@@ -224,7 +224,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TransformFinalBlock_WhenCalledTwice_ExpectedBehaviorBasedOnDotNetVersion()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             var buffer = CryptoTestUtilities.SimpleTextAsciiBytes;
 
             algorithm.TransformBlock(buffer, 0, buffer.Length - 1, null, 0);
@@ -246,7 +246,7 @@ namespace Bodu.Security.Cryptography
 
         private void FeedWithPartialBlocks(HashAlgorithm algorithm, byte[] input)
         {
-            if (this.HandlePartialBlocks)
+            if (HandlePartialBlocks)
             {
                 int pos = 0;
                 int size = Math.Max(algorithm.InputBlockSize - 1, 1);

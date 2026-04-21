@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Security.Cryptography
 {
@@ -22,8 +21,8 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public virtual void Initialize_AfterHashing_ShouldResetInternalState(TVariant variant)
         {
-            var specification = this.GetSpecification(variant);
-            using var algorithm = this.CreateAlgorithm(variant);
+            var specification = GetSpecification(variant);
+            using var algorithm = CreateAlgorithm(variant);
             int blockSize = specification.InputBlockSize;
 
             // Feed partial input — do NOT finalise — then reset
@@ -37,7 +36,7 @@ namespace Bodu.Security.Cryptography
             // After Initialize, finalising with empty input should equal a clean empty-input hash
             algorithm.TransformFinalBlock([], 0, 0);
 
-            using var reference = this.CreateAlgorithm(variant);
+            using var reference = CreateAlgorithm(variant);
             reference.TransformFinalBlock([], 0, 0);
 
             CollectionAssert.AreEqual(
@@ -56,7 +55,7 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public virtual void Initialize_AfterHashing_ShouldClearResidualBlockState(TVariant variant)
         {
-            var specification = this.GetSpecification(variant);
+            var specification = GetSpecification(variant);
 
             if (!specification.CanReuseTransform)
             {
@@ -65,7 +64,7 @@ namespace Bodu.Security.Cryptography
                 return;
             }
 
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
             int blockSize = specification.InputBlockSize;
             byte[] input = Enumerable.Range(0, blockSize + (blockSize / 2))
                                      .Select(i => (byte)((i * 31) + 7))

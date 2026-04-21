@@ -1,10 +1,5 @@
-﻿using Bodu.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Bodu.Security.Cryptography
 {
@@ -19,7 +14,7 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants), DynamicDataSourceType.Method)]
         public void Variant_Set_WhenValid_ShouldProduceExpectedHash(TigerVariant variant)
         {
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
 
             byte[] input = Encoding.ASCII.GetBytes("Test input");
 
@@ -33,7 +28,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Variant_Get_WhenDefault_ShouldReturnPearson()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             var type = algorithm.Variant;
 
@@ -43,7 +38,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Variant_Set_WhenHashingStarted_ShouldThrowExactly()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             algorithm.TransformBlock(new byte[] { 1, 2, 3 }, 0, 3, null, 0);
 
             Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
@@ -55,7 +50,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Variant_Set_WhenDisposed_ShouldThrowExactly()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             algorithm.Dispose();
 
             Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -67,7 +62,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Variant_Get_WhenDisposed_ShouldThrowExactly()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             algorithm.Dispose();
 
             Assert.ThrowsExactly<ObjectDisposedException>(() =>

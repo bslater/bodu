@@ -4,9 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test;
+using Bodu.Test.IO;
 using System.Diagnostics;
 using System.Security.Cryptography;
-using Bodu.Infrastructure;
 
 namespace Bodu.Security.Cryptography
 {
@@ -18,7 +19,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public async Task ComputeHashAsync_ComputeHashAsync_WhenAlgorithmDisposed_ShouldThrowExactly()
         {
-            var algorithm = this.CreateAlgorithm();
+            var algorithm = CreateAlgorithm();
             algorithm.Dispose();
 
             using var stream = new MemoryStream(new byte[16]);
@@ -34,7 +35,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public async Task ComputeHashAsync_ComputeHashAsync_WithCancelledToken_ShouldThrowExactly()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             using var stream = new MemoryStream(new byte[4096]);
             using var cts = new CancellationTokenSource();
             cts.Cancel();
@@ -51,7 +52,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public async Task ComputeHashAsync_ComputeHashAsync_WithNullStream_ShouldThrowExactly()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
             {
                 await algorithm.ComputeHashAsync(null!);
@@ -70,7 +71,7 @@ namespace Bodu.Security.Cryptography
         public async Task ComputeHashAsync_LongStream_WithVariousLengths_ShouldSucceed(int length)
         {
             using var stream = new FixedLengthIncrementingStream(length);
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             byte[] result = await algorithm.ComputeHashAsync(stream);
 
@@ -86,8 +87,8 @@ namespace Bodu.Security.Cryptography
         {
             byte[] input = Enumerable.Range(0, 128).Select(i => (byte)(i % 256)).ToArray();
 
-            using var algorithm1 = this.CreateAlgorithm();
-            using var algorithm2 = this.CreateAlgorithm();
+            using var algorithm1 = CreateAlgorithm();
+            using var algorithm2 = CreateAlgorithm();
             using var stream1 = new MemoryStream(input);
             using var stream2 = new MemoryStream(input);
 
@@ -105,7 +106,7 @@ namespace Bodu.Security.Cryptography
         {
             using var cancellationSource = new CancellationTokenSource(1000); // cancel after 1 second
             using var stream = new ThrottledIncrementingByteStream(10000); // delayed stream that is 10 seconds
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             await Task.WhenAny(
                 Assert.ThrowsExactlyAsync<OperationCanceledException>(() =>
@@ -121,7 +122,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public async Task ComputeHashAsync_WhenCancelledBeforeAwait_ShouldThrowExactly()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             var stream = new FixedLengthIncrementingStream(int.MaxValue);
 
             // create a canellation token and cancel it before computation starts
@@ -146,7 +147,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public async Task ComputeHashAsync_WhenCancelledTokenIsPassed_ShouldThrowExactly()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             using var stream = new MemoryStream(new byte[4096]);
             using var cts = new CancellationTokenSource();
             cts.Cancel();
@@ -166,8 +167,8 @@ namespace Bodu.Security.Cryptography
             const int length = 1 * 1024 * 1024; // 1 MB
             using var streamA = new FixedLengthIncrementingStream(length);
             using var streamB = new FixedLengthIncrementingStream(length);
-            using var algorithmA = this.CreateAlgorithm();
-            using var algorithmB = this.CreateAlgorithm();
+            using var algorithmA = CreateAlgorithm();
+            using var algorithmB = CreateAlgorithm();
 
             byte[] hashA = await algorithmA.ComputeHashAsync(streamA);
             byte[] hashB = await algorithmB.ComputeHashAsync(streamB);
@@ -181,12 +182,12 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public async Task ComputeHashAsync_WhenStreamIsEmpty_ShouldReturnExpectedHash()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             using var stream = new MemoryStream(Array.Empty<byte>());
 
             byte[] actual = await algorithm.ComputeHashAsync(stream);
 
-            CollectionAssert.AreEqual(this.ExpectedEmptyInputHash, actual);
+            CollectionAssert.AreEqual(ExpectedEmptyInputHash, actual);
         }
 
         /// <summary>
@@ -198,7 +199,7 @@ namespace Bodu.Security.Cryptography
         {
             const int length = 1 * 1024 * 1024; // 1 MB
             using var stream = new FixedLengthIncrementingStream(length);
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             await algorithm.ComputeHashAsync(stream);
 
@@ -213,7 +214,7 @@ namespace Bodu.Security.Cryptography
         {
             const int length = 10 * 1024 * 1024; // 10 MB
             using var stream = new FixedLengthIncrementingStream(length);
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             byte[] result = await algorithm.ComputeHashAsync(stream);
 
@@ -227,7 +228,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public async Task ComputeHashAsync_WhenStreamIsNull_ShouldThrowExactly()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
             {
                 await algorithm.ComputeHashAsync(null!);
@@ -291,7 +292,7 @@ namespace Bodu.Security.Cryptography
             var monitoredStream = new MonitoringStream(baseStream);
 
             // Compute the hash asynchronously
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             await algorithm.ComputeHashAsync(monitoredStream);
 
             // Verify the total number of bytes read matches the expected input length

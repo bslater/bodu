@@ -4,10 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Testing.Security;
-
 namespace Bodu.Security.Cryptography
 {
     public sealed partial class XtsModeTransformTests

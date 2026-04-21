@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography
 {
@@ -15,7 +10,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Key_WhenAccessed_ShouldNotBeNull()
         {
-            using TAlgorithm algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
             Assert.IsNotNull(algorithm.Key);
         }
 
@@ -26,7 +21,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Key_WhenAccessedAfterDispose_ShouldThrowObjectDisposedException()
         {
-            TAlgorithm algorithm = this.CreateAlgorithm();
+            TAlgorithm algorithm = CreateAlgorithm();
             algorithm.Dispose();
 
             Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -41,7 +36,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Key_WhenSetToNull_ShouldThrowExactly()
         {
-            using TAlgorithm algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
             Assert.ThrowsExactly<ArgumentNullException>(() => algorithm.Key = null);
         }
 
@@ -52,7 +47,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Key_WhenSetToInvalidSize_ShouldThrowExactly()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             byte[]? invalidKey = CryptoTestUtilities.FindInvalidKey(algorithm.LegalKeySizes);
 
@@ -76,7 +71,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Key_WhenSet_ShouldReturnSameValueOnGet()
         {
-            using TAlgorithm algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
             int size = algorithm.LegalKeySizes[0].MinSize;
             byte[] key = new byte[size / 8];
             CryptoHelpers.FillWithRandomNonZeroBytes(key);
@@ -91,7 +86,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Key_WhenSet_ShouldReturnDefensiveCopy()
         {
-            using TAlgorithm algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
             int size = algorithm.LegalKeySizes[0].MinSize;
             byte[] key = new byte[size / 8];
             CryptoHelpers.FillWithRandomNonZeroBytes(key);
@@ -129,7 +124,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void GenerateKey_WhenCalled_ShouldChangeKey()
         {
-            using TAlgorithm algorithm = this.CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
             byte[] initialKey = algorithm.Key;
 
             algorithm.GenerateKey();

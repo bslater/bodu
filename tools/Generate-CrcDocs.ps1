@@ -30,8 +30,8 @@
 #Requires -Version 7
 [CmdletBinding()]
 param(
-    [string]$SpecsPath  = (Join-Path $PSScriptRoot '..' 'Bodu.Security.Cryptography' 'src' 'crc-specs.json'),
-    [string]$MetaPath   = (Join-Path $PSScriptRoot '..' 'Bodu.Security.Cryptography' 'src' 'crc-specs.meta.json'),
+    [string]$SpecsPath  = (Join-Path $PSScriptRoot '..' 'Bodu.IO' 'src' 'crc-specs.json'),
+    [string]$MetaPath   = (Join-Path $PSScriptRoot '..' 'Bodu.IO' 'src' 'crc-specs.meta.json'),
     [string]$OutputPath = (Join-Path $PSScriptRoot '..' 'docs' 'guides' 'cryptography' 'crc-catalogue.md'),
     [int]$MaxSize = 64
 )

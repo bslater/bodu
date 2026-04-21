@@ -4,8 +4,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System.Runtime.Intrinsics.X86;
-
 namespace Bodu.Security.Cryptography
 {
     public enum BKDRVariant
@@ -43,7 +41,7 @@ namespace Bodu.Security.Cryptography
         protected override BKDR CreateAlgorithm(BKDRVariant variant) =>
             variant switch
             {
-                BKDRVariant.Default => this.CreateAlgorithm(),
+                BKDRVariant.Default => CreateAlgorithm(),
                 BKDRVariant.Seed31 => new BKDR
                 {
                     Seed = 31

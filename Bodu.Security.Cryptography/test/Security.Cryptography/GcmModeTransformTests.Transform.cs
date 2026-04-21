@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 namespace Bodu.Security.Cryptography
 {
-    using Bodu.Testing.Security;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     public sealed partial class GcmModeTransformTests

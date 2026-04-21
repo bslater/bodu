@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.5.002.0
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11527.330 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bodu.Core", "Bodu.Core\src\Bodu.Core.csproj", "{F136F92E-234A-4378-AA7C-D392DD080865}"
 EndProject
@@ -31,6 +31,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BouncyCastle.Crypto", "bc-csharp\crypto\src\BouncyCastle.Crypto.csproj", "{5E3754E3-7035-4B05-A7D5-CD2666B2C50F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bodu.Rosyln.CrcSpecGenerator", "Bodu.Roslyn\CrcSpecGenerator\src\Bodu.Rosyln.CrcSpecGenerator.csproj", "{B0C2A1AA-24DB-4DBB-A5D6-7288256E5126}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bodu.Test", "Bodu.Test\src\Bodu.Test.csproj", "{9EBAE41A-57E2-C249-63A1-050AE34CCDCD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -108,6 +110,12 @@ Global
 		{B0C2A1AA-24DB-4DBB-A5D6-7288256E5126}.Publish|Any CPU.Build.0 = Debug|Any CPU
 		{B0C2A1AA-24DB-4DBB-A5D6-7288256E5126}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0C2A1AA-24DB-4DBB-A5D6-7288256E5126}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EBAE41A-57E2-C249-63A1-050AE34CCDCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EBAE41A-57E2-C249-63A1-050AE34CCDCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EBAE41A-57E2-C249-63A1-050AE34CCDCD}.Publish|Any CPU.ActiveCfg = Release|Any CPU
+		{9EBAE41A-57E2-C249-63A1-050AE34CCDCD}.Publish|Any CPU.Build.0 = Release|Any CPU
+		{9EBAE41A-57E2-C249-63A1-050AE34CCDCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EBAE41A-57E2-C249-63A1-050AE34CCDCD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Infrastructure;
 using System.Text;
 
 namespace Bodu.Security.Cryptography
@@ -638,7 +637,7 @@ namespace Bodu.Security.Cryptography
                     "5BEFC76AB4BF5A3366C6CA2F25307FB3FA1AFB1E470DE69B",
                     "B8641B5FC9BE2BD413C2427A32BE07D92FFB1BE5F824572F",
                     "AD461B920172ABC6624ABFAC0F9E515E28750B7A586450B3",
-                    "130C604AC81FB5A4EDE0B3F0E4A6AEFA27FCF4FFADC5DF47",                    
+                    "130C604AC81FB5A4EDE0B3F0E4A6AEFA27FCF4FFADC5DF47",
                 }
                 : new[]
                 {

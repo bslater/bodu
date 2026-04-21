@@ -16,7 +16,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Initialize_WhenCalledBetweenHashes_ShouldResetStateForNewHash()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             byte[] input1 = CryptoTestUtilities.SimpleTextAsciiBytes;
             byte[] input2 = CryptoTestUtilities.ByteSequence256;
@@ -35,7 +35,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Initialize_WhenCalledRepeatedly_ShouldNotThrowOrAffectBehavior()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             algorithm.Initialize();
             algorithm.Initialize();
@@ -53,7 +53,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Initialize_WhenCalledAfterFinalBlock_ShouldAllowNewHashComputation()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             byte[] input = CryptoTestUtilities.ByteSequence256;
             algorithm.TransformFinalBlock(input, 0, input.Length);
@@ -84,7 +84,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Initialize_MidHashing_ShouldResetPartialState()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             byte[] part1 = CryptoTestUtilities.SimpleTextAsciiBytes.Take(4).ToArray();
             byte[] part2 = CryptoTestUtilities.SimpleTextAsciiBytes.Skip(4).ToArray();
@@ -108,7 +108,7 @@ namespace Bodu.Security.Cryptography
         public void Initialize_WhenDisposed_ShouldThrowExactly()
         {
             // Arrange
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             algorithm.Dispose();
 
             // Act & Assert
@@ -128,7 +128,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void Initialize_AfterHashing_ShouldResetStateForReuse()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             byte[] first = algorithm.ComputeHash(new byte[] { 1, 2, 3, 4 });
             Assert.IsNotNull(first);

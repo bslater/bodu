@@ -4,10 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Infrastructure;
-using System.Security.Cryptography;
 using System.Text;
-using static Bodu.Security.Cryptography.Poly1305Tests;
 
 namespace Bodu.Security.Cryptography
 {
@@ -39,7 +36,7 @@ namespace Bodu.Security.Cryptography
             BoundaryLengths = [16, 32, 48, 64],
             MinKeyLength = 32,
             MaxKeyLength = 32,
-            CanReuseTransform=false,
+            CanReuseTransform = false,
             TestKey = Poly1305TestKey,
         };
 
@@ -59,7 +56,7 @@ namespace Bodu.Security.Cryptography
             CollectionAssert.AreEqual(expected, actual);
         }
 
-        protected override Poly1305 CreateAlgorithm(SingleTestVariant variant) => this.CreateAlgorithm();
+        protected override Poly1305 CreateAlgorithm(SingleTestVariant variant) => CreateAlgorithm();
 
         protected override IEnumerable<KnownAnswerTest> GetTestVectors(SingleTestVariant variant)
         {

@@ -4,9 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Infrastructure;
-using static Bodu.Security.Cryptography.CityHash32Tests;
-
 namespace Bodu.Security.Cryptography
 {
     /// <summary>
@@ -35,7 +32,7 @@ namespace Bodu.Security.Cryptography
         protected override CityHash32 CreateAlgorithm() => new CityHash32();
 
         /// <inheritdoc />
-        protected override CityHash32 CreateAlgorithm(SingleTestVariant variant) => this.CreateAlgorithm();
+        protected override CityHash32 CreateAlgorithm(SingleTestVariant variant) => CreateAlgorithm();
 
         /// <inheritdoc />
         protected override HashAlgorithmSpecification GetSpecification(SingleTestVariant variant) =>
@@ -49,12 +46,12 @@ namespace Bodu.Security.Cryptography
         /// <inheritdoc />
         protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(SingleTestVariant variant) =>
              new Dictionary<string, string>
-            {
-                ["Empty"] = "02400040",
-                ["ABC"] = "CB5A67A8",
-                ["Zeros_16"] = "00400040",
-                ["Sequential_0_255"] = "3CB48141",
-            };
+             {
+                 ["Empty"] = "02400040",
+                 ["ABC"] = "CB5A67A8",
+                 ["Zeros_16"] = "00400040",
+                 ["Sequential_0_255"] = "3CB48141",
+             };
 
         /// <inheritdoc />
         protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
@@ -86,7 +83,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void ComputeHash_AtPathBoundaries_ShouldProduceDistinctNonZeroHashes()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             // One representative length per path.
             int[] boundaryLengths = { 4, 12, 24, 25 };

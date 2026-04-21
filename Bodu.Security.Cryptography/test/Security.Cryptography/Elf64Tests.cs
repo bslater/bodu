@@ -43,7 +43,7 @@ namespace Bodu.Security.Cryptography
         protected override Elf64 CreateAlgorithm(Elf64Variant variant) =>
             variant switch
             {
-                Elf64Variant.Default => this.CreateAlgorithm(),
+                Elf64Variant.Default => CreateAlgorithm(),
                 Elf64Variant.Seed31 => new Elf64
                 {
                     Seed = 31

@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TransformFinalBlock_WhenInputBufferIsNull_ShouldThrowArgumentNullException_fix()
         {
-            using var transform = this.CreateAlgorithm();
+            using var transform = CreateAlgorithm();
 
             Assert.ThrowsExactly<ArgumentNullException>(() =>
             {

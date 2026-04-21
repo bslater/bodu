@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Infrastructure;
-
 namespace Bodu.Security.Cryptography
 {
     [TestClass]

@@ -4,13 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.IO;
+using Bodu.Test.IO;
 using System.Security.Cryptography;
-using System.Threading;
-using System.Threading.Tasks;
-using Bodu.Infrastructure;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Security.Cryptography.Extensions
 {
@@ -315,7 +310,7 @@ namespace Bodu.Security.Cryptography.Extensions
             using var algorithm = CreateAlgorithm();
             await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
             {
-                await algorithm.VerifyHashAsync((Stream)null!, SampleHash);
+                await algorithm.VerifyHashAsync(null!, SampleHash);
             });
         }
 

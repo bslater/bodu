@@ -4,10 +4,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using Bodu.Infrastructure;
-
-using System.Text;
-
 namespace Bodu.Security.Cryptography
 {
     public partial class CubeHashTests
@@ -16,7 +12,7 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants), DynamicDataSourceType.Method)]
         public void AlgorithmName_WhenUsingVariant_ShouldReturnCorrectlyFormattedString(CubeHashVariants variant)
         {
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
             string expected = GetAlgorithmName(algorithm);
 
             Assert.AreEqual(expected, algorithm.AlgorithmName);

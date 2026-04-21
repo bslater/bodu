@@ -1,11 +1,4 @@
-﻿using Bodu.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
     [TestClass]
     public partial class MonitoringHashAlgorithmTests
@@ -18,7 +11,7 @@ namespace Bodu.Security.Cryptography
             HashSize = 32,
             InputBlockSize = 1,
             OutputBlockSize = 1,
-            MinNonZeroBytesForLongInput=2,
+            MinNonZeroBytesForLongInput = 2,
         };
 
         /// <inheritdoc />
@@ -26,7 +19,7 @@ namespace Bodu.Security.Cryptography
             "<DisposeCallCount>k__BackingField",
             ];
 
-        private static IReadOnlyCollection<string> ExcludedPropertyName= [
+        private static IReadOnlyCollection<string> ExcludedPropertyName = [
             "BytesProcessed",
             "InitializeCallCount",
             "HashCoreCallCount",

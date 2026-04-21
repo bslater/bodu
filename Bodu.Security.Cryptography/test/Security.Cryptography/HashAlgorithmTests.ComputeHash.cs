@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using Bodu.Test;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography
@@ -34,7 +33,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void ComputeHash_AfterTransformBlock_ShouldIgnorePriorStreaming()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             // Begin a partial stream operation
             algorithm.TransformBlock(CryptoTestUtilities.ByteSequence256, 0, 128, null, 0);
@@ -54,8 +53,8 @@ namespace Bodu.Security.Cryptography
         public void ComputeHash_ShouldBeDeterministic(TVariant variant)
         {
             byte[] input = Enumerable.Range(0, 128).Select(i => (byte)(i % 256)).ToArray();
-            using var algorithm1 = this.CreateAlgorithm(variant);
-            using var algorithm2 = this.CreateAlgorithm(variant);
+            using var algorithm1 = CreateAlgorithm(variant);
+            using var algorithm2 = CreateAlgorithm(variant);
             byte[] hash1 = algorithm1.ComputeHash(input);
             byte[] hash2 = algorithm2.ComputeHash(input);
 
@@ -72,8 +71,8 @@ namespace Bodu.Security.Cryptography
         {
             byte[] buffer = new byte[size];
             byte[] expected = ExpectedEmptyInputHash;
-            using var algorithm1 = this.CreateAlgorithm();
-            using var algorithm2 = this.CreateAlgorithm();
+            using var algorithm1 = CreateAlgorithm();
+            using var algorithm2 = CreateAlgorithm();
 
             byte[] actual = algorithm1.ComputeHash(buffer, offset, count); CollectionAssert.AreEqual(expected, actual);
 
@@ -96,7 +95,7 @@ namespace Bodu.Security.Cryptography
         public void ComputeHash_WhenOffsetAndCountCombinationIsInvalid_ShouldThrowExactly(int size, int offset, int count)
         {
             byte[] buffer = new byte[size];
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             Assert.ThrowsExactly<ArgumentException>(() =>
             {
@@ -116,8 +115,8 @@ namespace Bodu.Security.Cryptography
             CryptoHelpers.FillWithRandomNonZeroBytes(bufferA);
             Array.Copy(bufferA, 0, bufferB, 1, bufferA.Length);
 
-            using var algorithm1 = this.CreateAlgorithm();
-            using var algorithm2 = this.CreateAlgorithm();
+            using var algorithm1 = CreateAlgorithm();
+            using var algorithm2 = CreateAlgorithm();
             byte[] expected = algorithm1.ComputeHash(bufferA);
             byte[] actual = algorithm2.ComputeHash(bufferB, 1, bufferA.Length);
             CollectionAssert.AreEqual(expected, actual);
@@ -131,7 +130,7 @@ namespace Bodu.Security.Cryptography
         public void ComputeHash_WhenOffsetIsNegative_ShouldThrowExactly()
         {
             byte[] buffer = Array.Empty<byte>();
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             {
@@ -151,8 +150,8 @@ namespace Bodu.Security.Cryptography
         [DataRow(1024)]
         public void ComputeHash_WhenReusedWithSameInput_ShouldProduceIdenticalHashResults(int size)
         {
-            using var algorithm1 = this.CreateAlgorithm();
-            using var algorithm2 = this.CreateAlgorithm();
+            using var algorithm1 = CreateAlgorithm();
+            using var algorithm2 = CreateAlgorithm();
             byte[] input = new byte[size];
             if (size > 0)
                 CryptoHelpers.FillWithRandomNonZeroBytes(input);
@@ -222,7 +221,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void ComputeHash_WithLargeInput_ShouldNotThrow()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             // Create data that will certainly exceed uint.MaxValue during computation
             byte[] data = Enumerable.Repeat((byte)255, 20_480_000).ToArray();
@@ -240,7 +239,7 @@ namespace Bodu.Security.Cryptography
         public void ComputeHash_WithNullBuffer_ShouldThrowExactly()
         {
             byte[] buffer = null!;
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             Assert.ThrowsExactly<ArgumentNullException>(() =>
             {
@@ -256,7 +255,7 @@ namespace Bodu.Security.Cryptography
         public void ComputeHash_WithNullBufferAndRange_ShouldThrowExactly()
         {
             byte[] buffer = null!;
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             Assert.ThrowsExactly<ArgumentNullException>(() =>
             {
@@ -270,7 +269,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void ComputeHash_WithNullStream_ShouldThrowExactly()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
 
             // Expected behavior differs based on .NET version
 #if NETFRAMEWORK || NETCOREAPP3_1
@@ -298,7 +297,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void ComputeHash_WhenDisposed_ShouldThrowObjectDisposedExceptionWithAlgorithmName()
         {
-            using var algorithm = this.CreateAlgorithm();
+            using var algorithm = CreateAlgorithm();
             algorithm.Dispose();
 
             var ex = Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -318,7 +317,7 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void ComputeHash_WhenCalled_ShouldAlwaysReturnCorrectHashSize(TVariant variant)
         {
-            using var algorithm = this.CreateAlgorithm(variant);
+            using var algorithm = CreateAlgorithm(variant);
             int expectedBytes = algorithm.HashSize / 8;
 
             foreach (int len in new[] { 0, 1, 4, 5, 12, 13, 24, 25, 100 })
@@ -339,13 +338,13 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void ComputeHash_AtBoundaryLengths_ShouldProduceDistinctNonZeroHashes(TVariant variant)
         {
-            var specification = this.GetSpecification(variant);
+            var specification = GetSpecification(variant);
 
             var hashes = new List<byte[]>(specification.BoundaryLengths.Count);
 
             foreach (int len in specification.BoundaryLengths)
             {
-                using var algorithm = this.CreateAlgorithm(variant);
+                using var algorithm = CreateAlgorithm(variant);
                 byte[] input = Enumerable.Range(1, len).Select(i => (byte)(i * 7)).ToArray();
                 byte[] hash = algorithm.ComputeHash(input);
 
@@ -376,8 +375,8 @@ namespace Bodu.Security.Cryptography
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void ComputeHash_WhenInputIsLong_ShouldDistributeEntropyAcrossAllBytes(TVariant variant)
         {
-            var specification = this.GetSpecification(variant);
-            using var algorithm = this.CreateAlgorithm(variant);
+            var specification = GetSpecification(variant);
+            using var algorithm = CreateAlgorithm(variant);
 
             int outputBytes = specification.HashSize / 8;
             int threshold = specification.MinNonZeroBytesForLongInput ?? Math.Max(1, outputBytes / 2);

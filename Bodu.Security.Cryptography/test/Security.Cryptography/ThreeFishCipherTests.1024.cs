@@ -1,12 +1,4 @@
-﻿using Bodu.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
     [TestClass]
     internal partial class ThreeFish1024CipherTests
@@ -45,7 +37,7 @@ namespace Bodu.Security.Cryptography
 
         protected override Threefish1024Cipher CreateBlockCipher(ThreeFishCipherTestVariant variant)
         {
-            var spec = this.GetSpecification(variant);
+            var spec = GetSpecification(variant);
             return new Threefish1024Cipher(spec.TestKey, spec.TestTweak);
         }
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Bodu.Security.Cryptography
+﻿namespace Bodu.Security.Cryptography
 {
     public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm>
     {
@@ -25,7 +19,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void LegalTweakSizes_WhenDefined_ShouldHaveNonOverlappingValues()
         {
-            var blockSizes = this.CreateAlgorithm().LegalTweakSizes;
+            var blockSizes = CreateAlgorithm().LegalTweakSizes;
             HashSet<int> uniqueSizes = new();
 
             foreach (var blockSize in blockSizes)
@@ -43,7 +37,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void LegalTweakSizes_WhenDefined_ShouldHaveValidRanges()
         {
-            var blockSizes = this.CreateAlgorithm().LegalTweakSizes;
+            var blockSizes = CreateAlgorithm().LegalTweakSizes;
 
             foreach (var blockSize in blockSizes)
             {
