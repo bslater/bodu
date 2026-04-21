@@ -16,6 +16,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bodu.Security.Cryptography"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bodu.Security.Cryptography.Test", "Bodu.Security.Cryptography\test\Bodu.Security.Cryptography.Test.csproj", "{960C5F9E-A46E-482E-891F-C6252D0923C1}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bodu.IO", "Bodu.IO\src\Bodu.IO.csproj", "{7FBA9E51-0D6C-4C5F-A1E4-9D7B3E5A2F11}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bodu.IO.Test", "Bodu.IO\test\Bodu.IO.Test.csproj", "{8C9D0E21-3A4B-4C5D-6E7F-89A0B1C2D3E4}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp2", "ConsoleApp2\ConsoleApp2.csproj", "{E76ADB4A-C954-415C-A17F-81787C876381}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bodu.Globalization.Calendar", "Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj", "{510FE440-C019-4E70-8138-0DCBDD29CF0C}"
@@ -59,6 +63,18 @@ Global
 		{960C5F9E-A46E-482E-891F-C6252D0923C1}.Publish|Any CPU.Build.0 = Release|Any CPU
 		{960C5F9E-A46E-482E-891F-C6252D0923C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{960C5F9E-A46E-482E-891F-C6252D0923C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FBA9E51-0D6C-4C5F-A1E4-9D7B3E5A2F11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FBA9E51-0D6C-4C5F-A1E4-9D7B3E5A2F11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FBA9E51-0D6C-4C5F-A1E4-9D7B3E5A2F11}.Publish|Any CPU.ActiveCfg = Release|Any CPU
+		{7FBA9E51-0D6C-4C5F-A1E4-9D7B3E5A2F11}.Publish|Any CPU.Build.0 = Release|Any CPU
+		{7FBA9E51-0D6C-4C5F-A1E4-9D7B3E5A2F11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FBA9E51-0D6C-4C5F-A1E4-9D7B3E5A2F11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C9D0E21-3A4B-4C5D-6E7F-89A0B1C2D3E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C9D0E21-3A4B-4C5D-6E7F-89A0B1C2D3E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C9D0E21-3A4B-4C5D-6E7F-89A0B1C2D3E4}.Publish|Any CPU.ActiveCfg = Release|Any CPU
+		{8C9D0E21-3A4B-4C5D-6E7F-89A0B1C2D3E4}.Publish|Any CPU.Build.0 = Release|Any CPU
+		{8C9D0E21-3A4B-4C5D-6E7F-89A0B1C2D3E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C9D0E21-3A4B-4C5D-6E7F-89A0B1C2D3E4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E76ADB4A-C954-415C-A17F-81787C876381}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E76ADB4A-C954-415C-A17F-81787C876381}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E76ADB4A-C954-415C-A17F-81787C876381}.Publish|Any CPU.ActiveCfg = Release|Any CPU
