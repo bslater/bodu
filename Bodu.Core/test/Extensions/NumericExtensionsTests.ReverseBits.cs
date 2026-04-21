@@ -456,7 +456,7 @@ public partial class NumericExtensionsTests
     [DataRow((ushort)0x1234, 8, (ushort)0x002C)] // low byte 0x34 → 0x2C
     [DataRow((ushort)0xFF34, 8, (ushort)0x002C)] // high byte ignored
     [DataRow((ushort)0x00AB, 12, (ushort)0x0D50)] // low 12 bits
-    [DataRow((ushort)0xFFAB, 12, (ushort)0x0D50)] // high nibble ignored
+    [DataRow((ushort)0xF0AB, 12, (ushort)0x0D50)] // high nibble ignored
     public void ReverseBits_WhenBitLengthIsPartial_ForUShort_ShouldReturnLowBitsReversed(ushort value, int bitLength, ushort expected) =>
         Assert.AreEqual(expected, value.ReverseBits(bitLength));
 
@@ -593,7 +593,7 @@ public partial class NumericExtensionsTests
     [TestMethod]
     [DataRow(0xFFFFFFFFFFFFFF12ul, 8, 0x48ul)]          // low byte 0x12 → 0x48, high bits ignored
     [DataRow(0x0000000000000012ul, 8, 0x48ul)]          // same low byte, zero high bits
-    [DataRow(0xABCDEF0123456789ul, 32, 0x91E6A2C8ul)]  // low 32 bits 0x23456789 → 0x91E6A2C8
+    [DataRow(0xABCDEF0123456789ul, 32, 0x91E6A2C4ul)]   // low 32 bits 0x23456789 → 0x91E6A2C4
     [DataRow(0x00000000FFFFFFFFul, 40, 0xFFFFFFFF00ul)] // low 40 bits: 32 set bits shift to the top of the window
     public void ReverseBits_WhenBitLengthIsPartial_ForULong_ShouldReturnLowBitsReversed(ulong value, int bitLength, ulong expected) =>
         Assert.AreEqual(expected, value.ReverseBits(bitLength));
