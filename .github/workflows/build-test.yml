@@ -20,6 +20,7 @@ jobs:
       TEST_PROJECTS: >-
         Bodu.Core/test/Bodu.Core.Test.csproj
         Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.csproj
+        Bodu.IO/test/Bodu.IO.Test.csproj
     steps:
       - name: Checkout
         uses: actions/checkout@v4
