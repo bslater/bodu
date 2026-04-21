@@ -93,49 +93,81 @@ namespace Bodu.Security.Cryptography
         /// Gets the <see cref="CrcStandard" /> parameters that configure this instance.
         /// </summary>
         /// <value>The immutable <see cref="CrcStandard" /> supplied to the constructor.</value>
-        public CrcStandard CrcStandard => this.standard;
+        /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+        public CrcStandard CrcStandard
+        {
+            get { this.ThrowIfDisposed(); return this.standard; }
+        }
 
         /// <summary>
         /// Gets the initial value used in the CRC calculation.
         /// </summary>
         /// <value>The initial value for the CRC calculation.</value>
-        public ulong InitialValue => this.standard.InitialValue;
+        /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+        public ulong InitialValue
+        {
+            get { this.ThrowIfDisposed(); return this.standard.InitialValue; }
+        }
 
         /// <summary>
         /// Gets the name of the CRC standard.
         /// </summary>
         /// <value>The name of the CRC algorithm.</value>
-        public string Name => this.standard.Name;
+        /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+        public string Name
+        {
+            get { this.ThrowIfDisposed(); return this.standard.Name; }
+        }
 
         /// <summary>
         /// Gets the polynomial used in the CRC calculation.
         /// </summary>
         /// <value>The polynomial value used in the CRC calculation.</value>
-        public ulong Polynomial => this.standard.Polynomial;
+        /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+        public ulong Polynomial
+        {
+            get { this.ThrowIfDisposed(); return this.standard.Polynomial; }
+        }
 
         /// <summary>
         /// Gets a value indicating whether input bytes are reflected (bit-reversed) before being processed.
         /// </summary>
         /// <value><see langword="true" /> if input bytes are reflected; otherwise, <see langword="false" />.</value>
-        public bool ReflectIn => this.standard.ReflectIn;
+        /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+        public bool ReflectIn
+        {
+            get { this.ThrowIfDisposed(); return this.standard.ReflectIn; }
+        }
 
         /// <summary>
         /// Gets a value indicating whether the CRC result is reflected before XORing with <see cref="XOrOut" />.
         /// </summary>
         /// <value><see langword="true" /> if the result is reflected; otherwise, <see langword="false" />.</value>
-        public bool ReflectOut => this.standard.ReflectOut;
+        /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+        public bool ReflectOut
+        {
+            get { this.ThrowIfDisposed(); return this.standard.ReflectOut; }
+        }
 
         /// <summary>
         /// Gets the size, in bits, of the CRC checksum.
         /// </summary>
         /// <value>The size of the CRC in bits.</value>
-        public int Size => this.standard.Size;
+        /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+        public int Size
+        {
+            get { this.ThrowIfDisposed(); return this.standard.Size; }
+        }
 
         /// <summary>
         /// Gets the value to XOR the final CRC result with.
         /// </summary>
         /// <value>The XOR value for the final CRC result.</value>
-        public ulong XOrOut => this.standard.XOrOut;
+        /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+        public ulong XOrOut
+        {
+            get { this.ThrowIfDisposed(); return this.standard.XOrOut; }
+        }
 
         /// <summary>
         /// Computes and returns the CRC hash of the specified input in a single call, resetting internal state first.
@@ -283,6 +315,8 @@ namespace Bodu.Security.Cryptography
                 this.workingHash = 0;
                 CryptoHelpers.ClearAndNullify(ref HashValue);
                 this.lookupTable = null!;
+                HashSizeValue = 0;
+                State = 0;
             }
 
             this.disposed = true;

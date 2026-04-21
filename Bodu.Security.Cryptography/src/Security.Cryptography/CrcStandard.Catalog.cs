@@ -10,3670 +10,229 @@
 
 namespace Bodu.Security.Cryptography
 {
+    using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Threading;
 
-    /// <summary>
-    /// Provides the catalogue of well-known CRC parameter sets sourced from the CRC RevEng reference at
-    /// <see href="https://reveng.sourceforge.io/crc-catalogue/all.htm">reveng.sourceforge.io</see>.
-    /// </summary>
     public sealed partial class CrcStandard
     {
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-3/GSM</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-3/GSM</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-3/GSM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-3-gsm">CRC RevEng catalogue</a> (Created: 17 February 2017), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>3</c></description></item>
-        /// <item><description>Polynomial: <c>0x3</c></description></item>
-        /// <item><description>Initial Value: <c>0x0</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x7</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC3_GSM = new CrcStandard(
-            name: "CRC-3/GSM",
-            size: 3,
-            polynomial: 0x3UL,
-            initialValue: 0x0UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x7UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-3/ROHC</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-3/ROHC</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-3/ROHC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-3-rohc">CRC RevEng catalogue</a> (Created: 14 December 2009; Updated: 4 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>3</c></description></item>
-        /// <item><description>Polynomial: <c>0x3</c></description></item>
-        /// <item><description>Initial Value: <c>0x7</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC3_ROHC = new CrcStandard(
-            name: "CRC-3/ROHC",
-            size: 3,
-            polynomial: 0x3UL,
-            initialValue: 0x7UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-4/G-704</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-4/G-704</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-4/G-704</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-4-g-704">CRC RevEng catalogue</a> (Created: 7 October 2008; Updated: 21 November 2018), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>4</c></description></item>
-        /// <item><description>Polynomial: <c>0x3</c></description></item>
-        /// <item><description>Initial Value: <c>0x0</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-4/G-704</c> standard is also known by the alias <c>CRC-4/ITU</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC4_ITU" />
-        public static readonly CrcStandard CRC4_G704 = new CrcStandard(
-            name: "CRC-4/G-704",
-            size: 4,
-            polynomial: 0x3UL,
-            initialValue: 0x0UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-4/ITU</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-4/ITU</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-4/ITU</c> is an alias of the <see cref="CrcStandard.CRC4_G704" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC4_G704" />
-        public static readonly CrcStandard CRC4_ITU = CRC4_G704;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-4/INTERLAKEN</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-4/INTERLAKEN</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-4/INTERLAKEN</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-4-interlaken">CRC RevEng catalogue</a> (Created: 10 February 2016; Updated: 4 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>4</c></description></item>
-        /// <item><description>Polynomial: <c>0x3</c></description></item>
-        /// <item><description>Initial Value: <c>0xF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xF</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC4_INTERLAKEN = new CrcStandard(
-            name: "CRC-4/INTERLAKEN",
-            size: 4,
-            polynomial: 0x3UL,
-            initialValue: 0xFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-5/EPC-C1G2</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-5/EPC-C1G2</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-5/EPC-C1G2</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-5-epc-c1g2">CRC RevEng catalogue</a> (Created: 20 May 2009; Updated: 28 December 2019), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>5</c></description></item>
-        /// <item><description>Polynomial: <c>0x09</c></description></item>
-        /// <item><description>Initial Value: <c>0x09</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-5/EPC-C1G2</c> standard is also known by the alias <c>CRC-5/EPC</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC5_EPC" />
-        public static readonly CrcStandard CRC5_EPCC1G2 = new CrcStandard(
-            name: "CRC-5/EPC-C1G2",
-            size: 5,
-            polynomial: 0x09UL,
-            initialValue: 0x09UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-5/EPC</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-5/EPC</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-5/EPC</c> is an alias of the <see cref="CrcStandard.CRC5_EPCC1G2" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC5_EPCC1G2" />
-        public static readonly CrcStandard CRC5_EPC = CRC5_EPCC1G2;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-5/G-704</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-5/G-704</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-5/G-704</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-5-g-704">CRC RevEng catalogue</a> (Created: 7 October 2008; Updated: 21 November 2018), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>5</c></description></item>
-        /// <item><description>Polynomial: <c>0x15</c></description></item>
-        /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-5/G-704</c> standard is also known by the alias <c>CRC-5/ITU</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC5_ITU" />
-        public static readonly CrcStandard CRC5_G704 = new CrcStandard(
-            name: "CRC-5/G-704",
-            size: 5,
-            polynomial: 0x15UL,
-            initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-5/ITU</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-5/ITU</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-5/ITU</c> is an alias of the <see cref="CrcStandard.CRC5_G704" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC5_G704" />
-        public static readonly CrcStandard CRC5_ITU = CRC5_G704;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-5/USB</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-5/USB</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-5/USB</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-5-usb">CRC RevEng catalogue</a> (Created: 1 December 2007; Updated: 12 July 2024), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>5</c></description></item>
-        /// <item><description>Polynomial: <c>0x05</c></description></item>
-        /// <item><description>Initial Value: <c>0x1F</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x1F</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC5_USB = new CrcStandard(
-            name: "CRC-5/USB",
-            size: 5,
-            polynomial: 0x05UL,
-            initialValue: 0x1FUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x1FUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-6/CDMA2000-A</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-6/CDMA2000-A</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-6/CDMA2000-A</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-cdma2000-a">CRC RevEng catalogue</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>6</c></description></item>
-        /// <item><description>Polynomial: <c>0x27</c></description></item>
-        /// <item><description>Initial Value: <c>0x3F</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC6_CDMA2000A = new CrcStandard(
-            name: "CRC-6/CDMA2000-A",
-            size: 6,
-            polynomial: 0x27UL,
-            initialValue: 0x3FUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-6/CDMA2000-B</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-6/CDMA2000-B</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-6/CDMA2000-B</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-cdma2000-b">CRC RevEng catalogue</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>6</c></description></item>
-        /// <item><description>Polynomial: <c>0x07</c></description></item>
-        /// <item><description>Initial Value: <c>0x3F</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC6_CDMA2000B = new CrcStandard(
-            name: "CRC-6/CDMA2000-B",
-            size: 6,
-            polynomial: 0x07UL,
-            initialValue: 0x3FUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-6/DARC</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-6/DARC</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-6/DARC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-darc">CRC RevEng catalogue</a> (Created: 14 December 2009; Updated: 20 November 2018), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>6</c></description></item>
-        /// <item><description>Polynomial: <c>0x19</c></description></item>
-        /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC6_DARC = new CrcStandard(
-            name: "CRC-6/DARC",
-            size: 6,
-            polynomial: 0x19UL,
-            initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-6/G-704</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-6/G-704</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-6/G-704</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-g-704">CRC RevEng catalogue</a> (Created: 7 October 2008; Updated: 21 November 2018), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>6</c></description></item>
-        /// <item><description>Polynomial: <c>0x03</c></description></item>
-        /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-6/G-704</c> standard is also known by the alias <c>CRC-6/ITU</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC6_ITU" />
-        public static readonly CrcStandard CRC6_G704 = new CrcStandard(
-            name: "CRC-6/G-704",
-            size: 6,
-            polynomial: 0x03UL,
-            initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-6/ITU</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-6/ITU</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-6/ITU</c> is an alias of the <see cref="CrcStandard.CRC6_G704" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC6_G704" />
-        public static readonly CrcStandard CRC6_ITU = CRC6_G704;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-6/GSM</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-6/GSM</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-6/GSM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-gsm">CRC RevEng catalogue</a> (Created: 17 February 2017), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>6</c></description></item>
-        /// <item><description>Polynomial: <c>0x2F</c></description></item>
-        /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x3F</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC6_GSM = new CrcStandard(
-            name: "CRC-6/GSM",
-            size: 6,
-            polynomial: 0x2FUL,
-            initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x3FUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-7/MMC</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-7/MMC</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-7/MMC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-7-mmc">CRC RevEng catalogue</a> (Created: 7 October 2008; Updated: 11 January 2022), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>7</c></description></item>
-        /// <item><description>Polynomial: <c>0x09</c></description></item>
-        /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-7/MMC</c> standard is also known by the alias <c>CRC-7</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC7" />
-        public static readonly CrcStandard CRC7_MMC = new CrcStandard(
-            name: "CRC-7/MMC",
-            size: 7,
-            polynomial: 0x09UL,
-            initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-7</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-7</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-7</c> is an alias of the <see cref="CrcStandard.CRC7_MMC" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC7_MMC" />
-        public static readonly CrcStandard CRC7 = CRC7_MMC;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-7/ROHC</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-7/ROHC</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-7/ROHC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-7-rohc">CRC RevEng catalogue</a> (Created: 14 December 2009; Updated: 4 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>7</c></description></item>
-        /// <item><description>Polynomial: <c>0x4F</c></description></item>
-        /// <item><description>Initial Value: <c>0x7F</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC7_ROHC = new CrcStandard(
-            name: "CRC-7/ROHC",
-            size: 7,
-            polynomial: 0x4FUL,
-            initialValue: 0x7FUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-7/UMTS</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-7/UMTS</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-7/UMTS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-7-umts">CRC RevEng catalogue</a> (Created: 8 February 2016; Updated: 7 May 2022), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>7</c></description></item>
-        /// <item><description>Polynomial: <c>0x45</c></description></item>
-        /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC7_UMTS = new CrcStandard(
-            name: "CRC-7/UMTS",
-            size: 7,
-            polynomial: 0x45UL,
-            initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/AUTOSAR</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/AUTOSAR</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-8/AUTOSAR</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-autosar">CRC RevEng catalogue</a> (Created: 24 July 2016; Updated: 28 July 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>8</c></description></item>
-        /// <item><description>Polynomial: <c>0x2F</c></description></item>
-        /// <item><description>Initial Value: <c>0xFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC8_AUTOSAR = new CrcStandard(
-            name: "CRC-8/AUTOSAR",
-            size: 8,
-            polynomial: 0x2FUL,
-            initialValue: 0xFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/CDMA2000</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/CDMA2000</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-8/CDMA2000</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-cdma2000">CRC RevEng catalogue</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>8</c></description></item>
-        /// <item><description>Polynomial: <c>0x9B</c></description></item>
-        /// <item><description>Initial Value: <c>0xFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC8_CDMA2000 = new CrcStandard(
-            name: "CRC-8/CDMA2000",
-            size: 8,
-            polynomial: 0x9BUL,
-            initialValue: 0xFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/DARC</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/DARC</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-8/DARC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-darc">CRC RevEng catalogue</a> (Created: 14 December 2009; Updated: 29 November 2018), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>8</c></description></item>
-        /// <item><description>Polynomial: <c>0x39</c></description></item>
-        /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC8_DARC = new CrcStandard(
-            name: "CRC-8/DARC",
-            size: 8,
-            polynomial: 0x39UL,
-            initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/DVB-S2</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/DVB-S2</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-8/DVB-S2</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-dvb-s2">CRC RevEng catalogue</a> (Created: 10 January 2014; Updated: 29 July 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>8</c></description></item>
-        /// <item><description>Polynomial: <c>0xD5</c></description></item>
-        /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC8_DVBS2 = new CrcStandard(
-            name: "CRC-8/DVB-S2",
-            size: 8,
-            polynomial: 0xD5UL,
-            initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/GSM-A</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/GSM-A</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-8/GSM-A</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-gsm-a">CRC RevEng catalogue</a> (Created: 17 February 2017; Updated: 8 August 2024), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>8</c></description></item>
-        /// <item><description>Polynomial: <c>0x1D</c></description></item>
-        /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC8_GSMA = new CrcStandard(
-            name: "CRC-8/GSM-A",
-            size: 8,
-            polynomial: 0x1DUL,
-            initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/GSM-B</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/GSM-B</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-8/GSM-B</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-gsm-b">CRC RevEng catalogue</a> (Created: 17 February 2017), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>8</c></description></item>
-        /// <item><description>Polynomial: <c>0x49</c></description></item>
-        /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC8_GSMB = new CrcStandard(
-            name: "CRC-8/GSM-B",
-            size: 8,
-            polynomial: 0x49UL,
-            initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/HITAG</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/HITAG</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-8/HITAG</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-hitag">CRC RevEng catalogue</a> (Created: 23 December 2021; Updated: 4 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>8</c></description></item>
-        /// <item><description>Polynomial: <c>0x1D</c></description></item>
-        /// <item><description>Initial Value: <c>0xFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC8_HITAG = new CrcStandard(
-            name: "CRC-8/HITAG",
-            size: 8,
-            polynomial: 0x1DUL,
-            initialValue: 0xFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/I-432-1</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/I-432-1</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-8/I-432-1</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-i-432-1">CRC RevEng catalogue</a> (Created: 19 April 2009; Updated: 2 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>8</c></description></item>
-        /// <item><description>Polynomial: <c>0x07</c></description></item>
-        /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x55</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-8/I-432-1</c> standard is also known by the alias <c>CRC-8/ITU</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC8_ITU" />
-        public static readonly CrcStandard CRC8_I4321 = new CrcStandard(
-            name: "CRC-8/I-432-1",
-            size: 8,
-            polynomial: 0x07UL,
-            initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x55UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/ITU</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/ITU</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-8/ITU</c> is an alias of the <see cref="CrcStandard.CRC8_I4321" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC8_I4321" />
-        public static readonly CrcStandard CRC8_ITU = CRC8_I4321;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/I-CODE</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/I-CODE</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-8/I-CODE</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-i-code">CRC RevEng catalogue</a> (Created: 3 November 2007; Updated: 6 February 2017), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>8</c></description></item>
-        /// <item><description>Polynomial: <c>0x1D</c></description></item>
-        /// <item><description>Initial Value: <c>0xFD</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC8_ICODE = new CrcStandard(
-            name: "CRC-8/I-CODE",
-            size: 8,
-            polynomial: 0x1DUL,
-            initialValue: 0xFDUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/LTE</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/LTE</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-8/LTE</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-lte">CRC RevEng catalogue</a> (Created: 13 February 2016; Updated: 5 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>8</c></description></item>
-        /// <item><description>Polynomial: <c>0x9B</c></description></item>
-        /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC8_LTE = new CrcStandard(
-            name: "CRC-8/LTE",
-            size: 8,
-            polynomial: 0x9BUL,
-            initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/MAXIM-DOW</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/MAXIM-DOW</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-8/MAXIM-DOW</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-maxim-dow">CRC RevEng catalogue</a> (Created: 26 April 2009; Updated: 2 January 2021), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>8</c></description></item>
-        /// <item><description>Polynomial: <c>0x31</c></description></item>
-        /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-8/MAXIM-DOW</c> standard is also known by the aliases <c>CRC-8/MAXIM</c> and <c>DOW-CRC</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC8_MAXIM" />
-        /// <seealso cref="CrcStandard.DOWCRC" />
-        public static readonly CrcStandard CRC8_MAXIMDOW = new CrcStandard(
-            name: "CRC-8/MAXIM-DOW",
-            size: 8,
-            polynomial: 0x31UL,
-            initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/MAXIM</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/MAXIM</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-8/MAXIM</c> is an alias of the <see cref="CrcStandard.CRC8_MAXIMDOW" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC8_MAXIMDOW" />
-        /// <seealso cref="CrcStandard.DOWCRC" />
-        public static readonly CrcStandard CRC8_MAXIM = CRC8_MAXIMDOW;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>DOW-CRC</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>DOW-CRC</c> definition.</value>
-        /// <remarks>
-        /// <para><c>DOW-CRC</c> is an alias of the <see cref="CrcStandard.CRC8_MAXIMDOW" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC8_MAXIMDOW" />
-        /// <seealso cref="CrcStandard.CRC8_MAXIM" />
-        public static readonly CrcStandard DOWCRC = CRC8_MAXIMDOW;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/MIFARE-MAD</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/MIFARE-MAD</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-8/MIFARE-MAD</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-mifare-mad">CRC RevEng catalogue</a> (Created: 21 February 2019), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>8</c></description></item>
-        /// <item><description>Polynomial: <c>0x1D</c></description></item>
-        /// <item><description>Initial Value: <c>0xC7</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC8_MIFAREMAD = new CrcStandard(
-            name: "CRC-8/MIFARE-MAD",
-            size: 8,
-            polynomial: 0x1DUL,
-            initialValue: 0xC7UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/NRSC-5</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/NRSC-5</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-8/NRSC-5</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-nrsc-5">CRC RevEng catalogue</a> (Created: 16 November 2018; Updated: 20 March 2019), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>8</c></description></item>
-        /// <item><description>Polynomial: <c>0x31</c></description></item>
-        /// <item><description>Initial Value: <c>0xFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC8_NRSC5 = new CrcStandard(
-            name: "CRC-8/NRSC-5",
-            size: 8,
-            polynomial: 0x31UL,
-            initialValue: 0xFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/OPENSAFETY</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/OPENSAFETY</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-8/OPENSAFETY</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-opensafety">CRC RevEng catalogue</a> (Created: 22 July 2016; Updated: 7 May 2022), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>8</c></description></item>
-        /// <item><description>Polynomial: <c>0x2F</c></description></item>
-        /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC8_OPENSAFETY = new CrcStandard(
-            name: "CRC-8/OPENSAFETY",
-            size: 8,
-            polynomial: 0x2FUL,
-            initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/ROHC</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/ROHC</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-8/ROHC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-rohc">CRC RevEng catalogue</a> (Created: 14 December 2009; Updated: 4 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>8</c></description></item>
-        /// <item><description>Polynomial: <c>0x07</c></description></item>
-        /// <item><description>Initial Value: <c>0xFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC8_ROHC = new CrcStandard(
-            name: "CRC-8/ROHC",
-            size: 8,
-            polynomial: 0x07UL,
-            initialValue: 0xFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/SAE-J1850</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/SAE-J1850</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-8/SAE-J1850</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-sae-j1850">CRC RevEng catalogue</a> (Created: 17 February 2016; Updated: 3 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>8</c></description></item>
-        /// <item><description>Polynomial: <c>0x1D</c></description></item>
-        /// <item><description>Initial Value: <c>0xFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC8_SAEJ1850 = new CrcStandard(
-            name: "CRC-8/SAE-J1850",
-            size: 8,
-            polynomial: 0x1DUL,
-            initialValue: 0xFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/SMBUS</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/SMBUS</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-8/SMBUS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-smbus">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 8 August 2024), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>8</c></description></item>
-        /// <item><description>Polynomial: <c>0x07</c></description></item>
-        /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-8/SMBUS</c> standard is also known by the alias <c>CRC-8</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC8" />
-        public static readonly CrcStandard CRC8_SMBUS = new CrcStandard(
-            name: "CRC-8/SMBUS",
-            size: 8,
-            polynomial: 0x07UL,
-            initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-8</c> is an alias of the <see cref="CrcStandard.CRC8_SMBUS" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC8_SMBUS" />
-        public static readonly CrcStandard CRC8 = CRC8_SMBUS;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/TECH-3250</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/TECH-3250</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-8/TECH-3250</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-tech-3250">CRC RevEng catalogue</a> (Created: 19 July 2012; Updated: 21 November 2018), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>8</c></description></item>
-        /// <item><description>Polynomial: <c>0x1D</c></description></item>
-        /// <item><description>Initial Value: <c>0xFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-8/TECH-3250</c> standard is also known by the aliases <c>CRC-8/AES</c> and <c>CRC-8/EBU</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC8_AES" />
-        /// <seealso cref="CrcStandard.CRC8_EBU" />
-        public static readonly CrcStandard CRC8_TECH3250 = new CrcStandard(
-            name: "CRC-8/TECH-3250",
-            size: 8,
-            polynomial: 0x1DUL,
-            initialValue: 0xFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/AES</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/AES</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-8/AES</c> is an alias of the <see cref="CrcStandard.CRC8_TECH3250" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC8_TECH3250" />
-        /// <seealso cref="CrcStandard.CRC8_EBU" />
-        public static readonly CrcStandard CRC8_AES = CRC8_TECH3250;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/EBU</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/EBU</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-8/EBU</c> is an alias of the <see cref="CrcStandard.CRC8_TECH3250" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC8_TECH3250" />
-        /// <seealso cref="CrcStandard.CRC8_AES" />
-        public static readonly CrcStandard CRC8_EBU = CRC8_TECH3250;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-8/WCDMA</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-8/WCDMA</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-8/WCDMA</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-wcdma">CRC RevEng catalogue</a> (Created: 8 November 2009; Updated: 28 December 2019), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>8</c></description></item>
-        /// <item><description>Polynomial: <c>0x9B</c></description></item>
-        /// <item><description>Initial Value: <c>0x00</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC8_WCDMA = new CrcStandard(
-            name: "CRC-8/WCDMA",
-            size: 8,
-            polynomial: 0x9BUL,
-            initialValue: 0x00UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-10/ATM</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-10/ATM</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-10/ATM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-10-atm">CRC RevEng catalogue</a> (Created: 19 April 2009; Updated: 7 May 2022), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>10</c></description></item>
-        /// <item><description>Polynomial: <c>0x233</c></description></item>
-        /// <item><description>Initial Value: <c>0x000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x000</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-10/ATM</c> standard is also known by the aliases <c>CRC-10</c> and <c>CRC-10/I-610</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC10" />
-        /// <seealso cref="CrcStandard.CRC10_I610" />
-        public static readonly CrcStandard CRC10_ATM = new CrcStandard(
-            name: "CRC-10/ATM",
-            size: 10,
-            polynomial: 0x233UL,
-            initialValue: 0x000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-10</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-10</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-10</c> is an alias of the <see cref="CrcStandard.CRC10_ATM" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC10_ATM" />
-        /// <seealso cref="CrcStandard.CRC10_I610" />
-        public static readonly CrcStandard CRC10 = CRC10_ATM;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-10/I-610</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-10/I-610</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-10/I-610</c> is an alias of the <see cref="CrcStandard.CRC10_ATM" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC10_ATM" />
-        /// <seealso cref="CrcStandard.CRC10" />
-        public static readonly CrcStandard CRC10_I610 = CRC10_ATM;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-10/CDMA2000</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-10/CDMA2000</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-10/CDMA2000</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-10-cdma2000">CRC RevEng catalogue</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>10</c></description></item>
-        /// <item><description>Polynomial: <c>0x3D9</c></description></item>
-        /// <item><description>Initial Value: <c>0x3FF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC10_CDMA2000 = new CrcStandard(
-            name: "CRC-10/CDMA2000",
-            size: 10,
-            polynomial: 0x3D9UL,
-            initialValue: 0x3FFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-10/GSM</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-10/GSM</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-10/GSM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-10-gsm">CRC RevEng catalogue</a> (Created: 17 February 2017), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>10</c></description></item>
-        /// <item><description>Polynomial: <c>0x175</c></description></item>
-        /// <item><description>Initial Value: <c>0x000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x3FF</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC10_GSM = new CrcStandard(
-            name: "CRC-10/GSM",
-            size: 10,
-            polynomial: 0x175UL,
-            initialValue: 0x000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x3FFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-11/FLEXRAY</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-11/FLEXRAY</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-11/FLEXRAY</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-11-flexray">CRC RevEng catalogue</a> (Created: 3 November 2007; Updated: 7 May 2022), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>11</c></description></item>
-        /// <item><description>Polynomial: <c>0x385</c></description></item>
-        /// <item><description>Initial Value: <c>0x01A</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x000</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-11/FLEXRAY</c> standard is also known by the alias <c>CRC-11</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC11" />
-        public static readonly CrcStandard CRC11_FLEXRAY = new CrcStandard(
-            name: "CRC-11/FLEXRAY",
-            size: 11,
-            polynomial: 0x385UL,
-            initialValue: 0x01AUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-11</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-11</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-11</c> is an alias of the <see cref="CrcStandard.CRC11_FLEXRAY" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC11_FLEXRAY" />
-        public static readonly CrcStandard CRC11 = CRC11_FLEXRAY;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-11/UMTS</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-11/UMTS</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-11/UMTS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-11-umts">CRC RevEng catalogue</a> (Created: 8 February 2016; Updated: 7 May 2022), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>11</c></description></item>
-        /// <item><description>Polynomial: <c>0x307</c></description></item>
-        /// <item><description>Initial Value: <c>0x000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC11_UMTS = new CrcStandard(
-            name: "CRC-11/UMTS",
-            size: 11,
-            polynomial: 0x307UL,
-            initialValue: 0x000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-12/CDMA2000</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-12/CDMA2000</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-12/CDMA2000</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-12-cdma2000">CRC RevEng catalogue</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>12</c></description></item>
-        /// <item><description>Polynomial: <c>0xF13</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC12_CDMA2000 = new CrcStandard(
-            name: "CRC-12/CDMA2000",
-            size: 12,
-            polynomial: 0xF13UL,
-            initialValue: 0xFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-12/DECT</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-12/DECT</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-12/DECT</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-12-dect">CRC RevEng catalogue</a> (Created: 29 July 2010; Updated: 15 February 2017), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>12</c></description></item>
-        /// <item><description>Polynomial: <c>0x80F</c></description></item>
-        /// <item><description>Initial Value: <c>0x000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x000</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-12/DECT</c> standard is also known by the alias <c>X-CRC-12</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.XCRC12" />
-        public static readonly CrcStandard CRC12_DECT = new CrcStandard(
-            name: "CRC-12/DECT",
-            size: 12,
-            polynomial: 0x80FUL,
-            initialValue: 0x000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>X-CRC-12</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>X-CRC-12</c> definition.</value>
-        /// <remarks>
-        /// <para><c>X-CRC-12</c> is an alias of the <see cref="CrcStandard.CRC12_DECT" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC12_DECT" />
-        public static readonly CrcStandard XCRC12 = CRC12_DECT;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-12/GSM</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-12/GSM</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-12/GSM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-12-gsm">CRC RevEng catalogue</a> (Created: 17 February 2017), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>12</c></description></item>
-        /// <item><description>Polynomial: <c>0xD31</c></description></item>
-        /// <item><description>Initial Value: <c>0x000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC12_GSM = new CrcStandard(
-            name: "CRC-12/GSM",
-            size: 12,
-            polynomial: 0xD31UL,
-            initialValue: 0x000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-12/UMTS</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-12/UMTS</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-12/UMTS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-12-umts">CRC RevEng catalogue</a> (Created: 10 December 2009; Updated: 5 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>12</c></description></item>
-        /// <item><description>Polynomial: <c>0x80F</c></description></item>
-        /// <item><description>Initial Value: <c>0x000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x000</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-12/UMTS</c> standard is also known by the alias <c>CRC-12/3GPP</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC12_3GPP" />
-        public static readonly CrcStandard CRC12_UMTS = new CrcStandard(
-            name: "CRC-12/UMTS",
-            size: 12,
-            polynomial: 0x80FUL,
-            initialValue: 0x000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-12/3GPP</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-12/3GPP</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-12/3GPP</c> is an alias of the <see cref="CrcStandard.CRC12_UMTS" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC12_UMTS" />
-        public static readonly CrcStandard CRC12_3GPP = CRC12_UMTS;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-13/BBC</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-13/BBC</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-13/BBC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-13-bbc">CRC RevEng catalogue</a> (Created: 14 October 2013; Updated: 6 February 2017), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>13</c></description></item>
-        /// <item><description>Polynomial: <c>0x1CF5</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC13_BBC = new CrcStandard(
-            name: "CRC-13/BBC",
-            size: 13,
-            polynomial: 0x1CF5UL,
-            initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-14/DARC</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-14/DARC</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-14/DARC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-14-darc">CRC RevEng catalogue</a> (Created: 14 December 2009; Updated: 20 November 2018), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>14</c></description></item>
-        /// <item><description>Polynomial: <c>0x0805</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC14_DARC = new CrcStandard(
-            name: "CRC-14/DARC",
-            size: 14,
-            polynomial: 0x0805UL,
-            initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-14/GSM</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-14/GSM</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-14/GSM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-14-gsm">CRC RevEng catalogue</a> (Created: 17 February 2017), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>14</c></description></item>
-        /// <item><description>Polynomial: <c>0x202D</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x3FFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC14_GSM = new CrcStandard(
-            name: "CRC-14/GSM",
-            size: 14,
-            polynomial: 0x202DUL,
-            initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x3FFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-15/CAN</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-15/CAN</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-15/CAN</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-15-can">CRC RevEng catalogue</a> (Created: 2 November 2007; Updated: 7 May 2022), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>15</c></description></item>
-        /// <item><description>Polynomial: <c>0x4599</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-15/CAN</c> standard is also known by the alias <c>CRC-15</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC15" />
-        public static readonly CrcStandard CRC15_CAN = new CrcStandard(
-            name: "CRC-15/CAN",
-            size: 15,
-            polynomial: 0x4599UL,
-            initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-15</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-15</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-15</c> is an alias of the <see cref="CrcStandard.CRC15_CAN" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC15_CAN" />
-        public static readonly CrcStandard CRC15 = CRC15_CAN;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-15/MPT1327</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-15/MPT1327</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-15/MPT1327</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-15-mpt1327">CRC RevEng catalogue</a> (Created: 16 July 2012; Updated: 2 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>15</c></description></item>
-        /// <item><description>Polynomial: <c>0x6815</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0001</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC15_MPT1327 = new CrcStandard(
-            name: "CRC-15/MPT1327",
-            size: 15,
-            polynomial: 0x6815UL,
-            initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0001UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/ARC</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/ARC</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/ARC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-arc">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 2 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x8005</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-16/ARC</c> standard is also known by the aliases <c>ARC</c>, <c>CRC-16</c>, <c>CRC-16/LHA</c>, and <c>CRC-IBM</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.ARC" />
-        /// <seealso cref="CrcStandard.CRC16" />
-        /// <seealso cref="CrcStandard.CRC16_LHA" />
-        /// <seealso cref="CrcStandard.CRCIBM" />
-        public static readonly CrcStandard CRC16_ARC = new CrcStandard(
-            name: "CRC-16/ARC",
-            size: 16,
-            polynomial: 0x8005UL,
-            initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>ARC</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>ARC</c> definition.</value>
-        /// <remarks>
-        /// <para><c>ARC</c> is an alias of the <see cref="CrcStandard.CRC16_ARC" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_ARC" />
-        /// <seealso cref="CrcStandard.CRC16" />
-        /// <seealso cref="CrcStandard.CRC16_LHA" />
-        /// <seealso cref="CrcStandard.CRCIBM" />
-        public static readonly CrcStandard ARC = CRC16_ARC;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16</c> is an alias of the <see cref="CrcStandard.CRC16_ARC" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_ARC" />
-        /// <seealso cref="CrcStandard.ARC" />
-        /// <seealso cref="CrcStandard.CRC16_LHA" />
-        /// <seealso cref="CrcStandard.CRCIBM" />
-        public static readonly CrcStandard CRC16 = CRC16_ARC;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/LHA</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/LHA</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16/LHA</c> is an alias of the <see cref="CrcStandard.CRC16_ARC" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_ARC" />
-        /// <seealso cref="CrcStandard.ARC" />
-        /// <seealso cref="CrcStandard.CRC16" />
-        /// <seealso cref="CrcStandard.CRCIBM" />
-        public static readonly CrcStandard CRC16_LHA = CRC16_ARC;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-IBM</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-IBM</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-IBM</c> is an alias of the <see cref="CrcStandard.CRC16_ARC" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_ARC" />
-        /// <seealso cref="CrcStandard.ARC" />
-        /// <seealso cref="CrcStandard.CRC16" />
-        /// <seealso cref="CrcStandard.CRC16_LHA" />
-        public static readonly CrcStandard CRCIBM = CRC16_ARC;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/CDMA2000</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/CDMA2000</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/CDMA2000</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-cdma2000">CRC RevEng catalogue</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0xC867</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC16_CDMA2000 = new CrcStandard(
-            name: "CRC-16/CDMA2000",
-            size: 16,
-            polynomial: 0xC867UL,
-            initialValue: 0xFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/CMS</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/CMS</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/CMS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-cms">CRC RevEng catalogue</a> (Created: 13 July 2016; Updated: 2 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x8005</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC16_CMS = new CrcStandard(
-            name: "CRC-16/CMS",
-            size: 16,
-            polynomial: 0x8005UL,
-            initialValue: 0xFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/DDS-110</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/DDS-110</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/DDS-110</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-dds-110">CRC RevEng catalogue</a> (Created: 30 November 2009; Updated: 28 December 2019), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x8005</c></description></item>
-        /// <item><description>Initial Value: <c>0x800D</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC16_DDS110 = new CrcStandard(
-            name: "CRC-16/DDS-110",
-            size: 16,
-            polynomial: 0x8005UL,
-            initialValue: 0x800DUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/DECT-R</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/DECT-R</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/DECT-R</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-dect-r">CRC RevEng catalogue</a> (Created: 7 December 2009; Updated: 3 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x0589</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0001</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-16/DECT-R</c> standard is also known by the alias <c>R-CRC-16</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.RCRC16" />
-        public static readonly CrcStandard CRC16_DECTR = new CrcStandard(
-            name: "CRC-16/DECT-R",
-            size: 16,
-            polynomial: 0x0589UL,
-            initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0001UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>R-CRC-16</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>R-CRC-16</c> definition.</value>
-        /// <remarks>
-        /// <para><c>R-CRC-16</c> is an alias of the <see cref="CrcStandard.CRC16_DECTR" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_DECTR" />
-        public static readonly CrcStandard RCRC16 = CRC16_DECTR;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/DECT-X</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/DECT-X</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/DECT-X</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-dect-x">CRC RevEng catalogue</a> (Created: 30 July 2010; Updated: 2 January 2021), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x0589</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-16/DECT-X</c> standard is also known by the alias <c>X-CRC-16</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.XCRC16" />
-        public static readonly CrcStandard CRC16_DECTX = new CrcStandard(
-            name: "CRC-16/DECT-X",
-            size: 16,
-            polynomial: 0x0589UL,
-            initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>X-CRC-16</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>X-CRC-16</c> definition.</value>
-        /// <remarks>
-        /// <para><c>X-CRC-16</c> is an alias of the <see cref="CrcStandard.CRC16_DECTX" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_DECTX" />
-        public static readonly CrcStandard XCRC16 = CRC16_DECTX;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/DNP</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/DNP</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/DNP</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-dnp">CRC RevEng catalogue</a> (Created: 2 November 2007; Updated: 28 December 2019), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x3D65</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC16_DNP = new CrcStandard(
-            name: "CRC-16/DNP",
-            size: 16,
-            polynomial: 0x3D65UL,
-            initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/EN-13757</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/EN-13757</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/EN-13757</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-en-13757">CRC RevEng catalogue</a> (Created: 1 October 2008; Updated: 28 December 2019), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x3D65</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC16_EN13757 = new CrcStandard(
-            name: "CRC-16/EN-13757",
-            size: 16,
-            polynomial: 0x3D65UL,
-            initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/GENIBUS</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/GENIBUS</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/GENIBUS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-genibus">CRC RevEng catalogue</a> (Created: 2 November 2007; Updated: 3 January 2021), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x1021</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-16/GENIBUS</c> standard is also known by the aliases <c>CRC-16/DARC</c>, <c>CRC-16/EPC</c>, <c>CRC-16/EPC-C1G2</c>, and <c>CRC-16/I-CODE</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_DARC" />
-        /// <seealso cref="CrcStandard.CRC16_EPC" />
-        /// <seealso cref="CrcStandard.CRC16_EPCC1G2" />
-        /// <seealso cref="CrcStandard.CRC16_ICODE" />
-        public static readonly CrcStandard CRC16_GENIBUS = new CrcStandard(
-            name: "CRC-16/GENIBUS",
-            size: 16,
-            polynomial: 0x1021UL,
-            initialValue: 0xFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/DARC</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/DARC</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16/DARC</c> is an alias of the <see cref="CrcStandard.CRC16_GENIBUS" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_GENIBUS" />
-        /// <seealso cref="CrcStandard.CRC16_EPC" />
-        /// <seealso cref="CrcStandard.CRC16_EPCC1G2" />
-        /// <seealso cref="CrcStandard.CRC16_ICODE" />
-        public static readonly CrcStandard CRC16_DARC = CRC16_GENIBUS;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/EPC</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/EPC</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16/EPC</c> is an alias of the <see cref="CrcStandard.CRC16_GENIBUS" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_GENIBUS" />
-        /// <seealso cref="CrcStandard.CRC16_DARC" />
-        /// <seealso cref="CrcStandard.CRC16_EPCC1G2" />
-        /// <seealso cref="CrcStandard.CRC16_ICODE" />
-        public static readonly CrcStandard CRC16_EPC = CRC16_GENIBUS;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/EPC-C1G2</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/EPC-C1G2</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16/EPC-C1G2</c> is an alias of the <see cref="CrcStandard.CRC16_GENIBUS" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_GENIBUS" />
-        /// <seealso cref="CrcStandard.CRC16_DARC" />
-        /// <seealso cref="CrcStandard.CRC16_EPC" />
-        /// <seealso cref="CrcStandard.CRC16_ICODE" />
-        public static readonly CrcStandard CRC16_EPCC1G2 = CRC16_GENIBUS;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/I-CODE</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/I-CODE</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16/I-CODE</c> is an alias of the <see cref="CrcStandard.CRC16_GENIBUS" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_GENIBUS" />
-        /// <seealso cref="CrcStandard.CRC16_DARC" />
-        /// <seealso cref="CrcStandard.CRC16_EPC" />
-        /// <seealso cref="CrcStandard.CRC16_EPCC1G2" />
-        public static readonly CrcStandard CRC16_ICODE = CRC16_GENIBUS;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/GSM</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/GSM</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/GSM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-gsm">CRC RevEng catalogue</a> (Created: 17 February 2017; Updated: 4 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x1021</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC16_GSM = new CrcStandard(
-            name: "CRC-16/GSM",
-            size: 16,
-            polynomial: 0x1021UL,
-            initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/IBM-3740</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/IBM-3740</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/IBM-3740</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-ibm-3740">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 3 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x1021</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-16/IBM-3740</c> standard is also known by the aliases <c>CRC-16/AUTOSAR</c> and <c>CRC-16/CCITT-FALSE</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_AUTOSAR" />
-        /// <seealso cref="CrcStandard.CRC16_CCITTFALSE" />
-        public static readonly CrcStandard CRC16_IBM3740 = new CrcStandard(
-            name: "CRC-16/IBM-3740",
-            size: 16,
-            polynomial: 0x1021UL,
-            initialValue: 0xFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/AUTOSAR</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/AUTOSAR</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16/AUTOSAR</c> is an alias of the <see cref="CrcStandard.CRC16_IBM3740" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_IBM3740" />
-        /// <seealso cref="CrcStandard.CRC16_CCITTFALSE" />
-        public static readonly CrcStandard CRC16_AUTOSAR = CRC16_IBM3740;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/CCITT-FALSE</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/CCITT-FALSE</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16/CCITT-FALSE</c> is an alias of the <see cref="CrcStandard.CRC16_IBM3740" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_IBM3740" />
-        /// <seealso cref="CrcStandard.CRC16_AUTOSAR" />
-        public static readonly CrcStandard CRC16_CCITTFALSE = CRC16_IBM3740;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/IBM-SDLC</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/IBM-SDLC</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/IBM-SDLC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-ibm-sdlc">CRC RevEng catalogue</a> (Created: 10 September 2005; Updated: 4 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x1021</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-16/IBM-SDLC</c> standard is also known by the aliases <c>CRC-16/ISO-HDLC</c>, <c>CRC-16/ISO-IEC-14443-3-B</c>, <c>CRC-16/X-25</c>, <c>CRC-B</c>, and <c>X-25</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_ISOHDLC" />
-        /// <seealso cref="CrcStandard.CRC16_ISOIEC144433B" />
-        /// <seealso cref="CrcStandard.CRC16_X25" />
-        /// <seealso cref="CrcStandard.CRCB" />
-        /// <seealso cref="CrcStandard.X25" />
-        public static readonly CrcStandard CRC16_IBMSDLC = new CrcStandard(
-            name: "CRC-16/IBM-SDLC",
-            size: 16,
-            polynomial: 0x1021UL,
-            initialValue: 0xFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/ISO-HDLC</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/ISO-HDLC</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16/ISO-HDLC</c> is an alias of the <see cref="CrcStandard.CRC16_IBMSDLC" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_IBMSDLC" />
-        /// <seealso cref="CrcStandard.CRC16_ISOIEC144433B" />
-        /// <seealso cref="CrcStandard.CRC16_X25" />
-        /// <seealso cref="CrcStandard.CRCB" />
-        /// <seealso cref="CrcStandard.X25" />
-        public static readonly CrcStandard CRC16_ISOHDLC = CRC16_IBMSDLC;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/ISO-IEC-14443-3-B</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/ISO-IEC-14443-3-B</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16/ISO-IEC-14443-3-B</c> is an alias of the <see cref="CrcStandard.CRC16_IBMSDLC" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_IBMSDLC" />
-        /// <seealso cref="CrcStandard.CRC16_ISOHDLC" />
-        /// <seealso cref="CrcStandard.CRC16_X25" />
-        /// <seealso cref="CrcStandard.CRCB" />
-        /// <seealso cref="CrcStandard.X25" />
-        public static readonly CrcStandard CRC16_ISOIEC144433B = CRC16_IBMSDLC;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/X-25</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/X-25</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16/X-25</c> is an alias of the <see cref="CrcStandard.CRC16_IBMSDLC" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_IBMSDLC" />
-        /// <seealso cref="CrcStandard.CRC16_ISOHDLC" />
-        /// <seealso cref="CrcStandard.CRC16_ISOIEC144433B" />
-        /// <seealso cref="CrcStandard.CRCB" />
-        /// <seealso cref="CrcStandard.X25" />
-        public static readonly CrcStandard CRC16_X25 = CRC16_IBMSDLC;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-B</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-B</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-B</c> is an alias of the <see cref="CrcStandard.CRC16_IBMSDLC" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_IBMSDLC" />
-        /// <seealso cref="CrcStandard.CRC16_ISOHDLC" />
-        /// <seealso cref="CrcStandard.CRC16_ISOIEC144433B" />
-        /// <seealso cref="CrcStandard.CRC16_X25" />
-        /// <seealso cref="CrcStandard.X25" />
-        public static readonly CrcStandard CRCB = CRC16_IBMSDLC;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>X-25</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>X-25</c> definition.</value>
-        /// <remarks>
-        /// <para><c>X-25</c> is an alias of the <see cref="CrcStandard.CRC16_IBMSDLC" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_IBMSDLC" />
-        /// <seealso cref="CrcStandard.CRC16_ISOHDLC" />
-        /// <seealso cref="CrcStandard.CRC16_ISOIEC144433B" />
-        /// <seealso cref="CrcStandard.CRC16_X25" />
-        /// <seealso cref="CrcStandard.CRCB" />
-        public static readonly CrcStandard X25 = CRC16_IBMSDLC;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/ISO-IEC-14443-3-A</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/ISO-IEC-14443-3-A</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/ISO-IEC-14443-3-A</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-iso-iec-14443-3-a">CRC RevEng catalogue</a> (Created: 30 April 2011; Updated: 3 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x1021</c></description></item>
-        /// <item><description>Initial Value: <c>0xC6C6</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-16/ISO-IEC-14443-3-A</c> standard is also known by the alias <c>CRC-A</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRCA" />
-        public static readonly CrcStandard CRC16_ISOIEC144433A = new CrcStandard(
-            name: "CRC-16/ISO-IEC-14443-3-A",
-            size: 16,
-            polynomial: 0x1021UL,
-            initialValue: 0xC6C6UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-A</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-A</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-A</c> is an alias of the <see cref="CrcStandard.CRC16_ISOIEC144433A" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_ISOIEC144433A" />
-        public static readonly CrcStandard CRCA = CRC16_ISOIEC144433A;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/KERMIT</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/KERMIT</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/KERMIT</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-kermit">CRC RevEng catalogue</a> (Created: 10 September 2005; Updated: 4 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x1021</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-16/KERMIT</c> standard is also known by the aliases <c>CRC-16/BLUETOOTH</c>, <c>CRC-16/CCITT</c>, <c>CRC-16/CCITT-TRUE</c>, <c>CRC-16/V-41-LSB</c>, <c>CRC-CCITT</c>, and <c>KERMIT</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_BLUETOOTH" />
-        /// <seealso cref="CrcStandard.CRC16_CCITT" />
-        /// <seealso cref="CrcStandard.CRC16_CCITTTRUE" />
-        /// <seealso cref="CrcStandard.CRC16_V41LSB" />
-        /// <seealso cref="CrcStandard.CRCCCITT" />
-        /// <seealso cref="CrcStandard.KERMIT" />
-        public static readonly CrcStandard CRC16_KERMIT = new CrcStandard(
-            name: "CRC-16/KERMIT",
-            size: 16,
-            polynomial: 0x1021UL,
-            initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/BLUETOOTH</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/BLUETOOTH</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16/BLUETOOTH</c> is an alias of the <see cref="CrcStandard.CRC16_KERMIT" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_KERMIT" />
-        /// <seealso cref="CrcStandard.CRC16_CCITT" />
-        /// <seealso cref="CrcStandard.CRC16_CCITTTRUE" />
-        /// <seealso cref="CrcStandard.CRC16_V41LSB" />
-        /// <seealso cref="CrcStandard.CRCCCITT" />
-        /// <seealso cref="CrcStandard.KERMIT" />
-        public static readonly CrcStandard CRC16_BLUETOOTH = CRC16_KERMIT;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/CCITT</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/CCITT</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16/CCITT</c> is an alias of the <see cref="CrcStandard.CRC16_KERMIT" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_KERMIT" />
-        /// <seealso cref="CrcStandard.CRC16_BLUETOOTH" />
-        /// <seealso cref="CrcStandard.CRC16_CCITTTRUE" />
-        /// <seealso cref="CrcStandard.CRC16_V41LSB" />
-        /// <seealso cref="CrcStandard.CRCCCITT" />
-        /// <seealso cref="CrcStandard.KERMIT" />
-        public static readonly CrcStandard CRC16_CCITT = CRC16_KERMIT;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/CCITT-TRUE</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/CCITT-TRUE</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16/CCITT-TRUE</c> is an alias of the <see cref="CrcStandard.CRC16_KERMIT" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_KERMIT" />
-        /// <seealso cref="CrcStandard.CRC16_BLUETOOTH" />
-        /// <seealso cref="CrcStandard.CRC16_CCITT" />
-        /// <seealso cref="CrcStandard.CRC16_V41LSB" />
-        /// <seealso cref="CrcStandard.CRCCCITT" />
-        /// <seealso cref="CrcStandard.KERMIT" />
-        public static readonly CrcStandard CRC16_CCITTTRUE = CRC16_KERMIT;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/V-41-LSB</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/V-41-LSB</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16/V-41-LSB</c> is an alias of the <see cref="CrcStandard.CRC16_KERMIT" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_KERMIT" />
-        /// <seealso cref="CrcStandard.CRC16_BLUETOOTH" />
-        /// <seealso cref="CrcStandard.CRC16_CCITT" />
-        /// <seealso cref="CrcStandard.CRC16_CCITTTRUE" />
-        /// <seealso cref="CrcStandard.CRCCCITT" />
-        /// <seealso cref="CrcStandard.KERMIT" />
-        public static readonly CrcStandard CRC16_V41LSB = CRC16_KERMIT;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-CCITT</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-CCITT</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-CCITT</c> is an alias of the <see cref="CrcStandard.CRC16_KERMIT" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_KERMIT" />
-        /// <seealso cref="CrcStandard.CRC16_BLUETOOTH" />
-        /// <seealso cref="CrcStandard.CRC16_CCITT" />
-        /// <seealso cref="CrcStandard.CRC16_CCITTTRUE" />
-        /// <seealso cref="CrcStandard.CRC16_V41LSB" />
-        /// <seealso cref="CrcStandard.KERMIT" />
-        public static readonly CrcStandard CRCCCITT = CRC16_KERMIT;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>KERMIT</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>KERMIT</c> definition.</value>
-        /// <remarks>
-        /// <para><c>KERMIT</c> is an alias of the <see cref="CrcStandard.CRC16_KERMIT" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_KERMIT" />
-        /// <seealso cref="CrcStandard.CRC16_BLUETOOTH" />
-        /// <seealso cref="CrcStandard.CRC16_CCITT" />
-        /// <seealso cref="CrcStandard.CRC16_CCITTTRUE" />
-        /// <seealso cref="CrcStandard.CRC16_V41LSB" />
-        /// <seealso cref="CrcStandard.CRCCCITT" />
-        public static readonly CrcStandard KERMIT = CRC16_KERMIT;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/LJ1200</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/LJ1200</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/LJ1200</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-lj1200">CRC RevEng catalogue</a> (Created: 20 February 2016; Updated: 6 June 2018), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x6F63</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC16_LJ1200 = new CrcStandard(
-            name: "CRC-16/LJ1200",
-            size: 16,
-            polynomial: 0x6F63UL,
-            initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/M17</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/M17</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/M17</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-m17">CRC RevEng catalogue</a> (Created: 7 May 2022; Updated: 8 August 2024), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x5935</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC16_M17 = new CrcStandard(
-            name: "CRC-16/M17",
-            size: 16,
-            polynomial: 0x5935UL,
-            initialValue: 0xFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/MAXIM-DOW</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/MAXIM-DOW</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/MAXIM-DOW</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-maxim-dow">CRC RevEng catalogue</a> (Created: 26 April 2009; Updated: 28 December 2019), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x8005</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-16/MAXIM-DOW</c> standard is also known by the alias <c>CRC-16/MAXIM</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_MAXIM" />
-        public static readonly CrcStandard CRC16_MAXIMDOW = new CrcStandard(
-            name: "CRC-16/MAXIM-DOW",
-            size: 16,
-            polynomial: 0x8005UL,
-            initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/MAXIM</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/MAXIM</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16/MAXIM</c> is an alias of the <see cref="CrcStandard.CRC16_MAXIMDOW" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_MAXIMDOW" />
-        public static readonly CrcStandard CRC16_MAXIM = CRC16_MAXIMDOW;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/MCRF4XX</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/MCRF4XX</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/MCRF4XX</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-mcrf4xx">CRC RevEng catalogue</a> (Created: 18 January 2008; Updated: 4 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x1021</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC16_MCRF4XX = new CrcStandard(
-            name: "CRC-16/MCRF4XX",
-            size: 16,
-            polynomial: 0x1021UL,
-            initialValue: 0xFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/MODBUS</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/MODBUS</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/MODBUS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-modbus">CRC RevEng catalogue</a> (Created: 27 February 2007; Updated: 2 January 2021), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x8005</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-16/MODBUS</c> standard is also known by the alias <c>MODBUS</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.MODBUS" />
-        public static readonly CrcStandard CRC16_MODBUS = new CrcStandard(
-            name: "CRC-16/MODBUS",
-            size: 16,
-            polynomial: 0x8005UL,
-            initialValue: 0xFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>MODBUS</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>MODBUS</c> definition.</value>
-        /// <remarks>
-        /// <para><c>MODBUS</c> is an alias of the <see cref="CrcStandard.CRC16_MODBUS" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_MODBUS" />
-        public static readonly CrcStandard MODBUS = CRC16_MODBUS;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/NRSC-5</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/NRSC-5</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/NRSC-5</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-nrsc-5">CRC RevEng catalogue</a> (Created: 16 November 2018; Updated: 20 March 2019), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x080B</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC16_NRSC5 = new CrcStandard(
-            name: "CRC-16/NRSC-5",
-            size: 16,
-            polynomial: 0x080BUL,
-            initialValue: 0xFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/OPENSAFETY-A</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/OPENSAFETY-A</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/OPENSAFETY-A</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-opensafety-a">CRC RevEng catalogue</a> (Created: 22 July 2016; Updated: 7 May 2022), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x5935</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC16_OPENSAFETYA = new CrcStandard(
-            name: "CRC-16/OPENSAFETY-A",
-            size: 16,
-            polynomial: 0x5935UL,
-            initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/OPENSAFETY-B</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/OPENSAFETY-B</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/OPENSAFETY-B</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-opensafety-b">CRC RevEng catalogue</a> (Created: 22 July 2016; Updated: 7 May 2022), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x755B</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC16_OPENSAFETYB = new CrcStandard(
-            name: "CRC-16/OPENSAFETY-B",
-            size: 16,
-            polynomial: 0x755BUL,
-            initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/PROFIBUS</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/PROFIBUS</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/PROFIBUS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-profibus">CRC RevEng catalogue</a> (Created: 5 July 2016; Updated: 7 May 2022), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x1DCF</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-16/PROFIBUS</c> standard is also known by the alias <c>CRC-16/IEC-61158-2</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_IEC611582" />
-        public static readonly CrcStandard CRC16_PROFIBUS = new CrcStandard(
-            name: "CRC-16/PROFIBUS",
-            size: 16,
-            polynomial: 0x1DCFUL,
-            initialValue: 0xFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/IEC-61158-2</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/IEC-61158-2</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16/IEC-61158-2</c> is an alias of the <see cref="CrcStandard.CRC16_PROFIBUS" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_PROFIBUS" />
-        public static readonly CrcStandard CRC16_IEC611582 = CRC16_PROFIBUS;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/RIELLO</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/RIELLO</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/RIELLO</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-riello">CRC RevEng catalogue</a> (Created: 18 April 2009; Updated: 28 December 2019), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x1021</c></description></item>
-        /// <item><description>Initial Value: <c>0xB2AA</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC16_RIELLO = new CrcStandard(
-            name: "CRC-16/RIELLO",
-            size: 16,
-            polynomial: 0x1021UL,
-            initialValue: 0xB2AAUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/SPI-FUJITSU</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/SPI-FUJITSU</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/SPI-FUJITSU</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-spi-fujitsu">CRC RevEng catalogue</a> (Created: 30 October 2007; Updated: 4 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x1021</c></description></item>
-        /// <item><description>Initial Value: <c>0x1D0F</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-16/SPI-FUJITSU</c> standard is also known by the alias <c>CRC-16/AUG-CCITT</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_AUGCCITT" />
-        public static readonly CrcStandard CRC16_SPIFUJITSU = new CrcStandard(
-            name: "CRC-16/SPI-FUJITSU",
-            size: 16,
-            polynomial: 0x1021UL,
-            initialValue: 0x1D0FUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/AUG-CCITT</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/AUG-CCITT</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16/AUG-CCITT</c> is an alias of the <see cref="CrcStandard.CRC16_SPIFUJITSU" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_SPIFUJITSU" />
-        public static readonly CrcStandard CRC16_AUGCCITT = CRC16_SPIFUJITSU;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/T10-DIF</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/T10-DIF</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/T10-DIF</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-t10-dif">CRC RevEng catalogue</a> (Created: 29 September 2009; Updated: 2 January 2021), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x8BB7</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC16_T10DIF = new CrcStandard(
-            name: "CRC-16/T10-DIF",
-            size: 16,
-            polynomial: 0x8BB7UL,
-            initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/TELEDISK</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/TELEDISK</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/TELEDISK</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-teledisk">CRC RevEng catalogue</a> (Created: 10 December 2009; Updated: 4 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0xA097</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC16_TELEDISK = new CrcStandard(
-            name: "CRC-16/TELEDISK",
-            size: 16,
-            polynomial: 0xA097UL,
-            initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/TMS37157</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/TMS37157</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/TMS37157</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-tms37157">CRC RevEng catalogue</a> (Created: 17 April 2011; Updated: 28 December 2019), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x1021</c></description></item>
-        /// <item><description>Initial Value: <c>0x89EC</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC16_TMS37157 = new CrcStandard(
-            name: "CRC-16/TMS37157",
-            size: 16,
-            polynomial: 0x1021UL,
-            initialValue: 0x89ECUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/UMTS</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/UMTS</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/UMTS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-umts">CRC RevEng catalogue</a> (Created: 4 June 2008; Updated: 8 August 2024), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x8005</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-16/UMTS</c> standard is also known by the aliases <c>CRC-16/BUYPASS</c> and <c>CRC-16/VERIFONE</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_BUYPASS" />
-        /// <seealso cref="CrcStandard.CRC16_VERIFONE" />
-        public static readonly CrcStandard CRC16_UMTS = new CrcStandard(
-            name: "CRC-16/UMTS",
-            size: 16,
-            polynomial: 0x8005UL,
-            initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/BUYPASS</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/BUYPASS</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16/BUYPASS</c> is an alias of the <see cref="CrcStandard.CRC16_UMTS" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_UMTS" />
-        /// <seealso cref="CrcStandard.CRC16_VERIFONE" />
-        public static readonly CrcStandard CRC16_BUYPASS = CRC16_UMTS;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/VERIFONE</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/VERIFONE</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16/VERIFONE</c> is an alias of the <see cref="CrcStandard.CRC16_UMTS" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_UMTS" />
-        /// <seealso cref="CrcStandard.CRC16_BUYPASS" />
-        public static readonly CrcStandard CRC16_VERIFONE = CRC16_UMTS;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/USB</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/USB</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/USB</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-usb">CRC RevEng catalogue</a> (Created: 1 December 2007; Updated: 12 July 2024), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x8005</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC16_USB = new CrcStandard(
-            name: "CRC-16/USB",
-            size: 16,
-            polynomial: 0x8005UL,
-            initialValue: 0xFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/XMODEM</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/XMODEM</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-16/XMODEM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-xmodem">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 5 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>16</c></description></item>
-        /// <item><description>Polynomial: <c>0x1021</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-16/XMODEM</c> standard is also known by the aliases <c>CRC-16/ACORN</c>, <c>CRC-16/LTE</c>, <c>CRC-16/V-41-MSB</c>, <c>XMODEM</c>, and <c>ZMODEM</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_ACORN" />
-        /// <seealso cref="CrcStandard.CRC16_LTE" />
-        /// <seealso cref="CrcStandard.CRC16_V41MSB" />
-        /// <seealso cref="CrcStandard.XMODEM" />
-        /// <seealso cref="CrcStandard.ZMODEM" />
-        public static readonly CrcStandard CRC16_XMODEM = new CrcStandard(
-            name: "CRC-16/XMODEM",
-            size: 16,
-            polynomial: 0x1021UL,
-            initialValue: 0x0000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/ACORN</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/ACORN</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16/ACORN</c> is an alias of the <see cref="CrcStandard.CRC16_XMODEM" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_XMODEM" />
-        /// <seealso cref="CrcStandard.CRC16_LTE" />
-        /// <seealso cref="CrcStandard.CRC16_V41MSB" />
-        /// <seealso cref="CrcStandard.XMODEM" />
-        /// <seealso cref="CrcStandard.ZMODEM" />
-        public static readonly CrcStandard CRC16_ACORN = CRC16_XMODEM;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/LTE</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/LTE</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16/LTE</c> is an alias of the <see cref="CrcStandard.CRC16_XMODEM" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_XMODEM" />
-        /// <seealso cref="CrcStandard.CRC16_ACORN" />
-        /// <seealso cref="CrcStandard.CRC16_V41MSB" />
-        /// <seealso cref="CrcStandard.XMODEM" />
-        /// <seealso cref="CrcStandard.ZMODEM" />
-        public static readonly CrcStandard CRC16_LTE = CRC16_XMODEM;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-16/V-41-MSB</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-16/V-41-MSB</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-16/V-41-MSB</c> is an alias of the <see cref="CrcStandard.CRC16_XMODEM" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_XMODEM" />
-        /// <seealso cref="CrcStandard.CRC16_ACORN" />
-        /// <seealso cref="CrcStandard.CRC16_LTE" />
-        /// <seealso cref="CrcStandard.XMODEM" />
-        /// <seealso cref="CrcStandard.ZMODEM" />
-        public static readonly CrcStandard CRC16_V41MSB = CRC16_XMODEM;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>XMODEM</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>XMODEM</c> definition.</value>
-        /// <remarks>
-        /// <para><c>XMODEM</c> is an alias of the <see cref="CrcStandard.CRC16_XMODEM" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_XMODEM" />
-        /// <seealso cref="CrcStandard.CRC16_ACORN" />
-        /// <seealso cref="CrcStandard.CRC16_LTE" />
-        /// <seealso cref="CrcStandard.CRC16_V41MSB" />
-        /// <seealso cref="CrcStandard.ZMODEM" />
-        public static readonly CrcStandard XMODEM = CRC16_XMODEM;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>ZMODEM</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>ZMODEM</c> definition.</value>
-        /// <remarks>
-        /// <para><c>ZMODEM</c> is an alias of the <see cref="CrcStandard.CRC16_XMODEM" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC16_XMODEM" />
-        /// <seealso cref="CrcStandard.CRC16_ACORN" />
-        /// <seealso cref="CrcStandard.CRC16_LTE" />
-        /// <seealso cref="CrcStandard.CRC16_V41MSB" />
-        /// <seealso cref="CrcStandard.XMODEM" />
-        public static readonly CrcStandard ZMODEM = CRC16_XMODEM;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-17/CAN-FD</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-17/CAN-FD</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-17/CAN-FD</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-17-can-fd">CRC RevEng catalogue</a> (Created: 20 June 2017; Updated: 3 January 2021), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>17</c></description></item>
-        /// <item><description>Polynomial: <c>0x1685B</c></description></item>
-        /// <item><description>Initial Value: <c>0x00000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC17_CANFD = new CrcStandard(
-            name: "CRC-17/CAN-FD",
-            size: 17,
-            polynomial: 0x1685BUL,
-            initialValue: 0x00000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-21/CAN-FD</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-21/CAN-FD</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-21/CAN-FD</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-21-can-fd">CRC RevEng catalogue</a> (Created: 20 June 2017; Updated: 3 January 2021), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>21</c></description></item>
-        /// <item><description>Polynomial: <c>0x102899</c></description></item>
-        /// <item><description>Initial Value: <c>0x000000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x000000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC21_CANFD = new CrcStandard(
-            name: "CRC-21/CAN-FD",
-            size: 21,
-            polynomial: 0x102899UL,
-            initialValue: 0x000000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x000000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-24/BLE</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-24/BLE</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-24/BLE</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-ble">CRC RevEng catalogue</a> (Created: 7 February 2016; Updated: 4 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>24</c></description></item>
-        /// <item><description>Polynomial: <c>0x00065B</c></description></item>
-        /// <item><description>Initial Value: <c>0x555555</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x000000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC24_BLE = new CrcStandard(
-            name: "CRC-24/BLE",
-            size: 24,
-            polynomial: 0x00065BUL,
-            initialValue: 0x555555UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x000000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-24/FLEXRAY-A</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-24/FLEXRAY-A</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-24/FLEXRAY-A</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-flexray-a">CRC RevEng catalogue</a> (Created: 3 November 2007; Updated: 6 February 2017), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>24</c></description></item>
-        /// <item><description>Polynomial: <c>0x5D6DCB</c></description></item>
-        /// <item><description>Initial Value: <c>0xFEDCBA</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x000000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC24_FLEXRAYA = new CrcStandard(
-            name: "CRC-24/FLEXRAY-A",
-            size: 24,
-            polynomial: 0x5D6DCBUL,
-            initialValue: 0xFEDCBAUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x000000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-24/FLEXRAY-B</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-24/FLEXRAY-B</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-24/FLEXRAY-B</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-flexray-b">CRC RevEng catalogue</a> (Created: 3 November 2007; Updated: 6 February 2017), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>24</c></description></item>
-        /// <item><description>Polynomial: <c>0x5D6DCB</c></description></item>
-        /// <item><description>Initial Value: <c>0xABCDEF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x000000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC24_FLEXRAYB = new CrcStandard(
-            name: "CRC-24/FLEXRAY-B",
-            size: 24,
-            polynomial: 0x5D6DCBUL,
-            initialValue: 0xABCDEFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x000000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-24/INTERLAKEN</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-24/INTERLAKEN</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-24/INTERLAKEN</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-interlaken">CRC RevEng catalogue</a> (Created: 10 February 2016; Updated: 4 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>24</c></description></item>
-        /// <item><description>Polynomial: <c>0x328B63</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFFFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC24_INTERLAKEN = new CrcStandard(
-            name: "CRC-24/INTERLAKEN",
-            size: 24,
-            polynomial: 0x328B63UL,
-            initialValue: 0xFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFFFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-24/LTE-A</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-24/LTE-A</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-24/LTE-A</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-lte-a">CRC RevEng catalogue</a> (Created: 13 February 2016; Updated: 5 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>24</c></description></item>
-        /// <item><description>Polynomial: <c>0x864CFB</c></description></item>
-        /// <item><description>Initial Value: <c>0x000000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x000000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC24_LTEA = new CrcStandard(
-            name: "CRC-24/LTE-A",
-            size: 24,
-            polynomial: 0x864CFBUL,
-            initialValue: 0x000000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x000000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-24/LTE-B</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-24/LTE-B</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-24/LTE-B</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-lte-b">CRC RevEng catalogue</a> (Created: 13 February 2016; Updated: 5 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>24</c></description></item>
-        /// <item><description>Polynomial: <c>0x800063</c></description></item>
-        /// <item><description>Initial Value: <c>0x000000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x000000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC24_LTEB = new CrcStandard(
-            name: "CRC-24/LTE-B",
-            size: 24,
-            polynomial: 0x800063UL,
-            initialValue: 0x000000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x000000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-24/OPENPGP</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-24/OPENPGP</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-24/OPENPGP</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-openpgp">CRC RevEng catalogue</a> (Created: 2 November 2007; Updated: 4 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>24</c></description></item>
-        /// <item><description>Polynomial: <c>0x864CFB</c></description></item>
-        /// <item><description>Initial Value: <c>0xB704CE</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x000000</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-24/OPENPGP</c> standard is also known by the alias <c>CRC-24</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC24" />
-        public static readonly CrcStandard CRC24_OPENPGP = new CrcStandard(
-            name: "CRC-24/OPENPGP",
-            size: 24,
-            polynomial: 0x864CFBUL,
-            initialValue: 0xB704CEUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x000000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-24</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-24</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-24</c> is an alias of the <see cref="CrcStandard.CRC24_OPENPGP" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC24_OPENPGP" />
-        public static readonly CrcStandard CRC24 = CRC24_OPENPGP;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-24/OS-9</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-24/OS-9</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-24/OS-9</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-os-9">CRC RevEng catalogue</a> (Created: 25 July 2018; Updated: 4 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>24</c></description></item>
-        /// <item><description>Polynomial: <c>0x800063</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFFFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC24_OS9 = new CrcStandard(
-            name: "CRC-24/OS-9",
-            size: 24,
-            polynomial: 0x800063UL,
-            initialValue: 0xFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFFFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-30/CDMA</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-30/CDMA</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-30/CDMA</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-30-cdma">CRC RevEng catalogue</a> (Created: 20 February 2016; Updated: 4 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>30</c></description></item>
-        /// <item><description>Polynomial: <c>0x2030B9C7</c></description></item>
-        /// <item><description>Initial Value: <c>0x3FFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x3FFFFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC30_CDMA = new CrcStandard(
-            name: "CRC-30/CDMA",
-            size: 30,
-            polynomial: 0x2030B9C7UL,
-            initialValue: 0x3FFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x3FFFFFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-31/PHILIPS</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-31/PHILIPS</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-31/PHILIPS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-31-philips">CRC RevEng catalogue</a> (Created: 12 April 2012; Updated: 28 December 2019), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>31</c></description></item>
-        /// <item><description>Polynomial: <c>0x04C11DB7</c></description></item>
-        /// <item><description>Initial Value: <c>0x7FFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x7FFFFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC31_PHILIPS = new CrcStandard(
-            name: "CRC-31/PHILIPS",
-            size: 31,
-            polynomial: 0x04C11DB7UL,
-            initialValue: 0x7FFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x7FFFFFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/AIXM</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/AIXM</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-32/AIXM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-aixm">CRC RevEng catalogue</a> (Created: 29 April 2009; Updated: 2 January 2021), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>32</c></description></item>
-        /// <item><description>Polynomial: <c>0x814141AB</c></description></item>
-        /// <item><description>Initial Value: <c>0x00000000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00000000</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-32/AIXM</c> standard is also known by the alias <c>CRC-32Q</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32Q" />
-        public static readonly CrcStandard CRC32_AIXM = new CrcStandard(
-            name: "CRC-32/AIXM",
-            size: 32,
-            polynomial: 0x814141ABUL,
-            initialValue: 0x00000000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00000000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32Q</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32Q</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-32Q</c> is an alias of the <see cref="CrcStandard.CRC32_AIXM" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32_AIXM" />
-        public static readonly CrcStandard CRC32Q = CRC32_AIXM;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/AUTOSAR</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/AUTOSAR</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-32/AUTOSAR</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-autosar">CRC RevEng catalogue</a> (Created: 24 July 2016; Updated: 28 July 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>32</c></description></item>
-        /// <item><description>Polynomial: <c>0xF4ACFB13</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFFFFFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC32_AUTOSAR = new CrcStandard(
-            name: "CRC-32/AUTOSAR",
-            size: 32,
-            polynomial: 0xF4ACFB13UL,
-            initialValue: 0xFFFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFFFFFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/BASE91-D</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/BASE91-D</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-32/BASE91-D</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-base91-d">CRC RevEng catalogue</a> (Created: 28 November 2008; Updated: 8 August 2024), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>32</c></description></item>
-        /// <item><description>Polynomial: <c>0xA833982B</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFFFFFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-32/BASE91-D</c> standard is also known by the alias <c>CRC-32D</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32D" />
-        public static readonly CrcStandard CRC32_BASE91D = new CrcStandard(
-            name: "CRC-32/BASE91-D",
-            size: 32,
-            polynomial: 0xA833982BUL,
-            initialValue: 0xFFFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFFFFFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32D</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32D</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-32D</c> is an alias of the <see cref="CrcStandard.CRC32_BASE91D" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32_BASE91D" />
-        public static readonly CrcStandard CRC32D = CRC32_BASE91D;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/BZIP2</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/BZIP2</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-32/BZIP2</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-bzip2">CRC RevEng catalogue</a> (Created: 8 October 2008; Updated: 22 August 2022), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>32</c></description></item>
-        /// <item><description>Polynomial: <c>0x04C11DB7</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFFFFFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-32/BZIP2</c> standard is also known by the aliases <c>CRC-32/AAL5</c>, <c>CRC-32/DECT-B</c>, and <c>B-CRC-32</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32_AAL5" />
-        /// <seealso cref="CrcStandard.CRC32_DECTB" />
-        /// <seealso cref="CrcStandard.BCRC32" />
-        public static readonly CrcStandard CRC32_BZIP2 = new CrcStandard(
-            name: "CRC-32/BZIP2",
-            size: 32,
-            polynomial: 0x04C11DB7UL,
-            initialValue: 0xFFFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFFFFFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/AAL5</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/AAL5</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-32/AAL5</c> is an alias of the <see cref="CrcStandard.CRC32_BZIP2" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32_BZIP2" />
-        /// <seealso cref="CrcStandard.CRC32_DECTB" />
-        /// <seealso cref="CrcStandard.BCRC32" />
-        public static readonly CrcStandard CRC32_AAL5 = CRC32_BZIP2;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/DECT-B</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/DECT-B</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-32/DECT-B</c> is an alias of the <see cref="CrcStandard.CRC32_BZIP2" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32_BZIP2" />
-        /// <seealso cref="CrcStandard.CRC32_AAL5" />
-        /// <seealso cref="CrcStandard.BCRC32" />
-        public static readonly CrcStandard CRC32_DECTB = CRC32_BZIP2;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>B-CRC-32</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>B-CRC-32</c> definition.</value>
-        /// <remarks>
-        /// <para><c>B-CRC-32</c> is an alias of the <see cref="CrcStandard.CRC32_BZIP2" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32_BZIP2" />
-        /// <seealso cref="CrcStandard.CRC32_AAL5" />
-        /// <seealso cref="CrcStandard.CRC32_DECTB" />
-        public static readonly CrcStandard BCRC32 = CRC32_BZIP2;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/CD-ROM-EDC</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/CD-ROM-EDC</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-32/CD-ROM-EDC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-cd-rom-edc">CRC RevEng catalogue</a> (Created: 19 April 2019; Updated: 4 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>32</c></description></item>
-        /// <item><description>Polynomial: <c>0x8001801B</c></description></item>
-        /// <item><description>Initial Value: <c>0x00000000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00000000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC32_CDROMEDC = new CrcStandard(
-            name: "CRC-32/CD-ROM-EDC",
-            size: 32,
-            polynomial: 0x8001801BUL,
-            initialValue: 0x00000000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00000000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/CKSUM</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/CKSUM</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-32/CKSUM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-cksum">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 8 August 2024), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>32</c></description></item>
-        /// <item><description>Polynomial: <c>0x04C11DB7</c></description></item>
-        /// <item><description>Initial Value: <c>0x00000000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFFFFFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-32/CKSUM</c> standard is also known by the aliases <c>CKSUM</c> and <c>CRC-32/POSIX</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CKSUM" />
-        /// <seealso cref="CrcStandard.CRC32_POSIX" />
-        public static readonly CrcStandard CRC32_CKSUM = new CrcStandard(
-            name: "CRC-32/CKSUM",
-            size: 32,
-            polynomial: 0x04C11DB7UL,
-            initialValue: 0x00000000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFFFFFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CKSUM</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CKSUM</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CKSUM</c> is an alias of the <see cref="CrcStandard.CRC32_CKSUM" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32_CKSUM" />
-        /// <seealso cref="CrcStandard.CRC32_POSIX" />
-        public static readonly CrcStandard CKSUM = CRC32_CKSUM;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/POSIX</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/POSIX</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-32/POSIX</c> is an alias of the <see cref="CrcStandard.CRC32_CKSUM" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32_CKSUM" />
-        /// <seealso cref="CrcStandard.CKSUM" />
-        public static readonly CrcStandard CRC32_POSIX = CRC32_CKSUM;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/ISCSI</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/ISCSI</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-32/ISCSI</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-iscsi">CRC RevEng catalogue</a> (Created: 10 September 2005; Updated: 8 August 2024), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>32</c></description></item>
-        /// <item><description>Polynomial: <c>0x1EDC6F41</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFFFFFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-32/ISCSI</c> standard is also known by the aliases <c>CRC-32/BASE91-C</c>, <c>CRC-32/CASTAGNOLI</c>, <c>CRC-32/INTERLAKEN</c>, <c>CRC-32C</c>, and <c>CRC-32/NVME</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32_BASE91C" />
-        /// <seealso cref="CrcStandard.CRC32_CASTAGNOLI" />
-        /// <seealso cref="CrcStandard.CRC32_INTERLAKEN" />
-        /// <seealso cref="CrcStandard.CRC32C" />
-        /// <seealso cref="CrcStandard.CRC32_NVME" />
-        public static readonly CrcStandard CRC32_ISCSI = new CrcStandard(
-            name: "CRC-32/ISCSI",
-            size: 32,
-            polynomial: 0x1EDC6F41UL,
-            initialValue: 0xFFFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFFFFFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/BASE91-C</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/BASE91-C</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-32/BASE91-C</c> is an alias of the <see cref="CrcStandard.CRC32_ISCSI" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32_ISCSI" />
-        /// <seealso cref="CrcStandard.CRC32_CASTAGNOLI" />
-        /// <seealso cref="CrcStandard.CRC32_INTERLAKEN" />
-        /// <seealso cref="CrcStandard.CRC32C" />
-        /// <seealso cref="CrcStandard.CRC32_NVME" />
-        public static readonly CrcStandard CRC32_BASE91C = CRC32_ISCSI;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/CASTAGNOLI</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/CASTAGNOLI</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-32/CASTAGNOLI</c> is an alias of the <see cref="CrcStandard.CRC32_ISCSI" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32_ISCSI" />
-        /// <seealso cref="CrcStandard.CRC32_BASE91C" />
-        /// <seealso cref="CrcStandard.CRC32_INTERLAKEN" />
-        /// <seealso cref="CrcStandard.CRC32C" />
-        /// <seealso cref="CrcStandard.CRC32_NVME" />
-        public static readonly CrcStandard CRC32_CASTAGNOLI = CRC32_ISCSI;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/INTERLAKEN</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/INTERLAKEN</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-32/INTERLAKEN</c> is an alias of the <see cref="CrcStandard.CRC32_ISCSI" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32_ISCSI" />
-        /// <seealso cref="CrcStandard.CRC32_BASE91C" />
-        /// <seealso cref="CrcStandard.CRC32_CASTAGNOLI" />
-        /// <seealso cref="CrcStandard.CRC32C" />
-        /// <seealso cref="CrcStandard.CRC32_NVME" />
-        public static readonly CrcStandard CRC32_INTERLAKEN = CRC32_ISCSI;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32C</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32C</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-32C</c> is an alias of the <see cref="CrcStandard.CRC32_ISCSI" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32_ISCSI" />
-        /// <seealso cref="CrcStandard.CRC32_BASE91C" />
-        /// <seealso cref="CrcStandard.CRC32_CASTAGNOLI" />
-        /// <seealso cref="CrcStandard.CRC32_INTERLAKEN" />
-        /// <seealso cref="CrcStandard.CRC32_NVME" />
-        public static readonly CrcStandard CRC32C = CRC32_ISCSI;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/NVME</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/NVME</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-32/NVME</c> is an alias of the <see cref="CrcStandard.CRC32_ISCSI" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32_ISCSI" />
-        /// <seealso cref="CrcStandard.CRC32_BASE91C" />
-        /// <seealso cref="CrcStandard.CRC32_CASTAGNOLI" />
-        /// <seealso cref="CrcStandard.CRC32_INTERLAKEN" />
-        /// <seealso cref="CrcStandard.CRC32C" />
-        public static readonly CrcStandard CRC32_NVME = CRC32_ISCSI;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-32</c> is an alias of the <see cref="CrcStandard.CRC32_ISOHDLC" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32_ISOHDLC" />
-        /// <seealso cref="CrcStandard.CRC32_ADCCP" />
-        /// <seealso cref="CrcStandard.CRC32_V42" />
-        /// <seealso cref="CrcStandard.CRC32_XZ" />
-        /// <seealso cref="CrcStandard.PKZIP" />
-        public static readonly CrcStandard CRC32 = CRC32_ISOHDLC;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/ADCCP</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/ADCCP</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-32/ADCCP</c> is an alias of the <see cref="CrcStandard.CRC32_ISOHDLC" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32_ISOHDLC" />
-        /// <seealso cref="CrcStandard.CRC32" />
-        /// <seealso cref="CrcStandard.CRC32_V42" />
-        /// <seealso cref="CrcStandard.CRC32_XZ" />
-        /// <seealso cref="CrcStandard.PKZIP" />
-        public static readonly CrcStandard CRC32_ADCCP = CRC32_ISOHDLC;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/V-42</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/V-42</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-32/V-42</c> is an alias of the <see cref="CrcStandard.CRC32_ISOHDLC" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32_ISOHDLC" />
-        /// <seealso cref="CrcStandard.CRC32" />
-        /// <seealso cref="CrcStandard.CRC32_ADCCP" />
-        /// <seealso cref="CrcStandard.CRC32_XZ" />
-        /// <seealso cref="CrcStandard.PKZIP" />
-        public static readonly CrcStandard CRC32_V42 = CRC32_ISOHDLC;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/XZ</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/XZ</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-32/XZ</c> is an alias of the <see cref="CrcStandard.CRC32_ISOHDLC" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32_ISOHDLC" />
-        /// <seealso cref="CrcStandard.CRC32" />
-        /// <seealso cref="CrcStandard.CRC32_ADCCP" />
-        /// <seealso cref="CrcStandard.CRC32_V42" />
-        /// <seealso cref="CrcStandard.PKZIP" />
-        public static readonly CrcStandard CRC32_XZ = CRC32_ISOHDLC;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>PKZIP</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>PKZIP</c> definition.</value>
-        /// <remarks>
-        /// <para><c>PKZIP</c> is an alias of the <see cref="CrcStandard.CRC32_ISOHDLC" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32_ISOHDLC" />
-        /// <seealso cref="CrcStandard.CRC32" />
-        /// <seealso cref="CrcStandard.CRC32_ADCCP" />
-        /// <seealso cref="CrcStandard.CRC32_V42" />
-        /// <seealso cref="CrcStandard.CRC32_XZ" />
-        public static readonly CrcStandard PKZIP = CRC32_ISOHDLC;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/JAMCRC</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/JAMCRC</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-32/JAMCRC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-jamcrc">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 21 November 2018), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>32</c></description></item>
-        /// <item><description>Polynomial: <c>0x04C11DB7</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00000000</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-32/JAMCRC</c> standard is also known by the alias <c>JAMCRC</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.JAMCRC" />
-        public static readonly CrcStandard CRC32_JAMCRC = new CrcStandard(
-            name: "CRC-32/JAMCRC",
-            size: 32,
-            polynomial: 0x04C11DB7UL,
-            initialValue: 0xFFFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00000000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>JAMCRC</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>JAMCRC</c> definition.</value>
-        /// <remarks>
-        /// <para><c>JAMCRC</c> is an alias of the <see cref="CrcStandard.CRC32_JAMCRC" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32_JAMCRC" />
-        public static readonly CrcStandard JAMCRC = CRC32_JAMCRC;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/MEF</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/MEF</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-32/MEF</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-mef">CRC RevEng catalogue</a> (Created: 10 January 2022; Updated: 4 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>32</c></description></item>
-        /// <item><description>Polynomial: <c>0x741B8CD7</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00000000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC32_MEF = new CrcStandard(
-            name: "CRC-32/MEF",
-            size: 32,
-            polynomial: 0x741B8CD7UL,
-            initialValue: 0xFFFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00000000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/MPEG-2</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/MPEG-2</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-32/MPEG-2</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-mpeg-2">CRC RevEng catalogue</a> (Created: 8 October 2008; Updated: 4 August 2023), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>32</c></description></item>
-        /// <item><description>Polynomial: <c>0x04C11DB7</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00000000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC32_MPEG2 = new CrcStandard(
-            name: "CRC-32/MPEG-2",
-            size: 32,
-            polynomial: 0x04C11DB7UL,
-            initialValue: 0xFFFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00000000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-32/XFER</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-32/XFER</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-32/XFER</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-xfer">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 2 January 2021), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>32</c></description></item>
-        /// <item><description>Polynomial: <c>0x000000AF</c></description></item>
-        /// <item><description>Initial Value: <c>0x00000000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x00000000</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-32/XFER</c> standard is also known by the alias <c>XFER</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.XFER" />
-        public static readonly CrcStandard CRC32_XFER = new CrcStandard(
-            name: "CRC-32/XFER",
-            size: 32,
-            polynomial: 0x000000AFUL,
-            initialValue: 0x00000000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x00000000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>XFER</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>XFER</c> definition.</value>
-        /// <remarks>
-        /// <para><c>XFER</c> is an alias of the <see cref="CrcStandard.CRC32_XFER" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC32_XFER" />
-        public static readonly CrcStandard XFER = CRC32_XFER;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-40/GSM</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-40/GSM</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-40/GSM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-40-gsm">CRC RevEng catalogue</a> (Created: 10 December 2009; Updated: 25 March 2019), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>40</c></description></item>
-        /// <item><description>Polynomial: <c>0x0004820009</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000000000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFFFFFFFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC40_GSM = new CrcStandard(
-            name: "CRC-40/GSM",
-            size: 40,
-            polynomial: 0x0004820009UL,
-            initialValue: 0x0000000000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFFFFFFFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-64/ECMA-182</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-64/ECMA-182</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-64/ECMA-182</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-ecma-182">CRC RevEng catalogue</a> (Created: 6 April 2009; Updated: 7 May 2022), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>64</c></description></item>
-        /// <item><description>Polynomial: <c>0x42F0E1EBA9EA3693</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000000000000000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000000000000000</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-64/ECMA-182</c> standard is also known by the alias <c>CRC-64</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC64" />
-        public static readonly CrcStandard CRC64_ECMA182 = new CrcStandard(
-            name: "CRC-64/ECMA-182",
-            size: 64,
-            polynomial: 0x42F0E1EBA9EA3693UL,
-            initialValue: 0x0000000000000000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000000000000000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-64</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-64</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-64</c> is an alias of the <see cref="CrcStandard.CRC64_ECMA182" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC64_ECMA182" />
-        public static readonly CrcStandard CRC64 = CRC64_ECMA182;
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-64/GO-ISO</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-64/GO-ISO</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-64/GO-ISO</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-go-iso">CRC RevEng catalogue</a> (Created: 28 January 2017; Updated: 29 August 2024), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>64</c></description></item>
-        /// <item><description>Polynomial: <c>0x000000000000001B</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFFFFFFFFFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFFFFFFFFFFFFFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC64_GOISO = new CrcStandard(
-            name: "CRC-64/GO-ISO",
-            size: 64,
-            polynomial: 0x000000000000001BUL,
-            initialValue: 0xFFFFFFFFFFFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFFFFFFFFFFFFFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-64/JONES</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-64/JONES</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-64/JONES</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-jones">CRC RevEng catalogue</a>, with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>64</c></description></item>
-        /// <item><description>Polynomial: <c>0xAD93D23594C935A9</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFFFFFFFFFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000000000000000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC64_JONES = new CrcStandard(
-            name: "CRC-64/JONES",
-            size: 64,
-            polynomial: 0xAD93D23594C935A9UL,
-            initialValue: 0xFFFFFFFFFFFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000000000000000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-64/MS</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-64/MS</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-64/MS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-ms">CRC RevEng catalogue</a> (Created: 7 January 2022), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>64</c></description></item>
-        /// <item><description>Polynomial: <c>0x259C84CBA6426349</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFFFFFFFFFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000000000000000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC64_MS = new CrcStandard(
-            name: "CRC-64/MS",
-            size: 64,
-            polynomial: 0x259C84CBA6426349UL,
-            initialValue: 0xFFFFFFFFFFFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000000000000000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-64/NVME</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-64/NVME</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-64/NVME</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-nvme">CRC RevEng catalogue</a> (Created: 8 August 2024), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>64</c></description></item>
-        /// <item><description>Polynomial: <c>0xAD93D23594C93659</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFFFFFFFFFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFFFFFFFFFFFFFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC64_NVME = new CrcStandard(
-            name: "CRC-64/NVME",
-            size: 64,
-            polynomial: 0xAD93D23594C93659UL,
-            initialValue: 0xFFFFFFFFFFFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFFFFFFFFFFFFFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-64/REDIS</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-64/REDIS</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-64/REDIS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-redis">CRC RevEng catalogue</a> (Created: 24 August 2022), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>64</c></description></item>
-        /// <item><description>Polynomial: <c>0xAD93D23594C935A9</c></description></item>
-        /// <item><description>Initial Value: <c>0x0000000000000000</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0x0000000000000000</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC64_REDIS = new CrcStandard(
-            name: "CRC-64/REDIS",
-            size: 64,
-            polynomial: 0xAD93D23594C935A9UL,
-            initialValue: 0x0000000000000000UL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0x0000000000000000UL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-64/WE</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-64/WE</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-64/WE</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-we">CRC RevEng catalogue</a> (Created: 8 November 2009; Updated: 28 December 2019), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>64</c></description></item>
-        /// <item><description>Polynomial: <c>0x42F0E1EBA9EA3693</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFFFFFFFFFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFFFFFFFFFFFFFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static readonly CrcStandard CRC64_WE = new CrcStandard(
-            name: "CRC-64/WE",
-            size: 64,
-            polynomial: 0x42F0E1EBA9EA3693UL,
-            initialValue: 0xFFFFFFFFFFFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFFFFFFFFFFFFFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-64/XZ</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-64/XZ</c> definition.</value>
-        /// <remarks>
-        /// <para>The <c>CRC-64/XZ</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-xz">CRC RevEng catalogue</a> (Created: 4 July 2011; Updated: 29 August 2024), with the following definition.</para>
-        /// <para>
-        /// <list type="bullet">
-        /// <item><description>Width: <c>64</c></description></item>
-        /// <item><description>Polynomial: <c>0x42F0E1EBA9EA3693</c></description></item>
-        /// <item><description>Initial Value: <c>0xFFFFFFFFFFFFFFFF</c></description></item>
-        /// <item><description>Reflect In: <c>true</c></description></item>
-        /// <item><description>Reflect Out: <c>true</c></description></item>
-        /// <item><description>XOR Out: <c>0xFFFFFFFFFFFFFFFF</c></description></item>
-        /// </list>
-        /// </para>
-        /// <para>The <c>CRC-64/XZ</c> standard is also known by the alias <c>CRC-64/GO-ECMA</c>.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC64_GOECMA" />
-        public static readonly CrcStandard CRC64_XZ = new CrcStandard(
-            name: "CRC-64/XZ",
-            size: 64,
-            polynomial: 0x42F0E1EBA9EA3693UL,
-            initialValue: 0xFFFFFFFFFFFFFFFFUL,
-            reflectIn: true,
-            reflectOut: true,
-            xOrOut: 0xFFFFFFFFFFFFFFFFUL);
-
-        /// <summary>Gets the <see cref="CrcStandard" /> that defines the <c>CRC-64/GO-ECMA</c> cyclic redundancy check algorithm standard.</summary>
-        /// <value>A <see cref="CrcStandard" /> object whose properties are set to the <c>CRC-64/GO-ECMA</c> definition.</value>
-        /// <remarks>
-        /// <para><c>CRC-64/GO-ECMA</c> is an alias of the <see cref="CrcStandard.CRC64_XZ" /> standard.</para>
-        /// </remarks>
-        /// <seealso cref="CrcStandard.CRC64_XZ" />
-        public static readonly CrcStandard CRC64_GOECMA = CRC64_XZ;
-
-        private static readonly CrcStandard[] s_all = new[]
+        /// <summary>Compact value-type row in the packed catalogue data table. Indexed by <see cref="CrcStandards" /> ordinal.</summary>
+        private readonly struct CatalogEntry
         {
-            CRC3_GSM,
-            CRC3_ROHC,
-            CRC4_G704,
-            CRC4_INTERLAKEN,
-            CRC5_EPCC1G2,
-            CRC5_G704,
-            CRC5_USB,
-            CRC6_CDMA2000A,
-            CRC6_CDMA2000B,
-            CRC6_DARC,
-            CRC6_G704,
-            CRC6_GSM,
-            CRC7_MMC,
-            CRC7_ROHC,
-            CRC7_UMTS,
-            CRC8_AUTOSAR,
-            CRC8_CDMA2000,
-            CRC8_DARC,
-            CRC8_DVBS2,
-            CRC8_GSMA,
-            CRC8_GSMB,
-            CRC8_HITAG,
-            CRC8_I4321,
-            CRC8_ICODE,
-            CRC8_LTE,
-            CRC8_MAXIMDOW,
-            CRC8_MIFAREMAD,
-            CRC8_NRSC5,
-            CRC8_OPENSAFETY,
-            CRC8_ROHC,
-            CRC8_SAEJ1850,
-            CRC8_SMBUS,
-            CRC8_TECH3250,
-            CRC8_WCDMA,
-            CRC10_ATM,
-            CRC10_CDMA2000,
-            CRC10_GSM,
-            CRC11_FLEXRAY,
-            CRC11_UMTS,
-            CRC12_CDMA2000,
-            CRC12_DECT,
-            CRC12_GSM,
-            CRC12_UMTS,
-            CRC13_BBC,
-            CRC14_DARC,
-            CRC14_GSM,
-            CRC15_CAN,
-            CRC15_MPT1327,
-            CRC16_ARC,
-            CRC16_CDMA2000,
-            CRC16_CMS,
-            CRC16_DDS110,
-            CRC16_DECTR,
-            CRC16_DECTX,
-            CRC16_DNP,
-            CRC16_EN13757,
-            CRC16_GENIBUS,
-            CRC16_GSM,
-            CRC16_IBM3740,
-            CRC16_IBMSDLC,
-            CRC16_ISOIEC144433A,
-            CRC16_KERMIT,
-            CRC16_LJ1200,
-            CRC16_M17,
-            CRC16_MAXIMDOW,
-            CRC16_MCRF4XX,
-            CRC16_MODBUS,
-            CRC16_NRSC5,
-            CRC16_OPENSAFETYA,
-            CRC16_OPENSAFETYB,
-            CRC16_PROFIBUS,
-            CRC16_RIELLO,
-            CRC16_SPIFUJITSU,
-            CRC16_T10DIF,
-            CRC16_TELEDISK,
-            CRC16_TMS37157,
-            CRC16_UMTS,
-            CRC16_USB,
-            CRC16_XMODEM,
-            CRC17_CANFD,
-            CRC21_CANFD,
-            CRC24_BLE,
-            CRC24_FLEXRAYA,
-            CRC24_FLEXRAYB,
-            CRC24_INTERLAKEN,
-            CRC24_LTEA,
-            CRC24_LTEB,
-            CRC24_OPENPGP,
-            CRC24_OS9,
-            CRC30_CDMA,
-            CRC31_PHILIPS,
-            CRC32_AIXM,
-            CRC32_AUTOSAR,
-            CRC32_BASE91D,
-            CRC32_BZIP2,
-            CRC32_CDROMEDC,
-            CRC32_CKSUM,
-            CRC32_ISCSI,
-            CRC32_ISOHDLC,
-            CRC32_JAMCRC,
-            CRC32_MEF,
-            CRC32_MPEG2,
-            CRC32_XFER,
-            CRC40_GSM,
-            CRC64_ECMA182,
-            CRC64_GOISO,
-            CRC64_JONES,
-            CRC64_MS,
-            CRC64_NVME,
-            CRC64_REDIS,
-            CRC64_WE,
-            CRC64_XZ,
+            public CatalogEntry(string name, int size, ulong polynomial, ulong initialValue, bool reflectIn, bool reflectOut, ulong xOrOut)
+            {
+                Name = name;
+                Size = size;
+                Polynomial = polynomial;
+                InitialValue = initialValue;
+                XOrOut = xOrOut;
+                ReflectIn = reflectIn;
+                ReflectOut = reflectOut;
+            }
+
+            public readonly string Name;
+            public readonly int Size;
+            public readonly ulong Polynomial;
+            public readonly ulong InitialValue;
+            public readonly ulong XOrOut;
+            public readonly bool ReflectIn;
+            public readonly bool ReflectOut;
+        }
+
+        private static readonly CatalogEntry[] s_catalog = new CatalogEntry[]
+        {
+            new CatalogEntry("CRC-3/GSM", 3, 0x3UL, 0x0UL, false, false, 0x7UL),
+            new CatalogEntry("CRC-3/ROHC", 3, 0x3UL, 0x7UL, true, true, 0x0UL),
+            new CatalogEntry("CRC-4/G-704", 4, 0x3UL, 0x0UL, true, true, 0x0UL),
+            new CatalogEntry("CRC-4/INTERLAKEN", 4, 0x3UL, 0xFUL, false, false, 0xFUL),
+            new CatalogEntry("CRC-5/EPC-C1G2", 5, 0x09UL, 0x09UL, false, false, 0x00UL),
+            new CatalogEntry("CRC-5/G-704", 5, 0x15UL, 0x00UL, true, true, 0x00UL),
+            new CatalogEntry("CRC-5/USB", 5, 0x05UL, 0x1FUL, true, true, 0x1FUL),
+            new CatalogEntry("CRC-6/CDMA2000-A", 6, 0x27UL, 0x3FUL, false, false, 0x00UL),
+            new CatalogEntry("CRC-6/CDMA2000-B", 6, 0x07UL, 0x3FUL, false, false, 0x00UL),
+            new CatalogEntry("CRC-6/DARC", 6, 0x19UL, 0x00UL, true, true, 0x00UL),
+            new CatalogEntry("CRC-6/G-704", 6, 0x03UL, 0x00UL, true, true, 0x00UL),
+            new CatalogEntry("CRC-6/GSM", 6, 0x2FUL, 0x00UL, false, false, 0x3FUL),
+            new CatalogEntry("CRC-7/MMC", 7, 0x09UL, 0x00UL, false, false, 0x00UL),
+            new CatalogEntry("CRC-7/ROHC", 7, 0x4FUL, 0x7FUL, true, true, 0x00UL),
+            new CatalogEntry("CRC-7/UMTS", 7, 0x45UL, 0x00UL, false, false, 0x00UL),
+            new CatalogEntry("CRC-8/AUTOSAR", 8, 0x2FUL, 0xFFUL, false, false, 0xFFUL),
+            new CatalogEntry("CRC-8/CDMA2000", 8, 0x9BUL, 0xFFUL, false, false, 0x00UL),
+            new CatalogEntry("CRC-8/DARC", 8, 0x39UL, 0x00UL, true, true, 0x00UL),
+            new CatalogEntry("CRC-8/DVB-S2", 8, 0xD5UL, 0x00UL, false, false, 0x00UL),
+            new CatalogEntry("CRC-8/GSM-A", 8, 0x1DUL, 0x00UL, false, false, 0x00UL),
+            new CatalogEntry("CRC-8/GSM-B", 8, 0x49UL, 0x00UL, false, false, 0xFFUL),
+            new CatalogEntry("CRC-8/HITAG", 8, 0x1DUL, 0xFFUL, false, false, 0x00UL),
+            new CatalogEntry("CRC-8/I-432-1", 8, 0x07UL, 0x00UL, false, false, 0x55UL),
+            new CatalogEntry("CRC-8/I-CODE", 8, 0x1DUL, 0xFDUL, false, false, 0x00UL),
+            new CatalogEntry("CRC-8/LTE", 8, 0x9BUL, 0x00UL, false, false, 0x00UL),
+            new CatalogEntry("CRC-8/MAXIM-DOW", 8, 0x31UL, 0x00UL, true, true, 0x00UL),
+            new CatalogEntry("CRC-8/MIFARE-MAD", 8, 0x1DUL, 0xC7UL, false, false, 0x00UL),
+            new CatalogEntry("CRC-8/NRSC-5", 8, 0x31UL, 0xFFUL, false, false, 0x00UL),
+            new CatalogEntry("CRC-8/OPENSAFETY", 8, 0x2FUL, 0x00UL, false, false, 0x00UL),
+            new CatalogEntry("CRC-8/ROHC", 8, 0x07UL, 0xFFUL, true, true, 0x00UL),
+            new CatalogEntry("CRC-8/SAE-J1850", 8, 0x1DUL, 0xFFUL, false, false, 0xFFUL),
+            new CatalogEntry("CRC-8/SMBUS", 8, 0x07UL, 0x00UL, false, false, 0x00UL),
+            new CatalogEntry("CRC-8/TECH-3250", 8, 0x1DUL, 0xFFUL, true, true, 0x00UL),
+            new CatalogEntry("CRC-8/WCDMA", 8, 0x9BUL, 0x00UL, true, true, 0x00UL),
+            new CatalogEntry("CRC-10/ATM", 10, 0x233UL, 0x000UL, false, false, 0x000UL),
+            new CatalogEntry("CRC-10/CDMA2000", 10, 0x3D9UL, 0x3FFUL, false, false, 0x000UL),
+            new CatalogEntry("CRC-10/GSM", 10, 0x175UL, 0x000UL, false, false, 0x3FFUL),
+            new CatalogEntry("CRC-11/FLEXRAY", 11, 0x385UL, 0x01AUL, false, false, 0x000UL),
+            new CatalogEntry("CRC-11/UMTS", 11, 0x307UL, 0x000UL, false, false, 0x000UL),
+            new CatalogEntry("CRC-12/CDMA2000", 12, 0xF13UL, 0xFFFUL, false, false, 0x000UL),
+            new CatalogEntry("CRC-12/DECT", 12, 0x80FUL, 0x000UL, false, false, 0x000UL),
+            new CatalogEntry("CRC-12/GSM", 12, 0xD31UL, 0x000UL, false, false, 0xFFFUL),
+            new CatalogEntry("CRC-12/UMTS", 12, 0x80FUL, 0x000UL, false, true, 0x000UL),
+            new CatalogEntry("CRC-13/BBC", 13, 0x1CF5UL, 0x0000UL, false, false, 0x0000UL),
+            new CatalogEntry("CRC-14/DARC", 14, 0x0805UL, 0x0000UL, true, true, 0x0000UL),
+            new CatalogEntry("CRC-14/GSM", 14, 0x202DUL, 0x0000UL, false, false, 0x3FFFUL),
+            new CatalogEntry("CRC-15/CAN", 15, 0x4599UL, 0x0000UL, false, false, 0x0000UL),
+            new CatalogEntry("CRC-15/MPT1327", 15, 0x6815UL, 0x0000UL, false, false, 0x0001UL),
+            new CatalogEntry("CRC-16/ARC", 16, 0x8005UL, 0x0000UL, true, true, 0x0000UL),
+            new CatalogEntry("CRC-16/CDMA2000", 16, 0xC867UL, 0xFFFFUL, false, false, 0x0000UL),
+            new CatalogEntry("CRC-16/CMS", 16, 0x8005UL, 0xFFFFUL, false, false, 0x0000UL),
+            new CatalogEntry("CRC-16/DDS-110", 16, 0x8005UL, 0x800DUL, false, false, 0x0000UL),
+            new CatalogEntry("CRC-16/DECT-R", 16, 0x0589UL, 0x0000UL, false, false, 0x0001UL),
+            new CatalogEntry("CRC-16/DECT-X", 16, 0x0589UL, 0x0000UL, false, false, 0x0000UL),
+            new CatalogEntry("CRC-16/DNP", 16, 0x3D65UL, 0x0000UL, true, true, 0xFFFFUL),
+            new CatalogEntry("CRC-16/EN-13757", 16, 0x3D65UL, 0x0000UL, false, false, 0xFFFFUL),
+            new CatalogEntry("CRC-16/GENIBUS", 16, 0x1021UL, 0xFFFFUL, false, false, 0xFFFFUL),
+            new CatalogEntry("CRC-16/GSM", 16, 0x1021UL, 0x0000UL, false, false, 0xFFFFUL),
+            new CatalogEntry("CRC-16/IBM-3740", 16, 0x1021UL, 0xFFFFUL, false, false, 0x0000UL),
+            new CatalogEntry("CRC-16/IBM-SDLC", 16, 0x1021UL, 0xFFFFUL, true, true, 0xFFFFUL),
+            new CatalogEntry("CRC-16/ISO-IEC-14443-3-A", 16, 0x1021UL, 0xC6C6UL, true, true, 0x0000UL),
+            new CatalogEntry("CRC-16/KERMIT", 16, 0x1021UL, 0x0000UL, true, true, 0x0000UL),
+            new CatalogEntry("CRC-16/LJ1200", 16, 0x6F63UL, 0x0000UL, false, false, 0x0000UL),
+            new CatalogEntry("CRC-16/M17", 16, 0x5935UL, 0xFFFFUL, false, false, 0x0000UL),
+            new CatalogEntry("CRC-16/MAXIM-DOW", 16, 0x8005UL, 0x0000UL, true, true, 0xFFFFUL),
+            new CatalogEntry("CRC-16/MCRF4XX", 16, 0x1021UL, 0xFFFFUL, true, true, 0x0000UL),
+            new CatalogEntry("CRC-16/MODBUS", 16, 0x8005UL, 0xFFFFUL, true, true, 0x0000UL),
+            new CatalogEntry("CRC-16/NRSC-5", 16, 0x080BUL, 0xFFFFUL, true, true, 0x0000UL),
+            new CatalogEntry("CRC-16/OPENSAFETY-A", 16, 0x5935UL, 0x0000UL, false, false, 0x0000UL),
+            new CatalogEntry("CRC-16/OPENSAFETY-B", 16, 0x755BUL, 0x0000UL, false, false, 0x0000UL),
+            new CatalogEntry("CRC-16/PROFIBUS", 16, 0x1DCFUL, 0xFFFFUL, false, false, 0xFFFFUL),
+            new CatalogEntry("CRC-16/RIELLO", 16, 0x1021UL, 0xB2AAUL, true, true, 0x0000UL),
+            new CatalogEntry("CRC-16/SPI-FUJITSU", 16, 0x1021UL, 0x1D0FUL, false, false, 0x0000UL),
+            new CatalogEntry("CRC-16/T10-DIF", 16, 0x8BB7UL, 0x0000UL, false, false, 0x0000UL),
+            new CatalogEntry("CRC-16/TELEDISK", 16, 0xA097UL, 0x0000UL, false, false, 0x0000UL),
+            new CatalogEntry("CRC-16/TMS37157", 16, 0x1021UL, 0x89ECUL, true, true, 0x0000UL),
+            new CatalogEntry("CRC-16/UMTS", 16, 0x8005UL, 0x0000UL, false, false, 0x0000UL),
+            new CatalogEntry("CRC-16/USB", 16, 0x8005UL, 0xFFFFUL, true, true, 0xFFFFUL),
+            new CatalogEntry("CRC-16/XMODEM", 16, 0x1021UL, 0x0000UL, false, false, 0x0000UL),
+            new CatalogEntry("CRC-17/CAN-FD", 17, 0x1685BUL, 0x00000UL, false, false, 0x00000UL),
+            new CatalogEntry("CRC-21/CAN-FD", 21, 0x102899UL, 0x000000UL, false, false, 0x000000UL),
+            new CatalogEntry("CRC-24/BLE", 24, 0x00065BUL, 0x555555UL, true, true, 0x000000UL),
+            new CatalogEntry("CRC-24/FLEXRAY-A", 24, 0x5D6DCBUL, 0xFEDCBAUL, false, false, 0x000000UL),
+            new CatalogEntry("CRC-24/FLEXRAY-B", 24, 0x5D6DCBUL, 0xABCDEFUL, false, false, 0x000000UL),
+            new CatalogEntry("CRC-24/INTERLAKEN", 24, 0x328B63UL, 0xFFFFFFUL, false, false, 0xFFFFFFUL),
+            new CatalogEntry("CRC-24/LTE-A", 24, 0x864CFBUL, 0x000000UL, false, false, 0x000000UL),
+            new CatalogEntry("CRC-24/LTE-B", 24, 0x800063UL, 0x000000UL, false, false, 0x000000UL),
+            new CatalogEntry("CRC-24/OPENPGP", 24, 0x864CFBUL, 0xB704CEUL, false, false, 0x000000UL),
+            new CatalogEntry("CRC-24/OS-9", 24, 0x800063UL, 0xFFFFFFUL, false, false, 0xFFFFFFUL),
+            new CatalogEntry("CRC-30/CDMA", 30, 0x2030B9C7UL, 0x3FFFFFFFUL, false, false, 0x3FFFFFFFUL),
+            new CatalogEntry("CRC-31/PHILIPS", 31, 0x04C11DB7UL, 0x7FFFFFFFUL, false, false, 0x7FFFFFFFUL),
+            new CatalogEntry("CRC-32/AIXM", 32, 0x814141ABUL, 0x00000000UL, false, false, 0x00000000UL),
+            new CatalogEntry("CRC-32/AUTOSAR", 32, 0xF4ACFB13UL, 0xFFFFFFFFUL, true, true, 0xFFFFFFFFUL),
+            new CatalogEntry("CRC-32/BASE91-D", 32, 0xA833982BUL, 0xFFFFFFFFUL, true, true, 0xFFFFFFFFUL),
+            new CatalogEntry("CRC-32/BZIP2", 32, 0x04C11DB7UL, 0xFFFFFFFFUL, false, false, 0xFFFFFFFFUL),
+            new CatalogEntry("CRC-32/CD-ROM-EDC", 32, 0x8001801BUL, 0x00000000UL, true, true, 0x00000000UL),
+            new CatalogEntry("CRC-32/CKSUM", 32, 0x04C11DB7UL, 0x00000000UL, false, false, 0xFFFFFFFFUL),
+            new CatalogEntry("CRC-32/ISCSI", 32, 0x1EDC6F41UL, 0xFFFFFFFFUL, true, true, 0xFFFFFFFFUL),
+            new CatalogEntry("CRC-32/ISO-HDLC", 32, 0x04C11DB7UL, 0xFFFFFFFFUL, true, true, 0xFFFFFFFFUL),
+            new CatalogEntry("CRC-32/JAMCRC", 32, 0x04C11DB7UL, 0xFFFFFFFFUL, true, true, 0x00000000UL),
+            new CatalogEntry("CRC-32/MEF", 32, 0x741B8CD7UL, 0xFFFFFFFFUL, true, true, 0x00000000UL),
+            new CatalogEntry("CRC-32/MPEG-2", 32, 0x04C11DB7UL, 0xFFFFFFFFUL, false, false, 0x00000000UL),
+            new CatalogEntry("CRC-32/XFER", 32, 0x000000AFUL, 0x00000000UL, false, false, 0x00000000UL),
+            new CatalogEntry("CRC-40/GSM", 40, 0x0004820009UL, 0x0000000000UL, false, false, 0xFFFFFFFFFFUL),
+            new CatalogEntry("CRC-64/ECMA-182", 64, 0x42F0E1EBA9EA3693UL, 0x0000000000000000UL, false, false, 0x0000000000000000UL),
+            new CatalogEntry("CRC-64/GO-ISO", 64, 0x000000000000001BUL, 0xFFFFFFFFFFFFFFFFUL, true, true, 0xFFFFFFFFFFFFFFFFUL),
+            new CatalogEntry("CRC-64/JONES", 64, 0xAD93D23594C935A9UL, 0xFFFFFFFFFFFFFFFFUL, true, true, 0x0000000000000000UL),
+            new CatalogEntry("CRC-64/MS", 64, 0x259C84CBA6426349UL, 0xFFFFFFFFFFFFFFFFUL, true, true, 0x0000000000000000UL),
+            new CatalogEntry("CRC-64/NVME", 64, 0xAD93D23594C93659UL, 0xFFFFFFFFFFFFFFFFUL, true, true, 0xFFFFFFFFFFFFFFFFUL),
+            new CatalogEntry("CRC-64/REDIS", 64, 0xAD93D23594C935A9UL, 0x0000000000000000UL, true, true, 0x0000000000000000UL),
+            new CatalogEntry("CRC-64/WE", 64, 0x42F0E1EBA9EA3693UL, 0xFFFFFFFFFFFFFFFFUL, false, false, 0xFFFFFFFFFFFFFFFFUL),
+            new CatalogEntry("CRC-64/XZ", 64, 0x42F0E1EBA9EA3693UL, 0xFFFFFFFFFFFFFFFFUL, true, true, 0xFFFFFFFFFFFFFFFFUL),
         };
 
-        private static readonly Dictionary<string, CrcStandard> s_byName = BuildNameLookup();
+        /// <summary>Lazy per-entry cache: index by <c>(int)CrcStandards</c> ordinal, materialised on first <see cref="Get(CrcStandards)" />.</summary>
+        private static readonly CrcStandard?[] s_cache = new CrcStandard?[s_catalog.Length];
+
+        /// <summary>Lazy map from canonical name or alias to the enum ordinal. Built on first <see cref="FromName(string)" /> call.</summary>
+        private static Dictionary<string, CrcStandards>? s_nameToEnum;
+
+        /// <summary>Lazy snapshot of every catalogue <see cref="CrcStandard" /> instance; materialised on first <see cref="All" /> access.</summary>
+        private static IReadOnlyList<CrcStandard>? s_all;
 
         /// <summary>
-        /// Gets an immutable snapshot of every supported CRC standard in the catalogue, in declaration order.
+        /// Gets a snapshot of every supported CRC standard in the catalogue, in declaration order.
         /// </summary>
-        /// <value>A read-only list containing every supported <see cref="CrcStandard" /> entry.</value>
+        /// <value>A read-only list containing one <see cref="CrcStandard" /> per canonical entry.</value>
         /// <remarks>
-        /// <para>Aliases are not included as separate entries; an alias and its canonical share a single <see cref="CrcStandard" />
-        /// instance and therefore appear once. Entries whose width exceeds <see cref="MaxSize" /> are omitted from the catalogue.</para>
+        /// <para>The backing array is built lazily on first access and then memoised, so merely loading this type does not construct any
+        /// <see cref="CrcStandard" /> instances. Aliases are not included as separate entries; use <see cref="FromName(string)" /> to
+        /// resolve an alias to its canonical instance.</para>
         /// </remarks>
-        public static IReadOnlyList<CrcStandard> All => s_all;
+        public static IReadOnlyList<CrcStandard> All
+        {
+            get
+            {
+                IReadOnlyList<CrcStandard>? cached = Volatile.Read(ref s_all);
+                if (cached is not null) return cached;
+                return BuildAll();
+            }
+        }
+
+        /// <summary>
+        /// Materialises — or retrieves from cache — the <see cref="CrcStandard" /> identified by the given enum value.
+        /// </summary>
+        /// <param name="standard">The catalogue entry to resolve. Must be a defined <see cref="CrcStandards" /> value.</param>
+        /// <returns>The shared <see cref="CrcStandard" /> instance for <paramref name="standard" />.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="standard" /> is not a defined enum value.</exception>
+        /// <remarks>
+        /// <para>The first call for a given value constructs a new <see cref="CrcStandard" /> from the packed catalogue data and races
+        /// to publish it into the per-entry cache. Subsequent calls — including concurrent calls — return the same instance, so
+        /// reference equality is stable.</para>
+        /// </remarks>
+        public static CrcStandard Get(CrcStandards standard)
+        {
+            int index = (int)standard;
+            if ((uint)index >= (uint)s_catalog.Length)
+                throw new ArgumentOutOfRangeException(nameof(standard), standard, "The specified CrcStandards value is not defined.");
+
+            CrcStandard? cached = Volatile.Read(ref s_cache[index]);
+            if (cached is not null) return cached;
+
+            ref readonly CatalogEntry entry = ref s_catalog[index];
+            CrcStandard created = new CrcStandard(
+                name: entry.Name,
+                size: entry.Size,
+                polynomial: entry.Polynomial,
+                initialValue: entry.InitialValue,
+                reflectIn: entry.ReflectIn,
+                reflectOut: entry.ReflectOut,
+                xOrOut: entry.XOrOut);
+
+            // Race-resolve: first writer wins; losers discard their copy and return the cached one for reference-equality stability.
+            CrcStandard? winner = Interlocked.CompareExchange(ref s_cache[index], created, null);
+            return winner ?? created;
+        }
 
         /// <summary>
         /// Resolves a catalogue entry by its canonical name or any of its published aliases.
         /// </summary>
         /// <param name="name">The canonical CRC standard name, or an alias. Comparison is ordinal and case-sensitive.</param>
-        /// <returns>The matching <see cref="CrcStandard" /> instance.</returns>
+        /// <returns>The shared <see cref="CrcStandard" /> instance for <paramref name="name" />.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="name" /> is <see langword="null" />.</exception>
-        /// <exception cref="KeyNotFoundException">No catalogue entry with the specified <paramref name="name" /> exists.</exception>
+        /// <exception cref="KeyNotFoundException">No catalogue entry matching <paramref name="name" /> exists.</exception>
         public static CrcStandard FromName(string name)
         {
             ThrowHelper.ThrowIfNull(name);
-            if (!s_byName.TryGetValue(name, out CrcStandard? result))
+            var map = GetNameToEnumMap();
+            if (!map.TryGetValue(name, out CrcStandards standard))
                 throw new KeyNotFoundException($"No CRC standard with the name '{name}' exists in the catalogue.");
-            return result;
+            return Get(standard);
         }
 
         /// <summary>
@@ -3684,205 +243,226 @@ namespace Bodu.Security.Cryptography
         /// <returns><see langword="true" /> if a catalogue entry was found; otherwise, <see langword="false" />.</returns>
         public static bool TryFromName(string? name, out CrcStandard? standard)
         {
-            if (name is null)
+            if (name is not null && GetNameToEnumMap().TryGetValue(name, out CrcStandards id))
             {
-                standard = null;
-                return false;
+                standard = Get(id);
+                return true;
             }
 
-            return s_byName.TryGetValue(name, out standard);
+            standard = null;
+            return false;
         }
 
-        private static Dictionary<string, CrcStandard> BuildNameLookup()
+        private static Dictionary<string, CrcStandards> GetNameToEnumMap()
         {
-            var map = new Dictionary<string, CrcStandard>(StringComparer.Ordinal);
-            map["CRC-3/GSM"] = CRC3_GSM;
-            map["CRC-3/ROHC"] = CRC3_ROHC;
-            map["CRC-4/G-704"] = CRC4_G704;
-            map["CRC-4/ITU"] = CRC4_G704;
-            map["CRC-4/INTERLAKEN"] = CRC4_INTERLAKEN;
-            map["CRC-5/EPC-C1G2"] = CRC5_EPCC1G2;
-            map["CRC-5/EPC"] = CRC5_EPCC1G2;
-            map["CRC-5/G-704"] = CRC5_G704;
-            map["CRC-5/ITU"] = CRC5_G704;
-            map["CRC-5/USB"] = CRC5_USB;
-            map["CRC-6/CDMA2000-A"] = CRC6_CDMA2000A;
-            map["CRC-6/CDMA2000-B"] = CRC6_CDMA2000B;
-            map["CRC-6/DARC"] = CRC6_DARC;
-            map["CRC-6/G-704"] = CRC6_G704;
-            map["CRC-6/ITU"] = CRC6_G704;
-            map["CRC-6/GSM"] = CRC6_GSM;
-            map["CRC-7/MMC"] = CRC7_MMC;
-            map["CRC-7"] = CRC7_MMC;
-            map["CRC-7/ROHC"] = CRC7_ROHC;
-            map["CRC-7/UMTS"] = CRC7_UMTS;
-            map["CRC-8/AUTOSAR"] = CRC8_AUTOSAR;
-            map["CRC-8/CDMA2000"] = CRC8_CDMA2000;
-            map["CRC-8/DARC"] = CRC8_DARC;
-            map["CRC-8/DVB-S2"] = CRC8_DVBS2;
-            map["CRC-8/GSM-A"] = CRC8_GSMA;
-            map["CRC-8/GSM-B"] = CRC8_GSMB;
-            map["CRC-8/HITAG"] = CRC8_HITAG;
-            map["CRC-8/I-432-1"] = CRC8_I4321;
-            map["CRC-8/ITU"] = CRC8_I4321;
-            map["CRC-8/I-CODE"] = CRC8_ICODE;
-            map["CRC-8/LTE"] = CRC8_LTE;
-            map["CRC-8/MAXIM-DOW"] = CRC8_MAXIMDOW;
-            map["CRC-8/MAXIM"] = CRC8_MAXIMDOW;
-            map["DOW-CRC"] = CRC8_MAXIMDOW;
-            map["CRC-8/MIFARE-MAD"] = CRC8_MIFAREMAD;
-            map["CRC-8/NRSC-5"] = CRC8_NRSC5;
-            map["CRC-8/OPENSAFETY"] = CRC8_OPENSAFETY;
-            map["CRC-8/ROHC"] = CRC8_ROHC;
-            map["CRC-8/SAE-J1850"] = CRC8_SAEJ1850;
-            map["CRC-8/SMBUS"] = CRC8_SMBUS;
-            map["CRC-8"] = CRC8_SMBUS;
-            map["CRC-8/TECH-3250"] = CRC8_TECH3250;
-            map["CRC-8/AES"] = CRC8_TECH3250;
-            map["CRC-8/EBU"] = CRC8_TECH3250;
-            map["CRC-8/WCDMA"] = CRC8_WCDMA;
-            map["CRC-10/ATM"] = CRC10_ATM;
-            map["CRC-10"] = CRC10_ATM;
-            map["CRC-10/I-610"] = CRC10_ATM;
-            map["CRC-10/CDMA2000"] = CRC10_CDMA2000;
-            map["CRC-10/GSM"] = CRC10_GSM;
-            map["CRC-11/FLEXRAY"] = CRC11_FLEXRAY;
-            map["CRC-11"] = CRC11_FLEXRAY;
-            map["CRC-11/UMTS"] = CRC11_UMTS;
-            map["CRC-12/CDMA2000"] = CRC12_CDMA2000;
-            map["CRC-12/DECT"] = CRC12_DECT;
-            map["X-CRC-12"] = CRC12_DECT;
-            map["CRC-12/GSM"] = CRC12_GSM;
-            map["CRC-12/UMTS"] = CRC12_UMTS;
-            map["CRC-12/3GPP"] = CRC12_UMTS;
-            map["CRC-13/BBC"] = CRC13_BBC;
-            map["CRC-14/DARC"] = CRC14_DARC;
-            map["CRC-14/GSM"] = CRC14_GSM;
-            map["CRC-15/CAN"] = CRC15_CAN;
-            map["CRC-15"] = CRC15_CAN;
-            map["CRC-15/MPT1327"] = CRC15_MPT1327;
-            map["CRC-16/ARC"] = CRC16_ARC;
-            map["ARC"] = CRC16_ARC;
-            map["CRC-16"] = CRC16_ARC;
-            map["CRC-16/LHA"] = CRC16_ARC;
-            map["CRC-IBM"] = CRC16_ARC;
-            map["CRC-16/CDMA2000"] = CRC16_CDMA2000;
-            map["CRC-16/CMS"] = CRC16_CMS;
-            map["CRC-16/DDS-110"] = CRC16_DDS110;
-            map["CRC-16/DECT-R"] = CRC16_DECTR;
-            map["R-CRC-16"] = CRC16_DECTR;
-            map["CRC-16/DECT-X"] = CRC16_DECTX;
-            map["X-CRC-16"] = CRC16_DECTX;
-            map["CRC-16/DNP"] = CRC16_DNP;
-            map["CRC-16/EN-13757"] = CRC16_EN13757;
-            map["CRC-16/GENIBUS"] = CRC16_GENIBUS;
-            map["CRC-16/DARC"] = CRC16_GENIBUS;
-            map["CRC-16/EPC"] = CRC16_GENIBUS;
-            map["CRC-16/EPC-C1G2"] = CRC16_GENIBUS;
-            map["CRC-16/I-CODE"] = CRC16_GENIBUS;
-            map["CRC-16/GSM"] = CRC16_GSM;
-            map["CRC-16/IBM-3740"] = CRC16_IBM3740;
-            map["CRC-16/AUTOSAR"] = CRC16_IBM3740;
-            map["CRC-16/CCITT-FALSE"] = CRC16_IBM3740;
-            map["CRC-16/IBM-SDLC"] = CRC16_IBMSDLC;
-            map["CRC-16/ISO-HDLC"] = CRC16_IBMSDLC;
-            map["CRC-16/ISO-IEC-14443-3-B"] = CRC16_IBMSDLC;
-            map["CRC-16/X-25"] = CRC16_IBMSDLC;
-            map["CRC-B"] = CRC16_IBMSDLC;
-            map["X-25"] = CRC16_IBMSDLC;
-            map["CRC-16/ISO-IEC-14443-3-A"] = CRC16_ISOIEC144433A;
-            map["CRC-A"] = CRC16_ISOIEC144433A;
-            map["CRC-16/KERMIT"] = CRC16_KERMIT;
-            map["CRC-16/BLUETOOTH"] = CRC16_KERMIT;
-            map["CRC-16/CCITT"] = CRC16_KERMIT;
-            map["CRC-16/CCITT-TRUE"] = CRC16_KERMIT;
-            map["CRC-16/V-41-LSB"] = CRC16_KERMIT;
-            map["CRC-CCITT"] = CRC16_KERMIT;
-            map["KERMIT"] = CRC16_KERMIT;
-            map["CRC-16/LJ1200"] = CRC16_LJ1200;
-            map["CRC-16/M17"] = CRC16_M17;
-            map["CRC-16/MAXIM-DOW"] = CRC16_MAXIMDOW;
-            map["CRC-16/MAXIM"] = CRC16_MAXIMDOW;
-            map["CRC-16/MCRF4XX"] = CRC16_MCRF4XX;
-            map["CRC-16/MODBUS"] = CRC16_MODBUS;
-            map["MODBUS"] = CRC16_MODBUS;
-            map["CRC-16/NRSC-5"] = CRC16_NRSC5;
-            map["CRC-16/OPENSAFETY-A"] = CRC16_OPENSAFETYA;
-            map["CRC-16/OPENSAFETY-B"] = CRC16_OPENSAFETYB;
-            map["CRC-16/PROFIBUS"] = CRC16_PROFIBUS;
-            map["CRC-16/IEC-61158-2"] = CRC16_PROFIBUS;
-            map["CRC-16/RIELLO"] = CRC16_RIELLO;
-            map["CRC-16/SPI-FUJITSU"] = CRC16_SPIFUJITSU;
-            map["CRC-16/AUG-CCITT"] = CRC16_SPIFUJITSU;
-            map["CRC-16/T10-DIF"] = CRC16_T10DIF;
-            map["CRC-16/TELEDISK"] = CRC16_TELEDISK;
-            map["CRC-16/TMS37157"] = CRC16_TMS37157;
-            map["CRC-16/UMTS"] = CRC16_UMTS;
-            map["CRC-16/BUYPASS"] = CRC16_UMTS;
-            map["CRC-16/VERIFONE"] = CRC16_UMTS;
-            map["CRC-16/USB"] = CRC16_USB;
-            map["CRC-16/XMODEM"] = CRC16_XMODEM;
-            map["CRC-16/ACORN"] = CRC16_XMODEM;
-            map["CRC-16/LTE"] = CRC16_XMODEM;
-            map["CRC-16/V-41-MSB"] = CRC16_XMODEM;
-            map["XMODEM"] = CRC16_XMODEM;
-            map["ZMODEM"] = CRC16_XMODEM;
-            map["CRC-17/CAN-FD"] = CRC17_CANFD;
-            map["CRC-21/CAN-FD"] = CRC21_CANFD;
-            map["CRC-24/BLE"] = CRC24_BLE;
-            map["CRC-24/FLEXRAY-A"] = CRC24_FLEXRAYA;
-            map["CRC-24/FLEXRAY-B"] = CRC24_FLEXRAYB;
-            map["CRC-24/INTERLAKEN"] = CRC24_INTERLAKEN;
-            map["CRC-24/LTE-A"] = CRC24_LTEA;
-            map["CRC-24/LTE-B"] = CRC24_LTEB;
-            map["CRC-24/OPENPGP"] = CRC24_OPENPGP;
-            map["CRC-24"] = CRC24_OPENPGP;
-            map["CRC-24/OS-9"] = CRC24_OS9;
-            map["CRC-30/CDMA"] = CRC30_CDMA;
-            map["CRC-31/PHILIPS"] = CRC31_PHILIPS;
-            map["CRC-32/AIXM"] = CRC32_AIXM;
-            map["CRC-32Q"] = CRC32_AIXM;
-            map["CRC-32/AUTOSAR"] = CRC32_AUTOSAR;
-            map["CRC-32/BASE91-D"] = CRC32_BASE91D;
-            map["CRC-32D"] = CRC32_BASE91D;
-            map["CRC-32/BZIP2"] = CRC32_BZIP2;
-            map["CRC-32/AAL5"] = CRC32_BZIP2;
-            map["CRC-32/DECT-B"] = CRC32_BZIP2;
-            map["B-CRC-32"] = CRC32_BZIP2;
-            map["CRC-32/CD-ROM-EDC"] = CRC32_CDROMEDC;
-            map["CRC-32/CKSUM"] = CRC32_CKSUM;
-            map["CKSUM"] = CRC32_CKSUM;
-            map["CRC-32/POSIX"] = CRC32_CKSUM;
-            map["CRC-32/ISCSI"] = CRC32_ISCSI;
-            map["CRC-32/BASE91-C"] = CRC32_ISCSI;
-            map["CRC-32/CASTAGNOLI"] = CRC32_ISCSI;
-            map["CRC-32/INTERLAKEN"] = CRC32_ISCSI;
-            map["CRC-32C"] = CRC32_ISCSI;
-            map["CRC-32/NVME"] = CRC32_ISCSI;
-            map["CRC-32/ISO-HDLC"] = CRC32_ISOHDLC;
-            map["CRC-32"] = CRC32_ISOHDLC;
-            map["CRC-32/ADCCP"] = CRC32_ISOHDLC;
-            map["CRC-32/V-42"] = CRC32_ISOHDLC;
-            map["CRC-32/XZ"] = CRC32_ISOHDLC;
-            map["PKZIP"] = CRC32_ISOHDLC;
-            map["CRC-32/JAMCRC"] = CRC32_JAMCRC;
-            map["JAMCRC"] = CRC32_JAMCRC;
-            map["CRC-32/MEF"] = CRC32_MEF;
-            map["CRC-32/MPEG-2"] = CRC32_MPEG2;
-            map["CRC-32/XFER"] = CRC32_XFER;
-            map["XFER"] = CRC32_XFER;
-            map["CRC-40/GSM"] = CRC40_GSM;
-            map["CRC-64/ECMA-182"] = CRC64_ECMA182;
-            map["CRC-64"] = CRC64_ECMA182;
-            map["CRC-64/GO-ISO"] = CRC64_GOISO;
-            map["CRC-64/JONES"] = CRC64_JONES;
-            map["CRC-64/MS"] = CRC64_MS;
-            map["CRC-64/NVME"] = CRC64_NVME;
-            map["CRC-64/REDIS"] = CRC64_REDIS;
-            map["CRC-64/WE"] = CRC64_WE;
-            map["CRC-64/XZ"] = CRC64_XZ;
-            map["CRC-64/GO-ECMA"] = CRC64_XZ;
-            return map;
+            Dictionary<string, CrcStandards>? map = Volatile.Read(ref s_nameToEnum);
+            if (map is not null) return map;
+            return BuildNameLookup();
+        }
+
+        private static Dictionary<string, CrcStandards> BuildNameLookup()
+        {
+            var map = new Dictionary<string, CrcStandards>(186, StringComparer.Ordinal);
+            map["CRC-3/GSM"] = CrcStandards.CRC3_GSM;
+            map["CRC-3/ROHC"] = CrcStandards.CRC3_ROHC;
+            map["CRC-4/G-704"] = CrcStandards.CRC4_G704;
+            map["CRC-4/ITU"] = CrcStandards.CRC4_G704;
+            map["CRC-4/INTERLAKEN"] = CrcStandards.CRC4_INTERLAKEN;
+            map["CRC-5/EPC-C1G2"] = CrcStandards.CRC5_EPCC1G2;
+            map["CRC-5/EPC"] = CrcStandards.CRC5_EPCC1G2;
+            map["CRC-5/G-704"] = CrcStandards.CRC5_G704;
+            map["CRC-5/ITU"] = CrcStandards.CRC5_G704;
+            map["CRC-5/USB"] = CrcStandards.CRC5_USB;
+            map["CRC-6/CDMA2000-A"] = CrcStandards.CRC6_CDMA2000A;
+            map["CRC-6/CDMA2000-B"] = CrcStandards.CRC6_CDMA2000B;
+            map["CRC-6/DARC"] = CrcStandards.CRC6_DARC;
+            map["CRC-6/G-704"] = CrcStandards.CRC6_G704;
+            map["CRC-6/ITU"] = CrcStandards.CRC6_G704;
+            map["CRC-6/GSM"] = CrcStandards.CRC6_GSM;
+            map["CRC-7/MMC"] = CrcStandards.CRC7_MMC;
+            map["CRC-7"] = CrcStandards.CRC7_MMC;
+            map["CRC-7/ROHC"] = CrcStandards.CRC7_ROHC;
+            map["CRC-7/UMTS"] = CrcStandards.CRC7_UMTS;
+            map["CRC-8/AUTOSAR"] = CrcStandards.CRC8_AUTOSAR;
+            map["CRC-8/CDMA2000"] = CrcStandards.CRC8_CDMA2000;
+            map["CRC-8/DARC"] = CrcStandards.CRC8_DARC;
+            map["CRC-8/DVB-S2"] = CrcStandards.CRC8_DVBS2;
+            map["CRC-8/GSM-A"] = CrcStandards.CRC8_GSMA;
+            map["CRC-8/GSM-B"] = CrcStandards.CRC8_GSMB;
+            map["CRC-8/HITAG"] = CrcStandards.CRC8_HITAG;
+            map["CRC-8/I-432-1"] = CrcStandards.CRC8_I4321;
+            map["CRC-8/ITU"] = CrcStandards.CRC8_I4321;
+            map["CRC-8/I-CODE"] = CrcStandards.CRC8_ICODE;
+            map["CRC-8/LTE"] = CrcStandards.CRC8_LTE;
+            map["CRC-8/MAXIM-DOW"] = CrcStandards.CRC8_MAXIMDOW;
+            map["CRC-8/MAXIM"] = CrcStandards.CRC8_MAXIMDOW;
+            map["DOW-CRC"] = CrcStandards.CRC8_MAXIMDOW;
+            map["CRC-8/MIFARE-MAD"] = CrcStandards.CRC8_MIFAREMAD;
+            map["CRC-8/NRSC-5"] = CrcStandards.CRC8_NRSC5;
+            map["CRC-8/OPENSAFETY"] = CrcStandards.CRC8_OPENSAFETY;
+            map["CRC-8/ROHC"] = CrcStandards.CRC8_ROHC;
+            map["CRC-8/SAE-J1850"] = CrcStandards.CRC8_SAEJ1850;
+            map["CRC-8/SMBUS"] = CrcStandards.CRC8_SMBUS;
+            map["CRC-8"] = CrcStandards.CRC8_SMBUS;
+            map["CRC-8/TECH-3250"] = CrcStandards.CRC8_TECH3250;
+            map["CRC-8/AES"] = CrcStandards.CRC8_TECH3250;
+            map["CRC-8/EBU"] = CrcStandards.CRC8_TECH3250;
+            map["CRC-8/WCDMA"] = CrcStandards.CRC8_WCDMA;
+            map["CRC-10/ATM"] = CrcStandards.CRC10_ATM;
+            map["CRC-10"] = CrcStandards.CRC10_ATM;
+            map["CRC-10/I-610"] = CrcStandards.CRC10_ATM;
+            map["CRC-10/CDMA2000"] = CrcStandards.CRC10_CDMA2000;
+            map["CRC-10/GSM"] = CrcStandards.CRC10_GSM;
+            map["CRC-11/FLEXRAY"] = CrcStandards.CRC11_FLEXRAY;
+            map["CRC-11"] = CrcStandards.CRC11_FLEXRAY;
+            map["CRC-11/UMTS"] = CrcStandards.CRC11_UMTS;
+            map["CRC-12/CDMA2000"] = CrcStandards.CRC12_CDMA2000;
+            map["CRC-12/DECT"] = CrcStandards.CRC12_DECT;
+            map["X-CRC-12"] = CrcStandards.CRC12_DECT;
+            map["CRC-12/GSM"] = CrcStandards.CRC12_GSM;
+            map["CRC-12/UMTS"] = CrcStandards.CRC12_UMTS;
+            map["CRC-12/3GPP"] = CrcStandards.CRC12_UMTS;
+            map["CRC-13/BBC"] = CrcStandards.CRC13_BBC;
+            map["CRC-14/DARC"] = CrcStandards.CRC14_DARC;
+            map["CRC-14/GSM"] = CrcStandards.CRC14_GSM;
+            map["CRC-15/CAN"] = CrcStandards.CRC15_CAN;
+            map["CRC-15"] = CrcStandards.CRC15_CAN;
+            map["CRC-15/MPT1327"] = CrcStandards.CRC15_MPT1327;
+            map["CRC-16/ARC"] = CrcStandards.CRC16_ARC;
+            map["ARC"] = CrcStandards.CRC16_ARC;
+            map["CRC-16"] = CrcStandards.CRC16_ARC;
+            map["CRC-16/LHA"] = CrcStandards.CRC16_ARC;
+            map["CRC-IBM"] = CrcStandards.CRC16_ARC;
+            map["CRC-16/CDMA2000"] = CrcStandards.CRC16_CDMA2000;
+            map["CRC-16/CMS"] = CrcStandards.CRC16_CMS;
+            map["CRC-16/DDS-110"] = CrcStandards.CRC16_DDS110;
+            map["CRC-16/DECT-R"] = CrcStandards.CRC16_DECTR;
+            map["R-CRC-16"] = CrcStandards.CRC16_DECTR;
+            map["CRC-16/DECT-X"] = CrcStandards.CRC16_DECTX;
+            map["X-CRC-16"] = CrcStandards.CRC16_DECTX;
+            map["CRC-16/DNP"] = CrcStandards.CRC16_DNP;
+            map["CRC-16/EN-13757"] = CrcStandards.CRC16_EN13757;
+            map["CRC-16/GENIBUS"] = CrcStandards.CRC16_GENIBUS;
+            map["CRC-16/DARC"] = CrcStandards.CRC16_GENIBUS;
+            map["CRC-16/EPC"] = CrcStandards.CRC16_GENIBUS;
+            map["CRC-16/EPC-C1G2"] = CrcStandards.CRC16_GENIBUS;
+            map["CRC-16/I-CODE"] = CrcStandards.CRC16_GENIBUS;
+            map["CRC-16/GSM"] = CrcStandards.CRC16_GSM;
+            map["CRC-16/IBM-3740"] = CrcStandards.CRC16_IBM3740;
+            map["CRC-16/AUTOSAR"] = CrcStandards.CRC16_IBM3740;
+            map["CRC-16/CCITT-FALSE"] = CrcStandards.CRC16_IBM3740;
+            map["CRC-16/IBM-SDLC"] = CrcStandards.CRC16_IBMSDLC;
+            map["CRC-16/ISO-HDLC"] = CrcStandards.CRC16_IBMSDLC;
+            map["CRC-16/ISO-IEC-14443-3-B"] = CrcStandards.CRC16_IBMSDLC;
+            map["CRC-16/X-25"] = CrcStandards.CRC16_IBMSDLC;
+            map["CRC-B"] = CrcStandards.CRC16_IBMSDLC;
+            map["X-25"] = CrcStandards.CRC16_IBMSDLC;
+            map["CRC-16/ISO-IEC-14443-3-A"] = CrcStandards.CRC16_ISOIEC144433A;
+            map["CRC-A"] = CrcStandards.CRC16_ISOIEC144433A;
+            map["CRC-16/KERMIT"] = CrcStandards.CRC16_KERMIT;
+            map["CRC-16/BLUETOOTH"] = CrcStandards.CRC16_KERMIT;
+            map["CRC-16/CCITT"] = CrcStandards.CRC16_KERMIT;
+            map["CRC-16/CCITT-TRUE"] = CrcStandards.CRC16_KERMIT;
+            map["CRC-16/V-41-LSB"] = CrcStandards.CRC16_KERMIT;
+            map["CRC-CCITT"] = CrcStandards.CRC16_KERMIT;
+            map["KERMIT"] = CrcStandards.CRC16_KERMIT;
+            map["CRC-16/LJ1200"] = CrcStandards.CRC16_LJ1200;
+            map["CRC-16/M17"] = CrcStandards.CRC16_M17;
+            map["CRC-16/MAXIM-DOW"] = CrcStandards.CRC16_MAXIMDOW;
+            map["CRC-16/MAXIM"] = CrcStandards.CRC16_MAXIMDOW;
+            map["CRC-16/MCRF4XX"] = CrcStandards.CRC16_MCRF4XX;
+            map["CRC-16/MODBUS"] = CrcStandards.CRC16_MODBUS;
+            map["MODBUS"] = CrcStandards.CRC16_MODBUS;
+            map["CRC-16/NRSC-5"] = CrcStandards.CRC16_NRSC5;
+            map["CRC-16/OPENSAFETY-A"] = CrcStandards.CRC16_OPENSAFETYA;
+            map["CRC-16/OPENSAFETY-B"] = CrcStandards.CRC16_OPENSAFETYB;
+            map["CRC-16/PROFIBUS"] = CrcStandards.CRC16_PROFIBUS;
+            map["CRC-16/IEC-61158-2"] = CrcStandards.CRC16_PROFIBUS;
+            map["CRC-16/RIELLO"] = CrcStandards.CRC16_RIELLO;
+            map["CRC-16/SPI-FUJITSU"] = CrcStandards.CRC16_SPIFUJITSU;
+            map["CRC-16/AUG-CCITT"] = CrcStandards.CRC16_SPIFUJITSU;
+            map["CRC-16/T10-DIF"] = CrcStandards.CRC16_T10DIF;
+            map["CRC-16/TELEDISK"] = CrcStandards.CRC16_TELEDISK;
+            map["CRC-16/TMS37157"] = CrcStandards.CRC16_TMS37157;
+            map["CRC-16/UMTS"] = CrcStandards.CRC16_UMTS;
+            map["CRC-16/BUYPASS"] = CrcStandards.CRC16_UMTS;
+            map["CRC-16/VERIFONE"] = CrcStandards.CRC16_UMTS;
+            map["CRC-16/USB"] = CrcStandards.CRC16_USB;
+            map["CRC-16/XMODEM"] = CrcStandards.CRC16_XMODEM;
+            map["CRC-16/ACORN"] = CrcStandards.CRC16_XMODEM;
+            map["CRC-16/LTE"] = CrcStandards.CRC16_XMODEM;
+            map["CRC-16/V-41-MSB"] = CrcStandards.CRC16_XMODEM;
+            map["XMODEM"] = CrcStandards.CRC16_XMODEM;
+            map["ZMODEM"] = CrcStandards.CRC16_XMODEM;
+            map["CRC-17/CAN-FD"] = CrcStandards.CRC17_CANFD;
+            map["CRC-21/CAN-FD"] = CrcStandards.CRC21_CANFD;
+            map["CRC-24/BLE"] = CrcStandards.CRC24_BLE;
+            map["CRC-24/FLEXRAY-A"] = CrcStandards.CRC24_FLEXRAYA;
+            map["CRC-24/FLEXRAY-B"] = CrcStandards.CRC24_FLEXRAYB;
+            map["CRC-24/INTERLAKEN"] = CrcStandards.CRC24_INTERLAKEN;
+            map["CRC-24/LTE-A"] = CrcStandards.CRC24_LTEA;
+            map["CRC-24/LTE-B"] = CrcStandards.CRC24_LTEB;
+            map["CRC-24/OPENPGP"] = CrcStandards.CRC24_OPENPGP;
+            map["CRC-24"] = CrcStandards.CRC24_OPENPGP;
+            map["CRC-24/OS-9"] = CrcStandards.CRC24_OS9;
+            map["CRC-30/CDMA"] = CrcStandards.CRC30_CDMA;
+            map["CRC-31/PHILIPS"] = CrcStandards.CRC31_PHILIPS;
+            map["CRC-32/AIXM"] = CrcStandards.CRC32_AIXM;
+            map["CRC-32Q"] = CrcStandards.CRC32_AIXM;
+            map["CRC-32/AUTOSAR"] = CrcStandards.CRC32_AUTOSAR;
+            map["CRC-32/BASE91-D"] = CrcStandards.CRC32_BASE91D;
+            map["CRC-32D"] = CrcStandards.CRC32_BASE91D;
+            map["CRC-32/BZIP2"] = CrcStandards.CRC32_BZIP2;
+            map["CRC-32/AAL5"] = CrcStandards.CRC32_BZIP2;
+            map["CRC-32/DECT-B"] = CrcStandards.CRC32_BZIP2;
+            map["B-CRC-32"] = CrcStandards.CRC32_BZIP2;
+            map["CRC-32/CD-ROM-EDC"] = CrcStandards.CRC32_CDROMEDC;
+            map["CRC-32/CKSUM"] = CrcStandards.CRC32_CKSUM;
+            map["CKSUM"] = CrcStandards.CRC32_CKSUM;
+            map["CRC-32/POSIX"] = CrcStandards.CRC32_CKSUM;
+            map["CRC-32/ISCSI"] = CrcStandards.CRC32_ISCSI;
+            map["CRC-32/BASE91-C"] = CrcStandards.CRC32_ISCSI;
+            map["CRC-32/CASTAGNOLI"] = CrcStandards.CRC32_ISCSI;
+            map["CRC-32/INTERLAKEN"] = CrcStandards.CRC32_ISCSI;
+            map["CRC-32C"] = CrcStandards.CRC32_ISCSI;
+            map["CRC-32/NVME"] = CrcStandards.CRC32_ISCSI;
+            map["CRC-32/ISO-HDLC"] = CrcStandards.CRC32_ISOHDLC;
+            map["CRC-32"] = CrcStandards.CRC32_ISOHDLC;
+            map["CRC-32/ADCCP"] = CrcStandards.CRC32_ISOHDLC;
+            map["CRC-32/V-42"] = CrcStandards.CRC32_ISOHDLC;
+            map["CRC-32/XZ"] = CrcStandards.CRC32_ISOHDLC;
+            map["PKZIP"] = CrcStandards.CRC32_ISOHDLC;
+            map["CRC-32/JAMCRC"] = CrcStandards.CRC32_JAMCRC;
+            map["JAMCRC"] = CrcStandards.CRC32_JAMCRC;
+            map["CRC-32/MEF"] = CrcStandards.CRC32_MEF;
+            map["CRC-32/MPEG-2"] = CrcStandards.CRC32_MPEG2;
+            map["CRC-32/XFER"] = CrcStandards.CRC32_XFER;
+            map["XFER"] = CrcStandards.CRC32_XFER;
+            map["CRC-40/GSM"] = CrcStandards.CRC40_GSM;
+            map["CRC-64/ECMA-182"] = CrcStandards.CRC64_ECMA182;
+            map["CRC-64"] = CrcStandards.CRC64_ECMA182;
+            map["CRC-64/GO-ISO"] = CrcStandards.CRC64_GOISO;
+            map["CRC-64/JONES"] = CrcStandards.CRC64_JONES;
+            map["CRC-64/MS"] = CrcStandards.CRC64_MS;
+            map["CRC-64/NVME"] = CrcStandards.CRC64_NVME;
+            map["CRC-64/REDIS"] = CrcStandards.CRC64_REDIS;
+            map["CRC-64/WE"] = CrcStandards.CRC64_WE;
+            map["CRC-64/XZ"] = CrcStandards.CRC64_XZ;
+            map["CRC-64/GO-ECMA"] = CrcStandards.CRC64_XZ;
+
+            Dictionary<string, CrcStandards>? winner = Interlocked.CompareExchange(ref s_nameToEnum, map, null);
+            return winner ?? map;
+        }
+
+        private static IReadOnlyList<CrcStandard> BuildAll()
+        {
+            var array = new CrcStandard[s_catalog.Length];
+            for (int i = 0; i < array.Length; i++)
+                array[i] = Get((CrcStandards)i);
+
+            var readOnly = new ReadOnlyCollection<CrcStandard>(array);
+            IReadOnlyList<CrcStandard>? winner = Interlocked.CompareExchange(ref s_all, readOnly, null);
+            return winner ?? readOnly;
         }
     }
 }

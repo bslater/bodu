@@ -8,9 +8,9 @@ intended to be run from the repository root.
 | Script | Purpose |
 | --- | --- |
 | `Fetch-CrcSpecs.ps1` | Downloads the CRC RevEng catalogue from `https://reveng.sourceforge.io/crc-catalogue/all.htm` and rebuilds `Bodu.Security.Cryptography/src/crc-specs.json`. Also writes `crc-specs.meta.json` with the source URL and fetch timestamp. Class, Created, Updated, Alias, and Codeword metadata is parsed from the page where possible, and otherwise carried over from the existing JSON so hand-curated fields survive a refresh. |
-| `Generate-CrcCatalog.ps1` | Regenerates `Bodu.Security.Cryptography/src/Security.Cryptography/CrcStandard.Catalog.cs` from the JSON. Emits one `public static readonly CrcStandard` field per canonical entry **plus** one per alias (as a reference to the canonical), with full XML doc blocks including spec definition, Created/Updated dates, a link to the RevEng source anchor, and `<seealso>` cross-references between aliases. |
-| `Generate-CrcCatalogTests.ps1` | Regenerates `Bodu.Security.Cryptography/test/Security.Cryptography/CrcTests.Catalog.cs`, a data-driven `[DataTestMethod]` that asserts every catalogue entry's CRC of ASCII `"123456789"` matches the RevEng-published `check` value. |
-| `Generate-CrcDocs.ps1` | Regenerates `docs/guides/cryptography/crc-catalogue.md`, the public-facing attribution and support-matrix page. Reads `crc-specs.meta.json` for the last-fetched timestamp and stamps the page with the current regeneration time. |
+| `Generate-CrcCatalog.ps1` | Regenerates **two** C# files from the JSON: `CrcStandards.cs` (public `enum CrcStandards` with one entry per canonical standard) and `CrcStandard.Catalog.cs` (the packed `CatalogEntry[]` data table plus `Get(CrcStandards)`, `FromName(string)`, `TryFromName`, and lazy `All`). Entries are materialised on first access and memoised. |
+| `Generate-CrcCatalogTests.ps1` | Regenerates `Bodu.Security.Cryptography/test/Security.Cryptography/CrcTests.Catalog.cs`, a data-driven `[DataTestMethod]` that asserts every catalogue entry's CRC of ASCII `"123456789"` matches the RevEng-published `check` value. Test data rows carry the `CrcStandards` enum value; the test materialises via `CrcStandard.Get(standardId)`. |
+| `Generate-CrcDocs.ps1` | Regenerates `docs/guides/cryptography/crc-catalogue.md`, the public-facing attribution and catalogue page. |
 
 ## Standard workflow
 
@@ -19,40 +19,42 @@ intended to be run from the repository root.
 pwsh ./tools/Fetch-CrcSpecs.ps1
 
 # 2. Rebuild the generated C# files and documentation
-pwsh ./tools/Generate-CrcCatalog.ps1
-pwsh ./tools/Generate-CrcCatalogTests.ps1
-pwsh ./tools/Generate-CrcDocs.ps1
+pwsh ./tools/Generate-CrcCatalog.ps1         # CrcStandards.cs + CrcStandard.Catalog.cs
+pwsh ./tools/Generate-CrcCatalogTests.ps1    # CrcTests.Catalog.cs
+pwsh ./tools/Generate-CrcDocs.ps1            # docs/guides/cryptography/crc-catalogue.md
 
 # 3. Build and run tests
 dotnet build Bodu.sln
 dotnet test Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.csproj --settings test.runsettings
 ```
 
-## Filtering rules
+## Filtering rule
 
-All three generators share two filters:
+The generators share a single filter:
 
-- **`-Exclude <names>`** — canonical CRC names whose field declarations are owned elsewhere (typically by hand in `CrcStandard.cs`). They are not re-emitted as declarations in the catalogue, but their aliases are still emitted (pointing at the externally declared canonical), and the canonical is still referenced from `All` and the name lookup. Defaults to `CRC-32/ISO-HDLC`.
-- **`-MaxSize <bits>`** — upper bound on CRC width. Entries whose `size` exceeds this value are skipped entirely: no field, no aliases, no `All` entry, no lookup entry, no test row. The generated documentation page lists them in a separate "not supported" section for transparency. Defaults to `64` (the widest width representable as a `ulong`, matching `CrcStandard.MaxSize`).
+- **`-MaxSize <bits>`** — upper bound on CRC width. Entries whose `size` exceeds this value are skipped entirely: no enum member, no catalogue row, no name-lookup entry, no test row. The generated documentation page lists them in a separate "not supported" section for transparency. Defaults to `64` (the widest width representable as a `ulong`, matching `CrcStandard.MaxSize`).
 
-Currently the only oversize entry is `CRC-82/DARC`.
+Currently only `CRC-82/DARC` is excluded by the default limit.
 
-## Core vs. catalogue standards
+## Common standards
 
-`CRC-32/ISO-HDLC` is excluded from the generated C# files by default. It is:
+A short list of commonly-used CRCs is exposed as **hand-maintained** `public static CrcStandard` properties on `CrcStandard` (in `CrcStandard.cs`). They delegate to `Get(CrcStandards.X)` so they share the lazy cache with the rest of the catalogue — they're purely a source-level convenience and add no storage cost beyond the shared cache slot.
 
-- Declared directly in `Bodu.Security.Cryptography/src/Security.Cryptography/CrcStandard.cs` as `CrcStandard.CRC32_ISOHDLC`.
-- The default standard used by `new Crc()` (see `Crc.cs`).
-- Exercised by the hand-written test vectors in `CrcTests.ComputeHash.cs` and friends, which cover more than just the single `check` input.
+Currently exposed:
 
-Its **aliases** (for example `CRC-32`, `CRC-32/ADCCP`, `PKZIP`) are still emitted by the generator as `public static readonly CrcStandard` fields that reference the core declaration, so `CrcStandard.CRC32`, `CrcStandard.PKZIP`, etc. resolve correctly.
+- `CrcStandard.CRC8_SMBUS` (`CRC-8`)
+- `CrcStandard.CRC8_MAXIMDOW` (`DOW-CRC`)
+- `CrcStandard.CRC16_ARC` (`CRC-16`)
+- `CrcStandard.CRC16_IBM3740` (`CRC-16/CCITT-FALSE`)
+- `CrcStandard.CRC16_KERMIT`
+- `CrcStandard.CRC16_MODBUS`
+- `CrcStandard.CRC16_XMODEM`
+- `CrcStandard.CRC32_ISOHDLC` — the default used by `new Crc()`
+- `CrcStandard.CRC32_ISCSI` (`CRC-32C` / Castagnoli)
+- `CrcStandard.CRC32_BZIP2`
+- `CrcStandard.CRC64_ECMA182`
+- `CrcStandard.CRC64_XZ`
 
-To reshape the split — for example to promote another standard to first-class core code — pass `-Exclude` to both generator scripts and hand-maintain the declaration in `CrcStandard.cs`:
+Keep the list in `CrcStandard.cs` and the matching `$Common` set in `tools/Generate-CrcDocs.ps1` in sync.
 
-```pwsh
-pwsh ./tools/Generate-CrcCatalog.ps1      -Exclude 'CRC-32/ISO-HDLC','CRC-32/ISCSI'
-pwsh ./tools/Generate-CrcCatalogTests.ps1 -Exclude 'CRC-32/ISO-HDLC','CRC-32/ISCSI'
-pwsh ./tools/Generate-CrcDocs.ps1         -Exclude 'CRC-32/ISO-HDLC','CRC-32/ISCSI'
-```
-
-Any excluded canonical must still exist as a `public static readonly CrcStandard` with the generator's naming convention (`CRC-32/ISCSI` → `CRC32_ISCSI`) in `CrcStandard.cs` or another `CrcStandard.*.cs` partial, so that `All` and the generated aliases can reference it.
+Anything outside this list is still fully accessible through `CrcStandard.Get(CrcStandards.X)` or `CrcStandard.FromName("CRC-X/Y")`.

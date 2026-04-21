@@ -3,10 +3,11 @@
     Generates the CRC catalogue documentation page at docs/guides/cryptography/crc-catalogue.md.
 
 .DESCRIPTION
-    Renders a Markdown reference page that lists every CRC standard in crc-specs.json, grouped by
-    support status (supported canonicals, their aliases, and any skipped-by-width entries). The
-    page credits the CRC RevEng project, records the last export timestamp from
-    crc-specs.meta.json, and stamps its own regeneration time.
+    Renders a Markdown reference page that lists every CRC standard in crc-specs.json. The page
+    credits the CRC RevEng project, records the last export timestamp from
+    crc-specs.meta.json, stamps its own regeneration time, and describes how to access the
+    catalogue via the common strongly-typed properties, the `CrcStandards` enum (via
+    `CrcStandard.Get`), or by name (via `CrcStandard.FromName`).
 
 .PARAMETER SpecsPath
     Path to the crc-specs.json input file.
@@ -17,11 +18,8 @@
 .PARAMETER OutputPath
     Path of the markdown file to write.
 
-.PARAMETER Exclude
-    Canonical CRC names whose C# field declarations live outside the generated catalogue.
-
 .PARAMETER MaxSize
-    Maximum CRC width (in bits). Entries above this are marked as skipped in the documentation.
+    Maximum CRC width (in bits). Entries above this are listed as unsupported.
 
 .EXAMPLE
     pwsh ./tools/Generate-CrcDocs.ps1
@@ -32,15 +30,23 @@
 #Requires -Version 7
 [CmdletBinding()]
 param(
-    [string]$SpecsPath = (Join-Path $PSScriptRoot '..' 'Bodu.Security.Cryptography' 'src' 'crc-specs.json'),
-    [string]$MetaPath  = (Join-Path $PSScriptRoot '..' 'Bodu.Security.Cryptography' 'src' 'crc-specs.meta.json'),
+    [string]$SpecsPath  = (Join-Path $PSScriptRoot '..' 'Bodu.Security.Cryptography' 'src' 'crc-specs.json'),
+    [string]$MetaPath   = (Join-Path $PSScriptRoot '..' 'Bodu.Security.Cryptography' 'src' 'crc-specs.meta.json'),
     [string]$OutputPath = (Join-Path $PSScriptRoot '..' 'docs' 'guides' 'cryptography' 'crc-catalogue.md'),
-    [string[]]$Exclude = @('CRC-32/ISO-HDLC'),
     [int]$MaxSize = 64
 )
 
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
+
+# Canonical catalogue names for the 12 CRC standards exposed as strongly-typed properties on
+# CrcStandard. Keep in sync with CrcStandard.cs.
+$Common = [System.Collections.Generic.HashSet[string]]::new([string[]]@(
+    'CRC-8/SMBUS', 'CRC-8/MAXIM-DOW',
+    'CRC-16/ARC', 'CRC-16/IBM-3740', 'CRC-16/KERMIT', 'CRC-16/MODBUS', 'CRC-16/XMODEM',
+    'CRC-32/ISO-HDLC', 'CRC-32/ISCSI', 'CRC-32/BZIP2',
+    'CRC-64/ECMA-182', 'CRC-64/XZ'
+), [System.StringComparer]::Ordinal)
 
 function ConvertTo-ConstantName {
     param([string]$Name)
@@ -49,32 +55,12 @@ function ConvertTo-ConstantName {
     return $s.ToUpperInvariant()
 }
 
-function Format-HexDoc {
-    param([string]$Value)
-    if (-not $Value) { return '' }
-    $hex = ($Value -replace '^0[xX]', '').ToUpperInvariant()
-    return "0x$hex"
-}
-
 function Format-AnchorSlug {
     param([string]$Name)
     return 'crc.cat.' + ($Name -replace '/', '-').ToLowerInvariant()
 }
 
-function Get-AliasesFrom {
-    param($Spec)
-    # Always return a [string[]] — never $null, never a one-null array — so .Count is safe
-    # regardless of how ConvertFrom-Json materialised the JSON "aliases" member. The leading
-    # comma prevents PowerShell from unwrapping an empty array to $null on function return.
-    if (-not $Spec.PSObject.Properties['aliases']) { return ,[string[]]@() }
-    $value = $Spec.aliases
-    if ($null -eq $value) { return ,[string[]]@() }
-    $arr = @($value | Where-Object { $null -ne $_ })
-    return ,[string[]]$arr
-}
-
 $specs = Get-Content -LiteralPath $SpecsPath -Raw | ConvertFrom-Json
-$excludeSet = [System.Collections.Generic.HashSet[string]]::new([string[]]$Exclude, [System.StringComparer]::Ordinal)
 
 $source = 'https://reveng.sourceforge.io/crc-catalogue/all.htm'
 $fetchedUtc = ''
@@ -92,6 +78,9 @@ if (Test-Path -LiteralPath $MetaPath) {
 }
 $regeneratedUtc = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
 
+$supported = @($specs | Where-Object { $_.size -le $MaxSize })
+$skipped   = @($specs | Where-Object { $_.size -gt $MaxSize })
+
 $lines = [System.Collections.Generic.List[string]]::new()
 [void]$lines.Add('---')
 [void]$lines.Add('title: CRC catalogue')
@@ -99,17 +88,13 @@ $lines = [System.Collections.Generic.List[string]]::new()
 [void]$lines.Add('')
 [void]$lines.Add('# CRC catalogue')
 [void]$lines.Add('')
-[void]$lines.Add('The <xref:Bodu.Security.Cryptography.CrcStandard> type exposes a broad catalogue of named CRC parameter')
-[void]$lines.Add('sets that can be passed to <xref:Bodu.Security.Cryptography.Crc> for CRC computation. The catalogue is')
-[void]$lines.Add('mechanically derived from the **CRC RevEng** project.')
+[void]$lines.Add('The <xref:Bodu.Security.Cryptography.CrcStandard> type exposes a broad catalogue of named CRC parameter sets that can be passed to <xref:Bodu.Security.Cryptography.Crc> for CRC computation. The catalogue is mechanically derived from the **CRC RevEng** project.')
 [void]$lines.Add('')
 [void]$lines.Add('## Attribution')
 [void]$lines.Add('')
 [void]$lines.Add("The CRC parameter sets in this catalogue are sourced from **Greg Cook's CRC RevEng Catalogue of parametrised CRC algorithms** at [$source]($source).")
 [void]$lines.Add('')
-[void]$lines.Add('The catalogue is distributed as part of the CRC RevEng project at <https://reveng.sourceforge.io/>. Please')
-[void]$lines.Add('consult the upstream page for the authoritative parameter definitions, alias history, and licence terms')
-[void]$lines.Add('that apply to the underlying data.')
+[void]$lines.Add('The catalogue is distributed as part of the CRC RevEng project at <https://reveng.sourceforge.io/>. Please consult the upstream page for the authoritative parameter definitions, alias history, and licence terms that apply to the underlying data.')
 [void]$lines.Add('')
 if ($fetchedUtc) {
     [void]$lines.Add("- **Catalogue last fetched (UTC):** $fetchedUtc")
@@ -117,35 +102,68 @@ if ($fetchedUtc) {
 [void]$lines.Add("- **This page regenerated (UTC):** $regeneratedUtc")
 [void]$lines.Add("- **Entries in source:** $entryCount")
 [void]$lines.Add('')
+[void]$lines.Add('## Accessing standards')
+[void]$lines.Add('')
+[void]$lines.Add('The catalogue is a **lazy-materialised data table**. Loading <xref:Bodu.Security.Cryptography.CrcStandard> allocates only the packed spec rows and the per-entry cache slots — individual <xref:Bodu.Security.Cryptography.CrcStandard> instances are constructed on first access and then memoised, so a process that uses only a handful of standards pays for only a handful of allocations.')
+[void]$lines.Add('')
+[void]$lines.Add('Three entry points:')
+[void]$lines.Add('')
+[void]$lines.Add('```csharp')
+[void]$lines.Add('// 1. Strongly-typed common standards — most convenient for the usual suspects.')
+[void]$lines.Add('using var crc = new Crc(CrcStandard.CRC32_ISOHDLC);')
+[void]$lines.Add('using var crc = new Crc(CrcStandard.CRC32_ISCSI);          // iSCSI / Castagnoli')
+[void]$lines.Add('using var crc = new Crc(CrcStandard.CRC16_MODBUS);')
+[void]$lines.Add('')
+[void]$lines.Add('// 2. By enum — covers every canonical catalogue entry (112 in total).')
+[void]$lines.Add('using var crc = new Crc(CrcStandard.Get(CrcStandards.CRC8_SAEJ1850));')
+[void]$lines.Add('')
+[void]$lines.Add('// 3. By name — resolves canonical names AND published aliases.')
+[void]$lines.Add('using var crc1 = new Crc(CrcStandard.FromName("CRC-32/ISO-HDLC"));')
+[void]$lines.Add('using var crc2 = new Crc(CrcStandard.FromName("PKZIP"));   // same instance as crc1')
+[void]$lines.Add('')
+[void]$lines.Add('// Iterate every catalogue standard')
+[void]$lines.Add('foreach (CrcStandard std in CrcStandard.All) { ... }')
+[void]$lines.Add('```')
+[void]$lines.Add('')
+[void]$lines.Add('`FromName` is ordinal and case-sensitive. `TryFromName` returns `false` rather than throwing when a name is unknown.')
+[void]$lines.Add('')
 [void]$lines.Add('## Support policy')
 [void]$lines.Add('')
-[void]$lines.Add("`CrcStandard` represents all scalar parameters as <xref:System.UInt64>, so the library can materialise any CRC of width 1–64 bits. Entries whose width exceeds 64 bits are listed below for completeness but are **not** emitted as catalogue constants and cannot be constructed through `CrcStandard`.")
+[void]$lines.Add('`CrcStandard` represents all scalar parameters as <xref:System.UInt64>, so the library can materialise any CRC of width 1–64 bits. Entries whose width exceeds 64 bits are listed below for completeness but are **not** exposed by <xref:Bodu.Security.Cryptography.CrcStandards> and cannot be constructed through `CrcStandard`.')
 [void]$lines.Add('')
 [void]$lines.Add('Aliases share a single catalogue instance with their canonical standard. `CrcStandard.FromName` resolves both canonical and alias names, so `FromName("CRC-32")` and `FromName("CRC-32/ISO-HDLC")` return the same instance.')
 [void]$lines.Add('')
 
-# Supported standards table
-$supported = @($specs | Where-Object { $_.size -le $MaxSize })
-$skipped   = @($specs | Where-Object { $_.size -gt $MaxSize })
-
-[void]$lines.Add('## Supported standards')
+[void]$lines.Add('## Common standards (strongly-typed)')
 [void]$lines.Add('')
-[void]$lines.Add('| Name | Width | Class | Constant | Aliases | RevEng |')
+[void]$lines.Add('These are exposed as `public static CrcStandard` properties on <xref:Bodu.Security.Cryptography.CrcStandard> for convenience — the underlying cache is still shared with the enum-based lookup.')
+[void]$lines.Add('')
+[void]$lines.Add('| Name | Width | Property | Aliases |')
+[void]$lines.Add('|---|---:|---|---|')
+foreach ($spec in $supported) {
+    if (-not $Common.Contains($spec.name)) { continue }
+    $c = ConvertTo-ConstantName $spec.name
+    $aliases = if ($spec.PSObject.Properties['aliases'] -and $spec.aliases) { @($spec.aliases) } else { @() }
+    $aliasCell = if ($aliases.Count -eq 0) { '—' } else { ($aliases | ForEach-Object { '`' + $_ + '`' }) -join ', ' }
+    [void]$lines.Add("| $($spec.name) | $($spec.size) | ``CrcStandard.$c`` | $aliasCell |")
+}
+[void]$lines.Add('')
+
+[void]$lines.Add('## Full catalogue')
+[void]$lines.Add('')
+[void]$lines.Add('Access the following via `CrcStandard.Get(CrcStandards.X)` or `CrcStandard.FromName("name")`.')
+[void]$lines.Add('')
+[void]$lines.Add('| Name | Width | Class | Enum | Aliases | RevEng |')
 [void]$lines.Add('|---|---:|---|---|---|---|')
 foreach ($spec in $supported) {
     $c = ConvertTo-ConstantName $spec.name
     $cls = if ($spec.PSObject.Properties['class']) { [string]$spec.class } else { '' }
-    $aliases = Get-AliasesFrom $spec
-    $aliasCell = if ($aliases.Count -eq 0) {
-        '—'
-    }
-    else {
-        ($aliases | ForEach-Object { '`' + $_ + '`' }) -join ', '
-    }
+    $aliases = if ($spec.PSObject.Properties['aliases'] -and $spec.aliases) { @($spec.aliases) } else { @() }
+    $aliasCell = if ($aliases.Count -eq 0) { '—' } else { ($aliases | ForEach-Object { '`' + $_ + '`' }) -join ', ' }
     $anchor = Format-AnchorSlug $spec.name
     $refLink = "[spec]($source#$anchor)"
-    $nameCell = if ($excludeSet.Contains($spec.name)) { "**$($spec.name)** (core)" } else { $spec.name }
-    [void]$lines.Add("| $nameCell | $($spec.size) | $cls | ``CrcStandard.$c`` | $aliasCell | $refLink |")
+    $nameCell = if ($Common.Contains($spec.name)) { "**$($spec.name)**" } else { $spec.name }
+    [void]$lines.Add("| $nameCell | $($spec.size) | $cls | ``CrcStandards.$c`` | $aliasCell | $refLink |")
 }
 [void]$lines.Add('')
 
@@ -167,17 +185,18 @@ if ($skipped.Count -gt 0) {
 
 [void]$lines.Add('## Regeneration')
 [void]$lines.Add('')
-[void]$lines.Add('This page is produced by `tools/Generate-CrcDocs.ps1`. To refresh the data from upstream:')
+[void]$lines.Add('This page and the generated C# sources are produced by the scripts in `tools/`. To refresh the data from upstream:')
 [void]$lines.Add('')
 [void]$lines.Add('```pwsh')
 [void]$lines.Add('pwsh ./tools/Fetch-CrcSpecs.ps1')
-[void]$lines.Add('pwsh ./tools/Generate-CrcCatalog.ps1')
-[void]$lines.Add('pwsh ./tools/Generate-CrcCatalogTests.ps1')
-[void]$lines.Add('pwsh ./tools/Generate-CrcDocs.ps1')
+[void]$lines.Add('pwsh ./tools/Generate-CrcCatalog.ps1        # regenerates CrcStandards.cs and CrcStandard.Catalog.cs')
+[void]$lines.Add('pwsh ./tools/Generate-CrcCatalogTests.ps1   # regenerates CrcTests.Catalog.cs')
+[void]$lines.Add('pwsh ./tools/Generate-CrcDocs.ps1           # regenerates this page')
 [void]$lines.Add('```')
 [void]$lines.Add('')
 
 Set-Content -LiteralPath $OutputPath -Value ($lines -join "`n") -Encoding utf8
 Write-Host "Wrote $OutputPath"
 Write-Host "  Supported listed: $($supported.Count)"
+Write-Host "  Common:           $(($supported | Where-Object { $Common.Contains($_.name) }).Count)"
 Write-Host "  Oversize listed:  $($skipped.Count)"

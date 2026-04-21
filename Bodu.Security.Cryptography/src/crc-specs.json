@@ -1,2712 +1,2466 @@
-﻿[
-    {
-        "name":  "CRC-3/GSM",
-        "size":  3,
-        "polynomial":  "0X3",
-        "initialValue":  "0X0",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X7",
-        "check":  "0X4",
-        "residue":  "0X2",
-        "class":  "academic",
-        "created":  "17 February 2017",
-        "updated":  "",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-3/ROHC",
-        "size":  3,
-        "polynomial":  "0X3",
-        "initialValue":  "0X7",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0",
-        "check":  "0X6",
-        "residue":  "0X0",
-        "class":  "academic",
-        "created":  "14 December 2009",
-        "updated":  "4 August 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-4/G-704",
-        "size":  4,
-        "polynomial":  "0X3",
-        "initialValue":  "0X0",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0",
-        "check":  "0X7",
-        "residue":  "0X0",
-        "class":  "academic",
-        "created":  "7 October 2008",
-        "updated":  "21 November 2018",
-        "aliases":  [
-                        "CRC-4/ITU"
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-4/INTERLAKEN",
-        "size":  4,
-        "polynomial":  "0X3",
-        "initialValue":  "0XF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XF",
-        "check":  "0XB",
-        "residue":  "0X2",
-        "class":  "academic",
-        "created":  "10 February 2016",
-        "updated":  "4 August 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-5/EPC-C1G2",
-        "size":  5,
-        "polynomial":  "0X09",
-        "initialValue":  "0X09",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0X00",
-        "residue":  "0X00",
-        "class":  "attested",
-        "created":  "20 May 2009",
-        "updated":  "28 December 2019",
-        "aliases":  [
-                        "CRC-5/EPC"
-                    ],
-        "codewords":  [
-                          "1000100100000010000110",
-                          "1000000100000000010011"
-                      ]
-    },
-    {
-        "name":  "CRC-5/G-704",
-        "size":  5,
-        "polynomial":  "0X15",
-        "initialValue":  "0X00",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0X07",
-        "residue":  "0X00",
-        "class":  "academic",
-        "created":  "7 October 2008",
-        "updated":  "21 November 2018",
-        "aliases":  [
-                        "CRC-5/ITU"
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-5/USB",
-        "size":  5,
-        "polynomial":  "0X05",
-        "initialValue":  "0X1F",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X1F",
-        "check":  "0X19",
-        "residue":  "0X06",
-        "class":  "confirmed",
-        "created":  "1 December 2007",
-        "updated":  "12 July 2024",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "0000000000001000",
-                          "1000000010000011",
-                          "0010111000011000",
-                          "1010111000000111",
-                          "1010100011110111",
-                          "0101110010111100",
-                          "0000111001001110",
-                          "1000000000010111"
-                      ]
-    },
-    {
-        "name":  "CRC-6/CDMA2000-A",
-        "size":  6,
-        "polynomial":  "0X27",
-        "initialValue":  "0X3F",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0X0D",
-        "residue":  "0X00",
-        "class":  "attested",
-        "created":  "14 October 2013",
-        "updated":  "28 July 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "C101002E",
-                          "0110000F",
-                          "05100009",
-                          "2E0F09"
-                      ]
-    },
-    {
-        "name":  "CRC-6/CDMA2000-B",
-        "size":  6,
-        "polynomial":  "0X07",
-        "initialValue":  "0X3F",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0X3B",
-        "residue":  "0X00",
-        "class":  "academic",
-        "created":  "14 October 2013",
-        "updated":  "28 July 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-6/DARC",
-        "size":  6,
-        "polynomial":  "0X19",
-        "initialValue":  "0X00",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0X26",
-        "residue":  "0X00",
-        "class":  "attested",
-        "created":  "14 December 2009",
-        "updated":  "20 November 2018",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "1001010011000100",
-                          "0101001100011101",
-                          "00001100010000000010000000101101",
-                          "000000",
-                          "20B8B4"
-                      ]
-    },
-    {
-        "name":  "CRC-6/G-704",
-        "size":  6,
-        "polynomial":  "0X03",
-        "initialValue":  "0X00",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0X06",
-        "residue":  "0X00",
-        "class":  "academic",
-        "created":  "7 October 2008",
-        "updated":  "21 November 2018",
-        "aliases":  [
-                        "CRC-6/ITU"
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-6/GSM",
-        "size":  6,
-        "polynomial":  "0X2F",
-        "initialValue":  "0X00",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X3F",
-        "check":  "0X13",
-        "residue":  "0X3A",
-        "class":  "academic",
-        "created":  "17 February 2017",
-        "updated":  "",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-7/MMC",
-        "size":  7,
-        "polynomial":  "0X09",
-        "initialValue":  "0X00",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0X75",
-        "residue":  "0X00",
-        "class":  "academic",
-        "created":  "7 October 2008",
-        "updated":  "11 January 2022",
-        "aliases":  [
-                        "CRC-7"
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-7/ROHC",
-        "size":  7,
-        "polynomial":  "0X4F",
-        "initialValue":  "0X7F",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0X53",
-        "residue":  "0X00",
-        "class":  "academic",
-        "created":  "14 December 2009",
-        "updated":  "4 August 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-7/UMTS",
-        "size":  7,
-        "polynomial":  "0X45",
-        "initialValue":  "0X00",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0X61",
-        "residue":  "0X00",
-        "class":  "academic",
-        "created":  "8 February 2016",
-        "updated":  "7 May 2022",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-8/AUTOSAR",
-        "size":  8,
-        "polynomial":  "0X2F",
-        "initialValue":  "0XFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFF",
-        "check":  "0XDF",
-        "residue":  "0X42",
-        "class":  "attested",
-        "created":  "24 July 2016",
-        "updated":  "28 July 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "0000000012",
-                          "F20183C2",
-                          "0FAA0055C6",
-                          "00FF551177",
-                          "332255AABBCCDDEEFF11",
-                          "926B5533",
-                          "FFFFFFFF6C"
-                      ]
-    },
-    {
-        "name":  "CRC-8/CDMA2000",
-        "size":  8,
-        "polynomial":  "0X9B",
-        "initialValue":  "0XFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0XDA",
-        "residue":  "0X00",
-        "class":  "academic",
-        "created":  "14 October 2013",
-        "updated":  "28 July 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-8/DARC",
-        "size":  8,
-        "polynomial":  "0X39",
-        "initialValue":  "0X00",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0X15",
-        "residue":  "0X00",
-        "class":  "attested",
-        "created":  "14 December 2009",
-        "updated":  "29 November 2018",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "000000010000001111010111"
-                      ]
-    },
-    {
-        "name":  "CRC-8/DVB-S2",
-        "size":  8,
-        "polynomial":  "0XD5",
-        "initialValue":  "0X00",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0XBC",
-        "residue":  "0X00",
-        "class":  "academic",
-        "created":  "10 January 2014",
-        "updated":  "29 July 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "22C812563011223344556677884F"
-                      ]
-    },
-    {
-        "name":  "CRC-8/GSM-A",
-        "size":  8,
-        "polynomial":  "0X1D",
-        "initialValue":  "0X00",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0X37",
-        "residue":  "0X00",
-        "class":  "academic",
-        "created":  "17 February 2017",
-        "updated":  "8 August 2024",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "D6"
-                      ]
-    },
-    {
-        "name":  "CRC-8/GSM-B",
-        "size":  8,
-        "polynomial":  "0X49",
-        "initialValue":  "0X00",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFF",
-        "check":  "0X94",
-        "residue":  "0X53",
-        "class":  "academic",
-        "created":  "17 February 2017",
-        "updated":  "",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-8/HITAG",
-        "size":  8,
-        "polynomial":  "0X1D",
-        "initialValue":  "0XFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0XB4",
-        "residue":  "0X00",
-        "class":  "attested",
-        "created":  "23 December 2021",
-        "updated":  "4 August 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "000000010110001101000000011011011010010011110",
-                          "00000",
-                          "2C680DB49E",
-                          "CA9340FFC6",
-                          "0000"
-                      ]
-    },
-    {
-        "name":  "CRC-8/I-432-1",
-        "size":  8,
-        "polynomial":  "0X07",
-        "initialValue":  "0X00",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X55",
-        "check":  "0XA1",
-        "residue":  "0XAC",
-        "class":  "academic",
-        "created":  "19 April 2009",
-        "updated":  "2 August 2023",
-        "aliases":  [
-                        "CRC-8/ITU"
-                    ],
-        "codewords":  [
-                          "0000000000000000000000000000000001010101",
-                          "0000000000000000000000000000000101010010"
-                      ]
-    },
-    {
-        "name":  "CRC-8/I-CODE",
-        "size":  8,
-        "polynomial":  "0X1D",
-        "initialValue":  "0XFD",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0X7E",
-        "residue":  "0X00",
-        "class":  "attested",
-        "created":  "3 November 2007",
-        "updated":  "6 February 2017",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-8/LTE",
-        "size":  8,
-        "polynomial":  "0X9B",
-        "initialValue":  "0X00",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0XEA",
-        "residue":  "0X00",
-        "class":  "academic",
-        "created":  "13 February 2016",
-        "updated":  "5 August 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-8/MAXIM-DOW",
-        "size":  8,
-        "polynomial":  "0X31",
-        "initialValue":  "0X00",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0XA1",
-        "residue":  "0X00",
-        "class":  "attested",
-        "created":  "26 April 2009",
-        "updated":  "2 January 2021",
-        "aliases":  [
-                        "CRC-8/MAXIM",
-                        "DOW-CRC"
-                    ],
-        "codewords":  [
-                          "242BC5FB00000040",
-                          "40000000FBC52B24",
-                          "102BC5FB000000A0",
-                          "A0000000FBC52B10",
-                          "212BC5FB00000089",
-                          "89000000FBC52B21",
-                          "142BC5FB00000054",
-                          "54000000FBC52B14",
-                          "14B3D8FB000000D4",
-                          "D4000000FBD8B314",
-                          "232BC5FB000000F3",
-                          "F3000000FBC52B23",
-                          "23B3D8FB00000073",
-                          "73000000FBD8B323",
-                          "092BC5FB00000097",
-                          "97000000FBC52B09",
-                          "09B3D8FB00000017",
-                          "17000000FBD8B309",
-                          "0B2BC5FB000000ED",
-                          "ED000000FBC52B0B",
-                          "0BB3D8FB0000006D",
-                          "6D000000FBD8B30B",
-                          "0F2BC5FB00000019",
-                          "19000000FBC52B0F",
-                          "0FB3D8FB00000099",
-                          "99000000FBD8B30F",
-                          "0A2BC5FB000000D0",
-                          "D0000000FBC52B0A",
-                          "0C2BC5FB0000005E",
-                          "5E000000FBC52B0C"
-                      ]
-    },
-    {
-        "name":  "CRC-8/MIFARE-MAD",
-        "size":  8,
-        "polynomial":  "0X1D",
-        "initialValue":  "0XC7",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0X99",
-        "residue":  "0X00",
-        "class":  "attested",
-        "created":  "21 February 2019",
-        "updated":  "",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "0101080108010800000000000004000310031002100210000000000000113089",
-                          "0103E103E103E103E103E10000000000000000000000000000000000000000C4",
-                          "0103E103E103E103E103E103E1000000000000000000000000000000000000AB",
-                          "00563D563C563C563C563C563C00000000000000000000000000000000000030"
-                      ]
-    },
-    {
-        "name":  "CRC-8/NRSC-5",
-        "size":  8,
-        "polynomial":  "0X31",
-        "initialValue":  "0XFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0XF7",
-        "residue":  "0X00",
-        "class":  "attested",
-        "created":  "16 November 2018",
-        "updated":  "20 March 2019",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "5822EF639D240114F25D007CDA4208A1CBBDE9DFD73273A7D180003038EB",
-                          "B002F6E01BF5E00BE3F6D05450D23B70273990D90ED77AEDF6EB803C1AD30A685E0A009A",
-                          "412C565998C4938214C58005800B09CABACB98B656DE98FB199A18923DE06D592D2D399A5CA72CFAD96BC10735E4774FA06AFEAB1726EF0F471ABED704DA798DEDABB16D1A4F0D7B7C49F65C1EBE2D5DE6EB16D8BF2DB0199F76D6C8455C1C70251B4290CA669C00AC529FC0014002174006E6860558EEF5CBE4DEF994D1F642156E48FA68072E78A7F1C88A80DF02516B5672FFF281780B6200A3",
-                          "896C608852750D2DC92490555A448BA655686F62F35A2F7522C62EB13161881468600683310689",
-                          "412C570068CB2362DCCB2400004416B42A5F9B2C469A721D106258A76D77C2F105C315DA1257CAD1232A47282475FB250171BCC094DE3C5711A0B68892F7A5685CAB97881BFA802056600688A08815EAD3C069B68A952C00058BD0071DFD5F975D1CFD976FAE0A82A1AF1636E4687EE472C62F22A96E3197B88943852B128D0489E911B85B84023122176D0670130348DDD554416BB8852A854364",
-                          "0D0640C6D800124B",
-                          "89866AD812A05E8034A3BBBAAAB56AD4FAD9894B0030000000007752"
-                      ]
-    },
-    {
-        "name":  "CRC-8/OPENSAFETY",
-        "size":  8,
-        "polynomial":  "0X2F",
-        "initialValue":  "0X00",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0X3E",
-        "residue":  "0X00",
-        "class":  "attested",
-        "created":  "22 July 2016",
-        "updated":  "7 May 2022",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "23C8083411223344556677883C",
-                          "02A806000060650006A11C",
-                          "03A80001000060650006A131",
-                          "03A806000060650007211D",
-                          "02A80001000060650007211D",
-                          "04A8060000606500021393",
-                          "05A800010000606500021350",
-                          "01AC0600006065000721AF",
-                          "00AC000300006065000721B5"
-                      ]
-    },
-    {
-        "name":  "CRC-8/ROHC",
-        "size":  8,
-        "polynomial":  "0X07",
-        "initialValue":  "0XFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0XD0",
-        "residue":  "0X00",
-        "class":  "academic",
-        "created":  "14 December 2009",
-        "updated":  "4 August 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-8/SAE-J1850",
-        "size":  8,
-        "polynomial":  "0X1D",
-        "initialValue":  "0XFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFF",
-        "check":  "0X4B",
-        "residue":  "0XC4",
-        "class":  "attested",
-        "created":  "17 February 2016",
-        "updated":  "3 August 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "0000000059",
-                          "F2018337",
-                          "0FAA005579",
-                          "00FF5511B8",
-                          "332255AABBCCDDEEFFCB",
-                          "926B558C",
-                          "FFFFFFFF74",
-                          "55FF0000ECFF601F",
-                          "55FF0000F0FFA038",
-                          "660BEAFFBFFFC0CA",
-                          "5E18EAFFB7FF60BD",
-                          "F6301600FCFE1081"
-                      ]
-    },
-    {
-        "name":  "CRC-8/SMBUS",
-        "size":  8,
-        "polynomial":  "0X07",
-        "initialValue":  "0X00",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0XF4",
-        "residue":  "0X00",
-        "class":  "attested",
-        "created":  "30 March 2005",
-        "updated":  "8 August 2024",
-        "aliases":  [
-                        "CRC-8"
-                    ],
-        "codewords":  [
-                          "E3"
-                      ]
-    },
-    {
-        "name":  "CRC-8/TECH-3250",
-        "size":  8,
-        "polynomial":  "0X1D",
-        "initialValue":  "0XFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0X97",
-        "residue":  "0X00",
-        "class":  "attested",
-        "created":  "19 July 2012",
-        "updated":  "21 November 2018",
-        "aliases":  [
-                        "CRC-8/AES",
-                        "CRC-8/EBU"
-                    ],
-        "codewords":  [
-                          "3D020000020000000000000000000000000000000000009B",
-                          "010000000000000000000000000000000000000000000032"
-                      ]
-    },
-    {
-        "name":  "CRC-8/WCDMA",
-        "size":  8,
-        "polynomial":  "0X9B",
-        "initialValue":  "0X00",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00",
-        "check":  "0X25",
-        "residue":  "0X00",
-        "class":  "third-party",
-        "created":  "8 November 2009",
-        "updated":  "28 December 2019",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "00001148",
-                          "00012077",
-                          "80800012",
-                          "00001021010022000A002D000000000000460A20",
-                          "00001021010123000A0028000000000000460A54",
-                          "00001021010125000A0029000000000000460A4B",
-                          "400010200B01001A000A000100000000008009001F01F393",
-                          "400010200B01001F000A000100000000000009001F01F3F7",
-                          "400010200B010020000A000100000000000009001F01F331",
-                          "40001107083829B41903",
-                          "40001107084826682180",
-                          "40001107085C293417A8",
-                          "00001268",
-                          "8B"
-                      ]
-    },
-    {
-        "name":  "CRC-10/ATM",
-        "size":  10,
-        "polynomial":  "0X233",
-        "initialValue":  "0X000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X000",
-        "check":  "0X199",
-        "residue":  "0X000",
-        "class":  "attested",
-        "created":  "19 April 2009",
-        "updated":  "7 May 2022",
-        "aliases":  [
-                        "CRC-10",
-                        "CRC-10/I-610"
-                    ],
-        "codewords":  [
-                          "116A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A00AF",
-                          "1801AAAAAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A02AC",
-                          "0A0B0C0D0E0F0000000000000000000000000000000000000000000000000000000000000000000000000000000001F6",
-                          "11111111111111111111000000000000000000000000000000000000000000000000000000000000000000000000016B",
-                          "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF030F",
-                          "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901202ED",
-                          "106A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A03B9",
-                          "180100000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000000000006A6A6A6A6A6A6A6A004A"
-                      ]
-    },
-    {
-        "name":  "CRC-10/CDMA2000",
-        "size":  10,
-        "polynomial":  "0X3D9",
-        "initialValue":  "0X3FF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X000",
-        "check":  "0X233",
-        "residue":  "0X000",
-        "class":  "academic",
-        "created":  "14 October 2013",
-        "updated":  "28 July 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-10/GSM",
-        "size":  10,
-        "polynomial":  "0X175",
-        "initialValue":  "0X000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X3FF",
-        "check":  "0X12A",
-        "residue":  "0X0C6",
-        "class":  "academic",
-        "created":  "17 February 2017",
-        "updated":  "",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-11/FLEXRAY",
-        "size":  11,
-        "polynomial":  "0X385",
-        "initialValue":  "0X01A",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X000",
-        "check":  "0X5A3",
-        "residue":  "0X000",
-        "class":  "attested",
-        "created":  "3 November 2007",
-        "updated":  "7 May 2022",
-        "aliases":  [
-                        "CRC-11"
-                    ],
-        "codewords":  [
-                          "1100000000010000000100000100110",
-                          "1100000000001000100000100011011",
-                          "1100000000010000100001100000100",
-                          "0000000000011000100010111010010"
-                      ]
-    },
-    {
-        "name":  "CRC-11/UMTS",
-        "size":  11,
-        "polynomial":  "0X307",
-        "initialValue":  "0X000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X000",
-        "check":  "0X061",
-        "residue":  "0X000",
-        "class":  "academic",
-        "created":  "8 February 2016",
-        "updated":  "7 May 2022",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-12/CDMA2000",
-        "size":  12,
-        "polynomial":  "0XF13",
-        "initialValue":  "0XFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X000",
-        "check":  "0XD4D",
-        "residue":  "0X000",
-        "class":  "academic",
-        "created":  "14 October 2013",
-        "updated":  "28 July 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-12/DECT",
-        "size":  12,
-        "polynomial":  "0X80F",
-        "initialValue":  "0X000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X000",
-        "check":  "0XF5B",
-        "residue":  "0X000",
-        "class":  "academic",
-        "created":  "29 July 2010",
-        "updated":  "15 February 2017",
-        "aliases":  [
-                        "X-CRC-12"
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-12/GSM",
-        "size":  12,
-        "polynomial":  "0XD31",
-        "initialValue":  "0X000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFFF",
-        "check":  "0XB34",
-        "residue":  "0X178",
-        "class":  "academic",
-        "created":  "17 February 2017",
-        "updated":  "",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-12/UMTS",
-        "size":  12,
-        "polynomial":  "0X80F",
-        "initialValue":  "0X000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X000",
-        "check":  "0XDAF",
-        "residue":  "0X000",
-        "class":  "academic",
-        "created":  "10 December 2009",
-        "updated":  "5 August 2023",
-        "aliases":  [
-                        "CRC-12/3GPP"
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-13/BBC",
-        "size":  13,
-        "polynomial":  "0X1CF5",
-        "initialValue":  "0X0000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0X04FA",
-        "residue":  "0X0000",
-        "class":  "attested",
-        "created":  "14 October 2013",
-        "updated":  "6 February 2017",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "17777777777762722"
-                      ]
-    },
-    {
-        "name":  "CRC-14/DARC",
-        "size":  14,
-        "polynomial":  "0X0805",
-        "initialValue":  "0X0000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0X082D",
-        "residue":  "0X0000",
-        "class":  "attested",
-        "created":  "14 December 2009",
-        "updated":  "20 November 2018",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "FF3F",
-                          "02000102372050524F4A454354204D41494E4D454E553B08",
-                          "40008040EC040A4AF252A2C22A04B2829272B2A272AADC10"
-                      ]
-    },
-    {
-        "name":  "CRC-14/GSM",
-        "size":  14,
-        "polynomial":  "0X202D",
-        "initialValue":  "0X0000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X3FFF",
-        "check":  "0X30AE",
-        "residue":  "0X031E",
-        "class":  "academic",
-        "created":  "17 February 2017",
-        "updated":  "",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-15/CAN",
-        "size":  15,
-        "polynomial":  "0X4599",
-        "initialValue":  "0X0000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0X059E",
-        "residue":  "0X0000",
-        "class":  "academic",
-        "created":  "2 November 2007",
-        "updated":  "7 May 2022",
-        "aliases":  [
-                        "CRC-15"
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-15/MPT1327",
-        "size":  15,
-        "polynomial":  "0X6815",
-        "initialValue":  "0X0000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0001",
-        "check":  "0X2566",
-        "residue":  "0X6815",
-        "class":  "attested",
-        "created":  "16 July 2012",
-        "updated":  "2 August 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "1010101010101010110001001101010000000000000000000000000000000001010101010101010110001001101011",
-                          "100111111101001010110100111100111111101101000100010011110010110",
-                          "101010011100010101100000101000001101110001101100111010111011101",
-                          "100111111101000101001010011100100110100101011000100100101110000",
-                          "100110100100011111000100011010000000101010101010101111110011100",
-                          "101010111001011010110100001100100101111010100000110000100000100",
-                          "100010100000110000001100011100100000100001111000111111000110000",
-                          "100011100000110000001100011100000001000000000000000011010100110",
-                          "100100110111000011010100010000111111111110010000001011101110100",
-                          "100100110110011110011100010000111111111110010000011001100110101",
-                          "100100110110011110011100110100100110000101111100010100001100011",
-                          "100100111111111111100100010111011001111001111000101011111101011",
-                          "100100110000101111100100001001011001111001110000111001000011011",
-                          "100100110000101111100100001000011001111001100000001000110011011",
-                          "100100110110011010100100010000111111111110010000011011111000111",
-                          "100100110110011010110100010000111111111110010000101111110001110",
-                          "4F2C"
-                      ]
-    },
-    {
-        "name":  "CRC-16/ARC",
-        "size":  16,
-        "polynomial":  "0X8005",
-        "initialValue":  "0X0000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0XBB3D",
-        "residue":  "0X0000",
-        "class":  "attested",
-        "created":  "30 March 2005",
-        "updated":  "2 August 2023",
-        "aliases":  [
-                        "ARC",
-                        "CRC-16",
-                        "CRC-16/LHA",
-                        "CRC-IBM"
-                    ],
-        "codewords":  [
-                          "000000000000",
-                          "F20183E1C2",
-                          "0FAA0055E30B",
-                          "00FF5511CF6C",
-                          "332255AABBCCDDEEFF98AE",
-                          "926B554EE2",
-                          "FFFFFFFF0194"
-                      ]
-    },
-    {
-        "name":  "CRC-16/CDMA2000",
-        "size":  16,
-        "polynomial":  "0XC867",
-        "initialValue":  "0XFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0X4C06",
-        "residue":  "0X0000",
-        "class":  "academic",
-        "created":  "14 October 2013",
-        "updated":  "28 July 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-16/CMS",
-        "size":  16,
-        "polynomial":  "0X8005",
-        "initialValue":  "0XFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0XAEE7",
-        "residue":  "0X0000",
-        "class":  "third-party",
-        "created":  "13 July 2016",
-        "updated":  "2 August 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "0200080078110000F00F0000F7E0",
-                          "020008005B110000F00F00004725",
-                          "0200080050110000F00F0000F71F",
-                          "0200080024110000F00F00003636",
-                          "02000800A6100000F00F0000141A",
-                          "0200080034100000B0090000B725",
-                          "0200080029100000B0090000E76E",
-                          "0200080002100000B0090000D79B",
-                          "0200080005100000B0090000A789",
-                          "0200080078100000B0090000F696",
-                          "00050900000000003030303000D55E",
-                          "01000400051000003793",
-                          "0200080034100000F00F00003740",
-                          "0200080029100000F00F0000670B",
-                          "0200080002100000F00F000057FE",
-                          "0200080005100000F00F000027EC",
-                          "0200080078100000F00F000076F3",
-                          "02000C00301000009A01000000000000837B",
-                          "02000C00301000009A0100009A0100004B55",
-                          "02000C00301000009A01000034030000934E",
-                          "02000C00301000009A010000CE0400005B09",
-                          "02000C00301000009A01000068060000A311"
-                      ]
-    },
-    {
-        "name":  "CRC-16/DDS-110",
-        "size":  16,
-        "polynomial":  "0X8005",
-        "initialValue":  "0X800D",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0X9ECF",
-        "residue":  "0X0000",
-        "class":  "attested",
-        "created":  "30 November 2009",
-        "updated":  "28 December 2019",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "0200108200731082F7FE",
-                          "02000200731082FEF7",
-                          "02001082007800ED96",
-                          "020010820078016D93",
-                          "020005006600057A586435"
-                      ]
-    },
-    {
-        "name":  "CRC-16/DECT-R",
-        "size":  16,
-        "polynomial":  "0X0589",
-        "initialValue":  "0X0000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0001",
-        "check":  "0X007E",
-        "residue":  "0X0589",
-        "class":  "attested",
-        "created":  "7 December 2009",
-        "updated":  "3 August 2023",
-        "aliases":  [
-                        "R-CRC-16"
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-16/DECT-X",
-        "size":  16,
-        "polynomial":  "0X0589",
-        "initialValue":  "0X0000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0X007F",
-        "residue":  "0X0000",
-        "class":  "attested",
-        "created":  "30 July 2010",
-        "updated":  "2 January 2021",
-        "aliases":  [
-                        "X-CRC-16"
-                    ],
-        "codewords":  [
-                          "A37029"
-                      ]
-    },
-    {
-        "name":  "CRC-16/DNP",
-        "size":  16,
-        "polynomial":  "0X3D65",
-        "initialValue":  "0X0000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFFFF",
-        "check":  "0XEA82",
-        "residue":  "0X66C5",
-        "class":  "confirmed",
-        "created":  "2 November 2007",
-        "updated":  "28 December 2019",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-16/EN-13757",
-        "size":  16,
-        "polynomial":  "0X3D65",
-        "initialValue":  "0X0000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFFFF",
-        "check":  "0XC2B7",
-        "residue":  "0XA366",
-        "class":  "confirmed",
-        "created":  "1 October 2008",
-        "updated":  "28 December 2019",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "EE449ACE010000802307AABC",
-                          "7A4700E0A535E79CFAA94D07B173BC101496",
-                          "021CCB0127DCF516FF4EA8BC0A4851744D3D",
-                          "438A680ECFC8EAA7F5D6476CAD938EBF88AF",
-                          "259794C336C6FE9601D99F81B5EBDD9F36B5",
-                          "67FC406AA1107F380CA349EB2F1AD57AD22A",
-                          "7D8067CD9D1076",
-                          "D0F1E6C2C3962E",
-                          "384BABA953BCE5",
-                          "70414545C59920",
-                          "F0649A4E111111110000E9CA",
-                          "A12F2F2F2F2F2F2F2F2F2F2F2F2F2F2F4A08",
-                          "2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F63D7",
-                          "7A8D00E0A503B1922864C36F29B37AF0646A",
-                          "D1391E979A44C456786CBB99CD6ECAACB373",
-                          "780B134365871E6D",
-                          "07400001AAAA0000363E"
-                      ]
-    },
-    {
-        "name":  "CRC-16/GENIBUS",
-        "size":  16,
-        "polynomial":  "0X1021",
-        "initialValue":  "0XFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFFFF",
-        "check":  "0XD64E",
-        "residue":  "0X1D0F",
-        "class":  "attested",
-        "created":  "2 November 2007",
-        "updated":  "3 January 2021",
-        "aliases":  [
-                        "CRC-16/DARC",
-                        "CRC-16/EPC",
-                        "CRC-16/EPC-C1G2",
-                        "CRC-16/I-CODE"
-                    ],
-        "codewords":  [
-                          "0000E2F0",
-                          "08001111CCAE",
-                          "100011112222968F",
-                          "180011112222333378F6",
-                          "20001111222233334444C241",
-                          "2800111122223333444455552A91",
-                          "30001111222233334444555566661835",
-                          "402141424387F5",
-                          "101000000001000000000000000000101000001010001",
-                          "3000319F60A356276E28F14FDC9C5DB4",
-                          "100120020C823E003982150064820900FA910A",
-                          "07200102C302101A901C",
-                          "0000000001000000000101100011110010111",
-                          "000000000101000000000000000011000101100011010000000101101101000111001",
-                          "11000000010100000000000000000110001011000110100000001000000100011111001001111011010001011100000011000001",
-                          "00000001010100000000000000001100010110001101000000011000001110000000010101010101010101100010011000111"
-                      ]
-    },
-    {
-        "name":  "CRC-16/GSM",
-        "size":  16,
-        "polynomial":  "0X1021",
-        "initialValue":  "0X0000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFFFF",
-        "check":  "0XCE3C",
-        "residue":  "0X1D0F",
-        "class":  "attested",
-        "created":  "17 February 2017",
-        "updated":  "4 August 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "010101000000000002005A28",
-                          "035D24E3580200010034D0F2"
-                      ]
-    },
-    {
-        "name":  "CRC-16/IBM-3740",
-        "size":  16,
-        "polynomial":  "0X1021",
-        "initialValue":  "0XFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0X29B1",
-        "residue":  "0X0000",
-        "class":  "attested",
-        "created":  "30 March 2005",
-        "updated":  "3 August 2023",
-        "aliases":  [
-                        "CRC-16/AUTOSAR",
-                        "CRC-16/CCITT-FALSE"
-                    ],
-        "codewords":  [
-                          "0000000084C0",
-                          "F20183D374",
-                          "0FAA00552023",
-                          "00FF5511B8F9",
-                          "332255AABBCCDDEEFFF53F",
-                          "926B550745",
-                          "FFFFFFFF1D0F",
-                          "FE00000001F1D3",
-                          "FB",
-                          "E5",
-                          "A40C"
-                      ]
-    },
-    {
-        "name":  "CRC-16/IBM-SDLC",
-        "size":  16,
-        "polynomial":  "0X1021",
-        "initialValue":  "0XFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFFFF",
-        "check":  "0X906E",
-        "residue":  "0XF0B8",
-        "class":  "attested",
-        "created":  "10 September 2005",
-        "updated":  "4 August 2023",
-        "aliases":  [
-                        "CRC-16/ISO-HDLC",
-                        "CRC-16/ISO-IEC-14443-3-B",
-                        "CRC-16/X-25",
-                        "CRC-B",
-                        "X-25"
-                    ],
-        "codewords":  [
-                          "033F5BEC",
-                          "01738357",
-                          "013FEBDF",
-                          "03733364",
-                          "54D9E4",
-                          "54261B",
-                          "4361744D6F757365393837363534333231910A",
-                          "4361744D6F7573653938373635343332316EF5",
-                          "21005100004944330300000000004A544954320000000D000000416E616C6F6720426C756573545045310000000D0000004A2E20512E205075626C696354414C4200000012000000546865204C6F73742053657373696F6E73F527",
-                          "000000CCC6",
-                          "0FAAFFFCD1",
-                          "0A1234562CF6"
-                      ]
-    },
-    {
-        "name":  "CRC-16/ISO-IEC-14443-3-A",
-        "size":  16,
-        "polynomial":  "0X1021",
-        "initialValue":  "0XC6C6",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0XBF05",
-        "residue":  "0X0000",
-        "class":  "attested",
-        "created":  "30 April 2011",
-        "updated":  "3 August 2023",
-        "aliases":  [
-                        "CRC-A"
-                    ],
-        "codewords":  [
-                          "0000A01E",
-                          "123426CF",
-                          "AABBCCDDEE0011227B09",
-                          "9370C2A82DF4B3BAA3",
-                          "08B6DD",
-                          "6030764A",
-                          "500057CD",
-                          "937000000000009CD9",
-                          "6000F57B",
-                          "93701DFBE03335D355"
-                      ]
-    },
-    {
-        "name":  "CRC-16/KERMIT",
-        "size":  16,
-        "polynomial":  "0X1021",
-        "initialValue":  "0X0000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0X2189",
-        "residue":  "0X0000",
-        "class":  "attested",
-        "created":  "10 September 2005",
-        "updated":  "4 August 2023",
-        "aliases":  [
-                        "CRC-16/BLUETOOTH",
-                        "CRC-16/CCITT",
-                        "CRC-16/CCITT-TRUE",
-                        "CRC-16/V-41-LSB",
-                        "CRC-CCITT",
-                        "KERMIT"
-                    ],
-        "codewords":  [
-                          "43AED6C8ADD651431551B03102D332B9C1D651313732B583F303",
-                          "6DAEB9CDADCD524F15C1C154022FCD454C43C1D9C1AEC15431AEB9CDADCD524F32B0B93446C2C13443B0B3B9B946834861",
-                          "CDAEB9CDADCD524F54DF7F3802D33231C1CDC8B03134388361A7",
-                          "6D8080808080808015D3518002B0B058D3838236",
-                          "CDAEB9CDADCD524F15C2C1B9024CB032C1CDC8B03134382FCD454C43C1D9C1AEC15431AEB9CDADCD524FC1B0B9B531323443B3C4B9B0B3C2C1B53131C2B9B0B0C143B53437313443B0C437C134B6B54334C1C432B6B9B5B5C14343433445B9C13831B543383132343446C131B332B0B934B9B0B3B3C1B0454534C438374643B3834483",
-                          "6DAEB9CDADCD524FB9DF7FD58391C6",
-                          "43AED6C8ADDA5843D50DD0C1524954D920BF8397AC",
-                          "43AED6C8ADDA584315C831BC0DD0C1524954D920BF8302D5",
-                          "32AED6C8ADDA58C21538313702CD31B3C15146B034B3B90D8ACDD6C10D8A5146C1B034B3B92F31B0AED6C8DA58C2AECD454C200D8AC1C1B0B53137202020202083751B",
-                          "6DAEB9D6ADD3CD57B5DF7F4A839BC6",
-                          "54A114",
-                          "4361744D6F7573653938373635343332318DC2",
-                          "10000000000000000000000000000000000000111001111100000000000000010010001001110100",
-                          "10001110110001001100011000000010000000111001111100000000000000010111110011100100",
-                          "6DD2",
-                          "1110110000110110",
-                          "1011000011011000"
-                      ]
-    },
-    {
-        "name":  "CRC-16/LJ1200",
-        "size":  16,
-        "polynomial":  "0X6F63",
-        "initialValue":  "0X0000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0XBDF4",
-        "residue":  "0X0000",
-        "class":  "third-party",
-        "created":  "20 February 2016",
-        "updated":  "6 June 2018",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-16/M17",
-        "size":  16,
-        "polynomial":  "0X5935",
-        "initialValue":  "0XFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0X772B",
-        "residue":  "0X0000",
-        "class":  "attested",
-        "created":  "7 May 2022",
-        "updated":  "8 August 2024",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "FFFF",
-                          "41206E",
-                          "1C31"
-                      ]
-    },
-    {
-        "name":  "CRC-16/MAXIM-DOW",
-        "size":  16,
-        "polynomial":  "0X8005",
-        "initialValue":  "0X0000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFFFF",
-        "check":  "0X44C2",
-        "residue":  "0XB001",
-        "class":  "attested",
-        "created":  "26 April 2009",
-        "updated":  "28 December 2019",
-        "aliases":  [
-                        "CRC-16/MAXIM"
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-16/MCRF4XX",
-        "size":  16,
-        "polynomial":  "0X1021",
-        "initialValue":  "0XFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0X6F91",
-        "residue":  "0X0000",
-        "class":  "attested",
-        "created":  "18 January 2008",
-        "updated":  "4 August 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "54261B",
-                          "4361744D6F7573653938373635343332316EF5",
-                          "3A7164D9",
-                          "3A916A3E"
-                      ]
-    },
-    {
-        "name":  "CRC-16/MODBUS",
-        "size":  16,
-        "polynomial":  "0X8005",
-        "initialValue":  "0XFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0X4B37",
-        "residue":  "0X0000",
-        "class":  "attested",
-        "created":  "27 February 2007",
-        "updated":  "2 January 2021",
-        "aliases":  [
-                        "MODBUS"
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-16/NRSC-5",
-        "size":  16,
-        "polynomial":  "0X080B",
-        "initialValue":  "0XFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0XA066",
-        "residue":  "0X0000",
-        "class":  "attested",
-        "created":  "16 November 2018",
-        "updated":  "20 March 2019",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "000048BBABA0329A0A0A2671",
-                          "00001010000010101001101000110010101000001010101110111011010010000000000100100110",
-                          "0030C8D3D37379D91E0A7B40",
-                          "00001010000111101101100101111001011100111101001111010011110010000011000001111011",
-                          "0010C097A920F31B240A2D1D",
-                          "00001010001001000001101111110011001000001010100110010111110000000001110100101101",
-                          "00200882E861D03C3C0AEB71",
-                          "00001010001111000011110011010000011000011110100010000010000010000010000111101011",
-                          "00100000DC69FABC4E0AB6CD",
-                          "00001010010011101011110011111010011010011101110000000000000000000001110110110110",
-                          "000015004000809E54456AC7",
-                          "01000101010101001001111010000000000000000100000000000000000101010000011101101010",
-                          "00200008FA7E849E54454B82",
-                          "01000101010101001001111010000100011111101111101000001000000000000010001001001011",
-                          "001000744280849E54457C5C",
-                          "01000101010101001001111010000100100000000100001001110100000000000001110001111100"
-                      ]
-    },
-    {
-        "name":  "CRC-16/OPENSAFETY-A",
-        "size":  16,
-        "polynomial":  "0X5935",
-        "initialValue":  "0X0000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0X5D38",
-        "residue":  "0X0000",
-        "class":  "attested",
-        "created":  "22 July 2016",
-        "updated":  "7 May 2022",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "23C8083411223344556677880374"
-                      ]
-    },
-    {
-        "name":  "CRC-16/OPENSAFETY-B",
-        "size":  16,
-        "polynomial":  "0X755B",
-        "initialValue":  "0X0000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0X20FE",
-        "residue":  "0X0000",
-        "class":  "attested",
-        "created":  "22 July 2016",
-        "updated":  "7 May 2022",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "22C812563011223344556677887031"
-                      ]
-    },
-    {
-        "name":  "CRC-16/PROFIBUS",
-        "size":  16,
-        "polynomial":  "0X1DCF",
-        "initialValue":  "0XFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFFFF",
-        "check":  "0XA819",
-        "residue":  "0XE394",
-        "class":  "attested",
-        "created":  "5 July 2016",
-        "updated":  "7 May 2022",
-        "aliases":  [
-                        "CRC-16/IEC-61158-2"
-                    ],
-        "codewords":  [
-                          "34AF21",
-                          "011057E0",
-                          "321000E37E82",
-                          "331000E32A0F",
-                          "2611010000080A109739"
-                      ]
-    },
-    {
-        "name":  "CRC-16/RIELLO",
-        "size":  16,
-        "polynomial":  "0X1021",
-        "initialValue":  "0XB2AA",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0X63D0",
-        "residue":  "0X0000",
-        "class":  "third-party",
-        "created":  "18 April 2009",
-        "updated":  "28 December 2019",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "2022525330308790"
-                      ]
-    },
-    {
-        "name":  "CRC-16/SPI-FUJITSU",
-        "size":  16,
-        "polynomial":  "0X1021",
-        "initialValue":  "0X1D0F",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0XE5CC",
-        "residue":  "0X0000",
-        "class":  "attested",
-        "created":  "30 October 2007",
-        "updated":  "4 August 2023",
-        "aliases":  [
-                        "CRC-16/AUG-CCITT"
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-16/T10-DIF",
-        "size":  16,
-        "polynomial":  "0X8BB7",
-        "initialValue":  "0X0000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0XD0DB",
-        "residue":  "0X0000",
-        "class":  "attested",
-        "created":  "29 September 2009",
-        "updated":  "2 January 2021",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "00000000000000000000000000000000000000000000000000000000000000000000",
-                          "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFA293",
-                          "000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F0224",
-                          "FFFF00000000000000000000000000000000000000000000000000000000000021B8",
-                          "FFFEFDFCFBFAF9F8F7F6F5F4F3F2F1F0EFEEEDECEBEAE9E8E7E6E5E4E3E2E1E0A0B7"
-                      ]
-    },
-    {
-        "name":  "CRC-16/TELEDISK",
-        "size":  16,
-        "polynomial":  "0XA097",
-        "initialValue":  "0X0000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0X0FB3",
-        "residue":  "0X0000",
-        "class":  "confirmed",
-        "created":  "10 December 2009",
-        "updated":  "4 August 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-16/TMS37157",
-        "size":  16,
-        "polynomial":  "0X1021",
-        "initialValue":  "0X89EC",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0X26B1",
-        "residue":  "0X0000",
-        "class":  "attested",
-        "created":  "17 April 2011",
-        "updated":  "28 December 2019",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "0225A6",
-                          "024000000000A060E7",
-                          "024100000000A46FA5",
-                          "01AAAAAAAAAADC25AB"
-                      ]
-    },
-    {
-        "name":  "CRC-16/UMTS",
-        "size":  16,
-        "polynomial":  "0X8005",
-        "initialValue":  "0X0000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0XFEE8",
-        "residue":  "0X0000",
-        "class":  "attested",
-        "created":  "4 June 2008",
-        "updated":  "8 August 2024",
-        "aliases":  [
-                        "CRC-16/BUYPASS",
-                        "CRC-16/VERIFONE"
-                    ],
-        "codewords":  [
-                          "1FBB",
-                          "0384901B56",
-                          "03848400001230314131333030323031333030311C39303062BF",
-                          "01100110011101011000001100000110011001110101100001101000111010100",
-                          "331D3030331D30",
-                          "53716",
-                          "01101000011101011000001100000110011001110101100001111000111001001",
-                          "341D3030331D30",
-                          "61897",
-                          "01101010011101011000001100000110011001110101100000001000111001111",
-                          "351D3030331D30",
-                          "04559",
-                          "01101100011101011000001100000110011001110101100001011000111000000",
-                          "361D3030331D30",
-                          "45504",
-                          "01100110011101011010001100000110000001110101100000101000111000110",
-                          "331D3430301D30",
-                          "20934",
-                          "01100110011101011000001100000111001001110101100001101000111110110",
-                          "331D3030391D30",
-                          "53750",
-                          "01100010011101011000001100010110000001110101100000001001101010001",
-                          "311D3031301D30",
-                          "04945"
-                      ]
-    },
-    {
-        "name":  "CRC-16/USB",
-        "size":  16,
-        "polynomial":  "0X8005",
-        "initialValue":  "0XFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFFFF",
-        "check":  "0XB4C8",
-        "residue":  "0XB001",
-        "class":  "confirmed",
-        "created":  "1 December 2007",
-        "updated":  "12 July 2024",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "1BED534B3E6D7F7CD7CC",
-                          "EB33",
-                          "55534243A864AB870800000080000A25000000000000000000000000000000C30E",
-                          "C370",
-                          "8006000100004000DD94",
-                          "BB29",
-                          "00010203EF7A",
-                          "234567890E1C"
-                      ]
-    },
-    {
-        "name":  "CRC-16/XMODEM",
-        "size":  16,
-        "polynomial":  "0X1021",
-        "initialValue":  "0X0000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000",
-        "check":  "0X31C3",
-        "residue":  "0X0000",
-        "class":  "attested",
-        "created":  "30 March 2005",
-        "updated":  "5 August 2023",
-        "aliases":  [
-                        "CRC-16/ACORN",
-                        "CRC-16/LTE",
-                        "CRC-16/V-41-MSB",
-                        "XMODEM",
-                        "ZMODEM"
-                    ],
-        "codewords":  [
-                          "541A71",
-                          "4361744D6F757365393837363534333231E556"
-                      ]
-    },
-    {
-        "name":  "CRC-17/CAN-FD",
-        "size":  17,
-        "polynomial":  "0X1685B",
-        "initialValue":  "0X00000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00000",
-        "check":  "0X04F03",
-        "residue":  "0X00000",
-        "class":  "academic",
-        "created":  "20 June 2017",
-        "updated":  "3 January 2021",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-21/CAN-FD",
-        "size":  21,
-        "polynomial":  "0X102899",
-        "initialValue":  "0X000000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X000000",
-        "check":  "0X0ED841",
-        "residue":  "0X000000",
-        "class":  "academic",
-        "created":  "20 June 2017",
-        "updated":  "3 January 2021",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-24/BLE",
-        "size":  24,
-        "polynomial":  "0X00065B",
-        "initialValue":  "0X555555",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X000000",
-        "check":  "0XC25A56",
-        "residue":  "0X000000",
-        "class":  "attested",
-        "created":  "7 February 2016",
-        "updated":  "4 August 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "0003424C45290ACE",
-                          "0100001010010000011001011010010100100101110001010100010110000011100000000100000011000000101101010010110111010111",
-                          "00119992B1EBD7900201050702031802180418A85DEF",
-                          "030C5F96EA3018009992B1EBD790DF02EB",
-                          "04129992B1EBD7900B094B6579666F6264656D6FD39F03",
-                          "05225F96EA3018009992B1EBD7901B0A8560A77B22020F0050000000D007FFFFFFFF1FA948DA02",
-                          "4021EE04A5DDA7F90B094C69616D73424C4576320319410302010607030D180F180A181C929E",
-                          "C522C4A5F2BE7479EE04A5DDA7F9667265500B085B030500180000004800FFFFFFFF1FA9E478D0",
-                          "00090DEF84B72D3C020105C2E2A4",
-                          "0522AB2F853118000DEF84B72D3C782118C9567FA202270050000000D007FFFFFFFF1FAF0F1957"
-                      ]
-    },
-    {
-        "name":  "CRC-24/FLEXRAY-A",
-        "size":  24,
-        "polynomial":  "0X5D6DCB",
-        "initialValue":  "0XFEDCBA",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X000000",
-        "check":  "0X7979BD",
-        "residue":  "0X000000",
-        "class":  "attested",
-        "created":  "3 November 2007",
-        "updated":  "6 February 2017",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "18020209880000F339C1",
-                          "600A0248C80102646D70",
-                          "205606C848102030405060474380",
-                          "202E06C84810203040506096C9D1",
-                          "201A06C848102030405060B072EB"
-                      ]
-    },
-    {
-        "name":  "CRC-24/FLEXRAY-B",
-        "size":  24,
-        "polynomial":  "0X5D6DCB",
-        "initialValue":  "0XABCDEF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X000000",
-        "check":  "0X1F23B8",
-        "residue":  "0X000000",
-        "class":  "attested",
-        "created":  "3 November 2007",
-        "updated":  "6 February 2017",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "18020209880000D5B910",
-                          "600A0248C8010242EDA1",
-                          "205606C848102030405060E6D9BE",
-                          "202E06C8481020304050603753EF",
-                          "201A06C84810203040506011E8D5"
-                      ]
-    },
-    {
-        "name":  "CRC-24/INTERLAKEN",
-        "size":  24,
-        "polynomial":  "0X328B63",
-        "initialValue":  "0XFFFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFFFFFF",
-        "check":  "0XB4F3E6",
-        "residue":  "0X144E63",
-        "class":  "academic",
-        "created":  "10 February 2016",
-        "updated":  "4 August 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "520BB1047D585E00C2B4B401BBAF01000000FCB0B3A8468E1A0A01E1BA38A9DF00003677EEA56DDABEB48D4D93A88A1200001F9515F655DCC3857A641B260C51F10000000000000059E69D"
-                      ]
-    },
-    {
-        "name":  "CRC-24/LTE-A",
-        "size":  24,
-        "polynomial":  "0X864CFB",
-        "initialValue":  "0X000000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X000000",
-        "check":  "0XCDE703",
-        "residue":  "0X000000",
-        "class":  "academic",
-        "created":  "13 February 2016",
-        "updated":  "5 August 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-24/LTE-B",
-        "size":  24,
-        "polynomial":  "0X800063",
-        "initialValue":  "0X000000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X000000",
-        "check":  "0X23EF52",
-        "residue":  "0X000000",
-        "class":  "academic",
-        "created":  "13 February 2016",
-        "updated":  "5 August 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-24/OPENPGP",
-        "size":  24,
-        "polynomial":  "0X864CFB",
-        "initialValue":  "0XB704CE",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X000000",
-        "check":  "0X21CF02",
-        "residue":  "0X000000",
-        "class":  "attested",
-        "created":  "2 November 2007",
-        "updated":  "4 August 2023",
-        "aliases":  [
-                        "CRC-24"
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-24/OS-9",
-        "size":  24,
-        "polynomial":  "0X800063",
-        "initialValue":  "0XFFFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFFFFFF",
-        "check":  "0X200FA5",
-        "residue":  "0X800FE3",
-        "class":  "attested",
-        "created":  "25 July 2018",
-        "updated":  "4 August 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "87CD00320021F181D600260029FF0000000F010400000100060101001000100101445261ED015242C643626D4473EB0C4EDF",
-                          "87CD0020000D118108001500FA556E4D6F756EF401113F21265F103F06782872",
-                          "87CD003C002CF181D500300033030003051A00000100010100011808180D1B040117030508070000002C0000546572ED5343C643626D436FEE81D4AA",
-                          "87CD00300021F181D400240027FF0000000F01000000010023010100100010010144B0015242C643626D4473EBA297DD",
-                          "87CD00300021F181D400240027FF0000000F01010000010023010100100010010144B1015242C643626D4473EBC1CCD5",
-                          "87CD00300021F181D400240027FF0000000F01020000010023010100100010010144B2015242C643626D4473EB6421CD",
-                          "87CD00300021F181D400240027FF0000000F01030000010023010100100010010144B3015242C643626D4473EB077AC5"
-                      ]
-    },
-    {
-        "name":  "CRC-30/CDMA",
-        "size":  30,
-        "polynomial":  "0X2030B9C7",
-        "initialValue":  "0X3FFFFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X3FFFFFFF",
-        "check":  "0X04C34ABF",
-        "residue":  "0X34EFA55A",
-        "class":  "academic",
-        "created":  "20 February 2016",
-        "updated":  "4 August 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-31/PHILIPS",
-        "size":  31,
-        "polynomial":  "0X04C11DB7",
-        "initialValue":  "0X7FFFFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X7FFFFFFF",
-        "check":  "0X0CE9E46C",
-        "residue":  "0X4EAF26F1",
-        "class":  "confirmed",
-        "created":  "12 April 2012",
-        "updated":  "28 December 2019",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-32/AIXM",
-        "size":  32,
-        "polynomial":  "0X814141AB",
-        "initialValue":  "0X00000000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00000000",
-        "check":  "0X3010BF7F",
-        "residue":  "0X00000000",
-        "class":  "attested",
-        "created":  "29 April 2009",
-        "updated":  "2 January 2021",
-        "aliases":  [
-                        "CRC-32Q"
-                    ],
-        "codewords":  [
-                          "3438303633374EA5A7C704",
-                          "3031363334313145A1AE5741",
-                          "3438303633374E3031363334313145A1BA30EE",
-                          "3738326C297100",
-                          "3438303633374E30313633343131453738326A259F4E",
-                          "34362E37266D25C1",
-                          "3438303633374E303136333431314534362E372F866D6D",
-                          "3438303633374E303136333431314537383234362E375E5DC940"
-                      ]
-    },
-    {
-        "name":  "CRC-32/AUTOSAR",
-        "size":  32,
-        "polynomial":  "0XF4ACFB13",
-        "initialValue":  "0XFFFFFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFFFFFFFF",
-        "check":  "0X1697D06A",
-        "residue":  "0X904CDDBF",
-        "class":  "attested",
-        "created":  "24 July 2016",
-        "updated":  "28 July 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "000000004022B36F",
-                          "F20183251A724F",
-                          "0FAA0055F82D6620",
-                          "00FF55116E99D79B",
-                          "332255AABBCCDDEEFF3D345AA6",
-                          "926B55788A68EE",
-                          "FFFFFFFFFFFFFFFF"
-                      ]
-    },
-    {
-        "name":  "CRC-32/BASE91-D",
-        "size":  32,
-        "polynomial":  "0XA833982B",
-        "initialValue":  "0XFFFFFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFFFFFFFF",
-        "check":  "0X87315576",
-        "residue":  "0X45270551",
-        "class":  "confirmed",
-        "created":  "28 November 2008",
-        "updated":  "8 August 2024",
-        "aliases":  [
-                        "CRC-32D"
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-32/BZIP2",
-        "size":  32,
-        "polynomial":  "0X04C11DB7",
-        "initialValue":  "0XFFFFFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFFFFFFFF",
-        "check":  "0XFC891918",
-        "residue":  "0XC704DD7B",
-        "class":  "attested",
-        "created":  "8 October 2008",
-        "updated":  "22 August 2022",
-        "aliases":  [
-                        "CRC-32/AAL5",
-                        "CRC-32/DECT-B",
-                        "B-CRC-32"
-                    ],
-        "codewords":  [
-                          "00000028",
-                          "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000028864D7F99",
-                          "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000028C55E457A",
-                          "0102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F20212223242526272800000028BF671ED0",
-                          "0102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F20212223242526272811220028ACBA602A",
-                          "6173640A86FA4F5B"
-                      ]
-    },
-    {
-        "name":  "CRC-32/CD-ROM-EDC",
-        "size":  32,
-        "polynomial":  "0X8001801B",
-        "initialValue":  "0X00000000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00000000",
-        "check":  "0X6EC2EDC4",
-        "residue":  "0X00000000",
-        "class":  "academic",
-        "created":  "19 April 2019",
-        "updated":  "4 August 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-32/CKSUM",
-        "size":  32,
-        "polynomial":  "0X04C11DB7",
-        "initialValue":  "0X00000000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFFFFFFFF",
-        "check":  "0X765E7680",
-        "residue":  "0XC704DD7B",
-        "class":  "attested",
-        "created":  "30 March 2005",
-        "updated":  "8 August 2024",
-        "aliases":  [
-                        "CKSUM",
-                        "CRC-32/POSIX"
-                    ],
-        "codewords":  [
-                          "930766865",
-                          "31323334353637383909",
-                          "3F0A451F",
-                          "C0F5BAE0"
-                      ]
-    },
-    {
-        "name":  "CRC-32/ISCSI",
-        "size":  32,
-        "polynomial":  "0X1EDC6F41",
-        "initialValue":  "0XFFFFFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFFFFFFFF",
-        "check":  "0XE3069283",
-        "residue":  "0XB798B438",
-        "class":  "attested",
-        "created":  "10 September 2005",
-        "updated":  "8 August 2024",
-        "aliases":  [
-                        "CRC-32/BASE91-C",
-                        "CRC-32/CASTAGNOLI",
-                        "CRC-32/INTERLAKEN",
-                        "CRC-32C",
-                        "CRC-32/NVME"
-                    ],
-        "codewords":  [
-                          "0000000000000000000000000000000000000000000000000000000000000000AA36918A",
-                          "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF43ABA862",
-                          "000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F4E79DD46",
-                          "84100000060301000000000000000000000000000000000000000000040000001400000000000000000000000100000000000000000000000000000000000000000000004AC32CFA",
-                          "8490000000000000000000000000000000000000415A3132333435362020202020202020202020207A1FC47B",
-                          "84080000010000000000000000000080AAEF81B4",
-                          "848800000000000038FF1E0501000000C83B3B57",
-                          "8400000004450000CD21EC1E",
-                          "8480000000450100BD860283"
-                      ]
-    },
-    {
-        "name":  "CRC-32/ISO-HDLC",
-        "size":  32,
-        "polynomial":  "0X04C11DB7",
-        "initialValue":  "0XFFFFFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFFFFFFFF",
-        "check":  "0XCBF43926",
-        "residue":  "0XDEBB20E3",
-        "class":  "attested",
-        "created":  "30 March 2005",
-        "updated":  "11 December 2024",
-        "aliases":  [
-                        "CRC-32",
-                        "CRC-32/ADCCP",
-                        "CRC-32/V-42",
-                        "CRC-32/XZ",
-                        "PKZIP"
-                    ],
-        "codewords":  [
-                          "000000001CDF4421",
-                          "F20183779DAB24",
-                          "0FAA005587B2C9B6",
-                          "00FF55111262A032",
-                          "332255AABBCCDDEEFF3D86AEB0",
-                          "926B559BA2DE9C",
-                          "FFFFFFFFFFFFFFFF",
-                          "89AEB31A874EAF84841B46736B0DFDF2BA58D30AA2A545A3E235A3521E07594CFA690DA7",
-                          "5512DBB6737D0106F65975B773DFB011FFC344BCF442E2DD6D8BC4870B5D5B035FF4BAD9",
-                          "C008300028CFE9521D3B08EA449900E808EA449900E8300102007E649416",
-                          "6173640ACEDE2D15"
-                      ]
-    },
-    {
-        "name":  "CRC-32/JAMCRC",
-        "size":  32,
-        "polynomial":  "0X04C11DB7",
-        "initialValue":  "0XFFFFFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00000000",
-        "check":  "0X340BC6D9",
-        "residue":  "0X00000000",
-        "class":  "confirmed",
-        "created":  "30 March 2005",
-        "updated":  "21 November 2018",
-        "aliases":  [
-                        "JAMCRC"
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-32/MEF",
-        "size":  32,
-        "polynomial":  "0X741B8CD7",
-        "initialValue":  "0XFFFFFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00000000",
-        "check":  "0XD2C22F51",
-        "residue":  "0X00000000",
-        "class":  "attested",
-        "created":  "10 January 2022",
-        "updated":  "4 August 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "4E6F7465000100003000000040F2E0C8E674040054686973206973207468652074657874206F6620746865206669727374206E6F74652E007E7E7E7E7E7E7E7E7E7E7E7E42342AB7",
-                          "4E6F74650001000030000000C08879C9E674040054686973206973207468652074657874206F6620746865207365636F6E64206E6F74652E007E7E7E7E7E7E7E7E7E7E7E78CE3BA8",
-                          "42342AB74E6F7465000100003000000040F2E0C8E674040054686973206973207468652074657874206F6620746865206669727374206E6F74652E007E7E7E7E7E7E7E7E7E7E7E7E78CE3BA84E6F74650001000030000000C08879C9E674040054686973206973207468652074657874206F6620746865207365636F6E64206E6F74652E007E7E7E7E7E7E7E7E7E7E7E266D44ED",
-                          "4E6F746500010000000400000000000040F2E0C8E67404004E6F7465000100004804000000000000C08879C9E6740400D1D99813"
-                      ]
-    },
-    {
-        "name":  "CRC-32/MPEG-2",
-        "size":  32,
-        "polynomial":  "0X04C11DB7",
-        "initialValue":  "0XFFFFFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00000000",
-        "check":  "0X0376E6E7",
-        "residue":  "0X00000000",
-        "class":  "attested",
-        "created":  "8 October 2008",
-        "updated":  "4 August 2023",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-32/XFER",
-        "size":  32,
-        "polynomial":  "0X000000AF",
-        "initialValue":  "0X00000000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X00000000",
-        "check":  "0XBD0BE338",
-        "residue":  "0X00000000",
-        "class":  "confirmed",
-        "created":  "30 March 2005",
-        "updated":  "2 January 2021",
-        "aliases":  [
-                        "XFER"
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-40/GSM",
-        "size":  40,
-        "polynomial":  "0X0004820009",
-        "initialValue":  "0X0000000000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFFFFFFFFFF",
-        "check":  "0XD4164FC646",
-        "residue":  "0XC4FF8071FF",
-        "class":  "academic",
-        "created":  "10 December 2009",
-        "updated":  "25 March 2019",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-64/ECMA-182",
-        "size":  64,
-        "polynomial":  "0X42F0E1EBA9EA3693",
-        "initialValue":  "0X0000000000000000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000000000000000",
-        "check":  "0X6C40DF5F0B497347",
-        "residue":  "0X0000000000000000",
-        "class":  "academic",
-        "created":  "6 April 2009",
-        "updated":  "7 May 2022",
-        "aliases":  [
-                        "CRC-64"
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-64/GO-ISO",
-        "size":  64,
-        "polynomial":  "0X000000000000001B",
-        "initialValue":  "0XFFFFFFFFFFFFFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFFFFFFFFFFFFFFFF",
-        "check":  "0XB90956C775A41001",
-        "residue":  "0X5300000000000000",
-        "class":  "confirmed",
-        "created":  "28 January 2017",
-        "updated":  "29 August 2024",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "0000000000000000",
-                          "610000000000002034",
-                          "6162000000000020C436",
-                          "6162630000000020C47637",
-                          "6162636400000020C4766733",
-                          "6162636465000020C47667D332",
-                          "6162636465660020C47667D30230",
-                          "6162636465666720C47667D302B031",
-                          "6162636465666768C47667D302B0210E",
-                          "6162636465666768697667D302B0216E8B",
-                          "6162636465666768696A67D302B0216E5B7F",
-                          "48652077686F2068617320612073686164792070617374206B6E6F77732074686174206E69636520677579732066696E697368206C6173742EB45ABEE25917DBC7",
-                          "46726565212046726565212F4120747269702F746F204D6172732F666F72203930302F656D707479206A6172732F4275726D61205368617665EFA0DAA61142FCEA",
-                          "4E6570616C207072656D69657220776F6E27742072657369676E2EA628EFD66A865552",
-                          "486973206D6F6E6579206973207477696365207461696E7465643A20277461696E7420796F75727320616E6420277461696E74206D696E652E16499D643A967888",
-                          "73697A653A2020612E6F75743A2020626164206D61676963D2ADCDDA653C55F3",
-                          "546865206D616A6F722070726F626C656D20697320776974682073656E646D61696C2E20202D4D61726B20486F72746F6EB976A68740035E9D",
-                          "5468697320697320612074657374206F662074686520656D657267656E63792062726F6164636173742073797374656D2E613B506B00F1FCE7"
-                      ]
-    },
-    {
-        "name":  "CRC-64/JONES",
-        "size":  64,
-        "polynomial":  "0xAD93D23594C935A9",
-        "initialValue":  "0xFFFFFFFFFFFFFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0x0000000000000000",
-        "check":  "0xCAA717168609F281",
-        "residue":  "n/a",
-        "class":  "confirmed",
-        "created":  "",
-        "updated":  "",
-        "aliases":  [
-
-                    ]
-    },
-    {
-        "name":  "CRC-64/MS",
-        "size":  64,
-        "polynomial":  "0X259C84CBA6426349",
-        "initialValue":  "0XFFFFFFFFFFFFFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000000000000000",
-        "check":  "0X75D4B74F024ECEEA",
-        "residue":  "0X0000000000000000",
-        "class":  "attested",
-        "created":  "7 January 2022",
-        "updated":  "",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "EBDBF499B234C9018A000000000000000000000002000000D8AE24AFCF9C941F0100000008000000360000002E00000042007500730069006E0065007300730049006D0070006100630074000000480042004900000007000000080000001C000000180000005000490049000000310000005365C6807317DACE",
-                          "4D004900430052004F0053004F00460054002E0049004E005400450052004E00450054004500580050004C004F005200450052002E00440045004600410055004C005400A149B5EA6DB8C828",
-                          "4D004900430052004F0053004F00460054002E00570049004E0044004F00570053002E0053005400490043004B0059004E004F0054004500530058C773F29AD57E33",
-                          "7B00310041004300310034004500370037002D0030003200450037002D0034004500350044002D0042003700340034002D003200450042003100410045003500310039003800420037007D005C004E004F00540045005000410044002E004500580045002B4EC2C169DC9C9B",
-                          "7B00440036003500320033003100420030002D0042003200460031002D0034003800350037002D0041003400430045002D004100380045003700430036004500410037004400320037007D005C004E004F00540045005000410044002E00450058004500237ED143CB0E8E91",
-                          "7B00390030003500450036003300420036002D0043003100420046002D0034003900340045002D0042003200390043002D003600350042003700330032004400330044003200310041007D005C0049004500580050004C004F00520045002E0045005800450006B6151674EBA0C3",
-                          "7B00360044003800300039003300370037002D0036004100460030002D0034003400340042002D0038003900350037002D004100330037003700330046003000320032003000300045007D005C0049004500580050004C004F00520045002E00450058004500CE6D913EB0E370E2",
-                          "7B00370043003500410034003000450046002D0041003000460042002D0034004200460043002D0038003700340041002D004300300046003200450030004200390046004100380045007D005C0049004500580050004C004F00520045002E00450058004500A5A793B7B47F220E"
-                      ]
-    },
-    {
-        "name":  "CRC-64/NVME",
-        "size":  64,
-        "polynomial":  "0XAD93D23594C93659",
-        "initialValue":  "0XFFFFFFFFFFFFFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFFFFFFFFFFFFFFFF",
-        "check":  "0XAE8B14860A799888",
-        "residue":  "0XF310303B2B6F6E42",
-        "class":  "attested",
-        "created":  "8 August 2024",
-        "updated":  "",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "00",
-                          "4EB622EB67D38264",
-                          "FF",
-                          "ACA3EC0273BADDC0",
-                          "9C4450675F9F723E",
-                          "7E519E8E4BF62D9A"
-                      ]
-    },
-    {
-        "name":  "CRC-64/REDIS",
-        "size":  64,
-        "polynomial":  "0XAD93D23594C935A9",
-        "initialValue":  "0X0000000000000000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X0000000000000000",
-        "check":  "0XE9C6D914C4B8D9CA",
-        "residue":  "0X0000000000000000",
-        "class":  "academic",
-        "created":  "24 August 2022",
-        "updated":  "",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-64/WE",
-        "size":  64,
-        "polynomial":  "0X42F0E1EBA9EA3693",
-        "initialValue":  "0XFFFFFFFFFFFFFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFFFFFFFFFFFFFFFF",
-        "check":  "0X62EC59E3F1A4F00A",
-        "residue":  "0XFCACBEBD5931A992",
-        "class":  "confirmed",
-        "created":  "8 November 2009",
-        "updated":  "28 December 2019",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-
-                      ]
-    },
-    {
-        "name":  "CRC-64/XZ",
-        "size":  64,
-        "polynomial":  "0X42F0E1EBA9EA3693",
-        "initialValue":  "0XFFFFFFFFFFFFFFFF",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0XFFFFFFFFFFFFFFFF",
-        "check":  "0X995DC9BBDF1939FA",
-        "residue":  "0X49958C9ABD7D353F",
-        "class":  "attested",
-        "created":  "4 July 2011",
-        "updated":  "29 August 2024",
-        "aliases":  [
-                        "CRC-64/GO-ECMA"
-                    ],
-        "codewords":  [
-                          "000000004B9F1B1E3586A5F4",
-                          "F20183C6F1648166279C31",
-                          "0FAA005575157C66F7D0C554",
-                          "00FF5511E604077EBE2238A6",
-                          "332255AABBCCDDEEFFD5E5A819B2CE1E70",
-                          "926B554E3E9FB5A996AA5F",
-                          "FFFFFFFF00000000FFFFFFFF",
-                          "0000000000000000",
-                          "61052B652E77840233",
-                          "616246B0840E207365BC",
-                          "6162632776271A4A09D82C",
-                          "61626364BA60596E59289D3C",
-                          "6162636465F29508FB58DF0B04",
-                          "616263646566F400A745859F8ED0",
-                          "61626364656667660E71CCA8A320EC",
-                          "6162636465666768590C7A640AF3B467",
-                          "6162636465666768698EEF569DC8F66699",
-                          "6162636465666768696AF47357CD2E3A0932",
-                          "48652077686F2068617320612073686164792070617374206B6E6F77732074686174206E69636520677579732066696E697368206C6173742E0DA0B92AACC06285",
-                          "46726565212046726565212F4120747269702F746F204D6172732F666F72203930302F656D707479206A6172732F4275726D612053686176658A513E353038601F",
-                          "4E6570616C207072656D69657220776F6E27742072657369676E2E415A746AB1F20E79",
-                          "486973206D6F6E6579206973207477696365207461696E7465643A20277461696E7420796F75727320616E6420277461696E74206D696E652E6D100B66B2419E04",
-                          "73697A653A2020612E6F75743A2020626164206D616769634D3AD6D86CE4B5E3",
-                          "546865206D616A6F722070726F626C656D20697320776974682073656E646D61696C2E20202D4D61726B20486F72746F6E51A0F2946BAF5A86",
-                          "5468697320697320612074657374206F662074686520656D657267656E63792062726F6164636173742073797374656D2E72BC5BC17F18DB27"
-                      ]
-    },
-    {
-        "name":  "CRC-82/DARC",
-        "size":  82,
-        "polynomial":  "0X0308C0111011401440411",
-        "initialValue":  "0X000000000000000000000",
-        "reflectIn":  true,
-        "reflectOut":  true,
-        "xorOut":  "0X000000000000000000000",
-        "check":  "0X09EA83F625023801FD612",
-        "residue":  "0X000000000000000000000",
-        "class":  "attested",
-        "created":  "14 December 2009",
-        "updated":  "23 December 2021",
-        "aliases":  [
-
-                    ],
-        "codewords":  [
-                          "C0FFFFFFFFFFFFFFFFFFFF",
-                          "02000102372050524F4A454354204D41494E4D454E553B48424065001049B5FB9ADE",
-                          "40008040EC040A4AF252A2C22A04B2829272B2A272AADC124202A6000892ADDF597B",
-                          "0000000000000000000000",
-                          "40424065001049B5FB9ADE"
-                      ]
-    }
+[
+  {
+    "name": "CRC-3/GSM",
+    "size": 3,
+    "polynomial": "0X3",
+    "initialValue": "0X0",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X7",
+    "check": "0X4",
+    "residue": "0X2",
+    "class": "academic",
+    "created": "17 February 2017",
+    "updated": "",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-3/ROHC",
+    "size": 3,
+    "polynomial": "0X3",
+    "initialValue": "0X7",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X0",
+    "check": "0X6",
+    "residue": "0X0",
+    "class": "academic",
+    "created": "14 December 2009",
+    "updated": "4 August 2023",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-4/G-704",
+    "size": 4,
+    "polynomial": "0X3",
+    "initialValue": "0X0",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X0",
+    "check": "0X7",
+    "residue": "0X0",
+    "class": "academic",
+    "created": "7 October 2008",
+    "updated": "21 November 2018",
+    "aliases": [
+      "CRC-4/ITU"
+    ],
+    "codewords": []
+  },
+  {
+    "name": "CRC-4/INTERLAKEN",
+    "size": 4,
+    "polynomial": "0X3",
+    "initialValue": "0XF",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0XF",
+    "check": "0XB",
+    "residue": "0X2",
+    "class": "academic",
+    "created": "10 February 2016",
+    "updated": "4 August 2023",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-5/EPC-C1G2",
+    "size": 5,
+    "polynomial": "0X09",
+    "initialValue": "0X09",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X00",
+    "check": "0X00",
+    "residue": "0X00",
+    "class": "attested",
+    "created": "20 May 2009",
+    "updated": "28 December 2019",
+    "aliases": [
+      "CRC-5/EPC"
+    ],
+    "codewords": [
+      "1000100100000010000110",
+      "1000000100000000010011"
+    ]
+  },
+  {
+    "name": "CRC-5/G-704",
+    "size": 5,
+    "polynomial": "0X15",
+    "initialValue": "0X00",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X00",
+    "check": "0X07",
+    "residue": "0X00",
+    "class": "academic",
+    "created": "7 October 2008",
+    "updated": "21 November 2018",
+    "aliases": [
+      "CRC-5/ITU"
+    ],
+    "codewords": []
+  },
+  {
+    "name": "CRC-5/USB",
+    "size": 5,
+    "polynomial": "0X05",
+    "initialValue": "0X1F",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X1F",
+    "check": "0X19",
+    "residue": "0X06",
+    "class": "confirmed",
+    "created": "1 December 2007",
+    "updated": "12 July 2024",
+    "aliases": [],
+    "codewords": [
+      "0000000000001000",
+      "1000000010000011",
+      "0010111000011000",
+      "1010111000000111",
+      "1010100011110111",
+      "0101110010111100",
+      "0000111001001110",
+      "1000000000010111"
+    ]
+  },
+  {
+    "name": "CRC-6/CDMA2000-A",
+    "size": 6,
+    "polynomial": "0X27",
+    "initialValue": "0X3F",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X00",
+    "check": "0X0D",
+    "residue": "0X00",
+    "class": "attested",
+    "created": "14 October 2013",
+    "updated": "28 July 2023",
+    "aliases": [],
+    "codewords": [
+      "C101002E",
+      "0110000F",
+      "05100009",
+      "2E0F09"
+    ]
+  },
+  {
+    "name": "CRC-6/CDMA2000-B",
+    "size": 6,
+    "polynomial": "0X07",
+    "initialValue": "0X3F",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X00",
+    "check": "0X3B",
+    "residue": "0X00",
+    "class": "academic",
+    "created": "14 October 2013",
+    "updated": "28 July 2023",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-6/DARC",
+    "size": 6,
+    "polynomial": "0X19",
+    "initialValue": "0X00",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X00",
+    "check": "0X26",
+    "residue": "0X00",
+    "class": "attested",
+    "created": "14 December 2009",
+    "updated": "20 November 2018",
+    "aliases": [],
+    "codewords": [
+      "1001010011000100",
+      "0101001100011101",
+      "00001100010000000010000000101101",
+      "000000",
+      "20B8B4"
+    ]
+  },
+  {
+    "name": "CRC-6/G-704",
+    "size": 6,
+    "polynomial": "0X03",
+    "initialValue": "0X00",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X00",
+    "check": "0X06",
+    "residue": "0X00",
+    "class": "academic",
+    "created": "7 October 2008",
+    "updated": "21 November 2018",
+    "aliases": [
+      "CRC-6/ITU"
+    ],
+    "codewords": []
+  },
+  {
+    "name": "CRC-6/GSM",
+    "size": 6,
+    "polynomial": "0X2F",
+    "initialValue": "0X00",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X3F",
+    "check": "0X13",
+    "residue": "0X3A",
+    "class": "academic",
+    "created": "17 February 2017",
+    "updated": "",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-7/MMC",
+    "size": 7,
+    "polynomial": "0X09",
+    "initialValue": "0X00",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X00",
+    "check": "0X75",
+    "residue": "0X00",
+    "class": "academic",
+    "created": "7 October 2008",
+    "updated": "11 January 2022",
+    "aliases": [
+      "CRC-7"
+    ],
+    "codewords": []
+  },
+  {
+    "name": "CRC-7/ROHC",
+    "size": 7,
+    "polynomial": "0X4F",
+    "initialValue": "0X7F",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X00",
+    "check": "0X53",
+    "residue": "0X00",
+    "class": "academic",
+    "created": "14 December 2009",
+    "updated": "4 August 2023",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-7/UMTS",
+    "size": 7,
+    "polynomial": "0X45",
+    "initialValue": "0X00",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X00",
+    "check": "0X61",
+    "residue": "0X00",
+    "class": "academic",
+    "created": "8 February 2016",
+    "updated": "7 May 2022",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-8/AUTOSAR",
+    "size": 8,
+    "polynomial": "0X2F",
+    "initialValue": "0XFF",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0XFF",
+    "check": "0XDF",
+    "residue": "0X42",
+    "class": "attested",
+    "created": "24 July 2016",
+    "updated": "28 July 2023",
+    "aliases": [],
+    "codewords": [
+      "0000000012",
+      "F20183C2",
+      "0FAA0055C6",
+      "00FF551177",
+      "332255AABBCCDDEEFF11",
+      "926B5533",
+      "FFFFFFFF6C"
+    ]
+  },
+  {
+    "name": "CRC-8/CDMA2000",
+    "size": 8,
+    "polynomial": "0X9B",
+    "initialValue": "0XFF",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X00",
+    "check": "0XDA",
+    "residue": "0X00",
+    "class": "academic",
+    "created": "14 October 2013",
+    "updated": "28 July 2023",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-8/DARC",
+    "size": 8,
+    "polynomial": "0X39",
+    "initialValue": "0X00",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X00",
+    "check": "0X15",
+    "residue": "0X00",
+    "class": "attested",
+    "created": "14 December 2009",
+    "updated": "29 November 2018",
+    "aliases": [],
+    "codewords": [
+      "000000010000001111010111"
+    ]
+  },
+  {
+    "name": "CRC-8/DVB-S2",
+    "size": 8,
+    "polynomial": "0XD5",
+    "initialValue": "0X00",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X00",
+    "check": "0XBC",
+    "residue": "0X00",
+    "class": "academic",
+    "created": "10 January 2014",
+    "updated": "29 July 2023",
+    "aliases": [],
+    "codewords": [
+      "22C812563011223344556677884F"
+    ]
+  },
+  {
+    "name": "CRC-8/GSM-A",
+    "size": 8,
+    "polynomial": "0X1D",
+    "initialValue": "0X00",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X00",
+    "check": "0X37",
+    "residue": "0X00",
+    "class": "academic",
+    "created": "17 February 2017",
+    "updated": "8 August 2024",
+    "aliases": [],
+    "codewords": [
+      "D6"
+    ]
+  },
+  {
+    "name": "CRC-8/GSM-B",
+    "size": 8,
+    "polynomial": "0X49",
+    "initialValue": "0X00",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0XFF",
+    "check": "0X94",
+    "residue": "0X53",
+    "class": "academic",
+    "created": "17 February 2017",
+    "updated": "",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-8/HITAG",
+    "size": 8,
+    "polynomial": "0X1D",
+    "initialValue": "0XFF",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X00",
+    "check": "0XB4",
+    "residue": "0X00",
+    "class": "attested",
+    "created": "23 December 2021",
+    "updated": "4 August 2023",
+    "aliases": [],
+    "codewords": [
+      "000000010110001101000000011011011010010011110",
+      "00000",
+      "2C680DB49E",
+      "CA9340FFC6",
+      "0000"
+    ]
+  },
+  {
+    "name": "CRC-8/I-432-1",
+    "size": 8,
+    "polynomial": "0X07",
+    "initialValue": "0X00",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X55",
+    "check": "0XA1",
+    "residue": "0XAC",
+    "class": "academic",
+    "created": "19 April 2009",
+    "updated": "2 August 2023",
+    "aliases": [
+      "CRC-8/ITU"
+    ],
+    "codewords": [
+      "0000000000000000000000000000000001010101",
+      "0000000000000000000000000000000101010010"
+    ]
+  },
+  {
+    "name": "CRC-8/I-CODE",
+    "size": 8,
+    "polynomial": "0X1D",
+    "initialValue": "0XFD",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X00",
+    "check": "0X7E",
+    "residue": "0X00",
+    "class": "attested",
+    "created": "3 November 2007",
+    "updated": "6 February 2017",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-8/LTE",
+    "size": 8,
+    "polynomial": "0X9B",
+    "initialValue": "0X00",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X00",
+    "check": "0XEA",
+    "residue": "0X00",
+    "class": "academic",
+    "created": "13 February 2016",
+    "updated": "5 August 2023",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-8/MAXIM-DOW",
+    "size": 8,
+    "polynomial": "0X31",
+    "initialValue": "0X00",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X00",
+    "check": "0XA1",
+    "residue": "0X00",
+    "class": "attested",
+    "created": "26 April 2009",
+    "updated": "2 January 2021",
+    "aliases": [
+      "CRC-8/MAXIM",
+      "DOW-CRC"
+    ],
+    "codewords": [
+      "242BC5FB00000040",
+      "40000000FBC52B24",
+      "102BC5FB000000A0",
+      "A0000000FBC52B10",
+      "212BC5FB00000089",
+      "89000000FBC52B21",
+      "142BC5FB00000054",
+      "54000000FBC52B14",
+      "14B3D8FB000000D4",
+      "D4000000FBD8B314",
+      "232BC5FB000000F3",
+      "F3000000FBC52B23",
+      "23B3D8FB00000073",
+      "73000000FBD8B323",
+      "092BC5FB00000097",
+      "97000000FBC52B09",
+      "09B3D8FB00000017",
+      "17000000FBD8B309",
+      "0B2BC5FB000000ED",
+      "ED000000FBC52B0B",
+      "0BB3D8FB0000006D",
+      "6D000000FBD8B30B",
+      "0F2BC5FB00000019",
+      "19000000FBC52B0F",
+      "0FB3D8FB00000099",
+      "99000000FBD8B30F",
+      "0A2BC5FB000000D0",
+      "D0000000FBC52B0A",
+      "0C2BC5FB0000005E",
+      "5E000000FBC52B0C"
+    ]
+  },
+  {
+    "name": "CRC-8/MIFARE-MAD",
+    "size": 8,
+    "polynomial": "0X1D",
+    "initialValue": "0XC7",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X00",
+    "check": "0X99",
+    "residue": "0X00",
+    "class": "attested",
+    "created": "21 February 2019",
+    "updated": "",
+    "aliases": [],
+    "codewords": [
+      "0101080108010800000000000004000310031002100210000000000000113089",
+      "0103E103E103E103E103E10000000000000000000000000000000000000000C4",
+      "0103E103E103E103E103E103E1000000000000000000000000000000000000AB",
+      "00563D563C563C563C563C563C00000000000000000000000000000000000030"
+    ]
+  },
+  {
+    "name": "CRC-8/NRSC-5",
+    "size": 8,
+    "polynomial": "0X31",
+    "initialValue": "0XFF",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X00",
+    "check": "0XF7",
+    "residue": "0X00",
+    "class": "attested",
+    "created": "16 November 2018",
+    "updated": "20 March 2019",
+    "aliases": [],
+    "codewords": [
+      "5822EF639D240114F25D007CDA4208A1CBBDE9DFD73273A7D180003038EB",
+      "B002F6E01BF5E00BE3F6D05450D23B70273990D90ED77AEDF6EB803C1AD30A685E0A009A",
+      "412C565998C4938214C58005800B09CABACB98B656DE98FB199A18923DE06D592D2D399A5CA72CFAD96BC10735E4774FA06AFEAB1726EF0F471ABED704DA798DEDABB16D1A4F0D7B7C49F65C1EBE2D5DE6EB16D8BF2DB0199F76D6C8455C1C70251B4290CA669C00AC529FC0014002174006E6860558EEF5CBE4DEF994D1F642156E48FA68072E78A7F1C88A80DF02516B5672FFF281780B6200A3",
+      "896C608852750D2DC92490555A448BA655686F62F35A2F7522C62EB13161881468600683310689",
+      "412C570068CB2362DCCB2400004416B42A5F9B2C469A721D106258A76D77C2F105C315DA1257CAD1232A47282475FB250171BCC094DE3C5711A0B68892F7A5685CAB97881BFA802056600688A08815EAD3C069B68A952C00058BD0071DFD5F975D1CFD976FAE0A82A1AF1636E4687EE472C62F22A96E3197B88943852B128D0489E911B85B84023122176D0670130348DDD554416BB8852A854364",
+      "0D0640C6D800124B",
+      "89866AD812A05E8034A3BBBAAAB56AD4FAD9894B0030000000007752"
+    ]
+  },
+  {
+    "name": "CRC-8/OPENSAFETY",
+    "size": 8,
+    "polynomial": "0X2F",
+    "initialValue": "0X00",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X00",
+    "check": "0X3E",
+    "residue": "0X00",
+    "class": "attested",
+    "created": "22 July 2016",
+    "updated": "7 May 2022",
+    "aliases": [],
+    "codewords": [
+      "23C8083411223344556677883C",
+      "02A806000060650006A11C",
+      "03A80001000060650006A131",
+      "03A806000060650007211D",
+      "02A80001000060650007211D",
+      "04A8060000606500021393",
+      "05A800010000606500021350",
+      "01AC0600006065000721AF",
+      "00AC000300006065000721B5"
+    ]
+  },
+  {
+    "name": "CRC-8/ROHC",
+    "size": 8,
+    "polynomial": "0X07",
+    "initialValue": "0XFF",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X00",
+    "check": "0XD0",
+    "residue": "0X00",
+    "class": "academic",
+    "created": "14 December 2009",
+    "updated": "4 August 2023",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-8/SAE-J1850",
+    "size": 8,
+    "polynomial": "0X1D",
+    "initialValue": "0XFF",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0XFF",
+    "check": "0X4B",
+    "residue": "0XC4",
+    "class": "attested",
+    "created": "17 February 2016",
+    "updated": "3 August 2023",
+    "aliases": [],
+    "codewords": [
+      "0000000059",
+      "F2018337",
+      "0FAA005579",
+      "00FF5511B8",
+      "332255AABBCCDDEEFFCB",
+      "926B558C",
+      "FFFFFFFF74",
+      "55FF0000ECFF601F",
+      "55FF0000F0FFA038",
+      "660BEAFFBFFFC0CA",
+      "5E18EAFFB7FF60BD",
+      "F6301600FCFE1081"
+    ]
+  },
+  {
+    "name": "CRC-8/SMBUS",
+    "size": 8,
+    "polynomial": "0X07",
+    "initialValue": "0X00",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X00",
+    "check": "0XF4",
+    "residue": "0X00",
+    "class": "attested",
+    "created": "30 March 2005",
+    "updated": "8 August 2024",
+    "aliases": [
+      "CRC-8"
+    ],
+    "codewords": [
+      "E3"
+    ]
+  },
+  {
+    "name": "CRC-8/TECH-3250",
+    "size": 8,
+    "polynomial": "0X1D",
+    "initialValue": "0XFF",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X00",
+    "check": "0X97",
+    "residue": "0X00",
+    "class": "attested",
+    "created": "19 July 2012",
+    "updated": "21 November 2018",
+    "aliases": [
+      "CRC-8/AES",
+      "CRC-8/EBU"
+    ],
+    "codewords": [
+      "3D020000020000000000000000000000000000000000009B",
+      "010000000000000000000000000000000000000000000032"
+    ]
+  },
+  {
+    "name": "CRC-8/WCDMA",
+    "size": 8,
+    "polynomial": "0X9B",
+    "initialValue": "0X00",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X00",
+    "check": "0X25",
+    "residue": "0X00",
+    "class": "third-party",
+    "created": "8 November 2009",
+    "updated": "28 December 2019",
+    "aliases": [],
+    "codewords": [
+      "00001148",
+      "00012077",
+      "80800012",
+      "00001021010022000A002D000000000000460A20",
+      "00001021010123000A0028000000000000460A54",
+      "00001021010125000A0029000000000000460A4B",
+      "400010200B01001A000A000100000000008009001F01F393",
+      "400010200B01001F000A000100000000000009001F01F3F7",
+      "400010200B010020000A000100000000000009001F01F331",
+      "40001107083829B41903",
+      "40001107084826682180",
+      "40001107085C293417A8",
+      "00001268",
+      "8B"
+    ]
+  },
+  {
+    "name": "CRC-10/ATM",
+    "size": 10,
+    "polynomial": "0X233",
+    "initialValue": "0X000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X000",
+    "check": "0X199",
+    "residue": "0X000",
+    "class": "attested",
+    "created": "19 April 2009",
+    "updated": "7 May 2022",
+    "aliases": [
+      "CRC-10",
+      "CRC-10/I-610"
+    ],
+    "codewords": [
+      "116A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A00AF",
+      "1801AAAAAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A02AC",
+      "0A0B0C0D0E0F0000000000000000000000000000000000000000000000000000000000000000000000000000000001F6",
+      "11111111111111111111000000000000000000000000000000000000000000000000000000000000000000000000016B",
+      "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF030F",
+      "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901202ED",
+      "106A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A6A03B9",
+      "180100000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000000000006A6A6A6A6A6A6A6A004A"
+    ]
+  },
+  {
+    "name": "CRC-10/CDMA2000",
+    "size": 10,
+    "polynomial": "0X3D9",
+    "initialValue": "0X3FF",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X000",
+    "check": "0X233",
+    "residue": "0X000",
+    "class": "academic",
+    "created": "14 October 2013",
+    "updated": "28 July 2023",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-10/GSM",
+    "size": 10,
+    "polynomial": "0X175",
+    "initialValue": "0X000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X3FF",
+    "check": "0X12A",
+    "residue": "0X0C6",
+    "class": "academic",
+    "created": "17 February 2017",
+    "updated": "",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-11/FLEXRAY",
+    "size": 11,
+    "polynomial": "0X385",
+    "initialValue": "0X01A",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X000",
+    "check": "0X5A3",
+    "residue": "0X000",
+    "class": "attested",
+    "created": "3 November 2007",
+    "updated": "7 May 2022",
+    "aliases": [
+      "CRC-11"
+    ],
+    "codewords": [
+      "1100000000010000000100000100110",
+      "1100000000001000100000100011011",
+      "1100000000010000100001100000100",
+      "0000000000011000100010111010010"
+    ]
+  },
+  {
+    "name": "CRC-11/UMTS",
+    "size": 11,
+    "polynomial": "0X307",
+    "initialValue": "0X000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X000",
+    "check": "0X061",
+    "residue": "0X000",
+    "class": "academic",
+    "created": "8 February 2016",
+    "updated": "7 May 2022",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-12/CDMA2000",
+    "size": 12,
+    "polynomial": "0XF13",
+    "initialValue": "0XFFF",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X000",
+    "check": "0XD4D",
+    "residue": "0X000",
+    "class": "academic",
+    "created": "14 October 2013",
+    "updated": "28 July 2023",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-12/DECT",
+    "size": 12,
+    "polynomial": "0X80F",
+    "initialValue": "0X000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X000",
+    "check": "0XF5B",
+    "residue": "0X000",
+    "class": "academic",
+    "created": "29 July 2010",
+    "updated": "15 February 2017",
+    "aliases": [
+      "X-CRC-12"
+    ],
+    "codewords": []
+  },
+  {
+    "name": "CRC-12/GSM",
+    "size": 12,
+    "polynomial": "0XD31",
+    "initialValue": "0X000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0XFFF",
+    "check": "0XB34",
+    "residue": "0X178",
+    "class": "academic",
+    "created": "17 February 2017",
+    "updated": "",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-12/UMTS",
+    "size": 12,
+    "polynomial": "0X80F",
+    "initialValue": "0X000",
+    "reflectIn": false,
+    "reflectOut": true,
+    "xorOut": "0X000",
+    "check": "0XDAF",
+    "residue": "0X000",
+    "class": "academic",
+    "created": "10 December 2009",
+    "updated": "5 August 2023",
+    "aliases": [
+      "CRC-12/3GPP"
+    ],
+    "codewords": []
+  },
+  {
+    "name": "CRC-13/BBC",
+    "size": 13,
+    "polynomial": "0X1CF5",
+    "initialValue": "0X0000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X0000",
+    "check": "0X04FA",
+    "residue": "0X0000",
+    "class": "attested",
+    "created": "14 October 2013",
+    "updated": "6 February 2017",
+    "aliases": [],
+    "codewords": [
+      "17777777777762722"
+    ]
+  },
+  {
+    "name": "CRC-14/DARC",
+    "size": 14,
+    "polynomial": "0X0805",
+    "initialValue": "0X0000",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X0000",
+    "check": "0X082D",
+    "residue": "0X0000",
+    "class": "attested",
+    "created": "14 December 2009",
+    "updated": "20 November 2018",
+    "aliases": [],
+    "codewords": [
+      "FF3F",
+      "02000102372050524F4A454354204D41494E4D454E553B08",
+      "40008040EC040A4AF252A2C22A04B2829272B2A272AADC10"
+    ]
+  },
+  {
+    "name": "CRC-14/GSM",
+    "size": 14,
+    "polynomial": "0X202D",
+    "initialValue": "0X0000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X3FFF",
+    "check": "0X30AE",
+    "residue": "0X031E",
+    "class": "academic",
+    "created": "17 February 2017",
+    "updated": "",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-15/CAN",
+    "size": 15,
+    "polynomial": "0X4599",
+    "initialValue": "0X0000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X0000",
+    "check": "0X059E",
+    "residue": "0X0000",
+    "class": "academic",
+    "created": "2 November 2007",
+    "updated": "7 May 2022",
+    "aliases": [
+      "CRC-15"
+    ],
+    "codewords": []
+  },
+  {
+    "name": "CRC-15/MPT1327",
+    "size": 15,
+    "polynomial": "0X6815",
+    "initialValue": "0X0000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X0001",
+    "check": "0X2566",
+    "residue": "0X6815",
+    "class": "attested",
+    "created": "16 July 2012",
+    "updated": "2 August 2023",
+    "aliases": [],
+    "codewords": [
+      "1010101010101010110001001101010000000000000000000000000000000001010101010101010110001001101011",
+      "100111111101001010110100111100111111101101000100010011110010110",
+      "101010011100010101100000101000001101110001101100111010111011101",
+      "100111111101000101001010011100100110100101011000100100101110000",
+      "100110100100011111000100011010000000101010101010101111110011100",
+      "101010111001011010110100001100100101111010100000110000100000100",
+      "100010100000110000001100011100100000100001111000111111000110000",
+      "100011100000110000001100011100000001000000000000000011010100110",
+      "100100110111000011010100010000111111111110010000001011101110100",
+      "100100110110011110011100010000111111111110010000011001100110101",
+      "100100110110011110011100110100100110000101111100010100001100011",
+      "100100111111111111100100010111011001111001111000101011111101011",
+      "100100110000101111100100001001011001111001110000111001000011011",
+      "100100110000101111100100001000011001111001100000001000110011011",
+      "100100110110011010100100010000111111111110010000011011111000111",
+      "100100110110011010110100010000111111111110010000101111110001110",
+      "4F2C"
+    ]
+  },
+  {
+    "name": "CRC-16/ARC",
+    "size": 16,
+    "polynomial": "0X8005",
+    "initialValue": "0X0000",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X0000",
+    "check": "0XBB3D",
+    "residue": "0X0000",
+    "class": "attested",
+    "created": "30 March 2005",
+    "updated": "2 August 2023",
+    "aliases": [
+      "ARC",
+      "CRC-16",
+      "CRC-16/LHA",
+      "CRC-IBM"
+    ],
+    "codewords": [
+      "000000000000",
+      "F20183E1C2",
+      "0FAA0055E30B",
+      "00FF5511CF6C",
+      "332255AABBCCDDEEFF98AE",
+      "926B554EE2",
+      "FFFFFFFF0194"
+    ]
+  },
+  {
+    "name": "CRC-16/CDMA2000",
+    "size": 16,
+    "polynomial": "0XC867",
+    "initialValue": "0XFFFF",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X0000",
+    "check": "0X4C06",
+    "residue": "0X0000",
+    "class": "academic",
+    "created": "14 October 2013",
+    "updated": "28 July 2023",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-16/CMS",
+    "size": 16,
+    "polynomial": "0X8005",
+    "initialValue": "0XFFFF",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X0000",
+    "check": "0XAEE7",
+    "residue": "0X0000",
+    "class": "third-party",
+    "created": "13 July 2016",
+    "updated": "2 August 2023",
+    "aliases": [],
+    "codewords": [
+      "0200080078110000F00F0000F7E0",
+      "020008005B110000F00F00004725",
+      "0200080050110000F00F0000F71F",
+      "0200080024110000F00F00003636",
+      "02000800A6100000F00F0000141A",
+      "0200080034100000B0090000B725",
+      "0200080029100000B0090000E76E",
+      "0200080002100000B0090000D79B",
+      "0200080005100000B0090000A789",
+      "0200080078100000B0090000F696",
+      "00050900000000003030303000D55E",
+      "01000400051000003793",
+      "0200080034100000F00F00003740",
+      "0200080029100000F00F0000670B",
+      "0200080002100000F00F000057FE",
+      "0200080005100000F00F000027EC",
+      "0200080078100000F00F000076F3",
+      "02000C00301000009A01000000000000837B",
+      "02000C00301000009A0100009A0100004B55",
+      "02000C00301000009A01000034030000934E",
+      "02000C00301000009A010000CE0400005B09",
+      "02000C00301000009A01000068060000A311"
+    ]
+  },
+  {
+    "name": "CRC-16/DDS-110",
+    "size": 16,
+    "polynomial": "0X8005",
+    "initialValue": "0X800D",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X0000",
+    "check": "0X9ECF",
+    "residue": "0X0000",
+    "class": "attested",
+    "created": "30 November 2009",
+    "updated": "28 December 2019",
+    "aliases": [],
+    "codewords": [
+      "0200108200731082F7FE",
+      "02000200731082FEF7",
+      "02001082007800ED96",
+      "020010820078016D93",
+      "020005006600057A586435"
+    ]
+  },
+  {
+    "name": "CRC-16/DECT-R",
+    "size": 16,
+    "polynomial": "0X0589",
+    "initialValue": "0X0000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X0001",
+    "check": "0X007E",
+    "residue": "0X0589",
+    "class": "attested",
+    "created": "7 December 2009",
+    "updated": "3 August 2023",
+    "aliases": [
+      "R-CRC-16"
+    ],
+    "codewords": []
+  },
+  {
+    "name": "CRC-16/DECT-X",
+    "size": 16,
+    "polynomial": "0X0589",
+    "initialValue": "0X0000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X0000",
+    "check": "0X007F",
+    "residue": "0X0000",
+    "class": "attested",
+    "created": "30 July 2010",
+    "updated": "2 January 2021",
+    "aliases": [
+      "X-CRC-16"
+    ],
+    "codewords": [
+      "A37029"
+    ]
+  },
+  {
+    "name": "CRC-16/DNP",
+    "size": 16,
+    "polynomial": "0X3D65",
+    "initialValue": "0X0000",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0XFFFF",
+    "check": "0XEA82",
+    "residue": "0X66C5",
+    "class": "confirmed",
+    "created": "2 November 2007",
+    "updated": "28 December 2019",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-16/EN-13757",
+    "size": 16,
+    "polynomial": "0X3D65",
+    "initialValue": "0X0000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0XFFFF",
+    "check": "0XC2B7",
+    "residue": "0XA366",
+    "class": "confirmed",
+    "created": "1 October 2008",
+    "updated": "28 December 2019",
+    "aliases": [],
+    "codewords": [
+      "EE449ACE010000802307AABC",
+      "7A4700E0A535E79CFAA94D07B173BC101496",
+      "021CCB0127DCF516FF4EA8BC0A4851744D3D",
+      "438A680ECFC8EAA7F5D6476CAD938EBF88AF",
+      "259794C336C6FE9601D99F81B5EBDD9F36B5",
+      "67FC406AA1107F380CA349EB2F1AD57AD22A",
+      "7D8067CD9D1076",
+      "D0F1E6C2C3962E",
+      "384BABA953BCE5",
+      "70414545C59920",
+      "F0649A4E111111110000E9CA",
+      "A12F2F2F2F2F2F2F2F2F2F2F2F2F2F2F4A08",
+      "2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F63D7",
+      "7A8D00E0A503B1922864C36F29B37AF0646A",
+      "D1391E979A44C456786CBB99CD6ECAACB373",
+      "780B134365871E6D",
+      "07400001AAAA0000363E"
+    ]
+  },
+  {
+    "name": "CRC-16/GENIBUS",
+    "size": 16,
+    "polynomial": "0X1021",
+    "initialValue": "0XFFFF",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0XFFFF",
+    "check": "0XD64E",
+    "residue": "0X1D0F",
+    "class": "attested",
+    "created": "2 November 2007",
+    "updated": "3 January 2021",
+    "aliases": [
+      "CRC-16/DARC",
+      "CRC-16/EPC",
+      "CRC-16/EPC-C1G2",
+      "CRC-16/I-CODE"
+    ],
+    "codewords": [
+      "0000E2F0",
+      "08001111CCAE",
+      "100011112222968F",
+      "180011112222333378F6",
+      "20001111222233334444C241",
+      "2800111122223333444455552A91",
+      "30001111222233334444555566661835",
+      "402141424387F5",
+      "101000000001000000000000000000101000001010001",
+      "3000319F60A356276E28F14FDC9C5DB4",
+      "100120020C823E003982150064820900FA910A",
+      "07200102C302101A901C",
+      "0000000001000000000101100011110010111",
+      "000000000101000000000000000011000101100011010000000101101101000111001",
+      "11000000010100000000000000000110001011000110100000001000000100011111001001111011010001011100000011000001",
+      "00000001010100000000000000001100010110001101000000011000001110000000010101010101010101100010011000111"
+    ]
+  },
+  {
+    "name": "CRC-16/GSM",
+    "size": 16,
+    "polynomial": "0X1021",
+    "initialValue": "0X0000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0XFFFF",
+    "check": "0XCE3C",
+    "residue": "0X1D0F",
+    "class": "attested",
+    "created": "17 February 2017",
+    "updated": "4 August 2023",
+    "aliases": [],
+    "codewords": [
+      "010101000000000002005A28",
+      "035D24E3580200010034D0F2"
+    ]
+  },
+  {
+    "name": "CRC-16/IBM-3740",
+    "size": 16,
+    "polynomial": "0X1021",
+    "initialValue": "0XFFFF",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X0000",
+    "check": "0X29B1",
+    "residue": "0X0000",
+    "class": "attested",
+    "created": "30 March 2005",
+    "updated": "3 August 2023",
+    "aliases": [
+      "CRC-16/AUTOSAR",
+      "CRC-16/CCITT-FALSE"
+    ],
+    "codewords": [
+      "0000000084C0",
+      "F20183D374",
+      "0FAA00552023",
+      "00FF5511B8F9",
+      "332255AABBCCDDEEFFF53F",
+      "926B550745",
+      "FFFFFFFF1D0F",
+      "FE00000001F1D3",
+      "FB",
+      "E5",
+      "A40C"
+    ]
+  },
+  {
+    "name": "CRC-16/IBM-SDLC",
+    "size": 16,
+    "polynomial": "0X1021",
+    "initialValue": "0XFFFF",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0XFFFF",
+    "check": "0X906E",
+    "residue": "0XF0B8",
+    "class": "attested",
+    "created": "10 September 2005",
+    "updated": "4 August 2023",
+    "aliases": [
+      "CRC-16/ISO-HDLC",
+      "CRC-16/ISO-IEC-14443-3-B",
+      "CRC-16/X-25",
+      "CRC-B",
+      "X-25"
+    ],
+    "codewords": [
+      "033F5BEC",
+      "01738357",
+      "013FEBDF",
+      "03733364",
+      "54D9E4",
+      "54261B",
+      "4361744D6F757365393837363534333231910A",
+      "4361744D6F7573653938373635343332316EF5",
+      "21005100004944330300000000004A544954320000000D000000416E616C6F6720426C756573545045310000000D0000004A2E20512E205075626C696354414C4200000012000000546865204C6F73742053657373696F6E73F527",
+      "000000CCC6",
+      "0FAAFFFCD1",
+      "0A1234562CF6"
+    ]
+  },
+  {
+    "name": "CRC-16/ISO-IEC-14443-3-A",
+    "size": 16,
+    "polynomial": "0X1021",
+    "initialValue": "0XC6C6",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X0000",
+    "check": "0XBF05",
+    "residue": "0X0000",
+    "class": "attested",
+    "created": "30 April 2011",
+    "updated": "3 August 2023",
+    "aliases": [
+      "CRC-A"
+    ],
+    "codewords": [
+      "0000A01E",
+      "123426CF",
+      "AABBCCDDEE0011227B09",
+      "9370C2A82DF4B3BAA3",
+      "08B6DD",
+      "6030764A",
+      "500057CD",
+      "937000000000009CD9",
+      "6000F57B",
+      "93701DFBE03335D355"
+    ]
+  },
+  {
+    "name": "CRC-16/KERMIT",
+    "size": 16,
+    "polynomial": "0X1021",
+    "initialValue": "0X0000",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X0000",
+    "check": "0X2189",
+    "residue": "0X0000",
+    "class": "attested",
+    "created": "10 September 2005",
+    "updated": "4 August 2023",
+    "aliases": [
+      "CRC-16/BLUETOOTH",
+      "CRC-16/CCITT",
+      "CRC-16/CCITT-TRUE",
+      "CRC-16/V-41-LSB",
+      "CRC-CCITT",
+      "KERMIT"
+    ],
+    "codewords": [
+      "43AED6C8ADD651431551B03102D332B9C1D651313732B583F303",
+      "6DAEB9CDADCD524F15C1C154022FCD454C43C1D9C1AEC15431AEB9CDADCD524F32B0B93446C2C13443B0B3B9B946834861",
+      "CDAEB9CDADCD524F54DF7F3802D33231C1CDC8B03134388361A7",
+      "6D8080808080808015D3518002B0B058D3838236",
+      "CDAEB9CDADCD524F15C2C1B9024CB032C1CDC8B03134382FCD454C43C1D9C1AEC15431AEB9CDADCD524FC1B0B9B531323443B3C4B9B0B3C2C1B53131C2B9B0B0C143B53437313443B0C437C134B6B54334C1C432B6B9B5B5C14343433445B9C13831B543383132343446C131B332B0B934B9B0B3B3C1B0454534C438374643B3834483",
+      "6DAEB9CDADCD524FB9DF7FD58391C6",
+      "43AED6C8ADDA5843D50DD0C1524954D920BF8397AC",
+      "43AED6C8ADDA584315C831BC0DD0C1524954D920BF8302D5",
+      "32AED6C8ADDA58C21538313702CD31B3C15146B034B3B90D8ACDD6C10D8A5146C1B034B3B92F31B0AED6C8DA58C2AECD454C200D8AC1C1B0B53137202020202083751B",
+      "6DAEB9D6ADD3CD57B5DF7F4A839BC6",
+      "54A114",
+      "4361744D6F7573653938373635343332318DC2",
+      "10000000000000000000000000000000000000111001111100000000000000010010001001110100",
+      "10001110110001001100011000000010000000111001111100000000000000010111110011100100",
+      "6DD2",
+      "1110110000110110",
+      "1011000011011000"
+    ]
+  },
+  {
+    "name": "CRC-16/LJ1200",
+    "size": 16,
+    "polynomial": "0X6F63",
+    "initialValue": "0X0000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X0000",
+    "check": "0XBDF4",
+    "residue": "0X0000",
+    "class": "third-party",
+    "created": "20 February 2016",
+    "updated": "6 June 2018",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-16/M17",
+    "size": 16,
+    "polynomial": "0X5935",
+    "initialValue": "0XFFFF",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X0000",
+    "check": "0X772B",
+    "residue": "0X0000",
+    "class": "attested",
+    "created": "7 May 2022",
+    "updated": "8 August 2024",
+    "aliases": [],
+    "codewords": [
+      "FFFF",
+      "41206E",
+      "1C31"
+    ]
+  },
+  {
+    "name": "CRC-16/MAXIM-DOW",
+    "size": 16,
+    "polynomial": "0X8005",
+    "initialValue": "0X0000",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0XFFFF",
+    "check": "0X44C2",
+    "residue": "0XB001",
+    "class": "attested",
+    "created": "26 April 2009",
+    "updated": "28 December 2019",
+    "aliases": [
+      "CRC-16/MAXIM"
+    ],
+    "codewords": []
+  },
+  {
+    "name": "CRC-16/MCRF4XX",
+    "size": 16,
+    "polynomial": "0X1021",
+    "initialValue": "0XFFFF",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X0000",
+    "check": "0X6F91",
+    "residue": "0X0000",
+    "class": "attested",
+    "created": "18 January 2008",
+    "updated": "4 August 2023",
+    "aliases": [],
+    "codewords": [
+      "54261B",
+      "4361744D6F7573653938373635343332316EF5",
+      "3A7164D9",
+      "3A916A3E"
+    ]
+  },
+  {
+    "name": "CRC-16/MODBUS",
+    "size": 16,
+    "polynomial": "0X8005",
+    "initialValue": "0XFFFF",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X0000",
+    "check": "0X4B37",
+    "residue": "0X0000",
+    "class": "attested",
+    "created": "27 February 2007",
+    "updated": "2 January 2021",
+    "aliases": [
+      "MODBUS"
+    ],
+    "codewords": []
+  },
+  {
+    "name": "CRC-16/NRSC-5",
+    "size": 16,
+    "polynomial": "0X080B",
+    "initialValue": "0XFFFF",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X0000",
+    "check": "0XA066",
+    "residue": "0X0000",
+    "class": "attested",
+    "created": "16 November 2018",
+    "updated": "20 March 2019",
+    "aliases": [],
+    "codewords": [
+      "000048BBABA0329A0A0A2671",
+      "00001010000010101001101000110010101000001010101110111011010010000000000100100110",
+      "0030C8D3D37379D91E0A7B40",
+      "00001010000111101101100101111001011100111101001111010011110010000011000001111011",
+      "0010C097A920F31B240A2D1D",
+      "00001010001001000001101111110011001000001010100110010111110000000001110100101101",
+      "00200882E861D03C3C0AEB71",
+      "00001010001111000011110011010000011000011110100010000010000010000010000111101011",
+      "00100000DC69FABC4E0AB6CD",
+      "00001010010011101011110011111010011010011101110000000000000000000001110110110110",
+      "000015004000809E54456AC7",
+      "01000101010101001001111010000000000000000100000000000000000101010000011101101010",
+      "00200008FA7E849E54454B82",
+      "01000101010101001001111010000100011111101111101000001000000000000010001001001011",
+      "001000744280849E54457C5C",
+      "01000101010101001001111010000100100000000100001001110100000000000001110001111100"
+    ]
+  },
+  {
+    "name": "CRC-16/OPENSAFETY-A",
+    "size": 16,
+    "polynomial": "0X5935",
+    "initialValue": "0X0000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X0000",
+    "check": "0X5D38",
+    "residue": "0X0000",
+    "class": "attested",
+    "created": "22 July 2016",
+    "updated": "7 May 2022",
+    "aliases": [],
+    "codewords": [
+      "23C8083411223344556677880374"
+    ]
+  },
+  {
+    "name": "CRC-16/OPENSAFETY-B",
+    "size": 16,
+    "polynomial": "0X755B",
+    "initialValue": "0X0000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X0000",
+    "check": "0X20FE",
+    "residue": "0X0000",
+    "class": "attested",
+    "created": "22 July 2016",
+    "updated": "7 May 2022",
+    "aliases": [],
+    "codewords": [
+      "22C812563011223344556677887031"
+    ]
+  },
+  {
+    "name": "CRC-16/PROFIBUS",
+    "size": 16,
+    "polynomial": "0X1DCF",
+    "initialValue": "0XFFFF",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0XFFFF",
+    "check": "0XA819",
+    "residue": "0XE394",
+    "class": "attested",
+    "created": "5 July 2016",
+    "updated": "7 May 2022",
+    "aliases": [
+      "CRC-16/IEC-61158-2"
+    ],
+    "codewords": [
+      "34AF21",
+      "011057E0",
+      "321000E37E82",
+      "331000E32A0F",
+      "2611010000080A109739"
+    ]
+  },
+  {
+    "name": "CRC-16/RIELLO",
+    "size": 16,
+    "polynomial": "0X1021",
+    "initialValue": "0XB2AA",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X0000",
+    "check": "0X63D0",
+    "residue": "0X0000",
+    "class": "third-party",
+    "created": "18 April 2009",
+    "updated": "28 December 2019",
+    "aliases": [],
+    "codewords": [
+      "2022525330308790"
+    ]
+  },
+  {
+    "name": "CRC-16/SPI-FUJITSU",
+    "size": 16,
+    "polynomial": "0X1021",
+    "initialValue": "0X1D0F",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X0000",
+    "check": "0XE5CC",
+    "residue": "0X0000",
+    "class": "attested",
+    "created": "30 October 2007",
+    "updated": "4 August 2023",
+    "aliases": [
+      "CRC-16/AUG-CCITT"
+    ],
+    "codewords": []
+  },
+  {
+    "name": "CRC-16/T10-DIF",
+    "size": 16,
+    "polynomial": "0X8BB7",
+    "initialValue": "0X0000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X0000",
+    "check": "0XD0DB",
+    "residue": "0X0000",
+    "class": "attested",
+    "created": "29 September 2009",
+    "updated": "2 January 2021",
+    "aliases": [],
+    "codewords": [
+      "00000000000000000000000000000000000000000000000000000000000000000000",
+      "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFA293",
+      "000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F0224",
+      "FFFF00000000000000000000000000000000000000000000000000000000000021B8",
+      "FFFEFDFCFBFAF9F8F7F6F5F4F3F2F1F0EFEEEDECEBEAE9E8E7E6E5E4E3E2E1E0A0B7"
+    ]
+  },
+  {
+    "name": "CRC-16/TELEDISK",
+    "size": 16,
+    "polynomial": "0XA097",
+    "initialValue": "0X0000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X0000",
+    "check": "0X0FB3",
+    "residue": "0X0000",
+    "class": "confirmed",
+    "created": "10 December 2009",
+    "updated": "4 August 2023",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-16/TMS37157",
+    "size": 16,
+    "polynomial": "0X1021",
+    "initialValue": "0X89EC",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X0000",
+    "check": "0X26B1",
+    "residue": "0X0000",
+    "class": "attested",
+    "created": "17 April 2011",
+    "updated": "28 December 2019",
+    "aliases": [],
+    "codewords": [
+      "0225A6",
+      "024000000000A060E7",
+      "024100000000A46FA5",
+      "01AAAAAAAAAADC25AB"
+    ]
+  },
+  {
+    "name": "CRC-16/UMTS",
+    "size": 16,
+    "polynomial": "0X8005",
+    "initialValue": "0X0000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X0000",
+    "check": "0XFEE8",
+    "residue": "0X0000",
+    "class": "attested",
+    "created": "4 June 2008",
+    "updated": "8 August 2024",
+    "aliases": [
+      "CRC-16/BUYPASS",
+      "CRC-16/VERIFONE"
+    ],
+    "codewords": [
+      "1FBB",
+      "0384901B56",
+      "03848400001230314131333030323031333030311C39303062BF",
+      "01100110011101011000001100000110011001110101100001101000111010100",
+      "331D3030331D30",
+      "53716",
+      "01101000011101011000001100000110011001110101100001111000111001001",
+      "341D3030331D30",
+      "61897",
+      "01101010011101011000001100000110011001110101100000001000111001111",
+      "351D3030331D30",
+      "04559",
+      "01101100011101011000001100000110011001110101100001011000111000000",
+      "361D3030331D30",
+      "45504",
+      "01100110011101011010001100000110000001110101100000101000111000110",
+      "331D3430301D30",
+      "20934",
+      "01100110011101011000001100000111001001110101100001101000111110110",
+      "331D3030391D30",
+      "53750",
+      "01100010011101011000001100010110000001110101100000001001101010001",
+      "311D3031301D30",
+      "04945"
+    ]
+  },
+  {
+    "name": "CRC-16/USB",
+    "size": 16,
+    "polynomial": "0X8005",
+    "initialValue": "0XFFFF",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0XFFFF",
+    "check": "0XB4C8",
+    "residue": "0XB001",
+    "class": "confirmed",
+    "created": "1 December 2007",
+    "updated": "12 July 2024",
+    "aliases": [],
+    "codewords": [
+      "1BED534B3E6D7F7CD7CC",
+      "EB33",
+      "55534243A864AB870800000080000A25000000000000000000000000000000C30E",
+      "C370",
+      "8006000100004000DD94",
+      "BB29",
+      "00010203EF7A",
+      "234567890E1C"
+    ]
+  },
+  {
+    "name": "CRC-16/XMODEM",
+    "size": 16,
+    "polynomial": "0X1021",
+    "initialValue": "0X0000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X0000",
+    "check": "0X31C3",
+    "residue": "0X0000",
+    "class": "attested",
+    "created": "30 March 2005",
+    "updated": "5 August 2023",
+    "aliases": [
+      "CRC-16/ACORN",
+      "CRC-16/LTE",
+      "CRC-16/V-41-MSB",
+      "XMODEM",
+      "ZMODEM"
+    ],
+    "codewords": [
+      "541A71",
+      "4361744D6F757365393837363534333231E556"
+    ]
+  },
+  {
+    "name": "CRC-17/CAN-FD",
+    "size": 17,
+    "polynomial": "0X1685B",
+    "initialValue": "0X00000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X00000",
+    "check": "0X04F03",
+    "residue": "0X00000",
+    "class": "academic",
+    "created": "20 June 2017",
+    "updated": "3 January 2021",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-21/CAN-FD",
+    "size": 21,
+    "polynomial": "0X102899",
+    "initialValue": "0X000000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X000000",
+    "check": "0X0ED841",
+    "residue": "0X000000",
+    "class": "academic",
+    "created": "20 June 2017",
+    "updated": "3 January 2021",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-24/BLE",
+    "size": 24,
+    "polynomial": "0X00065B",
+    "initialValue": "0X555555",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X000000",
+    "check": "0XC25A56",
+    "residue": "0X000000",
+    "class": "attested",
+    "created": "7 February 2016",
+    "updated": "4 August 2023",
+    "aliases": [],
+    "codewords": [
+      "0003424C45290ACE",
+      "0100001010010000011001011010010100100101110001010100010110000011100000000100000011000000101101010010110111010111",
+      "00119992B1EBD7900201050702031802180418A85DEF",
+      "030C5F96EA3018009992B1EBD790DF02EB",
+      "04129992B1EBD7900B094B6579666F6264656D6FD39F03",
+      "05225F96EA3018009992B1EBD7901B0A8560A77B22020F0050000000D007FFFFFFFF1FA948DA02",
+      "4021EE04A5DDA7F90B094C69616D73424C4576320319410302010607030D180F180A181C929E",
+      "C522C4A5F2BE7479EE04A5DDA7F9667265500B085B030500180000004800FFFFFFFF1FA9E478D0",
+      "00090DEF84B72D3C020105C2E2A4",
+      "0522AB2F853118000DEF84B72D3C782118C9567FA202270050000000D007FFFFFFFF1FAF0F1957"
+    ]
+  },
+  {
+    "name": "CRC-24/FLEXRAY-A",
+    "size": 24,
+    "polynomial": "0X5D6DCB",
+    "initialValue": "0XFEDCBA",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X000000",
+    "check": "0X7979BD",
+    "residue": "0X000000",
+    "class": "attested",
+    "created": "3 November 2007",
+    "updated": "6 February 2017",
+    "aliases": [],
+    "codewords": [
+      "18020209880000F339C1",
+      "600A0248C80102646D70",
+      "205606C848102030405060474380",
+      "202E06C84810203040506096C9D1",
+      "201A06C848102030405060B072EB"
+    ]
+  },
+  {
+    "name": "CRC-24/FLEXRAY-B",
+    "size": 24,
+    "polynomial": "0X5D6DCB",
+    "initialValue": "0XABCDEF",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X000000",
+    "check": "0X1F23B8",
+    "residue": "0X000000",
+    "class": "attested",
+    "created": "3 November 2007",
+    "updated": "6 February 2017",
+    "aliases": [],
+    "codewords": [
+      "18020209880000D5B910",
+      "600A0248C8010242EDA1",
+      "205606C848102030405060E6D9BE",
+      "202E06C8481020304050603753EF",
+      "201A06C84810203040506011E8D5"
+    ]
+  },
+  {
+    "name": "CRC-24/INTERLAKEN",
+    "size": 24,
+    "polynomial": "0X328B63",
+    "initialValue": "0XFFFFFF",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0XFFFFFF",
+    "check": "0XB4F3E6",
+    "residue": "0X144E63",
+    "class": "academic",
+    "created": "10 February 2016",
+    "updated": "4 August 2023",
+    "aliases": [],
+    "codewords": [
+      "520BB1047D585E00C2B4B401BBAF01000000FCB0B3A8468E1A0A01E1BA38A9DF00003677EEA56DDABEB48D4D93A88A1200001F9515F655DCC3857A641B260C51F10000000000000059E69D"
+    ]
+  },
+  {
+    "name": "CRC-24/LTE-A",
+    "size": 24,
+    "polynomial": "0X864CFB",
+    "initialValue": "0X000000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X000000",
+    "check": "0XCDE703",
+    "residue": "0X000000",
+    "class": "academic",
+    "created": "13 February 2016",
+    "updated": "5 August 2023",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-24/LTE-B",
+    "size": 24,
+    "polynomial": "0X800063",
+    "initialValue": "0X000000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X000000",
+    "check": "0X23EF52",
+    "residue": "0X000000",
+    "class": "academic",
+    "created": "13 February 2016",
+    "updated": "5 August 2023",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-24/OPENPGP",
+    "size": 24,
+    "polynomial": "0X864CFB",
+    "initialValue": "0XB704CE",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X000000",
+    "check": "0X21CF02",
+    "residue": "0X000000",
+    "class": "attested",
+    "created": "2 November 2007",
+    "updated": "4 August 2023",
+    "aliases": [
+      "CRC-24"
+    ],
+    "codewords": []
+  },
+  {
+    "name": "CRC-24/OS-9",
+    "size": 24,
+    "polynomial": "0X800063",
+    "initialValue": "0XFFFFFF",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0XFFFFFF",
+    "check": "0X200FA5",
+    "residue": "0X800FE3",
+    "class": "attested",
+    "created": "25 July 2018",
+    "updated": "4 August 2023",
+    "aliases": [],
+    "codewords": [
+      "87CD00320021F181D600260029FF0000000F010400000100060101001000100101445261ED015242C643626D4473EB0C4EDF",
+      "87CD0020000D118108001500FA556E4D6F756EF401113F21265F103F06782872",
+      "87CD003C002CF181D500300033030003051A00000100010100011808180D1B040117030508070000002C0000546572ED5343C643626D436FEE81D4AA",
+      "87CD00300021F181D400240027FF0000000F01000000010023010100100010010144B0015242C643626D4473EBA297DD",
+      "87CD00300021F181D400240027FF0000000F01010000010023010100100010010144B1015242C643626D4473EBC1CCD5",
+      "87CD00300021F181D400240027FF0000000F01020000010023010100100010010144B2015242C643626D4473EB6421CD",
+      "87CD00300021F181D400240027FF0000000F01030000010023010100100010010144B3015242C643626D4473EB077AC5"
+    ]
+  },
+  {
+    "name": "CRC-30/CDMA",
+    "size": 30,
+    "polynomial": "0X2030B9C7",
+    "initialValue": "0X3FFFFFFF",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X3FFFFFFF",
+    "check": "0X04C34ABF",
+    "residue": "0X34EFA55A",
+    "class": "academic",
+    "created": "20 February 2016",
+    "updated": "4 August 2023",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-31/PHILIPS",
+    "size": 31,
+    "polynomial": "0X04C11DB7",
+    "initialValue": "0X7FFFFFFF",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X7FFFFFFF",
+    "check": "0X0CE9E46C",
+    "residue": "0X4EAF26F1",
+    "class": "confirmed",
+    "created": "12 April 2012",
+    "updated": "28 December 2019",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-32/AIXM",
+    "size": 32,
+    "polynomial": "0X814141AB",
+    "initialValue": "0X00000000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X00000000",
+    "check": "0X3010BF7F",
+    "residue": "0X00000000",
+    "class": "attested",
+    "created": "29 April 2009",
+    "updated": "2 January 2021",
+    "aliases": [
+      "CRC-32Q"
+    ],
+    "codewords": [
+      "3438303633374EA5A7C704",
+      "3031363334313145A1AE5741",
+      "3438303633374E3031363334313145A1BA30EE",
+      "3738326C297100",
+      "3438303633374E30313633343131453738326A259F4E",
+      "34362E37266D25C1",
+      "3438303633374E303136333431314534362E372F866D6D",
+      "3438303633374E303136333431314537383234362E375E5DC940"
+    ]
+  },
+  {
+    "name": "CRC-32/AUTOSAR",
+    "size": 32,
+    "polynomial": "0XF4ACFB13",
+    "initialValue": "0XFFFFFFFF",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0XFFFFFFFF",
+    "check": "0X1697D06A",
+    "residue": "0X904CDDBF",
+    "class": "attested",
+    "created": "24 July 2016",
+    "updated": "28 July 2023",
+    "aliases": [],
+    "codewords": [
+      "000000004022B36F",
+      "F20183251A724F",
+      "0FAA0055F82D6620",
+      "00FF55116E99D79B",
+      "332255AABBCCDDEEFF3D345AA6",
+      "926B55788A68EE",
+      "FFFFFFFFFFFFFFFF"
+    ]
+  },
+  {
+    "name": "CRC-32/BASE91-D",
+    "size": 32,
+    "polynomial": "0XA833982B",
+    "initialValue": "0XFFFFFFFF",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0XFFFFFFFF",
+    "check": "0X87315576",
+    "residue": "0X45270551",
+    "class": "confirmed",
+    "created": "28 November 2008",
+    "updated": "8 August 2024",
+    "aliases": [
+      "CRC-32D"
+    ],
+    "codewords": []
+  },
+  {
+    "name": "CRC-32/BZIP2",
+    "size": 32,
+    "polynomial": "0X04C11DB7",
+    "initialValue": "0XFFFFFFFF",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0XFFFFFFFF",
+    "check": "0XFC891918",
+    "residue": "0XC704DD7B",
+    "class": "attested",
+    "created": "8 October 2008",
+    "updated": "22 August 2022",
+    "aliases": [
+      "CRC-32/AAL5",
+      "CRC-32/DECT-B",
+      "B-CRC-32"
+    ],
+    "codewords": [
+      "00000028",
+      "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000028864D7F99",
+      "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000028C55E457A",
+      "0102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F20212223242526272800000028BF671ED0",
+      "0102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F20212223242526272811220028ACBA602A",
+      "6173640A86FA4F5B"
+    ]
+  },
+  {
+    "name": "CRC-32/CD-ROM-EDC",
+    "size": 32,
+    "polynomial": "0X8001801B",
+    "initialValue": "0X00000000",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X00000000",
+    "check": "0X6EC2EDC4",
+    "residue": "0X00000000",
+    "class": "academic",
+    "created": "19 April 2019",
+    "updated": "4 August 2023",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-32/CKSUM",
+    "size": 32,
+    "polynomial": "0X04C11DB7",
+    "initialValue": "0X00000000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0XFFFFFFFF",
+    "check": "0X765E7680",
+    "residue": "0XC704DD7B",
+    "class": "attested",
+    "created": "30 March 2005",
+    "updated": "8 August 2024",
+    "aliases": [
+      "CKSUM",
+      "CRC-32/POSIX"
+    ],
+    "codewords": [
+      "930766865",
+      "31323334353637383909",
+      "3F0A451F",
+      "C0F5BAE0"
+    ]
+  },
+  {
+    "name": "CRC-32/ISCSI",
+    "size": 32,
+    "polynomial": "0X1EDC6F41",
+    "initialValue": "0XFFFFFFFF",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0XFFFFFFFF",
+    "check": "0XE3069283",
+    "residue": "0XB798B438",
+    "class": "attested",
+    "created": "10 September 2005",
+    "updated": "8 August 2024",
+    "aliases": [
+      "CRC-32/BASE91-C",
+      "CRC-32/CASTAGNOLI",
+      "CRC-32/INTERLAKEN",
+      "CRC-32C",
+      "CRC-32/NVME"
+    ],
+    "codewords": [
+      "0000000000000000000000000000000000000000000000000000000000000000AA36918A",
+      "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF43ABA862",
+      "000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F4E79DD46",
+      "84100000060301000000000000000000000000000000000000000000040000001400000000000000000000000100000000000000000000000000000000000000000000004AC32CFA",
+      "8490000000000000000000000000000000000000415A3132333435362020202020202020202020207A1FC47B",
+      "84080000010000000000000000000080AAEF81B4",
+      "848800000000000038FF1E0501000000C83B3B57",
+      "8400000004450000CD21EC1E",
+      "8480000000450100BD860283"
+    ]
+  },
+  {
+    "name": "CRC-32/ISO-HDLC",
+    "size": 32,
+    "polynomial": "0X04C11DB7",
+    "initialValue": "0XFFFFFFFF",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0XFFFFFFFF",
+    "check": "0XCBF43926",
+    "residue": "0XDEBB20E3",
+    "class": "attested",
+    "created": "30 March 2005",
+    "updated": "11 December 2024",
+    "aliases": [
+      "CRC-32",
+      "CRC-32/ADCCP",
+      "CRC-32/V-42",
+      "CRC-32/XZ",
+      "PKZIP"
+    ],
+    "codewords": [
+      "000000001CDF4421",
+      "F20183779DAB24",
+      "0FAA005587B2C9B6",
+      "00FF55111262A032",
+      "332255AABBCCDDEEFF3D86AEB0",
+      "926B559BA2DE9C",
+      "FFFFFFFFFFFFFFFF",
+      "89AEB31A874EAF84841B46736B0DFDF2BA58D30AA2A545A3E235A3521E07594CFA690DA7",
+      "5512DBB6737D0106F65975B773DFB011FFC344BCF442E2DD6D8BC4870B5D5B035FF4BAD9",
+      "C008300028CFE9521D3B08EA449900E808EA449900E8300102007E649416",
+      "6173640ACEDE2D15"
+    ]
+  },
+  {
+    "name": "CRC-32/JAMCRC",
+    "size": 32,
+    "polynomial": "0X04C11DB7",
+    "initialValue": "0XFFFFFFFF",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X00000000",
+    "check": "0X340BC6D9",
+    "residue": "0X00000000",
+    "class": "confirmed",
+    "created": "30 March 2005",
+    "updated": "21 November 2018",
+    "aliases": [
+      "JAMCRC"
+    ],
+    "codewords": []
+  },
+  {
+    "name": "CRC-32/MEF",
+    "size": 32,
+    "polynomial": "0X741B8CD7",
+    "initialValue": "0XFFFFFFFF",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X00000000",
+    "check": "0XD2C22F51",
+    "residue": "0X00000000",
+    "class": "attested",
+    "created": "10 January 2022",
+    "updated": "4 August 2023",
+    "aliases": [],
+    "codewords": [
+      "4E6F7465000100003000000040F2E0C8E674040054686973206973207468652074657874206F6620746865206669727374206E6F74652E007E7E7E7E7E7E7E7E7E7E7E7E42342AB7",
+      "4E6F74650001000030000000C08879C9E674040054686973206973207468652074657874206F6620746865207365636F6E64206E6F74652E007E7E7E7E7E7E7E7E7E7E7E78CE3BA8",
+      "42342AB74E6F7465000100003000000040F2E0C8E674040054686973206973207468652074657874206F6620746865206669727374206E6F74652E007E7E7E7E7E7E7E7E7E7E7E7E78CE3BA84E6F74650001000030000000C08879C9E674040054686973206973207468652074657874206F6620746865207365636F6E64206E6F74652E007E7E7E7E7E7E7E7E7E7E7E266D44ED",
+      "4E6F746500010000000400000000000040F2E0C8E67404004E6F7465000100004804000000000000C08879C9E6740400D1D99813"
+    ]
+  },
+  {
+    "name": "CRC-32/MPEG-2",
+    "size": 32,
+    "polynomial": "0X04C11DB7",
+    "initialValue": "0XFFFFFFFF",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X00000000",
+    "check": "0X0376E6E7",
+    "residue": "0X00000000",
+    "class": "attested",
+    "created": "8 October 2008",
+    "updated": "4 August 2023",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-32/XFER",
+    "size": 32,
+    "polynomial": "0X000000AF",
+    "initialValue": "0X00000000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X00000000",
+    "check": "0XBD0BE338",
+    "residue": "0X00000000",
+    "class": "confirmed",
+    "created": "30 March 2005",
+    "updated": "2 January 2021",
+    "aliases": [
+      "XFER"
+    ],
+    "codewords": []
+  },
+  {
+    "name": "CRC-40/GSM",
+    "size": 40,
+    "polynomial": "0X0004820009",
+    "initialValue": "0X0000000000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0XFFFFFFFFFF",
+    "check": "0XD4164FC646",
+    "residue": "0XC4FF8071FF",
+    "class": "academic",
+    "created": "10 December 2009",
+    "updated": "25 March 2019",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-64/ECMA-182",
+    "size": 64,
+    "polynomial": "0X42F0E1EBA9EA3693",
+    "initialValue": "0X0000000000000000",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0X0000000000000000",
+    "check": "0X6C40DF5F0B497347",
+    "residue": "0X0000000000000000",
+    "class": "academic",
+    "created": "6 April 2009",
+    "updated": "7 May 2022",
+    "aliases": [
+      "CRC-64"
+    ],
+    "codewords": []
+  },
+  {
+    "name": "CRC-64/GO-ISO",
+    "size": 64,
+    "polynomial": "0X000000000000001B",
+    "initialValue": "0XFFFFFFFFFFFFFFFF",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0XFFFFFFFFFFFFFFFF",
+    "check": "0XB90956C775A41001",
+    "residue": "0X5300000000000000",
+    "class": "confirmed",
+    "created": "28 January 2017",
+    "updated": "29 August 2024",
+    "aliases": [],
+    "codewords": [
+      "0000000000000000",
+      "610000000000002034",
+      "6162000000000020C436",
+      "6162630000000020C47637",
+      "6162636400000020C4766733",
+      "6162636465000020C47667D332",
+      "6162636465660020C47667D30230",
+      "6162636465666720C47667D302B031",
+      "6162636465666768C47667D302B0210E",
+      "6162636465666768697667D302B0216E8B",
+      "6162636465666768696A67D302B0216E5B7F",
+      "48652077686F2068617320612073686164792070617374206B6E6F77732074686174206E69636520677579732066696E697368206C6173742EB45ABEE25917DBC7",
+      "46726565212046726565212F4120747269702F746F204D6172732F666F72203930302F656D707479206A6172732F4275726D61205368617665EFA0DAA61142FCEA",
+      "4E6570616C207072656D69657220776F6E27742072657369676E2EA628EFD66A865552",
+      "486973206D6F6E6579206973207477696365207461696E7465643A20277461696E7420796F75727320616E6420277461696E74206D696E652E16499D643A967888",
+      "73697A653A2020612E6F75743A2020626164206D61676963D2ADCDDA653C55F3",
+      "546865206D616A6F722070726F626C656D20697320776974682073656E646D61696C2E20202D4D61726B20486F72746F6EB976A68740035E9D",
+      "5468697320697320612074657374206F662074686520656D657267656E63792062726F6164636173742073797374656D2E613B506B00F1FCE7"
+    ]
+  },
+  {
+    "name": "CRC-64/JONES",
+    "size": 64,
+    "polynomial": "0xAD93D23594C935A9",
+    "initialValue": "0xFFFFFFFFFFFFFFFF",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0x0000000000000000",
+    "check": "0xCAA717168609F281",
+    "residue": "n/a",
+    "class": "confirmed",
+    "created": "",
+    "updated": "",
+    "aliases": []
+  },
+  {
+    "name": "CRC-64/MS",
+    "size": 64,
+    "polynomial": "0X259C84CBA6426349",
+    "initialValue": "0XFFFFFFFFFFFFFFFF",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X0000000000000000",
+    "check": "0X75D4B74F024ECEEA",
+    "residue": "0X0000000000000000",
+    "class": "attested",
+    "created": "7 January 2022",
+    "updated": "",
+    "aliases": [],
+    "codewords": [
+      "EBDBF499B234C9018A000000000000000000000002000000D8AE24AFCF9C941F0100000008000000360000002E00000042007500730069006E0065007300730049006D0070006100630074000000480042004900000007000000080000001C000000180000005000490049000000310000005365C6807317DACE",
+      "4D004900430052004F0053004F00460054002E0049004E005400450052004E00450054004500580050004C004F005200450052002E00440045004600410055004C005400A149B5EA6DB8C828",
+      "4D004900430052004F0053004F00460054002E00570049004E0044004F00570053002E0053005400490043004B0059004E004F0054004500530058C773F29AD57E33",
+      "7B00310041004300310034004500370037002D0030003200450037002D0034004500350044002D0042003700340034002D003200450042003100410045003500310039003800420037007D005C004E004F00540045005000410044002E004500580045002B4EC2C169DC9C9B",
+      "7B00440036003500320033003100420030002D0042003200460031002D0034003800350037002D0041003400430045002D004100380045003700430036004500410037004400320037007D005C004E004F00540045005000410044002E00450058004500237ED143CB0E8E91",
+      "7B00390030003500450036003300420036002D0043003100420046002D0034003900340045002D0042003200390043002D003600350042003700330032004400330044003200310041007D005C0049004500580050004C004F00520045002E0045005800450006B6151674EBA0C3",
+      "7B00360044003800300039003300370037002D0036004100460030002D0034003400340042002D0038003900350037002D004100330037003700330046003000320032003000300045007D005C0049004500580050004C004F00520045002E00450058004500CE6D913EB0E370E2",
+      "7B00370043003500410034003000450046002D0041003000460042002D0034004200460043002D0038003700340041002D004300300046003200450030004200390046004100380045007D005C0049004500580050004C004F00520045002E00450058004500A5A793B7B47F220E"
+    ]
+  },
+  {
+    "name": "CRC-64/NVME",
+    "size": 64,
+    "polynomial": "0XAD93D23594C93659",
+    "initialValue": "0XFFFFFFFFFFFFFFFF",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0XFFFFFFFFFFFFFFFF",
+    "check": "0XAE8B14860A799888",
+    "residue": "0XF310303B2B6F6E42",
+    "class": "attested",
+    "created": "8 August 2024",
+    "updated": "",
+    "aliases": [],
+    "codewords": [
+      "00",
+      "4EB622EB67D38264",
+      "FF",
+      "ACA3EC0273BADDC0",
+      "9C4450675F9F723E",
+      "7E519E8E4BF62D9A"
+    ]
+  },
+  {
+    "name": "CRC-64/REDIS",
+    "size": 64,
+    "polynomial": "0XAD93D23594C935A9",
+    "initialValue": "0X0000000000000000",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X0000000000000000",
+    "check": "0XE9C6D914C4B8D9CA",
+    "residue": "0X0000000000000000",
+    "class": "academic",
+    "created": "24 August 2022",
+    "updated": "",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-64/WE",
+    "size": 64,
+    "polynomial": "0X42F0E1EBA9EA3693",
+    "initialValue": "0XFFFFFFFFFFFFFFFF",
+    "reflectIn": false,
+    "reflectOut": false,
+    "xorOut": "0XFFFFFFFFFFFFFFFF",
+    "check": "0X62EC59E3F1A4F00A",
+    "residue": "0XFCACBEBD5931A992",
+    "class": "confirmed",
+    "created": "8 November 2009",
+    "updated": "28 December 2019",
+    "aliases": [],
+    "codewords": []
+  },
+  {
+    "name": "CRC-64/XZ",
+    "size": 64,
+    "polynomial": "0X42F0E1EBA9EA3693",
+    "initialValue": "0XFFFFFFFFFFFFFFFF",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0XFFFFFFFFFFFFFFFF",
+    "check": "0X995DC9BBDF1939FA",
+    "residue": "0X49958C9ABD7D353F",
+    "class": "attested",
+    "created": "4 July 2011",
+    "updated": "29 August 2024",
+    "aliases": [
+      "CRC-64/GO-ECMA"
+    ],
+    "codewords": [
+      "000000004B9F1B1E3586A5F4",
+      "F20183C6F1648166279C31",
+      "0FAA005575157C66F7D0C554",
+      "00FF5511E604077EBE2238A6",
+      "332255AABBCCDDEEFFD5E5A819B2CE1E70",
+      "926B554E3E9FB5A996AA5F",
+      "FFFFFFFF00000000FFFFFFFF",
+      "0000000000000000",
+      "61052B652E77840233",
+      "616246B0840E207365BC",
+      "6162632776271A4A09D82C",
+      "61626364BA60596E59289D3C",
+      "6162636465F29508FB58DF0B04",
+      "616263646566F400A745859F8ED0",
+      "61626364656667660E71CCA8A320EC",
+      "6162636465666768590C7A640AF3B467",
+      "6162636465666768698EEF569DC8F66699",
+      "6162636465666768696AF47357CD2E3A0932",
+      "48652077686F2068617320612073686164792070617374206B6E6F77732074686174206E69636520677579732066696E697368206C6173742E0DA0B92AACC06285",
+      "46726565212046726565212F4120747269702F746F204D6172732F666F72203930302F656D707479206A6172732F4275726D612053686176658A513E353038601F",
+      "4E6570616C207072656D69657220776F6E27742072657369676E2E415A746AB1F20E79",
+      "486973206D6F6E6579206973207477696365207461696E7465643A20277461696E7420796F75727320616E6420277461696E74206D696E652E6D100B66B2419E04",
+      "73697A653A2020612E6F75743A2020626164206D616769634D3AD6D86CE4B5E3",
+      "546865206D616A6F722070726F626C656D20697320776974682073656E646D61696C2E20202D4D61726B20486F72746F6E51A0F2946BAF5A86",
+      "5468697320697320612074657374206F662074686520656D657267656E63792062726F6164636173742073797374656D2E72BC5BC17F18DB27"
+    ]
+  },
+  {
+    "name": "CRC-82/DARC",
+    "size": 82,
+    "polynomial": "0X0308C0111011401440411",
+    "initialValue": "0X000000000000000000000",
+    "reflectIn": true,
+    "reflectOut": true,
+    "xorOut": "0X000000000000000000000",
+    "check": "0X09EA83F625023801FD612",
+    "residue": "0X000000000000000000000",
+    "class": "attested",
+    "created": "14 December 2009",
+    "updated": "23 December 2021",
+    "aliases": [],
+    "codewords": [
+      "C0FFFFFFFFFFFFFFFFFFFF",
+      "02000102372050524F4A454354204D41494E4D454E553B48424065001049B5FB9ADE",
+      "40008040EC040A4AF252A2C22A04B2829272B2A272AADC124202A6000892ADDF597B",
+      "0000000000000000000000",
+      "40424065001049B5FB9ADE"
+    ]
+  }
 ]
