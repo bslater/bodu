@@ -7,14 +7,13 @@
     /// <summary>
     /// Provides general-purpose utility methods used by cryptographic components and implementations within
     /// <c>Bodu.Security.Cryptography</c>, including secure memory clearing, block padding and depadding, cryptographically
-    /// secure random byte generation, bit reflection, and argument validation helpers.
+    /// secure random byte generation, and argument validation helpers.
     /// </summary>
     /// <remarks>
     /// <para>
     /// This class is implemented as a partial type, with each file documenting a distinct facet of the surface: memory
-    /// clearing (<c>CryptoHelpers.DisposeHelpers.cs</c>), extension utilities such as bit reflection
-    /// (<c>CryptoHelpers.Extensions.cs</c>), block padding (<c>CryptoHelpers.Padding.cs</c>), secure random byte generation
-    /// (<c>CryptoHelpers.RandomNumberGenerator.cs</c>), and internal argument validation helpers
+    /// clearing (<c>CryptoHelpers.DisposeHelpers.cs</c>), block padding (<c>CryptoHelpers.Padding.cs</c>), secure random byte
+    /// generation (<c>CryptoHelpers.RandomNumberGenerator.cs</c>), and internal argument validation helpers
     /// (<c>CryptoHelpers.ThrowHelper.cs</c>).
     /// </para>
     /// <para>

@@ -82,6 +82,102 @@ public static partial class NumericExtensions
     }
 
     /// <summary>
+    /// Reverses the order of the least significant <paramref name="bitLength"/> bits in the specified
+    /// <see cref="byte"/> value.
+    /// </summary>
+    /// <param name="value">The 8-bit unsigned value to reflect.</param>
+    /// <param name="bitLength">
+    /// The number of least significant bits to reverse. Must be in the range [0, 8]. Bits above the
+    /// reflected window are discarded.
+    /// </param>
+    /// <returns>
+    /// A <see cref="byte"/> whose least significant <paramref name="bitLength"/> bits contain the
+    /// bit-reversed window of <paramref name="value"/>, with all higher bits set to zero.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="bitLength"/> is less than 0 or greater than 8.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte ReverseBits(this byte value, int bitLength)
+    {
+        ThrowHelper.ThrowIfOutOfRange(bitLength, 0, 8);
+        return value.ReverseBitsUnchecked(bitLength);
+    }
+
+    /// <summary>
+    /// Reverses the order of the least significant <paramref name="bitLength"/> bits in the specified
+    /// <see cref="ushort"/> value.
+    /// </summary>
+    /// <param name="value">The 16-bit unsigned integer to reflect.</param>
+    /// <param name="bitLength">
+    /// The number of least significant bits to reverse. Must be in the range [0, 16]. Bits above the
+    /// reflected window are discarded.
+    /// </param>
+    /// <returns>
+    /// A <see cref="ushort"/> whose least significant <paramref name="bitLength"/> bits contain the
+    /// bit-reversed window of <paramref name="value"/>, with all higher bits set to zero.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="bitLength"/> is less than 0 or greater than 16.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ushort ReverseBits(this ushort value, int bitLength)
+    {
+        ThrowHelper.ThrowIfOutOfRange(bitLength, 0, 16);
+        return value.ReverseBitsUnchecked(bitLength);
+    }
+
+    /// <summary>
+    /// Reverses the order of the least significant <paramref name="bitLength"/> bits in the specified
+    /// <see cref="uint"/> value.
+    /// </summary>
+    /// <param name="value">The 32-bit unsigned integer to reflect.</param>
+    /// <param name="bitLength">
+    /// The number of least significant bits to reverse. Must be in the range [0, 32]. Bits above the
+    /// reflected window are discarded.
+    /// </param>
+    /// <returns>
+    /// A <see cref="uint"/> whose least significant <paramref name="bitLength"/> bits contain the
+    /// bit-reversed window of <paramref name="value"/>, with all higher bits set to zero.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="bitLength"/> is less than 0 or greater than 32.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static uint ReverseBits(this uint value, int bitLength)
+    {
+        ThrowHelper.ThrowIfOutOfRange(bitLength, 0, 32);
+        return value.ReverseBitsUnchecked(bitLength);
+    }
+
+    /// <summary>
+    /// Reverses the order of the least significant <paramref name="bitLength"/> bits in the specified
+    /// <see cref="ulong"/> value.
+    /// </summary>
+    /// <param name="value">The 64-bit unsigned integer to reflect.</param>
+    /// <param name="bitLength">
+    /// The number of least significant bits to reverse. Must be in the range [0, 64]. Bits above the
+    /// reflected window are discarded.
+    /// </param>
+    /// <returns>
+    /// A <see cref="ulong"/> whose least significant <paramref name="bitLength"/> bits contain the
+    /// bit-reversed window of <paramref name="value"/>, with all higher bits set to zero.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="bitLength"/> is less than 0 or greater than 64.
+    /// </exception>
+    /// <remarks>
+    /// Commonly used by CRC and other checksum primitives to implement the <c>reflect-in</c> /
+    /// <c>reflect-out</c> transformations where <paramref name="bitLength"/> matches the hash width.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ulong ReverseBits(this ulong value, int bitLength)
+    {
+        ThrowHelper.ThrowIfOutOfRange(bitLength, 0, 64);
+        return value.ReverseBitsUnchecked(bitLength);
+    }
+
+    /// <summary>
     /// Reverses the bits within each byte of the specified byte array and returns a new array.
     /// </summary>
     /// <param name="bytes">The byte array to process. Must not be <see langword="null"/>.</param>
