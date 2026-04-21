@@ -1,17 +1,16 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="FletcherTests.cs" company="PlaceholderCompany">
+// <copyright file="FletcherTestHelpers.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.IO.Hashing
 {
-    [TestClass]
-    public partial class FletcherTests
+    internal static class FletcherTestHelpers
     {
-        private const string QuickBrownFox = "The quick brown fox jumps over the lazy dog";
+        public const string QuickBrownFox = "The quick brown fox jumps over the lazy dog";
 
-        private static byte[] IncrementingBytes(int length)
+        public static byte[] IncrementingBytes(int length)
         {
             byte[] data = new byte[length];
             for (int i = 0; i < length; i++)
@@ -19,7 +18,7 @@ namespace Bodu.IO.Hashing
             return data;
         }
 
-        private static string ToHex(ReadOnlySpan<byte> bytes)
+        public static string ToHex(ReadOnlySpan<byte> bytes)
         {
             char[] chars = new char[bytes.Length * 2];
             const string lookup = "0123456789ABCDEF";
@@ -31,6 +30,6 @@ namespace Bodu.IO.Hashing
             return new string(chars);
         }
 
-        private static byte[] Utf8(string value) => System.Text.Encoding.UTF8.GetBytes(value);
+        public static byte[] Utf8(string value) => System.Text.Encoding.UTF8.GetBytes(value);
     }
 }

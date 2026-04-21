@@ -1,14 +1,20 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="FletcherTests.32.cs" company="PlaceholderCompany">
+// <copyright file="Fletcher32Tests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.IO.Hashing
 {
-    public partial class FletcherTests
+    using static FletcherTestHelpers;
+
+    /// <summary>
+    /// Contains unit tests for the <see cref="Fletcher32" /> hash algorithm.
+    /// </summary>
+    [TestClass]
+    public class Fletcher32Tests
     {
-        private static readonly string[] Fletcher32IncrementalExpected = new[]
+        private static readonly string[] IncrementalExpected = new[]
         {
             "00000000", "00000000", "01000100", "02020102", "05020402", "09080406",
             "0E080906", "1714090C", "1E14100C", "2E281014", "37281914", "5046191E",
@@ -19,7 +25,7 @@ namespace Bodu.IO.Hashing
         /// Verifies that <see cref="Fletcher32.HashLengthInBytes" /> reports the 32-bit output width as four bytes.
         /// </summary>
         [TestMethod]
-        public void HashLengthInBytes_WhenFletcher32_ShouldBeFour()
+        public void HashLengthInBytes_WhenConstructed_ShouldBeFour()
         {
             using Fletcher32 hash = new();
             Assert.AreEqual(4, hash.HashLengthInBytes);
@@ -29,7 +35,7 @@ namespace Bodu.IO.Hashing
         /// Verifies that <see cref="Fletcher32.AlgorithmName" /> returns <c>Fletcher-32</c>.
         /// </summary>
         [TestMethod]
-        public void AlgorithmName_WhenFletcher32_ShouldBeFletcher32()
+        public void AlgorithmName_WhenConstructed_ShouldBeFletcher32()
         {
             using Fletcher32 hash = new();
             Assert.AreEqual("Fletcher-32", hash.AlgorithmName);
@@ -51,13 +57,13 @@ namespace Bodu.IO.Hashing
         [TestMethod]
         public void GetCurrentHash_WhenGivenIncrementingInput_ShouldMatchKnownAnswers()
         {
-            for (int length = 0; length < Fletcher32IncrementalExpected.Length; length++)
+            for (int length = 0; length < IncrementalExpected.Length; length++)
             {
                 using Fletcher32 hash = new();
                 hash.Append(IncrementingBytes(length));
                 string actual = ToHex(hash.GetCurrentHash());
                 Assert.AreEqual(
-                    Fletcher32IncrementalExpected[length],
+                    IncrementalExpected[length],
                     actual,
                     $"Mismatch at length {length}.");
             }

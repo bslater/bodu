@@ -1,14 +1,20 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="FletcherTests.64.cs" company="PlaceholderCompany">
+// <copyright file="Fletcher64Tests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.IO.Hashing
 {
-    public partial class FletcherTests
+    using static FletcherTestHelpers;
+
+    /// <summary>
+    /// Contains unit tests for the <see cref="Fletcher64" /> hash algorithm.
+    /// </summary>
+    [TestClass]
+    public class Fletcher64Tests
     {
-        private static readonly string[] Fletcher64IncrementalExpected = new[]
+        private static readonly string[] IncrementalExpected = new[]
         {
             "0000000000000000", "0000000000000000", "0000010000000100", "0002010000020100",
             "0302010003020100", "0604020403020104", "0604070403020604", "060A070403080604",
@@ -24,7 +30,7 @@ namespace Bodu.IO.Hashing
         /// Verifies that <see cref="Fletcher64.HashLengthInBytes" /> reports the 64-bit output width as eight bytes.
         /// </summary>
         [TestMethod]
-        public void HashLengthInBytes_WhenFletcher64_ShouldBeEight()
+        public void HashLengthInBytes_WhenConstructed_ShouldBeEight()
         {
             using Fletcher64 hash = new();
             Assert.AreEqual(8, hash.HashLengthInBytes);
@@ -34,7 +40,7 @@ namespace Bodu.IO.Hashing
         /// Verifies that <see cref="Fletcher64.AlgorithmName" /> returns <c>Fletcher-64</c>.
         /// </summary>
         [TestMethod]
-        public void AlgorithmName_WhenFletcher64_ShouldBeFletcher64()
+        public void AlgorithmName_WhenConstructed_ShouldBeFletcher64()
         {
             using Fletcher64 hash = new();
             Assert.AreEqual("Fletcher-64", hash.AlgorithmName);
@@ -56,13 +62,13 @@ namespace Bodu.IO.Hashing
         [TestMethod]
         public void GetCurrentHash_WhenGivenIncrementingInput_ShouldMatchKnownAnswers()
         {
-            for (int length = 0; length < Fletcher64IncrementalExpected.Length; length++)
+            for (int length = 0; length < IncrementalExpected.Length; length++)
             {
                 using Fletcher64 hash = new();
                 hash.Append(IncrementingBytes(length));
                 string actual = ToHex(hash.GetCurrentHash());
                 Assert.AreEqual(
-                    Fletcher64IncrementalExpected[length],
+                    IncrementalExpected[length],
                     actual,
                     $"Mismatch at length {length}.");
             }
