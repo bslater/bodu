@@ -1,12 +1,95 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonCryptographicHashAlgorithmTests.Append.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.IO.Hashing;
+
 namespace Bodu.IO.Hashing;
 
 public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorithm, TVariant>
 {
+    /// <summary>
+    /// Verifies that appending an empty span leaves <see cref="NonCryptographicHashAlgorithm.GetCurrentHash()" />
+    /// unchanged — equal to the hash of a freshly constructed instance.
+    /// </summary>
+    /// <param name="variant">The algorithm variant under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    public void Append_WhenInputIsEmpty_ShouldLeaveHashUnchanged(TVariant variant)
+    {
+        NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
+        NonCryptographicHashAlgorithm baseline = CreateAlgorithm(variant);
 
+        algorithm.Append(ReadOnlySpan<byte>.Empty);
+
+        CollectionAssert.AreEqual(baseline.GetCurrentHash(), algorithm.GetCurrentHash());
+    }
+
+    /// <summary>
+    /// Verifies that splitting an input across multiple
+    /// <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" /> calls produces the same digest as
+    /// hashing it all at once.
+    /// </summary>
+    /// <param name="variant">The algorithm variant under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    public void Append_WhenCalledInChunks_ShouldMatchSingleAppend(TVariant variant)
+    {
+        byte[] data = SharedInputs["Sequential_0_255"];
+
+        NonCryptographicHashAlgorithm whole = CreateAlgorithm(variant);
+        whole.Append(data);
+
+        NonCryptographicHashAlgorithm chunked = CreateAlgorithm(variant);
+        int third = data.Length / 3;
+        chunked.Append(data.AsSpan(0, third));
+        chunked.Append(data.AsSpan(third, third));
+        chunked.Append(data.AsSpan(third * 2, data.Length - (third * 2)));
+
+        CollectionAssert.AreEqual(whole.GetCurrentHash(), chunked.GetCurrentHash());
+    }
+
+    /// <summary>
+    /// Verifies that appending one byte at a time yields the same digest as appending the full sequence in a
+    /// single call, across a block-straddling input.
+    /// </summary>
+    /// <param name="variant">The algorithm variant under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    public void Append_WhenCalledOneByteAtATime_ShouldMatchSingleAppend(TVariant variant)
+    {
+        byte[] data = SharedInputs["QuickBrownFox"];
+
+        NonCryptographicHashAlgorithm whole = CreateAlgorithm(variant);
+        whole.Append(data);
+
+        NonCryptographicHashAlgorithm perByte = CreateAlgorithm(variant);
+        foreach (byte b in data)
+            perByte.Append(new[] { b });
+
+        CollectionAssert.AreEqual(whole.GetCurrentHash(), perByte.GetCurrentHash());
+    }
+
+    /// <summary>
+    /// Verifies that hashing a named input via a single
+    /// <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" /> call reproduces the expected
+    /// known-answer digest for the variant.
+    /// </summary>
+    /// <param name="variant">The algorithm variant under test.</param>
+    /// <param name="testName">The semantic name of the input vector.</param>
+    /// <param name="input">The input bytes being hashed.</param>
+    /// <param name="expected">The expected hash digest.</param>
+    [TestMethod]
+    [DynamicData(nameof(NamedInputTestData))]
+    public void Append_WhenUsingNamedInput_ShouldProduceExpectedHash(TVariant variant, string testName, byte[] input, byte[] expected)
+    {
+        NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
+        algorithm.Append(input);
+
+        byte[] actual = algorithm.GetCurrentHash();
+
+        CollectionAssert.AreEqual(expected, actual, $"Hash mismatch for '{testName}' using variant '{variant}'.");
+    }
 }
