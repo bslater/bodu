@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
+// --------------------------------------------------------------------------------------------------------------- //
 // <copyright file="FiscalWeekQuarterProviderTests_Constructor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,13 +13,39 @@ namespace Bodu.Extensions
     {
         /// <summary>
         /// Verifies that the constructor throws <see cref="ArgumentOutOfRangeException" /> when
+        /// <c>month</c> is below the valid range (1–12).
+        /// </summary>
+        [TestMethod]
+        [DataRow(0)]
+        [DataRow(-1)]
+        public void Constructor_WhenMonthIsBelowValidRange_ShouldThrowException(int month)
+        {
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+                new FiscalWeekQuarterProvider(month));
+        }
+
+        /// <summary>
+        /// Verifies that the constructor throws <see cref="ArgumentOutOfRangeException" /> when
+        /// <c>month</c> is above the valid range (1–12).
+        /// </summary>
+        [TestMethod]
+        [DataRow(13)]
+        [DataRow(100)]
+        public void Constructor_WhenMonthIsAboveValidRange_ShouldThrowException(int month)
+        {
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+                new FiscalWeekQuarterProvider(month));
+        }
+
+        /// <summary>
+        /// Verifies that the constructor throws <see cref="ArgumentOutOfRangeException" /> when
         /// <c>dayOfWeek</c> is not a defined <see cref="DayOfWeek" /> value.
         /// </summary>
         [TestMethod]
         public void Constructor_WhenDayOfWeekIsUndefined_ShouldThrowException()
         {
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-                new FiscalWeekQuarterProvider(2023, 1, (DayOfWeek)99));
+                new FiscalWeekQuarterProvider(1, (DayOfWeek)99));
         }
 
         /// <summary>
@@ -30,7 +56,7 @@ namespace Bodu.Extensions
         public void Constructor_WhenPatternIsUndefined_ShouldThrowException()
         {
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-                new FiscalWeekQuarterProvider(2023, 1, DayOfWeek.Sunday, isFiscalYearEnd: false, pattern: (FiscalWeekPattern)99));
+                new FiscalWeekQuarterProvider(1, DayOfWeek.Sunday, isFiscalYearEnd: false, pattern: (FiscalWeekPattern)99));
         }
 
         /// <summary>
@@ -43,7 +69,7 @@ namespace Bodu.Extensions
         [DataRow(FiscalWeekPattern.Weeks445)]
         public void Pattern_WhenConstructed_ShouldReturnSuppliedPattern(FiscalWeekPattern pattern)
         {
-            var provider = new FiscalWeekQuarterProvider(2023, 1, DayOfWeek.Sunday, isFiscalYearEnd: false, pattern: pattern);
+            var provider = new FiscalWeekQuarterProvider(1, DayOfWeek.Sunday, isFiscalYearEnd: false, pattern: pattern);
             Assert.AreEqual(pattern, provider.Pattern);
         }
 
@@ -54,24 +80,24 @@ namespace Bodu.Extensions
         [TestMethod]
         public void Pattern_WhenConstructedWithDefaultPattern_ShouldReturnWeeks445()
         {
-            var provider = new FiscalWeekQuarterProvider(2023, 1, DayOfWeek.Sunday, isFiscalYearEnd: false);
+            var provider = new FiscalWeekQuarterProvider(1, DayOfWeek.Sunday, isFiscalYearEnd: false);
             Assert.AreEqual(FiscalWeekPattern.Weeks445, provider.Pattern);
         }
 
         /// <summary>
         /// Verifies that two providers constructed with the same parameters but different
-        /// <see cref="FiscalWeekPattern" /> values report the same <see cref="FiscalWeekQuarterProvider.Is53WeekFiscalYear" />
-        /// result, confirming that the pattern does not affect quarter boundary arithmetic.
+        /// <see cref="FiscalWeekPattern" /> values produce identical quarter boundaries and 53-week
+        /// detection results, confirming that the pattern does not affect quarter boundary arithmetic.
         /// </summary>
         [TestMethod]
         public void Constructor_WhenPatternDiffers_ShouldNotAffectQuarterBoundaries()
         {
-            var p544 = new FiscalWeekQuarterProvider(2023, 1, DayOfWeek.Sunday, isFiscalYearEnd: false, pattern: FiscalWeekPattern.Weeks544);
-            var p445 = new FiscalWeekQuarterProvider(2023, 1, DayOfWeek.Sunday, isFiscalYearEnd: false, pattern: FiscalWeekPattern.Weeks445);
+            var p544 = new FiscalWeekQuarterProvider(1, DayOfWeek.Sunday, isFiscalYearEnd: false, pattern: FiscalWeekPattern.Weeks544);
+            var p445 = new FiscalWeekQuarterProvider(1, DayOfWeek.Sunday, isFiscalYearEnd: false, pattern: FiscalWeekPattern.Weeks445);
 
-            Assert.AreEqual(p544.GetQuarterStart(1), p445.GetQuarterStart(1));
-            Assert.AreEqual(p544.GetQuarterEnd(4), p445.GetQuarterEnd(4));
-            Assert.AreEqual(p544.Is53WeekFiscalYear, p445.Is53WeekFiscalYear);
+            Assert.AreEqual(p544.GetQuarterStart(1, 2023), p445.GetQuarterStart(1, 2023));
+            Assert.AreEqual(p544.GetQuarterEnd(4, 2023), p445.GetQuarterEnd(4, 2023));
+            Assert.AreEqual(p544.Is53WeekFiscalYear(2023), p445.Is53WeekFiscalYear(2023));
         }
 
         /// <summary>
@@ -82,7 +108,7 @@ namespace Bodu.Extensions
         public void Constructor_WhenIsFiscalYearEndIsTrue_ShouldInitialiseWithoutThrowing()
         {
             // Fiscal year ends in January; provider derives the start from the following month.
-            var provider = new FiscalWeekQuarterProvider(2022, 1, DayOfWeek.Saturday, isFiscalYearEnd: true);
+            var provider = new FiscalWeekQuarterProvider(1, DayOfWeek.Saturday, isFiscalYearEnd: true);
             Assert.IsNotNull(provider);
         }
     }
