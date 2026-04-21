@@ -151,7 +151,7 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
             GetFiscalYearStartTicks(fiscalYear),
             fiscalYear,
             _anchorMonth,
-            _firstDayOfWeek,
+            _anchorDayOfWeek,
             _useNearestDayOfWeek);
 
     /// <inheritdoc />
@@ -279,11 +279,13 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
     /// <param name="startMonth">
     /// The calendar month in which the fiscal year begins (already adjusted for <c>isFiscalYearEnd</c>).
     /// </param>
-    /// <param name="firstDayOfWeek">
-    /// The fiscal week start day, used to align the equivalent anchor in the following year.
+    /// <param name="anchorDayOfWeek">
+    /// The day of the week to which the anchor in the following year is aligned. Must be the same
+    /// target day used to align <paramref name="fiscalYearStartTicks"/> so the resulting span is a
+    /// multiple of seven days (either 364 or 371).
     /// </param>
     /// <param name="useNearestDayOfWeek">
-    /// <see langword="true"/> to align to the occurrence of <paramref name="firstDayOfWeek"/> nearest
+    /// <see langword="true"/> to align to the occurrence of <paramref name="anchorDayOfWeek"/> nearest
     /// the computed anchor; <see langword="false"/> to align to the occurrence on or before the
     /// computed anchor.
     /// </param>
@@ -295,7 +297,7 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
         long fiscalYearStartTicks,
         int year,
         int startMonth,
-        DayOfWeek firstDayOfWeek,
+        DayOfWeek anchorDayOfWeek,
         bool useNearestDayOfWeek)
     {
         const int DaysIn52Weeks = 364;
@@ -303,8 +305,8 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
         long nextYearAnchorTicks = DateTimeExtensions.GetDateTicks(year + 1, startMonth, 1);
 
         long nextFiscalYearStartTicks = useNearestDayOfWeek
-            ? AlignToNearestDayOfWeek(nextYearAnchorTicks, firstDayOfWeek)
-            : AlignToOnOrBeforeDayOfWeek(nextYearAnchorTicks, firstDayOfWeek);
+            ? AlignToNearestDayOfWeek(nextYearAnchorTicks, anchorDayOfWeek)
+            : AlignToOnOrBeforeDayOfWeek(nextYearAnchorTicks, anchorDayOfWeek);
 
         long daysInFiscalYear =
             (nextFiscalYearStartTicks - fiscalYearStartTicks) / DateTimeExtensions.TicksPerDay;
@@ -351,7 +353,7 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
         for (int candidate = calendarYear - 1; candidate <= calendarYear + 1; candidate++)
         {
             long start = GetFiscalYearStartTicks(candidate);
-            bool is53 = ComputeIs53WeekYear(start, candidate, _anchorMonth, _firstDayOfWeek, _useNearestDayOfWeek);
+            bool is53 = ComputeIs53WeekYear(start, candidate, _anchorMonth, _anchorDayOfWeek, _useNearestDayOfWeek);
             int lengthDays = is53 ? 371 : 364;
 
             long deltaDays = (weekStartTicks - start) / DateTimeExtensions.TicksPerDay;
