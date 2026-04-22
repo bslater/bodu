@@ -37,6 +37,9 @@ namespace Bodu.Extensions
             yield return new object[] { new DateTime(2024, 11, 5), DayOfWeek.Tuesday, new DateTime(2024, 10, 1) };
         }
 
+        /// <summary>
+        /// Verifies that the instance calendar-default overload locks in the currently observed forward-from-start behaviour (returning the first, not last, occurrence of the target day).
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(LastDayOfWeekInQuarterCalendarObservedTestData), DynamicDataSourceType.Method)]
         public void LastDayOfWeekInQuarter_WhenUsingCalendarDefault_ShouldReturnExpectedDate(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
@@ -45,6 +48,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that the instance calendar-default overload preserves the input's <see cref="DateTime.Kind" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeekInQuarter_WhenInstanceCalendarOverload_PreservesInputKind()
         {
@@ -53,6 +59,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(DateTimeKind.Utc, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that the instance calendar-default overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="DayOfWeek" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeekInQuarter_WhenInstanceCalendarOverload_DayOfWeekInvalid_ShouldThrowArgumentOutOfRangeException()
         {
@@ -67,6 +76,9 @@ namespace Bodu.Extensions
         // Instance: LastDayOfWeekInQuarter(this DateTime, DayOfWeek, CalendarQuarterDefinition)
         // =========================================================================
 
+        /// <summary>
+        /// Verifies that passing <see cref="CalendarQuarterDefinition.JanuaryToDecember" /> produces the same result as the default calendar overload.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeekInQuarter_WhenUsingJanuaryToDecemberDefinition_ShouldReturnSameResultAsCalendarOverload()
         {
@@ -76,6 +88,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(fromDefaultOverload, fromExplicitDefinition);
         }
 
+        /// <summary>
+        /// Verifies that passing <see cref="CalendarQuarterDefinition.Custom" /> without supplying a provider throws <see cref="InvalidOperationException" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeekInQuarter_WhenCustomDefinitionWithoutProvider_ShouldThrowInvalidOperationException()
         {
@@ -86,6 +101,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that the instance definition overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="CalendarQuarterDefinition" /> value.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeekInQuarter_WhenInstanceDefinitionOverload_DefinitionInvalid_ShouldThrowArgumentOutOfRangeException()
         {
@@ -102,6 +120,9 @@ namespace Bodu.Extensions
         // return the most recent occurrence of the target day on or before that end.
         // =========================================================================
 
+        /// <summary>
+        /// Verifies that the instance provider overload throws <see cref="ArgumentNullException" /> when the provider is <see langword="null" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeekInQuarter_WhenProviderIsNull_ShouldThrowArgumentNullException()
         {
@@ -114,6 +135,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that the provider overload returns a date whose <see cref="DateTime.DayOfWeek" /> matches the requested day.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeekInQuarter_WhenUsingValidQuarterProvider_ShouldReturnTargetDayOfWeek()
         {
@@ -123,6 +147,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(DayOfWeek.Monday, actual.DayOfWeek);
         }
 
+        /// <summary>
+        /// Verifies that the instance provider overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="DayOfWeek" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeekInQuarter_WhenProviderOverload_DayOfWeekInvalid_ShouldThrowArgumentOutOfRangeException()
         {
@@ -140,6 +167,9 @@ namespace Bodu.Extensions
         // Same forward-from-start behaviour as instance calendar overload.
         // =========================================================================
 
+        /// <summary>
+        /// Verifies that the static year/quarter overload returns the expected date under the current forward-from-start behaviour.
+        /// </summary>
         [TestMethod]
         public void GetLastDayOfWeekInQuarter_WhenUsingYearAndQuarter_ShouldReturnExpectedDate()
         {
@@ -148,6 +178,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(2024, 1, 7), actual);
         }
 
+        /// <summary>
+        /// Verifies that the static year/quarter overload throws <see cref="ArgumentOutOfRangeException" /> for quarter values outside <c>1..4</c>.
+        /// </summary>
         [TestMethod]
         [DataRow(0)]
         [DataRow(5)]
@@ -160,6 +193,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that the static year/quarter overload throws <see cref="ArgumentOutOfRangeException" /> for year values outside <c>1..9999</c>.
+        /// </summary>
         [TestMethod]
         [DataRow(0)]
         [DataRow(10000)]
@@ -171,6 +207,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that the static year/quarter overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="DayOfWeek" />.
+        /// </summary>
         [TestMethod]
         public void GetLastDayOfWeekInQuarter_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
         {
@@ -184,6 +223,9 @@ namespace Bodu.Extensions
         // Static: GetLastDayOfWeekInQuarter(int, int, DayOfWeek, CalendarQuarterDefinition)
         // =========================================================================
 
+        /// <summary>
+        /// Verifies that the static definition overload returns the expected date under the current forward-from-start behaviour.
+        /// </summary>
         [TestMethod]
         public void GetLastDayOfWeekInQuarter_WhenUsingDefinitionOverload_ShouldReturnExpectedDate()
         {
@@ -191,6 +233,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(2024, 1, 7), actual);
         }
 
+        /// <summary>
+        /// Verifies that the static definition overload throws <see cref="InvalidOperationException" /> when given <see cref="CalendarQuarterDefinition.Custom" />.
+        /// </summary>
         [TestMethod]
         public void GetLastDayOfWeekInQuarter_WhenDefinitionIsCustom_ShouldThrowInvalidOperationException()
         {
@@ -200,6 +245,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that the static definition overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="CalendarQuarterDefinition" /> value.
+        /// </summary>
         [TestMethod]
         public void GetLastDayOfWeekInQuarter_WhenDefinitionIsInvalid_ShouldThrowArgumentOutOfRangeException()
         {
