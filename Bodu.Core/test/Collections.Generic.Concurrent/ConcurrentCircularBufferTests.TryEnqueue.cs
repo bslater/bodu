@@ -15,6 +15,9 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryEnqueue" /> reflects the current <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" /> value immediately after it is toggled.
+    /// </summary>
     [TestMethod]
     public void TryEnqueue_WhenAllowOverwriteToggled_ShouldReflectImmediately()
     {
@@ -31,6 +34,9 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new[] { 2, 4 }, buffer.ToArray().Select(x => x.Value).ToArray());
     }
 
+    /// <summary>
+    /// Verifies that at the minimum capacity with overwriting enabled, <see cref="ConcurrentCircularBuffer{T}.TryEnqueue" /> always succeeds.
+    /// </summary>
     [TestMethod]
     public void TryEnqueue_WhenCapacityIsMinAndOverwriteEnabled_ShouldAlwaysReturnTrue()
     {
@@ -42,6 +48,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= MinCapacity);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryEnqueue" /> on a full buffer with overwriting enabled returns <see langword="true" />, evicts the oldest item, and fires <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" />.
+    /// </summary>
     [TestMethod]
     public void TryEnqueue_WhenBufferFullAndAllowOverwriteTrue_ShouldReturnTrueAndEvict()
     {
@@ -60,6 +69,9 @@ public partial class ConcurrentCircularBufferTests
         AssertBufferContainsExactlyValues(buffer, 2, 3);
     }
 
+    /// <summary>
+    /// Verifies that with overwriting disabled, concurrent producers together succeed exactly <c>Capacity</c> times and the buffer fills to capacity.
+    /// </summary>
     [TestMethod]
     public void TryEnqueue_WhenConcurrentProducersNoOverwrite_ShouldAcceptUpToCapacity()
     {
@@ -76,6 +88,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(100, buffer.Count);
     }
 
+    /// <summary>
+    /// Verifies that concurrent producers with overwriting enabled never let <see cref="ConcurrentCircularBuffer{T}.Count" /> exceed <see cref="ConcurrentCircularBuffer{T}.Capacity" /> and every stored item is non-null.
+    /// </summary>
     [TestMethod]
     public void TryEnqueue_WhenConcurrentProducersOverwriteEnabled_ShouldNeverExceedCapacity()
     {
@@ -93,6 +108,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(snapshot.All(x => x is not null), "All items in buffer should be non-null.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryEnqueue" /> returns <see langword="false" /> when the buffer is full and overwriting is disabled.
+    /// </summary>
     [TestMethod]
     public void TryEnqueue_WhenFullAndOverwriteDisabled_ShouldReturnFalse()
     {
@@ -104,6 +122,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsFalse(ok, "TryEnqueue must return false when full and overwrite disabled.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryEnqueue" /> returns <see langword="true" /> on a full buffer with overwriting enabled and keeps the count pinned at capacity.
+    /// </summary>
     [TestMethod]
     public void TryEnqueue_WhenFullAndOverwriteEnabled_ShouldReturnTrue()
     {
@@ -114,6 +135,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(2, buffer.Count);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryEnqueue" /> never throws under heavy multi-threaded contention and respects capacity.
+    /// </summary>
     [TestMethod]
     public void TryEnqueue_WhenMultipleThreads_ShouldNotThrow()
     {
@@ -141,6 +165,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(buffer.Count <= buffer.Capacity);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryEnqueue" /> accepts a <see langword="null" /> reference, stores it, and returns <see langword="true" />.
+    /// </summary>
     [TestMethod]
     public void TryEnqueue_WhenNullReferenceProvided_ShouldStoreNullAndReturnTrue()
     {
@@ -153,6 +180,9 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new[] { (string?)null, "X" }, snapshot);
     }
 
+    /// <summary>
+    /// Verifies that with overwriting disabled, every concurrent <see cref="ConcurrentCircularBuffer{T}.TryEnqueue" /> on a full buffer returns <see langword="false" /> and leaves the contents unchanged.
+    /// </summary>
     [TestMethod]
     public void TryEnqueue_WhenOverwriteDisabledAndFull_ShouldReturnFalseUnderContention()
     {
@@ -174,6 +204,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(4, buffer.Count);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryEnqueue" /> returns <see langword="true" /> when the buffer has free space and updates the count accordingly.
+    /// </summary>
     [TestMethod]
     public void TryEnqueue_WhenSpaceAvailable_ShouldReturnTrue()
     {
