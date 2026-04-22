@@ -10,6 +10,9 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+    /// <summary>
+    /// Verifies that under sustained concurrent enqueue, dequeue, and inspection pressure, the buffer maintains the accounting invariant <c>Count == enqueueSuccesses − dequeueSuccesses</c> without faults.
+    /// </summary>
     [TestMethod]
     [DataRow(10, true)]
     [DataRow(50, true)]
@@ -128,6 +131,9 @@ public partial class ConcurrentCircularBufferTests
     // consistency are the appropriate invariants for this scenario.
     // -----------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// Verifies that concurrent <see cref="ConcurrentCircularBuffer{T}.Clear" /> calls interleaved with producers and consumers maintain count bounds, consistent post-quiescence state, and do not throw.
+    /// </summary>
     [TestMethod]
     [DataRow(8, true)]
     [DataRow(8, false)]
@@ -222,6 +228,9 @@ public partial class ConcurrentCircularBufferTests
     // exception type, and no deadlock.
     // -----------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// Verifies that high-frequency toggling of <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" /> under writer/reader load surfaces only <see cref="InvalidOperationException" /> from throwing enqueues — never any state-corruption exception.
+    /// </summary>
     [TestMethod]
     public void StressTest_WhenAllowOverwriteToggledConcurrently_ShouldNeverCorruptState()
     {
@@ -340,6 +349,9 @@ public partial class ConcurrentCircularBufferTests
     // issues in this regime; scaling to Environment.ProcessorCount * 2 is necessary.
     // -----------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// Verifies that at the minimum capacity under processor-scaled thread contention, every enqueue/dequeue call succeeds without faults and the count stays within bounds.
+    /// </summary>
     [TestMethod]
     public void StressTest_WhenCapacityIsMin_ShouldRemainStableUnderMaxContention()
     {
@@ -424,6 +436,9 @@ public partial class ConcurrentCircularBufferTests
     // so CopyTo() must never throw when given a destination of that size.
     // -----------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.ToArray" /> and <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> interleaved with live mutations never throw and return arrays of length within capacity.
+    /// </summary>
     [TestMethod]
     [DataRow(true)]
     [DataRow(false)]
@@ -531,6 +546,9 @@ public partial class ConcurrentCircularBufferTests
     // aggressively threads race. In allowOverwrite=true mode, Enqueue must never throw at all.
     // -----------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// Verifies that the throwing <see cref="ConcurrentCircularBuffer{T}.Enqueue" />/<see cref="ConcurrentCircularBuffer{T}.Dequeue" /> paths only raise <see cref="InvalidOperationException" />; in overwrite mode, <see cref="ConcurrentCircularBuffer{T}.Enqueue" /> never throws.
+    /// </summary>
     [TestMethod]
     [DataRow(10, true)]
     [DataRow(10, false)]
@@ -653,6 +671,9 @@ public partial class ConcurrentCircularBufferTests
     // corrupt the invocation list or cause a torn read of the event field.
     // -----------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// Verifies that concurrent subscribe/unsubscribe of <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> handlers does not throw and continues to deliver at least some eviction events to registered handlers.
+    /// </summary>
     [TestMethod]
     public void StressTest_WhenEventHandlersSubscribedAndUnsubscribedConcurrently_ShouldDeliverEventsConsistently()
     {
@@ -746,6 +767,9 @@ public partial class ConcurrentCircularBufferTests
     // than a runner hang.
     // -----------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// Verifies that under 4× processor-count thread pressure across writers, readers, and inspectors, every task completes within the deadlock timeout without faults.
+    /// </summary>
     [TestMethod]
     public void StressTest_WhenHighConcurrency_ShouldNotDeadlockOrLivelock()
     {

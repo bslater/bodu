@@ -10,6 +10,9 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+        /// <summary>
+        /// Verifies that several independent <see cref="ConcurrentCircularBuffer{T}" /> instances operated in parallel each keep their own count within capacity without interference.
+        /// </summary>
         [TestMethod]
         public void MultipleInstances_WhenAccessedInParallel_ShouldRemainThreadSafe()
         {
@@ -29,6 +32,9 @@ public partial class ConcurrentCircularBufferTests
             });
         }
 
+        /// <summary>
+        /// Verifies that concurrent enqueues against two distinct buffers never cross-contaminate — each buffer's contents come only from its own producer.
+        /// </summary>
         [TestMethod]
         public void MultipleInstances_WhenUsedConcurrently_ShouldMaintainSeparateState()
         {
@@ -55,6 +61,9 @@ public partial class ConcurrentCircularBufferTests
             Assert.IsTrue(buffer1.Count <= buffer1.Capacity && buffer2.Count <= buffer2.Capacity, "Counts must remain within capacity.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> handlers registered on one instance are never invoked for evictions in another instance.
+        /// </summary>
         [TestMethod]
         public void MultipleInstances_WhenUsingEvents_ShouldMaintainEventIsolation()
         {
