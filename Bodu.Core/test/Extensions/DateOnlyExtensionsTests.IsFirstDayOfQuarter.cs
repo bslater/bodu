@@ -10,6 +10,9 @@ namespace Bodu.Extensions
 {
     public partial class DateOnlyExtensionsTests
     {
+        /// <summary>
+        /// Verifies that Is First Day Of Quarter, when Date Is Quarter Start And Default Definition, returns True.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.IsFirstDayOfQuarterJanuaryDecemberTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void IsFirstDayOfQuarter_WhenDateIsQuarterStartAndDefaultDefinition_ShouldReturnTrue(DateTime inputDateTime)
@@ -21,6 +24,9 @@ namespace Bodu.Extensions
             Assert.IsTrue(actual);
         }
 
+        /// <summary>
+        /// Verifies that Is First Day Of Quarter, when Date Matches Start Of Quarter Definition, returns True.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.IsFirstDayOfQuarterTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void IsFirstDayOfQuarter_WhenDateMatchesStartOfQuarterDefinition_ShouldReturnTrue(DateTime inputDateTime, CalendarQuarterDefinition definition)
@@ -31,6 +37,9 @@ namespace Bodu.Extensions
             Assert.IsTrue(actual);
         }
 
+        /// <summary>
+        /// Verifies that Is First Day Of Quarter, when Date Is Not Start Of Quarter Definition, returns False.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.IsNotFirstDayOfQuarterTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void IsFirstDayOfQuarter_WhenDateIsNotStartOfQuarterDefinition_ShouldReturnFalse(DateTime inputDateTime, CalendarQuarterDefinition definition)
@@ -41,6 +50,9 @@ namespace Bodu.Extensions
             Assert.IsFalse(actual);
         }
 
+        /// <summary>
+        /// Verifies that Is First Day Of Quarter, when Definition Is Invalid, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void IsFirstDayOfQuarter_WhenDefinitionIsInvalid_ShouldThrowExactly()
         {
@@ -53,6 +65,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Is First Day Of Quarter, when Definition Is Custom, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void IsFirstDayOfQuarter_WhenDefinitionIsCustom_ShouldThrowExactly()
         {
@@ -64,6 +79,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Is First Day Of Quarter, when Using Valid Quarter Provider, returns Expected Date.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.IsFirstDayOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
         public void IsFirstDayOfQuarter_WhenUsingValidQuarterProvider_ShouldReturnExpectedDate(DateTime inputDateTime, bool expected)

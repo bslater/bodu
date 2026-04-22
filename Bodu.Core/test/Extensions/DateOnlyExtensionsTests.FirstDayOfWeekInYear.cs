@@ -16,6 +16,9 @@ namespace Bodu.Extensions
 {
     public partial class DateOnlyExtensionsTests
     {
+        /// <summary>
+        /// Verifies that First Day Of Week In Year returns Expected Day.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests. FirstDayOfWeekInYearTestData),typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void FirstDayOfWeekInYear_ShouldReturnExpectedDay(DateTime inputDateTime, DayOfWeek targetDay, DateTime expectedDateTime)
@@ -28,6 +31,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that First Day Of Week In Year, when Enum Invalid, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInYear_WhenEnumInvalid_ShouldThrowExactly()
         {
@@ -40,6 +46,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that First Day Of Week In Year, when Min Value, returns Valid Date.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInYear_WhenMinValue_ShouldReturnValidDate()
         {
@@ -48,6 +57,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateOnly(1, 1, 1), actual); // 0001-01-01 is a Monday
         }
 
+        /// <summary>
+        /// Verifies that First Day Of Week In Year, when Max Year, returns Expected.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInYear_WhenMaxYear_ShouldReturnExpected()
         {

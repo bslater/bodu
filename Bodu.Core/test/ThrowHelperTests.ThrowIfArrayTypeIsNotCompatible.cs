@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that Throw If Array Type Is Not Compatible, when Array Type Is Incorrect, throws Argument Exception.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetIncompatibleArrayTypeTestData), DynamicDataSourceType.Method)]
         public void ThrowIfArrayTypeIsNotCompatible_WhenArrayTypeIsIncorrect_ShouldThrowArgumentException(Array array)
@@ -18,6 +21,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Array Type Is Not Compatible, when Array Type Is Correct, does not Throw.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetCompatibleArrayTypeTestData), DynamicDataSourceType.Method)]
         public void ThrowIfArrayTypeIsNotCompatible_WhenArrayTypeIsCorrect_ShouldNotThrow(Array array)

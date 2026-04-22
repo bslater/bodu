@@ -18,6 +18,9 @@ namespace Bodu.Extensions
     public partial class DateOnlyExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that Previous Day Of Week, when Called, returns Expected Date.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.PreviousDayOfWeekTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void PreviousDayOfWeek_WhenCalled_ShouldReturnExpectedDate(DateTime inputDateOnly, DayOfWeek targetDay, DateTime expectedDateOnly)
@@ -30,6 +33,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Previous Day Of Week, when Enum Is Invalid, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void PreviousDayOfWeek_WhenEnumIsInvalid_ShouldThrowExactly()
         {
@@ -41,6 +47,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Previous Day Of Week, when Using Min Value, returns Same Or Greater.
+        /// </summary>
         [TestMethod]
         public void PreviousDayOfWeek_WhenUsingMinValue_ShouldReturnSameOrGreater()
         {
@@ -49,6 +58,9 @@ namespace Bodu.Extensions
             Assert.IsTrue(actual >= DateOnly.MinValue);
         }
 
+        /// <summary>
+        /// Verifies that Previous Day Of Week, when Using Max Value, succeeds.
+        /// </summary>
         [TestMethod]
         public void PreviousDayOfWeek_WhenUsingMaxValue_ShouldSucceed()
         {

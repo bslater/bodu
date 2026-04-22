@@ -18,6 +18,9 @@ namespace Bodu.Extensions
     public partial class DateOnlyExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that Week Of Year, with Culture, returns Expected.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.WeekOfYearCalendarWeekTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void WeekOfYear_WithCulture_ShouldReturnExpected(DateTime inputDateTime, CalendarWeekRule rule, DayOfWeek firstDay, int expected)
@@ -29,6 +32,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Week Of Year, with Calendar Week, returns Expected.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.WeekOfYearCultureTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void WeekOfYear_WithCalendarWeek_ShouldReturnExpected(DateTime inputDateTime, CultureInfo culture, int expected)
@@ -40,6 +46,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Week Of Year, when Culture Is Null, uses Current Culture.
+        /// </summary>
         [TestMethod]
         public void WeekOfYear_WhenCultureIsNull_ShouldUseCurrentCulture()
         {
@@ -55,6 +64,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Week Of Year, Default Overload, delegates To Current Culture.
+        /// </summary>
         [TestMethod]
         public void WeekOfYear_DefaultOverload_ShouldDelegateToCurrentCulture()
         {

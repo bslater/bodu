@@ -22,6 +22,9 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that Next Double, when Called, returns Value Between Zero And One.
+        /// </summary>
         [TestMethod]
         public void NextDouble_WhenCalled_ShouldReturnValueBetweenZeroAndOne()
         {

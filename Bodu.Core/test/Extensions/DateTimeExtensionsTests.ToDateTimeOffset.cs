@@ -17,6 +17,9 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that To Date Time Offset, when Kind Is Utc, returns Zero Offset.
+        /// </summary>
         [TestMethod]
         public void ToDateTimeOffset_WhenKindIsUtc_ShouldReturnZeroOffset()
         {
@@ -27,6 +30,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(input, actual.UtcDateTime);
         }
 
+        /// <summary>
+        /// Verifies that To Date Time Offset, when Kind Is Local, returns Local Offset.
+        /// </summary>
         [TestMethod]
         public void ToDateTimeOffset_WhenKindIsLocal_ShouldReturnLocalOffset()
         {
@@ -36,6 +42,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(input, actual.LocalDateTime);
         }
 
+        /// <summary>
+        /// Verifies that To Date Time Offset, when Kind Is Unspecified, Assume Local.
+        /// </summary>
         [TestMethod]
         public void ToDateTimeOffset_WhenKindIsUnspecified_ShouldAssumeLocal()
         {
@@ -45,6 +54,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(input, actual.DateTime);
         }
 
+        /// <summary>
+        /// Verifies that To Date Time Offset, with Valid Offset, applies Offset.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 0)]
         [DataRow(2, 30)]
@@ -61,6 +73,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(input, actual.DateTime);
         }
 
+        /// <summary>
+        /// Verifies that To Date Time Offset, with Offset Outside Range, throws Exactly.
+        /// </summary>
         [TestMethod]
         [DataRow(15, 0)]
         [DataRow(-15, 0)]
@@ -76,6 +91,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that To Date Time Offset, when Result Too Early, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void ToDateTimeOffset_WhenResultTooEarly_ShouldThrowExactly()
         {
@@ -88,6 +106,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that To Date Time Offset, when Result Too Late, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void ToDateTimeOffset_WhenResultTooLate_ShouldThrowExactly()
         {

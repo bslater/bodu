@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that Throw If Destination Too Small, Array, when Destination Too Small, throws Argument Exception.
+        /// </summary>
         [TestMethod]
         [DataRow(5, 3)] // destination too small
         [DataRow(4, 2)]
@@ -22,6 +25,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Destination Too Small, Array, when Destination Sufficient, does not Throw.
+        /// </summary>
         [TestMethod]
         [DataRow(5, 5)]
         [DataRow(3, 5)]

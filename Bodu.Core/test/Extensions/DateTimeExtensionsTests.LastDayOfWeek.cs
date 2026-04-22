@@ -18,6 +18,9 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that Last Day Of Week, when Current Culture Set, returns Expected Start.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(LastDayOfWeekCultureInfoTestData), DynamicDataSourceType.Method)]
         public void LastDayOfWeek_WhenCurrentCultureSet_ShouldReturnExpectedStart(DateTime input, CultureInfo culture, DateTime expected)
@@ -27,6 +30,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Week, when Culture Is Null, uses Current Culture.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(LastDayOfWeekCultureInfoTestData), DynamicDataSourceType.Method)]
         public void LastDayOfWeek_WhenCultureIsNull_ShouldUseCurrentCulture(DateTime input, CultureInfo culture, DateTime expected)
@@ -47,6 +53,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that Last Day Of Week, when Using Default Overload, preserves Date Time Kind.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]
@@ -58,6 +67,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(kind, actual.Kind, $"Kind mismatch for LastDayOfWeek with {kind}");
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Week, when Using Culture, preserves Date Time Kind.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]
@@ -69,6 +81,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(kind, actual.Kind, $"Kind mismatch for LastDayOfWeek with {kind}");
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Week, when Using Min Value, returns Valid Result.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeek_WhenUsingMinValue_ShouldReturnValidResult()
         {
@@ -80,6 +95,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that Last Day Of Week, when Min Value And Start Day Is Late In Week, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeek_WhenMinValueAndStartDayIsLateInWeek_ShouldThrowExactly()
         {
@@ -92,6 +110,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Week, when Using Max Value, returns Valid Result.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeek_WhenUsingMaxValue_ShouldReturnValidResult()
         {
@@ -175,6 +196,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(DayOfWeek.Sunday, actual.DayOfWeek);
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Week, when Weekend Definition And Kind Is Set, preserves Kind.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(CalendarWeekendDefinitionDateTimeKindTestData), DynamicDataSourceType.Method)]
         public void LastDayOfWeek_WhenWeekendDefinitionAndKindIsSet_ShouldPreserveKind(CalendarWeekendDefinition definition, DateTimeKind kind)

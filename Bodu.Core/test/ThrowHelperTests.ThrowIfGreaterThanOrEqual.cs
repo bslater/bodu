@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that Throw If Greater Than Or Equal, when Value Is Greater Than Or Equal To Max, throws Argument Out Of Range Exception.
+        /// </summary>
         [TestMethod]
         [DataRow(5, 5)]
         [DataRow(6, 5)]
@@ -22,6 +25,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Greater Than Or Equal, when Value Is Less Than Max, does not Throw.
+        /// </summary>
         [TestMethod]
         [DataRow(-1, 0)]
         [DataRow(4, 5)]

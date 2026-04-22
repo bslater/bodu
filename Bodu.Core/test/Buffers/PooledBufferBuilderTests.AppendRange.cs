@@ -8,6 +8,9 @@
 {
     public partial class PooledBufferBuilderTests
     {
+        /// <summary>
+        /// Verifies that Append Range, when Enumerable Used, Using I Enumerable, Append All Items.
+        /// </summary>
         [TestMethod]
         public void AppendRange_WhenEnumerableUsed_ShouldAppendAllItems_UsingIEnumerable()
         {
@@ -19,6 +22,9 @@
             CollectionAssert.AreEqual(source.ToArray(), builder.AsSpan().ToArray());
         }
 
+        /// <summary>
+        /// Verifies that Append Range, when Exceeds Initial Size, Using I Enumerable, Expand Buffer.
+        /// </summary>
         [TestMethod]
         public void AppendRange_WhenExceedsInitialSize_ShouldExpandBuffer_UsingIEnumerable()
         {

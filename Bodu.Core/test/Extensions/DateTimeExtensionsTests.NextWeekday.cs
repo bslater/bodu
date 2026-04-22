@@ -19,6 +19,9 @@ namespace Bodu.Extensions
             yield return new object[] { new DateTime(2024, 4, 22), new DateTime(2024, 4, 23) }; // Mon → Tue
         }
 
+        /// <summary>
+        /// Verifies that Next Weekday, when Weekend Is Saturday Sunday, returns Expected Date.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(NextWeekdaySaturdaySundayDateTimeTestData), DynamicDataSourceType.Method)]
         public void NextWeekday_WhenWeekendIsSaturdaySunday_ShouldReturnExpectedDate(DateTime input, DateTime expected)
@@ -27,6 +30,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Next Weekday, when Weekend Is Friday Saturday, skips Friday And Saturday.
+        /// </summary>
         [TestMethod]
         public void NextWeekday_WhenWeekendIsFridaySaturday_ShouldSkipFridayAndSaturday()
         {
@@ -35,6 +41,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(2024, 4, 21), actual); // Sunday
         }
 
+        /// <summary>
+        /// Verifies that Next Weekday, when Weekend Is None, throws Argument Out Of Range Exception.
+        /// </summary>
         [TestMethod]
         public void NextWeekday_WhenWeekendIsNone_ShouldThrowArgumentOutOfRangeException()
         {
@@ -48,6 +57,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Next Weekday, when Called, preserves Input Kind.
+        /// </summary>
         [TestMethod]
         public void NextWeekday_WhenCalled_ShouldPreserveInputKind()
         {
@@ -56,6 +68,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(DateTimeKind.Utc, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that Next Weekday, when Called, preserves Time Of Day.
+        /// </summary>
         [TestMethod]
         public void NextWeekday_WhenCalled_ShouldPreserveTimeOfDay()
         {
@@ -64,6 +79,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new TimeSpan(13, 45, 15), actual.TimeOfDay);
         }
 
+        /// <summary>
+        /// Verifies that Next Weekday, when Weekend Is Invalid, throws Argument Out Of Range Exception.
+        /// </summary>
         [TestMethod]
         public void NextWeekday_WhenWeekendIsInvalid_ShouldThrowArgumentOutOfRangeException()
         {
@@ -79,6 +97,9 @@ namespace Bodu.Extensions
         // Provider overload
         // =========================================================================
 
+        /// <summary>
+        /// Verifies that Next Weekday, when Provider Is Null, uses Weekend Enum.
+        /// </summary>
         [TestMethod]
         public void NextWeekday_WhenProviderIsNull_ShouldUseWeekendEnum()
         {
@@ -87,6 +108,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(2024, 4, 22), actual);
         }
 
+        /// <summary>
+        /// Verifies that Next Weekday, when Using Custom Provider, applies Provider Rule.
+        /// </summary>
         [TestMethod]
         public void NextWeekday_WhenUsingCustomProvider_ShouldApplyProviderRule()
         {
@@ -98,6 +122,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(2024, 4, 20), actual);
         }
 
+        /// <summary>
+        /// Verifies that Next Weekday, when Provider Overload, Weekend Is Invalid, throws Argument Out Of Range Exception.
+        /// </summary>
         [TestMethod]
         public void NextWeekday_WhenProviderOverload_WeekendIsInvalid_ShouldThrowArgumentOutOfRangeException()
         {

@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that Throw If Array Length Out Of Range, when Array Is Null, throws Argument Null Exception.
+        /// </summary>
         [TestMethod]
         public void ThrowIfArrayLengthOutOfRange_WhenArrayIsNull_ShouldThrowArgumentNullException()
         {
@@ -18,6 +21,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Array Length Out Of Range, when Length Is Out Of Range, throws Argument Out Of Range Exception.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 1, 10)]    // below min
         [DataRow(11, 1, 10)]   // above max
@@ -32,6 +38,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Array Length Out Of Range, when Length Is Within Range, does not Throw.
+        /// </summary>
         [TestMethod]
         [DataRow(1, 1, 10)]    // at min
         [DataRow(10, 1, 10)]   // at max

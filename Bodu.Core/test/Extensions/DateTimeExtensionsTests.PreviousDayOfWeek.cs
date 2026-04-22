@@ -18,6 +18,9 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that Previous Day Of Week, when Called, returns Expected Date.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(PreviousDayOfWeekTestData), DynamicDataSourceType.Method)]
         public void PreviousDayOfWeek_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek targetDay, DateTime expected)
@@ -27,6 +30,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Previous Day Of Week, when Enum Is Invalid, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void PreviousDayOfWeek_WhenEnumIsInvalid_ShouldThrowExactly()
         {
@@ -39,6 +45,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that Previous Day Of Week, when Kind Is Set, preserves Kind.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]
@@ -51,6 +60,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(kind, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that Previous Day Of Week, when Time Is Set, preserves Timed.
+        /// </summary>
         [TestMethod]
         public void PreviousDayOfWeek_WhenTimeIsSet_ShouldPreserveTimed()
         {
@@ -63,6 +75,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that Previous Day Of Week, when Using Min Value, returns Same Or Greater.
+        /// </summary>
         [TestMethod]
         public void PreviousDayOfWeek_WhenUsingMinValue_ShouldReturnSameOrGreater()
         {
@@ -71,6 +86,9 @@ namespace Bodu.Extensions
             Assert.IsTrue(actual >= DateTime.MinValue);
         }
 
+        /// <summary>
+        /// Verifies that Previous Day Of Week, when Using Max Value, succeeds.
+        /// </summary>
         [TestMethod]
         public void PreviousDayOfWeek_WhenUsingMaxValue_ShouldSucceed()
         {

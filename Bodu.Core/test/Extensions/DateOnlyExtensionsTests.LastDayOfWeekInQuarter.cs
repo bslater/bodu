@@ -32,6 +32,9 @@ namespace Bodu.Extensions
             yield return new object[] { new DateOnly(2024, 11, 5), DayOfWeek.Tuesday, new DateOnly(2024, 12, 31) };
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Week In Quarter, when Target Matches Quarter End Day Of Week, returns Quarter End Date.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(LastDayOfWeekInQuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
         public void LastDayOfWeekInQuarter_WhenTargetMatchesQuarterEndDayOfWeek_ShouldReturnQuarterEndDate(DateOnly input, DayOfWeek dayOfWeek, DateOnly expected)
@@ -40,6 +43,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Week In Quarter, when Day Of Week Is Invalid, throws Argument Out Of Range Exception.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeekInQuarter_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
         {
@@ -51,6 +57,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Week In Quarter, when Definition Is Invalid, throws Argument Out Of Range Exception.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeekInQuarter_WhenDefinitionIsInvalid_ShouldThrowArgumentOutOfRangeException()
         {
@@ -66,6 +75,9 @@ namespace Bodu.Extensions
         // LastDayOfWeekInQuarter(int year, int quarter, DayOfWeek, CalendarQuarterDefinition)
         // =========================================================================
 
+        /// <summary>
+        /// Verifies that Last Day Of Week In Quarter, when Using Year And Quarter, returns Expected Date.
+        /// </summary>
         [TestMethod]
         [DataRow(2024, 1, DayOfWeek.Sunday, 2024, 3, 31)]  // Q1 ends Sun; target Sun → 31 Mar
         [DataRow(2024, 3, DayOfWeek.Monday, 2024, 9, 30)]  // Q3 ends Mon; target Mon → 30 Sep
@@ -77,6 +89,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateOnly(expectedYear, expectedMonth, expectedDay), actual);
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Week In Quarter, when Quarter Is Out Of Range, throws Argument Out Of Range Exception.
+        /// </summary>
         [TestMethod]
         [DataRow(0)]
         [DataRow(5)]
@@ -89,6 +104,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Week In Quarter, when Year And Quarter Overload Definition Is Invalid, throws Argument Out Of Range Exception.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeekInQuarter_WhenYearAndQuarterOverloadDefinitionIsInvalid_ShouldThrowArgumentOutOfRangeException()
         {
@@ -98,6 +116,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Week In Quarter, when Year And Quarter Overload Day Of Week Is Invalid, throws Argument Out Of Range Exception.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeekInQuarter_WhenYearAndQuarterOverloadDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
         {

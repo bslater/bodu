@@ -44,6 +44,9 @@ namespace Bodu.Security.Cryptography
             };
         }
 
+        /// <summary>
+        /// Verifies that Encrypt, with Rfc5297 A1 Vector, matches Expected.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(SivKatA1), DynamicDataSourceType.Method)]
         public void Encrypt_WithRfc5297A1Vector_ShouldMatchExpected(
@@ -64,6 +67,9 @@ namespace Bodu.Security.Cryptography
                 "SIV encrypt mismatch for RFC 5297 A.1 vector.");
         }
 
+        /// <summary>
+        /// Verifies that Decrypt, with Rfc5297 A1 Vector, Recover Plaintext.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(SivKatA1), DynamicDataSourceType.Method)]
         public void Decrypt_WithRfc5297A1Vector_ShouldRecoverPlaintext(

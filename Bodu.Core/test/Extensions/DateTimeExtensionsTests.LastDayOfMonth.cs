@@ -17,6 +17,9 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that Last Day Of Month, when Called, returns Expected Day.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.LastDayOfMonthDataTestData), DynamicDataSourceType.Method)]
         public void LastDayOfMonth_WhenCalled_ShouldReturnExpectedDay(DateTime input, DateTime expected)
@@ -27,6 +30,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(input.Kind, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Month, , when Kind Is Set, preserves Kind.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]
@@ -39,6 +45,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(kind, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Month, when Min Value, returns Expected Day.
+        /// </summary>
         [TestMethod]
         public void LastDayOfMonth_WhenMinValue_ShouldReturnExpectedDay()
         {
@@ -47,6 +56,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(1, 1, 31), actual);
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Month, when Max Value, returns Expected Day.
+        /// </summary>
         [TestMethod]
         public void LastDayOfMonth_WhenMaxValue_ShouldReturnExpectedDay()
         {

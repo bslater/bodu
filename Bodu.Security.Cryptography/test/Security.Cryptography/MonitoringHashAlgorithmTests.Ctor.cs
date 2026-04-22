@@ -10,6 +10,9 @@
     {
         // <summary>
         /// Verifies that the constructor sets <see cref="HashSize"/> to 32 bits (4 bytes). </summary>
+        /// <summary>
+        /// Verifies that Ctor Set Hash Size To32 Bits.
+        /// </summary>
         [TestMethod]
         public void Ctor_ShouldSetHashSizeTo32Bits()
         {

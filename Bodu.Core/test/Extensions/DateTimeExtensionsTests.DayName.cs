@@ -19,6 +19,9 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that Day Name, with Culture, returns Localized Name.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DayNameTestData), DynamicDataSourceType.Method)]
         public void DayName_WithCulture_ShouldReturnLocalizedName(DateTime input, CultureInfo culture, string expected)
@@ -28,6 +31,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Day Name, when Culture Is Null, Fallback To Current Culture.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DayNameFrenchTestData), DynamicDataSourceType.Method)]
         public void DayName_WhenCultureIsNull_ShouldFallbackToCurrentCulture(DateTime input, string expected)

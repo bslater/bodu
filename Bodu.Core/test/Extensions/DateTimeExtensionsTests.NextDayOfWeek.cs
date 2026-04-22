@@ -17,6 +17,9 @@ namespace Bodu.Extensions
 {
     public partial class DateTimeExtensionsTests
     {
+        /// <summary>
+        /// Verifies that Next Day Of Week, when Called, returns Expected Date.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(NextDayOfWeekTestData), DynamicDataSourceType.Method)]
         public void NextDayOfWeek_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek targetDay, DateTime expected)
@@ -26,6 +29,9 @@ namespace Bodu.Extensions
                 Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Next Day Of Week, when Time Is Set, preserves Time.
+        /// </summary>
         [TestMethod]
         public void NextDayOfWeek_WhenTimeIsSet_ShouldPreserveTime()
         {
@@ -35,6 +41,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(input.TimeOfDay, actual.TimeOfDay);
         }
 
+        /// <summary>
+        /// Verifies that Next Day Of Week, when Invalid Enum, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void NextDayOfWeek_WhenInvalidEnum_ShouldThrowExactly()
         {
@@ -46,6 +55,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Next Day Of Weekr, when Kind Is Set, preserves Kind.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]
@@ -59,6 +71,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that Next Day Of Week, when Time Is Set, preserves Timed.
+        /// </summary>
         [TestMethod]
         public void NextDayOfWeek_WhenTimeIsSet_ShouldPreserveTimed()
         {
@@ -70,6 +85,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(time, actual);
         }
 
+        /// <summary>
+        /// Verifies that Next Day Of Week, when Using Min Value, returns Next Valid Date.
+        /// </summary>
         [TestMethod]
         public void NextDayOfWeek_WhenUsingMinValue_ShouldReturnNextValidDate()
         {
@@ -78,6 +96,9 @@ namespace Bodu.Extensions
             Assert.IsTrue(actual >= DateTime.MinValue);
         }
 
+        /// <summary>
+        /// Verifies that Next Day Of Week, when Using Max Value Minus7, returns Within Range.
+        /// </summary>
         [TestMethod]
         public void NextDayOfWeek_WhenUsingMaxValueMinus7_ShouldReturnWithinRange()
         {

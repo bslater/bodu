@@ -82,6 +82,9 @@
         // True conformance testing requires NIST CAVP data; the round-trip test from the base
         // class is the primary correctness gate until CAVP vectors are integrated.
 
+        /// <summary>
+        /// Verifies that Encrypt, Empty Plaintext And Aad, Tag Should Be16 Bytes, behaves as expected.
+        /// </summary>
         [TestMethod]
         public void Encrypt_EmptyPlaintextAndAad_TagShouldBe16Bytes()
         {

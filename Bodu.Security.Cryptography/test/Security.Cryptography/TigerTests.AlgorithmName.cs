@@ -8,6 +8,9 @@ namespace Bodu.Security.Cryptography
 {
     public partial class TigerTests
     {
+        /// <summary>
+        /// Verifies that Algorithm Name, when Using Variant, returns Correctly Formatted String.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(HashAlgorithmVariants), DynamicDataSourceType.Method)]
         public void AlgorithmName_WhenUsingVariant_ShouldReturnCorrectlyFormattedString(TigerVariant variant)

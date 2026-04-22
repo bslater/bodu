@@ -16,6 +16,9 @@ namespace Bodu.Extensions
 {
     public partial class DateTimeExtensionsTests
     {
+        /// <summary>
+        /// Verifies that Get Elapsed Time Since, when Past Time, returns Positive Time Span.
+        /// </summary>
         [TestMethod]
         [DataRow(-5, DateTimeKind.Utc)]
         [DataRow(-10, DateTimeKind.Local)]
@@ -34,6 +37,9 @@ namespace Bodu.Extensions
             Assert.IsTrue(elapsed.TotalMilliseconds > 0, "Elapsed should be positive for past dates.");
         }
 
+        /// <summary>
+        /// Verifies that Get Elapsed Time Since, when Future Time, returns Negative Time Span.
+        /// </summary>
         [TestMethod]
         [DataRow(1, DateTimeKind.Utc)]
         [DataRow(5, DateTimeKind.Local)]
@@ -52,6 +58,9 @@ namespace Bodu.Extensions
                 $"Expected approx. -{minutesOffset} min but got {elapsed.TotalMinutes:F3} min.");
         }
 
+        /// <summary>
+        /// Verifies that Get Elapsed Time Since, when Kind Is Unspecified, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void GetElapsedTimeSince_WhenKindIsUnspecified_ShouldThrowExactly()
         {
@@ -66,6 +75,9 @@ namespace Bodu.Extensions
             StringAssert.Contains(ex.Message, "Utc or Local");
         }
 
+        /// <summary>
+        /// Verifies that Get Elapsed Time Since, when Now, returns Near Zero.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Utc)]
         [DataRow(DateTimeKind.Local)]

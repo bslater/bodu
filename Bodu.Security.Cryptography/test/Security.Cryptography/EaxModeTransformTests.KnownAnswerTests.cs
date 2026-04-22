@@ -49,12 +49,18 @@ namespace Bodu.Security.Cryptography
             };
         }
 
+        /// <summary>
+        /// Verifies that Transform, with Nist Vector, Encrypt Correctly.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(EaxKatVectors), DynamicDataSourceType.Method)]
         public void Transform_WithNistVector_ShouldEncryptCorrectly(
             string description, byte[] key, byte[] iv, byte[] plaintext, byte[] expectedCiphertext)
             => AssertKatEncrypt(description, key, iv, plaintext, expectedCiphertext);
 
+        /// <summary>
+        /// Verifies that Transform, with Nist Vector, Decrypt To Original Plaintext.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(EaxKatVectors), DynamicDataSourceType.Method)]
         public void Transform_WithNistVector_ShouldDecryptToOriginalPlaintext(

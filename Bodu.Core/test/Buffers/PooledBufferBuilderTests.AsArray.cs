@@ -8,6 +8,9 @@
 {
     public partial class PooledBufferBuilderTests
     {
+        /// <summary>
+        /// Verifies that As Array, when Accessed After Append, Using Array, matches As Span Contents.
+        /// </summary>
         [TestMethod]
         public void AsArray_WhenAccessedAfterAppend_ShouldMatchAsSpanContents_UsingArray()
         {

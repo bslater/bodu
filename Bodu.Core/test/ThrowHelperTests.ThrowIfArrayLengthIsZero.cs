@@ -8,6 +8,9 @@ namespace Bodu.Core.Test
 {
     public sealed partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that Throw If Array Length Is Zero, when Array Length Is Zero, throws Exactly.
+        /// </summary>
         [TestMethod]
         [DataRow(0)]
         public void ThrowIfArrayLengthIsZero_WhenArrayLengthIsZero_ShouldThrowExactly(int length)
@@ -19,6 +22,9 @@ namespace Bodu.Core.Test
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Array Length Is Zero, when Array Length Is Non Zero, does not Throw.
+        /// </summary>
         [TestMethod]
         [DataRow(1)]
         [DataRow(5)]

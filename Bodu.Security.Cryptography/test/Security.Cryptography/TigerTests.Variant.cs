@@ -31,6 +31,9 @@ namespace Bodu.Security.Cryptography
             Assert.IsTrue(result.Any(b => b != 0), $"Hash result should not be all zeros for variant {variant}.");
         }
 
+        /// <summary>
+        /// Verifies that Variant, Get, when Default, returns Pearson.
+        /// </summary>
         [TestMethod]
         public void Variant_Get_WhenDefault_ShouldReturnPearson()
         {
@@ -41,6 +44,9 @@ namespace Bodu.Security.Cryptography
             Assert.AreEqual(Bodu.Security.Cryptography.TigerHashingVariant.Tiger, type, "Default Variant should be Tiger.");
         }
 
+        /// <summary>
+        /// Verifies that Variant, Set, when Hashing Started, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void Variant_Set_WhenHashingStarted_ShouldThrowExactly()
         {
@@ -53,6 +59,9 @@ namespace Bodu.Security.Cryptography
             });
         }
 
+        /// <summary>
+        /// Verifies that Variant, Set, when Disposed, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void Variant_Set_WhenDisposed_ShouldThrowExactly()
         {
@@ -65,6 +74,9 @@ namespace Bodu.Security.Cryptography
             });
         }
 
+        /// <summary>
+        /// Verifies that Variant, Get, when Disposed, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void Variant_Get_WhenDisposed_ShouldThrowExactly()
         {

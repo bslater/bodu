@@ -10,6 +10,9 @@ namespace Bodu
     {
         // Span<T> overload
 
+        /// <summary>
+        /// Verifies that Throw If Span Length Is Not Equal To, Span, when Length Differs, throws Argument Exception.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 4)]
         [DataRow(3, 4)]
@@ -23,6 +26,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Span Length Is Not Equal To, Span, when Length Matches, does not Throw.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 0)]
         [DataRow(1, 1)]
@@ -36,6 +42,9 @@ namespace Bodu
 
         // ReadOnlySpan<T> overload
 
+        /// <summary>
+        /// Verifies that Throw If Span Length Is Not Equal To, Read Only Span, when Length Differs, throws Argument Exception.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 4)]
         [DataRow(3, 4)]
@@ -49,6 +58,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Span Length Is Not Equal To, Read Only Span, when Length Matches, does not Throw.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 0)]
         [DataRow(1, 1)]

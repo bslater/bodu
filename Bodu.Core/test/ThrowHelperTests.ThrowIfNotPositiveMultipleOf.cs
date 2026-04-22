@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that Throw If Not Positive Multiple Of, when Value Is Zero Negative Or Not Multiple, throws.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 2)]   // Zero is not positive
         [DataRow(-2, 2)]  // Negative value
@@ -21,6 +24,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Not Positive Multiple Of, when Value Is Positive And Multiple, does not Throw.
+        /// </summary>
         [TestMethod]
         [DataRow(2, 1)]
         [DataRow(4, 2)]

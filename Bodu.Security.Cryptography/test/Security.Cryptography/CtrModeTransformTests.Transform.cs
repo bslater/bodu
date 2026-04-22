@@ -44,6 +44,9 @@ namespace Bodu.Security.Cryptography
                 "Second CTR block must reflect big-endian counter increment.");
         }
 
+        /// <summary>
+        /// Verifies that Transform, Encrypt And Decrypt, is Symmetric.
+        /// </summary>
         [TestMethod]
         public void Transform_EncryptAndDecrypt_ShouldBeSymmetric()
         {
@@ -62,6 +65,9 @@ namespace Bodu.Security.Cryptography
             CollectionAssert.AreEqual(plaintext, recovered);
         }
 
+        /// <summary>
+        /// Verifies that Transform, when Encrypting, does not Mutate Initial Counter.
+        /// </summary>
         [TestMethod]
         public void Transform_WhenEncrypting_ShouldNotMutateInitialCounter()
         {
@@ -76,6 +82,9 @@ namespace Bodu.Security.Cryptography
                 "CTR must not mutate the caller-supplied initial counter array.");
         }
 
+        /// <summary>
+        /// Verifies that Transform, when Decrypting, uses Cipher Encrypt Primitive.
+        /// </summary>
         [TestMethod]
         public void Transform_WhenDecrypting_ShouldUseCipherEncryptPrimitive()
         {
@@ -86,6 +95,9 @@ namespace Bodu.Security.Cryptography
             Assert.AreEqual(0, cipher.DecryptBlockCount, "CTR must never call decrypt primitive.");
         }
 
+        /// <summary>
+        /// Verifies that Transform, when Called Twice, Continue Counter Across Calls.
+        /// </summary>
         [TestMethod]
         public void Transform_WhenCalledTwice_ShouldContinueCounterAcrossCalls()
         {
@@ -104,6 +116,9 @@ namespace Bodu.Security.Cryptography
             CollectionAssert.AreEqual(sOut, dOut, "CTR must preserve counter across successive calls.");
         }
 
+        /// <summary>
+        /// Verifies that Transform, with Different Initial Counters, produces Different Ciphertext.
+        /// </summary>
         [TestMethod]
         public void Transform_WithDifferentInitialCounters_ShouldProduceDifferentCiphertext()
         {

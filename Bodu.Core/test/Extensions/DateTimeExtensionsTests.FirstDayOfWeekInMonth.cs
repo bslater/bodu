@@ -17,6 +17,9 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that First Day Of Week In Month, when Called, returns Expected Date.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(FirstDayOfWeekInMonthTestData), DynamicDataSourceType.Method)]
         public void FirstDayOfWeekInMonth_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
@@ -26,6 +29,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that First Day Of Week In Month, when Invalid Day Of Week, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInMonth_WhenInvalidDayOfWeek_ShouldThrowExactly()
         {
@@ -46,6 +52,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(TimeSpan.Zero, actual.TimeOfDay);
         }
 
+        /// <summary>
+        /// Verifies that First Day Of Week In Month, when Called, preserves Date Time Kind.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]
@@ -58,6 +67,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(kind, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that First Day Of Week In Month, when Using Min Value, returns Valid Result.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInMonth_WhenUsingMinValue_ShouldReturnValidResult()
         {
@@ -66,6 +78,9 @@ namespace Bodu.Extensions
             Assert.IsTrue(actual >= DateTime.MinValue && actual <= DateTime.MinValue.AddMonths(1).AddDays(-1));
         }
 
+        /// <summary>
+        /// Verifies that First Day Of Week In Month, when Using Max Value, returns Valid Result.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInMonth_WhenUsingMaxValue_ShouldReturnValidResult()
         {

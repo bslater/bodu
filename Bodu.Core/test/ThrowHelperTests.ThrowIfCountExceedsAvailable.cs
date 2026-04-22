@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that Throw If Count Exceeds Available, when Count Is Invalid, throws Argument Out Of Range Exception.
+        /// </summary>
         [TestMethod]
         [DataRow(6, 5)]   // Count exceeds available
         [DataRow(-1, 5)]  // Count is negative
@@ -20,6 +23,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Count Exceeds Available, when Count Is Valid, does not Throw.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 0)]
         [DataRow(0, 5)]

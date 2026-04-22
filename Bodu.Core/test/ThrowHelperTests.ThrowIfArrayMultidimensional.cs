@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that Throw If Array Multidimensional, when Array Is Null, throws Argument Null Exception.
+        /// </summary>
         [TestMethod]
         public void ThrowIfArrayMultidimensional_WhenArrayIsNull_ShouldThrowArgumentNullException()
         {
@@ -18,6 +21,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Array Multidimensional, when Array Has Rank Two, throws Argument Exception.
+        /// </summary>
         [TestMethod]
         public void ThrowIfArrayMultidimensional_WhenArrayHasRankTwo_ShouldThrowArgumentException()
         {
@@ -28,6 +34,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Array Multidimensional, when Array Has Rank Three, throws Argument Exception.
+        /// </summary>
         [TestMethod]
         public void ThrowIfArrayMultidimensional_WhenArrayHasRankThree_ShouldThrowArgumentException()
         {
@@ -38,6 +47,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Array Multidimensional, when Array Is Single Dimensional, does not Throw.
+        /// </summary>
         [TestMethod]
         public void ThrowIfArrayMultidimensional_WhenArrayIsSingleDimensional_ShouldNotThrow()
         {
@@ -45,6 +57,9 @@ namespace Bodu
             ThrowHelper.ThrowIfArrayMultidimensional(array);
         }
 
+        /// <summary>
+        /// Verifies that Throw If Array Multidimensional, when Array Is Empty Single Dimensional, does not Throw.
+        /// </summary>
         [TestMethod]
         public void ThrowIfArrayMultidimensional_WhenArrayIsEmptySingleDimensional_ShouldNotThrow()
         {

@@ -24,6 +24,9 @@
             Assert.IsTrue(buffer.All(b => b >= 0), "All bytes should be populated.");
         }
 
+        /// <summary>
+        /// Verifies that Next Bytes, when Called, Fill Buffer.
+        /// </summary>
         [TestMethod]
         public void NextBytes_WhenCalled_ShouldFillBuffer()
         {
@@ -34,6 +37,9 @@
             Assert.IsTrue(buffer.Any(b => b != 0), "Expected non-zero bytes in actual.");
         }
 
+        /// <summary>
+        /// Verifies that Next Bytes, with Null Buffer, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void NextBytes_WithNullBuffer_ShouldThrowExactly()
         {

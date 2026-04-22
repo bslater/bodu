@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that Throw If Not Zero, when Value Is Not Zero, throws.
+        /// </summary>
         [TestMethod]
         [DataRow(1)]
         [DataRow(-1)]
@@ -21,6 +24,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Not Zero, when Value Is Zero, does not Throw.
+        /// </summary>
         [TestMethod]
         [DataRow(0)]
         public void ThrowIfNotZero_WhenValueIsZero_ShouldNotThrow(int value)

@@ -11,6 +11,9 @@ namespace Bodu.Security.Cryptography
 {
     public partial class PearsonTests
     {
+        /// <summary>
+        /// Verifies that Hash Size, Get, when Default, Return8.
+        /// </summary>
         [TestMethod]
         public void HashSize_Get_WhenDefault_ShouldReturn8()
         {
@@ -18,6 +21,9 @@ namespace Bodu.Security.Cryptography
             Assert.AreEqual(8, algorithm.HashSize, "Default algorithm size should be 8 bits.");
         }
 
+        /// <summary>
+        /// Verifies that Hash Size, Set, when Valid, updates Size.
+        /// </summary>
         [TestMethod]
         [DataRow(8)]
         [DataRow(64)]
@@ -34,6 +40,9 @@ namespace Bodu.Security.Cryptography
             Assert.AreEqual(bits, algorithm.HashSize, $"HashSize should be set to {bits} bits.");
         }
 
+        /// <summary>
+        /// Verifies that Compute Hash, when Hash Size Set, returns Expected Byte Length.
+        /// </summary>
         [TestMethod]
         [DataRow(8)]
         [DataRow(64)]
@@ -55,6 +64,9 @@ namespace Bodu.Security.Cryptography
             Assert.AreEqual(expectedLength, result.Length, $"Expected algorithm length for {bits} bits is {expectedLength} bytes.");
         }
 
+        /// <summary>
+        /// Verifies that Hash Size, Set, when Out Of Range, throws.
+        /// </summary>
         [TestMethod]
         [DataRow(0)]
         [DataRow(7)]
@@ -70,6 +82,9 @@ namespace Bodu.Security.Cryptography
             });
         }
 
+        /// <summary>
+        /// Verifies that Hash Size, Set, when Hashing Started, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void HashSize_Set_WhenHashingStarted_ShouldThrowExactly()
         {
@@ -82,6 +97,9 @@ namespace Bodu.Security.Cryptography
             });
         }
 
+        /// <summary>
+        /// Verifies that Hash Size, Get, when Disposed, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void HashSize_Get_WhenDisposed_ShouldThrowExactly()
         {
@@ -94,6 +112,9 @@ namespace Bodu.Security.Cryptography
             });
         }
 
+        /// <summary>
+        /// Verifies that Hash Size, Set, when Disposed, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void HashSize_Set_WhenDisposed_ShouldThrowExactly()
         {

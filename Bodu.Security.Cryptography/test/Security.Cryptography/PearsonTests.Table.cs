@@ -119,6 +119,9 @@ namespace Bodu.Security.Cryptography
                 $"ObjectDisposedException.ObjectName must match the concrete type name '{typeof(Pearson).FullName}'.");
         }
 
+        /// <summary>
+        /// Verifies that Table Type, when Internally Defined, is Valid Permutation.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void TableType_WhenInternallyDefined_ShouldBeValidPermutation(Pearson.PearsonTableType variant)

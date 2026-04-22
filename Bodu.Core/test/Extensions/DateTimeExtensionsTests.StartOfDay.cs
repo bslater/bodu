@@ -17,6 +17,9 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that Start Of Day, when Called, Set Time To Midnight.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(MidnightTestData), DynamicDataSourceType.Method)]
         public void StartOfDay_WhenCalled_ShouldSetTimeToMidnight(DateTime input, DateTime expected)
@@ -27,6 +30,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that Start Of Day, when Kind Is Set, preserves Kind.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]
@@ -39,6 +45,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(kind, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that Start Of Day, when Using Min Value, returns Midnight.
+        /// </summary>
         [TestMethod]
         public void StartOfDay_WhenUsingMinValue_ShouldReturnMidnight()
         {
@@ -49,6 +58,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(input.Kind, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that Start Of Day, when Using Max Value, returns Same Date At Midnight.
+        /// </summary>
         [TestMethod]
         public void StartOfDay_WhenUsingMaxValue_ShouldReturnSameDateAtMidnight()
         {

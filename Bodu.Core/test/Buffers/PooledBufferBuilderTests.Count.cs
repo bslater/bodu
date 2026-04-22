@@ -8,6 +8,9 @@
 {
     public partial class PooledBufferBuilderTests
     {
+        /// <summary>
+        /// Verifies that Count, when Items Added, Using Span, returns Accurate Value.
+        /// </summary>
         [TestMethod]
         public void Count_WhenItemsAdded_ShouldReturnAccurateValue_UsingSpan()
         {

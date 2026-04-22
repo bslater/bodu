@@ -17,6 +17,9 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that First Day Of Month, when Called, returns Expected Date.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(FirstDayOfMonthDataTestData), DynamicDataSourceType.Method)]
         public void FirstDayOfMonth_WhenCalled_ShouldReturnExpectedDate(DateTime input, DateTime expected)
@@ -26,6 +29,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that First Day Of Month preserves Date Time Kind.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]

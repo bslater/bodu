@@ -11,18 +11,27 @@ namespace Bodu.Collections.Generic.Extensions
     [TestClass]
     public sealed partial class IEnumerableExtensionsTests_Cache : EnumerableTests
     {
+        /// <summary>
+        /// Verifies that Cache Defer Execution.
+        /// </summary>
         [TestMethod]
         public void Cache_ShouldDeferExecution()
         {
             AssertExecutionIsDeferred("Cache", s => s.Cache(), YieldingSequence());
         }
 
+        /// <summary>
+        /// Verifies that Cache Enumerate On Demand.
+        /// </summary>
         [TestMethod]
         public void Cache_ShouldEnumerateOnDemand()
         {
             AssertExecutionOccursOnEnumeration("Cache", s => s.Cache(), YieldingSequence());
         }
 
+        /// <summary>
+        /// Verifies that Cache, when Enumerated From Multiple Threads, returns Consistent Results.
+        /// </summary>
         [TestMethod]
         public void Cache_WhenEnumeratedFromMultipleThreads_ShouldReturnConsistentResults()
         {
@@ -36,6 +45,9 @@ namespace Bodu.Collections.Generic.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Cache, when Enumerated Twice, Enumerate Source Only Once.
+        /// </summary>
         [TestMethod]
         public void Cache_WhenEnumeratedTwice_ShouldEnumerateSourceOnlyOnce()
         {
@@ -48,6 +60,9 @@ namespace Bodu.Collections.Generic.Extensions
             Assert.AreEqual(YieldingSequence().Count(), tracker.ItemsEnumerated);
         }
 
+        /// <summary>
+        /// Verifies that Cache, when Enumeration Is Interrupted, caches Partial Results.
+        /// </summary>
         [TestMethod]
         public void Cache_WhenEnumerationIsInterrupted_ShouldCachePartialResults()
         {
@@ -65,6 +80,9 @@ namespace Bodu.Collections.Generic.Extensions
             Assert.AreEqual(5, tracker.ItemsEnumerated);
         }
 
+        /// <summary>
+        /// Verifies that Cache, when Source Is Already Cached, returns Same Instance.
+        /// </summary>
         [TestMethod]
         public void Cache_WhenSourceIsAlreadyCached_ShouldReturnSameInstance()
         {
@@ -74,6 +92,9 @@ namespace Bodu.Collections.Generic.Extensions
             Assert.AreSame(source, result);
         }
 
+        /// <summary>
+        /// Verifies that Cache, when Source Is Collection, returns Same Instance.
+        /// </summary>
         [TestMethod]
         public void Cache_WhenSourceIsCollection_ShouldReturnSameInstance()
         {
@@ -83,6 +104,9 @@ namespace Bodu.Collections.Generic.Extensions
             Assert.AreSame(source, actual);
         }
 
+        /// <summary>
+        /// Verifies that Cache, when Source Is Null, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void Cache_WhenSourceIsNull_ShouldThrowExactly()
         {
@@ -92,6 +116,9 @@ namespace Bodu.Collections.Generic.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Cache, when Source Is Read Only Collection, returns Same Instance.
+        /// </summary>
         [TestMethod]
         public void Cache_WhenSourceIsReadOnlyCollection_ShouldReturnSameInstance()
         {
@@ -101,6 +128,9 @@ namespace Bodu.Collections.Generic.Extensions
             Assert.AreSame(source, actual);
         }
 
+        /// <summary>
+        /// Verifies that Cache, when Source Throws During Enumeration, Rethrow On Second Enumeration.
+        /// </summary>
         [TestMethod]
         public void Cache_WhenSourceThrowsDuringEnumeration_ShouldRethrowOnSecondEnumeration()
         {
@@ -131,6 +161,9 @@ namespace Bodu.Collections.Generic.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Cache, when Source Throws During Enumeration, throws On First Enumeration.
+        /// </summary>
         [TestMethod]
         public void Cache_WhenSourceThrowsDuringEnumeration_ShouldThrowOnFirstEnumeration()
         {
@@ -153,6 +186,9 @@ namespace Bodu.Collections.Generic.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Dispose Clear Cache And Enumerator.
+        /// </summary>
         [TestMethod]
         public void Dispose_ShouldClearCacheAndEnumerator()
         {
@@ -181,6 +217,9 @@ namespace Bodu.Collections.Generic.Extensions
             AssertExecutionOccursOnEnumeration("Cache", s => s.Cache(), YieldingSequence());
         }
 
+        /// <summary>
+        /// Verifies that Enumerator, Current, when After End, throws Exception.
+        /// </summary>
         [TestMethod]
         public void Enumerator_Current_WhenAfterEnd_ShouldThrowException()
         {
@@ -197,6 +236,9 @@ namespace Bodu.Collections.Generic.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Enumerator, Current, when Before Move Next, throws Exception.
+        /// </summary>
         [TestMethod]
         public void Enumerator_Current_WhenBeforeMoveNext_ShouldThrowException()
         {
@@ -212,6 +254,9 @@ namespace Bodu.Collections.Generic.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Enumerator, Reset, throws Exception.
+        /// </summary>
         [TestMethod]
         public void Enumerator_Reset_ShouldThrowException()
         {

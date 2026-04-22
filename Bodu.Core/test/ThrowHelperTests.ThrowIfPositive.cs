@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that Throw If Positive, when Value Is Positive, throws.
+        /// </summary>
         [TestMethod]
         [DataRow(1)]
         [DataRow(42)]
@@ -20,6 +23,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Positive, when Value Is Zero Or Negative, does not Throw.
+        /// </summary>
         [TestMethod]
         [DataRow(0)]
         [DataRow(-1)]

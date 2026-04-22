@@ -18,6 +18,9 @@ namespace Bodu.Extensions
 {
     public partial class DateOnlyExtensionsTests
     {
+        /// <summary>
+        /// Verifies that First Day Of Week, when Current Culture Set, returns Expected Start.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfWeekCultureInfoTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]
         public void FirstDayOfWeek_WhenCurrentCultureSet_ShouldReturnExpectedStart(DateTime inputDateTime, CultureInfo culture, DateTime expectedDateTime)
@@ -40,6 +43,9 @@ namespace Bodu.Extensions
             }
         }
 
+        /// <summary>
+        /// Verifies that First Day Of Week, when Culture, returns Expected Start.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfWeekCultureInfoTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void FirstDayOfWeek_WhenCulture_ShouldReturnExpectedStart(DateTime inputDateTime, CultureInfo culture, DateTime expectedDateTime)
@@ -52,6 +58,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that First Day Of Week, when Culture Is Null, uses Current Culture.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeek_WhenCultureIsNull_ShouldUseCurrentCulture()
         {
@@ -73,6 +82,9 @@ namespace Bodu.Extensions
             }
         }
 
+        /// <summary>
+        /// Verifies that First Day Of Week, when Min Value, returns Min.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeek_WhenMinValue_ShouldReturnMin()
         {
@@ -82,6 +94,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(min, actual);
         }
 
+        /// <summary>
+        /// Verifies that First Day Of Week, when Min Value And Culture Is US, returns Throw Argument Out Of Range Exception.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeek_WhenMinValueAndCultureIsUS_ShouldReturnThrowArgumentOutOfRangeException()
         {
@@ -94,6 +109,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that First Day Of Week, when Max Value, returns Start Of Week.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeek_WhenMaxValue_ShouldReturnStartOfWeek()
         {

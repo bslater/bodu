@@ -16,6 +16,9 @@ namespace Bodu.Extensions
 {
     public partial class DateOnlyExtensionsTests
     {
+        /// <summary>
+        /// Verifies that From Unix Time Milliseconds, when Valid Input, returns Expected.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.FromUnixTimeMillisecondsTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Property)]
         public void FromUnixTimeMilliseconds_WhenValidInput_ShouldReturnExpected(long input, DateTime expectedDateTime)
@@ -26,6 +29,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that From Unix Time Milliseconds, when Below Minimum, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void FromUnixTimeMilliseconds_WhenBelowMinimum_ShouldThrowExactly()
         {
@@ -37,6 +43,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that From Unix Time Milliseconds, when Above Maximum, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void FromUnixTimeMilliseconds_WhenAboveMaximum_ShouldThrowExactly()
         {

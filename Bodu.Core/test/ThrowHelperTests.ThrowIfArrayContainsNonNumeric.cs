@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that Throw If Array Contains Non Numeric, when Array Contains Non Numeric, throws Exactly.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetNonNumericArrayTestData), DynamicDataSourceType.Method)]
         public void ThrowIfArrayContainsNonNumeric_WhenArrayContainsNonNumeric_ShouldThrowExactly(Array array)
@@ -18,6 +21,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Array Contains Non Numeric, when Array Is Numeric, does not Throw.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetNumericArrayTestData), DynamicDataSourceType.Method)]
         public void ThrowIfArrayContainsNonNumeric_WhenArrayIsNumeric_ShouldNotThrow(Array array)

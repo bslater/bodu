@@ -27,6 +27,9 @@ namespace Bodu.Extensions
             yield return new object[] { DateTime.MinValue, DateTime.MinValue.Date };
         }
 
+        /// <summary>
+        /// Verifies that To Date Only, when Called, returns Expected Date Only.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(ToDateOnlyTestData), DynamicDataSourceType.Method)]
         public void ToDateOnly_WhenCalled_ShouldReturnExpectedDateOnly(DateTime input, DateTime expectedDateTime)
@@ -38,6 +41,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that To Date Only, when Kind Is Set, Ignore Kind.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]
@@ -50,6 +56,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateOnly(2024, 4, 18), actual);
         }
 
+        /// <summary>
+        /// Verifies that To Date Only, when Kind Is Utc, Ignore Kind.
+        /// </summary>
         [TestMethod]
         public void ToDateOnly_WhenKindIsUtc_ShouldIgnoreKind()
         {
@@ -59,6 +68,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateOnly(2024, 4, 18), actual);
         }
 
+        /// <summary>
+        /// Verifies that To Date Only, when Using Min Value, returns Earliest Date.
+        /// </summary>
         [TestMethod]
         public void ToDateOnly_WhenUsingMinValue_ShouldReturnEarliestDate()
         {
@@ -68,6 +80,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateOnly(1, 1, 1), actual);
         }
 
+        /// <summary>
+        /// Verifies that To Date Only, when Using Max Value, returns Latest Date.
+        /// </summary>
         [TestMethod]
         public void ToDateOnly_WhenUsingMaxValue_ShouldReturnLatestDate()
         {

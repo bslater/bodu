@@ -17,6 +17,9 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that Nth Day Of Week In Month, when Called, returns Expected.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(NthDayOfWeekInMonthTestData),  DynamicDataSourceType.Method)]
         public void NthDayOfWeekInMonth_WhenCalled_ShouldReturnExpected(DateTime input, DayOfWeek dayOfWeek, WeekOfMonthOrdinal ordinal, DateTime expected)
@@ -27,6 +30,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that Nth Day Of Week In Month, when Using Year Month, returns Expected.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(NthDayOfWeekInMonthTestData),  DynamicDataSourceType.Method)]
         public void NthDayOfWeekInMonth_WhenUsingYearMonth_ShouldReturnExpected(DateTime input, DayOfWeek dayOfWeek, WeekOfMonthOrdinal ordinal, DateTime expected)
@@ -38,6 +44,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Nth Day Of Week In Month, when Given Date Is In Future, returns Expected Date In Given Month.
+        /// </summary>
         [TestMethod]
         public void NthDayOfWeekInMonth_WhenGivenDateIsInFuture_ShouldReturnExpectedDateInGivenMonth()
         {
@@ -49,6 +58,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that Nth Day Of Week In Month, when Fifth Does Not Exist, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void NthDayOfWeekInMonth_WhenFifthDoesNotExist_ShouldThrowExactly()
         {
@@ -61,6 +73,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that Nth Day Of Week In Month, when Kind Is Set, preserves Kind.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]
@@ -73,6 +88,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(kind, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that Nth Day Of Week In Month, when Ordinal Is Invalid Enum, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void NthDayOfWeekInMonth_WhenOrdinalIsInvalidEnum_ShouldThrowExactly()
         {
@@ -85,6 +103,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Nth Day Of Week In Month, when Day Of Week Is Invalid Enum, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void NthDayOfWeekInMonth_WhenDayOfWeekIsInvalidEnum_ShouldThrowExactly()
         {

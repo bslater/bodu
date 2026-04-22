@@ -18,6 +18,9 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that To Iso String, when Utc Kind, returns Utc Formatted.
+        /// </summary>
         [TestMethod]
         [DataRow("2024-04-20T15:30:45.1234560Z", DateTimeKind.Utc, "2024-04-20T15:30:45.1234560Z")]
         public void ToIsoString_WhenUtcKind_ShouldReturnUtcFormatted(string inputStr, DateTimeKind kind, string expected)
@@ -27,6 +30,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that To Iso String, with Include Fractional Seconds, respects Option.
+        /// </summary>
         [TestMethod]
         [DataRow("2024-04-20T15:30:45", false, "2024-04-20T15:30:45")]
         [DataRow("2024-04-20T15:30:45.1234567", true, null)] // Validate that it returns a valid round-trip
@@ -41,6 +47,9 @@ namespace Bodu.Extensions
                 Assert.IsTrue(actual.StartsWith("2024-04-20T15:30:45."));
         }
 
+        /// <summary>
+        /// Verifies that To Iso String, with Explicit Kind, respects Kind.
+        /// </summary>
         [TestMethod]
         [DataRow("2024-04-20T15:30:45", DateTimeKind.Utc, "2024-04-20T15:30:45.0000000Z")]
         [DataRow("2024-04-20T15:30:45", DateTimeKind.Local, null)]
@@ -63,6 +72,9 @@ namespace Bodu.Extensions
             }
         }
 
+        /// <summary>
+        /// Verifies that To Iso String, with Custom Format, returns Expected.
+        /// </summary>
         [TestMethod]
         [DataRow("2024-04-20T15:30:45", "yyyy-MM-dd", "2024-04-20")]
         [DataRow("2024-04-20T15:30:45", "HH:mm:ss", "15:30:45")]
@@ -73,6 +85,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that To Iso String, with Empty Format, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void ToIsoString_WithEmptyFormat_ShouldThrowExactly()
         {

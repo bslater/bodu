@@ -28,6 +28,9 @@ namespace Bodu.Extensions
             yield return new object[] { new DateTime(2024, 4, 17), DayOfWeek.Saturday, new DateTime(2024, 4, 20) };
         }
 
+        /// <summary>
+        /// Verifies that Nearest Day Of Week, when Called, returns Expected Date.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(NearestDayOfWeekDateTimeTestData), DynamicDataSourceType.Method)]
         public void NearestDayOfWeek_WhenCalled_ShouldReturnExpectedDate(DateTime dateTime, DayOfWeek dayOfWeek, DateTime expected)
@@ -36,6 +39,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Nearest Day Of Week, when Called, preserves Input Kind.
+        /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenCalled_ShouldPreserveInputKind()
         {
@@ -44,6 +50,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(DateTimeKind.Local, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that Nearest Day Of Week, when Tied Between Past And Future, returns Earlier Date.
+        /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenTiedBetweenPastAndFuture_ShouldReturnEarlierDate()
         {
@@ -52,6 +61,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(2024, 4, 14), actual);
         }
 
+        /// <summary>
+        /// Verifies that Nearest Day Of Week, when Day Of Week Is Invalid, throws Argument Out Of Range Exception.
+        /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
         {
@@ -67,6 +79,9 @@ namespace Bodu.Extensions
         // NearestDayOfWeek(int year, int month, int day, DayOfWeek)
         // =========================================================================
 
+        /// <summary>
+        /// Verifies that Nearest Day Of Week, when Using Year Month Day, returns Expected Date.
+        /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenUsingYearMonthDay_ShouldReturnExpectedDate()
         {
@@ -74,6 +89,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(2024, 4, 15), actual);
         }
 
+        /// <summary>
+        /// Verifies that Nearest Day Of Week, when Using Year Month Day, returns Result With Unspecified Kind.
+        /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenUsingYearMonthDay_ShouldReturnResultWithUnspecifiedKind()
         {
@@ -81,6 +99,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(DateTimeKind.Unspecified, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that Nearest Day Of Week, when Using Year Month Day With Invalid Day Of Week, throws Argument Out Of Range Exception.
+        /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenUsingYearMonthDayWithInvalidDayOfWeek_ShouldThrowArgumentOutOfRangeException()
         {

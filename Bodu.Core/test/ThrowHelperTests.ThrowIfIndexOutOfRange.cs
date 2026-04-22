@@ -10,6 +10,9 @@ namespace Bodu
     {
         private static readonly int[] TestArray = new[] { 1, 2, 3, 4, 5 };
 
+        /// <summary>
+        /// Verifies that Throw If Index Out Of Range, when Index Is Invalid, throws Argument Out Of Range Exception.
+        /// </summary>
         [TestMethod]
         [DataRow(5)] // index == Count
         [DataRow(6)] // index > Count
@@ -23,6 +26,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Index Out Of Range, when Index Is Within Bounds, does not Throw.
+        /// </summary>
         [TestMethod]
         [DataRow(0)]
         [DataRow(1)]

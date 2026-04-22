@@ -33,6 +33,9 @@ namespace Bodu.Extensions
             new object[] { 253402300798L, new DateTime(9999, 12, 31, 23, 59, 58, DateTimeKind.Utc) },                // MaxValue - 1 second
         };
 
+        /// <summary>
+        /// Verifies that From Unix Time Seconds, when Valid Input, returns Expected.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(FromUnixTimeSecondsTestData), DynamicDataSourceType.Property)]
         public void FromUnixTimeSeconds_WhenValidInput_ShouldReturnExpected(long input, DateTime expected)
@@ -49,6 +52,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(DateTimeKind.Utc, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that From Unix Time Seconds, when Below Minimum, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void FromUnixTimeSeconds_WhenBelowMinimum_ShouldThrowExactly()
         {
@@ -60,6 +66,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that From Unix Time Seconds, when Above Maximum, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void FromUnixTimeSeconds_WhenAboveMaximum_ShouldThrowExactly()
         {

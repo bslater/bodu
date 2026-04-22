@@ -8,6 +8,9 @@
 {
     public partial class PooledBufferBuilderTests
     {
+        /// <summary>
+        /// Verifies that Try Copy From, when List Passed, Using I Collection, Copy Correctly.
+        /// </summary>
         [TestMethod]
         public void TryCopyFrom_WhenListPassed_ShouldCopyCorrectly_UsingICollection()
         {

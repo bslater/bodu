@@ -17,6 +17,9 @@ namespace Bodu.Extensions
     public partial class DateOnlyExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that Midday, when Called, Set Time To Noon.
+        /// </summary>
         [TestMethod]
         [DataRow("2024-04-18T00:00:00", "2024-04-18T12:00:00")]
         [DataRow("2024-04-18T23:59:59", "2024-04-18T12:00:00")]
@@ -33,6 +36,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(input.Kind, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that Midday, when Kind Is Utc, preserves Kind.
+        /// </summary>
         [TestMethod]
         public void Midday_WhenKindIsUtc_ShouldPreserveKind()
         {
@@ -43,6 +49,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(2024, 4, 18, 12, 0, 0, DateTimeKind.Utc), actual);
         }
 
+        /// <summary>
+        /// Verifies that Midday, when Kind Is Local, preserves Kind.
+        /// </summary>
         [TestMethod]
         public void Midday_WhenKindIsLocal_ShouldPreserveKind()
         {
@@ -53,6 +62,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(2024, 4, 18, 12, 0, 0, DateTimeKind.Local), actual);
         }
 
+        /// <summary>
+        /// Verifies that Midday, when Kind Is Unspecified, preserves Kind.
+        /// </summary>
         [TestMethod]
         public void Midday_WhenKindIsUnspecified_ShouldPreserveKind()
         {
@@ -63,6 +75,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(2024, 4, 18, 12, 0, 0, DateTimeKind.Unspecified), actual);
         }
 
+        /// <summary>
+        /// Verifies that Midday, when Using Min Date, returns Noon On That Day.
+        /// </summary>
         [TestMethod]
         public void Midday_WhenUsingMinDate_ShouldReturnNoonOnThatDay()
         {
@@ -72,6 +87,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(1, 1, 1, 12, 0, 0), actual);
         }
 
+        /// <summary>
+        /// Verifies that Midday, when Using Max Date, returns Noon On That Day.
+        /// </summary>
         [TestMethod]
         public void Midday_WhenUsingMaxDate_ShouldReturnNoonOnThatDay()
         {

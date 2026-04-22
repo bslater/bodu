@@ -23,6 +23,9 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that Try Fill With Random Non Zero Bytes, when Successful, returns True And Fill Buffer.
+        /// </summary>
         [TestMethod]
         public void TryFillWithRandomNonZeroBytes_WhenSuccessful_ShouldReturnTrueAndFillBuffer()
         {
@@ -42,6 +45,9 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that Try Fill With Random Non Zero Bytes, Repeated Calls, produces Independent Draws.
+        /// </summary>
         [TestMethod]
         public void TryFillWithRandomNonZeroBytes_RepeatedCalls_ShouldProduceIndependentDraws()
         {
@@ -72,6 +78,9 @@
             Assert.IsFalse(identical, "Consecutive calls should not produce identical buffers; temp-clear must not corrupt the output path.");
         }
 
+        /// <summary>
+        /// Verifies that Try Fill With Random Non Zero Bytes, Buffer Bytes, does not Contain Zero.
+        /// </summary>
         [TestMethod]
         public void TryFillWithRandomNonZeroBytes_BufferBytes_ShouldNotContainZero()
         {

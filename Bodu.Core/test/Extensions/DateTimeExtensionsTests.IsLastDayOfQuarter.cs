@@ -46,6 +46,9 @@
             Assert.IsTrue(actual);
         }
 
+        /// <summary>
+        /// Verifies that Is Last Day Of Quarter, when Definition Is Custom, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void IsLastDayOfQuarter_WhenDefinitionIsCustom_ShouldThrowExactly()
         {
@@ -57,6 +60,9 @@
             });
         }
 
+        /// <summary>
+        /// Verifies that Is Last Day Of Quarter, when Definition Is Invalid, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void IsLastDayOfQuarter_WhenDefinitionIsInvalid_ShouldThrowExactly()
         {
@@ -69,6 +75,9 @@
             });
         }
 
+        /// <summary>
+        /// Verifies that Is Last Day Of Quarter, when Using Valid Quarter Provider, returns Expected Date.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.IsLastDayOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
         public void IsLastDayOfQuarter_WhenUsingValidQuarterProvider_ShouldReturnExpectedDate(DateTime input, bool expected)

@@ -17,6 +17,9 @@ namespace Bodu.Extensions
     public partial class DateOnlyExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that Nth Day Of Week In Month, when Called, returns Expected.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.NthDayOfWeekInMonthTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void NthDayOfWeekInMonth_WhenCalled_ShouldReturnExpected(DateTime inputDateTime, DayOfWeek dayOfWeek, WeekOfMonthOrdinal ordinal, DateTime expectedDateTime)
@@ -30,6 +33,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that Nth Day Of Week In Month, when Using Year Month, returns Expected.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.NthDayOfWeekInMonthTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void NthDayOfWeekInMonth_WhenUsingYearMonth_ShouldReturnExpected(DateTime inputDateTime, DayOfWeek dayOfWeek, WeekOfMonthOrdinal ordinal, DateTime expectedDateTime)
@@ -42,6 +48,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Nth Day Of Week In Month, when Fifth Does Not Exist, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void NthDayOfWeekInMonth_WhenFifthDoesNotExist_ShouldThrowExactly()
         {
@@ -53,6 +62,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Nth Day Of Week In Month, when Ordinal Is Invalid Enum, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void NthDayOfWeekInMonth_WhenOrdinalIsInvalidEnum_ShouldThrowExactly()
         {
@@ -65,6 +77,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Nth Day Of Week In Month, when Day Of Week Is Invalid Enum, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void NthDayOfWeekInMonth_WhenDayOfWeekIsInvalidEnum_ShouldThrowExactly()
         {

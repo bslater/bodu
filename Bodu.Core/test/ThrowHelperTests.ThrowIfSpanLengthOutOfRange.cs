@@ -10,6 +10,9 @@ namespace Bodu
     {
         // Span<T> overload
 
+        /// <summary>
+        /// Verifies that Throw If Span Length Out Of Range, Span, when Length Is Out Of Range, throws Argument Out Of Range Exception.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 1, 10)]
         [DataRow(11, 1, 10)]
@@ -24,6 +27,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Span Length Out Of Range, Span, when Length Is Within Range, does not Throw.
+        /// </summary>
         [TestMethod]
         [DataRow(1, 1, 10)]
         [DataRow(10, 1, 10)]
@@ -38,6 +44,9 @@ namespace Bodu
 
         // ReadOnlySpan<T> overload
 
+        /// <summary>
+        /// Verifies that Throw If Span Length Out Of Range, Read Only Span, when Length Is Out Of Range, throws Argument Out Of Range Exception.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 1, 10)]
         [DataRow(11, 1, 10)]
@@ -52,6 +61,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Span Length Out Of Range, Read Only Span, when Length Is Within Range, does not Throw.
+        /// </summary>
         [TestMethod]
         [DataRow(1, 1, 10)]
         [DataRow(10, 1, 10)]

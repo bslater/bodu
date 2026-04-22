@@ -10,6 +10,9 @@ namespace Bodu.Extensions
 {
     public partial class DateOnlyExtensionsTests
     {
+        /// <summary>
+        /// Verifies that Week Of Month, with Calendar Week And Rule, returns Expected.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.WeekOfMonthCalendarWeekRuleTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void WeekOfMonth_WithCalendarWeekAndRule_ShouldReturnExpected(DateTime inputDateTime, CalendarWeekRule rule, DayOfWeek firstDay, int expected)
@@ -21,6 +24,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Week Of Month, with Culture, returns Expected.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.WeekOfMonthCultureTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void WeekOfMonth_WithCulture_ShouldReturnExpected(DateTime inputDateTime, CultureInfo culture, int expected)
@@ -32,6 +38,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Week Of Month, when Using Culture Info, respects Culture Settings.
+        /// </summary>
         [TestMethod]
         public void WeekOfMonth_WhenUsingCultureInfo_ShouldRespectCultureSettings()
         {
@@ -42,6 +51,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Week Of Month, when Using Default Culture, matches Explicit Call.
+        /// </summary>
         [TestMethod]
         public void WeekOfMonth_WhenUsingDefaultCulture_ShouldMatchExplicitCall()
         {
@@ -52,6 +64,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Week Of Month, when Given Various Cultures, returns Consistent.
+        /// </summary>
         [TestMethod]
         [DataRow("en-US")]
         [DataRow("en-GB")]
@@ -68,6 +83,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual, $"Culture: {cultureName}");
         }
 
+        /// <summary>
+        /// Verifies that Week Of Month, when Culture Is Null, uses Current Culture.
+        /// </summary>
         [TestMethod]
         public void WeekOfMonth_WhenCultureIsNull_ShouldUseCurrentCulture()
         {
@@ -86,6 +104,9 @@ namespace Bodu.Extensions
             }
         }
 
+        /// <summary>
+        /// Verifies that Week Of Month, when Day Of Week Is Invalid, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void WeekOfMonth_WhenDayOfWeekIsInvalid_ShouldThrowExactly()
         {
@@ -98,6 +119,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Week Of Month, when Calendar Week Rule Is Invalid, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void WeekOfMonth_WhenCalendarWeekRuleIsInvalid_ShouldThrowExactly()
         {

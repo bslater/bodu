@@ -235,6 +235,9 @@ namespace Bodu.Security.Cryptography
             });
         }
 
+        /// <summary>
+        /// Verifies that Compute Hash Async, when Using Incremental Input, matches Expected.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(HashAlgorithmVariants))]
         public async Task ComputeHashAsync_WhenUsingIncrementalInput_ShouldMatchExpected(TVariant variant)
@@ -263,6 +266,9 @@ namespace Bodu.Security.Cryptography
             }
         }
 
+        /// <summary>
+        /// Verifies that Compute Hash Async, when Using Named Input, matches Expected.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(ComputeHashNamedInputTestData))]
         public async Task ComputeHashAsync_WhenUsingNamedInput_ShouldMatchExpected(TVariant variant, string testName, byte[] input, byte[] expected)

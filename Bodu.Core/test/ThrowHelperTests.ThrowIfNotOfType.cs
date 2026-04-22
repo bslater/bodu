@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that Throw If Not Of Type, when String Value Is Not Int, throws Exception.
+        /// </summary>
         [TestMethod]
         public void ThrowIfNotOfType_WhenStringValueIsNotInt_ShouldThrowException()
         {
@@ -19,6 +22,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Not Of Type, when Null Value And Target Is Non Nullable, throws Exception.
+        /// </summary>
         [TestMethod]
         public void ThrowIfNotOfType_WhenNullValueAndTargetIsNonNullable_ShouldThrowException()
         {
@@ -30,6 +36,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Not Of Type, when Int Value Is String, throws Exception.
+        /// </summary>
         [TestMethod]
         public void ThrowIfNotOfType_WhenIntValueIsString_ShouldThrowException()
         {
@@ -41,6 +50,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Not Of Type, when Value Is Of Expected Type, does not Throw.
+        /// </summary>
         [TestMethod]
         public void ThrowIfNotOfType_WhenValueIsOfExpectedType_ShouldNotThrow()
         {
@@ -48,6 +60,9 @@ namespace Bodu
             ThrowHelper.ThrowIfNotOfType<int>(value);
         }
 
+        /// <summary>
+        /// Verifies that Throw If Not Of Type, when Value Is Null Reference Type, does not Throw.
+        /// </summary>
         [TestMethod]
         public void ThrowIfNotOfType_WhenValueIsNullReferenceType_ShouldNotThrow()
         {
@@ -55,6 +70,9 @@ namespace Bodu
             ThrowHelper.ThrowIfNotOfType<string>(value);
         }
 
+        /// <summary>
+        /// Verifies that Throw If Not Of Type, when Value Is Null Nullable Value Type, does not Throw.
+        /// </summary>
         [TestMethod]
         public void ThrowIfNotOfType_WhenValueIsNullNullableValueType_ShouldNotThrow()
         {

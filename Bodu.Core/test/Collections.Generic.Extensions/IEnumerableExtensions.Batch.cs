@@ -76,6 +76,9 @@
             }
         };
 
+        /// <summary>
+        /// Verifies that Batch, when Called, Defer Execution.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetBatchTestCases), DynamicDataSourceType.Method)]
         public void Batch_WhenCalled_ShouldDeferExecution(EnumerableTestPlan<int> testCase)
@@ -83,6 +86,9 @@
             AssertExecutionIsDeferred(testCase.Name, testCase.Invoke, testCase.Source);
         }
 
+        /// <summary>
+        /// Verifies that Batch, when Enumerated, Trigger Execution.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetBatchTestCases), DynamicDataSourceType.Method)]
         public void Batch_WhenEnumerated_ShouldTriggerExecution(EnumerableTestPlan<int> testCase)
@@ -90,6 +96,9 @@
             AssertExecutionOccursOnEnumeration(testCase.Name, testCase.Invoke, testCase.Source);
         }
 
+        /// <summary>
+        /// Verifies that Batch, when Enumerated, returns Expected Results.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetBatchTestCases), DynamicDataSourceType.Method)]
         public void Batch_WhenEnumerated_ShouldReturnExpectedResults(EnumerableTestPlan<int> testCase)
@@ -97,6 +106,9 @@
             AssertExecutionReturnsExpectedResults(testCase.Name, testCase.Invoke, testCase.Source, testCase.ExpectedResult, testCase.ResultSelector);
         }
 
+        /// <summary>
+        /// Verifies that Batch, when Source Is Null, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void Batch_WhenSourceIsNull_ShouldThrowExactly()
         {
@@ -107,6 +119,9 @@
             });
         }
 
+        /// <summary>
+        /// Verifies that Batch, with Selector, when Selector Is Null, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void Batch_WithSelector_WhenSelectorIsNull_ShouldThrowExactly()
         {
@@ -117,6 +132,9 @@
             });
         }
 
+        /// <summary>
+        /// Verifies that Batch, with Index Selector, when Selector Is Null, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void Batch_WithIndexSelector_WhenSelectorIsNull_ShouldThrowExactly()
         {
@@ -127,6 +145,9 @@
             });
         }
 
+        /// <summary>
+        /// Verifies that Batch, when Size Is Invalid, throws Exactly.
+        /// </summary>
         [TestMethod]
         [DataRow(-1)]
         [DataRow(0)]
@@ -139,6 +160,9 @@
             });
         }
 
+        /// <summary>
+        /// Verifies that Batch, with Empty Source, returns Empty.
+        /// </summary>
         [TestMethod]
         public void Batch_WithEmptySource_ShouldReturnEmpty()
         {

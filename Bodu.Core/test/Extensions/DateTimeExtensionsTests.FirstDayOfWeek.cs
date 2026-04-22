@@ -21,6 +21,9 @@ namespace Bodu.Extensions
     {
 
 
+        /// <summary>
+        /// Verifies that First Day Of Week, when Current Culture Set, returns Expected Start.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(FirstDayOfWeekCultureInfoTestData), DynamicDataSourceType.Method)]
         public void FirstDayOfWeek_WhenCurrentCultureSet_ShouldReturnExpectedStart(DateTime input, CultureInfo culture, DateTime expected)
@@ -41,6 +44,9 @@ namespace Bodu.Extensions
             }
         }
 
+        /// <summary>
+        /// Verifies that First Day Of Week, when Culture, returns Expected Start.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(FirstDayOfWeekCultureInfoTestData), DynamicDataSourceType.Method)]
         public void FirstDayOfWeek_WhenCulture_ShouldReturnExpectedStart(DateTime input, CultureInfo culture, DateTime expected)
@@ -50,6 +56,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that First Day Of Week, when Culture Is Null, uses Current Culture.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeek_WhenCultureIsNull_ShouldUseCurrentCulture()
         {
@@ -71,6 +80,9 @@ namespace Bodu.Extensions
             }
         }
 
+        /// <summary>
+        /// Verifies that First Day Of Week, when Using Default Overload, preserves Date Time Kind.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]
@@ -82,6 +94,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(kind, actual.Kind, $"Kind mismatch for FirstDayOfWeek with {kind}");
         }
 
+        /// <summary>
+        /// Verifies that First Day Of Week, when Using Culture, preserves Date Time Kind.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]
@@ -94,6 +109,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(kind, actual.Kind, $"Kind mismatch for FirstDayOfWeek with {kind}");
         }
 
+        /// <summary>
+        /// Verifies that First Day Of Week, when Using Min Value, returns Min.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeek_WhenUsingMinValue_ShouldReturnMin()
         {
@@ -103,6 +121,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(min.Date, actual);
         }
 
+        /// <summary>
+        /// Verifies that First Day Of Week, when Using Min Value With Sunday Start, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeek_WhenUsingMinValueWithSundayStart_ShouldThrowExactly()
         {
@@ -115,6 +136,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that First Day Of Week, when Using Max Value, returns Valid Start.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeek_WhenUsingMaxValue_ShouldReturnValidStart()
         {
@@ -194,6 +218,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that First Day Of Week, when Weekend Definition And Kind Is Set, preserves Kind.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(CalendarWeekendDefinitionDateTimeKindTestData), DynamicDataSourceType.Method)]
         public void FirstDayOfWeek_WhenWeekendDefinitionAndKindIsSet_ShouldPreserveKind(CalendarWeekendDefinition definition, DateTimeKind kind)

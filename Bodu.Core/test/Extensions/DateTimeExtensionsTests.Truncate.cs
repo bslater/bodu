@@ -18,6 +18,9 @@ namespace Bodu.Extensions
     {
         private static readonly DateTime Sample = new DateTime(2024, 4, 18, 14, 37, 56, 789).AddTicks(1234); // 7891234 ticks
 
+        /// <summary>
+        /// Verifies that Truncate, when Called With Resolution, returns Expected.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeResolution.Year, "2024-01-01T00:00:00.0000000")]
         [DataRow(DateTimeResolution.Month, "2024-04-01T00:00:00.0000000")]
@@ -36,6 +39,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(Sample.Kind, actual.Kind, "Kind should be preserved.");
         }
 
+        /// <summary>
+        /// Verifies that Truncate, when Resolution Is Invalid, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void Truncate_WhenResolutionIsInvalid_ShouldThrowExactly()
         {
@@ -47,6 +53,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Truncate, when Input Is Min Value, does not Throw.
+        /// </summary>
         [TestMethod]
         public void Truncate_WhenInputIsMinValue_ShouldNotThrow()
         {
@@ -58,6 +67,9 @@ namespace Bodu.Extensions
             }
         }
 
+        /// <summary>
+        /// Verifies that Truncate, when Input Is Max Value, does not Throw.
+        /// </summary>
         [TestMethod]
         public void Truncate_WhenInputIsMaxValue_ShouldNotThrow()
         {
@@ -69,6 +81,9 @@ namespace Bodu.Extensions
             }
         }
 
+        /// <summary>
+        /// Verifies that Truncate, when Kind Is Preserved, matches Original Kind.
+        /// </summary>
         [TestMethod]
         public void Truncate_WhenKindIsPreserved_ShouldMatchOriginalKind()
         {

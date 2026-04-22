@@ -17,6 +17,9 @@ namespace Bodu.Extensions
 {
     public partial class DateOnlyExtensionsTests
     {
+        /// <summary>
+        /// Verifies that Next Day Of Week, when Called, returns Expected Date.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests. NextDayOfWeekTestData),typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void NextDayOfWeek_WhenCalled_ShouldReturnExpectedDate(DateTime inputDateTime, DayOfWeek targetDay, DateTime expectedDateTime)
@@ -29,6 +32,9 @@ namespace Bodu.Extensions
                 Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Next Day Of Week, when Invalid Enum, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void NextDayOfWeek_WhenInvalidEnum_ShouldThrowExactly()
         {
@@ -40,6 +46,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Next Day Of Week, when Using Min Value, returns Next Valid Date.
+        /// </summary>
         [TestMethod]
         public void NextDayOfWeek_WhenUsingMinValue_ShouldReturnNextValidDate()
         {
@@ -48,6 +57,9 @@ namespace Bodu.Extensions
             Assert.IsTrue(actual >= DateOnly.MinValue);
         }
 
+        /// <summary>
+        /// Verifies that Next Day Of Week, when Using Max Value Minus7, returns Within Range.
+        /// </summary>
         [TestMethod]
         public void NextDayOfWeek_WhenUsingMaxValueMinus7_ShouldReturnWithinRange()
         {

@@ -26,6 +26,9 @@ namespace Bodu.Extensions
             yield return new object[] { new DateOnly(2000, 01, 01), -999, 0, 0, new DateOnly(1001, 01, 01) };
         }
 
+        /// <summary>
+        /// Verifies that Add, when Valid Inputs Provided, returns Expected Result.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.GetAddTestCases), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void Add_WhenValidInputsProvided_ShouldReturnExpectedResult(DateTime inputDateTime, int years, int months, double days, DateTime expectedDateTime)
@@ -46,6 +49,9 @@ namespace Bodu.Extensions
             yield return new object[] { DateOnly.MinValue.ToString("yyyy-MM-dd"), 0, 0, -1 };
         }
 
+        /// <summary>
+        /// Verifies that Add, when Out Of Range, throws Exactly.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetAddExceptionCases), DynamicDataSourceType.Method)]
         public void Add_WhenOutOfRange_ShouldThrowExactly(string inputDate, int years, int months, int days)
@@ -57,6 +63,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Add, when All Parameters Zero, returns Same Date.
+        /// </summary>
         [TestMethod]
         public void Add_WhenAllParametersZero_ShouldReturnSameDate()
         {
@@ -65,6 +74,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(input, actual);
         }
 
+        /// <summary>
+        /// Verifies that Add, when Adding To Feb28 In Leap Year, returns Feb29.
+        /// </summary>
         [TestMethod]
         public void Add_WhenAddingToFeb28InLeapYear_ShouldReturnFeb29()
         {

@@ -27,6 +27,9 @@ namespace Bodu.Globalization.Extensions
             yield return new object[] { DayOfWeek.Saturday, DayOfWeek.Friday };
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Week, when First Day Of Week Is Specified, returns Day Six Positions Later.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(LastDayOfWeekTestData), DynamicDataSourceType.Method)]
         public void LastDayOfWeek_WhenFirstDayOfWeekIsSpecified_ShouldReturnDaySixPositionsLater(
@@ -40,6 +43,9 @@ namespace Bodu.Globalization.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Week, when Using En Gb Culture, returns Sunday.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeek_WhenUsingEnGbCulture_ShouldReturnSunday()
         {
@@ -50,6 +56,9 @@ namespace Bodu.Globalization.Extensions
             Assert.AreEqual(DayOfWeek.Sunday, actual);
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Week, when Using En Us Culture, returns Saturday.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeek_WhenUsingEnUsCulture_ShouldReturnSaturday()
         {
@@ -60,6 +69,9 @@ namespace Bodu.Globalization.Extensions
             Assert.AreEqual(DayOfWeek.Saturday, actual);
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Week, when Info Is Null, throws Argument Null Exception.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeek_WhenInfoIsNull_ShouldThrowArgumentNullException()
         {

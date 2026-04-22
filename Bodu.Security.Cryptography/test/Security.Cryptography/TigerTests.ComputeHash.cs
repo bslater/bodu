@@ -8,6 +8,9 @@
 {
     public partial class TigerTests
     {
+        /// <summary>
+        /// Verifies that Compute Hash, when Variant Is Different, produces Different Hash.
+        /// </summary>
         [TestMethod]
         public void ComputeHash_WhenVariantIsDifferent_ShouldProduceDifferentHash()
         {

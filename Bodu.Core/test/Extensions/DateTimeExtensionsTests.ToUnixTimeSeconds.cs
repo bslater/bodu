@@ -17,6 +17,9 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that To Unix Time Seconds, when Utc Input, returns Expected.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(FromUnixTimeSecondsTestData), DynamicDataSourceType.Property)]
         public void ToUnixTimeSeconds_WhenUtcInput_ShouldReturnExpected(long expected, DateTime input)
@@ -26,6 +29,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that To Unix Time Seconds, when Kind Is Utc, returns Utc Seconds.
+        /// </summary>
         [TestMethod]
         public void ToUnixTimeSeconds_WhenKindIsUtc_ShouldReturnUtcSeconds()
         {
@@ -35,6 +41,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(5, actual);
         }
 
+        /// <summary>
+        /// Verifies that To Unix Time Seconds, when Kind Is Local, Convert To Utc.
+        /// </summary>
         [TestMethod]
         public void ToUnixTimeSeconds_WhenKindIsLocal_ShouldConvertToUtc()
         {
@@ -47,6 +56,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that To Unix Time Seconds, when Kind Is Unspecified, Assume Local.
+        /// </summary>
         [TestMethod]
         public void ToUnixTimeSeconds_WhenKindIsUnspecified_ShouldAssumeLocal()
         {
@@ -59,6 +71,9 @@ namespace Bodu.Extensions
             Assert.IsTrue(Math.Abs(localResult - unspecifiedResult) < 1);
         }
 
+        /// <summary>
+        /// Verifies that To Unix Time Seconds, when Using Min Value, is Negative Large.
+        /// </summary>
         [TestMethod]
         public void ToUnixTimeSeconds_WhenUsingMinValue_ShouldBeNegativeLarge()
         {
@@ -67,6 +82,9 @@ namespace Bodu.Extensions
             Assert.IsTrue(actual < 0);
         }
 
+        /// <summary>
+        /// Verifies that To Unix Time Seconds, when Using Max Value, is Positive Large.
+        /// </summary>
         [TestMethod]
         public void ToUnixTimeSeconds_WhenUsingMaxValue_ShouldBePositiveLarge()
         {
@@ -75,6 +93,9 @@ namespace Bodu.Extensions
             Assert.IsTrue(actual > 0);
         }
 
+        /// <summary>
+        /// Verifies that To Unix Time Seconds, Round Trip With From Unix Time Seconds, matches Utc.
+        /// </summary>
         [TestMethod]
         public void ToUnixTimeSeconds_RoundTripWithFromUnixTimeSeconds_ShouldMatchUtc()
         {

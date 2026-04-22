@@ -16,6 +16,9 @@
         // SivModeTransform now implements IAeadBlockCipherModeTransform.
         // All tests use Encrypt / Decrypt — the old Transform(span, span, bool) no longer exists.
 
+        /// <summary>
+        /// Verifies that Encrypt Then Decrypt, with Same Key And Nonce, Recover Plaintext.
+        /// </summary>
         [TestMethod]
         public void EncryptThenDecrypt_WithSameKeyAndNonce_ShouldRecoverPlaintext()
         {
@@ -34,6 +37,9 @@
             CollectionAssert.AreEqual(plaintext, recovered, "SIV round-trip must recover the original plaintext.");
         }
 
+        /// <summary>
+        /// Verifies that Encrypt, with Empty Plaintext, produces Tag Only.
+        /// </summary>
         [TestMethod]
         public void Encrypt_WithEmptyPlaintext_ShouldProduceTagOnly()
         {
@@ -43,6 +49,9 @@
             Assert.AreEqual(enc.TagSize, n, "Encrypting empty plaintext must write exactly TagSize bytes.");
         }
 
+        /// <summary>
+        /// Verifies that Decrypt, when Ciphertext Is Tampered, throws Cryptographic Exception.
+        /// </summary>
         [TestMethod]
         public void Decrypt_WhenCiphertextIsTampered_ShouldThrowCryptographicException()
         {
@@ -62,6 +71,9 @@
             });
         }
 
+        /// <summary>
+        /// Verifies that Decrypt, when Tag Is Tampered, throws Cryptographic Exception.
+        /// </summary>
         [TestMethod]
         public void Decrypt_WhenTagIsTampered_ShouldThrowCryptographicException()
         {
@@ -81,6 +93,9 @@
             });
         }
 
+        /// <summary>
+        /// Verifies that Decrypt, when Aad Is Tampered, throws Cryptographic Exception.
+        /// </summary>
         [TestMethod]
         public void Decrypt_WhenAadIsTampered_ShouldThrowCryptographicException()
         {

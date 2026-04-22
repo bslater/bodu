@@ -9,6 +9,9 @@
     public partial class SequenceGeneratorTests
     {/// <summary>
      /// Verifies that Range returns an inclusive ascending or descending integer sequence. </summary>
+        /// <summary>
+        /// Verifies that Range, when Start And Stop Are Valid, returns Inclusive Sequence.
+        /// </summary>
         [TestMethod]
         [DataRow(1, 5, new[] { 1, 2, 3, 4, 5 })]
         [DataRow(5, 1, new[] { 5, 4, 3, 2, 1 })]

@@ -8,6 +8,9 @@
 {
     public sealed partial class CbcModeTransformTests
     {
+        /// <summary>
+        /// Verifies that Transform, when Decrypting, applies CBC Unchaining.
+        /// </summary>
         [TestMethod]
         public void Transform_WhenDecrypting_ShouldApplyCBCUnchaining()
         {
@@ -30,6 +33,9 @@
             CollectionAssert.AreEqual(plaintext2, output[ExpectedBlockSize..].ToArray(), "Decryption of second block failed.");
         }
 
+        /// <summary>
+        /// Verifies that Transform, when Encrypting, applies CBC Chaining.
+        /// </summary>
         [TestMethod]
         public void Transform_WhenEncrypting_ShouldApplyCBCChaining()
         {
@@ -49,6 +55,9 @@
             CollectionAssert.AreEqual(expectedBlock2, output[ExpectedBlockSize..].ToArray());
         }
 
+        /// <summary>
+        /// Verifies that Transform, when Encrypting, does not Mutate IV.
+        /// </summary>
         [TestMethod]
         public void Transform_WhenEncrypting_ShouldNotMutateIV()
         {
@@ -65,6 +74,9 @@
             CollectionAssert.AreEqual(ivCopy, iv, "IV must not be mutated after encryption.");
         }
 
+        /// <summary>
+        /// Verifies that Transform, with Empty Input, does not Throw.
+        /// </summary>
         [TestMethod]
         public void Transform_WithEmptyInput_ShouldNotThrow()
         {
@@ -78,6 +90,9 @@
             Assert.AreEqual(0, output.Length);
         }
 
+        /// <summary>
+        /// Verifies that Transform, with Single Block, Encrypt Correctly.
+        /// </summary>
         [TestMethod]
         public void Transform_WithSingleBlock_ShouldEncryptCorrectly()
         {

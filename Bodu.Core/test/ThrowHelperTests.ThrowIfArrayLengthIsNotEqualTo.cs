@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that Throw If Array Length Is Not Equal To, when Array Is Null, throws Argument Null Exception.
+        /// </summary>
         [TestMethod]
         public void ThrowIfArrayLengthIsNotEqualTo_WhenArrayIsNull_ShouldThrowArgumentNullException()
         {
@@ -18,6 +21,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Array Length Is Not Equal To, when Length Differs, throws Argument Exception.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 4)]
         [DataRow(3, 4)]
@@ -32,6 +38,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Array Length Is Not Equal To, when Length Matches, does not Throw.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 0)]
         [DataRow(1, 1)]

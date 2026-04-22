@@ -8,6 +8,9 @@
 {
     public partial class XorShiftRandomTests
     {
+        /// <summary>
+        /// Verifies that Next, when Seed Is Not Same, produces Deterministic Sequence.
+        /// </summary>
         [TestMethod]
         public void Next_WhenSeedIsNotSame_ShouldProduceDeterministicSequence()
         {
@@ -55,6 +58,9 @@
             Assert.AreNotEqual(value1, value2, "Different seeds should produce different sequences.");
         }
 
+        /// <summary>
+        /// Verifies that Next, when Called, returns Positive Integer.
+        /// </summary>
         [TestMethod]
         public void Next_WhenCalled_ShouldReturnPositiveInteger()
         {
@@ -80,6 +86,9 @@
             Assert.IsTrue(values.Count > 1, "Next produced repeating or identical values.");
         }
 
+        /// <summary>
+        /// Verifies that Next, when Called Within And Max, respects Bounds.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 10)]
         [DataRow(5, 15)]
@@ -93,6 +102,9 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that Next, when Called With Max, returns Within Range.
+        /// </summary>
         [TestMethod]
         [DataRow(1)]
         [DataRow(2)]
@@ -155,6 +167,9 @@
             Assert.IsTrue(differenceFound, "Two RNGs with different seeds produced identical sequences.");
         }
 
+        /// <summary>
+        /// Verifies that Next, with Max Value, returns In Expected Range.
+        /// </summary>
         [TestMethod]
         public void Next_WithMaxValue_ShouldReturnInExpectedRange()
         {
@@ -166,6 +181,9 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that Next, with Max Value Zero, throws Exactly.
+        /// </summary>
         [TestMethod]
         [DataRow(0)]
         [DataRow(-5)]
@@ -175,6 +193,9 @@
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => rng.Next(maxValue));
         }
 
+        /// <summary>
+        /// Verifies that Next, with Min And Max, returns Within Range.
+        /// </summary>
         [TestMethod]
         public void Next_WithMinAndMax_ShouldReturnWithinRange()
         {

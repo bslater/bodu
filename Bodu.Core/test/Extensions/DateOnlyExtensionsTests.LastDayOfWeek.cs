@@ -18,6 +18,9 @@ namespace Bodu.Extensions
     public partial class DateOnlyExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that Last Day Of Week, when Current Culture Set, returns Expected Start.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.LastDayOfWeekCultureInfoTestData),typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void LastDayOfWeek_WhenCurrentCultureSet_ShouldReturnExpectedStart(DateTime inputDateTime, CultureInfo culture, DateTime expectedDateTime)
@@ -30,6 +33,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Week, when Culture Is Null, uses Current Culture.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.LastDayOfWeekCultureInfoTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void LastDayOfWeek_WhenCultureIsNull_ShouldUseCurrentCulture(DateTime inputDateTime, CultureInfo culture, DateTime expectedDateTime)
@@ -51,6 +57,9 @@ namespace Bodu.Extensions
             }
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Week, when Using Min Value, succeeds.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeek_WhenUsingMinValue_ShouldSucceed()
         {
@@ -61,6 +70,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that Last Day Of Week, when Min Value And Culture Is US, returns Throw Argument Out Of Range Exception.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeek_WhenMinValueAndCultureIsUS_ShouldReturnThrowArgumentOutOfRangeException()
         {
@@ -73,6 +85,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Week, when Using Max Value, succeeds.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeek_WhenUsingMaxValue_ShouldSucceed()
         {

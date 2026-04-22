@@ -17,6 +17,9 @@ namespace Bodu.Extensions
 {
     public partial class DateTimeExtensionsTests
     {
+        /// <summary>
+        /// Verifies that Get Quarter, when Using Quarter Definition, returns Expected Quarter.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(QuarterTestData), DynamicDataSourceType.Method)]
         public void GetQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedQuarter(DateTime input, CalendarQuarterDefinition definition, int expected)
@@ -27,6 +30,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that Get Quarter, when Only Date Time, returns Expected Quarter.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(QuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
         public void GetQuarter_WhenOnlyDateTime_ShouldReturnExpectedQuarter(DateTime input, int expected)
@@ -36,6 +42,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Get Quarter, when Using Valid Provider, returns Expected Quarter.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.QuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
         public void GetQuarter_WhenUsingValidProvider_ShouldReturnExpectedQuarter(DateTime input, int expected)
@@ -46,6 +55,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Get Quarter, when Using Invalid Provider, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void GetQuarter_WhenUsingInvalidProvider_ShouldThrowExactly()
         {
@@ -58,6 +70,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that Get Quarter, when Using Custom Quarter Definition Without Provider, throws Exactly.
+        /// </summary>
         [TestMethod]
         public void GetQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowExactly()
         {

@@ -8,6 +8,9 @@
 {
     public partial class CryptoHelpersTests
     {
+        /// <summary>
+        /// Verifies that Fill With Random Bytes Excluding Never Contain Excluded Value.
+        /// </summary>
         [TestMethod]
         public void FillWithRandomBytesExcluding_ShouldNeverContainExcludedValue()
         {
@@ -25,6 +28,9 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that Fill With Random Bytes Excluding does not Leave Temp Buffer On Heap.
+        /// </summary>
         [TestMethod]
         public void FillWithRandomBytesExcluding_ShouldNotLeaveTempBufferOnHeap()
         {
@@ -52,6 +58,9 @@
             Assert.IsTrue(!identical, "Successive calls should produce fresh random output, not cached bytes.");
         }
 
+        /// <summary>
+        /// Verifies that Fill With Random Bytes Excluding, with High Forbidden Frequency, Terminate.
+        /// </summary>
         [TestMethod]
         public void FillWithRandomBytesExcluding_WithHighForbiddenFrequency_ShouldTerminate()
         {

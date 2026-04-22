@@ -18,6 +18,9 @@ namespace Bodu.Extensions
     {
 
 
+        /// <summary>
+        /// Verifies that Days In Month, when Called, returns Days In Month.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DaysInMonthTestData), DynamicDataSourceType.Method)]
         public void DaysInMonth_WhenCalled_ShouldReturnDaysInMonth(DateTime input, int expected)

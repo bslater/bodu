@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that Throw If Collection Too Small, when Collection Too Small, throws Argument Exception.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetTooSmallCollectionTestData), DynamicDataSourceType.Method)]
         public void ThrowIfCollectionTooSmall_WhenCollectionTooSmall_ShouldThrowArgumentException(ICollection<int> collection, int minimumCount)
@@ -18,6 +21,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that Throw If Collection Too Small, when Collection Is Sufficient, does not Throw.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetSufficientCollectionTestData), DynamicDataSourceType.Method)]
         public void ThrowIfCollectionTooSmall_WhenCollectionIsSufficient_ShouldNotThrow(ICollection<int> collection, int minimumCount)

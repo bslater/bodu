@@ -17,6 +17,9 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that Last Day Of Year, when Called, returns December31.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(LastDayOfYearTestData), DynamicDataSourceType.Method)]
         public void LastDayOfYear_WhenCalled_ShouldReturnDecember31(DateTime input, DateTime expected)
@@ -26,6 +29,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Year, when Kind Is Set, preserves Kind.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]
@@ -38,6 +44,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(kind, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Year, when Min Value, returns End Of Year1.
+        /// </summary>
         [TestMethod]
         public void LastDayOfYear_WhenMinValue_ShouldReturnEndOfYear1()
         {
@@ -47,6 +56,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(DateTime.MinValue.Year, 12, 31), actual);
         }
 
+        /// <summary>
+        /// Verifies that Last Day Of Year, when Max Value, returns Itself.
+        /// </summary>
         [TestMethod]
         public void LastDayOfYear_WhenMaxValue_ShouldReturnItself()
         {

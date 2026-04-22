@@ -33,6 +33,9 @@ namespace Bodu.Extensions
             yield return new object[] { new DateOnly(2024, 4, 17), DayOfWeek.Saturday, new DateOnly(2024, 4, 20) };
         }
 
+        /// <summary>
+        /// Verifies that Nearest Day Of Week, when Called, returns Expected Date.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(NearestDayOfWeekTestData), DynamicDataSourceType.Method)]
         public void NearestDayOfWeek_WhenCalled_ShouldReturnExpectedDate(DateOnly date, DayOfWeek dayOfWeek, DateOnly expected)
@@ -41,6 +44,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Nearest Day Of Week, when Tied Between Past And Future, returns Earlier Date.
+        /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenTiedBetweenPastAndFuture_ShouldReturnEarlierDate()
         {
@@ -50,6 +56,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateOnly(2024, 4, 14), actual);
         }
 
+        /// <summary>
+        /// Verifies that Nearest Day Of Week, when Day Of Week Is Invalid, throws Argument Out Of Range Exception.
+        /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
         {
@@ -65,6 +74,9 @@ namespace Bodu.Extensions
         // NearestDayOfWeek(int year, int month, int day, DayOfWeek)
         // =========================================================================
 
+        /// <summary>
+        /// Verifies that Nearest Day Of Week, when Using Year Month Day, returns Expected Date.
+        /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenUsingYearMonthDay_ShouldReturnExpectedDate()
         {
@@ -73,6 +85,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateOnly(2024, 4, 15), actual);
         }
 
+        /// <summary>
+        /// Verifies that Nearest Day Of Week, when Using Year Month Day With Invalid Day Of Week, throws Argument Out Of Range Exception.
+        /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenUsingYearMonthDayWithInvalidDayOfWeek_ShouldThrowArgumentOutOfRangeException()
         {

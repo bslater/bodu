@@ -19,6 +19,9 @@ namespace Bodu.Extensions
     public partial class DateOnlyExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that Month Name, with Culture, returns Localized Name.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests. MonthNameTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]
         public void MonthName_WithCulture_ShouldReturnLocalizedName(int year, int month, CultureInfo culture, string expected)
@@ -30,6 +33,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Month Name, when Culture Is Null, Fallback To Current Culture.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.MonthNameFrenchTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]
         public void MonthName_WhenCultureIsNull_ShouldFallbackToCurrentCulture(int year, int month, string expected)
@@ -50,6 +56,9 @@ namespace Bodu.Extensions
             }
         }
 
+        /// <summary>
+        /// Verifies that Month Name, when Using Min Value, returns Expected.
+        /// </summary>
         [TestMethod]
         public void MonthName_WhenUsingMinValue_ShouldReturnExpected()
         {
@@ -59,6 +68,9 @@ namespace Bodu.Extensions
             Assert.AreEqual("January", actual);
         }
 
+        /// <summary>
+        /// Verifies that Month Name, when Using Max Value, returns Expected.
+        /// </summary>
         [TestMethod]
         public void MonthName_WhenUsingMaxValue_ShouldReturnExpected()
         {

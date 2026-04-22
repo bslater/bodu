@@ -10,6 +10,9 @@ namespace Bodu.Extensions
 {
     public partial class DateTimeExtensionsTests
     {
+        /// <summary>
+        /// Verifies that Days In Year, when Called, returns Correct Days.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DaysInYearGregorianCalendarTestData), DynamicDataSourceType.Method)]
         public void DaysInYear_WhenCalled_ShouldReturnCorrectDays(DateTime input, int expected)
@@ -18,6 +21,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that Days In Year, when Using Custom Calendar, matches Expected.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DaysInYearTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void DaysInYear_WhenUsingCustomCalendar_ShouldMatchExpected(int year, Calendar calendar, int expectedDays)
@@ -27,18 +33,27 @@ namespace Bodu.Extensions
             Assert.AreEqual(expectedDays, actual, $"{calendar.GetType().Name} returned {actual} days for year {year}.");
         }
 
+        /// <summary>
+        /// Verifies that Days In Year, when Using Min Value, does not Throw.
+        /// </summary>
         [TestMethod]
         public void DaysInYear_WhenUsingMinValue_ShouldNotThrow()
         {
             Assert.IsTrue(DateTime.MinValue.DaysInYear() > 0);
         }
 
+        /// <summary>
+        /// Verifies that Days In Year, when Using Max Value, does not Throw.
+        /// </summary>
         [TestMethod]
         public void DaysInYear_WhenUsingMaxValue_ShouldNotThrow()
         {
             Assert.IsTrue(DateTime.MaxValue.DaysInYear() > 0);
         }
 
+        /// <summary>
+        /// Verifies that Days In Year, when No Calendar Provided, uses Current Culture Calendar.
+        /// </summary>
         [TestMethod]
         public void DaysInYear_WhenNoCalendarProvided_ShouldUseCurrentCultureCalendar()
         {

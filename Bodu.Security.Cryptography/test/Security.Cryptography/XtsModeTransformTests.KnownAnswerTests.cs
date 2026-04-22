@@ -57,6 +57,9 @@
             };
         }
 
+        /// <summary>
+        /// Verifies that Transform, with Ieee1619 Vector, Encrypt Correctly.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(XtsKatVectors), DynamicDataSourceType.Method)]
         public void Transform_WithIeee1619Vector_ShouldEncryptCorrectly(
@@ -76,6 +79,9 @@
                 $"XTS encrypt mismatch for IEEE 1619 vector (Key1={key1Hex[..8]}…).");
         }
 
+        /// <summary>
+        /// Verifies that Transform, with Ieee1619 Vector, Decrypt To Original Plaintext.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(XtsKatVectors), DynamicDataSourceType.Method)]
         public void Transform_WithIeee1619Vector_ShouldDecryptToOriginalPlaintext(

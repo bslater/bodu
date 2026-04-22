@@ -56,6 +56,9 @@ namespace Bodu.Security.Cryptography.Extensions
             Assert.IsNull(transform);
         }
 
+        /// <summary>
+        /// Verifies that Try Create Decryptor, when Key Iv And Tweak Are Unset, Generate And Return Transform.
+        /// </summary>
         [TestMethod]
         public void TryCreateDecryptor_WhenKeyIvAndTweakAreUnset_ShouldGenerateAndReturnTransform()
         {

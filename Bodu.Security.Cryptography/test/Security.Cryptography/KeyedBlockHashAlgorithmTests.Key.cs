@@ -378,6 +378,9 @@ namespace Bodu.Security.Cryptography
             });
         }
 
+        /// <summary>
+        /// Verifies that Key, when Below Minimum Length, throws.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(HashAlgorithmVariants))]
         public void Key_WhenBelowMinimumLength_ShouldThrow(TVariant variant)
