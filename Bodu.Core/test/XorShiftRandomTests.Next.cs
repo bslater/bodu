@@ -70,7 +70,7 @@
         }
 
         /// <summary>
-        /// Verifies that calling Next multiple times produces values in range and not all equal.
+        /// Verifies that calling <see cref="XorShiftRandom.Next" /> multiple times produces values in range and not all equal.
         /// </summary>
         [TestMethod]
         public void Next_WhenCalledMultipleTimes_ShouldProduceNonRepeatingValues()
@@ -121,7 +121,7 @@
         }
 
         /// <summary>
-        /// Verifies that calling Next with maxValue = 1 always returns 0.
+        /// Verifies that calling <see cref="XorShiftRandom.Next" /> with maxValue = 1 always returns 0.
         /// </summary>
         [TestMethod]
         public void Next_WhenMaxValueIsOne_ShouldAlwaysReturnZero()
@@ -134,7 +134,7 @@
         }
 
         /// <summary>
-        /// Verifies that calling Next with a positive maxValue returns a value in the expected range.
+        /// Verifies that calling <see cref="XorShiftRandom.Next" /> with a positive maxValue returns a value in the expected range.
         /// </summary>
         [TestMethod]
         public void Next_WhenMaxValueIsPositive_ShouldReturnValueInRange()

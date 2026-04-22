@@ -55,7 +55,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that calling Peek repeatedly does not change the count of the buffer.
+        /// Verifies that calling <see cref="CircularBuffer{T}.Peek" /> repeatedly does not change the count of the buffer.
         /// </summary>
         [TestMethod]
         public void Peek_WhenCalledRepeatedly_ShouldNotChangeCount()

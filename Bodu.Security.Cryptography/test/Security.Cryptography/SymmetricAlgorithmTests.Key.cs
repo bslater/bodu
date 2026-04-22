@@ -37,7 +37,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that setting the Key to null throws an ArgumentNullException.
+        /// Verifies that setting the <see cref="SymmetricAlgorithm.Key" /> to null throws an ArgumentNullException.
         /// </summary>
         [TestMethod]
         public void Key_WhenSetToNull_ShouldThrowExactly()
@@ -72,7 +72,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that setting Key returns the same hashValue on subsequent get.
+        /// Verifies that setting <see cref="SymmetricAlgorithm.Key" /> returns the same hashValue on subsequent get.
         /// </summary>
         [TestMethod]
         public void Key_WhenSet_ShouldReturnSameValueOnGet()

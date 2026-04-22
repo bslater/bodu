@@ -41,7 +41,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that setting the Policy to FirstInFirstOut via constructor reflects the correct value.
+        /// Verifies that setting the <see cref="EvictingDictionary{TKey, TValue}.Policy" /> to FirstInFirstOut via constructor reflects the correct value.
         /// </summary>
         [TestMethod]
         public void Policy_WhenConstructedWithFIFO_ShouldReflectFIFO()

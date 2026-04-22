@@ -9,7 +9,7 @@
     public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm>
     {
         /// <summary>
-        /// Verifies that getting the Tweak returns a new array each time.
+        /// Verifies that getting the <see cref="TweakableSymmetricAlgorithm.Tweak" /> returns a new array each time.
         /// </summary>
         [TestMethod]
         public void Tweak_WhenGetMultipleTimes_ShouldReturnDistinctCopies()
@@ -27,7 +27,7 @@
         }
 
         /// <summary>
-        /// Verifies that setting the Tweak uses a defensive copy to isolate internal state.
+        /// Verifies that setting the <see cref="TweakableSymmetricAlgorithm.Tweak" /> uses a defensive copy to isolate internal state.
         /// </summary>
         [TestMethod]
         public void Tweak_WhenSet_ShouldBeIsolatedFromInput()

@@ -72,7 +72,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that calling Remove from an ItemEvicting handler throws InvalidOperationException.
+        /// Verifies that calling <see cref="EvictingDictionary{TKey, TValue}.Remove" /> from an ItemEvicting handler throws InvalidOperationException.
         /// </summary>
         [TestMethod]
         public void Remove_WhenCalledFromItemEvictingHandler_ShouldThrowException()
@@ -94,7 +94,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that calling Clear from an ItemEvicted handler throws InvalidOperationException.
+        /// Verifies that calling <see cref="EvictingDictionary{TKey, TValue}.Clear" /> from an ItemEvicted handler throws InvalidOperationException.
         /// </summary>
         [TestMethod]
         public void Clear_WhenCalledFromItemEvictedHandler_ShouldThrowException()
