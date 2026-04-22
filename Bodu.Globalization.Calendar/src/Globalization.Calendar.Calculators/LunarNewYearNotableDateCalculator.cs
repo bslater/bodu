@@ -1,6 +1,6 @@
 ﻿using SysGlobal = System.Globalization;
 
-namespace Bodu.Globalization.Calendar
+namespace Bodu.Globalization.Calendar.Calculators
 {
 	/// <summary>
 	/// Provides a calculator for determining the date of Lunar New Year for a given year.

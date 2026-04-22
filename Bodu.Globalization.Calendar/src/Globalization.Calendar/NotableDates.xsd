@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xs:schema
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
@@ -6,70 +6,149 @@
   elementFormDefault="qualified"
   attributeFormDefault="unqualified"
   targetNamespace="urn:bodu:globalization:calendar"
-  xmlns:es="urn:bodu:globalization:calendar">
+  xmlns:nd="urn:bodu:globalization:calendar">
 
-  <!-- Root -->
+  <!-- ============================================================
+       Root: zero or more UseFrom directives that cherry-pick rules
+       from other resources, followed by zero or more locally
+       declared NotableDate entries.
+       ============================================================ -->
   <xs:element name="NotableDates">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="NotableDate" type="es:NotableDate" maxOccurs="unbounded" />
+        <xs:element name="UseFrom" type="nd:UseFrom" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="NotableDate" type="nd:NotableDate" minOccurs="0" maxOccurs="unbounded" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
 
-  <!-- Notable Date -->
+  <!-- ============================================================
+       UseFrom: cherry-picks one or more notable date rules from
+       another manifest resource. Each child Use element selects a
+       single named rule and may override scalar properties on the
+       inherited rule; UseAll is a deliberate opt-in for "every
+       rule in this resource". A document never inherits a rule it
+       has not explicitly listed, so adding a new rule to a source
+       file never cascades into its consumers.
+       ============================================================ -->
+  <xs:complexType name="UseFrom">
+    <xs:choice minOccurs="1" maxOccurs="unbounded">
+      <xs:element name="UseAll">
+        <xs:complexType />
+      </xs:element>
+      <xs:element name="Use" type="nd:Use" />
+    </xs:choice>
+    <xs:attribute name="resource" type="xs:string" use="required" />
+  </xs:complexType>
+
+  <!-- ============================================================
+       Use: cherry-picks a single notable date rule by name from
+       the enclosing UseFrom's source resource. Any scalar attribute
+       declared here overrides the inherited value; tags and
+       adjustments are inherited unchanged. The optional 'as'
+       attribute renames the rule locally.
+       ============================================================ -->
+  <xs:complexType name="Use">
+    <xs:attribute name="name" type="xs:string" use="required" />
+    <xs:attribute name="as" type="xs:string" use="optional" />
+    <xs:attribute name="category" type="nd:notableDateCategory" use="optional" />
+    <xs:attribute name="territory" type="nd:territory" use="optional" />
+    <xs:attribute name="nonWorking" type="xs:boolean" use="optional" />
+    <xs:attribute name="firstYear" type="xs:unsignedShort" use="optional" />
+    <xs:attribute name="lastYear" type="xs:unsignedShort" use="optional" />
+    <xs:attribute name="occurrenceYears" type="xs:positiveInteger" use="optional" />
+    <xs:attribute name="durationDays" type="xs:positiveInteger" use="optional" />
+    <xs:attribute name="priority" type="xs:int" use="optional" />
+    <xs:attribute name="comment" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <!-- ============================================================
+       NotableDate: one notable date with one or more authoring rules.
+       ============================================================ -->
   <xs:complexType name="NotableDate">
     <xs:sequence>
-      <xs:element name="Definition" type="es:Definition"  minOccurs="1" maxOccurs="unbounded" />
+      <xs:element name="Rule" type="nd:Rule" minOccurs="1" maxOccurs="unbounded" />
     </xs:sequence>
     <xs:attribute name="name" type="xs:string" use="required" />
   </xs:complexType>
 
-  <!-- Definition -->
-  <xs:complexType name="Definition">
+  <!-- ============================================================
+       Rule: a single resolution rule. Exactly one strategy element
+       (Fixed | DayOfWeekInMonth | OffsetFromAnchor | Calculator)
+       followed by zero or more Tag and Adjustment elements.
+       ============================================================ -->
+  <xs:complexType name="Rule">
     <xs:sequence>
       <xs:choice minOccurs="1" maxOccurs="1">
         <xs:element name="Fixed">
           <xs:complexType>
-            <xs:attribute name="day" type="es:day" use="required" />
-            <xs:attribute name="month" type="es:monthName" use="required" />
+            <xs:attribute name="day" type="nd:day" use="required" />
+            <xs:attribute name="month" type="nd:monthName" use="required" />
           </xs:complexType>
         </xs:element>
-        <xs:element name="Dynamic">
+        <xs:element name="DayOfWeekInMonth">
           <xs:complexType>
-            <xs:attribute name="providerType" type="es:assemblyTypeName" use="required" />
+            <xs:attribute name="month" type="nd:monthName" use="required" />
+            <xs:attribute name="dayOfWeek" type="nd:dayOfWeek" use="required" />
+            <xs:attribute name="weekOrdinal" type="nd:weekOrdinal" use="required" />
           </xs:complexType>
         </xs:element>
-        <xs:element name="Rule">
-          <xs:complexType>
-            <xs:attribute name="month" type="es:monthName" use="required" />
-            <xs:attribute name="dayOfWeek" type="es:dayOfWeek" use="required" />
-            <xs:attribute name="weekOrdinal" type="es:weekOrdinal" use="required" />
-          </xs:complexType>
-        </xs:element>
-        <xs:element name="OffsetFrom">
+        <xs:element name="OffsetFromAnchor">
           <xs:complexType>
             <xs:attribute name="name" type="xs:string" use="required" />
             <xs:attribute name="offset" type="xs:int" use="required" />
           </xs:complexType>
         </xs:element>
+        <xs:element name="Calculator">
+          <xs:complexType>
+            <xs:attribute name="key" type="xs:string" use="optional" />
+            <xs:attribute name="type" type="nd:assemblyTypeName" use="optional" />
+          </xs:complexType>
+        </xs:element>
       </xs:choice>
 
-      <!-- Updated: now using AdjustmentRule -->
-      <xs:element name="AdjustmentRule" type="es:AdjustmentRule" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="Tag" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="Adjustment" type="nd:Adjustment" minOccurs="0" maxOccurs="unbounded" />
     </xs:sequence>
-    <xs:attribute name="type" type="es:notableDateType" use="required" />
+
     <xs:attribute name="name" type="xs:string" use="optional" />
+    <xs:attribute name="category" type="nd:notableDateCategory" use="optional" />
     <xs:attribute name="nonWorking" type="xs:boolean" use="optional" />
     <xs:attribute name="firstYear" type="xs:unsignedShort" use="optional" />
     <xs:attribute name="lastYear" type="xs:unsignedShort" use="optional" />
-    <xs:attribute name="calendarType" type="es:assemblyTypeName" use="optional" />
-    <xs:attribute name="territory" type="es:territory" use="optional" />
-    <xs:attribute name="occurrenceYears" type="xs:int" use="optional" />
+    <xs:attribute name="occurrenceYears" type="xs:positiveInteger" use="optional" />
+    <xs:attribute name="durationDays" type="xs:positiveInteger" use="optional" />
+    <xs:attribute name="priority" type="xs:int" use="optional" />
+    <xs:attribute name="calendarType" type="nd:assemblyTypeName" use="optional" />
+    <xs:attribute name="territory" type="nd:territory" use="optional" />
+    <xs:attribute name="comment" type="xs:string" use="optional" />
   </xs:complexType>
 
-  <!-- AdjustmentRule foundation -->
-  <xs:simpleType name="WhenConditionType">
+  <!-- ============================================================
+       Adjustment: a conditional date shift attached to a Rule.
+       ============================================================ -->
+  <xs:complexType name="Adjustment">
+    <xs:attribute name="when" type="nd:adjustmentTrigger" use="required" />
+    <xs:attribute name="action" type="nd:adjustmentAction" use="required" />
+    <xs:attribute name="dayOfWeek" type="nd:dayOfWeek" use="optional" />
+    <xs:attribute name="weekOrdinal" type="nd:weekOrdinal" use="optional" />
+    <xs:attribute name="days" type="xs:int" use="optional" />
+    <xs:attribute name="priority" type="xs:int" use="optional" />
+    <xs:attribute name="nonWorking" type="xs:boolean" use="optional" />
+    <xs:attribute name="territory" type="nd:territory" use="optional" />
+    <xs:attribute name="calendarType" type="nd:assemblyTypeName" use="optional" />
+    <xs:attribute name="fromYear" type="xs:unsignedShort" use="optional" />
+    <xs:attribute name="toYear" type="xs:unsignedShort" use="optional" />
+    <xs:attribute name="comparisonMonth" type="nd:monthName" use="optional" />
+    <xs:attribute name="comparisonDay" type="nd:day" use="optional" />
+    <xs:attribute name="target" type="xs:string" use="optional" />
+    <xs:attribute name="handlerKey" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <!-- ============================================================
+       Simple types
+       ============================================================ -->
+  <xs:simpleType name="adjustmentTrigger">
     <xs:restriction base="xs:string">
       <xs:enumeration value="Always" />
       <xs:enumeration value="IfDayOfWeek" />
@@ -84,52 +163,28 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="ActionType">
+  <xs:simpleType name="adjustmentAction">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="MoveToNextWeekday" />
-      <xs:enumeration value="MoveToNextNonWorkingDay" />
-      <xs:enumeration value="MoveToPreviousWeekday" />
+      <xs:enumeration value="None" />
       <xs:enumeration value="AddDays" />
+      <xs:enumeration value="MoveToNextWeekday" />
+      <xs:enumeration value="MoveToPreviousWeekday" />
+      <xs:enumeration value="MoveToNextNonWorkingDay" />
       <xs:enumeration value="ReplaceWithNamedDate" />
-      <xs:enumeration value="AddObservableDate" />
       <xs:enumeration value="Custom" />
     </xs:restriction>
   </xs:simpleType>
 
-  <!-- Abstract Base for all AdjustmentRules -->
-  <xs:complexType name="AdjustmentRule">
-    <xs:attribute name="when" type="es:WhenConditionType" use="required" />
-    <xs:attribute name="action" type="es:ActionType" use="required" />
-    <xs:attribute name="dayOfWeek" type="es:dayOfWeek" use="optional" />
-    <xs:attribute name="priority" type="xs:int" use="optional" />
-    <xs:attribute name="nonWorking" type="xs:boolean" use="optional" />
-    <xs:attribute name="territory" type="es:territory" use="optional" />
-    <xs:attribute name="calendarType" type="es:assemblyTypeName" use="optional" />
-    <xs:attribute name="target" type="xs:string" use="optional" />
-    <xs:attribute name="customHandler" type="es:assemblyTypeName" use="optional" />
-  </xs:complexType>
-
-  <!-- Fundamental Types -->
-  <xs:simpleType name="notableDateType">
-    <xs:list>
-      <xs:simpleType>
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="Holiday" />
-          <xs:enumeration value="Observance" />
-          <xs:enumeration value="DaylightSavingTime" />
-          <xs:enumeration value="Season" />
-          <xs:enumeration value="Christian" />
-          <xs:enumeration value="Chinese" />
-          <xs:enumeration value="Jewish" />
-          <xs:enumeration value="Muslim" />
-          <xs:enumeration value="Orthodox" />
-          <xs:enumeration value="Regional" />
-          <xs:enumeration value="NonOfficial" />
-          <xs:enumeration value="Cultural" />
-          <xs:enumeration value="Remembrance" />
-        </xs:restriction>
-      </xs:simpleType>
-    </xs:list>
+  <xs:simpleType name="notableDateCategory">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="None" />
+      <xs:enumeration value="Holiday" />
+      <xs:enumeration value="Observance" />
+      <xs:enumeration value="Remembrance" />
+      <xs:enumeration value="Cultural" />
+      <xs:enumeration value="Seasonal" />
+      <xs:enumeration value="Other" />
+    </xs:restriction>
   </xs:simpleType>
 
   <xs:simpleType name="territory">
