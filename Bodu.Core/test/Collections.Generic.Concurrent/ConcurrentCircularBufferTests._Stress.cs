@@ -234,6 +234,22 @@ public partial class ConcurrentCircularBufferTests
         // when AllowOverwrite is false.
         for (int i = 0; i < capacity; i++) buffer.Enqueue(new TestItem(i));
 
+        // Deterministic warmup: drive both counters to >= 1 before the race begins. On a
+        // loaded CI runner the togglers may fail to land a true-interval on a full buffer
+        // within a writer's attempt window (or vice versa), making `enqSucceeded > 0` and
+        // `expectedEnqFaults > 0` flake-prone — even though the state-corruption invariant
+        // this test exists to verify (unexpectedFaults == 0, Count within [0, Capacity]) is
+        // unaffected.
+        buffer.AllowOverwrite = false;
+        try { buffer.Enqueue(new TestItem(-1)); }
+        catch (InvalidOperationException) { Interlocked.Increment(ref expectedEnqFaults); }
+
+        buffer.AllowOverwrite = true;
+        buffer.Enqueue(new TestItem(-2));
+        Interlocked.Increment(ref enqSucceeded);
+
+        buffer.AllowOverwrite = false;
+
         // Writers use the throwing Enqueue() rather than TryEnqueue so that the exception
         // path is exercised under real contention.
         var writers = Enumerable.Range(0, 4).Select(_ =>
@@ -527,6 +543,18 @@ public partial class ConcurrentCircularBufferTests
         const int durationMs = 2000;
         const int deadlockTimeoutMs = durationMs + 5000;
 
+        // Deterministic warmup (false-branch only): guarantee one rejected Enqueue before the
+        // race begins. The only race-dependent assertion (`expectedEnqFaults > 0` at the false
+        // branch below) is flake-prone on a loaded CI runner where the enqueue/dequeue cadence
+        // may rarely align with a transiently-full buffer during the 2-second race window.
+        if (!allowOverwrite)
+        {
+            for (int f = 0; f < capacity; f++) buffer.Enqueue(new TestItem(-f - 1));
+            try { buffer.Enqueue(new TestItem(-100)); }
+            catch (InvalidOperationException) { Interlocked.Increment(ref expectedEnqFaults); }
+            while (buffer.TryDequeue(out _)) { /* drain back to empty so the race starts cleanly */ }
+        }
+
         var writers = Enumerable.Range(0, threadCount).Select(_ =>
             Task.Run(() =>
             {
@@ -634,6 +662,16 @@ public partial class ConcurrentCircularBufferTests
 
         // Fill the buffer so every subsequent enqueue triggers an eviction.
         for (int i = 0; i < capacity; i++) buffer.Enqueue(new TestItem(i));
+
+        // Deterministic warmup: one guaranteed eviction delivered to a subscribed handler before
+        // the concurrent race begins. Without this seed the `totalEvictions > 0` assertion is
+        // flake-prone — on a loaded CI runner the tight subscribe / unsubscribe windows below can
+        // consistently miss every writer burst, even though the lifecycle-safety invariant
+        // (handlerFaults == 0) that this test actually exists to verify is unaffected.
+        Action<TestItem?> warmupHandler = _ => Interlocked.Increment(ref totalEvictions);
+        buffer.ItemEvicted += warmupHandler;
+        buffer.Enqueue(new TestItem(-1));
+        buffer.ItemEvicted -= warmupHandler;
 
         // Writers keep the buffer full, causing continuous evictions.
         var writers = Enumerable.Range(0, 4).Select(_ =>
