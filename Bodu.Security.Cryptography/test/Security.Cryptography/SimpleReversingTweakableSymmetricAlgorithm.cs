@@ -303,7 +303,7 @@ namespace Bodu.Security.Cryptography
             => new SimpleReversingBlockCipher(key, blockSizeBytes, tweak);
 
         /// <summary>
-        /// Validates that <paramref name="key" />, <paramref name="iv" />, and <paramref name="tweak" /> each
+        /// Verifies that <paramref name="key" />, <paramref name="iv" />, and <paramref name="tweak" /> each
         /// match the algorithm's configured key size, block size, and tweak size respectively.
         /// </summary>
         /// <exception cref="ArgumentNullException">Any parameter is <see langword="null" />.</exception>

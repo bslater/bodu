@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ThrowHelperTests.ThrowIfSpanLengthIsInsufficient_ReadOnlySpan.cs" company="PlaceholderCompany">
+// <copyright file="ThrowHelperTests.ThrowIfSpanLengthIsInsufficient.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------

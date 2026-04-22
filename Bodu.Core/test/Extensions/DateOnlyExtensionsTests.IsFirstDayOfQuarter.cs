@@ -1,3 +1,9 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="DateOnlyExtensionsTests.IsFirstDayOfQuarter.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 ﻿using static Bodu.Extensions.DateTimeExtensionsTests;
 
 namespace Bodu.Extensions

@@ -1,3 +1,9 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="IEnumerableExtensionsTests.RecursiveSelect.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 ﻿namespace Bodu.Collections.Extensions
 {
     [TestClass]
@@ -331,7 +337,7 @@
         }
 
         /// <summary>
-        /// Ensures RecursiveSelect works with an empty source collection and produces no output.
+        /// Verifies that RecursiveSelect works with an empty source collection and produces no output.
         /// </summary>
         [TestMethod]
         public void RecursiveSelect_WithEmptySource_ShouldReturnEmpty()
@@ -342,7 +348,7 @@
         }
 
         /// <summary>
-        /// Ensures RecursiveSelect works when some childSelector calls return null (graceful fallback).
+        /// Verifies that RecursiveSelect works when some childSelector calls return null (graceful fallback).
         /// </summary>
         [TestMethod]
         public void ChildSelector_ReturnsNull_ShouldSkipChildren()
@@ -355,7 +361,7 @@
         }
 
         /// <summary>
-        /// Ensures that exceptions thrown by the selector are propagated correctly.
+        /// Verifies that exceptions thrown by the selector are propagated correctly.
         /// </summary>
         [TestMethod]
         public void Selector_ThrowsException_ShouldBubbleUp()

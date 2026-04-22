@@ -1,3 +1,9 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="SymmetricAlgorithmTests.Key.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 ﻿using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography
@@ -5,7 +11,7 @@ namespace Bodu.Security.Cryptography
     public abstract partial class SymmetricAlgorithmTests<TAlgorithm>
     {
         /// <summary>
-        /// Validates that the Key property is not null upon algorithm creation.
+        /// Verifies that the Key property is not null upon algorithm creation.
         /// </summary>
         [TestMethod]
         public void Key_WhenAccessed_ShouldNotBeNull()
@@ -15,7 +21,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Validates that accessing <see cref="SymmetricAlgorithm.Key" /> after the algorithm has been disposed throws
+        /// Verifies that accessing <see cref="SymmetricAlgorithm.Key" /> after the algorithm has been disposed throws
         /// an <see cref="ObjectDisposedException" />.
         /// </summary>
         [TestMethod]
@@ -31,7 +37,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Validates that setting the Key to null throws an ArgumentNullException.
+        /// Verifies that setting the Key to null throws an ArgumentNullException.
         /// </summary>
         [TestMethod]
         public void Key_WhenSetToNull_ShouldThrowExactly()

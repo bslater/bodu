@@ -1,4 +1,10 @@
-﻿using SysGlob = System.Globalization;
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="EasterSundayNotableDateCalculatorTests.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using SysGlob = System.Globalization;
 
 namespace Bodu.Globalization.Calendar.Calculators
 {
