@@ -9,7 +9,7 @@
     public sealed partial class CbcModeTransformTests
     {
         /// <summary>
-        /// Verifies that Transform, when Decrypting, applies CBC Unchaining.
+        /// Verifies that <see cref="CbcModeTransform.Transform" /> in decrypt mode inverts the CBC chain, XOR-unwrapping each ciphertext block against the prior ciphertext to recover the original plaintext.
         /// </summary>
         [TestMethod]
         public void Transform_WhenDecrypting_ShouldApplyCBCUnchaining()
@@ -34,7 +34,7 @@
         }
 
         /// <summary>
-        /// Verifies that Transform, when Encrypting, applies CBC Chaining.
+        /// Verifies that <see cref="CbcModeTransform.Transform" /> in encrypt mode XORs each plaintext block with the prior ciphertext (or IV for block 0) before calling the cipher — the defining chaining property of CBC.
         /// </summary>
         [TestMethod]
         public void Transform_WhenEncrypting_ShouldApplyCBCChaining()
@@ -56,7 +56,7 @@
         }
 
         /// <summary>
-        /// Verifies that Transform, when Encrypting, does not Mutate IV.
+        /// Verifies that <see cref="CbcModeTransform.Transform" /> in encrypt mode leaves the caller's IV buffer untouched (the transform copies the IV rather than mutating it in place).
         /// </summary>
         [TestMethod]
         public void Transform_WhenEncrypting_ShouldNotMutateIV()

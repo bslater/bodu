@@ -32,7 +32,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Variant, Get, when Default, returns Pearson.
+        /// Verifies that a freshly constructed <see cref="Tiger" /> reports its default <see cref="Tiger.Variant" /> as <see cref="TigerHashingVariant.Tiger" />.
         /// </summary>
         [TestMethod]
         public void Variant_Get_WhenDefault_ShouldReturnPearson()
@@ -60,7 +60,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Variant, Set, when Disposed, throws Exactly.
+        /// Verifies that setting <see cref="Tiger.Variant" /> on a disposed algorithm throws <see cref="ObjectDisposedException" />.
         /// </summary>
         [TestMethod]
         public void Variant_Set_WhenDisposed_ShouldThrowExactly()
@@ -75,7 +75,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Variant, Get, when Disposed, throws Exactly.
+        /// Verifies that reading <see cref="Tiger.Variant" /> on a disposed algorithm throws <see cref="ObjectDisposedException" />.
         /// </summary>
         [TestMethod]
         public void Variant_Get_WhenDisposed_ShouldThrowExactly()
