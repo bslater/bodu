@@ -6,12 +6,6 @@
 
 ﻿namespace Bodu.Security.Cryptography
 {
-    public enum ThreeFishCipherTestVariant
-    {
-        ZeroedKeyAndTweak,
-        DefaultKeyAndTweak
-    }
-
     internal abstract partial class ThreeFishCipherTests<TTest, TCipher>
         : BlockCipherTests<TTest, TCipher, ThreeFishCipherTestVariant>
         where TTest : ThreeFishCipherTests<TTest, TCipher>, new()

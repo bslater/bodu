@@ -10,26 +10,6 @@ using System.Text;
 namespace Bodu.IO.Hashing;
 
 /// <summary>
-/// Identifies the representative subset of <see cref="CrcStandard" /> values exercised by the common
-/// <see cref="NonCryptographicHashAlgorithmTests{TTest, TAlgorithm, TVariant}" /> harness. The full RevEng
-/// catalogue remains covered by <c>CrcTests.Catalog.cs</c>.
-/// </summary>
-public enum CrcTestVariant
-{
-    /// <summary>CRC-8/SMBUS — a canonical 8-bit CRC.</summary>
-    Crc8_SMBUS,
-
-    /// <summary>CRC-16/ARC — a canonical 16-bit CRC.</summary>
-    Crc16_ARC,
-
-    /// <summary>CRC-32/ISO-HDLC — the default CRC-32 instantiation.</summary>
-    Crc32_IsoHdlc,
-
-    /// <summary>CRC-64/ECMA-182 — a canonical 64-bit CRC.</summary>
-    Crc64_Ecma182,
-}
-
-/// <summary>
 /// Contains unit tests for the <see cref="Crc" /> non-cryptographic hash algorithm. Extended by partial files
 /// covering the catalogue parity vectors and resume-from-hash semantics.
 /// </summary>
@@ -157,6 +137,4 @@ public partial class CrcTests
         Assert.AreEqual(1, new Crc(CrcStandard.CRC8_SMBUS).HashLengthInBytes);
         Assert.AreEqual(8, new Crc(CrcStandard.CRC64_ECMA182).HashLengthInBytes);
     }
-
-
 }

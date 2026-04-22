@@ -9,16 +9,6 @@ using System.IO.Hashing;
 namespace Bodu.IO.Hashing;
 
 /// <summary>
-/// Identifies the lone variant used by hash algorithms that do not expose configurable variants, satisfying the
-/// <c>TVariant</c> type parameter of <see cref="NonCryptographicHashAlgorithmTests{TTest, TAlgorithm, TVariant}" />.
-/// </summary>
-public enum SingleTestVariant
-{
-    /// <summary>The default (and only) configuration of the algorithm under test.</summary>
-    Default,
-}
-
-/// <summary>
 /// Provides a reusable base class for verifying correctness and consistency of
 /// <see cref="NonCryptographicHashAlgorithm" /> implementations.
 /// </summary>

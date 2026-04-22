@@ -6,12 +6,6 @@
 
 namespace Bodu.Security.Cryptography
 {
-    public enum BernsteinHashVariant
-    {
-        Default,
-        Modified
-    }
-
     /// <summary>
     /// Contains unit tests for the <see cref="Adler" /> hash algorithm.
     /// </summary>

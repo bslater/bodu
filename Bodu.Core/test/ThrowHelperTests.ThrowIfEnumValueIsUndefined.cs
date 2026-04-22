@@ -6,12 +6,6 @@
 
 namespace Bodu
 {
-    public enum TestEnum
-    {
-        A = 0,
-        B = 1,
-    }
-
     public partial class ThrowHelperTests
     {
         /// <summary>

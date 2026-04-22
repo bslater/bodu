@@ -6,13 +6,6 @@
 
 namespace Bodu.Security.Cryptography
 {
-    public enum BKDRVariant
-    {
-        Default,
-        Seed31,
-        Seed1313,
-    }
-
     /// <summary>
     /// Contains unit tests for the <see cref="BKDR" /> hash algorithm.
     /// </summary>

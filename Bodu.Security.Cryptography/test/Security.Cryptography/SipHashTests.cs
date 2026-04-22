@@ -6,12 +6,6 @@
 
 ﻿namespace Bodu.Security.Cryptography
 {
-    public enum SipHashVariant
-    {
-        SipHash_2_4,
-        SipHash_4_8
-    }
-
     public abstract partial class SipHashTests<TTest, TAlgorithm>
         : KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, SipHashVariant>
         where TTest : SipHashTests<TTest, TAlgorithm>, new()
