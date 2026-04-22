@@ -1,176 +1,175 @@
 using System.Linq;
 
-namespace Bodu.Globalization.Calendar
+namespace Bodu.Globalization.Calendar;
+
+/// <summary>
+/// Verifies that <see cref="XmlResourceNotableDateRuleProvider" /> correctly flattens the embedded country resources, applying
+/// cherry-pick directives, per-directive overrides, and <c>UseAll</c> wildcards.
+/// </summary>
+[TestClass]
+public sealed class XmlResourceNotableDateRuleProviderTests
 {
+	private const string CommonResource = "Bodu.Globalization.Calendar.Resources.Common.xml";
+	private const string ChristianResource = "Bodu.Globalization.Calendar.Resources.Christian.xml";
+	private const string UsResource = "Bodu.Globalization.Calendar.Resources.US.xml";
+	private const string GbResource = "Bodu.Globalization.Calendar.Resources.GB.xml";
+	private const string FrResource = "Bodu.Globalization.Calendar.Resources.FR.xml";
+	private const string DefaultResource = "Bodu.Globalization.Calendar.NotableDates.xml";
+
 	/// <summary>
-	/// Verifies that <see cref="XmlResourceNotableDateRuleProvider" /> correctly flattens the embedded country resources, applying
-	/// cherry-pick directives, per-directive overrides, and <c>UseAll</c> wildcards.
+	/// Verifies that loading the standalone Common resource exposes its rules without errors.
 	/// </summary>
-	[TestClass]
-	public sealed class XmlResourceNotableDateRuleProviderTests
+	[TestMethod]
+	public void LoadRules_WhenLoadingCommonResource_ShouldExposeUniversalRules()
 	{
-		private const string CommonResource = "Bodu.Globalization.Calendar.Resources.Common.xml";
-		private const string ChristianResource = "Bodu.Globalization.Calendar.Resources.Christian.xml";
-		private const string UsResource = "Bodu.Globalization.Calendar.Resources.US.xml";
-		private const string GbResource = "Bodu.Globalization.Calendar.Resources.GB.xml";
-		private const string FrResource = "Bodu.Globalization.Calendar.Resources.FR.xml";
-		private const string DefaultResource = "Bodu.Globalization.Calendar.NotableDates.xml";
+		var provider = new XmlResourceNotableDateRuleProvider(CommonResource);
 
-		/// <summary>
-		/// Verifies that loading the standalone Common resource exposes its rules without errors.
-		/// </summary>
-		[TestMethod]
-		public void LoadRules_WhenLoadingCommonResource_ShouldExposeUniversalRules()
-		{
-			var provider = new XmlResourceNotableDateRuleProvider(CommonResource);
+		var rules = provider.LoadRules().ToList();
 
-			var rules = provider.LoadRules().ToList();
+		Assert.IsTrue(rules.Any(r => r.Name == "New Year's Day"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Halloween"));
+		Assert.IsTrue(rules.Any(r => r.Name == "International Workers' Day"));
+	}
 
-			Assert.IsTrue(rules.Any(r => r.Name == "New Year's Day"));
-			Assert.IsTrue(rules.Any(r => r.Name == "Halloween"));
-			Assert.IsTrue(rules.Any(r => r.Name == "International Workers' Day"));
-		}
+	/// <summary>
+	/// Verifies that loading the US resource pulls in only the explicitly listed rules from Common and Christian — and does not
+	/// include any rule that the US file did not opt in to (for example, Easter Monday or Whit Monday).
+	/// </summary>
+	[TestMethod]
+	public void LoadRules_WhenLoadingUsResource_ShouldOnlyIncludeCherryPickedRules()
+	{
+		var provider = new XmlResourceNotableDateRuleProvider(UsResource);
 
-		/// <summary>
-		/// Verifies that loading the US resource pulls in only the explicitly listed rules from Common and Christian — and does not
-		/// include any rule that the US file did not opt in to (for example, Easter Monday or Whit Monday).
-		/// </summary>
-		[TestMethod]
-		public void LoadRules_WhenLoadingUsResource_ShouldOnlyIncludeCherryPickedRules()
-		{
-			var provider = new XmlResourceNotableDateRuleProvider(UsResource);
+		var rules = provider.LoadRules().ToList();
 
-			var rules = provider.LoadRules().ToList();
+		// Cherry-picked from Common
+		Assert.IsTrue(rules.Any(r => r.Name == "New Year's Day"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Valentine's Day"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Halloween"));
 
-			// Cherry-picked from Common
-			Assert.IsTrue(rules.Any(r => r.Name == "New Year's Day"));
-			Assert.IsTrue(rules.Any(r => r.Name == "Valentine's Day"));
-			Assert.IsTrue(rules.Any(r => r.Name == "Halloween"));
+		// Cherry-picked from Christian
+		Assert.IsTrue(rules.Any(r => r.Name == "Easter Sunday"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Good Friday"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Christmas Day"));
 
-			// Cherry-picked from Christian
-			Assert.IsTrue(rules.Any(r => r.Name == "Easter Sunday"));
-			Assert.IsTrue(rules.Any(r => r.Name == "Good Friday"));
-			Assert.IsTrue(rules.Any(r => r.Name == "Christmas Day"));
+		// Locally declared
+		Assert.IsTrue(rules.Any(r => r.Name == "Independence Day"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Thanksgiving"));
 
-			// Locally declared
-			Assert.IsTrue(rules.Any(r => r.Name == "Independence Day"));
-			Assert.IsTrue(rules.Any(r => r.Name == "Thanksgiving"));
+		// Not opted in: should be absent.
+		Assert.IsFalse(rules.Any(r => r.Name == "Easter Monday"));
+		Assert.IsFalse(rules.Any(r => r.Name == "Whit Monday"));
+		Assert.IsFalse(rules.Any(r => r.Name == "International Workers' Day"));
+		Assert.IsFalse(rules.Any(r => r.Name == "All Saints' Day"));
+	}
 
-			// Not opted in: should be absent.
-			Assert.IsFalse(rules.Any(r => r.Name == "Easter Monday"));
-			Assert.IsFalse(rules.Any(r => r.Name == "Whit Monday"));
-			Assert.IsFalse(rules.Any(r => r.Name == "International Workers' Day"));
-			Assert.IsFalse(rules.Any(r => r.Name == "All Saints' Day"));
-		}
+	/// <summary>
+	/// Verifies that <c>Use</c> directives apply scalar overrides to the inherited rule. The US file marks Christmas Day non-working
+	/// and tags the territory.
+	/// </summary>
+	[TestMethod]
+	public void LoadRules_WhenUseDirectiveAppliesOverrides_ShouldRetagInheritedRule()
+	{
+		var provider = new XmlResourceNotableDateRuleProvider(UsResource);
 
-		/// <summary>
-		/// Verifies that <c>Use</c> directives apply scalar overrides to the inherited rule. The US file marks Christmas Day non-working
-		/// and tags the territory.
-		/// </summary>
-		[TestMethod]
-		public void LoadRules_WhenUseDirectiveAppliesOverrides_ShouldRetagInheritedRule()
-		{
-			var provider = new XmlResourceNotableDateRuleProvider(UsResource);
+		var christmasDay = provider.LoadRules().Single(r => r.Name == "Christmas Day" && r.TerritoryCode == "US");
 
-			var christmasDay = provider.LoadRules().Single(r => r.Name == "Christmas Day" && r.TerritoryCode == "US");
+		Assert.IsTrue(christmasDay.IsNonWorkingDay);
+		Assert.AreEqual("US", christmasDay.TerritoryCode);
+	}
 
-			Assert.IsTrue(christmasDay.IsNonWorkingDay);
-			Assert.AreEqual("US", christmasDay.TerritoryCode);
-		}
+	/// <summary>
+	/// Verifies that loading the GB resource exposes Easter Monday (which the UK observes) because GB.xml explicitly cherry-picks it,
+	/// independent of what other country files do.
+	/// </summary>
+	[TestMethod]
+	public void LoadRules_WhenLoadingGbResource_ShouldIncludeEasterMonday()
+	{
+		var provider = new XmlResourceNotableDateRuleProvider(GbResource);
 
-		/// <summary>
-		/// Verifies that loading the GB resource exposes Easter Monday (which the UK observes) because GB.xml explicitly cherry-picks it,
-		/// independent of what other country files do.
-		/// </summary>
-		[TestMethod]
-		public void LoadRules_WhenLoadingGbResource_ShouldIncludeEasterMonday()
-		{
-			var provider = new XmlResourceNotableDateRuleProvider(GbResource);
+		var rules = provider.LoadRules().ToList();
 
-			var rules = provider.LoadRules().ToList();
+		Assert.IsTrue(rules.Any(r => r.Name == "Easter Monday"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Boxing Day"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Burns Night"));
+	}
 
-			Assert.IsTrue(rules.Any(r => r.Name == "Easter Monday"));
-			Assert.IsTrue(rules.Any(r => r.Name == "Boxing Day"));
-			Assert.IsTrue(rules.Any(r => r.Name == "Burns Night"));
-		}
+	/// <summary>
+	/// Verifies that locally declared rules in a country file override the inherited rule with the same (name, territory) key.
+	/// </summary>
+	[TestMethod]
+	public void LoadRules_WhenLocalRuleOverridesInheritedRule_ShouldUseLocalRule()
+	{
+		var provider = new XmlResourceNotableDateRuleProvider(GbResource);
 
-		/// <summary>
-		/// Verifies that locally declared rules in a country file override the inherited rule with the same (name, territory) key.
-		/// </summary>
-		[TestMethod]
-		public void LoadRules_WhenLocalRuleOverridesInheritedRule_ShouldUseLocalRule()
-		{
-			var provider = new XmlResourceNotableDateRuleProvider(GbResource);
+		// New Year's Day is declared locally in GB.xml with a Tag and territory; the inherited Common rule should be overridden.
+		var newYears = provider.LoadRules().Single(r => r.Name == "New Year's Day");
 
-			// New Year's Day is declared locally in GB.xml with a Tag and territory; the inherited Common rule should be overridden.
-			var newYears = provider.LoadRules().Single(r => r.Name == "New Year's Day");
+		Assert.AreEqual("GB", newYears.TerritoryCode);
+		Assert.IsTrue(newYears.Tags.Contains("BankHoliday"));
+	}
 
-			Assert.AreEqual("GB", newYears.TerritoryCode);
-			Assert.IsTrue(newYears.Tags.Contains("BankHoliday"));
-		}
+	/// <summary>
+	/// Verifies that loading the FR resource exposes the locally declared "Fête du Travail" while International Workers' Day is
+	/// absent (because France did not cherry-pick it).
+	/// </summary>
+	[TestMethod]
+	public void LoadRules_WhenFrResource_ShouldExposeLocalNamesOnly()
+	{
+		var provider = new XmlResourceNotableDateRuleProvider(FrResource);
 
-		/// <summary>
-		/// Verifies that loading the FR resource exposes the locally declared "Fête du Travail" while International Workers' Day is
-		/// absent (because France did not cherry-pick it).
-		/// </summary>
-		[TestMethod]
-		public void LoadRules_WhenFrResource_ShouldExposeLocalNamesOnly()
-		{
-			var provider = new XmlResourceNotableDateRuleProvider(FrResource);
+		var rules = provider.LoadRules().ToList();
 
-			var rules = provider.LoadRules().ToList();
+		Assert.IsFalse(rules.Any(r => r.Name == "International Workers' Day"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Fête du Travail"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Bastille Day"));
+	}
 
-			Assert.IsFalse(rules.Any(r => r.Name == "International Workers' Day"));
-			Assert.IsTrue(rules.Any(r => r.Name == "Fête du Travail"));
-			Assert.IsTrue(rules.Any(r => r.Name == "Bastille Day"));
-		}
+	/// <summary>
+	/// Verifies that the default composite resource pulls in every rule from Common and Christian via the wildcard <c>UseAll</c>,
+	/// but no country-specific rules.
+	/// </summary>
+	[TestMethod]
+	public void LoadRules_WhenLoadingDefaultComposite_ShouldExposeUniversalRulesViaUseAll()
+	{
+		var provider = new XmlResourceNotableDateRuleProvider(DefaultResource);
 
-		/// <summary>
-		/// Verifies that the default composite resource pulls in every rule from Common and Christian via the wildcard <c>UseAll</c>,
-		/// but no country-specific rules.
-		/// </summary>
-		[TestMethod]
-		public void LoadRules_WhenLoadingDefaultComposite_ShouldExposeUniversalRulesViaUseAll()
-		{
-			var provider = new XmlResourceNotableDateRuleProvider(DefaultResource);
+		var rules = provider.LoadRules().ToList();
 
-			var rules = provider.LoadRules().ToList();
+		Assert.IsTrue(rules.Any(r => r.Name == "New Year's Day"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Easter Sunday"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Christmas Day"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Halloween"));
+		Assert.IsFalse(rules.Any(r => r.Name == "Independence Day"), "Country-specific rules should not appear in the default composite.");
+		Assert.IsFalse(rules.Any(r => r.Name == "Bastille Day"));
+	}
 
-			Assert.IsTrue(rules.Any(r => r.Name == "New Year's Day"));
-			Assert.IsTrue(rules.Any(r => r.Name == "Easter Sunday"));
-			Assert.IsTrue(rules.Any(r => r.Name == "Christmas Day"));
-			Assert.IsTrue(rules.Any(r => r.Name == "Halloween"));
-			Assert.IsFalse(rules.Any(r => r.Name == "Independence Day"), "Country-specific rules should not appear in the default composite.");
-			Assert.IsFalse(rules.Any(r => r.Name == "Bastille Day"));
-		}
+	/// <summary>
+	/// Verifies that loading a non-existent resource throws a clear <see cref="FileNotFoundException" />.
+	/// </summary>
+	[TestMethod]
+	public void LoadRules_WhenResourceMissing_ShouldThrowFileNotFoundException()
+	{
+		var provider = new XmlResourceNotableDateRuleProvider("Bodu.Globalization.Calendar.Resources.Imaginary.xml");
 
-		/// <summary>
-		/// Verifies that loading a non-existent resource throws a clear <see cref="FileNotFoundException" />.
-		/// </summary>
-		[TestMethod]
-		public void LoadRules_WhenResourceMissing_ShouldThrowFileNotFoundException()
-		{
-			var provider = new XmlResourceNotableDateRuleProvider("Bodu.Globalization.Calendar.Resources.Imaginary.xml");
+		Assert.ThrowsExactly<FileNotFoundException>(() => _ = provider.LoadRules().ToList());
+	}
 
-			Assert.ThrowsExactly<FileNotFoundException>(() => _ = provider.LoadRules().ToList());
-		}
+	/// <summary>
+	/// Verifies that adding a new rule to a source resource does not cascade into a consumer that uses explicit cherry-pick. A new
+	/// rule introduced into Common.xml would not show up in US.xml's flattened set unless US.xml explicitly added a Use directive
+	/// for it. This test confirms the contract by verifying that the US set is a strict subset of Common's universal rules.
+	/// </summary>
+	[TestMethod]
+	public void LoadRules_WhenSourceContainsRulesNotCherryPicked_ShouldNotInheritThem()
+	{
+		var common = new XmlResourceNotableDateRuleProvider(CommonResource).LoadRules().Select(r => r.Name).ToHashSet();
+		var us = new XmlResourceNotableDateRuleProvider(UsResource).LoadRules().Select(r => r.Name).ToHashSet();
 
-		/// <summary>
-		/// Verifies that adding a new rule to a source resource does not cascade into a consumer that uses explicit cherry-pick. A new
-		/// rule introduced into Common.xml would not show up in US.xml's flattened set unless US.xml explicitly added a Use directive
-		/// for it. This test confirms the contract by verifying that the US set is a strict subset of Common's universal rules.
-		/// </summary>
-		[TestMethod]
-		public void LoadRules_WhenSourceContainsRulesNotCherryPicked_ShouldNotInheritThem()
-		{
-			var common = new XmlResourceNotableDateRuleProvider(CommonResource).LoadRules().Select(r => r.Name).ToHashSet();
-			var us = new XmlResourceNotableDateRuleProvider(UsResource).LoadRules().Select(r => r.Name).ToHashSet();
-
-			// Pick a rule that exists in Common but is NOT cherry-picked by US.xml.
-			Assert.IsTrue(common.Contains("International Workers' Day"));
-			Assert.IsFalse(us.Contains("International Workers' Day"));
-			Assert.IsTrue(common.Contains("Remembrance Day"));
-			Assert.IsFalse(us.Contains("Remembrance Day"));
-		}
+		// Pick a rule that exists in Common but is NOT cherry-picked by US.xml.
+		Assert.IsTrue(common.Contains("International Workers' Day"));
+		Assert.IsFalse(us.Contains("International Workers' Day"));
+		Assert.IsTrue(common.Contains("Remembrance Day"));
+		Assert.IsFalse(us.Contains("Remembrance Day"));
 	}
 }

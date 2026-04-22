@@ -12,99 +12,98 @@ using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bodu.Extensions;
 
-namespace Bodu.Extensions
+namespace Bodu.Extensions;
+
+public partial class DateTimeExtensionsTests
 {
-    public partial class DateTimeExtensionsTests
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeSeconds" />, when UtcInput, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(FromUnixTimeSecondsTestData), DynamicDataSourceType.Property)]
+    public void ToUnixTimeSeconds_WhenUtcInput_ShouldReturnExpected(long expected, DateTime input)
     {
+        long actual = input.ToUnixTimeSeconds();
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeSeconds" />, when UtcInput, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        [DynamicData(nameof(FromUnixTimeSecondsTestData), DynamicDataSourceType.Property)]
-        public void ToUnixTimeSeconds_WhenUtcInput_ShouldReturnExpected(long expected, DateTime input)
-        {
-            long actual = input.ToUnixTimeSeconds();
+        Assert.AreEqual(expected, actual);
+    }
 
-            Assert.AreEqual(expected, actual);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeSeconds" />, when KindIsUtc, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void ToUnixTimeSeconds_WhenKindIsUtc_ShouldReturnUtcSeconds()
+    {
+        DateTime input = new DateTime(1970, 1, 1, 0, 0, 5, DateTimeKind.Utc);
+        long actual = input.ToUnixTimeSeconds();
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeSeconds" />, when KindIsUtc, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        public void ToUnixTimeSeconds_WhenKindIsUtc_ShouldReturnUtcSeconds()
-        {
-            DateTime input = new DateTime(1970, 1, 1, 0, 0, 5, DateTimeKind.Utc);
-            long actual = input.ToUnixTimeSeconds();
+        Assert.AreEqual(5, actual);
+    }
 
-            Assert.AreEqual(5, actual);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeSeconds" />, when KindIsLocal, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void ToUnixTimeSeconds_WhenKindIsLocal_ShouldConvertToUtc()
+    {
+        DateTime utc = new DateTime(2024, 4, 18, 14, 0, 0, DateTimeKind.Utc);
+        DateTime local = utc.ToLocalTime();
+        long expected = utc.ToUnixTimeSeconds();
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeSeconds" />, when KindIsLocal, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        public void ToUnixTimeSeconds_WhenKindIsLocal_ShouldConvertToUtc()
-        {
-            DateTime utc = new DateTime(2024, 4, 18, 14, 0, 0, DateTimeKind.Utc);
-            DateTime local = utc.ToLocalTime();
-            long expected = utc.ToUnixTimeSeconds();
+        long actual = local.ToUnixTimeSeconds();
 
-            long actual = local.ToUnixTimeSeconds();
+        Assert.AreEqual(expected, actual);
+    }
 
-            Assert.AreEqual(expected, actual);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeSeconds" />, when KindIsUnspecified, returns <see langword="true" />.
+    /// </summary>
+    [TestMethod]
+    public void ToUnixTimeSeconds_WhenKindIsUnspecified_ShouldAssumeLocal()
+    {
+        DateTime nowLocal = DateTime.Now;
+        DateTime unspecified = DateTime.SpecifyKind(nowLocal, DateTimeKind.Unspecified);
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeSeconds" />, when KindIsUnspecified, returns <see langword="true" />.
-        /// </summary>
-        [TestMethod]
-        public void ToUnixTimeSeconds_WhenKindIsUnspecified_ShouldAssumeLocal()
-        {
-            DateTime nowLocal = DateTime.Now;
-            DateTime unspecified = DateTime.SpecifyKind(nowLocal, DateTimeKind.Unspecified);
+        long localResult = nowLocal.ToUnixTimeSeconds();
+        long unspecifiedResult = unspecified.ToUnixTimeSeconds();
 
-            long localResult = nowLocal.ToUnixTimeSeconds();
-            long unspecifiedResult = unspecified.ToUnixTimeSeconds();
+        Assert.IsTrue(Math.Abs(localResult - unspecifiedResult) < 1);
+    }
 
-            Assert.IsTrue(Math.Abs(localResult - unspecifiedResult) < 1);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeSeconds" />, when UsingMinValue, returns <see langword="true" />.
+    /// </summary>
+    [TestMethod]
+    public void ToUnixTimeSeconds_WhenUsingMinValue_ShouldBeNegativeLarge()
+    {
+        long actual = DateTime.MinValue.ToUnixTimeSeconds();
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeSeconds" />, when UsingMinValue, returns <see langword="true" />.
-        /// </summary>
-        [TestMethod]
-        public void ToUnixTimeSeconds_WhenUsingMinValue_ShouldBeNegativeLarge()
-        {
-            long actual = DateTime.MinValue.ToUnixTimeSeconds();
+        Assert.IsTrue(actual < 0);
+    }
 
-            Assert.IsTrue(actual < 0);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeSeconds" />, when UsingMaxValue, returns <see langword="true" />.
+    /// </summary>
+    [TestMethod]
+    public void ToUnixTimeSeconds_WhenUsingMaxValue_ShouldBePositiveLarge()
+    {
+        long actual = DateTime.MaxValue.ToUnixTimeSeconds();
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeSeconds" />, when UsingMaxValue, returns <see langword="true" />.
-        /// </summary>
-        [TestMethod]
-        public void ToUnixTimeSeconds_WhenUsingMaxValue_ShouldBePositiveLarge()
-        {
-            long actual = DateTime.MaxValue.ToUnixTimeSeconds();
+        Assert.IsTrue(actual > 0);
+    }
 
-            Assert.IsTrue(actual > 0);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeSeconds" />, RoundTripWithFromUnixTimeSeconds, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void ToUnixTimeSeconds_RoundTripWithFromUnixTimeSeconds_ShouldMatchUtc()
+    {
+        DateTime input = new DateTime(2024, 4, 18, 14, 30, 0, DateTimeKind.Utc);
+        long seconds = input.ToUnixTimeSeconds();
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeSeconds" />, RoundTripWithFromUnixTimeSeconds, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        public void ToUnixTimeSeconds_RoundTripWithFromUnixTimeSeconds_ShouldMatchUtc()
-        {
-            DateTime input = new DateTime(2024, 4, 18, 14, 30, 0, DateTimeKind.Utc);
-            long seconds = input.ToUnixTimeSeconds();
+        DateTime roundTrip = DateTimeExtensions.FromUnixTimeSeconds(seconds);
 
-            DateTime roundTrip = DateTimeExtensions.FromUnixTimeSeconds(seconds);
-
-            Assert.AreEqual(input, roundTrip);
-        }
+        Assert.AreEqual(input, roundTrip);
     }
 }

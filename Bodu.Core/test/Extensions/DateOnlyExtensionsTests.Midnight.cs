@@ -12,90 +12,89 @@ using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bodu.Extensions;
 
-namespace Bodu.Extensions
+namespace Bodu.Extensions;
+
+public partial class DateOnlyExtensionsTests
 {
-    public partial class DateOnlyExtensionsTests
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when Called, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DataRow("2024-04-18T05:00:00", "2024-04-18T00:00:00")]
+    [DataRow("2024-04-18T23:59:59", "2024-04-18T00:00:00")]
+    [DataRow("2000-01-01T12:00:00", "2000-01-01T00:00:00")]
+    [DataRow("0001-01-01T03:30:00", "0001-01-01T00:00:00")]
+    [DataRow("9999-12-31T22:00:00", "9999-12-31T00:00:00")]
+    public void Midnight_WhenCalled_ShouldReturnMidnightOnSameDate(string inputDate, string expectedDate)
     {
-        /// <summary>
-        /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when Called, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        [DataRow("2024-04-18T05:00:00", "2024-04-18T00:00:00")]
-        [DataRow("2024-04-18T23:59:59", "2024-04-18T00:00:00")]
-        [DataRow("2000-01-01T12:00:00", "2000-01-01T00:00:00")]
-        [DataRow("0001-01-01T03:30:00", "0001-01-01T00:00:00")]
-        [DataRow("9999-12-31T22:00:00", "9999-12-31T00:00:00")]
-        public void Midnight_WhenCalled_ShouldReturnMidnightOnSameDate(string inputDate, string expectedDate)
-        {
-            DateTime input = DateTime.Parse(inputDate);
-            DateTime expected = DateTime.Parse(expectedDate);
-            DateTime actual = input.Midnight();
+        DateTime input = DateTime.Parse(inputDate);
+        DateTime expected = DateTime.Parse(expectedDate);
+        DateTime actual = input.Midnight();
 
-            Assert.AreEqual(expected, actual);
-            Assert.AreEqual(input.Kind, actual.Kind);
-        }
+        Assert.AreEqual(expected, actual);
+        Assert.AreEqual(input.Kind, actual.Kind);
+    }
 
-        /// <summary>
-        /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when KindIsUtc, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        public void Midnight_WhenKindIsUtc_ShouldPreserveKind()
-        {
-            DateTime input = new DateTime(2024, 4, 18, 9, 30, 0, DateTimeKind.Utc);
-            DateTime actual = input.Midnight();
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when KindIsUtc, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void Midnight_WhenKindIsUtc_ShouldPreserveKind()
+    {
+        DateTime input = new DateTime(2024, 4, 18, 9, 30, 0, DateTimeKind.Utc);
+        DateTime actual = input.Midnight();
 
-            Assert.AreEqual(DateTimeKind.Utc, actual.Kind);
-            Assert.AreEqual(new DateTime(2024, 4, 18, 0, 0, 0, DateTimeKind.Utc), actual);
-        }
+        Assert.AreEqual(DateTimeKind.Utc, actual.Kind);
+        Assert.AreEqual(new DateTime(2024, 4, 18, 0, 0, 0, DateTimeKind.Utc), actual);
+    }
 
-        /// <summary>
-        /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when KindIsLocal, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        public void Midnight_WhenKindIsLocal_ShouldPreserveKind()
-        {
-            DateTime input = new DateTime(2024, 4, 18, 22, 15, 0, DateTimeKind.Local);
-            DateTime actual = input.Midnight();
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when KindIsLocal, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void Midnight_WhenKindIsLocal_ShouldPreserveKind()
+    {
+        DateTime input = new DateTime(2024, 4, 18, 22, 15, 0, DateTimeKind.Local);
+        DateTime actual = input.Midnight();
 
-            Assert.AreEqual(DateTimeKind.Local, actual.Kind);
-            Assert.AreEqual(new DateTime(2024, 4, 18, 0, 0, 0, DateTimeKind.Local), actual);
-        }
+        Assert.AreEqual(DateTimeKind.Local, actual.Kind);
+        Assert.AreEqual(new DateTime(2024, 4, 18, 0, 0, 0, DateTimeKind.Local), actual);
+    }
 
-        /// <summary>
-        /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when KindIsUnspecified, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        public void Midnight_WhenKindIsUnspecified_ShouldPreserveKind()
-        {
-            DateTime input = new DateTime(2024, 4, 18, 18, 45, 0, DateTimeKind.Unspecified);
-            DateTime actual = input.Midnight();
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when KindIsUnspecified, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void Midnight_WhenKindIsUnspecified_ShouldPreserveKind()
+    {
+        DateTime input = new DateTime(2024, 4, 18, 18, 45, 0, DateTimeKind.Unspecified);
+        DateTime actual = input.Midnight();
 
-            Assert.AreEqual(DateTimeKind.Unspecified, actual.Kind);
-            Assert.AreEqual(new DateTime(2024, 4, 18, 0, 0, 0, DateTimeKind.Unspecified), actual);
-        }
+        Assert.AreEqual(DateTimeKind.Unspecified, actual.Kind);
+        Assert.AreEqual(new DateTime(2024, 4, 18, 0, 0, 0, DateTimeKind.Unspecified), actual);
+    }
 
-        /// <summary>
-        /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when UsingMinValue, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        public void Midnight_WhenUsingMinValue_ShouldReturnMidnight()
-        {
-            DateTime input = DateTime.MinValue.Date;
-            DateTime actual = input.Midnight();
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when UsingMinValue, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void Midnight_WhenUsingMinValue_ShouldReturnMidnight()
+    {
+        DateTime input = DateTime.MinValue.Date;
+        DateTime actual = input.Midnight();
 
-            Assert.AreEqual(new DateTime(1, 1, 1, 0, 0, 0), actual);
-        }
+        Assert.AreEqual(new DateTime(1, 1, 1, 0, 0, 0), actual);
+    }
 
-        /// <summary>
-        /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when UsingMaxValue, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        public void Midnight_WhenUsingMaxValue_ShouldReturnMidnight()
-        {
-            DateTime input = DateTime.MaxValue.Date;
-            DateTime actual = input.Midnight();
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when UsingMaxValue, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void Midnight_WhenUsingMaxValue_ShouldReturnMidnight()
+    {
+        DateTime input = DateTime.MaxValue.Date;
+        DateTime actual = input.Midnight();
 
-            Assert.AreEqual(new DateTime(9999, 12, 31, 0, 0, 0), actual);
-        }
+        Assert.AreEqual(new DateTime(9999, 12, 31, 0, 0, 0), actual);
     }
 }

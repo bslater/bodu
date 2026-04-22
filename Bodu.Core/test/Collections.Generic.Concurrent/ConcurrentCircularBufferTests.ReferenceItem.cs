@@ -4,19 +4,18 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Collections.Generic.Concurrent
+namespace Bodu.Collections.Generic.Concurrent;
+
+public partial class ConcurrentCircularBufferTests
 {
-    public partial class ConcurrentCircularBufferTests
+    /// <summary>
+    /// A reference type that intentionally does not override Equals or GetHashCode,
+    /// so that equality falls back to reference identity. Used to test Contains behaviour
+    /// for types without custom equality.
+    /// </summary>
+    private sealed class ReferenceItem
     {
-        /// <summary>
-        /// A reference type that intentionally does not override Equals or GetHashCode,
-        /// so that equality falls back to reference identity. Used to test Contains behaviour
-        /// for types without custom equality.
-        /// </summary>
-        private sealed class ReferenceItem
-        {
-            public int Value { get; }
-            public ReferenceItem(int value) => Value = value;
-        }
+        public int Value { get; }
+        public ReferenceItem(int value) => Value = value;
     }
 }

@@ -13,70 +13,69 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bodu.Extensions;
 using System.Globalization;
 
-namespace Bodu.Extensions
-{
-    public partial class DateTimeExtensionsTests
-    {
+namespace Bodu.Extensions;
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.MonthName" />, with Culture, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        [DynamicData(nameof(MonthNameTestData), DynamicDataSourceType.Method)]
-        public void MonthName_WithCulture_ShouldReturnLocalizedName(int year, int month, CultureInfo culture, string expected)
+public partial class DateTimeExtensionsTests
+{
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.MonthName" />, with Culture, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(MonthNameTestData), DynamicDataSourceType.Method)]
+    public void MonthName_WithCulture_ShouldReturnLocalizedName(int year, int month, CultureInfo culture, string expected)
+    {
+        DateTime input = new DateTime(year, month, 1);
+
+        string actual = input.MonthName(culture);
+
+        Assert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.MonthName" />, when CultureIsNull, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(MonthNameFrenchTestData), DynamicDataSourceType.Method)]
+    public void MonthName_WhenCultureIsNull_ShouldFallbackToCurrentCulture(int year, int month, string expected)
+    {
+        var original = CultureInfo.CurrentCulture;
+        try
         {
+            CultureInfo.CurrentCulture = new CultureInfo("fr-FR");
             DateTime input = new DateTime(year, month, 1);
 
-            string actual = input.MonthName(culture);
+            string actual = input.MonthName(null!);
 
             Assert.AreEqual(expected, actual);
         }
-
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.MonthName" />, when CultureIsNull, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        [DynamicData(nameof(MonthNameFrenchTestData), DynamicDataSourceType.Method)]
-        public void MonthName_WhenCultureIsNull_ShouldFallbackToCurrentCulture(int year, int month, string expected)
+        finally
         {
-            var original = CultureInfo.CurrentCulture;
-            try
-            {
-                CultureInfo.CurrentCulture = new CultureInfo("fr-FR");
-                DateTime input = new DateTime(year, month, 1);
-
-                string actual = input.MonthName(null!);
-
-                Assert.AreEqual(expected, actual);
-            }
-            finally
-            {
-                CultureInfo.CurrentCulture = original;
-            }
+            CultureInfo.CurrentCulture = original;
         }
+    }
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.MonthName" />, when UsingMinValue, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        public void MonthName_WhenUsingMinValue_ShouldReturnExpected()
-        {
-            DateTime input = DateTime.MinValue; // 0001-01-01
-            string actual = input.MonthName(new CultureInfo("en-US"));
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.MonthName" />, when UsingMinValue, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void MonthName_WhenUsingMinValue_ShouldReturnExpected()
+    {
+        DateTime input = DateTime.MinValue; // 0001-01-01
+        string actual = input.MonthName(new CultureInfo("en-US"));
 
-            Assert.AreEqual("January", actual);
-        }
+        Assert.AreEqual("January", actual);
+    }
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.MonthName" />, when UsingMaxValue, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        public void MonthName_WhenUsingMaxValue_ShouldReturnExpected()
-        {
-            DateTime input = DateTime.MaxValue; // 9999-12-31
-            string actual = input.MonthName(new CultureInfo("en-US"));
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.MonthName" />, when UsingMaxValue, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void MonthName_WhenUsingMaxValue_ShouldReturnExpected()
+    {
+        DateTime input = DateTime.MaxValue; // 9999-12-31
+        string actual = input.MonthName(new CultureInfo("en-US"));
 
-            Assert.AreEqual("December", actual);
-        }
+        Assert.AreEqual("December", actual);
     }
 }

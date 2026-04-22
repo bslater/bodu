@@ -6,120 +6,119 @@
 
 using System.Security.Cryptography;
 
-namespace Bodu.Security.Cryptography
+namespace Bodu.Security.Cryptography;
+
+[TestClass]
+public sealed partial class Iso7816_4PaddingTests
+    : PaddingStrategyTests<Iso7816_4Padding>
 {
-    [TestClass]
-    public sealed partial class Iso7816_4PaddingTests
-        : PaddingStrategyTests<Iso7816_4Padding>
+    protected override int BlockSize => 16;
+
+    protected override bool ValidatesPaddingOnUnpad => true;
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// ISO/IEC 7816-4 uses a terminator pattern (<c>0x80</c> followed by <c>0x00</c>)
+    /// rather than a trailing length byte, so tests built around a length-byte layout
+    /// do not apply to this scheme.
+    /// </remarks>
+    protected override bool HasLengthByte => false;
+
+    protected override byte[] CreatePlaintextWithResidual(int residualBytes)
     {
-        protected override int BlockSize => 16;
+        byte[] buf = new byte[residualBytes];
+        for (int i = 0; i < buf.Length; i++)
+            buf[i] = (byte)(0x30 + i);
+        return buf;
+    }
 
-        protected override bool ValidatesPaddingOnUnpad => true;
+    /// <summary>
+    /// Verifies that <see cref="Iso7816_4Padding.Pad" /> writes <c>0x80</c> as the first
+    /// pad byte and <c>0x00</c> for every subsequent pad byte.
+    /// </summary>
+    [TestMethod]
+    public void Pad_WhenInputHasResidual_ShouldWriteTerminatorFollowedByZeroBytes()
+    {
+        var padding = CreatePadding();
+        byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 5);
 
-        /// <inheritdoc />
-        /// <remarks>
-        /// ISO/IEC 7816-4 uses a terminator pattern (<c>0x80</c> followed by <c>0x00</c>)
-        /// rather than a trailing length byte, so tests built around a length-byte layout
-        /// do not apply to this scheme.
-        /// </remarks>
-        protected override bool HasLengthByte => false;
+        byte[] padded = padding.Pad(plaintext, BlockSize);
 
-        protected override byte[] CreatePlaintextWithResidual(int residualBytes)
-        {
-            byte[] buf = new byte[residualBytes];
-            for (int i = 0; i < buf.Length; i++)
-                buf[i] = (byte)(0x30 + i);
-            return buf;
-        }
+        Assert.AreEqual(BlockSize, padded.Length);
+        Assert.AreEqual((byte)0x80, padded[plaintext.Length], "First pad byte must be 0x80.");
 
-        /// <summary>
-        /// Verifies that <see cref="Iso7816_4Padding.Pad" /> writes <c>0x80</c> as the first
-        /// pad byte and <c>0x00</c> for every subsequent pad byte.
-        /// </summary>
-        [TestMethod]
-        public void Pad_WhenInputHasResidual_ShouldWriteTerminatorFollowedByZeroBytes()
-        {
-            var padding = CreatePadding();
-            byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 5);
+        for (int i = plaintext.Length + 1; i < padded.Length; i++)
+            Assert.AreEqual((byte)0x00, padded[i], $"Pad byte after the terminator at index {i} must be 0x00.");
+    }
 
-            byte[] padded = padding.Pad(plaintext, BlockSize);
+    /// <summary>
+    /// Verifies that <see cref="Iso7816_4Padding.Pad" /> appends a full block of padding
+    /// (<c>0x80</c> followed by <see cref="BlockSize" /> - 1 zero bytes) when the input
+    /// is already block-aligned.
+    /// </summary>
+    [TestMethod]
+    public void Pad_WhenInputIsBlockAligned_ShouldAppendFullBlockOfPadding()
+    {
+        var padding = CreatePadding();
+        byte[] plaintext = CreatePlaintextWithResidual(0);
 
-            Assert.AreEqual(BlockSize, padded.Length);
-            Assert.AreEqual((byte)0x80, padded[plaintext.Length], "First pad byte must be 0x80.");
+        byte[] padded = padding.Pad(plaintext, BlockSize);
 
-            for (int i = plaintext.Length + 1; i < padded.Length; i++)
-                Assert.AreEqual((byte)0x00, padded[i], $"Pad byte after the terminator at index {i} must be 0x00.");
-        }
+        Assert.AreEqual(plaintext.Length + BlockSize, padded.Length);
+        Assert.AreEqual((byte)0x80, padded[plaintext.Length], "Terminator must sit at the start of the appended block.");
 
-        /// <summary>
-        /// Verifies that <see cref="Iso7816_4Padding.Pad" /> appends a full block of padding
-        /// (<c>0x80</c> followed by <see cref="BlockSize" /> - 1 zero bytes) when the input
-        /// is already block-aligned.
-        /// </summary>
-        [TestMethod]
-        public void Pad_WhenInputIsBlockAligned_ShouldAppendFullBlockOfPadding()
-        {
-            var padding = CreatePadding();
-            byte[] plaintext = CreatePlaintextWithResidual(0);
+        for (int i = plaintext.Length + 1; i < padded.Length; i++)
+            Assert.AreEqual((byte)0x00, padded[i]);
+    }
 
-            byte[] padded = padding.Pad(plaintext, BlockSize);
+    /// <summary>
+    /// Verifies that <see cref="Iso7816_4Padding.Unpad" /> preserves a plaintext byte of
+    /// <c>0x80</c> that sits immediately before the terminator, which is the rightmost
+    /// <c>0x80</c> in the final block.
+    /// </summary>
+    [TestMethod]
+    public void Unpad_WhenPlaintextEndsWithTerminatorValue_ShouldReturnOriginal()
+    {
+        var padding = CreatePadding();
 
-            Assert.AreEqual(plaintext.Length + BlockSize, padded.Length);
-            Assert.AreEqual((byte)0x80, padded[plaintext.Length], "Terminator must sit at the start of the appended block.");
+        byte[] plaintext = new byte[BlockSize - 3];
+        for (int i = 0; i < plaintext.Length - 1; i++)
+            plaintext[i] = (byte)(0x30 + i);
+        plaintext[plaintext.Length - 1] = 0x80;
 
-            for (int i = plaintext.Length + 1; i < padded.Length; i++)
-                Assert.AreEqual((byte)0x00, padded[i]);
-        }
+        byte[] padded = padding.Pad(plaintext, BlockSize);
+        byte[] unpadded = padding.Unpad(padded, BlockSize);
 
-        /// <summary>
-        /// Verifies that <see cref="Iso7816_4Padding.Unpad" /> preserves a plaintext byte of
-        /// <c>0x80</c> that sits immediately before the terminator, which is the rightmost
-        /// <c>0x80</c> in the final block.
-        /// </summary>
-        [TestMethod]
-        public void Unpad_WhenPlaintextEndsWithTerminatorValue_ShouldReturnOriginal()
-        {
-            var padding = CreatePadding();
+        CollectionAssert.AreEqual(plaintext, unpadded);
+    }
 
-            byte[] plaintext = new byte[BlockSize - 3];
-            for (int i = 0; i < plaintext.Length - 1; i++)
-                plaintext[i] = (byte)(0x30 + i);
-            plaintext[plaintext.Length - 1] = 0x80;
+    /// <summary>
+    /// Verifies that <see cref="Iso7816_4Padding.Unpad" /> rejects a final block that
+    /// contains no terminator byte.
+    /// </summary>
+    [TestMethod]
+    public void Unpad_WhenFinalBlockHasNoTerminator_ShouldThrowCryptographicException()
+    {
+        var padding = CreatePadding();
+        byte[] input = new byte[BlockSize];
 
-            byte[] padded = padding.Pad(plaintext, BlockSize);
-            byte[] unpadded = padding.Unpad(padded, BlockSize);
+        Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(input, BlockSize));
+    }
 
-            CollectionAssert.AreEqual(plaintext, unpadded);
-        }
+    /// <summary>
+    /// Verifies that <see cref="Iso7816_4Padding.Unpad" /> rejects a block where bytes
+    /// after the terminator are non-zero.
+    /// </summary>
+    [TestMethod]
+    public void Unpad_WhenBytesAfterTerminatorAreNonZero_ShouldThrowCryptographicException()
+    {
+        var padding = CreatePadding();
 
-        /// <summary>
-        /// Verifies that <see cref="Iso7816_4Padding.Unpad" /> rejects a final block that
-        /// contains no terminator byte.
-        /// </summary>
-        [TestMethod]
-        public void Unpad_WhenFinalBlockHasNoTerminator_ShouldThrowCryptographicException()
-        {
-            var padding = CreatePadding();
-            byte[] input = new byte[BlockSize];
+        byte[] input = new byte[BlockSize];
+        input[BlockSize - 3] = 0x80;
+        input[BlockSize - 2] = 0x00;
+        input[BlockSize - 1] = 0xFF;
 
-            Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(input, BlockSize));
-        }
-
-        /// <summary>
-        /// Verifies that <see cref="Iso7816_4Padding.Unpad" /> rejects a block where bytes
-        /// after the terminator are non-zero.
-        /// </summary>
-        [TestMethod]
-        public void Unpad_WhenBytesAfterTerminatorAreNonZero_ShouldThrowCryptographicException()
-        {
-            var padding = CreatePadding();
-
-            byte[] input = new byte[BlockSize];
-            input[BlockSize - 3] = 0x80;
-            input[BlockSize - 2] = 0x00;
-            input[BlockSize - 1] = 0xFF;
-
-            Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(input, BlockSize));
-        }
+        Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(input, BlockSize));
     }
 }

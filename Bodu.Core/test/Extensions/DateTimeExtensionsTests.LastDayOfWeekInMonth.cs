@@ -12,73 +12,72 @@ using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bodu.Extensions;
 
-namespace Bodu.Extensions
+namespace Bodu.Extensions;
+
+public partial class DateTimeExtensionsTests    
 {
-    public partial class DateTimeExtensionsTests    
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInMonth" />, when Called, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(LastDayOfWeekInMonthTestData), DynamicDataSourceType.Method)]
+    public void LastDayOfWeekInMonth_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
     {
+        DateTime actual = input.LastDayOfWeekInMonth(dayOfWeek);
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInMonth" />, when Called, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        [DynamicData(nameof(LastDayOfWeekInMonthTestData), DynamicDataSourceType.Method)]
-        public void LastDayOfWeekInMonth_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
+        Assert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInMonth" />, when InvalidDayOfWeek, throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void LastDayOfWeekInMonth_WhenInvalidDayOfWeek_ShouldThrowExactly()
+    {
+        DateTime input = new DateTime(2024, 4, 1);
+        var invalidDay = (DayOfWeek)999;
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            DateTime actual = input.LastDayOfWeekInMonth(dayOfWeek);
+            _ = input.LastDayOfWeekInMonth(invalidDay);
+        });
+    }
 
-            Assert.AreEqual(expected, actual);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInMonth" />, when KindIsSet, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DataRow(DateTimeKind.Unspecified)]
+    [DataRow(DateTimeKind.Utc)]
+    [DataRow(DateTimeKind.Local)]
+    public void LastDayOfWeekInMonth_WhenKindIsSet_ShouldPreserveKind(DateTimeKind kind)
+    {
+        DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
+        DateTime actual = input.LastDayOfWeekInMonth(DayOfWeek.Saturday);
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInMonth" />, when InvalidDayOfWeek, throws <see cref="ArgumentOutOfRangeException" />.
-        /// </summary>
-        [TestMethod]
-        public void LastDayOfWeekInMonth_WhenInvalidDayOfWeek_ShouldThrowExactly()
-        {
-            DateTime input = new DateTime(2024, 4, 1);
-            var invalidDay = (DayOfWeek)999;
+        Assert.AreEqual(kind, actual.Kind);
+    }
 
-            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-            {
-                _ = input.LastDayOfWeekInMonth(invalidDay);
-            });
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInMonth" />, when MinValue, returns <see langword="true" />.
+    /// </summary>
+    [TestMethod]
+    public void LastDayOfWeekInMonth_WhenMinValue_ShouldReturnValidResult()
+    {
+        DateTime actual = DateTime.MinValue.LastDayOfWeekInMonth(DayOfWeek.Monday);
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInMonth" />, when KindIsSet, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        [DataRow(DateTimeKind.Unspecified)]
-        [DataRow(DateTimeKind.Utc)]
-        [DataRow(DateTimeKind.Local)]
-        public void LastDayOfWeekInMonth_WhenKindIsSet_ShouldPreserveKind(DateTimeKind kind)
-        {
-            DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
-            DateTime actual = input.LastDayOfWeekInMonth(DayOfWeek.Saturday);
+        Assert.IsTrue(actual >= DateTime.MinValue && actual <= DateTime.MinValue.AddMonths(1).AddDays(-1));
+    }
 
-            Assert.AreEqual(kind, actual.Kind);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInMonth" />, when MaxValue, returns <see langword="true" />.
+    /// </summary>
+    [TestMethod]
+    public void LastDayOfWeekInMonth_WhenMaxValue_ShouldReturnValidResult()
+    {
+        DateTime actual = DateTime.MaxValue.LastDayOfWeekInMonth(DayOfWeek.Friday);
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInMonth" />, when MinValue, returns <see langword="true" />.
-        /// </summary>
-        [TestMethod]
-        public void LastDayOfWeekInMonth_WhenMinValue_ShouldReturnValidResult()
-        {
-            DateTime actual = DateTime.MinValue.LastDayOfWeekInMonth(DayOfWeek.Monday);
-
-            Assert.IsTrue(actual >= DateTime.MinValue && actual <= DateTime.MinValue.AddMonths(1).AddDays(-1));
-        }
-
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInMonth" />, when MaxValue, returns <see langword="true" />.
-        /// </summary>
-        [TestMethod]
-        public void LastDayOfWeekInMonth_WhenMaxValue_ShouldReturnValidResult()
-        {
-            DateTime actual = DateTime.MaxValue.LastDayOfWeekInMonth(DayOfWeek.Friday);
-
-            Assert.IsTrue(actual <= DateTime.MaxValue);
-        }
+        Assert.IsTrue(actual <= DateTime.MaxValue);
     }
 }

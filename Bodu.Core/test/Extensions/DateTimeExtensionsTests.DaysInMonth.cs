@@ -12,22 +12,20 @@ using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bodu.Extensions;
 
-namespace Bodu.Extensions
+namespace Bodu.Extensions;
+
+public partial class DateTimeExtensionsTests
 {
-    public partial class DateTimeExtensionsTests
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.DaysInMonth" />, when Called, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(DaysInMonthTestData), DynamicDataSourceType.Method)]
+    public void DaysInMonth_WhenCalled_ShouldReturnDaysInMonth(DateTime input, int expected)
     {
-
-
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.DaysInMonth" />, when Called, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        [DynamicData(nameof(DaysInMonthTestData), DynamicDataSourceType.Method)]
-        public void DaysInMonth_WhenCalled_ShouldReturnDaysInMonth(DateTime input, int expected)
-        {
-            var actual = input.DaysInMonth();
-            Assert.AreEqual(expected, actual);
-        }
-
+        var actual = input.DaysInMonth();
+        Assert.AreEqual(expected, actual);
     }
+
 }

@@ -4,35 +4,34 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Core.Test
-{
-    public sealed partial class ThrowHelperTests
-    {
-        /// <summary>
-        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsZero" />, when ArrayLengthIsZero, throws <see cref="ArgumentException" />.
-        /// </summary>
-        [TestMethod]
-        [DataRow(0)]
-        public void ThrowIfArrayLengthIsZero_WhenArrayLengthIsZero_ShouldThrowExactly(int length)
-        {
-            var array = new int[length];
-            Assert.ThrowsExactly<ArgumentException>(() =>
-            {
-                ThrowHelper.ThrowIfArrayLengthIsZero(array);
-            });
-        }
+namespace Bodu.Core.Test;
 
-        /// <summary>
-        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsZero" />, when ArrayLengthIsNonZero, NotThrow.
-        /// </summary>
-        [TestMethod]
-        [DataRow(1)]
-        [DataRow(5)]
-        [DataRow(100)]
-        public void ThrowIfArrayLengthIsZero_WhenArrayLengthIsNonZero_ShouldNotThrow(int length)
+public sealed partial class ThrowHelperTests
+{
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsZero" />, when ArrayLengthIsZero, throws <see cref="ArgumentException" />.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0)]
+    public void ThrowIfArrayLengthIsZero_WhenArrayLengthIsZero_ShouldThrowExactly(int length)
+    {
+        var array = new int[length];
+        Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            var array = new int[length];
             ThrowHelper.ThrowIfArrayLengthIsZero(array);
-        }
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsZero" />, when ArrayLengthIsNonZero, NotThrow.
+    /// </summary>
+    [TestMethod]
+    [DataRow(1)]
+    [DataRow(5)]
+    [DataRow(100)]
+    public void ThrowIfArrayLengthIsZero_WhenArrayLengthIsNonZero_ShouldNotThrow(int length)
+    {
+        var array = new int[length];
+        ThrowHelper.ThrowIfArrayLengthIsZero(array);
     }
 }

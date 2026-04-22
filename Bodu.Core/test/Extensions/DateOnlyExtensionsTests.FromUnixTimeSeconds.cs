@@ -13,50 +13,49 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bodu.Extensions;
 using System.Globalization;
 
-namespace Bodu.Extensions
+namespace Bodu.Extensions;
+
+public partial class DateOnlyExtensionsTests
 {
-    public partial class DateOnlyExtensionsTests
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.FromUnixTimeSeconds" />, when ValidInput, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(DateTimeExtensionsTests.FromUnixTimeSecondsTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Property)]
+    public void FromUnixTimeSeconds_WhenValidInput_ShouldReturnExpected(long input, DateTime expectedDateTime)
     {
+        var expected = DateOnly.FromDateTime(expectedDateTime);
+        var actual = DateOnlyExtensions.FromUnixTimeSeconds(input);
 
-        /// <summary>
-        /// Verifies that <see cref="DateOnlyExtensions.FromUnixTimeSeconds" />, when ValidInput, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        [DynamicData(nameof(DateTimeExtensionsTests.FromUnixTimeSecondsTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Property)]
-        public void FromUnixTimeSeconds_WhenValidInput_ShouldReturnExpected(long input, DateTime expectedDateTime)
+        Assert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.FromUnixTimeSeconds" />, when BelowMinimum, throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void FromUnixTimeSeconds_WhenBelowMinimum_ShouldThrowExactly()
+    {
+        long belowMin = -62135596801; // 1 second before DateTime.MinValue
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            var expected = DateOnly.FromDateTime(expectedDateTime);
-            var actual = DateOnlyExtensions.FromUnixTimeSeconds(input);
+            _ = DateTimeExtensions.FromUnixTimeSeconds(belowMin);
+        });
+    }
 
-            Assert.AreEqual(expected, actual);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.FromUnixTimeSeconds" />, when AboveMaximum, throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void FromUnixTimeSeconds_WhenAboveMaximum_ShouldThrowExactly()
+    {
+        long aboveMax = 253402300800; // 1 second after DateTime.MaxValue
 
-        /// <summary>
-        /// Verifies that <see cref="DateOnlyExtensions.FromUnixTimeSeconds" />, when BelowMinimum, throws <see cref="ArgumentOutOfRangeException" />.
-        /// </summary>
-        [TestMethod]
-        public void FromUnixTimeSeconds_WhenBelowMinimum_ShouldThrowExactly()
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            long belowMin = -62135596801; // 1 second before DateTime.MinValue
-
-            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-            {
-                _ = DateTimeExtensions.FromUnixTimeSeconds(belowMin);
-            });
-        }
-
-        /// <summary>
-        /// Verifies that <see cref="DateOnlyExtensions.FromUnixTimeSeconds" />, when AboveMaximum, throws <see cref="ArgumentOutOfRangeException" />.
-        /// </summary>
-        [TestMethod]
-        public void FromUnixTimeSeconds_WhenAboveMaximum_ShouldThrowExactly()
-        {
-            long aboveMax = 253402300800; // 1 second after DateTime.MaxValue
-
-            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-            {
-                _ = DateTimeExtensions.FromUnixTimeSeconds(aboveMax);
-            });
-        }
+            _ = DateTimeExtensions.FromUnixTimeSeconds(aboveMax);
+        });
     }
 }

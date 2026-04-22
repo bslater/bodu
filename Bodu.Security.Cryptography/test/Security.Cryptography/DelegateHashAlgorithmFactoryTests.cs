@@ -4,10 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography
+namespace Bodu.Security.Cryptography;
+
+[TestClass]
+public partial class DelegateHashAlgorithmFactoryTests
 {
-    [TestClass]
-    public partial class DelegateHashAlgorithmFactoryTests
-    {
-    }
 }

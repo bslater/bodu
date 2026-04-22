@@ -13,99 +13,97 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bodu.Extensions;
 using System.Globalization;
 
-namespace Bodu.Extensions
+namespace Bodu.Extensions;
+
+public partial class DateTimeExtensionsTests
 {
-    public partial class DateTimeExtensionsTests
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.NextDayOfWeek(DateTime, DayOfWeek)" /> returns the next occurrence of the requested <see cref="DayOfWeek" /> for each <c>(input, target)</c> pair.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(NextDayOfWeekTestData), DynamicDataSourceType.Method)]
+    public void NextDayOfWeek_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek targetDay, DateTime expected)
     {
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.NextDayOfWeek(DateTime, DayOfWeek)" /> returns the next occurrence of the requested <see cref="DayOfWeek" /> for each <c>(input, target)</c> pair.
-        /// </summary>
-        [TestMethod]
-        [DynamicData(nameof(NextDayOfWeekTestData), DynamicDataSourceType.Method)]
-        public void NextDayOfWeek_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek targetDay, DateTime expected)
+            var actual = input.NextDayOfWeek(targetDay);
+
+            Assert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that targeting the input's own <see cref="DateTime.DayOfWeek" /> advances by exactly one week and preserves the input's <see cref="DateTime.TimeOfDay" />.
+    /// </summary>
+    [TestMethod]
+    public void NextDayOfWeek_WhenTimeIsSet_ShouldPreserveTime()
+    {
+        var input = DateTime.Now;
+        var actual = input.NextDayOfWeek(input.DayOfWeek); // Move one week
+
+        Assert.AreEqual(input.TimeOfDay, actual.TimeOfDay);
+    }
+
+    /// <summary>
+    /// Verifies that an undefined <see cref="DayOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void NextDayOfWeek_WhenInvalidEnum_ShouldThrowExactly()
+    {
+        DateTime input = new DateTime(2024, 4, 18);
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-                var actual = input.NextDayOfWeek(targetDay);
+            _ = input.NextDayOfWeek((DayOfWeek)999);
+        });
+    }
 
-                Assert.AreEqual(expected, actual);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.NextDayOfWeek(DateTime, DayOfWeek)" /> preserves the input's <see cref="DateTime.Kind" /> across all <see cref="DateTimeKind" /> values.
+    /// </summary>
+    [TestMethod]
+    [DataRow(DateTimeKind.Unspecified)]
+    [DataRow(DateTimeKind.Utc)]
+    [DataRow(DateTimeKind.Local)]
+    public void NextDayOfWeekr_WhenKindIsSet_ShouldPreserveKind(DateTimeKind kind)
+    {
+        DateTime input = new DateTime(2024, 4, 18, 10, 0, 0, kind);
+        DateTime actual = input.NextDayOfWeek(DayOfWeek.Wednesday);
 
-        /// <summary>
-        /// Verifies that targeting the input's own <see cref="DateTime.DayOfWeek" /> advances by exactly one week and preserves the input's <see cref="DateTime.TimeOfDay" />.
-        /// </summary>
-        [TestMethod]
-        public void NextDayOfWeek_WhenTimeIsSet_ShouldPreserveTime()
-        {
-            var input = DateTime.Now;
-            var actual = input.NextDayOfWeek(input.DayOfWeek); // Move one week
+        Assert.AreEqual(kind, actual.Kind);
+    }
 
-            Assert.AreEqual(input.TimeOfDay, actual.TimeOfDay);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.NextDayOfWeek(DateTime, DayOfWeek)" /> preserves a sub-second-precision <see cref="DateTime.TimeOfDay" /> on the resulting date.
+    /// </summary>
+    [TestMethod]
+    public void NextDayOfWeek_WhenTimeIsSet_ShouldPreserveTimed()
+    {
+        var time = new TimeSpan(0, 12, 32, 55, 34, 903);
+        var input = new DateTime(2024, 4, 18).Add(time);
 
-        /// <summary>
-        /// Verifies that an undefined <see cref="DayOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" />.
-        /// </summary>
-        [TestMethod]
-        public void NextDayOfWeek_WhenInvalidEnum_ShouldThrowExactly()
-        {
-            DateTime input = new DateTime(2024, 4, 18);
+        var actual = input.NextDayOfWeek(DayOfWeek.Monday).TimeOfDay;
 
-            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-            {
-                _ = input.NextDayOfWeek((DayOfWeek)999);
-            });
-        }
+        Assert.AreEqual(time, actual);
+    }
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.NextDayOfWeek(DateTime, DayOfWeek)" /> preserves the input's <see cref="DateTime.Kind" /> across all <see cref="DateTimeKind" /> values.
-        /// </summary>
-        [TestMethod]
-        [DataRow(DateTimeKind.Unspecified)]
-        [DataRow(DateTimeKind.Utc)]
-        [DataRow(DateTimeKind.Local)]
-        public void NextDayOfWeekr_WhenKindIsSet_ShouldPreserveKind(DateTimeKind kind)
-        {
-            DateTime input = new DateTime(2024, 4, 18, 10, 0, 0, kind);
-            DateTime actual = input.NextDayOfWeek(DayOfWeek.Wednesday);
+    /// <summary>
+    /// Verifies that <see cref="DateTime.MinValue" /> returns a date on or after <see cref="DateTime.MinValue" /> (does not underflow).
+    /// </summary>
+    [TestMethod]
+    public void NextDayOfWeek_WhenUsingMinValue_ShouldReturnNextValidDate()
+    {
+        DateTime actual = DateTime.MinValue.NextDayOfWeek(DayOfWeek.Friday);
 
-            Assert.AreEqual(kind, actual.Kind);
-        }
+        Assert.IsTrue(actual >= DateTime.MinValue);
+    }
 
+    /// <summary>
+    /// Verifies that an input one week before <see cref="DateTime.MaxValue" /> targeting its own <see cref="DateTime.DayOfWeek" /> stays within the valid range.
+    /// </summary>
+    [TestMethod]
+    public void NextDayOfWeek_WhenUsingMaxValueMinus7_ShouldReturnWithinRange()
+    {
+        DateTime input = DateTime.MaxValue.AddDays(-7);
+        DateTime actual = input.NextDayOfWeek(input.DayOfWeek);
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.NextDayOfWeek(DateTime, DayOfWeek)" /> preserves a sub-second-precision <see cref="DateTime.TimeOfDay" /> on the resulting date.
-        /// </summary>
-        [TestMethod]
-        public void NextDayOfWeek_WhenTimeIsSet_ShouldPreserveTimed()
-        {
-            var time = new TimeSpan(0, 12, 32, 55, 34, 903);
-            var input = new DateTime(2024, 4, 18).Add(time);
-
-            var actual = input.NextDayOfWeek(DayOfWeek.Monday).TimeOfDay;
-
-            Assert.AreEqual(time, actual);
-        }
-
-        /// <summary>
-        /// Verifies that <see cref="DateTime.MinValue" /> returns a date on or after <see cref="DateTime.MinValue" /> (does not underflow).
-        /// </summary>
-        [TestMethod]
-        public void NextDayOfWeek_WhenUsingMinValue_ShouldReturnNextValidDate()
-        {
-            DateTime actual = DateTime.MinValue.NextDayOfWeek(DayOfWeek.Friday);
-
-            Assert.IsTrue(actual >= DateTime.MinValue);
-        }
-
-        /// <summary>
-        /// Verifies that an input one week before <see cref="DateTime.MaxValue" /> targeting its own <see cref="DateTime.DayOfWeek" /> stays within the valid range.
-        /// </summary>
-        [TestMethod]
-        public void NextDayOfWeek_WhenUsingMaxValueMinus7_ShouldReturnWithinRange()
-        {
-            DateTime input = DateTime.MaxValue.AddDays(-7);
-            DateTime actual = input.NextDayOfWeek(input.DayOfWeek);
-
-            Assert.IsTrue(actual <= DateTime.MaxValue);
-        }
+        Assert.IsTrue(actual <= DateTime.MaxValue);
     }
 }

@@ -12,88 +12,87 @@ using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bodu.Extensions;
 
-namespace Bodu.Extensions
+namespace Bodu.Extensions;
+
+public partial class DateTimeExtensionsTests
 {
-    public partial class DateTimeExtensionsTests
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when Called, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DataRow("2024-04-18T00:00:00", 0, 0, 0, 0)]
+    [DataRow("2024-04-18T01:30:45", 1, 30, 45, 0)]
+    [DataRow("2024-04-18T12:00:00", 12, 0, 0, 0)]
+    [DataRow("2024-04-18T23:59:59.999", 23, 59, 59, 999)]
+    [DataRow("2024-04-18T15:45:32.123", 15, 45, 32, 123)]
+    public void ToTimeSpan_WhenCalled_ShouldExtractCorrectTime(                   string inputDate, int expectedHours, int expectedMinutes, int expectedSeconds, int expectedMilliseconds)
     {
+        DateTime input = DateTime.Parse(inputDate);
+        TimeSpan expected = new TimeSpan(0, expectedHours, expectedMinutes, expectedSeconds, expectedMilliseconds);
+        TimeSpan actual = input.ToTimeSpan();
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when Called, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        [DataRow("2024-04-18T00:00:00", 0, 0, 0, 0)]
-        [DataRow("2024-04-18T01:30:45", 1, 30, 45, 0)]
-        [DataRow("2024-04-18T12:00:00", 12, 0, 0, 0)]
-        [DataRow("2024-04-18T23:59:59.999", 23, 59, 59, 999)]
-        [DataRow("2024-04-18T15:45:32.123", 15, 45, 32, 123)]
-        public void ToTimeSpan_WhenCalled_ShouldExtractCorrectTime(                   string inputDate, int expectedHours, int expectedMinutes, int expectedSeconds, int expectedMilliseconds)
-        {
-            DateTime input = DateTime.Parse(inputDate);
-            TimeSpan expected = new TimeSpan(0, expectedHours, expectedMinutes, expectedSeconds, expectedMilliseconds);
-            TimeSpan actual = input.ToTimeSpan();
+        Assert.AreEqual(expected, actual);
+    }
 
-            Assert.AreEqual(expected, actual);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when KindIsUtc, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void ToTimeSpan_WhenKindIsUtc_ShouldStillReturnSameTime()
+    {
+        DateTime input = new DateTime(2024, 4, 18, 10, 15, 30, DateTimeKind.Utc);
+        TimeSpan actual = input.ToTimeSpan();
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when KindIsUtc, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        public void ToTimeSpan_WhenKindIsUtc_ShouldStillReturnSameTime()
-        {
-            DateTime input = new DateTime(2024, 4, 18, 10, 15, 30, DateTimeKind.Utc);
-            TimeSpan actual = input.ToTimeSpan();
+        Assert.AreEqual(new TimeSpan(10, 15, 30), actual);
+    }
 
-            Assert.AreEqual(new TimeSpan(10, 15, 30), actual);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when KindIsLocal, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void ToTimeSpan_WhenKindIsLocal_ShouldStillReturnSameTime()
+    {
+        DateTime input = new DateTime(2024, 4, 18, 8, 0, 0, DateTimeKind.Local);
+        TimeSpan actual = input.ToTimeSpan();
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when KindIsLocal, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        public void ToTimeSpan_WhenKindIsLocal_ShouldStillReturnSameTime()
-        {
-            DateTime input = new DateTime(2024, 4, 18, 8, 0, 0, DateTimeKind.Local);
-            TimeSpan actual = input.ToTimeSpan();
+        Assert.AreEqual(TimeSpan.FromHours(8), actual);
+    }
 
-            Assert.AreEqual(TimeSpan.FromHours(8), actual);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when KindIsUnspecified, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void ToTimeSpan_WhenKindIsUnspecified_ShouldStillReturnSameTime()
+    {
+        DateTime input = new DateTime(2024, 4, 18, 22, 45, 59, DateTimeKind.Unspecified);
+        TimeSpan actual = input.ToTimeSpan();
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when KindIsUnspecified, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        public void ToTimeSpan_WhenKindIsUnspecified_ShouldStillReturnSameTime()
-        {
-            DateTime input = new DateTime(2024, 4, 18, 22, 45, 59, DateTimeKind.Unspecified);
-            TimeSpan actual = input.ToTimeSpan();
+        Assert.AreEqual(new TimeSpan(22, 45, 59), actual);
+    }
 
-            Assert.AreEqual(new TimeSpan(22, 45, 59), actual);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when UsingMinValue, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void ToTimeSpan_WhenUsingMinValue_ShouldReturnZero()
+    {
+        DateTime input = DateTime.MinValue; // 0001-01-01 00:00:00
+        TimeSpan actual = input.ToTimeSpan();
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when UsingMinValue, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        public void ToTimeSpan_WhenUsingMinValue_ShouldReturnZero()
-        {
-            DateTime input = DateTime.MinValue; // 0001-01-01 00:00:00
-            TimeSpan actual = input.ToTimeSpan();
+        Assert.AreEqual(TimeSpan.Zero, actual);
+    }
 
-            Assert.AreEqual(TimeSpan.Zero, actual);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when UsingMaxValue, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void ToTimeSpan_WhenUsingMaxValue_ShouldReturnExpectedTime()
+    {
+        DateTime input = DateTime.MaxValue; // 9999-12-31 23:59:59.9999999
+        TimeSpan actual = input.ToTimeSpan();
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when UsingMaxValue, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        public void ToTimeSpan_WhenUsingMaxValue_ShouldReturnExpectedTime()
-        {
-            DateTime input = DateTime.MaxValue; // 9999-12-31 23:59:59.9999999
-            TimeSpan actual = input.ToTimeSpan();
-
-            // Only full milliseconds are compared
-            Assert.AreEqual(new TimeSpan(0, 23, 59, 59, 999), TimeSpan.FromMilliseconds(Math.Floor(actual.TotalMilliseconds)));
-        }
+        // Only full milliseconds are compared
+        Assert.AreEqual(new TimeSpan(0, 23, 59, 59, 999), TimeSpan.FromMilliseconds(Math.Floor(actual.TotalMilliseconds)));
     }
 }

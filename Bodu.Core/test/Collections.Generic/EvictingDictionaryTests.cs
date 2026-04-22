@@ -4,11 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Collections.Generic
+namespace Bodu.Collections.Generic;
+
+[TestClass]
+public partial class EvictingDictionaryTests
 {
-    [TestClass]
-    public partial class EvictingDictionaryTests
-    {
-        public const int DefaultCapacity = 16;
-    }
+    public const int DefaultCapacity = 16;
 }

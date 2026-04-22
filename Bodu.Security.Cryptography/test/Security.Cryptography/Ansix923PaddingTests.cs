@@ -4,41 +4,40 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography
+namespace Bodu.Security.Cryptography;
+
+[TestClass]
+public sealed partial class Ansix923PaddingTests
+    : PaddingStrategyTests<Ansix923Padding>
 {
-    [TestClass]
-    public sealed partial class Ansix923PaddingTests
-        : PaddingStrategyTests<Ansix923Padding>
+    protected override int BlockSize => 16;
+
+    protected override bool ValidatesPaddingOnUnpad => true;
+
+    protected override byte[] CreatePlaintextWithResidual(int residualBytes)
     {
-        protected override int BlockSize => 16;
+        byte[] buf = new byte[residualBytes];
+        for (int i = 0; i < buf.Length; i++)
+            buf[i] = (byte)(0x30 + i);
+        return buf;
+    }
 
-        protected override bool ValidatesPaddingOnUnpad => true;
+    /// <summary>
+    /// Verifies that <see cref="Ansix923Padding.Pad" /> writes <c>0x00</c> for every
+    /// interior pad byte and the pad length in the trailing byte.
+    /// </summary>
+    [TestMethod]
+    public void Pad_WhenInputHasResidual_ShouldWriteZeroInteriorAndTrailingLength()
+    {
+        var padding = CreatePadding();
+        byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 5);
 
-        protected override byte[] CreatePlaintextWithResidual(int residualBytes)
-        {
-            byte[] buf = new byte[residualBytes];
-            for (int i = 0; i < buf.Length; i++)
-                buf[i] = (byte)(0x30 + i);
-            return buf;
-        }
+        byte[] padded = padding.Pad(plaintext, BlockSize);
 
-        /// <summary>
-        /// Verifies that <see cref="Ansix923Padding.Pad" /> writes <c>0x00</c> for every
-        /// interior pad byte and the pad length in the trailing byte.
-        /// </summary>
-        [TestMethod]
-        public void Pad_WhenInputHasResidual_ShouldWriteZeroInteriorAndTrailingLength()
-        {
-            var padding = CreatePadding();
-            byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 5);
+        Assert.AreEqual(BlockSize, padded.Length);
+        Assert.AreEqual((byte)5, padded[padded.Length - 1]);
 
-            byte[] padded = padding.Pad(plaintext, BlockSize);
-
-            Assert.AreEqual(BlockSize, padded.Length);
-            Assert.AreEqual((byte)5, padded[padded.Length - 1]);
-
-            for (int i = plaintext.Length; i < padded.Length - 1; i++)
-                Assert.AreEqual((byte)0x00, padded[i], $"Interior pad byte at index {i} must be 0x00.");
-        }
+        for (int i = plaintext.Length; i < padded.Length - 1; i++)
+            Assert.AreEqual((byte)0x00, padded[i], $"Interior pad byte at index {i} must be 0x00.");
     }
 }

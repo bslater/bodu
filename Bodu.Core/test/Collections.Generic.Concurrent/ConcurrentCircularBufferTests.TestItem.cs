@@ -4,17 +4,16 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Collections.Generic.Concurrent
+namespace Bodu.Collections.Generic.Concurrent;
+
+public partial class ConcurrentCircularBufferTests
 {
-    public partial class ConcurrentCircularBufferTests
+    private sealed record TestItem
     {
-        private sealed record TestItem
-        {
-            public int Value { get; set; }
+        public int Value { get; set; }
 
-            public TestItem(int value) { Value = value; }
+        public TestItem(int value) { Value = value; }
 
-            public override string ToString() => $"Item({Value})";
-        }
+        public override string ToString() => $"Item({Value})";
     }
 }

@@ -4,10 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Extensions
+namespace Bodu.Extensions;
+
+[TestClass]
+public partial class ComparableHelperTests
 {
-    [TestClass]
-    public partial class ComparableHelperTests
-    {
-    }
 }
