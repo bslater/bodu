@@ -4,12 +4,13 @@ Guidance for AI assistants working in this repository. Read this file before mak
 
 ## Repository Overview
 
-**Bodu** is a multi-project C# utility library solution focused on high-performance, well-documented, framework-style building blocks. The solution (`Bodu.sln`) contains three independent projects:
+**Bodu** is a multi-project C# utility library solution focused on high-performance, well-documented, framework-style building blocks. The solution (`Bodu.sln`) contains four independent projects:
 
 | Project | Path | Responsibility |
 |---|---|---|
 | `Bodu.Core` | `Bodu.Core/` | Buffers, generic collections (circular buffer, evicting dictionary), extensions, text, XML, argument validation helpers. |
-| `Bodu.Security.Cryptography` | `Bodu.Security.Cryptography/` | Block ciphers (Threefish 256/512/1024, Skipjack), hashes/checksums (Fletcher, Adler, SipHash, FNV1a, Tiger), crypto helpers. |
+| `Bodu.IO` | `Bodu.IO/` | Non-cryptographic hashing built on `System.IO.Hashing.NonCryptographicHashAlgorithm` — Fletcher-16/32/64 and the full RevEng CRC catalogue (CRC-3 … CRC-64). |
+| `Bodu.Security.Cryptography` | `Bodu.Security.Cryptography/` | Block ciphers (Threefish 256/512/1024, Skipjack), keyed and cryptographic hashes (Adler, SipHash, FNV1a, Tiger), crypto helpers. |
 | `Bodu.Globalization.Calendar` | `Bodu.Globalization.Calendar/` | Calendar/notable date calculations (Easter, Lunar New Year) and date resolvers. |
 
 Each project has the layout:
@@ -23,15 +24,17 @@ Each project has the layout:
 ### Target Frameworks
 
 - `Bodu.Core` — `net8.0`
+- `Bodu.IO` — `net8.0`
 - `Bodu.Security.Cryptography` — `net8.0`
 - `Bodu.Globalization.Calendar` — `net8.0`
 
-Nullable reference types are enabled everywhere. `ImplicitUsings` is enabled for Cryptography and Calendar but **disabled** for `Bodu.Core` — when editing files in `Bodu.Core/`, add explicit `using` directives.
+Nullable reference types are enabled everywhere. `ImplicitUsings` is enabled for `Bodu.IO`, Cryptography, and Calendar but **disabled** for `Bodu.Core` — when editing files in `Bodu.Core/`, add explicit `using` directives.
 
 ## Key Types
 
 - **Bodu.Core**: `CircularBuffer<T>`, `ConcurrentCircularBuffer<T>`, `EvictingDictionary<TKey, TValue>`, `EvictingDictionaryPolicy`, `IRandomGenerator`, `BufferConverter`, `ArrayExtensions`, `BaseEncoding`, `ThrowHelper`.
-- **Bodu.Security.Cryptography**: `Threefish256` / `Threefish512` / `Threefish1024`, `Fletcher32`, `Adler32`, `SipHash`, `FNV1a`, `Skipjack`, `Tiger`, `CryptoHelpers`.
+- **Bodu.IO**: `Fletcher16` / `Fletcher32` / `Fletcher64`, `Crc`, `CrcStandard`, `CrcStandards`, `CrcLookupTableBuilder`, `CrcLookupTableCache`, `BlockNonCryptographicHashAlgorithm<T>`, `IResumableHashAlgorithm`.
+- **Bodu.Security.Cryptography**: `Threefish256` / `Threefish512` / `Threefish1024`, `Adler32`, `SipHash`, `FNV1a`, `Skipjack`, `Tiger`, `CryptoHelpers`.
 - **Bodu.Globalization.Calendar**: `NotableDateService`, `NotableDateResolver`, `NotableDate`, `NotableDateKind`, `EasterSundayNotableDateCalculator`, `LunarNewYearNotableDateCalculator`.
 
 ## Build & Tooling
@@ -104,7 +107,7 @@ Every `.cs` file begins with the standard banner — preserve the separator line
 
 ### Namespace Style
 
-- Use **file-scoped** namespaces — terminate the namespace declaration with `;` and do **not** wrap the file contents in `{ }`.
+- Use **file-scoped** namespaces — terminate the namespace declaration with `;` and do **not** wrap the file contents in `{ }`. This applies to every project in the solution; no exceptions.
 
   ```csharp
   namespace Bodu.Collections.Generic;
@@ -112,8 +115,17 @@ Every `.cs` file begins with the standard banner — preserve the separator line
   public sealed class CircularBuffer<T> { ... }
   ```
 
-- `Bodu.Core` and `Bodu.Globalization.Calendar` already follow this convention throughout.
-- `Bodu.Security.Cryptography` historically uses block-scoped nested namespaces. Match the style of the file you're editing; do not convert existing files solely for style, but new files should prefer the file-scoped `;` form.
+- `Bodu.Core`, `Bodu.IO`, and `Bodu.Globalization.Calendar` already follow this convention throughout.
+- `Bodu.Security.Cryptography` contains legacy block-scoped nested namespace files. Do not mix styles within a file, but when a file's primary type is being edited for other reasons, convert it to the file-scoped `;` form at the same time.
+
+### File Layout
+
+- **One public type per file.** Every `.cs` file declares exactly one top-level type. Nested / child types must live in separate partial-class files nested under the parent file per `.filenesting.json` (see Build & Tooling).
+- Partial-file naming is `<Base>.<Part>.cs` where `<Base>.cs` holds the root declaration. Examples:
+  - `CircularBuffer.cs` ← root
+  - `CircularBuffer.Enumerator.cs`, `CircularBuffer.Debug.cs` ← partials/child-type splits
+  - `CrcStandard.cs` ← root; `CrcStandard.Catalog.cs` ← auto-generated catalogue partial
+- Don't stack unrelated helper types into the same file. If a type only makes sense alongside its parent (private nested enum, internal helper record), split it into a partial file under the parent rather than co-locating it in the root.
 
 ### Naming
 
