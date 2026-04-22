@@ -1,369 +1,417 @@
-﻿/* Unmerged change from project 'Bodu.Globalization.Calendar (net7.0)'
-Before:
-using System;
-After:
-using Bodu.Collections.Generic;
-using Bodu.Extensions;
-using System;
-*/
-
 using Bodu.Extensions;
 using System.Collections.Concurrent;
-using System.Data;
-
-/* Unmerged change from project 'Bodu.Globalization.Calendar (net7.0)'
-Before:
-using Bodu.Collections.Generic;
-using Bodu.Extensions;
-
-using SysGlobal = System.Globalization;
-After:
-using SysGlobal = System.Globalization;
-*/
+using System.Collections.Immutable;
+using System.Globalization;
 
 namespace Bodu.Globalization.Calendar
 {
 	/// <summary>
-	/// Provides a service for managing and querying notable dates based on predefined definitions. Dynamically generates and caches notable
-	/// dates as needed when queries fall outside generated bounds.
+	/// Provides the canonical implementation of <see cref="INotableDateService" />, combining base
+	/// <see cref="INotableDateRuleProvider" /> sources with optional <see cref="INotableDateRuleOverrideProvider" /> layers and producing
+	/// resolved <see cref="NotableDate" /> instances on demand.
 	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// The service caches resolved notable dates per year. Years are generated lazily on first access and cleared via
+	/// <see cref="Invalidate()" /> or <see cref="Invalidate(int)" />. The cache is thread-safe under concurrent reads and writes.
+	/// </para>
+	/// <para>
+	/// Multi-day events are supported: a <see cref="NotableDateRule" /> with <see cref="NotableDateRule.DurationDays" /> greater than one
+	/// produces a single <see cref="NotableDate" /> whose <see cref="NotableDate.EndDate" /> is the inclusive last day of the span. Range
+	/// and single-day queries return the span when any day within it intersects the query.
+	/// </para>
+	/// </remarks>
 	public sealed class NotableDateService : INotableDateService
 	{
 		private const string DefaultResourceName = "Bodu.Globalization.Calendar.NotableDates.xml";
 
-		private readonly IReadOnlyList<NotableDateDefinition> _definitions;
-		private readonly ConcurrentDictionary<DateTime, List<NotableDate>> _dateCache;
+		private readonly ImmutableArray<NotableDateRule> _baseRules;
+		private readonly IReadOnlyList<INotableDateRuleOverrideProvider> _overrideProviders;
+		private readonly IReadOnlyList<NotableDateRule> _effectiveRules;
+		private readonly NotableDateRuleResolver _resolver;
+		private readonly NotableDateAdjuster _adjuster;
+		private readonly INotableDateCollisionResolver _collisionResolver;
+		private readonly INotableDateNameLocalizer? _nameLocalizer;
 		private readonly CalendarWeekendDefinition _weekendDefinition;
 		private readonly IWeekendDefinitionProvider? _weekendProvider;
-		private readonly NotableDateResolver _resolver;
-		private readonly NotableDateAdjuster _adjuster;
-		private readonly object _generationLock = new();
-		private readonly int _maximumOffsetDays;
-		private DateTime minGeneraged = DateTime.MaxValue;
-		private DateTime maxGenerated = DateTime.MinValue;
 
-		private bool _isGeneratingDates;
-		private readonly List<NotableDate> _inProgressDates = new();
+		private readonly ConcurrentDictionary<int, IReadOnlyList<NotableDate>> _yearCache = new();
+		private readonly object _gate = new();
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="NotableDateService" /> class using the default embedded calendar metadata.
+		/// Initializes a new instance of the <see cref="NotableDateService" /> class using the embedded default rule set.
 		/// </summary>
 		public NotableDateService()
-			: this(new[] { new XmlResourceCalendarMetadataSource(DefaultResourceName) }, CalendarWeekendDefinition.SaturdaySunday, null)
+			: this(new[] { (INotableDateRuleProvider)new XmlResourceNotableDateRuleProvider(DefaultResourceName) },
+				   CalendarWeekendDefinition.SaturdaySunday)
 		{ }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="NotableDateService" /> class.
 		/// </summary>
-		/// <param name="definitionProviders">Sources of notable date definitions.</param>
-		/// <param name="weekendDefinition">Weekend definition to apply when evaluating weekends.</param>
-		/// <param name="weekendProvider">Optional custom weekend provider.</param>
-		public NotableDateService(IEnumerable<INotableDateDefinitionProvider> definitionProviders,
-								  CalendarWeekendDefinition weekendDefinition,
-								  IWeekendDefinitionProvider? weekendProvider = null)
+		/// <param name="ruleProviders">Sources of base notable date rules. Must not be <see langword="null" />.</param>
+		/// <param name="weekendDefinition">The weekend definition to apply when evaluating weekends.</param>
+		/// <param name="weekendProvider">An optional custom weekend provider.</param>
+		/// <param name="overrideProviders">Optional layered override providers, applied after the base rules in registration order.</param>
+		/// <param name="calculatorRegistry">Optional registry used to resolve <see cref="DateResolutionStrategy.Calculator" /> rules.</param>
+		/// <param name="adjustmentHandlers">Optional registry of custom <see cref="IAdjustmentHandler" /> instances.</param>
+		/// <param name="collisionResolver">Optional collision resolver. Defaults to <see cref="DefaultNotableDateCollisionResolver" />.</param>
+		/// <param name="nameLocalizer">Optional localizer used to translate notable date names into the active culture.</param>
+		/// <exception cref="ArgumentNullException">Thrown when <paramref name="ruleProviders" /> is <see langword="null" />.</exception>
+		public NotableDateService(
+			IEnumerable<INotableDateRuleProvider> ruleProviders,
+			CalendarWeekendDefinition weekendDefinition,
+			IWeekendDefinitionProvider? weekendProvider = null,
+			IEnumerable<INotableDateRuleOverrideProvider>? overrideProviders = null,
+			INotableDateCalculatorRegistry? calculatorRegistry = null,
+			IAdjustmentHandlerRegistry? adjustmentHandlers = null,
+			INotableDateCollisionResolver? collisionResolver = null,
+			INotableDateNameLocalizer? nameLocalizer = null)
 		{
-			ThrowHelper.ThrowIfNull(definitionProviders);
+			if (ruleProviders is null) throw new ArgumentNullException(nameof(ruleProviders));
 			ThrowHelper.ThrowIfEnumValueIsUndefined(weekendDefinition);
 			ThrowHelper.ThrowIfConditionallyRequiredParameterIsNull(weekendProvider, weekendDefinition, CalendarWeekendDefinition.Custom);
 
-			_definitions = definitionProviders.SelectMany(p => p.LoadDefinitions()).ToList();
+			_baseRules = ruleProviders.SelectMany(p => p.LoadRules()).ToImmutableArray();
+			_overrideProviders = overrideProviders?.ToList() ?? (IReadOnlyList<INotableDateRuleOverrideProvider>)Array.Empty<INotableDateRuleOverrideProvider>();
 			_weekendDefinition = weekendDefinition;
 			_weekendProvider = weekendProvider;
+			_collisionResolver = collisionResolver ?? new DefaultNotableDateCollisionResolver();
+			_nameLocalizer = nameLocalizer;
 
-			_resolver = new NotableDateResolver(_definitions);
-			_adjuster = new NotableDateAdjuster(IsWeekend, IsNonWorkingDay, _weekendDefinition, _weekendProvider);
-			_maximumOffsetDays = CalculateMaximumOffsetDays(_definitions);
-
-			_dateCache = new ConcurrentDictionary<DateTime, List<NotableDate>>();
+			_effectiveRules = ApplyOverrides(_baseRules, _overrideProviders);
+			_resolver = new NotableDateRuleResolver(_effectiveRules, calculatorRegistry);
+			_adjuster = new NotableDateAdjuster(
+				IsWeekend,
+				IsNonWorkingDay,
+				_weekendDefinition,
+				_weekendProvider,
+				adjustmentHandlers,
+				ResolveByName);
 		}
 
-		private static int CalculateMaximumOffsetDays(IEnumerable<NotableDateDefinition> definitions)
-		{
-			return definitions
-				.SelectMany(def =>
-					Enumerable.Concat(
-						def.DefinitionType == NotableDateDefinitionType.OffsetFrom && def.OffsetDays.HasValue
-							? new[] { Math.Abs(def.OffsetDays.Value) }
-							: Array.Empty<int>(),
-						def.AdjustmentRules.Select(r => Math.Abs(r.OffsetDays))
-					))
-				.DefaultIfEmpty(0)
-				.Max();
-		}
+		// --------------------------------------------------------------------------------------
+		// INotableDateService surface
+		// --------------------------------------------------------------------------------------
 
 		/// <inheritdoc />
-		public bool IsWeekend(DateTime date) =>
-			date.IsWeekend(_weekendDefinition, _weekendProvider);
+		public bool IsWeekend(DateTime date) => date.IsWeekend(_weekendDefinition, _weekendProvider);
 
 		/// <inheritdoc />
 		public bool IsNonWorkingDay(DateTime date, string? territoryCode = null, Type? calendarType = null)
 		{
-			var targetDate = date.Date;
-			IEnumerable<NotableDate> candidates;
+			if (IsWeekend(date)) return true;
 
-			if (_isGeneratingDates)
+			var perYear = GetOrGenerateYear(date.Year);
+			foreach (var notable in perYear)
 			{
-				candidates = _dateCache.TryGetValue(targetDate, out var committed)
-					? committed.Concat(_inProgressDates.Where(d => d.Date == targetDate))
-					: _inProgressDates.Where(d => d.Date == targetDate);
-			}
-			else
-			{
-				EnsureDatesGenerated(targetDate, targetDate);
+				if (!notable.IsNonWorkingDay) continue;
+				if (!ContainsDay(notable, date.Date)) continue;
+				if (!MatchesContext(notable, territoryCode, calendarType)) continue;
 
-				candidates = _dateCache.TryGetValue(targetDate, out var found)
-					? found
-					: Enumerable.Empty<NotableDate>();
+				return true;
 			}
 
-			return candidates.Any(d => MatchesContext(d, territoryCode, calendarType) && d.NonWorking)
-				|| IsWeekend(targetDate);
+			return false;
 		}
 
 		/// <inheritdoc />
 		public IReadOnlyList<NotableDate> GetNotableDates(int year, string? territoryCode = null, Type? calendarType = null)
 		{
-			var start = new DateTime(year, 1, 1);
-			var end = new DateTime(year, 12, 31);
-			return GetNotableDates(start, end, territoryCode, calendarType);
+			var perYear = GetOrGenerateYear(year);
+			return ProjectAndOrder(perYear, territoryCode, calendarType);
 		}
 
 		/// <inheritdoc />
 		public IReadOnlyList<NotableDate> GetNotableDates(DateTime startDate, DateTime endDate, string? territoryCode = null, Type? calendarType = null)
 		{
-			EnsureDatesGenerated(startDate.Date, endDate.Date);
+			if (endDate < startDate) (startDate, endDate) = (endDate, startDate);
 
-			return _dateCache
-				.Where(kv => kv.Key >= startDate.Date && kv.Key <= endDate.Date)
-				.SelectMany(kv => kv.Value)
-				.Where(d => MatchesContext(d, territoryCode, calendarType))
-				.OrderBy(d => d.Date)
+			var results = new List<NotableDate>();
+			for (int year = startDate.Year; year <= endDate.Year; year++)
+			{
+				var perYear = GetOrGenerateYear(year);
+				foreach (var notable in perYear)
+				{
+					if (notable.EndDate < startDate.Date || notable.Date > endDate.Date) continue;
+					if (!MatchesContext(notable, territoryCode, calendarType)) continue;
+
+					results.Add(LocaliseIfNeeded(notable));
+				}
+			}
+
+			// Apply the collision resolver per anchor day so that overlap rules see only same-day results, then concatenate in date order.
+			return results
+				.GroupBy(n => n.Date.Date)
+				.OrderBy(g => g.Key)
+				.SelectMany(g => _collisionResolver.Resolve(g.Key, g.ToList()))
 				.ToList();
 		}
 
 		/// <inheritdoc />
 		public IReadOnlyList<NotableDate> GetNotableDates(DateTime date, string? territoryCode = null, Type? calendarType = null)
 		{
-			return GetNotableDates(date.Date, date.Date, territoryCode, calendarType);
+			var results = new List<NotableDate>();
+
+			// Multi-day spans may have started in the previous year; check both years to cover wrap-around.
+			foreach (var year in new[] { date.Year - 1, date.Year })
+			{
+				if (year < 1) continue;
+
+				var perYear = GetOrGenerateYear(year);
+				foreach (var notable in perYear)
+				{
+					if (!ContainsDay(notable, date.Date)) continue;
+					if (!MatchesContext(notable, territoryCode, calendarType)) continue;
+
+					results.Add(LocaliseIfNeeded(notable));
+				}
+			}
+
+			return _collisionResolver.Resolve(date.Date, results);
 		}
 
-		private void EnsureDatesGenerated(DateTime startDate, DateTime endDate)
+		/// <inheritdoc />
+		public void Invalidate()
 		{
-			if (startDate >= minGeneraged && endDate <= maxGenerated)
-				return;
+			_yearCache.Clear();
+		}
 
-			lock (_generationLock)
+		/// <inheritdoc />
+		public void Invalidate(int year)
+		{
+			_yearCache.TryRemove(year, out _);
+		}
+
+		// --------------------------------------------------------------------------------------
+		// Generation pipeline
+		// --------------------------------------------------------------------------------------
+
+		private IReadOnlyList<NotableDate> GetOrGenerateYear(int year)
+		{
+			if (_yearCache.TryGetValue(year, out var cached))
+				return cached;
+
+			lock (_gate)
 			{
-				var generateStart = ComparableHelper.Min(startDate, minGeneraged);
-				var generateEnd = ComparableHelper.Max(endDate, maxGenerated);
+				if (_yearCache.TryGetValue(year, out cached))
+					return cached;
 
-				GenerateDatesForRange(generateStart, generateEnd);
-
-				minGeneraged = startDate;
-				maxGenerated = endDate;
+				var generated = GenerateYear(year);
+				_yearCache[year] = generated;
+				return generated;
 			}
 		}
 
-		private void GenerateDatesForRange(DateTime startDate, DateTime endDate)
+		private IReadOnlyList<NotableDate> GenerateYear(int year)
 		{
-			_isGeneratingDates = true;
-			try
+			var output = new List<NotableDate>();
+
+			foreach (var rule in _effectiveRules)
 			{
-				_inProgressDates.Clear();
+				if (!NotableDateRuleResolver.IsApplicable(rule, year))
+					continue;
 
-				DateTimeExtensions.GetDateParts(startDate.AddDays(-_maximumOffsetDays), out int startYear, out int startMonth, out _);
-				DateTimeExtensions.GetDateParts(endDate.AddDays(_maximumOffsetDays), out int endYear, out int endMonth, out _);
-
-				for (int year = startYear; year <= endYear; year++)
+				DateTime? anchor;
+				try
 				{
-					foreach (var definition in _definitions)
+					anchor = _resolver.ResolveAnchorDate(rule, year);
+				}
+				catch (InvalidOperationException)
+				{
+					// Surface broken rules at query time, not at construction time, so a single bad rule does not poison the cache.
+					continue;
+				}
+
+				if (anchor is null)
+					continue;
+
+				foreach (var territory in ExpandTerritories(rule.TerritoryCode))
+				{
+					if (IsRemovedByOverride(rule, year, territory))
+						continue;
+
+					var baseDate = BuildNotableDate(rule, anchor.Value, territory, adjustmentReason: null);
+					output.Add(baseDate);
+
+					foreach (var adjustment in rule.Adjustments.OrderBy(a => a.Priority))
 					{
-						if ((definition.FirstYear.HasValue && year < definition.FirstYear.Value) ||
-							(definition.LastYear.HasValue && year > definition.LastYear.Value))
+						if (!NotableDateAdjuster.IsInScope(adjustment, year, territory, rule.CalendarType))
 							continue;
 
-						var baseDate = _resolver.ResolveBaseDate(definition, year);
-						if (baseDate is null)
+						var result = _adjuster.Apply(adjustment, rule, anchor.Value, territory, rule.CalendarType);
+						if (!result.Activated || result.AdjustedDate.Date == anchor.Value.Date)
 							continue;
 
-						var territoryCodes = definition.TerritoryCode?.Length > 0
-							? definition.TerritoryCode.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Distinct(StringComparer.OrdinalIgnoreCase).ToArray()
-							: new[] { (string?)null }; // No territory specified
-
-						foreach (var territory in territoryCodes)
-						{
-							var baseNotable = new NotableDate
-							{
-								Date = baseDate.Value,
-								Name = definition.Name,
-								Kind = definition.NotableDateKind,
-								NonWorking = definition.NonWorking ?? false,
-								TerritoryCode = territory,
-								CalendarType = definition.CalendarType,
-								Comment = definition.Comment
-							};
-
-							foreach (var rule in definition.AdjustmentRules.OrderBy(r => r.Priority))
-							{
-								var ruleTerritories = rule.TerritoryCode?.Length > 0
-									? rule.TerritoryCode.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Distinct(StringComparer.OrdinalIgnoreCase).ToArray()
-									: new[] { (string?)null }; // No territory specified
-
-								foreach (var ruleTerritory in ruleTerritories)
-								{
-									// Clone baseNotable and override Territory for rule if needed
-									var ruleBase = baseNotable with { TerritoryCode = ruleTerritory ?? baseNotable.TerritoryCode };
-
-									var (success, adjustedDate) = _adjuster.Apply(rule, ruleBase.Date);
-
-									if (!success || adjustedDate.Date == ruleBase.Date.Date)
-										continue;
-
-									_inProgressDates.Add(ruleBase with
-									{
-										Date = adjustedDate,
-										OriginalDate = ruleBase.Date,
-										NonWorking = rule.NonWorking ?? ruleBase.NonWorking
-									});
-								}
-							}
-
-							_inProgressDates.Add(baseNotable);
-						}
+						bool isNonWorking = result.IsNonWorkingOverride ?? rule.IsNonWorkingDay ?? false;
+						var reason = new AdjustmentReason(anchor.Value, result.Trigger, result.Action, result.HandlerKey);
+						output.Add(BuildNotableDate(rule, result.AdjustedDate, territory, reason, isNonWorking));
 					}
 				}
+			}
 
-				foreach (var notable in _inProgressDates.Where(d => d.Date.IsInRange(startDate, endDate)))
-				{
-					AddToCache(notable);
-				}
-			}
-			finally
-			{
-				_isGeneratingDates = false;
-				_inProgressDates.Clear();
-			}
+			return output;
 		}
 
-		/*
-		private void GenerateDatesForRange(DateTime startDate, DateTime endDate)
+		private static NotableDate BuildNotableDate(
+			NotableDateRule rule,
+			DateTime date,
+			string? territory,
+			AdjustmentReason? adjustmentReason,
+			bool? isNonWorkingOverride = null)
 		{
-			_isGeneratingDates = true;
-			try
+			return new NotableDate
 			{
-				_inProgressDates.Clear();
-
-				DateTimeExtensions.GetDateParts(startDate.AddDays(-_maximumOffsetDays), out int startYear, out int startMonth, out _);
-				DateTimeExtensions.GetDateParts(endDate.AddDays(_maximumOffsetDays), out int endYear, out int endMonth, out _);
-
-				for (int year = startYear; year <= endYear; year++)
-				{
-					foreach (var definition in _definitions)
-					{
-						if ((definition.FirstYear.HasValue && year < definition.FirstYear.Value) ||
-							(definition.LastYear.HasValue && year > definition.LastYear.Value))
-							continue;
-
-						var baseDate = _resolver.ResolveBaseDate(definition, year);
-						if (baseDate == null)
-							continue;
-
-						var baseNotable = new NotableDate
-						{
-							Date = baseDate.Value,
-							Name = definition.Name,
-							Kind = definition.NotableDateKind,
-							NonWorking = definition.NonWorking ?? false,
-							TerritoryCode = definition.TerritoryCode,
-							CalendarType = definition.CalendarType,
-							Comment = definition.Comment
-						};
-
-						foreach (var rule in definition.AdjustmentRules.OrderBy(r => r.Priority))
-						{
-							var (success, adjustedDate) = _adjuster.Apply(rule, baseNotable.Date);
-
-							if (!success || adjustedDate.Date == baseNotable.Date.Date)
-								continue;
-
-							_inProgressDates.Add(baseNotable with
-							{
-								Date = adjustedDate,
-								OriginalDate = baseNotable.Date,
-								NonWorking = rule.NonWorking ?? baseNotable.NonWorking
-							});
-						}
-
-						_inProgressDates.Add(baseNotable);
-					}
-				}
-
-				foreach (var notable in _inProgressDates.Where(d => d.Date.IsInRange(startDate, endDate)))
-				{
-					AddToCache(notable);
-				}
-			}
-			finally
-			{
-				_isGeneratingDates = false;
-				_inProgressDates.Clear();
-			}
+				Date = date,
+				Name = rule.Name,
+				Category = rule.Category,
+				DurationDays = Math.Max(1, rule.DurationDays),
+				IsNonWorkingDay = isNonWorkingOverride ?? rule.IsNonWorkingDay ?? false,
+				CalendarType = rule.CalendarType,
+				TerritoryCode = territory,
+				Tags = rule.Tags,
+				Comment = rule.Comment,
+				AdjustmentReason = adjustmentReason,
+			};
 		}
-		*/
 
-		private void AddToCache(NotableDate notableDate)
+		private NotableDate LocaliseIfNeeded(NotableDate notable)
 		{
-			var date = notableDate.Date.Date;
-			_dateCache.AddOrUpdate(
-				date,
-				_ => new List<NotableDate> { notableDate },
-				(_, list) =>
-				{
-					lock (list)
-					{
-						if (!list.Contains(notableDate))
-						{
-							list.Add(notableDate);
-						}
-						return list;
-					}
-				});
+			if (_nameLocalizer is null) return notable;
+
+			var localised = _nameLocalizer.GetDisplayName(notable, CultureInfo.CurrentCulture);
+			if (string.Equals(localised, notable.Name, StringComparison.Ordinal))
+				return notable;
+
+			return notable with { Name = localised };
 		}
 
-		/// <summary>
-		/// Determines whether a notable date matches the given territory and calendar context.
-		/// </summary>
-		/// <param name="date">The notable date to evaluate.</param>
-		/// <param name="territoryCode">
-		/// The requested ISO country code or country-region code (e.g., "AU", "AU-NSW"). If <c>null</c> or empty, matches all.
-		/// </param>
-		/// <param name="calendarType">Optional calendar type constraint. If <c>null</c>, matches all calendar types.</param>
-		/// <returns><c>true</c> if the date matches the context; otherwise, <c>false</c>.</returns>
-		private static bool MatchesContext(NotableDate date, string? territoryCode, Type? calendarType) =>
-			(
+		private IReadOnlyList<NotableDate> ProjectAndOrder(IReadOnlyList<NotableDate> perYear, string? territoryCode, Type? calendarType)
+		{
+			var matching = new List<NotableDate>();
+			foreach (var notable in perYear)
+			{
+				if (!MatchesContext(notable, territoryCode, calendarType)) continue;
+				matching.Add(LocaliseIfNeeded(notable));
+			}
 
-				// No territory filter requested → match everything
-				string.IsNullOrEmpty(territoryCode) ||
+			return matching
+				.OrderBy(n => n.Date)
+				.ThenBy(n => n.Name, StringComparer.OrdinalIgnoreCase)
+				.ToList();
+		}
 
-				// Date has no specific territory → match (considered general)
-				string.IsNullOrEmpty(date.TerritoryCode) ||
+		// --------------------------------------------------------------------------------------
+		// Override / scope helpers
+		// --------------------------------------------------------------------------------------
 
-				// Exact territory match (e.g., "AU" == "AU")
-				date.TerritoryCode.Equals(territoryCode, StringComparison.OrdinalIgnoreCase) ||
+		private static IReadOnlyList<NotableDateRule> ApplyOverrides(
+			ImmutableArray<NotableDateRule> baseRules,
+			IReadOnlyList<INotableDateRuleOverrideProvider> overrideProviders)
+		{
+			if (overrideProviders.Count == 0)
+				return baseRules.IsDefault ? (IReadOnlyList<NotableDateRule>)Array.Empty<NotableDateRule>() : baseRules;
 
-				// Subregion match (e.g., "AU-NSW" starts with "AU-")
-				date.TerritoryCode.StartsWith(territoryCode + "-", StringComparison.OrdinalIgnoreCase)
-			) &&
-			(
+			// Apply additions by composite (name, territory) key so that regional variants of the same notable date (e.g. multiple
+			// Labour Day variants across Australian states) survive instead of collapsing into a single entry. Removals are evaluated
+			// per-year inside GenerateYear so they can be scoped to specific years and territories.
+			IEnumerable<NotableDateRule> source = baseRules.IsDefault
+				? Enumerable.Empty<NotableDateRule>()
+				: baseRules;
 
-				// No calendar constraint → match
-				calendarType == null ||
+			var byKey = new Dictionary<(string Name, string Territory), NotableDateRule>();
+			foreach (var rule in source)
+			{
+				byKey[CompositeKey(rule)] = rule;
+			}
 
-				// Date has no specific calendar → match
-				date.CalendarType == null ||
+			foreach (var provider in overrideProviders)
+			{
+				foreach (var addition in provider.GetAdditions())
+				{
+					byKey[CompositeKey(addition)] = addition;
+				}
+			}
 
-				// Exact calendar type match (e.g., Gregorian == Gregorian)
-				date.CalendarType == calendarType
-			);
+			return byKey.Values.ToList();
+		}
+
+		private static (string Name, string Territory) CompositeKey(NotableDateRule rule) =>
+			(rule.Name ?? string.Empty, rule.TerritoryCode ?? string.Empty);
+
+		private bool IsRemovedByOverride(NotableDateRule rule, int year, string? territory)
+		{
+			foreach (var provider in _overrideProviders)
+			{
+				foreach (var removal in provider.GetRemovals())
+				{
+					if (!string.Equals(removal.RuleName, rule.Name, StringComparison.OrdinalIgnoreCase))
+						continue;
+
+					if (removal.FromYear is { } from && year < from) continue;
+					if (removal.ToYear is { } to && year > to) continue;
+
+					if (!string.IsNullOrEmpty(removal.TerritoryCode))
+					{
+						if (string.IsNullOrEmpty(territory)) continue;
+						if (!TerritoryCode.TryParse(removal.TerritoryCode, out var removalScope)) continue;
+						if (!TerritoryCode.TryParse(territory, out var actual)) continue;
+						if (!removalScope.Contains(actual)) continue;
+					}
+
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		private static IEnumerable<string?> ExpandTerritories(string? value)
+		{
+			if (string.IsNullOrEmpty(value))
+			{
+				yield return null;
+				yield break;
+			}
+
+			foreach (var territory in TerritoryCode.ParseList(value))
+				yield return territory.ToString();
+		}
+
+		private static bool MatchesContext(NotableDate date, string? territoryCode, Type? calendarType)
+		{
+			if (calendarType is not null && date.CalendarType is not null && date.CalendarType != calendarType)
+				return false;
+
+			if (string.IsNullOrEmpty(territoryCode) || string.IsNullOrEmpty(date.TerritoryCode))
+				return true;
+
+			if (!TerritoryCode.TryParse(territoryCode, out var requested))
+				return false;
+			if (!TerritoryCode.TryParse(date.TerritoryCode, out var owned))
+				return false;
+
+			// A query for "AU" matches both "AU" and any "AU-XXX" subdivision; a query for "AU-NSW" matches only itself or the parent "AU".
+			return requested.Contains(owned) || owned.Contains(requested);
+		}
+
+		private static bool ContainsDay(NotableDate notable, DateTime day)
+		{
+			return day >= notable.Date.Date && day <= notable.EndDate.Date;
+		}
+
+		private DateTime? ResolveByName(string ruleName, int year, string? territoryCode, Type? calendarType)
+		{
+			var perYear = GetOrGenerateYear(year);
+			foreach (var notable in perYear)
+			{
+				if (!string.Equals(notable.Name, ruleName, StringComparison.OrdinalIgnoreCase)) continue;
+				if (!MatchesContext(notable, territoryCode, calendarType)) continue;
+
+				return notable.Date;
+			}
+
+			return null;
+		}
 	}
 }

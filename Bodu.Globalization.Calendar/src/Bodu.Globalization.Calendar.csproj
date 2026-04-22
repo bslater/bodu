@@ -18,6 +18,14 @@
     <DefineConstants>$(DefineConstants);NETSTANDARD2_0</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <DefineConstants>$(DefineConstants);NET6_0_OR_GREATER</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
+    <DefineConstants>$(DefineConstants);NET7_0_OR_GREATER</DefineConstants>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
     <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
   </PropertyGroup>
@@ -34,6 +42,11 @@
   <ItemGroup>
     <None Remove="Globalization.Calendar\NotableDates.xml" />
     <None Remove="Globalization.Calendar\NotableDates.xsd" />
+    <None Remove="Globalization.Calendar\Resources\Common.xml" />
+    <None Remove="Globalization.Calendar\Resources\Christian.xml" />
+    <None Remove="Globalization.Calendar\Resources\US.xml" />
+    <None Remove="Globalization.Calendar\Resources\GB.xml" />
+    <None Remove="Globalization.Calendar\Resources\FR.xml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -47,6 +60,11 @@
     <EmbeddedResource Include="Globalization.Calendar\NotableDates.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Resources\Common.xml" />
+    <EmbeddedResource Include="Globalization.Calendar\Resources\Christian.xml" />
+    <EmbeddedResource Include="Globalization.Calendar\Resources\US.xml" />
+    <EmbeddedResource Include="Globalization.Calendar\Resources\GB.xml" />
+    <EmbeddedResource Include="Globalization.Calendar\Resources\FR.xml" />
     <EmbeddedResource Include="ResourceStrings.resx">
       <LastGenOutput>ResourceStrings.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
