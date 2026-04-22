@@ -20,7 +20,7 @@ jobs:
       TEST_PROJECTS: >-
         Bodu.Core/test/Bodu.Core.Test.csproj
         Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.csproj
-        Bodu.IO/test/Bodu.IO.Test.csproj
+        Bodu.IO.Hashing/test/Bodu.IO.Hashing.Test.csproj
         Bodu.Globalization.Calendar/test/Bodu.Globalization.Calendar.Test.csproj
     steps:
       - name: Checkout
