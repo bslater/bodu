@@ -77,7 +77,7 @@
         };
 
         /// <summary>
-        /// Verifies that Batch, when Called, Defer Execution.
+        /// Verifies that <see cref="IEnumerableExtensions.Batch{T}(IEnumerable{T}, int)" /> defers execution until the returned sequence is enumerated.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetBatchTestCases), DynamicDataSourceType.Method)]
@@ -87,7 +87,7 @@
         }
 
         /// <summary>
-        /// Verifies that Batch, when Enumerated, Trigger Execution.
+        /// Verifies that enumerating a batched sequence triggers execution against its source.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetBatchTestCases), DynamicDataSourceType.Method)]
@@ -97,7 +97,7 @@
         }
 
         /// <summary>
-        /// Verifies that Batch, when Enumerated, returns Expected Results.
+        /// Verifies that enumerating a batched sequence yields the expected groups for even/uneven splits and for projection overloads (selector and indexed selector).
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetBatchTestCases), DynamicDataSourceType.Method)]
@@ -107,7 +107,7 @@
         }
 
         /// <summary>
-        /// Verifies that Batch, when Source Is Null, throws Exactly.
+        /// Verifies that a <see langword="null" /> source throws <see cref="ArgumentNullException" />.
         /// </summary>
         [TestMethod]
         public void Batch_WhenSourceIsNull_ShouldThrowExactly()
@@ -120,7 +120,7 @@
         }
 
         /// <summary>
-        /// Verifies that Batch, with Selector, when Selector Is Null, throws Exactly.
+        /// Verifies that a <see langword="null" /> projection selector throws <see cref="ArgumentNullException" />.
         /// </summary>
         [TestMethod]
         public void Batch_WithSelector_WhenSelectorIsNull_ShouldThrowExactly()
@@ -133,7 +133,7 @@
         }
 
         /// <summary>
-        /// Verifies that Batch, with Index Selector, when Selector Is Null, throws Exactly.
+        /// Verifies that a <see langword="null" /> indexed projection selector throws <see cref="ArgumentNullException" />.
         /// </summary>
         [TestMethod]
         public void Batch_WithIndexSelector_WhenSelectorIsNull_ShouldThrowExactly()
@@ -146,7 +146,7 @@
         }
 
         /// <summary>
-        /// Verifies that Batch, when Size Is Invalid, throws Exactly.
+        /// Verifies that a non-positive batch size throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         [DataRow(-1)]
@@ -161,7 +161,7 @@
         }
 
         /// <summary>
-        /// Verifies that Batch, with Empty Source, returns Empty.
+        /// Verifies that batching an empty source produces an empty sequence with no batches.
         /// </summary>
         [TestMethod]
         public void Batch_WithEmptySource_ShouldReturnEmpty()

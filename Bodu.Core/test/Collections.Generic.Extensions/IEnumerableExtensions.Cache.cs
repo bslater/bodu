@@ -12,7 +12,7 @@ namespace Bodu.Collections.Generic.Extensions
     public sealed partial class IEnumerableExtensionsTests_Cache : EnumerableTests
     {
         /// <summary>
-        /// Verifies that Cache Defer Execution.
+        /// Verifies that <see cref="IEnumerableExtensions.Cache{T}" /> defers execution until the returned sequence is enumerated.
         /// </summary>
         [TestMethod]
         public void Cache_ShouldDeferExecution()
@@ -21,7 +21,7 @@ namespace Bodu.Collections.Generic.Extensions
         }
 
         /// <summary>
-        /// Verifies that Cache Enumerate On Demand.
+        /// Verifies that <see cref="IEnumerableExtensions.Cache{T}" /> begins enumerating its source only when the consumer requests an item.
         /// </summary>
         [TestMethod]
         public void Cache_ShouldEnumerateOnDemand()
@@ -30,7 +30,7 @@ namespace Bodu.Collections.Generic.Extensions
         }
 
         /// <summary>
-        /// Verifies that Cache, when Enumerated From Multiple Threads, returns Consistent Results.
+        /// Verifies that a cached sequence enumerated concurrently from multiple threads yields the same complete result to every reader.
         /// </summary>
         [TestMethod]
         public void Cache_WhenEnumeratedFromMultipleThreads_ShouldReturnConsistentResults()
@@ -46,7 +46,7 @@ namespace Bodu.Collections.Generic.Extensions
         }
 
         /// <summary>
-        /// Verifies that Cache, when Enumerated Twice, Enumerate Source Only Once.
+        /// Verifies that enumerating a cached sequence twice yields the same items and the underlying source is only enumerated once.
         /// </summary>
         [TestMethod]
         public void Cache_WhenEnumeratedTwice_ShouldEnumerateSourceOnlyOnce()
@@ -61,7 +61,7 @@ namespace Bodu.Collections.Generic.Extensions
         }
 
         /// <summary>
-        /// Verifies that Cache, when Enumeration Is Interrupted, caches Partial Results.
+        /// Verifies that interrupting an in-progress enumeration still caches the items already emitted, and a fresh enumeration completes the source without re-pulling the cached prefix.
         /// </summary>
         [TestMethod]
         public void Cache_WhenEnumerationIsInterrupted_ShouldCachePartialResults()
@@ -81,7 +81,7 @@ namespace Bodu.Collections.Generic.Extensions
         }
 
         /// <summary>
-        /// Verifies that Cache, when Source Is Already Cached, returns Same Instance.
+        /// Verifies that calling <see cref="IEnumerableExtensions.Cache{T}" /> on an already-cached sequence returns the same instance (idempotent).
         /// </summary>
         [TestMethod]
         public void Cache_WhenSourceIsAlreadyCached_ShouldReturnSameInstance()
@@ -93,7 +93,7 @@ namespace Bodu.Collections.Generic.Extensions
         }
 
         /// <summary>
-        /// Verifies that Cache, when Source Is Collection, returns Same Instance.
+        /// Verifies that <see cref="IEnumerableExtensions.Cache{T}" /> short-circuits and returns the source instance when it already implements <see cref="ICollection{T}" />.
         /// </summary>
         [TestMethod]
         public void Cache_WhenSourceIsCollection_ShouldReturnSameInstance()
@@ -105,7 +105,7 @@ namespace Bodu.Collections.Generic.Extensions
         }
 
         /// <summary>
-        /// Verifies that Cache, when Source Is Null, throws Exactly.
+        /// Verifies that a <see langword="null" /> source throws <see cref="ArgumentNullException" />.
         /// </summary>
         [TestMethod]
         public void Cache_WhenSourceIsNull_ShouldThrowExactly()
@@ -117,7 +117,7 @@ namespace Bodu.Collections.Generic.Extensions
         }
 
         /// <summary>
-        /// Verifies that Cache, when Source Is Read Only Collection, returns Same Instance.
+        /// Verifies that <see cref="IEnumerableExtensions.Cache{T}" /> short-circuits and returns the source instance when it already implements <see cref="IReadOnlyCollection{T}" />.
         /// </summary>
         [TestMethod]
         public void Cache_WhenSourceIsReadOnlyCollection_ShouldReturnSameInstance()
@@ -129,7 +129,7 @@ namespace Bodu.Collections.Generic.Extensions
         }
 
         /// <summary>
-        /// Verifies that Cache, when Source Throws During Enumeration, Rethrow On Second Enumeration.
+        /// Verifies that a source exception is preserved by the cache and rethrown on subsequent enumerations.
         /// </summary>
         [TestMethod]
         public void Cache_WhenSourceThrowsDuringEnumeration_ShouldRethrowOnSecondEnumeration()
@@ -162,7 +162,7 @@ namespace Bodu.Collections.Generic.Extensions
         }
 
         /// <summary>
-        /// Verifies that Cache, when Source Throws During Enumeration, throws On First Enumeration.
+        /// Verifies that a source exception is propagated to the consumer at the position where it was thrown during the first enumeration.
         /// </summary>
         [TestMethod]
         public void Cache_WhenSourceThrowsDuringEnumeration_ShouldThrowOnFirstEnumeration()
@@ -187,7 +187,7 @@ namespace Bodu.Collections.Generic.Extensions
         }
 
         /// <summary>
-        /// Verifies that Dispose Clear Cache And Enumerator.
+        /// Verifies that disposing the cached sequence releases its internal cache and enumerator, so a subsequent <see cref="IEnumerableExtensions.Cache{T}" /> call begins a fresh enumeration.
         /// </summary>
         [TestMethod]
         public void Dispose_ShouldClearCacheAndEnumerator()
@@ -218,7 +218,7 @@ namespace Bodu.Collections.Generic.Extensions
         }
 
         /// <summary>
-        /// Verifies that Enumerator, Current, when After End, throws Exception.
+        /// Verifies that accessing <c>Current</c> after the enumerator has been exhausted throws <see cref="InvalidOperationException" />.
         /// </summary>
         [TestMethod]
         public void Enumerator_Current_WhenAfterEnd_ShouldThrowException()
@@ -237,7 +237,7 @@ namespace Bodu.Collections.Generic.Extensions
         }
 
         /// <summary>
-        /// Verifies that Enumerator, Current, when Before Move Next, throws Exception.
+        /// Verifies that accessing <c>Current</c> before the first call to <c>MoveNext</c> throws <see cref="InvalidOperationException" />.
         /// </summary>
         [TestMethod]
         public void Enumerator_Current_WhenBeforeMoveNext_ShouldThrowException()
@@ -255,7 +255,7 @@ namespace Bodu.Collections.Generic.Extensions
         }
 
         /// <summary>
-        /// Verifies that Enumerator, Reset, throws Exception.
+        /// Verifies that calling <c>Reset</c> on the enumerator throws <see cref="NotSupportedException" />.
         /// </summary>
         [TestMethod]
         public void Enumerator_Reset_ShouldThrowException()
