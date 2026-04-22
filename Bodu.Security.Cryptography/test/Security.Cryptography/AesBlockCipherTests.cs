@@ -22,7 +22,7 @@ public sealed class AesBlockCipherTests
     [TestMethod]
     public void Ctor_WhenKeyIsNull_ShouldThrowArgumentNullException()
     {
-        Assert.ThrowsException<ArgumentNullException>(() => new AesBlockCipher(null!));
+        Assert.ThrowsExactly<ArgumentNullException>(() => new AesBlockCipher(null!));
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ public sealed class AesBlockCipherTests
     public void Ctor_WhenKeyLengthIsInvalid_ShouldThrowCryptographicException(int keyLength)
     {
         byte[] key = new byte[keyLength];
-        Assert.ThrowsException<CryptographicException>(() => new AesBlockCipher(key));
+        Assert.ThrowsExactly<CryptographicException>(() => new AesBlockCipher(key));
     }
 
     /// <summary>
@@ -120,7 +120,7 @@ public sealed class AesBlockCipherTests
         cipher.Dispose();
 
         byte[] input = new byte[16], output = new byte[16];
-        Assert.ThrowsException<ObjectDisposedException>(() => cipher.Encrypt(input, output));
+        Assert.ThrowsExactly<ObjectDisposedException>(() => cipher.Encrypt(input, output));
     }
 
     /// <summary>
@@ -134,7 +134,7 @@ public sealed class AesBlockCipherTests
         cipher.Dispose();
 
         byte[] input = new byte[16], output = new byte[16];
-        Assert.ThrowsException<ObjectDisposedException>(() => cipher.Decrypt(input, output));
+        Assert.ThrowsExactly<ObjectDisposedException>(() => cipher.Decrypt(input, output));
     }
 
     /// <summary>
