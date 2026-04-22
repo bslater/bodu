@@ -110,7 +110,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Contains returns true for an existing key.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Contains" /> returns true for an existing key.
         /// </summary>
         [TestMethod]
         public void IDictionary_Contains_WhenKeyExists_ShouldReturnTrue()
@@ -121,7 +121,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Contains returns false for a non-existent key.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Contains" /> returns false for a non-existent key.
         /// </summary>
         [TestMethod]
         public void IDictionary_Contains_WhenKeyDoesNotExist_ShouldReturnFalse()
@@ -131,7 +131,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Contains returns false when the key is of the wrong type.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Contains" /> returns false when the key is of the wrong type.
         /// </summary>
         [TestMethod]
         public void IDictionary_Contains_WhenKeyIsWrongType_ShouldReturnFalse()
@@ -142,7 +142,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Add inserts a new key-value pair when types are valid.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Add" /> inserts a new key-value pair when types are valid.
         /// </summary>
         [TestMethod]
         public void IDictionary_Add_WhenKeyAndValueAreValid_ShouldAddItem()
@@ -153,7 +153,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Remove deletes an existing entry when a valid key is provided.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Remove" /> deletes an existing entry when a valid key is provided.
         /// </summary>
         [TestMethod]
         public void IDictionary_Remove_WhenKeyExists_ShouldRemoveEntry()
@@ -165,7 +165,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that IsFixedSize returns false indicating the dictionary is resizable.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.IsFixedSize" /> returns false indicating the dictionary is resizable.
         /// </summary>
         [TestMethod]
         public void IDictionary_IsFixedSize_WhenAccessed_ShouldReturnFalse()
@@ -175,7 +175,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that IsReadOnly returns false indicating the dictionary allows modification.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.IsReadOnly" /> returns false indicating the dictionary allows modification.
         /// </summary>
         [TestMethod]
         public void IDictionary_IsReadOnly_WhenAccessed_ShouldReturnFalse()
@@ -185,7 +185,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that GetEnumerator returns all key-value entries as DictionaryEntry.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.GetEnumerator" /> returns all key-value entries as DictionaryEntry.
         /// </summary>
         [TestMethod]
         public void IDictionary_GetEnumerator_WhenCalled_ShouldReturnAllEntries()
@@ -205,7 +205,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Keys returns a collection matching the generic Keys property.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> returns a collection matching the generic Keys property.
         /// </summary>
         [TestMethod]
         public void IDictionary_Keys_WhenAccessed_ShouldMatchGenericKeys()
@@ -221,7 +221,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Values returns a collection matching the generic Values property.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Values" /> returns a collection matching the generic Values property.
         /// </summary>
         [TestMethod]
         public void IDictionary_Values_WhenAccessed_ShouldMatchGenericValues()
