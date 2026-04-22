@@ -8,6 +8,9 @@
 {
     public partial class CryptoHelpersTests
     {
+        /// <summary>
+        /// Verifies that <see cref="CryptoHelpers.FillWithRandomBytesExcluding" /> returns a value that differs from the baseline.
+        /// </summary>
         [TestMethod]
         public void FillWithRandomBytesExcluding_ShouldNeverContainExcludedValue()
         {
@@ -25,6 +28,9 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that <see cref="CryptoHelpers.FillWithRandomBytesExcluding" /> returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         public void FillWithRandomBytesExcluding_ShouldNotLeaveTempBufferOnHeap()
         {
@@ -52,6 +58,9 @@
             Assert.IsTrue(!identical, "Successive calls should produce fresh random output, not cached bytes.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="CryptoHelpers.FillWithRandomBytesExcluding" />, with HighForbiddenFrequency, returns a value that differs from the baseline.
+        /// </summary>
         [TestMethod]
         public void FillWithRandomBytesExcluding_WithHighForbiddenFrequency_ShouldTerminate()
         {
@@ -74,7 +83,7 @@
             Assert.IsTrue(completed, "FillWithRandomBytesExcluding should terminate in bounded time.");
         }
         /// <summary>
-        /// Verifies that FillWithRandomNonZeroBytes throws ArgumentNullException when the buffer is null.
+        /// Verifies that <see cref="CryptoHelpers.FillWithRandomNonZeroBytes" /> throws ArgumentNullException when the buffer is null.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
@@ -84,7 +93,7 @@
         }
 
         /// <summary>
-        /// Verifies that FillWithRandomNonZeroBytes throws ArgumentException when the buffer is empty.
+        /// Verifies that <see cref="CryptoHelpers.FillWithRandomNonZeroBytes" /> throws ArgumentException when the buffer is empty.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
@@ -94,7 +103,7 @@
         }
 
         /// <summary>
-        /// Verifies that FillWithRandomNonZeroBytes fills the buffer with only non-zero values.
+        /// Verifies that <see cref="CryptoHelpers.FillWithRandomNonZeroBytes" /> fills the buffer with only non-zero values.
         /// </summary>
         [TestMethod]
         public void FillWithRandomNonZeroBytes_WhenBufferHasLength_ShouldContainNoZeroBytes()

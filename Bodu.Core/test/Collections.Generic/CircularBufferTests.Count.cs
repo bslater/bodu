@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class CircularBufferTests
     {
         /// <summary>
-        /// Verifies that Count tracks the current number of elements.
+        /// Verifies that <see cref="CircularBuffer{T}.Count" /> tracks the current number of elements.
         /// </summary>
         [TestMethod]
         public void Count_WhenItemsAreEnqueuedAndDequeued_ShouldReflectCorrectItemCount()

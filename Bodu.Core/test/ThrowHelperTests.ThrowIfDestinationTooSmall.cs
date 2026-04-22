@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfDestinationTooSmall" />, Array, when DestinationTooSmall, throws <see cref="ArgumentException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(5, 3)] // destination too small
         [DataRow(4, 2)]
@@ -22,6 +25,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfDestinationTooSmall" />, Array, when DestinationSufficient, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(5, 5)]
         [DataRow(3, 5)]

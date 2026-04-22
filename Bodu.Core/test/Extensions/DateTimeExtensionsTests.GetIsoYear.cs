@@ -35,6 +35,9 @@ namespace Bodu.Extensions
             yield return new object[] { new DateTime(2021, 1, 3), 2020 };
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.GetIsoYear" />, when Called, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetIsoYearTestData), DynamicDataSourceType.Method)]
         public void GetIsoYear_WhenCalled_ShouldReturnExpectedYear(DateTime input, int expected)
@@ -43,6 +46,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.GetIsoYear" />, when Called, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void GetIsoYear_WhenCalled_ShouldMatchIsoWeekCalculator()
         {
@@ -52,6 +58,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.GetIsoYear" />, when TimeOfDayIsNonZero, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void GetIsoYear_WhenTimeOfDayIsNonZero_ShouldReturnSameResultAsMidnight()
         {

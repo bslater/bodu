@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class EvictingDictionaryTests
     {
         /// <summary>
-        /// Verifies that TouchOrThrow throws KeyNotFoundException when the key does not exist.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TouchOrThrow" /> throws KeyNotFoundException when the key does not exist.
         /// </summary>
         [TestMethod]
         public void TouchOrThrow_WhenKeyIsMissing_ShouldThrowExactly()
@@ -20,7 +20,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TouchOrThrow increments TotalTouches when the key exists.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TouchOrThrow" /> increments TotalTouches when the key exists.
         /// </summary>
         [TestMethod]
         public void TouchOrThrow_WhenKeyExists_ShouldIncrementTotalTouches()
@@ -35,7 +35,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TouchOrThrow does not increment TotalTouches when the key is missing and the exception is thrown.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TouchOrThrow" /> does not increment TotalTouches when the key is missing and the exception is thrown.
         /// </summary>
         [TestMethod]
         public void TouchOrThrow_WhenKeyIsMissing_ShouldNotIncrementTotalTouches()

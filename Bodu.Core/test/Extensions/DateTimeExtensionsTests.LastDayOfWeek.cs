@@ -18,6 +18,9 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeek(DateTime, CultureInfo)" /> returns the expected week end for the supplied culture's first-day-of-week.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(LastDayOfWeekCultureInfoTestData), DynamicDataSourceType.Method)]
         public void LastDayOfWeek_WhenCurrentCultureSet_ShouldReturnExpectedStart(DateTime input, CultureInfo culture, DateTime expected)
@@ -27,6 +30,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that passing a <see langword="null" /> <see cref="CultureInfo" /> falls back to <see cref="CultureInfo.CurrentCulture" />.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(LastDayOfWeekCultureInfoTestData), DynamicDataSourceType.Method)]
         public void LastDayOfWeek_WhenCultureIsNull_ShouldUseCurrentCulture(DateTime input, CultureInfo culture, DateTime expected)
@@ -47,6 +53,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that the parameterless <see cref="DateTimeExtensions.LastDayOfWeek(DateTime)" /> overload preserves the input's <see cref="DateTime.Kind" /> across all <see cref="DateTimeKind" /> values.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]
@@ -58,6 +67,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(kind, actual.Kind, $"Kind mismatch for LastDayOfWeek with {kind}");
         }
 
+        /// <summary>
+        /// Verifies that the culture-taking <see cref="DateTimeExtensions.LastDayOfWeek(DateTime, CultureInfo)" /> overload preserves the input's <see cref="DateTime.Kind" /> across all <see cref="DateTimeKind" /> values.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]
@@ -69,6 +81,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(kind, actual.Kind, $"Kind mismatch for LastDayOfWeek with {kind}");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTime.MinValue" /> with the invariant culture returns a date that is on or after <see cref="DateTime.MinValue" /> with <see cref="DateTimeKind.Unspecified" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeek_WhenUsingMinValue_ShouldReturnValidResult()
         {
@@ -80,6 +95,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that <see cref="DateTime.MaxValue" /> with a Sunday-start culture throws <see cref="ArgumentOutOfRangeException" /> because the computed week end would overflow.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeek_WhenMinValueAndStartDayIsLateInWeek_ShouldThrowExactly()
         {
@@ -92,6 +110,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTime.MaxValue" /> with a Friday-end culture returns <c>MaxValue.Date</c> (which is itself the configured last day of the week).
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeek_WhenUsingMaxValue_ShouldReturnValidResult()
         {
@@ -175,6 +196,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(DayOfWeek.Sunday, actual.DayOfWeek);
         }
 
+        /// <summary>
+        /// Verifies that the weekend-definition overload preserves the input's <see cref="DateTime.Kind" /> across every <c>(definition, kind)</c> combination.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(CalendarWeekendDefinitionDateTimeKindTestData), DynamicDataSourceType.Method)]
         public void LastDayOfWeek_WhenWeekendDefinitionAndKindIsSet_ShouldPreserveKind(CalendarWeekendDefinition definition, DateTimeKind kind)

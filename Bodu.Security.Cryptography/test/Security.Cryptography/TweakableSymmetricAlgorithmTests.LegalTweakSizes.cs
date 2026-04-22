@@ -9,7 +9,7 @@
     public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm>
     {
         /// <summary>
-        /// Verifies that LegalTweakSizes returns a new instance each call.
+        /// Verifies that <see cref="TweakableSymmetricAlgorithm.LegalTweakSizes" /> returns a new instance each call.
         /// </summary>
         [TestMethod]
         public void LegalTweakSizes_WhenCalledMultipleTimes_ShouldReturnNewArrayInstances()
@@ -20,7 +20,7 @@
         }
 
         /// <summary>
-        /// Verifies that LegalTweakSizes do not overlap and are unique.
+        /// Verifies that <see cref="TweakableSymmetricAlgorithm.LegalTweakSizes" /> do not overlap and are unique.
         /// </summary>
         [TestMethod]
         public void LegalTweakSizes_WhenDefined_ShouldHaveNonOverlappingValues()
@@ -38,7 +38,7 @@
         }
 
         /// <summary>
-        /// Verifies that LegalTweakSizes define valid MinSize, MaxSize, and SkipSize values.
+        /// Verifies that <see cref="TweakableSymmetricAlgorithm.LegalTweakSizes" /> define valid MinSize, MaxSize, and SkipSize values.
         /// </summary>
         [TestMethod]
         public void LegalTweakSizes_WhenDefined_ShouldHaveValidRanges()

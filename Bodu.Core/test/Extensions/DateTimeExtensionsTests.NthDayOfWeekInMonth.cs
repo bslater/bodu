@@ -17,6 +17,9 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that the instance overload returns the expected nth-occurrence date for each <c>(input, dayOfWeek, ordinal)</c> tuple.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(NthDayOfWeekInMonthTestData),  DynamicDataSourceType.Method)]
         public void NthDayOfWeekInMonth_WhenCalled_ShouldReturnExpected(DateTime input, DayOfWeek dayOfWeek, WeekOfMonthOrdinal ordinal, DateTime expected)
@@ -27,6 +30,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that the static <see cref="DateTimeExtensions.GetNthDayOfWeekInMonth(int, int, DayOfWeek, WeekOfMonthOrdinal)" /> overload returns the same nth-occurrence date as the instance overload.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(NthDayOfWeekInMonthTestData),  DynamicDataSourceType.Method)]
         public void NthDayOfWeekInMonth_WhenUsingYearMonth_ShouldReturnExpected(DateTime input, DayOfWeek dayOfWeek, WeekOfMonthOrdinal ordinal, DateTime expected)
@@ -38,6 +44,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that the result is computed within the input's month, even when the resulting date is earlier than the input.
+        /// </summary>
         [TestMethod]
         public void NthDayOfWeekInMonth_WhenGivenDateIsInFuture_ShouldReturnExpectedDateInGivenMonth()
         {
@@ -49,6 +58,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that requesting <see cref="WeekOfMonthOrdinal.Fifth" /> in a month that has only four occurrences throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void NthDayOfWeekInMonth_WhenFifthDoesNotExist_ShouldThrowExactly()
         {
@@ -61,6 +73,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.NthDayOfWeekInMonth(DateTime, DayOfWeek, WeekOfMonthOrdinal)" /> preserves the input's <see cref="DateTime.Kind" /> across all <see cref="DateTimeKind" /> values.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]
@@ -73,6 +88,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(kind, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that an undefined <see cref="WeekOfMonthOrdinal" /> value throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void NthDayOfWeekInMonth_WhenOrdinalIsInvalidEnum_ShouldThrowExactly()
         {
@@ -85,6 +103,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that an undefined <see cref="DayOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void NthDayOfWeekInMonth_WhenDayOfWeekIsInvalidEnum_ShouldThrowExactly()
         {

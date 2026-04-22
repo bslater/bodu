@@ -10,6 +10,9 @@ namespace Bodu
     {
         // Span<T> overload
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthOutOfRange" />, Span, when LengthIsOutOfRange, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 1, 10)]
         [DataRow(11, 1, 10)]
@@ -24,6 +27,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthOutOfRange" />, Span, when LengthIsWithinRange, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(1, 1, 10)]
         [DataRow(10, 1, 10)]
@@ -38,6 +44,9 @@ namespace Bodu
 
         // ReadOnlySpan<T> overload
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthOutOfRange" />, ReadOnlySpan, when LengthIsOutOfRange, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 1, 10)]
         [DataRow(11, 1, 10)]
@@ -52,6 +61,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthOutOfRange" />, ReadOnlySpan, when LengthIsWithinRange, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(1, 1, 10)]
         [DataRow(10, 1, 10)]

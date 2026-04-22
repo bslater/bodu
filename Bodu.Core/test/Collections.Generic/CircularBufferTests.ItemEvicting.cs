@@ -9,7 +9,7 @@
     public partial class CircularBufferTests
     {
         /// <summary>
-        /// Verifies that ItemEvicting is triggered with the correct items before they are overwritten.
+        /// Verifies that <see cref="CircularBuffer{T}.ItemEvicting" /> is triggered with the correct items before they are overwritten.
         /// </summary>
         [TestMethod]
         public void ItemEvicting_WhenOverwriteOccurs_ShouldContainCorrectItems()
@@ -27,7 +27,7 @@
         }
 
         /// <summary>
-        /// Verifies that ItemEvicting is not triggered when overwrite is disabled.
+        /// Verifies that <see cref="CircularBuffer{T}.ItemEvicting" /> is not triggered when overwrite is disabled.
         /// </summary>
         [TestMethod]
         public void ItemEvicting_WhenOverwriteIsDisabled_ShouldNotFire()
@@ -45,7 +45,7 @@
         }
 
         /// <summary>
-        /// Verifies that ItemEvicting is not triggered when the buffer has available capacity.
+        /// Verifies that <see cref="CircularBuffer{T}.ItemEvicting" /> is not triggered when the buffer has available capacity.
         /// </summary>
         [TestMethod]
         public void ItemEvicting_WhenBufferHasAvailableCapacity_ShouldNotFire()
@@ -61,7 +61,7 @@
         }
 
         /// <summary>
-        /// Verifies that ItemEvicting is triggered before ItemEvicted when an item is overwritten.
+        /// Verifies that <see cref="CircularBuffer{T}.ItemEvicting" /> is triggered before ItemEvicted when an item is overwritten.
         /// </summary>
         [TestMethod]
         public void ItemEvicting_WhenItemOverwritten_ShouldOccurBeforeItemEvicted()

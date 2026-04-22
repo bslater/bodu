@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf" />, ReadOnlySpan, when LengthInvalid, throws <see cref="ArgumentException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(5, 2)]  // Not a multiple
         [DataRow(0, 1)]  // Zero length
@@ -21,6 +24,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf" />, ReadOnlySpan, when LengthValid, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(6, 3)]
         [DataRow(4, 2)]
@@ -31,6 +37,9 @@ namespace Bodu
             ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(span, factor);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf" />, Span, when LengthInvalid, throws <see cref="ArgumentException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(5, 2)]
         [DataRow(0, 1)]
@@ -44,6 +53,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf" />, Span, when LengthValid, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(6, 3)]
         [DataRow(4, 2)]

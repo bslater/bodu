@@ -10,6 +10,9 @@ namespace Bodu
     {
         // Non-nullable overloads
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfLessThan" />, when ValueIsLessThanMin, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(-1, 0)]
         [DataRow(0, 1)]
@@ -22,6 +25,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfLessThan" />, when ValueIsGreaterThanOrEqualToMin, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 0)]
         [DataRow(6, 5)]
@@ -33,6 +39,9 @@ namespace Bodu
 
         // Nullable overloads
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfLessThan" />, Nullable, when ValueIsNullAndThrowIfNull, throws <see cref="ArgumentNullException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(null, 5, true)]
         public void ThrowIfLessThan_Nullable_WhenValueIsNullAndThrowIfNull_ShouldThrowArgumentNullException(int? value, int min, bool throwIfNull)
@@ -43,6 +52,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfLessThan" />, Nullable, when ValueIsNullAndThrowIfNullIsFalse, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(null, 5, false)]
         public void ThrowIfLessThan_Nullable_WhenValueIsNullAndThrowIfNullIsFalse_ShouldNotThrow(int? value, int min, bool throwIfNull)
@@ -50,6 +62,9 @@ namespace Bodu
             ThrowHelper.ThrowIfLessThan(value, min, throwIfNull);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfLessThan" />, Nullable, when ValueIsLessThanMin, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(2, 5, false)]
         [DataRow(-1, 0, false)]
@@ -61,6 +76,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfLessThan" />, Nullable, when ValueIsGreaterThanOrEqualToMin, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(5, 5, false)]
         [DataRow(6, 5, false)]

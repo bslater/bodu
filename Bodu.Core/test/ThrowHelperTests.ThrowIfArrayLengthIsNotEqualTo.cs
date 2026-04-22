@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsNotEqualTo" />, when ArrayIsNull, throws <see cref="ArgumentNullException" />.
+        /// </summary>
         [TestMethod]
         public void ThrowIfArrayLengthIsNotEqualTo_WhenArrayIsNull_ShouldThrowArgumentNullException()
         {
@@ -18,6 +21,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsNotEqualTo" />, when LengthDiffers, throws <see cref="ArgumentException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 4)]
         [DataRow(3, 4)]
@@ -32,6 +38,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsNotEqualTo" />, when LengthMatches, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 0)]
         [DataRow(1, 1)]

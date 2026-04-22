@@ -31,6 +31,9 @@ namespace Bodu.Security.Cryptography
             Assert.IsTrue(result.Any(b => b != 0), $"Hash result should not be all zeros for variant {variant}.");
         }
 
+        /// <summary>
+        /// Verifies that a freshly constructed <see cref="Tiger" /> reports its default <see cref="Tiger.Variant" /> as <see cref="TigerHashingVariant.Tiger" />.
+        /// </summary>
         [TestMethod]
         public void Variant_Get_WhenDefault_ShouldReturnPearson()
         {
@@ -41,6 +44,9 @@ namespace Bodu.Security.Cryptography
             Assert.AreEqual(Bodu.Security.Cryptography.TigerHashingVariant.Tiger, type, "Default Variant should be Tiger.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="Tiger.Variant" />, Set, when HashingStarted, throws <see cref="CryptographicUnexpectedOperationException" />.
+        /// </summary>
         [TestMethod]
         public void Variant_Set_WhenHashingStarted_ShouldThrowExactly()
         {
@@ -53,6 +59,9 @@ namespace Bodu.Security.Cryptography
             });
         }
 
+        /// <summary>
+        /// Verifies that setting <see cref="Tiger.Variant" /> on a disposed algorithm throws <see cref="ObjectDisposedException" />.
+        /// </summary>
         [TestMethod]
         public void Variant_Set_WhenDisposed_ShouldThrowExactly()
         {
@@ -65,6 +74,9 @@ namespace Bodu.Security.Cryptography
             });
         }
 
+        /// <summary>
+        /// Verifies that reading <see cref="Tiger.Variant" /> on a disposed algorithm throws <see cref="ObjectDisposedException" />.
+        /// </summary>
         [TestMethod]
         public void Variant_Get_WhenDisposed_ShouldThrowExactly()
         {

@@ -8,6 +8,9 @@ namespace Bodu.IO.Hashing
 {
     public partial class CrcLookupTableBuilderTests
     {
+        /// <summary>
+        /// Verifies that an all-ones polynomial produces a lookup table whose entries never exceed the declared bit width.
+        /// </summary>
         [TestMethod]
         public void BuildLookupTable_AllOnesPolynomial_ShouldNotOverflow()
         {
@@ -22,6 +25,9 @@ namespace Bodu.IO.Hashing
             }
         }
 
+        /// <summary>
+        /// Verifies that polynomial bits above the declared <paramref name="size" /> are masked away before the table is populated.
+        /// </summary>
         [TestMethod]
         public void BuildLookupTable_PolynomialHasExcessBits_ShouldStillMaskCorrectly()
         {
@@ -36,6 +42,9 @@ namespace Bodu.IO.Hashing
             }
         }
 
+        /// <summary>
+        /// Verifies that every entry in the generated lookup table is confined to the declared bit width.
+        /// </summary>
         [TestMethod]
         public void BuildLookupTable_ShouldMaskUpperBits()
         {
@@ -49,6 +58,9 @@ namespace Bodu.IO.Hashing
             }
         }
 
+        /// <summary>
+        /// Verifies that a zero polynomial still produces a well-formed table in which every entry is zero.
+        /// </summary>
         [TestMethod]
         public void BuildLookupTable_WhenPolynomialIsZero_ShouldStillGenerateTable()
         {
@@ -57,6 +69,9 @@ namespace Bodu.IO.Hashing
             Assert.IsTrue(Array.TrueForAll(table, v => v == 0), "All entries should be zero with zero polynomial.");
         }
 
+        /// <summary>
+        /// Verifies that the reflected and non-reflected tables for the same polynomial differ for at least one entry.
+        /// </summary>
         [TestMethod]
         public void BuildLookupTable_WhenReflected_ShouldProduceDifferentEntriesThanNonReflected()
         {
@@ -79,6 +94,9 @@ namespace Bodu.IO.Hashing
             Assert.IsTrue(anyDifference, "Reflected and non-reflected tables should differ.");
         }
 
+        /// <summary>
+        /// Verifies that a 64-bit polynomial produces a fully populated 256-entry table whose entries fit in 64 bits.
+        /// </summary>
         [TestMethod]
         public void BuildLookupTable_WhenSizeIs64_ShouldGenerateFullByteTable()
         {
@@ -90,6 +108,9 @@ namespace Bodu.IO.Hashing
             }
         }
 
+        /// <summary>
+        /// Verifies that an out-of-range <paramref name="size" /> throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(int.MinValue)]
         [DataRow(-1)]
@@ -176,6 +197,9 @@ namespace Bodu.IO.Hashing
                 Assert.IsTrue((entry & ~mask) == 0, $"Entry {entry:X} exceeds size {size} bits.");
         }
 
+        /// <summary>
+        /// Verifies that a 1-bit CRC produces a table whose entries are strictly <c>0</c> or <c>1</c>.
+        /// </summary>
         [TestMethod]
         public void BuildLookupTable_WhenSizeIsOne_ShouldRespectBitMasking()
         {
@@ -186,6 +210,9 @@ namespace Bodu.IO.Hashing
             }
         }
 
+        /// <summary>
+        /// Verifies that the generated table length is <c>2</c> for sub-8-bit widths and <c>256</c> for 8-bit or wider CRCs.
+        /// </summary>
         [TestMethod]
         [DataRow(1, 2)]     // Less than 8 bits: table size = 2
         [DataRow(2, 2)]
@@ -202,6 +229,9 @@ namespace Bodu.IO.Hashing
             Assert.AreEqual(expected, table.Length);
         }
 
+        /// <summary>
+        /// Verifies that reflected and non-reflected lookup tables for the same polynomial are not equal.
+        /// </summary>
         [TestMethod]
         public void BuildLookupTable_WithAndWithoutReflection_ShouldProduceDifferentTables()
         {
@@ -211,6 +241,9 @@ namespace Bodu.IO.Hashing
             CollectionAssert.AreNotEqual(table1, table2);
         }
 
+        /// <summary>
+        /// Verifies that different polynomials of the same width produce distinct lookup tables.
+        /// </summary>
         [TestMethod]
         public void BuildLookupTable_WithDifferentPolynomials_ShouldProduceDifferentTables()
         {

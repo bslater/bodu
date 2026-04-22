@@ -10,6 +10,9 @@ namespace Bodu
     {
         // Span<T> overload
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthIsNotEqualTo" />, Span, when LengthDiffers, throws <see cref="ArgumentException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 4)]
         [DataRow(3, 4)]
@@ -23,6 +26,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthIsNotEqualTo" />, Span, when LengthMatches, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 0)]
         [DataRow(1, 1)]
@@ -36,6 +42,9 @@ namespace Bodu
 
         // ReadOnlySpan<T> overload
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthIsNotEqualTo" />, ReadOnlySpan, when LengthDiffers, throws <see cref="ArgumentException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 4)]
         [DataRow(3, 4)]
@@ -49,6 +58,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthIsNotEqualTo" />, ReadOnlySpan, when LengthMatches, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 0)]
         [DataRow(1, 1)]

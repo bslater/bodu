@@ -28,6 +28,9 @@ namespace Bodu.Extensions
             yield return new object[] { new DateTime(2024, 4, 17), DayOfWeek.Saturday, new DateTime(2024, 4, 20) };
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.NearestDayOfWeek(DateTime, DayOfWeek)" /> returns the closest occurrence of the requested <see cref="DayOfWeek" /> in either direction.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(NearestDayOfWeekDateTimeTestData), DynamicDataSourceType.Method)]
         public void NearestDayOfWeek_WhenCalled_ShouldReturnExpectedDate(DateTime dateTime, DayOfWeek dayOfWeek, DateTime expected)
@@ -36,6 +39,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.NearestDayOfWeek(DateTime, DayOfWeek)" /> preserves the input's <see cref="DateTime.Kind" />.
+        /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenCalled_ShouldPreserveInputKind()
         {
@@ -44,6 +50,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(DateTimeKind.Local, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that when the past and future occurrences are equidistant (3 days each), the earlier date is returned.
+        /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenTiedBetweenPastAndFuture_ShouldReturnEarlierDate()
         {
@@ -52,6 +61,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(2024, 4, 14), actual);
         }
 
+        /// <summary>
+        /// Verifies that an undefined <see cref="DayOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
         {
@@ -67,6 +79,9 @@ namespace Bodu.Extensions
         // NearestDayOfWeek(int year, int month, int day, DayOfWeek)
         // =========================================================================
 
+        /// <summary>
+        /// Verifies that the static <see cref="DateTimeExtensions.NearestDayOfWeek(int, int, int, DayOfWeek)" /> overload returns the expected nearest date.
+        /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenUsingYearMonthDay_ShouldReturnExpectedDate()
         {
@@ -74,6 +89,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(2024, 4, 15), actual);
         }
 
+        /// <summary>
+        /// Verifies that the static <c>(year, month, day)</c> overload always returns a result with <see cref="DateTimeKind.Unspecified" />.
+        /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenUsingYearMonthDay_ShouldReturnResultWithUnspecifiedKind()
         {
@@ -81,6 +99,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(DateTimeKind.Unspecified, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that the static <c>(year, month, day)</c> overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="DayOfWeek" />.
+        /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenUsingYearMonthDayWithInvalidDayOfWeek_ShouldThrowArgumentOutOfRangeException()
         {

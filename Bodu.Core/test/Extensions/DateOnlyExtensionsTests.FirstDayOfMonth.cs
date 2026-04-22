@@ -17,6 +17,9 @@ namespace Bodu.Extensions
     public partial class DateOnlyExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.FirstDayOfMonth" />, when Called, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfMonthDataTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void FirstDayOfMonth_WhenCalled_ShouldReturnExpectedDate(DateTime inputDateTime, DateTime expectedDateTime)

@@ -212,6 +212,9 @@ namespace Bodu.Security.Cryptography
             }
         }
 
+        /// <summary>
+        /// Verifies that <see cref="HashAlgorithm.ComputeHash" />, when UsingNamedInput, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(ComputeHashNamedInputTestData))]
         public void ComputeHash_WhenUsingNamedInput_ShouldMatchExpected(TVariant variant, string testName, byte[] input, byte[] expected)
@@ -224,6 +227,9 @@ namespace Bodu.Security.Cryptography
             CollectionAssert.AreEqual(expected, actual, $"Hash mismatch for {testName} using variant '{variant}'.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="HashAlgorithm.ComputeHash" />, with LargeInput, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void ComputeHash_WithLargeInput_ShouldNotThrow()
         {

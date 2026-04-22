@@ -19,6 +19,9 @@ namespace Bodu.Extensions
     {
 
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfQuarter(DateTime, CalendarQuarterDefinition)" /> returns the expected quarter-end date for each supported <see cref="CalendarQuarterDefinition" /> boundary.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(LastDayOfQuarterDateTimeTestData),DynamicDataSourceType.Method)]
         public void LastDayOfQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedDate(DateTime input, CalendarQuarterDefinition definition,  DateTime expected)
@@ -29,6 +32,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that the parameterless <see cref="DateTimeExtensions.LastDayOfQuarter(DateTime)" /> overload returns the January-to-December quarter end for the given input.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(LastDayOfQuarterDateTimeJanuaryDecemberTestData), DynamicDataSourceType.Method)]
         public void LastDayOfQuarter_WhenUsingDateOnly_ShouldReturnExpectedStartOfCalendarQuarter(DateTime input, DateTime expected)
@@ -39,6 +45,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.GetLastDayOfQuarter(int, int, CalendarQuarterDefinition)" /> computes the expected quarter-end for each <c>(year, quarter, definition)</c> triple.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(LastDayOfQuarterTestData), DynamicDataSourceType.Method)]
         public void LastDayOfQuarter_WhenUsingQuarterAndDefinition_ShouldReturnExpectedDate(int year,int quarter, CalendarQuarterDefinition definition, DateTime expected)
@@ -48,6 +57,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfQuarter(DateTime)" /> preserves the input's <see cref="DateTime.Kind" /> for every <see cref="DateTimeKind" /> value.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]
@@ -60,6 +72,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(kind, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfQuarter(DateTime, CalendarQuarterDefinition)" /> preserves the input's <see cref="DateTime.Kind" /> across every <c>(definition, kind)</c> combination.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(CalendarQuarterDefinitionDateTimeKindTestData), DynamicDataSourceType.Method)]
         public void LastDayOfQuarter_WhenQuarterAndDefinitionAndKindIsSet_ShouldPreserveKind(CalendarQuarterDefinition definition, DateTimeKind kind)
@@ -70,6 +85,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(kind, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.GetLastDayOfQuarter(int, int)" /> with the default January-to-December definition returns the expected quarter-end for each <c>(year, quarter)</c> pair.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(LastDayOfQuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
         public void LastDayOfQuarter_WhenUsingQuarterAndCalendarDefinition_ShouldReturnExpectedDate(int year, int quarter, DateTime expected)
@@ -79,6 +97,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that a custom <c>IQuarterProvider</c> returning out-of-range month values causes <see cref="DateTimeExtensions.LastDayOfQuarter{T}" /> to throw <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfQuarter_WhenUsingInvalidProvider_ShouldThrowArgumentOutOfRange()
         {
@@ -91,6 +112,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that passing <see cref="CalendarQuarterDefinition.Custom" /> without supplying a provider throws <see cref="InvalidOperationException" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowInvalidOperation()
         {
@@ -102,6 +126,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfQuarter{T}" /> returns the correct quarter-end using a valid quarter provider.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.LastDayOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
         public void LastDayOfQuarter_WhenUsingValidQuarterProvider_ShouldReturnExpectedDate(DateTime input, DateTime expected)
@@ -113,6 +140,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTime.MinValue" /> yields <c>0001-03-31</c> (end of Q1 of year 1) for the January-to-December quarter end.
+        /// </summary>
         [TestMethod]
         public void LastDayOfQuarter_WhenInputIsMinValue_ShouldReturnExpectedDate()
         {
@@ -120,6 +150,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(1, 3, 31), actual);
         }
 
+        /// <summary>
+        /// Verifies that an undefined <see cref="CalendarQuarterDefinition" /> value throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfQuarter_WhenDefinitionIsInvalid_ShouldThrowExactly()
         {
@@ -132,6 +165,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that the static <see cref="DateTimeExtensions.GetLastDayOfQuarter(int, int, CalendarQuarterDefinition)" /> overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined definition.
+        /// </summary>
         [TestMethod]
         public void LastDayOfQuarter_WhenDefinitionIsInvalid_WithYearAndQuarter_ShouldThrowExactly()
         {
@@ -143,6 +179,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that a quarter index outside <c>1..4</c> throws <see cref="ArgumentOutOfRangeException" /> when an otherwise-valid definition is supplied.
+        /// </summary>
         [TestMethod]
         [DataRow(-1)]
         [DataRow(0)]
@@ -155,6 +194,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that the default January-to-December overload throws <see cref="ArgumentOutOfRangeException" /> for quarter values outside <c>1..4</c>.
+        /// </summary>
         [TestMethod]
         [DataRow(-1)]
         [DataRow(0)]
@@ -169,6 +211,9 @@ namespace Bodu.Extensions
 
 
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.GetLastDayOfQuarter(int, int, CalendarQuarterDefinition)" /> throws <see cref="ArgumentOutOfRangeException" /> for year values outside <c>1..9999</c>.
+        /// </summary>
         [TestMethod]
         [DataRow(-1)]
         [DataRow(0)]
@@ -181,6 +226,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.GetLastDayOfQuarter(int, int)" /> throws <see cref="ArgumentOutOfRangeException" /> for year values outside <c>1..9999</c>.
+        /// </summary>
         [TestMethod]
         [DataRow(-1)]
         [DataRow(0)]

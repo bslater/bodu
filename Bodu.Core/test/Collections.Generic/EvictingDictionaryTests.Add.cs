@@ -36,7 +36,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that EvictionCount equals the number of items added beyond capacity under LeastRecentlyUsed policy.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.EvictionCount" /> equals the number of items added beyond capacity under LeastRecentlyUsed policy.
         /// </summary>
         [TestMethod]
         [TestCategory("Stress")]
@@ -55,7 +55,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that EvictionCount equals the number of items added beyond capacity under LeastFrequentlyUsed policy.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.EvictionCount" /> equals the number of items added beyond capacity under LeastFrequentlyUsed policy.
         /// </summary>
         [TestMethod]
         [TestCategory("Stress")]

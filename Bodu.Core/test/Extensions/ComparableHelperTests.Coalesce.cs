@@ -16,7 +16,7 @@
         }
 
         /// <summary>
-        /// Verifies that Coalesce returns the first non-null value, the second value if the first is null, or null if both are null.
+        /// Verifies that <see cref="ComparableHelper.Coalesce" /> returns the first non-null value, the second value if the first is null, or null if both are null.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetCoalesceTestData), DynamicDataSourceType.Method)]

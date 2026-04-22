@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" />, when ArrayIsNull, throws <see cref="ArgumentNullException" />.
+        /// </summary>
         [TestMethod]
         public void ThrowIfArrayOffsetOrCountInvalid_WhenArrayIsNull_ShouldThrowException()
         {
@@ -19,6 +22,9 @@ namespace Bodu
 
         // --- Offset edge cases ---
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" />, when OffsetInvalid, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(5, -1, 0)]   // negative offset
         [DataRow(5, 6, 0)]    // offset > array.Length
@@ -31,6 +37,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" />, when OffsetValid, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(5, 0, 0)]    // offset at lower bound
         [DataRow(5, 5, 0)]    // offset == array.Length (valid: empty slice from end)
@@ -43,6 +52,9 @@ namespace Bodu
 
         // --- Count edge cases ---
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" />, when CountInvalid, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(5, 0, -1)]   // negative count
         [DataRow(5, 0, 6)]    // count > array.Length
@@ -55,6 +67,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" />, when CountValid, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(5, 0, 0)]    // count at lower bound
         [DataRow(5, 0, 5)]    // count == array.Length
@@ -67,6 +82,9 @@ namespace Bodu
 
         // --- Offset + count combination edge cases ---
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" />, when ArrayTooShort, throws <see cref="ArgumentException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(5, 2, 5)]    // 2 + 5 = 7 > 5 => insufficient
         [DataRow(4, 4, 1)]    // 4 + 1 = 5 > 4 => insufficient
@@ -80,6 +98,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" />, when ArrayIsSufficient, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(10, 2, 5)]   // 2 + 5 = 7 <= 10 => sufficient
         [DataRow(5, 0, 5)]    // 0 + 5 = 5 <= 5 => sufficient

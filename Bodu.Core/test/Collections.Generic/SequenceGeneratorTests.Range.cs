@@ -9,6 +9,9 @@
     public partial class SequenceGeneratorTests
     {/// <summary>
      /// Verifies that Range returns an inclusive ascending or descending integer sequence. </summary>
+        /// <summary>
+        /// Verifies that <see cref="SequenceGenerator.Range" />, when StartAndStopAreValid, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DataRow(1, 5, new[] { 1, 2, 3, 4, 5 })]
         [DataRow(5, 1, new[] { 5, 4, 3, 2, 1 })]
@@ -20,7 +23,7 @@
         }
 
         /// <summary>
-        /// Verifies that Range with a step generates correctly spaced results.
+        /// Verifies that <see cref="SequenceGenerator.Range" /> with a step generates correctly spaced results.
         /// </summary>
         [TestMethod]
         [DataRow(1, 10, 2, new[] { 1, 3, 5, 7, 9 })]
@@ -33,7 +36,7 @@
         }
 
         /// <summary>
-        /// Verifies that Range returns a valid long sequence of the expected count.
+        /// Verifies that <see cref="SequenceGenerator.Range" /> returns a valid long sequence of the expected count.
         /// </summary>
         [TestMethod]
         public void Range_WhenCountIsPositive_ShouldReturnCorrectLongSequence()
@@ -43,7 +46,7 @@
         }
 
         /// <summary>
-        /// Verifies that Range throws when the count is negative.
+        /// Verifies that <see cref="SequenceGenerator.Range" /> throws when the count is negative.
         /// </summary>
         [TestMethod]
         public void Range_WhenCountIsNegative_ShouldThrowExactly()
@@ -55,7 +58,7 @@
         }
 
         /// <summary>
-        /// Verifies that Range throws if the resulting long range would overflow.
+        /// Verifies that <see cref="SequenceGenerator.Range" /> throws if the resulting long range would overflow.
         /// </summary>
         [TestMethod]
         public void Range_WhenResultWouldOverflowLong_ShouldThrowExactly()
@@ -67,7 +70,7 @@
         }
 
         /// <summary>
-        /// Verifies that Range handles extreme Int32 values correctly.
+        /// Verifies that <see cref="SequenceGenerator.Range" /> handles extreme Int32 values correctly.
         /// </summary>
         [TestMethod]
         [DataRow(int.MinValue, int.MinValue + 2, new[] { int.MinValue, int.MinValue + 1, int.MinValue + 2 })]
@@ -119,7 +122,7 @@
         }
 
         /// <summary>
-        /// Verifies that Range defers execution when called.
+        /// Verifies that <see cref="SequenceGenerator.Range" /> defers execution when called.
         /// </summary>
         [TestMethod]
         public void Range_WhenCalled_ShouldDeferExecution()
@@ -132,7 +135,7 @@
         }
 
         /// <summary>
-        /// Verifies that Range with step defers execution until enumerated.
+        /// Verifies that <see cref="SequenceGenerator.Range" /> with step defers execution until enumerated.
         /// </summary>
         [TestMethod]
         public void Range_WhenStepIsSpecified_ShouldDeferExecution()

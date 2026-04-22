@@ -44,6 +44,9 @@ namespace Bodu.Security.Cryptography
                 "Second CTR block must reflect big-endian counter increment.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="CtrModeTransform.Transform" />, EncryptAndDecrypt, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void Transform_EncryptAndDecrypt_ShouldBeSymmetric()
         {
@@ -62,6 +65,9 @@ namespace Bodu.Security.Cryptography
             CollectionAssert.AreEqual(plaintext, recovered);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="CtrModeTransform.Transform" />, when Encrypting, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void Transform_WhenEncrypting_ShouldNotMutateInitialCounter()
         {
@@ -76,6 +82,9 @@ namespace Bodu.Security.Cryptography
                 "CTR must not mutate the caller-supplied initial counter array.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="CtrModeTransform.Transform" />, when Decrypting, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void Transform_WhenDecrypting_ShouldUseCipherEncryptPrimitive()
         {
@@ -86,6 +95,9 @@ namespace Bodu.Security.Cryptography
             Assert.AreEqual(0, cipher.DecryptBlockCount, "CTR must never call decrypt primitive.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="CtrModeTransform.Transform" />, when CalledTwice, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void Transform_WhenCalledTwice_ShouldContinueCounterAcrossCalls()
         {
@@ -104,6 +116,9 @@ namespace Bodu.Security.Cryptography
             CollectionAssert.AreEqual(sOut, dOut, "CTR must preserve counter across successive calls.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="CtrModeTransform.Transform" />, with DifferentInitialCounters, returns a value that differs from the baseline.
+        /// </summary>
         [TestMethod]
         public void Transform_WithDifferentInitialCounters_ShouldProduceDifferentCiphertext()
         {

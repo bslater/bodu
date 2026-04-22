@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class EvictingDictionaryTests
     {
         /// <summary>
-        /// Verifies that Add evicts the first item without a second-chance flag when capacity is exceeded.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Add" /> evicts the first item without a second-chance flag when capacity is exceeded.
         /// </summary>
         [TestMethod]
         [TestCategory("SecondChance")]
@@ -28,7 +28,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Touch grants a second chance to an item under SecondChance policy.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> grants a second chance to an item under SecondChance policy.
         /// </summary>
         [TestMethod]
         [TestCategory("SecondChance")]
@@ -47,7 +47,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Touch returns true for existing keys under SecondChance policy.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> returns true for existing keys under SecondChance policy.
         /// </summary>
         [TestMethod]
         public void Touch_WhenPolicyIsSCAndKeyExists_ShouldReturnTrue()
@@ -59,7 +59,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TouchOrThrow does not throw and sets the second-chance flag under SecondChance policy.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TouchOrThrow" /> does not throw and sets the second-chance flag under SecondChance policy.
         /// </summary>
         [TestMethod]
         public void TouchOrThrow_WhenPolicyIsSCAndKeyExists_ShouldSetSecondChance()
@@ -73,7 +73,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that PeekEvictionCandidate skips items with the second-chance flag and returns the correct candidate.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.PeekEvictionCandidate" /> skips items with the second-chance flag and returns the correct candidate.
         /// </summary>
         [TestMethod]
         public void PeekEvictionCandidate_WhenPolicyIsSC_ShouldSkipSecondChanceItems()
@@ -88,7 +88,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that PeekEvictionCandidate falls back to the oldest item when all items have the second-chance flag set.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.PeekEvictionCandidate" /> falls back to the oldest item when all items have the second-chance flag set.
         /// </summary>
         [TestMethod]
         public void PeekEvictionCandidate_WhenPolicyIsSCAndAllItemsHaveSecondChance_ShouldReturnOldestKey()
@@ -109,7 +109,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Clear resets second-chance tracking in SecondChance policy.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Clear" /> resets second-chance tracking in SecondChance policy.
         /// </summary>
         [TestMethod]
         public void Clear_WhenPolicyIsSC_ShouldResetSecondChanceFlags()

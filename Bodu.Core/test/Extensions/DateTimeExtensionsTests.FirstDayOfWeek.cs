@@ -21,6 +21,9 @@ namespace Bodu.Extensions
     {
 
 
+        /// <summary>
+        /// Verifies that the parameterless <see cref="DateTimeExtensions.FirstDayOfWeek(DateTime)" /> overload uses <see cref="CultureInfo.CurrentCulture" /> to determine the week start.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(FirstDayOfWeekCultureInfoTestData), DynamicDataSourceType.Method)]
         public void FirstDayOfWeek_WhenCurrentCultureSet_ShouldReturnExpectedStart(DateTime input, CultureInfo culture, DateTime expected)
@@ -41,6 +44,9 @@ namespace Bodu.Extensions
             }
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeek(DateTime, CultureInfo)" /> returns the expected week start for the supplied culture's first-day-of-week.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(FirstDayOfWeekCultureInfoTestData), DynamicDataSourceType.Method)]
         public void FirstDayOfWeek_WhenCulture_ShouldReturnExpectedStart(DateTime input, CultureInfo culture, DateTime expected)
@@ -50,6 +56,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that passing a <see langword="null" /> <see cref="CultureInfo" /> falls back to <see cref="CultureInfo.CurrentCulture" />.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeek_WhenCultureIsNull_ShouldUseCurrentCulture()
         {
@@ -71,6 +80,9 @@ namespace Bodu.Extensions
             }
         }
 
+        /// <summary>
+        /// Verifies that the parameterless overload preserves the input's <see cref="DateTime.Kind" /> across all <see cref="DateTimeKind" /> values.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]
@@ -82,6 +94,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(kind, actual.Kind, $"Kind mismatch for FirstDayOfWeek with {kind}");
         }
 
+        /// <summary>
+        /// Verifies that the culture-taking overload preserves the input's <see cref="DateTime.Kind" /> across all <see cref="DateTimeKind" /> values.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]
@@ -94,6 +109,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(kind, actual.Kind, $"Kind mismatch for FirstDayOfWeek with {kind}");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTime.MinValue" /> with a Monday-start culture returns <c>MinValue.Date</c> (which is itself a Monday).
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeek_WhenUsingMinValue_ShouldReturnMin()
         {
@@ -103,6 +121,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(min.Date, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTime.MinValue" /> with a Sunday-start culture throws <see cref="ArgumentOutOfRangeException" /> because the computed start would underflow.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeek_WhenUsingMinValueWithSundayStart_ShouldThrowExactly()
         {
@@ -115,6 +136,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTime.MaxValue" /> returns a valid week start that is on or before the input.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeek_WhenUsingMaxValue_ShouldReturnValidStart()
         {
@@ -194,6 +218,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that the weekend-definition overload preserves the input's <see cref="DateTime.Kind" /> across every <c>(definition, kind)</c> combination.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(CalendarWeekendDefinitionDateTimeKindTestData), DynamicDataSourceType.Method)]
         public void FirstDayOfWeek_WhenWeekendDefinitionAndKindIsSet_ShouldPreserveKind(CalendarWeekendDefinition definition, DateTimeKind kind)

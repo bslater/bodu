@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfNotPositiveMultipleOf" />, when ValueIsZeroNegativeOrNotMultiple, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 2)]   // Zero is not positive
         [DataRow(-2, 2)]  // Negative value
@@ -21,6 +24,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfNotPositiveMultipleOf" />, when ValueIsPositiveAndMultiple, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(2, 1)]
         [DataRow(4, 2)]

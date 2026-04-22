@@ -18,6 +18,9 @@ namespace Bodu.Extensions
     {
 
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.DaysInMonth" />, when Called, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DaysInMonthTestData), DynamicDataSourceType.Method)]
         public void DaysInMonth_WhenCalled_ShouldReturnDaysInMonth(DateTime input, int expected)

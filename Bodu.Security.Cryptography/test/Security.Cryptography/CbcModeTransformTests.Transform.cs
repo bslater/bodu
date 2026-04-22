@@ -8,6 +8,9 @@
 {
     public sealed partial class CbcModeTransformTests
     {
+        /// <summary>
+        /// Verifies that <see cref="CbcModeTransform.Transform" /> in decrypt mode inverts the CBC chain, XOR-unwrapping each ciphertext block against the prior ciphertext to recover the original plaintext.
+        /// </summary>
         [TestMethod]
         public void Transform_WhenDecrypting_ShouldApplyCBCUnchaining()
         {
@@ -30,6 +33,9 @@
             CollectionAssert.AreEqual(plaintext2, output[ExpectedBlockSize..].ToArray(), "Decryption of second block failed.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="CbcModeTransform.Transform" /> in encrypt mode XORs each plaintext block with the prior ciphertext (or IV for block 0) before calling the cipher — the defining chaining property of CBC.
+        /// </summary>
         [TestMethod]
         public void Transform_WhenEncrypting_ShouldApplyCBCChaining()
         {
@@ -49,6 +55,9 @@
             CollectionAssert.AreEqual(expectedBlock2, output[ExpectedBlockSize..].ToArray());
         }
 
+        /// <summary>
+        /// Verifies that <see cref="CbcModeTransform.Transform" /> in encrypt mode leaves the caller's IV buffer untouched (the transform copies the IV rather than mutating it in place).
+        /// </summary>
         [TestMethod]
         public void Transform_WhenEncrypting_ShouldNotMutateIV()
         {
@@ -65,6 +74,9 @@
             CollectionAssert.AreEqual(ivCopy, iv, "IV must not be mutated after encryption.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="CbcModeTransform.Transform" />, with EmptyInput, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void Transform_WithEmptyInput_ShouldNotThrow()
         {
@@ -78,6 +90,9 @@
             Assert.AreEqual(0, output.Length);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="CbcModeTransform.Transform" />, with SingleBlock, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void Transform_WithSingleBlock_ShouldEncryptCorrectly()
         {

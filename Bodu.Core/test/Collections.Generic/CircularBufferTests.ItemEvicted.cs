@@ -9,7 +9,7 @@
     public partial class CircularBufferTests
     {
         /// <summary>
-        /// Verifies that ItemEvicted is not raised when the buffer has capacity available.
+        /// Verifies that <see cref="CircularBuffer{T}.ItemEvicted" /> is not raised when the buffer has capacity available.
         /// </summary>
         [TestMethod]
         public void ItemEvicted_WhenBufferHasCapacity_ShouldNotFire()
@@ -25,7 +25,7 @@
         }
 
         /// <summary>
-        /// Verifies that ItemEvicted handlers are invoked without exception under high concurrency.
+        /// Verifies that <see cref="CircularBuffer{T}.ItemEvicted" /> handlers are invoked without exception under high concurrency.
         /// </summary>
         [TestMethod]
         public void ItemEvicted_WhenConcurrentOverwrite_ShouldNotThrow()
@@ -89,7 +89,7 @@
         }
 
         /// <summary>
-        /// Verifies that ItemEvicted is not raised when overwrite is not allowed.
+        /// Verifies that <see cref="CircularBuffer{T}.ItemEvicted" /> is not raised when overwrite is not allowed.
         /// </summary>
         [TestMethod]
         public void ItemEvicted_WhenOverwriteIsDisabled_ShouldNotFire()
@@ -107,7 +107,7 @@
         }
 
         /// <summary>
-        /// Verifies that ItemEvicted is raised with the correct item when an element is overwritten.
+        /// Verifies that <see cref="CircularBuffer{T}.ItemEvicted" /> is raised with the correct item when an element is overwritten.
         /// </summary>
         [TestMethod]
         public void ItemEvicted_WhenOverwriteOccurs_ShouldContainCorrectItem()

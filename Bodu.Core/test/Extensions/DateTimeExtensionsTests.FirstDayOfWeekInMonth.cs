@@ -17,6 +17,9 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInMonth" />, when Called, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(FirstDayOfWeekInMonthTestData), DynamicDataSourceType.Method)]
         public void FirstDayOfWeekInMonth_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
@@ -26,6 +29,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInMonth" />, when InvalidDayOfWeek, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInMonth_WhenInvalidDayOfWeek_ShouldThrowExactly()
         {
@@ -46,6 +52,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(TimeSpan.Zero, actual.TimeOfDay);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInMonth" />, when Called, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]
@@ -58,6 +67,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(kind, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInMonth" />, when UsingMinValue, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInMonth_WhenUsingMinValue_ShouldReturnValidResult()
         {
@@ -66,6 +78,9 @@ namespace Bodu.Extensions
             Assert.IsTrue(actual >= DateTime.MinValue && actual <= DateTime.MinValue.AddMonths(1).AddDays(-1));
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInMonth" />, when UsingMaxValue, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInMonth_WhenUsingMaxValue_ShouldReturnValidResult()
         {

@@ -9,7 +9,7 @@
     public partial class CryptoHelpersTests
     {
         /// <summary>
-        /// Verifies that TryFillWithRandomNonZeroBytes returns true and fills span with non-zero bytes.
+        /// Verifies that <see cref="CryptoHelpers.TryFillWithRandomNonZeroBytes" /> returns true and fills span with non-zero bytes.
         /// </summary>
         [TestMethod]
         public void TryFillWithRandomNonZeroBytes_WhenBufferCanBeFilled_ShouldReturnTrue()
@@ -23,6 +23,9 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that <see cref="CryptoHelpers.TryFillWithRandomNonZeroBytes" />, when Successful, returns a value that differs from the baseline.
+        /// </summary>
         [TestMethod]
         public void TryFillWithRandomNonZeroBytes_WhenSuccessful_ShouldReturnTrueAndFillBuffer()
         {
@@ -42,6 +45,9 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that <see cref="CryptoHelpers.TryFillWithRandomNonZeroBytes" />, RepeatedCalls, returns a value that differs from the baseline.
+        /// </summary>
         [TestMethod]
         public void TryFillWithRandomNonZeroBytes_RepeatedCalls_ShouldProduceIndependentDraws()
         {
@@ -72,6 +78,9 @@
             Assert.IsFalse(identical, "Consecutive calls should not produce identical buffers; temp-clear must not corrupt the output path.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="CryptoHelpers.TryFillWithRandomNonZeroBytes" />, BufferBytes, returns a value that differs from the baseline.
+        /// </summary>
         [TestMethod]
         public void TryFillWithRandomNonZeroBytes_BufferBytes_ShouldNotContainZero()
         {

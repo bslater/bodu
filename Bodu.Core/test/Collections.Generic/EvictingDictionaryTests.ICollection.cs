@@ -11,7 +11,7 @@ namespace Bodu.Collections.Generic
     public partial class EvictingDictionaryTests
     {
         /// <summary>
-        /// Verifies that SyncRoot consistently returns the same non-null object across calls.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.SyncRoot" /> consistently returns the same non-null object across calls.
         /// </summary>
         [TestMethod]
         public void ICollection_SyncRoot_WhenCalledMultipleTimes_ShouldReturnSameInstance()
@@ -25,7 +25,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that IsSynchronized returns false to indicate the dictionary is not thread-safe.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.IsSynchronized" /> returns false to indicate the dictionary is not thread-safe.
         /// </summary>
         [TestMethod]
         public void ICollection_IsSynchronized_WhenAccessed_ShouldReturnFalse()
@@ -35,7 +35,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo successfully populates a DictionaryEntry array when inputs are valid.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> successfully populates a DictionaryEntry array when inputs are valid.
         /// </summary>
         [TestMethod]
         public void ICollection_CopyTo_WhenValidArray_ShouldCopyItemsToTarget()
@@ -54,7 +54,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo throws ArgumentNullException when the array is null.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> throws ArgumentNullException when the array is null.
         /// </summary>
         [TestMethod]
         public void ICollection_CopyTo_WhenArrayIsNull_ShouldThrowExactly()
@@ -67,7 +67,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo throws ArgumentException when the array is multidimensional.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> throws ArgumentException when the array is multidimensional.
         /// </summary>
         [TestMethod]
         public void ICollection_CopyTo_WhenArrayIsMultidimensional_ShouldThrowExactly()
@@ -82,7 +82,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo throws ArgumentException when the array has a non-zero lower bound.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> throws ArgumentException when the array has a non-zero lower bound.
         /// </summary>
         [TestMethod]
         public void ICollection_CopyTo_WhenArrayHasNonZeroLowerBound_ShouldThrowExactly()
@@ -97,7 +97,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo throws ArgumentOutOfRangeException when the index is negative.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> throws ArgumentOutOfRangeException when the index is negative.
         /// </summary>
         [TestMethod]
         public void ICollection_CopyTo_WhenIndexIsNegative_ShouldThrowExactly()
@@ -112,7 +112,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo throws ArgumentException when the array is too small to hold items.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> throws ArgumentException when the array is too small to hold items.
         /// </summary>
         [TestMethod]
         public void ICollection_CopyTo_WhenArrayIsTooSmall_ShouldThrowExactly()
@@ -130,7 +130,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo throws ArgumentException when the object array is multidimensional.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> throws ArgumentException when the object array is multidimensional.
         /// </summary>
         [TestMethod]
         public void ICollection_CopyTo_WhenObjectArrayIsMultidimensional_ShouldThrowExactly()

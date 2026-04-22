@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrEmpty" />, when ValueIsNull, throws <see cref="ArgumentNullException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(null)]
         public void ThrowIfNullOrEmpty_WhenValueIsNull_ShouldThrowArgumentNullException(string? value)
@@ -18,6 +21,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrEmpty" />, when ValueIsEmpty, throws <see cref="ArgumentException" />.
+        /// </summary>
         [TestMethod]
         [DataRow("")]
         public void ThrowIfNullOrEmpty_WhenValueIsEmpty_ShouldThrowArgumentException(string value)
@@ -28,6 +34,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrEmpty" />, when ValueIsNonEmpty, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow("a")]
         [DataRow("test")]

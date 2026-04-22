@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography
     public partial class CryptoHelpersTests
     {
         /// <summary>
-        /// Verifies that TryDepadBlock returns <c>true</c> for valid input input across modes.
+        /// Verifies that <see cref="CryptoHelpers.TryDepadBlock" /> returns <c>true</c> for valid input input across modes.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases), DynamicDataSourceType.Method)]
@@ -27,7 +27,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that TryDepadBlock returns the correct uninput byte count for valid input.
+        /// Verifies that <see cref="CryptoHelpers.TryDepadBlock" /> returns the correct uninput byte count for valid input.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases), DynamicDataSourceType.Method)]
@@ -45,7 +45,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that TryDepadBlock returns the correct uninput content for valid input.
+        /// Verifies that <see cref="CryptoHelpers.TryDepadBlock" /> returns the correct uninput content for valid input.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases), DynamicDataSourceType.Method)]
@@ -63,7 +63,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that TryDepadBlock returns <c>false</c> for invalid input input across supported modes.
+        /// Verifies that <see cref="CryptoHelpers.TryDepadBlock" /> returns <c>false</c> for invalid input input across supported modes.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(CryptoHelpersTests.InvalidDepaddingCases), DynamicDataSourceType.Method)]

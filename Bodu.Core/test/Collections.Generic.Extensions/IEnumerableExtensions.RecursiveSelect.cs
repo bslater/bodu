@@ -328,7 +328,7 @@ namespace Bodu.Collections.Generic.Extensions
         }
 
         /// <summary>
-        /// Verifies that RecursiveSelect works with an empty source collection and produces no output.
+        /// Verifies that <see cref="IEnumerableExtensions.RecursiveSelect" /> works with an empty source collection and produces no output.
         /// </summary>
         [TestMethod]
         public void RecursiveSelect_WithEmptySource_ShouldReturnEmpty()

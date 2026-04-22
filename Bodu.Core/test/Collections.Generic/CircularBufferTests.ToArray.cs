@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class CircularBufferTests
     {
         /// <summary>
-        /// Verifies that ToArray returns buffer contents in the correct logical FirstInFirstOut order.
+        /// Verifies that <see cref="CircularBuffer{T}.ToArray" /> returns buffer contents in the correct logical FirstInFirstOut order.
         /// </summary>
         [TestMethod]
         public void ToArray_WhenBufferHasElements_ShouldReturnElementsInOrder()
@@ -22,7 +22,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ToArray returns an empty array when the buffer has no items.
+        /// Verifies that <see cref="CircularBuffer{T}.ToArray" /> returns an empty array when the buffer has no items.
         /// </summary>
         [TestMethod]
         public void ToArray_WhenBufferIsEmpty_ShouldReturnEmptyArray()

@@ -16,6 +16,9 @@ namespace Bodu.Extensions
 {
     public partial class DateOnlyExtensionsTests
     {
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfWeekInYear" />, when Called, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.LastDayOfWeekInYearTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void LastDayOfWeekInYear_WhenCalled_ShouldReturnExpectedDate(DateTime inputDateTime, DayOfWeek dayOfWeek, DateTime expectedDateTime)
@@ -28,6 +31,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfWeekInYear" />, when DayOfWeekIsInvalid, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeekInYear_WhenDayOfWeekIsInvalid_ShouldThrowExactly()
         {
@@ -40,6 +46,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfWeekInYear" />, when UsingMinValue, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeekInYear_WhenUsingMinValue_ShouldReturnInYear1()
         {
@@ -50,6 +59,9 @@ namespace Bodu.Extensions
             Assert.IsTrue(actual <= new DateOnly(1, 12, 31));
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfWeekInYear" />, when UsingMaxValue, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeekInYear_WhenUsingMaxValue_ShouldReturnValidDate()
         {

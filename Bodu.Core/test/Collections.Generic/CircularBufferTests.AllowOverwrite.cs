@@ -39,7 +39,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that AllowOverwrite controls overwriting behavior when toggled at runtime.
+        /// Verifies that <see cref="CircularBuffer{T}.AllowOverwrite" /> controls overwriting behavior when toggled at runtime.
         /// </summary>
         [TestMethod]
         public void AllowOverwrite_WhenDisabledAndBufferFull_ShouldPreventOverwrite()

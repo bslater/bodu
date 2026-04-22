@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class CircularBufferTests
     {
         /// <summary>
-        /// Verifies that Equals returns true when comparing the buffer with itself.
+        /// Verifies that <see cref="CircularBuffer{T}.Equals" /> returns true when comparing the buffer with itself.
         /// </summary>
         [TestMethod]
         public void Equals_ShouldReturnTrue_WhenComparingSameReference()
@@ -19,7 +19,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Equals returns false when comparing the buffer with null.
+        /// Verifies that <see cref="CircularBuffer{T}.Equals" /> returns false when comparing the buffer with null.
         /// </summary>
         [TestMethod]
         public void Equals_ShouldReturnFalse_WhenComparingWithNull()
@@ -29,7 +29,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Equals returns false when comparing the buffer with an object of another type.
+        /// Verifies that <see cref="CircularBuffer{T}.Equals" /> returns false when comparing the buffer with an object of another type.
         /// </summary>
         [TestMethod]
         public void Equals_ShouldReturnFalse_WhenComparingDifferentType()

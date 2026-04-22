@@ -36,7 +36,7 @@ namespace Bodu.Infrastructure
         }
 
         /// <summary>
-        /// Verifies that calling GetBytesZeroPadded resets the buffer.
+        /// Verifies that calling <see cref="ByteBuffer.GetBytesZeroPadded" /> resets the buffer.
         /// </summary>
         [TestMethod]
         public void GetBytesZeroPadded_ShouldResetIndex()

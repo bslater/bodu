@@ -27,6 +27,9 @@ namespace Bodu.Globalization.Extensions
             yield return new object[] { DayOfWeek.Saturday, DayOfWeek.Friday };
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeFormatInfoExtensions.LastDayOfWeek" />, when FirstDayOfWeekIsSpecified, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(LastDayOfWeekTestData), DynamicDataSourceType.Method)]
         public void LastDayOfWeek_WhenFirstDayOfWeekIsSpecified_ShouldReturnDaySixPositionsLater(
@@ -40,6 +43,9 @@ namespace Bodu.Globalization.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeFormatInfoExtensions.LastDayOfWeek" />, when UsingEnGbCulture, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeek_WhenUsingEnGbCulture_ShouldReturnSunday()
         {
@@ -50,6 +56,9 @@ namespace Bodu.Globalization.Extensions
             Assert.AreEqual(DayOfWeek.Sunday, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeFormatInfoExtensions.LastDayOfWeek" />, when UsingEnUsCulture, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeek_WhenUsingEnUsCulture_ShouldReturnSaturday()
         {
@@ -60,6 +69,9 @@ namespace Bodu.Globalization.Extensions
             Assert.AreEqual(DayOfWeek.Saturday, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeFormatInfoExtensions.LastDayOfWeek" />, when InfoIsNull, throws <see cref="ArgumentNullException" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeek_WhenInfoIsNull_ShouldThrowArgumentNullException()
         {

@@ -32,6 +32,9 @@ namespace Bodu.Extensions
             yield return new object[] { new DateOnly(2024, 11, 5), DayOfWeek.Tuesday, new DateOnly(2024, 10, 1) };
         }
 
+        /// <summary>
+        /// Verifies that the instance overload returns the expected first occurrence of the requested <see cref="DayOfWeek" /> within the January-to-December quarter for the given input.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(FirstDayOfWeekInQuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
         public void FirstDayOfWeekInQuarter_WhenUsingJanuaryToDecember_ShouldReturnExpectedDate(DateOnly input, DayOfWeek dayOfWeek, DateOnly expected)
@@ -40,6 +43,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that when the quarter starts on the requested <see cref="DayOfWeek" />, the result is the quarter-start date itself.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInQuarter_WhenDateFallsOnTargetDayOfWeekFirstInQuarter_ShouldReturnSameDate()
         {
@@ -48,6 +54,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateOnly(2024, 1, 1), actual);
         }
 
+        /// <summary>
+        /// Verifies that an undefined <see cref="DayOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" /> on the instance overload.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInQuarter_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
         {
@@ -59,6 +68,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that an undefined <see cref="CalendarQuarterDefinition" /> value throws <see cref="ArgumentOutOfRangeException" /> on the instance overload.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInQuarter_WhenDefinitionIsInvalid_ShouldThrowArgumentOutOfRangeException()
         {
@@ -74,6 +86,9 @@ namespace Bodu.Extensions
         // FirstDayOfWeekInQuarter(int year, int quarter, DayOfWeek, CalendarQuarterDefinition)
         // =========================================================================
 
+        /// <summary>
+        /// Verifies that the static <see cref="DateOnlyExtensions.FirstDayOfWeekInQuarter(int, int, DayOfWeek, CalendarQuarterDefinition)" /> overload returns the expected first occurrence for each <c>(year, quarter, dayOfWeek)</c> tuple.
+        /// </summary>
         [TestMethod]
         [DataRow(2024, 1, DayOfWeek.Monday, 2024, 1, 1)]
         [DataRow(2024, 1, DayOfWeek.Friday, 2024, 1, 5)]
@@ -86,6 +101,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateOnly(expectedYear, expectedMonth, expectedDay), actual);
         }
 
+        /// <summary>
+        /// Verifies that the static overload throws <see cref="ArgumentOutOfRangeException" /> for quarter values outside <c>1..4</c>.
+        /// </summary>
         [TestMethod]
         [DataRow(0)]
         [DataRow(5)]
@@ -98,6 +116,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that the static overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="CalendarQuarterDefinition" /> value.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInQuarter_WhenYearAndQuarterOverloadDefinitionIsInvalid_ShouldThrowArgumentOutOfRangeException()
         {
@@ -107,6 +128,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that the static overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="DayOfWeek" /> value.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInQuarter_WhenYearAndQuarterOverloadDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
         {

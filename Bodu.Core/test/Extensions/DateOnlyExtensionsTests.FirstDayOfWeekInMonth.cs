@@ -16,6 +16,9 @@ namespace Bodu.Extensions
 {
     public partial class DateOnlyExtensionsTests
     {
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.FirstDayOfWeekInMonth" />, when Called, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfWeekInMonthTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void FirstDayOfWeekInMonth_WhenCalled_ShouldReturnExpectedDate(DateTime inputDateTime, DayOfWeek dayOfWeek, DateTime expectedDateTime)
@@ -28,6 +31,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.FirstDayOfWeekInMonth" />, when InvalidDayOfWeek, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInMonth_WhenInvalidDayOfWeek_ShouldThrowExactly()
         {
@@ -40,6 +46,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.FirstDayOfWeekInMonth" />, when UsingMinValue, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInMonth_WhenUsingMinValue_ShouldReturnValidResult()
         {
@@ -48,6 +57,9 @@ namespace Bodu.Extensions
             Assert.IsTrue(actual >= DateOnly.MinValue && actual <= DateOnly.MinValue.AddMonths(1).AddDays(-1));
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.FirstDayOfWeekInMonth" />, when UsingMaxValue, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInMonth_WhenUsingMaxValue_ShouldReturnValidResult()
         {

@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class EvictingDictionaryTests
     {
         /// <summary>
-        /// Verifies that Remove returns true and deletes the key when it exists.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Remove" /> returns true and deletes the key when it exists.
         /// </summary>
         [TestMethod]
         public void Remove_WhenKeyExists_ShouldRemoveSuccessfully()
@@ -25,7 +25,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Remove returns false when the key is not present.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Remove" /> returns false when the key is not present.
         /// </summary>
         [TestMethod]
         public void Remove_WhenKeyDoesNotExist_ShouldReturnFalse()
@@ -59,7 +59,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Remove(KeyValuePair) removes the entry only if both key and value match.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Remove" />(KeyValuePair) removes the entry only if both key and value match.
         /// </summary>
         [TestMethod]
         public void Remove_WhenKeyValuePairMatches_ShouldRemoveSuccessfully()
@@ -74,7 +74,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Remove(KeyValuePair) returns false if key exists but value does not match.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Remove" />(KeyValuePair) returns false if key exists but value does not match.
         /// </summary>
         [TestMethod]
         public void Remove_WhenKeyExistsButValueDoesNotMatch_ShouldNotRemove()
@@ -123,7 +123,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Remove only deletes the specified key when multiple keys share the same value.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Remove" /> only deletes the specified key when multiple keys share the same value.
         /// </summary>
         [TestMethod]
         public void Remove_WhenMultipleKeysWithSameValue_ShouldOnlyRemoveMatchingKey()

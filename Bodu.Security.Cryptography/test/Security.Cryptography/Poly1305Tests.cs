@@ -40,6 +40,9 @@ namespace Bodu.Security.Cryptography
             TestKey = Poly1305TestKey,
         };
 
+        /// <summary>
+        /// Verifies that <see cref="Poly1305.Poly1305" />, when UsingRfcTestVector, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void Poly1305_WhenUsingRfcTestVector_ShouldMatch()
         {

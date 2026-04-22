@@ -29,6 +29,9 @@ namespace Bodu.Extensions
             yield return new object[] { new DateTime(2024, 6, 17), 25 };
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.GetIsoWeekOfYear" />, when Called, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetIsoWeekOfYearTestData), DynamicDataSourceType.Method)]
         public void GetIsoWeekOfYear_WhenCalled_ShouldReturnExpectedWeekNumber(DateTime input, int expected)
@@ -37,6 +40,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.GetIsoWeekOfYear" />, when Called, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         public void GetIsoWeekOfYear_WhenCalled_ShouldReturnValueInRange1To53()
         {
@@ -45,6 +51,9 @@ namespace Bodu.Extensions
             Assert.IsTrue(actual >= 1 && actual <= 53);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.GetIsoWeekOfYear" />, when TimeOfDayIsNonZero, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void GetIsoWeekOfYear_WhenTimeOfDayIsNonZero_ShouldReturnSameResultAsMidnight()
         {
@@ -53,6 +62,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(morning.GetIsoWeekOfYear(), evening.GetIsoWeekOfYear());
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.GetIsoWeekOfYear" />, when Called, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DataRow(2024, 12, 30, DisplayName = "Late December Monday belonging to week 1 of next year")]
         [DataRow(2024, 12, 31, DisplayName = "Late December Tuesday belonging to week 1 of next year")]

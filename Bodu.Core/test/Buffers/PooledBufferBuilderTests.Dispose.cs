@@ -8,6 +8,9 @@
 {
     public partial class PooledBufferBuilderTests
     {
+        /// <summary>
+        /// Verifies that <see cref="PooledBufferBuilder.Dispose" />, when Called, UsingPooledBufferBuilder, throws <see cref="ObjectDisposedException" />.
+        /// </summary>
         [TestMethod]
         public void Dispose_WhenCalled_ShouldPreventBufferAccess_UsingPooledBufferBuilder()
         {
@@ -20,6 +23,9 @@
             Assert.ThrowsExactly<ObjectDisposedException>(() => _ = builder.Count);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="PooledBufferBuilder.Dispose" />, when InvokedMultipleTimes, UsingPooledBufferBuilder, NotThrow.
+        /// </summary>
         [TestMethod]
         public void Dispose_WhenInvokedMultipleTimes_ShouldNotThrow_UsingPooledBufferBuilder()
         {

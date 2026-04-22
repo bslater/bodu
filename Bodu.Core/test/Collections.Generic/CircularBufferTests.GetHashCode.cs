@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class CircularBufferTests
     {
         /// <summary>
-        /// Verifies that GetHashCode returns the same value for repeated calls on the same instance.
+        /// Verifies that <see cref="CircularBuffer{T}.GetHashCode" /> returns the same value for repeated calls on the same instance.
         /// </summary>
         [TestMethod]
         public void GetHashCode_ShouldBeStable_ForSameInstance()

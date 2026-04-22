@@ -89,7 +89,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that setting InitialValue after a full hash computation is accepted.
+        /// Verifies that setting <see cref="UInt32.InitialValue" /> after a full hash computation is accepted.
         /// </summary>
         [TestMethod]
         public void InitialValue_WhenSetAfterHashFinal_ShouldBeAccepted()
@@ -104,7 +104,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that setting InitialValue to zero is accepted and produces a result.
+        /// Verifies that setting <see cref="UInt32.InitialValue" /> to zero is accepted and produces a result.
         /// </summary>
         [TestMethod]
         public void InitialValue_WhenSetToZero_ShouldBeAccepted()

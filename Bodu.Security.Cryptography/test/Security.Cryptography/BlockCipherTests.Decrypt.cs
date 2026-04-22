@@ -93,6 +93,9 @@ namespace Bodu.Security.Cryptography
             CollectionAssert.AreEqual(output1, output2);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="BlockCipher.Decrypt" />, when KnownInput, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DecryptTestData))]
         public void Decrypt_WhenKnownInput_ShouldMatchExpected(TVariant variant, string testName, byte[] input, byte[] expected, Func<IBlockCipher>? factory)

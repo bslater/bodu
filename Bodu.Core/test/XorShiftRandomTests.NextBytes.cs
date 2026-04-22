@@ -9,7 +9,7 @@
     public partial class XorShiftRandomTests
     {
         /// <summary>
-        /// Verifies that NextBytes fills the provided buffer completely with random bytes.
+        /// Verifies that <see cref="XorShiftRandom.NextBytes" /> fills the provided buffer completely with random bytes.
         /// </summary>
         [TestMethod]
         [DataRow(1)]
@@ -24,6 +24,9 @@
             Assert.IsTrue(buffer.All(b => b >= 0), "All bytes should be populated.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="XorShiftRandom.NextBytes" />, when Called, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         public void NextBytes_WhenCalled_ShouldFillBuffer()
         {
@@ -34,6 +37,9 @@
             Assert.IsTrue(buffer.Any(b => b != 0), "Expected non-zero bytes in actual.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="XorShiftRandom.NextBytes" />, with NullBuffer, throws <see cref="ArgumentNullException" />.
+        /// </summary>
         [TestMethod]
         public void NextBytes_WithNullBuffer_ShouldThrowExactly()
         {

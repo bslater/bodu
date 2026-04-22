@@ -33,6 +33,9 @@ namespace Bodu.Extensions
             yield return new object[] { new DateOnly(2024, 4, 17), DayOfWeek.Saturday, new DateOnly(2024, 4, 20) };
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.NearestDayOfWeek(DateOnly, DayOfWeek)" /> returns the closest occurrence of the requested <see cref="DayOfWeek" /> in either direction.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(NearestDayOfWeekTestData), DynamicDataSourceType.Method)]
         public void NearestDayOfWeek_WhenCalled_ShouldReturnExpectedDate(DateOnly date, DayOfWeek dayOfWeek, DateOnly expected)
@@ -41,6 +44,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that when the past and future occurrences are equidistant (3 days each), the earlier date is returned.
+        /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenTiedBetweenPastAndFuture_ShouldReturnEarlierDate()
         {
@@ -50,6 +56,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateOnly(2024, 4, 14), actual);
         }
 
+        /// <summary>
+        /// Verifies that an undefined <see cref="DayOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
         {
@@ -65,6 +74,9 @@ namespace Bodu.Extensions
         // NearestDayOfWeek(int year, int month, int day, DayOfWeek)
         // =========================================================================
 
+        /// <summary>
+        /// Verifies that the static <see cref="DateOnlyExtensions.NearestDayOfWeek(int, int, int, DayOfWeek)" /> overload returns the expected nearest date.
+        /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenUsingYearMonthDay_ShouldReturnExpectedDate()
         {
@@ -73,6 +85,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateOnly(2024, 4, 15), actual);
         }
 
+        /// <summary>
+        /// Verifies that the static <c>(year, month, day)</c> overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="DayOfWeek" />.
+        /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenUsingYearMonthDayWithInvalidDayOfWeek_ShouldThrowArgumentOutOfRangeException()
         {

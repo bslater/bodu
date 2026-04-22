@@ -8,6 +8,9 @@ namespace Bodu.Security.Cryptography
 {
     public partial class TigerTests
     {
+        /// <summary>
+        /// Verifies that <see cref="Tiger.AlgorithmName" />, when UsingVariant, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(HashAlgorithmVariants), DynamicDataSourceType.Method)]
         public void AlgorithmName_WhenUsingVariant_ShouldReturnCorrectlyFormattedString(TigerVariant variant)

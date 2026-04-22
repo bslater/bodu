@@ -10,6 +10,9 @@ namespace Bodu
     {
         // Span<T> overload (delegates to ReadOnlySpan<T>)
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanOffsetOrCountInvalid" />, Span, when OffsetOrCountOutOfRange, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(-1, 2)]   // negative offset
         [DataRow(6, 2)]    // offset > length
@@ -24,6 +27,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanOffsetOrCountInvalid" />, Span, when SumExceedsLength, throws <see cref="ArgumentException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(3, 3)]    // offset + count > length
         [DataRow(4, 2)]    // offset + count > length
@@ -36,6 +42,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanOffsetOrCountInvalid" />, Span, when ParametersAreValid, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 0)]
         [DataRow(0, 5)]
@@ -50,6 +59,9 @@ namespace Bodu
 
         // ReadOnlySpan<T> overload (canonical implementation)
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanOffsetOrCountInvalid" />, ReadOnlySpan, when OffsetOrCountOutOfRange, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(-1, 2)]
         [DataRow(6, 2)]
@@ -64,6 +76,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanOffsetOrCountInvalid" />, ReadOnlySpan, when SumExceedsLength, throws <see cref="ArgumentException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(3, 3)]
         [DataRow(4, 2)]
@@ -76,6 +91,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanOffsetOrCountInvalid" />, ReadOnlySpan, when ParametersAreValid, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 0)]
         [DataRow(0, 5)]

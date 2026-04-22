@@ -10,6 +10,9 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+    /// <summary>
+    /// Verifies that a heavily-overfilled buffer with overwriting enabled drains cleanly via <see cref="ConcurrentCircularBuffer{T}.TryDequeue" /> within the capacity bound.
+    /// </summary>
     [TestMethod]
     public void TryDequeue_WhenAllowOverwriteTrue_ShouldNotThrowAndRespectBounds()
     {
@@ -26,6 +29,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, buffer.Count);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryDequeue" /> on an empty buffer returns <see langword="false" />.
+    /// </summary>
     [TestMethod]
     public void TryDequeue_WhenBufferIsEmpty_ShouldReturnFalse()
     {
@@ -33,6 +39,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsFalse(buffer.TryDequeue(out _));
     }
 
+    /// <summary>
+    /// Verifies that after <see cref="ConcurrentCircularBuffer{T}.TryDequeue" /> drains the last item, the next call returns <see langword="false" />.
+    /// </summary>
     [TestMethod]
     public void TryDequeue_WhenBufferTransitionsToEmpty_ShouldReturnFalseAfterLastItem()
     {
@@ -49,6 +58,9 @@ public partial class ConcurrentCircularBufferTests
     // value — following the implementation change that requires capacity >= 2 for the Vyukov
     // MPMC sequence protocol to be correct.
 
+    /// <summary>
+    /// Verifies that at the minimum-valid capacity, repeated enqueue/<see cref="ConcurrentCircularBuffer{T}.TryDequeue" /> cycles keep the count within the capacity bound.
+    /// </summary>
     [TestMethod]
     public void TryDequeue_WhenCapacityIsMinimum_ShouldBehaveConsistently()
     {
@@ -63,6 +75,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= 2);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryDequeue" /> interleaved with concurrent <see cref="ConcurrentCircularBuffer{T}.Clear" /> calls never throws and ultimately returns <see langword="false" /> on the emptied buffer.
+    /// </summary>
     [TestMethod]
     public void TryDequeue_WhenClearInterleaves_ShouldReturnFalseOnceEmptiedWithoutThrowing()
     {
@@ -98,6 +113,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsFalse(buffer.TryDequeue(out _)); // should be empty now
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryDequeue" /> eventually succeeds against a buffer fed by a concurrent enqueuer.
+    /// </summary>
     [TestMethod]
     public void TryDequeue_WhenConcurrentEnqueueInterleaves_ShouldEventuallySucceed()
     {
@@ -133,6 +151,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(dequeuedCount > 0, "Expected to dequeue at least one item.");
     }
 
+    /// <summary>
+    /// Verifies that many concurrent consumers drain a preloaded buffer and together receive every item exactly once.
+    /// </summary>
     [TestMethod]
     public void TryDequeue_WhenManyConsumersAgainstPreloadedBuffer_ShouldDrainAllItems()
     {
@@ -151,6 +172,9 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEquivalent(Enumerable.Range(0, 20).ToArray(), dequeued.OrderBy(x => x).ToArray());
     }
 
+    /// <summary>
+    /// Verifies that no item is ever returned more than once across parallel <see cref="ConcurrentCircularBuffer{T}.TryDequeue" /> consumers.
+    /// </summary>
     [TestMethod]
     public void TryDequeue_WhenMultipleConsumers_ShouldDequeueEachItemAtMostOnce()
     {
@@ -173,6 +197,9 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEquivalent(Enumerable.Range(0, 30).ToArray(), dequeued.OrderBy(x => x).ToArray());
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryDequeue" /> returns each <see langword="null" /> item that was enqueued, in FIFO order.
+    /// </summary>
     [TestMethod]
     public void TryDequeue_WhenNullsPresent_ShouldReturnNullValues()
     {
@@ -191,6 +218,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(1, nonNulls);
     }
 
+    /// <summary>
+    /// Verifies that single-threaded <see cref="ConcurrentCircularBuffer{T}.TryDequeue" /> returns items in strict FIFO order.
+    /// </summary>
     [TestMethod]
     public void TryDequeue_WhenSingleThreaded_ShouldReturnInFifoOrder()
     {

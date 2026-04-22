@@ -43,6 +43,9 @@ namespace Bodu.Security.Cryptography
             Assert.IsTrue(result.Any(b => b != 0), $"Hash result should not be all zeros for type {type}.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="Pearson.TableType" />, Get, when Default, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void TableType_Get_WhenDefault_ShouldReturnPearson()
         {
@@ -53,6 +56,9 @@ namespace Bodu.Security.Cryptography
             Assert.AreEqual(Pearson.PearsonTableType.Pearson, type, "Default TableType should be Pearson.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="Pearson.TableType" />, Set, when NotStarted, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void TableType_Set_WhenNotStarted_ShouldLoadExpectedPresetTable()
         {
@@ -68,6 +74,9 @@ namespace Bodu.Security.Cryptography
             CollectionAssert.AreEqual(expected, table, "Table contents should match AESSBox preset.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="Pearson.TableType" />, Set, ToUserDefined, throws <see cref="CryptographicUnexpectedOperationException" />.
+        /// </summary>
         [TestMethod]
         public void TableType_Set_ToUserDefined_ShouldRequireManualTableAssignment()
         {
@@ -81,6 +90,9 @@ namespace Bodu.Security.Cryptography
             }, "Using UserDefined table type without a valid table should throw.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="Pearson.TableType" />, Set, when HashingStarted, throws <see cref="CryptographicUnexpectedOperationException" />.
+        /// </summary>
         [TestMethod]
         public void TableType_Set_WhenHashingStarted_ShouldThrowExactly()
         {
@@ -93,6 +105,9 @@ namespace Bodu.Security.Cryptography
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="Pearson.TableType" />, Set, when Disposed, throws <see cref="ObjectDisposedException" />.
+        /// </summary>
         [TestMethod]
         public void TableType_Set_WhenDisposed_ShouldThrowExactly()
         {
@@ -105,6 +120,9 @@ namespace Bodu.Security.Cryptography
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="Pearson.TableType" />, Get, when Disposed, throws <see cref="ObjectDisposedException" />.
+        /// </summary>
         [TestMethod]
         public void TableType_Get_WhenDisposed_ShouldThrowExactly()
         {

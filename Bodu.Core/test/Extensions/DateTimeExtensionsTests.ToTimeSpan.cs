@@ -17,6 +17,9 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when Called, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DataRow("2024-04-18T00:00:00", 0, 0, 0, 0)]
         [DataRow("2024-04-18T01:30:45", 1, 30, 45, 0)]
@@ -32,6 +35,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when KindIsUtc, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void ToTimeSpan_WhenKindIsUtc_ShouldStillReturnSameTime()
         {
@@ -41,6 +47,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new TimeSpan(10, 15, 30), actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when KindIsLocal, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void ToTimeSpan_WhenKindIsLocal_ShouldStillReturnSameTime()
         {
@@ -50,6 +59,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(TimeSpan.FromHours(8), actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when KindIsUnspecified, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void ToTimeSpan_WhenKindIsUnspecified_ShouldStillReturnSameTime()
         {
@@ -59,6 +71,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new TimeSpan(22, 45, 59), actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when UsingMinValue, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void ToTimeSpan_WhenUsingMinValue_ShouldReturnZero()
         {
@@ -68,6 +83,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(TimeSpan.Zero, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when UsingMaxValue, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void ToTimeSpan_WhenUsingMaxValue_ShouldReturnExpectedTime()
         {

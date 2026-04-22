@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIsNullOrWhiteSpace" />, when Null, throws <see cref="ArgumentNullException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(null)]
         public void ThrowIsNullOrWhiteSpace_WhenNull_ShouldThrowArgumentNullException(string? value)
@@ -18,6 +21,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIsNullOrWhiteSpace" />, when EmptyOrWhitespace, throws <see cref="ArgumentException" />.
+        /// </summary>
         [TestMethod]
         [DataRow("")]
         [DataRow("   ")]
@@ -31,6 +37,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIsNullOrWhiteSpace" />, when ValueIsValid, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow("Valid")]
         [DataRow("x")]

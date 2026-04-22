@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class EvictingDictionaryTests
     {
         /// <summary>
-        /// Verifies that Clear resets LeastFrequentlyUsed frequency tracking when called.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Clear" /> resets LeastFrequentlyUsed frequency tracking when called.
         /// </summary>
         [TestMethod]
         public void Clear_WhenPolicyIsLFUAndCalled_ShouldResetFrequencyTracking()
@@ -49,7 +49,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Touch updates frequency in LeastFrequentlyUsed policy and prevents eviction of the touched key.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> updates frequency in LeastFrequentlyUsed policy and prevents eviction of the touched key.
         /// </summary>
         [TestMethod]
         public void Touch_WhenPolicyIsLFUAndKeyTouched_ShouldUpdateFrequencyAndPreventEviction()
@@ -69,7 +69,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TryGetValue updates frequency for LeastFrequentlyUsed, protecting the accessed key from eviction.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> updates frequency for LeastFrequentlyUsed, protecting the accessed key from eviction.
         /// </summary>
         [TestMethod]
         public void TryGetValue_WhenPolicyIsLFUAndKeyAccessed_ShouldUpdateFrequency()
@@ -88,7 +88,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Touch returns true when key exists in LeastFrequentlyUsed.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> returns true when key exists in LeastFrequentlyUsed.
         /// </summary>
         [TestMethod]
         public void Touch_WhenPolicyIsLFUAndKeyExists_ShouldReturnTrue()
@@ -100,7 +100,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TouchOrThrow updates frequency when the key exists in LeastFrequentlyUsed.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TouchOrThrow" /> updates frequency when the key exists in LeastFrequentlyUsed.
         /// </summary>
         [TestMethod]
         public void TouchOrThrow_WhenPolicyIsLFUAndKeyExists_ShouldUpdateFrequency()
@@ -114,7 +114,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Add evicts the least frequently used item when capacity is exceeded.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Add" /> evicts the least frequently used item when capacity is exceeded.
         /// </summary>
         [TestMethod]
         [TestCategory("LFU")]
@@ -133,7 +133,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that PeekEvictionCandidate returns the least frequently used key.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.PeekEvictionCandidate" /> returns the least frequently used key.
         /// </summary>
         [TestMethod]
         public void PeekEvictionCandidate_WhenPolicyIsLFU_ShouldReturnLeastFrequentlyUsedKey()
@@ -149,7 +149,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Clear resets access frequency and allows fresh insertion.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Clear" /> resets access frequency and allows fresh insertion.
         /// </summary>
         [TestMethod]
         public void Clear_WhenPolicyIsLFU_ShouldAllowFreshInsertAfterReset()

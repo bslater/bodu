@@ -9,7 +9,7 @@
     public partial class SequenceGeneratorTests
     {
         /// <summary>
-        /// Verifies that Repeat returns an infinite sequence repeating the given value.
+        /// Verifies that <see cref="SequenceGenerator.Repeat" /> returns an infinite sequence repeating the given value.
         /// </summary>
         [TestMethod]
         public void Repeat_WhenCalled_ShouldReturnInfiniteSequence()
@@ -19,7 +19,7 @@
         }
 
         /// <summary>
-        /// Verifies that Repeat returns a fixed number of repetitions when a positive count is provided.
+        /// Verifies that <see cref="SequenceGenerator.Repeat" /> returns a fixed number of repetitions when a positive count is provided.
         /// </summary>
         [TestMethod]
         public void Repeat_WhenCountIsPositive_ShouldReturnFixedSequence()
@@ -29,7 +29,7 @@
         }
 
         /// <summary>
-        /// Verifies that Repeat throws an ArgumentOutOfRangeException when count is negative.
+        /// Verifies that <see cref="SequenceGenerator.Repeat" /> throws an ArgumentOutOfRangeException when count is negative.
         /// </summary>
         [TestMethod]
         public void Repeat_WhenCountIsNegative_ShouldThrowExactly()
@@ -41,7 +41,7 @@
         }
 
         /// <summary>
-        /// Verifies that Repeat returns an empty sequence when count is zero.
+        /// Verifies that <see cref="SequenceGenerator.Repeat" /> returns an empty sequence when count is zero.
         /// </summary>
         [TestMethod]
         public void Repeat_WhenCountIsZero_ShouldReturnEmptySequence()
@@ -51,7 +51,7 @@
         }
 
         /// <summary>
-        /// Verifies that Repeat does not trigger enumeration until explicitly iterated.
+        /// Verifies that <see cref="SequenceGenerator.Repeat" /> does not trigger enumeration until explicitly iterated.
         /// </summary>
         [TestMethod]
         public void Repeat_WhenCalled_ShouldDeferExecution()
@@ -63,7 +63,7 @@
         }
 
         /// <summary>
-        /// Verifies that Repeat with a positive count does not trigger enumeration until explicitly iterated.
+        /// Verifies that <see cref="SequenceGenerator.Repeat" /> with a positive count does not trigger enumeration until explicitly iterated.
         /// </summary>
         [TestMethod]
         public void Repeat_WhenCountIsPositive_ShouldDeferExecution()

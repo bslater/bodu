@@ -56,7 +56,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ShuffleAndYield using a span does not mutate the underlying original array.
+        /// Verifies that <see cref="ShuffleHelpers.ShuffleAndYield" /> using a span does not mutate the underlying original array.
         /// </summary>
         [TestMethod]
         public void ShuffleAndYield_Span_ShouldNotModifyOriginalSpan()
@@ -70,7 +70,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ShuffleAndYield works correctly with complex reference types and preserves object references.
+        /// Verifies that <see cref="ShuffleHelpers.ShuffleAndYield" /> works correctly with complex reference types and preserves object references.
         /// </summary>
         [TestMethod]
         public void ShuffleAndYield_WithReferenceTypes_ShouldReturnExpectedSubset_UsingSpan()
@@ -89,7 +89,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ShuffleAndYield works correctly with complex reference types and preserves object references.
+        /// Verifies that <see cref="ShuffleHelpers.ShuffleAndYield" /> works correctly with complex reference types and preserves object references.
         /// </summary>
         [TestMethod]
         public void ShuffleAndYield_WithReferenceTypes_ShouldReturnExpectedSubset_UsingMemory()
@@ -123,7 +123,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ShuffleAndYield returns an empty array when the input is empty or the count is zero.
+        /// Verifies that <see cref="ShuffleHelpers.ShuffleAndYield" /> returns an empty array when the input is empty or the count is zero.
         /// </summary>
         [TestMethod]
         [DataRow(0, 0)]
@@ -138,7 +138,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ShuffleAndYield throws an ArgumentOutOfRangeException when count is negative.
+        /// Verifies that <see cref="ShuffleHelpers.ShuffleAndYield" /> throws an ArgumentOutOfRangeException when count is negative.
         /// </summary>
         [TestMethod]
         public void ShuffleAndYield_WhenCountNegative_ShouldThrowExactly()
@@ -149,7 +149,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ShuffleAndYield throws an ArgumentOutOfRangeException when count exceeds the number of elements in the input.
+        /// Verifies that <see cref="ShuffleHelpers.ShuffleAndYield" /> throws an ArgumentOutOfRangeException when count exceeds the number of elements in the input.
         /// </summary>
         [TestMethod]
         public void ShuffleAndYield_WhenCountExceedsLength_ShouldThrowExactly()
@@ -160,7 +160,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ShuffleAndYield for IEnumerable defers execution and does not enumerate the source until iterated.
+        /// Verifies that <see cref="ShuffleHelpers.ShuffleAndYield" /> for IEnumerable defers execution and does not enumerate the source until iterated.
         /// </summary>
         [TestMethod]
         public void ShuffleAndYield_IEnumerable_ShouldDeferExecution()
@@ -172,7 +172,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ShuffleAndYield correctly handles input with duplicate values.
+        /// Verifies that <see cref="ShuffleHelpers.ShuffleAndYield" /> correctly handles input with duplicate values.
         /// </summary>
         [TestMethod]
         public void ShuffleAndYield_ShouldWorkWithDuplicates()
@@ -184,7 +184,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ShuffleAndYield does not modify the contents of the original array.
+        /// Verifies that <see cref="ShuffleHelpers.ShuffleAndYield" /> does not modify the contents of the original array.
         /// </summary>
         [TestMethod]
         public void ShuffleAndYield_ShouldNotMutateOriginalArray()
@@ -211,7 +211,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ShuffleAndYield for IEnumerable returns the expected count and all elements belong to the source.
+        /// Verifies that <see cref="ShuffleHelpers.ShuffleAndYield" /> for IEnumerable returns the expected count and all elements belong to the source.
         /// </summary>
         [TestMethod]
         [DataRow(0)]
@@ -228,7 +228,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ShuffleAndYield only begins enumeration when the actual is iterated.
+        /// Verifies that <see cref="ShuffleHelpers.ShuffleAndYield" /> only begins enumeration when the actual is iterated.
         /// </summary>
         [TestMethod]
         public void ShuffleAndYield_IEnumerable_ShouldEnumerateOnIteration()
@@ -245,7 +245,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ShuffleAndYield works correctly with complex reference types and preserves object references.
+        /// Verifies that <see cref="ShuffleHelpers.ShuffleAndYield" /> works correctly with complex reference types and preserves object references.
         /// </summary>
         [TestMethod]
         public void ShuffleAndYield_WithReferenceTypes_ShouldReturnExpectedSubset_UsingArray()
@@ -264,7 +264,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ShuffleAndYield works correctly with complex reference types and preserves object references.
+        /// Verifies that <see cref="ShuffleHelpers.ShuffleAndYield" /> works correctly with complex reference types and preserves object references.
         /// </summary>
         [TestMethod]
         public void ShuffleAndYield_WithReferenceTypes_ShouldReturnExpectedSubset_UsingEnumerable()

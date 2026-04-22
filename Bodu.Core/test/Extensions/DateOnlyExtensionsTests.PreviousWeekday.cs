@@ -30,6 +30,9 @@ namespace Bodu.Extensions
             yield return new object[] { new DateOnly(2024, 4, 17), new DateOnly(2024, 4, 16) };
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.PreviousWeekday(DateOnly, CalendarWeekendDefinition)" /> returns the prior non-weekend date when Saturday and Sunday are defined as the weekend.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(PreviousWeekdaySaturdaySundayTestData), DynamicDataSourceType.Method)]
         public void PreviousWeekday_WhenWeekendIsSaturdaySunday_ShouldReturnExpectedDate(DateOnly date, DateOnly expected)
@@ -38,6 +41,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that with a Friday/Saturday weekend, <see cref="DateOnlyExtensions.PreviousWeekday(DateOnly, CalendarWeekendDefinition)" /> skips both weekend days and returns the preceding Thursday.
+        /// </summary>
         [TestMethod]
         public void PreviousWeekday_WhenWeekendIsFridaySaturday_ShouldSkipSaturdayAndFriday()
         {
@@ -47,6 +53,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateOnly(2024, 4, 18), actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="CalendarWeekendDefinition.None" /> throws <see cref="ArgumentOutOfRangeException" /> because the reverse search loop has no weekend to skip.
+        /// </summary>
         [TestMethod]
         public void PreviousWeekday_WhenWeekendIsNone_ShouldThrowArgumentOutOfRangeException()
         {
@@ -60,6 +69,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that an undefined <see cref="CalendarWeekendDefinition" /> value throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void PreviousWeekday_WhenWeekendIsInvalid_ShouldThrowArgumentOutOfRangeException()
         {
@@ -75,6 +87,9 @@ namespace Bodu.Extensions
         // PreviousWeekday(this DateOnly, CalendarWeekendDefinition, IWeekendDefinitionProvider?)
         // =========================================================================
 
+        /// <summary>
+        /// Verifies that the provider overload falls back to the <see cref="CalendarWeekendDefinition" /> enum value when the provider is <see langword="null" />.
+        /// </summary>
         [TestMethod]
         public void PreviousWeekday_WhenProviderIsNull_ShouldUseWeekendEnum()
         {
@@ -83,6 +98,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateOnly(2024, 4, 19), actual);
         }
 
+        /// <summary>
+        /// Verifies that the provider overload still throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="CalendarWeekendDefinition" /> even when a provider is supplied.
+        /// </summary>
         [TestMethod]
         public void PreviousWeekday_WhenProviderOverload_WeekendIsInvalid_ShouldThrowArgumentOutOfRangeException()
         {

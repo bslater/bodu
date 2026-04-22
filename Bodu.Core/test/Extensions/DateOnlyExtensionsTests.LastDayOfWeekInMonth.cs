@@ -17,6 +17,9 @@ namespace Bodu.Extensions
     public partial class DateOnlyExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfWeekInMonth" />, when Called, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.LastDayOfWeekInMonthTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void LastDayOfWeekInMonth_WhenCalled_ShouldReturnExpectedDate(DateTime inputDateTime, DayOfWeek dayOfWeek, DateTime expectedDateTime)
@@ -29,6 +32,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfWeekInMonth" />, when InvalidDayOfWeek, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeekInMonth_WhenInvalidDayOfWeek_ShouldThrowExactly()
         {
@@ -41,6 +47,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfWeekInMonth" />, when MinValue, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeekInMonth_WhenMinValue_ShouldReturnValidResult()
         {
@@ -49,6 +58,9 @@ namespace Bodu.Extensions
             Assert.IsTrue(actual >= DateOnly.MinValue && actual <= DateOnly.MinValue.AddMonths(1).AddDays(-1));
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfWeekInMonth" />, when MaxValue, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeekInMonth_WhenMaxValue_ShouldReturnValidResult()
         {

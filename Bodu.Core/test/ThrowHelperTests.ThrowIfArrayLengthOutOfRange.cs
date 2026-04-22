@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthOutOfRange" />, when ArrayIsNull, throws <see cref="ArgumentNullException" />.
+        /// </summary>
         [TestMethod]
         public void ThrowIfArrayLengthOutOfRange_WhenArrayIsNull_ShouldThrowArgumentNullException()
         {
@@ -18,6 +21,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthOutOfRange" />, when LengthIsOutOfRange, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 1, 10)]    // below min
         [DataRow(11, 1, 10)]   // above max
@@ -32,6 +38,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthOutOfRange" />, when LengthIsWithinRange, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(1, 1, 10)]    // at min
         [DataRow(10, 1, 10)]   // at max

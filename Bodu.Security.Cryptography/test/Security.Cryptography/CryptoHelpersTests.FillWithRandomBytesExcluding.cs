@@ -9,7 +9,7 @@
     public partial class CryptoHelpersTests
     {
         /// <summary>
-        /// Verifies that FillWithRandomBytesExcluding fills a span without the forbidden byte.
+        /// Verifies that <see cref="CryptoHelpers.FillWithRandomBytesExcluding" /> fills a span without the forbidden byte.
         /// </summary>
         [TestMethod]
         public void FillWithRandomBytesExcluding_WhenForbiddenByteIsGiven_ShouldNotBeInResult()

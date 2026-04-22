@@ -10,6 +10,9 @@ namespace Bodu.Extensions
 {
     public partial class DateOnlyExtensionsTests
     {
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.WeekOfMonth(DateOnly, CalendarWeekRule, DayOfWeek)" /> returns the expected week index for each <c>(date, rule, firstDay)</c> triple.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.WeekOfMonthCalendarWeekRuleTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void WeekOfMonth_WithCalendarWeekAndRule_ShouldReturnExpected(DateTime inputDateTime, CalendarWeekRule rule, DayOfWeek firstDay, int expected)
@@ -21,6 +24,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.WeekOfMonth(DateOnly, CultureInfo)" /> returns the expected week index for each <c>(date, culture)</c> pair.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.WeekOfMonthCultureTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void WeekOfMonth_WithCulture_ShouldReturnExpected(DateTime inputDateTime, CultureInfo culture, int expected)
@@ -32,6 +38,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that the culture overload reads <see cref="DateTimeFormatInfo.CalendarWeekRule" /> and <see cref="DateTimeFormatInfo.FirstDayOfWeek" /> from the supplied culture.
+        /// </summary>
         [TestMethod]
         public void WeekOfMonth_WhenUsingCultureInfo_ShouldRespectCultureSettings()
         {
@@ -42,6 +51,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that the parameterless overload produces the same result as an explicit call with <see cref="CultureInfo.CurrentCulture" />'s rule and first-day-of-week.
+        /// </summary>
         [TestMethod]
         public void WeekOfMonth_WhenUsingDefaultCulture_ShouldMatchExplicitCall()
         {
@@ -52,6 +64,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that the culture overload yields the same week index as an explicit <c>(rule, firstDay)</c> call across a representative set of cultures.
+        /// </summary>
         [TestMethod]
         [DataRow("en-US")]
         [DataRow("en-GB")]
@@ -68,6 +83,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual, $"Culture: {cultureName}");
         }
 
+        /// <summary>
+        /// Verifies that the parameterless overload falls back to <see cref="CultureInfo.CurrentCulture" /> when no culture is supplied.
+        /// </summary>
         [TestMethod]
         public void WeekOfMonth_WhenCultureIsNull_ShouldUseCurrentCulture()
         {
@@ -86,6 +104,9 @@ namespace Bodu.Extensions
             }
         }
 
+        /// <summary>
+        /// Verifies that an undefined <see cref="DayOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void WeekOfMonth_WhenDayOfWeekIsInvalid_ShouldThrowExactly()
         {
@@ -98,6 +119,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that an undefined <see cref="CalendarWeekRule" /> value throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void WeekOfMonth_WhenCalendarWeekRuleIsInvalid_ShouldThrowExactly()
         {

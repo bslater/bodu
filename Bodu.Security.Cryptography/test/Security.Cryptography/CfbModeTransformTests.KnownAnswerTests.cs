@@ -42,12 +42,18 @@ namespace Bodu.Security.Cryptography
             };
         }
 
+        /// <summary>
+        /// Verifies that <see cref="CfbModeTransform.Transform" />, with NistVector, EncryptCorrectly.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(CfbKatVectors), DynamicDataSourceType.Method)]
         public void Transform_WithNistVector_ShouldEncryptCorrectly(
             string description, byte[] key, byte[] iv, byte[] plaintext, byte[] expectedCiphertext)
             => AssertKatEncrypt(description, key, iv, plaintext, expectedCiphertext);
 
+        /// <summary>
+        /// Verifies that <see cref="CfbModeTransform.Transform" />, with NistVector, DecryptToOriginalPlaintext.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(CfbKatVectors), DynamicDataSourceType.Method)]
         public void Transform_WithNistVector_ShouldDecryptToOriginalPlaintext(

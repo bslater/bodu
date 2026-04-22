@@ -19,6 +19,9 @@ namespace Bodu.Extensions
     {
 
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.IsWeekday" />, when UsingStandardWeekend, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(WeekendTestData), DynamicDataSourceType.Method)]
         public void IsWeekday_WhenUsingStandardWeekend_ShouldReturnExpected(DateTime input, CalendarWeekendDefinition weekend, Type? providerType, bool expected)
@@ -29,6 +32,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(!expected, actual, $"Failed for {input} with weekend {weekend}");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.IsWeekday" />, when CustomRuleMissingProvider, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void IsWeekday_WhenCustomRuleMissingProvider_ShouldThrowExactly()
         {

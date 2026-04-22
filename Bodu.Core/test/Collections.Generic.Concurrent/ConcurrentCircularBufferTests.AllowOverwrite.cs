@@ -10,6 +10,9 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" /> returns the default (<see langword="true" />) for ctors that omit it and the explicitly supplied value otherwise.
+    /// </summary>
     [TestMethod]
     public void AllowOverwrite_WhenBufferConstructed_ShouldReturnConfiguredDefault()
     {
@@ -26,6 +29,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsFalse(explicitFalse.AllowOverwrite);
     }
 
+    /// <summary>
+    /// Verifies that flipping <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" /> from <see langword="false" /> to <see langword="true" /> lets subsequent enqueues evict, and flipping back forces the next enqueue to throw.
+    /// </summary>
     [TestMethod]
     public void AllowOverwrite_WhenFlippedFromFalseToTrue_ShouldAffectSubsequentOperationsImmediately()
     {
@@ -47,6 +53,9 @@ public partial class ConcurrentCircularBufferTests
         });
     }
 
+    /// <summary>
+    /// Verifies that flipping <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" /> to <see langword="false" /> causes the next enqueue on a full buffer to throw <see cref="InvalidOperationException" />.
+    /// </summary>
     [TestMethod]
     public void AllowOverwrite_WhenFlippedFromTrueToFalse_ShouldAffectSubsequentOperationsImmediately()
     {
@@ -61,6 +70,9 @@ public partial class ConcurrentCircularBufferTests
         });
     }
 
+    /// <summary>
+    /// Verifies that toggles of <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" /> on one thread are observable by readers on other threads.
+    /// </summary>
     [TestMethod]
     public void AllowOverwrite_WhenToggledAcrossThreads_ShouldBeVisibleToAllThreads()
     {
@@ -111,6 +123,9 @@ public partial class ConcurrentCircularBufferTests
     // which is a tautology for any bool and can never fail. The corrected test captures the last
     // write made by the toggler and asserts the final read is consistent with that value.
 
+    /// <summary>
+    /// Verifies that concurrent writers and readers of <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" /> observe a valid boolean value without tearing or exceptions.
+    /// </summary>
     [TestMethod]
     public void AllowOverwrite_WhenToggledConcurrently_ShouldRemainThreadSafe()
     {

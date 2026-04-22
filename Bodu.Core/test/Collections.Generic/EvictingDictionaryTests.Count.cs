@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class EvictingDictionaryTests
     {
         /// <summary>
-        /// Verifies that Count is zero for a newly constructed dictionary.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Count" /> is zero for a newly constructed dictionary.
         /// </summary>
         [TestMethod]
         public void Count_WhenConstructed_ShouldBeZero()
@@ -19,7 +19,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Count increases to reflect the number of items added.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Count" /> increases to reflect the number of items added.
         /// </summary>
         [TestMethod]
         public void Count_WhenItemsAreAdded_ShouldReflectCorrectCount()
@@ -33,7 +33,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Count decreases when an item is removed from the dictionary.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Count" /> decreases when an item is removed from the dictionary.
         /// </summary>
         [TestMethod]
         public void Count_WhenItemIsRemoved_ShouldDecrease()
@@ -48,7 +48,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Count becomes zero after calling Clear on the dictionary.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Count" /> becomes zero after calling Clear on the dictionary.
         /// </summary>
         [TestMethod]
         public void Count_WhenCleared_ShouldBeZero()

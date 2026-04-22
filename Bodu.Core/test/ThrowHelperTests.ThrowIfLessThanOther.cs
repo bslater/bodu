@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfLessThanOther" />, when ValueIsLessThanOther, throws <see cref="ArgumentException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(-1, 0)]
         [DataRow(0, 1)]
@@ -21,6 +24,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfLessThanOther" />, when ValueIsEqualOrGreaterThanOther, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 0)]
         [DataRow(6, 5)]

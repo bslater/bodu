@@ -8,6 +8,9 @@ namespace Bodu.Security.Cryptography
 {
     public abstract partial class SipHashTests<TTest, TAlgorithm>
     {
+        /// <summary>
+        /// Verifies that <see cref="SipHash.AlgorithmName" />, when UsingVariant, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(HashAlgorithmVariants), DynamicDataSourceType.Method)]
         public void AlgorithmName_WhenUsingVariant_ShouldReturnCorrectlyFormattedString(SipHashVariant variant)
@@ -18,6 +21,9 @@ namespace Bodu.Security.Cryptography
             Assert.AreEqual(expected, algorithm.AlgorithmName);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="SipHash.AlgorithmName" />, when UsingCustomRounds, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void AlgorithmName_WhenUsingCustomRounds_ShouldReturnCorrectlyFormattedString()
         {

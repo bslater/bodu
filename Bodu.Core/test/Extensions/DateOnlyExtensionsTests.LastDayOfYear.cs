@@ -17,6 +17,9 @@ namespace Bodu.Extensions
     public partial class DateOnlyExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfYear" />, when Called, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.LastDayOfYearTestData),typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void LastDayOfYear_WhenCalled_ShouldReturnDecember31(DateTime inputDateOnly, DateTime expectedDateOnly)
@@ -28,6 +31,9 @@ namespace Bodu.Extensions
 
             Assert.AreEqual(expected, actual);
         }
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfYear" />, when MinValue, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void LastDayOfYear_WhenMinValue_ShouldReturnEndOfYear1()
         {
@@ -37,6 +43,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateOnly(DateTime.MinValue.Year, 12, 31), actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfYear" />, when MaxValue, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void LastDayOfYear_WhenMaxValue_ShouldReturnItself()
         {

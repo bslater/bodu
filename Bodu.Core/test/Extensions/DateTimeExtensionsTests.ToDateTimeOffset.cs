@@ -17,6 +17,9 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.ToDateTimeOffset" />, when KindIsUtc, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void ToDateTimeOffset_WhenKindIsUtc_ShouldReturnZeroOffset()
         {
@@ -27,6 +30,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(input, actual.UtcDateTime);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.ToDateTimeOffset" />, when KindIsLocal, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void ToDateTimeOffset_WhenKindIsLocal_ShouldReturnLocalOffset()
         {
@@ -36,6 +42,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(input, actual.LocalDateTime);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.ToDateTimeOffset" />, when KindIsUnspecified, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void ToDateTimeOffset_WhenKindIsUnspecified_ShouldAssumeLocal()
         {
@@ -45,6 +54,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(input, actual.DateTime);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.ToDateTimeOffset" />, with ValidOffset, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 0)]
         [DataRow(2, 30)]
@@ -61,6 +73,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(input, actual.DateTime);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.ToDateTimeOffset" />, with OffsetOutsideRange, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(15, 0)]
         [DataRow(-15, 0)]
@@ -76,6 +91,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.ToDateTimeOffset" />, when ResultTooEarly, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void ToDateTimeOffset_WhenResultTooEarly_ShouldThrowExactly()
         {
@@ -88,6 +106,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.ToDateTimeOffset" />, when ResultTooLate, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void ToDateTimeOffset_WhenResultTooLate_ShouldThrowExactly()
         {

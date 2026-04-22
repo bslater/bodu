@@ -78,7 +78,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that accessing Tweak before it is initialized throws.
+        /// Verifies that accessing <see cref="TweakableSymmetricAlgorithm.Tweak" /> before it is initialized throws.
         /// </summary>
         [TestMethod]
         public void Tweak_WhenNoAccessedMultipleTimes_ShouldReturnSameValue()
@@ -92,7 +92,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that accessing Tweak before it is initialized throws.
+        /// Verifies that accessing <see cref="TweakableSymmetricAlgorithm.Tweak" /> before it is initialized throws.
         /// </summary>
         [TestMethod]
         public void Tweak_WhenNotInitialized_ShouldReturnExpectedValue()
@@ -124,7 +124,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that setting the Tweak returns the exact same content when retrieved.
+        /// Verifies that setting the <see cref="TweakableSymmetricAlgorithm.Tweak" /> returns the exact same content when retrieved.
         /// </summary>
         [TestMethod]
         public void Tweak_WhenSet_ShouldReturnExpectedValue()
@@ -141,7 +141,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Tweak set to an invalid size throws.
+        /// Verifies that <see cref="TweakableSymmetricAlgorithm.Tweak" /> set to an invalid size throws.
         /// </summary>
         [TestMethod]
         public void Tweak_WhenSetToInvalidSize_ShouldThrowCryptographicException()
@@ -156,7 +156,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Tweak set to null throws ArgumentNullException.
+        /// Verifies that <see cref="TweakableSymmetricAlgorithm.Tweak" /> set to null throws ArgumentNullException.
         /// </summary>
         [TestMethod]
         public void Tweak_WhenSetToNull_ShouldThrowArgumentNullException()

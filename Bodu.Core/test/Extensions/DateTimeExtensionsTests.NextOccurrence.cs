@@ -56,6 +56,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual, $"Expected next occurrence from {start} every {interval} after {after} to be {expected}");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.NextOccurrence" />, when InvalidTimeSpan, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(0)]
         [DataRow(-1)]

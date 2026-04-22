@@ -8,6 +8,9 @@
 {
     public partial class PooledBufferBuilderTests
     {
+        /// <summary>
+        /// Verifies that <see cref="PooledBufferBuilder.AsArray" />, when AccessedAfterAppend, UsingArray, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void AsArray_WhenAccessedAfterAppend_ShouldMatchAsSpanContents_UsingArray()
         {

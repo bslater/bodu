@@ -10,6 +10,9 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> is not raised when overwriting is disabled and TryEnqueue fails on a full buffer.
+    /// </summary>
     [TestMethod]
     public void ItemEvicted_WhenAllowOverwriteFalse_ShouldNotFire()
     {
@@ -26,6 +29,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsFalse(fired, "Eviction event should not fire when overwriting is disabled.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> does not fire while the buffer has free space.
+    /// </summary>
     [TestMethod]
     public void ItemEvicted_WhenBufferNotFull_ShouldNotFire()
     {
@@ -40,6 +46,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsFalse(fired, "Eviction should not occur before the buffer is full.");
     }
 
+    /// <summary>
+    /// Verifies that an exception thrown by the first <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> handler does not prevent the second handler from being invoked.
+    /// </summary>
     [TestMethod]
     public void ItemEvicted_WhenFirstHandlerThrows_ShouldStillInvokeSecondHandler()
     {
@@ -56,6 +65,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(secondHandlerFired, "Second handler should be invoked even if the first throws.");
     }
 
+    /// <summary>
+    /// Verifies that a handler unsubscribed from <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> receives no further eviction callbacks.
+    /// </summary>
     [TestMethod]
     public void ItemEvicted_WhenHandlerUnsubscribed_ShouldNotReceiveFurtherEvents()
     {
@@ -77,6 +89,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(1, count, "Handler should not receive events after unsubscription.");
     }
 
+    /// <summary>
+    /// Verifies that when a <see langword="null" /> item is evicted, <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> fires with a <see langword="null" /> argument.
+    /// </summary>
     [TestMethod]
     public void ItemEvicted_WhenNullItemIsEvicted_ShouldReceiveNullArgument()
     {
@@ -94,6 +109,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsNull(received, "ItemEvicted argument should be null when the evicted item was null.");
     }
 
+    /// <summary>
+    /// Verifies that exceptions thrown from a single <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> handler are swallowed by <see cref="ConcurrentCircularBuffer{T}.Enqueue" />.
+    /// </summary>
     [TestMethod]
     public void ItemEvicted_WhenHandlerThrows_ShouldNotPropagateException()
     {
@@ -108,6 +126,9 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(3));
     }
 
+    /// <summary>
+    /// Verifies that all handlers registered on <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> are invoked on a single eviction.
+    /// </summary>
     [TestMethod]
     public void ItemEvicted_WhenMultipleHandlersRegistered_ShouldInvokeAll()
     {
@@ -126,6 +147,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(1, count2, "Second handler should be invoked once.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> captures every item evicted by concurrent overwriting producers.
+    /// </summary>
     [TestMethod]
     public void ItemEvicted_WhenOverwritesOccurConcurrently_ShouldCaptureEvictedItems()
     {
@@ -156,6 +180,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(evicted.All(x => x.Value >= 0 && x.Value < 100));
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> remains stable and delivers non-null arguments under heavy parallel overwriting.
+    /// </summary>
     [TestMethod]
     public void ItemEvicted_WhenParallelWritersOverwrite_ShouldRemainStable()
     {

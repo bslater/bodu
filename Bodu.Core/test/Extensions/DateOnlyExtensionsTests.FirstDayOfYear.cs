@@ -17,6 +17,9 @@ namespace Bodu.Extensions
     public partial class DateOnlyExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.FirstDayOfYear" />, when Called, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests. FirstDayOfYearTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void FirstDayOfYear_WhenCalled_ShouldReturnExpectedStartOfYear(DateTime inputDateTime, DateTime expectedDateTime)
@@ -29,6 +32,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.FirstDayOfYear" />, when MinValue, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfYear_WhenMinValue_ShouldReturnExpected()
         {
@@ -38,6 +44,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateOnly(1, 1, 1), actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.FirstDayOfYear" />, when MaxValue, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfYear_WhenMaxValue_ShouldReturnExpected()
         {

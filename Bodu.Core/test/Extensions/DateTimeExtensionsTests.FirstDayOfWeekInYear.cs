@@ -16,6 +16,9 @@ namespace Bodu.Extensions
 {
     public partial class DateTimeExtensionsTests
     {
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInYear" /> returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(FirstDayOfWeekInYearTestData), DynamicDataSourceType.Method)]
         public void FirstDayOfWeekInYear_ShouldReturnExpectedDay(DateTime input, DayOfWeek targetDay, DateTime expected)
@@ -25,6 +28,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInYear" /> returns the expected value.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInYear_ShouldPreserveDateTimeKind()
         {
@@ -37,6 +43,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(DateTimeKind.Unspecified, inputUnspecified.FirstDayOfWeekInYear(DayOfWeek.Monday).Kind);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInYear" />, when EnumInvalid, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInYear_WhenEnumInvalid_ShouldThrowExactly()
         {
@@ -49,6 +58,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInYear" />, when MinValue, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInYear_WhenMinValue_ShouldReturnValidDate()
         {
@@ -57,6 +69,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(1, 1, 1), actual); // 0001-01-01 is a Monday
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInYear" />, when MaxYear, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInYear_WhenMaxYear_ShouldReturnExpected()
         {

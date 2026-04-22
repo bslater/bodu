@@ -8,6 +8,9 @@
 {
     public partial class DateTimeExtensionsTests
     {
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.IsFirstDayOfQuarter" />, when DateIsQuarterStartAndDefaultDefinition, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(IsFirstDayOfQuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
         public void IsFirstDayOfQuarter_WhenDateIsQuarterStartAndDefaultDefinition_ShouldReturnTrue(DateTime input)
@@ -17,6 +20,9 @@
             Assert.IsTrue(actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.IsFirstDayOfQuarter" />, when DateMatchesStartOfQuarterDefinition, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(IsFirstDayOfQuarterTestData), DynamicDataSourceType.Method)]
         public void IsFirstDayOfQuarter_WhenDateMatchesStartOfQuarterDefinition_ShouldReturnTrue(DateTime inputDate, CalendarQuarterDefinition definition)
@@ -26,6 +32,9 @@
             Assert.IsTrue(actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.IsFirstDayOfQuarter" />, when DateIsNotStartOfQuarterDefinition, returns <see langword="false" />.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(IsNotFirstDayOfQuarterTestData), DynamicDataSourceType.Method)]
         public void IsFirstDayOfQuarter_WhenDateIsNotStartOfQuarterDefinition_ShouldReturnFalse(DateTime inputDate, CalendarQuarterDefinition definition)
@@ -34,6 +43,9 @@
             Assert.IsFalse(actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.IsFirstDayOfQuarter" />, when DefinitionIsInvalid, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void IsFirstDayOfQuarter_WhenDefinitionIsInvalid_ShouldThrowExactly()
         {
@@ -46,6 +58,9 @@
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.IsFirstDayOfQuarter" />, when DefinitionIsCustom, throws <see cref="InvalidOperationException" />.
+        /// </summary>
         [TestMethod]
         public void IsFirstDayOfQuarter_WhenDefinitionIsCustom_ShouldThrowExactly()
         {
@@ -57,6 +72,9 @@
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.IsFirstDayOfQuarter" />, when UsingValidQuarterProvider, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.IsFirstDayOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
         public void IsFirstDayOfQuarter_WhenUsingValidQuarterProvider_ShouldReturnExpectedDate(DateTime input, bool expected)

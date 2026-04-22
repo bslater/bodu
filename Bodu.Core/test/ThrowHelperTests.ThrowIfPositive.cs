@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfPositive" />, when ValueIsPositive, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(1)]
         [DataRow(42)]
@@ -20,6 +23,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfPositive" />, when ValueIsZeroOrNegative, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(0)]
         [DataRow(-1)]

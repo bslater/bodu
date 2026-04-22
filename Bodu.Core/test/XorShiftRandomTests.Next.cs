@@ -8,6 +8,9 @@
 {
     public partial class XorShiftRandomTests
     {
+        /// <summary>
+        /// Verifies that <see cref="XorShiftRandom.Next" />, when SeedIsNotSame, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void Next_WhenSeedIsNotSame_ShouldProduceDeterministicSequence()
         {
@@ -21,7 +24,7 @@
         }
 
         /// <summary>
-        /// Verifies that Next(min, max) returns values within the expected bounds.
+        /// Verifies that <see cref="XorShiftRandom.Next" />(min, max) returns values within the expected bounds.
         /// </summary>
         [TestMethod]
         [DataRow(0, 10)]
@@ -55,6 +58,9 @@
             Assert.AreNotEqual(value1, value2, "Different seeds should produce different sequences.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="XorShiftRandom.Next" />, when Called, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         public void Next_WhenCalled_ShouldReturnPositiveInteger()
         {
@@ -64,7 +70,7 @@
         }
 
         /// <summary>
-        /// Verifies that calling Next multiple times produces values in range and not all equal.
+        /// Verifies that calling <see cref="XorShiftRandom.Next" /> multiple times produces values in range and not all equal.
         /// </summary>
         [TestMethod]
         public void Next_WhenCalledMultipleTimes_ShouldProduceNonRepeatingValues()
@@ -80,6 +86,9 @@
             Assert.IsTrue(values.Count > 1, "Next produced repeating or identical values.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="XorShiftRandom.Next" />, when CalledWithinAndMax, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 10)]
         [DataRow(5, 15)]
@@ -93,6 +102,9 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that <see cref="XorShiftRandom.Next" />, when CalledWithMax, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         [DataRow(1)]
         [DataRow(2)]
@@ -109,7 +121,7 @@
         }
 
         /// <summary>
-        /// Verifies that calling Next with maxValue = 1 always returns 0.
+        /// Verifies that calling <see cref="XorShiftRandom.Next" /> with maxValue = 1 always returns 0.
         /// </summary>
         [TestMethod]
         public void Next_WhenMaxValueIsOne_ShouldAlwaysReturnZero()
@@ -122,7 +134,7 @@
         }
 
         /// <summary>
-        /// Verifies that calling Next with a positive maxValue returns a value in the expected range.
+        /// Verifies that calling <see cref="XorShiftRandom.Next" /> with a positive maxValue returns a value in the expected range.
         /// </summary>
         [TestMethod]
         public void Next_WhenMaxValueIsPositive_ShouldReturnValueInRange()
@@ -155,6 +167,9 @@
             Assert.IsTrue(differenceFound, "Two RNGs with different seeds produced identical sequences.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="XorShiftRandom.Next" />, with MaxValue, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         public void Next_WithMaxValue_ShouldReturnInExpectedRange()
         {
@@ -166,6 +181,9 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that <see cref="XorShiftRandom.Next" />, with MaxValueZero, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(0)]
         [DataRow(-5)]
@@ -175,6 +193,9 @@
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => rng.Next(maxValue));
         }
 
+        /// <summary>
+        /// Verifies that <see cref="XorShiftRandom.Next" />, with MinAndMax, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         public void Next_WithMinAndMax_ShouldReturnWithinRange()
         {
@@ -187,7 +208,7 @@
         }
 
         /// <summary>
-        /// Verifies that Next(min, max) throws when min is greater than max.
+        /// Verifies that <see cref="XorShiftRandom.Next" />(min, max) throws when min is greater than max.
         /// </summary>
         [TestMethod]
         [DataRow(0, 0)]

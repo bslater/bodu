@@ -36,6 +36,9 @@ namespace Bodu.Extensions
             new object[] { 253402300799999L, new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Utc) },    // MaxValue - 1 ms
         };
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.FromUnixTimeMilliseconds" />, when ValidInput, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(FromUnixTimeMillisecondsTestData), DynamicDataSourceType.Property)]
         public void FromUnixTimeMilliseconds_WhenValidInput_ShouldReturnExpected(long input, DateTime expected)
@@ -52,6 +55,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(DateTimeKind.Utc, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.FromUnixTimeMilliseconds" />, when BelowMinimum, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void FromUnixTimeMilliseconds_WhenBelowMinimum_ShouldThrowExactly()
         {
@@ -63,6 +69,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.FromUnixTimeMilliseconds" />, when AboveMaximum, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void FromUnixTimeMilliseconds_WhenAboveMaximum_ShouldThrowExactly()
         {

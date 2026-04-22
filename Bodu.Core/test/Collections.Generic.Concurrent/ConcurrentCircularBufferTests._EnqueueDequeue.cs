@@ -10,6 +10,9 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+    /// <summary>
+    /// Verifies that at the minimum capacity, sustained concurrent TryEnqueue/TryDequeue churn never throws and keeps the count within bounds.
+    /// </summary>
     [TestMethod]
     public void EnqueueAndDequeue_WhenCapacityIsMin_ShouldBehaveConsistently()
     {
@@ -37,6 +40,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= 1);
     }
 
+    /// <summary>
+    /// Verifies that with overwriting disabled, items only leave the buffer via <see cref="ConcurrentCircularBuffer{T}.TryDequeue" /> so <c>enqueued == dequeued + count</c>.
+    /// </summary>
     [TestMethod]
     public void EnqueueAndDequeue_WhenAllowOverwriteFalse_ShouldNotDropItemsExceptByDequeue()
     {
@@ -67,6 +73,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(buffer.Count <= buffer.Capacity);
     }
 
+    /// <summary>
+    /// Verifies that with overwriting enabled, heavy concurrent Enqueue and TryDequeue churn never throws and the count stays within capacity.
+    /// </summary>
     [TestMethod]
     public void EnqueueAndDequeue_WhenAllowOverwriteTrue_ShouldNeverExceedCapacityOrThrow()
     {
@@ -110,6 +119,9 @@ public partial class ConcurrentCircularBufferTests
     //    Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= 1, "Count must stay within [0,1].");
     //}
 
+    /// <summary>
+    /// Verifies that enqueue/dequeue churn interleaved with concurrent <see cref="ConcurrentCircularBuffer{T}.Clear" /> calls leaves the count within <c>[0, Capacity]</c>.
+    /// </summary>
     [TestMethod]
     public void EnqueueAndDequeue_WhenClearInterleaves_ShouldRemainWithinBounds()
     {
@@ -140,6 +152,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity);
     }
 
+    /// <summary>
+    /// Verifies that concurrent producer/consumer pairs preserve <see langword="null" /> items in the buffer's transferred sequence.
+    /// </summary>
     [TestMethod]
     public void EnqueueAndDequeue_WhenConcurrent_ShouldRetainNulls()
     {
@@ -172,6 +187,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity);
     }
 
+    /// <summary>
+    /// Verifies that interleaved enqueue/dequeue operations produce only valid item values and keep the count within capacity.
+    /// </summary>
     [TestMethod]
     public void EnqueueAndDequeue_WhenInterleavedConcurrently_ShouldNotCorruptState()
     {
@@ -194,6 +212,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity);
     }
 
+    /// <summary>
+    /// Verifies that many concurrent producers and consumers do not deadlock and together keep the count within capacity.
+    /// </summary>
     [TestMethod]
     public void EnqueueAndDequeue_WhenManyProducersAndConsumers_ShouldKeepBoundsAndNotDeadlock()
     {
@@ -219,6 +240,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity);
     }
 
+    /// <summary>
+    /// Verifies that repeatedly filling and draining the buffer does not leak entries or stall; final count returns to zero.
+    /// </summary>
     [TestMethod]
     public void EnqueueAndDequeue_WhenRepeatedWraparound_ShouldNotLeakOrStall()
     {
@@ -235,6 +259,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, buffer.Count);
     }
 
+    /// <summary>
+    /// Verifies that parallel wraparound churn keeps the count within the declared capacity.
+    /// </summary>
     [TestMethod]
     public void EnqueueAndDequeue_WhenWraparoundUnderStress_ShouldKeepCountWithinCapacity()
     {

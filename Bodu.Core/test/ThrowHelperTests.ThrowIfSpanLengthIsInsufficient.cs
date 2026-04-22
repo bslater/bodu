@@ -8,6 +8,9 @@ namespace Bodu
 {
     public partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthIsInsufficient" />, ReadOnlySpan, when Insufficient, throws <see cref="ArgumentException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(5, 2, 5)]   // span.Length = 5; offset = 2; count = 5 => insufficient
         [DataRow(4, 0, 5)]   // span.Length = 4; offset = 0; count = 5 => insufficient
@@ -20,6 +23,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthIsInsufficient" />, ReadOnlySpan, when Sufficient, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(10, 2, 5)]   // span.Length = 10; offset + count = 7 <= 10
         [DataRow(6, 0, 6)]    // offset 0 + count 6 = 6 == span.Length
@@ -30,6 +36,9 @@ namespace Bodu
             ThrowHelper.ThrowIfSpanLengthIsInsufficient(span, offset, count);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthIsInsufficient" />, Span, when Insufficient, throws <see cref="ArgumentException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(5, 2, 5)]
         [DataRow(4, 1, 4)]
@@ -42,6 +51,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthIsInsufficient" />, Span, when Sufficient, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(10, 2, 5)]
         [DataRow(6, 0, 6)]

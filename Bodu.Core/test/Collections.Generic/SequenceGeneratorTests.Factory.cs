@@ -9,7 +9,7 @@
     public partial class SequenceGeneratorTests
     {
         /// <summary>
-        /// Verifies that Factory returns the sequence produced by the supplied enumerator.
+        /// Verifies that <see cref="SequenceGenerator.Factory" /> returns the sequence produced by the supplied enumerator.
         /// </summary>
         [TestMethod]
         public void Factory_WhenEnumeratorIsValid_ShouldReturnExpectedSequence()
@@ -19,7 +19,7 @@
         }
 
         /// <summary>
-        /// Verifies that Factory throws an ArgumentNullException when the enumerator factory is null.
+        /// Verifies that <see cref="SequenceGenerator.Factory" /> throws an ArgumentNullException when the enumerator factory is null.
         /// </summary>
         [TestMethod]
         public void Factory_WhenFactoryIsNull_ShouldThrowExactly()
@@ -31,7 +31,7 @@
         }
 
         /// <summary>
-        /// Verifies that Factory defers enumeration until the resulting sequence is explicitly consumed.
+        /// Verifies that <see cref="SequenceGenerator.Factory" /> defers enumeration until the resulting sequence is explicitly consumed.
         /// </summary>
         [TestMethod]
         public void Factory_WhenCalled_ShouldDeferExecution()

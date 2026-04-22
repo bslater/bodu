@@ -18,6 +18,9 @@ namespace Bodu.Extensions
     public partial class DateOnlyExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfWeek(DateOnly, CultureInfo)" /> returns the expected week end for the supplied culture's first-day-of-week.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.LastDayOfWeekCultureInfoTestData),typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void LastDayOfWeek_WhenCurrentCultureSet_ShouldReturnExpectedStart(DateTime inputDateTime, CultureInfo culture, DateTime expectedDateTime)
@@ -30,6 +33,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that passing a <see langword="null" /> <see cref="CultureInfo" /> falls back to <see cref="CultureInfo.CurrentCulture" />.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.LastDayOfWeekCultureInfoTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void LastDayOfWeek_WhenCultureIsNull_ShouldUseCurrentCulture(DateTime inputDateTime, CultureInfo culture, DateTime expectedDateTime)
@@ -51,6 +57,9 @@ namespace Bodu.Extensions
             }
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnly.MinValue" /> with the invariant culture returns a date that is on or after <see cref="DateOnly.MinValue" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeek_WhenUsingMinValue_ShouldSucceed()
         {
@@ -61,6 +70,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnly.MaxValue" /> with a Sunday-start (en-US) culture throws <see cref="ArgumentOutOfRangeException" /> because the computed week end would overflow.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeek_WhenMinValueAndCultureIsUS_ShouldReturnThrowArgumentOutOfRangeException()
         {
@@ -73,6 +85,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnly.MaxValue" /> with a Friday-end culture returns <see cref="DateOnly.MaxValue" /> (which is itself the configured last day of the week).
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeek_WhenUsingMaxValue_ShouldSucceed()
         {

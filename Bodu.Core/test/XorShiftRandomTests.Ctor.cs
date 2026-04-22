@@ -8,6 +8,9 @@
 {
     public partial class XorShiftRandomTests
     {
+        /// <summary>
+        /// Verifies that <see cref="XorShiftRandom.Constructor" />, when ValidRange, returns a non-null value.
+        /// </summary>
         [TestMethod]
         [DataRow(int.MinValue)]
         [DataRow(0)]
@@ -18,6 +21,9 @@
             Assert.IsNotNull(rng);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="XorShiftRandom.Constructor" />, when CalledWithoutSeed, returns a non-null value.
+        /// </summary>
         [TestMethod]
         public void Constructor_WhenCalledWithoutSeed_ShouldCreateInstance()
         {

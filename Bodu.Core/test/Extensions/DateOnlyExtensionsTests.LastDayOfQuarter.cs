@@ -19,6 +19,9 @@ namespace Bodu.Extensions
     {
 
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfQuarter(DateOnly, CalendarQuarterDefinition)" /> returns the expected quarter-end <see cref="DateOnly" /> for each supported <see cref="CalendarQuarterDefinition" /> boundary.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.LastDayOfQuarterDateTimeTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]
         public void LastDayOfQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedDate(DateTime inputDateTime, CalendarQuarterDefinition definition, DateTime expectedDateTime)
@@ -32,6 +35,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that the parameterless <see cref="DateOnlyExtensions.LastDayOfQuarter(DateOnly)" /> overload returns the January-to-December quarter end for the given input.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.LastDayOfQuarterDateTimeJanuaryDecemberTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]
         public void LastDayOfQuarter_WhenUsingDateOnly_ShouldReturnExpectedStartOfCalendarQuarter(DateTime inputDateTime, DateTime expectedDateTime)
@@ -46,6 +52,9 @@ namespace Bodu.Extensions
 
 
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfQuarter(CalendarQuarterDefinition, int, int)" /> returns the expected quarter-end <see cref="DateOnly" /> for each <c>(year, quarter, definition)</c> triple.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.LastDayOfQuarterTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void LastDayOfQuarter_WhenUsingQuarterAndDefinition_ShouldReturnExpectedDate(int year, int quarter, CalendarQuarterDefinition definition, DateTime expectedDateTime)
@@ -57,6 +66,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfQuarter(int, int)" /> with the default January-to-December definition returns the expected quarter end for each <c>(year, quarter)</c> pair.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.LastDayOfQuarterJanuaryDecemberTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void LastDayOfQuarter_WhenUsingQuarterAndCalendarDefinition_ShouldReturnExpectedDate(int year, int quarter, DateTime expectedDateTime)
@@ -68,6 +80,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that a custom <c>IQuarterProvider</c> returning out-of-range month values causes the <see cref="DateOnly" /> provider overload to throw <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfQuarter_WhenUsingInvalidProvider_ShouldThrowArgumentOutOfRange()
         {
@@ -80,6 +95,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that passing <see cref="CalendarQuarterDefinition.Custom" /> without supplying a provider throws <see cref="InvalidOperationException" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowInvalidOperation()
         {
@@ -92,7 +110,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that LastDayOfQuarter returns the correct date using a valid quarter provider.
+        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfQuarter" /> returns the correct date using a valid quarter provider.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.LastDayOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
@@ -107,6 +125,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnly.MinValue" /> yields <c>0001-03-31</c> (end of Q1 of year 1) for the January-to-December quarter end.
+        /// </summary>
         [TestMethod]
         public void LastDayOfQuarter_WhenInputIsMinValue_ShouldReturnExpectedDate()
         {
@@ -114,6 +135,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateOnly(1, 3, 31), actual);
         }
 
+        /// <summary>
+        /// Verifies that an undefined <see cref="CalendarQuarterDefinition" /> value throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfQuarter_WhenDefinitionIsInvalid_ShouldThrowExactly()
         {
@@ -126,6 +150,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that the static <see cref="DateOnlyExtensions.LastDayOfQuarter(CalendarQuarterDefinition, int, int)" /> overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined definition.
+        /// </summary>
         [TestMethod]
         public void LastDayOfQuarter_WhenDefinitionIsInvalidAndQuarterIsValid_ShouldThrowExactly()
         {
@@ -137,6 +164,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that a quarter index outside <c>1..4</c> throws <see cref="ArgumentOutOfRangeException" /> when an otherwise-valid definition is supplied.
+        /// </summary>
         [TestMethod]
         [DataRow(-1)]
         [DataRow(0)]
@@ -149,6 +179,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that the default January-to-December overload throws <see cref="ArgumentOutOfRangeException" /> for quarter values outside <c>1..4</c>.
+        /// </summary>
         [TestMethod]
         [DataRow(-1)]
         [DataRow(0)]

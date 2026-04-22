@@ -37,7 +37,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that setting the IV to null throws an ArgumentNullException.
+        /// Verifies that setting the <see cref="SymmetricAlgorithm.IV" /> to null throws an ArgumentNullException.
         /// </summary>
         [TestMethod]
         public void IV_WhenSetToNull_ShouldThrowExactly()
@@ -58,7 +58,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that setting IV returns the same hashValue on subsequent get.
+        /// Verifies that setting <see cref="SymmetricAlgorithm.IV" /> returns the same hashValue on subsequent get.
         /// </summary>
         [TestMethod]
         public void IV_WhenSet_ShouldReturnSameValueOnGet()
@@ -108,7 +108,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that GenerateIV produces a different IV from the previous one.
+        /// Verifies that <see cref="SymmetricAlgorithm.GenerateIV" /> produces a different IV from the previous one.
         /// </summary>
         [TestMethod]
         public void GenerateIV_WhenCalled_ShouldChangeIV()

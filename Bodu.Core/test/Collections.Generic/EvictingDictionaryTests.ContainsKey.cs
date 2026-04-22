@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class EvictingDictionaryTests
     {
         /// <summary>
-        /// Verifies that ContainsKey returns true when the dictionary contains the specified key.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ContainsKey" /> returns true when the dictionary contains the specified key.
         /// </summary>
         [TestMethod]
         public void ContainsKey_WhenKeyExists_ShouldReturnTrue()
@@ -21,7 +21,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ContainsKey correctly reflects the current state after a previously evicted key is removed and a new key is added.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ContainsKey" /> correctly reflects the current state after a previously evicted key is removed and a new key is added.
         /// </summary>
         [TestMethod]
         public void ContainsKey_WhenEvictedKeyIsRemovedAndNewKeyAdded_ShouldReturnCorrectResults()
@@ -38,7 +38,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ContainsKey returns false when the dictionary does not contain the specified key.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ContainsKey" /> returns false when the dictionary does not contain the specified key.
         /// </summary>
         [TestMethod]
         public void ContainsKey_WhenKeyDoesNotExist_ShouldReturnFalse()
@@ -49,7 +49,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ContainsKey throws ArgumentNullException when a null key is provided and the key type is a reference type.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ContainsKey" /> throws ArgumentNullException when a null key is provided and the key type is a reference type.
         /// </summary>
         [TestMethod]
         public void ContainsKey_WhenKeyIsNull_ShouldThrowExactly()
@@ -63,7 +63,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ContainsKey returns true when a matching key exists under a case-insensitive equality comparer.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ContainsKey" /> returns true when a matching key exists under a case-insensitive equality comparer.
         /// </summary>
         [TestMethod]
         public void ContainsKey_WhenComparerIgnoresCaseAndKeyMatches_ShouldReturnTrue()
@@ -78,7 +78,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ContainsKey returns false when the key exists but casing differs and the comparer is case-sensitive.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ContainsKey" /> returns false when the key exists but casing differs and the comparer is case-sensitive.
         /// </summary>
         [TestMethod]
         public void ContainsKey_WhenComparerIsCaseSensitiveAndCasingDiffers_ShouldReturnFalse()

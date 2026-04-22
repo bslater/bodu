@@ -8,6 +8,9 @@
 {
     public partial class TigerTests
     {
+        /// <summary>
+        /// Verifies that <see cref="Tiger.ComputeHash" />, when VariantIsDifferent, ProduceDifferentHash.
+        /// </summary>
         [TestMethod]
         public void ComputeHash_WhenVariantIsDifferent_ShouldProduceDifferentHash()
         {

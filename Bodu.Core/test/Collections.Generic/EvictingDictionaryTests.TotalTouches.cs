@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class EvictingDictionaryTests
     {
         /// <summary>
-        /// Verifies that TotalTouches is zero when a new dictionary is created.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TotalTouches" /> is zero when a new dictionary is created.
         /// </summary>
         [TestMethod]
         public void TotalTouches_WhenDictionaryIsNew_ShouldBeZero()
@@ -19,7 +19,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TotalTouches increments when a key is accessed via Touch.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TotalTouches" /> increments when a key is accessed via Touch.
         /// </summary>
         [TestMethod]
         public void TotalTouches_WhenKeyIsTouched_ShouldIncrement()
@@ -34,7 +34,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TotalTouches does not increment when Touch is called on a missing key.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TotalTouches" /> does not increment when Touch is called on a missing key.
         /// </summary>
         [TestMethod]
         public void TotalTouches_WhenTouchCalledWithMissingKey_ShouldNotIncrement()
@@ -48,7 +48,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TotalTouches increments when a key is accessed via indexer get.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TotalTouches" /> increments when a key is accessed via indexer get.
         /// </summary>
         [TestMethod]
         public void TotalTouches_WhenKeyAccessedViaIndexer_ShouldIncrement()
@@ -63,7 +63,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TotalTouches increments when a key is accessed via TryGetValue.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TotalTouches" /> increments when a key is accessed via TryGetValue.
         /// </summary>
         [TestMethod]
         public void TotalTouches_WhenKeyAccessedViaTryGetValue_ShouldIncrement()
@@ -78,7 +78,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TotalTouches does not increment when TryGetValue is called on a missing key.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TotalTouches" /> does not increment when TryGetValue is called on a missing key.
         /// </summary>
         [TestMethod]
         public void TotalTouches_WhenTryGetValueFails_ShouldNotIncrement()
@@ -92,7 +92,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TotalTouches resets to zero after Clear is called.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TotalTouches" /> resets to zero after Clear is called.
         /// </summary>
         [TestMethod]
         public void TotalTouches_WhenCleared_ShouldResetToZero()
@@ -110,7 +110,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TotalTouches is unaffected by setting values via indexer.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TotalTouches" /> is unaffected by setting values via indexer.
         /// </summary>
         [TestMethod]
         public void TotalTouches_WhenSettingViaIndexer_ShouldNotChange()

@@ -16,6 +16,9 @@ namespace Bodu.Extensions
 {
     public partial class DateTimeExtensionsTests
     {
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.Midnight" />, when Called, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(MidnightTestData), DynamicDataSourceType.Method)]
         public void Midnight_WhenCalled_ShouldSetTimeToNoon(DateTime input, DateTime expected)
@@ -25,6 +28,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.Midnight" />, when KindIsSet, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]
@@ -37,6 +43,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(kind, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.Midnight" />, when UsingMinValue, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void Midnight_WhenUsingMinValue_ShouldReturnMidnight()
         {
@@ -46,6 +55,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(1, 1, 1, 0, 0, 0), actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.Midnight" />, when UsingMaxValue, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void Midnight_WhenUsingMaxValue_ShouldReturnMidnight()
         {

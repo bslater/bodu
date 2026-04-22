@@ -8,6 +8,9 @@
 {
     public sealed partial class EcbModeTransformTests
     {
+        /// <summary>
+        /// Verifies that <see cref="EcbModeTransform.Transform" />, when Decrypting, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void Transform_WhenDecrypting_ShouldDecryptEachBlockIndependently()
         {
@@ -23,6 +26,9 @@
             CollectionAssert.AreEqual(original, decrypted, "Decrypted output should match original plaintext in ECB mode.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="EcbModeTransform.Transform" />, when Encrypting, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void Transform_WhenEncrypting_ShouldEncryptEachBlockIndependently()
         {
@@ -42,6 +48,9 @@
             CollectionAssert.AreEqual(expectedBlock2, output[ExpectedBlockSize..].ToArray(), "Second block did not match expected ECB output.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="EcbModeTransform.Transform" />, when PlaintextBlocksAreIdentical, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void Transform_WhenPlaintextBlocksAreIdentical_ShouldProduceIdenticalCipherTextBlocks()
         {

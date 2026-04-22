@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class EvictingDictionaryTests
     {
         /// <summary>
-        /// Verifies that Add evicts the most recently used item when capacity is exceeded using MostRecentlyUsed policy.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Add" /> evicts the most recently used item when capacity is exceeded using MostRecentlyUsed policy.
         /// </summary>
         [TestMethod]
         [TestCategory("MRU")]
@@ -28,7 +28,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Touch updates recency in a MostRecentlyUsed dictionary.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> updates recency in a MostRecentlyUsed dictionary.
         /// </summary>
         [TestMethod]
         public void Touch_WhenPolicyIsMRUAndKeyTouched_ShouldUpdateRecency()
@@ -48,7 +48,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that PeekEvictionCandidate returns the most recently used key.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.PeekEvictionCandidate" /> returns the most recently used key.
         /// </summary>
         [TestMethod]
         public void PeekEvictionCandidate_WhenPolicyIsMRU_ShouldReturnMostRecentlyUsedKey()
@@ -89,7 +89,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ItemEvicted is raised with the correct key and value when an item is evicted using MostRecentlyUsed policy.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ItemEvicted" /> is raised with the correct key and value when an item is evicted using MostRecentlyUsed policy.
         /// </summary>
         [TestMethod]
         [TestCategory("MRU")]
@@ -108,7 +108,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Clear resets access order in a MostRecentlyUsed dictionary.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Clear" /> resets access order in a MostRecentlyUsed dictionary.
         /// </summary>
         [TestMethod]
         public void Clear_WhenPolicyIsMRUAndCalled_ShouldResetAccessOrder()
@@ -152,7 +152,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Keys are returned in recency order under MostRecentlyUsed policy.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> are returned in recency order under MostRecentlyUsed policy.
         /// </summary>
         [TestMethod]
         [TestCategory("MRU")]

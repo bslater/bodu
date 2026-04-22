@@ -17,6 +17,9 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeMilliseconds" />, when CalledWithUtc, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(FromUnixTimeMillisecondsTestData), DynamicDataSourceType.Property)]
         public void ToUnixTimeMilliseconds_WhenCalledWithUtc_ShouldReturnExpected(long expected, DateTime input)
@@ -26,6 +29,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeMilliseconds" />, when KindIsUtc, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void ToUnixTimeMilliseconds_WhenKindIsUtc_ShouldReturnCorrectMilliseconds()
         {
@@ -35,6 +41,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(1000, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeMilliseconds" />, when KindIsLocal, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void ToUnixTimeMilliseconds_WhenKindIsLocal_ShouldConvertToUtc()
         {
@@ -47,6 +56,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeMilliseconds" />, when KindIsUnspecified, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         public void ToUnixTimeMilliseconds_WhenKindIsUnspecified_ShouldAssumeLocalTime()
         {
@@ -60,6 +72,9 @@ namespace Bodu.Extensions
             Assert.IsTrue(Math.Abs(resultUnspecified - resultLocal) < 1000);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeMilliseconds" />, when UsingMinValue, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         public void ToUnixTimeMilliseconds_WhenUsingMinValue_ShouldBeNegativeLarge()
         {
@@ -68,6 +83,9 @@ namespace Bodu.Extensions
             Assert.IsTrue(actual < 0);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeMilliseconds" />, when UsingMaxValue, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         public void ToUnixTimeMilliseconds_WhenUsingMaxValue_ShouldBePositiveLarge()
         {
@@ -76,6 +94,9 @@ namespace Bodu.Extensions
             Assert.IsTrue(actual > 0);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeMilliseconds" />, RoundTripWithFromUnixTimeMilliseconds, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void ToUnixTimeMilliseconds_RoundTripWithFromUnixTimeMilliseconds_ShouldMatchUtc()
         {

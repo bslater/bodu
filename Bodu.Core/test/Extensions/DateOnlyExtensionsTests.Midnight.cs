@@ -16,6 +16,9 @@ namespace Bodu.Extensions
 {
     public partial class DateOnlyExtensionsTests
     {
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when Called, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DataRow("2024-04-18T05:00:00", "2024-04-18T00:00:00")]
         [DataRow("2024-04-18T23:59:59", "2024-04-18T00:00:00")]
@@ -32,6 +35,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(input.Kind, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when KindIsUtc, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void Midnight_WhenKindIsUtc_ShouldPreserveKind()
         {
@@ -42,6 +48,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(2024, 4, 18, 0, 0, 0, DateTimeKind.Utc), actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when KindIsLocal, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void Midnight_WhenKindIsLocal_ShouldPreserveKind()
         {
@@ -52,6 +61,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(2024, 4, 18, 0, 0, 0, DateTimeKind.Local), actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when KindIsUnspecified, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void Midnight_WhenKindIsUnspecified_ShouldPreserveKind()
         {
@@ -62,6 +74,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(2024, 4, 18, 0, 0, 0, DateTimeKind.Unspecified), actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when UsingMinValue, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void Midnight_WhenUsingMinValue_ShouldReturnMidnight()
         {
@@ -71,6 +86,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(1, 1, 1, 0, 0, 0), actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when UsingMaxValue, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void Midnight_WhenUsingMaxValue_ShouldReturnMidnight()
         {

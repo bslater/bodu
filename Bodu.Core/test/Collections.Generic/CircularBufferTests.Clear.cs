@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class CircularBufferTests
     {
         /// <summary>
-        /// Verifies that Clear removes all items from the buffer and resets its state.
+        /// Verifies that <see cref="CircularBuffer{T}.Clear" /> removes all items from the buffer and resets its state.
         /// </summary>
         [TestMethod]
         public void Clear_ShouldClearAllItems()
@@ -28,7 +28,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Clear is a no-op when the buffer is already empty.
+        /// Verifies that <see cref="CircularBuffer{T}.Clear" /> is a no-op when the buffer is already empty.
         /// </summary>
         [TestMethod]
         public void Clear_WhenBufferIsAlreadyEmpty_ShouldDoNothing()
@@ -41,7 +41,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Clear resets buffer state even after wraparound.
+        /// Verifies that <see cref="CircularBuffer{T}.Clear" /> resets buffer state even after wraparound.
         /// </summary>
         [TestMethod]
         public void Clear_WhenCalledAfterWraparound_ShouldResetInternalState()
@@ -117,7 +117,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Clear removes all elements when the buffer is not wrapped (head &lt; tail).
+        /// Verifies that <see cref="CircularBuffer{T}.Clear" /> removes all elements when the buffer is not wrapped (head &lt; tail).
         /// </summary>
         [TestMethod]
         public void Clear_WhenNotWrapped_ShouldRemoveAllItems()
@@ -134,7 +134,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Clear zeroes both array segments when the buffer is wrapped (head &gt;= tail).
+        /// Verifies that <see cref="CircularBuffer{T}.Clear" /> zeroes both array segments when the buffer is wrapped (head &gt;= tail).
         /// </summary>
         [TestMethod]
         public void Clear_WhenWrapped_ShouldZeroAllSegments()

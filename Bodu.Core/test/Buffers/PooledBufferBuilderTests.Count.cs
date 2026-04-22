@@ -8,6 +8,9 @@
 {
     public partial class PooledBufferBuilderTests
     {
+        /// <summary>
+        /// Verifies that <see cref="PooledBufferBuilder.Count" />, when ItemsAdded, UsingSpan, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void Count_WhenItemsAdded_ShouldReturnAccurateValue_UsingSpan()
         {

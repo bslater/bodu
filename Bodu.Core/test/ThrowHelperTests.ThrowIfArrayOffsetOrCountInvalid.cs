@@ -8,6 +8,9 @@ namespace Bodu
 {
     public sealed partial class ThrowHelperTests
     {
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" />, when OffsetOrCountOutOfRange, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(-1, 2)]  // Negative offset
         [DataRow(6, 2)]   // Offset > array length
@@ -22,6 +25,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" />, when SumExceedsLength, throws <see cref="ArgumentException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(3, 3)]  // Offset + count exceeds array length
         [DataRow(4, 2)]  // Offset + count exceeds array length
@@ -34,6 +40,9 @@ namespace Bodu
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" />, when ParametersAreValid, NotThrow.
+        /// </summary>
         [TestMethod]
         [DataRow(0, 5)]
         [DataRow(1, 4)]

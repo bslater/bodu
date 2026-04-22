@@ -59,6 +59,9 @@
 
         // ── KAT tests ──────────────────────────────────────────────────────────────────────────────
 
+        /// <summary>
+        /// Verifies that <see cref="GcmSivModeTransform.Encrypt" />, with Rfc8452 Vector, matches Expected.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(GcmSivRfc8452Vectors), DynamicDataSourceType.Method)]
         public void Encrypt_WithRfc8452Vector_ShouldMatchExpected(
@@ -75,6 +78,9 @@
                 $"GCM-SIV encrypt mismatch for RFC 8452 C.1 (nonce={nonceHex}).");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="GcmSivModeTransform.Decrypt" />, with Rfc8452Vector, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(GcmSivRfc8452Vectors), DynamicDataSourceType.Method)]
         public void Decrypt_WithRfc8452Vector_ShouldRecoverPlaintext(
@@ -95,6 +101,9 @@
 
         // ── Structural tests ───────────────────────────────────────────────────────────────────────
 
+        /// <summary>
+        /// Verifies that <see cref="GcmSivModeTransform.Decrypt" />, when TagIsCorrupted, throws <see cref="CryptographicException" />.
+        /// </summary>
         [TestMethod]
         public void Decrypt_WhenTagIsCorrupted_ShouldThrowCryptographicException()
         {
@@ -116,6 +125,9 @@
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="GcmSivModeTransform.EncryptThenDecrypt" />, with RandomKey, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void EncryptThenDecrypt_WithRandomKey_ShouldRoundTrip()
         {

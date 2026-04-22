@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class EvictingDictionaryTests
     {
         /// <summary>
-        /// Verifies that Contains returns true when key and value match exactly.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Contains" /> returns true when key and value match exactly.
         /// </summary>
         [TestMethod]
         public void Contains_WhenExactKeyAndValueMatch_ShouldReturnTrue()
@@ -21,7 +21,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Contains returns false when the value differs even though the key matches.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Contains" /> returns false when the value differs even though the key matches.
         /// </summary>
         [TestMethod]
         public void Contains_WhenValueDiffersButKeyMatches_ShouldReturnFalse()
@@ -33,7 +33,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Contains returns false when the key is missing from the dictionary.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Contains" /> returns false when the key is missing from the dictionary.
         /// </summary>
         [TestMethod]
         public void Contains_WhenKeyIsMissing_ShouldReturnFalse()
@@ -44,7 +44,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Contains returns false when using a default struct key that is not present.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Contains" /> returns false when using a default struct key that is not present.
         /// </summary>
         [TestMethod]
         public void Contains_WhenKeyIsDefaultStructAndNotPresent_ShouldReturnFalse()
@@ -55,7 +55,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Contains returns true when key and value match using a case-insensitive comparer.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Contains" /> returns true when key and value match using a case-insensitive comparer.
         /// </summary>
         [TestMethod]
         public void Contains_WhenCaseInsensitiveComparerAndKeyValueMatch_ShouldReturnTrue()
@@ -70,7 +70,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Contains returns false when value differs even if the key matches case-insensitively.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Contains" /> returns false when value differs even if the key matches case-insensitively.
         /// </summary>
         [TestMethod]
         public void Contains_WhenCaseInsensitiveComparerAndValueDiffers_ShouldReturnFalse()
@@ -85,7 +85,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Contains returns false when the key does not exist even with a case-insensitive comparer.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Contains" /> returns false when the key does not exist even with a case-insensitive comparer.
         /// </summary>
         [TestMethod]
         public void Contains_WhenCaseInsensitiveComparerAndKeyNotFound_ShouldReturnFalse()
@@ -100,7 +100,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Contains respects a custom key equality comparer.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Contains" /> respects a custom key equality comparer.
         /// </summary>
         [TestMethod]
         public void Contains_WhenUsingCustomEqualityComparer_ShouldRespectComparer()
@@ -113,7 +113,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Contains returns false when the value differs despite the custom comparer matching the key.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Contains" /> returns false when the value differs despite the custom comparer matching the key.
         /// </summary>
         [TestMethod]
         public void Contains_WhenUsingCustomComparerAndValueDiffers_ShouldReturnFalse()

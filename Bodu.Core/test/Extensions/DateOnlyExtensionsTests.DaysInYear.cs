@@ -10,6 +10,9 @@ namespace Bodu.Extensions
 {
     public partial class DateOnlyExtensionsTests
     {
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.DaysInYear" />, when Called, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.DaysInYearGregorianCalendarTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void DaysInYear_WhenCalled_ShouldReturnCorrectDays(DateTime inputDateTime, int expected)
@@ -19,6 +22,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.DaysInYear" />, when UsingCustomCalendar, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.DaysInYearTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void DaysInYear_WhenUsingCustomCalendar_ShouldMatchExpected(int year, Calendar calendar, int expectedDays)
@@ -28,18 +34,27 @@ namespace Bodu.Extensions
             Assert.AreEqual(expectedDays, actual, $"{calendar.GetType().Name} returned {actual} days for year {year}.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.DaysInYear" />, when UsingMinValue, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         public void DaysInYear_WhenUsingMinValue_ShouldNotThrow()
         {
             Assert.IsTrue(DateOnly.MinValue.DaysInYear() > 0);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.DaysInYear" />, when UsingMaxValue, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         public void DaysInYear_WhenUsingMaxValue_ShouldNotThrow()
         {
             Assert.IsTrue(DateOnly.MaxValue.DaysInYear() > 0);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.DaysInYear" />, when NoCalendarProvided, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void DaysInYear_WhenNoCalendarProvided_ShouldUseCurrentCultureCalendar()
         {

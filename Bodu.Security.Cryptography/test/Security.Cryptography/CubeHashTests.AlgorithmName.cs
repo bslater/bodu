@@ -8,6 +8,9 @@ namespace Bodu.Security.Cryptography
 {
     public partial class CubeHashTests
     {
+        /// <summary>
+        /// Verifies that <see cref="CubeHash.AlgorithmName" />, when UsingVariant, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(HashAlgorithmVariants), DynamicDataSourceType.Method)]
         public void AlgorithmName_WhenUsingVariant_ShouldReturnCorrectlyFormattedString(CubeHashVariants variant)
@@ -18,6 +21,9 @@ namespace Bodu.Security.Cryptography
             Assert.AreEqual(expected, algorithm.AlgorithmName);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="CubeHash.AlgorithmName" />, when UsingCustomRounds, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void AlgorithmName_WhenUsingCustomRounds_ShouldReturnCorrectlyFormattedString()
         {

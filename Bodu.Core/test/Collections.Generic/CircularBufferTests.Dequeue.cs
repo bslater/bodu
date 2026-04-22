@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class CircularBufferTests
     {
         /// <summary>
-        /// Verifies that Dequeue returns and removes the oldest item in FirstInFirstOut order.
+        /// Verifies that <see cref="CircularBuffer{T}.Dequeue" /> returns and removes the oldest item in FirstInFirstOut order.
         /// </summary>
         [TestMethod]
         public void Dequeue_WhenBufferIsNotEmpty_ShouldReturnAndRemoveOldestItem()
@@ -45,7 +45,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Dequeue throws InvalidOperationException when the buffer is empty.
+        /// Verifies that <see cref="CircularBuffer{T}.Dequeue" /> throws InvalidOperationException when the buffer is empty.
         /// </summary>
         [TestMethod]
         public void Dequeue_WhenBufferIsEmpty_ShouldThrowExactly()
@@ -59,7 +59,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Dequeue returns null if a null value was previously enqueued.
+        /// Verifies that <see cref="CircularBuffer{T}.Dequeue" /> returns null if a null value was previously enqueued.
         /// </summary>
         [TestMethod]
         public void Dequeue_WhenItemIsNull_ShouldReturnNull()
@@ -72,7 +72,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Dequeue preserves FirstInFirstOut order after the buffer wraps around.
+        /// Verifies that <see cref="CircularBuffer{T}.Dequeue" /> preserves FirstInFirstOut order after the buffer wraps around.
         /// </summary>
         [TestMethod]
         public void Dequeue_WhenBufferIsWrapped_ShouldPreserveFifoOrder()
@@ -93,7 +93,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Dequeue drains the buffer in FirstInFirstOut order when called multiple times.
+        /// Verifies that <see cref="CircularBuffer{T}.Dequeue" /> drains the buffer in FirstInFirstOut order when called multiple times.
         /// </summary>
         [TestMethod]
         public void Dequeue_WhenCalledMultipleTimes_ShouldDrainInFifoOrder()
@@ -114,7 +114,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Dequeue allows reusing internal storage after wraparound.
+        /// Verifies that <see cref="CircularBuffer{T}.Dequeue" /> allows reusing internal storage after wraparound.
         /// </summary>
         [TestMethod]
         public void Dequeue_WhenWraparoundOccurs_ShouldAllowSlotReuse()

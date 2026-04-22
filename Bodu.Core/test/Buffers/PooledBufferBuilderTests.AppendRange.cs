@@ -8,6 +8,9 @@
 {
     public partial class PooledBufferBuilderTests
     {
+        /// <summary>
+        /// Verifies that <see cref="PooledBufferBuilder.AppendRange" />, when EnumerableUsed, UsingIEnumerable, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void AppendRange_WhenEnumerableUsed_ShouldAppendAllItems_UsingIEnumerable()
         {
@@ -19,6 +22,9 @@
             CollectionAssert.AreEqual(source.ToArray(), builder.AsSpan().ToArray());
         }
 
+        /// <summary>
+        /// Verifies that <see cref="PooledBufferBuilder.AppendRange" />, when ExceedsInitialSize, UsingIEnumerable, returns the expected value.
+        /// </summary>
         [TestMethod]
         public void AppendRange_WhenExceedsInitialSize_ShouldExpandBuffer_UsingIEnumerable()
         {

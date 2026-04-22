@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class EvictingDictionaryTests
     {
         /// <summary>
-        /// Verifies that Values returns an empty collection when the dictionary has no entries.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Values" /> returns an empty collection when the dictionary has no entries.
         /// </summary>
         [TestMethod]
         public void Values_WhenDictionaryIsEmpty_ShouldReturnEmptyCollection()
@@ -20,7 +20,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Values contains all values for inserted items when capacity is not exceeded.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Values" /> contains all values for inserted items when capacity is not exceeded.
         /// </summary>
         [TestMethod]
         public void Values_WhenItemsAdded_ShouldContainAllValues()
@@ -39,7 +39,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Values does not contain the value of an explicitly removed key.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Values" /> does not contain the value of an explicitly removed key.
         /// </summary>
         [TestMethod]
         public void Values_WhenItemIsRemoved_ShouldNotContainRemovedValue()
@@ -55,7 +55,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Values does not contain the value of a key that was evicted when capacity was exceeded.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Values" /> does not contain the value of a key that was evicted when capacity was exceeded.
         /// </summary>
         [TestMethod]
         public void Values_WhenItemIsEvicted_ShouldNotContainEvictedValue()
@@ -71,7 +71,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Values returns an empty collection after the dictionary is cleared.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Values" /> returns an empty collection after the dictionary is cleared.
         /// </summary>
         [TestMethod]
         public void Values_WhenDictionaryIsCleared_ShouldBeEmpty()
@@ -86,7 +86,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Values reflects the updated value when a key is replaced via the indexer.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Values" /> reflects the updated value when a key is replaced via the indexer.
         /// </summary>
         [TestMethod]
         public void Values_WhenValueIsUpdatedViaIndexer_ShouldReflectNewValue()
@@ -100,7 +100,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Values can contain duplicate values across different keys.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Values" /> can contain duplicate values across different keys.
         /// </summary>
         [TestMethod]
         public void Values_WhenMultipleKeysHaveSameValue_ShouldContainDuplicateValues()
@@ -130,7 +130,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Values.Contains uses the default equality comparer for the value type.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Values" />.Contains uses the default equality comparer for the value type.
         /// </summary>
         [TestMethod]
         public void Values_Contains_WhenValuePresent_ShouldReturnTrue()

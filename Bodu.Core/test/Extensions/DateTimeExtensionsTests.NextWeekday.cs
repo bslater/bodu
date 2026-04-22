@@ -19,6 +19,9 @@ namespace Bodu.Extensions
             yield return new object[] { new DateTime(2024, 4, 22), new DateTime(2024, 4, 23) }; // Mon → Tue
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.NextWeekday(DateTime, CalendarWeekendDefinition)" /> returns the next non-weekend date when Saturday and Sunday are defined as the weekend.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(NextWeekdaySaturdaySundayDateTimeTestData), DynamicDataSourceType.Method)]
         public void NextWeekday_WhenWeekendIsSaturdaySunday_ShouldReturnExpectedDate(DateTime input, DateTime expected)
@@ -27,6 +30,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that with a Friday/Saturday weekend, <see cref="DateTimeExtensions.NextWeekday(DateTime, CalendarWeekendDefinition)" /> skips both weekend days and returns the following Sunday.
+        /// </summary>
         [TestMethod]
         public void NextWeekday_WhenWeekendIsFridaySaturday_ShouldSkipFridayAndSaturday()
         {
@@ -35,6 +41,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(2024, 4, 21), actual); // Sunday
         }
 
+        /// <summary>
+        /// Verifies that <see cref="CalendarWeekendDefinition.None" /> throws <see cref="ArgumentOutOfRangeException" /> because the search loop has no weekend to skip.
+        /// </summary>
         [TestMethod]
         public void NextWeekday_WhenWeekendIsNone_ShouldThrowArgumentOutOfRangeException()
         {
@@ -48,6 +57,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.NextWeekday(DateTime, CalendarWeekendDefinition)" /> preserves the input's <see cref="DateTime.Kind" />.
+        /// </summary>
         [TestMethod]
         public void NextWeekday_WhenCalled_ShouldPreserveInputKind()
         {
@@ -56,6 +68,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(DateTimeKind.Utc, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.NextWeekday(DateTime, CalendarWeekendDefinition)" /> preserves the input's <see cref="DateTime.TimeOfDay" />.
+        /// </summary>
         [TestMethod]
         public void NextWeekday_WhenCalled_ShouldPreserveTimeOfDay()
         {
@@ -64,6 +79,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new TimeSpan(13, 45, 15), actual.TimeOfDay);
         }
 
+        /// <summary>
+        /// Verifies that an undefined <see cref="CalendarWeekendDefinition" /> value throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void NextWeekday_WhenWeekendIsInvalid_ShouldThrowArgumentOutOfRangeException()
         {
@@ -79,6 +97,9 @@ namespace Bodu.Extensions
         // Provider overload
         // =========================================================================
 
+        /// <summary>
+        /// Verifies that the provider overload falls back to the <see cref="CalendarWeekendDefinition" /> enum value when the provider is <see langword="null" />.
+        /// </summary>
         [TestMethod]
         public void NextWeekday_WhenProviderIsNull_ShouldUseWeekendEnum()
         {
@@ -87,6 +108,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(2024, 4, 22), actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="CalendarWeekendDefinition.Custom" /> with a user-supplied <c>IWeekendDefinitionProvider</c> applies the provider's rule when determining the next weekday.
+        /// </summary>
         [TestMethod]
         public void NextWeekday_WhenUsingCustomProvider_ShouldApplyProviderRule()
         {
@@ -98,6 +122,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(2024, 4, 20), actual);
         }
 
+        /// <summary>
+        /// Verifies that the provider overload still throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="CalendarWeekendDefinition" /> even when a provider is supplied.
+        /// </summary>
         [TestMethod]
         public void NextWeekday_WhenProviderOverload_WeekendIsInvalid_ShouldThrowArgumentOutOfRangeException()
         {

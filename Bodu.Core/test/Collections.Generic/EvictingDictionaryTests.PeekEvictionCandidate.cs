@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class EvictingDictionaryTests
     {
         /// <summary>
-        /// Verifies that PeekEvictionCandidate returns null when the dictionary is empty.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.PeekEvictionCandidate" /> returns null when the dictionary is empty.
         /// </summary>
         [TestMethod]
         public void PeekEvictionCandidate_WhenDictionaryIsEmpty_ShouldReturnNull()
@@ -20,7 +20,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that PeekEvictionCandidate returns null after all items are removed.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.PeekEvictionCandidate" /> returns null after all items are removed.
         /// </summary>
         [TestMethod]
         public void PeekEvictionCandidate_WhenAllItemsRemoved_ShouldReturnNull()
@@ -33,7 +33,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that PeekEvictionCandidate returns the only item when one has been added.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.PeekEvictionCandidate" /> returns the only item when one has been added.
         /// </summary>
         [TestMethod]
         public void PeekEvictionCandidate_WhenItemRecentlyAdded_ShouldReturnIt()
@@ -45,7 +45,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that PeekEvictionCandidate returns the correct candidate based on recent access.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.PeekEvictionCandidate" /> returns the correct candidate based on recent access.
         /// </summary>
         [TestMethod]
         public void PeekEvictionCandidate_AfterMultipleAccessPatterns_ShouldReturnCorrectCandidate()

@@ -16,6 +16,9 @@ namespace Bodu.Extensions
 {
     public partial class DateTimeExtensionsTests
     {
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInYear" />, when Called, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(LastDayOfWeekInYearTestData), DynamicDataSourceType.Method)]
         public void LastDayOfWeekInYear_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
@@ -25,6 +28,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInYear" />, when DayOfWeekIsInvalid, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeekInYear_WhenDayOfWeekIsInvalid_ShouldThrowExactly()
         {
@@ -37,6 +43,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInYear" />, when UsingMinValue, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeekInYear_WhenUsingMinValue_ShouldReturnInYear1()
         {
@@ -47,6 +56,9 @@ namespace Bodu.Extensions
             Assert.IsTrue(actual <= new DateTime(1, 12, 31));
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInYear" />, when UsingMaxValue, returns <see langword="true" />.
+        /// </summary>
         [TestMethod]
         public void LastDayOfWeekInYear_WhenUsingMaxValue_ShouldReturnValidDate()
         {
@@ -56,6 +68,9 @@ namespace Bodu.Extensions
             Assert.IsTrue(actual <= DateTime.MaxValue);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInYear" />, when KindIsLocal, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]

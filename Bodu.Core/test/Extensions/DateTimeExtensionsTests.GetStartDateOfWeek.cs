@@ -29,6 +29,9 @@ namespace Bodu.Extensions
             new object[] { 2026, 1,  new DateTime(2025, 12, 29) }, // ISO week 1 of 2026 starts in Dec 2025
         };
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.GetStartDateOfWeek" />, with CultureInfo, returns the expected value.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(IsoWeekTestCases))]
         public void GetStartDateOfWeek_WithCultureInfo_ShouldReturnExpectedDate(int year, int week, DateTime expected)
@@ -39,6 +42,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.GetStartDateOfWeek" />, with InvalidWeekNumber, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void GetStartDateOfWeek_WithInvalidWeekNumber_ShouldThrowExactly()
         {
@@ -51,6 +57,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.GetStartDateOfWeek" />, with InvalidYear, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(0)] //DateTime.MinValue.Year-1
         [DataRow(10000)] //DateTime.MaxValue.Year+1
@@ -62,6 +71,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.GetStartDateOfWeek" />, with CultureAndInvalidYear, throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         [DataRow(0)] //DateTime.MinValue.Year-1
         [DataRow(10000)] //DateTime.MaxValue.Year+1
