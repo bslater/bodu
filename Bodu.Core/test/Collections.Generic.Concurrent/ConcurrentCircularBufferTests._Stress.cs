@@ -635,6 +635,16 @@ public partial class ConcurrentCircularBufferTests
         // Fill the buffer so every subsequent enqueue triggers an eviction.
         for (int i = 0; i < capacity; i++) buffer.Enqueue(new TestItem(i));
 
+        // Deterministic warmup: one guaranteed eviction delivered to a subscribed handler before
+        // the concurrent race begins. Without this seed the `totalEvictions > 0` assertion is
+        // flake-prone — on a loaded CI runner the tight subscribe / unsubscribe windows below can
+        // consistently miss every writer burst, even though the lifecycle-safety invariant
+        // (handlerFaults == 0) that this test actually exists to verify is unaffected.
+        Action<TestItem?> warmupHandler = _ => Interlocked.Increment(ref totalEvictions);
+        buffer.ItemEvicted += warmupHandler;
+        buffer.Enqueue(new TestItem(-1));
+        buffer.ItemEvicted -= warmupHandler;
+
         // Writers keep the buffer full, causing continuous evictions.
         var writers = Enumerable.Range(0, 4).Select(_ =>
             Task.Run(() =>
