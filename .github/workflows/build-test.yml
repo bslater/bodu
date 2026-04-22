@@ -75,6 +75,83 @@ jobs:
           retention-days: 14
           if-no-files-found: error
 
+      - name: Filter failed tests into separate TRX
+        if: always()
+        shell: pwsh
+        run: |
+          $sourceRoot = Join-Path '${{ github.workspace }}' 'TestResults'
+          $failedRoot = Join-Path '${{ github.workspace }}' 'FailedTestResults'
+
+          if (-not (Test-Path $sourceRoot)) {
+            Write-Host 'No TestResults directory found; nothing to filter.'
+            return
+          }
+
+          $ns = 'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'
+          $trxFiles = Get-ChildItem -Path $sourceRoot -Filter '*.trx' -Recurse -File
+          $totalFailed = 0
+
+          foreach ($trx in $trxFiles) {
+            [xml]$doc = Get-Content -LiteralPath $trx.FullName
+            $nsMgr = New-Object System.Xml.XmlNamespaceManager($doc.NameTable)
+            $nsMgr.AddNamespace('t', $ns)
+
+            $failedResults = @($doc.SelectNodes('//t:UnitTestResult[@outcome="Failed"]', $nsMgr))
+            if ($failedResults.Count -eq 0) {
+              Write-Host ("No failed tests in {0}; skipping." -f $trx.Name)
+              continue
+            }
+
+            $failedIds = @{}
+            foreach ($node in $failedResults) { $failedIds[$node.testId] = $true }
+
+            foreach ($node in @($doc.SelectNodes('//t:UnitTestResult', $nsMgr))) {
+              if (-not $failedIds.ContainsKey($node.testId)) {
+                [void]$node.ParentNode.RemoveChild($node)
+              }
+            }
+
+            foreach ($node in @($doc.SelectNodes('//t:TestEntry', $nsMgr))) {
+              if (-not $failedIds.ContainsKey($node.testId)) {
+                [void]$node.ParentNode.RemoveChild($node)
+              }
+            }
+
+            foreach ($node in @($doc.SelectNodes('//t:TestDefinitions/*', $nsMgr))) {
+              if (-not $failedIds.ContainsKey($node.id)) {
+                [void]$node.ParentNode.RemoveChild($node)
+              }
+            }
+
+            $counters = $doc.SelectSingleNode('//t:ResultSummary/t:Counters', $nsMgr)
+            if ($null -ne $counters) {
+              foreach ($attr in @($counters.Attributes)) {
+                $counters.SetAttribute($attr.Name, '0')
+              }
+              $counters.SetAttribute('total', [string]$failedResults.Count)
+              $counters.SetAttribute('executed', [string]$failedResults.Count)
+              $counters.SetAttribute('failed', [string]$failedResults.Count)
+            }
+
+            $relative = [System.IO.Path]::GetRelativePath($sourceRoot, $trx.FullName)
+            $target = Join-Path $failedRoot ([System.IO.Path]::ChangeExtension($relative, '.failed.trx'))
+            New-Item -ItemType Directory -Force -Path (Split-Path -Parent $target) | Out-Null
+            $doc.Save($target)
+            Write-Host ("Wrote {0} (failed: {1})" -f $target, $failedResults.Count)
+            $totalFailed += $failedResults.Count
+          }
+
+          Write-Host ("Total failed tests captured: {0}" -f $totalFailed)
+
+      - name: Upload failed-tests TRX artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-failed-trx
+          path: FailedTestResults/**/*.failed.trx
+          retention-days: 14
+          if-no-files-found: ignore
+
       - name: Publish test report
         if: always()
         uses: dorny/test-reporter@v1
