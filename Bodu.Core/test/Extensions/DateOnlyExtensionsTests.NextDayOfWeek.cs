@@ -18,7 +18,7 @@ namespace Bodu.Extensions
     public partial class DateOnlyExtensionsTests
     {
         /// <summary>
-        /// Verifies that Next Day Of Week, when Called, returns Expected Date.
+        /// Verifies that <see cref="DateOnlyExtensions.NextDayOfWeek(DateOnly, DayOfWeek)" /> returns the next occurrence of the requested <see cref="DayOfWeek" /> for each <c>(input, target)</c> pair.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests. NextDayOfWeekTestData),typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
@@ -33,7 +33,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Next Day Of Week, when Invalid Enum, throws Exactly.
+        /// Verifies that an undefined <see cref="DayOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         public void NextDayOfWeek_WhenInvalidEnum_ShouldThrowExactly()
@@ -47,7 +47,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Next Day Of Week, when Using Min Value, returns Next Valid Date.
+        /// Verifies that <see cref="DateOnly.MinValue" /> returns a date on or after <see cref="DateOnly.MinValue" /> (does not underflow).
         /// </summary>
         [TestMethod]
         public void NextDayOfWeek_WhenUsingMinValue_ShouldReturnNextValidDate()
@@ -58,7 +58,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Next Day Of Week, when Using Max Value Minus7, returns Within Range.
+        /// Verifies that an input one week before <see cref="DateOnly.MaxValue" /> targeting its own <see cref="DateOnly.DayOfWeek" /> stays within the valid range.
         /// </summary>
         [TestMethod]
         public void NextDayOfWeek_WhenUsingMaxValueMinus7_ShouldReturnWithinRange()

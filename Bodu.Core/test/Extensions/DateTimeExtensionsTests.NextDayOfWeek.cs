@@ -18,7 +18,7 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
         /// <summary>
-        /// Verifies that Next Day Of Week, when Called, returns Expected Date.
+        /// Verifies that <see cref="DateTimeExtensions.NextDayOfWeek(DateTime, DayOfWeek)" /> returns the next occurrence of the requested <see cref="DayOfWeek" /> for each <c>(input, target)</c> pair.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(NextDayOfWeekTestData), DynamicDataSourceType.Method)]
@@ -30,7 +30,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Next Day Of Week, when Time Is Set, preserves Time.
+        /// Verifies that targeting the input's own <see cref="DateTime.DayOfWeek" /> advances by exactly one week and preserves the input's <see cref="DateTime.TimeOfDay" />.
         /// </summary>
         [TestMethod]
         public void NextDayOfWeek_WhenTimeIsSet_ShouldPreserveTime()
@@ -42,7 +42,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Next Day Of Week, when Invalid Enum, throws Exactly.
+        /// Verifies that an undefined <see cref="DayOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         public void NextDayOfWeek_WhenInvalidEnum_ShouldThrowExactly()
@@ -56,7 +56,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Next Day Of Weekr, when Kind Is Set, preserves Kind.
+        /// Verifies that <see cref="DateTimeExtensions.NextDayOfWeek(DateTime, DayOfWeek)" /> preserves the input's <see cref="DateTime.Kind" /> across all <see cref="DateTimeKind" /> values.
         /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
@@ -72,7 +72,7 @@ namespace Bodu.Extensions
 
 
         /// <summary>
-        /// Verifies that Next Day Of Week, when Time Is Set, preserves Timed.
+        /// Verifies that <see cref="DateTimeExtensions.NextDayOfWeek(DateTime, DayOfWeek)" /> preserves a sub-second-precision <see cref="DateTime.TimeOfDay" /> on the resulting date.
         /// </summary>
         [TestMethod]
         public void NextDayOfWeek_WhenTimeIsSet_ShouldPreserveTimed()
@@ -86,7 +86,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Next Day Of Week, when Using Min Value, returns Next Valid Date.
+        /// Verifies that <see cref="DateTime.MinValue" /> returns a date on or after <see cref="DateTime.MinValue" /> (does not underflow).
         /// </summary>
         [TestMethod]
         public void NextDayOfWeek_WhenUsingMinValue_ShouldReturnNextValidDate()
@@ -97,7 +97,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Next Day Of Week, when Using Max Value Minus7, returns Within Range.
+        /// Verifies that an input one week before <see cref="DateTime.MaxValue" /> targeting its own <see cref="DateTime.DayOfWeek" /> stays within the valid range.
         /// </summary>
         [TestMethod]
         public void NextDayOfWeek_WhenUsingMaxValueMinus7_ShouldReturnWithinRange()

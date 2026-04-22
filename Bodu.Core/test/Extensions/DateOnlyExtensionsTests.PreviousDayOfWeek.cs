@@ -19,7 +19,7 @@ namespace Bodu.Extensions
     {
 
         /// <summary>
-        /// Verifies that Previous Day Of Week, when Called, returns Expected Date.
+        /// Verifies that <see cref="DateOnlyExtensions.PreviousDayOfWeek(DateOnly, DayOfWeek)" /> returns the prior occurrence of the requested <see cref="DayOfWeek" /> for each <c>(input, target)</c> pair.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.PreviousDayOfWeekTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
@@ -34,7 +34,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Previous Day Of Week, when Enum Is Invalid, throws Exactly.
+        /// Verifies that an undefined <see cref="DayOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         public void PreviousDayOfWeek_WhenEnumIsInvalid_ShouldThrowExactly()
@@ -48,7 +48,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Previous Day Of Week, when Using Min Value, returns Same Or Greater.
+        /// Verifies that <see cref="DateOnly.MinValue" /> + 7 days returning the prior Monday yields a result on or after <see cref="DateOnly.MinValue" />.
         /// </summary>
         [TestMethod]
         public void PreviousDayOfWeek_WhenUsingMinValue_ShouldReturnSameOrGreater()
@@ -59,7 +59,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Previous Day Of Week, when Using Max Value, succeeds.
+        /// Verifies that <see cref="DateOnly.MaxValue" /> targeting Saturday returns a valid result on or before <see cref="DateOnly.MaxValue" />.
         /// </summary>
         [TestMethod]
         public void PreviousDayOfWeek_WhenUsingMaxValue_ShouldSucceed()

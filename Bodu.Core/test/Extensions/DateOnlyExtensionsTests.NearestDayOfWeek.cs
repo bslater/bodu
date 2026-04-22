@@ -34,7 +34,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Nearest Day Of Week, when Called, returns Expected Date.
+        /// Verifies that <see cref="DateOnlyExtensions.NearestDayOfWeek(DateOnly, DayOfWeek)" /> returns the closest occurrence of the requested <see cref="DayOfWeek" /> in either direction.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(NearestDayOfWeekTestData), DynamicDataSourceType.Method)]
@@ -45,7 +45,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Nearest Day Of Week, when Tied Between Past And Future, returns Earlier Date.
+        /// Verifies that when the past and future occurrences are equidistant (3 days each), the earlier date is returned.
         /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenTiedBetweenPastAndFuture_ShouldReturnEarlierDate()
@@ -57,7 +57,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Nearest Day Of Week, when Day Of Week Is Invalid, throws Argument Out Of Range Exception.
+        /// Verifies that an undefined <see cref="DayOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
@@ -75,7 +75,7 @@ namespace Bodu.Extensions
         // =========================================================================
 
         /// <summary>
-        /// Verifies that Nearest Day Of Week, when Using Year Month Day, returns Expected Date.
+        /// Verifies that the static <see cref="DateOnlyExtensions.NearestDayOfWeek(int, int, int, DayOfWeek)" /> overload returns the expected nearest date.
         /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenUsingYearMonthDay_ShouldReturnExpectedDate()
@@ -86,7 +86,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Nearest Day Of Week, when Using Year Month Day With Invalid Day Of Week, throws Argument Out Of Range Exception.
+        /// Verifies that the static <c>(year, month, day)</c> overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="DayOfWeek" />.
         /// </summary>
         [TestMethod]
         public void NearestDayOfWeek_WhenUsingYearMonthDayWithInvalidDayOfWeek_ShouldThrowArgumentOutOfRangeException()
