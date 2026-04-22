@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class EvictingDictionaryTests
     {
         /// <summary>
-        /// Verifies that EvictionCount is zero for a newly constructed dictionary before any evictions.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.EvictionCount" /> is zero for a newly constructed dictionary before any evictions.
         /// </summary>
         [TestMethod]
         public void EvictionCount_WhenNoEvictions_ShouldBeZero()
@@ -37,7 +37,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that EvictionCount increments each time an item is evicted due to exceeding capacity.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.EvictionCount" /> increments each time an item is evicted due to exceeding capacity.
         /// </summary>
         [TestMethod]
         public void EvictionCount_WhenCapacityExceededMultipleTimes_ShouldIncrementWithEachEviction()
@@ -54,7 +54,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that EvictionCount does not increment when an existing key is overwritten.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.EvictionCount" /> does not increment when an existing key is overwritten.
         /// </summary>
         [TestMethod]
         public void EvictionCount_WhenReplacingExistingKey_ShouldNotIncrement()
@@ -68,7 +68,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that EvictionCount tracks the correct number of evictions over many additions.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.EvictionCount" /> tracks the correct number of evictions over many additions.
         /// </summary>
         [TestMethod]
         public void EvictionCount_WhenManyEvictionsOccur_ShouldReflectCorrectEvictionTotal()

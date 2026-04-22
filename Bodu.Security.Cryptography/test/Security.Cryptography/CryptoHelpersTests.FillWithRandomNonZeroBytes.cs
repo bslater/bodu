@@ -83,7 +83,7 @@
             Assert.IsTrue(completed, "FillWithRandomBytesExcluding should terminate in bounded time.");
         }
         /// <summary>
-        /// Verifies that FillWithRandomNonZeroBytes throws ArgumentNullException when the buffer is null.
+        /// Verifies that <see cref="CryptoHelpers.FillWithRandomNonZeroBytes" /> throws ArgumentNullException when the buffer is null.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
@@ -93,7 +93,7 @@
         }
 
         /// <summary>
-        /// Verifies that FillWithRandomNonZeroBytes throws ArgumentException when the buffer is empty.
+        /// Verifies that <see cref="CryptoHelpers.FillWithRandomNonZeroBytes" /> throws ArgumentException when the buffer is empty.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
@@ -103,7 +103,7 @@
         }
 
         /// <summary>
-        /// Verifies that FillWithRandomNonZeroBytes fills the buffer with only non-zero values.
+        /// Verifies that <see cref="CryptoHelpers.FillWithRandomNonZeroBytes" /> fills the buffer with only non-zero values.
         /// </summary>
         [TestMethod]
         public void FillWithRandomNonZeroBytes_WhenBufferHasLength_ShouldContainNoZeroBytes()

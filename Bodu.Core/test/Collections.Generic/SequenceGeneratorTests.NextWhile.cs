@@ -9,7 +9,7 @@
     public partial class SequenceGeneratorTests
     {
         /// <summary>
-        /// Verifies that NextWhile applies indexed transformations until the condition fails.
+        /// Verifies that <see cref="SequenceGenerator.NextWhile" /> applies indexed transformations until the condition fails.
         /// </summary>
         [TestMethod]
         public void NextWhile_WhenUsingIndexedTransform_ShouldReturnExpectedSequence()
@@ -23,7 +23,7 @@
         }
 
         /// <summary>
-        /// Verifies that NextWhile performs repeated transformation using a simple update function.
+        /// Verifies that <see cref="SequenceGenerator.NextWhile" /> performs repeated transformation using a simple update function.
         /// </summary>
         [TestMethod]
         public void NextWhile_WhenUsingSimpleTransform_ShouldReturnExpectedSequence()
@@ -37,7 +37,7 @@
         }
 
         /// <summary>
-        /// Verifies that NextWhile using a state object returns the correct projection values.
+        /// Verifies that <see cref="SequenceGenerator.NextWhile" /> using a state object returns the correct projection values.
         /// </summary>
         [TestMethod]
         public void NextWhile_WhenUsingStateObject_ShouldReturnProjectedSequence()
@@ -52,7 +52,7 @@
         }
 
         /// <summary>
-        /// Verifies that NextWhile throws when the actual selector is null.
+        /// Verifies that <see cref="SequenceGenerator.NextWhile" /> throws when the actual selector is null.
         /// </summary>
         [TestMethod]
         public void NextWhile_WhenResultSelectorIsNull_ShouldThrowExactly()
@@ -64,7 +64,7 @@
         }
 
         /// <summary>
-        /// Verifies that NextWhile returns an empty sequence if the condition fails immediately.
+        /// Verifies that <see cref="SequenceGenerator.NextWhile" /> returns an empty sequence if the condition fails immediately.
         /// </summary>
         [TestMethod]
         public void NextWhile_WhenInitialConditionIsFalse_ShouldReturnEmptySequence()
@@ -78,7 +78,7 @@
         }
 
         /// <summary>
-        /// Verifies that NextWhile throws when the iterate function is null for a stateful generator.
+        /// Verifies that <see cref="SequenceGenerator.NextWhile" /> throws when the iterate function is null for a stateful generator.
         /// </summary>
         [TestMethod]
         public void NextWhile_WhenIterateFunctionIsNull_ShouldThrowExactly()

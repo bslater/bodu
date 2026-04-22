@@ -9,7 +9,7 @@
     public partial class XorShiftRandomTests
     {
         /// <summary>
-        /// Verifies that NextDouble returns values in the expected range [0.0, 1.0).
+        /// Verifies that <see cref="XorShiftRandom.NextDouble" /> returns values in the expected range [0.0, 1.0).
         /// </summary>
         [TestMethod]
         public void NextDouble_ShouldBeWithinRange()

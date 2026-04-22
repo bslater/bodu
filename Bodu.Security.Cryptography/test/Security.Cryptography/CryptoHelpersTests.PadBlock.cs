@@ -128,7 +128,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that PadBlock returns the expected total output length after padding is applied when using the byte array overload.
+        /// Verifies that <see cref="CryptoHelpers.PadBlock" /> returns the expected total output length after padding is applied when using the byte array overload.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases), DynamicDataSourceType.Method)]
@@ -143,7 +143,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that PadBlock returns the expected total output length after padding is applied when using the span-based overload.
+        /// Verifies that <see cref="CryptoHelpers.PadBlock" /> returns the expected total output length after padding is applied when using the span-based overload.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases), DynamicDataSourceType.Method)]
@@ -163,7 +163,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that PadBlock preserves the original bytes at the beginning of the padded block when using the byte array overload.
+        /// Verifies that <see cref="CryptoHelpers.PadBlock" /> preserves the original bytes at the beginning of the padded block when using the byte array overload.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases), DynamicDataSourceType.Method)]
@@ -177,7 +177,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that PadBlock preserves the original bytes at the beginning of the padded block when using the span-based overload.
+        /// Verifies that <see cref="CryptoHelpers.PadBlock" /> preserves the original bytes at the beginning of the padded block when using the span-based overload.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases), DynamicDataSourceType.Method)]

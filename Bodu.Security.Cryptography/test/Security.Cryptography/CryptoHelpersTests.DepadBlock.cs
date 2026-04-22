@@ -84,7 +84,7 @@ namespace Bodu.Security.Cryptography
         };
 
         /// <summary>
-        /// Verifies that DepadBlock removes padding and returns the expected unpadded bytes using the byte[] overload.
+        /// Verifies that <see cref="CryptoHelpers.DepadBlock" /> removes padding and returns the expected unpadded bytes using the byte[] overload.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases), DynamicDataSourceType.Method)]
@@ -100,7 +100,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that DepadBlock removes padding and returns the expected byte count using the Span overload.
+        /// Verifies that <see cref="CryptoHelpers.DepadBlock" /> removes padding and returns the expected byte count using the Span overload.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases), DynamicDataSourceType.Method)]
@@ -120,7 +120,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that DepadBlock removes padding and returns the expected byte count using the Span overload.
+        /// Verifies that <see cref="CryptoHelpers.DepadBlock" /> removes padding and returns the expected byte count using the Span overload.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases), DynamicDataSourceType.Method)]

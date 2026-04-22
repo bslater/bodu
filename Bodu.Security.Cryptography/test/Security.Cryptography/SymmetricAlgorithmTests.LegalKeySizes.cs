@@ -9,7 +9,7 @@
     public abstract partial class SymmetricAlgorithmTests<TAlgorithm>
     {
         /// <summary>
-        /// Verifies that LegalKeySizes returns a new instance each call.
+        /// Verifies that <see cref="SymmetricAlgorithm.LegalKeySizes" /> returns a new instance each call.
         /// </summary>
         [TestMethod]
         public void LegalKeySizes_WhenCalledMultipleTimes_ShouldReturnNewArrayInstances()
@@ -19,7 +19,7 @@
         }
 
         /// <summary>
-        /// Verifies that LegalKeySizes define valid MinSize, MaxSize, and SkipSize values.
+        /// Verifies that <see cref="SymmetricAlgorithm.LegalKeySizes" /> define valid MinSize, MaxSize, and SkipSize values.
         /// </summary>
         [TestMethod]
         public void LegalKeySizes_WhenDefined_ShouldHaveValidRanges()
@@ -34,7 +34,7 @@
         }
 
         /// <summary>
-        /// Verifies that LegalKeySizes do not overlap and are unique.
+        /// Verifies that <see cref="SymmetricAlgorithm.LegalKeySizes" /> do not overlap and are unique.
         /// </summary>
         [TestMethod]
         public void LegalKeySizes_WhenDefined_ShouldHaveNonOverlappingValues()

@@ -9,7 +9,7 @@
     public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm>
     {
         /// <summary>
-        /// Verifies that GenerateTweak creates a tweak of expected length.
+        /// Verifies that <see cref="TweakableSymmetricAlgorithm.GenerateTweak" /> creates a tweak of expected length.
         /// </summary>
         [TestMethod]
         public void GenerateTweak_WhenCalled_ShouldInitializeTweakCorrectly()

@@ -306,7 +306,7 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that CopyTo succeeds and copies elements to the correct positions when the destination array is larger than required.
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> succeeds and copies elements to the correct positions when the destination array is larger than required.
     /// </summary>
     [TestMethod]
     public void CopyTo_WhenArrayIsLargerThanRequired_ShouldCopyWithoutThrowing()
@@ -326,7 +326,7 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that CopyTo throws ArgumentException when a valid mid-array index leaves insufficient trailing space for all elements.
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> throws ArgumentException when a valid mid-array index leaves insufficient trailing space for all elements.
     /// </summary>
     [TestMethod]
     public void CopyTo_WhenIndexOffsetLeavesInsufficientSpace_ShouldThrowException()

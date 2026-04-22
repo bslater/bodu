@@ -26,7 +26,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Clear removes all items in a RandomReplacement dictionary.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Clear" /> removes all items in a RandomReplacement dictionary.
         /// </summary>
         [TestMethod]
         [TestCategory("Random")]
@@ -41,7 +41,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ItemEvicted is triggered when eviction occurs using RandomReplacement policy.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ItemEvicted" /> is triggered when eviction occurs using RandomReplacement policy.
         /// </summary>
         [TestMethod]
         [TestCategory("Random")]
@@ -77,7 +77,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that PeekEvictionCandidate returns a valid key when using RandomReplacement.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.PeekEvictionCandidate" /> returns a valid key when using RandomReplacement.
         /// </summary>
         [TestMethod]
         [TestCategory("Random")]

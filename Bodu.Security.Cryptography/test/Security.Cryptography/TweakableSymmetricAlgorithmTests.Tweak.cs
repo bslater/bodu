@@ -141,7 +141,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Tweak set to an invalid size throws.
+        /// Verifies that <see cref="TweakableSymmetricAlgorithm.Tweak" /> set to an invalid size throws.
         /// </summary>
         [TestMethod]
         public void Tweak_WhenSetToInvalidSize_ShouldThrowCryptographicException()
@@ -156,7 +156,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Tweak set to null throws ArgumentNullException.
+        /// Verifies that <see cref="TweakableSymmetricAlgorithm.Tweak" /> set to null throws ArgumentNullException.
         /// </summary>
         [TestMethod]
         public void Tweak_WhenSetToNull_ShouldThrowArgumentNullException()

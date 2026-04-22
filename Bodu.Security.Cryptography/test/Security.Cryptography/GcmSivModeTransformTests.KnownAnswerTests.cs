@@ -60,7 +60,7 @@
         // ── KAT tests ──────────────────────────────────────────────────────────────────────────────
 
         /// <summary>
-        /// Verifies that Encrypt, with Rfc8452 Vector, matches Expected.
+        /// Verifies that <see cref="GcmSivModeTransform.Encrypt" />, with Rfc8452 Vector, matches Expected.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GcmSivRfc8452Vectors), DynamicDataSourceType.Method)]

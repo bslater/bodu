@@ -9,7 +9,7 @@
     public partial class CryptoHelpersTests
     {
         /// <summary>
-        /// Verifies that GetRandomBytesExcluding throws ArgumentOutOfRangeException when length is invalid.
+        /// Verifies that <see cref="CryptoHelpers.GetRandomBytesExcluding" /> throws ArgumentOutOfRangeException when length is invalid.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
@@ -19,7 +19,7 @@
         }
 
         /// <summary>
-        /// Verifies that GetRandomBytesExcluding returns an array that does not contain the forbidden byte.
+        /// Verifies that <see cref="CryptoHelpers.GetRandomBytesExcluding" /> returns an array that does not contain the forbidden byte.
         /// </summary>
         [TestMethod]
         public void GetRandomBytesExcluding_WhenValidInput_ShouldReturnArrayWithoutForbiddenByte()

@@ -9,7 +9,7 @@
     public partial class CryptoHelpersTests
     {
         /// <summary>
-        /// Verifies that TryFillWithRandomNonZeroBytes returns true and fills span with non-zero bytes.
+        /// Verifies that <see cref="CryptoHelpers.TryFillWithRandomNonZeroBytes" /> returns true and fills span with non-zero bytes.
         /// </summary>
         [TestMethod]
         public void TryFillWithRandomNonZeroBytes_WhenBufferCanBeFilled_ShouldReturnTrue()

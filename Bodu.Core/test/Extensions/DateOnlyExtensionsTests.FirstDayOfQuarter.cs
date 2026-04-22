@@ -109,7 +109,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that FirstDayOfQuarter returns the correct date using a valid quarter provider.
+        /// Verifies that <see cref="DateOnlyExtensions.FirstDayOfQuarter" /> returns the correct date using a valid quarter provider.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.FirstDayOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]

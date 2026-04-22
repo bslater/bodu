@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class EvictingDictionaryTests
     {
         /// <summary>
-        /// Verifies that Clear removes all key-value pairs and resets Count to zero.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Clear" /> removes all key-value pairs and resets Count to zero.
         /// </summary>
         [TestMethod]
         public void Clear_WhenCalled_ShouldRemoveAllEntries()

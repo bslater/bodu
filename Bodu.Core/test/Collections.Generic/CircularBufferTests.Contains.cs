@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class CircularBufferTests
     {
         /// <summary>
-        /// Verifies that Contains returns true when the specified item exists in the buffer.
+        /// Verifies that <see cref="CircularBuffer{T}.Contains" /> returns true when the specified item exists in the buffer.
         /// </summary>
         [TestMethod]
         public void Contains_WhenItemExists_ShouldReturnTrue()
@@ -20,7 +20,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Contains uses the default equality comparer for value types.
+        /// Verifies that <see cref="CircularBuffer{T}.Contains" /> uses the default equality comparer for value types.
         /// </summary>
         [TestMethod]
         public void Contains_WhenUsingValueTypes_ShouldUseDefaultEquality()
@@ -34,7 +34,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Contains returns false when the specified item does not exist in the buffer.
+        /// Verifies that <see cref="CircularBuffer{T}.Contains" /> returns false when the specified item does not exist in the buffer.
         /// </summary>
         [TestMethod]
         public void Contains_WhenItemDoesNotExist_ShouldReturnFalse()
@@ -45,7 +45,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Contains returns true when null is present in the buffer.
+        /// Verifies that <see cref="CircularBuffer{T}.Contains" /> returns true when null is present in the buffer.
         /// </summary>
         [TestMethod]
         public void Contains_WhenBufferContainsNull_ShouldReturnTrue()
@@ -56,7 +56,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Contains returns false immediately when the buffer is empty, exercising the early-exit path.
+        /// Verifies that <see cref="CircularBuffer{T}.Contains" /> returns false immediately when the buffer is empty, exercising the early-exit path.
         /// </summary>
         [TestMethod]
         public void Contains_WhenBufferIsEmpty_ShouldReturnFalse()
@@ -144,7 +144,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Contains returns false for previously present items after the buffer has been cleared.
+        /// Verifies that <see cref="CircularBuffer{T}.Contains" /> returns false for previously present items after the buffer has been cleared.
         /// </summary>
         [TestMethod]
         public void Contains_AfterClear_ShouldReturnFalseForPreviouslyPresentItems()

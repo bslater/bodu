@@ -27,7 +27,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TryDequeue returns the correct value after an overwrite has occurred.
+        /// Verifies that <see cref="CircularBuffer{T}.TryDequeue" /> returns the correct value after an overwrite has occurred.
         /// </summary>
         [TestMethod]
         public void TryDequeue_AfterOverwrite_ShouldReturnCorrectItem()
@@ -44,7 +44,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TryDequeue returns false and outputs default value when the buffer is empty.
+        /// Verifies that <see cref="CircularBuffer{T}.TryDequeue" /> returns false and outputs default value when the buffer is empty.
         /// </summary>
         [TestMethod]
         public void TryDequeue_WhenBufferIsEmpty_ShouldReturnFalseAndDefaultValue()
@@ -58,7 +58,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TryDequeue returns true and outputs null when null was enqueued.
+        /// Verifies that <see cref="CircularBuffer{T}.TryDequeue" /> returns true and outputs null when null was enqueued.
         /// </summary>
         [TestMethod]
         public void TryDequeue_WhenNullWasEnqueued_ShouldReturnTrueAndOutputNull()
@@ -73,7 +73,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TryDequeue does not trigger any eviction events.
+        /// Verifies that <see cref="CircularBuffer{T}.TryDequeue" /> does not trigger any eviction events.
         /// </summary>
         [TestMethod]
         public void TryDequeue_WhenCalled_ShouldNotTriggerEvictionEvents()
@@ -96,7 +96,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TryDequeue returns false after all items have been removed from the buffer.
+        /// Verifies that <see cref="CircularBuffer{T}.TryDequeue" /> returns false after all items have been removed from the buffer.
         /// </summary>
         [TestMethod]
         public void TryDequeue_WhenBufferTransitionsToEmpty_ShouldReturnFalseAfterLastItem()

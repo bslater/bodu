@@ -61,7 +61,7 @@
         }
 
         /// <summary>
-        /// Verifies that TweakSize is correctly assigned when set to a valid value.
+        /// Verifies that <see cref="TweakableSymmetricAlgorithm.TweakSize" /> is correctly assigned when set to a valid value.
         /// </summary>
         [TestMethod]
         public void TweakSize_WhenSetToValidValue_ShouldUpdateInternalValue()

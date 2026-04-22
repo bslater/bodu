@@ -9,7 +9,7 @@
     public abstract partial class SymmetricAlgorithmTests<TAlgorithm>
     {
         /// <summary>
-        /// Verifies that LegalBlockSizes returns a new instance each call.
+        /// Verifies that <see cref="SymmetricAlgorithm.LegalBlockSizes" /> returns a new instance each call.
         /// </summary>
         [TestMethod]
         public void LegalBlockSizes_WhenCalledMultipleTimes_ShouldReturnNewArrayInstances()
@@ -19,7 +19,7 @@
         }
 
         /// <summary>
-        /// Verifies that LegalBlockSizes define valid MinSize, MaxSize, and SkipSize values.
+        /// Verifies that <see cref="SymmetricAlgorithm.LegalBlockSizes" /> define valid MinSize, MaxSize, and SkipSize values.
         /// </summary>
         [TestMethod]
         public void LegalBlockSizes_WhenDefined_ShouldHaveValidRanges()
@@ -34,7 +34,7 @@
         }
 
         /// <summary>
-        /// Verifies that LegalBlockSizes do not overlap and are unique.
+        /// Verifies that <see cref="SymmetricAlgorithm.LegalBlockSizes" /> do not overlap and are unique.
         /// </summary>
         [TestMethod]
         public void LegalBlockSizes_WhenDefined_ShouldHaveNonOverlappingValues()

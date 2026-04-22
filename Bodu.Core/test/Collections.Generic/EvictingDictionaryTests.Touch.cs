@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class EvictingDictionaryTests
     {
         /// <summary>
-        /// Verifies that Touch returns false when the key is not found in the dictionary.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> returns false when the key is not found in the dictionary.
         /// </summary>
         [TestMethod]
         public void Touch_WhenKeyIsMissing_ShouldReturnFalse()
@@ -23,7 +23,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Touch increments the TotalTouches counter when the key exists.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> increments the TotalTouches counter when the key exists.
         /// </summary>
         [TestMethod]
         public void Touch_WhenKeyExists_ShouldIncrementTotalTouches()
@@ -53,7 +53,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Touch updates access order and affects LeastRecentlyUsed eviction behavior.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> updates access order and affects LeastRecentlyUsed eviction behavior.
         /// </summary>
         [TestMethod]
         public void Touch_WhenKeyIsAccessed_ShouldAffectLRUEvictionOrder()

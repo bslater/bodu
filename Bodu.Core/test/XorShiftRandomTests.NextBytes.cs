@@ -9,7 +9,7 @@
     public partial class XorShiftRandomTests
     {
         /// <summary>
-        /// Verifies that NextBytes fills the provided buffer completely with random bytes.
+        /// Verifies that <see cref="XorShiftRandom.NextBytes" /> fills the provided buffer completely with random bytes.
         /// </summary>
         [TestMethod]
         [DataRow(1)]

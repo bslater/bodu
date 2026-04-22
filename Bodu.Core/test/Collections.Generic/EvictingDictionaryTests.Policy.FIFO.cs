@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class EvictingDictionaryTests
     {
         /// <summary>
-        /// Verifies that Add evicts the oldest item when capacity is exceeded using FirstInFirstOut policy.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Add" /> evicts the oldest item when capacity is exceeded using FirstInFirstOut policy.
         /// </summary>
         [TestMethod]
         [TestCategory("FIFO")]
@@ -26,7 +26,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ItemEvicted is raised with the correct key and value when an item is evicted using FirstInFirstOut.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ItemEvicted" /> is raised with the correct key and value when an item is evicted using FirstInFirstOut.
         /// </summary>
         [TestMethod]
         [TestCategory("FIFO")]
@@ -63,7 +63,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ItemEvicting is raised before ItemEvicted when eviction occurs using FirstInFirstOut policy.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ItemEvicting" /> is raised before ItemEvicted when eviction occurs using FirstInFirstOut policy.
         /// </summary>
         [TestMethod]
         [TestCategory("FIFO")]
@@ -83,7 +83,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ItemEvicting is raised with the correct key and value before eviction occurs.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ItemEvicting" /> is raised with the correct key and value before eviction occurs.
         /// </summary>
         [TestMethod]
         public void ItemEvicting_WhenPolicyIsFIFOAndEvictionOccurs_ShouldBeCalledWithCorrectKeyValue()
@@ -121,7 +121,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Keys are returned in insertion order when using FirstInFirstOut eviction policy.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> are returned in insertion order when using FirstInFirstOut eviction policy.
         /// </summary>
         [TestMethod]
         public void Keys_WhenPolicyIsFIFO_ShouldReturnKeysInInsertionOrder()
@@ -137,7 +137,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Values are returned in insertion order when using FirstInFirstOut eviction policy.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Values" /> are returned in insertion order when using FirstInFirstOut eviction policy.
         /// </summary>
         [TestMethod]
         public void Values_WhenPolicyIsFIFO_ShouldReturnValuesInInsertionOrder()
@@ -224,7 +224,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Touch does not affect eviction order when using FirstInFirstOut policy.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> does not affect eviction order when using FirstInFirstOut policy.
         /// </summary>
         [TestMethod]
         [TestCategory("FIFO")]
@@ -246,7 +246,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Touch increments TotalTouches when using FirstInFirstOut policy.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> increments TotalTouches when using FirstInFirstOut policy.
         /// </summary>
         [TestMethod]
         [TestCategory("FIFO")]
@@ -262,7 +262,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TouchOrThrow does not alter eviction order when using FirstInFirstOut policy.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TouchOrThrow" /> does not alter eviction order when using FirstInFirstOut policy.
         /// </summary>
         [TestMethod]
         [TestCategory("FIFO")]

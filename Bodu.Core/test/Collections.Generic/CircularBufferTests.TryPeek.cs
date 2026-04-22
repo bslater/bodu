@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class CircularBufferTests
     {
         /// <summary>
-        /// Verifies that TryPeek returns true and the oldest item when the buffer is not empty.
+        /// Verifies that <see cref="CircularBuffer{T}.TryPeek" /> returns true and the oldest item when the buffer is not empty.
         /// </summary>
         [TestMethod]
         public void TryPeek_WhenBufferIsNotEmpty_ShouldReturnTrueAndOldestItem()
@@ -25,7 +25,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TryPeek returns false and default when the buffer is empty.
+        /// Verifies that <see cref="CircularBuffer{T}.TryPeek" /> returns false and default when the buffer is empty.
         /// </summary>
         [TestMethod]
         public void TryPeek_WhenBufferIsEmpty_ShouldReturnFalseAndDefault()
@@ -39,7 +39,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TryPeek returns true and outputs null when null is the current item.
+        /// Verifies that <see cref="CircularBuffer{T}.TryPeek" /> returns true and outputs null when null is the current item.
         /// </summary>
         [TestMethod]
         public void TryPeek_WhenItemIsNull_ShouldReturnTrueAndNull()

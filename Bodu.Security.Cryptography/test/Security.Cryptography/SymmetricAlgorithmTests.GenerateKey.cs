@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography
     public abstract partial class SymmetricAlgorithmTests<TAlgorithm>
     {
         /// <summary>
-        /// Verifies that GenerateKey creates a key of expected length.
+        /// Verifies that <see cref="SymmetricAlgorithm.GenerateKey" /> creates a key of expected length.
         /// </summary>
         [TestMethod]
         public void GenerateKey_WhenCalled_ShouldInitializeKeyCorrectly()

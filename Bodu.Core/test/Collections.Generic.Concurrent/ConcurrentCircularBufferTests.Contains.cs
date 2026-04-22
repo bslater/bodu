@@ -331,7 +331,7 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that Contains uses the default equality comparer for value types.
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Contains" /> uses the default equality comparer for value types.
     /// </summary>
     [TestMethod]
     public void Contains_WhenUsingValueTypes_ShouldUseDefaultEquality()

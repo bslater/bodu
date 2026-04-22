@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class CircularBufferTests
     {
         /// <summary>
-        /// Verifies that Peek returns the oldest item in the buffer without removing it.
+        /// Verifies that <see cref="CircularBuffer{T}.Peek" /> returns the oldest item in the buffer without removing it.
         /// </summary>
         [TestMethod]
         public void Peek_WhenBufferHasItems_ShouldReturnOldestWithoutRemoving()
@@ -23,7 +23,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Peek returns the correct item after the buffer has wrapped around.
+        /// Verifies that <see cref="CircularBuffer{T}.Peek" /> returns the correct item after the buffer has wrapped around.
         /// </summary>
         [TestMethod]
         public void Peek_WhenBufferHasWrapped_ShouldReturnOldestItem()
@@ -41,7 +41,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Peek throws InvalidOperationException when the buffer is empty.
+        /// Verifies that <see cref="CircularBuffer{T}.Peek" /> throws InvalidOperationException when the buffer is empty.
         /// </summary>
         [TestMethod]
         public void Peek_WhenBufferIsEmpty_ShouldThrowExactly()
@@ -76,7 +76,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Peek reflects the new oldest item after a dequeue operation.
+        /// Verifies that <see cref="CircularBuffer{T}.Peek" /> reflects the new oldest item after a dequeue operation.
         /// </summary>
         [TestMethod]
         public void Peek_WhenOldestChangesDueToDequeue_ShouldReflectNewOldest()

@@ -25,7 +25,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TryEnqueue does not modify the buffer when it is full and overwrite is disabled.
+        /// Verifies that <see cref="CircularBuffer{T}.TryEnqueue" /> does not modify the buffer when it is full and overwrite is disabled.
         /// </summary>
         [TestMethod]
         public void TryEnqueue_WhenFullAndOverwriteDisabled_ShouldNotModifyBuffer()
@@ -41,7 +41,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TryEnqueue returns true and increases the buffer count when space is available.
+        /// Verifies that <see cref="CircularBuffer{T}.TryEnqueue" /> returns true and increases the buffer count when space is available.
         /// </summary>
         [TestMethod]
         public void TryEnqueue_WhenBufferHasSpace_ShouldReturnTrueAndIncreaseCount()
@@ -56,7 +56,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TryEnqueue returns false when buffer is full and overwrite is disabled.
+        /// Verifies that <see cref="CircularBuffer{T}.TryEnqueue" /> returns false when buffer is full and overwrite is disabled.
         /// </summary>
         [TestMethod]
         public void TryEnqueue_WhenFullAndOverwriteDisabled_ShouldReturnFalse()
@@ -73,7 +73,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TryEnqueue overwrites the oldest item and returns true when full and overwrite is enabled.
+        /// Verifies that <see cref="CircularBuffer{T}.TryEnqueue" /> overwrites the oldest item and returns true when full and overwrite is enabled.
         /// </summary>
         [TestMethod]
         public void TryEnqueue_WhenFullAndOverwriteEnabled_ShouldOverwriteAndReturnTrue()
@@ -90,7 +90,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TryEnqueue triggers ItemEvicting and ItemEvicted events in the correct order when overwriting.
+        /// Verifies that <see cref="CircularBuffer{T}.TryEnqueue" /> triggers ItemEvicting and ItemEvicted events in the correct order when overwriting.
         /// </summary>
         [TestMethod]
         public void TryEnqueue_WhenFullAndOverwriteEnabled_ShouldTriggerEvictionEventsInCorrectOrder()

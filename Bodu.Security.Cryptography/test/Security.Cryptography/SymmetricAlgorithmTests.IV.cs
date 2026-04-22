@@ -108,7 +108,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that GenerateIV produces a different IV from the previous one.
+        /// Verifies that <see cref="SymmetricAlgorithm.GenerateIV" /> produces a different IV from the previous one.
         /// </summary>
         [TestMethod]
         public void GenerateIV_WhenCalled_ShouldChangeIV()

@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class EvictingDictionaryTests
     {
         /// <summary>
-        /// Verifies that CopyTo throws ArgumentNullException when the destination array is null.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> throws ArgumentNullException when the destination array is null.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenArrayIsNull_ShouldThrowExactly()
@@ -24,7 +24,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo succeeds when the target array is exactly the size of the dictionary.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> succeeds when the target array is exactly the size of the dictionary.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenArraySizeMatchesDictionaryCount_ShouldCopySuccessfully()
@@ -41,7 +41,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo performs no action when the dictionary is empty.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> performs no action when the dictionary is empty.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenDictionaryIsEmpty_ShouldNotCopyAnything()
@@ -52,7 +52,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo throws ArgumentException when the destination array is multidimensional.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> throws ArgumentException when the destination array is multidimensional.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenArrayIsMultidimensional_ShouldThrowExactly()
@@ -67,7 +67,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo throws ArgumentException when the array has a non-zero lower bound.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> throws ArgumentException when the array has a non-zero lower bound.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenArrayHasNonZeroLowerBound_ShouldThrowExactly()
@@ -82,7 +82,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo throws ArgumentOutOfRangeException when the specified index is negative.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> throws ArgumentOutOfRangeException when the specified index is negative.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenIndexIsNegative_ShouldThrowExactly()
@@ -97,7 +97,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo throws ArgumentException when the destination array is too small.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> throws ArgumentException when the destination array is too small.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenArrayIsTooSmall_ShouldThrowExactly()
@@ -115,7 +115,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo writes items into the array in LeastRecentlyUsed order when space is sufficient.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> writes items into the array in LeastRecentlyUsed order when space is sufficient.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenArrayHasEnoughSpace_ShouldCopyItemsInLRUOrder()
@@ -135,7 +135,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo writes data starting at the specified index offset.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> writes data starting at the specified index offset.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenIndexIsOffset_ShouldCopyStartingAtOffset()

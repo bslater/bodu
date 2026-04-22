@@ -31,7 +31,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Touch updates recency in an LeastRecentlyUsed dictionary.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> updates recency in an LeastRecentlyUsed dictionary.
         /// </summary>
         [TestMethod]
         public void Touch_WhenPolicyIsLRUAndKeyTouched_ShouldUpdateRecency()
@@ -55,7 +55,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Touch returns true when key exists in an LeastRecentlyUsed dictionary.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> returns true when key exists in an LeastRecentlyUsed dictionary.
         /// </summary>
         [TestMethod]
         public void Touch_WhenPolicyIsLRUAndKeyExists_ShouldReturnTrue()
@@ -69,7 +69,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TouchOrThrow updates recency when the key exists in an LeastRecentlyUsed dictionary.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TouchOrThrow" /> updates recency when the key exists in an LeastRecentlyUsed dictionary.
         /// </summary>
         [TestMethod]
         public void TouchOrThrow_WhenPolicyIsLRUAndKeyExists_ShouldUpdateRecency()
@@ -83,7 +83,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Clear resets access order in an LeastRecentlyUsed dictionary.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Clear" /> resets access order in an LeastRecentlyUsed dictionary.
         /// </summary>
         [TestMethod]
         public void Clear_WhenPolicyIsLRUAndCalled_ShouldResetAccessOrder()
@@ -158,7 +158,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that PeekEvictionCandidate returns the least recently used key using LeastRecentlyUsed.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.PeekEvictionCandidate" /> returns the least recently used key using LeastRecentlyUsed.
         /// </summary>
         [TestMethod]
         public void PeekEvictionCandidate_WhenPolicyIsLRU_ShouldReturnLeastRecentlyUsedKey()
@@ -252,7 +252,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that ItemEvicting is triggered before ItemEvicted when using LeastRecentlyUsed policy.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ItemEvicting" /> is triggered before ItemEvicted when using LeastRecentlyUsed policy.
         /// </summary>
         [TestMethod]
         [TestCategory("LRU")]
@@ -296,7 +296,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Keys are returned in recency order under LeastRecentlyUsed policy.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> are returned in recency order under LeastRecentlyUsed policy.
         /// </summary>
         [TestMethod]
         [TestCategory("LRU")]

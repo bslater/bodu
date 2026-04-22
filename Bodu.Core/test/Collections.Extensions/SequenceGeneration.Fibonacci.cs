@@ -23,7 +23,7 @@
         };
 
         /// <summary>
-        /// Verifies that Fibonacci throws ArgumentOutOfRangeException when minimum is negative.
+        /// Verifies that <see cref="Fibonacci.Fibonacci" /> throws ArgumentOutOfRangeException when minimum is negative.
         /// </summary>
         [TestMethod]
         public void Fibonacci_WhenMinimumIsNegative_ShouldThrowExactly()
@@ -35,7 +35,7 @@
         }
 
         /// <summary>
-        /// Verifies that Fibonacci throws ArgumentOutOfRangeException when maximum is negative.
+        /// Verifies that <see cref="Fibonacci.Fibonacci" /> throws ArgumentOutOfRangeException when maximum is negative.
         /// </summary>
         [TestMethod]
         public void Fibonacci_WhenMaximumIsNegative_ShouldThrowExactly()
@@ -47,7 +47,7 @@
         }
 
         /// <summary>
-        /// Verifies that Fibonacci throws ArgumentException when minimum is greater than maximum.
+        /// Verifies that <see cref="Fibonacci.Fibonacci" /> throws ArgumentException when minimum is greater than maximum.
         /// </summary>
         [TestMethod]
         public void Fibonacci_WhenMinimumGreaterThanMaximum_ShouldThrowExactly()
@@ -59,7 +59,7 @@
         }
 
         /// <summary>
-        /// Verifies that Fibonacci returns all expected values in the range 0 to 100.
+        /// Verifies that <see cref="Fibonacci.Fibonacci" /> returns all expected values in the range 0 to 100.
         /// </summary>
         [TestMethod]
         public void Fibonacci_WhenRangeIsZeroToHundred_ShouldReturnExpectedValues()
@@ -70,7 +70,7 @@
         }
 
         /// <summary>
-        /// Verifies that Fibonacci returns only values between 5 and 15.
+        /// Verifies that <see cref="Fibonacci.Fibonacci" /> returns only values between 5 and 15.
         /// </summary>
         [TestMethod]
         public void Fibonacci_WhenRangeIsFiveToFifteen_ShouldReturnSubset()
@@ -92,7 +92,7 @@
         }
 
         /// <summary>
-        /// Verifies that Fibonacci returns an empty sequence when the range excludes all values.
+        /// Verifies that <see cref="Fibonacci.Fibonacci" /> returns an empty sequence when the range excludes all values.
         /// </summary>
         [TestMethod]
         public void Fibonacci_WhenRangeIsOneToOne_ShouldReturnEmpty()
@@ -102,7 +102,7 @@
         }
 
         /// <summary>
-        /// Verifies that Fibonacci returns a single matching value when the range bounds exactly one value.
+        /// Verifies that <see cref="Fibonacci.Fibonacci" /> returns a single matching value when the range bounds exactly one value.
         /// </summary>
         [TestMethod]
         public void Fibonacci_WhenRangeBoundsSingleValue_ShouldReturnThatValue()

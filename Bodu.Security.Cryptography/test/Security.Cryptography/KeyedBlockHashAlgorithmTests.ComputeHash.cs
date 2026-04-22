@@ -41,7 +41,7 @@
         }
 
         /// <summary>
-        /// Verifies that ComputeHash returns the same result when called multiple times with the same key and input.
+        /// Verifies that <see cref="KeyedBlockHashAlgorithm.ComputeHash" /> returns the same result when called multiple times with the same key and input.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(HashAlgorithmVariants))]
@@ -67,7 +67,7 @@
         }
 
         /// <summary>
-        /// Verifies that ComputeHash returns different results when different keys are used with the same input.
+        /// Verifies that <see cref="KeyedBlockHashAlgorithm.ComputeHash" /> returns different results when different keys are used with the same input.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(HashAlgorithmVariants))]

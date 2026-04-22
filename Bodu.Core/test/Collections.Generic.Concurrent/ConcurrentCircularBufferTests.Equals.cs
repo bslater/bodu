@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 public partial class ConcurrentCircularBufferTests
 {
     /// <summary>
-    /// Verifies that Equals returns <see langword="true"/> when comparing the buffer instance with itself.
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Equals" /> returns <see langword="true"/> when comparing the buffer instance with itself.
     /// </summary>
     [TestMethod]
     public void Equals_WhenComparingSameReference_ShouldReturnTrue()
@@ -22,7 +22,7 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that Equals returns <see langword="false"/> when comparing the buffer with <see langword="null"/>.
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Equals" /> returns <see langword="false"/> when comparing the buffer with <see langword="null"/>.
     /// </summary>
     [TestMethod]
     public void Equals_WhenComparingWithNull_ShouldReturnFalse()
@@ -34,7 +34,7 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that Equals returns <see langword="false"/> when comparing the buffer with an object of a different type.
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Equals" /> returns <see langword="false"/> when comparing the buffer with an object of a different type.
     /// </summary>
     [TestMethod]
     public void Equals_WhenComparingDifferentType_ShouldReturnFalse()

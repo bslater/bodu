@@ -110,7 +110,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that LastDayOfQuarter returns the correct date using a valid quarter provider.
+        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfQuarter" /> returns the correct date using a valid quarter provider.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.LastDayOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]

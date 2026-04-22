@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class CircularBufferTests
     {
         /// <summary>
-        /// Verifies that Enqueue adds a new item to the end of the buffer.
+        /// Verifies that <see cref="CircularBuffer{T}.Enqueue" /> adds a new item to the end of the buffer.
         /// </summary>
         [TestMethod]
         public void Enqueue_WhenBufferHasSpace_ShouldAddItemToEnd()
@@ -21,7 +21,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Enqueue replaces the single element when buffer size is 1 and overwrite is enabled.
+        /// Verifies that <see cref="CircularBuffer{T}.Enqueue" /> replaces the single element when buffer size is 1 and overwrite is enabled.
         /// </summary>
         [TestMethod]
         public void Enqueue_WhenBufferHasSingleSlot_ShouldReplaceExistingOnOverwrite()
@@ -34,7 +34,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Enqueue overwrites the oldest item when the buffer is full and overwrite is allowed.
+        /// Verifies that <see cref="CircularBuffer{T}.Enqueue" /> overwrites the oldest item when the buffer is full and overwrite is allowed.
         /// </summary>
         [TestMethod]
         public void Enqueue_WhenFullAndOverwriteAllowed_ShouldOverwriteOldest()
@@ -48,7 +48,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Enqueue throws an exception when the buffer is full and overwrite is not allowed.
+        /// Verifies that <see cref="CircularBuffer{T}.Enqueue" /> throws an exception when the buffer is full and overwrite is not allowed.
         /// </summary>
         [TestMethod]
         public void Enqueue_WhenFullAndOverwriteNotAllowed_ShouldThrowExactly()
@@ -64,7 +64,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Enqueue allows duplicate items to be stored.
+        /// Verifies that <see cref="CircularBuffer{T}.Enqueue" /> allows duplicate items to be stored.
         /// </summary>
         [TestMethod]
         public void Enqueue_WhenDuplicatesProvided_ShouldStoreAll()
@@ -78,7 +78,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Enqueue can reuse space freed by a prior Dequeue operation.
+        /// Verifies that <see cref="CircularBuffer{T}.Enqueue" /> can reuse space freed by a prior Dequeue operation.
         /// </summary>
         [TestMethod]
         public void Enqueue_WhenSlotIsFreed_ShouldReuseSpace()
@@ -92,7 +92,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Enqueue correctly stores null values for reference types.
+        /// Verifies that <see cref="CircularBuffer{T}.Enqueue" /> correctly stores null values for reference types.
         /// </summary>
         [TestMethod]
         public void Enqueue_WhenNullValueProvided_ShouldAcceptNullReference()
@@ -105,7 +105,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Enqueue throws an InvalidOperationException when the buffer is full and overwrite is disabled.
+        /// Verifies that <see cref="CircularBuffer{T}.Enqueue" /> throws an InvalidOperationException when the buffer is full and overwrite is disabled.
         /// </summary>
         [TestMethod]
         public void Enqueue_WhenBufferIsFullAndOverwriteDisabled_ShouldThrowExactly()

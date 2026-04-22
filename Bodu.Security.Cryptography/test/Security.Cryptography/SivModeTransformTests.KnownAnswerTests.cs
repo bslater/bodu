@@ -45,7 +45,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Encrypt, with Rfc5297 A1 Vector, matches Expected.
+        /// Verifies that <see cref="SivModeTransform.Encrypt" />, with Rfc5297 A1 Vector, matches Expected.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(SivKatA1), DynamicDataSourceType.Method)]

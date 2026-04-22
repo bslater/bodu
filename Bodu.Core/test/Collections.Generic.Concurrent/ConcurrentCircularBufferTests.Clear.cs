@@ -160,7 +160,7 @@ namespace Bodu.Collections.Generic.Concurrent
         }
 
         /// <summary>
-        /// Verifies that Clear removes all items even if concurrently reading Count and ToArray.
+        /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Clear" /> removes all items even if concurrently reading Count and ToArray.
         /// </summary>
         [TestMethod]
         public void Clear_WhenInvokedDuringConcurrentRead_ShouldProduceConsistentEmptyState()
@@ -200,7 +200,7 @@ namespace Bodu.Collections.Generic.Concurrent
         }
 
         /// <summary>
-        /// Verifies that Clear does not cause invalid state when concurrent Dequeue is active.
+        /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Clear" /> does not cause invalid state when concurrent Dequeue is active.
         /// </summary>
         [TestMethod]
         public void Clear_WhenInvokedDuringDequeuePressure_ShouldNotThrowInvalidOperation()
@@ -242,7 +242,7 @@ namespace Bodu.Collections.Generic.Concurrent
         }
 
         /// <summary>
-        /// Verifies that Clear does not interfere with concurrent Enqueue and Count remains in range.
+        /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Clear" /> does not interfere with concurrent Enqueue and Count remains in range.
         /// </summary>
         [TestMethod]
         public void Clear_WhenInvokedDuringEnqueuePressure_ShouldNotCorruptState()

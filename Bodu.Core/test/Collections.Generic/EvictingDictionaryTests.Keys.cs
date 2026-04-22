@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class EvictingDictionaryTests
     {
         /// <summary>
-        /// Verifies that Keys returns an empty collection when the dictionary is empty.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> returns an empty collection when the dictionary is empty.
         /// </summary>
         [TestMethod]
         public void Keys_Get_WhenEmpty_ShouldReturnEmptyCollection()
@@ -20,7 +20,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Keys contains all inserted keys when the dictionary has not exceeded capacity.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> contains all inserted keys when the dictionary has not exceeded capacity.
         /// </summary>
         [TestMethod]
         public void Keys_Get_WhenItemsAdded_ShouldContainAllInsertedKeys()
@@ -39,7 +39,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Keys does not contain a key that has been explicitly removed.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> does not contain a key that has been explicitly removed.
         /// </summary>
         [TestMethod]
         public void Keys_Get_WhenItemIsRemoved_ShouldNotContainRemovedKey()
@@ -55,7 +55,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Keys does not contain a key that was evicted when capacity was exceeded.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> does not contain a key that was evicted when capacity was exceeded.
         /// </summary>
         [TestMethod]
         public void Keys_Get_WhenItemIsEvicted_ShouldNotContainEvictedKey()
@@ -71,7 +71,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Keys returns an empty collection after the dictionary is cleared.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> returns an empty collection after the dictionary is cleared.
         /// </summary>
         [TestMethod]
         public void Keys_Get_WhenDictionaryIsCleared_ShouldBeEmpty()
@@ -86,7 +86,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that Keys reflects the count of unique keys when a key is re-inserted.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> reflects the count of unique keys when a key is re-inserted.
         /// </summary>
         [TestMethod]
         public void Keys_Get_WhenKeyIsReinserted_ShouldNotContainDuplicates()

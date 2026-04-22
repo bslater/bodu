@@ -24,7 +24,7 @@
         }
 
         /// <summary>
-        /// Verifies that Next(min, max) returns values within the expected bounds.
+        /// Verifies that <see cref="XorShiftRandom.Next" />(min, max) returns values within the expected bounds.
         /// </summary>
         [TestMethod]
         [DataRow(0, 10)]
@@ -208,7 +208,7 @@
         }
 
         /// <summary>
-        /// Verifies that Next(min, max) throws when min is greater than max.
+        /// Verifies that <see cref="XorShiftRandom.Next" />(min, max) throws when min is greater than max.
         /// </summary>
         [TestMethod]
         [DataRow(0, 0)]

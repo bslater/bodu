@@ -92,7 +92,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that FirstDayOfWeekInQuarter returns the correct date using a valid quarter provider.
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInQuarter" /> returns the correct date using a valid quarter provider.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.FirstDayOfWeekInQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]

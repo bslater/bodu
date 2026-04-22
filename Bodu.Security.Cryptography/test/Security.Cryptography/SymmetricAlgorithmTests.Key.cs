@@ -125,7 +125,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that GenerateKey produces a different Key from the previous one.
+        /// Verifies that <see cref="SymmetricAlgorithm.GenerateKey" /> produces a different Key from the previous one.
         /// </summary>
         [TestMethod]
         public void GenerateKey_WhenCalled_ShouldChangeKey()

@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic
     public partial class EvictingDictionaryTests
     {
         /// <summary>
-        /// Verifies that TryGetValue returns true and the correct value when the key exists.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> returns true and the correct value when the key exists.
         /// </summary>
         [TestMethod]
         public void TryGetValue_WhenKeyExists_ShouldReturnTrueAndCorrectValue()
@@ -40,7 +40,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TryGetValue updates recency for LeastRecentlyUsed, preventing eviction of the accessed key.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> updates recency for LeastRecentlyUsed, preventing eviction of the accessed key.
         /// </summary>
         [TestMethod]
         public void TryGetValue_WhenPolicyIsLRUAndKeyAccessed_ShouldUpdateRecencyAndPreventEviction()
@@ -59,7 +59,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TryGetValue updates access frequency for LeastFrequentlyUsed, preventing eviction of the accessed key.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> updates access frequency for LeastFrequentlyUsed, preventing eviction of the accessed key.
         /// </summary>
         [TestMethod]
         public void TryGetValue_WhenPolicyIsLFUAndKeyAccessed_ShouldUpdateFrequencyAndPreventEviction()
@@ -78,7 +78,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TryGetValue does not affect insertion order when using FirstInFirstOut policy.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> does not affect insertion order when using FirstInFirstOut policy.
         /// </summary>
         [TestMethod]
         public void TryGetValue_WhenPolicyIsFIFOAndKeyAccessed_ShouldNotAffectEvictionOrder()
@@ -99,7 +99,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TryGetValue increments TotalTouches when the key is found.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> increments TotalTouches when the key is found.
         /// </summary>
         [TestMethod]
         public void TryGetValue_WhenKeyExists_ShouldIncrementTotalTouches()
@@ -114,7 +114,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TryGetValue does not increment TotalTouches when the key is not found.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> does not increment TotalTouches when the key is not found.
         /// </summary>
         [TestMethod]
         public void TryGetValue_WhenKeyDoesNotExist_ShouldNotIncrementTotalTouches()
@@ -128,7 +128,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that TryGetValue returns the default value for a reference type when the key is absent.
+        /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> returns the default value for a reference type when the key is absent.
         /// </summary>
         [TestMethod]
         public void TryGetValue_WhenKeyDoesNotExist_ForReferenceTypeValue_ShouldSetValueToNull()

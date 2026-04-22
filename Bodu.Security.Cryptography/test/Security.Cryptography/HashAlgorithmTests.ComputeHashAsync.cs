@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography
     public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     {
         /// <summary>
-        /// Verifies that ComputeHashAsync throws ObjectDisposedException when the algorithm is disposed.
+        /// Verifies that <see cref="HashAlgorithmExtensions.ComputeHashAsync" /> throws ObjectDisposedException when the algorithm is disposed.
         /// </summary>
         [TestMethod]
         public async Task ComputeHashAsync_ComputeHashAsync_WhenAlgorithmDisposed_ShouldThrowExactly()
@@ -30,7 +30,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that ComputeHashAsync throws TaskCanceledException when cancellation token is triggered.
+        /// Verifies that <see cref="HashAlgorithmExtensions.ComputeHashAsync" /> throws TaskCanceledException when cancellation token is triggered.
         /// </summary>
         [TestMethod]
         public async Task ComputeHashAsync_ComputeHashAsync_WithCancelledToken_ShouldThrowExactly()
@@ -47,7 +47,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that ComputeHashAsync throws ArgumentNullException when passed a null stream directly.
+        /// Verifies that <see cref="HashAlgorithmExtensions.ComputeHashAsync" /> throws ArgumentNullException when passed a null stream directly.
         /// </summary>
         [TestMethod]
         public async Task ComputeHashAsync_ComputeHashAsync_WithNullStream_ShouldThrowExactly()
@@ -142,7 +142,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that ComputeHashAsync throws TaskCanceledException if the cancellation token is already canceled.
+        /// Verifies that <see cref="HashAlgorithmExtensions.ComputeHashAsync" /> throws TaskCanceledException if the cancellation token is already canceled.
         /// </summary>
         [TestMethod]
         public async Task ComputeHashAsync_WhenCancelledTokenIsPassed_ShouldThrowExactly()
@@ -223,7 +223,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that ComputeHashAsync throws ArgumentNullException when the stream is null.
+        /// Verifies that <see cref="HashAlgorithmExtensions.ComputeHashAsync" /> throws ArgumentNullException when the stream is null.
         /// </summary>
         [TestMethod]
         public async Task ComputeHashAsync_WhenStreamIsNull_ShouldThrowExactly()

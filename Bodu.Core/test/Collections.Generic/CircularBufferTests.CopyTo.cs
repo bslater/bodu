@@ -12,7 +12,7 @@ namespace Bodu.Collections.Generic
     public partial class CircularBufferTests
     {
         /// <summary>
-        /// Verifies that CopyTo correctly copies all elements to the destination array starting at index zero.
+        /// Verifies that <see cref="CircularBuffer{T}.CopyTo" /> correctly copies all elements to the destination array starting at index zero.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenBufferHasElements_ShouldCopyElementsToArray()
@@ -27,7 +27,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo throws ArgumentNullException when the destination array is null.
+        /// Verifies that <see cref="CircularBuffer{T}.CopyTo" /> throws ArgumentNullException when the destination array is null.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenArrayIsNull_ShouldThrowExactly()
@@ -41,7 +41,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo throws ArgumentOutOfRangeException when the target index is negative.
+        /// Verifies that <see cref="CircularBuffer{T}.CopyTo" /> throws ArgumentOutOfRangeException when the target index is negative.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenIndexIsNegative_ShouldThrowExactly()
@@ -56,7 +56,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo throws ArgumentException when the destination array is too small to hold all elements.
+        /// Verifies that <see cref="CircularBuffer{T}.CopyTo" /> throws ArgumentException when the destination array is too small to hold all elements.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenArrayIsTooSmall_ShouldThrowExactly()
@@ -72,7 +72,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo throws ArgumentException when the target index offset leaves insufficient space for all elements.
+        /// Verifies that <see cref="CircularBuffer{T}.CopyTo" /> throws ArgumentException when the target index offset leaves insufficient space for all elements.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenIndexOffsetLeavesInsufficientSpace_ShouldThrowExactly()
@@ -89,7 +89,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo throws ArgumentException when the target index equals the array length.
+        /// Verifies that <see cref="CircularBuffer{T}.CopyTo" /> throws ArgumentException when the target index equals the array length.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenIndexEqualsArrayLength_ShouldThrowExactly()
@@ -104,7 +104,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo does not modify the destination array when the buffer is empty.
+        /// Verifies that <see cref="CircularBuffer{T}.CopyTo" /> does not modify the destination array when the buffer is empty.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenBufferIsEmpty_ShouldLeaveArrayUnchanged()
@@ -116,7 +116,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo writes elements at the correct offset when a non-zero index is supplied.
+        /// Verifies that <see cref="CircularBuffer{T}.CopyTo" /> writes elements at the correct offset when a non-zero index is supplied.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenIndexIsNonZero_ShouldCopyToCorrectOffset()
@@ -133,7 +133,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo preserves logical enqueue order when the internal buffer has wrapped around.
+        /// Verifies that <see cref="CircularBuffer{T}.CopyTo" /> preserves logical enqueue order when the internal buffer has wrapped around.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenBufferHasWrappedAround_ShouldCopyInEnqueueOrder()
@@ -150,7 +150,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo includes null entries in the destination array when the buffer contains nulls.
+        /// Verifies that <see cref="CircularBuffer{T}.CopyTo" /> includes null entries in the destination array when the buffer contains nulls.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenBufferContainsNulls_ShouldIncludeNullsInArray()
@@ -165,7 +165,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo succeeds and copies elements to the correct positions when the destination array is larger than required.
+        /// Verifies that <see cref="CircularBuffer{T}.CopyTo" /> succeeds and copies elements to the correct positions when the destination array is larger than required.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenArrayIsLargerThanRequired_ShouldCopyWithoutThrowing()
@@ -183,7 +183,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo copies all elements correctly when the destination array is exactly the same size as the buffer count.
+        /// Verifies that <see cref="CircularBuffer{T}.CopyTo" /> copies all elements correctly when the destination array is exactly the same size as the buffer count.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenArrayIsExactFit_ShouldCopyAllElements()
@@ -200,7 +200,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo does not throw when the index equals the array length and the buffer is empty, since zero elements require no space.
+        /// Verifies that <see cref="CircularBuffer{T}.CopyTo" /> does not throw when the index equals the array length and the buffer is empty, since zero elements require no space.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenIndexEqualsArrayLengthAndBufferIsEmpty_ShouldNotThrow()
@@ -266,7 +266,7 @@ namespace Bodu.Collections.Generic
         }
 
         /// <summary>
-        /// Verifies that CopyTo with a non-zero destination offset places elements at the correct position.
+        /// Verifies that <see cref="CircularBuffer{T}.CopyTo" /> with a non-zero destination offset places elements at the correct position.
         /// </summary>
         [TestMethod]
         public void CopyTo_WhenDestinationHasNonZeroOffset_ShouldPlaceElementsAtIndex()
