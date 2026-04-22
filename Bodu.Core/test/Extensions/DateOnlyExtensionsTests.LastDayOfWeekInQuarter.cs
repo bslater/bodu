@@ -33,7 +33,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Last Day Of Week In Quarter, when Target Matches Quarter End Day Of Week, returns Quarter End Date.
+        /// Verifies that when the quarter end falls on the requested <see cref="DayOfWeek" />, the instance overload returns the quarter-end date itself.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(LastDayOfWeekInQuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
@@ -44,7 +44,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Last Day Of Week In Quarter, when Day Of Week Is Invalid, throws Argument Out Of Range Exception.
+        /// Verifies that an undefined <see cref="DayOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" /> on the instance overload.
         /// </summary>
         [TestMethod]
         public void LastDayOfWeekInQuarter_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
@@ -58,7 +58,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Last Day Of Week In Quarter, when Definition Is Invalid, throws Argument Out Of Range Exception.
+        /// Verifies that an undefined <see cref="CalendarQuarterDefinition" /> value throws <see cref="ArgumentOutOfRangeException" /> on the instance overload.
         /// </summary>
         [TestMethod]
         public void LastDayOfWeekInQuarter_WhenDefinitionIsInvalid_ShouldThrowArgumentOutOfRangeException()
@@ -76,7 +76,7 @@ namespace Bodu.Extensions
         // =========================================================================
 
         /// <summary>
-        /// Verifies that Last Day Of Week In Quarter, when Using Year And Quarter, returns Expected Date.
+        /// Verifies that the static <see cref="DateOnlyExtensions.LastDayOfWeekInQuarter(int, int, DayOfWeek, CalendarQuarterDefinition)" /> overload returns the expected last occurrence for each <c>(year, quarter, dayOfWeek)</c> tuple.
         /// </summary>
         [TestMethod]
         [DataRow(2024, 1, DayOfWeek.Sunday, 2024, 3, 31)]  // Q1 ends Sun; target Sun → 31 Mar
@@ -90,7 +90,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Last Day Of Week In Quarter, when Quarter Is Out Of Range, throws Argument Out Of Range Exception.
+        /// Verifies that the static overload throws <see cref="ArgumentOutOfRangeException" /> for quarter values outside <c>1..4</c>.
         /// </summary>
         [TestMethod]
         [DataRow(0)]
@@ -105,7 +105,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Last Day Of Week In Quarter, when Year And Quarter Overload Definition Is Invalid, throws Argument Out Of Range Exception.
+        /// Verifies that the static overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="CalendarQuarterDefinition" /> value.
         /// </summary>
         [TestMethod]
         public void LastDayOfWeekInQuarter_WhenYearAndQuarterOverloadDefinitionIsInvalid_ShouldThrowArgumentOutOfRangeException()
@@ -117,7 +117,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Last Day Of Week In Quarter, when Year And Quarter Overload Day Of Week Is Invalid, throws Argument Out Of Range Exception.
+        /// Verifies that the static overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="DayOfWeek" /> value.
         /// </summary>
         [TestMethod]
         public void LastDayOfWeekInQuarter_WhenYearAndQuarterOverloadDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()

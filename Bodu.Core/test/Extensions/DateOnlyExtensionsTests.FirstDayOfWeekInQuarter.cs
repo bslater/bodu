@@ -33,7 +33,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week In Quarter, when Using January To December, returns Expected Date.
+        /// Verifies that the instance overload returns the expected first occurrence of the requested <see cref="DayOfWeek" /> within the January-to-December quarter for the given input.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(FirstDayOfWeekInQuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
@@ -44,7 +44,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week In Quarter, when Date Falls On Target Day Of Week First In Quarter, returns Same Date.
+        /// Verifies that when the quarter starts on the requested <see cref="DayOfWeek" />, the result is the quarter-start date itself.
         /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInQuarter_WhenDateFallsOnTargetDayOfWeekFirstInQuarter_ShouldReturnSameDate()
@@ -55,7 +55,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week In Quarter, when Day Of Week Is Invalid, throws Argument Out Of Range Exception.
+        /// Verifies that an undefined <see cref="DayOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" /> on the instance overload.
         /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInQuarter_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
@@ -69,7 +69,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week In Quarter, when Definition Is Invalid, throws Argument Out Of Range Exception.
+        /// Verifies that an undefined <see cref="CalendarQuarterDefinition" /> value throws <see cref="ArgumentOutOfRangeException" /> on the instance overload.
         /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInQuarter_WhenDefinitionIsInvalid_ShouldThrowArgumentOutOfRangeException()
@@ -87,7 +87,7 @@ namespace Bodu.Extensions
         // =========================================================================
 
         /// <summary>
-        /// Verifies that First Day Of Week In Quarter, when Using Year And Quarter, returns Expected Date.
+        /// Verifies that the static <see cref="DateOnlyExtensions.FirstDayOfWeekInQuarter(int, int, DayOfWeek, CalendarQuarterDefinition)" /> overload returns the expected first occurrence for each <c>(year, quarter, dayOfWeek)</c> tuple.
         /// </summary>
         [TestMethod]
         [DataRow(2024, 1, DayOfWeek.Monday, 2024, 1, 1)]
@@ -102,7 +102,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week In Quarter, when Quarter Is Out Of Range, throws Argument Out Of Range Exception.
+        /// Verifies that the static overload throws <see cref="ArgumentOutOfRangeException" /> for quarter values outside <c>1..4</c>.
         /// </summary>
         [TestMethod]
         [DataRow(0)]
@@ -117,7 +117,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week In Quarter, when Year And Quarter Overload Definition Is Invalid, throws Argument Out Of Range Exception.
+        /// Verifies that the static overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="CalendarQuarterDefinition" /> value.
         /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInQuarter_WhenYearAndQuarterOverloadDefinitionIsInvalid_ShouldThrowArgumentOutOfRangeException()
@@ -129,7 +129,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week In Quarter, when Year And Quarter Overload Day Of Week Is Invalid, throws Argument Out Of Range Exception.
+        /// Verifies that the static overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="DayOfWeek" /> value.
         /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInQuarter_WhenYearAndQuarterOverloadDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
