@@ -17,6 +17,10 @@ namespace Bodu.Security.Cryptography
         /// </summary>
         protected virtual bool RequiresBlockAlignedInput => true;
 
+        /// <summary>
+        /// Verifies that a mode which requires block-aligned input throws <see cref="ArgumentException" /> when
+        /// presented with an input whose length is not a multiple of the block size.
+        /// </summary>
         [TestMethod]
         public void Transform_WhenInputNotBlockAligned_ShouldThrow()
         {
@@ -39,6 +43,10 @@ namespace Bodu.Security.Cryptography
             });
         }
 
+        /// <summary>
+        /// Verifies that an output buffer smaller than the input length causes <see cref="Transform" /> to throw
+        /// <see cref="ArgumentException" />.
+        /// </summary>
         [TestMethod]
         public void Transform_WhenOutputTooSmall_ShouldThrow()
         {
@@ -55,6 +63,9 @@ namespace Bodu.Security.Cryptography
             });
         }
 
+        /// <summary>
+        /// Verifies that encrypting and then decrypting a plaintext with matched transforms reproduces the original bytes exactly.
+        /// </summary>
         [TestMethod]
         public void Transform_WhenRoundTripped_ShouldReturnOriginal()
         {
@@ -74,6 +85,9 @@ namespace Bodu.Security.Cryptography
             CollectionAssert.AreEqual(plaintext, decrypted);
         }
 
+        /// <summary>
+        /// Verifies that an all-zero plaintext is processed without error and yields an output buffer of the expected length.
+        /// </summary>
         [TestMethod]
         public void Transform_WithAllZeroInput_ShouldProcessCorrectly()
         {
@@ -93,6 +107,9 @@ namespace Bodu.Security.Cryptography
             Assert.AreEqual(input.Length, output.Length);
         }
 
+        /// <summary>
+        /// Verifies that an alternating <c>0xAA</c>/<c>0x55</c> bit-pattern input is transformed to non-zero output.
+        /// </summary>
         [TestMethod]
         public void Transform_WithAlternatingBitsAA55_ShouldSucceed()
         {
@@ -108,6 +125,9 @@ namespace Bodu.Security.Cryptography
             Assert.IsTrue(output.Any(b => b != 0));
         }
 
+        /// <summary>
+        /// Verifies that a fully-saturated <c>0xFF</c> input is accepted and produces output of the expected length.
+        /// </summary>
         [TestMethod]
         public void Transform_WithMaxValueInput_ShouldSucceed()
         {
@@ -132,6 +152,9 @@ namespace Bodu.Security.Cryptography
             Assert.AreEqual(input.Length, output.Length);
         }
 
+        /// <summary>
+        /// Verifies that a mirrored ramp-and-reverse input pattern is transformed to non-zero output.
+        /// </summary>
         [TestMethod]
         public void Transform_WithMirroredPattern_ShouldSucceed()
         {
@@ -149,6 +172,9 @@ namespace Bodu.Security.Cryptography
             Assert.IsTrue(output.Any(b => b != 0));
         }
 
+        /// <summary>
+        /// Verifies that an alternating <c>0xF0</c>/<c>0x0F</c> nibble-pattern input is transformed to non-zero output.
+        /// </summary>
         [TestMethod]
         public void Transform_WithNibblePatternF00F_ShouldSucceed()
         {
@@ -202,6 +228,9 @@ namespace Bodu.Security.Cryptography
                 "identical inputs for two identical plaintext blocks — chaining is not active.");
         }
 
+        /// <summary>
+        /// Verifies that a sawtooth (mod-16) byte-pattern input is transformed to non-zero output.
+        /// </summary>
         [TestMethod]
         public void Transform_WithSawtoothPattern_ShouldSucceed()
         {
