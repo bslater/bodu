@@ -1,15 +1,15 @@
-﻿// -----------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CubeHashTests.FinalizationRounds.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
-// -----------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Security.Cryptography
 {
     public partial class CubeHashTests
     {
         /// <summary>
-        /// Validates that a new instance of <see cref="CubeHash" /> has a default finalization rounds hashValue of 32.
+        /// Verifies that a new instance of <see cref="CubeHash" /> has a default finalization rounds hashValue of 32.
         /// </summary>
         [TestMethod]
         public void FinalizationRounds_WhenDefaultConstructed_ShouldBe32()
@@ -19,7 +19,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Validates that the finalization rounds hashValue can be set and retrieved before any algorithming operation starts.
+        /// Verifies that the finalization rounds hashValue can be set and retrieved before any algorithming operation starts.
         /// </summary>
         [TestMethod]
         public void FinalizationRounds_WhenSetBeforeUse_ShouldBeRetained()
@@ -29,7 +29,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Ensures that setting <see cref="CubeHash.FinalizationRounds" /> after a algorithm computation has started does not throw an exception.
+        /// Verifies that setting <see cref="CubeHash.FinalizationRounds" /> after a algorithm computation has started does not throw an exception.
         /// </summary>
         [TestMethod]
         public void FinalizationRounds_WhenSetAfterHashing_ShouldNotThrow()

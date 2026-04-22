@@ -1,10 +1,11 @@
-﻿using Bodu.IO.Hashing;
-using System;
-// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CrcTests.Equals.cs" company="PlaceholderCompany">
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="CrcTests.Ctors.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
+using Bodu.IO.Hashing;
+using System;
 
 namespace Bodu.IO.Hashing;
 

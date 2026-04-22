@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------- //
-// <copyright file="FiscalWeekQuarterProviderTests_Is53WeekFiscalYear.cs" company="PlaceholderCompany">
+// <copyright file="FiscalWeekQuarterProviderTests.Is53WeekFiscalYear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ThrowHelperTests.ThrowIfSequenceRangeOverflows_Int.cs" company="PlaceholderCompany">
+// <copyright file="ThrowHelperTests.ThrowIfSequenceRangeOverflows.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------

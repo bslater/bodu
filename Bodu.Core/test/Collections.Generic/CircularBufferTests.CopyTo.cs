@@ -1,3 +1,9 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="CircularBufferTests.CopyTo.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using Bodu.Collections.Generic.Concurrent;
 using System.Collections;
 

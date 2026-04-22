@@ -1,3 +1,9 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="SymmetricAlgorithmTests.GenerateIV.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 ﻿using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography
@@ -18,7 +24,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Validates that setting <see cref="SymmetricAlgorithm.GenerateIV" /> after the algorithm has been disposed throws
+        /// Verifies that setting <see cref="SymmetricAlgorithm.GenerateIV" /> after the algorithm has been disposed throws
         /// an <see cref="ObjectDisposedException" />.
         /// </summary>
         [TestMethod]

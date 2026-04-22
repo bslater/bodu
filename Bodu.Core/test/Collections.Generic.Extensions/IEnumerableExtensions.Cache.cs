@@ -1,3 +1,9 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="IEnumerableExtensions.Cache.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 ﻿using Bodu.Infrastructure;
 
 namespace Bodu.Collections.Generic.Extensions

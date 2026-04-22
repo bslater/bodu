@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------- //
-// <copyright file="FiscalWeekQuarterProviderTests_GetQuarter.cs" company="PlaceholderCompany">
+// <copyright file="FiscalWeekQuarterProviderTests.GetQuarter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------

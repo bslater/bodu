@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ParallelMerkleTreeHashTests.MonitoringHashAlgorithm.cs" company="PlaceholderCompany">
+// <copyright file="ParallelMerkleTreeHashTests._MonitoringHashAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------

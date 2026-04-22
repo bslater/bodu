@@ -1,15 +1,15 @@
-﻿// -----------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CubeHashTests.HashSize.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
-// -----------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Security.Cryptography
 {
     public partial class CubeHashTests
     {
         /// <summary>
-        /// Validates that a new instance of <see cref="CubeHash" /> has a default hash size hashValue of 512.
+        /// Verifies that a new instance of <see cref="CubeHash" /> has a default hash size hashValue of 512.
         /// </summary>
         [TestMethod]
         public void HashSize_WhenDefaultConstructed_ShouldBe16()
@@ -19,7 +19,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Validates that the hash size hashValue can be set and retrieved before any algorithming operation starts.
+        /// Verifies that the hash size hashValue can be set and retrieved before any algorithming operation starts.
         /// </summary>
         [TestMethod]
         public void HashSize_WhenSetBeforeUse_ShouldBeRetained()
@@ -29,7 +29,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Ensures that setting <see cref="CubeHash.HashSize" /> after a algorithm computation has started does not throw an exception.
+        /// Verifies that setting <see cref="CubeHash.HashSize" /> after a algorithm computation has started does not throw an exception.
         /// </summary>
         [TestMethod]
         public void HashSize_WhenSetAfterHashing_ShouldNotThrow()

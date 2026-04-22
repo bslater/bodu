@@ -1,3 +1,9 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ShuffleHelpersTests.Shuffle.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 ﻿using Bodu.Collections.Generic.Extensions;
 
 namespace Bodu.Collections.Generic

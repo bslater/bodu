@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------- //
-// <copyright file="FiscalWeekQuarterProviderTests_Constructor.cs" company="PlaceholderCompany">
+// <copyright file="FiscalWeekQuarterProviderTests.Ctors.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------

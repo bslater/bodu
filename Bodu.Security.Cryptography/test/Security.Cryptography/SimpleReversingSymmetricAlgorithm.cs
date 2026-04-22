@@ -249,7 +249,7 @@ namespace Bodu.Security.Cryptography
             => new SimpleReversingBlockCipher(key, blockSizeBytes);
 
         /// <summary>
-        /// Validates that <paramref name="key" /> and <paramref name="iv" /> match the algorithm's configured
+        /// Verifies that <paramref name="key" /> and <paramref name="iv" /> match the algorithm's configured
         /// key size and block size respectively.
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="key" /> or <paramref name="iv" /> is <see langword="null" />.</exception>

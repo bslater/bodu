@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BlockHashAlgorithmTests.cs" company="PlaceholderCompany">
+// <copyright file="BlockHashAlgorithmTests.ComputeHash.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ namespace Bodu.Security.Cryptography
         /// processed without error, producing a hash of the expected output length.
         /// </summary>
         /// <remarks>
-        /// Ensures that <see cref="BlockHashAlgorithm{T}.PadBlock" /> handles the full residual-length
+        /// Verifies that <see cref="BlockHashAlgorithm{T}.PadBlock" /> handles the full residual-length
         /// domain on the happy path and that <see cref="BlockHashAlgorithm{T}.ProcessFinalBlock" />
         /// produces a digest of the size advertised by <see cref="HashAlgorithm.HashSize" />.
         /// </remarks>

@@ -1,4 +1,10 @@
-﻿using System.Collections.Immutable;
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="NotableDateDefinitionParserTests.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Collections.Immutable;
 using System.Xml.Linq;
 
 namespace Bodu.Globalization.Calendar

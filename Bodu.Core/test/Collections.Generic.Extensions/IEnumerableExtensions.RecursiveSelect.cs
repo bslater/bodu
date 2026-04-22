@@ -1,3 +1,9 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="IEnumerableExtensions.RecursiveSelect.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 ﻿using Bodu.Collections.Extensions;
 
 namespace Bodu.Collections.Generic.Extensions
@@ -322,7 +328,7 @@ namespace Bodu.Collections.Generic.Extensions
         }
 
         /// <summary>
-        /// Ensures RecursiveSelect works with an empty source collection and produces no output.
+        /// Verifies that RecursiveSelect works with an empty source collection and produces no output.
         /// </summary>
         [TestMethod]
         public void RecursiveSelect_WithEmptySource_ShouldReturnEmpty()

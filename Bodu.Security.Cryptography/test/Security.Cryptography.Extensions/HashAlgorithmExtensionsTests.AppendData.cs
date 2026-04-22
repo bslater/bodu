@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="HashAlgorithmExtensionsTests_AppendData.cs" company="PlaceholderCompany">
+// <copyright file="HashAlgorithmExtensionsTests.AppendData.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------

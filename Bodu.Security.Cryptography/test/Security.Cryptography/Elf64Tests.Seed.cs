@@ -1,8 +1,8 @@
-﻿// -----------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Elf64Tests.Seed.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
-// -----------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
 
@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography
     public partial class Elf64Tests
     {
         /// <summary>
-        /// Validates that a new instance of <see cref="Elf64" /> has a default seed hashValue of zero.
+        /// Verifies that a new instance of <see cref="Elf64" /> has a default seed hashValue of zero.
         /// </summary>
         [TestMethod]
         public void Seed_WhenDefaultConstructed_ShouldBeZero()
@@ -24,7 +24,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Validates that the seed hashValue can be set and retrieved before any algorithming operation starts.
+        /// Verifies that the seed hashValue can be set and retrieved before any algorithming operation starts.
         /// </summary>
         [TestMethod]
         public void Seed_WhenSetBeforeUse_ShouldBeRetained()
@@ -34,7 +34,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Ensures setting <see cref="Elf64.Seed" /> after a algorithm computation has begun throws a <see cref="CryptographicException" />.
+        /// Verifies that setting <see cref="Elf64.Seed" /> after a algorithm computation has begun throws a <see cref="CryptographicException" />.
         /// </summary>
         [TestMethod]
         public void Seed_WhenSetAfterHashingStarted_ShouldThrow()
@@ -47,7 +47,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Ensures that setting <see cref="Elf64.Seed" /> after a algorithm computation has started does not throw a <see cref="CryptographicException" />.
+        /// Verifies that setting <see cref="Elf64.Seed" /> after a algorithm computation has started does not throw a <see cref="CryptographicException" />.
         /// </summary>
         [TestMethod]
         public void Seed_WhenSetAfterHashing_ShouldNotThrow()
@@ -63,7 +63,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Confirms that using different seed values results in different algorithm outputs for the same input.
+        /// Verifies that using different seed values results in different algorithm outputs for the same input.
         /// </summary>
         [TestMethod]
         public void ComputeHash_WithDifferentSeeds_ShouldReturnDifferentResults()
@@ -80,7 +80,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Ensures that calling <see cref="Elf64.Initialize" /> resets the internal algorithm state to the seed hashValue.
+        /// Verifies that calling <see cref="Elf64.Initialize" /> resets the internal algorithm state to the seed hashValue.
         /// </summary>
         [TestMethod]
         public void Initialize_ShouldResetHashStateToSeed()
