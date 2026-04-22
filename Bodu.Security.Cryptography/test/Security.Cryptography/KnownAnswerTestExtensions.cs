@@ -4,23 +4,22 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-﻿namespace Bodu.Security.Cryptography
+namespace Bodu.Security.Cryptography;
+
+/// <summary>
+/// Extension methods for <see cref="KnownAnswerTest" /> providing typed access to the loosely-typed
+/// <see cref="KnownAnswerTest.Parameters" /> dictionary.
+/// </summary>
+public static class KnownAnswerTestExtensions
 {
-    /// <summary>
-    /// Extension methods for <see cref="KnownAnswerTest" /> providing typed access to the loosely-typed
-    /// <see cref="KnownAnswerTest.Parameters" /> dictionary.
-    /// </summary>
-    public static class KnownAnswerTestExtensions
+    public static bool TryGet<T>(this KnownAnswerTest kat, string key, out T? value)
     {
-        public static bool TryGet<T>(this KnownAnswerTest kat, string key, out T? value)
+        if (kat.Parameters.TryGetValue(key, out var obj) && obj is T t)
         {
-            if (kat.Parameters.TryGetValue(key, out var obj) && obj is T t)
-            {
-                value = t;
-                return true;
-            }
-            value = default;
-            return false;
+            value = t;
+            return true;
         }
+        value = default;
+        return false;
     }
 }

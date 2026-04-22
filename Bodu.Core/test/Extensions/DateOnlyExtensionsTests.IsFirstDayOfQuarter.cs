@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-﻿using static Bodu.Extensions.DateTimeExtensionsTests;
+using static Bodu.Extensions.DateTimeExtensionsTests;
 
 namespace Bodu.Extensions;
 

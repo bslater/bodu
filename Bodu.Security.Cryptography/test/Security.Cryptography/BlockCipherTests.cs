@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-﻿using System.Reflection;
+using System.Reflection;
 
 namespace Bodu.Security.Cryptography;
 

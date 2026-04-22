@@ -4,20 +4,19 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-﻿namespace Bodu.Security.Cryptography
-{
-    internal abstract partial class ThreeFishCipherTests<TTest, TCipher>
-        : BlockCipherTests<TTest, TCipher, ThreeFishCipherTestVariant>
-        where TTest : ThreeFishCipherTests<TTest, TCipher>, new()
-        where TCipher : ThreefishBlockCipher
-    {
-        public override IEnumerable<ThreeFishCipherTestVariant> GetBlockCipherVariants() =>
-            Enum.GetValues<ThreeFishCipherTestVariant>().ToArray();
+namespace Bodu.Security.Cryptography;
 
-        /// <summary>
-        /// Creates an initialised instance of the Threefish variant under test with a freshly
-        /// generated key, IV, and tweak.
-        /// </summary>
-        protected abstract Threefish CreateInitialisedAlgorithm();
-    }
+internal abstract partial class ThreeFishCipherTests<TTest, TCipher>
+    : BlockCipherTests<TTest, TCipher, ThreeFishCipherTestVariant>
+    where TTest : ThreeFishCipherTests<TTest, TCipher>, new()
+    where TCipher : ThreefishBlockCipher
+{
+    public override IEnumerable<ThreeFishCipherTestVariant> GetBlockCipherVariants() =>
+        Enum.GetValues<ThreeFishCipherTestVariant>().ToArray();
+
+    /// <summary>
+    /// Creates an initialised instance of the Threefish variant under test with a freshly
+    /// generated key, IV, and tweak.
+    /// </summary>
+    protected abstract Threefish CreateInitialisedAlgorithm();
 }

@@ -4,10 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-﻿namespace Bodu
+namespace Bodu;
+
+[TestClass]
+public partial class ThrowHelperTests
 {
-    [TestClass]
-    public partial class ThrowHelperTests
-    {
-    }
 }

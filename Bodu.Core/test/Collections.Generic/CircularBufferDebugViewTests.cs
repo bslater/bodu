@@ -4,10 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-﻿namespace Bodu.Collections.Generic
+namespace Bodu.Collections.Generic;
+
+[TestClass]
+public partial class CircularBufferDebugViewTests
 {
-    [TestClass]
-    public partial class CircularBufferDebugViewTests
-    {
-    }
 }

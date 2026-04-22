@@ -4,10 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-﻿namespace Bodu
+namespace Bodu;
+
+[TestClass]
+public partial class XorShiftRandomTests
 {
-    [TestClass]
-    public partial class XorShiftRandomTests
-    {
-    }
 }

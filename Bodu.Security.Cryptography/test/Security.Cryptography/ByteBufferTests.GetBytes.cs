@@ -49,12 +49,11 @@ public partial class ByteBufferTests
     /// Verifies that GetRandomBytes cannot be called twice without refilling the buffer.
     /// </summary>
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
     public void GetBytes_WhenGetBytesCalledTwice_ShouldThrowExactly()
     {
         var buffer = new ByteBuffer(2);
         buffer.Add(new byte[] { 1, 2 }, 0, 2);
         var _ = buffer.GetBytes(); // OK
-        buffer.GetBytes();
+        Assert.ThrowsExactly<InvalidOperationException>(() => buffer.GetBytes());
     }
 }

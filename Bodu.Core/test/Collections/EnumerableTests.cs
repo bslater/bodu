@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-﻿using Bodu.Infrastructure;
+using Bodu.Infrastructure;
 using System.Collections;
 
 namespace Bodu.Collections;

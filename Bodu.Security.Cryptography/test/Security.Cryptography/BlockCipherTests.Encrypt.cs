@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-﻿using Bodu.Test;
+using Bodu.Test;
 
 namespace Bodu.Security.Cryptography;
 

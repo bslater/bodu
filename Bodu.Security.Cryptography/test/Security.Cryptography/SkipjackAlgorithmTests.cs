@@ -4,11 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-﻿namespace Bodu.Security.Cryptography
+namespace Bodu.Security.Cryptography;
+
+[TestClass]
+public sealed partial class SkipjackAlgorithmTests : SymmetricAlgorithmTests<Skipjack>
 {
-    [TestClass]
-    public sealed partial class SkipjackAlgorithmTests : SymmetricAlgorithmTests<Skipjack>
-    {
-        protected override Skipjack CreateAlgorithm() => new Skipjack();
-    }
+    protected override Skipjack CreateAlgorithm() => new Skipjack();
 }

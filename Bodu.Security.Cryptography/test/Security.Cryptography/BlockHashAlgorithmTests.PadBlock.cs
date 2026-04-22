@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 
 namespace Bodu.Security.Cryptography;
 

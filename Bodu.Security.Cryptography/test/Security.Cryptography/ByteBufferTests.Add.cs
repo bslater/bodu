@@ -48,12 +48,11 @@ public partial class ByteBufferTests
     /// Verifies that writing beyond remaining buffer space throws ArgumentOutOfRangeException.
     /// </summary>
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Add_WhenCountExceedsRemainingCapacity_ShouldThrowExactly()
     {
         var buffer = new ByteBuffer(2);
         buffer.Add(new byte[] { 1 }, 0, 1);
-        buffer.Add(new byte[] { 2, 3 }, 0, 2);
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => buffer.Add(new byte[] { 2, 3 }, 0, 2));
     }
 
     /// <summary>
@@ -82,11 +81,10 @@ public partial class ByteBufferTests
     /// Verifies that invalid index + count combination throws ArgumentOutOfRangeException.
     /// </summary>
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Add_WhenIndexAndCountAreInvalidRange_ShouldThrowExactly()
     {
         var buffer = new ByteBuffer(4);
-        buffer.Add(new byte[2], 1, 2);
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => buffer.Add(new byte[2], 1, 2));
     }
 
     /// <summary>

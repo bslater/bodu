@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-﻿using Bodu.Test;
+using Bodu.Test;
 using System.Reflection;
 using System.Security.Cryptography;
 

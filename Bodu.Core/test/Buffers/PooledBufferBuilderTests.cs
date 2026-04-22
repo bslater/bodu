@@ -4,10 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-﻿namespace Bodu.Buffers
+namespace Bodu.Buffers;
+
+[TestClass]
+public partial class PooledBufferBuilderTests
 {
-    [TestClass]
-    public partial class PooledBufferBuilderTests
-    {
-    }
 }

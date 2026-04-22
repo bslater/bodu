@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-﻿using Bodu.Collections.Generic.Extensions;
+using Bodu.Collections.Generic.Extensions;
 
 namespace Bodu.Collections.Generic;
 
