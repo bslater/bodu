@@ -18,6 +18,9 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInQuarter(DateTime, DayOfWeek, CalendarQuarterDefinition)" /> returns the expected first occurrence of the given <see cref="DayOfWeek" /> within each <see cref="CalendarQuarterDefinition" /> boundary.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(FirstDayOfWeekInQuarterDateTimeTestData), DynamicDataSourceType.Method)]
         public void FirstDayOfWeekInQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedDate(DateTime input, CalendarQuarterDefinition definition, DayOfWeek dayOfWeek, DateTime expected)
@@ -26,6 +29,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that the parameterless-definition <see cref="DateTimeExtensions.FirstDayOfWeekInQuarter(DateTime, DayOfWeek)" /> overload returns the expected first-weekday occurrence using the January-to-December quarter boundaries.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(FirstDayOfWeekInQuarterDateTimeJanuaryDecemberTestData), DynamicDataSourceType.Method)]
         public void FirstDayOfWeekInQuarter_WhenUsingDateOnly_ShouldReturnExpectedStartOfCalendarQuarter(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
@@ -34,6 +40,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.GetFirstDayOfWeekInQuarter(int, int, DayOfWeek, CalendarQuarterDefinition)" /> computes the expected first-weekday occurrence for each <c>(year, quarter, dayOfWeek, definition)</c> tuple.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(FirstDayOfWeekInQuarterTestData), DynamicDataSourceType.Method)]
         public void FirstDayOfWeekInQuarter_WhenUsingQuarterAndDefinition_ShouldReturnExpectedDate(int year, int quarter, CalendarQuarterDefinition definition, DayOfWeek dayOfWeek, DateTime expected)
@@ -42,6 +51,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.GetFirstDayOfWeekInQuarter(int, int, DayOfWeek)" /> with the default January-to-December definition returns the expected first-weekday occurrence.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(FirstDayOfWeekInQuarterYearQuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
         public void FirstDayOfWeekInQuarter_WhenUsingQuarterAndCalendarDefinition_ShouldReturnExpectedDate(int year, int quarter, DayOfWeek dayOfWeek, DateTime expected)
@@ -50,6 +62,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that a custom <c>IQuarterProvider</c> returning out-of-range month values causes <see cref="DateTimeExtensions.FirstDayOfWeekInQuarter{T}" /> to throw <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInQuarter_WhenUsingInvalidProvider_ShouldThrowArgumentOutOfRange()
         {
@@ -62,6 +77,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that passing <see cref="CalendarQuarterDefinition.Custom" /> without supplying a provider throws <see cref="InvalidOperationException" />.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowInvalidOperation()
         {
@@ -85,6 +103,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTime.MinValue" /> with <see cref="DayOfWeek.Monday" /> yields <c>0001-01-01</c> (which is a Monday) under January-to-December boundaries.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInQuarter_WhenInputIsMinValue_ShouldReturnExpectedDate()
         {
@@ -92,6 +113,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(1, 1, 1), actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTime.MaxValue" /> with <see cref="DayOfWeek.Friday" /> yields the first Friday of Q4 of year 9999 under January-to-December boundaries.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInQuarter_WhenInputIsMaxValue_ShouldReturnExpectedDate()
         {
@@ -99,6 +123,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateTime(9999, 10, 1), actual); // Q4 of 9999
         }
 
+        /// <summary>
+        /// Verifies that an undefined <see cref="CalendarQuarterDefinition" /> value throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInQuarter_WhenDefinitionIsInvalid_ShouldThrowExactly()
         {
@@ -111,6 +138,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that the static <see cref="DateTimeExtensions.GetFirstDayOfWeekInQuarter(int, int, DayOfWeek, CalendarQuarterDefinition)" /> overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined definition even when the quarter index is valid.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInQuarter_WhenDefinitionIsInvalidAndQuarterIsValid_ShouldThrowExactly()
         {
@@ -122,6 +152,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that a quarter index outside <c>1..4</c> throws <see cref="ArgumentOutOfRangeException" /> when an otherwise-valid definition is supplied.
+        /// </summary>
         [TestMethod]
         [DataRow(-1)]
         [DataRow(0)]
@@ -134,6 +167,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that the default January-to-December overload throws <see cref="ArgumentOutOfRangeException" /> for quarter values outside <c>1..4</c>.
+        /// </summary>
         [TestMethod]
         [DataRow(-1)]
         [DataRow(0)]
@@ -146,6 +182,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInQuarter(DateTime, DayOfWeek)" /> preserves the input's <see cref="DateTime.Kind" /> for every <see cref="DateTimeKind" /> value.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]
@@ -158,6 +197,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(kind, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that the provider-based <see cref="DateTimeExtensions.FirstDayOfWeekInQuarter{T}" /> overload preserves the input's <see cref="DateTime.Kind" /> for every <see cref="DateTimeKind" /> value.
+        /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
         [DataRow(DateTimeKind.Utc)]
@@ -171,6 +213,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(kind, actual.Kind);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInQuarter(DateTime, DayOfWeek, CalendarQuarterDefinition)" /> preserves the input's <see cref="DateTime.Kind" /> across every <c>(definition, kind)</c> combination.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(CalendarQuarterDefinitionDateTimeKindTestData), DynamicDataSourceType.Method)]
         public void FirstDayOfWeekInQuarter_WhenQuarterAndDefinitionAndKindIsSet_ShouldPreserveKind(CalendarQuarterDefinition definition, DateTimeKind kind)
@@ -182,6 +227,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that an undefined <see cref="DayOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" /> even when quarter and definition are valid.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInQuarter_WhenDayOfWeekIsInvalidAndQuarterAndDefinitionIsValid_ShouldThrowExactly()
         {
@@ -193,6 +241,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.GetFirstDayOfWeekInQuarter(int, int, DayOfWeek, CalendarQuarterDefinition)" /> throws <see cref="ArgumentOutOfRangeException" /> for year values outside <c>1..9999</c>.
+        /// </summary>
         [TestMethod]
         [DataRow(-1)]
         [DataRow(0)]
@@ -205,6 +256,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateTimeExtensions.GetFirstDayOfWeekInQuarter(int, int, DayOfWeek)" /> throws <see cref="ArgumentOutOfRangeException" /> for year values outside <c>1..9999</c>.
+        /// </summary>
         [TestMethod]
         [DataRow(-1)]
         [DataRow(0)]
