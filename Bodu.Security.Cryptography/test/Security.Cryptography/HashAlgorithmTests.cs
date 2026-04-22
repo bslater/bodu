@@ -10,11 +10,6 @@ using System.Text;
 
 namespace Bodu.Security.Cryptography
 {
-    public enum SingleTestVariant
-    {
-        Default
-    }
-
     /// <summary>
     /// Provides a reusable base class for verifying correctness and consistency of <see cref="HashAlgorithm" /> implementations.
     /// </summary>

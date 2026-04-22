@@ -6,13 +6,6 @@
 
 namespace Bodu.Security.Cryptography
 {
-    public enum Elf64Variant
-    {
-        Default,
-        Seed31,
-        Seed131,
-    }
-
     /// <summary>
     /// Contains unit tests for the <see cref="Elf64" /> hash algorithm.
     /// </summary>

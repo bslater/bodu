@@ -6,17 +6,6 @@
 
 namespace Bodu.Security.Cryptography
 {
-    public enum CubeHashVariants
-    {
-        CubeHash16_16_32_32_512,
-        CubeHash160_16_32_160_512,
-        CubeHash80_8_1_80_512,
-        CubeHash10_1_1_10_512,
-        CubeHash160_16_32_160_256,
-        CubeHash80_8_1_80_256,
-        CubeHash10_1_1_10_256
-    }
-
     /// <summary>
     /// Contains unit tests for the <see cref="CubeHash" /> hash algorithm.
     /// </summary>

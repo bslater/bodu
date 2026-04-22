@@ -4,19 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-﻿namespace Bodu.Collections
+namespace Bodu.Collections
 {
-    public class Node
-    {
-        public string Name { get; set; } = string.Empty;
-
-        public List<Node> Children { get; set; } = new();
-
-        public bool Stop { get; set; } = false;
-
-        public override string ToString() => Name;
-    }
-
     public static class NodeSampleTree
     {
         public static Node[] BuildSampleTree()
