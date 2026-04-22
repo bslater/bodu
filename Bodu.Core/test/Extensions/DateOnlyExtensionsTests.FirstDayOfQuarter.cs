@@ -19,6 +19,9 @@ namespace Bodu.Extensions
     {
 
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.FirstDayOfQuarter(DateOnly, CalendarQuarterDefinition)" /> returns the expected quarter-start <see cref="DateOnly" /> for each supported <see cref="CalendarQuarterDefinition" /> boundary.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfQuarterDateTimeTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void FirstDayOfQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedDate(DateTime inputDateTime, CalendarQuarterDefinition definition, DateTime expectedDateTime)
@@ -32,6 +35,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that the parameterless <see cref="DateOnlyExtensions.FirstDayOfQuarter(DateOnly)" /> overload returns the January-to-December quarter start for the given input.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfQuarterDateTimeJanuaryDecemberTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void FirstDayOfQuarter_WhenUsingDateOnly_ShouldReturnExpectedStartOfCalendarQuarter(DateTime inputDateTime, DateTime expectedDateTime)
@@ -45,6 +51,9 @@ namespace Bodu.Extensions
         }
 
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.FirstDayOfQuarter(CalendarQuarterDefinition, int, int)" /> returns the expected quarter-start <see cref="DateOnly" /> for each <c>(year, quarter, definition)</c> triple.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfQuarterTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void FirstDayOfQuarter_WhenUsingQuarterAndDefinition_ShouldReturnExpectedDate(int year, int quarter, CalendarQuarterDefinition definition, DateTime expectedDateTime)
@@ -56,6 +65,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnlyExtensions.FirstDayOfQuarter(int, int)" /> with the default January-to-December definition returns the expected quarter start for each <c>(year, quarter)</c> pair.
+        /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfQuarterYearQuarterJanuaryDecemberTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
         public void FirstDayOfQuarter_WhenUsingQuarterAndCalendarDefinition_ShouldReturnExpectedDate(int year, int quarter, DateTime expectedDateTime)
@@ -67,6 +79,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that a custom <c>IQuarterProvider</c> returning out-of-range month values causes the <see cref="DateOnly" /> provider overload to throw <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfQuarter_WhenUsingInvalidProvider_ShouldThrowArgumentOutOfRange()
         {
@@ -79,6 +94,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that passing <see cref="CalendarQuarterDefinition.Custom" /> without supplying a provider throws <see cref="InvalidOperationException" />.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowInvalidOperation()
         {
@@ -106,6 +124,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(expected, actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnly.MinValue" /> yields <c>0001-01-01</c> for the January-to-December quarter start.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfQuarter_WhenInputIsMinValue_ShouldReturnExpectedDate()
         {
@@ -113,6 +134,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateOnly(1, 1, 1), actual);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="DateOnly.MaxValue" /> yields <c>9999-10-01</c> (Q4 of year 9999) for the January-to-December quarter start.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfQuarter_WhenInputIsMaxValue_ShouldReturnExpectedDate()
         {
@@ -120,6 +144,9 @@ namespace Bodu.Extensions
             Assert.AreEqual(new DateOnly(9999, 10, 1), actual); // Q4 of 9999
         }
 
+        /// <summary>
+        /// Verifies that an undefined <see cref="CalendarQuarterDefinition" /> value throws <see cref="ArgumentOutOfRangeException" />.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfQuarter_WhenDefinitionIsInvalid_ShouldThrowExactly()
         {
@@ -132,6 +159,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that the static <see cref="DateOnlyExtensions.FirstDayOfQuarter(CalendarQuarterDefinition, int, int)" /> overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined definition.
+        /// </summary>
         [TestMethod]
         public void FirstDayOfQuarter_WhenDefinitionIsInvalidAndQuarterIsValid_ShouldThrowExactly()
         {
@@ -143,6 +173,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that a quarter index outside <c>1..4</c> throws <see cref="ArgumentOutOfRangeException" /> when an otherwise-valid definition is supplied.
+        /// </summary>
         [TestMethod]
         [DataRow(-1)]
         [DataRow(0)]
@@ -155,6 +188,9 @@ namespace Bodu.Extensions
             });
         }
 
+        /// <summary>
+        /// Verifies that the default January-to-December overload throws <see cref="ArgumentOutOfRangeException" /> for quarter values outside <c>1..4</c>.
+        /// </summary>
         [TestMethod]
         [DataRow(-1)]
         [DataRow(0)]
