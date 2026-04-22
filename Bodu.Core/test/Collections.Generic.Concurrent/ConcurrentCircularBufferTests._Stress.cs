@@ -234,6 +234,22 @@ public partial class ConcurrentCircularBufferTests
         // when AllowOverwrite is false.
         for (int i = 0; i < capacity; i++) buffer.Enqueue(new TestItem(i));
 
+        // Deterministic warmup: drive both counters to >= 1 before the race begins. On a
+        // loaded CI runner the togglers may fail to land a true-interval on a full buffer
+        // within a writer's attempt window (or vice versa), making `enqSucceeded > 0` and
+        // `expectedEnqFaults > 0` flake-prone — even though the state-corruption invariant
+        // this test exists to verify (unexpectedFaults == 0, Count within [0, Capacity]) is
+        // unaffected.
+        buffer.AllowOverwrite = false;
+        try { buffer.Enqueue(new TestItem(-1)); }
+        catch (InvalidOperationException) { Interlocked.Increment(ref expectedEnqFaults); }
+
+        buffer.AllowOverwrite = true;
+        buffer.Enqueue(new TestItem(-2));
+        Interlocked.Increment(ref enqSucceeded);
+
+        buffer.AllowOverwrite = false;
+
         // Writers use the throwing Enqueue() rather than TryEnqueue so that the exception
         // path is exercised under real contention.
         var writers = Enumerable.Range(0, 4).Select(_ =>
