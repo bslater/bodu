@@ -5,12 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Bodu.Collections.Generic.Concurrent
 {
@@ -21,26 +16,6 @@ namespace Bodu.Collections.Generic.Concurrent
 
         private const int MinCapacity = 2;
         private const int DefaultCapacity = 16;
-
-        private sealed record TestItem
-        {
-            public int Value { get; set; }
-
-            public TestItem(int value) { Value = value; }
-
-            public override string ToString() => $"Item({Value})";
-        }
-
-        /// <summary>
-        /// A reference type that intentionally does not override Equals or GetHashCode,
-        /// so that equality falls back to reference identity. Used to test Contains behaviour
-        /// for types without custom equality.
-        /// </summary>
-        private sealed class ReferenceItem
-        {
-            public int Value { get; }
-            public ReferenceItem(int value) => Value = value;
-        }
 
         private static void AssertBufferContainsExactlyValues(
             ConcurrentCircularBuffer<TestItem> buffer,

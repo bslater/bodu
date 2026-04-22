@@ -303,22 +303,5 @@ namespace Bodu.Collections.Generic
 
             AssertStatisticalUniformity(tracker, size, label: nameof(ShuffleHelpers.ShuffleAndYield));
         }
-
-        public class Person
-        {
-            public int Id { get; }
-
-            public string Name { get; }
-
-            public override bool Equals(object obj) => obj is Person other && Id == other.Id;
-
-            public override int GetHashCode() => Id.GetHashCode();
-
-            public Person(int id, string name)
-            {
-                Id = id;
-                Name = name;
-            }
-        }
     }
 }

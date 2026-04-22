@@ -15,26 +15,8 @@ namespace Bodu.IO.Hashing;
 /// test-only subclass is required to drive invalid inputs through the base constructor.
 /// </summary>
 [TestClass]
-public class FletcherCtorGuardTests
+public partial class FletcherCtorGuardTests
 {
-    /// <summary>
-    /// Test-only <see cref="Fletcher{TSelf}" /> subclass used solely to reach the protected constructor with
-    /// arbitrary hash sizes. The parameterless public constructor satisfies the CRTP <c>new()</c> constraint and
-    /// is never invoked directly by tests.
-    /// </summary>
-    private sealed class TestFletcher : Fletcher<TestFletcher>
-    {
-        public TestFletcher()
-            : base(16)
-        {
-        }
-
-        public TestFletcher(int hashSize)
-            : base(hashSize)
-        {
-        }
-    }
-
     /// <summary>
     /// Verifies that constructing a <see cref="Fletcher{TSelf}" /> subclass with an unsupported hash size throws
     /// <see cref="ArgumentException" /> whose <c>ParamName</c> is <c>hashSize</c> and whose message begins with
