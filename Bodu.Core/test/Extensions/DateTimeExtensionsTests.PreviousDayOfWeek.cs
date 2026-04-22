@@ -19,7 +19,7 @@ namespace Bodu.Extensions
     {
 
         /// <summary>
-        /// Verifies that Previous Day Of Week, when Called, returns Expected Date.
+        /// Verifies that <see cref="DateTimeExtensions.PreviousDayOfWeek(DateTime, DayOfWeek)" /> returns the prior occurrence of the requested <see cref="DayOfWeek" /> for each <c>(input, target)</c> pair.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(PreviousDayOfWeekTestData), DynamicDataSourceType.Method)]
@@ -31,7 +31,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Previous Day Of Week, when Enum Is Invalid, throws Exactly.
+        /// Verifies that an undefined <see cref="DayOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         public void PreviousDayOfWeek_WhenEnumIsInvalid_ShouldThrowExactly()
@@ -46,7 +46,7 @@ namespace Bodu.Extensions
 
 
         /// <summary>
-        /// Verifies that Previous Day Of Week, when Kind Is Set, preserves Kind.
+        /// Verifies that <see cref="DateTimeExtensions.PreviousDayOfWeek(DateTime, DayOfWeek)" /> preserves the input's <see cref="DateTime.Kind" /> across all <see cref="DateTimeKind" /> values.
         /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
@@ -61,7 +61,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Previous Day Of Week, when Time Is Set, preserves Timed.
+        /// Verifies that <see cref="DateTimeExtensions.PreviousDayOfWeek(DateTime, DayOfWeek)" /> preserves a sub-second-precision <see cref="DateTime.TimeOfDay" /> on the resulting date.
         /// </summary>
         [TestMethod]
         public void PreviousDayOfWeek_WhenTimeIsSet_ShouldPreserveTimed()
@@ -76,7 +76,7 @@ namespace Bodu.Extensions
 
 
         /// <summary>
-        /// Verifies that Previous Day Of Week, when Using Min Value, returns Same Or Greater.
+        /// Verifies that <see cref="DateTime.MinValue" /> + 7 days returning the prior Monday yields a result on or after <see cref="DateTime.MinValue" />.
         /// </summary>
         [TestMethod]
         public void PreviousDayOfWeek_WhenUsingMinValue_ShouldReturnSameOrGreater()
@@ -87,7 +87,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Previous Day Of Week, when Using Max Value, succeeds.
+        /// Verifies that <see cref="DateTime.MaxValue" /> targeting Saturday returns a valid result on or before <see cref="DateTime.MaxValue" />.
         /// </summary>
         [TestMethod]
         public void PreviousDayOfWeek_WhenUsingMaxValue_ShouldSucceed()
