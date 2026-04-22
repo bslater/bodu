@@ -11,7 +11,7 @@
         // <summary>
         /// Verifies that the constructor sets <see cref="HashSize"/> to 32 bits (4 bytes). </summary>
         /// <summary>
-        /// Verifies that Ctor Set Hash Size To32 Bits.
+        /// Verifies that <see cref="MonitoringHashAlgorithm.Ctor" /> returns the expected value.
         /// </summary>
         [TestMethod]
         public void Ctor_ShouldSetHashSizeTo32Bits()

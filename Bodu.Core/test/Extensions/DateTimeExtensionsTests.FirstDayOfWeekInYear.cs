@@ -17,7 +17,7 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
         /// <summary>
-        /// Verifies that First Day Of Week In Year returns Expected Day.
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInYear" /> returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(FirstDayOfWeekInYearTestData), DynamicDataSourceType.Method)]
@@ -29,7 +29,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week In Year preserves Date Time Kind.
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInYear" /> returns the expected value.
         /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInYear_ShouldPreserveDateTimeKind()
@@ -44,7 +44,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week In Year, when Enum Invalid, throws Exactly.
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInYear" />, when EnumInvalid, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInYear_WhenEnumInvalid_ShouldThrowExactly()
@@ -59,7 +59,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week In Year, when Min Value, returns Valid Date.
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInYear" />, when MinValue, returns the expected value.
         /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInYear_WhenMinValue_ShouldReturnValidDate()
@@ -70,7 +70,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week In Year, when Max Year, returns Expected.
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInYear" />, when MaxYear, returns the expected value.
         /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInYear_WhenMaxYear_ShouldReturnExpected()

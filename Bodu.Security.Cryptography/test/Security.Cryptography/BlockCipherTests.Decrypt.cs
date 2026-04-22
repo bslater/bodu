@@ -94,7 +94,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Decrypt, when Known Input, matches Expected.
+        /// Verifies that <see cref="BlockCipher.Decrypt" />, when KnownInput, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DecryptTestData))]

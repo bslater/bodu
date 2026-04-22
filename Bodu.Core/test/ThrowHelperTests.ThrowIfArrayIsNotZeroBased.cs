@@ -9,7 +9,7 @@ namespace Bodu
     public partial class ThrowHelperTests
     {
         /// <summary>
-        /// Verifies that Throw If Array Is Not Zero Based, when Array Is Not Zero Based, throws Exactly.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayIsNotZeroBased" />, when ArrayIsNotZeroBased, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetNonZeroBasedArrayTestData), DynamicDataSourceType.Method)]
@@ -22,7 +22,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Array Is Not Zero Based, when Array Is Zero Based, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayIsNotZeroBased" />, when ArrayIsZeroBased, NotThrow.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetZeroBasedArrayTestData), DynamicDataSourceType.Method)]

@@ -9,7 +9,7 @@ namespace Bodu
     public partial class ThrowHelperTests
     {
         /// <summary>
-        /// Verifies that Throw If Array Type Is Not Compatible, when Array Type Is Incorrect, throws Argument Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayTypeIsNotCompatible" />, when ArrayTypeIsIncorrect, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetIncompatibleArrayTypeTestData), DynamicDataSourceType.Method)]
@@ -22,7 +22,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Array Type Is Not Compatible, when Array Type Is Correct, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayTypeIsNotCompatible" />, when ArrayTypeIsCorrect, NotThrow.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetCompatibleArrayTypeTestData), DynamicDataSourceType.Method)]

@@ -75,7 +75,7 @@
         }
 
         /// <summary>
-        /// Verifies that Transform, with Empty Input, does not Throw.
+        /// Verifies that <see cref="CbcModeTransform.Transform" />, with EmptyInput, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Transform_WithEmptyInput_ShouldNotThrow()
@@ -91,7 +91,7 @@
         }
 
         /// <summary>
-        /// Verifies that Transform, with Single Block, Encrypt Correctly.
+        /// Verifies that <see cref="CbcModeTransform.Transform" />, with SingleBlock, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Transform_WithSingleBlock_ShouldEncryptCorrectly()

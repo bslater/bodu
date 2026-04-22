@@ -18,7 +18,7 @@ namespace Bodu.Extensions
     {
 
         /// <summary>
-        /// Verifies that Last Day Of Month, when Called, returns Expected Day.
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfMonth" />, when Called, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.LastDayOfMonthDataTestData), DynamicDataSourceType.Method)]
@@ -31,7 +31,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Last Day Of Month, , when Kind Is Set, preserves Kind.
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfMonth" />, , when KindIsSet, returns the expected value.
         /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
@@ -46,7 +46,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Last Day Of Month, when Min Value, returns Expected Day.
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfMonth" />, when MinValue, returns the expected value.
         /// </summary>
         [TestMethod]
         public void LastDayOfMonth_WhenMinValue_ShouldReturnExpectedDay()
@@ -57,7 +57,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Last Day Of Month, when Max Value, returns Expected Day.
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfMonth" />, when MaxValue, returns the expected value.
         /// </summary>
         [TestMethod]
         public void LastDayOfMonth_WhenMaxValue_ShouldReturnExpectedDay()

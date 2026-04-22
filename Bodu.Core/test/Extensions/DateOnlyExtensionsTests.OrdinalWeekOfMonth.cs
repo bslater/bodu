@@ -17,7 +17,7 @@ namespace Bodu.Extensions
     public partial class DateOnlyExtensionsTests
     {
         /// <summary>
-        /// Verifies that Day Of Week Occurrence In Month, when Called, returns Expected Ordinal.
+        /// Verifies that <see cref="DateOnlyExtensions.DayOfWeekOccurrenceInMonth" />, when Called, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.DayOfWeekOccurrenceInMonthTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]
@@ -31,7 +31,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Day Of Week Occurrence In Month, when Leap Day, returns Correct Ordinal.
+        /// Verifies that <see cref="DateOnlyExtensions.DayOfWeekOccurrenceInMonth" />, when LeapDay, returns the expected value.
         /// </summary>
         [TestMethod]
         public void DayOfWeekOccurrenceInMonth_WhenLeapDay_ShouldReturnCorrectOrdinal()

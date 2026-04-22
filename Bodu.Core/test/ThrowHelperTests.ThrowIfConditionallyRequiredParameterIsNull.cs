@@ -9,7 +9,7 @@ namespace Bodu
     public partial class ThrowHelperTests
     {
         /// <summary>
-        /// Verifies that Throw If Conditionally Required Parameter Is Null, when Condition Matches And Value Is Null, throws Argument Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfConditionallyRequiredParameterIsNull" />, when ConditionMatchesAndValueIsNull, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         [DataRow(null, true, true)]
@@ -22,7 +22,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Conditionally Required Parameter Is Null, when Condition Does Not Match Or Value Is Not Null, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfConditionallyRequiredParameterIsNull" />, when ConditionDoesNotMatchOrValueIsNotNull, NotThrow.
         /// </summary>
         [TestMethod]
         [DataRow(null, false, true)]

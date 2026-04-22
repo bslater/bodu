@@ -18,7 +18,7 @@ namespace Bodu.Extensions
     {
 
         /// <summary>
-        /// Verifies that Midday, when Called, Set Time To Noon.
+        /// Verifies that <see cref="DateTimeExtensions.Midday" />, when Called, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(MiddayTestData), DynamicDataSourceType.Method )]
@@ -31,7 +31,7 @@ namespace Bodu.Extensions
 
 
         /// <summary>
-        /// Verifies that Midday, when Kind Is Set, preserves Kind.
+        /// Verifies that <see cref="DateTimeExtensions.Midday" />, when KindIsSet, returns the expected value.
         /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
@@ -46,7 +46,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Midday, when Using Min Date, returns Noon On That Day.
+        /// Verifies that <see cref="DateTimeExtensions.Midday" />, when UsingMinDate, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Midday_WhenUsingMinDate_ShouldReturnNoonOnThatDay()
@@ -58,7 +58,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Midday, when Using Max Date, returns Noon On That Day.
+        /// Verifies that <see cref="DateTimeExtensions.Midday" />, when UsingMaxDate, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Midday_WhenUsingMaxDate_ShouldReturnNoonOnThatDay()

@@ -61,7 +61,7 @@
         }
 
         /// <summary>
-        /// Verifies that Transform, with Nist Vector, Encrypt Correctly.
+        /// Verifies that <see cref="CtrModeTransform.Transform" />, with NistVector, EncryptCorrectly.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(CtrKatVectors), DynamicDataSourceType.Method)]
@@ -70,7 +70,7 @@
             => AssertKatEncrypt(description, key, counter, plaintext, expectedCiphertext);
 
         /// <summary>
-        /// Verifies that Transform, with Nist Vector, Decrypt To Original Plaintext.
+        /// Verifies that <see cref="CtrModeTransform.Transform" />, with NistVector, DecryptToOriginalPlaintext.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(CtrKatVectors), DynamicDataSourceType.Method)]

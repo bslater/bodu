@@ -18,7 +18,7 @@ namespace Bodu.Extensions
     {
 
         /// <summary>
-        /// Verifies that First Day Of Week In Month, when Called, returns Expected Date.
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInMonth" />, when Called, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(FirstDayOfWeekInMonthTestData), DynamicDataSourceType.Method)]
@@ -30,7 +30,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week In Month, when Invalid Day Of Week, throws Exactly.
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInMonth" />, when InvalidDayOfWeek, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInMonth_WhenInvalidDayOfWeek_ShouldThrowExactly()
@@ -53,7 +53,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week In Month, when Called, preserves Date Time Kind.
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInMonth" />, when Called, returns the expected value.
         /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
@@ -68,7 +68,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week In Month, when Using Min Value, returns Valid Result.
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInMonth" />, when UsingMinValue, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInMonth_WhenUsingMinValue_ShouldReturnValidResult()
@@ -79,7 +79,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week In Month, when Using Max Value, returns Valid Result.
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInMonth" />, when UsingMaxValue, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void FirstDayOfWeekInMonth_WhenUsingMaxValue_ShouldReturnValidResult()

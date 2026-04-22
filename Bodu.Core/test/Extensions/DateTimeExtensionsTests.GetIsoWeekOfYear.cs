@@ -30,7 +30,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Get Iso Week Of Year, when Called, returns Expected Week Number.
+        /// Verifies that <see cref="DateTimeExtensions.GetIsoWeekOfYear" />, when Called, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetIsoWeekOfYearTestData), DynamicDataSourceType.Method)]
@@ -41,7 +41,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Get Iso Week Of Year, when Called, returns Value In Range1 To53.
+        /// Verifies that <see cref="DateTimeExtensions.GetIsoWeekOfYear" />, when Called, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void GetIsoWeekOfYear_WhenCalled_ShouldReturnValueInRange1To53()
@@ -52,7 +52,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Get Iso Week Of Year, when Time Of Day Is Non Zero, returns Same Result As Midnight.
+        /// Verifies that <see cref="DateTimeExtensions.GetIsoWeekOfYear" />, when TimeOfDayIsNonZero, returns the expected value.
         /// </summary>
         [TestMethod]
         public void GetIsoWeekOfYear_WhenTimeOfDayIsNonZero_ShouldReturnSameResultAsMidnight()
@@ -63,7 +63,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Get Iso Week Of Year, when Called, matches Iso Week Calculator.
+        /// Verifies that <see cref="DateTimeExtensions.GetIsoWeekOfYear" />, when Called, returns the expected value.
         /// </summary>
         [TestMethod]
         [DataRow(2024, 12, 30, DisplayName = "Late December Monday belonging to week 1 of next year")]

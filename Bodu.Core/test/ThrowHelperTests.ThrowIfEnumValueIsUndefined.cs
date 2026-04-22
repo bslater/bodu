@@ -15,7 +15,7 @@ namespace Bodu
     public partial class ThrowHelperTests
     {
         /// <summary>
-        /// Verifies that Throw If Enum Value Is Undefined, when Value Is Undefined, throws Argument Out Of Range Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfEnumValueIsUndefined" />, when ValueIsUndefined, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         [DataRow((TestEnum)99)]
@@ -29,7 +29,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Enum Value Is Undefined, when Value Is Defined, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfEnumValueIsUndefined" />, when ValueIsDefined, NotThrow.
         /// </summary>
         [TestMethod]
         [DataRow(TestEnum.A)]

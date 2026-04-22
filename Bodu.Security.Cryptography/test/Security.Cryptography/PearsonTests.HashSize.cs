@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography
     public partial class PearsonTests
     {
         /// <summary>
-        /// Verifies that Hash Size, Get, when Default, Return8.
+        /// Verifies that <see cref="Pearson.HashSize" />, Get, when Default, returns the expected value.
         /// </summary>
         [TestMethod]
         public void HashSize_Get_WhenDefault_ShouldReturn8()
@@ -22,7 +22,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Hash Size, Set, when Valid, updates Size.
+        /// Verifies that <see cref="Pearson.HashSize" />, Set, when Valid, returns the expected value.
         /// </summary>
         [TestMethod]
         [DataRow(8)]
@@ -41,7 +41,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Compute Hash, when Hash Size Set, returns Expected Byte Length.
+        /// Verifies that <see cref="Pearson.ComputeHash" />, when HashSizeSet, returns the expected value.
         /// </summary>
         [TestMethod]
         [DataRow(8)]
@@ -65,7 +65,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Hash Size, Set, when Out Of Range, throws.
+        /// Verifies that <see cref="Pearson.HashSize" />, Set, when OutOfRange, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         [DataRow(0)]
@@ -83,7 +83,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Hash Size, Set, when Hashing Started, throws Exactly.
+        /// Verifies that <see cref="Pearson.HashSize" />, Set, when HashingStarted, throws <see cref="CryptographicUnexpectedOperationException" />.
         /// </summary>
         [TestMethod]
         public void HashSize_Set_WhenHashingStarted_ShouldThrowExactly()
@@ -98,7 +98,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Hash Size, Get, when Disposed, throws Exactly.
+        /// Verifies that <see cref="Pearson.HashSize" />, Get, when Disposed, throws <see cref="ObjectDisposedException" />.
         /// </summary>
         [TestMethod]
         public void HashSize_Get_WhenDisposed_ShouldThrowExactly()
@@ -113,7 +113,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Hash Size, Set, when Disposed, throws Exactly.
+        /// Verifies that <see cref="Pearson.HashSize" />, Set, when Disposed, throws <see cref="ObjectDisposedException" />.
         /// </summary>
         [TestMethod]
         public void HashSize_Set_WhenDisposed_ShouldThrowExactly()

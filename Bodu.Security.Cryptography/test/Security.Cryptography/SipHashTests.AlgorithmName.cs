@@ -9,7 +9,7 @@ namespace Bodu.Security.Cryptography
     public abstract partial class SipHashTests<TTest, TAlgorithm>
     {
         /// <summary>
-        /// Verifies that Algorithm Name, when Using Variant, returns Correctly Formatted String.
+        /// Verifies that <see cref="SipHash.AlgorithmName" />, when UsingVariant, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(HashAlgorithmVariants), DynamicDataSourceType.Method)]
@@ -22,7 +22,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Algorithm Name, when Using Custom Rounds, returns Correctly Formatted String.
+        /// Verifies that <see cref="SipHash.AlgorithmName" />, when UsingCustomRounds, returns the expected value.
         /// </summary>
         [TestMethod]
         public void AlgorithmName_WhenUsingCustomRounds_ShouldReturnCorrectlyFormattedString()

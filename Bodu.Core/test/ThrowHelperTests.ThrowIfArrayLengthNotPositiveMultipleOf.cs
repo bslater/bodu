@@ -9,7 +9,7 @@ namespace Bodu
     public partial class ThrowHelperTests
     {
         /// <summary>
-        /// Verifies that Throw If Array Length Not Positive Multiple Of, when Length Is Not Positive Multiple, throws Exactly.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthNotPositiveMultipleOf" />, when LengthIsNotPositiveMultiple, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         [DataRow(5, 2)]   // 5 % 2 != 0
@@ -25,7 +25,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Array Length Not Positive Multiple Of, when Length Is Positive Multiple, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthNotPositiveMultipleOf" />, when LengthIsPositiveMultiple, NotThrow.
         /// </summary>
         [TestMethod]
         [DataRow(6, 3)]   // 6 % 3 == 0

@@ -17,7 +17,7 @@ namespace Bodu.Extensions
     public partial class DateOnlyExtensionsTests
     {
         /// <summary>
-        /// Verifies that Midnight, when Called, returns Midnight On Same Date.
+        /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when Called, returns the expected value.
         /// </summary>
         [TestMethod]
         [DataRow("2024-04-18T05:00:00", "2024-04-18T00:00:00")]
@@ -36,7 +36,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Midnight, when Kind Is Utc, preserves Kind.
+        /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when KindIsUtc, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Midnight_WhenKindIsUtc_ShouldPreserveKind()
@@ -49,7 +49,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Midnight, when Kind Is Local, preserves Kind.
+        /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when KindIsLocal, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Midnight_WhenKindIsLocal_ShouldPreserveKind()
@@ -62,7 +62,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Midnight, when Kind Is Unspecified, preserves Kind.
+        /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when KindIsUnspecified, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Midnight_WhenKindIsUnspecified_ShouldPreserveKind()
@@ -75,7 +75,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Midnight, when Using Min Value, returns Midnight.
+        /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when UsingMinValue, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Midnight_WhenUsingMinValue_ShouldReturnMidnight()
@@ -87,7 +87,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Midnight, when Using Max Value, returns Midnight.
+        /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when UsingMaxValue, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Midnight_WhenUsingMaxValue_ShouldReturnMidnight()

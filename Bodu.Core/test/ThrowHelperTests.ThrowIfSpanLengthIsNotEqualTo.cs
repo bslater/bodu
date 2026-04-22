@@ -11,7 +11,7 @@ namespace Bodu
         // Span<T> overload
 
         /// <summary>
-        /// Verifies that Throw If Span Length Is Not Equal To, Span, when Length Differs, throws Argument Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthIsNotEqualTo" />, Span, when LengthDiffers, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         [DataRow(0, 4)]
@@ -27,7 +27,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Span Length Is Not Equal To, Span, when Length Matches, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthIsNotEqualTo" />, Span, when LengthMatches, NotThrow.
         /// </summary>
         [TestMethod]
         [DataRow(0, 0)]
@@ -43,7 +43,7 @@ namespace Bodu
         // ReadOnlySpan<T> overload
 
         /// <summary>
-        /// Verifies that Throw If Span Length Is Not Equal To, Read Only Span, when Length Differs, throws Argument Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthIsNotEqualTo" />, ReadOnlySpan, when LengthDiffers, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         [DataRow(0, 4)]
@@ -59,7 +59,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Span Length Is Not Equal To, Read Only Span, when Length Matches, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthIsNotEqualTo" />, ReadOnlySpan, when LengthMatches, NotThrow.
         /// </summary>
         [TestMethod]
         [DataRow(0, 0)]

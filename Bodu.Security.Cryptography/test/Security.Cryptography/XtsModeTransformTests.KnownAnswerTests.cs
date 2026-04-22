@@ -58,7 +58,7 @@
         }
 
         /// <summary>
-        /// Verifies that Transform, with Ieee1619 Vector, Encrypt Correctly.
+        /// Verifies that <see cref="XtsModeTransform.Transform" />, with Ieee1619Vector, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(XtsKatVectors), DynamicDataSourceType.Method)]
@@ -80,7 +80,7 @@
         }
 
         /// <summary>
-        /// Verifies that Transform, with Ieee1619 Vector, Decrypt To Original Plaintext.
+        /// Verifies that <see cref="XtsModeTransform.Transform" />, with Ieee1619Vector, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(XtsKatVectors), DynamicDataSourceType.Method)]

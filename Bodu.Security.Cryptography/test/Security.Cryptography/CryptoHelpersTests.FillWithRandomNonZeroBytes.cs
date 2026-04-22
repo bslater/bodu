@@ -9,7 +9,7 @@
     public partial class CryptoHelpersTests
     {
         /// <summary>
-        /// Verifies that Fill With Random Bytes Excluding Never Contain Excluded Value.
+        /// Verifies that <see cref="CryptoHelpers.FillWithRandomBytesExcluding" /> returns a value that differs from the baseline.
         /// </summary>
         [TestMethod]
         public void FillWithRandomBytesExcluding_ShouldNeverContainExcludedValue()
@@ -29,7 +29,7 @@
         }
 
         /// <summary>
-        /// Verifies that Fill With Random Bytes Excluding does not Leave Temp Buffer On Heap.
+        /// Verifies that <see cref="CryptoHelpers.FillWithRandomBytesExcluding" /> returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void FillWithRandomBytesExcluding_ShouldNotLeaveTempBufferOnHeap()
@@ -59,7 +59,7 @@
         }
 
         /// <summary>
-        /// Verifies that Fill With Random Bytes Excluding, with High Forbidden Frequency, Terminate.
+        /// Verifies that <see cref="CryptoHelpers.FillWithRandomBytesExcluding" />, with HighForbiddenFrequency, returns a value that differs from the baseline.
         /// </summary>
         [TestMethod]
         public void FillWithRandomBytesExcluding_WithHighForbiddenFrequency_ShouldTerminate()

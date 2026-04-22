@@ -51,7 +51,7 @@
         }
 
         /// <summary>
-        /// Verifies that Is Last Day Of Quarter, when Definition Is Invalid, throws Exactly.
+        /// Verifies that <see cref="DateOnlyExtensions.IsLastDayOfQuarter" />, when DefinitionIsInvalid, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         public void IsLastDayOfQuarter_WhenDefinitionIsInvalid_ShouldThrowExactly()
@@ -66,7 +66,7 @@
         }
 
         /// <summary>
-        /// Verifies that Is Last Day Of Quarter, when Definition Is Custom, throws Exactly.
+        /// Verifies that <see cref="DateOnlyExtensions.IsLastDayOfQuarter" />, when DefinitionIsCustom, throws <see cref="InvalidOperationException" />.
         /// </summary>
         [TestMethod]
         public void IsLastDayOfQuarter_WhenDefinitionIsCustom_ShouldThrowExactly()
@@ -80,7 +80,7 @@
         }
 
         /// <summary>
-        /// Verifies that Is Last Day Of Quarter, when Using Valid Quarter Provider, returns Expected Date.
+        /// Verifies that <see cref="DateOnlyExtensions.IsLastDayOfQuarter" />, when UsingValidQuarterProvider, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.IsLastDayOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]

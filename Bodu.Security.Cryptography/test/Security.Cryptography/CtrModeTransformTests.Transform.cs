@@ -45,7 +45,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Transform, Encrypt And Decrypt, is Symmetric.
+        /// Verifies that <see cref="CtrModeTransform.Transform" />, EncryptAndDecrypt, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Transform_EncryptAndDecrypt_ShouldBeSymmetric()
@@ -66,7 +66,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Transform, when Encrypting, does not Mutate Initial Counter.
+        /// Verifies that <see cref="CtrModeTransform.Transform" />, when Encrypting, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Transform_WhenEncrypting_ShouldNotMutateInitialCounter()
@@ -83,7 +83,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Transform, when Decrypting, uses Cipher Encrypt Primitive.
+        /// Verifies that <see cref="CtrModeTransform.Transform" />, when Decrypting, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Transform_WhenDecrypting_ShouldUseCipherEncryptPrimitive()
@@ -96,7 +96,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Transform, when Called Twice, Continue Counter Across Calls.
+        /// Verifies that <see cref="CtrModeTransform.Transform" />, when CalledTwice, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Transform_WhenCalledTwice_ShouldContinueCounterAcrossCalls()
@@ -117,7 +117,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Transform, with Different Initial Counters, produces Different Ciphertext.
+        /// Verifies that <see cref="CtrModeTransform.Transform" />, with DifferentInitialCounters, returns a value that differs from the baseline.
         /// </summary>
         [TestMethod]
         public void Transform_WithDifferentInitialCounters_ShouldProduceDifferentCiphertext()

@@ -9,7 +9,7 @@
     public partial class XorShiftRandomTests
     {
         /// <summary>
-        /// Verifies that Constructor, when Valid Range, Create Instance.
+        /// Verifies that <see cref="XorShiftRandom.Constructor" />, when ValidRange, returns a non-null value.
         /// </summary>
         [TestMethod]
         [DataRow(int.MinValue)]
@@ -22,7 +22,7 @@
         }
 
         /// <summary>
-        /// Verifies that Constructor, when Called Without Seed, Create Instance.
+        /// Verifies that <see cref="XorShiftRandom.Constructor" />, when CalledWithoutSeed, returns a non-null value.
         /// </summary>
         [TestMethod]
         public void Constructor_WhenCalledWithoutSeed_ShouldCreateInstance()

@@ -68,7 +68,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Decrypt, with Rfc5297 A1 Vector, Recover Plaintext.
+        /// Verifies that <see cref="SivModeTransform.Decrypt" />, with Rfc5297A1Vector, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(SivKatA1), DynamicDataSourceType.Method)]

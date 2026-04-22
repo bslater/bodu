@@ -9,7 +9,7 @@ namespace Bodu
     public partial class ThrowHelperTests
     {
         /// <summary>
-        /// Verifies that Throw If Array Multidimensional, when Array Is Null, throws Argument Null Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayMultidimensional" />, when ArrayIsNull, throws <see cref="ArgumentNullException" />.
         /// </summary>
         [TestMethod]
         public void ThrowIfArrayMultidimensional_WhenArrayIsNull_ShouldThrowArgumentNullException()
@@ -22,7 +22,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Array Multidimensional, when Array Has Rank Two, throws Argument Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayMultidimensional" />, when ArrayHasRankTwo, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         public void ThrowIfArrayMultidimensional_WhenArrayHasRankTwo_ShouldThrowArgumentException()
@@ -35,7 +35,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Array Multidimensional, when Array Has Rank Three, throws Argument Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayMultidimensional" />, when ArrayHasRankThree, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         public void ThrowIfArrayMultidimensional_WhenArrayHasRankThree_ShouldThrowArgumentException()
@@ -48,7 +48,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Array Multidimensional, when Array Is Single Dimensional, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayMultidimensional" />, when ArrayIsSingleDimensional, NotThrow.
         /// </summary>
         [TestMethod]
         public void ThrowIfArrayMultidimensional_WhenArrayIsSingleDimensional_ShouldNotThrow()
@@ -58,7 +58,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Array Multidimensional, when Array Is Empty Single Dimensional, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayMultidimensional" />, when ArrayIsEmptySingleDimensional, NotThrow.
         /// </summary>
         [TestMethod]
         public void ThrowIfArrayMultidimensional_WhenArrayIsEmptySingleDimensional_ShouldNotThrow()

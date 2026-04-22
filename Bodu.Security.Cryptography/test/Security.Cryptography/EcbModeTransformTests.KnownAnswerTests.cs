@@ -45,7 +45,7 @@ namespace Bodu.Security.Cryptography
         // ── Test methods ──────────────────────────────────────────────────────────────────────────
 
         /// <summary>
-        /// Verifies that Transform, with Nist Vector, Encrypt Correctly.
+        /// Verifies that <see cref="EcbModeTransform.Transform" />, with NistVector, EncryptCorrectly.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(EcbKatVectors), DynamicDataSourceType.Method)]
@@ -54,7 +54,7 @@ namespace Bodu.Security.Cryptography
             => AssertKatEncrypt(description, key, iv, plaintext, expectedCiphertext);
 
         /// <summary>
-        /// Verifies that Transform, with Nist Vector, Decrypt To Original Plaintext.
+        /// Verifies that <see cref="EcbModeTransform.Transform" />, with NistVector, DecryptToOriginalPlaintext.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(EcbKatVectors), DynamicDataSourceType.Method)]

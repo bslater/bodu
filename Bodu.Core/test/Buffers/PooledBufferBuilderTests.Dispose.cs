@@ -9,7 +9,7 @@
     public partial class PooledBufferBuilderTests
     {
         /// <summary>
-        /// Verifies that Dispose, when Called, Using Pooled Buffer Builder, Prevent Buffer Access.
+        /// Verifies that <see cref="PooledBufferBuilder.Dispose" />, when Called, UsingPooledBufferBuilder, throws <see cref="ObjectDisposedException" />.
         /// </summary>
         [TestMethod]
         public void Dispose_WhenCalled_ShouldPreventBufferAccess_UsingPooledBufferBuilder()
@@ -24,7 +24,7 @@
         }
 
         /// <summary>
-        /// Verifies that Dispose, when Invoked Multiple Times, Using Pooled Buffer Builder, does not Throw.
+        /// Verifies that <see cref="PooledBufferBuilder.Dispose" />, when InvokedMultipleTimes, UsingPooledBufferBuilder, NotThrow.
         /// </summary>
         [TestMethod]
         public void Dispose_WhenInvokedMultipleTimes_ShouldNotThrow_UsingPooledBufferBuilder()

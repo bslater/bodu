@@ -18,7 +18,7 @@ namespace Bodu.Extensions
     {
 
         /// <summary>
-        /// Verifies that End Of Day, when Called, returns Expected.
+        /// Verifies that <see cref="DateTimeExtensions.EndOfDay" />, when Called, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(EndOfDayTestData), DynamicDataSourceType.Method)]
@@ -30,7 +30,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that End Of Day, when Max Date Time, returns Max Value.
+        /// Verifies that <see cref="DateTimeExtensions.EndOfDay" />, when MaxDateTime, returns the expected value.
         /// </summary>
         [TestMethod]
         public void EndOfDay_WhenMaxDateTime_ShouldReturnMaxValue()
@@ -43,7 +43,7 @@ namespace Bodu.Extensions
 
 
         /// <summary>
-        /// Verifies that End Of Day, when Kind Is Set, preserves Kind.
+        /// Verifies that <see cref="DateTimeExtensions.EndOfDay" />, when KindIsSet, returns the expected value.
         /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]

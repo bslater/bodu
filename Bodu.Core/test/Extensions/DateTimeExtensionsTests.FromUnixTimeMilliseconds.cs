@@ -37,7 +37,7 @@ namespace Bodu.Extensions
         };
 
         /// <summary>
-        /// Verifies that From Unix Time Milliseconds, when Valid Input, returns Expected.
+        /// Verifies that <see cref="DateTimeExtensions.FromUnixTimeMilliseconds" />, when ValidInput, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(FromUnixTimeMillisecondsTestData), DynamicDataSourceType.Property)]
@@ -56,7 +56,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that From Unix Time Milliseconds, when Below Minimum, throws Exactly.
+        /// Verifies that <see cref="DateTimeExtensions.FromUnixTimeMilliseconds" />, when BelowMinimum, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         public void FromUnixTimeMilliseconds_WhenBelowMinimum_ShouldThrowExactly()
@@ -70,7 +70,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that From Unix Time Milliseconds, when Above Maximum, throws Exactly.
+        /// Verifies that <see cref="DateTimeExtensions.FromUnixTimeMilliseconds" />, when AboveMaximum, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         public void FromUnixTimeMilliseconds_WhenAboveMaximum_ShouldThrowExactly()

@@ -9,7 +9,7 @@ namespace Bodu
     public sealed partial class ThrowHelperTests
     {
         /// <summary>
-        /// Verifies that Throw If Array Offset Or Count Invalid, when Offset Or Count Out Of Range, throws Argument Out Of Range Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" />, when OffsetOrCountOutOfRange, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         [DataRow(-1, 2)]  // Negative offset
@@ -26,7 +26,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Array Offset Or Count Invalid, when Sum Exceeds Length, throws Argument Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" />, when SumExceedsLength, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         [DataRow(3, 3)]  // Offset + count exceeds array length
@@ -41,7 +41,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Array Offset Or Count Invalid, when Parameters Are Valid, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" />, when ParametersAreValid, NotThrow.
         /// </summary>
         [TestMethod]
         [DataRow(0, 5)]

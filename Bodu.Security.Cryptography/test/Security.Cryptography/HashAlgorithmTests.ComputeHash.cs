@@ -213,7 +213,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Compute Hash, when Using Named Input, matches Expected.
+        /// Verifies that <see cref="HashAlgorithm.ComputeHash" />, when UsingNamedInput, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(ComputeHashNamedInputTestData))]
@@ -228,7 +228,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Compute Hash, with Large Input, does not Throw.
+        /// Verifies that <see cref="HashAlgorithm.ComputeHash" />, with LargeInput, returns the expected value.
         /// </summary>
         [TestMethod]
         public void ComputeHash_WithLargeInput_ShouldNotThrow()

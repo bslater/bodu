@@ -379,7 +379,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Key, when Below Minimum Length, throws.
+        /// Verifies that <see cref="KeyedBlockHashAlgorithm.Key" />, when BelowMinimumLength, throws <see cref="CryptographicException" />.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(HashAlgorithmVariants))]

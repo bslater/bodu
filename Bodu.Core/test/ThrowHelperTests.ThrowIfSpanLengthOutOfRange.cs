@@ -11,7 +11,7 @@ namespace Bodu
         // Span<T> overload
 
         /// <summary>
-        /// Verifies that Throw If Span Length Out Of Range, Span, when Length Is Out Of Range, throws Argument Out Of Range Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthOutOfRange" />, Span, when LengthIsOutOfRange, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         [DataRow(0, 1, 10)]
@@ -28,7 +28,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Span Length Out Of Range, Span, when Length Is Within Range, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthOutOfRange" />, Span, when LengthIsWithinRange, NotThrow.
         /// </summary>
         [TestMethod]
         [DataRow(1, 1, 10)]
@@ -45,7 +45,7 @@ namespace Bodu
         // ReadOnlySpan<T> overload
 
         /// <summary>
-        /// Verifies that Throw If Span Length Out Of Range, Read Only Span, when Length Is Out Of Range, throws Argument Out Of Range Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthOutOfRange" />, ReadOnlySpan, when LengthIsOutOfRange, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         [DataRow(0, 1, 10)]
@@ -62,7 +62,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Span Length Out Of Range, Read Only Span, when Length Is Within Range, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthOutOfRange" />, ReadOnlySpan, when LengthIsWithinRange, NotThrow.
         /// </summary>
         [TestMethod]
         [DataRow(1, 1, 10)]

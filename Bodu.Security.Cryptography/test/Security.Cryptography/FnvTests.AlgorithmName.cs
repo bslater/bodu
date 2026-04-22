@@ -9,7 +9,7 @@ namespace Bodu.Security.Cryptography
     public abstract partial class FnvTests<TTest, TAlgorithm>
     {
         /// <summary>
-        /// Verifies that Algorithm Name, when Using Variant, returns Correctly Formatted String.
+        /// Verifies that <see cref="Fnv.AlgorithmName" />, when UsingVariant, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(HashAlgorithmVariants), DynamicDataSourceType.Method)]

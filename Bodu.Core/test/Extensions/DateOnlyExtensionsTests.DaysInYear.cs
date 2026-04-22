@@ -11,7 +11,7 @@ namespace Bodu.Extensions
     public partial class DateOnlyExtensionsTests
     {
         /// <summary>
-        /// Verifies that Days In Year, when Called, returns Correct Days.
+        /// Verifies that <see cref="DateOnlyExtensions.DaysInYear" />, when Called, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.DaysInYearGregorianCalendarTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
@@ -23,7 +23,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Days In Year, when Using Custom Calendar, matches Expected.
+        /// Verifies that <see cref="DateOnlyExtensions.DaysInYear" />, when UsingCustomCalendar, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.DaysInYearTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
@@ -35,7 +35,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Days In Year, when Using Min Value, does not Throw.
+        /// Verifies that <see cref="DateOnlyExtensions.DaysInYear" />, when UsingMinValue, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void DaysInYear_WhenUsingMinValue_ShouldNotThrow()
@@ -44,7 +44,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Days In Year, when Using Max Value, does not Throw.
+        /// Verifies that <see cref="DateOnlyExtensions.DaysInYear" />, when UsingMaxValue, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void DaysInYear_WhenUsingMaxValue_ShouldNotThrow()
@@ -53,7 +53,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Days In Year, when No Calendar Provided, uses Current Culture Calendar.
+        /// Verifies that <see cref="DateOnlyExtensions.DaysInYear" />, when NoCalendarProvided, returns the expected value.
         /// </summary>
         [TestMethod]
         public void DaysInYear_WhenNoCalendarProvided_ShouldUseCurrentCultureCalendar()

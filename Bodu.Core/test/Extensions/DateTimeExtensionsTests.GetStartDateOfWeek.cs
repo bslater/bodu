@@ -30,7 +30,7 @@ namespace Bodu.Extensions
         };
 
         /// <summary>
-        /// Verifies that Get Start Date Of Week, with Culture Info, returns Expected Date.
+        /// Verifies that <see cref="DateTimeExtensions.GetStartDateOfWeek" />, with CultureInfo, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(IsoWeekTestCases))]
@@ -43,7 +43,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Get Start Date Of Week, with Invalid Week Number, throws Exactly.
+        /// Verifies that <see cref="DateTimeExtensions.GetStartDateOfWeek" />, with InvalidWeekNumber, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         public void GetStartDateOfWeek_WithInvalidWeekNumber_ShouldThrowExactly()
@@ -58,7 +58,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Get Start Date Of Week, with Invalid Year, throws Exactly.
+        /// Verifies that <see cref="DateTimeExtensions.GetStartDateOfWeek" />, with InvalidYear, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         [DataRow(0)] //DateTime.MinValue.Year-1
@@ -72,7 +72,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Get Start Date Of Week, with Culture And Invalid Year, throws Exactly.
+        /// Verifies that <see cref="DateTimeExtensions.GetStartDateOfWeek" />, with CultureAndInvalidYear, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         [DataRow(0)] //DateTime.MinValue.Year-1

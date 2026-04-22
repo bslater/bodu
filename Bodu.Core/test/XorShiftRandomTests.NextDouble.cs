@@ -23,7 +23,7 @@
         }
 
         /// <summary>
-        /// Verifies that Next Double, when Called, returns Value Between Zero And One.
+        /// Verifies that <see cref="XorShiftRandom.NextDouble" />, when Called, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void NextDouble_WhenCalled_ShouldReturnValueBetweenZeroAndOne()

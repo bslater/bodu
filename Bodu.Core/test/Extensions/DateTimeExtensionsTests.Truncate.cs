@@ -19,7 +19,7 @@ namespace Bodu.Extensions
         private static readonly DateTime Sample = new DateTime(2024, 4, 18, 14, 37, 56, 789).AddTicks(1234); // 7891234 ticks
 
         /// <summary>
-        /// Verifies that Truncate, when Called With Resolution, returns Expected.
+        /// Verifies that <see cref="DateTimeExtensions.Truncate" />, when CalledWithResolution, returns the expected value.
         /// </summary>
         [TestMethod]
         [DataRow(DateTimeResolution.Year, "2024-01-01T00:00:00.0000000")]
@@ -40,7 +40,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Truncate, when Resolution Is Invalid, throws Exactly.
+        /// Verifies that <see cref="DateTimeExtensions.Truncate" />, when ResolutionIsInvalid, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         public void Truncate_WhenResolutionIsInvalid_ShouldThrowExactly()
@@ -54,7 +54,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Truncate, when Input Is Min Value, does not Throw.
+        /// Verifies that <see cref="DateTimeExtensions.Truncate" />, when InputIsMinValue, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void Truncate_WhenInputIsMinValue_ShouldNotThrow()
@@ -68,7 +68,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Truncate, when Input Is Max Value, does not Throw.
+        /// Verifies that <see cref="DateTimeExtensions.Truncate" />, when InputIsMaxValue, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void Truncate_WhenInputIsMaxValue_ShouldNotThrow()
@@ -82,7 +82,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Truncate, when Kind Is Preserved, matches Original Kind.
+        /// Verifies that <see cref="DateTimeExtensions.Truncate" />, when KindIsPreserved, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Truncate_WhenKindIsPreserved_ShouldMatchOriginalKind()

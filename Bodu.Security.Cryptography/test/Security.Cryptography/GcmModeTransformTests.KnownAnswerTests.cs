@@ -60,7 +60,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Encrypt, with Nist Vector, produces Expected Ciphertext And Tag.
+        /// Verifies that <see cref="GcmModeTransform.Encrypt" />, with NistVector, ProduceExpectedCiphertextAndTag.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GcmKatVectors), DynamicDataSourceType.Method)]
@@ -70,7 +70,7 @@ namespace Bodu.Security.Cryptography
             => AssertKatEncrypt(description, key, iv, aad, plaintext, expectedCiphertext, expectedTag);
 
         /// <summary>
-        /// Verifies that Decrypt, with Nist Vector, Recover Original Plaintext.
+        /// Verifies that <see cref="GcmModeTransform.Decrypt" />, with NistVector, RecoverOriginalPlaintext.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GcmKatVectors), DynamicDataSourceType.Method)]

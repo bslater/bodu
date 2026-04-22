@@ -41,7 +41,7 @@ namespace Bodu.Security.Cryptography
         };
 
         /// <summary>
-        /// Verifies that Poly1305, when Using Rfc Test Vector, matches.
+        /// Verifies that <see cref="Poly1305.Poly1305" />, when UsingRfcTestVector, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Poly1305_WhenUsingRfcTestVector_ShouldMatch()

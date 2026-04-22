@@ -11,7 +11,7 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
         /// <summary>
-        /// Verifies that Add, when Valid Inputs Provided, returns Expected Result.
+        /// Verifies that <see cref="DateTimeExtensions.Add" />, when ValidInputsProvided, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetAddTestCases), DynamicDataSourceType.Method)]
@@ -55,7 +55,7 @@ namespace Bodu.Extensions
         };
 
         /// <summary>
-        /// Verifies that Add, when Out Of Range, throws Argument Out Of Range Exception.
+        /// Verifies that <see cref="DateTimeExtensions.Add" />, when OutOfRange, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetAddExceptionCases), DynamicDataSourceType.Method)]
@@ -76,7 +76,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Add, when All Parameters Zero, returns Same Date.
+        /// Verifies that <see cref="DateTimeExtensions.Add" />, when AllParametersZero, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Add_WhenAllParametersZero_ShouldReturnSameDate()
@@ -86,7 +86,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Add, when Adding Negative Fractional Day, Subtract Accurately.
+        /// Verifies that <see cref="DateTimeExtensions.Add" />, when AddingNegativeFractionalDay, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Add_WhenAddingNegativeFractionalDay_ShouldSubtractAccurately()
@@ -97,7 +97,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Add, when Days Is Less Than Epsilon, is Ignored.
+        /// Verifies that <see cref="DateTimeExtensions.Add" />, when DaysIsLessThanEpsilon, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Add_WhenDaysIsLessThanEpsilon_ShouldBeIgnored()
@@ -108,7 +108,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Add, when Adding To Feb28 Leap Year, Include Feb29.
+        /// Verifies that <see cref="DateTimeExtensions.Add" />, when AddingToFeb28LeapYear, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Add_WhenAddingToFeb28LeapYear_ShouldIncludeFeb29()
@@ -119,7 +119,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Add, when In Dst Transition Zone, respects Timezone.
+        /// Verifies that <see cref="DateTimeExtensions.Add" />, when InDstTransitionZone, returns the expected value.
         /// </summary>
         [TestMethod]
         [DataRow("2024-03-10T01:30:00", 0, 0, 1.0 / 24, "2024-03-10T03:30:00", "Pacific Standard Time")]

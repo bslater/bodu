@@ -9,7 +9,7 @@ namespace Bodu
     public partial class ThrowHelperTests
     {
         /// <summary>
-        /// Verifies that Throw If Array Is Not Single Dimension, when Array Is Multi Dimensional, throws Exactly.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayIsNotSingleDimension" />, when ArrayIsMultiDimensional, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetMultiDimensionalArrayTestData), DynamicDataSourceType.Method)]
@@ -22,7 +22,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Array Is Not Single Dimension, when Array Is Single Dimension, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfArrayIsNotSingleDimension" />, when ArrayIsSingleDimension, NotThrow.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetSingleDimensionalArrayTestData), DynamicDataSourceType.Method)]

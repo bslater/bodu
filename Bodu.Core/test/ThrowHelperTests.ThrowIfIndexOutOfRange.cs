@@ -11,7 +11,7 @@ namespace Bodu
         private static readonly int[] TestArray = new[] { 1, 2, 3, 4, 5 };
 
         /// <summary>
-        /// Verifies that Throw If Index Out Of Range, when Index Is Invalid, throws Argument Out Of Range Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfIndexOutOfRange" />, when IndexIsInvalid, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         [DataRow(5)] // index == Count
@@ -27,7 +27,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Index Out Of Range, when Index Is Within Bounds, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfIndexOutOfRange" />, when IndexIsWithinBounds, NotThrow.
         /// </summary>
         [TestMethod]
         [DataRow(0)]

@@ -24,7 +24,7 @@
         }
 
         /// <summary>
-        /// Verifies that Try Fill With Random Non Zero Bytes, when Successful, returns True And Fill Buffer.
+        /// Verifies that <see cref="CryptoHelpers.TryFillWithRandomNonZeroBytes" />, when Successful, returns a value that differs from the baseline.
         /// </summary>
         [TestMethod]
         public void TryFillWithRandomNonZeroBytes_WhenSuccessful_ShouldReturnTrueAndFillBuffer()
@@ -46,7 +46,7 @@
         }
 
         /// <summary>
-        /// Verifies that Try Fill With Random Non Zero Bytes, Repeated Calls, produces Independent Draws.
+        /// Verifies that <see cref="CryptoHelpers.TryFillWithRandomNonZeroBytes" />, RepeatedCalls, returns a value that differs from the baseline.
         /// </summary>
         [TestMethod]
         public void TryFillWithRandomNonZeroBytes_RepeatedCalls_ShouldProduceIndependentDraws()
@@ -79,7 +79,7 @@
         }
 
         /// <summary>
-        /// Verifies that Try Fill With Random Non Zero Bytes, Buffer Bytes, does not Contain Zero.
+        /// Verifies that <see cref="CryptoHelpers.TryFillWithRandomNonZeroBytes" />, BufferBytes, returns a value that differs from the baseline.
         /// </summary>
         [TestMethod]
         public void TryFillWithRandomNonZeroBytes_BufferBytes_ShouldNotContainZero()

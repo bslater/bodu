@@ -19,7 +19,7 @@ namespace Bodu.Extensions
     {
 
         /// <summary>
-        /// Verifies that To Iso String, when Utc Kind, returns Utc Formatted.
+        /// Verifies that <see cref="DateTimeExtensions.ToIsoString" />, when UtcKind, returns the expected value.
         /// </summary>
         [TestMethod]
         [DataRow("2024-04-20T15:30:45.1234560Z", DateTimeKind.Utc, "2024-04-20T15:30:45.1234560Z")]
@@ -31,7 +31,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Iso String, with Include Fractional Seconds, respects Option.
+        /// Verifies that <see cref="DateTimeExtensions.ToIsoString" />, with IncludeFractionalSeconds, returns the expected value.
         /// </summary>
         [TestMethod]
         [DataRow("2024-04-20T15:30:45", false, "2024-04-20T15:30:45")]
@@ -48,7 +48,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Iso String, with Explicit Kind, respects Kind.
+        /// Verifies that <see cref="DateTimeExtensions.ToIsoString" />, with ExplicitKind, returns the expected value.
         /// </summary>
         [TestMethod]
         [DataRow("2024-04-20T15:30:45", DateTimeKind.Utc, "2024-04-20T15:30:45.0000000Z")]
@@ -73,7 +73,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Iso String, with Custom Format, returns Expected.
+        /// Verifies that <see cref="DateTimeExtensions.ToIsoString" />, with CustomFormat, returns the expected value.
         /// </summary>
         [TestMethod]
         [DataRow("2024-04-20T15:30:45", "yyyy-MM-dd", "2024-04-20")]
@@ -86,7 +86,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Iso String, with Empty Format, throws Exactly.
+        /// Verifies that <see cref="DateTimeExtensions.ToIsoString" />, with EmptyFormat, throws <see cref="ArgumentNullException" />.
         /// </summary>
         [TestMethod]
         public void ToIsoString_WithEmptyFormat_ShouldThrowExactly()

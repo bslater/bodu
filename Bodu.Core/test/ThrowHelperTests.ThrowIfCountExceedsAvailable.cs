@@ -9,7 +9,7 @@ namespace Bodu
     public partial class ThrowHelperTests
     {
         /// <summary>
-        /// Verifies that Throw If Count Exceeds Available, when Count Is Invalid, throws Argument Out Of Range Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfCountExceedsAvailable" />, when CountIsInvalid, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         [DataRow(6, 5)]   // Count exceeds available
@@ -24,7 +24,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Count Exceeds Available, when Count Is Valid, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfCountExceedsAvailable" />, when CountIsValid, NotThrow.
         /// </summary>
         [TestMethod]
         [DataRow(0, 0)]

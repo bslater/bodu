@@ -17,7 +17,7 @@ namespace Bodu.Extensions
     public partial class DateOnlyExtensionsTests
     {
         /// <summary>
-        /// Verifies that Is Leap Year, when Called, returns Expected.
+        /// Verifies that <see cref="DateOnlyExtensions.IsLeapYear" />, when Called, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.LeapYearTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]

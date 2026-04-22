@@ -20,7 +20,7 @@ namespace Bodu.Extensions
     {
 
         /// <summary>
-        /// Verifies that Day Name, with Culture, returns Localized Name.
+        /// Verifies that <see cref="DateTimeExtensions.DayName" />, with Culture, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DayNameTestData), DynamicDataSourceType.Method)]
@@ -32,7 +32,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Day Name, when Culture Is Null, Fallback To Current Culture.
+        /// Verifies that <see cref="DateTimeExtensions.DayName" />, when CultureIsNull, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DayNameFrenchTestData), DynamicDataSourceType.Method)]

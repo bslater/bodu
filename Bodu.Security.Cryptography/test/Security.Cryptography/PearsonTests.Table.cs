@@ -120,7 +120,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Table Type, when Internally Defined, is Valid Permutation.
+        /// Verifies that <see cref="Pearson.TableType" />, when InternallyDefined, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(HashAlgorithmVariants))]

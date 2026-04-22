@@ -9,7 +9,7 @@ namespace Bodu
     public partial class ThrowHelperTests
     {
         /// <summary>
-        /// Verifies that Throw If Less Than Or Equal, when Value Is Less Than Or Equal To Min, throws Argument Out Of Range Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfLessThanOrEqual" />, when ValueIsLessThanOrEqualToMin, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         [DataRow(0, 1)]
@@ -25,7 +25,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Less Than Or Equal, when Value Is Greater Than Min, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfLessThanOrEqual" />, when ValueIsGreaterThanMin, NotThrow.
         /// </summary>
         [TestMethod]
         [DataRow(1, 0)]

@@ -9,7 +9,7 @@ namespace Bodu
     public partial class ThrowHelperTests
     {
         /// <summary>
-        /// Verifies that Throw If Span Length Not Positive Multiple Of, Read Only Span, when Length Invalid, throws.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf" />, ReadOnlySpan, when LengthInvalid, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         [DataRow(5, 2)]  // Not a multiple
@@ -25,7 +25,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Span Length Not Positive Multiple Of, Read Only Span, when Length Valid, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf" />, ReadOnlySpan, when LengthValid, NotThrow.
         /// </summary>
         [TestMethod]
         [DataRow(6, 3)]
@@ -38,7 +38,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Span Length Not Positive Multiple Of, Span, when Length Invalid, throws.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf" />, Span, when LengthInvalid, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         [DataRow(5, 2)]
@@ -54,7 +54,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Span Length Not Positive Multiple Of, Span, when Length Valid, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf" />, Span, when LengthValid, NotThrow.
         /// </summary>
         [TestMethod]
         [DataRow(6, 3)]

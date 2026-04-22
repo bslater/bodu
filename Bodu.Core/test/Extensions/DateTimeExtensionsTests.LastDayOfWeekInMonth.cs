@@ -18,7 +18,7 @@ namespace Bodu.Extensions
     {
 
         /// <summary>
-        /// Verifies that Last Day Of Week In Month, when Called, returns Expected Date.
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInMonth" />, when Called, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(LastDayOfWeekInMonthTestData), DynamicDataSourceType.Method)]
@@ -30,7 +30,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Last Day Of Week In Month, when Invalid Day Of Week, throws Exactly.
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInMonth" />, when InvalidDayOfWeek, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         public void LastDayOfWeekInMonth_WhenInvalidDayOfWeek_ShouldThrowExactly()
@@ -45,7 +45,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Last Day Of Week In Month, when Kind Is Set, preserves Kind.
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInMonth" />, when KindIsSet, returns the expected value.
         /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
@@ -60,7 +60,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Last Day Of Week In Month, when Min Value, returns Valid Result.
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInMonth" />, when MinValue, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void LastDayOfWeekInMonth_WhenMinValue_ShouldReturnValidResult()
@@ -71,7 +71,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Last Day Of Week In Month, when Max Value, returns Valid Result.
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInMonth" />, when MaxValue, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void LastDayOfWeekInMonth_WhenMaxValue_ShouldReturnValidResult()

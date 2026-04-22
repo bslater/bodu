@@ -9,7 +9,7 @@ namespace Bodu
     public partial class ThrowHelperTests
     {
         /// <summary>
-        /// Verifies that Throw If Collection Too Small, when Collection Too Small, throws Argument Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfCollectionTooSmall" />, when CollectionTooSmall, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetTooSmallCollectionTestData), DynamicDataSourceType.Method)]
@@ -22,7 +22,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Collection Too Small, when Collection Is Sufficient, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfCollectionTooSmall" />, when CollectionIsSufficient, NotThrow.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetSufficientCollectionTestData), DynamicDataSourceType.Method)]

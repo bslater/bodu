@@ -57,7 +57,7 @@ namespace Bodu.Security.Cryptography.Extensions
         }
 
         /// <summary>
-        /// Verifies that Try Create Decryptor, when Key Iv And Tweak Are Unset, Generate And Return Transform.
+        /// Verifies that <see cref="TweakableSymmetricAlgorithmExtensions.TryCreateDecryptor" />, when KeyIvAndTweakAreUnset, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void TryCreateDecryptor_WhenKeyIvAndTweakAreUnset_ShouldGenerateAndReturnTransform()

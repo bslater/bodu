@@ -9,7 +9,7 @@ namespace Bodu
     public partial class ThrowHelperTests
     {
         /// <summary>
-        /// Verifies that Throw If Null, when Value Is Null, throws.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfNull{T}(T)" /> throws <see cref="ArgumentNullException" /> when the value is <see langword="null" />.
         /// </summary>
         [TestMethod]
         [DataRow(null)]
@@ -22,7 +22,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Null, when Value Is Not Null, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfNull{T}(T)" /> does not throw for non-null values across reference and value types.
         /// </summary>
         [TestMethod]
         [DataRow("test")]
@@ -34,7 +34,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Null, with Message, when Value Is Null, throws With Message.
+        /// Verifies that the message-taking overload throws <see cref="ArgumentNullException" /> whose message contains the supplied custom text when the value is <see langword="null" />.
         /// </summary>
         [TestMethod]
         [DataRow(null, "Custom message")]
@@ -49,7 +49,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Null, with Message, when Value Is Not Null, does not Throw.
+        /// Verifies that the message-taking overload does not throw for non-null values regardless of the supplied message.
         /// </summary>
         [TestMethod]
         [DataRow("hello", "Custom message")]

@@ -18,7 +18,7 @@ namespace Bodu.Extensions
     {
 
         /// <summary>
-        /// Verifies that To Time Span, when Called, Extract Correct Time.
+        /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when Called, returns the expected value.
         /// </summary>
         [TestMethod]
         [DataRow("2024-04-18T00:00:00", 0, 0, 0, 0)]
@@ -36,7 +36,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Time Span, when Kind Is Utc, Still Return Same Time.
+        /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when KindIsUtc, returns the expected value.
         /// </summary>
         [TestMethod]
         public void ToTimeSpan_WhenKindIsUtc_ShouldStillReturnSameTime()
@@ -48,7 +48,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Time Span, when Kind Is Local, Still Return Same Time.
+        /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when KindIsLocal, returns the expected value.
         /// </summary>
         [TestMethod]
         public void ToTimeSpan_WhenKindIsLocal_ShouldStillReturnSameTime()
@@ -60,7 +60,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Time Span, when Kind Is Unspecified, Still Return Same Time.
+        /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when KindIsUnspecified, returns the expected value.
         /// </summary>
         [TestMethod]
         public void ToTimeSpan_WhenKindIsUnspecified_ShouldStillReturnSameTime()
@@ -72,7 +72,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Time Span, when Using Min Value, returns Zero.
+        /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when UsingMinValue, returns the expected value.
         /// </summary>
         [TestMethod]
         public void ToTimeSpan_WhenUsingMinValue_ShouldReturnZero()
@@ -84,7 +84,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Time Span, when Using Max Value, returns Expected Time.
+        /// Verifies that <see cref="DateTimeExtensions.ToTimeSpan" />, when UsingMaxValue, returns the expected value.
         /// </summary>
         [TestMethod]
         public void ToTimeSpan_WhenUsingMaxValue_ShouldReturnExpectedTime()

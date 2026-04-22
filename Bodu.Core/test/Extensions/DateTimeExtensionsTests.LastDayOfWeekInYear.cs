@@ -17,7 +17,7 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
         /// <summary>
-        /// Verifies that Last Day Of Week In Year, when Called, returns Expected Date.
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInYear" />, when Called, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(LastDayOfWeekInYearTestData), DynamicDataSourceType.Method)]
@@ -29,7 +29,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Last Day Of Week In Year, when Day Of Week Is Invalid, throws Exactly.
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInYear" />, when DayOfWeekIsInvalid, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         public void LastDayOfWeekInYear_WhenDayOfWeekIsInvalid_ShouldThrowExactly()
@@ -44,7 +44,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Last Day Of Week In Year, when Using Min Value, returns In Year1.
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInYear" />, when UsingMinValue, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void LastDayOfWeekInYear_WhenUsingMinValue_ShouldReturnInYear1()
@@ -57,7 +57,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Last Day Of Week In Year, when Using Max Value, returns Valid Date.
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInYear" />, when UsingMaxValue, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void LastDayOfWeekInYear_WhenUsingMaxValue_ShouldReturnValidDate()
@@ -69,7 +69,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Last Day Of Week In Year, when Kind Is Local, preserves Kind.
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeekInYear" />, when KindIsLocal, returns the expected value.
         /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]

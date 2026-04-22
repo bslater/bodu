@@ -9,7 +9,7 @@ namespace Bodu
     public partial class ThrowHelperTests
     {
         /// <summary>
-        /// Verifies that Throw If Null Or Empty, when Value Is Null, throws Argument Null Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrEmpty" />, when ValueIsNull, throws <see cref="ArgumentNullException" />.
         /// </summary>
         [TestMethod]
         [DataRow(null)]
@@ -22,7 +22,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Null Or Empty, when Value Is Empty, throws Argument Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrEmpty" />, when ValueIsEmpty, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         [DataRow("")]
@@ -35,7 +35,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Null Or Empty, when Value Is Non Empty, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrEmpty" />, when ValueIsNonEmpty, NotThrow.
         /// </summary>
         [TestMethod]
         [DataRow("a")]

@@ -236,7 +236,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Compute Hash Async, when Using Incremental Input, matches Expected.
+        /// Verifies that <see cref="HashAlgorithm.ComputeHashAsync" />, when UsingIncrementalInput, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(HashAlgorithmVariants))]
@@ -267,7 +267,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Compute Hash Async, when Using Named Input, matches Expected.
+        /// Verifies that <see cref="HashAlgorithm.ComputeHashAsync" />, when UsingNamedInput, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(ComputeHashNamedInputTestData))]

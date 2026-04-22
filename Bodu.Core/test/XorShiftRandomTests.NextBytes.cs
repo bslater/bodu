@@ -25,7 +25,7 @@
         }
 
         /// <summary>
-        /// Verifies that Next Bytes, when Called, Fill Buffer.
+        /// Verifies that <see cref="XorShiftRandom.NextBytes" />, when Called, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void NextBytes_WhenCalled_ShouldFillBuffer()
@@ -38,7 +38,7 @@
         }
 
         /// <summary>
-        /// Verifies that Next Bytes, with Null Buffer, throws Exactly.
+        /// Verifies that <see cref="XorShiftRandom.NextBytes" />, with NullBuffer, throws <see cref="ArgumentNullException" />.
         /// </summary>
         [TestMethod]
         public void NextBytes_WithNullBuffer_ShouldThrowExactly()

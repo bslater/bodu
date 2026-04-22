@@ -9,7 +9,7 @@ namespace Bodu
     public partial class ThrowHelperTests
     {
         /// <summary>
-        /// Verifies that Throw Is Null Or White Space, when Null, throws Argument Null Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIsNullOrWhiteSpace" />, when Null, throws <see cref="ArgumentNullException" />.
         /// </summary>
         [TestMethod]
         [DataRow(null)]
@@ -22,7 +22,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw Is Null Or White Space, when Empty Or Whitespace, throws Argument Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIsNullOrWhiteSpace" />, when EmptyOrWhitespace, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         [DataRow("")]
@@ -38,7 +38,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw Is Null Or White Space, when Value Is Valid, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIsNullOrWhiteSpace" />, when ValueIsValid, NotThrow.
         /// </summary>
         [TestMethod]
         [DataRow("Valid")]

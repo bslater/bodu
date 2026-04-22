@@ -9,7 +9,7 @@ namespace Bodu
     public partial class ThrowHelperTests
     {
         /// <summary>
-        /// Verifies that Throw If Sequence Range Overflows, when Sum Exceeds Int Max, throws.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSequenceRangeOverflows" />, when SumExceedsIntMax, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         public void ThrowIfSequenceRangeOverflows_WhenSumExceedsIntMax_ShouldThrow()
@@ -18,7 +18,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Sequence Range Overflows, when Sum Does Not Exceed Int Max, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSequenceRangeOverflows" />, when SumDoesNotExceedIntMax, NotThrow.
         /// </summary>
         [TestMethod]
         public void ThrowIfSequenceRangeOverflows_WhenSumDoesNotExceedIntMax_ShouldNotThrow()
@@ -27,7 +27,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Sequence Range Overflows, Long, when Sum Exceeds Long Max, throws.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSequenceRangeOverflows" />, Long, when SumExceedsLongMax, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         public void ThrowIfSequenceRangeOverflows_Long_WhenSumExceedsLongMax_ShouldThrow()
@@ -36,7 +36,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Sequence Range Overflows, Long, when Sum Does Not Exceed Long Max, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSequenceRangeOverflows" />, Long, when SumDoesNotExceedLongMax, NotThrow.
         /// </summary>
         [TestMethod]
         public void ThrowIfSequenceRangeOverflows_Long_WhenSumDoesNotExceedLongMax_ShouldNotThrow()

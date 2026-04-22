@@ -9,7 +9,7 @@ namespace Bodu
     public partial class ThrowHelperTests
     {
         /// <summary>
-        /// Verifies that Throw If Not Of Type, when String Value Is Not Int, throws Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfNotOfType" />, when StringValueIsNotInt, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         public void ThrowIfNotOfType_WhenStringValueIsNotInt_ShouldThrowException()
@@ -23,7 +23,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Not Of Type, when Null Value And Target Is Non Nullable, throws Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfNotOfType" />, when NullValueAndTargetIsNonNullable, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         public void ThrowIfNotOfType_WhenNullValueAndTargetIsNonNullable_ShouldThrowException()
@@ -37,7 +37,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Not Of Type, when Int Value Is String, throws Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfNotOfType" />, when IntValueIsString, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         public void ThrowIfNotOfType_WhenIntValueIsString_ShouldThrowException()
@@ -51,7 +51,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Not Of Type, when Value Is Of Expected Type, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfNotOfType" />, when ValueIsOfExpectedType, NotThrow.
         /// </summary>
         [TestMethod]
         public void ThrowIfNotOfType_WhenValueIsOfExpectedType_ShouldNotThrow()
@@ -61,7 +61,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Not Of Type, when Value Is Null Reference Type, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfNotOfType" />, when ValueIsNullReferenceType, NotThrow.
         /// </summary>
         [TestMethod]
         public void ThrowIfNotOfType_WhenValueIsNullReferenceType_ShouldNotThrow()
@@ -71,7 +71,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Not Of Type, when Value Is Null Nullable Value Type, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfNotOfType" />, when ValueIsNullNullableValueType, NotThrow.
         /// </summary>
         [TestMethod]
         public void ThrowIfNotOfType_WhenValueIsNullNullableValueType_ShouldNotThrow()

@@ -9,7 +9,7 @@ namespace Bodu
     public partial class ThrowHelperTests
     {
         /// <summary>
-        /// Verifies that Throw If Invalid String Comparison, when Value Is Invalid, throws Argument Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfInvalidStringComparison" />, when ValueIsInvalid, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         [DataRow((StringComparison)999)]
@@ -24,7 +24,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Invalid String Comparison, when Value Is Valid, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfInvalidStringComparison" />, when ValueIsValid, NotThrow.
         /// </summary>
         [TestMethod]
         [DataRow(StringComparison.CurrentCulture)]

@@ -18,7 +18,7 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
         /// <summary>
-        /// Verifies that Get Quarter, when Using Quarter Definition, returns Expected Quarter.
+        /// Verifies that <see cref="DateTimeExtensions.GetQuarter" />, when UsingQuarterDefinition, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(QuarterTestData), DynamicDataSourceType.Method)]
@@ -31,7 +31,7 @@ namespace Bodu.Extensions
 
 
         /// <summary>
-        /// Verifies that Get Quarter, when Only Date Time, returns Expected Quarter.
+        /// Verifies that <see cref="DateTimeExtensions.GetQuarter" />, when OnlyDateTime, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(QuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
@@ -43,7 +43,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Get Quarter, when Using Valid Provider, returns Expected Quarter.
+        /// Verifies that <see cref="DateTimeExtensions.GetQuarter" />, when UsingValidProvider, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.QuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
@@ -56,7 +56,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Get Quarter, when Using Invalid Provider, throws Exactly.
+        /// Verifies that <see cref="DateTimeExtensions.GetQuarter" />, when UsingInvalidProvider, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         public void GetQuarter_WhenUsingInvalidProvider_ShouldThrowExactly()
@@ -71,7 +71,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Get Quarter, when Using Custom Quarter Definition Without Provider, throws Exactly.
+        /// Verifies that <see cref="DateTimeExtensions.GetQuarter" />, when UsingCustomQuarterDefinitionWithoutProvider, throws <see cref="InvalidOperationException" />.
         /// </summary>
         [TestMethod]
         public void GetQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowExactly()

@@ -18,7 +18,7 @@ namespace Bodu.Extensions
     {
 
         /// <summary>
-        /// Verifies that To Unix Time Milliseconds, when Called With Utc, returns Expected.
+        /// Verifies that <see cref="DateOnlyExtensions.ToUnixTimeMilliseconds" />, when CalledWithUtc, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.FromUnixTimeMillisecondsTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Property)]
@@ -36,7 +36,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Unix Time Milliseconds, when Using Min Value, is Negative Large.
+        /// Verifies that <see cref="DateOnlyExtensions.ToUnixTimeMilliseconds" />, when UsingMinValue, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void ToUnixTimeMilliseconds_WhenUsingMinValue_ShouldBeNegativeLarge()
@@ -47,7 +47,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Unix Time Milliseconds, when Using Max Value, is Positive Large.
+        /// Verifies that <see cref="DateOnlyExtensions.ToUnixTimeMilliseconds" />, when UsingMaxValue, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void ToUnixTimeMilliseconds_WhenUsingMaxValue_ShouldBePositiveLarge()
@@ -58,7 +58,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Unix Time Milliseconds, Round Trip With From Unix Time Milliseconds, matches Utc.
+        /// Verifies that <see cref="DateOnlyExtensions.ToUnixTimeMilliseconds" />, RoundTripWithFromUnixTimeMilliseconds, returns the expected value.
         /// </summary>
         [TestMethod]
         public void ToUnixTimeMilliseconds_RoundTripWithFromUnixTimeMilliseconds_ShouldMatchUtc()

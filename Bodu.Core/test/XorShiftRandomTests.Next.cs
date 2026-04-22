@@ -9,7 +9,7 @@
     public partial class XorShiftRandomTests
     {
         /// <summary>
-        /// Verifies that Next, when Seed Is Not Same, produces Deterministic Sequence.
+        /// Verifies that <see cref="XorShiftRandom.Next" />, when SeedIsNotSame, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Next_WhenSeedIsNotSame_ShouldProduceDeterministicSequence()
@@ -59,7 +59,7 @@
         }
 
         /// <summary>
-        /// Verifies that Next, when Called, returns Positive Integer.
+        /// Verifies that <see cref="XorShiftRandom.Next" />, when Called, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void Next_WhenCalled_ShouldReturnPositiveInteger()
@@ -87,7 +87,7 @@
         }
 
         /// <summary>
-        /// Verifies that Next, when Called Within And Max, respects Bounds.
+        /// Verifies that <see cref="XorShiftRandom.Next" />, when CalledWithinAndMax, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         [DataRow(0, 10)]
@@ -103,7 +103,7 @@
         }
 
         /// <summary>
-        /// Verifies that Next, when Called With Max, returns Within Range.
+        /// Verifies that <see cref="XorShiftRandom.Next" />, when CalledWithMax, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         [DataRow(1)]
@@ -168,7 +168,7 @@
         }
 
         /// <summary>
-        /// Verifies that Next, with Max Value, returns In Expected Range.
+        /// Verifies that <see cref="XorShiftRandom.Next" />, with MaxValue, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void Next_WithMaxValue_ShouldReturnInExpectedRange()
@@ -182,7 +182,7 @@
         }
 
         /// <summary>
-        /// Verifies that Next, with Max Value Zero, throws Exactly.
+        /// Verifies that <see cref="XorShiftRandom.Next" />, with MaxValueZero, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         [DataRow(0)]
@@ -194,7 +194,7 @@
         }
 
         /// <summary>
-        /// Verifies that Next, with Min And Max, returns Within Range.
+        /// Verifies that <see cref="XorShiftRandom.Next" />, with MinAndMax, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void Next_WithMinAndMax_ShouldReturnWithinRange()

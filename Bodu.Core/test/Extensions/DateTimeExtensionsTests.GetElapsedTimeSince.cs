@@ -17,7 +17,7 @@ namespace Bodu.Extensions
     public partial class DateTimeExtensionsTests
     {
         /// <summary>
-        /// Verifies that Get Elapsed Time Since, when Past Time, returns Positive Time Span.
+        /// Verifies that <see cref="DateTimeExtensions.GetElapsedTimeSince" />, when PastTime, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         [DataRow(-5, DateTimeKind.Utc)]
@@ -38,7 +38,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Get Elapsed Time Since, when Future Time, returns Negative Time Span.
+        /// Verifies that <see cref="DateTimeExtensions.GetElapsedTimeSince" />, when FutureTime, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         [DataRow(1, DateTimeKind.Utc)]
@@ -59,7 +59,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Get Elapsed Time Since, when Kind Is Unspecified, throws Exactly.
+        /// Verifies that <see cref="DateTimeExtensions.GetElapsedTimeSince" />, when KindIsUnspecified, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         public void GetElapsedTimeSince_WhenKindIsUnspecified_ShouldThrowExactly()
@@ -76,7 +76,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Get Elapsed Time Since, when Now, returns Near Zero.
+        /// Verifies that <see cref="DateTimeExtensions.GetElapsedTimeSince" />, when Now, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Utc)]

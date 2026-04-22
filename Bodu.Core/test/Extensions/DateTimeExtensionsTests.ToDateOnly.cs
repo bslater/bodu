@@ -28,7 +28,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Date Only, when Called, returns Expected Date Only.
+        /// Verifies that <see cref="DateTimeExtensions.ToDateOnly" />, when Called, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(ToDateOnlyTestData), DynamicDataSourceType.Method)]
@@ -42,7 +42,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Date Only, when Kind Is Set, Ignore Kind.
+        /// Verifies that <see cref="DateTimeExtensions.ToDateOnly" />, when KindIsSet, returns the expected value.
         /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
@@ -57,7 +57,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Date Only, when Kind Is Utc, Ignore Kind.
+        /// Verifies that <see cref="DateTimeExtensions.ToDateOnly" />, when KindIsUtc, returns the expected value.
         /// </summary>
         [TestMethod]
         public void ToDateOnly_WhenKindIsUtc_ShouldIgnoreKind()
@@ -69,7 +69,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Date Only, when Using Min Value, returns Earliest Date.
+        /// Verifies that <see cref="DateTimeExtensions.ToDateOnly" />, when UsingMinValue, returns the expected value.
         /// </summary>
         [TestMethod]
         public void ToDateOnly_WhenUsingMinValue_ShouldReturnEarliestDate()
@@ -81,7 +81,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Date Only, when Using Max Value, returns Latest Date.
+        /// Verifies that <see cref="DateTimeExtensions.ToDateOnly" />, when UsingMaxValue, returns the expected value.
         /// </summary>
         [TestMethod]
         public void ToDateOnly_WhenUsingMaxValue_ShouldReturnLatestDate()

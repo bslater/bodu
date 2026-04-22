@@ -11,7 +11,7 @@ namespace Bodu
         // Span<T> overload (delegates to ReadOnlySpan<T>)
 
         /// <summary>
-        /// Verifies that Throw If Span Offset Or Count Invalid, Span, when Offset Or Count Out Of Range, throws Argument Out Of Range Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanOffsetOrCountInvalid" />, Span, when OffsetOrCountOutOfRange, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         [DataRow(-1, 2)]   // negative offset
@@ -28,7 +28,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Span Offset Or Count Invalid, Span, when Sum Exceeds Length, throws Argument Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanOffsetOrCountInvalid" />, Span, when SumExceedsLength, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         [DataRow(3, 3)]    // offset + count > length
@@ -43,7 +43,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Span Offset Or Count Invalid, Span, when Parameters Are Valid, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanOffsetOrCountInvalid" />, Span, when ParametersAreValid, NotThrow.
         /// </summary>
         [TestMethod]
         [DataRow(0, 0)]
@@ -60,7 +60,7 @@ namespace Bodu
         // ReadOnlySpan<T> overload (canonical implementation)
 
         /// <summary>
-        /// Verifies that Throw If Span Offset Or Count Invalid, Read Only Span, when Offset Or Count Out Of Range, throws Argument Out Of Range Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanOffsetOrCountInvalid" />, ReadOnlySpan, when OffsetOrCountOutOfRange, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         [DataRow(-1, 2)]
@@ -77,7 +77,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Span Offset Or Count Invalid, Read Only Span, when Sum Exceeds Length, throws Argument Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanOffsetOrCountInvalid" />, ReadOnlySpan, when SumExceedsLength, throws <see cref="ArgumentException" />.
         /// </summary>
         [TestMethod]
         [DataRow(3, 3)]
@@ -92,7 +92,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Span Offset Or Count Invalid, Read Only Span, when Parameters Are Valid, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfSpanOffsetOrCountInvalid" />, ReadOnlySpan, when ParametersAreValid, NotThrow.
         /// </summary>
         [TestMethod]
         [DataRow(0, 0)]

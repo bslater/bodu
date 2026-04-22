@@ -9,7 +9,7 @@ namespace Bodu
     public partial class ThrowHelperTests
     {
         /// <summary>
-        /// Verifies that Throw If Zero Or Positive, when Value Is Zero Or Positive, throws.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfZeroOrPositive" />, when ValueIsZeroOrPositive, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         [DataRow(0)]
@@ -25,7 +25,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Zero Or Positive, when Value Is Negative, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfZeroOrPositive" />, when ValueIsNegative, NotThrow.
         /// </summary>
         [TestMethod]
         [DataRow(-1)]

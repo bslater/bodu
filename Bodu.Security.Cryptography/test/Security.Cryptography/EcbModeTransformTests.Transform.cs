@@ -9,7 +9,7 @@
     public sealed partial class EcbModeTransformTests
     {
         /// <summary>
-        /// Verifies that Transform, when Decrypting, Decrypt Each Block Independently.
+        /// Verifies that <see cref="EcbModeTransform.Transform" />, when Decrypting, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Transform_WhenDecrypting_ShouldDecryptEachBlockIndependently()
@@ -27,7 +27,7 @@
         }
 
         /// <summary>
-        /// Verifies that Transform, when Encrypting, Encrypt Each Block Independently.
+        /// Verifies that <see cref="EcbModeTransform.Transform" />, when Encrypting, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Transform_WhenEncrypting_ShouldEncryptEachBlockIndependently()
@@ -49,7 +49,7 @@
         }
 
         /// <summary>
-        /// Verifies that Transform, when Plaintext Blocks Are Identical, produces Identical Cipher Text Blocks.
+        /// Verifies that <see cref="EcbModeTransform.Transform" />, when PlaintextBlocksAreIdentical, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Transform_WhenPlaintextBlocksAreIdentical_ShouldProduceIdenticalCipherTextBlocks()

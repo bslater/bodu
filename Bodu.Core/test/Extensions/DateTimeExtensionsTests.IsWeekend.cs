@@ -21,7 +21,7 @@ namespace Bodu.Extensions
 
 
         /// <summary>
-        /// Verifies that Is Weekend, when Using Standard Weekend, returns Expected.
+        /// Verifies that <see cref="DateTimeExtensions.IsWeekend" />, when UsingStandardWeekend, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(WeekendTestData), DynamicDataSourceType.Method)]
@@ -34,7 +34,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Is Weekend, when Custom Rule Missing Provider, throws Exactly.
+        /// Verifies that <see cref="DateTimeExtensions.IsWeekend" />, when CustomRuleMissingProvider, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         public void IsWeekend_WhenCustomRuleMissingProvider_ShouldThrowExactly()
@@ -47,7 +47,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Is Weekend, when Invalid Enum, throws Exactly.
+        /// Verifies that <see cref="DateTimeExtensions.IsWeekend" />, when InvalidEnum, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         public void IsWeekend_WhenInvalidEnum_ShouldThrowExactly()

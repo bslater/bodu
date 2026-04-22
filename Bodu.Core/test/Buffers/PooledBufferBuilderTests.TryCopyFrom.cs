@@ -9,7 +9,7 @@
     public partial class PooledBufferBuilderTests
     {
         /// <summary>
-        /// Verifies that Try Copy From, when List Passed, Using I Collection, Copy Correctly.
+        /// Verifies that <see cref="PooledBufferBuilder.TryCopyFrom" />, when ListPassed, UsingICollection, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void TryCopyFrom_WhenListPassed_ShouldCopyCorrectly_UsingICollection()

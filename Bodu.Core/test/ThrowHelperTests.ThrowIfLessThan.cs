@@ -11,7 +11,7 @@ namespace Bodu
         // Non-nullable overloads
 
         /// <summary>
-        /// Verifies that Throw If Less Than, when Value Is Less Than Min, throws Argument Out Of Range Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfLessThan" />, when ValueIsLessThanMin, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         [DataRow(-1, 0)]
@@ -26,7 +26,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Less Than, when Value Is Greater Than Or Equal To Min, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfLessThan" />, when ValueIsGreaterThanOrEqualToMin, NotThrow.
         /// </summary>
         [TestMethod]
         [DataRow(0, 0)]
@@ -40,7 +40,7 @@ namespace Bodu
         // Nullable overloads
 
         /// <summary>
-        /// Verifies that Throw If Less Than, Nullable, when Value Is Null And Throw If Null, throws Argument Null Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfLessThan" />, Nullable, when ValueIsNullAndThrowIfNull, throws <see cref="ArgumentNullException" />.
         /// </summary>
         [TestMethod]
         [DataRow(null, 5, true)]
@@ -53,7 +53,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Less Than, Nullable, when Value Is Null And Throw If Null Is False, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfLessThan" />, Nullable, when ValueIsNullAndThrowIfNullIsFalse, NotThrow.
         /// </summary>
         [TestMethod]
         [DataRow(null, 5, false)]
@@ -63,7 +63,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Less Than, Nullable, when Value Is Less Than Min, throws Argument Out Of Range Exception.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfLessThan" />, Nullable, when ValueIsLessThanMin, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         [DataRow(2, 5, false)]
@@ -77,7 +77,7 @@ namespace Bodu
         }
 
         /// <summary>
-        /// Verifies that Throw If Less Than, Nullable, when Value Is Greater Than Or Equal To Min, does not Throw.
+        /// Verifies that <see cref="ThrowHelper.ThrowIfLessThan" />, Nullable, when ValueIsGreaterThanOrEqualToMin, NotThrow.
         /// </summary>
         [TestMethod]
         [DataRow(5, 5, false)]

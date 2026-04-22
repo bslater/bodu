@@ -79,7 +79,7 @@
         }
 
         /// <summary>
-        /// Verifies that Decrypt, with Rfc8452 Vector, Recover Plaintext.
+        /// Verifies that <see cref="GcmSivModeTransform.Decrypt" />, with Rfc8452Vector, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GcmSivRfc8452Vectors), DynamicDataSourceType.Method)]
@@ -102,7 +102,7 @@
         // ── Structural tests ───────────────────────────────────────────────────────────────────────
 
         /// <summary>
-        /// Verifies that Decrypt, when Tag Is Corrupted, throws Cryptographic Exception.
+        /// Verifies that <see cref="GcmSivModeTransform.Decrypt" />, when TagIsCorrupted, throws <see cref="CryptographicException" />.
         /// </summary>
         [TestMethod]
         public void Decrypt_WhenTagIsCorrupted_ShouldThrowCryptographicException()
@@ -126,7 +126,7 @@
         }
 
         /// <summary>
-        /// Verifies that Encrypt Then Decrypt, with Random Key, Round Trip.
+        /// Verifies that <see cref="GcmSivModeTransform.EncryptThenDecrypt" />, with RandomKey, returns the expected value.
         /// </summary>
         [TestMethod]
         public void EncryptThenDecrypt_WithRandomKey_ShouldRoundTrip()

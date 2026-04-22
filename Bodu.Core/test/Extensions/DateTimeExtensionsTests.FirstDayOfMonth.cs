@@ -18,7 +18,7 @@ namespace Bodu.Extensions
     {
 
         /// <summary>
-        /// Verifies that First Day Of Month, when Called, returns Expected Date.
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfMonth" />, when Called, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(FirstDayOfMonthDataTestData), DynamicDataSourceType.Method)]
@@ -30,7 +30,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Month preserves Date Time Kind.
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfMonth" /> returns the expected value.
         /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]

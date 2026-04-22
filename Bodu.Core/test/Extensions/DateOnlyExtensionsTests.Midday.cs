@@ -18,7 +18,7 @@ namespace Bodu.Extensions
     {
 
         /// <summary>
-        /// Verifies that Midday, when Called, Set Time To Noon.
+        /// Verifies that <see cref="DateOnlyExtensions.Midday" />, when Called, returns the expected value.
         /// </summary>
         [TestMethod]
         [DataRow("2024-04-18T00:00:00", "2024-04-18T12:00:00")]
@@ -37,7 +37,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Midday, when Kind Is Utc, preserves Kind.
+        /// Verifies that <see cref="DateOnlyExtensions.Midday" />, when KindIsUtc, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Midday_WhenKindIsUtc_ShouldPreserveKind()
@@ -50,7 +50,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Midday, when Kind Is Local, preserves Kind.
+        /// Verifies that <see cref="DateOnlyExtensions.Midday" />, when KindIsLocal, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Midday_WhenKindIsLocal_ShouldPreserveKind()
@@ -63,7 +63,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Midday, when Kind Is Unspecified, preserves Kind.
+        /// Verifies that <see cref="DateOnlyExtensions.Midday" />, when KindIsUnspecified, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Midday_WhenKindIsUnspecified_ShouldPreserveKind()
@@ -76,7 +76,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Midday, when Using Min Date, returns Noon On That Day.
+        /// Verifies that <see cref="DateOnlyExtensions.Midday" />, when UsingMinDate, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Midday_WhenUsingMinDate_ShouldReturnNoonOnThatDay()
@@ -88,7 +88,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Midday, when Using Max Date, returns Noon On That Day.
+        /// Verifies that <see cref="DateOnlyExtensions.Midday" />, when UsingMaxDate, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Midday_WhenUsingMaxDate_ShouldReturnNoonOnThatDay()

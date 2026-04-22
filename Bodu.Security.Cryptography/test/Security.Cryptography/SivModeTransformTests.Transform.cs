@@ -17,7 +17,7 @@
         // All tests use Encrypt / Decrypt — the old Transform(span, span, bool) no longer exists.
 
         /// <summary>
-        /// Verifies that Encrypt Then Decrypt, with Same Key And Nonce, Recover Plaintext.
+        /// Verifies that <see cref="SivModeTransform.EncryptThenDecrypt" />, with SameKeyAndNonce, returns the expected value.
         /// </summary>
         [TestMethod]
         public void EncryptThenDecrypt_WithSameKeyAndNonce_ShouldRecoverPlaintext()
@@ -38,7 +38,7 @@
         }
 
         /// <summary>
-        /// Verifies that Encrypt, with Empty Plaintext, produces Tag Only.
+        /// Verifies that <see cref="SivModeTransform.Encrypt" />, with EmptyPlaintext, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Encrypt_WithEmptyPlaintext_ShouldProduceTagOnly()
@@ -50,7 +50,7 @@
         }
 
         /// <summary>
-        /// Verifies that Decrypt, when Ciphertext Is Tampered, throws Cryptographic Exception.
+        /// Verifies that <see cref="SivModeTransform.Decrypt" />, when CiphertextIsTampered, throws <see cref="CryptographicException" />.
         /// </summary>
         [TestMethod]
         public void Decrypt_WhenCiphertextIsTampered_ShouldThrowCryptographicException()
@@ -72,7 +72,7 @@
         }
 
         /// <summary>
-        /// Verifies that Decrypt, when Tag Is Tampered, throws Cryptographic Exception.
+        /// Verifies that <see cref="SivModeTransform.Decrypt" />, when TagIsTampered, throws <see cref="CryptographicException" />.
         /// </summary>
         [TestMethod]
         public void Decrypt_WhenTagIsTampered_ShouldThrowCryptographicException()
@@ -94,7 +94,7 @@
         }
 
         /// <summary>
-        /// Verifies that Decrypt, when Aad Is Tampered, throws Cryptographic Exception.
+        /// Verifies that <see cref="SivModeTransform.Decrypt" />, when AadIsTampered, throws <see cref="CryptographicException" />.
         /// </summary>
         [TestMethod]
         public void Decrypt_WhenAadIsTampered_ShouldThrowCryptographicException()

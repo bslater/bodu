@@ -9,7 +9,7 @@
     public partial class PooledBufferBuilderTests
     {
         /// <summary>
-        /// Verifies that Append Range, when Enumerable Used, Using I Enumerable, Append All Items.
+        /// Verifies that <see cref="PooledBufferBuilder.AppendRange" />, when EnumerableUsed, UsingIEnumerable, returns the expected value.
         /// </summary>
         [TestMethod]
         public void AppendRange_WhenEnumerableUsed_ShouldAppendAllItems_UsingIEnumerable()
@@ -23,7 +23,7 @@
         }
 
         /// <summary>
-        /// Verifies that Append Range, when Exceeds Initial Size, Using I Enumerable, Expand Buffer.
+        /// Verifies that <see cref="PooledBufferBuilder.AppendRange" />, when ExceedsInitialSize, UsingIEnumerable, returns the expected value.
         /// </summary>
         [TestMethod]
         public void AppendRange_WhenExceedsInitialSize_ShouldExpandBuffer_UsingIEnumerable()

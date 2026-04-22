@@ -11,7 +11,7 @@ namespace Bodu.Extensions
     public partial class DateOnlyExtensionsTests
     {
         /// <summary>
-        /// Verifies that Is First Day Of Quarter, when Date Is Quarter Start And Default Definition, returns True.
+        /// Verifies that <see cref="DateOnlyExtensions.IsFirstDayOfQuarter" />, when DateIsQuarterStartAndDefaultDefinition, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.IsFirstDayOfQuarterJanuaryDecemberTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
@@ -25,7 +25,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Is First Day Of Quarter, when Date Matches Start Of Quarter Definition, returns True.
+        /// Verifies that <see cref="DateOnlyExtensions.IsFirstDayOfQuarter" />, when DateMatchesStartOfQuarterDefinition, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.IsFirstDayOfQuarterTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
@@ -38,7 +38,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Is First Day Of Quarter, when Date Is Not Start Of Quarter Definition, returns False.
+        /// Verifies that <see cref="DateOnlyExtensions.IsFirstDayOfQuarter" />, when DateIsNotStartOfQuarterDefinition, returns <see langword="false" />.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.IsNotFirstDayOfQuarterTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
@@ -51,7 +51,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Is First Day Of Quarter, when Definition Is Invalid, throws Exactly.
+        /// Verifies that <see cref="DateOnlyExtensions.IsFirstDayOfQuarter" />, when DefinitionIsInvalid, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         public void IsFirstDayOfQuarter_WhenDefinitionIsInvalid_ShouldThrowExactly()
@@ -66,7 +66,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Is First Day Of Quarter, when Definition Is Custom, throws Exactly.
+        /// Verifies that <see cref="DateOnlyExtensions.IsFirstDayOfQuarter" />, when DefinitionIsCustom, throws <see cref="InvalidOperationException" />.
         /// </summary>
         [TestMethod]
         public void IsFirstDayOfQuarter_WhenDefinitionIsCustom_ShouldThrowExactly()
@@ -80,7 +80,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Is First Day Of Quarter, when Using Valid Quarter Provider, returns Expected Date.
+        /// Verifies that <see cref="DateOnlyExtensions.IsFirstDayOfQuarter" />, when UsingValidQuarterProvider, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.IsFirstDayOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]

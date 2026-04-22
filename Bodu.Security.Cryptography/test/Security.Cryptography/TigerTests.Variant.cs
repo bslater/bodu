@@ -45,7 +45,7 @@ namespace Bodu.Security.Cryptography
         }
 
         /// <summary>
-        /// Verifies that Variant, Set, when Hashing Started, throws Exactly.
+        /// Verifies that <see cref="Tiger.Variant" />, Set, when HashingStarted, throws <see cref="CryptographicUnexpectedOperationException" />.
         /// </summary>
         [TestMethod]
         public void Variant_Set_WhenHashingStarted_ShouldThrowExactly()

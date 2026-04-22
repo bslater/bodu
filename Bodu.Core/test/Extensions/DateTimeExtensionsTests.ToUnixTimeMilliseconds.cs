@@ -18,7 +18,7 @@ namespace Bodu.Extensions
     {
 
         /// <summary>
-        /// Verifies that To Unix Time Milliseconds, when Called With Utc, returns Expected.
+        /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeMilliseconds" />, when CalledWithUtc, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(FromUnixTimeMillisecondsTestData), DynamicDataSourceType.Property)]
@@ -30,7 +30,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Unix Time Milliseconds, when Kind Is Utc, returns Correct Milliseconds.
+        /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeMilliseconds" />, when KindIsUtc, returns the expected value.
         /// </summary>
         [TestMethod]
         public void ToUnixTimeMilliseconds_WhenKindIsUtc_ShouldReturnCorrectMilliseconds()
@@ -42,7 +42,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Unix Time Milliseconds, when Kind Is Local, Convert To Utc.
+        /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeMilliseconds" />, when KindIsLocal, returns the expected value.
         /// </summary>
         [TestMethod]
         public void ToUnixTimeMilliseconds_WhenKindIsLocal_ShouldConvertToUtc()
@@ -57,7 +57,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Unix Time Milliseconds, when Kind Is Unspecified, Assume Local Time.
+        /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeMilliseconds" />, when KindIsUnspecified, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void ToUnixTimeMilliseconds_WhenKindIsUnspecified_ShouldAssumeLocalTime()
@@ -73,7 +73,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Unix Time Milliseconds, when Using Min Value, is Negative Large.
+        /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeMilliseconds" />, when UsingMinValue, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void ToUnixTimeMilliseconds_WhenUsingMinValue_ShouldBeNegativeLarge()
@@ -84,7 +84,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Unix Time Milliseconds, when Using Max Value, is Positive Large.
+        /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeMilliseconds" />, when UsingMaxValue, returns <see langword="true" />.
         /// </summary>
         [TestMethod]
         public void ToUnixTimeMilliseconds_WhenUsingMaxValue_ShouldBePositiveLarge()
@@ -95,7 +95,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that To Unix Time Milliseconds, Round Trip With From Unix Time Milliseconds, matches Utc.
+        /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeMilliseconds" />, RoundTripWithFromUnixTimeMilliseconds, returns the expected value.
         /// </summary>
         [TestMethod]
         public void ToUnixTimeMilliseconds_RoundTripWithFromUnixTimeMilliseconds_ShouldMatchUtc()

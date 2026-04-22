@@ -36,7 +36,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Get Iso Year, when Called, returns Expected Year.
+        /// Verifies that <see cref="DateTimeExtensions.GetIsoYear" />, when Called, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetIsoYearTestData), DynamicDataSourceType.Method)]
@@ -47,7 +47,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Get Iso Year, when Called, matches Iso Week Calculator.
+        /// Verifies that <see cref="DateTimeExtensions.GetIsoYear" />, when Called, returns the expected value.
         /// </summary>
         [TestMethod]
         public void GetIsoYear_WhenCalled_ShouldMatchIsoWeekCalculator()
@@ -59,7 +59,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Get Iso Year, when Time Of Day Is Non Zero, returns Same Result As Midnight.
+        /// Verifies that <see cref="DateTimeExtensions.GetIsoYear" />, when TimeOfDayIsNonZero, returns the expected value.
         /// </summary>
         [TestMethod]
         public void GetIsoYear_WhenTimeOfDayIsNonZero_ShouldReturnSameResultAsMidnight()

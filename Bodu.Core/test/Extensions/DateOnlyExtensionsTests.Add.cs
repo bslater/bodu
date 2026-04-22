@@ -27,7 +27,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Add, when Valid Inputs Provided, returns Expected Result.
+        /// Verifies that <see cref="DateOnlyExtensions.Add" />, when ValidInputsProvided, returns the expected value.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.GetAddTestCases), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
@@ -50,7 +50,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Add, when Out Of Range, throws Exactly.
+        /// Verifies that <see cref="DateOnlyExtensions.Add" />, when OutOfRange, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(GetAddExceptionCases), DynamicDataSourceType.Method)]
@@ -64,7 +64,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Add, when All Parameters Zero, returns Same Date.
+        /// Verifies that <see cref="DateOnlyExtensions.Add" />, when AllParametersZero, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Add_WhenAllParametersZero_ShouldReturnSameDate()
@@ -75,7 +75,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Add, when Adding To Feb28 In Leap Year, returns Feb29.
+        /// Verifies that <see cref="DateOnlyExtensions.Add" />, when AddingToFeb28InLeapYear, returns the expected value.
         /// </summary>
         [TestMethod]
         public void Add_WhenAddingToFeb28InLeapYear_ShouldReturnFeb29()

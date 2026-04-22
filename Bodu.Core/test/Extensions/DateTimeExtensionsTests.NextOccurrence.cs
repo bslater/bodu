@@ -57,7 +57,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Next Occurrence, when Invalid Time Span, throws Exactly.
+        /// Verifies that <see cref="DateTimeExtensions.NextOccurrence" />, when InvalidTimeSpan, throws <see cref="ArgumentOutOfRangeException" />.
         /// </summary>
         [TestMethod]
         [DataRow(0)]
