@@ -19,7 +19,7 @@ namespace Bodu.Extensions
     public partial class DateOnlyExtensionsTests
     {
         /// <summary>
-        /// Verifies that First Day Of Week, when Current Culture Set, returns Expected Start.
+        /// Verifies that the parameterless <see cref="DateOnlyExtensions.FirstDayOfWeek(DateOnly)" /> overload uses <see cref="CultureInfo.CurrentCulture" /> to determine the week start.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfWeekCultureInfoTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]
@@ -44,7 +44,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week, when Culture, returns Expected Start.
+        /// Verifies that <see cref="DateOnlyExtensions.FirstDayOfWeek(DateOnly, CultureInfo)" /> returns the expected week start for the supplied culture's first-day-of-week.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(DateTimeExtensionsTests.FirstDayOfWeekCultureInfoTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
@@ -59,7 +59,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week, when Culture Is Null, uses Current Culture.
+        /// Verifies that passing a <see langword="null" /> <see cref="CultureInfo" /> falls back to <see cref="CultureInfo.CurrentCulture" />.
         /// </summary>
         [TestMethod]
         public void FirstDayOfWeek_WhenCultureIsNull_ShouldUseCurrentCulture()
@@ -83,7 +83,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week, when Min Value, returns Min.
+        /// Verifies that <see cref="DateOnly.MinValue" /> with a Monday-start culture returns <see cref="DateOnly.MinValue" /> (which is itself a Monday).
         /// </summary>
         [TestMethod]
         public void FirstDayOfWeek_WhenMinValue_ShouldReturnMin()
@@ -95,7 +95,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week, when Min Value And Culture Is US, returns Throw Argument Out Of Range Exception.
+        /// Verifies that <see cref="DateOnly.MinValue" /> with a Sunday-start (en-US) culture throws <see cref="ArgumentOutOfRangeException" /> because the computed start would underflow.
         /// </summary>
         [TestMethod]
         public void FirstDayOfWeek_WhenMinValueAndCultureIsUS_ShouldReturnThrowArgumentOutOfRangeException()
@@ -110,7 +110,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week, when Max Value, returns Start Of Week.
+        /// Verifies that <see cref="DateOnly.MaxValue" /> returns a valid week start that is on or before the input.
         /// </summary>
         [TestMethod]
         public void FirstDayOfWeek_WhenMaxValue_ShouldReturnStartOfWeek()
