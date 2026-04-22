@@ -19,7 +19,7 @@ namespace Bodu.Extensions
     {
 
         /// <summary>
-        /// Verifies that Last Day Of Week, when Current Culture Set, returns Expected Start.
+        /// Verifies that <see cref="DateTimeExtensions.LastDayOfWeek(DateTime, CultureInfo)" /> returns the expected week end for the supplied culture's first-day-of-week.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(LastDayOfWeekCultureInfoTestData), DynamicDataSourceType.Method)]
@@ -31,7 +31,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Last Day Of Week, when Culture Is Null, uses Current Culture.
+        /// Verifies that passing a <see langword="null" /> <see cref="CultureInfo" /> falls back to <see cref="CultureInfo.CurrentCulture" />.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(LastDayOfWeekCultureInfoTestData), DynamicDataSourceType.Method)]
@@ -54,7 +54,7 @@ namespace Bodu.Extensions
 
 
         /// <summary>
-        /// Verifies that Last Day Of Week, when Using Default Overload, preserves Date Time Kind.
+        /// Verifies that the parameterless <see cref="DateTimeExtensions.LastDayOfWeek(DateTime)" /> overload preserves the input's <see cref="DateTime.Kind" /> across all <see cref="DateTimeKind" /> values.
         /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
@@ -68,7 +68,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Last Day Of Week, when Using Culture, preserves Date Time Kind.
+        /// Verifies that the culture-taking <see cref="DateTimeExtensions.LastDayOfWeek(DateTime, CultureInfo)" /> overload preserves the input's <see cref="DateTime.Kind" /> across all <see cref="DateTimeKind" /> values.
         /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
@@ -82,7 +82,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Last Day Of Week, when Using Min Value, returns Valid Result.
+        /// Verifies that <see cref="DateTime.MinValue" /> with the invariant culture returns a date that is on or after <see cref="DateTime.MinValue" /> with <see cref="DateTimeKind.Unspecified" />.
         /// </summary>
         [TestMethod]
         public void LastDayOfWeek_WhenUsingMinValue_ShouldReturnValidResult()
@@ -96,7 +96,7 @@ namespace Bodu.Extensions
 
 
         /// <summary>
-        /// Verifies that Last Day Of Week, when Min Value And Start Day Is Late In Week, throws Exactly.
+        /// Verifies that <see cref="DateTime.MaxValue" /> with a Sunday-start culture throws <see cref="ArgumentOutOfRangeException" /> because the computed week end would overflow.
         /// </summary>
         [TestMethod]
         public void LastDayOfWeek_WhenMinValueAndStartDayIsLateInWeek_ShouldThrowExactly()
@@ -111,7 +111,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Last Day Of Week, when Using Max Value, returns Valid Result.
+        /// Verifies that <see cref="DateTime.MaxValue" /> with a Friday-end culture returns <c>MaxValue.Date</c> (which is itself the configured last day of the week).
         /// </summary>
         [TestMethod]
         public void LastDayOfWeek_WhenUsingMaxValue_ShouldReturnValidResult()
@@ -197,7 +197,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that Last Day Of Week, when Weekend Definition And Kind Is Set, preserves Kind.
+        /// Verifies that the weekend-definition overload preserves the input's <see cref="DateTime.Kind" /> across every <c>(definition, kind)</c> combination.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(CalendarWeekendDefinitionDateTimeKindTestData), DynamicDataSourceType.Method)]

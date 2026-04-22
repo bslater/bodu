@@ -22,7 +22,7 @@ namespace Bodu.Extensions
 
 
         /// <summary>
-        /// Verifies that First Day Of Week, when Current Culture Set, returns Expected Start.
+        /// Verifies that the parameterless <see cref="DateTimeExtensions.FirstDayOfWeek(DateTime)" /> overload uses <see cref="CultureInfo.CurrentCulture" /> to determine the week start.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(FirstDayOfWeekCultureInfoTestData), DynamicDataSourceType.Method)]
@@ -45,7 +45,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week, when Culture, returns Expected Start.
+        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeek(DateTime, CultureInfo)" /> returns the expected week start for the supplied culture's first-day-of-week.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(FirstDayOfWeekCultureInfoTestData), DynamicDataSourceType.Method)]
@@ -57,7 +57,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week, when Culture Is Null, uses Current Culture.
+        /// Verifies that passing a <see langword="null" /> <see cref="CultureInfo" /> falls back to <see cref="CultureInfo.CurrentCulture" />.
         /// </summary>
         [TestMethod]
         public void FirstDayOfWeek_WhenCultureIsNull_ShouldUseCurrentCulture()
@@ -81,7 +81,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week, when Using Default Overload, preserves Date Time Kind.
+        /// Verifies that the parameterless overload preserves the input's <see cref="DateTime.Kind" /> across all <see cref="DateTimeKind" /> values.
         /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
@@ -95,7 +95,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week, when Using Culture, preserves Date Time Kind.
+        /// Verifies that the culture-taking overload preserves the input's <see cref="DateTime.Kind" /> across all <see cref="DateTimeKind" /> values.
         /// </summary>
         [TestMethod]
         [DataRow(DateTimeKind.Unspecified)]
@@ -110,7 +110,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week, when Using Min Value, returns Min.
+        /// Verifies that <see cref="DateTime.MinValue" /> with a Monday-start culture returns <c>MinValue.Date</c> (which is itself a Monday).
         /// </summary>
         [TestMethod]
         public void FirstDayOfWeek_WhenUsingMinValue_ShouldReturnMin()
@@ -122,7 +122,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week, when Using Min Value With Sunday Start, throws Exactly.
+        /// Verifies that <see cref="DateTime.MinValue" /> with a Sunday-start culture throws <see cref="ArgumentOutOfRangeException" /> because the computed start would underflow.
         /// </summary>
         [TestMethod]
         public void FirstDayOfWeek_WhenUsingMinValueWithSundayStart_ShouldThrowExactly()
@@ -137,7 +137,7 @@ namespace Bodu.Extensions
         }
 
         /// <summary>
-        /// Verifies that First Day Of Week, when Using Max Value, returns Valid Start.
+        /// Verifies that <see cref="DateTime.MaxValue" /> returns a valid week start that is on or before the input.
         /// </summary>
         [TestMethod]
         public void FirstDayOfWeek_WhenUsingMaxValue_ShouldReturnValidStart()
@@ -219,7 +219,7 @@ namespace Bodu.Extensions
 
 
         /// <summary>
-        /// Verifies that First Day Of Week, when Weekend Definition And Kind Is Set, preserves Kind.
+        /// Verifies that the weekend-definition overload preserves the input's <see cref="DateTime.Kind" /> across every <c>(definition, kind)</c> combination.
         /// </summary>
         [TestMethod]
         [DynamicData(nameof(CalendarWeekendDefinitionDateTimeKindTestData), DynamicDataSourceType.Method)]
