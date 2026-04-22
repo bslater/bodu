@@ -402,12 +402,116 @@ public sealed class EasterSundayNotableDateCalculatorTests
             yield return new object[] { new EasterSundayKnownAnswer { Year = 2092, ExpectedDate = new DateTime(2092, 3, 30) } };
             yield return new object[] { new EasterSundayKnownAnswer { Year = 2093, ExpectedDate = new DateTime(2093, 4, 12) } };
 
+
+            // Orthodox entries intentionally omitted from this data source; all 184 Orthodox rows
+            // (1916-2099) are exercised by GetDate_WhenGivenOrthodoxKnownYears_ShouldReturnExpectedDate,
+            // which is marked [Ignore] pending fix of bslater/bodu#53.
+
+
+        }
+
+        /// <summary>
+        /// Provides known year, expected Easter Sunday dates, and calendar system for validation. Grouped logically into Boundary, Julian,
+        /// and Gregorian.
+        /// </summary>
+        public static IEnumerable<object[]> GetKnownEasterSundayTestData()
+	{
+		// Helper only for non-null calendars
+		static SysGlob.Calendar CalendarOf(string type) => type switch
+		{
+			"Gregorian" => new SysGlob.GregorianCalendar(),
+			"Julian" => new SysGlob.JulianCalendar(),
+			_ => throw new ArgumentException($"Unsupported calendar type: {type}", nameof(type))
+		};
+
+		// Boundary Tests
+		yield return new object[] { 1, new DateTime(1, 3, 27, 0, 0, 0, DateTimeKind.Unspecified), null! };
+		yield return new object[] { 1, new DateTime(1, 3, 25, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Julian") };
+		yield return new object[] { 9999, new DateTime(9999, 3, 28, 0, 0, 0, DateTimeKind.Unspecified), null! };
+		yield return new object[] { 9999, new DateTime(9999, 3, 28, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Gregorian") };
+
+		// Julian Calendar
+		yield return new object[] { 1000, new DateTime(1000, 3, 31, 0, 0, 0, DateTimeKind.Unspecified), null! };
+		yield return new object[] { 1000, new DateTime(1000, 4, 6, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Julian") };
+		yield return new object[] { 1200, new DateTime(1200, 4, 9, 0, 0, 0, DateTimeKind.Unspecified), null! };
+		yield return new object[] { 1200, new DateTime(1200, 4, 16, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Julian") };
+		yield return new object[] { 1500, new DateTime(1500, 4, 19, 0, 0, 0, DateTimeKind.Unspecified), null! };
+		yield return new object[] { 1500, new DateTime(1500, 4, 29, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Julian") };
+
+		// Gregorian Calendar
+		yield return new object[] { 1583, new DateTime(1583, 4, 10, 0, 0, 0, DateTimeKind.Unspecified), null! };
+		yield return new object[] { 1583, new DateTime(1583, 4, 10, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Gregorian") };
+		yield return new object[] { 1600, new DateTime(1600, 4, 2, 0, 0, 0, DateTimeKind.Unspecified), null! };
+		yield return new object[] { 1600, new DateTime(1600, 4, 2, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Gregorian") };
+		yield return new object[] { 1700, new DateTime(1700, 4, 11, 0, 0, 0, DateTimeKind.Unspecified), null! };
+		yield return new object[] { 1700, new DateTime(1700, 4, 11, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Gregorian") };
+		yield return new object[] { 1800, new DateTime(1800, 4, 13, 0, 0, 0, DateTimeKind.Unspecified), null! };
+		yield return new object[] { 1800, new DateTime(1800, 4, 13, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Gregorian") };
+		yield return new object[] { 1900, new DateTime(1900, 4, 15, 0, 0, 0, DateTimeKind.Unspecified), null! };
+		yield return new object[] { 1900, new DateTime(1900, 4, 15, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Gregorian") };
+		yield return new object[] { 2000, new DateTime(2000, 4, 23, 0, 0, 0, DateTimeKind.Unspecified), null! };
+		yield return new object[] { 2000, new DateTime(2000, 4, 23, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Gregorian") };
+		yield return new object[] { 2024, new DateTime(2024, 3, 31, 0, 0, 0, DateTimeKind.Unspecified), null! };
+		yield return new object[] { 2024, new DateTime(2024, 3, 31, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Gregorian") };
+		yield return new object[] { 2024, new DateTime(2024, 4, 13, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Julian") };
+		yield return new object[] { 2025, new DateTime(2025, 4, 20, 0, 0, 0, DateTimeKind.Unspecified), null! };
+		yield return new object[] { 2025, new DateTime(2025, 4, 20, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Gregorian") };
+
+		// Future Years
+		yield return new object[] { 2030, new DateTime(2030, 4, 21, 0, 0, 0, DateTimeKind.Unspecified), null! };
+		yield return new object[] { 2040, new DateTime(2040, 4, 1, 0, 0, 0, DateTimeKind.Unspecified), null! };
+		yield return new object[] { 2050, new DateTime(2050, 4, 10, 0, 0, 0, DateTimeKind.Unspecified), null! };
+		yield return new object[] { 2100, new DateTime(2100, 3, 28, 0, 0, 0, DateTimeKind.Unspecified), null! };
+	}
+
+	public static string GetKnownEasterSundayTestDataDisplayName(MethodInfo methodInfo, object[] data)
+	{
+            EasterSundayKnownAnswer knownAnswer = (EasterSundayKnownAnswer)data[0];
+		return $"{methodInfo.Name} - Year: {knownAnswer.Year}, Calendar: {knownAnswer.CalendarType}, Expected: {knownAnswer.ExpectedDate:yyyy-MM-dd}";
+        }
+
+        /// <summary>
+        /// Verifies that Easter Sunday is correctly calculated across a known set of years and calendars.
+        /// </summary>
+        [TestMethod]
+	[DynamicData(nameof(GetInvalidYearTestData), DynamicDataDisplayName =nameof(GetKnownEasterSundayTestDataDisplayName))]
+	public void GetDate_WhenGivenKnownYears_ShouldReturnExpectedDate(EasterSundayKnownAnswer knownAnswer)
+	{
+		var calculator = new EasterSundayNotableDateCalculator();
+            SysGlob.Calendar? calendar = knownAnswer.CalendarType switch
+            {
+                EasterCalendarType.Gregorian => new SysGlob.GregorianCalendar(),
+                EasterCalendarType.Julian => new SysGlob.JulianCalendar(),
+                _ => null
+            };
+
+            var result = calculator.GetDate(knownAnswer.Year, calendar);
+
+		Assert.IsNotNull(result);
+		Assert.AreEqual(knownAnswer.ExpectedDate, result);
+	}
+
+        /// <summary>
+        /// Known-failing Orthodox Easter Sunday data spanning years 1916-2099, exercised by a
+        /// separate <see cref="IgnoreAttribute" />-marked test pending fix of
+        /// <see href="https://github.com/bslater/bodu/issues/53" />.
+        /// </summary>
+        public static IEnumerable<object[]> GetBrokenOrthodoxTestData()
+        {
             yield return new object[] { new EasterSundayKnownAnswer { Year = 1916, ExpectedDate = new DateTime(1916, 4, 23), CalendarType = EasterCalendarType.Orthodox } };
-
-            // Orthodox entries for 1917-1929 intentionally omitted here; they are exercised by
-            // GetDate_WhenGivenBrokenOrthodox1917To1929Years_ShouldReturnExpectedDate, which is
-            // marked [Ignore] pending fix of bslater/bodu#53.
-
+            yield return new object[] { new EasterSundayKnownAnswer { Year = 1917, ExpectedDate = new DateTime(1917, 4, 15), CalendarType = EasterCalendarType.Orthodox } };
+            yield return new object[] { new EasterSundayKnownAnswer { Year = 1918, ExpectedDate = new DateTime(1918, 5, 5), CalendarType = EasterCalendarType.Orthodox } };
+            yield return new object[] { new EasterSundayKnownAnswer { Year = 1919, ExpectedDate = new DateTime(1919, 4, 20), CalendarType = EasterCalendarType.Orthodox } };
+            yield return new object[] { new EasterSundayKnownAnswer { Year = 1920, ExpectedDate = new DateTime(1920, 4, 11), CalendarType = EasterCalendarType.Orthodox } };
+            yield return new object[] { new EasterSundayKnownAnswer { Year = 1921, ExpectedDate = new DateTime(1921, 5, 1), CalendarType = EasterCalendarType.Orthodox } };
+            yield return new object[] { new EasterSundayKnownAnswer { Year = 1922, ExpectedDate = new DateTime(1922, 4, 16), CalendarType = EasterCalendarType.Orthodox } };
+            yield return new object[] { new EasterSundayKnownAnswer { Year = 1923, ExpectedDate = new DateTime(1923, 4, 8), CalendarType = EasterCalendarType.Orthodox } };
+            yield return new object[] { new EasterSundayKnownAnswer { Year = 1924, ExpectedDate = new DateTime(1924, 4, 27), CalendarType = EasterCalendarType.Orthodox } };
+            yield return new object[] { new EasterSundayKnownAnswer { Year = 1925, ExpectedDate = new DateTime(1925, 4, 19), CalendarType = EasterCalendarType.Orthodox } };
+            yield return new object[] { new EasterSundayKnownAnswer { Year = 1926, ExpectedDate = new DateTime(1926, 5, 2), CalendarType = EasterCalendarType.Orthodox } };
+            yield return new object[] { new EasterSundayKnownAnswer { Year = 1927, ExpectedDate = new DateTime(1927, 4, 24), CalendarType = EasterCalendarType.Orthodox } };
+            yield return new object[] { new EasterSundayKnownAnswer { Year = 1928, ExpectedDate = new DateTime(1928, 4, 15), CalendarType = EasterCalendarType.Orthodox } };
+            yield return new object[] { new EasterSundayKnownAnswer { Year = 1929, ExpectedDate = new DateTime(1929, 5, 5), CalendarType = EasterCalendarType.Orthodox } };
             yield return new object[] { new EasterSundayKnownAnswer { Year = 1930, ExpectedDate = new DateTime(1930, 4, 20), CalendarType = EasterCalendarType.Orthodox } };
             yield return new object[] { new EasterSundayKnownAnswer { Year = 1931, ExpectedDate = new DateTime(1931, 4, 12), CalendarType = EasterCalendarType.Orthodox } };
             yield return new object[] { new EasterSundayKnownAnswer { Year = 1932, ExpectedDate = new DateTime(1932, 5, 1), CalendarType = EasterCalendarType.Orthodox } };
@@ -578,121 +682,18 @@ public sealed class EasterSundayNotableDateCalculatorTests
             yield return new object[] { new EasterSundayKnownAnswer { Year = 2097, ExpectedDate = new DateTime(2097, 5, 5), CalendarType = EasterCalendarType.Orthodox } };
             yield return new object[] { new EasterSundayKnownAnswer { Year = 2098, ExpectedDate = new DateTime(2098, 4, 27), CalendarType = EasterCalendarType.Orthodox } };
             yield return new object[] { new EasterSundayKnownAnswer { Year = 2099, ExpectedDate = new DateTime(2099, 4, 12), CalendarType = EasterCalendarType.Orthodox } };
-
         }
 
         /// <summary>
-        /// Provides known year, expected Easter Sunday dates, and calendar system for validation. Grouped logically into Boundary, Julian,
-        /// and Gregorian.
-        /// </summary>
-        public static IEnumerable<object[]> GetKnownEasterSundayTestData()
-	{
-		// Helper only for non-null calendars
-		static SysGlob.Calendar CalendarOf(string type) => type switch
-		{
-			"Gregorian" => new SysGlob.GregorianCalendar(),
-			"Julian" => new SysGlob.JulianCalendar(),
-			_ => throw new ArgumentException($"Unsupported calendar type: {type}", nameof(type))
-		};
-
-		// Boundary Tests
-		yield return new object[] { 1, new DateTime(1, 3, 27, 0, 0, 0, DateTimeKind.Unspecified), null! };
-		yield return new object[] { 1, new DateTime(1, 3, 25, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Julian") };
-		yield return new object[] { 9999, new DateTime(9999, 3, 28, 0, 0, 0, DateTimeKind.Unspecified), null! };
-		yield return new object[] { 9999, new DateTime(9999, 3, 28, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Gregorian") };
-
-		// Julian Calendar
-		yield return new object[] { 1000, new DateTime(1000, 3, 31, 0, 0, 0, DateTimeKind.Unspecified), null! };
-		yield return new object[] { 1000, new DateTime(1000, 4, 6, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Julian") };
-		yield return new object[] { 1200, new DateTime(1200, 4, 9, 0, 0, 0, DateTimeKind.Unspecified), null! };
-		yield return new object[] { 1200, new DateTime(1200, 4, 16, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Julian") };
-		yield return new object[] { 1500, new DateTime(1500, 4, 19, 0, 0, 0, DateTimeKind.Unspecified), null! };
-		yield return new object[] { 1500, new DateTime(1500, 4, 29, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Julian") };
-
-		// Gregorian Calendar
-		yield return new object[] { 1583, new DateTime(1583, 4, 10, 0, 0, 0, DateTimeKind.Unspecified), null! };
-		yield return new object[] { 1583, new DateTime(1583, 4, 10, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Gregorian") };
-		yield return new object[] { 1600, new DateTime(1600, 4, 2, 0, 0, 0, DateTimeKind.Unspecified), null! };
-		yield return new object[] { 1600, new DateTime(1600, 4, 2, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Gregorian") };
-		yield return new object[] { 1700, new DateTime(1700, 4, 11, 0, 0, 0, DateTimeKind.Unspecified), null! };
-		yield return new object[] { 1700, new DateTime(1700, 4, 11, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Gregorian") };
-		yield return new object[] { 1800, new DateTime(1800, 4, 13, 0, 0, 0, DateTimeKind.Unspecified), null! };
-		yield return new object[] { 1800, new DateTime(1800, 4, 13, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Gregorian") };
-		yield return new object[] { 1900, new DateTime(1900, 4, 15, 0, 0, 0, DateTimeKind.Unspecified), null! };
-		yield return new object[] { 1900, new DateTime(1900, 4, 15, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Gregorian") };
-		yield return new object[] { 2000, new DateTime(2000, 4, 23, 0, 0, 0, DateTimeKind.Unspecified), null! };
-		yield return new object[] { 2000, new DateTime(2000, 4, 23, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Gregorian") };
-		yield return new object[] { 2024, new DateTime(2024, 3, 31, 0, 0, 0, DateTimeKind.Unspecified), null! };
-		yield return new object[] { 2024, new DateTime(2024, 3, 31, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Gregorian") };
-		yield return new object[] { 2024, new DateTime(2024, 4, 13, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Julian") };
-		yield return new object[] { 2025, new DateTime(2025, 4, 20, 0, 0, 0, DateTimeKind.Unspecified), null! };
-		yield return new object[] { 2025, new DateTime(2025, 4, 20, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Gregorian") };
-
-		// Future Years
-		yield return new object[] { 2030, new DateTime(2030, 4, 21, 0, 0, 0, DateTimeKind.Unspecified), null! };
-		yield return new object[] { 2040, new DateTime(2040, 4, 1, 0, 0, 0, DateTimeKind.Unspecified), null! };
-		yield return new object[] { 2050, new DateTime(2050, 4, 10, 0, 0, 0, DateTimeKind.Unspecified), null! };
-		yield return new object[] { 2100, new DateTime(2100, 3, 28, 0, 0, 0, DateTimeKind.Unspecified), null! };
-	}
-
-	public static string GetKnownEasterSundayTestDataDisplayName(MethodInfo methodInfo, object[] data)
-	{
-            EasterSundayKnownAnswer knownAnswer = (EasterSundayKnownAnswer)data[0];
-		return $"{methodInfo.Name} - Year: {knownAnswer.Year}, Calendar: {knownAnswer.CalendarType}, Expected: {knownAnswer.ExpectedDate:yyyy-MM-dd}";
-        }
-
-        /// <summary>
-        /// Verifies that Easter Sunday is correctly calculated across a known set of years and calendars.
-        /// </summary>
-        [TestMethod]
-	[DynamicData(nameof(GetInvalidYearTestData), DynamicDataDisplayName =nameof(GetKnownEasterSundayTestDataDisplayName))]
-	public void GetDate_WhenGivenKnownYears_ShouldReturnExpectedDate(EasterSundayKnownAnswer knownAnswer)
-	{
-		var calculator = new EasterSundayNotableDateCalculator();
-            SysGlob.Calendar? calendar = knownAnswer.CalendarType switch
-            {
-                EasterCalendarType.Gregorian => new SysGlob.GregorianCalendar(),
-                EasterCalendarType.Julian => new SysGlob.JulianCalendar(),
-                _ => null
-            };
-
-            var result = calculator.GetDate(knownAnswer.Year, calendar);
-
-		Assert.IsNotNull(result);
-		Assert.AreEqual(knownAnswer.ExpectedDate, result);
-	}
-
-        /// <summary>
-        /// Known-failing Orthodox Easter Sunday data for years 1917-1929, exercised by a
-        /// separate <see cref="IgnoreAttribute" />-marked test pending fix of
+        /// Verifies that Orthodox Easter Sunday is correctly calculated for years 1916-2099.
+        /// Currently skipped: the calculator returns incorrect dates (7-35 days earlier than
+        /// expected) for most Orthodox entries. Tracked by
         /// <see href="https://github.com/bslater/bodu/issues/53" />.
         /// </summary>
-        public static IEnumerable<object[]> GetBrokenOrthodox1917To1929TestData()
-        {
-            yield return new object[] { new EasterSundayKnownAnswer { Year = 1917, ExpectedDate = new DateTime(1917, 4, 15), CalendarType = EasterCalendarType.Orthodox } };
-            yield return new object[] { new EasterSundayKnownAnswer { Year = 1918, ExpectedDate = new DateTime(1918, 5, 5), CalendarType = EasterCalendarType.Orthodox } };
-            yield return new object[] { new EasterSundayKnownAnswer { Year = 1919, ExpectedDate = new DateTime(1919, 4, 20), CalendarType = EasterCalendarType.Orthodox } };
-            yield return new object[] { new EasterSundayKnownAnswer { Year = 1920, ExpectedDate = new DateTime(1920, 4, 11), CalendarType = EasterCalendarType.Orthodox } };
-            yield return new object[] { new EasterSundayKnownAnswer { Year = 1921, ExpectedDate = new DateTime(1921, 5, 1), CalendarType = EasterCalendarType.Orthodox } };
-            yield return new object[] { new EasterSundayKnownAnswer { Year = 1922, ExpectedDate = new DateTime(1922, 4, 16), CalendarType = EasterCalendarType.Orthodox } };
-            yield return new object[] { new EasterSundayKnownAnswer { Year = 1923, ExpectedDate = new DateTime(1923, 4, 8), CalendarType = EasterCalendarType.Orthodox } };
-            yield return new object[] { new EasterSundayKnownAnswer { Year = 1924, ExpectedDate = new DateTime(1924, 4, 27), CalendarType = EasterCalendarType.Orthodox } };
-            yield return new object[] { new EasterSundayKnownAnswer { Year = 1925, ExpectedDate = new DateTime(1925, 4, 19), CalendarType = EasterCalendarType.Orthodox } };
-            yield return new object[] { new EasterSundayKnownAnswer { Year = 1926, ExpectedDate = new DateTime(1926, 5, 2), CalendarType = EasterCalendarType.Orthodox } };
-            yield return new object[] { new EasterSundayKnownAnswer { Year = 1927, ExpectedDate = new DateTime(1927, 4, 24), CalendarType = EasterCalendarType.Orthodox } };
-            yield return new object[] { new EasterSundayKnownAnswer { Year = 1928, ExpectedDate = new DateTime(1928, 4, 15), CalendarType = EasterCalendarType.Orthodox } };
-            yield return new object[] { new EasterSundayKnownAnswer { Year = 1929, ExpectedDate = new DateTime(1929, 5, 5), CalendarType = EasterCalendarType.Orthodox } };
-        }
-
-        /// <summary>
-        /// Verifies that Orthodox Easter Sunday is correctly calculated for years 1917-1929.
-        /// Currently skipped: the calculator returns dates 7-35 days earlier than expected for
-        /// these years. Tracked by <see href="https://github.com/bslater/bodu/issues/53" />.
-        /// </summary>
         [TestMethod]
-        [Ignore("Pre-existing calculator bug for Orthodox Easter 1917-1929 — tracked by bslater/bodu#53.")]
-        [DynamicData(nameof(GetBrokenOrthodox1917To1929TestData), DynamicDataDisplayName = nameof(GetKnownEasterSundayTestDataDisplayName))]
-        public void GetDate_WhenGivenBrokenOrthodox1917To1929Years_ShouldReturnExpectedDate(EasterSundayKnownAnswer knownAnswer)
+        [Ignore("Pre-existing calculator bug for Orthodox Easter years 1916-2099 — tracked by bslater/bodu#53.")]
+        [DynamicData(nameof(GetBrokenOrthodoxTestData), DynamicDataDisplayName = nameof(GetKnownEasterSundayTestDataDisplayName))]
+        public void GetDate_WhenGivenOrthodoxKnownYears_ShouldReturnExpectedDate(EasterSundayKnownAnswer knownAnswer)
         {
             var calculator = new EasterSundayNotableDateCalculator();
             SysGlob.Calendar? calendar = knownAnswer.CalendarType switch
