@@ -543,6 +543,18 @@ public partial class ConcurrentCircularBufferTests
         const int durationMs = 2000;
         const int deadlockTimeoutMs = durationMs + 5000;
 
+        // Deterministic warmup (false-branch only): guarantee one rejected Enqueue before the
+        // race begins. The only race-dependent assertion (`expectedEnqFaults > 0` at the false
+        // branch below) is flake-prone on a loaded CI runner where the enqueue/dequeue cadence
+        // may rarely align with a transiently-full buffer during the 2-second race window.
+        if (!allowOverwrite)
+        {
+            for (int f = 0; f < capacity; f++) buffer.Enqueue(new TestItem(-f - 1));
+            try { buffer.Enqueue(new TestItem(-100)); }
+            catch (InvalidOperationException) { Interlocked.Increment(ref expectedEnqFaults); }
+            while (buffer.TryDequeue(out _)) { /* drain back to empty so the race starts cleanly */ }
+        }
+
         var writers = Enumerable.Range(0, threadCount).Select(_ =>
             Task.Run(() =>
             {

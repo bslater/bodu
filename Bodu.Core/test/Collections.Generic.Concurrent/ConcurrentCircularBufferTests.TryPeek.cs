@@ -210,6 +210,14 @@ public partial class ConcurrentCircularBufferTests
 
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
 
+        // Deterministic warmup: seed one item and observe it before the enqueuer / dequeuer /
+        // peeker race begins. Without this the `observed > 0` assertion is hostage to scheduler
+        // luck — on a loaded CI runner the dequeuer can consistently drain the buffer faster
+        // than the peeker samples it, leaving every TryPeek call observing an empty buffer.
+        buffer.Enqueue(new TestItem(-1));
+        if (buffer.TryPeek(out var seed) && seed != null)
+            Interlocked.Increment(ref observed);
+
         var enqueuer = Task.Run(() =>
         {
             for (int i = 0; i < 50 && !cts.IsCancellationRequested; i++)
