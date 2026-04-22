@@ -10,6 +10,9 @@ namespace Bodu.Collections.Generic.Concurrent
 {
     public partial class ConcurrentCircularBufferTests
     {
+        /// <summary>
+        /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Clear" /> empties a buffer containing <see langword="null" /> items without throwing.
+        /// </summary>
         [TestMethod]
         public void Clear_WhenBufferContainsNulls_ShouldEmptyWithoutError()
         {
@@ -24,6 +27,9 @@ namespace Bodu.Collections.Generic.Concurrent
             CollectionAssert.AreEqual(Array.Empty<TestItem>(), buffer.ToArray());
         }
 
+        /// <summary>
+        /// Verifies that items removed by <see cref="ConcurrentCircularBuffer{T}.Clear" /> release their references so the GC can collect them.
+        /// </summary>
         [TestMethod]
         public void Clear_WhenBufferContainsOnlyObjectsWithoutReferences_ShouldAllowGarbageCollection()
         {
@@ -46,6 +52,9 @@ namespace Bodu.Collections.Generic.Concurrent
             Assert.IsFalse(wr1.IsAlive || wr2.IsAlive, "Cleared items should be eligible for GC.");
         }
 
+        /// <summary>
+        /// Verifies that after <see cref="ConcurrentCircularBuffer{T}.Clear" />, capacity is preserved and subsequent enqueues populate the buffer in FIFO order.
+        /// </summary>
         [TestMethod]
         public void Clear_WhenBufferFilledAndImmediatelyReused_ShouldPreserveCapacityAndMaintainFifoOrder()
         {
@@ -64,6 +73,9 @@ namespace Bodu.Collections.Generic.Concurrent
             CollectionAssert.AreEqual(new[] { 10, 11 }, buffer.ToArray().Select(x => x.Value).ToArray());
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Clear" /> on a full buffer does not raise <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" />.
+        /// </summary>
         [TestMethod]
         public void Clear_WhenBufferFull_WithAllowOverwriteTrue_ShouldNotRaiseEvictionEvents()
         {
@@ -80,6 +92,9 @@ namespace Bodu.Collections.Generic.Concurrent
             Assert.AreEqual(0, buffer.Count);
         }
 
+        /// <summary>
+        /// Verifies that repeatedly calling <see cref="ConcurrentCircularBuffer{T}.Clear" /> on an empty buffer is a no-op that preserves capacity.
+        /// </summary>
         [TestMethod]
         public void Clear_WhenBufferIsEmptyAndCalledRepeatedly_ShouldBeNoOp()
         {
@@ -92,6 +107,9 @@ namespace Bodu.Collections.Generic.Concurrent
             Assert.AreEqual(5, buffer.Capacity);
         }
 
+        /// <summary>
+        /// Verifies that post-clear enqueues form a fresh FIFO sequence with none of the pre-clear items visible.
+        /// </summary>
         [TestMethod]
         public void Clear_WhenBufferResetWithSubsequentEnqueues_ShouldMaintainFifoOrder()
         {
@@ -258,6 +276,9 @@ namespace Bodu.Collections.Generic.Concurrent
             Assert.IsFalse(failed, "Buffer state became invalid (Count out of range) during Clear.");
         }
 
+        /// <summary>
+        /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Clear" /> interleaved with active producers and consumers keeps <see cref="ConcurrentCircularBuffer{T}.Count" /> within <c>[0, Capacity]</c>.
+        /// </summary>
         [TestMethod]
         public void Clear_WhenProducerConsumerActive_ShouldKeepCountWithinBounds()
         {
@@ -303,6 +324,9 @@ namespace Bodu.Collections.Generic.Concurrent
             Assert.AreEqual(0, violations, "Count should always be within [0, Capacity] during Clear.");
         }
 
+        /// <summary>
+        /// Verifies that read APIs — <see cref="ConcurrentCircularBuffer{T}.TryPeek" />, <see cref="ConcurrentCircularBuffer{T}.Peek" />, <see cref="ConcurrentCircularBuffer{T}.Contains" />, and the indexer — only surface documented exceptions (empty/out-of-range race conditions) while <see cref="ConcurrentCircularBuffer{T}.Clear" /> fires concurrently.
+        /// </summary>
         [TestMethod]
         [DataRow(true)]
         [DataRow(false)]
