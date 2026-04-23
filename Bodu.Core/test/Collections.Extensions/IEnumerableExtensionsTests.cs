@@ -4,10 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-﻿namespace Bodu.Collections.Extensions
-{
-    [TestClass]
-    public abstract partial class IEnumerableExtensionsTests
-        : EnumerableTests
-    { }
-}
+namespace Bodu.Collections.Extensions;
+
+[TestClass]
+public abstract partial class IEnumerableExtensionsTests
+    : EnumerableTests
+{ }

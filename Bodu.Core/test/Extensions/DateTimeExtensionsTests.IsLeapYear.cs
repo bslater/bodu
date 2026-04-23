@@ -12,22 +12,21 @@ using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bodu.Extensions;
 
-namespace Bodu.Extensions
+namespace Bodu.Extensions;
+
+public partial class DateTimeExtensionsTests
 {
-    public partial class DateTimeExtensionsTests
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.IsLeapYear" />, when Called, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(LeapYearTestData), DynamicDataSourceType.Method)]
+    public void IsLeapYear_WhenCalled_ShouldReturnExpected(int year, bool expected)
     {
+        DateTime input = new DateTime(year, 1, 1);
+        bool actual = input.IsLeapYear();
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.IsLeapYear" />, when Called, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        [DynamicData(nameof(LeapYearTestData), DynamicDataSourceType.Method)]
-        public void IsLeapYear_WhenCalled_ShouldReturnExpected(int year, bool expected)
-        {
-            DateTime input = new DateTime(year, 1, 1);
-            bool actual = input.IsLeapYear();
-
-            Assert.AreEqual(expected, actual, $"Expected leap year check for {year} to be {expected}.");
-        }
+        Assert.AreEqual(expected, actual, $"Expected leap year check for {year} to be {expected}.");
     }
 }

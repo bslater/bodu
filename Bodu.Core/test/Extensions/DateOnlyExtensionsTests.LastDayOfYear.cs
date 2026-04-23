@@ -12,47 +12,46 @@ using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bodu.Extensions;
 
-namespace Bodu.Extensions
+namespace Bodu.Extensions;
+
+public partial class DateOnlyExtensionsTests
 {
-    public partial class DateOnlyExtensionsTests
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.LastDayOfYear" />, when Called, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(DateTimeExtensionsTests.LastDayOfYearTestData),typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    public void LastDayOfYear_WhenCalled_ShouldReturnDecember31(DateTime inputDateOnly, DateTime expectedDateOnly)
     {
+        DateOnly input = DateOnly.FromDateTime(inputDateOnly);
+        DateOnly expected = DateOnly.FromDateTime(expectedDateOnly);
 
-        /// <summary>
-        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfYear" />, when Called, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        [DynamicData(nameof(DateTimeExtensionsTests.LastDayOfYearTestData),typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-        public void LastDayOfYear_WhenCalled_ShouldReturnDecember31(DateTime inputDateOnly, DateTime expectedDateOnly)
-        {
-            DateOnly input = DateOnly.FromDateTime(inputDateOnly);
-            DateOnly expected = DateOnly.FromDateTime(expectedDateOnly);
+        DateOnly actual = input.LastDayOfYear();
 
-            DateOnly actual = input.LastDayOfYear();
+        Assert.AreEqual(expected, actual);
+    }
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.LastDayOfYear" />, when MinValue, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void LastDayOfYear_WhenMinValue_ShouldReturnEndOfYear1()
+    {
+        DateOnly input = DateOnly.MinValue;
+        DateOnly actual = input.LastDayOfYear();
 
-            Assert.AreEqual(expected, actual);
-        }
-        /// <summary>
-        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfYear" />, when MinValue, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        public void LastDayOfYear_WhenMinValue_ShouldReturnEndOfYear1()
-        {
-            DateOnly input = DateOnly.MinValue;
-            DateOnly actual = input.LastDayOfYear();
+        Assert.AreEqual(new DateOnly(DateTime.MinValue.Year, 12, 31), actual);
+    }
 
-            Assert.AreEqual(new DateOnly(DateTime.MinValue.Year, 12, 31), actual);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.LastDayOfYear" />, when MaxValue, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void LastDayOfYear_WhenMaxValue_ShouldReturnItself()
+    {
+        DateOnly input = DateOnly.MaxValue;
+        DateOnly actual = input.LastDayOfYear();
 
-        /// <summary>
-        /// Verifies that <see cref="DateOnlyExtensions.LastDayOfYear" />, when MaxValue, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        public void LastDayOfYear_WhenMaxValue_ShouldReturnItself()
-        {
-            DateOnly input = DateOnly.MaxValue;
-            DateOnly actual = input.LastDayOfYear();
-
-            Assert.AreEqual(DateOnly.MaxValue, actual);
-        }
+        Assert.AreEqual(DateOnly.MaxValue, actual);
     }
 }

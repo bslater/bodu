@@ -58,6 +58,7 @@ public static partial class BufferConverter
     /// <returns>The value of type <typeparamref name="T"/> read from the span.</returns>
     /// <exception cref="ArgumentOutOfRangeException">The span length is insufficient to represent a value of type <typeparamref name="T"/>.</exception>
     /// <remarks>The method assumes that the span represents the value using platform-native endianness.</remarks>
+    /// <exception cref="ArgumentException">Thrown when a span or array argument does not meet a length or offset precondition.</exception>
     public static T Read<T>(this ReadOnlySpan<byte> sourceSpan)
         where T : unmanaged
     {

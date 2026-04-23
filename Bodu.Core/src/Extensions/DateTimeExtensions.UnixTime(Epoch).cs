@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.UnixTime(Epoch).cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -85,7 +85,7 @@ public static partial class DateTimeExtensions
     /// <param name="dateTime">The <see cref="DateTime"/> to convert. It is first converted to UTC using <see cref="DateTime.ToUniversalTime()"/>.</param>
     /// <returns>The total number of milliseconds since the Unix epoch.</returns>
     /// <remarks>
-    /// This method normalizes the input to UTC before computing the elapsed time. Use <see cref="FromUnixTimeMilliseconds(long)"/> to
+    /// This method normalises the input to UTC before computing the elapsed time. Use <see cref="FromUnixTimeMilliseconds(long)"/> to
     /// convert back.
     /// </remarks>
     /// <seealso cref="FromUnixTimeMilliseconds(long)"/>
@@ -97,7 +97,7 @@ public static partial class DateTimeExtensions
     /// <param name="dateTime">The <see cref="DateTime"/> to convert. It is first converted to UTC using <see cref="DateTime.ToUniversalTime()"/>.</param>
     /// <returns>The total number of seconds since the Unix epoch.</returns>
     /// <remarks>
-    /// This method normalizes the input to UTC before computing the elapsed time. Use <see cref="FromUnixTimeSeconds(long)"/> to convert back.
+    /// This method normalises the input to UTC before computing the elapsed time. Use <see cref="FromUnixTimeSeconds(long)"/> to convert back.
     /// </remarks>
     /// <seealso cref="FromUnixTimeSeconds(long)"/>
     public static long ToUnixTimeSeconds(this DateTime dateTime) => (dateTime.ToUniversalTime().Ticks / TicksPerSecond) - UnixEpochSeconds;

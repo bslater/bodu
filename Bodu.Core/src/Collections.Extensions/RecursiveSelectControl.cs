@@ -7,17 +7,17 @@
 namespace Bodu.Collections.Extensions;
 
 /// <summary>
-/// Represents predefined behaviors for how an element is processed during recursive selection.
+/// Represents predefined behaviours for how an element is processed during recursive selection.
 /// </summary>
 /// <remarks>
 /// This enum defines composable control flags that determine whether an element should be yielded, whether its children should be
 /// traversed, and whether recursion should stop after the current element. These values are intended to be treated as bitmasks using
 /// <see cref="int"/> values (not [Flags]).
 /// <para>
-/// Typical usage includes returning one of these values from a <c>Func&lt;T, RecursiveSelectControl&gt;</c> to control behavior
+/// Typical usage includes returning one of these values from a <c>Func&lt;T, RecursiveSelectControl&gt;</c> to control behaviour
 /// dynamically within a recursive traversal method.
 /// </para>
-/// <para><strong>Behavior Matrix</strong></para>
+/// <para><strong>Behaviour Matrix</strong></para>
 /// <list type="table">
 /// <listheader>
 /// <term>Combination</term>
@@ -181,7 +181,7 @@ public enum RecursiveSelectControl
     RecurseOnly = Generic.Extensions.IEnumerableExtensions.Recurse,
 
     /// <summary>
-    /// Yield the current element and recurse into its children. This is the default behavior.
+    /// Yield the current element and recurse into its children. This is the default behaviour.
     /// </summary>
     YieldAndRecurse = Generic.Extensions.IEnumerableExtensions.Yield | Generic.Extensions.IEnumerableExtensions.Recurse,
 

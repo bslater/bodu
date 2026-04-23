@@ -4,8 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-﻿namespace Bodu.Security.Cryptography
-{
-    public abstract partial class SipHashTests<TTest, TAlgorithm>
-    { }
-}
+namespace Bodu.Security.Cryptography;
+
+public abstract partial class SipHashTests<TTest, TAlgorithm>
+{ }

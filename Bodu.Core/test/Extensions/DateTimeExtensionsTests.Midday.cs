@@ -12,61 +12,59 @@ using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bodu.Extensions;
 
-namespace Bodu.Extensions
+namespace Bodu.Extensions;
+
+public partial class DateTimeExtensionsTests
 {
-    public partial class DateTimeExtensionsTests
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.Midday" />, when Called, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(MiddayTestData), DynamicDataSourceType.Method )]
+    public void Midday_WhenCalled_ShouldSetTimeToNoon(DateTime input, DateTime expected)
     {
+        var actual = input.Midday();
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.Midday" />, when Called, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        [DynamicData(nameof(MiddayTestData), DynamicDataSourceType.Method )]
-        public void Midday_WhenCalled_ShouldSetTimeToNoon(DateTime input, DateTime expected)
-        {
-            var actual = input.Midday();
+        Assert.AreEqual(expected, actual);
+    }
 
-            Assert.AreEqual(expected, actual);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.Midday" />, when KindIsSet, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DataRow(DateTimeKind.Unspecified)]
+    [DataRow(DateTimeKind.Utc)]
+    [DataRow(DateTimeKind.Local)]
+    public void Midday_WhenKindIsSet_ShouldPreserveKind(DateTimeKind kind)
+    {
+        var input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
+        var actual = input.Midday();
 
+        Assert.AreEqual(kind, actual.Kind);
+    }
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.Midday" />, when KindIsSet, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        [DataRow(DateTimeKind.Unspecified)]
-        [DataRow(DateTimeKind.Utc)]
-        [DataRow(DateTimeKind.Local)]
-        public void Midday_WhenKindIsSet_ShouldPreserveKind(DateTimeKind kind)
-        {
-            var input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
-            var actual = input.Midday();
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.Midday" />, when UsingMinDate, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void Midday_WhenUsingMinDate_ShouldReturnNoonOnThatDay()
+    {
+        var input = DateTime.MinValue.Date;
+        var actual = input.Midday();
 
-            Assert.AreEqual(kind, actual.Kind);
-        }
+        Assert.AreEqual(new DateTime(1, 1, 1, 12, 0, 0), actual);
+    }
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.Midday" />, when UsingMinDate, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        public void Midday_WhenUsingMinDate_ShouldReturnNoonOnThatDay()
-        {
-            var input = DateTime.MinValue.Date;
-            var actual = input.Midday();
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.Midday" />, when UsingMaxDate, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void Midday_WhenUsingMaxDate_ShouldReturnNoonOnThatDay()
+    {
+        var input = DateTime.MaxValue.Date;
+        var actual = input.Midday();
 
-            Assert.AreEqual(new DateTime(1, 1, 1, 12, 0, 0), actual);
-        }
-
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.Midday" />, when UsingMaxDate, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        public void Midday_WhenUsingMaxDate_ShouldReturnNoonOnThatDay()
-        {
-            var input = DateTime.MaxValue.Date;
-            var actual = input.Midday();
-
-            Assert.AreEqual(new DateTime(9999, 12, 31, 12, 0, 0), actual);
-        }
+        Assert.AreEqual(new DateTime(9999, 12, 31, 12, 0, 0), actual);
     }
 }

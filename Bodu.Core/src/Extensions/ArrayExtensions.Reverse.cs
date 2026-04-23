@@ -170,7 +170,7 @@ public static partial class ArrayExtensions
     /// and <c>count = source.Length</c>. See that overload for full implementation
     /// details. Prefer the generic <see cref="Reverse{T}(T[])"/> overload where the
     /// element type is known at compile time; the non-generic path cannot use
-    /// <see cref="ReverseCore{T}"/> and falls back to <see cref="Array.Copy"/> and
+    /// <see cref="ReverseCore{T}"/> and falls back to <see cref="Array.Copy(Array, Array, int)"/> and
     /// <see cref="Array.Reverse(Array, int, int)"/>.
     /// </remarks>
     public static Array Reverse(this Array source)
@@ -221,8 +221,8 @@ public static partial class ArrayExtensions
     /// <para>
     /// Unlike the typed <see cref="Reverse{T}(T[], int, int)"/> overload, this method
     /// cannot delegate to <see cref="ReverseCore{T}"/> because the element type is not
-    /// known at compile time. Instead it uses <see cref="Array.CreateInstance"/> to
-    /// allocate a correctly typed result, <see cref="Array.Copy"/> to populate it, and
+    /// known at compile time. Instead it uses <see cref="Array.CreateInstance(Type, int)"/> to
+    /// allocate a correctly typed result, <see cref="Array.Copy(Array, Array, int)"/> to populate it, and
     /// <see cref="Array.Reverse(Array, int, int)"/> to reverse the nominated slice
     /// in-place on the copy. These BCL methods are used internally via
     /// <see cref="ReverseArrayCore"/>.
@@ -314,7 +314,7 @@ public static partial class ArrayExtensions
     /// Because the element type is not known at compile time, it cannot use
     /// <see cref="GC.AllocateUninitializedArray{T}"/> or
     /// <see cref="MemoryExtensions.Reverse{T}(Span{T})"/>. Instead it allocates via
-    /// <see cref="Array.CreateInstance"/>, copies via <see cref="Array.Copy"/>, and
+    /// <see cref="Array.CreateInstance(Type, int)"/>, copies via <see cref="Array.Copy(Array, Array, int)"/>, and
     /// reverses in-place via <see cref="Array.Reverse(Array, int, int)"/>.
     /// </para>
     /// <para>
@@ -326,7 +326,8 @@ public static partial class ArrayExtensions
     /// </remarks>
     internal static Array ReverseArrayCore(Array source, int index, int count)
     {
-        var elementType = source.GetType().GetElementType()!;
+        Type? elementType = source.GetType().GetElementType();
+        if (elementType is null) throw new InvalidOperationException("Array element type could not be resolved.");
         var result = Array.CreateInstance(elementType, source.Length);
         Array.Copy(source, result, source.Length);
 

@@ -12,59 +12,58 @@ using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bodu.Extensions;
 
-namespace Bodu.Extensions
+namespace Bodu.Extensions;
+
+public partial class DateTimeExtensionsTests
 {
-    public partial class DateTimeExtensionsTests
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.FirstDayOfYear" />, when Called, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(FirstDayOfYearTestData), DynamicDataSourceType.Method)]
+    public void FirstDayOfYear_WhenCalled_ShouldReturnExpectedStartOfYear(DateTime input, DateTime expected)
     {
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfYear" />, when Called, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        [DynamicData(nameof(FirstDayOfYearTestData), DynamicDataSourceType.Method)]
-        public void FirstDayOfYear_WhenCalled_ShouldReturnExpectedStartOfYear(DateTime input, DateTime expected)
-        {
-            DateTime actual = input.FirstDayOfYear();
+        DateTime actual = input.FirstDayOfYear();
 
-            Assert.AreEqual(expected, actual);
-        }
+        Assert.AreEqual(expected, actual);
+    }
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfYear" /> returns the expected value.
-        /// </summary>
-        [TestMethod]
-        [DataRow(DateTimeKind.Unspecified)]
-        [DataRow(DateTimeKind.Utc)]
-        [DataRow(DateTimeKind.Local)]
-        public void FirstDayOfYear_ShouldPreserveDateTimeKind(DateTimeKind kind)
-        {
-            var input = new DateTime(2024, 4, 18, 12, 0, 0, kind);
-            var actual = input.FirstDayOfYear();
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.FirstDayOfYear" /> returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DataRow(DateTimeKind.Unspecified)]
+    [DataRow(DateTimeKind.Utc)]
+    [DataRow(DateTimeKind.Local)]
+    public void FirstDayOfYear_ShouldPreserveDateTimeKind(DateTimeKind kind)
+    {
+        var input = new DateTime(2024, 4, 18, 12, 0, 0, kind);
+        var actual = input.FirstDayOfYear();
 
-            Assert.AreEqual(kind, actual.Kind);
-        }
+        Assert.AreEqual(kind, actual.Kind);
+    }
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfYear" />, when MinValue, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        public void FirstDayOfYear_WhenMinValue_ShouldReturnExpected()
-        {
-            DateTime min = DateTime.MinValue; // 0001-01-01
-            DateTime actual = min.FirstDayOfYear();
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.FirstDayOfYear" />, when MinValue, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void FirstDayOfYear_WhenMinValue_ShouldReturnExpected()
+    {
+        DateTime min = DateTime.MinValue; // 0001-01-01
+        DateTime actual = min.FirstDayOfYear();
 
-            Assert.AreEqual(new DateTime(1, 1, 1), actual);
-        }
+        Assert.AreEqual(new DateTime(1, 1, 1), actual);
+    }
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfYear" />, when MaxValue, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        public void FirstDayOfYear_WhenMaxValue_ShouldReturnExpected()
-        {
-            DateTime max = DateTime.MaxValue; // 9999-12-31
-            DateTime actual = max.FirstDayOfYear();
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.FirstDayOfYear" />, when MaxValue, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void FirstDayOfYear_WhenMaxValue_ShouldReturnExpected()
+    {
+        DateTime max = DateTime.MaxValue; // 9999-12-31
+        DateTime actual = max.FirstDayOfYear();
 
-            Assert.AreEqual(new DateTime(9999, 1, 1), actual);
-        }
+        Assert.AreEqual(new DateTime(9999, 1, 1), actual);
     }
 }

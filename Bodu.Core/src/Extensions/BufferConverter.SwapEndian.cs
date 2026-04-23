@@ -61,6 +61,7 @@ public static partial class BufferConverter
     /// <param name="elementSize">The size of each element in bytes.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="elementSize"/> is &lt;= 1.</exception>
     /// <exception cref="ArgumentException">Thrown if array lengths are not multiples of <paramref name="elementSize"/>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="source" /> is <see langword="null" />.</exception>
     public static void SwapEndian(byte[] source, byte[] destination, int elementSize)
     {
         ThrowHelper.ThrowIfNull(source);

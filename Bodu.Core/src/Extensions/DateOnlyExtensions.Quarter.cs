@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.Quarter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -57,6 +57,7 @@ public static partial class DateOnlyExtensions
     /// This method supports predefined quarter structures aligned to calendar or financial years. The result is based on adjusting the
     /// input month by the definition offset and mapping the result to a 1-based quarter.
     /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown when the method preconditions are not met.</exception>
     public static int Quarter(this DateOnly date, CalendarQuarterDefinition definition)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(definition);
@@ -180,7 +181,7 @@ public static partial class DateOnlyExtensions
     /// </summary>
     /// <param name="definition">A <see cref="CalendarQuarterDefinition"/> enum value encoded as MMDD (e.g., 401 for 1 April).</param>
     /// <returns>A tuple <c>(defMonth, defDay)</c> representing the anchor month and day of Q1.</returns>
-    /// <remarks>Used as a normalized form of the quarter definition for modular math calculations.</remarks>
+    /// <remarks>Used as a normalised form of the quarter definition for modular math calculations.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static (uint defMonth, uint defDay) GetQuarterDefinition(CalendarQuarterDefinition definition)
     {

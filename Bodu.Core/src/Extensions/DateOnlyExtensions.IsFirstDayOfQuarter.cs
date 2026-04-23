@@ -18,7 +18,7 @@ public static partial class DateOnlyExtensions
     /// <remarks>
     /// This method evaluates whether the date component (ignoring the time of day) of the <paramref name="date"/> corresponds to the
     /// first day of the quarter based on the standard calendar year definition (January–March as Q1, etc.). The comparison is performed
-    /// using the <see cref="DateOnly"/> property to normalize the time to midnight before evaluating the boundary.
+    /// using the <see cref="DateOnly"/> property to normalise the time to midnight before evaluating the boundary.
     /// </remarks>
     public static bool IsFirstDayOfQuarter(this DateOnly date)
     {
@@ -47,7 +47,7 @@ public static partial class DateOnlyExtensions
     /// <remarks>
     /// This method evaluates whether the date component (ignoring the time of day) of the <paramref name="date"/> corresponds to the
     /// first day of the quarter based on the provided <paramref name="definition"/>. The comparison is performed using the
-    /// <see cref="DateOnly"/> property to normalize the time to midnight before evaluating the boundary.
+    /// <see cref="DateOnly"/> property to normalise the time to midnight before evaluating the boundary.
     /// </remarks>
     public static bool IsFirstDayOfQuarter(this DateOnly date, CalendarQuarterDefinition definition)
     {
@@ -77,7 +77,7 @@ public static partial class DateOnlyExtensions
     /// <remarks>
     /// This method evaluates whether the date component (ignoring the time of day) of the <paramref name="date"/> corresponds to the
     /// first day of the quarter, using the logic defined by the specified <paramref name="provider"/>. The comparison is performed
-    /// using the <see cref="DateOnly"/> property to normalize the time to midnight before evaluating the boundary.
+    /// using the <see cref="DateOnly"/> property to normalise the time to midnight before evaluating the boundary.
     /// </remarks>
     public static bool IsFirstDayOfQuarter(this DateOnly date, IQuarterDefinitionProvider provider)
     {

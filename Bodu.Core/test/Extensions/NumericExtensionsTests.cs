@@ -4,9 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-﻿namespace Bodu.Extensions
-{
-    [TestClass]
-    public partial class NumericExtensionsTests
-    { }
-}
+namespace Bodu.Extensions;
+
+[TestClass]
+public partial class NumericExtensionsTests
+{ }

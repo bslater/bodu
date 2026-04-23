@@ -4,10 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing
+namespace Bodu.IO.Hashing;
+
+[TestClass]
+public partial class CrcLookupTableBuilderTests
 {
-    [TestClass]
-    public partial class CrcLookupTableBuilderTests
-    {
-    }
 }

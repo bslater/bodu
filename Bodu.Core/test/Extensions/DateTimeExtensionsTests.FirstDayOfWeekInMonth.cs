@@ -12,81 +12,80 @@ using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bodu.Extensions;
 
-namespace Bodu.Extensions
+namespace Bodu.Extensions;
+
+public partial class DateTimeExtensionsTests
 {
-    public partial class DateTimeExtensionsTests
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInMonth" />, when Called, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(FirstDayOfWeekInMonthTestData), DynamicDataSourceType.Method)]
+    public void FirstDayOfWeekInMonth_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
     {
+        DateTime actual = input.FirstDayOfWeekInMonth(dayOfWeek);
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInMonth" />, when Called, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        [DynamicData(nameof(FirstDayOfWeekInMonthTestData), DynamicDataSourceType.Method)]
-        public void FirstDayOfWeekInMonth_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
+        Assert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInMonth" />, when InvalidDayOfWeek, throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void FirstDayOfWeekInMonth_WhenInvalidDayOfWeek_ShouldThrowExactly()
+    {
+        DateTime input = new DateTime(2024, 4, 1);
+        var invalidDay = (DayOfWeek)999;
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            DateTime actual = input.FirstDayOfWeekInMonth(dayOfWeek);
+            _ = input.FirstDayOfWeekInMonth(invalidDay);
+        });
+    }
 
-            Assert.AreEqual(expected, actual);
-        }
+    public void FirstDayOfWeekInMonth_WhenCalled_ShouldTruncateTime()
+    {
+        DateTime input = new DateTime(2024, 7, 5, 10, 5, 0, DateTimeKind.Local);
+        DateTime actual = input.FirstDayOfWeekInMonth(DayOfWeek.Saturday);
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInMonth" />, when InvalidDayOfWeek, throws <see cref="ArgumentOutOfRangeException" />.
-        /// </summary>
-        [TestMethod]
-        public void FirstDayOfWeekInMonth_WhenInvalidDayOfWeek_ShouldThrowExactly()
-        {
-            DateTime input = new DateTime(2024, 4, 1);
-            var invalidDay = (DayOfWeek)999;
+        Assert.AreEqual(TimeSpan.Zero, actual.TimeOfDay);
+    }
 
-            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-            {
-                _ = input.FirstDayOfWeekInMonth(invalidDay);
-            });
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInMonth" />, when Called, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DataRow(DateTimeKind.Unspecified)]
+    [DataRow(DateTimeKind.Utc)]
+    [DataRow(DateTimeKind.Local)]
+    public void FirstDayOfWeekInMonth_WhenCalled_ShouldPreserveDateTimeKind(DateTimeKind kind)
+    {
+        DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
+        DateTime actual = input.FirstDayOfWeekInMonth(DayOfWeek.Saturday);
 
-        public void FirstDayOfWeekInMonth_WhenCalled_ShouldTruncateTime()
-        {
-            DateTime input = new DateTime(2024, 7, 5, 10, 5, 0, DateTimeKind.Local);
-            DateTime actual = input.FirstDayOfWeekInMonth(DayOfWeek.Saturday);
+        Assert.AreEqual(kind, actual.Kind);
+    }
 
-            Assert.AreEqual(TimeSpan.Zero, actual.TimeOfDay);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInMonth" />, when UsingMinValue, returns <see langword="true" />.
+    /// </summary>
+    [TestMethod]
+    public void FirstDayOfWeekInMonth_WhenUsingMinValue_ShouldReturnValidResult()
+    {
+        DateTime actual = DateTime.MinValue.FirstDayOfWeekInMonth(DayOfWeek.Monday);
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInMonth" />, when Called, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        [DataRow(DateTimeKind.Unspecified)]
-        [DataRow(DateTimeKind.Utc)]
-        [DataRow(DateTimeKind.Local)]
-        public void FirstDayOfWeekInMonth_WhenCalled_ShouldPreserveDateTimeKind(DateTimeKind kind)
-        {
-            DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
-            DateTime actual = input.FirstDayOfWeekInMonth(DayOfWeek.Saturday);
+        Assert.IsTrue(actual >= DateTime.MinValue && actual <= DateTime.MinValue.AddMonths(1).AddDays(-1));
+    }
 
-            Assert.AreEqual(kind, actual.Kind);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInMonth" />, when UsingMaxValue, returns <see langword="true" />.
+    /// </summary>
+    [TestMethod]
+    public void FirstDayOfWeekInMonth_WhenUsingMaxValue_ShouldReturnValidResult()
+    {
+        DateTime actual = DateTime.MaxValue.FirstDayOfWeekInMonth(DayOfWeek.Friday);
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInMonth" />, when UsingMinValue, returns <see langword="true" />.
-        /// </summary>
-        [TestMethod]
-        public void FirstDayOfWeekInMonth_WhenUsingMinValue_ShouldReturnValidResult()
-        {
-            DateTime actual = DateTime.MinValue.FirstDayOfWeekInMonth(DayOfWeek.Monday);
-
-            Assert.IsTrue(actual >= DateTime.MinValue && actual <= DateTime.MinValue.AddMonths(1).AddDays(-1));
-        }
-
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.FirstDayOfWeekInMonth" />, when UsingMaxValue, returns <see langword="true" />.
-        /// </summary>
-        [TestMethod]
-        public void FirstDayOfWeekInMonth_WhenUsingMaxValue_ShouldReturnValidResult()
-        {
-            DateTime actual = DateTime.MaxValue.FirstDayOfWeekInMonth(DayOfWeek.Friday);
-
-            Assert.IsTrue(actual <= DateTime.MaxValue);
-        }
+        Assert.IsTrue(actual <= DateTime.MaxValue);
     }
 }

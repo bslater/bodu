@@ -4,11 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Collections.Generic
+namespace Bodu.Collections.Generic;
+
+[TestClass]
+public partial class CircularBufferTests
 {
-    [TestClass]
-    public partial class CircularBufferTests
-    {
-        private const int DefaultCapacity = 16;
-    }
+    private const int DefaultCapacity = 16;
 }

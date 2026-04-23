@@ -1,10 +1,15 @@
-﻿namespace Bodu.Security.Cryptography
-{
-    using System;
-    using System.Runtime.CompilerServices;
-    using System.Security.Cryptography;
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="CryptoHelpers.ThrowHelper.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
 
-    public static partial class CryptoHelpers
-    {
-    }
+using System;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+
+namespace Bodu.Security.Cryptography;
+
+public static partial class CryptoHelpers
+{
 }

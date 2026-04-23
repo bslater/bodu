@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 
 namespace Bodu.Collections.Generic.Concurrent;
 

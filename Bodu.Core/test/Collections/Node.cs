@@ -4,21 +4,20 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Collections
+namespace Bodu.Collections;
+
+/// <summary>
+/// Test-only tree node used by <see cref="NodeSampleTree" /> and the RecursiveSelect test suite.
+/// Each node carries a human-readable <see cref="Name" />, a list of <see cref="Children" />, and a
+/// <see cref="Stop" /> flag that drives the recursion-control test cases.
+/// </summary>
+public class Node
 {
-    /// <summary>
-    /// Test-only tree node used by <see cref="NodeSampleTree" /> and the RecursiveSelect test suite.
-    /// Each node carries a human-readable <see cref="Name" />, a list of <see cref="Children" />, and a
-    /// <see cref="Stop" /> flag that drives the recursion-control test cases.
-    /// </summary>
-    public class Node
-    {
-        public string Name { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
 
-        public List<Node> Children { get; set; } = new();
+    public List<Node> Children { get; set; } = new();
 
-        public bool Stop { get; set; } = false;
+    public bool Stop { get; set; } = false;
 
-        public override string ToString() => Name;
-    }
+    public override string ToString() => Name;
 }

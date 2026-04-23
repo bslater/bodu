@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.LastDateOfIsoWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -37,7 +37,7 @@ public static partial class DateTimeExtensions
     /// specified number of weeks, and adding six days to reach the Sunday of that week.
     /// </para>
     /// <note type="tip">For the corresponding start of the week, use <see cref="GetFirstDateOfIsoWeek"/>.</note>
-    /// <para>The result has its time component normalized to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
+    /// <para>The result has its time component normalised to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="isoYear"/> is outside the valid range, or if <paramref name="isoWeek"/> is less than 1 or greater than

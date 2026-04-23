@@ -1,8 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionary.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
-// --------------------------------------------------------------------------------------------------------------- //
+// ---------------------------------------------------------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
@@ -147,7 +147,7 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <remarks>
     /// <para>Creates an empty dictionary with the specified capacity and eviction policy, using the specified key comparer.</para>
     /// <para>
-    /// Initializes the internal storage for key/value pairs, and, where applicable, the eviction tracking structure: FIFO, LRU, MRU, and
+    /// Initialises the internal storage for key/value pairs, and, where applicable, the eviction tracking structure: FIFO, LRU, MRU, and
     /// SecondChance use a linked list; LFU uses a sorted dictionary of frequency lists; RandomReplacement does not require additional tracking.
     /// </para>
     /// </remarks>

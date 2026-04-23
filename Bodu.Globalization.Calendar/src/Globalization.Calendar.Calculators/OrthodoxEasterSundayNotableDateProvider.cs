@@ -1,4 +1,10 @@
-﻿using Bodu.Globalization.Calendar.Calculators;
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="OrthodoxEasterSundayNotableDateProvider.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using Bodu.Globalization.Calendar.Calculators;
 using SysGlobal = System.Globalization;
 
 namespace Bodu.Globalization.Calendar.Providers;

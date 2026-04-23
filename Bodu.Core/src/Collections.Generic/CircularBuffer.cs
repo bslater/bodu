@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CircularBuffer.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -102,11 +102,11 @@ public partial class CircularBuffer<T>
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This constructor initializes the buffer with a default capacity defined by the internal <c>DefaultCapacity</c> constant. When the
+    /// This constructor initialises the buffer with a default capacity defined by the internal <c>DefaultCapacity</c> constant. When the
     /// buffer becomes full, new items will overwrite the oldest elements.
     /// </para>
     /// <para>
-    /// To customize capacity or overwrite behavior, use an overloaded constructor such as
+    /// To customise capacity or overwrite behaviour, use an overloaded constructor such as
     /// <see cref="CircularBuffer{T}.CircularBuffer(int)"/> or <see cref="CircularBuffer{T}.CircularBuffer(int, bool)"/>.
     /// </para>
     /// </remarks>
@@ -128,7 +128,7 @@ public partial class CircularBuffer<T>
         : this(capacity, allowOverwrite: true) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CircularBuffer{T}"/> class with the specified capacity and overwrite behavior.
+    /// Initializes a new instance of the <see cref="CircularBuffer{T}"/> class with the specified capacity and overwrite behaviour.
     /// </summary>
     /// <param name="capacity">The maximum number of elements the buffer can contain. Must be greater than zero.</param>
     /// <param name="allowOverwrite">
@@ -184,7 +184,7 @@ public partial class CircularBuffer<T>
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CircularBuffer{T}"/> class by copying elements from the specified collection, applying
-    /// the specified capacity and overwrite behavior.
+    /// the specified capacity and overwrite behaviour.
     /// </summary>
     /// <param name="collection">The collection from which elements are copied. Must not be <see langword="null"/>.</param>
     /// <param name="capacity">The maximum number of elements the buffer can contain. Must be greater than zero.</param>
@@ -309,7 +309,7 @@ public partial class CircularBuffer<T>
     /// When set to <see langword="false"/>, attempting to <see cref="Enqueue(T)"/> or <see cref="TryEnqueue(T)"/> into a full buffer
     /// will throw an <see cref="InvalidOperationException"/> or return <see langword="false"/>, respectively.
     /// </para>
-    /// <para>This property can be toggled at runtime to change eviction behavior dynamically.</para>
+    /// <para>This property can be toggled at runtime to change eviction behaviour dynamically.</para>
     /// </remarks>
     public bool AllowOverwrite { get; set; }
 
@@ -449,7 +449,7 @@ public partial class CircularBuffer<T>
     /// <exception cref="InvalidOperationException">Thrown if the buffer is empty when <see cref="Dequeue"/> is called.</exception>
     /// <remarks>
     /// <para>
-    /// This method removes the element that has been in the buffer the longest (FIFO behavior). If the buffer is empty, an
+    /// This method removes the element that has been in the buffer the longest (FIFO behaviour). If the buffer is empty, an
     /// <see cref="InvalidOperationException"/> is thrown.
     /// </para>
     /// <para>Use <see cref="TryDequeue(out T)"/> to avoid exceptions when the buffer may be empty.</para>

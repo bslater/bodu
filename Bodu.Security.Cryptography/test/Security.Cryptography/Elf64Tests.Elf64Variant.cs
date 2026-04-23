@@ -4,16 +4,15 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography
+namespace Bodu.Security.Cryptography;
+
+/// <summary>
+/// Identifies the ELF64 seed configurations exercised by <see cref="Elf64Tests" />: the unseeded default,
+/// a seed of 31, and a seed of 131.
+/// </summary>
+public enum Elf64Variant
 {
-    /// <summary>
-    /// Identifies the ELF64 seed configurations exercised by <see cref="Elf64Tests" />: the unseeded default,
-    /// a seed of 31, and a seed of 131.
-    /// </summary>
-    public enum Elf64Variant
-    {
-        Default,
-        Seed31,
-        Seed131,
-    }
+    Default,
+    Seed31,
+    Seed131,
 }

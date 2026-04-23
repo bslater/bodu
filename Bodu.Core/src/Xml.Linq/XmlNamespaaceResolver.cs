@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlNamespaaceResolver.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -35,6 +35,7 @@ public sealed class XmlNamespaceResolver
     /// <param name="parent">The parent element.</param>
     /// <param name="localName">The local name of the child element.</param>
     /// <returns>The matching child XElement, or null if not found.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="parent" /> is <see langword="null" />.</exception>
     public XElement? Element(XElement parent, string localName)
     {
         ThrowHelper.ThrowIfNull(parent);
@@ -47,6 +48,7 @@ public sealed class XmlNamespaceResolver
     /// <param name="parent">The parent element.</param>
     /// <param name="localName">The local name of the child elements.</param>
     /// <returns>An enumerable of matching XElement objects.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="parent" /> is <see langword="null" />.</exception>
     public IEnumerable<XElement> Elements(XElement parent, string localName)
     {
         ThrowHelper.ThrowIfNull(parent);

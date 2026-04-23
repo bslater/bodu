@@ -4,12 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-﻿namespace Bodu.Security.Cryptography
+namespace Bodu.Security.Cryptography;
+
+[TestClass]
+public partial class SimpleReversingSymmetricAlgorithmTests
+    : SymmetricAlgorithmTests<SimpleReversingSymmetricAlgorithm>
 {
-    [TestClass]
-    public partial class SimpleReversingSymmetricAlgorithmTests
-        : SymmetricAlgorithmTests<SimpleReversingSymmetricAlgorithm>
-    {
-        protected override SimpleReversingSymmetricAlgorithm CreateAlgorithm() => new SimpleReversingSymmetricAlgorithm();
-    }
+    protected override SimpleReversingSymmetricAlgorithm CreateAlgorithm() => new SimpleReversingSymmetricAlgorithm();
 }

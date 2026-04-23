@@ -4,11 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-﻿namespace Bodu.Collections.Generic
+namespace Bodu.Collections.Generic;
+
+[TestClass]
+public partial class SequenceGeneratorTests
+    : EnumerableTests
 {
-    [TestClass]
-    public partial class SequenceGeneratorTests
-        : EnumerableTests
-    {
-    }
 }

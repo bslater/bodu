@@ -4,249 +4,248 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Collections.Generic
+namespace Bodu.Collections.Generic;
+
+public partial class CircularBufferTests
 {
-    public partial class CircularBufferTests
+    /// <summary>
+    /// Verifies that <see cref="CircularBuffer{T}.Clear" /> removes all items from the buffer and resets its state.
+    /// </summary>
+    [TestMethod]
+    public void Clear_ShouldClearAllItems()
     {
-        /// <summary>
-        /// Verifies that <see cref="CircularBuffer{T}.Clear" /> removes all items from the buffer and resets its state.
-        /// </summary>
-        [TestMethod]
-        public void Clear_ShouldClearAllItems()
+        var buffer = new CircularBuffer<int>(3);
+        buffer.Enqueue(1);
+        buffer.Enqueue(2);
+        buffer.Clear();
+
+        Assert.AreEqual(0, buffer.Count);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            var buffer = new CircularBuffer<int>(3);
-            buffer.Enqueue(1);
-            buffer.Enqueue(2);
-            buffer.Clear();
+            _ = buffer.Dequeue(); // should throw
+        });
+    }
 
-            Assert.AreEqual(0, buffer.Count);
+    /// <summary>
+    /// Verifies that <see cref="CircularBuffer{T}.Clear" /> is a no-op when the buffer is already empty.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenBufferIsAlreadyEmpty_ShouldDoNothing()
+    {
+        var buffer = new CircularBuffer<string>(3);
+        buffer.Clear(); // no items
 
-            Assert.ThrowsExactly<InvalidOperationException>(() =>
+        Assert.AreEqual(0, buffer.Count);
+        Assert.IsTrue(buffer.ToArray().Length == 0);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CircularBuffer{T}.Clear" /> resets buffer state even after wraparound.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenCalledAfterWraparound_ShouldResetInternalState()
+    {
+        var buffer = new CircularBuffer<int>(3);
+        buffer.Enqueue(1);
+        buffer.Enqueue(2);
+        buffer.Enqueue(3);
+        buffer.Dequeue();
+        buffer.Enqueue(4); // wrap
+        buffer.Clear();
+
+        Assert.AreEqual(0, buffer.Count);
+        Assert.AreEqual(3, buffer.Capacity);
+        CollectionAssert.AreEqual(Array.Empty<int>(), buffer.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that calling Clear during an active enumeration throws <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenEnumerationIsActive_ShouldInvalidateEnumerator()
+    {
+        var buffer = new CircularBuffer<int>(Enumerable.Range(1, 10));
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            foreach (var item in buffer)
             {
-                _ = buffer.Dequeue(); // should throw
-            });
-        }
+                if (item == 5)
+                    buffer.Clear();
+            }
+        });
+    }
 
-        /// <summary>
-        /// Verifies that <see cref="CircularBuffer{T}.Clear" /> is a no-op when the buffer is already empty.
-        /// </summary>
-        [TestMethod]
-        public void Clear_WhenBufferIsAlreadyEmpty_ShouldDoNothing()
-        {
-            var buffer = new CircularBuffer<string>(3);
-            buffer.Clear(); // no items
+    /// <summary>
+    /// Verifies that calling Clear before advancing an enumerator causes the next MoveNext call to throw
+    /// <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenCalledBeforeMoveNext_ShouldInvalidateEnumerator()
+    {
+        var buffer = new CircularBuffer<int>(3);
+        buffer.Enqueue(1);
+        buffer.Enqueue(2);
+        buffer.Enqueue(3);
 
-            Assert.AreEqual(0, buffer.Count);
-            Assert.IsTrue(buffer.ToArray().Length == 0);
-        }
+        var enumerator = buffer.GetEnumerator();
 
-        /// <summary>
-        /// Verifies that <see cref="CircularBuffer{T}.Clear" /> resets buffer state even after wraparound.
-        /// </summary>
-        [TestMethod]
-        public void Clear_WhenCalledAfterWraparound_ShouldResetInternalState()
-        {
-            var buffer = new CircularBuffer<int>(3);
-            buffer.Enqueue(1);
-            buffer.Enqueue(2);
-            buffer.Enqueue(3);
-            buffer.Dequeue();
-            buffer.Enqueue(4); // wrap
-            buffer.Clear();
+        // Clear before any MoveNext — version is now stale
+        buffer.Clear();
 
-            Assert.AreEqual(0, buffer.Count);
-            Assert.AreEqual(3, buffer.Capacity);
-            CollectionAssert.AreEqual(Array.Empty<int>(), buffer.ToArray());
-        }
+        Assert.ThrowsExactly<InvalidOperationException>(() => enumerator.MoveNext());
+    }
 
-        /// <summary>
-        /// Verifies that calling Clear during an active enumeration throws <see cref="InvalidOperationException" />.
-        /// </summary>
-        [TestMethod]
-        public void Clear_WhenEnumerationIsActive_ShouldInvalidateEnumerator()
-        {
-            var buffer = new CircularBuffer<int>(Enumerable.Range(1, 10));
+    /// <summary>
+    /// Verifies that calling Clear mid-enumeration causes Reset to throw <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenCalledDuringEnumeration_ShouldInvalidateReset()
+    {
+        var buffer = new CircularBuffer<int>(3);
+        buffer.Enqueue(1);
+        buffer.Enqueue(2);
+        buffer.Enqueue(3);
 
-            Assert.ThrowsExactly<InvalidOperationException>(() =>
-            {
-                foreach (var item in buffer)
-                {
-                    if (item == 5)
-                        buffer.Clear();
-                }
-            });
-        }
+        var enumerator = buffer.GetEnumerator();
+        enumerator.MoveNext(); // advance past first element
 
-        /// <summary>
-        /// Verifies that calling Clear before advancing an enumerator causes the next MoveNext call to throw
-        /// <see cref="InvalidOperationException" />.
-        /// </summary>
-        [TestMethod]
-        public void Clear_WhenCalledBeforeMoveNext_ShouldInvalidateEnumerator()
-        {
-            var buffer = new CircularBuffer<int>(3);
-            buffer.Enqueue(1);
-            buffer.Enqueue(2);
-            buffer.Enqueue(3);
+        buffer.Clear();
 
-            var enumerator = buffer.GetEnumerator();
+        Assert.ThrowsExactly<InvalidOperationException>(() => enumerator.Reset());
+    }
 
-            // Clear before any MoveNext — version is now stale
-            buffer.Clear();
+    /// <summary>
+    /// Verifies that <see cref="CircularBuffer{T}.Clear" /> removes all elements when the buffer is not wrapped (head &lt; tail).
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenNotWrapped_ShouldRemoveAllItems()
+    {
+        var buffer = new CircularBuffer<string>(5);
+        buffer.Enqueue("A");
+        buffer.Enqueue("B");
+        buffer.Enqueue("C");
 
-            Assert.ThrowsExactly<InvalidOperationException>(() => enumerator.MoveNext());
-        }
+        buffer.Clear();
 
-        /// <summary>
-        /// Verifies that calling Clear mid-enumeration causes Reset to throw <see cref="InvalidOperationException" />.
-        /// </summary>
-        [TestMethod]
-        public void Clear_WhenCalledDuringEnumeration_ShouldInvalidateReset()
-        {
-            var buffer = new CircularBuffer<int>(3);
-            buffer.Enqueue(1);
-            buffer.Enqueue(2);
-            buffer.Enqueue(3);
+        Assert.AreEqual(0, buffer.Count);
+        Assert.IsTrue(buffer.ToArray().Length == 0);
+    }
 
-            var enumerator = buffer.GetEnumerator();
-            enumerator.MoveNext(); // advance past first element
+    /// <summary>
+    /// Verifies that <see cref="CircularBuffer{T}.Clear" /> zeroes both array segments when the buffer is wrapped (head &gt;= tail).
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenWrapped_ShouldZeroAllSegments()
+    {
+        var buffer = new CircularBuffer<int>(5);
 
-            buffer.Clear();
+        buffer.Enqueue(1);
+        buffer.Enqueue(2);
+        buffer.Enqueue(3);
+        buffer.Enqueue(4);
+        buffer.Enqueue(5);
+        buffer.Dequeue(); // move head forward
+        buffer.Enqueue(6); // causes wrap
 
-            Assert.ThrowsExactly<InvalidOperationException>(() => enumerator.Reset());
-        }
+        Assert.IsTrue(buffer.Count > 0);
 
-        /// <summary>
-        /// Verifies that <see cref="CircularBuffer{T}.Clear" /> removes all elements when the buffer is not wrapped (head &lt; tail).
-        /// </summary>
-        [TestMethod]
-        public void Clear_WhenNotWrapped_ShouldRemoveAllItems()
-        {
-            var buffer = new CircularBuffer<string>(5);
-            buffer.Enqueue("A");
-            buffer.Enqueue("B");
-            buffer.Enqueue("C");
+        buffer.Clear();
 
-            buffer.Clear();
+        Assert.AreEqual(0, buffer.Count);
+        CollectionAssert.AreEqual(Array.Empty<int>(), buffer.ToArray());
+    }
 
-            Assert.AreEqual(0, buffer.Count);
-            Assert.IsTrue(buffer.ToArray().Length == 0);
-        }
+    /// <summary>
+    /// Verifies that clearing a full buffer does not raise any eviction events.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenBufferFull_ShouldNotRaiseEvictionEvents()
+    {
+        int evictingCount = 0;
+        int evictedCount = 0;
 
-        /// <summary>
-        /// Verifies that <see cref="CircularBuffer{T}.Clear" /> zeroes both array segments when the buffer is wrapped (head &gt;= tail).
-        /// </summary>
-        [TestMethod]
-        public void Clear_WhenWrapped_ShouldZeroAllSegments()
-        {
-            var buffer = new CircularBuffer<int>(5);
+        var buffer = new CircularBuffer<int>(3, allowOverwrite: true);
+        buffer.Enqueue(1);
+        buffer.Enqueue(2);
+        buffer.Enqueue(3);
 
-            buffer.Enqueue(1);
-            buffer.Enqueue(2);
-            buffer.Enqueue(3);
-            buffer.Enqueue(4);
-            buffer.Enqueue(5);
-            buffer.Dequeue(); // move head forward
-            buffer.Enqueue(6); // causes wrap
+        buffer.ItemEvicting += _ => evictingCount++;
+        buffer.ItemEvicted += _ => evictedCount++;
 
-            Assert.IsTrue(buffer.Count > 0);
+        buffer.Clear();
 
-            buffer.Clear();
+        Assert.AreEqual(0, evictingCount);
+        Assert.AreEqual(0, evictedCount);
+    }
 
-            Assert.AreEqual(0, buffer.Count);
-            CollectionAssert.AreEqual(Array.Empty<int>(), buffer.ToArray());
-        }
+    /// <summary>
+    /// Verifies that clearing and immediately reusing the buffer preserves its capacity and maintains
+    /// correct FIFO ordering for subsequently enqueued items.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenCalledAndImmediatelyReused_ShouldPreserveCapacityAndMaintainFifoOrder()
+    {
+        var buffer = new CircularBuffer<int>(3);
+        buffer.Enqueue(1);
+        buffer.Enqueue(2);
+        buffer.Enqueue(3);
 
-        /// <summary>
-        /// Verifies that clearing a full buffer does not raise any eviction events.
-        /// </summary>
-        [TestMethod]
-        public void Clear_WhenBufferFull_ShouldNotRaiseEvictionEvents()
-        {
-            int evictingCount = 0;
-            int evictedCount = 0;
+        buffer.Clear();
 
-            var buffer = new CircularBuffer<int>(3, allowOverwrite: true);
-            buffer.Enqueue(1);
-            buffer.Enqueue(2);
-            buffer.Enqueue(3);
+        buffer.Enqueue(10);
+        buffer.Enqueue(20);
 
-            buffer.ItemEvicting += _ => evictingCount++;
-            buffer.ItemEvicted += _ => evictedCount++;
+        Assert.AreEqual(3, buffer.Capacity);
+        Assert.AreEqual(2, buffer.Count);
+        CollectionAssert.AreEqual(new[] { 10, 20 }, buffer.ToArray());
+    }
 
-            buffer.Clear();
+    /// <summary>
+    /// Verifies that enqueuing items after clearing a previously full buffer behaves correctly
+    /// and maintains FIFO order.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenBufferWasFullAndNewItemsEnqueued_ShouldMaintainFifoOrder()
+    {
+        var buffer = new CircularBuffer<int>(3, allowOverwrite: true);
+        buffer.Enqueue(1);
+        buffer.Enqueue(2);
+        buffer.Enqueue(3);
 
-            Assert.AreEqual(0, evictingCount);
-            Assert.AreEqual(0, evictedCount);
-        }
+        Assert.AreEqual(3, buffer.Count);
+        buffer.Clear();
+        Assert.AreEqual(0, buffer.Count);
 
-        /// <summary>
-        /// Verifies that clearing and immediately reusing the buffer preserves its capacity and maintains
-        /// correct FIFO ordering for subsequently enqueued items.
-        /// </summary>
-        [TestMethod]
-        public void Clear_WhenCalledAndImmediatelyReused_ShouldPreserveCapacityAndMaintainFifoOrder()
-        {
-            var buffer = new CircularBuffer<int>(3);
-            buffer.Enqueue(1);
-            buffer.Enqueue(2);
-            buffer.Enqueue(3);
+        buffer.Enqueue(10);
+        buffer.Enqueue(20);
+        buffer.Enqueue(30);
 
-            buffer.Clear();
+        CollectionAssert.AreEqual(new[] { 10, 20, 30 }, buffer.ToArray());
+    }
 
-            buffer.Enqueue(10);
-            buffer.Enqueue(20);
+    /// <summary>
+    /// Verifies that draining all items and then refilling the buffer preserves FIFO order
+    /// across the cycle.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenDrainedAndRefilled_ShouldPreserveFifoOrder()
+    {
+        var buffer = new CircularBuffer<int>(3);
+        buffer.Enqueue(1);
+        buffer.Enqueue(2);
+        buffer.Enqueue(3);
 
-            Assert.AreEqual(3, buffer.Capacity);
-            Assert.AreEqual(2, buffer.Count);
-            CollectionAssert.AreEqual(new[] { 10, 20 }, buffer.ToArray());
-        }
+        buffer.Dequeue();
+        buffer.Dequeue();
+        buffer.Dequeue();
 
-        /// <summary>
-        /// Verifies that enqueuing items after clearing a previously full buffer behaves correctly
-        /// and maintains FIFO order.
-        /// </summary>
-        [TestMethod]
-        public void Clear_WhenBufferWasFullAndNewItemsEnqueued_ShouldMaintainFifoOrder()
-        {
-            var buffer = new CircularBuffer<int>(3, allowOverwrite: true);
-            buffer.Enqueue(1);
-            buffer.Enqueue(2);
-            buffer.Enqueue(3);
+        Assert.AreEqual(0, buffer.Count);
 
-            Assert.AreEqual(3, buffer.Count);
-            buffer.Clear();
-            Assert.AreEqual(0, buffer.Count);
+        buffer.Enqueue(10);
+        buffer.Enqueue(20);
 
-            buffer.Enqueue(10);
-            buffer.Enqueue(20);
-            buffer.Enqueue(30);
-
-            CollectionAssert.AreEqual(new[] { 10, 20, 30 }, buffer.ToArray());
-        }
-
-        /// <summary>
-        /// Verifies that draining all items and then refilling the buffer preserves FIFO order
-        /// across the cycle.
-        /// </summary>
-        [TestMethod]
-        public void Clear_WhenDrainedAndRefilled_ShouldPreserveFifoOrder()
-        {
-            var buffer = new CircularBuffer<int>(3);
-            buffer.Enqueue(1);
-            buffer.Enqueue(2);
-            buffer.Enqueue(3);
-
-            buffer.Dequeue();
-            buffer.Dequeue();
-            buffer.Dequeue();
-
-            Assert.AreEqual(0, buffer.Count);
-
-            buffer.Enqueue(10);
-            buffer.Enqueue(20);
-
-            CollectionAssert.AreEqual(new[] { 10, 20 }, buffer.ToArray());
-        }
+        CollectionAssert.AreEqual(new[] { 10, 20 }, buffer.ToArray());
     }
 }

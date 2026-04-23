@@ -95,6 +95,7 @@ public static partial class ShuffleHelpers
     /// <param name="source">The source sequence to shuffle.</param>
     /// <param name="rng">The random number generator.</param>
     /// <returns>A lazily-evaluated, fully shuffled sequence.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="source" /> is <see langword="null" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IEnumerable<T> ShuffleAndYield<T>(IEnumerable<T> source, IRandomGenerator rng)
     {
@@ -109,6 +110,7 @@ public static partial class ShuffleHelpers
     /// <param name="array">The array to shuffle.</param>
     /// <param name="rng">The random number generator.</param>
     /// <returns>A shuffled sequence based on the array.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="array" /> is <see langword="null" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IEnumerable<T> ShuffleAndYield<T>(T[] array, IRandomGenerator rng)
     {

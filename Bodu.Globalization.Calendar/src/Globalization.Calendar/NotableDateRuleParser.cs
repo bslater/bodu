@@ -1,3 +1,9 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="NotableDateRuleParser.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using Bodu.Extensions;
 using System.Collections.Immutable;
 using System.Globalization;
@@ -8,342 +14,465 @@ using System.Xml.Schema;
 
 using SysGlobal = System.Globalization;
 
-namespace Bodu.Globalization.Calendar
+namespace Bodu.Globalization.Calendar;
+
+/// <summary>
+/// Parses authored XML payloads into <see cref="NotableDateRule" /> instances after schema validation.
+/// </summary>
+/// <remarks>
+/// <para>
+/// XML inputs are validated against the embedded <c>NotableDates.xsd</c> schema before parsing. JSON parsing is intentionally not yet
+/// reinstated; the previous incomplete implementation has been preserved as a documented stub at the bottom of this file for future
+/// completion.
+/// </para>
+/// <para>
+/// This class replaces <c>NotableDateDefinitionParser</c>. The new schema vocabulary uses <c>Rule</c> as the per-definition element and
+/// names the strategy child elements <c>Fixed</c>, <c>DayOfWeekInMonth</c>, <c>OffsetFromAnchor</c>, and <c>Calculator</c>.
+/// </para>
+/// </remarks>
+public static class NotableDateRuleParser
 {
+	private static readonly XNamespace Namespace = "urn:bodu:globalization:calendar";
+	private static readonly XmlSchemaSet SchemaSet = LoadSchema();
+
 	/// <summary>
-	/// Parses authored XML payloads into <see cref="NotableDateRule" /> instances after schema validation.
+	/// Parses the supplied XML string into rules after validating against the embedded schema.
 	/// </summary>
+	/// <param name="xml">The XML payload. Must not be <see langword="null" /> or whitespace.</param>
+	/// <returns>The parsed rules.</returns>
 	/// <remarks>
-	/// <para>
-	/// XML inputs are validated against the embedded <c>NotableDates.xsd</c> schema before parsing. JSON parsing is intentionally not yet
-	/// reinstated; the previous incomplete implementation has been preserved as a documented stub at the bottom of this file for future
-	/// completion.
-	/// </para>
-	/// <para>
-	/// This class replaces <c>NotableDateDefinitionParser</c>. The new schema vocabulary uses <c>Rule</c> as the per-definition element and
-	/// names the strategy child elements <c>Fixed</c>, <c>DayOfWeekInMonth</c>, <c>OffsetFromAnchor</c>, and <c>Calculator</c>.
-	/// </para>
+	/// This convenience overload returns only the rules and discards any <c>Import</c> or <c>Suppress</c> directives. To resolve a
+	/// document graph including imports, call <see cref="ParseDocument(string)" /> instead and feed the result to a loader such as
+	/// <see cref="XmlResourceNotableDateRuleProvider" />.
 	/// </remarks>
-	public static class NotableDateRuleParser
+	/// <exception cref="ArgumentNullException">Thrown when <paramref name="xml" /> is <see langword="null" />, empty, or whitespace.</exception>
+	/// <exception cref="XmlSchemaValidationException">Thrown when the XML does not conform to the embedded schema.</exception>
+	public static List<NotableDateRule> ParseXml(string xml)
 	{
-		private static readonly XNamespace Namespace = "urn:bodu:globalization:calendar";
-		private static readonly XmlSchemaSet SchemaSet = LoadSchema();
-
-		/// <summary>
-		/// Parses the supplied XML string into rules after validating against the embedded schema.
-		/// </summary>
-		/// <param name="xml">The XML payload. Must not be <see langword="null" /> or whitespace.</param>
-		/// <returns>The parsed rules.</returns>
-		/// <remarks>
-		/// This convenience overload returns only the rules and discards any <c>Import</c> or <c>Suppress</c> directives. To resolve a
-		/// document graph including imports, call <see cref="ParseDocument(string)" /> instead and feed the result to a loader such as
-		/// <see cref="XmlResourceNotableDateRuleProvider" />.
-		/// </remarks>
-		/// <exception cref="ArgumentNullException">Thrown when <paramref name="xml" /> is <see langword="null" />, empty, or whitespace.</exception>
-		/// <exception cref="XmlSchemaValidationException">Thrown when the XML does not conform to the embedded schema.</exception>
-		public static List<NotableDateRule> ParseXml(string xml)
-		{
-			return ParseDocument(xml).LocalRules.ToList();
-		}
-
-		/// <summary>
-		/// Parses the supplied <see cref="XDocument" /> into rules after validating against the embedded schema.
-		/// </summary>
-		/// <param name="document">The XML document. Must not be <see langword="null" />.</param>
-		/// <returns>The parsed rules.</returns>
-		/// <exception cref="ArgumentNullException">Thrown when <paramref name="document" /> is <see langword="null" />.</exception>
-		public static List<NotableDateRule> ParseXml(XDocument document)
-		{
-			return ParseDocument(document).LocalRules.ToList();
-		}
-
-		/// <summary>
-		/// Parses the supplied XML string into a <see cref="ParsedNotableDateDocument" />, exposing local rules together with any
-		/// <c>Import</c> and <c>Suppress</c> directives.
-		/// </summary>
-		/// <param name="xml">The XML payload. Must not be <see langword="null" /> or whitespace.</param>
-		/// <returns>The parsed document, including imports, suppressions, and rules.</returns>
-		/// <exception cref="ArgumentNullException">Thrown when <paramref name="xml" /> is <see langword="null" />, empty, or whitespace.</exception>
-		/// <exception cref="XmlSchemaValidationException">Thrown when the XML does not conform to the embedded schema.</exception>
-		public static ParsedNotableDateDocument ParseDocument(string xml)
-		{
-			if (string.IsNullOrWhiteSpace(xml))
-				throw new ArgumentNullException(nameof(xml));
-
-			using var stringReader = new StringReader(xml);
-			using var xmlReader = XmlReader.Create(stringReader, CreateValidationSettings());
-			var document = XDocument.Load(xmlReader);
-			return ParseDocumentInternal(document);
-		}
-
-		/// <summary>
-		/// Parses the supplied <see cref="XDocument" /> into a <see cref="ParsedNotableDateDocument" />.
-		/// </summary>
-		/// <param name="document">The XML document. Must not be <see langword="null" />.</param>
-		/// <returns>The parsed document.</returns>
-		/// <exception cref="ArgumentNullException">Thrown when <paramref name="document" /> is <see langword="null" />.</exception>
-		public static ParsedNotableDateDocument ParseDocument(XDocument document)
-		{
-			if (document is null)
-				throw new ArgumentNullException(nameof(document));
-
-			ValidateDocument(document);
-			return ParseDocumentInternal(document);
-		}
-
-		// ----------------------------------------------------------------------------
-		// Per-element parsing
-		// ----------------------------------------------------------------------------
-
-		private static ParsedNotableDateDocument ParseDocumentInternal(XDocument document)
-		{
-			var useGroups = document.Descendants(Namespace + "UseFrom")
-				.Select(ParseUseGroup)
-				.ToImmutableArray();
-
-			var rules = document.Descendants(Namespace + "NotableDate")
-				.SelectMany(ParseNotableDate)
-				.ToImmutableArray();
-
-			return new ParsedNotableDateDocument(useGroups, rules);
-		}
-
-		private static NotableDateRuleUseGroup ParseUseGroup(XElement useFromElement)
-		{
-			var resource = GetRequiredAttribute(useFromElement, "resource");
-			bool useAll = useFromElement.Element(Namespace + "UseAll") is not null;
-
-			var uses = useFromElement.Elements(Namespace + "Use")
-				.Select(ParseUseDirective)
-				.ToImmutableArray();
-
-			return new NotableDateRuleUseGroup(resource, useAll, uses);
-		}
-
-		private static NotableDateRuleUseDirective ParseUseDirective(XElement useElement) =>
-			new(
-				SourceRuleName: GetRequiredAttribute(useElement, "name"),
-				LocalName: GetOptionalAttribute(useElement, "as"),
-				Category: ParseOptionalEnum<NotableDateCategory>(useElement, "category"),
-				TerritoryCode: GetOptionalAttribute(useElement, "territory"),
-				IsNonWorkingDay: ParseOptionalBool(useElement, "nonWorking"),
-				FirstYear: ParseOptionalInt(useElement, "firstYear"),
-				LastYear: ParseOptionalInt(useElement, "lastYear"),
-				OccurrenceYears: ParseOptionalInt(useElement, "occurrenceYears"),
-				DurationDays: ParseOptionalInt(useElement, "durationDays"),
-				Priority: ParseOptionalInt(useElement, "priority"),
-				Comment: GetOptionalAttribute(useElement, "comment"));
-
-		private static IEnumerable<NotableDateRule> ParseNotableDate(XElement notableDateElement)
-		{
-			var name = GetRequiredAttribute(notableDateElement, "name");
-
-			foreach (var ruleElement in notableDateElement.Elements(Namespace + "Rule"))
-			{
-				var strategyElement = ruleElement.Elements()
-					.FirstOrDefault(e => IsStrategyElement(e.Name.LocalName))
-					?? throw new InvalidOperationException($"Rule '{name}' is missing a strategy child element.");
-
-				var strategy = strategyElement.Name.LocalName switch
-				{
-					"Fixed" => DateResolutionStrategy.Fixed,
-					"DayOfWeekInMonth" => DateResolutionStrategy.DayOfWeekInMonth,
-					"Calculator" => DateResolutionStrategy.Calculator,
-					"OffsetFromAnchor" => DateResolutionStrategy.OffsetFromAnchor,
-					_ => throw new InvalidOperationException($"Unknown strategy element '{strategyElement.Name.LocalName}' on rule '{name}'.")
-				};
-
-				var rule = new NotableDateRule
-				{
-					Name = GetOptionalAttribute(ruleElement, "name") ?? name,
-					Strategy = strategy,
-					Category = ParseOptionalEnum<NotableDateCategory>(ruleElement, "category") ?? NotableDateCategory.None,
-					FirstYear = ParseOptionalInt(ruleElement, "firstYear"),
-					LastYear = ParseOptionalInt(ruleElement, "lastYear"),
-					OccurrenceYears = ParseOptionalInt(ruleElement, "occurrenceYears"),
-					CalendarType = ParseOptionalType<SysGlobal.Calendar>(ruleElement, "calendarType"),
-					TerritoryCode = GetOptionalAttribute(ruleElement, "territory"),
-					IsNonWorkingDay = ParseOptionalBool(ruleElement, "nonWorking"),
-					DurationDays = ParseOptionalInt(ruleElement, "durationDays") ?? 1,
-					Priority = ParseOptionalInt(ruleElement, "priority") ?? 100,
-					Tags = ruleElement.Elements(Namespace + "Tag")
-						.Select(t => t.Value)
-						.Where(t => !string.IsNullOrWhiteSpace(t))
-						.ToImmutableHashSet(StringComparer.OrdinalIgnoreCase),
-					Comment = GetOptionalAttribute(ruleElement, "comment"),
-					Adjustments = ruleElement.Elements(Namespace + "Adjustment")
-						.Select(ParseAdjustment)
-						.ToImmutableArray(),
-				};
-
-				yield return ApplyStrategySpecifics(rule, strategyElement);
-			}
-		}
-
-		private static bool IsStrategyElement(string localName) =>
-			localName is "Fixed" or "DayOfWeekInMonth" or "Calculator" or "OffsetFromAnchor";
-
-		private static NotableDateRule ApplyStrategySpecifics(NotableDateRule rule, XElement strategyElement) =>
-			rule.Strategy switch
-			{
-				DateResolutionStrategy.Fixed => rule with
-				{
-					Month = ParseMonth(GetRequiredAttribute(strategyElement, "month")),
-					Day = int.Parse(GetRequiredAttribute(strategyElement, "day"), CultureInfo.InvariantCulture)
-				},
-				DateResolutionStrategy.DayOfWeekInMonth => rule with
-				{
-					Month = ParseMonth(GetRequiredAttribute(strategyElement, "month")),
-					DayOfWeek = ParseRequiredEnum<DayOfWeek>(strategyElement, "dayOfWeek"),
-					WeekOrdinal = ParseRequiredEnum<WeekOfMonthOrdinal>(strategyElement, "weekOrdinal"),
-				},
-				DateResolutionStrategy.OffsetFromAnchor => rule with
-				{
-					AnchorRuleName = GetRequiredAttribute(strategyElement, "name"),
-					OffsetDays = int.Parse(GetRequiredAttribute(strategyElement, "offset"), CultureInfo.InvariantCulture),
-				},
-				DateResolutionStrategy.Calculator => rule with
-				{
-					CalculatorKey = GetOptionalAttribute(strategyElement, "key"),
-					CalculatorType = ParseOptionalType<INotableDateCalculator>(strategyElement, "type"),
-				},
-				_ => throw new NotSupportedException($"Unsupported strategy: {rule.Strategy}.")
-			};
-
-		private static ObservanceAdjustment ParseAdjustment(XElement element) =>
-			new()
-			{
-				Trigger = ParseRequiredEnum<AdjustmentTrigger>(element, "when"),
-				Action = ParseRequiredEnum<AdjustmentAction>(element, "action"),
-				DayOfWeek = ParseOptionalEnum<DayOfWeek>(element, "dayOfWeek"),
-				WeekOrdinal = ParseOptionalEnum<WeekOfMonthOrdinal>(element, "weekOrdinal"),
-				IsNonWorkingDay = ParseOptionalBool(element, "nonWorking"),
-				OffsetDays = ParseOptionalInt(element, "days") ?? 0,
-				TerritoryCode = GetOptionalAttribute(element, "territory"),
-				CalendarType = ParseOptionalType<SysGlobal.Calendar>(element, "calendarType"),
-				EffectiveFromYear = ParseOptionalInt(element, "fromYear"),
-				EffectiveToYear = ParseOptionalInt(element, "toYear"),
-				ComparisonDate = ParseOptionalMonthDay(element, "comparisonMonth", "comparisonDay"),
-				TargetRuleName = GetOptionalAttribute(element, "target"),
-				Priority = ParseOptionalInt(element, "priority") ?? 100,
-				HandlerKey = GetOptionalAttribute(element, "handlerKey"),
-			};
-
-		// ----------------------------------------------------------------------------
-		// Attribute helpers
-		// ----------------------------------------------------------------------------
-
-		private static string GetRequiredAttribute(XElement element, string attributeName) =>
-			element.Attribute(attributeName)?.Value
-				?? throw new InvalidOperationException($"Missing required attribute '{attributeName}' on element '{element.Name.LocalName}'.");
-
-		private static string? GetOptionalAttribute(XElement element, string attributeName) =>
-			element.Attribute(attributeName)?.Value;
-
-		private static TEnum ParseRequiredEnum<TEnum>(XElement element, string attributeName) where TEnum : struct, Enum =>
-			Enum.TryParse<TEnum>(GetRequiredAttribute(element, attributeName), ignoreCase: true, out var result)
-				? result
-				: throw new InvalidOperationException($"Invalid value for attribute '{attributeName}' on element '{element.Name.LocalName}'.");
-
-		private static TEnum? ParseOptionalEnum<TEnum>(XElement element, string attributeName) where TEnum : struct, Enum
-		{
-			var raw = GetOptionalAttribute(element, attributeName);
-			return raw is not null && Enum.TryParse<TEnum>(raw, ignoreCase: true, out var result) ? result : null;
-		}
-
-		private static int? ParseOptionalInt(XElement element, string attributeName)
-		{
-			var raw = GetOptionalAttribute(element, attributeName);
-			return raw is not null && int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : (int?)null;
-		}
-
-		private static bool? ParseOptionalBool(XElement element, string attributeName)
-		{
-			var raw = GetOptionalAttribute(element, attributeName);
-			return raw is not null && bool.TryParse(raw, out var result) ? result : (bool?)null;
-		}
-
-		private static DateTime? ParseOptionalMonthDay(XElement element, string monthAttr, string dayAttr)
-		{
-			var month = GetOptionalAttribute(element, monthAttr);
-			var day = GetOptionalAttribute(element, dayAttr);
-			if (month is null || day is null) return null;
-
-			int monthValue = ParseMonth(month);
-			if (!int.TryParse(day, NumberStyles.Integer, CultureInfo.InvariantCulture, out var dayValue)) return null;
-
-			// Year is irrelevant for comparison-date authoring; the adjuster reprojects onto the resolved year.
-			return new DateTime(2000, monthValue, dayValue, 0, 0, 0, DateTimeKind.Unspecified);
-		}
-
-		private static Type? ParseOptionalType<TBase>(XElement element, string attributeName)
-		{
-			var typeName = GetOptionalAttribute(element, attributeName);
-			if (string.IsNullOrWhiteSpace(typeName)) return null;
-
-			var type = Type.GetType(typeName, throwOnError: false);
-			return type is not null && typeof(TBase).IsAssignableFrom(type) ? type : null;
-		}
-
-		private static int ParseMonth(string monthName)
-		{
-			ThrowHelper.ThrowIfNullOrEmpty(monthName);
-
-			if (DateTime.TryParseExact(monthName, "MMMM", CultureInfo.InvariantCulture, DateTimeStyles.None, out var result))
-				return result.Month;
-
-			throw new FormatException($"Invalid month name '{monthName}'. Expected a full English month name (e.g. 'January').");
-		}
-
-		// ----------------------------------------------------------------------------
-		// Schema validation
-		// ----------------------------------------------------------------------------
-
-		private static XmlSchemaSet LoadSchema()
-		{
-			var assembly = Assembly.GetExecutingAssembly();
-			const string schemaResourceName = "Bodu.Globalization.Calendar.NotableDates.xsd";
-
-			using var stream = assembly.GetManifestResourceStream(schemaResourceName)
-				?? throw new FileNotFoundException($"Embedded schema resource '{schemaResourceName}' not found in assembly '{assembly.FullName}'.");
-
-			var schemaSet = new XmlSchemaSet();
-			schemaSet.Add(null, XmlReader.Create(stream));
-			return schemaSet;
-		}
-
-		private static XmlReaderSettings CreateValidationSettings()
-		{
-			var settings = new XmlReaderSettings
-			{
-				ValidationType = ValidationType.Schema,
-				Schemas = SchemaSet,
-				ValidationFlags = XmlSchemaValidationFlags.ReportValidationWarnings,
-			};
-			settings.ValidationEventHandler += HandleValidationEvent;
-			return settings;
-		}
-
-		private static void ValidateDocument(XDocument document)
-		{
-			using var reader = document.CreateReader();
-			using var validatingReader = XmlReader.Create(reader, CreateValidationSettings());
-			while (validatingReader.Read()) { }
-		}
-
-		private static void HandleValidationEvent(object? sender, ValidationEventArgs e)
-		{
-			if (e.Severity == XmlSeverityType.Error)
-				throw new XmlSchemaValidationException($"Schema validation error: {e.Message}", e.Exception);
-		}
-
-		// ----------------------------------------------------------------------------
-		// JSON parser placeholder (preserved for future implementation)
-		// ----------------------------------------------------------------------------
-		//
-		// The previous incomplete JSON parser has been intentionally kept out of the
-		// public surface until it can be reinstated against the new NotableDateRule
-		// vocabulary. When implementing, mirror ParseXml: validate against a JSON
-		// schema (or strict deserialiser), then map each item through ApplyStrategySpecifics.
+		return ParseDocument(xml).LocalRules.ToList();
 	}
+
+	/// <summary>
+	/// Parses the supplied <see cref="XDocument" /> into rules after validating against the embedded schema.
+	/// </summary>
+	/// <param name="document">The XML document. Must not be <see langword="null" />.</param>
+	/// <returns>The parsed rules.</returns>
+	/// <exception cref="ArgumentNullException">Thrown when <paramref name="document" /> is <see langword="null" />.</exception>
+	public static List<NotableDateRule> ParseXml(XDocument document)
+	{
+		return ParseDocument(document).LocalRules.ToList();
+	}
+
+	/// <summary>
+	/// Parses the supplied XML string into a <see cref="ParsedNotableDateDocument" />, exposing local rules together with any
+	/// <c>Import</c> and <c>Suppress</c> directives.
+	/// </summary>
+	/// <param name="xml">The XML payload. Must not be <see langword="null" /> or whitespace.</param>
+	/// <returns>The parsed document, including imports, suppressions, and rules.</returns>
+	/// <exception cref="ArgumentNullException">Thrown when <paramref name="xml" /> is <see langword="null" />, empty, or whitespace.</exception>
+	/// <exception cref="XmlSchemaValidationException">Thrown when the XML does not conform to the embedded schema.</exception>
+	public static ParsedNotableDateDocument ParseDocument(string xml)
+	{
+		if (string.IsNullOrWhiteSpace(xml))
+			throw new ArgumentNullException(nameof(xml));
+
+		using var stringReader = new StringReader(xml);
+		using var xmlReader = XmlReader.Create(stringReader, CreateValidationSettings());
+		var document = XDocument.Load(xmlReader);
+		return ParseDocumentInternal(document);
+	}
+
+	/// <summary>
+	/// Parses the supplied <see cref="XDocument" /> into a <see cref="ParsedNotableDateDocument" />.
+	/// </summary>
+	/// <param name="document">The XML document. Must not be <see langword="null" />.</param>
+	/// <returns>The parsed document.</returns>
+	/// <exception cref="ArgumentNullException">Thrown when <paramref name="document" /> is <see langword="null" />.</exception>
+	public static ParsedNotableDateDocument ParseDocument(XDocument document)
+	{
+		if (document is null)
+			throw new ArgumentNullException(nameof(document));
+
+		ValidateDocument(document);
+		return ParseDocumentInternal(document);
+	}
+
+	// ----------------------------------------------------------------------------
+	// Per-element parsing
+	// ----------------------------------------------------------------------------
+
+    /// <summary>
+    /// Parses a validated <see cref="XDocument" /> into a <see cref="ParsedNotableDateDocument" />,
+    /// materialising each &lt;NotableDate&gt; child into zero or more <see cref="NotableDateRule" />
+    /// instances along with any &lt;Use&gt; group references.
+    /// </summary>
+    /// <param name="document">The notable-date XML document to parse; must already be schema-validated.</param>
+    /// <returns>The parsed document model.</returns>
+	private static ParsedNotableDateDocument ParseDocumentInternal(XDocument document)
+	{
+		var useGroups = document.Descendants(Namespace + "UseFrom")
+			.Select(ParseUseGroup)
+			.ToImmutableArray();
+
+		var rules = document.Descendants(Namespace + "NotableDate")
+			.SelectMany(ParseNotableDate)
+			.ToImmutableArray();
+
+		return new ParsedNotableDateDocument(useGroups, rules);
+	}
+
+    /// <summary>
+    /// Parses a &lt;UseFrom&gt; element into a <see cref="NotableDateRuleUseGroup" />, enumerating
+    /// all child &lt;Use&gt; directives.
+    /// </summary>
+    /// <param name="useFromElement">The &lt;UseFrom&gt; XML element.</param>
+    /// <returns>The parsed use-group instance.</returns>
+	private static NotableDateRuleUseGroup ParseUseGroup(XElement useFromElement)
+	{
+		var resource = GetRequiredAttribute(useFromElement, "resource");
+		bool useAll = useFromElement.Element(Namespace + "UseAll") is not null;
+
+		var uses = useFromElement.Elements(Namespace + "Use")
+			.Select(ParseUseDirective)
+			.ToImmutableArray();
+
+		return new NotableDateRuleUseGroup(resource, useAll, uses);
+	}
+
+    /// <summary>
+    /// Parses a single &lt;Use&gt; directive element into a
+    /// <see cref="NotableDateRuleUseDirective" />.
+    /// </summary>
+    /// <param name="useElement">The &lt;Use&gt; XML element.</param>
+    /// <returns>The parsed use directive.</returns>
+	private static NotableDateRuleUseDirective ParseUseDirective(XElement useElement) =>
+		new(
+			SourceRuleName: GetRequiredAttribute(useElement, "name"),
+			LocalName: GetOptionalAttribute(useElement, "as"),
+			Category: ParseOptionalEnum<NotableDateCategory>(useElement, "category"),
+			TerritoryCode: GetOptionalAttribute(useElement, "territory"),
+			IsNonWorkingDay: ParseOptionalBool(useElement, "nonWorking"),
+			FirstYear: ParseOptionalInt(useElement, "firstYear"),
+			LastYear: ParseOptionalInt(useElement, "lastYear"),
+			OccurrenceYears: ParseOptionalInt(useElement, "occurrenceYears"),
+			DurationDays: ParseOptionalInt(useElement, "durationDays"),
+			Priority: ParseOptionalInt(useElement, "priority"),
+			Comment: GetOptionalAttribute(useElement, "comment"));
+
+    /// <summary>
+    /// Expands a single &lt;NotableDate&gt; XML element into its one-or-more
+    /// <see cref="NotableDateRule" /> instances, applying each strategy element's specifics.
+    /// </summary>
+    /// <param name="notableDateElement">The &lt;NotableDate&gt; XML element.</param>
+    /// <returns>The sequence of rules derived from the element.</returns>
+	private static IEnumerable<NotableDateRule> ParseNotableDate(XElement notableDateElement)
+	{
+		var name = GetRequiredAttribute(notableDateElement, "name");
+
+		foreach (var ruleElement in notableDateElement.Elements(Namespace + "Rule"))
+		{
+			var strategyElement = ruleElement.Elements()
+				.FirstOrDefault(e => IsStrategyElement(e.Name.LocalName))
+				?? throw new InvalidOperationException($"Rule '{name}' is missing a strategy child element.");
+
+			var strategy = strategyElement.Name.LocalName switch
+			{
+				"Fixed" => DateResolutionStrategy.Fixed,
+				"DayOfWeekInMonth" => DateResolutionStrategy.DayOfWeekInMonth,
+				"Calculator" => DateResolutionStrategy.Calculator,
+				"OffsetFromAnchor" => DateResolutionStrategy.OffsetFromAnchor,
+				_ => throw new InvalidOperationException($"Unknown strategy element '{strategyElement.Name.LocalName}' on rule '{name}'.")
+			};
+
+			var rule = new NotableDateRule
+			{
+				Name = GetOptionalAttribute(ruleElement, "name") ?? name,
+				Strategy = strategy,
+				Category = ParseOptionalEnum<NotableDateCategory>(ruleElement, "category") ?? NotableDateCategory.None,
+				FirstYear = ParseOptionalInt(ruleElement, "firstYear"),
+				LastYear = ParseOptionalInt(ruleElement, "lastYear"),
+				OccurrenceYears = ParseOptionalInt(ruleElement, "occurrenceYears"),
+				CalendarType = ParseOptionalType<SysGlobal.Calendar>(ruleElement, "calendarType"),
+				TerritoryCode = GetOptionalAttribute(ruleElement, "territory"),
+				IsNonWorkingDay = ParseOptionalBool(ruleElement, "nonWorking"),
+				DurationDays = ParseOptionalInt(ruleElement, "durationDays") ?? 1,
+				Priority = ParseOptionalInt(ruleElement, "priority") ?? 100,
+				Tags = ruleElement.Elements(Namespace + "Tag")
+					.Select(t => t.Value)
+					.Where(t => !string.IsNullOrWhiteSpace(t))
+					.ToImmutableHashSet(StringComparer.OrdinalIgnoreCase),
+				Comment = GetOptionalAttribute(ruleElement, "comment"),
+				Adjustments = ruleElement.Elements(Namespace + "Adjustment")
+					.Select(ParseAdjustment)
+					.ToImmutableArray(),
+			};
+
+			yield return ApplyStrategySpecifics(rule, strategyElement);
+		}
+	}
+
+    /// <summary>
+    /// Returns <see langword="true" /> if <paramref name="localName" /> is a recognised
+    /// calculation-strategy element name (for example <c>Fixed</c>, <c>EasterSunday</c>).
+    /// </summary>
+    /// <param name="localName">The local name of the XML element.</param>
+    /// <returns><see langword="true" /> if the element names a strategy; otherwise <see langword="false" />.</returns>
+	private static bool IsStrategyElement(string localName) =>
+		localName is "Fixed" or "DayOfWeekInMonth" or "Calculator" or "OffsetFromAnchor";
+
+    /// <summary>
+    /// Applies strategy-specific attributes and child elements (fixed date, Easter offset,
+    /// lunar rule, and so on) onto <paramref name="rule" />, returning the enriched rule.
+    /// </summary>
+    /// <param name="rule">The partially-populated rule to enrich.</param>
+    /// <param name="strategyElement">The XML element describing the strategy.</param>
+    /// <returns>The rule with strategy-specific fields populated.</returns>
+	private static NotableDateRule ApplyStrategySpecifics(NotableDateRule rule, XElement strategyElement) =>
+		rule.Strategy switch
+		{
+			DateResolutionStrategy.Fixed => rule with
+			{
+				Month = ParseMonth(GetRequiredAttribute(strategyElement, "month")),
+				Day = int.Parse(GetRequiredAttribute(strategyElement, "day"), CultureInfo.InvariantCulture)
+			},
+			DateResolutionStrategy.DayOfWeekInMonth => rule with
+			{
+				Month = ParseMonth(GetRequiredAttribute(strategyElement, "month")),
+				DayOfWeek = ParseRequiredEnum<DayOfWeek>(strategyElement, "dayOfWeek"),
+				WeekOrdinal = ParseRequiredEnum<WeekOfMonthOrdinal>(strategyElement, "weekOrdinal"),
+			},
+			DateResolutionStrategy.OffsetFromAnchor => rule with
+			{
+				AnchorRuleName = GetRequiredAttribute(strategyElement, "name"),
+				OffsetDays = int.Parse(GetRequiredAttribute(strategyElement, "offset"), CultureInfo.InvariantCulture),
+			},
+			DateResolutionStrategy.Calculator => rule with
+			{
+				CalculatorKey = GetOptionalAttribute(strategyElement, "key"),
+				CalculatorType = ParseOptionalType<INotableDateCalculator>(strategyElement, "type"),
+			},
+			_ => throw new NotSupportedException($"Unsupported strategy: {rule.Strategy}.")
+		};
+
+    /// <summary>
+    /// Parses an &lt;Adjustment&gt; XML element into an <see cref="ObservanceAdjustment" /> record.
+    /// </summary>
+    /// <param name="element">The &lt;Adjustment&gt; XML element.</param>
+    /// <returns>The parsed observance adjustment.</returns>
+	private static ObservanceAdjustment ParseAdjustment(XElement element) =>
+		new()
+		{
+			Trigger = ParseRequiredEnum<AdjustmentTrigger>(element, "when"),
+			Action = ParseRequiredEnum<AdjustmentAction>(element, "action"),
+			DayOfWeek = ParseOptionalEnum<DayOfWeek>(element, "dayOfWeek"),
+			WeekOrdinal = ParseOptionalEnum<WeekOfMonthOrdinal>(element, "weekOrdinal"),
+			IsNonWorkingDay = ParseOptionalBool(element, "nonWorking"),
+			OffsetDays = ParseOptionalInt(element, "days") ?? 0,
+			TerritoryCode = GetOptionalAttribute(element, "territory"),
+			CalendarType = ParseOptionalType<SysGlobal.Calendar>(element, "calendarType"),
+			EffectiveFromYear = ParseOptionalInt(element, "fromYear"),
+			EffectiveToYear = ParseOptionalInt(element, "toYear"),
+			ComparisonDate = ParseOptionalMonthDay(element, "comparisonMonth", "comparisonDay"),
+			TargetRuleName = GetOptionalAttribute(element, "target"),
+			Priority = ParseOptionalInt(element, "priority") ?? 100,
+			HandlerKey = GetOptionalAttribute(element, "handlerKey"),
+		};
+
+	// ----------------------------------------------------------------------------
+	// Attribute helpers
+	// ----------------------------------------------------------------------------
+
+    /// <summary>
+    /// Returns the value of <paramref name="attributeName" /> on <paramref name="element" />,
+    /// throwing if absent.
+    /// </summary>
+    /// <param name="element">The XML element to inspect.</param>
+    /// <param name="attributeName">The required attribute name.</param>
+    /// <returns>The attribute value.</returns>
+    /// <exception cref="FormatException">The attribute is missing on <paramref name="element" />.</exception>
+	private static string GetRequiredAttribute(XElement element, string attributeName) =>
+		element.Attribute(attributeName)?.Value
+			?? throw new InvalidOperationException($"Missing required attribute '{attributeName}' on element '{element.Name.LocalName}'.");
+
+    /// <summary>
+    /// Returns the value of <paramref name="attributeName" /> on <paramref name="element" />,
+    /// or <see langword="null" /> if the attribute is absent.
+    /// </summary>
+    /// <param name="element">The XML element to inspect.</param>
+    /// <param name="attributeName">The attribute name.</param>
+    /// <returns>The attribute value, or <see langword="null" /> if not present.</returns>
+	private static string? GetOptionalAttribute(XElement element, string attributeName) =>
+		element.Attribute(attributeName)?.Value;
+
+	private static TEnum ParseRequiredEnum<TEnum>(XElement element, string attributeName) where TEnum : struct, Enum =>
+		Enum.TryParse<TEnum>(GetRequiredAttribute(element, attributeName), ignoreCase: true, out var result)
+			? result
+			: throw new InvalidOperationException($"Invalid value for attribute '{attributeName}' on element '{element.Name.LocalName}'.");
+
+	private static TEnum? ParseOptionalEnum<TEnum>(XElement element, string attributeName) where TEnum : struct, Enum
+	{
+		var raw = GetOptionalAttribute(element, attributeName);
+		return raw is not null && Enum.TryParse<TEnum>(raw, ignoreCase: true, out var result) ? result : null;
+	}
+
+    /// <summary>
+    /// Parses <paramref name="attributeName" /> on <paramref name="element" /> as an
+    /// <see cref="int" /> if present.
+    /// </summary>
+    /// <param name="element">The XML element to inspect.</param>
+    /// <param name="attributeName">The attribute name.</param>
+    /// <returns>The parsed integer, or <see langword="null" /> if the attribute is absent.</returns>
+    /// <exception cref="FormatException">The attribute is present but not a valid integer.</exception>
+	private static int? ParseOptionalInt(XElement element, string attributeName)
+	{
+		var raw = GetOptionalAttribute(element, attributeName);
+		return raw is not null && int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : (int?)null;
+	}
+
+    /// <summary>
+    /// Parses <paramref name="attributeName" /> on <paramref name="element" /> as a
+    /// <see cref="bool" /> if present.
+    /// </summary>
+    /// <param name="element">The XML element to inspect.</param>
+    /// <param name="attributeName">The attribute name.</param>
+    /// <returns>The parsed boolean, or <see langword="null" /> if the attribute is absent.</returns>
+    /// <exception cref="FormatException">The attribute is present but not a valid boolean.</exception>
+	private static bool? ParseOptionalBool(XElement element, string attributeName)
+	{
+		var raw = GetOptionalAttribute(element, attributeName);
+		return raw is not null && bool.TryParse(raw, out var result) ? result : (bool?)null;
+	}
+
+    /// <summary>
+    /// Parses a (month, day) pair from <paramref name="element" /> into a
+    /// <see cref="DateTime" /> in the current year, or returns <see langword="null" /> if either
+    /// attribute is absent.
+    /// </summary>
+    /// <param name="element">The XML element to inspect.</param>
+    /// <param name="monthAttr">The attribute name carrying the month name or number.</param>
+    /// <param name="dayAttr">The attribute name carrying the day of month.</param>
+    /// <returns>The parsed month/day, or <see langword="null" />.</returns>
+    /// <exception cref="FormatException">One of the attributes is present but cannot be parsed.</exception>
+	private static DateTime? ParseOptionalMonthDay(XElement element, string monthAttr, string dayAttr)
+	{
+		var month = GetOptionalAttribute(element, monthAttr);
+		var day = GetOptionalAttribute(element, dayAttr);
+		if (month is null || day is null) return null;
+
+		int monthValue = ParseMonth(month);
+		if (!int.TryParse(day, NumberStyles.Integer, CultureInfo.InvariantCulture, out var dayValue)) return null;
+
+		// Year is irrelevant for comparison-date authoring; the adjuster reprojects onto the resolved year.
+		return new DateTime(2000, monthValue, dayValue, 0, 0, 0, DateTimeKind.Unspecified);
+	}
+
+    /// <summary>
+    /// Resolves the value of <paramref name="attributeName" /> on <paramref name="element" />
+    /// to a <see cref="Type" /> assignable to <typeparamref name="TBase" />.
+    /// </summary>
+    /// <typeparam name="TBase">The base type the resolved type must be assignable to.</typeparam>
+    /// <param name="element">The XML element to inspect.</param>
+    /// <param name="attributeName">The attribute name carrying the type name.</param>
+    /// <returns>The resolved <see cref="Type" />, or <see langword="null" /> if the attribute is absent.</returns>
+    /// <exception cref="FormatException">The attribute is present but does not resolve to a type
+    /// assignable to <typeparamref name="TBase" />.</exception>
+	private static Type? ParseOptionalType<TBase>(XElement element, string attributeName)
+	{
+		var typeName = GetOptionalAttribute(element, attributeName);
+		if (string.IsNullOrWhiteSpace(typeName)) return null;
+
+		var type = Type.GetType(typeName, throwOnError: false);
+		return type is not null && typeof(TBase).IsAssignableFrom(type) ? type : null;
+	}
+
+    /// <summary>
+    /// Parses <paramref name="monthName" /> as either a month number (<c>1</c>–<c>12</c>) or a
+    /// culture-invariant English month name.
+    /// </summary>
+    /// <param name="monthName">The month token.</param>
+    /// <returns>The month number in the range <c>1..12</c>.</returns>
+    /// <exception cref="FormatException"><paramref name="monthName" /> is neither a valid
+    /// month number nor a recognised English month name.</exception>
+	private static int ParseMonth(string monthName)
+	{
+		ThrowHelper.ThrowIfNullOrEmpty(monthName);
+
+		if (DateTime.TryParseExact(monthName, "MMMM", CultureInfo.InvariantCulture, DateTimeStyles.None, out var result))
+			return result.Month;
+
+		throw new FormatException($"Invalid month name '{monthName}'. Expected a full English month name (e.g. 'January').");
+	}
+
+	// ----------------------------------------------------------------------------
+	// Schema validation
+	// ----------------------------------------------------------------------------
+
+    /// <summary>
+    /// Loads the embedded XSD schema set used to validate notable-date XML documents.
+    /// </summary>
+    /// <returns>The compiled <see cref="XmlSchemaSet" />.</returns>
+	private static XmlSchemaSet LoadSchema()
+	{
+		var assembly = Assembly.GetExecutingAssembly();
+		const string schemaResourceName = "Bodu.Globalization.Calendar.NotableDates.xsd";
+
+		using var stream = assembly.GetManifestResourceStream(schemaResourceName)
+			?? throw new FileNotFoundException($"Embedded schema resource '{schemaResourceName}' not found in assembly '{assembly.FullName}'.");
+
+		var schemaSet = new XmlSchemaSet();
+		schemaSet.Add(null, XmlReader.Create(stream));
+		return schemaSet;
+	}
+
+    /// <summary>
+    /// Builds the <see cref="XmlReaderSettings" /> used to validate notable-date XML documents
+    /// against the embedded schema.
+    /// </summary>
+    /// <returns>Configured reader settings with schema validation enabled.</returns>
+	private static XmlReaderSettings CreateValidationSettings()
+	{
+		var settings = new XmlReaderSettings
+		{
+			ValidationType = ValidationType.Schema,
+			Schemas = SchemaSet,
+			ValidationFlags = XmlSchemaValidationFlags.ReportValidationWarnings,
+		};
+		settings.ValidationEventHandler += HandleValidationEvent;
+		return settings;
+	}
+
+    /// <summary>
+    /// Validates <paramref name="document" /> against the embedded notable-date schema,
+    /// throwing on the first schema violation.
+    /// </summary>
+    /// <param name="document">The XML document to validate.</param>
+    /// <exception cref="XmlSchemaValidationException">The document fails schema validation.</exception>
+	private static void ValidateDocument(XDocument document)
+	{
+		using var reader = document.CreateReader();
+		using var validatingReader = XmlReader.Create(reader, CreateValidationSettings());
+		while (validatingReader.Read()) { }
+	}
+
+    /// <summary>
+    /// Schema-validation event handler that rethrows warnings and errors as
+    /// <see cref="XmlSchemaValidationException" />.
+    /// </summary>
+    /// <param name="sender">The event sender (unused).</param>
+    /// <param name="e">The validation event arguments.</param>
+    /// <exception cref="XmlSchemaValidationException">Always thrown for any reported event.</exception>
+	private static void HandleValidationEvent(object? sender, ValidationEventArgs e)
+	{
+		if (e.Severity == XmlSeverityType.Error)
+			throw new XmlSchemaValidationException($"Schema validation error: {e.Message}", e.Exception);
+	}
+
+	// ----------------------------------------------------------------------------
+	// JSON parser placeholder (preserved for future implementation)
+	// ----------------------------------------------------------------------------
+	//
+	// The previous incomplete JSON parser has been intentionally kept out of the
+	// public surface until it can be reinstated against the new NotableDateRule
+	// vocabulary. When implementing, mirror ParseXml: validate against a JSON
+	// schema (or strict deserialiser), then map each item through ApplyStrategySpecifics.
 }

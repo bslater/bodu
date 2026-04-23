@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelper.CallerExpression.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -224,7 +224,7 @@ public static partial class ThrowHelper
     /// Use this overload when the caller may supply a larger span than required and the
     /// excess elements are simply ignored — for example, a buffer that must hold at least
     /// a full cipher block but may be larger. When the length must be exact, use
-    /// <see cref="ThrowIfSpanLengthIsNotEqualTo{T}"/> instead.
+    /// <see cref="ThrowIfSpanLengthIsNotEqualTo{T}(Span{T}, int, string)"/> instead.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfSpanLengthIsInsufficient<T>(
@@ -281,7 +281,7 @@ public static partial class ThrowHelper
     /// Use this overload when the caller may supply a larger span than required and the
     /// excess elements are simply ignored — for example, a buffer that must hold at least
     /// a full cipher block but may be larger. When the length must be exact, use
-    /// <see cref="ThrowIfSpanLengthIsNotEqualTo{T}"/> instead.
+    /// <see cref="ThrowIfSpanLengthIsNotEqualTo{T}(ReadOnlySpan{T}, int, string)"/> instead.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfSpanLengthIsInsufficient<T>(

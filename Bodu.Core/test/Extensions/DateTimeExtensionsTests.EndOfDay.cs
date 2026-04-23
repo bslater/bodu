@@ -12,49 +12,47 @@ using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bodu.Extensions;
 
-namespace Bodu.Extensions
+namespace Bodu.Extensions;
+
+public partial class DateTimeExtensionsTests
 {
-    public partial class DateTimeExtensionsTests
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.EndOfDay" />, when Called, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(EndOfDayTestData), DynamicDataSourceType.Method)]
+    public void EndOfDay_WhenCalled_ShouldReturnExpected(DateTime input, DateTime expected)
     {
+        var actual = input.EndOfDay();
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.EndOfDay" />, when Called, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        [DynamicData(nameof(EndOfDayTestData), DynamicDataSourceType.Method)]
-        public void EndOfDay_WhenCalled_ShouldReturnExpected(DateTime input, DateTime expected)
-        {
-            var actual = input.EndOfDay();
+        Assert.AreEqual(expected, actual);
+    }
 
-            Assert.AreEqual(expected, actual);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.EndOfDay" />, when MaxDateTime, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void EndOfDay_WhenMaxDateTime_ShouldReturnMaxValue()
+    {
+        var maxDate = DateTime.MaxValue.Date;
+        var actual = maxDate.EndOfDay();
 
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.EndOfDay" />, when MaxDateTime, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        public void EndOfDay_WhenMaxDateTime_ShouldReturnMaxValue()
-        {
-            var maxDate = DateTime.MaxValue.Date;
-            var actual = maxDate.EndOfDay();
+        Assert.AreEqual(DateTime.MaxValue, actual);
+    }
 
-            Assert.AreEqual(DateTime.MaxValue, actual);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.EndOfDay" />, when KindIsSet, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DataRow(DateTimeKind.Unspecified)]
+    [DataRow(DateTimeKind.Utc)]
+    [DataRow(DateTimeKind.Local)]
+    public void EndOfDay_WhenKindIsSet_ShouldPreserveKind(DateTimeKind kind)
+    {
+        var input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
+        var actual = input.EndOfDay();
 
-
-        /// <summary>
-        /// Verifies that <see cref="DateTimeExtensions.EndOfDay" />, when KindIsSet, returns the expected value.
-        /// </summary>
-        [TestMethod]
-        [DataRow(DateTimeKind.Unspecified)]
-        [DataRow(DateTimeKind.Utc)]
-        [DataRow(DateTimeKind.Local)]
-        public void EndOfDay_WhenKindIsSet_ShouldPreserveKind(DateTimeKind kind)
-        {
-            var input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
-            var actual = input.EndOfDay();
-
-            Assert.AreEqual(kind, actual.Kind);
-        }
+        Assert.AreEqual(kind, actual.Kind);
     }
 }

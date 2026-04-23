@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.Midnight.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public static partial class DateTimeExtensions
     /// </returns>
     /// <remarks>
     /// <para>
-    /// This method is functionally equivalent to accessing the <see cref="DateTime.Date"/> property. It normalizes the time component to
+    /// This method is functionally equivalent to accessing the <see cref="DateTime.Date"/> property. It normalises the time component to
     /// midnight while retaining the date and <see cref="DateTime.Kind"/> of the input.
     /// </para>
     /// <para>

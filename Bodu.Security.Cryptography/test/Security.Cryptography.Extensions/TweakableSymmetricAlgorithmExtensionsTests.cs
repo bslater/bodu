@@ -4,11 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography.Extensions
+namespace Bodu.Security.Cryptography.Extensions;
+
+[TestClass]
+public partial class TweakableSymmetricAlgorithmExtensionsTests
 {
-    [TestClass]
-    public partial class TweakableSymmetricAlgorithmExtensionsTests
-    {
-        private TweakableSymmetricAlgorithm CreateAlgorithm() => new SimpleReversingTweakableSymmetricAlgorithm();
-    }
+    private TweakableSymmetricAlgorithm CreateAlgorithm() => new SimpleReversingTweakableSymmetricAlgorithm();
 }

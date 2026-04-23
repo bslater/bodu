@@ -7,85 +7,84 @@
 using Bodu.Test.IO;
 using static Bodu.Security.Cryptography.MerkleTestData;
 
-namespace Bodu.Security.Cryptography
+namespace Bodu.Security.Cryptography;
+
+/// <summary>
+/// Tests for the synchronous <c>ComputeHash(Stream)</c> overload — exposed only by
+/// <see cref="MerkleTreeHash" />. The parallel implementation offers a stream path solely
+/// through <c>ComputeHashAsync</c>.
+/// </summary>
+public partial class MerkleTreeHashTests
 {
+    // ─── Argument validation ──────────────────────────────────────────────────────────────────
+
     /// <summary>
-    /// Tests for the synchronous <c>ComputeHash(Stream)</c> overload — exposed only by
-    /// <see cref="MerkleTreeHash" />. The parallel implementation offers a stream path solely
-    /// through <c>ComputeHashAsync</c>.
+    /// Verifies that a <see langword="null" /> stream raises <see cref="ArgumentNullException" />.
     /// </summary>
-    public partial class MerkleTreeHashTests
+    [TestMethod]
+    public void ComputeHash_WhenStreamIsNull_ShouldThrowArgumentNullException()
     {
-        // ─── Argument validation ──────────────────────────────────────────────────────────────────
+        using var hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        Assert.ThrowsExactly<ArgumentNullException>(() => hasher.ComputeHash((Stream)null!));
+    }
 
-        /// <summary>
-        /// Verifies that a <see langword="null" /> stream raises <see cref="ArgumentNullException" />.
-        /// </summary>
-        [TestMethod]
-        public void ComputeHash_WhenStreamIsNull_ShouldThrowArgumentNullException()
-        {
-            using var hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
-            Assert.ThrowsExactly<ArgumentNullException>(() => hasher.ComputeHash((Stream)null!));
-        }
+    // ─── Result shape ─────────────────────────────────────────────────────────────────────────
 
-        // ─── Result shape ─────────────────────────────────────────────────────────────────────────
+    /// <summary>
+    /// Verifies that the stream overload returns a non-null hash of the expected length.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHash_WhenStreamProvided_ShouldReturnHashOfExpectedLength()
+    {
+        using var hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using var stream = new IncrementingByteStream(8);
 
-        /// <summary>
-        /// Verifies that the stream overload returns a non-null hash of the expected length.
-        /// </summary>
-        [TestMethod]
-        public void ComputeHash_WhenStreamProvided_ShouldReturnHashOfExpectedLength()
-        {
-            using var hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
-            using var stream = new IncrementingByteStream(8);
+        byte[] result = hasher.ComputeHash(stream);
 
-            byte[] result = hasher.ComputeHash(stream);
+        Assert.IsNotNull(result);
+        Assert.AreEqual(4, result.Length); // MonitoringHashAlgorithm: sizeof(uint)
+    }
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(4, result.Length); // MonitoringHashAlgorithm: sizeof(uint)
-        }
+    // ─── Equivalence with in-memory overloads ─────────────────────────────────────────────────
 
-        // ─── Equivalence with in-memory overloads ─────────────────────────────────────────────────
+    /// <summary>
+    /// Verifies that hashing a <see cref="MemoryStream" /> of the same bytes produces the same
+    /// result as the span overload.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHash_WhenStreamMatchesSpan_ShouldProduceIdenticalResult()
+    {
+        byte[] data = MakeData(13);
 
-        /// <summary>
-        /// Verifies that hashing a <see cref="MemoryStream" /> of the same bytes produces the same
-        /// result as the span overload.
-        /// </summary>
-        [TestMethod]
-        public void ComputeHash_WhenStreamMatchesSpan_ShouldProduceIdenticalResult()
-        {
-            byte[] data = MakeData(13);
+        using var h1 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using var h2 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
 
-            using var h1 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
-            using var h2 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using var ms = new MemoryStream(data);
+        byte[] fromStream = h1.ComputeHash(ms);
+        byte[] fromSpan = h2.ComputeHash(data.AsSpan());
 
-            using var ms = new MemoryStream(data);
-            byte[] fromStream = h1.ComputeHash(ms);
-            byte[] fromSpan = h2.ComputeHash(data.AsSpan());
+        CollectionAssert.AreEqual(fromSpan, fromStream);
+    }
 
-            CollectionAssert.AreEqual(fromSpan, fromStream);
-        }
+    // ─── Partial-read delivery ────────────────────────────────────────────────────────────────
 
-        // ─── Partial-read delivery ────────────────────────────────────────────────────────────────
+    /// <summary>
+    /// Verifies that a stream delivering data in partial chunks (<see cref="IncrementingByteStream" />
+    /// returns at most half of its remaining bytes per read) produces the same hash as the
+    /// equivalent span-based call.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHash_WhenStreamDeliversPartialReads_ShouldProduceSameResultAsSpan()
+    {
+        const int length = 37; // prime; exercises every partial-read boundary
 
-        /// <summary>
-        /// Verifies that a stream delivering data in partial chunks (<see cref="IncrementingByteStream" />
-        /// returns at most half of its remaining bytes per read) produces the same hash as the
-        /// equivalent span-based call.
-        /// </summary>
-        [TestMethod]
-        public void ComputeHash_WhenStreamDeliversPartialReads_ShouldProduceSameResultAsSpan()
-        {
-            const int length = 37; // prime; exercises every partial-read boundary
+        using var h1 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using var h2 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
 
-            using var h1 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
-            using var h2 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using var stream = new IncrementingByteStream(length);
+        byte[] fromStream = h1.ComputeHash(stream);
+        byte[] fromSpan = h2.ComputeHash(new IncrementingByteStream(length).ToArray().AsSpan());
 
-            using var stream = new IncrementingByteStream(length);
-            byte[] fromStream = h1.ComputeHash(stream);
-            byte[] fromSpan = h2.ComputeHash(new IncrementingByteStream(length).ToArray().AsSpan());
-
-            CollectionAssert.AreEqual(fromStream, fromSpan);
-        }
+        CollectionAssert.AreEqual(fromStream, fromSpan);
     }
 }

@@ -4,10 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-﻿namespace Bodu.Infrastructure
+namespace Bodu.Infrastructure;
+
+[TestClass]
+public partial class ByteBufferTests
 {
-    [TestClass]
-    public partial class ByteBufferTests
-    {
-    }
 }

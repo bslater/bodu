@@ -57,8 +57,8 @@ public partial class ConcurrentCircularBuffer<T>
     bool ICollection.IsSynchronized => false;
 
     /// <summary>
-    /// Not supported. <see cref="ConcurrentCircularBuffer{T}"/> manages its own internal synchronisation and does not expose a
-    /// synchronisation root.
+    /// Gets an object that can be used to synchronise access to the collection. Not supported on this type —
+    /// <see cref="ConcurrentCircularBuffer{T}"/> manages its own internal synchronisation.
     /// </summary>
     /// <exception cref="NotSupportedException">Always thrown. Use the thread-safe members of this class directly.</exception>
     /// <remarks>

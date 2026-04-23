@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.NearestDayOfWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,6 +19,7 @@ public static partial class DateOnlyExtensions
     /// A <see cref="DateOnly"/> representing the closest date (before or after) to <paramref name="date"/> that falls on the
     /// specified <paramref name="dayOfWeek"/>. If two dates are equally close, the earlier one is returned.
     /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when an enumeration argument is not a defined value of its declaring type.</exception>
     public static DateOnly NearestDayOfWeek(this DateOnly date, DayOfWeek dayOfWeek)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
