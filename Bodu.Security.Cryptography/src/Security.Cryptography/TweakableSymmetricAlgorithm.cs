@@ -298,6 +298,11 @@ public abstract class TweakableSymmetricAlgorithm
             throw new CryptographicException(ResourceStrings.CryptographicException_TweakNotSet);
     }
 
+    /// <summary>
+    /// Throws <see cref="ObjectDisposedException" /> if this algorithm instance has already been
+    /// disposed.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed()
     {

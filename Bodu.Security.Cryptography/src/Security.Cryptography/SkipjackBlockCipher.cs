@@ -304,6 +304,10 @@ public sealed class SkipjackBlockCipher
         return (h6 << 8) + h5;
     }
 
+    /// <summary>
+    /// Throws <see cref="ObjectDisposedException" /> if this cipher has already been disposed.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed()
     {

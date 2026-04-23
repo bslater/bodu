@@ -73,6 +73,16 @@ public static class BlockCipherModeFactory
         }
     }
 
+    /// <summary>
+    /// Validates that <paramref name="iv" /> is non-null and exactly
+    /// <paramref name="requiredLength" /> bytes long; otherwise throws
+    /// <see cref="ArgumentException" /> against the supplied parameter name.
+    /// </summary>
+    /// <param name="name">The caller-visible parameter name reported in any exception.</param>
+    /// <param name="iv">The initialisation vector to validate.</param>
+    /// <param name="requiredLength">The required length of <paramref name="iv" /> in bytes.</param>
+    /// <exception cref="ArgumentException"><paramref name="iv" /> is <see langword="null" /> or
+    /// does not have the required length.</exception>
     private static void ValidateIv(string name, byte[]? iv, int requiredLength)
     {
         if (iv is null)

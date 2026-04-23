@@ -230,6 +230,16 @@ public abstract class SipHash<T>
         base.Dispose(disposing);
     }
 
+    /// <summary>
+    /// Produces the SipHash final padding block: copies the residual 0–7 bytes into an 8-byte
+    /// buffer and places the low byte of <paramref name="messageLength" /> into the last slot.
+    /// </summary>
+    /// <param name="block">The residual input bytes; length must be in <c>[0..7]</c>.</param>
+    /// <param name="messageLength">The total processed message length in bytes. Only the low
+    /// byte is used per the SipHash specification.</param>
+    /// <returns>The padded 8-byte block.</returns>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="block" /> is longer than
+    /// 7 bytes.</exception>
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
     {
         if ((uint)block.Length > 7)
