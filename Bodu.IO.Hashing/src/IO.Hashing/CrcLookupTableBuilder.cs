@@ -24,6 +24,8 @@ public static class CrcLookupTableBuilder
     /// <returns>
     /// An array of <see cref="ulong" /> values representing the CRC lookup table, with <c><![CDATA[1 << min(size, 8)]]></c> entries.
     /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is less than 1 or
+    /// greater than 64.</exception>
     /// <remarks>
     /// This method is typically used to precompute a table of CRC values for efficient byte-wise CRC calculation. The reflection
     /// setting determines whether the bits of the input byte are reversed prior to processing, which is common in some CRC variants.

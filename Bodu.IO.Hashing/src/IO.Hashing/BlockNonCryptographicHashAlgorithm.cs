@@ -195,6 +195,7 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     /// derived types to duplicate the running input-alignment state.
     /// </summary>
     /// <param name="source">The algorithm instance whose residual state should be copied.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
     protected void CopyResidualStateFrom(BlockNonCryptographicHashAlgorithm<T> source)
     {
         ThrowHelper.ThrowIfNull(source);

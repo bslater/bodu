@@ -68,6 +68,7 @@ internal sealed class NotableDateAdjuster
 	/// <param name="territoryCode">The territory currently being resolved, if any.</param>
 	/// <param name="calendarType">The calendar currently being resolved, if any.</param>
 	/// <returns><see langword="true" /> if the adjustment may activate; otherwise <see langword="false" />.</returns>
+	/// <exception cref="ArgumentNullException"><paramref name="adjustment" /> is <see langword="null" />.</exception>
 	public static bool IsInScope(ObservanceAdjustment adjustment, int year, string? territoryCode, Type? calendarType)
 	{
 		if (adjustment is null) throw new ArgumentNullException(nameof(adjustment));
