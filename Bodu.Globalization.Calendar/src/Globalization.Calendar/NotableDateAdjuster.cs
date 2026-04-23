@@ -255,9 +255,18 @@ internal sealed class NotableDateAdjuster
 	}
 
     /// <summary>
-    /// Resolves the replacement date for an <see cref="AdjustmentAction.MoveTo" /> or
-    /// equivalent action, using the adjustment's reference (named rule, fixed date, or offset).
+    /// Resolves the replacement date for an action that targets a named rule (for example,
+    /// <see cref="AdjustmentAction.ReplaceWithNamedDate" />), looking up the referenced rule
+    /// via the configured name-resolver and falling back to <paramref name="original" /> if
+    /// no match is found.
     /// </summary>
+    /// <param name="adjustment">The observance adjustment; <see cref="ObservanceAdjustment.TargetRuleName" />
+    /// identifies the replacement rule.</param>
+    /// <param name="original">The original date.</param>
+    /// <param name="territoryCode">The territory code, or <see langword="null" />.</param>
+    /// <param name="calendarType">The calendar type, or <see langword="null" />.</param>
+    /// <returns>The resolved replacement date, or <paramref name="original" /> if no target
+    /// rule is configured or no match is found.</returns>
 	private DateTime ResolveReplacement(ObservanceAdjustment adjustment, DateTime original, string? territoryCode, Type? calendarType)
 	{
 		if (string.IsNullOrWhiteSpace(adjustment.TargetRuleName) || _resolveByName is null)
