@@ -249,6 +249,8 @@ public sealed class Crc
     /// Returns the working-state representation of <see cref="CrcStandard.InitialValue" />, applying input reflection
     /// when required.
     /// </summary>
+    /// <returns>The initial CRC accumulator value, bit-reflected if the standard's
+    /// <see cref="CrcStandard.ReflectIn" /> flag is set.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private ulong ComputeInitialState()
         => this.standard.ReflectIn
@@ -258,6 +260,8 @@ public sealed class Crc
     /// <summary>
     /// Applies final output reflection, XOR-out, and width-masking to the supplied working CRC value.
     /// </summary>
+    /// <param name="value">The working CRC accumulator to finalise.</param>
+    /// <returns>The finalised CRC output value, width-masked to the standard's polynomial size.</returns>
     /// <remarks>
     /// The supplied <paramref name="value" /> is passed by value and the result is returned; no instance state is
     /// mutated. This is the load-bearing property that lets <see cref="GetCurrentHashCore" /> stay non-destructive.
@@ -384,6 +388,9 @@ public sealed class Crc
     /// Writes the low <paramref name="byteCount" /> bytes of <paramref name="value" /> to <paramref name="destination" />
     /// in little-endian order.
     /// </summary>
+    /// <param name="value">The 64-bit value whose low bytes are to be written.</param>
+    /// <param name="byteCount">The number of low-order bytes to write; must be between 1 and 8.</param>
+    /// <param name="destination">The destination span; must be at least <paramref name="byteCount" /> bytes long.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void WriteHashBytes(ulong value, int byteCount, Span<byte> destination)
     {
