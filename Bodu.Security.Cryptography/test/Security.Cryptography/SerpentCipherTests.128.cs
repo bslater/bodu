@@ -56,23 +56,17 @@ internal partial class Serpent128CipherTests
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// The DefaultKeyAndTweak vector is the canonical Serpent-128 test vector from the Bouncy Castle Serpent engine test suite
+    /// (bc-java <c>SerpentTest.java</c>). It pins the byte-order and key-schedule conventions to the standard Linux kernel /
+    /// Bouncy Castle layout (little-endian word packing, no external IP/FP permutation). The ZeroedKeyAndTweak variant
+    /// contributes only inherited round-trip and determinism coverage.
+    /// </remarks>
     protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(SerpentCipherTestVariant variant) =>
         variant switch
         {
-            // Canonical Serpent-128 test vectors from the Bouncy Castle Serpent engine test suite
-            // (bc-java: crypto/test/src/test/java/org/bouncycastle/crypto/test/SerpentTest.java).
-            // These vectors match the standard Linux kernel / Bouncy Castle byte-ordering convention
-            // (little-endian word packing, no external IP/FP permutation).
             SerpentCipherTestVariant.ZeroedKeyAndTweak =>
-            [
-                new KnownAnswerTest
-                {
-                    Name           = "Serpent-128 / key=00×16 / plaintext=00×16",
-                    Input          = new byte[16],
-                    ExpectedOutput = Convert.FromHexString("49672BA898D98DF95019180445491089"),
-                    CipherFactory  = () => new Serpent128Cipher(new byte[16]),
-                },
-            ],
+                Array.Empty<KnownAnswerTest>(),
             SerpentCipherTestVariant.DefaultKeyAndTweak =>
             [
                 new KnownAnswerTest

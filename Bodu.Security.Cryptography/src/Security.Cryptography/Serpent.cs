@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -44,6 +45,8 @@ public abstract class Serpent
 
     private readonly int _defaultTweakSizeBytes;
 
+    private bool _disposed;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="Serpent" /> class with the specified block and tweak sizes.
     /// </summary>
@@ -80,7 +83,9 @@ public abstract class Serpent
     /// <inheritdoc />
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak)
     {
+        this.ThrowIfDisposed();
         this.Validate(rgbKey, rgbIV, tweak);
+
         var engine = this.CreateCipher(rgbKey, tweak);
         return new SerpentTransform(engine, this.BlockMode, this.Padding, rgbIV, false);
     }
@@ -88,22 +93,65 @@ public abstract class Serpent
     /// <inheritdoc />
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak)
     {
+        this.ThrowIfDisposed();
         this.Validate(rgbKey, rgbIV, tweak);
+
         var engine = this.CreateCipher(rgbKey, tweak);
         return new SerpentTransform(engine, this.BlockMode, this.Padding, rgbIV, true);
     }
 
     /// <inheritdoc />
-    public override void GenerateIV() =>
+    public override void GenerateIV()
+    {
+        this.ThrowIfDisposed();
         this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeBytes);
+    }
 
     /// <inheritdoc />
-    public override void GenerateKey() =>
+    public override void GenerateKey()
+    {
+        this.ThrowIfDisposed();
         this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeBytes);
+    }
 
     /// <inheritdoc />
-    public override void GenerateTweak() =>
+    public override void GenerateTweak()
+    {
+        this.ThrowIfDisposed();
         this.TweakValue = CryptoHelpers.GetRandomNonZeroBytes(this._defaultTweakSizeBytes);
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Marks the instance as disposed, zeroes any retained key and IV buffers, and delegates the tweak buffer cleanup to the
+    /// base implementation.
+    /// </remarks>
+    protected override void Dispose(bool disposing)
+    {
+        if (!this._disposed)
+        {
+            if (disposing)
+            {
+                CryptoHelpers.Clear(this.KeyValue);
+                CryptoHelpers.Clear(this.IVValue);
+            }
+
+            this._disposed = true;
+        }
+
+        base.Dispose(disposing);
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ObjectDisposedException" /> whose <see cref="ObjectDisposedException.ObjectName" /> matches the
+    /// concrete algorithm type's <see cref="Type.FullName" /> if the instance has been disposed.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ThrowIfDisposed()
+    {
+        ObjectDisposedException.ThrowIf(this._disposed, this);
+    }
 
     /// <summary>
     /// Instantiates the concrete Serpent block cipher with the specified key and tweak.

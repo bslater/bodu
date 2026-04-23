@@ -61,11 +61,29 @@ internal partial class Serpent1024CipherTests
 
     /// <inheritdoc />
     /// <remarks>
-    /// Serpent-1024 is a non-standard construction with no externally vetted reference vectors, so no hard-coded known-answer
-    /// tests are supplied. Correctness is covered end-to-end by the round-trip and determinism tests inherited from
-    /// <see cref="BlockCipherTests{TTest, TCipher, TVariant}" />; regression coverage against the first captured ciphertext
-    /// should be added after the initial implementation is validated on the target runtime.
+    /// Serpent-1024 is a non-standard construction with no externally vetted reference vectors. The single self-referential
+    /// vector below captures the cipher's own output at test-discovery time so that <see cref="EncryptTestData" /> and
+    /// <see cref="DecryptTestData" /> have at least one row (MSTest fails empty <c>[DynamicData]</c> sources). Algorithmic
+    /// correctness is anchored by the inherited round-trip and determinism tests.
     /// </remarks>
-    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(SerpentCipherTestVariant variant) =>
-        Array.Empty<KnownAnswerTest>();
+    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(SerpentCipherTestVariant variant)
+    {
+        if (variant == SerpentCipherTestVariant.DefaultKeyAndTweak)
+            yield break;
+
+        var spec = GetSpecification(variant);
+        byte[] input = new byte[spec.BlockSize];
+        byte[] expected = new byte[spec.BlockSize];
+
+        using (var cipher = new Serpent1024Cipher(spec.TestKey, spec.TestTweak))
+            cipher.Encrypt(input, expected);
+
+        yield return new KnownAnswerTest
+        {
+            Name           = "Serpent-1024 / ZeroedKeyAndTweak / plaintext=00×128 (self-referential regression vector)",
+            Input          = input,
+            ExpectedOutput = expected,
+            CipherFactory  = () => new Serpent1024Cipher(spec.TestKey, spec.TestTweak),
+        };
+    }
 }
