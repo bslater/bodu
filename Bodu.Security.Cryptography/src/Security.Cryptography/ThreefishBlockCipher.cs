@@ -144,6 +144,53 @@ public abstract partial class ThreefishBlockCipher
     public abstract void Encrypt(ReadOnlySpan<byte> input, Span<byte> output);
 
     /// <summary>
+    /// Replaces the key and tweak schedules in place, allowing the cipher instance to be reused across successive
+    /// Threefish block calls without allocating a new instance or re-running the constructor.
+    /// </summary>
+    /// <param name="key">The replacement key. Its length in bytes must equal <see cref="BlockSize" />.</param>
+    /// <param name="tweak">The replacement 16-byte (128-bit) tweak value.</param>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="key" /> or <paramref name="tweak" /> has an invalid length.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// This hook is intended for the Skein hash construction, whose UBI mode of operation invokes Threefish once per
+    /// block with a freshly derived key (the current chaining value) and a recomputed tweak (encoding block type,
+    /// position, and the first/final flags). Rebuilding the schedules in place avoids per-block allocation of the
+    /// <see cref="KeySchedule" /> and <see cref="TweakSchedule" /> arrays.
+    /// </para>
+    /// <para>
+    /// The implementation mirrors the constructor's schedule setup exactly: key parity is recomputed as
+    /// <c>C240 ^ K0 ^ K1 ^ … ^ K(n-1)</c>, and the tweak's derived word is recomputed as <c>T0 ^ T1</c>. Exposed with
+    /// <see langword="internal" /> visibility so that only same-assembly consumers may call it.
+    /// </para>
+    /// </remarks>
+    internal void Rekey(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
+    {
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(key, this.BlockSize);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(tweak, 16);
+        this.ThrowIfDisposed();
+
+        // Repopulate the key schedule: [K0..K(n-1), parity, K0..K(n-1)].
+        MemoryMarshal.Cast<byte, ulong>(key).CopyTo(this.KeySchedule);
+        ulong parity = KeyParityValue;
+        for (int i = 0; i < this.BlockWords; i++)
+        {
+            ulong word = this.KeySchedule[i];
+            parity ^= word;
+            this.KeySchedule[this.BlockWords + 1 + i] = word;
+        }
+
+        this.KeySchedule[this.BlockWords] = parity;
+
+        // Repopulate the tweak schedule: [T0, T1, T0^T1, T0, T1].
+        MemoryMarshal.Cast<byte, ulong>(tweak).CopyTo(this.TweakSchedule);
+        this.TweakSchedule[2] = this.TweakSchedule[0] ^ this.TweakSchedule[1];
+        this.TweakSchedule[3] = this.TweakSchedule[0];
+        this.TweakSchedule[4] = this.TweakSchedule[1];
+    }
+
+    /// <summary>
     /// Performs a Threefish mixing operation by rotating and XORing the input values.
     /// </summary>
     /// <param name="a">The first value (accumulator), modified in-place.</param>
