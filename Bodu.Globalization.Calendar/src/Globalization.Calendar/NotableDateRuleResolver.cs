@@ -26,7 +26,7 @@ internal sealed class NotableDateRuleResolver
 	private readonly INotableDateCalculatorRegistry? _calculators;
 
 	/// <summary>
-	/// Initialises a new instance of the <see cref="NotableDateRuleResolver" /> class.
+	/// Initializes a new instance of the <see cref="NotableDateRuleResolver" /> class.
 	/// </summary>
 	/// <param name="rules">The rules available for resolution. Must not be <see langword="null" />.</param>
 	/// <param name="calculators">Optional calculator registry consulted for <see cref="DateResolutionStrategy.Calculator" /> rules.</param>

@@ -61,7 +61,7 @@ public abstract partial class ThreefishBlockCipher
     private const ulong KeyParityValue = 0x1BD11BDAA9FC1A22;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="ThreefishBlockCipher" /> class using the specified key and tweak.
+    /// Initializes a new instance of the <see cref="ThreefishBlockCipher" /> class using the specified key and tweak.
     /// </summary>
     /// <param name="key">
     /// The encryption key. Its length in bytes must equal the variant block size (32, 64, or 128 bytes).

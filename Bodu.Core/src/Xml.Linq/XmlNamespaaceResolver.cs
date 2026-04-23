@@ -18,7 +18,7 @@ public sealed class XmlNamespaceResolver
     private readonly XNamespace _xNamespace;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="XmlNamespaceResolver"/> class with the specified root element.
+    /// Initializes a new instance of the <see cref="XmlNamespaceResolver"/> class with the specified root element.
     /// </summary>
     /// <param name="root">The root element from which to extract the default namespace.</param>
     /// <exception cref="InvalidOperationException">Thrown if the root element is <see langword="null"/> or has no namespace.</exception>

@@ -90,13 +90,13 @@ public sealed partial class ConcurrentCircularBuffer<T>
     private int _version;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="ConcurrentCircularBuffer{T}"/> class with default capacity and overwriting enabled.
+    /// Initializes a new instance of the <see cref="ConcurrentCircularBuffer{T}"/> class with default capacity and overwriting enabled.
     /// </summary>
     public ConcurrentCircularBuffer()
         : this(DefaultCapacity, allowOverwrite: true) { }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="ConcurrentCircularBuffer{T}"/> class with the specified capacity and overwriting enabled.
+    /// Initializes a new instance of the <see cref="ConcurrentCircularBuffer{T}"/> class with the specified capacity and overwriting enabled.
     /// </summary>
     /// <param name="capacity">
     /// The maximum number of elements the buffer can hold. Must be at least 2. See the class remarks for an
@@ -107,7 +107,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
         : this(capacity, allowOverwrite: true) { }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="ConcurrentCircularBuffer{T}"/> class with the specified capacity and overwrite behaviour.
+    /// Initializes a new instance of the <see cref="ConcurrentCircularBuffer{T}"/> class with the specified capacity and overwrite behaviour.
     /// </summary>
     /// <param name="capacity">
     /// The maximum number of elements the buffer can hold. Must be at least 2. See the class remarks for an
@@ -140,8 +140,8 @@ public sealed partial class ConcurrentCircularBuffer<T>
     }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="ConcurrentCircularBuffer{T}"/> class.
-    /// Initialises a new instance by copying from <paramref name="collection"/>, using the specified capacity
+    /// Initializes a new instance of the <see cref="ConcurrentCircularBuffer{T}"/> class.
+    /// Initializes a new instance by copying from <paramref name="collection"/>, using the specified capacity
     /// and overwrite behaviour.
     /// </summary>
     /// <param name="collection">

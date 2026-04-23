@@ -36,7 +36,7 @@ public sealed class CityHash64
     private const ulong KMul = 0x9ddfea08eb382d69UL;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="CityHash64" /> class with a fixed 64-bit (8-byte) hash output size.
+    /// Initializes a new instance of the <see cref="CityHash64" /> class with a fixed 64-bit (8-byte) hash output size.
     /// </summary>
     public CityHash64()
         : base(64)

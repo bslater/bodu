@@ -19,7 +19,7 @@ internal sealed class ByteBuffer
     private int _index;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="ByteBuffer" /> class that is empty and has the specified capacity.
+    /// Initializes a new instance of the <see cref="ByteBuffer" /> class that is empty and has the specified capacity.
     /// </summary>
     /// <param name="capacity">The number of bytes that the new buffer can initially store.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than 0.</exception>

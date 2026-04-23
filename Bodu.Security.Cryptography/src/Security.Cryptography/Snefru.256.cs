@@ -24,7 +24,7 @@ public sealed class Snefru256
     : Snefru<Snefru256>
 {
     /// <summary>
-    /// Initialises a new instance of the <see cref="Snefru256" /> class using a fixed 256-bit output size.
+    /// Initializes a new instance of the <see cref="Snefru256" /> class using a fixed 256-bit output size.
     /// </summary>
     public Snefru256()
         : base(256)

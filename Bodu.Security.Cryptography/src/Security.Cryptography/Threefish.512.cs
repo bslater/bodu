@@ -30,7 +30,7 @@ public sealed class Threefish512
     : Threefish
 {
     /// <summary>
-    /// Initialises a new instance of the <see cref="Threefish512" /> class using a 512-bit block size, 512-bit key, and 128-bit tweak.
+    /// Initializes a new instance of the <see cref="Threefish512" /> class using a 512-bit block size, 512-bit key, and 128-bit tweak.
     /// </summary>
     public Threefish512()
         : base(512, 128) { }

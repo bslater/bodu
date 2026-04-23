@@ -30,7 +30,7 @@ public sealed class Adler32
     private const uint Adler32_Modulo = 65521; // Largest prime smaller than 2^16
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="Adler32" /> class using the standard Adler-32 modulus (65521).
+    /// Initializes a new instance of the <see cref="Adler32" /> class using the standard Adler-32 modulus (65521).
     /// </summary>
     public Adler32()
         : base(Adler32_Modulo)

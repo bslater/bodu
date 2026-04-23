@@ -60,7 +60,7 @@ public sealed class SivModeTransform : IAeadBlockCipherModeTransform
     private bool _aadProcessed;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="SivModeTransform" /> class.
+    /// Initializes a new instance of the <see cref="SivModeTransform" /> class.
     /// </summary>
     /// <param name="s2vCipher">The cipher keyed with K₁, used for CMAC and S2V computation.</param>
     /// <param name="ctrCipher">The cipher keyed with K₂, used for CTR encryption.</param>

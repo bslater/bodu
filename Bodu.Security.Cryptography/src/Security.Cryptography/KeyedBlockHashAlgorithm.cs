@@ -45,7 +45,7 @@ public abstract class KeyedBlockHashAlgorithm<T>
     private bool _disposed = false;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="KeyedBlockHashAlgorithm{T}" /> class with the specified input block size and
+    /// Initializes a new instance of the <see cref="KeyedBlockHashAlgorithm{T}" /> class with the specified input block size and
     /// required key size.
     /// </summary>
     /// <param name="blockSize">

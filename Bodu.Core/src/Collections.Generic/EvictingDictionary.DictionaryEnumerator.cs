@@ -29,7 +29,7 @@ public partial class EvictingDictionary<TKey, TValue>
         private IEnumerator<KeyValuePair<TKey, TValue>> _inner;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="DictionaryEnumerator"/> struct.
+        /// Initializes a new instance of the <see cref="DictionaryEnumerator"/> struct.
         /// </summary>
         /// <param name="dictionary">The dictionary to enumerate. Must not be <see langword="null"/>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="dictionary"/> is <see langword="null"/>.</exception>

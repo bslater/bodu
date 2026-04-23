@@ -55,7 +55,7 @@ public sealed class CcmModeTransform : IAeadBlockCipherModeTransform
     private bool _aadProcessed;
 
     /// <summary>
-    /// Initialises a new instance. The first 12 bytes of <paramref name="iv" /> are used as the CCM nonce.
+    /// Initializes a new instance. The first 12 bytes of <paramref name="iv" /> are used as the CCM nonce.
     /// </summary>
     /// <exception cref="ArgumentNullException"><paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="iv" /> length does not equal the cipher block size.</exception>

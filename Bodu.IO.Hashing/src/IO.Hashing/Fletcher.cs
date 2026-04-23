@@ -37,7 +37,7 @@ public abstract class Fletcher<TSelf>
     private ulong _partB;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="Fletcher{TSelf}" /> class with the specified hash size.
+    /// Initializes a new instance of the <see cref="Fletcher{TSelf}" /> class with the specified hash size.
     /// </summary>
     /// <param name="hashSize">The hash size in bits. Valid values are 16, 32, or 64.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="hashSize" /> is not 16, 32, or 64.</exception>

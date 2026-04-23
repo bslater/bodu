@@ -88,7 +88,7 @@ public partial class EvictingDictionary<TKey, TValue>
     private int _version;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with the default capacity and eviction policy.
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with the default capacity and eviction policy.
     /// </summary>
     /// <remarks>
     /// Creates an empty dictionary with a capacity of <see cref="DefaultCapacity"/> items, using <see cref="DefaultPolicy"/> for eviction
@@ -98,7 +98,7 @@ public partial class EvictingDictionary<TKey, TValue>
         : this(DefaultCapacity, DefaultPolicy, null) { }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with the specified capacity and the default
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with the specified capacity and the default
     /// eviction policy.
     /// </summary>
     /// <param name="capacity">The maximum number of key/value pairs the dictionary can contain. Must be positive.</param>
@@ -111,7 +111,7 @@ public partial class EvictingDictionary<TKey, TValue>
         : this(capacity, DefaultPolicy, null) { }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with the specified capacity and eviction policy.
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with the specified capacity and eviction policy.
     /// </summary>
     /// <param name="capacity">The maximum number of key/value pairs the dictionary can contain. Must be positive.</param>
     /// <param name="policy">The eviction policy used when capacity is exceeded.</param>
@@ -123,7 +123,7 @@ public partial class EvictingDictionary<TKey, TValue>
         : this(capacity, policy, null) { }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with the specified capacity, using the
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with the specified capacity, using the
     /// default eviction policy and the specified key comparer.
     /// </summary>
     /// <param name="capacity">The maximum number of key/value pairs the dictionary can contain. Must be positive.</param>
@@ -137,7 +137,7 @@ public partial class EvictingDictionary<TKey, TValue>
         : this(capacity, DefaultPolicy, comparer) { }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with the specified capacity, eviction
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with the specified capacity, eviction
     /// policy, and key comparer.
     /// </summary>
     /// <param name="capacity">The maximum number of key/value pairs the dictionary can contain. Must be positive.</param>
@@ -180,7 +180,7 @@ public partial class EvictingDictionary<TKey, TValue>
     }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with elements copied from the specified
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with elements copied from the specified
     /// sequence, using the default capacity and eviction policy.
     /// </summary>
     /// <param name="source">The sequence of key/value pairs to copy. Must not be <see langword="null"/>.</param>
@@ -196,7 +196,7 @@ public partial class EvictingDictionary<TKey, TValue>
         : this(DefaultCapacity, source, DefaultPolicy, null) { }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with elements copied from the specified
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with elements copied from the specified
     /// sequence, using the specified capacity and the default eviction policy.
     /// </summary>
     /// <param name="capacity">The maximum number of key/value pairs the dictionary can contain. Must be positive.</param>
@@ -214,7 +214,7 @@ public partial class EvictingDictionary<TKey, TValue>
         : this(capacity, source, DefaultPolicy, null) { }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with elements copied from the specified
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with elements copied from the specified
     /// sequence, using the default capacity and the specified eviction policy.
     /// </summary>
     /// <param name="source">The sequence of key/value pairs to copy. Must not be <see langword="null"/>.</param>
@@ -228,7 +228,7 @@ public partial class EvictingDictionary<TKey, TValue>
         : this(DefaultCapacity, source, policy, null) { }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with elements copied from the specified
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with elements copied from the specified
     /// sequence, using the specified capacity and eviction policy.
     /// </summary>
     /// <param name="capacity">The maximum number of key/value pairs the dictionary can contain. Must be positive.</param>
@@ -244,7 +244,7 @@ public partial class EvictingDictionary<TKey, TValue>
         : this(capacity, source, policy, null) { }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with elements copied from the specified
+    /// Initializes a new instance of the <see cref="EvictingDictionary{TKey, TValue}"/> class, with elements copied from the specified
     /// sequence, using the specified capacity, eviction policy, and key comparer.
     /// </summary>
     /// <param name="capacity">The maximum number of key/value pairs the dictionary can contain. Must be positive.</param>

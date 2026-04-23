@@ -35,7 +35,7 @@ public sealed class CbcModeTransform
     private readonly byte[] _currentIv;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="CbcModeTransform" /> class with the specified cipher and initialisation vector.
+    /// Initializes a new instance of the <see cref="CbcModeTransform" /> class with the specified cipher and initialisation vector.
     /// </summary>
     /// <param name="cipher">The block cipher over which CBC is applied.</param>
     /// <param name="iv">The initialisation vector used as the chaining value for the first block. A defensive copy is taken.</param>

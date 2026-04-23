@@ -27,7 +27,7 @@ public sealed class DelegateHashAlgorithmFactory<T> :
     private readonly Func<T> _builder;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="DelegateHashAlgorithmFactory{T}" /> class using the specified construction delegate.
+    /// Initializes a new instance of the <see cref="DelegateHashAlgorithmFactory{T}" /> class using the specified construction delegate.
     /// </summary>
     /// <param name="builder">
     /// A delegate that returns a configured instance of <typeparamref name="T" />. This delegate is invoked each time

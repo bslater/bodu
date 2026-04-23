@@ -66,7 +66,7 @@ public sealed class Blowfish
     private CipherBlockMode _blockMode = CipherBlockMode.CBC;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="Blowfish" /> class with default parameters.
+    /// Initializes a new instance of the <see cref="Blowfish" /> class with default parameters.
     /// </summary>
     /// <remarks>
     /// <para>

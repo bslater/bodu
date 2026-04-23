@@ -47,7 +47,7 @@ public sealed class Crc
     private ulong _workingHash;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="Crc" /> class using the default CRC standard (CRC-32/ISO-HDLC).
+    /// Initializes a new instance of the <see cref="Crc" /> class using the default CRC standard (CRC-32/ISO-HDLC).
     /// </summary>
     /// <remarks>
     /// The default standard is CRC-32 (ISO-HDLC) with width 32, polynomial <c>0x04C11DB7</c>, initial value
@@ -59,7 +59,7 @@ public sealed class Crc
     }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="Crc" /> class using the specified <see cref="CrcStandard" />.
+    /// Initializes a new instance of the <see cref="Crc" /> class using the specified <see cref="CrcStandard" />.
     /// </summary>
     /// <param name="crcStandard">The CRC parameters (polynomial, width, reflection, initial value, final XOR) to use.</param>
     /// <exception cref="ArgumentNullException"><paramref name="crcStandard" /> is <see langword="null" />.</exception>

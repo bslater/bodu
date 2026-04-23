@@ -25,7 +25,7 @@ namespace Bodu.Globalization.Calendar;
 public sealed record ParsedNotableDateDocument
 {
 	/// <summary>
-	/// Initialises a new instance of the <see cref="ParsedNotableDateDocument" /> record.
+	/// Initializes a new instance of the <see cref="ParsedNotableDateDocument" /> record.
 	/// </summary>
 	/// <param name="useGroups">The cherry-pick groups that pull rules from other resources.</param>
 	/// <param name="localRules">The notable date rules declared locally in this document.</param>

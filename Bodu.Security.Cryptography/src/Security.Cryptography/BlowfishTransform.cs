@@ -22,7 +22,7 @@ internal sealed class BlowfishTransform
     : BlockCipherTransform
 {
     /// <summary>
-    /// Initialises a new instance of the <see cref="BlowfishTransform" /> class.
+    /// Initializes a new instance of the <see cref="BlowfishTransform" /> class.
     /// </summary>
     /// <param name="cipher">
     /// The configured <see cref="IBlockCipher" /> engine to use. Must not be <see langword="null" />.

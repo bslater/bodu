@@ -23,7 +23,7 @@ public sealed class SipHash128
     : SipHash<SipHash128>
 {
     /// <summary>
-    /// Initialises a new instance of the <see cref="SipHash128" /> class with a fixed 128-bit output size, the default
+    /// Initializes a new instance of the <see cref="SipHash128" /> class with a fixed 128-bit output size, the default
     /// <c>SipHash-2-4</c> parameterisation, and a freshly generated random key.
     /// </summary>
     /// <remarks>

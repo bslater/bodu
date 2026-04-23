@@ -71,7 +71,7 @@ public abstract class CityHash<T>
 #endif
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="CityHash{T}" /> class with the specified hash output size.
+    /// Initializes a new instance of the <see cref="CityHash{T}" /> class with the specified hash output size.
     /// </summary>
     /// <param name="hashSize">
     /// The desired hash output size in bits. Must be one of 32, 64, or 128.
@@ -261,7 +261,7 @@ public abstract class CityHash<T>
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (disposed) return;
+        if (_disposed) return;
 
         if (disposing)
         {
@@ -271,7 +271,7 @@ public abstract class CityHash<T>
             this.HashSizeValue = 0;
         }
 
-        disposed = true;
+        _disposed = true;
         base.Dispose(disposing);
     }
 

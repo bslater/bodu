@@ -23,7 +23,7 @@ public static partial class SequenceGenerator
         private readonly Func<IEnumerator<TResult>> _createEnumerator;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="AnonymousEnumerable{TResult}"/> class.
+        /// Initializes a new instance of the <see cref="AnonymousEnumerable{TResult}"/> class.
         /// </summary>
         /// <param name="createEnumerator">The delegate used to generate the enumerator.</param>
         internal AnonymousEnumerable(Func<IEnumerator<TResult>> createEnumerator)

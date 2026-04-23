@@ -80,7 +80,7 @@ public partial struct WeekPattern : IEnumerable<DayOfWeek>
     private byte _selectedDays;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="WeekPattern"/> struct with the specified selected days.
+    /// Initializes a new instance of the <see cref="WeekPattern"/> struct with the specified selected days.
     /// </summary>
     /// <param name="daysOfWeek">An array of <see cref="DayOfWeek"/> values to mark as selected.</param>
     /// <exception cref="ArgumentOutOfRangeException">
@@ -105,7 +105,7 @@ public partial struct WeekPattern : IEnumerable<DayOfWeek>
     }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="WeekPattern"/> struct by parsing the specified string.
+    /// Initializes a new instance of the <see cref="WeekPattern"/> struct by parsing the specified string.
     /// </summary>
     /// <param name="input">The input string representing selected days. Must not be <see langword="null"/>.</param>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="input"/> is <see langword="null"/>.</exception>

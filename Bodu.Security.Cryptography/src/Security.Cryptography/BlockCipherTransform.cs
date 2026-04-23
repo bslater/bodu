@@ -41,7 +41,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
     private bool _disposed;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="BlockCipherTransform" /> class using the specified cipher
+    /// Initializes a new instance of the <see cref="BlockCipherTransform" /> class using the specified cipher
     /// engine, mode, padding scheme, initialisation vector, and transform direction.
     /// </summary>
     /// <param name="cipher">
@@ -63,7 +63,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
     }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="BlockCipherTransform" /> class using
+    /// Initializes a new instance of the <see cref="BlockCipherTransform" /> class using
     /// the specified cipher engine, mode, extended padding scheme, initialisation vector,
     /// and transform direction.
     /// </summary>

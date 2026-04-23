@@ -22,7 +22,7 @@ internal sealed class CircularBufferDebugView<T>
     private readonly CircularBuffer<T> _circularBuffer;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="CircularBufferDebugView{T}"/> class.
+    /// Initializes a new instance of the <see cref="CircularBufferDebugView{T}"/> class.
     /// </summary>
     /// <param name="circularBuffer">The circular buffer instance to debug.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="circularBuffer"/> is <see langword="null"/>.</exception>

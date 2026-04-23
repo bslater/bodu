@@ -60,7 +60,7 @@ public abstract partial class Snefru<T>
 #endif
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="Snefru{T}" /> class with the specified output hash size.
+    /// Initializes a new instance of the <see cref="Snefru{T}" /> class with the specified output hash size.
     /// </summary>
     /// <param name="hashSize">The size of the output hash, in bits. Must be either 128 or 256.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="hashSize" /> is not one of the supported values.</exception>

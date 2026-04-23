@@ -62,7 +62,7 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
     private readonly FiscalWeekPattern _pattern;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="FiscalWeekQuarterProvider"/> class using the
+    /// Initializes a new instance of the <see cref="FiscalWeekQuarterProvider"/> class using the
     /// specified anchor month and alignment options.
     /// </summary>
     /// <param name="month">The calendar month (1–12) of the fiscal year anchor.</param>

@@ -46,7 +46,7 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     private readonly byte[] _currentIv; // running CBC chaining vector
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="CtsModeTransform" /> class.
+    /// Initializes a new instance of the <see cref="CtsModeTransform" /> class.
     /// </summary>
     /// <param name="cipher">The underlying block cipher.</param>
     /// <param name="iv">

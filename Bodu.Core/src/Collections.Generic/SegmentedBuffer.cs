@@ -41,7 +41,7 @@ public sealed class SegmentedBuffer<T> :
     private int _count;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="SegmentedBuffer{T}"/> class using the default segment size.
+    /// Initializes a new instance of the <see cref="SegmentedBuffer{T}"/> class using the default segment size.
     /// </summary>
     /// <remarks>The default segment size is 512 items. New segments are allocated only as needed.</remarks>
     public SegmentedBuffer()
@@ -49,7 +49,7 @@ public sealed class SegmentedBuffer<T> :
     { }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="SegmentedBuffer{T}"/> class using the specified segment size.
+    /// Initializes a new instance of the <see cref="SegmentedBuffer{T}"/> class using the specified segment size.
     /// </summary>
     /// <param name="segmentSize">The number of elements per segment.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="segmentSize"/> is less than 1.</exception>

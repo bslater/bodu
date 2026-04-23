@@ -34,7 +34,7 @@ public sealed class CfbModeTransform : IBlockCipherModeTransform
     private readonly byte[] _currentIv;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="CfbModeTransform" /> class with the specified cipher and initialisation vector.
+    /// Initializes a new instance of the <see cref="CfbModeTransform" /> class with the specified cipher and initialisation vector.
     /// </summary>
     /// <param name="cipher">The block cipher over which CFB is applied.</param>
     /// <param name="iv">The initialisation vector used as the feedback register for the first block. A defensive copy is taken.</param>

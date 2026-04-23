@@ -28,7 +28,7 @@ public sealed class Fnv132 : Fnv
     private const ulong Prime = 0x01000193UL;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="Fnv132" /> class using standard FNV-1 32-bit parameters.
+    /// Initializes a new instance of the <see cref="Fnv132" /> class using standard FNV-1 32-bit parameters.
     /// </summary>
     /// <remarks>
     /// <para>This constructor configures the FNV algorithm to use the 32-bit variant of FNV-1, with the following predefined values:</para>

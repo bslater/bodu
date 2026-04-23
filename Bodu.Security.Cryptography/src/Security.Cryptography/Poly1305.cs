@@ -60,7 +60,7 @@ public sealed class Poly1305
     private bool _disposed = false;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="Poly1305" /> class.
+    /// Initializes a new instance of the <see cref="Poly1305" /> class.
     /// </summary>
     public Poly1305()
         : base(BlockSize, KeySize)

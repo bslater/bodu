@@ -282,10 +282,10 @@ public sealed class SkipjackBlockCipher
         g1 = (w >> 8) & 0xff;
         g2 = w & 0xff;
 
-        g3 = ftable[g2 ^ key0[k]] ^ g1;
-        g4 = ftable[g3 ^ key1[k]] ^ g2;
-        g5 = ftable[g4 ^ key2[k]] ^ g3;
-        g6 = ftable[g5 ^ key3[k]] ^ g4;
+        g3 = s_ftable[g2 ^ key0[k]] ^ g1;
+        g4 = s_ftable[g3 ^ key1[k]] ^ g2;
+        g5 = s_ftable[g4 ^ key2[k]] ^ g3;
+        g6 = s_ftable[g5 ^ key3[k]] ^ g4;
 
         return ((g5 << 8) + g6);
     }
@@ -302,10 +302,10 @@ public sealed class SkipjackBlockCipher
         int h1 = w & 0xff;
         int h2 = (w >> 8) & 0xff;
 
-        int h3 = ftable[h2 ^ key3[k]] ^ h1;
-        int h4 = ftable[h3 ^ key2[k]] ^ h2;
-        int h5 = ftable[h4 ^ key1[k]] ^ h3;
-        int h6 = ftable[h5 ^ key0[k]] ^ h4;
+        int h3 = s_ftable[h2 ^ key3[k]] ^ h1;
+        int h4 = s_ftable[h3 ^ key2[k]] ^ h2;
+        int h5 = s_ftable[h4 ^ key1[k]] ^ h3;
+        int h6 = s_ftable[h5 ^ key0[k]] ^ h4;
 
         return (h6 << 8) + h5;
     }

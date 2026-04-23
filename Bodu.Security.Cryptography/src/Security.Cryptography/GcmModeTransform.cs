@@ -57,7 +57,7 @@ public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
     private bool _aadProcessed;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="GcmModeTransform" /> class.
+    /// Initializes a new instance of the <see cref="GcmModeTransform" /> class.
     /// </summary>
     /// <param name="cipher">The block cipher. Must have a 16-byte (128-bit) block size.</param>
     /// <param name="iv">

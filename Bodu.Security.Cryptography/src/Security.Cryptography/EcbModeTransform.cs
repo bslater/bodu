@@ -33,7 +33,7 @@ public sealed class EcbModeTransform : IBlockCipherModeTransform
     private readonly IBlockCipher _cipher;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="EcbModeTransform" /> class that wraps the specified block cipher.
+    /// Initializes a new instance of the <see cref="EcbModeTransform" /> class that wraps the specified block cipher.
     /// </summary>
     /// <param name="cipher">The block cipher over which ECB is applied.</param>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher" /> is <see langword="null" />.</exception>

@@ -45,7 +45,7 @@ public sealed class EaxModeTransform : IBlockCipherModeTransform
     private readonly byte[] _counter; // current counter value, incremented big-endian each block
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="EaxModeTransform" /> class.
+    /// Initializes a new instance of the <see cref="EaxModeTransform" /> class.
     /// </summary>
     /// <param name="cipher">The block cipher used to generate keystream blocks.</param>
     /// <param name="iv">

@@ -37,7 +37,7 @@ public sealed class ApHash
 #endif
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="ApHash" /> class with a 32-bit hash size.
+    /// Initializes a new instance of the <see cref="ApHash" /> class with a 32-bit hash size.
     /// </summary>
     public ApHash()
     {

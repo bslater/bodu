@@ -35,7 +35,7 @@ public sealed class OfbModeTransform : IBlockCipherModeTransform
     private readonly byte[] _currentIv;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="OfbModeTransform" /> class with the specified cipher and initialisation vector.
+    /// Initializes a new instance of the <see cref="OfbModeTransform" /> class with the specified cipher and initialisation vector.
     /// </summary>
     /// <param name="cipher">The block cipher used to generate the keystream.</param>
     /// <param name="iv">The initialisation vector used to seed the feedback register. A defensive copy is taken.</param>

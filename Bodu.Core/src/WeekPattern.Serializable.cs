@@ -12,7 +12,7 @@ namespace Bodu;
 public partial struct WeekPattern : System.Runtime.Serialization.ISerializable
 {
     /// <summary>
-    /// Initialises a new instance of the <see cref="WeekPattern"/> struct from the given serialised data.
+    /// Initializes a new instance of the <see cref="WeekPattern"/> struct from the given serialised data.
     /// </summary>
     /// <param name="info">The <see cref="SerializationInfo"/> containing the serialised data. Must not be <see langword="null"/>.</param>
     /// <param name="context">The streaming context (not used).</param>

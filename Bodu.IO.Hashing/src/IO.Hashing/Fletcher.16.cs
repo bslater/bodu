@@ -27,7 +27,7 @@ public sealed class Fletcher16
     private const int FletcherHashSize = 16;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="Fletcher16" /> class with a 16-bit hash size.
+    /// Initializes a new instance of the <see cref="Fletcher16" /> class with a 16-bit hash size.
     /// </summary>
     public Fletcher16()
         : base(FletcherHashSize)

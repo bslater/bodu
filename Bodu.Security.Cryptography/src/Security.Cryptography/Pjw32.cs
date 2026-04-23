@@ -34,7 +34,7 @@ public sealed class Pjw32
 #endif
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="Bodu.Security.Cryptography.Pjw32" /> class.
+    /// Initializes a new instance of the <see cref="Bodu.Security.Cryptography.Pjw32" /> class.
     /// </summary>
     public Pjw32()
     {

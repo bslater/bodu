@@ -42,7 +42,7 @@ public sealed class Bernstein :
 #endif
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="Bernstein" /> class with default parameters.
+    /// Initializes a new instance of the <see cref="Bernstein" /> class with default parameters.
     /// </summary>
     public Bernstein()
     {

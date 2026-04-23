@@ -30,7 +30,7 @@ public sealed class Threefish256
     : Threefish
 {
     /// <summary>
-    /// Initialises a new instance of the <see cref="Threefish256" /> class using a 256-bit block size, 256-bit key, and 128-bit tweak.
+    /// Initializes a new instance of the <see cref="Threefish256" /> class using a 256-bit block size, 256-bit key, and 128-bit tweak.
     /// </summary>
     public Threefish256()
         : base(256, 128) { }

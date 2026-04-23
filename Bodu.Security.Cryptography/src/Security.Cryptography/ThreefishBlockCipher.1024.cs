@@ -38,7 +38,7 @@ public sealed class Threefish1024Cipher
     : ThreefishBlockCipher
 {
     /// <summary>
-    /// Initialises a new instance of the <see cref="Threefish1024Cipher" /> class using the specified key and tweak.
+    /// Initializes a new instance of the <see cref="Threefish1024Cipher" /> class using the specified key and tweak.
     /// </summary>
     /// <param name="key">The 1024-bit (128-byte) key used for encryption and decryption.</param>
     /// <param name="tweak">The 128-bit (16-byte) tweak value used to modify the block cipher behaviour.</param>

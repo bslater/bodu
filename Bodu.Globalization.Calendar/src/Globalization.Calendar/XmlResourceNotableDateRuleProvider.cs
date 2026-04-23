@@ -34,7 +34,7 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 	private readonly Lazy<List<NotableDateRule>> _flattenedRules;
 
 	/// <summary>
-	/// Initialises a new instance of the <see cref="XmlResourceNotableDateRuleProvider" /> class.
+	/// Initializes a new instance of the <see cref="XmlResourceNotableDateRuleProvider" /> class.
 	/// </summary>
 	/// <param name="xmlResourceName">The full manifest resource name of the root XML payload. Must not be <see langword="null" />.</param>
 	/// <param name="assembly">The assembly containing the embedded resource(s). Defaults to the currently executing assembly.</param>

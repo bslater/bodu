@@ -33,7 +33,7 @@ public abstract class Adler32Base
     : Bodu.Security.Cryptography.Adler<uint>
 {
     /// <summary>
-    /// Initialises a new instance of the <see cref="Adler32Base" /> class.
+    /// Initializes a new instance of the <see cref="Adler32Base" /> class.
     /// </summary>
     protected Adler32Base(uint modulo)
         : base(modulo)

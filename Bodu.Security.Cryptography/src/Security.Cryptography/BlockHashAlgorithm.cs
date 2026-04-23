@@ -54,7 +54,7 @@ public abstract class BlockHashAlgorithm<T>
 #endif
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="BlockHashAlgorithm{T}" /> class using the specified input block size.
+    /// Initializes a new instance of the <see cref="BlockHashAlgorithm{T}" /> class using the specified input block size.
     /// </summary>
     /// <param name="blockSize">
     /// The block size, in bytes, that the algorithm uses to process input data. This value determines how data is buffered and

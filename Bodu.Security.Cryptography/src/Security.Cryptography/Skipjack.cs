@@ -56,7 +56,7 @@ public sealed class Skipjack
     private bool _disposed = false;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="Skipjack" /> class with the fixed 80-bit key size and 64-bit block size, CBC
+    /// Initializes a new instance of the <see cref="Skipjack" /> class with the fixed 80-bit key size and 64-bit block size, CBC
     /// cipher mode, and PKCS7 padding.
     /// </summary>
     /// <remarks>

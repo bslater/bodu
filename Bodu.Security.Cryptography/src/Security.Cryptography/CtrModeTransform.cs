@@ -44,7 +44,7 @@ public sealed class CtrModeTransform : IBlockCipherModeTransform
     private bool _counterWrapped;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="CtrModeTransform" /> class.
+    /// Initializes a new instance of the <see cref="CtrModeTransform" /> class.
     /// </summary>
     /// <param name="cipher">The block cipher whose encrypt primitive generates the keystream.</param>
     /// <param name="initialCounter">

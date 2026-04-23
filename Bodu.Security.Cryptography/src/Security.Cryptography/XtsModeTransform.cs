@@ -48,7 +48,7 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
     private readonly byte[] _tweak; // sector number / tweak value
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="XtsModeTransform" /> class.
+    /// Initializes a new instance of the <see cref="XtsModeTransform" /> class.
     /// </summary>
     /// <param name="dataCipher">
     /// The cipher keyed with Key₁, used to encrypt or decrypt data blocks.

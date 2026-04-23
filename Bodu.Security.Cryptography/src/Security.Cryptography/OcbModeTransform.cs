@@ -63,7 +63,7 @@ public sealed class OcbModeTransform
     private bool _aadProcessed;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="OcbModeTransform" /> class.
+    /// Initializes a new instance of the <see cref="OcbModeTransform" /> class.
     /// </summary>
     /// <param name="cipher">The block cipher (must have a 16-byte block size).</param>
     /// <param name="iv">

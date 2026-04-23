@@ -50,7 +50,7 @@ public sealed class AesBlockCipher
     private bool _disposed;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="AesBlockCipher" /> class with the specified AES key.
+    /// Initializes a new instance of the <see cref="AesBlockCipher" /> class with the specified AES key.
     /// </summary>
     /// <param name="key">
     /// The AES key. Valid lengths are 16, 24, or 32 bytes (AES-128, AES-192, or AES-256). A defensive copy

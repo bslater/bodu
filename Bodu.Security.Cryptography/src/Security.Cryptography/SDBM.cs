@@ -34,7 +34,7 @@ public sealed class SDBM
 #endif
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="SDBM" /> class.
+    /// Initializes a new instance of the <see cref="SDBM" /> class.
     /// </summary>
     public SDBM()
     {

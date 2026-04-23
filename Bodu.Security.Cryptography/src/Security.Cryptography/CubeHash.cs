@@ -77,7 +77,7 @@ public sealed class CubeHash
 #endif
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="CubeHash" /> class with default parameters.
+    /// Initializes a new instance of the <see cref="CubeHash" /> class with default parameters.
     /// </summary>
     public CubeHash()
     {

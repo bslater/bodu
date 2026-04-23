@@ -43,7 +43,7 @@ public partial class EvictingDictionary<TKey, TValue>
         public bool SecondChance { get; set; }
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="CacheItem"/> class with the specified value.
+        /// Initializes a new instance of the <see cref="CacheItem"/> class with the specified value.
         /// </summary>
         /// <param name="value">The value to store in the cache entry.</param>
         public CacheItem(TValue value) => Value = value;

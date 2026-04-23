@@ -98,7 +98,7 @@ public partial class CircularBuffer<T>
     private int _version;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="CircularBuffer{T}"/> class using the default capacity and allowing overwrites by default.
+    /// Initializes a new instance of the <see cref="CircularBuffer{T}"/> class using the default capacity and allowing overwrites by default.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -114,7 +114,7 @@ public partial class CircularBuffer<T>
         : this(DefaultCapacity, allowOverwrite: true) { }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="CircularBuffer{T}"/> class with the specified capacity, allowing overwrites when full.
+    /// Initializes a new instance of the <see cref="CircularBuffer{T}"/> class with the specified capacity, allowing overwrites when full.
     /// </summary>
     /// <param name="capacity">The maximum number of elements the buffer can contain. Must be greater than zero.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="capacity"/> is less than or equal to zero.</exception>
@@ -128,7 +128,7 @@ public partial class CircularBuffer<T>
         : this(capacity, allowOverwrite: true) { }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="CircularBuffer{T}"/> class with the specified capacity and overwrite behaviour.
+    /// Initializes a new instance of the <see cref="CircularBuffer{T}"/> class with the specified capacity and overwrite behaviour.
     /// </summary>
     /// <param name="capacity">The maximum number of elements the buffer can contain. Must be greater than zero.</param>
     /// <param name="allowOverwrite">
@@ -155,7 +155,7 @@ public partial class CircularBuffer<T>
     }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="CircularBuffer{T}"/> class by copying elements from the specified collection, using
+    /// Initializes a new instance of the <see cref="CircularBuffer{T}"/> class by copying elements from the specified collection, using
     /// the default capacity and allowing overwriting if needed.
     /// </summary>
     /// <param name="collection">The collection from which elements are copied. Must not be <see langword="null"/>.</param>
@@ -168,7 +168,7 @@ public partial class CircularBuffer<T>
         : this(collection, DefaultCapacity, allowOverwrite: true) { }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="CircularBuffer{T}"/> class by copying elements from the specified collection and
+    /// Initializes a new instance of the <see cref="CircularBuffer{T}"/> class by copying elements from the specified collection and
     /// applying the specified capacity. Overwriting is enabled by default.
     /// </summary>
     /// <param name="collection">The collection from which elements are copied. Must not be <see langword="null"/>.</param>
@@ -183,7 +183,7 @@ public partial class CircularBuffer<T>
         : this(collection, capacity, allowOverwrite: true) { }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="CircularBuffer{T}"/> class by copying elements from the specified collection, applying
+    /// Initializes a new instance of the <see cref="CircularBuffer{T}"/> class by copying elements from the specified collection, applying
     /// the specified capacity and overwrite behaviour.
     /// </summary>
     /// <param name="collection">The collection from which elements are copied. Must not be <see langword="null"/>.</param>

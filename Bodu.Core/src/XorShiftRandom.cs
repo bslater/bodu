@@ -26,7 +26,7 @@ public sealed class XorShiftRandom :
     private uint _w;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="XorShiftRandom"/> class using a system-generated seed.
+    /// Initializes a new instance of the <see cref="XorShiftRandom"/> class using a system-generated seed.
     /// </summary>
     /// <remarks>The default seed is derived from <see cref="Environment.TickCount"/> at the time of construction.</remarks>
     public XorShiftRandom()
@@ -34,7 +34,7 @@ public sealed class XorShiftRandom :
     { }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="XorShiftRandom"/> class with a 32-bit signed integer seed.
+    /// Initializes a new instance of the <see cref="XorShiftRandom"/> class with a 32-bit signed integer seed.
     /// </summary>
     /// <param name="seed">The seed used to initialise the random generator.</param>
     public XorShiftRandom(int seed)
@@ -42,7 +42,7 @@ public sealed class XorShiftRandom :
     { }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="XorShiftRandom"/> class with a 32-bit unsigned seed.
+    /// Initializes a new instance of the <see cref="XorShiftRandom"/> class with a 32-bit unsigned seed.
     /// </summary>
     /// <param name="seed">The seed used to initialise the random generator.</param>
     public XorShiftRandom(uint seed)

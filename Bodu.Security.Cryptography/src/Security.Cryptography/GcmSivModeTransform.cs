@@ -60,7 +60,7 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
     private bool _aadProcessed;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="GcmSivModeTransform" /> class.
+    /// Initializes a new instance of the <see cref="GcmSivModeTransform" /> class.
     /// </summary>
     /// <param name="masterCipher">
     /// The block cipher keyed with the master key. Used for per-message key derivation

@@ -35,7 +35,7 @@ public sealed class JSHash
 #endif
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="JSHash" /> class.
+    /// Initializes a new instance of the <see cref="JSHash" /> class.
     /// </summary>
     /// <remarks>This constructor initialises the hash algorithm to a default 32-bit output with a seed value of <c>0x4E67C6A7</c>.</remarks>
     public JSHash()

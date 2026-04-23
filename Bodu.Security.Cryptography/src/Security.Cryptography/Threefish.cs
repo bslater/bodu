@@ -43,7 +43,7 @@ public abstract class Threefish
     private readonly int DefaultTweakSizeBytes;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="Threefish" /> class with the specified block and tweak sizes.
+    /// Initializes a new instance of the <see cref="Threefish" /> class with the specified block and tweak sizes.
     /// </summary>
     /// <param name="blockSizeBits">The block size in bits. Must match the Threefish variant block size (256, 512, or 1024).</param>
     /// <param name="tweakSizeBits">The tweak size in bits. 128 bits for all Threefish variants.</param>

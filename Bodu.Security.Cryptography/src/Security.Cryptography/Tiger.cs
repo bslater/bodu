@@ -54,14 +54,14 @@ public sealed partial class Tiger
     private TigerHashingVariant _variant = TigerHashingVariant.Tiger;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="Tiger" /> class with a 192-bit output hash size.
+    /// Initializes a new instance of the <see cref="Tiger" /> class with a 192-bit output hash size.
     /// </summary>
     public Tiger() :
         this(192)
     { }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="Tiger" /> class with the specified output size.
+    /// Initializes a new instance of the <see cref="Tiger" /> class with the specified output size.
     /// </summary>
     /// <param name="hashSize">The desired output size in bits. Must be one of 128, 160, or 192.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="hashSize" /> is not valid.</exception>

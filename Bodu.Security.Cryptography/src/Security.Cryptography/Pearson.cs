@@ -58,7 +58,7 @@ public sealed partial class Pearson
     private byte[] _workingHash;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="Pearson" /> class with a default 8-bit hash size.
+    /// Initializes a new instance of the <see cref="Pearson" /> class with a default 8-bit hash size.
     /// </summary>
     public Pearson()
     {

@@ -43,7 +43,7 @@ public sealed class BKDR
 #endif
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="BKDR" /> class.
+    /// Initializes a new instance of the <see cref="BKDR" /> class.
     /// </summary>
     public BKDR()
     {

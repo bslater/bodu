@@ -48,7 +48,7 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     private ulong _totalLength;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="BlockNonCryptographicHashAlgorithm{T}" /> class using the specified
+    /// Initializes a new instance of the <see cref="BlockNonCryptographicHashAlgorithm{T}" /> class using the specified
     /// output size and block size.
     /// </summary>
     /// <param name="hashLengthInBytes">The length, in bytes, of the hash produced by this algorithm. Must be greater than zero.</param>

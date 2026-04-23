@@ -44,7 +44,7 @@ public abstract class Fnv
 #endif
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="Fnv" /> class using the specified configuration parameters.
+    /// Initializes a new instance of the <see cref="Fnv" /> class using the specified configuration parameters.
     /// </summary>
     /// <param name="hashSize">The size, in bits, of the resulting hash value. Only supported values are <c>32</c> and <c>64</c>.</param>
     /// <param name="prime">

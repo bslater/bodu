@@ -334,7 +334,7 @@ public sealed class BlowfishBlockCipher
     private bool _disposed;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="BlowfishBlockCipher" /> class using the specified key.
+    /// Initializes a new instance of the <see cref="BlowfishBlockCipher" /> class using the specified key.
     /// </summary>
     /// <param name="key">
     /// The encryption key. Must be between 4 and 56 bytes (32 to 448 bits) in length. Must not be <see langword="null" />.

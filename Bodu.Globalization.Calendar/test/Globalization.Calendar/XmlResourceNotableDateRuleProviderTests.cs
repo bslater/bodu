@@ -20,6 +20,7 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	private const string UsResource = "Bodu.Globalization.Calendar.Resources.US.xml";
 	private const string GbResource = "Bodu.Globalization.Calendar.Resources.GB.xml";
 	private const string FrResource = "Bodu.Globalization.Calendar.Resources.FR.xml";
+	private const string AuResource = "Bodu.Globalization.Calendar.Resources.AU.xml";
 	private const string DefaultResource = "Bodu.Globalization.Calendar.NotableDates.xml";
 
 	/// <summary>
@@ -148,6 +149,100 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 		Assert.IsTrue(rules.Any(r => r.Name == "Halloween"));
 		Assert.IsFalse(rules.Any(r => r.Name == "Independence Day"), "Country-specific rules should not appear in the default composite.");
 		Assert.IsFalse(rules.Any(r => r.Name == "Bastille Day"));
+	}
+
+
+	/// <summary>
+	/// Verifies that loading the AU resource pulls in the cherry-picked Common and Christian rules together with the locally declared
+	/// national and state-specific rules, and excludes any rule the AU file did not opt in to.
+	/// </summary>
+	[TestMethod]
+	public void LoadRules_WhenLoadingAuResource_ShouldIncludeCherryPickedAndLocalRules()
+	{
+		var provider = new XmlResourceNotableDateRuleProvider(AuResource);
+
+		var rules = provider.LoadRules().ToList();
+
+		// Cherry-picked from Common
+		Assert.IsTrue(rules.Any(r => r.Name == "Valentine's Day" && r.TerritoryCode == "AU"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Halloween" && r.TerritoryCode == "AU"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Remembrance Day" && r.TerritoryCode == "AU"));
+
+		// Cherry-picked from Christian
+		Assert.IsTrue(rules.Any(r => r.Name == "Easter Sunday" && r.TerritoryCode == "AU"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Good Friday" && r.TerritoryCode == "AU"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Easter Saturday" && r.TerritoryCode == "AU"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Easter Monday" && r.TerritoryCode == "AU"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Christmas Day" && r.TerritoryCode == "AU"));
+
+		// Locally declared national
+		Assert.IsTrue(rules.Any(r => r.Name == "New Year's Day" && r.TerritoryCode == "AU"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Australia Day" && r.TerritoryCode == "AU"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Anzac Day" && r.TerritoryCode == "AU"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Boxing Day" && r.TerritoryCode == "AU"));
+
+		// Locally declared subdivision-scoped (one example per state/territory)
+		Assert.IsTrue(rules.Any(r => r.Name == "Bank Holiday" && r.TerritoryCode == "AU-NSW"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Melbourne Cup Day" && r.TerritoryCode == "AU-VIC"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Royal Queensland Show" && r.TerritoryCode == "AU-QLD"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Adelaide Cup Day" && r.TerritoryCode == "AU-SA"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Western Australia Day" && r.TerritoryCode == "AU-WA"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Eight Hours Day" && r.TerritoryCode == "AU-TAS"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Picnic Day" && r.TerritoryCode == "AU-NT"));
+		Assert.IsTrue(rules.Any(r => r.Name == "Canberra Day" && r.TerritoryCode == "AU-ACT"));
+
+		// Not opted in: should be absent
+		Assert.IsFalse(rules.Any(r => r.Name == "International Workers' Day"));
+		Assert.IsFalse(rules.Any(r => r.Name == "Whit Monday"));
+		Assert.IsFalse(rules.Any(r => r.Name == "All Saints' Day"));
+	}
+
+	/// <summary>
+	/// Verifies that the AU resource preserves multiple rules sharing the same canonical name (e.g. "Labour Day" and "King's
+	/// Birthday") when they are scoped to different subdivisions, since the override pipeline keys by composite (name, territory).
+	/// </summary>
+	[TestMethod]
+	public void LoadRules_WhenLoadingAuResource_ShouldYieldDistinctLabourDayAndKingsBirthdayRulesPerSubdivision()
+	{
+		var provider = new XmlResourceNotableDateRuleProvider(AuResource);
+
+		var rules = provider.LoadRules().ToList();
+
+		var labourDayTerritories = rules
+			.Where(r => r.Name == "Labour Day")
+			.Select(r => r.TerritoryCode)
+			.OrderBy(t => t, StringComparer.Ordinal)
+			.ToList();
+
+		CollectionAssert.AreEquivalent(
+			new[] { "AU-ACT", "AU-NSW", "AU-QLD", "AU-SA", "AU-VIC", "AU-WA" },
+			labourDayTerritories);
+
+		var kingsBirthdayTerritories = rules
+			.Where(r => r.Name == "King's Birthday")
+			.Select(r => r.TerritoryCode)
+			.OrderBy(t => t, StringComparer.Ordinal)
+			.ToList();
+
+		CollectionAssert.AreEquivalent(
+			new[] { "AU-ACT", "AU-NSW", "AU-NT", "AU-QLD", "AU-SA", "AU-TAS", "AU-VIC", "AU-WA" },
+			kingsBirthdayTerritories);
+	}
+
+	/// <summary>
+	/// Verifies that Anzac Day in the AU resource is scoped to the country (territory <c>"AU"</c>) and is flagged as a non-working
+	/// day, so that all subdivisions inherit it via the subdivision-aware containment match in <see cref="NotableDateService" />.
+	/// </summary>
+	[TestMethod]
+	public void LoadRules_WhenLoadingAuResource_ShouldTagAnzacDayAsNationalNonWorkingDay()
+	{
+		var provider = new XmlResourceNotableDateRuleProvider(AuResource);
+
+		var anzacDay = provider.LoadRules().Single(r => r.Name == "Anzac Day");
+
+		Assert.AreEqual("AU", anzacDay.TerritoryCode);
+		Assert.AreEqual(true, anzacDay.IsNonWorkingDay);
+		Assert.IsTrue(anzacDay.Tags.Contains("NationalHoliday"));
 	}
 
 	/// <summary>

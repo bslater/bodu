@@ -31,7 +31,7 @@ public sealed class CityHash32
     : CityHash<CityHash32>
 {
     /// <summary>
-    /// Initialises a new instance of the <see cref="CityHash32" /> class with a fixed 32-bit (4-byte) hash output size.
+    /// Initializes a new instance of the <see cref="CityHash32" /> class with a fixed 32-bit (4-byte) hash output size.
     /// </summary>
     public CityHash32()
         : base(32)

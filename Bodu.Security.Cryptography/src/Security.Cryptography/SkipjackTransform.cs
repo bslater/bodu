@@ -22,7 +22,7 @@ internal sealed class SkipjackTransform
     : BlockCipherTransform
 {
     /// <summary>
-    /// Initialises a new instance of the <see cref="SkipjackTransform" /> class using the specified cipher, mode, padding, and
+    /// Initializes a new instance of the <see cref="SkipjackTransform" /> class using the specified cipher, mode, padding, and
     /// initialisation vector.
     /// </summary>
     /// <param name="cipher">The configured <see cref="IBlockCipher" /> engine to use. Must not be <see langword="null" />.</param>
