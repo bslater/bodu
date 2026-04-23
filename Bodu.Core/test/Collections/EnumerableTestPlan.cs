@@ -38,7 +38,7 @@ public class EnumerableTestPlan<TSource>
 
     public override string ToString() => Name;
 
-    public EnumerableTestPlan(string name, IEnumerable<TSource> source, Func<IEnumerable<TSource>, IEnumerable> invoke, IEnumerable<object> expectedResult, Func<TSource, object> resultSelector = null)
+    public EnumerableTestPlan(string name, IEnumerable<TSource> source, Func<IEnumerable<TSource>, IEnumerable> invoke, IEnumerable<object> expectedResult, Func<TSource, object>? resultSelector = null)
     {
         Name = name;
         Source = source;

@@ -338,7 +338,10 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
             var result = new T[count];
             for (int i = 0; i < count; i++)
-                result[i] = Volatile.Read(ref _buffer[SlotIndex(head + i)].Value)!;
+            {
+                T? slotValue = Volatile.Read(ref _buffer[SlotIndex(head + i)].Value);
+                result[i] = slotValue!;
+            }
 
             int v2 = Volatile.Read(ref _version);
             if (v1 == v2) return result;
@@ -351,7 +354,10 @@ public sealed partial class ConcurrentCircularBuffer<T>
         int c = Math.Clamp(t - h, 0, _capacity);
         var res = new T[c];
         for (int i = 0; i < c; i++)
-            res[i] = Volatile.Read(ref _buffer[SlotIndex(h + i)].Value)!;
+        {
+            T? slotValue = Volatile.Read(ref _buffer[SlotIndex(h + i)].Value);
+            res[i] = slotValue!;
+        }
         return res;
     }
 

@@ -326,7 +326,8 @@ public static partial class ArrayExtensions
     /// </remarks>
     internal static Array ReverseArrayCore(Array source, int index, int count)
     {
-        var elementType = source.GetType().GetElementType()!;
+        Type? elementType = source.GetType().GetElementType();
+        if (elementType is null) throw new InvalidOperationException("Array element type could not be resolved.");
         var result = Array.CreateInstance(elementType, source.Length);
         Array.Copy(source, result, source.Length);
 
