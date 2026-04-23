@@ -29,22 +29,14 @@
   </ItemGroup>
 
   <!--
-    Test-only plugin assemblies referenced purely so their DLLs land in the test output directory; tests load
-    them from disk to exercise ExternalPluginLoader. ReferenceOutputAssembly=false prevents the test project
-    from linking against their public surface at compile time, which keeps the plugins arm's-length in the
-    same way a real external consumer would treat them.
+    Test-only plugin assemblies referenced so they build alongside the test project and their DLLs end up in
+    the test output directory (copy-local semantics). Tests load them from disk via ExternalPluginLoader; the
+    compile-time reference is harmless because no test code uses the plugin types directly (they're reached
+    only through reflection after the loader materialises them into an isolated AssemblyLoadContext).
   -->
   <ItemGroup>
-    <ProjectReference Include="Globalization.Calendar.Plugin1.TestAssembly\Bodu.Globalization.Calendar.Plugin1.TestAssembly.csproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <OutputItemType>Content</OutputItemType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </ProjectReference>
-    <ProjectReference Include="Globalization.Calendar.Plugin2.TestAssembly\Bodu.Globalization.Calendar.Plugin2.TestAssembly.csproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <OutputItemType>Content</OutputItemType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </ProjectReference>
+    <ProjectReference Include="Globalization.Calendar.Plugin1.TestAssembly\Bodu.Globalization.Calendar.Plugin1.TestAssembly.csproj" />
+    <ProjectReference Include="Globalization.Calendar.Plugin2.TestAssembly\Bodu.Globalization.Calendar.Plugin2.TestAssembly.csproj" />
   </ItemGroup>
 
   <ItemGroup>
