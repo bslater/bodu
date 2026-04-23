@@ -138,6 +138,9 @@ public sealed class CcmModeTransform : IAeadBlockCipherModeTransform
     /// <summary>
     /// Computes CBC-MAC over the NIST SP 800-38C formatted input (B0 + AAD encoding + plaintext).
     /// </summary>
+    /// <param name="aad">The associated authenticated data.</param>
+    /// <param name="plaintext">The plaintext bytes whose MAC is being computed.</param>
+    /// <returns>The computed CBC-MAC tag, truncated to the configured tag length.</returns>
     private byte[] ComputeCbcMac(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
     {
         int blockSize = this.cipher.BlockSize;
@@ -196,6 +199,9 @@ public sealed class CcmModeTransform : IAeadBlockCipherModeTransform
     }
 
     /// <summary>Builds counter block A_i (flags | nonce | counter), encrypts it, and XORs with input.</summary>
+    /// <param name="input">The input bytes to XOR with the keystream.</param>
+    /// <param name="counterIndex">The CTR block index that produces the keystream block.</param>
+    /// <returns>A fresh array holding <c>input XOR keystream</c>.</returns>
     private byte[] XorWithCtrBlock(ReadOnlySpan<byte> input, int counterIndex)
     {
         int blockSize = this.cipher.BlockSize;

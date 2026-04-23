@@ -168,6 +168,8 @@ public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
     /// Applies CTR mode: for each block, computes keystream = E(counter), XORs with input,
     /// increments the counter.
     /// </summary>
+    /// <param name="input">The input bytes to XOR with the CTR keystream.</param>
+    /// <param name="output">The destination span; must be at least <paramref name="input" />.Length bytes.</param>
     private void ApplyCtr(ReadOnlySpan<byte> input, Span<byte> output)
     {
         int blockSize = this.cipher.BlockSize;
@@ -187,6 +189,9 @@ public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
     /// <summary>
     /// Computes the GCM authentication tag: T = GHASH(H, AAD, C) ⊕ E(J0).
     /// </summary>
+    /// <param name="aad">The associated authenticated data.</param>
+    /// <param name="ciphertext">The ciphertext bytes authenticated by the tag.</param>
+    /// <returns>The computed 128-bit GCM authentication tag.</returns>
     private byte[] ComputeTag(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> ciphertext)
     {
         int blockSize = this.cipher.BlockSize;
@@ -214,6 +219,8 @@ public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
     }
 
     /// <summary>Feeds <paramref name="data" /> into the GHASH accumulator <paramref name="y" /> block by block.</summary>
+    /// <param name="y">The running GHASH accumulator (16 bytes); updated in place.</param>
+    /// <param name="data">The input bytes to fold into the GHASH state.</param>
     private void GhashUpdate(byte[] y, ReadOnlySpan<byte> data)
     {
         int blockSize = this.cipher.BlockSize;
@@ -227,6 +234,8 @@ public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
     }
 
     /// <summary>Processes one 16-byte block through GHASH: y = (y ⊕ block) * H.</summary>
+    /// <param name="y">The running GHASH accumulator (16 bytes); updated in place.</param>
+    /// <param name="block">A single 16-byte block to fold into <paramref name="y" />.</param>
     private void GhashBlock(byte[] y, byte[] block)
     {
         for (int i = 0; i < y.Length; i++)
@@ -239,6 +248,9 @@ public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
     /// irreducible polynomial x^128 + x^7 + x^2 + x + 1, with big-endian bit ordering.
     /// Result is written into <paramref name="result" /> (may alias <paramref name="x" />).
     /// </summary>
+    /// <param name="x">The left operand block (16 bytes).</param>
+    /// <param name="h">The hash subkey <c>H</c> (16 bytes).</param>
+    /// <param name="result">The destination span (16 bytes); receives <c>x · H</c> in GF(2<sup>128</sup>).</param>
     private static void GhashMultiply(ReadOnlySpan<byte> x, ReadOnlySpan<byte> h, Span<byte> result)
     {
         Span<byte> z = stackalloc byte[16]; // accumulator
@@ -267,6 +279,7 @@ public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
     /// <summary>
     /// Increments the 32-bit big-endian counter in the last 4 bytes of <paramref name="counter" />.
     /// </summary>
+    /// <param name="counter">The 16-byte CTR block; its low 32 bits are incremented in place per NIST SP 800-38D.</param>
     private static void IncrementCounter32(byte[] counter)
     {
         for (int i = counter.Length - 1; i >= counter.Length - 4; i--)

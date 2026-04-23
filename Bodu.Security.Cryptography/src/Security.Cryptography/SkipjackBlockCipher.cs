@@ -245,6 +245,9 @@ public sealed class SkipjackBlockCipher
     /// <summary>
     /// Reads a big-endian 16-bit unsigned integer from <paramref name="s" />.
     /// </summary>
+    /// <param name="s">The source byte span.</param>
+    /// <param name="o">The byte offset at which to read.</param>
+    /// <returns>The 16-bit value read in big-endian order.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ushort ReadBE16(ReadOnlySpan<byte> s, int o) =>
         (ushort)((s[o] << 8) | s[o + 1]);
@@ -252,6 +255,9 @@ public sealed class SkipjackBlockCipher
     /// <summary>
     /// Writes <paramref name="v" /> as big-endian 16-bit value into <paramref name="d" />.
     /// </summary>
+    /// <param name="d">The destination byte span.</param>
+    /// <param name="o">The byte offset at which to write.</param>
+    /// <param name="v">The 16-bit value to write.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void WriteBE16(Span<byte> d, int o, ushort v)
     {

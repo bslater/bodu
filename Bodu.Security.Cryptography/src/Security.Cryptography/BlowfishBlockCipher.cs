@@ -444,6 +444,8 @@ public sealed class BlowfishBlockCipher
     /// Splits <paramref name="x" /> into four bytes, looks up each in its respective S-box, then combines using addition and XOR:
     /// <c>((S0[b0] + S1[b1]) ^ S2[b2]) + S3[b3]</c>.
     /// </remarks>
+    /// <param name="x">The 32-bit input word.</param>
+    /// <returns>The transformed 32-bit output word.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private uint F(uint x) =>
         ((this.s0[x >> 24] + this.s1[(x >> 16) & 0xFF]) ^ this.s2[(x >> 8) & 0xFF]) + this.s3[x & 0xFF];
@@ -451,6 +453,8 @@ public sealed class BlowfishBlockCipher
     /// <summary>
     /// Performs the 16-round Blowfish Feistel encipher operation on two 32-bit halves.
     /// </summary>
+    /// <param name="xl">The left half of the 64-bit block; updated in place.</param>
+    /// <param name="xr">The right half of the 64-bit block; updated in place.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void EncipherBlock(ref uint xl, ref uint xr)
     {
@@ -470,6 +474,8 @@ public sealed class BlowfishBlockCipher
     /// <summary>
     /// Performs the 16-round Blowfish Feistel decipher operation on two 32-bit halves.
     /// </summary>
+    /// <param name="xl">The left half of the 64-bit block; updated in place.</param>
+    /// <param name="xr">The right half of the 64-bit block; updated in place.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void DecipherBlock(ref uint xl, ref uint xr)
     {
@@ -496,6 +502,7 @@ public sealed class BlowfishBlockCipher
     /// After this method returns, the cipher is ready to encrypt and decrypt.
     /// </para>
     /// </remarks>
+    /// <param name="key">The raw Blowfish key (between 4 and 56 bytes).</param>
     private void InitialiseKeySchedule(ReadOnlySpan<byte> key)
     {
         // Copy the pi-derived initialisers into the mutable working arrays.

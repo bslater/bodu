@@ -97,6 +97,9 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
     /// <summary>Standard CBC encryption (no stealing), used when input is block-aligned.</summary>
+    /// <param name="input">The plaintext bytes to encrypt.</param>
+    /// <param name="output">The destination span for the ciphertext.</param>
+    /// <returns>The number of bytes written to <paramref name="output" />.</returns>
     private int EncryptCbc(ReadOnlySpan<byte> input, Span<byte> output)
     {
         int blockSize = this.cipher.BlockSize;
@@ -118,6 +121,9 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     }
 
     /// <summary>Standard CBC decryption (no stealing), used when input is block-aligned.</summary>
+    /// <param name="input">The ciphertext bytes to decrypt.</param>
+    /// <param name="output">The destination span for the plaintext.</param>
+    /// <returns>The number of bytes written to <paramref name="output" />.</returns>
     private int DecryptCbc(ReadOnlySpan<byte> input, Span<byte> output)
     {
         int blockSize = this.cipher.BlockSize;
@@ -142,6 +148,12 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     /// CTS encryption for non-block-aligned input. Processes all full blocks except the last two
     /// with standard CBC, then applies the steal algorithm to the penultimate and final blocks.
     /// </summary>
+    /// <param name="input">The plaintext input.</param>
+    /// <param name="output">The destination span for the ciphertext.</param>
+    /// <param name="fullBlocks">The number of complete blocks in <paramref name="input" />.</param>
+    /// <param name="tailBytes">The number of bytes in the final partial block (1 to <paramref name="blockSize" /> − 1).</param>
+    /// <param name="blockSize">The underlying cipher block size in bytes.</param>
+    /// <returns>The number of bytes written to <paramref name="output" />.</returns>
     private int EncryptCts(ReadOnlySpan<byte> input, Span<byte> output, int fullBlocks, int tailBytes, int blockSize)
     {
         // Process all full blocks except the penultimate through standard CBC.
@@ -184,6 +196,12 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     /// CTS decryption for non-block-aligned input. Reconstructs the penultimate and final
     /// plaintext blocks using the inverse steal, then decrypts all body blocks with CBC.
     /// </summary>
+    /// <param name="input">The ciphertext input.</param>
+    /// <param name="output">The destination span for the plaintext.</param>
+    /// <param name="fullBlocks">The number of complete blocks in <paramref name="input" />.</param>
+    /// <param name="tailBytes">The number of bytes in the final partial block (1 to <paramref name="blockSize" /> − 1).</param>
+    /// <param name="blockSize">The underlying cipher block size in bytes.</param>
+    /// <returns>The number of bytes written to <paramref name="output" />.</returns>
     private int DecryptCts(ReadOnlySpan<byte> input, Span<byte> output, int fullBlocks, int tailBytes, int blockSize)
     {
         // Body blocks (all before the CTS pair).

@@ -205,6 +205,9 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
     /// POLYVAL(K_auth, len(A)||len(C), A blocks, C blocks) XOR nonce, then clear bit 31 and 63,
     /// then encrypt with K_enc.
     /// </summary>
+    /// <param name="aad">The associated authenticated data.</param>
+    /// <param name="plaintext">The plaintext bytes authenticated by the tag.</param>
+    /// <returns>The computed AES-GCM-SIV authentication tag.</returns>
     private byte[] ComputeTag(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
     {
         int blockSize = this.encCipher.BlockSize;
@@ -239,6 +242,8 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
     /// POLYVAL(H, X) = reflect(GHASH(reflect(H), reflect(X))).
     /// Internally uses GHASH multiplication on reflected inputs.
     /// </summary>
+    /// <param name="state">The POLYVAL accumulator (16 bytes); updated in place.</param>
+    /// <param name="data">The input bytes to fold into the POLYVAL state.</param>
     private void PolyvalUpdate(byte[] state, ReadOnlySpan<byte> data)
     {
         int blockSize = 16;
@@ -257,6 +262,9 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
     /// Computes POLYVAL(H, X) by reflecting both operands, applying GHASH multiplication,
     /// and reflecting the result. reflect(X) = byte-reverse + bit-reverse within each byte.
     /// </summary>
+    /// <param name="x">The left operand block (16 bytes).</param>
+    /// <param name="h">The POLYVAL hash key (16 bytes).</param>
+    /// <param name="result">The destination block (16 bytes); receives the POLYVAL product.</param>
     private static void PolyvalMultiply(byte[] x, byte[] h, byte[] result)
     {
         byte[] xr = new byte[16];
@@ -273,6 +281,8 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
     /// <summary>
     /// Reflects a 128-bit value: reverses byte order and bit-reverses each byte.
     /// </summary>
+    /// <param name="input">The source 16-byte block.</param>
+    /// <param name="output">The destination 16-byte block; receives <paramref name="input" /> with byte and bit order reversed.</param>
     private static void ReflectBytesAndBits(byte[] input, byte[] output)
     {
         for (int i = 0; i < 16; i++)
@@ -289,6 +299,9 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
     /// Multiplies two 128-bit big-endian field elements in GF(2^128) with polynomial
     /// x^128 + x^7 + x^2 + x + 1 (GCM/GHASH field). Shift-and-XOR algorithm.
     /// </summary>
+    /// <param name="x">The left operand block (16 bytes).</param>
+    /// <param name="h">The hash subkey <c>H</c> (16 bytes).</param>
+    /// <param name="result">The destination block (16 bytes); receives the GF(2<sup>128</sup>) product.</param>
     private static void GhashMultiply(byte[] x, byte[] h, byte[] result)
     {
         byte[] z = new byte[16];
@@ -318,6 +331,8 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
     /// Builds the GCM-SIV CTR IV from the tag: set MSB of last byte (bit 127) to 1 to
     /// distinguish CTR from POLYVAL blocks per RFC 8452 Section 5.
     /// </summary>
+    /// <param name="tag">The POLYVAL-derived authentication tag.</param>
+    /// <returns>The CTR initialisation vector derived from <paramref name="tag" /> per RFC 8452.</returns>
     private static byte[] BuildCtrIv(byte[] tag)
     {
         byte[] ctrIv = (byte[])tag.Clone();

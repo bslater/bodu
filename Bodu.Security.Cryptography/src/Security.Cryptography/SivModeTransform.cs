@@ -158,6 +158,9 @@ public sealed class SivModeTransform : IAeadBlockCipherModeTransform
     /// Computes the Synthetic IV using S2V per RFC 5297 Section 2.4.
     /// S2V(K, S₁, …, Sₙ) where S₁ = AAD and Sₙ = plaintext.
     /// </summary>
+    /// <param name="aad">The associated authenticated data.</param>
+    /// <param name="plaintext">The plaintext bytes.</param>
+    /// <returns>The S2V synthetic initialisation vector per RFC 5297 §2.4.</returns>
     private byte[] S2V(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
     {
         int blockSize = this.s2vCipher.BlockSize;
@@ -204,6 +207,8 @@ public sealed class SivModeTransform : IAeadBlockCipherModeTransform
     /// <summary>
     /// Computes AES-CMAC of <paramref name="message" /> using <c>s2vCipher</c> per RFC 4493.
     /// </summary>
+    /// <param name="message">The message to MAC.</param>
+    /// <returns>The 16-byte CMAC tag.</returns>
     private byte[] ComputeCmac(ReadOnlySpan<byte> message)
     {
         int blockSize = this.s2vCipher.BlockSize;
@@ -279,6 +284,7 @@ public sealed class SivModeTransform : IAeadBlockCipherModeTransform
     /// Doubles <paramref name="x" /> in-place in GF(2^128) with big-endian bit order and
     /// polynomial x^128 + x^7 + x^2 + x + 1.
     /// </summary>
+    /// <param name="x">The 16-byte block to double in GF(2<sup>128</sup>); updated in place.</param>
     private static void Dbl(byte[] x)
     {
         bool msb = (x[0] & 0x80) != 0;

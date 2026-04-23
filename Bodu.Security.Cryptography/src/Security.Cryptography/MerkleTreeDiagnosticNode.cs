@@ -80,6 +80,8 @@ public sealed class MerkleTreeDiagnostics
     // -----------------------------------------------------------------------------------------
 
     /// <summary>Records a leaf node produced from an input block.</summary>
+    /// <param name="index">The zero-based leaf index.</param>
+    /// <param name="hash">The computed leaf hash bytes.</param>
     internal void RecordLeaf(int index, byte[] hash) =>
         this.nodes.Add(new MerkleTreeDiagnosticNode(
             Level: 0,
@@ -313,6 +315,9 @@ public sealed class MerkleTreeDiagnostics
     /// Combines a list of child hashes using the same <see cref="HashAlgorithm.TransformBlock"/>
     /// strategy employed by <see cref="ParallelMerkleTreeHash"/>, and returns the resulting hash.
     /// </summary>
+    /// <param name="hashes">The ordered child hashes to concatenate and re-hash.</param>
+    /// <param name="factory">A factory producing a fresh <see cref="HashAlgorithm" /> for this combination.</param>
+    /// <returns>The combined parent hash.</returns>
     private static byte[] CombineHashes(IReadOnlyList<byte[]> hashes, Func<HashAlgorithm> factory)
     {
         using var hasher = factory();

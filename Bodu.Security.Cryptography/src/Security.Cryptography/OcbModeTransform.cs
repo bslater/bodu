@@ -417,6 +417,7 @@ public sealed class OcbModeTransform
     /// Computes the initial offset Offset_0 using the RFC 7253 §2.4 K_top stretch.
     /// Supports a 12-byte (96-bit) nonce with TAGLEN = 128.
     /// </summary>
+    /// <returns>The initial <c>Offset_0</c> value derived from the nonce per RFC 7253 §4.2.</returns>
     private byte[] ComputeInitialOffset()
     {
         int blockSize = this.cipher.BlockSize;
@@ -498,6 +499,8 @@ public sealed class OcbModeTransform
     /// <summary>
     /// Computes HASH(K, A) — the OCB3 authentication of associated data per RFC 7253 §4.
     /// </summary>
+    /// <param name="aad">The associated authenticated data.</param>
+    /// <returns>The HASH value of <paramref name="aad" /> per RFC 7253 §4.3.</returns>
     private byte[] ComputeHash(ReadOnlySpan<byte> aad)
     {
         int blockSize = this.cipher.BlockSize;
@@ -556,6 +559,8 @@ public sealed class OcbModeTransform
     /// polynomial x^128 + x^7 + x^2 + x + 1 (reduction via XOR with 0x87 in the LSByte).
     /// This implements the <c>double()</c> function from RFC 7253 §2.1.
     /// </summary>
+    /// <param name="x">The 16-byte input block.</param>
+    /// <returns>The GF(2<sup>128</sup>) doubling of <paramref name="x" />.</returns>
     private static byte[] GfDouble(byte[] x)
     {
         byte[] result = new byte[x.Length];
@@ -583,6 +588,8 @@ public sealed class OcbModeTransform
     /// Returns the number of trailing zero bits (ntz) of <paramref name="n" />.
     /// Used by RFC 7253 to select L[i] for each block index.
     /// </summary>
+    /// <param name="n">A positive block index.</param>
+    /// <returns>The number of trailing zero bits in <paramref name="n" /> (the L-array index per RFC 7253).</returns>
     private static int Ntz(int n)
     {
         if (n == 0) return 32;

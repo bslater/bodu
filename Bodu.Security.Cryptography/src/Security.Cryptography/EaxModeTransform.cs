@@ -100,6 +100,7 @@ public sealed class EaxModeTransform : IBlockCipherModeTransform
     /// <summary>
     /// Increments <paramref name="counter" /> as an unsigned big-endian integer, wrapping on overflow.
     /// </summary>
+    /// <param name="counter">The counter block to increment in place; interpreted as a big-endian integer.</param>
     private static void IncrementBigEndian(byte[] counter)
     {
         for (int i = counter.Length - 1; i >= 0; i--)

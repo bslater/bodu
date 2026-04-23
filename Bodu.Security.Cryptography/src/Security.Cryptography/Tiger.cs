@@ -272,6 +272,11 @@ public sealed partial class Tiger
     /// <summary>
     /// Applies one full "pass" of eight Tiger mixing rounds with the specified multiplier.
     /// </summary>
+    /// <param name="a">The first state word; updated in place.</param>
+    /// <param name="b">The second state word; updated in place.</param>
+    /// <param name="c">The third state word; updated in place.</param>
+    /// <param name="x">The eight message words for this pass.</param>
+    /// <param name="mul">The pass multiplier (5, 7, or 9).</param>
     private static void DoPass(ref ulong a, ref ulong b, ref ulong c, ReadOnlySpan<ulong> x, int mul)
     {
         Round(ref a, ref b, ref c, x[0], mul);
@@ -287,6 +292,7 @@ public sealed partial class Tiger
     /// <summary>
     /// Applies the Tiger key schedule to mutate the block before subsequent passes.
     /// </summary>
+    /// <param name="x">The eight message words; updated in place per the Tiger key-schedule transform.</param>
     private static void KeySchedule(Span<ulong> x)
     {
         x[0] -= x[7] ^ 0xA5A5A5A5A5A5A5A5UL;
@@ -310,6 +316,11 @@ public sealed partial class Tiger
     /// <summary>
     /// Performs a single Tiger mixing round on three state values and one message word.
     /// </summary>
+    /// <param name="a">The first state word; updated in place.</param>
+    /// <param name="b">The second state word; updated in place.</param>
+    /// <param name="c">The third state word; updated in place.</param>
+    /// <param name="x">The message word for this round.</param>
+    /// <param name="mul">The pass multiplier (5, 7, or 9).</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void Round(ref ulong a, ref ulong b, ref ulong c, ulong x, int mul)
     {

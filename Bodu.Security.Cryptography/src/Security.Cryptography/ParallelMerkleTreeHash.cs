@@ -311,6 +311,8 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// constructor.
     /// </para>
     /// </remarks>
+    /// <param name="diagnostics">The diagnostics sink to capture per-level timings, or <see langword="null" />.</param>
+    /// <param name="activeToken">The cancellation token associated with the current hashing session.</param>
     private void Reset(MerkleTreeDiagnostics? diagnostics, CancellationToken activeToken)
     {
         ObjectDisposedException.ThrowIf(this._disposed, this);
@@ -339,6 +341,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// Fills <see cref="_blockBuffer"/> from <paramref name="data"/>, flushing a leaf hash to
     /// level 0 each time the buffer reaches <see cref="_blockSize"/>.
     /// </summary>
+    /// <param name="data">The input bytes to feed into the current leaf accumulator.</param>
     private void ProcessBytes(ReadOnlySpan<byte> data)
     {
         while (!data.IsEmpty)
@@ -360,6 +363,8 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// Hashes <paramref name="length"/> bytes from <paramref name="data"/>, records the leaf node
     /// if diagnostics are enabled, and submits the hash to level 0.
     /// </summary>
+    /// <param name="data">The leaf buffer (owned by the caller until consumed).</param>
+    /// <param name="length">The number of valid bytes in <paramref name="data" />.</param>
     private void SubmitLeaf(byte[] data, int length)
     {
         var hash = this.HashSpan(data.AsSpan(0, length));
@@ -446,6 +451,10 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// is identified.
     /// </para>
     /// </remarks>
+    /// <param name="level">The tree level this worker serves.</param>
+    /// <param name="channel">The bounded channel producing input hashes for this level.</param>
+    /// <param name="token">The cancellation token that stops the worker.</param>
+    /// <returns>A task that completes when the worker has drained its channel.</returns>
     private async Task RunLevelWorkerAsync(int level, Channel<byte[]> channel, CancellationToken token)
     {
         var pending = new List<byte[]>(this._fanOut);
@@ -535,6 +544,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// Completes all level channels and awaits their workers, suppressing any exceptions that
     /// arise from cancelled tokens or completed channels during cancellation teardown.
     /// </summary>
+    /// <returns>A task that completes when every level worker has drained and exited.</returns>
     private async Task DrainWorkersAsync()
     {
         foreach (var channel in this._levelChannels.Values)
@@ -558,6 +568,8 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// Uses <see cref="HashAlgorithm.TryComputeHash"/> to operate directly on the span,
     /// avoiding an intermediate heap copy of the input bytes.
     /// </remarks>
+    /// <param name="data">The bytes to hash.</param>
+    /// <returns>The hash computed by a freshly-created <see cref="HashAlgorithm" />.</returns>
     private byte[] HashSpan(ReadOnlySpan<byte> data)
     {
         using var hasher = this._algorithmFactory();
@@ -587,6 +599,10 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// <param name="hashes">The child hashes to combine.</param>
     /// <param name="sourceLevel">The level from which the children came.</param>
     /// <param name="parentIndex">The index of the resulting parent node within level <paramref name="sourceLevel"/> + 1.</param>
+    /// <param name="hashes">The child hashes being combined.</param>
+    /// <param name="sourceLevel">The tree level that produced <paramref name="hashes" />.</param>
+    /// <param name="parentIndex">The zero-based index of the parent node being computed.</param>
+    /// <returns>The combined parent hash.</returns>
     private byte[] CombineAndHash(List<byte[]> hashes, int sourceLevel, int parentIndex)
     {
         using var hasher = this._algorithmFactory();

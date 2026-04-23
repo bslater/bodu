@@ -123,6 +123,7 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
     /// Multiplies <paramref name="T" /> by α in GF(2^128) using the IEEE 1619 polynomial
     /// x^128 + x^7 + x^2 + x + 1, with little-endian bit ordering (byte 0 = x^0..x^7).
     /// </summary>
+    /// <param name="T">The 16-byte tweak block to double in GF(2<sup>128</sup>); updated in place.</param>
     private static void GfDouble(Span<byte> T)
     {
         // Left-shift the 128-bit little-endian value. Carry propagates from byte[0] upward.
