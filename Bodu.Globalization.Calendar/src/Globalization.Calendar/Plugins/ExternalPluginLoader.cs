@@ -112,15 +112,18 @@ public sealed class ExternalPluginLoader
 	}
 
 	/// <summary>
-	/// Resolves references a plugin makes first through the host's default load context (so framework + <c>Bodu.*</c> types
-	/// stay canonical), then alongside the plugin file (so its private dependencies can sit next to the DLL).
+	/// Resolves references a plugin makes through the host's default load context so framework and <c>Bodu.*</c> types stay
+	/// canonical (preventing duplicate <c>Bodu.Globalization.Calendar</c> loads in each plugin context). Private dependencies
+	/// that the plugin bundles alongside its DLL are loaded automatically by the plugin's own <see cref="AssemblyLoadContext" />.
 	/// </summary>
 	private static Assembly? ResolveFromHostOrAlongside(AssemblyLoadContext context, AssemblyName name)
 	{
-		// Prefer the host-loaded version where one already exists (stops duplicate Bodu.* loads).
+		if (string.IsNullOrEmpty(name.Name))
+			return null;
+
 		foreach (var loaded in AssemblyLoadContext.Default.Assemblies)
 		{
-			if (AssemblyName.ReferenceMatchesDefinition(name, loaded.GetName()))
+			if (string.Equals(loaded.GetName().Name, name.Name, StringComparison.OrdinalIgnoreCase))
 				return loaded;
 		}
 
