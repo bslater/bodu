@@ -79,7 +79,7 @@ public sealed partial class CrcStandard
     public static CrcStandard CRC64_XZ => Get(CrcStandards.CRC64_XZ);
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CrcStandard" /> class with the specified parameters.
+    /// Initialises a new instance of the <see cref="CrcStandard" /> class with the specified parameters.
     /// </summary>
     /// <param name="name">The name of the CRC standard.</param>
     /// <param name="size">The size, in bits, of the CRC checksum.</param>

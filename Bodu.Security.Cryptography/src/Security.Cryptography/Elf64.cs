@@ -38,7 +38,7 @@ public sealed class Elf64
 #endif
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Elf64" /> class.
+    /// Initialises a new instance of the <see cref="Elf64" /> class.
     /// </summary>
     public Elf64()
     {

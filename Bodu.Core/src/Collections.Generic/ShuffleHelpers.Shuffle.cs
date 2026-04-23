@@ -45,7 +45,7 @@ public static partial class ShuffleHelpers
     /// <param name="rng">The random number generator used to shuffle elements.</param>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="rng"/> is <see langword="null"/>.</exception>
     /// <remarks>
-    /// This method modifies the span in-place using the Fisher–Yates algorithm. It is optimized for shuffling stack-allocated or pooled
+    /// This method modifies the span in-place using the Fisher–Yates algorithm. It is optimised for shuffling stack-allocated or pooled
     /// data, and does not allocate memory.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

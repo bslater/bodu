@@ -180,7 +180,7 @@ public static partial class DateOnlyExtensions
     /// </summary>
     /// <param name="definition">A <see cref="CalendarQuarterDefinition"/> enum value encoded as MMDD (e.g., 401 for 1 April).</param>
     /// <returns>A tuple <c>(defMonth, defDay)</c> representing the anchor month and day of Q1.</returns>
-    /// <remarks>Used as a normalized form of the quarter definition for modular math calculations.</remarks>
+    /// <remarks>Used as a normalised form of the quarter definition for modular math calculations.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static (uint defMonth, uint defDay) GetQuarterDefinition(CalendarQuarterDefinition definition)
     {

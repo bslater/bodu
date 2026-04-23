@@ -60,7 +60,7 @@ public abstract partial class Snefru<T>
 #endif
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Snefru{T}" /> class with the specified output hash size.
+    /// Initialises a new instance of the <see cref="Snefru{T}" /> class with the specified output hash size.
     /// </summary>
     /// <param name="hashSize">The size of the output hash, in bits. Must be either 128 or 256.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="hashSize" /> is not one of the supported values.</exception>
@@ -165,7 +165,7 @@ public abstract partial class Snefru<T>
     }
 
     /// <summary>
-    /// Finalizes the hash computation by serializing the internal state to a byte array in big-endian format.
+    /// Finalizes the hash computation by serialising the internal state to a byte array in big-endian format.
     /// </summary>
     /// <returns>The computed hash as a byte array.</returns>
     protected override byte[] ProcessFinalBlock()

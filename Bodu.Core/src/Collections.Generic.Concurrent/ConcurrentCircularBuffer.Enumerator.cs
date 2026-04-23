@@ -36,7 +36,7 @@ public sealed partial class ConcurrentCircularBuffer<T> :
         private int _index;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Enumerator"/> struct by capturing a snapshot of the buffer's contents.
+        /// Initialises a new instance of the <see cref="Enumerator"/> struct by capturing a snapshot of the buffer's contents.
         /// </summary>
         /// <param name="owner">The <see cref="ConcurrentCircularBuffer{T}"/> instance to enumerate. Must not be <see langword="null"/>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="owner"/> is <see langword="null"/>.</exception>

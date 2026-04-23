@@ -29,7 +29,7 @@ public sealed class Adler64
     private const ulong Adler64_Modulo = 4294967291UL;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Adler64" /> class using the Adler-64 prime modulus (4294967291).
+    /// Initialises a new instance of the <see cref="Adler64" /> class using the Adler-64 prime modulus (4294967291).
     /// </summary>
     public Adler64()
         : base(Adler64_Modulo)

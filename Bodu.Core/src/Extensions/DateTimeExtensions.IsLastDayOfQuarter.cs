@@ -21,7 +21,7 @@ public static partial class DateTimeExtensions
     /// This method uses the <see cref="CalendarQuarterDefinition.JanuaryToDecember"/> convention: Q1 = Jan–Mar, Q2 = Apr–Jun, Q3 =
     /// Jul–Sep, Q4 = Oct–Dec.
     /// </para>
-    /// <para>The comparison is performed on the date component only (time is normalized to 00:00:00).</para>
+    /// <para>The comparison is performed on the date component only (time is normalised to 00:00:00).</para>
     /// </remarks>
     public static bool IsLastDayOfQuarter(this DateTime dateTime)
     {
@@ -46,7 +46,7 @@ public static partial class DateTimeExtensions
     /// </exception>
     /// <remarks>
     /// <para>
-    /// The method evaluates whether the date portion of <paramref name="dateTime"/> (normalized to 00:00:00) is the final day of its
+    /// The method evaluates whether the date portion of <paramref name="dateTime"/> (normalised to 00:00:00) is the final day of its
     /// quarter according to the specified definition.
     /// </para>
     /// </remarks>
@@ -75,7 +75,7 @@ public static partial class DateTimeExtensions
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="provider"/> is <see langword="null"/>.</exception>
     /// <remarks>
     /// <para>
-    /// The method compares the date portion (normalized to 00:00:00) of <paramref name="dateTime"/> with the end of quarter date returned
+    /// The method compares the date portion (normalised to 00:00:00) of <paramref name="dateTime"/> with the end of quarter date returned
     /// by the specified <paramref name="provider"/>.
     /// </para>
     /// </remarks>

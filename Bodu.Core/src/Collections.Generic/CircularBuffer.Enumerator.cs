@@ -31,7 +31,7 @@ public partial class CircularBuffer<T>
         private int _iteratedCount;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Enumerator"/> struct.
+        /// Initialises a new instance of the <see cref="Enumerator"/> struct.
         /// </summary>
         /// <param name="circularBuffer">The buffer to enumerate.</param>
         internal Enumerator(CircularBuffer<T> circularBuffer)

@@ -37,7 +37,7 @@ public sealed class ApHash
 #endif
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ApHash" /> class with a 32-bit hash size.
+    /// Initialises a new instance of the <see cref="ApHash" /> class with a 32-bit hash size.
     /// </summary>
     public ApHash()
     {
@@ -187,7 +187,7 @@ public sealed class ApHash
     /// </summary>
     /// <remarks>
     /// This method is used to prevent reconfiguration of algorithm parameters such as the key, number of rounds, or other settings once
-    /// hashing has begun. It ensures settings are immutable after initialization.
+    /// hashing has begun. It ensures settings are immutable after initialisation.
     /// </remarks>
     /// <exception cref="CryptographicUnexpectedOperationException">
     /// Thrown when an attempt is made to modify the algorithm after it has entered a non-zero state, which indicates that hashing has

@@ -49,7 +49,7 @@ public abstract class BlockHashAlgorithm<T>
 #endif
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BlockHashAlgorithm{T}" /> class using the specified input block size.
+    /// Initialises a new instance of the <see cref="BlockHashAlgorithm{T}" /> class using the specified input block size.
     /// </summary>
     /// <param name="blockSize">
     /// The block size, in bytes, that the algorithm uses to process input data. This value determines how data is buffered and
@@ -257,7 +257,7 @@ public abstract class BlockHashAlgorithm<T>
     /// </summary>
     /// <returns>A byte array containing the final computed hash value.</returns>
     /// <remarks>
-    /// This method is invoked after all input has been processed and padded. It reads from the internal hash state and serializes the
+    /// This method is invoked after all input has been processed and padded. It reads from the internal hash state and serialises the
     /// result to a byte array in the format expected by consumers of the algorithm (e.g., big-endian or little-endian).
     /// </remarks>
     protected abstract byte[] ProcessFinalBlock();
@@ -268,7 +268,7 @@ public abstract class BlockHashAlgorithm<T>
     /// <returns><see langword="true" /> if the final block should be padded; otherwise, <see langword="false" />.</returns>
     /// <remarks>
     /// This method is used to decide whether padding is required for the final block of input data. Derived classes can override this
-    /// method to implement their own logic for padding behavior. By default, this method returns <see langword="true" />, indicating
+    /// method to implement their own logic for padding behaviour. By default, this method returns <see langword="true" />, indicating
     /// that padding is required.
     /// </remarks>
     protected virtual bool ShouldPadFinalBlock() => true;

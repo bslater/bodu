@@ -114,7 +114,7 @@ public abstract class Threefish
     /// Validates the provided key, IV, and tweak against expected lengths and legal sizes.
     /// </summary>
     /// <param name="key">The encryption key.</param>
-    /// <param name="iv">The initialization vector.</param>
+    /// <param name="iv">The initialisation vector.</param>
     /// <param name="tweak">The tweak value.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="key" />, <paramref name="iv" />, or <paramref name="tweak" /> is <see langword="null" />.</exception>
     /// <exception cref="CryptographicException">Thrown when any input does not match the required length.</exception>

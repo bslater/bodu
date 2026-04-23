@@ -27,7 +27,7 @@ internal sealed class EvictingDictionaryDebugView<TKey, TValue>
     private readonly EvictingDictionary<TKey, TValue> _dictionary;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EvictingDictionaryDebugView{TKey, TValue}"/> class for the specified
+    /// Initialises a new instance of the <see cref="EvictingDictionaryDebugView{TKey, TValue}"/> class for the specified
     /// <paramref name="dictionary"/>.
     /// </summary>
     /// <param name="dictionary">The dictionary to expose in the debugger view.</param>

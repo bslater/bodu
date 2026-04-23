@@ -86,7 +86,7 @@ public abstract class SipHash<T>
     private ulong v0, v1, v2, v3;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SipHash{T}" /> class with a specified hash size.
+    /// Initialises a new instance of the <see cref="SipHash{T}" /> class with a specified hash size.
     /// </summary>
     /// <param name="hashSize">The desired size of the final hash in bits. Supported values are 64 or 128.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="hashSize" /> is not supported.</exception>

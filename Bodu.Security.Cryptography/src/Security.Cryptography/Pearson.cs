@@ -17,7 +17,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>The algorithm operates as follows:</para>
 /// <list type="number">
 /// <item>
-/// <description>Initialize the hash result to 0 (or a seed value).</description>
+/// <description>Initialise the hash result to 0 (or a seed value).</description>
 /// </item>
 /// <item>
 /// <description>For each byte in the input, use the current hash value and the input byte as an index into the permutation table.</description>
@@ -28,7 +28,7 @@ namespace Bodu.Security.Cryptography;
 /// </list>
 /// <para>
 /// When computing multi-byte hashes (e.g., 64-bit), the algorithm is repeated for each byte of the result, often using different
-/// initialization or byte offsets to reduce collisions.
+/// initialisation or byte offsets to reduce collisions.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for password hashing,
 /// digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -53,7 +53,7 @@ public sealed partial class Pearson
     private byte[] workingHash;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Pearson" /> class with a default 8-bit hash size.
+    /// Initialises a new instance of the <see cref="Pearson" /> class with a default 8-bit hash size.
     /// </summary>
     public Pearson()
     {
@@ -100,7 +100,7 @@ public sealed partial class Pearson
         /// </summary>
         /// <remarks>
         /// This permutation is derived from the first 64 SHA-256 constants (K values), mapped and repeated to form a 256-byte table. It
-        /// introduces pseudorandom distribution with properties inspired by secure hash initialization.
+        /// introduces pseudorandom distribution with properties inspired by secure hash initialisation.
         /// </remarks>
         SHA256Constants,
 
@@ -363,7 +363,7 @@ if (finalized)
     /// Thrown when <paramref name="type" /> is <see cref="PearsonTableType.UserDefined" />. In this case, the table must be explicitly
     /// provided via the <c>Table</c> property on the <see cref="Pearson" /> instance.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="type" /> is not a recognized value.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="type" /> is not a recognised value.</exception>
     private static byte[] GetPermutationTable(PearsonTableType type) =>
         type switch
         {
@@ -399,7 +399,7 @@ if (finalized)
     /// </summary>
     /// <remarks>
     /// This method is used to prevent reconfiguration of algorithm parameters such as the key, number of rounds, or other settings once
-    /// hashing has begun. It ensures settings are immutable after initialization.
+    /// hashing has begun. It ensures settings are immutable after initialisation.
     /// </remarks>
     /// <exception cref="CryptographicUnexpectedOperationException">
     /// Thrown when an attempt is made to modify the algorithm after it has entered a non-zero state, which indicates that hashing has

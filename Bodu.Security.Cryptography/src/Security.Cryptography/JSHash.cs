@@ -30,9 +30,9 @@ public sealed class JSHash
 #endif
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="JSHash" /> class.
+    /// Initialises a new instance of the <see cref="JSHash" /> class.
     /// </summary>
-    /// <remarks>This constructor initializes the hash algorithm to a default 32-bit output with a seed value of <c>0x4E67C6A7</c>.</remarks>
+    /// <remarks>This constructor initialises the hash algorithm to a default 32-bit output with a seed value of <c>0x4E67C6A7</c>.</remarks>
     public JSHash()
     {
         this.HashSizeValue = 32;

@@ -29,7 +29,7 @@ public sealed class Fnv1a64 : Fnv
     private const ulong Prime = 0x00000100000001B3UL;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Fnv1a64" /> class using standard FNV-1a 64-bit parameters.
+    /// Initialises a new instance of the <see cref="Fnv1a64" /> class using standard FNV-1a 64-bit parameters.
     /// </summary>
     /// <remarks>
     /// <para>This constructor configures the FNV algorithm to use the 64-bit variant of FNV-1a, with the following predefined values:</para>

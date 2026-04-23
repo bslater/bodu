@@ -33,10 +33,10 @@ public sealed class Threefish256Cipher
     : ThreefishBlockCipher
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Threefish256Cipher" /> class using the specified key and tweak.
+    /// Initialises a new instance of the <see cref="Threefish256Cipher" /> class using the specified key and tweak.
     /// </summary>
     /// <param name="key">The 256-bit (32-byte) key used for encryption and decryption.</param>
-    /// <param name="tweak">The 128-bit (16-byte) tweak value used to modify the block cipher behavior.</param>
+    /// <param name="tweak">The 128-bit (16-byte) tweak value used to modify the block cipher behaviour.</param>
     public Threefish256Cipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
         : base(key, tweak) { }
 

@@ -37,7 +37,7 @@ public sealed class CubeHash
     public const int MaxInputBlockSize = 128;
 
     /// <summary>
-    /// The maximum number of rounds permitted for initialization, processing, or finalization.
+    /// The maximum number of rounds permitted for initialisation, processing, or finalization.
     /// </summary>
     public const int MaxRounds = 4096;
 
@@ -52,7 +52,7 @@ public sealed class CubeHash
     public const int MinInputBlockSize = 1;
 
     /// <summary>
-    /// The minimum number of rounds permitted for initialization, processing, or finalization.
+    /// The minimum number of rounds permitted for initialisation, processing, or finalization.
     /// </summary>
     public const int MinRounds = 1;
 
@@ -77,7 +77,7 @@ public sealed class CubeHash
 #endif
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CubeHash" /> class with default parameters.
+    /// Initialises a new instance of the <see cref="CubeHash" /> class with default parameters.
     /// </summary>
     public CubeHash()
     {
@@ -97,7 +97,7 @@ public sealed class CubeHash
     /// <para>Follows the <see cref="CubeHash" /> naming convention from the original submission: <c>CubeHashr+b/w+f-h</c>, where:</para>
     /// <list type="bullet">
     /// <item>
-    /// <description><c>r</c> = number of initialization rounds</description>
+    /// <description><c>r</c> = number of initialisation rounds</description>
     /// </item>
     /// <item>
     /// <description><c>b</c> = number of transformation rounds per block</description>
@@ -189,10 +189,10 @@ public sealed class CubeHash
     }
 
     /// <summary>
-    /// Gets or sets the number of initialization rounds to run before processing input data.
+    /// Gets or sets the number of initialisation rounds to run before processing input data.
     /// </summary>
     /// <remarks>
-    /// Initialization rounds mix the initial state of the algorithm before the first input byte is processed. Increasing this value
+    /// Initialisation rounds mix the initial state of the algorithm before the first input byte is processed. Increasing this value
     /// enhances initial diffusion but increases computation time.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">Value is less than <see cref="MinRounds" /> or greater than <see cref="MaxRounds" />.</exception>
@@ -476,7 +476,7 @@ public sealed class CubeHash
     }
 
     /// <summary>
-    /// Resets the working state to the cached post-initialization snapshot.
+    /// Resets the working state to the cached post-initialisation snapshot.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void InitializeVectors() => this.initializedState.CopyTo(this.state, 0);

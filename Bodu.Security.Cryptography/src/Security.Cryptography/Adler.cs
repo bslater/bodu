@@ -41,7 +41,7 @@ public abstract class Adler<T>
     private bool disposed = false;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Adler{T}" /> class with the specified modulus.
+    /// Initialises a new instance of the <see cref="Adler{T}" /> class with the specified modulus.
     /// </summary>
     /// <param name="modulo">The modulus applied to the accumulators after each reduction step.</param>
     /// <exception cref="NotSupportedException">

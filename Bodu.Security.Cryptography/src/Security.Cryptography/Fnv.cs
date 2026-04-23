@@ -44,7 +44,7 @@ public abstract class Fnv
 #endif
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Fnv" /> class using the specified configuration parameters.
+    /// Initialises a new instance of the <see cref="Fnv" /> class using the specified configuration parameters.
     /// </summary>
     /// <param name="hashSize">The size, in bits, of the resulting hash value. Only supported values are <c>32</c> and <c>64</c>.</param>
     /// <param name="prime">
@@ -65,7 +65,7 @@ public abstract class Fnv
     /// <remarks>
     /// This constructor is intended to be used by derived classes that implement specific FNV hash variants, such as
     /// <see cref="Fnv1a32" /> or <see cref="Fnv1a64" />. It validates the provided hash size against the supported options and
-    /// initializes the internal hashing state accordingly.
+    /// initialises the internal hashing state accordingly.
     /// </remarks>
     protected Fnv(int hashSize, ulong prime, ulong offsetBasis, bool useFnv1a = false)
     {
@@ -277,7 +277,7 @@ if (finalized)
     /// </summary>
     /// <remarks>
     /// This method is used to prevent reconfiguration of algorithm parameters such as the key, number of rounds, or other settings once
-    /// hashing has begun. It ensures settings are immutable after initialization.
+    /// hashing has begun. It ensures settings are immutable after initialisation.
     /// </remarks>
     /// <exception cref="CryptographicUnexpectedOperationException">
     /// Thrown when an attempt is made to modify the algorithm after it has entered a non-zero state, which indicates that hashing has

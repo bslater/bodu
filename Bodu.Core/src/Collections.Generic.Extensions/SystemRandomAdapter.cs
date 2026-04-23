@@ -21,14 +21,14 @@ public sealed class SystemRandomAdapter :
     private readonly Random _random;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SystemRandomAdapter"/> class with a default <see cref="System.Random"/> instance.
+    /// Initialises a new instance of the <see cref="SystemRandomAdapter"/> class with a default <see cref="System.Random"/> instance.
     /// </summary>
     /// <remarks>The <see cref="System.Random"/> default constructor is used, which seeds the generator from the system clock.</remarks>
     public SystemRandomAdapter()
         : this(new Random()) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SystemRandomAdapter"/> class with the specified <see cref="System.Random"/> instance.
+    /// Initialises a new instance of the <see cref="SystemRandomAdapter"/> class with the specified <see cref="System.Random"/> instance.
     /// </summary>
     /// <param name="random">The <see cref="System.Random"/> instance to wrap. Must not be <see langword="null"/>.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="random"/> is <see langword="null"/>.</exception>

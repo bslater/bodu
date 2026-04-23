@@ -18,7 +18,7 @@ namespace Bodu.Globalization.Calendar;
 public readonly record struct TerritoryCode
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="TerritoryCode" /> struct from a parsed country and optional subdivision.
+	/// Initialises a new instance of the <see cref="TerritoryCode" /> struct from a parsed country and optional subdivision.
 	/// </summary>
 	/// <param name="country">The two-letter ISO 3166-1 alpha-2 country code in upper case.</param>
 	/// <param name="subdivision">Optional ISO 3166-2 subdivision code in upper case, or <see langword="null" /> for no subdivision.</param>

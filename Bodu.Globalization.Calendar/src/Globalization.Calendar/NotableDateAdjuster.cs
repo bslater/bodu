@@ -29,7 +29,7 @@ internal sealed class NotableDateAdjuster
 	private readonly Func<string, int, string?, Type?, DateTime?>? _resolveByName;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="NotableDateAdjuster" /> class.
+	/// Initialises a new instance of the <see cref="NotableDateAdjuster" /> class.
 	/// </summary>
 	/// <param name="isWeekend">A predicate for weekend evaluation.</param>
 	/// <param name="isNonWorkingDay">A predicate for non-working-day evaluation, scoped by territory and calendar.</param>

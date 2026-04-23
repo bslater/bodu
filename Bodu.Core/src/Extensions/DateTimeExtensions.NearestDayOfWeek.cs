@@ -52,7 +52,7 @@ public static partial class DateTimeExtensions
     /// </param>
     /// <returns>
     /// An object whose value is set to the closest date (either before or after) to the specified reference date that falls on the given
-    /// <paramref name="dayOfWeek"/>. If two dates are equally close, the earlier one is returned. The result is normalized to midnight
+    /// <paramref name="dayOfWeek"/>. If two dates are equally close, the earlier one is returned. The result is normalised to midnight
     /// (00:00:00) and has <see cref="DateTimeKind.Unspecified"/>.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">

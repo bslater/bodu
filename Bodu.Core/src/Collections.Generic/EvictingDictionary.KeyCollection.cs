@@ -28,7 +28,7 @@ public partial class EvictingDictionary<TKey, TValue>
         private readonly EvictingDictionary<TKey, TValue> _dictionary;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="KeyCollection"/> class bound to the specified dictionary.
+        /// Initialises a new instance of the <see cref="KeyCollection"/> class bound to the specified dictionary.
         /// </summary>
         /// <param name="dictionary">The dictionary whose keys this collection exposes. Must not be <see langword="null"/>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="dictionary"/> is <see langword="null"/>.</exception>

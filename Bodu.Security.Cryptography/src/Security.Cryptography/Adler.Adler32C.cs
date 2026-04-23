@@ -29,7 +29,7 @@ public sealed class Adler32C
     private const uint Adler32C_Modulo = 65536; // 2^16, used in vectorized variants
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Adler32C" /> class using the optimized modulus (65536).
+    /// Initialises a new instance of the <see cref="Adler32C" /> class using the optimised modulus (65536).
     /// </summary>
     public Adler32C()
         : base(Adler32C_Modulo)

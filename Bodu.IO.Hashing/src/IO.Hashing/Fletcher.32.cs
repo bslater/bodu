@@ -27,7 +27,7 @@ public sealed class Fletcher32
     private const int FletcherHashSize = 32;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Fletcher32" /> class with a 32-bit hash size.
+    /// Initialises a new instance of the <see cref="Fletcher32" /> class with a 32-bit hash size.
     /// </summary>
     public Fletcher32()
         : base(FletcherHashSize)

@@ -39,7 +39,7 @@ public partial class CircularBuffer<T> :
     /// </summary>
     /// <value>An object that can be used to synchronize access to the collection.</value>
     /// <remarks>
-    /// This property returns a lazily-initialized synchronization root. Even though the buffer itself is not thread-safe, consumers can use
+    /// This property returns a lazily-initialised synchronization root. Even though the buffer itself is not thread-safe, consumers can use
     /// this object with <see cref="System.Threading.Monitor.Enter(object)"/> to implement external synchronization. For a built-in
     /// thread-safe implementation, see <see cref="Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer{T}"/>.
     /// </remarks>

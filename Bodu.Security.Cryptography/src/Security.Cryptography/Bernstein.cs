@@ -42,7 +42,7 @@ public sealed class Bernstein :
 #endif
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Bernstein" /> class with default parameters.
+    /// Initialises a new instance of the <see cref="Bernstein" /> class with default parameters.
     /// </summary>
     public Bernstein()
     {
@@ -232,7 +232,7 @@ public sealed class Bernstein :
     /// The input data to hash. Each byte is processed sequentially and combined into the internal hash state using XOR.
     /// </param>
     /// <remarks>
-    /// This variation of the Bernstein hash function replaces the addition step with a bitwise XOR operation for alternative mixing behavior.
+    /// This variation of the Bernstein hash function replaces the addition step with a bitwise XOR operation for alternative mixing behaviour.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void HashModified(ReadOnlySpan<byte> data)
@@ -288,7 +288,7 @@ public sealed class Bernstein :
     /// </summary>
     /// <remarks>
     /// This method is used to prevent reconfiguration of algorithm parameters such as the key, number of rounds, or other settings once
-    /// hashing has begun. It ensures settings are immutable after initialization.
+    /// hashing has begun. It ensures settings are immutable after initialisation.
     /// </remarks>
     /// <exception cref="CryptographicUnexpectedOperationException">
     /// Thrown when an attempt is made to modify the algorithm after it has entered a non-zero state, which indicates that hashing has

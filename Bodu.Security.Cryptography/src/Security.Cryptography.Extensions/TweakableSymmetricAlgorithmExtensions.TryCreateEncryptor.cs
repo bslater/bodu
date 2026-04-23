@@ -52,11 +52,11 @@ public static partial class TweakableSymmetricAlgorithmExtensions
     }
 
     /// <summary>
-    /// Attempts to create an encryptor using the specified key, initialization vector, and tweak.
+    /// Attempts to create an encryptor using the specified key, initialisation vector, and tweak.
     /// </summary>
     /// <param name="algorithm">The tweakable symmetric algorithm to use for encryption. Must not be <see langword="null" />.</param>
     /// <param name="key">The encryption key.</param>
-    /// <param name="iv">The initialization vector.</param>
+    /// <param name="iv">The initialisation vector.</param>
     /// <param name="tweak">The tweak value to apply during encryption.</param>
     /// <param name="transform">
     /// When this method returns, contains the created <see cref="ICryptoTransform" /> if the operation succeeded; otherwise,

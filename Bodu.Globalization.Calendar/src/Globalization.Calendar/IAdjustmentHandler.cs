@@ -68,12 +68,12 @@ public sealed class AdjustmentHandlerRegistry : IAdjustmentHandlerRegistry
 	private readonly object _gate = new();
 
 	/// <summary>
-	/// Initializes a new, empty <see cref="AdjustmentHandlerRegistry" />.
+	/// Initialises a new, empty <see cref="AdjustmentHandlerRegistry" />.
 	/// </summary>
 	public AdjustmentHandlerRegistry() { }
 
 	/// <summary>
-	/// Initializes a new <see cref="AdjustmentHandlerRegistry" /> seeded with the supplied handlers.
+	/// Initialises a new <see cref="AdjustmentHandlerRegistry" /> seeded with the supplied handlers.
 	/// </summary>
 	/// <param name="handlers">The key/handler pairs to register. Must not be <see langword="null" />.</param>
 	/// <exception cref="ArgumentNullException">Thrown when <paramref name="handlers" /> is <see langword="null" />.</exception>

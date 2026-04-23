@@ -17,12 +17,12 @@ public sealed class NotableDateCalculatorRegistry : INotableDateCalculatorRegist
 	private readonly object _gate = new();
 
 	/// <summary>
-	/// Initializes a new, empty <see cref="NotableDateCalculatorRegistry" />.
+	/// Initialises a new, empty <see cref="NotableDateCalculatorRegistry" />.
 	/// </summary>
 	public NotableDateCalculatorRegistry() { }
 
 	/// <summary>
-	/// Initializes a new <see cref="NotableDateCalculatorRegistry" /> seeded with the supplied calculators.
+	/// Initialises a new <see cref="NotableDateCalculatorRegistry" /> seeded with the supplied calculators.
 	/// </summary>
 	/// <param name="calculators">The key/calculator pairs to seed into the registry. Must not be <see langword="null" />.</param>
 	/// <exception cref="ArgumentNullException">Thrown when <paramref name="calculators" /> is <see langword="null" />.</exception>

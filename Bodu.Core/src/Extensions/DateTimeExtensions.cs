@@ -181,7 +181,7 @@ public static partial class DateTimeExtensions
     /// </para>
     /// <para>
     /// It provides functionality equivalent to computing <c>new DateOnly(year, month, day).DayNumber</c>, but avoids object allocations and
-    /// is optimized for scenarios where correctness and validation are both required.
+    /// is optimised for scenarios where correctness and validation are both required.
     /// </para>
     /// </remarks>
     public static int GetDayNumber(int year, int month, int day)
@@ -213,7 +213,7 @@ public static partial class DateTimeExtensions
     /// <remarks>
     /// <para>
     /// This method discards any time-of-day component by rounding down to the nearest whole day. It is equivalent to calling
-    /// <c>DateTime.Date.Ticks</c> but avoids object allocations and is optimized for internal calendar or performance-sensitive usage.
+    /// <c>DateTime.Date.Ticks</c> but avoids object allocations and is optimised for internal calendar or performance-sensitive usage.
     /// </para>
     /// <para>
     /// No validation is performed. The caller is responsible for ensuring that <paramref name="ticks"/> falls within the valid
@@ -241,7 +241,7 @@ public static partial class DateTimeExtensions
     /// </para>
     /// <para>
     /// The calculation is equivalent to accessing the <see cref="DateTime.Year"/>, <see cref="DateTime.Month"/>, and
-    /// <see cref="DateTime.Day"/> properties, but uses optimized integer arithmetic to reduce overhead.
+    /// <see cref="DateTime.Day"/> properties, but uses optimised integer arithmetic to reduce overhead.
     /// </para>
     /// <para>
     /// The input tick value must fall within the valid range supported by <see cref="DateTime"/>, which spans from
@@ -317,7 +317,7 @@ public static partial class DateTimeExtensions
     /// reduce overhead in high-performance scenarios.
     /// </para>
     /// <para>
-    /// The result is equivalent to the values returned by the standard <see cref="DateTime"/> accessors, but the method is optimized for
+    /// The result is equivalent to the values returned by the standard <see cref="DateTime"/> accessors, but the method is optimised for
     /// scenarios where multiple components are needed and maximum efficiency is desired.
     /// </para>
     /// <para>This method assumes the input is within the valid <see cref="DateTime"/> range and uses no internal validation.</para>
@@ -336,7 +336,7 @@ public static partial class DateTimeExtensions
     /// <para>
     /// This method truncates the time component of the input <paramref name="dateTime"/> by rounding down to the nearest whole day
     /// boundary. It is equivalent to <c>dateTime.Date.Ticks</c> but avoids allocation of a new <see cref="DateTime"/> instance and is
-    /// optimized for internal use.
+    /// optimised for internal use.
     /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -387,7 +387,7 @@ public static partial class DateTimeExtensions
     /// <remarks>
     /// <para>
     /// This method computes the day of the week using modulo arithmetic based on the number of days since 0001-01-01. It is equivalent in
-    /// result to <see cref="DateTime.DayOfWeek"/> but avoids object instantiation and is optimized for tick-level operations.
+    /// result to <see cref="DateTime.DayOfWeek"/> but avoids object instantiation and is optimised for tick-level operations.
     /// </para>
     /// <para>
     /// No argument validation is performed. The caller is responsible for ensuring that the input <paramref name="ticks"/> value is valid
@@ -412,7 +412,7 @@ public static partial class DateTimeExtensions
     /// This method multiplies the input <paramref name="days"/> by the number of ticks per day, rounding to the nearest whole tick using
     /// symmetric arithmetic rounding (midpoint rounding away from zero).
     /// </para>
-    /// <para>It is equivalent in purpose to <see cref="TimeSpan.FromDays(double)"/> but optimized for internal use and avoids allocations.</para>
+    /// <para>It is equivalent in purpose to <see cref="TimeSpan.FromDays(double)"/> but optimised for internal use and avoids allocations.</para>
     /// <para>
     /// No argument validation is performed; it is the caller's responsibility to ensure that <paramref name="days"/> is within a valid range.
     /// </para>
@@ -588,7 +588,7 @@ public static partial class DateTimeExtensions
     /// calendar date.
     /// </para>
     /// <para>
-    /// It is equivalent in result to <c>new DateTime(year, month, day).Ticks</c> but avoids object allocation and is optimized for
+    /// It is equivalent in result to <c>new DateTime(year, month, day).Ticks</c> but avoids object allocation and is optimised for
     /// high-performance internal date calculations.
     /// </para>
     /// </remarks>
@@ -680,7 +680,7 @@ public static partial class DateTimeExtensions
     /// <remarks>
     /// <para>
     /// This method is equivalent in result to <c>new DateTime(dateTime.Year, dateTime.Month, 1).Ticks</c> but avoids object allocation and
-    /// is optimized for internal date calculations.
+    /// is optimised for internal date calculations.
     /// </para>
     /// </remarks>
     private static long GetFirstDayOfMonthTicks(DateTime dateTime) => DateTimeExtensions.GetDateTicks(dateTime.Year, dateTime.Month, 1);
@@ -769,7 +769,7 @@ public static partial class DateTimeExtensions
     /// calendar day.
     /// </para>
     /// <para>
-    /// It is equivalent in result to <c>new DateTime(year, month, DaysInMonth()).Ticks</c>, but avoids object allocation and is optimized
+    /// It is equivalent in result to <c>new DateTime(year, month, DaysInMonth()).Ticks</c>, but avoids object allocation and is optimised
     /// for internal calendar calculations.
     /// </para>
     /// </remarks>
@@ -802,7 +802,7 @@ public static partial class DateTimeExtensions
     /// </returns>
     /// <remarks>
     /// <para>This method starts from the last day of the given month and steps backward to find the final occurrence of the specified <paramref name="dayOfWeek"/>.</para>
-    /// <para>The result is a tick value normalized to midnight and avoids object allocation.</para>
+    /// <para>The result is a tick value normalised to midnight and avoids object allocation.</para>
     /// <para>No validation is performed; the caller is responsible for ensuring all parameters are within valid calendar ranges.</para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -831,7 +831,7 @@ public static partial class DateTimeExtensions
     /// <para>
     /// This method calculates the total number of seconds from midnight using the specified hour, minute, and second values, and converts
     /// that total into ticks. It is equivalent in effect to <c>new TimeSpan(hour, minute, second).Ticks</c>, but avoids object allocation
-    /// and is optimized for internal use.
+    /// and is optimised for internal use.
     /// </para>
     /// </remarks>
     private static long GetTicksForTime(int hour, int minute, int second)

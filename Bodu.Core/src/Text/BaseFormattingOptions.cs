@@ -12,7 +12,7 @@ namespace Bodu.Text;
 /// Defines formatting options that influence how encoded output is generated from binary data using any positional numeral system.
 /// </summary>
 /// <remarks>
-/// These options can be combined to control character casing, spacing, prefix inclusion, and line formatting. The behavior of each
+/// These options can be combined to control character casing, spacing, prefix inclusion, and line formatting. The behaviour of each
 /// option may vary depending on the encoding implementation.
 /// </remarks>
 [Flags]

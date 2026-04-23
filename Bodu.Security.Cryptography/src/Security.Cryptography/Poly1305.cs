@@ -31,7 +31,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Internally, the input is split into 16-byte blocks, each treated as a 130-bit number (with an additional high bit if full-sized),
 /// and accumulated using modular arithmetic modulo <c>2¹³⁰ - 5</c>. After processing all blocks, the accumulator is finalized by adding
-/// the second half of the key <c>s</c> and serializing the result as the final MAC tag.
+/// the second half of the key <c>s</c> and serialising the result as the final MAC tag.
 /// </para>
 /// <note type="important">This algorithm is a <b>one-time authenticator</b> and must <b>not</b> be used with the same key for multiple
 /// messages. Reusing a key with different inputs <b>compromises</b> the cryptographic security and may lead to forgery attacks.</note>
@@ -60,7 +60,7 @@ public sealed class Poly1305
     private bool disposed = false;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Poly1305" /> class.
+    /// Initialises a new instance of the <see cref="Poly1305" /> class.
     /// </summary>
     public Poly1305()
         : base(BlockSize, KeySize)

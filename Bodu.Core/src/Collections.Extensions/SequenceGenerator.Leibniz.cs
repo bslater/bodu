@@ -35,7 +35,7 @@ public static partial class SequenceGenerator
     /// </para>
     /// <para>This generator emits only terms where <c>abs(term) ≥ min</c> and <c>abs(term) &lt; max</c>.</para>
     /// <para>
-    /// This method is suitable for illustrating convergence, alternating series behavior, or computing partial approximations of π via
+    /// This method is suitable for illustrating convergence, alternating series behaviour, or computing partial approximations of π via
     /// summation and multiplying the result by 4.
     /// </para>
     /// </remarks>

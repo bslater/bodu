@@ -27,7 +27,7 @@ public sealed class Fletcher64
     private const int FletcherHashSize = 64;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Fletcher64" /> class with a 64-bit hash size.
+    /// Initialises a new instance of the <see cref="Fletcher64" /> class with a 64-bit hash size.
     /// </summary>
     public Fletcher64()
         : base(FletcherHashSize)

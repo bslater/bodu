@@ -136,10 +136,10 @@ public abstract class TweakableSymmetricAlgorithm
         this.CreateDecryptor(rgbKey, rgbIV, this.Tweak);
 
     /// <summary>
-    /// Creates a symmetric decryptor using the specified key, initialization vector (IV), and tweak value.
+    /// Creates a symmetric decryptor using the specified key, initialisation vector (IV), and tweak value.
     /// </summary>
     /// <param name="rgbKey">The secret key to use for decryption.</param>
-    /// <param name="rgbIV">The initialization vector to use for the decryption operation.</param>
+    /// <param name="rgbIV">The initialisation vector to use for the decryption operation.</param>
     /// <param name="tweak">The tweak value that modifies the decryption process.</param>
     /// <returns>An <see cref="ICryptoTransform" /> instance that can be used to perform the decryption.</returns>
     /// <exception cref="ArgumentNullException">
@@ -163,10 +163,10 @@ public abstract class TweakableSymmetricAlgorithm
         this.CreateEncryptor(this.Key, this.IV, this.Tweak);
 
     /// <summary>
-    /// Creates a symmetric encryptor using the specified key, initialization vector (IV), and tweak value.
+    /// Creates a symmetric encryptor using the specified key, initialisation vector (IV), and tweak value.
     /// </summary>
     /// <param name="rgbKey">The secret key to use for encryption.</param>
-    /// <param name="rgbIV">The initialization vector to use for the encryption operation.</param>
+    /// <param name="rgbIV">The initialisation vector to use for the encryption operation.</param>
     /// <param name="tweak">The tweak value that modifies the encryption process.</param>
     /// <returns>An <see cref="ICryptoTransform" /> instance that can be used to perform the encryption.</returns>
     /// <exception cref="ArgumentNullException">
@@ -187,7 +187,7 @@ public abstract class TweakableSymmetricAlgorithm
     /// <exception cref="CryptographicException">Thrown if <see cref="TweakSize" /> is not configured to a valid size.</exception>
     /// <remarks>
     /// <para>
-    /// This method initializes the tweak with random or algorithm-specific data. The generated size will match the current
+    /// This method initialises the tweak with random or algorithm-specific data. The generated size will match the current
     /// <see cref="TweakSize" />. If no size has been set, an exception will be thrown.
     /// </para>
     /// </remarks>

@@ -39,7 +39,7 @@ public sealed class NotableDateService : INotableDateService
 	private readonly object _gate = new();
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="NotableDateService" /> class using the embedded default rule set.
+	/// Initialises a new instance of the <see cref="NotableDateService" /> class using the embedded default rule set.
 	/// </summary>
 	public NotableDateService()
 		: this(new[] { (INotableDateRuleProvider)new XmlResourceNotableDateRuleProvider(DefaultResourceName) },
@@ -47,7 +47,7 @@ public sealed class NotableDateService : INotableDateService
 	{ }
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="NotableDateService" /> class.
+	/// Initialises a new instance of the <see cref="NotableDateService" /> class.
 	/// </summary>
 	/// <param name="ruleProviders">Sources of base notable date rules. Must not be <see langword="null" />.</param>
 	/// <param name="weekendDefinition">The weekend definition to apply when evaluating weekends.</param>

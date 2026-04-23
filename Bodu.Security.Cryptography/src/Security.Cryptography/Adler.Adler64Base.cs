@@ -28,7 +28,7 @@ public abstract class Adler64Base
     : Bodu.Security.Cryptography.Adler<ulong>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Adler64Base" /> class.
+    /// Initialises a new instance of the <see cref="Adler64Base" /> class.
     /// </summary>
     protected Adler64Base(ulong modulo)
         : base(modulo)

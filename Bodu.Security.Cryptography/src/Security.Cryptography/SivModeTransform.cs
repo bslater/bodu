@@ -10,7 +10,7 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Applies Synthetic Initialization Vector (SIV) mode to two underlying <see cref="IBlockCipher" />
+/// Applies Synthetic Initialisation Vector (SIV) mode to two underlying <see cref="IBlockCipher" />
 /// instances, providing deterministic authenticated encryption per RFC 5297 (AES-SIV).
 /// </summary>
 /// <remarks>

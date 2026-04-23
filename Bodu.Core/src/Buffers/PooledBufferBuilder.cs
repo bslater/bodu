@@ -26,7 +26,7 @@ public sealed class PooledBufferBuilder<T> :
     private T[] _internalBuffer;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PooledBufferBuilder{T}"/> class with the specified initial capacity.
+    /// Initialises a new instance of the <see cref="PooledBufferBuilder{T}"/> class with the specified initial capacity.
     /// </summary>
     /// <param name="initialCapacity">The initial capacity of the pooled buffer. Defaults to 256.</param>
     public PooledBufferBuilder(int initialCapacity = 256)

@@ -57,7 +57,7 @@ public static partial class IEnumerableExtensions
         private int _initializationState; // 0 = not initialised, 1 = initialising, 2 = initialised
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CacheEnumerable{T}"/> class.
+        /// Initialises a new instance of the <see cref="CacheEnumerable{T}"/> class.
         /// </summary>
         /// <param name="source">The original sequence to cache during iteration.</param>
         public CacheEnumerable(IEnumerable<T> source)
@@ -137,7 +137,7 @@ public static partial class IEnumerableExtensions
             private int _index;
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="Enumerator"/> class.
+            /// Initialises a new instance of the <see cref="Enumerator"/> class.
             /// </summary>
             /// <param name="parent">The parent <see cref="CacheEnumerable{T}"/> instance.</param>
             public Enumerator(CacheEnumerable<T> parent)
