@@ -31,7 +31,7 @@ public partial class Skein1024Tests
         MinKeyLength = 16,
         MaxKeyLength = Skein<Skein1024>.MaxKeySizeBytes,
         ValidKeyLengths = [0, 16, 32, 64, 128, 256, Skein<Skein1024>.MaxKeySizeBytes],
-        TestKey = Array.Empty<byte>(),
+        TestKey = SkeinTestKey,
     };
 
     /// <inheritdoc />

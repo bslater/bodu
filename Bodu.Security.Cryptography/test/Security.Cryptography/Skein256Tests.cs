@@ -27,7 +27,7 @@ public partial class Skein256Tests
         MinKeyLength = 16,
         MaxKeyLength = Skein<Skein256>.MaxKeySizeBytes,
         ValidKeyLengths = [0, 16, 32, 64, 128, 256, Skein<Skein256>.MaxKeySizeBytes],
-        TestKey = Array.Empty<byte>(),
+        TestKey = SkeinTestKey,
     };
 
     /// <inheritdoc />
