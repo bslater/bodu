@@ -25,6 +25,14 @@ public static partial class BaseEncoding
 
 	private static readonly sbyte[] _b32Lookup = BuildLookup(_b32Alphabet);
 
+	/// <summary>
+	/// Builds a 128-entry lookup table mapping alphabet characters to their numeric symbol index.
+	/// </summary>
+	/// <param name="alphabet">The encoding alphabet; each character's position is its symbol value.</param>
+	/// <param name="acceptLower">When <see langword="true" />, case-folds letter characters so that
+	/// the lower-case variant maps to the same symbol as the upper-case variant.</param>
+	/// <returns>A 128-entry <see cref="sbyte" /> array where valid characters map to their symbol
+	/// index (0..<paramref name="alphabet" />.Length-1) and all other entries are <c>-1</c>.</returns>
 	private static sbyte[] BuildLookup(string alphabet, bool acceptLower = true)
 	{
 		var table = new sbyte[128];
@@ -39,6 +47,18 @@ public static partial class BaseEncoding
 		return table;
 	}
 
+	/// <summary>
+	/// Encodes a byte buffer into a radix-aware character string using the supplied alphabet.
+	/// </summary>
+	/// <param name="data">The bytes to encode.</param>
+	/// <param name="alphabet">The encoding alphabet; its length must be a power of two (equal to
+	/// 2<sup><paramref name="bitsPerSymbol" /></sup>).</param>
+	/// <param name="bitsPerSymbol">The number of bits each output symbol represents (for example
+	/// 4 for Base16, 5 for Base32).</param>
+	/// <param name="fmt">Formatting flags influencing casing of the output.</param>
+	/// <returns>The encoded string. A byte-aligned fast path is used when 8 is divisible by
+	/// <paramref name="bitsPerSymbol" />; otherwise a generic bit-stream path emits a final
+	/// padded symbol per RFC 4648.</returns>
 	private static string EncodeCore(ReadOnlySpan<byte> data, ReadOnlySpan<char> alphabet, int bitsPerSymbol, BaseFormattingOptions fmt)
 	{
 		bool upper = fmt.HasFlag(BaseFormattingOptions.UpperCase);
@@ -84,6 +104,21 @@ public static partial class BaseEncoding
 		return sb.ToString();
 	}
 
+	/// <summary>
+	/// Attempts to decode a radix-encoded character sequence into a byte span, tolerating
+	/// optional decorations (whitespace, <c>0x</c> prefix) according to <paramref name="style" />.
+	/// </summary>
+	/// <param name="text">The encoded input characters.</param>
+	/// <param name="lookup">The 128-entry symbol lookup table produced by
+	/// <see cref="BuildLookup(string, bool)" />.</param>
+	/// <param name="bitsPerSymbol">The number of bits each input symbol contributes.</param>
+	/// <param name="dest">The destination span that receives the decoded bytes.</param>
+	/// <param name="bytesWritten">When this method returns, contains the number of bytes written
+	/// to <paramref name="dest" />, or zero if decoding failed.</param>
+	/// <param name="style">Formatting allowances applied during scanning of
+	/// <paramref name="text" />.</param>
+	/// <returns><see langword="true" /> on successful decode; <see langword="false" /> when an
+	/// invalid symbol is encountered or <paramref name="dest" /> is too small.</returns>
 	private static bool TryDecodeCore(ReadOnlySpan<char> text, ReadOnlySpan<sbyte> lookup, int bitsPerSymbol, Span<byte> dest, out int bytesWritten, BaseFormatStyles style)
 	{
 		bytesWritten = 0;
