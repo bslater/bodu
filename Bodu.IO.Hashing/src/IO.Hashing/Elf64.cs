@@ -7,6 +7,7 @@
 using System.Buffers.Binary;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 
 namespace Bodu.IO.Hashing;
 
@@ -17,7 +18,9 @@ namespace Bodu.IO.Hashing;
 /// <remarks>
 /// <para>
 /// ELF hashing shifts and folds the running hash for each byte of input, periodically XORing the high bits
-/// back into the low bits. An optional <see cref="Seed" /> may be supplied to alter the initial state.
+/// back into the low bits. An optional <see cref="Seed" /> may be supplied to alter the initial state and
+/// is reconfigurable only while the algorithm has not yet consumed any input. <see cref="Reset" /> returns
+/// the instance to the reconfigurable state.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used
 /// for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -28,9 +31,12 @@ public sealed class Elf64
     private const int HashLength = 8;
     private const ulong HighBitsMask = 0xF000000000000000UL;
     private const int HighBitsShift = 56;
+    private const string ReconfigurationNotAllowed =
+        "The algorithm is already in use and cannot be reconfigured after computation has started.";
 
-    private readonly ulong _seed;
+    private ulong _seed;
     private ulong _workingHash;
+    private bool _started;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Elf64" /> class with a seed of <c>0</c>.
@@ -52,14 +58,32 @@ public sealed class Elf64
     }
 
     /// <summary>
-    /// Gets the initial seed applied to the running hash accumulator.
+    /// Gets or sets the initial seed applied to the running hash accumulator.
     /// </summary>
-    public ulong Seed => this._seed;
+    /// <value>The seed value applied before hashing begins.</value>
+    /// <exception cref="CryptographicUnexpectedOperationException">
+    /// The algorithm has already consumed input and cannot be reconfigured until <see cref="Reset" /> is
+    /// invoked.
+    /// </exception>
+    public ulong Seed
+    {
+        get => this._seed;
+
+        set
+        {
+            this.ThrowIfInvalidState();
+            this._seed = value;
+            this._workingHash = value;
+        }
+    }
 
     /// <inheritdoc />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override void Append(ReadOnlySpan<byte> source)
     {
+        if (source.Length == 0)
+            return;
+
         ulong v = this._workingHash;
         foreach (byte b in source)
         {
@@ -71,12 +95,24 @@ public sealed class Elf64
         }
 
         this._workingHash = v;
+        this._started = true;
     }
 
     /// <inheritdoc />
-    public override void Reset() => this._workingHash = this._seed;
+    public override void Reset()
+    {
+        this._workingHash = this._seed;
+        this._started = false;
+    }
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
         BinaryPrimitives.WriteUInt64BigEndian(destination, this._workingHash);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ThrowIfInvalidState()
+    {
+        if (this._started)
+            throw new CryptographicUnexpectedOperationException(ReconfigurationNotAllowed);
+    }
 }
