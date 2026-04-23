@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Australian public holidays and widely observed cultural dates.
+
+  Cherry-picks each inherited rule explicitly. Locally declared rules
+  override their inherited namesake. New rules added to Common.xml or
+  Christian.xml do not appear here unless added to the <UseFrom> lists
+  below.
+
+  Australia has a strong country-vs-state split: Australia Day, Anzac
+  Day, the Easter family and Christmas/Boxing Day are observed nation
+  wide (territory="AU"); Labour Day, the King's Birthday and several
+  capital-city days vary substantially across the eight states and
+  territories (territory="AU-NSW", "AU-VIC", "AU-QLD", "AU-SA",
+  "AU-WA", "AU-TAS", "AU-NT", "AU-ACT").
+
+  Every emitted NotableDate carries its originating TerritoryCode, so
+  callers may delineate national from subdivision-scoped entries when
+  producing lists, e.g.
+
+    var all      = service.GetNotableDates(2026, "AU");
+    var national = all.Where(n => n.TerritoryCode == "AU");
+    var perState = all.Where(n => n.TerritoryCode is { Length: > 3 } c
+                                  && c.StartsWith("AU-"))
+                      .GroupBy(n => n.TerritoryCode!);
+
+    // Or scope the query to a single subdivision; national rules and
+    // subdivision-only rules are returned together, each retaining its
+    // own TerritoryCode for downstream grouping or labelling:
+    var victoria = service.GetNotableDates(2026, "AU-VIC");
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <UseFrom resource="Bodu.Globalization.Calendar.Resources.Common.xml">
+    <Use name="Valentine's Day" territory="AU" />
+    <Use name="April Fool's Day" territory="AU" />
+    <Use name="Halloween" territory="AU" />
+    <Use name="Remembrance Day" territory="AU" />
+  </UseFrom>
+
+  <UseFrom resource="Bodu.Globalization.Calendar.Resources.Christian.xml">
+    <Use name="Easter Sunday" territory="AU" />
+    <Use name="Good Friday" territory="AU" nonWorking="true" />
+    <Use name="Easter Saturday" territory="AU" nonWorking="true" />
+    <Use name="Easter Monday" territory="AU" nonWorking="true" />
+    <Use name="Christmas Eve" territory="AU" />
+    <Use name="Christmas Day" territory="AU" nonWorking="true" />
+  </UseFrom>
+
+  <!-- ============================================================ -->
+  <!-- National (territory="AU")                                    -->
+  <!-- ============================================================ -->
+
+  <NotableDate name="New Year's Day">
+    <Rule category="Holiday" territory="AU" nonWorking="true">
+      <Fixed month="January" day="1" />
+      <Tag>NationalHoliday</Tag>
+      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Australia Day">
+    <Rule category="Holiday" territory="AU" nonWorking="true"
+          comment="Public holiday since 1994; substitute Monday observed when 26 January falls on a weekend.">
+      <Fixed month="January" day="26" />
+      <Tag>NationalHoliday</Tag>
+      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Anzac Day">
+    <Rule category="Remembrance" territory="AU" nonWorking="true"
+          comment="Observed on 25 April. Per-state rules govern any substitute day when the date falls on a weekend; the date itself is not shifted.">
+      <Fixed month="April" day="25" />
+      <Tag>NationalHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Boxing Day">
+    <Rule category="Holiday" territory="AU" nonWorking="true">
+      <Fixed month="December" day="26" />
+      <Tag>NationalHoliday</Tag>
+      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+  </NotableDate>
+
+  <!-- ============================================================ -->
+  <!-- New South Wales (territory="AU-NSW")                         -->
+  <!-- ============================================================ -->
+
+  <NotableDate name="King's Birthday (NSW)">
+    <Rule name="King's Birthday" category="Holiday" territory="AU-NSW" nonWorking="true">
+      <DayOfWeekInMonth month="June" dayOfWeek="Monday" weekOrdinal="Second" />
+      <Tag>StateHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Bank Holiday (NSW)">
+    <Rule name="Bank Holiday" category="Observance" territory="AU-NSW"
+          comment="Observed by banks and the financial sector only; not a general public holiday.">
+      <DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="First" />
+      <Tag>BankHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Labour Day (NSW)">
+    <Rule name="Labour Day" category="Holiday" territory="AU-NSW" nonWorking="true">
+      <DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="First" />
+      <Tag>StateHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <!-- ============================================================ -->
+  <!-- Victoria (territory="AU-VIC")                                -->
+  <!-- ============================================================ -->
+
+  <NotableDate name="Labour Day (VIC)">
+    <Rule name="Labour Day" category="Holiday" territory="AU-VIC" nonWorking="true">
+      <DayOfWeekInMonth month="March" dayOfWeek="Monday" weekOrdinal="Second" />
+      <Tag>StateHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="King's Birthday (VIC)">
+    <Rule name="King's Birthday" category="Holiday" territory="AU-VIC" nonWorking="true">
+      <DayOfWeekInMonth month="June" dayOfWeek="Monday" weekOrdinal="Second" />
+      <Tag>StateHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="AFL Grand Final Friday">
+    <Rule category="Holiday" territory="AU-VIC" firstYear="2015" nonWorking="true"
+          comment="Proclaimed annually by the Victorian Governor; the date varies with the AFL season. Approximated here as the last Friday of September.">
+      <DayOfWeekInMonth month="September" dayOfWeek="Friday" weekOrdinal="Last" />
+      <Tag>StateHoliday</Tag>
+      <Tag>Approximate</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Melbourne Cup Day">
+    <Rule category="Holiday" territory="AU-VIC" nonWorking="true"
+          comment="Statutorily defined as the Tuesday in the week in which the first Tuesday in November occurs — equivalent to the first Tuesday of November.">
+      <DayOfWeekInMonth month="November" dayOfWeek="Tuesday" weekOrdinal="First" />
+      <Tag>StateHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <!-- ============================================================ -->
+  <!-- Queensland (territory="AU-QLD")                              -->
+  <!-- ============================================================ -->
+
+  <NotableDate name="Labour Day (QLD)">
+    <Rule name="Labour Day" category="Holiday" territory="AU-QLD" nonWorking="true">
+      <DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="First" />
+      <Tag>StateHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="King's Birthday (QLD)">
+    <Rule name="King's Birthday" category="Holiday" territory="AU-QLD" firstYear="2016" nonWorking="true"
+          comment="Moved to October from 2016 onwards; prior years observed in June.">
+      <DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="First" />
+      <Tag>StateHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Royal Queensland Show (Brisbane)">
+    <Rule name="Royal Queensland Show" category="Cultural" territory="AU-QLD" nonWorking="true"
+          comment="Brisbane metropolitan area only — not observed state-wide.">
+      <DayOfWeekInMonth month="August" dayOfWeek="Wednesday" weekOrdinal="Second" />
+      <Tag>RegionalHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <!-- ============================================================ -->
+  <!-- South Australia (territory="AU-SA")                          -->
+  <!-- ============================================================ -->
+
+  <NotableDate name="Adelaide Cup Day">
+    <Rule category="Holiday" territory="AU-SA" nonWorking="true">
+      <DayOfWeekInMonth month="March" dayOfWeek="Monday" weekOrdinal="Second" />
+      <Tag>StateHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="King's Birthday (SA)">
+    <Rule name="King's Birthday" category="Holiday" territory="AU-SA" nonWorking="true">
+      <DayOfWeekInMonth month="June" dayOfWeek="Monday" weekOrdinal="Second" />
+      <Tag>StateHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Labour Day (SA)">
+    <Rule name="Labour Day" category="Holiday" territory="AU-SA" nonWorking="true">
+      <DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="First" />
+      <Tag>StateHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Proclamation Day">
+    <Rule category="Holiday" territory="AU-SA" nonWorking="true"
+          comment="Observed on 26 December in lieu of Boxing Day in South Australia.">
+      <Fixed month="December" day="26" />
+      <Tag>StateHoliday</Tag>
+      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+  </NotableDate>
+
+  <!-- ============================================================ -->
+  <!-- Western Australia (territory="AU-WA")                        -->
+  <!-- ============================================================ -->
+
+  <NotableDate name="Labour Day (WA)">
+    <Rule name="Labour Day" category="Holiday" territory="AU-WA" nonWorking="true">
+      <DayOfWeekInMonth month="March" dayOfWeek="Monday" weekOrdinal="First" />
+      <Tag>StateHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Western Australia Day">
+    <Rule category="Holiday" territory="AU-WA" nonWorking="true">
+      <DayOfWeekInMonth month="June" dayOfWeek="Monday" weekOrdinal="First" />
+      <Tag>StateHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="King's Birthday (WA)">
+    <Rule name="King's Birthday" category="Holiday" territory="AU-WA" nonWorking="true"
+          comment="Proclaimed annually by the Governor of Western Australia; typically the last Monday of September or the first Monday of October. Approximated here as the last Monday of September.">
+      <DayOfWeekInMonth month="September" dayOfWeek="Monday" weekOrdinal="Last" />
+      <Tag>StateHoliday</Tag>
+      <Tag>Approximate</Tag>
+    </Rule>
+  </NotableDate>
+
+  <!-- ============================================================ -->
+  <!-- Tasmania (territory="AU-TAS")                                -->
+  <!-- ============================================================ -->
+
+  <NotableDate name="Eight Hours Day">
+    <Rule category="Holiday" territory="AU-TAS" nonWorking="true">
+      <DayOfWeekInMonth month="March" dayOfWeek="Monday" weekOrdinal="Second" />
+      <Tag>StateHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="King's Birthday (TAS)">
+    <Rule name="King's Birthday" category="Holiday" territory="AU-TAS" nonWorking="true">
+      <DayOfWeekInMonth month="June" dayOfWeek="Monday" weekOrdinal="Second" />
+      <Tag>StateHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Recreation Day">
+    <Rule category="Holiday" territory="AU-TAS" nonWorking="true"
+          comment="Observed in the northern half of Tasmania only, in lieu of Royal Hobart Show Day in the south.">
+      <DayOfWeekInMonth month="November" dayOfWeek="Monday" weekOrdinal="First" />
+      <Tag>RegionalHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <!-- ============================================================ -->
+  <!-- Northern Territory (territory="AU-NT")                       -->
+  <!-- ============================================================ -->
+
+  <NotableDate name="May Day">
+    <Rule category="Holiday" territory="AU-NT" nonWorking="true">
+      <DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="First" />
+      <Tag>TerritoryHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="King's Birthday (NT)">
+    <Rule name="King's Birthday" category="Holiday" territory="AU-NT" nonWorking="true">
+      <DayOfWeekInMonth month="June" dayOfWeek="Monday" weekOrdinal="Second" />
+      <Tag>TerritoryHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Picnic Day">
+    <Rule category="Holiday" territory="AU-NT" nonWorking="true">
+      <DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="First" />
+      <Tag>TerritoryHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <!-- ============================================================ -->
+  <!-- Australian Capital Territory (territory="AU-ACT")            -->
+  <!-- ============================================================ -->
+
+  <NotableDate name="Canberra Day">
+    <Rule category="Holiday" territory="AU-ACT" nonWorking="true">
+      <DayOfWeekInMonth month="March" dayOfWeek="Monday" weekOrdinal="Second" />
+      <Tag>TerritoryHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Reconciliation Day">
+    <Rule category="Holiday" territory="AU-ACT" firstYear="2018" nonWorking="true"
+          comment="Introduced in 2018. Statutorily defined as the first Monday on or after 27 May; approximated here as the last Monday of May.">
+      <DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="Last" />
+      <Tag>TerritoryHoliday</Tag>
+      <Tag>Approximate</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="King's Birthday (ACT)">
+    <Rule name="King's Birthday" category="Holiday" territory="AU-ACT" nonWorking="true">
+      <DayOfWeekInMonth month="June" dayOfWeek="Monday" weekOrdinal="Second" />
+      <Tag>TerritoryHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Labour Day (ACT)">
+    <Rule name="Labour Day" category="Holiday" territory="AU-ACT" nonWorking="true">
+      <DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="First" />
+      <Tag>TerritoryHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>
