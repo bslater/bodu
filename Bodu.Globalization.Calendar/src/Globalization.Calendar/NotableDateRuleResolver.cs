@@ -62,6 +62,15 @@ internal sealed class NotableDateRuleResolver
 		return ResolveInternal(rule, year, new HashSet<string>(StringComparer.OrdinalIgnoreCase));
 	}
 
+    /// <summary>
+    /// Resolves <paramref name="rule" /> for <paramref name="year" />, tracking active names
+    /// in <paramref name="resolving" /> to detect cycles among offset-anchored rules.
+    /// </summary>
+    /// <param name="rule">The rule to resolve.</param>
+    /// <param name="year">The civil year.</param>
+    /// <param name="resolving">The set of rule names currently being resolved up the call stack.</param>
+    /// <returns>The resolved date, or <see langword="null" /> if the rule does not apply.</returns>
+    /// <exception cref="InvalidOperationException">A cycle was detected among offset-anchored rules.</exception>
 	private DateTime? ResolveInternal(NotableDateRule rule, int year, HashSet<string> resolving)
 	{
 		if (!IsApplicable(rule, year))
@@ -103,6 +112,10 @@ internal sealed class NotableDateRuleResolver
 		}
 	}
 
+    /// <summary>
+    /// Resolves the anchor date of a rule whose strategy is offset-based, looking up the
+    /// anchor rule by name and applying the configured day offset.
+    /// </summary>
 	private DateTime? ResolveOffsetAnchor(NotableDateRule rule, int year, HashSet<string> resolving)
 	{
 		if (string.IsNullOrWhiteSpace(rule.AnchorRuleName))
@@ -118,6 +131,10 @@ internal sealed class NotableDateRuleResolver
 		return anchorDate.Value.AddDays(offset);
 	}
 
+    /// <summary>
+    /// Resolves a rule whose strategy is a registered <see cref="INotableDateCalculator" />,
+    /// delegating to the configured calculator registry.
+    /// </summary>
 	private DateTime? ResolveCalculator(NotableDateRule rule, int year)
 	{
 		// Prefer registry lookup (DI-friendly, decoupled from CLR type names).

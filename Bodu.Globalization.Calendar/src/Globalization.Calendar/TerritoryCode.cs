@@ -148,6 +148,12 @@ public readonly record struct TerritoryCode
 	public override string ToString() =>
 		Subdivision is null ? Country : string.Concat(Country, "-", Subdivision);
 
+    /// <summary>
+    /// Returns <see langword="true" /> if every character in <paramref name="value" /> is an
+    /// ASCII letter (A–Z or a–z).
+    /// </summary>
+    /// <param name="value">The character span to test.</param>
+    /// <returns><see langword="true" /> if all characters are ASCII letters; otherwise <see langword="false" />.</returns>
 	private static bool IsAllAsciiLetters(ReadOnlySpan<char> value)
 	{
 		foreach (var c in value)
@@ -162,6 +168,12 @@ public readonly record struct TerritoryCode
 		return true;
 	}
 
+    /// <summary>
+    /// Returns <see langword="true" /> if every character in <paramref name="value" /> is an
+    /// ASCII letter or digit.
+    /// </summary>
+    /// <param name="value">The character span to test.</param>
+    /// <returns><see langword="true" /> if all characters are ASCII alphanumerics; otherwise <see langword="false" />.</returns>
 	private static bool IsAllAsciiAlphanumeric(ReadOnlySpan<char> value)
 	{
 		foreach (var c in value)

@@ -132,6 +132,10 @@ internal sealed class NotableDateAdjuster
 		return ApplyAction(adjustment, rule, originalDate, territoryCode, calendarType);
 	}
 
+    /// <summary>
+    /// Returns <see langword="true" /> if <paramref name="adjustment" />'s trigger condition
+    /// fires for the given original date, territory, and calendar context.
+    /// </summary>
 	private bool EvaluateTrigger(ObservanceAdjustment adjustment, DateTime original, string? territoryCode, Type? calendarType)
 	{
 		switch (adjustment.Trigger)
@@ -168,6 +172,10 @@ internal sealed class NotableDateAdjuster
 		}
 	}
 
+    /// <summary>
+    /// Applies <paramref name="adjustment" />'s built-in action (shift to weekday, move to
+    /// next non-working day, and so on), returning the result.
+    /// </summary>
 	private AdjustmentApplyResult ApplyAction(
 		ObservanceAdjustment adjustment,
 		NotableDateRule rule,
@@ -190,6 +198,10 @@ internal sealed class NotableDateAdjuster
 		return new AdjustmentApplyResult(true, adjusted, adjustment.Trigger, adjustment.Action, adjustment.HandlerKey, adjustment.IsNonWorkingDay);
 	}
 
+    /// <summary>
+    /// Resolves <paramref name="adjustment" />'s configured <see cref="IAdjustmentHandler" />
+    /// type and delegates the adjustment to it, wrapping its return value.
+    /// </summary>
 	private AdjustmentApplyResult ApplyCustomHandler(
 		ObservanceAdjustment adjustment,
 		NotableDateRule rule,
@@ -219,6 +231,14 @@ internal sealed class NotableDateAdjuster
 			result.IsNonWorkingOverride ?? adjustment.IsNonWorkingDay);
 	}
 
+    /// <summary>
+    /// Advances <paramref name="original" /> forward until it lands on a non-working day in
+    /// the given territory and calendar context.
+    /// </summary>
+    /// <param name="original">The starting date.</param>
+    /// <param name="territoryCode">The territory code, or <see langword="null" />.</param>
+    /// <param name="calendarType">The calendar type, or <see langword="null" />.</param>
+    /// <returns>The first non-working day at or after <paramref name="original" />.</returns>
 	private DateTime MoveToNextNonWorkingDay(DateTime original, string? territoryCode, Type? calendarType)
 	{
 		// Walk forward at most 31 days looking for the next day that is *not* flagged non-working — i.e. the next "open" day.
@@ -234,6 +254,10 @@ internal sealed class NotableDateAdjuster
 		return original;
 	}
 
+    /// <summary>
+    /// Resolves the replacement date for an <see cref="AdjustmentAction.MoveTo" /> or
+    /// equivalent action, using the adjustment's reference (named rule, fixed date, or offset).
+    /// </summary>
 	private DateTime ResolveReplacement(ObservanceAdjustment adjustment, DateTime original, string? territoryCode, Type? calendarType)
 	{
 		if (string.IsNullOrWhiteSpace(adjustment.TargetRuleName) || _resolveByName is null)
@@ -243,6 +267,13 @@ internal sealed class NotableDateAdjuster
 		return resolved ?? original;
 	}
 
+    /// <summary>
+    /// Projects <paramref name="comparison" /> into the same month/day position of
+    /// <paramref name="year" /> for year-agnostic trigger evaluation.
+    /// </summary>
+    /// <param name="comparison">The reference date.</param>
+    /// <param name="year">The target year.</param>
+    /// <returns>The projected date.</returns>
 	private static DateTime ProjectComparisonDate(DateTime comparison, int year)
 	{
 		// Authors specify a month/day; we project it onto the active year so rules remain stable across years.
