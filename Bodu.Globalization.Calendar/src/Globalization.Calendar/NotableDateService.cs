@@ -275,6 +275,14 @@ public sealed class NotableDateService : INotableDateService
     /// Constructs a <see cref="NotableDate" /> from a rule, its resolved date, and any
     /// observance-adjustment metadata.
     /// </summary>
+    /// <param name="rule">The originating notable-date rule.</param>
+    /// <param name="date">The resolved observed date for the rule.</param>
+    /// <param name="territory">The territory code, or <see langword="null" />.</param>
+    /// <param name="adjustmentReason">The reason the observed date differs from the rule's base
+    /// calculation, or <see cref="AdjustmentReason.None" /> if no adjustment was applied.</param>
+    /// <param name="isNonWorkingOverride">If <see langword="true" />, the rule is flagged as a
+    /// non-working day regardless of the underlying weekday.</param>
+    /// <returns>The constructed <see cref="NotableDate" />.</returns>
 	private static NotableDate BuildNotableDate(
 		NotableDateRule rule,
 		DateTime date,
@@ -318,6 +326,10 @@ public sealed class NotableDateService : INotableDateService
     /// Filters the full-year notable-date list for the requested territory and calendar type,
     /// applies localisation, and returns the results ordered by observed date.
     /// </summary>
+    /// <param name="perYear">The unfiltered notable dates for a single year.</param>
+    /// <param name="territoryCode">The territory code filter, or <see langword="null" />.</param>
+    /// <param name="calendarType">The calendar type filter, or <see langword="null" />.</param>
+    /// <returns>The filtered, localised, and ordered notable-date list.</returns>
 	private IReadOnlyList<NotableDate> ProjectAndOrder(IReadOnlyList<NotableDate> perYear, string? territoryCode, Type? calendarType)
 	{
 		var matching = new List<NotableDate>();
@@ -341,6 +353,10 @@ public sealed class NotableDateService : INotableDateService
     /// Applies the configured override provider to the base rule set for the given year, using
     /// the override's remove/add semantics.
     /// </summary>
+    /// <param name="baseRules">The base set of rules to be overridden.</param>
+    /// <param name="overrideProviders">The sequence of override providers whose overrides should
+    /// be applied, in order.</param>
+    /// <returns>The rule list after all overrides have been applied.</returns>
 	private static IReadOnlyList<NotableDateRule> ApplyOverrides(
 		ImmutableArray<NotableDateRule> baseRules,
 		IReadOnlyList<INotableDateRuleOverrideProvider> overrideProviders)

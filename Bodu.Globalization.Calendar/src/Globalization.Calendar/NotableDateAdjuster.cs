@@ -136,6 +136,11 @@ internal sealed class NotableDateAdjuster
     /// Returns <see langword="true" /> if <paramref name="adjustment" />'s trigger condition
     /// fires for the given original date, territory, and calendar context.
     /// </summary>
+    /// <param name="adjustment">The observance adjustment carrying the trigger configuration.</param>
+    /// <param name="original">The original resolved date.</param>
+    /// <param name="territoryCode">The territory code, or <see langword="null" />.</param>
+    /// <param name="calendarType">The calendar type, or <see langword="null" />.</param>
+    /// <returns><see langword="true" /> if the trigger fires; otherwise <see langword="false" />.</returns>
 	private bool EvaluateTrigger(ObservanceAdjustment adjustment, DateTime original, string? territoryCode, Type? calendarType)
 	{
 		switch (adjustment.Trigger)
@@ -176,6 +181,12 @@ internal sealed class NotableDateAdjuster
     /// Applies <paramref name="adjustment" />'s built-in action (shift to weekday, move to
     /// next non-working day, and so on), returning the result.
     /// </summary>
+    /// <param name="adjustment">The observance adjustment describing the action.</param>
+    /// <param name="rule">The originating notable-date rule.</param>
+    /// <param name="original">The original resolved date.</param>
+    /// <param name="territoryCode">The territory code, or <see langword="null" />.</param>
+    /// <param name="calendarType">The calendar type, or <see langword="null" />.</param>
+    /// <returns>The outcome of applying the action.</returns>
 	private AdjustmentApplyResult ApplyAction(
 		ObservanceAdjustment adjustment,
 		NotableDateRule rule,
@@ -202,6 +213,12 @@ internal sealed class NotableDateAdjuster
     /// Resolves <paramref name="adjustment" />'s configured <see cref="IAdjustmentHandler" />
     /// type and delegates the adjustment to it, wrapping its return value.
     /// </summary>
+    /// <param name="adjustment">The observance adjustment carrying the custom handler type.</param>
+    /// <param name="rule">The originating notable-date rule.</param>
+    /// <param name="original">The original resolved date.</param>
+    /// <param name="territoryCode">The territory code, or <see langword="null" />.</param>
+    /// <param name="calendarType">The calendar type, or <see langword="null" />.</param>
+    /// <returns>The outcome of delegating to the custom <see cref="IAdjustmentHandler" />.</returns>
 	private AdjustmentApplyResult ApplyCustomHandler(
 		ObservanceAdjustment adjustment,
 		NotableDateRule rule,

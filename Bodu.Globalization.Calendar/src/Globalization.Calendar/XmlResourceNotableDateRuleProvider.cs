@@ -139,6 +139,10 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
     /// Searches <paramref name="sourceRules" /> for a rule that satisfies the &lt;Use&gt;
     /// directive's name and optional territory scope.
     /// </summary>
+    /// <param name="sourceRules">The already-loaded rule dictionary.</param>
+    /// <param name="name">The rule name from the &lt;Use&gt; directive.</param>
+    /// <returns>The matching rule, or <see langword="null" /> if no rule with the given name is
+    /// present in <paramref name="sourceRules" />.</returns>
 	private static NotableDateRule? FindSourceRule(IReadOnlyDictionary<RuleKey, NotableDateRule> sourceRules, string name)
 	{
 		foreach (var pair in sourceRules)
@@ -214,6 +218,10 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
     /// Loads a single embedded XML resource, schema-validates it, and parses it into a
     /// <see cref="ParsedNotableDateDocument" />.
     /// </summary>
+    /// <param name="resourceName">The fully-qualified embedded resource name.</param>
+    /// <param name="documentCache">A per-call cache used to deduplicate resource loads when
+    /// multiple &lt;Use&gt; directives reference the same source.</param>
+    /// <returns>The parsed document model.</returns>
 	private ParsedNotableDateDocument LoadDocument(
 		string resourceName,
 		Dictionary<string, ParsedNotableDateDocument> documentCache)
