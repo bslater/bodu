@@ -188,6 +188,8 @@ if (finalized)
     /// <returns>
     /// A byte array containing the computed FNV hash (4 bytes for a 32-bit hash, 8 bytes for a 64-bit hash) in <b>big-endian</b> byte order.
     /// </returns>
+    /// <exception cref="CryptographicUnexpectedOperationException">Thrown when the hash algorithm has been disposed or has produced an unexpected finalisation state.</exception>
+    /// <exception cref="NotSupportedException">Thrown when the operation is not supported for the current configuration.</exception>
     protected override byte[] HashFinal()
     {
         this.ThrowIfDisposed();

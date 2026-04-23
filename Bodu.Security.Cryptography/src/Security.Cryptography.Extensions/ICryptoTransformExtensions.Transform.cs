@@ -190,6 +190,7 @@ public static partial class ICryptoTransformExtensions
     /// making this overload suitable for scenarios where the caller manages buffer lifetimes.
     /// </para>
     /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown when the transform has been disposed or is in an invalid state.</exception>
     public static int Transform(this ICryptoTransform transform, ReadOnlySpan<byte> input, Span<byte> destination)
     {
         ThrowHelper.ThrowIfNull(transform);

@@ -279,6 +279,7 @@ public static partial class CryptoHelpers
     /// The padding is invalid, <paramref name="source" /> is not a positive multiple of <paramref name="blockSizeBytes" />,
     /// or the padding mode is unsupported.
     /// </exception>
+    /// <exception cref="ArgumentException">Thrown when an argument does not satisfy the method preconditions.</exception>
     public static int DepadBlock(
         BoduPaddingMode padding,
         int blockSizeBytes,

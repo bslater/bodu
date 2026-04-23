@@ -344,6 +344,7 @@ if (finalized)
     /// Finalises the Pearson hash and returns a byte array whose length matches the configured <see cref="HashSize" /> (in bytes).
     /// </summary>
     /// <returns>A byte array containing the computed Pearson hash.</returns>
+    /// <exception cref="CryptographicUnexpectedOperationException">Thrown when the hash algorithm has been disposed or has produced an unexpected finalisation state.</exception>
     protected override byte[] HashFinal()
     {
         this.ThrowIfDisposed();

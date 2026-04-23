@@ -427,6 +427,7 @@ public sealed class CubeHash
     /// <returns>
     /// A byte array containing the computed hash value. Its length is <see cref="HashAlgorithm.HashSize" /> divided by 8.
     /// </returns>
+    /// <exception cref="CryptographicUnexpectedOperationException">Thrown when the hash algorithm has been disposed or has produced an unexpected finalisation state.</exception>
     protected override byte[] HashFinal()
     {
         this.ThrowIfDisposed();

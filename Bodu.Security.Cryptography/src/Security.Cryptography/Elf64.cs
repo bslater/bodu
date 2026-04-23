@@ -184,6 +184,7 @@ public sealed class Elf64
     /// Finalises the ELF-64 hash computation and returns the 64-bit result as an 8-byte big-endian array.
     /// </summary>
     /// <returns>An 8-byte array containing the hash value in <b>big-endian</b> byte order.</returns>
+    /// <exception cref="CryptographicUnexpectedOperationException">Thrown when the hash algorithm has been disposed or has produced an unexpected finalisation state.</exception>
     protected override byte[] HashFinal()
     {
         this.ThrowIfDisposed();

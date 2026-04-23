@@ -153,6 +153,7 @@ public sealed class Pjw32
     /// Finalises the PJW hash computation and returns the 32-bit result as a 4-byte big-endian array.
     /// </summary>
     /// <returns>A 4-byte array containing the hash value in <b>big-endian</b> byte order.</returns>
+    /// <exception cref="CryptographicUnexpectedOperationException">Thrown when the hash algorithm has been disposed or has produced an unexpected finalisation state.</exception>
     protected override byte[] HashFinal()
     {
         this.ThrowIfDisposed();

@@ -144,6 +144,7 @@ public sealed class JSHash
     /// Finalises the JSHash computation and returns the 32-bit result as a 4-byte array in native byte order.
     /// </summary>
     /// <returns>A 4-byte array containing the hash value in the platform's native byte order.</returns>
+    /// <exception cref="CryptographicUnexpectedOperationException">Thrown when the hash algorithm has been disposed or has produced an unexpected finalisation state.</exception>
     protected override byte[] HashFinal()
     {
         this.ThrowIfDisposed();

@@ -45,6 +45,7 @@ public abstract class Adler32Base
     /// <returns>
     /// A 4-byte array containing the checksum encoded in <b>big-endian</b> byte order as <c><![CDATA[(B << 16) | A]]></c>.
     /// </returns>
+    /// <exception cref="CryptographicUnexpectedOperationException">Thrown when the hash algorithm has been disposed or has produced an unexpected finalisation state.</exception>
     protected override byte[] HashFinal()
     {
 #if !NET6_0_OR_GREATER

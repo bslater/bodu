@@ -209,6 +209,7 @@ public sealed class Bernstein :
     /// Finalises the Bernstein hash computation and returns the result as a 4-byte big-endian array.
     /// </summary>
     /// <returns>A 4-byte array containing the 32-bit hash value in <b>big-endian</b> byte order.</returns>
+    /// <exception cref="CryptographicUnexpectedOperationException">Thrown when the hash algorithm has been disposed or has produced an unexpected finalisation state.</exception>
     protected override byte[] HashFinal()
     {
         this.ThrowIfDisposed();

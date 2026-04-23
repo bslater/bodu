@@ -57,6 +57,7 @@ public static partial class ICryptoTransformExtensions
     ///]]>
     /// </code>
     /// </example>
+    /// <exception cref="TaskCanceledException">Thrown when the operation is cancelled via the supplied cancellation token.</exception>
     public static async Task TransformAsync(
         this ICryptoTransform transform,
         Stream sourceStream,

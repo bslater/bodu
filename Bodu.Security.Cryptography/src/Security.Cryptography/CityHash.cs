@@ -230,6 +230,7 @@ public abstract class CityHash<T>
     /// algorithm-defined (for example, the <c>K2</c> constant for CityHash64).
     /// </returns>
     /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
+    /// <exception cref="CryptographicUnexpectedOperationException">Thrown when the hash algorithm has been disposed or has produced an unexpected finalisation state.</exception>
     protected override byte[] HashFinal()
     {
         ThrowIfDisposed();

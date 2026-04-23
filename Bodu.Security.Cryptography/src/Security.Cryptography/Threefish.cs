@@ -108,6 +108,8 @@ public abstract class Threefish
     /// <param name="key">The encryption key.</param>
     /// <param name="tweak">The tweak value.</param>
     /// <returns>A configured <see cref="IBlockCipher" /> instance for encryption or decryption.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="key" /> is <see langword="null" />.</exception>
+    /// <exception cref="CryptographicException">Thrown when the underlying cryptographic algorithm fails.</exception>
     protected abstract IBlockCipher CreateCipher(byte[] key, byte[] tweak);
 
     /// <summary>

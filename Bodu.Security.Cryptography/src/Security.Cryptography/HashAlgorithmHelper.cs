@@ -47,6 +47,7 @@ public static class HashAlgorithmHelper
     /// <param name="input">The input data to hash.</param>
     /// <returns>The computed hash as a byte array.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory" /> is <see langword="null" />.</exception>
+    /// <exception cref="CryptographicException">Thrown when the underlying cryptographic algorithm fails.</exception>
     public static byte[] HashData<T>(IHashAlgorithmFactory<T> factory, ReadOnlySpan<byte> input)
         where T : System.Security.Cryptography.HashAlgorithm
     {
@@ -73,6 +74,7 @@ public static class HashAlgorithmHelper
     /// <param name="stream">The stream to hash.</param>
     /// <returns>The computed hash as a byte array.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory" /> or <paramref name="stream" /> is <see langword="null" />.</exception>
+    /// <exception cref="CryptographicException">Thrown when the underlying cryptographic algorithm fails.</exception>
     public static byte[] HashData<T>(IHashAlgorithmFactory<T> factory, Stream stream)
         where T : System.Security.Cryptography.HashAlgorithm
     {
@@ -94,6 +96,7 @@ public static class HashAlgorithmHelper
     /// <param name="cancellationToken">An optional cancellation token.</param>
     /// <returns>A task representing the asynchronous hash computation.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory" /> or <paramref name="stream" /> is <see langword="null" />.</exception>
+    /// <exception cref="CryptographicException">Thrown when the underlying cryptographic algorithm fails.</exception>
     public static async ValueTask<byte[]> HashDataAsync<T>(
         IHashAlgorithmFactory<T> factory,
         Stream stream,
