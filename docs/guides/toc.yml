@@ -1,5 +1,16 @@
 # ./<Project Root Dir>/docs/guides/toc.yml
-- name: Cryptography
+- name: Bodu.IO.Hashing
+  href: io-hashing/
+  items:
+    - name: Overview
+      href: io-hashing/index.md
+    - name: Using CRC
+      href: io-hashing/crc.md
+    - name: Using Fletcher
+      href: io-hashing/fletcher.md
+    - name: CRC catalogue
+      href: io-hashing/crc-catalogue.md
+- name: Bodu.Security.Cryptography
   href: cryptography/
   items:
     - name: Overview
@@ -14,10 +25,8 @@
       href: cryptography/composing-primitives.md
     - name: Padding
       href: cryptography/padding.md
-    - name: Hashing and checksums
+    - name: Hashing
       href: cryptography/hashing.md
-    - name: CRC catalogue
-      href: cryptography/crc-catalogue.md
     - name: Symmetric algorithms
       items:
         - name: Threefish-256

@@ -9,7 +9,7 @@ Guidance for AI assistants working in this repository. Read this file before mak
 | Project | Path | Responsibility |
 |---|---|---|
 | `Bodu.Core` | `Bodu.Core/` | Buffers, generic collections (circular buffer, evicting dictionary), extensions, text, XML, argument validation helpers. |
-| `Bodu.IO` | `Bodu.IO/` | Non-cryptographic hashing built on `System.IO.Hashing.NonCryptographicHashAlgorithm` — Fletcher-16/32/64 and the full RevEng CRC catalogue (CRC-3 … CRC-64). |
+| `Bodu.IO.Hashing` | `Bodu.IO.Hashing/` | Non-cryptographic hashing built on `System.IO.Hashing.NonCryptographicHashAlgorithm` — Fletcher-16/32/64 and the full RevEng CRC catalogue (CRC-3 … CRC-64). |
 | `Bodu.Security.Cryptography` | `Bodu.Security.Cryptography/` | Block ciphers (Threefish 256/512/1024, Skipjack), keyed and cryptographic hashes (Adler, SipHash, FNV1a, Tiger), crypto helpers. |
 | `Bodu.Globalization.Calendar` | `Bodu.Globalization.Calendar/` | Calendar/notable date calculations (Easter, Lunar New Year) and date resolvers. |
 
@@ -24,16 +24,16 @@ Each project has the layout:
 ### Target Frameworks
 
 - `Bodu.Core` — `net8.0`
-- `Bodu.IO` — `net8.0`
+- `Bodu.IO.Hashing` — `net8.0`
 - `Bodu.Security.Cryptography` — `net8.0`
 - `Bodu.Globalization.Calendar` — `net8.0`
 
-Nullable reference types are enabled everywhere. `ImplicitUsings` is enabled for `Bodu.IO`, Cryptography, and Calendar but **disabled** for `Bodu.Core` — when editing files in `Bodu.Core/`, add explicit `using` directives.
+Nullable reference types are enabled everywhere. `ImplicitUsings` is enabled for `Bodu.IO.Hashing`, Cryptography, and Calendar but **disabled** for `Bodu.Core` — when editing files in `Bodu.Core/`, add explicit `using` directives.
 
 ## Key Types
 
 - **Bodu.Core**: `CircularBuffer<T>`, `ConcurrentCircularBuffer<T>`, `EvictingDictionary<TKey, TValue>`, `EvictingDictionaryPolicy`, `IRandomGenerator`, `BufferConverter`, `ArrayExtensions`, `BaseEncoding`, `ThrowHelper`.
-- **Bodu.IO**: `Fletcher16` / `Fletcher32` / `Fletcher64`, `Crc`, `CrcStandard`, `CrcStandards`, `CrcLookupTableBuilder`, `CrcLookupTableCache`, `BlockNonCryptographicHashAlgorithm<T>`, `IResumableHashAlgorithm`.
+- **Bodu.IO.Hashing**: `Fletcher16` / `Fletcher32` / `Fletcher64`, `Crc`, `CrcStandard`, `CrcStandards`, `CrcLookupTableBuilder`, `CrcLookupTableCache`, `BlockNonCryptographicHashAlgorithm<T>`, `IResumableHashAlgorithm`.
 - **Bodu.Security.Cryptography**: `Threefish256` / `Threefish512` / `Threefish1024`, `Adler32`, `SipHash`, `FNV1a`, `Skipjack`, `Tiger`, `CryptoHelpers`.
 - **Bodu.Globalization.Calendar**: `NotableDateService`, `NotableDateResolver`, `NotableDate`, `NotableDateKind`, `EasterSundayNotableDateCalculator`, `LunarNewYearNotableDateCalculator`.
 
@@ -115,7 +115,7 @@ Every `.cs` file begins with the standard banner — preserve the separator line
   public sealed class CircularBuffer<T> { ... }
   ```
 
-- `Bodu.Core`, `Bodu.IO`, and `Bodu.Globalization.Calendar` already follow this convention throughout.
+- `Bodu.Core`, `Bodu.IO.Hashing`, and `Bodu.Globalization.Calendar` already follow this convention throughout.
 - `Bodu.Security.Cryptography` contains legacy block-scoped nested namespace files. Do not mix styles within a file, but when a file's primary type is being edited for other reasons, convert it to the file-scoped `;` form at the same time.
 
 ### File Layout
@@ -133,8 +133,8 @@ Every `.cs` file begins with the standard banner — preserve the separator line
 - Private static fields: `s_camelCase`.
 - Explicit types preferred over `var`.
 - No primary constructors on documented public types (they conflict with `<param>` XML documentation).
-- Expression-bodied members only for trivial properties/accessors; use block bodies for anything with meaningful logic.
-- Public argument validation goes through `ThrowHelper` (in `Bodu.Core`).
+- Expression-bodied members for methods, properties, and accessors with a small implementation footprint — see **Expression-Bodied Members** below for the required layout.
+- Public argument validation goes through the `ThrowHelper.ThrowIf…` members (in `Bodu.Core`) — see **Parameter Validation** below.
 
 ## C# Code Style Guidelines
 
@@ -147,6 +147,10 @@ Every `.cs` file begins with the standard banner — preserve the separator line
 ### XML Documentation
 
 **All documentation must be in British English.**
+
+**Documentation scope**
+- Provide complete XML documentation for **every** member of a declared type — `public`, `protected`, `internal`, **and** `private`. Private members are documented to the same standard as public members.
+- The only exception is `<remarks>`: it is optional on private members and should be added only when the private implementation genuinely warrants it (for example, a subtle concurrency protocol, a lock-free state transition, or a non-obvious invariant that aids future maintainers).
 
 **`<summary>`**
 - Write a concise, professional summary describing the purpose, intent, or responsibility of the type or member.
@@ -163,6 +167,7 @@ Every `.cs` file begins with the standard banner — preserve the separator line
 **`<returns>`**
 - Add `<returns>` for every non-void member.
 - Describe the result in the context of the method's purpose, not merely the raw type.
+- **Properties must always include a `<returns>` element** describing what the property yields on read, in addition to any `<value>` element that clarifies semantics.
 
 **`<exception>`**
 - Document all exceptions the member can throw, including `ArgumentNullException`, `ArgumentException`, `ArgumentOutOfRangeException`, and `InvalidOperationException`.
@@ -204,6 +209,47 @@ Every `.cs` file begins with the standard banner — preserve the separator line
 - Explain *why*, the protocol intent, or subtle state meaning — not basic syntax.
 - Do not add comments that merely narrate obvious code.
 
+### Parameter Validation
+
+All public interfaces (public methods, constructors, protected-virtual extension points, indexers) must validate their parameters using the `ThrowHelper.ThrowIf…` members declared in `Bodu.Core`.
+
+- Prefer an existing `ThrowIf…` helper over hand-rolled checks. The catalogue covers nulls, ranges, enum values, array offsets/lengths, span sizes, type compatibility, and related cases.
+- If no existing helper fits a validation rule, **add a new `ThrowIf…` member** to `ThrowHelper` when the rule is general-purpose enough to be reused. Follow the naming, signature, and XML-doc conventions established by the existing helpers (including the `CallerArgumentExpression`-driven `paramName`).
+- Inline `if`-statement validation is permitted only for rules that are specific to a single call site and do not justify a shared helper. In that case, format the check on a **single line**:
+
+  ```csharp
+  if (string.IsNullOrWhiteSpace(xml)) throw new ArgumentNullException(nameof(xml));
+  ```
+
+- **Group validation statements together** at the top of the member, before any real work. Keep helper calls and single-line `if` checks in a single contiguous block, then a blank line, then the method body.
+
+Example:
+
+```csharp
+public static NotableDateRule Create(string name, int dayOffset, string? culture)
+{
+    ThrowHelper.ThrowIfNull(name);
+    ThrowHelper.ThrowIfGreaterThan(dayOffset, MaxOffset);
+    if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Name must not be blank.", nameof(name));
+
+    return new NotableDateRule(name, dayOffset, culture);
+}
+```
+
+### Expression-Bodied Members
+
+Use the `=>` expression-bodied form for methods, properties, and accessors whose implementation is small (a single expression or trivial delegation). Format with `=>` on the declaring line and the expression on the **next** line, indented one level:
+
+```csharp
+public static List<NotableDateRule> ParseXml(string xml) =>
+    ParseDocument(xml).LocalRules.ToList();
+```
+
+- The `=>` token stays at the end of the signature line, not on the body line.
+- A single level of indentation separates the body from the declaration.
+- Use a block body instead when the implementation spans multiple statements or needs intermediate locals, guard clauses, or inline documentation.
+- Trivial property and accessor bodies (e.g. `=> _field;`) may remain on one line.
+
 ### Formatting and Layout
 
 **Blank Lines**
@@ -213,7 +259,7 @@ Every `.cs` file begins with the standard banner — preserve the separator line
 **Member Layout**
 - Maintain consistent spacing between members.
 - Group related members logically.
-- Use expression-bodied members where the body is trivially concise.
+- Use expression-bodied members (per **Expression-Bodied Members** above) where the body is a small, single expression.
 - Use block bodies for members with meaningful logic.
 
 **Braces and Wrapping**

@@ -4,7 +4,9 @@ title: CRC catalogue
 
 # CRC catalogue
 
-The <xref:Bodu.IO.Hashing.CrcStandard> type exposes a broad catalogue of named CRC parameter sets that can be passed to <xref:Bodu.IO.Hashing.Crc> for CRC computation. The catalogue is mechanically derived from the **CRC RevEng** project.
+The <xref:Bodu.IO.Hashing.CrcStandard> type (in the **Bodu.IO.Hashing** package) exposes a broad catalogue of named CRC parameter sets that can be passed to <xref:Bodu.IO.Hashing.Crc> for CRC computation. The catalogue is mechanically derived from the **CRC RevEng** project.
+
+For walk-through usage of the CRC engine, see [Using CRC](crc.md).
 
 ## Attribution
 
