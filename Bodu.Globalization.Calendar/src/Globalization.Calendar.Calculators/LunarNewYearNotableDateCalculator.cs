@@ -1,4 +1,10 @@
-﻿using SysGlobal = System.Globalization;
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="LunarNewYearNotableDateCalculator.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using SysGlobal = System.Globalization;
 
 namespace Bodu.Globalization.Calendar.Calculators;
 

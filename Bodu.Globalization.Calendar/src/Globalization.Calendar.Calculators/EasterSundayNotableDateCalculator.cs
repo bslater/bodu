@@ -1,4 +1,10 @@
-﻿using System.Collections.Concurrent;
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="EasterSundayNotableDateCalculator.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Collections.Concurrent;
 
 namespace Bodu.Globalization.Calendar.Calculators;
 
