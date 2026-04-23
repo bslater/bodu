@@ -4,29 +4,17 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography;
+namespace Bodu.IO.Hashing;
 
 /// <summary>
-/// Contains unit tests for the <see cref="Adler" /> hash algorithm.
+/// Provides a reusable abstract base class for verifying the correctness of <see cref="Adler64Base" />
+/// implementations (Adler-64).
 /// </summary>
-[TestClass]
+/// <typeparam name="TTest">The concrete test type inheriting this class.</typeparam>
+/// <typeparam name="TAlgorithm">The 64-bit Adler variant under test.</typeparam>
 public abstract partial class Adler64BaseTests<TTest, TAlgorithm>
-    : AdlerTests<TTest, TAlgorithm, SingleTestVariant, ulong>
+    : AdlerTests<TTest, TAlgorithm, ulong>
     where TTest : Adler64BaseTests<TTest, TAlgorithm>, new()
     where TAlgorithm : Adler64Base, new()
 {
-    public override IEnumerable<SingleTestVariant> GetHashAlgorithmVariants() => new[]
-    {
-        SingleTestVariant.Default
-    };
-
-    /// <inheritdoc />
-    protected override HashAlgorithmSpecification GetSpecification(SingleTestVariant variant) =>
-        new HashAlgorithmSpecification
-        {
-            HashSize = 64,
-            InputBlockSize = 1,
-            OutputBlockSize = 1,
-        };
-
 }
