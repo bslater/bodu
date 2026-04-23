@@ -26,11 +26,28 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     }
 
     /// <summary>
+    /// Gets a value indicating whether the algorithm under test treats an empty byte array as a valid key
+    /// (typically selecting an unkeyed / plain-hash mode). Defaults to <see langword="false" /> — the strict
+    /// keyed-MAC contract requires that assigning an empty key throws.
+    /// </summary>
+    /// <remarks>
+    /// Variable-length-optional-key algorithms such as Skein override this to <see langword="true" /> so the
+    /// empty-key negative test is skipped and the empty-array sentinel remains a legitimate assignment.
+    /// </remarks>
+    protected virtual bool EmptyKeyIsValid => false;
+
+    /// <summary>
     /// Verifies that setting an invalid key throws a <see cref="CryptographicException" />.
     /// </summary>
     [TestMethod]
     public void Key_WhenSetToInvalidKey_ShouldThrowExactly()
     {
+        if (EmptyKeyIsValid)
+        {
+            Assert.Inconclusive($"{typeof(TAlgorithm).Name} treats an empty key as the unkeyed-mode sentinel; skipping.");
+            return;
+        }
+
         using var algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<CryptographicException>(() =>

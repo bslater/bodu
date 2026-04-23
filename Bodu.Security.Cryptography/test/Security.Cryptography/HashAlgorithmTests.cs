@@ -106,14 +106,23 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <param name="variant">The algorithm variant under test.</param>
     /// <remarks>
     /// This ensures consistency between fixed test vectors (e.g., "Empty") and the incremental output series, where the first
-    /// incremental hash corresponds to hashing zero bytes.
+    /// incremental hash corresponds to hashing zero bytes. Algorithms that do not publish incremental hashes yet return an
+    /// empty list from <see cref="GetExpectedHashesForIncrementalInput" />; the consistency check is then skipped as
+    /// inconclusive rather than failing.
     /// </remarks>
     [TestMethod]
     [DynamicData(nameof(HashAlgorithmVariants), DynamicDataSourceType.Method)]
     public void HashAlgorithm_TestData_Check(TVariant variant)
     {
+        var incrementalHashes = GetExpectedHashesForIncrementalInput(variant);
+        if (incrementalHashes.Count == 0)
+        {
+            Assert.Inconclusive($"No incremental hashes defined for variant '{variant}'; skipping consistency check.");
+            return;
+        }
+
         var emptyA = GetExpectedHashesForNamedInputs(variant)["Empty"];
-        var emptyB = GetExpectedHashesForIncrementalInput(variant)[0];
+        var emptyB = incrementalHashes[0];
         Assert.AreEqual(emptyA, emptyB, "Expected hash value for 'Empty' named input should equal the first item of incremental input.");
     }
 

@@ -10,13 +10,13 @@ using System.Runtime.InteropServices;
 
 namespace Bodu.Security.Cryptography;
 
-public abstract partial class Skein
+public abstract partial class Skein<T>
 {
     /// <summary>
     /// Applies a single Skein <c>UBI</c> (Unique Block Iteration) compression step that folds <paramref name="block" />
     /// into the chaining state using the supplied tweak fields.
     /// </summary>
-    /// <param name="block">The block to absorb. Must be exactly <see cref="InputBlockSize" /> bytes long.</param>
+    /// <param name="block">The block to absorb. Must be exactly <see cref="BlockHashAlgorithm{T}.BlockSizeBytes" /> bytes long.</param>
     /// <param name="type">The UBI block type, which occupies bits 120..125 of the tweak.</param>
     /// <param name="first">Whether this is the first UBI call in the current stage. Sets bit 126 of the tweak.</param>
     /// <param name="final">Whether this is the final UBI call in the current stage. Sets bit 127 of the tweak.</param>
@@ -73,7 +73,7 @@ public abstract partial class Skein
     /// Builds the 32-byte configuration block defined by Skein 1.3 §3.5.1 and zero-pads it out to the current state
     /// size.
     /// </summary>
-    /// <param name="destination">A buffer of <see cref="InputBlockSize" /> bytes that receives the packed configuration block.</param>
+    /// <param name="destination">A buffer of <see cref="BlockHashAlgorithm{T}.BlockSizeBytes" /> bytes that receives the packed configuration block.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void BuildConfigurationBlock(Span<byte> destination)
     {
@@ -95,12 +95,12 @@ public abstract partial class Skein
     {
         Array.Clear(this._state, 0, this._state.Length);
 
-        if (this._key.Length > 0)
+        if (this.KeyValue is { Length: > 0 })
         {
-            this.AbsorbKeyPhase(this._key);
+            this.AbsorbKeyPhase(this.KeyValue);
         }
 
-        Span<byte> configurationBlock = stackalloc byte[this._blockSizeBytes];
+        Span<byte> configurationBlock = stackalloc byte[this.BlockSizeBytes];
         this.BuildConfigurationBlock(configurationBlock);
 
         // The configuration UBI is a single 32-byte payload, zero-padded up to the state size. Per the Skein
@@ -119,21 +119,21 @@ public abstract partial class Skein
     /// <param name="key">The key material to absorb.</param>
     private void AbsorbKeyPhase(ReadOnlySpan<byte> key)
     {
-        Span<byte> block = stackalloc byte[this._blockSizeBytes];
+        Span<byte> block = stackalloc byte[this.BlockSizeBytes];
         ulong absorbed = 0UL;
         bool first = true;
         int remaining = key.Length;
         int offset = 0;
 
-        while (remaining > this._blockSizeBytes)
+        while (remaining > this.BlockSizeBytes)
         {
-            key.Slice(offset, this._blockSizeBytes).CopyTo(block);
-            absorbed += (ulong)this._blockSizeBytes;
+            key.Slice(offset, this.BlockSizeBytes).CopyTo(block);
+            absorbed += (ulong)this.BlockSizeBytes;
             this.Ubi(block, SkeinTweakType.Key, first, final: false, position: absorbed);
 
             first = false;
-            offset += this._blockSizeBytes;
-            remaining -= this._blockSizeBytes;
+            offset += this.BlockSizeBytes;
+            remaining -= this.BlockSizeBytes;
         }
 
         // Final key block: remaining is in [0..blockSize]; an empty key is not allowed to reach this method.
@@ -151,7 +151,7 @@ public abstract partial class Skein
     /// <param name="source">The next chunk of input data.</param>
     private void AbsorbMessage(ReadOnlySpan<byte> source)
     {
-        int blockSize = this._blockSizeBytes;
+        int blockSize = this.BlockSizeBytes;
 
         // Merge the tail of the previous call with the head of this one until we hold a full block of pending data.
         if (this._pendingBytes > 0 && this._pendingBytes + source.Length > blockSize)
@@ -200,7 +200,7 @@ public abstract partial class Skein
     /// Runs the Skein output UBI chain against the finalized chaining value, emitting consecutive state-sized output
     /// fragments until <paramref name="destination" /> is filled.
     /// </summary>
-    /// <param name="destination">The digest buffer, of length <see cref="HashAlgorithm.HashSize" /> / 8.</param>
+    /// <param name="destination">The digest buffer, of length <see cref="System.Security.Cryptography.HashAlgorithm.HashSize" /> / 8.</param>
     /// <remarks>
     /// <para>
     /// Each output call saves the final chaining value and re-runs UBI over a zero-filled block whose first eight bytes
@@ -211,7 +211,7 @@ public abstract partial class Skein
     /// </remarks>
     private void GenerateOutput(Span<byte> destination)
     {
-        int blockSize = this._blockSizeBytes;
+        int blockSize = this.BlockSizeBytes;
         int stateWords = this._state.Length;
 
         Span<ulong> savedChainingValue = stackalloc ulong[stateWords];

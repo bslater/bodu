@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// The permitted output sizes are 384, 512, and 1024 bits; 1024 bits is the default. Supplying a non-empty
-/// <see cref="Skein.Key" /> turns the instance into the keyed Skein-MAC-1024 variant by prepending a <c>KEY</c> UBI
+/// <see cref="Skein{T}.Key" /> turns the instance into the keyed Skein-MAC-1024 variant by prepending a <c>KEY</c> UBI
 /// phase to the standard <c>CFG → MSG → OUT</c> pipeline.
 /// </para>
 /// </remarks>
@@ -30,7 +30,7 @@ namespace Bodu.Security.Cryptography;
 /// </example>
 /// <seealso cref="Threefish1024Cipher" />
 public sealed class Skein1024
-    : Skein
+    : Skein<Skein1024>
 {
     /// <summary>
     /// The state / block size, in bytes, of the Skein-1024 variant.
