@@ -91,6 +91,48 @@ Every test method has an XML `<summary>` starting with **"Verifies that ..."**, 
 public void Enqueue_WhenFull_ShouldThrowInvalidOperationException() { ... }
 ```
 
+### Test Exception Handling
+
+When validating exceptions, always capture them using `Assert.ThrowsExactly<TException>` with the action enclosed in a statement block.
+
+Rules:
+
+- Always use **`Assert.ThrowsExactly<TException>`** for exception assertions.
+- Always assert the **specific expected exception type**. Do not use broader base exception types unless that is the exact expected contract.
+- Always write the invocation being tested inside a block-bodied lambda:
+
+```csharp
+var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+{
+    _ = new TestCityHash(hashSize);
+});
+```
+
+- When applicable, validate the inner exception:
+-- Assert that an inner exception exists when one is expected.
+-- Assert its exact type.
+-- Validate its message and other relevant properties where required by the contract.
+
+```csharp
+  var ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
+{
+    sut.Execute();
+});
+
+Assert.IsNotNull(ex.InnerException);
+Assert.IsInstanceOfType<ArgumentException>(ex.InnerException);
+Assert.IsTrue(ex.InnerException.Message.Contains("Invalid state", StringComparison.Ordinal));
+```
+
+- Guidance:
+-- Validate only the exception details that form part of the public contract.
+-- For argument exceptions, prefer asserting:
+--- exact exception type
+--- ParamName
+--- relevant message content where useful
+-- For wrapped exceptions, also validate the InnerException chain where that wrapping is intentional and contractually significant.
+-- Keep exception assertions explicit and local to the test; do not hide them behind helper methods unless already established in the test suite.
+
 ## Source File Conventions
 
 ### File Header
