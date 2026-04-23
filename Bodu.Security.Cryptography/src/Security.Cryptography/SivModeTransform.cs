@@ -145,6 +145,10 @@ public sealed class SivModeTransform : IAeadBlockCipherModeTransform
 
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// Ensures the associated-data (AAD) S2V contribution has been finalised exactly once
+    /// before payload bytes are processed; no-op on subsequent invocations.
+    /// </summary>
     private void EnsureAadProcessed()
     {
         if (!this.aadProcessed) { this.aad = Array.Empty<byte>(); this.aadProcessed = true; }
@@ -245,6 +249,14 @@ public sealed class SivModeTransform : IAeadBlockCipherModeTransform
         return mac;
     }
 
+    /// <summary>
+    /// Applies AES-CTR encryption using <paramref name="counter" /> as the initial counter
+    /// block, producing <c>input XOR keystream</c> in <paramref name="output" />.
+    /// </summary>
+    /// <param name="input">The plaintext (or ciphertext) bytes.</param>
+    /// <param name="output">The destination span; must be at least <paramref name="input" />.Length bytes.</param>
+    /// <param name="counter">The starting counter block; the low 32 bits are incremented per
+    /// block per RFC 5297.</param>
     private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
     {
         int blockSize = this.ctrCipher.BlockSize;
@@ -276,6 +288,13 @@ public sealed class SivModeTransform : IAeadBlockCipherModeTransform
         if (msb) x[x.Length - 1] ^= 0x87;
     }
 
+    /// <summary>
+    /// Writes the byte-wise XOR of <paramref name="a" /> and <paramref name="b" /> into
+    /// <paramref name="result" />.
+    /// </summary>
+    /// <param name="a">The first operand span.</param>
+    /// <param name="b">The second operand span; must be at least <paramref name="a" />.Length bytes.</param>
+    /// <param name="result">The destination span; must be at least <paramref name="a" />.Length bytes.</param>
     private static void Xor(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, Span<byte> result)
     {
         for (int i = 0; i < result.Length; i++) result[i] = (byte)(a[i] ^ b[i]);

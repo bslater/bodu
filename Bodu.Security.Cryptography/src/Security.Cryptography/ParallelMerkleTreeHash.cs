@@ -372,6 +372,12 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     // Level management
     // -----------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// Appends <paramref name="hash" /> to the intermediate buffer at the specified tree
+    /// <paramref name="level" />, creating the level's buffer lazily if it does not yet exist.
+    /// </summary>
+    /// <param name="level">The tree level (0 for leaves, incrementing upward).</param>
+    /// <param name="hash">The hash bytes to append.</param>
     private void WriteToLevel(int level, byte[] hash)
     {
         // TryWrite on an unbounded channel fails only if the channel has already been completed.
@@ -381,6 +387,11 @@ public sealed class ParallelMerkleTreeHash : IDisposable
                 $"Write to level-{level} channel failed. The channel was completed before all nodes were submitted.");
     }
 
+    /// <summary>
+    /// Grows the internal level buffer list to include <paramref name="level" />, allocating
+    /// fresh buffers for any intermediate levels.
+    /// </summary>
+    /// <param name="level">The zero-based tree level that must be addressable.</param>
     private void EnsureLevelExists(int level)
     {
         // Fast path — no lock required once the entry is visible in the dictionary.

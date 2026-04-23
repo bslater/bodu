@@ -151,6 +151,10 @@ public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
 
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// Ensures the associated-data (AAD) GHASH contribution has been finalised exactly once
+    /// before payload bytes are processed; no-op on subsequent invocations.
+    /// </summary>
     private void EnsureAadProcessed()
     {
         if (!this.aadProcessed)
@@ -269,6 +273,14 @@ public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
             if (++counter[i] != 0) break;
     }
 
+    /// <summary>
+    /// Writes <paramref name="value" /> into <paramref name="buffer" /> in big-endian byte order
+    /// starting at <paramref name="offset" />.
+    /// </summary>
+    /// <param name="value">The 64-bit value to serialise.</param>
+    /// <param name="buffer">The destination buffer; must contain at least 8 bytes at
+    /// <paramref name="offset" />.</param>
+    /// <param name="offset">The byte offset at which to begin writing.</param>
     private static void WriteBigEndian64(ulong value, byte[] buffer, int offset)
     {
         for (int i = 7; i >= 0; i--)

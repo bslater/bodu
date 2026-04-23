@@ -393,6 +393,10 @@ public sealed class OcbModeTransform
 
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// Ensures the associated-data (AAD) authentication contribution has been finalised
+    /// exactly once before payload bytes are processed; no-op on subsequent invocations.
+    /// </summary>
     private void EnsureAadProcessed()
     {
         if (!this.aadProcessed) { this.aad = Array.Empty<byte>(); this.aadProcessed = true; }
@@ -563,6 +567,13 @@ public sealed class OcbModeTransform
         return result;
     }
 
+    /// <summary>
+    /// Writes the byte-wise XOR of <paramref name="a" /> and <paramref name="b" /> into
+    /// <paramref name="result" />.
+    /// </summary>
+    /// <param name="a">The first operand span.</param>
+    /// <param name="b">The second operand span; must be at least <paramref name="a" />.Length bytes.</param>
+    /// <param name="result">The destination span; must be at least <paramref name="a" />.Length bytes.</param>
     private static void Xor(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, Span<byte> result)
     {
         for (int i = 0; i < result.Length; i++) result[i] = (byte)(a[i] ^ b[i]);

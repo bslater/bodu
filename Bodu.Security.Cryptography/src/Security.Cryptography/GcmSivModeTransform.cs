@@ -153,6 +153,10 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
 
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// Ensures the associated-data (AAD) POLYVAL contribution has been finalised exactly once
+    /// before payload bytes are processed; no-op on subsequent invocations.
+    /// </summary>
     private void EnsureAadProcessed()
     {
         if (!this.aadProcessed) { this.aad = Array.Empty<byte>(); this.aadProcessed = true; }
@@ -321,6 +325,14 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
         return ctrIv;
     }
 
+    /// <summary>
+    /// Applies AES-CTR encryption using the supplied <paramref name="counter" /> block,
+    /// producing <c>input XOR keystream</c> in <paramref name="output" />.
+    /// </summary>
+    /// <param name="input">The plaintext (or ciphertext) bytes.</param>
+    /// <param name="output">The destination span; must be at least <paramref name="input" />.Length bytes.</param>
+    /// <param name="counter">The initial counter block; the low 32 bits are incremented per
+    /// block per RFC 8452.</param>
     private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
     {
         int blockSize = this.encCipher.BlockSize;
@@ -343,6 +355,13 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
         }
     }
 
+    /// <summary>
+    /// Writes the byte-wise XOR of <paramref name="a" /> and <paramref name="b" /> into
+    /// <paramref name="result" />.
+    /// </summary>
+    /// <param name="a">The first operand span.</param>
+    /// <param name="b">The second operand span; must be at least <paramref name="a" />.Length bytes.</param>
+    /// <param name="result">The destination span; must be at least <paramref name="a" />.Length bytes.</param>
     private static void Xor(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, Span<byte> result)
     {
         for (int i = 0; i < result.Length; i++) result[i] = (byte)(a[i] ^ b[i]);

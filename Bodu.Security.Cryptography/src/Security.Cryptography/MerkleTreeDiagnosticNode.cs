@@ -322,5 +322,11 @@ public sealed class MerkleTreeDiagnostics
         return hasher.Hash!;
     }
 
+    /// <summary>
+    /// Returns the upper-case hexadecimal representation of <paramref name="bytes" /> for
+    /// diagnostic display.
+    /// </summary>
+    /// <param name="bytes">The bytes to format.</param>
+    /// <returns>A hex-encoded string.</returns>
     private static string ToHex(byte[] bytes) => Convert.ToHexString(bytes);
 }

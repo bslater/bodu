@@ -126,6 +126,10 @@ public sealed class CcmModeTransform : IAeadBlockCipherModeTransform
 
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// Ensures the associated-data (AAD) MAC contribution has been finalised exactly once before
+    /// payload bytes are processed; no-op on subsequent invocations.
+    /// </summary>
     private void EnsureAadProcessed()
     {
         if (!this.aadProcessed) { this.aad = Array.Empty<byte>(); this.aadProcessed = true; }
@@ -178,6 +182,12 @@ public sealed class CcmModeTransform : IAeadBlockCipherModeTransform
         return mac;
     }
 
+    /// <summary>
+    /// XORs <paramref name="block" /> into <paramref name="mac" /> and runs a single AES block
+    /// through the underlying cipher to advance the CBC-MAC state.
+    /// </summary>
+    /// <param name="mac">The CBC-MAC accumulator (16 bytes); updated in place.</param>
+    /// <param name="block">The next input block; must be 16 bytes.</param>
     private void CbcMacUpdate(byte[] mac, ReadOnlySpan<byte> block)
     {
         Span<byte> xored = stackalloc byte[mac.Length];
@@ -203,6 +213,14 @@ public sealed class CcmModeTransform : IAeadBlockCipherModeTransform
         return ks;
     }
 
+    /// <summary>
+    /// Applies CTR-mode encryption starting from counter-block index
+    /// <paramref name="startIndex" />, writing <c>input XOR keystream</c> into
+    /// <paramref name="output" />.
+    /// </summary>
+    /// <param name="input">The plaintext (or ciphertext) bytes to XOR with the keystream.</param>
+    /// <param name="output">The destination span; must be at least <paramref name="input" />.Length bytes.</param>
+    /// <param name="startIndex">The starting counter-block index in the CTR sequence.</param>
     private void EncryptCtr(ReadOnlySpan<byte> input, Span<byte> output, int startIndex)
     {
         int blockSize = this.cipher.BlockSize;

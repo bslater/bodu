@@ -166,12 +166,21 @@ public sealed class MerkleTreeHash : IDisposable
     // Internal pipeline
     // -----------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// Clears all accumulated leaf buffers and intermediate state so the instance is ready to
+    /// compute a new hash.
+    /// </summary>
     private void Reset()
     {
         this.buffer.SetLength(0);
         this.currentLevel.Clear();
     }
 
+    /// <summary>
+    /// Appends <paramref name="data" /> to the current leaf accumulator, flushing full
+    /// leaf-sized blocks into the tree as they become available.
+    /// </summary>
+    /// <param name="data">The input bytes to feed into the hash.</param>
     private void ProcessInput(ReadOnlySpan<byte> data)
     {
         while (!data.IsEmpty)
@@ -188,6 +197,11 @@ public sealed class MerkleTreeHash : IDisposable
         }
     }
 
+    /// <summary>
+    /// Finalises any trailing partial leaf, combines intermediate node hashes up the tree, and
+    /// returns the root hash.
+    /// </summary>
+    /// <returns>The root Merkle-tree hash bytes.</returns>
     private byte[] ComputeFinalHash()
     {
         // Zero-pad the partial tail block to a full block size before hashing, so that every
@@ -227,6 +241,12 @@ public sealed class MerkleTreeHash : IDisposable
     // Hashing helpers
     // -----------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// Computes the leaf hash over the full contents of <paramref name="stream" /> using the
+    /// configured factory-produced <see cref="HashAlgorithm" />.
+    /// </summary>
+    /// <param name="stream">The memory stream containing the leaf bytes.</param>
+    /// <returns>The leaf hash bytes.</returns>
     private byte[] ComputeLeafHash(MemoryStream stream)
     {
         stream.Position = 0;
@@ -234,6 +254,12 @@ public sealed class MerkleTreeHash : IDisposable
         return hasher.ComputeHash(stream);
     }
 
+    /// <summary>
+    /// Computes the leaf hash over <paramref name="span" /> using the configured factory-produced
+    /// <see cref="HashAlgorithm" />.
+    /// </summary>
+    /// <param name="span">The leaf bytes.</param>
+    /// <returns>The leaf hash bytes.</returns>
     private byte[] ComputeLeafHash(ReadOnlySpan<byte> span)
     {
         using var hasher = this.algorithmFactory();
