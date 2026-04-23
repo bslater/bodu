@@ -320,6 +320,43 @@ public sealed class NotableDateAdjusterTests
 		Assert.IsTrue(NotableDateAdjuster.IsInScope(adjustment, 2025, "AU-NSW", null));
 	}
 
+	/// <summary>
+	/// Verifies that scope evaluation is bidirectional: an adjustment scoped to a subdivision (e.g. <c>AU-WA</c>) is also in scope
+	/// when the call site is generating for the parent country (<c>AU</c>). This lets subdivision-specific substitutes fire while
+	/// generating country-level rules; the generator tags the emitted occurrence with the narrower territory.
+	/// </summary>
+	[TestMethod]
+	public void IsInScope_WhenAdjustmentTerritoryChildOfRequested_ShouldReturnTrue()
+	{
+		var adjustment = new ObservanceAdjustment
+		{
+			Key = "test",
+			Trigger = AdjustmentTrigger.Always,
+			Action = AdjustmentAction.None,
+			TerritoryCode = "AU-WA",
+		};
+
+		Assert.IsTrue(NotableDateAdjuster.IsInScope(adjustment, 2025, "AU", null));
+	}
+
+	/// <summary>
+	/// Verifies that a peer-subdivision adjustment (e.g. <c>AU-WA</c>) does not activate when generating for a different,
+	/// unrelated subdivision (<c>AU-NSW</c>).
+	/// </summary>
+	[TestMethod]
+	public void IsInScope_WhenAdjustmentTerritoryIsUnrelatedSibling_ShouldReturnFalse()
+	{
+		var adjustment = new ObservanceAdjustment
+		{
+			Key = "test",
+			Trigger = AdjustmentTrigger.Always,
+			Action = AdjustmentAction.None,
+			TerritoryCode = "AU-WA",
+		};
+
+		Assert.IsFalse(NotableDateAdjuster.IsInScope(adjustment, 2025, "AU-NSW", null));
+	}
+
 	private sealed class ShiftByFiveDaysHandler : IAdjustmentHandler
 	{
 		public AdjustmentHandlerResult Apply(AdjustmentHandlerContext context) =>

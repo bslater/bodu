@@ -70,9 +70,13 @@
 
   <NotableDate name="Anzac Day">
     <Rule category="Remembrance" territory="AU" nonWorking="true"
-          comment="Observed on 25 April. Per-state rules govern any substitute day when the date falls on a weekend; the date itself is not shifted.">
+          comment="Observed on 25 April. WA and NT observe a substitute Monday when Anzac Day falls on a weekend; other states do not shift the observance.">
       <Fixed month="April" day="25" />
       <Tag>NationalHoliday</Tag>
+      <!-- Western Australia: substitute Monday when 25 April falls on a weekend. -->
+      <Adjustment key="wa-weekend-sub" when="IfWeekend" action="MoveToNextWeekday" territory="AU-WA" />
+      <!-- Northern Territory: substitute Monday when 25 April falls on a weekend. -->
+      <Adjustment key="nt-weekend-sub" when="IfWeekend" action="MoveToNextWeekday" territory="AU-NT" />
     </Rule>
   </NotableDate>
 

@@ -84,10 +84,17 @@ internal sealed class NotableDateAdjuster
 			if (!TerritoryCode.TryParse(territoryCode, out var requested))
 				return false;
 
+			// Bidirectional containment: the adjustment is in scope when either party
+			// contains the other. Parent-containing-child (adjustment="AU" queried
+			// against "AU-NSW") lets country-level shifts apply to every subdivision.
+			// Child-containing-parent (adjustment="AU-WA" evaluated while generating
+			// for rule territory "AU") lets a subdivision-specific substitute fire
+			// during generation of the parent rule; the emitted occurrence is then
+			// tagged with the adjustment's own territory by the generator.
 			bool matched = false;
 			foreach (var scoped in TerritoryCode.ParseList(adjustment.TerritoryCode))
 			{
-				if (scoped.Contains(requested))
+				if (scoped.Contains(requested) || requested.Contains(scoped))
 				{
 					matched = true;
 					break;
