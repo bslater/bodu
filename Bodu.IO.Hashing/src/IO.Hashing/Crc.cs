@@ -273,6 +273,16 @@ public sealed class Crc
         return value;
     }
 
+    /// <summary>
+    /// Updates <paramref name="crc" /> by feeding <paramref name="data" /> through a non-reflected
+    /// bit-by-bit CRC step using the lookup <paramref name="table" />.
+    /// </summary>
+    /// <param name="data">The input bytes.</param>
+    /// <param name="crc">The current CRC accumulator.</param>
+    /// <param name="table">The 2-entry bit-wise lookup table for the active polynomial.</param>
+    /// <param name="shift">The bit offset of the MSB in the CRC register (width − 1 for wide CRCs,
+    /// or width − 1 for narrow CRCs where the register is left-aligned).</param>
+    /// <returns>The updated CRC accumulator.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong ProcessBitwiseNormal(ReadOnlySpan<byte> data, ulong crc, ulong[] table, int shift)
     {
@@ -288,6 +298,14 @@ public sealed class Crc
         return crc;
     }
 
+    /// <summary>
+    /// Updates <paramref name="crc" /> by feeding <paramref name="data" /> through a reflected
+    /// bit-by-bit CRC step using the lookup <paramref name="table" />.
+    /// </summary>
+    /// <param name="data">The input bytes.</param>
+    /// <param name="crc">The current CRC accumulator.</param>
+    /// <param name="table">The 2-entry bit-wise lookup table for the active polynomial.</param>
+    /// <returns>The updated CRC accumulator.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong ProcessBitwiseReflected(ReadOnlySpan<byte> data, ulong crc, ulong[] table)
     {
@@ -303,6 +321,15 @@ public sealed class Crc
         return crc;
     }
 
+    /// <summary>
+    /// Updates <paramref name="crc" /> by feeding <paramref name="data" /> through a non-reflected
+    /// byte-wise CRC step using the 256-entry lookup <paramref name="table" />.
+    /// </summary>
+    /// <param name="data">The input bytes.</param>
+    /// <param name="crc">The current CRC accumulator.</param>
+    /// <param name="table">The 256-entry byte-wise lookup table for the active polynomial.</param>
+    /// <param name="shift">The bit offset of the top byte in the CRC register (width − 8).</param>
+    /// <returns>The updated CRC accumulator.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong ProcessBytewiseNormal(ReadOnlySpan<byte> data, ulong crc, ulong[] table, int shift)
     {
@@ -313,6 +340,14 @@ public sealed class Crc
         return crc;
     }
 
+    /// <summary>
+    /// Updates <paramref name="crc" /> by feeding <paramref name="data" /> through a reflected
+    /// byte-wise CRC step using the 256-entry lookup <paramref name="table" />.
+    /// </summary>
+    /// <param name="data">The input bytes.</param>
+    /// <param name="crc">The current CRC accumulator.</param>
+    /// <param name="table">The 256-entry byte-wise lookup table for the active polynomial.</param>
+    /// <returns>The updated CRC accumulator.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong ProcessBytewiseReflected(ReadOnlySpan<byte> data, ulong crc, ulong[] table)
     {
@@ -323,6 +358,11 @@ public sealed class Crc
         return crc;
     }
 
+    /// <summary>
+    /// Routes <paramref name="data" /> through the reflected or non-reflected byte-wise path
+    /// when the hash width is at least a byte, or the corresponding bit-wise path otherwise.
+    /// </summary>
+    /// <param name="data">The input bytes to feed into the CRC accumulator.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ProcessBlocks(ReadOnlySpan<byte> data)
     {
@@ -352,6 +392,14 @@ public sealed class Crc
         fullWord.Slice(0, byteCount).CopyTo(destination);
     }
 
+    /// <summary>
+    /// Returns the output byte length for <paramref name="crcStandard" />, rounding up the polynomial
+    /// width in bits to the next whole byte.
+    /// </summary>
+    /// <param name="crcStandard">The CRC standard whose output size is requested. Must not be
+    /// <see langword="null" />.</param>
+    /// <returns>The output length in bytes.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="crcStandard" /> is <see langword="null" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int HashLengthInBytesFor(CrcStandard crcStandard)
     {

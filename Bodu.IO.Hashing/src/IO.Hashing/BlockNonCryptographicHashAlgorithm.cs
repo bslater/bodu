@@ -203,6 +203,11 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
         this.totalLength = source.totalLength;
     }
 
+    /// <summary>
+    /// Accumulates <paramref name="buffer" /> into the residual buffer and drains complete blocks
+    /// to <c>ProcessFullBlock</c>, preserving any incomplete trailing block for a subsequent call.
+    /// </summary>
+    /// <param name="buffer">The input bytes to feed into the hash.</param>
     private void ProcessBlocks(ReadOnlySpan<byte> buffer)
     {
         int pos = 0;

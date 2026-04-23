@@ -253,6 +253,11 @@ public sealed partial class CrcStandard
         return false;
     }
 
+    /// <summary>
+    /// Returns the cached case-sensitive map from canonical CRC name to
+    /// <see cref="CrcStandards" /> enum value, lazily constructing it on first use.
+    /// </summary>
+    /// <returns>A shared, read-only dictionary keyed by CRC name (for example, <c>"CRC-3/GSM"</c>).</returns>
     private static Dictionary<string, CrcStandards> GetNameToEnumMap()
     {
         Dictionary<string, CrcStandards>? map = Volatile.Read(ref s_nameToEnum);
@@ -260,6 +265,11 @@ public sealed partial class CrcStandard
         return BuildNameLookup();
     }
 
+    /// <summary>
+    /// Builds the canonical-name → <see cref="CrcStandards" /> dictionary used by
+    /// <see cref="GetNameToEnumMap" />; called once on first lookup and cached for reuse.
+    /// </summary>
+    /// <returns>A new dictionary populated with every name in the catalogue.</returns>
     private static Dictionary<string, CrcStandards> BuildNameLookup()
     {
         var map = new Dictionary<string, CrcStandards>(112, StringComparer.Ordinal);
@@ -380,6 +390,11 @@ public sealed partial class CrcStandard
         return winner ?? map;
     }
 
+    /// <summary>
+    /// Materialises every <see cref="CrcStandards" /> value as a fully-populated
+    /// <see cref="CrcStandard" /> and caches the resulting read-only collection for reuse.
+    /// </summary>
+    /// <returns>A read-only list covering every catalogue entry, in enum-declaration order.</returns>
     private static IReadOnlyList<CrcStandard> BuildAll()
     {
         var array = new CrcStandard[s_catalog.Length];
