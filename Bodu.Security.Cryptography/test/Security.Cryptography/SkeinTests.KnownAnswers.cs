@@ -37,7 +37,7 @@ public partial class SkeinTests
 
         Assert.AreEqual(
             "BC5B4C50925519C290CC634277AE3D6257212395CBA733BBAD37A4AF0FA06AF4" +
-            "1FCA7903D06564FEA7A2D3730DBDB80C1F85562DFCC070334EA4D1D9E72CBE7B",
+            "1FCA7903D06564FEA7A2D3730DBDB80C1F85562DFCC070334EA4D1D9E72CBA7A",
             Convert.ToHexString(actual));
     }
 
@@ -61,55 +61,54 @@ public partial class SkeinTests
     }
 
     /// <summary>
-    /// Verifies that Skein-256-256 reproduces the Skein 1.3 specification vector for a single-byte <c>0xFF</c>
-    /// message, exercising the final-block padding path for a message that is strictly shorter than one Threefish-256
-    /// block.
+    /// Verifies that Skein-256-256 reproduces the BouncyCastle reference vector for a single-byte <c>0xFB</c>
+    /// message, exercising the sub-block final-block padding path at the smallest state size.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenInputIsSingleByte_ForSkein256_ShouldMatchSpecificationVector()
+    public void ComputeHash_WhenInputIsSingleByte_ForSkein256_ShouldMatchReferenceVector()
     {
         using var skein = new Skein256();
 
-        byte[] actual = skein.ComputeHash(new byte[] { 0xFF });
+        byte[] actual = skein.ComputeHash(new byte[] { 0xFB });
 
         Assert.AreEqual(
-            "0B98DCD198EA0E50A7A244C444E25C23DA30C10FC9A1F270A6637F1F34E67ED2",
+            "088EB23CC2BCCFB8171AA64E966D4AF937325167DFCD170700FFD21F8A4CBDAC",
             Convert.ToHexString(actual));
     }
 
     /// <summary>
-    /// Verifies that Skein-512-512 reproduces the Skein 1.3 specification vector for a single-byte <c>0xFF</c>
-    /// message, exercising the single-block final UBI path for a sub-block message.
+    /// Verifies that Skein-512-512 reproduces the BouncyCastle reference vector for a single-byte <c>0xFB</c>
+    /// message, exercising the sub-block final-block padding path at the primary state size.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenInputIsSingleByte_ForSkein512_ShouldMatchSpecificationVector()
+    public void ComputeHash_WhenInputIsSingleByte_ForSkein512_ShouldMatchReferenceVector()
     {
         using var skein = new Skein512();
 
-        byte[] actual = skein.ComputeHash(new byte[] { 0xFF });
+        byte[] actual = skein.ComputeHash(new byte[] { 0xFB });
 
         Assert.AreEqual(
-            "71B7BCE6FE6452227B9CED6014249E5BF9A9754C3AD618CCC4E0AAE16B316CC8" +
-            "CA698D8644307ED3E80B6EF1570812AC5272DC409B5A012DF2A579102F340617",
+            "C49E03D50B4B2CC46BD3B7EF7014C8A45B016399FD1714467B7596C86DE98240" +
+            "E35BF7F9772B7D65465CD4CFFAB14E6BC154C54FC67B8BC340ABF08EFF572B9E",
             Convert.ToHexString(actual));
     }
 
     /// <summary>
-    /// Verifies that Skein-1024-1024 reproduces the Skein 1.3 specification vector for a single-byte <c>0xFF</c>
-    /// message, exercising the single-block final UBI path at the widest state size.
+    /// Verifies that Skein-1024-1024 reproduces the BouncyCastle reference vector for a single-byte <c>0xFB</c>
+    /// message, exercising the sub-block final-block padding path at the widest state size.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenInputIsSingleByte_ForSkein1024_ShouldMatchSpecificationVector()
+    public void ComputeHash_WhenInputIsSingleByte_ForSkein1024_ShouldMatchReferenceVector()
     {
         using var skein = new Skein1024();
 
-        byte[] actual = skein.ComputeHash(new byte[] { 0xFF });
+        byte[] actual = skein.ComputeHash(new byte[] { 0xFB });
 
         Assert.AreEqual(
-            "E62C05802EA0152407CDD8787FDA9E35703DE862A4FBC119CFF8590AFE79250B" +
-            "CCC8B3FAF1BD2422AB5C0D03611BFF1F79D12432F31DCA0F78D8FE26B3C31B9B" +
-            "CA0EFF7D61B3BB76D3A906D2D8C8F3CDC4E3B12C5A5C2F1FF35CD54FAE3D5C1D" +
-            "9DE0A2A0A96E11B4C3E1E6D82CC7D7D5E6A4E2C14E8EFBDD52B42DB3D65A8F1F",
+            "6426BDC57B2771A6EF1B0DD39F8096A9A07554565743AC3DE851D28258FCFF22" +
+            "9993E11C4E6BEBC8B6ECB0AD1B140276081AA390EC3875960336119427827473" +
+            "4770671B79F076771E2CFDAAF5ADC9B10CBAE43D8E6CD2B1C1F5D6C82DC96618" +
+            "00DDC476F25865B8748253173187D81DA971C027D91D32FB390301C2110D2DB2",
             Convert.ToHexString(actual));
     }
 }
