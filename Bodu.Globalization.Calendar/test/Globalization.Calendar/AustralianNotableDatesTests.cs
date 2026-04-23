@@ -224,10 +224,74 @@ namespace Bodu.Globalization.Calendar
 
 			var results = service.GetNotableDates(2026, subdivision);
 
-			var anzacDay = results.SingleOrDefault(d => d.Name == "Anzac Day");
-			Assert.IsNotNull(anzacDay, $"Anzac Day should be visible to subdivision {subdivision}.");
-			Assert.AreEqual("AU", anzacDay!.TerritoryCode);
-			Assert.AreEqual(new DateTime(2026, 4, 25), anzacDay.Date);
-		}
+			// Anzac Day can fall on a weekend (25 April 2026 is a Saturday); WA and NT emit a substitute Monday as well,
+		// so filter to the original observance entry rather than asserting a single occurrence per subdivision.
+		var anzacDay = results.SingleOrDefault(d => d.Name == "Anzac Day" && !d.WasAdjusted);
+		Assert.IsNotNull(anzacDay, $"Anzac Day should be visible to subdivision {subdivision}.");
+		Assert.AreEqual("AU", anzacDay!.TerritoryCode);
+		Assert.AreEqual(new DateTime(2026, 4, 25), anzacDay.Date);
+	}
+
+	/// <summary>
+	/// Verifies that Western Australia observes a substitute Monday when Anzac Day falls on a Saturday (25 April 2020), emitting
+	/// both the original Saturday observance and the adjusted Monday substitute scoped to <c>AU-WA</c>.
+	/// </summary>
+	[TestMethod]
+	public void GetNotableDates_WhenAnzacDayOnSaturday_ShouldEmitMondaySubstitute_ForAuWa()
+	{
+		var service = BuildAuService();
+
+		var occurrences = service.GetNotableDates(2020, "AU-WA")
+			.Where(d => d.Name == "Anzac Day")
+			.OrderBy(d => d.Date)
+			.ToList();
+
+		Assert.AreEqual(2, occurrences.Count);
+		Assert.AreEqual(new DateTime(2020, 4, 25), occurrences[0].Date);
+		Assert.IsFalse(occurrences[0].WasAdjusted);
+		Assert.AreEqual(new DateTime(2020, 4, 27), occurrences[1].Date);
+		Assert.IsTrue(occurrences[1].WasAdjusted);
+		Assert.AreEqual(DayOfWeek.Monday, occurrences[1].Date.DayOfWeek);
+		Assert.AreEqual("AU-WA", occurrences[1].TerritoryCode,
+			"The substitute Monday must be tagged with the narrower AU-WA scope so consumers know it's not a country-wide shift.");
+	}
+
+	/// <summary>
+	/// Verifies that New South Wales does NOT observe a substitute Monday when Anzac Day falls on a Saturday (25 April 2020):
+	/// only the original observance is emitted, reflecting the per-state divergence in Anzac Day weekend treatment.
+	/// </summary>
+	[TestMethod]
+	public void GetNotableDates_WhenAnzacDayOnSaturday_ShouldNotEmitSubstitute_ForAuNsw()
+	{
+		var service = BuildAuService();
+
+		var occurrences = service.GetNotableDates(2020, "AU-NSW")
+			.Where(d => d.Name == "Anzac Day")
+			.ToList();
+
+		Assert.AreEqual(1, occurrences.Count);
+		Assert.AreEqual(new DateTime(2020, 4, 25), occurrences[0].Date);
+		Assert.IsFalse(occurrences[0].WasAdjusted);
+	}
+
+	/// <summary>
+	/// Verifies that the Northern Territory observes a substitute Monday when Anzac Day falls on a Sunday (25 April 2021).
+	/// </summary>
+	[TestMethod]
+	public void GetNotableDates_WhenAnzacDayOnSunday_ShouldEmitMondaySubstitute_ForAuNt()
+	{
+		var service = BuildAuService();
+
+		var occurrences = service.GetNotableDates(2021, "AU-NT")
+			.Where(d => d.Name == "Anzac Day")
+			.OrderBy(d => d.Date)
+			.ToList();
+
+		Assert.AreEqual(2, occurrences.Count);
+		Assert.AreEqual(new DateTime(2021, 4, 25), occurrences[0].Date);
+		Assert.IsFalse(occurrences[0].WasAdjusted);
+		Assert.AreEqual(new DateTime(2021, 4, 26), occurrences[1].Date);
+		Assert.IsTrue(occurrences[1].WasAdjusted);
+		Assert.AreEqual("AU-NT", occurrences[1].TerritoryCode);
 	}
 }

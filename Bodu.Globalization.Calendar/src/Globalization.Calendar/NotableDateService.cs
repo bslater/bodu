@@ -261,9 +261,17 @@ public sealed class NotableDateService : INotableDateService
 					if (!result.Activated || result.AdjustedDate.Date == anchor.Value.Date)
 						continue;
 
+					// When the adjustment declares a more specific territory than the rule itself (e.g. an Anzac
+					// Day substitute scoped to AU-WA sitting on a country-level AU rule), tag the emitted
+					// occurrence with that narrower scope so downstream filtering and delineation reflect where
+					// the substitute is actually observed.
+					string? emittedTerritory = !string.IsNullOrEmpty(adjustment.TerritoryCode)
+						? adjustment.TerritoryCode
+						: territory;
+
 					bool isNonWorking = result.IsNonWorkingOverride ?? rule.IsNonWorkingDay ?? false;
 					var reason = new AdjustmentReason(anchor.Value, result.Trigger, result.Action, result.HandlerKey);
-					output.Add(BuildNotableDate(rule, result.AdjustedDate, territory, reason, isNonWorking));
+					output.Add(BuildNotableDate(rule, result.AdjustedDate, emittedTerritory, reason, isNonWorking));
 				}
 			}
 		}
