@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Extensions;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Xml.Schema;
@@ -42,7 +43,7 @@ public sealed class UseDirectiveInheritanceTests
 			"  </NotableDate>\n" +
 			"</NotableDates>";
 
-		Assert.ThrowsException<XmlSchemaValidationException>(() => NotableDateRuleParser.ParseDocument(xml));
+		Assert.ThrowsExactly<XmlSchemaValidationException>(() => NotableDateRuleParser.ParseDocument(xml));
 	}
 
 	/// <summary>
@@ -117,7 +118,7 @@ public sealed class UseDirectiveInheritanceTests
 			"  </UseFrom>\n" +
 			"</NotableDates>";
 
-		Assert.ThrowsException<InvalidOperationException>(() => NotableDateRuleParser.ParseDocument(xml));
+		Assert.ThrowsExactly<InvalidOperationException>(() => NotableDateRuleParser.ParseDocument(xml));
 	}
 
 	// ------------------------------------------------------------------------------------------
