@@ -47,6 +47,7 @@ public sealed partial class Whirlpool
 
     private readonly ulong[] _state = new ulong[8];
     private WhirlpoolVersion _version = WhirlpoolVersion.WhirlpoolInfo3;
+    private bool _inputConsumed;
     private bool _disposed;
 
     /// <summary>
@@ -101,7 +102,8 @@ public sealed partial class Whirlpool
         set
         {
             this.ThrowIfDisposed();
-            this.ThrowIfInvalidState();
+            if (this._inputConsumed)
+                throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
             ThrowHelper.ThrowIfEnumValueIsUndefined(value);
 
             this._version = value;
@@ -114,6 +116,21 @@ public sealed partial class Whirlpool
         this.ThrowIfDisposed();
         base.Initialize();
         Array.Clear(this._state);
+        this._inputConsumed = false;
+    }
+
+    /// <inheritdoc />
+    protected override void HashCore(byte[] array, int ibStart, int cbSize)
+    {
+        base.HashCore(array, ibStart, cbSize);
+        this._inputConsumed = true;
+    }
+
+    /// <inheritdoc />
+    protected override void HashCore(ReadOnlySpan<byte> source)
+    {
+        base.HashCore(source);
+        this._inputConsumed = true;
     }
 
     /// <summary>
