@@ -44,6 +44,7 @@
     <None Remove="Globalization.Calendar\NotableDates.xsd" />
     <None Remove="Globalization.Calendar\Resources\Common.xml" />
     <None Remove="Globalization.Calendar\Resources\Christian.xml" />
+    <None Remove="Globalization.Calendar\Resources\AU.xml" />
     <None Remove="Globalization.Calendar\Resources\US.xml" />
     <None Remove="Globalization.Calendar\Resources\GB.xml" />
     <None Remove="Globalization.Calendar\Resources\FR.xml" />
@@ -62,6 +63,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization.Calendar\Resources\Common.xml" />
     <EmbeddedResource Include="Globalization.Calendar\Resources\Christian.xml" />
+    <EmbeddedResource Include="Globalization.Calendar\Resources\AU.xml" />
     <EmbeddedResource Include="Globalization.Calendar\Resources\US.xml" />
     <EmbeddedResource Include="Globalization.Calendar\Resources\GB.xml" />
     <EmbeddedResource Include="Globalization.Calendar\Resources\FR.xml" />
