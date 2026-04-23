@@ -62,12 +62,12 @@ public abstract class CityHash<T>
     // invoke ComputeHashCore on the complete input in a single pass, as the algorithm requires.
     private MemoryStream? _inputBuffer = new MemoryStream();
 
-    private bool disposed = false;
+    private bool _disposed = false;
 
 #if !NET6_0_OR_GREATER
     // Required for .NET Standard 2.0 or older target frameworks — tracks whether HashFinal
     // has been called since the last Initialize so we can enforce the finalized guard.
-    private bool finalized;
+    private bool _finalized;
 #endif
 
     /// <summary>
@@ -193,7 +193,7 @@ public abstract class CityHash<T>
         ThrowHelper.ThrowIfLessThan(cbSize, 0);
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
 
-        if (this.finalized)
+        if (this._finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
@@ -236,10 +236,10 @@ public abstract class CityHash<T>
         ThrowIfDisposed();
 
 #if !NET6_0_OR_GREATER
-        if (this.finalized)
+        if (this._finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 
-        this.finalized = true;
+        this._finalized = true;
         State = 2;
 #endif
 
@@ -289,7 +289,7 @@ public abstract class CityHash<T>
         _inputBuffer.Position = 0;
 
 #if !NET6_0_OR_GREATER
-        this.finalized = false;
+        this._finalized = false;
         State = 0;
 #endif
     }
@@ -302,9 +302,9 @@ public abstract class CityHash<T>
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this.disposed, this);
+        ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
-        if (this.disposed)
+        if (this._disposed)
             throw new ObjectDisposedException(GetType().Name);
 #endif
     }

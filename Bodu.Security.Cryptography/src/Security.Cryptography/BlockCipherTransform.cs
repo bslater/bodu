@@ -32,13 +32,13 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 public abstract class BlockCipherTransform : ICryptoTransform
 {
-    private readonly IBlockCipher cipher;
-    private readonly bool encrypt;
-    private readonly IBlockCipherModeTransform mode;
-    private readonly IPaddingStrategy padding;
+    private readonly IBlockCipher _cipher;
+    private readonly bool _encrypt;
+    private readonly IBlockCipherModeTransform _mode;
+    private readonly IPaddingStrategy _padding;
 
-    private byte[]? deferredInput;
-    private bool disposed;
+    private byte[]? _deferredInput;
+    private bool _disposed;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="BlockCipherTransform" /> class using the specified cipher
@@ -56,10 +56,10 @@ public abstract class BlockCipherTransform : ICryptoTransform
     /// <exception cref="ArgumentNullException"><paramref name="cipher" /> is <see langword="null" />.</exception>
     protected BlockCipherTransform(IBlockCipher cipher, CipherBlockMode cipherMode, PaddingMode paddingMode, byte[] iv, bool encrypt)
     {
-        this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
-        this.encrypt = encrypt;
-        this.mode = BlockCipherModeFactory.Create(cipherMode, cipher, iv);
-        this.padding = PaddingFactory.Create(paddingMode);
+        this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
+        this._encrypt = encrypt;
+        this._mode = BlockCipherModeFactory.Create(cipherMode, cipher, iv);
+        this._padding = PaddingFactory.Create(paddingMode);
     }
 
     /// <summary>
@@ -82,10 +82,10 @@ public abstract class BlockCipherTransform : ICryptoTransform
     /// <exception cref="ArgumentNullException"><paramref name="cipher" /> is <see langword="null" />.</exception>
     protected BlockCipherTransform(IBlockCipher cipher, CipherBlockMode cipherMode, BoduPaddingMode paddingMode, byte[] iv, bool encrypt)
     {
-        this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
-        this.encrypt = encrypt;
-        this.mode = BlockCipherModeFactory.Create(cipherMode, cipher, iv);
-        this.padding = PaddingFactory.Create(paddingMode);
+        this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
+        this._encrypt = encrypt;
+        this._mode = BlockCipherModeFactory.Create(cipherMode, cipher, iv);
+        this._padding = PaddingFactory.Create(paddingMode);
     }
 
     /// <inheritdoc />
@@ -95,25 +95,25 @@ public abstract class BlockCipherTransform : ICryptoTransform
     public bool CanTransformMultipleBlocks => true;
 
     /// <inheritdoc />
-    public int InputBlockSize => this.cipher.BlockSize;
+    public int InputBlockSize => this._cipher.BlockSize;
 
     /// <inheritdoc />
-    public int OutputBlockSize => this.cipher.BlockSize;
+    public int OutputBlockSize => this._cipher.BlockSize;
 
     /// <inheritdoc />
     public void Dispose()
     {
-        if (this.disposed)
+        if (this._disposed)
             return;
 
-        if (this.deferredInput is not null)
+        if (this._deferredInput is not null)
         {
-            CryptographicOperations.ZeroMemory(this.deferredInput);
-            this.deferredInput = null;
+            CryptographicOperations.ZeroMemory(this._deferredInput);
+            this._deferredInput = null;
         }
 
-        this.cipher.Dispose();
-        this.disposed = true;
+        this._cipher.Dispose();
+        this._disposed = true;
         GC.SuppressFinalize(this);
     }
 
@@ -136,35 +136,35 @@ public abstract class BlockCipherTransform : ICryptoTransform
     public int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount,
                               byte[] outputBuffer, int outputOffset)
     {
-        ObjectDisposedException.ThrowIf(this.disposed, this);
+        ObjectDisposedException.ThrowIf(this._disposed, this);
         ThrowHelper.ThrowIfNull(inputBuffer);
         ThrowHelper.ThrowIfNull(outputBuffer);
 
         ReadOnlySpan<byte> input = inputBuffer.AsSpan(inputOffset, inputCount);
         Span<byte> output = outputBuffer.AsSpan(outputOffset, inputCount);
 
-        if (this.encrypt)
+        if (this._encrypt)
         {
-            return this.mode.Transform(input, output, true);
+            return this._mode.Transform(input, output, true);
         }
         else
         {
-            bool stripPadding = this.padding.StripsPaddingOnUnpad;
+            bool stripPadding = this._padding.StripsPaddingOnUnpad;
 
-            if (stripPadding && input.Length <= this.cipher.BlockSize)
+            if (stripPadding && input.Length <= this._cipher.BlockSize)
             {
-                this.deferredInput = input.ToArray();
+                this._deferredInput = input.ToArray();
                 return 0;
             }
 
             int bytesToProcess = input.Length;
             if (stripPadding)
             {
-                bytesToProcess -= this.cipher.BlockSize;
-                this.deferredInput = input.Slice(bytesToProcess).ToArray();
+                bytesToProcess -= this._cipher.BlockSize;
+                this._deferredInput = input.Slice(bytesToProcess).ToArray();
             }
 
-            return this.mode.Transform(input.Slice(0, bytesToProcess), output.Slice(0, bytesToProcess), false);
+            return this._mode.Transform(input.Slice(0, bytesToProcess), output.Slice(0, bytesToProcess), false);
         }
     }
 
@@ -180,24 +180,24 @@ public abstract class BlockCipherTransform : ICryptoTransform
     /// <exception cref="CryptographicException">The padding is invalid or cannot be removed during decryption.</exception>
     public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
     {
-        ObjectDisposedException.ThrowIf(this.disposed, this);
+        ObjectDisposedException.ThrowIf(this._disposed, this);
         ThrowHelper.ThrowIfNull(inputBuffer);
 
         ReadOnlySpan<byte> input = inputBuffer.AsSpan(inputOffset, inputCount);
 
-        if (this.encrypt)
+        if (this._encrypt)
         {
-            byte[] padded = this.padding.Pad(input, this.cipher.BlockSize);
+            byte[] padded = this._padding.Pad(input, this._cipher.BlockSize);
             byte[] output = new byte[padded.Length];
-            this.mode.Transform(padded, output, true);
+            this._mode.Transform(padded, output, true);
             return output;
         }
         else
         {
-            byte[] combined = Combine(this.deferredInput, input);
+            byte[] combined = Combine(this._deferredInput, input);
             byte[] decrypted = new byte[combined.Length];
-            this.mode.Transform(combined, decrypted, false);
-            return this.padding.Unpad(decrypted, this.cipher.BlockSize);
+            this._mode.Transform(combined, decrypted, false);
+            return this._padding.Unpad(decrypted, this._cipher.BlockSize);
         }
     }
 

@@ -47,15 +47,15 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="../guides/cryptography/hashing.html#pattern-6--merkle-trees">Merkle-tree recipes in the hashing guide</seealso>
 public sealed class MerkleTreeHash : IDisposable
 {
-    private readonly int blockSize;
-    private readonly int fanOut;
-    private readonly Func<HashAlgorithm> algorithmFactory;
+    private readonly int _blockSize;
+    private readonly int _fanOut;
+    private readonly Func<HashAlgorithm> _algorithmFactory;
 
     // Accumulates raw bytes for the current partial block; reused across ComputeHash calls.
-    private readonly MemoryStream buffer;
+    private readonly MemoryStream _buffer;
 
     // Holds the hash values produced at the current tree level during reduction.
-    private List<byte[]> currentLevel;
+    private List<byte[]> _currentLevel;
 
     /// <summary>
     /// Initialises a new <see cref="MerkleTreeHash"/> instance with the specified hash algorithm
@@ -82,11 +82,11 @@ public sealed class MerkleTreeHash : IDisposable
     /// </exception>
     public MerkleTreeHash(Func<HashAlgorithm> algorithmFactory, int blockSize = 1024, int fanOut = 3)
     {
-        this.algorithmFactory = algorithmFactory ?? throw new ArgumentNullException(nameof(algorithmFactory));
-        this.blockSize = blockSize > 0 ? blockSize : throw new ArgumentOutOfRangeException(nameof(blockSize), "Block size must be greater than zero.");
-        this.fanOut = fanOut >= 2 ? fanOut : throw new ArgumentOutOfRangeException(nameof(fanOut), "Fan-out must be at least 2.");
-        this.buffer = new MemoryStream(blockSize);
-        this.currentLevel = new List<byte[]>();
+        this._algorithmFactory = algorithmFactory ?? throw new ArgumentNullException(nameof(algorithmFactory));
+        this._blockSize = blockSize > 0 ? blockSize : throw new ArgumentOutOfRangeException(nameof(blockSize), "Block size must be greater than zero.");
+        this._fanOut = fanOut >= 2 ? fanOut : throw new ArgumentOutOfRangeException(nameof(fanOut), "Fan-out must be at least 2.");
+        this._buffer = new MemoryStream(blockSize);
+        this._currentLevel = new List<byte[]>();
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ public sealed class MerkleTreeHash : IDisposable
         ArgumentNullException.ThrowIfNull(input);
         this.Reset();
 
-        byte[] buffer = ArrayPool<byte>.Shared.Rent(this.blockSize * 4);
+        byte[] buffer = ArrayPool<byte>.Shared.Rent(this._blockSize * 4);
         try
         {
             int bytesRead;
@@ -172,8 +172,8 @@ public sealed class MerkleTreeHash : IDisposable
     /// </summary>
     private void Reset()
     {
-        this.buffer.SetLength(0);
-        this.currentLevel.Clear();
+        this._buffer.SetLength(0);
+        this._currentLevel.Clear();
     }
 
     /// <summary>
@@ -185,14 +185,14 @@ public sealed class MerkleTreeHash : IDisposable
     {
         while (!data.IsEmpty)
         {
-            int toWrite = Math.Min(this.blockSize - (int)this.buffer.Length, data.Length);
-            this.buffer.Write(data.Slice(0, toWrite));
+            int toWrite = Math.Min(this._blockSize - (int)this._buffer.Length, data.Length);
+            this._buffer.Write(data.Slice(0, toWrite));
             data = data.Slice(toWrite);
 
-            if (this.buffer.Length == this.blockSize)
+            if (this._buffer.Length == this._blockSize)
             {
-                this.currentLevel.Add(this.ComputeLeafHash(this.buffer));
-                this.buffer.SetLength(0);
+                this._currentLevel.Add(this.ComputeLeafHash(this._buffer));
+                this._buffer.SetLength(0);
             }
         }
     }
@@ -207,34 +207,34 @@ public sealed class MerkleTreeHash : IDisposable
         // Zero-pad the partial tail block to a full block size before hashing, so that every
         // leaf is the same width regardless of input alignment. MemoryStream.SetLength fills
         // the extended region with zeros when growing.
-        if (this.buffer.Length > 0)
+        if (this._buffer.Length > 0)
         {
-            this.buffer.SetLength(this.blockSize);
-            this.currentLevel.Add(this.ComputeLeafHash(this.buffer));
-            this.buffer.SetLength(0);
+            this._buffer.SetLength(this._blockSize);
+            this._currentLevel.Add(this.ComputeLeafHash(this._buffer));
+            this._buffer.SetLength(0);
         }
 
         // Reduce level by level until a single root hash remains.
-        while (this.currentLevel.Count > 1)
+        while (this._currentLevel.Count > 1)
         {
-            int hashLength = this.currentLevel[0].Length;
-            var nextLevel = new List<byte[]>(this.currentLevel.Count / this.fanOut + 1);
+            int hashLength = this._currentLevel[0].Length;
+            var nextLevel = new List<byte[]>(this._currentLevel.Count / this._fanOut + 1);
 
-            for (int i = 0; i < this.currentLevel.Count; i += this.fanOut)
+            for (int i = 0; i < this._currentLevel.Count; i += this._fanOut)
             {
-                int groupSize = Math.Min(this.fanOut, this.currentLevel.Count - i);
+                int groupSize = Math.Min(this._fanOut, this._currentLevel.Count - i);
 
                 using var bufferBuilder = new PooledBufferBuilder<byte>(hashLength * groupSize);
                 for (int j = 0; j < groupSize; j++)
-                    bufferBuilder.AppendRange(this.currentLevel[i + j]);
+                    bufferBuilder.AppendRange(this._currentLevel[i + j]);
 
                 nextLevel.Add(this.ComputeLeafHash(bufferBuilder.AsSpan()));
             }
 
-            this.currentLevel = nextLevel;
+            this._currentLevel = nextLevel;
         }
 
-        return this.currentLevel[0];
+        return this._currentLevel[0];
     }
 
     // -----------------------------------------------------------------------------------------
@@ -250,7 +250,7 @@ public sealed class MerkleTreeHash : IDisposable
     private byte[] ComputeLeafHash(MemoryStream stream)
     {
         stream.Position = 0;
-        using var hasher = this.algorithmFactory();
+        using var hasher = this._algorithmFactory();
         return hasher.ComputeHash(stream);
     }
 
@@ -262,7 +262,7 @@ public sealed class MerkleTreeHash : IDisposable
     /// <returns>The leaf hash bytes.</returns>
     private byte[] ComputeLeafHash(ReadOnlySpan<byte> span)
     {
-        using var hasher = this.algorithmFactory();
+        using var hasher = this._algorithmFactory();
         byte[] result = new byte[hasher.HashSize >> 3];
         if (!hasher.TryComputeHash(span, result, out int bytesWritten))
             throw new CryptographicException("The hash algorithm's destination buffer was too small.");
@@ -281,6 +281,6 @@ public sealed class MerkleTreeHash : IDisposable
     /// <inheritdoc />
     public void Dispose()
     {
-        this.buffer.Dispose();
+        this._buffer.Dispose();
     }
 }

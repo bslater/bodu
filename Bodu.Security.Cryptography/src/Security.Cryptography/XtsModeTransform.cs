@@ -43,9 +43,9 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 public sealed class XtsModeTransform : IBlockCipherModeTransform
 {
-    private readonly IBlockCipher dataCipher;
-    private readonly IBlockCipher tweakCipher;
-    private readonly byte[] tweak; // sector number / tweak value
+    private readonly IBlockCipher _dataCipher;
+    private readonly IBlockCipher _tweakCipher;
+    private readonly byte[] _tweak; // sector number / tweak value
 
     /// <summary>
     /// Initialises a new instance of the <see cref="XtsModeTransform" /> class.
@@ -67,8 +67,8 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
     /// </exception>
     public XtsModeTransform(IBlockCipher dataCipher, IBlockCipher tweakCipher, byte[] tweak)
     {
-        this.dataCipher = dataCipher ?? throw new ArgumentNullException(nameof(dataCipher));
-        this.tweakCipher = tweakCipher ?? throw new ArgumentNullException(nameof(tweakCipher));
+        this._dataCipher = dataCipher ?? throw new ArgumentNullException(nameof(dataCipher));
+        this._tweakCipher = tweakCipher ?? throw new ArgumentNullException(nameof(tweakCipher));
         if (tweak is null) throw new ArgumentNullException(nameof(tweak));
         if (tweakCipher.BlockSize != dataCipher.BlockSize)
             throw new ArgumentException(
@@ -79,13 +79,13 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
                 $"Tweak length ({tweak.Length}) must equal the cipher block size ({dataCipher.BlockSize}).",
                 nameof(tweak));
 
-        this.tweak = (byte[])tweak.Clone();
+        this._tweak = (byte[])tweak.Clone();
     }
 
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        int blockSize = this.dataCipher.BlockSize;
+        int blockSize = this._dataCipher.BlockSize;
         if (input.Length % blockSize != 0)
             throw new ArgumentException(
                 $"XTS requires block-aligned input; {input.Length} is not a multiple of {blockSize}.", nameof(input));
@@ -93,7 +93,7 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
 
         // T_0 = tweakCipher.Encrypt(sector_number)
         Span<byte> T = stackalloc byte[blockSize];
-        this.tweakCipher.Encrypt(this.tweak, T);
+        this._tweakCipher.Encrypt(this._tweak, T);
 
         Span<byte> buf = stackalloc byte[blockSize];
 
@@ -105,9 +105,9 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
             // XEX: out = cipher(in XOR T) XOR T
             for (int i = 0; i < blockSize; i++) buf[i] = (byte)(inBlock[i] ^ T[i]);
             if (encrypt)
-                this.dataCipher.Encrypt(buf, outBlock);
+                this._dataCipher.Encrypt(buf, outBlock);
             else
-                this.dataCipher.Decrypt(buf, outBlock);
+                this._dataCipher.Decrypt(buf, outBlock);
             for (int i = 0; i < blockSize; i++) outBlock[i] ^= T[i];
 
             // Advance tweak: T = α ⊗ T in GF(2^128), little-endian, poly 0x87 reduction.

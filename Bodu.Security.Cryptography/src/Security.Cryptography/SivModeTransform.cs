@@ -54,10 +54,10 @@ public sealed class SivModeTransform : IAeadBlockCipherModeTransform
 {
     private const int TagLengthBytes = 16;
 
-    private readonly IBlockCipher s2vCipher;  // K1 — CMAC / S2V
-    private readonly IBlockCipher ctrCipher;  // K2 — CTR encryption
-    private byte[]? aad;
-    private bool aadProcessed;
+    private readonly IBlockCipher _s2vCipher;  // K1 — CMAC / S2V
+    private readonly IBlockCipher _ctrCipher;  // K2 — CTR encryption
+    private byte[]? _aad;
+    private bool _aadProcessed;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="SivModeTransform" /> class.
@@ -69,8 +69,8 @@ public sealed class SivModeTransform : IAeadBlockCipherModeTransform
     /// <exception cref="ArgumentException"><paramref name="iv" /> length does not equal the cipher block size.</exception>
     public SivModeTransform(IBlockCipher s2vCipher, IBlockCipher ctrCipher, byte[] iv)
     {
-        this.s2vCipher = s2vCipher ?? throw new ArgumentNullException(nameof(s2vCipher));
-        this.ctrCipher = ctrCipher ?? throw new ArgumentNullException(nameof(ctrCipher));
+        this._s2vCipher = s2vCipher ?? throw new ArgumentNullException(nameof(s2vCipher));
+        this._ctrCipher = ctrCipher ?? throw new ArgumentNullException(nameof(ctrCipher));
         if (iv is null) throw new ArgumentNullException(nameof(iv));
         if (iv.Length != s2vCipher.BlockSize)
             throw new ArgumentException(
@@ -84,10 +84,10 @@ public sealed class SivModeTransform : IAeadBlockCipherModeTransform
     /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
     {
-        if (this.aadProcessed)
+        if (this._aadProcessed)
             throw new InvalidOperationException("AssociatedData has already been processed.");
-        this.aad = associatedData.ToArray();
-        this.aadProcessed = true;
+        this._aad = associatedData.ToArray();
+        this._aadProcessed = true;
     }
 
     /// <inheritdoc />
@@ -99,7 +99,7 @@ public sealed class SivModeTransform : IAeadBlockCipherModeTransform
         EnsureAadProcessed();
 
         // SIV = S2V(K1, AAD, plaintext).
-        byte[] siv = S2V(this.aad.AsSpan(), plaintext);
+        byte[] siv = S2V(this._aad.AsSpan(), plaintext);
 
         // Encrypt plaintext with CTR (K2) seeded from SIV with bits 31 and 63 cleared
         // (RFC 5297 Section 2.6: "the rightmost bit is the 0th", so bit 63 = byte[8] bit 7,
@@ -134,7 +134,7 @@ public sealed class SivModeTransform : IAeadBlockCipherModeTransform
         CtrEncrypt(ciphertext, output.Slice(0, plaintextLength), ctrSeed);
 
         // Verify SIV.
-        byte[] expectedSiv = S2V(this.aad.AsSpan(), output.Slice(0, plaintextLength));
+        byte[] expectedSiv = S2V(this._aad.AsSpan(), output.Slice(0, plaintextLength));
         if (!CryptographicOperations.FixedTimeEquals(expectedSiv, receivedSiv))
         {
             CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
@@ -151,7 +151,7 @@ public sealed class SivModeTransform : IAeadBlockCipherModeTransform
     /// </summary>
     private void EnsureAadProcessed()
     {
-        if (!this.aadProcessed) { this.aad = Array.Empty<byte>(); this.aadProcessed = true; }
+        if (!this._aadProcessed) { this._aad = Array.Empty<byte>(); this._aadProcessed = true; }
     }
 
     /// <summary>
@@ -163,7 +163,7 @@ public sealed class SivModeTransform : IAeadBlockCipherModeTransform
     /// <returns>The S2V synthetic initialisation vector per RFC 5297 §2.4.</returns>
     private byte[] S2V(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
     {
-        int blockSize = this.s2vCipher.BlockSize;
+        int blockSize = this._s2vCipher.BlockSize;
 
         // D = CMAC(K1, 0^128)
         byte[] d = ComputeCmac(new byte[blockSize]);
@@ -211,11 +211,11 @@ public sealed class SivModeTransform : IAeadBlockCipherModeTransform
     /// <returns>The 16-byte CMAC tag.</returns>
     private byte[] ComputeCmac(ReadOnlySpan<byte> message)
     {
-        int blockSize = this.s2vCipher.BlockSize;
+        int blockSize = this._s2vCipher.BlockSize;
 
         // Subkey generation.
         byte[] L = new byte[blockSize];
-        this.s2vCipher.Encrypt(new byte[blockSize], L);
+        this._s2vCipher.Encrypt(new byte[blockSize], L);
         byte[] k1 = (byte[])L.Clone(); Dbl(k1);
         byte[] k2 = (byte[])k1.Clone(); Dbl(k2);
 
@@ -229,7 +229,7 @@ public sealed class SivModeTransform : IAeadBlockCipherModeTransform
             byte[] block = new byte[blockSize];
             message.Slice(blockIdx * blockSize, blockSize).CopyTo(block);
             Xor(mac, block, mac);
-            this.s2vCipher.Encrypt(mac, mac);
+            this._s2vCipher.Encrypt(mac, mac);
         }
 
         // Last block.
@@ -249,7 +249,7 @@ public sealed class SivModeTransform : IAeadBlockCipherModeTransform
         byte[] subkey = lastIsFull ? k1 : k2;
         Xor(lastBlock, subkey, lastBlock);
         Xor(mac, lastBlock, mac);
-        this.s2vCipher.Encrypt(mac, mac);
+        this._s2vCipher.Encrypt(mac, mac);
 
         return mac;
     }
@@ -264,13 +264,13 @@ public sealed class SivModeTransform : IAeadBlockCipherModeTransform
     /// block per RFC 5297.</param>
     private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
     {
-        int blockSize = this.ctrCipher.BlockSize;
+        int blockSize = this._ctrCipher.BlockSize;
         byte[] ctr = (byte[])counter.Clone();
         Span<byte> ks = stackalloc byte[blockSize];
 
         for (int offset = 0; offset < input.Length; offset += blockSize)
         {
-            this.ctrCipher.Encrypt(ctr, ks);
+            this._ctrCipher.Encrypt(ctr, ks);
             // Increment counter (big-endian).
             for (int i = ctr.Length - 1; i >= 0; i--)
                 if (++ctr[i] != 0) break;

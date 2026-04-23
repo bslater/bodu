@@ -53,11 +53,11 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
     private const int TagLengthBytes = 16;
     private const int NonceLengthBytes = 12;
 
-    private readonly IBlockCipher encCipher;  // cipher keyed with derived K_enc
-    private readonly byte[] authKey;          // derived K_auth (POLYVAL key)
-    private readonly byte[] nonce;            // 12-byte nonce
-    private byte[]? aad;
-    private bool aadProcessed;
+    private readonly IBlockCipher _encCipher;  // cipher keyed with derived K_enc
+    private readonly byte[] _authKey;          // derived K_auth (POLYVAL key)
+    private readonly byte[] _nonce;            // 12-byte nonce
+    private byte[]? _aad;
+    private bool _aadProcessed;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="GcmSivModeTransform" /> class.
@@ -85,13 +85,13 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
             throw new ArgumentException(
                 $"IV length ({iv.Length}) must equal the cipher block size ({masterCipher.BlockSize}).", nameof(iv));
 
-        this.nonce = new byte[NonceLengthBytes];
-        iv.AsSpan(0, NonceLengthBytes).CopyTo(this.nonce);
+        this._nonce = new byte[NonceLengthBytes];
+        iv.AsSpan(0, NonceLengthBytes).CopyTo(this._nonce);
 
         // Derive K_auth and K_enc per RFC 8452 Section 4.
         // Each call: E_K(LE32(i) || nonce), take first 8 bytes.
-        (this.authKey, byte[] encKeyMaterial) = DeriveKeys(masterCipher, this.nonce);
-        this.encCipher = cipherFactory(encKeyMaterial);
+        (this._authKey, byte[] encKeyMaterial) = DeriveKeys(masterCipher, this._nonce);
+        this._encCipher = cipherFactory(encKeyMaterial);
     }
 
     /// <inheritdoc />
@@ -100,10 +100,10 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
     /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
     {
-        if (this.aadProcessed)
+        if (this._aadProcessed)
             throw new InvalidOperationException("AssociatedData has already been processed.");
-        this.aad = associatedData.ToArray();
-        this.aadProcessed = true;
+        this._aad = associatedData.ToArray();
+        this._aadProcessed = true;
     }
 
     /// <inheritdoc />
@@ -115,7 +115,7 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
         EnsureAadProcessed();
 
         // Tag = E(K_enc, POLYVAL(K_auth, AAD, PT) XOR nonce) with bits [31] and [63] cleared.
-        byte[] tag = ComputeTag(this.aad.AsSpan(), plaintext);
+        byte[] tag = ComputeTag(this._aad.AsSpan(), plaintext);
 
         // Encrypt plaintext with CTR(K_enc) seeded from tag.
         byte[] ctrIv = BuildCtrIv(tag);
@@ -142,7 +142,7 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
         CtrEncrypt(ciphertext, output.Slice(0, plaintextLength), ctrIv);
 
         // Recompute and verify tag.
-        byte[] expectedTag = ComputeTag(this.aad.AsSpan(), output.Slice(0, plaintextLength));
+        byte[] expectedTag = ComputeTag(this._aad.AsSpan(), output.Slice(0, plaintextLength));
         if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
         {
             CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
@@ -159,7 +159,7 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
     /// </summary>
     private void EnsureAadProcessed()
     {
-        if (!this.aadProcessed) { this.aad = Array.Empty<byte>(); this.aadProcessed = true; }
+        if (!this._aadProcessed) { this._aad = Array.Empty<byte>(); this._aadProcessed = true; }
     }
 
     /// <summary>
@@ -210,7 +210,7 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
     /// <returns>The computed AES-GCM-SIV authentication tag.</returns>
     private byte[] ComputeTag(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
     {
-        int blockSize = this.encCipher.BlockSize;
+        int blockSize = this._encCipher.BlockSize;
 
         // POLYVAL accumulation: process AAD blocks, then plaintext blocks, then length block.
         byte[] polyvalResult = new byte[blockSize];
@@ -228,12 +228,12 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
 
         // XOR with nonce, clear bit 31 (byte 3 MSB) and bit 63 (byte 7 MSB).
         for (int i = 0; i < NonceLengthBytes; i++)
-            polyvalResult[i] ^= this.nonce[i];
+            polyvalResult[i] ^= this._nonce[i];
         polyvalResult[15] &= 0x7F; // clear bit 127 (RFC calls this bit 31 of the last 32-bit word)
 
         // Encrypt with K_enc to produce the tag.
         byte[] tag = new byte[blockSize];
-        this.encCipher.Encrypt(polyvalResult, tag);
+        this._encCipher.Encrypt(polyvalResult, tag);
         return tag;
     }
 
@@ -254,7 +254,7 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
             data.Slice(offset, len).CopyTo(block);
             // state ^= block, then multiply by H (authKey) via POLYVAL.
             Xor(state, block, state);
-            PolyvalMultiply(state, this.authKey, state);
+            PolyvalMultiply(state, this._authKey, state);
         }
     }
 
@@ -350,13 +350,13 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
     /// block per RFC 8452.</param>
     private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
     {
-        int blockSize = this.encCipher.BlockSize;
+        int blockSize = this._encCipher.BlockSize;
         byte[] ctr = (byte[])counter.Clone();
         Span<byte> ks = stackalloc byte[blockSize];
 
         for (int offset = 0; offset < input.Length; offset += blockSize)
         {
-            this.encCipher.Encrypt(ctr, ks);
+            this._encCipher.Encrypt(ctr, ks);
             // GCM-SIV CTR increments only the last 32 bits (little-endian), per RFC 8452.
             uint lo = (uint)(ctr[12] | (ctr[13] << 8) | (ctr[14] << 16) | (ctr[15] << 24));
             lo++;

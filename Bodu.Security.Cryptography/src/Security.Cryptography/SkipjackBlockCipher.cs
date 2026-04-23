@@ -62,7 +62,7 @@ public sealed class SkipjackBlockCipher
     public const int KeySize = 10;  // 80 bits
 
     // Static F-table (8 × 8 S-box)
-    private static readonly byte[] ftable = new byte[256]
+    private static readonly byte[] s_ftable = new byte[256]
     {
         0xa3, 0xd7, 0x09, 0x83, 0xf8, 0x48, 0xf6, 0xf4, 0xb3, 0x21, 0x15, 0x78, 0x99, 0xb1, 0xaf, 0xf9,
         0xe7, 0x2d, 0x4d, 0x8a, 0xce, 0x4c, 0xca, 0x2e, 0x52, 0x95, 0xd9, 0x1e, 0x4e, 0x38, 0x44, 0x28,
@@ -83,7 +83,7 @@ public sealed class SkipjackBlockCipher
     };
 
     private readonly int[] key0, key1, key2, key3;
-    private bool disposed = false;
+    private bool _disposed = false;
 
     /// <summary>
     /// Creates a new <see cref="SkipjackBlockCipher" /> instance using the supplied 80-bit key.
@@ -174,14 +174,14 @@ public sealed class SkipjackBlockCipher
     /// </summary>
     public void Dispose()
     {
-        if (!this.disposed)
+        if (!this._disposed)
         {
             CryptoHelpers.Clear(this.key0);
             CryptoHelpers.Clear(this.key1);
             CryptoHelpers.Clear(this.key2);
             CryptoHelpers.Clear(this.key3);
 
-            this.disposed = true;
+            this._disposed = true;
         }
     }
 
@@ -318,7 +318,7 @@ public sealed class SkipjackBlockCipher
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this.disposed, this);
+        ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (disposed) throw new ObjectDisposedException(nameof(SkipjackBlockCipher));
 #endif

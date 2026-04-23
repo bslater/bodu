@@ -37,8 +37,8 @@ public abstract class Adler<T>
     /// </summary>
     protected T PartB;
 
-    private readonly T modulo;
-    private bool disposed = false;
+    private readonly T _modulo;
+    private bool _disposed = false;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="Adler{T}" /> class with the specified modulus.
@@ -49,7 +49,7 @@ public abstract class Adler<T>
     /// </exception>
     protected Adler(T modulo)
     {
-        this.modulo = modulo;
+        this._modulo = modulo;
         this.HashSizeValue = typeof(T) switch
         {
             var t when t == typeof(uint) => 32,
@@ -69,7 +69,7 @@ public abstract class Adler<T>
 #if !NET6_0_OR_GREATER
 
     // Required for .NET Standard 2.0 or older frameworks
-    private bool finalized;
+    private bool _finalized;
 #endif
 
     /// <inheritdoc />
@@ -92,7 +92,7 @@ public abstract class Adler<T>
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (this.disposed) return;
+        if (this._disposed) return;
 
         if (disposing)
         {
@@ -102,7 +102,7 @@ public abstract class Adler<T>
             this.HashSizeValue = 0;
         }
 
-        this.disposed = true;
+        this._disposed = true;
         base.Dispose(disposing);
     }
 
@@ -181,8 +181,8 @@ public abstract class Adler<T>
                 // Move index forward to avoid infinite loop, handling remaining non-vectorized bytes later
                 index = chunkEnd;
 
-                pA %= this.modulo;
-                pB %= this.modulo;
+                pA %= this._modulo;
+                pB %= this._modulo;
             }
         }
 
@@ -194,8 +194,8 @@ public abstract class Adler<T>
 
             if ((index % NMAX) == 0)
             {
-                pA %= this.modulo;
-                pB %= this.modulo;
+                pA %= this._modulo;
+                pB %= this._modulo;
             }
         }
 
@@ -213,7 +213,7 @@ public abstract class Adler<T>
     protected void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this.disposed, this);
+        ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (disposed)
             throw new ObjectDisposedException(this.GetType().Name);

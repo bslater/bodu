@@ -32,15 +32,15 @@ public abstract class Fnv
 {
     private static readonly int[] ValidHashSizes = { 16, 32, 64 };
 
-    private readonly ulong offsetBasis;
-    private readonly ulong prime;
-    private readonly bool useFnv1a;
-    private bool disposed = false;
-    private ulong workingHash;
+    private readonly ulong _offsetBasis;
+    private readonly ulong _prime;
+    private readonly bool _useFnv1a;
+    private bool _disposed = false;
+    private ulong _workingHash;
 #if !NET6_0_OR_GREATER
 
     // Required for .NET Standard 2.0 or older frameworks
-    private bool finalized;
+    private bool _finalized;
 #endif
 
     /// <summary>
@@ -75,10 +75,10 @@ public abstract class Fnv
                 nameof(hashSize));
 
         this.HashSizeValue = hashSize;
-        this.prime = prime;
-        this.offsetBasis = this.workingHash = offsetBasis;
-        this.useFnv1a = useFnv1a;
-        this.AlgorithmName = $"FNV-{(this.useFnv1a ? "1a" : "1")}-{this.HashSizeValue}";
+        this._prime = prime;
+        this._offsetBasis = this._workingHash = offsetBasis;
+        this._useFnv1a = useFnv1a;
+        this.AlgorithmName = $"FNV-{(this._useFnv1a ? "1a" : "1")}-{this.HashSizeValue}";
     }
 
     /// <summary>
@@ -100,7 +100,7 @@ public abstract class Fnv
         State = 0;
         finalized = false;
 #endif
-        this.workingHash = this.offsetBasis;
+        this._workingHash = this._offsetBasis;
     }
 
     /// <summary>
@@ -112,17 +112,17 @@ public abstract class Fnv
     /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this.disposed) return;
+        if (this._disposed) return;
 
         if (disposing)
         {
             CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
-            this.workingHash = 0;
+            this._workingHash = 0;
             this.HashSizeValue = 0;
         }
 
-        this.disposed = true;
+        this._disposed = true;
         base.Dispose(disposing);
     }
 
@@ -176,7 +176,7 @@ public abstract class Fnv
 if (finalized)
     throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
-        if (this.useFnv1a)
+        if (this._useFnv1a)
             this.HashCoreFNV1a(source);
         else
             this.HashCoreFNV1(source);
@@ -202,7 +202,7 @@ if (finalized)
 #endif
 
         Span<byte> buffer = stackalloc byte[8];
-        BinaryPrimitives.WriteUInt64BigEndian(buffer, this.workingHash);
+        BinaryPrimitives.WriteUInt64BigEndian(buffer, this._workingHash);
 
         return this.HashSizeValue switch
         {
@@ -224,14 +224,14 @@ if (finalized)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void HashCoreFNV1(ReadOnlySpan<byte> source)
     {
-        var hash = this.workingHash;
+        var hash = this._workingHash;
         for (int i = 0; i < source.Length; i++)
         {
-            hash *= this.prime;
+            hash *= this._prime;
             hash ^= source[i];
         }
 
-        this.workingHash = hash;
+        this._workingHash = hash;
     }
 
     /// <summary>
@@ -246,14 +246,14 @@ if (finalized)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void HashCoreFNV1a(ReadOnlySpan<byte> source)
     {
-        var hash = this.workingHash;
+        var hash = this._workingHash;
         for (int i = 0; i < source.Length; i++)
         {
             hash ^= source[i];
-            hash *= this.prime;
+            hash *= this._prime;
         }
 
-        this.workingHash = hash;
+        this._workingHash = hash;
     }
 
     /// <summary>
@@ -266,7 +266,7 @@ if (finalized)
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this.disposed, this);
+        ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (disposed)
             throw new ObjectDisposedException(nameof(Fnv));

@@ -47,11 +47,11 @@ public sealed partial class Tiger
 
     private static readonly int[] ValidHashSizes = { 128, 160, 192 };
 
-    private bool disposed = false;
-    private ulong state0 = 0x0123456789ABCDEF;
-    private ulong state1 = 0xFEDCBA9876543210;
-    private ulong state2 = 0xF096A5B4C3B2E187;
-    private TigerHashingVariant variant = TigerHashingVariant.Tiger;
+    private bool _disposed = false;
+    private ulong _state0 = 0x0123456789ABCDEF;
+    private ulong _state1 = 0xFEDCBA9876543210;
+    private ulong _state2 = 0xF096A5B4C3B2E187;
+    private TigerHashingVariant _variant = TigerHashingVariant.Tiger;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="Tiger" /> class with a 192-bit output hash size.
@@ -171,7 +171,7 @@ public sealed partial class Tiger
         get
         {
             this.ThrowIfDisposed();
-            return this.variant;
+            return this._variant;
         }
 
         set
@@ -180,7 +180,7 @@ public sealed partial class Tiger
             this.ThrowIfInvalidState();
             ThrowHelper.ThrowIfEnumValueIsUndefined(value);
 
-            this.variant = value;
+            this._variant = value;
         }
     }
 
@@ -193,9 +193,9 @@ public sealed partial class Tiger
         State = 0;
         finalized = false;
 #endif
-        this.state0 = 0x0123456789ABCDEF;
-        this.state1 = 0xFEDCBA9876543210;
-        this.state2 = 0xF096A5B4C3B2E187;
+        this._state0 = 0x0123456789ABCDEF;
+        this._state1 = 0xFEDCBA9876543210;
+        this._state2 = 0xF096A5B4C3B2E187;
     }
 
     /// <summary>
@@ -206,16 +206,16 @@ public sealed partial class Tiger
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (this.disposed) return;
+        if (this._disposed) return;
         if (disposing)
         {
             CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
-            this.state0 = this.state1 = this.state2 = 0;
+            this._state0 = this._state1 = this._state2 = 0;
             this.HashSizeValue = 0;
         }
 
-        this.disposed = true;
+        this._disposed = true;
         base.Dispose(disposing);
     }
 
@@ -235,7 +235,7 @@ public sealed partial class Tiger
         block.CopyTo(padded);
 
         // Write padding byte depending on Tiger variant
-        padded[inputLength] = this.variant == TigerHashingVariant.Tiger ? (byte)0x01 : (byte)0x80;
+        padded[inputLength] = this._variant == TigerHashingVariant.Tiger ? (byte)0x01 : (byte)0x80;
 
         // Clear bytes between padding and message length field
         padded.Slice(inputLength + 1, totalLength - inputLength - 1 - 8).Clear();
@@ -262,9 +262,9 @@ public sealed partial class Tiger
     protected override byte[] ProcessFinalBlock()
     {
         Span<byte> output = stackalloc byte[MaxOutputBits / 8];
-        BinaryPrimitives.WriteUInt64LittleEndian(output[0..8], this.state0);
-        BinaryPrimitives.WriteUInt64LittleEndian(output[8..16], this.state1);
-        BinaryPrimitives.WriteUInt64LittleEndian(output[16..24], this.state2);
+        BinaryPrimitives.WriteUInt64LittleEndian(output[0..8], this._state0);
+        BinaryPrimitives.WriteUInt64LittleEndian(output[8..16], this._state1);
+        BinaryPrimitives.WriteUInt64LittleEndian(output[16..24], this._state2);
 
         return output.Slice(0, this.HashSizeValue / 8).ToArray();
     }
@@ -348,7 +348,7 @@ public sealed partial class Tiger
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void TransformBlock(Span<ulong> blockWords)
     {
-        ulong a = this.state0, b = this.state1, c = this.state2;
+        ulong a = this._state0, b = this._state1, c = this._state2;
 
         DoPass(ref a, ref b, ref c, blockWords, 5);
         KeySchedule(blockWords);
@@ -356,8 +356,8 @@ public sealed partial class Tiger
         KeySchedule(blockWords);
         DoPass(ref b, ref c, ref a, blockWords, 9);
 
-        this.state0 = a ^ this.state0;
-        this.state1 = b - this.state1;
-        this.state2 = c + this.state2;
+        this._state0 = a ^ this._state0;
+        this._state1 = b - this._state1;
+        this._state2 = c + this._state2;
     }
 }

@@ -26,12 +26,12 @@ public sealed class JSHash
 {
     private const uint DefaultValue = 0x4E67C6A7;
 
-    private bool disposed = false;
-    private uint workingHash;
+    private bool _disposed = false;
+    private uint _workingHash;
 #if !NET6_0_OR_GREATER
 
     // Required for .NET Standard 2.0 or older frameworks
-    private bool finalized;
+    private bool _finalized;
 #endif
 
     /// <summary>
@@ -58,7 +58,7 @@ public sealed class JSHash
         finalized = false;
 #endif
         this.ThrowIfDisposed();
-        this.workingHash = DefaultValue;
+        this._workingHash = DefaultValue;
     }
 
     /// <summary>
@@ -70,18 +70,18 @@ public sealed class JSHash
     /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this.disposed)
+        if (this._disposed)
             return;
 
         if (disposing)
         {
             CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
-            this.workingHash = 0;
+            this._workingHash = 0;
             this.HashSizeValue = 0;
         }
 
-        this.disposed = true;
+        this._disposed = true;
         base.Dispose(disposing);
     }
 
@@ -131,13 +131,13 @@ public sealed class JSHash
     {
         this.ThrowIfDisposed();
 
-        var v = this.workingHash;
+        var v = this._workingHash;
         foreach (byte b in source)
         {
             v ^= (v << 5) + (v >> 2) + b;
         }
 
-        this.workingHash = v;
+        this._workingHash = v;
     }
 
     /// <summary>
@@ -155,7 +155,7 @@ public sealed class JSHash
         State = 2;
 #endif
         Span<byte> span = stackalloc byte[4];
-        MemoryMarshal.Write(span, in this.workingHash);
+        MemoryMarshal.Write(span, in this._workingHash);
         return span.ToArray();
     }
 
@@ -166,7 +166,7 @@ public sealed class JSHash
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this.disposed, this);
+        ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (disposed)
             throw new ObjectDisposedException(nameof(JSHash));

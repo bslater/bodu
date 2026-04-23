@@ -325,13 +325,13 @@ public sealed class BlowfishBlockCipher
         0xB74E6132, 0xCE77E25B, 0x578FDFE3, 0x3AC372E6,
     };
 
-    private readonly uint[] p = new uint[PArrayLength];
-    private readonly uint[] s0 = new uint[SBoxLength];
-    private readonly uint[] s1 = new uint[SBoxLength];
-    private readonly uint[] s2 = new uint[SBoxLength];
-    private readonly uint[] s3 = new uint[SBoxLength];
+    private readonly uint[] _p = new uint[PArrayLength];
+    private readonly uint[] _s0 = new uint[SBoxLength];
+    private readonly uint[] _s1 = new uint[SBoxLength];
+    private readonly uint[] _s2 = new uint[SBoxLength];
+    private readonly uint[] _s3 = new uint[SBoxLength];
 
-    private bool disposed;
+    private bool _disposed;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="BlowfishBlockCipher" /> class using the specified key.
@@ -364,16 +364,16 @@ public sealed class BlowfishBlockCipher
     /// <inheritdoc />
     public void Dispose()
     {
-        if (!this.disposed)
+        if (!this._disposed)
         {
             // Securely zero all sensitive key material.
-            Array.Clear(this.p, 0, this.p.Length);
-            Array.Clear(this.s0, 0, this.s0.Length);
-            Array.Clear(this.s1, 0, this.s1.Length);
-            Array.Clear(this.s2, 0, this.s2.Length);
-            Array.Clear(this.s3, 0, this.s3.Length);
+            Array.Clear(this._p, 0, this._p.Length);
+            Array.Clear(this._s0, 0, this._s0.Length);
+            Array.Clear(this._s1, 0, this._s1.Length);
+            Array.Clear(this._s2, 0, this._s2.Length);
+            Array.Clear(this._s3, 0, this._s3.Length);
 
-            this.disposed = true;
+            this._disposed = true;
         }
     }
 
@@ -448,7 +448,7 @@ public sealed class BlowfishBlockCipher
     /// <returns>The transformed 32-bit output word.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private uint F(uint x) =>
-        ((this.s0[x >> 24] + this.s1[(x >> 16) & 0xFF]) ^ this.s2[(x >> 8) & 0xFF]) + this.s3[x & 0xFF];
+        ((this._s0[x >> 24] + this._s1[(x >> 16) & 0xFF]) ^ this._s2[(x >> 8) & 0xFF]) + this._s3[x & 0xFF];
 
     /// <summary>
     /// Performs the 16-round Blowfish Feistel encipher operation on two 32-bit halves.
@@ -460,15 +460,15 @@ public sealed class BlowfishBlockCipher
     {
         for (int i = 0; i < FeistelRounds; i++)
         {
-            xl ^= this.p[i];
+            xl ^= this._p[i];
             xr ^= this.F(xl);
             (xl, xr) = (xr, xl);
         }
 
         // Undo the final swap and apply output whitening.
         (xl, xr) = (xr, xl);
-        xr ^= this.p[16];
-        xl ^= this.p[17];
+        xr ^= this._p[16];
+        xl ^= this._p[17];
     }
 
     /// <summary>
@@ -481,15 +481,15 @@ public sealed class BlowfishBlockCipher
     {
         for (int i = 17; i >= 2; i--)
         {
-            xl ^= this.p[i];
+            xl ^= this._p[i];
             xr ^= this.F(xl);
             (xl, xr) = (xr, xl);
         }
 
         // Undo the final swap and strip input whitening.
         (xl, xr) = (xr, xl);
-        xr ^= this.p[1];
-        xl ^= this.p[0];
+        xr ^= this._p[1];
+        xl ^= this._p[0];
     }
 
     /// <summary>
@@ -506,11 +506,11 @@ public sealed class BlowfishBlockCipher
     private void InitialiseKeySchedule(ReadOnlySpan<byte> key)
     {
         // Copy the pi-derived initialisers into the mutable working arrays.
-        InitP.CopyTo(this.p, 0);
-        InitS0.CopyTo(this.s0, 0);
-        InitS1.CopyTo(this.s1, 0);
-        InitS2.CopyTo(this.s2, 0);
-        InitS3.CopyTo(this.s3, 0);
+        InitP.CopyTo(this._p, 0);
+        InitS0.CopyTo(this._s0, 0);
+        InitS1.CopyTo(this._s1, 0);
+        InitS2.CopyTo(this._s2, 0);
+        InitS3.CopyTo(this._s3, 0);
 
         // XOR the P-array entries with successive 32-bit words derived from the key, cycling as needed.
         int keyLen = key.Length;
@@ -525,7 +525,7 @@ public sealed class BlowfishBlockCipher
                 keyIndex = (keyIndex + 1) % keyLen;
             }
 
-            this.p[i] ^= word;
+            this._p[i] ^= word;
         }
 
         // Expand the P-array by encrypting the all-zeros block and replacing entries in pairs.
@@ -535,37 +535,37 @@ public sealed class BlowfishBlockCipher
         for (int i = 0; i < PArrayLength; i += 2)
         {
             this.EncipherBlock(ref xl, ref xr);
-            this.p[i] = xl;
-            this.p[i + 1] = xr;
+            this._p[i] = xl;
+            this._p[i + 1] = xr;
         }
 
         // Expand all four S-boxes in the same way.
         for (int i = 0; i < SBoxLength; i += 2)
         {
             this.EncipherBlock(ref xl, ref xr);
-            this.s0[i] = xl;
-            this.s0[i + 1] = xr;
+            this._s0[i] = xl;
+            this._s0[i + 1] = xr;
         }
 
         for (int i = 0; i < SBoxLength; i += 2)
         {
             this.EncipherBlock(ref xl, ref xr);
-            this.s1[i] = xl;
-            this.s1[i + 1] = xr;
+            this._s1[i] = xl;
+            this._s1[i + 1] = xr;
         }
 
         for (int i = 0; i < SBoxLength; i += 2)
         {
             this.EncipherBlock(ref xl, ref xr);
-            this.s2[i] = xl;
-            this.s2[i + 1] = xr;
+            this._s2[i] = xl;
+            this._s2[i + 1] = xr;
         }
 
         for (int i = 0; i < SBoxLength; i += 2)
         {
             this.EncipherBlock(ref xl, ref xr);
-            this.s3[i] = xl;
-            this.s3[i + 1] = xr;
+            this._s3[i] = xl;
+            this._s3[i + 1] = xr;
         }
     }
 
@@ -576,7 +576,7 @@ public sealed class BlowfishBlockCipher
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this.disposed, this);
+        ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
 			if (_disposed)
 				throw new ObjectDisposedException(nameof(BlowfishBlockCipher));

@@ -28,13 +28,13 @@ public sealed class Elf64
     private const ulong HighBitsMask = 0xF000000000000000UL;
     private const int HighBitsShift = 56;
 
-    private bool disposed = false;
-    private ulong seedValue;
-    private ulong workingHash;
+    private bool _disposed = false;
+    private ulong _seedValue;
+    private ulong _workingHash;
 #if !NET6_0_OR_GREATER
 
     // Required for .NET Standard 2.0 or older frameworks
-    private bool finalized;
+    private bool _finalized;
 #endif
 
     /// <summary>
@@ -68,7 +68,7 @@ public sealed class Elf64
         {
             this.ThrowIfDisposed();
 
-            return this.seedValue;
+            return this._seedValue;
         }
 
         set
@@ -76,7 +76,7 @@ public sealed class Elf64
             this.ThrowIfDisposed();
             this.ThrowIfInvalidState();
 
-            this.seedValue = value;
+            this._seedValue = value;
             this.Initialize();
         }
     }
@@ -89,7 +89,7 @@ public sealed class Elf64
         State = 0;
         finalized = false;
 #endif
-        this.workingHash = this.seedValue;
+        this._workingHash = this._seedValue;
     }
 
     /// <summary>
@@ -101,18 +101,18 @@ public sealed class Elf64
     /// <remarks>Ensures all internal state is overwritten with zeros before releasing resources.</remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this.disposed) return;
+        if (this._disposed) return;
 
         if (disposing)
         {
             CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
-            this.seedValue = 0;
-            this.workingHash = 0;
+            this._seedValue = 0;
+            this._workingHash = 0;
             this.HashSizeValue = 0;
         }
 
-        this.disposed = true;
+        this._disposed = true;
         base.Dispose(disposing);
     }
 
@@ -166,7 +166,7 @@ public sealed class Elf64
         if (finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
-        ulong v = this.workingHash;
+        ulong v = this._workingHash;
 
         foreach (byte b in source)
         {
@@ -177,7 +177,7 @@ public sealed class Elf64
             v &= ~high;
         }
 
-        this.workingHash = v;
+        this._workingHash = v;
     }
 
     /// <summary>
@@ -196,7 +196,7 @@ public sealed class Elf64
         State = 2;
 #endif
 
-        return this.workingHash.GetBytes(asBigEndian: true);
+        return this._workingHash.GetBytes(asBigEndian: true);
     }
 
     /// <summary>
@@ -209,7 +209,7 @@ public sealed class Elf64
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this.disposed, this);
+        ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (disposed)
             throw new ObjectDisposedException(nameof(Elf64));

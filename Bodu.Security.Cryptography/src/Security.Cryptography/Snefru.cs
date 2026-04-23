@@ -48,15 +48,15 @@ public abstract partial class Snefru<T>
     private static readonly int[] Shifts = [16, 8, 16, 24];         // fixed bitwise rotation amounts applied after each S-box round.
     private static readonly int[] ValidHashSizes = { 128, 256 };
 
-    private readonly uint[] buffer = new uint[TotalWords];          // internal working buffer used for permutation and round processing.
-    private readonly uint[] state;                                  // internal state used to accumulate the hash output across input blocks.
+    private readonly uint[] _buffer = new uint[TotalWords];          // internal working buffer used for permutation and round processing.
+    private readonly uint[] _state;                                  // internal state used to accumulate the hash output across input blocks.
 
-    private bool disposed = false;
+    private bool _disposed = false;
 
 #if !NET6_0_OR_GREATER
 
     // Required for .NET Standard 2.0 or older frameworks
-    private bool finalized;
+    private bool _finalized;
 #endif
 
     /// <summary>
@@ -71,7 +71,7 @@ public abstract partial class Snefru<T>
             throw new ArgumentOutOfRangeException(nameof(hashSize),
                 string.Format(ResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
 
-        this.state = new uint[hashSize >> 5];
+        this._state = new uint[hashSize >> 5];
         HashSizeValue = hashSize;
 
         InitializeState();
@@ -100,18 +100,18 @@ public abstract partial class Snefru<T>
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (this.disposed) return;
+        if (this._disposed) return;
 
         if (disposing)
         {
-            CryptoHelpers.Clear(this.buffer);
-            CryptoHelpers.Clear(this.state);
+            CryptoHelpers.Clear(this._buffer);
+            CryptoHelpers.Clear(this._state);
             CryptoHelpers.ClearAndNullify(ref HashValue);
 
             this.HashSizeValue = 0;
         }
 
-        this.disposed = true;
+        this._disposed = true;
         base.Dispose(disposing);
     }
 
@@ -148,8 +148,8 @@ public abstract partial class Snefru<T>
     /// </remarks>
     protected override void ProcessBlock(ReadOnlySpan<byte> block)
     {
-        this.state.AsSpan().CopyTo(this.buffer);
-        LoadBlockToBuffer(block, this.buffer.AsSpan(this.state.Length));
+        this._state.AsSpan().CopyTo(this._buffer);
+        LoadBlockToBuffer(block, this._buffer.AsSpan(this._state.Length));
 
         for (int round = 0; round < 8; round++)
         {
@@ -160,8 +160,8 @@ public abstract partial class Snefru<T>
             }
         }
 
-        for (int i = 0; i < this.state.Length; i++)
-            this.state[i] ^= this.buffer[Mask - i];
+        for (int i = 0; i < this._state.Length; i++)
+            this._state[i] ^= this._buffer[Mask - i];
     }
 
     /// <summary>
@@ -170,8 +170,8 @@ public abstract partial class Snefru<T>
     /// <returns>The computed hash as a byte array.</returns>
     protected override byte[] ProcessFinalBlock()
     {
-        byte[] output = new byte[this.state.Length * sizeof(uint)];
-        WriteStateBigEndian(this.state, output);
+        byte[] output = new byte[this._state.Length * sizeof(uint)];
+        WriteStateBigEndian(this._state, output);
 
         return output;
     }
@@ -222,11 +222,11 @@ public abstract partial class Snefru<T>
 
             // Flat array layout: each table occupies 256 consecutive entries.
             // Index = (tableIndex << 8) | byteValue, avoiding the double indirection of a jagged array.
-            int sBoxIndex = ((baseBox + ((kk >> 1) & 0x01)) << 8) | (int)(this.buffer[kk] & 0xff);
+            int sBoxIndex = ((baseBox + ((kk >> 1) & 0x01)) << 8) | (int)(this._buffer[kk] & 0xff);
             uint sboxEntry = Constants[sBoxIndex];
 
-            this.buffer[next] ^= sboxEntry;
-            this.buffer[last] ^= sboxEntry;
+            this._buffer[next] ^= sboxEntry;
+            this._buffer[last] ^= sboxEntry;
         }
     }
 
@@ -234,7 +234,7 @@ public abstract partial class Snefru<T>
     /// Clears the internal state array to prepare for new input.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void InitializeState() => Array.Clear(this.state);
+    private void InitializeState() => Array.Clear(this._state);
 
     /// <summary>
     /// Performs a circular right bitwise rotation on each word in the internal buffer.
@@ -244,6 +244,6 @@ public abstract partial class Snefru<T>
     private void RotateWords(int shiftAmount)
     {
         for (int i = 0; i < TotalWords; i++)
-            this.buffer[i] = this.buffer[i].RotateBitsRightUnchecked(shiftAmount);
+            this._buffer[i] = this._buffer[i].RotateBitsRightUnchecked(shiftAmount);
     }
 }

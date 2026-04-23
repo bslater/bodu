@@ -27,13 +27,13 @@ public sealed class ApHash
 {
     private const uint DefaultCheckSumValue = 0xAAAAAAAA;
 
-    private bool disposed = false;
-    private ulong size;
-    private uint workingHash;
+    private bool _disposed = false;
+    private ulong _size;
+    private uint _workingHash;
 #if !NET6_0_OR_GREATER
 
     // Required for .NET Standard 2.0 or older frameworks
-    private bool finalized;
+    private bool _finalized;
 #endif
 
     /// <summary>
@@ -59,8 +59,8 @@ public sealed class ApHash
         State = 0;
         finalized = false;
 #endif
-        this.workingHash = ApHash.DefaultCheckSumValue;
-        this.size = 0;
+        this._workingHash = ApHash.DefaultCheckSumValue;
+        this._size = 0;
     }
 
     /// <summary>
@@ -72,16 +72,16 @@ public sealed class ApHash
     /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this.disposed) return;
+        if (this._disposed) return;
 
         if (disposing)
         {
             CryptoHelpers.ClearAndNullify(ref this.HashValue);
-            this.workingHash = 0;
+            this._workingHash = 0;
             this.HashSizeValue = 0;
         }
 
-        this.disposed = true;
+        this._disposed = true;
         base.Dispose(disposing);
     }
 
@@ -130,18 +130,18 @@ public sealed class ApHash
     {
         this.ThrowIfDisposed();
 
-        var v = this.workingHash;
+        var v = this._workingHash;
         foreach (var b in source)
         {
-            if ((this.size & 1) == 0)
+            if ((this._size & 1) == 0)
                 v ^= (v << 7) ^ b ^ (v >> 3);
             else
                 v ^= ~((v << 11) ^ b ^ (v >> 5));
 
-            this.size++;
+            this._size++;
         }
 
-        this.workingHash = v;
+        this._workingHash = v;
     }
 
     /// <summary>
@@ -161,7 +161,7 @@ public sealed class ApHash
 #endif
 
         Span<byte> span = stackalloc byte[4];
-        MemoryMarshal.Write(span, in this.workingHash);
+        MemoryMarshal.Write(span, in this._workingHash);
         return span.ToArray();
     }
 
@@ -175,7 +175,7 @@ public sealed class ApHash
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this.disposed, this);
+        ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (disposed)
             throw new ObjectDisposedException(nameof(ApHash));

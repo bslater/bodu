@@ -46,8 +46,8 @@ namespace Bodu.Security.Cryptography;
 public sealed class AesBlockCipher
     : IBlockCipher
 {
-    private readonly Aes aes;
-    private bool disposed;
+    private readonly Aes _aes;
+    private bool _disposed;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="AesBlockCipher" /> class with the specified AES key.
@@ -62,13 +62,13 @@ public sealed class AesBlockCipher
     {
         if (key is null) throw new ArgumentNullException(nameof(key));
 
-        this.aes = Aes.Create();
-        this.aes.Key = key; // BCL validates length and throws CryptographicException on mismatch.
+        this._aes = Aes.Create();
+        this._aes.Key = key; // BCL validates length and throws CryptographicException on mismatch.
     }
 
     /// <inheritdoc />
     /// <value>Always 16 (128 bits), the fixed AES block size.</value>
-    public int BlockSize => this.aes.BlockSize / 8;
+    public int BlockSize => this._aes.BlockSize / 8;
 
     /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
@@ -77,8 +77,8 @@ public sealed class AesBlockCipher
     /// </exception>
     public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        ObjectDisposedException.ThrowIf(this.disposed, this);
-        this.aes.EncryptEcb(input, output, PaddingMode.None);
+        ObjectDisposedException.ThrowIf(this._disposed, this);
+        this._aes.EncryptEcb(input, output, PaddingMode.None);
     }
 
     /// <inheritdoc />
@@ -88,8 +88,8 @@ public sealed class AesBlockCipher
     /// </exception>
     public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        ObjectDisposedException.ThrowIf(this.disposed, this);
-        this.aes.DecryptEcb(input, output, PaddingMode.None);
+        ObjectDisposedException.ThrowIf(this._disposed, this);
+        this._aes.DecryptEcb(input, output, PaddingMode.None);
     }
 
     /// <summary>
@@ -99,10 +99,10 @@ public sealed class AesBlockCipher
     /// </summary>
     public void Dispose()
     {
-        if (!this.disposed)
+        if (!this._disposed)
         {
-            this.aes.Dispose();
-            this.disposed = true;
+            this._aes.Dispose();
+            this._disposed = true;
         }
     }
 }

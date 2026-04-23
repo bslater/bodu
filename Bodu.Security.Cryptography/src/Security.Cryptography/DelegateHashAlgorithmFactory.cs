@@ -24,7 +24,7 @@ public sealed class DelegateHashAlgorithmFactory<T> :
     Bodu.Security.Cryptography.IHashAlgorithmFactory<T>
     where T : System.Security.Cryptography.HashAlgorithm
 {
-    private readonly Func<T> builder;
+    private readonly Func<T> _builder;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="DelegateHashAlgorithmFactory{T}" /> class using the specified construction delegate.
@@ -36,9 +36,9 @@ public sealed class DelegateHashAlgorithmFactory<T> :
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="builder" /> is <see langword="null" />.</exception>
     public DelegateHashAlgorithmFactory(Func<T> builder)
     {
-        this.builder = builder ?? throw new ArgumentNullException(nameof(builder));
+        this._builder = builder ?? throw new ArgumentNullException(nameof(builder));
     }
 
     /// <inheritdoc />
-    public T Create() => this.builder();
+    public T Create() => this._builder();
 }
