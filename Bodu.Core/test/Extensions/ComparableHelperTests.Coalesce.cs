@@ -8,11 +8,11 @@ namespace Bodu.Extensions;
 
 public partial class ComparableHelperTests
 {
-    private static IEnumerable<object[]> GetCoalesceTestData()
+    private static IEnumerable<object?[]> GetCoalesceTestData()
     {
-        yield return new object[] { 5, 10, 5 };     // First is non-null
-        yield return new object[] { null, 10, 10 };  // First is null
-        yield return new object[] { null, null, null }; // Both null
+        yield return new object?[] { 5, 10, 5 };     // First is non-null
+        yield return new object?[] { null, 10, 10 };  // First is null
+        yield return new object?[] { null, null, null }; // Both null
     }
 
     /// <summary>

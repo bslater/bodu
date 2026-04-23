@@ -23,7 +23,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// <summary>
     /// Enumerates all instance fields in the algorithm and its base types to validate disposal state.
     /// </summary>
-    public static IEnumerable<object[]> GetDisposableFields() => TestHelpers.GetFieldInfoForType<TCipher>(excludeFileds: "disposed");
+    public static IEnumerable<object[]> GetDisposableFields() => TestHelpers.GetFieldInfoForType<TCipher>(excludeFileds: IgnoreFieldNames);
 
     /// <summary>
     /// Verifies that writable public properties on a hash algorithm throw an <see cref="ObjectDisposedException" /> when set after the

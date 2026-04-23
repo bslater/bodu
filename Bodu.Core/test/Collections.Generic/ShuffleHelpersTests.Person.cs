@@ -18,7 +18,7 @@ public partial class ShuffleHelpersTests
 
         public string Name { get; }
 
-        public override bool Equals(object obj) => obj is Person other && Id == other.Id;
+        public override bool Equals(object? obj) => obj is Person other && Id == other.Id;
 
         public override int GetHashCode() => Id.GetHashCode();
 
