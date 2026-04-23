@@ -48,7 +48,7 @@ public partial class ByteBufferTests
     }
 
     /// <summary>
-    /// Verifies that Initialize(clear: false) does not erase old data.
+    /// Verifies that Initialise(clear: false) does not erase old data.
     /// </summary>
     [TestMethod]
     public void GetBytesZeroPadded_WhenInitializedWithoutClear_ShouldPreserveOldData()

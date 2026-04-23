@@ -78,7 +78,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     }
 
     /// <summary>
-    /// Verifies that accessing <see cref="TweakableSymmetricAlgorithm.Tweak" /> before it is initialized throws.
+    /// Verifies that accessing <see cref="TweakableSymmetricAlgorithm.Tweak" /> before it is initialised throws.
     /// </summary>
     [TestMethod]
     public void Tweak_WhenNoAccessedMultipleTimes_ShouldReturnSameValue()
@@ -92,7 +92,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     }
 
     /// <summary>
-    /// Verifies that accessing <see cref="TweakableSymmetricAlgorithm.Tweak" /> before it is initialized throws.
+    /// Verifies that accessing <see cref="TweakableSymmetricAlgorithm.Tweak" /> before it is initialised throws.
     /// </summary>
     [TestMethod]
     public void Tweak_WhenNotInitialized_ShouldReturnExpectedValue()

@@ -441,7 +441,7 @@ public partial class ParallelMerkleTreeHashTests
     // ═══════════════════════════════════════════════════════════════════════════════════════════
 
     /// <summary>
-    /// Verifies that each hasher instance records exactly one <c>Initialize</c> call,
+    /// Verifies that each hasher instance records exactly one <c>Initialise</c> call,
     /// confirming that the constructor invokes it once and the implementation does not
     /// reset state between operations on the same instance.
     /// </summary>

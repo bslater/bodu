@@ -23,7 +23,7 @@ namespace Bodu.Security.Cryptography;
 /// Consolidates tests that are specific to the block-buffered hashing contract supplied by
 /// <see cref="BlockHashAlgorithm{T}" />: residual-buffer accumulation across transform calls,
 /// block-aligned versus unaligned input parity, padded-final-block correctness, and state reset
-/// semantics for internal buffering after <see cref="HashAlgorithm.Initialize" />.
+/// semantics for internal buffering after <see cref="HashAlgorithm.Initialise" />.
 /// </para>
 /// <para>
 /// All test methods are declared <see langword="virtual" /> so that derived test classes may

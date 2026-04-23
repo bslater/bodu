@@ -27,7 +27,7 @@ public partial class ThrowHelperTests
 
     /// <summary>
     /// Provides test cases from <see cref="GetInRangeTestData" /> that use inclusive bounds (i.e., where <c>inclusive == true</c>).
-    /// This is used to verify the default behavior of <see cref="ThrowHelper.ThrowIfOutOfRange{T}" />, where the <c>inclusive</c>
+    /// This is used to verify the default behaviour of <see cref="ThrowHelper.ThrowIfOutOfRange{T}" />, where the <c>inclusive</c>
     /// parameter defaults to <c>true</c>.
     /// </summary>
     /// <returns>

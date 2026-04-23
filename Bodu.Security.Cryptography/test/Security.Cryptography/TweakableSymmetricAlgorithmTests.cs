@@ -7,7 +7,7 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides unit tests for symmetric algorithms to verify encryption, decryption, and property behaviors.
+/// Provides unit tests for symmetric algorithms to verify encryption, decryption, and property behaviours.
 /// </summary>
 /// <typeparam name="TAlgorithm">The type of symmetric algorithm under test.</typeparam>
 [TestClass]

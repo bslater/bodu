@@ -80,7 +80,7 @@ public partial class BKDRTests
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="BKDR.Initialize" /> resets the internal algorithm state to the seed hashValue.
+    /// Verifies that calling <see cref="BKDR.Initialise" /> resets the internal algorithm state to the seed hashValue.
     /// </summary>
     [TestMethod]
     public void Initialize_ShouldResetHashStateToSeed()

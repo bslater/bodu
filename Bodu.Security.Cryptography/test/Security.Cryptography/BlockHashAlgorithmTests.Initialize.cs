@@ -12,7 +12,7 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
 {
 
     /// <summary>
-    /// Verifies that <see cref="HashAlgorithm.Initialize" /> resets the internal accumulator so that
+    /// Verifies that <see cref="HashAlgorithm.Initialise" /> resets the internal accumulator so that
     /// a fresh hash computation starts from a clean state, regardless of whether the algorithm
     /// supports reuse.
     /// </summary>
@@ -45,7 +45,7 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
     }
 
     /// <summary>
-    /// Verifies that <see cref="HashAlgorithm.Initialize" /> allows the algorithm to be reused,
+    /// Verifies that <see cref="HashAlgorithm.Initialise" /> allows the algorithm to be reused,
     /// producing identical output for identical input across consecutive calls.
     /// Skipped for algorithms where <see cref="HashAlgorithmSpecification.CanReuseTransform" />
     /// is <see langword="false" />.

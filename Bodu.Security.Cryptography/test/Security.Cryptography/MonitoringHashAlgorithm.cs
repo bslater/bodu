@@ -54,7 +54,7 @@ public class MonitoringHashAlgorithm : HashAlgorithm
     public event EventHandler? HashCoreSpanCalled;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MonitoringHashAlgorithm" /> class.
+    /// Initialises a new instance of the <see cref="MonitoringHashAlgorithm" /> class.
     /// </summary>
     public MonitoringHashAlgorithm()
     {
@@ -109,7 +109,7 @@ public class MonitoringHashAlgorithm : HashAlgorithm
     }
 
     /// <summary>
-    /// Initializes or resets the hash algorithm to its initial state.
+    /// Initialises or resets the hash algorithm to its initial state.
     /// </summary>
     public override void Initialize()
     {

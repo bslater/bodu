@@ -21,7 +21,7 @@ public partial class MonitoringHashAlgorithmTests
     }
 
     /// <summary>
-    /// Verifies that the constructor initializes <see cref="MonitoringHashAlgorithm.BytesProcessed" /> to zero.
+    /// Verifies that the constructor initialises <see cref="MonitoringHashAlgorithm.BytesProcessed" /> to zero.
     /// </summary>
     [TestMethod]
     public void Ctor_ShouldSetBytesProcessedToZero()

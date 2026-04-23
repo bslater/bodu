@@ -224,7 +224,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 
     /// <summary>
     /// Verifies that calling <see cref="HashAlgorithm.TransformFinalBlock(byte[], int, int)" /> twice without calling
-    /// <see cref="HashAlgorithm.Initialize" /> behaves according to the .NET version in use. For older versions, it throws
+    /// <see cref="HashAlgorithm.Initialise" /> behaves according to the .NET version in use. For older versions, it throws
     /// <see cref="CryptographicUnexpectedOperationException" />, whereas in later versions, it does not throw.
     /// </summary>
     [TestMethod]

@@ -120,7 +120,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <summary>
     /// Creates a new instance of the algorithm under test using the default variant.
     /// </summary>
-    /// <returns>A fully initialized instance of <typeparamref name="TAlgorithm" /> configured with <see cref="DefaultVariant" />.</returns>
+    /// <returns>A fully initialised instance of <typeparamref name="TAlgorithm" /> configured with <see cref="DefaultVariant" />.</returns>
     protected override TAlgorithm CreateAlgorithm() =>
         CreateAlgorithm(DefaultVariant);
 

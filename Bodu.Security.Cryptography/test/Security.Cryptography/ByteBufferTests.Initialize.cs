@@ -11,7 +11,7 @@ namespace Bodu.Infrastructure;
 public partial class ByteBufferTests
 {
     /// <summary>
-    /// Verifies that Initialize resets the internal index.
+    /// Verifies that Initialise resets the internal index.
     /// </summary>
     [TestMethod]
     public void Initalize_WhenCalled_ShouldResetIndex()
@@ -23,7 +23,7 @@ public partial class ByteBufferTests
     }
 
     /// <summary>
-    /// Verifies that Initialize(clear: false) does not clear buffer contents, but GetBytesZeroPadded() still zeroes them.
+    /// Verifies that Initialise(clear: false) does not clear buffer contents, but GetBytesZeroPadded() still zeroes them.
     /// </summary>
     [TestMethod]
     public void Initalize_WhenClearFalse_ShouldNotPreserveBufferContentsInZeroPadded()
@@ -36,7 +36,7 @@ public partial class ByteBufferTests
     }
 
     /// <summary>
-    /// Verifies that Initialize(true) clears all buffer contents.
+    /// Verifies that Initialise(true) clears all buffer contents.
     /// </summary>
     [TestMethod]
     public void Initalize_WhenClearTrue_ShouldClearBuffer()

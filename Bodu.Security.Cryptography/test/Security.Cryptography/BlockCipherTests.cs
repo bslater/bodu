@@ -81,7 +81,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// <summary>
     /// Creates a new instance of the block cipher engine under test using the default variant.
     /// </summary>
-    /// <returns>A fully initialized instance of <typeparamref name="TCipher" /> configured with <see cref="DefaultVariant" />.</returns>
+    /// <returns>A fully initialised instance of <typeparamref name="TCipher" /> configured with <see cref="DefaultVariant" />.</returns>
     protected virtual TCipher CreateBlockCipher() =>
         CreateBlockCipher(DefaultVariant);
 

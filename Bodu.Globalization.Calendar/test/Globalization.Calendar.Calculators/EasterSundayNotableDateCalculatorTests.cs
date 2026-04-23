@@ -1,11 +1,17 @@
-﻿using System.Globalization;
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="EasterSundayNotableDateCalculatorTests.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Globalization;
 using System.Reflection;
 using SysGlob = System.Globalization;
 
 namespace Bodu.Globalization.Calendar.Calculators;
 
 /// <summary>
-/// Verifies the correctness and behavior of <see cref="EasterSundayNotableDateCalculator" />.
+/// Verifies the correctness and behaviour of <see cref="EasterSundayNotableDateCalculator" />.
 /// </summary>
 [TestClass]
 public sealed class EasterSundayNotableDateCalculatorTests

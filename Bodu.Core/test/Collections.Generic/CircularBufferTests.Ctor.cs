@@ -109,7 +109,7 @@ public partial class CircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that providing a valid capacity initializes the buffer with the specified capacity.
+    /// Verifies that providing a valid capacity initialises the buffer with the specified capacity.
     /// </summary>
     [TestMethod]
     [DataRow(5)]
@@ -241,7 +241,7 @@ public partial class CircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that the default constructor initializes an empty buffer.
+    /// Verifies that the default constructor initialises an empty buffer.
     /// </summary>
     [TestMethod]
     public void Constructor_WhenDefaultUsed_ShouldStartEmpty()

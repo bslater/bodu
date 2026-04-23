@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 {
     /// <summary>
-    /// Verifies that reusing the algorithm instance after <see cref="HashAlgorithm.Initialize" /> resets the state correctly.
+    /// Verifies that reusing the algorithm instance after <see cref="HashAlgorithm.Initialise" /> resets the state correctly.
     /// </summary>
     [TestMethod]
     public void Initialize_WhenCalledBetweenHashes_ShouldResetStateForNewHash()
@@ -30,7 +30,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="HashAlgorithm.Initialize" /> multiple times without computing does not throw or alter behavior.
+    /// Verifies that calling <see cref="HashAlgorithm.Initialise" /> multiple times without computing does not throw or alter behaviour.
     /// </summary>
     [TestMethod]
     public void Initialize_WhenCalledRepeatedly_ShouldNotThrowOrAffectBehavior()
@@ -79,7 +79,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="HashAlgorithm.Initialize" /> mid-hashing resets any partially buffered data.
+    /// Verifies that calling <see cref="HashAlgorithm.Initialise" /> mid-hashing resets any partially buffered data.
     /// </summary>
     [TestMethod]
     public void Initialize_MidHashing_ShouldResetPartialState()
@@ -101,8 +101,8 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="HashAlgorithm.Initialize" /> after disposal throws an <see cref="ObjectDisposedException" />,
-    /// matching base .NET behavior.
+    /// Verifies that calling <see cref="HashAlgorithm.Initialise" /> after disposal throws an <see cref="ObjectDisposedException" />,
+    /// matching base .NET behaviour.
     /// </summary>
     [TestMethod]
     public void Initialize_WhenDisposed_ShouldThrowExactly()
@@ -119,11 +119,11 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     }
 
     /// <summary>
-    /// Verifies that <see cref="HashAlgorithm.Initialize" /> resets the algorithm's
+    /// Verifies that <see cref="HashAlgorithm.Initialise" /> resets the algorithm's
     /// <see cref="HashAlgorithm.State" /> so that a hash computation can be started immediately
     /// afterwards without a <see cref="CryptographicUnexpectedOperationException" /> being raised.
     /// Regression guard for <see cref="CubeHash" />, where the .NET-6+ branch of
-    /// <c>Initialize()</c> previously did not reset <c>State</c>.
+    /// <c>Initialise()</c> previously did not reset <c>State</c>.
     /// </summary>
     [TestMethod]
     public void Initialize_AfterHashing_ShouldResetStateForReuse()

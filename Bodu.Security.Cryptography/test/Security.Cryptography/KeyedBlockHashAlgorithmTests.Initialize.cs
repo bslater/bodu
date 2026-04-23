@@ -11,9 +11,9 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TVariant>
 {
     /// <summary>
-    /// Verifies that calling <see cref="HashAlgorithm.Initialize" /> on a keyed-hash instance
+    /// Verifies that calling <see cref="HashAlgorithm.Initialise" /> on a keyed-hash instance
     /// whose key has been cleared does not silently regenerate a fresh random key. A keyed MAC
-    /// that swaps keys on Initialize would violate its security contract. Implementations that
+    /// that swaps keys on Initialise would violate its security contract. Implementations that
     /// permit silent regeneration may opt out by returning <see langword="true" /> from
     /// <see cref="AllowsKeyRegenerationOnInitialize" />.
     /// </summary>
@@ -48,7 +48,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
 
     /// <summary>
     /// Gets a value indicating whether this keyed-hash implementation permits
-    /// <see cref="HashAlgorithm.Initialize" /> to silently regenerate a random key when the
+    /// <see cref="HashAlgorithm.Initialise" /> to silently regenerate a random key when the
     /// previous key has been cleared. Defaults to <see langword="false" /> (strict keyed-MAC
     /// contract).
     /// </summary>

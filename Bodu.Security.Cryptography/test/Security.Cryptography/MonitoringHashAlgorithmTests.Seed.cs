@@ -77,7 +77,7 @@ public partial class MonitoringHashAlgorithmTests
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="Elf64.Initialize" /> resets the internal algorithm state to the seed hashValue.
+    /// Verifies that calling <see cref="Elf64.Initialise" /> resets the internal algorithm state to the seed hashValue.
     /// </summary>
     [TestMethod]
     public void Initialize_ShouldResetHashStateToSeed()

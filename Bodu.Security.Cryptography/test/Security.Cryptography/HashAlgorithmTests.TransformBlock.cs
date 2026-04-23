@@ -35,7 +35,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <param name="property">The property to test for immutability after hashing begins.</param>
     /// <remarks>
     /// This test uses reflection to set the property to its current hashValue after hashing has started, simulating a mutation attempt.
-    /// It is intended to enforce correct behavior in concrete <see cref="HashAlgorithm" /> or <see cref="KeyedHashAlgorithm" />
+    /// It is intended to enforce correct behaviour in concrete <see cref="HashAlgorithm" /> or <see cref="KeyedHashAlgorithm" />
     /// implementations where configuration changes are no longer allowed once data has been processed.
     /// </remarks>
     [TestMethod]

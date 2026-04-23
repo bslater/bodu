@@ -110,7 +110,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     }
 
     /// <summary>
-    /// Verifies the correct get/set behavior of the <see cref="KeyedHashAlgorithm.Key" /> property.
+    /// Verifies the correct get/set behaviour of the <see cref="KeyedHashAlgorithm.Key" /> property.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(HashAlgorithmVariants))]
@@ -219,7 +219,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     }
 
     /// <summary>
-    /// Verifies that reassigning the same key hashValue multiple times does not throw or alter behavior.
+    /// Verifies that reassigning the same key hashValue multiple times does not throw or alter behaviour.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(HashAlgorithmVariants))]
@@ -241,7 +241,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="HashAlgorithm.Initialize" /> does not reset the key unless explicitly cleared.
+    /// Verifies that calling <see cref="HashAlgorithm.Initialise" /> does not reset the key unless explicitly cleared.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(HashAlgorithmVariants))]

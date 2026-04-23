@@ -36,7 +36,7 @@ public partial class BernsteinTests
     }
 
     /// <summary>
-    /// Verifies that setting a new InitialValue after Initialize allows reuse with different results.
+    /// Verifies that setting a new InitialValue after Initialise allows reuse with different results.
     /// </summary>
     [TestMethod]
     public void InitialValue_WhenResetWithInitialize_ShouldAllowReuseWithDifferentInitialValues()

@@ -22,7 +22,7 @@ public partial class ByteBufferTests
     }
 
     /// <summary>
-    /// Verifies that calling Initialize resets the buffer to empty.
+    /// Verifies that calling Initialise resets the buffer to empty.
     /// </summary>
     [TestMethod]
     public void IsEmpty_WhenBufferReset_ShouldReturnTrue()
@@ -45,7 +45,7 @@ public partial class ByteBufferTests
     }
 
     /// <summary>
-    /// Verifies that a newly initialized buffer is empty.
+    /// Verifies that a newly initialised buffer is empty.
     /// </summary>
     [TestMethod]
     public void IsEmpty_WhenInitialized_ShouldReturnTrue()

@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 {
     /// <summary>
-    /// Verifies that accessing <see cref="HashAlgorithm.Hash" /> after calling <see cref="HashAlgorithm.Initialize" /> without
+    /// Verifies that accessing <see cref="HashAlgorithm.Hash" /> after calling <see cref="HashAlgorithm.Initialise" /> without
     /// finalizing the hash computation throws a <see cref="CryptographicUnexpectedOperationException" />.
     /// </summary>
     [TestMethod]
