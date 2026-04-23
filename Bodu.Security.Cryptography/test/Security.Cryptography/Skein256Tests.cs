@@ -24,7 +24,7 @@ public partial class Skein256Tests
         IsStateless = false,
         LongInputLength = 200,
         BoundaryLengths = [1, 8, 16, 32, 64, 128],
-        MinKeyLength = 0,
+        MinKeyLength = 16,
         MaxKeyLength = Skein<Skein256>.MaxKeySizeBytes,
         ValidKeyLengths = [0, 16, 32, 64, 128, 256, Skein<Skein256>.MaxKeySizeBytes],
         TestKey = Array.Empty<byte>(),

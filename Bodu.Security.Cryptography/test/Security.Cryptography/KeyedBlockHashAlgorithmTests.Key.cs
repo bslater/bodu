@@ -74,6 +74,11 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
 
         foreach (int invalidLength in specification.GetRejectedKeyLengths())
         {
+            // Variable-length-optional-key algorithms (EnforcesMinimumKeyLength=false) only reject lengths above
+            // MaxKeyLength; they tolerate below-minimum and empty keys. Skip those rows for such algorithms.
+            if (!EnforcesMinimumKeyLength && invalidLength < specification.MinKeyLength)
+                continue;
+
             Assert.ThrowsExactly<CryptographicException>(
                 () => algorithm.Key = new byte[invalidLength],
                 $"[{variant}] Expected CryptographicException for key length {invalidLength} " +
@@ -395,6 +400,14 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     }
 
     /// <summary>
+    /// Gets a value indicating whether the algorithm rejects key lengths that fall below
+    /// <see cref="KeyedAlgorithmSpecification.MinKeyLength" />. Defaults to <see langword="true" />.
+    /// Variable-length-optional-key algorithms (such as Skein, which also accepts lengths below the MAC-friendly
+    /// minimum) override this to <see langword="false" /> so the below-minimum negative test is skipped.
+    /// </summary>
+    protected virtual bool EnforcesMinimumKeyLength => true;
+
+    /// <summary>
     /// Verifies that <see cref="KeyedBlockHashAlgorithm.Key" />, when BelowMinimumLength, throws <see cref="CryptographicException" />.
     /// </summary>
     [TestMethod]
@@ -404,6 +417,12 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
         if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
         {
             Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping invalid test case.");
+            return;
+        }
+
+        if (!EnforcesMinimumKeyLength || specification.MinKeyLength == 0)
+        {
+            Assert.Inconclusive($"[{variant}] Algorithm does not enforce a minimum key length; skipping below-minimum test.");
             return;
         }
 

@@ -180,6 +180,32 @@ public abstract partial class Skein<T>
     }
 
     /// <summary>
+    /// Gets the number of bytes absorbed per Threefish block — equivalently, the Skein state size in bytes.
+    /// </summary>
+    /// <returns>The block size, in bytes, for this Skein variant (32, 64, or 128).</returns>
+    public override int InputBlockSize => this.BlockSizeBytes;
+
+    /// <summary>
+    /// Gets the output block size, in bytes, produced per Skein transformation step — mirrors <see cref="InputBlockSize" />.
+    /// </summary>
+    /// <returns>The block size, in bytes, for this Skein variant (32, 64, or 128).</returns>
+    public override int OutputBlockSize => this.BlockSizeBytes;
+
+    /// <summary>
+    /// Gets the fully qualified algorithm name, including the state size and the configured output size.
+    /// </summary>
+    /// <returns>A string of the form <c>"Skein-<i>s</i>-<i>h</i>"</c> — e.g. <c>"Skein-512-256"</c>.</returns>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    public string AlgorithmName
+    {
+        get
+        {
+            this.ThrowIfDisposed();
+            return $"Skein-{this.BlockSizeBytes * 8}-{this.HashSizeValue}";
+        }
+    }
+
+    /// <summary>
     /// Resets the algorithm to its initial state, recomputing the chaining value from the configuration block (and
     /// the key, if one has been supplied) so that a fresh hash or MAC may be computed.
     /// </summary>
@@ -331,7 +357,14 @@ public abstract partial class Skein<T>
             CryptoHelpers.Clear(this._initialChainingValue);
             CryptoHelpers.Clear(this._pendingBlock);
             CryptoHelpers.Clear(this._ubiCipherOutput);
+            CryptoHelpers.ClearAndNullify(ref this.HashValue);
+
             this._cipher.Dispose();
+            this._isChainingValueCached = false;
+            this._pendingBytes = 0;
+            this._messageBytesProcessed = 0UL;
+            this._hasProcessedAnyMessageBlock = false;
+            this.HashSizeValue = 0;
         }
 
         this._disposed = true;

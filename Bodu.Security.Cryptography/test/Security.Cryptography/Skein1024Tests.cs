@@ -28,7 +28,7 @@ public partial class Skein1024Tests
         IsStateless = false,
         LongInputLength = 512,
         BoundaryLengths = [1, 16, 128, 256, 512],
-        MinKeyLength = 0,
+        MinKeyLength = 16,
         MaxKeyLength = Skein<Skein1024>.MaxKeySizeBytes,
         ValidKeyLengths = [0, 16, 32, 64, 128, 256, Skein<Skein1024>.MaxKeySizeBytes],
         TestKey = Array.Empty<byte>(),

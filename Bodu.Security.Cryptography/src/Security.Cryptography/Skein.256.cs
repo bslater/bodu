@@ -64,10 +64,4 @@ public sealed class Skein256
     public Skein256(int hashSize)
         : base(new Threefish256Cipher(new byte[BlockSizeBytes], new byte[16]), hashSize, PermittedHashSizes)
     { }
-
-    /// <summary>
-    /// Gets the fully qualified algorithm name, including the state size and the configured output size.
-    /// </summary>
-    /// <returns>A string of the form <c>"Skein-256-<i>n</i>"</c>, e.g. <c>"Skein-256-256"</c>.</returns>
-    public string AlgorithmName => $"Skein-256-{this.HashSize}";
 }

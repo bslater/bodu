@@ -37,6 +37,16 @@ public abstract partial class SkeinTests<TTest, TAlgorithm>
     protected override bool EmptyKeyIsValid => true;
 
     /// <inheritdoc />
+    /// <remarks>
+    /// Skein accepts any key length from zero up to <see cref="Skein{T}.MaxKeySizeBytes" />; there is no lower bound
+    /// beyond "non-null". The framework's below-minimum negative test is therefore skipped, even though the Skein
+    /// specification still sets <see cref="KeyedAlgorithmSpecification.MinKeyLength" /> to a MAC-friendly size so
+    /// that the tests which generate a representative key via <c>GenerateUniqueKey(MinKeyLength)</c> exercise
+    /// meaningful MAC behaviour rather than hashing with a one-byte key.
+    /// </remarks>
+    protected override bool EnforcesMinimumKeyLength => false;
+
+    /// <inheritdoc />
     public override IEnumerable<SingleTestVariant> GetHashAlgorithmVariants() => new[]
     {
         SingleTestVariant.Default,

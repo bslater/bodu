@@ -64,10 +64,4 @@ public sealed class Skein512
     public Skein512(int hashSize)
         : base(new Threefish512Cipher(new byte[BlockSizeBytes], new byte[16]), hashSize, PermittedHashSizes)
     { }
-
-    /// <summary>
-    /// Gets the fully qualified algorithm name, including the state size and the configured output size.
-    /// </summary>
-    /// <returns>A string of the form <c>"Skein-512-<i>n</i>"</c>, e.g. <c>"Skein-512-512"</c>.</returns>
-    public string AlgorithmName => $"Skein-512-{this.HashSize}";
 }
