@@ -4,34 +4,35 @@ title: Using hashes and checksums
 
 # Using hashes and checksums
 
-**Bodu.Security.Cryptography** ships a broad family of hashes and checksums that plug into the standard <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contract. This page sorts them by use-case and shows a minimal recipe for each.
+Non-cryptographic checksums and hash-table hashes live in **Bodu.IO.Hashing**, built on <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>. Cryptographic digests, keyed hashes, and Merkle trees live in **Bodu.Security.Cryptography**, built on <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>. This page sorts them by use-case and shows a minimal recipe for each.
 
 ## Pick the right tool
 
 | If you need… | Use | Why |
 |---|---|---|
-| A fast error-detection checksum for network framing, file integrity, etc. | <xref:Bodu.Security.Cryptography.Fletcher32>, <xref:Bodu.Security.Cryptography.Adler32>, <xref:Bodu.Security.Cryptography.Fnv1a32>, <xref:Bodu.Security.Cryptography.Crc> | Cheap, well-spread, **not** cryptographic. |
+| A fast error-detection checksum for network framing, file integrity, etc. | <xref:Bodu.IO.Hashing.Fletcher32>, <xref:Bodu.IO.Hashing.Adler32>, <xref:Bodu.IO.Hashing.Fnv1a32>, <xref:Bodu.IO.Hashing.Crc> | Cheap, well-spread, **not** cryptographic. |
 | A hash-table key or a short fingerprint, resistant to collision DoS | <xref:Bodu.Security.Cryptography.SipHash64>, <xref:Bodu.Security.Cryptography.SipHash128> | Keyed, collision-resistant for short inputs. |
 | A cryptographic digest for signatures, fingerprints, or content addressing | <xref:Bodu.Security.Cryptography.Tiger>, or <xref:System.Security.Cryptography.SHA256?displayProperty=nameWithType> (BCL) | Collision-resistant against active attackers. |
 | A rolling integrity check over a long stream or file, with partial re-verification | <xref:Bodu.Security.Cryptography.MerkleTreeHash>, <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> | Subtree recomputation without rehashing the whole input. |
 
-The library also includes a number of classic non-cryptographic hashes (<xref:Bodu.Security.Cryptography.Bernstein>, <xref:Bodu.Security.Cryptography.BKDR>, <xref:Bodu.Security.Cryptography.SDBM>, <xref:Bodu.Security.Cryptography.JSHash>, <xref:Bodu.Security.Cryptography.Elf64>) which follow the same `HashAlgorithm` pattern shown below.
+**Bodu.IO.Hashing** also includes a number of classic non-cryptographic hashes (<xref:Bodu.IO.Hashing.Bernstein>, <xref:Bodu.IO.Hashing.BKDR>, <xref:Bodu.IO.Hashing.SDBM>, <xref:Bodu.IO.Hashing.JSHash>, <xref:Bodu.IO.Hashing.Elf64>, <xref:Bodu.IO.Hashing.ApHash>, <xref:Bodu.IO.Hashing.Pjw32>, <xref:Bodu.IO.Hashing.Pearson>, <xref:Bodu.IO.Hashing.CityHash32>, <xref:Bodu.IO.Hashing.CityHash64>) which follow the same `NonCryptographicHashAlgorithm` pattern shown below.
 
 ## Pattern 1 — a non-cryptographic checksum
 
 ```csharp
-using System.Security.Cryptography;
+using System.IO.Hashing;
 using System.Text;
-using Bodu.Security.Cryptography;
+using Bodu.IO.Hashing;
 
 byte[] data = Encoding.UTF8.GetBytes("the quick brown fox");
 
-using var hash = new Fletcher32();
-byte[] digest = hash.ComputeHash(data);
+var hash = new Fletcher32();
+hash.Append(data);
+byte[] digest = hash.GetCurrentHash();
 string hex    = Convert.ToHexString(digest);   // 4-byte value as 8 hex characters
 ```
 
-The same shape works for `Adler32`, `Adler64`, `Fletcher16`, `Fletcher32`, `Fletcher64`, `Fnv1a32`, `Fnv1a64`, `CityHash64`, `CrcStandard`, and the classic hashes listed above. They all derive from `HashAlgorithm`, so any API that accepts a `HashAlgorithm` accepts them.
+The same shape works for `Adler32`, `Adler64`, `Fletcher16`, `Fletcher32`, `Fletcher64`, `Fnv1a32`, `Fnv1a64`, `CityHash64`, `Crc`, and the classic hashes listed above. They all derive from `NonCryptographicHashAlgorithm`, so any API that accepts a `NonCryptographicHashAlgorithm` accepts them.
 
 **What they're not.** These are error-detection and distribution tools. An attacker who can freely modify a message can trivially forge the checksum. Pair them with a signature or a MAC if you need integrity against an adversary.
 
