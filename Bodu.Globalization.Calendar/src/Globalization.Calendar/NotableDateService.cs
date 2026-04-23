@@ -279,7 +279,7 @@ public sealed class NotableDateService : INotableDateService
     /// <param name="date">The resolved observed date for the rule.</param>
     /// <param name="territory">The territory code, or <see langword="null" />.</param>
     /// <param name="adjustmentReason">The reason the observed date differs from the rule's base
-    /// calculation, or <see cref="AdjustmentReason.None" /> if no adjustment was applied.</param>
+    /// calculation, or <see langword="null" /> if no adjustment was applied.</param>
     /// <param name="isNonWorkingOverride">If <see langword="true" />, the rule is flagged as a
     /// non-working day regardless of the underlying weekday.</param>
     /// <returns>The constructed <see cref="NotableDate" />.</returns>
