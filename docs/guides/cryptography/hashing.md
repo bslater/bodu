@@ -6,6 +6,15 @@ title: Using hashes and checksums
 
 **Bodu.Security.Cryptography** ships the library's keyed hashes (SipHash), one-time authenticators (Poly1305), cryptographic digests (Tiger, Snefru, CubeHash), and Merkle-tree hashing. All of them plug into the standard <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contract.
 
+This page is the cross-cutting overview — how the families relate, which to choose for which job, and how to verify a digest safely. For the full per-algorithm walk-throughs, see:
+
+- [Using SipHash](siphash.md) — keyed short-input PRF.
+- [Using Poly1305](poly1305.md) — one-time authenticator.
+- [Using Tiger](tiger.md) — 128 / 160 / 192-bit cryptographic digest.
+- [Using CubeHash](cubehash.md) — SHA-3 submission with tunable rounds and block size.
+- [Using Snefru](snefru.md) — legacy 128 / 256-bit digest (interop only).
+- [Using Merkle trees](merkle-trees.md) — tree-structured streaming integrity.
+
 > **Looking for CRC, Fletcher, Adler, FNV, CityHash, Pearson, Bernstein, BKDR, SDBM, JSHash, Elf64, ApHash, or Pjw32?** Those non-cryptographic families live in the companion <xref:Bodu.IO.Hashing> package, built on <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>. See the [Bodu.IO.Hashing guides](../io-hashing/).
 
 ## Pick the right tool

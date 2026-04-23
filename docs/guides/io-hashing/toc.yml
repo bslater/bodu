@@ -1,0 +1,19 @@
+# ./<Project Root Dir>/docs/guides/io-hashing/toc.yml
+- name: Overview
+  href: index.md
+- name: Using CRC
+  href: crc.md
+- name: CRC catalogue
+  href: crc-catalogue.md
+- name: Using Fletcher
+  href: fletcher.md
+- name: Using Adler
+  href: adler.md
+- name: Using FNV
+  href: fnv.md
+- name: Using CityHash
+  href: cityhash.md
+- name: Using Pearson
+  href: pearson.md
+- name: Classic string hashes
+  href: string-hashes.md
