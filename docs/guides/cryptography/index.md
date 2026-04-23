@@ -55,9 +55,18 @@ All five share the same high-level shape: a `SymmetricAlgorithm` (or `TweakableS
 
 ## Hashing
 
-[Using hashes and checksums](hashing.md) — concrete recipes for the classic non-cryptographic families (Adler, FNV, CityHash), keyed short-input hashes (SipHash), cryptographic digests (Tiger), and streaming integrity with `MerkleTreeHash` / `ParallelMerkleTreeHash`.
+Start with [Using hashes and checksums](hashing.md) for the cross-cutting picture — how the keyed, cryptographic, and Merkle-tree primitives relate, how to compute and verify digests, and when each one is the right tool. Then pick the per-algorithm page you need:
 
-For CRC and Fletcher checksums on `System.IO.Hashing.NonCryptographicHashAlgorithm`, see the [Bodu.IO.Hashing guides](../io-hashing/).
+| Type | Shape | Guide |
+|---|---|---|
+| `SipHash64` / `SipHash128` | Keyed PRF — hash-flooding defence | [Using SipHash](siphash.md) |
+| `Poly1305` | One-time authenticator | [Using Poly1305](poly1305.md) |
+| `Tiger` | 128 / 160 / 192-bit cryptographic digest | [Using Tiger](tiger.md) |
+| `CubeHash` | SHA-3 submission, tunable rounds and block size | [Using CubeHash](cubehash.md) |
+| `Snefru128` / `Snefru256` | Legacy cryptographic digest — interop only | [Using Snefru](snefru.md) |
+| `MerkleTreeHash` / `ParallelMerkleTreeHash` | Tree-structured streaming integrity | [Using Merkle trees](merkle-trees.md) |
+
+For non-cryptographic checksums and fingerprints (CRC, Fletcher, Adler, FNV, CityHash, Pearson, and the classic string hashes) on `System.IO.Hashing.NonCryptographicHashAlgorithm`, see the [Bodu.IO.Hashing guides](../io-hashing/).
 
 ## Related concepts
 

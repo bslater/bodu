@@ -6,10 +6,20 @@
       href: io-hashing/index.md
     - name: Using CRC
       href: io-hashing/crc.md
-    - name: Using Fletcher
-      href: io-hashing/fletcher.md
     - name: CRC catalogue
       href: io-hashing/crc-catalogue.md
+    - name: Using Fletcher
+      href: io-hashing/fletcher.md
+    - name: Using Adler
+      href: io-hashing/adler.md
+    - name: Using FNV
+      href: io-hashing/fnv.md
+    - name: Using CityHash
+      href: io-hashing/cityhash.md
+    - name: Using Pearson
+      href: io-hashing/pearson.md
+    - name: Classic string hashes
+      href: io-hashing/string-hashes.md
 - name: Bodu.Security.Cryptography
   href: cryptography/
   items:
@@ -25,8 +35,22 @@
       href: cryptography/composing-primitives.md
     - name: Padding
       href: cryptography/padding.md
-    - name: Hashing
+    - name: Hashing and checksums
       href: cryptography/hashing.md
+    - name: Hashing algorithms
+      items:
+        - name: Using SipHash
+          href: cryptography/siphash.md
+        - name: Using Poly1305
+          href: cryptography/poly1305.md
+        - name: Using Tiger
+          href: cryptography/tiger.md
+        - name: Using CubeHash
+          href: cryptography/cubehash.md
+        - name: Using Snefru
+          href: cryptography/snefru.md
+        - name: Using Merkle trees
+          href: cryptography/merkle-trees.md
     - name: Symmetric algorithms
       items:
         - name: Threefish-256
