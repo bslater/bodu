@@ -710,6 +710,24 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not an ASCII decimal
+    /// digit character, that is, a character in the range <c>'0'</c> (U+0030) to <c>'9'</c> (U+0039) inclusive.
+    /// </summary>
+    /// <param name="value">The character to validate.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="value" /> is outside the inclusive range <c>'0'</c> to <c>'9'</c>.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfNotAsciiDecimalDigit(char value)
+    {
+        if ((uint)(value - '0') > 9u)
+            throw new ArgumentOutOfRangeException(
+                nameof(value),
+                value,
+                $"Character '{value}' (U+{(int)value:X4}) is not an ASCII decimal digit ('0' to '9').");
+    }
+
+    /// <summary>
     /// Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />.
     /// </summary>
     /// <typeparam name="T">The type of the object.</typeparam>
