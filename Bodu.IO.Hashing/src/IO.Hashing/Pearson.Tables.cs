@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography;
+namespace Bodu.IO.Hashing;
 
 public sealed partial class Pearson
 {
