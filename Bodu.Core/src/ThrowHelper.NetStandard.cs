@@ -1,5 +1,5 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
-// <copyright file="ThrowHelper_NetStandard.cs" company="PlaceholderCompany">
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ThrowHelper.NetStandard.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
