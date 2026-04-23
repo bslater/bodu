@@ -225,12 +225,12 @@ namespace Bodu.Globalization.Calendar
 			var results = service.GetNotableDates(2026, subdivision);
 
 			// Anzac Day can fall on a weekend (25 April 2026 is a Saturday); WA and NT emit a substitute Monday as well,
-		// so filter to the original observance entry rather than asserting a single occurrence per subdivision.
-		var anzacDay = results.SingleOrDefault(d => d.Name == "Anzac Day" && !d.WasAdjusted);
-		Assert.IsNotNull(anzacDay, $"Anzac Day should be visible to subdivision {subdivision}.");
-		Assert.AreEqual("AU", anzacDay!.TerritoryCode);
-		Assert.AreEqual(new DateTime(2026, 4, 25), anzacDay.Date);
-	}
+			// so filter to the original observance entry rather than asserting a single occurrence per subdivision.
+			var anzacDay = results.SingleOrDefault(d => d.Name == "Anzac Day" && !d.WasAdjusted);
+			Assert.IsNotNull(anzacDay, $"Anzac Day should be visible to subdivision {subdivision}.");
+			Assert.AreEqual("AU", anzacDay!.TerritoryCode);
+			Assert.AreEqual(new DateTime(2026, 4, 25), anzacDay.Date);
+		}
 
 	/// <summary>
 	/// Verifies that Western Australia observes a substitute Monday when Anzac Day falls on a Saturday (25 April 2020), emitting
@@ -294,4 +294,5 @@ namespace Bodu.Globalization.Calendar
 		Assert.IsTrue(occurrences[1].WasAdjusted);
 		Assert.AreEqual("AU-NT", occurrences[1].TerritoryCode);
 	}
+}
 }
