@@ -1,5 +1,5 @@
-// --------------------------------------------------------------------------------------------------------------- //
-// <copyright file="ICryptoTransformExtensions_TransformFinalBlock.cs" company="PlaceholderCompany">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ICryptoTransformExtensions.TransformFinalBlock.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------

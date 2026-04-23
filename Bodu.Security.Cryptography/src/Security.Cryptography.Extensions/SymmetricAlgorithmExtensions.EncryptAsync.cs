@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="SymmetricAlgorithmExtensions_EncryptAsync.cs" company="PlaceholderCompany">
+// <copyright file="SymmetricAlgorithmExtensions.EncryptAsync.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------

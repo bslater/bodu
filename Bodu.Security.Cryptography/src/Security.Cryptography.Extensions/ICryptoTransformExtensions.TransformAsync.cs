@@ -1,5 +1,5 @@
-// --------------------------------------------------------------------------------------------------------------- //
-// <copyright file="ICryptoTransformExtensions_TransformAsync.cs" company="PlaceholderCompany">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ICryptoTransformExtensions.TransformAsync.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------

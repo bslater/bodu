@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="TweakableSymmetricAlgorithmExtensions_TryCreateEncryptor.cs" company="PlaceholderCompany">
+// <copyright file="TweakableSymmetricAlgorithmExtensions.TryCreateEncryptor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------

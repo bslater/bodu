@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Adler32.cs" company="PlaceholderCompany">
+// <copyright file="Adler.Adler64.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------

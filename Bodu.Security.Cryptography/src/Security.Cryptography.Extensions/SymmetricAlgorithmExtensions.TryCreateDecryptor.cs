@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="SymmetricAlgorithmExtensions_TryCreateDecryptor.cs" company="PlaceholderCompany">
+// <copyright file="SymmetricAlgorithmExtensions.TryCreateDecryptor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------

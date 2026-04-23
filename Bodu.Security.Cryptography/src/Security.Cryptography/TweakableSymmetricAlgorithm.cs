@@ -1,4 +1,9 @@
-﻿
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="TweakableSymmetricAlgorithm.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;

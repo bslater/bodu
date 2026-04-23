@@ -1,5 +1,5 @@
-// --------------------------------------------------------------------------------------------------------------- //
-// <copyright file="HashAlgorithmExtensions_VerifyHashAsync.cs" company="PlaceholderCompany">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="HashAlgorithmExtensions.VerifyHashAsync.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------

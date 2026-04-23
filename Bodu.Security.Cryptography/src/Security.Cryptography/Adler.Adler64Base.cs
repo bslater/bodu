@@ -1,4 +1,9 @@
-﻿
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="Adler.Adler64Base.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;

@@ -1,4 +1,9 @@
-﻿
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="Pkcs7Padding.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using System;
 using System.Security.Cryptography;
 

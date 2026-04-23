@@ -1,4 +1,9 @@
-﻿
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="CbcModeTransform.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using System;
 using Bodu.Security.Cryptography;
 

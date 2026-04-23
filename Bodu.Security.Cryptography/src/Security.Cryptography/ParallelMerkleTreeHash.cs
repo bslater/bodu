@@ -1,4 +1,10 @@
-﻿using System;
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ParallelMerkleTreeHash.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System;
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
