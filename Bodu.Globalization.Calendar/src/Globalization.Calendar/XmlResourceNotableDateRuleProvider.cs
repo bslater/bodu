@@ -53,6 +53,11 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 	// Loading and flattening
 	// ----------------------------------------------------------------------------
 
+    /// <summary>
+    /// Loads every configured XML resource and flattens their rule definitions — including
+    /// cross-file &lt;UseFrom&gt; references — into a single rule list.
+    /// </summary>
+    /// <returns>The materialised rule list.</returns>
 	private List<NotableDateRule> LoadAndFlatten()
 	{
 		var documentCache = new Dictionary<string, ParsedNotableDateDocument>(StringComparer.OrdinalIgnoreCase);
@@ -63,6 +68,10 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 		return byKey.Values.ToList();
 	}
 
+    /// <summary>
+    /// Flattens a single parsed resource document into a rule dictionary keyed by
+    /// <see cref="RuleKey" />, resolving &lt;Use&gt; directives against already-loaded sources.
+    /// </summary>
 	private IReadOnlyDictionary<RuleKey, NotableDateRule> FlattenResource(
 		string resourceName,
 		Dictionary<string, ParsedNotableDateDocument> documentCache,
@@ -126,6 +135,10 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 		}
 	}
 
+    /// <summary>
+    /// Searches <paramref name="sourceRules" /> for a rule that satisfies the &lt;Use&gt;
+    /// directive's name and optional territory scope.
+    /// </summary>
 	private static NotableDateRule? FindSourceRule(IReadOnlyDictionary<RuleKey, NotableDateRule> sourceRules, string name)
 	{
 		foreach (var pair in sourceRules)
@@ -137,9 +150,22 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 		return null;
 	}
 
+    /// <summary>
+    /// Builds the composite <see cref="RuleKey" /> (name + territory) used to deduplicate rules
+    /// within a single resource.
+    /// </summary>
+    /// <param name="rule">The rule to key.</param>
+    /// <returns>The composite key.</returns>
 	private static RuleKey KeyOf(NotableDateRule rule) =>
 		new(rule.Name, rule.TerritoryCode);
 
+    /// <summary>
+    /// Returns a copy of <paramref name="source" /> with any field overrides from
+    /// <paramref name="directive" /> applied (name, territory, observance adjustment, etc.).
+    /// </summary>
+    /// <param name="source">The base rule being re-used.</param>
+    /// <param name="directive">The &lt;Use&gt; directive specifying overrides.</param>
+    /// <returns>The overridden rule.</returns>
 	private static NotableDateRule ApplyOverrides(NotableDateRule source, NotableDateRuleUseDirective directive)
 	{
 		return source with
@@ -164,16 +190,30 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 	/// </summary>
 	private readonly record struct RuleKey(string Name, string? Territory)
 	{
+        /// <summary>
+        /// Returns <see langword="true" /> if <paramref name="other" /> has the same name and
+        /// territory as this key.
+        /// </summary>
+        /// <param name="other">The key to compare against.</param>
+        /// <returns><see langword="true" /> if equal; otherwise <see langword="false" />.</returns>
 		public bool Equals(RuleKey other) =>
 			string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase)
 			&& string.Equals(Territory ?? string.Empty, other.Territory ?? string.Empty, StringComparison.OrdinalIgnoreCase);
 
+        /// <summary>
+        /// Returns the hash code combining the rule name and territory.
+        /// </summary>
+        /// <returns>The composite hash code.</returns>
 		public override int GetHashCode() =>
 			HashCode.Combine(
 				StringComparer.OrdinalIgnoreCase.GetHashCode(Name ?? string.Empty),
 				StringComparer.OrdinalIgnoreCase.GetHashCode(Territory ?? string.Empty));
 	}
 
+    /// <summary>
+    /// Loads a single embedded XML resource, schema-validates it, and parses it into a
+    /// <see cref="ParsedNotableDateDocument" />.
+    /// </summary>
 	private ParsedNotableDateDocument LoadDocument(
 		string resourceName,
 		Dictionary<string, ParsedNotableDateDocument> documentCache)

@@ -193,6 +193,12 @@ public sealed class NotableDateService : INotableDateService
 	// Generation pipeline
 	// --------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// Returns the cached per-year notable-date list for <paramref name="year" />, generating
+    /// and caching it on first access.
+    /// </summary>
+    /// <param name="year">The civil year to resolve.</param>
+    /// <returns>The notable dates for the specified year.</returns>
 	private IReadOnlyList<NotableDate> GetOrGenerateYear(int year)
 	{
 		if (_yearCache.TryGetValue(year, out var cached))
@@ -209,6 +215,12 @@ public sealed class NotableDateService : INotableDateService
 		}
 	}
 
+    /// <summary>
+    /// Materialises the notable dates for <paramref name="year" /> by invoking every configured
+    /// rule, applying observance adjustments, and de-duplicating by rule identity.
+    /// </summary>
+    /// <param name="year">The civil year to generate.</param>
+    /// <returns>The notable dates for <paramref name="year" />, in unspecified order.</returns>
 	private IReadOnlyList<NotableDate> GenerateYear(int year)
 	{
 		var output = new List<NotableDate>();
@@ -259,6 +271,10 @@ public sealed class NotableDateService : INotableDateService
 		return output;
 	}
 
+    /// <summary>
+    /// Constructs a <see cref="NotableDate" /> from a rule, its resolved date, and any
+    /// observance-adjustment metadata.
+    /// </summary>
 	private static NotableDate BuildNotableDate(
 		NotableDateRule rule,
 		DateTime date,
@@ -281,6 +297,12 @@ public sealed class NotableDateService : INotableDateService
 		};
 	}
 
+    /// <summary>
+    /// If a name-localiser is configured, replaces the name on <paramref name="notable" /> with
+    /// its localised form; otherwise returns <paramref name="notable" /> unchanged.
+    /// </summary>
+    /// <param name="notable">The notable date to potentially localise.</param>
+    /// <returns>The localised or original notable date.</returns>
 	private NotableDate LocaliseIfNeeded(NotableDate notable)
 	{
 		if (_nameLocalizer is null) return notable;
@@ -292,6 +314,10 @@ public sealed class NotableDateService : INotableDateService
 		return notable with { Name = localised };
 	}
 
+    /// <summary>
+    /// Filters the full-year notable-date list for the requested territory and calendar type,
+    /// applies localisation, and returns the results ordered by observed date.
+    /// </summary>
 	private IReadOnlyList<NotableDate> ProjectAndOrder(IReadOnlyList<NotableDate> perYear, string? territoryCode, Type? calendarType)
 	{
 		var matching = new List<NotableDate>();
@@ -311,6 +337,10 @@ public sealed class NotableDateService : INotableDateService
 	// Override / scope helpers
 	// --------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// Applies the configured override provider to the base rule set for the given year, using
+    /// the override's remove/add semantics.
+    /// </summary>
 	private static IReadOnlyList<NotableDateRule> ApplyOverrides(
 		ImmutableArray<NotableDateRule> baseRules,
 		IReadOnlyList<INotableDateRuleOverrideProvider> overrideProviders)
@@ -345,6 +375,14 @@ public sealed class NotableDateService : INotableDateService
 	private static (string Name, string Territory) CompositeKey(NotableDateRule rule) =>
 		(rule.Name ?? string.Empty, rule.TerritoryCode ?? string.Empty);
 
+    /// <summary>
+    /// Returns <see langword="true" /> if <paramref name="rule" /> has been suppressed for the
+    /// specified year and territory by the configured override provider.
+    /// </summary>
+    /// <param name="rule">The candidate rule.</param>
+    /// <param name="year">The civil year under evaluation.</param>
+    /// <param name="territory">The territory code, or <see langword="null" /> for territory-neutral.</param>
+    /// <returns><see langword="true" /> if the rule is removed; otherwise <see langword="false" />.</returns>
 	private bool IsRemovedByOverride(NotableDateRule rule, int year, string? territory)
 	{
 		foreach (var provider in _overrideProviders)
@@ -372,6 +410,12 @@ public sealed class NotableDateService : INotableDateService
 		return false;
 	}
 
+    /// <summary>
+    /// Splits a comma-separated territory list into individual codes, or yields a single
+    /// <see langword="null" /> when <paramref name="value" /> is <see langword="null" />.
+    /// </summary>
+    /// <param name="value">A territory code, a comma-separated list, or <see langword="null" />.</param>
+    /// <returns>The individual territory codes.</returns>
 	private static IEnumerable<string?> ExpandTerritories(string? value)
 	{
 		if (string.IsNullOrEmpty(value))
@@ -384,6 +428,14 @@ public sealed class NotableDateService : INotableDateService
 			yield return territory.ToString();
 	}
 
+    /// <summary>
+    /// Returns <see langword="true" /> if <paramref name="date" /> applies in the supplied
+    /// territory and calendar context.
+    /// </summary>
+    /// <param name="date">The candidate notable date.</param>
+    /// <param name="territoryCode">The territory code filter, or <see langword="null" /> to match any.</param>
+    /// <param name="calendarType">The calendar type filter, or <see langword="null" /> to match any.</param>
+    /// <returns><see langword="true" /> if the date matches; otherwise <see langword="false" />.</returns>
 	private static bool MatchesContext(NotableDate date, string? territoryCode, Type? calendarType)
 	{
 		if (calendarType is not null && date.CalendarType is not null && date.CalendarType != calendarType)
@@ -401,11 +453,27 @@ public sealed class NotableDateService : INotableDateService
 		return requested.Contains(owned) || owned.Contains(requested);
 	}
 
+    /// <summary>
+    /// Returns <see langword="true" /> if <paramref name="notable" /> covers the calendar day
+    /// of <paramref name="day" />, ignoring the time component.
+    /// </summary>
+    /// <param name="notable">The notable date.</param>
+    /// <param name="day">The day under test.</param>
+    /// <returns><see langword="true" /> if the day is covered.</returns>
 	private static bool ContainsDay(NotableDate notable, DateTime day)
 	{
 		return day >= notable.Date.Date && day <= notable.EndDate.Date;
 	}
 
+    /// <summary>
+    /// Resolves the observed date for a rule identified by <paramref name="ruleName" /> in the
+    /// given year, territory, and calendar context.
+    /// </summary>
+    /// <param name="ruleName">The rule name.</param>
+    /// <param name="year">The civil year.</param>
+    /// <param name="territoryCode">The territory code, or <see langword="null" />.</param>
+    /// <param name="calendarType">The calendar type, or <see langword="null" />.</param>
+    /// <returns>The observed date, or <see langword="null" /> if no matching rule exists.</returns>
 	private DateTime? ResolveByName(string ruleName, int year, string? territoryCode, Type? calendarType)
 	{
 		var perYear = GetOrGenerateYear(year);
