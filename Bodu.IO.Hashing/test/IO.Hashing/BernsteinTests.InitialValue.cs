@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Security.Cryptography;
+
 namespace Bodu.IO.Hashing;
 
 public partial class BernsteinTests
@@ -19,16 +21,16 @@ public partial class BernsteinTests
     }
 
     /// <summary>
-    /// Verifies that using different <see cref="Bernstein.InitialValue" /> seeds produces different digests for
-    /// the same input.
+    /// Verifies that changing <see cref="Bernstein.InitialValue" /> before any input has been consumed
+    /// updates the accumulator so that two instances with distinct seeds produce distinct digests.
     /// </summary>
     [TestMethod]
-    public void Append_WhenInitialValuesDiffer_ShouldProduceDifferentHashes()
+    public void InitialValue_WhenSetBeforeHashing_ShouldAffectResult()
     {
         byte[] input = NonCryptographicHashSharedInputs.Abc;
 
-        Bernstein a = new(initialValue: 1U, useModifiedAlgorithm: false);
-        Bernstein b = new(initialValue: 2U, useModifiedAlgorithm: false);
+        Bernstein a = new() { InitialValue = 1U };
+        Bernstein b = new() { InitialValue = 2U };
         a.Append(input);
         b.Append(input);
 
@@ -36,12 +38,55 @@ public partial class BernsteinTests
     }
 
     /// <summary>
+    /// Verifies that two independent instances constructed with the same seed produce identical digests.
+    /// </summary>
+    [TestMethod]
+    public void InitialValue_WhenSameValue_ShouldProduceSameHash()
+    {
+        byte[] input = NonCryptographicHashSharedInputs.Abc;
+
+        Bernstein a = new() { InitialValue = 0xABCDEFU };
+        Bernstein b = new() { InitialValue = 0xABCDEFU };
+        a.Append(input);
+        b.Append(input);
+
+        CollectionAssert.AreEqual(a.GetCurrentHash(), b.GetCurrentHash());
+    }
+
+    /// <summary>
+    /// Verifies that setting <see cref="Bernstein.InitialValue" /> after input has been consumed throws
+    /// <see cref="CryptographicUnexpectedOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void InitialValue_WhenSetAfterHashingStarted_ShouldThrow()
+    {
+        Bernstein algorithm = new();
+        algorithm.Append(new byte[] { 1, 2, 3 });
+
+        Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() => algorithm.InitialValue = 42U);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Bernstein.InitialValue" /> can be reconfigured after <see cref="Bernstein.Reset" />.
+    /// </summary>
+    [TestMethod]
+    public void InitialValue_WhenSetAfterReset_ShouldBeAccepted()
+    {
+        Bernstein algorithm = new();
+        algorithm.Append(new byte[] { 1, 2, 3 });
+        algorithm.Reset();
+        algorithm.InitialValue = 42U;
+
+        Assert.AreEqual(42U, algorithm.InitialValue);
+    }
+
+    /// <summary>
     /// Verifies that an initial seed of zero is accepted and yields a 4-byte digest.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenInitialValueIsZero_ShouldProduceFourByteDigest()
+    public void InitialValue_WhenSetToZero_ShouldBeAccepted()
     {
-        Bernstein algorithm = new(initialValue: 0U, useModifiedAlgorithm: false);
+        Bernstein algorithm = new() { InitialValue = 0U };
         algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
         byte[] digest = algorithm.GetCurrentHash();
@@ -52,9 +97,9 @@ public partial class BernsteinTests
     /// Verifies that an initial seed of <see cref="uint.MaxValue" /> is accepted.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenInitialValueIsUInt32MaxValue_ShouldBeAccepted()
+    public void InitialValue_WhenSetToMaxValue_ShouldBeAccepted()
     {
-        Bernstein algorithm = new(initialValue: uint.MaxValue, useModifiedAlgorithm: false);
+        Bernstein algorithm = new() { InitialValue = uint.MaxValue };
         algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
         byte[] digest = algorithm.GetCurrentHash();
@@ -62,35 +107,32 @@ public partial class BernsteinTests
     }
 
     /// <summary>
-    /// Verifies that two independent instances constructed with the same seed produce identical digests.
+    /// Verifies that toggling <see cref="Bernstein.UseModifiedAlgorithm" /> before any input has been consumed
+    /// switches the active mixing form.
     /// </summary>
     [TestMethod]
-    public void Append_WhenSameInitialValue_ShouldProduceSameHash()
-    {
-        byte[] input = NonCryptographicHashSharedInputs.Abc;
-
-        Bernstein a = new(initialValue: 0xABCDEFU, useModifiedAlgorithm: false);
-        Bernstein b = new(initialValue: 0xABCDEFU, useModifiedAlgorithm: false);
-        a.Append(input);
-        b.Append(input);
-
-        CollectionAssert.AreEqual(a.GetCurrentHash(), b.GetCurrentHash());
-    }
-
-    /// <summary>
-    /// Verifies that the modified XOR variant yields a different digest from the original additive form for
-    /// the same non-empty input.
-    /// </summary>
-    [TestMethod]
-    public void Append_WhenModifiedVariant_ShouldDifferFromOriginal()
+    public void UseModifiedAlgorithm_WhenSetBeforeHashing_ShouldAffectResult()
     {
         byte[] input = NonCryptographicHashSharedInputs.Abc;
 
         Bernstein original = new();
-        Bernstein modified = new(Bernstein.DefaultInitialValue, useModifiedAlgorithm: true);
+        Bernstein modified = new() { UseModifiedAlgorithm = true };
         original.Append(input);
         modified.Append(input);
 
         CollectionAssert.AreNotEqual(original.GetCurrentHash(), modified.GetCurrentHash());
+    }
+
+    /// <summary>
+    /// Verifies that setting <see cref="Bernstein.UseModifiedAlgorithm" /> after input has been consumed
+    /// throws <see cref="CryptographicUnexpectedOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void UseModifiedAlgorithm_WhenSetAfterHashingStarted_ShouldThrow()
+    {
+        Bernstein algorithm = new();
+        algorithm.Append(new byte[] { 1, 2, 3 });
+
+        Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() => algorithm.UseModifiedAlgorithm = true);
     }
 }

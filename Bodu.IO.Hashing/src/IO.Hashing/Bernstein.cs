@@ -7,6 +7,7 @@
 using System.Buffers.Binary;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 
 namespace Bodu.IO.Hashing;
 
@@ -17,8 +18,13 @@ namespace Bodu.IO.Hashing;
 /// <remarks>
 /// <para>
 /// The default algorithm computes <c>hash = (hash * 33) + c</c> for each input byte <c>c</c>. Setting
-/// <see cref="UseModifiedAlgorithm" /> via the constructor selects the XOR-modified form,
-/// <c>hash = (hash * 33) ^ c</c>, which may give better distribution in some hash-table workloads.
+/// <see cref="UseModifiedAlgorithm" /> selects the XOR-modified form, <c>hash = (hash * 33) ^ c</c>, which
+/// may give better distribution in some hash-table workloads.
+/// </para>
+/// <para>
+/// Both <see cref="InitialValue" /> and <see cref="UseModifiedAlgorithm" /> are reconfigurable only while the
+/// algorithm has not yet consumed input. <see cref="Reset" /> returns the instance to the reconfigurable
+/// state.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used
 /// for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -32,10 +38,13 @@ public sealed class Bernstein
     public const uint DefaultInitialValue = 5381U;
 
     private const int HashLength = 4;
+    private const string ReconfigurationNotAllowed =
+        "The algorithm is already in use and cannot be reconfigured after computation has started.";
 
-    private readonly uint _initialValue;
-    private readonly bool _useModified;
+    private uint _initialValue;
+    private bool _useModified;
     private uint _workingHash;
+    private bool _started;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Bernstein" /> class with the canonical djb2 seed
@@ -64,30 +73,67 @@ public sealed class Bernstein
     }
 
     /// <summary>
-    /// Gets the initial seed value applied to the running hash accumulator.
+    /// Gets or sets the initial seed value applied to the running hash accumulator.
     /// </summary>
-    public uint InitialValue => this._initialValue;
+    /// <value>The initial hash seed. Defaults to <see cref="DefaultInitialValue" />.</value>
+    /// <exception cref="CryptographicUnexpectedOperationException">
+    /// The algorithm has already consumed input and cannot be reconfigured until <see cref="Reset" /> is
+    /// invoked.
+    /// </exception>
+    public uint InitialValue
+    {
+        get => this._initialValue;
+
+        set
+        {
+            this.ThrowIfInvalidState();
+            this._initialValue = value;
+            this._workingHash = value;
+        }
+    }
 
     /// <summary>
-    /// Gets a value indicating whether the XOR-modified form of the algorithm is in use.
+    /// Gets or sets a value indicating whether the XOR-modified form of the algorithm is in use.
     /// </summary>
     /// <value>
     /// <see langword="true" /> when each update performs <c>(hash * 33) ^ c</c>; <see langword="false" /> when
     /// it performs <c>(hash * 33) + c</c>.
     /// </value>
-    public bool UseModifiedAlgorithm => this._useModified;
+    /// <exception cref="CryptographicUnexpectedOperationException">
+    /// The algorithm has already consumed input and cannot be reconfigured until <see cref="Reset" /> is
+    /// invoked.
+    /// </exception>
+    public bool UseModifiedAlgorithm
+    {
+        get => this._useModified;
+
+        set
+        {
+            this.ThrowIfInvalidState();
+            this._useModified = value;
+        }
+    }
 
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
+        if (source.Length == 0)
+            return;
+
         if (this._useModified)
             this.AppendModified(source);
         else
             this.AppendOriginal(source);
+
+        this._started = true;
     }
 
     /// <inheritdoc />
-    public override void Reset() => this._workingHash = this._initialValue;
+    public override void Reset()
+    {
+        this._workingHash = this._initialValue;
+        this._started = false;
+    }
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
@@ -115,5 +161,12 @@ public sealed class Bernstein
         }
 
         this._workingHash = v;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ThrowIfInvalidState()
+    {
+        if (this._started)
+            throw new CryptographicUnexpectedOperationException(ReconfigurationNotAllowed);
     }
 }
