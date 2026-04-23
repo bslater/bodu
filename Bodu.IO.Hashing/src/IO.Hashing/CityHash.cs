@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers.Binary;
 using System.IO;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
@@ -27,9 +28,14 @@ namespace Bodu.IO.Hashing;
 /// all input is available.
 /// </para>
 /// <para>
-/// Shared mixing primitives (<see cref="Mix(uint)" />, <see cref="Mur(uint, uint)" />,
-/// <see cref="Permute3(ref uint, ref uint, ref uint)" />) and algorithm constants are defined here and are
-/// available to all derived variants. Supported output sizes are 32 and 64 bits.
+/// Shared 32-bit mixing primitives (<see cref="Mix(uint)" />, <see cref="Mur(uint, uint)" />,
+/// <see cref="Permute3(ref uint, ref uint, ref uint)" />) and shared 64-bit primitives
+/// (<see cref="ShiftMix(ulong)" />, <see cref="HashLen16(ulong, ulong)" />,
+/// <see cref="HashLen16(ulong, ulong, ulong)" />,
+/// <see cref="WeakHashLen32WithSeeds(ulong, ulong, ulong, ulong, ulong, ulong)" />,
+/// <see cref="WeakHashLen32WithSeeds(ReadOnlySpan{byte}, ulong, ulong)" />,
+/// <see cref="Hash64Len0to16(ReadOnlySpan{byte})" />) and algorithm constants are defined here and are
+/// available to all derived variants. Supported output sizes are 32, 64, and 128 bits.
 /// </para>
 /// <note type="important">
 /// CityHash is <b>not</b> cryptographically secure. It must <b>not</b> be used for password hashing, digital
@@ -58,7 +64,18 @@ public abstract class CityHash<T>
     /// <summary>The third 64-bit mixing constant, derived from the CityHash reference implementation.</summary>
     protected const ulong K2 = 0x9AE16A3B2F90404FUL;
 
-    private static readonly int[] ValidHashSizes = { 32, 64 };
+    /// <summary>
+    /// The fourth 64-bit constant used by the 128-bit variant to seed the accumulator from the first 16
+    /// bytes of input.
+    /// </summary>
+    protected const ulong K3 = 0xC949D7C7509E6557UL;
+
+    /// <summary>
+    /// The prime multiplier used by the 64-bit <see cref="HashLen16(ulong, ulong)" /> finalisation step.
+    /// </summary>
+    protected const ulong KMul = 0x9DDFEA08EB382D69UL;
+
+    private static readonly int[] ValidHashSizes = { 32, 64, 128 };
 
     private readonly MemoryStream _inputBuffer = new();
 
@@ -66,7 +83,7 @@ public abstract class CityHash<T>
     /// Initializes a new instance of the <see cref="CityHash{T}" /> class with the specified hash output
     /// size.
     /// </summary>
-    /// <param name="hashSize">The desired hash output size in bits. Must be one of 32 or 64.</param>
+    /// <param name="hashSize">The desired hash output size in bits. Must be one of 32, 64, or 128.</param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="hashSize" /> is not one of the supported values.
     /// </exception>
@@ -138,6 +155,135 @@ public abstract class CityHash<T>
         a = c;
         c = b;
         b = t;
+    }
+
+    /// <summary>
+    /// Applies a final 64-bit entropy spreading step by XOR-ing the value with its own 47-bit right shift.
+    /// </summary>
+    /// <param name="val">The 64-bit value to mix.</param>
+    /// <returns>The mixed 64-bit result.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected static ulong ShiftMix(ulong val) => val ^ (val >> 47);
+
+    /// <summary>
+    /// Combines two 64-bit values into a single 64-bit hash using the default <see cref="KMul" /> multiplier.
+    /// </summary>
+    /// <param name="u">The first input value.</param>
+    /// <param name="v">The second input value.</param>
+    /// <returns>The combined 64-bit hash value.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected static ulong HashLen16(ulong u, ulong v) => HashLen16(u, v, KMul);
+
+    /// <summary>
+    /// Combines two 64-bit values into a single 64-bit hash using a caller-supplied multiplier, applying
+    /// two rounds of multiply-shift-XOR to thoroughly distribute entropy across all output bits.
+    /// </summary>
+    /// <param name="u">The first input value.</param>
+    /// <param name="v">The second input value.</param>
+    /// <param name="mul">The multiplier to apply during mixing. Typically a large odd prime.</param>
+    /// <returns>The combined 64-bit hash value.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected static ulong HashLen16(ulong u, ulong v, ulong mul)
+    {
+        ulong a = (u ^ v) * mul;
+        a ^= a >> 47;
+
+        ulong b = (v ^ a) * mul;
+        b ^= b >> 47;
+
+        return b * mul;
+    }
+
+    /// <summary>
+    /// Computes a weak 64-bit hash of 32 bytes using six provided seed values, returning a pair of
+    /// independent 64-bit outputs.
+    /// </summary>
+    /// <param name="w">The first 64-bit word of the input block.</param>
+    /// <param name="x">The second 64-bit word of the input block.</param>
+    /// <param name="y">The third 64-bit word of the input block.</param>
+    /// <param name="z">The fourth 64-bit word of the input block.</param>
+    /// <param name="a">The first accumulator seed.</param>
+    /// <param name="b">The second accumulator seed.</param>
+    /// <returns>
+    /// A tuple containing two independent 64-bit hash values derived from the mixed input and seeds.
+    /// </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected static (ulong First, ulong Second) WeakHashLen32WithSeeds(
+        ulong w, ulong x, ulong y, ulong z, ulong a, ulong b)
+    {
+        a += w;
+        b = (b + a + z).RotateBitsRightUnchecked(21);
+
+        ulong c = a;
+        a += x;
+        a += y;
+        b += a.RotateBitsRightUnchecked(44);
+
+        return (a + z, b + c);
+    }
+
+    /// <summary>
+    /// Reads four consecutive 64-bit little-endian words from the specified span and forwards them to
+    /// <see cref="WeakHashLen32WithSeeds(ulong, ulong, ulong, ulong, ulong, ulong)" /> along with the
+    /// provided seeds.
+    /// </summary>
+    /// <param name="s">The input span. Must contain at least 32 bytes starting at offset 0.</param>
+    /// <param name="a">The first accumulator seed.</param>
+    /// <param name="b">The second accumulator seed.</param>
+    /// <returns>
+    /// A tuple containing two independent 64-bit hash values derived from the 32-byte block and seeds.
+    /// </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected static (ulong First, ulong Second) WeakHashLen32WithSeeds(
+        ReadOnlySpan<byte> s, ulong a, ulong b) =>
+        WeakHashLen32WithSeeds(
+            BinaryPrimitives.ReadUInt64LittleEndian(s),
+            BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(8)),
+            BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(16)),
+            BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(24)),
+            a, b);
+
+    /// <summary>
+    /// Hashes 0 to 16 bytes to a 64-bit value, selecting a byte-, word-, or double-word code path based on
+    /// the exact input length.
+    /// </summary>
+    /// <param name="s">The input span. Length must be in the range [0, 16].</param>
+    /// <returns>The 64-bit hash value.</returns>
+    /// <remarks>
+    /// An empty input returns <see cref="K2" /> directly.
+    /// </remarks>
+    protected static ulong Hash64Len0to16(ReadOnlySpan<byte> s)
+    {
+        int len = s.Length;
+
+        if (len >= 8)
+        {
+            ulong mul = K2 + (ulong)(len * 2);
+            ulong a = BinaryPrimitives.ReadUInt64LittleEndian(s) + K2;
+            ulong b = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 8));
+            ulong c = b.RotateBitsRightUnchecked(37) * mul + a;
+            ulong d = (a.RotateBitsRightUnchecked(25) + b) * mul;
+            return HashLen16(c, d, mul);
+        }
+
+        if (len >= 4)
+        {
+            ulong mul = K2 + (ulong)(len * 2);
+            ulong a = BinaryPrimitives.ReadUInt32LittleEndian(s);
+            return HashLen16((ulong)len + (a << 3), BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 4)), mul);
+        }
+
+        if (len > 0)
+        {
+            byte a = s[0];
+            byte b = s[len >> 1];
+            byte c = s[len - 1];
+            uint y = (uint)a + ((uint)b << 8);
+            uint z = (uint)len + ((uint)c << 2);
+            return ShiftMix((ulong)y * K2 ^ (ulong)z * K0) * K2;
+        }
+
+        return K2;
     }
 
     private static int ValidateHashSize(int hashSize)

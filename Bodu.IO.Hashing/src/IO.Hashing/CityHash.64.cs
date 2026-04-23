@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CityHash.64.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ namespace Bodu.IO.Hashing;
 /// <see cref="CityHash64" /> selects one of four internal mixing paths depending on the input length: a compact path for 0–16 bytes,
 /// a four-word path for 17–32 bytes, an eight-word path with byte-swap finalisation for 33–64 bytes, and a full iterative path that
 /// consumes 64-byte blocks using two pairs of seeded weak hash accumulators for inputs of 65 bytes or more. All paths converge through
-/// the internal <c>HashLen16</c> finaliser, which applies two rounds of multiply-shift-XOR to distribute entropy across all output bits.
+/// the shared <c>HashLen16</c> finaliser, which applies two rounds of multiply-shift-XOR to distribute entropy across all output bits.
 /// </para>
 /// <note type="important">
 /// This algorithm is <b>not</b> cryptographically secure and must <b>not</b> be used for password hashing, digital signatures, or any
@@ -30,11 +30,6 @@ namespace Bodu.IO.Hashing;
 public sealed class CityHash64
     : CityHash<CityHash64>
 {
-    /// <summary>
-    /// The prime multiplier used in the 64-bit <c>HashLen16</c> finalisation step.
-    /// </summary>
-    private const ulong KMul = 0x9ddfea08eb382d69UL;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="CityHash64" /> class with a fixed 64-bit (8-byte) hash output size.
     /// </summary>
@@ -61,90 +56,6 @@ public sealed class CityHash64
         byte[] buffer = new byte[8];
         BinaryPrimitives.WriteUInt64LittleEndian(buffer, result);
         return buffer;
-    }
-
-    /// <summary>
-    /// Applies a final 64-bit entropy spreading step by XOR-ing the value with its own upper half-shift.
-    /// </summary>
-    /// <param name="val">The 64-bit value to mix.</param>
-    /// <returns>The mixed 64-bit result.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ulong ShiftMix(ulong val) =>
-        val ^ (val >> 47);
-
-    /// <summary>
-    /// Combines two 64-bit values into a single 64-bit hash using the default <see cref="KMul" /> multiplier.
-    /// </summary>
-    /// <param name="u">The first input value.</param>
-    /// <param name="v">The second input value.</param>
-    /// <returns>The combined 64-bit hash value.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ulong HashLen16(ulong u, ulong v) =>
-        HashLen16(u, v, KMul);
-
-    /// <summary>
-    /// Combines two 64-bit values into a single 64-bit hash using a caller-supplied multiplier. Applies two rounds of
-    /// multiply-shift-XOR to thoroughly distribute entropy across all output bits.
-    /// </summary>
-    /// <param name="u">The first input value.</param>
-    /// <param name="v">The second input value.</param>
-    /// <param name="mul">The multiplier to apply during mixing. Typically a large odd prime.</param>
-    /// <returns>The combined 64-bit hash value.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ulong HashLen16(ulong u, ulong v, ulong mul)
-    {
-        ulong a = (u ^ v) * mul;
-        a ^= a >> 47;
-
-        ulong b = (v ^ a) * mul;
-        b ^= b >> 47;
-
-        return b * mul;
-    }
-
-    /// <summary>
-    /// Hashes 0 to 16 bytes. Selects a byte-, word-, or double-word path based on the exact input length.
-    /// </summary>
-    /// <param name="s">The input span. Length must be in the range [0, 16].</param>
-    /// <returns>The 64-bit hash value.</returns>
-    /// <remarks>
-    /// For inputs of 8 bytes or more, two overlapping 64-bit words are read and mixed with the length-adjusted <c>K2</c>
-    /// constant. For 4–7 bytes, two 32-bit words span the input. For 1–3 bytes, individual bytes seed a <c>ShiftMix</c> step.
-    /// An empty input returns the <c>K2</c> constant directly.
-    /// </remarks>
-    private static ulong Hash64Len0to16(ReadOnlySpan<byte> s)
-    {
-        int len = s.Length;
-
-        if (len >= 8)
-        {
-            ulong mul = K2 + (ulong)(len * 2);
-            ulong a = BinaryPrimitives.ReadUInt64LittleEndian(s) + K2;
-            ulong b = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 8));
-            ulong c = b.RotateBitsRightUnchecked(37) * mul + a;
-            ulong d = (a.RotateBitsRightUnchecked(25) + b) * mul;
-            return HashLen16(c, d, mul);
-        }
-
-        if (len >= 4)
-        {
-            ulong mul = K2 + (ulong)(len * 2);
-            ulong a = BinaryPrimitives.ReadUInt32LittleEndian(s);
-            return HashLen16((ulong)len + (a << 3), BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 4)), mul);
-        }
-
-        if (len > 0)
-        {
-            byte a = s[0];
-            byte b = s[len >> 1];
-            byte c = s[len - 1];
-            uint y = (uint)a + ((uint)b << 8);
-            uint z = (uint)len + ((uint)c << 2);
-            return ShiftMix((ulong)y * K2 ^ (ulong)z * K0) * K2;
-        }
-
-        // An empty input is defined to return K2.
-        return K2;
     }
 
     /// <summary>
@@ -201,71 +112,20 @@ public sealed class CityHash64
     }
 
     /// <summary>
-    /// Computes a weak 64-bit hash of 32 bytes using six provided seed values, returning a pair of independent 64-bit outputs.
-    /// </summary>
-    /// <param name="w">The first 64-bit word of the input block.</param>
-    /// <param name="x">The second 64-bit word of the input block.</param>
-    /// <param name="y">The third 64-bit word of the input block.</param>
-    /// <param name="z">The fourth 64-bit word of the input block.</param>
-    /// <param name="a">The first accumulator seed.</param>
-    /// <param name="b">The second accumulator seed.</param>
-    /// <returns>
-    /// A tuple containing two independent 64-bit hash values derived from the mixed input and seeds.
-    /// </returns>
-    /// <remarks>
-    /// This helper is used by both <see cref="Hash64Len33to64" /> and the iterative loop in <see cref="Hash64Long" /> to process
-    /// 32-byte halves of each 64-byte block. Each call folds all four input words and both seeds into two output values using
-    /// additions and a single rotation.
-    /// </remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static (ulong First, ulong Second) WeakHashLen32WithSeeds(
-        ulong w, ulong x, ulong y, ulong z, ulong a, ulong b)
-    {
-        a += w;
-        b = (b + a + z).RotateBitsRightUnchecked(21);
-
-        ulong c = a;
-        a += x;
-        a += y;
-        b += a.RotateBitsRightUnchecked(44);
-
-        return (a + z, b + c);
-    }
-
-    /// <summary>
-    /// Reads four consecutive 64-bit little-endian words from the specified span and forwards them to
-    /// <see cref="WeakHashLen32WithSeeds(ulong, ulong, ulong, ulong, ulong, ulong)" /> along with the provided seeds.
-    /// </summary>
-    /// <param name="s">The input span. Must contain at least 32 bytes starting at offset 0.</param>
-    /// <param name="a">The first accumulator seed.</param>
-    /// <param name="b">The second accumulator seed.</param>
-    /// <returns>
-    /// A tuple containing two independent 64-bit hash values derived from the 32-byte block and seeds.
-    /// </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static (ulong First, ulong Second) WeakHashLen32WithSeeds(
-        ReadOnlySpan<byte> s, ulong a, ulong b) =>
-        WeakHashLen32WithSeeds(
-            BinaryPrimitives.ReadUInt64LittleEndian(s),
-            BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(8)),
-            BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(16)),
-            BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(24)),
-            a, b);
-
-    /// <summary>
-    /// Hashes inputs of 65 bytes or more using two pairs of seeded <see cref="WeakHashLen32WithSeeds" /> accumulators that consume
-    /// the input in 64-byte blocks.
+    /// Hashes inputs of 65 bytes or more using two pairs of seeded weak-hash accumulators that consume the
+    /// input in 64-byte blocks.
     /// </summary>
     /// <param name="s">The input span. Length must be 65 or greater.</param>
     /// <returns>The 64-bit hash value.</returns>
     /// <remarks>
     /// <para>
-    /// The method seeds the four accumulators (<c>v</c>, <c>w</c>) and the three mixing variables (<c>x</c>, <c>y</c>, <c>z</c>)
-    /// from the tail of the input before processing, ensuring that long and short inputs produce well-distributed results.
+    /// The method seeds the four accumulators (<c>v</c>, <c>w</c>) and the three mixing variables (<c>x</c>,
+    /// <c>y</c>, <c>z</c>) from the tail of the input before processing, ensuring that long and short inputs
+    /// produce well-distributed results.
     /// </para>
     /// <para>
-    /// Each 64-byte iteration updates all five variables and swaps <c>x</c> and <c>z</c> to prevent positional bias. The final
-    /// result combines both accumulator pairs through two nested <see cref="HashLen16" /> calls.
+    /// Each 64-byte iteration updates all five variables and swaps <c>x</c> and <c>z</c> to prevent positional
+    /// bias. The final result combines both accumulator pairs through two nested <c>HashLen16</c> calls.
     /// </para>
     /// </remarks>
     private static ulong Hash64Long(ReadOnlySpan<byte> s)

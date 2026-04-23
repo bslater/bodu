@@ -22,7 +22,7 @@ public abstract partial class CityHashTests<TTest, TAlgorithm>
     [DataRow(63)]
     [DataRow(65)]
     [DataRow(127)]
-    [DataRow(128)]
+    [DataRow(129)]
     [DataRow(256)]
     [DataRow(-1)]
     public void Ctor_WhenHashSizeIsInvalid_ShouldThrowExactly(int hashSize)
@@ -31,12 +31,13 @@ public abstract partial class CityHashTests<TTest, TAlgorithm>
     }
 
     /// <summary>
-    /// Verifies that the base-class constructor succeeds for each supported hash size: 32 and 64 bits.
+    /// Verifies that the base-class constructor succeeds for each supported hash size: 32, 64, and 128 bits.
     /// </summary>
     /// <param name="hashSize">A valid hash size in bits.</param>
     [TestMethod]
     [DataRow(32)]
     [DataRow(64)]
+    [DataRow(128)]
     public void Ctor_WhenHashSizeIsValid_ShouldSucceed(int hashSize)
     {
         TestCityHash algorithm = new(hashSize);
