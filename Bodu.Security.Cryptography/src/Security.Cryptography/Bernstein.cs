@@ -31,14 +31,14 @@ public sealed class Bernstein :
     /// </summary>
     public const uint DefaultInitialValue = 5381U;
 
-    private bool _disposed = false;
+    private bool disposed = false;
 
-    private uint _initialValue;
-    private bool _useModified;
-    private uint _workingHash;
+    private uint initialValue;
+    private bool useModified;
+    private uint workingHash;
 #if !NET6_0_OR_GREATER
     // Required for .NET Standard 2.0 or older frameworks
-    private bool _finalized;
+    private bool finalized;
 #endif
 
     /// <summary>
@@ -47,8 +47,8 @@ public sealed class Bernstein :
     public Bernstein()
     {
         this.HashSizeValue = 32;
-        this._initialValue = this._workingHash = DefaultInitialValue;
-        this._useModified = false;
+        this.initialValue = this.workingHash = DefaultInitialValue;
+        this.useModified = false;
     }
 
     /// <inheritdoc />
@@ -69,7 +69,7 @@ public sealed class Bernstein :
         {
             this.ThrowIfDisposed();
 
-            return this._initialValue;
+            return this.initialValue;
         }
 
         set
@@ -77,7 +77,7 @@ public sealed class Bernstein :
             this.ThrowIfDisposed();
             this.ThrowIfInvalidState();
 
-            this._initialValue = value;
+            this.initialValue = value;
             this.Initialize();
         }
     }
@@ -97,7 +97,7 @@ public sealed class Bernstein :
         {
             this.ThrowIfDisposed();
 
-            return this._useModified;
+            return this.useModified;
         }
 
         set
@@ -105,7 +105,7 @@ public sealed class Bernstein :
             this.ThrowIfDisposed();
             this.ThrowIfInvalidState();
 
-            this._useModified = value;
+            this.useModified = value;
             this.Initialize();
         }
     }
@@ -116,9 +116,9 @@ public sealed class Bernstein :
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
         State = 0;
-        _finalized = false;
+        finalized = false;
 #endif
-        this._workingHash = this._initialValue;
+        this.workingHash = this.initialValue;
     }
 
     /// <summary>
@@ -130,18 +130,18 @@ public sealed class Bernstein :
     /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.disposed) return;
 
         if (disposing)
         {
             CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
-            this._initialValue = 0;
-            this._workingHash = 0;
+            this.initialValue = 0;
+            this.workingHash = 0;
             this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
+        this.disposed = true;
         base.Dispose(disposing);
     }
 
@@ -172,11 +172,11 @@ public sealed class Bernstein :
         ThrowHelper.ThrowIfLessThan(ibStart, 0);
         ThrowHelper.ThrowIfLessThan(cbSize, 0);
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
-        if (_finalized)
+        if (finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
-        if (this._useModified)
+        if (this.useModified)
             this.HashModified(array.AsSpan(ibStart, cbSize));
         else
             this.HashOriginal(array.AsSpan(ibStart, cbSize));
@@ -195,11 +195,11 @@ public sealed class Bernstein :
         this.ThrowIfDisposed();
 
 #if !NET6_0_OR_GREATER
-        if (_finalized)
+        if (finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
-        if (this._useModified)
+        if (this.useModified)
             this.HashModified(source);
         else
             this.HashOriginal(source);
@@ -214,15 +214,15 @@ public sealed class Bernstein :
     {
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
-        if (_finalized)
+        if (finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 
-        _finalized = true;
+        finalized = true;
         State = 2;
 #endif
 
         Span<byte> span = stackalloc byte[4];
-        BinaryPrimitives.WriteUInt32BigEndian(span, this._workingHash); // Explicit big-endian output
+        BinaryPrimitives.WriteUInt32BigEndian(span, this.workingHash); // Explicit big-endian output
         return span.ToArray();
     }
 
@@ -238,13 +238,13 @@ public sealed class Bernstein :
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void HashModified(ReadOnlySpan<byte> data)
     {
-        uint v = this._workingHash;
+        uint v = this.workingHash;
         foreach (byte b in data)
         {
             v = ((v << 5) + v) ^ b;
         }
 
-        this._workingHash = v;
+        this.workingHash = v;
     }
 
     /// <summary>
@@ -257,13 +257,13 @@ public sealed class Bernstein :
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void HashOriginal(ReadOnlySpan<byte> data)
     {
-        uint v = this._workingHash;
+        uint v = this.workingHash;
         foreach (var b in data)
         {
             v = ((v << 5) + v) + b;
         }
 
-        this._workingHash = v;
+        this.workingHash = v;
     }
 
     /// <summary>
@@ -276,9 +276,9 @@ public sealed class Bernstein :
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(this.disposed, this);
 #else
-        if (_disposed)
+        if (disposed)
             throw new ObjectDisposedException(nameof(Bernstein));
 #endif
     }

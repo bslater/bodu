@@ -27,13 +27,13 @@ public sealed class ApHash
 {
     private const uint DefaultCheckSumValue = 0xAAAAAAAA;
 
-    private bool _disposed = false;
-    private ulong _size;
-    private uint _workingHash;
+    private bool disposed = false;
+    private ulong size;
+    private uint workingHash;
 #if !NET6_0_OR_GREATER
 
     // Required for .NET Standard 2.0 or older frameworks
-    private bool _finalized;
+    private bool finalized;
 #endif
 
     /// <summary>
@@ -57,10 +57,10 @@ public sealed class ApHash
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
         State = 0;
-        _finalized = false;
+        finalized = false;
 #endif
-        this._workingHash = ApHash.DefaultCheckSumValue;
-        this._size = 0;
+        this.workingHash = ApHash.DefaultCheckSumValue;
+        this.size = 0;
     }
 
     /// <summary>
@@ -72,16 +72,16 @@ public sealed class ApHash
     /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.disposed) return;
 
         if (disposing)
         {
             CryptoHelpers.ClearAndNullify(ref this.HashValue);
-            this._workingHash = 0;
+            this.workingHash = 0;
             this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
+        this.disposed = true;
         base.Dispose(disposing);
     }
 
@@ -111,7 +111,7 @@ public sealed class ApHash
         ThrowHelper.ThrowIfLessThan(ibStart, 0);
         ThrowHelper.ThrowIfLessThan(cbSize, 0);
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
-        if (_finalized)
+        if (finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
@@ -130,18 +130,18 @@ public sealed class ApHash
     {
         this.ThrowIfDisposed();
 
-        var v = this._workingHash;
+        var v = this.workingHash;
         foreach (var b in source)
         {
-            if ((this._size & 1) == 0)
+            if ((this.size & 1) == 0)
                 v ^= (v << 7) ^ b ^ (v >> 3);
             else
                 v ^= ~((v << 11) ^ b ^ (v >> 5));
 
-            this._size++;
+            this.size++;
         }
 
-        this._workingHash = v;
+        this.workingHash = v;
     }
 
     /// <summary>
@@ -153,15 +153,15 @@ public sealed class ApHash
     {
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
-        if (_finalized)
+        if (finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 
-        _finalized = true;
+        finalized = true;
         State = 2;
 #endif
 
         Span<byte> span = stackalloc byte[4];
-        MemoryMarshal.Write(span, in this._workingHash);
+        MemoryMarshal.Write(span, in this.workingHash);
         return span.ToArray();
     }
 
@@ -175,9 +175,9 @@ public sealed class ApHash
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(this.disposed, this);
 #else
-        if (_disposed)
+        if (disposed)
             throw new ObjectDisposedException(nameof(ApHash));
 #endif
     }

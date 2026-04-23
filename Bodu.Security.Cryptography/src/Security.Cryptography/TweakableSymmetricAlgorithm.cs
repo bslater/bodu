@@ -57,7 +57,7 @@ public abstract class TweakableSymmetricAlgorithm
     /// </remarks>
     protected byte[]? TweakValue = null!;
 
-    private bool _disposed = false;
+    private bool disposed = false;
 
     /// <summary>
     /// Gets the tweak sizes, in bits, that are supported by the symmetric algorithm.
@@ -232,7 +232,7 @@ public abstract class TweakableSymmetricAlgorithm
     /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
-        if (!this._disposed)
+        if (!this.disposed)
         {
             if (disposing)
             {
@@ -245,7 +245,7 @@ public abstract class TweakableSymmetricAlgorithm
                 this.TweakSizeValue = 0;
             }
 
-            this._disposed = true;
+            this.disposed = true;
         }
 
         base.Dispose(disposing);
@@ -306,7 +306,7 @@ public abstract class TweakableSymmetricAlgorithm
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed()
     {
-        if (this._disposed)
+        if (this.disposed)
             throw new ObjectDisposedException(this.GetType().Name);
     }
 }

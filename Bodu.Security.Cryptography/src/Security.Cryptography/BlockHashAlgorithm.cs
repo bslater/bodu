@@ -38,10 +38,10 @@ public abstract class BlockHashAlgorithm<T>
     /// </summary>
     protected readonly int BlockSizeBytes; // Size of a single block (in bytes) to be processed per hash step
 
-    private readonly Memory<byte> _residualByteBuffer; // Temporary buffer to hold incomplete blocks between HashCore calls
-    private bool _disposed;
-    private int _residualBytes;                        // Number of bytes currently in the residual buffer
-    private ulong _totalLength;                        // Total length of data processed, used for padding
+    private readonly Memory<byte> residualByteBuffer; // Temporary buffer to hold incomplete blocks between HashCore calls
+    private bool disposed;
+    private int residualBytes;                        // Number of bytes currently in the residual buffer
+    private ulong totalLength;                        // Total length of data processed, used for padding
 
     // Tracks whether Dispose() has been called
 
@@ -50,7 +50,7 @@ public abstract class BlockHashAlgorithm<T>
     /// <summary>
     /// Indicates whether the hash computation has been finalized. Used in .NET Standard environments.
     /// </summary>
-    protected bool _finalized;
+    protected bool finalized;
 #endif
 
     /// <summary>
@@ -80,7 +80,7 @@ public abstract class BlockHashAlgorithm<T>
     {
         ThrowHelper.ThrowIfLessThanOrEqual(blockSize, 0);
         this.BlockSizeBytes = blockSize;
-        this._residualByteBuffer = new byte[this.BlockSizeBytes];
+        this.residualByteBuffer = new byte[this.BlockSizeBytes];
     }
 
     /// <summary>
@@ -93,24 +93,24 @@ public abstract class BlockHashAlgorithm<T>
     public override void Initialize()
     {
         // Clear internal buffers and reset state
-        this._residualByteBuffer.Span.Clear();
-        this._residualBytes = 0;
-        this._totalLength = 0;
+        this.residualByteBuffer.Span.Clear();
+        this.residualBytes = 0;
+        this.totalLength = 0;
     }
 
     /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.disposed) return;
 
         if (disposing)
         {
-            CryptoHelpers.Clear(this._residualByteBuffer);
-            this._residualBytes = 0;
-            this._totalLength = 0;
+            CryptoHelpers.Clear(this.residualByteBuffer);
+            this.residualBytes = 0;
+            this.totalLength = 0;
         }
 
-        this._disposed = true;
+        this.disposed = true;
         base.Dispose(disposing);
     }
 
@@ -153,7 +153,7 @@ public abstract class BlockHashAlgorithm<T>
     ThrowHelper.ThrowIfLessThan(ibStart, 0);
     ThrowHelper.ThrowIfLessThan(cbSize, 0);
     ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
-    if (this._finalized)
+    if (this.finalized)
         throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
@@ -184,7 +184,7 @@ public abstract class BlockHashAlgorithm<T>
         this.ThrowIfDisposed();
 
 #if !NET6_0_OR_GREATER
-    if (this._finalized)
+    if (this.finalized)
         throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
@@ -204,13 +204,13 @@ public abstract class BlockHashAlgorithm<T>
         this.ThrowIfDisposed();
 
 #if !NET6_0_OR_GREATER
-    if (this._finalized)
+    if (this.finalized)
         throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
         if (this.ShouldPadFinalBlock())
         {
-            var finalBlock = this.PadBlock(this._residualByteBuffer.Span.Slice(0, this._residualBytes), this._totalLength);
+            var finalBlock = this.PadBlock(this.residualByteBuffer.Span.Slice(0, this.residualBytes), this.totalLength);
 
             if (this.AllowUnalignedFinalBlock)
             {
@@ -222,9 +222,9 @@ public abstract class BlockHashAlgorithm<T>
                     this.ProcessBlock(finalBlock.AsSpan(i, this.BlockSizeBytes));
             }
         }
-        else if (this._residualBytes > 0)
+        else if (this.residualBytes > 0)
         {
-            this.ProcessBlock(this._residualByteBuffer.Span.Slice(0, this._residualBytes));
+            this.ProcessBlock(this.residualByteBuffer.Span.Slice(0, this.residualBytes));
         }
 
         return this.ProcessFinalBlock();
@@ -286,9 +286,9 @@ public abstract class BlockHashAlgorithm<T>
     protected void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(this.disposed, this);
 #else
-    if (_disposed)
+    if (disposed)
         throw new ObjectDisposedException(this.GetType().Name);
 #endif
     }
@@ -317,28 +317,28 @@ public abstract class BlockHashAlgorithm<T>
     private void ProcessBlocks(ReadOnlySpan<byte> buffer)
     {
         int pos = 0;
-        this._totalLength += (ulong)buffer.Length;
+        this.totalLength += (ulong)buffer.Length;
 
-        Span<byte> residualSpan = this._residualByteBuffer.Span;
+        Span<byte> residualSpan = this.residualByteBuffer.Span;
 
         // Attempt to fill a partial residual block if it exists
-        if (this._residualBytes > 0)
+        if (this.residualBytes > 0)
         {
-            int remaining = this.BlockSizeBytes - this._residualBytes;
+            int remaining = this.BlockSizeBytes - this.residualBytes;
 
             if (buffer.Length >= remaining)
             {
                 // Complete residual block and process it
-                buffer.Slice(pos, remaining).CopyTo(residualSpan[this._residualBytes..]);
-                this.ProcessBlock(this._residualByteBuffer.Span);
-                this._residualBytes = 0;
+                buffer.Slice(pos, remaining).CopyTo(residualSpan[this.residualBytes..]);
+                this.ProcessBlock(this.residualByteBuffer.Span);
+                this.residualBytes = 0;
                 pos += remaining;
             }
             else
             {
                 // Not enough to complete a block, buffer it for later
-                buffer.CopyTo(residualSpan[this._residualBytes..]);
-                this._residualBytes += buffer.Length;
+                buffer.CopyTo(residualSpan[this.residualBytes..]);
+                this.residualBytes += buffer.Length;
                 return;
             }
         }
@@ -351,8 +351,8 @@ public abstract class BlockHashAlgorithm<T>
         }
 
         // Buffer any trailing bytes that form an incomplete block
-        this._residualBytes = buffer.Length - pos;
-        if (this._residualBytes > 0)
-            buffer.Slice(pos, this._residualBytes).CopyTo(residualSpan);
+        this.residualBytes = buffer.Length - pos;
+        if (this.residualBytes > 0)
+            buffer.Slice(pos, this.residualBytes).CopyTo(residualSpan);
     }
 }

@@ -31,8 +31,8 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="../guides/cryptography/cipher-modes.html#ofb--synchronous-stream-cipher">OFB walk-through in the cipher-modes guide</seealso>
 public sealed class OfbModeTransform : IBlockCipherModeTransform
 {
-    private readonly IBlockCipher _cipher;
-    private readonly byte[] _currentIv;
+    private readonly IBlockCipher cipher;
+    private readonly byte[] currentIv;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="OfbModeTransform" /> class with the specified cipher and initialisation vector.
@@ -40,22 +40,22 @@ public sealed class OfbModeTransform : IBlockCipherModeTransform
     /// <param name="cipher">The block cipher used to generate the keystream.</param>
     /// <param name="iv">The initialisation vector used to seed the feedback register. A defensive copy is taken.</param>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
-    public OfbModeTransform(IBlockCipher _cipher, byte[] iv)
+    public OfbModeTransform(IBlockCipher cipher, byte[] iv)
     {
-        this._cipher = _cipher ?? throw new ArgumentNullException(nameof(_cipher));
+        this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
         if (iv is null)
             throw new ArgumentNullException(nameof(iv));
-        if (iv.Length != _cipher.BlockSize)
+        if (iv.Length != cipher.BlockSize)
             throw new ArgumentException(
-                $"IV length ({iv.Length}) must equal the _cipher block size ({_cipher.BlockSize}).",
+                $"IV length ({iv.Length}) must equal the cipher block size ({cipher.BlockSize}).",
                 nameof(iv));
-        this._currentIv = (byte[])iv.Clone();
+        this.currentIv = (byte[])iv.Clone();
     }
 
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        int blockSize = this._cipher.BlockSize;
+        int blockSize = this.cipher.BlockSize;
 
         ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
@@ -68,14 +68,14 @@ public sealed class OfbModeTransform : IBlockCipherModeTransform
             Span<byte> outBlock = output.Slice(offset, blockSize);
 
             // Encrypt the feedback register to generate keystream
-            this._cipher.Encrypt(this._currentIv, keystream);
+            this.cipher.Encrypt(this.currentIv, keystream);
 
             // XOR keystream with plaintext or ciphertext
             for (int i = 0; i < blockSize; i++)
                 outBlock[i] = (byte)(inBlock[i] ^ keystream[i]);
 
             // Update feedback register with generated keystream
-            keystream.CopyTo(this._currentIv);
+            keystream.CopyTo(this.currentIv);
         }
 
         return input.Length;

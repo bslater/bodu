@@ -49,26 +49,26 @@ public sealed class CcmModeTransform : IAeadBlockCipherModeTransform
     private const byte BaseB0NoAad = 0x3A;  // 0_111_010
     private const byte BaseB0WithAad = 0x7A;  // 1_111_010
 
-    private readonly IBlockCipher _cipher;
-    private readonly byte[] _nonce;
-    private byte[]? _aad;
-    private bool _aadProcessed;
+    private readonly IBlockCipher cipher;
+    private readonly byte[] nonce;
+    private byte[]? aad;
+    private bool aadProcessed;
 
     /// <summary>
     /// Initialises a new instance. The first 12 bytes of <paramref name="iv" /> are used as the CCM nonce.
     /// </summary>
     /// <exception cref="ArgumentNullException"><paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="iv" /> length does not equal the cipher block size.</exception>
-    public CcmModeTransform(IBlockCipher _cipher, byte[] iv)
+    public CcmModeTransform(IBlockCipher cipher, byte[] iv)
     {
-        this._cipher = _cipher ?? throw new ArgumentNullException(nameof(_cipher));
+        this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
         if (iv is null) throw new ArgumentNullException(nameof(iv));
-        if (iv.Length != _cipher.BlockSize)
+        if (iv.Length != cipher.BlockSize)
             throw new ArgumentException(
-                $"IV length ({iv.Length}) must equal the _cipher block size ({_cipher.BlockSize}).", nameof(iv));
+                $"IV length ({iv.Length}) must equal the cipher block size ({cipher.BlockSize}).", nameof(iv));
 
-        this._nonce = new byte[NonceLengthBytes];
-        iv.AsSpan(0, NonceLengthBytes).CopyTo(this._nonce);
+        this.nonce = new byte[NonceLengthBytes];
+        iv.AsSpan(0, NonceLengthBytes).CopyTo(this.nonce);
     }
 
     /// <inheritdoc />
@@ -77,10 +77,10 @@ public sealed class CcmModeTransform : IAeadBlockCipherModeTransform
     /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
     {
-        if (this._aadProcessed)
+        if (this.aadProcessed)
             throw new InvalidOperationException("AssociatedData has already been processed.");
-        this._aad = associatedData.ToArray();
-        this._aadProcessed = true;
+        this.aad = associatedData.ToArray();
+        this.aadProcessed = true;
     }
 
     /// <inheritdoc />
@@ -91,7 +91,7 @@ public sealed class CcmModeTransform : IAeadBlockCipherModeTransform
             throw new ArgumentException($"Output must be at least {required} bytes.", nameof(output));
         EnsureAadProcessed();
 
-        byte[] mac = ComputeCbcMac(this._aad.AsSpan(), plaintext);
+        byte[] mac = ComputeCbcMac(this.aad.AsSpan(), plaintext);
         byte[] encTag = XorWithCtrBlock(mac, counterIndex: 0);
 
         EncryptCtr(plaintext, output.Slice(0, plaintext.Length), startIndex: 1);
@@ -113,7 +113,7 @@ public sealed class CcmModeTransform : IAeadBlockCipherModeTransform
         ReadOnlySpan<byte> receivedTag = ciphertextWithTag.Slice(plaintextLength);
 
         EncryptCtr(ciphertext, output.Slice(0, plaintextLength), startIndex: 1);
-        byte[] mac = ComputeCbcMac(this._aad.AsSpan(), output.Slice(0, plaintextLength));
+        byte[] mac = ComputeCbcMac(this.aad.AsSpan(), output.Slice(0, plaintextLength));
         byte[] encTag = XorWithCtrBlock(mac, counterIndex: 0);
 
         if (!CryptographicOperations.FixedTimeEquals(encTag.AsSpan(0, TagSize), receivedTag))
@@ -132,7 +132,7 @@ public sealed class CcmModeTransform : IAeadBlockCipherModeTransform
     /// </summary>
     private void EnsureAadProcessed()
     {
-        if (!this._aadProcessed) { this._aad = Array.Empty<byte>(); this._aadProcessed = true; }
+        if (!this.aadProcessed) { this.aad = Array.Empty<byte>(); this.aadProcessed = true; }
     }
 
     /// <summary>
@@ -141,16 +141,16 @@ public sealed class CcmModeTransform : IAeadBlockCipherModeTransform
     /// <param name="aad">The associated authenticated data.</param>
     /// <param name="plaintext">The plaintext bytes whose MAC is being computed.</param>
     /// <returns>The computed CBC-MAC tag, truncated to the configured tag length.</returns>
-    private byte[] ComputeCbcMac(ReadOnlySpan<byte> _aad, ReadOnlySpan<byte> plaintext)
+    private byte[] ComputeCbcMac(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
     {
-        int blockSize = this._cipher.BlockSize;
+        int blockSize = this.cipher.BlockSize;
         byte[] mac = new byte[blockSize];
 
         // Block B0.
-        bool hasAad = _aad.Length > 0;
+        bool hasAad = aad.Length > 0;
         byte[] b0 = new byte[blockSize];
         b0[0] = hasAad ? BaseB0WithAad : BaseB0NoAad;
-        this._nonce.CopyTo(b0, 1);
+        this.nonce.CopyTo(b0, 1);
         // Message length in last 3 bytes (big-endian, q=3).
         uint len = (uint)plaintext.Length;
         b0[15] = (byte)len;
@@ -161,15 +161,15 @@ public sealed class CcmModeTransform : IAeadBlockCipherModeTransform
         // AAD: 2-byte length prefix then AAD bytes, zero-padded to block boundary.
         if (hasAad)
         {
-            if (_aad.Length >= 0xFF00)
+            if (aad.Length >= 0xFF00)
                 throw new NotSupportedException("AAD must be shorter than 65280 bytes for 2-byte length encoding.");
-            // Encode: 2-byte length + _aad + zero-padding to block multiple.
-            int encodedLen = 2 + _aad.Length;
+            // Encode: 2-byte length + aad + zero-padding to block multiple.
+            int encodedLen = 2 + aad.Length;
             int padded = ((encodedLen + blockSize - 1) / blockSize) * blockSize;
             byte[] aadEncoded = new byte[padded];
-            aadEncoded[0] = (byte)(_aad.Length >> 8);
-            aadEncoded[1] = (byte)_aad.Length;
-            _aad.CopyTo(aadEncoded.AsSpan(2));
+            aadEncoded[0] = (byte)(aad.Length >> 8);
+            aadEncoded[1] = (byte)aad.Length;
+            aad.CopyTo(aadEncoded.AsSpan(2));
             for (int i = 0; i < aadEncoded.Length; i += blockSize)
                 CbcMacUpdate(mac, aadEncoded.AsSpan(i, blockSize));
         }
@@ -195,7 +195,7 @@ public sealed class CcmModeTransform : IAeadBlockCipherModeTransform
     {
         Span<byte> xored = stackalloc byte[mac.Length];
         for (int i = 0; i < mac.Length; i++) xored[i] = (byte)(mac[i] ^ block[i]);
-        this._cipher.Encrypt(xored, mac);
+        this.cipher.Encrypt(xored, mac);
     }
 
     /// <summary>Builds counter block A_i (flags | nonce | counter), encrypts it, and XORs with input.</summary>
@@ -204,16 +204,16 @@ public sealed class CcmModeTransform : IAeadBlockCipherModeTransform
     /// <returns>A fresh array holding <c>input XOR keystream</c>.</returns>
     private byte[] XorWithCtrBlock(ReadOnlySpan<byte> input, int counterIndex)
     {
-        int blockSize = this._cipher.BlockSize;
+        int blockSize = this.cipher.BlockSize;
         byte[] ctr = new byte[blockSize];
         ctr[0] = CounterFlagByte;
-        this._nonce.CopyTo(ctr, 1);
+        this.nonce.CopyTo(ctr, 1);
         ctr[15] = (byte)counterIndex;
         ctr[14] = (byte)(counterIndex >> 8);
         ctr[13] = (byte)(counterIndex >> 16);
 
         byte[] ks = new byte[blockSize];
-        this._cipher.Encrypt(ctr, ks);
+        this.cipher.Encrypt(ctr, ks);
         for (int i = 0; i < Math.Min(input.Length, blockSize); i++)
             ks[i] ^= input[i];
         return ks;
@@ -229,18 +229,18 @@ public sealed class CcmModeTransform : IAeadBlockCipherModeTransform
     /// <param name="startIndex">The starting counter-block index in the CTR sequence.</param>
     private void EncryptCtr(ReadOnlySpan<byte> input, Span<byte> output, int startIndex)
     {
-        int blockSize = this._cipher.BlockSize;
+        int blockSize = this.cipher.BlockSize;
         Span<byte> ks = stackalloc byte[blockSize];
         for (int offset = 0; offset < input.Length; offset += blockSize)
         {
             int idx = startIndex + offset / blockSize;
             byte[] ctr = new byte[blockSize];
             ctr[0] = CounterFlagByte;
-            this._nonce.CopyTo(ctr, 1);
+            this.nonce.CopyTo(ctr, 1);
             ctr[15] = (byte)idx;
             ctr[14] = (byte)(idx >> 8);
             ctr[13] = (byte)(idx >> 16);
-            this._cipher.Encrypt(ctr, ks);
+            this.cipher.Encrypt(ctr, ks);
             int rem = Math.Min(blockSize, input.Length - offset);
             for (int i = 0; i < rem; i++)
                 output[offset + i] = (byte)(input[offset + i] ^ ks[i]);

@@ -41,8 +41,8 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 public sealed class EaxModeTransform : IBlockCipherModeTransform
 {
-    private readonly IBlockCipher _cipher;
-    private readonly byte[] _counter; // current _counter value, incremented big-endian each block
+    private readonly IBlockCipher cipher;
+    private readonly byte[] counter; // current counter value, incremented big-endian each block
 
     /// <summary>
     /// Initialises a new instance of the <see cref="EaxModeTransform" /> class.
@@ -58,22 +58,22 @@ public sealed class EaxModeTransform : IBlockCipherModeTransform
     /// <exception cref="ArgumentException">
     /// <paramref name="iv" /> length does not equal the cipher block size.
     /// </exception>
-    public EaxModeTransform(IBlockCipher _cipher, byte[] iv)
+    public EaxModeTransform(IBlockCipher cipher, byte[] iv)
     {
-        this._cipher = _cipher ?? throw new ArgumentNullException(nameof(_cipher));
+        this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
         if (iv is null) throw new ArgumentNullException(nameof(iv));
-        if (iv.Length != _cipher.BlockSize)
+        if (iv.Length != cipher.BlockSize)
             throw new ArgumentException(
-                $"IV length ({iv.Length}) must equal the _cipher block size ({_cipher.BlockSize}).",
+                $"IV length ({iv.Length}) must equal the cipher block size ({cipher.BlockSize}).",
                 nameof(iv));
 
-        this._counter = (byte[])iv.Clone();
+        this.counter = (byte[])iv.Clone();
     }
 
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        int blockSize = this._cipher.BlockSize;
+        int blockSize = this.cipher.BlockSize;
         ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 
@@ -81,8 +81,8 @@ public sealed class EaxModeTransform : IBlockCipherModeTransform
 
         for (int offset = 0; offset < input.Length; offset += blockSize)
         {
-            // Generate keystream block from the current _counter (always uses encrypt primitive).
-            this._cipher.Encrypt(this._counter, keystream);
+            // Generate keystream block from the current counter (always uses encrypt primitive).
+            this.cipher.Encrypt(this.counter, keystream);
 
             // XOR with input — identical operation for both encrypt and decrypt (CTR property).
             ReadOnlySpan<byte> inBlock = input.Slice(offset, blockSize);
@@ -90,8 +90,8 @@ public sealed class EaxModeTransform : IBlockCipherModeTransform
             for (int i = 0; i < blockSize; i++)
                 outBlock[i] = (byte)(inBlock[i] ^ keystream[i]);
 
-            // Advance _counter (big-endian increment, rightmost byte first).
-            IncrementBigEndian(this._counter);
+            // Advance counter (big-endian increment, rightmost byte first).
+            IncrementBigEndian(this.counter);
         }
 
         return input.Length;
@@ -101,9 +101,9 @@ public sealed class EaxModeTransform : IBlockCipherModeTransform
     /// Increments <paramref name="counter" /> as an unsigned big-endian integer, wrapping on overflow.
     /// </summary>
     /// <param name="counter">The counter block to increment in place; interpreted as a big-endian integer.</param>
-    private static void IncrementBigEndian(byte[] _counter)
+    private static void IncrementBigEndian(byte[] counter)
     {
-        for (int i = _counter.Length - 1; i >= 0; i--)
-            if (++_counter[i] != 0) break;
+        for (int i = counter.Length - 1; i >= 0; i--)
+            if (++counter[i] != 0) break;
     }
 }

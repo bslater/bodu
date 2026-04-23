@@ -35,11 +35,11 @@ public sealed class BKDR
         31U, 131U, 1313U, 13131U, 131313U, 1313131U, 13131313U, 131313131U, 1313131313U
     };
 
-    private bool _disposed = false;
-    private uint _seedValue;
-    private uint _workingHash;
+    private bool disposed = false;
+    private uint seedValue;
+    private uint workingHash;
 #if !NET6_0_OR_GREATER
-    private bool _finalized;
+    private bool finalized;
 #endif
 
     /// <summary>
@@ -47,7 +47,7 @@ public sealed class BKDR
     /// </summary>
     public BKDR()
     {
-        this._seedValue = DefaultSeed;
+        this.seedValue = DefaultSeed;
         this.HashSizeValue = 32;
         this.Initialize();
     }
@@ -70,7 +70,7 @@ public sealed class BKDR
         get
         {
             this.ThrowIfDisposed();
-            return this._seedValue;
+            return this.seedValue;
         }
 
         set
@@ -82,7 +82,7 @@ public sealed class BKDR
                 throw new ArgumentException(
                     string.Format(ResourceStrings.CryptographicException_InvalidPropertyValue, nameof(this.Seed)), nameof(value));
 
-            this._seedValue = value;
+            this.seedValue = value;
             this.Initialize();
         }
     }
@@ -93,9 +93,9 @@ public sealed class BKDR
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
         State = 0;
-        _finalized = false;
+        finalized = false;
 #endif
-        this._workingHash = this._seedValue;
+        this.workingHash = this.seedValue;
     }
 
     /// <summary>
@@ -107,17 +107,17 @@ public sealed class BKDR
     /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.disposed) return;
         if (disposing)
         {
             CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
-            this._workingHash = 0;
-            this._seedValue = 0;
+            this.workingHash = 0;
+            this.seedValue = 0;
             this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
+        this.disposed = true;
         base.Dispose(disposing);
     }
 
@@ -148,7 +148,7 @@ public sealed class BKDR
         ThrowHelper.ThrowIfLessThan(ibStart, 0);
         ThrowHelper.ThrowIfLessThan(cbSize, 0);
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
-        if (_finalized)
+        if (finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
         this.HashCore(array.AsSpan(ibStart, cbSize));
@@ -166,16 +166,16 @@ public sealed class BKDR
     {
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
-        if (_finalized)
+        if (finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
-        uint v = this._workingHash;
+        uint v = this.workingHash;
         foreach (var b in source)
         {
-            v = (v * this._seedValue) + b;
+            v = (v * this.seedValue) + b;
         }
 
-        this._workingHash = v;
+        this.workingHash = v;
     }
 
     /// <summary>
@@ -187,13 +187,13 @@ public sealed class BKDR
     {
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
-        if (_finalized)
+        if (finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
-        _finalized = true;
+        finalized = true;
         State = 2;
 #endif
         Span<byte> span = stackalloc byte[4];
-        BinaryPrimitives.WriteUInt32BigEndian(span, this._workingHash);
+        BinaryPrimitives.WriteUInt32BigEndian(span, this.workingHash);
         return span.ToArray();
     }
 
@@ -207,9 +207,9 @@ public sealed class BKDR
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(this.disposed, this);
 #else
-        if (_disposed)
+        if (disposed)
             throw new ObjectDisposedException(nameof(BKDR));
 #endif
     }

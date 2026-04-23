@@ -15,8 +15,8 @@ namespace Bodu.Security.Cryptography;
 internal sealed class ByteBuffer
 {
     private const int EmptyIndex = -1;
-    private readonly byte[] _internalBuffer;
-    private int _index;
+    private readonly byte[] internalBuffer;
+    private int index;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="ByteBuffer" /> class that is empty and has the specified capacity.
@@ -26,14 +26,14 @@ internal sealed class ByteBuffer
     public ByteBuffer(int capacity)
     {
         ThrowHelper.ThrowIfLessThan(capacity, 0);
-        this._internalBuffer = new byte[capacity];
+        this.internalBuffer = new byte[capacity];
         this.Initialize();
     }
 
     /// <summary>
     /// Gets the maximum number of bytes that the buffer can contain.
     /// </summary>
-    public int Capacity => this._internalBuffer.Length;
+    public int Capacity => this.internalBuffer.Length;
 
     /// <summary>
     /// Gets the number of bytes currently written to the buffer.
@@ -41,7 +41,7 @@ internal sealed class ByteBuffer
     public int Count
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get { return this._index + 1; }
+        get { return this.index + 1; }
     }
 
     /// <summary>
@@ -50,7 +50,7 @@ internal sealed class ByteBuffer
     public bool IsEmpty
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get { return this._index == EmptyIndex; }
+        get { return this.index == EmptyIndex; }
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ internal sealed class ByteBuffer
     public bool IsFull
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get { return this.Count == this._internalBuffer.Length; }
+        get { return this.Count == this.internalBuffer.Length; }
     }
 
     /// <summary>
@@ -75,11 +75,11 @@ internal sealed class ByteBuffer
     /// <paramref name="index" /> and <paramref name="count" /> specify an invalid range in <paramref name="array" />. <br />
     /// -or- <br /><paramref name="count" /> exceeds the remaining capacity of the buffer.
     /// </exception>
-    public bool Add(byte[] array, int _index, int count)
+    public bool Add(byte[] array, int index, int count)
     {
-        this.EnsureAddIsValid(array, _index, count);
-        Buffer.BlockCopy(array, _index, this._internalBuffer, this.Count, count);
-        this._index += count;
+        this.EnsureAddIsValid(array, index, count);
+        Buffer.BlockCopy(array, index, this.internalBuffer, this.Count, count);
+        this.index += count;
         return this.IsFull;
     }
 
@@ -92,9 +92,9 @@ internal sealed class ByteBuffer
     public bool Add(ReadOnlySpan<byte> span)
     {
         int currentCount = this.Count;
-        ThrowHelper.ThrowIfGreaterThan(span.Length, this._internalBuffer.Length - currentCount, nameof(span));
-        span.CopyTo(new Span<byte>(this._internalBuffer, currentCount, span.Length));
-        this._index += span.Length;
+        ThrowHelper.ThrowIfGreaterThan(span.Length, this.internalBuffer.Length - currentCount, nameof(span));
+        span.CopyTo(new Span<byte>(this.internalBuffer, currentCount, span.Length));
+        this.index += span.Length;
         return this.IsFull;
     }
 
@@ -108,8 +108,8 @@ internal sealed class ByteBuffer
         if (!this.IsFull)
             throw new InvalidOperationException(ResourceStrings.InvalidOperation_BufferNotFull);
 
-        this._index = EmptyIndex;
-        return this._internalBuffer;
+        this.index = EmptyIndex;
+        return this.internalBuffer;
     }
 
     /// <summary>
@@ -119,9 +119,9 @@ internal sealed class ByteBuffer
     public byte[] GetBytesZeroPadded()
     {
         int count = this.Count;
-        Array.Clear(this._internalBuffer, count, this._internalBuffer.Length - count);
-        this._index = EmptyIndex;
-        return this._internalBuffer;
+        Array.Clear(this.internalBuffer, count, this.internalBuffer.Length - count);
+        this.index = EmptyIndex;
+        return this.internalBuffer;
     }
 
     /// <summary>
@@ -131,9 +131,9 @@ internal sealed class ByteBuffer
     public void Initialize(bool clear = true)
     {
         if (clear)
-            Array.Clear(this._internalBuffer, 0, this._internalBuffer.Length);
+            Array.Clear(this.internalBuffer, 0, this.internalBuffer.Length);
 
-        this._index = EmptyIndex;
+        this.index = EmptyIndex;
     }
 
     /// <summary>
@@ -149,12 +149,12 @@ internal sealed class ByteBuffer
     /// -or- <br /><paramref name="count" /> exceeds the remaining capacity of the buffer.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void EnsureAddIsValid(byte[] array, int _index, int count)
+    private void EnsureAddIsValid(byte[] array, int index, int count)
     {
         ThrowHelper.ThrowIfNull(array);
-        ThrowHelper.ThrowIfLessThan(_index, 0);
+        ThrowHelper.ThrowIfLessThan(index, 0);
         ThrowHelper.ThrowIfLessThan(count, 0);
-        ThrowHelper.ThrowIfGreaterThan(count, array.Length - _index, nameof(count));
-        ThrowHelper.ThrowIfGreaterThan(this.Count + count, this._internalBuffer.Length, nameof(count));
+        ThrowHelper.ThrowIfGreaterThan(count, array.Length - index, nameof(count));
+        ThrowHelper.ThrowIfGreaterThan(this.Count + count, this.internalBuffer.Length, nameof(count));
     }
 }

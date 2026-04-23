@@ -28,13 +28,13 @@ public sealed class Elf64
     private const ulong HighBitsMask = 0xF000000000000000UL;
     private const int HighBitsShift = 56;
 
-    private bool _disposed = false;
-    private ulong _seedValue;
-    private ulong _workingHash;
+    private bool disposed = false;
+    private ulong seedValue;
+    private ulong workingHash;
 #if !NET6_0_OR_GREATER
 
     // Required for .NET Standard 2.0 or older frameworks
-    private bool _finalized;
+    private bool finalized;
 #endif
 
     /// <summary>
@@ -68,7 +68,7 @@ public sealed class Elf64
         {
             this.ThrowIfDisposed();
 
-            return this._seedValue;
+            return this.seedValue;
         }
 
         set
@@ -76,7 +76,7 @@ public sealed class Elf64
             this.ThrowIfDisposed();
             this.ThrowIfInvalidState();
 
-            this._seedValue = value;
+            this.seedValue = value;
             this.Initialize();
         }
     }
@@ -87,9 +87,9 @@ public sealed class Elf64
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
         State = 0;
-        _finalized = false;
+        finalized = false;
 #endif
-        this._workingHash = this._seedValue;
+        this.workingHash = this.seedValue;
     }
 
     /// <summary>
@@ -101,18 +101,18 @@ public sealed class Elf64
     /// <remarks>Ensures all internal state is overwritten with zeros before releasing resources.</remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.disposed) return;
 
         if (disposing)
         {
             CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
-            this._seedValue = 0;
-            this._workingHash = 0;
+            this.seedValue = 0;
+            this.workingHash = 0;
             this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
+        this.disposed = true;
         base.Dispose(disposing);
     }
 
@@ -143,7 +143,7 @@ public sealed class Elf64
         ThrowHelper.ThrowIfLessThan(ibStart, 0);
         ThrowHelper.ThrowIfLessThan(cbSize, 0);
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
-        if (_finalized)
+        if (finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
@@ -163,10 +163,10 @@ public sealed class Elf64
     {
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
-        if (_finalized)
+        if (finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
-        ulong v = this._workingHash;
+        ulong v = this.workingHash;
 
         foreach (byte b in source)
         {
@@ -177,7 +177,7 @@ public sealed class Elf64
             v &= ~high;
         }
 
-        this._workingHash = v;
+        this.workingHash = v;
     }
 
     /// <summary>
@@ -189,14 +189,14 @@ public sealed class Elf64
     {
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
-        if (_finalized)
+        if (finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 
-        _finalized = true;
+        finalized = true;
         State = 2;
 #endif
 
-        return this._workingHash.GetBytes(asBigEndian: true);
+        return this.workingHash.GetBytes(asBigEndian: true);
     }
 
     /// <summary>
@@ -209,9 +209,9 @@ public sealed class Elf64
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(this.disposed, this);
 #else
-        if (_disposed)
+        if (disposed)
             throw new ObjectDisposedException(nameof(Elf64));
 #endif
     }

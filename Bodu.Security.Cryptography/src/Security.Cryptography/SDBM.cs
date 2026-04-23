@@ -25,12 +25,12 @@ namespace Bodu.Security.Cryptography;
 public sealed class SDBM
     : System.Security.Cryptography.HashAlgorithm
 {
-    private bool _disposed = false;
-    private uint _workingHash;
+    private bool disposed = false;
+    private uint workingHash;
 #if !NET6_0_OR_GREATER
 
     // Required for .NET Standard 2.0 or older frameworks
-    private bool _finalized;
+    private bool finalized;
 #endif
 
     /// <summary>
@@ -53,9 +53,9 @@ public sealed class SDBM
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
         State = 0;
-        _finalized = false;
+        finalized = false;
 #endif
-        this._workingHash = 0;
+        this.workingHash = 0;
     }
 
     /// <summary>
@@ -67,16 +67,16 @@ public sealed class SDBM
     /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.disposed) return;
         if (disposing)
         {
             CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
-            this._workingHash = 0;
+            this.workingHash = 0;
             this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
+        this.disposed = true;
         base.Dispose(disposing);
     }
 
@@ -107,7 +107,7 @@ public sealed class SDBM
         ThrowHelper.ThrowIfLessThan(ibStart, 0);
         ThrowHelper.ThrowIfLessThan(cbSize, 0);
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
-        if (_finalized)
+        if (finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
@@ -126,16 +126,16 @@ public sealed class SDBM
     {
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
-        if (_finalized)
+        if (finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
-        var v = this._workingHash;
+        var v = this.workingHash;
         foreach (var b in source)
         {
             v = b + (v << 6) + (v << 16) - v;
         }
 
-        this._workingHash = v;
+        this.workingHash = v;
     }
 
     /// <summary>
@@ -147,13 +147,13 @@ public sealed class SDBM
     {
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
-        if (_finalized)
+        if (finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
-        _finalized = true;
+        finalized = true;
         State = 2;
 #endif
         Span<byte> span = stackalloc byte[4];
-        BinaryPrimitives.WriteUInt32BigEndian(span, this._workingHash);
+        BinaryPrimitives.WriteUInt32BigEndian(span, this.workingHash);
         return span.ToArray();
     }
 
@@ -167,9 +167,9 @@ public sealed class SDBM
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(this.disposed, this);
 #else
-        if (_disposed)
+        if (disposed)
             throw new ObjectDisposedException(nameof(SDBM));
 #endif
     }

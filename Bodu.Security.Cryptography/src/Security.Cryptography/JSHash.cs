@@ -26,12 +26,12 @@ public sealed class JSHash
 {
     private const uint DefaultValue = 0x4E67C6A7;
 
-    private bool _disposed = false;
-    private uint _workingHash;
+    private bool disposed = false;
+    private uint workingHash;
 #if !NET6_0_OR_GREATER
 
     // Required for .NET Standard 2.0 or older frameworks
-    private bool _finalized;
+    private bool finalized;
 #endif
 
     /// <summary>
@@ -55,10 +55,10 @@ public sealed class JSHash
     {
 #if !NET6_0_OR_GREATER
         State = 0;
-        _finalized = false;
+        finalized = false;
 #endif
         this.ThrowIfDisposed();
-        this._workingHash = DefaultValue;
+        this.workingHash = DefaultValue;
     }
 
     /// <summary>
@@ -70,18 +70,18 @@ public sealed class JSHash
     /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed)
+        if (this.disposed)
             return;
 
         if (disposing)
         {
             CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
-            this._workingHash = 0;
+            this.workingHash = 0;
             this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
+        this.disposed = true;
         base.Dispose(disposing);
     }
 
@@ -112,7 +112,7 @@ public sealed class JSHash
         ThrowHelper.ThrowIfLessThan(ibStart, 0);
         ThrowHelper.ThrowIfLessThan(cbSize, 0);
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
-        if (_finalized)
+        if (finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
@@ -131,13 +131,13 @@ public sealed class JSHash
     {
         this.ThrowIfDisposed();
 
-        var v = this._workingHash;
+        var v = this.workingHash;
         foreach (byte b in source)
         {
             v ^= (v << 5) + (v >> 2) + b;
         }
 
-        this._workingHash = v;
+        this.workingHash = v;
     }
 
     /// <summary>
@@ -149,13 +149,13 @@ public sealed class JSHash
     {
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
-        if (_finalized)
+        if (finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
-        _finalized = true;
+        finalized = true;
         State = 2;
 #endif
         Span<byte> span = stackalloc byte[4];
-        MemoryMarshal.Write(span, in this._workingHash);
+        MemoryMarshal.Write(span, in this.workingHash);
         return span.ToArray();
     }
 
@@ -166,9 +166,9 @@ public sealed class JSHash
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(this.disposed, this);
 #else
-        if (_disposed)
+        if (disposed)
             throw new ObjectDisposedException(nameof(JSHash));
 #endif
     }

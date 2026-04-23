@@ -62,7 +62,7 @@ public sealed class SkipjackBlockCipher
     public const int KeySize = 10;  // 80 bits
 
     // Static F-table (8 × 8 S-box)
-    private static readonly byte[] s_ftable = new byte[256]
+    private static readonly byte[] ftable = new byte[256]
     {
         0xa3, 0xd7, 0x09, 0x83, 0xf8, 0x48, 0xf6, 0xf4, 0xb3, 0x21, 0x15, 0x78, 0x99, 0xb1, 0xaf, 0xf9,
         0xe7, 0x2d, 0x4d, 0x8a, 0xce, 0x4c, 0xca, 0x2e, 0x52, 0x95, 0xd9, 0x1e, 0x4e, 0x38, 0x44, 0x28,
@@ -83,7 +83,7 @@ public sealed class SkipjackBlockCipher
     };
 
     private readonly int[] key0, key1, key2, key3;
-    private bool _disposed = false;
+    private bool disposed = false;
 
     /// <summary>
     /// Creates a new <see cref="SkipjackBlockCipher" /> instance using the supplied 80-bit key.
@@ -174,14 +174,14 @@ public sealed class SkipjackBlockCipher
     /// </summary>
     public void Dispose()
     {
-        if (!this._disposed)
+        if (!this.disposed)
         {
             CryptoHelpers.Clear(this.key0);
             CryptoHelpers.Clear(this.key1);
             CryptoHelpers.Clear(this.key2);
             CryptoHelpers.Clear(this.key3);
 
-            this._disposed = true;
+            this.disposed = true;
         }
     }
 
@@ -282,10 +282,10 @@ public sealed class SkipjackBlockCipher
         g1 = (w >> 8) & 0xff;
         g2 = w & 0xff;
 
-        g3 = s_ftable[g2 ^ key0[k]] ^ g1;
-        g4 = s_ftable[g3 ^ key1[k]] ^ g2;
-        g5 = s_ftable[g4 ^ key2[k]] ^ g3;
-        g6 = s_ftable[g5 ^ key3[k]] ^ g4;
+        g3 = ftable[g2 ^ key0[k]] ^ g1;
+        g4 = ftable[g3 ^ key1[k]] ^ g2;
+        g5 = ftable[g4 ^ key2[k]] ^ g3;
+        g6 = ftable[g5 ^ key3[k]] ^ g4;
 
         return ((g5 << 8) + g6);
     }
@@ -302,10 +302,10 @@ public sealed class SkipjackBlockCipher
         int h1 = w & 0xff;
         int h2 = (w >> 8) & 0xff;
 
-        int h3 = s_ftable[h2 ^ key3[k]] ^ h1;
-        int h4 = s_ftable[h3 ^ key2[k]] ^ h2;
-        int h5 = s_ftable[h4 ^ key1[k]] ^ h3;
-        int h6 = s_ftable[h5 ^ key0[k]] ^ h4;
+        int h3 = ftable[h2 ^ key3[k]] ^ h1;
+        int h4 = ftable[h3 ^ key2[k]] ^ h2;
+        int h5 = ftable[h4 ^ key1[k]] ^ h3;
+        int h6 = ftable[h5 ^ key0[k]] ^ h4;
 
         return (h6 << 8) + h5;
     }
@@ -318,9 +318,9 @@ public sealed class SkipjackBlockCipher
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(this.disposed, this);
 #else
-        if (_disposed) throw new ObjectDisposedException(nameof(SkipjackBlockCipher));
+        if (disposed) throw new ObjectDisposedException(nameof(SkipjackBlockCipher));
 #endif
     }
 }

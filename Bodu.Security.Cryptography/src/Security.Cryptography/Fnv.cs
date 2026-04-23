@@ -32,15 +32,15 @@ public abstract class Fnv
 {
     private static readonly int[] ValidHashSizes = { 16, 32, 64 };
 
-    private readonly ulong _offsetBasis;
-    private readonly ulong _prime;
-    private readonly bool _useFnv1a;
-    private bool _disposed = false;
-    private ulong _workingHash;
+    private readonly ulong offsetBasis;
+    private readonly ulong prime;
+    private readonly bool useFnv1a;
+    private bool disposed = false;
+    private ulong workingHash;
 #if !NET6_0_OR_GREATER
 
     // Required for .NET Standard 2.0 or older frameworks
-    private bool _finalized;
+    private bool finalized;
 #endif
 
     /// <summary>
@@ -67,7 +67,7 @@ public abstract class Fnv
     /// <see cref="Fnv1a32" /> or <see cref="Fnv1a64" />. It validates the provided hash size against the supported options and
     /// initialises the internal hashing state accordingly.
     /// </remarks>
-    protected Fnv(int hashSize, ulong _prime, ulong _offsetBasis, bool _useFnv1a = false)
+    protected Fnv(int hashSize, ulong prime, ulong offsetBasis, bool useFnv1a = false)
     {
         if (!ValidHashSizes.Contains(hashSize))
             throw new ArgumentException(
@@ -75,10 +75,10 @@ public abstract class Fnv
                 nameof(hashSize));
 
         this.HashSizeValue = hashSize;
-        this._prime = _prime;
-        this._offsetBasis = this._workingHash = _offsetBasis;
-        this._useFnv1a = _useFnv1a;
-        this.AlgorithmName = $"FNV-{(this._useFnv1a ? "1a" : "1")}-{this.HashSizeValue}";
+        this.prime = prime;
+        this.offsetBasis = this.workingHash = offsetBasis;
+        this.useFnv1a = useFnv1a;
+        this.AlgorithmName = $"FNV-{(this.useFnv1a ? "1a" : "1")}-{this.HashSizeValue}";
     }
 
     /// <summary>
@@ -98,9 +98,9 @@ public abstract class Fnv
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
         State = 0;
-        _finalized = false;
+        finalized = false;
 #endif
-        this._workingHash = this._offsetBasis;
+        this.workingHash = this.offsetBasis;
     }
 
     /// <summary>
@@ -112,17 +112,17 @@ public abstract class Fnv
     /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.disposed) return;
 
         if (disposing)
         {
             CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
-            this._workingHash = 0;
+            this.workingHash = 0;
             this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
+        this.disposed = true;
         base.Dispose(disposing);
     }
 
@@ -153,7 +153,7 @@ public abstract class Fnv
         ThrowHelper.ThrowIfLessThan(ibStart, 0);
         ThrowHelper.ThrowIfLessThan(cbSize, 0);
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
-        if (_finalized)
+        if (finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
@@ -173,10 +173,10 @@ public abstract class Fnv
         this.ThrowIfDisposed();
 
 #if !NET6_0_OR_GREATER
-if (_finalized)
+if (finalized)
     throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
-        if (this._useFnv1a)
+        if (this.useFnv1a)
             this.HashCoreFNV1a(source);
         else
             this.HashCoreFNV1(source);
@@ -194,15 +194,15 @@ if (_finalized)
     {
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
-        if (_finalized)
+        if (finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 
-        _finalized = true;
+        finalized = true;
         State = 2;
 #endif
 
         Span<byte> buffer = stackalloc byte[8];
-        BinaryPrimitives.WriteUInt64BigEndian(buffer, this._workingHash);
+        BinaryPrimitives.WriteUInt64BigEndian(buffer, this.workingHash);
 
         return this.HashSizeValue switch
         {
@@ -224,14 +224,14 @@ if (_finalized)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void HashCoreFNV1(ReadOnlySpan<byte> source)
     {
-        var hash = this._workingHash;
+        var hash = this.workingHash;
         for (int i = 0; i < source.Length; i++)
         {
-            hash *= this._prime;
+            hash *= this.prime;
             hash ^= source[i];
         }
 
-        this._workingHash = hash;
+        this.workingHash = hash;
     }
 
     /// <summary>
@@ -246,14 +246,14 @@ if (_finalized)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void HashCoreFNV1a(ReadOnlySpan<byte> source)
     {
-        var hash = this._workingHash;
+        var hash = this.workingHash;
         for (int i = 0; i < source.Length; i++)
         {
             hash ^= source[i];
-            hash *= this._prime;
+            hash *= this.prime;
         }
 
-        this._workingHash = hash;
+        this.workingHash = hash;
     }
 
     /// <summary>
@@ -266,9 +266,9 @@ if (_finalized)
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(this.disposed, this);
 #else
-        if (_disposed)
+        if (disposed)
             throw new ObjectDisposedException(nameof(Fnv));
 #endif
     }

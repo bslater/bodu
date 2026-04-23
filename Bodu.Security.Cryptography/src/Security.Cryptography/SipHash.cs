@@ -80,9 +80,9 @@ public abstract class SipHash<T>
     };
 
     private static readonly int[] ValidHashSizes = { 64, 128 };
-    private int _compressionRounds;
-    private bool _disposed = false;
-    private int _finalizationRounds;
+    private int compressionRounds;
+    private bool disposed = false;
+    private int finalizationRounds;
     private ulong v0, v1, v2, v3;
 
     /// <summary>
@@ -99,8 +99,8 @@ public abstract class SipHash<T>
 
         this.KeyValue = new byte[KeySize];
         CryptoHelpers.FillWithRandomNonZeroBytes(this.KeyValue);
-        this._compressionRounds = MinCompressionRounds;
-        this._finalizationRounds = MinFinalizationRounds;
+        this.compressionRounds = MinCompressionRounds;
+        this.finalizationRounds = MinFinalizationRounds;
         this.HashSizeValue = hashSize;
         this.OnKeyChanged();
     }
@@ -155,7 +155,7 @@ public abstract class SipHash<T>
         get
         {
             this.ThrowIfDisposed();
-            return this._compressionRounds;
+            return this.compressionRounds;
         }
 
         set
@@ -164,7 +164,7 @@ public abstract class SipHash<T>
             this.ThrowIfInvalidState();
             ThrowHelper.ThrowIfLessThan(value, MinCompressionRounds);
 
-            this._compressionRounds = value;
+            this.compressionRounds = value;
         }
     }
 
@@ -186,7 +186,7 @@ public abstract class SipHash<T>
         get
         {
             this.ThrowIfDisposed();
-            return this._finalizationRounds;
+            return this.finalizationRounds;
         }
 
         set
@@ -195,7 +195,7 @@ public abstract class SipHash<T>
             this.ThrowIfInvalidState();
             ThrowHelper.ThrowIfLessThan(value, MinFinalizationRounds);
 
-            this._finalizationRounds = value;
+            this.finalizationRounds = value;
         }
     }
 
@@ -214,19 +214,19 @@ public abstract class SipHash<T>
     /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.disposed) return;
 
         if (disposing)
         {
             CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
             this.v0 = this.v1 = this.v2 = this.v3 = 0;
-            this._compressionRounds = 0;
-            this._finalizationRounds = 0;
+            this.compressionRounds = 0;
+            this.finalizationRounds = 0;
             this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
+        this.disposed = true;
         base.Dispose(disposing);
     }
 
@@ -262,7 +262,7 @@ public abstract class SipHash<T>
     {
         var b = BinaryPrimitives.ReadUInt64LittleEndian(block);
         this.v3 ^= b;
-        this.PerformSipRounds(this._compressionRounds);
+        this.PerformSipRounds(this.compressionRounds);
         this.v0 ^= b;
     }
 
@@ -279,7 +279,7 @@ public abstract class SipHash<T>
     protected override byte[] ProcessFinalBlock()
     {
         this.v2 ^= (this.HashSizeValue == 64) ? 0xffUL : 0xeeUL;
-        this.PerformSipRounds(this._finalizationRounds);
+        this.PerformSipRounds(this.finalizationRounds);
 
         byte[] hash = new byte[this.HashSizeValue / 8];
 
@@ -291,7 +291,7 @@ public abstract class SipHash<T>
         if (this.HashSizeValue == 128)
         {
             this.v1 ^= 0xdd;
-            this.PerformSipRounds(this._finalizationRounds);
+            this.PerformSipRounds(this.finalizationRounds);
 
             ulong h1 = this.v0 ^ this.v1 ^ this.v2 ^ this.v3;
             MemoryMarshal.Write(hash.AsSpan(8, 8), in h1);

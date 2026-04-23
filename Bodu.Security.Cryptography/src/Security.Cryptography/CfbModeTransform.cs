@@ -30,8 +30,8 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="../guides/cryptography/cipher-modes.html#cfb--self-synchronising-stream-cipher">CFB walk-through in the cipher-modes guide</seealso>
 public sealed class CfbModeTransform : IBlockCipherModeTransform
 {
-    private readonly IBlockCipher _cipher;
-    private readonly byte[] _currentIv;
+    private readonly IBlockCipher cipher;
+    private readonly byte[] currentIv;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="CfbModeTransform" /> class with the specified cipher and initialisation vector.
@@ -39,22 +39,22 @@ public sealed class CfbModeTransform : IBlockCipherModeTransform
     /// <param name="cipher">The block cipher over which CFB is applied.</param>
     /// <param name="iv">The initialisation vector used as the feedback register for the first block. A defensive copy is taken.</param>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
-    public CfbModeTransform(IBlockCipher _cipher, byte[] iv)
+    public CfbModeTransform(IBlockCipher cipher, byte[] iv)
     {
-        this._cipher = _cipher ?? throw new ArgumentNullException(nameof(_cipher));
+        this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
         if (iv is null)
             throw new ArgumentNullException(nameof(iv));
-        if (iv.Length != _cipher.BlockSize)
+        if (iv.Length != cipher.BlockSize)
             throw new ArgumentException(
-                $"IV length ({iv.Length}) must equal the _cipher block size ({_cipher.BlockSize}).",
+                $"IV length ({iv.Length}) must equal the cipher block size ({cipher.BlockSize}).",
                 nameof(iv));
-        this._currentIv = (byte[])iv.Clone();
+        this.currentIv = (byte[])iv.Clone();
     }
 
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        int blockSize = this._cipher.BlockSize;
+        int blockSize = this.cipher.BlockSize;
 
         ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
@@ -67,7 +67,7 @@ public sealed class CfbModeTransform : IBlockCipherModeTransform
             Span<byte> outBlock = output.Slice(offset, blockSize);
 
             // Encrypt the current IV (used as feedback input)
-            this._cipher.Encrypt(this._currentIv, feedback);
+            this.cipher.Encrypt(this.currentIv, feedback);
 
             if (encrypt)
             {
@@ -76,7 +76,7 @@ public sealed class CfbModeTransform : IBlockCipherModeTransform
                     outBlock[i] = (byte)(inBlock[i] ^ feedback[i]);
 
                 // Update IV to current ciphertext block
-                outBlock.CopyTo(this._currentIv);
+                outBlock.CopyTo(this.currentIv);
             }
             else
             {
@@ -85,7 +85,7 @@ public sealed class CfbModeTransform : IBlockCipherModeTransform
                     outBlock[i] = (byte)(inBlock[i] ^ feedback[i]);
 
                 // Update IV to current ciphertext block
-                inBlock.CopyTo(this._currentIv);
+                inBlock.CopyTo(this.currentIv);
             }
         }
 

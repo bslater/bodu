@@ -47,7 +47,7 @@ namespace Bodu.Security.Cryptography;
 /// </example>
 public sealed class MerkleTreeDiagnostics
 {
-    private readonly ConcurrentBag<MerkleTreeDiagnosticNode> _nodes = new();
+    private readonly ConcurrentBag<MerkleTreeDiagnosticNode> nodes = new();
 
     // -----------------------------------------------------------------------------------------
     // Internal recording — called by ParallelMerkleTreeHash during computation
@@ -57,7 +57,7 @@ public sealed class MerkleTreeDiagnostics
     /// <param name="index">The zero-based leaf index.</param>
     /// <param name="hash">The computed leaf hash bytes.</param>
     internal void RecordLeaf(int index, byte[] hash) =>
-        this._nodes.Add(new MerkleTreeDiagnosticNode(
+        this.nodes.Add(new MerkleTreeDiagnosticNode(
             Level: 0,
             Index: index,
             IsLeaf: true,
@@ -70,7 +70,7 @@ public sealed class MerkleTreeDiagnostics
     /// <param name="childHashes">Snapshots of the child hash values used as input.</param>
     /// <param name="hash">The resulting parent hash.</param>
     internal void RecordInternal(int level, int index, byte[][] childHashes, byte[] hash) =>
-        this._nodes.Add(new MerkleTreeDiagnosticNode(
+        this.nodes.Add(new MerkleTreeDiagnosticNode(
             Level: level,
             Index: index,
             IsLeaf: false,
@@ -88,7 +88,7 @@ public sealed class MerkleTreeDiagnostics
     ///   A list of all <see cref="MerkleTreeDiagnosticNode"/> instances recorded during the computation.
     /// </returns>
     public IReadOnlyList<MerkleTreeDiagnosticNode> GetAllNodes() =>
-        this._nodes.OrderBy(n => n.Level).ThenBy(n => n.Index).ToList();
+        this.nodes.OrderBy(n => n.Level).ThenBy(n => n.Index).ToList();
 
     /// <summary>
     /// Gets the number of distinct levels recorded in the tree, including the leaf level.
@@ -97,7 +97,7 @@ public sealed class MerkleTreeDiagnostics
     ///   The total number of levels, or zero if no nodes have been recorded.
     /// </returns>
     public int GetLevelCount() =>
-        this._nodes.Count == 0 ? 0 : this._nodes.Max(n => n.Level) + 1;
+        this.nodes.Count == 0 ? 0 : this.nodes.Max(n => n.Level) + 1;
 
     /// <summary>
     /// Returns all nodes at the specified <paramref name="level"/>, sorted by index ascending.
@@ -107,14 +107,14 @@ public sealed class MerkleTreeDiagnostics
     ///   A list of nodes at <paramref name="level"/>, or an empty list if none exist.
     /// </returns>
     public IReadOnlyList<MerkleTreeDiagnosticNode> GetLevel(int level) =>
-        this._nodes.Where(n => n.Level == level).OrderBy(n => n.Index).ToList();
+        this.nodes.Where(n => n.Level == level).OrderBy(n => n.Index).ToList();
 
     /// <summary>
     /// Gets the root node — the sole node at the highest recorded level — or
     /// <see langword="null"/> if no nodes have been recorded.
     /// </summary>
     public MerkleTreeDiagnosticNode? Root =>
-        this._nodes.Count == 0 ? null : this._nodes.MaxBy(n => n.Level);
+        this.nodes.Count == 0 ? null : this.nodes.MaxBy(n => n.Level);
 
     // -----------------------------------------------------------------------------------------
     // Validation
@@ -154,7 +154,7 @@ public sealed class MerkleTreeDiagnostics
 
         var issues = new List<string>();
 
-        foreach (var node in this._nodes.Where(n => !n.IsLeaf).OrderBy(n => n.Level).ThenBy(n => n.Index))
+        foreach (var node in this.nodes.Where(n => !n.IsLeaf).OrderBy(n => n.Level).ThenBy(n => n.Index))
         {
             var recomputed = CombineHashes(node.ChildHashes, algorithmFactory);
             if (!recomputed.SequenceEqual(node.Hash))
@@ -216,7 +216,7 @@ public sealed class MerkleTreeDiagnostics
         }
         else
         {
-            writer.WriteLine("  (no _nodes recorded)");
+            writer.WriteLine("  (no nodes recorded)");
         }
 
         writer.WriteLine(heavy);

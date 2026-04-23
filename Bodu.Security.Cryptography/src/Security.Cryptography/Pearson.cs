@@ -51,21 +51,21 @@ public sealed partial class Pearson
     /// </summary>
     public const int MinHashSize = 8;
 
-    private bool _disposed = false;
-    private bool _isFirstByte;
-    private byte[] _permutationTable;
-    private PearsonTableType _tableType;
-    private byte[] _workingHash;
+    private bool disposed = false;
+    private bool isFirstByte;
+    private byte[] permutationTable;
+    private PearsonTableType tableType;
+    private byte[] workingHash;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="Pearson" /> class with a default 8-bit hash size.
     /// </summary>
     public Pearson()
     {
-        this._permutationTable = GetPermutationTable(PearsonTableType.Pearson);
+        this.permutationTable = GetPermutationTable(PearsonTableType.Pearson);
         this.HashSizeValue = MinHashSize;
-        this._workingHash = new byte[this.HashSizeValue / 8];
-        this._isFirstByte = true;
+        this.workingHash = new byte[this.HashSizeValue / 8];
+        this.isFirstByte = true;
     }
 
     /// <summary>
@@ -122,7 +122,7 @@ public sealed partial class Pearson
 #if !NET6_0_OR_GREATER
 
     // Required for .NET Standard 2.0 or older frameworks
-    private bool _finalized;
+    private bool finalized;
 #endif
 
     /// <inheritdoc />
@@ -168,7 +168,7 @@ public sealed partial class Pearson
         get
         {
             this.ThrowIfDisposed();
-            return this._permutationTable.ToArray();
+            return this.permutationTable.ToArray();
         }
 
         set
@@ -178,8 +178,8 @@ public sealed partial class Pearson
             if (value == null || value.Length != 256 || value.Distinct().Count() != 256)
                 throw new ArgumentException("Table must contain 256 unique bytes.", nameof(value));
 
-            this._permutationTable = value.ToArray();
-            this._tableType = PearsonTableType.UserDefined;
+            this.permutationTable = value.ToArray();
+            this.tableType = PearsonTableType.UserDefined;
         }
     }
 
@@ -206,7 +206,7 @@ public sealed partial class Pearson
         get
         {
             this.ThrowIfDisposed();
-            return this._tableType;
+            return this.tableType;
         }
 
         set
@@ -214,16 +214,16 @@ public sealed partial class Pearson
             this.ThrowIfDisposed();
             this.ThrowIfInvalidState();
 
-            this._tableType = value;
+            this.tableType = value;
 
             if (value != PearsonTableType.UserDefined)
             {
-                this._permutationTable = GetPermutationTable(value);
+                this.permutationTable = GetPermutationTable(value);
             }
             else
             {
                 // Reset the table to an empty placeholder until explicitly set by the user
-                this._permutationTable = null!;
+                this.permutationTable = null!;
             }
         }
     }
@@ -234,10 +234,10 @@ public sealed partial class Pearson
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
         State = 0;
-        _finalized = false;
+        finalized = false;
 #endif
-        this._workingHash = new byte[this.HashSizeValue / 8];
-        this._isFirstByte = true;
+        this.workingHash = new byte[this.HashSizeValue / 8];
+        this.isFirstByte = true;
     }
 
     /// <summary>
@@ -249,19 +249,19 @@ public sealed partial class Pearson
     /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.disposed) return;
 
         if (disposing)
         {
             CryptoHelpers.ClearAndNullify(ref this.HashValue);
-            CryptoHelpers.ClearAndNullify(ref this._permutationTable!);
-            CryptoHelpers.ClearAndNullify(ref this._workingHash!);
+            CryptoHelpers.ClearAndNullify(ref this.permutationTable!);
+            CryptoHelpers.ClearAndNullify(ref this.workingHash!);
 
-            this._isFirstByte = false;
+            this.isFirstByte = false;
             this.HashSizeValue = default;
         }
 
-        this._disposed = true;
+        this.disposed = true;
         base.Dispose(disposing);
     }
 
@@ -294,7 +294,7 @@ public sealed partial class Pearson
 ThrowHelper.ThrowIfLessThan(ibStart, 0);
 ThrowHelper.ThrowIfLessThan(cbSize, 0);
 ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
-if (_finalized)
+if (finalized)
     throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
@@ -316,17 +316,17 @@ if (_finalized)
         this.ThrowIfDisposed();
         this.ThrowIfTableNotConfigured();
 
-        ReadOnlySpan<byte> t = this._permutationTable.AsSpan();
-        var v = this._workingHash;
+        ReadOnlySpan<byte> t = this.permutationTable.AsSpan();
+        var v = this.workingHash;
         int offset = 0;
 
-        if (this._isFirstByte && source.Length > 0)
+        if (this.isFirstByte && source.Length > 0)
         {
             byte b = source[0];
             for (int j = 0; j < v.Length; j++)
                 v[j] = t[(b + j) & 0xFF];
 
-            this._isFirstByte = false;
+            this.isFirstByte = false;
             offset = 1;
         }
 
@@ -337,7 +337,7 @@ if (_finalized)
                 v[j] = t[v[j] ^ b];
         }
 
-        this._workingHash = v;
+        this.workingHash = v;
     }
 
     /// <summary>
@@ -351,13 +351,13 @@ if (_finalized)
         this.ThrowIfTableNotConfigured();
 
 #if !NET6_0_OR_GREATER
-        if (_finalized)
+        if (finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 
-        _finalized = true;
+        finalized = true;
         State = 2;
 #endif
-        return this._workingHash.ToArray();
+        return this.workingHash.ToArray();
     }
 
     /// <summary>
@@ -392,9 +392,9 @@ if (_finalized)
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(this.disposed, this);
 #else
-        if (_disposed)
+        if (disposed)
             throw new ObjectDisposedException(nameof(Pearson));
 #endif
     }
@@ -428,7 +428,7 @@ if (_finalized)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfTableNotConfigured()
     {
-        if (this._permutationTable == null || this._permutationTable.Length != 256)
+        if (this.permutationTable == null || this.permutationTable.Length != 256)
         {
             throw new CryptographicUnexpectedOperationException(
                 $"A valid 256-byte permutation table must be set before hashing can proceed. " +

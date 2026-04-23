@@ -37,8 +37,8 @@ public abstract class Adler<T>
     /// </summary>
     protected T PartB;
 
-    private readonly T _modulo;
-    private bool _disposed = false;
+    private readonly T modulo;
+    private bool disposed = false;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="Adler{T}" /> class with the specified modulus.
@@ -47,9 +47,9 @@ public abstract class Adler<T>
     /// <exception cref="NotSupportedException">
     /// <typeparamref name="T" /> is not one of the supported accumulator types (<see cref="uint" /> or <see cref="ulong" />).
     /// </exception>
-    protected Adler(T _modulo)
+    protected Adler(T modulo)
     {
-        this._modulo = _modulo;
+        this.modulo = modulo;
         this.HashSizeValue = typeof(T) switch
         {
             var t when t == typeof(uint) => 32,
@@ -69,7 +69,7 @@ public abstract class Adler<T>
 #if !NET6_0_OR_GREATER
 
     // Required for .NET Standard 2.0 or older frameworks
-    private bool _finalized;
+    private bool finalized;
 #endif
 
     /// <inheritdoc />
@@ -77,7 +77,7 @@ public abstract class Adler<T>
     {
 #if !NET6_0_OR_GREATER
         State = 0;
-        _finalized = false;
+        finalized = false;
 #endif
         this.ThrowIfDisposed();
         this.PartA = T.One;
@@ -92,7 +92,7 @@ public abstract class Adler<T>
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.disposed) return;
 
         if (disposing)
         {
@@ -102,7 +102,7 @@ public abstract class Adler<T>
             this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
+        this.disposed = true;
         base.Dispose(disposing);
     }
 
@@ -132,7 +132,7 @@ public abstract class Adler<T>
         ThrowHelper.ThrowIfLessThan(ibStart, 0);
         ThrowHelper.ThrowIfLessThan(cbSize, 0);
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
-        if (_finalized)
+        if (finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
@@ -181,8 +181,8 @@ public abstract class Adler<T>
                 // Move index forward to avoid infinite loop, handling remaining non-vectorized bytes later
                 index = chunkEnd;
 
-                pA %= this._modulo;
-                pB %= this._modulo;
+                pA %= this.modulo;
+                pB %= this.modulo;
             }
         }
 
@@ -194,8 +194,8 @@ public abstract class Adler<T>
 
             if ((index % NMAX) == 0)
             {
-                pA %= this._modulo;
-                pB %= this._modulo;
+                pA %= this.modulo;
+                pB %= this.modulo;
             }
         }
 
@@ -213,9 +213,9 @@ public abstract class Adler<T>
     protected void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        ObjectDisposedException.ThrowIf(this.disposed, this);
 #else
-        if (_disposed)
+        if (disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
     }
