@@ -1,0 +1,221 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="CityHash.128.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using Bodu.Extensions;
+using System;
+using System.Buffers.Binary;
+using System.Runtime.CompilerServices;
+
+namespace Bodu.IO.Hashing;
+
+/// <summary>
+/// Computes a 128-bit (16-byte) non-cryptographic hash using the <c>CityHash128</c> variant by Google. This
+/// class cannot be inherited.
+/// </summary>
+/// <remarks>
+/// <para>
+/// <see cref="CityHash128" /> chooses its initial 128-bit seed from the first 16 bytes of input (or from the
+/// fixed constants <c>K0</c>, <c>K1</c> for shorter inputs), then delegates to <c>CityHash128WithSeed</c>.
+/// For inputs shorter than 128 bytes, <c>CityMurmur</c> folds the message into the seeded accumulator; for
+/// longer inputs, a main loop consumes 128-byte blocks using two pairs of seeded weak-hash accumulators
+/// before a tail pass over the remaining 0–127 bytes.
+/// </para>
+/// <para>
+/// The digest is emitted as two consecutive little-endian 64-bit words (<c>First</c> followed by
+/// <c>Second</c>), matching the encoding convention used by <see cref="CityHash64" />.
+/// </para>
+/// <note type="important">
+/// This algorithm is <b>not</b> cryptographically secure and must <b>not</b> be used for password hashing,
+/// digital signatures, or any application requiring adversarial collision resistance.
+/// </note>
+/// </remarks>
+public sealed class CityHash128
+    : CityHash<CityHash128>
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CityHash128" /> class with a fixed 128-bit (16-byte)
+    /// hash output size.
+    /// </summary>
+    public CityHash128()
+        : base(128)
+    {
+    }
+
+    /// <summary>
+    /// Computes the 128-bit CityHash of the provided input span, selecting the optimal mixing path based on
+    /// input length.
+    /// </summary>
+    /// <param name="source">The input bytes to hash.</param>
+    /// <returns>A 16-byte array containing the little-endian encoded 128-bit hash value.</returns>
+    protected override byte[] ComputeHashCore(ReadOnlySpan<byte> source)
+    {
+        (ulong first, ulong second) = CityHash128Core(source);
+
+        byte[] buffer = new byte[16];
+        BinaryPrimitives.WriteUInt64LittleEndian(buffer.AsSpan(0, 8), first);
+        BinaryPrimitives.WriteUInt64LittleEndian(buffer.AsSpan(8, 8), second);
+        return buffer;
+    }
+
+    /// <summary>
+    /// Selects a 128-bit seed for <see cref="CityHash128WithSeed(ReadOnlySpan{byte}, ulong, ulong)" /> based
+    /// on the first 16 bytes of the input, or on fixed constants when the input is shorter.
+    /// </summary>
+    /// <param name="s">The complete input span.</param>
+    /// <returns>The 128-bit hash as a <c>(First, Second)</c> tuple.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static (ulong First, ulong Second) CityHash128Core(ReadOnlySpan<byte> s)
+    {
+        int len = s.Length;
+        if (len >= 16)
+        {
+            ulong low = BinaryPrimitives.ReadUInt64LittleEndian(s) ^ K3;
+            ulong high = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(8));
+            return CityHash128WithSeed(s.Slice(16), low, high);
+        }
+
+        if (len >= 8)
+        {
+            ulong low = BinaryPrimitives.ReadUInt64LittleEndian(s) ^ (ulong)len * K0;
+            ulong high = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 8)) ^ K1;
+            return CityHash128WithSeed(ReadOnlySpan<byte>.Empty, low, high);
+        }
+
+        return CityHash128WithSeed(s, K0, K1);
+    }
+
+    /// <summary>
+    /// Computes <c>CityHash128WithSeed</c>: for short inputs (&lt; 128 bytes) it delegates to
+    /// <see cref="CityMurmur(ReadOnlySpan{byte}, ulong, ulong)" />; for longer inputs it runs the iterative
+    /// main loop over 128-byte blocks followed by a tail reduction.
+    /// </summary>
+    /// <param name="source">The input span to hash.</param>
+    /// <param name="seedLow">The low 64 bits of the seed.</param>
+    /// <param name="seedHigh">The high 64 bits of the seed.</param>
+    /// <returns>The 128-bit hash as a <c>(First, Second)</c> tuple.</returns>
+    private static (ulong First, ulong Second) CityHash128WithSeed(
+        ReadOnlySpan<byte> source, ulong seedLow, ulong seedHigh)
+    {
+        if (source.Length < 128)
+            return CityMurmur(source, seedLow, seedHigh);
+
+        // Keep 56 bytes of running state across the main loop.
+        ulong x = seedLow;
+        ulong y = seedHigh;
+        ulong z = (ulong)source.Length * K1;
+
+        ulong v0 = (y ^ K1).RotateBitsRightUnchecked(49) * K1 + BinaryPrimitives.ReadUInt64LittleEndian(source);
+        ulong v1 = v0.RotateBitsRightUnchecked(42) * K1 + BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(8));
+        ulong w0 = (y + z).RotateBitsRightUnchecked(35) * K1 + x;
+        ulong w1 = (x + BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(88))).RotateBitsRightUnchecked(53) * K1;
+
+        int offset = 0;
+        int remaining = source.Length;
+
+        do
+        {
+            // Two unrolled iterations per 128-byte block, matching the Google reference.
+            x = (x + y + v0 + BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(offset + 8))).RotateBitsRightUnchecked(37) * K1;
+            y = (y + v1 + BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(offset + 48))).RotateBitsRightUnchecked(42) * K1;
+            x ^= w1;
+            y += v0 + BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(offset + 40));
+            z = (z + w0).RotateBitsRightUnchecked(33) * K1;
+            (v0, v1) = WeakHashLen32WithSeeds(source.Slice(offset), v1 * K1, x + w0);
+            (w0, w1) = WeakHashLen32WithSeeds(source.Slice(offset + 32), z + w1, y + BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(offset + 16)));
+            (z, x) = (x, z);
+            offset += 64;
+
+            x = (x + y + v0 + BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(offset + 8))).RotateBitsRightUnchecked(37) * K1;
+            y = (y + v1 + BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(offset + 48))).RotateBitsRightUnchecked(42) * K1;
+            x ^= w1;
+            y += v0 + BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(offset + 40));
+            z = (z + w0).RotateBitsRightUnchecked(33) * K1;
+            (v0, v1) = WeakHashLen32WithSeeds(source.Slice(offset), v1 * K1, x + w0);
+            (w0, w1) = WeakHashLen32WithSeeds(source.Slice(offset + 32), z + w1, y + BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(offset + 16)));
+            (z, x) = (x, z);
+            offset += 64;
+
+            remaining -= 128;
+        }
+        while (remaining >= 128);
+
+        x += (v0 + z).RotateBitsRightUnchecked(49) * K0;
+        y = y * K0 + w1.RotateBitsRightUnchecked(37);
+        z = z * K0 + w0.RotateBitsRightUnchecked(27);
+        w0 *= 9;
+        v0 *= K0;
+
+        // Tail: hash up to four 32-byte chunks taken from the end of the input.
+        int tailOffset = offset;
+        int tailEnd = offset + remaining;
+        for (int tailDone = 0; tailDone < remaining;)
+        {
+            tailDone += 32;
+            y = (x + y).RotateBitsRightUnchecked(42) * K0 + v1;
+            w0 += BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(tailEnd - tailDone + 16));
+            x = x * K0 + w0;
+            z += w1 + BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(tailEnd - tailDone));
+            w1 += v0;
+            (v0, v1) = WeakHashLen32WithSeeds(source.Slice(tailEnd - tailDone), v0 + z, v1);
+            v0 *= K0;
+        }
+
+        x = HashLen16(x, v0);
+        y = HashLen16(y + z, w0);
+        return (HashLen16(x + v1, w1) + y, HashLen16(x + w1, y + v1));
+    }
+
+    /// <summary>
+    /// Computes a 128-bit hash of a &lt; 128-byte input by folding it into the 128-bit seed using a
+    /// Murmur-style mixing loop. This is the short-input specialisation invoked by
+    /// <see cref="CityHash128WithSeed(ReadOnlySpan{byte}, ulong, ulong)" />.
+    /// </summary>
+    /// <param name="source">The input span. Length must be less than 128 bytes.</param>
+    /// <param name="seedLow">The low 64 bits of the seed.</param>
+    /// <param name="seedHigh">The high 64 bits of the seed.</param>
+    /// <returns>The 128-bit hash as a <c>(First, Second)</c> tuple.</returns>
+    private static (ulong First, ulong Second) CityMurmur(
+        ReadOnlySpan<byte> source, ulong seedLow, ulong seedHigh)
+    {
+        ulong a = seedLow;
+        ulong b = seedHigh;
+        ulong c = 0UL;
+        ulong d = 0UL;
+        int len = source.Length;
+        int l = len - 16;
+
+        if (l <= 0)
+        {
+            a = ShiftMix(a * K1) * K1;
+            c = b * K1 + Hash64Len0to16(source);
+            d = ShiftMix(a + (len >= 8 ? BinaryPrimitives.ReadUInt64LittleEndian(source) : c));
+        }
+        else
+        {
+            c = HashLen16(BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(len - 8)) + K1, a);
+            d = HashLen16(b + (ulong)len, c + BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(len - 16)));
+            a += d;
+
+            int offset = 0;
+            while (l > 0)
+            {
+                a ^= ShiftMix(BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(offset)) * K1) * K1;
+                a *= K1;
+                b ^= a;
+                c ^= ShiftMix(BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(offset + 8)) * K1) * K1;
+                c *= K1;
+                d ^= c;
+
+                offset += 16;
+                l -= 16;
+            }
+        }
+
+        a = HashLen16(a, c);
+        b = HashLen16(d, b);
+        return (a ^ b, HashLen16(b, a));
+    }
+}

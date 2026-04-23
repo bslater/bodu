@@ -93,7 +93,7 @@ ulong digest = BitConverter.ToUInt64(sip.ComputeHash(data));
 
 `SipHash64` derives from `System.Security.Cryptography.HashAlgorithm`, so it drops into any API that expects a standard .NET hash. It is keyed and collision-resistant, which makes it suitable for protecting hash tables against collision-DoS attacks.
 
-See also: <xref:Bodu.Security.Cryptography.Threefish256>, <xref:Bodu.Security.Cryptography.Tiger>, <xref:Bodu.Security.Cryptography.MerkleTreeHash>, <xref:Bodu.Security.Cryptography.Fnv1a64>.
+See also: <xref:Bodu.Security.Cryptography.Threefish256>, <xref:Bodu.Security.Cryptography.Tiger>, <xref:Bodu.Security.Cryptography.MerkleTreeHash>, <xref:Bodu.IO.Hashing.Fnv1a64>.
 
 ### Bodu.Globalization.Calendar — resolve Easter Sunday
 

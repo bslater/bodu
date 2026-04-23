@@ -4,15 +4,15 @@ title: Using hashes and checksums
 
 # Using hashes and checksums
 
-**Bodu.Security.Cryptography** ships a broad family of hashes that plug into the standard <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contract: keyed hashes (SipHash), cryptographic digests (Tiger), Merkle-tree hashing, and the classic non-cryptographic families that predate the BCL's own non-cryptographic surface (Adler, FNV, CityHash, and the Bernstein / BKDR / SDBM / JSHash / Elf64 / ApHash / Pjw32 / Pearson string hashes).
+**Bodu.Security.Cryptography** ships the library's keyed hashes (SipHash), one-time authenticators (Poly1305), cryptographic digests (Tiger, Snefru, CubeHash), and Merkle-tree hashing. All of them plug into the standard <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contract.
 
-> **Looking for CRC or Fletcher?** Those moved to the **Bodu.IO.Hashing** package, which builds on <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>. See the [Bodu.IO.Hashing guides](../io-hashing/).
+> **Looking for CRC, Fletcher, Adler, FNV, CityHash, Pearson, Bernstein, BKDR, SDBM, JSHash, Elf64, ApHash, or Pjw32?** Those non-cryptographic families live in the companion <xref:Bodu.IO.Hashing> package, built on <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>. See the [Bodu.IO.Hashing guides](../io-hashing/).
 
 ## Pick the right tool
 
 | If you need… | Use | Why |
 |---|---|---|
-| A fast non-cryptographic fingerprint for hash tables, bucketing, caches | <xref:Bodu.Security.Cryptography.Adler32>, <xref:Bodu.Security.Cryptography.Fnv1a32>, <xref:Bodu.Security.Cryptography.Fnv1a64>, <xref:Bodu.Security.Cryptography.CityHash64> | Cheap, well-spread, **not** cryptographic. |
+| A fast non-cryptographic fingerprint for hash tables, bucketing, caches | <xref:Bodu.IO.Hashing.Adler32>, <xref:Bodu.IO.Hashing.Fnv1a32>, <xref:Bodu.IO.Hashing.Fnv1a64>, <xref:Bodu.IO.Hashing.CityHash64> | Cheap, well-spread, **not** cryptographic. |
 | A hash-table key or short fingerprint, resistant to collision-DoS | <xref:Bodu.Security.Cryptography.SipHash64>, <xref:Bodu.Security.Cryptography.SipHash128> | Keyed, collision-resistant for short inputs. |
 | A cryptographic digest for signatures, fingerprints, or content addressing | <xref:Bodu.Security.Cryptography.Tiger>, or <xref:System.Security.Cryptography.SHA256?displayProperty=nameWithType> (BCL) | Collision-resistant against active attackers. |
 | A rolling integrity check over a long stream with partial re-verification | <xref:Bodu.Security.Cryptography.MerkleTreeHash>, <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> | Subtree recomputation without rehashing the whole input. |
@@ -20,20 +20,21 @@ title: Using hashes and checksums
 
 ## Pattern 1 — a classic non-cryptographic fingerprint
 
-Adler, FNV, and CityHash all derive from <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>, so they drop into any API that accepts a standard .NET hash.
+Adler, FNV, and CityHash all derive from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> (via **Bodu.IO.Hashing**), so they drop into any API that accepts a standard .NET non-cryptographic hash.
 
 ```csharp
 using System.Text;
-using Bodu.Security.Cryptography;
+using Bodu.IO.Hashing;
 
 byte[] data = Encoding.UTF8.GetBytes("the quick brown fox");
 
-using var fnv = new Fnv1a64();
-byte[] digest = fnv.ComputeHash(data);
+var fnv = new Fnv1a64();
+fnv.Append(data);
+byte[] digest = fnv.GetCurrentHash();
 string hex    = Convert.ToHexString(digest);   // 8-byte value, 16 hex characters
 ```
 
-The same shape works for `Adler32`, `Adler64`, `Fnv1a32`, `Fnv1a64`, `CityHash32`, `CityHash64`, and the classic string hashes listed above.
+The same shape works for `Adler32`, `Adler64`, `Fletcher16`, `Fletcher32`, `Fletcher64`, `Fnv1a32`, `Fnv1a64`, `CityHash32`, `CityHash64`, `Crc`, and the classic string hashes (`Bernstein`, `BKDR`, `SDBM`, `JSHash`, `Elf64`, `ApHash`, `Pjw32`, `Pearson`). They all derive from `NonCryptographicHashAlgorithm`, so any API that accepts that base accepts them.
 
 **What they're not.** These are non-cryptographic — they are error-detection and distribution tools, not authentication tools. An attacker who can freely modify a message can trivially forge the digest. Pair them with a signature or a MAC if you need integrity against an adversary.
 
@@ -89,12 +90,28 @@ A direct `SequenceEqual` comparison leaks timing information to an observer and 
 
 ## Pattern 5 — streaming hash over a file
 
-Every `HashAlgorithm` accepts a `Stream`, which lets you fingerprint a file without loading it into memory:
+For non-cryptographic streaming, `NonCryptographicHashAlgorithm.Append(Stream)` (or `AppendAsync`) consumes the stream without loading it into memory:
 
 ```csharp
-using var hash = new Fnv1a64();
+using System.IO.Hashing;
+using Bodu.IO.Hashing;
+
+var hash = new Fnv1a64();
+using (var stream = File.OpenRead("archive.bin"))
+    hash.Append(stream);
+
+byte[] fingerprint = hash.GetCurrentHash();
+```
+
+For a cryptographic digest the `HashAlgorithm` base exposes `ComputeHash(Stream)`:
+
+```csharp
+using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+using var tiger = new Tiger();
 using var stream = File.OpenRead("archive.bin");
-byte[] fingerprint = hash.ComputeHash(stream);
+byte[] digest = tiger.ComputeHash(stream);
 ```
 
 For a larger file where you want partial verifiability — "the first megabyte's digest is X; the second megabyte's digest is Y" — use a Merkle tree instead (next section).
@@ -124,5 +141,5 @@ For large inputs where you want to overlap leaf hashing with tree reduction, use
 
 - [Encryption basics](encryption-basics.md) — symmetric encryption in this library.
 - [Cipher block modes](cipher-modes.md) — ECB / CBC / CFB / OFB / CTR with worked examples.
-- [Bodu.IO.Hashing guides](../io-hashing/) — CRC and Fletcher checksums on `System.IO.Hashing.NonCryptographicHashAlgorithm`.
+- [Bodu.IO.Hashing guides](../io-hashing/) — CRC, Fletcher, Adler, FNV, CityHash, and the classic string hashes on `System.IO.Hashing.NonCryptographicHashAlgorithm`.
 - [MerkleTreeHash class doc](../../api/Bodu.Security.Cryptography.MerkleTreeHash.html) · [ParallelMerkleTreeHash class doc](../../api/Bodu.Security.Cryptography.ParallelMerkleTreeHash.html).
