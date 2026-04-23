@@ -50,7 +50,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         byte[] destination = new byte[algorithm.HashLengthInBytes - 1];
         if (destination.Length == 0)
         {
-            Assert.Inconclusive($"Hash length for variant '{variant}' is too small to test undersized destination.");
+            Assert.Inconclusive($"Hash length for variant '{variant}' ({algorithm.HashLengthInBytes})is too small to test undersized destination.");
             return;
         }
 
