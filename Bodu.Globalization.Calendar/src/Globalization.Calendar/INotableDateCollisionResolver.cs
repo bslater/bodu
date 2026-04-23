@@ -6,6 +6,7 @@
 
 namespace Bodu.Globalization.Calendar;
 
+
 /// <summary>
 /// Resolves the canonical ordering, deduplication, or suppression of multiple <see cref="NotableDate" /> instances that fall on the
 /// same day.
@@ -27,24 +28,4 @@ public interface INotableDateCollisionResolver
 	/// <param name="overlapping">The notable dates resolved for this day. The supplied collection is never empty.</param>
 	/// <returns>The ordered notable dates to expose to consumers.</returns>
 	IReadOnlyList<NotableDate> Resolve(DateTime date, IReadOnlyList<NotableDate> overlapping);
-}
-
-/// <summary>
-/// Provides the default <see cref="INotableDateCollisionResolver" /> implementation. Sorts overlapping dates by category, falls back to
-/// alphabetic name, and removes exact duplicates.
-/// </summary>
-public sealed class DefaultNotableDateCollisionResolver : INotableDateCollisionResolver
-{
-	/// <inheritdoc />
-	public IReadOnlyList<NotableDate> Resolve(DateTime date, IReadOnlyList<NotableDate> overlapping)
-	{
-		if (overlapping is null || overlapping.Count == 0)
-			return Array.Empty<NotableDate>();
-
-		return overlapping
-			.Distinct()
-			.OrderBy(d => (int)d.Category)
-			.ThenBy(d => d.Name, StringComparer.OrdinalIgnoreCase)
-			.ToList();
-	}
 }
