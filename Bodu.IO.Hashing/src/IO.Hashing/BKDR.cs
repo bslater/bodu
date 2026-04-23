@@ -6,6 +6,8 @@
 
 using System.Buffers.Binary;
 using System.IO.Hashing;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 
 namespace Bodu.IO.Hashing;
 
@@ -17,7 +19,7 @@ namespace Bodu.IO.Hashing;
 /// <para>
 /// For each input byte <c>c</c> the hash is updated as <c>hash = (hash * seed) + c</c>. The <see cref="Seed" />
 /// multiplier must be one of the supported values (31, 131, 1313, 13131, 131313, 1313131, 13131313, 131313131,
-/// 1313131313).
+/// 1313131313) and can be reassigned only while the algorithm has not yet consumed any input.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used
 /// for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -31,14 +33,17 @@ public sealed class BKDR
     public const uint DefaultSeed = 131U;
 
     private const int HashLength = 4;
+    private const string ReconfigurationNotAllowed =
+        "The algorithm is already in use and cannot be reconfigured after computation has started.";
 
     private static readonly uint[] ValidSeedValues =
     {
         31U, 131U, 1313U, 13131U, 131313U, 1313131U, 13131313U, 131313131U, 1313131313U,
     };
 
-    private readonly uint _seed;
+    private uint _seed;
     private uint _workingHash;
+    private bool _started;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BKDR" /> class with the default seed of <c>131</c>.
@@ -61,25 +66,41 @@ public sealed class BKDR
     public BKDR(uint seed)
         : base(HashLength)
     {
-        if (Array.IndexOf(ValidSeedValues, seed) == -1)
-        {
-            throw new ArgumentException(
-                $"The value {seed} is not a supported BKDR seed.",
-                nameof(seed));
-        }
-
+        ValidateSeed(seed);
         this._seed = seed;
         this._workingHash = seed;
     }
 
     /// <summary>
-    /// Gets the seed multiplier applied on each byte update.
+    /// Gets or sets the seed multiplier applied on each byte update.
     /// </summary>
-    public uint Seed => this._seed;
+    /// <value>The seed value. Must be one of the supported seed constants.</value>
+    /// <exception cref="ArgumentException">
+    /// The assigned value is not one of the supported seed values.
+    /// </exception>
+    /// <exception cref="CryptographicUnexpectedOperationException">
+    /// The algorithm has already consumed input and cannot be reconfigured until <see cref="Reset" /> is
+    /// invoked.
+    /// </exception>
+    public uint Seed
+    {
+        get => this._seed;
+
+        set
+        {
+            this.ThrowIfInvalidState();
+            ValidateSeed(value);
+            this._seed = value;
+            this._workingHash = value;
+        }
+    }
 
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
+        if (source.Length == 0)
+            return;
+
         uint v = this._workingHash;
         uint seed = this._seed;
         foreach (byte b in source)
@@ -88,12 +109,45 @@ public sealed class BKDR
         }
 
         this._workingHash = v;
+        this._started = true;
     }
 
     /// <inheritdoc />
-    public override void Reset() => this._workingHash = this._seed;
+    public override void Reset()
+    {
+        this._workingHash = this._seed;
+        this._started = false;
+    }
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
         BinaryPrimitives.WriteUInt32BigEndian(destination, this._workingHash);
+
+    private static void ValidateSeed(uint value)
+    {
+        if (Array.IndexOf(ValidSeedValues, value) == -1)
+        {
+            throw new ArgumentException(
+                $"The value {value} is not a supported BKDR seed.",
+                nameof(value));
+        }
+    }
+
+    /// <summary>
+    /// Throws a <see cref="CryptographicUnexpectedOperationException" /> if the hash algorithm has already
+    /// consumed input, indicating that the instance is in a non-configurable state.
+    /// </summary>
+    /// <remarks>
+    /// Prevents reconfiguration of the seed once hashing has begun. The guard is cleared by
+    /// <see cref="Reset" />.
+    /// </remarks>
+    /// <exception cref="CryptographicUnexpectedOperationException">
+    /// Thrown when an attempt is made to modify the algorithm after it has begun consuming input.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ThrowIfInvalidState()
+    {
+        if (this._started)
+            throw new CryptographicUnexpectedOperationException(ReconfigurationNotAllowed);
+    }
 }
