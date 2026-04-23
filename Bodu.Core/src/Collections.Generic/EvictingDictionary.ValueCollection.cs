@@ -17,8 +17,9 @@ public partial class EvictingDictionary<TKey, TValue>
     /// </summary>
     /// <remarks>
     /// The collection reflects subsequent mutations to the underlying dictionary. Enumeration order follows the current
-    /// <see cref="EvictingDictionaryPolicy"/>. The collection is read-only; <see cref="Add"/>, <see cref="Clear"/>, and
-    /// <see cref="Remove"/> throw <see cref="NotSupportedException"/>.
+    /// <see cref="EvictingDictionaryPolicy"/>. The collection is read-only;
+    /// <see cref="ICollection{T}.Add"/>, <see cref="ICollection{T}.Clear"/>, and
+    /// <see cref="ICollection{T}.Remove"/> throw <see cref="NotSupportedException"/>.
     /// </remarks>
     public sealed class ValueCollection :
         ICollection<TValue>,

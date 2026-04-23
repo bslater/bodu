@@ -69,7 +69,7 @@ public static partial class IEnumerableExtensions
         /// Disposes internal state and releases the source enumerator and cached items.
         /// </summary>
         /// <remarks>
-        /// Field resets are performed via <see cref="Volatile.Write"/> to ensure that concurrent enumerators observing these fields
+        /// Field resets are performed via <see cref="Volatile.Write{T}(ref T, T)"/> to ensure that concurrent enumerators observing these fields
         /// always see the post-dispose state, preventing use of freed resources on weakly-ordered architectures.
         /// </remarks>
         public void Dispose()
