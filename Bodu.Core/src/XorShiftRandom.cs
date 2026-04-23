@@ -98,6 +98,7 @@ public sealed class XorShiftRandom :
     /// <summary>
     /// Generates the next 32-bit random number using XOR-shift algorithm.
     /// </summary>
+    /// <returns>A pseudo-random <see cref="uint" /> drawn from the current generator state.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private uint NextUInt32()
     {

@@ -778,6 +778,10 @@ public static partial class DateTimeExtensions
     /// <summary>
     /// Returns the tick count that represents the last day of week in the current month of the <see cref="System.DateTime"/>.
     /// </summary>
+    /// <param name="ticks">The tick count at the last day of the month.</param>
+    /// <param name="dayOfWeek">The <see cref="DayOfWeek" /> to locate.</param>
+    /// <returns>The tick count at midnight of the last <paramref name="dayOfWeek" /> in the month
+    /// containing <paramref name="ticks" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static long GetLastDayOfWeekInMonth(long ticks, DayOfWeek dayOfWeek)
     {
@@ -788,6 +792,10 @@ public static partial class DateTimeExtensions
     /// <summary>
     /// Returns the tick count that represents the last day of week in the current month of the <see cref="System.DateTime"/>.
     /// </summary>
+    /// <param name="dateTime">The date whose month supplies the search range.</param>
+    /// <param name="dayOfWeek">The <see cref="DayOfWeek" /> to locate.</param>
+    /// <returns>The tick count at midnight of the last <paramref name="dayOfWeek" /> in
+    /// <paramref name="dateTime" />'s month.</returns>
     private static long GetLastDayOfWeekInMonthAsTicks(DateTime dateTime, DayOfWeek dayOfWeek) => DateTimeExtensions.GetLastDayOfWeekInMonth(DateTimeExtensions.GetLastDayOfMonthTicks(dateTime), dayOfWeek);
 
     /// <summary>
