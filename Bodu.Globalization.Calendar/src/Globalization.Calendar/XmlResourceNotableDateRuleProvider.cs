@@ -164,28 +164,15 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 		new(rule.Name, rule.TerritoryCode);
 
     /// <summary>
-    /// Returns a copy of <paramref name="source" /> with any field overrides from
-    /// <paramref name="directive" /> applied (name, territory, observance adjustment, etc.).
+    /// Returns a copy of <paramref name="source" /> with every override from <paramref name="directive" /> applied via
+    /// <see cref="NotableDateRuleMerger.Apply" />. The merge algorithm lives in a dedicated helper so it can be exercised in
+    /// isolation without bootstrapping an assembly loader.
     /// </summary>
     /// <param name="source">The base rule being re-used.</param>
     /// <param name="directive">The &lt;Use&gt; directive specifying overrides.</param>
     /// <returns>The overridden rule.</returns>
-	private static NotableDateRule ApplyOverrides(NotableDateRule source, NotableDateRuleUseDirective directive)
-	{
-		return source with
-		{
-			Name = string.IsNullOrWhiteSpace(directive.LocalName) ? source.Name : directive.LocalName!,
-			Category = directive.Category ?? source.Category,
-			TerritoryCode = directive.TerritoryCode ?? source.TerritoryCode,
-			IsNonWorkingDay = directive.IsNonWorkingDay ?? source.IsNonWorkingDay,
-			FirstYear = directive.FirstYear ?? source.FirstYear,
-			LastYear = directive.LastYear ?? source.LastYear,
-			OccurrenceYears = directive.OccurrenceYears ?? source.OccurrenceYears,
-			DurationDays = directive.DurationDays ?? source.DurationDays,
-			Priority = directive.Priority ?? source.Priority,
-			Comment = directive.Comment ?? source.Comment,
-		};
-	}
+	private static NotableDateRule ApplyOverrides(NotableDateRule source, NotableDateRuleUseDirective directive) =>
+		NotableDateRuleMerger.Apply(source, directive);
 
 	/// <summary>
 	/// Compound dedupe key used inside the flatten pipeline. Two rules with the same name but different territories survive as

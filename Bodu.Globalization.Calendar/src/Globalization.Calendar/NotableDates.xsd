@@ -44,13 +44,25 @@
   <!-- ============================================================
        Use: cherry-picks a single notable date rule by name from
        the enclosing UseFrom's source resource. Any scalar attribute
-       declared here overrides the inherited value; tags and
-       adjustments are inherited unchanged. The optional 'as'
-       attribute renames the rule locally.
+       declared here overrides the inherited value. A nested Rule
+       child provides an extensible override body: it may override
+       any scalar, replace the strategy element, add Tag children
+       (union-merged with inherited tags), or add Adjustment
+       children (merged by key). The optional clearTags and
+       clearAdjustments flags discard the inherited set before the
+       override is applied. When both a flat attribute on Use and
+       the nested Rule specify the same scalar, the nested Rule
+       wins (innermost-wins). The optional 'as' attribute renames
+       the rule locally.
        ============================================================ -->
   <xs:complexType name="Use">
+    <xs:sequence>
+      <xs:element name="Rule" type="nd:OverrideRule" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
     <xs:attribute name="name" type="xs:string" use="required" />
     <xs:attribute name="as" type="xs:string" use="optional" />
+    <xs:attribute name="clearTags" type="xs:boolean" use="optional" default="false" />
+    <xs:attribute name="clearAdjustments" type="xs:boolean" use="optional" default="false" />
     <xs:attribute name="category" type="nd:notableDateCategory" use="optional" />
     <xs:attribute name="territory" type="nd:territory" use="optional" />
     <xs:attribute name="nonWorking" type="xs:boolean" use="optional" />
@@ -125,9 +137,75 @@
   </xs:complexType>
 
   <!-- ============================================================
+       OverrideRule: the payload form used inside a <Use> directive.
+       Mirrors Rule but relaxes two constraints: the strategy choice
+       is optional (a Use may add tags or adjustments without
+       replacing the inherited strategy), and no attribute is
+       required. Any field present here overrides the inherited
+       value; fields left absent fall through from the inherited
+       rule. Tag children merge additively with inherited tags;
+       Adjustment children merge by key (replace-if-matched,
+       append-if-new).
+       ============================================================ -->
+  <xs:complexType name="OverrideRule">
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element name="Fixed">
+          <xs:complexType>
+            <xs:attribute name="day" type="nd:day" use="required" />
+            <xs:attribute name="month" type="nd:monthName" use="required" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="DayOfWeekInMonth">
+          <xs:complexType>
+            <xs:attribute name="month" type="nd:monthName" use="required" />
+            <xs:attribute name="dayOfWeek" type="nd:dayOfWeek" use="required" />
+            <xs:attribute name="weekOrdinal" type="nd:weekOrdinal" use="required" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="OffsetFromAnchor">
+          <xs:complexType>
+            <xs:attribute name="name" type="xs:string" use="required" />
+            <xs:attribute name="offset" type="xs:int" use="required" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Calculator">
+          <xs:complexType>
+            <xs:attribute name="key" type="xs:string" use="optional" />
+            <xs:attribute name="type" type="nd:assemblyTypeName" use="optional" />
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+
+      <xs:element name="Tag" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="Adjustment" type="nd:Adjustment" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+
+    <xs:attribute name="name" type="xs:string" use="optional" />
+    <xs:attribute name="category" type="nd:notableDateCategory" use="optional" />
+    <xs:attribute name="nonWorking" type="xs:boolean" use="optional" />
+    <xs:attribute name="firstYear" type="xs:unsignedShort" use="optional" />
+    <xs:attribute name="lastYear" type="xs:unsignedShort" use="optional" />
+    <xs:attribute name="occurrenceYears" type="xs:positiveInteger" use="optional" />
+    <xs:attribute name="durationDays" type="xs:positiveInteger" use="optional" />
+    <xs:attribute name="priority" type="xs:int" use="optional" />
+    <xs:attribute name="calendarType" type="nd:assemblyTypeName" use="optional" />
+    <xs:attribute name="territory" type="nd:territory" use="optional" />
+    <xs:attribute name="comment" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <!-- ============================================================
        Adjustment: a conditional date shift attached to a Rule.
+       The required 'key' attribute identifies the adjustment for
+       inheritance merging: when a <Use> override declares an
+       Adjustment with a key already present on the inherited
+       rule, the override replaces it in place; otherwise it is
+       appended. Keys are author-defined and should be unique
+       within a single rule's adjustment sequence; convention is
+       kebab-case (e.g. "weekend-roll", "boxing-day-monday-sub").
        ============================================================ -->
   <xs:complexType name="Adjustment">
+    <xs:attribute name="key" type="xs:string" use="required" />
     <xs:attribute name="when" type="nd:adjustmentTrigger" use="required" />
     <xs:attribute name="action" type="nd:adjustmentAction" use="required" />
     <xs:attribute name="dayOfWeek" type="nd:dayOfWeek" use="optional" />
