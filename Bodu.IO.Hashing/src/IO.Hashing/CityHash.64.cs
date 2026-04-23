@@ -108,9 +108,9 @@ public sealed class CityHash64
     /// <param name="s">The input span. Length must be in the range [0, 16].</param>
     /// <returns>The 64-bit hash value.</returns>
     /// <remarks>
-    /// For inputs of 8 bytes or more, two overlapping 64-bit words are read and mixed with the length-adjusted <see cref="K2" />
-    /// constant. For 4–7 bytes, two 32-bit words span the input. For 1–3 bytes, individual bytes seed a <see cref="ShiftMix" /> step.
-    /// An empty input returns <see cref="CityHash{T}.K2" /> directly.
+    /// For inputs of 8 bytes or more, two overlapping 64-bit words are read and mixed with the length-adjusted <c>K2</c>
+    /// constant. For 4–7 bytes, two 32-bit words span the input. For 1–3 bytes, individual bytes seed a <c>ShiftMix</c> step.
+    /// An empty input returns the <c>K2</c> constant directly.
     /// </remarks>
     private static ulong Hash64Len0to16(ReadOnlySpan<byte> s)
     {
