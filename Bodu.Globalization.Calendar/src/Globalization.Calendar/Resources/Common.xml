@@ -10,7 +10,7 @@
   <NotableDate name="New Year's Day">
     <Rule category="Holiday" nonWorking="true">
       <Fixed month="January" day="1" />
-      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
   </NotableDate>
 

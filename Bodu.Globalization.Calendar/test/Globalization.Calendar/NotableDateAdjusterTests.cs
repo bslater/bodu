@@ -47,6 +47,7 @@ public sealed class NotableDateAdjusterTests
 		var adjuster = CreateAdjuster();
 		var adjustment = new ObservanceAdjustment
 		{
+			Key = "test",
 			Trigger = AdjustmentTrigger.Always,
 			Action = AdjustmentAction.AddDays,
 			OffsetDays = 3,
@@ -68,6 +69,7 @@ public sealed class NotableDateAdjusterTests
 		var adjuster = CreateAdjuster();
 		var adjustment = new ObservanceAdjustment
 		{
+			Key = "test",
 			Trigger = AdjustmentTrigger.IfWeekend,
 			Action = AdjustmentAction.MoveToNextWeekday,
 		};
@@ -88,6 +90,7 @@ public sealed class NotableDateAdjusterTests
 		var adjuster = CreateAdjuster();
 		var adjustment = new ObservanceAdjustment
 		{
+			Key = "test",
 			Trigger = AdjustmentTrigger.IfWeekend,
 			Action = AdjustmentAction.MoveToNextWeekday,
 		};
@@ -106,6 +109,7 @@ public sealed class NotableDateAdjusterTests
 		var adjuster = CreateAdjuster();
 		var adjustment = new ObservanceAdjustment
 		{
+			Key = "test",
 			Trigger = AdjustmentTrigger.IfDayOfWeek,
 			DayOfWeek = DayOfWeek.Friday,
 			Action = AdjustmentAction.AddDays,
@@ -128,6 +132,7 @@ public sealed class NotableDateAdjusterTests
 		var adjuster = CreateAdjuster(isNonWorking: (d, t, c) => true);
 		var adjustment = new ObservanceAdjustment
 		{
+			Key = "test",
 			Trigger = AdjustmentTrigger.IfNonWorkingDay,
 			Action = AdjustmentAction.AddDays,
 			OffsetDays = 2,
@@ -148,6 +153,7 @@ public sealed class NotableDateAdjusterTests
 		var adjuster = CreateAdjuster();
 		var adjustment = new ObservanceAdjustment
 		{
+			Key = "test",
 			Trigger = AdjustmentTrigger.IfLeapYear,
 			Action = AdjustmentAction.None,
 		};
@@ -168,6 +174,7 @@ public sealed class NotableDateAdjusterTests
 		var adjuster = CreateAdjuster();
 		var adjustment = new ObservanceAdjustment
 		{
+			Key = "test",
 			Trigger = AdjustmentTrigger.IfBeforeFixedDate,
 			Action = AdjustmentAction.AddDays,
 			OffsetDays = 7,
@@ -191,6 +198,7 @@ public sealed class NotableDateAdjusterTests
 		var adjuster = CreateAdjuster();
 		var adjustment = new ObservanceAdjustment
 		{
+			Key = "test",
 			Trigger = AdjustmentTrigger.IfNthOccurrenceInMonth,
 			Action = AdjustmentAction.None,
 			WeekOrdinal = WeekOfMonthOrdinal.Second,
@@ -216,6 +224,7 @@ public sealed class NotableDateAdjusterTests
 
 		var adjustment = new ObservanceAdjustment
 		{
+			Key = "test",
 			Trigger = AdjustmentTrigger.Always,
 			Action = AdjustmentAction.MoveToNextNonWorkingDay,
 		};
@@ -239,6 +248,7 @@ public sealed class NotableDateAdjusterTests
 
 		var adjustment = new ObservanceAdjustment
 		{
+			Key = "test",
 			Trigger = AdjustmentTrigger.Always,
 			Action = AdjustmentAction.ReplaceWithNamedDate,
 			TargetRuleName = "Boxing Day",
@@ -262,6 +272,7 @@ public sealed class NotableDateAdjusterTests
 		var adjuster = CreateAdjuster(handlers: registry);
 		var adjustment = new ObservanceAdjustment
 		{
+			Key = "test",
 			Trigger = AdjustmentTrigger.Custom,
 			Action = AdjustmentAction.Custom,
 			HandlerKey = "shift-by-five",
@@ -281,6 +292,7 @@ public sealed class NotableDateAdjusterTests
 	{
 		var adjustment = new ObservanceAdjustment
 		{
+			Key = "test",
 			Trigger = AdjustmentTrigger.Always,
 			Action = AdjustmentAction.None,
 			EffectiveFromYear = 2030,
@@ -299,6 +311,7 @@ public sealed class NotableDateAdjusterTests
 	{
 		var adjustment = new ObservanceAdjustment
 		{
+			Key = "test",
 			Trigger = AdjustmentTrigger.Always,
 			Action = AdjustmentAction.None,
 			TerritoryCode = "AU",

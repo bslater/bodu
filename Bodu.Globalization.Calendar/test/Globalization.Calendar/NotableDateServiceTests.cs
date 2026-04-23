@@ -69,6 +69,7 @@ public sealed class NotableDateServiceTests
 		{
 			Adjustments = ImmutableArray.Create(new ObservanceAdjustment
 			{
+				Key = "test",
 				Trigger = AdjustmentTrigger.IfWeekend,
 				Action = AdjustmentAction.MoveToNextWeekday,
 			}),

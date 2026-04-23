@@ -31,7 +31,7 @@
     <Rule category="Holiday" territory="GB" nonWorking="true">
       <Fixed month="January" day="1" />
       <Tag>BankHoliday</Tag>
-      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
   </NotableDate>
 
@@ -40,7 +40,7 @@
     <Rule category="Holiday" territory="GB-SCT" nonWorking="true">
       <Fixed month="January" day="2" />
       <Tag>BankHoliday</Tag>
-      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
   </NotableDate>
 
@@ -55,7 +55,7 @@
     <Rule category="Holiday" territory="GB-NIR" nonWorking="true">
       <Fixed month="March" day="17" />
       <Tag>BankHoliday</Tag>
-      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
   </NotableDate>
 
@@ -86,7 +86,7 @@
     <Rule category="Holiday" territory="GB-NIR" nonWorking="true">
       <Fixed month="July" day="12" />
       <Tag>BankHoliday</Tag>
-      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
   </NotableDate>
 
@@ -116,7 +116,7 @@
     <Rule category="Holiday" territory="GB-SCT" nonWorking="true">
       <Fixed month="November" day="30" />
       <Tag>BankHoliday</Tag>
-      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
   </NotableDate>
 
@@ -125,7 +125,7 @@
     <Rule category="Holiday" territory="GB" nonWorking="true">
       <Fixed month="December" day="26" />
       <Tag>BankHoliday</Tag>
-      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
   </NotableDate>
 </NotableDates>

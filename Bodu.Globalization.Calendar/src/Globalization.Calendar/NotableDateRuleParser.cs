@@ -141,12 +141,17 @@ public static class NotableDateRuleParser
 
     /// <summary>
     /// Parses a single &lt;Use&gt; directive element into a
-    /// <see cref="NotableDateRuleUseDirective" />.
+    /// <see cref="NotableDateRuleUseDirective" />, including the optional nested &lt;Rule&gt;
+    /// override body and the <c>clearTags</c> / <c>clearAdjustments</c> flags.
     /// </summary>
     /// <param name="useElement">The &lt;Use&gt; XML element.</param>
     /// <returns>The parsed use directive.</returns>
-	private static NotableDateRuleUseDirective ParseUseDirective(XElement useElement) =>
-		new(
+	private static NotableDateRuleUseDirective ParseUseDirective(XElement useElement)
+	{
+		var overrideRuleElement = useElement.Element(Namespace + "Rule");
+		var overrideBody = overrideRuleElement is null ? null : ParseOverrideBody(overrideRuleElement);
+
+		return new NotableDateRuleUseDirective(
 			SourceRuleName: GetRequiredAttribute(useElement, "name"),
 			LocalName: GetOptionalAttribute(useElement, "as"),
 			Category: ParseOptionalEnum<NotableDateCategory>(useElement, "category"),
@@ -157,7 +162,113 @@ public static class NotableDateRuleParser
 			OccurrenceYears: ParseOptionalInt(useElement, "occurrenceYears"),
 			DurationDays: ParseOptionalInt(useElement, "durationDays"),
 			Priority: ParseOptionalInt(useElement, "priority"),
-			Comment: GetOptionalAttribute(useElement, "comment"));
+			Comment: GetOptionalAttribute(useElement, "comment"),
+			ClearTags: ParseOptionalBool(useElement, "clearTags") ?? false,
+			ClearAdjustments: ParseOptionalBool(useElement, "clearAdjustments") ?? false,
+			OverrideBody: overrideBody);
+	}
+
+    /// <summary>
+    /// Parses the nested &lt;Rule&gt; override body inside a &lt;Use&gt; directive into a
+    /// <see cref="NotableDateRuleOverrideBody" />.
+    /// </summary>
+    /// <remarks>
+    /// The nested form is structurally identical to a standalone &lt;Rule&gt; but every child
+    /// element is optional: the strategy may be absent (inherit the source strategy), and Tag
+    /// and Adjustment children are accumulated for merging by the flatten pipeline.
+    /// </remarks>
+	private static NotableDateRuleOverrideBody ParseOverrideBody(XElement ruleElement)
+	{
+		var strategyElement = ruleElement.Elements()
+			.FirstOrDefault(e => IsStrategyElement(e.Name.LocalName));
+
+		DateResolutionStrategy? strategy = strategyElement is null
+			? null
+			: strategyElement.Name.LocalName switch
+			{
+				"Fixed" => DateResolutionStrategy.Fixed,
+				"DayOfWeekInMonth" => DateResolutionStrategy.DayOfWeekInMonth,
+				"Calculator" => DateResolutionStrategy.Calculator,
+				"OffsetFromAnchor" => DateResolutionStrategy.OffsetFromAnchor,
+				_ => throw new InvalidOperationException($"Unknown strategy element '{strategyElement.Name.LocalName}' on override rule.")
+			};
+
+		var body = new NotableDateRuleOverrideBody
+		{
+			Name = GetOptionalAttribute(ruleElement, "name"),
+			Category = ParseOptionalEnum<NotableDateCategory>(ruleElement, "category"),
+			TerritoryCode = GetOptionalAttribute(ruleElement, "territory"),
+			IsNonWorkingDay = ParseOptionalBool(ruleElement, "nonWorking"),
+			FirstYear = ParseOptionalInt(ruleElement, "firstYear"),
+			LastYear = ParseOptionalInt(ruleElement, "lastYear"),
+			OccurrenceYears = ParseOptionalInt(ruleElement, "occurrenceYears"),
+			DurationDays = ParseOptionalInt(ruleElement, "durationDays"),
+			Priority = ParseOptionalInt(ruleElement, "priority"),
+			Comment = GetOptionalAttribute(ruleElement, "comment"),
+			CalendarType = ParseOptionalType<SysGlobal.Calendar>(ruleElement, "calendarType"),
+			Strategy = strategy,
+			Tags = ruleElement.Elements(Namespace + "Tag")
+				.Select(t => t.Value)
+				.Where(t => !string.IsNullOrWhiteSpace(t))
+				.ToImmutableArray(),
+			Adjustments = ruleElement.Elements(Namespace + "Adjustment")
+				.Select(ParseAdjustment)
+				.ToImmutableArray(),
+		};
+
+		if (strategyElement is not null)
+			body = ApplyStrategySpecificsToBody(body, strategyElement);
+
+		EnsureUniqueAdjustmentKeys(body.Adjustments, ruleElement);
+		return body;
+	}
+
+    /// <summary>
+    /// Applies the strategy-specific attributes on <paramref name="strategyElement" /> to the
+    /// override body. Mirrors <see cref="ApplyStrategySpecifics(NotableDateRule, XElement)" />
+    /// but writes to a <see cref="NotableDateRuleOverrideBody" />.
+    /// </summary>
+	private static NotableDateRuleOverrideBody ApplyStrategySpecificsToBody(NotableDateRuleOverrideBody body, XElement strategyElement) =>
+		body.Strategy switch
+		{
+			DateResolutionStrategy.Fixed => body with
+			{
+				Month = ParseMonth(GetRequiredAttribute(strategyElement, "month")),
+				Day = int.Parse(GetRequiredAttribute(strategyElement, "day"), CultureInfo.InvariantCulture),
+			},
+			DateResolutionStrategy.DayOfWeekInMonth => body with
+			{
+				Month = ParseMonth(GetRequiredAttribute(strategyElement, "month")),
+				DayOfWeek = ParseRequiredEnum<DayOfWeek>(strategyElement, "dayOfWeek"),
+				WeekOrdinal = ParseRequiredEnum<WeekOfMonthOrdinal>(strategyElement, "weekOrdinal"),
+			},
+			DateResolutionStrategy.OffsetFromAnchor => body with
+			{
+				AnchorRuleName = GetRequiredAttribute(strategyElement, "name"),
+				OffsetDays = int.Parse(GetRequiredAttribute(strategyElement, "offset"), CultureInfo.InvariantCulture),
+			},
+			DateResolutionStrategy.Calculator => body with
+			{
+				CalculatorKey = GetOptionalAttribute(strategyElement, "key"),
+				CalculatorType = ParseOptionalType<INotableDateCalculator>(strategyElement, "type"),
+			},
+			_ => body,
+		};
+
+    /// <summary>
+    /// Enforces the per-rule uniqueness invariant on adjustment keys — the same invariant the
+    /// merge pipeline relies on when deciding between replace and append semantics.
+    /// </summary>
+	private static void EnsureUniqueAdjustmentKeys(ImmutableArray<ObservanceAdjustment> adjustments, XElement contextElement)
+	{
+		var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+		foreach (var adjustment in adjustments)
+		{
+			if (!seen.Add(adjustment.Key))
+				throw new InvalidOperationException(
+					$"Duplicate adjustment key '{adjustment.Key}' on element '{contextElement.Name.LocalName}'. Keys must be unique within a single rule or override body.");
+		}
+	}
 
     /// <summary>
     /// Expands a single &lt;NotableDate&gt; XML element into its one-or-more
@@ -184,6 +295,12 @@ public static class NotableDateRuleParser
 				_ => throw new InvalidOperationException($"Unknown strategy element '{strategyElement.Name.LocalName}' on rule '{name}'.")
 			};
 
+			var adjustments = ruleElement.Elements(Namespace + "Adjustment")
+				.Select(ParseAdjustment)
+				.ToImmutableArray();
+
+			EnsureUniqueAdjustmentKeys(adjustments, ruleElement);
+
 			var rule = new NotableDateRule
 			{
 				Name = GetOptionalAttribute(ruleElement, "name") ?? name,
@@ -202,9 +319,7 @@ public static class NotableDateRuleParser
 					.Where(t => !string.IsNullOrWhiteSpace(t))
 					.ToImmutableHashSet(StringComparer.OrdinalIgnoreCase),
 				Comment = GetOptionalAttribute(ruleElement, "comment"),
-				Adjustments = ruleElement.Elements(Namespace + "Adjustment")
-					.Select(ParseAdjustment)
-					.ToImmutableArray(),
+				Adjustments = adjustments,
 			};
 
 			yield return ApplyStrategySpecifics(rule, strategyElement);
@@ -262,6 +377,7 @@ public static class NotableDateRuleParser
 	private static ObservanceAdjustment ParseAdjustment(XElement element) =>
 		new()
 		{
+			Key = GetRequiredAttribute(element, "key"),
 			Trigger = ParseRequiredEnum<AdjustmentTrigger>(element, "when"),
 			Action = ParseRequiredEnum<AdjustmentAction>(element, "action"),
 			DayOfWeek = ParseOptionalEnum<DayOfWeek>(element, "dayOfWeek"),

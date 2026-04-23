@@ -96,7 +96,7 @@
     <Rule category="Holiday" nonWorking="true">
       <Fixed month="December" day="25" />
       <Tag>Christian</Tag>
-      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
   </NotableDate>
 </NotableDates>

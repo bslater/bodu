@@ -60,7 +60,7 @@
   <NotableDate name="Juneteenth">
     <Rule category="Holiday" territory="US" nonWorking="true" firstYear="2021">
       <Fixed month="June" day="19" />
-      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
   </NotableDate>
 
@@ -74,7 +74,7 @@
   <NotableDate name="Independence Day">
     <Rule category="Holiday" territory="US" nonWorking="true">
       <Fixed month="July" day="4" />
-      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
   </NotableDate>
 
@@ -96,7 +96,7 @@
   <NotableDate name="Veterans Day">
     <Rule category="Holiday" territory="US" nonWorking="true">
       <Fixed month="November" day="11" />
-      <Adjustment when="IfWeekend" action="MoveToNextWeekday" />
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
   </NotableDate>
 

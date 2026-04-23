@@ -26,6 +26,23 @@ namespace Bodu.Globalization.Calendar;
 public sealed record ObservanceAdjustment
 {
 	/// <summary>
+	/// Gets the identifier used to merge this adjustment with inherited adjustments during <c>&lt;Use&gt;</c> directive resolution.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// When a <c>&lt;Use&gt;</c> override declares an adjustment whose <see cref="Key" /> matches one already on the inherited rule, the
+	/// override replaces the inherited entry at its current position; otherwise the override is appended. Keys are author-defined
+	/// strings, unique within a single rule's <see cref="NotableDateRule.Adjustments" /> sequence, and are by convention kebab-case
+	/// (for example <c>"weekend-roll"</c>, <c>"boxing-day-monday-sub"</c>, <c>"anzac-day-wa-observance"</c>).
+	/// </para>
+	/// <para>
+	/// The value is informational at run time — the <see cref="NotableDateAdjuster" /> evaluation pipeline does not consult
+	/// <see cref="Key" /> once the rule set has been flattened.
+	/// </para>
+	/// </remarks>
+	public required string Key { get; init; }
+
+	/// <summary>
 	/// Gets the condition that determines whether the adjustment activates for a given calculated date.
 	/// </summary>
 	public AdjustmentTrigger Trigger { get; init; }
