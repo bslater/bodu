@@ -21,9 +21,9 @@ public static partial class BaseEncoding
 	// Base32 (RFC 4648)
 	private const string _b32Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
-	private static readonly sbyte[] _b16Lookup = BuildLookup(_b16Alphabet);
+	private static readonly sbyte[] s_b16Lookup = BuildLookup(_b16Alphabet);
 
-	private static readonly sbyte[] _b32Lookup = BuildLookup(_b32Alphabet);
+	private static readonly sbyte[] s_b32Lookup = BuildLookup(_b32Alphabet);
 
 	/// <summary>
 	/// Builds a 128-entry lookup table mapping alphabet characters to their numeric symbol index.
