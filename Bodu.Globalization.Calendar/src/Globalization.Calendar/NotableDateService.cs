@@ -63,6 +63,7 @@ public sealed class NotableDateService : INotableDateService
 	/// <param name="adjustmentHandlers">Optional registry of custom <see cref="IAdjustmentHandler" /> instances.</param>
 	/// <param name="collisionResolver">Optional collision resolver. Defaults to <see cref="DefaultNotableDateCollisionResolver" />.</param>
 	/// <param name="nameLocalizer">Optional localizer used to translate notable date names into the active culture.</param>
+	/// <param name="plugins">Optional external plugins loaded via <see cref="Plugins.ExternalPluginLoader" />. Rule providers exposed by plugins are appended to <paramref name="ruleProviders" /> and participate in the normal flatten pipeline; named calculators are registered onto an internal calculator registry that falls back to <paramref name="calculatorRegistry" /> when supplied (caller-supplied registrations win on key collision).</param>
 	/// <exception cref="ArgumentNullException">Thrown when <paramref name="ruleProviders" /> is <see langword="null" />.</exception>
 	public NotableDateService(
 		IEnumerable<INotableDateRuleProvider> ruleProviders,
@@ -72,13 +73,48 @@ public sealed class NotableDateService : INotableDateService
 		INotableDateCalculatorRegistry? calculatorRegistry = null,
 		IAdjustmentHandlerRegistry? adjustmentHandlers = null,
 		INotableDateCollisionResolver? collisionResolver = null,
-		INotableDateNameLocalizer? nameLocalizer = null)
+		INotableDateNameLocalizer? nameLocalizer = null,
+		IEnumerable<Plugins.INotableDatePlugin>? plugins = null)
 	{
 		if (ruleProviders is null) throw new ArgumentNullException(nameof(ruleProviders));
 		ThrowHelper.ThrowIfEnumValueIsUndefined(weekendDefinition);
 		ThrowHelper.ThrowIfConditionallyRequiredParameterIsNull(weekendProvider, weekendDefinition, CalendarWeekendDefinition.Custom);
 
-		_baseRules = ruleProviders.SelectMany(p => p.LoadRules()).ToImmutableArray();
+		// Fan plugin contributions into the provider list and the calculator registry. The merge order means host-level
+		// rule providers are loaded first and therefore win composite-key collisions inside the flatten pipeline, and
+		// host-supplied calculator registrations take precedence over plugin-supplied ones with the same key.
+		var effectiveProviders = ruleProviders.ToList();
+		var effectiveRegistry = calculatorRegistry;
+
+		if (plugins is not null)
+		{
+			var pluginCalculators = new List<KeyValuePair<string, INotableDateCalculator>>();
+
+			foreach (var plugin in plugins)
+			{
+				if (plugin is Plugins.INotableDateRulePlugin rulePlugin)
+				{
+					foreach (var provider in rulePlugin.GetRuleProviders())
+						effectiveProviders.Add(provider);
+				}
+
+				if (plugin is Plugins.INotableDateCalculatorPlugin calcPlugin)
+				{
+					foreach (var pair in calcPlugin.GetCalculators())
+						pluginCalculators.Add(pair);
+				}
+			}
+
+			if (pluginCalculators.Count > 0)
+			{
+				var pluginRegistry = new NotableDateCalculatorRegistry(pluginCalculators);
+				effectiveRegistry = effectiveRegistry is null
+					? pluginRegistry
+					: new CompositeCalculatorRegistry(effectiveRegistry, pluginRegistry);
+			}
+		}
+
+		_baseRules = effectiveProviders.SelectMany(p => p.LoadRules()).ToImmutableArray();
 		_overrideProviders = overrideProviders?.ToList() ?? (IReadOnlyList<INotableDateRuleOverrideProvider>)Array.Empty<INotableDateRuleOverrideProvider>();
 		_weekendDefinition = weekendDefinition;
 		_weekendProvider = weekendProvider;
@@ -86,7 +122,7 @@ public sealed class NotableDateService : INotableDateService
 		_nameLocalizer = nameLocalizer;
 
 		_effectiveRules = ApplyOverrides(_baseRules, _overrideProviders);
-		_resolver = new NotableDateRuleResolver(_effectiveRules, calculatorRegistry);
+		_resolver = new NotableDateRuleResolver(_effectiveRules, effectiveRegistry);
 		_adjuster = new NotableDateAdjuster(
 			IsWeekend,
 			IsNonWorkingDay,
@@ -510,5 +546,32 @@ public sealed class NotableDateService : INotableDateService
 		}
 
 		return null;
+	}
+
+	/// <summary>
+	/// Layers two <see cref="INotableDateCalculatorRegistry" /> instances: <paramref name="primary" /> is consulted first; on a
+	/// miss, <paramref name="fallback" /> is consulted. Used to compose host-supplied calculators with plugin-supplied ones so
+	/// the host retains precedence on key collisions.
+	/// </summary>
+	private sealed class CompositeCalculatorRegistry : INotableDateCalculatorRegistry
+	{
+		private readonly INotableDateCalculatorRegistry _primary;
+		private readonly INotableDateCalculatorRegistry _fallback;
+
+		public CompositeCalculatorRegistry(INotableDateCalculatorRegistry primary, INotableDateCalculatorRegistry fallback)
+		{
+			_primary = primary;
+			_fallback = fallback;
+		}
+
+		public bool Contains(string key) => _primary.Contains(key) || _fallback.Contains(key);
+
+		public bool TryGet(string key, out INotableDateCalculator calculator)
+		{
+			if (_primary.TryGet(key, out calculator!))
+				return true;
+
+			return _fallback.TryGet(key, out calculator!);
+		}
 	}
 }

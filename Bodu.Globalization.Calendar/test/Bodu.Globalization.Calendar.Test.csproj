@@ -28,6 +28,25 @@
     <ProjectReference Include="..\src\Bodu.Globalization.Calendar.csproj" />
   </ItemGroup>
 
+  <!--
+    Test-only plugin assemblies referenced purely so their DLLs land in the test output directory; tests load
+    them from disk to exercise ExternalPluginLoader. ReferenceOutputAssembly=false prevents the test project
+    from linking against their public surface at compile time, which keeps the plugins arm's-length in the
+    same way a real external consumer would treat them.
+  -->
+  <ItemGroup>
+    <ProjectReference Include="Globalization.Calendar.Plugin1.TestAssembly\Bodu.Globalization.Calendar.Plugin1.TestAssembly.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <OutputItemType>Content</OutputItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="Globalization.Calendar.Plugin2.TestAssembly\Bodu.Globalization.Calendar.Plugin2.TestAssembly.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <OutputItemType>Content</OutputItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+
   <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>

@@ -1,0 +1,207 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="PluginTrustPolicyTests.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Reflection;
+using Bodu.Globalization.Calendar.Plugins;
+
+namespace Bodu.Globalization.Calendar.Plugins;
+
+/// <summary>
+/// Verifies the behaviour of each built-in <see cref="IPluginTrustPolicy" /> implementation in isolation — file-hash equality,
+/// strong-name allowlisting, composite AND semantics, delegating dispatch, and the unconditional dev-only <c>AllowAll</c>
+/// policy.
+/// </summary>
+[TestClass]
+public sealed class PluginTrustPolicyTests
+{
+	private static readonly byte[] SampleHash = { 0x01, 0x02, 0x03, 0x04 };
+	private const string SampleAssemblyName = "Acme.Holidays";
+
+	/// <summary>
+	/// Verifies that the dev-only <see cref="AllowAllPluginTrustPolicy" /> returns trusted for every context.
+	/// </summary>
+	[TestMethod]
+	public void AllowAllPluginTrustPolicy_ShouldAlwaysReturnTrusted()
+	{
+		var policy = new AllowAllPluginTrustPolicy();
+		var context = new PluginTrustContext("/tmp/anything.dll", new AssemblyName("Anything"), new byte[0]);
+
+		var result = policy.Evaluate(context);
+
+		Assert.IsTrue(result.Trusted);
+		Assert.IsNull(result.Reason);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="FileHashPluginTrustPolicy" /> admits a candidate whose SHA-256 matches the pinned value for
+	/// its assembly name.
+	/// </summary>
+	[TestMethod]
+	public void FileHashPluginTrustPolicy_WhenHashMatches_ShouldReturnTrusted()
+	{
+		var policy = new FileHashPluginTrustPolicy(
+			new Dictionary<string, byte[]> { [SampleAssemblyName] = SampleHash });
+		var context = new PluginTrustContext("/tmp/acme.dll", new AssemblyName(SampleAssemblyName), SampleHash);
+
+		var result = policy.Evaluate(context);
+
+		Assert.IsTrue(result.Trusted);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="FileHashPluginTrustPolicy" /> rejects a candidate whose SHA-256 differs from the pinned value,
+	/// and that the rejection carries a diagnostic reason.
+	/// </summary>
+	[TestMethod]
+	public void FileHashPluginTrustPolicy_WhenHashDiffers_ShouldReturnUntrustedWithReason()
+	{
+		var policy = new FileHashPluginTrustPolicy(
+			new Dictionary<string, byte[]> { [SampleAssemblyName] = SampleHash });
+		var tamperedHash = new byte[] { 0x01, 0x02, 0x03, 0xFF };
+		var context = new PluginTrustContext("/tmp/acme.dll", new AssemblyName(SampleAssemblyName), tamperedHash);
+
+		var result = policy.Evaluate(context);
+
+		Assert.IsFalse(result.Trusted);
+		Assert.IsNotNull(result.Reason);
+		StringAssert.Contains(result.Reason!, SampleAssemblyName);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="FileHashPluginTrustPolicy" /> rejects an assembly whose name is not in the allowlist at all.
+	/// </summary>
+	[TestMethod]
+	public void FileHashPluginTrustPolicy_WhenAssemblyNameNotInAllowlist_ShouldReturnUntrusted()
+	{
+		var policy = new FileHashPluginTrustPolicy(
+			new Dictionary<string, byte[]> { [SampleAssemblyName] = SampleHash });
+		var context = new PluginTrustContext("/tmp/other.dll", new AssemblyName("Other.Assembly"), SampleHash);
+
+		var result = policy.Evaluate(context);
+
+		Assert.IsFalse(result.Trusted);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="StrongNamePluginTrustPolicy" /> rejects an assembly that is not strong-named (null public-key
+	/// token) even if the allowlist is empty.
+	/// </summary>
+	[TestMethod]
+	public void StrongNamePluginTrustPolicy_WhenAssemblyNotStrongNamed_ShouldReturnUntrusted()
+	{
+		var policy = new StrongNamePluginTrustPolicy(new[] { "abcdef1234567890" });
+		var context = new PluginTrustContext("/tmp/plain.dll", new AssemblyName("Plain.Assembly"), SampleHash);
+
+		var result = policy.Evaluate(context);
+
+		Assert.IsFalse(result.Trusted);
+		StringAssert.Contains(result.Reason!, "not strong-named");
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="StrongNamePluginTrustPolicy" /> admits an assembly whose public-key token (hex-lowercase)
+	/// appears in the allowlist, matched case-insensitively.
+	/// </summary>
+	[TestMethod]
+	public void StrongNamePluginTrustPolicy_WhenTokenInAllowlist_ShouldReturnTrusted()
+	{
+		byte[] token = new byte[] { 0xB0, 0x3F, 0x5F, 0x7F, 0x11, 0xD5, 0x0A, 0x3A };
+		string tokenHex = "b03f5f7f11d50a3a";
+
+		var assemblyName = new AssemblyName("Signed.Assembly");
+		assemblyName.SetPublicKeyToken(token);
+
+		var policy = new StrongNamePluginTrustPolicy(new[] { tokenHex.ToUpperInvariant() });
+		var context = new PluginTrustContext("/tmp/signed.dll", assemblyName, SampleHash);
+
+		var result = policy.Evaluate(context);
+
+		Assert.IsTrue(result.Trusted);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="StrongNamePluginTrustPolicy" /> rejects an assembly whose token is not in the allowlist and
+	/// surfaces the token value in the reason.
+	/// </summary>
+	[TestMethod]
+	public void StrongNamePluginTrustPolicy_WhenTokenNotInAllowlist_ShouldReturnUntrustedWithReason()
+	{
+		byte[] token = new byte[] { 0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF };
+		var assemblyName = new AssemblyName("Signed.Assembly");
+		assemblyName.SetPublicKeyToken(token);
+
+		var policy = new StrongNamePluginTrustPolicy(new[] { "deadbeef12345678" });
+		var context = new PluginTrustContext("/tmp/signed.dll", assemblyName, SampleHash);
+
+		var result = policy.Evaluate(context);
+
+		Assert.IsFalse(result.Trusted);
+		StringAssert.Contains(result.Reason!, "0123456789abcdef");
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="CompositePluginTrustPolicy" /> returns trusted only when every child policy returns trusted.
+	/// </summary>
+	[TestMethod]
+	public void CompositePluginTrustPolicy_WhenAllChildrenTrust_ShouldReturnTrusted()
+	{
+		var policy = new CompositePluginTrustPolicy(new AllowAllPluginTrustPolicy(), new AllowAllPluginTrustPolicy());
+		var context = new PluginTrustContext("/tmp/anything.dll", new AssemblyName("Anything"), SampleHash);
+
+		var result = policy.Evaluate(context);
+
+		Assert.IsTrue(result.Trusted);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="CompositePluginTrustPolicy" /> short-circuits on the first child that rejects and returns that
+	/// child's reason.
+	/// </summary>
+	[TestMethod]
+	public void CompositePluginTrustPolicy_WhenChildRejects_ShouldShortCircuitWithChildReason()
+	{
+		var rejecting = new DelegatingPluginTrustPolicy(_ => new PluginTrustResult(false, "child-reason"));
+		var policy = new CompositePluginTrustPolicy(new AllowAllPluginTrustPolicy(), rejecting, new AllowAllPluginTrustPolicy());
+		var context = new PluginTrustContext("/tmp/anything.dll", new AssemblyName("Anything"), SampleHash);
+
+		var result = policy.Evaluate(context);
+
+		Assert.IsFalse(result.Trusted);
+		Assert.AreEqual("child-reason", result.Reason);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="CompositePluginTrustPolicy" /> throws when constructed with an empty policy array.
+	/// </summary>
+	[TestMethod]
+	public void CompositePluginTrustPolicy_WhenConstructedEmpty_ShouldThrowArgumentException()
+	{
+		Assert.ThrowsExactly<ArgumentException>(() => _ = new CompositePluginTrustPolicy());
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="DelegatingPluginTrustPolicy" /> forwards the context to its callback verbatim and returns the
+	/// callback's verdict.
+	/// </summary>
+	[TestMethod]
+	public void DelegatingPluginTrustPolicy_ShouldForwardContextAndReturnCallbackResult()
+	{
+		PluginTrustContext? observed = null;
+		var policy = new DelegatingPluginTrustPolicy(ctx =>
+		{
+			observed = ctx;
+			return new PluginTrustResult(false, "nope");
+		});
+		var context = new PluginTrustContext("/tmp/x.dll", new AssemblyName("X"), SampleHash);
+
+		var result = policy.Evaluate(context);
+
+		Assert.IsNotNull(observed);
+		Assert.AreEqual(context.AssemblyPath, observed!.Value.AssemblyPath);
+		Assert.IsFalse(result.Trusted);
+		Assert.AreEqual("nope", result.Reason);
+	}
+}
