@@ -25,7 +25,7 @@ public partial class NotableDateRuleParserTests
 					<Fixed month=""January"" day=""1"" />
 					<Tag>Public</Tag>
 					<Tag>Civic</Tag>
-					<Adjustment when=""IfWeekend"" action=""MoveToNextWeekday"" priority=""10"" />
+					<Adjustment key=""weekend-roll"" when=""IfWeekend"" action=""MoveToNextWeekday"" priority=""10"" />
 				</Rule>
 			</NotableDate>
 		</NotableDates>";
@@ -62,7 +62,7 @@ public partial class NotableDateRuleParserTests
 			<NotableDate name=""New Year's Day"">
 				<Rule category=""Holiday"" nonWorking=""true"">
 					<Fixed month=""January"" day=""1"" />
-					<Adjustment when=""IfWeekend"" action=""MoveToNextWeekday"" priority=""1"" />
+					<Adjustment key=""weekend-roll"" when=""IfWeekend"" action=""MoveToNextWeekday"" priority=""1"" />
 				</Rule>
 			</NotableDate>
 			<NotableDate name=""Easter Sunday"">
