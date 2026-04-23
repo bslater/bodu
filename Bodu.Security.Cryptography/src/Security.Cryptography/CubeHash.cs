@@ -56,24 +56,24 @@ public sealed class CubeHash
     /// </summary>
     public const int MinRounds = 1;
 
-    private bool disposed = false;
+    private bool _disposed = false;
 
     // Internal algorithm parameters
-    private int finalizationRounds;
+    private int _finalizationRounds;
 
-    private int initializationRounds;
-    private uint[] initializedState;
-    private int inputBlockSizeBytes;
-    private bool isInitializedStateCached = false;
+    private int _initializationRounds;
+    private uint[] _initializedState;
+    private int _inputBlockSizeBytes;
+    private bool _isInitializedStateCached = false;
 
     // Number of bytes accumulated in the current partial block
-    private int pendingBytes;
+    private int _pendingBytes;
 
-    private int rounds;
-    private uint[] state;
+    private int _rounds;
+    private uint[] _state;
 
 #if !NET6_0_OR_GREATER
-    private bool finalized; // flag to block reuse in older .NET
+    private bool _finalized; // flag to block reuse in older .NET
 #endif
 
     /// <summary>
@@ -81,13 +81,13 @@ public sealed class CubeHash
     /// </summary>
     public CubeHash()
     {
-        this.state = new uint[32];
-        this.initializedState = new uint[32];
+        this._state = new uint[32];
+        this._initializedState = new uint[32];
         this.HashSizeValue = 512;
-        this.inputBlockSizeBytes = 32;
-        this.rounds = 16;
-        this.initializationRounds = 16;
-        this.finalizationRounds = 32;
+        this._inputBlockSizeBytes = 32;
+        this._rounds = 16;
+        this._initializationRounds = 16;
+        this._finalizationRounds = 32;
     }
 
     /// <summary>
@@ -144,7 +144,7 @@ public sealed class CubeHash
         get
         {
             this.ThrowIfDisposed();
-            return this.finalizationRounds;
+            return this._finalizationRounds;
         }
 
         set
@@ -152,8 +152,8 @@ public sealed class CubeHash
             this.ThrowIfDisposed();
             this.ThrowIfInvalidState();
             ThrowHelper.ThrowIfOutOfRange(value, MinRounds, MaxRounds);
-            this.finalizationRounds = value;
-            this.isInitializedStateCached = false;
+            this._finalizationRounds = value;
+            this._isInitializedStateCached = false;
         }
     }
 
@@ -184,7 +184,7 @@ public sealed class CubeHash
             ThrowHelper.ThrowIfOutOfRange(value, MinHashSize, MaxHashSize);
             ThrowHelper.ThrowIfNotPositiveMultipleOf(value, 8);
             this.HashSizeValue = value;
-            this.isInitializedStateCached = false;
+            this._isInitializedStateCached = false;
         }
     }
 
@@ -203,7 +203,7 @@ public sealed class CubeHash
         get
         {
             this.ThrowIfDisposed();
-            return this.initializationRounds;
+            return this._initializationRounds;
         }
 
         set
@@ -211,8 +211,8 @@ public sealed class CubeHash
             this.ThrowIfDisposed();
             this.ThrowIfInvalidState();
             ThrowHelper.ThrowIfOutOfRange(value, MinRounds, MaxRounds);
-            this.initializationRounds = value;
-            this.isInitializedStateCached = false;
+            this._initializationRounds = value;
+            this._isInitializedStateCached = false;
         }
     }
 
@@ -251,7 +251,7 @@ public sealed class CubeHash
         get
         {
             this.ThrowIfDisposed();
-            return this.rounds;
+            return this._rounds;
         }
 
         set
@@ -259,8 +259,8 @@ public sealed class CubeHash
             this.ThrowIfDisposed();
             this.ThrowIfInvalidState();
             ThrowHelper.ThrowIfOutOfRange(value, MinRounds, MaxRounds);
-            this.rounds = value;
-            this.isInitializedStateCached = false;
+            this._rounds = value;
+            this._isInitializedStateCached = false;
         }
     }
 
@@ -280,7 +280,7 @@ public sealed class CubeHash
         get
         {
             this.ThrowIfDisposed();
-            return this.inputBlockSizeBytes;
+            return this._inputBlockSizeBytes;
         }
 
         set
@@ -288,8 +288,8 @@ public sealed class CubeHash
             this.ThrowIfDisposed();
             this.ThrowIfInvalidState();
             ThrowHelper.ThrowIfOutOfRange(value, MinInputBlockSize, MaxInputBlockSize);
-            this.inputBlockSizeBytes = value;
-            this.isInitializedStateCached = false;
+            this._inputBlockSizeBytes = value;
+            this._isInitializedStateCached = false;
         }
     }
 
@@ -299,9 +299,9 @@ public sealed class CubeHash
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
         State = 0;
-        finalized = false;
+        _finalized = false;
 #endif
-        this.pendingBytes = 0;
+        this._pendingBytes = 0;
 
         this.EnsureInitialized();
         this.InitializeVectors();
@@ -316,24 +316,24 @@ public sealed class CubeHash
     /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this.disposed) return;
+        if (this._disposed) return;
 
         if (disposing)
         {
-            this.finalizationRounds = this.initializationRounds = this.rounds = this.inputBlockSizeBytes = this.pendingBytes = 0;
+            this._finalizationRounds = this._initializationRounds = this._rounds = this._inputBlockSizeBytes = this._pendingBytes = 0;
 
-            if (this.state != null)
+            if (this._state != null)
             {
                 CryptoHelpers.ClearAndNullify(ref this.HashValue);
-                CryptoHelpers.ClearAndNullify(ref this.state!);
-                CryptoHelpers.ClearAndNullify(ref this.initializedState!);
+                CryptoHelpers.ClearAndNullify(ref this._state!);
+                CryptoHelpers.ClearAndNullify(ref this._initializedState!);
 
-                this.isInitializedStateCached = false;
+                this._isInitializedStateCached = false;
                 this.HashSizeValue = 0;
             }
         }
 
-        this.disposed = true;
+        this._disposed = true;
         base.Dispose(disposing);
     }
 
@@ -364,7 +364,7 @@ public sealed class CubeHash
         ThrowHelper.ThrowIfLessThan(ibStart, 0);
         ThrowHelper.ThrowIfLessThan(cbSize, 0);
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
-        if (finalized)
+        if (_finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
         this.EnsureInitialized();
@@ -384,32 +384,32 @@ public sealed class CubeHash
         this.ThrowIfDisposed();
         this.EnsureInitialized();
 
-        int blockSize = this.inputBlockSizeBytes;
+        int blockSize = this._inputBlockSizeBytes;
 
         // Complete any in-flight partial block first
-        if (this.pendingBytes > 0)
+        if (this._pendingBytes > 0)
         {
-            int needed = blockSize - this.pendingBytes;
+            int needed = blockSize - this._pendingBytes;
 
             if (source.Length < needed)
             {
                 // Not enough data to complete the block — buffer and return
-                this.XorBytesIntoState(source, this.pendingBytes);
-                this.pendingBytes += source.Length;
+                this.XorBytesIntoState(source, this._pendingBytes);
+                this._pendingBytes += source.Length;
                 return;
             }
 
-            this.XorBytesIntoState(source.Slice(0, needed), this.pendingBytes);
+            this.XorBytesIntoState(source.Slice(0, needed), this._pendingBytes);
             source = source.Slice(needed);
-            this.pendingBytes = 0;
-            this.PerformRounds(this.rounds);
+            this._pendingBytes = 0;
+            this.PerformRounds(this._rounds);
         }
 
         // Process full blocks directly
         while (source.Length >= blockSize)
         {
             this.XorBlockIntoState(source.Slice(0, blockSize));
-            this.PerformRounds(this.rounds);
+            this.PerformRounds(this._rounds);
             source = source.Slice(blockSize);
         }
 
@@ -417,7 +417,7 @@ public sealed class CubeHash
         if (source.Length > 0)
         {
             this.XorBytesIntoState(source, 0);
-            this.pendingBytes = source.Length;
+            this._pendingBytes = source.Length;
         }
     }
 
@@ -432,25 +432,25 @@ public sealed class CubeHash
     {
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
-        if (finalized)
+        if (_finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
-        finalized = true;
+        _finalized = true;
         State = 2;
 #endif
         this.EnsureInitialized();
 
-        // Append the 0x80 padding byte at the current pending-byte position within the state
-        this.state[this.pendingBytes / 4] ^= 0x80u << (8 * (this.pendingBytes % 4));
-        this.PerformRounds(this.rounds);
+        // Append the 0x80 padding byte at the current pending-byte position within the _state
+        this._state[this._pendingBytes / 4] ^= 0x80u << (8 * (this._pendingBytes % 4));
+        this.PerformRounds(this._rounds);
 
-        // Set the finalization flag and apply finalization rounds
-        this.state[31] ^= 1U;
-        this.PerformRounds(this.finalizationRounds);
+        // Set the finalization flag and apply finalization _rounds
+        this._state[31] ^= 1U;
+        this.PerformRounds(this._finalizationRounds);
 
         int byteLength = this.HashSize / 8;
         byte[] result = GC.AllocateUninitializedArray<byte>(byteLength);
         for (int i = 0; i < byteLength; i++)
-            result[i] = (byte)(this.state[i / 4] >> (8 * (i % 4)));
+            result[i] = (byte)(this._state[i / 4] >> (8 * (i % 4)));
 
         return result;
     }
@@ -461,26 +461,26 @@ public sealed class CubeHash
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void EnsureInitialized()
     {
-        if (this.isInitializedStateCached)
+        if (this._isInitializedStateCached)
             return;
 
-        // Zero and seed the state with algorithm parameters, then apply initialization rounds
-        Array.Clear(this.state, 0, this.state.Length);
-        this.state[0] = (uint)(this.HashSizeValue / 8);
-        this.state[1] = (uint)this.inputBlockSizeBytes;
-        this.state[2] = (uint)this.rounds;
-        this.PerformRounds(this.initializationRounds);
+        // Zero and seed the _state with algorithm parameters, then apply initialization _rounds
+        Array.Clear(this._state, 0, this._state.Length);
+        this._state[0] = (uint)(this.HashSizeValue / 8);
+        this._state[1] = (uint)this._inputBlockSizeBytes;
+        this._state[2] = (uint)this._rounds;
+        this.PerformRounds(this._initializationRounds);
 
-        // Cache the post-initialization state for fast resets
-        this.state.CopyTo(this.initializedState, 0);
-        this.isInitializedStateCached = true;
+        // Cache the post-initialization _state for fast resets
+        this._state.CopyTo(this._initializedState, 0);
+        this._isInitializedStateCached = true;
     }
 
     /// <summary>
     /// Resets the working state to the cached post-initialisation snapshot.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void InitializeVectors() => this.initializedState.CopyTo(this.state, 0);
+    private void InitializeVectors() => this._initializedState.CopyTo(this._state, 0);
 
     /// <summary>
     /// Executes the specified number of CubeHash transformation rounds on the state vector.
@@ -488,7 +488,7 @@ public sealed class CubeHash
     /// <param name="roundCount">The number of rounds to perform.</param>
     private void PerformRounds(int roundCount)
     {
-        Span<uint> s = this.state;
+        Span<uint> s = this._state;
         Span<uint> lower = s.Slice(0, 16);
         Span<uint> upper = s.Slice(16, 16);
 
@@ -543,7 +543,7 @@ public sealed class CubeHash
         if (BitConverter.IsLittleEndian && (block.Length & 3) == 0)
         {
             ReadOnlySpan<uint> words = MemoryMarshal.Cast<byte, uint>(block);
-            Span<uint> stateSpan = this.state;
+            Span<uint> stateSpan = this._state;
             for (int i = 0; i < words.Length; i++)
                 stateSpan[i] ^= words[i];
 
@@ -566,7 +566,7 @@ public sealed class CubeHash
         for (int i = 0; i < source.Length; i++)
         {
             int pos = stateByteOffset + i;
-            this.state[pos >> 2] ^= (uint)source[i] << (8 * (pos & 3));
+            this._state[pos >> 2] ^= (uint)source[i] << (8 * (pos & 3));
         }
     }
 
@@ -577,9 +577,9 @@ public sealed class CubeHash
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this.disposed, this);
+        ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
-        if (disposed)
+        if (_disposed)
             throw new ObjectDisposedException(nameof(CubeHash));
 #endif
     }

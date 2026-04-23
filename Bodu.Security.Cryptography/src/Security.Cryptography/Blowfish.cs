@@ -61,9 +61,9 @@ public sealed class Blowfish
     // Legal key sizes span 32..448 bits in 8-bit (single-byte) increments.
     private static readonly KeySizes[] BlowfishKeySizes = { new KeySizes(MinKeySizeBytes * 8, MaxKeySizeBytes * 8, 8) };
 
-    private bool disposed = false;
+    private bool _disposed = false;
 
-    private CipherBlockMode blockMode = CipherBlockMode.CBC;
+    private CipherBlockMode _blockMode = CipherBlockMode.CBC;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="Blowfish" /> class with default parameters.
@@ -113,10 +113,10 @@ public sealed class Blowfish
     /// </remarks>
     public CipherBlockMode BlockMode
     {
-        get => this.blockMode;
+        get => this._blockMode;
         set
         {
-            this.blockMode = value;
+            this._blockMode = value;
 
             // Keep the inherited Mode in sync where a direct CipherMode equivalent exists. Extended modes without a
             // mapping (e.g. CTR, OFB) intentionally leave ModeValue untouched.
@@ -243,7 +243,7 @@ public sealed class Blowfish
     /// </remarks>
     protected override void Dispose(bool disposing)
     {
-        if (!this.disposed)
+        if (!this._disposed)
         {
             if (disposing)
             {
@@ -252,7 +252,7 @@ public sealed class Blowfish
                 CryptoHelpers.Clear(this.IVValue!);
             }
 
-            this.disposed = true;
+            this._disposed = true;
         }
 
         base.Dispose(disposing);
@@ -315,9 +315,9 @@ public sealed class Blowfish
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this.disposed, this);
+        ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
-        if (this.disposed)
+        if (this._disposed)
             throw new ObjectDisposedException(nameof(Blowfish));
 #endif
     }

@@ -53,7 +53,7 @@ public sealed class Skipjack
     // Skipjack has a single fixed 80-bit key size; expressed as a single-entry range with skip size 0.
     private static readonly KeySizes[] SkipjackKeySizes = { new KeySizes(KeySizeBits, KeySizeBits, 0) };
 
-    private bool disposed = false;
+    private bool _disposed = false;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="Skipjack" /> class with the fixed 80-bit key size and 64-bit block size, CBC
@@ -202,7 +202,7 @@ public sealed class Skipjack
     /// </remarks>
     protected override void Dispose(bool disposing)
     {
-        if (!this.disposed)
+        if (!this._disposed)
         {
             if (disposing)
             {
@@ -211,7 +211,7 @@ public sealed class Skipjack
                 CryptoHelpers.Clear(this.IVValue!);
             }
 
-            this.disposed = true;
+            this._disposed = true;
         }
 
         base.Dispose(disposing);
@@ -273,9 +273,9 @@ public sealed class Skipjack
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this.disposed, this);
+        ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
-        if (this.disposed)
+        if (this._disposed)
             throw new ObjectDisposedException(nameof(Skipjack));
 #endif
     }

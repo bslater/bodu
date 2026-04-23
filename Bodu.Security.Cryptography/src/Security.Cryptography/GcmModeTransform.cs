@@ -49,12 +49,12 @@ public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
 {
     private const int DefaultTagSize = 16;
 
-    private readonly IBlockCipher cipher;
-    private readonly byte[] h;          // hash key = E(0^128)
-    private readonly byte[] j0;         // initial counter (base for tag and first keystream)
-    private readonly byte[] counter;    // running CTR counter (incremented per block)
-    private byte[]? aad;
-    private bool aadProcessed;
+    private readonly IBlockCipher _cipher;
+    private readonly byte[] _h;          // hash key = E(0^128)
+    private readonly byte[] _j0;         // initial _counter (base for tag and first keystream)
+    private readonly byte[] _counter;    // running CTR _counter (incremented per block)
+    private byte[]? _aad;
+    private bool _aadProcessed;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="GcmModeTransform" /> class.
@@ -66,23 +66,23 @@ public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="iv" /> length does not equal the cipher block size.</exception>
-    public GcmModeTransform(IBlockCipher cipher, byte[] iv)
+    public GcmModeTransform(IBlockCipher _cipher, byte[] iv)
     {
-        this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
+        this._cipher = _cipher ?? throw new ArgumentNullException(nameof(_cipher));
         if (iv is null) throw new ArgumentNullException(nameof(iv));
-        if (iv.Length != cipher.BlockSize)
+        if (iv.Length != _cipher.BlockSize)
             throw new ArgumentException(
-                $"IV length ({iv.Length}) must equal the cipher block size ({cipher.BlockSize}).",
+                $"IV length ({iv.Length}) must equal the _cipher block size ({_cipher.BlockSize}).",
                 nameof(iv));
 
         // H = E_K(0^blockSize) — the GHASH hash key.
-        this.h = new byte[cipher.BlockSize];
-        cipher.Encrypt(new byte[cipher.BlockSize], this.h);
+        this._h = new byte[_cipher.BlockSize];
+        _cipher.Encrypt(new byte[_cipher.BlockSize], this._h);
 
-        // J0 is the base counter for the tag; counter starts at J0 + 1 for data.
-        this.j0 = (byte[])iv.Clone();
-        this.counter = (byte[])iv.Clone();
-        IncrementCounter32(this.counter); // counter for first data block = J0 + 1
+        // J0 is the base _counter for the tag; _counter starts at J0 + 1 for data.
+        this._j0 = (byte[])iv.Clone();
+        this._counter = (byte[])iv.Clone();
+        IncrementCounter32(this._counter); // _counter for first data block = J0 + 1
     }
 
     /// <inheritdoc />
@@ -91,10 +91,10 @@ public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
     /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
     {
-        if (this.aadProcessed)
+        if (this._aadProcessed)
             throw new InvalidOperationException("AssociatedData has already been processed.");
-        this.aad = associatedData.ToArray();
-        this.aadProcessed = true;
+        this._aad = associatedData.ToArray();
+        this._aadProcessed = true;
     }
 
     /// <inheritdoc />
@@ -113,7 +113,7 @@ public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
         ApplyCtr(plaintext, ciphertext);
 
         // Compute tag: GHASH(H, AAD, C) XOR E(J0).
-        byte[] tag = ComputeTag(this.aad.AsSpan(), ciphertext);
+        byte[] tag = ComputeTag(this._aad.AsSpan(), ciphertext);
         tag.AsSpan().CopyTo(output.Slice(plaintext.Length));
 
         return required;
@@ -139,7 +139,7 @@ public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
         ReadOnlySpan<byte> receivedTag = ciphertextWithTag.Slice(plaintextLength);
 
         // Verify tag before decrypting (constant-time comparison).
-        byte[] expectedTag = ComputeTag(this.aad.AsSpan(), ciphertext);
+        byte[] expectedTag = ComputeTag(this._aad.AsSpan(), ciphertext);
         if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
             throw new CryptographicException("GCM authentication tag verification failed.");
 
@@ -157,10 +157,10 @@ public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
     /// </summary>
     private void EnsureAadProcessed()
     {
-        if (!this.aadProcessed)
+        if (!this._aadProcessed)
         {
-            this.aad = Array.Empty<byte>();
-            this.aadProcessed = true;
+            this._aad = Array.Empty<byte>();
+            this._aadProcessed = true;
         }
     }
 
@@ -172,13 +172,13 @@ public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
     /// <param name="output">The destination span; must be at least <paramref name="input" />.Length bytes.</param>
     private void ApplyCtr(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        int blockSize = this.cipher.BlockSize;
+        int blockSize = this._cipher.BlockSize;
         Span<byte> keystream = stackalloc byte[blockSize];
 
         for (int offset = 0; offset < input.Length; offset += blockSize)
         {
-            this.cipher.Encrypt(this.counter, keystream);
-            IncrementCounter32(this.counter);
+            this._cipher.Encrypt(this._counter, keystream);
+            IncrementCounter32(this._counter);
 
             int remaining = Math.Min(blockSize, input.Length - offset);
             for (int i = 0; i < remaining; i++)
@@ -192,26 +192,26 @@ public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
     /// <param name="aad">The associated authenticated data.</param>
     /// <param name="ciphertext">The ciphertext bytes authenticated by the tag.</param>
     /// <returns>The computed 128-bit GCM authentication tag.</returns>
-    private byte[] ComputeTag(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> ciphertext)
+    private byte[] ComputeTag(ReadOnlySpan<byte> _aad, ReadOnlySpan<byte> ciphertext)
     {
-        int blockSize = this.cipher.BlockSize;
+        int blockSize = this._cipher.BlockSize;
         byte[] y = new byte[blockSize]; // GHASH accumulator
 
         // GHASH over AAD.
-        GhashUpdate(y, aad);
+        GhashUpdate(y, _aad);
 
         // GHASH over ciphertext.
         GhashUpdate(y, ciphertext);
 
         // GHASH length block: [len(AAD)]_64 || [len(C)]_64 in bits, big-endian.
         byte[] lenBlock = new byte[blockSize];
-        WriteBigEndian64((ulong)aad.Length * 8, lenBlock, 0);
+        WriteBigEndian64((ulong)_aad.Length * 8, lenBlock, 0);
         WriteBigEndian64((ulong)ciphertext.Length * 8, lenBlock, 8);
         GhashBlock(y, lenBlock);
 
         // T = y ⊕ E(J0).
         byte[] eJ0 = new byte[blockSize];
-        this.cipher.Encrypt(this.j0, eJ0);
+        this._cipher.Encrypt(this._j0, eJ0);
         for (int i = 0; i < blockSize; i++)
             y[i] ^= eJ0[i];
 
@@ -223,7 +223,7 @@ public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
     /// <param name="data">The input bytes to fold into the GHASH state.</param>
     private void GhashUpdate(byte[] y, ReadOnlySpan<byte> data)
     {
-        int blockSize = this.cipher.BlockSize;
+        int blockSize = this._cipher.BlockSize;
         for (int offset = 0; offset < data.Length; offset += blockSize)
         {
             int remaining = Math.Min(blockSize, data.Length - offset);
@@ -240,7 +240,7 @@ public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
     {
         for (int i = 0; i < y.Length; i++)
             y[i] ^= block[i];
-        GhashMultiply(y, this.h, y);
+        GhashMultiply(y, this._h, y);
     }
 
     /// <summary>
@@ -251,11 +251,11 @@ public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
     /// <param name="x">The left operand block (16 bytes).</param>
     /// <param name="h">The hash subkey <c>H</c> (16 bytes).</param>
     /// <param name="result">The destination span (16 bytes); receives <c>x · H</c> in GF(2<sup>128</sup>).</param>
-    private static void GhashMultiply(ReadOnlySpan<byte> x, ReadOnlySpan<byte> h, Span<byte> result)
+    private static void GhashMultiply(ReadOnlySpan<byte> x, ReadOnlySpan<byte> _h, Span<byte> result)
     {
         Span<byte> z = stackalloc byte[16]; // accumulator
         Span<byte> v = stackalloc byte[16];
-        h.CopyTo(v);
+        _h.CopyTo(v);
 
         for (int i = 0; i < 128; i++)
         {
@@ -280,10 +280,10 @@ public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
     /// Increments the 32-bit big-endian counter in the last 4 bytes of <paramref name="counter" />.
     /// </summary>
     /// <param name="counter">The 16-byte CTR block; its low 32 bits are incremented in place per NIST SP 800-38D.</param>
-    private static void IncrementCounter32(byte[] counter)
+    private static void IncrementCounter32(byte[] _counter)
     {
-        for (int i = counter.Length - 1; i >= counter.Length - 4; i--)
-            if (++counter[i] != 0) break;
+        for (int i = _counter.Length - 1; i >= _counter.Length - 4; i--)
+            if (++_counter[i] != 0) break;
     }
 
     /// <summary>

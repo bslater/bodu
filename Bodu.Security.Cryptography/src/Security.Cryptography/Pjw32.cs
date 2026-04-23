@@ -25,12 +25,12 @@ namespace Bodu.Security.Cryptography;
 public sealed class Pjw32
     : System.Security.Cryptography.HashAlgorithm
 {
-    private bool disposed = false;
-    private uint workingHash;
+    private bool _disposed = false;
+    private uint _workingHash;
 #if !NET6_0_OR_GREATER
 
     // Required for .NET Standard 2.0 or older frameworks
-    private bool finalized;
+    private bool _finalized;
 #endif
 
     /// <summary>
@@ -54,9 +54,9 @@ public sealed class Pjw32
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
         State = 0;
-        finalized = false;
+        _finalized = false;
 #endif
-        this.workingHash = 0;
+        this._workingHash = 0;
     }
 
     /// <summary>
@@ -68,16 +68,16 @@ public sealed class Pjw32
     /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this.disposed) return;
+        if (this._disposed) return;
         if (disposing)
         {
             CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
-            this.workingHash = 0;
+            this._workingHash = 0;
             this.HashSizeValue = 0;
         }
 
-        this.disposed = true;
+        this._disposed = true;
         base.Dispose(disposing);
     }
 
@@ -108,7 +108,7 @@ public sealed class Pjw32
         ThrowHelper.ThrowIfLessThan(ibStart, 0);
         ThrowHelper.ThrowIfLessThan(cbSize, 0);
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
-        if (finalized)
+        if (_finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
@@ -132,10 +132,10 @@ public sealed class Pjw32
 
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
-        if (finalized)
+        if (_finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
-        uint v = this.workingHash;
+        uint v = this._workingHash;
 
         foreach (var b in source)
         {
@@ -146,7 +146,7 @@ public sealed class Pjw32
             v &= LowBitsMask;
         }
 
-        this.workingHash = v;
+        this._workingHash = v;
     }
 
     /// <summary>
@@ -158,13 +158,13 @@ public sealed class Pjw32
     {
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
-        if (finalized)
+        if (_finalized)
             throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
-        finalized = true;
+        _finalized = true;
         State = 2;
 #endif
         Span<byte> span = stackalloc byte[4];
-        BinaryPrimitives.WriteUInt32BigEndian(span, this.workingHash);
+        BinaryPrimitives.WriteUInt32BigEndian(span, this._workingHash);
         return span.ToArray();
     }
 
@@ -178,9 +178,9 @@ public sealed class Pjw32
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this.disposed, this);
+        ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
-        if (disposed)
+        if (_disposed)
             throw new ObjectDisposedException(nameof(Pjw32));
 #endif
     }

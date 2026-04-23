@@ -38,10 +38,10 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="../guides/cryptography/cipher-modes.html#ctr--parallel-seekable-stream-shaped">CTR walk-through in the cipher-modes guide</seealso>
 public sealed class CtrModeTransform : IBlockCipherModeTransform
 {
-    private readonly IBlockCipher cipher;
-    private readonly byte[] initialCounter;
-    private readonly byte[] counter;
-    private bool counterWrapped;
+    private readonly IBlockCipher _cipher;
+    private readonly byte[] _initialCounter;
+    private readonly byte[] _counter;
+    private bool _counterWrapped;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="CtrModeTransform" /> class.
@@ -56,17 +56,17 @@ public sealed class CtrModeTransform : IBlockCipherModeTransform
     /// <exception cref="ArgumentException">
     /// <paramref name="initialCounter" /> length does not equal the cipher block size.
     /// </exception>
-    public CtrModeTransform(IBlockCipher cipher, byte[] initialCounter)
+    public CtrModeTransform(IBlockCipher _cipher, byte[] _initialCounter)
     {
-        this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
-        if (initialCounter is null) throw new ArgumentNullException(nameof(initialCounter));
-        if (initialCounter.Length != cipher.BlockSize)
+        this._cipher = _cipher ?? throw new ArgumentNullException(nameof(_cipher));
+        if (_initialCounter is null) throw new ArgumentNullException(nameof(_initialCounter));
+        if (_initialCounter.Length != _cipher.BlockSize)
             throw new ArgumentException(
-                $"initialCounter length ({initialCounter.Length}) must equal the cipher block size ({cipher.BlockSize}).",
-                nameof(initialCounter));
+                $"_initialCounter length ({_initialCounter.Length}) must equal the _cipher block size ({_cipher.BlockSize}).",
+                nameof(_initialCounter));
 
-        this.initialCounter = (byte[])initialCounter.Clone();
-        this.counter = (byte[])initialCounter.Clone();
+        this._initialCounter = (byte[])_initialCounter.Clone();
+        this._counter = (byte[])_initialCounter.Clone();
     }
 
     /// <inheritdoc />
@@ -74,16 +74,16 @@ public sealed class CtrModeTransform : IBlockCipherModeTransform
     {
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 
-        int blockSize = this.cipher.BlockSize;
+        int blockSize = this._cipher.BlockSize;
         Span<byte> keystream = stackalloc byte[blockSize];
 
         for (int offset = 0; offset < input.Length; offset += blockSize)
         {
-            if (this.counterWrapped)
+            if (this._counterWrapped)
                 throw new CryptographicException(
-                    "The CTR counter has wrapped to its initial value. Continuing would reuse the keystream.");
+                    "The CTR _counter has wrapped to its initial value. Continuing would reuse the keystream.");
 
-            this.cipher.Encrypt(this.counter, keystream);
+            this._cipher.Encrypt(this._counter, keystream);
             this.IncrementCounter();
 
             int len = Math.Min(blockSize, input.Length - offset);
@@ -102,11 +102,11 @@ public sealed class CtrModeTransform : IBlockCipherModeTransform
     /// </summary>
     private void IncrementCounter()
     {
-        for (int i = this.counter.Length - 1; i >= 0; i--)
-            if (++this.counter[i] != 0) break;
+        for (int i = this._counter.Length - 1; i >= 0; i--)
+            if (++this._counter[i] != 0) break;
 
-        // Wrap detected: counter has returned to its initial value.
-        if (this.counter.AsSpan().SequenceEqual(this.initialCounter))
-            this.counterWrapped = true;
+        // Wrap detected: _counter has returned to its initial value.
+        if (this._counter.AsSpan().SequenceEqual(this._initialCounter))
+            this._counterWrapped = true;
     }
 }

@@ -43,9 +43,9 @@ namespace Bodu.Security.Cryptography;
 /// </remarks>
 public sealed class XtsModeTransform : IBlockCipherModeTransform
 {
-    private readonly IBlockCipher dataCipher;
-    private readonly IBlockCipher tweakCipher;
-    private readonly byte[] tweak; // sector number / tweak value
+    private readonly IBlockCipher _dataCipher;
+    private readonly IBlockCipher _tweakCipher;
+    private readonly byte[] _tweak; // sector number / _tweak value
 
     /// <summary>
     /// Initialises a new instance of the <see cref="XtsModeTransform" /> class.
@@ -65,35 +65,35 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
     /// <exception cref="ArgumentException">
     /// Block sizes differ, or <paramref name="tweak" /> length does not equal the block size.
     /// </exception>
-    public XtsModeTransform(IBlockCipher dataCipher, IBlockCipher tweakCipher, byte[] tweak)
+    public XtsModeTransform(IBlockCipher _dataCipher, IBlockCipher _tweakCipher, byte[] _tweak)
     {
-        this.dataCipher = dataCipher ?? throw new ArgumentNullException(nameof(dataCipher));
-        this.tweakCipher = tweakCipher ?? throw new ArgumentNullException(nameof(tweakCipher));
-        if (tweak is null) throw new ArgumentNullException(nameof(tweak));
-        if (tweakCipher.BlockSize != dataCipher.BlockSize)
+        this._dataCipher = _dataCipher ?? throw new ArgumentNullException(nameof(_dataCipher));
+        this._tweakCipher = _tweakCipher ?? throw new ArgumentNullException(nameof(_tweakCipher));
+        if (_tweak is null) throw new ArgumentNullException(nameof(_tweak));
+        if (_tweakCipher.BlockSize != _dataCipher.BlockSize)
             throw new ArgumentException(
-                $"tweakCipher block size ({tweakCipher.BlockSize}) must equal dataCipher block size ({dataCipher.BlockSize}).",
-                nameof(tweakCipher));
-        if (tweak.Length != dataCipher.BlockSize)
+                $"_tweakCipher block size ({_tweakCipher.BlockSize}) must equal _dataCipher block size ({_dataCipher.BlockSize}).",
+                nameof(_tweakCipher));
+        if (_tweak.Length != _dataCipher.BlockSize)
             throw new ArgumentException(
-                $"Tweak length ({tweak.Length}) must equal the cipher block size ({dataCipher.BlockSize}).",
-                nameof(tweak));
+                $"Tweak length ({_tweak.Length}) must equal the cipher block size ({_dataCipher.BlockSize}).",
+                nameof(_tweak));
 
-        this.tweak = (byte[])tweak.Clone();
+        this._tweak = (byte[])_tweak.Clone();
     }
 
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        int blockSize = this.dataCipher.BlockSize;
+        int blockSize = this._dataCipher.BlockSize;
         if (input.Length % blockSize != 0)
             throw new ArgumentException(
                 $"XTS requires block-aligned input; {input.Length} is not a multiple of {blockSize}.", nameof(input));
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 
-        // T_0 = tweakCipher.Encrypt(sector_number)
+        // T_0 = _tweakCipher.Encrypt(sector_number)
         Span<byte> T = stackalloc byte[blockSize];
-        this.tweakCipher.Encrypt(this.tweak, T);
+        this._tweakCipher.Encrypt(this._tweak, T);
 
         Span<byte> buf = stackalloc byte[blockSize];
 
@@ -105,12 +105,12 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
             // XEX: out = cipher(in XOR T) XOR T
             for (int i = 0; i < blockSize; i++) buf[i] = (byte)(inBlock[i] ^ T[i]);
             if (encrypt)
-                this.dataCipher.Encrypt(buf, outBlock);
+                this._dataCipher.Encrypt(buf, outBlock);
             else
-                this.dataCipher.Decrypt(buf, outBlock);
+                this._dataCipher.Decrypt(buf, outBlock);
             for (int i = 0; i < blockSize; i++) outBlock[i] ^= T[i];
 
-            // Advance tweak: T = α ⊗ T in GF(2^128), little-endian, poly 0x87 reduction.
+            // Advance _tweak: T = α ⊗ T in GF(2^128), little-endian, poly 0x87 reduction.
             GfDouble(T);
         }
 
