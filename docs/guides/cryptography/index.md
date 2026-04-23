@@ -1,12 +1,12 @@
 ---
-title: Cryptography guides
+title: Bodu.Security.Cryptography guides
 ---
 
-# Cryptography guides
+# Bodu.Security.Cryptography guides
 
 Recipe-style walk-throughs for using **Bodu.Security.Cryptography** in real applications — encrypting and decrypting data with the right mode, padding, and IV; and choosing the right hash for the job.
 
-If you're looking for the generated API reference, see the [Bodu.Security.Cryptography namespace page](../../api/Bodu.Security.Cryptography.html).
+If you're looking for the generated API reference, see the [Bodu.Security.Cryptography namespace page](../../apidoc/Bodu.Security.Cryptography.md). For non-cryptographic checksums (CRC, Fletcher), see the [Bodu.IO.Hashing guides](../io-hashing/).
 
 ## Start here
 
@@ -55,7 +55,9 @@ All five share the same high-level shape: a `SymmetricAlgorithm` (or `TweakableS
 
 ## Hashing
 
-[Using hashes and checksums](hashing.md) — concrete recipes for non-cryptographic checksums (Fletcher, Adler, FNV, CRC), keyed short-input hashes (SipHash), cryptographic digests (Tiger), and streaming integrity with `MerkleTreeHash` / `ParallelMerkleTreeHash`.
+[Using hashes and checksums](hashing.md) — concrete recipes for the classic non-cryptographic families (Adler, FNV, CityHash), keyed short-input hashes (SipHash), cryptographic digests (Tiger), and streaming integrity with `MerkleTreeHash` / `ParallelMerkleTreeHash`.
+
+For CRC and Fletcher checksums on `System.IO.Hashing.NonCryptographicHashAlgorithm`, see the [Bodu.IO.Hashing guides](../io-hashing/).
 
 ## Related concepts
 

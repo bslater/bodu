@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" role="img" aria-labelledby="crc-title crc-desc">
+  <title id="crc-title">Table-driven CRC pipeline</title>
+  <desc id="crc-desc">A table-driven CRC pipeline: each message byte is XORed with the low byte of the accumulator, the resulting index looks up a precomputed word in the 256-entry table, the accumulator shifts right by eight, and the table word is XORed back in. After the final byte, the accumulator is XORed with XOR-out, reflected (if configured), and masked to the CRC width.</desc>
+
+  <defs>
+    <style>
+      .bg { fill: #0F172A; }
+      .panel { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .header { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .title { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .formula { fill: #94A3B8; font: italic 12px/1 "Cambria",Georgia,serif; }
+      .label { fill: #F8FAFC; font: 700 13px/1 "Segoe UI",Arial,sans-serif; }
+      .sub { fill: #CBD5E1; font: 400 11px/1 "Segoe UI",Arial,sans-serif; }
+      .sub-muted { fill: #94A3B8; font: 400 10.5px/1 "Segoe UI",Arial,sans-serif; }
+      .cipher-e { fill: #3B82F6; stroke: #60A5FA; stroke-width: 1; }
+      .accum { fill: #14B8A6; stroke: #2DD4BF; stroke-width: 1; }
+      .byte { fill: #F59E0B; }
+      .tableblock { fill: #A78BFA; stroke: #C4B5FD; stroke-width: 1; }
+      .tag { fill: #FBBF24; stroke: #F59E0B; stroke-width: 1; }
+      .wire { stroke: #CBD5E1; stroke-width: 1.6; fill: none; }
+      .wire-byte { stroke: #FBBF24; stroke-width: 1.6; fill: none; }
+      .wire-lookup { stroke: #C4B5FD; stroke-width: 1.6; fill: none; }
+      .xor { fill: #0F172A; stroke: #F8FAFC; stroke-width: 1.6; }
+      .xor-sym { fill: #F8FAFC; font: 700 14px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .cipher-text { fill: #F8FAFC; font: 700 14px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .reg-cell { fill: #1E293B; stroke: #60A5FA; stroke-width: 1.2; }
+      .reg-text { fill: #E2E8F0; font: 700 11px/1 "Consolas","Menlo",monospace; text-anchor: middle; }
+    </style>
+    <marker id="arr-d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#CBD5E1"/>
+    </marker>
+    <marker id="arr-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#FBBF24"/>
+    </marker>
+    <marker id="arr-p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#C4B5FD"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="820" height="320"/>
+
+  <g transform="translate(10 10)">
+    <rect class="panel" width="800" height="300" rx="8"/>
+    <rect class="header" width="800" height="30" rx="8"/>
+    <rect class="header" y="22" width="800" height="8"/>
+    <text class="title" x="16" y="20">Table-driven CRC — one byte per iteration</text>
+    <text class="formula" x="800" y="20" text-anchor="end" dx="-16">reg ← (reg » 8) ⊕ table[(byte ⊕ reg) &amp; 0xFF]</text>
+
+    <!-- incoming byte on the left -->
+    <g transform="translate(70 90)">
+      <rect class="byte" x="-34" y="-13" width="68" height="26" rx="4"/>
+      <text class="label" x="0" y="5" text-anchor="middle" fill="#0F172A">byte b</text>
+    </g>
+    <text class="sub-muted" x="16" y="130" text-anchor="start">(reflect-in if set)</text>
+
+    <!-- XOR mixer: b ⊕ low(reg) -->
+    <g transform="translate(230 90)">
+      <circle class="xor" cx="0" cy="0" r="14"/>
+      <text class="xor-sym" x="0" y="5">⊕</text>
+    </g>
+    <line class="wire-byte" x1="104" y1="90" x2="213" y2="90" marker-end="url(#arr-b)"/>
+
+    <!-- accumulator register on the right top -->
+    <g transform="translate(590 80)">
+      <rect class="panel" x="-110" y="-24" width="220" height="48" rx="6"/>
+      <text class="sub" x="-104" y="-6">accumulator (reg)</text>
+      <g>
+        <rect class="reg-cell" x="-100" y="0"  width="30" height="20" rx="3"/>
+        <rect class="reg-cell" x="-68"  y="0"  width="30" height="20" rx="3"/>
+        <rect class="reg-cell" x="-36"  y="0"  width="30" height="20" rx="3"/>
+        <rect class="reg-cell" x="-4"   y="0"  width="30" height="20" rx="3"/>
+        <rect class="reg-cell" x="28"   y="0"  width="30" height="20" rx="3"/>
+        <rect class="reg-cell" x="60"   y="0"  width="30" height="20" rx="3"/>
+      </g>
+      <g class="reg-text">
+        <text x="-85" y="14">07</text>
+        <text x="-53" y="14">6D</text>
+        <text x="-21" y="14">C4</text>
+        <text x="11"  y="14">19</text>
+        <text x="43"  y="14">99</text>
+        <text x="75"  y="14">09</text>
+      </g>
+    </g>
+
+    <!-- low byte tap from accumulator back to XOR -->
+    <path class="wire" d="M 500 90 C 430 90, 320 90, 244 90" stroke-dasharray="4 3"/>
+    <text class="sub-muted" x="400" y="82" text-anchor="middle">low byte of reg</text>
+
+    <!-- lookup index wire to the table -->
+    <g transform="translate(360 150)">
+      <rect class="cipher-e" x="-44" y="-14" width="88" height="28" rx="5"/>
+      <text class="cipher-text" x="0" y="5">index &amp; 0xFF</text>
+    </g>
+    <path class="wire-byte" d="M 230 104 L 230 150 L 316 150" marker-end="url(#arr-b)"/>
+
+    <!-- table -->
+    <g transform="translate(560 170)">
+      <rect class="panel" x="0" y="0" width="170" height="110" rx="8"/>
+      <rect class="header" x="0" y="0" width="170" height="22" rx="8"/>
+      <rect class="header" x="0" y="14" width="170" height="8"/>
+      <text class="label" x="85" y="16" text-anchor="middle" font-size="12">table[256]</text>
+      <g class="sub-muted" font-family="'Consolas','Menlo',monospace" font-size="10">
+        <text x="10" y="38">1A</text><text x="46" y="38">2D1C6E23</text>
+        <text x="10" y="54">1B</text><text x="46" y="54">5AB5CB18</text>
+        <text x="10" y="70" fill="#60A5FA">1C</text><text x="46" y="70" fill="#60A5FA">072DB8A5</text>
+        <text x="10" y="86">1D</text><text x="46" y="86">6CB4BBBE</text>
+        <text x="10" y="102">1E</text><text x="46" y="102">0DC0E0DA</text>
+      </g>
+    </g>
+    <path class="wire-lookup" d="M 404 150 L 490 150 L 490 210 L 556 210" marker-end="url(#arr-p)"/>
+
+    <!-- shift + XOR combine -->
+    <g transform="translate(360 220)">
+      <circle class="xor" cx="0" cy="0" r="14"/>
+      <text class="xor-sym" x="0" y="5">⊕</text>
+    </g>
+    <!-- reg » 8 path -->
+    <path class="wire" d="M 590 104 L 590 130 L 470 130 L 470 220 L 374 220" marker-end="url(#arr-d)"/>
+    <text class="sub-muted" x="468" y="124">reg » 8</text>
+
+    <!-- table word into lower XOR -->
+    <path class="wire-lookup" d="M 560 220 L 374 220" marker-end="url(#arr-p)"/>
+    <text class="sub-muted" x="480" y="213" text-anchor="middle">table[idx]</text>
+
+    <!-- back into accumulator -->
+    <path class="wire" d="M 346 220 L 210 220 L 210 104 L 480 104" stroke-dasharray="4 3"/>
+    <text class="sub-muted" x="214" y="240" text-anchor="start">updated reg (loop for next byte)</text>
+
+    <!-- Finalisation strip -->
+    <g transform="translate(40 262)">
+      <rect class="tag" x="0" y="-14" width="720" height="28" rx="4" opacity="0.92"/>
+      <text class="label" x="12" y="5" fill="#0F172A">Finalise:</text>
+      <text class="sub" x="90" y="5" fill="#0F172A">reg ⊕= XOR-out &#160;·&#160; reflect-out if set &#160;·&#160; mask to width N (1 ≤ N ≤ 64) &#160;·&#160; emit as big-endian bytes</text>
+    </g>
+  </g>
+</svg>
