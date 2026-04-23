@@ -8,9 +8,9 @@ using Bodu.Extensions;
 using System;
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
 
-namespace Bodu.Security.Cryptography;
+
+namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Computes a 64-bit (8-byte) non-cryptographic hash using the <c>CityHash64</c> variant by Google. This class cannot be inherited.
