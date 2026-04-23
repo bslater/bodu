@@ -35,6 +35,7 @@ public static partial class DateTimeExtensions
     /// </para>
     /// <para>For custom models, use <see cref="Quarter(DateTime, IQuarterDefinitionProvider)"/> instead.</para>
     /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown when the method preconditions are not met.</exception>
     public static int Quarter(this DateTime dateTime, CalendarQuarterDefinition definition)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(definition);

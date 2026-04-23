@@ -52,6 +52,7 @@ public static partial class BufferConverter
     /// <returns>A new array of <typeparamref name="T"/> elements.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> is negative or exceeds the available bytes.</exception>
     /// <remarks>The method assumes that the span represents elements of type <typeparamref name="T"/> using platform-native endianness.</remarks>
+    /// <exception cref="ArgumentException">Thrown when a span or array argument does not meet a length or offset precondition.</exception>
     public static T[] ToArray<T>(this ReadOnlySpan<byte> sourceSpan, int count)
         where T : unmanaged
     {

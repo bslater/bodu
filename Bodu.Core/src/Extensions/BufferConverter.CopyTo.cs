@@ -85,6 +85,7 @@ public static partial class BufferConverter
     /// <exception cref="ArgumentOutOfRangeException">
     /// The specified <paramref name="count"/> exceeds the available elements in the source or target span.
     /// </exception>
+    /// <exception cref="ArgumentException">Thrown when a span or array argument does not meet a length or offset precondition.</exception>
     public static void CopyTo<T>(this ReadOnlySpan<byte> sourceSpan, Span<T> targetSpan, int count)
         where T : unmanaged
     {

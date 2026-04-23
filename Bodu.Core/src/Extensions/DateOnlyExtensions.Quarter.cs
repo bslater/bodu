@@ -57,6 +57,7 @@ public static partial class DateOnlyExtensions
     /// This method supports predefined quarter structures aligned to calendar or financial years. The result is based on adjusting the
     /// input month by the definition offset and mapping the result to a 1-based quarter.
     /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown when the method preconditions are not met.</exception>
     public static int Quarter(this DateOnly date, CalendarQuarterDefinition definition)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(definition);
