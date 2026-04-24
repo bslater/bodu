@@ -42,19 +42,19 @@ public sealed class JSHash
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
-        uint v = _workingHash;
+        uint v = this._workingHash;
         foreach (byte b in source)
         {
             v ^= (v << 5) + (v >> 2) + b;
         }
 
-        _workingHash = v;
+        this._workingHash = v;
     }
 
     /// <inheritdoc />
-    public override void Reset() => _workingHash = Seed;
+    public override void Reset() => this._workingHash = Seed;
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt32LittleEndian(destination, _workingHash);
+        BinaryPrimitives.WriteUInt32LittleEndian(destination, this._workingHash);
 }

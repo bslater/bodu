@@ -20,7 +20,7 @@ public partial class CrcTests
     /// The name of the static property on <see cref="CrcStandard" /> that returns the expected standard instance;
     /// used to retrieve the canonical <see cref="CrcStandard" /> for comparison.
     /// </param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(CrcTestVariant.Crc8_SMBUS)]
     [DataRow(CrcTestVariant.Crc16_ARC)]
     [DataRow(CrcTestVariant.Crc32_IsoHdlc)]

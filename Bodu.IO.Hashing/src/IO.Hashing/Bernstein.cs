@@ -67,9 +67,9 @@ public sealed class Bernstein
     public Bernstein(uint initialValue, bool useModifiedAlgorithm)
         : base(HashLength)
     {
-        _initialValue = initialValue;
-        _useModified = useModifiedAlgorithm;
-        _workingHash = initialValue;
+        this._initialValue = initialValue;
+        this._useModified = useModifiedAlgorithm;
+        this._workingHash = initialValue;
     }
 
     /// <summary>
@@ -82,13 +82,13 @@ public sealed class Bernstein
     /// </exception>
     public uint InitialValue
     {
-        get => _initialValue;
+        get => this._initialValue;
 
         set
         {
-            ThrowIfInvalidState();
-            _initialValue = value;
-            _workingHash = value;
+            this.ThrowIfInvalidState();
+            this._initialValue = value;
+            this._workingHash = value;
         }
     }
 
@@ -105,12 +105,12 @@ public sealed class Bernstein
     /// </exception>
     public bool UseModifiedAlgorithm
     {
-        get => _useModified;
+        get => this._useModified;
 
         set
         {
-            ThrowIfInvalidState();
-            _useModified = value;
+            this.ThrowIfInvalidState();
+            this._useModified = value;
         }
     }
 
@@ -120,53 +120,53 @@ public sealed class Bernstein
         if (source.Length == 0)
             return;
 
-        if (_useModified)
-            AppendModified(source);
+        if (this._useModified)
+            this.AppendModified(source);
         else
-            AppendOriginal(source);
+            this.AppendOriginal(source);
 
-        _started = true;
+        this._started = true;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        _workingHash = _initialValue;
-        _started = false;
+        this._workingHash = this._initialValue;
+        this._started = false;
     }
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt32BigEndian(destination, _workingHash);
+        BinaryPrimitives.WriteUInt32BigEndian(destination, this._workingHash);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendOriginal(ReadOnlySpan<byte> source)
     {
-        uint v = _workingHash;
+        uint v = this._workingHash;
         foreach (byte b in source)
         {
             v = ((v << 5) + v) + b;
         }
 
-        _workingHash = v;
+        this._workingHash = v;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendModified(ReadOnlySpan<byte> source)
     {
-        uint v = _workingHash;
+        uint v = this._workingHash;
         foreach (byte b in source)
         {
             v = ((v << 5) + v) ^ b;
         }
 
-        _workingHash = v;
+        this._workingHash = v;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfInvalidState()
     {
-        if (_started)
+        if (this._started)
             throw new CryptographicUnexpectedOperationException(ReconfigurationNotAllowed);
     }
 }

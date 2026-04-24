@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Ansix923Padding.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -35,7 +35,9 @@ public sealed class Ansix923Padding : IPaddingStrategy
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
     {
         if (blockSize <= 0)
-            throw new ArgumentOutOfRangeException(nameof(blockSize), "Block size must be greater than zero.");
+            throw new ArgumentOutOfRangeException(
+                nameof(blockSize),
+                string.Format(ResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
 
         int paddingLength = blockSize - (input.Length % blockSize);
         if (paddingLength == 0)

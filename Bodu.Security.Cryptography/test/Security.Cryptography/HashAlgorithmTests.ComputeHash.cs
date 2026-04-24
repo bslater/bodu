@@ -180,20 +180,23 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     public void ComputeHash_WhenUsingIncrementalInput_ShouldMatchExpected(TVariant variant)
     {
         var specification = GetSpecification(variant);
-        var algorithm = CreateAlgorithm(variant);
         var expectedHashes = GetExpectedHashesForIncrementalInput(variant).ToArray();
 
         if (expectedHashes.Length == 0)
+        {
             Assert.Inconclusive($"No expected hashes defined for variant {variant}.");
+            return;
+        }
 
-        int stepCount = algorithm.InputBlockSize > 1
-            ? algorithm.InputBlockSize * 8
+        int stepCount = specification.InputBlockSize > 1
+            ? specification.InputBlockSize * 8
             : 16;
 
         Assert.AreEqual(stepCount, expectedHashes.Length,
             $"Expected {stepCount} algorithm entries for variant '{variant}' " +
-            $"(InputBlockSize={algorithm.InputBlockSize}), but got {expectedHashes.Length}.");
+            $"(InputBlockSize={specification.InputBlockSize}), but got {expectedHashes.Length}.");
 
+        var algorithm = CreateAlgorithm(variant);
         byte[] input = new byte[stepCount];
         for (int i = 0; i < stepCount; i++)
         {

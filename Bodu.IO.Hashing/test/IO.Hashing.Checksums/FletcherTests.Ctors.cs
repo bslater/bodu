@@ -20,7 +20,7 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
     /// the literal <c>"Invalid hash size:"</c> prefix declared in the base constructor.
     /// </summary>
     /// <param name="hashSize">The invalid hash size under test.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0)]
     [DataRow(1)]
     [DataRow(8)]
@@ -42,7 +42,7 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
     /// </summary>
     /// <param name="hashSize">The valid hash size under test.</param>
     /// <param name="expectedBytes">The expected <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.HashLengthInBytes" />.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(16, 2)]
     [DataRow(32, 4)]
     [DataRow(64, 8)]

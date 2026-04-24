@@ -13,6 +13,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Globalization.Calendar.Plugin1.TestAssembly\**" />
+    <Compile Remove="Globalization.Calendar.Plugin2.TestAssembly\**" />
+    <EmbeddedResource Remove="Globalization.Calendar.Plugin1.TestAssembly\**" />
+    <EmbeddedResource Remove="Globalization.Calendar.Plugin2.TestAssembly\**" />
+    <None Remove="Globalization.Calendar.Plugin1.TestAssembly\**" />
+    <None Remove="Globalization.Calendar.Plugin2.TestAssembly\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="10.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

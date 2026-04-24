@@ -215,7 +215,7 @@ public class CrcLookupTableCacheTests
     /// <summary>
     /// Verifies that the <see cref="CrcLookupTableCache" /> throws an exception when the <paramref name="size" /> is outside the valid range.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0, false)] // Below min size
     [DataRow(16, true)] // Valid size
     [DataRow(64, true)] // Valid size
@@ -246,7 +246,7 @@ public class CrcLookupTableCacheTests
     /// whose <c>ParamName</c> is <c>size</c>, confirming the <see cref="ThrowHelper" /> contract propagates
     /// through the cache lookup path.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(-1)]
     [DataRow(0)]
     [DataRow(65)]
@@ -262,7 +262,7 @@ public class CrcLookupTableCacheTests
     /// Verifies that <see cref="CrcLookupTableCache.GetLookupTable" /> succeeds at the inclusive boundary
     /// values <see cref="CrcStandard.MinSize" /> (1-bit) and <see cref="CrcStandard.MaxSize" /> (64-bit).
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(1, 2)]
     [DataRow(64, 256)]
     public void GetLookupTable_WhenSizeIsBoundaryValue_ShouldReturnExpectedTable(int size, int expectedLength)

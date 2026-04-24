@@ -54,9 +54,9 @@ public sealed class Luhn
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)
     {
-        int sumEven = _sumEvenHypothesis;
-        int sumOdd = _sumOddHypothesis;
-        int count = _count;
+        int sumEven = this._sumEvenHypothesis;
+        int sumOdd = this._sumOddHypothesis;
+        int count = this._count;
 
         for (int i = 0; i < digits.Length; i++)
         {
@@ -84,23 +84,23 @@ public sealed class Luhn
             count++;
         }
 
-        _sumEvenHypothesis = sumEven;
-        _sumOddHypothesis = sumOdd;
-        _count = count;
+        this._sumEvenHypothesis = sumEven;
+        this._sumOddHypothesis = sumOdd;
+        this._count = count;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        _sumEvenHypothesis = 0;
-        _sumOddHypothesis = 0;
-        _count = 0;
+        this._sumEvenHypothesis = 0;
+        this._sumOddHypothesis = 0;
+        this._count = 0;
     }
 
     /// <inheritdoc />
     public override char GetCurrentCheckDigit()
     {
-        int sum = (_count & 1) == 0 ? _sumEvenHypothesis : _sumOddHypothesis;
+        int sum = (this._count & 1) == 0 ? this._sumEvenHypothesis : this._sumOddHypothesis;
         return (char)('0' + ((10 - (sum % 10)) % 10));
     }
 

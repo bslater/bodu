@@ -131,7 +131,7 @@ public sealed partial class CityHash128Tests
     /// Verifies that hashing the same bytes through two independent instances yields identical digests.
     /// </summary>
     /// <param name="length">The input length under test, in bytes.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0)]
     [DataRow(1)]
     [DataRow(7)]
@@ -163,7 +163,7 @@ public sealed partial class CityHash128Tests
     /// internal length paths.
     /// </summary>
     /// <param name="length">The input length under test, in bytes.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(8)]
     [DataRow(64)]
     [DataRow(200)]

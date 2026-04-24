@@ -119,13 +119,11 @@ public partial class CrcTests
             {
                 "00", "00", "07", "1B", "48", "E3", "BC", "2F",
                 "D8", "3E", "85", "A4", "44", "FF", "D0", "14",
-
             },
             CrcTestVariant.Crc16_ARC => new[]
             {
                 "0000", "0000", "C1C0", "8051", "10A1", "A10F", "0EBB", "BAC6",
                 "0671", "F0C4", "0442", "C3C4", "C596", "5656", "17FB", "3ACA",
-
             },
             CrcTestVariant.Crc32_IsoHdlc => new[]
             {
@@ -133,7 +131,6 @@ public partial class CrcTests
                 "1386B98B", "CCD35A51", "4ACFEB30", "F90958AD",
                 "9F68AA88", "0243E1BC", "46D76C45", "E18E2DAD",
                 "65C97092", "B846FEE6", "C856EF69", "5E676CA0",
-
             },
             CrcTestVariant.Crc64_Ecma182 => new[]
             {
@@ -145,8 +142,8 @@ public partial class CrcTests
                 "322F32767C451689", "D0C0D1646DAA271F", "9864919E39622D30", "271231EDF36DCA2D",
                 "A91D61CFB075AD77", "25ED4B42D6CB4EA7", "BB87EEC69AD3C24C", "399E9CC9BE4539B2",
                 "3EA90075978753D3", "36050E7F53F83C63", "59C1581472B10E12", "616C064ADBD8E4D5",
-
             },
+            _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
         };
 
     private static CrcStandard StandardFor(CrcTestVariant variant) => variant switch

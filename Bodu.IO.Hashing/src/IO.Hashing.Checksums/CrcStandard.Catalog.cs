@@ -15,9 +15,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
 
-#nullable disable warnings
 public sealed partial class CrcStandard
 {
+#pragma warning disable CS8669 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. Auto-generated code requires an explicit '#nullable' directive in source.
+
     /// <summary>Compact value-type row in the packed catalogue data table. Indexed by <see cref="CrcStandards" /> ordinal.</summary>
     private readonly struct CatalogEntry
     {
@@ -124,7 +125,7 @@ public sealed partial class CrcStandard
         new CatalogEntry("CRC-16/XMODEM", 16, 0x1021UL, 0x0000UL, false, false, 0x0000UL),
         new CatalogEntry("CRC-17/CAN-FD", 17, 0x1685BUL, 0x00000UL, false, false, 0x00000UL),
         new CatalogEntry("CRC-21/CAN-FD", 21, 0x102899UL, 0x000000UL, false, false, 0x000000UL),
-        new CatalogEntry("CRC-24/BLE", 24, 0x00065BUL, 0x555555UL, true, true, 0x000000UL),
+        new CatalogEntry("CRC-24/BLE", 24, 0x00065BUL, 0x555555UL, true, true, 0x000000UL),  
         new CatalogEntry("CRC-24/FLEXRAY-A", 24, 0x5D6DCBUL, 0xFEDCBAUL, false, false, 0x000000UL),
         new CatalogEntry("CRC-24/FLEXRAY-B", 24, 0x5D6DCBUL, 0xABCDEFUL, false, false, 0x000000UL),
         new CatalogEntry("CRC-24/INTERLAKEN", 24, 0x328B63UL, 0xFFFFFFUL, false, false, 0xFFFFFFUL),
@@ -390,5 +391,5 @@ public sealed partial class CrcStandard
         IReadOnlyList<CrcStandard>? winner = Interlocked.CompareExchange(ref s_all, readOnly, null);
         return winner ?? readOnly;
     }
+#pragma warning restore CS8669 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. Auto-generated code requires an explicit '#nullable' directive in source.
 }
-#nullable enable warnings

@@ -96,14 +96,14 @@ public abstract class CityHash<T>
     public override void Append(ReadOnlySpan<byte> source)
     {
         if (source.Length > 0)
-            _inputBuffer.Write(source);
+            this._inputBuffer.Write(source);
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        _inputBuffer.SetLength(0);
-        _inputBuffer.Position = 0;
+        this._inputBuffer.SetLength(0);
+        this._inputBuffer.Position = 0;
     }
 
     /// <inheritdoc />
@@ -111,9 +111,9 @@ public abstract class CityHash<T>
     {
         // CityHash is a one-shot algorithm; finalisation re-runs over the accumulated buffer so that
         // GetCurrentHash remains non-destructive and may be invoked multiple times.
-        byte[] data = _inputBuffer.ToArray();
-        byte[] digest = ComputeHashCore(data);
-        digest.AsSpan(0, HashLengthInBytes).CopyTo(destination);
+        byte[] data = this._inputBuffer.ToArray();
+        byte[] digest = this.ComputeHashCore(data);
+        digest.AsSpan(0, this.HashLengthInBytes).CopyTo(destination);
     }
 
     /// <summary>

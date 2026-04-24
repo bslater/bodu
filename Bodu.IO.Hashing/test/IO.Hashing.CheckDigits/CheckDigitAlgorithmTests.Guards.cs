@@ -20,7 +20,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     [DataRow('a')]
     [DataRow('Z')]
     [DataRow('\0')]
-    [DataTestMethod]
+    [TestMethod]
     public void Append_WhenCharacterIsNotAnAsciiDigit_ShouldThrowArgumentOutOfRangeException(char invalid)
     {
         TAlgorithm algorithm = CreateAlgorithm();

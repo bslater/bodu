@@ -84,8 +84,7 @@ public sealed class SegmentedBuffer<T> :
     {
         get
         {
-            if ((uint)index >= (uint)_count)
-                throw new ArgumentOutOfRangeException(nameof(index));
+            ThrowHelper.ThrowIfGreaterThanOther(index, _count - 1);
 
             int segmentIndex = index / _segmentSize;
             int offset = index % _segmentSize;
@@ -94,8 +93,7 @@ public sealed class SegmentedBuffer<T> :
 
         set
         {
-            if ((uint)index >= (uint)_count)
-                throw new ArgumentOutOfRangeException(nameof(index));
+            ThrowHelper.ThrowIfGreaterThanOther(index, _count);
 
             int segmentIndex = index / _segmentSize;
             int offset = index % _segmentSize;

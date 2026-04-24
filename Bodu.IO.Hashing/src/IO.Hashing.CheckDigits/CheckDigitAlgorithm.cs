@@ -65,7 +65,7 @@ public abstract class CheckDigitAlgorithm
     /// Thrown when <paramref name="digit" /> is outside the range <c>'0'</c> to <c>'9'</c>.
     /// </exception>
     public void Append(char digit) =>
-        Append([digit]);
+        this.Append([digit]);
 
     /// <summary>
     /// Resets the algorithm to its initial state, discarding any digits previously absorbed.

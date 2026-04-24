@@ -45,7 +45,7 @@ public sealed partial class Damm
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)
     {
-        byte interim = _interim;
+        byte interim = this._interim;
         for (int i = 0; i < digits.Length; i++)
         {
             char ch = digits[i];
@@ -55,16 +55,16 @@ public sealed partial class Damm
             interim = Table[interim, ch - '0'];
         }
 
-        _interim = interim;
+        this._interim = interim;
     }
 
     /// <inheritdoc />
     public override void Reset() =>
-        _interim = 0;
+        this._interim = 0;
 
     /// <inheritdoc />
     public override char GetCurrentCheckDigit() =>
-        (char)('0' + _interim);
+        (char)('0' + this._interim);
 
     /// <summary>
     /// Computes the Damm check digit for the supplied body of decimal digits without allocating a streaming

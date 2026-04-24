@@ -55,7 +55,7 @@ public class CrcStandardTests
     /// equal to <c>size</c>.
     /// </summary>
     /// <param name="size">The invalid width under test.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0)]
     [DataRow(-1)]
     [DataRow(int.MinValue)]
@@ -72,7 +72,7 @@ public class CrcStandardTests
     /// equal to <c>size</c>.
     /// </summary>
     /// <param name="size">The invalid width under test.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(65)]
     [DataRow(128)]
     [DataRow(int.MaxValue)]

@@ -47,16 +47,16 @@ public sealed class SuperFastHash
 
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source) =>
-        _buffer.Write(source);
+        this._buffer.Write(source);
 
     /// <inheritdoc />
     public override void Reset() =>
-        _buffer.SetLength(0);
+        this._buffer.SetLength(0);
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
-        ReadOnlySpan<byte> data = _buffer.GetBuffer().AsSpan(0, (int)_buffer.Length);
+        ReadOnlySpan<byte> data = this._buffer.GetBuffer().AsSpan(0, (int)this._buffer.Length);
         BinaryPrimitives.WriteUInt32LittleEndian(destination, Compute(data));
     }
 

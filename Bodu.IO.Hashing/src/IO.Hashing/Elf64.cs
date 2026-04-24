@@ -53,8 +53,8 @@ public sealed class Elf64
     public Elf64(ulong seed)
         : base(HashLength)
     {
-        _seed = seed;
-        _workingHash = seed;
+        this._seed = seed;
+        this._workingHash = seed;
     }
 
     /// <summary>
@@ -67,13 +67,13 @@ public sealed class Elf64
     /// </exception>
     public ulong Seed
     {
-        get => _seed;
+        get => this._seed;
 
         set
         {
-            ThrowIfInvalidState();
-            _seed = value;
-            _workingHash = value;
+            this.ThrowIfInvalidState();
+            this._seed = value;
+            this._workingHash = value;
         }
     }
 
@@ -84,7 +84,7 @@ public sealed class Elf64
         if (source.Length == 0)
             return;
 
-        ulong v = _workingHash;
+        ulong v = this._workingHash;
         foreach (byte b in source)
         {
             v = (v << 4) + b;
@@ -94,25 +94,25 @@ public sealed class Elf64
             v &= ~high;
         }
 
-        _workingHash = v;
-        _started = true;
+        this._workingHash = v;
+        this._started = true;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        _workingHash = _seed;
-        _started = false;
+        this._workingHash = this._seed;
+        this._started = false;
     }
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt64BigEndian(destination, _workingHash);
+        BinaryPrimitives.WriteUInt64BigEndian(destination, this._workingHash);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfInvalidState()
     {
-        if (_started)
+        if (this._started)
             throw new CryptographicUnexpectedOperationException(ReconfigurationNotAllowed);
     }
 }

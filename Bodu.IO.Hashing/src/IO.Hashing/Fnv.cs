@@ -59,12 +59,12 @@ public abstract class Fnv<TSelf>
         : base(
             hashLengthInBytes: ValidateHashSize(hashSize) / 8)
     {
-        _hashSizeBits = hashSize;
-        _prime = prime;
-        _offsetBasis = offsetBasis;
-        _useFnv1a = useFnv1a;
-        _workingHash = offsetBasis;
-        AlgorithmName = $"FNV-{(useFnv1a ? "1a" : "1")}-{hashSize}";
+        this._hashSizeBits = hashSize;
+        this._prime = prime;
+        this._offsetBasis = offsetBasis;
+        this._useFnv1a = useFnv1a;
+        this._workingHash = offsetBasis;
+        this.AlgorithmName = $"FNV-{(useFnv1a ? "1a" : "1")}-{hashSize}";
     }
 
     /// <summary>
@@ -76,22 +76,22 @@ public abstract class Fnv<TSelf>
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
-        if (_useFnv1a)
-            AppendFnv1a(source);
+        if (this._useFnv1a)
+            this.AppendFnv1a(source);
         else
-            AppendFnv1(source);
+            this.AppendFnv1(source);
     }
 
     /// <inheritdoc />
-    public override void Reset() => _workingHash = _offsetBasis;
+    public override void Reset() => this._workingHash = this._offsetBasis;
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
         Span<byte> buffer = stackalloc byte[8];
-        BinaryPrimitives.WriteUInt64BigEndian(buffer, _workingHash);
+        BinaryPrimitives.WriteUInt64BigEndian(buffer, this._workingHash);
 
-        switch (_hashSizeBits)
+        switch (this._hashSizeBits)
         {
             case 32:
                 buffer.Slice(4, 4).CopyTo(destination);
@@ -117,28 +117,28 @@ public abstract class Fnv<TSelf>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendFnv1(ReadOnlySpan<byte> source)
     {
-        ulong hash = _workingHash;
-        ulong prime = _prime;
+        ulong hash = this._workingHash;
+        ulong prime = this._prime;
         for (int i = 0; i < source.Length; i++)
         {
             hash *= prime;
             hash ^= source[i];
         }
 
-        _workingHash = hash;
+        this._workingHash = hash;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendFnv1a(ReadOnlySpan<byte> source)
     {
-        ulong hash = _workingHash;
-        ulong prime = _prime;
+        ulong hash = this._workingHash;
+        ulong prime = this._prime;
         for (int i = 0; i < source.Length; i++)
         {
             hash ^= source[i];
             hash *= prime;
         }
 
-        _workingHash = hash;
+        this._workingHash = hash;
     }
 }

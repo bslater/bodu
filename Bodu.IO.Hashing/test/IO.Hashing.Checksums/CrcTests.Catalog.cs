@@ -161,7 +161,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// </summary>
         /// <param name="standardId">The catalogue entry under test, identified by <see cref="CrcStandards" />.</param>
         /// <param name="expectedCheck">The expected CRC value, packed little-endian from the CRC width.</param>
-        [DataTestMethod]
+        [TestMethod]
         [DynamicData(nameof(CatalogCheckVectors), DynamicDataDisplayName = nameof(GetCatalogCheckDisplayName))]
         public void ComputeHash_WhenInputIsCheckVector_ForCatalogStandard_ShouldMatchPublishedCheck(string displayName, CrcStandards standardId, ulong expectedCheck)
         {

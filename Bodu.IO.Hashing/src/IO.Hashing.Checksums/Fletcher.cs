@@ -54,9 +54,9 @@ public abstract class Fletcher<TSelf>
                     nameof(hashSize)),
             blockSize: hashSize / 16)
     {
-        _hashSizeBits = hashSize;
-        _modulus = (1UL << (hashSize / 2)) - 1;
-        AlgorithmName = $"Fletcher-{hashSize}";
+        this._hashSizeBits = hashSize;
+        this._modulus = (1UL << (hashSize / 2)) - 1;
+        this.AlgorithmName = $"Fletcher-{hashSize}";
     }
 
     /// <summary>
@@ -68,16 +68,16 @@ public abstract class Fletcher<TSelf>
     /// <inheritdoc />
     protected override void ResetState()
     {
-        _partA = 0;
-        _partB = 0;
+        this._partA = 0;
+        this._partB = 0;
     }
 
     /// <inheritdoc />
     protected override TSelf Clone()
     {
         TSelf clone = new();
-        clone._partA = _partA;
-        clone._partB = _partB;
+        clone._partA = this._partA;
+        clone._partB = this._partB;
         clone.CopyResidualStateFrom(this);
         return clone;
     }
@@ -85,7 +85,7 @@ public abstract class Fletcher<TSelf>
     /// <inheritdoc />
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
     {
-        byte[] buffer = new byte[BlockSizeBytes];
+        byte[] buffer = new byte[this.BlockSizeBytes];
         block.CopyTo(buffer);
         return buffer;
     }
@@ -95,20 +95,20 @@ public abstract class Fletcher<TSelf>
     protected override void ProcessBlock(ReadOnlySpan<byte> block)
     {
         ulong b = 0;
-        for (int i = 0; i < block.Length && i < BlockSizeBytes; i++)
+        for (int i = 0; i < block.Length && i < this.BlockSizeBytes; i++)
         {
-            b |= ((ulong)block[i]) << ((BlockSizeBytes - (i + 1)) << 3);
+            b |= ((ulong)block[i]) << ((this.BlockSizeBytes - (i + 1)) << 3);
         }
 
-        _partA = (_partA + b) % _modulus;
-        _partB = (_partB + _partA) % _modulus;
+        this._partA = (this._partA + b) % this._modulus;
+        this._partB = (this._partB + this._partA) % this._modulus;
     }
 
     /// <inheritdoc />
     protected override byte[] ProcessFinalBlock()
     {
-        ulong finalHash = (_partA << (_hashSizeBits / 2)) | _partB;
-        return finalHash.GetBytes().SliceInternal(0, _hashSizeBits / 8);
+        ulong finalHash = (this._partA << (this._hashSizeBits / 2)) | this._partB;
+        return finalHash.GetBytes().SliceInternal(0, this._hashSizeBits / 8);
     }
 
     /// <inheritdoc />

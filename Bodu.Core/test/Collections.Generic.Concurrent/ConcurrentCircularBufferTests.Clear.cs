@@ -80,7 +80,7 @@ public partial class ConcurrentCircularBufferTests
     public void Clear_WhenBufferFull_WithAllowOverwriteTrue_ShouldNotRaiseEvictionEvents()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(2, allowOverwrite: true);
-        int evicting = 0, evicted = 0;
+        int evicted = 0;
 
         buffer.ItemEvicted += _ => evicted++;
 

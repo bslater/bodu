@@ -83,7 +83,9 @@ public sealed class MerkleTreeHash : IDisposable
     public MerkleTreeHash(Func<HashAlgorithm> algorithmFactory, int blockSize = 1024, int fanOut = 3)
     {
         this._algorithmFactory = algorithmFactory ?? throw new ArgumentNullException(nameof(algorithmFactory));
-        this._blockSize = blockSize > 0 ? blockSize : throw new ArgumentOutOfRangeException(nameof(blockSize), "Block size must be greater than zero.");
+        this._blockSize = blockSize > 0 ? blockSize :throw new ArgumentOutOfRangeException(
+                                                        nameof(blockSize),
+                                                        string.Format(ResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
         this._fanOut = fanOut >= 2 ? fanOut : throw new ArgumentOutOfRangeException(nameof(fanOut), "Fan-out must be at least 2.");
         this._buffer = new MemoryStream(blockSize);
         this._currentLevel = new List<byte[]>();

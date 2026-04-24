@@ -83,10 +83,10 @@ public sealed partial class Pearson
                 nameof(tableType));
         }
 
-        _tableType = tableType;
-        _permutationTable = GetPermutationTable(tableType);
-        _workingHash = new byte[hashSizeBits / 8];
-        _isFirstByte = true;
+        this._tableType = tableType;
+        this._permutationTable = GetPermutationTable(tableType);
+        this._workingHash = new byte[hashSizeBits / 8];
+        this._isFirstByte = true;
     }
 
     /// <summary>
@@ -115,10 +115,10 @@ public sealed partial class Pearson
         if (permutationTable.Length != 256 || permutationTable.Distinct().Count() != 256)
             throw new ArgumentException(IOResourceStrings.ArgumentException_PearsonInvalidTable, nameof(permutationTable));
 
-        _tableType = PearsonTableType.UserDefined;
-        _permutationTable = (byte[])permutationTable.Clone();
-        _workingHash = new byte[hashSizeBits / 8];
-        _isFirstByte = true;
+        this._tableType = PearsonTableType.UserDefined;
+        this._permutationTable = (byte[])permutationTable.Clone();
+        this._workingHash = new byte[hashSizeBits / 8];
+        this._isFirstByte = true;
     }
 
     /// <summary>
@@ -146,12 +146,12 @@ public sealed partial class Pearson
     /// <summary>
     /// Gets the permutation table preset selected for this instance.
     /// </summary>
-    public PearsonTableType TableType => _tableType;
+    public PearsonTableType TableType => this._tableType;
 
     /// <summary>
     /// Gets a copy of the 256-byte permutation table currently in use.
     /// </summary>
-    public byte[] Table => (byte[])_permutationTable.Clone();
+    public byte[] Table => (byte[])this._permutationTable.Clone();
 
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
@@ -159,17 +159,17 @@ public sealed partial class Pearson
         if (source.Length == 0)
             return;
 
-        ReadOnlySpan<byte> table = _permutationTable;
-        byte[] v = _workingHash;
+        ReadOnlySpan<byte> table = this._permutationTable;
+        byte[] v = this._workingHash;
         int offset = 0;
 
-        if (_isFirstByte)
+        if (this._isFirstByte)
         {
             byte b = source[0];
             for (int j = 0; j < v.Length; j++)
                 v[j] = table[(b + j) & 0xFF];
 
-            _isFirstByte = false;
+            this._isFirstByte = false;
             offset = 1;
         }
 
@@ -184,13 +184,13 @@ public sealed partial class Pearson
     /// <inheritdoc />
     public override void Reset()
     {
-        Array.Clear(_workingHash, 0, _workingHash.Length);
-        _isFirstByte = true;
+        Array.Clear(this._workingHash, 0, this._workingHash.Length);
+        this._isFirstByte = true;
     }
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        _workingHash.AsSpan().CopyTo(destination);
+        this._workingHash.AsSpan().CopyTo(destination);
 
     private static int ValidateHashSize(int hashSizeBits)
     {

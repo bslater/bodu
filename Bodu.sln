@@ -34,6 +34,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bodu.Rosyln.CrcSpecGenerato
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bodu.Test", "Bodu.Test\src\Bodu.Test.csproj", "{9EBAE41A-57E2-C249-63A1-050AE34CCDCD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bodu.Globalization.Calendar.Plugin1.TestAssembly", "Bodu.Globalization.Calendar\test\Globalization.Calendar.Plugin1.TestAssembly\Bodu.Globalization.Calendar.Plugin1.TestAssembly.csproj", "{CB47C903-DB59-BC2B-78D3-F2949C950465}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bodu.Globalization.Calendar.Plugin2.TestAssembly", "Bodu.Globalization.Calendar\test\Globalization.Calendar.Plugin2.TestAssembly\Bodu.Globalization.Calendar.Plugin2.TestAssembly.csproj", "{239C31F4-9065-06C1-D3CF-1C9DBC8164F0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bodu.Core", "Bodu.Core", "{9E9BA194-878A-4E6B-9351-EDA71C83DE9F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bodu.Globalization.Calendar", "Bodu.Globalization.Calendar", "{9884515A-0128-4852-9E5C-E29FAE465578}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bodu.IO.Hashing", "Bodu.IO.Hashing", "{96C14FC8-5E38-4751-A23C-AFFE5E2D0521}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bodu.Security.Cryptography", "Bodu.Security.Cryptography", "{A802CA25-B766-40A8-9B85-17A56E418E59}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -116,9 +128,33 @@ Global
 		{9EBAE41A-57E2-C249-63A1-050AE34CCDCD}.Publish|Any CPU.Build.0 = Release|Any CPU
 		{9EBAE41A-57E2-C249-63A1-050AE34CCDCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9EBAE41A-57E2-C249-63A1-050AE34CCDCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB47C903-DB59-BC2B-78D3-F2949C950465}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB47C903-DB59-BC2B-78D3-F2949C950465}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB47C903-DB59-BC2B-78D3-F2949C950465}.Publish|Any CPU.ActiveCfg = Release|Any CPU
+		{CB47C903-DB59-BC2B-78D3-F2949C950465}.Publish|Any CPU.Build.0 = Release|Any CPU
+		{CB47C903-DB59-BC2B-78D3-F2949C950465}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB47C903-DB59-BC2B-78D3-F2949C950465}.Release|Any CPU.Build.0 = Release|Any CPU
+		{239C31F4-9065-06C1-D3CF-1C9DBC8164F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{239C31F4-9065-06C1-D3CF-1C9DBC8164F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{239C31F4-9065-06C1-D3CF-1C9DBC8164F0}.Publish|Any CPU.ActiveCfg = Release|Any CPU
+		{239C31F4-9065-06C1-D3CF-1C9DBC8164F0}.Publish|Any CPU.Build.0 = Release|Any CPU
+		{239C31F4-9065-06C1-D3CF-1C9DBC8164F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{239C31F4-9065-06C1-D3CF-1C9DBC8164F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F136F92E-234A-4378-AA7C-D392DD080865} = {9E9BA194-878A-4E6B-9351-EDA71C83DE9F}
+		{4F948CB9-9E56-40E2-8CFA-E5C10CF57C40} = {9E9BA194-878A-4E6B-9351-EDA71C83DE9F}
+		{49AEB4D4-DCD1-4526-9963-54CCE14AE5AB} = {A802CA25-B766-40A8-9B85-17A56E418E59}
+		{960C5F9E-A46E-482E-891F-C6252D0923C1} = {A802CA25-B766-40A8-9B85-17A56E418E59}
+		{7FBA9E51-0D6C-4C5F-A1E4-9D7B3E5A2F11} = {96C14FC8-5E38-4751-A23C-AFFE5E2D0521}
+		{8C9D0E21-3A4B-4C5D-6E7F-89A0B1C2D3E4} = {96C14FC8-5E38-4751-A23C-AFFE5E2D0521}
+		{510FE440-C019-4E70-8138-0DCBDD29CF0C} = {9884515A-0128-4852-9E5C-E29FAE465578}
+		{7D628D91-802A-450A-B65A-67C9396D6188} = {9884515A-0128-4852-9E5C-E29FAE465578}
+		{CB47C903-DB59-BC2B-78D3-F2949C950465} = {9884515A-0128-4852-9E5C-E29FAE465578}
+		{239C31F4-9065-06C1-D3CF-1C9DBC8164F0} = {9884515A-0128-4852-9E5C-E29FAE465578}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A5DB81C5-C549-4C3B-9163-CD74574A9D51}

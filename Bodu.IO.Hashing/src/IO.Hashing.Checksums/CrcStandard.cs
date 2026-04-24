@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.Checksums;
 using System.Runtime.Serialization;
 
 namespace Bodu.IO.Hashing.Checksums;
@@ -26,6 +25,47 @@ public sealed partial class CrcStandard
     /// The minimum size allowed for a CRC standard (in bits).
     /// </summary>
     public const int MinSize = 1;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CrcStandard" /> class with the specified parameters.
+    /// </summary>
+    /// <param name="name">The name of the CRC standard.</param>
+    /// <param name="size">The size, in bits, of the CRC checksum.</param>
+    /// <param name="polynomial">The CRC polynomial value.</param>
+    /// <param name="initialValue">The initial value used for the CRC calculation.</param>
+    /// <param name="reflectIn">Indicates whether to reflect the input during the CRC calculation.</param>
+    /// <param name="reflectOut">Indicates whether to reflect the output during the CRC calculation.</param>
+    /// <param name="xOrOut">The value to XOR the final output with.</param>
+    /// <exception cref="ArgumentException"><paramref name="name" /> is <see langword="null" /> or empty.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="size" /> is less than <see cref="MinSize" /> or greater than <see cref="MaxSize" />.
+    /// </exception>
+    public CrcStandard(string name, int size, ulong polynomial, ulong initialValue, bool reflectIn, bool reflectOut, ulong xOrOut)
+    {
+        ThrowHelper.ThrowIfNullOrEmpty(name);
+        ThrowHelper.ThrowIfOutOfRange(size, MinSize, MaxSize);
+
+        this.Name = name;
+        this.Size = size;
+        this.Polynomial = polynomial;
+        this.InitialValue = initialValue;
+        this.ReflectIn = reflectIn;
+        this.ReflectOut = reflectOut;
+        this.XOrOut = xOrOut;
+    }
+
+    private CrcStandard(SerializationInfo info, StreamingContext context)
+    {
+        ThrowHelper.ThrowIfNull(info);
+
+        this.Name = info.GetString(nameof(this.Name))!;
+        this.Size = info.GetInt32(nameof(this.Size));
+        this.Polynomial = info.GetUInt64(nameof(this.Polynomial));
+        this.InitialValue = info.GetUInt64(nameof(this.InitialValue));
+        this.ReflectIn = info.GetBoolean(nameof(this.ReflectIn));
+        this.ReflectOut = info.GetBoolean(nameof(this.ReflectOut));
+        this.XOrOut = info.GetUInt64(nameof(this.XOrOut));
+    }
 
     /// <summary>Gets the <c>CRC-8/SMBUS</c> CRC standard (alias <c>CRC-8</c>). Width 8, polynomial <c>0x07</c>, initial value <c>0x00</c>, no reflection, XOR out <c>0x00</c>.</summary>
     /// <remarks>The canonical "CRC-8" used by SMBus (System Management Bus) and the de-facto generic 8-bit CRC.</remarks>
@@ -80,47 +120,6 @@ public sealed partial class CrcStandard
     public static CrcStandard CRC64_XZ => Get(CrcStandards.CRC64_XZ);
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CrcStandard" /> class with the specified parameters.
-    /// </summary>
-    /// <param name="name">The name of the CRC standard.</param>
-    /// <param name="size">The size, in bits, of the CRC checksum.</param>
-    /// <param name="polynomial">The CRC polynomial value.</param>
-    /// <param name="initialValue">The initial value used for the CRC calculation.</param>
-    /// <param name="reflectIn">Indicates whether to reflect the input during the CRC calculation.</param>
-    /// <param name="reflectOut">Indicates whether to reflect the output during the CRC calculation.</param>
-    /// <param name="xOrOut">The value to XOR the final output with.</param>
-    /// <exception cref="ArgumentException"><paramref name="name" /> is <see langword="null" /> or empty.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="size" /> is less than <see cref="MinSize" /> or greater than <see cref="MaxSize" />.
-    /// </exception>
-    public CrcStandard(string name, int size, ulong polynomial, ulong initialValue, bool reflectIn, bool reflectOut, ulong xOrOut)
-    {
-        ThrowHelper.ThrowIfNullOrEmpty(name);
-        ThrowHelper.ThrowIfOutOfRange(size, MinSize, MaxSize);
-
-        Name = name;
-        Size = size;
-        Polynomial = polynomial;
-        InitialValue = initialValue;
-        ReflectIn = reflectIn;
-        ReflectOut = reflectOut;
-        XOrOut = xOrOut;
-    }
-
-    private CrcStandard(SerializationInfo info, StreamingContext context)
-    {
-        ThrowHelper.ThrowIfNull(info);
-
-        Name = info.GetString(nameof(Name))!;
-        Size = info.GetInt32(nameof(Size));
-        Polynomial = info.GetUInt64(nameof(Polynomial));
-        InitialValue = info.GetUInt64(nameof(InitialValue));
-        ReflectIn = info.GetBoolean(nameof(ReflectIn));
-        ReflectOut = info.GetBoolean(nameof(ReflectOut));
-        XOrOut = info.GetUInt64(nameof(XOrOut));
-    }
-
-    /// <summary>
     /// Gets the initial value used in the CRC calculation.
     /// </summary>
     /// <value>The initial value for the CRC calculation.</value>
@@ -172,33 +171,33 @@ public sealed partial class CrcStandard
     /// </returns>
     public bool Equals(CrcStandard? other)
         => other is not null &&
-           string.Equals(Name, other.Name, StringComparison.Ordinal) &&
-           Size == other.Size &&
-           Polynomial == other.Polynomial &&
-           InitialValue == other.InitialValue &&
-           ReflectIn == other.ReflectIn &&
-           ReflectOut == other.ReflectOut &&
-           XOrOut == other.XOrOut;
+           string.Equals(this.Name, other.Name, StringComparison.Ordinal) &&
+           this.Size == other.Size &&
+           this.Polynomial == other.Polynomial &&
+           this.InitialValue == other.InitialValue &&
+           this.ReflectIn == other.ReflectIn &&
+           this.ReflectOut == other.ReflectOut &&
+           this.XOrOut == other.XOrOut;
 
     /// <inheritdoc />
     public override bool Equals(object? obj)
-        => obj is CrcStandard other && Equals(other);
+        => obj is CrcStandard other && this.Equals(other);
 
     /// <inheritdoc />
     public override int GetHashCode()
-        => HashCode.Combine(Name, Size, Polynomial, InitialValue, ReflectIn, ReflectOut, XOrOut);
+        => HashCode.Combine(this.Name, this.Size, this.Polynomial, this.InitialValue, this.ReflectIn, this.ReflectOut, this.XOrOut);
 
     /// <inheritdoc />
     void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
     {
         ThrowHelper.ThrowIfNull(info);
 
-        info.AddValue(nameof(Name), Name);
-        info.AddValue(nameof(Size), Size);
-        info.AddValue(nameof(Polynomial), Polynomial);
-        info.AddValue(nameof(InitialValue), InitialValue);
-        info.AddValue(nameof(ReflectIn), ReflectIn);
-        info.AddValue(nameof(ReflectOut), ReflectOut);
-        info.AddValue(nameof(XOrOut), XOrOut);
+        info.AddValue(nameof(this.Name), this.Name);
+        info.AddValue(nameof(this.Size), this.Size);
+        info.AddValue(nameof(this.Polynomial), this.Polynomial);
+        info.AddValue(nameof(this.InitialValue), this.InitialValue);
+        info.AddValue(nameof(this.ReflectIn), this.ReflectIn);
+        info.AddValue(nameof(this.ReflectOut), this.ReflectOut);
+        info.AddValue(nameof(this.XOrOut), this.XOrOut);
     }
 }

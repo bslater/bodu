@@ -15,7 +15,7 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
     /// buffer state machine inside <see cref="BlockNonCryptographicHashAlgorithm{T}.Append" />.
     /// </summary>
     /// <param name="length">The input length under test, in bytes.</param>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0)]
     [DataRow(1)]
     [DataRow(2)]

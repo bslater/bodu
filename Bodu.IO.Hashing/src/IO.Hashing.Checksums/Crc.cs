@@ -70,10 +70,10 @@ public sealed class Crc
     public Crc(CrcStandard crcStandard)
         : base(hashLengthInBytes: HashLengthInBytesFor(crcStandard))
     {
-        _standard = crcStandard;
-        _hashSizeBits = crcStandard.Size;
-        _lookupTable = GlobalCache.GetLookupTable(crcStandard.Size, crcStandard.Polynomial, crcStandard.ReflectIn);
-        _workingHash = ComputeInitialState();
+        this._standard = crcStandard;
+        this._hashSizeBits = crcStandard.Size;
+        this._lookupTable = GlobalCache.GetLookupTable(crcStandard.Size, crcStandard.Polynomial, crcStandard.ReflectIn);
+        this._workingHash = this.ComputeInitialState();
     }
 
     /// <summary>
@@ -96,39 +96,39 @@ public sealed class Crc
     /// Gets the <see cref="CrcStandard" /> parameters that configure this instance.
     /// </summary>
     /// <value>The immutable <see cref="CrcStandard" /> supplied to the constructor.</value>
-    public CrcStandard CrcStandard => _standard;
+    public CrcStandard CrcStandard => this._standard;
 
     /// <summary>Gets the initial value used in the CRC calculation.</summary>
-    public ulong InitialValue => _standard.InitialValue;
+    public ulong InitialValue => this._standard.InitialValue;
 
     /// <summary>Gets the name of the CRC standard.</summary>
-    public string Name => _standard.Name;
+    public string Name => this._standard.Name;
 
     /// <summary>Gets the polynomial used in the CRC calculation.</summary>
-    public ulong Polynomial => _standard.Polynomial;
+    public ulong Polynomial => this._standard.Polynomial;
 
     /// <summary>Gets a value indicating whether input bytes are reflected (bit-reversed) before being processed.</summary>
-    public bool ReflectIn => _standard.ReflectIn;
+    public bool ReflectIn => this._standard.ReflectIn;
 
     /// <summary>Gets a value indicating whether the CRC result is reflected before XOR-ing with <see cref="XOrOut" />.</summary>
-    public bool ReflectOut => _standard.ReflectOut;
+    public bool ReflectOut => this._standard.ReflectOut;
 
     /// <summary>Gets the size, in bits, of the CRC checksum.</summary>
-    public int Size => _standard.Size;
+    public int Size => this._standard.Size;
 
     /// <summary>Gets the value to XOR the final CRC result with.</summary>
-    public ulong XOrOut => _standard.XOrOut;
+    public ulong XOrOut => this._standard.XOrOut;
 
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
-        ProcessBlocks(source);
+        this.ProcessBlocks(source);
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        _workingHash = ComputeInitialState();
+        this._workingHash = this.ComputeInitialState();
     }
 
     /// <inheritdoc />
@@ -138,8 +138,8 @@ public sealed class Crc
     /// </remarks>
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
-        ulong folded = FoldOutputState(_workingHash);
-        WriteHashBytes(folded, HashLengthInBytes, destination);
+        ulong folded = this.FoldOutputState(this._workingHash);
+        WriteHashBytes(folded, this.HashLengthInBytes, destination);
     }
 
     /// <summary>
@@ -149,12 +149,12 @@ public sealed class Crc
     /// <returns>A byte array containing the finalised CRC value, sized according to <see cref="Size" />.</returns>
     public byte[] ComputeHash(ReadOnlySpan<byte> data)
     {
-        Reset();
-        ProcessBlocks(data);
+        this.Reset();
+        this.ProcessBlocks(data);
 
-        byte[] buffer = new byte[HashLengthInBytes];
-        ulong folded = FoldOutputState(_workingHash);
-        WriteHashBytes(folded, HashLengthInBytes, buffer);
+        byte[] buffer = new byte[this.HashLengthInBytes];
+        ulong folded = this.FoldOutputState(this._workingHash);
+        WriteHashBytes(folded, this.HashLengthInBytes, buffer);
         return buffer;
     }
 
@@ -169,7 +169,7 @@ public sealed class Crc
         ThrowHelper.ThrowIfNull(previousHash);
         ThrowHelper.ThrowIfNull(newData);
 
-        return ComputeHashFrom(previousHash.AsSpan(), newData.AsSpan());
+        return this.ComputeHashFrom(previousHash.AsSpan(), newData.AsSpan());
     }
 
     /// <inheritdoc />
@@ -182,7 +182,7 @@ public sealed class Crc
         ThrowHelper.ThrowIfNull(previousHash);
         ThrowHelper.ThrowIfNull(newData);
 
-        return ComputeHashFrom(previousHash.AsSpan(), newData.AsSpan().Slice(offset, length));
+        return this.ComputeHashFrom(previousHash.AsSpan(), newData.AsSpan().Slice(offset, length));
     }
 
     /// <inheritdoc />
@@ -192,8 +192,8 @@ public sealed class Crc
     /// </remarks>
     public byte[] ComputeHashFrom(ReadOnlySpan<byte> previousHash, ReadOnlySpan<byte> newData)
     {
-        byte[] buffer = new byte[HashLengthInBytes];
-        TryComputeHashFrom(previousHash, newData, buffer, out _);
+        byte[] buffer = new byte[this.HashLengthInBytes];
+        this.TryComputeHashFrom(previousHash, newData, buffer, out _);
         return buffer;
     }
 
@@ -210,7 +210,7 @@ public sealed class Crc
         Span<byte> destination,
         out int bytesWritten)
     {
-        if (previousHash.Length != HashLengthInBytes)
+        if (previousHash.Length != this.HashLengthInBytes)
             throw new ArgumentException(
                 "Hash length does not match the expected length.",
                 nameof(previousHash));
@@ -219,32 +219,32 @@ public sealed class Crc
         // that widths below 64 bits zero-extend cleanly.
         Span<byte> fullWord = stackalloc byte[sizeof(ulong)];
         previousHash.CopyTo(fullWord);
-        _workingHash = BinaryPrimitives.ReadUInt64LittleEndian(fullWord);
+        this._workingHash = BinaryPrimitives.ReadUInt64LittleEndian(fullWord);
 
         // Undo finalisation: XOR first, then reflect back to the working-state orientation when the algorithm applies
         // XOR-reflected output.
-        _workingHash ^= _standard.XOrOut;
-        if (_standard.ReflectIn ^ _standard.ReflectOut)
-            _workingHash = NumericExtensions.ReverseBitsUnchecked(_workingHash, _hashSizeBits);
+        this._workingHash ^= this._standard.XOrOut;
+        if (this._standard.ReflectIn ^ this._standard.ReflectOut)
+            this._workingHash = NumericExtensions.ReverseBitsUnchecked(this._workingHash, this._hashSizeBits);
 
         // Continue hashing and finalise again.
-        ProcessBlocks(newData);
+        this.ProcessBlocks(newData);
 
-        if (destination.Length < HashLengthInBytes)
+        if (destination.Length < this.HashLengthInBytes)
         {
             bytesWritten = 0;
             return false;
         }
 
-        ulong folded = FoldOutputState(_workingHash);
-        WriteHashBytes(folded, HashLengthInBytes, destination);
-        bytesWritten = HashLengthInBytes;
+        ulong folded = this.FoldOutputState(this._workingHash);
+        WriteHashBytes(folded, this.HashLengthInBytes, destination);
+        bytesWritten = this.HashLengthInBytes;
         return true;
     }
 
     /// <inheritdoc />
     public override bool Equals(object? obj)
-        => obj is Crc other && _standard.Equals(other._standard);
+        => obj is Crc other && this._standard.Equals(other._standard);
 
     /// <summary>
     /// Returns the working-state representation of <see cref="CrcStandard.InitialValue" />, applying input reflection
@@ -254,9 +254,9 @@ public sealed class Crc
     /// <see cref="CrcStandard.ReflectIn" /> flag is set.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private ulong ComputeInitialState()
-        => _standard.ReflectIn
-            ? NumericExtensions.ReverseBitsUnchecked(_standard.InitialValue, _hashSizeBits)
-            : _standard.InitialValue;
+        => this._standard.ReflectIn
+            ? NumericExtensions.ReverseBitsUnchecked(this._standard.InitialValue, this._hashSizeBits)
+            : this._standard.InitialValue;
 
     /// <summary>
     /// Applies final output reflection, XOR-out, and width-masking to the supplied working CRC value.
@@ -270,11 +270,11 @@ public sealed class Crc
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private ulong FoldOutputState(ulong value)
     {
-        if (_standard.ReflectIn ^ _standard.ReflectOut)
-            value = NumericExtensions.ReverseBitsUnchecked(value, _hashSizeBits);
+        if (this._standard.ReflectIn ^ this._standard.ReflectOut)
+            value = NumericExtensions.ReverseBitsUnchecked(value, this._hashSizeBits);
 
-        value ^= _standard.XOrOut;
-        value &= ulong.MaxValue >> (64 - _hashSizeBits);
+        value ^= this._standard.XOrOut;
+        value &= ulong.MaxValue >> (64 - this._hashSizeBits);
         return value;
     }
 
@@ -371,17 +371,17 @@ public sealed class Crc
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ProcessBlocks(ReadOnlySpan<byte> data)
     {
-        if (_hashSizeBits >= 8)
+        if (this._hashSizeBits >= 8)
         {
-            _workingHash = _standard.ReflectIn
-                ? ProcessBytewiseReflected(data, _workingHash, _lookupTable)
-                : ProcessBytewiseNormal(data, _workingHash, _lookupTable, _hashSizeBits - 8);
+            this._workingHash = this._standard.ReflectIn
+                ? ProcessBytewiseReflected(data, this._workingHash, this._lookupTable)
+                : ProcessBytewiseNormal(data, this._workingHash, this._lookupTable, this._hashSizeBits - 8);
         }
         else
         {
-            _workingHash = _standard.ReflectIn
-                ? ProcessBitwiseReflected(data, _workingHash, _lookupTable)
-                : ProcessBitwiseNormal(data, _workingHash, _lookupTable, _hashSizeBits - 1);
+            this._workingHash = this._standard.ReflectIn
+                ? ProcessBitwiseReflected(data, this._workingHash, this._lookupTable)
+                : ProcessBitwiseNormal(data, this._workingHash, this._lookupTable, this._hashSizeBits - 1);
         }
     }
 

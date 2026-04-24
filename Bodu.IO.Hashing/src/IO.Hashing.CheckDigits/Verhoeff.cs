@@ -64,19 +64,19 @@ public sealed partial class Verhoeff
 
             int v = ch - '0';
             for (int k = 0; k < 8; k++)
-                next[k] = D[P[k, v], _c[(k + 1) & 7]];
+                next[k] = D[P[k, v], this._c[(k + 1) & 7]];
 
-            next.CopyTo(_c);
+            next.CopyTo(this._c);
         }
     }
 
     /// <inheritdoc />
     public override void Reset() =>
-        Array.Clear(_c);
+        Array.Clear(this._c);
 
     /// <inheritdoc />
     public override char GetCurrentCheckDigit() =>
-        (char)('0' + Inv[_c[1]]);
+        (char)('0' + Inv[this._c[1]]);
 
     /// <summary>
     /// Computes the Verhoeff check digit for the supplied body of decimal digits without allocating a streaming
