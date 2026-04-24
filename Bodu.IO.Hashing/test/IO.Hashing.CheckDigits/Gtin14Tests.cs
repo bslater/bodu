@@ -19,7 +19,6 @@ public sealed class Gtin14Tests : CheckDigitAlgorithmTests<Gtin14Tests, Gtin14>
         EmptyCheckDigit = '0',
         KnownAnswers =
         [
-            new() { Name = "Empty",         Body = "",               ExpectedCheck = '0' },
             new() { Name = "GS1Example",    Body = "1061414100041",  ExpectedCheck = '5' },
             new() { Name = "AllZeros",      Body = "0000000000000",  ExpectedCheck = '0' },
         ],

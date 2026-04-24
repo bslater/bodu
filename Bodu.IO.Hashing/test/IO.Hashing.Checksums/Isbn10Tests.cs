@@ -23,7 +23,6 @@ public sealed class Isbn10Tests : AlphanumericCheckDigitAlgorithmTests<Isbn10Tes
         EmptyCheckDigit = '0',
         KnownAnswers =
         [
-            new() { Name = "Empty",                   Body = "",          ExpectedCheck = '0' },
             new() { Name = "HarryPotterPhilosophers", Body = "043942089", ExpectedCheck = 'X' },
             new() { Name = "WikipediaIsbn10",         Body = "030640615", ExpectedCheck = '2' },
             new() { Name = "AllZeros",                Body = "000000000", ExpectedCheck = '0' },
