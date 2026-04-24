@@ -46,7 +46,7 @@ public sealed partial class CfbModeTransformTests
     /// Verifies that <see cref="CfbModeTransform.Transform" />, with NistVector, EncryptCorrectly.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CfbKatVectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CfbKatVectors))]
     public void Transform_WithNistVector_ShouldEncryptCorrectly(
         string description, byte[] key, byte[] iv, byte[] plaintext, byte[] expectedCiphertext)
         => AssertKatEncrypt(description, key, iv, plaintext, expectedCiphertext);
@@ -55,7 +55,7 @@ public sealed partial class CfbModeTransformTests
     /// Verifies that <see cref="CfbModeTransform.Transform" />, with NistVector, DecryptToOriginalPlaintext.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CfbKatVectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CfbKatVectors))]
     public void Transform_WithNistVector_ShouldDecryptToOriginalPlaintext(
         string description, byte[] key, byte[] iv, byte[] plaintext, byte[] expectedCiphertext)
         => AssertKatDecrypt(description, key, iv, plaintext, expectedCiphertext);

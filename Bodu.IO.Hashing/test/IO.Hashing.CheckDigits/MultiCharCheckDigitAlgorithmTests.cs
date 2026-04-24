@@ -102,7 +102,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <param name="body">The body characters to append.</param>
     /// <param name="expectedCheck">The check code the algorithm is expected to emit.</param>
     [TestMethod]
-    [DynamicData(nameof(KnownAnswerData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(KnownAnswerData))]
     public void Append_WhenKnownAnswerIsAppendedInFull_ShouldProduceExpectedCheckDigits(string name, string body, string expectedCheck)
     {
         _ = name;
@@ -121,7 +121,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <param name="body">The body characters to append.</param>
     /// <param name="expectedCheck">The check code the algorithm is expected to emit.</param>
     [TestMethod]
-    [DynamicData(nameof(KnownAnswerData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(KnownAnswerData))]
     public void Append_WhenKnownAnswerIsAppendedOneCharAtATime_ShouldProduceExpectedCheckDigits(string name, string body, string expectedCheck)
     {
         _ = name;
@@ -140,7 +140,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <param name="body">The body characters to append.</param>
     /// <param name="expectedCheck">The check code the algorithm is expected to emit.</param>
     [TestMethod]
-    [DynamicData(nameof(KnownAnswerData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(KnownAnswerData))]
     public void Append_WhenKnownAnswerIsSplitAcrossTwoChunks_ShouldProduceExpectedCheckDigits(string name, string body, string expectedCheck)
     {
         _ = name;
@@ -180,7 +180,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <param name="body">The body characters.</param>
     /// <param name="expectedCheck">The expected check code (unused in this cross-check).</param>
     [TestMethod]
-    [DynamicData(nameof(KnownAnswerData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(KnownAnswerData))]
     public void GetCurrentCheckDigits_SpanAndStringOverloads_ShouldAgree(string name, string body, string expectedCheck)
     {
         _ = name;
@@ -204,7 +204,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <param name="body">The body characters.</param>
     /// <param name="expectedCheck">The expected check code.</param>
     [TestMethod]
-    [DynamicData(nameof(KnownAnswerData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(KnownAnswerData))]
     public void Compute_WhenKnownAnswer_ShouldReturnExpectedCheckDigits(string name, string body, string expectedCheck)
     {
         _ = name;
@@ -219,7 +219,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <param name="body">The body characters.</param>
     /// <param name="expectedCheck">The expected check code.</param>
     [TestMethod]
-    [DynamicData(nameof(KnownAnswerData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(KnownAnswerData))]
     public void IsValid_WhenSequenceIncludesComputedCheckDigits_ShouldReturnTrue(string name, string body, string expectedCheck)
     {
         _ = name;
@@ -235,7 +235,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <param name="body">The body characters.</param>
     /// <param name="expectedCheck">The correct check code.</param>
     [TestMethod]
-    [DynamicData(nameof(KnownAnswerData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(KnownAnswerData))]
     public void IsValid_WhenLastCheckDigitIsTampered_ShouldReturnFalse(string name, string body, string expectedCheck)
     {
         _ = name;
@@ -273,7 +273,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <param name="body">The body characters to append in the second run.</param>
     /// <param name="expectedCheck">The check code the algorithm is expected to emit for the second run.</param>
     [TestMethod]
-    [DynamicData(nameof(KnownAnswerData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(KnownAnswerData))]
     public void Reset_BetweenAppends_ShouldDiscardPriorState(string name, string body, string expectedCheck)
     {
         _ = name;

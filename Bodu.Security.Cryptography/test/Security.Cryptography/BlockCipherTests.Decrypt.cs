@@ -113,7 +113,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// Verifies that cedryption throws ArgumentException when input size is invalid.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetInvalidBlockSizes), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetInvalidBlockSizes))]
     public void Decrypt_WithInvalidInputSize_ShouldThrowExactly(TVariant variant, byte[] input)
     {
         using var cipher = CreateBlockCipher(variant);
@@ -127,7 +127,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// Verifies that cedryption throws ArgumentException when output size is invalid.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetInvalidBlockSizes), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetInvalidBlockSizes))]
     public void Decrypt_WithInvalidOutSize_ShouldThrowExactly(TVariant variant, byte[] output)
     {
         using var cipher = CreateBlockCipher(variant);

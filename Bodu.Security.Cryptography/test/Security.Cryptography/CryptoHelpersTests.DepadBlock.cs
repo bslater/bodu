@@ -87,7 +87,7 @@ public partial class CryptoHelpersTests
     /// Verifies that <see cref="CryptoHelpers.DepadBlock" /> removes padding and returns the expected unpadded bytes using the byte[] overload.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases))]
     public void DepadBlock_WhenValidInput_ShouldReturnOriginalBytes_UsingByteArray(
         PaddingMode padding, string inputHex, string expectedHex)
     {
@@ -103,7 +103,7 @@ public partial class CryptoHelpersTests
     /// Verifies that <see cref="CryptoHelpers.DepadBlock" /> removes padding and returns the expected byte count using the Span overload.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases))]
     public void DepadBlock_WhenValidInput_ShouldReturnOriginalBytes_UsingSpan(
         PaddingMode padding, string inputHex, string expectedHex)
     {
@@ -123,7 +123,7 @@ public partial class CryptoHelpersTests
     /// Verifies that <see cref="CryptoHelpers.DepadBlock" /> removes padding and returns the expected byte count using the Span overload.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases))]
     public void DepadBlock_WhenValidInput_ShouldReturnExpectedLength_UsingSpan(
         PaddingMode padding, string inputHex, string expectedHex)
     {
@@ -147,7 +147,7 @@ public partial class CryptoHelpersTests
     /// <param name="blockSize">The block size in bytes.</param>
     /// <param name="exceptionType">The expected exception type.</param>
     [TestMethod]
-    [DynamicData(nameof(InvalidDepaddingCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(InvalidDepaddingCases))]
     public void DepadBlock_WhenInvalidInput_ShouldThrowExactly(
         PaddingMode padding, string inputHex, int blockSize, Type exceptionType)
     {

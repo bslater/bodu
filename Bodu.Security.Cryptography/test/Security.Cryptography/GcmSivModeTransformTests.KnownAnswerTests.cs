@@ -63,7 +63,7 @@ public sealed partial class GcmSivModeTransformTests
     /// Verifies that <see cref="GcmSivModeTransform.Encrypt" />, with Rfc8452 Vector, matches Expected.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GcmSivRfc8452Vectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GcmSivRfc8452Vectors))]
     public void Encrypt_WithRfc8452Vector_ShouldMatchExpected(
         string keyHex, string nonceHex, string aadHex, string ptHex, string expectedOutputHex)
     {
@@ -82,7 +82,7 @@ public sealed partial class GcmSivModeTransformTests
     /// Verifies that <see cref="GcmSivModeTransform.Decrypt" />, with Rfc8452Vector, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GcmSivRfc8452Vectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GcmSivRfc8452Vectors))]
     public void Decrypt_WithRfc8452Vector_ShouldRecoverPlaintext(
         string keyHex, string nonceHex, string aadHex, string ptHex, string expectedOutputHex)
     {

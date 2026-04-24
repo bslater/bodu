@@ -35,7 +35,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// ensures concrete <see cref="HashAlgorithm" /> implementations enforce correct disposal behaviour.
     /// </remarks>
     [TestMethod]
-    [DynamicData(nameof(GetWritableProperties), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetWritableProperties))]
     public void Dispose_WhenAssigningProperty_ShouldThrowExactly(PropertyInfo property)
     {
         if (property is null)
@@ -84,7 +84,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// </summary>
     /// <param name="field">The field to inspect for zeroed or null state.</param>
     [TestMethod]
-    [DynamicData(nameof(GetDisposableFields), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetDisposableFields))]
     public void Dispose_WhenCalled_ShouldZeroPrivateField(FieldInfo field)
     {
         if (field is null)

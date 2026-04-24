@@ -78,8 +78,4 @@
     </Compile>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="IO.Hashing\CheckDigits\" />
-  </ItemGroup>
-
 </Project>

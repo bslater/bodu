@@ -53,7 +53,7 @@ public sealed partial class EaxModeTransformTests
     /// Verifies that <see cref="EaxModeTransform.Transform" />, with NistVector, EncryptCorrectly.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(EaxKatVectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(EaxKatVectors))]
     public void Transform_WithNistVector_ShouldEncryptCorrectly(
         string description, byte[] key, byte[] iv, byte[] plaintext, byte[] expectedCiphertext)
         => AssertKatEncrypt(description, key, iv, plaintext, expectedCiphertext);
@@ -62,7 +62,7 @@ public sealed partial class EaxModeTransformTests
     /// Verifies that <see cref="EaxModeTransform.Transform" />, with NistVector, DecryptToOriginalPlaintext.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(EaxKatVectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(EaxKatVectors))]
     public void Transform_WithNistVector_ShouldDecryptToOriginalPlaintext(
         string description, byte[] key, byte[] iv, byte[] plaintext, byte[] expectedCiphertext)
         => AssertKatDecrypt(description, key, iv, plaintext, expectedCiphertext);

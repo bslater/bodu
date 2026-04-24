@@ -16,7 +16,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     /// <param name="body">The body digits to append.</param>
     /// <param name="expectedCheck">The check digit the algorithm is expected to emit.</param>
     [TestMethod]
-    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName =nameof(GetKnownAnswerTestName))]
+    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
     public void Append_WhenKnownAnswerIsAppendedInFull_ShouldProduceExpectedCheckDigit(string name, string body, char expectedCheck)
     {
         _ = name;

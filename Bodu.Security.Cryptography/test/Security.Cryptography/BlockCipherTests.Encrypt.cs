@@ -143,7 +143,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// Verifies that encryption throws ArgumentException when input size is invalid.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetInvalidBlockSizes), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetInvalidBlockSizes))]
     public void Encrypt_WithInvalidInputSize_ShouldThrowExactly(TVariant variant, byte[] input)
     {
         using var cipher = CreateBlockCipher(variant);
@@ -157,7 +157,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// Verifies that encryption throws ArgumentException when output size is invalid.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetInvalidBlockSizes), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetInvalidBlockSizes))]
     public void Encrypt_WithInvalidOutSize_ShouldThrowExactly(TVariant variant, byte[] output)
     {
         using var cipher = CreateBlockCipher(variant);
@@ -171,7 +171,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// Verifies that encryption and decryption can operate on the same buffer (in-place).
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(BlockCipherVariants), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(BlockCipherVariants))]
     public void EncryptDecrypt_WithInPlaceBuffer_ShouldSucceed(TVariant variant)
     {
         using var cipher = CreateBlockCipher();
@@ -189,7 +189,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// Verifies that encryption and decryption of valid blocks succeeds without exceptions.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidSingleBlockData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidSingleBlockData))]
     public void EncryptDecrypt_WithValidInput_ShouldRoundtrip(TVariant variant, string testName, byte[] input)
     {
         using var cipher = CreateBlockCipher(variant);

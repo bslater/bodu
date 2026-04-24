@@ -77,7 +77,7 @@ public partial class ICryptoTransformExtensionsTests
     /// transforms the entire array and returns the expected output.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public void TransformFinalBlock_ByteArray_WhenArrayIsValid_ShouldReturnTransformedOutput(KnownAnswerTest kat)
     {
         using var transform = CreateTransform(kat);
@@ -164,7 +164,7 @@ public partial class ICryptoTransformExtensionsTests
     /// with offset zero transforms the entire array and returns the same output as the no-offset overload.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public void TransformFinalBlock_ByteArrayOffset_WhenOffsetIsZero_ShouldTransformEntireArray(KnownAnswerTest kat)
     {
         byte[] fromOffset;
@@ -204,7 +204,7 @@ public partial class ICryptoTransformExtensionsTests
     /// correctly transforms a valid input span and returns the expected output.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public void TransformFinalBlock_Span_WhenSpanIsValid_ShouldReturnTransformedOutput(KnownAnswerTest kat)
     {
         using var transform = CreateTransform(kat);
@@ -233,7 +233,7 @@ public partial class ICryptoTransformExtensionsTests
     /// Verifies that the span overload produces output identical to the byte-array overload for the same input.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public void TransformFinalBlock_Span_WhenComparedToByteArrayOverload_ShouldProduceIdenticalOutput(
         KnownAnswerTest kat)
     {
@@ -272,7 +272,7 @@ public partial class ICryptoTransformExtensionsTests
     /// transforms the memory region and returns the expected output.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public void TransformFinalBlock_Memory_WhenMemoryIsValid_ShouldReturnTransformedOutput(KnownAnswerTest kat)
     {
         using var transform = CreateTransform(kat);
@@ -287,7 +287,7 @@ public partial class ICryptoTransformExtensionsTests
     /// Verifies that the memory overload produces output identical to the span overload for the same input.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public void TransformFinalBlock_Memory_WhenComparedToSpanOverload_ShouldProduceIdenticalOutput(
         KnownAnswerTest kat)
     {

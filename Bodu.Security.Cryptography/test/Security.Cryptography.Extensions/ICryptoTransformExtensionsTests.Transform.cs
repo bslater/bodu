@@ -155,7 +155,7 @@ public partial class ICryptoTransformExtensionsTests
     /// expected transformed output for each known-answer test case.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public void Transform_ByteArray_WhenValid_ShouldReturnExpectedOutput(KnownAnswerTest kat)
     {
         using var transform = CreateTransform(kat);
@@ -201,7 +201,7 @@ public partial class ICryptoTransformExtensionsTests
     /// the expected transformed output for a valid offset and count.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public void Transform_ByteArrayRange_WhenValid_ShouldReturnExpectedOutput(KnownAnswerTest kat)
     {
         using var transform = CreateTransform(kat);
@@ -233,7 +233,7 @@ public partial class ICryptoTransformExtensionsTests
     /// returns the expected transformed output for each known-answer test case.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public void Transform_Span_WhenValid_ShouldReturnExpectedOutput(KnownAnswerTest kat)
     {
         using var transform = CreateTransform(kat);
@@ -247,7 +247,7 @@ public partial class ICryptoTransformExtensionsTests
     /// Verifies that the span overload produces output identical to the byte-array overload for the same input.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public void Transform_Span_WhenComparedToByteArrayOverload_ShouldProduceIdenticalOutput(KnownAnswerTest kat)
     {
         byte[] fromArray;
@@ -270,7 +270,7 @@ public partial class ICryptoTransformExtensionsTests
     /// returns the expected transformed output for each known-answer test case.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public void Transform_Memory_WhenValid_ShouldReturnExpectedOutput(KnownAnswerTest kat)
     {
         using var transform = CreateTransform(kat);
@@ -284,7 +284,7 @@ public partial class ICryptoTransformExtensionsTests
     /// Verifies that the memory overload produces output identical to the span overload for the same input.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public void Transform_Memory_WhenComparedToSpanOverload_ShouldProduceIdenticalOutput(KnownAnswerTest kat)
     {
         byte[] fromSpan;
@@ -341,7 +341,7 @@ public partial class ICryptoTransformExtensionsTests
     /// writes the transformed output into the destination span and returns the number of bytes written.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public void Transform_SpanToSpan_WhenValid_ShouldWriteToDestinationAndReturnByteCount(KnownAnswerTest kat)
     {
         using var transform = CreateTransform(kat);
@@ -396,7 +396,7 @@ public partial class ICryptoTransformExtensionsTests
     /// writes the transformed output into the destination memory region and returns the byte count.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public void Transform_MemoryToMemory_WhenValid_ShouldWriteToDestinationAndReturnByteCount(KnownAnswerTest kat)
     {
         using var transform = CreateTransform(kat);
@@ -415,7 +415,7 @@ public partial class ICryptoTransformExtensionsTests
     /// the same input.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public void Transform_MemoryToMemory_WhenComparedToSpanToSpanOverload_ShouldProduceIdenticalOutput(KnownAnswerTest kat)
     {
         byte[] spanDest = new byte[kat.Input.Length + 32];
@@ -499,7 +499,7 @@ public partial class ICryptoTransformExtensionsTests
     /// writes the transformed output to the target stream and returns the total bytes read.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public void Transform_Stream_WhenValid_ShouldWriteTransformedBytesToTarget(KnownAnswerTest kat)
     {
         using var source = new MemoryStream(kat.Input);

@@ -1,50 +1,53 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="UpcA.cs" company="PlaceholderCompany">
+// <copyright file="Ean13.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Checksums;
+using Bodu.IO.Hashing.Checksums;
+
+namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
-/// Computes the check digit of a 12-digit Universal Product Code (UPC-A) barcode using the UPC-A weighted
-/// modulus-10 algorithm. This class cannot be inherited.
+/// Computes the check digit of a 13-digit European Article Number / Global Trade Item Number-13 barcode using the
+/// EAN-13 weighted modulus-10 algorithm. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// UPC-A shares its weight pattern with EAN-13 and ISBN-13; a UPC-A value is exactly an EAN-13 whose country
-/// prefix is a leading zero. The static helpers on this type enforce a strict 11-digit body length (12-digit
-/// full sequence); the streaming surface is length-agnostic.
+/// EAN-13 and ISBN-13 share the same weight pattern — alternating 1 and 3 over the twelve body digits with the
+/// rightmost data digit carrying weight 3 — so a 13-digit ISBN is also a valid EAN-13. The static helpers on this
+/// type enforce a strict 12-digit body length (13-digit full sequence) to make downstream callers' intent
+/// explicit; the streaming surface is length-agnostic.
 /// </para>
 /// <para>
-/// <b>Worked example.</b> For the body <c>"03600029145"</c>, the computed check digit is <c>'2'</c>, and the
-/// resulting UPC-A <c>"036000291452"</c> is therefore valid.
+/// <b>Worked example.</b> For the body <c>"501234567890"</c>, the computed check digit is <c>'0'</c>, and the
+/// resulting EAN-13 <c>"5012345678900"</c> is therefore valid.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
-public sealed class UpcA
+public sealed class Ean13
     : CheckDigitAlgorithm
 {
-    /// <summary>The required body length of <c>11</c> decimal digits.</summary>
-    public const int BodyLength = 11;
+    /// <summary>The required body length of <c>12</c> decimal digits.</summary>
+    public const int BodyLength = 12;
 
-    /// <summary>The required full-sequence length of <c>12</c> decimal digits.</summary>
-    public const int SequenceLength = 12;
+    /// <summary>The required full-sequence length of <c>13</c> decimal digits.</summary>
+    public const int SequenceLength = 13;
 
     private int _sumEvenHypothesis;
     private int _sumOddHypothesis;
     private int _count;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="UpcA" /> class.
+    /// Initializes a new instance of the <see cref="Ean13" /> class.
     /// </summary>
-    public UpcA()
+    public Ean13()
     {
     }
 
     /// <inheritdoc />
-    public override string AlgorithmName => "UPC-A";
+    public override string AlgorithmName => "EAN-13";
 
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)
@@ -97,7 +100,7 @@ public sealed class UpcA
     }
 
     /// <summary>
-    /// Computes the UPC-A check digit for the supplied body of decimal digits without allocating a streaming
+    /// Computes the EAN-13 check digit for the supplied body of decimal digits without allocating a streaming
     /// instance.
     /// </summary>
     /// <param name="digits">The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).</param>
@@ -113,13 +116,14 @@ public sealed class UpcA
         WeightedMod10.ComputeIsbn13(digits);
 
     /// <summary>
-    /// Determines whether the supplied sequence, comprising an eleven-digit body followed by a trailing UPC-A
+    /// Determines whether the supplied sequence, comprising a twelve-digit body followed by a trailing EAN-13
     /// check digit, is consistent.
     /// </summary>
     /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
     /// <returns>
     /// <see langword="true" /> if the sequence is exactly <see cref="SequenceLength" /> digits and evaluates as
-    /// valid under UPC-A; otherwise, <see langword="false" />.
+    /// valid under EAN-13; otherwise, <see langword="false" /> — including the case where
+    /// <paramref name="digitsIncludingCheck" /> has the wrong length or contains a non-digit character.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> digitsIncludingCheck)
     {

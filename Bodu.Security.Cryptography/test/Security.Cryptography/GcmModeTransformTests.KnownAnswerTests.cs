@@ -63,7 +63,7 @@ public sealed partial class GcmModeTransformTests
     /// Verifies that <see cref="GcmModeTransform.Encrypt" />, with NistVector, ProduceExpectedCiphertextAndTag.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GcmKatVectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GcmKatVectors))]
     public void Encrypt_WithNistVector_ShouldProduceExpectedCiphertextAndTag(
         string description, byte[] key, byte[] iv, byte[] aad,
         byte[] plaintext, byte[] expectedCiphertext, byte[] expectedTag)
@@ -73,7 +73,7 @@ public sealed partial class GcmModeTransformTests
     /// Verifies that <see cref="GcmModeTransform.Decrypt" />, with NistVector, RecoverOriginalPlaintext.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GcmKatVectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GcmKatVectors))]
     public void Decrypt_WithNistVector_ShouldRecoverOriginalPlaintext(
         string description, byte[] key, byte[] iv, byte[] aad,
         byte[] plaintext, byte[] expectedCiphertext, byte[] expectedTag)

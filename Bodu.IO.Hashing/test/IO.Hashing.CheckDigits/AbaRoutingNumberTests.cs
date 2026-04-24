@@ -4,15 +4,14 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.Checksums;
-
 namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Contains unit tests for the <see cref="AbaRoutingNumber" /> check-digit algorithm.
 /// </summary>
 [TestClass]
-public sealed class AbaRoutingNumberTests : CheckDigitAlgorithmTests<AbaRoutingNumberTests, AbaRoutingNumber>
+public sealed partial class AbaRoutingNumberTests
+    : CheckDigitAlgorithmTests<AbaRoutingNumberTests, AbaRoutingNumber>
 {
     /// <inheritdoc />
     protected override CheckDigitAlgorithmSpecification GetSpecification() => new()
@@ -35,25 +34,4 @@ public sealed class AbaRoutingNumberTests : CheckDigitAlgorithmTests<AbaRoutingN
     /// <inheritdoc />
     protected override bool IsValidStatic(ReadOnlySpan<char> digitsIncludingCheck) =>
         AbaRoutingNumber.IsValid(digitsIncludingCheck);
-
-    /// <summary>
-    /// Verifies that <see cref="AbaRoutingNumber.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose length
-    /// is not exactly <see cref="AbaRoutingNumber.SequenceLength" />.
-    /// </summary>
-    [TestMethod]
-    public void IsValid_WhenSequenceLengthIsWrong_ShouldReturnFalse()
-    {
-        Assert.IsFalse(AbaRoutingNumber.IsValid("0110000150".AsSpan()));
-        Assert.IsFalse(AbaRoutingNumber.IsValid("01100001".AsSpan()));
-    }
-
-    /// <summary>
-    /// Verifies that a real-world Federal Reserve Bank routing number round-trips through
-    /// <see cref="AbaRoutingNumber.IsValid(ReadOnlySpan{char})" />.
-    /// </summary>
-    [TestMethod]
-    public void IsValid_FrbBostonRoutingNumber_ShouldReturnTrue()
-    {
-        Assert.IsTrue(AbaRoutingNumber.IsValid("011000015".AsSpan()));
-    }
 }

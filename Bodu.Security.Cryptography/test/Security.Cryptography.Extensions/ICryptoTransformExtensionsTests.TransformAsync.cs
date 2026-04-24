@@ -103,7 +103,7 @@ public partial class ICryptoTransformExtensionsTests
     /// reads all bytes from the source, applies the transform, and writes the expected output to the target stream.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public async Task TransformAsync_Stream_WhenInputIsValid_ShouldWriteTransformedBytesToTarget(KnownAnswerTest kat)
     {
         using var source = new MemoryStream(kat.Input);
@@ -138,7 +138,7 @@ public partial class ICryptoTransformExtensionsTests
     /// does not dispose the target stream after completing the operation.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public async Task TransformAsync_Stream_WhenCompleted_ShouldLeaveTargetStreamOpen(KnownAnswerTest kat)
     {
         using var source = new MemoryStream(kat.Input);
@@ -183,7 +183,7 @@ public partial class ICryptoTransformExtensionsTests
     /// throws immediately when the cancellation token is already cancelled before the call.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public async Task TransformAsync_Stream_WhenAlreadyCancelled_ShouldThrowImmediately(KnownAnswerTest kat)
     {
         using var source = new MemoryStream(kat.Input);
@@ -257,7 +257,7 @@ public partial class ICryptoTransformExtensionsTests
     /// correct byte count and producing the expected output.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public async Task TransformAsync_Memory_WhenInputIsValid_ShouldWriteTransformedBytesToDestination(
         KnownAnswerTest kat)
     {
@@ -280,7 +280,7 @@ public partial class ICryptoTransformExtensionsTests
     /// for the same input.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public async Task TransformAsync_Memory_WhenComparedToSyncOverload_ShouldProduceIdenticalOutput(
         KnownAnswerTest kat)
     {
@@ -309,7 +309,7 @@ public partial class ICryptoTransformExtensionsTests
     /// throws <see cref="TaskCanceledException" /> when the token is already cancelled before the operation begins.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public async Task TransformAsync_Memory_WhenAlreadyCancelled_ShouldThrowTaskCanceledException(
         KnownAnswerTest kat)
     {
@@ -332,7 +332,7 @@ public partial class ICryptoTransformExtensionsTests
     /// throws <see cref="ArgumentException" /> when the destination buffer is too small to hold the output.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public async Task TransformAsync_Memory_WhenDestinationIsTooSmall_ShouldThrowArgumentException(
         KnownAnswerTest kat)
     {

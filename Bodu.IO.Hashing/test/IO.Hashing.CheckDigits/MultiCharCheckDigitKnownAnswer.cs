@@ -4,7 +4,14 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Checksums;
+
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="MultiCharCheckDigitKnownAnswer.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Represents a single known-answer test vector for a <see cref="MultiCharCheckDigitAlgorithm" />, pairing a body

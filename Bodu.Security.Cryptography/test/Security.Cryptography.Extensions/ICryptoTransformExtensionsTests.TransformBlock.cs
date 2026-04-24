@@ -45,7 +45,7 @@ public partial class ICryptoTransformExtensionsTests
     /// the transformed output in-place and returns the number of bytes written.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public void TransformBlock_WhenArrayIsValid_ShouldTransformInPlaceAndReturnByteCount(KnownAnswerTest kat)
     {
         // Take a fresh copy since TransformBlock modifies the array in-place.
@@ -81,7 +81,7 @@ public partial class ICryptoTransformExtensionsTests
     /// the same input always yields the same output regardless of previous calls.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidTransformTestData))]
     public void TransformBlock_WhenCalledRepeatedly_ShouldTransformEachBlockIndependently(KnownAnswerTest kat)
     {
         // Two independent copies of the same input — the transform must produce identical

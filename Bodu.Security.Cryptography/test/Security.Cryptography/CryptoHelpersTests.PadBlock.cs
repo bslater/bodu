@@ -76,7 +76,7 @@ public partial class CryptoHelpersTests
     /// ISO10126, only the last padding byte is validated due to randomness.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases))]
     public void PadBlock_WhenValidInput_ShouldApplyCorrectPadding_UsingByteArray(
         PaddingMode padding, string inputHex, int blockSizeBytes, string expectedHex)
     {
@@ -101,7 +101,7 @@ public partial class CryptoHelpersTests
     /// ISO10126, only the last padding byte is validated due to randomness.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases))]
     public void PadBlock_WhenValidInput_ShouldApplyCorrectPadding_UsingSpan(
         PaddingMode padding, string inputHex, int blockSizeBytes, string expectedHex)
     {
@@ -131,7 +131,7 @@ public partial class CryptoHelpersTests
     /// Verifies that <see cref="CryptoHelpers.PadBlock" /> returns the expected total output length after padding is applied when using the byte array overload.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases))]
     public void PadBlock_WhenValidInput_ShouldReturnExpectedLength_UsingByteArray(
         PaddingMode padding, string inputHex, int blockSizeBytes, string expectedHex)
     {
@@ -146,7 +146,7 @@ public partial class CryptoHelpersTests
     /// Verifies that <see cref="CryptoHelpers.PadBlock" /> returns the expected total output length after padding is applied when using the span-based overload.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases))]
     public void PadBlock_WhenValidInput_ShouldReturnExpectedLength_UsingSpan(
         PaddingMode padding, string inputHex, int blockSizeBytes, string expectedHex)
     {
@@ -166,7 +166,7 @@ public partial class CryptoHelpersTests
     /// Verifies that <see cref="CryptoHelpers.PadBlock" /> preserves the original bytes at the beginning of the padded block when using the byte array overload.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases))]
     public void PadBlock_WhenValidInput_ShouldPreserveOriginalBytes_UsingByteArray(
         PaddingMode padding, string inputHex, int blockSizeBytes, string expectedHex)
     {
@@ -180,7 +180,7 @@ public partial class CryptoHelpersTests
     /// Verifies that <see cref="CryptoHelpers.PadBlock" /> preserves the original bytes at the beginning of the padded block when using the span-based overload.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases))]
     public void PadBlock_WhenValidInput_ShouldPreserveOriginalBytes_UsingSpan(
         PaddingMode padding, string inputHex, int blockSizeBytes, string expectedHex)
     {
@@ -201,7 +201,7 @@ public partial class CryptoHelpersTests
     /// size when using the byte array overload. Skips tests that require a custom destination length.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CryptoHelpersTests.InvalidPaddingCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CryptoHelpersTests.InvalidPaddingCases))]
     public void PadBlock_WhenInvalidInput_WithArray_ShouldThrowExactly(
         PaddingMode padding, string inputHex, int blockSizeBytes, Type exceptionType, int? destinationLength = null)
     {
@@ -225,7 +225,7 @@ public partial class CryptoHelpersTests
     /// size when using the span-based overload.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CryptoHelpersTests.InvalidPaddingCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CryptoHelpersTests.InvalidPaddingCases))]
     public void PadBlock_WhenInvalidInput_WithSpan_ShouldThrowExactly(
         PaddingMode padding, string inputHex, int blockSizeBytes, Type exceptionType, int? destinationLength = null)
     {

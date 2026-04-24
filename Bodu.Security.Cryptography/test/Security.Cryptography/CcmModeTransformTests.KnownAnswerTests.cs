@@ -69,10 +69,10 @@ public sealed partial class CcmModeTransformTests
     // The base class Transform_WithRealAesCipher_RandomKey_ShouldRoundTrip covers this automatically.
 
     // Once the implementation is verified, add:
-    //   [TestMethod][DynamicData(nameof(CcmKatVectors), DynamicDataSourceType.Method)]
+    //   [TestMethod][DynamicData(nameof(CcmKatVectors))]
     //   public void Encrypt_WithNistVector_ShouldMatchExpected(...) => AssertKatEncrypt(...);
     //
-    //   [TestMethod][DynamicData(nameof(CcmKatVectors), DynamicDataSourceType.Method)]
+    //   [TestMethod][DynamicData(nameof(CcmKatVectors))]
     //   public void Decrypt_WithNistVector_ShouldRecoverPlaintext(...) => AssertKatDecrypt(...);
 
     // ── RFC 3610 Section 2.8 — Example #1 (adapted for our Nlen=12, T=16 parameters) ─────────

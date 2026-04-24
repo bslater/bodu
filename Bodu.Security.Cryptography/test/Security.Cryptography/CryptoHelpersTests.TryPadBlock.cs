@@ -15,7 +15,7 @@ public partial class CryptoHelpersTests
     /// supported padding modes.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases))]
     public void TryPadBlock_WhenValidInput_ShouldReturnTrue(
         PaddingMode padding, string inputHex, int blockSizeBytes, string expectedHex)
     {
@@ -33,7 +33,7 @@ public partial class CryptoHelpersTests
     /// must match the expected padded length derived from the input and padding mode.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases))]
     public void TryPadBlock_WhenValidInput_ShouldReturnExpectedLength(
         PaddingMode padding, string inputHex, int blockSizeBytes, string expectedHex)
     {
@@ -51,7 +51,7 @@ public partial class CryptoHelpersTests
     /// padding is only appended and not destructive to source data.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CryptoHelpersTests.ValidPaddingCases))]
     public void TryPadBlock_WhenValidInput_ShouldPreserveOriginalBytes(
         PaddingMode padding, string inputHex, int blockSizeBytes, string expectedHex)
     {
@@ -69,7 +69,7 @@ public partial class CryptoHelpersTests
     /// block sizes, or insufficient destination buffer length.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CryptoHelpersTests.InvalidPaddingCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CryptoHelpersTests.InvalidPaddingCases))]
     public void TryPadBlock_WhenInvalidInput_ShouldReturnFalse(
         PaddingMode padding, string inputHex, int blockSizeBytes, Type exceptionType, int? destinationLength = null)
     {
@@ -90,7 +90,7 @@ public partial class CryptoHelpersTests
     /// configuration, aligning with a <c>false</c> return hashValue.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CryptoHelpersTests.InvalidPaddingCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CryptoHelpersTests.InvalidPaddingCases))]
     public void TryPadBlock_WhenInvalidInput_ShouldReturnZeroWritten(
         PaddingMode padding, string inputHex, int blockSizeBytes, Type exceptionType, int? destinationLength = null)
     {

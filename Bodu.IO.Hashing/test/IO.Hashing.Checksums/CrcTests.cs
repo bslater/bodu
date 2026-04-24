@@ -114,26 +114,26 @@ public partial class CrcTests
     /// the canonical check vectors against all 100+ RevEng standards instead.
     /// </remarks>
     protected override IEnumerable<string> GetIncrementalHashValue(CrcTestVariant variant) => variant switch
+    {
+        CrcTestVariant.Crc8_SMBUS => new[]
         {
-            CrcTestVariant.Crc8_SMBUS => new[]
-            {
                 "00", "00", "07", "1B", "48", "E3", "BC", "2F",
                 "D8", "3E", "85", "A4", "44", "FF", "D0", "14",
             },
-            CrcTestVariant.Crc16_ARC => new[]
-            {
+        CrcTestVariant.Crc16_ARC => new[]
+        {
                 "0000", "0000", "C1C0", "8051", "10A1", "A10F", "0EBB", "BAC6",
                 "0671", "F0C4", "0442", "C3C4", "C596", "5656", "17FB", "3ACA",
             },
-            CrcTestVariant.Crc32_IsoHdlc => new[]
-            {
+        CrcTestVariant.Crc32_IsoHdlc => new[]
+        {
                 "00000000", "8DEF02D2", "6922DE36", "7F895408",
                 "1386B98B", "CCD35A51", "4ACFEB30", "F90958AD",
                 "9F68AA88", "0243E1BC", "46D76C45", "E18E2DAD",
                 "65C97092", "B846FEE6", "C856EF69", "5E676CA0",
             },
-            CrcTestVariant.Crc64_Ecma182 => new[]
-            {
+        CrcTestVariant.Crc64_Ecma182 => new[]
+        {
                 "0000000000000000", "0000000000000000", "9336EAA9EBE1F042", "2FB25A00BCE9E42A",
                 "F3CB1ECE9E6005F8", "B21D702AD45A8D58", "3215BDB1E4E5C7A8", "5415F7A09699D1A3",
                 "CCC7A6A5DAE42AA2", "8B0767B5C7C1E307", "47D31426ADAE75BD", "960ABF2C9F8531A7",
@@ -143,8 +143,8 @@ public partial class CrcTests
                 "A91D61CFB075AD77", "25ED4B42D6CB4EA7", "BB87EEC69AD3C24C", "399E9CC9BE4539B2",
                 "3EA90075978753D3", "36050E7F53F83C63", "59C1581472B10E12", "616C064ADBD8E4D5",
             },
-            _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
-        };
+        _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
+    };
 
     private static CrcStandard StandardFor(CrcTestVariant variant) => variant switch
     {

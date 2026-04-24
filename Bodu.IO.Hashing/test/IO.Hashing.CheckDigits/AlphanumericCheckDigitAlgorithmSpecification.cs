@@ -4,9 +4,16 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.CheckDigits;
 
-namespace Bodu.IO.Hashing.Checksums;
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="AlphanumericCheckDigitAlgorithmSpecification.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using Bodu.IO.Hashing.Checksums;
+
+namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Describes the expected observable properties of an <see cref="AlphanumericCheckDigitAlgorithm" />

@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.Checksums;
+using Bodu.IO.Hashing.CheckDigits;
 
-namespace Bodu.IO.Hashing.CheckDigits;
+namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Contains unit tests for the <see cref="Cusip" /> check-digit algorithm.

@@ -1,51 +1,52 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Ean13.cs" company="PlaceholderCompany">
+// <copyright file="Gtin14.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Checksums;
+using Bodu.IO.Hashing.Checksums;
+
+namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
-/// Computes the check digit of a 13-digit European Article Number / Global Trade Item Number-13 barcode using the
-/// EAN-13 weighted modulus-10 algorithm. This class cannot be inherited.
+/// Computes the check digit of a 14-digit Global Trade Item Number (GTIN-14) barcode using the GTIN-14 weighted
+/// modulus-10 algorithm. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// EAN-13 and ISBN-13 share the same weight pattern — alternating 1 and 3 over the twelve body digits with the
-/// rightmost data digit carrying weight 3 — so a 13-digit ISBN is also a valid EAN-13. The static helpers on this
-/// type enforce a strict 12-digit body length (13-digit full sequence) to make downstream callers' intent
-/// explicit; the streaming surface is length-agnostic.
+/// GTIN-14 — the logistics-tier GS1 identifier derived by prefixing an EAN-13 with a single indicator digit —
+/// shares its weight pattern with EAN-13, UPC-A, and ISBN-13. The static helpers on this type enforce a strict
+/// 13-digit body length (14-digit full sequence); the streaming surface is length-agnostic.
 /// </para>
 /// <para>
-/// <b>Worked example.</b> For the body <c>"501234567890"</c>, the computed check digit is <c>'0'</c>, and the
-/// resulting EAN-13 <c>"5012345678900"</c> is therefore valid.
+/// <b>Worked example.</b> For the body <c>"1061414100041"</c>, the computed check digit is <c>'5'</c>, and the
+/// resulting GTIN-14 <c>"10614141000415"</c> is therefore valid.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
-public sealed class Ean13
+public sealed class Gtin14
     : CheckDigitAlgorithm
 {
-    /// <summary>The required body length of <c>12</c> decimal digits.</summary>
-    public const int BodyLength = 12;
+    /// <summary>The required body length of <c>13</c> decimal digits.</summary>
+    public const int BodyLength = 13;
 
-    /// <summary>The required full-sequence length of <c>13</c> decimal digits.</summary>
-    public const int SequenceLength = 13;
+    /// <summary>The required full-sequence length of <c>14</c> decimal digits.</summary>
+    public const int SequenceLength = 14;
 
     private int _sumEvenHypothesis;
     private int _sumOddHypothesis;
     private int _count;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Ean13" /> class.
+    /// Initializes a new instance of the <see cref="Gtin14" /> class.
     /// </summary>
-    public Ean13()
+    public Gtin14()
     {
     }
 
     /// <inheritdoc />
-    public override string AlgorithmName => "EAN-13";
+    public override string AlgorithmName => "GTIN-14";
 
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)
@@ -98,7 +99,7 @@ public sealed class Ean13
     }
 
     /// <summary>
-    /// Computes the EAN-13 check digit for the supplied body of decimal digits without allocating a streaming
+    /// Computes the GTIN-14 check digit for the supplied body of decimal digits without allocating a streaming
     /// instance.
     /// </summary>
     /// <param name="digits">The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).</param>
@@ -114,14 +115,13 @@ public sealed class Ean13
         WeightedMod10.ComputeIsbn13(digits);
 
     /// <summary>
-    /// Determines whether the supplied sequence, comprising a twelve-digit body followed by a trailing EAN-13
-    /// check digit, is consistent.
+    /// Determines whether the supplied sequence, comprising a thirteen-digit body followed by a trailing
+    /// GTIN-14 check digit, is consistent.
     /// </summary>
     /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
     /// <returns>
     /// <see langword="true" /> if the sequence is exactly <see cref="SequenceLength" /> digits and evaluates as
-    /// valid under EAN-13; otherwise, <see langword="false" /> — including the case where
-    /// <paramref name="digitsIncludingCheck" /> has the wrong length or contains a non-digit character.
+    /// valid under GTIN-14; otherwise, <see langword="false" />.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> digitsIncludingCheck)
     {

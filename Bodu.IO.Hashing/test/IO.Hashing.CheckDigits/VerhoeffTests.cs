@@ -10,7 +10,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// Contains unit tests for the <see cref="Verhoeff" /> check-digit algorithm.
 /// </summary>
 [TestClass]
-public sealed partial class VerhoeffTests 
+public sealed partial class VerhoeffTests
     : CheckDigitAlgorithmTests<VerhoeffTests, Verhoeff>
 {
     /// <inheritdoc />

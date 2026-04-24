@@ -14,7 +14,7 @@ public partial class CryptoHelpersTests
     /// Verifies that <see cref="CryptoHelpers.TryDepadBlock" /> returns <c>true</c> for valid input input across modes.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases))]
     public void TryDepadBlock_WhenValidPadding_ShouldReturnTrue(
         PaddingMode padding, string inputHex, string expectedHex)
     {
@@ -30,7 +30,7 @@ public partial class CryptoHelpersTests
     /// Verifies that <see cref="CryptoHelpers.TryDepadBlock" /> returns the correct uninput byte count for valid input.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases))]
     public void TryDepadBlock_WhenValidPadding_ShouldReturnExpectedLength(
         PaddingMode padding, string inputHex, string expectedHex)
     {
@@ -48,7 +48,7 @@ public partial class CryptoHelpersTests
     /// Verifies that <see cref="CryptoHelpers.TryDepadBlock" /> returns the correct uninput content for valid input.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CryptoHelpersTests.ValidDepaddingCases))]
     public void TryDepadBlock_WhenValidPadding_ShouldReturnExpectedResult(
         PaddingMode padding, string inputHex, string expectedHex)
     {
@@ -66,7 +66,7 @@ public partial class CryptoHelpersTests
     /// Verifies that <see cref="CryptoHelpers.TryDepadBlock" /> returns <c>false</c> for invalid input input across supported modes.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CryptoHelpersTests.InvalidDepaddingCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CryptoHelpersTests.InvalidDepaddingCases))]
     public void TryDepadBlock_WhenInvalidPadding_ShouldReturnFalse(PaddingMode padding, string inputHex, int blockSizeBytes, Type exceptionType)
     {
         byte[] input = Convert.FromHexString(inputHex);

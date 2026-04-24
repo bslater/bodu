@@ -48,7 +48,7 @@ public sealed partial class EcbModeTransformTests
     /// Verifies that <see cref="EcbModeTransform.Transform" />, with NistVector, EncryptCorrectly.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(EcbKatVectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(EcbKatVectors))]
     public void Transform_WithNistVector_ShouldEncryptCorrectly(
         string description, byte[] key, byte[] iv, byte[] plaintext, byte[] expectedCiphertext)
         => AssertKatEncrypt(description, key, iv, plaintext, expectedCiphertext);
@@ -57,7 +57,7 @@ public sealed partial class EcbModeTransformTests
     /// Verifies that <see cref="EcbModeTransform.Transform" />, with NistVector, DecryptToOriginalPlaintext.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(EcbKatVectors), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(EcbKatVectors))]
     public void Transform_WithNistVector_ShouldDecryptToOriginalPlaintext(
         string description, byte[] key, byte[] iv, byte[] plaintext, byte[] expectedCiphertext)
         => AssertKatDecrypt(description, key, iv, plaintext, expectedCiphertext);

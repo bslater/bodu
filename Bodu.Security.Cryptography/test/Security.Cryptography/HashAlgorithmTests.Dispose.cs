@@ -23,7 +23,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// properties, and that the thrown <see cref="ObjectDisposedException" /> correctly identifies the disposed type.
     /// </remarks>
     [TestMethod]
-    [DynamicData(nameof(GetReadableProperties), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetReadableProperties))]
     public void Dispose_WhenReadingProperty_ShouldThrowExactly(PropertyInfo property)
     {
         if (property is null)
@@ -66,7 +66,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <see cref="ObjectDisposedException" /> correctly identifies the disposed type.
     /// </remarks>
     [TestMethod]
-    [DynamicData(nameof(GetWritableProperties), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetWritableProperties))]
     public void Dispose_WhenAssigningProperty_ShouldThrowExactly(PropertyInfo property)
     {
         if (property is null)
@@ -117,7 +117,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// </summary>
     /// <param name="field">The field to inspect for zeroed or null state.</param>
     [TestMethod]
-    [DynamicData(nameof(GetDisposableFields), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetDisposableFields))]
     public void Dispose_WhenCalled_ShouldZeroPrivateField(FieldInfo field)
     {
         if (field is null)

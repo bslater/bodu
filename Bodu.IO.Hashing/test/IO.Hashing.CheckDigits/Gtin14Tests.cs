@@ -1,48 +1,46 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="UpcATests.cs" company="PlaceholderCompany">
+// <copyright file="Gtin14Tests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.Checksums;
-
 namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
-/// Contains unit tests for the <see cref="UpcA" /> check-digit algorithm.
+/// Contains unit tests for the <see cref="Gtin14" /> check-digit algorithm.
 /// </summary>
 [TestClass]
-public sealed class UpcATests : CheckDigitAlgorithmTests<UpcATests, UpcA>
+public sealed class Gtin14Tests : CheckDigitAlgorithmTests<Gtin14Tests, Gtin14>
 {
     /// <inheritdoc />
     protected override CheckDigitAlgorithmSpecification GetSpecification() => new()
     {
-        AlgorithmName = "UPC-A",
+        AlgorithmName = "GTIN-14",
         EmptyCheckDigit = '0',
         KnownAnswers =
         [
-            new() { Name = "Empty",          Body = "",            ExpectedCheck = '0' },
-            new() { Name = "WikipediaUPCA",  Body = "03600029145", ExpectedCheck = '2' },
-            new() { Name = "AllZeros",       Body = "00000000000", ExpectedCheck = '0' },
+            new() { Name = "Empty",         Body = "",               ExpectedCheck = '0' },
+            new() { Name = "GS1Example",    Body = "1061414100041",  ExpectedCheck = '5' },
+            new() { Name = "AllZeros",      Body = "0000000000000",  ExpectedCheck = '0' },
         ],
     };
 
     /// <inheritdoc />
     protected override char ComputeStatic(ReadOnlySpan<char> digits) =>
-        UpcA.Compute(digits);
+        Gtin14.Compute(digits);
 
     /// <inheritdoc />
     protected override bool IsValidStatic(ReadOnlySpan<char> digitsIncludingCheck) =>
-        UpcA.IsValid(digitsIncludingCheck);
+        Gtin14.IsValid(digitsIncludingCheck);
 
     /// <summary>
-    /// Verifies that <see cref="UpcA.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose length is not
-    /// exactly <see cref="UpcA.SequenceLength" />.
+    /// Verifies that <see cref="Gtin14.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose length is not
+    /// exactly <see cref="Gtin14.SequenceLength" />.
     /// </summary>
     [TestMethod]
     public void IsValid_WhenSequenceLengthIsWrong_ShouldReturnFalse()
     {
-        Assert.IsFalse(UpcA.IsValid("0360002914520".AsSpan()));
-        Assert.IsFalse(UpcA.IsValid("03600029145".AsSpan()));
+        Assert.IsFalse(Gtin14.IsValid("106141410004150".AsSpan()));
+        Assert.IsFalse(Gtin14.IsValid("1061414100041".AsSpan()));
     }
 }

@@ -111,7 +111,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// inconclusive rather than failing.
     /// </remarks>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(HashAlgorithmVariants))]
     public void HashAlgorithm_TestData_Check(TVariant variant)
     {
         var incrementalHashes = GetExpectedHashesForIncrementalInput(variant);

@@ -48,7 +48,7 @@ public sealed partial class SivModeTransformTests
     /// Verifies that <see cref="SivModeTransform.Encrypt" />, with Rfc5297 A1 Vector, matches Expected.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(SivKatA1), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(SivKatA1))]
     public void Encrypt_WithRfc5297A1Vector_ShouldMatchExpected(
         string k1Hex, string k2Hex, string adHex, string ptHex, string expectedOutputHex)
     {
@@ -71,7 +71,7 @@ public sealed partial class SivModeTransformTests
     /// Verifies that <see cref="SivModeTransform.Decrypt" />, with Rfc5297A1Vector, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(SivKatA1), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(SivKatA1))]
     public void Decrypt_WithRfc5297A1Vector_ShouldRecoverPlaintext(
         string k1Hex, string k2Hex, string adHex, string ptHex, string expectedOutputHex)
     {

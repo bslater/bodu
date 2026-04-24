@@ -17,7 +17,7 @@ public partial class TigerTests
     /// </summary>
     /// <param name="variant">The table type to test.</param>
     [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(HashAlgorithmVariants))]
     public void Variant_Set_WhenValid_ShouldProduceExpectedHash(TigerVariant variant)
     {
         using var algorithm = CreateAlgorithm(variant);
