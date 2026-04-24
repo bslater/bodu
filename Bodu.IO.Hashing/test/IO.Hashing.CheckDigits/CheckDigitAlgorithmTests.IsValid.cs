@@ -16,7 +16,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     /// <param name="body">The body digits.</param>
     /// <param name="expectedCheck">The expected check digit.</param>
     [TestMethod]
-    [DynamicData(nameof(KnownAnswerData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(KnownAnswerData))]
     public void IsValid_WhenSequenceIncludesComputedCheckDigit_ShouldReturnTrue(string name, string body, char expectedCheck)
     {
         _ = name;
@@ -32,7 +32,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     /// <param name="body">The body digits.</param>
     /// <param name="expectedCheck">The correct check digit.</param>
     [TestMethod]
-    [DynamicData(nameof(KnownAnswerData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(KnownAnswerData))]
     public void IsValid_WhenCheckDigitIsTampered_ShouldReturnFalse(string name, string body, char expectedCheck)
     {
         _ = name;

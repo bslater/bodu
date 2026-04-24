@@ -7,7 +7,7 @@
 using Bodu.IO.Hashing.Checksums;
 using System.Runtime.Serialization;
 
-namespace Bodu.IO.Hashing;
+namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Represents an immutable set of parameters (polynomial, width, reflection, initial value, final XOR) that describe a specific CRC algorithm.

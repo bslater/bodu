@@ -16,7 +16,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     /// <param name="body">The body digits to append.</param>
     /// <param name="expectedCheck">The check digit the algorithm is expected to emit.</param>
     [TestMethod]
-    [DynamicData(nameof(KnownAnswerData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName =nameof(GetKnownAnswerTestName))]
     public void Append_WhenKnownAnswerIsAppendedInFull_ShouldProduceExpectedCheckDigit(string name, string body, char expectedCheck)
     {
         _ = name;
@@ -35,7 +35,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     /// <param name="body">The body digits to append.</param>
     /// <param name="expectedCheck">The check digit the algorithm is expected to emit.</param>
     [TestMethod]
-    [DynamicData(nameof(KnownAnswerData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
     public void Append_WhenKnownAnswerIsAppendedOneCharAtATime_ShouldProduceExpectedCheckDigit(string name, string body, char expectedCheck)
     {
         _ = name;
@@ -54,7 +54,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     /// <param name="body">The body digits to append.</param>
     /// <param name="expectedCheck">The check digit the algorithm is expected to emit.</param>
     [TestMethod]
-    [DynamicData(nameof(KnownAnswerData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
     public void Append_WhenKnownAnswerIsSplitAcrossTwoChunks_ShouldProduceExpectedCheckDigit(string name, string body, char expectedCheck)
     {
         _ = name;
@@ -92,7 +92,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     /// <param name="body">The full body digits.</param>
     /// <param name="expectedCheck">The expected check digit for the full body (unused in this test).</param>
     [TestMethod]
-    [DynamicData(nameof(KnownAnswerData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
     public void GetCurrentCheckDigit_AtEveryPrefixLength_ShouldAgreeWithStaticCompute(string name, string body, char expectedCheck)
     {
         _ = name;

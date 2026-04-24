@@ -9,6 +9,7 @@
 // </auto-generated>
 
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace Bodu.IO.Hashing.Checksums
@@ -147,8 +148,11 @@ namespace Bodu.IO.Hashing.Checksums
         /// <returns>
         /// The standard name for the current test case, or <c>"Unknown Standard"</c> if the first element is not a <see cref="string" />.
         /// </returns>
-        private static string GetDisplayName(object[] dataRow) =>
-            dataRow[0] as string ?? "Unknown Standard";
+        public static string GetCatalogCheckDisplayName(MethodInfo methodInfo, object[] data)
+        {
+            string name = (string)data[0];
+            return $"{methodInfo.Name}_{name}";
+        }
 
         /// <summary>
         /// Verifies that every catalogue CRC standard hashes the reference input <c>"123456789"</c> to the
@@ -158,7 +162,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <param name="standardId">The catalogue entry under test, identified by <see cref="CrcStandards" />.</param>
         /// <param name="expectedCheck">The expected CRC value, packed little-endian from the CRC width.</param>
         [DataTestMethod]
-        [DynamicData(nameof(CatalogCheckVectors), DynamicDataDisplayName = nameof(GetDisplayName))]
+        [DynamicData(nameof(CatalogCheckVectors), DynamicDataDisplayName = nameof(GetCatalogCheckDisplayName))]
         public void ComputeHash_WhenInputIsCheckVector_ForCatalogStandard_ShouldMatchPublishedCheck(string displayName, CrcStandards standardId, ulong expectedCheck)
         {
             CrcStandard standard = CrcStandard.Get(standardId);

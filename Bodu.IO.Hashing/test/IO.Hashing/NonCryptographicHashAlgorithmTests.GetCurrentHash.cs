@@ -25,16 +25,24 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void GetCurrentHash_WhenAppendingIncrementalData_ShouldReturnExpectedHashValueAtEachStep(TVariant variant)
     {
+        var specification = GetSpecification(variant);
         string[] expectedValues = GetIncrementalHashValue(variant).ToArray();
+
         if (expectedValues.Length == 0)
         {
-            Assert.Inconclusive($"No incremental hash values defined for variant '{variant}'.");
+            Assert.Inconclusive($"No expected hashes defined for variant {variant}.");
             return;
         }
 
-        NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
+        int stepCount = Math.Max(specification.HashLengthInBytes * 4, 16);
 
-        for (int i = 0; i < expectedValues.Length; i++)
+        Assert.AreEqual(stepCount, expectedValues.Length,
+            $"Expected {stepCount} algorithm entries for variant '{variant}' " +
+            $"(HashLength={specification.HashLengthInBytes}), but got {expectedValues.Length}.");
+
+        var algorithm = CreateAlgorithm(variant);
+
+        for (int i = 0; i < stepCount; i++)
         {
             byte[] expected = Convert.FromHexString(expectedValues[i]);
             byte[] actual = algorithm.GetCurrentHash();
