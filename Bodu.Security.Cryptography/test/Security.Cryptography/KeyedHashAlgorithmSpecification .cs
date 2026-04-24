@@ -52,12 +52,19 @@ public record KeyedAlgorithmSpecification
     /// Returns a representative set of key lengths that should be rejected by the algorithm — lengths just
     /// outside the valid range, useful for negative testing.
     /// </summary>
+    /// <remarks>
+    /// The zero-length entry is emitted only when <see cref="MinKeyLength" /> is strictly positive, allowing
+    /// variable-length-optional-key algorithms (such as Skein, where an empty key selects an unkeyed mode) to
+    /// declare <c>MinKeyLength = 0</c> without causing the length-rejection test to assert that an empty key throws.
+    /// </remarks>
     public IEnumerable<int> GetRejectedKeyLengths()
     {
         if (MinKeyLength > 0)
+        {
             yield return MinKeyLength - 1;
+            yield return 0;
+        }
 
         yield return MaxKeyLength + 1;
-        yield return 0;
     }
 }

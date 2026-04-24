@@ -17,9 +17,9 @@ namespace Bodu.Security.Cryptography;
 /// for this state size.
 /// </para>
 /// <para>
-/// Supplying a non-empty <see cref="Skein.Key" /> turns the instance into the keyed Skein-MAC-256 variant by prepending
+/// Supplying a non-empty <see cref="Skein{T}.Key" /> turns the instance into the keyed Skein-MAC-256 variant by prepending
 /// a <c>KEY</c> UBI phase to the standard <c>CFG → MSG → OUT</c> pipeline. The key length is not fixed: any byte
-/// sequence is valid.
+/// sequence from zero up to <see cref="Skein{T}.MaxKeySizeBytes" /> bytes is valid.
 /// </para>
 /// </remarks>
 /// <example>
@@ -33,7 +33,7 @@ namespace Bodu.Security.Cryptography;
 /// </example>
 /// <seealso cref="Threefish256Cipher" />
 public sealed class Skein256
-    : Skein
+    : Skein<Skein256>
 {
     /// <summary>
     /// The state / block size, in bytes, of the Skein-256 variant.
@@ -64,10 +64,4 @@ public sealed class Skein256
     public Skein256(int hashSize)
         : base(new Threefish256Cipher(new byte[BlockSizeBytes], new byte[16]), hashSize, PermittedHashSizes)
     { }
-
-    /// <summary>
-    /// Gets the fully qualified algorithm name, including the state size and the configured output size.
-    /// </summary>
-    /// <returns>A string of the form <c>"Skein-256-<i>n</i>"</c>, e.g. <c>"Skein-256-256"</c>.</returns>
-    public string AlgorithmName => $"Skein-256-{this.HashSize}";
 }

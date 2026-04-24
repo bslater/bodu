@@ -15,6 +15,7 @@ namespace Bodu.Security.Cryptography;
 /// functions, built by Bruce Schneier and co-authors on top of the <see cref="ThreefishBlockCipher" /> tweakable block
 /// cipher and submitted as a finalist to the NIST SHA-3 competition.
 /// </summary>
+/// <typeparam name="T">The concrete Skein variant derived from this class. Must expose a public parameterless constructor.</typeparam>
 /// <remarks>
 /// <para>
 /// Skein hashes a message by repeatedly applying the <c>UBI</c> (Unique Block Iteration) mode of operation. Each UBI
@@ -22,6 +23,12 @@ namespace Bodu.Security.Cryptography;
 /// a tweak that identifies the block's role (configuration, optional key, message, output) together with its position
 /// and its first / final flags. The new chaining value is the encryption output XORed with the block, giving the classic
 /// Matyas-Meyer-Oseas construction.
+/// </para>
+/// <para>
+/// The base inherits from <see cref="KeyedBlockHashAlgorithm{T}" /> so that the keyed <c>Skein-MAC</c> mode integrates
+/// with the shared keyed-hash test infrastructure. Unlike strict keyed-MAC algorithms such as <see cref="SipHash{T}" />,
+/// Skein accepts a <em>variable-length optional</em> key: an empty <see cref="Key" /> selects the canonical plain-hash
+/// profile (no KEY UBI phase), while any non-empty byte sequence enables Skein-MAC with a preliminary KEY UBI phase.
 /// </para>
 /// <para>
 /// Three fixed state sizes are supported, each implemented by a sealed derived class that wires up the corresponding
@@ -33,20 +40,21 @@ namespace Bodu.Security.Cryptography;
 /// <item><description><see cref="Skein1024" /> — 1024-bit state, 128-byte blocks, over <see cref="Threefish1024Cipher" />.</description></item>
 /// </list>
 /// <para>
-/// Output size is independently configurable per instance (any multiple of eight bits up to the state size for the
-/// canonical truncation set; each derived class publishes its permitted values). When a non-empty <see cref="Key" />
-/// is supplied, Skein switches to its <c>Skein-MAC</c> mode and runs a preliminary <c>KEY</c> UBI phase across the key
-/// material before the configuration block, providing a keyed MAC without an HMAC wrapper.
-/// </para>
-/// <para>
 /// Only the sequential hashing profile of Skein is implemented. Tree hashing, personalization strings, public-key or
 /// key-derivation identifiers, and nonce modes are not exposed; the corresponding Skein tweak types are reserved for
 /// potential future extension (see <see cref="SkeinTweakType" />).
 /// </para>
 /// </remarks>
-public abstract partial class Skein
-    : HashAlgorithm
+public abstract partial class Skein<T>
+    : KeyedBlockHashAlgorithm<T>
+    where T : Skein<T>, new()
 {
+    /// <summary>
+    /// The maximum accepted length, in bytes, for <see cref="Key" /> across every Skein variant. Keys longer than this
+    /// bound are rejected to prevent unbounded memory usage; this value is far above any practical MAC key.
+    /// </summary>
+    public const int MaxKeySizeBytes = 1024;
+
     /// <summary>
     /// The schema identifier placed in the first four bytes of the configuration block.
     /// </summary>
@@ -63,13 +71,11 @@ public abstract partial class Skein
     /// </summary>
     private const int TweakSizeBytes = 16;
 
-    private readonly int _blockSizeBytes;
     private readonly ThreefishBlockCipher _cipher;
     private readonly ulong[] _state;
     private readonly ulong[] _initialChainingValue;
     private readonly byte[] _pendingBlock;
     private readonly byte[] _ubiCipherOutput;
-    private byte[] _key = Array.Empty<byte>();
     private int _pendingBytes;
     private ulong _messageBytesProcessed;
     private bool _hasProcessedAnyMessageBlock;
@@ -81,7 +87,7 @@ public abstract partial class Skein
 #endif
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Skein" /> class using a pre-constructed cipher supplied by a
+    /// Initializes a new instance of the <see cref="Skein{T}" /> class using a pre-constructed cipher supplied by a
     /// derived variant.
     /// </summary>
     /// <param name="cipher">
@@ -96,6 +102,7 @@ public abstract partial class Skein
     /// <paramref name="hashSizeBits" /> is not one of the values in <paramref name="validHashSizesBits" />.
     /// </exception>
     private protected Skein(ThreefishBlockCipher cipher, int hashSizeBits, int[] validHashSizesBits)
+        : base(blockSize: cipher.BlockSize, keySize: cipher.BlockSize)
     {
         if (Array.IndexOf(validHashSizesBits, hashSizeBits) < 0)
         {
@@ -109,14 +116,17 @@ public abstract partial class Skein
         }
 
         this._cipher = cipher;
-        this._blockSizeBytes = cipher.BlockSize;
         this.HashSizeValue = hashSizeBits;
 
-        int stateWords = this._blockSizeBytes / sizeof(ulong);
+        int stateWords = cipher.BlockSize / sizeof(ulong);
         this._state = new ulong[stateWords];
         this._initialChainingValue = new ulong[stateWords];
-        this._pendingBlock = new byte[this._blockSizeBytes];
-        this._ubiCipherOutput = new byte[this._blockSizeBytes];
+        this._pendingBlock = new byte[cipher.BlockSize];
+        this._ubiCipherOutput = new byte[cipher.BlockSize];
+
+        // Default to the plain-hash profile: empty key means no KEY UBI phase is run. Callers that want the
+        // keyed Skein-MAC mode supply a non-empty key via the Key property before hashing.
+        this.KeyValue = Array.Empty<byte>();
     }
 
     /// <summary>
@@ -130,23 +140,25 @@ public abstract partial class Skein
     /// <returns>A defensive copy of the current key, or an empty array if no key has been configured.</returns>
     /// <remarks>
     /// <para>
-    /// Unlike <see cref="KeyedHashAlgorithm" />, Skein does not require a fixed key length: any byte sequence (including
-    /// the empty sequence) is valid. Setting the key clears any cached initial chaining value so the next call to
-    /// <see cref="Initialize" /> (or the first call to a hashing method on a freshly configured instance) rebuilds the
-    /// state from the UBI pipeline <c>KEY → CFG</c>.
+    /// Unlike <see cref="SipHash{T}" />, Skein does not require a fixed key length: any byte sequence from zero up to
+    /// <see cref="MaxKeySizeBytes" /> bytes is valid. Setting the key clears any cached initial chaining value so the
+    /// next call to <see cref="Initialize" /> rebuilds the state from the UBI pipeline <c>KEY → CFG</c>.
     /// </para>
     /// </remarks>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="ArgumentNullException">The assigned value is <see langword="null" />.</exception>
+    /// <exception cref="CryptographicException">
+    /// The assigned key is longer than <see cref="MaxKeySizeBytes" /> bytes.
+    /// </exception>
     /// <exception cref="CryptographicUnexpectedOperationException">
     /// A hash computation has already started and the key may not be reassigned while the algorithm is in use.
     /// </exception>
-    public byte[] Key
+    public override byte[] Key
     {
         get
         {
             this.ThrowIfDisposed();
-            return this._key.Copy();
+            return this.KeyValue.Copy();
         }
 
         set
@@ -155,7 +167,14 @@ public abstract partial class Skein
             this.ThrowIfInvalidState();
             ThrowHelper.ThrowIfNull(value);
 
-            this._key = value.Copy();
+            if (value.Length > MaxKeySizeBytes)
+                throw new CryptographicException(
+                    string.Format(
+                        ResourceStrings.CryptographicException_InvalidKeySize,
+                        value.Length,
+                        $"0..{MaxKeySizeBytes}"));
+
+            this.KeyValue = value.Copy();
             this._isChainingValueCached = false;
         }
     }
@@ -164,22 +183,43 @@ public abstract partial class Skein
     /// Gets the number of bytes absorbed per Threefish block — equivalently, the Skein state size in bytes.
     /// </summary>
     /// <returns>The block size, in bytes, for this Skein variant (32, 64, or 128).</returns>
-    public override int InputBlockSize => this._blockSizeBytes;
+    public override int InputBlockSize => this.BlockSizeBytes;
 
     /// <summary>
     /// Gets the output block size, in bytes, produced per Skein transformation step — mirrors <see cref="InputBlockSize" />.
     /// </summary>
     /// <returns>The block size, in bytes, for this Skein variant (32, 64, or 128).</returns>
-    public override int OutputBlockSize => this._blockSizeBytes;
+    public override int OutputBlockSize => this.BlockSizeBytes;
+
+    /// <summary>
+    /// Gets the fully qualified algorithm name, including the state size and the configured output size.
+    /// </summary>
+    /// <returns>A string of the form <c>"Skein-<i>s</i>-<i>h</i>"</c> — e.g. <c>"Skein-512-256"</c>.</returns>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    public string AlgorithmName
+    {
+        get
+        {
+            this.ThrowIfDisposed();
+            return $"Skein-{this.BlockSizeBytes * 8}-{this.HashSizeValue}";
+        }
+    }
 
     /// <summary>
     /// Resets the algorithm to its initial state, recomputing the chaining value from the configuration block (and
     /// the key, if one has been supplied) so that a fresh hash or MAC may be computed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="CryptographicException">
+    /// The internal key storage has been cleared (set to <see langword="null" />) — the key must be reassigned before
+    /// the instance can be reused.
+    /// </exception>
     public override void Initialize()
     {
         this.ThrowIfDisposed();
+
+        if (this.KeyValue is null)
+            throw new CryptographicException(ResourceStrings.CryptographicException_KeyNotSet);
 
 #if !NET6_0_OR_GREATER
         this.State = 0;
@@ -248,9 +288,9 @@ public abstract partial class Skein
         // Process the final message block. The tweak's position field carries the total number of real message bytes
         // absorbed (excluding any zero padding applied to bring the block up to the Skein state size).
         int residual = this._pendingBytes;
-        if (residual < this._blockSizeBytes)
+        if (residual < this.BlockSizeBytes)
         {
-            Array.Clear(this._pendingBlock, residual, this._blockSizeBytes - residual);
+            Array.Clear(this._pendingBlock, residual, this.BlockSizeBytes - residual);
         }
 
         this._messageBytesProcessed += (ulong)residual;
@@ -272,6 +312,35 @@ public abstract partial class Skein
     }
 
     /// <summary>
+    /// Processes a single aligned message block. Unused — Skein overrides <see cref="HashCore(ReadOnlySpan{byte})" />
+    /// and <see cref="HashFinal" /> directly rather than participating in the
+    /// <see cref="BlockHashAlgorithm{T}" /> <c>ProcessBlock → PadBlock → ProcessFinalBlock</c> pipeline, because the
+    /// UBI mode requires a one-block lookahead that the pipeline does not express.
+    /// </summary>
+    /// <param name="block">Ignored.</param>
+    /// <exception cref="InvalidOperationException">Always thrown — this method is not expected to be invoked.</exception>
+    protected override void ProcessBlock(ReadOnlySpan<byte> block) =>
+        throw new InvalidOperationException("Skein bypasses the BlockHashAlgorithm ProcessBlock pipeline.");
+
+    /// <summary>
+    /// Pads the final partial block. Unused — see <see cref="ProcessBlock" />.
+    /// </summary>
+    /// <param name="block">Ignored.</param>
+    /// <param name="messageLength">Ignored.</param>
+    /// <returns>Never returns — always throws.</returns>
+    /// <exception cref="InvalidOperationException">Always thrown — this method is not expected to be invoked.</exception>
+    protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength) =>
+        throw new InvalidOperationException("Skein bypasses the BlockHashAlgorithm PadBlock pipeline.");
+
+    /// <summary>
+    /// Finalises the computation via the block pipeline. Unused — see <see cref="ProcessBlock" />.
+    /// </summary>
+    /// <returns>Never returns — always throws.</returns>
+    /// <exception cref="InvalidOperationException">Always thrown — this method is not expected to be invoked.</exception>
+    protected override byte[] ProcessFinalBlock() =>
+        throw new InvalidOperationException("Skein bypasses the BlockHashAlgorithm ProcessFinalBlock pipeline.");
+
+    /// <summary>
     /// Releases the unmanaged resources used by the algorithm, securely clears all intermediate state, and disposes the
     /// underlying Threefish cipher.
     /// </summary>
@@ -288,8 +357,14 @@ public abstract partial class Skein
             CryptoHelpers.Clear(this._initialChainingValue);
             CryptoHelpers.Clear(this._pendingBlock);
             CryptoHelpers.Clear(this._ubiCipherOutput);
-            CryptoHelpers.Clear(this._key);
+            CryptoHelpers.ClearAndNullify(ref this.HashValue);
+
             this._cipher.Dispose();
+            this._isChainingValueCached = false;
+            this._pendingBytes = 0;
+            this._messageBytesProcessed = 0UL;
+            this._hasProcessedAnyMessageBlock = false;
+            this.HashSizeValue = 0;
         }
 
         this._disposed = true;
