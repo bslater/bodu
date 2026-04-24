@@ -23,7 +23,6 @@ public sealed class CusipTests : AlphanumericCheckDigitAlgorithmTests<CusipTests
         EmptyCheckDigit = '0',
         KnownAnswers =
         [
-            new() { Name = "Empty",             Body = "",         ExpectedCheck = '0' },
             new() { Name = "AppleInc",          Body = "03783310", ExpectedCheck = '0' },
             new() { Name = "MicrosoftCorp",     Body = "59491810", ExpectedCheck = '4' },
         ],

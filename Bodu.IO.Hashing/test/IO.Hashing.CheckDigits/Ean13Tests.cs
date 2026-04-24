@@ -19,7 +19,6 @@ public sealed class Ean13Tests : CheckDigitAlgorithmTests<Ean13Tests, Ean13>
         EmptyCheckDigit = '0',
         KnownAnswers =
         [
-            new() { Name = "Empty",          Body = "",              ExpectedCheck = '0' },
             new() { Name = "WikipediaEAN13", Body = "501234567890",  ExpectedCheck = '0' },
             new() { Name = "BookIsbnShape",  Body = "978030640615",  ExpectedCheck = '7' },
         ],

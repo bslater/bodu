@@ -23,7 +23,6 @@ public sealed class SedolTests : AlphanumericCheckDigitAlgorithmTests<SedolTests
         EmptyCheckDigit = '0',
         KnownAnswers =
         [
-            new() { Name = "Empty",            Body = "",       ExpectedCheck = '0' },
             new() { Name = "NumericBody",      Body = "026349", ExpectedCheck = '4' },
             new() { Name = "AlphanumericBody", Body = "B0WNLY", ExpectedCheck = '7' },
         ],

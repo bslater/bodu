@@ -19,7 +19,6 @@ public sealed class Ean8Tests : CheckDigitAlgorithmTests<Ean8Tests, Ean8>
         EmptyCheckDigit = '0',
         KnownAnswers =
         [
-            new() { Name = "Empty",         Body = "",        ExpectedCheck = '0' },
             new() { Name = "WikipediaEAN8", Body = "7351353", ExpectedCheck = '7' },
             new() { Name = "AllZeros",      Body = "0000000", ExpectedCheck = '0' },
         ],

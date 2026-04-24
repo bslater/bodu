@@ -19,7 +19,6 @@ public sealed class UpcATests : CheckDigitAlgorithmTests<UpcATests, UpcA>
         EmptyCheckDigit = '0',
         KnownAnswers =
         [
-            new() { Name = "Empty",          Body = "",            ExpectedCheck = '0' },
             new() { Name = "WikipediaUPCA",  Body = "03600029145", ExpectedCheck = '2' },
             new() { Name = "AllZeros",       Body = "00000000000", ExpectedCheck = '0' },
         ],

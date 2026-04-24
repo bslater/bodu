@@ -23,7 +23,6 @@ public sealed class IsinTests : AlphanumericCheckDigitAlgorithmTests<IsinTests, 
         EmptyCheckDigit = '0',
         KnownAnswers =
         [
-            new() { Name = "Empty",         Body = "",            ExpectedCheck = '0' },
             new() { Name = "AppleUS",       Body = "US037833100", ExpectedCheck = '5' },
             new() { Name = "BritishGB",     Body = "GB000263494", ExpectedCheck = '6' },
             new() { Name = "NumericOnly",   Body = "00000000000", ExpectedCheck = '0' },

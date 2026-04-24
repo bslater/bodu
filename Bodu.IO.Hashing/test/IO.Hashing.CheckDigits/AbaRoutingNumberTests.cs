@@ -20,7 +20,6 @@ public sealed partial class AbaRoutingNumberTests
         EmptyCheckDigit = '0',
         KnownAnswers =
         [
-            new() { Name = "Empty",                  Body = "",         ExpectedCheck = '0' },
             new() { Name = "FrbBostonRoutingBody",   Body = "01100001", ExpectedCheck = '5' },
             new() { Name = "FrbNewYorkRoutingBody",  Body = "02100008", ExpectedCheck = '9' },
             new() { Name = "AllZeros",               Body = "00000000", ExpectedCheck = '0' },
