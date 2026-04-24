@@ -44,9 +44,9 @@
 #Requires -Version 7
 [CmdletBinding()]
 param(
-    [string]$SpecsPath          = (Join-Path $PSScriptRoot '..' 'Bodu.IO' 'src' 'crc-specs.json'),
-    [string]$EnumOutputPath     = (Join-Path $PSScriptRoot '..' 'Bodu.IO' 'src' 'IO.Hashing.Checksums' 'CrcStandards.cs'),
-    [string]$CatalogOutputPath  = (Join-Path $PSScriptRoot '..' 'Bodu.IO' 'src' 'IO.Hashing.Checksums' 'CrcStandard.Catalog.cs'),
+    [string]$SpecsPath          = (Join-Path $PSScriptRoot '..' 'Bodu.IO.Hashing' 'src' 'crc-specs.json'),
+    [string]$EnumOutputPath     = (Join-Path $PSScriptRoot '..' 'Bodu.IO.Hashing' 'src' 'IO.Hashing.Checksums' 'CrcStandards.cs'),
+    [string]$CatalogOutputPath  = (Join-Path $PSScriptRoot '..' 'Bodu.IO.Hashing' 'src' 'IO.Hashing.Checksums' 'CrcStandard.Catalog.cs'),
     [int]$MaxSize = 64
 )
 

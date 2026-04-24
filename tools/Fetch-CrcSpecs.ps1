@@ -31,8 +31,8 @@
 [CmdletBinding()]
 param(
     [string]$Source = 'https://reveng.sourceforge.io/crc-catalogue/all.htm',
-    [string]$OutputPath = (Join-Path $PSScriptRoot '..' 'Bodu.IO' 'src' 'crc-specs.json'),
-    [string]$MetaPath   = (Join-Path $PSScriptRoot '..' 'Bodu.IO' 'src' 'crc-specs.meta.json')
+    [string]$OutputPath = (Join-Path $PSScriptRoot '..' 'Bodu.IO.Hashing' 'src' 'crc-specs.json'),
+    [string]$MetaPath   = (Join-Path $PSScriptRoot '..' 'Bodu.IO.Hashing' 'src' 'crc-specs.meta.json')
 )
 
 $ErrorActionPreference = 'Stop'

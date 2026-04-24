@@ -30,8 +30,8 @@
 #Requires -Version 7
 [CmdletBinding()]
 param(
-    [string]$SpecsPath  = (Join-Path $PSScriptRoot '..' 'Bodu.IO' 'src' 'crc-specs.json'),
-    [string]$MetaPath   = (Join-Path $PSScriptRoot '..' 'Bodu.IO' 'src' 'crc-specs.meta.json'),
+    [string]$SpecsPath  = (Join-Path $PSScriptRoot '..' 'Bodu.IO.Hashing' 'src' 'crc-specs.json'),
+    [string]$MetaPath   = (Join-Path $PSScriptRoot '..' 'Bodu.IO.Hashing' 'src' 'crc-specs.meta.json'),
     [string]$OutputPath = (Join-Path $PSScriptRoot '..' 'docs' 'guides' 'cryptography' 'crc-catalogue.md'),
     [int]$MaxSize = 64
 )
@@ -60,7 +60,7 @@ function Format-AnchorSlug {
     return 'crc.cat.' + ($Name -replace '/', '-').ToLowerInvariant()
 }
 
-$specs = Get-Content -LiteralPath $SpecsPath -Raw | ConvertFrom-Json
+$specs = @(Get-Content -LiteralPath $SpecsPath -Raw | ConvertFrom-Json)
 
 $source = 'https://reveng.sourceforge.io/crc-catalogue/all.htm'
 $fetchedUtc = ''
@@ -143,7 +143,11 @@ if ($fetchedUtc) {
 foreach ($spec in $supported) {
     if (-not $Common.Contains($spec.name)) { continue }
     $c = ConvertTo-ConstantName $spec.name
-    $aliases = if ($spec.PSObject.Properties['aliases'] -and $spec.aliases) { @($spec.aliases) } else { @() }
+    $aliases = @()
+
+    if ($spec.PSObject.Properties.Match('aliases').Count -gt 0 -and $spec.aliases) {
+        $aliases = @($spec.aliases)
+    }    
     $aliasCell = if ($aliases.Count -eq 0) { '—' } else { ($aliases | ForEach-Object { '`' + $_ + '`' }) -join ', ' }
     [void]$lines.Add("| $($spec.name) | $($spec.size) | ``CrcStandard.$c`` | $aliasCell |")
 }
@@ -158,7 +162,11 @@ foreach ($spec in $supported) {
 foreach ($spec in $supported) {
     $c = ConvertTo-ConstantName $spec.name
     $cls = if ($spec.PSObject.Properties['class']) { [string]$spec.class } else { '' }
-    $aliases = if ($spec.PSObject.Properties['aliases'] -and $spec.aliases) { @($spec.aliases) } else { @() }
+    $aliases = @()
+
+    if ($spec.PSObject.Properties.Match('aliases').Count -gt 0 -and $spec.aliases) {
+        $aliases = @($spec.aliases)
+    }    
     $aliasCell = if ($aliases.Count -eq 0) { '—' } else { ($aliases | ForEach-Object { '`' + $_ + '`' }) -join ', ' }
     $anchor = Format-AnchorSlug $spec.name
     $refLink = "[spec]($source#$anchor)"
