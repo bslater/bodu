@@ -6,6 +6,7 @@
 
 using Bodu.Extensions;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -303,5 +304,50 @@ public partial class NotableDateRuleParserTests
 
 		Assert.AreEqual(1, doc.LocalRules.Length);
 		Assert.AreEqual("Independence Day", doc.LocalRules[0].Name);
+	}
+
+	/// <summary>
+	/// Verifies that the <see cref="NotableDateRuleParser.ParseXml(System.Xml.Linq.XDocument)" />
+	/// overload routes through the same parser pipeline as the string form.
+	/// </summary>
+	[TestMethod]
+	public void ParseXml_WhenCalledWithXDocument_ShouldReturnSameRules()
+	{
+		XDocument document = XDocument.Parse(FixedRuleXml);
+
+		var rule = NotableDateRuleParser.ParseXml(document).Single();
+
+		Assert.AreEqual("Fixed Rule Test", rule.Name);
+		Assert.AreEqual(DateResolutionStrategy.Fixed, rule.Strategy);
+	}
+
+	/// <summary>
+	/// Verifies that the <see cref="NotableDateRuleParser.ParseDocument(System.Xml.Linq.XDocument)" />
+	/// overload returns a parsed document equivalent to the string overload.
+	/// </summary>
+	[TestMethod]
+	public void ParseDocument_WhenCalledWithXDocument_ShouldReturnSameDocument()
+	{
+		XDocument document = XDocument.Parse(FixedRuleXml);
+
+		var parsed = NotableDateRuleParser.ParseDocument(document);
+
+		Assert.AreEqual(1, parsed.LocalRules.Length);
+		Assert.AreEqual("Fixed Rule Test", parsed.LocalRules[0].Name);
+	}
+
+	/// <summary>
+	/// Verifies that the <see cref="NotableDateRuleParser.ParseDocument(System.Xml.Linq.XDocument)" />
+	/// overload rejects a null document via <see cref="ArgumentNullException" />.
+	/// </summary>
+	[TestMethod]
+	public void ParseDocument_WhenXDocumentIsNull_ShouldThrowArgumentNullException()
+	{
+		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+		{
+			_ = NotableDateRuleParser.ParseDocument((XDocument)null!);
+		});
+
+		Assert.AreEqual("document", ex.ParamName);
 	}
 }

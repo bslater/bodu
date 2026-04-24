@@ -716,17 +716,70 @@ public sealed class EasterSundayNotableDateCalculatorTests
         }
 
 	/// <summary>
-	/// Verifies that requesting Easter Sunday for year 0 throws an <see cref="ArgumentOutOfRangeException" />.
+	/// Verifies that requesting Easter Sunday for year 0 or any negative year throws
+	/// <see cref="ArgumentOutOfRangeException" />.
 	/// </summary>
 	[TestMethod]
 	[DataRow(-1)]
 	[DataRow(0)]
+	[DataRow(int.MinValue)]
 	public void GetDate_WhenYearInvalid_ShouldThrowArgumentOutOfRangeException(int year)
 	{
-		Assert.Throws<ArgumentOutOfRangeException>(() =>
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
 		{
 			_ = _calculator.GetDate(year, null);
 		});
+	}
+
+	/// <summary>
+	/// Verifies Julian-era Easter Sundays (year &lt; 1583) resolve using the Julian computus and
+	/// that their <see cref="DateTime" /> values match the expected almanac dates when no
+	/// calendar is supplied.
+	/// </summary>
+	[DataRow(500, 500, 4, 2)]
+	[DataRow(1000, 1000, 3, 31)]
+	[DataRow(1500, 1500, 4, 19)]
+	[DataRow(1582, 1582, 4, 15)]
+	[TestMethod]
+	public void GetDate_WhenJulianEraYear_ShouldComputeUsingJulianBranch(int year, int expectedY, int expectedM, int expectedD)
+	{
+		DateTime? result = _calculator.GetDate(year, null);
+
+		Assert.IsNotNull(result);
+		Assert.AreEqual(new DateTime(expectedY, expectedM, expectedD), result);
+	}
+
+	/// <summary>
+	/// Verifies that the Gregorian vs. Julian computation branches are selected based on the
+	/// 1583 cutover year.
+	/// </summary>
+	[TestMethod]
+	public void GetDate_WhenAtOrAbove1583_ShouldUseGregorianBranch()
+	{
+		// 1583 is the Gregorian computus's minimum supported year; 1584 should also take that branch.
+		DateTime? gregorian1583 = _calculator.GetDate(1583, null);
+		DateTime? gregorian1584 = _calculator.GetDate(1584, null);
+
+		Assert.IsNotNull(gregorian1583);
+		Assert.IsNotNull(gregorian1584);
+		Assert.AreEqual(1583, gregorian1583!.Value.Year);
+		Assert.AreEqual(1584, gregorian1584!.Value.Year);
+	}
+
+	/// <summary>
+	/// Verifies that passing a Julian calendar explicitly yields Julian-calendar
+	/// <see cref="DateTime" /> values (with matching Kind and components) rather than the raw
+	/// Gregorian output. Covers the non-null <c>calendar.ToDateTime</c> branch in the calculator.
+	/// </summary>
+	[TestMethod]
+	public void GetDate_WhenExplicitJulianCalendar_ShouldReturnDateBuiltThroughCalendar()
+	{
+		var julian = new SysGlob.JulianCalendar();
+
+		DateTime? result = _calculator.GetDate(2026, julian);
+
+		Assert.IsNotNull(result);
+		Assert.AreEqual(DateTimeKind.Unspecified, result!.Value.Kind);
 	}
 
 	/// <summary>
