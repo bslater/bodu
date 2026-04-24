@@ -4,9 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-
 namespace Bodu.IO.Hashing;
 
 public partial class BlockNonCryptographicHashAlgorithmTests

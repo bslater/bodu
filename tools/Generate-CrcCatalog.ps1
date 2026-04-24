@@ -45,8 +45,8 @@
 [CmdletBinding()]
 param(
     [string]$SpecsPath          = (Join-Path $PSScriptRoot '..' 'Bodu.IO' 'src' 'crc-specs.json'),
-    [string]$EnumOutputPath     = (Join-Path $PSScriptRoot '..' 'Bodu.IO' 'src' 'IO.Hashing' 'CrcStandards.cs'),
-    [string]$CatalogOutputPath  = (Join-Path $PSScriptRoot '..' 'Bodu.IO' 'src' 'IO.Hashing' 'CrcStandard.Catalog.cs'),
+    [string]$EnumOutputPath     = (Join-Path $PSScriptRoot '..' 'Bodu.IO' 'src' 'IO.Hashing.Checksums' 'CrcStandards.cs'),
+    [string]$CatalogOutputPath  = (Join-Path $PSScriptRoot '..' 'Bodu.IO' 'src' 'IO.Hashing.Checksums' 'CrcStandard.Catalog.cs'),
     [int]$MaxSize = 64
 )
 
@@ -104,7 +104,7 @@ $enumBuilder = [System.Text.StringBuilder]::new()
 [void]$enumBuilder.AppendLine('//     Source: Bodu.IO/src/crc-specs.json (derived from https://reveng.sourceforge.io/crc-catalogue/all.htm).')
 [void]$enumBuilder.AppendLine('// </auto-generated>')
 [void]$enumBuilder.AppendLine()
-[void]$enumBuilder.AppendLine('namespace Bodu.IO.Hashing')
+[void]$enumBuilder.AppendLine('namespace Bodu.IO.Hashing.Checksums')
 [void]$enumBuilder.AppendLine('{')
 [void]$enumBuilder.AppendLine('    /// <summary>')
 [void]$enumBuilder.AppendLine('    /// Identifies a CRC parameter set defined in the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm">CRC RevEng catalogue</a>.')

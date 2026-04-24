@@ -53,7 +53,7 @@ public partial class PearsonTests
     [TestMethod]
     public void Ctor_WhenPermutationTableIsNull_ShouldThrow()
     {
-        Assert.ThrowsExactly<ArgumentNullException>(() => _ = new Pearson(8, (byte[])null!));
+        Assert.ThrowsExactly<ArgumentNullException>(() => _ = new Pearson(8, null!));
     }
 
     /// <summary>

@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-
 namespace Bodu.IO.Hashing;
 
 public partial class BlockNonCryptographicHashAlgorithmTests

@@ -4,8 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.IO.Hashing;
 using Bodu.Test;
+using System.IO.Hashing;
 
 namespace Bodu.IO.Hashing;
 

@@ -29,7 +29,7 @@
 [CmdletBinding()]
 param(
     [string]$SpecsPath  = (Join-Path $PSScriptRoot '..' 'Bodu.IO' 'src' 'crc-specs.json'),
-    [string]$OutputPath = (Join-Path $PSScriptRoot '..' 'Bodu.IO' 'test' 'IO.Hashing' 'CrcTests.Catalog.cs'),
+    [string]$OutputPath = (Join-Path $PSScriptRoot '..' 'Bodu.IO' 'test' 'IO.Hashing.Checksums' 'CrcTests.Catalog.cs'),
     [int]$MaxSize = 64
 )
 
@@ -67,7 +67,7 @@ $sb = [System.Text.StringBuilder]::new()
 [void]$sb.AppendLine('using System.Collections.Generic;')
 [void]$sb.AppendLine('using System.Text;')
 [void]$sb.AppendLine()
-[void]$sb.AppendLine('namespace Bodu.IO.Hashing')
+[void]$sb.AppendLine('namespace Bodu.IO.Hashing.Checksums')
 [void]$sb.AppendLine('{')
 [void]$sb.AppendLine('    public partial class CrcTests')
 [void]$sb.AppendLine('    {')

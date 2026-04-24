@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.IO.Hashing.Checksums;
+
 namespace Bodu.IO.Hashing;
 
 /// <summary>
