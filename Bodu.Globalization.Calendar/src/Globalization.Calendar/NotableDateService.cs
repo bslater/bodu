@@ -44,6 +44,11 @@ public sealed class NotableDateService : INotableDateService
 	private readonly ConcurrentDictionary<int, IReadOnlyList<NotableDate>> _yearCache = new();
 	private readonly object _gate = new();
 
+	// Per-thread set of years currently being generated on this thread. Used by GetOrGenerateYear to short-circuit recursive
+	// entry from within GenerateYear (for example, MoveToNextNonWorkingDay's walk calling back through IsNonWorkingDay) so that a
+	// single rule cannot cause the generator to stack-overflow by consulting the very year it is in the middle of producing.
+	private readonly ThreadLocal<HashSet<int>> _generatingYears = new(() => new HashSet<int>());
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="NotableDateService" /> class using the embedded default rule set.
 	/// </summary>
@@ -240,14 +245,31 @@ public sealed class NotableDateService : INotableDateService
 		if (_yearCache.TryGetValue(year, out var cached))
 			return cached;
 
+		// Re-entry guard: if this thread is already generating `year` higher up the call stack (for example, MoveToNextNonWorkingDay's
+		// bounded walk calling back through IsNonWorkingDay → GetOrGenerateYear for the same year), return an empty snapshot so
+		// dependent predicates do not drive unbounded recursion. Callers requiring the fully materialised year must wait for the
+		// outer generation to complete; mid-generation consumers see only what is already cached, which for the in-progress year
+		// is nothing.
+		HashSet<int> inProgress = _generatingYears.Value!;
+		if (inProgress.Contains(year))
+			return Array.Empty<NotableDate>();
+
 		lock (_gate)
 		{
 			if (_yearCache.TryGetValue(year, out cached))
 				return cached;
 
-			var generated = GenerateYear(year);
-			_yearCache[year] = generated;
-			return generated;
+			inProgress.Add(year);
+			try
+			{
+				var generated = GenerateYear(year);
+				_yearCache[year] = generated;
+				return generated;
+			}
+			finally
+			{
+				inProgress.Remove(year);
+			}
 		}
 	}
 

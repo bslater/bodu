@@ -145,34 +145,19 @@ public sealed partial class NotableDateServiceTests
 	}
 
 	/// <summary>
-	/// Documents the service-level re-entry gap in <see cref="AdjustmentAction.MoveToNextNonWorkingDay" />: the adjuster's forward
-	/// walk calls the service's <see cref="NotableDateService.IsNonWorkingDay" /> predicate, which in turn calls
-	/// <c>GetOrGenerateYear</c> for the same year currently being generated on this thread. Because <c>Monitor</c> is reentrant,
-	/// the lock re-acquires instead of deadlocking and <c>GenerateYear</c> is invoked recursively, causing unbounded recursion
-	/// that terminates only with a <see cref="StackOverflowException" />. The 366-iteration bound inside the adjuster is defeated
-	/// because each bounded iteration itself re-enters the full generation pipeline.
+	/// Verifies that a <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> adjustment fired from inside <c>GenerateYear</c>
+	/// does not recurse indefinitely. The adjuster's walk calls the service's <see cref="NotableDateService.IsNonWorkingDay" />
+	/// predicate, which in turn calls <c>GetOrGenerateYear</c> for the same year currently being generated on this thread; a
+	/// thread-local re-entry guard in <c>GetOrGenerateYear</c> short-circuits the recursive call by returning an empty snapshot,
+	/// so the walk sees only the weekend short-circuit and terminates at the next weekend day.
 	/// </summary>
-	/// <remarks>
-	/// <para>
-	/// Trigger conditions (all three must hold):
-	/// </para>
-	/// <para>• A rule carries an adjustment whose <see cref="AdjustmentAction" /> is <see cref="AdjustmentAction.MoveToNextNonWorkingDay" />.</para>
-	/// <para>• The anchor date is not a Friday (so the first walk cursor is not a weekend and does not short-circuit <c>IsWeekend</c>).</para>
-	/// <para>• No other rule marks an early-in-the-year day as non-working, so the walk cannot terminate quickly via the rule list.</para>
-	/// <para>
-	/// The test asserts the desired post-fix behaviour: the call terminates in bounded time and returns at least the base
-	/// occurrence. Any reasonable guard — a thread-local "generating year N" flag that short-circuits re-entry, a non-working-day
-	/// predicate that consults only already-cached years, or an adjuster that consumes a pre-materialised non-working-day set —
-	/// satisfies this contract. The test is marked <see cref="IgnoreAttribute" /> so it does not hang CI; remove the attribute
-	/// once the re-entry guard lands.
-	/// </para>
-	/// </remarks>
 	[TestMethod]
-	[Ignore("Service-level re-entry gap: MoveToNextNonWorkingDay adjustments called during GenerateYear trigger unbounded recursion. Enable once a re-entry guard is implemented.")]
 	public void GetNotableDates_WhenMoveToNextNonWorkingDayAdjustmentFiresDuringYearGeneration_ShouldNotRecurseIndefinitely()
 	{
-		// 1 January 2025 is a Wednesday. The walk's first cursor (Thursday) is not a weekend, so IsWeekend short-circuit does not
-		// fire and the service's IsNonWorkingDay falls through to GetOrGenerateYear on the same year currently being generated.
+		// 1 January 2025 is a Wednesday. Without the re-entry guard, the walk's first cursor (Thursday) is not a weekend, so
+		// IsNonWorkingDay falls through to GetOrGenerateYear for the same year currently being generated and recurses until the
+		// stack is exhausted. With the guard, that call returns an empty snapshot; the walk steps forward until Saturday, where
+		// the IsWeekend short-circuit fires and the adjusted date is emitted.
 		NotableDateRule rule = Fixed("Walk Trigger", 1, 1) with
 		{
 			Adjustments = ImmutableArray.Create(new ObservanceAdjustment
@@ -185,10 +170,47 @@ public sealed partial class NotableDateServiceTests
 
 		var service = BuildService(rule);
 
-		IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
+		List<NotableDate> results = service.GetNotableDates(2025)
+			.Where(r => r.Name == "Walk Trigger")
+			.OrderBy(r => r.Date)
+			.ToList();
 
-		Assert.IsTrue(
-			results.Any(r => r.Name == "Walk Trigger" && r.Date == new DateTime(2025, 1, 1)),
-			"Expected at least the base occurrence on the anchor date to be returned without recursing indefinitely.");
+		Assert.AreEqual(2, results.Count, "Expected the base occurrence plus one adjusted occurrence from the bounded walk.");
+		Assert.AreEqual(new DateTime(2025, 1, 1), results[0].Date);
+		Assert.IsFalse(results[0].WasAdjusted);
+		Assert.AreEqual(new DateTime(2025, 1, 4), results[1].Date, "Walk should advance to Saturday 4 January via the weekend short-circuit in IsNonWorkingDay.");
+		Assert.IsTrue(results[1].WasAdjusted);
+	}
+
+	/// <summary>
+	/// Verifies that when no day within the adjuster's 366-iteration bound qualifies as non-working, the service-level walk
+	/// still terminates without recursion. With <see cref="CalendarWeekendDefinition.None" /> no day short-circuits as a weekend,
+	/// so the re-entry guard must carry the entire walk: every iteration returns an empty snapshot, the adjuster exhausts the
+	/// bound and falls back to the original date, and only the base occurrence is emitted.
+	/// </summary>
+	[TestMethod]
+	public void GetNotableDates_WhenMoveToNextNonWorkingDayCannotFindCandidateUnderReEntry_ShouldEmitBaseOnly()
+	{
+		NotableDateRule rule = Fixed("Unreachable Shift", 1, 1) with
+		{
+			Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+			{
+				Key = "always-next-non-working",
+				Trigger = AdjustmentTrigger.Always,
+				Action = AdjustmentAction.MoveToNextNonWorkingDay,
+			}),
+		};
+
+		var service = new NotableDateService(
+			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
+			CalendarWeekendDefinition.None);
+
+		List<NotableDate> results = service.GetNotableDates(2025)
+			.Where(r => r.Name == "Unreachable Shift")
+			.ToList();
+
+		Assert.AreEqual(1, results.Count, "When the bounded walk cannot find a non-working day under re-entry, only the base occurrence should survive.");
+		Assert.AreEqual(new DateTime(2025, 1, 1), results[0].Date);
+		Assert.IsFalse(results[0].WasAdjusted);
 	}
 }
