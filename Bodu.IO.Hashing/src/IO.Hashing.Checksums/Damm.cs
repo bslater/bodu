@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.Checksums;
-
 namespace Bodu.IO.Hashing.CheckDigits;
+
+using Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Computes the check digit of a decimal string using the <c>Damm</c> algorithm. This class cannot be inherited.
@@ -29,7 +29,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
-public sealed partial class Damm 
+public sealed partial class Damm
     : CheckDigitAlgorithm
 {
     private byte _interim;

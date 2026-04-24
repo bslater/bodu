@@ -35,7 +35,7 @@ public abstract class Adler64Base
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
-        ulong hash = (this.PartB << 32) | this.PartA;
+        ulong hash = (PartB << 32) | PartA;
         BinaryPrimitives.WriteUInt64BigEndian(destination, hash);
     }
 }

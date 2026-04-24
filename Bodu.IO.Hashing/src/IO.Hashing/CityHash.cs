@@ -6,11 +6,11 @@
 
 namespace Bodu.IO.Hashing;
 
+using Bodu.Extensions;
 using System.Buffers.Binary;
 using System.IO;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
-using Bodu.Extensions;
 
 /// <summary>
 /// Base class for the <c>CityHash</c> family of non-cryptographic hash algorithms developed by Google. See
@@ -96,14 +96,14 @@ public abstract class CityHash<T>
     public override void Append(ReadOnlySpan<byte> source)
     {
         if (source.Length > 0)
-            this._inputBuffer.Write(source);
+            _inputBuffer.Write(source);
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        this._inputBuffer.SetLength(0);
-        this._inputBuffer.Position = 0;
+        _inputBuffer.SetLength(0);
+        _inputBuffer.Position = 0;
     }
 
     /// <inheritdoc />
@@ -111,9 +111,9 @@ public abstract class CityHash<T>
     {
         // CityHash is a one-shot algorithm; finalisation re-runs over the accumulated buffer so that
         // GetCurrentHash remains non-destructive and may be invoked multiple times.
-        byte[] data = this._inputBuffer.ToArray();
-        byte[] digest = this.ComputeHashCore(data);
-        digest.AsSpan(0, this.HashLengthInBytes).CopyTo(destination);
+        byte[] data = _inputBuffer.ToArray();
+        byte[] digest = ComputeHashCore(data);
+        digest.AsSpan(0, HashLengthInBytes).CopyTo(destination);
     }
 
     /// <summary>
@@ -278,9 +278,9 @@ public abstract class CityHash<T>
             byte a = s[0];
             byte b = s[len >> 1];
             byte c = s[len - 1];
-            uint y = (uint)a + ((uint)b << 8);
+            uint y = a + ((uint)b << 8);
             uint z = (uint)len + ((uint)c << 2);
-            return ShiftMix((ulong)y * K2 ^ (ulong)z * K0) * K2;
+            return ShiftMix(y * K2 ^ z * K0) * K2;
         }
 
         return K2;

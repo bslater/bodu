@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.Checksums;
-
 namespace Bodu.IO.CheckDigits;
+
+using Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Computes the check digit of a decimal string using the <c>Verhoeff</c> algorithm. This class cannot be
@@ -30,7 +30,7 @@ namespace Bodu.IO.CheckDigits;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
-public sealed partial class Verhoeff 
+public sealed partial class Verhoeff
     : CheckDigitAlgorithm
 {
     // Eight parallel accumulators allow the streaming Append surface to compute the check digit without

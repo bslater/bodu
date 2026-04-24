@@ -4,13 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-
-// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Luhn.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-// ---------------------------------------------------------------------------------------------------------------
-
 namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
@@ -41,7 +34,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
-public sealed class Luhn 
+public sealed class Luhn
     : CheckDigitAlgorithm
 {
     private int _sumEvenHypothesis;

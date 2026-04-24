@@ -4,27 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-
-// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CheckDigitAlgorithmSpecification.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-// ---------------------------------------------------------------------------------------------------------------
-
-
-// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CheckDigitAlgorithmSpecification.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-// ---------------------------------------------------------------------------------------------------------------
-
-
-// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CheckDigitAlgorithmSpecification.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-// ---------------------------------------------------------------------------------------------------------------
-
 using Bodu.IO.Hashing.CheckDigits;
 
 namespace Bodu.IO.Hashing.Checksums;

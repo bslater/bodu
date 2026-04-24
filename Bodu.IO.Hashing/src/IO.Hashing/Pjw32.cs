@@ -45,7 +45,7 @@ public sealed class Pjw32
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override void Append(ReadOnlySpan<byte> source)
     {
-        uint v = this._workingHash;
+        uint v = _workingHash;
         foreach (byte b in source)
         {
             v = (v << 4) + b;
@@ -54,13 +54,13 @@ public sealed class Pjw32
             v &= LowBitsMask;
         }
 
-        this._workingHash = v;
+        _workingHash = v;
     }
 
     /// <inheritdoc />
-    public override void Reset() => this._workingHash = 0;
+    public override void Reset() => _workingHash = 0;
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt32BigEndian(destination, this._workingHash);
+        BinaryPrimitives.WriteUInt32BigEndian(destination, _workingHash);
 }

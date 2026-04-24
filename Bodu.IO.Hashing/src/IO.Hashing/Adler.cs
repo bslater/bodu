@@ -51,9 +51,9 @@ public abstract class Adler<T>
     protected Adler(int hashLengthInBytes, T modulo)
         : base(hashLengthInBytes)
     {
-        this._modulo = modulo;
-        this.PartA = T.One;
-        this.PartB = T.Zero;
+        _modulo = modulo;
+        PartA = T.One;
+        PartB = T.Zero;
     }
 
     /// <inheritdoc />
@@ -62,8 +62,8 @@ public abstract class Adler<T>
         const int NMAX = 5552;
         int length = source.Length;
         int index = 0;
-        T pA = this.PartA;
-        T pB = this.PartB;
+        T pA = PartA;
+        T pB = PartB;
 
         if (Vector.IsHardwareAccelerated && length >= 512)
         {
@@ -89,8 +89,8 @@ public abstract class Adler<T>
 
                 index = chunkEnd;
 
-                pA %= this._modulo;
-                pB %= this._modulo;
+                pA %= _modulo;
+                pB %= _modulo;
             }
         }
 
@@ -101,19 +101,19 @@ public abstract class Adler<T>
 
             if ((index % NMAX) == 0)
             {
-                pA %= this._modulo;
-                pB %= this._modulo;
+                pA %= _modulo;
+                pB %= _modulo;
             }
         }
 
-        this.PartA = pA;
-        this.PartB = pB;
+        PartA = pA;
+        PartB = pB;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        this.PartA = T.One;
-        this.PartB = T.Zero;
+        PartA = T.One;
+        PartB = T.Zero;
     }
 }

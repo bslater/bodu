@@ -20,7 +20,7 @@ public class CrcLookupTableCache
     /// </summary>
     public CrcLookupTableCache()
     {
-        this.localCache = new ConcurrentDictionary<string, ulong[]>();
+        localCache = new ConcurrentDictionary<string, ulong[]>();
     }
 
     /// <summary>
@@ -40,6 +40,6 @@ public class CrcLookupTableCache
         ThrowHelper.ThrowIfOutOfRange(size, CrcStandard.MinSize, CrcStandard.MaxSize);
 
         string cacheKey = $"{size}_{polynomial}_{reflectIn}";
-        return this.localCache.GetOrAdd(cacheKey, _ => CrcLookupTableBuilder.BuildLookupTable(size, polynomial, reflectIn));
+        return localCache.GetOrAdd(cacheKey, _ => CrcLookupTableBuilder.BuildLookupTable(size, polynomial, reflectIn));
     }
 }

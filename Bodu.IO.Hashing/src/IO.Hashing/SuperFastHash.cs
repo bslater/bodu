@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
-using System.IO;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
 
@@ -48,16 +47,16 @@ public sealed class SuperFastHash
 
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source) =>
-        this._buffer.Write(source);
+        _buffer.Write(source);
 
     /// <inheritdoc />
     public override void Reset() =>
-        this._buffer.SetLength(0);
+        _buffer.SetLength(0);
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
-        ReadOnlySpan<byte> data = this._buffer.GetBuffer().AsSpan(0, (int)this._buffer.Length);
+        ReadOnlySpan<byte> data = _buffer.GetBuffer().AsSpan(0, (int)_buffer.Length);
         BinaryPrimitives.WriteUInt32LittleEndian(destination, Compute(data));
     }
 

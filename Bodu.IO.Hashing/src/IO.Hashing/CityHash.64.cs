@@ -5,9 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Extensions;
-using System;
 using System.Buffers.Binary;
-using System.Runtime.CompilerServices;
 
 
 namespace Bodu.IO.Hashing;

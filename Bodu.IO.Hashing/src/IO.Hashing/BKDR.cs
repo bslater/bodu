@@ -67,8 +67,8 @@ public sealed class BKDR
         : base(HashLength)
     {
         ValidateSeed(seed);
-        this._seed = seed;
-        this._workingHash = seed;
+        _seed = seed;
+        _workingHash = seed;
     }
 
     /// <summary>
@@ -84,14 +84,14 @@ public sealed class BKDR
     /// </exception>
     public uint Seed
     {
-        get => this._seed;
+        get => _seed;
 
         set
         {
-            this.ThrowIfInvalidState();
+            ThrowIfInvalidState();
             ValidateSeed(value);
-            this._seed = value;
-            this._workingHash = value;
+            _seed = value;
+            _workingHash = value;
         }
     }
 
@@ -101,27 +101,27 @@ public sealed class BKDR
         if (source.Length == 0)
             return;
 
-        uint v = this._workingHash;
-        uint seed = this._seed;
+        uint v = _workingHash;
+        uint seed = _seed;
         foreach (byte b in source)
         {
             v = (v * seed) + b;
         }
 
-        this._workingHash = v;
-        this._started = true;
+        _workingHash = v;
+        _started = true;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        this._workingHash = this._seed;
-        this._started = false;
+        _workingHash = _seed;
+        _started = false;
     }
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt32BigEndian(destination, this._workingHash);
+        BinaryPrimitives.WriteUInt32BigEndian(destination, _workingHash);
 
     private static void ValidateSeed(uint value)
     {
@@ -147,7 +147,7 @@ public sealed class BKDR
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfInvalidState()
     {
-        if (this._started)
+        if (_started)
             throw new CryptographicUnexpectedOperationException(ReconfigurationNotAllowed);
     }
 }
