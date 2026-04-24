@@ -13,7 +13,7 @@ namespace Bodu.Globalization.Calendar;
 /// <see cref="AdjustmentAction" />.
 /// </summary>
 [TestClass]
-public sealed class NotableDateAdjusterTests
+public sealed partial class NotableDateAdjusterTests
 {
 	private static NotableDateRule SampleRule(string name = "Test") => new()
 	{
