@@ -223,6 +223,299 @@ public sealed class NotableDateRuleResolverTests
 		Assert.IsFalse(NotableDateRuleResolver.IsApplicable(rule, 2001));
 	}
 
+	// -----------------------------------------------------------------------------------------
+	// Argument validation + constructor paths
+	// -----------------------------------------------------------------------------------------
+
+	/// <summary>
+	/// Verifies that the constructor throws <see cref="ArgumentNullException" /> when
+	/// <paramref name="rules" /> is <see langword="null" />.
+	/// </summary>
+	[TestMethod]
+	public void Constructor_WhenRulesIsNull_ShouldThrowArgumentNullException()
+	{
+		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+		{
+			_ = new NotableDateRuleResolver(null!);
+		});
+
+		Assert.AreEqual("rules", ex.ParamName);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="NotableDateRuleResolver.ResolveAnchorDate" /> throws
+	/// <see cref="ArgumentNullException" /> when the rule argument is <see langword="null" />.
+	/// </summary>
+	[TestMethod]
+	public void ResolveAnchorDate_WhenRuleIsNull_ShouldThrowArgumentNullException()
+	{
+		var resolver = new NotableDateRuleResolver(Array.Empty<NotableDateRule>());
+
+		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+		{
+			_ = resolver.ResolveAnchorDate(null!, 2025);
+		});
+
+		Assert.AreEqual("rule", ex.ParamName);
+	}
+
+	/// <summary>
+	/// Verifies that a rule with an unrecognised <see cref="DateResolutionStrategy" /> throws
+	/// <see cref="NotSupportedException" /> naming the rule.
+	/// </summary>
+	[TestMethod]
+	public void ResolveAnchorDate_WhenStrategyIsUnsupported_ShouldThrowNotSupportedException()
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "Alien",
+			Strategy = (DateResolutionStrategy)999,
+			Category = NotableDateCategory.Observance,
+		};
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		var ex = Assert.ThrowsExactly<NotSupportedException>(() =>
+		{
+			_ = resolver.ResolveAnchorDate(rule, 2025);
+		});
+
+		Assert.IsTrue(ex.Message.Contains("Alien", StringComparison.Ordinal));
+	}
+
+	// -----------------------------------------------------------------------------------------
+	// Strategy-specific edge cases
+	// -----------------------------------------------------------------------------------------
+
+	/// <summary>
+	/// Verifies that a Fixed rule with missing <see cref="NotableDateRule.Month" /> or
+	/// <see cref="NotableDateRule.Day" /> resolves to <see langword="null" /> rather than
+	/// throwing.
+	/// </summary>
+	[DataRow(null!, null!)]
+	[DataRow(5, null!)]
+	[DataRow(null!, 15)]
+	[TestMethod]
+	public void ResolveAnchorDate_WhenFixedRuleMissingMonthOrDay_ShouldReturnNull(int? month, int? day)
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "Incomplete",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Holiday,
+			Month = month,
+			Day = day,
+		};
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		Assert.IsNull(resolver.ResolveAnchorDate(rule, 2025));
+	}
+
+	/// <summary>
+	/// Verifies that a DayOfWeekInMonth rule with any of Month/DayOfWeek/WeekOrdinal missing
+	/// resolves to <see langword="null" />.
+	/// </summary>
+	[TestMethod]
+	public void ResolveAnchorDate_WhenDayOfWeekInMonthRuleMissingRequiredFields_ShouldReturnNull()
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "Incomplete DOW",
+			Strategy = DateResolutionStrategy.DayOfWeekInMonth,
+			Category = NotableDateCategory.Observance,
+			Month = 5,
+			DayOfWeek = null,
+			WeekOrdinal = null,
+		};
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		Assert.IsNull(resolver.ResolveAnchorDate(rule, 2025));
+	}
+
+	/// <summary>
+	/// Verifies that an OffsetFromAnchor rule with a missing/whitespace anchor name short
+	/// -circuits to <see langword="null" /> rather than throwing a lookup exception.
+	/// </summary>
+	[DataRow(null!)]
+	[DataRow("")]
+	[DataRow("   ")]
+	[TestMethod]
+	public void ResolveAnchorDate_WhenOffsetFromAnchorHasNoAnchorName_ShouldReturnNull(string? anchor)
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "Orphan",
+			Strategy = DateResolutionStrategy.OffsetFromAnchor,
+			Category = NotableDateCategory.Observance,
+			AnchorRuleName = anchor,
+			OffsetDays = 1,
+		};
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		Assert.IsNull(resolver.ResolveAnchorDate(rule, 2025));
+	}
+
+	/// <summary>
+	/// Verifies that an OffsetFromAnchor rule with no <see cref="NotableDateRule.OffsetDays" />
+	/// returns <see langword="null" /> rather than defaulting to zero.
+	/// </summary>
+	[TestMethod]
+	public void ResolveAnchorDate_WhenOffsetFromAnchorHasNoOffsetDays_ShouldReturnNull()
+	{
+		var anchor = FixedRule("Anchor", 4, 10);
+		var offset = new NotableDateRule
+		{
+			Name = "Derived",
+			Strategy = DateResolutionStrategy.OffsetFromAnchor,
+			Category = NotableDateCategory.Observance,
+			AnchorRuleName = "Anchor",
+			OffsetDays = null,
+		};
+		var resolver = new NotableDateRuleResolver(new[] { anchor, offset });
+
+		Assert.IsNull(resolver.ResolveAnchorDate(offset, 2025));
+	}
+
+	/// <summary>
+	/// Verifies that an OffsetFromAnchor rule returns <see langword="null" /> when the anchor
+	/// rule itself does not apply to the requested year.
+	/// </summary>
+	[TestMethod]
+	public void ResolveAnchorDate_WhenOffsetFromAnchorAnchorNotApplicable_ShouldReturnNull()
+	{
+		var anchor = FixedRule("Anchor", 4, 10, firstYear: 2030);
+		var offset = OffsetRule("Derived", "Anchor", 1);
+		var resolver = new NotableDateRuleResolver(new[] { anchor, offset });
+
+		Assert.IsNull(resolver.ResolveAnchorDate(offset, 2025));
+	}
+
+	/// <summary>
+	/// Verifies that a Calculator rule uses the CLR <see cref="NotableDateRule.CalculatorType" />
+	/// fallback when no calculator registry is configured or the registry does not contain the
+	/// requested key.
+	/// </summary>
+	[TestMethod]
+	public void ResolveAnchorDate_WhenCalculatorRuleFallsBackToType_ShouldInstantiateAndInvoke()
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "Legacy Calc",
+			Strategy = DateResolutionStrategy.Calculator,
+			Category = NotableDateCategory.Observance,
+			CalculatorType = typeof(FixedJuneCalculator),
+		};
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		DateTime? result = resolver.ResolveAnchorDate(rule, 2025);
+
+		Assert.AreEqual(new DateTime(2025, 6, 1), result);
+	}
+
+	/// <summary>
+	/// Verifies that a Calculator rule with a registry that has the key wins over the CLR
+	/// <see cref="NotableDateRule.CalculatorType" /> fallback.
+	/// </summary>
+	[TestMethod]
+	public void ResolveAnchorDate_WhenCalculatorRuleHasBothKeyAndType_ShouldPreferRegistry()
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "Dual",
+			Strategy = DateResolutionStrategy.Calculator,
+			Category = NotableDateCategory.Observance,
+			CalculatorKey = "key",
+			CalculatorType = typeof(FixedJuneCalculator),
+		};
+		var registry = new NotableDateCalculatorRegistry()
+			.Register("key", new StaticCalculator(new DateTime(2025, 3, 15)));
+		var resolver = new NotableDateRuleResolver(new[] { rule }, registry);
+
+		DateTime? result = resolver.ResolveAnchorDate(rule, 2025);
+
+		Assert.AreEqual(new DateTime(2025, 3, 15), result);
+	}
+
+	/// <summary>
+	/// Verifies that a Calculator rule whose CLR type does not implement
+	/// <see cref="INotableDateCalculator" /> gracefully returns <see langword="null" /> rather
+	/// than throwing.
+	/// </summary>
+	[TestMethod]
+	public void ResolveAnchorDate_WhenCalculatorTypeIsNotCalculator_ShouldReturnNull()
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "Wrong Type",
+			Strategy = DateResolutionStrategy.Calculator,
+			Category = NotableDateCategory.Observance,
+			CalculatorType = typeof(NotACalculator),
+		};
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		Assert.IsNull(resolver.ResolveAnchorDate(rule, 2025));
+	}
+
+	/// <summary>
+	/// Verifies that anchor rules whose <see cref="NotableDateRule.Name" /> is null, empty, or
+	/// whitespace are skipped during the name-index build: a later offset rule referencing a
+	/// legitimate anchor name cannot resolve because the would-be anchor was not indexed.
+	/// </summary>
+	[DataRow(null!)]
+	[DataRow("")]
+	[DataRow("   ")]
+	[TestMethod]
+	public void Constructor_WhenAnchorNameIsNullOrWhitespace_ShouldSkipFromNameIndex(string? anchorName)
+	{
+		var unindexedAnchor = new NotableDateRule
+		{
+			Name = anchorName ?? string.Empty,
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Holiday,
+			Month = 4,
+			Day = 10,
+		};
+		var offset = OffsetRule("Derived", "RealAnchor", 1);
+		var resolver = new NotableDateRuleResolver(new[] { unindexedAnchor, offset });
+
+		Assert.ThrowsExactly<InvalidOperationException>(() =>
+		{
+			_ = resolver.ResolveAnchorDate(offset, 2025);
+		});
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="NotableDateRuleResolver.IsApplicable" /> enforces both the
+	/// first/last year window and the cadence test derived from
+	/// <see cref="NotableDateRule.OccurrenceYears" />. Each row states the expected outcome
+	/// directly to make the truth table self-auditing.
+	/// </summary>
+	[DataRow(2025, null, null, null, true)]    // no bounds, no cadence → always
+	[DataRow(2025, 2020, 2030, null, true)]    // in-window, no cadence
+	[DataRow(2019, 2020, 2030, null, false)]   // below firstYear
+	[DataRow(2031, 2020, 2030, null, false)]   // above lastYear
+	[DataRow(2024, 2024, null, 4, true)]       // on cadence (Olympic origin)
+	[DataRow(2025, 2024, null, 4, false)]      // off cadence
+	[DataRow(2028, 2024, null, 4, true)]       // on cadence + 1 cycle
+	[DataRow(2020, null, null, 4, true)]       // cadence origin 0 ⇒ 2020 % 4 == 0
+	[DataRow(2021, null, null, 4, false)]      // cadence origin 0 ⇒ 2021 % 4 != 0
+	[DataRow(2025, null, null, 1, true)]       // cadence 1 ⇒ always
+	[DataRow(2025, null, null, 0, true)]       // cadence 0 is ignored (not > 0)
+	[TestMethod]
+	public void IsApplicable_TruthTable(int year, int? first, int? last, int? cadence, bool expected)
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "r",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Holiday,
+			FirstYear = first,
+			LastYear = last,
+			OccurrenceYears = cadence,
+		};
+
+		Assert.AreEqual(expected, NotableDateRuleResolver.IsApplicable(rule, year));
+	}
+
 	private sealed class StaticCalculator : INotableDateCalculator
 	{
 		private readonly DateTime _value;
@@ -230,5 +523,22 @@ public sealed class NotableDateRuleResolverTests
 		public StaticCalculator(DateTime value) => _value = value;
 
 		public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null) => _value;
+	}
+
+	/// <summary>
+	/// Calculator-type fallback double. Activator creates one via its parameterless ctor.
+	/// </summary>
+	public sealed class FixedJuneCalculator : INotableDateCalculator
+	{
+		public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null) =>
+			new DateTime(year, 6, 1);
+	}
+
+	/// <summary>
+	/// Intentionally not an <see cref="INotableDateCalculator" /> — used to test the
+	/// resolver's defensive fallback.
+	/// </summary>
+	public sealed class NotACalculator
+	{
 	}
 }

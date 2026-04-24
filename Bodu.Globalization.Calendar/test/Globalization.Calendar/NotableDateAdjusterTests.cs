@@ -357,9 +357,571 @@ public sealed class NotableDateAdjusterTests
 		Assert.IsFalse(NotableDateAdjuster.IsInScope(adjustment, 2025, "AU-NSW", null));
 	}
 
+	// -----------------------------------------------------------------------------------------
+	// Argument-validation (null-argument) paths
+	// -----------------------------------------------------------------------------------------
+
+	/// <summary>
+	/// Verifies that <see cref="NotableDateAdjuster.Apply" /> throws
+	/// <see cref="ArgumentNullException" /> when <paramref name="adjustment" /> is
+	/// <see langword="null" />.
+	/// </summary>
+	[TestMethod]
+	public void Apply_WhenAdjustmentIsNull_ShouldThrowArgumentNullException()
+	{
+		var adjuster = CreateAdjuster();
+
+		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+		{
+			_ = adjuster.Apply(null!, SampleRule(), new DateTime(2025, 1, 1));
+		});
+
+		Assert.AreEqual("adjustment", ex.ParamName);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="NotableDateAdjuster.Apply" /> throws
+	/// <see cref="ArgumentNullException" /> when <paramref name="rule" /> is
+	/// <see langword="null" />.
+	/// </summary>
+	[TestMethod]
+	public void Apply_WhenRuleIsNull_ShouldThrowArgumentNullException()
+	{
+		var adjuster = CreateAdjuster();
+		var adjustment = new ObservanceAdjustment
+		{
+			Key = "k",
+			Trigger = AdjustmentTrigger.Always,
+			Action = AdjustmentAction.None,
+		};
+
+		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+		{
+			_ = adjuster.Apply(adjustment, null!, new DateTime(2025, 1, 1));
+		});
+
+		Assert.AreEqual("rule", ex.ParamName);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="NotableDateAdjuster.IsInScope" /> throws
+	/// <see cref="ArgumentNullException" /> when <paramref name="adjustment" /> is
+	/// <see langword="null" />.
+	/// </summary>
+	[TestMethod]
+	public void IsInScope_WhenAdjustmentIsNull_ShouldThrowArgumentNullException()
+	{
+		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+		{
+			_ = NotableDateAdjuster.IsInScope(null!, 2025, null, null);
+		});
+
+		Assert.AreEqual("adjustment", ex.ParamName);
+	}
+
+	/// <summary>
+	/// Verifies that the <see cref="NotableDateAdjuster" /> constructor throws when either
+	/// required predicate is <see langword="null" />.
+	/// </summary>
+	[TestMethod]
+	public void Constructor_WhenIsWeekendIsNull_ShouldThrowArgumentNullException()
+	{
+		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+		{
+			_ = new NotableDateAdjuster(
+				isWeekend: null!,
+				isNonWorkingDay: (d, t, c) => false,
+				weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+				weekendProvider: null);
+		});
+
+		Assert.AreEqual("isWeekend", ex.ParamName);
+	}
+
+	/// <summary>
+	/// Verifies that the <see cref="NotableDateAdjuster" /> constructor throws when
+	/// <paramref name="isNonWorkingDay" /> is <see langword="null" />.
+	/// </summary>
+	[TestMethod]
+	public void Constructor_WhenIsNonWorkingDayIsNull_ShouldThrowArgumentNullException()
+	{
+		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+		{
+			_ = new NotableDateAdjuster(
+				isWeekend: _ => false,
+				isNonWorkingDay: null!,
+				weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+				weekendProvider: null);
+		});
+
+		Assert.AreEqual("isNonWorkingDay", ex.ParamName);
+	}
+
+	// -----------------------------------------------------------------------------------------
+	// Custom-trigger / custom-action handler-lookup paths
+	// -----------------------------------------------------------------------------------------
+
+	/// <summary>
+	/// Verifies that a <see cref="AdjustmentTrigger.Custom" /> adjustment is a no-op when the
+	/// handler registry is absent, the handler key is missing, or the handler key is not
+	/// registered — the adjuster returns a not-activated result with the original date in every
+	/// such case.
+	/// </summary>
+	[DataRow(false, "missing-key")]
+	[DataRow(true, null)]
+	[DataRow(true, "")]
+	[DataRow(true, "   ")]
+	[DataRow(true, "not-registered")]
+	[TestMethod]
+	public void Apply_WhenCustomTriggerHasNoResolvableHandler_ShouldReturnNotActivated(
+		bool useRegistry,
+		string? handlerKey)
+	{
+		IAdjustmentHandlerRegistry? registry = useRegistry
+			? new AdjustmentHandlerRegistry().Register("other-key", new ShiftByFiveDaysHandler())
+			: null;
+
+		var adjuster = CreateAdjuster(handlers: registry);
+		var adjustment = new ObservanceAdjustment
+		{
+			Key = "k",
+			Trigger = AdjustmentTrigger.Custom,
+			Action = AdjustmentAction.Custom,
+			HandlerKey = handlerKey,
+		};
+
+		var original = new DateTime(2025, 6, 1);
+		var result = adjuster.Apply(adjustment, SampleRule(), original);
+
+		Assert.IsFalse(result.Activated);
+		Assert.AreEqual(original, result.AdjustedDate);
+	}
+
+	/// <summary>
+	/// Verifies that a custom handler that returns <c>Activated = false</c> produces a
+	/// not-activated result from the adjuster even though the handler was dispatched.
+	/// </summary>
+	[TestMethod]
+	public void Apply_WhenCustomTriggerAndHandlerDeclinesActivation_ShouldReturnNotActivated()
+	{
+		var registry = new AdjustmentHandlerRegistry().Register("decline", new DeclineHandler());
+		var adjuster = CreateAdjuster(handlers: registry);
+		var adjustment = new ObservanceAdjustment
+		{
+			Key = "k",
+			Trigger = AdjustmentTrigger.Custom,
+			Action = AdjustmentAction.Custom,
+			HandlerKey = "decline",
+		};
+
+		var original = new DateTime(2025, 6, 1);
+		var result = adjuster.Apply(adjustment, SampleRule(), original);
+
+		Assert.IsFalse(result.Activated);
+		Assert.AreEqual(original, result.AdjustedDate);
+	}
+
+	/// <summary>
+	/// Verifies that a custom handler that returns a non-working override is surfaced on the
+	/// <see cref="AdjustmentApplyResult" />.
+	/// </summary>
+	[TestMethod]
+	public void Apply_WhenCustomHandlerReturnsNonWorkingOverride_ShouldForwardToResult()
+	{
+		var registry = new AdjustmentHandlerRegistry().Register(
+			"flag-non-working",
+			new FlagNonWorkingHandler());
+		var adjuster = CreateAdjuster(handlers: registry);
+		var adjustment = new ObservanceAdjustment
+		{
+			Key = "k",
+			Trigger = AdjustmentTrigger.Custom,
+			Action = AdjustmentAction.Custom,
+			HandlerKey = "flag-non-working",
+			IsNonWorkingDay = false,
+		};
+
+		var result = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 6, 1));
+
+		Assert.IsTrue(result.Activated);
+		Assert.IsTrue(result.IsNonWorkingOverride);
+	}
+
+	// -----------------------------------------------------------------------------------------
+	// Action edge cases
+	// -----------------------------------------------------------------------------------------
+
+	/// <summary>
+	/// Verifies that <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> returns the
+	/// original date if the predicate never returns <see langword="true" /> within 366 days
+	/// (the bounded-walk fallback).
+	/// </summary>
+	[TestMethod]
+	public void Apply_WhenMoveToNextNonWorkingDayPredicateNeverMatches_ShouldReturnOriginal()
+	{
+		var adjuster = CreateAdjuster(isNonWorking: (d, t, c) => false);
+		var adjustment = new ObservanceAdjustment
+		{
+			Key = "k",
+			Trigger = AdjustmentTrigger.Always,
+			Action = AdjustmentAction.MoveToNextNonWorkingDay,
+		};
+
+		var original = new DateTime(2025, 6, 1);
+		var result = adjuster.Apply(adjustment, SampleRule(), original);
+
+		Assert.IsTrue(result.Activated);
+		Assert.AreEqual(original, result.AdjustedDate);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="AdjustmentAction.ReplaceWithNamedDate" /> falls back to the
+	/// original date when either the target rule name is empty or no name-resolver callback is
+	/// configured.
+	/// </summary>
+	[DataRow(null!)]
+	[DataRow("")]
+	[DataRow("   ")]
+	[TestMethod]
+	public void Apply_WhenReplaceWithNamedDateAndTargetIsMissing_ShouldReturnOriginal(string? target)
+	{
+		var adjuster = CreateAdjuster(resolveByName: (name, year, t, c) => new DateTime(year, 12, 26));
+		var adjustment = new ObservanceAdjustment
+		{
+			Key = "k",
+			Trigger = AdjustmentTrigger.Always,
+			Action = AdjustmentAction.ReplaceWithNamedDate,
+			TargetRuleName = target,
+		};
+
+		var original = new DateTime(2025, 6, 1);
+		var result = adjuster.Apply(adjustment, SampleRule(), original);
+
+		Assert.IsTrue(result.Activated);
+		Assert.AreEqual(original, result.AdjustedDate);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="AdjustmentAction.ReplaceWithNamedDate" /> returns the original
+	/// date when no <c>resolveByName</c> callback is configured, regardless of whether the
+	/// target name is present.
+	/// </summary>
+	[TestMethod]
+	public void Apply_WhenReplaceWithNamedDateAndResolverIsNull_ShouldReturnOriginal()
+	{
+		var adjuster = CreateAdjuster(resolveByName: null);
+		var adjustment = new ObservanceAdjustment
+		{
+			Key = "k",
+			Trigger = AdjustmentTrigger.Always,
+			Action = AdjustmentAction.ReplaceWithNamedDate,
+			TargetRuleName = "Target",
+		};
+
+		var original = new DateTime(2025, 6, 1);
+		var result = adjuster.Apply(adjustment, SampleRule(), original);
+
+		Assert.IsTrue(result.Activated);
+		Assert.AreEqual(original, result.AdjustedDate);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="AdjustmentAction.ReplaceWithNamedDate" /> falls back to the
+	/// original when the resolver returns <see langword="null" /> for the target rule.
+	/// </summary>
+	[TestMethod]
+	public void Apply_WhenReplaceWithNamedDateAndResolverReturnsNull_ShouldReturnOriginal()
+	{
+		var adjuster = CreateAdjuster(resolveByName: (name, year, t, c) => null);
+		var adjustment = new ObservanceAdjustment
+		{
+			Key = "k",
+			Trigger = AdjustmentTrigger.Always,
+			Action = AdjustmentAction.ReplaceWithNamedDate,
+			TargetRuleName = "Target",
+		};
+
+		var original = new DateTime(2025, 6, 1);
+		var result = adjuster.Apply(adjustment, SampleRule(), original);
+
+		Assert.IsTrue(result.Activated);
+		Assert.AreEqual(original, result.AdjustedDate);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="AdjustmentAction.None" /> leaves the date unchanged even when
+	/// the trigger activates.
+	/// </summary>
+	[TestMethod]
+	public void Apply_WhenActionIsNone_ShouldActivateWithoutChangingDate()
+	{
+		var adjuster = CreateAdjuster();
+		var adjustment = new ObservanceAdjustment
+		{
+			Key = "k",
+			Trigger = AdjustmentTrigger.Always,
+			Action = AdjustmentAction.None,
+		};
+
+		var original = new DateTime(2025, 6, 1);
+		var result = adjuster.Apply(adjustment, SampleRule(), original);
+
+		Assert.IsTrue(result.Activated);
+		Assert.AreEqual(original, result.AdjustedDate);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="AdjustmentAction.MoveToPreviousWeekday" /> walks backward from a
+	/// Sunday onto the preceding Friday.
+	/// </summary>
+	[TestMethod]
+	public void Apply_WhenSundayAndMoveToPreviousWeekday_ShouldYieldFriday()
+	{
+		var adjuster = CreateAdjuster();
+		var adjustment = new ObservanceAdjustment
+		{
+			Key = "k",
+			Trigger = AdjustmentTrigger.Always,
+			Action = AdjustmentAction.MoveToPreviousWeekday,
+		};
+
+		var sunday = new DateTime(2026, 1, 4);
+		var result = adjuster.Apply(adjustment, SampleRule(), sunday);
+
+		Assert.IsTrue(result.Activated);
+		Assert.AreEqual(DayOfWeek.Friday, result.AdjustedDate.DayOfWeek);
+	}
+
+	// -----------------------------------------------------------------------------------------
+	// Trigger edge cases
+	// -----------------------------------------------------------------------------------------
+
+	/// <summary>
+	/// Verifies that <see cref="AdjustmentTrigger.IfWeekday" /> activates on weekdays and not on
+	/// weekends.
+	/// </summary>
+	[DataRow("2025-06-02", true)]  // Monday
+	[DataRow("2025-06-06", true)]  // Friday
+	[DataRow("2025-06-07", false)] // Saturday
+	[DataRow("2025-06-08", false)] // Sunday
+	[TestMethod]
+	public void Apply_IfWeekdayTrigger_ShouldActivateOnlyOnWeekdays(string dateIso, bool expectedActivation)
+	{
+		var adjuster = CreateAdjuster();
+		var adjustment = new ObservanceAdjustment
+		{
+			Key = "k",
+			Trigger = AdjustmentTrigger.IfWeekday,
+			Action = AdjustmentAction.None,
+		};
+
+		var result = adjuster.Apply(adjustment, SampleRule(), DateTime.Parse(dateIso));
+
+		Assert.AreEqual(expectedActivation, result.Activated);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="AdjustmentTrigger.IfAfterFixedDate" /> activates only when the
+	/// original date sits strictly after the comparison date projected onto the active year.
+	/// </summary>
+	[DataRow("2030-05-10", false)]
+	[DataRow("2030-06-01", false)]
+	[DataRow("2030-06-02", true)]
+	[DataRow("2030-11-01", true)]
+	[TestMethod]
+	public void Apply_IfAfterFixedDateTrigger_ShouldActivateOnStrictlyAfter(string originalIso, bool expectedActivation)
+	{
+		var adjuster = CreateAdjuster();
+		var adjustment = new ObservanceAdjustment
+		{
+			Key = "k",
+			Trigger = AdjustmentTrigger.IfAfterFixedDate,
+			Action = AdjustmentAction.AddDays,
+			OffsetDays = 1,
+			ComparisonDate = new DateTime(2000, 6, 1),
+		};
+
+		var result = adjuster.Apply(adjustment, SampleRule(), DateTime.Parse(originalIso));
+
+		Assert.AreEqual(expectedActivation, result.Activated);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="AdjustmentTrigger.IfDayOfWeek" /> returns false when the
+	/// <see cref="ObservanceAdjustment.DayOfWeek" /> is <see langword="null" />, matching the
+	/// production short-circuit.
+	/// </summary>
+	[TestMethod]
+	public void Apply_WhenIfDayOfWeekAndDayOfWeekIsNull_ShouldNotActivate()
+	{
+		var adjuster = CreateAdjuster();
+		var adjustment = new ObservanceAdjustment
+		{
+			Key = "k",
+			Trigger = AdjustmentTrigger.IfDayOfWeek,
+			Action = AdjustmentAction.None,
+			DayOfWeek = null,
+		};
+
+		var result = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 6, 2));
+
+		Assert.IsFalse(result.Activated);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="AdjustmentTrigger.IfNthOccurrenceInMonth" /> does not activate
+	/// when <see cref="ObservanceAdjustment.WeekOrdinal" /> is <see langword="null" />.
+	/// </summary>
+	[TestMethod]
+	public void Apply_WhenIfNthOccurrenceAndOrdinalIsNull_ShouldNotActivate()
+	{
+		var adjuster = CreateAdjuster();
+		var adjustment = new ObservanceAdjustment
+		{
+			Key = "k",
+			Trigger = AdjustmentTrigger.IfNthOccurrenceInMonth,
+			Action = AdjustmentAction.None,
+			WeekOrdinal = null,
+		};
+
+		var result = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 1, 8));
+
+		Assert.IsFalse(result.Activated);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="AdjustmentTrigger.IfBeforeFixedDate" /> and
+	/// <see cref="AdjustmentTrigger.IfAfterFixedDate" /> short-circuit to not-activated when
+	/// <see cref="ObservanceAdjustment.ComparisonDate" /> is <see langword="null" />.
+	/// </summary>
+	[DataRow(AdjustmentTrigger.IfBeforeFixedDate)]
+	[DataRow(AdjustmentTrigger.IfAfterFixedDate)]
+	[TestMethod]
+	public void Apply_WhenFixedDateTriggerAndComparisonIsNull_ShouldNotActivate(AdjustmentTrigger trigger)
+	{
+		var adjuster = CreateAdjuster();
+		var adjustment = new ObservanceAdjustment
+		{
+			Key = "k",
+			Trigger = trigger,
+			Action = AdjustmentAction.None,
+			ComparisonDate = null,
+		};
+
+		var result = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 6, 1));
+
+		Assert.IsFalse(result.Activated);
+	}
+
+	/// <summary>
+	/// Verifies that a comparison date of 29 February is clamped to 28 February when projected
+	/// onto a non-leap year, so <see cref="AdjustmentTrigger.IfBeforeFixedDate" /> still
+	/// evaluates cleanly without throwing.
+	/// </summary>
+	[TestMethod]
+	public void Apply_WhenIfBeforeFixedDateAndComparisonIsFeb29InNonLeapYear_ShouldClampDayAndNotThrow()
+	{
+		var adjuster = CreateAdjuster();
+		var adjustment = new ObservanceAdjustment
+		{
+			Key = "k",
+			Trigger = AdjustmentTrigger.IfBeforeFixedDate,
+			Action = AdjustmentAction.AddDays,
+			OffsetDays = 1,
+			ComparisonDate = new DateTime(2024, 2, 29),
+		};
+
+		// Original in a non-leap year before 28 February ⇒ should activate; on/after 28 Feb ⇒ no.
+		var before = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 2, 15));
+		var onClamped = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 2, 28));
+		var after = adjuster.Apply(adjustment, SampleRule(), new DateTime(2025, 3, 1));
+
+		Assert.IsTrue(before.Activated);
+		Assert.IsFalse(onClamped.Activated);
+		Assert.IsFalse(after.Activated);
+	}
+
+	// -----------------------------------------------------------------------------------------
+	// Scope edge cases
+	// -----------------------------------------------------------------------------------------
+
+	/// <summary>
+	/// Verifies that <see cref="NotableDateAdjuster.IsInScope" /> returns false when the
+	/// adjustment declares a <see cref="ObservanceAdjustment.CalendarType" /> that does not
+	/// match the query-context calendar.
+	/// </summary>
+	[TestMethod]
+	public void IsInScope_WhenAdjustmentCalendarDiffersFromContext_ShouldReturnFalse()
+	{
+		var adjustment = new ObservanceAdjustment
+		{
+			Key = "k",
+			Trigger = AdjustmentTrigger.Always,
+			Action = AdjustmentAction.None,
+			CalendarType = typeof(System.Globalization.JulianCalendar),
+		};
+
+		Assert.IsFalse(NotableDateAdjuster.IsInScope(adjustment, 2025, null, typeof(System.Globalization.GregorianCalendar)));
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="NotableDateAdjuster.IsInScope" /> returns false when the year is
+	/// below <see cref="ObservanceAdjustment.EffectiveFromYear" /> OR above
+	/// <see cref="ObservanceAdjustment.EffectiveToYear" />.
+	/// </summary>
+	[DataRow(2010, 2030, 2009, false)]
+	[DataRow(2010, 2030, 2010, true)]
+	[DataRow(2010, 2030, 2020, true)]
+	[DataRow(2010, 2030, 2030, true)]
+	[DataRow(2010, 2030, 2031, false)]
+	[TestMethod]
+	public void IsInScope_YearWindowTruthTable(int fromYear, int toYear, int queryYear, bool expected)
+	{
+		var adjustment = new ObservanceAdjustment
+		{
+			Key = "k",
+			Trigger = AdjustmentTrigger.Always,
+			Action = AdjustmentAction.None,
+			EffectiveFromYear = fromYear,
+			EffectiveToYear = toYear,
+		};
+
+		Assert.AreEqual(expected, NotableDateAdjuster.IsInScope(adjustment, queryYear, null, null));
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="NotableDateAdjuster.IsInScope" /> returns false when the query
+	/// territory cannot be parsed, even if the adjustment has a valid territory list.
+	/// </summary>
+	[TestMethod]
+	public void IsInScope_WhenRequestedTerritoryIsMalformed_ShouldReturnFalse()
+	{
+		var adjustment = new ObservanceAdjustment
+		{
+			Key = "k",
+			Trigger = AdjustmentTrigger.Always,
+			Action = AdjustmentAction.None,
+			TerritoryCode = "AU",
+		};
+
+		Assert.IsFalse(NotableDateAdjuster.IsInScope(adjustment, 2025, "BAD!", null));
+	}
+
 	private sealed class ShiftByFiveDaysHandler : IAdjustmentHandler
 	{
 		public AdjustmentHandlerResult Apply(AdjustmentHandlerContext context) =>
 			new(true, context.Date.AddDays(5));
+	}
+
+	private sealed class DeclineHandler : IAdjustmentHandler
+	{
+		public AdjustmentHandlerResult Apply(AdjustmentHandlerContext context) =>
+			new(false, context.Date);
+	}
+
+	private sealed class FlagNonWorkingHandler : IAdjustmentHandler
+	{
+		public AdjustmentHandlerResult Apply(AdjustmentHandlerContext context) =>
+			new(true, context.Date, IsNonWorkingOverride: true);
 	}
 }

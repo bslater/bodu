@@ -363,6 +363,140 @@ public sealed class UseDirectiveInheritanceTests
 	}
 
 	// ------------------------------------------------------------------------------------------
+	// Merger: strategy-override branches
+	// ------------------------------------------------------------------------------------------
+
+	/// <summary>
+	/// Verifies that each branch of <see cref="NotableDateRuleMerger.ApplyStrategyOverride" />
+	/// produces the correct, stale-cleared <see cref="NotableDateRule" /> for every supported
+	/// target strategy.
+	/// </summary>
+	[DataRow(DateResolutionStrategy.Fixed)]
+	[DataRow(DateResolutionStrategy.DayOfWeekInMonth)]
+	[DataRow(DateResolutionStrategy.OffsetFromAnchor)]
+	[DataRow(DateResolutionStrategy.Calculator)]
+	[TestMethod]
+	public void Apply_ApplyStrategyOverride_ShouldProduceCleanRuleForEveryTargetStrategy(DateResolutionStrategy target)
+	{
+		// A source rule that has every strategy-specific field set, so we can confirm that the
+		// merger clears the fields which no longer apply under the new strategy.
+		var source = new NotableDateRule
+		{
+			Name = "Seed",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Holiday,
+			Month = 1,
+			Day = 1,
+			DayOfWeek = DayOfWeek.Monday,
+			WeekOrdinal = WeekOfMonthOrdinal.First,
+			AnchorRuleName = "X",
+			OffsetDays = 7,
+			CalculatorKey = "k",
+			CalculatorType = typeof(string),
+		};
+
+		var body = new NotableDateRuleOverrideBody
+		{
+			Strategy = target,
+			Month = 5,
+			Day = 10,
+			DayOfWeek = DayOfWeek.Friday,
+			WeekOrdinal = WeekOfMonthOrdinal.Second,
+			AnchorRuleName = "Easter Sunday",
+			OffsetDays = -2,
+			CalculatorKey = "new-key",
+			CalculatorType = typeof(int),
+		};
+
+		var directive = new NotableDateRuleUseDirective(
+			SourceRuleName: source.Name,
+			OverrideBody: body);
+
+		NotableDateRule merged = NotableDateRuleMerger.Apply(source, directive);
+
+		Assert.AreEqual(target, merged.Strategy);
+		switch (target)
+		{
+			case DateResolutionStrategy.Fixed:
+				Assert.AreEqual(5, merged.Month);
+				Assert.AreEqual(10, merged.Day);
+				Assert.IsNull(merged.DayOfWeek);
+				Assert.IsNull(merged.WeekOrdinal);
+				Assert.IsNull(merged.AnchorRuleName);
+				Assert.IsNull(merged.OffsetDays);
+				Assert.IsNull(merged.CalculatorKey);
+				Assert.IsNull(merged.CalculatorType);
+				break;
+
+			case DateResolutionStrategy.DayOfWeekInMonth:
+				Assert.AreEqual(5, merged.Month);
+				Assert.IsNull(merged.Day);
+				Assert.AreEqual(DayOfWeek.Friday, merged.DayOfWeek);
+				Assert.AreEqual(WeekOfMonthOrdinal.Second, merged.WeekOrdinal);
+				Assert.IsNull(merged.AnchorRuleName);
+				Assert.IsNull(merged.OffsetDays);
+				Assert.IsNull(merged.CalculatorKey);
+				Assert.IsNull(merged.CalculatorType);
+				break;
+
+			case DateResolutionStrategy.OffsetFromAnchor:
+				Assert.IsNull(merged.Month);
+				Assert.IsNull(merged.Day);
+				Assert.IsNull(merged.DayOfWeek);
+				Assert.IsNull(merged.WeekOrdinal);
+				Assert.AreEqual("Easter Sunday", merged.AnchorRuleName);
+				Assert.AreEqual(-2, merged.OffsetDays);
+				Assert.IsNull(merged.CalculatorKey);
+				Assert.IsNull(merged.CalculatorType);
+				break;
+
+			case DateResolutionStrategy.Calculator:
+				Assert.IsNull(merged.Month);
+				Assert.IsNull(merged.Day);
+				Assert.IsNull(merged.DayOfWeek);
+				Assert.IsNull(merged.WeekOrdinal);
+				Assert.IsNull(merged.AnchorRuleName);
+				Assert.IsNull(merged.OffsetDays);
+				Assert.AreEqual("new-key", merged.CalculatorKey);
+				Assert.AreEqual(typeof(int), merged.CalculatorType);
+				break;
+		}
+	}
+
+	/// <summary>
+	/// Verifies that the name-resolution branch in <see cref="NotableDateRuleMerger" /> prefers
+	/// a body-supplied name over the directive's flat <c>as</c> attribute, which in turn
+	/// overrides the inherited source name.
+	/// </summary>
+	[DataRow(null!, null!, "Seed Name")]
+	[DataRow("LocalAlias", null!, "LocalAlias")]
+	[DataRow(null!, "Body Name", "Body Name")]
+	[DataRow("LocalAlias", "Body Name", "Body Name")]
+	[DataRow("", null!, "Seed Name")]
+	[DataRow(null!, "   ", "Seed Name")]
+	[TestMethod]
+	public void Apply_ResolveName_Precedence(string? flatLocalName, string? bodyName, string expected)
+	{
+		var source = new NotableDateRule
+		{
+			Name = "Seed Name",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Holiday,
+			Month = 1,
+			Day = 1,
+		};
+
+		var directive = new NotableDateRuleUseDirective(
+			SourceRuleName: source.Name,
+			LocalName: flatLocalName,
+			OverrideBody: bodyName is null ? null : new NotableDateRuleOverrideBody { Name = bodyName });
+
+		NotableDateRule merged = NotableDateRuleMerger.Apply(source, directive);
+
+		Assert.AreEqual(expected, merged.Name);
+	}
+
+	// ------------------------------------------------------------------------------------------
 	// Test fixtures
 	// ------------------------------------------------------------------------------------------
 

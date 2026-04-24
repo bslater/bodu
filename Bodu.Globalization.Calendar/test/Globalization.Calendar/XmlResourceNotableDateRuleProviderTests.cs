@@ -257,6 +257,54 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	}
 
 	/// <summary>
+	/// Verifies that the constructor rejects a <see langword="null" /> resource name with
+	/// <see cref="ArgumentNullException" />.
+	/// </summary>
+	[TestMethod]
+	public void Constructor_WhenXmlResourceNameIsNull_ShouldThrowArgumentNullException()
+	{
+		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+		{
+			_ = new XmlResourceNotableDateRuleProvider(null!);
+		});
+
+		Assert.AreEqual("xmlResourceName", ex.ParamName);
+	}
+
+	/// <summary>
+	/// Verifies that the <paramref name="assembly" /> override routes resource lookups through
+	/// the supplied assembly rather than the currently-executing one.
+	/// </summary>
+	[TestMethod]
+	public void Constructor_WhenAssemblyOverrideSupplied_ShouldUseSuppliedAssembly()
+	{
+		var provider = new XmlResourceNotableDateRuleProvider(
+			CommonResource,
+			typeof(NotableDateService).Assembly);
+
+		IReadOnlyList<NotableDateRule> rules = provider.LoadRules().ToList();
+
+		Assert.IsTrue(rules.Count > 0);
+	}
+
+	/// <summary>
+	/// Verifies that loading the same provider twice returns the same cached flatten — both
+	/// <see cref="XmlResourceNotableDateRuleProvider.LoadRules" /> calls hit the
+	/// <c>Lazy&lt;List&lt;NotableDateRule&gt;&gt;</c> fast-path after the first one has
+	/// materialised the list.
+	/// </summary>
+	[TestMethod]
+	public void LoadRules_WhenCalledTwice_ShouldReturnCachedResult()
+	{
+		var provider = new XmlResourceNotableDateRuleProvider(CommonResource);
+
+		IEnumerable<NotableDateRule> first = provider.LoadRules();
+		IEnumerable<NotableDateRule> second = provider.LoadRules();
+
+		Assert.AreSame(first, second);
+	}
+
+	/// <summary>
 	/// Verifies that adding a new rule to a source resource does not cascade into a consumer that uses explicit cherry-pick. A new
 	/// rule introduced into Common.xml would not show up in US.xml's flattened set unless US.xml explicitly added a Use directive
 	/// for it. This test confirms the contract by verifying that the US set is a strict subset of Common's universal rules.
