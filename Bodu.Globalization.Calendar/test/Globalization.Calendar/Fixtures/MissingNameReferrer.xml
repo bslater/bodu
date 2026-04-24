@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Cherry-picks a rule that does not exist in Source.xml. Exercises the
+  FindSourceRule-returns-null branch in XmlResourceNotableDateRuleProvider, which
+  surfaces as an InvalidOperationException at flatten time.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar">
+  <UseFrom resource="Bodu.Globalization.Calendar.Fixtures.Source.xml">
+    <Use name="This Rule Does Not Exist" />
+  </UseFrom>
+</NotableDates>

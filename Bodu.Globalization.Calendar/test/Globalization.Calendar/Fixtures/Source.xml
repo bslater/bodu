@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Source fixture providing two rules that can be cherry-picked by consumers. Used by
+  DupReferrer.xml and MissingNameReferrer.xml to exercise the flattenedCache-hit,
+  documentCache-hit, and FindSourceRule-returns-null paths.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar">
+  <NotableDate name="Shared Alpha">
+    <Rule category="Observance">
+      <Fixed month="January" day="2" />
+    </Rule>
+  </NotableDate>
+  <NotableDate name="Shared Beta">
+    <Rule category="Observance">
+      <Fixed month="February" day="3" />
+    </Rule>
+  </NotableDate>
+</NotableDates>

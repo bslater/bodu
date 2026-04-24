@@ -36,32 +36,17 @@ public sealed class LunarNewYearNotableDateCalculatorTests
 
 	/// <summary>
 	/// Verifies that requesting Lunar New Year outside the supported 1901–2100 range returns
-	/// <see langword="null" />.
+	/// <see langword="null" /> rather than throwing, including the exact upper-bound boundary
+	/// year 2101 (which must not slip through the guard and reach <c>ToDateTime</c>).
 	/// </summary>
 	[DataRow(1)]
 	[DataRow(1900)]
+	[DataRow(2101)]
 	[DataRow(9999)]
 	[TestMethod]
 	public void GetDate_WhenYearOutsideSupportedRange_ShouldReturnNull(int year)
 	{
 		DateTime? result = _calculator.GetDate(year);
-
-		Assert.IsNull(result);
-	}
-
-	/// <summary>
-	/// Verifies that requesting Lunar New Year for the boundary year immediately above the
-	/// supported range returns <see langword="null" /> rather than throwing. Currently skipped:
-	/// the guard <c>year &gt; MaxSupportedDateTime.Year</c> lets 2101 through because
-	/// <see cref="SysGlob.ChineseLunisolarCalendar" /> exposes 2101 as its max-supported
-	/// Gregorian year even though that era year is invalid, producing an
-	/// <see cref="ArgumentOutOfRangeException" /> from the runtime.
-	/// </summary>
-	[TestMethod]
-	[Ignore("Pre-existing off-by-one guard in LunarNewYearNotableDateCalculator: year 2101 bypasses the out-of-range check and throws.")]
-	public void GetDate_WhenYearIs2101_ShouldReturnNull()
-	{
-		DateTime? result = _calculator.GetDate(2101);
 
 		Assert.IsNull(result);
 	}

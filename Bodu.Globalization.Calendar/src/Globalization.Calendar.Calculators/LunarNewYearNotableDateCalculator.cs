@@ -42,8 +42,12 @@ public sealed class LunarNewYearNotableDateCalculator
 		if (year < 1)
 			throw new ArgumentOutOfRangeException(nameof(year), "Year must be greater than or equal to 1.");
 
-		// ChineseLunisolarCalendar supports only years 1901–2100
-		if (year < ChineseCalendar.MinSupportedDateTime.Year || year > ChineseCalendar.MaxSupportedDateTime.Year)
+		// ChineseLunisolarCalendar's MaxSupportedDateTime reports 28 January 2101 because the
+		// lunar year starting in 2100 extends into early 2101, but ToDateTime(year, 1, 1, …)
+		// for year 2101 is not itself a supported era year and throws. Cap the guard at the
+		// last *valid* lunar year — MaxSupportedDateTime.Year - 1 — so callers get a clean
+		// null rather than an exception.
+		if (year < ChineseCalendar.MinSupportedDateTime.Year || year >= ChineseCalendar.MaxSupportedDateTime.Year)
 			return null;
 
 		SysGlobal.Calendar targetCalendar = calendar ?? new SysGlobal.GregorianCalendar();

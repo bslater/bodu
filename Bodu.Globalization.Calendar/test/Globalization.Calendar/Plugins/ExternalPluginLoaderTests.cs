@@ -131,4 +131,117 @@ public sealed class ExternalPluginLoaderTests
 	{
 		Assert.ThrowsExactly<ArgumentNullException>(() => _ = new ExternalPluginLoader(null!));
 	}
+
+	private const string Plugin3AssemblyFileName = "Bodu.Globalization.Calendar.Plugin3.TestAssembly.dll";
+	private const string Plugin4AssemblyFileName = "Bodu.Globalization.Calendar.Plugin4.TestAssembly.dll";
+
+	private static string Plugin3Path => Path.Combine(AppContext.BaseDirectory, Plugin3AssemblyFileName);
+
+	private static string Plugin4Path => Path.Combine(AppContext.BaseDirectory, Plugin4AssemblyFileName);
+
+	/// <summary>
+	/// Verifies that a plugin whose entry-point type throws from its constructor surfaces as a
+	/// <see cref="PluginActivationException" /> wrapping the original cause.
+	/// </summary>
+	[TestMethod]
+	public void Load_WhenPluginConstructorThrows_ShouldThrowPluginActivationExceptionWrappingCause()
+	{
+		Assert.IsTrue(File.Exists(Plugin3Path), $"Plugin3 assembly not found at '{Plugin3Path}'.");
+		var loader = new ExternalPluginLoader(new AllowAllPluginTrustPolicy());
+
+		var ex = Assert.ThrowsExactly<PluginActivationException>(() => _ = loader.Load(Plugin3Path));
+
+		Assert.AreEqual(Plugin3Path, ex.AssemblyPath);
+		Assert.IsNotNull(ex.PluginType);
+		Assert.IsNotNull(ex.InnerException);
+		// Activator.CreateInstance wraps the constructor's exception in a TargetInvocationException;
+		// walk the chain to confirm the original "intentional" marker reaches the caller.
+		Exception? chain = ex.InnerException;
+		bool found = false;
+		while (chain is not null)
+		{
+			if (chain.Message.Contains("intentional", StringComparison.OrdinalIgnoreCase))
+			{
+				found = true;
+				break;
+			}
+			chain = chain.InnerException;
+		}
+		Assert.IsTrue(found, "Expected the original 'intentional' message somewhere in the inner-exception chain.");
+	}
+
+	/// <summary>
+	/// Verifies that a plugin whose <see cref="NotableDatePluginAttribute" /> points at a type
+	/// that does not implement <see cref="INotableDatePlugin" /> surfaces as a
+	/// <see cref="PluginMissingAttributeException" /> with a reason mentioning the interface.
+	/// </summary>
+	[TestMethod]
+	public void Load_WhenAttributeTypeDoesNotImplementInterface_ShouldThrowPluginMissingAttributeException()
+	{
+		Assert.IsTrue(File.Exists(Plugin4Path), $"Plugin4 assembly not found at '{Plugin4Path}'.");
+		var loader = new ExternalPluginLoader(new AllowAllPluginTrustPolicy());
+
+		var ex = Assert.ThrowsExactly<PluginMissingAttributeException>(() => _ = loader.Load(Plugin4Path));
+
+		Assert.AreEqual(Plugin4Path, ex.AssemblyPath);
+		Assert.IsTrue(ex.Reason.Contains("INotableDatePlugin", StringComparison.Ordinal));
+	}
+
+	/// <summary>
+	/// Verifies that an unreadable assembly file — for instance a text file with a <c>.dll</c>
+	/// extension — surfaces as a runtime exception raised during metadata inspection rather
+	/// than being silently tolerated. Asserts only the presence of an exception because the
+	/// exact type depends on where metadata parsing fails first.
+	/// </summary>
+	[TestMethod]
+	public void Load_WhenAssemblyFileIsMalformed_ShouldSurfaceException()
+	{
+		string malformedPath = Path.Combine(Path.GetTempPath(), $"bodu-malformed-{Guid.NewGuid():N}.dll");
+		try
+		{
+			File.WriteAllText(malformedPath, "this is not a valid portable-executable file");
+			var loader = new ExternalPluginLoader(new AllowAllPluginTrustPolicy());
+
+			Assert.ThrowsExactly<System.BadImageFormatException>(() => _ = loader.Load(malformedPath));
+		}
+		finally
+		{
+			if (File.Exists(malformedPath))
+				File.Delete(malformedPath);
+		}
+	}
+
+	/// <summary>
+	/// Verifies that the private <c>ResolveFromHostOrAlongside</c> callback returns
+	/// <see langword="null" /> for an assembly with an empty name, resolves a host-loaded
+	/// assembly for a matching name, and returns <see langword="null" /> for an assembly
+	/// name not loaded in the default context. The callback is an implementation detail
+	/// invoked by <see cref="System.Runtime.Loader.AssemblyLoadContext" /> during plugin load
+	/// and is not exercised by normal public-API plugin scenarios in this test harness.
+	/// </summary>
+	[TestMethod]
+	public void ResolveFromHostOrAlongside_ShouldFavourHostAssemblyAndTolerateUnnamedRequests()
+	{
+		var resolve = typeof(ExternalPluginLoader).GetMethod(
+			"ResolveFromHostOrAlongside",
+			System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+		Assert.IsNotNull(resolve, "ResolveFromHostOrAlongside was not found on ExternalPluginLoader.");
+
+		var defaultContext = System.Runtime.Loader.AssemblyLoadContext.Default;
+
+		var unnamed = new System.Reflection.AssemblyName { Name = string.Empty };
+		System.Reflection.Assembly? unnamedResult =
+			(System.Reflection.Assembly?)resolve!.Invoke(null, new object?[] { defaultContext, unnamed });
+		Assert.IsNull(unnamedResult);
+
+		var calendarAssemblyName = typeof(NotableDateService).Assembly.GetName();
+		System.Reflection.Assembly? hostResult =
+			(System.Reflection.Assembly?)resolve.Invoke(null, new object?[] { defaultContext, calendarAssemblyName });
+		Assert.AreSame(typeof(NotableDateService).Assembly, hostResult);
+
+		var unknownName = new System.Reflection.AssemblyName("Definitely.Not.Loaded.Assembly.Name");
+		System.Reflection.Assembly? unknownResult =
+			(System.Reflection.Assembly?)resolve.Invoke(null, new object?[] { defaultContext, unknownName });
+		Assert.IsNull(unknownResult);
+	}
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Circular-reference test fixture A. Deliberately references CircularB.xml via
+  <UseFrom>, which in turn references this same file, to drive the
+  InvalidOperationException path in XmlResourceNotableDateRuleProvider.FlattenResource.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar">
+  <UseFrom resource="Bodu.Globalization.Calendar.Fixtures.CircularB.xml">
+    <UseAll />
+  </UseFrom>
+  <NotableDate name="Circular A Marker">
+    <Rule category="Observance">
+      <Fixed month="January" day="2" />
+    </Rule>
+  </NotableDate>
+</NotableDates>
