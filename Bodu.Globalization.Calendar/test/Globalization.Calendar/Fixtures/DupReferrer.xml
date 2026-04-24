@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  References the same source fixture (Source.xml) twice from different UseFrom groups.
+  The second reference hits the flattenedCache/documentCache fast paths in
+  XmlResourceNotableDateRuleProvider (the fast paths are otherwise never taken because
+  production resources reference each source at most once).
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar">
+  <UseFrom resource="Bodu.Globalization.Calendar.Fixtures.Source.xml">
+    <Use name="Shared Alpha" />
+  </UseFrom>
+  <UseFrom resource="Bodu.Globalization.Calendar.Fixtures.Source.xml">
+    <Use name="Shared Beta" />
+  </UseFrom>
+</NotableDates>

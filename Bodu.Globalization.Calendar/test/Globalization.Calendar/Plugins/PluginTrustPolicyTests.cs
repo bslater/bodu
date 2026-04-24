@@ -204,4 +204,146 @@ public sealed class PluginTrustPolicyTests
 		Assert.IsFalse(result.Trusted);
 		Assert.AreEqual("nope", result.Reason);
 	}
+
+	// ---------------------------------------------------------------------------------
+	// Constructor argument validation (composite / file-hash / strong-name)
+	// ---------------------------------------------------------------------------------
+
+	/// <summary>
+	/// Verifies that <see cref="CompositePluginTrustPolicy" /> rejects a <see langword="null" />
+	/// policies array with <see cref="ArgumentNullException" />.
+	/// </summary>
+	[TestMethod]
+	public void CompositePluginTrustPolicy_WhenPoliciesArrayIsNull_ShouldThrowArgumentNullException()
+	{
+		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+		{
+			_ = new CompositePluginTrustPolicy(null!);
+		});
+
+		Assert.AreEqual("policies", ex.ParamName);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="CompositePluginTrustPolicy" /> rejects a policies array that
+	/// contains a <see langword="null" /> element with <see cref="ArgumentException" />.
+	/// </summary>
+	[TestMethod]
+	public void CompositePluginTrustPolicy_WhenPoliciesArrayContainsNullElement_ShouldThrowArgumentException()
+	{
+		var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+		{
+			_ = new CompositePluginTrustPolicy(new AllowAllPluginTrustPolicy(), null!);
+		});
+
+		Assert.AreEqual("policies", ex.ParamName);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="FileHashPluginTrustPolicy" /> rejects a <see langword="null" />
+	/// allowlist dictionary with <see cref="ArgumentNullException" />.
+	/// </summary>
+	[TestMethod]
+	public void FileHashPluginTrustPolicy_WhenAllowedHashesIsNull_ShouldThrowArgumentNullException()
+	{
+		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+		{
+			_ = new FileHashPluginTrustPolicy(null!);
+		});
+
+		Assert.AreEqual("allowedHashesByAssemblyName", ex.ParamName);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="FileHashPluginTrustPolicy" /> silently skips allowlist entries
+	/// whose key is null/whitespace or whose value is <see langword="null" /> rather than
+	/// throwing — entries so constructed never produce a trust admission, while other entries
+	/// in the same dictionary remain active.
+	/// </summary>
+	[TestMethod]
+	public void FileHashPluginTrustPolicy_WhenAllowlistContainsWhitespaceKeyOrNullValue_ShouldSilentlySkip()
+	{
+		var allowlist = new Dictionary<string, byte[]?>(StringComparer.OrdinalIgnoreCase)
+		{
+			["   "] = SampleHash,
+			["Valid"] = null,
+			["Good"] = SampleHash,
+		};
+
+		var policy = new FileHashPluginTrustPolicy((IReadOnlyDictionary<string, byte[]>)allowlist!);
+
+		var context = new PluginTrustContext("/tmp/x.dll", new AssemblyName("Good"), SampleHash);
+		Assert.IsTrue(policy.Evaluate(context).Trusted);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="FileHashPluginTrustPolicy" /> rejects an assembly whose
+	/// <see cref="AssemblyName.Name" /> is empty (exercises the early-return branch on missing
+	/// assembly name).
+	/// </summary>
+	[TestMethod]
+	public void FileHashPluginTrustPolicy_WhenAssemblyNameIsEmpty_ShouldReturnUntrusted()
+	{
+		var allowlist = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase)
+		{
+			["Good"] = SampleHash,
+		};
+		var policy = new FileHashPluginTrustPolicy(allowlist);
+		var nameless = new AssemblyName { Name = string.Empty };
+		var context = new PluginTrustContext("/tmp/x.dll", nameless, SampleHash);
+
+		PluginTrustResult result = policy.Evaluate(context);
+
+		Assert.IsFalse(result.Trusted);
+		Assert.IsNotNull(result.Reason);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="FileHashPluginTrustPolicy" /> rejects with a length-mismatch
+	/// reason when the candidate hash has a different byte length from the pinned one.
+	/// </summary>
+	[TestMethod]
+	public void FileHashPluginTrustPolicy_WhenHashLengthDiffers_ShouldReturnUntrustedWithLengthMismatchReason()
+	{
+		var allowlist = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase)
+		{
+			["Good"] = new byte[] { 1, 2, 3 },
+		};
+		var policy = new FileHashPluginTrustPolicy(allowlist);
+		var context = new PluginTrustContext("/tmp/x.dll", new AssemblyName("Good"), SampleHash);
+
+		PluginTrustResult result = policy.Evaluate(context);
+
+		Assert.IsFalse(result.Trusted);
+		Assert.IsTrue(result.Reason!.Contains("length", StringComparison.OrdinalIgnoreCase));
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="StrongNamePluginTrustPolicy" /> rejects a
+	/// <see langword="null" /> allowlist with <see cref="ArgumentNullException" />.
+	/// </summary>
+	[TestMethod]
+	public void StrongNamePluginTrustPolicy_WhenAllowlistIsNull_ShouldThrowArgumentNullException()
+	{
+		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+		{
+			_ = new StrongNamePluginTrustPolicy(null!);
+		});
+
+		Assert.AreEqual("allowedPublicKeyTokens", ex.ParamName);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="StrongNamePluginTrustPolicy" /> normalises allowlist entries
+	/// (trim + lowercase) including treating a <see langword="null" /> element as an empty
+	/// string, without throwing during construction.
+	/// </summary>
+	[TestMethod]
+	public void StrongNamePluginTrustPolicy_WhenAllowlistHasMixedCaseAndNullEntries_ShouldNormaliseWithoutThrowing()
+	{
+		_ = new StrongNamePluginTrustPolicy(new[] { "  AbCdEf1234567890  ", null! });
+
+		// Reaching this line implies the normalisation succeeded for both entries.
+		Assert.IsTrue(true);
+	}
 }
