@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.CheckDigits;
+namespace Bodu.IO.CheckDigits;
 
 public sealed partial class Verhoeff
 {

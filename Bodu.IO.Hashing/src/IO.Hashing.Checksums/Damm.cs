@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.IO.Hashing.Checksums;
+
 namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
@@ -27,7 +29,8 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
-public sealed partial class Damm : CheckDigitAlgorithm
+public sealed partial class Damm 
+    : CheckDigitAlgorithm
 {
     private byte _interim;
 

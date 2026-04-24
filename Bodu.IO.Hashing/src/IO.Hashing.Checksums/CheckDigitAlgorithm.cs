@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.CheckDigits;
+namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Represents the abstract base class from which all decimal check-digit algorithms in this library derive.

@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.IO.CheckDigits;
+
 namespace Bodu.IO.Hashing.CheckDigits;
 
 public sealed partial class LuhnTests

@@ -4,13 +4,13 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+namespace Bodu.IO.Hashing;
+
 using System.Buffers.Binary;
 using System.IO;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
 using Bodu.Extensions;
-
-namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Base class for the <c>CityHash</c> family of non-cryptographic hash algorithms developed by Google. See

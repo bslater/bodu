@@ -4,7 +4,14 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.CheckDigits;
+
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="Luhn.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Computes the check digit of a decimal string using the <c>Luhn</c> (<c>mod 10</c>) algorithm. This class cannot
@@ -34,7 +41,8 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
-public sealed class Luhn : CheckDigitAlgorithm
+public sealed class Luhn 
+    : CheckDigitAlgorithm
 {
     private int _sumEvenHypothesis;
     private int _sumOddHypothesis;

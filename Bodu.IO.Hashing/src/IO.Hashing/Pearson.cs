@@ -112,10 +112,9 @@ public sealed partial class Pearson
     public Pearson(int hashSizeBits, byte[] permutationTable)
         : base(ValidateHashSize(hashSizeBits) / 8)
     {
-        if (permutationTable is null)
-            throw new ArgumentNullException(nameof(permutationTable));
+        ThrowHelper.ThrowIfNull(permutationTable);
         if (permutationTable.Length != 256 || permutationTable.Distinct().Count() != 256)
-            throw new ArgumentException("Table must contain 256 unique bytes.", nameof(permutationTable));
+            throw new ArgumentException(IOResourceStrings.ArgumentException_PearsonInvalidTable, nameof(permutationTable));
 
         this._tableType = PearsonTableType.UserDefined;
         this._permutationTable = (byte[])permutationTable.Clone();
@@ -221,6 +220,9 @@ public sealed partial class Pearson
         PearsonTableType.AESSBox => (byte[])AESSBoxTable.Value.Clone(),
         PearsonTableType.CRC32HighByte => (byte[])CRC32HighByteTable.Value.Clone(),
         PearsonTableType.SHA256Constants => (byte[])SHA256ConstantsTable.Value.Clone(),
-        _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Unknown PearsonTableType value."),
+        _ => throw new ArgumentOutOfRangeException(
+                nameof(type),
+                string.Format(Bodu.ResourceStrings.Arg_OutOfRangeException_EnumValue, type, typeof(PearsonTableType).Name))
+
     };
 }
