@@ -20,7 +20,7 @@ The catalogue is distributed as part of the CRC RevEng project at <https://reven
 
 ## Accessing standards
 
-The catalogue is a **lazy-materialised data table**. Loading <xref:Bodu.IO.Hashing.CrcStandard> allocates only the packed spec rows and the per-entry cache slots — individual <xref:Bodu.IO.Hashing.CrcStandard> instances are constructed on first access and then memoised, so a process that uses only a handful of standards pays for only a handful of allocations.
+The catalogue is a **lazy-materialised data table**. Loading <xref:Bodu.IO.Hashing.Checksum.CrcStandard> allocates only the packed spec rows and the per-entry cache slots — individual <xref:Bodu.IO.Hashing.Checksum.CrcStandard> instances are constructed on first access and then memoised, so a process that uses only a handful of standards pays for only a handful of allocations.
 
 Three entry points:
 
@@ -45,13 +45,13 @@ foreach (CrcStandard std in CrcStandard.All) { ... }
 
 ## Support policy
 
-`CrcStandard` represents all scalar parameters as <xref:System.UInt64>, so the library can materialise any CRC of width 1–64 bits. Entries whose width exceeds 64 bits are listed below for completeness but are **not** exposed by <xref:Bodu.IO.Hashing.CrcStandards> and cannot be constructed through `CrcStandard`.
+`CrcStandard` represents all scalar parameters as <xref:System.UInt64>, so the library can materialise any CRC of width 1–64 bits. Entries whose width exceeds 64 bits are listed below for completeness but are **not** exposed by <xref:Bodu.IO.Hashing.Checksum.CrcStandards> and cannot be constructed through `CrcStandard`.
 
 Aliases share a single catalogue instance with their canonical standard. `CrcStandard.FromName` resolves both canonical and alias names, so `FromName("CRC-32")` and `FromName("CRC-32/ISO-HDLC")` return the same instance.
 
 ## Common standards (strongly-typed)
 
-These are exposed as `public static CrcStandard` properties on <xref:Bodu.IO.Hashing.CrcStandard> for convenience — the underlying cache is still shared with the enum-based lookup.
+These are exposed as `public static CrcStandard` properties on <xref:Bodu.IO.Hashing.Checksum.CrcStandard> for convenience — the underlying cache is still shared with the enum-based lookup.
 
 | Name | Width | Property | Aliases |
 |---|---:|---|---|
