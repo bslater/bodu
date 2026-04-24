@@ -33,9 +33,12 @@ public sealed partial class Verhoeff : CheckDigitAlgorithm
     // Eight parallel accumulators allow the streaming Append surface to compute the check digit without
     // buffering digits. _c[k] holds the Verhoeff running value 'c' under the hypothesis that the most
     // recently appended digit occupies right-index k in the final sequence. Update: on each append of v,
-    //   newC[k] = d[_c[(k + 1) & 7], p[k, v]]
-    // because shifting in a new most-recent digit demotes every existing digit by one right-index, so the
-    // previous state under hypothesis (k+1) becomes the input for the new state under hypothesis k.
+    //   newC[k] = d[p[k, v], _c[(k + 1) & 7]]
+    // because shifting in a new most-recent digit demotes every existing digit by one right-index. The
+    // previous state under hypothesis (k+1) is the product of the older digits' permutation values, and
+    // the new digit's permutation value p[k, v] is left-multiplied onto it — matching the left-to-right
+    // accumulation of the static rtl walk c_{i+1} = d[c_i, p[j, digit]]. D5 is non-abelian, so operand
+    // order is load-bearing.
     private readonly byte[] _c = new byte[8];
 
     /// <summary>
@@ -60,7 +63,7 @@ public sealed partial class Verhoeff : CheckDigitAlgorithm
 
             int v = ch - '0';
             for (int k = 0; k < 8; k++)
-                next[k] = D[_c[(k + 1) & 7], P[k, v]];
+                next[k] = D[P[k, v], _c[(k + 1) & 7]];
 
             next.CopyTo(_c);
         }
