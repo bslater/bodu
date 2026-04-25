@@ -28,7 +28,7 @@ namespace Bodu.Globalization.Calendar
 
 		private static NotableDateService BuildAuService() =>
 			new(
-				new[] { (INotableDateRuleProvider)new XmlResourceNotableDateRuleProvider(AuResource) },
+				new[] { (INotableDateRuleProvider)new XmlResourceNotableDateRuleProvider(AuResource, new ResourcePathResolver()) },
 				CalendarWeekendDefinition.SaturdaySunday);
 
 		/// <summary>
