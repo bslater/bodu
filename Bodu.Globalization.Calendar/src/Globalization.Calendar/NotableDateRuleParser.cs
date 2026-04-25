@@ -193,9 +193,11 @@ public static class NotableDateRuleParser
 				_ => throw new InvalidOperationException($"Unknown strategy element '{strategyElement.Name.LocalName}' on override rule.")
 			};
 
+		// The inner <Rule>'s name attribute is descriptive metadata only; canonical naming flows from the source rule
+		// or the directive's `as` attribute. Leaving Name unset prevents an authored descriptor (e.g. "Australian
+		// Christmas Day With Non-Working-Day Roll") from accidentally renaming the inherited rule.
 		var body = new NotableDateRuleOverrideBody
 		{
-			Name = GetOptionalAttribute(ruleElement, "name"),
 			Category = ParseOptionalEnum<NotableDateCategory>(ruleElement, "category"),
 			TerritoryCode = GetOptionalAttribute(ruleElement, "territory"),
 			IsNonWorkingDay = ParseOptionalBool(ruleElement, "nonWorking"),
@@ -303,7 +305,7 @@ public static class NotableDateRuleParser
 
 			var rule = new NotableDateRule
 			{
-				Name = GetOptionalAttribute(ruleElement, "name") ?? name,
+				Name = name,
 				Strategy = strategy,
 				Category = ParseOptionalEnum<NotableDateCategory>(ruleElement, "category") ?? NotableDateCategory.None,
 				FirstYear = ParseOptionalInt(ruleElement, "firstYear"),
