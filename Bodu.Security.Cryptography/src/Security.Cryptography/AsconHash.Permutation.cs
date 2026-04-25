@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="AsconHash256.Permutation.cs" company="PlaceholderCompany">
+// <copyright file="AsconHash.Permutation.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,14 +9,15 @@ using System.Runtime.CompilerServices;
 
 namespace Bodu.Security.Cryptography;
 
-public sealed partial class AsconHash256
+public abstract partial class AsconHash<T>
 {
     /// <summary>
     /// Applies the Ascon-p permutation with the specified number of rounds to the internal five-word state.
     /// </summary>
     /// <param name="rounds">
-    /// The number of rounds to apply. Must be between 1 and 12 inclusive. ASCON-HASH256 always passes 12, corresponding to the
-    /// full Ascon-p12 permutation used for both initialisation, absorption, and squeezing.
+    /// The number of rounds to apply. When called during initialisation or squeezing this is always 12 (Ascon-p12). During
+    /// absorption the value is determined by the concrete variant: 12 for <c>ASCON-HASH256</c> and 8 for
+    /// <c>ASCON-HASHA256</c>.
     /// </param>
     /// <remarks>
     /// <para>
@@ -25,7 +26,8 @@ public sealed partial class AsconHash256
     /// <list type="number">
     /// <item>
     /// <description>
-    /// <b>Constant addition</b>: a round-dependent constant is XORed into the third state word (<c>_s2</c>) to break symmetry.
+    /// <b>Constant addition</b>: a round-dependent constant is XORed into the third state word (<c>_s2</c>) to break symmetry
+    /// between rounds.
     /// </description>
     /// </item>
     /// <item>
@@ -37,7 +39,7 @@ public sealed partial class AsconHash256
     /// <item>
     /// <description>
     /// <b>Linear diffusion layer</b>: each state word is XORed with two rotated copies of itself using word-specific rotation
-    /// constants, ensuring full diffusion across the state.
+    /// constants, ensuring full diffusion across the 320-bit state.
     /// </description>
     /// </item>
     /// </list>
