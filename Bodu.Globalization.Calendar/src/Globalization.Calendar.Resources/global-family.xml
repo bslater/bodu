@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global family observances notable-date resource using the Western/Gregorian calendar.
+
+  These entries represent the most widely observed forms of Mother's Day and
+  Father's Day globally. Regional variants exist and are handled in the
+  corresponding region resource files:
+
+    Mother's Day:
+      - Second Sunday in May  — observed in most of the world (this file)
+      - Fourth Sunday of Lent — observed in the United Kingdom and Ireland
+        as Mothering Sunday (see region-gb.xml)
+      - Last Sunday in May    — observed in France, with a Pentecost
+        exception (see region-fr.xml)
+
+    Father's Day:
+      - Third Sunday in June       — observed in most of the world (this file)
+      - First Sunday in September  — observed in Australia and New Zealand
+        (see region-au.xml, region-nz.xml)
+
+  These rules are not universally public holidays or non-working days in
+  every country. Country-specific resources should import only the dates
+  they observe and override naming, territory, nonWorking, adjustment, or
+  tagging behaviour where required.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <!--
+    Family and parenting observances.
+  -->
+
+  <NotableDate name="Mother's Day">
+    <Rule name="Second Sunday In May Mother's Day" category="Observance"
+          comment="The most widely observed form of Mother's Day, falling on the second Sunday of May. First held in the United States in 1908; adopted by many countries throughout the 20th century. Regional exceptions are defined in their respective region files.">
+      <DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Second" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Father's Day">
+    <Rule name="Third Sunday In June Father's Day" category="Observance"
+          comment="The most widely observed form of Father's Day, falling on the third Sunday of June. Originated in the United States in 1910; now adopted by many countries. Australia and New Zealand instead observe Father's Day on the first Sunday in September (see their respective region files).">
+      <DayOfWeekInMonth month="June" dayOfWeek="Sunday" weekOrdinal="Third" />
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

@@ -137,17 +137,25 @@
   </NotableDate>
 
   <!--
+    Imported family observances.
+
+    Mother's Day uses the global second-Sunday-in-May form, consistent with
+    New Zealand practice. Father's Day falls on the first Sunday in September
+    in New Zealand, which differs from the global third-Sunday-in-June default,
+    so it is defined separately below.
+  -->
+
+  <UseFrom resource="./global-family.xml">
+    <Use name="Mother's Day" territory="NZ" />
+  </UseFrom>
+
+  <!--
     Widely observed New Zealand cultural observances.
   -->
 
-  <NotableDate name="Mother's Day">
-    <Rule name="Second Sunday In May Mother's Day" category="Observance" territory="NZ">
-      <DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Second" />
-    </Rule>
-  </NotableDate>
-
   <NotableDate name="Father's Day">
-    <Rule name="First Sunday In September Father's Day" category="Observance" territory="NZ">
+    <Rule name="First Sunday In September Father's Day" category="Observance" territory="NZ"
+          comment="In New Zealand and Australia, Father's Day is observed on the first Sunday of September, not the third Sunday of June as in most other countries.">
       <DayOfWeekInMonth month="September" dayOfWeek="Sunday" weekOrdinal="First" />
     </Rule>
   </NotableDate>

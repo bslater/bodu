@@ -110,25 +110,22 @@
   </NotableDate>
 
   <!--
-    Widely observed Canadian cultural and family observances.
+    Imported family observances.
   -->
 
-  <NotableDate name="Mother's Day">
-    <Rule name="Second Sunday In May Mother's Day" category="Observance" territory="CA">
-      <DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Second" />
-    </Rule>
-  </NotableDate>
+  <UseFrom resource="./global-family.xml">
+    <Use name="Mother's Day" territory="CA" />
+    <Use name="Father's Day" territory="CA" />
+  </UseFrom>
+
+  <!--
+    Widely observed Canadian cultural and family observances.
+  -->
 
   <NotableDate name="National Indigenous Peoples Day">
     <Rule name="Fixed National Indigenous Peoples Day" category="Observance" territory="CA" firstYear="1996"
           comment="Proclaimed by Governor General Roméo LeBlanc in 1996 on the recommendation of the Royal Commission on Aboriginal Peoples, in recognition of the unique heritage, diverse cultures, and outstanding contributions of Indigenous peoples.">
       <Fixed month="June" day="21" />
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Father's Day">
-    <Rule name="Third Sunday In June Father's Day" category="Observance" territory="CA">
-      <DayOfWeekInMonth month="June" dayOfWeek="Sunday" weekOrdinal="Third" />
     </Rule>
   </NotableDate>
 

@@ -62,6 +62,7 @@
     <None Remove="Globalization.Calendar\NotableDates.xml" />
     <None Remove="Globalization.Calendar\NotableDates.xsd" />
     <None Remove="Globalization.Calendar.Resources\global-animals.xml" />
+    <None Remove="Globalization.Calendar.Resources\global-family.xml" />
     <None Remove="Globalization.Calendar.Resources\global-food.xml" />
     <None Remove="Globalization.Calendar.Resources\global-science.xml" />
     <None Remove="Globalization.Calendar.Resources\region-ca.xml" />
@@ -91,6 +92,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-animals.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\global-family.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-food.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-science.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\region-au.xml" />

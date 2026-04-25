@@ -104,6 +104,19 @@
   </NotableDate>
 
   <!--
+    Imported family observances.
+
+    Father's Day uses the global third-Sunday-in-June form, consistent with
+    French practice. Mother's Day falls on the last Sunday in May in France,
+    which differs from the global second-Sunday-in-May default, so it is
+    defined separately below.
+  -->
+
+  <UseFrom resource="./global-family.xml">
+    <Use name="Father's Day" territory="FR" />
+  </UseFrom>
+
+  <!--
     Widely observed French cultural and family observances.
   -->
 
@@ -111,17 +124,9 @@
     <Rule name="Last Sunday In May Mother's Day"
           category="Observance"
           territory="FR"
-          comment="La Fête des Mères. Observed on the last Sunday in May. When the last Sunday of May coincides with Pentecost Sunday, the observance moves to the first Sunday of June by long-standing convention.">
+          comment="La Fête des Mères. Observed on the last Sunday in May. When the last Sunday of May coincides with Pentecost Sunday, the observance moves to the first Sunday of June by long-standing convention; this edge case is not automatically resolved by this rule.">
       <DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Last" />
       <Tag>Approximate</Tag>
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Father's Day">
-    <Rule name="Third Sunday In June Father's Day"
-          category="Observance"
-          territory="FR">
-      <DayOfWeekInMonth month="June" dayOfWeek="Sunday" weekOrdinal="Third" />
     </Rule>
   </NotableDate>
 

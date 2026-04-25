@@ -179,15 +179,12 @@
   </NotableDate>
 
   <!--
-    Widely observed German cultural and family observances.
+    Imported family observances.
   -->
 
-  <NotableDate name="Mother's Day">
-    <Rule name="Second Sunday In May Mother's Day"
-          category="Observance"
-          territory="DE">
-      <DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Second" />
-    </Rule>
-  </NotableDate>
+  <UseFrom resource="./global-family.xml">
+    <Use name="Mother's Day" territory="DE" />
+    <Use name="Father's Day" territory="DE" />
+  </UseFrom>
 
 </NotableDates>

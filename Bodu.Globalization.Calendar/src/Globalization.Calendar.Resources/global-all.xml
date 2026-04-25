@@ -5,8 +5,9 @@
   calendar for consumers calling `new NotableDateService()`.
 
   These rules represent internationally recognised civic, cultural,
-  educational, environmental, food and agriculture, health, animal welfare,
-  remembrance, science and technology, social, and United Nations observances. They are intended for recognition and display,
+  educational, environmental, family, food and agriculture, health, animal
+  welfare, remembrance, science and technology, social, and United Nations
+  observances. They are intended for recognition and display,
   not as a statement that each date is a public holiday or non-working
   day in every jurisdiction.
 
@@ -56,6 +57,10 @@
   </UseFrom>
 
   <UseFrom resource="./christian-gregorian.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-family.xml">
     <UseAll />
   </UseFrom>
 
