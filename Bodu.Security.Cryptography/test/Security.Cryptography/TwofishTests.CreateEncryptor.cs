@@ -111,4 +111,23 @@ public sealed partial class TwofishTests
         using var transform = algorithm.CreateEncryptor(algorithm.Key, algorithm.IV);
         Assert.IsNotNull(transform);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Twofish.CreateDecryptor(byte[], byte[])" /> succeeds and returns a non-null
+    /// transform for each of the three supported key sizes (128, 192, and 256 bits).
+    /// </summary>
+    [TestMethod]
+    [DataRow(128)]
+    [DataRow(192)]
+    [DataRow(256)]
+    public void CreateDecryptor_WithEachValidKeySize_ShouldSucceed(int keySizeBits)
+    {
+        using var algorithm = CreateAlgorithm();
+        algorithm.KeySize = keySizeBits;
+        algorithm.GenerateKey();
+        algorithm.GenerateIV();
+
+        using var transform = algorithm.CreateDecryptor(algorithm.Key, algorithm.IV);
+        Assert.IsNotNull(transform);
+    }
 }
