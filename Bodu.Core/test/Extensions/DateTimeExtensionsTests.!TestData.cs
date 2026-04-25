@@ -2188,6 +2188,15 @@ public partial class DateTimeExtensionsTests
         yield return new object[] { new DateTime(2024, 04, 19), CalendarWeekendDefinition.FridayOnly, null, true }; // Friday
         yield return new object[] { new DateTime(2024, 04, 20), CalendarWeekendDefinition.FridayOnly, null, false }; // Saturday
 
+        // CalendarWeekendDefinition.None means no day of the week is a weekend, so every day must evaluate to false.
+        yield return new object[] { new DateTime(2024, 04, 21), CalendarWeekendDefinition.None, null, false }; // Sunday
+        yield return new object[] { new DateTime(2024, 04, 22), CalendarWeekendDefinition.None, null, false }; // Monday
+        yield return new object[] { new DateTime(2024, 04, 23), CalendarWeekendDefinition.None, null, false }; // Tuesday
+        yield return new object[] { new DateTime(2024, 04, 24), CalendarWeekendDefinition.None, null, false }; // Wednesday
+        yield return new object[] { new DateTime(2024, 04, 25), CalendarWeekendDefinition.None, null, false }; // Thursday
+        yield return new object[] { new DateTime(2024, 04, 26), CalendarWeekendDefinition.None, null, false }; // Friday
+        yield return new object[] { new DateTime(2024, 04, 27), CalendarWeekendDefinition.None, null, false }; // Saturday
+
         yield return new object[] { new DateTime(2024, 04, 19), CalendarWeekendDefinition.Custom, typeof(FridayOnlyWeekendProvider), true };
         yield return new object[] { new DateTime(2024, 04, 20), CalendarWeekendDefinition.Custom, typeof(FridayOnlyWeekendProvider), false };
     }
