@@ -146,6 +146,7 @@ public abstract partial class AsconHash<T>
         {
             CryptoHelpers.ClearAndNullify(ref this.HashValue);
             this._s0 = this._s1 = this._s2 = this._s3 = this._s4 = 0;
+            this.HashSizeValue = 0;
         }
 
         this._disposed = true;
