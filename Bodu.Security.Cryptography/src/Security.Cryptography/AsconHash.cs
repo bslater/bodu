@@ -145,13 +145,14 @@ public abstract partial class AsconHash<T>
     /// </param>
     /// <param name="messageLength">The total number of input bytes consumed before this call. Not used by Ascon padding.</param>
     /// <returns>
-    /// An 8-byte array containing the residual bytes followed by <c>0x80</c> at the next position and zero bytes thereafter.
+    /// An 8-byte array containing the residual bytes followed by <c>0x01</c> at the next position and zero bytes thereafter,
+    /// matching the little-endian word representation used throughout the Ascon sponge state.
     /// </returns>
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
     {
         Span<byte> padded = stackalloc byte[8];
         block.CopyTo(padded);
-        padded[block.Length] = 0x80;
+        padded[block.Length] = 0x01;
         return padded.ToArray();
     }
 
@@ -162,7 +163,7 @@ public abstract partial class AsconHash<T>
     /// <param name="block">The 8-byte input block to absorb. Its length must equal the configured block size.</param>
     protected override void ProcessBlock(ReadOnlySpan<byte> block)
     {
-        this._s0 ^= BinaryPrimitives.ReadUInt64BigEndian(block);
+        this._s0 ^= BinaryPrimitives.ReadUInt64LittleEndian(block);
         this.ApplyPermutation(this._absorptionRounds);
     }
 
@@ -175,13 +176,13 @@ public abstract partial class AsconHash<T>
     {
         byte[] hash = new byte[32];
 
-        BinaryPrimitives.WriteUInt64BigEndian(hash.AsSpan(0, 8), this._s0);
+        BinaryPrimitives.WriteUInt64LittleEndian(hash.AsSpan(0, 8), this._s0);
         this.ApplyPermutation(12);
-        BinaryPrimitives.WriteUInt64BigEndian(hash.AsSpan(8, 8), this._s0);
+        BinaryPrimitives.WriteUInt64LittleEndian(hash.AsSpan(8, 8), this._s0);
         this.ApplyPermutation(12);
-        BinaryPrimitives.WriteUInt64BigEndian(hash.AsSpan(16, 8), this._s0);
+        BinaryPrimitives.WriteUInt64LittleEndian(hash.AsSpan(16, 8), this._s0);
         this.ApplyPermutation(12);
-        BinaryPrimitives.WriteUInt64BigEndian(hash.AsSpan(24, 8), this._s0);
+        BinaryPrimitives.WriteUInt64LittleEndian(hash.AsSpan(24, 8), this._s0);
 
         return hash;
     }
