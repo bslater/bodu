@@ -16,7 +16,7 @@ namespace Bodu.Globalization.Calendar;
 /// spans, and cache invalidation.
 /// </summary>
 [TestClass]
-public sealed class NotableDateServiceTests
+public sealed partial class NotableDateServiceTests
 {
 	private static NotableDateRule Fixed(string name, int month, int day, NotableDateCategory category = NotableDateCategory.Holiday, bool nonWorking = false, string? territory = null) =>
 		new()

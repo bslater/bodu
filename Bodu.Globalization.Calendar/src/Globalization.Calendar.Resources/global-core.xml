@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <NotableDate name="New Year's Day">
+    <Rule category="Holiday" nonWorking="true">
+      <Fixed month="January" day="1" />
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Workers' Day">
+    <Rule category="Observance">
+      <Fixed month="May" day="1" />
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

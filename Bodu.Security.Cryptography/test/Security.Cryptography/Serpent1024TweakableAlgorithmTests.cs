@@ -17,4 +17,13 @@ public partial class Serpent1024TweakableAlgorithmTests
 {
     /// <inheritdoc />
     protected override Serpent1024 CreateAlgorithm() => new Serpent1024();
+
+    /// <inheritdoc />
+    protected override SymmetricAlgorithmSpecification GetSpecification() =>
+        new SymmetricAlgorithmSpecification
+        {
+            BlockSizeBits = 1024,
+            DefaultKeySizeBits = 1024,
+            LegalKeySizesBits = [1024],
+        };
 }

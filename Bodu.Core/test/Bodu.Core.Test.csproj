@@ -10,6 +10,14 @@
     <AssemblyName>Bodu.CoreLib.Test</AssemblyName>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+
+    <!--
+      Test data factories ([DynamicData] sources, exception-throwing test scaffolds, optional-selector
+      EnumerableTestPlan constructors) deliberately pass null where the production type is non-nullable.
+      Suppress the corresponding nullable-context warnings project-wide rather than annotating every site;
+      production code in Bodu.Core/src retains full nullable analysis via its own csproj settings.
+    -->
+    <NoWarn>$(NoWarn);CS8600;CS8601;CS8602;CS8604;CS8618;CS8625</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

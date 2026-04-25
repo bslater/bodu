@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <NotableDate name="World Book and Copyright Day">
+    <Rule category="Observance">
+      <Fixed month="April" day="23" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Literacy Day">
+    <Rule category="Observance">
+      <Fixed month="September" day="8" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Teachers' Day">
+    <Rule category="Observance">
+      <Fixed month="October" day="5" />
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

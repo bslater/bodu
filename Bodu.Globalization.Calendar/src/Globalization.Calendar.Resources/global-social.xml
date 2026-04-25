@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <NotableDate name="International Day of Families">
+    <Rule category="Observance">
+      <Fixed month="May" day="15" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Refugee Day">
+    <Rule category="Observance">
+      <Fixed month="June" day="20" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Day of Older Persons">
+    <Rule category="Observance">
+      <Fixed month="October" day="1" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Day of Persons with Disabilities">
+    <Rule category="Observance">
+      <Fixed month="December" day="3" />
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

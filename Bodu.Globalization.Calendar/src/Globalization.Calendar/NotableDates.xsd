@@ -181,8 +181,8 @@
       <xs:element name="Adjustment" type="nd:Adjustment" minOccurs="0" maxOccurs="unbounded" />
     </xs:sequence>
 
-    <xs:attribute name="name" type="xs:string" use="optional" />
-    <xs:attribute name="category" type="nd:notableDateCategory" use="optional" />
+    <xs:attribute name="name" type="xs:string" use="required" />
+    <xs:attribute name="category" type="nd:notableDateCategory" use="required" />
     <xs:attribute name="nonWorking" type="xs:boolean" use="optional" />
     <xs:attribute name="firstYear" type="xs:unsignedShort" use="optional" />
     <xs:attribute name="lastYear" type="xs:unsignedShort" use="optional" />
@@ -260,11 +260,16 @@
       <xs:enumeration value="Observance" />
       <xs:enumeration value="Remembrance" />
       <xs:enumeration value="Cultural" />
+      <xs:enumeration value="Religious" />
       <xs:enumeration value="Seasonal" />
+      <xs:enumeration value="Civic" />
+      <xs:enumeration value="Bank" />
+      <xs:enumeration value="School" />
+      <xs:enumeration value="Regional" />
       <xs:enumeration value="Other" />
     </xs:restriction>
   </xs:simpleType>
-
+  
   <xs:simpleType name="territory">
     <xs:restriction base="xs:string">
       <xs:pattern value="^([A-Z]{2}(-[A-Z0-9]{2,3})?)(,([A-Z]{2}(-[A-Z0-9]{2,3})?))*$" />

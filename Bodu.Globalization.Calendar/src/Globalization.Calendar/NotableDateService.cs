@@ -29,10 +29,11 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 public sealed class NotableDateService : INotableDateService
 {
-	private const string DefaultResourceName = "Bodu.Globalization.Calendar.NotableDates.xml";
+	private const string DefaultResourceName = "Bodu/Globalization/Calendar/Resources/global-all.xml";
 
 	private readonly ImmutableArray<NotableDateRule> _baseRules;
 	private readonly IReadOnlyList<INotableDateRuleOverrideProvider> _overrideProviders;
+	private readonly IReadOnlyList<RuleRemoval> _overrideRemovals;
 	private readonly IReadOnlyList<NotableDateRule> _effectiveRules;
 	private readonly NotableDateRuleResolver _resolver;
 	private readonly NotableDateAdjuster _adjuster;
@@ -40,35 +41,43 @@ public sealed class NotableDateService : INotableDateService
 	private readonly INotableDateNameLocalizer? _nameLocalizer;
 	private readonly CalendarWeekendDefinition _weekendDefinition;
 	private readonly IWeekendDefinitionProvider? _weekendProvider;
+	private readonly IResourcePathResolver _resourcePathResolver;
 
 	private readonly ConcurrentDictionary<int, IReadOnlyList<NotableDate>> _yearCache = new();
 	private readonly object _gate = new();
+
+	// Per-thread set of years currently being generated on this thread. Used by GetOrGenerateYear to short-circuit recursive
+	// entry from within GenerateYear (for example, MoveToNextNonWorkingDay's walk calling back through IsNonWorkingDay) so that a
+	// single rule cannot cause the generator to stack-overflow by consulting the very year it is in the middle of producing.
+	private readonly ThreadLocal<HashSet<int>> _generatingYears = new(() => new HashSet<int>());
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="NotableDateService" /> class using the embedded default rule set.
 	/// </summary>
 	public NotableDateService()
-		: this(new[] { (INotableDateRuleProvider)new XmlResourceNotableDateRuleProvider(DefaultResourceName) },
+		: this(new[] { (INotableDateRuleProvider)new XmlResourceNotableDateRuleProvider(DefaultResourceName, new ResourcePathResolver()) },
 			   CalendarWeekendDefinition.SaturdaySunday)
 	{ }
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="NotableDateService" /> class.
-	/// </summary>
-	/// <param name="ruleProviders">Sources of base notable date rules. Must not be <see langword="null" />.</param>
-	/// <param name="weekendDefinition">The weekend definition to apply when evaluating weekends.</param>
-	/// <param name="weekendProvider">An optional custom weekend provider.</param>
-	/// <param name="overrideProviders">Optional layered override providers, applied after the base rules in registration order.</param>
-	/// <param name="calculatorRegistry">Optional registry used to resolve <see cref="DateResolutionStrategy.Calculator" /> rules.</param>
-	/// <param name="adjustmentHandlers">Optional registry of custom <see cref="IAdjustmentHandler" /> instances.</param>
-	/// <param name="collisionResolver">Optional collision resolver. Defaults to <see cref="DefaultNotableDateCollisionResolver" />.</param>
-	/// <param name="nameLocalizer">Optional localizer used to translate notable date names into the active culture.</param>
-	/// <param name="plugins">Optional external plugins loaded via <see cref="Plugins.ExternalPluginLoader" />. Rule providers exposed by plugins are appended to <paramref name="ruleProviders" /> and participate in the normal flatten pipeline; named calculators are registered onto an internal calculator registry that falls back to <paramref name="calculatorRegistry" /> when supplied (caller-supplied registrations win on key collision).</param>
-	/// <exception cref="ArgumentNullException">Thrown when <paramref name="ruleProviders" /> is <see langword="null" />.</exception>
-	public NotableDateService(
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotableDateService" /> class.
+    /// </summary>
+    /// <param name="ruleProviders">Sources of base notable date rules. Must not be <see langword="null" />.</param>
+    /// <param name="weekendDefinition">The weekend definition to apply when evaluating weekends.</param>
+    /// <param name="resourcePathResolver">An optional custom weekend provider.</param>
+    /// <param name="weekendProvider">An optional custom weekend provider.</param>
+    /// <param name="overrideProviders">Optional layered override providers, applied after the base rules in registration order.</param>
+    /// <param name="calculatorRegistry">Optional registry used to resolve <see cref="DateResolutionStrategy.Calculator" /> rules.</param>
+    /// <param name="adjustmentHandlers">Optional registry of custom <see cref="IAdjustmentHandler" /> instances.</param>
+    /// <param name="collisionResolver">Optional collision resolver. Defaults to <see cref="DefaultNotableDateCollisionResolver" />.</param>
+    /// <param name="nameLocalizer">Optional localizer used to translate notable date names into the active culture.</param>
+    /// <param name="plugins">Optional external plugins loaded via <see cref="Plugins.ExternalPluginLoader" />. Rule providers exposed by plugins are appended to <paramref name="ruleProviders" /> and participate in the normal flatten pipeline; named calculators are registered onto an internal calculator registry that falls back to <paramref name="calculatorRegistry" /> when supplied (caller-supplied registrations win on key collision).</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ruleProviders" /> is <see langword="null" />.</exception>
+    public NotableDateService(
 		IEnumerable<INotableDateRuleProvider> ruleProviders,
 		CalendarWeekendDefinition weekendDefinition,
-		IWeekendDefinitionProvider? weekendProvider = null,
+        IResourcePathResolver? resourcePathResolver=null,
+        IWeekendDefinitionProvider? weekendProvider = null,
 		IEnumerable<INotableDateRuleOverrideProvider>? overrideProviders = null,
 		INotableDateCalculatorRegistry? calculatorRegistry = null,
 		IAdjustmentHandlerRegistry? adjustmentHandlers = null,
@@ -116,12 +125,20 @@ public sealed class NotableDateService : INotableDateService
 
 		_baseRules = effectiveProviders.SelectMany(p => p.LoadRules()).ToImmutableArray();
 		_overrideProviders = overrideProviders?.ToList() ?? (IReadOnlyList<INotableDateRuleOverrideProvider>)Array.Empty<INotableDateRuleOverrideProvider>();
+
+		// Snapshot every override provider's removals at construction so that IsRemovedByOverride iterates a materialised list
+		// once per rule × year × territory rather than re-invoking GetRemovals on every check. This pins the cost of any
+		// non-trivial override provider (database-backed, configuration-bound, lazily-enumerated) to a single call per provider
+		// and removes a runaway vector for providers that return fresh, infinite, or expensive enumerables on each invocation.
+		_overrideRemovals = _overrideProviders.SelectMany(p => p.GetRemovals()).ToList();
+
 		_weekendDefinition = weekendDefinition;
 		_weekendProvider = weekendProvider;
 		_collisionResolver = collisionResolver ?? new DefaultNotableDateCollisionResolver();
 		_nameLocalizer = nameLocalizer;
+        _resourcePathResolver= resourcePathResolver ?? new ResourcePathResolver();
 
-		_effectiveRules = ApplyOverrides(_baseRules, _overrideProviders);
+        _effectiveRules = ApplyOverrides(_baseRules, _overrideProviders);
 		_resolver = new NotableDateRuleResolver(_effectiveRules, effectiveRegistry);
 		_adjuster = new NotableDateAdjuster(
 			IsWeekend,
@@ -240,14 +257,33 @@ public sealed class NotableDateService : INotableDateService
 		if (_yearCache.TryGetValue(year, out var cached))
 			return cached;
 
+		// Re-entry guard: if this thread is already generating any year higher up the call stack, do not start another generation
+		// pass. MoveToNextNonWorkingDay's bounded walk calls back through IsNonWorkingDay → GetOrGenerateYear; without the guard
+		// it recurses for the originating year (same-year re-entry) and, when the walk crosses a year boundary, would otherwise
+		// open a fresh generation for the next year, leading to year-by-year recursion until DateTime overflows. Returning an
+		// empty snapshot for any cache-miss query during nested generation collapses both vectors: dependent predicates see only
+		// what is already cached, the bounded walk falls through its 366-iteration cap, and only the outer caller fully
+		// materialises a year.
+		HashSet<int> inProgress = _generatingYears.Value!;
+		if (inProgress.Count > 0)
+			return Array.Empty<NotableDate>();
+
 		lock (_gate)
 		{
 			if (_yearCache.TryGetValue(year, out cached))
 				return cached;
 
-			var generated = GenerateYear(year);
-			_yearCache[year] = generated;
-			return generated;
+			inProgress.Add(year);
+			try
+			{
+				var generated = GenerateYear(year);
+				_yearCache[year] = generated;
+				return generated;
+			}
+			finally
+			{
+				inProgress.Remove(year);
+			}
 		}
 	}
 
@@ -445,26 +481,23 @@ public sealed class NotableDateService : INotableDateService
     /// <returns><see langword="true" /> if the rule is removed; otherwise <see langword="false" />.</returns>
 	private bool IsRemovedByOverride(NotableDateRule rule, int year, string? territory)
 	{
-		foreach (var provider in _overrideProviders)
+		foreach (var removal in _overrideRemovals)
 		{
-			foreach (var removal in provider.GetRemovals())
+			if (!string.Equals(removal.RuleName, rule.Name, StringComparison.OrdinalIgnoreCase))
+				continue;
+
+			if (removal.FromYear is { } from && year < from) continue;
+			if (removal.ToYear is { } to && year > to) continue;
+
+			if (!string.IsNullOrEmpty(removal.TerritoryCode))
 			{
-				if (!string.Equals(removal.RuleName, rule.Name, StringComparison.OrdinalIgnoreCase))
-					continue;
-
-				if (removal.FromYear is { } from && year < from) continue;
-				if (removal.ToYear is { } to && year > to) continue;
-
-				if (!string.IsNullOrEmpty(removal.TerritoryCode))
-				{
-					if (string.IsNullOrEmpty(territory)) continue;
-					if (!TerritoryCode.TryParse(removal.TerritoryCode, out var removalScope)) continue;
-					if (!TerritoryCode.TryParse(territory, out var actual)) continue;
-					if (!removalScope.Contains(actual)) continue;
-				}
-
-				return true;
+				if (string.IsNullOrEmpty(territory)) continue;
+				if (!TerritoryCode.TryParse(removal.TerritoryCode, out var removalScope)) continue;
+				if (!TerritoryCode.TryParse(territory, out var actual)) continue;
+				if (!removalScope.Contains(actual)) continue;
 			}
+
+			return true;
 		}
 
 		return false;

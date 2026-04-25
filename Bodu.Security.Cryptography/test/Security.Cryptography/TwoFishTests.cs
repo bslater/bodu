@@ -8,7 +8,17 @@ namespace Bodu.Security.Cryptography;
 
 [TestClass]
 public sealed partial class TwofishTests
-    : SymmetricAlgorithmTests<Twofish>
+    : SymmetricAlgorithmTests<TwofishTests, Twofish>
 {
+    /// <inheritdoc />
     protected override Twofish CreateAlgorithm() => Twofish.Create();
+
+    /// <inheritdoc />
+    protected override SymmetricAlgorithmSpecification GetSpecification() =>
+        new SymmetricAlgorithmSpecification
+        {
+            BlockSizeBits = 128,
+            DefaultKeySizeBits = 256,
+            LegalKeySizesBits = [128, 192, 256],
+        };
 }

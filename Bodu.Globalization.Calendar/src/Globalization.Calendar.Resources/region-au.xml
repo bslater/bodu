@@ -32,10 +32,10 @@
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-  <UseFrom resource="Bodu.Globalization.Calendar.Resources.Common.xml">
+  <UseFrom resource="Bodu.Globalization.Calendar.Resources.global._all">
     <!-- New Year's Day is inherited from Common and tagged locally as a national holiday via the nested Rule override. The
          inherited Fixed January 1 strategy and the weekend-roll adjustment carry through unchanged. -->
-    <Use name="New Year's Day">
+    <Use name="New Year's Day" category="Holiday">
       <Rule territory="AU" nonWorking="true">
         <Tag>NationalHoliday</Tag>
       </Rule>
@@ -52,7 +52,11 @@
     <Use name="Easter Saturday" territory="AU" nonWorking="true" />
     <Use name="Easter Monday" territory="AU" nonWorking="true" />
     <Use name="Christmas Eve" territory="AU" />
-    <Use name="Christmas Day" territory="AU" nonWorking="true" />
+    <Use name="Christmas Day" territory="AU" nonWorking="true">
+      <Rule category="Holiday" nonWorking="true">
+        <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextNonWorkingDay" />
+      </Rule>
+    </Use>
   </UseFrom>
 
   <!-- ============================================================ -->
@@ -84,7 +88,7 @@
     <Rule category="Holiday" territory="AU" nonWorking="true">
       <Fixed month="December" day="26" />
       <Tag>NationalHoliday</Tag>
-      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
+      <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextNonWorkingDay" />
     </Rule>
   </NotableDate>
 
