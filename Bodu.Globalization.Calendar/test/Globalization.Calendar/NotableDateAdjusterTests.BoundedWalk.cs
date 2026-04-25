@@ -16,11 +16,12 @@ public sealed partial class NotableDateAdjusterTests
 	[TestMethod]
 	public void Apply_WhenMoveToNextNonWorkingDayPredicateNeverMatches_ShouldInvokePredicateExactly366Times()
 	{
+		// isNonWorking always returns true — every day is non-working — so no working day is ever found within the bound.
 		int callCount = 0;
 		var adjuster = CreateAdjuster(isNonWorking: (d, t, c) =>
 		{
 			callCount++;
-			return false;
+			return true;
 		});
 
 		ObservanceAdjustment adjustment = new()
@@ -36,16 +37,16 @@ public sealed partial class NotableDateAdjusterTests
 	}
 
 	/// <summary>
-	/// Verifies that the forward walk's inclusive upper bound is exactly 366 days after the original date: when the predicate
-	/// returns <see langword="true" /> only for that last bounded day, the walk finds it and returns that date rather than falling
-	/// back.
+	/// Verifies that the forward walk's inclusive upper bound is exactly 366 days after the original date: when the walk finds a
+	/// working day only on that last bounded day, it returns that date rather than falling back.
 	/// </summary>
 	[TestMethod]
 	public void Apply_WhenMoveToNextNonWorkingDayMatchesOnLastBoundedDay_ShouldReturnThatDay()
 	{
 		DateTime original = new(2025, 1, 1);
 		DateTime target = original.AddDays(366);
-		var adjuster = CreateAdjuster(isNonWorking: (d, t, c) => d.Date == target);
+		// All days except target are non-working, so target is the only working day within the bound.
+		var adjuster = CreateAdjuster(isNonWorking: (d, t, c) => d.Date != target);
 
 		ObservanceAdjustment adjustment = new()
 		{
@@ -61,7 +62,7 @@ public sealed partial class NotableDateAdjusterTests
 	}
 
 	/// <summary>
-	/// Verifies that a non-working day one day beyond the walk's 366-day bound is <em>not</em> reached: the walk terminates at the
+	/// Verifies that a working day one day beyond the walk's 366-day bound is <em>not</em> reached: the walk terminates at the
 	/// bound and the adjuster falls back to the original date. This asserts the bound is exclusive on the far side and prevents a
 	/// regression that silently raises the ceiling.
 	/// </summary>
@@ -70,7 +71,8 @@ public sealed partial class NotableDateAdjusterTests
 	{
 		DateTime original = new(2025, 1, 1);
 		DateTime beyond = original.AddDays(367);
-		var adjuster = CreateAdjuster(isNonWorking: (d, t, c) => d.Date == beyond);
+		// All days except beyond are non-working, so the only working day is one step past the 366-day bound.
+		var adjuster = CreateAdjuster(isNonWorking: (d, t, c) => d.Date != beyond);
 
 		ObservanceAdjustment adjustment = new()
 		{

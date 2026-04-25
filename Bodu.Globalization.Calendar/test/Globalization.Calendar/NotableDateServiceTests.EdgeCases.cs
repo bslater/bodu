@@ -149,15 +149,15 @@ public sealed partial class NotableDateServiceTests
 	/// does not recurse indefinitely. The adjuster's walk calls the service's <see cref="NotableDateService.IsNonWorkingDay" />
 	/// predicate, which in turn calls <c>GetOrGenerateYear</c> for the same year currently being generated on this thread; a
 	/// thread-local re-entry guard in <c>GetOrGenerateYear</c> short-circuits the recursive call by returning an empty snapshot,
-	/// so the walk sees only the weekend short-circuit and terminates at the next weekend day.
+	/// so the walk reports the first cursor as a working day and terminates immediately.
 	/// </summary>
 	[TestMethod]
 	public void GetNotableDates_WhenMoveToNextNonWorkingDayAdjustmentFiresDuringYearGeneration_ShouldNotRecurseIndefinitely()
 	{
 		// 1 January 2025 is a Wednesday. Without the re-entry guard, the walk's first cursor (Thursday) is not a weekend, so
 		// IsNonWorkingDay falls through to GetOrGenerateYear for the same year currently being generated and recurses until the
-		// stack is exhausted. With the guard, that call returns an empty snapshot; the walk steps forward until Saturday, where
-		// the IsWeekend short-circuit fires and the adjusted date is emitted.
+		// stack is exhausted. With the guard, that call returns an empty snapshot; Thursday is not a weekend, so IsNonWorkingDay
+		// returns false (working day) and the walk terminates immediately on 2 January (Thursday).
 		NotableDateRule rule = Fixed("Walk Trigger", 1, 1) with
 		{
 			Adjustments = ImmutableArray.Create(new ObservanceAdjustment
@@ -178,16 +178,15 @@ public sealed partial class NotableDateServiceTests
 		Assert.AreEqual(2, results.Count, "Expected the base occurrence plus one adjusted occurrence from the bounded walk.");
 		Assert.AreEqual(new DateTime(2025, 1, 1), results[0].Date);
 		Assert.IsFalse(results[0].WasAdjusted);
-		Assert.AreEqual(new DateTime(2025, 1, 4), results[1].Date, "Walk should advance to Saturday 4 January via the weekend short-circuit in IsNonWorkingDay.");
+		Assert.AreEqual(new DateTime(2025, 1, 2), results[1].Date, "Walk should advance to Thursday 2 January — the re-entry guard returns an empty snapshot, so Thursday is reported as a working day and the walk terminates.");
 		Assert.IsTrue(results[1].WasAdjusted);
 	}
 
 	/// <summary>
-	/// Verifies that when no day within the adjuster's 366-iteration bound qualifies as non-working, the service-level walk still
-	/// terminates without recursion. A custom <see cref="IWeekendDefinitionProvider" /> that classifies every day as a weekday
-	/// removes the only short-circuit available to the walk, so the re-entry guard must carry every iteration: each call returns
-	/// an empty snapshot, the adjuster exhausts the bound and falls back to the original date, and only the base occurrence is
-	/// emitted.
+	/// Verifies that when no working day within the adjuster's 366-iteration bound can be found, the service-level walk still
+	/// terminates without recursion. A custom <see cref="IWeekendDefinitionProvider" /> that classifies every day as a weekend
+	/// ensures every cursor is non-working, so the walk exhausts the bound and falls back to the original date, and only the base
+	/// occurrence is emitted.
 	/// </summary>
 	[TestMethod]
 	public void GetNotableDates_WhenMoveToNextNonWorkingDayCannotFindCandidateUnderReEntry_ShouldEmitBaseOnly()
@@ -202,16 +201,17 @@ public sealed partial class NotableDateServiceTests
 			}),
 		};
 
+		// Every day is a weekend, so IsNonWorkingDay always returns true; the walk never finds a working day and falls back.
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
 			CalendarWeekendDefinition.Custom,
-			weekendProvider: new NeverWeekendProvider());
+			weekendProvider: new AlwaysWeekendProvider());
 
 		List<NotableDate> results = service.GetNotableDates(2025)
 			.Where(r => r.Name == "Unreachable Shift")
 			.ToList();
 
-		Assert.AreEqual(1, results.Count, "When the bounded walk cannot find a non-working day under re-entry, only the base occurrence should survive.");
+		Assert.AreEqual(1, results.Count, "When the bounded walk cannot find a working day, only the base occurrence should survive.");
 		Assert.AreEqual(new DateTime(2025, 1, 1), results[0].Date);
 		Assert.IsFalse(results[0].WasAdjusted);
 	}
@@ -226,12 +226,12 @@ public sealed partial class NotableDateServiceTests
 	[TestMethod]
 	public void GetNotableDates_WhenMoveToNextNonWorkingDayWalkCrossesYearBoundary_ShouldNotGenerateNextYear()
 	{
-		// 28 December 2025 is a Sunday; the walk's first cursor (29 Dec Mon) is not a weekend, so IsNonWorkingDay falls through
-		// to GetOrGenerateYear for the year currently being generated. Walking forward five days reaches 2 January 2026 (Fri,
-		// also non-weekend) and finally 3 January 2026 (Sat) where the IsWeekend short-circuit terminates the walk. Without the
-		// cross-year guard, GetOrGenerateYear(2026) would open a fresh GenerateYear pass for 2026 — observable via the counting
-		// calculator below — and recurse year-by-year. With the guard, no nested generation runs.
-		NotableDateRule walkTrigger = Fixed("Walk Trigger", 12, 28) with
+		// 31 December 2025 is a Wednesday. The walk's first cursor is 1 January 2026 (Thursday), which immediately crosses the
+		// year boundary. IsNonWorkingDay calls GetOrGenerateYear(2026); without the cross-year guard that call would open a fresh
+		// GenerateYear pass for 2026 — observable via the counting calculator — and recurse year-by-year. With the guard, no
+		// nested generation runs: 1 January 2026 is not a weekend so IsNonWorkingDay returns false (working day) and the walk
+		// terminates immediately on that date.
+		NotableDateRule walkTrigger = Fixed("Walk Trigger", 12, 31) with
 		{
 			Adjustments = ImmutableArray.Create(new ObservanceAdjustment
 			{
@@ -267,22 +267,22 @@ public sealed partial class NotableDateServiceTests
 			.ToList();
 
 		Assert.AreEqual(1, calculator.CallCount, "Year 2026 must not be generated as a side effect of the walk crossing the year boundary; only the queried year 2025 should be materialised.");
-		Assert.AreEqual(2, walkResults.Count, "Expected the base occurrence on 28 December 2025 plus one adjusted occurrence at the next Saturday.");
-		Assert.AreEqual(new DateTime(2025, 12, 28), walkResults[0].Date);
+		Assert.AreEqual(2, walkResults.Count, "Expected the base occurrence on 31 December 2025 plus one adjusted occurrence after crossing the year boundary.");
+		Assert.AreEqual(new DateTime(2025, 12, 31), walkResults[0].Date);
 		Assert.IsFalse(walkResults[0].WasAdjusted);
-		Assert.AreEqual(new DateTime(2026, 1, 3), walkResults[1].Date, "Adjusted occurrence should fall on 3 January 2026 (Saturday), demonstrating the walk crossed the year boundary.");
+		Assert.AreEqual(new DateTime(2026, 1, 1), walkResults[1].Date, "Adjusted occurrence should fall on 1 January 2026 (Thursday), demonstrating the walk crossed the year boundary without generating 2026.");
 		Assert.IsTrue(walkResults[1].WasAdjusted);
 	}
 
 	/// <summary>
-	/// <see cref="IWeekendDefinitionProvider" /> that classifies every day of the week as a weekday, used to exercise the
-	/// re-entry guard's coverage when the adjuster's <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> walk has no weekend
-	/// short-circuit available.
+	/// <see cref="IWeekendDefinitionProvider" /> that classifies every day of the week as a weekend, used to exercise the
+	/// bounded-walk fallback when the adjuster's <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> walk can never find a
+	/// working day.
 	/// </summary>
-	private sealed class NeverWeekendProvider : IWeekendDefinitionProvider
+	private sealed class AlwaysWeekendProvider : IWeekendDefinitionProvider
 	{
 		/// <inheritdoc />
-		public bool IsWeekend(DayOfWeek dayOfWeek) => false;
+		public bool IsWeekend(DayOfWeek dayOfWeek) => true;
 	}
 
 	/// <summary>
