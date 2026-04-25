@@ -15,21 +15,21 @@ namespace Bodu.Globalization.Calendar;
 [TestClass]
 public sealed class XmlResourceNotableDateRuleProviderTests
 {
-	private const string CommonResource = "Bodu.Globalization.Calendar.Resources.Common.xml";
-	private const string ChristianResource = "Bodu.Globalization.Calendar.Resources.Christian.xml";
-	private const string UsResource = "Bodu.Globalization.Calendar.Resources.US.xml";
-	private const string GbResource = "Bodu.Globalization.Calendar.Resources.GB.xml";
-	private const string FrResource = "Bodu.Globalization.Calendar.Resources.FR.xml";
-	private const string AuResource = "Bodu.Globalization.Calendar.Resources.AU.xml";
-	private const string DefaultResource = "Bodu.Globalization.Calendar.NotableDates.xml";
+	private const string CommonResource = "Bodu/Globalization/Calendar/Resources/global-all.xml";
+	private const string ChristianResource = "Bodu/Globalization/Calendar/Resources/christian-gregorian.xml";
+    private const string UsResource = "Bodu/Globalization/Calendar/Resources/region-us.xml";
+    private const string GbResource = "Bodu/Globalization/Calendar/Resources/region-gb.xml";
+    private const string FrResource = "Bodu/Globalization/Calendar/Resources/region-fr.xml";
+    private const string AuResource = "Bodu/Globalization/Calendar/Resources/region-au.xml";
+    private const string DefaultResource = "Bodu/Globalization/Calendar/Resources/global-all.xml";
 
-	/// <summary>
-	/// Verifies that loading the standalone Common resource exposes its rules without errors.
-	/// </summary>
-	[TestMethod]
+    /// <summary>
+    /// Verifies that loading the standalone Common resource exposes its rules without errors.
+    /// </summary>
+    [TestMethod]
 	public void LoadRules_WhenLoadingCommonResource_ShouldExposeUniversalRules()
 	{
-		var provider = new XmlResourceNotableDateRuleProvider(CommonResource);
+		var provider = new XmlResourceNotableDateRuleProvider(CommonResource, new ResourcePathResolver());
 
 		var rules = provider.LoadRules().ToList();
 
@@ -45,7 +45,7 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	[TestMethod]
 	public void LoadRules_WhenLoadingUsResource_ShouldOnlyIncludeCherryPickedRules()
 	{
-		var provider = new XmlResourceNotableDateRuleProvider(UsResource);
+		var provider = new XmlResourceNotableDateRuleProvider(UsResource, new ResourcePathResolver());
 
 		var rules = provider.LoadRules().ToList();
 
@@ -77,7 +77,7 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	[TestMethod]
 	public void LoadRules_WhenUseDirectiveAppliesOverrides_ShouldRetagInheritedRule()
 	{
-		var provider = new XmlResourceNotableDateRuleProvider(UsResource);
+		var provider = new XmlResourceNotableDateRuleProvider(UsResource, new ResourcePathResolver());
 
 		var christmasDay = provider.LoadRules().Single(r => r.Name == "Christmas Day" && r.TerritoryCode == "US");
 
@@ -92,7 +92,7 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	[TestMethod]
 	public void LoadRules_WhenLoadingGbResource_ShouldIncludeEasterMonday()
 	{
-		var provider = new XmlResourceNotableDateRuleProvider(GbResource);
+		var provider = new XmlResourceNotableDateRuleProvider(GbResource, new ResourcePathResolver());
 
 		var rules = provider.LoadRules().ToList();
 
@@ -107,7 +107,7 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	[TestMethod]
 	public void LoadRules_WhenLocalRuleOverridesInheritedRule_ShouldUseLocalRule()
 	{
-		var provider = new XmlResourceNotableDateRuleProvider(GbResource);
+		var provider = new XmlResourceNotableDateRuleProvider(GbResource, new ResourcePathResolver());
 
 		// New Year's Day is declared locally in GB.xml with a Tag and territory; the inherited Common rule should be overridden.
 		var newYears = provider.LoadRules().Single(r => r.Name == "New Year's Day");
@@ -123,7 +123,7 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	[TestMethod]
 	public void LoadRules_WhenFrResource_ShouldExposeLocalNamesOnly()
 	{
-		var provider = new XmlResourceNotableDateRuleProvider(FrResource);
+		var provider = new XmlResourceNotableDateRuleProvider(FrResource, new ResourcePathResolver());
 
 		var rules = provider.LoadRules().ToList();
 
@@ -139,7 +139,7 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	[TestMethod]
 	public void LoadRules_WhenLoadingDefaultComposite_ShouldExposeUniversalRulesViaUseAll()
 	{
-		var provider = new XmlResourceNotableDateRuleProvider(DefaultResource);
+		var provider = new XmlResourceNotableDateRuleProvider(DefaultResource, new ResourcePathResolver());
 
 		var rules = provider.LoadRules().ToList();
 
@@ -159,7 +159,7 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	[TestMethod]
 	public void LoadRules_WhenLoadingAuResource_ShouldIncludeCherryPickedAndLocalRules()
 	{
-		var provider = new XmlResourceNotableDateRuleProvider(AuResource);
+		var provider = new XmlResourceNotableDateRuleProvider(AuResource, new ResourcePathResolver());
 
 		var rules = provider.LoadRules().ToList();
 
@@ -204,7 +204,7 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	[TestMethod]
 	public void LoadRules_WhenLoadingAuResource_ShouldYieldDistinctLabourDayAndKingsBirthdayRulesPerSubdivision()
 	{
-		var provider = new XmlResourceNotableDateRuleProvider(AuResource);
+		var provider = new XmlResourceNotableDateRuleProvider(AuResource, new ResourcePathResolver());
 
 		var rules = provider.LoadRules().ToList();
 
@@ -236,7 +236,7 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	[TestMethod]
 	public void LoadRules_WhenLoadingAuResource_ShouldTagAnzacDayAsNationalNonWorkingDay()
 	{
-		var provider = new XmlResourceNotableDateRuleProvider(AuResource);
+		var provider = new XmlResourceNotableDateRuleProvider(AuResource, new ResourcePathResolver());
 
 		var anzacDay = provider.LoadRules().Single(r => r.Name == "Anzac Day");
 
@@ -251,7 +251,7 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	[TestMethod]
 	public void LoadRules_WhenResourceMissing_ShouldThrowFileNotFoundException()
 	{
-		var provider = new XmlResourceNotableDateRuleProvider("Bodu.Globalization.Calendar.Resources.Imaginary.xml");
+		var provider = new XmlResourceNotableDateRuleProvider("Bodu/Globalization/Calendar/Resources/Imaginary.xml", new ResourcePathResolver());
 
 		Assert.ThrowsExactly<FileNotFoundException>(() => _ = provider.LoadRules().ToList());
 	}
@@ -265,7 +265,7 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	{
 		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
 		{
-			_ = new XmlResourceNotableDateRuleProvider(null!);
+			_ = new XmlResourceNotableDateRuleProvider(null!, new ResourcePathResolver());
 		});
 
 		Assert.AreEqual("xmlResourceName", ex.ParamName);
@@ -280,7 +280,8 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	{
 		var provider = new XmlResourceNotableDateRuleProvider(
 			CommonResource,
-			typeof(NotableDateService).Assembly);
+            new ResourcePathResolver(),
+            typeof(NotableDateService).Assembly);
 
 		IReadOnlyList<NotableDateRule> rules = provider.LoadRules().ToList();
 
@@ -296,7 +297,7 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	[TestMethod]
 	public void LoadRules_WhenCalledTwice_ShouldReturnCachedResult()
 	{
-		var provider = new XmlResourceNotableDateRuleProvider(CommonResource);
+		var provider = new XmlResourceNotableDateRuleProvider(CommonResource, new ResourcePathResolver());
 
 		IEnumerable<NotableDateRule> first = provider.LoadRules();
 		IEnumerable<NotableDateRule> second = provider.LoadRules();
@@ -312,8 +313,8 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	[TestMethod]
 	public void LoadRules_WhenSourceContainsRulesNotCherryPicked_ShouldNotInheritThem()
 	{
-		var common = new XmlResourceNotableDateRuleProvider(CommonResource).LoadRules().Select(r => r.Name).ToHashSet();
-		var us = new XmlResourceNotableDateRuleProvider(UsResource).LoadRules().Select(r => r.Name).ToHashSet();
+		var common = new XmlResourceNotableDateRuleProvider(CommonResource, new ResourcePathResolver()).LoadRules().Select(r => r.Name).ToHashSet();
+		var us = new XmlResourceNotableDateRuleProvider(UsResource, new ResourcePathResolver()).LoadRules().Select(r => r.Name).ToHashSet();
 
 		// Pick a rule that exists in Common but is NOT cherry-picked by US.xml.
 		Assert.IsTrue(common.Contains("International Workers' Day"));

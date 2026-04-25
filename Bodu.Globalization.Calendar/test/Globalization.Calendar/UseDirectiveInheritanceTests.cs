@@ -56,7 +56,7 @@ public sealed class UseDirectiveInheritanceTests
 		var xml = NamespaceHeader +
 			"  <UseFrom resource=\"Bodu.Globalization.Calendar.Resources.Common.xml\">\n" +
 			"    <Use name=\"New Year's Day\" clearAdjustments=\"true\">\n" +
-			"      <Rule territory=\"AU\" nonWorking=\"true\">\n" +
+            "      <Rule name=\"New Year's Day\" category=\"Holiday\" territory=\"AU\" nonWorking=\"true\">\n" +
 			"        <Tag>NationalHoliday</Tag>\n" +
 			"        <Adjustment key=\"weekend-roll\" when=\"IfWeekend\" action=\"MoveToNextWeekday\" />\n" +
 			"      </Rule>\n" +
@@ -87,7 +87,7 @@ public sealed class UseDirectiveInheritanceTests
 		var xml = NamespaceHeader +
 			"  <UseFrom resource=\"Bodu.Globalization.Calendar.Resources.Common.xml\">\n" +
 			"    <Use name=\"Halloween\">\n" +
-			"      <Rule territory=\"AU\">\n" +
+            "      <Rule name=\"Halloween\" category=\"Observance\" territory=\"AU\">\n" +
 			"        <Tag>Cultural</Tag>\n" +
 			"      </Rule>\n" +
 			"    </Use>\n" +
@@ -110,7 +110,7 @@ public sealed class UseDirectiveInheritanceTests
 		var xml = NamespaceHeader +
 			"  <UseFrom resource=\"Bodu.Globalization.Calendar.Resources.Common.xml\">\n" +
 			"    <Use name=\"New Year's Day\">\n" +
-			"      <Rule territory=\"AU\">\n" +
+            "      <Rule name=\"New Year's Day\" category=\"Holiday\" territory=\"AU\">\n" +
 			"        <Adjustment key=\"dup\" when=\"Always\" action=\"None\" />\n" +
 			"        <Adjustment key=\"dup\" when=\"IfWeekend\" action=\"None\" />\n" +
 			"      </Rule>\n" +

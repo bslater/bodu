@@ -1,27 +1,39 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global health notable-date resource using the Western/Gregorian calendar.
+
+  These entries represent internationally recognised health and public-health
+  observances. They are not universally public holidays or non-working days in
+  every country. Country-specific resources should import only the dates they
+  observe and override naming, suppression, or behavioural rules where required.
+-->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
+  <!--
+    Fixed-date health observances.
+  -->
+
   <NotableDate name="World Health Day">
-    <Rule category="Observance">
+    <Rule name="Fixed World Health Day" category="Observance">
       <Fixed month="April" day="7" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Blood Donor Day">
-    <Rule category="Observance">
+    <Rule name="Fixed World Blood Donor Day" category="Observance">
       <Fixed month="June" day="14" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Mental Health Day">
-    <Rule category="Observance">
+    <Rule name="Fixed World Mental Health Day" category="Observance">
       <Fixed month="October" day="10" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World AIDS Day">
-    <Rule category="Observance">
+    <Rule name="Fixed World AIDS Day" category="Observance">
       <Fixed month="December" day="1" />
     </Rule>
   </NotableDate>

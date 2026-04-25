@@ -1,23 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  France public holidays (jours fériés) and widely observed cultural
-  dates.
+  French notable-date resource using the Western/Gregorian calendar.
 
-  Cherry-picks each inherited rule explicitly. Rules not listed in
-  the <UseFrom> blocks are not inherited, so adding a new rule to
-  Common.xml or Christian.xml has no effect on this file.
+  These entries represent French public holidays and widely observed cultural
+  dates. National rules use territory="FR"; regional rules use their ISO
+  subdivision territory codes.
+
+  Country-specific rules explicitly import only the inherited global and
+  Christian dates that France observes, and override naming, territory,
+  nonWorking, adjustment, or tagging behaviour where required.
 -->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-  <UseFrom resource="Bodu.Globalization.Calendar.Resources.Common.xml">
+  <!--
+    Imported global observances.
+  -->
+
+  <UseFrom resource="./global-all.xml">
     <Use name="New Year's Day" territory="FR" nonWorking="true" />
     <Use name="Valentine's Day" territory="FR" />
     <Use name="International Women's Day" territory="FR" />
     <Use name="April Fool's Day" territory="FR" />
   </UseFrom>
 
-  <UseFrom resource="Bodu.Globalization.Calendar.Resources.Christian.xml">
+  <!--
+    Imported Christian observances.
+  -->
+
+  <UseFrom resource="./christian-gregorian.xml">
     <Use name="Easter Sunday" territory="FR" />
     <Use name="Easter Monday" territory="FR" nonWorking="true" />
     <Use name="Ascension Day" territory="FR" nonWorking="true" />
@@ -27,66 +38,93 @@
     <Use name="Christmas Day" territory="FR" nonWorking="true" />
   </UseFrom>
 
-  <!-- France's International Workers' Day is locally re-named "Fête du Travail". -->
+  <!--
+    National French holidays and observances.
+  -->
+
   <NotableDate name="Fête du Travail">
-    <Rule category="Holiday" territory="FR" nonWorking="true">
+    <Rule name="Fixed Fête du Travail"
+          category="Holiday"
+          territory="FR"
+          nonWorking="true"
+          comment="France's International Workers' Day is locally named Fête du Travail.">
       <Fixed month="May" day="1" />
       <Tag>National</Tag>
     </Rule>
   </NotableDate>
 
-  <!-- MAY -->
   <NotableDate name="Victory in Europe Day">
-    <Rule category="Holiday" territory="FR" nonWorking="true">
+    <Rule name="Fixed Victory in Europe Day"
+          category="Holiday"
+          territory="FR"
+          nonWorking="true">
       <Fixed month="May" day="8" />
       <Tag>National</Tag>
     </Rule>
   </NotableDate>
 
-  <!-- JULY -->
   <NotableDate name="Bastille Day">
-    <Rule category="Holiday" territory="FR" nonWorking="true">
+    <Rule name="Fixed Bastille Day"
+          category="Holiday"
+          territory="FR"
+          nonWorking="true">
       <Fixed month="July" day="14" />
       <Tag>National</Tag>
     </Rule>
   </NotableDate>
 
-  <!-- AUGUST -->
   <NotableDate name="Assumption of Mary">
-    <Rule category="Holiday" territory="FR" nonWorking="true">
+    <Rule name="Fixed Assumption of Mary"
+          category="Holiday"
+          territory="FR"
+          nonWorking="true">
       <Fixed month="August" day="15" />
       <Tag>Christian</Tag>
     </Rule>
   </NotableDate>
 
-  <!-- NOVEMBER -->
   <NotableDate name="All Saints' Day">
-    <Rule category="Holiday" territory="FR" nonWorking="true">
+    <Rule name="Fixed All Saints Day"
+          category="Holiday"
+          territory="FR"
+          nonWorking="true">
       <Fixed month="November" day="1" />
       <Tag>Christian</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Armistice Day">
-    <Rule category="Holiday" territory="FR" nonWorking="true">
+    <Rule name="Fixed Armistice Day"
+          category="Holiday"
+          territory="FR"
+          nonWorking="true">
       <Fixed month="November" day="11" />
       <Tag>National</Tag>
     </Rule>
   </NotableDate>
 
-  <!-- ALSACE-MOSELLE local holidays. These are additional regional rules that
-       extend the FR-wide set rather than override it. -->
+  <!--
+    Alsace-Moselle regional holidays and observances.
+  -->
+
   <NotableDate name="Good Friday (Alsace-Moselle)">
-    <Rule name="Good Friday" category="Holiday" territory="FR-67,FR-68,FR-57" nonWorking="true">
+    <Rule name="Friday Before Western Easter Good Friday"
+          category="Holiday"
+          territory="FR-67,FR-68,FR-57"
+          nonWorking="true">
       <OffsetFromAnchor name="Easter Sunday" offset="-2" />
       <Tag>Christian</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Saint Stephen's Day">
-    <Rule category="Holiday" territory="FR-67,FR-68,FR-57" nonWorking="true">
+    <Rule name="Fixed Saint Stephen's Day"
+          category="Holiday"
+          territory="FR-67,FR-68,FR-57"
+          nonWorking="true">
       <Fixed month="December" day="26" />
       <Tag>Christian</Tag>
     </Rule>
   </NotableDate>
+
 </NotableDates>

@@ -1,21 +1,34 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global education and literacy notable-date resource using the Western/Gregorian calendar.
+
+  These entries represent internationally recognised education, literacy,
+  and knowledge-related observances. They are not universally public holidays
+  or non-working days in every country. Country-specific resources should
+  import only the dates they observe and override naming, suppression, or
+  behavioural rules where required.
+-->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
+  <!--
+    Fixed-date education and literacy observances.
+  -->
+
   <NotableDate name="World Book and Copyright Day">
-    <Rule category="Observance">
+    <Rule name="Fixed World Book and Copyright Day" category="Observance">
       <Fixed month="April" day="23" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="International Literacy Day">
-    <Rule category="Observance">
+    <Rule name="Fixed International Literacy Day" category="Observance">
       <Fixed month="September" day="8" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Teachers' Day">
-    <Rule category="Observance">
+    <Rule name="Fixed World Teachers' Day" category="Observance">
       <Fixed month="October" day="5" />
     </Rule>
   </NotableDate>

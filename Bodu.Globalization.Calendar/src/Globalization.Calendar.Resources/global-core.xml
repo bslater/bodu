@@ -1,16 +1,29 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global civil notable-date resource using the Western/Gregorian calendar.
+
+  These entries represent commonly recognised civil observances. They are
+  not universally public holidays or non-working days in every country.
+  Country-specific resources should import only the dates they observe and
+  override nonWorking, weekend adjustment, naming, or suppression behaviour
+  where required.
+-->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
+  <!--
+    Fixed-date civil observances.
+  -->
+
   <NotableDate name="New Year's Day">
-    <Rule category="Holiday" nonWorking="true">
+    <Rule name="Fixed New Year's Day With Weekend Roll" category="Holiday" nonWorking="true">
       <Fixed month="January" day="1" />
       <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="International Workers' Day">
-    <Rule category="Observance">
+    <Rule name="Fixed International Workers' Day" category="Observance">
       <Fixed month="May" day="1" />
     </Rule>
   </NotableDate>

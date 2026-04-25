@@ -1,114 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  United States federal holidays and widely observed cultural dates.
+  United States notable-date resource using the Western/Gregorian calendar.
 
-  Every inherited rule is cherry-picked explicitly from a source
-  resource via <UseFrom> / <Use>. Adding a new rule to Common.xml or
-  Christian.xml does not cascade into this file: only the rules listed
-  below are inherited.
+  These entries represent United States federal holidays and widely observed
+  cultural dates. National rules use territory="US".
 
-  Where inherited rules need to be retagged with a US territory, mark
-  them as non-working, or follow a US-specific naming convention, the
-  override attributes on each <Use> apply scalar changes without
-  forking the source rule. Tags and Adjustments are inherited
-  unchanged; to override those, declare a local <NotableDate> instead.
+  Country-specific rules explicitly import only the inherited global and
+  Christian dates that the United States observes, and override naming,
+  territory, nonWorking, adjustment, or tagging behaviour where required.
 -->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-  <UseFrom resource="Bodu.Globalization.Calendar.Resources.Common.xml">
+  <!--
+    Imported global observances.
+  -->
+
+  <UseFrom resource="./global-all.xml">
     <Use name="New Year's Day" territory="US" />
     <Use name="Valentine's Day" territory="US" />
     <Use name="Halloween" territory="US" />
   </UseFrom>
 
-  <UseFrom resource="Bodu.Globalization.Calendar.Resources.Christian.xml">
+  <!--
+    Imported Christian observances.
+  -->
+
+  <UseFrom resource="./christian-gregorian.xml">
     <Use name="Easter Sunday" territory="US" />
     <Use name="Good Friday" territory="US" />
     <Use name="Christmas Eve" territory="US" />
-    <Use name="Christmas Day" territory="US" nonWorking="true" />
+    <Use name="Christmas Day" territory="US" nonWorking="true">
+      <Rule name="United States Christmas Day With Non-Working-Day Roll" category="Holiday" nonWorking="true">
+        <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextNonWorkingDay" />
+      </Rule>
+    </Use>
   </UseFrom>
 
-  <!-- JANUARY -->
+  <!--
+    National United States holidays and observances.
+  -->
+
   <NotableDate name="Martin Luther King Jr. Day">
-    <Rule category="Holiday" territory="US" nonWorking="true" firstYear="1986">
+    <Rule name="Third Monday In January Martin Luther King Jr. Day" category="Holiday" territory="US" nonWorking="true" firstYear="1986">
       <DayOfWeekInMonth month="January" dayOfWeek="Monday" weekOrdinal="Third" />
     </Rule>
   </NotableDate>
 
-  <!-- FEBRUARY -->
   <NotableDate name="Presidents' Day">
-    <Rule category="Holiday" territory="US" nonWorking="true">
+    <Rule name="Third Monday In February Presidents' Day" category="Holiday" territory="US" nonWorking="true">
       <DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" />
     </Rule>
   </NotableDate>
 
-  <!-- MAY -->
   <NotableDate name="Mother's Day">
-    <Rule category="Observance" territory="US">
+    <Rule name="Second Sunday In May Mother's Day" category="Observance" territory="US">
       <DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Second" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Memorial Day">
-    <Rule category="Holiday" territory="US" nonWorking="true">
+    <Rule name="Last Monday In May Memorial Day" category="Holiday" territory="US" nonWorking="true">
       <DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="Last" />
     </Rule>
   </NotableDate>
 
-  <!-- JUNE -->
   <NotableDate name="Juneteenth">
-    <Rule category="Holiday" territory="US" nonWorking="true" firstYear="2021">
+    <Rule name="Fixed Juneteenth With Weekend Roll" category="Holiday" territory="US" nonWorking="true" firstYear="2021">
       <Fixed month="June" day="19" />
       <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Father's Day">
-    <Rule category="Observance" territory="US">
+    <Rule name="Third Sunday In June Father's Day" category="Observance" territory="US">
       <DayOfWeekInMonth month="June" dayOfWeek="Sunday" weekOrdinal="Third" />
     </Rule>
   </NotableDate>
 
-  <!-- JULY -->
   <NotableDate name="Independence Day">
-    <Rule category="Holiday" territory="US" nonWorking="true">
+    <Rule name="Fixed Independence Day With Weekend Roll" category="Holiday" territory="US" nonWorking="true">
       <Fixed month="July" day="4" />
       <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
   </NotableDate>
 
-  <!-- SEPTEMBER -->
   <NotableDate name="Labor Day">
-    <Rule category="Holiday" territory="US" nonWorking="true">
+    <Rule name="First Monday In September Labor Day" category="Holiday" territory="US" nonWorking="true">
       <DayOfWeekInMonth month="September" dayOfWeek="Monday" weekOrdinal="First" />
     </Rule>
   </NotableDate>
 
-  <!-- OCTOBER -->
   <NotableDate name="Columbus Day">
-    <Rule category="Holiday" territory="US" nonWorking="true">
+    <Rule name="Second Monday In October Columbus Day" category="Holiday" territory="US" nonWorking="true">
       <DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" />
     </Rule>
   </NotableDate>
 
-  <!-- NOVEMBER -->
   <NotableDate name="Veterans Day">
-    <Rule category="Holiday" territory="US" nonWorking="true">
+    <Rule name="Fixed Veterans Day With Weekend Roll" category="Holiday" territory="US" nonWorking="true">
       <Fixed month="November" day="11" />
       <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Thanksgiving">
-    <Rule category="Holiday" territory="US" nonWorking="true">
+    <Rule name="Fourth Thursday In November Thanksgiving" category="Holiday" territory="US" nonWorking="true">
       <DayOfWeekInMonth month="November" dayOfWeek="Thursday" weekOrdinal="Fourth" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Black Friday">
-    <Rule category="Cultural" territory="US">
+    <Rule name="Day After Thanksgiving Black Friday" category="Cultural" territory="US">
       <OffsetFromAnchor name="Thanksgiving" offset="1" />
     </Rule>
   </NotableDate>
+
 </NotableDates>

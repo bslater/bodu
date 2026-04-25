@@ -1,21 +1,34 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global cultural notable-date resource using the Western/Gregorian calendar.
+
+  These entries represent commonly recognised cultural observances. They are
+  not universally public holidays or non-working days in every country.
+  Country-specific resources should import only the dates they observe and
+  override nonWorking, weekend adjustment, naming, or suppression behaviour
+  where required.
+-->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
+  <!--
+    Fixed-date cultural observances.
+  -->
+
   <NotableDate name="Valentine's Day">
-    <Rule category="Cultural">
+    <Rule name="Fixed Valentine's Day" category="Cultural">
       <Fixed month="February" day="14" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="April Fool's Day">
-    <Rule category="Cultural">
+    <Rule name="Fixed April Fool's Day" category="Cultural">
       <Fixed month="April" day="1" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Halloween">
-    <Rule category="Cultural">
+    <Rule name="Fixed Halloween" category="Cultural">
       <Fixed month="October" day="31" />
     </Rule>
   </NotableDate>

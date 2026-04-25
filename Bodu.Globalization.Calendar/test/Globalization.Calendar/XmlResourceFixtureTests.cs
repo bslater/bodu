@@ -33,7 +33,8 @@ public sealed class XmlResourceFixtureTests
 	{
 		var provider = new XmlResourceNotableDateRuleProvider(
 			$"{FixtureNamespace}.CircularA.xml",
-			TestAssembly);
+            new ResourcePathResolver(),
+            TestAssembly);
 
 		var ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
 		{
@@ -54,7 +55,8 @@ public sealed class XmlResourceFixtureTests
 	{
 		var provider = new XmlResourceNotableDateRuleProvider(
 			$"{FixtureNamespace}.DupReferrer.xml",
-			TestAssembly);
+            new ResourcePathResolver(),
+            TestAssembly);
 
 		var rules = provider.LoadRules().ToList();
 
@@ -72,6 +74,7 @@ public sealed class XmlResourceFixtureTests
 	{
 		var provider = new XmlResourceNotableDateRuleProvider(
 			$"{FixtureNamespace}.MissingNameReferrer.xml",
+            new ResourcePathResolver(),
 			TestAssembly);
 
 		var ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
