@@ -257,22 +257,25 @@ internal sealed class NotableDateAdjuster
 	}
 
     /// <summary>
-    /// Advances <paramref name="original" /> forward until it lands on a non-working day in
-    /// the given territory and calendar context.
+    /// Advances <paramref name="original" /> forward, skipping days that are already non-working, and returns the first
+    /// working day found. That working day is then treated as the observance substitute, making it a non-working day.
     /// </summary>
     /// <param name="original">The starting date.</param>
     /// <param name="territoryCode">The territory code, or <see langword="null" />.</param>
     /// <param name="calendarType">The calendar type, or <see langword="null" />.</param>
-    /// <returns>The first non-working day at or after <paramref name="original" />.</returns>
+    /// <returns>
+    /// The first working day strictly after <paramref name="original" />, or <paramref name="original" /> itself if
+    /// no working day is found within 366 days.
+    /// </returns>
 	private DateTime MoveToNextNonWorkingDay(DateTime original, string? territoryCode, Type? calendarType)
 	{
-		// Walk forward at most 31 days looking for the next day that is *not* flagged non-working — i.e. the next "open" day.
-		// Reading "MoveToNextNonWorkingDay" literally: we move to the next day that is itself a non-working day.
-		// The original enum doc clarifies it skips to the following non-working day, used to avoid stacking observances.
+		// Skip days that are already non-working (weekends, other holidays) and stop on the first working day.
+		// That working day is promoted to a non-working substitute. For example, if Boxing Day falls on Saturday,
+		// the walk skips Sunday and lands on Monday, which becomes the public holiday substitute.
 		DateTime cursor = original.AddDays(1);
 		for (int i = 0; i < 366; i++, cursor = cursor.AddDays(1))
 		{
-			if (_isNonWorkingDay(cursor, territoryCode, calendarType))
+			if (!_isNonWorkingDay(cursor, territoryCode, calendarType))
 				return cursor;
 		}
 

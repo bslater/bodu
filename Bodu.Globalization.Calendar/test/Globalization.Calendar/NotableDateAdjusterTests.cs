@@ -213,12 +213,14 @@ public sealed partial class NotableDateAdjusterTests
 	}
 
 	/// <summary>
-	/// Verifies that <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> walks forward until the predicate returns true.
+	/// Verifies that <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> skips days that are already non-working and
+	/// stops on the first working day, which becomes the substitute observance.
 	/// </summary>
 	[TestMethod]
-	public void Apply_WhenMoveToNextNonWorkingDay_ShouldStopOnFirstMatchingDay()
+	public void Apply_WhenMoveToNextNonWorkingDay_ShouldSkipNonWorkingDaysAndStopOnFirstWorkingDay()
 	{
-		// First non-working day in this scenario is the first Saturday after the original date.
+		// isNonWorking returns true for Sat/Sun. Walk starts from a Saturday (4 Jan 2025);
+		// the next cursor is Sunday (non-working, skipped), then Monday (working) — the first eligible day.
 		var adjuster = CreateAdjuster(
 			isNonWorking: (d, t, c) => d.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday);
 
@@ -229,11 +231,11 @@ public sealed partial class NotableDateAdjusterTests
 			Action = AdjustmentAction.MoveToNextNonWorkingDay,
 		};
 
-		var wednesday = new DateTime(2025, 1, 1); // Wed
-		var result = adjuster.Apply(adjustment, SampleRule(), wednesday);
+		var saturday = new DateTime(2025, 1, 4); // Sat
+		var result = adjuster.Apply(adjustment, SampleRule(), saturday);
 
 		Assert.IsTrue(result.Activated);
-		Assert.AreEqual(DayOfWeek.Saturday, result.AdjustedDate.DayOfWeek);
+		Assert.AreEqual(DayOfWeek.Monday, result.AdjustedDate.DayOfWeek);
 	}
 
 	/// <summary>
@@ -553,13 +555,13 @@ public sealed partial class NotableDateAdjusterTests
 
 	/// <summary>
 	/// Verifies that <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> returns the
-	/// original date if the predicate never returns <see langword="true" /> within 366 days
-	/// (the bounded-walk fallback).
+	/// original date if no working day is found within 366 days (the bounded-walk fallback).
 	/// </summary>
 	[TestMethod]
 	public void Apply_WhenMoveToNextNonWorkingDayPredicateNeverMatches_ShouldReturnOriginal()
 	{
-		var adjuster = CreateAdjuster(isNonWorking: (d, t, c) => false);
+		// isNonWorking always returns true — every day is non-working — so no working day is ever found.
+		var adjuster = CreateAdjuster(isNonWorking: (d, t, c) => true);
 		var adjustment = new ObservanceAdjustment
 		{
 			Key = "k",

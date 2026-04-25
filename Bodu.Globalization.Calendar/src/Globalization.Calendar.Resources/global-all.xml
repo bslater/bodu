@@ -55,5 +55,9 @@
     <UseAll />
   </UseFrom>
 
+  <UseFrom resource="./christian-gregorian.xml">
+    <UseAll />
+  </UseFrom>
+
 
 </NotableDates>
