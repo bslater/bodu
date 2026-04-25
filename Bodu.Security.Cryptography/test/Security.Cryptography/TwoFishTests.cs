@@ -10,5 +10,5 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class TwofishTests
     : SymmetricAlgorithmTests<Twofish>
 {
-    protected override Twofish CreateAlgorithm() => TwoFish.Create();
+    protected override Twofish CreateAlgorithm() => Twofish.Create();
 }
