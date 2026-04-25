@@ -25,6 +25,8 @@
       href: cubehash.md
     - name: Using Snefru
       href: snefru.md
+    - name: Using ASCON
+      href: ascon.md
     - name: Using Merkle trees
       href: merkle-trees.md
 - name: Symmetric algorithms
