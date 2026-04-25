@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global food and agriculture notable-date resource using the Western/Gregorian calendar.
+
+  These entries represent internationally recognised food security, agriculture,
+  nutrition, and dietary observances. They are not universally public holidays or
+  non-working days in every country. Country-specific resources should import only
+  the dates they observe and override naming, suppression, or behavioural rules
+  where required.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <!--
+    Fixed-date food and agriculture observances.
+  -->
+
+  <NotableDate name="World Pulses Day">
+    <Rule name="Fixed World Pulses Day" category="Observance" firstYear="2019"
+          comment="Proclaimed by the United Nations General Assembly in 2018 (resolution 73/251) and first observed on 10 February 2019, to raise awareness of the nutritional benefits of pulses.">
+      <Fixed month="February" day="10" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Food Safety Day">
+    <Rule name="Fixed World Food Safety Day" category="Observance" firstYear="2019"
+          comment="Established by the United Nations General Assembly in 2018 (resolution 73/250) and first observed on 7 June 2019. Co-sponsored by the Food and Agriculture Organization (FAO) and the World Health Organization (WHO).">
+      <Fixed month="June" day="7" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Vegetarian Day">
+    <Rule name="Fixed World Vegetarian Day" category="Cultural" firstYear="1977"
+          comment="Established in 1977 by the North American Vegetarian Society and endorsed by the International Vegetarian Union in 1978, to promote the joy, compassion, and life-enhancing possibilities of vegetarianism.">
+      <Fixed month="October" day="1" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Food Day">
+    <Rule name="Fixed World Food Day" category="Observance" firstYear="1979"
+          comment="Established by the United Nations Food and Agriculture Organization (FAO) in 1979 and first observed on 16 October 1981. The date marks the founding of the FAO in 1945.">
+      <Fixed month="October" day="16" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Vegan Day">
+    <Rule name="Fixed World Vegan Day" category="Cultural" firstYear="1994"
+          comment="Established in 1994 by the Vegan Society to mark the organisation's 50th anniversary and to celebrate veganism worldwide.">
+      <Fixed month="November" day="1" />
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

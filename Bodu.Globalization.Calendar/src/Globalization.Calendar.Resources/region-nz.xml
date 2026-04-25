@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  New Zealand notable-date resource using the Western/Gregorian calendar.
+
+  These entries represent New Zealand national public holidays and widely observed
+  cultural dates. National rules use territory="NZ".
+
+  Regional anniversary days are observed by each of New Zealand's regions on
+  different dates. These are not included in this resource as they require
+  granular regional territory codes beyond the national level.
+
+  Note on Matariki: Matariki (Māori New Year) was established as a national public
+  holiday by the Te Kāhui o Matariki Public Holiday Act 2022. The date is set each
+  year by the Matariki Advisory Board based on the lunar/stellar calendar and falls
+  on a Friday in June or July. This rule requires a custom INotableDateCalculator
+  registered under the key "matariki".
+
+  Country-specific rules explicitly import only the inherited global and Christian
+  dates that New Zealand observes, and override naming, territory, nonWorking,
+  adjustment, or tagging behaviour where required.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <!--
+    Imported global observances.
+  -->
+
+  <UseFrom resource="./global-all.xml">
+    <Use name="New Year's Day" territory="NZ" nonWorking="true">
+      <Rule name="New Zealand New Year's Day With Weekend Roll" category="Holiday" nonWorking="true">
+        <Tag>NationalHoliday</Tag>
+        <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
+      </Rule>
+    </Use>
+    <Use name="Valentine's Day" territory="NZ" />
+    <Use name="Halloween" territory="NZ" />
+    <Use name="Remembrance Day" territory="NZ" />
+  </UseFrom>
+
+  <!--
+    Imported Christian observances.
+  -->
+
+  <UseFrom resource="./christian-gregorian.xml">
+    <Use name="Easter Sunday" territory="NZ" />
+    <Use name="Good Friday" territory="NZ" nonWorking="true" />
+    <Use name="Holy Saturday" as="Easter Saturday" territory="NZ" />
+    <Use name="Easter Monday" territory="NZ" nonWorking="true" />
+    <Use name="Christmas Day" territory="NZ" nonWorking="true">
+      <Rule name="New Zealand Christmas Day With Weekend Roll" category="Holiday" nonWorking="true">
+        <Tag>NationalHoliday</Tag>
+        <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
+      </Rule>
+    </Use>
+    <Use name="Boxing Day" territory="NZ" nonWorking="true">
+      <Rule name="New Zealand Boxing Day With Weekend Roll" category="Holiday" nonWorking="true">
+        <Tag>NationalHoliday</Tag>
+        <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
+      </Rule>
+    </Use>
+  </UseFrom>
+
+  <!--
+    National New Zealand holidays and observances.
+  -->
+
+  <NotableDate name="Day after New Year's Day">
+    <Rule name="Fixed Day After New Year's Day With Weekend Roll"
+          category="Holiday"
+          territory="NZ"
+          nonWorking="true"
+          comment="When 2 January falls on a weekend, the observed holiday shifts to the next weekday not already occupied by the New Year's Day substitute.">
+      <Fixed month="January" day="2" />
+      <Tag>NationalHoliday</Tag>
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Waitangi Day">
+    <Rule name="Fixed Waitangi Day With Weekend Roll"
+          category="Holiday"
+          territory="NZ"
+          nonWorking="true"
+          comment="Commemorates the signing of the Treaty of Waitangi on 6 February 1840. A Monday substitute is observed when Waitangi Day falls on a weekend, following the Waitangi Day Act 1960 as amended in 2013.">
+      <Fixed month="February" day="6" />
+      <Tag>NationalHoliday</Tag>
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Anzac Day">
+    <Rule name="Fixed Anzac Day With Weekend Roll"
+          category="Remembrance"
+          territory="NZ"
+          nonWorking="true"
+          comment="Commemorates Australian and New Zealand soldiers who served in the Gallipoli campaign. A Monday substitute is observed when Anzac Day falls on a Sunday, following amendments to the Anzac Day Act 1966.">
+      <Fixed month="April" day="25" />
+      <Tag>NationalHoliday</Tag>
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Sovereign's Birthday">
+    <Rule name="First Monday In June Sovereign's Birthday"
+          category="Holiday"
+          territory="NZ"
+          nonWorking="true"
+          comment="Observed on the first Monday in June. Celebrated as the Sovereign's Birthday following a long-standing tradition; the specific Monday was historically linked to Queen Elizabeth II and continues under King Charles III.">
+      <DayOfWeekInMonth month="June" dayOfWeek="Monday" weekOrdinal="First" />
+      <Tag>NationalHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Matariki">
+    <Rule name="Matariki"
+          category="Holiday"
+          territory="NZ"
+          nonWorking="true"
+          firstYear="2022"
+          comment="Māori New Year. Established as a public holiday by the Te Kāhui o Matariki Public Holiday Act 2022. The date is determined annually by the Matariki Advisory Board and falls on a Friday in June or July. This rule requires a custom INotableDateCalculator registered under the key 'matariki'.">
+      <Calculator key="matariki" />
+      <Tag>NationalHoliday</Tag>
+      <Tag>Māori</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Labour Day">
+    <Rule name="Fourth Monday In October Labour Day"
+          category="Holiday"
+          territory="NZ"
+          nonWorking="true"
+          comment="Commemorates the eight-hour working day movement. New Zealand was one of the first countries in the world to achieve an eight-hour working day, in 1840.">
+      <DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="Fourth" />
+      <Tag>NationalHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <!--
+    Widely observed New Zealand cultural observances.
+  -->
+
+  <NotableDate name="Mother's Day">
+    <Rule name="Second Sunday In May Mother's Day" category="Observance" territory="NZ">
+      <DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Second" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Father's Day">
+    <Rule name="First Sunday In September Father's Day" category="Observance" territory="NZ">
+      <DayOfWeekInMonth month="September" dayOfWeek="Sunday" weekOrdinal="First" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Guy Fawkes Night">
+    <Rule name="Fixed Guy Fawkes Night" category="Cultural" territory="NZ"
+          comment="Commemorates the foiling of the Gunpowder Plot of 5 November 1605. Widely observed in New Zealand as a fireworks celebration, reflecting the country's British heritage.">
+      <Fixed month="November" day="5" />
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

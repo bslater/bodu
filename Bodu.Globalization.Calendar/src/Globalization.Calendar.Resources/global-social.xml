@@ -39,4 +39,46 @@
     </Rule>
   </NotableDate>
 
+  <NotableDate name="World Day of Social Justice">
+    <Rule name="Fixed World Day of Social Justice" category="Observance" firstYear="2009"
+          comment="Proclaimed by the United Nations General Assembly in 2007 (resolution 62/10) and first observed on 20 February 2009, to acknowledge that social development and social justice are indispensable to peace and security.">
+      <Fixed month="February" day="20" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Day Against Child Labour">
+    <Rule name="Fixed World Day Against Child Labour" category="Observance" firstYear="2002"
+          comment="Launched by the International Labour Organization (ILO) in 2002 to raise awareness and action to combat child labour and to improve working conditions.">
+      <Fixed month="June" day="12" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Nelson Mandela International Day">
+    <Rule name="Fixed Nelson Mandela International Day" category="Observance" firstYear="2010"
+          comment="Proclaimed by the United Nations General Assembly in 2009 (resolution 64/13) and first observed on 18 July 2010, the anniversary of Nelson Mandela's birth, in recognition of his contribution to the culture of peace and freedom.">
+      <Fixed month="July" day="18" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Day of Charity">
+    <Rule name="Fixed International Day of Charity" category="Observance" firstYear="2012"
+          comment="Proclaimed by the United Nations General Assembly in 2012 (resolution 67/105) and first observed on 5 September 2013. The date marks the anniversary of the death of Mother Teresa of Calcutta in 1997.">
+      <Fixed month="September" day="5" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Day of the Girl Child">
+    <Rule name="Fixed International Day of the Girl Child" category="Observance" firstYear="2012"
+          comment="Proclaimed by the United Nations General Assembly in 2011 (resolution 66/170) and first observed on 11 October 2012, to recognise girls' rights and challenges faced by girls worldwide.">
+      <Fixed month="October" day="11" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Universal Children's Day">
+    <Rule name="Fixed Universal Children's Day" category="Observance" firstYear="1954"
+          comment="Established by the United Nations General Assembly in 1954 (resolution 836(IX)) to promote international togetherness, awareness among children worldwide, and improving children's welfare. The date also marks the adoption of the Convention on the Rights of the Child in 1989.">
+      <Fixed month="November" day="20" />
+    </Rule>
+  </NotableDate>
+
 </NotableDates>
