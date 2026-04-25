@@ -17,7 +17,7 @@ public sealed partial class TwofishTests
     [TestMethod]
     public void BlockMode_WhenDefault_ShouldBeCbc()
     {
-        using var algorithm = CreateAlgorithm();
+        using Twofish algorithm = CreateAlgorithm();
         Assert.AreEqual(CipherBlockMode.CBC, algorithm.BlockMode);
     }
 
@@ -32,7 +32,7 @@ public sealed partial class TwofishTests
     [DataRow(CipherBlockMode.CTR)]
     public void BlockMode_WhenSet_ShouldReturnSameValueOnGet(CipherBlockMode mode)
     {
-        using var algorithm = CreateAlgorithm();
+        using Twofish algorithm = CreateAlgorithm();
         algorithm.BlockMode = mode;
         Assert.AreEqual(mode, algorithm.BlockMode);
     }
@@ -48,7 +48,7 @@ public sealed partial class TwofishTests
     [DataRow(CipherBlockMode.OFB, CipherMode.OFB)]
     public void BlockMode_WhenSetToMappableValue_ShouldSynchronizeModeProperty(CipherBlockMode blockMode, CipherMode expectedMode)
     {
-        using var algorithm = CreateAlgorithm();
+        using Twofish algorithm = CreateAlgorithm();
         algorithm.BlockMode = blockMode;
         Assert.AreEqual(expectedMode, algorithm.Mode);
     }
@@ -65,7 +65,7 @@ public sealed partial class TwofishTests
     [DataRow(CipherBlockMode.SIV)]
     public void BlockMode_WhenSetToUnmappableValue_ShouldNotChangeModeProperty(CipherBlockMode mode)
     {
-        using var algorithm = CreateAlgorithm();
+        using Twofish algorithm = CreateAlgorithm();
         CipherMode modeBefore = algorithm.Mode;
         algorithm.BlockMode = mode;
         Assert.AreEqual(modeBefore, algorithm.Mode);
