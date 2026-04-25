@@ -12,7 +12,8 @@ public partial class NotableDateRuleParserTests
 	public const string FixedRuleXml = @"
 		<NotableDates xmlns=""urn:bodu:globalization:calendar"">
 			<NotableDate name=""Fixed Rule Test"">
-				<Rule category=""Holiday""
+				<Rule name=""Fixed Rule Test Rule""
+				      category=""Holiday""
 				      firstYear=""2000""
 				      lastYear=""2100""
 				      occurrenceYears=""4""
@@ -33,7 +34,7 @@ public partial class NotableDateRuleParserTests
 	public const string DayOfWeekInMonthRuleXml = @"
 		<NotableDates xmlns=""urn:bodu:globalization:calendar"">
 			<NotableDate name=""Mother's Day Test"">
-				<Rule category=""Observance"">
+				<Rule name=""Mother's Day Observance Rule"" category=""Observance"">
 					<DayOfWeekInMonth month=""May"" dayOfWeek=""Sunday"" weekOrdinal=""Second"" />
 				</Rule>
 			</NotableDate>
@@ -42,7 +43,7 @@ public partial class NotableDateRuleParserTests
 	public const string CalculatorRuleXml = @"
 		<NotableDates xmlns=""urn:bodu:globalization:calendar"">
 			<NotableDate name=""Easter Sunday Test"">
-				<Rule category=""Observance"" firstYear=""1583"">
+				<Rule name=""Easter Sunday Calculator Rule"" category=""Observance"" firstYear=""1583"">
 					<Calculator key=""easter-sunday"" />
 				</Rule>
 			</NotableDate>
@@ -51,7 +52,7 @@ public partial class NotableDateRuleParserTests
 	public const string OffsetFromAnchorRuleXml = @"
 		<NotableDates xmlns=""urn:bodu:globalization:calendar"">
 			<NotableDate name=""Good Friday Test"">
-				<Rule category=""Holiday"">
+				<Rule name=""Good Friday Offset Rule"" category=""Holiday"">
 					<OffsetFromAnchor name=""Easter Sunday"" offset=""-2"" />
 				</Rule>
 			</NotableDate>
@@ -60,23 +61,23 @@ public partial class NotableDateRuleParserTests
 	public const string MultiRuleXml = @"
 		<NotableDates xmlns=""urn:bodu:globalization:calendar"">
 			<NotableDate name=""New Year's Day"">
-				<Rule category=""Holiday"" nonWorking=""true"">
+				<Rule name=""New Year's Day Rule"" category=""Holiday"" nonWorking=""true"">
 					<Fixed month=""January"" day=""1"" />
 					<Adjustment key=""weekend-roll"" when=""IfWeekend"" action=""MoveToNextWeekday"" priority=""1"" />
 				</Rule>
 			</NotableDate>
 			<NotableDate name=""Easter Sunday"">
-				<Rule category=""Observance"" firstYear=""1583"">
+				<Rule name=""Easter Sunday Rule"" category=""Observance"" firstYear=""1583"">
 					<Calculator key=""easter-sunday"" />
 				</Rule>
 			</NotableDate>
 			<NotableDate name=""Good Friday"">
-				<Rule category=""Holiday"" firstYear=""1583"" nonWorking=""true"">
+				<Rule name=""Good Friday Rule"" category=""Holiday"" firstYear=""1583"" nonWorking=""true"">
 					<OffsetFromAnchor name=""Easter Sunday"" offset=""-2"" />
 				</Rule>
 			</NotableDate>
 			<NotableDate name=""Anzac Day"">
-				<Rule category=""Remembrance"" territory=""AU,NZ"" nonWorking=""true"">
+				<Rule name=""Anzac Day Rule"" category=""Remembrance"" territory=""AU,NZ"" nonWorking=""true"">
 					<Fixed month=""April"" day=""25"" />
 				</Rule>
 			</NotableDate>
@@ -92,7 +93,7 @@ public partial class NotableDateRuleParserTests
 				<Use name=""Christmas Day"" as=""Christmas"" territory=""US"" nonWorking=""true"" priority=""5"" />
 			</UseFrom>
 			<NotableDate name=""Independence Day"">
-				<Rule category=""Holiday"" territory=""US"" nonWorking=""true"">
+				<Rule name=""Independence Day Rule"" category=""Holiday"" territory=""US"" nonWorking=""true"">
 					<Fixed month=""July"" day=""4"" />
 				</Rule>
 			</NotableDate>

@@ -621,7 +621,7 @@ public sealed class CoverageGapFillTests
 	{
 		string xml = UseDirectiveNamespaceHeader +
 			"  <NotableDate name=\"Missing Type Test\">\n" +
-			"    <Rule category=\"Observance\">\n" +
+			"    <Rule name=\"Missing Type Rule\" category=\"Observance\">\n" +
 			"      <Calculator key=\"x\" type=\"Totally.Invalid.Namespace.DoesNotExist, Nowhere\" />\n" +
 			"    </Rule>\n" +
 			"  </NotableDate>\n" +
