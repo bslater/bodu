@@ -14,8 +14,9 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// ASCON-HASHA256 uses an 8-round Ascon-p permutation (Ascon-p8) during message block absorption and the full 12-round permutation
-/// (Ascon-p12) during initialisation and output squeezing. The reduced absorption round count improves throughput for long messages
-/// relative to <see cref="AsconHash256" /> at a reduced — though still substantial — security margin.
+/// (Ascon-p12) during the initial squeeze phase. Subsequent squeeze blocks also use Ascon-p8. The reduced absorption round count
+/// improves throughput for long messages relative to <see cref="AsconHash256" /> at a reduced — though still substantial — security
+/// margin.
 /// </para>
 /// <para>
 /// For the highest security margin, use <see cref="AsconHash256" />, which applies Ascon-p12 at every phase.
@@ -32,12 +33,19 @@ namespace Bodu.Security.Cryptography;
 public sealed class AsconHashA256
     : AsconHash<AsconHashA256>
 {
-    private const ulong Iv = 0x00400c0400000100UL;
+    // Pre-computed initial state for ASCON-HASHA256 (NIST SP 800-232).
+    // These five words are the result of applying Ascon-p12 to [raw_IV, 0, 0, 0, 0].
+    // Source: ascon-c opt64/constants.h, ASCON_HASHA_IV0..IV4.
+    private const ulong Iv0 = 0xe2ffb4d17ffcadc5UL;
+    private const ulong Iv1 = 0xdd364b655fa88cebUL;
+    private const ulong Iv2 = 0xdcaabe85a70319d2UL;
+    private const ulong Iv3 = 0xd98f049404be3214UL;
+    private const ulong Iv4 = 0xca8c9d516e8a2221UL;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AsconHashA256" /> class.
     /// </summary>
     public AsconHashA256()
-        : base(Iv, 8, "ASCON-HASHA256")
+        : base(Iv0, Iv1, Iv2, Iv3, Iv4, 8, "ASCON-HASHA256")
     { }
 }

@@ -31,12 +31,19 @@ namespace Bodu.Security.Cryptography;
 public sealed class AsconHash256
     : AsconHash<AsconHash256>
 {
-    private const ulong Iv = 0x00400c0000000100UL;
+    // Pre-computed initial state for ASCON-HASH256 (NIST SP 800-232).
+    // These five words are the result of applying Ascon-p12 to [raw_IV, 0, 0, 0, 0].
+    // Source: ascon-c opt64/constants.h, ASCON_HASH_IV0..IV4.
+    private const ulong Iv0 = 0x9b1e5494e934d681UL;
+    private const ulong Iv1 = 0x4bc3a01e333751d2UL;
+    private const ulong Iv2 = 0xae65396c6b34b81aUL;
+    private const ulong Iv3 = 0x3c7fd4a4d56a4db3UL;
+    private const ulong Iv4 = 0x1a5c464906c5976dUL;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AsconHash256" /> class.
     /// </summary>
     public AsconHash256()
-        : base(Iv, 12, "ASCON-HASH256")
+        : base(Iv0, Iv1, Iv2, Iv3, Iv4, 12, "ASCON-HASH256")
     { }
 }

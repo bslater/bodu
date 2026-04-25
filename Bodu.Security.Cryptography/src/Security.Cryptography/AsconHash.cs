@@ -18,16 +18,18 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// All ASCON hash algorithms share a 320-bit internal state comprising five 64-bit words, a 64-bit (8-byte) rate, and a 256-bit
-/// output. They differ in their initialisation vector and in the number of Ascon-p rounds applied after each absorbed block. The
-/// initialisation and squeezing phases always use the full 12-round permutation (Ascon-p12).
+/// output. They differ in their pre-computed initialisation state and in the number of Ascon-p rounds applied after each absorbed
+/// block. The initial squeeze always uses the full 12-round permutation (Ascon-p12); subsequent squeeze blocks use the same round
+/// count as absorption.
 /// </para>
 /// <para>
-/// Padding follows the Ascon convention: the byte immediately after the last input byte is set to <c>0x80</c>, and the remaining
-/// rate bytes are zero. A padding block is always appended, even when the message length is a multiple of the eight-byte rate.
+/// Padding follows the Ascon convention: the byte immediately after the last input byte is set to <c>0x01</c> (the little-endian
+/// sentinel bit), and the remaining rate bytes are zero. A padding block is always appended, even when the message length is a
+/// multiple of the eight-byte rate.
 /// </para>
 /// <para>
-/// Concrete derived types supply the initialisation vector, absorption round count, and canonical algorithm name via the protected
-/// constructor. No further overrides are required.
+/// Concrete derived types supply the five pre-computed post-initialisation state words and the absorption round count via the
+/// protected constructor. No further overrides are required.
 /// </para>
 /// </remarks>
 public abstract partial class AsconHash<T>
@@ -36,9 +38,14 @@ public abstract partial class AsconHash<T>
 {
     private readonly string _algorithmName;
     private readonly int _absorptionRounds;
-    private readonly ulong _initializationVector;
+    private readonly ulong _iv0;
+    private readonly ulong _iv1;
+    private readonly ulong _iv2;
+    private readonly ulong _iv3;
+    private readonly ulong _iv4;
 
     private bool _disposed;
+    private bool _useP12ForFinalPad;
     private ulong _s0;
     private ulong _s1;
     private ulong _s2;
@@ -48,9 +55,11 @@ public abstract partial class AsconHash<T>
     /// <summary>
     /// Initializes a new instance of the <see cref="AsconHash{T}" /> class with the specified algorithm parameters.
     /// </summary>
-    /// <param name="initializationVector">
-    /// The 64-bit initialisation vector encoding the algorithm variant, rate, and round counts per NIST SP 800-232.
-    /// </param>
+    /// <param name="iv0">Pre-computed initial state word 0 (result of applying Ascon-p12 to the raw IV).</param>
+    /// <param name="iv1">Pre-computed initial state word 1.</param>
+    /// <param name="iv2">Pre-computed initial state word 2.</param>
+    /// <param name="iv3">Pre-computed initial state word 3.</param>
+    /// <param name="iv4">Pre-computed initial state word 4.</param>
     /// <param name="absorptionRounds">
     /// The number of Ascon-p rounds applied after each absorbed block. Must be between 1 and 12 inclusive.
     /// </param>
@@ -61,14 +70,18 @@ public abstract partial class AsconHash<T>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="absorptionRounds" /> is less than 1 or greater than 12.
     /// </exception>
-    protected AsconHash(ulong initializationVector, int absorptionRounds, string algorithmName)
+    protected AsconHash(ulong iv0, ulong iv1, ulong iv2, ulong iv3, ulong iv4, int absorptionRounds, string algorithmName)
         : base(8)
     {
         ThrowHelper.ThrowIfNull(algorithmName);
         ThrowHelper.ThrowIfLessThan(absorptionRounds, 1);
         ThrowHelper.ThrowIfGreaterThan(absorptionRounds, 12);
 
-        this._initializationVector = initializationVector;
+        this._iv0 = iv0;
+        this._iv1 = iv1;
+        this._iv2 = iv2;
+        this._iv3 = iv3;
+        this._iv4 = iv4;
         this._absorptionRounds = absorptionRounds;
         this._algorithmName = algorithmName;
         this.HashSizeValue = 256;
@@ -108,12 +121,14 @@ public abstract partial class AsconHash<T>
         this.ThrowIfDisposed();
         base.Initialize();
 
-        this._s0 = this._initializationVector;
-        this._s1 = 0;
-        this._s2 = 0;
-        this._s3 = 0;
-        this._s4 = 0;
-        this.ApplyPermutation(12);
+        // Load the pre-computed initial state directly — no permutation is needed because these
+        // values are already the result of applying Ascon-p12 to the raw IV constant.
+        this._s0 = this._iv0;
+        this._s1 = this._iv1;
+        this._s2 = this._iv2;
+        this._s3 = this._iv3;
+        this._s4 = this._iv4;
+        this._useP12ForFinalPad = false;
     }
 
     /// <summary>
@@ -153,23 +168,34 @@ public abstract partial class AsconHash<T>
         Span<byte> padded = stackalloc byte[8];
         block.CopyTo(padded);
         padded[block.Length] = 0x01;
+
+        // Signal ProcessBlock to use 12 rounds for this final padded block, which corresponds
+        // to the initial squeeze permutation in the reference implementation.
+        this._useP12ForFinalPad = true;
         return padded.ToArray();
     }
 
     /// <summary>
-    /// Absorbs a single 8-byte rate block into the sponge state and applies the Ascon-p permutation using the configured
-    /// absorption round count.
+    /// Absorbs a single 8-byte rate block into the sponge state and applies the Ascon-p permutation. Full message blocks use
+    /// the configured absorption round count; the final padded block always uses 12 rounds to match the reference squeeze
+    /// initialisation.
     /// </summary>
     /// <param name="block">The 8-byte input block to absorb. Its length must equal the configured block size.</param>
     protected override void ProcessBlock(ReadOnlySpan<byte> block)
     {
         this._s0 ^= BinaryPrimitives.ReadUInt64LittleEndian(block);
-        this.ApplyPermutation(this._absorptionRounds);
+
+        // The final padded block must use 12 rounds (Ascon-p12) because it corresponds to the
+        // initial permutation of the squeeze phase in the reference algorithm. Regular absorption
+        // blocks use _absorptionRounds (12 for HASH256, 8 for HASHA256).
+        int rounds = this._useP12ForFinalPad ? 12 : this._absorptionRounds;
+        this._useP12ForFinalPad = false;
+        this.ApplyPermutation(rounds);
     }
 
     /// <summary>
-    /// Squeezes the 256-bit hash output from the sponge state by extracting four successive 64-bit words, each preceded by a
-    /// 12-round Ascon-p permutation except the first.
+    /// Squeezes the 256-bit hash output from the sponge state by extracting four successive 64-bit words, with
+    /// <c>_absorptionRounds</c> Ascon-p permutation rounds applied between each extraction.
     /// </summary>
     /// <returns>A 32-byte array containing the final hash digest.</returns>
     protected override byte[] ProcessFinalBlock()
@@ -177,11 +203,11 @@ public abstract partial class AsconHash<T>
         byte[] hash = new byte[32];
 
         BinaryPrimitives.WriteUInt64LittleEndian(hash.AsSpan(0, 8), this._s0);
-        this.ApplyPermutation(12);
+        this.ApplyPermutation(this._absorptionRounds);
         BinaryPrimitives.WriteUInt64LittleEndian(hash.AsSpan(8, 8), this._s0);
-        this.ApplyPermutation(12);
+        this.ApplyPermutation(this._absorptionRounds);
         BinaryPrimitives.WriteUInt64LittleEndian(hash.AsSpan(16, 8), this._s0);
-        this.ApplyPermutation(12);
+        this.ApplyPermutation(this._absorptionRounds);
         BinaryPrimitives.WriteUInt64LittleEndian(hash.AsSpan(24, 8), this._s0);
 
         return hash;
