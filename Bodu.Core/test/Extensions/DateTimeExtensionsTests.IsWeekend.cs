@@ -54,4 +54,23 @@ public partial class DateTimeExtensionsTests
         });
     }
 
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.IsWeekend(DayOfWeek, CalendarWeekendDefinition, IWeekendDefinitionProvider?)" />
+    /// returns <see langword="false" /> for every day of the week when called with
+    /// <see cref="CalendarWeekendDefinition.None" />, matching the enum's documented contract that no standard weekend is defined.
+    /// </summary>
+    [TestMethod]
+    [DataRow(DayOfWeek.Sunday)]
+    [DataRow(DayOfWeek.Monday)]
+    [DataRow(DayOfWeek.Tuesday)]
+    [DataRow(DayOfWeek.Wednesday)]
+    [DataRow(DayOfWeek.Thursday)]
+    [DataRow(DayOfWeek.Friday)]
+    [DataRow(DayOfWeek.Saturday)]
+    public void IsWeekend_WhenNoneAndAnyDay_ShouldReturnFalse(DayOfWeek day)
+    {
+        bool actual = DateTimeExtensions.IsWeekend(day, CalendarWeekendDefinition.None);
+
+        Assert.IsFalse(actual, $"CalendarWeekendDefinition.None must classify every day as a weekday, but {day} was classified as weekend.");
+    }
 }
