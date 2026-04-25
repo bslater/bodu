@@ -45,8 +45,8 @@ public partial class AsconHash256Tests
     protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(Variant variant) =>
         new Dictionary<string, string>
         {
-            // Known-answer test vectors sourced from NIST SP 800-232 and the ASCON v1.2 reference implementation.
-            ["Empty"] = "7346BC14F036E87AE03D0997913088F5F68411434B3CF8B54FA796A80D251F91",
+            // Known-answer test vectors sourced from the ASCON reference implementation (ascon-c, LWC_HASH_KAT_128_256.txt).
+            ["Empty"] = "0B3BE5850F2F6B98CAF29F8FDEA89B64A1FA70AA249B8F839BD53BAA304D92B2",
         };
 
     /// <inheritdoc />
