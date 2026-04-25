@@ -183,10 +183,11 @@ public sealed partial class NotableDateServiceTests
 	}
 
 	/// <summary>
-	/// Verifies that when no day within the adjuster's 366-iteration bound qualifies as non-working, the service-level walk
-	/// still terminates without recursion. With <see cref="CalendarWeekendDefinition.None" /> no day short-circuits as a weekend,
-	/// so the re-entry guard must carry the entire walk: every iteration returns an empty snapshot, the adjuster exhausts the
-	/// bound and falls back to the original date, and only the base occurrence is emitted.
+	/// Verifies that when no day within the adjuster's 366-iteration bound qualifies as non-working, the service-level walk still
+	/// terminates without recursion. A custom <see cref="IWeekendDefinitionProvider" /> that classifies every day as a weekday
+	/// removes the only short-circuit available to the walk, so the re-entry guard must carry every iteration: each call returns
+	/// an empty snapshot, the adjuster exhausts the bound and falls back to the original date, and only the base occurrence is
+	/// emitted.
 	/// </summary>
 	[TestMethod]
 	public void GetNotableDates_WhenMoveToNextNonWorkingDayCannotFindCandidateUnderReEntry_ShouldEmitBaseOnly()
@@ -203,7 +204,8 @@ public sealed partial class NotableDateServiceTests
 
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
-			CalendarWeekendDefinition.None);
+			CalendarWeekendDefinition.Custom,
+			weekendProvider: new NeverWeekendProvider());
 
 		List<NotableDate> results = service.GetNotableDates(2025)
 			.Where(r => r.Name == "Unreachable Shift")
@@ -212,5 +214,16 @@ public sealed partial class NotableDateServiceTests
 		Assert.AreEqual(1, results.Count, "When the bounded walk cannot find a non-working day under re-entry, only the base occurrence should survive.");
 		Assert.AreEqual(new DateTime(2025, 1, 1), results[0].Date);
 		Assert.IsFalse(results[0].WasAdjusted);
+	}
+
+	/// <summary>
+	/// <see cref="IWeekendDefinitionProvider" /> that classifies every day of the week as a weekday, used to exercise the
+	/// re-entry guard's coverage when the adjuster's <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> walk has no weekend
+	/// short-circuit available.
+	/// </summary>
+	private sealed class NeverWeekendProvider : IWeekendDefinitionProvider
+	{
+		/// <inheritdoc />
+		public bool IsWeekend(DayOfWeek dayOfWeek) => false;
 	}
 }
