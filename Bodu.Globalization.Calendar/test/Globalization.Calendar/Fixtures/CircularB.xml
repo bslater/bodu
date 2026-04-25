@@ -7,7 +7,7 @@
     <UseAll />
   </UseFrom>
   <NotableDate name="Circular B Marker">
-    <Rule category="Observance">
+    <Rule name="Circular B Marker Rule" category="Observance">
       <Fixed month="January" day="3" />
     </Rule>
   </NotableDate>
