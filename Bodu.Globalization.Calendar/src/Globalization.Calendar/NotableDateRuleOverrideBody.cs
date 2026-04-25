@@ -30,7 +30,23 @@ public sealed record NotableDateRuleOverrideBody
 	/// <summary>
 	/// Gets the override for <see cref="NotableDateRule.Name" />.
 	/// </summary>
+	/// <remarks>
+	/// Reserved for programmatic construction; the XML parser does not populate this from the inner <c>&lt;Rule&gt;</c>'s
+	/// <c>name</c> attribute (use the directive's <c>as</c> attribute to rename inherited rules).
+	/// </remarks>
 	public string? Name { get; init; }
+
+	/// <summary>
+	/// Gets the rule-level identifier used to target a specific inherited rule for override when the source notable date contains
+	/// more than one <see cref="NotableDateRule" />.
+	/// </summary>
+	/// <remarks>
+	/// When set, the merger applies this override only to the inherited rule whose <see cref="NotableDateRule.RuleName" /> matches
+	/// (case-insensitive). When <see langword="null" /> the override applies to every inherited rule sharing the directive's
+	/// canonical name. Populated by the parser from the inner <c>&lt;Rule&gt;</c>'s <c>name</c> attribute.
+	/// </remarks>
+	/// <returns>The rule-level identifier, or <see langword="null" /> to broadcast the override to every matching rule.</returns>
+	public string? RuleName { get; init; }
 
 	/// <summary>
 	/// Gets the override for <see cref="NotableDateRule.Category" />.

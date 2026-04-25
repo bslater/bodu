@@ -165,6 +165,7 @@ public static class NotableDateRuleParser
 			Comment: GetOptionalAttribute(useElement, "comment"),
 			ClearTags: ParseOptionalBool(useElement, "clearTags") ?? false,
 			ClearAdjustments: ParseOptionalBool(useElement, "clearAdjustments") ?? false,
+			ClearInherited: ParseOptionalBool(useElement, "clearInherited") ?? false,
 			OverrideBody: overrideBody);
 	}
 
@@ -193,9 +194,12 @@ public static class NotableDateRuleParser
 				_ => throw new InvalidOperationException($"Unknown strategy element '{strategyElement.Name.LocalName}' on override rule.")
 			};
 
+		// The inner <Rule>'s name attribute is treated as a rule-level identifier (RuleName), used by the merger to target a
+		// specific inherited rule when the source notable date contains more than one. It does not rename the inherited rule —
+		// canonical naming flows from the source rule or the directive's `as` attribute.
 		var body = new NotableDateRuleOverrideBody
 		{
-			Name = GetOptionalAttribute(ruleElement, "name"),
+			RuleName = GetOptionalAttribute(ruleElement, "name"),
 			Category = ParseOptionalEnum<NotableDateCategory>(ruleElement, "category"),
 			TerritoryCode = GetOptionalAttribute(ruleElement, "territory"),
 			IsNonWorkingDay = ParseOptionalBool(ruleElement, "nonWorking"),
@@ -303,7 +307,8 @@ public static class NotableDateRuleParser
 
 			var rule = new NotableDateRule
 			{
-				Name = GetOptionalAttribute(ruleElement, "name") ?? name,
+				Name = name,
+				RuleName = GetOptionalAttribute(ruleElement, "name"),
 				Strategy = strategy,
 				Category = ParseOptionalEnum<NotableDateCategory>(ruleElement, "category") ?? NotableDateCategory.None,
 				FirstYear = ParseOptionalInt(ruleElement, "firstYear"),

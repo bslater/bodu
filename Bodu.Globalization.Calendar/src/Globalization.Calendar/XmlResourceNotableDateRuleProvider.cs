@@ -112,15 +112,50 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 
 				foreach (var directive in group.Uses)
 				{
-					// Source lookup is by name only; if multiple rules share the same name in the source (e.g. regional variants
-					// of "Labour Day"), the first match is used. Authors who need finer-grained selection should rename the
-					// source rule or scope it to a unique territory.
-					var sourceRule = FindSourceRule(sourceRules, directive.SourceRuleName)
-						?? throw new InvalidOperationException(
+					// Source lookup is by canonical name. A single notable date may be expressed as more than one rule (era splits,
+					// regional variants); every match is brought across so the consumer sees the same shape as the source. The
+					// override body, if any, is applied either to the rule whose RuleName matches the body's RuleName, or — when
+					// the body's RuleName is omitted — to every match. With ClearInherited, the body alone defines the result.
+					var matches = FindSourceRules(sourceRules, directive.SourceRuleName);
+					if (matches.Count == 0)
+					{
+						throw new InvalidOperationException(
 							$"Notable date rule '{directive.SourceRuleName}' was not found in source resource '{group.SourceResource}' (referenced from '{resourceName}').");
+					}
 
-					var localised = ApplyOverrides(sourceRule, directive);
-					byKey[KeyOf(localised)] = localised;
+					if (directive.ClearInherited)
+					{
+						// Drop every inherited match previously copied via UseAll, then promote a single rule built solely from the
+						// directive (the override body is applied on top of the first match purely to seed strategy/category/etc.).
+						foreach (var match in matches)
+						{
+							byKey.Remove(KeyOf(match));
+						}
+
+						var seed = matches[0];
+						var localised = ApplyOverrides(seed, directive);
+						byKey[KeyOf(localised)] = localised;
+						continue;
+					}
+
+					var targetRuleName = directive.OverrideBody?.RuleName;
+					var directiveScalarsOnly = directive with { OverrideBody = null };
+					foreach (var sourceRule in matches)
+					{
+						// The override body applies to: a single match unconditionally; every match when no RuleName is supplied;
+						// or only the rule whose RuleName matches when the body explicitly identifies one. Other matches receive
+						// the directive's flat scalars (territory, nonWorking, etc.) without the body's per-rule overrides.
+						bool isOverrideTarget = matches.Count == 1
+							|| string.IsNullOrWhiteSpace(targetRuleName)
+							|| string.Equals(sourceRule.RuleName, targetRuleName, StringComparison.OrdinalIgnoreCase);
+
+						var localised = ApplyOverrides(sourceRule, isOverrideTarget ? directive : directiveScalarsOnly);
+
+						// Remove the inherited entry under its source-side key before re-keying, since the merge may shift any
+						// component of the dedupe key (territory rename via flat attribute, RuleName rename via the body).
+						byKey.Remove(KeyOf(sourceRule));
+						byKey[KeyOf(localised)] = localised;
+					}
 				}
 			}
 
@@ -153,32 +188,35 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
     }
 
     /// <summary>
-    /// Searches <paramref name="sourceRules" /> for a rule that satisfies the &lt;Use&gt;
-    /// directive's name and optional territory scope.
+    /// Returns every rule in <paramref name="sourceRules" /> whose canonical
+    /// <see cref="NotableDateRule.Name" /> matches <paramref name="name" /> (case-insensitive),
+    /// preserving dictionary enumeration order.
     /// </summary>
     /// <param name="sourceRules">The already-loaded rule dictionary.</param>
-    /// <param name="name">The rule name from the &lt;Use&gt; directive.</param>
-    /// <returns>The matching rule, or <see langword="null" /> if no rule with the given name is
-    /// present in <paramref name="sourceRules" />.</returns>
-	private static NotableDateRule? FindSourceRule(IReadOnlyDictionary<RuleKey, NotableDateRule> sourceRules, string name)
+    /// <param name="name">The canonical rule name from the &lt;Use&gt; directive.</param>
+    /// <returns>The matching rules; empty if none are present.</returns>
+	private static List<NotableDateRule> FindSourceRules(IReadOnlyDictionary<RuleKey, NotableDateRule> sourceRules, string name)
 	{
+		var matches = new List<NotableDateRule>();
 		foreach (var pair in sourceRules)
 		{
 			if (string.Equals(pair.Key.Name, name, StringComparison.OrdinalIgnoreCase))
-				return pair.Value;
+				matches.Add(pair.Value);
 		}
 
-		return null;
+		return matches;
 	}
 
     /// <summary>
-    /// Builds the composite <see cref="RuleKey" /> (name + territory) used to deduplicate rules
-    /// within a single resource.
+    /// Builds the composite <see cref="RuleKey" /> (name + territory + rule name) used to deduplicate rules within a single
+    /// resource. Including <see cref="NotableDateRule.RuleName" /> lets a single notable date carry more than one rule
+    /// (for example, an era-split <c>King's Birthday</c>) without collapsing variants under the same canonical name and
+    /// territory.
     /// </summary>
     /// <param name="rule">The rule to key.</param>
     /// <returns>The composite key.</returns>
 	private static RuleKey KeyOf(NotableDateRule rule) =>
-		new(rule.Name, rule.TerritoryCode);
+		new(rule.Name, rule.TerritoryCode, rule.RuleName);
 
     /// <summary>
     /// Returns a copy of <paramref name="source" /> with every override from <paramref name="directive" /> applied via
@@ -192,30 +230,33 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 		NotableDateRuleMerger.Apply(source, directive);
 
 	/// <summary>
-	/// Compound dedupe key used inside the flatten pipeline. Two rules with the same name but different territories survive as
-	/// independent entries so that regional variants (for example, the Scotland-only Summer Bank Holiday alongside the
-	/// England/Wales/Northern-Ireland one) are not collapsed.
+	/// Compound dedupe key used inside the flatten pipeline. Rules survive as independent entries when any of the three
+	/// components differ — so regional variants (e.g. the Scotland-only Summer Bank Holiday alongside the
+	/// England/Wales/Northern-Ireland one) and era splits (e.g. Queensland's June and October King's Birthday) are not
+	/// collapsed.
 	/// </summary>
-	private readonly record struct RuleKey(string Name, string? Territory)
+	private readonly record struct RuleKey(string Name, string? Territory, string? RuleName)
 	{
         /// <summary>
-        /// Returns <see langword="true" /> if <paramref name="other" /> has the same name and
-        /// territory as this key.
+        /// Returns <see langword="true" /> if <paramref name="other" /> has the same canonical
+        /// name, territory, and rule-level identifier as this key.
         /// </summary>
         /// <param name="other">The key to compare against.</param>
         /// <returns><see langword="true" /> if equal; otherwise <see langword="false" />.</returns>
 		public bool Equals(RuleKey other) =>
 			string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase)
-			&& string.Equals(Territory ?? string.Empty, other.Territory ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+			&& string.Equals(Territory ?? string.Empty, other.Territory ?? string.Empty, StringComparison.OrdinalIgnoreCase)
+			&& string.Equals(RuleName ?? string.Empty, other.RuleName ?? string.Empty, StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
-        /// Returns the hash code combining the rule name and territory.
+        /// Returns the hash code combining the rule name, territory, and rule-level identifier.
         /// </summary>
         /// <returns>The composite hash code.</returns>
 		public override int GetHashCode() =>
 			HashCode.Combine(
 				StringComparer.OrdinalIgnoreCase.GetHashCode(Name ?? string.Empty),
-				StringComparer.OrdinalIgnoreCase.GetHashCode(Territory ?? string.Empty));
+				StringComparer.OrdinalIgnoreCase.GetHashCode(Territory ?? string.Empty),
+				StringComparer.OrdinalIgnoreCase.GetHashCode(RuleName ?? string.Empty));
 	}
 
     /// <summary>
