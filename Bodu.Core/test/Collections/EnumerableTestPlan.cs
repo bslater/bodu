@@ -44,6 +44,6 @@ public class EnumerableTestPlan<TSource>
         Source = source;
         Invoke = invoke;
         ExpectedResult = expectedResult;
-        ResultSelector = resultSelector;
+        ResultSelector = resultSelector!;
     }
 }

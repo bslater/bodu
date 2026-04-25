@@ -16,7 +16,7 @@ public partial class ThrowHelperTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(null, 0, 0);
+            ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(null!, 0, 0);
         });
     }
 

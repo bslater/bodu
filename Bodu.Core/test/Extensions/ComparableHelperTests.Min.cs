@@ -13,9 +13,9 @@ public partial class ComparableHelperTests
         yield return new object[] { new SimpleTestObject(1), new SimpleTestObject(2), new SimpleTestObject(1) };
         yield return new object[] { new SimpleTestObject(5), new SimpleTestObject(5), new SimpleTestObject(5) };
         yield return new object[] { new SimpleTestObject(10), new SimpleTestObject(3), new SimpleTestObject(3) };
-        yield return new object[] { null, new SimpleTestObject(7), new SimpleTestObject(7) };
-        yield return new object[] { new SimpleTestObject(8), null, new SimpleTestObject(8) };
-        yield return new object[] { null, null, null };
+        yield return new object[] { null!, new SimpleTestObject(7), new SimpleTestObject(7) };
+        yield return new object[] { new SimpleTestObject(8), null!, new SimpleTestObject(8) };
+        yield return new object[] { null!, null!, null! };
     }
 
     /// <summary>

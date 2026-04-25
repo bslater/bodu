@@ -68,30 +68,30 @@ public partial class WeekPatternTests
     public static IEnumerable<object[]> GetInvalidParseInputTestData()
     {
         // Wrong length
-        yield return new object[] { "", null };
-        yield return new object[] { "SMTWTF", null };
-        yield return new object[] { "SMTWTFSS", null };
+        yield return new object[] { "", null! };
+        yield return new object[] { "SMTWTF", null! };
+        yield return new object[] { "SMTWTFSS", null! };
 
         // Incorrect order
-        yield return new object[] { "ssmtwtf", null };
-        yield return new object[] { "s mtwtf", null };
-        yield return new object[] { "sm  wtf", null };
-        yield return new object[] { "m twtfs", null };
-        yield return new object[] { "m    fs", null };
-        yield return new object[] { "   t fs", null };
+        yield return new object[] { "ssmtwtf", null! };
+        yield return new object[] { "s mtwtf", null! };
+        yield return new object[] { "sm  wtf", null! };
+        yield return new object[] { "m twtfs", null! };
+        yield return new object[] { "m    fs", null! };
+        yield return new object[] { "   t fs", null! };
 
         // Symbol mismatch
-        yield return new object[] { "S_T-TFS", null };
-        yield return new object[] { "s_t-tfs", null };
-        yield return new object[] { "M*TWTFS", null };
-        yield return new object[] { "m*twTfs", null };
-        yield return new object[] { "ssmtwtf", null };
+        yield return new object[] { "S_T-TFS", null! };
+        yield return new object[] { "s_t-tfs", null! };
+        yield return new object[] { "M*TWTFS", null! };
+        yield return new object[] { "m*twTfs", null! };
+        yield return new object[] { "ssmtwtf", null! };
 
         // Invalid characters
-        yield return new object[] { "SXTWTFS", null };
-        yield return new object[] { "mxtwtfs", null };
-        yield return new object[] { "M1WTFSS", null };
-        yield return new object[] { "m1wtfss", null };
+        yield return new object[] { "SXTWTFS", null! };
+        yield return new object[] { "mxtwtfs", null! };
+        yield return new object[] { "M1WTFSS", null! };
+        yield return new object[] { "m1wtfss", null! };
 
         // Invalid binary input
         yield return new object[] { "1200101", "B" };

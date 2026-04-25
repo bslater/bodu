@@ -42,7 +42,7 @@ public partial class ThrowHelperTests
     {
         yield return new object[] { new object[] { 1, 2, 3, 4 } };                          // all int
         yield return new object[] { new object[] { 1.5, 2.5 } };                            // float/double
-        yield return new object[] { new object[] { 1m, 2m, null } };                        // decimal + null
+        yield return new object[] { new object[] { 1m, 2m, null! } };                       // decimal + null
         yield return new object[] { new object[] { (byte)1, (short)2, (long)3 } };          // mixed numeric
         yield return new object[] { new object[] { (sbyte)1, (ushort)2, (uint)3, (ulong)4 } }; // all unsigned
     }
