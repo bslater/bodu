@@ -108,24 +108,24 @@ internal struct AsconState
 
     /// <summary>
     /// XORs a 16-byte (128-bit, two-word) rate block into state words <c>S0</c> and <c>S1</c> using
-    /// big-endian word order as required by the ASCON sponge construction.
+    /// little-endian word order as specified by NIST SP 800-232.
     /// </summary>
     /// <param name="block">The 16-byte block to absorb. Must be exactly 16 bytes.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AbsorbRate128(ReadOnlySpan<byte> block)
     {
-        this.S0 ^= BinaryPrimitives.ReadUInt64BigEndian(block);
-        this.S1 ^= BinaryPrimitives.ReadUInt64BigEndian(block.Slice(8));
+        this.S0 ^= BinaryPrimitives.ReadUInt64LittleEndian(block);
+        this.S1 ^= BinaryPrimitives.ReadUInt64LittleEndian(block.Slice(8));
     }
 
     /// <summary>
-    /// XORs a single 8-byte (64-bit, one-word) rate block into state word <c>S0</c> using big-endian
-    /// word order as required by the ASCON sponge construction.
+    /// XORs a single 8-byte (64-bit, one-word) rate block into state word <c>S0</c> using little-endian
+    /// word order as specified by NIST SP 800-232.
     /// </summary>
     /// <param name="block">The 8-byte block to absorb. Must be exactly 8 bytes.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AbsorbRate64(ReadOnlySpan<byte> block) =>
-        this.S0 ^= BinaryPrimitives.ReadUInt64BigEndian(block);
+        this.S0 ^= BinaryPrimitives.ReadUInt64LittleEndian(block);
 
     /// <summary>
     /// Reads the current rate (128-bit, two-word) as 16 bytes into <paramref name="destination" />.
@@ -134,8 +134,8 @@ internal struct AsconState
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void SqueezeRate128(Span<byte> destination)
     {
-        BinaryPrimitives.WriteUInt64BigEndian(destination, this.S0);
-        BinaryPrimitives.WriteUInt64BigEndian(destination.Slice(8), this.S1);
+        BinaryPrimitives.WriteUInt64LittleEndian(destination, this.S0);
+        BinaryPrimitives.WriteUInt64LittleEndian(destination.Slice(8), this.S1);
     }
 
     /// <summary>
@@ -144,7 +144,7 @@ internal struct AsconState
     /// <param name="destination">Destination span. Must be at least 8 bytes.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void SqueezeRate64(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt64BigEndian(destination, this.S0);
+        BinaryPrimitives.WriteUInt64LittleEndian(destination, this.S0);
 
     /// <summary>
     /// Zeroes all five state words, clearing any sensitive intermediate state.
