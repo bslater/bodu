@@ -157,11 +157,11 @@ public partial class WeekPatternTests
     public static IEnumerable<object[]> GetValidParseInputTestData()
     {
         // Auto-detect (null format)
-        yield return new object[] { "SMTWTFS", null, (byte)0b1111111 };
-        yield return new object[] { "smtwtfs", null, (byte)0b1111111 };
-        yield return new object[] { "MTWTFSS", null, (byte)0b1111111 };
-        yield return new object[] { "mtwtfss", null, (byte)0b1111111 };
-        yield return new object[] { "1010101", null, (byte)0b1010101 };
+        yield return new object[] { "SMTWTFS", null!, (byte)0b1111111 };
+        yield return new object[] { "smtwtfs", null!, (byte)0b1111111 };
+        yield return new object[] { "MTWTFSS", null!, (byte)0b1111111 };
+        yield return new object[] { "mtwtfss", null!, (byte)0b1111111 };
+        yield return new object[] { "1010101", null!, (byte)0b1010101 };
 
         // Explicit binary
         yield return new object[] { "1010101", "B", (byte)0b1010101 };
@@ -212,10 +212,10 @@ public partial class WeekPatternTests
         yield return new object[] { "s t t s", "e", (byte)0b1010101 };
 
         // Empty representations
-        yield return new object[] { "       ", null, (byte)0b0000000 };
-        yield return new object[] { "-------", null, (byte)0b0000000 };
-        yield return new object[] { "*******", null, (byte)0b0000000 };
-        yield return new object[] { "_______", null, (byte)0b0000000 };
+        yield return new object[] { "       ", null!, (byte)0b0000000 };
+        yield return new object[] { "-------", null!, (byte)0b0000000 };
+        yield return new object[] { "*******", null!, (byte)0b0000000 };
+        yield return new object[] { "_______", null!, (byte)0b0000000 };
         yield return new object[] { "0000000", "b", (byte)0b0000000 };
         yield return new object[] { "       ", "se", (byte)0b0000000 };
         yield return new object[] { "-------", "sD", (byte)0b0000000 };

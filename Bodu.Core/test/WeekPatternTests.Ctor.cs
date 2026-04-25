@@ -25,7 +25,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void Constructor_WhenNullArrayProvided_ShouldBeEmpty()
     {
-        var pattern = new WeekPattern((DayOfWeek[])null);
+        var pattern = new WeekPattern((DayOfWeek[])null!);
         Assert.AreEqual(0, pattern.Count);
     }
 
@@ -46,7 +46,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void Constructor_WhenNullStringProvided_ShouldThrowException()
     {
-        string input = null;
+        string input = null!;
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new WeekPattern(input);
