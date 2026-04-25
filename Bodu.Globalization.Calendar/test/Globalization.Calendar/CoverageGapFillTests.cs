@@ -533,7 +533,7 @@ public sealed class CoverageGapFillTests
 	{
 		string xml = UseDirectiveNamespaceHeader +
 			"  <UseFrom resource=\"x\">\n" +
-			"    <Use name=\"Seed\"><Rule><Fixed month=\"March\" day=\"15\" /></Rule></Use>\n" +
+            "    <Use name=\"Seed\"><Rule name=\"Seed Rule\" category=\"Holiday\"><Fixed month=\"March\" day=\"15\" /></Rule></Use>\n" +
 			"  </UseFrom>\n" +
 			"</NotableDates>";
 
@@ -555,7 +555,7 @@ public sealed class CoverageGapFillTests
 	{
 		string xml = UseDirectiveNamespaceHeader +
 			"  <UseFrom resource=\"x\">\n" +
-			"    <Use name=\"Seed\"><Rule><DayOfWeekInMonth month=\"May\" dayOfWeek=\"Sunday\" weekOrdinal=\"Second\" /></Rule></Use>\n" +
+			"    <Use name=\"Seed\"><Rule name=\"Seed Rule\" category=\"Holiday\"><DayOfWeekInMonth month=\"May\" dayOfWeek=\"Sunday\" weekOrdinal=\"Second\" /></Rule></Use>\n" +
 			"  </UseFrom>\n" +
 			"</NotableDates>";
 
@@ -578,7 +578,7 @@ public sealed class CoverageGapFillTests
 	{
 		string xml = UseDirectiveNamespaceHeader +
 			"  <UseFrom resource=\"x\">\n" +
-			"    <Use name=\"Seed\"><Rule><OffsetFromAnchor name=\"Easter Sunday\" offset=\"-2\" /></Rule></Use>\n" +
+            "    <Use name=\"Seed\"><Rule name=\"Seed Rule\" category=\"Holiday\"><OffsetFromAnchor name=\"Easter Sunday\" offset=\"-2\" /></Rule></Use>\n" +
 			"  </UseFrom>\n" +
 			"</NotableDates>";
 
@@ -600,7 +600,7 @@ public sealed class CoverageGapFillTests
 	{
 		string xml = UseDirectiveNamespaceHeader +
 			"  <UseFrom resource=\"x\">\n" +
-			"    <Use name=\"Seed\"><Rule><Calculator key=\"easter-sunday\" /></Rule></Use>\n" +
+            "    <Use name=\"Seed\"><Rule name=\"Seed Rule\" category=\"Holiday\"><Calculator key=\"easter-sunday\" /></Rule></Use>\n" +
 			"  </UseFrom>\n" +
 			"</NotableDates>";
 
@@ -621,7 +621,7 @@ public sealed class CoverageGapFillTests
 	{
 		string xml = UseDirectiveNamespaceHeader +
 			"  <NotableDate name=\"Missing Type Test\">\n" +
-			"    <Rule category=\"Observance\">\n" +
+			"    <Rule name=\"Missing Type Rule\" category=\"Observance\">\n" +
 			"      <Calculator key=\"x\" type=\"Totally.Invalid.Namespace.DoesNotExist, Nowhere\" />\n" +
 			"    </Rule>\n" +
 			"  </NotableDate>\n" +

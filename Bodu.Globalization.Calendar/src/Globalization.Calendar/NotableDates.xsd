@@ -42,16 +42,24 @@
   </xs:complexType>
 
   <!-- ============================================================
-       Use: cherry-picks a single notable date rule by name from
-       the enclosing UseFrom's source resource. Any scalar attribute
-       declared here overrides the inherited value. A nested Rule
-       child provides an extensible override body: it may override
-       any scalar, replace the strategy element, add Tag children
-       (union-merged with inherited tags), or add Adjustment
-       children (merged by key). The optional clearTags and
-       clearAdjustments flags discard the inherited set before the
-       override is applied. When both a flat attribute on Use and
-       the nested Rule specify the same scalar, the nested Rule
+       Use: cherry-picks one or more notable date rules by canonical
+       name from the enclosing UseFrom's source resource. Every rule
+       in the source whose <NotableDate name> matches is brought
+       across; with multiple matches the directive's flat scalars
+       (territory, nonWorking, etc.) broadcast to every variant.
+       A nested Rule child provides an extensible override body: it
+       may override any scalar, replace the strategy element, add
+       Tag children (union-merged with inherited tags), or add
+       Adjustment children (merged by key). When the body declares
+       a name attribute, the override applies only to the inherited
+       rule whose <Rule name> matches; other variants pass through
+       with the directive's flat scalars but none of the body's
+       per-rule changes. The optional clearTags and clearAdjustments
+       flags discard the inherited set before the override is
+       applied; clearInherited drops every inherited variant for
+       this directive entirely, leaving only the rule materialised
+       from the directive itself. When both a flat attribute on Use
+       and the nested Rule specify the same scalar, the nested Rule
        wins (innermost-wins). The optional 'as' attribute renames
        the rule locally.
        ============================================================ -->
@@ -63,6 +71,7 @@
     <xs:attribute name="as" type="xs:string" use="optional" />
     <xs:attribute name="clearTags" type="xs:boolean" use="optional" default="false" />
     <xs:attribute name="clearAdjustments" type="xs:boolean" use="optional" default="false" />
+    <xs:attribute name="clearInherited" type="xs:boolean" use="optional" default="false" />
     <xs:attribute name="category" type="nd:notableDateCategory" use="optional" />
     <xs:attribute name="territory" type="nd:territory" use="optional" />
     <xs:attribute name="nonWorking" type="xs:boolean" use="optional" />
@@ -87,7 +96,12 @@
   <!-- ============================================================
        Rule: a single resolution rule. Exactly one strategy element
        (Fixed | DayOfWeekInMonth | OffsetFromAnchor | Calculator)
-       followed by zero or more Tag and Adjustment elements.
+       followed by zero or more Tag and Adjustment elements. The
+       'name' attribute carries a rule-level identifier (RuleName)
+       distinct from the parent <NotableDate>'s canonical title; it
+       is what consumers target via a Use directive's nested Rule
+       body when a notable date is described by more than one rule
+       (era splits, regional variants, alternate calendars).
        ============================================================ -->
   <xs:complexType name="Rule">
     <xs:sequence>
@@ -123,8 +137,8 @@
       <xs:element name="Adjustment" type="nd:Adjustment" minOccurs="0" maxOccurs="unbounded" />
     </xs:sequence>
 
-    <xs:attribute name="name" type="xs:string" use="optional" />
-    <xs:attribute name="category" type="nd:notableDateCategory" use="optional" />
+    <xs:attribute name="name" type="xs:string" use="required" />
+    <xs:attribute name="category" type="nd:notableDateCategory" use="required" />
     <xs:attribute name="nonWorking" type="xs:boolean" use="optional" />
     <xs:attribute name="firstYear" type="xs:unsignedShort" use="optional" />
     <xs:attribute name="lastYear" type="xs:unsignedShort" use="optional" />
@@ -143,9 +157,14 @@
        replacing the inherited strategy), and no attribute is
        required. Any field present here overrides the inherited
        value; fields left absent fall through from the inherited
-       rule. Tag children merge additively with inherited tags;
-       Adjustment children merge by key (replace-if-matched,
-       append-if-new).
+       rule. The 'name' attribute is treated as a rule-level
+       identifier (RuleName) rather than the canonical notable-date
+       title — when set, it targets the inherited rule whose
+       <Rule name> matches and is propagated onto the merged result;
+       authors who need to rename the inherited rule should use the
+       directive's 'as' attribute instead. Tag children merge
+       additively with inherited tags; Adjustment children merge by
+       key (replace-if-matched, append-if-new).
        ============================================================ -->
   <xs:complexType name="OverrideRule">
     <xs:sequence>

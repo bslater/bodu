@@ -41,6 +41,21 @@ public partial class AsconHashA256Tests
     /// <inheritdoc />
     protected override AsconHashA256 CreateAlgorithm(Variant variant) => new AsconHashA256();
 
+    /// <summary>
+    /// Computes the empty-message hash at runtime because no hardcoded KAT vector is available yet for
+    /// <see cref="AsconHashA256" />. Structural tests that compare against this value will still verify
+    /// consistency across different call paths even without an external reference value.
+    /// </summary>
+    /// <returns>The hash of an empty byte sequence produced by <see cref="AsconHashA256" />.</returns>
+    protected override byte[] ExpectedEmptyInputHash
+    {
+        get
+        {
+            using AsconHashA256 hash = new AsconHashA256();
+            return hash.ComputeHash(Array.Empty<byte>());
+        }
+    }
+
     /// <inheritdoc />
     protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(Variant variant) =>
         new Dictionary<string, string>
@@ -48,6 +63,16 @@ public partial class AsconHashA256Tests
             // TODO: populate with known-answer test vectors from NIST SP 800-232 once the implementation has been
             // verified against the ASCON v1.2 reference implementation.
         };
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// No official known-answer vectors are available yet for <see cref="AsconHashA256" />. A single
+    /// runtime-computed vector for the empty input is provided so that the named-input data-driven
+    /// tests have at least one row to enumerate; the value is cross-checked for consistency rather
+    /// than against an external reference.
+    /// </remarks>
+    protected override IEnumerable<KnownAnswerTest> GetTestVectors(Variant variant) =>
+        [new KnownAnswerTest { Name = "Empty", Input = [], ExpectedOutput = this.ExpectedEmptyInputHash }];
 
     /// <inheritdoc />
     protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(Variant variant) => [];

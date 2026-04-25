@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Source fixture exposing one NotableDate ("King's Birthday") declared as two distinct
+  rule variants, distinguished by their per-rule RuleName attribute. Used to verify the
+  multi-rule cherry-pick path: a single Use directive should bring across every variant
+  and target an individual variant for override via the body's RuleName.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar">
+  <NotableDate name="King's Birthday">
+    <Rule name="June Variant" category="Holiday" lastYear="2015">
+      <DayOfWeekInMonth month="June" dayOfWeek="Monday" weekOrdinal="Second" />
+      <Tag>SourceJune</Tag>
+    </Rule>
+    <Rule name="October Variant" category="Holiday" firstYear="2016">
+      <DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="First" />
+      <Tag>SourceOctober</Tag>
+    </Rule>
+  </NotableDate>
+</NotableDates>

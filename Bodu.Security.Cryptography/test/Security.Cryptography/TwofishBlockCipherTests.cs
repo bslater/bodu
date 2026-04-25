@@ -203,10 +203,3 @@ internal sealed partial class TwofishBlockCipherTests
         };
     }
 }
-
-internal enum TwofishTestVariant
-{
-    Key128,
-    Key192,
-    Key256,
-}

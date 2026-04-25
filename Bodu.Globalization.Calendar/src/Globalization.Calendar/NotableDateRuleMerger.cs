@@ -41,6 +41,7 @@ internal static class NotableDateRuleMerger
 		var merged = source with
 		{
 			Name = ResolveName(source.Name, directive.LocalName, body?.Name),
+			RuleName = body?.RuleName ?? source.RuleName,
 			Category = body?.Category ?? directive.Category ?? source.Category,
 			TerritoryCode = body?.TerritoryCode ?? directive.TerritoryCode ?? source.TerritoryCode,
 			IsNonWorkingDay = body?.IsNonWorkingDay ?? directive.IsNonWorkingDay ?? source.IsNonWorkingDay,

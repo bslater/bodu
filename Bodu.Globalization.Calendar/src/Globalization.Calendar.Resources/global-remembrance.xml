@@ -1,15 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global remembrance notable-date resource using the Western/Gregorian calendar.
+
+  These entries represent internationally recognised remembrance observances.
+  They are not universally public holidays or non-working days in every country.
+  Country-specific resources should import only the dates they observe and
+  override naming, suppression, or behavioural rules where required.
+-->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
+  <!--
+    Fixed-date remembrance observances.
+  -->
+
   <NotableDate name="International Holocaust Remembrance Day">
-    <Rule category="Remembrance">
+    <Rule name="Fixed International Holocaust Remembrance Day" category="Remembrance">
       <Fixed month="January" day="27" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Remembrance Day">
-    <Rule category="Remembrance">
+    <Rule name="Fixed Remembrance Day" category="Remembrance">
       <Fixed month="November" day="11" />
     </Rule>
   </NotableDate>

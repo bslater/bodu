@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar
 	[TestClass]
 	public sealed class AustralianNotableDatesTests
 	{
-		private const string AuResource = "Bodu.Globalization.Calendar.Resources.AU.xml";
+		private const string AuResource = "Bodu/Globalization/Calendar/Resources/region-au.xml";
 
 		private static readonly string[] ExpectedTerritories =
 		{

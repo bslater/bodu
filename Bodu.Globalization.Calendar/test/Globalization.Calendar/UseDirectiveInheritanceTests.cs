@@ -36,7 +36,7 @@ public sealed class UseDirectiveInheritanceTests
 	{
 		var xml = NamespaceHeader +
 			"  <NotableDate name=\"Test\">\n" +
-			"    <Rule category=\"Holiday\">\n" +
+			"    <Rule name=\"Test Rule\" category=\"Holiday\">\n" +
 			"      <Fixed month=\"January\" day=\"1\" />\n" +
 			"      <Adjustment when=\"IfWeekend\" action=\"MoveToNextWeekday\" />\n" +
 			"    </Rule>\n" +
@@ -56,7 +56,7 @@ public sealed class UseDirectiveInheritanceTests
 		var xml = NamespaceHeader +
 			"  <UseFrom resource=\"Bodu.Globalization.Calendar.Resources.Common.xml\">\n" +
 			"    <Use name=\"New Year's Day\" clearAdjustments=\"true\">\n" +
-			"      <Rule territory=\"AU\" nonWorking=\"true\">\n" +
+            "      <Rule name=\"New Year's Day\" category=\"Holiday\" territory=\"AU\" nonWorking=\"true\">\n" +
 			"        <Tag>NationalHoliday</Tag>\n" +
 			"        <Adjustment key=\"weekend-roll\" when=\"IfWeekend\" action=\"MoveToNextWeekday\" />\n" +
 			"      </Rule>\n" +
@@ -87,7 +87,7 @@ public sealed class UseDirectiveInheritanceTests
 		var xml = NamespaceHeader +
 			"  <UseFrom resource=\"Bodu.Globalization.Calendar.Resources.Common.xml\">\n" +
 			"    <Use name=\"Halloween\">\n" +
-			"      <Rule territory=\"AU\">\n" +
+            "      <Rule name=\"Halloween\" category=\"Observance\" territory=\"AU\">\n" +
 			"        <Tag>Cultural</Tag>\n" +
 			"      </Rule>\n" +
 			"    </Use>\n" +
@@ -110,7 +110,7 @@ public sealed class UseDirectiveInheritanceTests
 		var xml = NamespaceHeader +
 			"  <UseFrom resource=\"Bodu.Globalization.Calendar.Resources.Common.xml\">\n" +
 			"    <Use name=\"New Year's Day\">\n" +
-			"      <Rule territory=\"AU\">\n" +
+            "      <Rule name=\"New Year's Day\" category=\"Holiday\" territory=\"AU\">\n" +
 			"        <Adjustment key=\"dup\" when=\"Always\" action=\"None\" />\n" +
 			"        <Adjustment key=\"dup\" when=\"IfWeekend\" action=\"None\" />\n" +
 			"      </Rule>\n" +
@@ -494,6 +494,115 @@ public sealed class UseDirectiveInheritanceTests
 		NotableDateRule merged = NotableDateRuleMerger.Apply(source, directive);
 
 		Assert.AreEqual(expected, merged.Name);
+	}
+
+	// ------------------------------------------------------------------------------------------
+	// Parser: RuleName + ClearInherited capture
+	// ------------------------------------------------------------------------------------------
+
+	/// <summary>
+	/// Verifies that the parser captures the inner <c>&lt;Rule&gt;</c>'s <c>name</c> attribute on
+	/// <see cref="NotableDateRuleOverrideBody.RuleName" /> rather than overwriting
+	/// <see cref="NotableDateRuleOverrideBody.Name" />, so an authored descriptor cannot accidentally rename the inherited rule.
+	/// </summary>
+	[TestMethod]
+	public void ParseDocument_WhenUseRuleHasNameAttribute_ShouldPopulateOverrideBodyRuleName()
+	{
+		var xml = NamespaceHeader +
+			"  <UseFrom resource=\"Bodu.Globalization.Calendar.Resources.Common.xml\">\n" +
+			"    <Use name=\"Christmas Day\">\n" +
+			"      <Rule name=\"Australian Christmas Day With Non-Working-Day Roll\" category=\"Holiday\" nonWorking=\"true\">\n" +
+			"        <Adjustment key=\"weekend-roll\" when=\"IfNonWorkingDay\" action=\"MoveToNextNonWorkingDay\" />\n" +
+			"      </Rule>\n" +
+			"    </Use>\n" +
+			"  </UseFrom>\n" +
+			"</NotableDates>";
+
+		var directive = NotableDateRuleParser.ParseDocument(xml).UseGroups[0].Uses[0];
+
+		Assert.IsNotNull(directive.OverrideBody);
+		Assert.AreEqual("Australian Christmas Day With Non-Working-Day Roll", directive.OverrideBody!.RuleName);
+		Assert.IsNull(directive.OverrideBody.Name, "The body's Name override is reserved for programmatic construction and must not be populated from the XML.");
+	}
+
+	/// <summary>
+	/// Verifies that the parser captures the standalone <c>&lt;Rule&gt;</c>'s <c>name</c> attribute on
+	/// <see cref="NotableDateRule.RuleName" />, distinct from the canonical <see cref="NotableDateRule.Name" /> taken from the
+	/// parent <c>&lt;NotableDate&gt;</c>.
+	/// </summary>
+	[TestMethod]
+	public void ParseXml_WhenRuleHasNameAttribute_ShouldPopulateRuleName()
+	{
+		var xml = NamespaceHeader +
+			"  <NotableDate name=\"King's Birthday\">\n" +
+			"    <Rule name=\"Second Monday In June King's Birthday (NSW)\" category=\"Holiday\" territory=\"AU-NSW\" nonWorking=\"true\">\n" +
+			"      <DayOfWeekInMonth month=\"June\" dayOfWeek=\"Monday\" weekOrdinal=\"Second\" />\n" +
+			"    </Rule>\n" +
+			"  </NotableDate>\n" +
+			"</NotableDates>";
+
+		var rule = NotableDateRuleParser.ParseXml(xml).Single();
+
+		Assert.AreEqual("King's Birthday", rule.Name);
+		Assert.AreEqual("Second Monday In June King's Birthday (NSW)", rule.RuleName);
+	}
+
+	/// <summary>
+	/// Verifies that the parser captures <c>clearInherited="true"</c> on the directive and leaves it at the default
+	/// <see langword="false" /> when the attribute is absent.
+	/// </summary>
+	[TestMethod]
+	public void ParseDocument_WhenUseDeclaresClearInherited_ShouldExposeFlagOnDirective()
+	{
+		var xml = NamespaceHeader +
+			"  <UseFrom resource=\"Bodu.Globalization.Calendar.Resources.Common.xml\">\n" +
+			"    <Use name=\"Halloween\" clearInherited=\"true\" />\n" +
+			"    <Use name=\"Valentine's Day\" />\n" +
+			"  </UseFrom>\n" +
+			"</NotableDates>";
+
+		var uses = NotableDateRuleParser.ParseDocument(xml).UseGroups[0].Uses;
+
+		Assert.IsTrue(uses[0].ClearInherited);
+		Assert.IsFalse(uses[1].ClearInherited);
+	}
+
+	// ------------------------------------------------------------------------------------------
+	// Merger: RuleName propagation
+	// ------------------------------------------------------------------------------------------
+
+	/// <summary>
+	/// Verifies that the merger propagates the override body's <see cref="NotableDateRuleOverrideBody.RuleName" /> onto the merged
+	/// rule, so consumers can still target it for further inheritance via that identifier.
+	/// </summary>
+	[TestMethod]
+	public void Apply_WhenBodyDeclaresRuleName_ShouldPropagateToMergedRule()
+	{
+		var source = SampleSourceRule() with { RuleName = "Source Rule Identifier" };
+		var directive = new NotableDateRuleUseDirective(
+			SourceRuleName: source.Name,
+			OverrideBody: new NotableDateRuleOverrideBody { RuleName = "Override Rule Identifier" });
+
+		var merged = NotableDateRuleMerger.Apply(source, directive);
+
+		Assert.AreEqual("Override Rule Identifier", merged.RuleName);
+	}
+
+	/// <summary>
+	/// Verifies that when the override body omits a <see cref="NotableDateRuleOverrideBody.RuleName" />, the inherited
+	/// <see cref="NotableDateRule.RuleName" /> is preserved on the merged rule.
+	/// </summary>
+	[TestMethod]
+	public void Apply_WhenBodyOmitsRuleName_ShouldPreserveInheritedRuleName()
+	{
+		var source = SampleSourceRule() with { RuleName = "Source Rule Identifier" };
+		var directive = new NotableDateRuleUseDirective(
+			SourceRuleName: source.Name,
+			OverrideBody: new NotableDateRuleOverrideBody { TerritoryCode = "AU" });
+
+		var merged = NotableDateRuleMerger.Apply(source, directive);
+
+		Assert.AreEqual("Source Rule Identifier", merged.RuleName);
 	}
 
 	// ------------------------------------------------------------------------------------------

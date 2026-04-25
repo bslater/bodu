@@ -6,12 +6,12 @@
 -->
 <NotableDates xmlns="urn:bodu:globalization:calendar">
   <NotableDate name="Shared Alpha">
-    <Rule category="Observance">
+    <Rule name="Shared Alpha Rule" category="Observance">
       <Fixed month="January" day="2" />
     </Rule>
   </NotableDate>
   <NotableDate name="Shared Beta">
-    <Rule category="Observance">
+    <Rule name="Shared Beta Rule" category="Observance">
       <Fixed month="February" day="3" />
     </Rule>
   </NotableDate>

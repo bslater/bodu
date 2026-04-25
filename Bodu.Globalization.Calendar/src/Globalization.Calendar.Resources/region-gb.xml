@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  United Kingdom public holidays and widely observed cultural dates.
+  United Kingdom notable-date resource using the Western/Gregorian calendar.
 
-  Cherry-picks each inherited rule explicitly. Locally declared rules
-  override their inherited namesake. New rules added to Common.xml or
-  Christian.xml do not appear here unless added to the <UseFrom> lists
-  below.
+  These entries represent United Kingdom public holidays and widely observed
+  cultural dates. National rules use territory="GB"; country-specific rules
+  use their ISO subdivision territory codes.
+
+  Country-specific rules explicitly import only the inherited global and
+  Christian dates that the United Kingdom observes, and override naming,
+  territory, nonWorking, adjustment, or tagging behaviour where required.
 -->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-  <UseFrom resource="Bodu.Globalization.Calendar.Resources.Common.xml">
+  <!--
+    Imported global observances.
+  -->
+
+  <UseFrom resource="./global-all.xml">
     <Use name="Valentine's Day" territory="GB" />
     <Use name="International Women's Day" territory="GB" />
     <Use name="April Fool's Day" territory="GB" />
@@ -18,26 +25,78 @@
     <Use name="Remembrance Day" territory="GB" />
   </UseFrom>
 
-  <UseFrom resource="Bodu.Globalization.Calendar.Resources.Christian.xml">
+  <!--
+    Imported Christian observances.
+  -->
+
+  <UseFrom resource="./christian-gregorian.xml">
     <Use name="Easter Sunday" territory="GB" />
     <Use name="Good Friday" territory="GB" nonWorking="true" />
     <Use name="Easter Monday" territory="GB" nonWorking="true" />
     <Use name="Christmas Eve" territory="GB" />
-    <Use name="Christmas Day" territory="GB" nonWorking="true" />
+    <Use name="Christmas Day" territory="GB" nonWorking="true">
+      <Rule name="GB Christmas Day With Non-Working-Day Roll" category="Holiday" nonWorking="true">
+        <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextNonWorkingDay" />
+      </Rule>
+    </Use>
   </UseFrom>
 
-  <!-- New Year's Day in the UK rolls forward to the following Monday when it falls on a weekend. -->
+  <!--
+    National United Kingdom holidays and observances.
+  -->
+
   <NotableDate name="New Year's Day">
-    <Rule category="Holiday" territory="GB" nonWorking="true">
+    <Rule name="Fixed New Year's Day With Weekend Roll" category="Holiday" territory="GB" nonWorking="true">
       <Fixed month="January" day="1" />
       <Tag>BankHoliday</Tag>
       <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
   </NotableDate>
 
-  <!-- January (Scotland) -->
+  <NotableDate name="Early May Bank Holiday">
+    <Rule name="First Monday In May Early May Bank Holiday" category="Holiday" territory="GB" nonWorking="true">
+      <DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="First" />
+      <Tag>BankHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Spring Bank Holiday">
+    <Rule name="Last Monday In May Spring Bank Holiday" category="Holiday" territory="GB" nonWorking="true">
+      <DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="Last" />
+      <Tag>BankHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Bonfire Night">
+    <Rule name="Fixed Bonfire Night" category="Cultural" territory="GB">
+      <Fixed month="November" day="5" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Boxing Day">
+    <Rule name="Fixed Boxing Day With Weekend Roll" category="Holiday" territory="GB" nonWorking="true">
+      <Fixed month="December" day="26" />
+      <Tag>BankHoliday</Tag>
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+  </NotableDate>
+
+  <!--
+    England holidays and observances.
+  -->
+
+  <NotableDate name="Saint George's Day">
+    <Rule name="Fixed Saint George's Day" category="Cultural" territory="GB-ENG">
+      <Fixed month="April" day="23" />
+    </Rule>
+  </NotableDate>
+
+  <!--
+    Scotland holidays and observances.
+  -->
+
   <NotableDate name="2 January">
-    <Rule category="Holiday" territory="GB-SCT" nonWorking="true">
+    <Rule name="Fixed 2 January With Weekend Roll" category="Holiday" territory="GB-SCT" nonWorking="true">
       <Fixed month="January" day="2" />
       <Tag>BankHoliday</Tag>
       <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
@@ -45,87 +104,55 @@
   </NotableDate>
 
   <NotableDate name="Burns Night">
-    <Rule category="Cultural" territory="GB-SCT">
+    <Rule name="Fixed Burns Night" category="Cultural" territory="GB-SCT">
       <Fixed month="January" day="25" />
     </Rule>
   </NotableDate>
 
-  <!-- MARCH -->
-  <NotableDate name="Saint Patrick's Day">
-    <Rule category="Holiday" territory="GB-NIR" nonWorking="true">
-      <Fixed month="March" day="17" />
-      <Tag>BankHoliday</Tag>
-      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
-    </Rule>
-  </NotableDate>
-
-  <!-- APRIL -->
-  <NotableDate name="Saint George's Day">
-    <Rule category="Cultural" territory="GB-ENG">
-      <Fixed month="April" day="23" />
-    </Rule>
-  </NotableDate>
-
-  <!-- MAY -->
-  <NotableDate name="Early May Bank Holiday">
-    <Rule category="Holiday" territory="GB" nonWorking="true">
-      <DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="First" />
-      <Tag>BankHoliday</Tag>
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Spring Bank Holiday">
-    <Rule category="Holiday" territory="GB" nonWorking="true">
-      <DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="Last" />
-      <Tag>BankHoliday</Tag>
-    </Rule>
-  </NotableDate>
-
-  <!-- JULY (Northern Ireland) -->
-  <NotableDate name="Battle of the Boyne">
-    <Rule category="Holiday" territory="GB-NIR" nonWorking="true">
-      <Fixed month="July" day="12" />
-      <Tag>BankHoliday</Tag>
-      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
-    </Rule>
-  </NotableDate>
-
-  <!-- AUGUST -->
   <NotableDate name="Summer Bank Holiday (Scotland)">
-    <Rule name="Summer Bank Holiday" category="Holiday" territory="GB-SCT" nonWorking="true">
+    <Rule name="First Monday In August Summer Bank Holiday" category="Holiday" territory="GB-SCT" nonWorking="true">
       <DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="First" />
       <Tag>BankHoliday</Tag>
     </Rule>
   </NotableDate>
 
-  <NotableDate name="Summer Bank Holiday">
-    <Rule category="Holiday" territory="GB-ENG,GB-WLS,GB-NIR" nonWorking="true">
-      <DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="Last" />
-      <Tag>BankHoliday</Tag>
-    </Rule>
-  </NotableDate>
-
-  <!-- NOVEMBER -->
-  <NotableDate name="Bonfire Night">
-    <Rule category="Cultural" territory="GB">
-      <Fixed month="November" day="5" />
-    </Rule>
-  </NotableDate>
-
   <NotableDate name="Saint Andrew's Day">
-    <Rule category="Holiday" territory="GB-SCT" nonWorking="true">
+    <Rule name="Fixed Saint Andrew's Day With Weekend Roll" category="Holiday" territory="GB-SCT" nonWorking="true">
       <Fixed month="November" day="30" />
       <Tag>BankHoliday</Tag>
       <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
   </NotableDate>
 
-  <!-- DECEMBER -->
-  <NotableDate name="Boxing Day">
-    <Rule category="Holiday" territory="GB" nonWorking="true">
-      <Fixed month="December" day="26" />
+  <!--
+    Northern Ireland holidays and observances.
+  -->
+
+  <NotableDate name="Saint Patrick's Day">
+    <Rule name="Fixed Saint Patrick's Day With Weekend Roll" category="Holiday" territory="GB-NIR" nonWorking="true">
+      <Fixed month="March" day="17" />
       <Tag>BankHoliday</Tag>
       <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
   </NotableDate>
+
+  <NotableDate name="Battle of the Boyne">
+    <Rule name="Fixed Battle of the Boyne With Weekend Roll" category="Holiday" territory="GB-NIR" nonWorking="true">
+      <Fixed month="July" day="12" />
+      <Tag>BankHoliday</Tag>
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+  </NotableDate>
+
+  <!--
+    England, Wales, and Northern Ireland holidays and observances.
+  -->
+
+  <NotableDate name="Summer Bank Holiday">
+    <Rule name="Last Monday In August Summer Bank Holiday" category="Holiday" territory="GB-ENG,GB-WLS,GB-NIR" nonWorking="true">
+      <DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="Last" />
+      <Tag>BankHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
 </NotableDates>
