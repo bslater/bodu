@@ -64,6 +64,7 @@ Start with [Using hashes and checksums](hashing.md) for the cross-cutting pictur
 | `Tiger` | 128 / 160 / 192-bit cryptographic digest | [Using Tiger](tiger.md) |
 | `CubeHash` | SHA-3 submission, tunable rounds and block size | [Using CubeHash](cubehash.md) |
 | `Snefru128` / `Snefru256` | Legacy cryptographic digest — interop only | [Using Snefru](snefru.md) |
+| `AsconHash256` / `AsconHashA256` | NIST SP 800-232 sponge digest — 256-bit output, two margin/throughput variants | [Using ASCON](ascon.md) |
 | `MerkleTreeHash` / `ParallelMerkleTreeHash` | Tree-structured streaming integrity | [Using Merkle trees](merkle-trees.md) |
 
 For non-cryptographic checksums and fingerprints (CRC, Fletcher, Adler, FNV, CityHash, Pearson, and the classic string hashes) on `System.IO.Hashing.NonCryptographicHashAlgorithm`, see the [Bodu.IO.Hashing guides](../io-hashing/).
