@@ -63,6 +63,25 @@ public sealed record NotableDateRule
 #endif
 
 	/// <summary>
+	/// Gets the optional rule-level identifier authored on the <c>&lt;Rule&gt;</c> element's <c>name</c> attribute.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// Distinct from <see cref="Name" /> — which is the canonical notable date title shared by every rule that produces it (for
+	/// example, <c>"King's Birthday"</c>) — <see cref="RuleName" /> identifies the specific rule variant within that notable date.
+	/// Authors use it to target a particular rule for inheritance or override when a notable date is described by more than one
+	/// rule (era splits, subdivision-specific strategies, alternate calendars).
+	/// </para>
+	/// <para>
+	/// A <c>&lt;Use&gt;</c> directive's nested override body addresses a source rule by <see cref="RuleName" /> when the source
+	/// notable date contains multiple rules; if no <see cref="RuleName" /> is specified the override applies to every inherited
+	/// rule sharing the same <see cref="Name" />.
+	/// </para>
+	/// </remarks>
+	/// <returns>The rule-level identifier, or <see langword="null" /> when the rule was authored without one.</returns>
+	public string? RuleName { get; init; }
+
+	/// <summary>
 	/// Gets the inclusive first year the rule is applicable, or <see langword="null" /> for no lower bound.
 	/// </summary>
 	public int? FirstYear { get; init; }

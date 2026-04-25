@@ -76,6 +76,18 @@
     <EmbeddedResource Include="Globalization.Calendar\Fixtures\MissingNameReferrer.xml">
       <LogicalName>Bodu.Globalization.Calendar.Fixtures.MissingNameReferrer.xml</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\MultiRuleSource.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.MultiRuleSource.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\MultiRuleBroadcast.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.MultiRuleBroadcast.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\MultiRuleTargeted.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.MultiRuleTargeted.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\MultiRuleClearInherited.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.MultiRuleClearInherited.xml</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

@@ -63,6 +63,7 @@
     <xs:attribute name="as" type="xs:string" use="optional" />
     <xs:attribute name="clearTags" type="xs:boolean" use="optional" default="false" />
     <xs:attribute name="clearAdjustments" type="xs:boolean" use="optional" default="false" />
+    <xs:attribute name="clearInherited" type="xs:boolean" use="optional" default="false" />
     <xs:attribute name="category" type="nd:notableDateCategory" use="optional" />
     <xs:attribute name="territory" type="nd:territory" use="optional" />
     <xs:attribute name="nonWorking" type="xs:boolean" use="optional" />

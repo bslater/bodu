@@ -84,4 +84,72 @@ public sealed class XmlResourceFixtureTests
 
 		Assert.IsTrue(ex.Message.Contains("This Rule Does Not Exist", StringComparison.Ordinal));
 	}
+
+	/// <summary>
+	/// Verifies that a <c>&lt;Use&gt;</c> against a multi-rule source brings every variant across, with the directive's flat
+	/// scalars (territory) broadcast to every variant when the override body declines to identify one by <c>RuleName</c>.
+	/// </summary>
+	[TestMethod]
+	public void LoadRules_WhenUseTargetsMultiRuleSourceWithoutBody_ShouldBroadcastFlatScalarsToEveryVariant()
+	{
+		var provider = new XmlResourceNotableDateRuleProvider(
+			$"{FixtureNamespace}.MultiRuleBroadcast.xml",
+			new ResourcePathResolver(),
+			TestAssembly);
+
+		var rules = provider.LoadRules().Where(r => r.Name == "King's Birthday").ToList();
+
+		Assert.AreEqual(2, rules.Count);
+		Assert.IsTrue(rules.All(r => r.TerritoryCode == "AU-QLD"));
+		CollectionAssert.AreEquivalent(
+			new[] { "June Variant", "October Variant" },
+			rules.Select(r => r.RuleName).ToArray());
+	}
+
+	/// <summary>
+	/// Verifies that a <c>&lt;Use&gt;</c> against a multi-rule source applies the override body only to the rule whose
+	/// <c>RuleName</c> matches; other variants receive the flat scalars but none of the body's per-rule changes.
+	/// </summary>
+	[TestMethod]
+	public void LoadRules_WhenUseBodyTargetsRuleByName_ShouldApplyOverrideToMatchedRuleOnly()
+	{
+		var provider = new XmlResourceNotableDateRuleProvider(
+			$"{FixtureNamespace}.MultiRuleTargeted.xml",
+			new ResourcePathResolver(),
+			TestAssembly);
+
+		var rules = provider.LoadRules().Where(r => r.Name == "King's Birthday").ToList();
+
+		Assert.AreEqual(2, rules.Count);
+		var october = rules.Single(r => r.RuleName == "October Variant");
+		var june = rules.Single(r => r.RuleName == "June Variant");
+
+		Assert.AreEqual("AU-QLD", october.TerritoryCode);
+		Assert.AreEqual(50, october.Priority);
+		Assert.IsTrue(october.Tags.Contains("TargetedOverride"));
+
+		Assert.AreEqual("AU-QLD", june.TerritoryCode);
+		Assert.IsFalse(june.Tags.Contains("TargetedOverride"), "Body's per-rule tags must not bleed onto a non-matching variant.");
+	}
+
+	/// <summary>
+	/// Verifies that <c>clearInherited="true"</c> drops every inherited variant (including any previously copied via
+	/// <c>UseAll</c>) and leaves only the rule built from the directive itself.
+	/// </summary>
+	[TestMethod]
+	public void LoadRules_WhenUseDeclaresClearInherited_ShouldDropInheritedVariants()
+	{
+		var provider = new XmlResourceNotableDateRuleProvider(
+			$"{FixtureNamespace}.MultiRuleClearInherited.xml",
+			new ResourcePathResolver(),
+			TestAssembly);
+
+		var rules = provider.LoadRules().Where(r => r.Name == "King's Birthday").ToList();
+
+		Assert.AreEqual(1, rules.Count);
+		var only = rules[0];
+		Assert.AreEqual("Single NT Variant", only.RuleName);
+		Assert.AreEqual("AU-NT", only.TerritoryCode);
+		Assert.IsTrue(only.Tags.Contains("ClearedAndReplaced"));
+	}
 }

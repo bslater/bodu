@@ -27,6 +27,13 @@ namespace Bodu.Globalization.Calendar;
 /// <param name="Comment">Optional comment override.</param>
 /// <param name="ClearTags">When <see langword="true" />, inherited tags are discarded before the override's tags are applied.</param>
 /// <param name="ClearAdjustments">When <see langword="true" />, inherited adjustments are discarded before the override's adjustments are applied.</param>
+/// <param name="ClearInherited">
+/// When <see langword="true" />, every inherited rule sharing the directive's canonical name is dropped before the override is
+/// applied; the override body alone defines the resulting rule(s). When <see langword="false" /> (default), inherited rules
+/// pass through and the override body — if present — replaces only the inherited rule whose
+/// <see cref="NotableDateRule.RuleName" /> matches the body's <see cref="NotableDateRuleOverrideBody.RuleName" />, applying to
+/// every match when the body's identifier is omitted.
+/// </param>
 /// <param name="OverrideBody">Optional override body supplied via a nested <c>&lt;Rule&gt;</c> child. Fields on the body win over the flat attributes where both are present.</param>
 public sealed record NotableDateRuleUseDirective(
 	string SourceRuleName,
@@ -42,4 +49,5 @@ public sealed record NotableDateRuleUseDirective(
 	string? Comment = null,
 	bool ClearTags = false,
 	bool ClearAdjustments = false,
+	bool ClearInherited = false,
 	NotableDateRuleOverrideBody? OverrideBody = null);
