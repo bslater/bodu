@@ -60,20 +60,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global.core.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global.cultural.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global.education.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global.environment.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global.health.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global.remembrance.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global.social.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global.un.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\global._all.xml" />
     <EmbeddedResource Include="Globalization.Calendar\NotableDates.xml" />
     <EmbeddedResource Include="Globalization.Calendar\NotableDates.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Globalization.Calendar.Resources\christian.gregorian.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\region-au.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\region-us.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\region-gb.xml" />
