@@ -23,9 +23,9 @@ namespace Bodu.Security.Cryptography;
 /// count as absorption.
 /// </para>
 /// <para>
-/// Padding follows the Ascon convention: the byte immediately after the last input byte is set to <c>0x80</c> (the most-significant
-/// sentinel bit in big-endian byte order), and the remaining rate bytes are zero. A padding block is always appended, even when the
-/// message length is a multiple of the eight-byte rate.
+/// Padding follows the Ascon convention: the byte immediately after the last input byte is set to <c>0x01</c> (the little-endian
+/// sentinel bit), and the remaining rate bytes are zero. A padding block is always appended, even when the message length is a
+/// multiple of the eight-byte rate.
 /// </para>
 /// <para>
 /// Concrete derived types supply the five pre-computed post-initialisation state words and the absorption round count via the
@@ -161,14 +161,14 @@ public abstract partial class AsconHash<T>
     /// </param>
     /// <param name="messageLength">The total number of input bytes consumed before this call. Not used by Ascon padding.</param>
     /// <returns>
-    /// An 8-byte array containing the residual bytes followed by <c>0x80</c> at the next position and zero bytes thereafter,
-    /// matching the big-endian word representation used throughout the Ascon sponge state.
+    /// An 8-byte array containing the residual bytes followed by <c>0x01</c> at the next position and zero bytes thereafter,
+    /// matching the little-endian word representation used throughout the Ascon sponge state.
     /// </returns>
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
     {
         Span<byte> padded = stackalloc byte[8];
         block.CopyTo(padded);
-        padded[block.Length] = 0x80;
+        padded[block.Length] = 0x01;
 
         // Signal ProcessBlock to use 12 rounds for this final padded block, which corresponds
         // to the initial squeeze permutation in the reference implementation.
@@ -184,7 +184,7 @@ public abstract partial class AsconHash<T>
     /// <param name="block">The 8-byte input block to absorb. Its length must equal the configured block size.</param>
     protected override void ProcessBlock(ReadOnlySpan<byte> block)
     {
-        this._s0 ^= BinaryPrimitives.ReadUInt64BigEndian(block);
+        this._s0 ^= BinaryPrimitives.ReadUInt64LittleEndian(block);
 
         // The final padded block must use 12 rounds (Ascon-p12) because it corresponds to the
         // initial permutation of the squeeze phase in the reference algorithm. Regular absorption
@@ -203,13 +203,13 @@ public abstract partial class AsconHash<T>
     {
         byte[] hash = new byte[32];
 
-        BinaryPrimitives.WriteUInt64BigEndian(hash.AsSpan(0, 8), this._s0);
+        BinaryPrimitives.WriteUInt64LittleEndian(hash.AsSpan(0, 8), this._s0);
         this.ApplyPermutation(this._absorptionRounds);
-        BinaryPrimitives.WriteUInt64BigEndian(hash.AsSpan(8, 8), this._s0);
+        BinaryPrimitives.WriteUInt64LittleEndian(hash.AsSpan(8, 8), this._s0);
         this.ApplyPermutation(this._absorptionRounds);
-        BinaryPrimitives.WriteUInt64BigEndian(hash.AsSpan(16, 8), this._s0);
+        BinaryPrimitives.WriteUInt64LittleEndian(hash.AsSpan(16, 8), this._s0);
         this.ApplyPermutation(this._absorptionRounds);
-        BinaryPrimitives.WriteUInt64BigEndian(hash.AsSpan(24, 8), this._s0);
+        BinaryPrimitives.WriteUInt64LittleEndian(hash.AsSpan(24, 8), this._s0);
 
         return hash;
     }
