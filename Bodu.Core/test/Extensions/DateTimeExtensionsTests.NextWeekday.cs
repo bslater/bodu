@@ -42,19 +42,18 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CalendarWeekendDefinition.None" /> throws <see cref="ArgumentOutOfRangeException" /> because the search loop has no weekend to skip.
+    /// Verifies that <see cref="DateTimeExtensions.NextWeekday(DateTime, CalendarWeekendDefinition)" />, when called with
+    /// <see cref="CalendarWeekendDefinition.None" />, advances by exactly one day. Because <see cref="DateTimeExtensions.IsWeekend(DayOfWeek, CalendarWeekendDefinition, IWeekendDefinitionProvider?)" />
+    /// classifies every day as a weekday under <c>None</c>, the search loop's first iteration moves the cursor forward one day and exits.
     /// </summary>
     [TestMethod]
-    public void NextWeekday_WhenWeekendIsNone_ShouldThrowArgumentOutOfRangeException()
+    public void NextWeekday_WhenWeekendIsNone_ShouldAdvanceOneDay()
     {
-        // IsWeekend's switch does not handle CalendarWeekendDefinition.None explicitly, so it
-        // falls into the default AOOR branch during the search loop.
         DateTime input = new DateTime(2024, 4, 20);
 
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = input.NextWeekday(CalendarWeekendDefinition.None);
-        });
+        DateTime actual = input.NextWeekday(CalendarWeekendDefinition.None);
+
+        Assert.AreEqual(input.AddDays(1), actual);
     }
 
     /// <summary>

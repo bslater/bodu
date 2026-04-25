@@ -54,19 +54,18 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CalendarWeekendDefinition.None" /> throws <see cref="ArgumentOutOfRangeException" /> because the reverse search loop has no weekend to skip.
+    /// Verifies that <see cref="DateOnlyExtensions.PreviousWeekday(DateOnly, CalendarWeekendDefinition)" />, when called with
+    /// <see cref="CalendarWeekendDefinition.None" />, retreats by exactly one day. Because <see cref="DateTimeExtensions.IsWeekend(DayOfWeek, CalendarWeekendDefinition, IWeekendDefinitionProvider?)" />
+    /// classifies every day as a weekday under <c>None</c>, the reverse search loop's first iteration moves the cursor back one day and exits.
     /// </summary>
     [TestMethod]
-    public void PreviousWeekday_WhenWeekendIsNone_ShouldThrowArgumentOutOfRangeException()
+    public void PreviousWeekday_WhenWeekendIsNone_ShouldRetreatOneDay()
     {
-        // IsWeekend's switch does not handle CalendarWeekendDefinition.None explicitly, so it
-        // falls into the default AOOR branch during the search loop.
         DateOnly input = new DateOnly(2024, 4, 21);
 
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = input.PreviousWeekday(CalendarWeekendDefinition.None);
-        });
+        DateOnly actual = input.PreviousWeekday(CalendarWeekendDefinition.None);
+
+        Assert.AreEqual(input.AddDays(-1), actual);
     }
 
     /// <summary>
