@@ -217,6 +217,64 @@ public sealed partial class NotableDateServiceTests
 	}
 
 	/// <summary>
+	/// Verifies that a <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> walk anchored near year-end demonstrably crosses
+	/// the Dec 31 → Jan 1 boundary within the adjuster's 366-day bound and yet does not trigger generation of the next year. A
+	/// counting <see cref="INotableDateCalculator" /> attached to a probe rule observes year-generation passes; the test asserts
+	/// the calculator is invoked exactly once (for the queried year 2025) so that the cross-year recursion vector — present in
+	/// the earlier same-year-only guard — is closed.
+	/// </summary>
+	[TestMethod]
+	public void GetNotableDates_WhenMoveToNextNonWorkingDayWalkCrossesYearBoundary_ShouldNotGenerateNextYear()
+	{
+		// 28 December 2025 is a Sunday; the walk's first cursor (29 Dec Mon) is not a weekend, so IsNonWorkingDay falls through
+		// to GetOrGenerateYear for the year currently being generated. Walking forward five days reaches 2 January 2026 (Fri,
+		// also non-weekend) and finally 3 January 2026 (Sat) where the IsWeekend short-circuit terminates the walk. Without the
+		// cross-year guard, GetOrGenerateYear(2026) would open a fresh GenerateYear pass for 2026 — observable via the counting
+		// calculator below — and recurse year-by-year. With the guard, no nested generation runs.
+		NotableDateRule walkTrigger = Fixed("Walk Trigger", 12, 28) with
+		{
+			Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+			{
+				Key = "walk",
+				Trigger = AdjustmentTrigger.Always,
+				Action = AdjustmentAction.MoveToNextNonWorkingDay,
+			}),
+		};
+
+		// A Calculator-strategy probe whose calculator counts invocations. GenerateYear iterates every rule for the year being
+		// generated and dispatches Calculator strategy through the registry, so calculator.GetDate(year) is invoked exactly once
+		// per year-generation pass. The probe returns null so it emits no occurrence and does not pollute the assertions.
+		NotableDateRule probe = new()
+		{
+			Name = "Year Generation Probe",
+			Strategy = DateResolutionStrategy.Calculator,
+			Category = NotableDateCategory.Other,
+			CalculatorKey = "probe",
+		};
+
+		var calculator = new CountingCalculator();
+		var registry = new NotableDateCalculatorRegistry(
+			new[] { new KeyValuePair<string, INotableDateCalculator>("probe", calculator) });
+
+		var service = new NotableDateService(
+			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(walkTrigger, probe) },
+			CalendarWeekendDefinition.SaturdaySunday,
+			calculatorRegistry: registry);
+
+		List<NotableDate> walkResults = service.GetNotableDates(2025)
+			.Where(r => r.Name == "Walk Trigger")
+			.OrderBy(r => r.Date)
+			.ToList();
+
+		Assert.AreEqual(1, calculator.CallCount, "Year 2026 must not be generated as a side effect of the walk crossing the year boundary; only the queried year 2025 should be materialised.");
+		Assert.AreEqual(2, walkResults.Count, "Expected the base occurrence on 28 December 2025 plus one adjusted occurrence at the next Saturday.");
+		Assert.AreEqual(new DateTime(2025, 12, 28), walkResults[0].Date);
+		Assert.IsFalse(walkResults[0].WasAdjusted);
+		Assert.AreEqual(new DateTime(2026, 1, 3), walkResults[1].Date, "Adjusted occurrence should fall on 3 January 2026 (Saturday), demonstrating the walk crossed the year boundary.");
+		Assert.IsTrue(walkResults[1].WasAdjusted);
+	}
+
+	/// <summary>
 	/// <see cref="IWeekendDefinitionProvider" /> that classifies every day of the week as a weekday, used to exercise the
 	/// re-entry guard's coverage when the adjuster's <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> walk has no weekend
 	/// short-circuit available.
@@ -225,5 +283,26 @@ public sealed partial class NotableDateServiceTests
 	{
 		/// <inheritdoc />
 		public bool IsWeekend(DayOfWeek dayOfWeek) => false;
+	}
+
+	/// <summary>
+	/// <see cref="INotableDateCalculator" /> that records how many times <see cref="GetDate" /> is invoked. Used by tests that
+	/// need to observe how many year-generation passes the service runs, since GenerateYear iterates every rule and dispatches
+	/// Calculator-strategy rules through the registry.
+	/// </summary>
+	private sealed class CountingCalculator : INotableDateCalculator
+	{
+		/// <summary>
+		/// Gets the number of times <see cref="GetDate" /> has been invoked since construction.
+		/// </summary>
+		/// <returns>The invocation count.</returns>
+		public int CallCount { get; private set; }
+
+		/// <inheritdoc />
+		public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null)
+		{
+			CallCount++;
+			return null;
+		}
 	}
 }
