@@ -8,7 +8,17 @@ namespace Bodu.Security.Cryptography;
 
 [TestClass]
 public sealed partial class BlowfishTests
-    : SymmetricAlgorithmTests<Blowfish>
+    : SymmetricAlgorithmTests<BlowfishTests, Blowfish>
 {
+    /// <inheritdoc />
     protected override Blowfish CreateAlgorithm() => Blowfish.Create();
+
+    /// <inheritdoc />
+    protected override SymmetricAlgorithmSpecification GetSpecification() =>
+        new SymmetricAlgorithmSpecification
+        {
+            BlockSizeBits = 64,
+            DefaultKeySizeBits = 128,
+            LegalKeySizesBits = [32, 128, 256, 448],
+        };
 }

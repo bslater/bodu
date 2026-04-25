@@ -8,7 +8,17 @@ namespace Bodu.Security.Cryptography;
 
 [TestClass]
 public partial class SimpleReversingSymmetricAlgorithmTests
-    : SymmetricAlgorithmTests<SimpleReversingSymmetricAlgorithm>
+    : SymmetricAlgorithmTests<SimpleReversingSymmetricAlgorithmTests, SimpleReversingSymmetricAlgorithm>
 {
+    /// <inheritdoc />
     protected override SimpleReversingSymmetricAlgorithm CreateAlgorithm() => new SimpleReversingSymmetricAlgorithm();
+
+    /// <inheritdoc />
+    protected override SymmetricAlgorithmSpecification GetSpecification() =>
+        new SymmetricAlgorithmSpecification
+        {
+            BlockSizeBits = 128,
+            DefaultKeySizeBits = 128,
+            LegalKeySizesBits = [8, 128, 256, 2048],
+        };
 }
