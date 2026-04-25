@@ -15,7 +15,7 @@ public partial class NotableDateRuleParserTests
 	/// <summary>
 	/// Returns the display name for a data-driven adjustment test case by reading the first element of the data row.
 	/// </summary>
-	private static string GetAdjustmentTestDisplayName(MethodInfo _, object[] data) =>
+	public static string GetAdjustmentTestDisplayName(MethodInfo _, object[] data) =>
 		(string)data[0];
 
 	/// <summary>
