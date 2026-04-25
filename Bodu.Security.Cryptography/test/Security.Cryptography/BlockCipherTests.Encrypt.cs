@@ -63,7 +63,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     }
 
     /// <summary>
-    /// Verifies that decryption does not alter the input span.
+    /// Verifies that encryption does not alter the input span.
     /// </summary>
     [TestMethod]
     public void Encrypt_WhenCalled_ShouldNotModifyInputBuffer()
@@ -73,7 +73,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         byte[] input = original.ToArray();
         byte[] output = new byte[cipher.BlockSize];
 
-        cipher.Decrypt(input, output);
+        cipher.Encrypt(input, output);
 
         CollectionAssert.AreEqual(original, input); // input must be unchanged
     }
@@ -199,6 +199,6 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         byte[] actual = new byte[cipher.BlockSize];
         cipher.Decrypt(encrypted, actual);
 
-        CollectionAssert.AreEqual(actual, actual, $"Cipher mismatch for {testName} using variant '{variant}'.");
+        CollectionAssert.AreEqual(input, actual, $"Cipher mismatch for {testName} using variant '{variant}'.");
     }
 }

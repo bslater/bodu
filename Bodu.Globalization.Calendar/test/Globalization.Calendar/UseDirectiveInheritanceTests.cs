@@ -36,7 +36,7 @@ public sealed class UseDirectiveInheritanceTests
 	{
 		var xml = NamespaceHeader +
 			"  <NotableDate name=\"Test\">\n" +
-			"    <Rule category=\"Holiday\">\n" +
+			"    <Rule name=\"Test Rule\" category=\"Holiday\">\n" +
 			"      <Fixed month=\"January\" day=\"1\" />\n" +
 			"      <Adjustment when=\"IfWeekend\" action=\"MoveToNextWeekday\" />\n" +
 			"    </Rule>\n" +
