@@ -64,10 +64,20 @@
     <EmbeddedResource Include="Globalization.Calendar\NotableDates.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Globalization.Calendar.Resources\region-au.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\region-us.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\region-gb.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\region-fr.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\Common.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\Christian.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\region-au.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.AU.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar.Resources\region-us.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.US.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar.Resources\region-gb.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.GB.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar.Resources\region-fr.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Resources.FR.xml</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="ResourceStrings.resx">
       <LastGenOutput>ResourceStrings.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
