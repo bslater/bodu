@@ -65,5 +65,15 @@ public partial class AsconHashA256Tests
         };
 
     /// <inheritdoc />
+    /// <remarks>
+    /// No official known-answer vectors are available yet for <see cref="AsconHashA256" />. A single
+    /// runtime-computed vector for the empty input is provided so that the named-input data-driven
+    /// tests have at least one row to enumerate; the value is cross-checked for consistency rather
+    /// than against an external reference.
+    /// </remarks>
+    protected override IEnumerable<KnownAnswerTest> GetTestVectors(Variant variant) =>
+        [new KnownAnswerTest { Name = "Empty", Input = [], ExpectedOutput = this.ExpectedEmptyInputHash }];
+
+    /// <inheritdoc />
     protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(Variant variant) => [];
 }
