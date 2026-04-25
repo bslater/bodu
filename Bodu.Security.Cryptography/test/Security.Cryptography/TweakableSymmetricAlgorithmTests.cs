@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography;
 /// <typeparam name="TAlgorithm">The type of symmetric algorithm under test.</typeparam>
 [TestClass]
 public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm>
-    : SymmetricAlgorithmTests<TAlgorithm>
+    : SymmetricAlgorithmTests<TTest, TAlgorithm>
     where TTest : TweakableSymmetricAlgorithmTests<TTest, TAlgorithm>, new()
     where TAlgorithm : Security.Cryptography.TweakableSymmetricAlgorithm
 {

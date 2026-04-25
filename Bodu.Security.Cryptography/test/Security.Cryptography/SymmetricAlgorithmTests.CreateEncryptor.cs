@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
-public abstract partial class SymmetricAlgorithmTests<TAlgorithm>
+public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
 {
     /// <summary>
     /// Verifies that setting <see cref="SymmetricAlgorithm.CreateEncryptor" /> after the algorithm has been disposed throws

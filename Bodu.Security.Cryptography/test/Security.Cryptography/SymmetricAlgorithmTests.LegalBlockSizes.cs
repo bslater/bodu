@@ -6,7 +6,7 @@
 
 namespace Bodu.Security.Cryptography;
 
-public abstract partial class SymmetricAlgorithmTests<TAlgorithm>
+public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
 {
     /// <summary>
     /// Verifies that <see cref="SymmetricAlgorithm.LegalBlockSizes" /> returns a new instance each call.
