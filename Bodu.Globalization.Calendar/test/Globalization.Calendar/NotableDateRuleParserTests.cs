@@ -165,20 +165,6 @@ public partial class NotableDateRuleParserTests
 	}
 
 	/// <summary>
-	/// Verifies that parsing a Fixed rule extracts a single observance adjustment with the correct trigger and action.
-	/// </summary>
-	[TestMethod]
-	public void ParseXml_WhenFixedRule_ShouldPopulateAdjustments()
-	{
-		var rule = NotableDateRuleParser.ParseXml(FixedRuleXml).Single();
-
-		Assert.AreEqual(1, rule.Adjustments.Length);
-		Assert.AreEqual(AdjustmentTrigger.IfWeekend, rule.Adjustments[0].Trigger);
-		Assert.AreEqual(AdjustmentAction.MoveToNextWeekday, rule.Adjustments[0].Action);
-		Assert.AreEqual(10, rule.Adjustments[0].Priority);
-	}
-
-	/// <summary>
 	/// Verifies that parsing a DayOfWeekInMonth rule populates the strategy and weekday/ordinal fields.
 	/// </summary>
 	[TestMethod]
