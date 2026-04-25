@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
-public abstract partial class SymmetricAlgorithmTests<TAlgorithm>
+public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
 {
     /// <summary>
     /// Verifies that <see cref="SymmetricAlgorithm.GenerateKey" /> creates a key of expected length.

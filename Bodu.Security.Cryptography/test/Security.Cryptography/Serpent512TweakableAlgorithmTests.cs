@@ -17,4 +17,13 @@ public partial class Serpent512TweakableAlgorithmTests
 {
     /// <inheritdoc />
     protected override Serpent512 CreateAlgorithm() => new Serpent512();
+
+    /// <inheritdoc />
+    protected override SymmetricAlgorithmSpecification GetSpecification() =>
+        new SymmetricAlgorithmSpecification
+        {
+            BlockSizeBits = 512,
+            DefaultKeySizeBits = 512,
+            LegalKeySizesBits = [512],
+        };
 }
