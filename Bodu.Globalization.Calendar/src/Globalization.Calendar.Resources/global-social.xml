@@ -1,27 +1,40 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global social and humanitarian notable-date resource using the Western/Gregorian calendar.
+
+  These entries represent internationally recognised social, humanitarian,
+  and community-related observances. They are not universally public holidays
+  or non-working days in every country. Country-specific resources should
+  import only the dates they observe and override naming, suppression, or
+  behavioural rules where required.
+-->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
+  <!--
+    Fixed-date social and humanitarian observances.
+  -->
+
   <NotableDate name="International Day of Families">
-    <Rule category="Observance">
+    <Rule name="Fixed International Day of Families" category="Observance">
       <Fixed month="May" day="15" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Refugee Day">
-    <Rule category="Observance">
+    <Rule name="Fixed World Refugee Day" category="Observance">
       <Fixed month="June" day="20" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="International Day of Older Persons">
-    <Rule category="Observance">
+    <Rule name="Fixed International Day of Older Persons" category="Observance">
       <Fixed month="October" day="1" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="International Day of Persons with Disabilities">
-    <Rule category="Observance">
+    <Rule name="Fixed International Day of Persons with Disabilities" category="Observance">
       <Fixed month="December" day="3" />
     </Rule>
   </NotableDate>

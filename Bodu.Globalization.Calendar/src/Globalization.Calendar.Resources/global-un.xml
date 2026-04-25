@@ -1,39 +1,52 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global international and United Nations notable-date resource using the Western/Gregorian calendar.
+
+  These entries represent internationally recognised observances, including
+  United Nations-designated days. They are not universally public holidays
+  or non-working days in every country. Country-specific resources should
+  import only the dates they observe and override naming, suppression, or
+  behavioural rules where required.
+-->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
+  <!--
+    Fixed-date international observances.
+  -->
+
   <NotableDate name="International Women's Day">
-    <Rule category="Observance">
+    <Rule name="Fixed International Women's Day" category="Observance">
       <Fixed month="March" day="8" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="International Day of Happiness">
-    <Rule category="Observance">
+    <Rule name="Fixed International Day of Happiness" category="Observance">
       <Fixed month="March" day="20" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="International Youth Day">
-    <Rule category="Observance">
+    <Rule name="Fixed International Youth Day" category="Observance">
       <Fixed month="August" day="12" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="International Day of Peace">
-    <Rule category="Observance">
+    <Rule name="Fixed International Day of Peace" category="Observance">
       <Fixed month="September" day="21" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="United Nations Day">
-    <Rule category="Observance">
+    <Rule name="Fixed United Nations Day" category="Observance">
       <Fixed month="October" day="24" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Human Rights Day">
-    <Rule category="Observance">
+    <Rule name="Fixed Human Rights Day" category="Observance">
       <Fixed month="December" day="10" />
     </Rule>
   </NotableDate>

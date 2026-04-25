@@ -15,18 +15,18 @@ namespace Bodu.Globalization.Calendar;
 [TestClass]
 public sealed class XmlResourceNotableDateRuleProviderTests
 {
-	private const string CommonResource = "Bodu.Globalization.Calendar.Resources.Common.xml";
-	private const string ChristianResource = "Bodu.Globalization.Calendar.Resources.Christian.xml";
-	private const string UsResource = "Bodu.Globalization.Calendar.Resources.US.xml";
-	private const string GbResource = "Bodu.Globalization.Calendar.Resources.GB.xml";
-	private const string FrResource = "Bodu.Globalization.Calendar.Resources.FR.xml";
-	private const string AuResource = "Bodu.Globalization.Calendar.Resources.AU.xml";
-	private const string DefaultResource = "Bodu.Globalization.Calendar.NotableDates.xml";
+	private const string CommonResource = "Bodu/Globalization/Calendar/Resources/global-all.xml";
+	private const string ChristianResource = "Bodu/Globalization/Calendar/Resources/christian-gregorian.xml";
+    private const string UsResource = "Bodu/Globalization/Calendar/Resources/region-us.xml";
+    private const string GbResource = "Bodu/Globalization/Calendar/Resources/region-gb.xml";
+    private const string FrResource = "Bodu/Globalization/Calendar/Resources/region-fr.xml";
+    private const string AuResource = "Bodu/Globalization/Calendar/Resources/region-au.xml";
+    private const string DefaultResource = "Bodu/Globalization/Calendar/Resources/global-all.xml";
 
-	/// <summary>
-	/// Verifies that loading the standalone Common resource exposes its rules without errors.
-	/// </summary>
-	[TestMethod]
+    /// <summary>
+    /// Verifies that loading the standalone Common resource exposes its rules without errors.
+    /// </summary>
+    [TestMethod]
 	public void LoadRules_WhenLoadingCommonResource_ShouldExposeUniversalRules()
 	{
 		var provider = new XmlResourceNotableDateRuleProvider(CommonResource, new ResourcePathResolver());
@@ -251,7 +251,7 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	[TestMethod]
 	public void LoadRules_WhenResourceMissing_ShouldThrowFileNotFoundException()
 	{
-		var provider = new XmlResourceNotableDateRuleProvider("Bodu.Globalization.Calendar.Resources.Imaginary.xml", new ResourcePathResolver());
+		var provider = new XmlResourceNotableDateRuleProvider("Bodu/Globalization/Calendar/Resources/Imaginary.xml", new ResourcePathResolver());
 
 		Assert.ThrowsExactly<FileNotFoundException>(() => _ = provider.LoadRules().ToList());
 	}
@@ -280,8 +280,8 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	{
 		var provider = new XmlResourceNotableDateRuleProvider(
 			CommonResource,
-			new ResourcePathResolver(),
-			typeof(NotableDateService).Assembly);
+            new ResourcePathResolver(),
+            typeof(NotableDateService).Assembly);
 
 		IReadOnlyList<NotableDateRule> rules = provider.LoadRules().ToList();
 

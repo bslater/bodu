@@ -1,27 +1,40 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global environmental notable-date resource using the Western/Gregorian calendar.
+
+  These entries represent internationally recognised environmental and
+  sustainability-related observances. They are not universally public holidays
+  or non-working days in every country. Country-specific resources should
+  import only the dates they observe and override naming, suppression, or
+  behavioural rules where required.
+-->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
+  <!--
+    Fixed-date environmental observances.
+  -->
+
   <NotableDate name="World Water Day">
-    <Rule category="Observance">
+    <Rule name="Fixed World Water Day" category="Observance">
       <Fixed month="March" day="22" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Earth Day">
-    <Rule category="Observance">
+    <Rule name="Fixed Earth Day" category="Observance">
       <Fixed month="April" day="22" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Environment Day">
-    <Rule category="Observance">
+    <Rule name="Fixed World Environment Day" category="Observance">
       <Fixed month="June" day="5" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Oceans Day">
-    <Rule category="Observance">
+    <Rule name="Fixed World Oceans Day" category="Observance">
       <Fixed month="June" day="8" />
     </Rule>
   </NotableDate>
