@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <NotableDate name="International Holocaust Remembrance Day">
+    <Rule category="Remembrance">
+      <Fixed month="January" day="27" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Remembrance Day">
+    <Rule category="Remembrance">
+      <Fixed month="November" day="11" />
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

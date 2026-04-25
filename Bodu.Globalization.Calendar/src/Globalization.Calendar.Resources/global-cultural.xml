@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <NotableDate name="Valentine's Day">
+    <Rule category="Cultural">
+      <Fixed month="February" day="14" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="April Fool's Day">
+    <Rule category="Cultural">
+      <Fixed month="April" day="1" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Halloween">
+    <Rule category="Cultural">
+      <Fixed month="October" day="31" />
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <NotableDate name="International Women's Day">
+    <Rule category="Observance">
+      <Fixed month="March" day="8" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Day of Happiness">
+    <Rule category="Observance">
+      <Fixed month="March" day="20" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Youth Day">
+    <Rule category="Observance">
+      <Fixed month="August" day="12" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Day of Peace">
+    <Rule category="Observance">
+      <Fixed month="September" day="21" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="United Nations Day">
+    <Rule category="Observance">
+      <Fixed month="October" day="24" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Human Rights Day">
+    <Rule category="Observance">
+      <Fixed month="December" day="10" />
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

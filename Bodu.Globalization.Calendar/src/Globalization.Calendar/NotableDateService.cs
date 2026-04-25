@@ -29,7 +29,7 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 public sealed class NotableDateService : INotableDateService
 {
-	private const string DefaultResourceName = "Bodu.Globalization.Calendar.NotableDates.xml";
+	private const string DefaultResourceName = "Bodu/Globalization/Calendar/Resources/global-all.xml";
 
 	private readonly ImmutableArray<NotableDateRule> _baseRules;
 	private readonly IReadOnlyList<INotableDateRuleOverrideProvider> _overrideProviders;
@@ -40,6 +40,7 @@ public sealed class NotableDateService : INotableDateService
 	private readonly INotableDateNameLocalizer? _nameLocalizer;
 	private readonly CalendarWeekendDefinition _weekendDefinition;
 	private readonly IWeekendDefinitionProvider? _weekendProvider;
+	private readonly IResourcePathResolver _resourcePathResolver;
 
 	private readonly ConcurrentDictionary<int, IReadOnlyList<NotableDate>> _yearCache = new();
 	private readonly object _gate = new();
@@ -48,27 +49,29 @@ public sealed class NotableDateService : INotableDateService
 	/// Initializes a new instance of the <see cref="NotableDateService" /> class using the embedded default rule set.
 	/// </summary>
 	public NotableDateService()
-		: this(new[] { (INotableDateRuleProvider)new XmlResourceNotableDateRuleProvider(DefaultResourceName) },
+		: this(new[] { (INotableDateRuleProvider)new XmlResourceNotableDateRuleProvider(DefaultResourceName, new ResourcePathResolver()) },
 			   CalendarWeekendDefinition.SaturdaySunday)
 	{ }
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="NotableDateService" /> class.
-	/// </summary>
-	/// <param name="ruleProviders">Sources of base notable date rules. Must not be <see langword="null" />.</param>
-	/// <param name="weekendDefinition">The weekend definition to apply when evaluating weekends.</param>
-	/// <param name="weekendProvider">An optional custom weekend provider.</param>
-	/// <param name="overrideProviders">Optional layered override providers, applied after the base rules in registration order.</param>
-	/// <param name="calculatorRegistry">Optional registry used to resolve <see cref="DateResolutionStrategy.Calculator" /> rules.</param>
-	/// <param name="adjustmentHandlers">Optional registry of custom <see cref="IAdjustmentHandler" /> instances.</param>
-	/// <param name="collisionResolver">Optional collision resolver. Defaults to <see cref="DefaultNotableDateCollisionResolver" />.</param>
-	/// <param name="nameLocalizer">Optional localizer used to translate notable date names into the active culture.</param>
-	/// <param name="plugins">Optional external plugins loaded via <see cref="Plugins.ExternalPluginLoader" />. Rule providers exposed by plugins are appended to <paramref name="ruleProviders" /> and participate in the normal flatten pipeline; named calculators are registered onto an internal calculator registry that falls back to <paramref name="calculatorRegistry" /> when supplied (caller-supplied registrations win on key collision).</param>
-	/// <exception cref="ArgumentNullException">Thrown when <paramref name="ruleProviders" /> is <see langword="null" />.</exception>
-	public NotableDateService(
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotableDateService" /> class.
+    /// </summary>
+    /// <param name="ruleProviders">Sources of base notable date rules. Must not be <see langword="null" />.</param>
+    /// <param name="weekendDefinition">The weekend definition to apply when evaluating weekends.</param>
+    /// <param name="resourcePathResolver">An optional custom weekend provider.</param>
+    /// <param name="weekendProvider">An optional custom weekend provider.</param>
+    /// <param name="overrideProviders">Optional layered override providers, applied after the base rules in registration order.</param>
+    /// <param name="calculatorRegistry">Optional registry used to resolve <see cref="DateResolutionStrategy.Calculator" /> rules.</param>
+    /// <param name="adjustmentHandlers">Optional registry of custom <see cref="IAdjustmentHandler" /> instances.</param>
+    /// <param name="collisionResolver">Optional collision resolver. Defaults to <see cref="DefaultNotableDateCollisionResolver" />.</param>
+    /// <param name="nameLocalizer">Optional localizer used to translate notable date names into the active culture.</param>
+    /// <param name="plugins">Optional external plugins loaded via <see cref="Plugins.ExternalPluginLoader" />. Rule providers exposed by plugins are appended to <paramref name="ruleProviders" /> and participate in the normal flatten pipeline; named calculators are registered onto an internal calculator registry that falls back to <paramref name="calculatorRegistry" /> when supplied (caller-supplied registrations win on key collision).</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ruleProviders" /> is <see langword="null" />.</exception>
+    public NotableDateService(
 		IEnumerable<INotableDateRuleProvider> ruleProviders,
 		CalendarWeekendDefinition weekendDefinition,
-		IWeekendDefinitionProvider? weekendProvider = null,
+        IResourcePathResolver? resourcePathResolver=null,
+        IWeekendDefinitionProvider? weekendProvider = null,
 		IEnumerable<INotableDateRuleOverrideProvider>? overrideProviders = null,
 		INotableDateCalculatorRegistry? calculatorRegistry = null,
 		IAdjustmentHandlerRegistry? adjustmentHandlers = null,
@@ -120,8 +123,9 @@ public sealed class NotableDateService : INotableDateService
 		_weekendProvider = weekendProvider;
 		_collisionResolver = collisionResolver ?? new DefaultNotableDateCollisionResolver();
 		_nameLocalizer = nameLocalizer;
+        _resourcePathResolver= resourcePathResolver ?? new ResourcePathResolver();
 
-		_effectiveRules = ApplyOverrides(_baseRules, _overrideProviders);
+        _effectiveRules = ApplyOverrides(_baseRules, _overrideProviders);
 		_resolver = new NotableDateRuleResolver(_effectiveRules, effectiveRegistry);
 		_adjuster = new NotableDateAdjuster(
 			IsWeekend,

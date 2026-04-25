@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <NotableDate name="World Water Day">
+    <Rule category="Observance">
+      <Fixed month="March" day="22" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Earth Day">
+    <Rule category="Observance">
+      <Fixed month="April" day="22" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Environment Day">
+    <Rule category="Observance">
+      <Fixed month="June" day="5" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Oceans Day">
+    <Rule category="Observance">
+      <Fixed month="June" day="8" />
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

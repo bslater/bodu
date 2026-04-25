@@ -29,19 +29,22 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvider
 {
-	private readonly string _rootResourceName;
-	private readonly Assembly _assembly;
+    private readonly string _rootResourceName;
+    private readonly IResourcePathResolver _resourcePathResolver;
+    private readonly Assembly _assembly;
 	private readonly Lazy<List<NotableDateRule>> _flattenedRules;
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="XmlResourceNotableDateRuleProvider" /> class.
-	/// </summary>
-	/// <param name="xmlResourceName">The full manifest resource name of the root XML payload. Must not be <see langword="null" />.</param>
-	/// <param name="assembly">The assembly containing the embedded resource(s). Defaults to the currently executing assembly.</param>
-	/// <exception cref="ArgumentNullException">Thrown when <paramref name="xmlResourceName" /> is <see langword="null" />.</exception>
-	public XmlResourceNotableDateRuleProvider(string xmlResourceName, Assembly? assembly = null)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="XmlResourceNotableDateRuleProvider" /> class.
+    /// </summary>
+    /// <param name="xmlResourceName">The full manifest resource name of the root XML payload. Must not be <see langword="null" />.</param>
+    /// <param name="resourcePathResolver">The full manifest resource name of the root XML payload. Must not be <see langword="null" />.</param>
+    /// <param name="assembly">The assembly containing the embedded resource(s). Defaults to the currently executing assembly.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="xmlResourceName" /> is <see langword="null" />.</exception>
+    public XmlResourceNotableDateRuleProvider(string xmlResourceName, IResourcePathResolver resourcePathResolver, Assembly? assembly = null)
 	{
 		_rootResourceName = xmlResourceName ?? throw new ArgumentNullException(nameof(xmlResourceName));
+        _resourcePathResolver = resourcePathResolver ?? throw new ArgumentNullException(nameof(resourcePathResolver));
 		_assembly = assembly ?? Assembly.GetExecutingAssembly();
 		_flattenedRules = new Lazy<List<NotableDateRule>>(LoadAndFlatten, isThreadSafe: true);
 	}
@@ -64,9 +67,11 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 		var flattenedCache = new Dictionary<string, IReadOnlyDictionary<RuleKey, NotableDateRule>>(StringComparer.OrdinalIgnoreCase);
 		var inProgress = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-		var byKey = FlattenResource(_rootResourceName, documentCache, flattenedCache, inProgress);
+		var byKey = FlattenResource(_rootResourceName, _resourcePathResolver, documentCache, flattenedCache, inProgress);
 		return byKey.Values.ToList();
 	}
+
+
 
     /// <summary>
     /// Flattens a single parsed resource document into a rule dictionary keyed by
@@ -74,7 +79,8 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
     /// </summary>
 	private IReadOnlyDictionary<RuleKey, NotableDateRule> FlattenResource(
 		string resourceName,
-		Dictionary<string, ParsedNotableDateDocument> documentCache,
+		IResourcePathResolver pathResolver,
+        Dictionary<string, ParsedNotableDateDocument> documentCache,
 		Dictionary<string, IReadOnlyDictionary<RuleKey, NotableDateRule>> flattenedCache,
 		HashSet<string> inProgress)
 	{
@@ -92,7 +98,8 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 
 			foreach (var group in document.UseGroups)
 			{
-				var sourceRules = FlattenResource(group.SourceResource, documentCache, flattenedCache, inProgress);
+				var resolvedPath = pathResolver.Resolve(resourceName, group.SourceResource);
+                var sourceRules = FlattenResource(resolvedPath, pathResolver, documentCache, flattenedCache, inProgress);
 
 				if (group.UseAll)
 				{
@@ -134,6 +141,16 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 			inProgress.Remove(resourceName);
 		}
 	}
+
+    private static string ToProviderPath(string logicalPath)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(logicalPath);
+
+        return logicalPath
+            .Trim()
+            .Trim('/')
+            .Replace('/', '.');
+    }
 
     /// <summary>
     /// Searches <paramref name="sourceRules" /> for a rule that satisfies the &lt;Use&gt;
@@ -213,7 +230,9 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 		string resourceName,
 		Dictionary<string, ParsedNotableDateDocument> documentCache)
 	{
-		if (documentCache.TryGetValue(resourceName, out var cached))
+		resourceName = ToProviderPath(resourceName);
+
+        if (documentCache.TryGetValue(resourceName, out var cached))
 			return cached;
 
 		using var stream = _assembly.GetManifestResourceStream(resourceName)

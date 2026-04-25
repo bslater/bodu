@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <NotableDate name="World Health Day">
+    <Rule category="Observance">
+      <Fixed month="April" day="7" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Blood Donor Day">
+    <Rule category="Observance">
+      <Fixed month="June" day="14" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Mental Health Day">
+    <Rule category="Observance">
+      <Fixed month="October" day="10" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World AIDS Day">
+    <Rule category="Observance">
+      <Fixed month="December" day="1" />
+    </Rule>
+  </NotableDate>
+
+</NotableDates>
