@@ -288,6 +288,60 @@ public sealed partial class NotableDateServiceTests
 	}
 
 	/// <summary>
+	/// Verifies that <see cref="INotableDateRuleOverrideProvider.GetRemovals" /> is invoked exactly once per provider during
+	/// service construction and is not re-enumerated on subsequent queries. The service materialises an internal removals
+	/// snapshot so that non-trivial override providers (database-backed, lazily-enumerated, or expensive to compute) cannot drive
+	/// per-rule × per-year × per-territory traffic during query operations.
+	/// </summary>
+	[TestMethod]
+	public void GetRemovals_WhenServiceQueriedRepeatedly_ShouldBeInvokedOncePerOverrideProvider()
+	{
+		var baseProvider = new InMemoryRuleProvider(Fixed("Holiday A", 1, 1, territory: "AU-NSW"));
+		var override_ = new CountingOverrideProvider(
+			removals: new[] { new RuleRemoval("Holiday A", TerritoryCode: "AU-NSW") },
+			additions: Array.Empty<NotableDateRule>());
+
+		var service = new NotableDateService(
+			new[] { (INotableDateRuleProvider)baseProvider },
+			CalendarWeekendDefinition.SaturdaySunday,
+			overrideProviders: new[] { (INotableDateRuleOverrideProvider)override_ });
+
+		_ = service.GetNotableDates(2024, territoryCode: "AU-NSW");
+		_ = service.GetNotableDates(2025, territoryCode: "AU-NSW");
+		_ = service.GetNotableDates(2026, territoryCode: "AU-NSW");
+		service.Invalidate();
+		_ = service.GetNotableDates(2025, territoryCode: "AU-NSW");
+
+		Assert.AreEqual(1, override_.GetRemovalsCallCount);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="INotableDateRuleOverrideProvider.GetAdditions" /> is invoked exactly once per provider during
+	/// service construction. Together with the corresponding removals guarantee, this pins the override-provider call count to a
+	/// constant per service lifetime regardless of query volume or cache invalidations.
+	/// </summary>
+	[TestMethod]
+	public void GetAdditions_WhenServiceQueriedRepeatedly_ShouldBeInvokedOncePerOverrideProvider()
+	{
+		var baseProvider = new InMemoryRuleProvider(Fixed("Holiday A", 1, 1));
+		var override_ = new CountingOverrideProvider(
+			removals: Array.Empty<RuleRemoval>(),
+			additions: new[] { Fixed("One-Off", 6, 15) });
+
+		var service = new NotableDateService(
+			new[] { (INotableDateRuleProvider)baseProvider },
+			CalendarWeekendDefinition.SaturdaySunday,
+			overrideProviders: new[] { (INotableDateRuleOverrideProvider)override_ });
+
+		_ = service.GetNotableDates(2024);
+		_ = service.GetNotableDates(2025);
+		service.Invalidate();
+		_ = service.GetNotableDates(2025);
+
+		Assert.AreEqual(1, override_.GetAdditionsCallCount);
+	}
+
+	/// <summary>
 	/// <see cref="INotableDateRuleProvider" /> that records the number of times <see cref="LoadRules" /> is invoked, enabling
 	/// tests to assert load-once semantics across multiple service queries and cache invalidations.
 	/// </summary>
@@ -361,5 +415,53 @@ public sealed partial class NotableDateServiceTests
 	{
 		foreach (NotableDateRule rule in source)
 			yield return rule;
+	}
+
+	/// <summary>
+	/// <see cref="INotableDateRuleOverrideProvider" /> that records the number of times <see cref="GetRemovals" /> and
+	/// <see cref="GetAdditions" /> are invoked, used to verify that the service materialises override-provider output once at
+	/// construction rather than re-enumerating on every query.
+	/// </summary>
+	private sealed class CountingOverrideProvider : INotableDateRuleOverrideProvider
+	{
+		private readonly IReadOnlyList<RuleRemoval> _removals;
+		private readonly IReadOnlyList<NotableDateRule> _additions;
+
+		/// <summary>
+		/// Initialises a new instance of the <see cref="CountingOverrideProvider" /> class.
+		/// </summary>
+		/// <param name="removals">The removals to return on every <see cref="GetRemovals" /> call.</param>
+		/// <param name="additions">The additions to return on every <see cref="GetAdditions" /> call.</param>
+		public CountingOverrideProvider(IEnumerable<RuleRemoval> removals, IEnumerable<NotableDateRule> additions)
+		{
+			_removals = removals.ToList();
+			_additions = additions.ToList();
+		}
+
+		/// <summary>
+		/// Gets the number of times <see cref="GetRemovals" /> has been invoked since construction.
+		/// </summary>
+		/// <returns>The invocation count.</returns>
+		public int GetRemovalsCallCount { get; private set; }
+
+		/// <summary>
+		/// Gets the number of times <see cref="GetAdditions" /> has been invoked since construction.
+		/// </summary>
+		/// <returns>The invocation count.</returns>
+		public int GetAdditionsCallCount { get; private set; }
+
+		/// <inheritdoc />
+		public IEnumerable<RuleRemoval> GetRemovals()
+		{
+			GetRemovalsCallCount++;
+			return _removals;
+		}
+
+		/// <inheritdoc />
+		public IEnumerable<NotableDateRule> GetAdditions()
+		{
+			GetAdditionsCallCount++;
+			return _additions;
+		}
 	}
 }

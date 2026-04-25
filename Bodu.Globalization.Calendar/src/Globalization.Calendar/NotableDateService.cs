@@ -33,6 +33,7 @@ public sealed class NotableDateService : INotableDateService
 
 	private readonly ImmutableArray<NotableDateRule> _baseRules;
 	private readonly IReadOnlyList<INotableDateRuleOverrideProvider> _overrideProviders;
+	private readonly IReadOnlyList<RuleRemoval> _overrideRemovals;
 	private readonly IReadOnlyList<NotableDateRule> _effectiveRules;
 	private readonly NotableDateRuleResolver _resolver;
 	private readonly NotableDateAdjuster _adjuster;
@@ -121,6 +122,13 @@ public sealed class NotableDateService : INotableDateService
 
 		_baseRules = effectiveProviders.SelectMany(p => p.LoadRules()).ToImmutableArray();
 		_overrideProviders = overrideProviders?.ToList() ?? (IReadOnlyList<INotableDateRuleOverrideProvider>)Array.Empty<INotableDateRuleOverrideProvider>();
+
+		// Snapshot every override provider's removals at construction so that IsRemovedByOverride iterates a materialised list
+		// once per rule × year × territory rather than re-invoking GetRemovals on every check. This pins the cost of any
+		// non-trivial override provider (database-backed, configuration-bound, lazily-enumerated) to a single call per provider
+		// and removes a runaway vector for providers that return fresh, infinite, or expensive enumerables on each invocation.
+		_overrideRemovals = _overrideProviders.SelectMany(p => p.GetRemovals()).ToList();
+
 		_weekendDefinition = weekendDefinition;
 		_weekendProvider = weekendProvider;
 		_collisionResolver = collisionResolver ?? new DefaultNotableDateCollisionResolver();
@@ -467,26 +475,23 @@ public sealed class NotableDateService : INotableDateService
     /// <returns><see langword="true" /> if the rule is removed; otherwise <see langword="false" />.</returns>
 	private bool IsRemovedByOverride(NotableDateRule rule, int year, string? territory)
 	{
-		foreach (var provider in _overrideProviders)
+		foreach (var removal in _overrideRemovals)
 		{
-			foreach (var removal in provider.GetRemovals())
+			if (!string.Equals(removal.RuleName, rule.Name, StringComparison.OrdinalIgnoreCase))
+				continue;
+
+			if (removal.FromYear is { } from && year < from) continue;
+			if (removal.ToYear is { } to && year > to) continue;
+
+			if (!string.IsNullOrEmpty(removal.TerritoryCode))
 			{
-				if (!string.Equals(removal.RuleName, rule.Name, StringComparison.OrdinalIgnoreCase))
-					continue;
-
-				if (removal.FromYear is { } from && year < from) continue;
-				if (removal.ToYear is { } to && year > to) continue;
-
-				if (!string.IsNullOrEmpty(removal.TerritoryCode))
-				{
-					if (string.IsNullOrEmpty(territory)) continue;
-					if (!TerritoryCode.TryParse(removal.TerritoryCode, out var removalScope)) continue;
-					if (!TerritoryCode.TryParse(territory, out var actual)) continue;
-					if (!removalScope.Contains(actual)) continue;
-				}
-
-				return true;
+				if (string.IsNullOrEmpty(territory)) continue;
+				if (!TerritoryCode.TryParse(removal.TerritoryCode, out var removalScope)) continue;
+				if (!TerritoryCode.TryParse(territory, out var actual)) continue;
+				if (!removalScope.Contains(actual)) continue;
 			}
+
+			return true;
 		}
 
 		return false;
