@@ -253,13 +253,15 @@ public sealed class NotableDateService : INotableDateService
 		if (_yearCache.TryGetValue(year, out var cached))
 			return cached;
 
-		// Re-entry guard: if this thread is already generating `year` higher up the call stack (for example, MoveToNextNonWorkingDay's
-		// bounded walk calling back through IsNonWorkingDay → GetOrGenerateYear for the same year), return an empty snapshot so
-		// dependent predicates do not drive unbounded recursion. Callers requiring the fully materialised year must wait for the
-		// outer generation to complete; mid-generation consumers see only what is already cached, which for the in-progress year
-		// is nothing.
+		// Re-entry guard: if this thread is already generating any year higher up the call stack, do not start another generation
+		// pass. MoveToNextNonWorkingDay's bounded walk calls back through IsNonWorkingDay → GetOrGenerateYear; without the guard
+		// it recurses for the originating year (same-year re-entry) and, when the walk crosses a year boundary, would otherwise
+		// open a fresh generation for the next year, leading to year-by-year recursion until DateTime overflows. Returning an
+		// empty snapshot for any cache-miss query during nested generation collapses both vectors: dependent predicates see only
+		// what is already cached, the bounded walk falls through its 366-iteration cap, and only the outer caller fully
+		// materialises a year.
 		HashSet<int> inProgress = _generatingYears.Value!;
-		if (inProgress.Contains(year))
+		if (inProgress.Count > 0)
 			return Array.Empty<NotableDate>();
 
 		lock (_gate)
