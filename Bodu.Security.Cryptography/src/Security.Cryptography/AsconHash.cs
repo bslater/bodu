@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Buffers.Binary;
-
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -46,11 +44,7 @@ public abstract partial class AsconHash<T>
 
     private bool _disposed;
     private bool _useP12ForFinalPad;
-    private ulong _s0;
-    private ulong _s1;
-    private ulong _s2;
-    private ulong _s3;
-    private ulong _s4;
+    private AsconState _state;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AsconHash{T}" /> class with the specified algorithm parameters.
@@ -77,11 +71,7 @@ public abstract partial class AsconHash<T>
         ThrowHelper.ThrowIfLessThan(absorptionRounds, 1);
         ThrowHelper.ThrowIfGreaterThan(absorptionRounds, 12);
 
-        this._iv0 = iv0;
-        this._iv1 = iv1;
-        this._iv2 = iv2;
-        this._iv3 = iv3;
-        this._iv4 = iv4;
+        this._iv0 = iv0; this._iv1 = iv1; this._iv2 = iv2; this._iv3 = iv3; this._iv4 = iv4;
         this._absorptionRounds = absorptionRounds;
         this._algorithmName = algorithmName;
         this.HashSizeValue = 256;
@@ -123,11 +113,7 @@ public abstract partial class AsconHash<T>
 
         // Load the pre-computed initial state directly — no permutation is needed because these
         // values are already the result of applying Ascon-p12 to the raw IV constant.
-        this._s0 = this._iv0;
-        this._s1 = this._iv1;
-        this._s2 = this._iv2;
-        this._s3 = this._iv3;
-        this._s4 = this._iv4;
+        this._state = new AsconState { S0 = this._iv0, S1 = this._iv1, S2 = this._iv2, S3 = this._iv3, S4 = this._iv4 };
         this._useP12ForFinalPad = false;
     }
 
@@ -145,7 +131,7 @@ public abstract partial class AsconHash<T>
         if (disposing)
         {
             CryptoHelpers.ClearAndNullify(ref this.HashValue);
-            this._s0 = this._s1 = this._s2 = this._s3 = this._s4 = 0;
+            this._state.Clear();
             this.HashSizeValue = 0;
         }
 
@@ -184,14 +170,14 @@ public abstract partial class AsconHash<T>
     /// <param name="block">The 8-byte input block to absorb. Its length must equal the configured block size.</param>
     protected override void ProcessBlock(ReadOnlySpan<byte> block)
     {
-        this._s0 ^= BinaryPrimitives.ReadUInt64LittleEndian(block);
+        this._state.AbsorbRate64(block);
 
         // The final padded block must use 12 rounds (Ascon-p12) because it corresponds to the
         // initial permutation of the squeeze phase in the reference algorithm. Regular absorption
         // blocks use _absorptionRounds (12 for HASH256, 8 for HASHA256).
         int rounds = this._useP12ForFinalPad ? 12 : this._absorptionRounds;
         this._useP12ForFinalPad = false;
-        this.ApplyPermutation(rounds);
+        this._state.Permute(rounds);
     }
 
     /// <summary>
@@ -203,13 +189,13 @@ public abstract partial class AsconHash<T>
     {
         byte[] hash = new byte[32];
 
-        BinaryPrimitives.WriteUInt64LittleEndian(hash.AsSpan(0, 8), this._s0);
-        this.ApplyPermutation(this._absorptionRounds);
-        BinaryPrimitives.WriteUInt64LittleEndian(hash.AsSpan(8, 8), this._s0);
-        this.ApplyPermutation(this._absorptionRounds);
-        BinaryPrimitives.WriteUInt64LittleEndian(hash.AsSpan(16, 8), this._s0);
-        this.ApplyPermutation(this._absorptionRounds);
-        BinaryPrimitives.WriteUInt64LittleEndian(hash.AsSpan(24, 8), this._s0);
+        this._state.SqueezeRate64(hash.AsSpan(0, 8));
+        this._state.Permute(this._absorptionRounds);
+        this._state.SqueezeRate64(hash.AsSpan(8, 8));
+        this._state.Permute(this._absorptionRounds);
+        this._state.SqueezeRate64(hash.AsSpan(16, 8));
+        this._state.Permute(this._absorptionRounds);
+        this._state.SqueezeRate64(hash.AsSpan(24, 8));
 
         return hash;
     }

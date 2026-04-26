@@ -198,4 +198,25 @@
   <data name="ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan" xml:space="preserve">
     <value>Specified block size must be greater than {0}.</value>
   </data>
+  <data name="CryptographicException_AssociatedDataAlreadyProcessed" xml:space="preserve">
+    <value>Associated data has already been processed and cannot be supplied again.</value>
+  </data>
+  <data name="CryptographicException_AssociatedDataNotProcessed" xml:space="preserve">
+    <value>Associated data must be processed before encrypting or decrypting.</value>
+  </data>
+  <data name="CryptographicException_AuthenticationTagMismatch" xml:space="preserve">
+    <value>Authentication tag verification failed. The ciphertext or associated data may have been tampered with.</value>
+  </data>
+  <data name="CryptographicException_OutputBufferTooSmall" xml:space="preserve">
+    <value>The output buffer is too small. At least {0} bytes are required.</value>
+  </data>
+  <data name="CryptographicException_CiphertextTooShort" xml:space="preserve">
+    <value>The ciphertext is too short to contain a {0}-byte authentication tag.</value>
+  </data>
+  <data name="CryptographicException_XofSqueezeAfterAbsorb" xml:space="preserve">
+    <value>Data cannot be absorbed after squeezing has begun. Call Initialize() to reset the instance.</value>
+  </data>
+  <data name="CryptographicException_XofCustomizationAfterAbsorb" xml:space="preserve">
+    <value>The customization string must be set before any data is absorbed.</value>
+  </data>
 </root>

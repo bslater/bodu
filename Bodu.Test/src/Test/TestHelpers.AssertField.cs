@@ -88,6 +88,11 @@ public static partial class TestHelpers
         if (fieldType == typeof(Span<byte>) || fieldType == typeof(ReadOnlySpan<byte>))
             throw new NotSupportedException("Span<TAlgorithm> fields cannot be reliably checked via reflection.");
 
+        // For any other value type (struct), compare to its default instance.
+        // This covers internal structs such as AsconState whose fields are all primitives.
+        if (fieldType.IsValueType)
+            return value.Equals(Activator.CreateInstance(fieldType));
+
         throw new NotSupportedException($"Unsupported field type: {fieldType}");
     }
 
