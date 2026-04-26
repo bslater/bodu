@@ -428,31 +428,50 @@ public sealed class CamelliaBlockCipher
     /// <param name="kaLo">The lower 64 bits of <c>KA</c>.</param>
     private void Expand128BitKey(ulong klHi, ulong klLo, ulong kaHi, ulong kaLo)
     {
+        // kw1, kw2 = KL <<< 0
         _kw[0] = klHi;
         _kw[1] = klLo;
 
+        // k1, k2 = KA <<< 0
         _k[0] = kaHi;
         _k[1] = kaLo;
 
-        (_ke[0], _ke[1]) = RotL128(klHi, klLo, 15);
-        (_k[2], _k[3]) = RotL128(kaHi, kaLo, 15);
-        (_k[4], _k[5]) = RotL128(kaHi, kaLo, 30);
+        // k3, k4 = KL <<< 15
+        (_k[2], _k[3]) = RotL128(klHi, klLo, 15);
+
+        // k5, k6 = KA <<< 15
+        (_k[4], _k[5]) = RotL128(kaHi, kaLo, 15);
+
+        // ke1, ke2 = KA <<< 30
+        (_ke[0], _ke[1]) = RotL128(kaHi, kaLo, 30);
+
+        // k7, k8 = KL <<< 45
         (_k[6], _k[7]) = RotL128(klHi, klLo, 45);
 
-        // k9 takes only the upper half of (KA <<< 45).
+        // k9 = (KA <<< 45) >> 64 — upper half only.
         (ulong hi, _) = RotL128(kaHi, kaLo, 45);
         _k[8] = hi;
 
-        // k10 takes only the lower half of (KL <<< 60).
+        // k10 = (KL <<< 60) & MASK64 — lower half only.
         (_, ulong lo) = RotL128(klHi, klLo, 60);
         _k[9] = lo;
 
+        // k11, k12 = KA <<< 60
         (_k[10], _k[11]) = RotL128(kaHi, kaLo, 60);
+
+        // ke3, ke4 = KL <<< 77
         (_ke[2], _ke[3]) = RotL128(klHi, klLo, 77);
+
+        // k13, k14 = KL <<< 94
         (_k[12], _k[13]) = RotL128(klHi, klLo, 94);
+
+        // k15, k16 = KA <<< 94
         (_k[14], _k[15]) = RotL128(kaHi, kaLo, 94);
+
+        // k17, k18 = KL <<< 111
         (_k[16], _k[17]) = RotL128(klHi, klLo, 111);
 
+        // kw3, kw4 = KA <<< 111
         (_kw[2], _kw[3]) = RotL128(kaHi, kaLo, 111);
     }
 
@@ -477,27 +496,57 @@ public sealed class CamelliaBlockCipher
         ulong kbHi,
         ulong kbLo)
     {
+        // kw1, kw2 = KL <<< 0
         _kw[0] = klHi;
         _kw[1] = klLo;
 
+        // k1, k2 = KB <<< 0
         _k[0] = kbHi;
         _k[1] = kbLo;
 
-        (_ke[0], _ke[1]) = RotL128(krHi, krLo, 15);
-        (_k[2], _k[3]) = RotL128(kaHi, kaLo, 15);
-        (_k[4], _k[5]) = RotL128(krHi, krLo, 30);
+        // k3, k4 = KR <<< 15
+        (_k[2], _k[3]) = RotL128(krHi, krLo, 15);
+
+        // k5, k6 = KA <<< 15
+        (_k[4], _k[5]) = RotL128(kaHi, kaLo, 15);
+
+        // ke1, ke2 = KR <<< 30
+        (_ke[0], _ke[1]) = RotL128(krHi, krLo, 30);
+
+        // k7, k8 = KB <<< 30
         (_k[6], _k[7]) = RotL128(kbHi, kbLo, 30);
-        (_ke[2], _ke[3]) = RotL128(klHi, klLo, 45);
-        (_k[8], _k[9]) = RotL128(kaHi, kaLo, 45);
-        (_k[10], _k[11]) = RotL128(klHi, klLo, 60);
+
+        // k9, k10 = KL <<< 45
+        (_k[8], _k[9]) = RotL128(klHi, klLo, 45);
+
+        // k11, k12 = KA <<< 45
+        (_k[10], _k[11]) = RotL128(kaHi, kaLo, 45);
+
+        // ke3, ke4 = KL <<< 60
+        (_ke[2], _ke[3]) = RotL128(klHi, klLo, 60);
+
+        // k13, k14 = KR <<< 60
         (_k[12], _k[13]) = RotL128(krHi, krLo, 60);
+
+        // k15, k16 = KB <<< 60
         (_k[14], _k[15]) = RotL128(kbHi, kbLo, 60);
-        (_ke[4], _ke[5]) = RotL128(klHi, klLo, 77);
-        (_k[16], _k[17]) = RotL128(kaHi, kaLo, 77);
+
+        // ke5, ke6 = KA <<< 77
+        (_ke[4], _ke[5]) = RotL128(kaHi, kaLo, 77);
+
+        // k17, k18 = KL <<< 77
+        (_k[16], _k[17]) = RotL128(klHi, klLo, 77);
+
+        // k19, k20 = KR <<< 94
         (_k[18], _k[19]) = RotL128(krHi, krLo, 94);
+
+        // k21, k22 = KA <<< 94
         (_k[20], _k[21]) = RotL128(kaHi, kaLo, 94);
+
+        // k23, k24 = KL <<< 111
         (_k[22], _k[23]) = RotL128(klHi, klLo, 111);
 
+        // kw3, kw4 = KB <<< 111
         (_kw[2], _kw[3]) = RotL128(kbHi, kbLo, 111);
     }
 
