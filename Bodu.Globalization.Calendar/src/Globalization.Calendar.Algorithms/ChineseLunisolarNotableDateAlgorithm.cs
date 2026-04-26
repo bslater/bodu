@@ -24,6 +24,13 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// the result may also fall within the same year or very early in the following year, depending on the calendar alignment.
 /// </para>
 /// <para>
+/// <paramref name="lunarMonth" /> is interpreted as the conventional ordinal lunar month (1 = first, 2 = second, …, 12 = twelfth)
+/// and the algorithm transparently skips any intercalary leap month inserted by the lunisolar calendar. For example, in a year with
+/// a leap fourth month, the fifth conventional lunar month corresponds to <see cref="SysGlobal.ChineseLunisolarCalendar" /> month 6.
+/// This ensures festivals such as the Dragon Boat Festival (5/5), Mid-Autumn Festival (8/15), and Double Ninth Festival (9/9)
+/// resolve to the correct Gregorian date in leap lunar years.
+/// </para>
+/// <para>
 /// The supported range is determined by <see cref="SysGlobal.ChineseLunisolarCalendar.MinSupportedDateTime" /> and
 /// <see cref="SysGlobal.ChineseLunisolarCalendar.MaxSupportedDateTime" />, which covers Gregorian years 1901–2100.
 /// </para>
@@ -83,14 +90,21 @@ public sealed class ChineseLunisolarNotableDateAlgorithm
 			return null;
 
 		int monthsInYear = ChineseCalendar.GetMonthsInYear(year);
-		if (_lunarMonth > monthsInYear)
+		int leapMonth = ChineseCalendar.GetLeapMonth(year);
+
+		// GetLeapMonth returns the position (1-based) of the intercalary month within the lunisolar
+		// calendar's consecutive 1..N month numbering, or 0 when the year is not a leap lunar year.
+		// To map a conventional ordinal lunar month onto the calendar's numbering we shift by one
+		// for any month whose position falls at or after the leap slot.
+		int calendarMonth = (leapMonth > 0 && _lunarMonth >= leapMonth) ? _lunarMonth + 1 : _lunarMonth;
+		if (calendarMonth > monthsInYear)
 			return null;
 
-		int daysInMonth = ChineseCalendar.GetDaysInMonth(year, _lunarMonth);
+		int daysInMonth = ChineseCalendar.GetDaysInMonth(year, calendarMonth);
 		if (_lunarDay > daysInMonth)
 			return null;
 
-		DateTime result = ChineseCalendar.ToDateTime(year, _lunarMonth, _lunarDay, 0, 0, 0, 0);
+		DateTime result = ChineseCalendar.ToDateTime(year, calendarMonth, _lunarDay, 0, 0, 0, 0);
 
 		SysGlobal.Calendar targetCalendar = calendar ?? new SysGlobal.GregorianCalendar();
 
