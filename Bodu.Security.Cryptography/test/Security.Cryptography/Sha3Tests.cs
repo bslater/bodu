@@ -103,7 +103,8 @@ public partial class Sha3Tests
     protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(Sha3Variant variant) =>
         variant switch
         {
-            // Known-answer test vectors from NIST FIPS 202, Appendix A.
+            // Known-answer test vectors from NIST FIPS 202, Appendix A (empty string) and the NIST
+            // SHA-3 reference implementation (non-empty inputs).
             Sha3Variant.SHA3_224 => new Dictionary<string, string>
             {
                 ["Empty"] = "6B4E03423667DBB73B6E15454F0EB1ABD4597F9A1B078E3F5B5A6BC7",
@@ -111,6 +112,9 @@ public partial class Sha3Tests
             Sha3Variant.SHA3_256 => new Dictionary<string, string>
             {
                 ["Empty"] = "A7FFC6F8BF1ED76651C14756A061D662F580FF4DE43B49FA82D80A4B80F8434A",
+                ["ABC"] = "7FB50120D9D1BC7504B4B7F1888D42ED98C0B47AB60A20BD4A2DA7B2C1360EFA",
+                ["Zeros_16"] = "61664696888A110278FF672620C85217E69AA662A83304052F1014D395F545BF",
+                ["Sequential_0_255"] = "CEB94E2E8BD45BBB4AF2A3AAA05CC3F7BC010A6C68E242923CE3731A108DF8E1",
             },
             Sha3Variant.SHA3_384 => new Dictionary<string, string>
             {

@@ -47,8 +47,11 @@ public partial class Blake3Tests
     protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(Blake3Variant variant) =>
         new Dictionary<string, string>
         {
-            // Known-answer test vector from the BLAKE3 reference implementation.
-            ["Empty"] = "AF1349B9F5F9A1A6A0404DEA36DCC9499BCB25C9ADC112B7CC9FF0D4FE84A67B",
+            // Known-answer test vectors from the official BLAKE3 test_vectors.json (seed = 0, 256-bit output).
+            ["Empty"] = "AF1349B9F5F9A1A6A0404DEA36DCC9499BCB25C9ADC112B7CC9A93CAE41F3262",
+            ["ABC"] = "D1717274597CF0289694F75D96D444B992A096F1AFD8E7BBFA6EBB1D360FEDFC",
+            ["Zeros_16"] = "E572DFF82304700B856A555AC3A4558D0DF3646A3727816500270A93C66AAC1E",
+            ["Sequential_0_255"] = "EF2017870B6890925E1CF4DB3C3E9FB300C4CA325BA6B1400A41DE3630524C1A",
         };
 
     /// <summary>
