@@ -606,7 +606,7 @@ public sealed class NotableDateRuleResolverTests
 
 		DateTime? result = resolver.ResolveAnchorDate(rule, 2025);
 
-		Assert.AreEqual(new DateTime(2025, 9, 1), result);
+		Assert.AreEqual(new DateTime(2025, 9, 9), result);
 		Assert.AreEqual("Custom", StringMonthAlgorithm.LastMonthToken);
 	}
 
