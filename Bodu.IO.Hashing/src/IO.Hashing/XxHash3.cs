@@ -151,7 +151,7 @@ public sealed class XxHash3
     {
         ulong s0 = BinaryPrimitives.ReadUInt64LittleEndian(secret.Slice(56));
         ulong s1 = BinaryPrimitives.ReadUInt64LittleEndian(secret.Slice(64));
-        return Avalanche(unchecked(Prime64_1 + Prime64_2 + s0 ^ s1));
+        return Avalanche(unchecked(s0 ^ s1));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -266,12 +266,12 @@ public sealed class XxHash3
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static (ulong Lo, ulong Hi) Hash128Len0(ReadOnlySpan<byte> secret)
     {
-        ulong lo = Avalanche(unchecked(Prime64_1 + Prime64_2 +
-                            (BinaryPrimitives.ReadUInt64LittleEndian(secret.Slice(64)) ^
-                             BinaryPrimitives.ReadUInt64LittleEndian(secret.Slice(72)))));
-        ulong hi = Avalanche(unchecked(Prime64_2 + Prime64_3 +
-                            (BinaryPrimitives.ReadUInt64LittleEndian(secret.Slice(80)) ^
-                             BinaryPrimitives.ReadUInt64LittleEndian(secret.Slice(88)))));
+        ulong lo = Avalanche(unchecked(
+            BinaryPrimitives.ReadUInt64LittleEndian(secret.Slice(64)) ^
+            BinaryPrimitives.ReadUInt64LittleEndian(secret.Slice(72))));
+        ulong hi = Avalanche(unchecked(
+            BinaryPrimitives.ReadUInt64LittleEndian(secret.Slice(80)) ^
+            BinaryPrimitives.ReadUInt64LittleEndian(secret.Slice(88))));
         return (lo, hi);
     }
 
@@ -456,18 +456,32 @@ public sealed class XxHash3
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong MergeLongAcc(ulong[] acc, ReadOnlySpan<byte> secret, ulong length)
     {
+        // xxHash3 merge: fold 4 accumulator pairs using XOR with secret words at offset 11.
+        const int SecretMergeStart = 11;
         ulong result = unchecked(length * Prime64_1);
-        for (int i = 0; i < AccumulatorCount; i++)
-            result = MergeAccumulator64(result, acc[i]) + BinaryPrimitives.ReadUInt64LittleEndian(secret.Slice(72 + i * 8)) * acc[i];
+        for (int i = 0; i < 4; i++)
+        {
+            ulong a1 = acc[2 * i]     ^ BinaryPrimitives.ReadUInt64LittleEndian(secret.Slice(SecretMergeStart + 16 * i));
+            ulong a2 = acc[2 * i + 1] ^ BinaryPrimitives.ReadUInt64LittleEndian(secret.Slice(SecretMergeStart + 16 * i + 8));
+            result = unchecked(result ^ Mul128Fold64(a1, a2));
+        }
+
         return Avalanche(result);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong MergeLongAccHi(ulong[] acc, ReadOnlySpan<byte> secret, ulong length)
     {
+        // xxHash3-128 hi merge: same structure as lo but using the tail of the secret.
+        const int SecretHiStart = SecretLen - 64;
         ulong result = unchecked(~(length * Prime64_2));
-        for (int i = 0; i < AccumulatorCount; i++)
-            result = MergeAccumulator64(result, acc[AccumulatorCount - 1 - i]) + BinaryPrimitives.ReadUInt64LittleEndian(secret.Slice(SecretLen - 64 + i * 8)) * acc[i];
+        for (int i = 0; i < 4; i++)
+        {
+            ulong a1 = acc[2 * i]     ^ BinaryPrimitives.ReadUInt64LittleEndian(secret.Slice(SecretHiStart + 16 * i));
+            ulong a2 = acc[2 * i + 1] ^ BinaryPrimitives.ReadUInt64LittleEndian(secret.Slice(SecretHiStart + 16 * i + 8));
+            result = unchecked(result ^ Mul128Fold64(a1, a2));
+        }
+
         return Avalanche(result);
     }
 

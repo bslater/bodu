@@ -628,9 +628,6 @@ public sealed class Blake3
     /// </summary>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed()
-    {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(Blake3));
-    }
+    private void ThrowIfDisposed() =>
+        ObjectDisposedException.ThrowIf(_disposed, this);
 }
