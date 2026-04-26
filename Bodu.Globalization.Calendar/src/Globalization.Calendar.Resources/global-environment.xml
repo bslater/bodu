@@ -39,4 +39,39 @@
     </Rule>
   </NotableDate>
 
+  <NotableDate name="World Wetlands Day">
+    <Rule name="Fixed World Wetlands Day" category="Observance" firstYear="1997"
+          comment="First observed in 1997 to mark the anniversary of the signing of the Ramsar Convention on Wetlands on 2 February 1971 in Ramsar, Iran.">
+      <Fixed month="February" day="2" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Day of Forests">
+    <Rule name="Fixed International Day of Forests" category="Observance" firstYear="2013"
+          comment="Proclaimed by the United Nations General Assembly in 2012 (resolution 67/200) and first observed on 21 March 2013, to raise awareness of the importance of all types of forests.">
+      <Fixed month="March" day="21" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Day for Biological Diversity">
+    <Rule name="Fixed International Day for Biological Diversity" category="Observance" firstYear="2001"
+          comment="Proclaimed by the United Nations in 2000 (resolution 55/201). Observed annually on 22 May, the date of the adoption of the text of the Convention on Biological Diversity in 1992.">
+      <Fixed month="May" day="22" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Day to Combat Desertification and Drought">
+    <Rule name="Fixed World Day to Combat Desertification and Drought" category="Observance" firstYear="1995"
+          comment="Proclaimed by the United Nations General Assembly in 1994 (resolution 49/115) and first observed on 17 June 1995, the day of the adoption of the United Nations Convention to Combat Desertification (UNCCD) in 1994.">
+      <Fixed month="June" day="17" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Soil Day">
+    <Rule name="Fixed World Soil Day" category="Observance" firstYear="2014"
+          comment="Recommended by the International Union of Soil Sciences (IUSS) in 2002 and officially designated by the United Nations General Assembly in 2013 (resolution 68/232). The date marks the birthday of King Bhumibol Adulyadej of Thailand, a champion of sustainable land management.">
+      <Fixed month="December" day="5" />
+    </Rule>
+  </NotableDate>
+
 </NotableDates>

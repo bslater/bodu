@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="EasterSundayNotableDateCalculatorTests.cs" company="PlaceholderCompany">
+// <copyright file="EasterSundayNotableDateAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,15 +8,15 @@ using System.Globalization;
 using System.Reflection;
 using SysGlob = System.Globalization;
 
-namespace Bodu.Globalization.Calendar.Calculators;
+namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
-/// Verifies the correctness and behaviour of <see cref="EasterSundayNotableDateCalculator" />.
+/// Verifies the correctness and behaviour of <see cref="EasterSundayNotableDateAlgorithm" />.
 /// </summary>
 [TestClass]
-public sealed class EasterSundayNotableDateCalculatorTests
+public sealed class EasterSundayNotableDateAlgorithmTests
 {
-	private readonly EasterSundayNotableDateCalculator _calculator = new();
+	private readonly EasterSundayNotableDateAlgorithm _algorithm = new();
 
         public enum EasterCalendarType
         {
@@ -483,7 +483,7 @@ public sealed class EasterSundayNotableDateCalculatorTests
 	[DynamicData(nameof(GetInvalidYearTestData), DynamicDataDisplayName =nameof(GetKnownEasterSundayTestDataDisplayName))]
 	public void GetDate_WhenGivenKnownYears_ShouldReturnExpectedDate(EasterSundayKnownAnswer knownAnswer)
 	{
-		var calculator = new EasterSundayNotableDateCalculator();
+		var algorithm = new EasterSundayNotableDateAlgorithm();
             SysGlob.Calendar? calendar = knownAnswer.CalendarType switch
             {
                 EasterCalendarType.Gregorian => new SysGlob.GregorianCalendar(),
@@ -491,7 +491,7 @@ public sealed class EasterSundayNotableDateCalculatorTests
                 _ => null
             };
 
-            var result = calculator.GetDate(knownAnswer.Year, calendar);
+            var result = algorithm.GetDate(knownAnswer.Year, calendar);
 
 		Assert.IsNotNull(result);
 		Assert.AreEqual(knownAnswer.ExpectedDate, result);
@@ -692,16 +692,16 @@ public sealed class EasterSundayNotableDateCalculatorTests
 
         /// <summary>
         /// Verifies that Orthodox Easter Sunday is correctly calculated for years 1916-2099.
-        /// Currently skipped: the calculator returns incorrect dates (7-35 days earlier than
+        /// Currently skipped: the algorithm returns incorrect dates (7-35 days earlier than
         /// expected) for most Orthodox entries. Tracked by
         /// <see href="https://github.com/bslater/bodu/issues/53" />.
         /// </summary>
         [TestMethod]
-        [Ignore("Pre-existing calculator bug for Orthodox Easter years 1916-2099 — tracked by bslater/bodu#53.")]
+        [Ignore("Pre-existing algorithm bug for Orthodox Easter years 1916-2099 — tracked by bslater/bodu#53.")]
         [DynamicData(nameof(GetBrokenOrthodoxTestData), DynamicDataDisplayName = nameof(GetKnownEasterSundayTestDataDisplayName))]
         public void GetDate_WhenGivenOrthodoxKnownYears_ShouldReturnExpectedDate(EasterSundayKnownAnswer knownAnswer)
         {
-            var calculator = new EasterSundayNotableDateCalculator();
+            var algorithm = new EasterSundayNotableDateAlgorithm();
             SysGlob.Calendar? calendar = knownAnswer.CalendarType switch
             {
                 EasterCalendarType.Gregorian => new SysGlob.GregorianCalendar(),
@@ -709,7 +709,7 @@ public sealed class EasterSundayNotableDateCalculatorTests
                 _ => null
             };
 
-            var result = calculator.GetDate(knownAnswer.Year, calendar);
+            var result = algorithm.GetDate(knownAnswer.Year, calendar);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(knownAnswer.ExpectedDate, result);
@@ -727,7 +727,7 @@ public sealed class EasterSundayNotableDateCalculatorTests
 	{
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
 		{
-			_ = _calculator.GetDate(year, null);
+			_ = _algorithm.GetDate(year, null);
 		});
 	}
 
@@ -743,7 +743,7 @@ public sealed class EasterSundayNotableDateCalculatorTests
 	[TestMethod]
 	public void GetDate_WhenJulianEraYear_ShouldComputeUsingJulianBranch(int year, int expectedY, int expectedM, int expectedD)
 	{
-		DateTime? result = _calculator.GetDate(year, null);
+		DateTime? result = _algorithm.GetDate(year, null);
 
 		Assert.IsNotNull(result);
 		Assert.AreEqual(new DateTime(expectedY, expectedM, expectedD), result);
@@ -757,8 +757,8 @@ public sealed class EasterSundayNotableDateCalculatorTests
 	public void GetDate_WhenAtOrAbove1583_ShouldUseGregorianBranch()
 	{
 		// 1583 is the Gregorian computus's minimum supported year; 1584 should also take that branch.
-		DateTime? gregorian1583 = _calculator.GetDate(1583, null);
-		DateTime? gregorian1584 = _calculator.GetDate(1584, null);
+		DateTime? gregorian1583 = _algorithm.GetDate(1583, null);
+		DateTime? gregorian1584 = _algorithm.GetDate(1584, null);
 
 		Assert.IsNotNull(gregorian1583);
 		Assert.IsNotNull(gregorian1584);
@@ -769,14 +769,14 @@ public sealed class EasterSundayNotableDateCalculatorTests
 	/// <summary>
 	/// Verifies that passing a Julian calendar explicitly yields Julian-calendar
 	/// <see cref="DateTime" /> values (with matching Kind and components) rather than the raw
-	/// Gregorian output. Covers the non-null <c>calendar.ToDateTime</c> branch in the calculator.
+	/// Gregorian output. Covers the non-null <c>calendar.ToDateTime</c> branch in the algorithm.
 	/// </summary>
 	[TestMethod]
 	public void GetDate_WhenExplicitJulianCalendar_ShouldReturnDateBuiltThroughCalendar()
 	{
 		var julian = new SysGlob.JulianCalendar();
 
-		DateTime? result = _calculator.GetDate(2026, julian);
+		DateTime? result = _algorithm.GetDate(2026, julian);
 
 		Assert.IsNotNull(result);
 		Assert.AreEqual(DateTimeKind.Unspecified, result!.Value.Kind);
@@ -790,8 +790,8 @@ public sealed class EasterSundayNotableDateCalculatorTests
 	{
 		int year = 2026;
 
-		var firstCall = _calculator.GetDate(year, null);
-		var secondCall = _calculator.GetDate(year, null);
+		var firstCall = _algorithm.GetDate(year, null);
+		var secondCall = _algorithm.GetDate(year, null);
 
 		Assert.AreEqual(firstCall, secondCall);
 	}
@@ -804,7 +804,7 @@ public sealed class EasterSundayNotableDateCalculatorTests
 	{
 		int year = 2030;
 
-		var result = _calculator.GetDate(year, null);
+		var result = _algorithm.GetDate(year, null);
 
 		Assert.AreEqual(DateTimeKind.Unspecified, result?.Kind);
 	}

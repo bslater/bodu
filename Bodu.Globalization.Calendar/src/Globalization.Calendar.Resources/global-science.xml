@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global science and technology notable-date resource using the Western/Gregorian calendar.
+
+  These entries represent internationally recognised science, technology, and
+  innovation observances. They are not universally public holidays or non-working
+  days in every country. Country-specific resources should import only the dates
+  they observe and override naming, suppression, or behavioural rules where required.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <!--
+    Fixed-date science and technology observances.
+  -->
+
+  <NotableDate name="International Day of Women and Girls in Science">
+    <Rule name="Fixed International Day of Women and Girls in Science" category="Observance" firstYear="2016"
+          comment="Proclaimed by the United Nations General Assembly in 2015 (resolution 70/212) and first observed on 11 February 2016.">
+      <Fixed month="February" day="11" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Day of Mathematics">
+    <Rule name="Fixed International Day of Mathematics" category="Observance" firstYear="2020"
+          comment="Proclaimed by UNESCO in 2019 and first observed in 2020. The date coincides with Pi Day (3.14), reflecting the mathematical constant π ≈ 3.14159.">
+      <Fixed month="March" day="14" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Meteorological Day">
+    <Rule name="Fixed World Meteorological Day" category="Observance" firstYear="1961"
+          comment="Marks the anniversary of the entry into force of the World Meteorological Organization (WMO) Convention on 23 March 1950.">
+      <Fixed month="March" day="23" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Intellectual Property Day">
+    <Rule name="Fixed World Intellectual Property Day" category="Observance" firstYear="2000"
+          comment="Established by the World Intellectual Property Organization (WIPO) in 1999 to mark the date the WIPO Convention entered into force in 1970.">
+      <Fixed month="April" day="26" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Day of Light">
+    <Rule name="Fixed International Day of Light" category="Observance" firstYear="2018"
+          comment="Proclaimed by UNESCO in 2017 and first observed on 16 May 2018. The date marks the anniversary of Theodore Maiman's first successful operation of the laser in 1960.">
+      <Fixed month="May" day="16" />
+    </Rule>
+  </NotableDate>
+
+  <!--
+    Multi-day science observances.
+  -->
+
+  <NotableDate name="World Space Week">
+    <Rule name="Fixed World Space Week" category="Observance" durationDays="7" firstYear="1999"
+          comment="Proclaimed by the United Nations General Assembly in 1999 (resolution 54/68). Runs 4–10 October, marking the launch of Sputnik 1 (4 Oct 1957) and the signing of the Outer Space Treaty (10 Oct 1967).">
+      <Fixed month="October" day="4" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Science Day for Peace and Development">
+    <Rule name="Fixed World Science Day for Peace and Development" category="Observance" firstYear="2002"
+          comment="Proclaimed by UNESCO in 2001 and first observed on 10 November 2002, to highlight the role of science in society and the need to engage the wider public in debates on science.">
+      <Fixed month="November" day="10" />
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

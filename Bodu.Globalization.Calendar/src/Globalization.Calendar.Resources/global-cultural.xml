@@ -33,4 +33,46 @@
     </Rule>
   </NotableDate>
 
+  <NotableDate name="International Mother Language Day">
+    <Rule name="Fixed International Mother Language Day" category="Cultural" firstYear="2000"
+          comment="Proclaimed by UNESCO in 1999 (resolution 30C/29) and first observed on 21 February 2000, to promote linguistic and cultural diversity. The date marks the 1952 shooting of students protesting for recognition of the Bengali language in Dhaka.">
+      <Fixed month="February" day="21" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Poetry Day">
+    <Rule name="Fixed World Poetry Day" category="Cultural" firstYear="1999"
+          comment="Proclaimed by UNESCO at its 30th General Conference in Paris in 1999, to support linguistic expression through poetic form and to promote the reading, writing, and teaching of poetry worldwide.">
+      <Fixed month="March" day="21" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Theatre Day">
+    <Rule name="Fixed World Theatre Day" category="Cultural" firstYear="1962"
+          comment="Established in 1961 by the International Theatre Institute (ITI) and first celebrated on 27 March 1962. The date was chosen following a proposal by Finnish diplomat Arvi Kivimaa at the ITI World Congress in Vienna.">
+      <Fixed month="March" day="27" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Jazz Day">
+    <Rule name="Fixed International Jazz Day" category="Cultural" firstYear="2012"
+          comment="Proclaimed by UNESCO in 2011 (resolution 36C/38) and first celebrated on 30 April 2012. Championed by jazz musician and UNESCO Goodwill Ambassador Herbie Hancock.">
+      <Fixed month="April" day="30" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Music Day">
+    <Rule name="Fixed World Music Day" category="Cultural" firstYear="1982"
+          comment="Fête de la Musique. Originated in France in 1982 following a proposal by the French Ministry of Culture; now celebrated internationally on the summer solstice, 21 June, with free public performances.">
+      <Fixed month="June" day="21" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Friendship Day">
+    <Rule name="Fixed International Friendship Day" category="Cultural" firstYear="2011"
+          comment="Proclaimed by the United Nations General Assembly in 2011 (resolution 65/275). The concept originated in 1958 when the World Friendship Crusade proposed 30 July as World Friendship Day.">
+      <Fixed month="July" day="30" />
+    </Rule>
+  </NotableDate>
+
 </NotableDates>

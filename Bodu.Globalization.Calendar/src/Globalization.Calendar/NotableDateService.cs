@@ -67,11 +67,11 @@ public sealed class NotableDateService : INotableDateService
     /// <param name="resourcePathResolver">An optional custom weekend provider.</param>
     /// <param name="weekendProvider">An optional custom weekend provider.</param>
     /// <param name="overrideProviders">Optional layered override providers, applied after the base rules in registration order.</param>
-    /// <param name="calculatorRegistry">Optional registry used to resolve <see cref="DateResolutionStrategy.Calculator" /> rules.</param>
+    /// <param name="algorithmRegistry">Optional registry used to resolve <see cref="DateResolutionStrategy.Algorithm" /> rules.</param>
     /// <param name="adjustmentHandlers">Optional registry of custom <see cref="IAdjustmentHandler" /> instances.</param>
     /// <param name="collisionResolver">Optional collision resolver. Defaults to <see cref="DefaultNotableDateCollisionResolver" />.</param>
     /// <param name="nameLocalizer">Optional localizer used to translate notable date names into the active culture.</param>
-    /// <param name="plugins">Optional external plugins loaded via <see cref="Plugins.ExternalPluginLoader" />. Rule providers exposed by plugins are appended to <paramref name="ruleProviders" /> and participate in the normal flatten pipeline; named calculators are registered onto an internal calculator registry that falls back to <paramref name="calculatorRegistry" /> when supplied (caller-supplied registrations win on key collision).</param>
+    /// <param name="plugins">Optional external plugins loaded via <see cref="Plugins.ExternalPluginLoader" />. Rule providers exposed by plugins are appended to <paramref name="ruleProviders" /> and participate in the normal flatten pipeline; named algorithms are registered onto an internal algorithm registry that falls back to <paramref name="algorithmRegistry" /> when supplied (caller-supplied registrations win on key collision).</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="ruleProviders" /> is <see langword="null" />.</exception>
     public NotableDateService(
 		IEnumerable<INotableDateRuleProvider> ruleProviders,
@@ -79,7 +79,7 @@ public sealed class NotableDateService : INotableDateService
         IResourcePathResolver? resourcePathResolver=null,
         IWeekendDefinitionProvider? weekendProvider = null,
 		IEnumerable<INotableDateRuleOverrideProvider>? overrideProviders = null,
-		INotableDateCalculatorRegistry? calculatorRegistry = null,
+		INotableDateAlgorithmRegistry? algorithmRegistry = null,
 		IAdjustmentHandlerRegistry? adjustmentHandlers = null,
 		INotableDateCollisionResolver? collisionResolver = null,
 		INotableDateNameLocalizer? nameLocalizer = null,
@@ -89,15 +89,15 @@ public sealed class NotableDateService : INotableDateService
 		ThrowHelper.ThrowIfEnumValueIsUndefined(weekendDefinition);
 		ThrowHelper.ThrowIfConditionallyRequiredParameterIsNull(weekendProvider, weekendDefinition, CalendarWeekendDefinition.Custom);
 
-		// Fan plugin contributions into the provider list and the calculator registry. The merge order means host-level
+		// Fan plugin contributions into the provider list and the algorithm registry. The merge order means host-level
 		// rule providers are loaded first and therefore win composite-key collisions inside the flatten pipeline, and
-		// host-supplied calculator registrations take precedence over plugin-supplied ones with the same key.
+		// host-supplied algorithm registrations take precedence over plugin-supplied ones with the same key.
 		var effectiveProviders = ruleProviders.ToList();
-		var effectiveRegistry = calculatorRegistry;
+		var effectiveRegistry = algorithmRegistry;
 
 		if (plugins is not null)
 		{
-			var pluginCalculators = new List<KeyValuePair<string, INotableDateCalculator>>();
+			var pluginAlgorithms = new List<KeyValuePair<string, INotableDateAlgorithm>>();
 
 			foreach (var plugin in plugins)
 			{
@@ -107,19 +107,19 @@ public sealed class NotableDateService : INotableDateService
 						effectiveProviders.Add(provider);
 				}
 
-				if (plugin is Plugins.INotableDateCalculatorPlugin calcPlugin)
+				if (plugin is Plugins.INotableDateAlgorithmPlugin calcPlugin)
 				{
-					foreach (var pair in calcPlugin.GetCalculators())
-						pluginCalculators.Add(pair);
+					foreach (var pair in calcPlugin.GetAlgorithms())
+						pluginAlgorithms.Add(pair);
 				}
 			}
 
-			if (pluginCalculators.Count > 0)
+			if (pluginAlgorithms.Count > 0)
 			{
-				var pluginRegistry = new NotableDateCalculatorRegistry(pluginCalculators);
+				var pluginRegistry = new NotableDateAlgorithmRegistry(pluginAlgorithms);
 				effectiveRegistry = effectiveRegistry is null
 					? pluginRegistry
-					: new CompositeCalculatorRegistry(effectiveRegistry, pluginRegistry);
+					: new CompositeAlgorithmRegistry(effectiveRegistry, pluginRegistry);
 			}
 		}
 
@@ -582,16 +582,16 @@ public sealed class NotableDateService : INotableDateService
 	}
 
 	/// <summary>
-	/// Layers two <see cref="INotableDateCalculatorRegistry" /> instances: <paramref name="primary" /> is consulted first; on a
-	/// miss, <paramref name="fallback" /> is consulted. Used to compose host-supplied calculators with plugin-supplied ones so
+	/// Layers two <see cref="INotableDateAlgorithmRegistry" /> instances: <paramref name="primary" /> is consulted first; on a
+	/// miss, <paramref name="fallback" /> is consulted. Used to compose host-supplied algorithms with plugin-supplied ones so
 	/// the host retains precedence on key collisions.
 	/// </summary>
-	private sealed class CompositeCalculatorRegistry : INotableDateCalculatorRegistry
+	private sealed class CompositeAlgorithmRegistry : INotableDateAlgorithmRegistry
 	{
-		private readonly INotableDateCalculatorRegistry _primary;
-		private readonly INotableDateCalculatorRegistry _fallback;
+		private readonly INotableDateAlgorithmRegistry _primary;
+		private readonly INotableDateAlgorithmRegistry _fallback;
 
-		public CompositeCalculatorRegistry(INotableDateCalculatorRegistry primary, INotableDateCalculatorRegistry fallback)
+		public CompositeAlgorithmRegistry(INotableDateAlgorithmRegistry primary, INotableDateAlgorithmRegistry fallback)
 		{
 			_primary = primary;
 			_fallback = fallback;
@@ -599,12 +599,12 @@ public sealed class NotableDateService : INotableDateService
 
 		public bool Contains(string key) => _primary.Contains(key) || _fallback.Contains(key);
 
-		public bool TryGet(string key, out INotableDateCalculator calculator)
+		public bool TryGet(string key, out INotableDateAlgorithm algorithm)
 		{
-			if (_primary.TryGet(key, out calculator!))
+			if (_primary.TryGet(key, out algorithm!))
 				return true;
 
-			return _fallback.TryGet(key, out calculator!);
+			return _fallback.TryGet(key, out algorithm!);
 		}
 	}
 }

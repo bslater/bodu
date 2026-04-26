@@ -87,21 +87,27 @@
   </NotableDate>
 
   <!--
-    Widely observed Australian cultural and family observances.
+    Imported family observances.
+
+    Mother's Day uses the global second-Sunday-in-May form, consistent with
+    Australian practice. Father's Day falls on the first Sunday in September
+    in Australia, which differs from the global third-Sunday-in-June default,
+    so it is defined separately below.
   -->
 
-  <NotableDate name="Mother's Day">
-    <Rule name="Second Sunday In May Mother's Day"
-          category="Observance"
-          territory="AU">
-      <DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Second" />
-    </Rule>
-  </NotableDate>
+  <UseFrom resource="./global-family.xml">
+    <Use name="Mother's Day" territory="AU" />
+  </UseFrom>
+
+  <!--
+    Widely observed Australian cultural and family observances.
+  -->
 
   <NotableDate name="Father's Day">
     <Rule name="First Sunday In September Father's Day"
           category="Observance"
-          territory="AU">
+          territory="AU"
+          comment="In Australia and New Zealand, Father's Day is observed on the first Sunday of September, not the third Sunday of June as in most other countries.">
       <DayOfWeekInMonth month="September" dayOfWeek="Sunday" weekOrdinal="First" />
     </Rule>
   </NotableDate>

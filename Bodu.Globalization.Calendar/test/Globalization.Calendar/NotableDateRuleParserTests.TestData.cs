@@ -40,11 +40,11 @@ public partial class NotableDateRuleParserTests
 			</NotableDate>
 		</NotableDates>";
 
-	public const string CalculatorRuleXml = @"
+	public const string AlgorithmRuleXml = @"
 		<NotableDates xmlns=""urn:bodu:globalization:calendar"">
 			<NotableDate name=""Easter Sunday Test"">
-				<Rule name=""Easter Sunday Calculator Rule"" category=""Observance"" firstYear=""1583"">
-					<Calculator key=""easter-sunday"" />
+				<Rule name=""Easter Sunday Algorithm Rule"" category=""Observance"" firstYear=""1583"">
+					<Algorithm key=""easter-sunday"" />
 				</Rule>
 			</NotableDate>
 		</NotableDates>";
@@ -68,7 +68,7 @@ public partial class NotableDateRuleParserTests
 			</NotableDate>
 			<NotableDate name=""Easter Sunday"">
 				<Rule name=""Easter Sunday Rule"" category=""Observance"" firstYear=""1583"">
-					<Calculator key=""easter-sunday"" />
+					<Algorithm key=""easter-sunday"" />
 				</Rule>
 			</NotableDate>
 			<NotableDate name=""Good Friday"">

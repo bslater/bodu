@@ -12,7 +12,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 
 /// <summary>
 /// Verifies that a plugin loaded via <see cref="ExternalPluginLoader" /> flows through <see cref="NotableDateService" /> as a
-/// first-class contributor: its rule providers show up in <c>GetNotableDates</c> results, and its named calculators resolve
+/// first-class contributor: its rule providers show up in <c>GetNotableDates</c> results, and its named algorithms resolve
 /// rules that target them by key.
 /// </summary>
 [TestClass]
@@ -44,24 +44,24 @@ public sealed class NotableDateServicePluginIntegrationTests
 	}
 
 	/// <summary>
-	/// Verifies that a rule targeting a plugin-supplied calculator resolves via the composite calculator registry: the service
-	/// registers the plugin's calculator and then a consumer rule whose <c>CalculatorKey</c> matches that registration
+	/// Verifies that a rule targeting a plugin-supplied algorithm resolves via the composite algorithm registry: the service
+	/// registers the plugin's algorithm and then a consumer rule whose <c>AlgorithmKey</c> matches that registration
 	/// resolves through to the expected date.
 	/// </summary>
 	[TestMethod]
-	public void GetNotableDates_WhenRuleUsesPluginCalculator_ShouldResolveDateViaPluginRegistration()
+	public void GetNotableDates_WhenRuleUsesPluginAlgorithm_ShouldResolveDateViaPluginRegistration()
 	{
 		var loader = new ExternalPluginLoader(new AllowAllPluginTrustPolicy());
 		var plugin = loader.Load(Plugin1Path);
 
-		// Consumer-authored rule that relies on the plugin's calculator registration ("harness.static"), which
+		// Consumer-authored rule that relies on the plugin's algorithm registration ("harness.static"), which
 		// Plugin1 hard-codes to return 15 June 2027.
 		var consumerRule = new NotableDateRule
 		{
-			Name = "Test Plugin Calculator Day",
-			Strategy = DateResolutionStrategy.Calculator,
+			Name = "Test Plugin Algorithm Day",
+			Strategy = DateResolutionStrategy.Algorithm,
 			Category = NotableDateCategory.Observance,
-			CalculatorKey = "harness.static",
+			AlgorithmKey = "harness.static",
 		};
 
 		var service = new NotableDateService(
@@ -70,40 +70,40 @@ public sealed class NotableDateServicePluginIntegrationTests
 			plugins: new[] { plugin });
 
 		var results = service.GetNotableDates(2027);
-		var resolved = results.SingleOrDefault(r => r.Name == "Test Plugin Calculator Day");
+		var resolved = results.SingleOrDefault(r => r.Name == "Test Plugin Algorithm Day");
 
 		Assert.IsNotNull(resolved);
 		Assert.AreEqual(new DateTime(2027, 6, 15), resolved!.Date);
 	}
 
 	/// <summary>
-	/// Verifies that when both the host and a plugin register a calculator under the same key,
+	/// Verifies that when both the host and a plugin register a algorithm under the same key,
 	/// the host-supplied registration wins — exercising the composite-registry precedence path
 	/// in <see cref="NotableDateService" />.
 	/// </summary>
 	[TestMethod]
-	public void GetNotableDates_WhenHostAndPluginCollideOnCalculatorKey_ShouldPreferHostRegistration()
+	public void GetNotableDates_WhenHostAndPluginCollideOnAlgorithmKey_ShouldPreferHostRegistration()
 	{
 		var loader = new ExternalPluginLoader(new AllowAllPluginTrustPolicy());
 		var plugin = loader.Load(Plugin1Path);
 
-		// Plugin1's calculator returns 2027-06-15 under key "harness.static". Host registers a
-		// different calculator under the same key; host should win.
-		var hostRegistry = new NotableDateCalculatorRegistry()
-			.Register("harness.static", new HostOverrideCalculator(new DateTime(2099, 1, 1)));
+		// Plugin1's algorithm returns 2027-06-15 under key "harness.static". Host registers a
+		// different algorithm under the same key; host should win.
+		var hostRegistry = new NotableDateAlgorithmRegistry()
+			.Register("harness.static", new HostOverrideAlgorithm(new DateTime(2099, 1, 1)));
 
 		var consumerRule = new NotableDateRule
 		{
 			Name = "Composite Test Day",
-			Strategy = DateResolutionStrategy.Calculator,
+			Strategy = DateResolutionStrategy.Algorithm,
 			Category = NotableDateCategory.Observance,
-			CalculatorKey = "harness.static",
+			AlgorithmKey = "harness.static",
 		};
 
 		var service = new NotableDateService(
 			ruleProviders: new[] { new InMemoryRuleProvider(consumerRule) },
 			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-			calculatorRegistry: hostRegistry,
+			algorithmRegistry: hostRegistry,
 			plugins: new[] { plugin });
 
 		var resolved = service.GetNotableDates(2099).SingleOrDefault(r => r.Name == "Composite Test Day");
@@ -118,35 +118,35 @@ public sealed class NotableDateServicePluginIntegrationTests
 	/// short-circuit.
 	/// </summary>
 	[TestMethod]
-	public void CompositeCalculatorRegistry_ShouldReportContainsFromEitherLayer()
+	public void CompositeAlgorithmRegistry_ShouldReportContainsFromEitherLayer()
 	{
 		var loader = new ExternalPluginLoader(new AllowAllPluginTrustPolicy());
 		var plugin = loader.Load(Plugin1Path);
 
 		// Host provides "host.only"; plugin provides "harness.static". The composite should
 		// Contains both.
-		var hostRegistry = new NotableDateCalculatorRegistry()
-			.Register("host.only", new HostOverrideCalculator(new DateTime(2050, 1, 1)));
+		var hostRegistry = new NotableDateAlgorithmRegistry()
+			.Register("host.only", new HostOverrideAlgorithm(new DateTime(2050, 1, 1)));
 
 		NotableDateRule hostOnlyRule = new NotableDateRule
 		{
 			Name = "Host Only",
-			Strategy = DateResolutionStrategy.Calculator,
+			Strategy = DateResolutionStrategy.Algorithm,
 			Category = NotableDateCategory.Observance,
-			CalculatorKey = "host.only",
+			AlgorithmKey = "host.only",
 		};
 		NotableDateRule pluginOnlyRule = new NotableDateRule
 		{
 			Name = "Plugin Only",
-			Strategy = DateResolutionStrategy.Calculator,
+			Strategy = DateResolutionStrategy.Algorithm,
 			Category = NotableDateCategory.Observance,
-			CalculatorKey = "harness.static",
+			AlgorithmKey = "harness.static",
 		};
 
 		var service = new NotableDateService(
 			ruleProviders: new[] { new InMemoryRuleProvider(hostOnlyRule, pluginOnlyRule) },
 			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-			calculatorRegistry: hostRegistry,
+			algorithmRegistry: hostRegistry,
 			plugins: new[] { plugin });
 
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2050);
@@ -164,11 +164,11 @@ public sealed class NotableDateServicePluginIntegrationTests
 		public IEnumerable<NotableDateRule> LoadRules() => _rules;
 	}
 
-	private sealed class HostOverrideCalculator : INotableDateCalculator
+	private sealed class HostOverrideAlgorithm : INotableDateAlgorithm
 	{
 		private readonly DateTime _date;
 
-		public HostOverrideCalculator(DateTime date) => _date = date;
+		public HostOverrideAlgorithm(DateTime date) => _date = date;
 
 		public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null) => _date;
 	}

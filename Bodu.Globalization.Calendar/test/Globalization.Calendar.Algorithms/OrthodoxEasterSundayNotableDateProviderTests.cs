@@ -7,7 +7,7 @@
 using Bodu.Globalization.Calendar.Providers;
 using SysGlob = System.Globalization;
 
-namespace Bodu.Globalization.Calendar.Calculators;
+namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
 /// Verifies the correctness and contract of <see cref="OrthodoxEasterSundayNotableDateProvider" />.

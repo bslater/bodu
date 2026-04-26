@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Jewish (Hebrew) calendar notable-date resource.
+
+  These entries represent the principal observances of the Jewish Hebrew
+  (lunisolar) calendar. They are observed by Jewish communities worldwide
+  and are designated as national holidays in Israel and as important
+  observances for Jewish diaspora communities.
+
+  The Hebrew calendar is a lunisolar calendar whose months follow the lunar
+  cycle but whose years are adjusted with periodic intercalary months
+  (leap years) to keep the calendar aligned with the solar year. A Hebrew
+  year is either 353–355 days (regular) or 383–385 days (leap year). Dates
+  therefore shift by varying amounts in the Gregorian calendar each year.
+
+  Duration notes:
+    - In Israel (and for Reform/Progressive communities), many festivals are
+      observed for fewer days than in the diaspora. For example, Passover is
+      7 days in Israel and 8 days in the diaspora. The durationDays values
+      given here represent the traditional diaspora observance; regional
+      overrides may adjust this.
+    - Hanukkah always lasts exactly 8 days.
+    - Rosh Hashanah is 2 days everywhere by convention.
+    - Yom Kippur, Purim, and Shavuot (in Israel) are single days.
+
+  All rules in this resource require a custom INotableDateAlgorithm registered
+  under the stated key with the INotableDateAlgorithmRegistry. Implementations
+  may use System.Globalization.HebrewCalendar, a third-party Hebrew calendar
+  library, or a tabular algorithm.
+
+  Algorithm keys used:
+    rosh-hashanah   — 1–2 Tishrei. Jewish New Year.
+    yom-kippur      — 10 Tishrei. Day of Atonement.
+    sukkot          — 15 Tishrei. Feast of Tabernacles (7 days in Israel,
+                      8 days in the diaspora — durationDays="7" here;
+                      regional rules may override for diaspora practice).
+    hanukkah        — 25 Kislev. Festival of Lights. Always 8 days.
+    purim           — 14 Adar (or 14 Adar II in a leap year). Feast of Lots.
+    passover        — 15 Nisan. Festival of Freedom. 7 days in Israel,
+                      8 days in the diaspora.
+    shavuot         — 6 Sivan. Feast of Weeks / Pentecost. 1 day in Israel,
+                      2 days in the diaspora.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <NotableDate name="Rosh Hashanah">
+    <Rule name="Rosh Hashanah"
+          category="Religious"
+          durationDays="2"
+          comment="The Jewish New Year (literally 'Head of the Year'). Observed on 1 and 2 Tishrei, the seventh month of the Hebrew calendar. Marks the anniversary of the creation of the world in Jewish tradition, and opens the Ten Days of Repentance culminating in Yom Kippur. Observed with synagogue services, the sounding of the shofar (ram's horn), festive meals featuring symbolic foods such as apples dipped in honey, and the Tashlich ceremony. A national holiday in Israel. Requires a custom INotableDateAlgorithm registered under the key 'rosh-hashanah'.">
+      <Algorithm key="rosh-hashanah" />
+      <Tag>HebrewCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Yom Kippur">
+    <Rule name="Yom Kippur"
+          category="Religious"
+          comment="The Day of Atonement. Observed on 10 Tishrei, ten days after Rosh Hashanah. The holiest day of the Jewish year, dedicated to prayer, fasting, and repentance. Synagogue services run for most of the day. A national holiday in Israel, where public life effectively halts. Requires a custom INotableDateAlgorithm registered under the key 'yom-kippur'.">
+      <Algorithm key="yom-kippur" />
+      <Tag>HebrewCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Sukkot">
+    <Rule name="Sukkot"
+          category="Religious"
+          durationDays="7"
+          comment="The Feast of Tabernacles. Begins on 15 Tishrei, five days after Yom Kippur. Commemorates the forty years the Israelites spent wandering in the desert after the Exodus. Observed by dwelling and eating in a sukkah (temporary hut) for seven days in Israel (eight in the diaspora by traditional practice). The durationDays value here represents the Israeli/Reform seven-day observance; regional rules may override to eight days for diaspora practice. Requires a custom INotableDateAlgorithm registered under the key 'sukkot'.">
+      <Algorithm key="sukkot" />
+      <Tag>HebrewCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Hanukkah">
+    <Rule name="Hanukkah"
+          category="Religious"
+          durationDays="8"
+          comment="The Festival of Lights (Chanukkah). Begins on 25 Kislev and lasts eight days. Commemorates the rededication of the Second Temple in Jerusalem in 164 BCE following the Maccabean Revolt. Observed by lighting the hanukkiah (nine-branched menorah), with one additional candle lit each night, reciting special prayers, playing dreidel, and eating oil-fried foods such as latkes and sufganiyot. Widely observed by Jewish communities worldwide. Requires a custom INotableDateAlgorithm registered under the key 'hanukkah'.">
+      <Algorithm key="hanukkah" />
+      <Tag>HebrewCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Purim">
+    <Rule name="Purim"
+          category="Religious"
+          comment="The Feast of Lots. Observed on 14 Adar (or 14 Adar II in a Hebrew leap year). Commemorates the salvation of the Jewish people from Haman's plot to destroy them, as recounted in the Book of Esther. Observed with the public reading of the Megillah (Book of Esther), wearing of costumes, sending of food gifts (mishloach manot), charitable giving, and festive meals. Requires a custom INotableDateAlgorithm registered under the key 'purim'.">
+      <Algorithm key="purim" />
+      <Tag>HebrewCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Passover">
+    <Rule name="Passover"
+          category="Religious"
+          durationDays="7"
+          comment="Pesach. The Festival of Freedom. Begins on 15 Nisan and lasts seven days in Israel and among Reform communities (eight days in traditional diaspora practice). Commemorates the Exodus from Egypt. Observed with the Passover Seder on the first night (and second night in the diaspora), the eating of matzah (unleavened bread), and the prohibition of chametz (leavened products). The durationDays value here represents the seven-day Israeli/Reform observance; regional rules may override to eight days for diaspora communities. Requires a custom INotableDateAlgorithm registered under the key 'passover'.">
+      <Algorithm key="passover" />
+      <Tag>HebrewCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Shavuot">
+    <Rule name="Shavuot"
+          category="Religious"
+          comment="The Feast of Weeks (also Pentecost). Observed on 6 Sivan, fifty days (seven weeks) after the second day of Passover. Commemorates the giving of the Torah at Mount Sinai. Observed with synagogue services, all-night Torah study (tikkun leil Shavuot), and the eating of dairy foods. One day in Israel and among Reform communities; two days in traditional diaspora practice. Requires a custom INotableDateAlgorithm registered under the key 'shavuot'.">
+      <Algorithm key="shavuot" />
+      <Tag>HebrewCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

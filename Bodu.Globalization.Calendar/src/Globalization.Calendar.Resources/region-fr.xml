@@ -104,6 +104,43 @@
   </NotableDate>
 
   <!--
+    Imported family observances.
+
+    Father's Day uses the global third-Sunday-in-June form, consistent with
+    French practice. Mother's Day falls on the last Sunday in May in France,
+    which differs from the global second-Sunday-in-May default, so it is
+    defined separately below.
+  -->
+
+  <UseFrom resource="./global-family.xml">
+    <Use name="Father's Day" territory="FR" />
+  </UseFrom>
+
+  <!--
+    Widely observed French cultural and family observances.
+  -->
+
+  <NotableDate name="Mother's Day">
+    <Rule name="Last Sunday In May Mother's Day"
+          category="Observance"
+          territory="FR"
+          comment="La Fête des Mères. Observed on the last Sunday in May. When the last Sunday of May coincides with Pentecost Sunday, the observance moves to the first Sunday of June by long-standing convention; this edge case is not automatically resolved by this rule.">
+      <DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Last" />
+      <Tag>Approximate</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Music Day">
+    <Rule name="Fixed World Music Day"
+          category="Cultural"
+          territory="FR"
+          firstYear="1982"
+          comment="Fête de la Musique. Launched in France by the Ministry of Culture in 1982; now celebrated worldwide on 21 June. Free public performances are held throughout France on the summer solstice.">
+      <Fixed month="June" day="21" />
+    </Rule>
+  </NotableDate>
+
+  <!--
     Alsace-Moselle regional holidays and observances.
   -->
 

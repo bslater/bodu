@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SysGlobal = System.Globalization;
 
-namespace Bodu.Globalization.Calendar.Calculators;
+namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
 /// Provides a base implementation for Easter Sunday notable date providers.

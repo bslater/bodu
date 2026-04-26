@@ -219,8 +219,8 @@ public sealed partial class NotableDateServiceTests
 	/// <summary>
 	/// Verifies that a <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> walk anchored near year-end demonstrably crosses
 	/// the Dec 31 → Jan 1 boundary within the adjuster's 366-day bound and yet does not trigger generation of the next year. A
-	/// counting <see cref="INotableDateCalculator" /> attached to a probe rule observes year-generation passes; the test asserts
-	/// the calculator is invoked exactly once (for the queried year 2025) so that the cross-year recursion vector — present in
+	/// counting <see cref="INotableDateAlgorithm" /> attached to a probe rule observes year-generation passes; the test asserts
+	/// the algorithm is invoked exactly once (for the queried year 2025) so that the cross-year recursion vector — present in
 	/// the earlier same-year-only guard — is closed.
 	/// </summary>
 	[TestMethod]
@@ -228,7 +228,7 @@ public sealed partial class NotableDateServiceTests
 	{
 		// 31 December 2025 is a Wednesday. The walk's first cursor is 1 January 2026 (Thursday), which immediately crosses the
 		// year boundary. IsNonWorkingDay calls GetOrGenerateYear(2026); without the cross-year guard that call would open a fresh
-		// GenerateYear pass for 2026 — observable via the counting calculator — and recurse year-by-year. With the guard, no
+		// GenerateYear pass for 2026 — observable via the counting algorithm — and recurse year-by-year. With the guard, no
 		// nested generation runs: 1 January 2026 is not a weekend so IsNonWorkingDay returns false (working day) and the walk
 		// terminates immediately on that date.
 		NotableDateRule walkTrigger = Fixed("Walk Trigger", 12, 31) with
@@ -241,32 +241,32 @@ public sealed partial class NotableDateServiceTests
 			}),
 		};
 
-		// A Calculator-strategy probe whose calculator counts invocations. GenerateYear iterates every rule for the year being
-		// generated and dispatches Calculator strategy through the registry, so calculator.GetDate(year) is invoked exactly once
+		// A Algorithm-strategy probe whose algorithm counts invocations. GenerateYear iterates every rule for the year being
+		// generated and dispatches Algorithm strategy through the registry, so algorithm.GetDate(year) is invoked exactly once
 		// per year-generation pass. The probe returns null so it emits no occurrence and does not pollute the assertions.
 		NotableDateRule probe = new()
 		{
 			Name = "Year Generation Probe",
-			Strategy = DateResolutionStrategy.Calculator,
+			Strategy = DateResolutionStrategy.Algorithm,
 			Category = NotableDateCategory.Other,
-			CalculatorKey = "probe",
+			AlgorithmKey = "probe",
 		};
 
-		var calculator = new CountingCalculator();
-		var registry = new NotableDateCalculatorRegistry(
-			new[] { new KeyValuePair<string, INotableDateCalculator>("probe", calculator) });
+		var algorithm = new CountingAlgorithm();
+		var registry = new NotableDateAlgorithmRegistry(
+			new[] { new KeyValuePair<string, INotableDateAlgorithm>("probe", algorithm) });
 
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(walkTrigger, probe) },
 			CalendarWeekendDefinition.SaturdaySunday,
-			calculatorRegistry: registry);
+			algorithmRegistry: registry);
 
 		List<NotableDate> walkResults = service.GetNotableDates(2025)
 			.Where(r => r.Name == "Walk Trigger")
 			.OrderBy(r => r.Date)
 			.ToList();
 
-		Assert.AreEqual(1, calculator.CallCount, "Year 2026 must not be generated as a side effect of the walk crossing the year boundary; only the queried year 2025 should be materialised.");
+		Assert.AreEqual(1, algorithm.CallCount, "Year 2026 must not be generated as a side effect of the walk crossing the year boundary; only the queried year 2025 should be materialised.");
 		Assert.AreEqual(2, walkResults.Count, "Expected the base occurrence on 31 December 2025 plus one adjusted occurrence after crossing the year boundary.");
 		Assert.AreEqual(new DateTime(2025, 12, 31), walkResults[0].Date);
 		Assert.IsFalse(walkResults[0].WasAdjusted);
@@ -286,11 +286,11 @@ public sealed partial class NotableDateServiceTests
 	}
 
 	/// <summary>
-	/// <see cref="INotableDateCalculator" /> that records how many times <see cref="GetDate" /> is invoked. Used by tests that
+	/// <see cref="INotableDateAlgorithm" /> that records how many times <see cref="GetDate" /> is invoked. Used by tests that
 	/// need to observe how many year-generation passes the service runs, since GenerateYear iterates every rule and dispatches
-	/// Calculator-strategy rules through the registry.
+	/// Algorithm-strategy rules through the registry.
 	/// </summary>
-	private sealed class CountingCalculator : INotableDateCalculator
+	private sealed class CountingAlgorithm : INotableDateAlgorithm
 	{
 		/// <summary>
 		/// Gets the number of times <see cref="GetDate" /> has been invoked since construction.

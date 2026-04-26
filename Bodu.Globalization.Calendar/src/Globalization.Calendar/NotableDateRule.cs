@@ -167,19 +167,19 @@ public sealed record NotableDateRule
 	/// </summary>
 	public int? OffsetDays { get; init; }
 
-	// --- Calculator strategy fields ----------------------------------------------------------
+	// --- Algorithm strategy fields ----------------------------------------------------------
 
 	/// <summary>
-	/// Gets the registry key used to look up an <see cref="INotableDateCalculator" /> for <see cref="DateResolutionStrategy.Calculator" />.
+	/// Gets the registry key used to look up an <see cref="INotableDateAlgorithm" /> for <see cref="DateResolutionStrategy.Algorithm" />.
 	/// </summary>
-	public string? CalculatorKey { get; init; }
+	public string? AlgorithmKey { get; init; }
 
 	/// <summary>
-	/// Gets the optional CLR <see cref="Type" /> implementing <see cref="INotableDateCalculator" /> used as a fallback when
-	/// <see cref="CalculatorKey" /> is not registered. Provided for backward compatibility with rules authored against the previous
-	/// <c>NotableDateCalculatorType</c> field.
+	/// Gets the optional CLR <see cref="Type" /> implementing <see cref="INotableDateAlgorithm" /> used as a fallback when
+	/// <see cref="AlgorithmKey" /> is not registered. Provided for backward compatibility with rules authored against the previous
+	/// <c>NotableDateAlgorithmType</c> field.
 	/// </summary>
-	public Type? CalculatorType { get; init; }
+	public Type? AlgorithmType { get; init; }
 
 	// --- Adjustments + metadata --------------------------------------------------------------
 

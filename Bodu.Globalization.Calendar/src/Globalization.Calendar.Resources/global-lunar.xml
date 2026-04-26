@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Chinese and East Asian lunisolar calendar notable-date resource.
+
+  These entries represent internationally observed dates rooted in the
+  traditional Chinese lunisolar calendar. They are widely recognised across
+  Chinese, Vietnamese, Korean, and other East Asian communities worldwide.
+
+  All dates in this resource require a custom INotableDateAlgorithm registered
+  under the stated key with the INotableDateAlgorithmRegistry. The one exception
+  is the 'lunar-new-year' key, which is served by the built-in
+  LunarNewYearNotableDateAlgorithm supplied by this library.
+
+  Algorithm keys used:
+    lunar-new-year      — Built-in LunarNewYearNotableDateAlgorithm.
+                          Calculates the Gregorian date of the first day of the
+                          first month of the Chinese lunisolar year. Supported
+                          for Gregorian years 1901–2100.
+    lantern-festival    — The fifteenth day of the first lunar month (fifteen
+                          days after Lunar New Year). Marks the end of the
+                          New Year festival period.
+    qingming            — Qingming solar term. Falls on the fifteenth day after
+                          the Spring Equinox, approximately 4–5 April. In modern
+                          practice treated as a fixed observance on 4 April, but
+                          this varies by year and jurisdiction.
+    dragon-boat-festival — The fifth day of the fifth lunar month (mid-June in
+                           the Gregorian calendar). Also known as Duanwu.
+    mid-autumn-festival — The fifteenth day of the eighth lunar month (a full
+                          moon in September or October). Also known as the Moon
+                          Festival or Mooncake Festival.
+    double-ninth-festival — The ninth day of the ninth lunar month (October).
+                            Also known as Chongyang or the Chrysanthemum Festival.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <NotableDate name="Lunar New Year">
+    <Rule name="Lunar New Year"
+          category="Cultural"
+          firstYear="1901"
+          lastYear="2100"
+          comment="The first day of the first month of the Chinese lunisolar year. Also celebrated as Tết (Vietnam) and Seollal (Korea). Falls between 21 January and 20 February in the Gregorian calendar. The built-in LunarNewYearNotableDateAlgorithm implements this rule.">
+      <Algorithm key="lunar-new-year" />
+      <Tag>LunarCalendar</Tag>
+      <Tag>ChineseTradition</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Lantern Festival">
+    <Rule name="Lantern Festival"
+          category="Cultural"
+          firstYear="1901"
+          lastYear="2100"
+          comment="Yuanxiao Jie. Falls on the fifteenth day of the first lunar month, marking the end of the Lunar New Year celebrations. Observed with lantern displays, riddle games, and the eating of tangyuan (sweet rice dumplings). Requires a custom INotableDateAlgorithm registered under the key 'lantern-festival'.">
+      <Algorithm key="lantern-festival" />
+      <Tag>LunarCalendar</Tag>
+      <Tag>ChineseTradition</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Qingming Festival">
+    <Rule name="Qingming Festival"
+          category="Observance"
+          comment="Qingming Jie (清明節), also known as Tomb-Sweeping Day or Pure Brightness Festival. A solar term that falls on the fifteenth day after the Spring Equinox, typically 4–5 April. Families visit and clean the graves of their ancestors, making offerings of food, flowers, and paper goods. Requires a custom INotableDateAlgorithm registered under the key 'qingming'.">
+      <Algorithm key="qingming" />
+      <Tag>LunarCalendar</Tag>
+      <Tag>ChineseTradition</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Dragon Boat Festival">
+    <Rule name="Dragon Boat Festival"
+          category="Cultural"
+          firstYear="1901"
+          lastYear="2100"
+          comment="Duanwu Jie (端午節). Falls on the fifth day of the fifth lunar month, typically in June. Commemorates the poet and statesman Qu Yuan and is observed with dragon boat races and the eating of zongzi (sticky rice dumplings). Requires a custom INotableDateAlgorithm registered under the key 'dragon-boat-festival'.">
+      <Algorithm key="dragon-boat-festival" />
+      <Tag>LunarCalendar</Tag>
+      <Tag>ChineseTradition</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Mid-Autumn Festival">
+    <Rule name="Mid-Autumn Festival"
+          category="Cultural"
+          firstYear="1901"
+          lastYear="2100"
+          comment="Zhongqiu Jie (中秋節), also known as the Moon Festival or Mooncake Festival. Falls on the fifteenth day of the eighth lunar month, when the moon is at its fullest and brightest. Observed with mooncakes, lanterns, and family reunions. Widely celebrated in China, Vietnam, Korea, and Chinese diaspora communities worldwide. Requires a custom INotableDateAlgorithm registered under the key 'mid-autumn-festival'.">
+      <Algorithm key="mid-autumn-festival" />
+      <Tag>LunarCalendar</Tag>
+      <Tag>ChineseTradition</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Double Ninth Festival">
+    <Rule name="Double Ninth Festival"
+          category="Cultural"
+          firstYear="1901"
+          lastYear="2100"
+          comment="Chongyang Jie (重陽節), also known as the Chrysanthemum Festival. Falls on the ninth day of the ninth lunar month. Traditionally observed by climbing mountains, drinking chrysanthemum wine, and paying respects to ancestors. In many jurisdictions the day is also designated as Seniors' Day. Requires a custom INotableDateAlgorithm registered under the key 'double-ninth-festival'.">
+      <Algorithm key="double-ninth-festival" />
+      <Tag>LunarCalendar</Tag>
+      <Tag>ChineseTradition</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

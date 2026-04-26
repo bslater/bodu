@@ -1,23 +1,23 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="LunarNewYearNotableDateCalculator.cs" company="PlaceholderCompany">
+// <copyright file="LunarNewYearNotableDateAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using SysGlobal = System.Globalization;
 
-namespace Bodu.Globalization.Calendar.Calculators;
+namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
-/// Provides a calculator for determining the date of Lunar New Year for a given year.
+/// Provides a algorithm for determining the date of Lunar New Year for a given year.
 /// </summary>
 /// <remarks>
 /// Lunar New Year marks the beginning of the new year based on the traditional Chinese lunisolar calendar. It typically falls between
-/// January 21 and February 20 in the Gregorian calendar. This calculator uses the <see cref="SysGlobal.ChineseLunisolarCalendar" /> to
+/// January 21 and February 20 in the Gregorian calendar. This algorithm uses the <see cref="SysGlobal.ChineseLunisolarCalendar" /> to
 /// determine the date and maps the result to the specified calendar system.
 /// </remarks>
-public sealed class LunarNewYearNotableDateCalculator
-	: INotableDateCalculator
+public sealed class LunarNewYearNotableDateAlgorithm
+	: INotableDateAlgorithm
 {
 	private static readonly SysGlobal.ChineseLunisolarCalendar ChineseCalendar = new SysGlobal.ChineseLunisolarCalendar();
 

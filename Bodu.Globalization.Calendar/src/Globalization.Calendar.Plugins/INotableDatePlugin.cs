@@ -9,7 +9,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// <summary>
 /// Defines the minimum surface every external notable-date plugin must expose: a human-readable name and a semantic version. A
 /// concrete plugin implements this interface together with one or both of <see cref="INotableDateRulePlugin" /> and
-/// <see cref="INotableDateCalculatorPlugin" /> depending on what it contributes.
+/// <see cref="INotableDateAlgorithmPlugin" /> depending on what it contributes.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -31,7 +31,7 @@ public interface INotableDatePlugin
 	string Name { get; }
 
 	/// <summary>
-	/// Gets the semantic version of the plugin's contents. Authors increment this when rules or calculators change.
+	/// Gets the semantic version of the plugin's contents. Authors increment this when rules or algorithms change.
 	/// </summary>
 	Version Version { get; }
 }

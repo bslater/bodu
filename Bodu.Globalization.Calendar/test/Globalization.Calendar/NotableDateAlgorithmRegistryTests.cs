@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="NotableDateCalculatorRegistryTests.cs" company="PlaceholderCompany">
+// <copyright file="NotableDateAlgorithmRegistryTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,10 +10,10 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Verifies registration, lookup, and containment checks for
-/// <see cref="NotableDateCalculatorRegistry" />.
+/// <see cref="NotableDateAlgorithmRegistry" />.
 /// </summary>
 [TestClass]
-public sealed class NotableDateCalculatorRegistryTests
+public sealed class NotableDateAlgorithmRegistryTests
 {
 	/// <summary>
 	/// Verifies that the parameterless constructor yields an empty, functional registry.
@@ -21,26 +21,26 @@ public sealed class NotableDateCalculatorRegistryTests
 	[TestMethod]
 	public void Constructor_WhenParameterless_ShouldReturnEmptyRegistry()
 	{
-		var registry = new NotableDateCalculatorRegistry();
+		var registry = new NotableDateAlgorithmRegistry();
 
 		Assert.IsFalse(registry.Contains("any"));
-		Assert.IsFalse(registry.TryGet("any", out var calculator));
-		Assert.IsNull(calculator);
+		Assert.IsFalse(registry.TryGet("any", out var algorithm));
+		Assert.IsNull(algorithm);
 	}
 
 	/// <summary>
 	/// Verifies that the seeded constructor registers every supplied pair.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenSeeded_ShouldRegisterAllSuppliedCalculators()
+	public void Constructor_WhenSeeded_ShouldRegisterAllSuppliedAlgorithms()
 	{
-		var easter = new StaticCalculator(new DateTime(2026, 4, 5));
-		var lunar = new StaticCalculator(new DateTime(2026, 2, 17));
+		var easter = new StaticAlgorithm(new DateTime(2026, 4, 5));
+		var lunar = new StaticAlgorithm(new DateTime(2026, 2, 17));
 
-		var registry = new NotableDateCalculatorRegistry(new[]
+		var registry = new NotableDateAlgorithmRegistry(new[]
 		{
-			new KeyValuePair<string, INotableDateCalculator>("easter", easter),
-			new KeyValuePair<string, INotableDateCalculator>("lunar", lunar),
+			new KeyValuePair<string, INotableDateAlgorithm>("easter", easter),
+			new KeyValuePair<string, INotableDateAlgorithm>("lunar", lunar),
 		});
 
 		Assert.IsTrue(registry.TryGet("easter", out var resolvedEaster));
@@ -54,14 +54,14 @@ public sealed class NotableDateCalculatorRegistryTests
 	/// <see cref="ArgumentNullException" />.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenCalculatorsIsNull_ShouldThrowArgumentNullException()
+	public void Constructor_WhenAlgorithmsIsNull_ShouldThrowArgumentNullException()
 	{
 		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
 		{
-			_ = new NotableDateCalculatorRegistry(null!);
+			_ = new NotableDateAlgorithmRegistry(null!);
 		});
 
-		Assert.AreEqual("calculators", ex.ParamName);
+		Assert.AreEqual("algorithms", ex.ParamName);
 	}
 
 	/// <summary>
@@ -74,31 +74,31 @@ public sealed class NotableDateCalculatorRegistryTests
 	[TestMethod]
 	public void Register_WhenKeyIsNullOrWhitespace_ShouldThrowArgumentException(string? key)
 	{
-		var registry = new NotableDateCalculatorRegistry();
+		var registry = new NotableDateAlgorithmRegistry();
 
 		var ex = Assert.ThrowsExactly<ArgumentException>(() =>
 		{
-			_ = registry.Register(key!, new StaticCalculator(DateTime.Today));
+			_ = registry.Register(key!, new StaticAlgorithm(DateTime.Today));
 		});
 
 		Assert.AreEqual("key", ex.ParamName);
 	}
 
 	/// <summary>
-	/// Verifies that registering a <see langword="null" /> calculator throws
+	/// Verifies that registering a <see langword="null" /> algorithm throws
 	/// <see cref="ArgumentNullException" />.
 	/// </summary>
 	[TestMethod]
-	public void Register_WhenCalculatorIsNull_ShouldThrowArgumentNullException()
+	public void Register_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
 	{
-		var registry = new NotableDateCalculatorRegistry();
+		var registry = new NotableDateAlgorithmRegistry();
 
 		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
 		{
 			_ = registry.Register("key", null!);
 		});
 
-		Assert.AreEqual("calculator", ex.ParamName);
+		Assert.AreEqual("algorithm", ex.ParamName);
 	}
 
 	/// <summary>
@@ -111,18 +111,18 @@ public sealed class NotableDateCalculatorRegistryTests
 	[TestMethod]
 	public void LookupsAreCaseInsensitive(string lookupKey)
 	{
-		var registry = new NotableDateCalculatorRegistry();
-		var calculator = new StaticCalculator(new DateTime(2026, 1, 1));
-		registry.Register("Key", calculator);
+		var registry = new NotableDateAlgorithmRegistry();
+		var algorithm = new StaticAlgorithm(new DateTime(2026, 1, 1));
+		registry.Register("Key", algorithm);
 
 		Assert.IsTrue(registry.Contains(lookupKey));
 		Assert.IsTrue(registry.TryGet(lookupKey, out var resolved));
-		Assert.AreSame(calculator, resolved);
+		Assert.AreSame(algorithm, resolved);
 	}
 
 	/// <summary>
-	/// Verifies that <see cref="NotableDateCalculatorRegistry.Contains(string)" /> and
-	/// <see cref="NotableDateCalculatorRegistry.TryGet(string, out INotableDateCalculator)" />
+	/// Verifies that <see cref="NotableDateAlgorithmRegistry.Contains(string)" /> and
+	/// <see cref="NotableDateAlgorithmRegistry.TryGet(string, out INotableDateAlgorithm)" />
 	/// return <see langword="false" /> for null, empty, or whitespace keys.
 	/// </summary>
 	[DataRow(null!)]
@@ -131,23 +131,23 @@ public sealed class NotableDateCalculatorRegistryTests
 	[TestMethod]
 	public void Lookup_WhenKeyIsNullOrWhitespace_ShouldReturnFalse(string? key)
 	{
-		var registry = new NotableDateCalculatorRegistry();
-		registry.Register("actual", new StaticCalculator(DateTime.Today));
+		var registry = new NotableDateAlgorithmRegistry();
+		registry.Register("actual", new StaticAlgorithm(DateTime.Today));
 
 		Assert.IsFalse(registry.Contains(key!));
-		Assert.IsFalse(registry.TryGet(key!, out var calculator));
-		Assert.IsNull(calculator);
+		Assert.IsFalse(registry.TryGet(key!, out var algorithm));
+		Assert.IsNull(algorithm);
 	}
 
 	/// <summary>
-	/// Verifies that registering under an existing key replaces the previous calculator.
+	/// Verifies that registering under an existing key replaces the previous algorithm.
 	/// </summary>
 	[TestMethod]
-	public void Register_WhenKeyAlreadyRegistered_ShouldReplaceCalculator()
+	public void Register_WhenKeyAlreadyRegistered_ShouldReplaceAlgorithm()
 	{
-		var registry = new NotableDateCalculatorRegistry();
-		var original = new StaticCalculator(new DateTime(2020, 1, 1));
-		var replacement = new StaticCalculator(new DateTime(2030, 1, 1));
+		var registry = new NotableDateAlgorithmRegistry();
+		var original = new StaticAlgorithm(new DateTime(2020, 1, 1));
+		var replacement = new StaticAlgorithm(new DateTime(2030, 1, 1));
 
 		registry.Register("key", original).Register("key", replacement);
 
@@ -156,27 +156,27 @@ public sealed class NotableDateCalculatorRegistryTests
 	}
 
 	/// <summary>
-	/// Verifies that <see cref="NotableDateCalculatorRegistry.Register(string, INotableDateCalculator)" />
+	/// Verifies that <see cref="NotableDateAlgorithmRegistry.Register(string, INotableDateAlgorithm)" />
 	/// returns the registry so callers can chain fluently.
 	/// </summary>
 	[TestMethod]
 	public void Register_WhenCalled_ShouldReturnSameRegistryForChaining()
 	{
-		var registry = new NotableDateCalculatorRegistry();
+		var registry = new NotableDateAlgorithmRegistry();
 
-		NotableDateCalculatorRegistry returned = registry.Register("key", new StaticCalculator(DateTime.Today));
+		NotableDateAlgorithmRegistry returned = registry.Register("key", new StaticAlgorithm(DateTime.Today));
 
 		Assert.AreSame(registry, returned);
 	}
 
 	/// <summary>
-	/// Minimal <see cref="INotableDateCalculator" /> test double returning a fixed date.
+	/// Minimal <see cref="INotableDateAlgorithm" /> test double returning a fixed date.
 	/// </summary>
-	private sealed class StaticCalculator : INotableDateCalculator
+	private sealed class StaticAlgorithm : INotableDateAlgorithm
 	{
 		private readonly DateTime _date;
 
-		public StaticCalculator(DateTime date) => _date = date;
+		public StaticAlgorithm(DateTime date) => _date = date;
 
 		public DateTime? GetDate(int year, SysGlob.Calendar? calendar = null) => _date;
 	}

@@ -179,15 +179,15 @@ public partial class NotableDateRuleParserTests
 	}
 
 	/// <summary>
-	/// Verifies that parsing a Calculator rule populates the strategy and lookup key.
+	/// Verifies that parsing a Algorithm rule populates the strategy and lookup key.
 	/// </summary>
 	[TestMethod]
-	public void ParseXml_WhenCalculatorRule_ShouldPopulateCalculatorKey()
+	public void ParseXml_WhenAlgorithmRule_ShouldPopulateAlgorithmKey()
 	{
-		var rule = NotableDateRuleParser.ParseXml(CalculatorRuleXml).Single();
+		var rule = NotableDateRuleParser.ParseXml(AlgorithmRuleXml).Single();
 
-		Assert.AreEqual(DateResolutionStrategy.Calculator, rule.Strategy);
-		Assert.AreEqual("easter-sunday", rule.CalculatorKey);
+		Assert.AreEqual(DateResolutionStrategy.Algorithm, rule.Strategy);
+		Assert.AreEqual("easter-sunday", rule.AlgorithmKey);
 	}
 
 	/// <summary>

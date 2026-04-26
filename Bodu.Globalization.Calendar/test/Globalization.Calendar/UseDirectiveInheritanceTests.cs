@@ -374,7 +374,7 @@ public sealed class UseDirectiveInheritanceTests
 	[DataRow(DateResolutionStrategy.Fixed)]
 	[DataRow(DateResolutionStrategy.DayOfWeekInMonth)]
 	[DataRow(DateResolutionStrategy.OffsetFromAnchor)]
-	[DataRow(DateResolutionStrategy.Calculator)]
+	[DataRow(DateResolutionStrategy.Algorithm)]
 	[TestMethod]
 	public void Apply_ApplyStrategyOverride_ShouldProduceCleanRuleForEveryTargetStrategy(DateResolutionStrategy target)
 	{
@@ -391,8 +391,8 @@ public sealed class UseDirectiveInheritanceTests
 			WeekOrdinal = WeekOfMonthOrdinal.First,
 			AnchorRuleName = "X",
 			OffsetDays = 7,
-			CalculatorKey = "k",
-			CalculatorType = typeof(string),
+			AlgorithmKey = "k",
+			AlgorithmType = typeof(string),
 		};
 
 		var body = new NotableDateRuleOverrideBody
@@ -404,8 +404,8 @@ public sealed class UseDirectiveInheritanceTests
 			WeekOrdinal = WeekOfMonthOrdinal.Second,
 			AnchorRuleName = "Easter Sunday",
 			OffsetDays = -2,
-			CalculatorKey = "new-key",
-			CalculatorType = typeof(int),
+			AlgorithmKey = "new-key",
+			AlgorithmType = typeof(int),
 		};
 
 		var directive = new NotableDateRuleUseDirective(
@@ -424,8 +424,8 @@ public sealed class UseDirectiveInheritanceTests
 				Assert.IsNull(merged.WeekOrdinal);
 				Assert.IsNull(merged.AnchorRuleName);
 				Assert.IsNull(merged.OffsetDays);
-				Assert.IsNull(merged.CalculatorKey);
-				Assert.IsNull(merged.CalculatorType);
+				Assert.IsNull(merged.AlgorithmKey);
+				Assert.IsNull(merged.AlgorithmType);
 				break;
 
 			case DateResolutionStrategy.DayOfWeekInMonth:
@@ -435,8 +435,8 @@ public sealed class UseDirectiveInheritanceTests
 				Assert.AreEqual(WeekOfMonthOrdinal.Second, merged.WeekOrdinal);
 				Assert.IsNull(merged.AnchorRuleName);
 				Assert.IsNull(merged.OffsetDays);
-				Assert.IsNull(merged.CalculatorKey);
-				Assert.IsNull(merged.CalculatorType);
+				Assert.IsNull(merged.AlgorithmKey);
+				Assert.IsNull(merged.AlgorithmType);
 				break;
 
 			case DateResolutionStrategy.OffsetFromAnchor:
@@ -446,19 +446,19 @@ public sealed class UseDirectiveInheritanceTests
 				Assert.IsNull(merged.WeekOrdinal);
 				Assert.AreEqual("Easter Sunday", merged.AnchorRuleName);
 				Assert.AreEqual(-2, merged.OffsetDays);
-				Assert.IsNull(merged.CalculatorKey);
-				Assert.IsNull(merged.CalculatorType);
+				Assert.IsNull(merged.AlgorithmKey);
+				Assert.IsNull(merged.AlgorithmType);
 				break;
 
-			case DateResolutionStrategy.Calculator:
+			case DateResolutionStrategy.Algorithm:
 				Assert.IsNull(merged.Month);
 				Assert.IsNull(merged.Day);
 				Assert.IsNull(merged.DayOfWeek);
 				Assert.IsNull(merged.WeekOrdinal);
 				Assert.IsNull(merged.AnchorRuleName);
 				Assert.IsNull(merged.OffsetDays);
-				Assert.AreEqual("new-key", merged.CalculatorKey);
-				Assert.AreEqual(typeof(int), merged.CalculatorType);
+				Assert.AreEqual("new-key", merged.AlgorithmKey);
+				Assert.AreEqual(typeof(int), merged.AlgorithmType);
 				break;
 		}
 	}

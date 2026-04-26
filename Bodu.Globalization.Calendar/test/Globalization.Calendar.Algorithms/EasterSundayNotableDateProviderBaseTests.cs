@@ -7,7 +7,7 @@
 using System.Collections.Immutable;
 using SysGlob = System.Globalization;
 
-namespace Bodu.Globalization.Calendar.Calculators;
+namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
 /// Verifies the shared contract implemented in <see cref="EasterSundayNotableDateProviderBase" />

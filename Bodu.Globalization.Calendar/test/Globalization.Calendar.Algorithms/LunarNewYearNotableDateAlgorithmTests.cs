@@ -1,20 +1,20 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="LunarNewYearNotableDateCalculatorTests.cs" company="PlaceholderCompany">
+// <copyright file="LunarNewYearNotableDateAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using SysGlob = System.Globalization;
 
-namespace Bodu.Globalization.Calendar.Calculators;
+namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
-/// Verifies the correctness and boundary behaviour of <see cref="LunarNewYearNotableDateCalculator" />.
+/// Verifies the correctness and boundary behaviour of <see cref="LunarNewYearNotableDateAlgorithm" />.
 /// </summary>
 [TestClass]
-public sealed class LunarNewYearNotableDateCalculatorTests
+public sealed class LunarNewYearNotableDateAlgorithmTests
 {
-	private readonly LunarNewYearNotableDateCalculator _calculator = new();
+	private readonly LunarNewYearNotableDateAlgorithm _algorithm = new();
 
 	/// <summary>
 	/// Verifies that requesting Lunar New Year with a year below one throws
@@ -28,7 +28,7 @@ public sealed class LunarNewYearNotableDateCalculatorTests
 	{
 		var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
 		{
-			_ = _calculator.GetDate(year);
+			_ = _algorithm.GetDate(year);
 		});
 
 		Assert.AreEqual("year", ex.ParamName);
@@ -46,7 +46,7 @@ public sealed class LunarNewYearNotableDateCalculatorTests
 	[TestMethod]
 	public void GetDate_WhenYearOutsideSupportedRange_ShouldReturnNull(int year)
 	{
-		DateTime? result = _calculator.GetDate(year);
+		DateTime? result = _algorithm.GetDate(year);
 
 		Assert.IsNull(result);
 	}
@@ -70,7 +70,7 @@ public sealed class LunarNewYearNotableDateCalculatorTests
 		int expectedMonth,
 		int expectedDay)
 	{
-		DateTime? result = _calculator.GetDate(year);
+		DateTime? result = _algorithm.GetDate(year);
 
 		Assert.IsNotNull(result);
 		Assert.AreEqual(new DateTime(expectedYear, expectedMonth, expectedDay), result.Value);
@@ -83,7 +83,7 @@ public sealed class LunarNewYearNotableDateCalculatorTests
 	[TestMethod]
 	public void GetDate_WhenCalendarIsNull_ShouldReturnUnspecifiedKind()
 	{
-		DateTime? result = _calculator.GetDate(2026, null);
+		DateTime? result = _algorithm.GetDate(2026, null);
 
 		Assert.IsNotNull(result);
 		Assert.AreEqual(DateTimeKind.Unspecified, result.Value.Kind);
@@ -96,8 +96,8 @@ public sealed class LunarNewYearNotableDateCalculatorTests
 	[TestMethod]
 	public void GetDate_WhenCalendarIsGregorian_ShouldMatchDefaultResult()
 	{
-		DateTime? gregorianResult = _calculator.GetDate(2026, new SysGlob.GregorianCalendar());
-		DateTime? defaultResult = _calculator.GetDate(2026, null);
+		DateTime? gregorianResult = _algorithm.GetDate(2026, new SysGlob.GregorianCalendar());
+		DateTime? defaultResult = _algorithm.GetDate(2026, null);
 
 		Assert.IsNotNull(gregorianResult);
 		Assert.IsNotNull(defaultResult);
@@ -115,10 +115,10 @@ public sealed class LunarNewYearNotableDateCalculatorTests
 	{
 		var julian = new SysGlob.JulianCalendar();
 
-		DateTime? julianResult = _calculator.GetDate(2026, julian);
+		DateTime? julianResult = _algorithm.GetDate(2026, julian);
 
 		Assert.IsNotNull(julianResult);
-		// Gregorian 2026-02-17 sits 13 days ahead of Julian; the calculator re-creates the
+		// Gregorian 2026-02-17 sits 13 days ahead of Julian; the algorithm re-creates the
 		// DateTime using the Julian calendar so the instant re-expands back to the same UTC day.
 		DateTime expectedInstant = julian.ToDateTime(
 			julian.GetYear(new DateTime(2026, 2, 17)),
@@ -138,7 +138,7 @@ public sealed class LunarNewYearNotableDateCalculatorTests
 	{
 		for (int year = 1901; year <= 2100; year++)
 		{
-			DateTime? result = _calculator.GetDate(year);
+			DateTime? result = _algorithm.GetDate(year);
 
 			Assert.IsNotNull(result, $"expected a date for year {year}");
 			DateTime date = result.Value;

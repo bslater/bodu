@@ -28,4 +28,11 @@
     </Rule>
   </NotableDate>
 
+  <NotableDate name="New Year's Eve">
+    <Rule name="Fixed New Year's Eve" category="Cultural"
+          comment="The last day of the year in the Gregorian calendar, universally marked as a transition to the new year and widely celebrated with public gatherings, fireworks, and cultural events.">
+      <Fixed month="December" day="31" />
+    </Rule>
+  </NotableDate>
+
 </NotableDates>

@@ -14,15 +14,15 @@ namespace Bodu.Globalization.Calendar.Plugin1.TestAssembly;
 
 /// <summary>
 /// Test-only plugin that exercises the happy-path through <see cref="ExternalPluginLoader" />: it carries the required
-/// attribute, implements both <see cref="INotableDateRulePlugin" /> and <see cref="INotableDateCalculatorPlugin" />, and
+/// attribute, implements both <see cref="INotableDateRulePlugin" /> and <see cref="INotableDateAlgorithmPlugin" />, and
 /// returns deterministic fixtures for tests to assert against.
 /// </summary>
-public sealed class HarnessPlugin : INotableDateRulePlugin, INotableDateCalculatorPlugin
+public sealed class HarnessPlugin : INotableDateRulePlugin, INotableDateAlgorithmPlugin
 {
 	public const string PluginName = "Bodu.Test.Harness.Plugin1";
 	public const string RuleName = "Harness Test Day";
-	public const string CalculatorKey = "harness.static";
-	public static readonly DateTime FixedCalculatorDate = new(2027, 6, 15);
+	public const string AlgorithmKey = "harness.static";
+	public static readonly DateTime FixedAlgorithmDate = new(2027, 6, 15);
 
 	public string Name => PluginName;
 
@@ -33,9 +33,9 @@ public sealed class HarnessPlugin : INotableDateRulePlugin, INotableDateCalculat
 		yield return new StaticRuleProvider();
 	}
 
-	public IEnumerable<KeyValuePair<string, INotableDateCalculator>> GetCalculators()
+	public IEnumerable<KeyValuePair<string, INotableDateAlgorithm>> GetAlgorithms()
 	{
-		yield return new KeyValuePair<string, INotableDateCalculator>(CalculatorKey, new StaticCalculator());
+		yield return new KeyValuePair<string, INotableDateAlgorithm>(AlgorithmKey, new StaticAlgorithm());
 	}
 
 	private sealed class StaticRuleProvider : INotableDateRuleProvider
@@ -55,8 +55,8 @@ public sealed class HarnessPlugin : INotableDateRulePlugin, INotableDateCalculat
 		}
 	}
 
-	private sealed class StaticCalculator : INotableDateCalculator
+	private sealed class StaticAlgorithm : INotableDateAlgorithm
 	{
-		public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null) => FixedCalculatorDate;
+		public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null) => FixedAlgorithmDate;
 	}
 }

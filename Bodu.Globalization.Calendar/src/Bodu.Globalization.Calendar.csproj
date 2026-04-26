@@ -61,6 +61,18 @@
     <None Remove="Globalization.Calendar.Resources\global._all.xml" />
     <None Remove="Globalization.Calendar\NotableDates.xml" />
     <None Remove="Globalization.Calendar\NotableDates.xsd" />
+    <None Remove="Globalization.Calendar.Resources\global-animals.xml" />
+    <None Remove="Globalization.Calendar.Resources\global-buddhist.xml" />
+    <None Remove="Globalization.Calendar.Resources\global-family.xml" />
+    <None Remove="Globalization.Calendar.Resources\global-food.xml" />
+    <None Remove="Globalization.Calendar.Resources\global-hindu.xml" />
+    <None Remove="Globalization.Calendar.Resources\global-islamic.xml" />
+    <None Remove="Globalization.Calendar.Resources\global-jewish.xml" />
+    <None Remove="Globalization.Calendar.Resources\global-lunar.xml" />
+    <None Remove="Globalization.Calendar.Resources\global-science.xml" />
+    <None Remove="Globalization.Calendar.Resources\region-ca.xml" />
+    <None Remove="Globalization.Calendar.Resources\region-de.xml" />
+    <None Remove="Globalization.Calendar.Resources\region-nz.xml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -84,10 +96,22 @@
     <EmbeddedResource Include="Globalization.Calendar\NotableDates.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar.Resources\global-animals.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\global-buddhist.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\global-family.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\global-food.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\global-hindu.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\global-islamic.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\global-jewish.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\global-lunar.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\global-science.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\region-au.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\region-us.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\region-gb.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\region-ca.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\region-de.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\region-fr.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\region-gb.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\region-nz.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\region-us.xml" />
     <EmbeddedResource Include="ResourceStrings.resx">
       <LastGenOutput>ResourceStrings.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>

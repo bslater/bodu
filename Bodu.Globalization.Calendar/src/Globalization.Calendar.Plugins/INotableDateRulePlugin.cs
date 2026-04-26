@@ -8,7 +8,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 
 /// <summary>
 /// Marks a notable-date plugin that contributes one or more <see cref="INotableDateRuleProvider" /> instances to the host. A
-/// plugin that only contributes custom calculators need not implement this interface.
+/// plugin that only contributes custom algorithms need not implement this interface.
 /// </summary>
 /// <remarks>
 /// Rule providers returned from <see cref="GetRuleProviders" /> are added to the <see cref="NotableDateService" />'s provider

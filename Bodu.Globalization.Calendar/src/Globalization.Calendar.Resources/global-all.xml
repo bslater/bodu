@@ -5,10 +5,12 @@
   calendar for consumers calling `new NotableDateService()`.
 
   These rules represent internationally recognised civic, cultural,
-  educational, environmental, health, remembrance, social, and United
-  Nations observances. They are intended for recognition and display,
-  not as a statement that each date is a public holiday or non-working
-  day in every jurisdiction.
+  educational, environmental, family, food and agriculture, health, animal
+  welfare, remembrance, science and technology, social, United Nations,
+  and multi-tradition religious (lunar, Islamic, Jewish, Hindu, and
+  Buddhist calendar) observances. They are intended for recognition and
+  display, not as a statement that each date is a public holiday or
+  non-working day in every jurisdiction.
 
   UseAll is a deliberate opt-in for "every rule from this resource".
   This aggregate resource is the appropriate place to use wildcard
@@ -19,6 +21,14 @@
   country resources should cherry-pick relevant entries and override
   jurisdiction-specific behaviour such as nonWorking flags, weekend
   adjustments, local naming, or suppression rules.
+
+  Note on algorithm-keyed rules: the lunar, Islamic, Jewish, Hindu, and
+  Buddhist resource files contain rules that require custom
+  INotableDateAlgorithm implementations registered with the
+  INotableDateAlgorithmRegistry. Consumers that include global-all.xml
+  but do not register the required algorithms will receive null results
+  for those rules without error. See each individual resource file for
+  the full list of required algorithm keys.
 -->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -59,5 +69,40 @@
     <UseAll />
   </UseFrom>
 
+  <UseFrom resource="./global-family.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-animals.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-food.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-science.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-lunar.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-islamic.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-jewish.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-hindu.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-buddhist.xml">
+    <UseAll />
+  </UseFrom>
 
 </NotableDates>

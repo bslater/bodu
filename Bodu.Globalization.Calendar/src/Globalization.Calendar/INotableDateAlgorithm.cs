@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="INotableDateCalculator.cs" company="PlaceholderCompany">
+// <copyright file="INotableDateAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -13,10 +13,10 @@ namespace Bodu.Globalization.Calendar;
 /// calendar system.
 /// </summary>
 /// <remarks>
-/// Implementations of <see cref="INotableDateCalculator" /> provide algorithmic calculation of dates that cannot be represented by a
+/// Implementations of <see cref="INotableDateAlgorithm" /> provide algorithmic calculation of dates that cannot be represented by a
 /// fixed day and month, often varying by year and calendar type.
 /// </remarks>
-public interface INotableDateCalculator
+public interface INotableDateAlgorithm
 {
 	/// <summary>
 	/// Computes the calendar date of the notable event for the specified year and optional calendar system.
@@ -32,7 +32,7 @@ public interface INotableDateCalculator
 	/// </returns>
 	/// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="year" /> is less than 1.</exception>
 	/// <exception cref="NotSupportedException">
-	/// Thrown when the specified <paramref name="calendar" /> type is not supported by the calculator.
+	/// Thrown when the specified <paramref name="calendar" /> type is not supported by the algorithm.
 	/// </exception>
 	DateTime? GetDate(int year, SysGlobal.Calendar? calendar = null);
 }

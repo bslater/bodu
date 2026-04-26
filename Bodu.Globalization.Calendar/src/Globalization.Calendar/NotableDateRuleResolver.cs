@@ -10,28 +10,28 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Resolves the anchor date of a <see cref="NotableDateRule" /> for a specified year, dispatching to the appropriate strategy and
-/// honouring temporal bounds, recurrence cadences, anchor look-ups, and calculator registry resolution.
+/// honouring temporal bounds, recurrence cadences, anchor look-ups, and algorithm registry resolution.
 /// </summary>
 /// <remarks>
 /// <para>
 /// This class replaces the earlier <c>NotableDateResolver</c>. It preserves the same surface area (<see cref="ResolveAnchorDate" />)
 /// while finishing several previously incomplete behaviours: <see cref="NotableDateRule.OccurrenceYears" /> is now honoured;
-/// circular <c>OffsetFromAnchor</c> chains are detected at every depth; calculators are looked up via
-/// <see cref="INotableDateCalculatorRegistry" /> with a CLR <see cref="Type" /> fallback for backward compatibility.
+/// circular <c>OffsetFromAnchor</c> chains are detected at every depth; algorithms are looked up via
+/// <see cref="INotableDateAlgorithmRegistry" /> with a CLR <see cref="Type" /> fallback for backward compatibility.
 /// </para>
 /// </remarks>
 internal sealed class NotableDateRuleResolver
 {
 	private readonly IReadOnlyDictionary<string, NotableDateRule> _rulesByName;
-	private readonly INotableDateCalculatorRegistry? _calculators;
+	private readonly INotableDateAlgorithmRegistry? _algorithms;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="NotableDateRuleResolver" /> class.
 	/// </summary>
 	/// <param name="rules">The rules available for resolution. Must not be <see langword="null" />.</param>
-	/// <param name="calculators">Optional calculator registry consulted for <see cref="DateResolutionStrategy.Calculator" /> rules.</param>
+	/// <param name="algorithms">Optional algorithm registry consulted for <see cref="DateResolutionStrategy.Algorithm" /> rules.</param>
 	/// <exception cref="ArgumentNullException">Thrown when <paramref name="rules" /> is <see langword="null" />.</exception>
-	public NotableDateRuleResolver(IReadOnlyList<NotableDateRule> rules, INotableDateCalculatorRegistry? calculators = null)
+	public NotableDateRuleResolver(IReadOnlyList<NotableDateRule> rules, INotableDateAlgorithmRegistry? algorithms = null)
 	{
 		if (rules is null) throw new ArgumentNullException(nameof(rules));
 
@@ -44,7 +44,7 @@ internal sealed class NotableDateRuleResolver
 		}
 
 		_rulesByName = lookup;
-		_calculators = calculators;
+		_algorithms = algorithms;
 	}
 
 	/// <summary>
@@ -99,8 +99,8 @@ internal sealed class NotableDateRuleResolver
 				case DateResolutionStrategy.OffsetFromAnchor:
 					return ResolveOffsetAnchor(rule, year, resolving);
 
-				case DateResolutionStrategy.Calculator:
-					return ResolveCalculator(rule, year);
+				case DateResolutionStrategy.Algorithm:
+					return ResolveAlgorithm(rule, year);
 
 				default:
 					throw new NotSupportedException($"Unsupported date resolution strategy '{rule.Strategy}' on rule '{rule.Name}'.");
@@ -137,28 +137,28 @@ internal sealed class NotableDateRuleResolver
 	}
 
     /// <summary>
-    /// Resolves a rule whose strategy is a registered <see cref="INotableDateCalculator" />,
-    /// delegating to the configured calculator registry.
+    /// Resolves a rule whose strategy is a registered <see cref="INotableDateAlgorithm" />,
+    /// delegating to the configured algorithm registry.
     /// </summary>
-    /// <param name="rule">The rule bound to a calculator strategy.</param>
+    /// <param name="rule">The rule bound to a algorithm strategy.</param>
     /// <param name="year">The civil year.</param>
-    /// <returns>The calculated date, or <see langword="null" /> if the configured calculator
+    /// <returns>The calculated date, or <see langword="null" /> if the configured algorithm
     /// returns no date for the year.</returns>
-	private DateTime? ResolveCalculator(NotableDateRule rule, int year)
+	private DateTime? ResolveAlgorithm(NotableDateRule rule, int year)
 	{
 		// Prefer registry lookup (DI-friendly, decoupled from CLR type names).
-		if (!string.IsNullOrWhiteSpace(rule.CalculatorKey)
-			&& _calculators is not null
-			&& _calculators.TryGet(rule.CalculatorKey!, out var calculator))
+		if (!string.IsNullOrWhiteSpace(rule.AlgorithmKey)
+			&& _algorithms is not null
+			&& _algorithms.TryGet(rule.AlgorithmKey!, out var algorithm))
 		{
-			return calculator.GetDate(year);
+			return algorithm.GetDate(year);
 		}
 
 		// Fallback: legacy CLR type instantiation, for compatibility with rules authored before the registry existed.
-		if (rule.CalculatorType is not null)
+		if (rule.AlgorithmType is not null)
 		{
-			if (Activator.CreateInstance(rule.CalculatorType) is INotableDateCalculator legacyCalculator)
-				return legacyCalculator.GetDate(year);
+			if (Activator.CreateInstance(rule.AlgorithmType) is INotableDateAlgorithm legacyAlgorithm)
+				return legacyAlgorithm.GetDate(year);
 		}
 
 		return null;

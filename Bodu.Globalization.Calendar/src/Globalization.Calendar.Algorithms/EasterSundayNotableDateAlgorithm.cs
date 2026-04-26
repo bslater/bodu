@@ -1,22 +1,22 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="EasterSundayNotableDateCalculator.cs" company="PlaceholderCompany">
+// <copyright file="EasterSundayNotableDateAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections.Concurrent;
 
-namespace Bodu.Globalization.Calendar.Calculators;
+namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
 /// Provides Easter Sunday date calculations based on the given year and calendar system.
 /// </summary>
 /// <remarks>
 /// This implementation uses the Gregorian calendar for years &gt;= 1583 and the Julian calendar otherwise. Results are cached for
-/// performance. Use this calculator to retrieve the date of Easter Sunday.
+/// performance. Use this algorithm to retrieve the date of Easter Sunday.
 /// </remarks>
-public sealed class EasterSundayNotableDateCalculator
-	: INotableDateCalculator
+public sealed class EasterSundayNotableDateAlgorithm
+	: INotableDateAlgorithm
 {
 	private static readonly ConcurrentDictionary<(int year, string calendarId), DateTime> _easterCache = new();
 

@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Globalization.Calendar.Calculators;
+using Bodu.Globalization.Calendar.Algorithms;
 using SysGlobal = System.Globalization;
 
 namespace Bodu.Globalization.Calendar.Providers;

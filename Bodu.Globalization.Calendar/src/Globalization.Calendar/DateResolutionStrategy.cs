@@ -26,9 +26,9 @@ public enum DateResolutionStrategy
 	DayOfWeekInMonth,
 
 	/// <summary>
-	/// Resolved by an algorithmic <see cref="INotableDateCalculator" /> implementation looked up via key in the calculator registry.
+	/// Resolved by an algorithmic <see cref="INotableDateAlgorithm" /> implementation looked up via key in the algorithm registry.
 	/// </summary>
-	Calculator,
+	Algorithm,
 
 	/// <summary>
 	/// Resolved as a fixed integer day offset from another notable date rule referenced by name (e.g. Easter Monday = Easter Sunday + 1).
