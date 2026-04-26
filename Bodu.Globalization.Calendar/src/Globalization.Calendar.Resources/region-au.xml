@@ -47,6 +47,19 @@
   </UseFrom>
 
   <!--
+    Imported family observances.
+
+    Mother's Day uses the global second-Sunday-in-May form, consistent with
+    Australian practice. Father's Day falls on the first Sunday in September
+    in Australia, which differs from the global third-Sunday-in-June default,
+    so it is defined separately below.
+  -->
+
+  <UseFrom resource="./global-family.xml">
+    <Use name="Mother's Day" territory="AU" />
+  </UseFrom>
+
+  <!--
     National Australian holidays and observances.
   -->
 
@@ -85,19 +98,6 @@
       <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextNonWorkingDay" />
     </Rule>
   </NotableDate>
-
-  <!--
-    Imported family observances.
-
-    Mother's Day uses the global second-Sunday-in-May form, consistent with
-    Australian practice. Father's Day falls on the first Sunday in September
-    in Australia, which differs from the global third-Sunday-in-June default,
-    so it is defined separately below.
-  -->
-
-  <UseFrom resource="./global-family.xml">
-    <Use name="Mother's Day" territory="AU" />
-  </UseFrom>
 
   <!--
     Widely observed Australian cultural and family observances.

@@ -53,6 +53,15 @@
   </UseFrom>
 
   <!--
+    Imported family observances.
+  -->
+
+  <UseFrom resource="./global-family.xml">
+    <Use name="Mother's Day" territory="CA" />
+    <Use name="Father's Day" territory="CA" />
+  </UseFrom>
+
+  <!--
     National Canadian holidays and observances.
   -->
 
@@ -108,15 +117,6 @@
       <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextNonWorkingDay" />
     </Rule>
   </NotableDate>
-
-  <!--
-    Imported family observances.
-  -->
-
-  <UseFrom resource="./global-family.xml">
-    <Use name="Mother's Day" territory="CA" />
-    <Use name="Father's Day" territory="CA" />
-  </UseFrom>
 
   <!--
     Widely observed Canadian cultural and family observances.

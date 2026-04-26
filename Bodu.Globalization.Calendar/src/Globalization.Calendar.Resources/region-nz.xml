@@ -62,6 +62,19 @@
   </UseFrom>
 
   <!--
+    Imported family observances.
+
+    Mother's Day uses the global second-Sunday-in-May form, consistent with
+    New Zealand practice. Father's Day falls on the first Sunday in September
+    in New Zealand, which differs from the global third-Sunday-in-June default,
+    so it is defined separately below.
+  -->
+
+  <UseFrom resource="./global-family.xml">
+    <Use name="Mother's Day" territory="NZ" />
+  </UseFrom>
+
+  <!--
     National New Zealand holidays and observances.
   -->
 
@@ -135,19 +148,6 @@
       <Tag>NationalHoliday</Tag>
     </Rule>
   </NotableDate>
-
-  <!--
-    Imported family observances.
-
-    Mother's Day uses the global second-Sunday-in-May form, consistent with
-    New Zealand practice. Father's Day falls on the first Sunday in September
-    in New Zealand, which differs from the global third-Sunday-in-June default,
-    so it is defined separately below.
-  -->
-
-  <UseFrom resource="./global-family.xml">
-    <Use name="Mother's Day" territory="NZ" />
-  </UseFrom>
 
   <!--
     Widely observed New Zealand cultural observances.

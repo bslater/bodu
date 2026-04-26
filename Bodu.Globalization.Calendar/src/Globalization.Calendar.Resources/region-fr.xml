@@ -39,6 +39,19 @@
   </UseFrom>
 
   <!--
+    Imported family observances.
+
+    Father's Day uses the global third-Sunday-in-June form, consistent with
+    French practice. Mother's Day falls on the last Sunday in May in France,
+    which differs from the global second-Sunday-in-May default, so it is
+    defined separately below.
+  -->
+
+  <UseFrom resource="./global-family.xml">
+    <Use name="Father's Day" territory="FR" />
+  </UseFrom>
+
+  <!--
     National French holidays and observances.
   -->
 
@@ -102,19 +115,6 @@
       <Tag>National</Tag>
     </Rule>
   </NotableDate>
-
-  <!--
-    Imported family observances.
-
-    Father's Day uses the global third-Sunday-in-June form, consistent with
-    French practice. Mother's Day falls on the last Sunday in May in France,
-    which differs from the global second-Sunday-in-May default, so it is
-    defined separately below.
-  -->
-
-  <UseFrom resource="./global-family.xml">
-    <Use name="Father's Day" territory="FR" />
-  </UseFrom>
 
   <!--
     Widely observed French cultural and family observances.
