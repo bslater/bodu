@@ -204,8 +204,9 @@ public partial class ShuffleHelpersTests
     }
 
     /// <summary>
-    /// Runs 20,000 in-place shuffles of a 10-element array to validate statistical uniformity of output positions. Each value should
-    /// appear roughly equally in each position, with no more than 2 statistically significant outliers.
+    /// Runs 20,000 in-place shuffles of a 10-element array to validate statistical uniformity of output positions. Uses a fixed-seed
+    /// <see cref="XorShiftRandom" /> to ensure deterministic, reproducible results. Each value should appear roughly equally in each
+    /// position, with no more than 2 statistically significant outliers.
     /// </summary>
     [TestMethod]
     public void Shuffle_WhenRepeated_ShouldDistributeItemsStatistically()
@@ -214,16 +215,33 @@ public partial class ShuffleHelpersTests
         const int size = 10;
         var tracker = new int[size, size];
         var original = Enumerable.Range(0, size).ToArray();
+        var rng = new XorShiftRandom(12345);
 
         for (int r = 0; r < runs; r++)
         {
             var buffer = original.ToArray();
-            ShuffleHelpers.Shuffle(buffer, new SystemRandomAdapter());
+            ShuffleHelpers.Shuffle(buffer, rng);
 
             for (int i = 0; i < size; i++)
                 tracker[i, buffer[i]]++;
         }
 
         AssertStatisticalUniformity(tracker, size, label: nameof(ShuffleHelpers.Shuffle));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ShuffleHelpers.Shuffle" /> produces the same permutation when called with an identically seeded
+    /// <see cref="XorShiftRandom" />, confirming deterministic behaviour.
+    /// </summary>
+    [TestMethod]
+    public void Shuffle_WithFixedSeed_ShouldProduceDeterministicOutput()
+    {
+        int[] buffer1 = Enumerable.Range(1, 10).ToArray();
+        int[] buffer2 = Enumerable.Range(1, 10).ToArray();
+
+        ShuffleHelpers.Shuffle(buffer1, new XorShiftRandom(42));
+        ShuffleHelpers.Shuffle(buffer2, new XorShiftRandom(42));
+
+        CollectionAssert.AreEqual(buffer1, buffer2);
     }
 }
