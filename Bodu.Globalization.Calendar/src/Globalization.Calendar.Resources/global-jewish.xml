@@ -23,25 +23,26 @@
     - Rosh Hashanah is 2 days everywhere by convention.
     - Yom Kippur, Purim, and Shavuot (in Israel) are single days.
 
-  Each rule resolves through the built-in HebrewNotableDateAlgorithm, which is
-  named directly on the <Algorithm> element along with the Hebrew month and day
-  pair that defines the observance. The NotableDateRuleResolver activates the
-  algorithm through its (HebrewMonth, int) constructor at resolution time, so
-  no INotableDateAlgorithmRegistry registration is required for these rules.
+  Resolution strategy:
+    Four observances anchor the file via the built-in HebrewNotableDateAlgorithm,
+    invoked through its (HebrewMonth, int) constructor at resolution time:
+      Rosh Hashanah  — 1 Tishri
+      Hanukkah       — 25 Kislev
+      Purim          — 14 LastAdar (Adar I in standard years, Adar II in leap)
+      Passover       — 15 Nisan
 
-  Algorithm bindings used:
-    rosh-hashanah   — 1–2 Tishri. Jewish New Year.
-    yom-kippur      — 10 Tishri. Day of Atonement.
-    sukkot          — 15 Tishri. Feast of Tabernacles (7 days in Israel,
-                      8 days in the diaspora — durationDays="7" here;
-                      regional rules may override for diaspora practice).
-    hanukkah        — 25 Kislev. Festival of Lights. Always 8 days.
-    purim           — 14 LastAdar (Adar I in standard years, Adar II in leap
-                      years). Feast of Lots.
-    passover        — 15 Nisan. Festival of Freedom. 7 days in Israel,
-                      8 days in the diaspora.
-    shavuot         — 6 Sivan. Feast of Weeks / Pentecost. 1 day in Israel,
-                      2 days in the diaspora.
+    Three further observances are exact, invariant offsets in the Hebrew
+    calendar and are authored as OffsetFromAnchor rules so the dependent date
+    cannot drift from its anchor:
+      Yom Kippur     — Rosh Hashanah + 9 days  (1 → 10 Tishri)
+      Sukkot         — Rosh Hashanah + 14 days (1 → 15 Tishri)
+      Shavuot        — Passover      + 50 days (15 Nisan → 6 Sivan; the
+                       "fifty days" of Pentecost. Nisan is always 30 days and
+                       Iyar always 29, so this offset is constant.)
+
+    No INotableDateAlgorithmRegistry registration is required for any rule in
+    this resource; consumers may still register an alternative implementation
+    under the listed key to override the built-in algorithm.
 -->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -62,11 +63,8 @@
   <NotableDate name="Yom Kippur">
     <Rule name="Yom Kippur"
           category="Religious"
-          comment="The Day of Atonement. Observed on 10 Tishri, ten days after Rosh Hashanah. The holiest day of the Jewish year, dedicated to prayer, fasting, and repentance. Synagogue services run for most of the day. A national holiday in Israel, where public life effectively halts.">
-      <Algorithm key="yom-kippur"
-                 type="Bodu.Globalization.Calendar.Algorithms.HebrewNotableDateAlgorithm, Bodu.Globalization.Calendar"
-                 month="Tishri"
-                 day="10" />
+          comment="The Day of Atonement. Observed on 10 Tishri, nine days after Rosh Hashanah, closing the Ten Days of Repentance. The holiest day of the Jewish year, dedicated to prayer, fasting, and repentance. Synagogue services run for most of the day. A national holiday in Israel, where public life effectively halts. Authored as a fixed nine-day offset from Rosh Hashanah; the Hebrew calendar guarantees this offset is invariant.">
+      <OffsetFromAnchor name="Rosh Hashanah" offset="9" />
       <Tag>HebrewCalendar</Tag>
     </Rule>
   </NotableDate>
@@ -75,11 +73,8 @@
     <Rule name="Sukkot"
           category="Religious"
           durationDays="7"
-          comment="The Feast of Tabernacles. Begins on 15 Tishri, five days after Yom Kippur. Commemorates the forty years the Israelites spent wandering in the desert after the Exodus. Observed by dwelling and eating in a sukkah (temporary hut) for seven days in Israel (eight in the diaspora by traditional practice). The durationDays value here represents the Israeli/Reform seven-day observance; regional rules may override to eight days for diaspora practice.">
-      <Algorithm key="sukkot"
-                 type="Bodu.Globalization.Calendar.Algorithms.HebrewNotableDateAlgorithm, Bodu.Globalization.Calendar"
-                 month="Tishri"
-                 day="15" />
+          comment="The Feast of Tabernacles. Begins on 15 Tishri, fourteen days after Rosh Hashanah and five days after Yom Kippur. Commemorates the forty years the Israelites spent wandering in the desert after the Exodus. Observed by dwelling and eating in a sukkah (temporary hut) for seven days in Israel (eight in the diaspora by traditional practice). The durationDays value here represents the Israeli/Reform seven-day observance; regional rules may override to eight days for diaspora practice. Authored as a fixed fourteen-day offset from Rosh Hashanah; the Hebrew calendar guarantees this offset is invariant.">
+      <OffsetFromAnchor name="Rosh Hashanah" offset="14" />
       <Tag>HebrewCalendar</Tag>
     </Rule>
   </NotableDate>
@@ -125,11 +120,8 @@
   <NotableDate name="Shavuot">
     <Rule name="Shavuot"
           category="Religious"
-          comment="The Feast of Weeks (also Pentecost). Observed on 6 Sivan, fifty days (seven weeks) after the second day of Passover. Commemorates the giving of the Torah at Mount Sinai. Observed with synagogue services, all-night Torah study (tikkun leil Shavuot), and the eating of dairy foods. One day in Israel and among Reform communities; two days in traditional diaspora practice.">
-      <Algorithm key="shavuot"
-                 type="Bodu.Globalization.Calendar.Algorithms.HebrewNotableDateAlgorithm, Bodu.Globalization.Calendar"
-                 month="Sivan"
-                 day="6" />
+          comment="The Feast of Weeks (also Pentecost). Observed on 6 Sivan, fifty days after the first day of Passover (15 Nisan). Commemorates the giving of the Torah at Mount Sinai. Observed with synagogue services, all-night Torah study (tikkun leil Shavuot), and the eating of dairy foods. One day in Israel and among Reform communities; two days in traditional diaspora practice. Authored as a fixed fifty-day offset from Passover; Nisan is always 30 days and Iyar always 29, so this offset is invariant.">
+      <OffsetFromAnchor name="Passover" offset="50" />
       <Tag>HebrewCalendar</Tag>
     </Rule>
   </NotableDate>
