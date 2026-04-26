@@ -50,6 +50,15 @@
   </UseFrom>
 
   <!--
+    Imported family observances.
+  -->
+
+  <UseFrom resource="./global-family.xml">
+    <Use name="Mother's Day" territory="DE" />
+    <Use name="Father's Day" territory="DE" />
+  </UseFrom>
+
+  <!--
     National German holidays (observed in all sixteen federal states).
   -->
 
@@ -178,13 +187,5 @@
     </Rule>
   </NotableDate>
 
-  <!--
-    Imported family observances.
-  -->
-
-  <UseFrom resource="./global-family.xml">
-    <Use name="Mother's Day" territory="DE" />
-    <Use name="Father's Day" territory="DE" />
-  </UseFrom>
 
 </NotableDates>
