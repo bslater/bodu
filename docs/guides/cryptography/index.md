@@ -28,6 +28,11 @@ If you're looking for the generated API reference, see the [Bodu.Security.Crypto
 </div>
 
 <div class="bodu-card">
+  <h3><a href="ascon.html">ASCON family</a></h3>
+  <p>All five NIST SP 800-232 algorithms — <code>AsconHash256</code>, <code>AsconHashA256</code>, <code>AsconXof128</code>, <code>AsconCxof128</code>, and <code>AsconAead128</code> — with algorithm selection guidance and quick-start examples.</p>
+</div>
+
+<div class="bodu-card">
   <h3><a href="padding.html">Padding</a></h3>
   <p>PKCS7, Zeros, and None — how each one pads, when it round-trips cleanly, and when it silently loses bytes.</p>
 </div>
@@ -64,7 +69,8 @@ Start with [Using hashes and checksums](hashing.md) for the cross-cutting pictur
 | `Tiger` | 128 / 160 / 192-bit cryptographic digest | [Using Tiger](tiger.md) |
 | `CubeHash` | SHA-3 submission, tunable rounds and block size | [Using CubeHash](cubehash.md) |
 | `Snefru128` / `Snefru256` | Legacy cryptographic digest — interop only | [Using Snefru](snefru.md) |
-| `AsconHash256` / `AsconHashA256` | NIST SP 800-232 sponge digest — 256-bit output, two margin/throughput variants | [Using ASCON](ascon.md) |
+| `AsconHash256` / `AsconHashA256` | NIST SP 800-232 sponge digest — 256-bit output, two margin/throughput variants | [ASCON hashing](ascon-hashing.md) |
+| `AsconXof128` / `AsconCxof128` | NIST SP 800-232 extendable output — squeeze any number of bytes; CXOF128 adds a customisation string | [ASCON XOF](ascon-xof.md) |
 | `MerkleTreeHash` / `ParallelMerkleTreeHash` | Tree-structured streaming integrity | [Using Merkle trees](merkle-trees.md) |
 
 For non-cryptographic checksums and fingerprints (CRC, Fletcher, Adler, FNV, CityHash, Pearson, and the classic string hashes) on `System.IO.Hashing.NonCryptographicHashAlgorithm`, see the [Bodu.IO.Hashing guides](../io-hashing/).
@@ -77,4 +83,15 @@ For non-cryptographic checksums and fingerprints (CRC, Fletcher, Adler, FNV, Cit
 
 ## Authenticated encryption
 
-For authenticated-encryption-with-associated-data (AEAD), pair the public <xref:Bodu.Security.Cryptography.AesBlockCipher> with one of the mode transforms — `GcmModeTransform`, `CcmModeTransform`, `OcbModeTransform`, `SivModeTransform`, or `GcmSivModeTransform` — and call through the one-shot <xref:Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions> helpers. The [AEAD modes guide](aead-modes.md) walks through each mode end-to-end.
+For authenticated-encryption-with-associated-data (AEAD), you have two families of algorithms:
+
+**AES-based AEAD** — pair <xref:Bodu.Security.Cryptography.AesBlockCipher> with one of the
+five mode transforms (`GcmModeTransform`, `CcmModeTransform`, `OcbModeTransform`,
+`SivModeTransform`, or `GcmSivModeTransform`) and call through the one-shot
+<xref:Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions> helpers.
+The [AEAD modes guide](aead-modes.md) walks through each mode end-to-end.
+
+**ASCON-AEAD128** — <xref:Bodu.Security.Cryptography.AsconAead128> is a sponge-based AEAD
+(NIST SP 800-232) that requires no separate block cipher. Use it when you need a
+standards-backed AEAD with a compact software footprint or when targeting hardware without
+AES-NI. See the [ASCON AEAD guide](ascon-aead.md).

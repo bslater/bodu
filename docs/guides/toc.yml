@@ -37,6 +37,16 @@
       href: cryptography/padding.md
     - name: Hashing and checksums
       href: cryptography/hashing.md
+    - name: ASCON family
+      items:
+        - name: Overview
+          href: cryptography/ascon.md
+        - name: Hashing
+          href: cryptography/ascon-hashing.md
+        - name: Extendable output (XOF)
+          href: cryptography/ascon-xof.md
+        - name: Authenticated encryption (AEAD)
+          href: cryptography/ascon-aead.md
     - name: Hashing algorithms
       items:
         - name: Using SipHash
