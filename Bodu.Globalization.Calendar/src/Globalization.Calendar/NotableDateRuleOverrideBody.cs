@@ -134,14 +134,14 @@ public sealed record NotableDateRuleOverrideBody
 	public int? OffsetDays { get; init; }
 
 	/// <summary>
-	/// Gets the calculator registry key used by <see cref="DateResolutionStrategy.Calculator" />.
+	/// Gets the algorithm registry key used by <see cref="DateResolutionStrategy.Algorithm" />.
 	/// </summary>
-	public string? CalculatorKey { get; init; }
+	public string? AlgorithmKey { get; init; }
 
 	/// <summary>
-	/// Gets the calculator CLR type used by <see cref="DateResolutionStrategy.Calculator" />.
+	/// Gets the algorithm CLR type used by <see cref="DateResolutionStrategy.Algorithm" />.
 	/// </summary>
-	public Type? CalculatorType { get; init; }
+	public Type? AlgorithmType { get; init; }
 
 	/// <summary>
 	/// Gets the tags authored on the override. These merge additively with the inherited rule's tags.

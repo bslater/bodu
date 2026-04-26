@@ -12,7 +12,7 @@
   Note on Matariki: Matariki (Māori New Year) was established as a national public
   holiday by the Te Kāhui o Matariki Public Holiday Act 2022. The date is set each
   year by the Matariki Advisory Board based on the lunar/stellar calendar and falls
-  on a Friday in June or July. This rule requires a custom INotableDateCalculator
+  on a Friday in June or July. This rule requires a custom INotableDateAlgorithm
   registered under the key "matariki".
 
   Country-specific rules explicitly import only the inherited global and Christian
@@ -118,8 +118,8 @@
           territory="NZ"
           nonWorking="true"
           firstYear="2022"
-          comment="Māori New Year. Established as a public holiday by the Te Kāhui o Matariki Public Holiday Act 2022. The date is determined annually by the Matariki Advisory Board and falls on a Friday in June or July. This rule requires a custom INotableDateCalculator registered under the key 'matariki'.">
-      <Calculator key="matariki" />
+          comment="Māori New Year. Established as a public holiday by the Te Kāhui o Matariki Public Holiday Act 2022. The date is determined annually by the Matariki Advisory Board and falls on a Friday in June or July. This rule requires a custom INotableDateAlgorithm registered under the key 'matariki'.">
+      <Algorithm key="matariki" />
       <Tag>NationalHoliday</Tag>
       <Tag>Māori</Tag>
     </Rule>

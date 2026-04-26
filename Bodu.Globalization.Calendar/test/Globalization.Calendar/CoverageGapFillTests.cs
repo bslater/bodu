@@ -109,8 +109,8 @@ public sealed class CoverageGapFillTests
 
 	/// <summary>
 	/// Verifies that <see cref="NotableDateService.GetNotableDates(int, string?, Type?)" /> skips
-	/// a rule whose anchor resolves to <see langword="null" /> (for example a Calculator rule
-	/// whose registered calculator returns <see langword="null" />) without emitting anything.
+	/// a rule whose anchor resolves to <see langword="null" /> (for example a Algorithm rule
+	/// whose registered algorithm returns <see langword="null" />) without emitting anything.
 	/// </summary>
 	[TestMethod]
 	public void GetNotableDates_WhenAnchorResolvesToNull_ShouldSkipRule()
@@ -118,17 +118,17 @@ public sealed class CoverageGapFillTests
 		var rule = new NotableDateRule
 		{
 			Name = "Null Calc",
-			Strategy = DateResolutionStrategy.Calculator,
+			Strategy = DateResolutionStrategy.Algorithm,
 			Category = NotableDateCategory.Observance,
-			CalculatorKey = "null-key",
+			AlgorithmKey = "null-key",
 		};
-		var nullCalculatorRegistry = new NotableDateCalculatorRegistry()
-			.Register("null-key", new NullCalculator());
+		var nullAlgorithmRegistry = new NotableDateAlgorithmRegistry()
+			.Register("null-key", new NullAlgorithm());
 
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
 			CalendarWeekendDefinition.SaturdaySunday,
-			calculatorRegistry: nullCalculatorRegistry);
+			algorithmRegistry: nullAlgorithmRegistry);
 
 		IReadOnlyList<NotableDate> result = service.GetNotableDates(2025);
 
@@ -435,39 +435,39 @@ public sealed class CoverageGapFillTests
 	}
 
 	// ---------------------------------------------------------------------------------
-	// CompositeCalculatorRegistry.Contains — primary-miss fallback hit branch
+	// CompositeAlgorithmRegistry.Contains — primary-miss fallback hit branch
 	// ---------------------------------------------------------------------------------
 
 	/// <summary>
-	/// Verifies that the host/plugin composite calculator registry's <c>Contains</c> check
+	/// Verifies that the host/plugin composite algorithm registry's <c>Contains</c> check
 	/// falls through to the plugin-supplied registry when the host-supplied primary does not
 	/// contain the key. (Primary = host; fallback = plugin. This test registers a key only on
 	/// the plugin side.)
 	/// </summary>
 	[TestMethod]
-	public void CompositeCalculatorRegistry_WhenKeyOnlyInFallback_ShouldStillResolve()
+	public void CompositeAlgorithmRegistry_WhenKeyOnlyInFallback_ShouldStillResolve()
 	{
-		// The service internally wraps host + plugin registries in a CompositeCalculatorRegistry
-		// only when plugins contribute calculators. We simulate that via a plugin double.
-		var hostRegistry = new NotableDateCalculatorRegistry(); // empty host
+		// The service internally wraps host + plugin registries in a CompositeAlgorithmRegistry
+		// only when plugins contribute algorithms. We simulate that via a plugin double.
+		var hostRegistry = new NotableDateAlgorithmRegistry(); // empty host
 
-		var plugin = new StaticCalculatorPlugin(new[]
+		var plugin = new StaticAlgorithmPlugin(new[]
 		{
-			new KeyValuePair<string, INotableDateCalculator>("plugin-only-key", new FixedCalculator(new DateTime(2030, 7, 1))),
+			new KeyValuePair<string, INotableDateAlgorithm>("plugin-only-key", new FixedAlgorithm(new DateTime(2030, 7, 1))),
 		});
 
 		var rule = new NotableDateRule
 		{
 			Name = "Plugin Only",
-			Strategy = DateResolutionStrategy.Calculator,
+			Strategy = DateResolutionStrategy.Algorithm,
 			Category = NotableDateCategory.Observance,
-			CalculatorKey = "plugin-only-key",
+			AlgorithmKey = "plugin-only-key",
 		};
 
 		var service = new NotableDateService(
 			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
 			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-			calculatorRegistry: hostRegistry,
+			algorithmRegistry: hostRegistry,
 			plugins: new[] { (INotableDatePlugin)plugin });
 
 		NotableDate resolved = service.GetNotableDates(2030).Single();
@@ -475,34 +475,34 @@ public sealed class CoverageGapFillTests
 	}
 
 	/// <summary>
-	/// Minimal plugin that only contributes calculators (implements
-	/// <see cref="INotableDateCalculatorPlugin" />), used to force the service to build a
+	/// Minimal plugin that only contributes algorithms (implements
+	/// <see cref="INotableDateAlgorithmPlugin" />), used to force the service to build a
 	/// composite registry layered over the host registry.
 	/// </summary>
-	private sealed class StaticCalculatorPlugin : INotableDatePlugin, INotableDateCalculatorPlugin
+	private sealed class StaticAlgorithmPlugin : INotableDatePlugin, INotableDateAlgorithmPlugin
 	{
-		private readonly KeyValuePair<string, INotableDateCalculator>[] _calculators;
+		private readonly KeyValuePair<string, INotableDateAlgorithm>[] _algorithms;
 
-		public StaticCalculatorPlugin(KeyValuePair<string, INotableDateCalculator>[] calculators) =>
-			_calculators = calculators;
+		public StaticAlgorithmPlugin(KeyValuePair<string, INotableDateAlgorithm>[] algorithms) =>
+			_algorithms = algorithms;
 
-		public string Name => nameof(StaticCalculatorPlugin);
+		public string Name => nameof(StaticAlgorithmPlugin);
 
 		public Version Version => new(1, 0);
 
-		public IEnumerable<KeyValuePair<string, INotableDateCalculator>> GetCalculators() => _calculators;
+		public IEnumerable<KeyValuePair<string, INotableDateAlgorithm>> GetAlgorithms() => _algorithms;
 	}
 
-	private sealed class FixedCalculator : INotableDateCalculator
+	private sealed class FixedAlgorithm : INotableDateAlgorithm
 	{
 		private readonly DateTime _date;
 
-		public FixedCalculator(DateTime date) => _date = date;
+		public FixedAlgorithm(DateTime date) => _date = date;
 
 		public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null) => _date;
 	}
 
-	private sealed class NullCalculator : INotableDateCalculator
+	private sealed class NullAlgorithm : INotableDateAlgorithm
 	{
 		public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null) => null;
 	}
@@ -592,45 +592,45 @@ public sealed class CoverageGapFillTests
 
 	/// <summary>
 	/// Verifies that a <c>&lt;Use&gt;</c> override body declaring a
-	/// <see cref="DateResolutionStrategy.Calculator" /> strategy populates the calculator key
+	/// <see cref="DateResolutionStrategy.Algorithm" /> strategy populates the algorithm key
 	/// and type on the parsed override body.
 	/// </summary>
 	[TestMethod]
-	public void ParseOverrideBody_WhenStrategyIsCalculator_ShouldPopulateKeyAndType()
+	public void ParseOverrideBody_WhenStrategyIsAlgorithm_ShouldPopulateKeyAndType()
 	{
 		string xml = UseDirectiveNamespaceHeader +
 			"  <UseFrom resource=\"x\">\n" +
-            "    <Use name=\"Seed\"><Rule name=\"Seed Rule\" category=\"Holiday\"><Calculator key=\"easter-sunday\" /></Rule></Use>\n" +
+            "    <Use name=\"Seed\"><Rule name=\"Seed Rule\" category=\"Holiday\"><Algorithm key=\"easter-sunday\" /></Rule></Use>\n" +
 			"  </UseFrom>\n" +
 			"</NotableDates>";
 
 		var doc = NotableDateRuleParser.ParseDocument(xml);
 		var body = doc.UseGroups[0].Uses[0].OverrideBody!;
 
-		Assert.AreEqual(DateResolutionStrategy.Calculator, body.Strategy);
-		Assert.AreEqual("easter-sunday", body.CalculatorKey);
+		Assert.AreEqual(DateResolutionStrategy.Algorithm, body.Strategy);
+		Assert.AreEqual("easter-sunday", body.AlgorithmKey);
 	}
 
 	/// <summary>
 	/// Verifies that <see cref="NotableDateRuleParser" /> tolerates a
-	/// <c>calculatorType</c> attribute that names a type which cannot be resolved at runtime,
-	/// leaving <see cref="NotableDateRule.CalculatorType" /> <see langword="null" />.
+	/// <c>algorithmType</c> attribute that names a type which cannot be resolved at runtime,
+	/// leaving <see cref="NotableDateRule.AlgorithmType" /> <see langword="null" />.
 	/// </summary>
 	[TestMethod]
-	public void ParseXml_WhenCalculatorTypeNameCannotBeResolved_ShouldLeaveTypeNull()
+	public void ParseXml_WhenAlgorithmTypeNameCannotBeResolved_ShouldLeaveTypeNull()
 	{
 		string xml = UseDirectiveNamespaceHeader +
 			"  <NotableDate name=\"Missing Type Test\">\n" +
 			"    <Rule name=\"Missing Type Rule\" category=\"Observance\">\n" +
-			"      <Calculator key=\"x\" type=\"Totally.Invalid.Namespace.DoesNotExist, Nowhere\" />\n" +
+			"      <Algorithm key=\"x\" type=\"Totally.Invalid.Namespace.DoesNotExist, Nowhere\" />\n" +
 			"    </Rule>\n" +
 			"  </NotableDate>\n" +
 			"</NotableDates>";
 
 		NotableDateRule rule = NotableDateRuleParser.ParseXml(xml).Single();
 
-		Assert.IsNull(rule.CalculatorType);
-		Assert.AreEqual("x", rule.CalculatorKey);
+		Assert.IsNull(rule.AlgorithmType);
+		Assert.AreEqual("x", rule.AlgorithmKey);
 	}
 
 	// ---------------------------------------------------------------------------------

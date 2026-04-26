@@ -22,13 +22,13 @@
   jurisdiction-specific behaviour such as nonWorking flags, weekend
   adjustments, local naming, or suppression rules.
 
-  Note on calculator-keyed rules: the lunar, Islamic, Jewish, Hindu, and
+  Note on algorithm-keyed rules: the lunar, Islamic, Jewish, Hindu, and
   Buddhist resource files contain rules that require custom
-  INotableDateCalculator implementations registered with the
-  INotableDateCalculatorRegistry. Consumers that include global-all.xml
-  but do not register the required calculators will receive null results
+  INotableDateAlgorithm implementations registered with the
+  INotableDateAlgorithmRegistry. Consumers that include global-all.xml
+  but do not register the required algorithms will receive null results
   for those rules without error. See each individual resource file for
-  the full list of required calculator keys.
+  the full list of required algorithm keys.
 -->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">

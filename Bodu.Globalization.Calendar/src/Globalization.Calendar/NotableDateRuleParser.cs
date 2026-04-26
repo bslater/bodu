@@ -27,7 +27,7 @@ namespace Bodu.Globalization.Calendar;
 /// </para>
 /// <para>
 /// This class replaces <c>NotableDateDefinitionParser</c>. The new schema vocabulary uses <c>Rule</c> as the per-definition element and
-/// names the strategy child elements <c>Fixed</c>, <c>DayOfWeekInMonth</c>, <c>OffsetFromAnchor</c>, and <c>Calculator</c>.
+/// names the strategy child elements <c>Fixed</c>, <c>DayOfWeekInMonth</c>, <c>OffsetFromAnchor</c>, and <c>Algorithm</c>.
 /// </para>
 /// </remarks>
 public static class NotableDateRuleParser
@@ -189,7 +189,7 @@ public static class NotableDateRuleParser
 			{
 				"Fixed" => DateResolutionStrategy.Fixed,
 				"DayOfWeekInMonth" => DateResolutionStrategy.DayOfWeekInMonth,
-				"Calculator" => DateResolutionStrategy.Calculator,
+				"Algorithm" => DateResolutionStrategy.Algorithm,
 				"OffsetFromAnchor" => DateResolutionStrategy.OffsetFromAnchor,
 				_ => throw new InvalidOperationException($"Unknown strategy element '{strategyElement.Name.LocalName}' on override rule.")
 			};
@@ -251,10 +251,10 @@ public static class NotableDateRuleParser
 				AnchorRuleName = GetRequiredAttribute(strategyElement, "name"),
 				OffsetDays = int.Parse(GetRequiredAttribute(strategyElement, "offset"), CultureInfo.InvariantCulture),
 			},
-			DateResolutionStrategy.Calculator => body with
+			DateResolutionStrategy.Algorithm => body with
 			{
-				CalculatorKey = GetOptionalAttribute(strategyElement, "key"),
-				CalculatorType = ParseOptionalType<INotableDateCalculator>(strategyElement, "type"),
+				AlgorithmKey = GetOptionalAttribute(strategyElement, "key"),
+				AlgorithmType = ParseOptionalType<INotableDateAlgorithm>(strategyElement, "type"),
 			},
 			_ => body,
 		};
@@ -294,7 +294,7 @@ public static class NotableDateRuleParser
 			{
 				"Fixed" => DateResolutionStrategy.Fixed,
 				"DayOfWeekInMonth" => DateResolutionStrategy.DayOfWeekInMonth,
-				"Calculator" => DateResolutionStrategy.Calculator,
+				"Algorithm" => DateResolutionStrategy.Algorithm,
 				"OffsetFromAnchor" => DateResolutionStrategy.OffsetFromAnchor,
 				_ => throw new InvalidOperationException($"Unknown strategy element '{strategyElement.Name.LocalName}' on rule '{name}'.")
 			};
@@ -338,7 +338,7 @@ public static class NotableDateRuleParser
     /// <param name="localName">The local name of the XML element.</param>
     /// <returns><see langword="true" /> if the element names a strategy; otherwise <see langword="false" />.</returns>
 	private static bool IsStrategyElement(string localName) =>
-		localName is "Fixed" or "DayOfWeekInMonth" or "Calculator" or "OffsetFromAnchor";
+		localName is "Fixed" or "DayOfWeekInMonth" or "Algorithm" or "OffsetFromAnchor";
 
     /// <summary>
     /// Applies strategy-specific attributes and child elements (fixed date, Easter offset,
@@ -366,10 +366,10 @@ public static class NotableDateRuleParser
 				AnchorRuleName = GetRequiredAttribute(strategyElement, "name"),
 				OffsetDays = int.Parse(GetRequiredAttribute(strategyElement, "offset"), CultureInfo.InvariantCulture),
 			},
-			DateResolutionStrategy.Calculator => rule with
+			DateResolutionStrategy.Algorithm => rule with
 			{
-				CalculatorKey = GetOptionalAttribute(strategyElement, "key"),
-				CalculatorType = ParseOptionalType<INotableDateCalculator>(strategyElement, "type"),
+				AlgorithmKey = GetOptionalAttribute(strategyElement, "key"),
+				AlgorithmType = ParseOptionalType<INotableDateAlgorithm>(strategyElement, "type"),
 			},
 			_ => throw new NotSupportedException($"Unsupported strategy: {rule.Strategy}.")
 		};

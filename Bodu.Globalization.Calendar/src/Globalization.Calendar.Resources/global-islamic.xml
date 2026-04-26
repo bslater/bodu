@@ -14,14 +14,14 @@
   over approximately 33 years.
 
   Because Hijri dates depend on lunar observation (or calculated approximation),
-  all rules in this resource require a custom INotableDateCalculator registered
-  under the stated key with the INotableDateCalculatorRegistry. Astronomical
+  all rules in this resource require a custom INotableDateAlgorithm registered
+  under the stated key with the INotableDateAlgorithmRegistry. Astronomical
   calculation methods (e.g. the Umm al-Qura calendar used in Saudi Arabia, or
   the Islamic Society of North America tabular calendar) differ in their
   precise Gregorian equivalents by up to one day; implementations should document
   which convention they follow.
 
-  Calculator keys used:
+  Algorithm keys used:
     islamic-new-year    — 1 Muharram, the first day of the Hijri year.
     day-of-ashura       — 10 Muharram. Commemorated differently by Sunni and
                           Shia traditions.
@@ -42,8 +42,8 @@
   <NotableDate name="Islamic New Year">
     <Rule name="Islamic New Year"
           category="Religious"
-          comment="Hijri New Year (Ra's as-Sanah al-Hijriyyah). The first day of Muharram, the opening month of the Islamic lunar calendar. Marks the anniversary of the Prophet Muhammad's migration (Hijra) from Mecca to Medina in 622 CE, from which the Hijri calendar era is dated. A public holiday in many Muslim-majority countries. Requires a custom INotableDateCalculator registered under the key 'islamic-new-year'.">
-      <Calculator key="islamic-new-year" />
+          comment="Hijri New Year (Ra's as-Sanah al-Hijriyyah). The first day of Muharram, the opening month of the Islamic lunar calendar. Marks the anniversary of the Prophet Muhammad's migration (Hijra) from Mecca to Medina in 622 CE, from which the Hijri calendar era is dated. A public holiday in many Muslim-majority countries. Requires a custom INotableDateAlgorithm registered under the key 'islamic-new-year'.">
+      <Algorithm key="islamic-new-year" />
       <Tag>IslamicCalendar</Tag>
     </Rule>
   </NotableDate>
@@ -51,8 +51,8 @@
   <NotableDate name="Day of Ashura">
     <Rule name="Day of Ashura"
           category="Religious"
-          comment="Yawm Ashura. Falls on the tenth day of Muharram. For Sunni Muslims it is a recommended fast day commemorating Moses' fast in gratitude for the Israelites' deliverance. For Shia Muslims it is a major day of mourning commemorating the martyrdom of Hussein ibn Ali at the Battle of Karbala (61 AH / 680 CE). Requires a custom INotableDateCalculator registered under the key 'day-of-ashura'.">
-      <Calculator key="day-of-ashura" />
+          comment="Yawm Ashura. Falls on the tenth day of Muharram. For Sunni Muslims it is a recommended fast day commemorating Moses' fast in gratitude for the Israelites' deliverance. For Shia Muslims it is a major day of mourning commemorating the martyrdom of Hussein ibn Ali at the Battle of Karbala (61 AH / 680 CE). Requires a custom INotableDateAlgorithm registered under the key 'day-of-ashura'.">
+      <Algorithm key="day-of-ashura" />
       <Tag>IslamicCalendar</Tag>
     </Rule>
   </NotableDate>
@@ -60,8 +60,8 @@
   <NotableDate name="Mawlid al-Nabi">
     <Rule name="Mawlid al-Nabi"
           category="Religious"
-          comment="The Prophet's Birthday (Mawlid an-Nabawi). Observed on the 12th of Rabi al-Awwal in Sunni tradition and the 17th in Shia tradition. Commemorates the birth of the Prophet Muhammad. A public holiday in many Muslim-majority countries; not observed by some denominations that consider it an innovation (bid'ah). Calculator implementations should document which convention (Sunni 12th or Shia 17th) they apply. Requires a custom INotableDateCalculator registered under the key 'mawlid-al-nabi'.">
-      <Calculator key="mawlid-al-nabi" />
+          comment="The Prophet's Birthday (Mawlid an-Nabawi). Observed on the 12th of Rabi al-Awwal in Sunni tradition and the 17th in Shia tradition. Commemorates the birth of the Prophet Muhammad. A public holiday in many Muslim-majority countries; not observed by some denominations that consider it an innovation (bid'ah). Algorithm implementations should document which convention (Sunni 12th or Shia 17th) they apply. Requires a custom INotableDateAlgorithm registered under the key 'mawlid-al-nabi'.">
+      <Algorithm key="mawlid-al-nabi" />
       <Tag>IslamicCalendar</Tag>
     </Rule>
   </NotableDate>
@@ -70,8 +70,8 @@
     <Rule name="Ramadan"
           category="Religious"
           durationDays="30"
-          comment="The ninth month of the Islamic lunar calendar, observed by Muslims worldwide as a month of fasting (sawm), prayer, reflection, and community. The fast runs from dawn (Fajr) to sunset (Maghrib) each day. The month lasts 29 or 30 days depending on the lunar cycle. The durationDays value of 30 represents the maximum span; implementations may return either 29 or 30 depending on the year. Requires a custom INotableDateCalculator registered under the key 'ramadan-start'.">
-      <Calculator key="ramadan-start" />
+          comment="The ninth month of the Islamic lunar calendar, observed by Muslims worldwide as a month of fasting (sawm), prayer, reflection, and community. The fast runs from dawn (Fajr) to sunset (Maghrib) each day. The month lasts 29 or 30 days depending on the lunar cycle. The durationDays value of 30 represents the maximum span; implementations may return either 29 or 30 depending on the year. Requires a custom INotableDateAlgorithm registered under the key 'ramadan-start'.">
+      <Algorithm key="ramadan-start" />
       <Tag>IslamicCalendar</Tag>
     </Rule>
   </NotableDate>
@@ -80,8 +80,8 @@
     <Rule name="Eid al-Fitr"
           category="Religious"
           durationDays="3"
-          comment="The Festival of Breaking the Fast. Celebrated on the first day of Shawwal, the month following Ramadan. One of the two major Islamic festivals (Eid). Observed with communal prayers, feasting, giving of Zakat al-Fitr (charitable donations), and the exchange of gifts. A public holiday in most Muslim-majority countries, typically lasting three days. Requires a custom INotableDateCalculator registered under the key 'eid-al-fitr'.">
-      <Calculator key="eid-al-fitr" />
+          comment="The Festival of Breaking the Fast. Celebrated on the first day of Shawwal, the month following Ramadan. One of the two major Islamic festivals (Eid). Observed with communal prayers, feasting, giving of Zakat al-Fitr (charitable donations), and the exchange of gifts. A public holiday in most Muslim-majority countries, typically lasting three days. Requires a custom INotableDateAlgorithm registered under the key 'eid-al-fitr'.">
+      <Algorithm key="eid-al-fitr" />
       <Tag>IslamicCalendar</Tag>
     </Rule>
   </NotableDate>
@@ -90,8 +90,8 @@
     <Rule name="Eid al-Adha"
           category="Religious"
           durationDays="4"
-          comment="The Festival of Sacrifice (Feast of the Sacrifice). Celebrated on the tenth day of Dhul Hijja, the final month of the Islamic calendar, coinciding with the completion of the Hajj pilgrimage. Commemorates Ibrahim's (Abraham's) willingness to sacrifice his son in obedience to God. Observed with communal prayers, the ritual slaughter of livestock, and distribution of meat to family, friends, and those in need. A public holiday in most Muslim-majority countries, typically lasting four days. Requires a custom INotableDateCalculator registered under the key 'eid-al-adha'.">
-      <Calculator key="eid-al-adha" />
+          comment="The Festival of Sacrifice (Feast of the Sacrifice). Celebrated on the tenth day of Dhul Hijja, the final month of the Islamic calendar, coinciding with the completion of the Hajj pilgrimage. Commemorates Ibrahim's (Abraham's) willingness to sacrifice his son in obedience to God. Observed with communal prayers, the ritual slaughter of livestock, and distribution of meat to family, friends, and those in need. A public holiday in most Muslim-majority countries, typically lasting four days. Requires a custom INotableDateAlgorithm registered under the key 'eid-al-adha'.">
+      <Algorithm key="eid-al-adha" />
       <Tag>IslamicCalendar</Tag>
     </Rule>
   </NotableDate>

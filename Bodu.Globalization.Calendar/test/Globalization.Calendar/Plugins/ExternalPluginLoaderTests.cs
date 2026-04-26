@@ -44,10 +44,10 @@ public sealed class ExternalPluginLoaderTests
 
 	/// <summary>
 	/// Verifies that the activated plugin participates in the split-concern contracts as an <see cref="INotableDateRulePlugin" />
-	/// and <see cref="INotableDateCalculatorPlugin" />, each returning the test fixtures declared by the plugin author.
+	/// and <see cref="INotableDateAlgorithmPlugin" />, each returning the test fixtures declared by the plugin author.
 	/// </summary>
 	[TestMethod]
-	public void Load_WhenPluginImplementsBothSplitInterfaces_ShouldExposeBothRulesAndCalculators()
+	public void Load_WhenPluginImplementsBothSplitInterfaces_ShouldExposeBothRulesAndAlgorithms()
 	{
 		var loader = new ExternalPluginLoader(new AllowAllPluginTrustPolicy());
 		var plugin = loader.Load(Plugin1Path);
@@ -58,11 +58,11 @@ public sealed class ExternalPluginLoaderTests
 		Assert.AreEqual(1, rules.Count);
 		Assert.AreEqual("Harness Test Day", rules[0].Name);
 
-		var calculatorPlugin = plugin as INotableDateCalculatorPlugin;
-		Assert.IsNotNull(calculatorPlugin, "Test plugin should implement INotableDateCalculatorPlugin.");
-		var calculators = calculatorPlugin!.GetCalculators().ToList();
-		Assert.AreEqual(1, calculators.Count);
-		Assert.AreEqual("harness.static", calculators[0].Key);
+		var algorithmPlugin = plugin as INotableDateAlgorithmPlugin;
+		Assert.IsNotNull(algorithmPlugin, "Test plugin should implement INotableDateAlgorithmPlugin.");
+		var algorithms = algorithmPlugin!.GetAlgorithms().ToList();
+		Assert.AreEqual(1, algorithms.Count);
+		Assert.AreEqual("harness.static", algorithms[0].Key);
 	}
 
 	/// <summary>

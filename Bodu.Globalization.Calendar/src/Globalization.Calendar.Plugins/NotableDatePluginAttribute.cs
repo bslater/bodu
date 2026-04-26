@@ -14,7 +14,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// <remarks>
 /// <para>
 /// The referenced <see cref="PluginType" /> must implement <see cref="INotableDatePlugin" /> together with at least one of
-/// <see cref="INotableDateRulePlugin" /> or <see cref="INotableDateCalculatorPlugin" />, and must expose a public parameterless
+/// <see cref="INotableDateRulePlugin" /> or <see cref="INotableDateAlgorithmPlugin" />, and must expose a public parameterless
 /// constructor so the loader can activate it with <see cref="Activator.CreateInstance(Type)" />.
 /// </para>
 /// <para>

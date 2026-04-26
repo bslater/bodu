@@ -167,21 +167,21 @@ public sealed class NotableDateRuleResolverTests
 	}
 
 	/// <summary>
-	/// Verifies that <see cref="DateResolutionStrategy.Calculator" /> rules look up their calculator via the supplied registry.
+	/// Verifies that <see cref="DateResolutionStrategy.Algorithm" /> rules look up their algorithm via the supplied registry.
 	/// </summary>
 	[TestMethod]
-	public void ResolveAnchorDate_WhenCalculatorRuleAndRegistered_ShouldUseRegistry()
+	public void ResolveAnchorDate_WhenAlgorithmRuleAndRegistered_ShouldUseRegistry()
 	{
 		var rule = new NotableDateRule
 		{
 			Name = "Static Calc",
-			Strategy = DateResolutionStrategy.Calculator,
+			Strategy = DateResolutionStrategy.Algorithm,
 			Category = NotableDateCategory.Observance,
-			CalculatorKey = "static",
+			AlgorithmKey = "static",
 		};
 
-		var registry = new NotableDateCalculatorRegistry()
-			.Register("static", new StaticCalculator(new DateTime(2025, 6, 15)));
+		var registry = new NotableDateAlgorithmRegistry()
+			.Register("static", new StaticAlgorithm(new DateTime(2025, 6, 15)));
 
 		var resolver = new NotableDateRuleResolver(new[] { rule }, registry);
 
@@ -191,17 +191,17 @@ public sealed class NotableDateRuleResolverTests
 	}
 
 	/// <summary>
-	/// Verifies that a Calculator rule with no registered key and no fallback type resolves to <see langword="null" />.
+	/// Verifies that a Algorithm rule with no registered key and no fallback type resolves to <see langword="null" />.
 	/// </summary>
 	[TestMethod]
-	public void ResolveAnchorDate_WhenCalculatorRuleAndNoCalculator_ShouldReturnNull()
+	public void ResolveAnchorDate_WhenAlgorithmRuleAndNoAlgorithm_ShouldReturnNull()
 	{
 		var rule = new NotableDateRule
 		{
 			Name = "Missing Calc",
-			Strategy = DateResolutionStrategy.Calculator,
+			Strategy = DateResolutionStrategy.Algorithm,
 			Category = NotableDateCategory.Observance,
-			CalculatorKey = "missing",
+			AlgorithmKey = "missing",
 		};
 
 		var resolver = new NotableDateRuleResolver(new[] { rule });
@@ -390,19 +390,19 @@ public sealed class NotableDateRuleResolverTests
 	}
 
 	/// <summary>
-	/// Verifies that a Calculator rule uses the CLR <see cref="NotableDateRule.CalculatorType" />
-	/// fallback when no calculator registry is configured or the registry does not contain the
+	/// Verifies that a Algorithm rule uses the CLR <see cref="NotableDateRule.AlgorithmType" />
+	/// fallback when no algorithm registry is configured or the registry does not contain the
 	/// requested key.
 	/// </summary>
 	[TestMethod]
-	public void ResolveAnchorDate_WhenCalculatorRuleFallsBackToType_ShouldInstantiateAndInvoke()
+	public void ResolveAnchorDate_WhenAlgorithmRuleFallsBackToType_ShouldInstantiateAndInvoke()
 	{
 		var rule = new NotableDateRule
 		{
 			Name = "Legacy Calc",
-			Strategy = DateResolutionStrategy.Calculator,
+			Strategy = DateResolutionStrategy.Algorithm,
 			Category = NotableDateCategory.Observance,
-			CalculatorType = typeof(FixedJuneCalculator),
+			AlgorithmType = typeof(FixedJuneAlgorithm),
 		};
 		var resolver = new NotableDateRuleResolver(new[] { rule });
 
@@ -412,22 +412,22 @@ public sealed class NotableDateRuleResolverTests
 	}
 
 	/// <summary>
-	/// Verifies that a Calculator rule with a registry that has the key wins over the CLR
-	/// <see cref="NotableDateRule.CalculatorType" /> fallback.
+	/// Verifies that a Algorithm rule with a registry that has the key wins over the CLR
+	/// <see cref="NotableDateRule.AlgorithmType" /> fallback.
 	/// </summary>
 	[TestMethod]
-	public void ResolveAnchorDate_WhenCalculatorRuleHasBothKeyAndType_ShouldPreferRegistry()
+	public void ResolveAnchorDate_WhenAlgorithmRuleHasBothKeyAndType_ShouldPreferRegistry()
 	{
 		var rule = new NotableDateRule
 		{
 			Name = "Dual",
-			Strategy = DateResolutionStrategy.Calculator,
+			Strategy = DateResolutionStrategy.Algorithm,
 			Category = NotableDateCategory.Observance,
-			CalculatorKey = "key",
-			CalculatorType = typeof(FixedJuneCalculator),
+			AlgorithmKey = "key",
+			AlgorithmType = typeof(FixedJuneAlgorithm),
 		};
-		var registry = new NotableDateCalculatorRegistry()
-			.Register("key", new StaticCalculator(new DateTime(2025, 3, 15)));
+		var registry = new NotableDateAlgorithmRegistry()
+			.Register("key", new StaticAlgorithm(new DateTime(2025, 3, 15)));
 		var resolver = new NotableDateRuleResolver(new[] { rule }, registry);
 
 		DateTime? result = resolver.ResolveAnchorDate(rule, 2025);
@@ -436,19 +436,19 @@ public sealed class NotableDateRuleResolverTests
 	}
 
 	/// <summary>
-	/// Verifies that a Calculator rule whose CLR type does not implement
-	/// <see cref="INotableDateCalculator" /> gracefully returns <see langword="null" /> rather
+	/// Verifies that a Algorithm rule whose CLR type does not implement
+	/// <see cref="INotableDateAlgorithm" /> gracefully returns <see langword="null" /> rather
 	/// than throwing.
 	/// </summary>
 	[TestMethod]
-	public void ResolveAnchorDate_WhenCalculatorTypeIsNotCalculator_ShouldReturnNull()
+	public void ResolveAnchorDate_WhenAlgorithmTypeIsNotAlgorithm_ShouldReturnNull()
 	{
 		var rule = new NotableDateRule
 		{
 			Name = "Wrong Type",
-			Strategy = DateResolutionStrategy.Calculator,
+			Strategy = DateResolutionStrategy.Algorithm,
 			Category = NotableDateCategory.Observance,
-			CalculatorType = typeof(NotACalculator),
+			AlgorithmType = typeof(NotAAlgorithm),
 		};
 		var resolver = new NotableDateRuleResolver(new[] { rule });
 
@@ -516,29 +516,29 @@ public sealed class NotableDateRuleResolverTests
 		Assert.AreEqual(expected, NotableDateRuleResolver.IsApplicable(rule, year));
 	}
 
-	private sealed class StaticCalculator : INotableDateCalculator
+	private sealed class StaticAlgorithm : INotableDateAlgorithm
 	{
 		private readonly DateTime _value;
 
-		public StaticCalculator(DateTime value) => _value = value;
+		public StaticAlgorithm(DateTime value) => _value = value;
 
 		public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null) => _value;
 	}
 
 	/// <summary>
-	/// Calculator-type fallback double. Activator creates one via its parameterless ctor.
+	/// Algorithm-type fallback double. Activator creates one via its parameterless ctor.
 	/// </summary>
-	public sealed class FixedJuneCalculator : INotableDateCalculator
+	public sealed class FixedJuneAlgorithm : INotableDateAlgorithm
 	{
 		public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null) =>
 			new DateTime(year, 6, 1);
 	}
 
 	/// <summary>
-	/// Intentionally not an <see cref="INotableDateCalculator" /> — used to test the
+	/// Intentionally not an <see cref="INotableDateAlgorithm" /> — used to test the
 	/// resolver's defensive fallback.
 	/// </summary>
-	public sealed class NotACalculator
+	public sealed class NotAAlgorithm
 	{
 	}
 }

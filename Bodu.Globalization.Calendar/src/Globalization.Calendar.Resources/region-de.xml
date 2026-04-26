@@ -13,7 +13,7 @@
 
   Note on Buß- und Bettag (Repentance Day, Saxony only): This holiday falls on the
   Wednesday before 23 November and cannot be expressed precisely using the available
-  resolution strategies. To resolve it, register a custom INotableDateCalculator
+  resolution strategies. To resolve it, register a custom INotableDateAlgorithm
   under the key "buss-und-bettag".
 
   Country-specific rules explicitly import only the inherited global and Christian
@@ -171,8 +171,8 @@
           category="Holiday"
           territory="DE-SN"
           nonWorking="true"
-          comment="Buß- und Bettag. A public holiday in Saxony only. Falls on the Wednesday before 23 November. This rule requires a custom INotableDateCalculator registered under the key 'buss-und-bettag'.">
-      <Calculator key="buss-und-bettag" />
+          comment="Buß- und Bettag. A public holiday in Saxony only. Falls on the Wednesday before 23 November. This rule requires a custom INotableDateAlgorithm registered under the key 'buss-und-bettag'.">
+      <Algorithm key="buss-und-bettag" />
       <Tag>Christian</Tag>
       <Tag>StateHoliday</Tag>
     </Rule>

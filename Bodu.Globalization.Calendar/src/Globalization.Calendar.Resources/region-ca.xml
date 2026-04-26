@@ -10,8 +10,8 @@
   Note on Victoria Day: Victoria Day falls on the Monday immediately preceding
   25 May (Canada Holidays Act, RSC 1985 c H-5.1). This date cannot be expressed
   precisely using the available DayOfWeekInMonth or OffsetFromAnchor strategies.
-  To resolve Victoria Day, register a custom INotableDateCalculator under the key
-  "victoria-day" with the INotableDateCalculatorRegistry.
+  To resolve Victoria Day, register a custom INotableDateAlgorithm under the key
+  "victoria-day" with the INotableDateAlgorithmRegistry.
 
   Country-specific rules explicitly import only the inherited global and Christian
   dates that Canada observes, and override naming, territory, nonWorking, adjustment,
@@ -58,8 +58,8 @@
 
   <NotableDate name="Victoria Day">
     <Rule name="Victoria Day" category="Holiday" territory="CA" nonWorking="true"
-          comment="Victoria Day falls on the Monday immediately preceding 25 May (Canada Holidays Act, RSC 1985 c H-5.1). This rule requires a custom INotableDateCalculator registered under the key 'victoria-day'.">
-      <Calculator key="victoria-day" />
+          comment="Victoria Day falls on the Monday immediately preceding 25 May (Canada Holidays Act, RSC 1985 c H-5.1). This rule requires a custom INotableDateAlgorithm registered under the key 'victoria-day'.">
+      <Algorithm key="victoria-day" />
       <Tag>FederalHoliday</Tag>
     </Rule>
   </NotableDate>

@@ -46,8 +46,8 @@
 
   <NotableDate name="Easter Sunday">
     <Rule name="Western Easter Sunday" category="Observance" firstYear="1583">
-      <Calculator key="easter-sunday"
-                  type="Bodu.Globalization.Calendar.Calculators.EasterSundayNotableDateCalculator, Bodu.Globalization.Calendar" />
+      <Algorithm key="easter-sunday"
+                  type="Bodu.Globalization.Calendar.Algorithms.EasterSundayNotableDateAlgorithm, Bodu.Globalization.Calendar" />
       <Tag>Christian</Tag>
     </Rule>
   </NotableDate>

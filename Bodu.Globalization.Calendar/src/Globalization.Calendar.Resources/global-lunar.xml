@@ -6,13 +6,13 @@
   traditional Chinese lunisolar calendar. They are widely recognised across
   Chinese, Vietnamese, Korean, and other East Asian communities worldwide.
 
-  All dates in this resource require a custom INotableDateCalculator registered
-  under the stated key with the INotableDateCalculatorRegistry. The one exception
+  All dates in this resource require a custom INotableDateAlgorithm registered
+  under the stated key with the INotableDateAlgorithmRegistry. The one exception
   is the 'lunar-new-year' key, which is served by the built-in
-  LunarNewYearNotableDateCalculator supplied by this library.
+  LunarNewYearNotableDateAlgorithm supplied by this library.
 
-  Calculator keys used:
-    lunar-new-year      — Built-in LunarNewYearNotableDateCalculator.
+  Algorithm keys used:
+    lunar-new-year      — Built-in LunarNewYearNotableDateAlgorithm.
                           Calculates the Gregorian date of the first day of the
                           first month of the Chinese lunisolar year. Supported
                           for Gregorian years 1901–2100.
@@ -39,8 +39,8 @@
           category="Cultural"
           firstYear="1901"
           lastYear="2100"
-          comment="The first day of the first month of the Chinese lunisolar year. Also celebrated as Tết (Vietnam) and Seollal (Korea). Falls between 21 January and 20 February in the Gregorian calendar. The built-in LunarNewYearNotableDateCalculator implements this rule.">
-      <Calculator key="lunar-new-year" />
+          comment="The first day of the first month of the Chinese lunisolar year. Also celebrated as Tết (Vietnam) and Seollal (Korea). Falls between 21 January and 20 February in the Gregorian calendar. The built-in LunarNewYearNotableDateAlgorithm implements this rule.">
+      <Algorithm key="lunar-new-year" />
       <Tag>LunarCalendar</Tag>
       <Tag>ChineseTradition</Tag>
     </Rule>
@@ -51,8 +51,8 @@
           category="Cultural"
           firstYear="1901"
           lastYear="2100"
-          comment="Yuanxiao Jie. Falls on the fifteenth day of the first lunar month, marking the end of the Lunar New Year celebrations. Observed with lantern displays, riddle games, and the eating of tangyuan (sweet rice dumplings). Requires a custom INotableDateCalculator registered under the key 'lantern-festival'.">
-      <Calculator key="lantern-festival" />
+          comment="Yuanxiao Jie. Falls on the fifteenth day of the first lunar month, marking the end of the Lunar New Year celebrations. Observed with lantern displays, riddle games, and the eating of tangyuan (sweet rice dumplings). Requires a custom INotableDateAlgorithm registered under the key 'lantern-festival'.">
+      <Algorithm key="lantern-festival" />
       <Tag>LunarCalendar</Tag>
       <Tag>ChineseTradition</Tag>
     </Rule>
@@ -61,8 +61,8 @@
   <NotableDate name="Qingming Festival">
     <Rule name="Qingming Festival"
           category="Observance"
-          comment="Qingming Jie (清明節), also known as Tomb-Sweeping Day or Pure Brightness Festival. A solar term that falls on the fifteenth day after the Spring Equinox, typically 4–5 April. Families visit and clean the graves of their ancestors, making offerings of food, flowers, and paper goods. Requires a custom INotableDateCalculator registered under the key 'qingming'.">
-      <Calculator key="qingming" />
+          comment="Qingming Jie (清明節), also known as Tomb-Sweeping Day or Pure Brightness Festival. A solar term that falls on the fifteenth day after the Spring Equinox, typically 4–5 April. Families visit and clean the graves of their ancestors, making offerings of food, flowers, and paper goods. Requires a custom INotableDateAlgorithm registered under the key 'qingming'.">
+      <Algorithm key="qingming" />
       <Tag>LunarCalendar</Tag>
       <Tag>ChineseTradition</Tag>
     </Rule>
@@ -73,8 +73,8 @@
           category="Cultural"
           firstYear="1901"
           lastYear="2100"
-          comment="Duanwu Jie (端午節). Falls on the fifth day of the fifth lunar month, typically in June. Commemorates the poet and statesman Qu Yuan and is observed with dragon boat races and the eating of zongzi (sticky rice dumplings). Requires a custom INotableDateCalculator registered under the key 'dragon-boat-festival'.">
-      <Calculator key="dragon-boat-festival" />
+          comment="Duanwu Jie (端午節). Falls on the fifth day of the fifth lunar month, typically in June. Commemorates the poet and statesman Qu Yuan and is observed with dragon boat races and the eating of zongzi (sticky rice dumplings). Requires a custom INotableDateAlgorithm registered under the key 'dragon-boat-festival'.">
+      <Algorithm key="dragon-boat-festival" />
       <Tag>LunarCalendar</Tag>
       <Tag>ChineseTradition</Tag>
     </Rule>
@@ -85,8 +85,8 @@
           category="Cultural"
           firstYear="1901"
           lastYear="2100"
-          comment="Zhongqiu Jie (中秋節), also known as the Moon Festival or Mooncake Festival. Falls on the fifteenth day of the eighth lunar month, when the moon is at its fullest and brightest. Observed with mooncakes, lanterns, and family reunions. Widely celebrated in China, Vietnam, Korea, and Chinese diaspora communities worldwide. Requires a custom INotableDateCalculator registered under the key 'mid-autumn-festival'.">
-      <Calculator key="mid-autumn-festival" />
+          comment="Zhongqiu Jie (中秋節), also known as the Moon Festival or Mooncake Festival. Falls on the fifteenth day of the eighth lunar month, when the moon is at its fullest and brightest. Observed with mooncakes, lanterns, and family reunions. Widely celebrated in China, Vietnam, Korea, and Chinese diaspora communities worldwide. Requires a custom INotableDateAlgorithm registered under the key 'mid-autumn-festival'.">
+      <Algorithm key="mid-autumn-festival" />
       <Tag>LunarCalendar</Tag>
       <Tag>ChineseTradition</Tag>
     </Rule>
@@ -97,8 +97,8 @@
           category="Cultural"
           firstYear="1901"
           lastYear="2100"
-          comment="Chongyang Jie (重陽節), also known as the Chrysanthemum Festival. Falls on the ninth day of the ninth lunar month. Traditionally observed by climbing mountains, drinking chrysanthemum wine, and paying respects to ancestors. In many jurisdictions the day is also designated as Seniors' Day. Requires a custom INotableDateCalculator registered under the key 'double-ninth-festival'.">
-      <Calculator key="double-ninth-festival" />
+          comment="Chongyang Jie (重陽節), also known as the Chrysanthemum Festival. Falls on the ninth day of the ninth lunar month. Traditionally observed by climbing mountains, drinking chrysanthemum wine, and paying respects to ancestors. In many jurisdictions the day is also designated as Seniors' Day. Requires a custom INotableDateAlgorithm registered under the key 'double-ninth-festival'.">
+      <Algorithm key="double-ninth-festival" />
       <Tag>LunarCalendar</Tag>
       <Tag>ChineseTradition</Tag>
     </Rule>

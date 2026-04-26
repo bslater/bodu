@@ -14,12 +14,12 @@
   depending on the local calendar tradition used (e.g. the Purnimanta vs.
   Amanta month-reckoning systems).
 
-  All rules in this resource require a custom INotableDateCalculator registered
-  under the stated key with the INotableDateCalculatorRegistry. Implementations
+  All rules in this resource require a custom INotableDateAlgorithm registered
+  under the stated key with the INotableDateAlgorithmRegistry. Implementations
   should document which regional calendar tradition and month-reckoning system
   they apply.
 
-  Calculator keys used:
+  Algorithm keys used:
     holi            — Full moon day (Purnima) in the month of Phalguna (Feb/Mar).
                       The main day of colour is the following day (Dhuleti/Rang
                       Panchami); this rule marks the Holika Dahan bonfire night.
@@ -40,8 +40,8 @@
     <Rule name="Holi"
           category="Religious"
           durationDays="2"
-          comment="The Festival of Colours. Begins on the full moon (Purnima) of Phalguna with Holika Dahan (the lighting of bonfires symbolising the victory of good over evil), followed the next day by Rangwali Holi (the coloured powder celebration). Widely celebrated across India and Hindu communities worldwide as a spring festival marking the triumph of virtue over vice and the arrival of the harvest season. A public holiday in India and Nepal. Requires a custom INotableDateCalculator registered under the key 'holi'.">
-      <Calculator key="holi" />
+          comment="The Festival of Colours. Begins on the full moon (Purnima) of Phalguna with Holika Dahan (the lighting of bonfires symbolising the victory of good over evil), followed the next day by Rangwali Holi (the coloured powder celebration). Widely celebrated across India and Hindu communities worldwide as a spring festival marking the triumph of virtue over vice and the arrival of the harvest season. A public holiday in India and Nepal. Requires a custom INotableDateAlgorithm registered under the key 'holi'.">
+      <Algorithm key="holi" />
       <Tag>HinduCalendar</Tag>
     </Rule>
   </NotableDate>
@@ -49,8 +49,8 @@
   <NotableDate name="Ram Navami">
     <Rule name="Ram Navami"
           category="Religious"
-          comment="The birthday of Lord Rama, the seventh avatar of Vishnu and the hero of the Ramayana. Observed on the ninth day of the bright fortnight of Chaitra, towards the end of the nine-day Chaitra Navaratri festival. Observed with fasting, prayers, devotional singing (bhajan and kirtan), and readings from the Ramayana. Requires a custom INotableDateCalculator registered under the key 'ram-navami'.">
-      <Calculator key="ram-navami" />
+          comment="The birthday of Lord Rama, the seventh avatar of Vishnu and the hero of the Ramayana. Observed on the ninth day of the bright fortnight of Chaitra, towards the end of the nine-day Chaitra Navaratri festival. Observed with fasting, prayers, devotional singing (bhajan and kirtan), and readings from the Ramayana. Requires a custom INotableDateAlgorithm registered under the key 'ram-navami'.">
+      <Algorithm key="ram-navami" />
       <Tag>HinduCalendar</Tag>
     </Rule>
   </NotableDate>
@@ -58,8 +58,8 @@
   <NotableDate name="Janmashtami">
     <Rule name="Janmashtami"
           category="Religious"
-          comment="The birthday of Lord Krishna, the eighth avatar of Vishnu. Observed on the eighth day (Ashtami) of the dark fortnight of Bhadrapada, typically in August or September. Celebrated with midnight prayer vigils, devotional singing, fasting, and the staging of Krishna's birth scene (jhankis). A public holiday in India and observed by Hindu communities worldwide. Requires a custom INotableDateCalculator registered under the key 'janmashtami'.">
-      <Calculator key="janmashtami" />
+          comment="The birthday of Lord Krishna, the eighth avatar of Vishnu. Observed on the eighth day (Ashtami) of the dark fortnight of Bhadrapada, typically in August or September. Celebrated with midnight prayer vigils, devotional singing, fasting, and the staging of Krishna's birth scene (jhankis). A public holiday in India and observed by Hindu communities worldwide. Requires a custom INotableDateAlgorithm registered under the key 'janmashtami'.">
+      <Algorithm key="janmashtami" />
       <Tag>HinduCalendar</Tag>
     </Rule>
   </NotableDate>
@@ -68,8 +68,8 @@
     <Rule name="Navaratri"
           category="Religious"
           durationDays="9"
-          comment="Nine nights dedicated to the goddess Durga and her nine forms (Navadurga). The most widely observed Navaratri begins on the first day of the bright fortnight of Ashvin (September/October). Observed with fasting, prayers, traditional dance (Garba, Dandiya), and the construction of Golu (doll displays in South India). Concludes on the tenth day with Vijayadashami (Dussehra). Requires a custom INotableDateCalculator registered under the key 'navaratri'.">
-      <Calculator key="navaratri" />
+          comment="Nine nights dedicated to the goddess Durga and her nine forms (Navadurga). The most widely observed Navaratri begins on the first day of the bright fortnight of Ashvin (September/October). Observed with fasting, prayers, traditional dance (Garba, Dandiya), and the construction of Golu (doll displays in South India). Concludes on the tenth day with Vijayadashami (Dussehra). Requires a custom INotableDateAlgorithm registered under the key 'navaratri'.">
+      <Algorithm key="navaratri" />
       <Tag>HinduCalendar</Tag>
     </Rule>
   </NotableDate>
@@ -77,8 +77,8 @@
   <NotableDate name="Dussehra">
     <Rule name="Dussehra"
           category="Religious"
-          comment="Vijayadashami. The tenth day of the bright fortnight of Ashvin, immediately following the conclusion of Navaratri. Celebrates the victory of Lord Rama over the demon king Ravana (in North India) and the victory of the goddess Durga over the buffalo demon Mahishasura (in Bengal and South India). Observed with the burning of effigies of Ravana, Kumbhakarna, and Meghnad, theatrical performances of the Ramayana (Ramlila), and weapon-worship (Ayudha Puja). A national public holiday in India. Requires a custom INotableDateCalculator registered under the key 'dussehra'.">
-      <Calculator key="dussehra" />
+          comment="Vijayadashami. The tenth day of the bright fortnight of Ashvin, immediately following the conclusion of Navaratri. Celebrates the victory of Lord Rama over the demon king Ravana (in North India) and the victory of the goddess Durga over the buffalo demon Mahishasura (in Bengal and South India). Observed with the burning of effigies of Ravana, Kumbhakarna, and Meghnad, theatrical performances of the Ramayana (Ramlila), and weapon-worship (Ayudha Puja). A national public holiday in India. Requires a custom INotableDateAlgorithm registered under the key 'dussehra'.">
+      <Algorithm key="dussehra" />
       <Tag>HinduCalendar</Tag>
     </Rule>
   </NotableDate>
@@ -87,8 +87,8 @@
     <Rule name="Diwali"
           category="Religious"
           durationDays="5"
-          comment="Deepavali, the Festival of Lights. The main day falls on the new moon (Amavasya) of the month of Kartik (October/November), with the five-day festival beginning two days before and ending two days after. Celebrates the return of Lord Rama to Ayodhya, the victory of Lord Krishna over the demon Narakasura, and the goddess Lakshmi's blessing of prosperity. Observed with the lighting of oil lamps (diyas) and candles, fireworks, exchange of sweets and gifts, prayers to Lakshmi and Ganesha, and rangoli decoration. A national public holiday in India and a public holiday in several other countries. The durationDays value of 5 spans the entire traditional five-day period from Dhanteras to Bhai Dooj. Requires a custom INotableDateCalculator registered under the key 'diwali'.">
-      <Calculator key="diwali" />
+          comment="Deepavali, the Festival of Lights. The main day falls on the new moon (Amavasya) of the month of Kartik (October/November), with the five-day festival beginning two days before and ending two days after. Celebrates the return of Lord Rama to Ayodhya, the victory of Lord Krishna over the demon Narakasura, and the goddess Lakshmi's blessing of prosperity. Observed with the lighting of oil lamps (diyas) and candles, fireworks, exchange of sweets and gifts, prayers to Lakshmi and Ganesha, and rangoli decoration. A national public holiday in India and a public holiday in several other countries. The durationDays value of 5 spans the entire traditional five-day period from Dhanteras to Bhai Dooj. Requires a custom INotableDateAlgorithm registered under the key 'diwali'.">
+      <Algorithm key="diwali" />
       <Tag>HinduCalendar</Tag>
     </Rule>
   </NotableDate>
