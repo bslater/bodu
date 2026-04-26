@@ -56,18 +56,21 @@ public sealed class GlobalJewishResourceTests
 	}
 
 	/// <summary>
-	/// Verifies that each Jewish observance resolves to its known correct Gregorian date for representative years, confirming
-	/// that the (HebrewMonth, int) constructor of <see cref="Algorithms.HebrewNotableDateAlgorithm" /> is being invoked with
-	/// the month and day authored on the rule.
+	/// Verifies that each Jewish observance resolves to its known correct Gregorian date for representative years. Anchor
+	/// rules (Rosh Hashanah, Hanukkah, Purim, Passover) drive the (HebrewMonth, int) constructor of
+	/// <see cref="Algorithms.HebrewNotableDateAlgorithm" /> directly; Yom Kippur, Sukkot, and Shavuot resolve via
+	/// <see cref="DateResolutionStrategy.OffsetFromAnchor" /> against their authored anchors.
 	/// </summary>
 	[DataRow(2024, "Rosh Hashanah", 10, 3)]
-	[DataRow(2024, "Yom Kippur", 10, 12)]
-	[DataRow(2024, "Sukkot", 10, 17)]
+	[DataRow(2024, "Yom Kippur", 10, 12)]      // Rosh Hashanah + 9
+	[DataRow(2024, "Sukkot", 10, 17)]          // Rosh Hashanah + 14
 	[DataRow(2024, "Hanukkah", 12, 26)]
 	[DataRow(2024, "Purim", 3, 24)]
 	[DataRow(2024, "Passover", 4, 23)]
+	[DataRow(2024, "Shavuot", 6, 12)]          // Passover + 50
 	[DataRow(2023, "Purim", 3, 7)]
 	[DataRow(2023, "Passover", 4, 6)]
+	[DataRow(2023, "Shavuot", 5, 26)]          // Passover + 50
 	[TestMethod]
 	public void GetNotableDates_WhenLoadingGlobalJewish_ShouldYieldKnownAnchorDates(int year, string holiday, int expectedMonth, int expectedDay)
 	{
