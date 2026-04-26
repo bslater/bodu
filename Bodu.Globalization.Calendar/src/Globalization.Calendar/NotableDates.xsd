@@ -129,6 +129,8 @@
           <xs:complexType>
             <xs:attribute name="key" type="xs:string" use="optional" />
             <xs:attribute name="type" type="nd:assemblyTypeName" use="optional" />
+            <xs:attribute name="month" type="xs:string" use="optional" />
+            <xs:attribute name="day" type="xs:int" use="optional" />
           </xs:complexType>
         </xs:element>
       </xs:choice>
@@ -192,6 +194,8 @@
           <xs:complexType>
             <xs:attribute name="key" type="xs:string" use="optional" />
             <xs:attribute name="type" type="nd:assemblyTypeName" use="optional" />
+            <xs:attribute name="month" type="xs:string" use="optional" />
+            <xs:attribute name="day" type="xs:int" use="optional" />
           </xs:complexType>
         </xs:element>
       </xs:choice>

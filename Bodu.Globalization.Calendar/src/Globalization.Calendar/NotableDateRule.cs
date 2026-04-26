@@ -181,6 +181,25 @@ public sealed record NotableDateRule
 	/// </summary>
 	public Type? AlgorithmType { get; init; }
 
+	/// <summary>
+	/// Gets the optional month token passed to the algorithm constructor when the rule's <see cref="AlgorithmType" /> exposes a
+	/// two-argument <c>(month, day)</c> constructor. Used to author calendar-specific algorithms (Hebrew, Hijri, Hindu lunar)
+	/// directly from XML by naming the algorithm class and supplying the month/day pair as constructor arguments.
+	/// </summary>
+	/// <remarks>
+	/// The string is parsed against the first constructor parameter's type at resolution time: an enum parameter is parsed
+	/// case-insensitively (for example <c>"Tishri"</c> → <see cref="Algorithms.HebrewMonth.Tishri" />), an <see cref="int" />
+	/// parameter accepts a numeric token, and a <see cref="string" /> parameter receives the raw value. Unused when the rule
+	/// resolves through an <see cref="AlgorithmKey" /> registered on an <see cref="INotableDateAlgorithmRegistry" />.
+	/// </remarks>
+	public string? AlgorithmMonth { get; init; }
+
+	/// <summary>
+	/// Gets the optional day-of-month value passed to the algorithm constructor alongside <see cref="AlgorithmMonth" /> when the
+	/// rule's <see cref="AlgorithmType" /> exposes a two-argument <c>(month, day)</c> constructor.
+	/// </summary>
+	public int? AlgorithmDay { get; init; }
+
 	// --- Adjustments + metadata --------------------------------------------------------------
 
 	/// <summary>

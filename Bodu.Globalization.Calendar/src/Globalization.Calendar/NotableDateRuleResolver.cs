@@ -5,6 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Extensions;
+using System.Globalization;
+using System.Reflection;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -157,11 +159,110 @@ internal sealed class NotableDateRuleResolver
 		// Fallback: legacy CLR type instantiation, for compatibility with rules authored before the registry existed.
 		if (rule.AlgorithmType is not null)
 		{
-			if (Activator.CreateInstance(rule.AlgorithmType) is INotableDateAlgorithm legacyAlgorithm)
+			INotableDateAlgorithm? legacyAlgorithm = TryCreateAlgorithm(rule);
+			if (legacyAlgorithm is not null)
 				return legacyAlgorithm.GetDate(year);
 		}
 
 		return null;
+	}
+
+    /// <summary>
+    /// Instantiates the rule's <see cref="NotableDateRule.AlgorithmType" /> by selecting the constructor that matches the
+    /// authored arguments: a two-parameter <c>(month, day)</c> constructor when <see cref="NotableDateRule.AlgorithmMonth" />
+    /// and <see cref="NotableDateRule.AlgorithmDay" /> are both supplied, otherwise the public parameterless constructor.
+    /// </summary>
+    /// <param name="rule">The rule whose algorithm is being constructed.</param>
+    /// <returns>The constructed algorithm, or <see langword="null" /> when no compatible constructor exists or activation fails.</returns>
+    private static INotableDateAlgorithm? TryCreateAlgorithm(NotableDateRule rule)
+	{
+		Type type = rule.AlgorithmType!;
+
+		if (rule.AlgorithmMonth is { } monthToken && rule.AlgorithmDay is { } day)
+		{
+			foreach (var ctor in type.GetConstructors())
+			{
+				var parameters = ctor.GetParameters();
+				if (parameters.Length != 2) continue;
+				if (parameters[1].ParameterType != typeof(int)) continue;
+
+				if (!TryCoerceMonthArgument(monthToken, parameters[0].ParameterType, out object? monthValue))
+					continue;
+
+				try
+				{
+					return ctor.Invoke(new[] { monthValue, (object)day }) as INotableDateAlgorithm;
+				}
+				catch (TargetInvocationException)
+				{
+					return null;
+				}
+				catch (ArgumentException)
+				{
+					return null;
+				}
+			}
+
+			// No (month, int) constructor matched; fall through to the parameterless attempt below so a misauthored
+			// rule still has a chance to surface via the legacy path rather than silently producing nothing.
+		}
+
+		try
+		{
+			return Activator.CreateInstance(type) as INotableDateAlgorithm;
+		}
+		catch (MissingMethodException)
+		{
+			return null;
+		}
+		catch (TargetInvocationException)
+		{
+			return null;
+		}
+	}
+
+    /// <summary>
+    /// Parses <paramref name="token" /> into a value compatible with <paramref name="targetType" /> for use as the first
+    /// argument of an algorithm constructor. Supports enum, <see cref="int" />, and <see cref="string" /> parameter types.
+    /// </summary>
+    /// <param name="token">The authored month token (typically the calendar's month name).</param>
+    /// <param name="targetType">The target parameter type declared by the candidate constructor.</param>
+    /// <param name="value">The coerced value when the method returns <see langword="true" />; otherwise <see langword="null" />.</param>
+    /// <returns><see langword="true" /> when <paramref name="token" /> was successfully coerced; otherwise <see langword="false" />.</returns>
+    private static bool TryCoerceMonthArgument(string token, Type targetType, out object? value)
+	{
+		if (targetType.IsEnum)
+		{
+			if (Enum.TryParse(targetType, token, ignoreCase: true, out var parsed) && parsed is not null && Enum.IsDefined(targetType, parsed))
+			{
+				value = parsed;
+				return true;
+			}
+
+			value = null;
+			return false;
+		}
+
+		if (targetType == typeof(int))
+		{
+			if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsed))
+			{
+				value = parsed;
+				return true;
+			}
+
+			value = null;
+			return false;
+		}
+
+		if (targetType == typeof(string))
+		{
+			value = token;
+			return true;
+		}
+
+		value = null;
+		return false;
 	}
 
 	/// <summary>

@@ -255,6 +255,8 @@ public static class NotableDateRuleParser
 			{
 				AlgorithmKey = GetOptionalAttribute(strategyElement, "key"),
 				AlgorithmType = ParseOptionalType<INotableDateAlgorithm>(strategyElement, "type"),
+				AlgorithmMonth = GetOptionalAttribute(strategyElement, "month"),
+				AlgorithmDay = ParseOptionalInt(strategyElement, "day"),
 			},
 			_ => body,
 		};
@@ -370,6 +372,8 @@ public static class NotableDateRuleParser
 			{
 				AlgorithmKey = GetOptionalAttribute(strategyElement, "key"),
 				AlgorithmType = ParseOptionalType<INotableDateAlgorithm>(strategyElement, "type"),
+				AlgorithmMonth = GetOptionalAttribute(strategyElement, "month"),
+				AlgorithmDay = ParseOptionalInt(strategyElement, "day"),
 			},
 			_ => throw new NotSupportedException($"Unsupported strategy: {rule.Strategy}.")
 		};
