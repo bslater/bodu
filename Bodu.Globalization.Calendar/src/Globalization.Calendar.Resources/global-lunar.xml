@@ -8,13 +8,15 @@
 
   Lunar New Year is expressed as a Fixed rule with calendarType set to
   ChineseLunisolarCalendar; no algorithm registration is required for it.
-  All remaining dates require a custom INotableDateAlgorithm registered
+
+  Lantern Festival is expressed as an OffsetFromAnchor rule (+14 days from
+  Lunar New Year); no algorithm registration is required for it either.
+  The first lunar month always has at least 29 days, so the offset is exact.
+
+  The remaining dates require a custom INotableDateAlgorithm registered
   under the stated key with the INotableDateAlgorithmRegistry.
 
   Algorithm keys used:
-    lantern-festival    — The fifteenth day of the first lunar month (fifteen
-                          days after Lunar New Year). Marks the end of the
-                          New Year festival period.
     qingming            — Qingming solar term. Falls on the fifteenth day after
                           the Spring Equinox, approximately 4–5 April. In modern
                           practice treated as a fixed observance on 4 April, but
@@ -48,8 +50,8 @@
           category="Cultural"
           firstYear="1901"
           lastYear="2100"
-          comment="Yuanxiao Jie. Falls on the fifteenth day of the first lunar month, marking the end of the Lunar New Year celebrations. Observed with lantern displays, riddle games, and the eating of tangyuan (sweet rice dumplings). Requires a custom INotableDateAlgorithm registered under the key 'lantern-festival'.">
-      <Algorithm key="lantern-festival" />
+          comment="Yuanxiao Jie. Falls on the fifteenth day of the first lunar month, fourteen days after Lunar New Year, marking the end of the New Year festival period. Observed with lantern displays, riddle games, and the eating of tangyuan (sweet rice dumplings). Resolved via OffsetFromAnchor from Lunar New Year (+14 days).">
+      <OffsetFromAnchor name="Lunar New Year" offset="14" />
       <Tag>LunarCalendar</Tag>
       <Tag>ChineseTradition</Tag>
     </Rule>
