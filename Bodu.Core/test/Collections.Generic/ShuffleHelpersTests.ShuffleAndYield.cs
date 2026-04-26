@@ -283,25 +283,40 @@ public partial class ShuffleHelpersTests
     }
 
     /// <summary>
-    /// Runs 20,000 shuffles using ShuffleAndYield of a 10-element array to validate statistical uniformity of output positions. Each
-    /// value should appear roughly equally in each position, with no more than 2 statistically significant outliers.
+    /// Runs 20,000 shuffles using ShuffleAndYield of a 10-element array to validate statistical uniformity of output positions. Uses a
+    /// fixed-seed <see cref="XorShiftRandom" /> to ensure deterministic, reproducible results. Each value should appear roughly equally
+    /// in each position, with no more than 2 statistically significant outliers.
     /// </summary>
     [TestMethod]
-    [Ignore("Flaky: statistical ±3σ bound intermittently exceeded — tracked by bslater/bodu#55.")]
     public void ShuffleAndYield_WhenRepeated_ShouldDistributeItemsStatistically()
     {
         const int runs = 20000;
         const int size = 10;
         var tracker = new int[size, size];
         var original = Enumerable.Range(0, size).ToArray();
+        var rng = new XorShiftRandom(12345);
 
         for (int r = 0; r < runs; r++)
         {
-            var shuffled = ShuffleHelpers.ShuffleAndYield(original, new SystemRandomAdapter(), size).ToArray();
+            var shuffled = ShuffleHelpers.ShuffleAndYield(original, rng, size).ToArray();
             for (int i = 0; i < size; i++)
                 tracker[i, shuffled[i]]++;
         }
 
         AssertStatisticalUniformity(tracker, size, label: nameof(ShuffleHelpers.ShuffleAndYield));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ShuffleHelpers.ShuffleAndYield" /> produces the same output sequence when called with an identically
+    /// seeded <see cref="XorShiftRandom" />, confirming deterministic behaviour.
+    /// </summary>
+    [TestMethod]
+    public void ShuffleAndYield_WithFixedSeed_ShouldProduceDeterministicOutput()
+    {
+        var buffer = Enumerable.Range(1, 10).ToArray();
+        int[] result1 = ShuffleHelpers.ShuffleAndYield(buffer, new XorShiftRandom(42), buffer.Length).ToArray();
+        int[] result2 = ShuffleHelpers.ShuffleAndYield(buffer, new XorShiftRandom(42), buffer.Length).ToArray();
+
+        CollectionAssert.AreEqual(result1, result2);
     }
 }
