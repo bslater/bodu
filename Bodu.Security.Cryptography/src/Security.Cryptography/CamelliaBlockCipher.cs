@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Extensions;
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 
@@ -21,15 +22,18 @@ namespace Bodu.Security.Cryptography;
 /// while the 192-bit and 256-bit key variants apply 24 rounds (four 6-round groups).
 /// </para>
 /// <para>
-/// This type exposes the raw Camellia block primitive. Key scheduling, FL/FL<sup>−1</sup> layer management, and
-/// the F-function are handled internally. Most callers should prefer the higher-level <see cref="Camellia" />
-/// class, which exposes the standard <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract.
-/// Use <see cref="CamelliaBlockCipher" /> directly only when composing the raw block primitive with an
-/// <see cref="IBlockCipherModeTransform" /> or <see cref="IPaddingStrategy" />.
+/// This implementation keeps the RFC 3713 model visible: the S-box material is represented by the published
+/// <c>SBOX1</c> table, <c>SBOX2</c>/<c>SBOX3</c>/<c>SBOX4</c> are derived exactly as specified, the
+/// <c>SIGMA</c> constants are stored as their 64-bit values, and whitening keys (<c>kw1..kw4</c>) are kept
+/// separate from round keys (<c>k1..k18</c> or <c>k1..k24</c>) and FL/FL<sup>−1</sup> keys
+/// (<c>ke1..ke4</c> or <c>ke1..ke6</c>).
 /// </para>
 /// <para>
-/// This implementation is binary-compatible with the test vectors published in RFC 3713, Appendix A, and the
-/// reference implementation maintained by NTT.
+/// This type exposes the raw Camellia block primitive. Most callers should prefer the higher-level
+/// <see cref="Camellia" /> class, which exposes the standard
+/// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract. Use
+/// <see cref="CamelliaBlockCipher" /> directly only when composing the raw block primitive with an
+/// <see cref="IBlockCipherModeTransform" /> or <see cref="IPaddingStrategy" />.
 /// </para>
 /// <list type="bullet">
 /// <item><description><b>Block size:</b> 16 bytes (128 bits)</description></item>
@@ -47,7 +51,22 @@ public sealed class CamelliaBlockCipher
     /// </summary>
     public const int BlockBytes = 16;
 
-    // SBOX1 from RFC 3713 Appendix B.1 — verified bijection (all 256 values 0x00..0xFF appear exactly once).
+    /// <summary>
+    /// The number of bytes in a valid 128-bit Camellia key.
+    /// </summary>
+    public const int Key128SizeInBytes = 16;
+
+    /// <summary>
+    /// The number of bytes in a valid 192-bit Camellia key.
+    /// </summary>
+    public const int Key192SizeInBytes = 24;
+
+    /// <summary>
+    /// The number of bytes in a valid 256-bit Camellia key.
+    /// </summary>
+    public const int Key256SizeInBytes = 32;
+
+    // SBOX1 from RFC 3713 Appendix A. SBOX2, SBOX3, and SBOX4 are derived from this table by the F function.
     private static readonly byte[] s_sbox1 = new byte[256]
     {
         0x70, 0x82, 0x2C, 0xEC, 0xB3, 0x27, 0xC0, 0xE5, 0xE4, 0x85, 0x57, 0x35, 0xEA, 0x0C, 0xAE, 0x41,
@@ -68,7 +87,7 @@ public sealed class CamelliaBlockCipher
         0x40, 0x28, 0xD3, 0x7B, 0xBB, 0xC9, 0x43, 0xC1, 0x15, 0xE3, 0xAD, 0xF4, 0x77, 0xC7, 0x80, 0x9E,
     };
 
-    // SIGMA constants for key schedule derivation (RFC 3713 §2.4).
+    // SIGMA1..SIGMA6 from RFC 3713 §2.4, represented as 64-bit constants.
     private static readonly ulong[] s_sigma = new ulong[]
     {
         0xA09E667F3BCC908BUL,
@@ -79,31 +98,36 @@ public sealed class CamelliaBlockCipher
         0xB05688C2B3E6C1FDUL,
     };
 
+    // Whitening keys kw1..kw4 in RFC order.
     private readonly ulong[] _kw;
+
+    // Round keys k1..k18 (128-bit key) or k1..k24 (192/256-bit key) in RFC order.
     private readonly ulong[] _k;
+
+    // FL/FLINV keys ke1..ke4 (128-bit key) or ke1..ke6 (192/256-bit key) in RFC order.
     private readonly ulong[] _ke;
-    private readonly bool _use192or256;
+
+    private readonly bool _usesExtendedKeySchedule;
     private bool _disposed;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="CamelliaBlockCipher" /> class using the specified key.
     /// </summary>
     /// <param name="key">
-    /// The encryption key. Must be 16, 24, or 32 bytes (128, 192, or 256 bits) in length. Must not be
-    /// <see langword="null" />.
+    /// The encryption key. Must be 16, 24, or 32 bytes (128, 192, or 256 bits) in length.
     /// </param>
     /// <exception cref="ArgumentException">
     /// <paramref name="key" /> is not 16, 24, or 32 bytes in length.
     /// </exception>
     public CamelliaBlockCipher(ReadOnlySpan<byte> key)
     {
-        if (key.Length is not (16 or 24 or 32))
+        if (key.Length is not (Key128SizeInBytes or Key192SizeInBytes or Key256SizeInBytes))
             throw new ArgumentException("The Camellia key must be 16, 24, or 32 bytes in length.", nameof(key));
 
-        _use192or256 = key.Length > 16;
+        _usesExtendedKeySchedule = key.Length > Key128SizeInBytes;
         _kw = new ulong[4];
-        _k = new ulong[_use192or256 ? 24 : 18];
-        _ke = new ulong[_use192or256 ? 6 : 4];
+        _k = new ulong[_usesExtendedKeySchedule ? 24 : 18];
+        _ke = new ulong[_usesExtendedKeySchedule ? 6 : 4];
 
         ExpandKey(key);
     }
@@ -123,96 +147,96 @@ public sealed class CamelliaBlockCipher
     /// <exception cref="ObjectDisposedException">The cipher instance has been disposed.</exception>
     public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockBytes);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockBytes);
 
-        // Ciphertext was produced with D2 in the upper 8 bytes and D1 in the lower 8 bytes,
-        // so read them in the same order and apply the reverse key schedule.
-        ulong d1 = BinaryPrimitives.ReadUInt64BigEndian(input);
-        ulong d2 = BinaryPrimitives.ReadUInt64BigEndian(input.Slice(8));
+        // Encryption produced (right ^ kw3) || (left ^ kw4) — restore the post-rounds halves first.
+        ulong right = BinaryPrimitives.ReadUInt64BigEndian(input) ^ _kw[2];
+        ulong left = BinaryPrimitives.ReadUInt64BigEndian(input.Slice(8)) ^ _kw[3];
 
-        d1 ^= _kw[2];
-        d2 ^= _kw[3];
-
-        if (!_use192or256)
+        if (!_usesExtendedKeySchedule)
         {
-            // 18-round decryption (128-bit key) — round keys applied in reverse order.
-            d2 ^= F(d1, _k[17]);
-            d1 ^= F(d2, _k[16]);
-            d2 ^= F(d1, _k[15]);
-            d1 ^= F(d2, _k[14]);
-            d2 ^= F(d1, _k[13]);
-            d1 ^= F(d2, _k[12]);
+            // Reverse rounds 18..13.
+            left ^= F(right, _k[17]);
+            right ^= F(left, _k[16]);
+            left ^= F(right, _k[15]);
+            right ^= F(left, _k[14]);
+            left ^= F(right, _k[13]);
+            right ^= F(left, _k[12]);
 
-            d1 = Fl(d1, _ke[3]);
-            d2 = FlinV(d2, _ke[2]);
+            left = FlInv(left, _ke[2]);
+            right = Fl(right, _ke[3]);
 
-            d2 ^= F(d1, _k[11]);
-            d1 ^= F(d2, _k[10]);
-            d2 ^= F(d1, _k[9]);
-            d1 ^= F(d2, _k[8]);
-            d2 ^= F(d1, _k[7]);
-            d1 ^= F(d2, _k[6]);
+            // Reverse rounds 12..7.
+            left ^= F(right, _k[11]);
+            right ^= F(left, _k[10]);
+            left ^= F(right, _k[9]);
+            right ^= F(left, _k[8]);
+            left ^= F(right, _k[7]);
+            right ^= F(left, _k[6]);
 
-            d1 = Fl(d1, _ke[1]);
-            d2 = FlinV(d2, _ke[0]);
+            left = FlInv(left, _ke[0]);
+            right = Fl(right, _ke[1]);
 
-            d2 ^= F(d1, _k[5]);
-            d1 ^= F(d2, _k[4]);
-            d2 ^= F(d1, _k[3]);
-            d1 ^= F(d2, _k[2]);
-            d2 ^= F(d1, _k[1]);
-            d1 ^= F(d2, _k[0]);
+            // Reverse rounds 6..1.
+            left ^= F(right, _k[5]);
+            right ^= F(left, _k[4]);
+            left ^= F(right, _k[3]);
+            right ^= F(left, _k[2]);
+            left ^= F(right, _k[1]);
+            right ^= F(left, _k[0]);
         }
         else
         {
-            // 24-round decryption (192/256-bit key) — round keys applied in reverse order.
-            d2 ^= F(d1, _k[23]);
-            d1 ^= F(d2, _k[22]);
-            d2 ^= F(d1, _k[21]);
-            d1 ^= F(d2, _k[20]);
-            d2 ^= F(d1, _k[19]);
-            d1 ^= F(d2, _k[18]);
+            // Reverse rounds 24..19.
+            left ^= F(right, _k[23]);
+            right ^= F(left, _k[22]);
+            left ^= F(right, _k[21]);
+            right ^= F(left, _k[20]);
+            left ^= F(right, _k[19]);
+            right ^= F(left, _k[18]);
 
-            d1 = Fl(d1, _ke[5]);
-            d2 = FlinV(d2, _ke[4]);
+            left = FlInv(left, _ke[4]);
+            right = Fl(right, _ke[5]);
 
-            d2 ^= F(d1, _k[17]);
-            d1 ^= F(d2, _k[16]);
-            d2 ^= F(d1, _k[15]);
-            d1 ^= F(d2, _k[14]);
-            d2 ^= F(d1, _k[13]);
-            d1 ^= F(d2, _k[12]);
+            // Reverse rounds 18..13.
+            left ^= F(right, _k[17]);
+            right ^= F(left, _k[16]);
+            left ^= F(right, _k[15]);
+            right ^= F(left, _k[14]);
+            left ^= F(right, _k[13]);
+            right ^= F(left, _k[12]);
 
-            d1 = Fl(d1, _ke[3]);
-            d2 = FlinV(d2, _ke[2]);
+            left = FlInv(left, _ke[2]);
+            right = Fl(right, _ke[3]);
 
-            d2 ^= F(d1, _k[11]);
-            d1 ^= F(d2, _k[10]);
-            d2 ^= F(d1, _k[9]);
-            d1 ^= F(d2, _k[8]);
-            d2 ^= F(d1, _k[7]);
-            d1 ^= F(d2, _k[6]);
+            // Reverse rounds 12..7.
+            left ^= F(right, _k[11]);
+            right ^= F(left, _k[10]);
+            left ^= F(right, _k[9]);
+            right ^= F(left, _k[8]);
+            left ^= F(right, _k[7]);
+            right ^= F(left, _k[6]);
 
-            d1 = Fl(d1, _ke[1]);
-            d2 = FlinV(d2, _ke[0]);
+            left = FlInv(left, _ke[0]);
+            right = Fl(right, _ke[1]);
 
-            d2 ^= F(d1, _k[5]);
-            d1 ^= F(d2, _k[4]);
-            d2 ^= F(d1, _k[3]);
-            d1 ^= F(d2, _k[2]);
-            d2 ^= F(d1, _k[1]);
-            d1 ^= F(d2, _k[0]);
+            // Reverse rounds 6..1.
+            left ^= F(right, _k[5]);
+            right ^= F(left, _k[4]);
+            left ^= F(right, _k[3]);
+            right ^= F(left, _k[2]);
+            left ^= F(right, _k[1]);
+            right ^= F(left, _k[0]);
         }
 
-        // Post-whitening: undo the encryption pre-whitening (kw1 was applied to D1, kw2 to D2).
-        d2 ^= _kw[0];
-        d1 ^= _kw[1];
+        // Undo input whitening: plaintext = (left ^ kw1) || (right ^ kw2).
+        left ^= _kw[0];
+        right ^= _kw[1];
 
-        // Plaintext M = D2 || D1.
-        BinaryPrimitives.WriteUInt64BigEndian(output, d2);
-        BinaryPrimitives.WriteUInt64BigEndian(output.Slice(8), d1);
+        BinaryPrimitives.WriteUInt64BigEndian(output, left);
+        BinaryPrimitives.WriteUInt64BigEndian(output.Slice(8), right);
     }
 
     /// <summary>
@@ -241,246 +265,240 @@ public sealed class CamelliaBlockCipher
     /// <exception cref="ObjectDisposedException">The cipher instance has been disposed.</exception>
     public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        this.ThrowIfDisposed();
+        ThrowIfDisposed();
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockBytes);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockBytes);
 
-        ulong d1 = BinaryPrimitives.ReadUInt64BigEndian(input);
-        ulong d2 = BinaryPrimitives.ReadUInt64BigEndian(input.Slice(8));
+        ulong left = BinaryPrimitives.ReadUInt64BigEndian(input) ^ _kw[0];
+        ulong right = BinaryPrimitives.ReadUInt64BigEndian(input.Slice(8)) ^ _kw[1];
 
-        d1 ^= _kw[0];
-        d2 ^= _kw[1];
-
-        if (!_use192or256)
+        if (!_usesExtendedKeySchedule)
         {
-            // 18-round encryption (128-bit key).
-            d2 ^= F(d1, _k[0]);
-            d1 ^= F(d2, _k[1]);
-            d2 ^= F(d1, _k[2]);
-            d1 ^= F(d2, _k[3]);
-            d2 ^= F(d1, _k[4]);
-            d1 ^= F(d2, _k[5]);
+            // Rounds 1..6.
+            right ^= F(left, _k[0]);
+            left ^= F(right, _k[1]);
+            right ^= F(left, _k[2]);
+            left ^= F(right, _k[3]);
+            right ^= F(left, _k[4]);
+            left ^= F(right, _k[5]);
 
-            d1 = Fl(d1, _ke[0]);
-            d2 = FlinV(d2, _ke[1]);
+            left = Fl(left, _ke[0]);
+            right = FlInv(right, _ke[1]);
 
-            d2 ^= F(d1, _k[6]);
-            d1 ^= F(d2, _k[7]);
-            d2 ^= F(d1, _k[8]);
-            d1 ^= F(d2, _k[9]);
-            d2 ^= F(d1, _k[10]);
-            d1 ^= F(d2, _k[11]);
+            // Rounds 7..12.
+            right ^= F(left, _k[6]);
+            left ^= F(right, _k[7]);
+            right ^= F(left, _k[8]);
+            left ^= F(right, _k[9]);
+            right ^= F(left, _k[10]);
+            left ^= F(right, _k[11]);
 
-            d1 = Fl(d1, _ke[2]);
-            d2 = FlinV(d2, _ke[3]);
+            left = Fl(left, _ke[2]);
+            right = FlInv(right, _ke[3]);
 
-            d2 ^= F(d1, _k[12]);
-            d1 ^= F(d2, _k[13]);
-            d2 ^= F(d1, _k[14]);
-            d1 ^= F(d2, _k[15]);
-            d2 ^= F(d1, _k[16]);
-            d1 ^= F(d2, _k[17]);
+            // Rounds 13..18.
+            right ^= F(left, _k[12]);
+            left ^= F(right, _k[13]);
+            right ^= F(left, _k[14]);
+            left ^= F(right, _k[15]);
+            right ^= F(left, _k[16]);
+            left ^= F(right, _k[17]);
         }
         else
         {
-            // 24-round encryption (192/256-bit key).
-            d2 ^= F(d1, _k[0]);
-            d1 ^= F(d2, _k[1]);
-            d2 ^= F(d1, _k[2]);
-            d1 ^= F(d2, _k[3]);
-            d2 ^= F(d1, _k[4]);
-            d1 ^= F(d2, _k[5]);
+            // Rounds 1..6.
+            right ^= F(left, _k[0]);
+            left ^= F(right, _k[1]);
+            right ^= F(left, _k[2]);
+            left ^= F(right, _k[3]);
+            right ^= F(left, _k[4]);
+            left ^= F(right, _k[5]);
 
-            d1 = Fl(d1, _ke[0]);
-            d2 = FlinV(d2, _ke[1]);
+            left = Fl(left, _ke[0]);
+            right = FlInv(right, _ke[1]);
 
-            d2 ^= F(d1, _k[6]);
-            d1 ^= F(d2, _k[7]);
-            d2 ^= F(d1, _k[8]);
-            d1 ^= F(d2, _k[9]);
-            d2 ^= F(d1, _k[10]);
-            d1 ^= F(d2, _k[11]);
+            // Rounds 7..12.
+            right ^= F(left, _k[6]);
+            left ^= F(right, _k[7]);
+            right ^= F(left, _k[8]);
+            left ^= F(right, _k[9]);
+            right ^= F(left, _k[10]);
+            left ^= F(right, _k[11]);
 
-            d1 = Fl(d1, _ke[2]);
-            d2 = FlinV(d2, _ke[3]);
+            left = Fl(left, _ke[2]);
+            right = FlInv(right, _ke[3]);
 
-            d2 ^= F(d1, _k[12]);
-            d1 ^= F(d2, _k[13]);
-            d2 ^= F(d1, _k[14]);
-            d1 ^= F(d2, _k[15]);
-            d2 ^= F(d1, _k[16]);
-            d1 ^= F(d2, _k[17]);
+            // Rounds 13..18.
+            right ^= F(left, _k[12]);
+            left ^= F(right, _k[13]);
+            right ^= F(left, _k[14]);
+            left ^= F(right, _k[15]);
+            right ^= F(left, _k[16]);
+            left ^= F(right, _k[17]);
 
-            d1 = Fl(d1, _ke[4]);
-            d2 = FlinV(d2, _ke[5]);
+            left = Fl(left, _ke[4]);
+            right = FlInv(right, _ke[5]);
 
-            d2 ^= F(d1, _k[18]);
-            d1 ^= F(d2, _k[19]);
-            d2 ^= F(d1, _k[20]);
-            d1 ^= F(d2, _k[21]);
-            d2 ^= F(d1, _k[22]);
-            d1 ^= F(d2, _k[23]);
+            // Rounds 19..24.
+            right ^= F(left, _k[18]);
+            left ^= F(right, _k[19]);
+            right ^= F(left, _k[20]);
+            left ^= F(right, _k[21]);
+            right ^= F(left, _k[22]);
+            left ^= F(right, _k[23]);
         }
 
-        // Post-whitening: D2 becomes the upper half of the ciphertext block.
-        d2 ^= _kw[2];
-        d1 ^= _kw[3];
+        // Final swap and output whitening: ciphertext = (right ^ kw3) || (left ^ kw4).
+        right ^= _kw[2];
+        left ^= _kw[3];
 
-        BinaryPrimitives.WriteUInt64BigEndian(output, d2);
-        BinaryPrimitives.WriteUInt64BigEndian(output.Slice(8), d1);
+        BinaryPrimitives.WriteUInt64BigEndian(output, right);
+        BinaryPrimitives.WriteUInt64BigEndian(output.Slice(8), left);
     }
 
     /// <summary>
-    /// Expands the supplied key into the whitening keys (<c>_kw</c>), round subkeys (<c>_k</c>), and FL/FL⁻¹
+    /// Expands the supplied key into the whitening keys (<c>_kw</c>), round subkeys (<c>_k</c>), and FL/FL<sup>−1</sup>
     /// layer keys (<c>_ke</c>) according to RFC 3713 §2.4.
     /// </summary>
     /// <param name="key">The raw key material (16, 24, or 32 bytes).</param>
     private void ExpandKey(ReadOnlySpan<byte> key)
     {
-        ulong klhi = BinaryPrimitives.ReadUInt64BigEndian(key);
-        ulong kllo = BinaryPrimitives.ReadUInt64BigEndian(key.Slice(8));
+        ulong klHi = BinaryPrimitives.ReadUInt64BigEndian(key);
+        ulong klLo = BinaryPrimitives.ReadUInt64BigEndian(key.Slice(8));
 
-        ulong krhi, krlo;
-        if (key.Length == 16)
+        ulong krHi;
+        ulong krLo;
+
+        if (key.Length == Key128SizeInBytes)
         {
-            krhi = 0;
-            krlo = 0;
+            krHi = 0;
+            krLo = 0;
         }
-        else if (key.Length == 24)
+        else if (key.Length == Key192SizeInBytes)
         {
-            krhi = BinaryPrimitives.ReadUInt64BigEndian(key.Slice(16));
-            // The 64-bit pad for a 192-bit key is the bitwise complement of the first KR word.
-            krlo = ~krhi;
+            krHi = BinaryPrimitives.ReadUInt64BigEndian(key.Slice(16));
+
+            // The 64-bit pad for a 192-bit key is the bitwise complement of the first KR word (RFC 3713 §2.4).
+            krLo = ~krHi;
         }
         else
         {
-            krhi = BinaryPrimitives.ReadUInt64BigEndian(key.Slice(16));
-            krlo = BinaryPrimitives.ReadUInt64BigEndian(key.Slice(24));
+            krHi = BinaryPrimitives.ReadUInt64BigEndian(key.Slice(16));
+            krLo = BinaryPrimitives.ReadUInt64BigEndian(key.Slice(24));
         }
 
-        // Derive KA from KL and KR via four Feistel rounds using SIGMA1..4.
-        ulong d1 = klhi ^ krhi;
-        ulong d2 = kllo ^ krlo;
+        // KA derivation: four Feistel rounds keyed by SIGMA1..SIGMA4.
+        ulong d1 = klHi ^ krHi;
+        ulong d2 = klLo ^ krLo;
 
         d2 ^= F(d1, s_sigma[0]);
         d1 ^= F(d2, s_sigma[1]);
-        d1 ^= klhi;
-        d2 ^= kllo;
+
+        d1 ^= klHi;
+        d2 ^= klLo;
+
         d2 ^= F(d1, s_sigma[2]);
         d1 ^= F(d2, s_sigma[3]);
 
-        ulong kahi = d1;
-        ulong kalo = d2;
+        ulong kaHi = d1;
+        ulong kaLo = d2;
 
-        if (!_use192or256)
+        if (!_usesExtendedKeySchedule)
         {
-            // 128-bit key schedule (RFC 3713 §2.4.1).
-            ulong hi, lo;
-
-            (_kw[0], _kw[1]) = (klhi, kllo);
-
-            (_k[0], _k[1]) = (kahi, kalo);
-
-            (hi, lo) = RotL128(klhi, kllo, 15);
-            (_ke[0], _ke[1]) = (hi, lo);
-
-            (hi, lo) = RotL128(kahi, kalo, 15);
-            (_k[2], _k[3]) = (hi, lo);
-
-            (hi, lo) = RotL128(kahi, kalo, 30);
-            (_k[4], _k[5]) = (hi, lo);
-
-            (hi, lo) = RotL128(klhi, kllo, 45);
-            (_k[6], _k[7]) = (hi, lo);
-
-            // k9 takes only the upper half of (KA <<< 45).
-            (hi, lo) = RotL128(kahi, kalo, 45);
-            _k[8] = hi;
-
-            // k10 takes only the lower half of (KL <<< 60).
-            (hi, lo) = RotL128(klhi, kllo, 60);
-            _k[9] = lo;
-
-            (hi, lo) = RotL128(kahi, kalo, 60);
-            (_k[10], _k[11]) = (hi, lo);
-
-            (hi, lo) = RotL128(klhi, kllo, 77);
-            (_ke[2], _ke[3]) = (hi, lo);
-
-            (hi, lo) = RotL128(klhi, kllo, 94);
-            (_k[12], _k[13]) = (hi, lo);
-
-            (hi, lo) = RotL128(kahi, kalo, 94);
-            (_k[14], _k[15]) = (hi, lo);
-
-            (hi, lo) = RotL128(klhi, kllo, 111);
-            (_k[16], _k[17]) = (hi, lo);
-
-            (hi, lo) = RotL128(kahi, kalo, 111);
-            (_kw[2], _kw[3]) = (hi, lo);
+            Expand128BitKey(klHi, klLo, kaHi, kaLo);
+            return;
         }
-        else
-        {
-            // Derive KB from KA and KR via two additional Feistel rounds using SIGMA5..6.
-            d1 = kahi ^ krhi;
-            d2 = kalo ^ krlo;
-            d2 ^= F(d1, s_sigma[4]);
-            d1 ^= F(d2, s_sigma[5]);
-            ulong kbhi = d1;
-            ulong kblo = d2;
 
-            // 192/256-bit key schedule (RFC 3713 §2.4.2).
-            ulong hi, lo;
+        // KB derivation: two further Feistel rounds keyed by SIGMA5..SIGMA6.
+        d1 = kaHi ^ krHi;
+        d2 = kaLo ^ krLo;
 
-            (_kw[0], _kw[1]) = (klhi, kllo);
+        d2 ^= F(d1, s_sigma[4]);
+        d1 ^= F(d2, s_sigma[5]);
 
-            (_k[0], _k[1]) = (kbhi, kblo);
+        Expand192Or256BitKey(klHi, klLo, krHi, krLo, kaHi, kaLo, d1, d2);
+    }
 
-            (hi, lo) = RotL128(krhi, krlo, 15);
-            (_ke[0], _ke[1]) = (hi, lo);
+    /// <summary>
+    /// Expands a 128-bit key into RFC-order whitening, round, and FL/FL<sup>−1</sup> keys per RFC 3713 §2.4.1.
+    /// </summary>
+    /// <param name="klHi">The upper 64 bits of <c>KL</c>.</param>
+    /// <param name="klLo">The lower 64 bits of <c>KL</c>.</param>
+    /// <param name="kaHi">The upper 64 bits of <c>KA</c>.</param>
+    /// <param name="kaLo">The lower 64 bits of <c>KA</c>.</param>
+    private void Expand128BitKey(ulong klHi, ulong klLo, ulong kaHi, ulong kaLo)
+    {
+        _kw[0] = klHi;
+        _kw[1] = klLo;
 
-            (hi, lo) = RotL128(kahi, kalo, 15);
-            (_k[2], _k[3]) = (hi, lo);
+        _k[0] = kaHi;
+        _k[1] = kaLo;
 
-            (hi, lo) = RotL128(krhi, krlo, 30);
-            (_k[4], _k[5]) = (hi, lo);
+        (_ke[0], _ke[1]) = RotL128(klHi, klLo, 15);
+        (_k[2], _k[3]) = RotL128(kaHi, kaLo, 15);
+        (_k[4], _k[5]) = RotL128(kaHi, kaLo, 30);
+        (_k[6], _k[7]) = RotL128(klHi, klLo, 45);
 
-            (hi, lo) = RotL128(kbhi, kblo, 30);
-            (_k[6], _k[7]) = (hi, lo);
+        // k9 takes only the upper half of (KA <<< 45).
+        (ulong hi, _) = RotL128(kaHi, kaLo, 45);
+        _k[8] = hi;
 
-            (hi, lo) = RotL128(klhi, kllo, 45);
-            (_ke[2], _ke[3]) = (hi, lo);
+        // k10 takes only the lower half of (KL <<< 60).
+        (_, ulong lo) = RotL128(klHi, klLo, 60);
+        _k[9] = lo;
 
-            (hi, lo) = RotL128(kahi, kalo, 45);
-            (_k[8], _k[9]) = (hi, lo);
+        (_k[10], _k[11]) = RotL128(kaHi, kaLo, 60);
+        (_ke[2], _ke[3]) = RotL128(klHi, klLo, 77);
+        (_k[12], _k[13]) = RotL128(klHi, klLo, 94);
+        (_k[14], _k[15]) = RotL128(kaHi, kaLo, 94);
+        (_k[16], _k[17]) = RotL128(klHi, klLo, 111);
 
-            (hi, lo) = RotL128(klhi, kllo, 60);
-            (_k[10], _k[11]) = (hi, lo);
+        (_kw[2], _kw[3]) = RotL128(kaHi, kaLo, 111);
+    }
 
-            (hi, lo) = RotL128(krhi, krlo, 60);
-            (_k[12], _k[13]) = (hi, lo);
+    /// <summary>
+    /// Expands a 192-bit or 256-bit key into RFC-order whitening, round, and FL/FL<sup>−1</sup> keys per RFC 3713 §2.4.2.
+    /// </summary>
+    /// <param name="klHi">The upper 64 bits of <c>KL</c>.</param>
+    /// <param name="klLo">The lower 64 bits of <c>KL</c>.</param>
+    /// <param name="krHi">The upper 64 bits of <c>KR</c>.</param>
+    /// <param name="krLo">The lower 64 bits of <c>KR</c>.</param>
+    /// <param name="kaHi">The upper 64 bits of <c>KA</c>.</param>
+    /// <param name="kaLo">The lower 64 bits of <c>KA</c>.</param>
+    /// <param name="kbHi">The upper 64 bits of <c>KB</c>.</param>
+    /// <param name="kbLo">The lower 64 bits of <c>KB</c>.</param>
+    private void Expand192Or256BitKey(
+        ulong klHi,
+        ulong klLo,
+        ulong krHi,
+        ulong krLo,
+        ulong kaHi,
+        ulong kaLo,
+        ulong kbHi,
+        ulong kbLo)
+    {
+        _kw[0] = klHi;
+        _kw[1] = klLo;
 
-            (hi, lo) = RotL128(kbhi, kblo, 60);
-            (_k[14], _k[15]) = (hi, lo);
+        _k[0] = kbHi;
+        _k[1] = kbLo;
 
-            (hi, lo) = RotL128(klhi, kllo, 77);
-            (_ke[4], _ke[5]) = (hi, lo);
+        (_ke[0], _ke[1]) = RotL128(krHi, krLo, 15);
+        (_k[2], _k[3]) = RotL128(kaHi, kaLo, 15);
+        (_k[4], _k[5]) = RotL128(krHi, krLo, 30);
+        (_k[6], _k[7]) = RotL128(kbHi, kbLo, 30);
+        (_ke[2], _ke[3]) = RotL128(klHi, klLo, 45);
+        (_k[8], _k[9]) = RotL128(kaHi, kaLo, 45);
+        (_k[10], _k[11]) = RotL128(klHi, klLo, 60);
+        (_k[12], _k[13]) = RotL128(krHi, krLo, 60);
+        (_k[14], _k[15]) = RotL128(kbHi, kbLo, 60);
+        (_ke[4], _ke[5]) = RotL128(klHi, klLo, 77);
+        (_k[16], _k[17]) = RotL128(kaHi, kaLo, 77);
+        (_k[18], _k[19]) = RotL128(krHi, krLo, 94);
+        (_k[20], _k[21]) = RotL128(kaHi, kaLo, 94);
+        (_k[22], _k[23]) = RotL128(klHi, klLo, 111);
 
-            (hi, lo) = RotL128(kahi, kalo, 77);
-            (_k[16], _k[17]) = (hi, lo);
-
-            (hi, lo) = RotL128(krhi, krlo, 94);
-            (_k[18], _k[19]) = (hi, lo);
-
-            (hi, lo) = RotL128(kahi, kalo, 94);
-            (_k[20], _k[21]) = (hi, lo);
-
-            (hi, lo) = RotL128(klhi, kllo, 111);
-            (_k[22], _k[23]) = (hi, lo);
-
-            (hi, lo) = RotL128(kbhi, kblo, 111);
-            (_kw[2], _kw[3]) = (hi, lo);
-        }
+        (_kw[2], _kw[3]) = RotL128(kbHi, kbLo, 111);
     }
 
     /// <summary>
@@ -488,101 +506,136 @@ public sealed class CamelliaBlockCipher
     /// P-function linear diffusion layer, and return the 64-bit result.
     /// </summary>
     /// <param name="x">The 64-bit data word.</param>
-    /// <param name="ke">The 64-bit round subkey.</param>
+    /// <param name="key">The 64-bit round subkey.</param>
     /// <returns>The transformed 64-bit output word.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ulong F(ulong x, ulong ke)
+    private static ulong F(ulong x, ulong key)
     {
-        x ^= ke;
+        x ^= key;
 
-        // Apply the four Camellia S-boxes to each byte in order:
-        //   Positions 0, 7 → SBOX1(b)
-        //   Positions 1, 4 → SBOX2(b) = ROTL1(SBOX1(b))
-        //   Positions 2, 5 → SBOX3(b) = ROTL7(SBOX1(b))
-        //   Positions 3, 6 → SBOX4(b) = SBOX1(ROTL1(b))
+        // Apply the four Camellia S-boxes to each byte in RFC 3713 §2.1 order:
+        //   Positions 0, 7 → SBOX1
+        //   Positions 1, 4 → SBOX2
+        //   Positions 2, 5 → SBOX3
+        //   Positions 3, 6 → SBOX4
         int t1 = s_sbox1[(int)(x >> 56)];
-        int t2 = RotL1b(s_sbox1[(int)((x >> 48) & 0xFF)]);
-        int t3 = RotR1b(s_sbox1[(int)((x >> 40) & 0xFF)]);
-        int t4 = s_sbox1[RotL1b((int)((x >> 32) & 0xFF))];
-        int t5 = RotL1b(s_sbox1[(int)((x >> 24) & 0xFF)]);
-        int t6 = RotR1b(s_sbox1[(int)((x >> 16) & 0xFF)]);
-        int t7 = s_sbox1[RotL1b((int)((x >> 8) & 0xFF))];
+        int t2 = SBox2((int)((x >> 48) & 0xFF));
+        int t3 = SBox3((int)((x >> 40) & 0xFF));
+        int t4 = SBox4((int)((x >> 32) & 0xFF));
+        int t5 = SBox2((int)((x >> 24) & 0xFF));
+        int t6 = SBox3((int)((x >> 16) & 0xFF));
+        int t7 = SBox4((int)((x >> 8) & 0xFF));
         int t8 = s_sbox1[(int)(x & 0xFF)];
 
-        // P-function: MDS-style diffusion over 8 bytes (RFC 3713 §2.1).
-        int u1 = t1 ^ t3 ^ t4 ^ t6 ^ t7 ^ t8;
-        int u2 = t1 ^ t2 ^ t4 ^ t5 ^ t7 ^ t8;
-        int u3 = t1 ^ t2 ^ t3 ^ t5 ^ t6 ^ t8;
-        int u4 = t2 ^ t3 ^ t4 ^ t5 ^ t6 ^ t7;
-        int u5 = t1 ^ t2 ^ t6 ^ t7 ^ t8;
-        int u6 = t2 ^ t3 ^ t5 ^ t7 ^ t8;
-        int u7 = t3 ^ t4 ^ t5 ^ t6 ^ t8;
-        int u8 = t1 ^ t4 ^ t5 ^ t6 ^ t7;
+        // P-function: byte-wise MDS-style diffusion (RFC 3713 §2.1).
+        int y1 = t1 ^ t3 ^ t4 ^ t6 ^ t7 ^ t8;
+        int y2 = t1 ^ t2 ^ t4 ^ t5 ^ t7 ^ t8;
+        int y3 = t1 ^ t2 ^ t3 ^ t5 ^ t6 ^ t8;
+        int y4 = t2 ^ t3 ^ t4 ^ t5 ^ t6 ^ t7;
+        int y5 = t1 ^ t2 ^ t6 ^ t7 ^ t8;
+        int y6 = t2 ^ t3 ^ t5 ^ t7 ^ t8;
+        int y7 = t3 ^ t4 ^ t5 ^ t6 ^ t8;
+        int y8 = t1 ^ t4 ^ t5 ^ t6 ^ t7;
 
-        return ((ulong)(u1 & 0xFF) << 56) | ((ulong)(u2 & 0xFF) << 48)
-             | ((ulong)(u3 & 0xFF) << 40) | ((ulong)(u4 & 0xFF) << 32)
-             | ((ulong)(u5 & 0xFF) << 24) | ((ulong)(u6 & 0xFF) << 16)
-             | ((ulong)(u7 & 0xFF) << 8)  |  (ulong)(u8 & 0xFF);
+        return ((ulong)(y1 & 0xFF) << 56)
+             | ((ulong)(y2 & 0xFF) << 48)
+             | ((ulong)(y3 & 0xFF) << 40)
+             | ((ulong)(y4 & 0xFF) << 32)
+             | ((ulong)(y5 & 0xFF) << 24)
+             | ((ulong)(y6 & 0xFF) << 16)
+             | ((ulong)(y7 & 0xFF) << 8)
+             | (ulong)(y8 & 0xFF);
     }
 
     /// <summary>
     /// Applies the Camellia FL function to a 64-bit value using the supplied 64-bit subkey.
     /// </summary>
     /// <param name="x">The 64-bit input.</param>
-    /// <param name="ke">The 64-bit subkey.</param>
+    /// <param name="key">The 64-bit subkey.</param>
     /// <returns>The transformed 64-bit output.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ulong Fl(ulong x, ulong ke)
+    private static ulong Fl(ulong x, ulong key)
     {
         uint x1 = (uint)(x >> 32);
         uint x2 = (uint)x;
-        uint k1 = (uint)(ke >> 32);
-        uint k2 = (uint)ke;
+        uint k1 = (uint)(key >> 32);
+        uint k2 = (uint)key;
 
-        x2 ^= RotL1u(x1 & k1);
-        x1 ^= (x2 | k2);
+        x2 ^= (x1 & k1).RotateBitsLeftUnchecked(1);
+        x1 ^= x2 | k2;
 
         return ((ulong)x1 << 32) | x2;
     }
 
     /// <summary>
-    /// Applies the inverse Camellia FL function (FL⁻¹) to a 64-bit value using the supplied 64-bit subkey.
+    /// Applies the inverse Camellia FL function (FL<sup>−1</sup>) to a 64-bit value using the supplied 64-bit subkey.
     /// </summary>
     /// <param name="x">The 64-bit input.</param>
-    /// <param name="ke">The 64-bit subkey.</param>
+    /// <param name="key">The 64-bit subkey.</param>
     /// <returns>The inverse-transformed 64-bit output.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ulong FlinV(ulong x, ulong ke)
+    private static ulong FlInv(ulong x, ulong key)
     {
         uint y1 = (uint)(x >> 32);
         uint y2 = (uint)x;
-        uint k1 = (uint)(ke >> 32);
-        uint k2 = (uint)ke;
+        uint k1 = (uint)(key >> 32);
+        uint k2 = (uint)key;
 
-        y1 ^= (y2 | k2);
-        y2 ^= RotL1u(y1 & k1);
+        y1 ^= y2 | k2;
+        y2 ^= (y1 & k1).RotateBitsLeftUnchecked(1);
 
         return ((ulong)y1 << 32) | y2;
     }
 
     /// <summary>
-    /// Rotates a 128-bit value left by <paramref name="n" /> bits. The value is represented as a (hi, lo) pair of
+    /// Rotates a 128-bit value left by the specified number of bits. The value is represented as a (hi, lo) pair of
     /// 64-bit words where <paramref name="hi" /> holds the most-significant bits.
     /// </summary>
     /// <param name="hi">The upper 64 bits of the 128-bit value.</param>
     /// <param name="lo">The lower 64 bits of the 128-bit value.</param>
-    /// <param name="n">The rotation count in bits. Must be in the range 1..127.</param>
+    /// <param name="bits">The rotation count, masked to the range 0..127.</param>
     /// <returns>The rotated (hi, lo) pair.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static (ulong hi, ulong lo) RotL128(ulong hi, ulong lo, int n)
+    private static (ulong hi, ulong lo) RotL128(ulong hi, ulong lo, int bits)
     {
-        if (n < 64)
-            return ((hi << n) | (lo >> (64 - n)), (lo << n) | (hi >> (64 - n)));
+        bits &= 127;
 
-        n -= 64;
-        if (n == 0) return (lo, hi);
-        return ((lo << n) | (hi >> (64 - n)), (hi << n) | (lo >> (64 - n)));
+        if (bits == 0)
+            return (hi, lo);
+
+        if (bits < 64)
+            return ((hi << bits) | (lo >> (64 - bits)), (lo << bits) | (hi >> (64 - bits)));
+
+        bits -= 64;
+        if (bits == 0)
+            return (lo, hi);
+
+        return ((lo << bits) | (hi >> (64 - bits)), (hi << bits) | (lo >> (64 - bits)));
     }
+
+    /// <summary>
+    /// Applies the Camellia <c>SBOX2</c> derivation: <c>SBOX2[x] = SBOX1[x] &lt;&lt;&lt; 1</c>.
+    /// </summary>
+    /// <param name="x">The 8-bit input index (only the lower 8 bits are used).</param>
+    /// <returns>The transformed byte value.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static int SBox2(int x) => RotateLeft1(s_sbox1[x]);
+
+    /// <summary>
+    /// Applies the Camellia <c>SBOX3</c> derivation: <c>SBOX3[x] = SBOX1[x] &lt;&lt;&lt; 7</c> (equivalently, a single right rotation).
+    /// </summary>
+    /// <param name="x">The 8-bit input index (only the lower 8 bits are used).</param>
+    /// <returns>The transformed byte value.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static int SBox3(int x) => RotateRight1(s_sbox1[x]);
+
+    /// <summary>
+    /// Applies the Camellia <c>SBOX4</c> derivation: <c>SBOX4[x] = SBOX1[x &lt;&lt;&lt; 1]</c>.
+    /// </summary>
+    /// <param name="x">The 8-bit input index (only the lower 8 bits are used).</param>
+    /// <returns>The transformed byte value.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static int SBox4(int x) => s_sbox1[RotateLeft1(x)];
 
     /// <summary>
     /// Rotates an 8-bit value left by 1 bit.
@@ -590,23 +643,15 @@ public sealed class CamelliaBlockCipher
     /// <param name="x">The 8-bit value to rotate (only the lower 8 bits are used).</param>
     /// <returns>The left-rotated byte value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int RotL1b(int x) => ((x << 1) | (x >> 7)) & 0xFF;
+    private static int RotateLeft1(int x) => ((x << 1) | (x >> 7)) & 0xFF;
 
     /// <summary>
-    /// Rotates an 8-bit value right by 1 bit (equivalent to a left rotation by 7 bits), producing SBOX3 outputs.
+    /// Rotates an 8-bit value right by 1 bit.
     /// </summary>
     /// <param name="x">The 8-bit value to rotate (only the lower 8 bits are used).</param>
     /// <returns>The right-rotated byte value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int RotR1b(int x) => ((x >> 1) | (x << 7)) & 0xFF;
-
-    /// <summary>
-    /// Rotates a 32-bit unsigned integer left by 1 bit, as required by the FL/FL⁻¹ functions.
-    /// </summary>
-    /// <param name="x">The value to rotate.</param>
-    /// <returns>The rotated 32-bit value.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static uint RotL1u(uint x) => (x << 1) | (x >> 31);
+    private static int RotateRight1(int x) => ((x >> 1) | (x << 7)) & 0xFF;
 
     /// <summary>
     /// Throws <see cref="ObjectDisposedException" /> if this cipher instance has already been disposed.
