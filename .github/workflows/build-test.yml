@@ -11,17 +11,20 @@ permissions:
   contents: read
   checks: write
   pull-requests: write
+  issues: write
 
 jobs:
   build-test:
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+
     env:
       TEST_PROJECTS: >-
         Bodu.Core/test/Bodu.Core.Test.csproj
         Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.csproj
         Bodu.IO.Hashing/test/Bodu.IO.Hashing.Test.csproj
         Bodu.Globalization.Calendar/test/Bodu.Globalization.Calendar.Test.csproj
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -53,9 +56,12 @@ jobs:
       - name: Test
         run: |
           status=0
+
           for proj in $TEST_PROJECTS; do
             name=$(basename "$proj" .csproj)
+
             echo "::group::Test $name"
+
             dotnet test "$proj" \
               --configuration Release \
               --no-build \
@@ -63,8 +69,10 @@ jobs:
               --results-directory "${{ github.workspace }}/TestResults/$name" \
               --logger "trx;LogFileName=$name.trx" \
               --logger "console;verbosity=normal" || status=$?
+
             echo "::endgroup::"
           done
+
           exit $status
 
       - name: Upload TRX artifact
@@ -98,13 +106,17 @@ jobs:
             $nsMgr.AddNamespace('t', $ns)
 
             $failedResults = @($doc.SelectNodes('//t:UnitTestResult[@outcome="Failed"]', $nsMgr))
+
             if ($failedResults.Count -eq 0) {
               Write-Host ("No failed tests in {0}; skipping." -f $trx.Name)
               continue
             }
 
             $failedIds = @{}
-            foreach ($node in $failedResults) { $failedIds[$node.testId] = $true }
+
+            foreach ($node in $failedResults) {
+              $failedIds[$node.testId] = $true
+            }
 
             foreach ($node in @($doc.SelectNodes('//t:UnitTestResult', $nsMgr))) {
               if (-not $failedIds.ContainsKey($node.testId)) {
@@ -125,10 +137,12 @@ jobs:
             }
 
             $counters = $doc.SelectSingleNode('//t:ResultSummary/t:Counters', $nsMgr)
+
             if ($null -ne $counters) {
               foreach ($attr in @($counters.Attributes)) {
                 $counters.SetAttribute($attr.Name, '0')
               }
+
               $counters.SetAttribute('total', [string]$failedResults.Count)
               $counters.SetAttribute('executed', [string]$failedResults.Count)
               $counters.SetAttribute('failed', [string]$failedResults.Count)
@@ -136,13 +150,89 @@ jobs:
 
             $relative = [System.IO.Path]::GetRelativePath($sourceRoot, $trx.FullName)
             $target = Join-Path $failedRoot ([System.IO.Path]::ChangeExtension($relative, '.failed.trx'))
+
             New-Item -ItemType Directory -Force -Path (Split-Path -Parent $target) | Out-Null
             $doc.Save($target)
+
             Write-Host ("Wrote {0} (failed: {1})" -f $target, $failedResults.Count)
+
             $totalFailed += $failedResults.Count
           }
 
           Write-Host ("Total failed tests captured: {0}" -f $totalFailed)
+
+      - name: Publish failed test summary
+        if: always()
+        shell: pwsh
+        run: |
+          $sourceRoot = Join-Path '${{ github.workspace }}' 'TestResults'
+          $summaryFile = Join-Path '${{ github.workspace }}' 'failed-tests-summary.md'
+
+          "# Failed Test Summary" | Out-File -FilePath $summaryFile -Encoding utf8
+          "" | Out-File -FilePath $summaryFile -Append -Encoding utf8
+
+          if (-not (Test-Path $sourceRoot)) {
+            "No TestResults directory found." | Out-File -FilePath $summaryFile -Append -Encoding utf8
+            Get-Content $summaryFile | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+            return
+          }
+
+          $ns = 'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'
+          $trxFiles = Get-ChildItem -Path $sourceRoot -Filter '*.trx' -Recurse -File
+          $totalFailed = 0
+
+          foreach ($trx in $trxFiles) {
+            [xml]$doc = Get-Content -LiteralPath $trx.FullName
+            $nsMgr = New-Object System.Xml.XmlNamespaceManager($doc.NameTable)
+            $nsMgr.AddNamespace('t', $ns)
+
+            $failedResults = @($doc.SelectNodes('//t:UnitTestResult[@outcome="Failed"]', $nsMgr))
+
+            if ($failedResults.Count -eq 0) {
+              continue
+            }
+
+            "## $($trx.BaseName)" | Out-File -FilePath $summaryFile -Append -Encoding utf8
+            "" | Out-File -FilePath $summaryFile -Append -Encoding utf8
+
+            foreach ($result in $failedResults) {
+              $testName = $result.testName
+              $messageNode = $result.SelectSingleNode('t:Output/t:ErrorInfo/t:Message', $nsMgr)
+              $stackNode = $result.SelectSingleNode('t:Output/t:ErrorInfo/t:StackTrace', $nsMgr)
+
+              "- **$testName**" | Out-File -FilePath $summaryFile -Append -Encoding utf8
+
+              if ($null -ne $messageNode) {
+                $message = $messageNode.InnerText.Trim()
+                "  - Message: $message" | Out-File -FilePath $summaryFile -Append -Encoding utf8
+              }
+
+              if ($null -ne $stackNode) {
+                $stackTrace = $stackNode.InnerText.Trim()
+
+                if (-not [string]::IsNullOrWhiteSpace($stackTrace)) {
+                  "  - Stack trace:" | Out-File -FilePath $summaryFile -Append -Encoding utf8
+                  "" | Out-File -FilePath $summaryFile -Append -Encoding utf8
+                  "    ````text" | Out-File -FilePath $summaryFile -Append -Encoding utf8
+                  $stackTrace | Out-File -FilePath $summaryFile -Append -Encoding utf8
+                  "    ````" | Out-File -FilePath $summaryFile -Append -Encoding utf8
+                }
+              }
+
+              "" | Out-File -FilePath $summaryFile -Append -Encoding utf8
+            }
+
+            $totalFailed += $failedResults.Count
+          }
+
+          if ($totalFailed -eq 0) {
+            "No failed tests were found." | Out-File -FilePath $summaryFile -Append -Encoding utf8
+          }
+
+          "" | Out-File -FilePath $summaryFile -Append -Encoding utf8
+          "_Total failed tests captured: $totalFailed._" | Out-File -FilePath $summaryFile -Append -Encoding utf8
+
+          Get-Content $summaryFile | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
 
       - name: Upload failed-tests TRX artifact
         if: always()
@@ -152,6 +242,83 @@ jobs:
           path: FailedTestResults/**/*.failed.trx
           retention-days: 14
           if-no-files-found: ignore
+
+      - name: Upload failed test summary artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failed-tests-summary
+          path: failed-tests-summary.md
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Comment failed test summary on PR
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            const summaryPath = 'failed-tests-summary.md';
+            const marker = '<!-- bodu-ci-failed-tests-summary -->';
+
+            if (!fs.existsSync(summaryPath)) {
+              return;
+            }
+
+            const summary = fs.readFileSync(summaryPath, 'utf8');
+
+            if (!summary.includes('- **')) {
+              return;
+            }
+
+            const maxBodyLength = 60000;
+            let body = [
+              marker,
+              '## CI failed test summary',
+              '',
+              summary,
+              '',
+              '@claude please review these failed tests and suggest the required code or test fixes.'
+            ].join('\n');
+
+            if (body.length > maxBodyLength) {
+              body = body.substring(0, maxBodyLength) + '\n\n_Comment truncated because the failure output was too large. See the workflow summary or uploaded artifacts for the full output._';
+            }
+
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100
+            });
+
+            const existing = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body &&
+              comment.body.includes(marker)
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body
+              });
+
+              return;
+            }
+
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number,
+              body
+            });
 
       - name: Publish test report
         if: always()
