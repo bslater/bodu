@@ -122,7 +122,7 @@ public sealed class XxHash32
         acc ^= acc >> 16;
 
         byte[] result = new byte[4];
-        BinaryPrimitives.WriteUInt32LittleEndian(result, acc);
+        BinaryPrimitives.WriteUInt32BigEndian(result, acc);
         return result;
     }
 

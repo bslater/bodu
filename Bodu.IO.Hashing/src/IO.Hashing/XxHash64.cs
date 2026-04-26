@@ -135,7 +135,7 @@ public sealed class XxHash64
         acc ^= acc >> 32;
 
         byte[] result = new byte[8];
-        BinaryPrimitives.WriteUInt64LittleEndian(result, acc);
+        BinaryPrimitives.WriteUInt64BigEndian(result, acc);
         return result;
     }
 }

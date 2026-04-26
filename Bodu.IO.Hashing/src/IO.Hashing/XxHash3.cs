@@ -142,7 +142,7 @@ public sealed class XxHash3
         };
 
         byte[] result = new byte[8];
-        BinaryPrimitives.WriteUInt64LittleEndian(result, h64);
+        BinaryPrimitives.WriteUInt64BigEndian(result, h64);
         return result;
     }
 
@@ -258,8 +258,8 @@ public sealed class XxHash3
         };
 
         byte[] result = new byte[16];
-        BinaryPrimitives.WriteUInt64LittleEndian(result.AsSpan(0, 8), lo);
-        BinaryPrimitives.WriteUInt64LittleEndian(result.AsSpan(8, 8), hi);
+        BinaryPrimitives.WriteUInt64BigEndian(result.AsSpan(0, 8), lo);
+        BinaryPrimitives.WriteUInt64BigEndian(result.AsSpan(8, 8), hi);
         return result;
     }
 

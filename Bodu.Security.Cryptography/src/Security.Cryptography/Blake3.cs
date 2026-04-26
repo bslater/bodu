@@ -81,6 +81,21 @@ public sealed class Blake3
         0x510E527Fu, 0x9B05688Cu, 0x1F83D9ABu, 0x5BE0CD19u,
     };
 
+    /// <summary>
+    /// The per-round message word permutation table (§2.4 of the BLAKE3 specification).
+    /// Each row gives the 16 message-word indices consumed by a single round's G calls.
+    /// </summary>
+    private static readonly byte[,] s_msgSchedule =
+    {
+        {  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 },
+        {  2,  6,  3, 10,  7,  0,  4, 13,  1, 11, 12,  5,  9, 14, 15,  8 },
+        {  3,  4, 10, 12, 13,  2,  7, 14,  6,  5,  9,  0, 11, 15,  8,  1 },
+        { 10,  7, 12,  9, 14,  3, 13, 15,  4,  0, 11,  2,  8,  6,  5,  1 },
+        {  6,  2,  4, 11,  9,  7,  8,  5,  0, 13, 10,  3, 14,  1, 15, 12 },
+        { 12,  1,  8,  0,  2, 10, 11,  4, 15,  7,  6,  9, 14, 13,  5,  3 },
+        { 13, 12,  9, 14, 11,  1,  3,  8,  6, 15,  0,  7,  4,  2, 10,  5 },
+    };
+
     // ---- streaming state ----
 
     /// <summary>
@@ -345,20 +360,20 @@ public sealed class Blake3
         state[14] = blockLen;
         state[15] = flags;
 
-        // Seven rounds of column then diagonal mixing.
+        // Seven rounds of column then diagonal mixing, each using a permuted view of the message block.
         for (int round = 0; round < 7; round++)
         {
             // Column step.
-            G(state, 0, 4, 8, 12, blockWords[0], blockWords[1]);
-            G(state, 1, 5, 9, 13, blockWords[2], blockWords[3]);
-            G(state, 2, 6, 10, 14, blockWords[4], blockWords[5]);
-            G(state, 3, 7, 11, 15, blockWords[6], blockWords[7]);
+            G(state, 0, 4,  8, 12, blockWords[s_msgSchedule[round,  0]], blockWords[s_msgSchedule[round,  1]]);
+            G(state, 1, 5,  9, 13, blockWords[s_msgSchedule[round,  2]], blockWords[s_msgSchedule[round,  3]]);
+            G(state, 2, 6, 10, 14, blockWords[s_msgSchedule[round,  4]], blockWords[s_msgSchedule[round,  5]]);
+            G(state, 3, 7, 11, 15, blockWords[s_msgSchedule[round,  6]], blockWords[s_msgSchedule[round,  7]]);
 
             // Diagonal step.
-            G(state, 0, 5, 10, 15, blockWords[8], blockWords[9]);
-            G(state, 1, 6, 11, 12, blockWords[10], blockWords[11]);
-            G(state, 2, 7, 8, 13, blockWords[12], blockWords[13]);
-            G(state, 3, 4, 9, 14, blockWords[14], blockWords[15]);
+            G(state, 0, 5, 10, 15, blockWords[s_msgSchedule[round,  8]], blockWords[s_msgSchedule[round,  9]]);
+            G(state, 1, 6, 11, 12, blockWords[s_msgSchedule[round, 10]], blockWords[s_msgSchedule[round, 11]]);
+            G(state, 2, 7,  8, 13, blockWords[s_msgSchedule[round, 12]], blockWords[s_msgSchedule[round, 13]]);
+            G(state, 3, 4,  9, 14, blockWords[s_msgSchedule[round, 14]], blockWords[s_msgSchedule[round, 15]]);
         }
 
         // Finalise: XOR the two halves of the state.

@@ -145,7 +145,14 @@ public sealed class Shake : HashAlgorithm
     /// </summary>
     /// <value>Either 128 (SHAKE128) or 256 (SHAKE256).</value>
     /// <returns>The security level selected at construction time.</returns>
-    public int SecurityLevel => this._securityLevel;
+    public int SecurityLevel
+    {
+        get
+        {
+            this.ThrowIfDisposed();
+            return this._securityLevel;
+        }
+    }
 
     /// <summary>
     /// Gets or sets the size, in bits, of the final computed hash output.
