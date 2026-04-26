@@ -215,7 +215,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
                 while ((bytesRead = await input.ReadAsync(readBuffer.AsMemory(0, readBuffer.Length), linked.Token)) > 0)
                     this.ProcessBytes(readBuffer.AsSpan(0, bytesRead));
             }
-            catch (OperationCanceledException)
+            catch (Exception)
             {
                 await this.DrainWorkersAsync();
                 throw;

@@ -315,7 +315,6 @@ public partial class ParallelMerkleTreeHashTests
     /// succeeds on the next call.
     /// </summary>
     [TestMethod]
-    [Ignore("Flaky: ParallelMerkleTreeHash state leak on fault recovery — tracked by bslater/bodu#54.")]
     public async Task ComputeHashAsync_AfterStreamFault_ShouldSucceedOnNextCall()
     {
         byte[] data = MakeData(8);
@@ -332,6 +331,116 @@ public partial class ParallelMerkleTreeHashTests
         byte[] actual = await hasher.ComputeHashAsync(new MemoryStream(data));
         CollectionAssert.AreEqual(expected, actual,
             "Instance did not recover correctly after a faulting stream.");
+    }
+
+    /// <summary>
+    /// Verifies that the instance resets cleanly when a fault occurs before any bytes have been
+    /// delivered to <c>ProcessBytes</c> — that is, the level-0 channel and worker created by
+    /// <c>Reset</c> are idle when the exception fires.
+    /// </summary>
+    [TestMethod]
+    public async Task ComputeHashAsync_AfterStreamFault_WhenFaultBeforeAnyData_ShouldSucceedOnNextCall()
+    {
+        byte[] data = MakeData(8);
+        byte[] expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
+
+        using var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
+
+        try
+        {
+            await hasher.ComputeHashAsync(new FaultingStream(MakeData(32), throwAfterBytes: 0));
+        }
+        catch (IOException) { /* expected */ }
+
+        byte[] actual = await hasher.ComputeHashAsync(new MemoryStream(data));
+        CollectionAssert.AreEqual(expected, actual,
+            "Instance did not recover correctly after a fault before any data was delivered.");
+    }
+
+    /// <summary>
+    /// Verifies that the instance resets cleanly when a fault occurs after exactly one complete
+    /// block has been submitted as a leaf — exercising the path where the level-0 worker has
+    /// one pending item when the exception fires.
+    /// </summary>
+    [TestMethod]
+    public async Task ComputeHashAsync_AfterStreamFault_WhenFaultAfterWholeBlock_ShouldSucceedOnNextCall()
+    {
+        byte[] data = MakeData(8);
+        byte[] expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
+
+        using var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
+
+        try
+        {
+            await hasher.ComputeHashAsync(new FaultingStream(MakeData(32), throwAfterBytes: DefaultBlockSize));
+        }
+        catch (IOException) { /* expected */ }
+
+        byte[] actual = await hasher.ComputeHashAsync(new MemoryStream(data));
+        CollectionAssert.AreEqual(expected, actual,
+            "Instance did not recover correctly after a fault at an exact block boundary.");
+    }
+
+    /// <summary>
+    /// Verifies that fault recovery is repeatable — two consecutive faulting calls followed by a
+    /// clean call must still produce the correct root, confirming the fix is not a one-shot path.
+    /// </summary>
+    [TestMethod]
+    public async Task ComputeHashAsync_AfterConsecutiveStreamFaults_ShouldSucceedOnNextCall()
+    {
+        byte[] data = MakeData(8);
+        byte[] expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
+
+        using var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
+
+        try
+        {
+            await hasher.ComputeHashAsync(new FaultingStream(MakeData(32), throwAfterBytes: 6));
+        }
+        catch (IOException) { /* expected */ }
+
+        try
+        {
+            await hasher.ComputeHashAsync(new FaultingStream(MakeData(32), throwAfterBytes: 3));
+        }
+        catch (IOException) { /* expected */ }
+
+        byte[] actual = await hasher.ComputeHashAsync(new MemoryStream(data));
+        CollectionAssert.AreEqual(expected, actual,
+            "Instance did not recover correctly after two consecutive faulting streams.");
+    }
+
+    /// <summary>
+    /// Verifies that fault and success calls can be freely interleaved — a successful call between
+    /// two faults must not leave the instance unable to recover from the subsequent fault.
+    /// </summary>
+    [TestMethod]
+    public async Task ComputeHashAsync_WhenFaultAndSuccessInterleaved_ShouldAlwaysProduceCorrectResult()
+    {
+        byte[] data = MakeData(8);
+        byte[] expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
+
+        using var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
+
+        try
+        {
+            await hasher.ComputeHashAsync(new FaultingStream(MakeData(32), throwAfterBytes: 6));
+        }
+        catch (IOException) { /* expected */ }
+
+        byte[] first = await hasher.ComputeHashAsync(new MemoryStream(data));
+        CollectionAssert.AreEqual(expected, first,
+            "First recovery call produced the wrong root.");
+
+        try
+        {
+            await hasher.ComputeHashAsync(new FaultingStream(MakeData(32), throwAfterBytes: 2));
+        }
+        catch (IOException) { /* expected */ }
+
+        byte[] second = await hasher.ComputeHashAsync(new MemoryStream(data));
+        CollectionAssert.AreEqual(expected, second,
+            "Second recovery call (after fault following a successful call) produced the wrong root.");
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════════════════
