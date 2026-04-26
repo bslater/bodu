@@ -402,6 +402,10 @@ public sealed class XxHash3
 
     private static void ConsumeStripes(ulong[] acc, ReadOnlySpan<byte> source, ReadOnlySpan<byte> secret)
     {
+        // Secret offset for the final stripe — intentionally not aligned to the 8-byte stride used
+        // by regular stripes so that the last accumulation uses a distinct secret region.
+        const int LastAccSecretStart = 7;
+
         int len = source.Length;
         int pos = 0;
         int blockLen = StripeLen * StripesPerBlock;
@@ -414,19 +418,15 @@ public sealed class XxHash3
             pos += blockLen;
         }
 
-        int remainingStripes = (len - pos) / StripeLen;
+        // Use (len - pos - 1) / StripeLen so that at least one byte is always reserved for the
+        // unconditional final stripe below, preventing the last full stripe from being processed twice.
+        int remainingStripes = (len - pos - 1) / StripeLen;
         for (int stripe = 0; stripe < remainingStripes; stripe++)
             Accumulate512(acc, source.Slice(pos + stripe * StripeLen), secret.Slice(stripe * 8));
 
-        // Final partial stripe.
-        int lastStripeOffset = len - StripeLen;
-        if (lastStripeOffset >= pos)
-            Accumulate512(acc, source.Slice(lastStripeOffset), secret.Slice((StripesPerBlock - 1) * 8));
-        else if ((len - pos) % StripeLen != 0)
-        {
-            int partialOffset = pos + remainingStripes * StripeLen;
-            Accumulate512(acc, source.Slice(partialOffset), secret.Slice(remainingStripes * 8));
-        }
+        // Final stripe always covers the last StripeLen bytes, potentially overlapping the last
+        // regular stripe for non-aligned inputs. Secret offset matches the reference formula.
+        Accumulate512(acc, source.Slice(len - StripeLen), secret.Slice(SecretLen - StripeLen - LastAccSecretStart));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
