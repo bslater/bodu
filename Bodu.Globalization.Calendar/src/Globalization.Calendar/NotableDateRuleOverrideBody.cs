@@ -144,6 +144,17 @@ public sealed record NotableDateRuleOverrideBody
 	public Type? AlgorithmType { get; init; }
 
 	/// <summary>
+	/// Gets the month token passed to the algorithm constructor for <see cref="DateResolutionStrategy.Algorithm" /> rules whose
+	/// <see cref="AlgorithmType" /> takes a <c>(month, day)</c> pair.
+	/// </summary>
+	public string? AlgorithmMonth { get; init; }
+
+	/// <summary>
+	/// Gets the day-of-month value passed to the algorithm constructor alongside <see cref="AlgorithmMonth" />.
+	/// </summary>
+	public int? AlgorithmDay { get; init; }
+
+	/// <summary>
 	/// Gets the tags authored on the override. These merge additively with the inherited rule's tags.
 	/// </summary>
 	public ImmutableArray<string> Tags { get; init; } = ImmutableArray<string>.Empty;

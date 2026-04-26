@@ -150,6 +150,8 @@ internal static class NotableDateRuleMerger
 				OffsetDays = null,
 				AlgorithmKey = null,
 				AlgorithmType = null,
+				AlgorithmMonth = null,
+				AlgorithmDay = null,
 			},
 			DateResolutionStrategy.DayOfWeekInMonth => rule with
 			{
@@ -162,6 +164,8 @@ internal static class NotableDateRuleMerger
 				OffsetDays = null,
 				AlgorithmKey = null,
 				AlgorithmType = null,
+				AlgorithmMonth = null,
+				AlgorithmDay = null,
 			},
 			DateResolutionStrategy.OffsetFromAnchor => rule with
 			{
@@ -174,6 +178,8 @@ internal static class NotableDateRuleMerger
 				OffsetDays = body.OffsetDays,
 				AlgorithmKey = null,
 				AlgorithmType = null,
+				AlgorithmMonth = null,
+				AlgorithmDay = null,
 			},
 			DateResolutionStrategy.Algorithm => rule with
 			{
@@ -186,6 +192,8 @@ internal static class NotableDateRuleMerger
 				OffsetDays = null,
 				AlgorithmKey = body.AlgorithmKey,
 				AlgorithmType = body.AlgorithmType,
+				AlgorithmMonth = body.AlgorithmMonth,
+				AlgorithmDay = body.AlgorithmDay,
 			},
 			_ => rule,
 		};

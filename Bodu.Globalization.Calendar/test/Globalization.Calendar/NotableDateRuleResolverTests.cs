@@ -516,6 +516,145 @@ public sealed class NotableDateRuleResolverTests
 		Assert.AreEqual(expected, NotableDateRuleResolver.IsApplicable(rule, year));
 	}
 
+	/// <summary>
+	/// Verifies that an Algorithm rule whose <see cref="NotableDateRule.AlgorithmType" /> exposes a two-argument
+	/// constructor of the form <c>(EnumMonth, int)</c> is activated using <see cref="NotableDateRule.AlgorithmMonth" />
+	/// and <see cref="NotableDateRule.AlgorithmDay" />, with the month token parsed against the constructor's enum type.
+	/// </summary>
+	[TestMethod]
+	public void ResolveAnchorDate_WhenAlgorithmTypeHasEnumIntCtor_ShouldActivateWithAuthoredMonthAndDay()
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "Enum-Month Algorithm",
+			Strategy = DateResolutionStrategy.Algorithm,
+			Category = NotableDateCategory.Observance,
+			AlgorithmType = typeof(EnumMonthAlgorithm),
+			AlgorithmMonth = "March",
+			AlgorithmDay = 17,
+		};
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		DateTime? result = resolver.ResolveAnchorDate(rule, 2025);
+
+		Assert.AreEqual(new DateTime(2025, 3, 17), result);
+	}
+
+	/// <summary>
+	/// Verifies that the enum-month parse is case-insensitive — a lowercase month token still resolves to the matching
+	/// enum value during constructor selection.
+	/// </summary>
+	[TestMethod]
+	public void ResolveAnchorDate_WhenAlgorithmMonthIsCaseInsensitive_ShouldStillActivate()
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "Lowercase Month",
+			Strategy = DateResolutionStrategy.Algorithm,
+			Category = NotableDateCategory.Observance,
+			AlgorithmType = typeof(EnumMonthAlgorithm),
+			AlgorithmMonth = "july",
+			AlgorithmDay = 4,
+		};
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		DateTime? result = resolver.ResolveAnchorDate(rule, 2025);
+
+		Assert.AreEqual(new DateTime(2025, 7, 4), result);
+	}
+
+	/// <summary>
+	/// Verifies that an Algorithm rule whose <see cref="NotableDateRule.AlgorithmType" /> exposes an
+	/// <c>(int, int)</c> constructor is activated when <see cref="NotableDateRule.AlgorithmMonth" /> parses as an integer.
+	/// </summary>
+	[TestMethod]
+	public void ResolveAnchorDate_WhenAlgorithmTypeHasIntIntCtor_ShouldActivateWithNumericMonthToken()
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "Int-Month Algorithm",
+			Strategy = DateResolutionStrategy.Algorithm,
+			Category = NotableDateCategory.Observance,
+			AlgorithmType = typeof(IntMonthAlgorithm),
+			AlgorithmMonth = "11",
+			AlgorithmDay = 5,
+		};
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		DateTime? result = resolver.ResolveAnchorDate(rule, 2025);
+
+		Assert.AreEqual(new DateTime(2025, 11, 5), result);
+	}
+
+	/// <summary>
+	/// Verifies that an Algorithm rule whose <see cref="NotableDateRule.AlgorithmType" /> exposes a <c>(string, int)</c>
+	/// constructor receives the raw <see cref="NotableDateRule.AlgorithmMonth" /> token without coercion.
+	/// </summary>
+	[TestMethod]
+	public void ResolveAnchorDate_WhenAlgorithmTypeHasStringIntCtor_ShouldActivateWithRawMonthToken()
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "String-Month Algorithm",
+			Strategy = DateResolutionStrategy.Algorithm,
+			Category = NotableDateCategory.Observance,
+			AlgorithmType = typeof(StringMonthAlgorithm),
+			AlgorithmMonth = "Custom",
+			AlgorithmDay = 9,
+		};
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		DateTime? result = resolver.ResolveAnchorDate(rule, 2025);
+
+		Assert.AreEqual(new DateTime(2025, 9, 1), result);
+		Assert.AreEqual("Custom", StringMonthAlgorithm.LastMonthToken);
+	}
+
+	/// <summary>
+	/// Verifies that supplying a month token that does not parse to the constructor's enum type causes the resolver to
+	/// return <see langword="null" /> rather than activating the algorithm or throwing.
+	/// </summary>
+	[TestMethod]
+	public void ResolveAnchorDate_WhenAlgorithmMonthDoesNotMatchEnum_ShouldReturnNull()
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "Unparseable Month",
+			Strategy = DateResolutionStrategy.Algorithm,
+			Category = NotableDateCategory.Observance,
+			AlgorithmType = typeof(EnumMonthAlgorithm),
+			AlgorithmMonth = "Smarch",
+			AlgorithmDay = 1,
+		};
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		Assert.IsNull(resolver.ResolveAnchorDate(rule, 2025));
+	}
+
+	/// <summary>
+	/// Verifies that when the rule supplies <see cref="NotableDateRule.AlgorithmMonth" /> and
+	/// <see cref="NotableDateRule.AlgorithmDay" /> but the algorithm type only exposes a parameterless constructor, the
+	/// resolver falls through to that constructor rather than failing.
+	/// </summary>
+	[TestMethod]
+	public void ResolveAnchorDate_WhenAlgorithmTypeOnlyHasParameterlessCtor_ShouldFallThroughToParameterless()
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "Parameterless",
+			Strategy = DateResolutionStrategy.Algorithm,
+			Category = NotableDateCategory.Observance,
+			AlgorithmType = typeof(FixedJuneAlgorithm),
+			AlgorithmMonth = "Tishri",
+			AlgorithmDay = 1,
+		};
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		DateTime? result = resolver.ResolveAnchorDate(rule, 2025);
+
+		Assert.AreEqual(new DateTime(2025, 6, 1), result);
+	}
+
 	private sealed class StaticAlgorithm : INotableDateAlgorithm
 	{
 		private readonly DateTime _value;
@@ -540,5 +679,83 @@ public sealed class NotableDateRuleResolverTests
 	/// </summary>
 	public sealed class NotAAlgorithm
 	{
+	}
+
+	/// <summary>
+	/// Algorithm-type fallback double exposing a <c>(MonthOfYear, int)</c> constructor; used to verify the resolver's
+	/// generic enum-month constructor selection logic.
+	/// </summary>
+	public sealed class EnumMonthAlgorithm : INotableDateAlgorithm
+	{
+		private readonly MonthOfYear _month;
+		private readonly int _day;
+
+		public EnumMonthAlgorithm(MonthOfYear month, int day)
+		{
+			_month = month;
+			_day = day;
+		}
+
+		public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null) =>
+			new DateTime(year, (int)_month, _day);
+	}
+
+	/// <summary>
+	/// Algorithm-type fallback double exposing an <c>(int, int)</c> constructor; used to verify integer-coerced month
+	/// constructor selection.
+	/// </summary>
+	public sealed class IntMonthAlgorithm : INotableDateAlgorithm
+	{
+		private readonly int _month;
+		private readonly int _day;
+
+		public IntMonthAlgorithm(int month, int day)
+		{
+			_month = month;
+			_day = day;
+		}
+
+		public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null) =>
+			new DateTime(year, _month, _day);
+	}
+
+	/// <summary>
+	/// Algorithm-type fallback double exposing a <c>(string, int)</c> constructor; used to verify pass-through of the
+	/// raw month token. Captures the token in <see cref="LastMonthToken" /> so tests can assert no coercion occurred.
+	/// </summary>
+	public sealed class StringMonthAlgorithm : INotableDateAlgorithm
+	{
+		private readonly int _day;
+
+		public StringMonthAlgorithm(string month, int day)
+		{
+			LastMonthToken = month;
+			_day = day;
+		}
+
+		public static string? LastMonthToken { get; private set; }
+
+		public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null) =>
+			new DateTime(year, 9, _day);
+	}
+
+	/// <summary>
+	/// Months supplied as the first parameter of <see cref="EnumMonthAlgorithm" />. Defined inside the test so the
+	/// production assembly does not pick up an unrelated public enum.
+	/// </summary>
+	public enum MonthOfYear
+	{
+		January = 1,
+		February = 2,
+		March = 3,
+		April = 4,
+		May = 5,
+		June = 6,
+		July = 7,
+		August = 8,
+		September = 9,
+		October = 10,
+		November = 11,
+		December = 12,
 	}
 }
