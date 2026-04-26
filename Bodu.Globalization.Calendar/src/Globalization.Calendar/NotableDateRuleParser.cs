@@ -511,13 +511,17 @@ public static class NotableDateRuleParser
 	}
 
     /// <summary>
-    /// Parses <paramref name="monthName" /> as either a month number (<c>1</c>–<c>12</c>) or a
-    /// culture-invariant English month name.
+    /// Parses <paramref name="monthName" /> as a culture-invariant English month name (e.g. <c>January</c>) or
+    /// an integer month number in the range <c>1</c>–<c>13</c>.
     /// </summary>
-    /// <param name="monthName">The month token.</param>
-    /// <returns>The month number in the range <c>1..12</c>.</returns>
-    /// <exception cref="FormatException"><paramref name="monthName" /> is neither a valid
-    /// month number nor a recognised English month name.</exception>
+    /// <remarks>
+    /// Integer months are accepted to support non-Gregorian BCL calendar rules (e.g. <c>month="1"</c> on a
+    /// <c>Fixed</c> rule with <c>calendarType="System.Globalization.ChineseLunisolarCalendar"</c>).
+    /// Lunisolar calendars can carry up to 13 months in intercalary years.
+    /// </remarks>
+    /// <param name="monthName">The month token — either an English month name or an integer 1–13.</param>
+    /// <returns>The month number.</returns>
+    /// <exception cref="FormatException"><paramref name="monthName" /> is neither a recognised English month name nor an integer in 1–13.</exception>
 	private static int ParseMonth(string monthName)
 	{
 		ThrowHelper.ThrowIfNullOrEmpty(monthName);
@@ -525,7 +529,11 @@ public static class NotableDateRuleParser
 		if (DateTime.TryParseExact(monthName, "MMMM", CultureInfo.InvariantCulture, DateTimeStyles.None, out var result))
 			return result.Month;
 
-		throw new FormatException($"Invalid month name '{monthName}'. Expected a full English month name (e.g. 'January').");
+		if (int.TryParse(monthName, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric)
+			&& numeric is >= 1 and <= 13)
+			return numeric;
+
+		throw new FormatException($"Invalid month value '{monthName}'. Expected a full English month name (e.g. 'January') or an integer 1–13.");
 	}
 
 	// ----------------------------------------------------------------------------

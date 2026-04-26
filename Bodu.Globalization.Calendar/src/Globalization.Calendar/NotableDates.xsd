@@ -107,9 +107,13 @@
     <xs:sequence>
       <xs:choice minOccurs="1" maxOccurs="1">
         <xs:element name="Fixed">
+          <!-- When calendarType is set on the enclosing Rule, month and day are
+               interpreted in that calendar system (e.g. ChineseLunisolarCalendar)
+               and the resolver converts the result to a Gregorian DateTime.
+               Without calendarType, month and day are Gregorian (1–12). -->
           <xs:complexType>
             <xs:attribute name="day" type="nd:day" use="required" />
-            <xs:attribute name="month" type="nd:monthName" use="required" />
+            <xs:attribute name="month" type="nd:monthOrNumber" use="required" />
           </xs:complexType>
         </xs:element>
         <xs:element name="DayOfWeekInMonth">
@@ -174,7 +178,7 @@
         <xs:element name="Fixed">
           <xs:complexType>
             <xs:attribute name="day" type="nd:day" use="required" />
-            <xs:attribute name="month" type="nd:monthName" use="required" />
+            <xs:attribute name="month" type="nd:monthOrNumber" use="required" />
           </xs:complexType>
         </xs:element>
         <xs:element name="DayOfWeekInMonth">
@@ -327,6 +331,37 @@
       <xs:enumeration value="November" />
       <xs:enumeration value="December" />
     </xs:restriction>
+  </xs:simpleType>
+
+  <!-- monthOrNumber: used by Fixed rules. Accepts either a full English month name
+       (Gregorian rules) or an integer 1–13 (when calendarType is set on the Rule,
+       the integer is the month number in that calendar system; lunisolar calendars
+       may carry up to 13 months via intercalary months). -->
+  <xs:simpleType name="monthOrNumber">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="January" />
+          <xs:enumeration value="February" />
+          <xs:enumeration value="March" />
+          <xs:enumeration value="April" />
+          <xs:enumeration value="May" />
+          <xs:enumeration value="June" />
+          <xs:enumeration value="July" />
+          <xs:enumeration value="August" />
+          <xs:enumeration value="September" />
+          <xs:enumeration value="October" />
+          <xs:enumeration value="November" />
+          <xs:enumeration value="December" />
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction base="xs:positiveInteger">
+          <xs:minInclusive value="1" />
+          <xs:maxInclusive value="13" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
   </xs:simpleType>
 
   <xs:simpleType name="dayOfWeek">

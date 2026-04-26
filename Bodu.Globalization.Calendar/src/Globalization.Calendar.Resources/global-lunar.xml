@@ -6,16 +6,12 @@
   traditional Chinese lunisolar calendar. They are widely recognised across
   Chinese, Vietnamese, Korean, and other East Asian communities worldwide.
 
-  All dates in this resource require a custom INotableDateAlgorithm registered
-  under the stated key with the INotableDateAlgorithmRegistry. The one exception
-  is the 'lunar-new-year' key, which is served by the built-in
-  LunarNewYearNotableDateAlgorithm supplied by this library.
+  Lunar New Year is expressed as a Fixed rule with calendarType set to
+  ChineseLunisolarCalendar; no algorithm registration is required for it.
+  All remaining dates require a custom INotableDateAlgorithm registered
+  under the stated key with the INotableDateAlgorithmRegistry.
 
   Algorithm keys used:
-    lunar-new-year      — Built-in LunarNewYearNotableDateAlgorithm.
-                          Calculates the Gregorian date of the first day of the
-                          first month of the Chinese lunisolar year. Supported
-                          for Gregorian years 1901–2100.
     lantern-festival    — The fifteenth day of the first lunar month (fifteen
                           days after Lunar New Year). Marks the end of the
                           New Year festival period.
@@ -39,8 +35,9 @@
           category="Cultural"
           firstYear="1901"
           lastYear="2100"
-          comment="The first day of the first month of the Chinese lunisolar year. Also celebrated as Tết (Vietnam) and Seollal (Korea). Falls between 21 January and 20 February in the Gregorian calendar. The built-in LunarNewYearNotableDateAlgorithm implements this rule.">
-      <Algorithm key="lunar-new-year" />
+          calendarType="System.Globalization.ChineseLunisolarCalendar"
+          comment="The first day of the first month of the Chinese lunisolar year. Also celebrated as Tết (Vietnam) and Seollal (Korea). Falls between 21 January and 20 February in the Gregorian calendar. Resolved via the Fixed strategy using ChineseLunisolarCalendar (month 1, day 1).">
+      <Fixed month="1" day="1" />
       <Tag>LunarCalendar</Tag>
       <Tag>ChineseTradition</Tag>
     </Rule>

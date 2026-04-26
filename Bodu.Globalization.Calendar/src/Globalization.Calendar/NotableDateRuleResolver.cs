@@ -90,7 +90,25 @@ internal sealed class NotableDateRuleResolver
 			{
 				case DateResolutionStrategy.Fixed:
 					if (rule.Month is { } m1 && rule.Day is { } d1)
+					{
+						if (rule.CalendarType is { } calType
+							&& Activator.CreateInstance(calType) is System.Globalization.Calendar cal)
+						{
+							try
+							{
+								DateTime converted = cal.ToDateTime(year, m1, d1, 0, 0, 0, 0);
+								return DateTime.SpecifyKind(converted.Date, DateTimeKind.Unspecified);
+							}
+							catch (ArgumentOutOfRangeException)
+							{
+								// Year is outside the calendar's supported range; treat as no occurrence.
+								return null;
+							}
+						}
+
 						return new DateTime(year, m1, d1, 0, 0, 0, DateTimeKind.Unspecified);
+					}
+
 					return null;
 
 				case DateResolutionStrategy.DayOfWeekInMonth:

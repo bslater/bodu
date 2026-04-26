@@ -655,6 +655,101 @@ public sealed class NotableDateRuleResolverTests
 		Assert.AreEqual(new DateTime(2025, 6, 1), result);
 	}
 
+	// -----------------------------------------------------------------------------------------
+	// Fixed strategy with CalendarType
+	// -----------------------------------------------------------------------------------------
+
+	/// <summary>
+	/// Verifies that a Fixed rule with <see cref="NotableDateRule.CalendarType" /> set to
+	/// <see cref="System.Globalization.ChineseLunisolarCalendar" /> resolves month 1, day 1
+	/// to the correct Gregorian date for a set of well-known Lunar New Year years.
+	/// </summary>
+	[DataRow(1901, 1901, 2, 19)]
+	[DataRow(2000, 2000, 2, 5)]
+	[DataRow(2020, 2020, 1, 25)]
+	[DataRow(2024, 2024, 2, 10)]
+	[DataRow(2025, 2025, 1, 29)]
+	[DataRow(2026, 2026, 2, 17)]
+	[DataRow(2100, 2100, 2, 9)]
+	[TestMethod]
+	public void ResolveAnchorDate_WhenFixedRuleWithCalendarType_ShouldReturnConvertedGregorianDate(
+		int year,
+		int expectedYear,
+		int expectedMonth,
+		int expectedDay)
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "Lunar New Year",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Cultural,
+			Month = 1,
+			Day = 1,
+			CalendarType = typeof(System.Globalization.ChineseLunisolarCalendar),
+		};
+
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		DateTime? result = resolver.ResolveAnchorDate(rule, year);
+
+		Assert.IsNotNull(result);
+		Assert.AreEqual(new DateTime(expectedYear, expectedMonth, expectedDay), result.Value);
+		Assert.AreEqual(DateTimeKind.Unspecified, result.Value.Kind);
+	}
+
+	/// <summary>
+	/// Verifies that a Fixed rule with <see cref="NotableDateRule.CalendarType" /> returns
+	/// <see langword="null" /> rather than throwing when the year falls outside the BCL
+	/// calendar's supported range.
+	/// </summary>
+	[DataRow(1800)]
+	[DataRow(2200)]
+	[TestMethod]
+	public void ResolveAnchorDate_WhenFixedRuleWithCalendarTypeAndYearOutOfRange_ShouldReturnNull(int year)
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "Lunar New Year",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Cultural,
+			Month = 1,
+			Day = 1,
+			CalendarType = typeof(System.Globalization.ChineseLunisolarCalendar),
+		};
+
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		Assert.IsNull(resolver.ResolveAnchorDate(rule, year));
+	}
+
+	/// <summary>
+	/// Verifies that a Fixed rule whose <see cref="NotableDateRule.CalendarType" /> is not
+	/// assignable to <see cref="System.Globalization.Calendar" /> falls through to the plain
+	/// Gregorian path and returns the expected Gregorian date.
+	/// </summary>
+	[TestMethod]
+	public void ResolveAnchorDate_WhenFixedRuleCalendarTypeIsNotCalendar_ShouldReturnGregorianDate()
+	{
+		// object has a public parameterless constructor but is not a Calendar;
+		// Activator.CreateInstance succeeds but the 'is Calendar' pattern fails, so
+		// the resolver falls through to the Gregorian DateTime path.
+		var rule = new NotableDateRule
+		{
+			Name = "Non-Calendar Type",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Holiday,
+			Month = 3,
+			Day = 15,
+			CalendarType = typeof(object),
+		};
+
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		DateTime? result = resolver.ResolveAnchorDate(rule, 2025);
+
+		Assert.AreEqual(new DateTime(2025, 3, 15), result);
+	}
+
 	private sealed class StaticAlgorithm : INotableDateAlgorithm
 	{
 		private readonly DateTime _value;
