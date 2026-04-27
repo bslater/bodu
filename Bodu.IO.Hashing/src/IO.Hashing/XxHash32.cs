@@ -101,7 +101,7 @@ public sealed class XxHash32
         // Consume remaining 4-byte groups.
         while (pos + 4 <= len)
         {
-            acc ^= Round32(0u, BinaryPrimitives.ReadUInt32LittleEndian(source.Slice(pos, 4)));
+            acc = unchecked(acc + BinaryPrimitives.ReadUInt32LittleEndian(source.Slice(pos, 4)) * Prime32_3);
             acc = unchecked(RotateLeft32(acc, 17) * Prime32_4);
             pos += 4;
         }
@@ -109,7 +109,7 @@ public sealed class XxHash32
         // Consume remaining single bytes.
         while (pos < len)
         {
-            acc ^= unchecked((uint)source[pos] * Prime32_5);
+            acc = unchecked(acc + (uint)source[pos] * Prime32_5);
             acc = unchecked(RotateLeft32(acc, 11) * Prime32_1);
             pos++;
         }
