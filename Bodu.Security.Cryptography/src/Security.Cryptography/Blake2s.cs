@@ -22,7 +22,8 @@ namespace Bodu.Security.Cryptography;
 /// applying 10 rounds of the BLAKE2 <c>G</c> mixing function per block.
 /// </para>
 /// <para>
-/// This implementation uses lookahead buffering: the final message block is not compressed until
+/// This implementation inherits its residual buffer, byte-counter and lookahead-buffering loop from
+/// <see cref="DeferredFinalBlockHashAlgorithm{T}" />: the final message block is not compressed until
 /// <see cref="HashAlgorithm.HashFinal" /> is called, at which point the <c>finalization</c> flag is set and the
 /// output bytes are serialised in little-endian order then truncated to the configured output length.
 /// </para>
@@ -37,7 +38,7 @@ namespace Bodu.Security.Cryptography;
 /// byte[] digest = blake2s.ComputeHash(message);
 /// </code>
 /// </example>
-public sealed class Blake2s : HashAlgorithm
+public sealed class Blake2s : DeferredFinalBlockHashAlgorithm<Blake2s>
 {
     /// <summary>
     /// The set of output sizes, in bits, accepted by this algorithm.
@@ -83,27 +84,6 @@ public sealed class Blake2s : HashAlgorithm
     private readonly uint[] _h = new uint[8];
 
     /// <summary>
-    /// The lookahead buffer holding bytes not yet compressed.
-    /// </summary>
-    private readonly byte[] _pendingBlock = new byte[BlockSizeBytesValue];
-
-    /// <summary>
-    /// The number of bytes currently held in <see cref="_pendingBlock" />.
-    /// </summary>
-    private int _pendingBytes;
-
-    /// <summary>
-    /// The total number of message bytes that have been fully compressed (not including bytes still pending in
-    /// <see cref="_pendingBlock" />).
-    /// </summary>
-    private ulong _totalCompressed;
-
-    /// <summary>
-    /// Indicates whether this instance has been disposed.
-    /// </summary>
-    private bool _disposed;
-
-    /// <summary>
     /// Initialises a new instance of the <see cref="Blake2s" /> class with a 256-bit output hash size.
     /// </summary>
     public Blake2s()
@@ -120,6 +100,7 @@ public sealed class Blake2s : HashAlgorithm
     /// <paramref name="hashSize" /> is not one of the supported output sizes.
     /// </exception>
     public Blake2s(int hashSize)
+        : base(BlockSizeBytesValue)
     {
         if (Array.IndexOf(ValidHashSizes, hashSize) < 0)
             throw new ArgumentOutOfRangeException(
@@ -186,99 +167,103 @@ public sealed class Blake2s : HashAlgorithm
     public override void Initialize()
     {
         this.ThrowIfDisposed();
-        this._pendingBytes = 0;
-        this._totalCompressed = 0UL;
-        Array.Clear(this._pendingBlock, 0, BlockSizeBytesValue);
-        this.InitializeState();
+        base.Initialize();
     }
 
-    /// <summary>
-    /// Releases resources used by the algorithm and clears the internal state.
-    /// </summary>
-    /// <param name="disposing">
-    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to
-    /// release only unmanaged resources.
-    /// </param>
-    protected override void Dispose(bool disposing)
-    {
-        if (this._disposed) return;
+    /// <inheritdoc />
+    /// <remarks>
+    /// Restores the internal hash-state words to the BLAKE2s initialisation values for the configured output size.
+    /// Invoked from <see cref="DeferredFinalBlockHashAlgorithm{T}.Initialize" /> after the inherited residual buffer
+    /// and counter have been cleared.
+    /// </remarks>
+    protected override void OnInitialize() =>
+        this.InitializeState();
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// Clears the chaining state, releases the framework <see cref="HashAlgorithm.HashValue" /> array, and zeros
+    /// <see cref="HashAlgorithm.HashSizeValue" />. The inherited residual buffer is cleared by the grandparent
+    /// before this hook runs.
+    /// </remarks>
+    protected override void OnDispose(bool disposing)
+    {
         if (disposing)
         {
             Array.Clear(this._h, 0, this._h.Length);
-            Array.Clear(this._pendingBlock, 0, this._pendingBlock.Length);
             CryptoHelpers.ClearAndNullify(ref this.HashValue);
-            this._pendingBytes = 0;
-            this._totalCompressed = 0UL;
             this.HashSizeValue = 0;
         }
-
-        this._disposed = true;
-        base.Dispose(disposing);
     }
 
     /// <summary>
-    /// Feeds <paramref name="cbSize" /> bytes of <paramref name="array" /> into the BLAKE2s compression pipeline.
+    /// Compresses a single 64-byte block using the BLAKE2s <c>F</c> compression function. Invoked by
+    /// <see cref="DeferredFinalBlockHashAlgorithm{T}" /> with <paramref name="isFinal" /> set to <see langword="true" />
+    /// for the last call (which inverts the finalisation flag word) and to <see langword="false" /> otherwise.
     /// </summary>
-    /// <param name="array">The input byte array. Must not be <see langword="null" />.</param>
-    /// <param name="ibStart">The zero-based offset in <paramref name="array" /> at which to begin reading.</param>
-    /// <param name="cbSize">The number of bytes to process.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="array" /> is <see langword="null" />.</exception>
-    protected override void HashCore(byte[] array, int ibStart, int cbSize)
+    /// <param name="block">The 64-byte block to compress.</param>
+    /// <param name="totalBytesIncludingThisBlock">
+    /// The cumulative byte count <em>including</em> the bytes in <paramref name="block" />. Used as the per-block
+    /// counter (the BLAKE2 <c>t0</c> / <c>t1</c> input pair).
+    /// </param>
+    /// <param name="isFinal">
+    /// <see langword="true" /> if this is the final block; causes the finalisation flag word to be inverted.
+    /// </param>
+    protected override void ProcessBlock(ReadOnlySpan<byte> block, ulong totalBytesIncludingThisBlock, bool isFinal)
     {
-        ThrowHelper.ThrowIfNull(array);
-        this.ThrowIfDisposed();
-        this.HashCore(array.AsSpan(ibStart, cbSize));
-    }
+        // Read the 16 message words in little-endian order.
+        Span<uint> m = stackalloc uint[16];
+        for (int i = 0; i < 16; i++)
+            m[i] = BinaryPrimitives.ReadUInt32LittleEndian(block.Slice(i * 4, 4));
 
-    /// <summary>
-    /// Feeds the entirety of <paramref name="source" /> into the BLAKE2s compression pipeline.
-    /// </summary>
-    /// <param name="source">The input byte span to hash.</param>
-    protected override void HashCore(ReadOnlySpan<byte> source)
-    {
-        this.ThrowIfDisposed();
+        // Initialise the 16-element working vector.
+        Span<uint> v = stackalloc uint[16];
+        v[0] = this._h[0];
+        v[1] = this._h[1];
+        v[2] = this._h[2];
+        v[3] = this._h[3];
+        v[4] = this._h[4];
+        v[5] = this._h[5];
+        v[6] = this._h[6];
+        v[7] = this._h[7];
+        v[8] = s_iv[0];
+        v[9] = s_iv[1];
+        v[10] = s_iv[2];
+        v[11] = s_iv[3];
+        v[12] = s_iv[4] ^ (uint)(totalBytesIncludingThisBlock & 0xFFFFFFFFUL);   // counter low word
+        v[13] = s_iv[5] ^ (uint)(totalBytesIncludingThisBlock >> 32);            // counter high word
+        v[14] = s_iv[6];
+        v[15] = s_iv[7];
 
-        int pos = 0;
-        int remaining = source.Length;
+        if (isFinal)
+            v[14] = ~v[14];
 
-        while (remaining > 0)
+        // 10 rounds of G mixing.
+        for (int r = 0; r < 10; r++)
         {
-            // If the pending buffer is full and there is still more incoming data, compress it now.
-            // We must never compress the last block here; that is done in HashFinal with the finalization flag.
-            if (this._pendingBytes == BlockSizeBytesValue)
-            {
-                this.Compress(this._pendingBlock, this._totalCompressed + BlockSizeBytesValue, isFinal: false);
-                this._totalCompressed += BlockSizeBytesValue;
-                this._pendingBytes = 0;
-            }
+            byte[] s = s_sigma[r % 10];
 
-            int canCopy = Math.Min(BlockSizeBytesValue - this._pendingBytes, remaining);
-            source.Slice(pos, canCopy).CopyTo(this._pendingBlock.AsSpan(this._pendingBytes));
-            this._pendingBytes += canCopy;
-            pos += canCopy;
-            remaining -= canCopy;
+            G(v, 0, 4, 8, 12, m[s[0]], m[s[1]]);
+            G(v, 1, 5, 9, 13, m[s[2]], m[s[3]]);
+            G(v, 2, 6, 10, 14, m[s[4]], m[s[5]]);
+            G(v, 3, 7, 11, 15, m[s[6]], m[s[7]]);
+            G(v, 0, 5, 10, 15, m[s[8]], m[s[9]]);
+            G(v, 1, 6, 11, 12, m[s[10]], m[s[11]]);
+            G(v, 2, 7, 8, 13, m[s[12]], m[s[13]]);
+            G(v, 3, 4, 9, 14, m[s[14]], m[s[15]]);
         }
+
+        // Fold the working vector back into the hash state.
+        for (int i = 0; i < 8; i++)
+            this._h[i] ^= v[i] ^ v[i + 8];
     }
 
-    /// <summary>
-    /// Finalises the BLAKE2s computation by padding and compressing the last block, then serialising the state.
-    /// </summary>
-    /// <returns>
-    /// A byte array of <see cref="HashAlgorithm.HashSize" /> / 8 bytes containing the computed digest.
-    /// </returns>
-    protected override byte[] HashFinal()
+    /// <inheritdoc />
+    /// <remarks>
+    /// Serialises the eight 32-bit state words in little-endian order and truncates the result to the configured
+    /// output length (which need not be a multiple of four bytes).
+    /// </remarks>
+    protected override byte[] ProcessFinalBlock()
     {
-        this.ThrowIfDisposed();
-
-        // Zero-pad the remaining bytes in the pending block.
-        if (this._pendingBytes < BlockSizeBytesValue)
-            Array.Clear(this._pendingBlock, this._pendingBytes, BlockSizeBytesValue - this._pendingBytes);
-
-        ulong counter = this._totalCompressed + (ulong)this._pendingBytes;
-        this.Compress(this._pendingBlock, counter, isFinal: true);
-
-        // Serialise the eight state words in little-endian order and truncate to the configured output length.
         int outputBytes = this.HashSizeValue / 8;
         byte[] output = new byte[outputBytes];
         int wordCount = (outputBytes + 3) / 4;
@@ -317,63 +302,6 @@ public sealed class Blake2s : HashAlgorithm
     }
 
     /// <summary>
-    /// Compresses a single 64-byte block using the BLAKE2s <c>F</c> compression function.
-    /// </summary>
-    /// <param name="block">The 64-byte block to compress.</param>
-    /// <param name="counter">The number of message bytes consumed so far including this block.</param>
-    /// <param name="isFinal">
-    /// <see langword="true" /> if this is the final block; causes the finalization flag word to be inverted.
-    /// </param>
-    private void Compress(byte[] block, ulong counter, bool isFinal)
-    {
-        // Read the 16 message words in little-endian order.
-        Span<uint> m = stackalloc uint[16];
-        for (int i = 0; i < 16; i++)
-            m[i] = BinaryPrimitives.ReadUInt32LittleEndian(block.AsSpan(i * 4, 4));
-
-        // Initialise the 16-element working vector.
-        Span<uint> v = stackalloc uint[16];
-        v[0] = this._h[0];
-        v[1] = this._h[1];
-        v[2] = this._h[2];
-        v[3] = this._h[3];
-        v[4] = this._h[4];
-        v[5] = this._h[5];
-        v[6] = this._h[6];
-        v[7] = this._h[7];
-        v[8] = s_iv[0];
-        v[9] = s_iv[1];
-        v[10] = s_iv[2];
-        v[11] = s_iv[3];
-        v[12] = s_iv[4] ^ (uint)(counter & 0xFFFFFFFFUL);   // counter low word
-        v[13] = s_iv[5] ^ (uint)(counter >> 32);            // counter high word
-        v[14] = s_iv[6];
-        v[15] = s_iv[7];
-
-        if (isFinal)
-            v[14] = ~v[14];
-
-        // 10 rounds of G mixing.
-        for (int r = 0; r < 10; r++)
-        {
-            byte[] s = s_sigma[r % 10];
-
-            G(v, 0, 4, 8, 12, m[s[0]], m[s[1]]);
-            G(v, 1, 5, 9, 13, m[s[2]], m[s[3]]);
-            G(v, 2, 6, 10, 14, m[s[4]], m[s[5]]);
-            G(v, 3, 7, 11, 15, m[s[6]], m[s[7]]);
-            G(v, 0, 5, 10, 15, m[s[8]], m[s[9]]);
-            G(v, 1, 6, 11, 12, m[s[10]], m[s[11]]);
-            G(v, 2, 7, 8, 13, m[s[12]], m[s[13]]);
-            G(v, 3, 4, 9, 14, m[s[14]], m[s[15]]);
-        }
-
-        // Fold the working vector back into the hash state.
-        for (int i = 0; i < 8; i++)
-            this._h[i] ^= v[i] ^ v[i + 8];
-    }
-
-    /// <summary>
     /// Applies the BLAKE2s <c>G</c> mixing function to four elements of the working vector.
     /// </summary>
     /// <param name="v">The 16-element working vector.</param>
@@ -405,26 +333,4 @@ public sealed class Blake2s : HashAlgorithm
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint RotateRight(uint value, int bits) =>
         (value >> bits) | (value << (32 - bits));
-
-    /// <summary>
-    /// Throws <see cref="ObjectDisposedException" /> if this instance has been disposed.
-    /// </summary>
-    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed() =>
-        ObjectDisposedException.ThrowIf(this._disposed, this);
-
-    /// <summary>
-    /// Throws <see cref="CryptographicUnexpectedOperationException" /> if the algorithm has already begun
-    /// processing input and can no longer be reconfigured.
-    /// </summary>
-    /// <exception cref="CryptographicUnexpectedOperationException">
-    /// A hash computation is already in progress.
-    /// </exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfInvalidState()
-    {
-        if (this.State != 0)
-            throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
-    }
 }
