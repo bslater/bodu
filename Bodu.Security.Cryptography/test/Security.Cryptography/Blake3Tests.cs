@@ -11,15 +11,8 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 [TestClass]
 public partial class Blake3Tests
-    : HashAlgorithmTests<Blake3Tests, Blake3, Blake3Tests.Blake3Variant>
+    : HashAlgorithmTests<Blake3Tests, Blake3, SingleTestVariant>
 {
-    /// <summary>Identifies the single configuration variant of <see cref="Blake3" />.</summary>
-    public enum Blake3Variant
-    {
-        /// <summary>The standard BLAKE3 configuration producing a 256-bit digest.</summary>
-        Default,
-    }
-
     private static readonly HashAlgorithmSpecification Specification = new()
     {
         HashSize = 256,
@@ -32,16 +25,16 @@ public partial class Blake3Tests
     };
 
     /// <inheritdoc />
-    public override IEnumerable<Blake3Variant> GetHashAlgorithmVariants() => [Blake3Variant.Default];
+    public override IEnumerable<SingleTestVariant> GetHashAlgorithmVariants() => [SingleTestVariant.Default];
 
     /// <inheritdoc />
-    protected override HashAlgorithmSpecification GetSpecification(Blake3Variant variant) => Specification;
+    protected override HashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => Specification;
 
     /// <inheritdoc />
-    protected override Blake3 CreateAlgorithm(Blake3Variant variant) => new Blake3();
+    protected override Blake3 CreateAlgorithm(SingleTestVariant variant) => new Blake3();
 
     /// <inheritdoc />
-    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(Blake3Variant variant) =>
+    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
         new[]
         {
             "AF1349B9F5F9A1A6A0404DEA36DCC9499BCB25C9ADC112B7CC9A93CAE41F3262", "2D3ADEDFF11B61F14C886E35AFA036736DCD87A74D27B5C1510225D0F592E213", "7B7015BB92CF0B318037702A6CDD81DEE41224F734684C2C122CD6359CB1EE63", "E1BE4D7A8AB5560AA4199EEA339849BA8E293D55CA0A81006726D184519E647F",
@@ -304,7 +297,7 @@ public partial class Blake3Tests
         };
 
     /// <inheritdoc />
-    protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(Blake3Variant variant) =>
+    protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(SingleTestVariant variant) =>
         new Dictionary<string, string>
         {
             // Known-answer test vectors from the official BLAKE3 test_vectors.json (seed = 0, 256-bit output).

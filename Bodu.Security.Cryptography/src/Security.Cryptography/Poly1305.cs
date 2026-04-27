@@ -189,40 +189,38 @@ public sealed class Poly1305
         uint h0 = this._acc[0], h1 = this._acc[1], h2 = this._acc[2], h3 = this._acc[3], h4 = this._acc[4];
 
         // Propagate carries across limbs
-        h1 += (h0 >> 26); h0 &= Mask26;
-        h2 += (h1 >> 26); h1 &= Mask26;
-        h3 += (h2 >> 26); h2 &= Mask26;
-        h4 += (h3 >> 26); h3 &= Mask26;
-        h0 += (h4 >> 26) * 5; h4 &= Mask26;
-        h1 += (h0 >> 26); h0 &= Mask26;
+        h1 += h0 >> 26; h0 &= Mask26;
+        h2 += h1 >> 26; h1 &= Mask26;
+        h3 += h2 >> 26; h2 &= Mask26;
+        h4 += h3 >> 26; h3 &= Mask26;
 
         // Compute g = h + 5, then conditionally reduce modulo 2^130-5 if g >= 2^130
-        var g0 = h0 + 5;
-        var b = g0 >> 26; g0 &= Mask26;
-        var g1 = h1 + b; b = g1 >> 26; g1 &= Mask26;
-        var g2 = h2 + b; b = g2 >> 26; g2 &= Mask26;
-        var g3 = h3 + b; b = g3 >> 26; g3 &= Mask26;
-        var g4 = h4 + b - (1 << 26);
-
-        // Mask to select either h or h - (2^130 - 5) based on overflow
-        b = (g4 >> 31) - 1;
-        h0 = (h0 & ~b) | (g0 & b);
-        h1 = (h1 & ~b) | (g1 & b);
-        h2 = (h2 & ~b) | (g2 & b);
-        h3 = (h3 & ~b) | (g3 & b);
-        h4 = (h4 & ~b) | (g4 & b);
-
-        // Pack h into 128-bit output and add s (the final key part, RFC step 3)
-        ulong f0 = ((h0) | (h1 << 26)) + this._key[0];
-        ulong f1 = (f0 >> 32) + ((h1 >> 6) | (h2 << 20)) + this._key[1];
-        ulong f2 = (f1 >> 32) + ((h2 >> 12) | (h3 << 14)) + this._key[2];
-        ulong f3 = (f2 >> 32) + ((h3 >> 18) | (h4 << 8)) + this._key[3];
+        h0 += 5;
+        h1 += h0 >> 26; h0 &= Mask26;
+        h2 += h1 >> 26; h1 &= Mask26;
+        h3 += h2 >> 26; h2 &= Mask26;
+        h4 += h3 >> 26; h3 &= Mask26;
 
         Span<byte> tag = stackalloc byte[16];
-        BinaryPrimitives.WriteUInt32LittleEndian(tag.Slice(0), (uint)f0);
-        BinaryPrimitives.WriteUInt32LittleEndian(tag.Slice(4), (uint)f1);
-        BinaryPrimitives.WriteUInt32LittleEndian(tag.Slice(8), (uint)f2);
-        BinaryPrimitives.WriteUInt32LittleEndian(tag.Slice(12), (uint)f3);
+
+        // If h + 5 carried into bit 130, c starts at 0 and the reduced value is used.
+        // Otherwise, c starts at -5, which cancels the test addition above.
+        long c = ((int)(h4 >> 26) - 1) * 5L;
+
+        c += (long)this._key[0] + (h0 | (h1 << 26));
+        BinaryPrimitives.WriteUInt32LittleEndian(tag.Slice(0), (uint)c);
+        c >>= 32;
+
+        c += (long)this._key[1] + ((h1 >> 6) | (h2 << 20));
+        BinaryPrimitives.WriteUInt32LittleEndian(tag.Slice(4), (uint)c);
+        c >>= 32;
+
+        c += (long)this._key[2] + ((h2 >> 12) | (h3 << 14));
+        BinaryPrimitives.WriteUInt32LittleEndian(tag.Slice(8), (uint)c);
+        c >>= 32;
+
+        c += (long)this._key[3] + ((h3 >> 18) | (h4 << 8));
+        BinaryPrimitives.WriteUInt32LittleEndian(tag.Slice(12), (uint)c);
 
 #if !NET6_0_OR_GREATER
         // Mark the instance as finalised so the base-class HashCore/HashFinal guards

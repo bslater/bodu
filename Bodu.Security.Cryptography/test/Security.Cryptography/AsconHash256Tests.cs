@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 [TestClass]
 public partial class AsconHash256Tests
-    : BlockHashAlgorithmTests<AsconHash256Tests, AsconHash256, AsconHash256Tests.Variant>
+    : BlockHashAlgorithmTests<AsconHash256Tests, AsconHash256, SingleTestVariant>
 {
     private static readonly HashAlgorithmSpecification Specification = new()
     {
@@ -23,26 +23,17 @@ public partial class AsconHash256Tests
         MinNonZeroBytesForLongInput = 28,
     };
 
-    /// <summary>
-    /// Identifies the single configuration variant of <see cref="AsconHash256" />.
-    /// </summary>
-    public enum Variant
-    {
-        /// <summary>The standard ASCON-HASH256 configuration as defined in NIST SP 800-232.</summary>
-        Default,
-    }
+    /// <inheritdoc />
+    public override IEnumerable<SingleTestVariant> GetHashAlgorithmVariants() => [SingleTestVariant.Default];
 
     /// <inheritdoc />
-    public override IEnumerable<Variant> GetHashAlgorithmVariants() => [Variant.Default];
+    protected override HashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => Specification;
 
     /// <inheritdoc />
-    protected override HashAlgorithmSpecification GetSpecification(Variant variant) => Specification;
+    protected override AsconHash256 CreateAlgorithm(SingleTestVariant variant) => new AsconHash256();
 
     /// <inheritdoc />
-    protected override AsconHash256 CreateAlgorithm(Variant variant) => new AsconHash256();
-
-    /// <inheritdoc />
-    protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(Variant variant) =>
+    protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(SingleTestVariant variant) =>
         new Dictionary<string, string>
         {
             // Known-answer test vectors sourced from the ASCON reference implementation (ascon-c, LWC_HASH_KAT_128_256.txt).
@@ -50,7 +41,7 @@ public partial class AsconHash256Tests
         };
 
     /// <inheritdoc />
-    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(Variant variant) =>
+    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
     [
         // Known-answer test vectors sourced from the ASCON reference implementation (ascon-c, LWC_HASH_KAT_128_256.txt).
         // Each entry is the hash of the sequential input [0x00, 0x01, ..., 0x(n-1)] for n = 0..65.

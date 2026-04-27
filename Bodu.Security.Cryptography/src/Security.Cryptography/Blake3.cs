@@ -210,6 +210,14 @@ public sealed class Blake3
         ThrowHelper.ThrowIfNull(array);
         ThrowIfDisposed();
 
+#if !NET6_0_OR_GREATER
+    ThrowHelper.ThrowIfLessThan(ibStart, 0);
+    ThrowHelper.ThrowIfLessThan(cbSize, 0);
+    ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
+    if (this._finalized)
+        throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+#endif
+
         HashCore(array.AsSpan(ibStart, cbSize));
     }
 
@@ -223,13 +231,17 @@ public sealed class Blake3
     {
         ThrowIfDisposed();
 
+#if !NET6_0_OR_GREATER
+    if (this._finalized)
+        throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+#endif
+
         while (source.Length > 0)
         {
             int spaceInChunk = ChunkSize - _chunkBuffered;
 
-            // A chunk is only compressed here when the buffer is full AND there is still more
-            // input after it.  This guarantees the chunk buffer always holds ≥ 1 byte on entry
-            // to HashFinal, so the last chunk can be correctly tagged with CHUNK_END | ROOT.
+            // Compress a full buffered chunk only when more input remains. This keeps an exactly
+            // 1024-byte message in the buffer so it can be finalized as a single root chunk.
             if (_chunkBuffered == ChunkSize && source.Length > 0)
             {
                 uint[] cv = ChunkChainingValue(_chunkBuffer.AsSpan(0, ChunkSize), _chunkCounter, isRoot: false);
@@ -259,20 +271,31 @@ public sealed class Blake3
     {
         ThrowIfDisposed();
 
+#if !NET6_0_OR_GREATER
+    if (this._finalized)
+        throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+#endif
+
         uint[] rootCv;
 
         if (_chunkCounter == 0)
         {
             // The entire input fits in a single chunk — compress it directly as the root.
-            rootCv = ChunkChainingValue(_chunkBuffer.AsSpan(0, _chunkBuffered), _chunkCounter, isRoot: true);
+            rootCv = ChunkChainingValue(
+                _chunkBuffer.AsSpan(0, _chunkBuffered),
+                _chunkCounter,
+                isRoot: true);
         }
         else
         {
-            // Compress the last (possibly partial) chunk, then fold the CV stack to the root.
-            uint[] lastCv = ChunkChainingValue(_chunkBuffer.AsSpan(0, _chunkBuffered), _chunkCounter, isRoot: false);
-            PushChunkCv(lastCv, _chunkCounter);
+            // Compress the last chunk separately, then merge it with the existing stack so the final
+            // parent compression receives the ROOT flag.
+            uint[] lastCv = ChunkChainingValue(
+                _chunkBuffer.AsSpan(0, _chunkBuffered),
+                _chunkCounter,
+                isRoot: false);
 
-            rootCv = MergeStack();
+            rootCv = MergeStackWithFinalChunk(lastCv);
         }
 
         // Serialise the root chaining value (8 × uint32 LE) into the output digest.
@@ -282,6 +305,44 @@ public sealed class Blake3
             BinaryPrimitives.WriteUInt32LittleEndian(digest.AsSpan(i * 4), rootCv[i]);
 
         return digest;
+    }
+
+   /// <summary>
+/// Merges the completed intermediate chunk stack with the final chunk chaining value and
+/// returns the root chaining value.
+/// </summary>
+/// <param name="rightCv">
+/// The chaining value of the final chunk. This value is kept out of <see cref="_cvStack" />
+/// until finalization so the last parent merge can be marked with <see cref="FlagRoot" />.
+/// </param>
+/// <returns>
+/// An 8-element array containing the 256-bit root chaining value of the complete message.
+/// </returns>
+/// <remarks>
+/// <para>
+/// Intermediate chunks may already have been folded into balanced subtrees on
+/// <see cref="_cvStack" />. Finalization differs from normal chunk pushing because the final
+/// chunk must not be pre-merged as a non-root parent. Instead, the stack is folded into the
+/// final chunk from right to left, applying <see cref="FlagRoot" /> to the last parent
+/// compression.
+/// </para>
+/// </remarks>
+private uint[] MergeStackWithFinalChunk(uint[] rightCv)
+    {
+        uint[] cv = rightCv;
+
+        while (_cvStack.Count > 0)
+        {
+            int lastIdx = _cvStack.Count - 1;
+
+            uint[] leftCv = _cvStack[lastIdx];
+            _cvStack.RemoveAt(lastIdx);
+
+            bool isRoot = _cvStack.Count == 0;
+            cv = ParentCv(leftCv, cv, isRoot);
+        }
+
+        return cv;
     }
 
     /// <summary>
@@ -597,54 +658,33 @@ public sealed class Blake3
         return trailingZeros >= stackDepth;
     }
 
-    /// <summary>
-    /// Merges all chaining values remaining on <see cref="_cvStack" /> into a single root
-    /// chaining value by folding pairs from right to left.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// After the last chunk CV has been pushed via <see cref="PushChunkCv" />, the stack may
-    /// hold up to ⌊log₂ N⌋ + 1 entries for an N-chunk input. The entries are ordered with the
-    /// largest (leftmost) subtree at index 0 and the smallest (most-recently-completed) subtree
-    /// at the top (highest index).
-    /// </para>
-    /// <para>
-    /// Merging proceeds right-to-left: the two top-most entries are combined into a parent node,
-    /// the result is re-pushed, and the loop continues until a single root CV remains. The final
-    /// merge receives the <see cref="FlagRoot" /> flag.
-    /// </para>
-    /// </remarks>
-    /// <returns>
-    /// An 8-element array containing the 256-bit root chaining value of the entire hash tree.
-    /// </returns>
-    private uint[] MergeStack()
-    {
-        // Collapse right-to-left: the top two entries are always the next pair to merge,
-        // because the stack invariant guarantees they represent equal-sized subtrees.
-        while (_cvStack.Count > 1)
-        {
-            int lastIdx = _cvStack.Count - 1;
-            bool isRootMerge = _cvStack.Count == 2;
-
-            uint[] right = _cvStack[lastIdx];
-            uint[] left = _cvStack[lastIdx - 1];
-
-            _cvStack.RemoveAt(lastIdx);
-            _cvStack.RemoveAt(lastIdx - 1);
-
-            _cvStack.Add(ParentCv(left, right, isRoot: isRootMerge));
-        }
-
-        return _cvStack[0];
-    }
-
     // ---- guard helpers ----
+
+    /// <summary>
+    /// Throws if the algorithm has begun processing and can no longer be reconfigured.
+    /// </summary>
+    /// <exception cref="CryptographicUnexpectedOperationException">
+    /// Thrown if an attempt is made to change configuration after the algorithm has started.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected void ThrowIfInvalidState()
+    {
+        if (this.State != 0)
+            throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
+    }
 
     /// <summary>
     /// Throws <see cref="ObjectDisposedException" /> if this instance has already been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed() =>
-        ObjectDisposedException.ThrowIf(_disposed, this);
+    private void ThrowIfDisposed()
+    {
+#if NET8_0_OR_GREATER
+        ObjectDisposedException.ThrowIf(this._disposed, this);
+#else
+        if (this._disposed)
+            throw new ObjectDisposedException(nameof(Blowfish));
+#endif
+    }
 }

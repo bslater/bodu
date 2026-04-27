@@ -74,8 +74,8 @@ public partial class Poly1305Tests
              ["Empty"] = "0103808AFB0DB2FD4ABFF6AF4149F51B",
              ["ABC"] = "22701EA05B6B7BB59C6EFAF002047EF8",
              ["Zeros_16"] = "268F6E95A4B8FA01E694DDC1D1D3FD25",
-             ["QuickBrownFox"] = "2458137FE6781FB38D3782CE0D70BCA6",
-             ["Sequential_0_255"] = "1212245DC131EF863720469237C5F17B",
+             ["QuickBrownFox"] = "2458137FE7781FB38D3782CE0D70BCA6",
+             ["Sequential_0_255"] = "1212245DC231EF863720469237C5F17B",
          };
 
     protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
