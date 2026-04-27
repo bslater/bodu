@@ -136,7 +136,39 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// algorithm factory, block size, and fan-out.
     /// </summary>
     /// <param name="algorithmFactory">
-    ///   Factory that returns a fresh, independent <see cref="HashAlgorithm"/> on each call.
+    ///   A typed factory whose <see cref="IHashAlgorithmFactory{T}.Create"/> method is invoked once
+    ///   per hash operation to obtain a fresh, independent <see cref="HashAlgorithm"/> instance.
+    ///   Must not be <see langword="null"/>. A distinct instance is created per hash operation so
+    ///   that concurrent level workers never share algorithm state.
+    /// </param>
+    /// <param name="blockSize">
+    ///   The size in bytes of each leaf block. Must be greater than zero. Defaults to 4096.
+    /// </param>
+    /// <param name="fanOut">
+    ///   The number of child nodes combined into each parent node during tree reduction.
+    ///   Must be at least 2. Defaults to 2. Larger values produce shallower trees but wider
+    ///   internal nodes.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    ///   <paramref name="algorithmFactory"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    ///   <paramref name="blockSize"/> is less than or equal to zero, or
+    ///   <paramref name="fanOut"/> is less than 2.
+    /// </exception>
+    public ParallelMerkleTreeHash(
+        IHashAlgorithmFactory<HashAlgorithm> algorithmFactory,
+        int blockSize = 4096,
+        int fanOut = 2)
+        : this((algorithmFactory ?? throw new ArgumentNullException(nameof(algorithmFactory))).Create, blockSize, fanOut)
+    { }
+
+    /// <summary>
+    /// Initialises a new <see cref="ParallelMerkleTreeHash"/> instance with the specified hash
+    /// algorithm factory delegate, block size, and fan-out.
+    /// </summary>
+    /// <param name="algorithmFactory">
+    ///   Factory delegate that returns a fresh, independent <see cref="HashAlgorithm"/> on each call.
     ///   Must not be <see langword="null"/>. A distinct instance is created per hash operation so
     ///   that concurrent level workers never share algorithm state.
     /// </param>
