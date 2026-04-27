@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+#pragma warning disable CS0618 // Type or member is obsolete — testing deprecated XxHash64 type
+
 namespace Bodu.IO.Hashing;
 
 /// <summary>
@@ -21,15 +23,9 @@ public sealed partial class XxHash64Tests
         {
             // Seed = 0. Verified against the xxHash reference implementation.
             Empty = "EF46DB3751D8E999",
-
-            // TODO: Expected cipher is incorrect and needs to be validated
-            //Abc = "44BC2CF5AD770999",
-
-            // TODO: Expected cipher is incorrect and needs to be validated
-            //Zeros16 = "F2A8F47CF7F4B67A",
-
-            // TODO: Expected cipher is incorrect and needs to be validated
-            //Sequential0To255 = "3C5BEB4B21C8EB5B",
+            Abc = "E66AE7354FCFEE98",
+            Zeros16 = "AF09F71516247C32",
+            Sequential0To255 = "0F7D97507CAAD693",
         },
     };
 

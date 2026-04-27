@@ -21,15 +21,9 @@ public sealed partial class MurmurHash3_32Tests
         {
             // Seed = 0. Verified against the reference MurmurHash3_x86_32 implementation.
             Empty = "00000000",
-
-            // TODO: Expected cipher is incorrect and needs to be validated
-            //Abc = "C518E8B7",
-
-            // TODO: Expected cipher is incorrect and needs to be validated
-            //Zeros16 = "B6A0BA33",
-
-            // TODO: Expected cipher is incorrect and needs to be validated
-            //Sequential0To255 = "C4E85B0D",
+            Abc = "35C5C143",
+            Zeros16 = "F8CD3481",
+            Sequential0To255 = "00B63463",
         },
     };
 

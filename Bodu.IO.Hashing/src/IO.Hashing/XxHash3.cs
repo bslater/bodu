@@ -15,6 +15,10 @@ using System.Runtime.CompilerServices;
 /// </summary>
 /// <remarks>
 /// <para>
+/// This type is superseded by <see cref="System.IO.Hashing.XxHash3" />, which is part of the .NET base
+/// class library and available on .NET 7 and later. Prefer the BCL implementation for all new code.
+/// </para>
+/// <para>
 /// <see cref="XxHash3" /> is a highly optimised algorithm suitable for both short and long inputs. It uses a
 /// 192-byte internal secret to drive per-lane mixing across 64-byte stripes, and selects an appropriate code
 /// path based on input length: a short path for 0–16 bytes, a medium path for 17–240 bytes, and a full
@@ -33,6 +37,7 @@ using System.Runtime.CompilerServices;
 /// digital signatures, or any application requiring adversarial collision resistance.
 /// </note>
 /// </remarks>
+[Obsolete("Use System.IO.Hashing.XxHash3 instead. This implementation is superseded by the built-in BCL type available on .NET 7 and later.")]
 public sealed class XxHash3
     : XxHash<XxHash3>
 {
@@ -151,7 +156,7 @@ public sealed class XxHash3
     {
         ulong s0 = BinaryPrimitives.ReadUInt64LittleEndian(secret.Slice(56));
         ulong s1 = BinaryPrimitives.ReadUInt64LittleEndian(secret.Slice(64));
-        return Avalanche(unchecked(s0 ^ s1));
+        return AvalancheXxH64(unchecked(s0 ^ s1));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -163,7 +168,7 @@ public sealed class XxHash3
         uint combined = ((uint)c1 << 16) | ((uint)c2 << 24) | c3 | ((uint)source.Length << 8);
         ulong lo = BinaryPrimitives.ReadUInt32LittleEndian(secret) ^ BinaryPrimitives.ReadUInt32LittleEndian(secret.Slice(4));
         ulong mixed = unchecked((ulong)combined ^ lo);
-        return Avalanche(mixed);
+        return AvalancheXxH64(mixed);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -172,9 +177,9 @@ public sealed class XxHash3
         ulong input1 = BinaryPrimitives.ReadUInt32LittleEndian(source);
         ulong input2 = BinaryPrimitives.ReadUInt32LittleEndian(source.Slice(source.Length - 4));
         ulong bitFlip = unchecked(
-            (BinaryPrimitives.ReadUInt64LittleEndian(secret.Slice(8)) ^
-             BinaryPrimitives.ReadUInt64LittleEndian(secret.Slice(16))));
-        ulong keyed = unchecked((input2 + ((input1 ^ bitFlip) << 32)));
+            BinaryPrimitives.ReadUInt64LittleEndian(secret.Slice(8)) ^
+            BinaryPrimitives.ReadUInt64LittleEndian(secret.Slice(16)));
+        ulong keyed = unchecked((input2 + (input1 << 32)) ^ bitFlip);
         return RrmXxH64(keyed, unchecked((ulong)source.Length));
     }
 
@@ -503,11 +508,24 @@ public sealed class XxHash3
         return unchecked(lo128 ^ hi128);
     }
 
+    // XXH3-specific avalanche used by medium and long input paths.
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong Avalanche(ulong h64)
     {
         h64 ^= h64 >> 37;
         h64 = unchecked(h64 * 0x165667919E3779F9uL);
+        h64 ^= h64 >> 32;
+        return h64;
+    }
+
+    // Standard XXH64 avalanche used by the 0-byte and 1–3-byte short input paths.
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static ulong AvalancheXxH64(ulong h64)
+    {
+        h64 ^= h64 >> 33;
+        h64 = unchecked(h64 * Prime64_2);
+        h64 ^= h64 >> 29;
+        h64 = unchecked(h64 * Prime64_3);
         h64 ^= h64 >> 32;
         return h64;
     }

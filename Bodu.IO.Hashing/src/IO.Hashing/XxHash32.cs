@@ -15,6 +15,10 @@ using System.Runtime.CompilerServices;
 /// </summary>
 /// <remarks>
 /// <para>
+/// This type is superseded by <see cref="System.IO.Hashing.XxHash32" />, which is part of the .NET base
+/// class library and available on .NET 6 and later. Prefer the BCL implementation for all new code.
+/// </para>
+/// <para>
 /// <see cref="XxHash32" /> is optimised for 32-bit platforms. It maintains four 32-bit accumulators that
 /// process input in 16-byte stripes when the input is 16 bytes or longer. For shorter input, a simpler
 /// single-accumulator path is used. The tail of up to 15 bytes is consumed in 4-byte and 1-byte steps
@@ -28,6 +32,7 @@ using System.Runtime.CompilerServices;
 /// digital signatures, or any application requiring adversarial collision resistance.
 /// </note>
 /// </remarks>
+[Obsolete("Use System.IO.Hashing.XxHash32 instead. This implementation is superseded by the built-in BCL type available on .NET 6 and later.")]
 public sealed class XxHash32
     : XxHash<XxHash32>
 {
@@ -101,7 +106,7 @@ public sealed class XxHash32
         // Consume remaining 4-byte groups.
         while (pos + 4 <= len)
         {
-            acc ^= Round32(0u, BinaryPrimitives.ReadUInt32LittleEndian(source.Slice(pos, 4)));
+            acc = unchecked(acc + BinaryPrimitives.ReadUInt32LittleEndian(source.Slice(pos, 4)) * Prime32_3);
             acc = unchecked(RotateLeft32(acc, 17) * Prime32_4);
             pos += 4;
         }
@@ -109,7 +114,7 @@ public sealed class XxHash32
         // Consume remaining single bytes.
         while (pos < len)
         {
-            acc ^= unchecked((uint)source[pos] * Prime32_5);
+            acc = unchecked(acc + (uint)source[pos] * Prime32_5);
             acc = unchecked(RotateLeft32(acc, 11) * Prime32_1);
             pos++;
         }

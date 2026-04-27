@@ -15,6 +15,10 @@ using System.Runtime.CompilerServices;
 /// </summary>
 /// <remarks>
 /// <para>
+/// This type is superseded by <see cref="System.IO.Hashing.XxHash64" />, which is part of the .NET base
+/// class library and available on .NET 7 and later. Prefer the BCL implementation for all new code.
+/// </para>
+/// <para>
 /// <see cref="XxHash64" /> is optimised for 64-bit platforms. It maintains four 64-bit accumulators that
 /// process input in 32-byte stripes when the input is 32 bytes or longer. For shorter input, a simpler
 /// single-accumulator path is used. The tail of up to 31 bytes is consumed in 8-byte, 4-byte, and 1-byte
@@ -28,6 +32,7 @@ using System.Runtime.CompilerServices;
 /// digital signatures, or any application requiring adversarial collision resistance.
 /// </note>
 /// </remarks>
+[Obsolete("Use System.IO.Hashing.XxHash64 instead. This implementation is superseded by the built-in BCL type available on .NET 7 and later.")]
 public sealed class XxHash64
     : XxHash<XxHash64>
 {
