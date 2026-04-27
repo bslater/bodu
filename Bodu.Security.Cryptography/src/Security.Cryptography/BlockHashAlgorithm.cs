@@ -1,10 +1,9 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockHashAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using Bodu;
 using Bodu.Security.Cryptography;
@@ -12,15 +11,18 @@ using Bodu.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Base class for hash algorithms that consume input in fixed-size blocks. Handles residual buffering, block alignment, total-length
-/// tracking, and final block padding on behalf of derived implementations.
+/// Base class for hash algorithms that consume input in fixed-size blocks and pad the final partial block before
+/// processing it (the Merkle&#8211;Damg&#229;rd shape). Handles block alignment and final-block padding orchestration on
+/// behalf of derived implementations; the residual buffer, running byte total, and disposal latch are inherited from
+/// <see cref="BufferedBlockHashAlgorithm{T}" />.
 /// </summary>
 /// <typeparam name="T">The concrete hash algorithm derived from this class. Must expose a public parameterless constructor.</typeparam>
 /// <remarks>
 /// <para>
-/// Input data is accumulated into an internal buffer until a complete block of <see cref="BlockSizeBytes" /> is available, at which
-/// point it is passed to <see cref="ProcessBlock" />. Any residual bytes left over at <see cref="HashAlgorithm.HashFinal" /> are
-/// padded via <see cref="PadBlock" /> before a final call to <see cref="ProcessFinalBlock" /> produces the digest.
+/// Input data is accumulated into the inherited residual buffer until a complete block of <see cref="BufferedBlockHashAlgorithm{T}.BlockSizeBytes" />
+/// is available, at which point it is passed to <see cref="ProcessBlock" />. Any residual bytes left over at
+/// <see cref="HashAlgorithm.HashFinal" /> are padded via <see cref="PadBlock" /> before a final call to
+/// <see cref="ProcessFinalBlock" /> produces the digest.
 /// </para>
 /// <para>Derived classes must implement the following:</para>
 /// <list type="bullet">
@@ -30,29 +32,9 @@ namespace Bodu.Security.Cryptography;
 /// </list>
 /// </remarks>
 public abstract class BlockHashAlgorithm<T>
-    : HashAlgorithm
+    : BufferedBlockHashAlgorithm<T>
     where T : BlockHashAlgorithm<T>, new()
 {
-    /// <summary>
-    /// The fixed size, in bytes, of each block processed by the algorithm.
-    /// </summary>
-    protected readonly int BlockSizeBytes; // Size of a single block (in bytes) to be processed per hash step
-
-    private readonly Memory<byte> _residualByteBuffer; // Temporary buffer to hold incomplete blocks between HashCore calls
-    private bool _disposed;
-    private int _residualBytes;                        // Number of bytes currently in the residual buffer
-    private ulong _totalLength;                        // Total length of data processed, used for padding
-
-    // Tracks whether Dispose() has been called
-
-#if !NET6_0_OR_GREATER
-
-    /// <summary>
-    /// Indicates whether the hash computation has been finalized. Used in .NET Standard environments.
-    /// </summary>
-    protected bool _finalized;
-#endif
-
     /// <summary>
     /// Initializes a new instance of the <see cref="BlockHashAlgorithm{T}" /> class using the specified input block size.
     /// </summary>
@@ -67,8 +49,10 @@ public abstract class BlockHashAlgorithm<T>
     /// accumulated for a full block.
     /// </para>
     /// <para>
-    /// This constructor allocates the internal buffer used to accumulate and align partial input segments across multiple calls to
-    /// <see cref="HashAlgorithm.TransformBlock" /> and <see cref="HashAlgorithm.TransformFinalBlock" />.
+    /// This constructor delegates to <see cref="BufferedBlockHashAlgorithm{T}" />, which allocates the residual buffer used to
+    /// accumulate and align partial input segments across multiple calls to
+    /// <see cref="HashAlgorithm.TransformBlock(byte[], int, int, byte[], int)" /> and
+    /// <see cref="HashAlgorithm.TransformFinalBlock(byte[], int, int)" />.
     /// </para>
     /// <para>
     /// The specified block size must match the expectations of the underlying algorithm implementation. For example, a SHA-like
@@ -77,10 +61,8 @@ public abstract class BlockHashAlgorithm<T>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="blockSize" /> is less than or equal to zero.</exception>
     protected BlockHashAlgorithm(int blockSize)
+        : base(blockSize)
     {
-        ThrowHelper.ThrowIfLessThanOrEqual(blockSize, 0);
-        this.BlockSizeBytes = blockSize;
-        this._residualByteBuffer = new byte[this.BlockSizeBytes];
     }
 
     /// <summary>
@@ -90,74 +72,12 @@ public abstract class BlockHashAlgorithm<T>
     protected virtual bool AllowUnalignedFinalBlock => false;
 
     /// <inheritdoc />
-    public override void Initialize()
-    {
-        // Clear internal buffers and reset state
-        this._residualByteBuffer.Span.Clear();
-        this._residualBytes = 0;
-        this._totalLength = 0;
-    }
-
-    /// <inheritdoc />
-    protected override void Dispose(bool disposing)
-    {
-        if (this._disposed) return;
-
-        if (disposing)
-        {
-            CryptoHelpers.Clear(this._residualByteBuffer);
-            this._residualBytes = 0;
-            this._totalLength = 0;
-        }
-
-        this._disposed = true;
-        base.Dispose(disposing);
-    }
-
-    /// <summary>
-    /// Processes a segment of the input byte array and feeds it into the hash computation pipeline. This method updates the internal
-    /// state of the algorithm by processing <paramref name="cbSize" /> bytes starting at the specified <paramref name="ibStart" /> offset.
-    /// </summary>
-    /// <param name="array">The input byte array containing the data to hash.</param>
-    /// <param name="ibStart">The zero-based index in <paramref name="array" /> at which to begin reading data.</param>
-    /// <param name="cbSize">The number of bytes to process from <paramref name="array" />.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="array" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <para><paramref name="ibStart" /> is less than 0.</para>
-    /// <para>-or-</para>
-    /// <para><paramref name="cbSize" /> is less than 0.</para>
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="ibStart" /> and <paramref name="cbSize" /> specify a range that exceeds the length of <paramref name="array" />.
-    /// </exception>
-    /// <exception cref="CryptographicUnexpectedOperationException">
-    /// The hash algorithm has already been finalized and cannot accept more input data.
-    /// </exception>
     /// <remarks>
-    /// <para>
-    /// This method is part of the core hashing process and is automatically invoked by methods such as
-    /// <see cref="HashAlgorithm.TransformBlock(byte[], int, int, byte[], int)" /> and <see cref="HashAlgorithm.ComputeHash(byte[])" />.
-    /// It handles processing of raw byte array input and ensures the hash algorithm receives data in properly sized blocks.
-    /// </para>
-    /// <para>
-    /// This method internally buffers incomplete blocks between calls to ensure proper alignment. Full blocks are immediately
-    /// processed; any remaining bytes are stored until more data arrives or finalization occurs.
-    /// </para>
+    /// The Merkle&#8211;Damg&#229;rd base owns no algorithm-side state &#8212; the chaining variables, IV, and any
+    /// schedule live entirely in derived classes. The empty body satisfies the grandparent's abstract contract.
     /// </remarks>
-    protected override void HashCore(byte[] array, int ibStart, int cbSize)
+    protected override void OnInitialize()
     {
-        ThrowHelper.ThrowIfNull(array);
-        this.ThrowIfDisposed();
-
-#if !NET6_0_OR_GREATER
-    ThrowHelper.ThrowIfLessThan(ibStart, 0);
-    ThrowHelper.ThrowIfLessThan(cbSize, 0);
-    ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
-    if (this._finalized)
-        throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
-#endif
-
-        this.ProcessBlocks(array.AsSpan(ibStart, cbSize));
     }
 
     /// <summary>
@@ -210,7 +130,7 @@ public abstract class BlockHashAlgorithm<T>
 
         if (this.ShouldPadFinalBlock())
         {
-            var finalBlock = this.PadBlock(this._residualByteBuffer.Span.Slice(0, this._residualBytes), this._totalLength);
+            var finalBlock = this.PadBlock(this._residualBlock.Span.Slice(0, this._residualBytes), this._totalBytes);
 
             if (this.AllowUnalignedFinalBlock)
             {
@@ -224,7 +144,7 @@ public abstract class BlockHashAlgorithm<T>
         }
         else if (this._residualBytes > 0)
         {
-            this.ProcessBlock(this._residualByteBuffer.Span.Slice(0, this._residualBytes));
+            this.ProcessBlock(this._residualBlock.Span.Slice(0, this._residualBytes));
         }
 
         return this.ProcessFinalBlock();
@@ -279,34 +199,6 @@ public abstract class BlockHashAlgorithm<T>
     protected virtual bool ShouldPadFinalBlock() => true;
 
     /// <summary>
-    /// Throws an exception if the instance has been disposed.
-    /// </summary>
-    /// <exception cref="ObjectDisposedException">Thrown when the instance has already been disposed.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected void ThrowIfDisposed()
-    {
-#if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
-#else
-    if (disposed)
-        throw new ObjectDisposedException(this.GetType().Name);
-#endif
-    }
-
-    /// <summary>
-    /// Throws if the algorithm has begun processing and can no longer be reconfigured.
-    /// </summary>
-    /// <exception cref="CryptographicUnexpectedOperationException">
-    /// Thrown if an attempt is made to change configuration after the algorithm has started.
-    /// </exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected void ThrowIfInvalidState()
-    {
-        if (this.State != 0)
-            throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
-    }
-
-    /// <summary>
     /// Processes a span of input bytes in fixed-size blocks, handling any residual bytes from previous invocations.
     /// </summary>
     /// <param name="buffer">The input span to process. May include incomplete blocks.</param>
@@ -317,9 +209,9 @@ public abstract class BlockHashAlgorithm<T>
     private void ProcessBlocks(ReadOnlySpan<byte> buffer)
     {
         int pos = 0;
-        this._totalLength += (ulong)buffer.Length;
+        this._totalBytes += (ulong)buffer.Length;
 
-        Span<byte> residualSpan = this._residualByteBuffer.Span;
+        Span<byte> residualSpan = this._residualBlock.Span;
 
         // Attempt to fill a partial residual block if it exists
         if (this._residualBytes > 0)
@@ -330,7 +222,7 @@ public abstract class BlockHashAlgorithm<T>
             {
                 // Complete residual block and process it
                 buffer.Slice(pos, remaining).CopyTo(residualSpan[this._residualBytes..]);
-                this.ProcessBlock(this._residualByteBuffer.Span);
+                this.ProcessBlock(this._residualBlock.Span);
                 this._residualBytes = 0;
                 pos += remaining;
             }
