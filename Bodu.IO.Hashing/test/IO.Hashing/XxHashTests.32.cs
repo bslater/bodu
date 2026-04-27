@@ -21,15 +21,9 @@ public sealed partial class XxHash32Tests
         {
             // Seed = 0. Verified against the xxHash reference implementation.
             Empty = "02CC5D05",
-
-            // TODO: Expected cipher is incorrect and needs to be validated
-            //Abc = "D6BF8459",
-
-            // TODO: Expected cipher is incorrect and needs to be validated
-            //Zeros16 = "7B117FCA",
-
-            // TODO: Expected cipher is incorrect and needs to be validated
-            //Sequential0To255 = "EEB3CEB5",
+            Abc = "80712ED5",
+            Zeros16 = "8E022B3A",
+            Sequential0To255 = "B4D58730",
         },
     };
 
