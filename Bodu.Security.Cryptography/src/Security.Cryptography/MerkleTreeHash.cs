@@ -62,7 +62,35 @@ public sealed class MerkleTreeHash : IDisposable
     /// factory, block size, and fan-out.
     /// </summary>
     /// <param name="algorithmFactory">
-    ///   Factory that returns a fresh <see cref="HashAlgorithm"/> per hash operation.
+    ///   A typed factory whose <see cref="IHashAlgorithmFactory{T}.Create"/> method is invoked once
+    ///   per hash operation to obtain a fresh, independent <see cref="HashAlgorithm"/> instance.
+    ///   Must not be <see langword="null"/>. A distinct instance is created for each leaf and
+    ///   internal node so that no algorithm state is shared across operations.
+    /// </param>
+    /// <param name="blockSize">
+    ///   The size in bytes of each leaf block. Must be greater than zero. Defaults to 1024.
+    /// </param>
+    /// <param name="fanOut">
+    ///   The number of child nodes combined into each parent node during tree reduction.
+    ///   Must be at least 2. Defaults to 3. Larger values produce shallower trees.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    ///   <paramref name="algorithmFactory"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    ///   <paramref name="blockSize"/> is less than or equal to zero, or
+    ///   <paramref name="fanOut"/> is less than 2.
+    /// </exception>
+    public MerkleTreeHash(IHashAlgorithmFactory<HashAlgorithm> algorithmFactory, int blockSize = 1024, int fanOut = 3)
+        : this((algorithmFactory ?? throw new ArgumentNullException(nameof(algorithmFactory))).Create, blockSize, fanOut)
+    { }
+
+    /// <summary>
+    /// Initialises a new <see cref="MerkleTreeHash"/> instance with the specified hash algorithm
+    /// factory delegate, block size, and fan-out.
+    /// </summary>
+    /// <param name="algorithmFactory">
+    ///   Factory delegate that returns a fresh <see cref="HashAlgorithm"/> per hash operation.
     ///   Must not be <see langword="null"/>. A distinct instance is created for each leaf and
     ///   internal node so that no algorithm state is shared across operations.
     /// </param>
