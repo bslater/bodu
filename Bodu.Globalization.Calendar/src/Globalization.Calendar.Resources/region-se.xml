@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NotableDates xmlns="urn:bodu:globalization:calendar">
+  <NotableDate name="National Day of Sweden">
+    <Rule name="Sweden" category="Holiday" territory="SE" nonWorking="true">
+      <Fixed month="June" day="6" />
+    </Rule>
+  </NotableDate>
+</NotableDates>

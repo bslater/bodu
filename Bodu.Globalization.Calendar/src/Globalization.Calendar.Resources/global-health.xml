@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Global health notable-date resource using the Western/Gregorian calendar.
 
@@ -77,6 +77,32 @@
     <Rule name="Fixed World Diabetes Day" category="Observance" firstYear="1991"
           comment="Established in 1991 by the International Diabetes Federation (IDF) and the World Health Organization. The date marks the birthday of Sir Frederick Banting, who co-discovered insulin in 1922.">
       <Fixed month="November" day="14" />
+    </Rule>
+  </NotableDate>
+
+
+  <!--
+    Month-long health observances.
+  -->
+
+  <NotableDate name="Breast Cancer Awareness Month">
+    <Rule name="Fixed Breast Cancer Awareness Month" category="Observance" durationDays="31"
+          comment="A month-long breast cancer awareness campaign observed in October. The durationDays value of 31 spans the full civil month of October, inclusive of 1 October.">
+      <Fixed month="October" day="1" />
+      <Tag>Health</Tag>
+      <Tag>Awareness</Tag>
+      <Tag>MultiDay</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Movember">
+    <Rule name="Fixed Movember" category="Observance" durationDays="30" firstYear="2003"
+          comment="A month-long men's health awareness campaign observed in November. The durationDays value of 30 spans the full civil month of November, inclusive of 1 November.">
+      <Fixed month="November" day="1" />
+      <Tag>Health</Tag>
+      <Tag>MensHealth</Tag>
+      <Tag>Awareness</Tag>
+      <Tag>MultiDay</Tag>
     </Rule>
   </NotableDate>
 

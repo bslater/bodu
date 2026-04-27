@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- South Korea notable-date resource. -->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <UseFrom resource="./global-lunar.xml">
+    <Use name="Lunar New Year" as="Seollal" territory="KR" nonWorking="true" durationDays="3" comment="South Korean public-holiday period. The durationDays value of 3 represents the day before Seollal, Seollal day, and the day after when resolved by the regional rule." />
+    <Use name="Chuseok" territory="KR" nonWorking="true" durationDays="3" comment="South Korean public-holiday period. The durationDays value of 3 represents the day before Chuseok, Chuseok day, and the day after." />
+  </UseFrom>
+
+  <UseFrom resource="./global-buddhist.xml">
+    <Use name="Vesak" as="Buddha's Birthday" territory="KR" nonWorking="true" />
+  </UseFrom>
+
+  <NotableDate name="New Year's Day">
+    <Rule name="Fixed Korea New Year's Day" category="Holiday" territory="KR" nonWorking="true">
+      <Fixed month="January" day="1" />
+      <Tag>Korea</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Independence Movement Day">
+    <Rule name="Fixed Independence Movement Day" category="Holiday" territory="KR" nonWorking="true">
+      <Fixed month="March" day="1" />
+      <Tag>Korea</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Children's Day">
+    <Rule name="Fixed Korea Children's Day" category="Holiday" territory="KR" nonWorking="true">
+      <Fixed month="May" day="5" />
+      <Tag>Korea</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Memorial Day">
+    <Rule name="Fixed Korea Memorial Day" category="Holiday" territory="KR" nonWorking="true">
+      <Fixed month="June" day="6" />
+      <Tag>Korea</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Constitution Day">
+    <Rule name="Fixed Constitution Day" category="Civic" territory="KR">
+      <Fixed month="July" day="17" />
+      <Tag>Korea</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Liberation Day">
+    <Rule name="Fixed Liberation Day" category="Holiday" territory="KR" nonWorking="true">
+      <Fixed month="August" day="15" />
+      <Tag>Korea</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="National Foundation Day">
+    <Rule name="Fixed Korea National Foundation Day" category="Holiday" territory="KR" nonWorking="true">
+      <Fixed month="October" day="3" />
+      <Tag>Korea</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Hangul Day">
+    <Rule name="Fixed Hangul Day" category="Holiday" territory="KR" nonWorking="true">
+      <Fixed month="October" day="9" />
+      <Tag>Korea</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Christmas Day">
+    <Rule name="Fixed Korea Christmas Day" category="Holiday" territory="KR" nonWorking="true">
+      <Fixed month="December" day="25" />
+      <Tag>Korea</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

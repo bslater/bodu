@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Default global notable-date resource. Pulls in the common global
   notable-date sets via UseAll, producing a broad, country-neutral
@@ -66,6 +66,10 @@
   </UseFrom>
 
   <UseFrom resource="./christian-gregorian.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./christian-orthodox.xml">
     <UseAll />
   </UseFrom>
 

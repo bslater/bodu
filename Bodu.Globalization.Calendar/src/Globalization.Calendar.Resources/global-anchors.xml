@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NotableDates xmlns="urn:bodu:globalization:calendar">
+
+  <NotableDate name="Orthodox Easter">
+    <Rule name="Orthodox Easter" category="Religious">
+      <Algorithm key="OrthodoxEaster" />
+      <Tag>Christian</Tag>
+      <Tag>Orthodox</Tag>
+      <Tag>Anchor</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Lunar New Year">
+    <Rule name="Lunar New Year" category="Cultural" durationDays="15">
+      <Algorithm key="ChineseLunarNewYear" />
+      <Tag>Lunar</Tag>
+      <Tag>Anchor</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Ramadan Start">
+    <Rule name="Ramadan Start" category="Religious" durationDays="30">
+      <Algorithm key="HijriRamadanStart" />
+      <Tag>Islamic</Tag>
+      <Tag>Anchor</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

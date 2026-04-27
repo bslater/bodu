@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Global environmental notable-date resource using the Western/Gregorian calendar.
 
@@ -71,6 +71,39 @@
     <Rule name="Fixed World Soil Day" category="Observance" firstYear="2014"
           comment="Recommended by the International Union of Soil Sciences (IUSS) in 2002 and officially designated by the United Nations General Assembly in 2013 (resolution 68/232). The date marks the birthday of King Bhumibol Adulyadej of Thailand, a champion of sustainable land management.">
       <Fixed month="December" day="5" />
+    </Rule>
+  </NotableDate>
+
+
+  <NotableDate name="Earth Hour">
+    <Rule name="Last Saturday In March Earth Hour" category="Observance" firstYear="2007"
+          comment="A global environmental awareness event associated with switching off non-essential lights for one hour, now generally held on the last Saturday in March at 8:30 pm local time.">
+      <DayOfWeekInMonth month="March" dayOfWeek="Saturday" weekOrdinal="Last" />
+    </Rule>
+  </NotableDate>
+
+
+  <!--
+    Multi-day environmental observances.
+  -->
+
+  <NotableDate name="Plastic Free July">
+    <Rule name="Fixed Plastic Free July" category="Observance" durationDays="31" firstYear="2011"
+          comment="A month-long environmental campaign encouraging reduced single-use plastic consumption. The durationDays value of 31 spans the full civil month of July, inclusive of 1 July.">
+      <Fixed month="July" day="1" />
+      <Tag>Environment</Tag>
+      <Tag>Sustainability</Tag>
+      <Tag>MultiDay</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Clean Up the World Weekend">
+    <Rule name="Third Friday In September Clean Up the World Weekend" category="Observance" durationDays="3" firstYear="1993"
+          comment="A global environmental community action weekend commonly observed over the third weekend of September. The durationDays value of 3 spans Friday through Sunday, inclusive of the start date.">
+      <DayOfWeekInMonth month="September" dayOfWeek="Friday" weekOrdinal="Third" />
+      <Tag>Environment</Tag>
+      <Tag>Community</Tag>
+      <Tag>MultiDay</Tag>
     </Rule>
   </NotableDate>
 

@@ -49,4 +49,18 @@
     </Rule>
   </NotableDate>
 
+  <NotableDate name="International Cat Day">
+    <Rule name="Fixed International Cat Day" category="Observance" firstYear="2002"
+          comment="An international cat welfare observance created by the International Fund for Animal Welfare and now associated with cat welfare and responsible care awareness.">
+      <Fixed month="August" day="8" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Dog Day">
+    <Rule name="Fixed International Dog Day" category="Observance"
+          comment="An international companion-animal observance that celebrates dogs, promotes adoption and responsible ownership, and recognises working and assistance dogs.">
+      <Fixed month="August" day="26" />
+    </Rule>
+  </NotableDate>
+
 </NotableDates>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Multi-day normalization resource.
+
+  Convention:
+    durationDays is inclusive of the resolved start date.
+    durationDays="7" means the start date plus the next six calendar days.
+
+  This file contains shared multi-day observance definitions that are not already
+  owned by a more specific thematic resource. Prefer updating the source thematic
+  file when a multi-day observance already exists there.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar">
+
+  <NotableDate name="World Space Week">
+    <Rule name="Fixed World Space Week" category="Observance" durationDays="7" firstYear="1999"
+          comment="Runs 4–10 October. The durationDays value of 7 spans the full period inclusively from 4 October.">
+      <Fixed month="October" day="4" />
+      <Tag>Science</Tag>
+      <Tag>Space</Tag>
+      <Tag>MultiDay</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="NAIDOC Week">
+    <Rule name="First Sunday In July NAIDOC Week" category="Observance" territory="AU" durationDays="7"
+          comment="Australian observance beginning on the first Sunday in July. The durationDays value of 7 spans the full week inclusively.">
+      <DayOfWeekInMonth month="July" dayOfWeek="Sunday" weekOrdinal="First" />
+      <Tag>Indigenous</Tag>
+      <Tag>Australia</Tag>
+      <Tag>MultiDay</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

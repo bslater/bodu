@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Global social and humanitarian notable-date resource using the Western/Gregorian calendar.
 
@@ -78,6 +78,37 @@
     <Rule name="Fixed Universal Children's Day" category="Observance" firstYear="1954"
           comment="Established by the United Nations General Assembly in 1954 (resolution 836(IX)) to promote international togetherness, awareness among children worldwide, and improving children's welfare. The date also marks the adoption of the Convention on the Rights of the Child in 1989.">
       <Fixed month="November" day="20" />
+    </Rule>
+  </NotableDate>
+
+
+  <NotableDate name="Pride Month">
+    <Rule name="Fixed Pride Month" category="Observance" durationDays="30"
+          comment="A month-long LGBTQIA+ cultural and social observance held in June, commonly associated with the anniversary of the 1969 Stonewall uprising and the development of modern Pride marches and events. The durationDays value of 30 spans the full civil month of June, inclusive of 1 June.">
+      <Fixed month="June" day="1" />
+      <Tag>Social</Tag>
+      <Tag>MultiDay</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Day Against Homophobia, Biphobia and Transphobia">
+    <Rule name="Fixed International Day Against Homophobia, Biphobia and Transphobia" category="Observance" firstYear="2005"
+          comment="Also widely known as IDAHOBIT. Observed on 17 May to mark the 1990 decision by the World Health Organization to remove homosexuality from the International Classification of Diseases.">
+      <Fixed month="May" day="17" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Kindness Day">
+    <Rule name="Fixed World Kindness Day" category="Observance" firstYear="1998"
+          comment="An international kindness observance promoted by the World Kindness Movement and other kindness organisations, encouraging acts of kindness and community goodwill.">
+      <Fixed month="November" day="13" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Men's Day">
+    <Rule name="Fixed International Men's Day" category="Observance" firstYear="1999"
+          comment="A global awareness day recognising the positive contributions of men and boys and raising awareness of issues affecting men's health, wellbeing, family life, and community participation.">
+      <Fixed month="November" day="19" />
     </Rule>
   </NotableDate>
 

@@ -67,4 +67,12 @@
     </Rule>
   </NotableDate>
 
+
+  <NotableDate name="Pi Day">
+    <Rule name="Fixed Pi Day" category="Cultural" firstYear="1988"
+          comment="A mathematical culture observance held on 14 March because 3/14 matches the first three significant digits of pi in month/day notation. The first recognised celebration was organised at the Exploratorium in San Francisco in 1988.">
+      <Fixed month="March" day="14" />
+    </Rule>
+  </NotableDate>
+
 </NotableDates>

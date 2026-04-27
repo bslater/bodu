@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NotableDates xmlns="urn:bodu:globalization:calendar">
+  <NotableDate name="Hari Raya Aidilfitri">
+    <Rule name="Malaysia" category="Religious" territory="MY" durationDays="2">
+      <Algorithm key="HijriCalendar" />
+    </Rule>
+  </NotableDate>
+</NotableDates>

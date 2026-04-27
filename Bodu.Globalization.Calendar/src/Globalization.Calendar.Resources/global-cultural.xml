@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Global cultural notable-date resource using the Western/Gregorian calendar.
 
@@ -72,6 +72,13 @@
     <Rule name="Fixed International Friendship Day" category="Cultural" firstYear="2011"
           comment="Proclaimed by the United Nations General Assembly in 2011 (resolution 65/275). The concept originated in 1958 when the World Friendship Crusade proposed 30 July as World Friendship Day.">
       <Fixed month="July" day="30" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Star Wars Day">
+    <Rule name="Fixed Star Wars Day" category="Cultural"
+          comment="An informal international fan observance of the Star Wars franchise, held on 4 May because of the phrase 'May the Fourth be with you'.">
+      <Fixed month="May" day="4" />
     </Rule>
   </NotableDate>
 
