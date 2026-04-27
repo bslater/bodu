@@ -19,8 +19,8 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </para>
 /// <para>
 /// This algorithm returns the first full moon that falls on or after 15 June of the given year, which consistently matches the
-/// Thai Asanha Bucha observance. The next-day observance that begins Vassa (Buddhist Lent) is provided separately by
-/// <see cref="VassaStartNotableDateAlgorithm" />.
+/// Thai Asanha Bucha observance. The next-day observance that begins Vassa (Buddhist Lent) is expressed as an
+/// <c>OffsetFromAnchor</c> rule (+1 day from Asalha Puja) in the XML resource and requires no separate algorithm.
 /// </para>
 /// <para>
 /// The full moon date is computed using the Meeus Chapter 49 algorithm via <see cref="LunarPhaseAlgorithm" />, accurate to within
