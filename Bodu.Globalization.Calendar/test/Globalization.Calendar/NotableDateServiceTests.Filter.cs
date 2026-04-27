@@ -134,7 +134,7 @@ public sealed partial class NotableDateServiceTests
 
 		Assert.ThrowsExactly<ArgumentNullException>(() =>
 		{
-			_ = service.GetNotableDates(2024, null!);
+			_ = service.GetNotableDates(2024, (NotableDateFilter)null!);
 		});
 	}
 
@@ -194,7 +194,7 @@ public sealed partial class NotableDateServiceTests
 
 		Assert.ThrowsExactly<ArgumentNullException>(() =>
 		{
-			_ = service.GetNotableDates(new DateTime(2024, 1, 1), new DateTime(2024, 12, 31), null!);
+			_ = service.GetNotableDates(new DateTime(2024, 1, 1), new DateTime(2024, 12, 31), (NotableDateFilter)null!);
 		});
 	}
 
@@ -247,7 +247,7 @@ public sealed partial class NotableDateServiceTests
 
 		Assert.ThrowsExactly<ArgumentNullException>(() =>
 		{
-			_ = service.GetNotableDates(new DateTime(2024, 1, 1), null!);
+			_ = service.GetNotableDates(new DateTime(2024, 1, 1), (NotableDateFilter)null!);
 		});
 	}
 
