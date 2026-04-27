@@ -543,18 +543,25 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     }
 
     /// <summary>
-    /// Completes all level channels and awaits their workers, suppressing any exceptions that
-    /// arise from cancelled tokens or completed channels during cancellation teardown.
+    /// Completes all level channels and awaits their workers using a sequential bottom-up drain,
+    /// suppressing any exceptions that arise during cancellation teardown.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Mirrors the shutdown ordering of <see cref="FinalizeAsync"/>: level N's channel is completed
+    /// and its worker is awaited before advancing to level N+1. Because a worker at level N is the
+    /// sole creator of level N+1's channel, awaiting it guarantees all promotions into N+1 have
+    /// landed before N+1's channel is completed. This eliminates zombie workers that would otherwise
+    /// remain blocked on channels that are never completed.
+    /// </para>
+    /// </remarks>
     /// <returns>A task that completes when every level worker has drained and exited.</returns>
     private async Task DrainWorkersAsync()
     {
-        foreach (var channel in this._levelChannels.Values)
-            channel.Writer.TryComplete();
-
-        foreach (var worker in this._levelWorkers.Values)
+        for (int level = 0; this._levelChannels.TryGetValue(level, out var channel); level++)
         {
-            try { await worker; }
+            channel.Writer.TryComplete();
+            try { await this._levelWorkers[level]; }
             catch { }
         }
     }
