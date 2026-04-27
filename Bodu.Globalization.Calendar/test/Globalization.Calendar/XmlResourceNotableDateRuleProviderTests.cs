@@ -27,7 +27,6 @@ public sealed class XmlResourceNotableDateRuleProviderTests
     /// Verifies that loading the standalone Common resource exposes its rules without errors.
     /// </summary>
     [TestMethod]
-    [Ignore("TODO: Need to investigate and fix the failure in this test")]
     public void LoadRules_WhenLoadingCommonResource_ShouldExposeUniversalRules()
 	{
 		var provider = new XmlResourceNotableDateRuleProvider(CommonResource, new ResourcePathResolver());
@@ -44,7 +43,6 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	/// include any rule that the US file did not opt in to (for example, Easter Monday or Whit Monday).
 	/// </summary>
 	[TestMethod]
-    [Ignore("TODO: Need to investigate and fix the failure in this test")]
     public void LoadRules_WhenLoadingUsResource_ShouldOnlyIncludeCherryPickedRules()
 	{
 		var provider = new XmlResourceNotableDateRuleProvider(UsResource, new ResourcePathResolver());
@@ -77,7 +75,6 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	/// and tags the territory.
 	/// </summary>
 	[TestMethod]
-    [Ignore("TODO: Need to investigate and fix the failure in this test")]
     public void LoadRules_WhenUseDirectiveAppliesOverrides_ShouldRetagInheritedRule()
 	{
 		var provider = new XmlResourceNotableDateRuleProvider(UsResource, new ResourcePathResolver());
@@ -93,7 +90,6 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	/// independent of what other country files do.
 	/// </summary>
 	[TestMethod]
-    [Ignore("TODO: Need to investigate and fix the failure in this test")]
     public void LoadRules_WhenLoadingGbResource_ShouldIncludeEasterMonday()
 	{
 		var provider = new XmlResourceNotableDateRuleProvider(GbResource, new ResourcePathResolver());
@@ -109,7 +105,6 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	/// Verifies that locally declared rules in a country file override the inherited rule with the same (name, territory) key.
 	/// </summary>
 	[TestMethod]
-    [Ignore("TODO: Need to investigate and fix the failure in this test")]
     public void LoadRules_WhenLocalRuleOverridesInheritedRule_ShouldUseLocalRule()
 	{
 		var provider = new XmlResourceNotableDateRuleProvider(GbResource, new ResourcePathResolver());
@@ -126,7 +121,6 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	/// absent (because France did not cherry-pick it).
 	/// </summary>
 	[TestMethod]
-    [Ignore("TODO: Need to investigate and fix the failure in this test")]
     public void LoadRules_WhenFrResource_ShouldExposeLocalNamesOnly()
 	{
 		var provider = new XmlResourceNotableDateRuleProvider(FrResource, new ResourcePathResolver());
@@ -143,7 +137,6 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	/// but no country-specific rules.
 	/// </summary>
 	[TestMethod]
-    [Ignore("TODO: Need to investigate and fix the failure in this test")]
     public void LoadRules_WhenLoadingDefaultComposite_ShouldExposeUniversalRulesViaUseAll()
 	{
 		var provider = new XmlResourceNotableDateRuleProvider(DefaultResource, new ResourcePathResolver());
@@ -164,7 +157,6 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	/// national and state-specific rules, and excludes any rule the AU file did not opt in to.
 	/// </summary>
 	[TestMethod]
-    [Ignore("TODO: Need to investigate and fix the failure in this test")]
     public void LoadRules_WhenLoadingAuResource_ShouldIncludeCherryPickedAndLocalRules()
 	{
 		var provider = new XmlResourceNotableDateRuleProvider(AuResource, new ResourcePathResolver());
@@ -210,7 +202,6 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	/// Birthday") when they are scoped to different subdivisions, since the override pipeline keys by composite (name, territory).
 	/// </summary>
 	[TestMethod]
-    [Ignore("TODO: Need to investigate and fix the failure in this test")]
     public void LoadRules_WhenLoadingAuResource_ShouldYieldDistinctLabourDayAndKingsBirthdayRulesPerSubdivision()
 	{
 		var provider = new XmlResourceNotableDateRuleProvider(AuResource, new ResourcePathResolver());
@@ -243,7 +234,6 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	/// day, so that all subdivisions inherit it via the subdivision-aware containment match in <see cref="NotableDateService" />.
 	/// </summary>
 	[TestMethod]
-    [Ignore("TODO: Need to investigate and fix the failure in this test")]
     public void LoadRules_WhenLoadingAuResource_ShouldTagAnzacDayAsNationalNonWorkingDay()
 	{
 		var provider = new XmlResourceNotableDateRuleProvider(AuResource, new ResourcePathResolver());
@@ -286,7 +276,6 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	/// the supplied assembly rather than the currently-executing one.
 	/// </summary>
 	[TestMethod]
-    [Ignore("TODO: Need to investigate and fix the failure in this test")]
     public void Constructor_WhenAssemblyOverrideSupplied_ShouldUseSuppliedAssembly()
 	{
 		var provider = new XmlResourceNotableDateRuleProvider(
@@ -306,7 +295,6 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	/// materialised the list.
 	/// </summary>
 	[TestMethod]
-    [Ignore("TODO: Need to investigate and fix the failure in this test")]
     public void LoadRules_WhenCalledTwice_ShouldReturnCachedResult()
 	{
 		var provider = new XmlResourceNotableDateRuleProvider(CommonResource, new ResourcePathResolver());
@@ -323,7 +311,6 @@ public sealed class XmlResourceNotableDateRuleProviderTests
 	/// for it. This test confirms the contract by verifying that the US set is a strict subset of Common's universal rules.
 	/// </summary>
 	[TestMethod]
-    [Ignore("TODO: Need to investigate and fix the failure in this test")]
     public void LoadRules_WhenSourceContainsRulesNotCherryPicked_ShouldNotInheritThem()
 	{
 		var common = new XmlResourceNotableDateRuleProvider(CommonResource, new ResourcePathResolver()).LoadRules().Select(r => r.Name).ToHashSet();
