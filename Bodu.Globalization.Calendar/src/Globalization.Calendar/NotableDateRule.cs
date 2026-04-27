@@ -143,6 +143,51 @@ public sealed record NotableDateRule
 	/// </summary>
 	public int? Month { get; init; }
 
+	/// <summary>
+	/// Gets a value indicating whether the intercalary (leap) month should be skipped when resolving this
+	/// <see cref="DateResolutionStrategy.Fixed" /> rule against a lunisolar calendar.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// When <see langword="true" /> and <see cref="CalendarType" /> is a lunisolar calendar such as
+	/// <see cref="SysGlobal.ChineseLunisolarCalendar" />, the resolver maps the conventional ordinal
+	/// <see cref="Month" /> to the calendar's consecutive month numbering by advancing past any intercalary
+	/// leap month that precedes it in the same year. This ensures that festivals defined against a conventional
+	/// month number — for example, the Dragon Boat Festival on the fifth day of the fifth lunar month —
+	/// resolve to the correct Gregorian date in leap lunar years.
+	/// </para>
+	/// </remarks>
+	public bool SkipLeapMonth { get; init; }
+
+	/// <summary>
+	/// Gets a value indicating whether the resolver should sweep the two overlapping calendar years when
+	/// resolving this <see cref="DateResolutionStrategy.Fixed" /> rule.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// Required for calendars whose year boundaries do not align with the Gregorian year — for example, the
+	/// Islamic (Hijri) calendar (a purely lunar calendar approximately 11 days shorter than a Gregorian year)
+	/// and the Hebrew calendar (a lunisolar calendar whose year begins in September or October). The resolver
+	/// determines the calendar year that contains 1 January of the requested Gregorian year, then checks that
+	/// year and the next, returning the first candidate whose Gregorian year matches.
+	/// </para>
+	/// </remarks>
+	public bool SweepCalendarYears { get; init; }
+
+	/// <summary>
+	/// Gets the calendar-specific month alias for months whose position depends on whether the calendar year
+	/// is a leap year. Used with <see cref="SweepCalendarYears" /> when <see cref="CalendarType" /> is
+	/// <see cref="SysGlobal.HebrewCalendar" />.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// Accepted values: <c>LastAdar</c>, <c>Nisan</c>, <c>Iyar</c>, <c>Sivan</c>, <c>Tammuz</c>, <c>Av</c>,
+	/// <c>Elul</c>. When this property is set, <see cref="Month" /> is <see langword="null" />. Simple Hebrew
+	/// months with a fixed calendar position (Tishri through AdarII) are stored directly in <see cref="Month" />.
+	/// </para>
+	/// </remarks>
+	public string? CalendarMonthAlias { get; init; }
+
 	// --- DayOfWeekInMonth strategy fields ----------------------------------------------------
 
 	/// <summary>
@@ -188,9 +233,9 @@ public sealed record NotableDateRule
 	/// </summary>
 	/// <remarks>
 	/// The string is parsed against the first constructor parameter's type at resolution time: an enum parameter is parsed
-	/// case-insensitively (for example <c>"Tishri"</c> → <see cref="Algorithms.HebrewMonth.Tishri" />), an <see cref="int" />
-	/// parameter accepts a numeric token, and a <see cref="string" /> parameter receives the raw value. Unused when the rule
-	/// resolves through an <see cref="AlgorithmKey" /> registered on an <see cref="INotableDateAlgorithmRegistry" />.
+	/// case-insensitively, an <see cref="int" /> parameter accepts a numeric token, and a <see cref="string" /> parameter
+	/// receives the raw value. Unused when the rule resolves through an <see cref="AlgorithmKey" /> registered on an
+	/// <see cref="INotableDateAlgorithmRegistry" />.
 	/// </remarks>
 	public string? AlgorithmMonth { get; init; }
 

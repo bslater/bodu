@@ -750,6 +750,324 @@ public sealed class NotableDateRuleResolverTests
 		Assert.AreEqual(new DateTime(2025, 3, 15), result);
 	}
 
+	// -----------------------------------------------------------------------------------------
+	// Fixed strategy with SkipLeapMonth (ChineseLunisolarCalendar)
+	// -----------------------------------------------------------------------------------------
+
+	/// <summary>
+	/// Verifies that a Fixed rule with <see cref="NotableDateRule.SkipLeapMonth" /> set resolves
+	/// the Dragon Boat Festival (conventional month 5, day 5) to the correct Gregorian date,
+	/// including years that contain an intercalary leap month before month 5.
+	/// </summary>
+	[DataRow(2022, 2022, 6, 3)]
+	[DataRow(2023, 2023, 6, 22)]
+	[DataRow(2024, 2024, 6, 10)]
+	[TestMethod]
+	public void ResolveAnchorDate_WhenFixedRuleWithSkipLeapMonth_DragonBoatFestival_ShouldReturnExpectedDate(
+		int year, int expectedYear, int expectedMonth, int expectedDay)
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "Dragon Boat Festival",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Cultural,
+			Month = 5,
+			Day = 5,
+			CalendarType = typeof(System.Globalization.ChineseLunisolarCalendar),
+			SkipLeapMonth = true,
+			FirstYear = 1901,
+			LastYear = 2100,
+		};
+
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		DateTime? result = resolver.ResolveAnchorDate(rule, year);
+
+		Assert.IsNotNull(result);
+		Assert.AreEqual(new DateTime(expectedYear, expectedMonth, expectedDay), result.Value);
+		Assert.AreEqual(DateTimeKind.Unspecified, result.Value.Kind);
+	}
+
+	/// <summary>
+	/// Verifies that a Fixed rule with <see cref="NotableDateRule.SkipLeapMonth" /> set resolves
+	/// the Mid-Autumn Festival (conventional month 8, day 15) to the correct Gregorian date.
+	/// </summary>
+	[DataRow(2022, 2022, 9, 10)]
+	[DataRow(2023, 2023, 9, 29)]
+	[DataRow(2024, 2024, 9, 17)]
+	[TestMethod]
+	public void ResolveAnchorDate_WhenFixedRuleWithSkipLeapMonth_MidAutumnFestival_ShouldReturnExpectedDate(
+		int year, int expectedYear, int expectedMonth, int expectedDay)
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "Mid-Autumn Festival",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Cultural,
+			Month = 8,
+			Day = 15,
+			CalendarType = typeof(System.Globalization.ChineseLunisolarCalendar),
+			SkipLeapMonth = true,
+			FirstYear = 1901,
+			LastYear = 2100,
+		};
+
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		DateTime? result = resolver.ResolveAnchorDate(rule, year);
+
+		Assert.IsNotNull(result);
+		Assert.AreEqual(new DateTime(expectedYear, expectedMonth, expectedDay), result.Value);
+	}
+
+	/// <summary>
+	/// Verifies that a Fixed rule with <see cref="NotableDateRule.SkipLeapMonth" /> set resolves
+	/// the Double Ninth Festival (conventional month 9, day 9) to the correct Gregorian date.
+	/// </summary>
+	[DataRow(2022, 2022, 10, 4)]
+	[DataRow(2023, 2023, 10, 23)]
+	[DataRow(2024, 2024, 10, 11)]
+	[TestMethod]
+	public void ResolveAnchorDate_WhenFixedRuleWithSkipLeapMonth_DoubleNinthFestival_ShouldReturnExpectedDate(
+		int year, int expectedYear, int expectedMonth, int expectedDay)
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "Double Ninth Festival",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Cultural,
+			Month = 9,
+			Day = 9,
+			CalendarType = typeof(System.Globalization.ChineseLunisolarCalendar),
+			SkipLeapMonth = true,
+			FirstYear = 1901,
+			LastYear = 2100,
+		};
+
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		DateTime? result = resolver.ResolveAnchorDate(rule, year);
+
+		Assert.IsNotNull(result);
+		Assert.AreEqual(new DateTime(expectedYear, expectedMonth, expectedDay), result.Value);
+	}
+
+	/// <summary>
+	/// Verifies that a Fixed rule with <see cref="NotableDateRule.SkipLeapMonth" /> set returns
+	/// <see langword="null" /> for years outside the ChineseLunisolarCalendar supported range.
+	/// </summary>
+	[DataRow(1800)]
+	[DataRow(2200)]
+	[TestMethod]
+	public void ResolveAnchorDate_WhenFixedRuleWithSkipLeapMonthAndYearOutOfRange_ShouldReturnNull(int year)
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "Dragon Boat Festival",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Cultural,
+			Month = 5,
+			Day = 5,
+			CalendarType = typeof(System.Globalization.ChineseLunisolarCalendar),
+			SkipLeapMonth = true,
+		};
+
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		Assert.IsNull(resolver.ResolveAnchorDate(rule, year));
+	}
+
+	// -----------------------------------------------------------------------------------------
+	// Fixed strategy with SweepCalendarYears (HebrewCalendar)
+	// -----------------------------------------------------------------------------------------
+
+	/// <summary>
+	/// Verifies that a Fixed rule with <see cref="NotableDateRule.SweepCalendarYears" /> and
+	/// <see cref="System.Globalization.HebrewCalendar" /> resolves Rosh Hashanah (1 Tishri)
+	/// to the correct Gregorian date.
+	/// </summary>
+	[DataRow(2022, 2022, 9, 26)]
+	[DataRow(2023, 2023, 9, 16)]
+	[DataRow(2024, 2024, 10, 3)]
+	[TestMethod]
+	public void ResolveAnchorDate_WhenFixedRuleWithSweepCalendarYears_RoshHashanah_ShouldReturnExpectedDate(
+		int year, int expectedYear, int expectedMonth, int expectedDay)
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "Rosh Hashanah",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Religious,
+			Month = 1,
+			Day = 1,
+			CalendarType = typeof(System.Globalization.HebrewCalendar),
+			SweepCalendarYears = true,
+		};
+
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		DateTime? result = resolver.ResolveAnchorDate(rule, year);
+
+		Assert.IsNotNull(result);
+		Assert.AreEqual(new DateTime(expectedYear, expectedMonth, expectedDay), result.Value);
+		Assert.AreEqual(DateTimeKind.Unspecified, result.Value.Kind);
+	}
+
+	/// <summary>
+	/// Verifies that a Fixed rule with <see cref="NotableDateRule.SweepCalendarYears" /> and
+	/// <see cref="NotableDateRule.CalendarMonthAlias" /> set to <c>"Nisan"</c> resolves Passover
+	/// (15 Nisan) to the correct Gregorian date, including leap Hebrew years where Nisan is month 8.
+	/// </summary>
+	[DataRow(2022, 2022, 4, 16)]
+	[DataRow(2023, 2023, 4, 6)]
+	[DataRow(2024, 2024, 4, 23)]
+	[TestMethod]
+	public void ResolveAnchorDate_WhenFixedRuleWithSweepCalendarYearsAndNisanAlias_Passover_ShouldReturnExpectedDate(
+		int year, int expectedYear, int expectedMonth, int expectedDay)
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "Passover",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Religious,
+			CalendarMonthAlias = "Nisan",
+			Day = 15,
+			CalendarType = typeof(System.Globalization.HebrewCalendar),
+			SweepCalendarYears = true,
+		};
+
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		DateTime? result = resolver.ResolveAnchorDate(rule, year);
+
+		Assert.IsNotNull(result);
+		Assert.AreEqual(new DateTime(expectedYear, expectedMonth, expectedDay), result.Value);
+	}
+
+	/// <summary>
+	/// Verifies that a Fixed rule with <see cref="NotableDateRule.SweepCalendarYears" /> and
+	/// <see cref="System.Globalization.HebrewCalendar" /> resolves Hanukkah (25 Kislev)
+	/// to the correct Gregorian date.
+	/// </summary>
+	[DataRow(2022, 2022, 12, 19)]
+	[DataRow(2023, 2023, 12, 8)]
+	[DataRow(2024, 2024, 12, 26)]
+	[TestMethod]
+	public void ResolveAnchorDate_WhenFixedRuleWithSweepCalendarYears_Hanukkah_ShouldReturnExpectedDate(
+		int year, int expectedYear, int expectedMonth, int expectedDay)
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "Hanukkah",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Religious,
+			Month = 3,
+			Day = 25,
+			CalendarType = typeof(System.Globalization.HebrewCalendar),
+			SweepCalendarYears = true,
+		};
+
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		DateTime? result = resolver.ResolveAnchorDate(rule, year);
+
+		Assert.IsNotNull(result);
+		Assert.AreEqual(new DateTime(expectedYear, expectedMonth, expectedDay), result.Value);
+	}
+
+	/// <summary>
+	/// Verifies that a Fixed rule with <see cref="NotableDateRule.SweepCalendarYears" /> and
+	/// <see cref="NotableDateRule.CalendarMonthAlias" /> set to <c>"LastAdar"</c> resolves Purim
+	/// (14 LastAdar) to the correct Gregorian date in both leap and non-leap Hebrew years.
+	/// </summary>
+	[DataRow(2022, 2022, 3, 17)]  // Hebrew 5782 — leap year (Adar II)
+	[DataRow(2023, 2023, 3, 7)]   // Hebrew 5783 — non-leap year
+	[DataRow(2024, 2024, 3, 24)]  // Hebrew 5784 — leap year (Adar II)
+	[TestMethod]
+	public void ResolveAnchorDate_WhenFixedRuleWithSweepCalendarYearsAndLastAdarAlias_Purim_ShouldReturnExpectedDate(
+		int year, int expectedYear, int expectedMonth, int expectedDay)
+	{
+		var rule = new NotableDateRule
+		{
+			Name = "Purim",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Religious,
+			CalendarMonthAlias = "LastAdar",
+			Day = 14,
+			CalendarType = typeof(System.Globalization.HebrewCalendar),
+			SweepCalendarYears = true,
+		};
+
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		DateTime? result = resolver.ResolveAnchorDate(rule, year);
+
+		Assert.IsNotNull(result);
+		Assert.AreEqual(new DateTime(expectedYear, expectedMonth, expectedDay), result.Value);
+	}
+
+	/// <summary>
+	/// Verifies that a Fixed rule with <see cref="NotableDateRule.SweepCalendarYears" /> and
+	/// <see cref="NotableDateRule.CalendarMonthAlias" /> set to <c>"AdarII"</c> returns
+	/// <see langword="null" /> in a Gregorian year where no Hebrew leap year contributes an
+	/// Adar II date within the year.
+	/// </summary>
+	[TestMethod]
+	public void ResolveAnchorDate_WhenFixedRuleWithSweepCalendarYearsAndAdarIIAliasInNonLeapYear_ShouldReturnNull()
+	{
+		// Gregorian 2025 spans Hebrew 5785 and 5786, both non-leap; no Adar II exists.
+		var rule = new NotableDateRule
+		{
+			Name = "AdarII Test",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Religious,
+			CalendarMonthAlias = "AdarII",
+			Day = 14,
+			CalendarType = typeof(System.Globalization.HebrewCalendar),
+			SweepCalendarYears = true,
+		};
+
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		Assert.IsNull(resolver.ResolveAnchorDate(rule, 2025));
+	}
+
+	// -----------------------------------------------------------------------------------------
+	// Fixed strategy with SweepCalendarYears (HijriCalendar)
+	// -----------------------------------------------------------------------------------------
+
+	/// <summary>
+	/// Verifies that a Fixed rule with <see cref="NotableDateRule.SweepCalendarYears" /> and
+	/// <see cref="System.Globalization.HijriCalendar" /> returns a non-null date that falls
+	/// within the requested Gregorian year for a year where the observance occurs.
+	/// </summary>
+	[DataRow(2022)]
+	[DataRow(2023)]
+	[DataRow(2024)]
+	[TestMethod]
+	public void ResolveAnchorDate_WhenFixedRuleWithSweepCalendarYearsAndHijriCalendar_ShouldReturnDateInRequestedYear(int year)
+	{
+		// Eid al-Adha: month 12, day 10 in the Hijri calendar.
+		var rule = new NotableDateRule
+		{
+			Name = "Eid al-Adha",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Religious,
+			Month = 12,
+			Day = 10,
+			CalendarType = typeof(System.Globalization.HijriCalendar),
+			SweepCalendarYears = true,
+		};
+
+		var resolver = new NotableDateRuleResolver(new[] { rule });
+
+		DateTime? result = resolver.ResolveAnchorDate(rule, year);
+
+		// Eid al-Adha falls in every Gregorian year for 2022–2024; result must be non-null and in the right year.
+		Assert.IsNotNull(result);
+		Assert.AreEqual(year, result.Value.Year);
+	}
+
 	private sealed class StaticAlgorithm : INotableDateAlgorithm
 	{
 		private readonly DateTime _value;

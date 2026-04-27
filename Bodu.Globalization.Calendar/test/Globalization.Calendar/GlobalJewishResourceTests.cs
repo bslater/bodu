@@ -10,10 +10,10 @@ using Bodu.Extensions;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Verifies the end-to-end wiring of the embedded <c>global-jewish.xml</c> resource: every rule resolves through the
-/// generic <see cref="DateResolutionStrategy.Algorithm" /> CLR-type fallback path by activating
-/// <see cref="Algorithms.HebrewNotableDateAlgorithm" /> with the authored Hebrew month and day, without requiring callers
-/// to populate an <see cref="INotableDateAlgorithmRegistry" />.
+/// Verifies the end-to-end wiring of the embedded <c>global-jewish.xml</c> resource: anchor rules resolve via the
+/// <see cref="DateResolutionStrategy.Fixed" /> strategy with <see cref="System.Globalization.HebrewCalendar" /> and
+/// <see cref="NotableDateRule.SweepCalendarYears" />, without requiring callers to populate an
+/// <see cref="INotableDateAlgorithmRegistry" />.
 /// </summary>
 [TestClass]
 public sealed class GlobalJewishResourceTests
@@ -35,7 +35,7 @@ public sealed class GlobalJewishResourceTests
 
 	/// <summary>
 	/// Verifies that all seven Jewish observances declared in <c>global-jewish.xml</c> resolve into <see cref="NotableDate" />
-	/// instances for a year that contains them, confirming each rule's <c>&lt;Algorithm type=… month=… day=… /&gt;</c> wiring.
+	/// instances for a year that contains them.
 	/// </summary>
 	[TestMethod]
 	public void GetNotableDates_WhenLoadingGlobalJewishWithoutRegistry_ShouldResolveAllSevenHolidays()
@@ -57,9 +57,9 @@ public sealed class GlobalJewishResourceTests
 
 	/// <summary>
 	/// Verifies that each Jewish observance resolves to its known correct Gregorian date for representative years. Anchor
-	/// rules (Rosh Hashanah, Hanukkah, Purim, Passover) drive the (HebrewMonth, int) constructor of
-	/// <see cref="Algorithms.HebrewNotableDateAlgorithm" /> directly; Yom Kippur, Sukkot, and Shavuot resolve via
-	/// <see cref="DateResolutionStrategy.OffsetFromAnchor" /> against their authored anchors.
+	/// rules (Rosh Hashanah, Hanukkah, Purim, Passover) use the Fixed strategy with
+	/// <see cref="System.Globalization.HebrewCalendar" /> and <see cref="NotableDateRule.SweepCalendarYears" />; Yom Kippur,
+	/// Sukkot, and Shavuot resolve via <see cref="DateResolutionStrategy.OffsetFromAnchor" /> against their authored anchors.
 	/// </summary>
 	[DataRow(2024, "Rosh Hashanah", 10, 3)]
 	[DataRow(2024, "Yom Kippur", 10, 12)]      // Rosh Hashanah + 9

@@ -114,6 +114,21 @@ public sealed record NotableDateRuleOverrideBody
 	public int? Day { get; init; }
 
 	/// <summary>
+	/// Gets the override for <see cref="NotableDateRule.SkipLeapMonth" />.
+	/// </summary>
+	public bool SkipLeapMonth { get; init; }
+
+	/// <summary>
+	/// Gets the override for <see cref="NotableDateRule.SweepCalendarYears" />.
+	/// </summary>
+	public bool SweepCalendarYears { get; init; }
+
+	/// <summary>
+	/// Gets the override for <see cref="NotableDateRule.CalendarMonthAlias" />.
+	/// </summary>
+	public string? CalendarMonthAlias { get; init; }
+
+	/// <summary>
 	/// Gets the day-of-week used by <see cref="DateResolutionStrategy.DayOfWeekInMonth" />.
 	/// </summary>
 	public DayOfWeek? DayOfWeek { get; init; }

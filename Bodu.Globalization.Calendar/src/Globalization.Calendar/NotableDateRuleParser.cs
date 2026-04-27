@@ -232,14 +232,23 @@ public static class NotableDateRuleParser
     /// override body. Mirrors <see cref="ApplyStrategySpecifics(NotableDateRule, XElement)" />
     /// but writes to a <see cref="NotableDateRuleOverrideBody" />.
     /// </summary>
-	private static NotableDateRuleOverrideBody ApplyStrategySpecificsToBody(NotableDateRuleOverrideBody body, XElement strategyElement) =>
-		body.Strategy switch
+	private static NotableDateRuleOverrideBody ApplyStrategySpecificsToBody(NotableDateRuleOverrideBody body, XElement strategyElement)
+	{
+		if (body.Strategy == DateResolutionStrategy.Fixed)
 		{
-			DateResolutionStrategy.Fixed => body with
+			var (monthNum, monthAlias) = ParseMonthToken(GetRequiredAttribute(strategyElement, "month"));
+			return body with
 			{
-				Month = ParseMonth(GetRequiredAttribute(strategyElement, "month")),
+				Month = monthNum,
+				CalendarMonthAlias = monthAlias,
 				Day = int.Parse(GetRequiredAttribute(strategyElement, "day"), CultureInfo.InvariantCulture),
-			},
+				SkipLeapMonth = ParseOptionalBool(strategyElement, "skipLeapMonth") ?? false,
+				SweepCalendarYears = ParseOptionalBool(strategyElement, "sweepCalendarYears") ?? false,
+			};
+		}
+
+		return body.Strategy switch
+		{
 			DateResolutionStrategy.DayOfWeekInMonth => body with
 			{
 				Month = ParseMonth(GetRequiredAttribute(strategyElement, "month")),
@@ -260,6 +269,7 @@ public static class NotableDateRuleParser
 			},
 			_ => body,
 		};
+	}
 
     /// <summary>
     /// Enforces the per-rule uniqueness invariant on adjustment keys — the same invariant the
@@ -349,14 +359,23 @@ public static class NotableDateRuleParser
     /// <param name="rule">The partially-populated rule to enrich.</param>
     /// <param name="strategyElement">The XML element describing the strategy.</param>
     /// <returns>The rule with strategy-specific fields populated.</returns>
-	private static NotableDateRule ApplyStrategySpecifics(NotableDateRule rule, XElement strategyElement) =>
-		rule.Strategy switch
+	private static NotableDateRule ApplyStrategySpecifics(NotableDateRule rule, XElement strategyElement)
+	{
+		if (rule.Strategy == DateResolutionStrategy.Fixed)
 		{
-			DateResolutionStrategy.Fixed => rule with
+			var (monthNum, monthAlias) = ParseMonthToken(GetRequiredAttribute(strategyElement, "month"));
+			return rule with
 			{
-				Month = ParseMonth(GetRequiredAttribute(strategyElement, "month")),
-				Day = int.Parse(GetRequiredAttribute(strategyElement, "day"), CultureInfo.InvariantCulture)
-			},
+				Month = monthNum,
+				CalendarMonthAlias = monthAlias,
+				Day = int.Parse(GetRequiredAttribute(strategyElement, "day"), CultureInfo.InvariantCulture),
+				SkipLeapMonth = ParseOptionalBool(strategyElement, "skipLeapMonth") ?? false,
+				SweepCalendarYears = ParseOptionalBool(strategyElement, "sweepCalendarYears") ?? false,
+			};
+		}
+
+		return rule.Strategy switch
+		{
 			DateResolutionStrategy.DayOfWeekInMonth => rule with
 			{
 				Month = ParseMonth(GetRequiredAttribute(strategyElement, "month")),
@@ -375,8 +394,9 @@ public static class NotableDateRuleParser
 				AlgorithmMonth = GetOptionalAttribute(strategyElement, "month"),
 				AlgorithmDay = ParseOptionalInt(strategyElement, "day"),
 			},
-			_ => throw new NotSupportedException($"Unsupported strategy: {rule.Strategy}.")
+			_ => throw new NotSupportedException($"Unsupported strategy: {rule.Strategy}."),
 		};
+	}
 
     /// <summary>
     /// Parses an &lt;Adjustment&gt; XML element into an <see cref="ObservanceAdjustment" /> record.
@@ -534,6 +554,63 @@ public static class NotableDateRuleParser
 			return numeric;
 
 		throw new FormatException($"Invalid month value '{monthName}'. Expected a full English month name (e.g. 'January') or an integer 1–13.");
+	}
+
+    /// <summary>
+    /// Parses <paramref name="token" /> as a month identifier for a <c>Fixed</c> strategy element, returning
+    /// either an integer month number or a calendar-specific alias string for months whose calendar position
+    /// depends on whether the year is a leap year.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Accepted forms:
+    /// <list type="bullet">
+    ///   <item><description>Full English month name — <c>"January"</c> through <c>"December"</c>.</description></item>
+    ///   <item><description>Integer 1–13 — a direct calendar month number.</description></item>
+    ///   <item><description>Hebrew month name with a fixed calendar position — <c>Tishri</c> (1), <c>Heshvan</c> (2), <c>Kislev</c> (3), <c>Tevet</c> (4), <c>Shevat</c> (5), <c>AdarI</c> (6), <c>AdarII</c> (7); these are stored as integers.</description></item>
+    ///   <item><description>Hebrew month name with a leap-year-dependent position — <c>LastAdar</c>, <c>Nisan</c>, <c>Iyar</c>, <c>Sivan</c>, <c>Tammuz</c>, <c>Av</c>, <c>Elul</c>; these are stored as alias strings and resolved by the resolver at runtime.</description></item>
+    /// </list>
+    /// </para>
+    /// </remarks>
+    /// <param name="token">The month token from the XML attribute.</param>
+    /// <returns>
+    /// A tuple of <c>(numericMonth, alias)</c>: exactly one of the two is non-<see langword="null" />.
+    /// </returns>
+    /// <exception cref="FormatException"><paramref name="token" /> is not a recognised month token.</exception>
+	private static (int? numericMonth, string? alias) ParseMonthToken(string token)
+	{
+		ThrowHelper.ThrowIfNullOrEmpty(token);
+
+		if (DateTime.TryParseExact(token, "MMMM", CultureInfo.InvariantCulture, DateTimeStyles.None, out var result))
+			return (result.Month, null);
+
+		if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric)
+			&& numeric is >= 1 and <= 13)
+			return (numeric, null);
+
+		// Hebrew months with a fixed calendar position — always at the same 1-based index.
+		int? simpleHebrew = token switch
+		{
+			"Tishri" => 1,
+			"Heshvan" => 2,
+			"Kislev" => 3,
+			"Tevet" => 4,
+			"Shevat" => 5,
+			"AdarI" => 6,
+			"AdarII" => 7,
+			_ => (int?)null,
+		};
+
+		if (simpleHebrew is not null)
+			return (simpleHebrew, null);
+
+		// Hebrew months whose calendar position shifts in leap years — stored as a named alias
+		// for runtime resolution by the resolver.
+		if (token is "LastAdar" or "Nisan" or "Iyar" or "Sivan" or "Tammuz" or "Av" or "Elul")
+			return (null, token);
+
+		throw new FormatException(
+			$"Invalid month value '{token}'. Expected a full English month name, an integer 1–13, or a Hebrew month name.");
 	}
 
 	// ----------------------------------------------------------------------------

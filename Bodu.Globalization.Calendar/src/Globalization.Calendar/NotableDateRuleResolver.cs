@@ -89,10 +89,19 @@ internal sealed class NotableDateRuleResolver
 			switch (rule.Strategy)
 			{
 				case DateResolutionStrategy.Fixed:
-					if (rule.Month is { } m1 && rule.Day is { } d1)
+					if (rule.Day is not { } d1)
+						return null;
+
+					if (rule.CalendarType is { } calType
+						&& Activator.CreateInstance(calType) is System.Globalization.Calendar cal)
 					{
-						if (rule.CalendarType is { } calType
-							&& Activator.CreateInstance(calType) is System.Globalization.Calendar cal)
+						if (rule.SweepCalendarYears)
+							return ResolveCalendarYearSweep(rule, year, cal, d1);
+
+						if (rule.SkipLeapMonth && cal is System.Globalization.ChineseLunisolarCalendar chineseCal)
+							return ResolveChineseLeapMonthSkip(rule, year, chineseCal, d1);
+
+						if (rule.Month is { } m1)
 						{
 							try
 							{
@@ -106,10 +115,12 @@ internal sealed class NotableDateRuleResolver
 							}
 						}
 
-						return new DateTime(year, m1, d1, 0, 0, 0, DateTimeKind.Unspecified);
+						return null;
 					}
 
-					return null;
+					return rule.Month is { } gregorianMonth
+						? new DateTime(year, gregorianMonth, d1, 0, 0, 0, DateTimeKind.Unspecified)
+						: (DateTime?)null;
 
 				case DateResolutionStrategy.DayOfWeekInMonth:
 					if (rule.Month is { } m2 && rule.WeekOrdinal is { } ord && rule.DayOfWeek is { } dow)
@@ -282,6 +293,142 @@ internal sealed class NotableDateRuleResolver
 		value = null;
 		return false;
 	}
+
+    /// <summary>
+    /// Resolves a <see cref="DateResolutionStrategy.Fixed" /> rule against a lunisolar calendar by advancing
+    /// the conventional ordinal lunar month past any intercalary leap month inserted earlier in the same year.
+    /// </summary>
+    /// <param name="rule">The rule to resolve; must have <see cref="NotableDateRule.Month" /> set.</param>
+    /// <param name="year">The Gregorian year.</param>
+    /// <param name="cal">The <see cref="System.Globalization.ChineseLunisolarCalendar" /> instance.</param>
+    /// <param name="day">The day of month in the lunisolar calendar.</param>
+    /// <returns>The Gregorian date, or <see langword="null" /> if the year is out of range or the month/day do not exist.</returns>
+	private static DateTime? ResolveChineseLeapMonthSkip(NotableDateRule rule, int year, System.Globalization.ChineseLunisolarCalendar cal, int day)
+	{
+		if (rule.Month is not { } lunarMonth)
+			return null;
+
+		if (year < cal.MinSupportedDateTime.Year || year >= cal.MaxSupportedDateTime.Year)
+			return null;
+
+		int monthsInYear = cal.GetMonthsInYear(year);
+		int leapMonth = cal.GetLeapMonth(year);
+
+		// GetLeapMonth returns the 1-based position of the intercalary month within the calendar's consecutive
+		// 1..N month sequence, or 0 for a non-leap year. Conventional ordinal months at or after the leap slot
+		// need their calendar index incremented by one to skip past the intercalary month.
+		int calendarMonth = (leapMonth > 0 && lunarMonth >= leapMonth) ? lunarMonth + 1 : lunarMonth;
+		if (calendarMonth > monthsInYear)
+			return null;
+
+		int daysInMonth = cal.GetDaysInMonth(year, calendarMonth);
+		if (day > daysInMonth)
+			return null;
+
+		DateTime result = cal.ToDateTime(year, calendarMonth, day, 0, 0, 0, 0);
+		return DateTime.SpecifyKind(result.Date, DateTimeKind.Unspecified);
+	}
+
+    /// <summary>
+    /// Resolves a <see cref="DateResolutionStrategy.Fixed" /> rule against a calendar whose year boundaries
+    /// do not align with the Gregorian year by checking both calendar years that overlap the requested
+    /// Gregorian year.
+    /// </summary>
+    /// <param name="rule">The rule to resolve.</param>
+    /// <param name="year">The Gregorian year.</param>
+    /// <param name="cal">The calendar instance (typically <see cref="System.Globalization.HijriCalendar" /> or
+    /// <see cref="System.Globalization.HebrewCalendar" />).</param>
+    /// <param name="day">The day of month in the target calendar.</param>
+    /// <returns>The first matching Gregorian date within the requested year, or <see langword="null" /> if none falls in that year.</returns>
+	private static DateTime? ResolveCalendarYearSweep(NotableDateRule rule, int year, System.Globalization.Calendar cal, int day)
+	{
+		int calYearForJan1;
+		try
+		{
+			calYearForJan1 = cal.GetYear(new DateTime(year, 1, 1));
+		}
+		catch (ArgumentOutOfRangeException)
+		{
+			return null;
+		}
+
+		for (int h = calYearForJan1; h <= calYearForJan1 + 1; h++)
+		{
+			int monthNumber;
+			if (rule.CalendarMonthAlias is { } alias)
+			{
+				bool isLeapYear = cal.GetMonthsInYear(h) == 13;
+				monthNumber = ResolveHebrewMonthAlias(alias, isLeapYear);
+				if (monthNumber < 0)
+					continue;
+			}
+			else if (rule.Month is { } m)
+			{
+				monthNumber = m;
+			}
+			else
+			{
+				return null;
+			}
+
+			int daysInMonth;
+			try
+			{
+				daysInMonth = cal.GetDaysInMonth(h, monthNumber);
+			}
+			catch (ArgumentOutOfRangeException)
+			{
+				continue;
+			}
+
+			if (day > daysInMonth)
+				continue;
+
+			DateTime candidate;
+			try
+			{
+				candidate = cal.ToDateTime(h, monthNumber, day, 0, 0, 0, 0);
+			}
+			catch (ArgumentOutOfRangeException)
+			{
+				continue;
+			}
+
+			if (candidate.Year != year)
+				continue;
+
+			return DateTime.SpecifyKind(candidate.Date, DateTimeKind.Unspecified);
+		}
+
+		return null;
+	}
+
+    /// <summary>
+    /// Maps a Hebrew month alias to the internal <see cref="System.Globalization.HebrewCalendar" /> month
+    /// number for the given leap-year state, or returns <c>-1</c> if the month does not exist in that year type.
+    /// </summary>
+    /// <param name="alias">The Hebrew month name.</param>
+    /// <param name="isLeapYear"><see langword="true" /> when the Hebrew year has 13 months.</param>
+    /// <returns>The 1-based month number, or <c>-1</c> when the month is absent in the given year type.</returns>
+	private static int ResolveHebrewMonthAlias(string alias, bool isLeapYear) =>
+		alias switch
+		{
+			"Tishri" => 1,
+			"Heshvan" => 2,
+			"Kislev" => 3,
+			"Tevet" => 4,
+			"Shevat" => 5,
+			"AdarI" => 6,
+			"AdarII" => isLeapYear ? 7 : -1,
+			"LastAdar" => isLeapYear ? 7 : 6,
+			"Nisan" => isLeapYear ? 8 : 7,
+			"Iyar" => isLeapYear ? 9 : 8,
+			"Sivan" => isLeapYear ? 10 : 9,
+			"Tammuz" => isLeapYear ? 11 : 10,
+			"Av" => isLeapYear ? 12 : 11,
+			"Elul" => isLeapYear ? 13 : 12,
+			_ => -1,
+		};
 
 	/// <summary>
 	/// Determines whether the supplied rule applies to the supplied year, after consulting <see cref="NotableDateRule.FirstYear" />,

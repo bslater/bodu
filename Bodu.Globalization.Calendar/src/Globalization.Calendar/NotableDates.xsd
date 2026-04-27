@@ -108,12 +108,20 @@
       <xs:choice minOccurs="1" maxOccurs="1">
         <xs:element name="Fixed">
           <!-- When calendarType is set on the enclosing Rule, month and day are
-               interpreted in that calendar system (e.g. ChineseLunisolarCalendar)
-               and the resolver converts the result to a Gregorian DateTime.
-               Without calendarType, month and day are Gregorian (1–12). -->
+               interpreted in that calendar system (e.g. ChineseLunisolarCalendar,
+               HijriCalendar, HebrewCalendar) and the resolver converts the result
+               to a Gregorian DateTime. Without calendarType, month and day are
+               Gregorian (1–12).
+               skipLeapMonth: for ChineseLunisolarCalendar rules — advances the
+               calendar month past any intercalary leap month that precedes it.
+               sweepCalendarYears: for calendars whose year does not align with
+               the Gregorian year (HijriCalendar, HebrewCalendar) — tries both
+               calendar years that overlap the requested Gregorian year. -->
           <xs:complexType>
             <xs:attribute name="day" type="nd:day" use="required" />
             <xs:attribute name="month" type="nd:monthOrNumber" use="required" />
+            <xs:attribute name="skipLeapMonth" type="xs:boolean" use="optional" />
+            <xs:attribute name="sweepCalendarYears" type="xs:boolean" use="optional" />
           </xs:complexType>
         </xs:element>
         <xs:element name="DayOfWeekInMonth">
@@ -179,6 +187,8 @@
           <xs:complexType>
             <xs:attribute name="day" type="nd:day" use="required" />
             <xs:attribute name="month" type="nd:monthOrNumber" use="required" />
+            <xs:attribute name="skipLeapMonth" type="xs:boolean" use="optional" />
+            <xs:attribute name="sweepCalendarYears" type="xs:boolean" use="optional" />
           </xs:complexType>
         </xs:element>
         <xs:element name="DayOfWeekInMonth">
@@ -333,14 +343,18 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <!-- monthOrNumber: used by Fixed rules. Accepts either a full English month name
-       (Gregorian rules) or an integer 1–13 (when calendarType is set on the Rule,
-       the integer is the month number in that calendar system; lunisolar calendars
-       may carry up to 13 months via intercalary months). -->
+  <!-- monthOrNumber: used by Fixed rules. Accepts a full English month name
+       (Gregorian rules), an integer 1–13 (numeric month in the calendarType system),
+       or a Hebrew month name (for rules using calendarType with HebrewCalendar).
+       Simple Hebrew months with a fixed calendar position (Tishri through AdarII)
+       are stored as integers 1–7 by the parser. Months whose position is leap-year
+       dependent (LastAdar, Nisan through Elul) are stored as a CalendarMonthAlias
+       and resolved at runtime by the resolver. -->
   <xs:simpleType name="monthOrNumber">
     <xs:union>
       <xs:simpleType>
         <xs:restriction base="xs:string">
+          <!-- Gregorian month names -->
           <xs:enumeration value="January" />
           <xs:enumeration value="February" />
           <xs:enumeration value="March" />
@@ -353,6 +367,22 @@
           <xs:enumeration value="October" />
           <xs:enumeration value="November" />
           <xs:enumeration value="December" />
+          <!-- Hebrew month names (fixed position 1–7: Tishri through AdarII) -->
+          <xs:enumeration value="Tishri" />
+          <xs:enumeration value="Heshvan" />
+          <xs:enumeration value="Kislev" />
+          <xs:enumeration value="Tevet" />
+          <xs:enumeration value="Shevat" />
+          <xs:enumeration value="AdarI" />
+          <xs:enumeration value="AdarII" />
+          <!-- Hebrew month names (leap-year-dependent position) -->
+          <xs:enumeration value="LastAdar" />
+          <xs:enumeration value="Nisan" />
+          <xs:enumeration value="Iyar" />
+          <xs:enumeration value="Sivan" />
+          <xs:enumeration value="Tammuz" />
+          <xs:enumeration value="Av" />
+          <xs:enumeration value="Elul" />
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType>
