@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+#pragma warning disable CS0618 // Type or member is obsolete — testing deprecated XxHash32 type
+
 namespace Bodu.IO.Hashing;
 
 /// <summary>

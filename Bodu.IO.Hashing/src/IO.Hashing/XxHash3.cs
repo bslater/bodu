@@ -15,6 +15,10 @@ using System.Runtime.CompilerServices;
 /// </summary>
 /// <remarks>
 /// <para>
+/// This type is superseded by <see cref="System.IO.Hashing.XxHash3" />, which is part of the .NET base
+/// class library and available on .NET 7 and later. Prefer the BCL implementation for all new code.
+/// </para>
+/// <para>
 /// <see cref="XxHash3" /> is a highly optimised algorithm suitable for both short and long inputs. It uses a
 /// 192-byte internal secret to drive per-lane mixing across 64-byte stripes, and selects an appropriate code
 /// path based on input length: a short path for 0–16 bytes, a medium path for 17–240 bytes, and a full
@@ -33,6 +37,7 @@ using System.Runtime.CompilerServices;
 /// digital signatures, or any application requiring adversarial collision resistance.
 /// </note>
 /// </remarks>
+[Obsolete("Use System.IO.Hashing.XxHash3 instead. This implementation is superseded by the built-in BCL type available on .NET 7 and later.")]
 public sealed class XxHash3
     : XxHash<XxHash3>
 {
