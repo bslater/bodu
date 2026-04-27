@@ -897,7 +897,7 @@ public sealed class NotableDateRuleResolverTests
 		{
 			Name = "Rosh Hashanah",
 			Strategy = DateResolutionStrategy.Fixed,
-			Category = NotableDateCategory.Religious,
+			Category = NotableDateCategory.Observance,
 			Month = 1,
 			Day = 1,
 			CalendarType = typeof(System.Globalization.HebrewCalendar),
@@ -929,7 +929,7 @@ public sealed class NotableDateRuleResolverTests
 		{
 			Name = "Passover",
 			Strategy = DateResolutionStrategy.Fixed,
-			Category = NotableDateCategory.Religious,
+			Category = NotableDateCategory.Observance,
 			CalendarMonthAlias = "Nisan",
 			Day = 15,
 			CalendarType = typeof(System.Globalization.HebrewCalendar),
@@ -960,7 +960,7 @@ public sealed class NotableDateRuleResolverTests
 		{
 			Name = "Hanukkah",
 			Strategy = DateResolutionStrategy.Fixed,
-			Category = NotableDateCategory.Religious,
+			Category = NotableDateCategory.Observance,
 			Month = 3,
 			Day = 25,
 			CalendarType = typeof(System.Globalization.HebrewCalendar),
@@ -991,7 +991,7 @@ public sealed class NotableDateRuleResolverTests
 		{
 			Name = "Purim",
 			Strategy = DateResolutionStrategy.Fixed,
-			Category = NotableDateCategory.Religious,
+			Category = NotableDateCategory.Observance,
 			CalendarMonthAlias = "LastAdar",
 			Day = 14,
 			CalendarType = typeof(System.Globalization.HebrewCalendar),
@@ -1020,7 +1020,7 @@ public sealed class NotableDateRuleResolverTests
 		{
 			Name = "AdarII Test",
 			Strategy = DateResolutionStrategy.Fixed,
-			Category = NotableDateCategory.Religious,
+			Category = NotableDateCategory.Observance,
 			CalendarMonthAlias = "AdarII",
 			Day = 14,
 			CalendarType = typeof(System.Globalization.HebrewCalendar),
@@ -1052,7 +1052,7 @@ public sealed class NotableDateRuleResolverTests
 		{
 			Name = "Eid al-Adha",
 			Strategy = DateResolutionStrategy.Fixed,
-			Category = NotableDateCategory.Religious,
+			Category = NotableDateCategory.Observance,
 			Month = 12,
 			Day = 10,
 			CalendarType = typeof(System.Globalization.HijriCalendar),
