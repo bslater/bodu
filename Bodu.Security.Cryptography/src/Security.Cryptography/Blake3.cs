@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Blake3.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -31,6 +31,12 @@ namespace Bodu.Security.Cryptography;
 /// output extraction; this implementation fixes the output length at 256 bits.
 /// </para>
 /// <para>
+/// This implementation inherits its 64-byte residual buffer, running byte counter, and
+/// defer-on-full-block buffering loop from <see cref="DeferredFinalBlockHashAlgorithm{T}" />.
+/// The final 64-byte block is not compressed until <see cref="HashAlgorithm.HashFinal" /> is
+/// called, ensuring that chunk-level and tree-level domain flags can be applied correctly.
+/// </para>
+/// <para>
 /// This implementation supports the standard, unkeyed hash mode only. Keyed-hash and
 /// key-derivation modes are not exposed.
 /// </para>
@@ -42,7 +48,7 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 public sealed class Blake3
-    : HashAlgorithm
+    : DeferredFinalBlockHashAlgorithm<Blake3>
 {
     // ---- domain-separation flags (§2.5 of the BLAKE3 specification) ----
 
@@ -98,30 +104,16 @@ public sealed class Blake3
 
     // ---- streaming state ----
 
-    /// <summary>
-    /// Accumulation buffer for the current in-progress chunk.
-    /// </summary>
+    /// <summary>Running chaining value for the chunk currently being compressed.</summary>
     /// <remarks>
-    /// The buffer always holds at least one byte of buffered input before <see cref="HashFinal" />
-    /// is called, so that the final chunk — whether partial or exactly 1024 bytes — is never
-    /// eagerly compressed during <see cref="HashCore(ReadOnlySpan{byte})" />. This invariant
-    /// ensures the <see cref="FlagRoot" /> domain-separation flag can be applied correctly.
+    /// Reset to the IV at the start of each new chunk (when the first block of a chunk is
+    /// processed) and updated in place after every compression call. Carries the accumulated
+    /// chaining state block-by-block until the chunk completes.
     /// </remarks>
-    private readonly byte[] _chunkBuffer = new byte[ChunkSize];
+    private readonly uint[] _chunkCv = new uint[8];
 
     /// <summary>Chaining-value stack used to build parent nodes as chunks complete.</summary>
     private readonly List<uint[]> _cvStack = new();
-
-    /// <summary>Number of bytes currently held in <see cref="_chunkBuffer" />.</summary>
-    private int _chunkBuffered;
-
-    /// <summary>Zero-based index of the chunk currently being accumulated.</summary>
-    private ulong _chunkCounter;
-
-    /// <summary>
-    /// <see langword="true" /> after <see cref="Dispose(bool)" /> has been called; prevents double-disposal.
-    /// </summary>
-    private bool _disposed;
 
     // ---- construction ----
 
@@ -130,8 +122,10 @@ public sealed class Blake3
     /// 256-bit digest.
     /// </summary>
     public Blake3()
+        : base(BlockSize)
     {
         HashSizeValue = 256;
+        s_iv.CopyTo(_chunkCv, 0);
     }
 
     // ---- HashAlgorithm overrides ----
@@ -160,7 +154,7 @@ public sealed class Blake3
     /// <see cref="System.Security.Cryptography.CryptoStream" />.
     /// </summary>
     /// <returns>
-    /// <see cref="ChunkSize" /> (1024 bytes) — one full BLAKE3 leaf chunk.
+    /// <see cref="BlockSize" /> (64 bytes) — one BLAKE3 compression block.
     /// </returns>
     public override int InputBlockSize => BlockSize;
 
@@ -173,132 +167,122 @@ public sealed class Blake3
     /// </returns>
     public override int OutputBlockSize => OutLen;
 
-    /// <summary>
-    /// Resets the hash algorithm to its initial state so that a new hash computation can begin.
-    /// </summary>
-    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <inheritdoc />
     public override void Initialize()
     {
         ThrowIfDisposed();
+        base.Initialize();
+    }
 
-        _chunkBuffered = 0;
-        _chunkCounter = 0;
+    // ---- DeferredFinalBlockHashAlgorithm<T> implementation ----
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Clears the CV stack and restores <see cref="_chunkCv" /> to the BLAKE3 initialisation
+    /// vector, ready for a new chunk.
+    /// </remarks>
+    protected override void OnInitialize()
+    {
         _cvStack.Clear();
+        s_iv.CopyTo(_chunkCv, 0);
     }
 
-    // ---- HashAlgorithm core ----
-
-    /// <summary>
-    /// Routes incoming data through the BLAKE3 streaming accumulator. Full intermediate chunks
-    /// are compressed immediately; the final chunk (whether exactly 1024 bytes or partial) is
-    /// always deferred to <see cref="HashFinal" /> so that the <c>ROOT</c> flag can be applied
-    /// correctly.
-    /// </summary>
-    /// <param name="array">The input byte array containing the data to hash. Must not be <see langword="null" />.</param>
-    /// <param name="ibStart">The zero-based offset in <paramref name="array" /> at which to begin reading.</param>
-    /// <param name="cbSize">The number of bytes to process.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="array" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="ibStart" /> or <paramref name="cbSize" /> is negative.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="ibStart" /> and <paramref name="cbSize" /> together exceed the length of
-    /// <paramref name="array" />.
-    /// </exception>
-    protected override void HashCore(byte[] array, int ibStart, int cbSize)
+    /// <inheritdoc />
+    /// <remarks>
+    /// Clears the CV stack, zeroes <see cref="_chunkCv" />, releases the framework
+    /// <see cref="HashAlgorithm.HashValue" /> array, and zeroes
+    /// <see cref="HashAlgorithm.HashSizeValue" />. The inherited residual buffer is cleared by
+    /// the grandparent before this hook runs.
+    /// </remarks>
+    protected override void OnDispose(bool disposing)
     {
-        ThrowHelper.ThrowIfNull(array);
-        ThrowIfDisposed();
-
-#if !NET6_0_OR_GREATER
-    ThrowHelper.ThrowIfLessThan(ibStart, 0);
-    ThrowHelper.ThrowIfLessThan(cbSize, 0);
-    ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
-    if (this._finalized)
-        throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
-#endif
-
-        HashCore(array.AsSpan(ibStart, cbSize));
-    }
-
-    /// <summary>
-    /// Routes incoming data through the BLAKE3 streaming accumulator. Full intermediate chunks
-    /// are compressed immediately; the final chunk is always deferred to
-    /// <see cref="HashFinal" />.
-    /// </summary>
-    /// <param name="source">The input byte span containing the data to hash.</param>
-    protected override void HashCore(ReadOnlySpan<byte> source)
-    {
-        ThrowIfDisposed();
-
-#if !NET6_0_OR_GREATER
-    if (this._finalized)
-        throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
-#endif
-
-        while (source.Length > 0)
+        if (disposing)
         {
-            int spaceInChunk = ChunkSize - _chunkBuffered;
-
-            // Compress a full buffered chunk only when more input remains. This keeps an exactly
-            // 1024-byte message in the buffer so it can be finalized as a single root chunk.
-            if (_chunkBuffered == ChunkSize && source.Length > 0)
-            {
-                uint[] cv = ChunkChainingValue(_chunkBuffer.AsSpan(0, ChunkSize), _chunkCounter, isRoot: false);
-                PushChunkCv(cv, _chunkCounter);
-
-                _chunkCounter++;
-                _chunkBuffered = 0;
-                spaceInChunk = ChunkSize;
-            }
-
-            // Copy as many bytes as fit into the current chunk buffer.
-            int toCopy = source.Length < spaceInChunk ? source.Length : spaceInChunk;
-            source.Slice(0, toCopy).CopyTo(_chunkBuffer.AsSpan(_chunkBuffered));
-            _chunkBuffered += toCopy;
-            source = source.Slice(toCopy);
+            _cvStack.Clear();
+            Array.Clear(_chunkCv, 0, _chunkCv.Length);
+            CryptoHelpers.ClearAndNullify(ref HashValue);
+            HashSizeValue = 0;
         }
     }
 
     /// <summary>
-    /// Finalises the BLAKE3 hash computation and returns the 256-bit digest.
+    /// Advances the BLAKE3 compression state by one 64-byte block, applying the correct
+    /// chunk-level and tree-level domain flags derived from <paramref name="totalBytesIncludingThisBlock" />.
     /// </summary>
-    /// <returns>
-    /// A 32-byte array containing the BLAKE3 digest of all data supplied through
-    /// <see cref="HashCore(byte[], int, int)" />.
-    /// </returns>
-    protected override byte[] HashFinal()
+    /// <param name="block">
+    /// The 64-byte block to compress. Zero-padded by the base class when <paramref name="isFinal" />
+    /// is <see langword="true" /> and the final message byte count is not a multiple of 64.
+    /// </param>
+    /// <param name="totalBytesIncludingThisBlock">
+    /// The cumulative byte count including the bytes in this block. Used to derive the chunk
+    /// index, the block position within the chunk, and the true block length for the final block.
+    /// </param>
+    /// <param name="isFinal">
+    /// <see langword="true" /> for the last compression call, raised by
+    /// <see cref="HashAlgorithm.HashFinal" />; otherwise <see langword="false" />.
+    /// </param>
+    protected override void ProcessBlock(ReadOnlySpan<byte> block, ulong totalBytesIncludingThisBlock, bool isFinal)
     {
-        ThrowIfDisposed();
+        // Derive chunk position. Subtracting 1 maps [1, 64] → block 0 of chunk 0, etc.
+        // The zero guard handles the empty-input case where totalBytes is 0.
+        ulong adjustedTotal = totalBytesIncludingThisBlock == 0 ? 0UL : totalBytesIncludingThisBlock - 1;
+        ulong chunkIndex    = adjustedTotal / (ulong)ChunkSize;
+        bool isFirstBlock   = adjustedTotal % (ulong)ChunkSize / (ulong)BlockSize == 0;
+        bool isLastBlock    = totalBytesIncludingThisBlock % (ulong)ChunkSize == 0 || isFinal;
 
-#if !NET6_0_OR_GREATER
-    if (this._finalized)
-        throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
-#endif
-
-        uint[] rootCv;
-
-        if (_chunkCounter == 0)
+        // Non-final blocks are always full; the final block carries the true byte count.
+        uint blockLen;
+        if (!isFinal)
         {
-            // The entire input fits in a single chunk — compress it directly as the root.
-            rootCv = ChunkChainingValue(
-                _chunkBuffer.AsSpan(0, _chunkBuffered),
-                _chunkCounter,
-                isRoot: true);
+            blockLen = (uint)BlockSize;
+        }
+        else if (totalBytesIncludingThisBlock == 0)
+        {
+            blockLen = 0u;
         }
         else
         {
-            // Compress the last chunk separately, then merge it with the existing stack so the final
-            // parent compression receives the ROOT flag.
-            uint[] lastCv = ChunkChainingValue(
-                _chunkBuffer.AsSpan(0, _chunkBuffered),
-                _chunkCounter,
-                isRoot: false);
-
-            rootCv = MergeStackWithFinalChunk(lastCv);
+            ulong rem = totalBytesIncludingThisBlock % (ulong)BlockSize;
+            blockLen = (uint)(rem == 0 ? BlockSize : (int)rem);
         }
 
-        // Serialise the root chaining value (8 × uint32 LE) into the output digest.
+        // Each new chunk begins from the IV.
+        if (isFirstBlock)
+            s_iv.CopyTo(_chunkCv, 0);
+
+        uint flags = 0u;
+        if (isFirstBlock)                    flags |= FlagChunkStart;
+        if (isLastBlock)                     flags |= FlagChunkEnd;
+        // FlagRoot is applied on the final block only when no earlier chunks exist on the stack,
+        // meaning this is the sole chunk and therefore the root.  For multi-chunk inputs the root
+        // merge is deferred to ProcessFinalBlock so that FlagRoot lands on the final parent compression.
+        if (isFinal && _cvStack.Count == 0)  flags |= FlagRoot;
+
+        uint[] blockWords = ReadBlockWords(block);
+        uint[] state      = Compress(_chunkCv, blockWords, chunkIndex, blockLen, flags);
+
+        for (int i = 0; i < 8; i++)
+            _chunkCv[i] = state[i];
+
+        // Completed non-final chunks are pushed to the stack for pairwise tree merging.
+        if (isLastBlock && !isFinal)
+            PushChunkCv((uint[])_chunkCv.Clone(), chunkIndex);
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// For single-chunk input the root chaining value is already in <see cref="_chunkCv" />
+    /// (with <see cref="FlagRoot" /> applied during <see cref="ProcessBlock" />). For
+    /// multi-chunk input the CV stack is folded into the final chunk's chaining value via
+    /// <see cref="MergeStackWithFinalChunk" />, which applies <see cref="FlagRoot" /> on the
+    /// last parent compression.
+    /// </remarks>
+    protected override byte[] ProcessFinalBlock()
+    {
+        uint[] rootCv = _cvStack.Count == 0
+            ? _chunkCv
+            : MergeStackWithFinalChunk(_chunkCv);
+
         byte[] digest = new byte[OutLen];
 
         for (int i = 0; i < 8; i++)
@@ -307,27 +291,27 @@ public sealed class Blake3
         return digest;
     }
 
-   /// <summary>
-/// Merges the completed intermediate chunk stack with the final chunk chaining value and
-/// returns the root chaining value.
-/// </summary>
-/// <param name="rightCv">
-/// The chaining value of the final chunk. This value is kept out of <see cref="_cvStack" />
-/// until finalization so the last parent merge can be marked with <see cref="FlagRoot" />.
-/// </param>
-/// <returns>
-/// An 8-element array containing the 256-bit root chaining value of the complete message.
-/// </returns>
-/// <remarks>
-/// <para>
-/// Intermediate chunks may already have been folded into balanced subtrees on
-/// <see cref="_cvStack" />. Finalization differs from normal chunk pushing because the final
-/// chunk must not be pre-merged as a non-root parent. Instead, the stack is folded into the
-/// final chunk from right to left, applying <see cref="FlagRoot" /> to the last parent
-/// compression.
-/// </para>
-/// </remarks>
-private uint[] MergeStackWithFinalChunk(uint[] rightCv)
+    /// <summary>
+    /// Merges the completed intermediate chunk stack with the final chunk chaining value and
+    /// returns the root chaining value.
+    /// </summary>
+    /// <param name="rightCv">
+    /// The chaining value of the final chunk. This value is kept out of <see cref="_cvStack" />
+    /// until finalisation so the last parent merge can be marked with <see cref="FlagRoot" />.
+    /// </param>
+    /// <returns>
+    /// An 8-element array containing the 256-bit root chaining value of the complete message.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// Intermediate chunks may already have been folded into balanced subtrees on
+    /// <see cref="_cvStack" />. Finalisation differs from normal chunk pushing because the final
+    /// chunk must not be pre-merged as a non-root parent. Instead, the stack is folded into the
+    /// final chunk from right to left, applying <see cref="FlagRoot" /> to the last parent
+    /// compression.
+    /// </para>
+    /// </remarks>
+    private uint[] MergeStackWithFinalChunk(uint[] rightCv)
     {
         uint[] cv = rightCv;
 
@@ -343,31 +327,6 @@ private uint[] MergeStackWithFinalChunk(uint[] rightCv)
         }
 
         return cv;
-    }
-
-    /// <summary>
-    /// Releases managed and unmanaged resources held by this instance, zeroing sensitive state.
-    /// </summary>
-    /// <param name="disposing">
-    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" />
-    /// to release only unmanaged resources.
-    /// </param>
-    protected override void Dispose(bool disposing)
-    {
-        if (_disposed) return;
-
-        if (disposing)
-        {
-            Array.Clear(_chunkBuffer, 0, _chunkBuffer.Length);
-            _cvStack.Clear();
-            _chunkBuffered = 0;
-            _chunkCounter = 0;
-            HashSizeValue = 0;
-            CryptoHelpers.ClearAndNullify(ref HashValue);
-        }
-
-        _disposed = true;
-        base.Dispose(disposing);
     }
 
     // ---- core compression ----
@@ -412,8 +371,8 @@ private uint[] MergeStackWithFinalChunk(uint[] rightCv)
         state[7] = cv[7];
 
         // Lower half: IV words, counter split into two 32-bit halves, block length, flags.
-        state[8] = s_iv[0];
-        state[9] = s_iv[1];
+        state[8]  = s_iv[0];
+        state[9]  = s_iv[1];
         state[10] = s_iv[2];
         state[11] = s_iv[3];
         state[12] = (uint)counter;
@@ -482,87 +441,16 @@ private uint[] MergeStackWithFinalChunk(uint[] rightCv)
     private static uint RotateRight(uint value, int bits) =>
         (value >> bits) | (value << (32 - bits));
 
-    // ---- chunk and parent processing ----
+    // ---- block and parent processing ----
 
     /// <summary>
-    /// Computes the chaining value for a single input chunk by processing its bytes as up to
-    /// 16 sequential 64-byte blocks through the BLAKE3 compression function.
-    /// </summary>
-    /// <param name="chunk">
-    /// The raw chunk bytes to process (0 to 1024 bytes). Blocks shorter than 64 bytes are
-    /// zero-padded internally before compression. An empty span is permitted and produces a
-    /// single compression call with <c>block_len = 0</c>, as required for the empty-input case.
-    /// </param>
-    /// <param name="chunkCounter">
-    /// The zero-based index of this chunk within the full input stream.
-    /// </param>
-    /// <param name="isRoot">
-    /// <see langword="true" /> if this chunk represents the sole or final root of the hash
-    /// tree, causing the <see cref="FlagRoot" /> domain flag to be applied to the last block.
-    /// </param>
-    /// <returns>
-    /// An 8-element array containing the 256-bit chaining value produced by this chunk.
-    /// </returns>
-    private static uint[] ChunkChainingValue(ReadOnlySpan<byte> chunk, ulong chunkCounter, bool isRoot)
-    {
-        // Start each chunk with the IV as the initial chaining value.
-        uint[] cv = new uint[8];
-        s_iv.AsSpan().CopyTo(cv);
-
-        uint blockFlags = FlagChunkStart;
-        int processed = 0;
-
-        // Process the chunk in 64-byte blocks; the final block may be shorter.
-        // The do-while ensures at least one compression call even for an empty chunk.
-        do
-        {
-            int remaining = chunk.Length - processed;
-            int blockLen = remaining >= BlockSize ? BlockSize : remaining;
-            bool isLastBlock = (processed + blockLen) >= chunk.Length;
-
-            if (isLastBlock)
-            {
-                blockFlags |= FlagChunkEnd;
-
-                if (isRoot)
-                    blockFlags |= FlagRoot;
-            }
-
-            // Read the block as 16 little-endian uint32 words, zero-padding if short.
-            uint[] blockWords = ReadBlockWords(chunk.Slice(processed, blockLen));
-
-            uint[] outState = Compress(cv, blockWords, chunkCounter, (uint)blockLen, blockFlags);
-
-            // The new chaining value is the first 8 words of the compression output.
-            cv[0] = outState[0];
-            cv[1] = outState[1];
-            cv[2] = outState[2];
-            cv[3] = outState[3];
-            cv[4] = outState[4];
-            cv[5] = outState[5];
-            cv[6] = outState[6];
-            cv[7] = outState[7];
-
-            processed += blockLen;
-
-            // Only the first block of each chunk carries CHUNK_START.
-            blockFlags = 0u;
-        }
-        while (processed < chunk.Length);
-
-        return cv;
-    }
-
-    /// <summary>
-    /// Reads up to 64 bytes from <paramref name="block" /> into a 16-element little-endian
+    /// Reads exactly 64 bytes from <paramref name="block" /> into a 16-element little-endian
     /// uint32 word array, zero-padding any bytes beyond the actual block length.
     /// </summary>
     /// <param name="block">The raw block bytes to interpret (0–64 bytes).</param>
     /// <returns>A 16-element array of little-endian uint32 words representing the block.</returns>
     private static uint[] ReadBlockWords(ReadOnlySpan<byte> block)
     {
-        // Stack-allocate a 64-byte buffer, explicitly clear it, and copy the block into it.
-        // Short BLAKE3 blocks are zero-padded before the 16 little-endian words are read.
         Span<byte> padded = stackalloc byte[BlockSize];
         padded.Clear();
         block.CopyTo(padded);
@@ -656,35 +544,5 @@ private uint[] MergeStackWithFinalChunk(uint[] rightCv)
         ulong completed = chunkIdx + 1;
         int trailingZeros = System.Numerics.BitOperations.TrailingZeroCount(completed);
         return trailingZeros >= stackDepth;
-    }
-
-    // ---- guard helpers ----
-
-    /// <summary>
-    /// Throws if the algorithm has begun processing and can no longer be reconfigured.
-    /// </summary>
-    /// <exception cref="CryptographicUnexpectedOperationException">
-    /// Thrown if an attempt is made to change configuration after the algorithm has started.
-    /// </exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected void ThrowIfInvalidState()
-    {
-        if (this.State != 0)
-            throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
-    }
-
-    /// <summary>
-    /// Throws <see cref="ObjectDisposedException" /> if this instance has already been disposed.
-    /// </summary>
-    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed()
-    {
-#if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
-#else
-        if (this._disposed)
-            throw new ObjectDisposedException(nameof(Blowfish));
-#endif
     }
 }
