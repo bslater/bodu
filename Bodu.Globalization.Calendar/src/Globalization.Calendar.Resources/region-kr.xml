@@ -5,7 +5,7 @@
 
   <UseFrom resource="./global-lunar.xml">
     <Use name="Lunar New Year" as="Seollal" territory="KR" nonWorking="true" durationDays="3" comment="South Korean public-holiday period. The durationDays value of 3 represents the day before Seollal, Seollal day, and the day after when resolved by the regional rule." />
-    <Use name="Chuseok" territory="KR" nonWorking="true" durationDays="3" comment="South Korean public-holiday period. The durationDays value of 3 represents the day before Chuseok, Chuseok day, and the day after." />
+    <Use name="Mid-Autumn Festival" as="Chuseok" territory="KR" nonWorking="true" durationDays="3" comment="South Korean public-holiday period. The durationDays value of 3 represents the day before Chuseok, Chuseok day, and the day after. Chuseok falls on the fifteenth day of the eighth lunar month, the same date as the Chinese Mid-Autumn Festival, here resolved via the ChineseLunisolarCalendar Fixed rule." />
   </UseFrom>
 
   <UseFrom resource="./global-buddhist.xml">

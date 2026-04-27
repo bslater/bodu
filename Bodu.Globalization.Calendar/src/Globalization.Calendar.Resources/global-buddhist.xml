@@ -17,6 +17,10 @@
   Dates marked as Fixed use the most widely observed convention for that
   tradition. Dates that vary annually require a custom INotableDateAlgorithm.
 
+  Vassa is expressed as an OffsetFromAnchor rule (+1 day from Asalha Puja);
+  it requires no algorithm registration. The Asalha Puja full moon always
+  falls on a single day, so the one-day offset is exact.
+
   Algorithm keys used:
     vesak           — The full moon day of the month of Vaisakha (April/May
                       in the Theravada lunisolar calendar). The most important
@@ -25,9 +29,6 @@
     asalha-puja     — The full moon of the month of Asalha (June/July).
                       Commemorates the Buddha's first sermon (Dhammacakkappavattana
                       Sutta) at Deer Park, Sarnath.
-    vassa-start     — The day after Asalha Puja. The first day of the three-month
-                      Rains Retreat (Vassa / Buddhist Lent), observed primarily
-                      in Theravada countries.
     losar           — Tibetan New Year. The first day of the first month of the
                       Tibetan lunar calendar, typically falling in February or
                       March. Uses the Tibetan lunisolar calendar.
@@ -66,8 +67,8 @@
     <Rule name="Vassa"
           category="Religious"
           durationDays="90"
-          comment="The Rains Retreat (Vassa / Buddhist Lent / Khao Phansa). The three-month period of intensified monastic practice observed primarily in Theravada countries. Begins the day after Asalha Puja (the full moon of Asalha) and ends with Pavarana (full moon of Ashvin, approximately three months later). During Vassa, monks and novices reside in their monasteries and limit travel. The beginning of Vassa is a public holiday in Thailand (Asanha Bucha / Khao Phansa). The durationDays value of 90 is an approximation; the exact duration is from the day after Asalha Puja full moon to the Pavarana full moon, which is 89–90 days depending on the year. Requires a custom INotableDateAlgorithm registered under the key 'vassa-start'.">
-      <Algorithm key="vassa-start" />
+          comment="The Rains Retreat (Vassa / Buddhist Lent / Khao Phansa). The three-month period of intensified monastic practice observed primarily in Theravada countries. Begins the day after Asalha Puja (the full moon of Asalha) and ends with Pavarana (full moon of Ashvin, approximately three months later). During Vassa, monks and novices reside in their monasteries and limit travel. The beginning of Vassa is a public holiday in Thailand (Asanha Bucha / Khao Phansa). The durationDays value of 90 is an approximation; the exact duration is from the day after Asalha Puja full moon to the Pavarana full moon, which is 89–90 days depending on the year. Resolved via OffsetFromAnchor from Asalha Puja (+1 day); no algorithm registration is required.">
+      <OffsetFromAnchor name="Asalha Puja" offset="1" />
       <Tag>BuddhistCalendar</Tag>
     </Rule>
   </NotableDate>
