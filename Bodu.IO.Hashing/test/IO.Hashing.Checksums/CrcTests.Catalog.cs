@@ -151,7 +151,7 @@ namespace Bodu.IO.Hashing.Checksums
         public static string GetCatalogCheckDisplayName(MethodInfo methodInfo, object[] data)
         {
             string name = (string)data[0];
-            return $"{methodInfo.Name}_{name}";
+            return $"{name}";
         }
 
         /// <summary>

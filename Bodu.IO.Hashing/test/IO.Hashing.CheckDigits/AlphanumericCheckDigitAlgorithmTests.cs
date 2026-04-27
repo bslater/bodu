@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.IO.Hashing.Checksums;
+using System.Reflection;
 
 namespace Bodu.IO.Hashing.CheckDigits;
 
@@ -63,5 +64,20 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
         AlphanumericCheckDigitAlgorithmSpecification spec = new TTest().GetSpecification();
         foreach (CheckDigitKnownAnswer vector in spec.KnownAnswers)
             yield return new object[] { vector.Name, vector.Body, vector.ExpectedCheck };
+    }
+
+    /// <summary>
+    /// Gets the display name used by <see cref="DynamicDataAttribute" /> for a test case row.
+    /// </summary>
+    /// <param name="data">
+    /// The test case data row. The first element is expected to contain the human-readable standard name.
+    /// </param>
+    /// <returns>
+    /// The standard name for the current test case as a <see cref="string" />.
+    /// </returns>
+    public static string GetKnownAnswerTestName(MethodInfo methodInfo, object[] data)
+    {
+        string name = (string)data[0];
+        return $"{name}";
     }
 }

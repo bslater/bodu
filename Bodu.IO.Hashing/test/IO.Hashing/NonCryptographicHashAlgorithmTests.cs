@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.IO.Hashing;
+using System.Reflection;
 
 namespace Bodu.IO.Hashing;
 
@@ -162,7 +163,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// parameterised known-answer tests.
     /// </summary>
     /// <returns>A sequence of test case arguments: variant, input name, input bytes, expected hash output.</returns>
-    public static IEnumerable<object[]> NamedInputTestData()
+    public static IEnumerable<object[]> KnownAnswerTestData()
     {
         var instance = new TTest();
         foreach (var variant in instance.GetNonCryptographicHashAlgorithmVariants())
@@ -172,6 +173,23 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
                 yield return new object[] { variant, vector.Name, vector.Input, vector.ExpectedOutput };
             }
         }
+    }
+
+
+    /// <summary>
+    /// Gets the display name used by <see cref="DynamicDataAttribute" /> for a test case row.
+    /// </summary>
+    /// <param name="data">
+    /// The test case data row. The first element is expected to contain the human-readable standard name.
+    /// </param>
+    /// <returns>
+    /// The standard name for the current test case as a <see cref="string" />.
+    /// </returns>
+    public static string GetKnownAnswerTestName(MethodInfo methodInfo, object[] data)
+    {
+        TVariant variant = (TVariant)data[0];
+        string testName = (string)data[1];
+        return $"{testName} (Variant: {variant})";
     }
 
     private static KnownAnswerTest CreateVector(string name, byte[] input, string expectedHex) =>

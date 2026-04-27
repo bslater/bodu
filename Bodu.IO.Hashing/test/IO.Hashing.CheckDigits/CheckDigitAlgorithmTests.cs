@@ -77,6 +77,6 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     public static string GetKnownAnswerTestName(MethodInfo methodInfo, object[] data)
     {
         string name = (string)data[0];
-        return $"{methodInfo.Name}_{name}";
+        return $"{name}";
     }
 }
