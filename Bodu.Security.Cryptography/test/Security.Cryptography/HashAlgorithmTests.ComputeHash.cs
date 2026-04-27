@@ -169,51 +169,17 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     }
 
     /// <summary>
-    /// Verifies that <see cref="HashAlgorithm.ComputeHash(byte[], int, int)"/> produces the correct
-    /// hash value for incrementally growing inputs, stepping one byte at a time from empty through
-    /// either <c>InputBlockSize * 8</c> bytes (for block-based algorithms) or 8 bytes (for
-    /// byte-at-a-time algorithms such as Pearson), ensuring correctness across sub-block, full-block,
-    /// and multi-block input lengths.
+    /// Verifies that the synchronous <see cref="HashAlgorithm.ComputeHash(byte[], int, int)" />
+    /// path produces the correct hash value for incrementally growing inputs from empty input
+    /// through one byte past the spec's coverage threshold.
     /// </summary>
+    /// <param name="variant">The variant identifier supplied by the dynamic data source.</param>
+    /// <returns>A task that completes when all incremental lengths have been verified.</returns>
     [TestMethod]
     [DynamicData(nameof(HashAlgorithmVariants))]
-    public void ComputeHash_WhenUsingIncrementalInput_ShouldMatchExpected(TVariant variant)
-    {
-        var specification = GetSpecification(variant);
-        var expectedHashes = GetExpectedHashesForIncrementalInput(variant).ToArray();
-
-        if (expectedHashes.Length == 0)
-        {
-            Assert.Inconclusive($"No expected hashes defined for variant {variant}.");
-            return;
-        }
-
-        int stepCount = specification.InputBlockSize > 1
-            ? specification.InputBlockSize * 8
-            : 16;
-
-        Assert.AreEqual(stepCount, expectedHashes.Length,
-            $"Expected {stepCount} algorithm entries for variant '{variant}' " +
-            $"(InputBlockSize={specification.InputBlockSize}), but got {expectedHashes.Length}.");
-
-        var algorithm = CreateAlgorithm(variant);
-        byte[] input = new byte[stepCount];
-        for (int i = 0; i < stepCount; i++)
-        {
-            byte[] expected = Convert.FromHexString(expectedHashes[i]);
-
-            input[i] = (byte)i;
-
-            var actual = algorithm.ComputeHash(input, 0, i);
-            TestHelpers.TraceWriteIfNotEqual(expected, actual);
-
-            CollectionAssert.AreEqual(expected, actual,
-                $"Hash mismatch for variant '{variant}' at incremental length {i}.");
-
-            if (!specification.CanReuseTransform)
-                algorithm = CreateAlgorithm(variant);
-        }
-    }
+    public Task ComputeHash_WhenUsingIncrementalInput_ShouldMatchExpected(TVariant variant) =>
+        AssertIncrementalInputAsync(variant,
+            (algorithm, input, byteCount) => Task.FromResult(algorithm.ComputeHash(input, 0, byteCount)));
 
     /// <summary>
     /// Verifies that <see cref="HashAlgorithm.ComputeHash" />, when UsingNamedInput, returns the expected value.

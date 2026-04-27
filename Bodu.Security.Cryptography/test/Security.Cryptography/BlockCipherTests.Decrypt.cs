@@ -6,6 +6,7 @@
 
 using Bodu.Extensions;
 using Bodu.Test;
+using System.Reflection;
 
 namespace Bodu.Security.Cryptography;
 
@@ -30,6 +31,13 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
                 yield return new object[] { variant, vector.Name, vector.ExpectedOutput, vector.Input, vector.CipherFactory! };
             }
         }
+    }
+
+    public static string GetDecryptTestDisplayName(MethodInfo methodInfo, object[] data)
+    {
+        TVariant variant = (TVariant)data[0];
+        string testName = (string)data[1];
+        return $"{testName} (Variant: {variant})";
     }
 
     /// <summary>
@@ -97,7 +105,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// Verifies that <see cref="BlockCipher.Decrypt" />, when KnownInput, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DecryptTestData))]
+    [DynamicData(nameof(DecryptTestData), DynamicDataDisplayName = nameof(GetDecryptTestDisplayName))]
     public void Decrypt_WhenKnownInput_ShouldMatchExpected(TVariant variant, string testName, byte[] input, byte[] expected, Func<IBlockCipher>? factory)
     {
         var engine = factory?.Invoke() ?? CreateBlockCipher(variant);
@@ -113,7 +121,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// Verifies that cedryption throws ArgumentException when input size is invalid.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetInvalidBlockSizes))]
+    [DynamicData(nameof(GetInvalidBlockSizes), DynamicDataDisplayName =nameof(GetInvalidBlockSizeTestDisplayName))]
     public void Decrypt_WithInvalidInputSize_ShouldThrowExactly(TVariant variant, byte[] input)
     {
         using var cipher = CreateBlockCipher(variant);

@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Test;
+using System.Reflection;
 
 namespace Bodu.Security.Cryptography;
 
@@ -31,6 +32,13 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         }
     }
 
+    public static string GetEncryptTestDisplayName(MethodInfo methodInfo, object[] data)
+    {
+        TVariant variant = (TVariant)data[0];
+        string testName = (string)data[1];
+        return $"{testName} (Variant: {variant})";
+    }
+
     public static IEnumerable<object[]> GetInvalidBlockSizes()
     {
         var instance = new TTest();
@@ -42,6 +50,13 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
             yield return new object[] { variant, new byte[blockSize - 1] };
             yield return new object[] { variant, new byte[blockSize + 1] };
         }
+    }
+
+    public static string GetValidSingleBlockTestDisplayName(MethodInfo methodInfo, object[] data)
+    {
+        TVariant variant = (TVariant)data[0];
+        string testName = (string)data[1];
+        return $"{testName} (Variant: {variant})";
     }
 
     public static IEnumerable<object[]> GetValidSingleBlockData()
@@ -60,6 +75,13 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
             yield return new object[] { variant, "Sawtooth 0x00–0x0F", Enumerable.Range(0, blockSize).Select(i => (byte)(i % 16)).ToArray() };
             yield return new object[] { variant, "Mirrored Half Asc/Desc", Enumerable.Range(0, blockSize).Select(i => (byte)(i < blockSize / 2 ? i : blockSize - i - 1)).ToArray() };
         }
+    }
+
+    public static string GetInvalidBlockSizeTestDisplayName(MethodInfo methodInfo, object[] data)
+    {
+        TVariant variant = (TVariant)data[0];
+        byte[] blockSize= (byte[])data[1];
+        return $"Block Size:{blockSize.Length} (Variant: {variant})";
     }
 
     /// <summary>
@@ -127,7 +149,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// Verifies that <see cref="BlockCipher.Encrypt" />, when KnownInput, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(EncryptTestData))]
+    [DynamicData(nameof(EncryptTestData), DynamicDataDisplayName = nameof (GetEncryptTestDisplayName))]
     public void Encrypt_WhenKnownInput_ShouldMatchExpected(TVariant variant, string testName, byte[] input, byte[] expected, Func<IBlockCipher>? factory)
     {
         var engine = factory?.Invoke() ?? CreateBlockCipher(variant);
@@ -143,7 +165,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// Verifies that encryption throws ArgumentException when input size is invalid.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetInvalidBlockSizes))]
+    [DynamicData(nameof(GetInvalidBlockSizes), DynamicDataDisplayName = nameof(GetInvalidBlockSizeTestDisplayName))]
     public void Encrypt_WithInvalidInputSize_ShouldThrowExactly(TVariant variant, byte[] input)
     {
         using var cipher = CreateBlockCipher(variant);
@@ -157,7 +179,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// Verifies that encryption throws ArgumentException when output size is invalid.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetInvalidBlockSizes))]
+    [DynamicData(nameof(GetInvalidBlockSizes), DynamicDataDisplayName = nameof(GetInvalidBlockSizeTestDisplayName))]
     public void Encrypt_WithInvalidOutSize_ShouldThrowExactly(TVariant variant, byte[] output)
     {
         using var cipher = CreateBlockCipher(variant);
@@ -189,7 +211,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// Verifies that encryption and decryption of valid blocks succeeds without exceptions.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidSingleBlockData))]
+    [DynamicData(nameof(GetValidSingleBlockData), DynamicDataDisplayName =nameof(GetValidSingleBlockTestDisplayName))]
     public void EncryptDecrypt_WithValidInput_ShouldRoundtrip(TVariant variant, string testName, byte[] input)
     {
         using var cipher = CreateBlockCipher(variant);

@@ -236,35 +236,21 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     }
 
     /// <summary>
-    /// Verifies that <see cref="HashAlgorithm.ComputeHashAsync" />, when UsingIncrementalInput, returns the expected value.
+    /// Verifies that the asynchronous
+    /// <see cref="HashAlgorithm.ComputeHashAsync(Stream, System.Threading.CancellationToken)" />
+    /// path produces the correct hash value for incrementally growing inputs from empty input
+    /// through one byte past the spec's coverage threshold.
     /// </summary>
+    /// <param name="variant">The variant identifier supplied by the dynamic data source.</param>
+    /// <returns>A task that completes when all incremental lengths have been verified.</returns>
     [TestMethod]
     [DynamicData(nameof(HashAlgorithmVariants))]
-    public async Task ComputeHashAsync_WhenUsingIncrementalInput_ShouldMatchExpected(TVariant variant)
-    {
-        var algorithm = CreateAlgorithm(variant);
-        var expectedHashes = GetExpectedHashesForIncrementalInput(variant).ToArray();
-
-        if (expectedHashes.Length == 0)
-            Assert.Inconclusive($"No expected hashes defined for variant {variant}.");
-
-        byte[] input = new byte[expectedHashes.Length];
-
-        for (int i = 0; i < expectedHashes.Length; i++)
+    public Task ComputeHashAsync_WhenUsingIncrementalInput_ShouldMatchExpected(TVariant variant) =>
+        AssertIncrementalInputAsync(variant, async (algorithm, input, byteCount) =>
         {
-            byte[] expected = Convert.FromHexString(expectedHashes[i]);
-            input[i] = (byte)i;
-            await using var stream = new MemoryStream(input, 0, i, writable: false);
-
-            byte[] actual = await algorithm.ComputeHashAsync(stream);
-
-            TestHelpers.TraceWriteIfNotEqual(expected, actual);
-
-            CollectionAssert.AreEqual(expected, actual, $"Hash mismatch for variant '{variant}' at incremental length {i + 1}.");
-            if (!algorithm.CanReuseTransform)
-                algorithm = CreateAlgorithm(variant);
-        }
-    }
+            await using var stream = new MemoryStream(input, 0, byteCount, writable: false);
+            return await algorithm.ComputeHashAsync(stream).ConfigureAwait(false);
+        });
 
     /// <summary>
     /// Verifies that <see cref="HashAlgorithm.ComputeHashAsync" />, when UsingNamedInput, returns the expected value.

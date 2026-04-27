@@ -259,4 +259,82 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             }
         }
     }
+
+    /// <summary>
+    /// Defines the strategy used to invoke a hash algorithm against a buffered input
+    /// during the incremental-input test. Implementations either call a synchronous
+    /// <see cref="HashAlgorithm.ComputeHash(byte[], int, int)" /> overload directly, or
+    /// adapt <see cref="HashAlgorithm.ComputeHashAsync(Stream, System.Threading.CancellationToken)" />
+    /// over an in-memory stream view of the same buffer.
+    /// </summary>
+    /// <param name="algorithm">The algorithm instance under test.</param>
+    /// <param name="input">
+    /// A backing buffer of length <c>maxLength</c>. Only the first <paramref name="byteCount" />
+    /// bytes are part of the input; trailing bytes are unrelated scratch space and must be
+    /// ignored by the implementation.
+    /// </param>
+    /// <param name="byteCount">The number of leading bytes from <paramref name="input" /> to hash.</param>
+    /// <returns>A task producing the computed hash bytes.</returns>
+    protected delegate Task<byte[]> IncrementalHashInvoker(HashAlgorithm algorithm, byte[] input, int byteCount);
+
+    /// <summary>
+    /// Drives the dense incremental-input verification for a single variant, asserting that the
+    /// supplied invoker reproduces every expected hash for input lengths
+    /// <c>0</c> through <c>coverage + 1</c>.
+    /// </summary>
+    /// <param name="variant">The variant identifier supplied by the dynamic data source.</param>
+    /// <param name="invoke">The strategy used to obtain a hash for each incremental length.</param>
+    /// <returns>A task that completes when all incremental lengths have been verified.</returns>
+    private async Task AssertIncrementalInputAsync(TVariant variant, IncrementalHashInvoker invoke)
+    {
+        var specification = GetSpecification(variant);
+        var expectedHashes = GetExpectedHashesForIncrementalInput(variant).ToArray();
+
+        if (expectedHashes.Length == 0)
+        {
+            Assert.Inconclusive($"No expected hashes defined for variant {variant}.");
+            return;
+        }
+
+        int coverage = specification.IncrementalCoverageBytes
+            ?? (specification.InputBlockSize > 1 ? specification.InputBlockSize * 8 : 16);
+        int maxLength = coverage + 1;
+        int expectedEntryCount = maxLength + 1;
+
+        Assert.AreEqual(expectedEntryCount, expectedHashes.Length,
+            $"Expected {expectedEntryCount} algorithm entries for variant '{variant}' " +
+            $"covering input lengths 0 through {maxLength} " +
+            $"(InputBlockSize={specification.InputBlockSize}, coverage={coverage}), " +
+            $"but got {expectedHashes.Length}.");
+
+        var algorithm = CreateAlgorithm(variant);
+        byte[] input = new byte[maxLength];
+
+        try
+        {
+            for (int byteCount = 0; byteCount <= maxLength; byteCount++)
+            {
+                if (byteCount > 0)
+                    input[byteCount - 1] = unchecked((byte)(byteCount - 1));
+
+                byte[] expected = Convert.FromHexString(expectedHashes[byteCount]);
+                byte[] actual = await invoke(algorithm, input, byteCount).ConfigureAwait(false);
+
+                TestHelpers.TraceWriteIfNotEqual(expected, actual);
+
+                CollectionAssert.AreEqual(expected, actual,
+                    $"Hash mismatch for variant '{variant}' at incremental length {byteCount}.");
+
+                if (!specification.CanReuseTransform && byteCount < maxLength)
+                {
+                    algorithm.Dispose();
+                    algorithm = CreateAlgorithm(variant);
+                }
+            }
+        }
+        finally
+        {
+            algorithm.Dispose();
+        }
+    }
 }

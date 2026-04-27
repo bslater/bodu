@@ -67,30 +67,33 @@ internal sealed partial class CamelliaBlockCipherTests
     {
         // RFC 3713 Appendix A.1 — single-block ECB encrypt, no padding or IV.
         yield return CreateKnownAnswerTest(
-            "Camellia-128 / RFC 3713 A.1",
-            "0123456789ABCDEFFEDCBA9876543210",
-            "0123456789ABCDEFFEDCBA9876543210",
-            "67673138549669730857065648EABE43");
+            name: "Camellia-128 / RFC 3713 A.1",
+            key: "0123456789ABCDEFFEDCBA9876543210",
+            input: "0123456789ABCDEFFEDCBA9876543210",
+            expectedOutput: "67673138549669730857065648EABE43");
     }
 
     private static IEnumerable<KnownAnswerTest> GetKey192KnownAnswerTests()
     {
         // RFC 3713 Appendix A.2
         yield return CreateKnownAnswerTest(
-            "Camellia-192 / RFC 3713 A.2",
-            "0123456789ABCDEFFEDCBA9876543210" + "0011223344556677",
-            "0123456789ABCDEFFEDCBA9876543210",
-            "B4993401B3E996F84EE5CEE7D79B09B9");
+            name: "Camellia-192 / RFC 3713 A.2",
+            key: "0123456789ABCDEFFEDCBA9876543210" + 
+                 "0011223344556677",
+            input: "0123456789ABCDEFFEDCBA9876543210",
+            expectedOutput: "B4993401B3E996F84EE5CEE7D79B09B9");
     }
 
     private static IEnumerable<KnownAnswerTest> GetKey256KnownAnswerTests()
     {
         // RFC 3713 Appendix A.3
         yield return CreateKnownAnswerTest(
-            "Camellia-256 / RFC 3713 A.3",
-            "0123456789ABCDEFFEDCBA9876543210" + "0011223344556677" + "8899AABBCCDDEEFF",
-            "0123456789ABCDEFFEDCBA9876543210",
-            "9ACC237DFF16D76C20EF7C919E3A7509");
+            name: "Camellia-256 / RFC 3713 A.3",
+            key: "0123456789ABCDEFFEDCBA9876543210" + 
+                 "0011223344556677" + 
+                 "8899AABBCCDDEEFF",
+            input: "0123456789ABCDEFFEDCBA9876543210",
+            expectedOutput: "9ACC237DFF16D76C20EF7C919E3A7509");
     }
 
     private static KnownAnswerTest CreateKnownAnswerTest(

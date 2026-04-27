@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Blake3.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -90,10 +90,10 @@ public sealed class Blake3
         {  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 },
         {  2,  6,  3, 10,  7,  0,  4, 13,  1, 11, 12,  5,  9, 14, 15,  8 },
         {  3,  4, 10, 12, 13,  2,  7, 14,  6,  5,  9,  0, 11, 15,  8,  1 },
-        { 10,  7, 12,  9, 14,  3, 13, 15,  4,  0, 11,  2,  8,  6,  5,  1 },
-        {  6,  2,  4, 11,  9,  7,  8,  5,  0, 13, 10,  3, 14,  1, 15, 12 },
-        { 12,  1,  8,  0,  2, 10, 11,  4, 15,  7,  6,  9, 14, 13,  5,  3 },
-        { 13, 12,  9, 14, 11,  1,  3,  8,  6, 15,  0,  7,  4,  2, 10,  5 },
+        { 10,  7, 12,  9, 14,  3, 13, 15,  4,  0, 11,  2,  5,  8,  1,  6 },
+        { 12, 13,  9, 11, 15, 10, 14,  8,  7,  2,  5,  3,  0,  1,  6,  4 },
+        {  9, 14, 11,  5,  8, 12, 15,  1, 13,  3,  0, 10,  2,  6,  4,  7 },
+        { 11, 15,  5,  0,  1,  9,  8,  6, 14, 10,  2, 12,  3,  4,  7, 13 },
     };
 
     // ---- streaming state ----
@@ -162,7 +162,7 @@ public sealed class Blake3
     /// <returns>
     /// <see cref="ChunkSize" /> (1024 bytes) — one full BLAKE3 leaf chunk.
     /// </returns>
-    public override int InputBlockSize => ChunkSize;
+    public override int InputBlockSize => BlockSize;
 
     /// <summary>
     /// Gets the output block size, in bytes.
@@ -500,8 +500,10 @@ public sealed class Blake3
     /// <returns>A 16-element array of little-endian uint32 words representing the block.</returns>
     private static uint[] ReadBlockWords(ReadOnlySpan<byte> block)
     {
-        // Stack-allocate a zero-filled 64-byte buffer and copy the (possibly short) block into it.
+        // Stack-allocate a 64-byte buffer, explicitly clear it, and copy the block into it.
+        // Short BLAKE3 blocks are zero-padded before the 16 little-endian words are read.
         Span<byte> padded = stackalloc byte[BlockSize];
+        padded.Clear();
         block.CopyTo(padded);
 
         uint[] words = new uint[16];
