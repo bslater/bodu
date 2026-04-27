@@ -57,11 +57,11 @@ public sealed class ExternalPluginLoader
 	public INotableDatePlugin Load(string assemblyPath)
 	{
 		if (string.IsNullOrWhiteSpace(assemblyPath))
-			throw new ArgumentException(CalendarStrings.AssemblyPathNullOrWhiteSpace_ArgumentException, nameof(assemblyPath));
+			throw new ArgumentException(CalendarStrings.ArgumentException_AssemblyPathNullOrWhiteSpace, nameof(assemblyPath));
 
 		var resolvedPath = Path.GetFullPath(assemblyPath);
 		if (!File.Exists(resolvedPath))
-			throw new FileNotFoundException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.PluginAssemblyNotFound_FileNotFoundException, resolvedPath), resolvedPath);
+			throw new FileNotFoundException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.FileNotFoundException_PluginAssemblyNotFound, resolvedPath), resolvedPath);
 
 		// Read bytes + hash before any code from the plugin runs, so the trust policy has the full fingerprint to decide on.
 		var fileBytes = File.ReadAllBytes(resolvedPath);
@@ -90,20 +90,20 @@ public sealed class ExternalPluginLoader
 		}
 
 		var attribute = assembly.GetCustomAttribute<NotableDatePluginAttribute>()
-			?? throw new PluginMissingAttributeException(resolvedPath, CalendarStrings.PluginAttributeMissing_PluginMissingAttributeException);
+			?? throw new PluginMissingAttributeException(resolvedPath, CalendarStrings.PluginMissingAttributeException_PluginAttributeMissing);
 
 		var pluginType = attribute.PluginType;
 		if (!typeof(INotableDatePlugin).IsAssignableFrom(pluginType))
 		{
 			throw new PluginMissingAttributeException(
 				resolvedPath,
-				string.Format(CultureInfo.InvariantCulture, CalendarStrings.PluginTypeMissingInterface_PluginMissingAttributeException, pluginType.FullName));
+				string.Format(CultureInfo.InvariantCulture, CalendarStrings.PluginMissingAttributeException_PluginTypeMissingInterface, pluginType.FullName));
 		}
 
 		try
 		{
 			var instance = Activator.CreateInstance(pluginType)
-				?? throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.ActivatorCreateInstanceNull_InvalidOperationException, pluginType.FullName));
+				?? throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.InvalidOperationException_ActivatorCreateInstanceNull, pluginType.FullName));
 			return (INotableDatePlugin)instance;
 		}
 		catch (Exception ex) when (ex is not PluginActivationException)

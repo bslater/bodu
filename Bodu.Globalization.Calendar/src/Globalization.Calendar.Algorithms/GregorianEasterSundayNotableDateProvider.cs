@@ -43,7 +43,7 @@ public sealed class GregorianEasterSundayNotableDateProvider
         }
 
         throw new NotSupportedException(
-            string.Format(CultureInfo.InvariantCulture, CalendarStrings.CalendarTypeNotSupported_NotSupportedException,
+            string.Format(CultureInfo.InvariantCulture, CalendarStrings.NotSupportedException_CalendarTypeNotSupported,
                 calendar.GetType().FullName, GetType().Name, typeof(SysGlobal.GregorianCalendar).FullName));
     }
 

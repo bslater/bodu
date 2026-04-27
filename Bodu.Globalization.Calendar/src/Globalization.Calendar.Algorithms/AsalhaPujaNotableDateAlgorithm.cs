@@ -48,7 +48,7 @@ public sealed class AsalhaPujaNotableDateAlgorithm
 	public DateTime? GetDate(int year, SysGlobal.Calendar? calendar = null)
 	{
 		if (year < 1)
-			throw new ArgumentOutOfRangeException(nameof(year), CalendarStrings.YearOutOfRange_ArgumentOutOfRangeException);
+			throw new ArgumentOutOfRangeException(nameof(year), CalendarStrings.ArgumentOutOfRangeException_YearOutOfRange);
 
 		DateTime? fullMoon = LunarPhaseAlgorithm.GetFullMoonOnOrAfter(new DateTime(year, 6, 15));
 		if (fullMoon is null)

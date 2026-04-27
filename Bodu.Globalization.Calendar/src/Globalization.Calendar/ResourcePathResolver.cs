@@ -63,7 +63,7 @@ public sealed class ResourcePathResolver : IResourcePathResolver
             {
                 if (segments.Count == 0)
                     throw new InvalidOperationException(
-                        string.Format(CultureInfo.InvariantCulture, CalendarStrings.ResourcePathEscapesRoot_InvalidOperationException, path));
+                        string.Format(CultureInfo.InvariantCulture, CalendarStrings.InvalidOperationException_ResourcePathEscapesRoot, path));
 
                 segments.RemoveAt(segments.Count - 1);
                 continue;

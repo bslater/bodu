@@ -28,222 +28,222 @@ internal static class CalendarStrings
         s_resourceMan ??= new global::System.Resources.ResourceManager(
             "Bodu.CalendarStrings", typeof(CalendarStrings).Assembly);
 
-    // ==================== Argument / validation exceptions ====================
+    // ==================== ArgumentException ====================
 
     /// <summary>Gets the message: "Key must not be null or whitespace."</summary>
-    internal static string KeyNullOrWhiteSpace_ArgumentException =>
-        ResourceManager.GetString("KeyNullOrWhiteSpace_ArgumentException", CultureInfo.CurrentUICulture)!;
+    internal static string ArgumentException_KeyNullOrWhiteSpace =>
+        ResourceManager.GetString("ArgumentException_KeyNullOrWhiteSpace", CultureInfo.CurrentUICulture)!;
 
     /// <summary>Gets the message: "Assembly path must not be null or whitespace."</summary>
-    internal static string AssemblyPathNullOrWhiteSpace_ArgumentException =>
-        ResourceManager.GetString("AssemblyPathNullOrWhiteSpace_ArgumentException", CultureInfo.CurrentUICulture)!;
+    internal static string ArgumentException_AssemblyPathNullOrWhiteSpace =>
+        ResourceManager.GetString("ArgumentException_AssemblyPathNullOrWhiteSpace", CultureInfo.CurrentUICulture)!;
 
     /// <summary>Gets the message: "At least one child policy is required."</summary>
-    internal static string PoliciesEmpty_ArgumentException =>
-        ResourceManager.GetString("PoliciesEmpty_ArgumentException", CultureInfo.CurrentUICulture)!;
+    internal static string ArgumentException_PoliciesEmpty =>
+        ResourceManager.GetString("ArgumentException_PoliciesEmpty", CultureInfo.CurrentUICulture)!;
 
     /// <summary>Gets the message: "Child policies must not be null."</summary>
-    internal static string PoliciesContainNull_ArgumentException =>
-        ResourceManager.GetString("PoliciesContainNull_ArgumentException", CultureInfo.CurrentUICulture)!;
+    internal static string ArgumentException_PoliciesContainNull =>
+        ResourceManager.GetString("ArgumentException_PoliciesContainNull", CultureInfo.CurrentUICulture)!;
 
     /// <summary>
     /// Gets the format string: "'{0}' is not a defined HinduLunarMonth value."
     /// <para>Parameters: {0} enum value.</para>
     /// </summary>
-    internal static string HinduLunarMonthUndefined_ArgumentException =>
-        ResourceManager.GetString("HinduLunarMonthUndefined_ArgumentException", CultureInfo.CurrentUICulture)!;
+    internal static string ArgumentException_HinduLunarMonthUndefined =>
+        ResourceManager.GetString("ArgumentException_HinduLunarMonthUndefined", CultureInfo.CurrentUICulture)!;
 
     /// <summary>
     /// Gets the format string: "'{0}' is not a defined HinduPaksha value."
     /// <para>Parameters: {0} enum value.</para>
     /// </summary>
-    internal static string HinduPakshaUndefined_ArgumentException =>
-        ResourceManager.GetString("HinduPakshaUndefined_ArgumentException", CultureInfo.CurrentUICulture)!;
+    internal static string ArgumentException_HinduPakshaUndefined =>
+        ResourceManager.GetString("ArgumentException_HinduPakshaUndefined", CultureInfo.CurrentUICulture)!;
 
-    // ==================== ArgumentOutOfRange exceptions ====================
+    // ==================== ArgumentOutOfRangeException ====================
 
     /// <summary>Gets the message: "Year must be greater than or equal to 1."</summary>
-    internal static string YearOutOfRange_ArgumentOutOfRangeException =>
-        ResourceManager.GetString("YearOutOfRange_ArgumentOutOfRangeException", CultureInfo.CurrentUICulture)!;
+    internal static string ArgumentOutOfRangeException_YearOutOfRange =>
+        ResourceManager.GetString("ArgumentOutOfRangeException_YearOutOfRange", CultureInfo.CurrentUICulture)!;
 
     /// <summary>Gets the message: "Tithi must be between 1 and 15."</summary>
-    internal static string TithiOutOfRange_ArgumentOutOfRangeException =>
-        ResourceManager.GetString("TithiOutOfRange_ArgumentOutOfRangeException", CultureInfo.CurrentUICulture)!;
+    internal static string ArgumentOutOfRangeException_TithiOutOfRange =>
+        ResourceManager.GetString("ArgumentOutOfRangeException_TithiOutOfRange", CultureInfo.CurrentUICulture)!;
 
-    // ==================== Format exceptions ====================
+    // ==================== FormatException ====================
 
     /// <summary>
     /// Gets the format string: "'{0}' is not a valid ISO 3166-1/3166-2 territory code."
     /// <para>Parameters: {0} the invalid value.</para>
     /// </summary>
-    internal static string TerritoryCodeInvalid_FormatException =>
-        ResourceManager.GetString("TerritoryCodeInvalid_FormatException", CultureInfo.CurrentUICulture)!;
+    internal static string FormatException_TerritoryCodeInvalid =>
+        ResourceManager.GetString("FormatException_TerritoryCodeInvalid", CultureInfo.CurrentUICulture)!;
 
     /// <summary>
     /// Gets the format string: "Invalid month value '{0}'. Expected a full English month name (e.g. 'January') or an integer 1–13."
     /// <para>Parameters: {0} the invalid month token.</para>
     /// </summary>
-    internal static string InvalidMonthValueGregorian_FormatException =>
-        ResourceManager.GetString("InvalidMonthValueGregorian_FormatException", CultureInfo.CurrentUICulture)!;
+    internal static string FormatException_InvalidMonthValueGregorian =>
+        ResourceManager.GetString("FormatException_InvalidMonthValueGregorian", CultureInfo.CurrentUICulture)!;
 
     /// <summary>
     /// Gets the format string: "Invalid month value '{0}'. Expected a full English month name, an integer 1–13, or a Hebrew month name."
     /// <para>Parameters: {0} the invalid month token.</para>
     /// </summary>
-    internal static string InvalidMonthValueHebrew_FormatException =>
-        ResourceManager.GetString("InvalidMonthValueHebrew_FormatException", CultureInfo.CurrentUICulture)!;
+    internal static string FormatException_InvalidMonthValueHebrew =>
+        ResourceManager.GetString("FormatException_InvalidMonthValueHebrew", CultureInfo.CurrentUICulture)!;
 
-    // ==================== InvalidOperation exceptions ====================
+    // ==================== InvalidOperationException ====================
 
     /// <summary>
     /// Gets the format string: "Unknown strategy element '{0}' on override rule."
     /// <para>Parameters: {0} strategy element local name.</para>
     /// </summary>
-    internal static string UnknownStrategyElementOnOverrideRule_InvalidOperationException =>
-        ResourceManager.GetString("UnknownStrategyElementOnOverrideRule_InvalidOperationException", CultureInfo.CurrentUICulture)!;
+    internal static string InvalidOperationException_UnknownStrategyElementOnOverrideRule =>
+        ResourceManager.GetString("InvalidOperationException_UnknownStrategyElementOnOverrideRule", CultureInfo.CurrentUICulture)!;
 
     /// <summary>
     /// Gets the format string: "Duplicate adjustment key '{0}' on element '{1}'. Keys must be unique within a single rule or override body."
     /// <para>Parameters: {0} adjustment key; {1} element local name.</para>
     /// </summary>
-    internal static string DuplicateAdjustmentKey_InvalidOperationException =>
-        ResourceManager.GetString("DuplicateAdjustmentKey_InvalidOperationException", CultureInfo.CurrentUICulture)!;
+    internal static string InvalidOperationException_DuplicateAdjustmentKey =>
+        ResourceManager.GetString("InvalidOperationException_DuplicateAdjustmentKey", CultureInfo.CurrentUICulture)!;
 
     /// <summary>
     /// Gets the format string: "Rule '{0}' is missing a strategy child element."
     /// <para>Parameters: {0} rule name.</para>
     /// </summary>
-    internal static string RuleMissingStrategy_InvalidOperationException =>
-        ResourceManager.GetString("RuleMissingStrategy_InvalidOperationException", CultureInfo.CurrentUICulture)!;
+    internal static string InvalidOperationException_RuleMissingStrategy =>
+        ResourceManager.GetString("InvalidOperationException_RuleMissingStrategy", CultureInfo.CurrentUICulture)!;
 
     /// <summary>
     /// Gets the format string: "Unknown strategy element '{0}' on rule '{1}'."
     /// <para>Parameters: {0} strategy element local name; {1} rule name.</para>
     /// </summary>
-    internal static string UnknownStrategyElementOnRule_InvalidOperationException =>
-        ResourceManager.GetString("UnknownStrategyElementOnRule_InvalidOperationException", CultureInfo.CurrentUICulture)!;
+    internal static string InvalidOperationException_UnknownStrategyElementOnRule =>
+        ResourceManager.GetString("InvalidOperationException_UnknownStrategyElementOnRule", CultureInfo.CurrentUICulture)!;
 
     /// <summary>
     /// Gets the format string: "Missing required attribute '{0}' on element '{1}'."
     /// <para>Parameters: {0} attribute name; {1} element local name.</para>
     /// </summary>
-    internal static string MissingRequiredAttribute_InvalidOperationException =>
-        ResourceManager.GetString("MissingRequiredAttribute_InvalidOperationException", CultureInfo.CurrentUICulture)!;
+    internal static string InvalidOperationException_MissingRequiredAttribute =>
+        ResourceManager.GetString("InvalidOperationException_MissingRequiredAttribute", CultureInfo.CurrentUICulture)!;
 
     /// <summary>
     /// Gets the format string: "Invalid value for attribute '{0}' on element '{1}'."
     /// <para>Parameters: {0} attribute name; {1} element local name.</para>
     /// </summary>
-    internal static string InvalidAttributeValue_InvalidOperationException =>
-        ResourceManager.GetString("InvalidAttributeValue_InvalidOperationException", CultureInfo.CurrentUICulture)!;
+    internal static string InvalidOperationException_InvalidAttributeValue =>
+        ResourceManager.GetString("InvalidOperationException_InvalidAttributeValue", CultureInfo.CurrentUICulture)!;
 
     /// <summary>
     /// Gets the format string: "Circular reference detected while flattening notable date resource '{0}'."
     /// <para>Parameters: {0} resource name.</para>
     /// </summary>
-    internal static string CircularReferenceInResource_InvalidOperationException =>
-        ResourceManager.GetString("CircularReferenceInResource_InvalidOperationException", CultureInfo.CurrentUICulture)!;
+    internal static string InvalidOperationException_CircularReferenceInResource =>
+        ResourceManager.GetString("InvalidOperationException_CircularReferenceInResource", CultureInfo.CurrentUICulture)!;
 
     /// <summary>
     /// Gets the format string: "Notable date rule '{0}' was not found in source resource '{1}' (referenced from '{2}')."
     /// <para>Parameters: {0} rule name; {1} source resource; {2} referencing resource.</para>
     /// </summary>
-    internal static string RuleNotFoundInSource_InvalidOperationException =>
-        ResourceManager.GetString("RuleNotFoundInSource_InvalidOperationException", CultureInfo.CurrentUICulture)!;
+    internal static string InvalidOperationException_RuleNotFoundInSource =>
+        ResourceManager.GetString("InvalidOperationException_RuleNotFoundInSource", CultureInfo.CurrentUICulture)!;
 
     /// <summary>
     /// Gets the format string: "Circular dependency detected while resolving notable date rule '{0}': {1}."
     /// <para>Parameters: {0} rule name; {1} dependency chain.</para>
     /// </summary>
-    internal static string CircularDependencyInRule_InvalidOperationException =>
-        ResourceManager.GetString("CircularDependencyInRule_InvalidOperationException", CultureInfo.CurrentUICulture)!;
+    internal static string InvalidOperationException_CircularDependencyInRule =>
+        ResourceManager.GetString("InvalidOperationException_CircularDependencyInRule", CultureInfo.CurrentUICulture)!;
 
     /// <summary>
     /// Gets the format string: "Anchor rule '{0}' referenced by '{1}' was not found."
     /// <para>Parameters: {0} anchor rule name; {1} referencing rule name.</para>
     /// </summary>
-    internal static string AnchorRuleNotFound_InvalidOperationException =>
-        ResourceManager.GetString("AnchorRuleNotFound_InvalidOperationException", CultureInfo.CurrentUICulture)!;
+    internal static string InvalidOperationException_AnchorRuleNotFound =>
+        ResourceManager.GetString("InvalidOperationException_AnchorRuleNotFound", CultureInfo.CurrentUICulture)!;
 
     /// <summary>
     /// Gets the format string: "The resource path '{0}' escapes the resource root."
     /// <para>Parameters: {0} resource path.</para>
     /// </summary>
-    internal static string ResourcePathEscapesRoot_InvalidOperationException =>
-        ResourceManager.GetString("ResourcePathEscapesRoot_InvalidOperationException", CultureInfo.CurrentUICulture)!;
+    internal static string InvalidOperationException_ResourcePathEscapesRoot =>
+        ResourceManager.GetString("InvalidOperationException_ResourcePathEscapesRoot", CultureInfo.CurrentUICulture)!;
 
     /// <summary>
     /// Gets the format string: "Activator.CreateInstance returned null for type '{0}'."
     /// <para>Parameters: {0} plugin type full name.</para>
     /// </summary>
-    internal static string ActivatorCreateInstanceNull_InvalidOperationException =>
-        ResourceManager.GetString("ActivatorCreateInstanceNull_InvalidOperationException", CultureInfo.CurrentUICulture)!;
+    internal static string InvalidOperationException_ActivatorCreateInstanceNull =>
+        ResourceManager.GetString("InvalidOperationException_ActivatorCreateInstanceNull", CultureInfo.CurrentUICulture)!;
 
-    // ==================== NotSupported exceptions ====================
+    // ==================== NotSupportedException ====================
 
     /// <summary>
     /// Gets the format string: "Unsupported strategy: {0}."
     /// <para>Parameters: {0} strategy value.</para>
     /// </summary>
-    internal static string UnsupportedStrategy_NotSupportedException =>
-        ResourceManager.GetString("UnsupportedStrategy_NotSupportedException", CultureInfo.CurrentUICulture)!;
+    internal static string NotSupportedException_UnsupportedStrategy =>
+        ResourceManager.GetString("NotSupportedException_UnsupportedStrategy", CultureInfo.CurrentUICulture)!;
 
     /// <summary>
     /// Gets the format string: "Unsupported date resolution strategy '{0}' on rule '{1}'."
     /// <para>Parameters: {0} strategy value; {1} rule name.</para>
     /// </summary>
-    internal static string UnsupportedDateResolutionStrategy_NotSupportedException =>
-        ResourceManager.GetString("UnsupportedDateResolutionStrategy_NotSupportedException", CultureInfo.CurrentUICulture)!;
+    internal static string NotSupportedException_UnsupportedDateResolutionStrategy =>
+        ResourceManager.GetString("NotSupportedException_UnsupportedDateResolutionStrategy", CultureInfo.CurrentUICulture)!;
 
     /// <summary>
     /// Gets the format string: "The calendar type '{0}' is not supported by {1}. Only {2} is supported."
     /// <para>Parameters: {0} calendar type full name; {1} provider type name; {2} supported calendar type full name.</para>
     /// </summary>
-    internal static string CalendarTypeNotSupported_NotSupportedException =>
-        ResourceManager.GetString("CalendarTypeNotSupported_NotSupportedException", CultureInfo.CurrentUICulture)!;
+    internal static string NotSupportedException_CalendarTypeNotSupported =>
+        ResourceManager.GetString("NotSupportedException_CalendarTypeNotSupported", CultureInfo.CurrentUICulture)!;
 
-    // ==================== FileNotFound exceptions ====================
+    // ==================== FileNotFoundException ====================
 
     /// <summary>
     /// Gets the format string: "Embedded schema resource '{0}' not found in assembly '{1}'."
     /// <para>Parameters: {0} schema resource name; {1} assembly full name.</para>
     /// </summary>
-    internal static string EmbeddedSchemaResourceNotFound_FileNotFoundException =>
-        ResourceManager.GetString("EmbeddedSchemaResourceNotFound_FileNotFoundException", CultureInfo.CurrentUICulture)!;
+    internal static string FileNotFoundException_EmbeddedSchemaResourceNotFound =>
+        ResourceManager.GetString("FileNotFoundException_EmbeddedSchemaResourceNotFound", CultureInfo.CurrentUICulture)!;
 
     /// <summary>
     /// Gets the format string: "Embedded XML resource '{0}' was not found in assembly '{1}'."
     /// <para>Parameters: {0} resource name; {1} assembly full name.</para>
     /// </summary>
-    internal static string EmbeddedXmlResourceNotFound_FileNotFoundException =>
-        ResourceManager.GetString("EmbeddedXmlResourceNotFound_FileNotFoundException", CultureInfo.CurrentUICulture)!;
+    internal static string FileNotFoundException_EmbeddedXmlResourceNotFound =>
+        ResourceManager.GetString("FileNotFoundException_EmbeddedXmlResourceNotFound", CultureInfo.CurrentUICulture)!;
 
     /// <summary>
     /// Gets the format string: "Plugin assembly '{0}' was not found."
     /// <para>Parameters: {0} resolved assembly path.</para>
     /// </summary>
-    internal static string PluginAssemblyNotFound_FileNotFoundException =>
-        ResourceManager.GetString("PluginAssemblyNotFound_FileNotFoundException", CultureInfo.CurrentUICulture)!;
+    internal static string FileNotFoundException_PluginAssemblyNotFound =>
+        ResourceManager.GetString("FileNotFoundException_PluginAssemblyNotFound", CultureInfo.CurrentUICulture)!;
 
-    // ==================== XmlSchemaValidation exceptions ====================
+    // ==================== XmlSchemaValidationException ====================
 
     /// <summary>
     /// Gets the format string: "Schema validation error: {0}"
     /// <para>Parameters: {0} validation error message.</para>
     /// </summary>
-    internal static string SchemaValidationError_XmlSchemaValidationException =>
-        ResourceManager.GetString("SchemaValidationError_XmlSchemaValidationException", CultureInfo.CurrentUICulture)!;
+    internal static string XmlSchemaValidationException_SchemaValidationError =>
+        ResourceManager.GetString("XmlSchemaValidationException_SchemaValidationError", CultureInfo.CurrentUICulture)!;
 
-    // ==================== Plugin exceptions ====================
+    // ==================== PluginMissingAttributeException ====================
 
     /// <summary>Gets the message: "attribute not present on the assembly"</summary>
-    internal static string PluginAttributeMissing_PluginMissingAttributeException =>
-        ResourceManager.GetString("PluginAttributeMissing_PluginMissingAttributeException", CultureInfo.CurrentUICulture)!;
+    internal static string PluginMissingAttributeException_PluginAttributeMissing =>
+        ResourceManager.GetString("PluginMissingAttributeException_PluginAttributeMissing", CultureInfo.CurrentUICulture)!;
 
     /// <summary>
     /// Gets the format string: "declared plugin type '{0}' does not implement INotableDatePlugin"
     /// <para>Parameters: {0} plugin type full name.</para>
     /// </summary>
-    internal static string PluginTypeMissingInterface_PluginMissingAttributeException =>
-        ResourceManager.GetString("PluginTypeMissingInterface_PluginMissingAttributeException", CultureInfo.CurrentUICulture)!;
+    internal static string PluginMissingAttributeException_PluginTypeMissingInterface =>
+        ResourceManager.GetString("PluginMissingAttributeException_PluginTypeMissingInterface", CultureInfo.CurrentUICulture)!;
 }

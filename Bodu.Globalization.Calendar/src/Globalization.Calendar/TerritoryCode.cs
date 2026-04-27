@@ -93,7 +93,7 @@ public readonly record struct TerritoryCode
 		if (TryParse(value, out var result))
 			return result;
 
-		throw new FormatException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.TerritoryCodeInvalid_FormatException, value));
+		throw new FormatException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.FormatException_TerritoryCodeInvalid, value));
 	}
 
 	/// <summary>
