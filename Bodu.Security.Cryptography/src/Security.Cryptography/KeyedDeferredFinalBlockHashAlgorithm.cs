@@ -1,0 +1,200 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="KeyedDeferredFinalBlockHashAlgorithm.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Security.Cryptography;
+using Bodu.Extensions;
+
+namespace Bodu.Security.Cryptography;
+
+/// <summary>
+/// Represents the abstract base class for hash algorithms that support an optional secret key and defer compression
+/// of the final block until <see cref="HashAlgorithm.HashFinal" /> is called, following the BLAKE-family
+/// deferred-finalisation pattern.
+/// </summary>
+/// <typeparam name="T">
+/// The concrete derived algorithm type. Must expose a public parameterless constructor.
+/// </typeparam>
+/// <remarks>
+/// <para>
+/// This class extends <see cref="DeferredFinalBlockHashAlgorithm{T}" /> with optional key-handling logic shared by
+/// keyed BLAKE-family hashes such as <see cref="Blake2b" /> and <see cref="Blake2s" />. It centralises defensive
+/// copying, key-length validation, secure disposal of secret material, and the sealed <see cref="OnInitialize" />
+/// hook that orchestrates hash-state reset followed by key-block injection when a key is set.
+/// </para>
+/// <para>
+/// The key is optional: assigning an empty array (or never assigning a key) places the instance in the standard
+/// unkeyed digest mode. Assigning a non-empty array of at most <see cref="MaximumKeySize" /> bytes switches the
+/// instance to the keyed MAC mode defined in RFC 7693 Section 2.8 — the key is zero-padded to the block size and
+/// prepended as the first message block.
+/// </para>
+/// <para>
+/// Derived classes must implement <see cref="InitializeHashState" /> to restore their algorithm-specific chaining
+/// variables and encode the key length into the parameter block, and <see cref="DeferredFinalBlockHashAlgorithm{T}.ProcessBlock" /> /
+/// <see cref="DeferredFinalBlockHashAlgorithm{T}.ProcessFinalBlock" /> as required by the grandparent.
+/// </para>
+/// </remarks>
+public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
+    : DeferredFinalBlockHashAlgorithm<T>
+    where T : KeyedDeferredFinalBlockHashAlgorithm<T>, new()
+{
+    /// <summary>
+    /// Internal storage for the optional secret key. <see langword="null" /> when the instance operates in the
+    /// unkeyed digest profile; otherwise a defensive copy of the caller-supplied key. Always assigned via defensive
+    /// copy and cleared on disposal.
+    /// </summary>
+    protected byte[]? KeyValue;
+
+    /// <summary>
+    /// The maximum accepted key length, in bytes. Supplied by the derived class via the constructor and used by the
+    /// <see cref="Key" /> setter to validate caller-supplied key material.
+    /// </summary>
+    private readonly int _maximumKeySize;
+
+    /// <summary>
+    /// Initialises a new instance of the <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}" /> class with the
+    /// specified input block size and maximum key size.
+    /// </summary>
+    /// <param name="blockSize">
+    /// The fixed size, in bytes, of each block consumed by the algorithm. Must be greater than zero.
+    /// </param>
+    /// <param name="maximumKeySize">
+    /// The maximum accepted key length, in bytes. Must be greater than zero.
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="blockSize" /> or <paramref name="maximumKeySize" /> is less than or equal to zero.
+    /// </exception>
+    protected KeyedDeferredFinalBlockHashAlgorithm(int blockSize, int maximumKeySize)
+        : base(blockSize)
+    {
+        ThrowHelper.ThrowIfLessThanOrEqual(maximumKeySize, 0);
+        this._maximumKeySize = maximumKeySize;
+    }
+
+    /// <summary>
+    /// Gets the maximum accepted key length, in bytes, for this algorithm instance.
+    /// </summary>
+    /// <returns>The maximum number of bytes accepted as a secret key.</returns>
+    public int MaximumKeySize => this._maximumKeySize;
+
+    /// <summary>
+    /// Gets or sets the optional secret key used to compute a keyed MAC digest.
+    /// </summary>
+    /// <value>
+    /// A byte array of 1 to <see cref="MaximumKeySize" /> bytes that enables keyed MAC mode, or an empty array
+    /// when operating in the unkeyed digest profile. Both the getter and the setter operate on defensive copies.
+    /// </value>
+    /// <returns>
+    /// A defensive copy of the current key, or an empty array if no key has been configured.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// When the key is non-empty, the instance operates in the keyed MAC mode defined in RFC 7693 Section 2.8. The
+    /// key length is encoded into the parameter block by <see cref="InitializeHashState" />, and the key itself
+    /// (zero-padded to the block size) is prepended as the first message block before any caller-supplied input is
+    /// processed.
+    /// </para>
+    /// <para>
+    /// Setting the key calls <see cref="HashAlgorithm.Initialize" /> so that the algorithm state is immediately
+    /// rebuilt for the new key. Setting an empty array clears the key and reverts the instance to unkeyed digest
+    /// mode.
+    /// </para>
+    /// <para>
+    /// The property may only be changed before hashing has begun; once
+    /// <see cref="HashAlgorithm.TransformBlock" /> or a <c>ComputeHash</c> overload has been called, the value is
+    /// immutable until <see cref="HashAlgorithm.Initialize" /> is called.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">The assigned value is <see langword="null" />.</exception>
+    /// <exception cref="CryptographicException">
+    /// The assigned key is longer than <see cref="MaximumKeySize" /> bytes.
+    /// </exception>
+    /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
+    /// <exception cref="CryptographicUnexpectedOperationException">
+    /// A hash computation is already in progress.
+    /// </exception>
+    public byte[] Key
+    {
+        get
+        {
+            this.ThrowIfDisposed();
+            return this.KeyValue?.Copy() ?? [];
+        }
+
+        set
+        {
+            this.ThrowIfDisposed();
+            this.ThrowIfInvalidState();
+            ThrowHelper.ThrowIfNull(value);
+
+            if (value.Length > this._maximumKeySize)
+                throw new CryptographicException(
+                    string.Format(ResourceStrings.CryptographicException_InvalidKeySize, value.Length, $"0..{this._maximumKeySize}"));
+
+            this.KeyValue = value.Length > 0 ? value.Copy() : null;
+            this.Initialize();
+        }
+    }
+
+    /// <inheritdoc />
+    public override void Initialize()
+    {
+        this.ThrowIfDisposed();
+        base.Initialize();
+    }
+
+    /// <summary>
+    /// Resets the algorithm-specific hash state and, if a key has been set, injects the key block as the first
+    /// message block. Sealed so that the key-injection protocol cannot be accidentally bypassed by derived classes.
+    /// </summary>
+    /// <remarks>
+    /// Invoked by <see cref="HashAlgorithm.Initialize" /> after the inherited residual buffer and counters have
+    /// been cleared. Calls <see cref="InitializeHashState" /> first, then feeds the zero-padded key block through
+    /// the buffering infrastructure when <see cref="KeyValue" /> is non-<see langword="null" />.
+    /// </remarks>
+    protected sealed override void OnInitialize()
+    {
+        this.InitializeHashState();
+
+        if (this.KeyValue is not null)
+            this.InjectKeyBlock();
+    }
+
+    /// <summary>
+    /// Resets the algorithm-specific chaining variables to their initialisation values and encodes any
+    /// configuration parameters (such as digest length and key length) into the parameter block. Called by the
+    /// sealed <see cref="OnInitialize" /> before key-block injection.
+    /// </summary>
+    /// <remarks>
+    /// Implementations should read <see cref="KeyValue" /> to determine the key length (<c>kk</c>) for
+    /// parameter-block encoding, as <see cref="KeyValue" /> is already updated to the new value before
+    /// <see cref="OnInitialize" /> runs.
+    /// </remarks>
+    protected abstract void InitializeHashState();
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Securely erases the stored key material by calling
+    /// <see cref="CryptoHelpers.ClearAndNullify{T}(ref T[])" /> on <see cref="KeyValue" />. The inherited
+    /// residual buffer is cleared by the grandparent before this hook runs.
+    /// </remarks>
+    protected override void OnDispose(bool disposing)
+    {
+        if (disposing)
+            CryptoHelpers.ClearAndNullify(ref this.KeyValue);
+    }
+
+    /// <summary>
+    /// Zero-pads the key to the full block size and feeds it through the buffering infrastructure as the first
+    /// message block, per RFC 7693 Section 2.8. Must only be called when <see cref="KeyValue" /> is
+    /// non-<see langword="null" />.
+    /// </summary>
+    private void InjectKeyBlock()
+    {
+        Span<byte> keyBlock = stackalloc byte[this.BlockSizeBytes];
+        this.KeyValue!.AsSpan().CopyTo(keyBlock);
+        this.HashCore(keyBlock);
+    }
+}

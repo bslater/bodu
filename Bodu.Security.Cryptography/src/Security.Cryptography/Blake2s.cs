@@ -7,7 +7,6 @@
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
-using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -24,15 +23,15 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// This implementation inherits its residual buffer, byte-counter and lookahead-buffering loop from
-/// <see cref="DeferredFinalBlockHashAlgorithm{T}" />: the final message block is not compressed until
+/// <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}" />: the final message block is not compressed until
 /// <see cref="HashAlgorithm.HashFinal" /> is called, at which point the <c>finalization</c> flag is set and the
 /// output bytes are serialised in little-endian order then truncated to the configured output length.
 /// </para>
 /// <para>
-/// Supplying a non-empty <see cref="Key" /> switches the instance into the keyed <c>BLAKE2s-MAC</c> mode defined
-/// in RFC 7693 Section 2.8. The key (1–32 bytes) is zero-padded to 64 bytes and prepended as the first message
-/// block, and the key length is encoded into the parameter block so that keyed and unkeyed digests of the same
-/// message are always distinct.
+/// Supplying a non-empty <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}.Key" /> switches the instance into
+/// the keyed <c>BLAKE2s-MAC</c> mode defined in RFC 7693 Section 2.8. The key (1–32 bytes) is zero-padded to
+/// 64 bytes and prepended as the first message block, and the key length is encoded into the parameter block so
+/// that keyed and unkeyed digests of the same message are always distinct.
 /// </para>
 /// </remarks>
 /// <example>
@@ -46,7 +45,7 @@ namespace Bodu.Security.Cryptography;
 /// byte[] tag = mac.ComputeHash(message);
 /// </code>
 /// </example>
-public sealed class Blake2s : DeferredFinalBlockHashAlgorithm<Blake2s>
+public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
 {
     /// <summary>
     /// The set of output sizes, in bits, accepted by this algorithm.
@@ -97,12 +96,6 @@ public sealed class Blake2s : DeferredFinalBlockHashAlgorithm<Blake2s>
     private readonly uint[] _h = new uint[8];
 
     /// <summary>
-    /// The optional secret key used for keyed <c>BLAKE2s-MAC</c> mode. <see langword="null" /> when operating in
-    /// the unkeyed digest profile.
-    /// </summary>
-    private byte[]? _key;
-
-    /// <summary>
     /// Initialises a new instance of the <see cref="Blake2s" /> class with a 256-bit output hash size.
     /// </summary>
     public Blake2s()
@@ -119,7 +112,7 @@ public sealed class Blake2s : DeferredFinalBlockHashAlgorithm<Blake2s>
     /// <paramref name="hashSize" /> is not one of the supported output sizes.
     /// </exception>
     public Blake2s(int hashSize)
-        : base(BlockSizeBytesValue)
+        : base(BlockSizeBytesValue, MaxKeySize)
     {
         if (Array.IndexOf(ValidHashSizes, hashSize) < 0)
             throw new ArgumentOutOfRangeException(
@@ -127,7 +120,7 @@ public sealed class Blake2s : DeferredFinalBlockHashAlgorithm<Blake2s>
                 string.Format(ResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
 
         this.HashSizeValue = hashSize;
-        this.InitializeState();
+        this.InitializeHashState();
     }
 
     /// <inheritdoc />
@@ -182,92 +175,12 @@ public sealed class Blake2s : DeferredFinalBlockHashAlgorithm<Blake2s>
         }
     }
 
-    /// <summary>
-    /// Gets or sets the secret key used to compute a keyed <c>BLAKE2s-MAC</c>.
-    /// </summary>
-    /// <value>
-    /// A byte array of 1 to <see cref="MaxKeySize" /> bytes that enables the keyed MAC mode, or an empty array
-    /// when operating in the unkeyed digest profile. Both the getter and the setter operate on defensive copies.
-    /// </value>
-    /// <returns>
-    /// A defensive copy of the current key, or an empty array if no key has been configured.
-    /// </returns>
-    /// <remarks>
-    /// <para>
-    /// When the key is non-empty, the instance operates in the keyed <c>BLAKE2s-MAC</c> mode defined in RFC 7693
-    /// Section 2.8. The key length is encoded into the parameter block and the key itself (zero-padded to 64
-    /// bytes) is prepended as the first message block before any caller-supplied input is processed.
-    /// </para>
-    /// <para>
-    /// Setting the key calls <see cref="Initialize" /> so that the algorithm state is immediately rebuilt for the
-    /// new key. Setting an empty array clears the key and reverts the instance to unkeyed digest mode.
-    /// </para>
-    /// <para>
-    /// The property may only be changed before hashing has begun; once
-    /// <see cref="HashAlgorithm.TransformBlock" /> or a <c>ComputeHash</c> overload has been called, the value is
-    /// immutable until <see cref="Initialize" /> is called.
-    /// </para>
-    /// </remarks>
-    /// <exception cref="ArgumentNullException">The assigned value is <see langword="null" />.</exception>
-    /// <exception cref="CryptographicException">
-    /// The assigned key is longer than <see cref="MaxKeySize" /> bytes.
-    /// </exception>
-    /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
-    /// <exception cref="CryptographicUnexpectedOperationException">
-    /// A hash computation is already in progress.
-    /// </exception>
-    public byte[] Key
-    {
-        get
-        {
-            this.ThrowIfDisposed();
-            return this._key?.Copy() ?? [];
-        }
-
-        set
-        {
-            this.ThrowIfDisposed();
-            this.ThrowIfInvalidState();
-            ThrowHelper.ThrowIfNull(value);
-
-            if (value.Length > MaxKeySize)
-                throw new CryptographicException(
-                    string.Format(ResourceStrings.CryptographicException_InvalidKeySize, value.Length, $"0..{MaxKeySize}"));
-
-            this._key = value.Length > 0 ? value.Copy() : null;
-            this.Initialize();
-        }
-    }
-
-    /// <inheritdoc />
-    public override void Initialize()
-    {
-        this.ThrowIfDisposed();
-        base.Initialize();
-    }
-
     /// <inheritdoc />
     /// <remarks>
-    /// Restores the internal hash-state words to the BLAKE2s initialisation values for the configured output size
-    /// and key length. If a key has been set, the key block (key zero-padded to 64 bytes) is fed through
-    /// <see cref="DeferredFinalBlockHashAlgorithm{T}.HashCore(ReadOnlySpan{byte})" /> so it occupies the residual
-    /// buffer and will be compressed as the first message block when hashing begins. Invoked from
-    /// <see cref="DeferredFinalBlockHashAlgorithm{T}.Initialize" /> after the inherited residual buffer and counter
-    /// have been cleared.
-    /// </remarks>
-    protected override void OnInitialize()
-    {
-        this.InitializeState();
-
-        if (this._key is not null)
-            this.InjectKeyBlock();
-    }
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// Clears the chaining state, releases the framework <see cref="HashAlgorithm.HashValue" /> array, zeros
-    /// <see cref="HashAlgorithm.HashSizeValue" />, and securely erases any stored key material. The inherited
-    /// residual buffer is cleared by the grandparent before this hook runs.
+    /// Clears the chaining state, releases the framework <see cref="HashAlgorithm.HashValue" /> array, and zeros
+    /// <see cref="HashAlgorithm.HashSizeValue" />. Calls <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}.OnDispose" />
+    /// to securely erase any stored key material. The inherited residual buffer is cleared by the grandparent
+    /// before this hook runs.
     /// </remarks>
     protected override void OnDispose(bool disposing)
     {
@@ -275,9 +188,10 @@ public sealed class Blake2s : DeferredFinalBlockHashAlgorithm<Blake2s>
         {
             Array.Clear(this._h, 0, this._h.Length);
             CryptoHelpers.ClearAndNullify(ref this.HashValue);
-            CryptoHelpers.ClearAndNullify(ref this._key);
             this.HashSizeValue = 0;
         }
+
+        base.OnDispose(disposing);
     }
 
     /// <summary>
@@ -372,31 +286,19 @@ public sealed class Blake2s : DeferredFinalBlockHashAlgorithm<Blake2s>
         return output;
     }
 
-    /// <summary>
-    /// Sets the eight internal hash-state words to the BLAKE2s initialisation values, then applies the
-    /// parameter block XOR encoding the digest length and key length per RFC 7693.
-    /// </summary>
-    private void InitializeState()
+    /// <inheritdoc />
+    /// <remarks>
+    /// Copies the BLAKE2s IV into the eight internal hash-state words, then applies the parameter block XOR
+    /// encoding the digest length and key length per RFC 7693: <c>h[0] ^= 0x01010000 ^ (kk &lt;&lt; 8) ^ nn</c>.
+    /// </remarks>
+    protected override void InitializeHashState()
     {
         s_iv.CopyTo(this._h, 0);
 
         // Parameter block: fan-out=1, max depth=1, digest length=nn, key length=kk.
-        // h[0] ^= 0x01010000 ^ (kk << 8) ^ nn
         int nn = this.HashSizeValue / 8;
-        int kk = this._key?.Length ?? 0;
+        int kk = this.KeyValue?.Length ?? 0;
         this._h[0] ^= 0x01010000U ^ ((uint)kk << 8) ^ (uint)nn;
-    }
-
-    /// <summary>
-    /// Pads the key to the full block size and feeds it through the buffering infrastructure as the first message
-    /// block, per RFC 7693 Section 2.8. Must only be called when <see cref="_key" /> is non-null.
-    /// </summary>
-    private void InjectKeyBlock()
-    {
-        // Key block = key bytes followed by zeros to fill the full 64-byte block.
-        Span<byte> keyBlock = stackalloc byte[BlockSizeBytesValue];
-        this._key!.AsSpan().CopyTo(keyBlock);
-        this.HashCore(keyBlock);
     }
 
     /// <summary>
