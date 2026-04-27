@@ -177,7 +177,16 @@ public sealed class NotableDateService : INotableDateService
 	/// <inheritdoc />
 	public IReadOnlyList<NotableDate> GetNotableDates(int year, string? territoryCode = null, Type? calendarType = null)
 	{
-		var perYear = GetOrGenerateYear(year);
+		IReadOnlyList<NotableDate> perYear = GetOrGenerateYear(year);
+		return ProjectAndOrder(perYear, territoryCode, calendarType);
+	}
+
+	/// <inheritdoc />
+	public IReadOnlyList<NotableDate> GetNotableDates(int year, NotableDateFilter filter, string? territoryCode = null, Type? calendarType = null)
+	{
+		ThrowHelper.ThrowIfNull(filter);
+
+		IReadOnlyList<NotableDate> perYear = GenerateYearFiltered(year, filter);
 		return ProjectAndOrder(perYear, territoryCode, calendarType);
 	}
 
@@ -186,11 +195,11 @@ public sealed class NotableDateService : INotableDateService
 	{
 		if (endDate < startDate) (startDate, endDate) = (endDate, startDate);
 
-		var results = new List<NotableDate>();
+		List<NotableDate> results = new();
 		for (int year = startDate.Year; year <= endDate.Year; year++)
 		{
-			var perYear = GetOrGenerateYear(year);
-			foreach (var notable in perYear)
+			IReadOnlyList<NotableDate> perYear = GetOrGenerateYear(year);
+			foreach (NotableDate notable in perYear)
 			{
 				if (notable.EndDate < startDate.Date || notable.Date > endDate.Date) continue;
 				if (!MatchesContext(notable, territoryCode, calendarType)) continue;
@@ -208,17 +217,69 @@ public sealed class NotableDateService : INotableDateService
 	}
 
 	/// <inheritdoc />
+	public IReadOnlyList<NotableDate> GetNotableDates(DateTime startDate, DateTime endDate, NotableDateFilter filter, string? territoryCode = null, Type? calendarType = null)
+	{
+		ThrowHelper.ThrowIfNull(filter);
+
+		if (endDate < startDate) (startDate, endDate) = (endDate, startDate);
+
+		List<NotableDate> results = new();
+		for (int year = startDate.Year; year <= endDate.Year; year++)
+		{
+			IReadOnlyList<NotableDate> perYear = GenerateYearFiltered(year, filter);
+			foreach (NotableDate notable in perYear)
+			{
+				if (notable.EndDate < startDate.Date || notable.Date > endDate.Date) continue;
+				if (!MatchesContext(notable, territoryCode, calendarType)) continue;
+
+				results.Add(LocaliseIfNeeded(notable));
+			}
+		}
+
+		return results
+			.GroupBy(n => n.Date.Date)
+			.OrderBy(g => g.Key)
+			.SelectMany(g => _collisionResolver.Resolve(g.Key, g.ToList()))
+			.ToList();
+	}
+
+	/// <inheritdoc />
 	public IReadOnlyList<NotableDate> GetNotableDates(DateTime date, string? territoryCode = null, Type? calendarType = null)
 	{
-		var results = new List<NotableDate>();
+		List<NotableDate> results = new();
 
 		// Multi-day spans may have started in the previous year; check both years to cover wrap-around.
-		foreach (var year in new[] { date.Year - 1, date.Year })
+		foreach (int year in new[] { date.Year - 1, date.Year })
 		{
 			if (year < 1) continue;
 
-			var perYear = GetOrGenerateYear(year);
-			foreach (var notable in perYear)
+			IReadOnlyList<NotableDate> perYear = GetOrGenerateYear(year);
+			foreach (NotableDate notable in perYear)
+			{
+				if (!ContainsDay(notable, date.Date)) continue;
+				if (!MatchesContext(notable, territoryCode, calendarType)) continue;
+
+				results.Add(LocaliseIfNeeded(notable));
+			}
+		}
+
+		return _collisionResolver.Resolve(date.Date, results);
+	}
+
+	/// <inheritdoc />
+	public IReadOnlyList<NotableDate> GetNotableDates(DateTime date, NotableDateFilter filter, string? territoryCode = null, Type? calendarType = null)
+	{
+		ThrowHelper.ThrowIfNull(filter);
+
+		List<NotableDate> results = new();
+
+		// Multi-day spans may have started in the previous year; check both years to cover wrap-around.
+		foreach (int year in new[] { date.Year - 1, date.Year })
+		{
+			if (year < 1) continue;
+
+			IReadOnlyList<NotableDate> perYear = GenerateYearFiltered(year, filter);
+			foreach (NotableDate notable in perYear)
 			{
 				if (!ContainsDay(notable, date.Date)) continue;
 				if (!MatchesContext(notable, territoryCode, calendarType)) continue;
@@ -344,6 +405,74 @@ public sealed class NotableDateService : INotableDateService
 					bool isNonWorking = result.IsNonWorkingOverride ?? rule.IsNonWorkingDay ?? false;
 					var reason = new AdjustmentReason(anchor.Value, result.Trigger, result.Action, result.HandlerKey);
 					output.Add(BuildNotableDate(rule, result.AdjustedDate, emittedTerritory, reason, isNonWorking));
+				}
+			}
+		}
+
+		return output;
+	}
+
+    /// <summary>
+    /// Materialises the notable dates for <paramref name="year" /> by invoking every rule that passes the primary gate of
+    /// <paramref name="filter" />, applying observance adjustments, and retaining only those dates that pass the secondary gate.
+    /// Results are never written to the per-year cache so that unfiltered queries continue to receive complete cached results.
+    /// </summary>
+    /// <param name="year">The civil year to generate.</param>
+    /// <param name="filter">The filter whose primary gate is applied before date resolution and whose secondary gate is applied to
+    /// each materialised date.</param>
+    /// <returns>The filtered notable dates for <paramref name="year" />, in unspecified order.</returns>
+	private IReadOnlyList<NotableDate> GenerateYearFiltered(int year, NotableDateFilter filter)
+	{
+		List<NotableDate> output = new();
+
+		foreach (NotableDateRule rule in _effectiveRules)
+		{
+			if (!NotableDateRuleResolver.IsApplicable(rule, year))
+				continue;
+
+			if (!filter.IsRuleEligible(rule))
+				continue;
+
+			DateTime? anchor;
+			try
+			{
+				anchor = _resolver.ResolveAnchorDate(rule, year);
+			}
+			catch (InvalidOperationException)
+			{
+				continue;
+			}
+
+			if (anchor is null)
+				continue;
+
+			foreach (string? territory in ExpandTerritories(rule.TerritoryCode))
+			{
+				if (IsRemovedByOverride(rule, year, territory))
+					continue;
+
+				NotableDate baseDate = BuildNotableDate(rule, anchor.Value, territory, adjustmentReason: null);
+				if (filter.IsMatch(baseDate))
+					output.Add(baseDate);
+
+				foreach (ObservanceAdjustment adjustment in rule.Adjustments.OrderBy(a => a.Priority))
+				{
+					if (!NotableDateAdjuster.IsInScope(adjustment, year, territory, rule.CalendarType))
+						continue;
+
+					AdjustmentApplyResult result = _adjuster.Apply(adjustment, rule, anchor.Value, territory, rule.CalendarType);
+					if (!result.Activated || result.AdjustedDate.Date == anchor.Value.Date)
+						continue;
+
+					string? emittedTerritory = !string.IsNullOrEmpty(adjustment.TerritoryCode)
+						? adjustment.TerritoryCode
+						: territory;
+
+					bool isNonWorking = result.IsNonWorkingOverride ?? rule.IsNonWorkingDay ?? false;
+					AdjustmentReason reason = new(anchor.Value, result.Trigger, result.Action, result.HandlerKey);
+					NotableDate adjustedDate = BuildNotableDate(rule, result.AdjustedDate, emittedTerritory, reason, isNonWorking);
+					if (filter.IsMatch(adjustedDate))
+						output.Add(adjustedDate);
 				}
 			}
 		}
