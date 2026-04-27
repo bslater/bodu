@@ -36,7 +36,6 @@ namespace Bodu.Globalization.Calendar
 		/// year 2026, when none of them collide with a weekend.
 		/// </summary>
 		[TestMethod]
-        [Ignore("TODO: Need to investigate and fix the failure in this test")]
         public void GetNotableDates_WhenQueryingAu_ShouldIncludeNationalRules_ForYear2026()
 		{
 			var service = BuildAuService();
@@ -54,7 +53,6 @@ namespace Bodu.Globalization.Calendar
 		/// non-working Monday observance, with the adjusted occurrence carrying an <see cref="NotableDate.AdjustmentReason" />.
 		/// </summary>
 		[TestMethod]
-        [Ignore("TODO: Need to investigate and fix the failure in this test")]
         public void GetNotableDates_WhenAustraliaDayFallsOnSunday_ShouldEmitMondaySubstitute()
 		{
 			var service = BuildAuService();
@@ -77,7 +75,6 @@ namespace Bodu.Globalization.Calendar
 		/// returning the New South Wales Labour Day, demonstrating that subdivision-scoped rules survive the composite-key flatten.
 		/// </summary>
 		[TestMethod]
-        [Ignore("TODO: Need to investigate and fix the failure in this test")]
         public void GetNotableDates_WhenQueryingAuVic_ShouldIncludeVictoriaLabourDay_AndExcludeNswLabourDay()
 		{
 			var service = BuildAuService();
@@ -95,7 +92,6 @@ namespace Bodu.Globalization.Calendar
 		/// and not the Victorian variant.
 		/// </summary>
 		[TestMethod]
-        [Ignore("TODO: Need to investigate and fix the failure in this test")]
         public void GetNotableDates_WhenQueryingAuNsw_ShouldIncludeNswLabourDay_AndExcludeVictoriaLabourDay()
 		{
 			var service = BuildAuService();
@@ -114,7 +110,6 @@ namespace Bodu.Globalization.Calendar
 		/// contract that lets callers delineate national entries from subdivision-specific ones in the produced list.
 		/// </summary>
 		[TestMethod]
-        [Ignore("TODO: Need to investigate and fix the failure in this test")]
         public void GetNotableDates_WhenQueryingAu_ShouldPreserveTerritoryCodeOnEveryEntry_ForDelineation()
 		{
 			var service = BuildAuService();
@@ -139,7 +134,6 @@ namespace Bodu.Globalization.Calendar
 		/// the statutory change that moved the holiday out of June.
 		/// </summary>
 		[TestMethod]
-        [Ignore("TODO: Need to investigate and fix the failure in this test")]
         public void GetNotableDates_WhenQueryingAuQld_ShouldResolveKingsBirthdayToOctober_ForYear2026()
 		{
 			var service = BuildAuService();
@@ -156,7 +150,6 @@ namespace Bodu.Globalization.Calendar
 		/// <c>firstYear</c> bound.
 		/// </summary>
 		[TestMethod]
-        [Ignore("TODO: Need to investigate and fix the failure in this test")]
         public void GetNotableDates_WhenQueryingAuAct_ForYear2017_ShouldNotIncludeReconciliationDay()
 		{
 			var service = BuildAuService();
@@ -170,7 +163,6 @@ namespace Bodu.Globalization.Calendar
 		/// Verifies that Reconciliation Day appears for the ACT from 2018 onwards and resolves to a Monday in late May.
 		/// </summary>
 		[TestMethod]
-        [Ignore("TODO: Need to investigate and fix the failure in this test")]
         public void GetNotableDates_WhenQueryingAuAct_ForYear2018_ShouldIncludeReconciliationDay()
 		{
 			var service = BuildAuService();
@@ -188,7 +180,6 @@ namespace Bodu.Globalization.Calendar
 		/// statutory definition "the Tuesday in the week in which the first Tuesday in November occurs".
 		/// </summary>
 		[TestMethod]
-        [Ignore("TODO: Need to investigate and fix the failure in this test")]
         public void GetNotableDates_WhenMelbourneCupDay_ForYear2026_ShouldResolveToFirstTuesdayOfNovember()
 		{
 			var service = BuildAuService();
@@ -206,7 +197,6 @@ namespace Bodu.Globalization.Calendar
 		/// 2026 falls on a Saturday and the national Boxing Day rule rolls weekend occurrences forward.
 		/// </summary>
 		[TestMethod]
-        [Ignore("TODO: Need to investigate and fix the failure in this test")]
         public void IsNonWorkingDay_WhenBoxingDayOnSaturday_ShouldReturnTrueForSubstituteMonday_ForAuNsw()
 		{
 			var service = BuildAuService();
@@ -228,7 +218,6 @@ namespace Bodu.Globalization.Calendar
 		[DataRow("AU-TAS")]
 		[DataRow("AU-NT")]
 		[DataRow("AU-ACT")]
-        [Ignore("TODO: Need to investigate and fix the failure in this test")]
         public void GetNotableDates_WhenQueryingAnySubdivision_ShouldIncludeNationalAnzacDay_ForYear2026(string subdivision)
 		{
 			var service = BuildAuService();
@@ -248,8 +237,6 @@ namespace Bodu.Globalization.Calendar
 	/// both the original Saturday observance and the adjusted Monday substitute scoped to <c>AU-WA</c>.
 	/// </summary>
 	[TestMethod]
-	[Ignore("TODO: Need to investigate and fix the failure in this test, which is currently emitting the substitute Monday but without the expected AU-WA territory code or WasAdjusted flag.")]
-
         public void GetNotableDates_WhenAnzacDayOnSaturday_ShouldEmitMondaySubstitute_ForAuWa()
 	{
 		var service = BuildAuService();
@@ -274,7 +261,6 @@ namespace Bodu.Globalization.Calendar
 	/// only the original observance is emitted, reflecting the per-state divergence in Anzac Day weekend treatment.
 	/// </summary>
 	[TestMethod]
-        [Ignore("TODO: Need to investigate and fix the failure in this test")]
         public void GetNotableDates_WhenAnzacDayOnSaturday_ShouldNotEmitSubstitute_ForAuNsw()
 	{
 		var service = BuildAuService();
@@ -292,7 +278,6 @@ namespace Bodu.Globalization.Calendar
 	/// Verifies that the Northern Territory observes a substitute Monday when Anzac Day falls on a Sunday (25 April 2021).
 	/// </summary>
 	[TestMethod]
-        [Ignore("TODO: Need to investigate and fix the failure in this test")]
         public void GetNotableDates_WhenAnzacDayOnSunday_ShouldEmitMondaySubstitute_ForAuNt()
 	{
 		var service = BuildAuService();
