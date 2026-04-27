@@ -191,7 +191,7 @@ public static class NotableDateRuleParser
 				"DayOfWeekInMonth" => DateResolutionStrategy.DayOfWeekInMonth,
 				"Algorithm" => DateResolutionStrategy.Algorithm,
 				"OffsetFromAnchor" => DateResolutionStrategy.OffsetFromAnchor,
-				_ => throw new InvalidOperationException($"Unknown strategy element '{strategyElement.Name.LocalName}' on override rule.")
+				_ => throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.InvalidOperationException_UnknownStrategyElementOnOverrideRule, strategyElement.Name.LocalName))
 			};
 
 		// The inner <Rule>'s name attribute is treated as a rule-level identifier (RuleName), used by the merger to target a
@@ -282,7 +282,7 @@ public static class NotableDateRuleParser
 		{
 			if (!seen.Add(adjustment.Key))
 				throw new InvalidOperationException(
-					$"Duplicate adjustment key '{adjustment.Key}' on element '{contextElement.Name.LocalName}'. Keys must be unique within a single rule or override body.");
+					string.Format(CultureInfo.InvariantCulture, CalendarStrings.InvalidOperationException_DuplicateAdjustmentKey, adjustment.Key, contextElement.Name.LocalName));
 		}
 	}
 
@@ -300,7 +300,7 @@ public static class NotableDateRuleParser
 		{
 			var strategyElement = ruleElement.Elements()
 				.FirstOrDefault(e => IsStrategyElement(e.Name.LocalName))
-				?? throw new InvalidOperationException($"Rule '{name}' is missing a strategy child element.");
+				?? throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.InvalidOperationException_RuleMissingStrategy, name));
 
 			var strategy = strategyElement.Name.LocalName switch
 			{
@@ -308,7 +308,7 @@ public static class NotableDateRuleParser
 				"DayOfWeekInMonth" => DateResolutionStrategy.DayOfWeekInMonth,
 				"Algorithm" => DateResolutionStrategy.Algorithm,
 				"OffsetFromAnchor" => DateResolutionStrategy.OffsetFromAnchor,
-				_ => throw new InvalidOperationException($"Unknown strategy element '{strategyElement.Name.LocalName}' on rule '{name}'.")
+				_ => throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.InvalidOperationException_UnknownStrategyElementOnRule, strategyElement.Name.LocalName, name))
 			};
 
 			var adjustments = ruleElement.Elements(Namespace + "Adjustment")
@@ -394,7 +394,7 @@ public static class NotableDateRuleParser
 				AlgorithmMonth = GetOptionalAttribute(strategyElement, "month"),
 				AlgorithmDay = ParseOptionalInt(strategyElement, "day"),
 			},
-			_ => throw new NotSupportedException($"Unsupported strategy: {rule.Strategy}."),
+			_ => throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.NotSupportedException_UnsupportedStrategy, rule.Strategy)),
 		};
 	}
 
@@ -437,7 +437,7 @@ public static class NotableDateRuleParser
     /// <exception cref="FormatException">The attribute is missing on <paramref name="element" />.</exception>
 	private static string GetRequiredAttribute(XElement element, string attributeName) =>
 		element.Attribute(attributeName)?.Value
-			?? throw new InvalidOperationException($"Missing required attribute '{attributeName}' on element '{element.Name.LocalName}'.");
+			?? throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.InvalidOperationException_MissingRequiredAttribute, attributeName, element.Name.LocalName));
 
     /// <summary>
     /// Returns the value of <paramref name="attributeName" /> on <paramref name="element" />,
@@ -452,7 +452,7 @@ public static class NotableDateRuleParser
 	private static TEnum ParseRequiredEnum<TEnum>(XElement element, string attributeName) where TEnum : struct, Enum =>
 		Enum.TryParse<TEnum>(GetRequiredAttribute(element, attributeName), ignoreCase: true, out var result)
 			? result
-			: throw new InvalidOperationException($"Invalid value for attribute '{attributeName}' on element '{element.Name.LocalName}'.");
+			: throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.InvalidOperationException_InvalidAttributeValue, attributeName, element.Name.LocalName));
 
 	private static TEnum? ParseOptionalEnum<TEnum>(XElement element, string attributeName) where TEnum : struct, Enum
 	{
@@ -553,7 +553,7 @@ public static class NotableDateRuleParser
 			&& numeric is >= 1 and <= 13)
 			return numeric;
 
-		throw new FormatException($"Invalid month value '{monthName}'. Expected a full English month name (e.g. 'January') or an integer 1–13.");
+		throw new FormatException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.FormatException_InvalidMonthValueGregorian, monthName));
 	}
 
     /// <summary>
@@ -610,7 +610,7 @@ public static class NotableDateRuleParser
 			return (null, token);
 
 		throw new FormatException(
-			$"Invalid month value '{token}'. Expected a full English month name, an integer 1–13, or a Hebrew month name.");
+			string.Format(CultureInfo.InvariantCulture, CalendarStrings.FormatException_InvalidMonthValueHebrew, token));
 	}
 
 	// ----------------------------------------------------------------------------
@@ -627,7 +627,7 @@ public static class NotableDateRuleParser
 		const string schemaResourceName = "Bodu.Globalization.Calendar.NotableDates.xsd";
 
 		using var stream = assembly.GetManifestResourceStream(schemaResourceName)
-			?? throw new FileNotFoundException($"Embedded schema resource '{schemaResourceName}' not found in assembly '{assembly.FullName}'.");
+			?? throw new FileNotFoundException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.FileNotFoundException_EmbeddedSchemaResourceNotFound, schemaResourceName, assembly.FullName));
 
 		var schemaSet = new XmlSchemaSet();
 		schemaSet.Add(null, XmlReader.Create(stream));
@@ -674,7 +674,7 @@ public static class NotableDateRuleParser
 	private static void HandleValidationEvent(object? sender, ValidationEventArgs e)
 	{
 		if (e.Severity == XmlSeverityType.Error)
-			throw new XmlSchemaValidationException($"Schema validation error: {e.Message}", e.Exception);
+			throw new XmlSchemaValidationException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.XmlSchemaValidationException_SchemaValidationError, e.Message), e.Exception);
 	}
 
 	// ----------------------------------------------------------------------------

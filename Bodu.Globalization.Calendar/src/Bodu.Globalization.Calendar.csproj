@@ -114,8 +114,8 @@
     <EmbeddedResource Include="Globalization.Calendar.Resources\region-gb.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\region-nz.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\region-us.xml" />
-    <EmbeddedResource Include="ResourceStrings.resx">
-      <LastGenOutput>ResourceStrings.Designer.cs</LastGenOutput>
+    <EmbeddedResource Include="CalendarStrings.resx">
+      <LastGenOutput>CalendarStrings.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>
@@ -125,8 +125,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="ResourceStrings.Designer.cs">
-      <DependentUpon>ResourceStrings.resx</DependentUpon>
+    <Compile Update="CalendarStrings.Designer.cs">
+      <DependentUpon>CalendarStrings.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
