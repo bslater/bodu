@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using SysGlobal = System.Globalization;
 
 namespace Bodu.Globalization.Calendar.Algorithms;
@@ -78,11 +79,11 @@ public sealed class HinduLunarNotableDateAlgorithm
 	public HinduLunarNotableDateAlgorithm(HinduLunarMonth month, HinduPaksha paksha, int tithi)
 	{
 		if (!Enum.IsDefined(typeof(HinduLunarMonth), month))
-			throw new ArgumentException($"'{month}' is not a defined HinduLunarMonth value.", nameof(month));
+			throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.HinduLunarMonthUndefined_ArgumentException, month), nameof(month));
 		if (!Enum.IsDefined(typeof(HinduPaksha), paksha))
-			throw new ArgumentException($"'{paksha}' is not a defined HinduPaksha value.", nameof(paksha));
+			throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.HinduPakshaUndefined_ArgumentException, paksha), nameof(paksha));
 		if (tithi < 1 || tithi > 15)
-			throw new ArgumentOutOfRangeException(nameof(tithi), "Tithi must be between 1 and 15.");
+			throw new ArgumentOutOfRangeException(nameof(tithi), CalendarStrings.TithiOutOfRange_ArgumentOutOfRangeException);
 
 		_month = month;
 		_paksha = paksha;
@@ -106,7 +107,7 @@ public sealed class HinduLunarNotableDateAlgorithm
 	public DateTime? GetDate(int year, SysGlobal.Calendar? calendar = null)
 	{
 		if (year < 1)
-			throw new ArgumentOutOfRangeException(nameof(year), "Year must be greater than or equal to 1.");
+			throw new ArgumentOutOfRangeException(nameof(year), CalendarStrings.YearOutOfRange_ArgumentOutOfRangeException);
 
 		// Find the new moon that begins the target lunar month.
 		int searchMonth = GetSearchMonth(_month);

@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Reflection;
 
 namespace Bodu.Globalization.Calendar;
@@ -89,7 +90,7 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 
 		if (!inProgress.Add(resourceName))
 			throw new InvalidOperationException(
-				$"Circular reference detected while flattening notable date resource '{resourceName}'.");
+				string.Format(CultureInfo.InvariantCulture, CalendarStrings.CircularReferenceInResource_InvalidOperationException, resourceName));
 
 		try
 		{
@@ -120,7 +121,7 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 					if (matches.Count == 0)
 					{
 						throw new InvalidOperationException(
-							$"Notable date rule '{directive.SourceRuleName}' was not found in source resource '{group.SourceResource}' (referenced from '{resourceName}').");
+							string.Format(CultureInfo.InvariantCulture, CalendarStrings.RuleNotFoundInSource_InvalidOperationException, directive.SourceRuleName, group.SourceResource, resourceName));
 					}
 
 					if (directive.ClearInherited)
@@ -278,7 +279,7 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 
 		using var stream = _assembly.GetManifestResourceStream(resourceName)
 			?? throw new FileNotFoundException(
-				$"Embedded XML resource '{resourceName}' was not found in assembly '{_assembly.FullName}'.");
+				string.Format(CultureInfo.InvariantCulture, CalendarStrings.EmbeddedXmlResourceNotFound_FileNotFoundException, resourceName, _assembly.FullName));
 
 		using var reader = new StreamReader(stream);
 		var xml = reader.ReadToEnd();

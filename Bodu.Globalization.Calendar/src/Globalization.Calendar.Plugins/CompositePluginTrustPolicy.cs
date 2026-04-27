@@ -30,11 +30,11 @@ public sealed class CompositePluginTrustPolicy : IPluginTrustPolicy
 	{
 		if (policies is null) throw new ArgumentNullException(nameof(policies));
 		if (policies.Length == 0)
-			throw new ArgumentException("At least one child policy is required.", nameof(policies));
+			throw new ArgumentException(CalendarStrings.PoliciesEmpty_ArgumentException, nameof(policies));
 		foreach (var policy in policies)
 		{
 			if (policy is null)
-				throw new ArgumentException("Child policies must not be null.", nameof(policies));
+				throw new ArgumentException(CalendarStrings.PoliciesContainNull_ArgumentException, nameof(policies));
 		}
 
 		_policies = policies.ToImmutableArray();
