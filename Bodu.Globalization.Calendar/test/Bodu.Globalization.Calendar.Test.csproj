@@ -22,11 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Globalization.Calendar.Algorithms\HinduLunarNotableDateAlgorithmTests.cs" />
-    <Compile Remove="Globalization.Calendar.Algorithms\QingmingNotableDateAlgorithmTests.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="10.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

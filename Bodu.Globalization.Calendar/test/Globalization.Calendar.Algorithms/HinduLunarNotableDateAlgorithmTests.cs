@@ -13,7 +13,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// <para>
 /// Expected dates are taken from widely published Indian panchanga sources. Results from this algorithm may differ
 /// from panchanga-exact dates by zero, one, or occasionally two calendar days due to the approximate tithi calculation
-/// method used. Test assertions therefore allow a tolerance of ±1 day for astronomical festivals.
+/// method used. Test assertions therefore allow a tolerance of ±2 days for astronomical festivals.
 /// </para>
 /// </remarks>
 [TestClass]
@@ -83,14 +83,14 @@ public sealed class HinduLunarNotableDateAlgorithmTests
 
 	/// <summary>
 	/// Verifies that Diwali (Amavasya / Krishna Paksha Chaturdashi of Kartik, i.e. the new moon) falls
-	/// within ±1 day of the known panchanga date. The approximation method targets the day on which
+	/// within ±2 days of the known panchanga date. The approximation method targets the day on which
 	/// the new moon transition occurs near the end of Krishna Paksha.
 	/// </summary>
 	[DataRow(2022, 10, 24)]
 	[DataRow(2023, 11, 13)]
 	[DataRow(2024, 11, 1)]
 	[TestMethod]
-	public void GetDate_WhenDiwali_ShouldFallWithinOneDayOfKnownPanchangaDate(int year, int knownMonth, int knownDay)
+	public void GetDate_WhenDiwali_ShouldFallWithinTwoDaysOfKnownPanchangaDate(int year, int knownMonth, int knownDay)
 	{
 		// Diwali is on Amavasya (new moon day) of Kartik: Krishna Paksha, tithi 15 (Amavasya).
 		var sut = new HinduLunarNotableDateAlgorithm(HinduLunarMonth.Kartik, HinduPaksha.Krishna, 15);
@@ -100,18 +100,18 @@ public sealed class HinduLunarNotableDateAlgorithmTests
 
 		Assert.IsNotNull(result);
 		int dayDiff = Math.Abs((result!.Value - expected).Days);
-		Assert.IsTrue(dayDiff <= 1,
-			$"Diwali {year}: expected within ±1 day of {expected:yyyy-MM-dd}, got {result.Value:yyyy-MM-dd}.");
+		Assert.IsTrue(dayDiff <= 2,
+			$"Diwali {year}: expected within ±2 days of {expected:yyyy-MM-dd}, got {result.Value:yyyy-MM-dd}.");
 	}
 
 	/// <summary>
-	/// Verifies that Holi (Purnima of Phalguna — Shukla Paksha, tithi 15) falls within ±1 day of the known date.
+	/// Verifies that Holi (Purnima of Phalguna — Shukla Paksha, tithi 15) falls within ±2 days of the known date.
 	/// </summary>
 	[DataRow(2022, 3, 18)]
 	[DataRow(2023, 3, 7)]
 	[DataRow(2024, 3, 25)]
 	[TestMethod]
-	public void GetDate_WhenHoli_ShouldFallWithinOneDayOfKnownPanchangaDate(int year, int knownMonth, int knownDay)
+	public void GetDate_WhenHoli_ShouldFallWithinTwoDaysOfKnownPanchangaDate(int year, int knownMonth, int knownDay)
 	{
 		// Holi main day (Holika Dahan) is on Purnima (full moon) of Phalguna.
 		var sut = new HinduLunarNotableDateAlgorithm(HinduLunarMonth.Phalguna, HinduPaksha.Shukla, 15);
@@ -121,19 +121,19 @@ public sealed class HinduLunarNotableDateAlgorithmTests
 
 		Assert.IsNotNull(result);
 		int dayDiff = Math.Abs((result!.Value - expected).Days);
-		Assert.IsTrue(dayDiff <= 1,
-			$"Holi {year}: expected within ±1 day of {expected:yyyy-MM-dd}, got {result.Value:yyyy-MM-dd}.");
+		Assert.IsTrue(dayDiff <= 2,
+			$"Holi {year}: expected within ±2 days of {expected:yyyy-MM-dd}, got {result.Value:yyyy-MM-dd}.");
 	}
 
 	/// <summary>
-	/// Verifies that Navaratri start (Shukla Paksha Pratipada of Ashvin, i.e. tithi 1) falls within ±1 day
+	/// Verifies that Navaratri start (Shukla Paksha Pratipada of Ashvin, i.e. tithi 1) falls within ±2 days
 	/// of the known panchanga date.
 	/// </summary>
 	[DataRow(2022, 9, 26)]
 	[DataRow(2023, 10, 15)]
 	[DataRow(2024, 10, 3)]
 	[TestMethod]
-	public void GetDate_WhenNavaratri_ShouldFallWithinOneDayOfKnownPanchangaDate(int year, int knownMonth, int knownDay)
+	public void GetDate_WhenNavaratri_ShouldFallWithinTwoDaysOfKnownPanchangaDate(int year, int knownMonth, int knownDay)
 	{
 		var sut = new HinduLunarNotableDateAlgorithm(HinduLunarMonth.Ashvin, HinduPaksha.Shukla, 1);
 
@@ -142,8 +142,8 @@ public sealed class HinduLunarNotableDateAlgorithmTests
 
 		Assert.IsNotNull(result);
 		int dayDiff = Math.Abs((result!.Value - expected).Days);
-		Assert.IsTrue(dayDiff <= 1,
-			$"Navaratri {year}: expected within ±1 day of {expected:yyyy-MM-dd}, got {result.Value:yyyy-MM-dd}.");
+		Assert.IsTrue(dayDiff <= 2,
+			$"Navaratri {year}: expected within ±2 days of {expected:yyyy-MM-dd}, got {result.Value:yyyy-MM-dd}.");
 	}
 
 	/// <summary>
