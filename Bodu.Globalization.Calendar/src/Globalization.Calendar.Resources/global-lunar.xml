@@ -6,30 +6,27 @@
   traditional Chinese lunisolar calendar. They are widely recognised across
   Chinese, Vietnamese, Korean, and other East Asian communities worldwide.
 
-  All dates in this resource require a custom INotableDateAlgorithm registered
-  under the stated key with the INotableDateAlgorithmRegistry. The one exception
-  is the 'lunar-new-year' key, which is served by the built-in
-  LunarNewYearNotableDateAlgorithm supplied by this library.
+  Lunar New Year is expressed as a Fixed rule with calendarType set to
+  ChineseLunisolarCalendar (month 1, day 1); no algorithm registration is required.
+
+  Lantern Festival is expressed as an OffsetFromAnchor rule (+14 days from
+  Lunar New Year); no algorithm registration is required for it either.
+  The first lunar month always has at least 29 days, so the offset is exact.
+
+  Dragon Boat Festival, Mid-Autumn Festival, and Double Ninth Festival are
+  expressed as Fixed rules with calendarType set to ChineseLunisolarCalendar
+  and skipLeapMonth="true" so the resolver advances the conventional ordinal
+  lunar month past any intercalary leap month in the same year; no algorithm
+  registration is required for any of these dates.
+
+  Qingming Festival still requires a custom INotableDateAlgorithm registered
+  under the key 'qingming' with the INotableDateAlgorithmRegistry.
 
   Algorithm keys used:
-    lunar-new-year      — Built-in LunarNewYearNotableDateAlgorithm.
-                          Calculates the Gregorian date of the first day of the
-                          first month of the Chinese lunisolar year. Supported
-                          for Gregorian years 1901–2100.
-    lantern-festival    — The fifteenth day of the first lunar month (fifteen
-                          days after Lunar New Year). Marks the end of the
-                          New Year festival period.
-    qingming            — Qingming solar term. Falls on the fifteenth day after
-                          the Spring Equinox, approximately 4–5 April. In modern
-                          practice treated as a fixed observance on 4 April, but
-                          this varies by year and jurisdiction.
-    dragon-boat-festival — The fifth day of the fifth lunar month (mid-June in
-                           the Gregorian calendar). Also known as Duanwu.
-    mid-autumn-festival — The fifteenth day of the eighth lunar month (a full
-                          moon in September or October). Also known as the Moon
-                          Festival or Mooncake Festival.
-    double-ninth-festival — The ninth day of the ninth lunar month (October).
-                            Also known as Chongyang or the Chrysanthemum Festival.
+    qingming — Qingming solar term. Falls on the fifteenth day after the Spring
+               Equinox, approximately 4–5 April. In modern practice treated as
+               a fixed observance on 4 April, but this varies by year and
+               jurisdiction.
 -->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -39,8 +36,9 @@
           category="Cultural"
           firstYear="1901"
           lastYear="2100"
-          comment="The first day of the first month of the Chinese lunisolar year. Also celebrated as Tết (Vietnam) and Seollal (Korea). Falls between 21 January and 20 February in the Gregorian calendar. The built-in LunarNewYearNotableDateAlgorithm implements this rule.">
-      <Algorithm key="lunar-new-year" />
+          calendarType="System.Globalization.ChineseLunisolarCalendar"
+          comment="The first day of the first month of the Chinese lunisolar year. Also celebrated as Tết (Vietnam) and Seollal (Korea). Falls between 21 January and 20 February in the Gregorian calendar. Resolved via the Fixed strategy using ChineseLunisolarCalendar (month 1, day 1).">
+      <Fixed month="1" day="1" />
       <Tag>LunarCalendar</Tag>
       <Tag>ChineseTradition</Tag>
     </Rule>
@@ -51,8 +49,8 @@
           category="Cultural"
           firstYear="1901"
           lastYear="2100"
-          comment="Yuanxiao Jie. Falls on the fifteenth day of the first lunar month, marking the end of the Lunar New Year celebrations. Observed with lantern displays, riddle games, and the eating of tangyuan (sweet rice dumplings). Requires a custom INotableDateAlgorithm registered under the key 'lantern-festival'.">
-      <Algorithm key="lantern-festival" />
+          comment="Yuanxiao Jie. Falls on the fifteenth day of the first lunar month, fourteen days after Lunar New Year, marking the end of the New Year festival period. Observed with lantern displays, riddle games, and the eating of tangyuan (sweet rice dumplings). Resolved via OffsetFromAnchor from Lunar New Year (+14 days).">
+      <OffsetFromAnchor name="Lunar New Year" offset="14" />
       <Tag>LunarCalendar</Tag>
       <Tag>ChineseTradition</Tag>
     </Rule>
@@ -73,8 +71,9 @@
           category="Cultural"
           firstYear="1901"
           lastYear="2100"
-          comment="Duanwu Jie (端午節). Falls on the fifth day of the fifth lunar month, typically in June. Commemorates the poet and statesman Qu Yuan and is observed with dragon boat races and the eating of zongzi (sticky rice dumplings). Requires a custom INotableDateAlgorithm registered under the key 'dragon-boat-festival'.">
-      <Algorithm key="dragon-boat-festival" />
+          calendarType="System.Globalization.ChineseLunisolarCalendar"
+          comment="Duanwu Jie (端午節). Falls on the fifth day of the fifth lunar month, typically in June. Commemorates the poet and statesman Qu Yuan and is observed with dragon boat races and the eating of zongzi (sticky rice dumplings). Resolved via the Fixed strategy using ChineseLunisolarCalendar (month 5, day 5) with skipLeapMonth to advance past any intercalary leap month in leap lunar years.">
+      <Fixed month="5" day="5" skipLeapMonth="true" />
       <Tag>LunarCalendar</Tag>
       <Tag>ChineseTradition</Tag>
     </Rule>
@@ -85,8 +84,9 @@
           category="Cultural"
           firstYear="1901"
           lastYear="2100"
-          comment="Zhongqiu Jie (中秋節), also known as the Moon Festival or Mooncake Festival. Falls on the fifteenth day of the eighth lunar month, when the moon is at its fullest and brightest. Observed with mooncakes, lanterns, and family reunions. Widely celebrated in China, Vietnam, Korea, and Chinese diaspora communities worldwide. Requires a custom INotableDateAlgorithm registered under the key 'mid-autumn-festival'.">
-      <Algorithm key="mid-autumn-festival" />
+          calendarType="System.Globalization.ChineseLunisolarCalendar"
+          comment="Zhongqiu Jie (中秋節), also known as the Moon Festival or Mooncake Festival. Falls on the fifteenth day of the eighth lunar month, when the moon is at its fullest and brightest. Observed with mooncakes, lanterns, and family reunions. Widely celebrated in China, Vietnam, Korea, and Chinese diaspora communities worldwide. Resolved via the Fixed strategy using ChineseLunisolarCalendar (month 8, day 15) with skipLeapMonth.">
+      <Fixed month="8" day="15" skipLeapMonth="true" />
       <Tag>LunarCalendar</Tag>
       <Tag>ChineseTradition</Tag>
     </Rule>
@@ -97,8 +97,9 @@
           category="Cultural"
           firstYear="1901"
           lastYear="2100"
-          comment="Chongyang Jie (重陽節), also known as the Chrysanthemum Festival. Falls on the ninth day of the ninth lunar month. Traditionally observed by climbing mountains, drinking chrysanthemum wine, and paying respects to ancestors. In many jurisdictions the day is also designated as Seniors' Day. Requires a custom INotableDateAlgorithm registered under the key 'double-ninth-festival'.">
-      <Algorithm key="double-ninth-festival" />
+          calendarType="System.Globalization.ChineseLunisolarCalendar"
+          comment="Chongyang Jie (重陽節), also known as the Chrysanthemum Festival. Falls on the ninth day of the ninth lunar month. Traditionally observed by climbing mountains, drinking chrysanthemum wine, and paying respects to ancestors. In many jurisdictions the day is also designated as Seniors' Day. Resolved via the Fixed strategy using ChineseLunisolarCalendar (month 9, day 9) with skipLeapMonth.">
+      <Fixed month="9" day="9" skipLeapMonth="true" />
       <Tag>LunarCalendar</Tag>
       <Tag>ChineseTradition</Tag>
     </Rule>

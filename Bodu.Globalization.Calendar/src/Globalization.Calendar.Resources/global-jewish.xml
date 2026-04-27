@@ -24,12 +24,19 @@
     - Yom Kippur, Purim, and Shavuot (in Israel) are single days.
 
   Resolution strategy:
-    Four observances anchor the file via the built-in HebrewNotableDateAlgorithm,
-    invoked through its (HebrewMonth, int) constructor at resolution time:
-      Rosh Hashanah  — 1 Tishri
-      Hanukkah       — 25 Kislev
-      Purim          — 14 LastAdar (Adar I in standard years, Adar II in leap)
-      Passover       — 15 Nisan
+    Four observances anchor the file as Fixed rules with calendarType set to
+    System.Globalization.HebrewCalendar and sweepCalendarYears="true". The
+    resolver determines the Hebrew year that contains 1 January of the requested
+    Gregorian year, checks that year and the next, and returns the first candidate
+    whose Gregorian year matches. No INotableDateAlgorithmRegistry registration
+    is required for any rule in this resource.
+
+      Rosh Hashanah  — 1 Tishri  (month="Tishri" day="1")
+      Hanukkah       — 25 Kislev (month="Kislev" day="25")
+      Purim          — 14 LastAdar — LastAdar resolves to Adar II (month 7) in
+                       Hebrew leap years and to Adar I (month 6) in standard years
+      Passover       — 15 Nisan  — Nisan is month 8 in leap years, month 7 in
+                       standard years; the resolver handles this automatically
 
     Three further observances are exact, invariant offsets in the Hebrew
     calendar and are authored as OffsetFromAnchor rules so the dependent date
@@ -39,10 +46,6 @@
       Shavuot        — Passover      + 50 days (15 Nisan → 6 Sivan; the
                        "fifty days" of Pentecost. Nisan is always 30 days and
                        Iyar always 29, so this offset is constant.)
-
-    No INotableDateAlgorithmRegistry registration is required for any rule in
-    this resource; consumers may still register an alternative implementation
-    under the listed key to override the built-in algorithm.
 -->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -51,11 +54,9 @@
     <Rule name="Rosh Hashanah"
           category="Religious"
           durationDays="2"
-          comment="The Jewish New Year (literally 'Head of the Year'). Observed on 1 and 2 Tishri, the seventh month of the Hebrew calendar. Marks the anniversary of the creation of the world in Jewish tradition, and opens the Ten Days of Repentance culminating in Yom Kippur. Observed with synagogue services, the sounding of the shofar (ram's horn), festive meals featuring symbolic foods such as apples dipped in honey, and the Tashlich ceremony. A national holiday in Israel.">
-      <Algorithm key="rosh-hashanah"
-                 type="Bodu.Globalization.Calendar.Algorithms.HebrewNotableDateAlgorithm, Bodu.Globalization.Calendar"
-                 month="Tishri"
-                 day="1" />
+          calendarType="System.Globalization.HebrewCalendar"
+          comment="The Jewish New Year (literally 'Head of the Year'). Observed on 1 and 2 Tishri, the seventh month of the Hebrew calendar. Marks the anniversary of the creation of the world in Jewish tradition, and opens the Ten Days of Repentance culminating in Yom Kippur. Observed with synagogue services, the sounding of the shofar (ram's horn), festive meals featuring symbolic foods such as apples dipped in honey, and the Tashlich ceremony. A national holiday in Israel. Resolved via the Fixed strategy using HebrewCalendar (month Tishri, day 1) with sweepCalendarYears.">
+      <Fixed month="Tishri" day="1" sweepCalendarYears="true" />
       <Tag>HebrewCalendar</Tag>
     </Rule>
   </NotableDate>
@@ -83,11 +84,9 @@
     <Rule name="Hanukkah"
           category="Religious"
           durationDays="8"
-          comment="The Festival of Lights (Chanukkah). Begins on 25 Kislev and lasts eight days. Commemorates the rededication of the Second Temple in Jerusalem in 164 BCE following the Maccabean Revolt. Observed by lighting the hanukkiah (nine-branched menorah), with one additional candle lit each night, reciting special prayers, playing dreidel, and eating oil-fried foods such as latkes and sufganiyot. Widely observed by Jewish communities worldwide.">
-      <Algorithm key="hanukkah"
-                 type="Bodu.Globalization.Calendar.Algorithms.HebrewNotableDateAlgorithm, Bodu.Globalization.Calendar"
-                 month="Kislev"
-                 day="25" />
+          calendarType="System.Globalization.HebrewCalendar"
+          comment="The Festival of Lights (Chanukkah). Begins on 25 Kislev and lasts eight days. Commemorates the rededication of the Second Temple in Jerusalem in 164 BCE following the Maccabean Revolt. Observed by lighting the hanukkiah (nine-branched menorah), with one additional candle lit each night, reciting special prayers, playing dreidel, and eating oil-fried foods such as latkes and sufganiyot. Widely observed by Jewish communities worldwide. Resolved via the Fixed strategy using HebrewCalendar (month Kislev, day 25) with sweepCalendarYears.">
+      <Fixed month="Kislev" day="25" sweepCalendarYears="true" />
       <Tag>HebrewCalendar</Tag>
     </Rule>
   </NotableDate>
@@ -95,11 +94,9 @@
   <NotableDate name="Purim">
     <Rule name="Purim"
           category="Religious"
-          comment="The Feast of Lots. Observed on 14 Adar (or 14 Adar II in a Hebrew leap year — the LastAdar token resolves correctly in both standard and leap years). Commemorates the salvation of the Jewish people from Haman's plot to destroy them, as recounted in the Book of Esther. Observed with the public reading of the Megillah (Book of Esther), wearing of costumes, sending of food gifts (mishloach manot), charitable giving, and festive meals.">
-      <Algorithm key="purim"
-                 type="Bodu.Globalization.Calendar.Algorithms.HebrewNotableDateAlgorithm, Bodu.Globalization.Calendar"
-                 month="LastAdar"
-                 day="14" />
+          calendarType="System.Globalization.HebrewCalendar"
+          comment="The Feast of Lots. Observed on 14 Adar (or 14 Adar II in a Hebrew leap year — the LastAdar alias resolves to Adar II in leap years and Adar I in standard years). Commemorates the salvation of the Jewish people from Haman's plot to destroy them, as recounted in the Book of Esther. Observed with the public reading of the Megillah (Book of Esther), wearing of costumes, sending of food gifts (mishloach manot), charitable giving, and festive meals. Resolved via the Fixed strategy using HebrewCalendar (month LastAdar, day 14) with sweepCalendarYears.">
+      <Fixed month="LastAdar" day="14" sweepCalendarYears="true" />
       <Tag>HebrewCalendar</Tag>
     </Rule>
   </NotableDate>
@@ -108,11 +105,9 @@
     <Rule name="Passover"
           category="Religious"
           durationDays="7"
-          comment="Pesach. The Festival of Freedom. Begins on 15 Nisan and lasts seven days in Israel and among Reform communities (eight days in traditional diaspora practice). Commemorates the Exodus from Egypt. Observed with the Passover Seder on the first night (and second night in the diaspora), the eating of matzah (unleavened bread), and the prohibition of chametz (leavened products). The durationDays value here represents the seven-day Israeli/Reform observance; regional rules may override to eight days for diaspora communities.">
-      <Algorithm key="passover"
-                 type="Bodu.Globalization.Calendar.Algorithms.HebrewNotableDateAlgorithm, Bodu.Globalization.Calendar"
-                 month="Nisan"
-                 day="15" />
+          calendarType="System.Globalization.HebrewCalendar"
+          comment="Pesach. The Festival of Freedom. Begins on 15 Nisan and lasts seven days in Israel and among Reform communities (eight days in traditional diaspora practice). Commemorates the Exodus from Egypt. Observed with the Passover Seder on the first night (and second night in the diaspora), the eating of matzah (unleavened bread), and the prohibition of chametz (leavened products). The durationDays value here represents the seven-day Israeli/Reform observance; regional rules may override to eight days for diaspora communities. Resolved via the Fixed strategy using HebrewCalendar (month Nisan, day 15) with sweepCalendarYears.">
+      <Fixed month="Nisan" day="15" sweepCalendarYears="true" />
       <Tag>HebrewCalendar</Tag>
     </Rule>
   </NotableDate>
