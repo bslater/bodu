@@ -6,7 +6,6 @@
 
 using Bodu.Test;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace Bodu.Security.Cryptography;
 
@@ -26,22 +25,6 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     where TAlgorithm : HashAlgorithm, new()
     where TVariant : struct, Enum
 {
-    /// <summary>
-    /// Defines shared named input vectors used across all hash algorithm test cases.
-    /// </summary>
-    /// <remarks>
-    /// Each entry maps a semantic name (e.g., "Empty", "ABC", "Zeros_16") to a representative input payload. These inputs are used in
-    /// conjunction with expected output values returned by <see cref="GetExpectedHashesForNamedInputs(TVariant)" />.
-    /// </remarks>
-    protected static readonly IReadOnlyDictionary<string, byte[]> SharedInputs = new Dictionary<string, byte[]>
-    {
-        ["Empty"] = Array.Empty<byte>(),
-        ["ABC"] = Encoding.ASCII.GetBytes("ABC"),
-        ["QuickBrownFox"] = Encoding.ASCII.GetBytes("The quick brown fox jumps over the lazy dog"),
-        ["Zeros_16"] = new byte[16],
-        ["Sequential_0_255"] = Enumerable.Range(0, 255).Select(i => (byte)i).ToArray()
-    };
-
     /// <summary>
     /// Gets a value indicating whether the algorithm supports partial input blocks during streaming.
     /// </summary>
@@ -69,17 +52,26 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <summary>
     /// Gets the expected hash result for an empty input using the default algorithm variant.
     /// </summary>
-    /// <exception cref="KeyNotFoundException">Thrown if no expected hash is defined for the "Empty" input and current variant.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if the default variant's <see cref="HashAlgorithmKnownAnswers.Empty" /> slot is unset.
+    /// </exception>
     /// <remarks>
-    /// This property is used to verify that the algorithm under test produces the correct result when hashing an empty input. Expected
-    /// results are sourced from <see cref="GetExpectedHashesForNamedInputs(TVariant)" />.
+    /// This property is used to verify that the algorithm under test produces the correct result when hashing
+    /// an empty input. The expected hash is sourced from
+    /// <see cref="HashAlgorithmSpecification.KnownAnswers" /> for the <see cref="DefaultVariant" />.
     /// </remarks>
-    protected virtual byte[] ExpectedEmptyInputHash =>
-        Convert.FromHexString(
-            GetExpectedHashesForNamedInputs(DefaultVariant).TryGetValue("Empty", out var hex)
-                ? hex
-                : throw new KeyNotFoundException(
-                    $"Expected hash for \"Empty\" input is not defined for variant '{DefaultVariant}'."));
+    protected virtual byte[] ExpectedEmptyInputHash
+    {
+        get
+        {
+            HashAlgorithmKnownAnswers knownAnswers = GetSpecification(DefaultVariant).KnownAnswers;
+            if (knownAnswers.Empty is { } hex)
+                return Convert.FromHexString(hex);
+
+            throw new InvalidOperationException(
+                $"Expected hash for the empty input is not defined for variant '{DefaultVariant}'.");
+        }
+    }
 
     /// <summary>
     /// Returns test case parameters for each defined algorithm variant.
@@ -105,24 +97,32 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
     /// <remarks>
-    /// This ensures consistency between fixed test vectors (e.g., "Empty") and the incremental output series, where the first
-    /// incremental hash corresponds to hashing zero bytes. Algorithms that do not publish incremental hashes yet return an
-    /// empty list from <see cref="GetExpectedHashesForIncrementalInput" />; the consistency check is then skipped as
+    /// This ensures consistency between fixed test vectors (e.g., the
+    /// <see cref="HashAlgorithmKnownAnswers.Empty" /> slot) and the incremental output series, where the first
+    /// incremental hash corresponds to hashing zero bytes. Algorithms that do not publish incremental hashes
+    /// yet return an empty list from <see cref="GetExpectedHashesForIncrementalInput" />, or omit the
+    /// <see cref="HashAlgorithmKnownAnswers.Empty" /> slot; the consistency check is then skipped as
     /// inconclusive rather than failing.
     /// </remarks>
     [TestMethod]
     [DynamicData(nameof(HashAlgorithmVariants))]
     public void HashAlgorithm_TestData_Check(TVariant variant)
     {
-        var incrementalHashes = GetExpectedHashesForIncrementalInput(variant);
+        IReadOnlyList<string> incrementalHashes = GetExpectedHashesForIncrementalInput(variant);
         if (incrementalHashes.Count == 0)
         {
             Assert.Inconclusive($"No incremental hashes defined for variant '{variant}'; skipping consistency check.");
             return;
         }
 
-        var emptyA = GetExpectedHashesForNamedInputs(variant)["Empty"];
-        var emptyB = incrementalHashes[0];
+        string? emptyA = GetSpecification(variant).KnownAnswers.Empty;
+        if (emptyA is null)
+        {
+            Assert.Inconclusive($"No empty-input known answer defined for variant '{variant}'; skipping consistency check.");
+            return;
+        }
+
+        string emptyB = incrementalHashes[0];
         Assert.AreEqual(emptyA, emptyB, "Expected hash value for 'Empty' named input should equal the first item of incremental input.");
     }
 
@@ -146,13 +146,6 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <param name="variant">The algorithm variant to retrieve expected results for.</param>
     /// <returns>A list of hexadecimal strings representing the hash outputs at each incremental step.</returns>
     protected abstract IReadOnlyList<string> GetExpectedHashesForIncrementalInput(TVariant variant);
-
-    /// <summary>
-    /// Returns a dictionary of expected hash outputs for well-known named inputs, such as "Empty", "ABC", or "Zeros_16".
-    /// </summary>
-    /// <param name="variant">The algorithm variant to retrieve expected results for.</param>
-    /// <returns>A dictionary mapping input names to their expected hexadecimal hash strings for the specified variant.</returns>
-    protected abstract IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(TVariant variant);
 
     /// <summary>
     /// Gets the property names excluded from disposal validation tests. Override in a derived class to suppress
@@ -239,26 +232,50 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             excludeProperties: new TTest().GetExcludedWriteablePropertyNames()?.ToArray() ?? []);
 
     /// <summary>
-    /// Combines shared input vectors with expected output values to generate test vectors for a specific variant.
+    /// Yields the known-answer vectors declared by the specification for the given <paramref name="variant" />:
+    /// each populated typed slot on <see cref="HashAlgorithmKnownAnswers" /> paired with its corresponding
+    /// shared input, followed by every algorithm-specific entry in
+    /// <see cref="HashAlgorithmKnownAnswers.Additional" />.
     /// </summary>
     /// <param name="variant">The variant to generate test vectors for.</param>
-    /// <returns>A sequence of <see cref="KnownAnswerTest" /> instances representing named test inputs and their expected hash results.</returns>
+    /// <returns>A sequence of <see cref="KnownAnswerTest" /> instances driving named-input assertions.</returns>
     protected virtual IEnumerable<KnownAnswerTest> GetTestVectors(TVariant variant)
     {
-        var expected = GetExpectedHashesForNamedInputs(variant);
-        foreach (var (name, input) in SharedInputs)
+        HashAlgorithmKnownAnswers knownAnswers = GetSpecification(variant).KnownAnswers;
+
+        if (knownAnswers.Empty is { } empty)
+            yield return CreateVector(nameof(knownAnswers.Empty), HashAlgorithmSharedInputs.Empty, empty);
+
+        if (knownAnswers.Abc is { } abc)
+            yield return CreateVector(nameof(knownAnswers.Abc), HashAlgorithmSharedInputs.Abc, abc);
+
+        if (knownAnswers.QuickBrownFox is { } qbf)
+            yield return CreateVector(nameof(knownAnswers.QuickBrownFox), HashAlgorithmSharedInputs.QuickBrownFox, qbf);
+
+        if (knownAnswers.Zeros16 is { } zeros)
+            yield return CreateVector(nameof(knownAnswers.Zeros16), HashAlgorithmSharedInputs.Zeros16, zeros);
+
+        if (knownAnswers.Sequential0To255 is { } sequential)
+            yield return CreateVector(nameof(knownAnswers.Sequential0To255), HashAlgorithmSharedInputs.Sequential0To255, sequential);
+
+        foreach (HashAlgorithmKnownAnswer extra in knownAnswers.Additional)
         {
-            if (expected.TryGetValue(name, out var hex))
+            yield return new KnownAnswerTest
             {
-                yield return new KnownAnswerTest
-                {
-                    Name = name,
-                    Input = input,
-                    ExpectedOutput = Convert.FromHexString(hex)
-                };
-            }
+                Name = extra.Name,
+                Input = extra.Input,
+                ExpectedOutput = Convert.FromHexString(extra.ExpectedHex),
+            };
         }
     }
+
+    private static KnownAnswerTest CreateVector(string name, byte[] input, string expectedHex) =>
+        new()
+        {
+            Name = name,
+            Input = input,
+            ExpectedOutput = Convert.FromHexString(expectedHex),
+        };
 
     /// <summary>
     /// Defines the strategy used to invoke a hash algorithm against a buffered input

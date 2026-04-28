@@ -27,6 +27,26 @@ public partial class SipHash64Tests
         MaxKeyLength = 16,
         ValidKeyLengths = [16],
         TestKey = SipHashTestKey,
+        KnownAnswers = variant switch
+        {
+            SipHashVariant.SipHash_2_4 => new HashAlgorithmKnownAnswers
+            {
+                Empty = "310E0EDD47DB6F72",
+                Abc = "E848C7790EAA99A2",
+                Zeros16 = "017755EFC0D3A098",
+                QuickBrownFox = "E46F1FDC05612752",
+                Sequential0To255 = "1AB24DC7FE69C1A9",
+            },
+            SipHashVariant.SipHash_4_8 => new HashAlgorithmKnownAnswers
+            {
+                Empty = "41DA38992B0579C8",
+                Abc = "618F256DAD66F19A",
+                Zeros16 = "640CDE74B926C33E",
+                QuickBrownFox = "70CB440B22B8D9F6",
+                Sequential0To255 = "23ED19F6EF85AC97",
+            },
+            _ => throw new ArgumentOutOfRangeException(nameof(variant)),
+        },
     };
 
     /// <inheritdoc />
@@ -46,28 +66,6 @@ public partial class SipHash64Tests
                 Key = SipHashTestKey,
                 CompressionRounds = 4,
                 FinalizationRounds = 8,
-            },
-            _ => throw new ArgumentOutOfRangeException(nameof(variant))
-        };
-
-    protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(SipHashVariant variant) =>
-        variant switch
-        {
-            SipHashVariant.SipHash_2_4 => new Dictionary<string, string>
-            {
-                ["Empty"] = "310E0EDD47DB6F72",
-                ["ABC"] = "E848C7790EAA99A2",
-                ["Zeros_16"] = "017755EFC0D3A098",
-                ["QuickBrownFox"] = "E46F1FDC05612752",
-                ["Sequential_0_255"] = "1AB24DC7FE69C1A9",
-            },
-            SipHashVariant.SipHash_4_8 => new Dictionary<string, string>
-            {
-                ["Empty"] = "41DA38992B0579C8",
-                ["ABC"] = "618F256DAD66F19A",
-                ["Zeros_16"] = "640CDE74B926C33E",
-                ["QuickBrownFox"] = "70CB440B22B8D9F6",
-                ["Sequential_0_255"] = "23ED19F6EF85AC97",
             },
             _ => throw new ArgumentOutOfRangeException(nameof(variant))
         };

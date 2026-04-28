@@ -28,12 +28,12 @@ public partial class TigerTests
     /// <inheritdoc />
     protected override HashAlgorithmSpecification GetSpecification(TigerVariant variant) => variant switch
     {
-        TigerVariant.Tiger_192 => BaseTigerSpecification with { HashSize = 192, OutputBlockSize = 24, MinNonZeroBytesForLongInput = 20 },
-        TigerVariant.Tiger_160 => BaseTigerSpecification with { HashSize = 160, OutputBlockSize = 20, MinNonZeroBytesForLongInput = 17 },
-        TigerVariant.Tiger_128 => BaseTigerSpecification with { HashSize = 128, OutputBlockSize = 16, MinNonZeroBytesForLongInput = 13 },
-        TigerVariant.Tiger2_192 => BaseTigerSpecification with { HashSize = 192, OutputBlockSize = 24, MinNonZeroBytesForLongInput = 20 },
-        TigerVariant.Tiger2_160 => BaseTigerSpecification with { HashSize = 160, OutputBlockSize = 20, MinNonZeroBytesForLongInput = 17 },
-        TigerVariant.Tiger2_128 => BaseTigerSpecification with { HashSize = 128, OutputBlockSize = 16, MinNonZeroBytesForLongInput = 13 },
+        TigerVariant.Tiger_192 => BaseTigerSpecification with { HashSize = 192, OutputBlockSize = 24, MinNonZeroBytesForLongInput = 20, KnownAnswers = BuildKnownAnswers(variant) },
+        TigerVariant.Tiger_160 => BaseTigerSpecification with { HashSize = 160, OutputBlockSize = 20, MinNonZeroBytesForLongInput = 17, KnownAnswers = BuildKnownAnswers(variant) },
+        TigerVariant.Tiger_128 => BaseTigerSpecification with { HashSize = 128, OutputBlockSize = 16, MinNonZeroBytesForLongInput = 13, KnownAnswers = BuildKnownAnswers(variant) },
+        TigerVariant.Tiger2_192 => BaseTigerSpecification with { HashSize = 192, OutputBlockSize = 24, MinNonZeroBytesForLongInput = 20, KnownAnswers = BuildKnownAnswers(variant) },
+        TigerVariant.Tiger2_160 => BaseTigerSpecification with { HashSize = 160, OutputBlockSize = 20, MinNonZeroBytesForLongInput = 17, KnownAnswers = BuildKnownAnswers(variant) },
+        TigerVariant.Tiger2_128 => BaseTigerSpecification with { HashSize = 128, OutputBlockSize = 16, MinNonZeroBytesForLongInput = 13, KnownAnswers = BuildKnownAnswers(variant) },
         _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null)
     };
 
@@ -91,31 +91,45 @@ public partial class TigerTests
             _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null)
         };
 
-    /// <inheritdoc />
-    private static readonly IReadOnlyDictionary<string, byte[]> CustomInputs = new Dictionary<string, byte[]>
-    {
-        ["Tiger"] = Encoding.UTF8.GetBytes("Tiger")
-    };
+    private static readonly byte[] TigerInput = Encoding.UTF8.GetBytes("Tiger");
 
-    /// <inheritdoc />
-    protected override IEnumerable<KnownAnswerTest> GetTestVectors(TigerTests.TigerVariant variant)
+    private static HashAlgorithmKnownAnswers BuildKnownAnswers(TigerVariant variant)
     {
-        foreach (var vector in base.GetTestVectors(variant))
-            yield return vector;
+        var (isTiger2, hashBits) = GetTigerHashBits(variant);
 
-        var expected = GetExpectedHashesForNamedInputs(variant);
-        foreach (var (name, input) in CustomInputs)
+        (string Empty, string Abc, string Zeros16, string QuickBrownFox, string Sequential0To255, string Tiger) full = isTiger2
+            ? (
+                "4441BE75F6018773C206C22745374B924AA8313FEF919F41",
+                "19BE3CEA22303641698DA70687ABFA23A2357C3F4A67E51F",
+                "2134110B93B62F7507576D8677C46222BCA4445F9DFDC31C",
+                "976ABFF8062A2E9DCEA3A1ACE966ED9C19CB85558B4976D8",
+                "7A20E7E8D65EE077E92429B9757DD0C5E41E1C3A4F5F20F7",
+                "FE40798B8EB937FD977608930548D6A894C20B04CBEF7A42")
+            : (
+                "3293AC630C13F0245F92BBB1766E16167A4E58492DDE73F3",
+                "C7188DAEE93509ECCE198DE5A43C8DB47210DB7E8D8BB8DD",
+                "464B87921CCDAEDBC0D6941610D1EB19E536036096403F32",
+                "6D12A41E72E644F017B6F0E2F7B44C6285F06DD5D2C5B075",
+                "90908AF825C3CA8474CD9D8C4201E1A12E97630FF7D6E354",
+                "DD00230799F5009FEC6DEBC838BB6A27DF2B9D6F110C7937");
+
+        return new HashAlgorithmKnownAnswers
         {
-            if (expected.TryGetValue(name, out var hex))
-            {
-                yield return new KnownAnswerTest
+            Empty = TruncateHex(full.Empty, hashBits),
+            Abc = TruncateHex(full.Abc, hashBits),
+            Zeros16 = TruncateHex(full.Zeros16, hashBits),
+            QuickBrownFox = TruncateHex(full.QuickBrownFox, hashBits),
+            Sequential0To255 = TruncateHex(full.Sequential0To255, hashBits),
+            Additional =
+            [
+                new HashAlgorithmKnownAnswer
                 {
-                    Name = name,
-                    Input = input,
-                    ExpectedOutput = Convert.FromHexString(hex)
-                };
-            }
-        }
+                    Name = "Tiger",
+                    Input = TigerInput,
+                    ExpectedHex = TruncateHex(full.Tiger, hashBits),
+                },
+            ],
+        };
     }
 
     /// <inheritdoc />
@@ -406,35 +420,4 @@ public partial class TigerTests
         return (isTiger2, hashBits);
     }
 
-    /// <inheritdoc />
-    protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(TigerTests.TigerVariant variant)
-    {
-        var (isTiger2, hashBits) = GetTigerHashBits(variant);
-
-        IReadOnlyDictionary<string, string> fullHashes = isTiger2
-            ? new Dictionary<string, string>
-            {
-                ["Empty"] = "4441BE75F6018773C206C22745374B924AA8313FEF919F41",
-                ["ABC"] = "19BE3CEA22303641698DA70687ABFA23A2357C3F4A67E51F",
-                ["Zeros_16"] = "2134110B93B62F7507576D8677C46222BCA4445F9DFDC31C",
-                ["QuickBrownFox"] = "976ABFF8062A2E9DCEA3A1ACE966ED9C19CB85558B4976D8",
-                ["Sequential_0_255"] = "7A20E7E8D65EE077E92429B9757DD0C5E41E1C3A4F5F20F7",
-                ["Tiger"] = "FE40798B8EB937FD977608930548D6A894C20B04CBEF7A42",
-            }
-            : new Dictionary<string, string>
-            {
-                ["Empty"] = "3293AC630C13F0245F92BBB1766E16167A4E58492DDE73F3",
-                ["ABC"] = "C7188DAEE93509ECCE198DE5A43C8DB47210DB7E8D8BB8DD",
-                ["Zeros_16"] = "464B87921CCDAEDBC0D6941610D1EB19E536036096403F32",
-                ["QuickBrownFox"] = "6D12A41E72E644F017B6F0E2F7B44C6285F06DD5D2C5B075",
-                ["Sequential_0_255"] = "90908AF825C3CA8474CD9D8C4201E1A12E97630FF7D6E354",
-                ["Tiger"] = "DD00230799F5009FEC6DEBC838BB6A27DF2B9D6F110C7937",
-            };
-
-        return fullHashes.ToDictionary(
-            kvp => kvp.Key,
-            kvp => TruncateHex(kvp.Value, hashBits),
-            StringComparer.OrdinalIgnoreCase
-        );
-    }
 }

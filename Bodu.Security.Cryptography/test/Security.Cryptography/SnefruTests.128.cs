@@ -28,6 +28,19 @@ public partial class Snefru128Tests
         BoundaryLengths = [1, 8, 16, 64],
         HashSize = 128,
         MinNonZeroBytesForLongInput = 6,    // 16 output bytes; conservative given Snefru's weaker diffusion
+        KnownAnswers = new()
+        {
+            Empty = "AA2532A1422095F6E8DBFF85FD6EF2BC",
+            Abc = "26C6CC5A5789D5F737335B305DE80218",
+            Zeros16 = "F2DDD3750BE35F20E0557F47E8B59C39",
+            QuickBrownFox = "59D9539D0DD96D635B5BDBD1395BB86C",
+            Sequential0To255 = "9FBED4C571EF6E8EEFA0B7F8353C6540",
+            Additional =
+            [
+                new HashAlgorithmKnownAnswer { Name = "a", Input = SnefruLetterAInput, ExpectedHex = "BF5CE540AE51BC50399F96746C5A15BD" },
+                new HashAlgorithmKnownAnswer { Name = "1234567890", Input = SnefruRepeatedDigitsInput, ExpectedHex = "D9204ED80BB8430C0B9C244FE485814A" },
+            ],
+        },
     };
 
     /// <inheritdoc />
@@ -44,15 +57,4 @@ public partial class Snefru128Tests
         "B7A3BF8A0A82812281AE90281CAC7D69", "F769214420AF44A3D7A0846788B9E503",
     };
 
-    protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(SingleTestVariant variant) => new Dictionary<string, string>
-    {
-        ["Empty"] = "AA2532A1422095F6E8DBFF85FD6EF2BC",
-        ["ABC"] = "26C6CC5A5789D5F737335B305DE80218",
-        ["Zeros_16"] = "F2DDD3750BE35F20E0557F47E8B59C39",
-        ["QuickBrownFox"] = "59D9539D0DD96D635B5BDBD1395BB86C",
-        ["Sequential_0_255"] = "9FBED4C571EF6E8EEFA0B7F8353C6540",
-
-        ["a"] = "BF5CE540AE51BC50399F96746C5A15BD",
-        ["1234567890"] = "D9204ED80BB8430C0B9C244FE485814A",
-    };
 }

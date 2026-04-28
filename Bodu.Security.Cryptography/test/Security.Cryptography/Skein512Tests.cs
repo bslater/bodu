@@ -30,6 +30,10 @@ public partial class Skein512Tests
         MaxKeyLength = Skein<Skein512>.MaxKeySizeBytes,
         ValidKeyLengths = [0, 16, 32, 64, 128, 256, Skein<Skein512>.MaxKeySizeBytes],
         TestKey = SkeinTestKey,
+        KnownAnswers = new()
+        {
+            Empty = Skein512EmptyHash,
+        },
     };
 
     /// <inheritdoc />
@@ -42,11 +46,4 @@ public partial class Skein512Tests
     /// </remarks>
     protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
         Array.Empty<string>();
-
-    /// <inheritdoc />
-    protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(SingleTestVariant variant) =>
-        new Dictionary<string, string>
-        {
-            ["Empty"] = Skein512EmptyHash,
-        };
 }

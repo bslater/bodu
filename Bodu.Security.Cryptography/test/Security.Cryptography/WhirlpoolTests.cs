@@ -26,6 +26,29 @@ public partial class WhirlpoolTests
         MinNonZeroBytesForLongInput = 56,
     };
 
+    /// <summary>The empty ISO test corpus payload.</summary>
+    private static readonly byte[] IsoEmptyInput = Array.Empty<byte>();
+
+    /// <summary>The ASCII byte <c>"a"</c> from the ISO test corpus.</summary>
+    private static readonly byte[] IsoAInput = Encoding.ASCII.GetBytes("a");
+
+    /// <summary>The ASCII bytes <c>"abc"</c> from the ISO test corpus.</summary>
+    private static readonly byte[] IsoAbcInput = Encoding.ASCII.GetBytes("abc");
+
+    /// <summary>The ISO test corpus <c>"message digest"</c> input.</summary>
+    private static readonly byte[] IsoMessageDigestInput = Encoding.ASCII.GetBytes("message digest");
+
+    /// <summary>The ISO test corpus lowercase alphabet input.</summary>
+    private static readonly byte[] IsoLowercaseAlphabetInput = Encoding.ASCII.GetBytes("abcdefghijklmnopqrstuvwxyz");
+
+    /// <summary>The ISO test corpus mixed-case alphabet plus digits input.</summary>
+    private static readonly byte[] IsoMixedAlphabetDigitsInput =
+        Encoding.ASCII.GetBytes("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+
+    /// <summary>The ISO test corpus 88-byte repeated-digit input.</summary>
+    private static readonly byte[] IsoEightDigitsRepeatedInput =
+        Encoding.ASCII.GetBytes("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678");
+
     /// <inheritdoc />
     public override IEnumerable<WhirlpoolVersion> GetHashAlgorithmVariants() => new[]
     {
@@ -36,7 +59,16 @@ public partial class WhirlpoolTests
 
     /// <inheritdoc />
     protected override HashAlgorithmSpecification GetSpecification(WhirlpoolVersion variant) =>
-        BaseWhirlpoolSpecification;
+        BaseWhirlpoolSpecification with
+        {
+            KnownAnswers = variant switch
+            {
+                WhirlpoolVersion.WhirlpoolInfo1 => WhirlpoolInfo1KnownAnswers,
+                WhirlpoolVersion.WhirlpoolInfo2 => WhirlpoolInfo2KnownAnswers,
+                WhirlpoolVersion.WhirlpoolInfo3 => WhirlpoolInfo3KnownAnswers,
+                _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
+            },
+        };
 
     /// <inheritdoc />
     protected override Whirlpool CreateAlgorithm() => new Whirlpool();
@@ -45,38 +77,6 @@ public partial class WhirlpoolTests
     protected override Whirlpool CreateAlgorithm(WhirlpoolVersion variant) =>
         new Whirlpool { Version = variant };
 
-    private static readonly IReadOnlyDictionary<string, byte[]> CustomInputs = new Dictionary<string, byte[]>
-    {
-        ["IsoEmpty"] = Array.Empty<byte>(),
-        ["IsoA"] = Encoding.ASCII.GetBytes("a"),
-        ["IsoAbc"] = Encoding.ASCII.GetBytes("abc"),
-        ["IsoMessageDigest"] = Encoding.ASCII.GetBytes("message digest"),
-        ["IsoLowercaseAlphabet"] = Encoding.ASCII.GetBytes("abcdefghijklmnopqrstuvwxyz"),
-        ["IsoMixedAlphabetDigits"] = Encoding.ASCII.GetBytes("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"),
-        ["IsoEightDigitsRepeated"] = Encoding.ASCII.GetBytes("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678"),
-    };
-
-    /// <inheritdoc />
-    protected override IEnumerable<KnownAnswerTest> GetTestVectors(WhirlpoolVersion variant)
-    {
-        foreach (var vector in base.GetTestVectors(variant))
-            yield return vector;
-
-        var expected = GetExpectedHashesForNamedInputs(variant);
-        foreach (var (name, input) in CustomInputs)
-        {
-            if (expected.TryGetValue(name, out var hex))
-            {
-                yield return new KnownAnswerTest
-                {
-                    Name = name,
-                    Input = input,
-                    ExpectedOutput = Convert.FromHexString(hex)
-                };
-            }
-        }
-    }
-
     /// <inheritdoc />
     protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(WhirlpoolVersion variant) =>
         variant switch
@@ -84,16 +84,6 @@ public partial class WhirlpoolTests
             WhirlpoolVersion.WhirlpoolInfo1 => WhirlpoolInfo1IncrementalHashes,
             WhirlpoolVersion.WhirlpoolInfo2 => WhirlpoolInfo2IncrementalHashes,
             WhirlpoolVersion.WhirlpoolInfo3 => WhirlpoolInfo3IncrementalHashes,
-            _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
-        };
-
-    /// <inheritdoc />
-    protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(WhirlpoolVersion variant) =>
-        variant switch
-        {
-            WhirlpoolVersion.WhirlpoolInfo1 => WhirlpoolInfo1NamedHashes,
-            WhirlpoolVersion.WhirlpoolInfo2 => WhirlpoolInfo2NamedHashes,
-            WhirlpoolVersion.WhirlpoolInfo3 => WhirlpoolInfo3NamedHashes,
             _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
         };
 }

@@ -67,13 +67,53 @@ public partial class Blake2bTests
     protected override HashAlgorithmSpecification GetSpecification(Blake2bVariant variant) =>
         variant switch
         {
-            Blake2bVariant.Blake2b_128 => BaseSpecification with { HashSize = 128, OutputBlockSize = 16, MinNonZeroBytesForLongInput = 14 },
-            Blake2bVariant.Blake2b_160 => BaseSpecification with { HashSize = 160, OutputBlockSize = 20, MinNonZeroBytesForLongInput = 18 },
-            Blake2bVariant.Blake2b_192 => BaseSpecification with { HashSize = 192, OutputBlockSize = 24, MinNonZeroBytesForLongInput = 22 },
-            Blake2bVariant.Blake2b_224 => BaseSpecification with { HashSize = 224, OutputBlockSize = 28, MinNonZeroBytesForLongInput = 26 },
-            Blake2bVariant.Blake2b_256 => BaseSpecification with { HashSize = 256, OutputBlockSize = 32, MinNonZeroBytesForLongInput = 30 },
-            Blake2bVariant.Blake2b_384 => BaseSpecification with { HashSize = 384, OutputBlockSize = 48, MinNonZeroBytesForLongInput = 44 },
-            Blake2bVariant.Blake2b_512 => BaseSpecification,
+            // Known-answer test vectors from RFC 7693 and the BLAKE2 reference implementation.
+            Blake2bVariant.Blake2b_128 => BaseSpecification with
+            {
+                HashSize = 128,
+                OutputBlockSize = 16,
+                MinNonZeroBytesForLongInput = 14,
+                KnownAnswers = new() { Empty = "CAE66941D9EFBD404E4D88758EA67670" },
+            },
+            Blake2bVariant.Blake2b_160 => BaseSpecification with
+            {
+                HashSize = 160,
+                OutputBlockSize = 20,
+                MinNonZeroBytesForLongInput = 18,
+                KnownAnswers = new() { Empty = "3345524ABF6BBE1809449224B5972C41790B6CF2" },
+            },
+            Blake2bVariant.Blake2b_192 => BaseSpecification with
+            {
+                HashSize = 192,
+                OutputBlockSize = 24,
+                MinNonZeroBytesForLongInput = 22,
+                KnownAnswers = new() { Empty = "AB3B5331A7135ED50D0F182D026E60ABDB3646FD51BCF8A3" },
+            },
+            Blake2bVariant.Blake2b_224 => BaseSpecification with
+            {
+                HashSize = 224,
+                OutputBlockSize = 28,
+                MinNonZeroBytesForLongInput = 26,
+                KnownAnswers = new() { Empty = "836CC68931C2E4E3E838602ECA1902591D216837BAFDDFE6F0C8CB07" },
+            },
+            Blake2bVariant.Blake2b_256 => BaseSpecification with
+            {
+                HashSize = 256,
+                OutputBlockSize = 32,
+                MinNonZeroBytesForLongInput = 30,
+                KnownAnswers = new() { Empty = "0E5751C026E543B2E8AB2EB06099DAA1D1E5DF47778F7787FAAB45CDF12FE3A8" },
+            },
+            Blake2bVariant.Blake2b_384 => BaseSpecification with
+            {
+                HashSize = 384,
+                OutputBlockSize = 48,
+                MinNonZeroBytesForLongInput = 44,
+                KnownAnswers = new() { Empty = "B32811423377F52D7862286EE1A72EE540524380FDA1724A6F25D7978C6FD3244A6CAF0498812673C5E05EF583825100" },
+            },
+            Blake2bVariant.Blake2b_512 => BaseSpecification with
+            {
+                KnownAnswers = new() { Empty = "786A02F742015903C6C6FD852552D272912F4740E15847618A86E217F71F5419D25E1031AFEE585313896444934EB04B903A685B1448B755D56F701AFE9BE2CE" },
+            },
             _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
         };
 
@@ -1916,42 +1956,6 @@ public partial class Blake2bTests
                 "6B490F42E902F61B1EE12D3C85E34152E37C94D07AB9EA577CAD6A6EB4690FAD38064F53A19C225703A5C52CDC9A85ADD71B339D327E1630EE3432B920240E8A", "4CE7BAD73D5CA6E76C99364489DCA5BE09C66E655BA2CDAD3EFE44530C43BEBFC227166DFF4F4A7D9C61E6D8193FED189FF42953295170B993BFA070C418BF27",
             },
             _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
-        };
-
-    /// <inheritdoc />
-    protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(Blake2bVariant variant) =>
-        variant switch
-        {
-            // Known-answer test vectors from RFC 7693 and the BLAKE2 reference implementation.
-            Blake2bVariant.Blake2b_128 => new Dictionary<string, string>
-            {
-                ["Empty"] = "CAE66941D9EFBD404E4D88758EA67670",
-            },
-            Blake2bVariant.Blake2b_160 => new Dictionary<string, string>
-            {
-                ["Empty"] = "3345524ABF6BBE1809449224B5972C41790B6CF2",
-            },
-            Blake2bVariant.Blake2b_192 => new Dictionary<string, string>
-            {
-                ["Empty"] = "AB3B5331A7135ED50D0F182D026E60ABDB3646FD51BCF8A3",
-            },
-            Blake2bVariant.Blake2b_224 => new Dictionary<string, string>
-            {
-                ["Empty"] = "836CC68931C2E4E3E838602ECA1902591D216837BAFDDFE6F0C8CB07",
-            },
-            Blake2bVariant.Blake2b_256 => new Dictionary<string, string>
-            {
-                ["Empty"] = "0E5751C026E543B2E8AB2EB06099DAA1D1E5DF47778F7787FAAB45CDF12FE3A8",
-            },
-            Blake2bVariant.Blake2b_384 => new Dictionary<string, string>
-            {
-                ["Empty"] = "B32811423377F52D7862286EE1A72EE540524380FDA1724A6F25D7978C6FD3244A6CAF0498812673C5E05EF583825100",
-            },
-            Blake2bVariant.Blake2b_512 => new Dictionary<string, string>
-            {
-                ["Empty"] = "786A02F742015903C6C6FD852552D272912F4740E15847618A86E217F71F5419D25E1031AFEE585313896444934EB04B903A685B1448B755D56F701AFE9BE2CE",
-            },
-            _ => new Dictionary<string, string>(),
         };
 
     /// <summary>
