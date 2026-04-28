@@ -6,13 +6,14 @@ title: Using AEAD modes
 
 **Authenticated encryption with associated data (AEAD)** combines confidentiality with integrity: the ciphertext carries a tag that detects any tampering with the ciphertext *or* with the associated metadata (headers, protocol fields, etc.) that travels alongside it.
 
-`Bodu.Security.Cryptography` ships five AEAD mode transforms, each implementing <xref:Bodu.Security.Cryptography.IAeadBlockCipherModeTransform>. All of them target a 16-byte (128-bit) block cipher — in practice, AES.
+`Bodu.Security.Cryptography` ships six AEAD mode transforms, each implementing <xref:Bodu.Security.Cryptography.IAeadBlockCipherModeTransform>. All of them target a 16-byte (128-bit) block cipher — in practice, AES.
 
 | Mode | Class | Standard | Notes |
 |---|---|---|---|
 | **GCM** | <xref:Bodu.Security.Cryptography.GcmModeTransform> | NIST SP 800-38D | Single-pass; fastest with CLMUL hardware. IV reuse is catastrophic. |
 | **CCM** | <xref:Bodu.Security.Cryptography.CcmModeTransform> | NIST SP 800-38C | Two-pass (CTR + CBC-MAC). Fixed 12-byte nonce and 16-byte tag in this implementation. |
 | **OCB3** | <xref:Bodu.Security.Cryptography.OcbModeTransform> | RFC 7253 | Single-pass with offsets; configurable tag length (8 / 12 / 16 bytes). |
+| **EAX** | <xref:Bodu.Security.Cryptography.EaxModeTransform> | Bellare/Rogaway/Wagner (FSE 2004) | Two-pass (CTR + OMAC); arbitrary nonce length, no length-extension limits. |
 | **SIV** | <xref:Bodu.Security.Cryptography.SivModeTransform> | RFC 5297 | Misuse-resistant — same message encrypts to the same ciphertext, but confidentiality is preserved. Needs two independent AES keys. |
 | **GCM-SIV** | <xref:Bodu.Security.Cryptography.GcmSivModeTransform> | RFC 8452 | Misuse-resistant successor to GCM; POLYVAL-based. |
 
@@ -125,6 +126,25 @@ byte[] recovered;
 using (var cipher = new AesBlockCipher(key))
     recovered = new OcbModeTransform(cipher, iv).Decrypt(cipherWithTag, aad);
 ```
+
+## EAX — two-pass, FSE 2004
+
+EAX (Bellare, Rogaway and Wagner) is a two-pass authenticated-encryption mode that pairs CTR encryption with OMAC1 authentication. Three OMAC invocations — one each over the nonce, the associated data, and the ciphertext — are XOR-combined to form the tag. EAX has no length-extension restrictions on the nonce or message and avoids GCM's polynomial-MAC pitfalls, making it a safe choice when you need an alternative to GCM without giving up performance to a misuse-resistant mode.
+
+```csharp
+byte[] key = RandomNumberGenerator.GetBytes(16);
+byte[] iv  = RandomNumberGenerator.GetBytes(16);  // EAX nonce — must equal the cipher block size
+
+byte[] cipherWithTag;
+using (var cipher = new AesBlockCipher(key))
+    cipherWithTag = new EaxModeTransform(cipher, iv).Encrypt(plaintext, aad);
+
+byte[] recovered;
+using (var cipher = new AesBlockCipher(key))
+    recovered = new EaxModeTransform(cipher, iv).Decrypt(cipherWithTag, aad);
+```
+
+The nonce is the raw value `N`; the transform internally derives the initial CTR counter as `OMAC^0(N)` and the authentication tag as `OMAC^0(N) ⊕ OMAC^1(aad) ⊕ OMAC^2(ciphertext)`. The tag length is fixed at 16 bytes.
 
 ## SIV — misuse-resistant
 
