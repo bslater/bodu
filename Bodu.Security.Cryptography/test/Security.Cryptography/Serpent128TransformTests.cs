@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Security.Cryptography;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -21,5 +23,31 @@ internal sealed class Serpent128TransformTests
         algorithm.GenerateKey();
         algorithm.GenerateIV();
         return (Serpent128Transform)algorithm.CreateEncryptor(algorithm.Key, algorithm.IV);
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Flattens both <see cref="SerpentCipherTestVariant" /> values; only
+    /// <see cref="SerpentCipherTestVariant.DefaultKeyAndTweak" /> contributes a published Bouncy Castle
+    /// vector — the zeroed variant returns an empty list and is silently skipped by the harness.
+    /// </remarks>
+    protected override IEnumerable<BlockCipherKnownAnswer> GetKnownAnswers() =>
+        Enum.GetValues<SerpentCipherTestVariant>().SelectMany(Serpent128KnownAnswers.For);
+
+    /// <inheritdoc />
+    protected override Serpent128Transform CreateTransformForKnownAnswer(BlockCipherKnownAnswer answer, bool forEncryption)
+    {
+        var algorithm = new Serpent128
+        {
+            Mode = CipherMode.ECB,
+            Padding = PaddingMode.None,
+        };
+        algorithm.Key = answer.Key!;
+        algorithm.IV = new byte[algorithm.BlockSize / 8];
+
+        ICryptoTransform transform = forEncryption
+            ? algorithm.CreateEncryptor()
+            : algorithm.CreateDecryptor();
+        return (Serpent128Transform)transform;
     }
 }

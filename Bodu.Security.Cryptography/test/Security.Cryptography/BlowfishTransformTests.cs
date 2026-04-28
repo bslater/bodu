@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Security.Cryptography;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -21,5 +23,26 @@ internal sealed class BlowfishTransformTests
         algorithm.GenerateKey();
         algorithm.GenerateIV();
         return (BlowfishTransform)algorithm.CreateEncryptor(algorithm.Key, algorithm.IV);
+    }
+
+    /// <inheritdoc />
+    protected override IEnumerable<BlockCipherKnownAnswer> GetKnownAnswers() =>
+        BlowfishKnownAnswers.For(SingleTestVariant.Default);
+
+    /// <inheritdoc />
+    protected override BlowfishTransform CreateTransformForKnownAnswer(BlockCipherKnownAnswer answer, bool forEncryption)
+    {
+        var algorithm = new Blowfish
+        {
+            Mode = CipherMode.ECB,
+            Padding = PaddingMode.None,
+        };
+        algorithm.Key = answer.Key!;
+        algorithm.IV = new byte[algorithm.BlockSize / 8];
+
+        ICryptoTransform transform = forEncryption
+            ? algorithm.CreateEncryptor()
+            : algorithm.CreateDecryptor();
+        return (BlowfishTransform)transform;
     }
 }

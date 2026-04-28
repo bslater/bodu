@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Security.Cryptography;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -21,5 +23,31 @@ internal sealed class CamelliaTransformTests
         algorithm.GenerateKey();
         algorithm.GenerateIV();
         return (CamelliaTransform)algorithm.CreateEncryptor(algorithm.Key, algorithm.IV);
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Flattens the per-key-size RFC 3713 Appendix A vectors across <see cref="CamelliaTestVariant.Key128" />,
+    /// <see cref="CamelliaTestVariant.Key192" />, and <see cref="CamelliaTestVariant.Key256" /> so each runs
+    /// through the Transform-layer harness in turn.
+    /// </remarks>
+    protected override IEnumerable<BlockCipherKnownAnswer> GetKnownAnswers() =>
+        Enum.GetValues<CamelliaTestVariant>().SelectMany(CamelliaKnownAnswers.For);
+
+    /// <inheritdoc />
+    protected override CamelliaTransform CreateTransformForKnownAnswer(BlockCipherKnownAnswer answer, bool forEncryption)
+    {
+        var algorithm = new Camellia
+        {
+            Mode = CipherMode.ECB,
+            Padding = PaddingMode.None,
+        };
+        algorithm.Key = answer.Key!;
+        algorithm.IV = new byte[algorithm.BlockSize / 8];
+
+        ICryptoTransform transform = forEncryption
+            ? algorithm.CreateEncryptor()
+            : algorithm.CreateDecryptor();
+        return (CamelliaTransform)transform;
     }
 }

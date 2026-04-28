@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Security.Cryptography;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -21,5 +23,32 @@ internal sealed class TwofishTransformTests
         algorithm.GenerateKey();
         algorithm.GenerateIV();
         return (TwofishTransform)algorithm.CreateEncryptor(algorithm.Key, algorithm.IV);
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Flattens the per-key-size Twofish AES-submission ECB intermediate-values vectors across
+    /// <see cref="TwofishTestVariant.Key128" />, <see cref="TwofishTestVariant.Key192" />, and
+    /// <see cref="TwofishTestVariant.Key256" /> so the full 18-vector corpus runs through the
+    /// Transform-layer harness in turn.
+    /// </remarks>
+    protected override IEnumerable<BlockCipherKnownAnswer> GetKnownAnswers() =>
+        Enum.GetValues<TwofishTestVariant>().SelectMany(TwofishKnownAnswers.For);
+
+    /// <inheritdoc />
+    protected override TwofishTransform CreateTransformForKnownAnswer(BlockCipherKnownAnswer answer, bool forEncryption)
+    {
+        var algorithm = new Twofish
+        {
+            Mode = CipherMode.ECB,
+            Padding = PaddingMode.None,
+        };
+        algorithm.Key = answer.Key!;
+        algorithm.IV = new byte[algorithm.BlockSize / 8];
+
+        ICryptoTransform transform = forEncryption
+            ? algorithm.CreateEncryptor()
+            : algorithm.CreateDecryptor();
+        return (TwofishTransform)transform;
     }
 }
