@@ -26,7 +26,36 @@ namespace Bodu.Globalization.Calendar;
 /// produces a single <see cref="NotableDate" /> whose <see cref="NotableDate.EndDate" /> is the inclusive last day of the span. Range
 /// and single-day queries return the span when any day within it intersects the query.
 /// </para>
+/// <para>
+/// The default no-argument constructor loads the embedded global rule set. The full constructor accepts base rule providers,
+/// weekend definitions, override providers, algorithm registries, custom adjustment handlers, collision resolvers, and name
+/// localisers, enabling complete control over the resolution pipeline.
+/// </para>
 /// </remarks>
+/// <example>
+/// <para>Construct with the built-in global rule set and query Australian public holidays:</para>
+/// <code>
+/// // Simplest construction — loads the embedded global rule set:
+/// NotableDateService service = new NotableDateService();
+///
+/// // All notable dates for New South Wales in 2026:
+/// IReadOnlyList&lt;NotableDate&gt; dates = service.GetNotableDates(2026, territoryCode: "AU-NSW");
+///
+/// // Full construction with a custom XML rule file and algorithm registry:
+/// var registry = new NotableDateAlgorithmRegistry()
+///     .Register("easter-sunday", new GregorianEasterSundayNotableDateProvider());
+///
+/// NotableDateService fullService = new NotableDateService(
+///     ruleProviders: new[] { new XmlResourceNotableDateRuleProvider(
+///         "MyApp/Calendar/Resources/custom-rules.xml",
+///         new ResourcePathResolver()) },
+///     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+///     algorithmRegistry: registry);
+///
+/// // Invalidate the cache when runtime overrides change:
+/// service.Invalidate();
+/// </code>
+/// </example>
 public sealed class NotableDateService : INotableDateService
 {
 	/// <summary>The embedded resource path for the default global rule set.</summary>

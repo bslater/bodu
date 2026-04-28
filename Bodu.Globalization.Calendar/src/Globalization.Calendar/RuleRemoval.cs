@@ -6,7 +6,6 @@
 
 namespace Bodu.Globalization.Calendar;
 
-
 /// <summary>
 /// Specifies that a notable date rule should be suppressed by an <see cref="INotableDateRuleOverrideProvider" />.
 /// </summary>

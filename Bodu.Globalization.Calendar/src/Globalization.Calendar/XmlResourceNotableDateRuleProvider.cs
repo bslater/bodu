@@ -20,7 +20,7 @@ namespace Bodu.Globalization.Calendar;
 /// <list type="number">
 /// <item><description>The supplied root resource is parsed.</description></item>
 /// <item><description>Each referenced source resource is loaded and recursively flattened, with cycle detection.</description></item>
-/// <item><description>For every <c>&lt;UseFrom&gt;</c> directive, the provider pulls the named rules (or every rule, when <c>&lt;UseAll&gt;</c> is present) from the source's flattened set, applies any per-directive scalar overrides, and adds the resulting rules to the local set.</description></item>
+/// <item><description>For every <c>&lt;UseFrom&gt;</c> directive, the provider pulls the named rules (or every rule when <c>&lt;UseAll&gt;</c> is present) from the source's flattened set, applies any per-directive scalar overrides, and adds the resulting rules to the local set.</description></item>
 /// <item><description>Locally declared <c>&lt;NotableDate&gt;</c> entries are added last and override any inherited rules with the same name.</description></item>
 /// </list>
 /// <para>
@@ -28,20 +28,47 @@ namespace Bodu.Globalization.Calendar;
 /// <c>&lt;Use&gt;</c> directive (or opt in via <c>&lt;UseAll /&gt;</c>) for that rule to appear in the consumer's flattened set.
 /// </para>
 /// </remarks>
+/// <example>
+/// <para>Load rules from an embedded XML resource in the entry assembly and construct a service:</para>
+/// <code>
+/// // The resource is stored as "MyApp/Calendar/Resources/custom-rules.xml" in the assembly manifest:
+/// var provider = new XmlResourceNotableDateRuleProvider(
+///     "MyApp/Calendar/Resources/custom-rules.xml",
+///     new ResourcePathResolver());
+///
+/// INotableDateService service = new NotableDateService(
+///     ruleProviders: new[] { provider },
+///     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+///
+/// // Load from a specific assembly (for example, a satellite resource assembly):
+/// Assembly resourceAssembly = Assembly.Load("MyApp.Resources");
+/// var crossAssemblyProvider = new XmlResourceNotableDateRuleProvider(
+///     "MyApp/Calendar/Resources/custom-rules.xml",
+///     new ResourcePathResolver(),
+///     assembly: resourceAssembly);
+/// </code>
+/// </example>
 public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvider
 {
-    private readonly string _rootResourceName;
-    private readonly IResourcePathResolver _resourcePathResolver;
-    private readonly Assembly _assembly;
+	/// <summary>The logical path of the root XML resource file that seeds the flatten pipeline.</summary>
+	private readonly string _rootResourceName;
+
+	/// <summary>The path resolver used to translate relative <c>&lt;UseFrom&gt;</c> paths into fully qualified resource names.</summary>
+	private readonly IResourcePathResolver _resourcePathResolver;
+
+	/// <summary>The assembly searched for embedded manifest resources during flattening.</summary>
+	private readonly Assembly _assembly;
+
+	/// <summary>Thread-safe lazy backing store for the fully flattened rule list; populated on first call to <see cref="LoadRules" />.</summary>
 	private readonly Lazy<List<NotableDateRule>> _flattenedRules;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="XmlResourceNotableDateRuleProvider" /> class.
     /// </summary>
-    /// <param name="xmlResourceName">The full manifest resource name of the root XML payload. Must not be <see langword="null" />.</param>
-    /// <param name="resourcePathResolver">The full manifest resource name of the root XML payload. Must not be <see langword="null" />.</param>
-    /// <param name="assembly">The assembly containing the embedded resource(s). Defaults to the currently executing assembly.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="xmlResourceName" /> is <see langword="null" />.</exception>
+    /// <param name="xmlResourceName">The logical resource path of the root XML payload (e.g. <c>Bodu/Globalization/Calendar/Resources/global-all.xml</c>). Must not be <see langword="null" />.</param>
+    /// <param name="resourcePathResolver">The resolver used to translate relative <c>&lt;UseFrom&gt;</c> paths into fully qualified resource names. Must not be <see langword="null" />.</param>
+    /// <param name="assembly">The assembly containing the embedded resource(s). Defaults to the currently executing assembly when <see langword="null" />.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="xmlResourceName" /> or <paramref name="resourcePathResolver" /> is <see langword="null" />.</exception>
     public XmlResourceNotableDateRuleProvider(string xmlResourceName, IResourcePathResolver resourcePathResolver, Assembly? assembly = null)
 	{
 		_rootResourceName = xmlResourceName ?? throw new ArgumentNullException(nameof(xmlResourceName));
@@ -71,8 +98,6 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 		var byKey = FlattenResource(_rootResourceName, _resourcePathResolver, documentCache, flattenedCache, inProgress);
 		return byKey.Values.ToList();
 	}
-
-
 
     /// <summary>
     /// Flattens a single parsed resource document into a rule dictionary keyed by
@@ -178,6 +203,12 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 		}
 	}
 
+    /// <summary>
+    /// Converts a logical slash-delimited path into the dot-delimited manifest resource name used by
+    /// <see cref="System.Reflection.Assembly.GetManifestResourceStream(string)" />.
+    /// </summary>
+    /// <param name="logicalPath">The logical resource path to convert. Must not be <see langword="null" />, empty, or whitespace.</param>
+    /// <returns>The manifest resource name with slashes replaced by dots and leading/trailing separators stripped.</returns>
     private static string ToProviderPath(string logicalPath)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(logicalPath);

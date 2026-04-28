@@ -25,6 +25,27 @@ namespace Bodu.Globalization.Calendar;
 /// <see cref="EndDate" /> inclusively.
 /// </para>
 /// </remarks>
+/// <example>
+/// <para>Iterate notable dates for a territory and display their details:</para>
+/// <code>
+/// INotableDateService service = new NotableDateService();
+/// IReadOnlyList&lt;NotableDate&gt; dates = service.GetNotableDates(2026, territoryCode: "AU");
+///
+/// foreach (NotableDate date in dates)
+/// {
+///     Console.WriteLine($"{date.Date:d}  {date.DisplayName}");
+///
+///     if (date.DurationDays > 1)
+///         Console.WriteLine($"  Spans through {date.EndDate:d} ({date.DurationDays} days)");
+///
+///     if (date.WasAdjusted)
+///         Console.WriteLine($"  Adjusted from {date.AdjustmentReason!.OriginalDate:d}");
+///
+///     if (date.IsNonWorkingDay)
+///         Console.WriteLine("  Non-working day");
+/// }
+/// </code>
+/// </example>
 public sealed record NotableDate
 {
 #if NET7_0_OR_GREATER

@@ -6,7 +6,6 @@
 
 namespace Bodu.Globalization.Calendar;
 
-
 /// <summary>
 /// Supplies runtime modifications to the notable date rules loaded by base <see cref="INotableDateRuleProvider" /> sources.
 /// </summary>
@@ -18,6 +17,32 @@ namespace Bodu.Globalization.Calendar;
 /// ones.
 /// </para>
 /// </remarks>
+/// <example>
+/// <para>Suppress Boxing Day for 2026 and inject a company-specific observance:</para>
+/// <code>
+/// public sealed class CompanyCalendarOverrides : INotableDateRuleOverrideProvider
+/// {
+///     public IEnumerable&lt;RuleRemoval&gt; GetRemovals()
+///     {
+///         // Remove Boxing Day for 2026 only:
+///         yield return new RuleRemoval("Boxing Day", FromYear: 2026, ToYear: 2026);
+///     }
+///
+///     public IEnumerable&lt;NotableDateRule&gt; GetAdditions()
+///     {
+///         yield return new NotableDateRule
+///         {
+///             Name = "Company Founding Day",
+///             Strategy = DateResolutionStrategy.Fixed,
+///             Category = NotableDateCategory.Observance,
+///             Month = 6,
+///             Day = 15,
+///             IsNonWorkingDay = true,
+///         };
+///     }
+/// }
+/// </code>
+/// </example>
 public interface INotableDateRuleOverrideProvider
 {
 	/// <summary>
