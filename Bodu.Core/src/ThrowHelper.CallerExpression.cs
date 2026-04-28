@@ -1556,7 +1556,7 @@ public static partial class ThrowHelper
     /// Thrown when <paramref name="value"/> is empty or contains only whitespace characters.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIsNullOrWhiteSpace(
+    public static void ThrowIfNullOrWhiteSpace(
         string value,
         [CallerArgumentExpression(nameof(value))] string? paramName = null)
     {

@@ -94,7 +94,7 @@ public sealed class NotableDateFilter
 	/// <exception cref="ArgumentException">Thrown when <paramref name="tag" /> is empty or whitespace.</exception>
 	public static NotableDateFilter WithTag(string tag)
 	{
-		ThrowHelper.ThrowIfNullOrEmpty(tag);
+		ThrowHelper.ThrowIfNullOrWhiteSpace(tag);
 
 		return new(
 			rule => rule.Tags.Any(t => string.Equals(t, tag, StringComparison.OrdinalIgnoreCase)),
@@ -149,7 +149,7 @@ public sealed class NotableDateFilter
 	/// <exception cref="ArgumentException">Thrown when <paramref name="name" /> is empty or whitespace.</exception>
 	public static NotableDateFilter WithName(string name)
 	{
-		ThrowHelper.ThrowIfNullOrEmpty(name);
+		ThrowHelper.ThrowIfNullOrWhiteSpace(name);
 
 		return new(
 			rule => string.Equals(rule.Name, name, StringComparison.OrdinalIgnoreCase),

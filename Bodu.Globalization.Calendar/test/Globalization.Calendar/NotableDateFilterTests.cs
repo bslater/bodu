@@ -13,7 +13,7 @@ namespace Bodu.Globalization.Calendar;
 /// secondary-gate date matching, and And/Or composition.
 /// </summary>
 [TestClass]
-public sealed class NotableDateFilterTests
+public sealed partial class NotableDateFilterTests
 {
 	// --------------------------------------------------------------------------------------
 	// Helpers

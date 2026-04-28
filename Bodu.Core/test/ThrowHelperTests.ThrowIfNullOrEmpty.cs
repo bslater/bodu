@@ -9,10 +9,11 @@ namespace Bodu;
 public partial class ThrowHelperTests
 {
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrEmpty" />, when ValueIsNull, throws <see cref="ArgumentNullException" />.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrEmpty" /> throws <see cref="ArgumentNullException" />
+    /// when the value is <see langword="null" />.
     /// </summary>
-    [TestMethod]
     [DataRow(null)]
+    [TestMethod]
     public void ThrowIfNullOrEmpty_WhenValueIsNull_ShouldThrowArgumentNullException(string? value)
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -22,10 +23,11 @@ public partial class ThrowHelperTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrEmpty" />, when ValueIsEmpty, throws <see cref="ArgumentException" />.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrEmpty" /> throws <see cref="ArgumentException" />
+    /// when the value is an empty string.
     /// </summary>
-    [TestMethod]
     [DataRow("")]
+    [TestMethod]
     public void ThrowIfNullOrEmpty_WhenValueIsEmpty_ShouldThrowArgumentException(string value)
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
@@ -35,12 +37,16 @@ public partial class ThrowHelperTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrEmpty" />, when ValueIsNonEmpty, NotThrow.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrEmpty" /> does not throw for any non-empty string,
+    /// including whitespace-only values. Callers that must also reject whitespace should use
+    /// <see cref="ThrowHelper.ThrowIfNullOrWhiteSpace" /> instead.
     /// </summary>
-    [TestMethod]
     [DataRow("a")]
     [DataRow("test")]
-    [DataRow("   ")] // Optional: consider whether whitespace-only is allowed
+    [DataRow("   ")]
+    [DataRow("\t")]
+    [DataRow("\n")]
+    [TestMethod]
     public void ThrowIfNullOrEmpty_WhenValueIsNonEmpty_ShouldNotThrow(string value)
     {
         ThrowHelper.ThrowIfNullOrEmpty(value);
