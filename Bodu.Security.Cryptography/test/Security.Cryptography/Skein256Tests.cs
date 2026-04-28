@@ -39,7 +39,7 @@ public partial class Skein256Tests
             MinKeyLength = 16,
             MaxKeyLength = Skein<Skein256>.MaxKeySizeBytes,
             ValidKeyLengths = [0, 16, 32, 64, 128, 256, Skein<Skein256>.MaxKeySizeBytes],
-            TestKey = IsMacVariant(variant) ? SkeinTestKey : Array.Empty<byte>(),
+            TestKey = SkeinTestKey,
             KnownAnswers = new HashAlgorithmKnownAnswers
             {
                 Empty = variant == Skein256TestVariant.Hash_256 ? Skein256_256_EmptyHash : null,
