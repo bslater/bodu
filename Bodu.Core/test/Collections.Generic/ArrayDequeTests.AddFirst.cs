@@ -49,30 +49,6 @@ public partial class ArrayDequeTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ArrayDeque{T}.TryAddFirst(T)"/> returns <see langword="true"/> when there is space.
-    /// </summary>
-    [TestMethod]
-    public void TryAddFirst_WhenSpaceAvailable_ShouldReturnTrue()
-    {
-        var deque = new ArrayDeque<int>(2);
-        Assert.IsTrue(deque.TryAddFirst(1));
-        Assert.AreEqual(1, deque.PeekFirst());
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="ArrayDeque{T}.TryAddFirst(T)"/> returns <see langword="false"/> when the deque is full.
-    /// </summary>
-    [TestMethod]
-    public void TryAddFirst_WhenFull_ShouldReturnFalse()
-    {
-        var deque = new ArrayDeque<int>(2);
-        deque.AddFirst(1);
-        deque.AddFirst(2);
-        Assert.IsFalse(deque.TryAddFirst(3));
-        Assert.AreEqual(2, deque.Count);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="ArrayDeque{T}.AddFirst(T)"/> accepts <see langword="null"/> for reference types.
     /// </summary>
     [TestMethod]

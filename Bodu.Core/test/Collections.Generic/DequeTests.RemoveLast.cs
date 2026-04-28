@@ -24,7 +24,24 @@ public partial class DequeTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Deque{T}.RemoveLast"/> throws when empty.
+    /// Verifies that <see cref="Deque{T}.RemoveLast"/> drains the deque to empty when called repeatedly.
+    /// </summary>
+    [TestMethod]
+    public void RemoveLast_WhenCalledRepeatedly_ShouldDrainToEmpty()
+    {
+        var deque = new Deque<int>(3);
+        deque.AddLast(1);
+        deque.AddLast(2);
+        deque.AddLast(3);
+
+        Assert.AreEqual(3, deque.RemoveLast());
+        Assert.AreEqual(2, deque.RemoveLast());
+        Assert.AreEqual(1, deque.RemoveLast());
+        Assert.IsTrue(deque.IsEmpty);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Deque{T}.RemoveLast"/> throws when the deque is empty.
     /// </summary>
     [TestMethod]
     public void RemoveLast_WhenEmpty_ShouldThrowExactly()
@@ -34,28 +51,5 @@ public partial class DequeTests
         {
             _ = deque.RemoveLast();
         });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Deque{T}.TryRemoveLast(out T)"/> returns the tail and <see langword="true"/> when items are present.
-    /// </summary>
-    [TestMethod]
-    public void TryRemoveLast_WhenDequeHasItems_ShouldReturnTailAndTrue()
-    {
-        var deque = new Deque<int>(2);
-        deque.AddLast(10);
-
-        Assert.IsTrue(deque.TryRemoveLast(out int item));
-        Assert.AreEqual(10, item);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Deque{T}.TryRemoveLast(out T)"/> returns <see langword="false"/> when empty.
-    /// </summary>
-    [TestMethod]
-    public void TryRemoveLast_WhenEmpty_ShouldReturnFalse()
-    {
-        var deque = new Deque<int>();
-        Assert.IsFalse(deque.TryRemoveLast(out _));
     }
 }

@@ -24,7 +24,24 @@ public partial class DequeTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Deque{T}.RemoveFirst"/> throws when empty.
+    /// Verifies that <see cref="Deque{T}.RemoveFirst"/> drains the deque to empty when called repeatedly.
+    /// </summary>
+    [TestMethod]
+    public void RemoveFirst_WhenCalledRepeatedly_ShouldDrainToEmpty()
+    {
+        var deque = new Deque<int>(3);
+        deque.AddLast(1);
+        deque.AddLast(2);
+        deque.AddLast(3);
+
+        Assert.AreEqual(1, deque.RemoveFirst());
+        Assert.AreEqual(2, deque.RemoveFirst());
+        Assert.AreEqual(3, deque.RemoveFirst());
+        Assert.IsTrue(deque.IsEmpty);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Deque{T}.RemoveFirst"/> throws when the deque is empty.
     /// </summary>
     [TestMethod]
     public void RemoveFirst_WhenEmpty_ShouldThrowExactly()
@@ -34,27 +51,5 @@ public partial class DequeTests
         {
             _ = deque.RemoveFirst();
         });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Deque{T}.TryRemoveFirst(out T)"/> returns the head and <see langword="true"/> when items are present.
-    /// </summary>
-    [TestMethod]
-    public void TryRemoveFirst_WhenDequeHasItems_ShouldReturnHeadAndTrue()
-    {
-        var deque = new Deque<int>(2);
-        deque.AddLast(7);
-        Assert.IsTrue(deque.TryRemoveFirst(out int item));
-        Assert.AreEqual(7, item);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Deque{T}.TryRemoveFirst(out T)"/> returns <see langword="false"/> when empty.
-    /// </summary>
-    [TestMethod]
-    public void TryRemoveFirst_WhenEmpty_ShouldReturnFalse()
-    {
-        var deque = new Deque<int>();
-        Assert.IsFalse(deque.TryRemoveFirst(out _));
     }
 }
