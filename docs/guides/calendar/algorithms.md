@@ -158,4 +158,5 @@ var service = new NotableDateService(
 ## Where to go next
 
 - [Using NotableDateService](notable-dates.md) — loading rules, override layers, and caching.
+- [Authoring notable date rules](rule-authoring.md) — in-code objects, XML resource files, satellite assemblies, and runtime overrides.
 - [Bodu.Globalization.Calendar API reference](../../apidoc/Bodu.Globalization.Calendar.md) — full type reference.

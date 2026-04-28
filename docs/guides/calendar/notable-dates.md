@@ -250,4 +250,5 @@ INotableDateRuleProvider(s)              → base rules
 ## Where to go next
 
 - [Date calculation algorithms](algorithms.md) — the built-in algorithm types and how to implement a custom one.
+- [Authoring notable date rules](rule-authoring.md) — in-code objects, XML resource files, satellite assemblies, and runtime overrides.
 - [Bodu.Globalization.Calendar API reference](../../apidoc/Bodu.Globalization.Calendar.md) — full type reference.
