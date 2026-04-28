@@ -6,7 +6,7 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
 
 ## [Unreleased]
 
-### Bodu.Globalization.Calendar — 2.0.0
+### Bodu.Globalization.Calendar — 1.1.0
 
 #### Added
 
@@ -15,7 +15,7 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
 
 #### Changed
 
-- **Breaking.** The parameterless `new NotableDateService()` constructor no longer loads the embedded global rule set. It now loads only `default-minimal.xml` (currently New Year's Day). National public-holiday data must be supplied by referencing one of the new `Bodu.Globalization.Calendar.Data.*` companion packages and passing its provider(s) to the full constructor.
+- **Behaviour change — please re-test.** The parameterless `new NotableDateService()` constructor no longer loads the embedded global rule set. It now loads only `default-minimal.xml` (currently New Year's Day). National public-holiday data must be supplied by referencing one of the new `Bodu.Globalization.Calendar.Data.*` companion packages and passing its provider(s) to the full constructor. The constructor signature itself is unchanged, so the source-level surface is preserved; only the rule set produced at runtime has shifted.
 - The `FileNotFoundException_EmbeddedXmlResourceNotFound` diagnostic message now reads `…not found in any of the searched assemblies: {1}.` to remain grammatical when the provider's assembly chain has more than one entry.
 
 #### Removed
