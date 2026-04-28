@@ -140,9 +140,9 @@
         <rect class="cipher-out" x="-22" y="124" width="44" height="18" rx="3"/>
         <text class="label" x="0" y="137" text-anchor="middle" fill="#0F172A">C₃</text>
       </g>
-      <!-- Feedback from C₁ → XOR₂ and C₂ → XOR₃ via a bottom routing path -->
-      <path class="wire-feedback" d="M 220 142 L 220 156 L 400 156 L 400 68 L 390 68" marker-end="url(#arrv)"/>
-      <path class="wire-feedback" d="M 400 142 L 400 166 L 580 166 L 580 68 L 570 68" marker-end="url(#arrv)"/>
+      <!-- Feedback from C₁ → XOR₂ and C₂ → XOR₃ routed in the gap between cells -->
+      <path class="wire-feedback" d="M 220 142 L 220 158 L 364 158 L 364 55 L 390 55" marker-end="url(#arrv)"/>
+      <path class="wire-feedback" d="M 400 142 L 400 162 L 544 162 L 544 55 L 570 55" marker-end="url(#arrv)"/>
     </g>
   </g>
 
@@ -203,9 +203,9 @@
         <rect class="cipher-out" x="-22" y="112" width="44" height="18" rx="3"/>
         <text class="label" x="0" y="125" text-anchor="middle" fill="#0F172A">C₃</text>
       </g>
-      <!-- Feedback: C₁ → E₂ input, C₂ → E₃ input -->
-      <path class="wire-feedback" d="M 220 130 L 220 140 L 400 140 L 400 27 L 370 27" marker-end="url(#arrv)"/>
-      <path class="wire-feedback" d="M 400 130 L 400 148 L 580 148 L 580 27 L 550 27" marker-end="url(#arrv)"/>
+      <!-- Feedback: C₁ → E₂ input, C₂ → E₃ input, routed in the gap between cells -->
+      <path class="wire-feedback" d="M 220 130 L 220 142 L 364 142 L 364 27 L 370 27" marker-end="url(#arrv)"/>
+      <path class="wire-feedback" d="M 400 130 L 400 148 L 544 148 L 544 27 L 550 27" marker-end="url(#arrv)"/>
     </g>
   </g>
 
@@ -264,10 +264,10 @@
         <rect class="cipher-out" x="-22" y="112" width="44" height="18" rx="3"/>
         <text class="label" x="0" y="125" text-anchor="middle" fill="#0F172A">C₃</text>
       </g>
-      <!-- Feedback: E₁ output → E₂ input, E₂ output → E₃ input -->
-      <path class="wire-feedback" d="M 250 27 L 270 27 L 270 4 L 400 4 L 400 17 L 380 27" marker-end="url(#arrv)"/>
-      <path class="wire-feedback" d="M 430 27 L 450 27 L 450 4 L 580 4 L 580 17 L 560 27" marker-end="url(#arrv)"/>
-      <text class="sub" x="14" y="10">Keystream feeds forward (independent of plaintext) — encrypt = decrypt.</text>
+      <!-- Feedback: E₁ output → E₂ input, E₂ output → E₃ input, routed above cells -->
+      <path class="wire-feedback" d="M 250 27 L 266 27 L 266 -8 L 368 -8 L 368 27 L 370 27" marker-end="url(#arrv)"/>
+      <path class="wire-feedback" d="M 430 27 L 446 27 L 446 -8 L 548 -8 L 548 27 L 550 27" marker-end="url(#arrv)"/>
+      <text class="sub" x="14" y="22">Keystream feeds forward (independent of plaintext) — encrypt = decrypt.</text>
     </g>
   </g>
 
