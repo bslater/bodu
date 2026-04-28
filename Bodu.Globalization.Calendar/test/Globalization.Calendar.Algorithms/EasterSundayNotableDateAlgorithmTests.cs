@@ -458,7 +458,7 @@ public sealed class EasterSundayNotableDateAlgorithmTests
         yield return new object[] { 2000, new DateTime(2000, 4, 23, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Gregorian") };
         yield return new object[] { 2024, new DateTime(2024, 3, 31, 0, 0, 0, DateTimeKind.Unspecified), null! };
         yield return new object[] { 2024, new DateTime(2024, 3, 31, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Gregorian") };
-        yield return new object[] { 2024, new DateTime(2024, 4, 13, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Julian") };
+        yield return new object[] { 2024, new DateTime(2024, 5, 5, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Julian") };
         yield return new object[] { 2025, new DateTime(2025, 4, 20, 0, 0, 0, DateTimeKind.Unspecified), null! };
         yield return new object[] { 2025, new DateTime(2025, 4, 20, 0, 0, 0, DateTimeKind.Unspecified), CalendarOf("Gregorian") };
 
@@ -696,7 +696,6 @@ public sealed class EasterSundayNotableDateAlgorithmTests
     /// <see href="https://github.com/bslater/bodu/issues/53" />.
     /// </summary>
     [TestMethod]
-    [Ignore("Pre-existing algorithm bug for Orthodox Easter years 1916-2099 — tracked by bslater/bodu#53.")]
     [DynamicData(nameof(GetBrokenOrthodoxTestData), DynamicDataDisplayName = nameof(GetKnownEasterSundayTestDataDisplayName))]
     public void GetDate_WhenGivenOrthodoxKnownYears_ShouldReturnExpectedDate(EasterSundayKnownAnswer knownAnswer)
     {
@@ -705,6 +704,7 @@ public sealed class EasterSundayNotableDateAlgorithmTests
         {
             EasterCalendarType.Gregorian => new SysGlob.GregorianCalendar(),
             EasterCalendarType.Julian => new SysGlob.JulianCalendar(),
+            EasterCalendarType.Orthodox => new SysGlob.JulianCalendar(),
             _ => null
         };
 

@@ -26,6 +26,7 @@ public sealed partial class XxHash3Tests
             // Seed = 0, 64-bit output. Verified against the xxHash3 reference implementation.
             Empty = "2D06800538D394C2",
             Abc = "244DA40F405C870E",
+            QuickBrownFox = "CE7D19A5418FB365",
             Zeros16 = "D0A66A65C7528968",
             Sequential0To255 = "B85FD37A0A050E63",
         },

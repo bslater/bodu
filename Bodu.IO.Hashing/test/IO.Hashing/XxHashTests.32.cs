@@ -24,6 +24,7 @@ public sealed partial class XxHash32Tests
             // Seed = 0. Verified against the xxHash reference implementation.
             Empty = "02CC5D05",
             Abc = "80712ED5",
+            QuickBrownFox = "E85EA4DE",
             Zeros16 = "8E022B3A",
             Sequential0To255 = "B4D58730",
         },

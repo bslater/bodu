@@ -30,6 +30,7 @@ public sealed partial class SDBMTests
                 Abc = "20440042",
                 QuickBrownFox = "8CA77173",
                 Zeros16 = "00000000",
+                Sequential0To255 = "DC07103F",
             },
         };
 

@@ -22,6 +22,7 @@ public sealed partial class MurmurHash3_128Tests
             // Seed = 0. Verified against the reference MurmurHash3_x64_128 implementation.
             Empty = "00000000000000000000000000000000",
             Abc = "DE2FF8A27764BE8D4AA65B1C4FEE2B9E",
+            QuickBrownFox = "6C1B07BC7BBC4BE347939AC4A93C437A",
             Zeros16 = "D618A97DF21BBD4BB61C79CDECA965B4",
             Sequential0To255 = "9D586942829AB00383DAED0E6167FB85",
         },

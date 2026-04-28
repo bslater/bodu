@@ -21,6 +21,7 @@ public sealed partial class CityHash32Tests
         {
             Empty = "02400040",
             Abc = "CB5A67A8",
+            QuickBrownFox = "38D83018",
             Zeros16 = "00400040",
             Sequential0To255 = "3CB48141",
         },

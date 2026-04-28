@@ -30,6 +30,7 @@ public sealed partial class JSHashTests
                 Abc = "37889B1A",
                 QuickBrownFox = "38FEEFDF",
                 Zeros16 = "B1DD413D",
+                Sequential0To255 = "9CFDA033",
             },
         };
 
