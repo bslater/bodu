@@ -33,6 +33,6 @@ public sealed class LeiTests : MultiCharCheckDigitAlgorithmTests<LeiTests, Lei>
         Lei.Compute(body);
 
     /// <inheritdoc />
-    protected override bool IsValidStatic(ReadOnlySpan<char> valueIncludingCheck) =>
-        Lei.IsValid(valueIncludingCheck);
+    protected override bool IsValidStatic(ReadOnlySpan<char> value) =>
+        Lei.IsValid(value);
 }
