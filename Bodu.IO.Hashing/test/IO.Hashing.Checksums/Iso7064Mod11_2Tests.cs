@@ -12,7 +12,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// Contains unit tests for the <see cref="Iso7064Mod11_2" /> check-character algorithm.
 /// </summary>
 [TestClass]
-public sealed class Iso7064Mod11_2Tests : AlphanumericCheckDigitAlgorithmTests<Iso7064Mod11_2Tests, Iso7064Mod11_2>
+public sealed partial class Iso7064Mod11_2Tests : AlphanumericCheckDigitAlgorithmTests<Iso7064Mod11_2Tests, Iso7064Mod11_2>
 {
     /// <inheritdoc />
     protected override AlphanumericCheckDigitAlgorithmSpecification GetSpecification() => new()

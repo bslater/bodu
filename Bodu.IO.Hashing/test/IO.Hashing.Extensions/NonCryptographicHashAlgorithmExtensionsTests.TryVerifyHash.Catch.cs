@@ -6,6 +6,7 @@
 
 using System.IO;
 using System.IO.Hashing;
+using System.Threading.Tasks;
 
 namespace Bodu.IO.Hashing.Extensions;
 
@@ -118,6 +119,107 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         ThrowingHashAlgorithm algorithm = new();
 
         Assert.IsFalse(algorithm.TryVerifyHash(SampleString, SampleEncoding, SampleStringHash));
+    }
+
+    /// <summary>
+    /// Verifies that <c>VerifyHash(Stream, string)</c> returns <see langword="false" /> when the supplied hex
+    /// string is malformed, exercising the <see cref="FormatException" /> catch arm of the hex-decoding step.
+    /// </summary>
+    [TestMethod]
+    public void VerifyHash_WhenStreamHexIsMalformed_ShouldReturnFalse()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(SampleData);
+
+        Assert.IsFalse(algorithm.VerifyHash(stream, "ZZZZZZZZ"));
+    }
+
+    /// <summary>
+    /// Verifies that the asynchronous <c>TryVerifyHashAsync(Stream, byte[])</c> overload swallows exceptions
+    /// thrown during stream reads and returns <see langword="false" />.
+    /// </summary>
+    [TestMethod]
+    public async Task TryVerifyHashAsync_WhenStreamThrowsDuringRead_ShouldReturnFalse()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using ThrowingReadStream stream = new();
+
+        bool result = await algorithm.TryVerifyHashAsync(stream, SampleHash);
+
+        Assert.IsFalse(result);
+    }
+
+    /// <summary>
+    /// Verifies that the asynchronous <c>TryVerifyHashAsync(Stream, string)</c> overload swallows exceptions
+    /// thrown during stream reads and returns <see langword="false" />.
+    /// </summary>
+    [TestMethod]
+    public async Task TryVerifyHashAsync_WhenStreamThrowsDuringRead_ForHexOverload_ShouldReturnFalse()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using ThrowingReadStream stream = new();
+
+        bool result = await algorithm.TryVerifyHashAsync(stream, SampleHex);
+
+        Assert.IsFalse(result);
+    }
+
+    /// <summary>
+    /// Verifies that the asynchronous <c>TryVerifyHashAsync(Stream, ReadOnlyMemory&lt;byte&gt;)</c> overload
+    /// swallows exceptions thrown during stream reads and returns <see langword="false" />.
+    /// </summary>
+    [TestMethod]
+    public async Task TryVerifyHashAsync_WhenStreamThrowsDuringRead_ForMemoryOverload_ShouldReturnFalse()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using ThrowingReadStream stream = new();
+
+        bool result = await algorithm.TryVerifyHashAsync(stream, (ReadOnlyMemory<byte>)SampleHash);
+
+        Assert.IsFalse(result);
+    }
+
+    /// <summary>
+    /// Verifies that the asynchronous <c>TryVerifyHashAsync(byte[], byte[])</c> overload swallows exceptions
+    /// raised by the underlying algorithm during <c>Append</c> and returns <see langword="false" />.
+    /// </summary>
+    [TestMethod]
+    public async Task TryVerifyHashAsync_WhenAlgorithmThrowsDuringAppend_ShouldReturnFalse()
+    {
+        ThrowingHashAlgorithm algorithm = new();
+
+        bool result = await algorithm.TryVerifyHashAsync(SampleData, SampleHash);
+
+        Assert.IsFalse(result);
+    }
+
+    /// <summary>
+    /// Verifies that the asynchronous <c>TryVerifyHashAsync(byte[], string)</c> overload swallows exceptions
+    /// raised by the underlying algorithm during <c>Append</c> and returns <see langword="false" />, even when
+    /// the supplied hex is well-formed.
+    /// </summary>
+    [TestMethod]
+    public async Task TryVerifyHashAsync_WhenAlgorithmThrowsDuringAppend_ForHexOverload_ShouldReturnFalse()
+    {
+        ThrowingHashAlgorithm algorithm = new();
+
+        bool result = await algorithm.TryVerifyHashAsync(SampleData, SampleHex);
+
+        Assert.IsFalse(result);
+    }
+
+    /// <summary>
+    /// Verifies that the asynchronous <c>TryVerifyHashAsync(string, Encoding, byte[])</c> overload swallows
+    /// exceptions raised by the underlying algorithm during <c>Append</c> and returns <see langword="false" />.
+    /// </summary>
+    [TestMethod]
+    public async Task TryVerifyHashAsync_WhenAlgorithmThrowsDuringAppend_ForStringOverload_ShouldReturnFalse()
+    {
+        ThrowingHashAlgorithm algorithm = new();
+
+        bool result = await algorithm.TryVerifyHashAsync(SampleString, SampleEncoding, SampleStringHash);
+
+        Assert.IsFalse(result);
     }
 
     /// <summary>

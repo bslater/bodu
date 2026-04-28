@@ -51,8 +51,9 @@ public sealed class FletcherPadBlockTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Fletcher{TSelf}.PadBlock" /> on a Fletcher-64 derivative returns an
-    /// 8-byte buffer that begins with the supplied residual and is zero-padded out to the block size.
+    /// Verifies that <see cref="Fletcher{TSelf}.PadBlock" /> on a Fletcher-64 derivative returns a
+    /// block-sized buffer (4 bytes; <c>hashSize / 16</c>) that begins with the supplied residual and is
+    /// zero-padded out to the block size.
     /// </summary>
     [TestMethod]
     public void PadBlock_WhenResidualIsPartialOnFletcher64Variant_ShouldZeroPadToBlockSize()
@@ -62,12 +63,11 @@ public sealed class FletcherPadBlockTests
         byte[] padded = algorithm.PadBlockExposed(new byte[] { 0x10, 0x20, 0x30 }, messageLength: 99UL);
 
         Assert.IsNotNull(padded);
-        Assert.AreEqual(8, padded.Length);
+        Assert.AreEqual(4, padded.Length);
         Assert.AreEqual(0x10, padded[0]);
         Assert.AreEqual(0x20, padded[1]);
         Assert.AreEqual(0x30, padded[2]);
-        for (int i = 3; i < padded.Length; i++)
-            Assert.AreEqual(0x00, padded[i]);
+        Assert.AreEqual(0x00, padded[3]);
     }
 
     /// <summary>
