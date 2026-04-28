@@ -32,30 +32,8 @@ internal sealed partial class SkipjackBlockCipherTests
     }
 
     /// <inheritdocs/>
-    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(SingleTestVariant variant)
-    {
-        yield return new KnownAnswerTest
-        {
-            Name = "All-zero plaintext / key bit 0 set",
-            Input = Convert.FromHexString("0000000000000000"),
-            ExpectedOutput = Convert.FromHexString("E378FE4157A66452"),
-            CipherFactory = () => new SkipjackBlockCipher(Convert.FromHexString("80000000000000000000")),
-        };
-
-        yield return new KnownAnswerTest
-        {
-            Name = "All-zero plaintext / key bit 1 set",
-            Input = Convert.FromHexString("0000000000000000"),
-            ExpectedOutput = Convert.FromHexString("61CE4785762E8980"),
-            CipherFactory = () => new SkipjackBlockCipher(Convert.FromHexString("40000000000000000000")),
-        };
-
-        yield return new KnownAnswerTest
-        {
-            Name = "All-zero plaintext / key byte 1 high bit set",
-            Input = Convert.FromHexString("0000000000000000"),
-            ExpectedOutput = Convert.FromHexString("F76307829359FC11"),
-            CipherFactory = () => new SkipjackBlockCipher(Convert.FromHexString("00800000000000000000")),
-        };
-    }
+    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(SingleTestVariant variant) =>
+        AdaptKnownAnswers(
+            SkipjackKnownAnswers.For(variant),
+            answer => new SkipjackBlockCipher(answer.Key!));
 }
