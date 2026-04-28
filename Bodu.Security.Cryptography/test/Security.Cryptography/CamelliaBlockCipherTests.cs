@@ -49,74 +49,8 @@ internal sealed partial class CamelliaBlockCipherTests
     }
 
     /// <inheritdoc />
-    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(CamelliaTestVariant variant)
-    {
-        // RFC 3713 Appendix A — single-block ECB vectors (no padding, no IV).
-        // Key and plaintext: 0123456789ABCDEF FEDCBA9876543210
-        // For 192/256-bit keys the same 128-bit block is encrypted; extra key bytes are appended.
-        return variant switch
-        {
-            CamelliaTestVariant.Key128 => GetKey128KnownAnswerTests(),
-            CamelliaTestVariant.Key192 => GetKey192KnownAnswerTests(),
-            CamelliaTestVariant.Key256 => GetKey256KnownAnswerTests(),
-            _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null)
-        };
-    }
-
-    private static IEnumerable<KnownAnswerTest> GetKey128KnownAnswerTests()
-    {
-        // RFC 3713 Appendix A.1 — single-block ECB encrypt, no padding or IV.
-        yield return CreateKnownAnswerTest(
-            name: "Camellia-128 / RFC 3713 A.1",
-            key: "0123456789ABCDEFFEDCBA9876543210",
-            input: "0123456789ABCDEFFEDCBA9876543210",
-            expectedOutput: "67673138549669730857065648EABE43");
-    }
-
-    private static IEnumerable<KnownAnswerTest> GetKey192KnownAnswerTests()
-    {
-        // RFC 3713 Appendix A.2
-        yield return CreateKnownAnswerTest(
-            name: "Camellia-192 / RFC 3713 A.2",
-            key: "0123456789ABCDEFFEDCBA9876543210" + 
-                 "0011223344556677",
-            input: "0123456789ABCDEFFEDCBA9876543210",
-            expectedOutput: "B4993401B3E996F84EE5CEE7D79B09B9");
-    }
-
-    private static IEnumerable<KnownAnswerTest> GetKey256KnownAnswerTests()
-    {
-        // RFC 3713 Appendix A.3
-        yield return CreateKnownAnswerTest(
-            name: "Camellia-256 / RFC 3713 A.3",
-            key: "0123456789ABCDEFFEDCBA9876543210" + 
-                 "0011223344556677" + 
-                 "8899AABBCCDDEEFF",
-            input: "0123456789ABCDEFFEDCBA9876543210",
-            expectedOutput: "9ACC237DFF16D76C20EF7C919E3A7509");
-    }
-
-    private static KnownAnswerTest CreateKnownAnswerTest(
-        string name,
-        string key,
-        string input,
-        string expectedOutput)
-    {
-        byte[] keyBytes = Convert.FromHexString(key);
-
-        return new KnownAnswerTest
-        {
-            Name = name,
-            Input = Convert.FromHexString(input),
-            ExpectedOutput = Convert.FromHexString(expectedOutput),
-            Parameters = new Dictionary<string, object>
-            {
-                ["Key"] = keyBytes,
-                ["KeySize"] = keyBytes.Length * 8,
-                ["Mode"] = "ECB",
-                ["Padding"] = "None",
-            },
-            CipherFactory = () => new CamelliaBlockCipher(keyBytes),
-        };
-    }
+    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(CamelliaTestVariant variant) =>
+        AdaptKnownAnswers(
+            CamelliaKnownAnswers.For(variant),
+            answer => new CamelliaBlockCipher(answer.Key!));
 }
