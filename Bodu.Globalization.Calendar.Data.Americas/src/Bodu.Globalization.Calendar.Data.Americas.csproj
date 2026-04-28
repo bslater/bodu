@@ -13,6 +13,12 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Title>Bodu Calendar Data — Americas</Title>
+    <Description>Notable-date rule pack for Bodu.Globalization.Calendar covering the Americas: United States and Canada. Embedded XML rule sets layered over the main library via a static AmericasCalendarData factory.</Description>
+    <PackageTags>$(PackageTags);calendar;holidays;notable-dates;data-pack;americas;us;ca</PackageTags>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="Resources\region-ca.xml" />
     <None Remove="Resources\region-us.xml" />

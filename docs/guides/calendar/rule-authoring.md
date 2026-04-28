@@ -347,13 +347,13 @@ The logical path `"MyApp/Calendar/Resources/my-rules.xml"` is mapped to the mani
 
 ---
 
-## Approach 3 — Satellite assemblies
+## Approach 3 — Companion data assemblies
 
-Embedding rule XML in a separate assembly keeps rules and application code independently versioned. This is useful for distributing a rule library, loading market-specific calendars on demand, or shrinking the main assembly.
+Embedding rule XML in a separate assembly keeps rules and application code independently versioned. This is useful for distributing a rule library, loading market-specific calendars on demand, or shrinking the main assembly. Bodu ships official region packs that follow exactly this shape — see [Calendar data packs](data-packs.md) for the prebuilt Americas, Europe, and Asia-Pacific assemblies.
 
-### Setting up the satellite project
+### Setting up the companion project
 
-Create a class library that contains only the embedded XML resources:
+Create a class library that contains only the embedded XML resources. The `<LogicalName>` override is what lets cross-assembly cherry-picks line up cleanly — pin each XML to the same logical path the consuming rule files expect:
 
 ```xml
 <!-- MyApp.CalendarRules.csproj -->
@@ -364,15 +364,19 @@ Create a class library that contains only the embedded XML resources:
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\my-rules.xml" />
-    <EmbeddedResource Include="Resources\region-apac.xml" />
+    <EmbeddedResource Include="Resources\my-rules.xml">
+      <LogicalName>MyApp.CalendarRules.Resources.my-rules.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\region-apac.xml">
+      <LogicalName>MyApp.CalendarRules.Resources.region-apac.xml</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
 ```
 
-### Loading from the satellite
+### Loading from a single companion assembly
 
-Pass the satellite assembly as the third constructor argument. The logical path resolves relative to that assembly's manifest resource namespace:
+Pass the assembly as the third constructor argument. The logical path resolves relative to that assembly's manifest resource namespace:
 
 ```csharp
 using System.Reflection;
@@ -390,7 +394,21 @@ var service = new NotableDateService(
     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
 ```
 
-Relative `<UseFrom>` paths in the satellite's XML files resolve against the satellite assembly. Cross-assembly references are not supported within a single provider; use multiple providers if rules span assemblies.
+### Cross-assembly cherry-picks
+
+`XmlResourceNotableDateRuleProvider` accepts an ordered chain of assemblies. The provider walks the chain in order on each manifest lookup, so a `<UseFrom>` directive declared in one assembly can resolve its target from another:
+
+```csharp
+var provider = new XmlResourceNotableDateRuleProvider(
+    "MyApp/CalendarRules/Resources/region-apac.xml",
+    new ResourcePathResolver(),
+    new[] {
+        typeof(MyAppRules).Assembly,           // pack-local rules win first
+        typeof(NotableDateService).Assembly,   // global anchors fall back to the main library
+    });
+```
+
+This is the mechanism that lets the official `Bodu.Globalization.Calendar.Data.*` packs cherry-pick from the main library's `global-*.xml` and `christian-*.xml` files even though those files live in a different DLL. If your custom rules reference rules in another assembly, list every assembly in the chain rather than wiring up several providers.
 
 ---
 
@@ -444,16 +462,16 @@ service.Invalidate(2026);   // Clear 2026 only.
 
 ## Choosing an approach
 
-| | In-Code | XML Files | Satellite Assembly |
+| | In-Code | XML Files | Companion Assembly |
 |---|---|---|---|
 | Schema validation | Manual | Yes (XSD) | Yes (XSD) |
 | Versioning | With code | Independent | Independent |
-| Cherry-pick composition | Manual | `<UseFrom>` / `<Use>` | `<UseFrom>` / `<Use>` |
+| Cherry-pick composition | Manual | `<UseFrom>` / `<Use>` | `<UseFrom>` / `<Use>` (across assembly chain) |
 | Runtime overhead | Minimal | Parse + cache on first use | Parse + cache on first use |
 | Suitable for large rule sets | Impractical | Yes | Yes |
 | Independent deployment | No | No | Yes |
 
-Use in-code objects for unit tests or small dynamic rule sets. Use XML resource files when authoring dozens or more rules within the same project. Use satellite assemblies to distribute rule sets as a separate package or to load regional calendars on demand.
+Use in-code objects for unit tests or small dynamic rule sets. Use XML resource files when authoring dozens or more rules within the same project. Use companion assemblies to distribute rule sets as a separate package or to load regional calendars on demand — and check whether one of the official [calendar data packs](data-packs.md) already covers your region before authoring your own.
 
 ## Where to go next
 

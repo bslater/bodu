@@ -24,7 +24,12 @@ If you're looking for the generated API reference, see the [Bodu.Globalization.C
 
 <div class="bodu-card">
   <h3><a href="rule-authoring.html">Authoring notable date rules</a></h3>
-  <p>How to add your own rules — as in-code objects, embedded XML resource files, or satellite assemblies — and how to layer runtime overrides on top of the base rule set.</p>
+  <p>How to add your own rules — as in-code objects, embedded XML resource files, or companion assemblies — and how to layer runtime overrides on top of the base rule set.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="data-packs.html">Calendar data packs</a></h3>
+  <p>The official <code>Bodu.Globalization.Calendar.Data.*</code> companion assemblies — Americas, Europe, and Asia-Pacific — and how to compose them with the resolution pipeline.</p>
 </div>
 
 </div>
@@ -64,6 +69,7 @@ Every notable date starts as a **`NotableDateRule`** — an authored recipe that
 ## Related concepts
 
 - [Using NotableDateService](notable-dates.md) — patterns for querying, filtering, and overriding.
+- [Calendar data packs](data-packs.md) — the official Americas / Europe / Asia-Pacific companion assemblies.
 - [Date calculation algorithms](algorithms.md) — selecting the right built-in algorithm and implementing your own.
-- [Authoring notable date rules](rule-authoring.md) — in-code objects, XML resource files, satellite assemblies, and runtime overrides.
+- [Authoring notable date rules](rule-authoring.md) — in-code objects, XML resource files, companion assemblies, and runtime overrides.
 - [Bodu.Globalization.Calendar API reference](../../apidoc/Bodu.Globalization.Calendar.md) — full namespace overview.

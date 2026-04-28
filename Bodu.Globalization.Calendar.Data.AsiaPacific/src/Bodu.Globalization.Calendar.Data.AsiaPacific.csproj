@@ -13,6 +13,12 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Title>Bodu Calendar Data — Asia-Pacific</Title>
+    <Description>Notable-date rule pack for Bodu.Globalization.Calendar covering the Asia-Pacific region: Australia, China, India, Japan, South Korea, Malaysia, New Zealand, and Singapore. Embedded XML rule sets layered over the main library via a static AsiaPacificCalendarData factory. Rules driven by lunar, Hindu, Islamic, or Buddhist algorithms require corresponding INotableDateAlgorithm implementations registered with the algorithm registry.</Description>
+    <PackageTags>$(PackageTags);calendar;holidays;notable-dates;data-pack;asia-pacific;au;cn;in;jp;kr;my;nz;sg</PackageTags>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="Resources\region-au.xml" />
     <None Remove="Resources\region-cn.xml" />

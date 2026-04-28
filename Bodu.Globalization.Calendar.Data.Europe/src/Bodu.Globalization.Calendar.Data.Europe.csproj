@@ -13,6 +13,12 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Title>Bodu Calendar Data — Europe</Title>
+    <Description>Notable-date rule pack for Bodu.Globalization.Calendar covering Europe: Germany, Spain, France, the United Kingdom, Ireland, Italy, the Netherlands, and Sweden. Embedded XML rule sets layered over the main library via a static EuropeCalendarData factory.</Description>
+    <PackageTags>$(PackageTags);calendar;holidays;notable-dates;data-pack;europe;de;es;fr;gb;ie;it;nl;se</PackageTags>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="Resources\region-de.xml" />
     <None Remove="Resources\region-es.xml" />
