@@ -22,7 +22,7 @@ public partial class CircularBuffer<T> :
     private object? _syncRoot;
 
     /// <inheritdoc />
-    public int Count => _count;
+    public int Count => _storage.Count;
 
     /// <summary>
     /// Gets a value indicating whether access to the <see cref="CircularBuffer{T}"/> is synchronized (thread safe).
@@ -74,11 +74,11 @@ public partial class CircularBuffer<T> :
         ThrowHelper.ThrowIfArrayMultidimensional(array);
         ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
         ThrowHelper.ThrowIfNegative(index, nameof(index));
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index + _count);
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index + _storage.Count);
 
         try
         {
-            CopyToInternal(array, index);
+            _storage.CopyToInternal(array, index);
         }
         catch (ArrayTypeMismatchException ex)
         {

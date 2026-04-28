@@ -1,5 +1,5 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CircularBuffer.Enumerator.cs" company="PlaceholderCompany">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ArrayDeque.Enumerator.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,23 +8,23 @@ using System;
 
 namespace Bodu.Collections.Generic;
 
-public partial class CircularBuffer<T>
+public partial class ArrayDeque<T>
 {
     /// <summary>
-    /// Enumerates the elements of a <see cref="CircularBuffer{T}"/>.
+    /// Enumerates the elements of an <see cref="ArrayDeque{T}"/> in head-to-tail order.
     /// </summary>
     /// <remarks>
-    /// <para>Use the <see langword="foreach"/> statement to simplify the enumeration process instead of directly using this enumerator.</para>
+    /// <para>Use the <see langword="foreach"/> statement to enumerate the deque rather than using this struct directly.</para>
     /// <para>
-    /// The enumerator provides read-only access to the collection's elements. Modifying the underlying collection while enumerating
-    /// invalidates the enumerator.
+    /// The enumerator provides read-only access. Modifying the underlying deque after enumeration begins invalidates
+    /// the enumerator and causes <see cref="MoveNext"/> or <see cref="Reset"/> to throw <see cref="InvalidOperationException"/>.
     /// </para>
     /// </remarks>
     [Serializable]
     public struct Enumerator :
-       System.Collections.Generic.IEnumerator<T>
+        System.Collections.Generic.IEnumerator<T>
     {
-        private readonly CircularBuffer<T> _circularBuffer;
+        private readonly ArrayDeque<T> _deque;
         private readonly int _version;
         private T _current;
         private int _currentIndex;
@@ -33,11 +33,11 @@ public partial class CircularBuffer<T>
         /// <summary>
         /// Initializes a new instance of the <see cref="Enumerator"/> struct.
         /// </summary>
-        /// <param name="circularBuffer">The buffer to enumerate.</param>
-        internal Enumerator(CircularBuffer<T> circularBuffer)
+        /// <param name="deque">The deque to enumerate.</param>
+        internal Enumerator(ArrayDeque<T> deque)
         {
-            _circularBuffer = circularBuffer;
-            _version = circularBuffer._storage.Version;
+            _deque = deque;
+            _version = deque._storage.Version;
             _currentIndex = -1;
             _current = default!;
             _iteratedCount = 0;
@@ -61,18 +61,18 @@ public partial class CircularBuffer<T>
         /// <inheritdoc />
         public bool MoveNext()
         {
-            if (_version != _circularBuffer._storage.Version)
+            if (_version != _deque._storage.Version)
                 throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
 
-            if (_iteratedCount >= _circularBuffer._storage.Count)
+            if (_iteratedCount >= _deque._storage.Count)
             {
                 _current = default!;
-                _currentIndex = -1; // Ended
+                _currentIndex = -1;
                 return false;
             }
 
-            _currentIndex = (_circularBuffer._storage.Head + _iteratedCount) % _circularBuffer._storage.Capacity;
-            _current = _circularBuffer._storage.Array[_currentIndex];
+            _currentIndex = (_deque._storage.Head + _iteratedCount) % _deque._storage.Capacity;
+            _current = _deque._storage.Array[_currentIndex];
             _iteratedCount++;
 
             return true;
@@ -81,7 +81,7 @@ public partial class CircularBuffer<T>
         /// <inheritdoc />
         public void Reset()
         {
-            if (_version != _circularBuffer._storage.Version)
+            if (_version != _deque._storage.Version)
                 throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
 
             _currentIndex = -1;
