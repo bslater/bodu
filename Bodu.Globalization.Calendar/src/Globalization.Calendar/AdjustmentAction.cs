@@ -27,12 +27,12 @@ public enum AdjustmentAction
 	AddDays,
 
 	/// <summary>
-	/// Moves the date forward to the next weekday as defined by the configured <see cref="CalendarWeekendDefinition" />.
+	/// Moves the date forward to the next weekday as defined by the configured <see cref="Bodu.Extensions.CalendarWeekendDefinition" />.
 	/// </summary>
 	MoveToNextWeekday,
 
 	/// <summary>
-	/// Moves the date backward to the previous weekday as defined by the configured <see cref="CalendarWeekendDefinition" />.
+	/// Moves the date backward to the previous weekday as defined by the configured <see cref="Bodu.Extensions.CalendarWeekendDefinition" />.
 	/// </summary>
 	MoveToPreviousWeekday,
 

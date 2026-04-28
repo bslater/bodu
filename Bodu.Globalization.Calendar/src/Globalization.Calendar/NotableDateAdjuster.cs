@@ -36,7 +36,7 @@ internal sealed class NotableDateAdjuster
 	/// <summary>The configured weekend definition, forwarded to shift actions that move dates to a weekday.</summary>
 	private readonly CalendarWeekendDefinition _weekendDefinition;
 
-	/// <summary>An optional custom weekend provider consulted when <see cref="_weekendDefinition" /> is <see cref="CalendarWeekendDefinition.Custom" />.</summary>
+	/// <summary>An optional custom weekend provider consulted when <see cref="_weekendDefinition" /> is <see cref="Bodu.Extensions.CalendarWeekendDefinition.Custom" />.</summary>
 	private readonly IWeekendDefinitionProvider? _weekendProvider;
 
 	/// <summary>An optional registry of custom <see cref="IAdjustmentHandler" /> instances looked up by key.</summary>

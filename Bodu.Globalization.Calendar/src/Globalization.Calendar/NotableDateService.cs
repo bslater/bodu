@@ -88,7 +88,7 @@ public sealed class NotableDateService : INotableDateService
 	/// <summary>The configured weekend definition used for weekend and non-working-day evaluation.</summary>
 	private readonly CalendarWeekendDefinition _weekendDefinition;
 
-	/// <summary>An optional custom weekend provider consulted when <see cref="_weekendDefinition" /> is <see cref="CalendarWeekendDefinition.Custom" />.</summary>
+	/// <summary>An optional custom weekend provider consulted when <see cref="_weekendDefinition" /> is <see cref="Bodu.Extensions.CalendarWeekendDefinition.Custom" />.</summary>
 	private readonly IWeekendDefinitionProvider? _weekendProvider;
 
 	/// <summary>The resolver used to locate embedded XML resource files.</summary>
