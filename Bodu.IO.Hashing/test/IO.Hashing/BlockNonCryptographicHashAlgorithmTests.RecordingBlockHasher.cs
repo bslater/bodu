@@ -45,5 +45,11 @@ public partial class BlockNonCryptographicHashAlgorithmTests
 
         public void CopyFromExposed(BlockNonCryptographicHashAlgorithm<RecordingBlockHasher>? source)
             => CopyResidualStateFrom(source!);
+
+        public int ResidualByteCountExposed => ResidualByteCount;
+
+        public byte[] ResidualBytesExposed => ResidualBytes.ToArray();
+
+        public ulong TotalLengthExposed => TotalLength;
     }
 }

@@ -13,7 +13,7 @@ using System.Runtime.Serialization;
 /// <see cref="ISerializable" /> round-trip contract.
 /// </summary>
 [TestClass]
-public class CrcStandardTests
+public partial class CrcStandardTests
 {
     private static CrcStandard CreateReference(
         string name = "Test",

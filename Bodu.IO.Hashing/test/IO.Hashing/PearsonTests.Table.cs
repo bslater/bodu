@@ -95,4 +95,32 @@ public partial class PearsonTests
         Assert.ThrowsExactly<ArgumentException>(() =>
             _ = new Pearson(8, Pearson.PearsonTableType.UserDefined));
     }
+
+    /// <summary>
+    /// Verifies that supplying an undefined <see cref="Pearson.PearsonTableType" /> value to the predefined
+    /// overload throws <see cref="ArgumentOutOfRangeException" />, exercising the default branch of the
+    /// internal permutation-table dispatcher.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenTableTypeIsUndefined_ShouldThrowArgumentOutOfRangeException()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            _ = new Pearson(8, (Pearson.PearsonTableType)9999));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Pearson.TableType" /> reflects the predefined permutation supplied at
+    /// construction time.
+    /// </summary>
+    /// <param name="variant">The predefined table type under test.</param>
+    [TestMethod]
+    [DataRow(Pearson.PearsonTableType.Pearson)]
+    [DataRow(Pearson.PearsonTableType.AESSBox)]
+    [DataRow(Pearson.PearsonTableType.CRC32HighByte)]
+    [DataRow(Pearson.PearsonTableType.SHA256Constants)]
+    public void TableType_WhenPredefined_ShouldReflectConstructorChoice(Pearson.PearsonTableType variant)
+    {
+        Pearson algorithm = new(8, variant);
+        Assert.AreEqual(variant, algorithm.TableType);
+    }
 }

@@ -58,4 +58,57 @@ public sealed class CusipTests : AlphanumericCheckDigitAlgorithmTests<CusipTests
         _ = Cusip.Compute("1234567@".AsSpan());
         _ = Cusip.Compute("1234567#".AsSpan());
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Cusip.IsValid(ReadOnlySpan{char})" /> returns <see langword="true" /> for an
+    /// empty input, matching the documented contract.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnTrue()
+    {
+        Assert.IsTrue(Cusip.IsValid(ReadOnlySpan<char>.Empty));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Cusip.IsValid(ReadOnlySpan{char})" /> resolves the historical CUSIP sentinels
+    /// <c>'*'</c>, <c>'@'</c>, and <c>'#'</c> within the body — confirming that the corresponding decode
+    /// branches are exercised.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenBodyContainsCusipSentinels_ShouldEvaluateAgainstComputedCheckDigit()
+    {
+        // Pair each sentinel-bearing body with its computed check digit so the verification is consistent.
+        ReadOnlySpan<char> bodyStar = "1234567*".AsSpan();
+        char checkStar = Cusip.Compute(bodyStar);
+        Assert.IsTrue(Cusip.IsValid(($"1234567*{checkStar}").AsSpan()));
+
+        ReadOnlySpan<char> bodyAt = "1234567@".AsSpan();
+        char checkAt = Cusip.Compute(bodyAt);
+        Assert.IsTrue(Cusip.IsValid(($"1234567@{checkAt}").AsSpan()));
+
+        ReadOnlySpan<char> bodyHash = "1234567#".AsSpan();
+        char checkHash = Cusip.Compute(bodyHash);
+        Assert.IsTrue(Cusip.IsValid(($"1234567#{checkHash}").AsSpan()));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Cusip.IsValid(ReadOnlySpan{char})" /> returns <see langword="false" /> when the
+    /// body contains a character outside the CUSIP alphabet.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenBodyContainsInvalidCharacter_ShouldReturnFalse()
+    {
+        // The lowercase 'a' is not part of the CUSIP alphabet; any otherwise-valid suffix must still be rejected.
+        Assert.IsFalse(Cusip.IsValid("0378331a0".AsSpan()));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Cusip.IsValid(ReadOnlySpan{char})" /> returns <see langword="false" /> when
+    /// the trailing check character is not a decimal digit.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenCheckCharacterIsNotADigit_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Cusip.IsValid("03783310A".AsSpan()));
+    }
 }
