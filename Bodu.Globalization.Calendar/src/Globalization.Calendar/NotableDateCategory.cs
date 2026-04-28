@@ -30,7 +30,7 @@ public enum NotableDateCategory
 	Holiday,
 
 	/// <summary>
-	/// A religious, cultural, or secular observance that may or may not involve public closure.
+	/// A secular or cultural observance that may or may not involve public closure, and does not belong to a more specific category.
 	/// </summary>
 	Observance,
 
@@ -45,9 +45,34 @@ public enum NotableDateCategory
 	Cultural,
 
 	/// <summary>
+	/// A religious observance, ceremony, or holy day significant within a specific faith or denomination.
+	/// </summary>
+	Religious,
+
+	/// <summary>
 	/// A seasonal marker such as a solstice, equinox, or daylight-saving transition.
 	/// </summary>
 	Seasonal,
+
+	/// <summary>
+	/// A civic or national commemoration, such as a constitution day or independence memorial, that may not carry a statutory day off.
+	/// </summary>
+	Civic,
+
+	/// <summary>
+	/// A bank or financial-institution holiday on which banks and financial markets are closed, which may differ from the public holiday schedule.
+	/// </summary>
+	Bank,
+
+	/// <summary>
+	/// A school holiday or term boundary observed by educational institutions, which may not coincide with public holidays.
+	/// </summary>
+	School,
+
+	/// <summary>
+	/// An observance specific to a subnational region, state, or province that does not apply nationally.
+	/// </summary>
+	Regional,
 
 	/// <summary>
 	/// A notable date that does not fit any other primary category.

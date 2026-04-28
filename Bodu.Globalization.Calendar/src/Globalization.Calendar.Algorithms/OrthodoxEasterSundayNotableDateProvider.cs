@@ -31,7 +31,7 @@ public sealed class OrthodoxEasterSundayNotableDateProvider
     protected override string Name => "Orthodox Easter Sunday";
 
     /// <inheritdoc />
-    protected override NotableDateCategory Category => NotableDateCategory.Cultural;
+    protected override NotableDateCategory Category => NotableDateCategory.Religious;
 
     /// <inheritdoc />
     protected override Type? DefaultCalendarType => typeof(SysGlobal.JulianCalendar);

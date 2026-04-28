@@ -26,7 +26,7 @@ public sealed class GregorianEasterSundayNotableDateProvider
     protected override string Name => "Easter Sunday";
 
     /// <inheritdoc />
-    protected override NotableDateCategory Category => NotableDateCategory.Cultural;
+    protected override NotableDateCategory Category => NotableDateCategory.Religious;
 
     /// <inheritdoc />
     protected override Type? DefaultCalendarType => typeof(SysGlobal.GregorianCalendar);
