@@ -28,8 +28,8 @@
   -->
 
   <UseFrom resource="./christian-gregorian.xml">
-    <Use name="Easter Sunday" territory="US" />
     <Use name="Good Friday" territory="US" />
+    <Use name="Easter Sunday" territory="US" />
     <Use name="Christmas Eve" territory="US" />
     <Use name="Christmas Day" territory="US" nonWorking="true">
       <Rule name="United States Christmas Day With Non-Working-Day Roll" category="Holiday" nonWorking="true">
@@ -79,18 +79,18 @@
     </Rule>
   </NotableDate>
 
+  <NotableDate name="Flag Day">
+    <Rule name="Fixed Flag Day" category="Observance" territory="US"
+          comment="Commemorates the adoption of the flag of the United States on 14 June 1777 by the Second Continental Congress. Not a federal holiday; designated as National Flag Day by Congress in 1949 (Public Law 81-81).">
+      <Fixed month="June" day="14" />
+    </Rule>
+  </NotableDate>
+
   <NotableDate name="Juneteenth">
     <Rule name="Fixed Juneteenth With Weekend Roll" category="Holiday" territory="US" nonWorking="true" firstYear="2021"
           comment="Juneteenth National Independence Day. Commemorates 19 June 1865, when Union soldiers arrived in Galveston, Texas and announced the end of slavery, more than two months after the end of the Civil War. Established as a federal holiday by the Juneteenth National Independence Day Act signed by President Biden on 17 June 2021.">
       <Fixed month="June" day="19" />
       <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Flag Day">
-    <Rule name="Fixed Flag Day" category="Observance" territory="US"
-          comment="Commemorates the adoption of the flag of the United States on 14 June 1777 by the Second Continental Congress. Not a federal holiday; designated as National Flag Day by Congress in 1949 (Public Law 81-81).">
-      <Fixed month="June" day="14" />
     </Rule>
   </NotableDate>
 

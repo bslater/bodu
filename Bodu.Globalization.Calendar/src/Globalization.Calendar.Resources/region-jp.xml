@@ -18,6 +18,13 @@
     </Rule>
   </NotableDate>
 
+  <NotableDate name="Setsubun">
+    <Rule name="Fixed Setsubun" category="Cultural" territory="JP">
+      <Fixed month="February" day="3" />
+      <Tag>Japan</Tag>
+    </Rule>
+  </NotableDate>
+
   <NotableDate name="National Foundation Day">
     <Rule name="Fixed National Foundation Day" category="Holiday" territory="JP" nonWorking="true">
       <Fixed month="February" day="11" />
@@ -90,6 +97,15 @@
     </Rule>
   </NotableDate>
 
+  <NotableDate name="Obon">
+    <Rule name="Fixed Obon" category="Cultural" territory="JP" durationDays="3"
+          comment="Japanese ancestral festival commonly observed from 13 to 15 August in many regions. The durationDays value of 3 spans the common August Obon period inclusively.">
+      <Fixed month="August" day="13" />
+      <Tag>Japan</Tag>
+      <Tag>MultiDay</Tag>
+    </Rule>
+  </NotableDate>
+
   <NotableDate name="Respect for the Aged Day">
     <Rule name="Third Monday In September Respect For The Aged Day" category="Holiday" territory="JP" nonWorking="true" firstYear="2003">
       <DayOfWeekInMonth month="September" dayOfWeek="Monday" weekOrdinal="Third" />
@@ -122,22 +138,6 @@
     <Rule name="Fixed Labour Thanksgiving Day" category="Holiday" territory="JP" nonWorking="true">
       <Fixed month="November" day="23" />
       <Tag>Japan</Tag>
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Setsubun">
-    <Rule name="Fixed Setsubun" category="Cultural" territory="JP">
-      <Fixed month="February" day="3" />
-      <Tag>Japan</Tag>
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Obon">
-    <Rule name="Fixed Obon" category="Cultural" territory="JP" durationDays="3"
-          comment="Japanese ancestral festival commonly observed from 13 to 15 August in many regions. The durationDays value of 3 spans the common August Obon period inclusively.">
-      <Fixed month="August" day="13" />
-      <Tag>Japan</Tag>
-      <Tag>MultiDay</Tag>
     </Rule>
   </NotableDate>
 

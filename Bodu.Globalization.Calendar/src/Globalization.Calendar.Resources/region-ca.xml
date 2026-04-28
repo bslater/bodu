@@ -41,8 +41,8 @@
   -->
 
   <UseFrom resource="./christian-gregorian.xml">
-    <Use name="Easter Sunday" territory="CA" />
     <Use name="Good Friday" territory="CA" nonWorking="true" />
+    <Use name="Easter Sunday" territory="CA" />
     <Use name="Easter Monday" territory="CA" nonWorking="true" />
     <Use name="Christmas Eve" territory="CA" />
     <Use name="Christmas Day" territory="CA" nonWorking="true">
@@ -184,6 +184,18 @@
     </Rule>
   </NotableDate>
 
+  <NotableDate name="Island Day">
+    <Rule name="Third Monday In February Island Day"
+          category="Holiday"
+          territory="CA-PE"
+          nonWorking="true"
+          firstYear="2009"
+          comment="Introduced in Prince Edward Island, first observed on the third Monday of February 2009.">
+      <DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" />
+      <Tag>ProvinceHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
   <NotableDate name="Louis Riel Day">
     <Rule name="Third Monday In February Louis Riel Day"
           category="Holiday"
@@ -203,18 +215,6 @@
           nonWorking="true"
           firstYear="2015"
           comment="Introduced in Nova Scotia, first observed on the third Monday of February 2015, to celebrate Nova Scotia's heritage and culture.">
-      <DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" />
-      <Tag>ProvinceHoliday</Tag>
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Island Day">
-    <Rule name="Third Monday In February Island Day"
-          category="Holiday"
-          territory="CA-PE"
-          nonWorking="true"
-          firstYear="2009"
-          comment="Introduced in Prince Edward Island, first observed on the third Monday of February 2009.">
       <DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" />
       <Tag>ProvinceHoliday</Tag>
     </Rule>
@@ -243,11 +243,35 @@
     under different names.
   -->
 
+  <NotableDate name="Nunavut Day">
+    <Rule name="Fixed Nunavut Day With Weekend Roll"
+          category="Holiday"
+          territory="CA-NU"
+          nonWorking="true"
+          firstYear="1999"
+          comment="Commemorates the passage of the Nunavut Act and the Nunavut Land Claims Agreement Act on 9 July 1993, which led to the establishment of Nunavut on 1 April 1999.">
+      <Fixed month="July" day="9" />
+      <Tag>TerritoryHoliday</Tag>
+      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
+    </Rule>
+  </NotableDate>
+
   <NotableDate name="British Columbia Day">
     <Rule name="First Monday In August British Columbia Day"
           category="Holiday"
           territory="CA-BC"
           nonWorking="true">
+      <DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="First" />
+      <Tag>ProvinceHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Civic Holiday">
+    <Rule name="First Monday In August Civic Holiday"
+          category="Holiday"
+          territory="CA-ON,CA-MB,CA-SK,CA-NU"
+          nonWorking="true"
+          comment="Observed on the first Monday of August in Ontario (where it is also informally known as Simcoe Day in Toronto), Manitoba, Saskatchewan, and Nunavut. The name and statutory status vary by municipality and territory.">
       <DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="First" />
       <Tag>ProvinceHoliday</Tag>
     </Rule>
@@ -273,17 +297,6 @@
     </Rule>
   </NotableDate>
 
-  <NotableDate name="Civic Holiday">
-    <Rule name="First Monday In August Civic Holiday"
-          category="Holiday"
-          territory="CA-ON,CA-MB,CA-SK,CA-NU"
-          nonWorking="true"
-          comment="Observed on the first Monday of August in Ontario (where it is also informally known as Simcoe Day in Toronto), Manitoba, Saskatchewan, and Nunavut. The name and statutory status vary by municipality and territory.">
-      <DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="First" />
-      <Tag>ProvinceHoliday</Tag>
-    </Rule>
-  </NotableDate>
-
   <NotableDate name="Discovery Day">
     <Rule name="Third Monday In August Discovery Day (YT)"
           category="Holiday"
@@ -292,19 +305,6 @@
           comment="Celebrated on the third Monday of August in Yukon to commemorate the discovery of gold on Bonanza Creek on 17 August 1896, which triggered the Klondike Gold Rush.">
       <DayOfWeekInMonth month="August" dayOfWeek="Monday" weekOrdinal="Third" />
       <Tag>TerritoryHoliday</Tag>
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Nunavut Day">
-    <Rule name="Fixed Nunavut Day With Weekend Roll"
-          category="Holiday"
-          territory="CA-NU"
-          nonWorking="true"
-          firstYear="1999"
-          comment="Commemorates the passage of the Nunavut Act and the Nunavut Land Claims Agreement Act on 9 July 1993, which led to the establishment of Nunavut on 1 April 1999.">
-      <Fixed month="July" day="9" />
-      <Tag>TerritoryHoliday</Tag>
-      <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
   </NotableDate>
 

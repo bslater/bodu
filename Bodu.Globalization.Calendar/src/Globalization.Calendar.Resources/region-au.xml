@@ -34,9 +34,9 @@
   -->
 
   <UseFrom resource="./christian-gregorian.xml">
-    <Use name="Easter Sunday" territory="AU" />
     <Use name="Good Friday" territory="AU" nonWorking="true" />
     <Use name="Holy Saturday" as="Easter Saturday" territory="AU" nonWorking="true" />
+    <Use name="Easter Sunday" territory="AU" />
     <Use name="Easter Monday" territory="AU" nonWorking="true" />
     <Use name="Christmas Eve" territory="AU" />
     <Use name="Christmas Day" territory="AU" nonWorking="true">
@@ -103,15 +103,6 @@
     Widely observed Australian cultural and family observances.
   -->
 
-  <NotableDate name="Father's Day">
-    <Rule name="First Sunday In September Father's Day"
-          category="Observance"
-          territory="AU"
-          comment="In Australia and New Zealand, Father's Day is observed on the first Sunday of September, not the third Sunday of June as in most other countries.">
-      <DayOfWeekInMonth month="September" dayOfWeek="Sunday" weekOrdinal="First" />
-    </Rule>
-  </NotableDate>
-
   <NotableDate name="Harmony Day">
     <Rule name="Fixed Harmony Day"
           category="Observance"
@@ -125,6 +116,15 @@
           category="Remembrance"
           territory="AU">
       <Fixed month="May" day="26" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="National Reconciliation Week">
+    <Rule name="Fixed National Reconciliation Week"
+          category="Observance"
+          territory="AU"
+          durationDays="7">
+      <Fixed month="May" day="27" />
     </Rule>
   </NotableDate>
 
@@ -145,12 +145,12 @@
     </Rule>
   </NotableDate>
 
-  <NotableDate name="National Reconciliation Week">
-    <Rule name="Fixed National Reconciliation Week"
+  <NotableDate name="Father's Day">
+    <Rule name="First Sunday In September Father's Day"
           category="Observance"
           territory="AU"
-          durationDays="7">
-      <Fixed month="May" day="27" />
+          comment="In Australia and New Zealand, Father's Day is observed on the first Sunday of September, not the third Sunday of June as in most other countries.">
+      <DayOfWeekInMonth month="September" dayOfWeek="Sunday" weekOrdinal="First" />
     </Rule>
   </NotableDate>
 
@@ -161,7 +161,7 @@
       <DayOfWeekInMonth month="September" dayOfWeek="Thursday" weekOrdinal="Second" />
     </Rule>
   </NotableDate>
-  
+
   <!--
     New South Wales holidays and observances.
   -->
@@ -258,6 +258,17 @@
     </Rule>
   </NotableDate>
 
+  <NotableDate name="Royal Queensland Show">
+    <Rule name="Second Wednesday In August Royal Queensland Show (Brisbane)"
+          category="Cultural"
+          territory="AU-QLD"
+          nonWorking="true"
+          comment="Brisbane metropolitan area only — not observed state-wide.">
+      <DayOfWeekInMonth month="August" dayOfWeek="Wednesday" weekOrdinal="Second" />
+      <Tag>RegionalHoliday</Tag>
+    </Rule>
+  </NotableDate>
+
   <NotableDate name="King's Birthday">
     <Rule name="First Monday In October King's Birthday (QLD)"
           category="Holiday"
@@ -267,17 +278,6 @@
           comment="Moved to October from 2016 onwards; prior years observed in June.">
       <DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="First" />
       <Tag>StateHoliday</Tag>
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Royal Queensland Show">
-    <Rule name="Second Wednesday In August Royal Queensland Show (Brisbane)"
-          category="Cultural"
-          territory="AU-QLD"
-          nonWorking="true"
-          comment="Brisbane metropolitan area only — not observed state-wide.">
-      <DayOfWeekInMonth month="August" dayOfWeek="Wednesday" weekOrdinal="Second" />
-      <Tag>RegionalHoliday</Tag>
     </Rule>
   </NotableDate>
 

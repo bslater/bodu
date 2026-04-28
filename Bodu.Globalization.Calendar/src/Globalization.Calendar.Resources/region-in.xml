@@ -4,19 +4,19 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <UseFrom resource="./global-hindu.xml">
-    <Use name="Maha Shivaratri" territory="IN" />
-    <Use name="Holi" territory="IN" nonWorking="true" />
-    <Use name="Ram Navami" territory="IN" />
-    <Use name="Janmashtami" territory="IN" />
-    <Use name="Ganesh Chaturthi" territory="IN" />
-    <Use name="Raksha Bandhan" territory="IN" />
-    <Use name="Navaratri" territory="IN" />
-    <Use name="Dussehra" territory="IN" nonWorking="true" />
-    <Use name="Diwali" territory="IN" nonWorking="true" />
     <Use name="Makar Sankranti" territory="IN" />
     <Use name="Pongal" territory="IN" />
     <Use name="Saraswati Puja" territory="IN" />
+    <Use name="Maha Shivaratri" territory="IN" />
+    <Use name="Holi" territory="IN" nonWorking="true" />
+    <Use name="Ram Navami" territory="IN" />
+    <Use name="Raksha Bandhan" territory="IN" />
+    <Use name="Janmashtami" territory="IN" />
+    <Use name="Ganesh Chaturthi" territory="IN" />
     <Use name="Onam" territory="IN" />
+    <Use name="Navaratri" territory="IN" />
+    <Use name="Dussehra" territory="IN" nonWorking="true" />
+    <Use name="Diwali" territory="IN" nonWorking="true" />
   </UseFrom>
 
   <UseFrom resource="./global-islamic.xml">
