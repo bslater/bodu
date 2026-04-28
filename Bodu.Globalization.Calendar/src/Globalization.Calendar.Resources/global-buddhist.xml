@@ -45,6 +45,17 @@
     </Rule>
   </NotableDate>
 
+  <NotableDate name="Losar">
+    <Rule name="Losar"
+          category="Religious"
+          durationDays="3"
+          comment="Tibetan New Year (Losar, lo meaning 'year', sar meaning 'new'). The first day of the first month of the Tibetan lunar calendar, typically falling in February or March in the Gregorian calendar. The most important festival in the Tibetan Buddhist calendar, celebrated over three days with prayers, offerings, traditional foods, and family gatherings. Also observed by Mongolian and Himalayan Buddhist communities. The precise Gregorian date is determined by the Tibetan lunisolar calendar, which may differ from the Chinese lunisolar calendar by up to several days. Requires a custom INotableDateAlgorithm registered under the key 'losar'.">
+      <Algorithm key="losar" />
+      <Tag>BuddhistCalendar</Tag>
+      <Tag>TibetanCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
   <NotableDate name="Vesak">
     <Rule name="Vesak"
           category="Religious"
@@ -79,17 +90,6 @@
           comment="Commemorates the enlightenment (Bodhi) of the Buddha Gautama under the Bodhi tree at Bodh Gaya. Observed on 8 December in Japanese Zen (Rohatsu) and most East Asian Mahayana traditions, following the convention established in Japanese Buddhism. Observed with meditation, recitation of sutras, and other practices. The Theravada tradition incorporates the enlightenment into the Vesak celebration rather than marking it separately.">
       <Fixed month="December" day="8" />
       <Tag>BuddhistCalendar</Tag>
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Losar">
-    <Rule name="Losar"
-          category="Religious"
-          durationDays="3"
-          comment="Tibetan New Year (Losar, lo meaning 'year', sar meaning 'new'). The first day of the first month of the Tibetan lunar calendar, typically falling in February or March in the Gregorian calendar. The most important festival in the Tibetan Buddhist calendar, celebrated over three days with prayers, offerings, traditional foods, and family gatherings. Also observed by Mongolian and Himalayan Buddhist communities. The precise Gregorian date is determined by the Tibetan lunisolar calendar, which may differ from the Chinese lunisolar calendar by up to several days. Requires a custom INotableDateAlgorithm registered under the key 'losar'.">
-      <Algorithm key="losar" />
-      <Tag>BuddhistCalendar</Tag>
-      <Tag>TibetanCalendar</Tag>
     </Rule>
   </NotableDate>
 

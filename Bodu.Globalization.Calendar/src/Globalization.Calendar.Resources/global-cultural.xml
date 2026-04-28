@@ -21,18 +21,6 @@
     </Rule>
   </NotableDate>
 
-  <NotableDate name="April Fool's Day">
-    <Rule name="Fixed April Fool's Day" category="Cultural">
-      <Fixed month="April" day="1" />
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Halloween">
-    <Rule name="Fixed Halloween" category="Cultural">
-      <Fixed month="October" day="31" />
-    </Rule>
-  </NotableDate>
-
   <NotableDate name="International Mother Language Day">
     <Rule name="Fixed International Mother Language Day" category="Cultural" firstYear="2000"
           comment="Proclaimed by UNESCO in 1999 (resolution 30C/29) and first observed on 21 February 2000, to promote linguistic and cultural diversity. The date marks the 1952 shooting of students protesting for recognition of the Bengali language in Dhaka.">
@@ -54,10 +42,23 @@
     </Rule>
   </NotableDate>
 
+  <NotableDate name="April Fool's Day">
+    <Rule name="Fixed April Fool's Day" category="Cultural">
+      <Fixed month="April" day="1" />
+    </Rule>
+  </NotableDate>
+
   <NotableDate name="International Jazz Day">
     <Rule name="Fixed International Jazz Day" category="Cultural" firstYear="2012"
           comment="Proclaimed by UNESCO in 2011 (resolution 36C/38) and first celebrated on 30 April 2012. Championed by jazz musician and UNESCO Goodwill Ambassador Herbie Hancock.">
       <Fixed month="April" day="30" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Star Wars Day">
+    <Rule name="Fixed Star Wars Day" category="Cultural"
+          comment="An informal international fan observance of the Star Wars franchise, held on 4 May because of the phrase 'May the Fourth be with you'.">
+      <Fixed month="May" day="4" />
     </Rule>
   </NotableDate>
 
@@ -75,10 +76,9 @@
     </Rule>
   </NotableDate>
 
-  <NotableDate name="Star Wars Day">
-    <Rule name="Fixed Star Wars Day" category="Cultural"
-          comment="An informal international fan observance of the Star Wars franchise, held on 4 May because of the phrase 'May the Fourth be with you'.">
-      <Fixed month="May" day="4" />
+  <NotableDate name="Halloween">
+    <Rule name="Fixed Halloween" category="Cultural">
+      <Fixed month="October" day="31" />
     </Rule>
   </NotableDate>
 

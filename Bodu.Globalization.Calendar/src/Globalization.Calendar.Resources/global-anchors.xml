@@ -28,15 +28,6 @@
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-  <NotableDate name="Orthodox Easter">
-    <Rule name="Orthodox Easter" category="Religious">
-      <Algorithm key="OrthodoxEaster" />
-      <Tag>Christian</Tag>
-      <Tag>Orthodox</Tag>
-      <Tag>Anchor</Tag>
-    </Rule>
-  </NotableDate>
-
   <NotableDate name="Lunar New Year">
     <Rule name="Lunar New Year"
           category="Cultural"
@@ -59,6 +50,15 @@
           comment="Anchor entry. The first day of Ramadan (month 9 of the Hijri calendar). The durationDays value of 30 represents the maximum month length; the actual month is 29 or 30 days depending on the year. Resolved via the Fixed strategy using HijriCalendar (month 9, day 1) with sweepCalendarYears.">
       <Fixed month="9" day="1" sweepCalendarYears="true" />
       <Tag>Islamic</Tag>
+      <Tag>Anchor</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Orthodox Easter">
+    <Rule name="Orthodox Easter" category="Religious">
+      <Algorithm key="OrthodoxEaster" />
+      <Tag>Christian</Tag>
+      <Tag>Orthodox</Tag>
       <Tag>Anchor</Tag>
     </Rule>
   </NotableDate>
