@@ -117,4 +117,6 @@ Task.Run(() =>
 ## Where to go next
 
 - [Evicting dictionary](evicting-dictionary.md) — a fixed-capacity key-value cache with LRU / LFU / FIFO eviction.
+- [WeekPattern](week-pattern.md) — immutable bitmask value type for sets of days of the week.
+- [Bodu.Core overview](index.md) — all key types at a glance.
 - [Bodu.Collections.Generic API reference](../../apidoc/Bodu.Collections.Generic.md) — full namespace overview.

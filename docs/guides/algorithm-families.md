@@ -248,8 +248,10 @@ Use ASCON when you need a standards-backed primitive with a compact software foo
 ## Where to go next
 
 **Starting points by library**
+- [Bodu.Core overview](core/) — bounded collections, evicting caches, WeekPattern, date extensions.
 - [Bodu.IO.Hashing overview](io-hashing/) — algorithm-selection table and common lifecycle.
 - [Bodu.Security.Cryptography overview](cryptography/) — encryption, hashing, and AEAD families.
+- [Bodu.Globalization.Calendar overview](calendar/) — notable date resolution, territory filtering, and algorithms.
 
 **Encryption**
 - [Encryption basics](cryptography/encryption-basics.md) — Key, IV, Tweak, mode, and padding in one place.

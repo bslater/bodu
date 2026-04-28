@@ -123,4 +123,6 @@ bool hasB = lru.ContainsKey("b");   // false — evicted
 ## Where to go next
 
 - [Circular buffer](circular-buffer.md) — fixed-capacity FIFO ring buffer.
+- [WeekPattern](week-pattern.md) — immutable bitmask value type for sets of days of the week.
+- [Bodu.Core overview](index.md) — all key types at a glance.
 - [Bodu.Collections.Generic API reference](../../apidoc/Bodu.Collections.Generic.md) — full namespace overview.
