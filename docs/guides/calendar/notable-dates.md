@@ -6,30 +6,33 @@ title: Using NotableDateService
 
 `NotableDateService` is the main entry point for resolving notable dates (public holidays, observances, religious festivals) for a given year and territory. It loads rules from one or more `INotableDateRuleProvider` sources, merges optional override providers on top, and caches resolved `NotableDate` instances per year in a thread-safe `ConcurrentDictionary`.
 
-## Pattern 1 — resolve the default global rule set
+## Pattern 1 — bare default service
 
-The default constructor loads the embedded global XML rule set, which covers public holidays and major observances for hundreds of territories:
+The parameterless constructor loads only the embedded **default-minimal** rule set (currently just New Year's Day) so a service can be created without referencing any companion data pack. This is suitable for smoke tests, demos, or apps that supply their own rule providers exclusively.
 
 ```csharp
 using Bodu.Globalization.Calendar;
 
 var service = new NotableDateService();
 
-// All notable dates for the current year, globally.
 IReadOnlyList<NotableDate> dates = service.GetNotableDates(DateTime.Today.Year);
-
-foreach (NotableDate date in dates)
-    Console.WriteLine($"{date.Date:d MMM yyyy}  [{date.TerritoryCode}]  {date.Name}");
+// → New Year's Day on 1 January
 ```
 
-## Pattern 2 — filter by territory
+Region-specific public holidays — US federal holidays, UK bank holidays, Australian state observances, and so on — ship in dedicated `Bodu.Globalization.Calendar.Data.*` companion assemblies. See [Calendar data packs](data-packs.md) for the full list.
 
-Pass a territory code string to restrict results to a specific country or sub-region:
+## Pattern 2 — load a data pack and filter by territory
+
+Pass providers from one of the companion data packs to query a specific country or sub-region. Each pack exposes a static `<Pack>CalendarData` factory with per-country `Create*Provider()` and bulk `CreateProviders()` helpers:
 
 ```csharp
+using Bodu.Extensions;
 using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
-var service = new NotableDateService();
+var service = new NotableDateService(
+    ruleProviders:     new[] { AsiaPacificCalendarData.CreateAustraliaProvider() },
+    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
 
 // All notable dates for Australia in 2026.
 IReadOnlyList<NotableDate> auDates = service.GetNotableDates(2026, territoryCode: "AU");
@@ -43,14 +46,20 @@ foreach (NotableDate date in nswDates)
 
 `TerritoryCode` containment applies: a query for `"AU"` returns both country-level dates and all `"AU-XXX"` subdivision dates. A query for `"AU-NSW"` returns dates scoped to `AU-NSW` and unscoped (global) dates, but not other states.
 
+All examples below assume a service constructed with the relevant data pack — typically `AmericasCalendarData`, `EuropeCalendarData`, or `AsiaPacificCalendarData` — as shown in Pattern 2.
+
 ## Pattern 3 — filter by category
 
 `NotableDateFilter` is a composable predicate built from static factory methods. Pass it to the filtered overload of `GetNotableDates`:
 
 ```csharp
+using Bodu.Extensions;
 using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.Data.Europe;
 
-var service = new NotableDateService();
+var service = new NotableDateService(
+    ruleProviders:     new[] { EuropeCalendarData.CreateUnitedKingdomProvider() },
+    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
 
 // Only public holidays for Great Britain.
 NotableDateFilter publicFilter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
@@ -61,7 +70,7 @@ NotableDateFilter nonWorkingFilter = NotableDateFilter
     .ForCategory(NotableDateCategory.Holiday)
     .And(NotableDateFilter.IsNonWorkingDay());
 
-IReadOnlyList<NotableDate> nonWorking = service.GetNotableDates(2026, nonWorkingFilter, "AU");
+IReadOnlyList<NotableDate> nonWorking = service.GetNotableDates(2026, nonWorkingFilter, "GB");
 
 // Multiple categories with Or:
 NotableDateFilter culturalOrObservance = NotableDateFilter
@@ -72,9 +81,13 @@ NotableDateFilter culturalOrObservance = NotableDateFilter
 ## Pattern 4 — query a date range
 
 ```csharp
+using Bodu.Extensions;
 using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
-var service = new NotableDateService();
+var service = new NotableDateService(
+    ruleProviders:     new[] { AsiaPacificCalendarData.CreateAustraliaProvider() },
+    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
 
 DateTime from = new DateTime(2026, 3, 1);
 DateTime to   = new DateTime(2026, 4, 30);
@@ -87,9 +100,13 @@ Multi-day events (e.g. Easter — `DurationDays > 1`) are included when *any* da
 ## Pattern 5 — query a single day
 
 ```csharp
+using Bodu.Extensions;
 using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
-var service = new NotableDateService();
+var service = new NotableDateService(
+    ruleProviders:     new[] { AsiaPacificCalendarData.CreateAustraliaProvider() },
+    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
 
 DateTime anzacDay = new DateTime(2026, 4, 25);
 IReadOnlyList<NotableDate> onDay = service.GetNotableDates(anzacDay, "AU");
@@ -100,9 +117,13 @@ This overload also returns multi-day spans whose anchor lies on a preceding day 
 ## Pattern 6 — check non-working days and weekends
 
 ```csharp
+using Bodu.Extensions;
 using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.Data.AsiaPacific;
 
-var service = new NotableDateService();
+var service = new NotableDateService(
+    ruleProviders:     new[] { AsiaPacificCalendarData.CreateAustraliaProvider() },
+    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
 
 DateTime christmas = new DateTime(2026, 12, 25);
 
@@ -249,6 +270,7 @@ INotableDateRuleProvider(s)              → base rules
 
 ## Where to go next
 
+- [Calendar data packs](data-packs.md) — the official Americas / Europe / Asia-Pacific companion assemblies and how to compose them.
 - [Date calculation algorithms](algorithms.md) — the built-in algorithm types and how to implement a custom one.
-- [Authoring notable date rules](rule-authoring.md) — in-code objects, XML resource files, satellite assemblies, and runtime overrides.
+- [Authoring notable date rules](rule-authoring.md) — in-code objects, XML resource files, companion assemblies, and runtime overrides.
 - [Bodu.Globalization.Calendar API reference](../../apidoc/Bodu.Globalization.Calendar.md) — full type reference.

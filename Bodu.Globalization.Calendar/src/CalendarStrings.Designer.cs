@@ -142,7 +142,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Embedded XML resource &apos;{0}&apos; was not found in assembly &apos;{1}&apos;..
+        ///   Looks up a localized string similar to Embedded XML resource &apos;{0}&apos; was not found in any of the searched assemblies: {1}..
         /// </summary>
         internal static string FileNotFoundException_EmbeddedXmlResourceNotFound {
             get {

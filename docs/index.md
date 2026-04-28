@@ -62,9 +62,10 @@ Four independent NuGet packages that share a single solution, a single set of co
 <div class="bodu-card">
   <img src="images/hero-calendar.svg" alt="Bodu.Globalization.Calendar" />
   <h3>Bodu.Globalization.Calendar</h3>
-  <p>Notable-date resolution with fixed, rule-based, offset-based, and dynamic calculators — including Gregorian-computus Easter and lunar-calendar Lunar New Year — driven by a pluggable XML rule source and adjustment pipeline.</p>
+  <p>Notable-date resolution with fixed, rule-based, offset-based, and dynamic calculators — including Gregorian-computus Easter and lunar-calendar Lunar New Year — driven by a pluggable XML rule source and adjustment pipeline. Region-specific public-holiday rules ship in companion <code>Data.Americas</code>, <code>Data.Europe</code>, and <code>Data.AsiaPacific</code> packs that ship and re-release independently of the main library.</p>
   <div class="bodu-card-links">
     <a href="api/Bodu.Globalization.Calendar.html">Overview</a>
+    <a href="guides/calendar/data-packs.html">Data packs</a>
     <a href="api/Bodu.Globalization.Calendar.html">API reference</a>
   </div>
 </div>
@@ -80,6 +81,11 @@ dotnet add package Bodu.Core
 dotnet add package Bodu.IO.Hashing
 dotnet add package Bodu.Security.Cryptography
 dotnet add package Bodu.Globalization.Calendar
+
+# Optional region-specific calendar data packs:
+dotnet add package Bodu.Globalization.Calendar.Data.Americas
+dotnet add package Bodu.Globalization.Calendar.Data.Europe
+dotnet add package Bodu.Globalization.Calendar.Data.AsiaPacific
 ```
 
 </div>
