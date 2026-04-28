@@ -90,12 +90,7 @@ public partial class CircularBuffer<T>
     private const int MaxArrayLength = 0x7FFFFFC7; // 2,147,483,647 - 1
 #endif
 
-    private int _capacity;
-    private int _count;
-    private int _head;
-    private T[] _internalBuffer;
-    private int _tail;
-    private int _version;
+    private RingStorage<T> _storage;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CircularBuffer{T}"/> class using the default capacity and allowing overwrites by default.
@@ -146,12 +141,8 @@ public partial class CircularBuffer<T>
 #else
         ThrowHelper.ThrowIfOutOfRange(capacity, 1, MaxArrayLength);
 #endif
-        _internalBuffer = new T[capacity];
-        _capacity = capacity;
+        _storage = new RingStorage<T>(capacity);
         AllowOverwrite = allowOverwrite;
-        _count = 0;
-        _head = 0;
-        _tail = 0;
     }
 
     /// <summary>
@@ -216,24 +207,8 @@ public partial class CircularBuffer<T>
         if (items.Length > capacity && !allowOverwrite)
             throw new InvalidOperationException(ResourceStrings.Arg_Invalid_ArrayLengthExceedsCapacity);
 
-        _internalBuffer = new T[capacity];
-        _capacity = capacity;
         AllowOverwrite = allowOverwrite;
-
-        if (items.Length > capacity)
-        {
-            // Retain the most recent elements that fit in the buffer.
-            Array.Copy(items, items.Length - capacity, _internalBuffer, 0, capacity);
-            _count = capacity;
-        }
-        else
-        {
-            Array.Copy(items, _internalBuffer, items.Length);
-            _count = items.Length;
-        }
-
-        _head = 0;
-        _tail = _count % capacity;
+        _storage.InitializeFrom(items, items.Length, capacity);
     }
 
     /// <summary>
@@ -325,7 +300,7 @@ public partial class CircularBuffer<T>
     /// </para>
     /// <para>To reduce memory usage after elements are removed, use <see cref="TrimExcess"/> to shrink the buffer.</para>
     /// </remarks>
-    public int Capacity => _capacity;
+    public int Capacity => _storage.Capacity;
 
     /// <summary>
     /// Gets the element at the specified zero-based index from the oldest to the newest element.
@@ -348,10 +323,9 @@ public partial class CircularBuffer<T>
         get
         {
             ThrowHelper.ThrowIfLessThan(index, 0);
-            ThrowHelper.ThrowIfGreaterThanOrEqual(index, _count);
+            ThrowHelper.ThrowIfGreaterThanOrEqual(index, _storage.Count);
 
-            int actualIndex = (_head + index) % _capacity;
-            return _internalBuffer[actualIndex];
+            return _storage.GetAt(index);
         }
     }
 
@@ -368,24 +342,8 @@ public partial class CircularBuffer<T>
     /// <see cref="Clear"/> does not count as eviction.
     /// </para>
     /// </remarks>
-    public void Clear()
-    {
-        if (_count > 0)
-        {
-            if (_head < _tail)
-            {
-                Array.Clear(_internalBuffer, _head, _count);
-            }
-            else
-            {
-                Array.Clear(_internalBuffer, _head, _capacity - _head);
-                Array.Clear(_internalBuffer, 0, _tail);
-            }
-
-            _head = _tail = _count = 0;
-            _version++;
-        }
-    }
+    public void Clear() =>
+        _storage.Clear();
 
     /// <summary>
     /// Determines whether the buffer contains a specific element.
@@ -396,25 +354,8 @@ public partial class CircularBuffer<T>
     /// <para>This method performs a linear scan from the oldest to the newest element using the default equality comparer for <typeparamref name="T"/>.</para>
     /// <para>The search is read-only and does not modify the buffer's state.</para>
     /// </remarks>
-    public bool Contains(T item)
-    {
-        if (_count == 0)
-            return false;
-
-        if (_head < _tail)
-        {
-            // Contiguous segment — delegate to Array.IndexOf which uses EqualityComparer<T>.Default
-            // and can be JIT-vectorised on supported runtimes.
-            return Array.IndexOf(_internalBuffer, item, _head, _count) >= 0;
-        }
-
-        // Wrapped layout: [_head .. end) then [0 .. _tail)
-        int firstSegmentLength = _capacity - _head;
-        if (Array.IndexOf(_internalBuffer, item, _head, firstSegmentLength) >= 0)
-            return true;
-
-        return _tail > 0 && Array.IndexOf(_internalBuffer, item, 0, _tail) >= 0;
-    }
+    public bool Contains(T item) =>
+        _storage.Contains(item);
 
     /// <summary>
     /// Copies elements from the buffer to the specified target array, starting at the given array index.
@@ -437,9 +378,9 @@ public partial class CircularBuffer<T>
     {
         ThrowHelper.ThrowIfNull(array);
         ThrowHelper.ThrowIfNegative(index, nameof(index));
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index + _count);
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index + _storage.Count);
 
-        CopyToInternal(array, index);
+        _storage.CopyToInternal(array, index);
     }
 
     /// <summary>
@@ -485,10 +426,10 @@ public partial class CircularBuffer<T>
     /// </remarks>
     public T Peek()
     {
-        if (_count == 0)
+        if (_storage.Count == 0)
             throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionEmpty);
 
-        return _internalBuffer[_head];
+        return _storage.PeekHead();
     }
 
     /// <summary>
@@ -510,14 +451,8 @@ public partial class CircularBuffer<T>
     ///]]>
     /// </code>
     /// </example>
-    public T[] ToArray()
-    {
-        var result = new T[_count];
-        if (_count > 0)
-            CopyToInternal(result, 0);
-
-        return result;
-    }
+    public T[] ToArray() =>
+        _storage.ToArray();
 
     /// <summary>
     /// Reduces the internal capacity of the <see cref="CircularBuffer{T}"/> to match the current number of elements, freeing unused memory.
@@ -547,16 +482,11 @@ public partial class CircularBuffer<T>
     /// </example>
     public void TrimExcess()
     {
-        int newCapacity = Math.Max(_count, 1);
-        if (newCapacity == _capacity)
+        int newCapacity = Math.Max(_storage.Count, 1);
+        if (newCapacity == _storage.Capacity)
             return;
-        var trimmed = new T[newCapacity];
-        CopyTo(trimmed, 0);
 
-        _internalBuffer = trimmed;
-        _capacity = newCapacity;
-        _head = _tail = 0;
-        _version++;
+        _storage.Resize(newCapacity);
     }
 
     /// <summary>
@@ -639,49 +569,14 @@ public partial class CircularBuffer<T>
     /// </example>
     public bool TryPeek(out T item)
     {
-        if (_count == 0)
+        if (_storage.Count == 0)
         {
             item = default!;
             return false;
         }
 
-        item = _internalBuffer[_head];
+        item = _storage.PeekHead();
         return true;
-    }
-
-    /// <summary>
-    /// Copies the contents of the circular buffer to the specified <see cref="Array"/> starting at the given index.
-    /// </summary>
-    /// <param name="destination">
-    /// The destination array to which elements from the buffer will be copied. Must not be <see langword="null"/> and must have sufficient space.
-    /// </param>
-    /// <param name="destinationIndex">The zero-based index in the destination array at which copying begins.</param>
-    /// <remarks>
-    /// <para>
-    /// This method performs the core logic for copying elements from the buffer to an external array, handling both contiguous and wrapped
-    /// buffer layouts.
-    /// </para>
-    /// <para>
-    /// If the buffer is empty, no operation is performed. If the buffer wraps around its internal array boundary, copying occurs in two
-    /// segments. Type compatibility between the buffer element type and the destination array element type is enforced by
-    /// <see cref="Array.Copy(Array, int, Array, int, int)"/>, which throws <see cref="ArrayTypeMismatchException"/> on mismatch.
-    /// </para>
-    /// </remarks>
-    private void CopyToInternal(Array destination, int destinationIndex)
-    {
-        if (_count == 0)
-            return;
-
-        if (_head < _tail)
-        {
-            Array.Copy(_internalBuffer, _head, destination, destinationIndex, _count);
-        }
-        else
-        {
-            int firstSegmentLength = _capacity - _head;
-            Array.Copy(_internalBuffer, _head, destination, destinationIndex, firstSegmentLength);
-            Array.Copy(_internalBuffer, 0, destination, destinationIndex + firstSegmentLength, _tail);
-        }
     }
 
     /// <summary>
@@ -707,7 +602,7 @@ public partial class CircularBuffer<T>
     /// </remarks>
     private bool TryDequeueInternal(out T item, bool throwIfEmpty)
     {
-        if (_count == 0)
+        if (_storage.Count == 0)
         {
             if (throwIfEmpty)
                 throw new InvalidOperationException(ResourceStrings.InvalidOperation_EmptySequence);
@@ -716,12 +611,7 @@ public partial class CircularBuffer<T>
             return false;
         }
 
-        item = _internalBuffer[_head];
-        _internalBuffer[_head] = default!;
-        _head = (_head + 1) % _capacity;
-        _count--;
-        _version++;
-
+        item = _storage.RemoveHead();
         return true;
     }
 
@@ -752,7 +642,7 @@ public partial class CircularBuffer<T>
     /// </remarks>
     private bool TryEnqueueInternal(T item, bool throwIfFull)
     {
-        if (_count == _internalBuffer.Length)
+        if (_storage.Count == _storage.Capacity)
         {
             if (!AllowOverwrite)
             {
@@ -762,22 +652,19 @@ public partial class CircularBuffer<T>
                 return false;
             }
 
-            T overwritten = _internalBuffer[_tail];
+            // When full, _tail == _head, so the head element is the one about to be evicted. Capture it
+            // before raising ItemEvicting so a handler exception vetoes the eviction without mutating storage.
+            T overwritten = _storage.PeekHead();
             ItemEvicting?.Invoke(overwritten);
 
-            _internalBuffer[_tail] = item;
-            _head = _tail = (_tail + 1) % _capacity;
+            _storage.OverwriteTail(item);
 
             ItemEvicted?.Invoke(overwritten);
         }
         else
         {
-            _internalBuffer[_tail] = item;
-            _tail = (_tail + 1) % _capacity;
-            _count++;
+            _storage.AddTail(item);
         }
-
-        _version++;
 
         return true;
     }
