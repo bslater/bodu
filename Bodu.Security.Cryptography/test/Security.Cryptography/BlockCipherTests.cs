@@ -97,9 +97,34 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// </summary>
     /// <param name="variant">The variant to generate test vectors for.</param>
     /// <returns>
-    /// A sequence of <see cref="CiperTextTestVector" /> instances representing named test inputs and their expected ciper text results.
+    /// A sequence of <see cref="KnownAnswerTest" /> instances representing named test inputs and their expected
+    /// ciphertext results.
     /// </returns>
     protected abstract IEnumerable<KnownAnswerTest> GetKnownAnswerTests(TVariant variant);
+
+    /// <summary>
+    /// Adapts a sequence of <see cref="BlockCipherKnownAnswer" /> vectors into the legacy
+    /// <see cref="KnownAnswerTest" /> shape consumed by the existing encrypt/decrypt KAT harness.
+    /// </summary>
+    /// <param name="answers">The data-driven vectors sourced from a per-cipher <c>&lt;Cipher&gt;KnownAnswers</c> static class.</param>
+    /// <param name="cipherFactory">A factory that constructs an <see cref="IBlockCipher" /> instance for a given vector,
+    /// applying its <see cref="BlockCipherKnownAnswer.Key" /> and (where applicable) <see cref="BlockCipherKnownAnswer.Tweak" />.</param>
+    /// <returns>A lazily-evaluated sequence of <see cref="KnownAnswerTest" /> rows wrapping each supplied vector.</returns>
+    /// <remarks>
+    /// Acts as the bridge between the externalised KAT data files (modelled on the Skein hash refactor) and the
+    /// existing <c>EncryptTestData</c> / <c>DecryptTestData</c> pipelines. Each emitted row carries a per-vector
+    /// <see cref="KnownAnswerTest.CipherFactory" /> that defers cipher construction until the test executes.
+    /// </remarks>
+    protected static IEnumerable<KnownAnswerTest> AdaptKnownAnswers(
+        IEnumerable<BlockCipherKnownAnswer> answers,
+        Func<BlockCipherKnownAnswer, IBlockCipher> cipherFactory) =>
+        answers.Select(answer => new KnownAnswerTest
+        {
+            Name = answer.Name,
+            Input = answer.Plaintext,
+            ExpectedOutput = answer.Ciphertext,
+            CipherFactory = () => cipherFactory(answer),
+        });
 
     ///// <summary>
     ///// Returns a fixed, deterministic key for use in tests that require stable output across runs.
