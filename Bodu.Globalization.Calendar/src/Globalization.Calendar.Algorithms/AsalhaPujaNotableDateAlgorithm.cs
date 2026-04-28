@@ -10,7 +10,7 @@ using SysGlobal = System.Globalization;
 namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
-/// Provides a algorithm for determining the Gregorian date of Asalha Puja (Dharma Day) for a given year.
+/// Provides an algorithm for determining the Gregorian date of Asalha Puja (Dharma Day) for a given year.
 /// </summary>
 /// <remarks>
 /// <para>

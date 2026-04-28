@@ -29,21 +29,46 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 public sealed class NotableDateService : INotableDateService
 {
+	/// <summary>The embedded resource path for the default global rule set.</summary>
 	private const string DefaultResourceName = "Bodu/Globalization/Calendar/Resources/global-all.xml";
 
+	/// <summary>The immutable snapshot of base rules loaded at construction from all rule providers.</summary>
 	private readonly ImmutableArray<NotableDateRule> _baseRules;
+
+	/// <summary>The ordered list of override providers applied on top of the base rule set.</summary>
 	private readonly IReadOnlyList<INotableDateRuleOverrideProvider> _overrideProviders;
+
+	/// <summary>Snapshot of all override removals, materialised once at construction to avoid re-querying providers per year.</summary>
 	private readonly IReadOnlyList<RuleRemoval> _overrideRemovals;
+
+	/// <summary>The merged rule set after all overrides have been applied; drives every resolution pass.</summary>
 	private readonly IReadOnlyList<NotableDateRule> _effectiveRules;
+
+	/// <summary>The resolver that turns each rule into an anchor date for a given year.</summary>
 	private readonly NotableDateRuleResolver _resolver;
+
+	/// <summary>The adjuster that evaluates observance adjustments against a resolved anchor date.</summary>
 	private readonly NotableDateAdjuster _adjuster;
+
+	/// <summary>The resolver that arbitrates when multiple rules produce a date on the same day.</summary>
 	private readonly INotableDateCollisionResolver _collisionResolver;
+
+	/// <summary>The optional localizer used to translate notable date names into the active culture.</summary>
 	private readonly INotableDateNameLocalizer? _nameLocalizer;
+
+	/// <summary>The configured weekend definition used for weekend and non-working-day evaluation.</summary>
 	private readonly CalendarWeekendDefinition _weekendDefinition;
+
+	/// <summary>An optional custom weekend provider consulted when <see cref="_weekendDefinition" /> is <see cref="CalendarWeekendDefinition.Custom" />.</summary>
 	private readonly IWeekendDefinitionProvider? _weekendProvider;
+
+	/// <summary>The resolver used to locate embedded XML resource files.</summary>
 	private readonly IResourcePathResolver _resourcePathResolver;
 
+	/// <summary>Thread-safe per-year cache of fully resolved notable dates.</summary>
 	private readonly ConcurrentDictionary<int, IReadOnlyList<NotableDate>> _yearCache = new();
+
+	/// <summary>Lock protecting write access to <see cref="_yearCache" /> during first-time year generation.</summary>
 	private readonly object _gate = new();
 
 	// Per-thread set of years currently being generated on this thread. Used by GetOrGenerateYear to short-circuit recursive
@@ -64,7 +89,7 @@ public sealed class NotableDateService : INotableDateService
     /// </summary>
     /// <param name="ruleProviders">Sources of base notable date rules. Must not be <see langword="null" />.</param>
     /// <param name="weekendDefinition">The weekend definition to apply when evaluating weekends.</param>
-    /// <param name="resourcePathResolver">An optional custom weekend provider.</param>
+    /// <param name="resourcePathResolver">An optional resource path resolver. Defaults to <see cref="ResourcePathResolver" /> when <see langword="null" />.</param>
     /// <param name="weekendProvider">An optional custom weekend provider.</param>
     /// <param name="overrideProviders">Optional layered override providers, applied after the base rules in registration order.</param>
     /// <param name="algorithmRegistry">Optional registry used to resolve <see cref="DateResolutionStrategy.Algorithm" /> rules.</param>
@@ -717,17 +742,27 @@ public sealed class NotableDateService : INotableDateService
 	/// </summary>
 	private sealed class CompositeAlgorithmRegistry : INotableDateAlgorithmRegistry
 	{
+		/// <summary>The host-supplied registry consulted first; its registrations take precedence on key collisions.</summary>
 		private readonly INotableDateAlgorithmRegistry _primary;
+
+		/// <summary>The plugin-supplied registry consulted when <see cref="_primary" /> does not contain the requested key.</summary>
 		private readonly INotableDateAlgorithmRegistry _fallback;
 
+		/// <summary>
+		/// Initialises a new instance of <see cref="CompositeAlgorithmRegistry" />.
+		/// </summary>
+		/// <param name="primary">The primary (host) registry, consulted first.</param>
+		/// <param name="fallback">The fallback (plugin) registry, consulted on primary misses.</param>
 		public CompositeAlgorithmRegistry(INotableDateAlgorithmRegistry primary, INotableDateAlgorithmRegistry fallback)
 		{
 			_primary = primary;
 			_fallback = fallback;
 		}
 
+		/// <inheritdoc />
 		public bool Contains(string key) => _primary.Contains(key) || _fallback.Contains(key);
 
+		/// <inheritdoc />
 		public bool TryGet(string key, out INotableDateAlgorithm algorithm)
 		{
 			if (_primary.TryGet(key, out algorithm!))

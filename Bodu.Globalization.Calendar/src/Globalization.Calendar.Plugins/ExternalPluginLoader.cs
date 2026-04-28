@@ -31,6 +31,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </remarks>
 public sealed class ExternalPluginLoader
 {
+	/// <summary>The trust policy consulted before any assembly code is loaded into the process.</summary>
 	private readonly IPluginTrustPolicy _trustPolicy;
 
 	/// <summary>

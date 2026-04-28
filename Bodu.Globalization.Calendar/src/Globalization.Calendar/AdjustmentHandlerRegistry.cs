@@ -12,7 +12,10 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 public sealed class AdjustmentHandlerRegistry : IAdjustmentHandlerRegistry
 {
+	/// <summary>The case-insensitive key-to-handler mapping maintained by this registry.</summary>
 	private readonly Dictionary<string, IAdjustmentHandler> _handlers = new(StringComparer.OrdinalIgnoreCase);
+
+	/// <summary>Lock protecting read-modify-write access to <see cref="_handlers" />.</summary>
 	private readonly object _gate = new();
 
 	/// <summary>

@@ -42,9 +42,17 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 public sealed class NotableDateFilter
 {
+	/// <summary>The primary gate predicate evaluated against each <see cref="NotableDateRule" /> before date resolution.</summary>
 	private readonly Func<NotableDateRule, bool> _ruleGate;
+
+	/// <summary>The secondary gate predicate evaluated against each materialised <see cref="NotableDate" />.</summary>
 	private readonly Func<NotableDate, bool> _dateGate;
 
+	/// <summary>
+	/// Initialises a new <see cref="NotableDateFilter" /> with explicit primary and secondary gate delegates.
+	/// </summary>
+	/// <param name="ruleGate">The primary gate predicate evaluated against each rule before date resolution.</param>
+	/// <param name="dateGate">The secondary gate predicate evaluated against each materialised date.</param>
 	private NotableDateFilter(Func<NotableDateRule, bool> ruleGate, Func<NotableDate, bool> dateGate)
 	{
 		_ruleGate = ruleGate;

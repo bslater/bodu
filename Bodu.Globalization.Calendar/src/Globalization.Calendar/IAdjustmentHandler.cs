@@ -6,7 +6,6 @@
 
 namespace Bodu.Globalization.Calendar;
 
-
 /// <summary>
 /// Implements custom evaluation and modification logic for an <see cref="ObservanceAdjustment" /> whose
 /// <see cref="ObservanceAdjustment.Trigger" /> or <see cref="ObservanceAdjustment.Action" /> is set to

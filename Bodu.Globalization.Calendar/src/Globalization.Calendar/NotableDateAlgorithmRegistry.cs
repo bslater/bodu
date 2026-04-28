@@ -18,7 +18,10 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 public sealed class NotableDateAlgorithmRegistry : INotableDateAlgorithmRegistry
 {
+	/// <summary>The case-insensitive key-to-algorithm mapping maintained by this registry.</summary>
 	private readonly Dictionary<string, INotableDateAlgorithm> _algorithms = new(StringComparer.OrdinalIgnoreCase);
+
+	/// <summary>Lock protecting read-modify-write access to <see cref="_algorithms" />.</summary>
 	private readonly object _gate = new();
 
 	/// <summary>
@@ -40,7 +43,7 @@ public sealed class NotableDateAlgorithmRegistry : INotableDateAlgorithmRegistry
 	}
 
 	/// <summary>
-	/// Registers a algorithm against the specified key. Existing entries with the same key are replaced.
+	/// Registers an algorithm against the specified key. Existing entries with the same key are replaced.
 	/// </summary>
 	/// <param name="key">A short stable identifier, for example <c>"easter-sunday"</c>. Must not be <see langword="null" /> or whitespace.</param>
 	/// <param name="algorithm">The algorithm instance. Must not be <see langword="null" />.</param>

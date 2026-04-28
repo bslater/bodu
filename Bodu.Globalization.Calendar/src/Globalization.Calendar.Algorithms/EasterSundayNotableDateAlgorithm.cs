@@ -18,6 +18,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 public sealed class EasterSundayNotableDateAlgorithm
 	: INotableDateAlgorithm
 {
+	/// <summary>Shared per-process cache of computed Easter dates, keyed by year and calendar identity string.</summary>
 	private static readonly ConcurrentDictionary<(int year, string calendarId), DateTime> _easterCache = new();
 
 	/// <inheritdoc />
