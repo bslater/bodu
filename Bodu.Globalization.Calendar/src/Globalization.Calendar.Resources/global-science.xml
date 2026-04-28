@@ -53,6 +53,13 @@
     Multi-day science observances.
   -->
 
+  <NotableDate name="Pi Day">
+    <Rule name="Fixed Pi Day" category="Cultural" firstYear="1988"
+          comment="A mathematical culture observance held on 14 March because 3/14 matches the first three significant digits of pi in month/day notation. The first recognised celebration was organised at the Exploratorium in San Francisco in 1988.">
+      <Fixed month="March" day="14" />
+    </Rule>
+  </NotableDate>
+
   <NotableDate name="World Space Week">
     <Rule name="Fixed World Space Week" category="Observance" durationDays="7" firstYear="1999"
           comment="Proclaimed by the United Nations General Assembly in 1999 (resolution 54/68). Runs 4–10 October, marking the launch of Sputnik 1 (4 Oct 1957) and the signing of the Outer Space Treaty (10 Oct 1967).">
@@ -64,14 +71,6 @@
     <Rule name="Fixed World Science Day for Peace and Development" category="Observance" firstYear="2002"
           comment="Proclaimed by UNESCO in 2001 and first observed on 10 November 2002, to highlight the role of science in society and the need to engage the wider public in debates on science.">
       <Fixed month="November" day="10" />
-    </Rule>
-  </NotableDate>
-
-
-  <NotableDate name="Pi Day">
-    <Rule name="Fixed Pi Day" category="Cultural" firstYear="1988"
-          comment="A mathematical culture observance held on 14 March because 3/14 matches the first three significant digits of pi in month/day notation. The first recognised celebration was organised at the Exploratorium in San Francisco in 1988.">
-      <Fixed month="March" day="14" />
     </Rule>
   </NotableDate>
 

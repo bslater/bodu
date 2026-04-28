@@ -50,6 +50,36 @@
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
+  <NotableDate name="Purim">
+    <Rule name="Purim"
+          category="Religious"
+          calendarType="System.Globalization.HebrewCalendar"
+          comment="The Feast of Lots. Observed on 14 Adar (or 14 Adar II in a Hebrew leap year — the LastAdar alias resolves to Adar II in leap years and Adar I in standard years). Commemorates the salvation of the Jewish people from Haman's plot to destroy them, as recounted in the Book of Esther. Observed with the public reading of the Megillah (Book of Esther), wearing of costumes, sending of food gifts (mishloach manot), charitable giving, and festive meals. Resolved via the Fixed strategy using HebrewCalendar (month LastAdar, day 14) with sweepCalendarYears.">
+      <Fixed month="LastAdar" day="14" sweepCalendarYears="true" />
+      <Tag>HebrewCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Passover">
+    <Rule name="Passover"
+          category="Religious"
+          durationDays="7"
+          calendarType="System.Globalization.HebrewCalendar"
+          comment="Pesach. The Festival of Freedom. Begins on 15 Nisan and lasts seven days in Israel and among Reform communities (eight days in traditional diaspora practice). Commemorates the Exodus from Egypt. Observed with the Passover Seder on the first night (and second night in the diaspora), the eating of matzah (unleavened bread), and the prohibition of chametz (leavened products). The durationDays value here represents the seven-day Israeli/Reform observance; regional rules may override to eight days for diaspora communities. Resolved via the Fixed strategy using HebrewCalendar (month Nisan, day 15) with sweepCalendarYears.">
+      <Fixed month="Nisan" day="15" sweepCalendarYears="true" />
+      <Tag>HebrewCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Shavuot">
+    <Rule name="Shavuot"
+          category="Religious"
+          comment="The Feast of Weeks (also Pentecost). Observed on 6 Sivan, fifty days after the first day of Passover (15 Nisan). Commemorates the giving of the Torah at Mount Sinai. Observed with synagogue services, all-night Torah study (tikkun leil Shavuot), and the eating of dairy foods. One day in Israel and among Reform communities; two days in traditional diaspora practice. Authored as a fixed fifty-day offset from Passover; Nisan is always 30 days and Iyar always 29, so this offset is invariant.">
+      <OffsetFromAnchor name="Passover" offset="50" />
+      <Tag>HebrewCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
   <NotableDate name="Rosh Hashanah">
     <Rule name="Rosh Hashanah"
           category="Religious"
@@ -87,36 +117,6 @@
           calendarType="System.Globalization.HebrewCalendar"
           comment="The Festival of Lights (Chanukkah). Begins on 25 Kislev and lasts eight days. Commemorates the rededication of the Second Temple in Jerusalem in 164 BCE following the Maccabean Revolt. Observed by lighting the hanukkiah (nine-branched menorah), with one additional candle lit each night, reciting special prayers, playing dreidel, and eating oil-fried foods such as latkes and sufganiyot. Widely observed by Jewish communities worldwide. Resolved via the Fixed strategy using HebrewCalendar (month Kislev, day 25) with sweepCalendarYears.">
       <Fixed month="Kislev" day="25" sweepCalendarYears="true" />
-      <Tag>HebrewCalendar</Tag>
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Purim">
-    <Rule name="Purim"
-          category="Religious"
-          calendarType="System.Globalization.HebrewCalendar"
-          comment="The Feast of Lots. Observed on 14 Adar (or 14 Adar II in a Hebrew leap year — the LastAdar alias resolves to Adar II in leap years and Adar I in standard years). Commemorates the salvation of the Jewish people from Haman's plot to destroy them, as recounted in the Book of Esther. Observed with the public reading of the Megillah (Book of Esther), wearing of costumes, sending of food gifts (mishloach manot), charitable giving, and festive meals. Resolved via the Fixed strategy using HebrewCalendar (month LastAdar, day 14) with sweepCalendarYears.">
-      <Fixed month="LastAdar" day="14" sweepCalendarYears="true" />
-      <Tag>HebrewCalendar</Tag>
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Passover">
-    <Rule name="Passover"
-          category="Religious"
-          durationDays="7"
-          calendarType="System.Globalization.HebrewCalendar"
-          comment="Pesach. The Festival of Freedom. Begins on 15 Nisan and lasts seven days in Israel and among Reform communities (eight days in traditional diaspora practice). Commemorates the Exodus from Egypt. Observed with the Passover Seder on the first night (and second night in the diaspora), the eating of matzah (unleavened bread), and the prohibition of chametz (leavened products). The durationDays value here represents the seven-day Israeli/Reform observance; regional rules may override to eight days for diaspora communities. Resolved via the Fixed strategy using HebrewCalendar (month Nisan, day 15) with sweepCalendarYears.">
-      <Fixed month="Nisan" day="15" sweepCalendarYears="true" />
-      <Tag>HebrewCalendar</Tag>
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Shavuot">
-    <Rule name="Shavuot"
-          category="Religious"
-          comment="The Feast of Weeks (also Pentecost). Observed on 6 Sivan, fifty days after the first day of Passover (15 Nisan). Commemorates the giving of the Torah at Mount Sinai. Observed with synagogue services, all-night Torah study (tikkun leil Shavuot), and the eating of dairy foods. One day in Israel and among Reform communities; two days in traditional diaspora practice. Authored as a fixed fifty-day offset from Passover; Nisan is always 30 days and Iyar always 29, so this offset is invariant.">
-      <OffsetFromAnchor name="Passover" offset="50" />
       <Tag>HebrewCalendar</Tag>
     </Rule>
   </NotableDate>

@@ -22,10 +22,31 @@
     </Rule>
   </NotableDate>
 
+  <NotableDate name="International Tea Day">
+    <Rule name="Fixed International Tea Day" category="Observance" firstYear="2020"
+          comment="Observed by the United Nations on 21 May and led by the Food and Agriculture Organization (FAO), recognising tea's cultural heritage, health benefits, economic importance, and sustainable production.">
+      <Fixed month="May" day="21" />
+    </Rule>
+  </NotableDate>
+
   <NotableDate name="World Food Safety Day">
     <Rule name="Fixed World Food Safety Day" category="Observance" firstYear="2019"
           comment="Established by the United Nations General Assembly in 2018 (resolution 73/250) and first observed on 7 June 2019. Co-sponsored by the Food and Agriculture Organization (FAO) and the World Health Organization (WHO).">
       <Fixed month="June" day="7" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Beer Day">
+    <Rule name="First Friday In August International Beer Day" category="Cultural" firstYear="2007"
+          comment="An informal global beer culture observance founded in Santa Cruz, California, and now generally observed on the first Friday in August.">
+      <DayOfWeekInMonth month="August" dayOfWeek="Friday" weekOrdinal="First" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Coffee Day">
+    <Rule name="Fixed International Coffee Day" category="Observance" firstYear="2015"
+          comment="A global coffee-sector observance promoted by the International Coffee Organization and coffee associations, celebrating coffee culture and raising awareness of the livelihoods of coffee producers.">
+      <Fixed month="October" day="1" />
     </Rule>
   </NotableDate>
 
@@ -47,27 +68,6 @@
     <Rule name="Fixed World Vegan Day" category="Cultural" firstYear="1994"
           comment="Established in 1994 by the Vegan Society to mark the organisation's 50th anniversary and to celebrate veganism worldwide.">
       <Fixed month="November" day="1" />
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="International Tea Day">
-    <Rule name="Fixed International Tea Day" category="Observance" firstYear="2020"
-          comment="Observed by the United Nations on 21 May and led by the Food and Agriculture Organization (FAO), recognising tea's cultural heritage, health benefits, economic importance, and sustainable production.">
-      <Fixed month="May" day="21" />
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="International Beer Day">
-    <Rule name="First Friday In August International Beer Day" category="Cultural" firstYear="2007"
-          comment="An informal global beer culture observance founded in Santa Cruz, California, and now generally observed on the first Friday in August.">
-      <DayOfWeekInMonth month="August" dayOfWeek="Friday" weekOrdinal="First" />
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="International Coffee Day">
-    <Rule name="Fixed International Coffee Day" category="Observance" firstYear="2015"
-          comment="A global coffee-sector observance promoted by the International Coffee Organization and coffee associations, celebrating coffee culture and raising awareness of the livelihoods of coffee producers.">
-      <Fixed month="October" day="1" />
     </Rule>
   </NotableDate>
 

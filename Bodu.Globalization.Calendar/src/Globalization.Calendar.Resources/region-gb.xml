@@ -39,8 +39,8 @@
   -->
 
   <UseFrom resource="./christian-gregorian.xml">
-    <Use name="Easter Sunday" territory="GB" />
     <Use name="Good Friday" territory="GB" nonWorking="true" />
+    <Use name="Easter Sunday" territory="GB" />
     <Use name="Easter Monday" territory="GB" nonWorking="true" />
     <Use name="Christmas Eve" territory="GB" />
     <Use name="Christmas Day" territory="GB" nonWorking="true">
@@ -99,19 +99,19 @@
     </Rule>
   </NotableDate>
 
+  <NotableDate name="Bonfire Night">
+    <Rule name="Fixed Bonfire Night" category="Cultural" territory="GB"
+          comment="Also known as Guy Fawkes Night. Commemorates the foiling of the Gunpowder Plot of 5 November 1605, when Guy Fawkes and co-conspirators were discovered attempting to blow up the Houses of Parliament. Marked with bonfires, fireworks, and the burning of 'Guy' effigies.">
+      <Fixed month="November" day="5" />
+    </Rule>
+  </NotableDate>
+
   <NotableDate name="Remembrance Sunday">
     <Rule name="Second Sunday In November Remembrance Sunday"
           category="Observance"
           territory="GB"
           comment="Observed on the Sunday closest to 11 November (Armistice Day), which falls on the second Sunday of November each year. The principal national act of remembrance is held at the Cenotaph in Whitehall, London. Distinct from Remembrance Day (11 November), which is also observed in the UK.">
       <DayOfWeekInMonth month="November" dayOfWeek="Sunday" weekOrdinal="Second" />
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Bonfire Night">
-    <Rule name="Fixed Bonfire Night" category="Cultural" territory="GB"
-          comment="Also known as Guy Fawkes Night. Commemorates the foiling of the Gunpowder Plot of 5 November 1605, when Guy Fawkes and co-conspirators were discovered attempting to blow up the Houses of Parliament. Marked with bonfires, fireworks, and the burning of 'Guy' effigies.">
-      <Fixed month="November" day="5" />
     </Rule>
   </NotableDate>
 

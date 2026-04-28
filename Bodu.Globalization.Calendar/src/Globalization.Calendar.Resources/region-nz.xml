@@ -43,9 +43,9 @@
   -->
 
   <UseFrom resource="./christian-gregorian.xml">
-    <Use name="Easter Sunday" territory="NZ" />
     <Use name="Good Friday" territory="NZ" nonWorking="true" />
     <Use name="Holy Saturday" as="Easter Saturday" territory="NZ" />
+    <Use name="Easter Sunday" territory="NZ" />
     <Use name="Easter Monday" territory="NZ" nonWorking="true" />
     <Use name="Christmas Day" territory="NZ" nonWorking="true">
       <Rule name="New Zealand Christmas Day With Weekend Roll" category="Holiday" nonWorking="true">

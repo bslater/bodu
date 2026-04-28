@@ -38,17 +38,17 @@
     </Rule>
   </NotableDate>
 
-  <NotableDate name="Orthodox Epiphany">
-    <Rule name="Fixed Orthodox Epiphany" category="Observance">
-      <Fixed month="January" day="19" />
+  <NotableDate name="Orthodox New Year">
+    <Rule name="Fixed Orthodox New Year" category="Observance">
+      <Fixed month="January" day="14" />
       <Tag>Christian</Tag>
       <Tag>OrthodoxChristian</Tag>
     </Rule>
   </NotableDate>
 
-  <NotableDate name="Orthodox New Year">
-    <Rule name="Fixed Orthodox New Year" category="Observance">
-      <Fixed month="January" day="14" />
+  <NotableDate name="Orthodox Epiphany">
+    <Rule name="Fixed Orthodox Epiphany" category="Observance">
+      <Fixed month="January" day="19" />
       <Tag>Christian</Tag>
       <Tag>OrthodoxChristian</Tag>
     </Rule>
@@ -122,17 +122,17 @@
     Pascha, Bright Week, Ascension, and Pentecost.
   -->
 
-  <NotableDate name="Orthodox Easter Monday">
-    <Rule name="One Day After Orthodox Easter" category="Holiday">
-      <OffsetFromAnchor name="Orthodox Easter Sunday" offset="1" />
+  <NotableDate name="Orthodox Bright Week">
+    <Rule name="Orthodox Bright Week" category="Religious" durationDays="7">
+      <OffsetFromAnchor name="Orthodox Easter Sunday" offset="0" />
       <Tag>Christian</Tag>
       <Tag>OrthodoxChristian</Tag>
     </Rule>
   </NotableDate>
 
-  <NotableDate name="Orthodox Bright Week">
-    <Rule name="Orthodox Bright Week" category="Religious" durationDays="7">
-      <OffsetFromAnchor name="Orthodox Easter Sunday" offset="0" />
+  <NotableDate name="Orthodox Easter Monday">
+    <Rule name="One Day After Orthodox Easter" category="Holiday">
+      <OffsetFromAnchor name="Orthodox Easter Sunday" offset="1" />
       <Tag>Christian</Tag>
       <Tag>OrthodoxChristian</Tag>
     </Rule>
