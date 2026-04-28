@@ -1981,4 +1981,48 @@ public partial class Blake2bTests
             Assert.AreEqual(size / 8, hash.Length, $"Expected {size / 8} bytes for {size}-bit output.");
         }
     }
+
+    /// <summary>
+    /// Returns keyed known-answer test vectors for the <see cref="Blake2bVariant.Blake2b_512" /> variant,
+    /// sourced from the official BLAKE2 reference test vectors (<c>blake2b-kat.txt</c>). Each vector uses the
+    /// 64-byte sequential key <c>bytes(range(64))</c> and an input of <c>bytes(range(i))</c> for the
+    /// boundary lengths that exercise the key-block injection, single-block, and multi-block code paths.
+    /// </summary>
+    /// <remarks>
+    /// Vectors verified with:
+    /// <code>
+    /// python3 -c "import hashlib; k=bytes(range(64)); [print(f'{i}: ' + hashlib.blake2b(bytes(range(i)), key=k, digest_size=64).hexdigest().upper()) for i in [0,1,2,63,64,127,128,129]]"
+    /// </code>
+    /// </remarks>
+    protected override IEnumerable<KnownAnswerTest> GetKeyedTestVectors(Blake2bVariant variant)
+    {
+        if (variant != Blake2bVariant.Blake2b_512)
+            yield break;
+
+        byte[] key = Enumerable.Range(0, Blake2b.MaxKeySize).Select(i => (byte)i).ToArray();
+
+        // (name, input-length, expected-hex) — all use the same 64-byte sequential key.
+        (string Name, int Length, string Hex)[] entries =
+        [
+            ("KAT-0",   0,   "10EBB67700B1868EFB4417987ACF4690AE9D972FB7A590C2F02871799AAA4786B5E996E8F0F4EB981FC214B005F42D2FF4233499391653DF7AEFCBC13FC51568"),
+            ("KAT-1",   1,   "961F6DD1E4DD30F63901690C512E78E4B45E4742ED197C3C5E45C549FD25F2E4187B0BC9FE30492B16B0D0BC4EF9B0F34C7003FAC09A5EF1532E69430234CEBD"),
+            ("KAT-2",   2,   "DA2CFBE2D8409A0F38026113884F84B50156371AE304C4430173D08A99D9FB1B983164A3770706D537F49E0C916D9F32B95CC37A95B99D857436F0232C88A965"),
+            ("KAT-63",  63,  "BD965BF31E87D70327536F2A341CEBC4768ECA275FA05EF98F7F1B71A0351298DE006FBA73FE6733ED01D75801B4A928E54231B38E38C562B2E33EA1284992FA"),
+            ("KAT-64",  64,  "65676D800617972FBD87E4B9514E1C67402B7A331096D3BFAC22F1ABB95374ABC942F16E9AB0EAD33B87C91968A6E509E119FF07787B3EF483E1DCDCCF6E3022"),
+            ("KAT-127", 127, "76D2D819C92BCE55FA8E092AB1BF9B9EAB237A25267986CACF2B8EE14D214D730DC9A5AA2D7B596E86A1FD8FA0804C77402D2FCD45083688B218B1CDFA0DCBCB"),
+            ("KAT-128", 128, "72065EE4DD91C2D8509FA1FC28A37C7FC9FA7D5B3F8AD3D0D7A25626B57B1B44788D4CAF806290425F9890A3A2A35A905AB4B37ACFD0DA6E4517B2525C9651E4"),
+            ("KAT-129", 129, "64475DFE7600D7171BEA0B394E27C9B00D8E74DD1E416A79473682AD3DFDBB706631558055CFC8A40E07BD015A4540DCDEA15883CBBF31412DF1DE1CD4152B91"),
+        ];
+
+        foreach ((string name, int length, string hex) in entries)
+        {
+            yield return new KnownAnswerTest
+            {
+                Name = name,
+                Input = Enumerable.Range(0, length).Select(i => (byte)i).ToArray(),
+                ExpectedOutput = Convert.FromHexString(hex),
+                Parameters = new Dictionary<string, object> { ["Key"] = key },
+            };
+        }
+    }
 }

@@ -343,4 +343,30 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
 
         Assert.AreNotEqual(Convert.ToHexString(unkeyedHash), Convert.ToHexString(keyedHash));
     }
+
+    /// <summary>
+    /// Verifies that the keyed MAC digest matches the known-answer test vector for the given variant, key, and
+    /// input. Vectors are supplied by <see cref="KeyedDeferredFinalBlockHashAlgorithmTests{TTest,TAlgorithm,TVariant}.GetKeyedTestVectors" />
+    /// and must agree with an authoritative reference implementation (e.g., Python's <c>hashlib</c> or the
+    /// official BLAKE2 test-vector files).
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(KeyedKnownAnswerTestData))]
+    public void ComputeHash_WhenKeyedWithKnownAnswerVector_ShouldMatchExpected(
+        TVariant variant,
+        string name,
+        byte[] input,
+        byte[] key,
+        byte[] expected)
+    {
+        using TAlgorithm sut = CreateAlgorithm(variant);
+        sut.Key = key;
+
+        byte[] actual = sut.ComputeHash(input);
+
+        CollectionAssert.AreEqual(expected, actual,
+            $"Keyed KAT mismatch for '{name}' using variant '{variant}'.  " +
+            $"Expected: {Convert.ToHexString(expected)}  " +
+            $"Actual:   {Convert.ToHexString(actual)}");
+    }
 }
