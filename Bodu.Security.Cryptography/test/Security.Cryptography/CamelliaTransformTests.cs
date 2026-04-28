@@ -8,11 +8,11 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Exercises the <see cref="CamelliaTransform" /> implementation against the shared
-/// <see cref="BlockCipherTransformTests{TCryptoTransform}" /> suite.
+/// <see cref="BlockCipherTransformTests{TTest, TCryptoTransform}" /> suite.
 /// </summary>
 [TestClass]
 internal sealed class CamelliaTransformTests
-    : BlockCipherTransformTests<CamelliaTransform>
+    : BlockCipherTransformTests<CamelliaTransformTests, CamelliaTransform>
 {
     /// <inheritdoc />
     protected override CamelliaTransform CreateAlgorithm()

@@ -7,12 +7,12 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Concrete test class that exercises the <see cref="BlockCipherTransformTests{TCryptoTransform}" /> base tests
+/// Concrete test class that exercises the <see cref="BlockCipherTransformTests{TTest, TCryptoTransform}" /> base tests
 /// against the <see cref="SkipjackTransform" /> implementation.
 /// </summary>
 [TestClass]
 internal sealed class SkipjackTransformTests
-    : BlockCipherTransformTests<SkipjackTransform>
+    : BlockCipherTransformTests<SkipjackTransformTests, SkipjackTransform>
 {
     /// <inheritdoc />
     protected override SkipjackTransform CreateAlgorithm()
