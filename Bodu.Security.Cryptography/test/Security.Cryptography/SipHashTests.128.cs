@@ -23,6 +23,8 @@ public partial class SipHash128Tests
         FinalizationRounds = 4,
     };
 
+    private static readonly byte[] HelloInput = Encoding.UTF8.GetBytes("Hello");
+
     protected override HashAlgorithmSpecification GetSpecification(SipHashVariant variant) => new KeyedAlgorithmSpecification
     {
         HashSize = 128,
@@ -36,6 +38,35 @@ public partial class SipHash128Tests
         MaxKeyLength = 16,
         ValidKeyLengths = [16],
         TestKey = SipHashTestKey,
+        KnownAnswers = variant switch
+        {
+            SipHashVariant.SipHash_2_4 => new HashAlgorithmKnownAnswers
+            {
+                Empty = "A3817F04BA25A8E66DF67214C7550293",
+                Abc = "6EDFC93C6A8C85920C6D1BFE0413F575",
+                Zeros16 = "D60D3284A18EBD5AF3D0F02A078007CD",
+                QuickBrownFox = "7628C9301AA4412555E65227CD31964E",
+                Sequential0To255 = "1C9BB67528165F8E468248E3799B0EAB",
+                Additional =
+                [
+                    new HashAlgorithmKnownAnswer
+                    {
+                        Name = "Hello",
+                        Input = HelloInput,
+                        ExpectedHex = "C9E2FA57B43C46560D0F6C0657D05731",
+                    },
+                ],
+            },
+            SipHashVariant.SipHash_4_8 => new HashAlgorithmKnownAnswers
+            {
+                Empty = "1F64CE586DA904E9CFECE85483A70A6C",
+                Abc = "2A74871B2DB4FB6B7F7167F798A760BD",
+                Zeros16 = "2393F374C9F5E28B5CEC1E15B0D61114",
+                QuickBrownFox = "3DEDE5965E71E3A16C7231C2A12B244F",
+                Sequential0To255 = "C7BF2FFE16C9026C3FE93166ABD4D257",
+            },
+            _ => throw new ArgumentOutOfRangeException(nameof(variant)),
+        },
     };
 
     protected override SipHash128 CreateAlgorithm(SipHashVariant variant) =>
@@ -47,54 +78,6 @@ public partial class SipHash128Tests
                 Key = SipHashTestKey,
                 CompressionRounds = 4,
                 FinalizationRounds = 8,
-            },
-            _ => throw new ArgumentOutOfRangeException(nameof(variant))
-        };
-
-    private static readonly IReadOnlyDictionary<string, byte[]> CustomInputs = new Dictionary<string, byte[]>
-    {
-        ["Hello"] = Encoding.UTF8.GetBytes("Hello")
-    };
-
-    protected override IEnumerable<KnownAnswerTest> GetTestVectors(SipHashVariant variant)
-    {
-        foreach (var vector in base.GetTestVectors(variant))
-            yield return vector;
-
-        var expected = GetExpectedHashesForNamedInputs(variant);
-        foreach (var (name, input) in CustomInputs)
-        {
-            if (expected.TryGetValue(name, out var hex))
-            {
-                yield return new KnownAnswerTest
-                {
-                    Name = name,
-                    Input = input,
-                    ExpectedOutput = Convert.FromHexString(hex)
-                };
-            }
-        }
-    }
-
-    protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(SipHashVariant variant) =>
-        variant switch
-        {
-            SipHashVariant.SipHash_2_4 => new Dictionary<string, string>
-            {
-                ["Empty"] = "A3817F04BA25A8E66DF67214C7550293",
-                ["ABC"] = "6EDFC93C6A8C85920C6D1BFE0413F575",
-                ["Zeros_16"] = "D60D3284A18EBD5AF3D0F02A078007CD",
-                ["QuickBrownFox"] = "7628C9301AA4412555E65227CD31964E",
-                ["Sequential_0_255"] = "1C9BB67528165F8E468248E3799B0EAB",
-                ["Hello"] = "C9E2FA57B43C46560D0F6C0657D05731",
-            },
-            SipHashVariant.SipHash_4_8 => new Dictionary<string, string>
-            {
-                ["Empty"] = "1F64CE586DA904E9CFECE85483A70A6C",
-                ["ABC"] = "2A74871B2DB4FB6B7F7167F798A760BD",
-                ["Zeros_16"] = "2393F374C9F5E28B5CEC1E15B0D61114",
-                ["QuickBrownFox"] = "3DEDE5965E71E3A16C7231C2A12B244F",
-                ["Sequential_0_255"] = "C7BF2FFE16C9026C3FE93166ABD4D257",
             },
             _ => throw new ArgumentOutOfRangeException(nameof(variant))
         };

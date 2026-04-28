@@ -21,6 +21,12 @@ public partial class AsconHashA256Tests
         LongInputLength = 256,
         BoundaryLengths = [1, 8, 16, 64],
         MinNonZeroBytesForLongInput = 28,
+        KnownAnswers = new()
+        {
+            // No official known-answer vectors are available yet for AsconHashA256. The empty-input value
+            // is runtime-computed and cross-checked for consistency rather than against an external reference.
+            Empty = "19BF587ED2116F38D0FDD852ACE7C83C3DA1D70E2503A67F278C4C612F4ABC39",
+        },
     };
 
     /// <summary>
@@ -40,23 +46,6 @@ public partial class AsconHashA256Tests
 
     /// <inheritdoc />
     protected override AsconHashA256 CreateAlgorithm(Variant variant) => new AsconHashA256();
-
-    /// <inheritdoc />
-    protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(Variant variant) =>
-        new Dictionary<string, string>
-        {
-            ["Empty"] = "19BF587ED2116F38D0FDD852ACE7C83C3DA1D70E2503A67F278C4C612F4ABC39",
-        };
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// No official known-answer vectors are available yet for <see cref="AsconHashA256" />. A single
-    /// runtime-computed vector for the empty input is provided so that the named-input data-driven
-    /// tests have at least one row to enumerate; the value is cross-checked for consistency rather
-    /// than against an external reference.
-    /// </remarks>
-    protected override IEnumerable<KnownAnswerTest> GetTestVectors(Variant variant) =>
-        [new KnownAnswerTest { Name = "Empty", Input = [], ExpectedOutput = Convert.FromHexString("19BF587ED2116F38D0FDD852ACE7C83C3DA1D70E2503A67F278C4C612F4ABC39") }];
 
     /// <inheritdoc />
     protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(Variant variant) => new[]

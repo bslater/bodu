@@ -21,6 +21,11 @@ public partial class AsconHash256Tests
         LongInputLength = 256,
         BoundaryLengths = [1, 8, 16, 64],
         MinNonZeroBytesForLongInput = 28,
+        KnownAnswers = new()
+        {
+            // Known-answer test vectors sourced from the ASCON reference implementation (ascon-c, LWC_HASH_KAT_128_256.txt).
+            Empty = "0B3BE5850F2F6B98CAF29F8FDEA89B64A1FA70AA249B8F839BD53BAA304D92B2",
+        },
     };
 
     /// <inheritdoc />
@@ -31,14 +36,6 @@ public partial class AsconHash256Tests
 
     /// <inheritdoc />
     protected override AsconHash256 CreateAlgorithm(SingleTestVariant variant) => new AsconHash256();
-
-    /// <inheritdoc />
-    protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(SingleTestVariant variant) =>
-        new Dictionary<string, string>
-        {
-            // Known-answer test vectors sourced from the ASCON reference implementation (ascon-c, LWC_HASH_KAT_128_256.txt).
-            ["Empty"] = "0B3BE5850F2F6B98CAF29F8FDEA89B64A1FA70AA249B8F839BD53BAA304D92B2",
-        };
 
     /// <inheritdoc />
     protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) =>
