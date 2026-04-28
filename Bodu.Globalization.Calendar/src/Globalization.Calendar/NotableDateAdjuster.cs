@@ -253,9 +253,17 @@ internal sealed class NotableDateAdjuster
 		}
 
 		var context = new AdjustmentHandlerContext(original, adjustment, rule, territoryCode, calendarType);
-		var result = handler.Apply(context);
+		AdjustmentHandlerResult result;
+		try
+		{
+			result = handler.Apply(context);
+		}
+		catch
+		{
+			return AdjustmentApplyResult.NotActivated(original);
+		}
 
-		if (!result.Activated)
+		if (result is null || !result.Activated)
 			return AdjustmentApplyResult.NotActivated(original);
 
 		return new AdjustmentApplyResult(
