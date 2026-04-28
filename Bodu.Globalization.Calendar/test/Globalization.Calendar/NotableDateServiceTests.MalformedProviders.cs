@@ -4,10 +4,12 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Extensions;
 using Bodu.Globalization.Calendar.Plugins;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Linq;
+using SysGlobal = System.Globalization;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -538,7 +540,7 @@ public sealed partial class NotableDateServiceTests
 	private sealed class WrongYearAlgorithm : INotableDateAlgorithm
 	{
 		/// <inheritdoc />
-		public DateTime? GetDate(int year, Calendar? calendar = null) =>
+		public DateTime? GetDate(int year, SysGlobal.Calendar? calendar = null) =>
 			new DateTime(year - 1, 12, 31);
 	}
 
