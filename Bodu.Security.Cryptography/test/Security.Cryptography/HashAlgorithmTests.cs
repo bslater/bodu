@@ -141,10 +141,20 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     protected abstract TAlgorithm CreateAlgorithm(TVariant variant);
 
     /// <summary>
-    /// Returns a list of expected hash outputs for progressive incremental inputs such as input[0..i].
+    /// Returns the expected hash values after progressively appending a single byte at a time from the sequence
+    /// <c>0x00, 0x01, 0x02, …</c>.
     /// </summary>
-    /// <param name="variant">The algorithm variant to retrieve expected results for.</param>
-    /// <returns>A list of hexadecimal strings representing the hash outputs at each incremental step.</returns>
+    /// <param name="variant">The variant under test.</param>
+    /// <returns>
+    /// A sequence of expected hex-encoded hash values. The entry at index <c>i</c> is the hash of the first
+    /// <c>i</c> bytes of the incremental sequence (so index 0 is the empty-input hash). An empty sequence
+    /// causes the incremental test to be marked inconclusive.
+    /// </returns>
+    /// <remarks>
+    /// The incremental test iterates once per entry, appending one further byte at each step and comparing the
+    /// current hash to the corresponding entry. This lets derived classes validate streaming semantics across
+    /// residual-buffer and block-alignment boundaries.
+    /// </remarks>
     protected abstract IReadOnlyList<string> GetExpectedHashesForIncrementalInput(TVariant variant);
 
     /// <summary>

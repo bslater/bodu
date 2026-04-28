@@ -69,4 +69,22 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         NonCryptographicHashAlgorithm baseline = CreateAlgorithm(variant);
         CollectionAssert.AreEqual(baseline.GetCurrentHash(), algorithm.GetCurrentHash());
     }
+
+    /// <summary>
+    /// Verifies that the synchronous append-and-finalise path produces the correct hash value for
+    /// incrementally growing inputs from empty input through one byte past the spec's coverage threshold.
+    /// </summary>
+    /// <param name="variant">The variant identifier supplied by the dynamic data source.</param>
+    /// <returns>A task that completes when all incremental lengths have been verified.</returns>
+    [TestMethod]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    public Task GetHashAndReset_WhenUsingIncrementalInput_ShouldMatchExpected(TVariant variant) =>
+        AssertIncrementalInputAsync(variant,
+            (algorithm, input, byteCount) =>
+            {
+                algorithm.Reset();
+                algorithm.Append(input.AsSpan(0, byteCount));
+                return Task.FromResult(algorithm.GetHashAndReset());
+            });
+
 }

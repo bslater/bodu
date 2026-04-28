@@ -40,6 +40,15 @@ public record NonCryptographicHashAlgorithmSpecification
     public int? BlockSizeBytes { get; init; }
 
     /// <summary>
+    /// Optional override for the upper bound (in bytes) of the dense incremental-input test.
+    /// When <see langword="null" />, the test defaults to <c>HashLengthInBytes * 4</c> for
+    /// block-based algorithms and <c>16</c> for byte-stream algorithms
+    /// (<see cref="HashLengthInBytes" /> ≤ 1). Override for hierarchical hashes (e.g. Blake3
+    /// chunks, KangarooTwelve leaves) so the test crosses every state-machine boundary.
+    /// </summary>
+    public int? IncrementalCoverageBytes { get; init; }
+
+    /// <summary>
     /// Gets the input lengths used to exercise distinct internal algorithm paths during hash distribution tests.
     /// Defaults to a general-purpose set suitable for most streaming hash algorithms; override for algorithms
     /// with well-defined internal path boundaries.

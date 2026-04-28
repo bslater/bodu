@@ -4,8 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test;
 using System.IO.Hashing;
 using System.Reflection;
+using System.Security.Cryptography;
 
 namespace Bodu.IO.Hashing;
 
@@ -118,7 +120,41 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// current hash to the corresponding entry. This lets derived classes validate streaming semantics across
     /// residual-buffer and block-alignment boundaries.
     /// </remarks>
-    protected abstract IEnumerable<string> GetIncrementalHashValue(TVariant variant);
+    protected abstract IReadOnlyList<string> GetExpectedHashesForIncrementalInput(TVariant variant);
+
+    /// <summary>
+    /// Verifies that the expected hash for the "Empty" named input matches the first entry in the incremental hash vector set.
+    /// </summary>
+    /// <param name="variant">The algorithm variant under test.</param>
+    /// <remarks>
+    /// This ensures consistency between fixed test vectors (e.g., the
+    /// <see cref="HashAlgorithmKnownAnswers.Empty" /> slot) and the incremental output series, where the first
+    /// incremental hash corresponds to hashing zero bytes. Algorithms that do not publish incremental hashes
+    /// yet return an empty list from <see cref="GetExpectedHashesForIncrementalInput" />, or omit the
+    /// <see cref="HashAlgorithmKnownAnswers.Empty" /> slot; the consistency check is then skipped as
+    /// inconclusive rather than failing.
+    /// </remarks>
+    [TestMethod]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    public void HashAlgorithm_TestData_Check(TVariant variant)
+    {
+        IReadOnlyList<string> incrementalHashes = GetExpectedHashesForIncrementalInput(variant);
+        if (incrementalHashes.Count == 0)
+        {
+            Assert.Inconclusive($"No incremental hashes defined for variant '{variant}'; skipping consistency check.");
+            return;
+        }
+
+        string? emptyA = GetSpecification(variant).KnownAnswers.Empty;
+        if (emptyA is null)
+        {
+            Assert.Inconclusive($"No empty-input known answer defined for variant '{variant}'; skipping consistency check.");
+            return;
+        }
+
+        string emptyB = incrementalHashes[0];
+        Assert.AreEqual(emptyA, emptyB, "Expected hash value for 'Empty' named input should equal the first item of incremental input.");
+    }
 
     /// <summary>
     /// Yields the known-answer vectors declared by the specification for the given <paramref name="variant" />:
@@ -199,4 +235,125 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
             Input = input,
             ExpectedOutput = Convert.FromHexString(expectedHex),
         };
+    /// <summary>
+    /// Defines the strategy used to compute a non-cryptographic hash over the first
+    /// <paramref name="byteCount" /> bytes of a shared input buffer during the incremental-length test.
+    /// </summary>
+    /// <param name="algorithm">The algorithm instance under test.</param>
+    /// <param name="input">
+    /// A backing buffer of length <c>maxLength</c>. Only the first <paramref name="byteCount" />
+    /// bytes are part of the input; trailing bytes are unrelated scratch space and must be ignored.
+    /// </param>
+    /// <param name="byteCount">The number of leading bytes from <paramref name="input" /> to hash.</param>
+    /// <returns>A task producing the computed hash bytes.</returns>
+    protected delegate Task<byte[]> IncrementalHashInvoker(
+        NonCryptographicHashAlgorithm algorithm,
+        byte[] input,
+        int byteCount);
+
+    /// <summary>
+    /// Defines the strategy used to observe the current hash after one further byte has been appended
+    /// to a streaming non-cryptographic hash algorithm instance.
+    /// </summary>
+    /// <param name="algorithm">The algorithm instance under test.</param>
+    /// <param name="source">The next input segment to append. This is empty for length <c>0</c>.</param>
+    /// <returns>A task producing the current hash bytes without resetting the algorithm.</returns>
+    protected delegate Task<byte[]> IncrementalCurrentHashInvoker(
+        NonCryptographicHashAlgorithm algorithm,
+        byte[] source);
+
+    /// <summary>
+    /// Drives dense incremental-length verification for a single variant, asserting that the supplied
+    /// invoker reproduces every expected hash for input lengths <c>0</c> through <c>coverage + 1</c>.
+    /// </summary>
+    /// <param name="variant">The variant identifier supplied by the dynamic data source.</param>
+    /// <param name="invoke">The strategy used to obtain a hash for each incremental length.</param>
+    /// <returns>A task that completes when all incremental lengths have been verified.</returns>
+    private async Task AssertIncrementalInputAsync(TVariant variant, IncrementalHashInvoker invoke)
+    {
+        var specification = GetSpecification(variant);
+        var expectedHashes = GetExpectedHashesForIncrementalInput(variant).ToArray();
+
+        if (expectedHashes.Length == 0)
+        {
+            Assert.Inconclusive($"No expected hashes defined for variant {variant}.");
+            return;
+        }
+
+        int coverage = specification.IncrementalCoverageBytes
+            ?? (specification.HashLengthInBytes > 1 ? specification.HashLengthInBytes * 8 : 16);
+        int maxLength = coverage + 1;
+        int expectedEntryCount = maxLength + 1;
+
+        Assert.AreEqual(expectedEntryCount, expectedHashes.Length,
+            $"Expected {expectedEntryCount} algorithm entries for variant '{variant}' " +
+            $"covering input lengths 0 through {maxLength} " +
+            $"(HashLengthInBytes={specification.HashLengthInBytes}, coverage={coverage}), " +
+            $"but got {expectedHashes.Length}.");
+
+        var algorithm = CreateAlgorithm(variant);
+        byte[] input = new byte[maxLength];
+
+        for (int byteCount = 0; byteCount <= maxLength; byteCount++)
+        {
+            if (byteCount > 0)
+                input[byteCount - 1] = unchecked((byte)(byteCount - 1));
+
+            byte[] expected = Convert.FromHexString(expectedHashes[byteCount]);
+            byte[] actual = await invoke(algorithm, input, byteCount).ConfigureAwait(false);
+
+            TestHelpers.TraceWriteIfNotEqual(expected, actual);
+
+            CollectionAssert.AreEqual(expected, actual,
+                $"Hash mismatch for variant '{variant}' at incremental length {byteCount}.");
+        }
+    }
+
+    /// <summary>
+    /// Drives true streaming incremental verification for a single variant, appending one additional
+    /// byte at each step and asserting that <see cref="NonCryptographicHashAlgorithm.GetCurrentHash()" />
+    /// matches the expected value after each append.
+    /// </summary>
+    /// <param name="variant">The variant identifier supplied by the dynamic data source.</param>
+    /// <param name="invoke">The strategy used to append the next segment and observe the current hash.</param>
+    /// <returns>A task that completes when all incremental stages have been verified.</returns>
+    private async Task AssertIncrementalCurrentHashAsync(TVariant variant, IncrementalCurrentHashInvoker invoke)
+    {
+        var specification = GetSpecification(variant);
+        var expectedHashes = GetExpectedHashesForIncrementalInput(variant).ToArray();
+
+        if (expectedHashes.Length == 0)
+        {
+            Assert.Inconclusive($"No expected hashes defined for variant {variant}.");
+            return;
+        }
+
+        int coverage = specification.IncrementalCoverageBytes
+            ?? (specification.HashLengthInBytes > 1 ? specification.HashLengthInBytes * 8 : 16);
+        int maxLength = coverage + 1;
+        int expectedEntryCount = maxLength + 1;
+
+        Assert.AreEqual(expectedEntryCount, expectedHashes.Length,
+            $"Expected {expectedEntryCount} algorithm entries for variant '{variant}' " +
+            $"covering input lengths 0 through {maxLength} " +
+            $"(HashLengthInBytes={specification.HashLengthInBytes}, coverage={coverage}), " +
+            $"but got {expectedHashes.Length}.");
+
+        var algorithm = CreateAlgorithm(variant);
+
+        for (int byteCount = 0; byteCount <= maxLength; byteCount++)
+        {
+            byte[] source = byteCount == 0
+                ? Array.Empty<byte>()
+                : new[] { unchecked((byte)(byteCount - 1)) };
+
+            byte[] expected = Convert.FromHexString(expectedHashes[byteCount]);
+            byte[] actual = await invoke(algorithm, source).ConfigureAwait(false);
+
+            TestHelpers.TraceWriteIfNotEqual(expected, actual);
+
+            CollectionAssert.AreEqual(expected, actual,
+                $"Hash mismatch for variant '{variant}' at incremental length {byteCount}.");
+        }
+    }
 }

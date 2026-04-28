@@ -72,4 +72,23 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
             await algorithm.AppendAsync(stream, cts.Token).ConfigureAwait(false);
         }).ConfigureAwait(false);
     }
+
+    /// <summary>
+    /// Verifies that the asynchronous stream append path produces the correct hash value for
+    /// incrementally growing inputs from empty input through one byte past the spec's coverage threshold.
+    /// </summary>
+    /// <param name="variant">The variant identifier supplied by the dynamic data source.</param>
+    /// <returns>A task that completes when all incremental lengths have been verified.</returns>
+    [TestMethod]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    public Task AppendAsync_WhenUsingIncrementalInput_ShouldMatchExpected(TVariant variant) =>
+        AssertIncrementalInputAsync(variant, async (algorithm, input, byteCount) =>
+        {
+            algorithm.Reset();
+
+            await using var stream = new MemoryStream(input, 0, byteCount, writable: false);
+            await algorithm.AppendAsync(stream).ConfigureAwait(false);
+
+            return algorithm.GetHashAndReset();
+        });
 }
