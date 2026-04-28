@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 [TestClass]
 public partial class Blake2sTests
-    : HashAlgorithmTests<Blake2sTests, Blake2s, Blake2sTests.Blake2sVariant>
+    : KeyedDeferredFinalBlockHashAlgorithmTests<Blake2sTests, Blake2s, Blake2sTests.Blake2sVariant>
 {
     /// <summary>Identifies the output-size variants of <see cref="Blake2s" />.</summary>
     public enum Blake2sVariant
@@ -800,6 +800,51 @@ public partial class Blake2sTests
             using Blake2s sut = new(size);
             byte[] hash = sut.ComputeHash(Array.Empty<byte>());
             Assert.AreEqual(size / 8, hash.Length, $"Expected {size / 8} bytes for {size}-bit output.");
+        }
+    }
+
+    /// <summary>
+    /// Returns keyed known-answer test vectors for the <see cref="Blake2sVariant.Blake2s_256" /> variant,
+    /// sourced from the official BLAKE2 reference test vectors (<c>blake2s-kat.txt</c>). Each vector uses the
+    /// 32-byte sequential key <c>bytes(range(32))</c> and an input of <c>bytes(range(i))</c> for the
+    /// boundary lengths that exercise the key-block injection, single-block, and multi-block code paths.
+    /// </summary>
+    /// <remarks>
+    /// Vectors verified with:
+    /// <code>
+    /// python3 -c "import hashlib; k=bytes(range(32)); [print(f'{i}: ' + hashlib.blake2s(bytes(range(i)), key=k, digest_size=32).hexdigest().upper()) for i in [0,1,2,31,32,33,63,64,65]]"
+    /// </code>
+    /// </remarks>
+    protected override IEnumerable<KnownAnswerTest> GetKeyedTestVectors(Blake2sVariant variant)
+    {
+        if (variant != Blake2sVariant.Blake2s_256)
+            yield break;
+
+        byte[] key = Enumerable.Range(0, Blake2s.MaxKeySize).Select(i => (byte)i).ToArray();
+
+        // (name, input-length, expected-hex) — all use the same 32-byte sequential key.
+        (string Name, int Length, string Hex)[] entries =
+        [
+            ("KAT-0",  0,  "48A8997DA407876B3D79C0D92325AD3B89CBB754D86AB71AEE047AD345FD2C49"),
+            ("KAT-1",  1,  "40D15FEE7C328830166AC3F918650F807E7E01E177258CDC0A39B11F598066F1"),
+            ("KAT-2",  2,  "6BB71300644CD3991B26CCD4D274ACD1ADEAB8B1D7914546C1198BBE9FC9D803"),
+            ("KAT-31", 31, "B6156F72D380EE9EA6ACD190464F2307A5C179EF01FD71F99F2D0F7A57360AEA"),
+            ("KAT-32", 32, "C03BC642B20959CBE133A0303E0C1ABFF3E31EC8E1A328EC8565C36DECFF5265"),
+            ("KAT-33", 33, "2C3E08176F760C6264C3A2CD66FEC6C3D78DE43FC192457B2A4A660A1E0EB22B"),
+            ("KAT-63", 63, "C65382513F07460DA39833CB666C5ED82E61B9E998F4B0C4287CEE56C3CC9BCD"),
+            ("KAT-64", 64, "8975B0577FD35566D750B362B0897A26C399136DF07BABABBDE6203FF2954ED4"),
+            ("KAT-65", 65, "21FE0CEB0052BE7FB0F004187CACD7DE67FA6EB0938D927677F2398C132317A8"),
+        ];
+
+        foreach ((string name, int length, string hex) in entries)
+        {
+            yield return new KnownAnswerTest
+            {
+                Name = name,
+                Input = Enumerable.Range(0, length).Select(i => (byte)i).ToArray(),
+                ExpectedOutput = Convert.FromHexString(hex),
+                Parameters = new Dictionary<string, object> { ["Key"] = key },
+            };
         }
     }
 }
