@@ -157,13 +157,13 @@ public sealed class NotableDateService : INotableDateService
 			{
 				if (plugin is Plugins.INotableDateRulePlugin rulePlugin)
 				{
-					foreach (var provider in rulePlugin.GetRuleProviders())
+					foreach (var provider in rulePlugin.GetRuleProviders() ?? Enumerable.Empty<INotableDateRuleProvider>())
 						effectiveProviders.Add(provider);
 				}
 
 				if (plugin is Plugins.INotableDateAlgorithmPlugin calcPlugin)
 				{
-					foreach (var pair in calcPlugin.GetAlgorithms())
+					foreach (var pair in calcPlugin.GetAlgorithms() ?? Enumerable.Empty<KeyValuePair<string, INotableDateAlgorithm>>())
 						pluginAlgorithms.Add(pair);
 				}
 			}
@@ -177,7 +177,10 @@ public sealed class NotableDateService : INotableDateService
 			}
 		}
 
-		_baseRules = effectiveProviders.SelectMany(p => p.LoadRules()).ToImmutableArray();
+		_baseRules = effectiveProviders
+			.SelectMany(p => p.LoadRules() ?? Enumerable.Empty<NotableDateRule>())
+			.Where(r => r is not null)
+			.ToImmutableArray();
 		_overrideProviders = overrideProviders?.ToList() ?? (IReadOnlyList<INotableDateRuleOverrideProvider>)Array.Empty<INotableDateRuleOverrideProvider>();
 
 		// Snapshot every override provider's removals at construction so that IsRemovedByOverride iterates a materialised list
@@ -266,7 +269,7 @@ public sealed class NotableDateService : INotableDateService
 		return results
 			.GroupBy(n => n.Date.Date)
 			.OrderBy(g => g.Key)
-			.SelectMany(g => _collisionResolver.Resolve(g.Key, g.ToList()))
+			.SelectMany(g => _collisionResolver.Resolve(g.Key, g.ToList()) ?? Array.Empty<NotableDate>())
 			.ToList();
 	}
 
@@ -293,7 +296,7 @@ public sealed class NotableDateService : INotableDateService
 		return results
 			.GroupBy(n => n.Date.Date)
 			.OrderBy(g => g.Key)
-			.SelectMany(g => _collisionResolver.Resolve(g.Key, g.ToList()))
+			.SelectMany(g => _collisionResolver.Resolve(g.Key, g.ToList()) ?? Array.Empty<NotableDate>())
 			.ToList();
 	}
 
@@ -317,7 +320,7 @@ public sealed class NotableDateService : INotableDateService
 			}
 		}
 
-		return _collisionResolver.Resolve(date.Date, results);
+		return _collisionResolver.Resolve(date.Date, results) ?? Array.Empty<NotableDate>();
 	}
 
 	/// <inheritdoc />
@@ -342,7 +345,7 @@ public sealed class NotableDateService : INotableDateService
 			}
 		}
 
-		return _collisionResolver.Resolve(date.Date, results);
+		return _collisionResolver.Resolve(date.Date, results) ?? Array.Empty<NotableDate>();
 	}
 
 	/// <inheritdoc />
@@ -579,7 +582,7 @@ public sealed class NotableDateService : INotableDateService
 		if (_nameLocalizer is null) return notable;
 
 		var localised = _nameLocalizer.GetDisplayName(notable, CultureInfo.CurrentCulture);
-		if (string.Equals(localised, notable.Name, StringComparison.Ordinal))
+		if (string.IsNullOrEmpty(localised) || string.Equals(localised, notable.Name, StringComparison.Ordinal))
 			return notable;
 
 		return notable with { Name = localised };
