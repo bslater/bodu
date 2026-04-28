@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 [TestClass]
 public partial class Blake2bTests
-    : HashAlgorithmTests<Blake2bTests, Blake2b, Blake2bTests.Blake2bVariant>
+    : KeyedDeferredFinalBlockHashAlgorithmTests<Blake2bTests, Blake2b, Blake2bTests.Blake2bVariant>
 {
     /// <summary>Identifies the output-size variants of <see cref="Blake2b" />.</summary>
     public enum Blake2bVariant
