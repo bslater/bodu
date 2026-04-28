@@ -14,6 +14,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <Version>1.0.0</Version>
     <Title>Bodu Calendar Data — Americas</Title>
     <Description>Notable-date rule pack for Bodu.Globalization.Calendar covering the Americas: United States and Canada. Embedded XML rule sets layered over the main library via a static AmericasCalendarData factory.</Description>
     <PackageTags>$(PackageTags);calendar;holidays;notable-dates;data-pack;americas;us;ca</PackageTags>

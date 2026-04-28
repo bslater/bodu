@@ -14,6 +14,13 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!-- Major bump: the parameterless NotableDateService() ctor now loads
+         only default-minimal.xml. Region-specific holiday rules ship in the
+         new Bodu.Globalization.Calendar.Data.* companion packages. -->
+    <Version>2.0.0</Version>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <DefineConstants>$(DefineConstants);NETSTANDARD2_0</DefineConstants>
   </PropertyGroup>
