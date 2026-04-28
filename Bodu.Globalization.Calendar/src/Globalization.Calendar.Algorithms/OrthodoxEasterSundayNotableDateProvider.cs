@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Globalization.Calendar.Algorithms;
+using System.Globalization;
 using SysGlobal = System.Globalization;
 
 namespace Bodu.Globalization.Calendar.Providers;
@@ -47,8 +48,8 @@ public sealed class OrthodoxEasterSundayNotableDateProvider
         }
 
         throw new NotSupportedException(
-            $"The calendar type '{calendar.GetType().FullName}' is not supported by {GetType().Name}. " +
-            $"Only {typeof(SysGlobal.JulianCalendar).FullName} is supported.");
+            string.Format(CultureInfo.InvariantCulture, CalendarStrings.NotSupportedException_CalendarTypeNotSupported,
+                calendar.GetType().FullName, GetType().Name, typeof(SysGlobal.JulianCalendar).FullName));
     }
 
     /// <inheritdoc />

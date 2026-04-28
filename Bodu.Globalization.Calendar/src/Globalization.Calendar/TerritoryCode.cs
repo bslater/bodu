@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -92,7 +93,7 @@ public readonly record struct TerritoryCode
 		if (TryParse(value, out var result))
 			return result;
 
-		throw new FormatException($"'{value}' is not a valid ISO 3166-1/3166-2 territory code.");
+		throw new FormatException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.FormatException_TerritoryCodeInvalid, value));
 	}
 
 	/// <summary>

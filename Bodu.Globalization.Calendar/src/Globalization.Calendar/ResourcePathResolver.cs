@@ -1,4 +1,12 @@
-﻿namespace Bodu.Globalization.Calendar;
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ResourcePathResolver.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Globalization;
+
+namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Resolves resource references relative to the resource document that declares them.
@@ -55,7 +63,7 @@ public sealed class ResourcePathResolver : IResourcePathResolver
             {
                 if (segments.Count == 0)
                     throw new InvalidOperationException(
-                        $"The resource path '{path}' escapes the resource root.");
+                        string.Format(CultureInfo.InvariantCulture, CalendarStrings.InvalidOperationException_ResourcePathEscapesRoot, path));
 
                 segments.RemoveAt(segments.Count - 1);
                 continue;
