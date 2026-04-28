@@ -12,6 +12,63 @@ Recipe-style walk-throughs and conceptual introductions for every library in the
 
 ---
 
+## Bodu.Core
+
+General-purpose building blocks: bounded collections, eviction-aware caches, day-of-week patterns, date and numeric extensions, and parameter validation helpers.
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="core/">Overview</a></h3>
+  <p>Key types at a glance — <code>CircularBuffer&lt;T&gt;</code>, <code>EvictingDictionary&lt;TKey,TValue&gt;</code>, <code>WeekPattern</code>, <code>ThrowHelper</code>, date extensions, and more.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="core/circular-buffer.html">Circular buffer</a></h3>
+  <p>Fixed-capacity FIFO ring buffer — single-threaded and thread-safe variants, overwrite mode, <code>Peek</code> / <code>Dequeue</code> / <code>TryEnqueue</code> patterns.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="core/evicting-dictionary.html">Evicting dictionary</a></h3>
+  <p>Capacity-bounded key-value store with FIFO, LRU, and LFU eviction. Drop-in cache primitive with standard dictionary semantics.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="core/week-pattern.html">WeekPattern</a></h3>
+  <p>Immutable bitmask value type for day-of-week sets. Supports composition, bitwise operators, compact string parsing, and enumeration.</p>
+</div>
+
+</div>
+
+---
+
+## Bodu.Globalization.Calendar
+
+Rule-driven notable date (public holiday, observance, festival) resolution for any year, territory, or calendar system.
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="calendar/">Overview</a></h3>
+  <p>How rules, strategies, territories, and adjustments combine — the resolution pipeline from <code>NotableDateRule</code> to <code>NotableDate</code>.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="calendar/notable-dates.html">Using NotableDateService</a></h3>
+  <p>Resolving dates for a year, filtering by territory and category, querying ranges, layering overrides, and cache invalidation.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="calendar/algorithms.html">Date calculation algorithms</a></h3>
+  <p>Built-in algorithms (Gregorian and Orthodox Easter, Hindu Lunar, Losar, Vesak, Asalha Puja, Qingming) and how to implement your own.</p>
+</div>
+
+</div>
+
+---
+
+---
+
 ## Bodu.IO.Hashing
 
 Non-cryptographic checksums, fingerprints, and identity-validation algorithms built on the BCL <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> contract. Nothing in this package is safe against an adversary — it is optimised for error detection, distribution, and speed.

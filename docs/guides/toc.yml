@@ -2,6 +2,21 @@
   href: index.md
 - name: Algorithm families
   href: algorithm-families.md
+- name: Bodu.Core
+  href: core/
+  items:
+    - name: Overview
+      href: core/index.md
+    - name: Collections
+      items:
+        - name: Circular buffer
+          href: core/circular-buffer.md
+        - name: Evicting dictionary
+          href: core/evicting-dictionary.md
+    - name: Primitives
+      items:
+        - name: WeekPattern
+          href: core/week-pattern.md
 - name: Bodu.IO.Hashing
   href: io-hashing/
   items:
@@ -90,3 +105,12 @@
           href: cryptography/skipjack.md
         - name: Blowfish
           href: cryptography/blowfish.md
+- name: Bodu.Globalization.Calendar
+  href: calendar/
+  items:
+    - name: Overview
+      href: calendar/index.md
+    - name: Using NotableDateService
+      href: calendar/notable-dates.md
+    - name: Date calculation algorithms
+      href: calendar/algorithms.md
