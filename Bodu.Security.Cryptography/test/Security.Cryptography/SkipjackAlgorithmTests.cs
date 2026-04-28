@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Security.Cryptography;
+
 namespace Bodu.Security.Cryptography;
 
 [TestClass]
@@ -21,4 +23,21 @@ public sealed partial class SkipjackAlgorithmTests
             DefaultKeySizeBits = 80,
             LegalKeySizesBits = [80],
         };
+
+    /// <inheritdoc />
+    protected override IEnumerable<BlockCipherKnownAnswer> GetKnownAnswers() =>
+        SkipjackKnownAnswers.For(SingleTestVariant.Default);
+
+    /// <inheritdoc />
+    protected override Skipjack CreateAlgorithmForKnownAnswer(BlockCipherKnownAnswer answer)
+    {
+        var algorithm = new Skipjack
+        {
+            Mode = CipherMode.ECB,
+            Padding = PaddingMode.None,
+        };
+        algorithm.Key = answer.Key!;
+        algorithm.IV = new byte[algorithm.BlockSize / 8];
+        return algorithm;
+    }
 }
