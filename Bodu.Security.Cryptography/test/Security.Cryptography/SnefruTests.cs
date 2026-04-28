@@ -9,7 +9,7 @@ using System.Text;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Contains unit tests for the <see cref="SDBM" /> hash algorithm.
+/// Contains unit tests for the <see cref="Snefru{TAlgorithm}" /> hash algorithm.
 /// </summary>
 [TestClass]
 public abstract partial class SnefruTests<TTest, TAlgorithm>

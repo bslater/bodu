@@ -43,7 +43,7 @@ public sealed class EasterSundayNotableDateAlgorithm
 		return _easterCache.GetOrAdd(key, _ =>
 		{
 			int month, day;
-			if (year >= 1583)
+			if (year >= 1583 && calendar is not System.Globalization.JulianCalendar)
 			{
 				// Gregorian calendar algorithm (Computus)
 				int a = year % 19;
