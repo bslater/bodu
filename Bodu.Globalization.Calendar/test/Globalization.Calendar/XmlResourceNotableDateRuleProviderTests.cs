@@ -13,7 +13,7 @@ namespace Bodu.Globalization.Calendar;
 /// cherry-pick directives, per-directive overrides, and <c>UseAll</c> wildcards.
 /// </summary>
 [TestClass]
-public sealed class XmlResourceNotableDateRuleProviderTests
+public sealed partial class XmlResourceNotableDateRuleProviderTests
 {
 	private const string CommonResource = "Bodu/Globalization/Calendar/Resources/global-all.xml";
 	private const string ChristianResource = "Bodu/Globalization/Calendar/Resources/christian-gregorian.xml";
