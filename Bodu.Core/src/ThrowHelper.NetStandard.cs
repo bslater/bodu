@@ -948,7 +948,7 @@ public static partial class ThrowHelper
     /// Thrown when <paramref name="value" /> is empty or contains only whitespace characters.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIsNullOrWhiteSpace(string value)
+    public static void ThrowIfNullOrWhiteSpace(string value)
     {
         if (value is null)
             throw new ArgumentNullException(nameof(value));
