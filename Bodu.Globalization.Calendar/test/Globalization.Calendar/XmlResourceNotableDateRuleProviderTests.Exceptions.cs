@@ -28,7 +28,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
 	{
 		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
 		{
-			_ = new XmlResourceNotableDateRuleProvider(DefaultResource, null!);
+			_ = new XmlResourceNotableDateRuleProvider(CommonResource, null!);
 		});
 
 		Assert.AreEqual("resourcePathResolver", ex.ParamName);
@@ -89,7 +89,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
 	{
 		Assembly fxBaseAssembly = typeof(object).Assembly;
 		var provider = new XmlResourceNotableDateRuleProvider(
-			DefaultResource,
+			CommonResource,
 			new ResourcePathResolver(),
 			fxBaseAssembly);
 
