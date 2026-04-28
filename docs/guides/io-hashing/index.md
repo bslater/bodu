@@ -52,6 +52,21 @@ If you're looking for the generated API reference, see the [Bodu.IO.Hashing name
   <p>Bernstein (djb2), BKDR, SDBM, JSHash, Elf64, ApHash, PJW — the one-liner hash functions from compilers, textbooks, and early web servers.</p>
 </div>
 
+<div class="bodu-card">
+  <h3><a href="murmurhash3.html">Using MurmurHash3</a></h3>
+  <p>Austin Appleby's MurmurHash3 in 32-bit and x64-128-bit variants — seeded, excellent avalanche, widely used in databases and probabilistic data structures.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="xxhash.html">Using XxHash</a></h3>
+  <p>Yann Collet's XxHash32 and XxHash64 — high-throughput seeded fingerprints for hash tables and routing.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="check-digits.html">Check digits</a></h3>
+  <p>Luhn, Damm, Verhoeff, EAN, GTIN, ISIN, IBAN, ISBN, SEDOL, CUSIP, ABA routing, LEI — single-character validators for human-readable identifiers.</p>
+</div>
+
 </div>
 
 ## Picking the right hash
@@ -89,5 +104,9 @@ Only CRC currently implements <xref:Bodu.IO.Hashing.IResumableHashAlgorithm> (re
 
 ## Cross-references
 
+- [Algorithm families](../algorithm-families.md) — how fingerprints, checksums, and check digits differ from each other and from the cryptographic families in `Bodu.Security.Cryptography`.
+- [Check digits](check-digits.md) — Luhn, Damm, Verhoeff, EAN, GTIN, ISIN, IBAN, ISBN, SEDOL, CUSIP, ABA routing, and LEI validation algorithms.
+- [Using MurmurHash3](murmurhash3.md) — seeded 32- and 128-bit fingerprints with excellent avalanche.
+- [Using XxHash](xxhash.md) — high-throughput seeded 32- and 64-bit fingerprints.
 - [Bodu.Security.Cryptography hashing guide](../cryptography/hashing.md) — keyed hashes (SipHash), cryptographic digests (Tiger, CubeHash, Snefru), one-time authenticators (Poly1305), and Merkle trees.
 - [Bodu.IO.Hashing API reference](../../apidoc/Bodu.IO.Hashing.md) — namespace overview with key types.
