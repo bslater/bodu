@@ -28,6 +28,17 @@ public record KeyedAlgorithmSpecification
     public required byte[] TestKey { get; init; }
 
     /// <summary>
+    /// Gets the keyed known-answer test vectors associated with this variant. Each entry may carry its own per-row
+    /// key, or fall back to <see cref="TestKey" /> when <see cref="KeyedHashAlgorithmKnownAnswer.Key" /> is
+    /// <see langword="null" />.
+    /// </summary>
+    /// <value>
+    /// A <see cref="KeyedHashAlgorithmKnownAnswers" /> record carrying per-row keyed vectors. Defaults to an empty
+    /// record, in which case the keyed harness emits no per-row assertions for this variant.
+    /// </value>
+    public KeyedHashAlgorithmKnownAnswers KeyedAnswers { get; init; } = new();
+
+    /// <summary>
     /// Gets a value indicating whether the algorithm requires an exact key length. <see langword="true" /> when
     /// <see cref="MinKeyLength" /> equals <see cref="MaxKeyLength" />.
     /// </summary>
