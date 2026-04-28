@@ -27,18 +27,21 @@ namespace Bodu.Globalization.Calendar;
 /// and single-day queries return the span when any day within it intersects the query.
 /// </para>
 /// <para>
-/// The default no-argument constructor loads the embedded global rule set. The full constructor accepts base rule providers,
-/// weekend definitions, override providers, algorithm registries, custom adjustment handlers, collision resolvers, and name
-/// localisers, enabling complete control over the resolution pipeline.
+/// The default no-argument constructor loads only the embedded minimal default rule set (currently New Year's Day) so a service
+/// can be created without referencing any companion data pack. Region-specific public holidays — US federal holidays, UK bank
+/// holidays, Australian state observances, and so on — ship in separate <c>Bodu.Globalization.Calendar.Data.*</c> assemblies and
+/// are added by passing the pack's <c>CreateProvider()</c> result through the full constructor. The full constructor accepts
+/// base rule providers, weekend definitions, override providers, algorithm registries, custom adjustment handlers, collision
+/// resolvers, and name localisers, enabling complete control over the resolution pipeline.
 /// </para>
 /// </remarks>
 /// <example>
-/// <para>Construct with the built-in global rule set and query Australian public holidays:</para>
+/// <para>Construct with the built-in minimal rule set, then layer Australian public holidays from a companion data pack:</para>
 /// <code>
-/// // Simplest construction — loads the embedded global rule set:
+/// // Simplest construction — loads only the embedded New Year's Day rule:
 /// NotableDateService service = new NotableDateService();
 ///
-/// // All notable dates for New South Wales in 2026:
+/// // All notable dates for New South Wales in 2026 (requires the Asia-Pacific data pack):
 /// IReadOnlyList&lt;NotableDate&gt; dates = service.GetNotableDates(2026, territoryCode: "AU-NSW");
 ///
 /// // Full construction with a custom XML rule file and algorithm registry:
@@ -58,8 +61,8 @@ namespace Bodu.Globalization.Calendar;
 /// </example>
 public sealed class NotableDateService : INotableDateService
 {
-	/// <summary>The embedded resource path for the default global rule set.</summary>
-	private const string DefaultResourceName = "Bodu/Globalization/Calendar/Resources/global-all.xml";
+	/// <summary>The embedded resource path for the minimal default rule set used by the parameterless constructor.</summary>
+	private const string DefaultResourceName = "Bodu/Globalization/Calendar/Resources/default-minimal.xml";
 
 	/// <summary>The immutable snapshot of base rules loaded at construction from all rule providers.</summary>
 	private readonly ImmutableArray<NotableDateRule> _baseRules;
@@ -106,7 +109,9 @@ public sealed class NotableDateService : INotableDateService
 	private readonly ThreadLocal<HashSet<int>> _generatingYears = new(() => new HashSet<int>());
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="NotableDateService" /> class using the embedded default rule set.
+	/// Initializes a new instance of the <see cref="NotableDateService" /> class using the embedded minimal default rule set
+	/// (currently a single rule for New Year's Day). Region-specific holidays must be supplied via the full constructor by passing
+	/// providers from the <c>Bodu.Globalization.Calendar.Data.*</c> companion assemblies.
 	/// </summary>
 	public NotableDateService()
 		: this(new[] { (INotableDateRuleProvider)new XmlResourceNotableDateRuleProvider(DefaultResourceName, new ResourcePathResolver()) },
