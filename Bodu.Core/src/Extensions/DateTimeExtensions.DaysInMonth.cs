@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.DaysInMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>

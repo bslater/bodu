@@ -11,8 +11,32 @@
   href: composing-primitives.md
 - name: Padding
   href: padding.md
+- name: ASCON family
+  items:
+    - name: Overview
+      href: ascon.md
+    - name: Hashing
+      href: ascon-hashing.md
+    - name: Extendable output (XOF)
+      href: ascon-xof.md
+    - name: Authenticated encryption (AEAD)
+      href: ascon-aead.md
 - name: Hashing and checksums
   href: hashing.md
+- name: Hashing algorithms
+  items:
+    - name: Using SipHash
+      href: siphash.md
+    - name: Using Poly1305
+      href: poly1305.md
+    - name: Using Tiger
+      href: tiger.md
+    - name: Using CubeHash
+      href: cubehash.md
+    - name: Using Snefru
+      href: snefru.md
+    - name: Using Merkle trees
+      href: merkle-trees.md
 - name: Symmetric algorithms
   items:
     - name: Threefish-256

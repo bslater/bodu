@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global education and literacy notable-date resource using the Western/Gregorian calendar.
+
+  These entries represent internationally recognised education, literacy,
+  and knowledge-related observances. They are not universally public holidays
+  or non-working days in every country. Country-specific resources should
+  import only the dates they observe and override naming, suppression, or
+  behavioural rules where required.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <!--
+    Fixed-date education and literacy observances.
+  -->
+
+  <NotableDate name="International Day of Education">
+    <Rule name="Fixed International Day of Education" category="Observance" firstYear="2019"
+          comment="Proclaimed by the United Nations General Assembly in 2018 (resolution 73/25) and first observed on 24 January 2019, to celebrate education and its role in peace and development.">
+      <Fixed month="January" day="24" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Book and Copyright Day">
+    <Rule name="Fixed World Book and Copyright Day" category="Observance">
+      <Fixed month="April" day="23" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Literacy Day">
+    <Rule name="Fixed International Literacy Day" category="Observance">
+      <Fixed month="September" day="8" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Teachers' Day">
+    <Rule name="Fixed World Teachers' Day" category="Observance">
+      <Fixed month="October" day="5" />
+    </Rule>
+  </NotableDate>
+
+  <!--
+    Floating education observances.
+  -->
+
+  <NotableDate name="Safer Internet Day">
+    <Rule name="Second Tuesday In February Safer Internet Day" category="Observance" firstYear="2004"
+          comment="Organised by the Insafe and INHOPE networks with support of the European Commission. First observed in 2004 as part of the EU-funded SafeBorders project; now promoted in over 180 countries. Observed on the second Tuesday of February each year.">
+      <DayOfWeekInMonth month="February" dayOfWeek="Tuesday" weekOrdinal="Second" />
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

@@ -20,10 +20,10 @@ _disableBreadcrumb: true
 
 <div class="bodu-hero">
   <h1>Bodu</h1>
-  <p class="tagline">A suite of small, focused .NET libraries for collections, cryptography, and calendar computation.</p>
+  <p class="tagline">A suite of small, focused .NET libraries for collections, non-cryptographic hashing, cryptography, and calendar computation.</p>
 </div>
 
-Three independent NuGet packages that share a single solution, a single set of conventions, and a single bar for quality: nullable-enabled, analyzer-clean, deterministic builds, and framework-style XML documentation.
+Four independent NuGet packages that share a single solution, a single set of conventions, and a single bar for quality: nullable-enabled, analyzer-clean, deterministic builds, and framework-style XML documentation.
 
 ## Libraries
 
@@ -40,21 +40,32 @@ Three independent NuGet packages that share a single solution, a single set of c
 </div>
 
 <div class="bodu-card">
+  <img src="images/hero-io.svg" alt="Bodu.IO.Hashing" />
+  <h3>Bodu.IO.Hashing</h3>
+  <p>Non-cryptographic checksums built on <code>System.IO.Hashing.NonCryptographicHashAlgorithm</code> — the full CRC RevEng catalogue (widths 1–64 bits) and the Fletcher family (16 / 32 / 64 bits), with shared lookup-table caching and resumable hashing.</p>
+  <div class="bodu-card-links">
+    <a href="api/Bodu.IO.Hashing.html">Overview</a>
+    <a href="guides/io-hashing/">Guides</a>
+  </div>
+</div>
+
+<div class="bodu-card">
   <img src="images/hero-crypto.svg" alt="Bodu.Security.Cryptography" />
   <h3>Bodu.Security.Cryptography</h3>
-  <p>Managed block ciphers (Threefish 256 / 512 / 1024, Skipjack) and a family of hashes and checksums (Fletcher, Adler, SipHash, FNV-1a, Tiger) built on the <code>HashAlgorithm</code> and <code>SymmetricAlgorithm</code> contracts.</p>
+  <p>Managed block ciphers (Threefish 256 / 512 / 1024, Blowfish, Skipjack), AEAD mode transforms for AES, keyed and cryptographic hashes (SipHash, Tiger), Merkle-tree hashing, and the classic non-cryptographic hash families (Adler, FNV-1a, CityHash).</p>
   <div class="bodu-card-links">
     <a href="api/Bodu.Security.Cryptography.html">Overview</a>
-    <a href="api/Bodu.Security.Cryptography.html">API reference</a>
+    <a href="guides/cryptography/">Guides</a>
   </div>
 </div>
 
 <div class="bodu-card">
   <img src="images/hero-calendar.svg" alt="Bodu.Globalization.Calendar" />
   <h3>Bodu.Globalization.Calendar</h3>
-  <p>Notable-date resolution with fixed, rule-based, offset-based, and dynamic calculators — including Gregorian-computus Easter and lunar-calendar Lunar New Year.</p>
+  <p>Notable-date resolution with fixed, rule-based, offset-based, and dynamic calculators — including Gregorian-computus Easter and lunar-calendar Lunar New Year — driven by a pluggable XML rule source and adjustment pipeline. Region-specific public-holiday rules ship in companion <code>Data.Americas</code>, <code>Data.Europe</code>, and <code>Data.AsiaPacific</code> packs that ship and re-release independently of the main library.</p>
   <div class="bodu-card-links">
     <a href="api/Bodu.Globalization.Calendar.html">Overview</a>
+    <a href="guides/calendar/data-packs.html">Data packs</a>
     <a href="api/Bodu.Globalization.Calendar.html">API reference</a>
   </div>
 </div>
@@ -67,8 +78,14 @@ Three independent NuGet packages that share a single solution, a single set of c
 
 ```bash
 dotnet add package Bodu.Core
+dotnet add package Bodu.IO.Hashing
 dotnet add package Bodu.Security.Cryptography
 dotnet add package Bodu.Globalization.Calendar
+
+# Optional region-specific calendar data packs:
+dotnet add package Bodu.Globalization.Calendar.Data.Americas
+dotnet add package Bodu.Globalization.Calendar.Data.Europe
+dotnet add package Bodu.Globalization.Calendar.Data.AsiaPacific
 ```
 
 </div>

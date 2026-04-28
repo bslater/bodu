@@ -1,9 +1,18 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ConcurrentCircularBufferTests.Capacity.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using System.Collections.Concurrent;
 
 namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+    /// <summary>
+    /// Verifies that concurrent reads of <see cref="ConcurrentCircularBuffer{T}.Capacity" /> all return the same configured value.
+    /// </summary>
     [TestMethod]
     public void Capacity_Get_WhenAccessedConcurrently_ShouldReturnConsistentValue()
     {
@@ -15,6 +24,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(results.All(r => r == 32), "All reads of Capacity should return 32.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Capacity" /> stays constant even while <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" /> is toggled concurrently.
+    /// </summary>
     [TestMethod]
     public void Capacity_Get_WhenAllowOverwriteToggles_ShouldRemainConstant()
     {
@@ -29,6 +41,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(9, buffer.Capacity);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Capacity" /> returns the value passed at construction.
+    /// </summary>
     [TestMethod]
     public void Capacity_Get_WhenBufferConstructed_ShouldReturnDefinedValue()
     {
@@ -36,6 +51,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(10, buffer.Capacity);
     }
 
+    /// <summary>
+    /// Verifies that a collection-initialised buffer reports the explicitly supplied capacity, even when the source is trimmed to fit.
+    /// </summary>
     [TestMethod]
     public void Capacity_Get_WhenConstructedFromCollection_ShouldUseProvidedCapacity()
     {
@@ -48,6 +66,9 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new[] { 4, 5, 6, 7, 8, 9 }, buffer.ToArray().Select(x => x.Value).ToArray());
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Capacity" /> is immutable while enqueue and dequeue run concurrently.
+    /// </summary>
     [TestMethod]
     public void Capacity_Get_WhenEnqueueAndDequeueConcurrently_ShouldRemainStable()
     {
@@ -74,6 +95,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(8, buffer.Capacity, "Capacity must remain fixed despite concurrent mutation.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Capacity" /> is preserved across a fill/<see cref="ConcurrentCircularBuffer{T}.Clear" /> cycle.
+    /// </summary>
     [TestMethod]
     public void Capacity_Get_WhenFilledAndCleared_ShouldRemainUnchanged()
     {
@@ -88,6 +112,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, buffer.Count);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Capacity" /> is unaffected by overwriting evictions.
+    /// </summary>
     [TestMethod]
     public void Capacity_Get_WhenOverwriteEvictsItems_ShouldRemainUnchanged()
     {
@@ -102,6 +129,9 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new[] { 3, 4, 5 }, buffer.ToArray().Select(x => x.Value).ToArray());
     }
 
+    /// <summary>
+    /// Verifies that snapshots returned by <see cref="ConcurrentCircularBuffer{T}.ToArray" /> never exceed <see cref="ConcurrentCircularBuffer{T}.Capacity" /> even when the buffer has been overfilled.
+    /// </summary>
     [TestMethod]
     public void Capacity_Get_WhenSnapshotOperationsOccur_ShouldNeverReturnValueGreaterThanDefinedCapacity()
     {

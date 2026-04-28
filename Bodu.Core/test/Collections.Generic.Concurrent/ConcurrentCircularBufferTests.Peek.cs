@@ -1,9 +1,18 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ConcurrentCircularBufferTests.Peek.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using System.Collections.Concurrent;
 
 namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+    /// <summary>
+    /// Verifies that a failed enqueue on a full buffer with overwriting disabled does not change the item returned by <see cref="ConcurrentCircularBuffer{T}.Peek" />.
+    /// </summary>
     [TestMethod]
     public void Peek_WhenAllowOverwriteFalseAndBufferFull_ShouldContinueToReturnOldestUntilDequeue()
     {
@@ -23,6 +32,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(10, p2.Value, "Oldest should not change when enqueue fails.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Peek" /> sees the current oldest item, and reflects the new oldest after an overwrite evicts it.
+    /// </summary>
     [TestMethod]
     public void Peek_WhenAllowOverwriteTrueAndBufferFull_ShouldReturnOldestBeforeOverwrite()
     {
@@ -40,6 +52,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(2, after.Value, "After overwrite, new oldest should be 2.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Peek" /> returns the oldest item and does not remove it from the buffer.
+    /// </summary>
     [TestMethod]
     public void Peek_WhenBufferHasItems_ShouldReturnOldestWithoutRemoving()
     {
@@ -51,6 +66,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(1, buffer.Count, "Peek must not remove the item.");
     }
 
+    /// <summary>
+    /// Verifies that after the buffer wraps, <see cref="ConcurrentCircularBuffer{T}.Peek" /> still returns the logical oldest item.
+    /// </summary>
     [TestMethod]
     public void Peek_WhenBufferHasWrapped_ShouldReturnOldestItem()
     {
@@ -65,6 +83,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(2, peeked.Value, "After wrap, oldest should be 2.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Peek" /> on an empty buffer throws <see cref="InvalidOperationException" />.
+    /// </summary>
     [TestMethod]
     public void Peek_WhenBufferIsEmpty_ShouldThrowInvalidOperation()
     {
@@ -75,6 +96,9 @@ public partial class ConcurrentCircularBufferTests
         });
     }
 
+    /// <summary>
+    /// Verifies that while another thread drains the buffer, at least one <see cref="ConcurrentCircularBuffer{T}.Peek" /> call succeeds before the buffer is fully consumed.
+    /// </summary>
     [TestMethod]
     public void Peek_WhenCalledDuringDraining_ShouldSometimesSucceedBeforeEmpty()
     {
@@ -120,6 +144,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(attempts > 0, "Peeker never attempted.");
     }
 
+    /// <summary>
+    /// Verifies that repeated <see cref="ConcurrentCircularBuffer{T}.Peek" /> calls are non-destructive and leave <see cref="ConcurrentCircularBuffer{T}.Count" /> unchanged.
+    /// </summary>
     [TestMethod]
     public void Peek_WhenCalledRepeatedly_ShouldNotChangeCount()
     {
@@ -134,6 +161,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(before, buffer.Count, "Peek must be non-destructive.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Peek" /> interleaved with <see cref="ConcurrentCircularBuffer{T}.Clear" /> only ever throws <see cref="InvalidOperationException" /> when the buffer is empty.
+    /// </summary>
     [TestMethod]
     public void Peek_WhenInterleavedWithClear_ShouldNotThrowAndMayReturnNewHead()
     {
@@ -178,6 +208,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(observedValues.Count >= 0);
     }
 
+    /// <summary>
+    /// Verifies that many concurrent peeks against a populated buffer never throw anything other than <see cref="InvalidOperationException" /> (empty) exceptions.
+    /// </summary>
     [TestMethod]
     public void Peek_WhenManyThreadsPeekConcurrently_ShouldNeverThrowUnlessEmpty()
     {
@@ -205,6 +238,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, errors.Count, "No exceptions other than InvalidOperation (empty) are expected.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Peek" /> reflects the updated oldest item after each dequeue.
+    /// </summary>
     [TestMethod]
     public void Peek_WhenOldestChangesDueToDequeue_ShouldReflectNewOldest()
     {
@@ -220,6 +256,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(30, buffer.Peek().Value);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Peek" /> returns <see langword="null" /> when the oldest item is null and leaves the buffer's count unchanged.
+    /// </summary>
     [TestMethod]
     public void Peek_WhenOldestIsNull_ShouldReturnNullWithoutRemoving()
     {
@@ -232,6 +271,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(2, buffer.Count, "Peek must not remove null.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Peek" /> does not throw while a concurrent enqueuer is mutating the buffer and always returns a non-null item when no evictions occur.
+    /// </summary>
     [TestMethod]
     public void Peek_WhenReadDuringConcurrentEnqueue_ShouldNotThrow()
     {

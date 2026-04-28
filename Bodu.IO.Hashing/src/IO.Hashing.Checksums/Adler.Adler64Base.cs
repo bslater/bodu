@@ -1,0 +1,41 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="Adler.Adler64Base.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Buffers.Binary;
+
+namespace Bodu.IO.Hashing.Checksums;
+
+/// <summary>
+/// Provides a reusable base class for <c>Adler-64</c> style checksum algorithms using <see cref="ulong" />
+/// accumulators.
+/// </summary>
+/// <remarks>
+/// <para>
+/// Finalisation combines the A and B accumulators into a 64-bit hash as
+/// <c><![CDATA[(B << 32) | A]]></c>, written in big-endian byte order.
+/// </para>
+/// </remarks>
+public abstract class Adler64Base
+    : Adler<ulong>
+{
+    private const int HashLength = 8;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Adler64Base" /> class with the specified modulus.
+    /// </summary>
+    /// <param name="modulo">The modulus applied to the accumulators after each reduction step.</param>
+    protected Adler64Base(ulong modulo)
+        : base(HashLength, modulo)
+    {
+    }
+
+    /// <inheritdoc />
+    protected override void GetCurrentHashCore(Span<byte> destination)
+    {
+        ulong hash = (this.PartB << 32) | this.PartA;
+        BinaryPrimitives.WriteUInt64BigEndian(destination, hash);
+    }
+}

@@ -4,44 +4,52 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu
+namespace Bodu;
+
+public partial class ThrowHelperTests
 {
-    public partial class ThrowHelperTests
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthOutOfRange" />, when ArrayIsNull, throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void ThrowIfArrayLengthOutOfRange_WhenArrayIsNull_ShouldThrowArgumentNullException()
     {
-        [TestMethod]
-        public void ThrowIfArrayLengthOutOfRange_WhenArrayIsNull_ShouldThrowArgumentNullException()
+        Array? array = null;
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            Array? array = null;
-            Assert.ThrowsExactly<ArgumentNullException>(() =>
-            {
-                ThrowHelper.ThrowIfArrayLengthOutOfRange(array!, 1, 10);
-            });
-        }
+            ThrowHelper.ThrowIfArrayLengthOutOfRange(array!, 1, 10);
+        });
+    }
 
-        [TestMethod]
-        [DataRow(0, 1, 10)]    // below min
-        [DataRow(11, 1, 10)]   // above max
-        [DataRow(5, 10, 20)]   // below min
-        [DataRow(25, 10, 20)]  // above max
-        public void ThrowIfArrayLengthOutOfRange_WhenLengthIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int arrayLength, int minLength, int maxLength)
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthOutOfRange" />, when LengthIsOutOfRange, throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0, 1, 10)]    // below min
+    [DataRow(11, 1, 10)]   // above max
+    [DataRow(5, 10, 20)]   // below min
+    [DataRow(25, 10, 20)]  // above max
+    public void ThrowIfArrayLengthOutOfRange_WhenLengthIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int arrayLength, int minLength, int maxLength)
+    {
+        Array array = new int[arrayLength];
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            Array array = new int[arrayLength];
-            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-            {
-                ThrowHelper.ThrowIfArrayLengthOutOfRange(array, minLength, maxLength);
-            });
-        }
-
-        [TestMethod]
-        [DataRow(1, 1, 10)]    // at min
-        [DataRow(10, 1, 10)]   // at max
-        [DataRow(5, 1, 10)]    // inside range
-        [DataRow(0, 0, 0)]     // degenerate equal min and max
-        [DataRow(7, 7, 7)]     // degenerate, only one valid length
-        public void ThrowIfArrayLengthOutOfRange_WhenLengthIsWithinRange_ShouldNotThrow(int arrayLength, int minLength, int maxLength)
-        {
-            Array array = new int[arrayLength];
             ThrowHelper.ThrowIfArrayLengthOutOfRange(array, minLength, maxLength);
-        }
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthOutOfRange" />, when LengthIsWithinRange, NotThrow.
+    /// </summary>
+    [TestMethod]
+    [DataRow(1, 1, 10)]    // at min
+    [DataRow(10, 1, 10)]   // at max
+    [DataRow(5, 1, 10)]    // inside range
+    [DataRow(0, 0, 0)]     // degenerate equal min and max
+    [DataRow(7, 7, 7)]     // degenerate, only one valid length
+    public void ThrowIfArrayLengthOutOfRange_WhenLengthIsWithinRange_ShouldNotThrow(int arrayLength, int minLength, int maxLength)
+    {
+        Array array = new int[arrayLength];
+        ThrowHelper.ThrowIfArrayLengthOutOfRange(array, minLength, maxLength);
     }
 }

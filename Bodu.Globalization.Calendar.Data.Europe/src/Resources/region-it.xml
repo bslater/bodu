@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NotableDates xmlns="urn:bodu:globalization:calendar">
+  <NotableDate name="Republic Day">
+    <Rule name="Italy" category="Holiday" territory="IT" nonWorking="true">
+      <Fixed month="June" day="2" />
+    </Rule>
+  </NotableDate>
+</NotableDates>

@@ -1,9 +1,18 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ConcurrentCircularBufferTests.Ctor.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using System.Collections.Concurrent;
 
 namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+    /// <summary>
+    /// Verifies that the default constructor, when invoked concurrently, produces buffers that each carry the default capacity and overwrite flag.
+    /// </summary>
     [TestMethod]
     public void Ctor_Default_WhenUsedInParallel_ShouldApplyDefaultsAndRemainStable()
     {
@@ -22,6 +31,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(results.All(b => b.Capacity >= 2)); // DefaultCapacity is internal; ensure minimum is met
     }
 
+    /// <summary>
+    /// Verifies that <c>allowOverwrite: false</c> is honoured by every instance when the constructor is invoked from many threads concurrently.
+    /// </summary>
     [TestMethod]
     public void Ctor_WhenAllowOverwriteFalse_ShouldRespectFlagAcrossParallelConstruction()
     {
@@ -38,6 +50,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(results.All(b => b.Count == 1));
     }
 
+    /// <summary>
+    /// Verifies that constructing from a source collection that fits within capacity preserves every item in enumeration order.
+    /// </summary>
     [TestMethod]
     public void Ctor_WhenAllowOverwriteTrueAndSourceFits_ShouldPreserveAllItems()
     {
@@ -52,6 +67,9 @@ public partial class ConcurrentCircularBufferTests
     // Minimum capacity is now 2. DataRow values cover all values below the minimum:
     // negative, zero, and the boundary value of 1 that was previously accepted but is now rejected.
 
+    /// <summary>
+    /// Verifies that a capacity below the minimum (2) throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
     [TestMethod]
     [DataRow(-1)]
     [DataRow(0)]
@@ -66,6 +84,9 @@ public partial class ConcurrentCircularBufferTests
 
     // Capacity = 2 is the minimum accepted value. Verify it constructs and behaves correctly.
 
+    /// <summary>
+    /// Verifies that the minimum-valid capacity of <c>2</c> constructs successfully and evicts in FIFO order when overfilled.
+    /// </summary>
     [TestMethod]
     public void Ctor_WhenCapacityIsTwo_ShouldConstructSuccessfullyAndAcceptItems()
     {
@@ -85,6 +106,9 @@ public partial class ConcurrentCircularBufferTests
     // The collection constructor delegates capacity validation to the two-parameter base constructor,
     // so any capacity < 2 must throw regardless of the source contents or allowOverwrite flag.
 
+    /// <summary>
+    /// Verifies that the collection constructor enforces the capacity minimum regardless of the <c>allowOverwrite</c> flag, throwing <see cref="ArgumentOutOfRangeException" /> for any capacity below 2.
+    /// </summary>
     [TestMethod]
     [DataRow(-5, true)]
     [DataRow(-1, true)]
@@ -105,6 +129,9 @@ public partial class ConcurrentCircularBufferTests
         });
     }
 
+    /// <summary>
+    /// Verifies that a capacity-taking constructor, invoked from many threads, initialises each instance consistently.
+    /// </summary>
     [TestMethod]
     public void Ctor_WhenCapacityProvided_AndConstructedInParallel_ShouldInitializeConsistently()
     {
@@ -122,6 +149,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(results.All(b => b.Count == 1));
     }
 
+    /// <summary>
+    /// Verifies that when the source contains more items than the buffer's capacity, construction retains only the most recent items in FIFO order.
+    /// </summary>
     [TestMethod]
     public void Ctor_WhenConstructedFromEnumerable_WithCapacitySmallerThanSource_ShouldTrimToMostRecent()
     {
@@ -132,6 +162,9 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new[] { 3, 4, 5 }, values);
     }
 
+    /// <summary>
+    /// Verifies that <see langword="null" /> entries in the source collection are preserved in the constructed buffer.
+    /// </summary>
     [TestMethod]
     public void Ctor_WhenConstructedFromEnumerableContainingNulls_ShouldRetainNulls()
     {
@@ -145,6 +178,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsNotNull(arr[2]);
     }
 
+    /// <summary>
+    /// Verifies that the three-argument constructor applies the specified capacity, allow-overwrite flag, and source contents together.
+    /// </summary>
     [TestMethod]
     public void Ctor_WhenConstructedFromEnumerableWithCapacityAndFlag_ShouldRespectAllValues()
     {
@@ -156,6 +192,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsFalse(buffer.AllowOverwrite);
     }
 
+    /// <summary>
+    /// Verifies that constructing from a non-array enumerable (a lazy LINQ sequence) preserves the source's enumeration order.
+    /// </summary>
     [TestMethod]
     public void Ctor_WhenConstructedFromNonArrayEnumerable_ShouldPreserveOrder()
     {
@@ -166,6 +205,9 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, values);
     }
 
+    /// <summary>
+    /// Verifies that passing a <see langword="null" /> source to the capacity-taking constructor throws <see cref="ArgumentNullException" />.
+    /// </summary>
     [TestMethod]
     public void Ctor_WhenEnumerableIsNull_WithCapacity_ShouldThrowArgumentNull()
     {
@@ -177,6 +219,9 @@ public partial class ConcurrentCircularBufferTests
         });
     }
 
+    /// <summary>
+    /// Verifies that passing a <see langword="null" /> source to the three-argument constructor throws <see cref="ArgumentNullException" />.
+    /// </summary>
     [TestMethod]
     public void Ctor_WhenEnumerableIsNull_WithCapacityAndAllowOverwrite_ShouldThrowArgumentNull()
     {
@@ -188,6 +233,9 @@ public partial class ConcurrentCircularBufferTests
         });
     }
 
+    /// <summary>
+    /// Verifies that a source exceeding capacity with overwriting disabled throws <see cref="InvalidOperationException" /> during construction.
+    /// </summary>
     [TestMethod]
     public void Ctor_WhenSourceExceedsCapacity_WithAllowOverwriteFalse_ShouldThrowInvalidOperation()
     {
@@ -199,6 +247,9 @@ public partial class ConcurrentCircularBufferTests
         });
     }
 
+    /// <summary>
+    /// Verifies that a source exceeding capacity with overwriting enabled keeps only the most recent items in FIFO order.
+    /// </summary>
     [TestMethod]
     public void Ctor_WhenSourceExceedsCapacity_WithAllowOverwriteTrue_ShouldKeepMostRecentInFifoOrder()
     {
@@ -211,6 +262,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(5, buffer.Capacity);
     }
 
+    /// <summary>
+    /// Verifies that the ctor's implicit trimming of an oversized source does not raise <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" />.
+    /// </summary>
     [TestMethod]
     public void Ctor_WhenSourceExceedsCapacity_WithAllowOverwriteTrue_ShouldNotRaiseEvictionEvents()
     {

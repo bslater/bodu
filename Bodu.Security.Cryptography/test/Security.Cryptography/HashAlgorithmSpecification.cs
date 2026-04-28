@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="HashAlgorithmSpecification.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Security.Cryptography;
 
@@ -26,6 +26,15 @@ public record HashAlgorithmSpecification
 
     /// <summary>Gets the expected <see cref="HashAlgorithm.CanTransformMultipleBlocks" /> value. Defaults to <see langword="true" />.</summary>
     public bool CanTransformMultipleBlocks { get; init; } = true;
+
+    /// <summary>
+    /// Optional override for the upper bound (in bytes) of the dense incremental-input test.
+    /// When <see langword="null" />, the test defaults to <c>InputBlockSize * 2</c> for
+    /// block-based algorithms and <c>16</c> for byte-stream algorithms
+    /// (<see cref="InputBlockSize" /> ≤ 1). Override for hierarchical hashes (e.g. Blake3
+    /// chunks, KangarooTwelve leaves) so the test crosses every state-machine boundary.
+    /// </summary>
+    public int? IncrementalCoverageBytes { get; init; }
 
     /// <summary>
     /// Gets the input lengths used to exercise distinct internal algorithm paths during hash distribution tests.
@@ -54,4 +63,14 @@ public record HashAlgorithmSpecification
     /// Defaults to <see langword="false" />.
     /// </summary>
     public bool IsStateless { get; init; } = false;
+
+    /// <summary>
+    /// Gets the known-answer test vectors associated with this variant.
+    /// </summary>
+    /// <value>
+    /// A <see cref="HashAlgorithmKnownAnswers" /> record carrying the expected digests for the shared inputs
+    /// and any algorithm-specific extension vectors. Defaults to an empty record, in which case the harness
+    /// emits no named-input assertions for this variant.
+    /// </value>
+    public HashAlgorithmKnownAnswers KnownAnswers { get; init; } = new();
 }

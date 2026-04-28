@@ -1,9 +1,18 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ConcurrentCircularBufferTests.CopyTo.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using System.Collections.Concurrent;
 
 namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> preserves <see langword="null" /> entries in the destination array.
+    /// </summary>
     [TestMethod]
     public void CopyTo_WhenBufferContainsNull_ShouldCopyNullValues()
     {
@@ -18,6 +27,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual("X", array[1]);
     }
 
+    /// <summary>
+    /// Verifies that a destination array sized to match <see cref="ConcurrentCircularBuffer{T}.Count" /> exactly receives every element in FIFO order.
+    /// </summary>
     [TestMethod]
     public void CopyTo_WhenDestinationIsExactFit_ShouldCopyAllElements()
     {
@@ -32,6 +44,9 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, array.Select(x => x.Value).ToArray());
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> writes items to the destination in FIFO order and leaves trailing slots untouched.
+    /// </summary>
     [TestMethod]
     public void CopyTo_WhenBufferHasElements_ShouldCopyElementsInFifoOrder()
     {
@@ -47,6 +62,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsNull(array[2]);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> on an empty buffer leaves the destination array unchanged.
+    /// </summary>
     [TestMethod]
     public void CopyTo_WhenBufferIsEmpty_ShouldNotModifyDestination()
     {
@@ -59,6 +77,9 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new[] { 100, 101, 102, 103 }, array.Select(x => x.Value).ToArray());
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> never throws when a concurrent thread is calling <see cref="ConcurrentCircularBuffer{T}.Clear" />.
+    /// </summary>
     [TestMethod]
     public void CopyTo_WhenConcurrentClear_ShouldNotThrow()
     {
@@ -98,6 +119,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, exceptions.Count, "CopyTo threw during concurrent Clear.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> never throws under a concurrent producer and always writes into an array of the expected length.
+    /// </summary>
     [TestMethod]
     public void CopyTo_WhenConcurrentEnqueue_ShouldNotThrowAndProduceWellSizedCopies()
     {
@@ -140,6 +164,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(copies.All(copy => copy.Length == buffer.Capacity));
     }
 
+    /// <summary>
+    /// Verifies that passing a <see langword="null" /> destination array to <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> throws <see cref="ArgumentNullException" />.
+    /// </summary>
     [TestMethod]
     public void CopyTo_WhenDestinationArrayIsNull_ShouldThrowArgumentNull()
     {
@@ -152,6 +179,9 @@ public partial class ConcurrentCircularBufferTests
         });
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> with a non-zero destination index writes elements starting at that offset and leaves earlier slots intact.
+    /// </summary>
     [TestMethod]
     public void CopyTo_WhenDestinationHasNonZeroOffset_ShouldPlaceElementsAtIndex()
     {
@@ -167,6 +197,9 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new[] { -1, -1, 1, 2, 3 }, array.Select(x => x?.Value ?? -1).ToArray());
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> accepts a destination index equal to the array length when the buffer is empty.
+    /// </summary>
     [TestMethod]
     public void CopyTo_WhenDestinationIndexAtUpperBound_ShouldSucceedForZeroCount()
     {
@@ -180,6 +213,9 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new TestItem[3], array);
     }
 
+    /// <summary>
+    /// Verifies that a destination index equal to the array length throws <see cref="ArgumentException" /> when the buffer is non-empty.
+    /// </summary>
     [TestMethod]
     public void CopyTo_WhenDestinationIndexBeyondCopyRange_ShouldThrowException()
     {
@@ -195,6 +231,9 @@ public partial class ConcurrentCircularBufferTests
         });
     }
 
+    /// <summary>
+    /// Verifies that a negative destination index throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
     [TestMethod]
     public void CopyTo_WhenDestinationIndexIsNegative_ShouldThrowArgumentOutOfRange()
     {
@@ -208,6 +247,9 @@ public partial class ConcurrentCircularBufferTests
         });
     }
 
+    /// <summary>
+    /// Verifies that a destination array smaller than the buffer's current count throws <see cref="ArgumentException" />.
+    /// </summary>
     [TestMethod]
     public void CopyTo_WhenDestinationTooSmall_ShouldThrowException()
     {
@@ -222,6 +264,9 @@ public partial class ConcurrentCircularBufferTests
         });
     }
 
+    /// <summary>
+    /// Verifies that after overwrites evict the oldest items, <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> writes only the most recent survivors in FIFO order.
+    /// </summary>
     [TestMethod]
     public void CopyTo_WhenOverwriteEvictsItems_ShouldCopyNewestItemsOnly()
     {
@@ -238,6 +283,9 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new[] { 3, 4, 5 }, array.Select(x => x.Value).ToArray());
     }
 
+    /// <summary>
+    /// Verifies that after the buffer has wrapped, <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> still writes elements in the logical FIFO order.
+    /// </summary>
     [TestMethod]
     public void CopyTo_WhenWrapAroundOccurred_ShouldPreserveLogicalOrder()
     {
@@ -258,7 +306,7 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that CopyTo succeeds and copies elements to the correct positions when the destination array is larger than required.
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> succeeds and copies elements to the correct positions when the destination array is larger than required.
     /// </summary>
     [TestMethod]
     public void CopyTo_WhenArrayIsLargerThanRequired_ShouldCopyWithoutThrowing()
@@ -278,7 +326,7 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that CopyTo throws ArgumentException when a valid mid-array index leaves insufficient trailing space for all elements.
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> throws ArgumentException when a valid mid-array index leaves insufficient trailing space for all elements.
     /// </summary>
     [TestMethod]
     public void CopyTo_WhenIndexOffsetLeavesInsufficientSpace_ShouldThrowException()

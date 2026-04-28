@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.ToDateTimeOffset.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public static partial class DateTimeExtensions
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the resulting UTC time is outside the supported range of <see cref="DateTimeOffset"/>.</exception>
     /// <remarks>
-    /// <para>The behavior depends on the <see cref="DateTime.Kind"/> of the input:</para>
+    /// <para>The behaviour depends on the <see cref="DateTime.Kind"/> of the input:</para>
     /// <list type="bullet">
     /// <item>
     /// <term><see cref="DateTimeKind.Utc"/></term>

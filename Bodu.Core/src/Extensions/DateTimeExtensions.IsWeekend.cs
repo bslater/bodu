@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.IsWeekend.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -64,6 +64,7 @@ public static partial class DateTimeExtensions
             CalendarWeekendDefinition.ThursdayFriday => dayOfWeek is DayOfWeek.Thursday or DayOfWeek.Friday,
             CalendarWeekendDefinition.SundayOnly => dayOfWeek == DayOfWeek.Sunday,
             CalendarWeekendDefinition.FridayOnly => dayOfWeek == DayOfWeek.Friday,
+            CalendarWeekendDefinition.None => false,
             CalendarWeekendDefinition.Custom when provider is not null => provider.IsWeekend(dayOfWeek),
 
             _ => throw new ArgumentOutOfRangeException(

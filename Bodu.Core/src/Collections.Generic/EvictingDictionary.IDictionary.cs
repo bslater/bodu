@@ -1,8 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionary.IDictionary.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
-// --------------------------------------------------------------------------------------------------------------- //
+// ---------------------------------------------------------------------------------------------------------------
 
 using System;
 using System.Collections;
@@ -167,7 +167,7 @@ public partial class EvictingDictionary<TKey, TValue> :
         ThrowHelper.ThrowIfArrayMultidimensional(array);
         ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
         ThrowHelper.ThrowIfLessThan(arrayIndex, 0);
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, arrayIndex+ Count);
+        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, arrayIndex + Count);
 
         foreach (KeyValuePair<TKey, TValue> kvp in GetOrderedItems())
             array[arrayIndex++] = kvp;

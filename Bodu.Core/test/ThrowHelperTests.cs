@@ -1,7 +1,12 @@
-﻿namespace Bodu
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ThrowHelperTests.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu;
+
+[TestClass]
+public partial class ThrowHelperTests
 {
-    [TestClass]
-    public partial class ThrowHelperTests
-    {
-    }
 }

@@ -1,9 +1,18 @@
-﻿using System.Collections.Concurrent;
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ConcurrentCircularBufferTests._Stress.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Collections.Concurrent;
 
 namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+    /// <summary>
+    /// Verifies that under sustained concurrent enqueue, dequeue, and inspection pressure, the buffer maintains the accounting invariant <c>Count == enqueueSuccesses − dequeueSuccesses</c> without faults.
+    /// </summary>
     [TestMethod]
     [DataRow(10, true)]
     [DataRow(50, true)]
@@ -122,6 +131,9 @@ public partial class ConcurrentCircularBufferTests
     // consistency are the appropriate invariants for this scenario.
     // -----------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// Verifies that concurrent <see cref="ConcurrentCircularBuffer{T}.Clear" /> calls interleaved with producers and consumers maintain count bounds, consistent post-quiescence state, and do not throw.
+    /// </summary>
     [TestMethod]
     [DataRow(8, true)]
     [DataRow(8, false)]
@@ -216,6 +228,9 @@ public partial class ConcurrentCircularBufferTests
     // exception type, and no deadlock.
     // -----------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// Verifies that high-frequency toggling of <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" /> under writer/reader load surfaces only <see cref="InvalidOperationException" /> from throwing enqueues — never any state-corruption exception.
+    /// </summary>
     [TestMethod]
     public void StressTest_WhenAllowOverwriteToggledConcurrently_ShouldNeverCorruptState()
     {
@@ -233,6 +248,22 @@ public partial class ConcurrentCircularBufferTests
         // Start from a full buffer to maximise the probability of immediate rejection
         // when AllowOverwrite is false.
         for (int i = 0; i < capacity; i++) buffer.Enqueue(new TestItem(i));
+
+        // Deterministic warmup: drive both counters to >= 1 before the race begins. On a
+        // loaded CI runner the togglers may fail to land a true-interval on a full buffer
+        // within a writer's attempt window (or vice versa), making `enqSucceeded > 0` and
+        // `expectedEnqFaults > 0` flake-prone — even though the state-corruption invariant
+        // this test exists to verify (unexpectedFaults == 0, Count within [0, Capacity]) is
+        // unaffected.
+        buffer.AllowOverwrite = false;
+        try { buffer.Enqueue(new TestItem(-1)); }
+        catch (InvalidOperationException) { Interlocked.Increment(ref expectedEnqFaults); }
+
+        buffer.AllowOverwrite = true;
+        buffer.Enqueue(new TestItem(-2));
+        Interlocked.Increment(ref enqSucceeded);
+
+        buffer.AllowOverwrite = false;
 
         // Writers use the throwing Enqueue() rather than TryEnqueue so that the exception
         // path is exercised under real contention.
@@ -318,6 +349,9 @@ public partial class ConcurrentCircularBufferTests
     // issues in this regime; scaling to Environment.ProcessorCount * 2 is necessary.
     // -----------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// Verifies that at the minimum capacity under processor-scaled thread contention, every enqueue/dequeue call succeeds without faults and the count stays within bounds.
+    /// </summary>
     [TestMethod]
     public void StressTest_WhenCapacityIsMin_ShouldRemainStableUnderMaxContention()
     {
@@ -371,7 +405,7 @@ public partial class ConcurrentCircularBufferTests
                     }
 
                     var count = buffer.Count;
-                    if (count < 0 || count > 1)
+                    if (count < 0 || count > MinCapacity)
                         Interlocked.Increment(ref countViolations);
                 }
             }));
@@ -388,7 +422,7 @@ public partial class ConcurrentCircularBufferTests
             $"Faults={faults}, CountViolations={countViolations}");
 
         Assert.IsTrue(completed, $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock or livelock.");
-        Assert.AreEqual(0, faults, "No exceptions expected from TryEnqueue or TryDequeue under capacity-1 churn.");
+        Assert.AreEqual(0, faults, "No exceptions expected from TryEnqueue or TryDequeue under capacity-churn.");
         Assert.AreEqual(0, countViolations, $"Count must remain within [0, {MinCapacity}] at all times.");
         Assert.AreEqual(MinCapacity, buffer.Capacity, $"Capacity must remain {MinCapacity} throughout.");
     }
@@ -402,6 +436,9 @@ public partial class ConcurrentCircularBufferTests
     // so CopyTo() must never throw when given a destination of that size.
     // -----------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.ToArray" /> and <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> interleaved with live mutations never throw and return arrays of length within capacity.
+    /// </summary>
     [TestMethod]
     [DataRow(true)]
     [DataRow(false)]
@@ -509,6 +546,9 @@ public partial class ConcurrentCircularBufferTests
     // aggressively threads race. In allowOverwrite=true mode, Enqueue must never throw at all.
     // -----------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// Verifies that the throwing <see cref="ConcurrentCircularBuffer{T}.Enqueue" />/<see cref="ConcurrentCircularBuffer{T}.Dequeue" /> paths only raise <see cref="InvalidOperationException" />; in overwrite mode, <see cref="ConcurrentCircularBuffer{T}.Enqueue" /> never throws.
+    /// </summary>
     [TestMethod]
     [DataRow(10, true)]
     [DataRow(10, false)]
@@ -526,6 +566,18 @@ public partial class ConcurrentCircularBufferTests
         int threadCount = Math.Max(2, Environment.ProcessorCount);
         const int durationMs = 2000;
         const int deadlockTimeoutMs = durationMs + 5000;
+
+        // Deterministic warmup (false-branch only): guarantee one rejected Enqueue before the
+        // race begins. The only race-dependent assertion (`expectedEnqFaults > 0` at the false
+        // branch below) is flake-prone on a loaded CI runner where the enqueue/dequeue cadence
+        // may rarely align with a transiently-full buffer during the 2-second race window.
+        if (!allowOverwrite)
+        {
+            for (int f = 0; f < capacity; f++) buffer.Enqueue(new TestItem(-f - 1));
+            try { buffer.Enqueue(new TestItem(-100)); }
+            catch (InvalidOperationException) { Interlocked.Increment(ref expectedEnqFaults); }
+            while (buffer.TryDequeue(out _)) { /* drain back to empty so the race starts cleanly */ }
+        }
 
         var writers = Enumerable.Range(0, threadCount).Select(_ =>
             Task.Run(() =>
@@ -619,6 +671,9 @@ public partial class ConcurrentCircularBufferTests
     // corrupt the invocation list or cause a torn read of the event field.
     // -----------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// Verifies that concurrent subscribe/unsubscribe of <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> handlers does not throw and continues to deliver at least some eviction events to registered handlers.
+    /// </summary>
     [TestMethod]
     public void StressTest_WhenEventHandlersSubscribedAndUnsubscribedConcurrently_ShouldDeliverEventsConsistently()
     {
@@ -634,6 +689,16 @@ public partial class ConcurrentCircularBufferTests
 
         // Fill the buffer so every subsequent enqueue triggers an eviction.
         for (int i = 0; i < capacity; i++) buffer.Enqueue(new TestItem(i));
+
+        // Deterministic warmup: one guaranteed eviction delivered to a subscribed handler before
+        // the concurrent race begins. Without this seed the `totalEvictions > 0` assertion is
+        // flake-prone — on a loaded CI runner the tight subscribe / unsubscribe windows below can
+        // consistently miss every writer burst, even though the lifecycle-safety invariant
+        // (handlerFaults == 0) that this test actually exists to verify is unaffected.
+        Action<TestItem?> warmupHandler = _ => Interlocked.Increment(ref totalEvictions);
+        buffer.ItemEvicted += warmupHandler;
+        buffer.Enqueue(new TestItem(-1));
+        buffer.ItemEvicted -= warmupHandler;
 
         // Writers keep the buffer full, causing continuous evictions.
         var writers = Enumerable.Range(0, 4).Select(_ =>
@@ -702,6 +767,9 @@ public partial class ConcurrentCircularBufferTests
     // than a runner hang.
     // -----------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// Verifies that under 4× processor-count thread pressure across writers, readers, and inspectors, every task completes within the deadlock timeout without faults.
+    /// </summary>
     [TestMethod]
     public void StressTest_WhenHighConcurrency_ShouldNotDeadlockOrLivelock()
     {

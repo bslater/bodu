@@ -1,14 +1,15 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Security.Cryptography;
-using Bodu.Testing.Security;
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="CbcModeTransformTests.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography
+namespace Bodu.Security.Cryptography;
+
+[TestClass]
+public sealed partial class CbcModeTransformTests
+    : BlockCipherModeTests<CbcModeTransform>
 {
-    [TestClass]
-    public sealed partial class CbcModeTransformTests
-        : BlockCipherModeTests<CbcModeTransform>
-    {
-        protected override CbcModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
-            => new CbcModeTransform(cipher, iv);
-    }
+    protected override CbcModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
+        => new CbcModeTransform(cipher, iv);
 }

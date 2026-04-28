@@ -1,29 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="DelegateHashAlgorithmFactoryTests.Create.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Bodu.Security.Cryptography
+namespace Bodu.Security.Cryptography;
+
+public partial class DelegateHashAlgorithmFactoryTests
 {
-    public partial class DelegateHashAlgorithmFactoryTests
+    /// <summary>
+    /// Verifies that <see cref="DelegateHashAlgorithmFactory{T}.Create" /> invokes the supplied builder delegate and returns a
+    /// fresh, non-null instance on each call.
+    /// </summary>
+    [TestMethod]
+    public void Create_WhenBuilderProvided_ShouldReturnInstanceFromDelegate()
     {
-        /// <summary>
-        /// Verifies that <see cref="DelegateHashAlgorithmFactory{T}.Create" /> invokes the supplied builder delegate and returns a
-        /// fresh, non-null instance on each call.
-        /// </summary>
-        [TestMethod]
-        public void Create_WhenBuilderProvided_ShouldReturnInstanceFromDelegate()
-        {
-            var factory = new DelegateHashAlgorithmFactory<MD5>(MD5.Create);
+        var factory = new DelegateHashAlgorithmFactory<MD5>(MD5.Create);
 
-            using var first = factory.Create();
-            using var second = factory.Create();
+        using var first = factory.Create();
+        using var second = factory.Create();
 
-            Assert.IsNotNull(first);
-            Assert.IsNotNull(second);
-            Assert.AreNotSame(first, second);
-        }
+        Assert.IsNotNull(first);
+        Assert.IsNotNull(second);
+        Assert.AreNotSame(first, second);
     }
 }

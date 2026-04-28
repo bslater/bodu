@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Cherry-picks the multi-rule "King's Birthday" from MultiRuleSource.xml and applies a flat
+  territory override. The override body omits a RuleName, so the merger should broadcast the
+  body's scalars to every variant rather than targeting one.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar">
+  <UseFrom resource="Bodu.Globalization.Calendar.Fixtures.MultiRuleSource.xml">
+    <Use name="King's Birthday" territory="AU-QLD" />
+  </UseFrom>
+</NotableDates>

@@ -88,6 +88,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Specified block size must be greater than {0}..
+        /// </summary>
+        internal static string ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan {
+            get {
+                return ResourceManager.GetString("ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown CRC crcParameters specified..
         /// </summary>
         internal static string CrcSpecificationNotFound_Unknown {
@@ -293,13 +302,67 @@ namespace Bodu {
                 return ResourceManager.GetString("InvalidOperation_BufferNotFull", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to The global CRC cache cannot be set to null..
+        ///   Looks up a localized string similar to Associated data has already been processed and cannot be supplied again.
         /// </summary>
-        internal static string InvalidOperation_CacheValueCannotBeNull {
+        internal static string CryptographicException_AssociatedDataAlreadyProcessed {
             get {
-                return ResourceManager.GetString("InvalidOperation_CacheValueCannotBeNull", resourceCulture);
+                return ResourceManager.GetString("CryptographicException_AssociatedDataAlreadyProcessed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Associated data must be processed before encrypting or decrypting.
+        /// </summary>
+        internal static string CryptographicException_AssociatedDataNotProcessed {
+            get {
+                return ResourceManager.GetString("CryptographicException_AssociatedDataNotProcessed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Authentication tag verification failed.
+        /// </summary>
+        internal static string CryptographicException_AuthenticationTagMismatch {
+            get {
+                return ResourceManager.GetString("CryptographicException_AuthenticationTagMismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The output buffer is too small. At least {0} bytes are required.
+        /// </summary>
+        internal static string CryptographicException_OutputBufferTooSmall {
+            get {
+                return ResourceManager.GetString("CryptographicException_OutputBufferTooSmall", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The ciphertext is too short to contain a {0}-byte authentication tag.
+        /// </summary>
+        internal static string CryptographicException_CiphertextTooShort {
+            get {
+                return ResourceManager.GetString("CryptographicException_CiphertextTooShort", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Data cannot be absorbed after squeezing has begun.
+        /// </summary>
+        internal static string CryptographicException_XofSqueezeAfterAbsorb {
+            get {
+                return ResourceManager.GetString("CryptographicException_XofSqueezeAfterAbsorb", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The customization string must be set before any data is absorbed.
+        /// </summary>
+        internal static string CryptographicException_XofCustomizationAfterAbsorb {
+            get {
+                return ResourceManager.GetString("CryptographicException_XofCustomizationAfterAbsorb", resourceCulture);
             }
         }
     }

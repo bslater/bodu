@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Islamic (Hijri) calendar notable-date resource.
+
+  These entries represent the principal observances of the Islamic lunar
+  (Hijri) calendar. They are observed globally by Muslim communities and
+  are designated as public holidays in many countries with Muslim-majority
+  or significant Muslim populations.
+
+  The Islamic (Hijri) calendar is a purely lunar calendar of 12 months,
+  each beginning with the sighting of the new crescent moon. A Hijri year
+  is approximately 354 days, so Islamic observances advance by roughly 10–11
+  days each Gregorian year, completing a full cycle of the Gregorian calendar
+  over approximately 33 years.
+
+  All rules are expressed as Fixed rules with calendarType set to
+  System.Globalization.HijriCalendar and sweepCalendarYears="true". The
+  resolver determines the Hijri year that contains 1 January of the requested
+  Gregorian year, checks that year and the next, and returns the first
+  candidate whose Gregorian year matches. No INotableDateAlgorithmRegistry
+  registration is required for any rule in this resource.
+
+  Note: HijriCalendar implements the tabular (algorithmic) Islamic calendar
+  rather than the observational calendar. Dates may differ from actual
+  moon-sighted dates by up to two days in some jurisdictions.
+
+  When an observance falls in the Gregorian year twice (approximately once
+  every 33 years for any given Hijri date), the earlier occurrence is returned.
+  When an observance does not fall in the Gregorian year at all (also
+  approximately once every 33 years), null is returned.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <NotableDate name="Ramadan">
+    <Rule name="Ramadan"
+          category="Religious"
+          durationDays="30"
+          calendarType="System.Globalization.HijriCalendar"
+          comment="The ninth month of the Islamic lunar calendar, observed by Muslims worldwide as a month of fasting (sawm), prayer, reflection, and community. The fast runs from dawn (Fajr) to sunset (Maghrib) each day. The month lasts 29 or 30 days depending on the lunar cycle. The durationDays value of 30 represents the maximum span; implementations may return either 29 or 30 depending on the year. Resolved via the Fixed strategy using HijriCalendar (month 9, day 1) with sweepCalendarYears.">
+      <Fixed month="9" day="1" sweepCalendarYears="true" />
+      <Tag>IslamicCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Eid al-Fitr">
+    <Rule name="Eid al-Fitr"
+          category="Religious"
+          durationDays="3"
+          calendarType="System.Globalization.HijriCalendar"
+          comment="The Festival of Breaking the Fast. Celebrated on the first day of Shawwal, the month following Ramadan. One of the two major Islamic festivals (Eid). Observed with communal prayers, feasting, giving of Zakat al-Fitr (charitable donations), and the exchange of gifts. A public holiday in most Muslim-majority countries, typically lasting three days. Resolved via the Fixed strategy using HijriCalendar (month 10, day 1) with sweepCalendarYears.">
+      <Fixed month="10" day="1" sweepCalendarYears="true" />
+      <Tag>IslamicCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Eid al-Adha">
+    <Rule name="Eid al-Adha"
+          category="Religious"
+          durationDays="4"
+          calendarType="System.Globalization.HijriCalendar"
+          comment="The Festival of Sacrifice (Feast of the Sacrifice). Celebrated on the tenth day of Dhul Hijja, the final month of the Islamic calendar, coinciding with the completion of the Hajj pilgrimage. Commemorates Ibrahim's (Abraham's) willingness to sacrifice his son in obedience to God. Observed with communal prayers, the ritual slaughter of livestock, and distribution of meat to family, friends, and those in need. A public holiday in most Muslim-majority countries, typically lasting four days. Resolved via the Fixed strategy using HijriCalendar (month 12, day 10) with sweepCalendarYears.">
+      <Fixed month="12" day="10" sweepCalendarYears="true" />
+      <Tag>IslamicCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Islamic New Year">
+    <Rule name="Islamic New Year"
+          category="Religious"
+          calendarType="System.Globalization.HijriCalendar"
+          comment="Hijri New Year (Ra's as-Sanah al-Hijriyyah). The first day of Muharram, the opening month of the Islamic lunar calendar. Marks the anniversary of the Prophet Muhammad's migration (Hijra) from Mecca to Medina in 622 CE, from which the Hijri calendar era is dated. A public holiday in many Muslim-majority countries. Resolved via the Fixed strategy using HijriCalendar (month 1, day 1) with sweepCalendarYears.">
+      <Fixed month="1" day="1" sweepCalendarYears="true" />
+      <Tag>IslamicCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Day of Ashura">
+    <Rule name="Day of Ashura"
+          category="Religious"
+          calendarType="System.Globalization.HijriCalendar"
+          comment="Yawm Ashura. Falls on the tenth day of Muharram. For Sunni Muslims it is a recommended fast day commemorating Moses' fast in gratitude for the Israelites' deliverance. For Shia Muslims it is a major day of mourning commemorating the martyrdom of Hussein ibn Ali at the Battle of Karbala (61 AH / 680 CE). Resolved via the Fixed strategy using HijriCalendar (month 1, day 10) with sweepCalendarYears.">
+      <Fixed month="1" day="10" sweepCalendarYears="true" />
+      <Tag>IslamicCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Mawlid al-Nabi">
+    <Rule name="Mawlid al-Nabi"
+          category="Religious"
+          calendarType="System.Globalization.HijriCalendar"
+          comment="The Prophet's Birthday (Mawlid an-Nabawi). Observed on the 12th of Rabi al-Awwal in Sunni tradition. Commemorates the birth of the Prophet Muhammad. A public holiday in many Muslim-majority countries; not observed by some denominations that consider it an innovation (bid'ah). Resolved via the Fixed strategy using HijriCalendar (month 3, day 12) with sweepCalendarYears.">
+      <Fixed month="3" day="12" sweepCalendarYears="true" />
+      <Tag>IslamicCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

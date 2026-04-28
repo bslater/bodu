@@ -19,7 +19,7 @@ public static partial class DateOnlyExtensions
     /// <remarks>
     /// This method evaluates whether the date component (ignoring the time of day) of the <paramref name="date"/> corresponds to the
     /// last day of the quarter, assuming a standard calendar year definition where Q1 is January–March, Q2 is April–June, Q3 is
-    /// July–September, and Q4 is October–December. The comparison is performed using the <see cref="DateOnly"/> property to normalize
+    /// July–September, and Q4 is October–December. The comparison is performed using the <see cref="DateOnly"/> property to normalise
     /// the time to midnight before evaluating the boundary.
     /// </remarks>
     public static bool IsLastDayOfQuarter(this DateOnly date)
@@ -49,7 +49,7 @@ public static partial class DateOnlyExtensions
     /// <remarks>
     /// This method evaluates whether the date component (ignoring the time of day) of the <paramref name="date"/> corresponds to the
     /// last day of the quarter based on the provided <paramref name="definition"/>. The comparison is performed using the
-    /// <see cref="DateOnly"/> property to normalize the time to midnight before evaluating the boundary.
+    /// <see cref="DateOnly"/> property to normalise the time to midnight before evaluating the boundary.
     /// </remarks>
     public static bool IsLastDayOfQuarter(this DateOnly date, CalendarQuarterDefinition definition)
     {
@@ -79,7 +79,7 @@ public static partial class DateOnlyExtensions
     /// <remarks>
     /// This method evaluates whether the date component (ignoring the time of day) of the <paramref name="date"/> corresponds to the
     /// last day of the quarter, using the logic defined by the specified <paramref name="provider"/>. The comparison is performed
-    /// using the <see cref="DateOnly"/> property to normalize the time to midnight before evaluating the boundary.
+    /// using the <see cref="DateOnly"/> property to normalise the time to midnight before evaluating the boundary.
     /// </remarks>
     public static bool IsLastDayOfQuarter(this DateOnly date, IQuarterDefinitionProvider provider)
     {

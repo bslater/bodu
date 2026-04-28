@@ -1,16 +1,24 @@
-﻿using Bodu.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="SimpleReversingSymmetricAlgorithmTests.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography
+namespace Bodu.Security.Cryptography;
+
+[TestClass]
+public partial class SimpleReversingSymmetricAlgorithmTests
+    : SymmetricAlgorithmTests<SimpleReversingSymmetricAlgorithmTests, SimpleReversingSymmetricAlgorithm>
 {
-    [TestClass]
-    public partial class SimpleReversingSymmetricAlgorithmTests
-        : SymmetricAlgorithmTests<SimpleReversingSymmetricAlgorithm>
-    {
-        protected override SimpleReversingSymmetricAlgorithm CreateAlgorithm() => new SimpleReversingSymmetricAlgorithm();
-    }
+    /// <inheritdoc />
+    protected override SimpleReversingSymmetricAlgorithm CreateAlgorithm() => new SimpleReversingSymmetricAlgorithm();
+
+    /// <inheritdoc />
+    protected override SymmetricAlgorithmSpecification GetSpecification() =>
+        new SymmetricAlgorithmSpecification
+        {
+            BlockSizeBits = 128,
+            DefaultKeySizeBits = 128,
+            LegalKeySizesBits = [8, 128, 256, 2048],
+        };
 }

@@ -1,135 +1,133 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BlockHashAlgorithmTests.cs" company="PlaceholderCompany">
+// <copyright file="BlockHashAlgorithmTests.ComputeHash.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Bodu.Security.Cryptography
+namespace Bodu.Security.Cryptography;
+
+public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVariant>
 {
-    public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVariant>
+    /// <summary>
+    /// Verifies that feeding the same input across differently sized streaming chunks yields the same final hash as
+    /// hashing the input in a single pass.
+    /// </summary>
+    /// <remarks>
+    /// Exercises the residual-buffer logic in <see cref="BlockHashAlgorithm{T}" /> to confirm that arbitrarily sized
+    /// transform segments are correctly accumulated into aligned blocks before being dispatched to
+    /// <c>ProcessBlock</c>. Input is derived deterministically from the specification's <see cref="HashAlgorithmSpecification.InputBlockSize" />
+    /// to guarantee coverage of sub-block, exact-block, and multi-block boundaries.
+    /// </remarks>
+    [TestMethod]
+    [DynamicData(nameof(HashAlgorithmVariants))]
+    public virtual void ComputeHash_WhenInputStreamedInChunks_ShouldMatchSinglePassResult(TVariant variant)
     {
-        /// <summary>
-        /// Verifies that feeding the same input across differently sized streaming chunks yields the same final hash as
-        /// hashing the input in a single pass.
-        /// </summary>
-        /// <remarks>
-        /// Exercises the residual-buffer logic in <see cref="BlockHashAlgorithm{T}" /> to confirm that arbitrarily sized
-        /// transform segments are correctly accumulated into aligned blocks before being dispatched to
-        /// <c>ProcessBlock</c>. Input is derived deterministically from the specification's <see cref="HashAlgorithmSpecification.InputBlockSize" />
-        /// to guarantee coverage of sub-block, exact-block, and multi-block boundaries.
-        /// </remarks>
-        [TestMethod]
-        [DynamicData(nameof(HashAlgorithmVariants))]
-        public virtual void ComputeHash_WhenInputStreamedInChunks_ShouldMatchSinglePassResult(TVariant variant)
+        var specification = GetSpecification(variant);
+
+        // Cover sub-block, exact-block, and multi-block boundaries deterministically.
+        int inputLength = (specification.InputBlockSize * 3) + (specification.InputBlockSize / 2) + 1;
+        byte[] input = Enumerable.Range(0, inputLength)
+                                 .Select(i => (byte)((i * 31) + 7))
+                                 .ToArray();
+
+        byte[] expected;
+        using (var reference = CreateAlgorithm(variant))
+            expected = reference.ComputeHash(input);
+
+        foreach (int chunkSize in StreamingChunkSizes(specification))
         {
-            var specification = this.GetSpecification(variant);
+            using var algorithm = CreateAlgorithm(variant);
+            int offset = 0;
 
-            // Cover sub-block, exact-block, and multi-block boundaries deterministically.
-            int inputLength = (specification.InputBlockSize * 3) + (specification.InputBlockSize / 2) + 1;
-            byte[] input = Enumerable.Range(0, inputLength)
-                                     .Select(i => (byte)((i * 31) + 7))
-                                     .ToArray();
-
-            byte[] expected;
-            using (var reference = this.CreateAlgorithm(variant))
-                expected = reference.ComputeHash(input);
-
-            foreach (int chunkSize in this.StreamingChunkSizes(specification))
+            while (offset < input.Length)
             {
-                using var algorithm = this.CreateAlgorithm(variant);
-                int offset = 0;
-
-                while (offset < input.Length)
-                {
-                    int count = Math.Min(chunkSize, input.Length - offset);
-                    algorithm.TransformBlock(input, offset, count, null, 0);
-                    offset += count;
-                }
-
-                algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
-
-                CollectionAssert.AreEqual(
-                    expected,
-                    algorithm.Hash!,
-                    $"[{variant}] Streaming with chunk size {chunkSize} diverged from the single-pass result.");
+                int count = Math.Min(chunkSize, input.Length - offset);
+                algorithm.TransformBlock(input, offset, count, null, 0);
+                offset += count;
             }
-        }
-
-        /// <summary>
-        /// Verifies that inputs whose length is not a multiple of the block size are padded and
-        /// processed without error, producing a hash of the expected output length.
-        /// </summary>
-        /// <remarks>
-        /// Ensures that <see cref="BlockHashAlgorithm{T}.PadBlock" /> handles the full residual-length
-        /// domain on the happy path and that <see cref="BlockHashAlgorithm{T}.ProcessFinalBlock" />
-        /// produces a digest of the size advertised by <see cref="HashAlgorithm.HashSize" />.
-        /// </remarks>
-        [TestMethod]
-        [DynamicData(nameof(HashAlgorithmVariants))]
-        public virtual void ComputeHash_WhenInputIsUnaligned_ShouldProduceValidHash(TVariant variant)
-        {
-            var specification = GetSpecification(variant);
-            int expectedLength;
-            using (var reference = this.CreateAlgorithm())
-            {
-                expectedLength = reference.HashSize / 8;
-            }
-
-            foreach (int length in this.UnalignedInputLengths(specification))
-            {
-                using var algorithm = this.CreateAlgorithm();
-                byte[] input = Enumerable.Range(0, length).Select(i => (byte)i).ToArray();
-
-                byte[] hash = algorithm.ComputeHash(input);
-
-                Assert.IsNotNull(hash, $"Hash for unaligned input length {length} must not be null.");
-                Assert.AreEqual(
-                    expectedLength,
-                    hash.Length,
-                    $"Hash length for unaligned input length {length} did not match HashSize.");
-            }
-        }
-
-        /// <summary>
-        /// Verifies that hashing an input whose length is exactly a multiple of the block size produces the same result
-        /// regardless of whether the input is supplied in a single pass or across successive block-aligned transform
-        /// calls.
-        /// </summary>
-        /// <remarks>
-        /// Isolates the block-aligned fast path so that residual buffering cannot mask a regression in block dispatch
-        /// ordering or per-block state accumulation. Input is derived deterministically using the same pattern as other
-        /// entropy tests in the suite.
-        /// </remarks>
-        [TestMethod]
-        [DynamicData(nameof(HashAlgorithmVariants))]
-        public virtual void ComputeHash_WhenInputIsBlockAligned_ShouldMatchAcrossTransformSplits(TVariant variant)
-        {
-            const int blockCount = 4;
-            var specification = this.GetSpecification(variant);
-            int blockSize = specification.InputBlockSize;
-
-            byte[] input = Enumerable.Range(0, blockSize * blockCount)
-                                     .Select(i => (byte)((i * 31) + 7))
-                                     .ToArray();
-
-            byte[] expected;
-            using (var reference = this.CreateAlgorithm(variant))
-                expected = reference.ComputeHash(input);
-
-            using var algorithm = this.CreateAlgorithm(variant);
-
-            for (int i = 0; i < blockCount; i++)
-                algorithm.TransformBlock(input, i * blockSize, blockSize, null, 0);
 
             algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
 
             CollectionAssert.AreEqual(
                 expected,
                 algorithm.Hash!,
-                $"[{variant}] Block-aligned transform splits diverged from the single-pass result.");
+                $"[{variant}] Streaming with chunk size {chunkSize} diverged from the single-pass result.");
         }
+    }
+
+    /// <summary>
+    /// Verifies that inputs whose length is not a multiple of the block size are padded and
+    /// processed without error, producing a hash of the expected output length.
+    /// </summary>
+    /// <remarks>
+    /// Verifies that <see cref="BlockHashAlgorithm{T}.PadBlock" /> handles the full residual-length
+    /// domain on the happy path and that <see cref="BlockHashAlgorithm{T}.ProcessFinalBlock" />
+    /// produces a digest of the size advertised by <see cref="HashAlgorithm.HashSize" />.
+    /// </remarks>
+    [TestMethod]
+    [DynamicData(nameof(HashAlgorithmVariants))]
+    public virtual void ComputeHash_WhenInputIsUnaligned_ShouldProduceValidHash(TVariant variant)
+    {
+        var specification = GetSpecification(variant);
+        int expectedLength;
+        using (var reference = CreateAlgorithm())
+        {
+            expectedLength = reference.HashSize / 8;
+        }
+
+        foreach (int length in UnalignedInputLengths(specification))
+        {
+            using var algorithm = CreateAlgorithm();
+            byte[] input = Enumerable.Range(0, length).Select(i => (byte)i).ToArray();
+
+            byte[] hash = algorithm.ComputeHash(input);
+
+            Assert.IsNotNull(hash, $"Hash for unaligned input length {length} must not be null.");
+            Assert.AreEqual(
+                expectedLength,
+                hash.Length,
+                $"Hash length for unaligned input length {length} did not match HashSize.");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that hashing an input whose length is exactly a multiple of the block size produces the same result
+    /// regardless of whether the input is supplied in a single pass or across successive block-aligned transform
+    /// calls.
+    /// </summary>
+    /// <remarks>
+    /// Isolates the block-aligned fast path so that residual buffering cannot mask a regression in block dispatch
+    /// ordering or per-block state accumulation. Input is derived deterministically using the same pattern as other
+    /// entropy tests in the suite.
+    /// </remarks>
+    [TestMethod]
+    [DynamicData(nameof(HashAlgorithmVariants))]
+    public virtual void ComputeHash_WhenInputIsBlockAligned_ShouldMatchAcrossTransformSplits(TVariant variant)
+    {
+        const int blockCount = 4;
+        var specification = GetSpecification(variant);
+        int blockSize = specification.InputBlockSize;
+
+        byte[] input = Enumerable.Range(0, blockSize * blockCount)
+                                 .Select(i => (byte)((i * 31) + 7))
+                                 .ToArray();
+
+        byte[] expected;
+        using (var reference = CreateAlgorithm(variant))
+            expected = reference.ComputeHash(input);
+
+        using var algorithm = CreateAlgorithm(variant);
+
+        for (int i = 0; i < blockCount; i++)
+            algorithm.TransformBlock(input, i * blockSize, blockSize, null, 0);
+
+        algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+
+        CollectionAssert.AreEqual(
+            expected,
+            algorithm.Hash!,
+            $"[{variant}] Block-aligned transform splits diverged from the single-pass result.");
     }
 }

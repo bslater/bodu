@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Chinese and East Asian lunisolar calendar notable-date resource.
+
+  These entries represent internationally observed dates rooted in the
+  traditional Chinese lunisolar calendar. They are widely recognised across
+  Chinese, Vietnamese, Korean, and other East Asian communities worldwide.
+
+  Lunar New Year is expressed as a Fixed rule with calendarType set to
+  ChineseLunisolarCalendar (month 1, day 1); no algorithm registration is required.
+
+  Lantern Festival is expressed as an OffsetFromAnchor rule (+14 days from
+  Lunar New Year); no algorithm registration is required for it either.
+  The first lunar month always has at least 29 days, so the offset is exact.
+
+  Dragon Boat Festival, Mid-Autumn Festival, Double Ninth Festival, Qixi
+  Festival, and Hungry Ghost Festival are expressed as Fixed rules with
+  calendarType set to ChineseLunisolarCalendar and skipLeapMonth="true" so the
+  resolver advances the conventional ordinal lunar month past any intercalary
+  leap month in the same year; no algorithm registration is required for any
+  of these dates.
+
+  Winter Solstice Festival (Dongzhi) is a solar term, not a lunar month date.
+  It is expressed here as a Fixed rule on 22 December — the most frequently
+  observed civil date — as an approximation. The astronomical winter solstice
+  can fall on 21, 22, or 23 December depending on the year; consumers requiring
+  exact astronomical accuracy should register a custom INotableDateAlgorithm.
+
+  Qingming Festival still requires a custom INotableDateAlgorithm registered
+  under the key 'qingming' with the INotableDateAlgorithmRegistry.
+
+  Algorithm keys used:
+    qingming — Qingming solar term. Falls on the fifteenth day after the Spring
+               Equinox, approximately 4–5 April. In modern practice treated as
+               a fixed observance on 4 April, but this varies by year and
+               jurisdiction.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <NotableDate name="Lunar New Year">
+    <Rule name="Lunar New Year"
+          category="Cultural"
+          firstYear="1901"
+          lastYear="2100"
+          calendarType="System.Globalization.ChineseLunisolarCalendar"
+          comment="The first day of the first month of the Chinese lunisolar year. Also celebrated as Tết (Vietnam) and Seollal (Korea). Falls between 21 January and 20 February in the Gregorian calendar. Resolved via the Fixed strategy using ChineseLunisolarCalendar (month 1, day 1).">
+      <Fixed month="1" day="1" />
+      <Tag>LunarCalendar</Tag>
+      <Tag>ChineseTradition</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Lantern Festival">
+    <Rule name="Lantern Festival"
+          category="Cultural"
+          firstYear="1901"
+          lastYear="2100"
+          comment="Yuanxiao Jie. Falls on the fifteenth day of the first lunar month, fourteen days after Lunar New Year, marking the end of the New Year festival period. Observed with lantern displays, riddle games, and the eating of tangyuan (sweet rice dumplings). Resolved via OffsetFromAnchor from Lunar New Year (+14 days).">
+      <OffsetFromAnchor name="Lunar New Year" offset="14" />
+      <Tag>LunarCalendar</Tag>
+      <Tag>ChineseTradition</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Qingming Festival">
+    <Rule name="Qingming Festival"
+          category="Observance"
+          comment="Qingming Jie (清明節), also known as Tomb-Sweeping Day or Pure Brightness Festival. A solar term that falls on the fifteenth day after the Spring Equinox, typically 4–5 April. Families visit and clean the graves of their ancestors, making offerings of food, flowers, and paper goods. Requires a custom INotableDateAlgorithm registered under the key 'qingming'.">
+      <Algorithm key="qingming" />
+      <Tag>LunarCalendar</Tag>
+      <Tag>ChineseTradition</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Dragon Boat Festival">
+    <Rule name="Dragon Boat Festival"
+          category="Cultural"
+          firstYear="1901"
+          lastYear="2100"
+          calendarType="System.Globalization.ChineseLunisolarCalendar"
+          comment="Duanwu Jie (端午節). Falls on the fifth day of the fifth lunar month, typically in June. Commemorates the poet and statesman Qu Yuan and is observed with dragon boat races and the eating of zongzi (sticky rice dumplings). Resolved via the Fixed strategy using ChineseLunisolarCalendar (month 5, day 5) with skipLeapMonth to advance past any intercalary leap month in leap lunar years.">
+      <Fixed month="5" day="5" skipLeapMonth="true" />
+      <Tag>LunarCalendar</Tag>
+      <Tag>ChineseTradition</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Qixi Festival">
+    <Rule name="Qixi Festival"
+          category="Cultural"
+          firstYear="1901"
+          lastYear="2100"
+          calendarType="System.Globalization.ChineseLunisolarCalendar"
+          comment="Double Seventh Festival (七夕節), also known as Chinese Valentine's Day or the Night of Sevens. Falls on the seventh day of the seventh lunar month. Commemorates the annual reunion of the cowherd and weaver girl (Niulang and Zhinü) as described in classical Chinese mythology. Observed with stargazing, the display of needlework, and offerings to the weaver goddess. Resolved via the Fixed strategy using ChineseLunisolarCalendar (month 7, day 7) with skipLeapMonth.">
+      <Fixed month="7" day="7" skipLeapMonth="true" />
+      <Tag>LunarCalendar</Tag>
+      <Tag>ChineseTradition</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Hungry Ghost Festival">
+    <Rule name="Hungry Ghost Festival"
+          category="Cultural"
+          firstYear="1901"
+          lastYear="2100"
+          calendarType="System.Globalization.ChineseLunisolarCalendar"
+          comment="Ghost Festival (中元節), also known as Zhongyuan Jie or Yu Lan Festival. Falls on the fifteenth day of the seventh lunar month, at the full moon of the Ghost Month. Traditions hold that the gates of the underworld are open during the seventh lunar month, allowing spirits to roam among the living. Observed with the burning of paper offerings, placing of food on altars, and the staging of outdoor entertainment (getai) for wandering spirits. Widely observed in China, Taiwan, Malaysia, Singapore, and diaspora communities. Resolved via the Fixed strategy using ChineseLunisolarCalendar (month 7, day 15) with skipLeapMonth.">
+      <Fixed month="7" day="15" skipLeapMonth="true" />
+      <Tag>LunarCalendar</Tag>
+      <Tag>ChineseTradition</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Mid-Autumn Festival">
+    <Rule name="Mid-Autumn Festival"
+          category="Cultural"
+          firstYear="1901"
+          lastYear="2100"
+          calendarType="System.Globalization.ChineseLunisolarCalendar"
+          comment="Zhongqiu Jie (中秋節), also known as the Moon Festival or Mooncake Festival. Falls on the fifteenth day of the eighth lunar month, when the moon is at its fullest and brightest. Observed with mooncakes, lanterns, and family reunions. Widely celebrated in China, Vietnam, Korea, and Chinese diaspora communities worldwide. Resolved via the Fixed strategy using ChineseLunisolarCalendar (month 8, day 15) with skipLeapMonth.">
+      <Fixed month="8" day="15" skipLeapMonth="true" />
+      <Tag>LunarCalendar</Tag>
+      <Tag>ChineseTradition</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Double Ninth Festival">
+    <Rule name="Double Ninth Festival"
+          category="Cultural"
+          firstYear="1901"
+          lastYear="2100"
+          calendarType="System.Globalization.ChineseLunisolarCalendar"
+          comment="Chongyang Jie (重陽節), also known as the Chrysanthemum Festival. Falls on the ninth day of the ninth lunar month. Traditionally observed by climbing mountains, drinking chrysanthemum wine, and paying respects to ancestors. In many jurisdictions the day is also designated as Seniors' Day. Resolved via the Fixed strategy using ChineseLunisolarCalendar (month 9, day 9) with skipLeapMonth.">
+      <Fixed month="9" day="9" skipLeapMonth="true" />
+      <Tag>LunarCalendar</Tag>
+      <Tag>ChineseTradition</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Winter Solstice Festival">
+    <Rule name="Fixed Winter Solstice Festival"
+          category="Cultural"
+          comment="Dongzhi Festival (冬至節). Observed on the winter solstice, which falls on 22 December in the majority of years (occasionally 21 or 23 December astronomically). One of the most important festivals in the Chinese calendar, marking the return of longer days and the peak of yin energy. Families gather for reunion meals featuring tangyuan (glutinous rice balls) in southern China and jiaozi (dumplings) in northern China. The date is expressed here as a Fixed rule on 22 December following modern civil-calendar convention. Consumers requiring the exact astronomical winter solstice date should register a custom INotableDateAlgorithm.">
+      <Fixed month="December" day="22" />
+      <Tag>LunarCalendar</Tag>
+      <Tag>ChineseTradition</Tag>
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

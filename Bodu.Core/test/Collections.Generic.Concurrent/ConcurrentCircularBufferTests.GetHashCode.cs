@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 public partial class ConcurrentCircularBufferTests
 {
     /// <summary>
-    /// Verifies that GetHashCode returns a stable value when called multiple times on the same instance.
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.GetHashCode" /> returns a stable value when called multiple times on the same instance.
     /// </summary>
     [TestMethod]
     public void GetHashCode_WhenCalledMultipleTimes_ShouldReturnStableValue()

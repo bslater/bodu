@@ -1,0 +1,28 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="CamelliaAlgorithmTests.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Security.Cryptography;
+
+/// <summary>
+/// Exercises the <see cref="Camellia" /> algorithm class against the shared <see cref="SymmetricAlgorithmTests{TTest,TAlgorithm}" />
+/// suite, verifying constructor defaults, key and IV generation, encryptor and decryptor creation, and disposal behaviour.
+/// </summary>
+[TestClass]
+public sealed partial class CamelliaAlgorithmTests
+    : SymmetricAlgorithmTests<CamelliaAlgorithmTests, Camellia>
+{
+    /// <inheritdoc />
+    protected override Camellia CreateAlgorithm() => new Camellia();
+
+    /// <inheritdoc />
+    protected override SymmetricAlgorithmSpecification GetSpecification() =>
+        new SymmetricAlgorithmSpecification
+        {
+            BlockSizeBits = 128,
+            DefaultKeySizeBits = 256,
+            LegalKeySizesBits = [128, 192, 256],
+        };
+}

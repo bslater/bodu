@@ -1,9 +1,18 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ConcurrentCircularBufferTests.Indexer.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using System.Collections.Concurrent;
 
 namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+    /// <summary>
+    /// Verifies that the indexer returns <see langword="null" /> when the requested slot contains a <see langword="null" /> entry.
+    /// </summary>
     [TestMethod]
     public void Indexer_WhenAccessingNullItem_ShouldReturnNull()
     {
@@ -15,6 +24,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(1, buffer[1]!.Value);
     }
 
+    /// <summary>
+    /// Verifies that the indexer returns items in FIFO order across the full valid index range.
+    /// </summary>
     [TestMethod]
     public void Indexer_WhenEnumeratingValidRange_ShouldReturnExpectedValuesInFifoOrder()
     {
@@ -28,6 +40,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(30, buffer[2].Value);
     }
 
+    /// <summary>
+    /// Verifies that the indexer throws <see cref="ArgumentOutOfRangeException" /> when given a negative index.
+    /// </summary>
     [TestMethod]
     public void Indexer_WhenNegativeIndex_ShouldThrowArgumentOutOfRange()
     {
@@ -40,6 +55,9 @@ public partial class ConcurrentCircularBufferTests
         });
     }
 
+    /// <summary>
+    /// Verifies that the indexer throws <see cref="ArgumentOutOfRangeException" /> when given an index beyond the current snapshot's length.
+    /// </summary>
     [TestMethod]
     public void Indexer_WhenNonNegativeIndexBeyondSnapshot_ShouldThrowArgumentOutOfRange()
     {
@@ -52,6 +70,9 @@ public partial class ConcurrentCircularBufferTests
         });
     }
 
+    /// <summary>
+    /// Verifies that parallel indexer reads on an unchanging buffer return the correct values for every valid index.
+    /// </summary>
     [TestMethod]
     public void Indexer_WhenReadConcurrentlyWithoutMutation_ShouldBeStableForInitialSnapshot()
     {
@@ -77,6 +98,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, errors.Count);
     }
 
+    /// <summary>
+    /// Verifies that indexer reads do not throw while a concurrent enqueuer is mutating the buffer.
+    /// </summary>
     [TestMethod]
     public void Indexer_WhenReadDuringConcurrentEnqueue_ShouldNotThrow()
     {

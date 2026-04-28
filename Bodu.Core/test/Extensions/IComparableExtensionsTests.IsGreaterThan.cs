@@ -1,0 +1,98 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="IComparableExtensionsTests.IsGreaterThan.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System;
+using System.Collections.Generic;
+
+namespace Bodu.Extensions;
+
+public partial class IComparableExtensionsTests
+{
+    // =========================================================================
+    // IsGreaterThan<T>(T, T?)
+    // =========================================================================
+
+    /// <summary>
+    /// Verifies that <c>IsGreaterThan</c> reports whether an integer value is strictly greater than a reference value
+    /// for representative above, equal, and below cases.
+    /// </summary>
+    [TestMethod]
+    [DataRow(10, 5, true, DisplayName = "Value above reference returns true")]
+    [DataRow(5, 5, false, DisplayName = "Value equal to reference returns false")]
+    [DataRow(0, 5, false, DisplayName = "Value below reference returns false")]
+    public void IsGreaterThan_WhenEvaluatingIntegerValues_ShouldReturnExpectedResult(int value, int other, bool expected)
+    {
+        Assert.AreEqual(expected, value.IsGreaterThan(other));
+    }
+
+    /// <summary>
+    /// Verifies that <c>IsGreaterThan</c> works correctly with a reference type (string) using natural ordering.
+    /// </summary>
+    [TestMethod]
+    [DataRow("banana", "apple", true, DisplayName = "String after reference returns true")]
+    [DataRow("apple", "apple", false, DisplayName = "String equal to reference returns false")]
+    [DataRow("aardvark", "apple", false, DisplayName = "String before reference returns false")]
+    public void IsGreaterThan_WhenEvaluatingStringValues_ShouldReturnExpectedResult(string value, string other, bool expected)
+    {
+        Assert.AreEqual(expected, value.IsGreaterThan(other));
+    }
+
+    /// <summary>
+    /// Verifies that <c>IsGreaterThan</c> returns <see langword="false"/> when the reference value is <see langword="null"/>.
+    /// </summary>
+    [TestMethod]
+    public void IsGreaterThan_WhenOtherIsNull_ShouldReturnFalse()
+    {
+        string? other = null;
+
+        Assert.IsFalse("anything".IsGreaterThan(other));
+    }
+
+    // =========================================================================
+    // IsGreaterThan<T>(T, T?, IComparer<T>)
+    // =========================================================================
+
+    /// <summary>
+    /// Verifies that the comparer overload of <c>IsGreaterThan</c> honours the supplied comparer's ordering.
+    /// Under a reverse comparer, numerically smaller values are treated as greater.
+    /// </summary>
+    [TestMethod]
+    public void IsGreaterThan_WhenUsingReverseComparer_ShouldReturnExpectedResult()
+    {
+        IComparer<int> comparer = ReverseIntComparer.Instance;
+
+        Assert.IsTrue(1.IsGreaterThan(5, comparer));
+        Assert.IsFalse(5.IsGreaterThan(5, comparer));
+        Assert.IsFalse(10.IsGreaterThan(5, comparer));
+    }
+
+    /// <summary>
+    /// Verifies that the comparer overload returns <see langword="false"/> when the reference value is <see langword="null"/>.
+    /// </summary>
+    [TestMethod]
+    public void IsGreaterThan_WhenOtherIsNull_ForComparerOverload_ShouldReturnFalse()
+    {
+        IComparer<int> comparer = Comparer<int>.Default;
+
+        Assert.IsFalse(5.IsGreaterThan(null, comparer));
+    }
+
+    /// <summary>
+    /// Verifies that a null comparer passed to the comparer overload throws <see cref="ArgumentNullException"/>.
+    /// </summary>
+    [TestMethod]
+    public void IsGreaterThan_WhenComparerIsNull_ShouldThrowArgumentNullException()
+    {
+        IComparer<int>? comparer = null;
+
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = 5.IsGreaterThan(1, comparer!);
+        });
+
+        Assert.AreEqual("comparer", ex.ParamName);
+    }
+}

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NotableDates xmlns="urn:bodu:globalization:calendar">
+  <NotableDate name="National Day of Spain">
+    <Rule name="Spain" category="Holiday" territory="ES" nonWorking="true">
+      <Fixed month="October" day="12" />
+    </Rule>
+  </NotableDate>
+</NotableDates>

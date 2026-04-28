@@ -4,31 +4,36 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu
-{
-    public partial class ThrowHelperTests
-    {
-        [TestMethod]
-        [DataRow(6, 5)]
-        [DataRow(1, 0)]
-        [DataRow(int.MaxValue, int.MaxValue - 1)]
-        public void ThrowIfGreaterThanOther_WhenValueIsGreaterThanOther_ShouldThrowArgumentException(int value, int other)
-        {
-            Assert.ThrowsExactly<ArgumentException>(() =>
-            {
-                ThrowHelper.ThrowIfGreaterThanOther(value, other);
-            });
-        }
+namespace Bodu;
 
-        [TestMethod]
-        [DataRow(3, 3)]
-        [DataRow(2, 3)]
-        [DataRow(0, 0)]
-        [DataRow(-1, 0)]
-        [DataRow(int.MinValue, int.MaxValue)]
-        public void ThrowIfGreaterThanOther_WhenValueIsLessThanOrEqualToOther_ShouldNotThrow(int value, int other)
+public partial class ThrowHelperTests
+{
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfGreaterThanOther" />, when ValueIsGreaterThanOther, throws <see cref="ArgumentException" />.
+    /// </summary>
+    [TestMethod]
+    [DataRow(6, 5)]
+    [DataRow(1, 0)]
+    [DataRow(int.MaxValue, int.MaxValue - 1)]
+    public void ThrowIfGreaterThanOther_WhenValueIsGreaterThanOther_ShouldThrowArgumentException(int value, int other)
+    {
+        Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ThrowHelper.ThrowIfGreaterThanOther(value, other);
-        }
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfGreaterThanOther" />, when ValueIsLessThanOrEqualToOther, NotThrow.
+    /// </summary>
+    [TestMethod]
+    [DataRow(3, 3)]
+    [DataRow(2, 3)]
+    [DataRow(0, 0)]
+    [DataRow(-1, 0)]
+    [DataRow(int.MinValue, int.MaxValue)]
+    public void ThrowIfGreaterThanOther_WhenValueIsLessThanOrEqualToOther_ShouldNotThrow(int value, int other)
+    {
+        ThrowHelper.ThrowIfGreaterThanOther(value, other);
     }
 }

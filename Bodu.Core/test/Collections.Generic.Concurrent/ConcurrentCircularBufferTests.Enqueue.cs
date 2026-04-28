@@ -1,9 +1,18 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ConcurrentCircularBufferTests.Enqueue.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using System.Collections.Concurrent;
 
 namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+    /// <summary>
+    /// Verifies that after <see cref="ConcurrentCircularBuffer{T}.Clear" />, subsequent enqueues start from an empty state and populate the buffer in FIFO order.
+    /// </summary>
     [TestMethod]
     public void Enqueue_AfterClear_ShouldStartFromEmptyAndAcceptNewItems()
     {
@@ -71,6 +80,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(buffer.Count <= buffer.Capacity);
     }
 
+    /// <summary>
+    /// Verifies that with overwriting disabled, concurrent enqueues against a full buffer all throw <see cref="InvalidOperationException" /> and the buffer's contents remain unchanged.
+    /// </summary>
     [TestMethod]
     public void Enqueue_WhenBufferFullAndAllowOverwriteFalse_ShouldBlockOverwrites()
     {
@@ -92,6 +104,9 @@ public partial class ConcurrentCircularBufferTests
         AssertBufferContainsExactlyValues(buffer, 1, 2, 3);
     }
 
+    /// <summary>
+    /// Verifies that enqueueing into a full buffer with overwriting disabled throws <see cref="InvalidOperationException" />.
+    /// </summary>
     [TestMethod]
     public void Enqueue_WhenBufferFullAndAllowOverwriteFalse_ShouldThrowInvalidOperation()
     {
@@ -105,6 +120,9 @@ public partial class ConcurrentCircularBufferTests
         });
     }
 
+    /// <summary>
+    /// Verifies that overwriting a full buffer evicts the oldest item and raises <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> in eviction order.
+    /// </summary>
     [TestMethod]
     public void Enqueue_WhenBufferFullAndAllowOverwriteTrue_ShouldEvictOldestAndRaiseEvents()
     {
@@ -125,6 +143,9 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new[] { 3, 4 }, snapshot.Select(x => x.Value).ToArray());
     }
 
+    /// <summary>
+    /// Verifies that concurrent enqueues into a full buffer with overwriting enabled evict older entries so only the most recent values are retained.
+    /// </summary>
     [TestMethod]
     public void Enqueue_WhenBufferFullAndAllowOverwriteTrue_ShouldEvictOldestItems()
     {
@@ -139,6 +160,9 @@ public partial class ConcurrentCircularBufferTests
         AssertBufferContainsOnlyValuesInRange(buffer, expectedCount: 3, minInclusive: 100, maxInclusive: 109);
     }
 
+    /// <summary>
+    /// Verifies that at minimum capacity with overwriting enabled, the buffer always retains the most recently enqueued items.
+    /// </summary>
     [TestMethod]
     public void Enqueue_WhenCapacityIsMinAndOverwriteTrue_ShouldAlwaysKeepMostRecent()
     {
@@ -152,6 +176,9 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new[] { 2, 3 }, values);
     }
 
+    /// <summary>
+    /// Verifies that slots freed by a concurrent dequeuer are safely reused by enqueuers without corruption or capacity violation.
+    /// </summary>
     [TestMethod]
     public void Enqueue_WhenConcurrentDequeueFreesSlots_ShouldReuseSlotsSafely()
     {
@@ -185,6 +212,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity);
     }
 
+    /// <summary>
+    /// Verifies that concurrent enqueues of duplicate values all land in the buffer and none are silently discarded.
+    /// </summary>
     [TestMethod]
     public void Enqueue_WhenDuplicateValuesProvidedConcurrently_ShouldStoreAll()
     {
@@ -196,6 +226,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(buffer.ToArray().All(x => x?.Value == 5));
     }
 
+    /// <summary>
+    /// Verifies that an exception thrown by an <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> handler is swallowed and the enqueue still completes successfully.
+    /// </summary>
     [TestMethod]
     public void Enqueue_WhenItemEvictedHandlerThrows_ShouldSwallowExceptionAndCompleteEnqueue()
     {
@@ -229,6 +262,9 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new[] { 2, 3 }, snapshot, "Enqueue should complete successfully when ItemEvicted throws.");
     }
 
+    /// <summary>
+    /// Verifies that enqueueing a sequence of <see langword="null" /> and non-null values preserves their exact insertion order.
+    /// </summary>
     [TestMethod]
     public void Enqueue_WhenMultipleNullsAndSpaceAvailable_ShouldRetainOrder()
     {
@@ -241,6 +277,9 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new[] { null, "X", null }, snapshot);
     }
 
+    /// <summary>
+    /// Verifies that concurrent enqueues into a buffer with ample capacity store every item without loss.
+    /// </summary>
     [TestMethod]
     public void Enqueue_WhenMultipleThreadsHaveSpace_ShouldStoreAllItems()
     {
@@ -252,6 +291,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(buffer.ToArray().All(x => x != null));
     }
 
+    /// <summary>
+    /// Verifies that <see langword="null" /> items are accepted by concurrent enqueues and appear in the buffer snapshot.
+    /// </summary>
     [TestMethod]
     public void Enqueue_WhenNullsProvidedConcurrently_ShouldAcceptNulls()
     {
@@ -267,6 +309,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(items.Count(x => x == null) > 0);
     }
 
+    /// <summary>
+    /// Verifies that concurrent enqueues that cause the buffer to wrap retain only items from the enqueued value range at full capacity.
+    /// </summary>
     [TestMethod]
     public void Enqueue_WhenWraparoundOccursConcurrently_ShouldRetainOnlyMostRecentItems()
     {
@@ -285,6 +330,9 @@ public partial class ConcurrentCircularBufferTests
         // where item values and insertion order are independent.
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryEnqueue" /> returns <see langword="false" /> on a full buffer with overwriting disabled and leaves the buffer unchanged.
+    /// </summary>
     [TestMethod]
     public void TryEnqueue_WhenBufferFullAndAllowOverwriteFalse_ShouldReturnFalse()
     {

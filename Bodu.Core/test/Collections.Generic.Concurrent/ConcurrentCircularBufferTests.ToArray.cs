@@ -1,9 +1,18 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ConcurrentCircularBufferTests.ToArray.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using System.Collections.Concurrent;
 
 namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+    /// <summary>
+    /// Verifies that after many overwriting enqueues, <see cref="ConcurrentCircularBuffer{T}.ToArray" /> returns only the last <c>Capacity</c> items in FIFO order.
+    /// </summary>
     [TestMethod]
     public void ToArray_WhenAllowOverwriteTrueAndManyWrites_ShouldReturnLastCapacityItemsInOrder()
     {
@@ -16,6 +25,9 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new[] { 15, 16, 17, 18, 19 }, values);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.ToArray" /> preserves both <see langword="null" /> and non-null items in their FIFO insertion order.
+    /// </summary>
     [TestMethod]
     public void ToArray_WhenBufferContainsNulls_ShouldPreserveNullsAndOrder()
     {
@@ -31,6 +43,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(3, snapshot[2]?.Value);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.ToArray" /> returns the currently stored items in FIFO order.
+    /// </summary>
     [TestMethod]
     public void ToArray_WhenBufferHasElements_ShouldReturnInFifoOrder()
     {
@@ -42,6 +57,9 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new[] { 10, 20 }, result);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.ToArray" /> returns a zero-length array when the buffer is empty.
+    /// </summary>
     [TestMethod]
     public void ToArray_WhenBufferIsEmpty_ShouldReturnEmptyArray()
     {
@@ -50,6 +68,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, result.Length);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.ToArray" /> never throws when <see cref="ConcurrentCircularBuffer{T}.Clear" /> interleaves with snapshot calls and always returns an array of length within capacity.
+    /// </summary>
     [TestMethod]
     public void ToArray_WhenClearInterleaves_ShouldNotThrowAndMayReturnEmpty()
     {
@@ -92,6 +113,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(nonEmptySnapshots >= 0); // sanity: we may see empty or non-empty snapshots
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.ToArray" /> under concurrent dequeues never throws and returns arrays of length within capacity.
+    /// </summary>
     [TestMethod]
     public void ToArray_WhenConcurrentDequeue_ShouldNotThrowAndLengthWithinCapacity()
     {
@@ -126,6 +150,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, failures.Count);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.ToArray" /> under concurrent enqueues never throws and returns arrays of length within capacity.
+    /// </summary>
     [TestMethod]
     public void ToArray_WhenConcurrentEnqueue_ShouldNotThrowAndLengthWithinCapacity()
     {
@@ -160,6 +187,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, failures.Count, "ToArray should not throw under concurrent enqueue.");
     }
 
+    /// <summary>
+    /// Verifies that many concurrent <see cref="ConcurrentCircularBuffer{T}.ToArray" /> calls never throw and each returned snapshot's length is within capacity.
+    /// </summary>
     [TestMethod]
     public void ToArray_WhenManyThreadsCallConcurrently_ShouldNotThrowAndReturnIndependentSnapshots()
     {
@@ -187,6 +217,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(lengths.All(len => len >= 0 && len <= 16));
     }
 
+    /// <summary>
+    /// Verifies that modifying the array returned by <see cref="ConcurrentCircularBuffer{T}.ToArray" /> does not change the buffer's internal state.
+    /// </summary>
     [TestMethod]
     public void ToArray_WhenSnapshotIsModified_ShouldNotAffectBuffer()
     {
@@ -202,6 +235,9 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new[] { 1, 2 }, again);
     }
 
+    /// <summary>
+    /// Verifies that after the buffer has wrapped, <see cref="ConcurrentCircularBuffer{T}.ToArray" /> still returns items in logical FIFO order.
+    /// </summary>
     [TestMethod]
     public void ToArray_WhenWrapped_ShouldReturnInFifoOrder()
     {

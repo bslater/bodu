@@ -1,8 +1,10 @@
-﻿using System.Security.Cryptography;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="SipHashTests.Dispose.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography
-{
-    public abstract partial class SipHashTests<TTest, TAlgorithm>
-    { }
-}
+namespace Bodu.Security.Cryptography;
+
+public abstract partial class SipHashTests<TTest, TAlgorithm>
+{ }

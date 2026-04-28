@@ -1,15 +1,16 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Security.Cryptography;
-using Bodu.Testing.Security;
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="CfbModeTransformTests.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography
+namespace Bodu.Security.Cryptography;
+
+[TestClass]
+public sealed partial class CfbModeTransformTests
+    : BlockCipherModeTests<CfbModeTransform>
 {
-    [TestClass]
-    public sealed partial class CfbModeTransformTests
-        : BlockCipherModeTests<CfbModeTransform>
-    {
-        /// <inheritdoc />
-        protected override CfbModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
-            => new CfbModeTransform(cipher, iv);
-    }
+    /// <inheritdoc />
+    protected override CfbModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
+        => new CfbModeTransform(cipher, iv);
 }

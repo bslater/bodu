@@ -1,0 +1,168 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="Luhn.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.IO.Hashing.CheckDigits;
+
+/// <summary>
+/// Computes the check digit of a decimal string using the <c>Luhn</c> (<c>mod 10</c>) algorithm. This class cannot
+/// be inherited.
+/// </summary>
+/// <remarks>
+/// <para>
+/// The Luhn algorithm — sometimes called the <i>modulus 10</i> or <i>mod 10</i> algorithm — was designed by Hans
+/// Peter Luhn at IBM in 1954 and entered the public domain shortly afterwards. It is the check-digit scheme used
+/// by most credit card numbers, many national identification numbers, IMEI numbers, and numerous other serial
+/// encodings.
+/// </para>
+/// <para>
+/// Working right-to-left over the sequence, every second digit (starting with the digit immediately to the left
+/// of the check digit) is doubled. When doubling produces a two-digit value, the digits are summed — equivalently
+/// one subtracts nine. The check digit is the value that makes the total sum divisible by ten.
+/// </para>
+/// <para>
+/// Luhn catches all single-digit substitution errors and all adjacent-digit transpositions <i>except</i> the
+/// transposition <c>09 ↔ 90</c>, which preserves the digit sum. It does not reliably detect other mutations such
+/// as twin errors (<c>aa → bb</c>).
+/// </para>
+/// <para>
+/// <b>Worked example.</b> For the body <c>"7992739871"</c>, the computed check digit is <c>'3'</c>, and the
+/// resulting sequence <c>"79927398713"</c> is therefore valid under Luhn.
+/// </para>
+/// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
+/// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
+/// </remarks>
+public sealed class Luhn
+    : CheckDigitAlgorithm
+{
+    private int _sumEvenHypothesis;
+    private int _sumOddHypothesis;
+    private int _count;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Luhn" /> class.
+    /// </summary>
+    public Luhn()
+    {
+    }
+
+    /// <inheritdoc />
+    public override string AlgorithmName => "Luhn";
+
+    /// <inheritdoc />
+    public override void Append(ReadOnlySpan<char> digits)
+    {
+        int sumEven = this._sumEvenHypothesis;
+        int sumOdd = this._sumOddHypothesis;
+        int count = this._count;
+
+        for (int i = 0; i < digits.Length; i++)
+        {
+            char ch = digits[i];
+            if ((uint)(ch - '0') > 9u)
+                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
+
+            int v = ch - '0';
+            int doubled = v * 2;
+            if (doubled > 9) doubled -= 9;
+
+            // _sumEvenHypothesis (body length N will be even): body[i] is doubled iff i is odd.
+            // _sumOddHypothesis  (body length N will be odd):  body[i] is doubled iff i is even.
+            if ((count & 1) == 0)
+            {
+                sumEven += v;
+                sumOdd += doubled;
+            }
+            else
+            {
+                sumEven += doubled;
+                sumOdd += v;
+            }
+
+            count++;
+        }
+
+        this._sumEvenHypothesis = sumEven;
+        this._sumOddHypothesis = sumOdd;
+        this._count = count;
+    }
+
+    /// <inheritdoc />
+    public override void Reset()
+    {
+        this._sumEvenHypothesis = 0;
+        this._sumOddHypothesis = 0;
+        this._count = 0;
+    }
+
+    /// <inheritdoc />
+    public override char GetCurrentCheckDigit()
+    {
+        int sum = (this._count & 1) == 0 ? this._sumEvenHypothesis : this._sumOddHypothesis;
+        return (char)('0' + ((10 - (sum % 10)) % 10));
+    }
+
+    /// <summary>
+    /// Computes the Luhn check digit for the supplied body of decimal digits without allocating a streaming
+    /// instance.
+    /// </summary>
+    /// <param name="digits">The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).</param>
+    /// <returns>The check digit as an ASCII character in the range <c>'0'</c> to <c>'9'</c>.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="digits" /> contains any character outside the range <c>'0'</c> to <c>'9'</c>.
+    /// </exception>
+    public static char Compute(ReadOnlySpan<char> digits)
+    {
+        int sum = 0;
+        for (int i = digits.Length - 1, j = 2; i >= 0; i--, j++)
+        {
+            char ch = digits[i];
+            if ((uint)(ch - '0') > 9u)
+                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
+
+            int v = ch - '0';
+            if ((j & 1) == 0)
+            {
+                v *= 2;
+                if (v > 9) v -= 9;
+            }
+
+            sum += v;
+        }
+
+        return (char)('0' + ((10 - (sum % 10)) % 10));
+    }
+
+    /// <summary>
+    /// Determines whether the supplied sequence, comprising a body followed by a trailing Luhn check digit, is
+    /// consistent — that is, whether the digit sum evaluates to a multiple of ten.
+    /// </summary>
+    /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
+    /// <returns>
+    /// <see langword="true" /> if the sequence is empty or evaluates as valid under Luhn; otherwise,
+    /// <see langword="false" /> — including the case where <paramref name="digitsIncludingCheck" /> contains a
+    /// character outside the range <c>'0'</c> to <c>'9'</c>.
+    /// </returns>
+    public static bool IsValid(ReadOnlySpan<char> digitsIncludingCheck)
+    {
+        int sum = 0;
+        for (int i = digitsIncludingCheck.Length - 1, j = 1; i >= 0; i--, j++)
+        {
+            char ch = digitsIncludingCheck[i];
+            if ((uint)(ch - '0') > 9u) return false;
+
+            int v = ch - '0';
+            if ((j & 1) == 0)
+            {
+                v *= 2;
+                if (v > 9) v -= 9;
+            }
+
+            sum += v;
+        }
+
+        return sum % 10 == 0;
+    }
+}

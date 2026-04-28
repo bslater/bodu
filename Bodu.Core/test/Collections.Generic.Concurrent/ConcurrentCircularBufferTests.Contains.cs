@@ -1,9 +1,18 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ConcurrentCircularBufferTests.Contains.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using System.Collections.Concurrent;
 
 namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Contains" /> returns <see langword="false" /> for items that were present before <see cref="ConcurrentCircularBuffer{T}.Clear" /> was called.
+    /// </summary>
     [TestMethod]
     public void Contains_AfterClear_ShouldReturnFalseForPreviouslyPresentItems()
     {
@@ -17,6 +26,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsFalse(buffer.Contains(item));
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Contains" /> uses default equality consistently across concurrent readers.
+    /// </summary>
     [TestMethod]
     public void Contains_WhenAccessedConcurrently_ShouldHonorDefaultEquality()
     {
@@ -29,6 +41,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(result, "Contains failed to honor equality under concurrency.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Contains" /> returns <see langword="true" /> when a <see langword="null" /> item is present.
+    /// </summary>
     [TestMethod]
     public void Contains_WhenBufferContainsNull_ShouldReturnTrue()
     {
@@ -37,6 +52,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(buffer.Contains(null));
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Contains" /> returns <see langword="false" /> for any item when the buffer is empty.
+    /// </summary>
     [TestMethod]
     public void Contains_WhenBufferIsEmpty_ShouldReturnFalse()
     {
@@ -44,6 +62,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsFalse(buffer.Contains(new TestItem(1)));
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Contains" /> does not throw while enqueues and clears run concurrently.
+    /// </summary>
     [TestMethod]
     public void Contains_WhenConcurrentEnqueueAndClear_ShouldNotThrow()
     {
@@ -82,6 +103,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, exceptions.Count, "Contains threw during concurrent mutation.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Contains" /> does not throw while a concurrent dequeuer is mutating the buffer.
+    /// </summary>
     [TestMethod]
     public void Contains_WhenDequeueInProgress_ShouldNotThrow()
     {
@@ -116,6 +140,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, exceptions.Count, "Contains should not throw while dequeues are in progress.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Contains" /> remains <see langword="true" /> for a value while at least one matching instance is still in the buffer.
+    /// </summary>
     [TestMethod]
     public void Contains_WhenDuplicatesPresent_ShouldReturnTrueWhileAnyInstanceExists()
     {
@@ -135,6 +162,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(buffer.Contains(b));
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Contains" /> consistently returns <see langword="false" /> for items that were never enqueued.
+    /// </summary>
     [TestMethod]
     public void Contains_WhenItemAbsent_ShouldReturnFalse()
     {
@@ -147,6 +177,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(result, "Contains returned true for missing item.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Contains" /> eventually returns <see langword="true" /> for an item introduced by a concurrent enqueuer.
+    /// </summary>
     [TestMethod]
     public void Contains_WhenItemEnqueuedConcurrently_ShouldEventuallyReturnTrue()
     {
@@ -194,6 +227,9 @@ public partial class ConcurrentCircularBufferTests
     }
 
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Contains" /> returns <see langword="false" /> after an item has been evicted by overwriting.
+    /// </summary>
     [TestMethod]
     public void Contains_WhenItemEvictedByOverwrite_ShouldReturnFalse()
     {
@@ -211,6 +247,9 @@ public partial class ConcurrentCircularBufferTests
             "Contains should return false once the target has been evicted.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Contains" /> handles <see langword="null" /> and non-null items correctly when both are present.
+    /// </summary>
     [TestMethod]
     public void Contains_WhenMultipleNullsAndValues_ShouldHandleNullEqualityCorrectly()
     {
@@ -265,6 +304,9 @@ public partial class ConcurrentCircularBufferTests
             "Contains should return true for the exact same instance that was enqueued.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Contains" /> correctly finds items that straddle a wraparound boundary and excludes items that were dequeued.
+    /// </summary>
     [TestMethod]
     public void Contains_WhenWrapAroundOccurs_ShouldFindItemsAcrossBoundary()
     {
@@ -289,7 +331,7 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that Contains uses the default equality comparer for value types.
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Contains" /> uses the default equality comparer for value types.
     /// </summary>
     [TestMethod]
     public void Contains_WhenUsingValueTypes_ShouldUseDefaultEquality()

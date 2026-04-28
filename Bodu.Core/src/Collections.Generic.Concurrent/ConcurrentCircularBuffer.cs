@@ -107,7 +107,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
         : this(capacity, allowOverwrite: true) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ConcurrentCircularBuffer{T}"/> class with the specified capacity and overwrite behavior.
+    /// Initializes a new instance of the <see cref="ConcurrentCircularBuffer{T}"/> class with the specified capacity and overwrite behaviour.
     /// </summary>
     /// <param name="capacity">
     /// The maximum number of elements the buffer can hold. Must be at least 2. See the class remarks for an
@@ -142,7 +142,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// <summary>
     /// Initializes a new instance of the <see cref="ConcurrentCircularBuffer{T}"/> class.
     /// Initializes a new instance by copying from <paramref name="collection"/>, using the specified capacity
-    /// and overwrite behavior.
+    /// and overwrite behaviour.
     /// </summary>
     /// <param name="collection">
     /// The collection whose elements are copied into the buffer. Must not be <see langword="null"/>.
@@ -338,7 +338,10 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
             var result = new T[count];
             for (int i = 0; i < count; i++)
-                result[i] = Volatile.Read(ref _buffer[SlotIndex(head + i)].Value)!;
+            {
+                T? slotValue = Volatile.Read(ref _buffer[SlotIndex(head + i)].Value);
+                result[i] = slotValue!;
+            }
 
             int v2 = Volatile.Read(ref _version);
             if (v1 == v2) return result;
@@ -351,7 +354,10 @@ public sealed partial class ConcurrentCircularBuffer<T>
         int c = Math.Clamp(t - h, 0, _capacity);
         var res = new T[c];
         for (int i = 0; i < c; i++)
-            res[i] = Volatile.Read(ref _buffer[SlotIndex(h + i)].Value)!;
+        {
+            T? slotValue = Volatile.Read(ref _buffer[SlotIndex(h + i)].Value);
+            res[i] = slotValue!;
+        }
         return res;
     }
 
@@ -421,6 +427,8 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// <summary>
     /// Computes a non-negative slot index from a monotonically increasing counter position.
     /// </summary>
+    /// <param name="position">The monotonically-increasing producer or consumer counter value.</param>
+    /// <returns>The wrapped slot index in the range <c>[0, _capacity)</c>.</returns>
     /// <remarks>
     /// Uses unsigned modulo to guarantee a non-negative result even after <see cref="int"/> counter overflow,
     /// where plain <c>position % _capacity</c> would yield a negative index in C#.
@@ -430,8 +438,10 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
     /// <summary>
     /// Evicts exactly one item from the head (used when overwriting). Fires <see cref="ItemEvicted"/> after removal. Handler exceptions
-    /// are swallowed. Returns <see langword="false"/> if the buffer was empty.
+    /// are swallowed.
     /// </summary>
+    /// <returns><see langword="true" /> if an item was evicted; <see langword="false" /> if the
+    /// buffer was empty.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool EvictOne()
     {
@@ -489,6 +499,14 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// <summary>
     /// Removes the oldest element using the lock-free consumer protocol.
     /// </summary>
+    /// <param name="item">When this method returns <see langword="true" />, contains the removed
+    /// element; otherwise the default value of <typeparamref name="T" />.</param>
+    /// <param name="throwIfEmpty">If <see langword="true" />, throws
+    /// <see cref="InvalidOperationException" /> when the buffer is empty; if
+    /// <see langword="false" />, returns <see langword="false" /> on empty.</param>
+    /// <returns><see langword="true" /> if an element was removed; otherwise <see langword="false" />.</returns>
+    /// <exception cref="InvalidOperationException">The buffer is empty and
+    /// <paramref name="throwIfEmpty" /> is <see langword="true" />.</exception>
     private bool InternalDequeue(out T? item, bool throwIfEmpty)
     {
         var spinner = default(SpinWait);

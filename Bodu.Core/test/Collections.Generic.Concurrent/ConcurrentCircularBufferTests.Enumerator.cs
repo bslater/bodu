@@ -1,3 +1,9 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ConcurrentCircularBufferTests.Enumerator.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
@@ -7,6 +13,9 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+    /// <summary>
+    /// Verifies that the enumerator yields <see langword="null" /> and non-null items in their correct FIFO order.
+    /// </summary>
     [TestMethod]
     public void Enumerator_WhenBufferContainsNulls_ShouldYieldNullsInCorrectOrder()
     {
@@ -19,6 +28,9 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new[] { "A", null, "B" }, items);
     }
 
+    /// <summary>
+    /// Verifies that the enumerator yields no items when the buffer is empty.
+    /// </summary>
     [TestMethod]
     public void Enumerator_WhenBufferIsEmpty_ShouldYieldNoItems()
     {
@@ -27,6 +39,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, items.Count);
     }
 
+    /// <summary>
+    /// Verifies that <c>foreach</c> iteration visits every item in FIFO order.
+    /// </summary>
     [TestMethod]
     public void Enumerator_WhenIteratedViaForeach_ShouldVisitAllItemsInFifoOrder()
     {
@@ -42,6 +57,9 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, values);
     }
 
+    /// <summary>
+    /// Verifies that <c>foreach</c> iteration over an empty buffer performs no iterations.
+    /// </summary>
     [TestMethod]
     public void Enumerator_WhenBufferIsEmpty_ForeachShouldNotIterate()
     {
@@ -51,6 +69,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, count);
     }
 
+    /// <summary>
+    /// Verifies that the enumerator yields a stable snapshot whose length is within capacity while a concurrent dequeuer is active.
+    /// </summary>
     [TestMethod]
     public void Enumerator_WhenConcurrentDequeueOccurs_ShouldYieldStableSnapshot()
     {
@@ -72,6 +93,9 @@ public partial class ConcurrentCircularBufferTests
         Task.WaitAll(reader, remover);
     }
 
+    /// <summary>
+    /// Verifies that a snapshot taken during concurrent enqueue/dequeue mutations remains internally consistent and contains only valid items.
+    /// </summary>
     [TestMethod]
     public void Enumerator_WhenConcurrentMutationsOccur_ShouldYieldPartialConsistentView()
     {
@@ -97,6 +121,9 @@ public partial class ConcurrentCircularBufferTests
         Task.WaitAll(enumeratorTask, mutateTask);
     }
 
+    /// <summary>
+    /// Verifies that enumerating the buffer while a concurrent enqueuer runs does not throw and yields only non-null seeded items.
+    /// </summary>
     [TestMethod]
     public void Enumerator_WhenSnapshotTakenDuringConcurrentEnqueue_ShouldNotThrow()
     {
@@ -120,6 +147,9 @@ public partial class ConcurrentCircularBufferTests
         Task.WaitAll(reader, writer);
     }
 
+    /// <summary>
+    /// Verifies that after a wraparound, the enumerator still yields items in logical FIFO order.
+    /// </summary>
     [TestMethod]
     public void Enumerator_WhenWraparoundHasOccurred_ShouldPreserveFifoOrder()
     {

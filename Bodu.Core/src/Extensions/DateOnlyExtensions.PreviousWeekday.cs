@@ -52,7 +52,7 @@ public static partial class DateOnlyExtensions
     /// <param name="weekend">The <see cref="CalendarWeekendDefinition"/> that defines the default pattern of weekend days.</param>
     /// <param name="provider">
     /// An optional <see cref="IWeekendDefinitionProvider"/> that can override the weekend definition with custom logic. If
-    /// <c>null</c>, the default behavior based on <paramref name="weekend"/> is used.
+    /// <c>null</c>, the default behaviour based on <paramref name="weekend"/> is used.
     /// </param>
     /// <returns>
     /// A <see cref="DateOnly"/> representing the previous weekday according to the specified <paramref name="weekend"/> definition

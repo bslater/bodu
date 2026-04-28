@@ -1,0 +1,29 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="Serpent256TweakableAlgorithmTests.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Security.Cryptography;
+
+/// <summary>
+/// Exercises the <see cref="TweakableSymmetricAlgorithmTests{TTest, TAlgorithm}" /> base test suite against
+/// <see cref="Serpent256" /> — validating tweak property behaviour, defensive copies, invalid-size handling, and disposal
+/// semantics for the 256-bit wide-block Serpent variant.
+/// </summary>
+[TestClass]
+public partial class Serpent256TweakableAlgorithmTests
+    : TweakableSymmetricAlgorithmTests<Serpent256TweakableAlgorithmTests, Serpent256>
+{
+    /// <inheritdoc />
+    protected override Serpent256 CreateAlgorithm() => new Serpent256();
+
+    /// <inheritdoc />
+    protected override SymmetricAlgorithmSpecification GetSpecification() =>
+        new SymmetricAlgorithmSpecification
+        {
+            BlockSizeBits = 256,
+            DefaultKeySizeBits = 256,
+            LegalKeySizesBits = [256],
+        };
+}

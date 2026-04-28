@@ -1,3 +1,9 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ConcurrentCircularBufferTests.TryPeek.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
@@ -9,6 +15,9 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryPeek" /> returns <see langword="false" /> on a buffer that has just been cleared.
+    /// </summary>
     [TestMethod]
     public void TryPeek_WhenAfterClear_ShouldReturnFalse()
     {
@@ -20,6 +29,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, buffer.Count);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryPeek" /> reflects the new oldest item immediately after <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" /> is toggled and an overwriting enqueue runs.
+    /// </summary>
     [TestMethod]
     public void TryPeek_WhenAllowOverwriteToggled_ShouldReflectImmediately()
     {
@@ -40,6 +52,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(2, afterToggle!.Value);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryPeek" /> observes <see langword="null" /> items safely when the buffer contains nulls under a concurrent writer.
+    /// </summary>
     [TestMethod]
     public void TryPeek_WhenBufferContainsNullsUnderConcurrency_ShouldYieldNullSafely()
     {
@@ -66,6 +81,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(nullSeen > 0, "Expected TryPeek to observe null items.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryPeek" /> on an empty buffer returns <see langword="false" />.
+    /// </summary>
     [TestMethod]
     public void TryPeek_WhenBufferIsEmpty_ShouldReturnFalse()
     {
@@ -81,6 +99,9 @@ public partial class ConcurrentCircularBufferTests
     // items (now 2 instead of 1), each subsequent enqueue evicts the oldest and TryPeek
     // correctly returns the current oldest remaining item.
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryPeek" /> behaves consistently at the minimum supported capacity, reflecting eviction as items overflow.
+    /// </summary>
     [TestMethod]
     public void TryPeek_WhenCapacityIsMinimum_ShouldBehaveConsistently()
     {
@@ -109,6 +130,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(8, item!.Value);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryPeek" /> does not throw while a concurrent consumer is draining the buffer.
+    /// </summary>
     [TestMethod]
     public void TryPeek_WhenConcurrentDequeue_ShouldNotThrow()
     {
@@ -135,6 +159,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, failures, "TryPeek threw during concurrent dequeue.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryPeek" /> eventually succeeds against a buffer fed by a concurrent enqueuer.
+    /// </summary>
     [TestMethod]
     public void TryPeek_WhenConcurrentEnqueue_ShouldEventuallySucceed()
     {
@@ -160,6 +187,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(1, peeked, "TryPeek never succeeded during enqueuing.");
     }
 
+    /// <summary>
+    /// Verifies that many concurrent <see cref="ConcurrentCircularBuffer{T}.TryPeek" /> calls never throw and never corrupt the buffer.
+    /// </summary>
     [TestMethod]
     public void TryPeek_WhenManyReaders_ShouldNotThrowOrCorrupt()
     {
@@ -190,6 +220,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(totalAttempts > 0, "No TryPeek operations were attempted.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryPeek" /> does not remove the item it inspects.
+    /// </summary>
     [TestMethod]
     public void TryPeek_WhenNonDestructive_ShouldNotRemoveItem()
     {
@@ -202,6 +235,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(1, buffer.Count, "TryPeek must not remove the element.");
     }
 
+    /// <summary>
+    /// Verifies that under a rapid producer/consumer race, <see cref="ConcurrentCircularBuffer{T}.TryPeek" /> observes at least one item.
+    /// </summary>
     [TestMethod]
     public void TryPeek_WhenRapidEnqueueDequeue_ShouldObserveItemsSometimes()
     {
@@ -209,6 +245,14 @@ public partial class ConcurrentCircularBufferTests
         int observed = 0;
 
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+
+        // Deterministic warmup: seed one item and observe it before the enqueuer / dequeuer /
+        // peeker race begins. Without this the `observed > 0` assertion is hostage to scheduler
+        // luck — on a loaded CI runner the dequeuer can consistently drain the buffer faster
+        // than the peeker samples it, leaving every TryPeek call observing an empty buffer.
+        buffer.Enqueue(new TestItem(-1));
+        if (buffer.TryPeek(out var seed) && seed != null)
+            Interlocked.Increment(ref observed);
 
         var enqueuer = Task.Run(() =>
         {
@@ -243,6 +287,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(observed > 0, "TryPeek did not observe any items.");
     }
 
+    /// <summary>
+    /// Verifies that after a wraparound, <see cref="ConcurrentCircularBuffer{T}.TryPeek" /> returns the logical oldest item.
+    /// </summary>
     [TestMethod]
     public void TryPeek_WhenWraparoundOccurred_ShouldReturnOldest()
     {

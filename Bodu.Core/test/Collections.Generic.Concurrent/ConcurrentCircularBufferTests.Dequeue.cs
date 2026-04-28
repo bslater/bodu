@@ -1,9 +1,18 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ConcurrentCircularBufferTests.Dequeue.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using System.Collections.Concurrent;
 
 namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+    /// <summary>
+    /// Verifies that when overwriting is disabled and the buffer is full, a failed enqueue leaves the existing FIFO sequence intact for later dequeue.
+    /// </summary>
     [TestMethod]
     public void Dequeue_WhenAllowOverwriteFalseAndBufferFull_NewEnqueueThrowsButExistingItemsRemainInFifo()
     {
@@ -22,6 +31,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, buffer.Count);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Dequeue" /> on an empty buffer throws <see cref="InvalidOperationException" />.
+    /// </summary>
     [TestMethod]
     public void Dequeue_WhenBufferIsEmpty_ShouldThrowInvalidOperation()
     {
@@ -32,6 +44,9 @@ public partial class ConcurrentCircularBufferTests
         });
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Dequeue" /> interleaved with <see cref="ConcurrentCircularBuffer{T}.Clear" /> never throws anything other than <see cref="InvalidOperationException" /> and never corrupts the buffer.
+    /// </summary>
     [TestMethod]
     public void Dequeue_WhenClearInterleaves_ShouldOnlyThrowWhenEmptyAndNeverCorruptState()
     {
@@ -85,6 +100,9 @@ public partial class ConcurrentCircularBufferTests
     //   - a strict sequential FIFO test (single-threaded, deterministic)
     //   - a concurrent test that correctly uses AreEquivalent (same elements, any order)
 
+    /// <summary>
+    /// Verifies that single-threaded enqueue followed by full drain returns items in strict FIFO order.
+    /// </summary>
     [TestMethod]
     public void Dequeue_WhenSingleThreaded_ShouldReturnItemsInFifoOrder()
     {
@@ -101,6 +119,9 @@ public partial class ConcurrentCircularBufferTests
             "Single-threaded dequeue must return items in strict FIFO order.");
     }
 
+    /// <summary>
+    /// Verifies that a concurrent producer and consumer together transfer every item exactly once, without loss or duplication.
+    /// </summary>
     [TestMethod]
     public void Dequeue_WhenEnqueueAndDequeueConcurrently_ShouldDeliverAllItemsExactlyOnce()
     {
@@ -141,6 +162,9 @@ public partial class ConcurrentCircularBufferTests
             "The set of dequeued values must equal the set of enqueued values.");
     }
 
+    /// <summary>
+    /// Verifies that many concurrent consumers draining a populated buffer each get a disjoint share, and together consume every item exactly once.
+    /// </summary>
     [TestMethod]
     public void Dequeue_WhenMultipleConsumers_ShouldReturnEachItemExactlyOnce()
     {
@@ -163,6 +187,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, buffer.Count);
     }
 
+    /// <summary>
+    /// Verifies that dequeueing a previously enqueued <see langword="null" /> returns <see langword="null" /> and decrements the count.
+    /// </summary>
     [TestMethod]
     public void Dequeue_WhenNullEnqueued_ShouldReturnNull()
     {
@@ -174,6 +201,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, buffer.Count);
     }
 
+    /// <summary>
+    /// Verifies that a mixed sequence of null and non-null enqueues is returned by <see cref="ConcurrentCircularBuffer{T}.Dequeue" /> in the exact order enqueued.
+    /// </summary>
     [TestMethod]
     public void Dequeue_WhenNullsAndValuesMixed_ShouldReturnExactlyWhatWasEnqueued()
     {
@@ -194,6 +224,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(2, d?.Value);
     }
 
+    /// <summary>
+    /// Verifies that after overwrites evict older items, <see cref="ConcurrentCircularBuffer{T}.Dequeue" /> returns the oldest survivor first.
+    /// </summary>
     [TestMethod]
     public void Dequeue_WhenOverwriteEnabledAndProducersEvict_ShouldReturnOldestOfCurrentSet()
     {
@@ -209,6 +242,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(4, buffer.Dequeue().Value);
     }
 
+    /// <summary>
+    /// Verifies that slots reused after a wraparound are still dequeued in FIFO order.
+    /// </summary>
     [TestMethod]
     public void Dequeue_WhenSlotReusedAfterWrap_ShouldReturnInFifoOrder()
     {
@@ -223,6 +259,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, buffer.Count);
     }
 
+    /// <summary>
+    /// Verifies that FIFO order is preserved across a wraparound boundary.
+    /// </summary>
     [TestMethod]
     public void Dequeue_WhenWrapAroundOccurs_ShouldPreserveFifoOrder()
     {
@@ -239,6 +278,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, buffer.Count);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryDequeue" /> on an empty buffer returns <see langword="false" /> and outputs the default value.
+    /// </summary>
     [TestMethod]
     public void TryDequeue_WhenBufferIsEmpty_ShouldReturnFalseAndOutDefault()
     {
@@ -249,6 +291,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, buffer.Count);
     }
 
+    /// <summary>
+    /// Verifies that parallel <see cref="ConcurrentCircularBuffer{T}.TryDequeue" /> calls collectively return every item in the buffer exactly once.
+    /// </summary>
     [TestMethod]
     public void TryDequeue_WhenDrainedConcurrently_ShouldReturnAllItems()
     {

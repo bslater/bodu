@@ -4,16 +4,12 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Testing.Security;
+namespace Bodu.Security.Cryptography;
 
-namespace Bodu.Security.Cryptography
+[TestClass]
+public sealed partial class GcmSivModeTransformTests
+    : AeadBlockCipherModeTests<GcmSivModeTransform>
 {
-    [TestClass]
-    public sealed partial class GcmSivModeTransformTests
-        : AeadBlockCipherModeTests<GcmSivModeTransform>
-    {
-        protected override GcmSivModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
-            => new GcmSivModeTransform(cipher, k => new AesBlockCipherFixture(k), iv);
-    }
+    protected override GcmSivModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
+        => new GcmSivModeTransform(cipher, k => new AesBlockCipherFixture(k), iv);
 }

@@ -7,104 +7,124 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Bodu.Extensions
+namespace Bodu.Extensions;
+
+public partial class DateOnlyExtensionsTests
 {
-    public partial class DateOnlyExtensionsTests
+    // Note: The current implementation starts at the quarter end and advances forward using
+    // ((target - currentDow + 7) % 7) days. This pins the result only when the quarter-end
+    // day-of-week already matches the target; for other targets, the returned date may fall
+    // into the following quarter. These tests lock in the observed behaviour so any future
+    // correction to match the documented "last occurrence within the same quarter" contract
+    // is flagged as a regression.
+
+    // =========================================================================
+    // LastDayOfWeekInQuarter(this DateOnly, DayOfWeek, CalendarQuarterDefinition)
+    // =========================================================================
+
+    public static IEnumerable<object[]> LastDayOfWeekInQuarterJanuaryDecemberTestData()
     {
-        // Note: The current implementation starts at the quarter end and advances forward using
-        // ((target - currentDow + 7) % 7) days. This pins the result only when the quarter-end
-        // day-of-week already matches the target; for other targets, the returned date may fall
-        // into the following quarter. These tests lock in the observed behaviour so any future
-        // correction to match the documented "last occurrence within the same quarter" contract
-        // is flagged as a regression.
+        // Q1 2024 ends Sun 31 Mar. Target Sun → 31 Mar (quarter end matches target).
+        yield return new object[] { new DateOnly(2024, 2, 15), DayOfWeek.Sunday, new DateOnly(2024, 3, 31) };
+        // Q3 2024 ends Mon 30 Sep. Target Mon → 30 Sep.
+        yield return new object[] { new DateOnly(2024, 8, 20), DayOfWeek.Monday, new DateOnly(2024, 9, 30) };
+        // Q4 2024 ends Tue 31 Dec. Target Tue → 31 Dec.
+        yield return new object[] { new DateOnly(2024, 11, 5), DayOfWeek.Tuesday, new DateOnly(2024, 12, 31) };
+    }
 
-        // =========================================================================
-        // LastDayOfWeekInQuarter(this DateOnly, DayOfWeek, CalendarQuarterDefinition)
-        // =========================================================================
+    /// <summary>
+    /// Verifies that when the quarter end falls on the requested <see cref="DayOfWeek" />, the instance overload returns the quarter-end date itself.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(LastDayOfWeekInQuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
+    public void LastDayOfWeekInQuarter_WhenTargetMatchesQuarterEndDayOfWeek_ShouldReturnQuarterEndDate(DateOnly input, DayOfWeek dayOfWeek, DateOnly expected)
+    {
+        DateOnly actual = input.LastDayOfWeekInQuarter(dayOfWeek, CalendarQuarterDefinition.JanuaryToDecember);
+        Assert.AreEqual(expected, actual);
+    }
 
-        public static IEnumerable<object[]> LastDayOfWeekInQuarterJanuaryDecemberTestData()
+    /// <summary>
+    /// Verifies that an undefined <see cref="DayOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" /> on the instance overload.
+    /// </summary>
+    [TestMethod]
+    public void LastDayOfWeekInQuarter_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
+    {
+        DateOnly input = new DateOnly(2024, 4, 20);
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            // Q1 2024 ends Sun 31 Mar. Target Sun → 31 Mar (quarter end matches target).
-            yield return new object[] { new DateOnly(2024, 2, 15), DayOfWeek.Sunday, new DateOnly(2024, 3, 31) };
-            // Q3 2024 ends Mon 30 Sep. Target Mon → 30 Sep.
-            yield return new object[] { new DateOnly(2024, 8, 20), DayOfWeek.Monday, new DateOnly(2024, 9, 30) };
-            // Q4 2024 ends Tue 31 Dec. Target Tue → 31 Dec.
-            yield return new object[] { new DateOnly(2024, 11, 5), DayOfWeek.Tuesday, new DateOnly(2024, 12, 31) };
-        }
+            _ = input.LastDayOfWeekInQuarter((DayOfWeek)999, CalendarQuarterDefinition.JanuaryToDecember);
+        });
+    }
 
-        [TestMethod]
-        [DynamicData(nameof(LastDayOfWeekInQuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
-        public void LastDayOfWeekInQuarter_WhenTargetMatchesQuarterEndDayOfWeek_ShouldReturnQuarterEndDate(DateOnly input, DayOfWeek dayOfWeek, DateOnly expected)
+    /// <summary>
+    /// Verifies that an undefined <see cref="CalendarQuarterDefinition" /> value throws <see cref="ArgumentOutOfRangeException" /> on the instance overload.
+    /// </summary>
+    [TestMethod]
+    public void LastDayOfWeekInQuarter_WhenDefinitionIsInvalid_ShouldThrowArgumentOutOfRangeException()
+    {
+        DateOnly input = new DateOnly(2024, 4, 20);
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            DateOnly actual = input.LastDayOfWeekInQuarter(dayOfWeek, CalendarQuarterDefinition.JanuaryToDecember);
-            Assert.AreEqual(expected, actual);
-        }
+            _ = input.LastDayOfWeekInQuarter(DayOfWeek.Monday, (CalendarQuarterDefinition)999);
+        });
+    }
 
-        [TestMethod]
-        public void LastDayOfWeekInQuarter_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
+    // =========================================================================
+    // LastDayOfWeekInQuarter(int year, int quarter, DayOfWeek, CalendarQuarterDefinition)
+    // =========================================================================
+
+    /// <summary>
+    /// Verifies that the static <see cref="DateOnlyExtensions.LastDayOfWeekInQuarter(int, int, DayOfWeek, CalendarQuarterDefinition)" /> overload returns the expected last occurrence for each <c>(year, quarter, dayOfWeek)</c> tuple.
+    /// </summary>
+    [TestMethod]
+    [DataRow(2024, 1, DayOfWeek.Sunday, 2024, 3, 31)]  // Q1 ends Sun; target Sun → 31 Mar
+    [DataRow(2024, 3, DayOfWeek.Monday, 2024, 9, 30)]  // Q3 ends Mon; target Mon → 30 Sep
+    [DataRow(2024, 4, DayOfWeek.Tuesday, 2024, 12, 31)] // Q4 ends Tue; target Tue → 31 Dec
+    public void LastDayOfWeekInQuarter_WhenUsingYearAndQuarter_ShouldReturnExpectedDate(
+        int year, int quarter, DayOfWeek dayOfWeek, int expectedYear, int expectedMonth, int expectedDay)
+    {
+        DateOnly actual = DateOnlyExtensions.LastDayOfWeekInQuarter(year, quarter, dayOfWeek, CalendarQuarterDefinition.JanuaryToDecember);
+        Assert.AreEqual(new DateOnly(expectedYear, expectedMonth, expectedDay), actual);
+    }
+
+    /// <summary>
+    /// Verifies that the static overload throws <see cref="ArgumentOutOfRangeException" /> for quarter values outside <c>1..4</c>.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(5)]
+    [DataRow(-1)]
+    public void LastDayOfWeekInQuarter_WhenQuarterIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int quarter)
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            DateOnly input = new DateOnly(2024, 4, 20);
+            _ = DateOnlyExtensions.LastDayOfWeekInQuarter(2024, quarter, DayOfWeek.Monday, CalendarQuarterDefinition.JanuaryToDecember);
+        });
+    }
 
-            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-            {
-                _ = input.LastDayOfWeekInQuarter((DayOfWeek)999, CalendarQuarterDefinition.JanuaryToDecember);
-            });
-        }
-
-        [TestMethod]
-        public void LastDayOfWeekInQuarter_WhenDefinitionIsInvalid_ShouldThrowArgumentOutOfRangeException()
+    /// <summary>
+    /// Verifies that the static overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="CalendarQuarterDefinition" /> value.
+    /// </summary>
+    [TestMethod]
+    public void LastDayOfWeekInQuarter_WhenYearAndQuarterOverloadDefinitionIsInvalid_ShouldThrowArgumentOutOfRangeException()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            DateOnly input = new DateOnly(2024, 4, 20);
+            _ = DateOnlyExtensions.LastDayOfWeekInQuarter(2024, 1, DayOfWeek.Monday, (CalendarQuarterDefinition)999);
+        });
+    }
 
-            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-            {
-                _ = input.LastDayOfWeekInQuarter(DayOfWeek.Monday, (CalendarQuarterDefinition)999);
-            });
-        }
-
-        // =========================================================================
-        // LastDayOfWeekInQuarter(int year, int quarter, DayOfWeek, CalendarQuarterDefinition)
-        // =========================================================================
-
-        [TestMethod]
-        [DataRow(2024, 1, DayOfWeek.Sunday, 2024, 3, 31)]  // Q1 ends Sun; target Sun → 31 Mar
-        [DataRow(2024, 3, DayOfWeek.Monday, 2024, 9, 30)]  // Q3 ends Mon; target Mon → 30 Sep
-        [DataRow(2024, 4, DayOfWeek.Tuesday, 2024, 12, 31)] // Q4 ends Tue; target Tue → 31 Dec
-        public void LastDayOfWeekInQuarter_WhenUsingYearAndQuarter_ShouldReturnExpectedDate(
-            int year, int quarter, DayOfWeek dayOfWeek, int expectedYear, int expectedMonth, int expectedDay)
+    /// <summary>
+    /// Verifies that the static overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="DayOfWeek" /> value.
+    /// </summary>
+    [TestMethod]
+    public void LastDayOfWeekInQuarter_WhenYearAndQuarterOverloadDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            DateOnly actual = DateOnlyExtensions.LastDayOfWeekInQuarter(year, quarter, dayOfWeek, CalendarQuarterDefinition.JanuaryToDecember);
-            Assert.AreEqual(new DateOnly(expectedYear, expectedMonth, expectedDay), actual);
-        }
-
-        [TestMethod]
-        [DataRow(0)]
-        [DataRow(5)]
-        [DataRow(-1)]
-        public void LastDayOfWeekInQuarter_WhenQuarterIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int quarter)
-        {
-            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-            {
-                _ = DateOnlyExtensions.LastDayOfWeekInQuarter(2024, quarter, DayOfWeek.Monday, CalendarQuarterDefinition.JanuaryToDecember);
-            });
-        }
-
-        [TestMethod]
-        public void LastDayOfWeekInQuarter_WhenYearAndQuarterOverloadDefinitionIsInvalid_ShouldThrowArgumentOutOfRangeException()
-        {
-            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-            {
-                _ = DateOnlyExtensions.LastDayOfWeekInQuarter(2024, 1, DayOfWeek.Monday, (CalendarQuarterDefinition)999);
-            });
-        }
-
-        [TestMethod]
-        public void LastDayOfWeekInQuarter_WhenYearAndQuarterOverloadDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
-        {
-            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-            {
-                _ = DateOnlyExtensions.LastDayOfWeekInQuarter(2024, 1, (DayOfWeek)999, CalendarQuarterDefinition.JanuaryToDecember);
-            });
-        }
+            _ = DateOnlyExtensions.LastDayOfWeekInQuarter(2024, 1, (DayOfWeek)999, CalendarQuarterDefinition.JanuaryToDecember);
+        });
     }
 }

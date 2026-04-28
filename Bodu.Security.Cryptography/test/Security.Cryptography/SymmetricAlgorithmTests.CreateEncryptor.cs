@@ -1,83 +1,83 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="SymmetricAlgorithmTests.CreateEncryptor.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Bodu.Security.Cryptography
+namespace Bodu.Security.Cryptography;
+
+public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
 {
-    public abstract partial class SymmetricAlgorithmTests<TAlgorithm>
+    /// <summary>
+    /// Verifies that setting <see cref="SymmetricAlgorithm.CreateEncryptor" /> after the algorithm has been disposed throws
+    /// an <see cref="ObjectDisposedException" />.
+    /// </summary>
+    [TestMethod]
+    public void CreateEncryptor_WhenSetAfterDispose_ShouldThrowObjectDisposedException()
     {
-        /// <summary>
-        /// Validates that setting <see cref="SymmetricAlgorithm.CreateEncryptor" /> after the algorithm has been disposed throws
-        /// an <see cref="ObjectDisposedException" />.
-        /// </summary>
-        [TestMethod]
-        public void CreateEncryptor_WhenSetAfterDispose_ShouldThrowObjectDisposedException()
+        TAlgorithm algorithm = CreateAlgorithm();
+        algorithm.Dispose();
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
-            TAlgorithm algorithm = this.CreateAlgorithm();
-            algorithm.Dispose();
+            _ = algorithm.CreateEncryptor();
+        });
+    }
 
-            Assert.ThrowsExactly<ObjectDisposedException>(() =>
-            {
-                _ = algorithm.CreateEncryptor();
-            });
-        }
+    /// <summary>
+    /// Verifies that attempting to create a cryptographic transform on a disposed
+    /// <typeparamref name="TAlgorithm" /> instance throws <see cref="ObjectDisposedException" /> whose
+    /// <see cref="ObjectDisposedException.ObjectName" /> carries the concrete algorithm type
+    /// name. Regression guard for defects where <c>nameof(T)</c> on a non-generic base class
+    /// produced the literal string <c>"T"</c> instead of the derived type name.
+    /// </summary>
+    [TestMethod]
+    public void CreateEncryptor_WhenDisposes_ShouldReportConcreteTypeName()
+    {
+        var algorithm = CreateAlgorithm();
+        algorithm.Dispose();
 
-        /// <summary>
-        /// Verifies that attempting to create a cryptographic transform on a disposed
-        /// <typeparamref name="TAlgorithm" /> instance throws <see cref="ObjectDisposedException" /> whose
-        /// <see cref="ObjectDisposedException.ObjectName" /> carries the concrete algorithm type
-        /// name. Regression guard for defects where <c>nameof(T)</c> on a non-generic base class
-        /// produced the literal string <c>"T"</c> instead of the derived type name.
-        /// </summary>
-        [TestMethod]
-        public void CreateEncryptor_WhenDisposes_ShouldReportConcreteTypeName()
+        try
         {
-            var algorithm = this.CreateAlgorithm();
-            algorithm.Dispose();
-
-            try
-            {
-                using var _ = algorithm.CreateEncryptor();
-                Assert.Fail("Expected ObjectDisposedException after disposal.");
-            }
-            catch (ObjectDisposedException ex)
-            {
-                Assert.AreEqual(typeof(TAlgorithm).FullName, ex.ObjectName,
-                    $"ObjectDisposedException.ObjectName must match the concrete type name '{typeof(TAlgorithm).FullName}'.");
-            }
+            using var _ = algorithm.CreateEncryptor();
+            Assert.Fail("Expected ObjectDisposedException after disposal.");
         }
-
-        /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithm.CreateEncryptor(byte[], byte[])" /> throws
-        /// <see cref="ArgumentNullException" /> when the key is <see langword="null" />.
-        /// </summary>
-        [TestMethod]
-        public void CreateEncryptor_WhenKeyIsNull_ShouldThrowArgumentNullException_fix()
+        catch (ObjectDisposedException ex)
         {
-            using var algorithm = this.CreateAlgorithm();
-
-            Assert.ThrowsExactly<ArgumentNullException>(() =>
-            {
-                _ = algorithm.CreateEncryptor(null!, new byte[algorithm.BlockSize / 8]);
-            });
+            Assert.AreEqual(typeof(TAlgorithm).FullName, ex.ObjectName,
+                $"ObjectDisposedException.ObjectName must match the concrete type name '{typeof(TAlgorithm).FullName}'.");
         }
+    }
 
-        /// <summary>
-        /// Verifies that <see cref="SymmetricAlgorithm.CreateEncryptor(byte[], byte[])" /> throws
-        /// <see cref="ArgumentNullException" /> when the IV is <see langword="null" />.
-        /// </summary>
-        [TestMethod]
-        public void CreateEncryptor_WhenIvIsNull_ShouldThrowArgumentNullException_fix()
+    /// <summary>
+    /// Verifies that <see cref="SymmetricAlgorithm.CreateEncryptor(byte[], byte[])" /> throws
+    /// <see cref="ArgumentNullException" /> when the key is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void CreateEncryptor_WhenKeyIsNull_ShouldThrowArgumentNullException_fix()
+    {
+        using var algorithm = CreateAlgorithm();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            using var algorithm = this.CreateAlgorithm();
+            _ = algorithm.CreateEncryptor(null!, new byte[algorithm.BlockSize / 8]);
+        });
+    }
 
-            Assert.ThrowsExactly<ArgumentNullException>(() =>
-            {
-                _ = algorithm.CreateEncryptor(new byte[algorithm.KeySize / 8], null!);
-            });
-        }
+    /// <summary>
+    /// Verifies that <see cref="SymmetricAlgorithm.CreateEncryptor(byte[], byte[])" /> throws
+    /// <see cref="ArgumentNullException" /> when the IV is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void CreateEncryptor_WhenIvIsNull_ShouldThrowArgumentNullException_fix()
+    {
+        using var algorithm = CreateAlgorithm();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = algorithm.CreateEncryptor(new byte[algorithm.KeySize / 8], null!);
+        });
     }
 }

@@ -1,20 +1,21 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Security.Cryptography;
-using Bodu.Testing.Security;
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="CtsModeTransformTests.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography
+namespace Bodu.Security.Cryptography;
+
+[TestClass]
+public sealed partial class CtsModeTransformTests
+    : BlockCipherModeTests<CtsModeTransform>
 {
-    [TestClass]
-    public sealed partial class CtsModeTransformTests
-        : BlockCipherModeTests<CtsModeTransform>
-    {
-        protected override CtsModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
-            => new CtsModeTransform(cipher, iv);
+    protected override CtsModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
+        => new CtsModeTransform(cipher, iv);
 
-        /// <summary>
-        /// CTS explicitly accepts non-block-aligned input — that is its primary purpose. The base-class
-        /// <c>Transform_WhenInputNotBlockAligned_ShouldThrow</c> test is suppressed for this mode.
-        /// </summary>
-        protected override bool RequiresBlockAlignedInput => false;
-    }
+    /// <summary>
+    /// CTS explicitly accepts non-block-aligned input — that is its primary purpose. The base-class
+    /// <c>Transform_WhenInputNotBlockAligned_ShouldThrow</c> test is suppressed for this mode.
+    /// </summary>
+    protected override bool RequiresBlockAlignedInput => false;
 }

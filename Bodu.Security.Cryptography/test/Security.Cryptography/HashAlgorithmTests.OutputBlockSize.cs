@@ -1,25 +1,24 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="HashAlgorithmTests.cs" company="PlaceholderCompany">
+// <copyright file="HashAlgorithmTests.OutputBlockSize.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
 
-namespace Bodu.Security.Cryptography
+namespace Bodu.Security.Cryptography;
+
+public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 {
-    public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
+    /// <summary>
+    /// Verifies that <see cref="HashAlgorithm.OutputBlockSize" /> returns the expected default block size.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(HashAlgorithmVariants))]
+    public void OutputBlockSize_ShouldBeExpectedOutputBlockSize(TVariant variant)
     {
-        /// <summary>
-        /// Verifies that <see cref="HashAlgorithm.OutputBlockSize" /> returns the expected default block size.
-        /// </summary>
-        [TestMethod]
-        [DynamicData(nameof(HashAlgorithmVariants))]
-        public void OutputBlockSize_ShouldBeExpectedOutputBlockSize(TVariant variant)
-        {
-            var specification = GetSpecification(variant);
-            using var algorithm = this.CreateAlgorithm(variant);
-            Assert.AreEqual(specification.OutputBlockSize, algorithm.OutputBlockSize, $"{typeof(TAlgorithm).Name} OutputBlockSize should be {specification.OutputBlockSize}.");
-        }
+        var specification = GetSpecification(variant);
+        using var algorithm = CreateAlgorithm(variant);
+        Assert.AreEqual(specification.OutputBlockSize, algorithm.OutputBlockSize, $"{typeof(TAlgorithm).Name} OutputBlockSize should be {specification.OutputBlockSize}.");
     }
 }

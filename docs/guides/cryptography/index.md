@@ -1,12 +1,12 @@
 ---
-title: Cryptography guides
+title: Bodu.Security.Cryptography guides
 ---
 
-# Cryptography guides
+# Bodu.Security.Cryptography guides
 
 Recipe-style walk-throughs for using **Bodu.Security.Cryptography** in real applications — encrypting and decrypting data with the right mode, padding, and IV; and choosing the right hash for the job.
 
-If you're looking for the generated API reference, see the [Bodu.Security.Cryptography namespace page](../../api/Bodu.Security.Cryptography.html).
+If you're looking for the generated API reference, see the [Bodu.Security.Cryptography namespace page](../../apidoc/Bodu.Security.Cryptography.md). For non-cryptographic checksums (CRC, Fletcher), see the [Bodu.IO.Hashing guides](../io-hashing/). Not sure which primitive to use? See the [algorithm families overview](../algorithm-families.md).
 
 ## Start here
 
@@ -25,6 +25,11 @@ If you're looking for the generated API reference, see the [Bodu.Security.Crypto
 <div class="bodu-card">
   <h3><a href="aead-modes.html">AEAD modes</a></h3>
   <p>GCM, CCM, OCB3, SIV, GCM-SIV — authenticated encryption with AES, using <code>AesBlockCipher</code> plus the one-shot extension methods.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="ascon.html">ASCON family</a></h3>
+  <p>All five NIST SP 800-232 algorithms — <code>AsconHash256</code>, <code>AsconHashA256</code>, <code>AsconXof128</code>, <code>AsconCxof128</code>, and <code>AsconAead128</code> — with algorithm selection guidance and quick-start examples.</p>
 </div>
 
 <div class="bodu-card">
@@ -55,7 +60,20 @@ All five share the same high-level shape: a `SymmetricAlgorithm` (or `TweakableS
 
 ## Hashing
 
-[Using hashes and checksums](hashing.md) — concrete recipes for non-cryptographic checksums (Fletcher, Adler, FNV, CRC), keyed short-input hashes (SipHash), cryptographic digests (Tiger), and streaming integrity with `MerkleTreeHash` / `ParallelMerkleTreeHash`.
+Start with [Using hashes and checksums](hashing.md) for the cross-cutting picture — how the keyed, cryptographic, and Merkle-tree primitives relate, how to compute and verify digests, and when each one is the right tool. Then pick the per-algorithm page you need:
+
+| Type | Shape | Guide |
+|---|---|---|
+| `SipHash64` / `SipHash128` | Keyed PRF — hash-flooding defence | [Using SipHash](siphash.md) |
+| `Poly1305` | One-time authenticator | [Using Poly1305](poly1305.md) |
+| `Tiger` | 128 / 160 / 192-bit cryptographic digest | [Using Tiger](tiger.md) |
+| `CubeHash` | SHA-3 submission, tunable rounds and block size | [Using CubeHash](cubehash.md) |
+| `Snefru128` / `Snefru256` | Legacy cryptographic digest — interop only | [Using Snefru](snefru.md) |
+| `AsconHash256` / `AsconHashA256` | NIST SP 800-232 sponge digest — 256-bit output, two margin/throughput variants | [ASCON hashing](ascon-hashing.md) |
+| `AsconXof128` / `AsconCxof128` | NIST SP 800-232 extendable output — squeeze any number of bytes; CXOF128 adds a customisation string | [ASCON XOF](ascon-xof.md) |
+| `MerkleTreeHash` / `ParallelMerkleTreeHash` | Tree-structured streaming integrity | [Using Merkle trees](merkle-trees.md) |
+
+For non-cryptographic checksums and fingerprints (CRC, Fletcher, Adler, FNV, CityHash, Pearson, and the classic string hashes) on `System.IO.Hashing.NonCryptographicHashAlgorithm`, see the [Bodu.IO.Hashing guides](../io-hashing/).
 
 ## Related concepts
 
@@ -65,4 +83,15 @@ All five share the same high-level shape: a `SymmetricAlgorithm` (or `TweakableS
 
 ## Authenticated encryption
 
-For authenticated-encryption-with-associated-data (AEAD), pair the public <xref:Bodu.Security.Cryptography.AesBlockCipher> with one of the mode transforms — `GcmModeTransform`, `CcmModeTransform`, `OcbModeTransform`, `SivModeTransform`, or `GcmSivModeTransform` — and call through the one-shot <xref:Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions> helpers. The [AEAD modes guide](aead-modes.md) walks through each mode end-to-end.
+For authenticated-encryption-with-associated-data (AEAD), you have two families of algorithms:
+
+**AES-based AEAD** — pair <xref:Bodu.Security.Cryptography.AesBlockCipher> with one of the
+five mode transforms (`GcmModeTransform`, `CcmModeTransform`, `OcbModeTransform`,
+`SivModeTransform`, or `GcmSivModeTransform`) and call through the one-shot
+<xref:Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions> helpers.
+The [AEAD modes guide](aead-modes.md) walks through each mode end-to-end.
+
+**ASCON-AEAD128** — <xref:Bodu.Security.Cryptography.AsconAead128> is a sponge-based AEAD
+(NIST SP 800-232) that requires no separate block cipher. Use it when you need a
+standards-backed AEAD with a compact software footprint or when targeting hardware without
+AES-NI. See the [ASCON AEAD guide](ascon-aead.md).

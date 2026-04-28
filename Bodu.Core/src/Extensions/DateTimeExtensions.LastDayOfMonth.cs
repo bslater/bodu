@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.LastDayOfMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public static partial class DateTimeExtensions
     /// This method calculates the last day of the month using Gregorian calendar rules. Leap years are correctly accounted for when
     /// determining the length of February.
     /// </para>
-    /// <para>The result has its time component normalized to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
+    /// <para>The result has its time component normalised to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
     /// </remarks>
     public static DateTime LastDayOfMonth(this DateTime dateTime) => new DateTime(GetLastDayOfMonthTicks(dateTime), dateTime.Kind);
 
@@ -42,7 +42,7 @@ public static partial class DateTimeExtensions
     /// This method uses Gregorian calendar logic to determine the number of days in the specified month, including leap year adjustments
     /// for February.
     /// </para>
-    /// <para>The returned value is normalized to midnight (00:00:00) and uses <see cref="DateTimeKind.Unspecified"/>.</para>
+    /// <para>The returned value is normalised to midnight (00:00:00) and uses <see cref="DateTimeKind.Unspecified"/>.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="year"/> is less than the <c>Year</c> of <see cref="DateTime.MinValue"/> or greater than that of

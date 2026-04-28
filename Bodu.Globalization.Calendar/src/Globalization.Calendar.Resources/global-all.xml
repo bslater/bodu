@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Default global notable-date resource. Pulls in the common global
+  notable-date sets via UseAll, producing a broad, country-neutral
+  calendar for consumers calling `new NotableDateService()`.
+
+  These rules represent internationally recognised civic, cultural,
+  educational, environmental, family, food and agriculture, health, animal
+  welfare, remembrance, science and technology, social, United Nations,
+  and multi-tradition religious (lunar, Islamic, Jewish, Hindu, and
+  Buddhist calendar) observances. They are intended for recognition and
+  display, not as a statement that each date is a public holiday or
+  non-working day in every jurisdiction.
+
+  UseAll is a deliberate opt-in for "every rule from this resource".
+  This aggregate resource is the appropriate place to use wildcard
+  inheritance because it is intentionally broad.
+
+  Country-specific resources should avoid UseAll against these global
+  files unless that country intentionally adopts the full set. Instead,
+  country resources should cherry-pick relevant entries and override
+  jurisdiction-specific behaviour such as nonWorking flags, weekend
+  adjustments, local naming, or suppression rules.
+
+  Note on algorithm-keyed rules: the lunar, Islamic, Jewish, Hindu, and
+  Buddhist resource files contain rules that require custom
+  INotableDateAlgorithm implementations registered with the
+  INotableDateAlgorithmRegistry. Consumers that include global-all.xml
+  but do not register the required algorithms will receive null results
+  for those rules without error. See each individual resource file for
+  the full list of required algorithm keys.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <UseFrom resource="./global-core.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-cultural.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-education.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-environment.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-health.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-remembrance.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-social.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-un.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./christian-gregorian.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./christian-orthodox.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-family.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-animals.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-food.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-science.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-lunar.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-islamic.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-jewish.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-hindu.xml">
+    <UseAll />
+  </UseFrom>
+
+  <UseFrom resource="./global-buddhist.xml">
+    <UseAll />
+  </UseFrom>
+
+</NotableDates>

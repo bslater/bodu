@@ -4,23 +4,22 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography
+namespace Bodu.Security.Cryptography;
+
+/// <summary>
+/// Concrete test class that exercises the <see cref="BlockCipherTransformTests{TCryptoTransform}" /> base tests
+/// against the <see cref="SkipjackTransform" /> implementation.
+/// </summary>
+[TestClass]
+internal sealed class SkipjackTransformTests
+    : BlockCipherTransformTests<SkipjackTransform>
 {
-    /// <summary>
-    /// Concrete test class that exercises the <see cref="BlockCipherTransformTests{TCryptoTransform}" /> base tests
-    /// against the <see cref="SkipjackTransform" /> implementation.
-    /// </summary>
-    [TestClass]
-    internal sealed class SkipjackTransformTests
-        : BlockCipherTransformTests<SkipjackTransform>
+    /// <inheritdoc />
+    protected override SkipjackTransform CreateAlgorithm()
     {
-        /// <inheritdoc />
-        protected override SkipjackTransform CreateAlgorithm()
-        {
-            var algorithm = new Skipjack();
-            algorithm.GenerateKey();
-            algorithm.GenerateIV();
-            return (SkipjackTransform)algorithm.CreateEncryptor(algorithm.Key, algorithm.IV);
-        }
+        var algorithm = new Skipjack();
+        algorithm.GenerateKey();
+        algorithm.GenerateIV();
+        return (SkipjackTransform)algorithm.CreateEncryptor(algorithm.Key, algorithm.IV);
     }
 }

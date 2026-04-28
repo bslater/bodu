@@ -146,6 +146,10 @@ public sealed class PooledBufferBuilder<T> :
         return false;
     }
 
+    /// <summary>
+    /// Rents a new pooled buffer twice the current capacity, copies the live elements into it,
+    /// and returns the previous buffer to <see cref="ArrayPool{T}.Shared" />.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void Grow()
     {
@@ -155,6 +159,11 @@ public sealed class PooledBufferBuilder<T> :
         _internalBuffer = newBuffer;
     }
 
+    /// <summary>
+    /// Returns the internal buffer to <see cref="ArrayPool{T}.Shared" />, clearing it first when
+    /// <typeparamref name="T" /> is or contains reference types so that pooled memory cannot
+    /// retain object references.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ReturnBufferIfNeeded()
     {
@@ -165,6 +174,10 @@ public sealed class PooledBufferBuilder<T> :
         }
     }
 
+    /// <summary>
+    /// Throws <see cref="ObjectDisposedException" /> if the builder has already been disposed.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">The builder has been disposed.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed()
     {

@@ -4,10 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Globalization.Extensions
+namespace Bodu.Globalization.Extensions;
+
+[TestClass]
+public partial class DateTimeFormatInfoExtensionsTests
 {
-    [TestClass]
-    public partial class DateTimeFormatInfoExtensionsTests
-    {
-    }
 }

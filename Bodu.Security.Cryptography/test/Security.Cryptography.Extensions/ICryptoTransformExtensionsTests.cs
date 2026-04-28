@@ -1,16 +1,15 @@
-﻿using Bodu.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ICryptoTransformExtensionsTests.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Security.Cryptography.Extensions
+using System.Security.Cryptography;
+
+namespace Bodu.Security.Cryptography.Extensions;
+
+[TestClass]
+public partial class ICryptoTransformExtensionsTests
 {
-    [TestClass]
-    public partial class ICryptoTransformExtensionsTests
-    {
-        private SymmetricAlgorithm CreateAlgorithm() => new SimpleReversingSymmetricAlgorithm();
-    }
+    private SymmetricAlgorithm CreateAlgorithm() => new SimpleReversingSymmetricAlgorithm();
 }

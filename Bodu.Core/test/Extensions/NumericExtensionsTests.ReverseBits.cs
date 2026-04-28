@@ -333,4 +333,595 @@ public partial class NumericExtensionsTests
         0x07, 0x87, 0x47, 0xC7, 0x27, 0xA7, 0x67, 0xE7, 0x17, 0x97, 0x57, 0xD7, 0x37, 0xB7, 0x77, 0xF7,
         0x0F, 0x8F, 0x4F, 0xCF, 0x2F, 0xAF, 0x6F, 0xEF, 0x1F, 0x9F, 0x5F, 0xDF, 0x3F, 0xBF, 0x7F, 0xFF
     };
+
+    // --------------------------------------------------
+    // byte — ReverseBits(value, bitLength)
+    // --------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseBits(byte, int)" /> returns zero when
+    /// <paramref name="bitLength" /> is zero, regardless of the input value.
+    /// </summary>
+    [TestMethod]
+    [DataRow((byte)0x00)]
+    [DataRow((byte)0x01)]
+    [DataRow((byte)0xAA)]
+    [DataRow((byte)0xFF)]
+    public void ReverseBits_WhenBitLengthIsZero_ForByte_ShouldReturnZero(byte value) =>
+        Assert.AreEqual((byte)0, value.ReverseBits(0));
+
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseBits(byte, int)" /> with the full bit width
+    /// produces the same result as the parameterless <see cref="NumericExtensions.ReverseBits(byte)" /> overload.
+    /// </summary>
+    [TestMethod]
+    [DataRow((byte)0x00)]
+    [DataRow((byte)0x01)]
+    [DataRow((byte)0x12)]
+    [DataRow((byte)0xAA)]
+    [DataRow((byte)0xC3)]
+    [DataRow((byte)0xFF)]
+    public void ReverseBits_WhenBitLengthIsFullWidth_ForByte_ShouldMatchParameterlessOverload(byte value) =>
+        Assert.AreEqual(value.ReverseBits(), value.ReverseBits(8));
+
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseBits(byte, int)" /> reverses only the least
+    /// significant <paramref name="bitLength" /> bits, with bits above the window cleared to zero.
+    /// </summary>
+    [TestMethod]
+    [DataRow((byte)0x1B, 4, (byte)0x0D)] // low nibble 0b1011 → 0b1101
+    [DataRow((byte)0xFB, 4, (byte)0x0D)] // high bits are ignored
+    [DataRow((byte)0x56, 5, (byte)0x0D)] // low 5 bits 0b10110 → 0b01101
+    [DataRow((byte)0x7F, 7, (byte)0x7F)] // seven-bit palindrome
+    [DataRow((byte)0x81, 7, (byte)0x40)] // high bit ignored, low 7 bits 0b0000001 → 0b1000000
+    public void ReverseBits_WhenBitLengthIsPartial_ForByte_ShouldReturnLowBitsReversed(byte value, int bitLength, byte expected) =>
+        Assert.AreEqual(expected, value.ReverseBits(bitLength));
+
+    /// <summary>
+    /// Verifies that applying <see cref="NumericExtensions.ReverseBits(byte, int)" /> twice with the same
+    /// <paramref name="bitLength" /> returns the value masked to the reflected window.
+    /// </summary>
+    [TestMethod]
+    [DataRow((byte)0x56, 5)]
+    [DataRow((byte)0x7B, 7)]
+    [DataRow((byte)0xFF, 4)]
+    [DataRow((byte)0x00, 6)]
+    public void ReverseBits_WhenAppliedTwiceWithSameBitLength_ForByte_ShouldReturnLowBitsOfOriginal(byte value, int bitLength)
+    {
+        byte mask = (byte)((1 << bitLength) - 1);
+        Assert.AreEqual((byte)(value & mask), value.ReverseBits(bitLength).ReverseBits(bitLength));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseBits(byte, int)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when <paramref name="bitLength" /> is negative.
+    /// </summary>
+    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(-8)]
+    [DataRow(int.MinValue)]
+    public void ReverseBits_WhenBitLengthIsNegative_ForByte_ShouldThrowArgumentOutOfRangeException(int bitLength) =>
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            ((byte)0xFF).ReverseBits(bitLength);
+        });
+
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseBits(byte, int)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when <paramref name="bitLength" /> exceeds the bit width (8).
+    /// </summary>
+    [TestMethod]
+    [DataRow(9)]
+    [DataRow(16)]
+    [DataRow(int.MaxValue)]
+    public void ReverseBits_WhenBitLengthExceedsTypeWidth_ForByte_ShouldThrowArgumentOutOfRangeException(int bitLength) =>
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            ((byte)0xFF).ReverseBits(bitLength);
+        });
+
+    // --------------------------------------------------
+    // ushort — ReverseBits(value, bitLength)
+    // --------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseBits(ushort, int)" /> returns zero when
+    /// <paramref name="bitLength" /> is zero, regardless of the input value.
+    /// </summary>
+    [TestMethod]
+    [DataRow((ushort)0x0000)]
+    [DataRow((ushort)0x1234)]
+    [DataRow((ushort)0xFFFF)]
+    public void ReverseBits_WhenBitLengthIsZero_ForUShort_ShouldReturnZero(ushort value) =>
+        Assert.AreEqual((ushort)0, value.ReverseBits(0));
+
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseBits(ushort, int)" /> with the full bit width
+    /// produces the same result as the parameterless <see cref="NumericExtensions.ReverseBits(ushort)" /> overload.
+    /// </summary>
+    [TestMethod]
+    [DataRow((ushort)0x0000)]
+    [DataRow((ushort)0x0001)]
+    [DataRow((ushort)0x1234)]
+    [DataRow((ushort)0xAAAA)]
+    [DataRow((ushort)0xFFFF)]
+    public void ReverseBits_WhenBitLengthIsFullWidth_ForUShort_ShouldMatchParameterlessOverload(ushort value) =>
+        Assert.AreEqual(value.ReverseBits(), value.ReverseBits(16));
+
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseBits(ushort, int)" /> reverses only the least
+    /// significant <paramref name="bitLength" /> bits, with bits above the window cleared to zero.
+    /// </summary>
+    [TestMethod]
+    [DataRow((ushort)0x1234, 8, (ushort)0x002C)] // low byte 0x34 → 0x2C
+    [DataRow((ushort)0xFF34, 8, (ushort)0x002C)] // high byte ignored
+    [DataRow((ushort)0x00AB, 12, (ushort)0x0D50)] // low 12 bits
+    [DataRow((ushort)0xF0AB, 12, (ushort)0x0D50)] // high nibble ignored
+    public void ReverseBits_WhenBitLengthIsPartial_ForUShort_ShouldReturnLowBitsReversed(ushort value, int bitLength, ushort expected) =>
+        Assert.AreEqual(expected, value.ReverseBits(bitLength));
+
+    /// <summary>
+    /// Verifies that applying <see cref="NumericExtensions.ReverseBits(ushort, int)" /> twice with the same
+    /// <paramref name="bitLength" /> returns the value masked to the reflected window.
+    /// </summary>
+    [TestMethod]
+    [DataRow((ushort)0x1234, 8)]
+    [DataRow((ushort)0xABCD, 12)]
+    [DataRow((ushort)0xFFFF, 10)]
+    public void ReverseBits_WhenAppliedTwiceWithSameBitLength_ForUShort_ShouldReturnLowBitsOfOriginal(ushort value, int bitLength)
+    {
+        ushort mask = (ushort)((1 << bitLength) - 1);
+        Assert.AreEqual((ushort)(value & mask), value.ReverseBits(bitLength).ReverseBits(bitLength));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseBits(ushort, int)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when <paramref name="bitLength" /> is outside [0, 16].
+    /// </summary>
+    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(17)]
+    [DataRow(int.MaxValue)]
+    [DataRow(int.MinValue)]
+    public void ReverseBits_WhenBitLengthIsOutOfRange_ForUShort_ShouldThrowArgumentOutOfRangeException(int bitLength) =>
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            ((ushort)0xFFFF).ReverseBits(bitLength);
+        });
+
+    // --------------------------------------------------
+    // uint — ReverseBits(value, bitLength)
+    // --------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseBits(uint, int)" /> returns zero when
+    /// <paramref name="bitLength" /> is zero, regardless of the input value.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0x00000000u)]
+    [DataRow(0x12345678u)]
+    [DataRow(0xFFFFFFFFu)]
+    public void ReverseBits_WhenBitLengthIsZero_ForUInt_ShouldReturnZero(uint value) =>
+        Assert.AreEqual(0u, value.ReverseBits(0));
+
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseBits(uint, int)" /> with the full bit width
+    /// produces the same result as the parameterless <see cref="NumericExtensions.ReverseBits(uint)" /> overload.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0x00000000u)]
+    [DataRow(0x00000001u)]
+    [DataRow(0x12345678u)]
+    [DataRow(0xAAAAAAAAu)]
+    [DataRow(0xFFFFFFFFu)]
+    public void ReverseBits_WhenBitLengthIsFullWidth_ForUInt_ShouldMatchParameterlessOverload(uint value) =>
+        Assert.AreEqual(value.ReverseBits(), value.ReverseBits(32));
+
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseBits(uint, int)" /> reverses only the least
+    /// significant <paramref name="bitLength" /> bits, with bits above the window cleared to zero.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0x12345678u, 16, 0x1E6Au)]   // low 16 bits 0x5678 → 0x1E6A
+    [DataRow(0xFFFF5678u, 16, 0x1E6Au)]   // high half ignored
+    [DataRow(0x00000001u, 24, 0x800000u)] // lone LSB in 24-bit window
+    [DataRow(0x000000FFu, 24, 0xFF0000u)] // low byte moves to top of 24-bit window
+    public void ReverseBits_WhenBitLengthIsPartial_ForUInt_ShouldReturnLowBitsReversed(uint value, int bitLength, uint expected) =>
+        Assert.AreEqual(expected, value.ReverseBits(bitLength));
+
+    /// <summary>
+    /// Verifies that applying <see cref="NumericExtensions.ReverseBits(uint, int)" /> twice with the same
+    /// <paramref name="bitLength" /> returns the value masked to the reflected window.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0x12345678u, 16)]
+    [DataRow(0xDEADBEEFu, 24)]
+    [DataRow(0xFFFFFFFFu, 20)]
+    public void ReverseBits_WhenAppliedTwiceWithSameBitLength_ForUInt_ShouldReturnLowBitsOfOriginal(uint value, int bitLength)
+    {
+        uint mask = (1u << bitLength) - 1u;
+        Assert.AreEqual(value & mask, value.ReverseBits(bitLength).ReverseBits(bitLength));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseBits(uint, int)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when <paramref name="bitLength" /> is outside [0, 32].
+    /// </summary>
+    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(33)]
+    [DataRow(int.MaxValue)]
+    [DataRow(int.MinValue)]
+    public void ReverseBits_WhenBitLengthIsOutOfRange_ForUInt_ShouldThrowArgumentOutOfRangeException(int bitLength) =>
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            0xFFFFFFFFu.ReverseBits(bitLength);
+        });
+
+    // --------------------------------------------------
+    // ulong — ReverseBits(value, bitLength)
+    // --------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseBits(ulong, int)" /> returns zero when
+    /// <paramref name="bitLength" /> is zero, regardless of the input value.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0x0000000000000000ul)]
+    [DataRow(0x0123456789ABCDEFul)]
+    [DataRow(0xFFFFFFFFFFFFFFFFul)]
+    public void ReverseBits_WhenBitLengthIsZero_ForULong_ShouldReturnZero(ulong value) =>
+        Assert.AreEqual(0ul, value.ReverseBits(0));
+
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseBits(ulong, int)" /> with the full bit width
+    /// produces the same result as the parameterless <see cref="NumericExtensions.ReverseBits(ulong)" /> overload.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0x0000000000000000ul)]
+    [DataRow(0x0000000000000001ul)]
+    [DataRow(0x0123456789ABCDEFul)]
+    [DataRow(0xAAAAAAAAAAAAAAAAul)]
+    [DataRow(0xFFFFFFFFFFFFFFFFul)]
+    public void ReverseBits_WhenBitLengthIsFullWidth_ForULong_ShouldMatchParameterlessOverload(ulong value) =>
+        Assert.AreEqual(value.ReverseBits(), value.ReverseBits(64));
+
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseBits(ulong, int)" /> reverses only the least
+    /// significant <paramref name="bitLength" /> bits, with bits above the window cleared to zero.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0xFFFFFFFFFFFFFF12ul, 8, 0x48ul)]          // low byte 0x12 → 0x48, high bits ignored
+    [DataRow(0x0000000000000012ul, 8, 0x48ul)]          // same low byte, zero high bits
+    [DataRow(0xABCDEF0123456789ul, 32, 0x91E6A2C4ul)]   // low 32 bits 0x23456789 → 0x91E6A2C4
+    [DataRow(0x00000000FFFFFFFFul, 40, 0xFFFFFFFF00ul)] // low 40 bits: 32 set bits shift to the top of the window
+    public void ReverseBits_WhenBitLengthIsPartial_ForULong_ShouldReturnLowBitsReversed(ulong value, int bitLength, ulong expected) =>
+        Assert.AreEqual(expected, value.ReverseBits(bitLength));
+
+    /// <summary>
+    /// Verifies that applying <see cref="NumericExtensions.ReverseBits(ulong, int)" /> twice with the same
+    /// <paramref name="bitLength" /> returns the value masked to the reflected window.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0x0123456789ABCDEFul, 32)]
+    [DataRow(0xDEADBEEFCAFEBABEul, 48)]
+    [DataRow(0xFFFFFFFFFFFFFFFFul, 63)]
+    public void ReverseBits_WhenAppliedTwiceWithSameBitLength_ForULong_ShouldReturnLowBitsOfOriginal(ulong value, int bitLength)
+    {
+        ulong mask = (1ul << bitLength) - 1ul;
+        Assert.AreEqual(value & mask, value.ReverseBits(bitLength).ReverseBits(bitLength));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseBits(ulong, int)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when <paramref name="bitLength" /> is outside [0, 64].
+    /// </summary>
+    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(65)]
+    [DataRow(int.MaxValue)]
+    [DataRow(int.MinValue)]
+    public void ReverseBits_WhenBitLengthIsOutOfRange_ForULong_ShouldThrowArgumentOutOfRangeException(int bitLength) =>
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            0xFFFFFFFFFFFFFFFFul.ReverseBits(bitLength);
+        });
+
+    // --------------------------------------------------
+    // Exhaustive / representative DynamicData sweeps
+    // --------------------------------------------------
+
+    /// <summary>
+    /// Computes the expected bit-reversed window using the canonical naive definition: the least
+    /// significant <paramref name="bitLength" /> bits of <paramref name="value" /> are read LSB-first
+    /// and written MSB-first into the result. All higher bits of the result are zero.
+    /// </summary>
+    /// <param name="value">The input value to reflect.</param>
+    /// <param name="bitLength">The number of least significant bits to reverse.</param>
+    /// <returns>A <see cref="ulong" /> whose low <paramref name="bitLength" /> bits hold the reflected window.</returns>
+    private static ulong ReflectLowBits(ulong value, int bitLength)
+    {
+        ulong result = 0;
+
+        for (int i = 0; i < bitLength; i++)
+        {
+            result = (result << 1) | (value & 1);
+            value >>= 1;
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Curated set of <see cref="ushort" /> inputs that exercises zero, single-bit, alternating,
+    /// nibble-boundary, palindromic, and all-bits-set patterns.
+    /// </summary>
+    private static readonly ushort[] UShortReverseBitsSampleValues =
+    {
+        0x0000, 0x0001, 0x0002, 0x0080, 0x00FF, 0x0100, 0x0F0F, 0x1234,
+        0x5555, 0x8000, 0xA5A5, 0xAAAA, 0xCAFE, 0xFF00, 0xFFFE, 0xFFFF,
+    };
+
+    /// <summary>
+    /// Curated set of <see cref="uint" /> inputs that exercises zero, single-bit, alternating,
+    /// byte-boundary, palindromic, and all-bits-set patterns.
+    /// </summary>
+    private static readonly uint[] UIntReverseBitsSampleValues =
+    {
+        0x00000000u, 0x00000001u, 0x00000080u, 0x000000FFu,
+        0x00008000u, 0x0000FFFFu, 0x00800000u, 0x01234567u,
+        0x55555555u, 0x80000000u, 0xAAAAAAAAu, 0xCAFEBABEu,
+        0xDEADBEEFu, 0xFEEDFACEu, 0xFFFFFFFEu, 0xFFFFFFFFu,
+    };
+
+    /// <summary>
+    /// Curated set of <see cref="ulong" /> inputs that exercises zero, single-bit, alternating,
+    /// word-boundary, palindromic, and all-bits-set patterns.
+    /// </summary>
+    private static readonly ulong[] ULongReverseBitsSampleValues =
+    {
+        0x0000000000000000ul, 0x0000000000000001ul, 0x0000000000000080ul, 0x00000000000000FFul,
+        0x0000000000008000ul, 0x000000000000FFFFul, 0x0000000080000000ul, 0x00000000FFFFFFFFul,
+        0x0123456789ABCDEFul, 0x5555555555555555ul, 0x8000000000000000ul, 0xAAAAAAAAAAAAAAAAul,
+        0xCAFEBABEDEADBEEFul, 0xFEEDFACE1337C0DEul, 0xFFFFFFFFFFFFFFFEul, 0xFFFFFFFFFFFFFFFFul,
+    };
+
+    /// <summary>
+    /// Produces every combination of <c>(value, bitLength)</c> for exhaustive coverage of the
+    /// <see cref="byte" /> overload: 256 values × 9 bit lengths = 2 304 cases.
+    /// </summary>
+    public static IEnumerable<object[]> ByteReverseBitsExhaustiveData()
+    {
+        for (int v = 0; v <= byte.MaxValue; v++)
+            for (int n = 0; n <= 8; n++)
+                yield return new object[] { (byte)v, n };
+    }
+
+    /// <summary>
+    /// Produces <c>(value, bitLength)</c> pairs for the curated <see cref="ushort" /> sample set
+    /// across every valid bit length in [0, 16].
+    /// </summary>
+    public static IEnumerable<object[]> UShortReverseBitsRepresentativeData()
+    {
+        foreach (ushort v in UShortReverseBitsSampleValues)
+            for (int n = 0; n <= 16; n++)
+                yield return new object[] { v, n };
+    }
+
+    /// <summary>
+    /// Produces <c>(value, bitLength)</c> pairs for the curated <see cref="uint" /> sample set
+    /// across every valid bit length in [0, 32].
+    /// </summary>
+    public static IEnumerable<object[]> UIntReverseBitsRepresentativeData()
+    {
+        foreach (uint v in UIntReverseBitsSampleValues)
+            for (int n = 0; n <= 32; n++)
+                yield return new object[] { v, n };
+    }
+
+    /// <summary>
+    /// Produces <c>(value, bitLength)</c> pairs for the curated <see cref="ulong" /> sample set
+    /// across every valid bit length in [0, 64].
+    /// </summary>
+    public static IEnumerable<object[]> ULongReverseBitsRepresentativeData()
+    {
+        foreach (ulong v in ULongReverseBitsSampleValues)
+            for (int n = 0; n <= 64; n++)
+                yield return new object[] { v, n };
+    }
+
+    /// <summary>
+    /// Verifies exhaustively, for every <see cref="byte" /> value and every bit length in [0, 8], that
+    /// <see cref="NumericExtensions.ReverseBits(byte, int)" /> matches the canonical naive reflection.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(ByteReverseBitsExhaustiveData), DynamicDataSourceType.Method)]
+    public void ReverseBits_WhenExhaustive_ForByte_ShouldMatchReferenceImplementation(byte value, int bitLength)
+    {
+        byte expected = (byte)ReflectLowBits(value, bitLength);
+        byte actual = value.ReverseBits(bitLength);
+
+        Trace.WriteLineIf(actual != expected, $"value     : 0x{value:X2}");
+        Trace.WriteLineIf(actual != expected, $"bitLength : {bitLength}");
+        Trace.WriteLineIf(actual != expected, $"expected  : 0x{expected:X2}");
+        Trace.WriteLineIf(actual != expected, $"actual    : 0x{actual:X2}");
+
+        Assert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseBits(ushort, int)" /> matches the canonical
+    /// naive reflection across a representative set of <see cref="ushort" /> values and every valid bit length.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(UShortReverseBitsRepresentativeData), DynamicDataSourceType.Method)]
+    public void ReverseBits_WhenRepresentative_ForUShort_ShouldMatchReferenceImplementation(ushort value, int bitLength)
+    {
+        ushort expected = (ushort)ReflectLowBits(value, bitLength);
+        ushort actual = value.ReverseBits(bitLength);
+
+        Trace.WriteLineIf(actual != expected, $"value     : 0x{value:X4}");
+        Trace.WriteLineIf(actual != expected, $"bitLength : {bitLength}");
+        Trace.WriteLineIf(actual != expected, $"expected  : 0x{expected:X4}");
+        Trace.WriteLineIf(actual != expected, $"actual    : 0x{actual:X4}");
+
+        Assert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseBits(uint, int)" /> matches the canonical
+    /// naive reflection across a representative set of <see cref="uint" /> values and every valid bit length.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(UIntReverseBitsRepresentativeData), DynamicDataSourceType.Method)]
+    public void ReverseBits_WhenRepresentative_ForUInt_ShouldMatchReferenceImplementation(uint value, int bitLength)
+    {
+        uint expected = (uint)ReflectLowBits(value, bitLength);
+        uint actual = value.ReverseBits(bitLength);
+
+        Trace.WriteLineIf(actual != expected, $"value     : 0x{value:X8}");
+        Trace.WriteLineIf(actual != expected, $"bitLength : {bitLength}");
+        Trace.WriteLineIf(actual != expected, $"expected  : 0x{expected:X8}");
+        Trace.WriteLineIf(actual != expected, $"actual    : 0x{actual:X8}");
+
+        Assert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseBits(ulong, int)" /> matches the canonical
+    /// naive reflection across a representative set of <see cref="ulong" /> values and every valid bit length.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(ULongReverseBitsRepresentativeData), DynamicDataSourceType.Method)]
+    public void ReverseBits_WhenRepresentative_ForULong_ShouldMatchReferenceImplementation(ulong value, int bitLength)
+    {
+        ulong expected = ReflectLowBits(value, bitLength);
+        ulong actual = value.ReverseBits(bitLength);
+
+        Trace.WriteLineIf(actual != expected, $"value     : 0x{value:X16}");
+        Trace.WriteLineIf(actual != expected, $"bitLength : {bitLength}");
+        Trace.WriteLineIf(actual != expected, $"expected  : 0x{expected:X16}");
+        Trace.WriteLineIf(actual != expected, $"actual    : 0x{actual:X16}");
+
+        Assert.AreEqual(expected, actual);
+    }
+
+    // --------------------------------------------------
+    // Full-width involution (bitLength == W)
+    // --------------------------------------------------
+
+    /// <summary>
+    /// Verifies that applying <see cref="NumericExtensions.ReverseBits(byte, int)" /> twice at full
+    /// bit width (8) returns the original value.
+    /// </summary>
+    [TestMethod]
+    [DataRow((byte)0x00)]
+    [DataRow((byte)0x01)]
+    [DataRow((byte)0x80)]
+    [DataRow((byte)0xAA)]
+    [DataRow((byte)0x55)]
+    [DataRow((byte)0xC3)]
+    [DataRow((byte)0xFF)]
+    public void ReverseBits_WhenAppliedTwiceAtFullWidth_ForByte_ShouldReturnOriginal(byte value) =>
+        Assert.AreEqual(value, value.ReverseBits(8).ReverseBits(8));
+
+    /// <summary>
+    /// Verifies that applying <see cref="NumericExtensions.ReverseBits(ushort, int)" /> twice at full
+    /// bit width (16) returns the original value.
+    /// </summary>
+    [TestMethod]
+    [DataRow((ushort)0x0000)]
+    [DataRow((ushort)0x0001)]
+    [DataRow((ushort)0x8000)]
+    [DataRow((ushort)0xAAAA)]
+    [DataRow((ushort)0x5555)]
+    [DataRow((ushort)0x1234)]
+    [DataRow((ushort)0xFFFF)]
+    public void ReverseBits_WhenAppliedTwiceAtFullWidth_ForUShort_ShouldReturnOriginal(ushort value) =>
+        Assert.AreEqual(value, value.ReverseBits(16).ReverseBits(16));
+
+    /// <summary>
+    /// Verifies that applying <see cref="NumericExtensions.ReverseBits(uint, int)" /> twice at full
+    /// bit width (32) returns the original value.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0x00000000u)]
+    [DataRow(0x00000001u)]
+    [DataRow(0x80000000u)]
+    [DataRow(0xAAAAAAAAu)]
+    [DataRow(0x55555555u)]
+    [DataRow(0xDEADBEEFu)]
+    [DataRow(0xFFFFFFFFu)]
+    public void ReverseBits_WhenAppliedTwiceAtFullWidth_ForUInt_ShouldReturnOriginal(uint value) =>
+        Assert.AreEqual(value, value.ReverseBits(32).ReverseBits(32));
+
+    /// <summary>
+    /// Verifies that applying <see cref="NumericExtensions.ReverseBits(ulong, int)" /> twice at full
+    /// bit width (64) returns the original value.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0x0000000000000000ul)]
+    [DataRow(0x0000000000000001ul)]
+    [DataRow(0x8000000000000000ul)]
+    [DataRow(0xAAAAAAAAAAAAAAAAul)]
+    [DataRow(0x5555555555555555ul)]
+    [DataRow(0x0123456789ABCDEFul)]
+    [DataRow(0xFFFFFFFFFFFFFFFFul)]
+    public void ReverseBits_WhenAppliedTwiceAtFullWidth_ForULong_ShouldReturnOriginal(ulong value) =>
+        Assert.AreEqual(value, value.ReverseBits(64).ReverseBits(64));
+
+    // --------------------------------------------------
+    // Cross-type consistency
+    // --------------------------------------------------
+
+    /// <summary>
+    /// Produces <c>(byteValue, bitLength)</c> pairs for cross-type consistency checks, spanning every
+    /// byte value and every bit length in [0, 8].
+    /// </summary>
+    public static IEnumerable<object[]> CrossTypeConsistencyByteData()
+    {
+        for (int v = 0; v <= byte.MaxValue; v++)
+            for (int n = 0; n <= 8; n++)
+                yield return new object[] { (byte)v, n };
+    }
+
+    /// <summary>
+    /// Verifies that reflecting the same numeric value at the same bit length yields identical
+    /// results across the <see cref="byte" />, <see cref="ushort" />, <see cref="uint" />, and
+    /// <see cref="ulong" /> overloads, with all higher bits zero.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(CrossTypeConsistencyByteData), DynamicDataSourceType.Method)]
+    public void ReverseBits_WhenValueFitsSmallerType_ShouldBeConsistentAcrossOverloads(byte value, int bitLength)
+    {
+        byte byteResult = value.ReverseBits(bitLength);
+        ushort ushortResult = ((ushort)value).ReverseBits(bitLength);
+        uint uintResult = ((uint)value).ReverseBits(bitLength);
+        ulong ulongResult = ((ulong)value).ReverseBits(bitLength);
+
+        Assert.AreEqual(byteResult, (byte)ushortResult, $"ushort overload disagreed for value=0x{value:X2}, bitLength={bitLength}");
+        Assert.AreEqual(byteResult, (byte)uintResult, $"uint overload disagreed for value=0x{value:X2}, bitLength={bitLength}");
+        Assert.AreEqual(byteResult, (byte)ulongResult, $"ulong overload disagreed for value=0x{value:X2}, bitLength={bitLength}");
+
+        // All higher bits above the reflected window must be zero in every overload.
+        Assert.AreEqual((ushort)byteResult, ushortResult);
+        Assert.AreEqual((uint)byteResult, uintResult);
+        Assert.AreEqual((ulong)byteResult, ulongResult);
+    }
+
+    /// <summary>
+    /// Verifies that bits above the reflected window in the input do not affect the result: the
+    /// output depends solely on the low <paramref name="bitLength" /> bits of the input.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(ByteReverseBitsExhaustiveData), DynamicDataSourceType.Method)]
+    public void ReverseBits_WhenHighBitsSetInInput_ForULong_ShouldIgnoreBitsAboveWindow(byte lowByteValue, int bitLength)
+    {
+        // Inject noise into every bit above the 8-bit window; bitLength never exceeds 8 here,
+        // so all noise bits are outside the reflected window and must be ignored.
+        ulong noisy = (ulong)lowByteValue | 0xFFFFFFFFFFFFFF00ul;
+        ulong clean = lowByteValue;
+
+        Assert.AreEqual(clean.ReverseBits(bitLength), noisy.ReverseBits(bitLength));
+    }
 }

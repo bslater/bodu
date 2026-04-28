@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.WeekOfMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -90,6 +90,11 @@ public static partial class DateTimeExtensions
     /// <summary>
     /// Calculates the 1-based week-of-month using raw tick data and specified calendar rules.
     /// </summary>
+    /// <param name="dateTime">The date to evaluate.</param>
+    /// <param name="weekRule">The <see cref="CalendarWeekRule" /> defining how the first week of the
+    /// month is identified.</param>
+    /// <param name="weekStart">The <see cref="DayOfWeek" /> on which each week begins.</param>
+    /// <returns>The 1-based week number of <paramref name="dateTime" /> within its month.</returns>
     private static int GetWeekOfMonth(DateTime dateTime, CalendarWeekRule weekRule, DayOfWeek weekStart)
     {
         DateTime firstOfMonth = new DateTime(dateTime.Year, dateTime.Month, 1);

@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.FirstDayOfWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -60,7 +60,7 @@ public static partial class DateOnlyExtensions
     /// </param>
     /// <returns>
     /// A <see cref="DateOnly"/> value representing the first day of the week that contains <paramref name="date"/>. The returned
-    /// value is normalized to midnight and preserves the date context without a time component.
+    /// value is normalised to midnight and preserves the date context without a time component.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="weekend"/> is not a defined <see cref="CalendarWeekendDefinition"/> value, or if the resulting date

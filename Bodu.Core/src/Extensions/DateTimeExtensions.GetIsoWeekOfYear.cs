@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.GetIsoWeekOfYear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -31,6 +31,6 @@ public static partial class DateTimeExtensions
     /// date portion of <paramref name="dateTime"/>. Any time-of-day component is discarded before the calculation.
     /// </para>
     /// </remarks>
-    public static int GetIsoWeekOfYear(this DateTime dateTime) => 
+    public static int GetIsoWeekOfYear(this DateTime dateTime) =>
         GetWeekOfYear(TruncateToDateTicks(dateTime), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
 }

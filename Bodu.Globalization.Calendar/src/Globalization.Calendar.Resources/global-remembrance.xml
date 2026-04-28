@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Global remembrance notable-date resource using the Western/Gregorian calendar.
+
+  These entries represent internationally recognised remembrance observances.
+  They are not universally public holidays or non-working days in every country.
+  Country-specific resources should import only the dates they observe and
+  override naming, suppression, or behavioural rules where required.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <!--
+    Fixed-date remembrance observances.
+  -->
+
+  <NotableDate name="International Holocaust Remembrance Day">
+    <Rule name="Fixed International Holocaust Remembrance Day" category="Remembrance">
+      <Fixed month="January" day="27" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Day for the Elimination of Racial Discrimination">
+    <Rule name="Fixed International Day for the Elimination of Racial Discrimination" category="Remembrance" firstYear="1966"
+          comment="Proclaimed by the United Nations General Assembly in 1966 (resolution 2142 (XXI)) to commemorate the Sharpeville massacre of 21 March 1960, in which South African police opened fire on peaceful anti-apartheid demonstrators, killing 69 people.">
+      <Fixed month="March" day="21" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="International Day for the Remembrance of the Slave Trade and its Abolition">
+    <Rule name="Fixed International Day for the Remembrance of the Slave Trade and its Abolition" category="Remembrance" firstYear="1998"
+          comment="Proclaimed by UNESCO and first observed on 23 August 1998. The date marks the anniversary of the 1791 uprising in Saint-Domingue (now Haiti and the Dominican Republic) that became a decisive turning point in the abolition of the transatlantic slave trade.">
+      <Fixed month="August" day="23" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Remembrance Day">
+    <Rule name="Fixed Remembrance Day" category="Remembrance">
+      <Fixed month="November" day="11" />
+    </Rule>
+  </NotableDate>
+
+</NotableDates>

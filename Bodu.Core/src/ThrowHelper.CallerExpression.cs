@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelper.CallerExpression.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -224,7 +224,7 @@ public static partial class ThrowHelper
     /// Use this overload when the caller may supply a larger span than required and the
     /// excess elements are simply ignored — for example, a buffer that must hold at least
     /// a full cipher block but may be larger. When the length must be exact, use
-    /// <see cref="ThrowIfSpanLengthIsNotEqualTo{T}"/> instead.
+    /// <see cref="ThrowIfSpanLengthIsNotEqualTo{T}(Span{T}, int, string)"/> instead.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfSpanLengthIsInsufficient<T>(
@@ -281,7 +281,7 @@ public static partial class ThrowHelper
     /// Use this overload when the caller may supply a larger span than required and the
     /// excess elements are simply ignored — for example, a buffer that must hold at least
     /// a full cipher block but may be larger. When the length must be exact, use
-    /// <see cref="ThrowIfSpanLengthIsNotEqualTo{T}"/> instead.
+    /// <see cref="ThrowIfSpanLengthIsNotEqualTo{T}(ReadOnlySpan{T}, int, string)"/> instead.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfSpanLengthIsInsufficient<T>(
@@ -1180,6 +1180,56 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is not an ASCII decimal
+    /// digit character, that is, a character in the range <c>'0'</c> (U+0030) to <c>'9'</c> (U+0039) inclusive.
+    /// </summary>
+    /// <param name="value">The character to validate.</param>
+    /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="value"/> is outside the inclusive range <c>'0'</c> to <c>'9'</c>.
+    /// </exception>
+    /// <remarks>Useful for validating inputs to algorithms that operate on decimal digit strings, such as check-digit algorithms.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfNotAsciiDecimalDigit(
+        char value,
+        [CallerArgumentExpression(nameof(value))] string? paramName = null)
+    {
+        if ((uint)(value - '0') > 9u)
+            throw new ArgumentOutOfRangeException(
+                paramName,
+                value,
+                $"Character '{value}' (U+{(int)value:X4}) is not an ASCII decimal digit ('0' to '9').");
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is not an ASCII uppercase
+    /// alphanumeric character, that is, a character in the range <c>'0'</c> (U+0030) to <c>'9'</c> (U+0039) or
+    /// <c>'A'</c> (U+0041) to <c>'Z'</c> (U+005A) inclusive.
+    /// </summary>
+    /// <param name="value">The character to validate.</param>
+    /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="value"/> is outside the inclusive ranges <c>'0'</c> to <c>'9'</c> and
+    /// <c>'A'</c> to <c>'Z'</c>.
+    /// </exception>
+    /// <remarks>
+    /// Useful for validating inputs to algorithms that operate on uppercase alphanumeric identifiers, such as
+    /// ISO 7064 MOD 97-10 (IBAN / LEI), ISIN, SEDOL, and CUSIP. Lowercase letters are <b>not</b> accepted — the
+    /// caller is expected to normalise before validation.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfNotAsciiAlphanumericUppercase(
+        char value,
+        [CallerArgumentExpression(nameof(value))] string? paramName = null)
+    {
+        if ((uint)(value - '0') > 9u && (uint)(value - 'A') > 25u)
+            throw new ArgumentOutOfRangeException(
+                paramName,
+                value,
+                $"Character '{value}' (U+{(int)value:X4}) is not an ASCII uppercase alphanumeric character ('0' to '9' or 'A' to 'Z').");
+    }
+
+    /// <summary>
     /// Throws an <see cref="ArgumentNullException"/> if <paramref name="value"/> is <see langword="null"/>.
     /// </summary>
     /// <typeparam name="T">The type of the object.</typeparam>
@@ -1506,7 +1556,7 @@ public static partial class ThrowHelper
     /// Thrown when <paramref name="value"/> is empty or contains only whitespace characters.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIsNullOrWhiteSpace(
+    public static void ThrowIfNullOrWhiteSpace(
         string value,
         [CallerArgumentExpression(nameof(value))] string? paramName = null)
     {

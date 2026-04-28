@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------- //
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WeekPattern.Functions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,20 @@ namespace Bodu;
 
 public partial struct WeekPattern
 {
+    /// <summary>
+    /// Parses a seven-character week-pattern string into a <see cref="WeekPattern" />,
+    /// auto-detecting the format when <paramref name="formatInfo" /> is <see langword="null" />.
+    /// </summary>
+    /// <param name="input">A seven-character string representing the days of the week. Each position
+    /// indicates whether the corresponding day is selected.</param>
+    /// <param name="formatInfo">An optional format descriptor containing the week-start character
+    /// (<c>'S'</c> or <c>'M'</c>), the character used for unselected days, and whether the encoding
+    /// is binary (<c>'1'</c>/<c>'0'</c>). When <see langword="null" />, these are inferred from
+    /// <paramref name="input" />.</param>
+    /// <returns>The parsed <see cref="WeekPattern" /> value.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="input" /> is <see langword="null" />.</exception>
+    /// <exception cref="FormatException"><paramref name="input" /> is not exactly seven characters, or
+    /// contains characters that do not match the detected or supplied format.</exception>
     private static WeekPattern ParseCore(string input, (char? startDay, char? unselectedChar, bool isBinary)? formatInfo)
     {
         ThrowHelper.ThrowIfNull(input);

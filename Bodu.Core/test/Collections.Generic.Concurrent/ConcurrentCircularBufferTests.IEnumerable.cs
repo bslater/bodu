@@ -1,3 +1,9 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ConcurrentCircularBufferTests.IEnumerable.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
@@ -7,6 +13,9 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+    /// <summary>
+    /// Verifies that enumeration includes <see langword="null" /> entries among the buffer's items.
+    /// </summary>
     [TestMethod]
     public void GetEnumerator_WhenBufferContainsNull_ShouldIncludeNull()
     {
@@ -20,6 +29,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(items.Any(i => i is null));
     }
 
+    /// <summary>
+    /// Verifies that enumerating an empty buffer yields no items.
+    /// </summary>
     [TestMethod]
     public void GetEnumerator_WhenBufferEmpty_ShouldYieldNoItems()
     {
@@ -28,6 +40,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, snapshot.Length);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.ToArray" /> under a concurrent dequeuer never throws and returns a snapshot whose length is within capacity.
+    /// </summary>
     [TestMethod]
     public void GetEnumerator_WhenConcurrentDequeueInProgress_ShouldReturnBoundedSnapshotAndNotThrow()
     {
@@ -65,6 +80,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, errors.Count, $"Unexpected exceptions: {string.Join(", ", errors.Select(e => e.GetType().Name))}");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.ToArray" /> under a concurrent enqueuer never throws and every snapshot stays within capacity.
+    /// </summary>
     [TestMethod]
     public void GetEnumerator_WhenConcurrentEnqueueInProgress_ShouldNotThrowAndReturnBoundedSnapshot()
     {
@@ -106,6 +124,9 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(snapshotLengths.All(len => len <= buffer.Capacity));
     }
 
+    /// <summary>
+    /// Verifies that LINQ enumeration over the buffer yields items in FIFO order.
+    /// </summary>
     [TestMethod]
     public void GetEnumerator_WhenEnumerated_ShouldYieldAllItemsInFifoOrder()
     {

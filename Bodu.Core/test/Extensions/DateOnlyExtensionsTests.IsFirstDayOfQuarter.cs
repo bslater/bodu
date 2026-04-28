@@ -1,73 +1,96 @@
-﻿using static Bodu.Extensions.DateTimeExtensionsTests;
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="DateOnlyExtensionsTests.IsFirstDayOfQuarter.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Extensions
+using static Bodu.Extensions.DateTimeExtensionsTests;
+
+namespace Bodu.Extensions;
+
+public partial class DateOnlyExtensionsTests
 {
-    public partial class DateOnlyExtensionsTests
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.IsFirstDayOfQuarter" />, when DateIsQuarterStartAndDefaultDefinition, returns <see langword="true" />.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(DateTimeExtensionsTests.IsFirstDayOfQuarterJanuaryDecemberTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    public void IsFirstDayOfQuarter_WhenDateIsQuarterStartAndDefaultDefinition_ShouldReturnTrue(DateTime inputDateTime)
     {
-        [TestMethod]
-        [DynamicData(nameof(DateTimeExtensionsTests.IsFirstDayOfQuarterJanuaryDecemberTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-        public void IsFirstDayOfQuarter_WhenDateIsQuarterStartAndDefaultDefinition_ShouldReturnTrue(DateTime inputDateTime)
+        var input = DateOnly.FromDateTime(inputDateTime);
+
+        bool actual = input.IsFirstDayOfQuarter();
+
+        Assert.IsTrue(actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.IsFirstDayOfQuarter" />, when DateMatchesStartOfQuarterDefinition, returns <see langword="true" />.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(DateTimeExtensionsTests.IsFirstDayOfQuarterTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    public void IsFirstDayOfQuarter_WhenDateMatchesStartOfQuarterDefinition_ShouldReturnTrue(DateTime inputDateTime, CalendarQuarterDefinition definition)
+    {
+        var input = DateOnly.FromDateTime(inputDateTime);
+        bool actual = input.IsFirstDayOfQuarter(definition);
+
+        Assert.IsTrue(actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.IsFirstDayOfQuarter" />, when DateIsNotStartOfQuarterDefinition, returns <see langword="false" />.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(DateTimeExtensionsTests.IsNotFirstDayOfQuarterTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    public void IsFirstDayOfQuarter_WhenDateIsNotStartOfQuarterDefinition_ShouldReturnFalse(DateTime inputDateTime, CalendarQuarterDefinition definition)
+    {
+        var input = DateOnly.FromDateTime(inputDateTime);
+        bool actual = input.IsFirstDayOfQuarter(definition);
+
+        Assert.IsFalse(actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.IsFirstDayOfQuarter" />, when DefinitionIsInvalid, throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void IsFirstDayOfQuarter_WhenDefinitionIsInvalid_ShouldThrowExactly()
+    {
+        var input = new DateOnly(2024, 4, 20);
+        var definition = (CalendarQuarterDefinition)999;
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            var input = DateOnly.FromDateTime(inputDateTime);
+            _ = input.IsFirstDayOfQuarter(definition);
+        });
+    }
 
-            bool actual = input.IsFirstDayOfQuarter();
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.IsFirstDayOfQuarter" />, when DefinitionIsCustom, throws <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void IsFirstDayOfQuarter_WhenDefinitionIsCustom_ShouldThrowExactly()
+    {
+        var input = new DateOnly(2024, 4, 20);
 
-            Assert.IsTrue(actual);
-        }
-
-        [TestMethod]
-        [DynamicData(nameof(DateTimeExtensionsTests.IsFirstDayOfQuarterTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-        public void IsFirstDayOfQuarter_WhenDateMatchesStartOfQuarterDefinition_ShouldReturnTrue(DateTime inputDateTime, CalendarQuarterDefinition definition)
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            var input = DateOnly.FromDateTime(inputDateTime);
-            bool actual = input.IsFirstDayOfQuarter(definition);
+            _ = input.IsFirstDayOfQuarter(CalendarQuarterDefinition.Custom);
+        });
+    }
 
-            Assert.IsTrue(actual);
-        }
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.IsFirstDayOfQuarter" />, when UsingValidQuarterProvider, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.IsFirstDayOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
+    public void IsFirstDayOfQuarter_WhenUsingValidQuarterProvider_ShouldReturnExpectedDate(DateTime inputDateTime, bool expected)
+    {
+        var input = DateOnly.FromDateTime(inputDateTime);
+        var provider = new ValidQuarterProvider();
 
-        [TestMethod]
-        [DynamicData(nameof(DateTimeExtensionsTests.IsNotFirstDayOfQuarterTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
-        public void IsFirstDayOfQuarter_WhenDateIsNotStartOfQuarterDefinition_ShouldReturnFalse(DateTime inputDateTime, CalendarQuarterDefinition definition)
-        {
-            var input = DateOnly.FromDateTime(inputDateTime);
-            bool actual = input.IsFirstDayOfQuarter(definition);
+        var actual = input.IsFirstDayOfQuarter(provider);
 
-            Assert.IsFalse(actual);
-        }
-
-        [TestMethod]
-        public void IsFirstDayOfQuarter_WhenDefinitionIsInvalid_ShouldThrowExactly()
-        {
-            var input = new DateOnly(2024, 4, 20);
-            var definition = (CalendarQuarterDefinition)999;
-
-            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-            {
-                _ = input.IsFirstDayOfQuarter(definition);
-            });
-        }
-
-        [TestMethod]
-        public void IsFirstDayOfQuarter_WhenDefinitionIsCustom_ShouldThrowExactly()
-        {
-            var input = new DateOnly(2024, 4, 20);
-
-            Assert.ThrowsExactly<InvalidOperationException>(() =>
-            {
-                _ = input.IsFirstDayOfQuarter(CalendarQuarterDefinition.Custom);
-            });
-        }
-
-        [TestMethod]
-        [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.IsFirstDayOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
-        public void IsFirstDayOfQuarter_WhenUsingValidQuarterProvider_ShouldReturnExpectedDate(DateTime inputDateTime, bool expected)
-        {
-            var input = DateOnly.FromDateTime(inputDateTime);
-            var provider = new ValidQuarterProvider();
-
-            var actual = input.IsFirstDayOfQuarter(provider);
-
-            Assert.AreEqual(expected, actual);
-        }
+        Assert.AreEqual(expected, actual);
     }
 }

@@ -1,106 +1,347 @@
-﻿using Bodu.Extensions;
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="NotableDateAdjuster.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Globalization.Calendar
+using Bodu.Extensions;
+
+namespace Bodu.Globalization.Calendar;
+
+/// <summary>
+/// Evaluates an <see cref="ObservanceAdjustment" /> against a calculated date and applies the configured action when the trigger
+/// activates.
+/// </summary>
+/// <remarks>
+/// <para>
+/// The adjuster centralises every evaluation concern that the previous implementation duplicated across <c>NotableDateService</c> and
+/// the partial <c>NotableDateAdjuster</c>: the trigger condition, the rule's territory and calendar scope, the effective year window,
+/// and the action dispatch. This means that callers can apply an adjustment in isolation (for example from inside a custom handler)
+/// without losing any of those guards.
+/// </para>
+/// <para>
+/// The adjuster also implements every previously-stubbed <see cref="AdjustmentTrigger" /> and <see cref="AdjustmentAction" /> value,
+/// including <see cref="AdjustmentAction.MoveToNextNonWorkingDay" />, <see cref="AdjustmentAction.ReplaceWithNamedDate" />, and the
+/// custom handler dispatch path.
+/// </para>
+/// </remarks>
+internal sealed class NotableDateAdjuster
 {
-	/// <summary>
-	/// Applies adjustment rules to notable dates.
-	/// </summary>
-	internal sealed class NotableDateAdjuster
-	{
-		private readonly Func<DateTime, bool> _isWeekend;
-		private readonly Func<DateTime, string?, Type?, bool> _isNonWorkingDay;
-		private readonly CalendarWeekendDefinition _weekendDefinition;
-		private readonly IWeekendDefinitionProvider? _weekendProvider;
+	/// <summary>Predicate for determining whether a given date falls on a weekend.</summary>
+	private readonly Func<DateTime, bool> _isWeekend;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="NotableDateAdjuster" /> class.
-		/// </summary>
-		/// <param name="isWeekend">A function to determine if a date is a weekend.</param>
-		/// <param name="isNonWorkingDay">A function to determine if a date is a non-working day with culture-awareness.</param>
-		/// <param name="weekendDefinition">The weekend definition used for adjustments.</param>
-		/// <param name="weekendProvider">An optional custom weekend provider.</param>
-		public NotableDateAdjuster(
-			Func<DateTime, bool> isWeekend,
-			Func<DateTime, string?, Type?, bool> isNonWorkingDay,
-			CalendarWeekendDefinition weekendDefinition,
-			IWeekendDefinitionProvider? weekendProvider)
+	/// <summary>Predicate for determining whether a given date is a non-working day in the specified territory and calendar context.</summary>
+	private readonly Func<DateTime, string?, Type?, bool> _isNonWorkingDay;
+
+	/// <summary>The configured weekend definition, forwarded to shift actions that move dates to a weekday.</summary>
+	private readonly CalendarWeekendDefinition _weekendDefinition;
+
+	/// <summary>An optional custom weekend provider consulted when <see cref="_weekendDefinition" /> is <see cref="Bodu.Extensions.CalendarWeekendDefinition.Custom" />.</summary>
+	private readonly IWeekendDefinitionProvider? _weekendProvider;
+
+	/// <summary>An optional registry of custom <see cref="IAdjustmentHandler" /> instances looked up by key.</summary>
+	private readonly IAdjustmentHandlerRegistry? _handlerRegistry;
+
+	/// <summary>An optional callback that resolves another rule's observed date by name, used by <see cref="AdjustmentAction.ReplaceWithNamedDate" />.</summary>
+	private readonly Func<string, int, string?, Type?, DateTime?>? _resolveByName;
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="NotableDateAdjuster" /> class.
+	/// </summary>
+	/// <param name="isWeekend">A predicate for weekend evaluation.</param>
+	/// <param name="isNonWorkingDay">A predicate for non-working-day evaluation, scoped by territory and calendar.</param>
+	/// <param name="weekendDefinition">The configured weekend definition.</param>
+	/// <param name="weekendProvider">An optional custom weekend provider.</param>
+	/// <param name="handlerRegistry">An optional registry of custom <see cref="IAdjustmentHandler" /> instances.</param>
+	/// <param name="resolveByName">An optional callback used by <see cref="AdjustmentAction.ReplaceWithNamedDate" /> to look up another rule's resolved date for the same year.</param>
+	/// <exception cref="ArgumentNullException">Thrown when <paramref name="isWeekend" /> or <paramref name="isNonWorkingDay" /> is <see langword="null" />.</exception>
+	public NotableDateAdjuster(
+		Func<DateTime, bool> isWeekend,
+		Func<DateTime, string?, Type?, bool> isNonWorkingDay,
+		CalendarWeekendDefinition weekendDefinition,
+		IWeekendDefinitionProvider? weekendProvider,
+		IAdjustmentHandlerRegistry? handlerRegistry = null,
+		Func<string, int, string?, Type?, DateTime?>? resolveByName = null)
+	{
+		_isWeekend = isWeekend ?? throw new ArgumentNullException(nameof(isWeekend));
+		_isNonWorkingDay = isNonWorkingDay ?? throw new ArgumentNullException(nameof(isNonWorkingDay));
+		_weekendDefinition = weekendDefinition;
+		_weekendProvider = weekendProvider;
+		_handlerRegistry = handlerRegistry;
+		_resolveByName = resolveByName;
+	}
+
+	/// <summary>
+	/// Determines whether the supplied adjustment is in scope for the supplied context.
+	/// </summary>
+	/// <param name="adjustment">The adjustment.</param>
+	/// <param name="year">The year being resolved.</param>
+	/// <param name="territoryCode">The territory currently being resolved, if any.</param>
+	/// <param name="calendarType">The calendar currently being resolved, if any.</param>
+	/// <returns><see langword="true" /> if the adjustment may activate; otherwise <see langword="false" />.</returns>
+	/// <exception cref="ArgumentNullException"><paramref name="adjustment" /> is <see langword="null" />.</exception>
+	public static bool IsInScope(ObservanceAdjustment adjustment, int year, string? territoryCode, Type? calendarType)
+	{
+		if (adjustment is null) throw new ArgumentNullException(nameof(adjustment));
+
+		if (adjustment.EffectiveFromYear is { } from && year < from) return false;
+		if (adjustment.EffectiveToYear is { } to && year > to) return false;
+
+		if (adjustment.CalendarType is not null && calendarType is not null && adjustment.CalendarType != calendarType)
+			return false;
+
+		if (!string.IsNullOrEmpty(adjustment.TerritoryCode) && !string.IsNullOrEmpty(territoryCode))
 		{
-			_isWeekend = isWeekend ?? throw new ArgumentNullException(nameof(isWeekend));
-			_isNonWorkingDay = isNonWorkingDay ?? throw new ArgumentNullException(nameof(isNonWorkingDay));
-			_weekendDefinition = weekendDefinition;
-			_weekendProvider = weekendProvider;
+			if (!TerritoryCode.TryParse(territoryCode, out var requested))
+				return false;
+
+			// Bidirectional containment: the adjustment is in scope when either party
+			// contains the other. Parent-containing-child (adjustment="AU" queried
+			// against "AU-NSW") lets country-level shifts apply to every subdivision.
+			// Child-containing-parent (adjustment="AU-WA" evaluated while generating
+			// for rule territory "AU") lets a subdivision-specific substitute fire
+			// during generation of the parent rule; the emitted occurrence is then
+			// tagged with the adjustment's own territory by the generator.
+			bool matched = false;
+			foreach (var scoped in TerritoryCode.ParseList(adjustment.TerritoryCode))
+			{
+				if (scoped.Contains(requested) || requested.Contains(scoped))
+				{
+					matched = true;
+					break;
+				}
+			}
+
+			if (!matched) return false;
 		}
 
-		/// <summary>
-		/// Applies an adjustment rule to a specified date based on defined conditions and actions.
-		/// </summary>
-		/// <param name="rule">The adjustment rule that defines the condition and action to apply.</param>
-		/// <param name="original">The original <see cref="DateTime" /> value to evaluate and potentially adjust.</param>
-		/// <param name="territoryCode">
-		/// Optional. A country or territory code used to determine non-working days when evaluating rules such as <see cref="NotableDateAdjustmentRuleType.IfNonWorkingDay" />.
-		/// </param>
-		/// <param name="calendarType">
-		/// Optional. A calendar system type used when evaluating non-working days, typically derived from a custom calendar system.
-		/// </param>
-		/// <returns>
-		/// A tuple consisting of:
-		/// <list type="bullet">
-		/// <item>
-		/// <description><c>Success</c>: <c>true</c> if the adjustment condition was met and the action was applied; otherwise, <c>false</c>.</description>
-		/// </item>
-		/// <item>
-		/// <description>
-		/// <c>AdjustedDate</c>: The resulting <see cref="DateTime" /> after applying the action if the condition was met, or the original
-		/// date if not.
-		/// </description>
-		/// </item>
-		/// </list>
-		/// </returns>
-		/// <remarks>
-		/// <para>
-		/// The method first evaluates the condition specified in <paramref name="rule" />. If the condition is satisfied, it applies the
-		/// associated action to adjust the original date.
-		/// </para>
-		/// <para>
-		/// Supported conditions include fixed rules such as <see cref="NotableDateAdjustmentRuleType.IfWeekend" />, custom conditions like
-		/// <see cref="NotableDateAdjustmentRuleType.IfDayOfWeek" />, or external calendar-based conditions such as <see cref="NotableDateAdjustmentRuleType.IfNonWorkingDay" />.
-		/// </para>
-		/// <para>
-		/// If no action is applicable or the condition is not met, the method returns the original date without modification and sets
-		/// <c>Success</c> to <c>false</c>.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException">Thrown if <paramref name="rule" /> is <c>null</c>.</exception>
-		public (bool Success, DateTime AdjustedDate) Apply(NotableDateAdjustmentRule rule, DateTime original, string? territoryCode = null, Type? calendarType = null)
+		return true;
+	}
+
+	/// <summary>
+	/// Applies the supplied adjustment to the supplied date.
+	/// </summary>
+	/// <param name="adjustment">The adjustment to evaluate. Must not be <see langword="null" />.</param>
+	/// <param name="rule">The originating rule, supplied for diagnostics and custom handlers. Must not be <see langword="null" />.</param>
+	/// <param name="originalDate">The currently resolved date.</param>
+	/// <param name="territoryCode">The territory currently being resolved, if any.</param>
+	/// <param name="calendarType">The calendar currently being resolved, if any.</param>
+	/// <returns>An <see cref="AdjustmentApplyResult" /> describing whether the adjustment activated and what date it produced.</returns>
+	/// <exception cref="ArgumentNullException">Thrown when <paramref name="adjustment" /> or <paramref name="rule" /> is <see langword="null" />.</exception>
+	public AdjustmentApplyResult Apply(
+		ObservanceAdjustment adjustment,
+		NotableDateRule rule,
+		DateTime originalDate,
+		string? territoryCode = null,
+		Type? calendarType = null)
+	{
+		if (adjustment is null) throw new ArgumentNullException(nameof(adjustment));
+		if (rule is null) throw new ArgumentNullException(nameof(rule));
+
+		if (!IsInScope(adjustment, originalDate.Year, territoryCode, calendarType))
+			return AdjustmentApplyResult.NotActivated(originalDate);
+
+		// Custom triggers always go through the handler registry: the handler decides both activation and the resulting date.
+		if (adjustment.Trigger == AdjustmentTrigger.Custom)
+			return ApplyCustomHandler(adjustment, rule, originalDate, territoryCode, calendarType);
+
+		if (!EvaluateTrigger(adjustment, originalDate, territoryCode, calendarType))
+			return AdjustmentApplyResult.NotActivated(originalDate);
+
+		return ApplyAction(adjustment, rule, originalDate, territoryCode, calendarType);
+	}
+
+    /// <summary>
+    /// Returns <see langword="true" /> if <paramref name="adjustment" />'s trigger condition
+    /// fires for the given original date, territory, and calendar context.
+    /// </summary>
+    /// <param name="adjustment">The observance adjustment carrying the trigger configuration.</param>
+    /// <param name="original">The original resolved date.</param>
+    /// <param name="territoryCode">The territory code, or <see langword="null" />.</param>
+    /// <param name="calendarType">The calendar type, or <see langword="null" />.</param>
+    /// <returns><see langword="true" /> if the trigger fires; otherwise <see langword="false" />.</returns>
+	private bool EvaluateTrigger(ObservanceAdjustment adjustment, DateTime original, string? territoryCode, Type? calendarType)
+	{
+		switch (adjustment.Trigger)
 		{
-			ThrowHelper.ThrowIfNull(rule);
+			case AdjustmentTrigger.Always:
+				return true;
 
-			DateTime adjusted = original;
+			case AdjustmentTrigger.IfWeekend:
+				return _isWeekend(original);
 
-			bool conditionMet = rule.AdjustmentRule switch
-			{
-				NotableDateAdjustmentRuleType.Always => true,
-				NotableDateAdjustmentRuleType.IfWeekend => _isWeekend(original),
-				NotableDateAdjustmentRuleType.IfWeekday => !_isWeekend(original),
-				NotableDateAdjustmentRuleType.IfNonWorkingDay => _isNonWorkingDay(original, territoryCode, calendarType),
-				NotableDateAdjustmentRuleType.IfLeapYear => DateTime.IsLeapYear(original.Year),
-				NotableDateAdjustmentRuleType.IfDayOfWeek when rule.DayOfWeek.HasValue => original.DayOfWeek == rule.DayOfWeek.Value,
-				_ => false,
-			};
+			case AdjustmentTrigger.IfWeekday:
+				return !_isWeekend(original);
 
-			if (!conditionMet)
-				return (false, original);
+			case AdjustmentTrigger.IfNonWorkingDay:
+				return _isNonWorkingDay(original, territoryCode, calendarType);
 
-			adjusted = rule.Action switch
-			{
-				NotableDateAdjustmentActionType.None => adjusted,
-				NotableDateAdjustmentActionType.AddDays => adjusted.AddDays(rule.OffsetDays),
-				NotableDateAdjustmentActionType.MoveToNextWeekday => adjusted.NextWeekday(_weekendDefinition, _weekendProvider),
-				NotableDateAdjustmentActionType.MoveToPreviousWeekday => adjusted.PreviousWeekday(_weekendDefinition, _weekendProvider),
-				_ => adjusted
-			};
+			case AdjustmentTrigger.IfLeapYear:
+				return DateTime.IsLeapYear(original.Year);
 
-			return (true, adjusted);
+			case AdjustmentTrigger.IfDayOfWeek:
+				return adjustment.DayOfWeek.HasValue && original.DayOfWeek == adjustment.DayOfWeek.Value;
+
+			case AdjustmentTrigger.IfBeforeFixedDate:
+				return adjustment.ComparisonDate is { } before && original < ProjectComparisonDate(before, original.Year);
+
+			case AdjustmentTrigger.IfAfterFixedDate:
+				return adjustment.ComparisonDate is { } after && original > ProjectComparisonDate(after, original.Year);
+
+			case AdjustmentTrigger.IfNthOccurrenceInMonth:
+				return adjustment.WeekOrdinal is { } ord && original.OrdinalWeekOfMonth() == ord;
+
+			default:
+				return false;
+		}
+	}
+
+    /// <summary>
+    /// Applies <paramref name="adjustment" />'s built-in action (shift to weekday, move to
+    /// next non-working day, and so on), returning the result.
+    /// </summary>
+    /// <param name="adjustment">The observance adjustment describing the action.</param>
+    /// <param name="rule">The originating notable-date rule.</param>
+    /// <param name="original">The original resolved date.</param>
+    /// <param name="territoryCode">The territory code, or <see langword="null" />.</param>
+    /// <param name="calendarType">The calendar type, or <see langword="null" />.</param>
+    /// <returns>The outcome of applying the action.</returns>
+	private AdjustmentApplyResult ApplyAction(
+		ObservanceAdjustment adjustment,
+		NotableDateRule rule,
+		DateTime original,
+		string? territoryCode,
+		Type? calendarType)
+	{
+		DateTime adjusted = adjustment.Action switch
+		{
+			AdjustmentAction.None => original,
+			AdjustmentAction.AddDays => original.AddDays(adjustment.OffsetDays),
+			AdjustmentAction.MoveToNextWeekday => original.NextWeekday(_weekendDefinition, _weekendProvider),
+			AdjustmentAction.MoveToPreviousWeekday => original.PreviousWeekday(_weekendDefinition, _weekendProvider),
+			AdjustmentAction.MoveToNextNonWorkingDay => MoveToNextNonWorkingDay(original, territoryCode, calendarType),
+			AdjustmentAction.ReplaceWithNamedDate => ResolveReplacement(adjustment, original, territoryCode, calendarType),
+			AdjustmentAction.Custom => ApplyCustomHandler(adjustment, rule, original, territoryCode, calendarType).AdjustedDate,
+			_ => original,
+		};
+
+		return new AdjustmentApplyResult(true, adjusted, adjustment.Trigger, adjustment.Action, adjustment.HandlerKey, adjustment.IsNonWorkingDay);
+	}
+
+    /// <summary>
+    /// Resolves <paramref name="adjustment" />'s configured <see cref="IAdjustmentHandler" />
+    /// type and delegates the adjustment to it, wrapping its return value.
+    /// </summary>
+    /// <param name="adjustment">The observance adjustment carrying the custom handler type.</param>
+    /// <param name="rule">The originating notable-date rule.</param>
+    /// <param name="original">The original resolved date.</param>
+    /// <param name="territoryCode">The territory code, or <see langword="null" />.</param>
+    /// <param name="calendarType">The calendar type, or <see langword="null" />.</param>
+    /// <returns>The outcome of delegating to the custom <see cref="IAdjustmentHandler" />.</returns>
+	private AdjustmentApplyResult ApplyCustomHandler(
+		ObservanceAdjustment adjustment,
+		NotableDateRule rule,
+		DateTime original,
+		string? territoryCode,
+		Type? calendarType)
+	{
+		if (_handlerRegistry is null
+			|| string.IsNullOrWhiteSpace(adjustment.HandlerKey)
+			|| !_handlerRegistry.TryGet(adjustment.HandlerKey!, out var handler))
+		{
+			return AdjustmentApplyResult.NotActivated(original);
+		}
+
+		var context = new AdjustmentHandlerContext(original, adjustment, rule, territoryCode, calendarType);
+		AdjustmentHandlerResult result;
+		try
+		{
+			result = handler.Apply(context);
+		}
+		catch
+		{
+			return AdjustmentApplyResult.NotActivated(original);
+		}
+
+		if (result is null || !result.Activated)
+			return AdjustmentApplyResult.NotActivated(original);
+
+		return new AdjustmentApplyResult(
+			true,
+			result.AdjustedDate,
+			adjustment.Trigger,
+			adjustment.Action,
+			adjustment.HandlerKey,
+			result.IsNonWorkingOverride ?? adjustment.IsNonWorkingDay);
+	}
+
+    /// <summary>
+    /// Advances <paramref name="original" /> forward, skipping days that are already non-working, and returns the first
+    /// working day found. That working day is then treated as the observance substitute, making it a non-working day.
+    /// </summary>
+    /// <param name="original">The starting date.</param>
+    /// <param name="territoryCode">The territory code, or <see langword="null" />.</param>
+    /// <param name="calendarType">The calendar type, or <see langword="null" />.</param>
+    /// <returns>
+    /// The first working day strictly after <paramref name="original" />, or <paramref name="original" /> itself if
+    /// no working day is found within 366 days.
+    /// </returns>
+	private DateTime MoveToNextNonWorkingDay(DateTime original, string? territoryCode, Type? calendarType)
+	{
+		// Skip days that are already non-working (weekends, other holidays) and stop on the first working day.
+		// That working day is promoted to a non-working substitute. For example, if Boxing Day falls on Saturday,
+		// the walk skips Sunday and lands on Monday, which becomes the public holiday substitute.
+		DateTime cursor = original.AddDays(1);
+		for (int i = 0; i < 366; i++, cursor = cursor.AddDays(1))
+		{
+			if (!_isNonWorkingDay(cursor, territoryCode, calendarType))
+				return cursor;
+		}
+
+		return original;
+	}
+
+    /// <summary>
+    /// Resolves the replacement date for an action that targets a named rule (for example,
+    /// <see cref="AdjustmentAction.ReplaceWithNamedDate" />), looking up the referenced rule
+    /// via the configured name-resolver and falling back to <paramref name="original" /> if
+    /// no match is found.
+    /// </summary>
+    /// <param name="adjustment">The observance adjustment; <see cref="ObservanceAdjustment.TargetRuleName" />
+    /// identifies the replacement rule.</param>
+    /// <param name="original">The original date.</param>
+    /// <param name="territoryCode">The territory code, or <see langword="null" />.</param>
+    /// <param name="calendarType">The calendar type, or <see langword="null" />.</param>
+    /// <returns>The resolved replacement date, or <paramref name="original" /> if no target
+    /// rule is configured or no match is found.</returns>
+	private DateTime ResolveReplacement(ObservanceAdjustment adjustment, DateTime original, string? territoryCode, Type? calendarType)
+	{
+		if (string.IsNullOrWhiteSpace(adjustment.TargetRuleName) || _resolveByName is null)
+			return original;
+
+		var resolved = _resolveByName(adjustment.TargetRuleName!, original.Year, territoryCode, calendarType);
+		return resolved ?? original;
+	}
+
+    /// <summary>
+    /// Projects <paramref name="comparison" /> into the same month/day position of
+    /// <paramref name="year" /> for year-agnostic trigger evaluation.
+    /// </summary>
+    /// <param name="comparison">The reference date.</param>
+    /// <param name="year">The target year.</param>
+    /// <returns>The projected date.</returns>
+	private static DateTime ProjectComparisonDate(DateTime comparison, int year)
+	{
+		// Authors specify a month/day; we project it onto the active year so rules remain stable across years.
+		try
+		{
+			return new DateTime(year, comparison.Month, comparison.Day, 0, 0, 0, DateTimeKind.Unspecified);
+		}
+		catch (ArgumentOutOfRangeException)
+		{
+			// Falls through for 29 February in a non-leap year — treat as 28 February.
+			return new DateTime(year, comparison.Month, Math.Min(comparison.Day, 28), 0, 0, 0, DateTimeKind.Unspecified);
 		}
 	}
 }
+

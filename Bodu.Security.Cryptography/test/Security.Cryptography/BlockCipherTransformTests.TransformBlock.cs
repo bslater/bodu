@@ -1,88 +1,87 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BlockCipherTransformTests.cs" company="PlaceholderCompany">
+// <copyright file="BlockCipherTransformTests.TransformBlock.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
 
-namespace Bodu.Security.Cryptography
+namespace Bodu.Security.Cryptography;
+
+public abstract partial class BlockCipherTransformTests<TCryptoTransform>
 {
-    public abstract partial class BlockCipherTransformTests<TCryptoTransform>
+    /// <summary>
+    /// Verifies that <see cref="ICryptoTransform.TransformBlock" /> throws
+    /// <see cref="ArgumentNullException" /> when <c>inputBuffer</c> is <see langword="null" />.
+    /// Regression guard for transforms that previously threw <see cref="NullReferenceException" /> via <c>.AsSpan</c>.
+    /// </summary>
+    [TestMethod]
+    public void TransformBlock_WhenInputBufferIsNull_ShouldThrowArgumentNullException_fix()
     {
-        /// <summary>
-        /// Verifies that <see cref="ICryptoTransform.TransformBlock" /> throws
-        /// <see cref="ArgumentNullException" /> when <c>inputBuffer</c> is <see langword="null" />.
-        /// Regression guard for transforms that previously threw <see cref="NullReferenceException" /> via <c>.AsSpan</c>.
-        /// </summary>
-        [TestMethod]
-        public void TransformBlock_WhenInputBufferIsNull_ShouldThrowArgumentNullException_fix()
+        using var transform = CreateAlgorithm();
+        byte[] output = new byte[transform.OutputBlockSize];
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            using var transform = this.CreateAlgorithm();
-            byte[] output = new byte[transform.OutputBlockSize];
+            _ = transform.TransformBlock(null!, 0, 0, output, 0);
+        });
+    }
 
-            Assert.ThrowsExactly<ArgumentNullException>(() =>
-            {
-                _ = transform.TransformBlock(null!, 0, 0, output, 0);
-            });
-        }
+    /// <summary>
+    /// Verifies that <see cref="ICryptoTransform.TransformBlock" /> throws
+    /// <see cref="ArgumentNullException" /> when <c>outputBuffer</c> is <see langword="null" />.
+    /// Regression guard for transforms that previously threw <see cref="NullReferenceException" /> via <c>.AsSpan</c>.
+    /// </summary>
+    [TestMethod]
+    public void TransformBlock_WhenOutputBufferIsNull_ShouldThrowArgumentNullException_fix()
+    {
+        using var transform = CreateAlgorithm();
+        byte[] input = new byte[transform.InputBlockSize];
 
-        /// <summary>
-        /// Verifies that <see cref="ICryptoTransform.TransformBlock" /> throws
-        /// <see cref="ArgumentNullException" /> when <c>outputBuffer</c> is <see langword="null" />.
-        /// Regression guard for transforms that previously threw <see cref="NullReferenceException" /> via <c>.AsSpan</c>.
-        /// </summary>
-        [TestMethod]
-        public void TransformBlock_WhenOutputBufferIsNull_ShouldThrowArgumentNullException_fix()
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            using var transform = this.CreateAlgorithm();
-            byte[] input = new byte[transform.InputBlockSize];
+            _ = transform.TransformBlock(input, 0, input.Length, null!, 0);
+        });
+    }
 
-            Assert.ThrowsExactly<ArgumentNullException>(() =>
-            {
-                _ = transform.TransformBlock(input, 0, input.Length, null!, 0);
-            });
-        }
+    /// <summary>
+    /// Verifies that <see cref="BlockCipherTransform.InputBlockSize" /> is greater than zero.
+    /// </summary>
+    [TestMethod]
+    public void InputBlockSize_ShouldBeGreaterThanZero()
+    {
+        using var transform = CreateAlgorithm();
+        Assert.IsTrue(transform.InputBlockSize > 0);
+    }
 
-        /// <summary>
-        /// Verifies that <see cref="BlockCipherTransform.InputBlockSize" /> is greater than zero.
-        /// </summary>
-        [TestMethod]
-        public void InputBlockSize_ShouldBeGreaterThanZero()
-        {
-            using var transform = this.CreateAlgorithm();
-            Assert.IsTrue(transform.InputBlockSize > 0);
-        }
+    /// <summary>
+    /// Verifies that <see cref="BlockCipherTransform.InputBlockSize" /> equals
+    /// <see cref="BlockCipherTransform.OutputBlockSize" />.
+    /// </summary>
+    [TestMethod]
+    public void InputBlockSize_ShouldEqualOutputBlockSize()
+    {
+        using var transform = CreateAlgorithm();
+        Assert.AreEqual(transform.InputBlockSize, transform.OutputBlockSize);
+    }
 
-        /// <summary>
-        /// Verifies that <see cref="BlockCipherTransform.InputBlockSize" /> equals
-        /// <see cref="BlockCipherTransform.OutputBlockSize" />.
-        /// </summary>
-        [TestMethod]
-        public void InputBlockSize_ShouldEqualOutputBlockSize()
-        {
-            using var transform = this.CreateAlgorithm();
-            Assert.AreEqual(transform.InputBlockSize, transform.OutputBlockSize);
-        }
+    /// <summary>
+    /// Verifies that <see cref="BlockCipherTransform.CanReuseTransform" /> returns <see langword="false" />.
+    /// </summary>
+    [TestMethod]
+    public void CanReuseTransform_ShouldReturnFalse()
+    {
+        using var transform = CreateAlgorithm();
+        Assert.IsFalse(transform.CanReuseTransform);
+    }
 
-        /// <summary>
-        /// Verifies that <see cref="BlockCipherTransform.CanReuseTransform" /> returns <see langword="false" />.
-        /// </summary>
-        [TestMethod]
-        public void CanReuseTransform_ShouldReturnFalse()
-        {
-            using var transform = this.CreateAlgorithm();
-            Assert.IsFalse(transform.CanReuseTransform);
-        }
-
-        /// <summary>
-        /// Verifies that <see cref="BlockCipherTransform.CanTransformMultipleBlocks" /> returns <see langword="true" />.
-        /// </summary>
-        [TestMethod]
-        public void CanTransformMultipleBlocks_ShouldReturnTrue()
-        {
-            using var transform = this.CreateAlgorithm();
-            Assert.IsTrue(transform.CanTransformMultipleBlocks);
-        }
+    /// <summary>
+    /// Verifies that <see cref="BlockCipherTransform.CanTransformMultipleBlocks" /> returns <see langword="true" />.
+    /// </summary>
+    [TestMethod]
+    public void CanTransformMultipleBlocks_ShouldReturnTrue()
+    {
+        using var transform = CreateAlgorithm();
+        Assert.IsTrue(transform.CanTransformMultipleBlocks);
     }
 }
