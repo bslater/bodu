@@ -21,12 +21,12 @@ public enum AdjustmentTrigger
 	Always = 0,
 
 	/// <summary>
-	/// Activates when the calculated date falls on the day of week specified by <c>ObservanceAdjustment.DayOfWeek</c>.
+	/// Activates when the calculated date falls on the day of week specified by <see cref="ObservanceAdjustment.DayOfWeek" />.
 	/// </summary>
 	IfDayOfWeek,
 
 	/// <summary>
-	/// Activates when the calculated date falls on a weekend, as determined by the configured <c>CalendarWeekendDefinition</c>.
+	/// Activates when the calculated date falls on a weekend, as determined by the configured <see cref="CalendarWeekendDefinition" />.
 	/// </summary>
 	IfWeekend,
 
@@ -41,12 +41,12 @@ public enum AdjustmentTrigger
 	IfNonWorkingDay,
 
 	/// <summary>
-	/// Activates when the calculated date occurs strictly before <c>ObservanceAdjustment.ComparisonDate</c>.
+	/// Activates when the calculated date occurs strictly before <see cref="ObservanceAdjustment.ComparisonDate" />.
 	/// </summary>
 	IfBeforeFixedDate,
 
 	/// <summary>
-	/// Activates when the calculated date occurs strictly after <c>ObservanceAdjustment.ComparisonDate</c>.
+	/// Activates when the calculated date occurs strictly after <see cref="ObservanceAdjustment.ComparisonDate" />.
 	/// </summary>
 	IfAfterFixedDate,
 
@@ -57,12 +57,12 @@ public enum AdjustmentTrigger
 
 	/// <summary>
 	/// Activates when the calculated date is the n-th occurrence of its weekday within its month, as specified by
-	/// <c>ObservanceAdjustment.WeekOrdinal</c>.
+	/// <see cref="ObservanceAdjustment.WeekOrdinal" />.
 	/// </summary>
 	IfNthOccurrenceInMonth,
 
 	/// <summary>
-	/// Activation is delegated to a registered <see cref="IAdjustmentHandler" /> looked up by <c>ObservanceAdjustment.HandlerKey</c>.
+	/// Activation is delegated to a registered <see cref="IAdjustmentHandler" /> looked up by <see cref="ObservanceAdjustment.HandlerKey" />.
 	/// </summary>
 	Custom,
 }

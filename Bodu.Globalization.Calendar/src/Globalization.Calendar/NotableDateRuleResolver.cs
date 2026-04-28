@@ -24,7 +24,10 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 internal sealed class NotableDateRuleResolver
 {
+	/// <summary>A case-insensitive name-keyed lookup of every rule available for resolution, built once at construction.</summary>
 	private readonly IReadOnlyDictionary<string, NotableDateRule> _rulesByName;
+
+	/// <summary>An optional algorithm registry consulted for <see cref="DateResolutionStrategy.Algorithm" /> rules.</summary>
 	private readonly INotableDateAlgorithmRegistry? _algorithms;
 
 	/// <summary>
@@ -171,7 +174,7 @@ internal sealed class NotableDateRuleResolver
     /// Resolves a rule whose strategy is a registered <see cref="INotableDateAlgorithm" />,
     /// delegating to the configured algorithm registry.
     /// </summary>
-    /// <param name="rule">The rule bound to a algorithm strategy.</param>
+    /// <param name="rule">The rule bound to an algorithm strategy.</param>
     /// <param name="year">The civil year.</param>
     /// <returns>The calculated date, or <see langword="null" /> if the configured algorithm
     /// returns no date for the year.</returns>

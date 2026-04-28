@@ -22,6 +22,27 @@ namespace Bodu.Globalization.Calendar;
 /// when the two are identical. Comparisons are performed case-insensitively against the canonical upper-case form.
 /// </para>
 /// </remarks>
+/// <example>
+/// <para>Parse and compare territory codes:</para>
+/// <code>
+/// // Parse a country-level territory:
+/// if (TerritoryCode.TryParse("AU", out TerritoryCode australia))
+///     Console.WriteLine(australia.Country);        // "AU"
+///
+/// // Parse a subdivision:
+/// TerritoryCode nsw = TerritoryCode.Parse("AU-NSW");
+/// Console.WriteLine(nsw.HasSubdivision);           // true
+/// Console.WriteLine(nsw.Subdivision);              // "NSW"
+/// Console.WriteLine(nsw);                          // "AU-NSW"
+///
+/// // Containment: AU contains AU-NSW but not NZ:
+/// Console.WriteLine(australia.Contains(nsw));      // true
+/// Console.WriteLine(nsw.Contains(australia));      // false
+///
+/// // Parse a comma-separated list (invalid entries are silently skipped):
+/// IReadOnlyList&lt;TerritoryCode&gt; codes = TerritoryCode.ParseList("AU, AU-NSW, AU-VIC");
+/// </code>
+/// </example>
 public readonly record struct TerritoryCode
 {
 	/// <summary>

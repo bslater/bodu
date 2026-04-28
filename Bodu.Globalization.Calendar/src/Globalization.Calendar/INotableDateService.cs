@@ -13,10 +13,35 @@ namespace Bodu.Globalization.Calendar;
 /// <see cref="NotableDateRule" /> sources.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Implementations are responsible for combining base <see cref="INotableDateRuleProvider" /> sources with optional
 /// <see cref="INotableDateRuleOverrideProvider" /> layers, dispatching to the resolver and adjuster, caching results, and applying any
 /// registered <see cref="INotableDateCollisionResolver" /> and <see cref="INotableDateNameLocalizer" /> services to the output.
+/// </para>
+/// <para>
+/// The canonical implementation is <see cref="NotableDateService" />, which supports lazy per-year caching, thread-safe concurrent
+/// access, multi-day event spans, and composable <see cref="NotableDateFilter" /> predicates.
+/// </para>
 /// </remarks>
+/// <example>
+/// <para>Construct the service using the built-in global rule set, then query notable dates for Australia:</para>
+/// <code>
+/// INotableDateService service = new NotableDateService();
+///
+/// // All notable dates for Australia in 2026, ordered by date:
+/// IReadOnlyList&lt;NotableDate&gt; dates = service.GetNotableDates(2026, territoryCode: "AU");
+///
+/// // Only non-working public holidays in Australia:
+/// NotableDateFilter filter = NotableDateFilter
+///     .ForCategory(NotableDateCategory.Public)
+///     .And(NotableDateFilter.IsNonWorkingDay());
+///
+/// IReadOnlyList&lt;NotableDate&gt; holidays = service.GetNotableDates(2026, filter, "AU");
+///
+/// // Test whether Christmas Day 2026 is a non-working day for New South Wales:
+/// bool isNonWorking = service.IsNonWorkingDay(new DateTime(2026, 12, 25), "AU-NSW");
+/// </code>
+/// </example>
 public interface INotableDateService
 {
 	/// <summary>

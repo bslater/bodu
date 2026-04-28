@@ -27,11 +27,22 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 internal sealed class NotableDateAdjuster
 {
+	/// <summary>Predicate for determining whether a given date falls on a weekend.</summary>
 	private readonly Func<DateTime, bool> _isWeekend;
+
+	/// <summary>Predicate for determining whether a given date is a non-working day in the specified territory and calendar context.</summary>
 	private readonly Func<DateTime, string?, Type?, bool> _isNonWorkingDay;
+
+	/// <summary>The configured weekend definition, forwarded to shift actions that move dates to a weekday.</summary>
 	private readonly CalendarWeekendDefinition _weekendDefinition;
+
+	/// <summary>An optional custom weekend provider consulted when <see cref="_weekendDefinition" /> is <see cref="CalendarWeekendDefinition.Custom" />.</summary>
 	private readonly IWeekendDefinitionProvider? _weekendProvider;
+
+	/// <summary>An optional registry of custom <see cref="IAdjustmentHandler" /> instances looked up by key.</summary>
 	private readonly IAdjustmentHandlerRegistry? _handlerRegistry;
+
+	/// <summary>An optional callback that resolves another rule's observed date by name, used by <see cref="AdjustmentAction.ReplaceWithNamedDate" />.</summary>
 	private readonly Func<string, int, string?, Type?, DateTime?>? _resolveByName;
 
 	/// <summary>

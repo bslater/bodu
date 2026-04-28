@@ -10,7 +10,7 @@ using SysGlobal = System.Globalization;
 namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
-/// Provides a algorithm for determining the approximate Gregorian date of Losar (Tibetan New Year) for a given year.
+/// Provides an algorithm for determining the approximate Gregorian date of Losar (Tibetan New Year) for a given year.
 /// </summary>
 /// <remarks>
 /// <para>

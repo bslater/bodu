@@ -6,7 +6,6 @@
 
 namespace Bodu.Globalization.Calendar;
 
-
 /// <summary>
 /// Captures the output produced by an <see cref="IAdjustmentHandler" />.
 /// </summary>
