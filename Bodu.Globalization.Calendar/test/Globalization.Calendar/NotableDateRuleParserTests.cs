@@ -51,6 +51,30 @@ public partial class NotableDateRuleParserTests
 	}
 
 	/// <summary>
+	/// Verifies that a rule whose <c>category</c> attribute is <c>"Religious"</c> is parsed as
+	/// <see cref="NotableDateCategory.Religious" /> rather than silently falling back to <see cref="NotableDateCategory.None" />.
+	/// </summary>
+	[TestMethod]
+	public void ParseXml_WhenCategoryIsReligious_ShouldReturnReligiousCategory()
+	{
+		var rule = NotableDateRuleParser.ParseXml(ReligiousRuleXml).Single();
+
+		Assert.AreEqual(NotableDateCategory.Religious, rule.Category);
+	}
+
+	/// <summary>
+	/// Verifies that a rule whose <c>category</c> attribute is <c>"Civic"</c> is parsed as
+	/// <see cref="NotableDateCategory.Civic" /> rather than silently falling back to <see cref="NotableDateCategory.None" />.
+	/// </summary>
+	[TestMethod]
+	public void ParseXml_WhenCategoryIsCivic_ShouldReturnCivicCategory()
+	{
+		var rule = NotableDateRuleParser.ParseXml(CivicRuleXml).Single();
+
+		Assert.AreEqual(NotableDateCategory.Civic, rule.Category);
+	}
+
+	/// <summary>
 	/// Verifies that parsing a Fixed rule populates the inclusive year window.
 	/// </summary>
 	[TestMethod]
