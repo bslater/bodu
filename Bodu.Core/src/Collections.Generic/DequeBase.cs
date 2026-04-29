@@ -10,19 +10,33 @@ using System.Collections.Generic;
 namespace Bodu.Collections.Generic;
 
 /// <summary>
-/// Provides the shared public surface for double-ended ring-backed collections. Inherited by
-/// <see cref="Deque{T}"/>, which selects fixed-capacity or growable behaviour at runtime via its
-/// <see cref="Deque{T}.AllowGrow"/> property. Defines the remove-side and peek-side operations once;
-/// derived types override the add-side operations to enforce their capacity policy.
+/// Provides the shared public surface for double-ended ring-backed collections — the remove-side and
+/// peek-side operations of a deque — leaving capacity policy (throw vs grow when full) to derived types.
+/// Inherited by <see cref="Deque{T}"/>.
 /// </summary>
 /// <typeparam name="T">Specifies the type of elements stored in the deque.</typeparam>
 /// <remarks>
 /// <para>
-/// The remove and peek operations have identical semantics regardless of capacity policy, so they live on
-/// the base. The add operations differ between policies — when full, fixed-capacity deques throw and
-/// growable deques resize the backing array — so <see cref="AddFirst(T)"/>, <see cref="AddLast(T)"/>,
-/// <see cref="TryAddFirst(T)"/>, and <see cref="TryAddLast(T)"/> are abstract and must be implemented by
-/// concrete types.
+/// <see cref="DequeBase{T}"/> exists as an extension point for additional double-ended collection
+/// implementations. The current shipping implementation is the sealed <see cref="Deque{T}"/>, which
+/// selects fixed-capacity or growable behaviour at runtime via its <see cref="Deque{T}.AllowGrow"/>
+/// property; future variants (for example a linked-list-backed deque) could share this contract.
+/// </para>
+/// <para>
+/// The remove and peek operations — <see cref="RemoveFirst"/>, <see cref="RemoveLast"/>,
+/// <see cref="PeekFirst"/>, <see cref="PeekLast"/>, and their <c>Try*</c> variants — have identical
+/// semantics regardless of capacity policy and are implemented once on this base. The add operations
+/// (<see cref="AddFirst(T)"/>, <see cref="AddLast(T)"/>, <see cref="TryAddFirst(T)"/>,
+/// <see cref="TryAddLast(T)"/>) are abstract because their behaviour on full differs by derived type:
+/// fixed-capacity deques throw, growable deques resize.
+/// </para>
+/// <para>
+/// Inherits from <see cref="RingBackedCollection{T}"/>, so derived types automatically pick up
+/// <see cref="RingBackedCollection{T}.Capacity"/>, <see cref="RingBackedCollection{T}.Count"/>,
+/// <see cref="RingBackedCollection{T}.IsEmpty"/>, the indexer, <see cref="RingBackedCollection{T}.Clear"/>,
+/// <see cref="RingBackedCollection{T}.Contains(T)"/>, <see cref="RingBackedCollection{T}.CopyTo(T[], int)"/>,
+/// <see cref="RingBackedCollection{T}.ToArray"/>, <see cref="RingBackedCollection{T}.TrimExcess"/>, the
+/// shared <see cref="RingBackedCollection{T}.Enumerator"/>, and the framework collection interfaces.
 /// </para>
 /// </remarks>
 [Serializable]

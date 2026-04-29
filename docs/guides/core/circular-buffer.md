@@ -25,7 +25,7 @@ int next   = buffer.Peek();      // 2, non-destructive
 
 ## Pattern 2 — bounded buffer that rejects excess
 
-By default, `AllowOverwrite` is `false` — enqueueing into a full buffer throws `InvalidOperationException`. Use `TryEnqueue` to avoid exceptions:
+The capacity-only and default constructors set `AllowOverwrite = true` (sliding-window semantics — see Pattern 3). Pass `allowOverwrite: false` to flip the buffer into bounded mode, where `Enqueue` into a full buffer throws `InvalidOperationException`. Use `TryEnqueue` to avoid exceptions:
 
 ```csharp
 using Bodu.Collections.Generic;
@@ -41,7 +41,7 @@ bool added = buffer.TryEnqueue("d");   // false — buffer is full
 
 ## Pattern 3 — ring buffer that overwrites the oldest entry
 
-Set `allowOverwrite: true` to implement a sliding window of the most-recent *N* values:
+`AllowOverwrite = true` — the default — implements a sliding window of the most-recent *N* values:
 
 ```csharp
 using Bodu.Collections.Generic;
@@ -116,6 +116,7 @@ Task.Run(() =>
 
 ## Where to go next
 
+- [Deque](deque.md) — double-ended queue with the same fixed-vs-growable choice on both ends.
 - [Evicting dictionary](evicting-dictionary.md) — a fixed-capacity key-value cache with LRU / LFU / FIFO eviction.
 - [WeekPattern](week-pattern.md) — immutable bitmask value type for sets of days of the week.
 - [Bodu.Core overview](index.md) — all key types at a glance.

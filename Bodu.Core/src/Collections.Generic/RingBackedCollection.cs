@@ -13,27 +13,36 @@ namespace Bodu.Collections.Generic;
 /// <summary>
 /// Provides the shared low-level mechanics for ring-buffer-backed collections — a contiguous backing array,
 /// head/tail indices with modulo wrap, a live element count, and a structural-version counter — as a
-/// reusable base type. Inherited by <see cref="CircularBuffer{T}"/> and <see cref="Deque{T}"/> (via
+/// reusable base type for <see cref="CircularBuffer{T}"/> and <see cref="Deque{T}"/> (via
 /// <see cref="DequeBase{T}"/>).
 /// </summary>
 /// <typeparam name="T">Specifies the type of elements stored in the collection.</typeparam>
 /// <remarks>
 /// <para>
-/// Concrete derived types layer their own public surface on top of the protected primitives exposed here:
-/// <see cref="CircularBuffer{T}"/> adds a single-ended <c>Enqueue</c>/<c>Dequeue</c>/<c>Peek</c> API with
-/// optional eviction, and <see cref="DequeBase{T}"/> (with its <see cref="Deque{T}"/> implementation) adds
-/// the double-ended <c>AddFirst</c>/<c>AddLast</c> / <c>RemoveFirst</c>/<c>RemoveLast</c> /
-/// <c>PeekFirst</c>/<c>PeekLast</c> API.
+/// <see cref="RingBackedCollection{T}"/> is intended as an extension point for new ring-backed collection
+/// types. It owns the storage and exposes:
+/// </para>
+/// <list type="bullet">
+/// <item><description>A read-only public surface for consumers — <see cref="Capacity"/>, <see cref="Count"/>, <see cref="IsEmpty"/>, the head-relative indexer, <see cref="Clear"/>, <see cref="Contains(T)"/>, <see cref="CopyTo(T[], int)"/>, <see cref="ToArray"/>, and <see cref="TrimExcess"/>.</description></item>
+/// <item><description>The framework collection interfaces — <see cref="System.Collections.ICollection"/>, <see cref="System.Collections.Generic.IEnumerable{T}"/>, and <see cref="System.Collections.Generic.IReadOnlyCollection{T}"/>.</description></item>
+/// <item><description>A single shared <see cref="Enumerator"/> nested struct that walks the live region in head-to-tail logical order and uses a structural-version token to detect concurrent modification.</description></item>
+/// <item><description>Protected primitives for derived types — <see cref="AddTail(T)"/>, <see cref="AddHead(T)"/>, <see cref="RemoveHead"/>, <see cref="RemoveTail"/>, <see cref="PeekHead"/>, <see cref="PeekTail"/>, <see cref="OverwriteTail(T)"/>, and <see cref="Resize(int)"/>.</description></item>
+/// </list>
+/// <para>
+/// The protected mutators perform no capacity or emptiness validation: derived classes must enforce those
+/// contracts before calling. This keeps the hot path branch-free in the common cases. Each mutator bumps
+/// the internal structural-version counter so any in-flight enumerators are correctly invalidated.
 /// </para>
 /// <para>
-/// The protected mutators (<see cref="AddTail(T)"/>, <see cref="AddHead(T)"/>, <see cref="RemoveHead"/>,
-/// <see cref="RemoveTail"/>, <see cref="OverwriteTail(T)"/>) intentionally perform no capacity or
-/// emptiness validation; derived classes must enforce those contracts before calling. This keeps the
-/// hot path branch-free for the common cases.
+/// Concrete derived types layer their own public API on top of these primitives:
 /// </para>
+/// <list type="bullet">
+/// <item><description><see cref="CircularBuffer{T}"/> adds the single-ended <c>Enqueue</c> / <c>Dequeue</c> / <c>Peek</c> surface with an <c>AllowOverwrite</c> toggle and eviction events.</description></item>
+/// <item><description><see cref="DequeBase{T}"/> (and its sealed <see cref="Deque{T}"/> implementation) adds the double-ended <c>AddFirst</c> / <c>AddLast</c> / <c>RemoveFirst</c> / <c>RemoveLast</c> / <c>PeekFirst</c> / <c>PeekLast</c> surface, with an <c>AllowGrow</c> toggle for fixed-vs-growable behaviour.</description></item>
+/// </list>
 /// <para>
-/// This type is not thread-safe. For a thread-safe single-ended buffer, use
-/// <see cref="Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer{T}"/> — its lock-free
+/// This type is not thread-safe. For thread-safe single-ended FIFO access, use
+/// <see cref="Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer{T}"/> — its lock-free Vyukov
 /// implementation does not share storage with this hierarchy.
 /// </para>
 /// </remarks>
@@ -119,6 +128,15 @@ public abstract partial class RingBackedCollection<T>
     /// <value><see langword="true"/> if <see cref="Count"/> is zero; otherwise, <see langword="false"/>.</value>
     /// <returns><see langword="true"/> when the collection is empty.</returns>
     public bool IsEmpty => _count == 0;
+
+    /// <summary>
+    /// Gets a value indicating whether the collection has reached the current backing-array capacity. On a
+    /// fixed-capacity buffer this signals that the next add will throw or be rejected; on a growable
+    /// collection it is a transient state that the next add resolves by resizing.
+    /// </summary>
+    /// <value><see langword="true"/> if <see cref="Count"/> equals <see cref="Capacity"/>.</value>
+    /// <returns><see langword="true"/> when the collection is at capacity.</returns>
+    public bool IsFull => _count == _array.Length;
 
     /// <summary>
     /// Gets the element at the specified zero-based logical index, where <c>0</c> refers to the head element.

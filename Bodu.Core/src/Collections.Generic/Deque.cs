@@ -12,25 +12,75 @@ using System.Linq;
 namespace Bodu.Collections.Generic;
 
 /// <summary>
-/// Represents a double-ended queue (deque) backed by a contiguous array. Elements may be added or removed from
-/// either end in amortised O(1) time. The <see cref="AllowGrow"/> property controls whether the deque expands
-/// the backing array on demand or rejects further inserts once it reaches <see cref="RingBackedCollection{T}.Capacity"/>.
+/// Represents a double-ended queue (deque) backed by a contiguous circular array. Elements may be added or
+/// removed from either end in amortised O(1) time. The <see cref="AllowGrow"/> property selects between
+/// growable and fixed-capacity behaviour at runtime.
 /// </summary>
 /// <typeparam name="T">Specifies the type of elements stored in the deque.</typeparam>
 /// <remarks>
 /// <para>
-/// When <see cref="AllowGrow"/> is <see langword="true"/> (the default), the backing array doubles automatically
-/// whenever <see cref="AddFirst(T)"/> or <see cref="AddLast(T)"/> would otherwise overflow, capped at
-/// <see cref="Array.MaxLength"/>. When <see cref="AllowGrow"/> is <see langword="false"/>, the deque behaves as a
-/// fixed-capacity buffer: add operations throw <see cref="InvalidOperationException"/> when full, and
-/// <see cref="TryAddFirst(T)"/> / <see cref="TryAddLast(T)"/> return <see langword="false"/>.
+/// <see cref="Deque{T}"/> stores its elements in a single backing array using head and tail indices that wrap
+/// around modulo the capacity. This gives O(1) amortised cost for adds and removes at either end, plus O(1)
+/// random read access through the indexer in head-to-tail logical order.
+/// </para>
+/// <para>The growth policy is controlled by the mutable <see cref="AllowGrow"/> property:</para>
+/// <list type="bullet">
+/// <item>
+/// <description>
+/// <c>AllowGrow = true</c> (the default) — the backing array doubles automatically whenever
+/// <see cref="AddFirst(T)"/> or <see cref="AddLast(T)"/> would otherwise overflow, capped at
+/// <see cref="Array.MaxLength"/>. <see cref="TryAddFirst(T)"/> and <see cref="TryAddLast(T)"/> always return
+/// <see langword="true"/>.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <c>AllowGrow = false</c> — the deque is fixed at its current capacity. <see cref="AddFirst(T)"/> and
+/// <see cref="AddLast(T)"/> throw <see cref="InvalidOperationException"/> when full;
+/// <see cref="TryAddFirst(T)"/> and <see cref="TryAddLast(T)"/> return <see langword="false"/> without
+/// modifying state.
+/// </description>
+/// </item>
+/// </list>
+/// <para>Key operations:</para>
+/// <list type="bullet">
+/// <item><description><see cref="AddFirst(T)"/> / <see cref="AddLast(T)"/> — push at either end (with <see cref="TryAddFirst(T)"/> / <see cref="TryAddLast(T)"/> non-throwing variants).</description></item>
+/// <item><description>Inherited <c>RemoveFirst</c> / <c>RemoveLast</c> — pop and return the head or tail element.</description></item>
+/// <item><description>Inherited <c>PeekFirst</c> / <c>PeekLast</c> — read the head or tail element without removing it.</description></item>
+/// <item><description><see cref="EnsureCapacity(int)"/> — pre-grow the backing array even when <see cref="AllowGrow"/> is <see langword="false"/>.</description></item>
+/// <item><description>Inherited <see cref="RingBackedCollection{T}.TrimExcess"/> — shrink the backing array to <c>Count</c> after a burst of removes.</description></item>
+/// </list>
+/// <para>
+/// <see cref="AllowGrow"/> can be toggled at runtime to switch the deque between modes. Switching from
+/// <see langword="true"/> to <see langword="false"/> does not shrink the existing capacity — call
+/// <see cref="RingBackedCollection{T}.TrimExcess"/> afterwards if a smaller footprint is wanted.
 /// </para>
 /// <para>
-/// Use <see cref="CircularBuffer{T}"/> for a single-ended FIFO buffer with eviction-on-full semantics.
+/// For a single-ended FIFO buffer with eviction-on-full semantics, see <see cref="CircularBuffer{T}"/>.
+/// For thread-safe concurrent FIFO access, see
+/// <see cref="Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer{T}"/>. <see cref="Deque{T}"/>
+/// itself is not thread-safe; concurrent reads and writes require external synchronization.
 /// </para>
 /// <para>
-/// This type is not thread-safe. Concurrent reads and writes from multiple threads require external synchronization.
+/// <see cref="Deque{T}"/> accepts <see langword="null"/> values for reference types and allows duplicate elements.
 /// </para>
+/// <example>
+/// <code language="csharp">
+///<![CDATA[
+/// // Growable double-ended queue (the default)
+/// var deque = new Deque<int>();
+/// deque.AddLast(2);
+/// deque.AddFirst(1);
+/// deque.AddLast(3);          // contents: 1, 2, 3
+/// int head = deque.RemoveFirst();   // 1
+///
+/// // Fixed-capacity queue: rejects adds when full
+/// var bounded = new Deque<int>(capacity: 8, allowGrow: false);
+/// for (int i = 0; i < 8; i++) bounded.AddLast(i);
+/// bool added = bounded.TryAddLast(8); // false — bounded is full
+///]]>
+/// </code>
+/// </example>
 /// </remarks>
 [DebuggerDisplay("Count = {Count}, Capacity = {Capacity}, AllowGrow = {AllowGrow}")]
 [DebuggerTypeProxy(typeof(DequeDebugView<>))]
@@ -199,21 +249,6 @@ public sealed class Deque<T> : DequeBase<T>
     /// <see cref="RingBackedCollection{T}.TrimExcess"/> if a smaller footprint is desired.
     /// </remarks>
     public bool AllowGrow { get; set; }
-
-    /// <summary>
-    /// Gets a value indicating whether the deque has reached its current backing-array capacity.
-    /// </summary>
-    /// <value>
-    /// <see langword="true"/> if <see cref="RingBackedCollection{T}.Count"/> equals
-    /// <see cref="RingBackedCollection{T}.Capacity"/>.
-    /// </value>
-    /// <returns><see langword="true"/> when full at the moment of the call.</returns>
-    /// <remarks>
-    /// On a growable deque this is a transient state — the next <see cref="AddFirst(T)"/> or
-    /// <see cref="AddLast(T)"/> triggers a resize. On a fixed-capacity deque it indicates that subsequent adds
-    /// will throw or return <see langword="false"/>.
-    /// </remarks>
-    public bool IsFull => Count == Capacity;
 
     /// <inheritdoc />
     /// <exception cref="InvalidOperationException">

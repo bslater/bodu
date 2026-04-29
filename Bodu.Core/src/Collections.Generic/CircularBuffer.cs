@@ -12,37 +12,55 @@ using System.Linq;
 namespace Bodu.Collections.Generic;
 
 /// <summary>
-/// Represents a first-in, first-out (FIFO) collection of elements using a fixed-size circular buffer with optional overwrite support.
+/// Represents a fixed-size, first-in first-out (FIFO) circular buffer with optional overwrite-on-full
+/// semantics. Elements are inserted at the tail and removed from the head; once the buffer reaches
+/// <see cref="RingBackedCollection{T}.Capacity"/>, the <see cref="AllowOverwrite"/> property determines
+/// whether further inserts evict the oldest element or are rejected.
 /// </summary>
-/// <typeparam name="T">Specifies the type of elements in the collection.</typeparam>
+/// <typeparam name="T">Specifies the type of elements stored in the buffer.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="CircularBuffer{T}"/> is a high-performance collection for storing a bounded number of elements in a circular manner.
-/// Elements are inserted at the tail and removed from the head. When the buffer reaches capacity, new elements overwrite the oldest
-/// entries if <see cref="AllowOverwrite"/> is <see langword="true"/>.
+/// <see cref="CircularBuffer{T}"/> is the single-ended member of the ring-backed collection family. Like
+/// <see cref="Deque{T}"/>, it stores its elements in a contiguous backing array using head and tail indices
+/// that wrap around modulo the capacity, giving O(1) cost for adds, removes, and peeks.
 /// </para>
 /// <para>
-/// This type is not thread-safe. If concurrent access is required, use
-/// <see cref="Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer{T}"/> instead.
+/// The behaviour on a full buffer is controlled by the mutable <see cref="AllowOverwrite"/> property:
 /// </para>
-/// <para>Key operations include:</para>
 /// <list type="bullet">
 /// <item>
-/// <description><see cref="Enqueue"/> and <see cref="TryEnqueue"/> - Add elements to the buffer.</description>
+/// <description>
+/// <c>AllowOverwrite = true</c> (the default for the parameterless and capacity-only constructors) — adds
+/// to a full buffer evict the oldest element to make room for the new one. The
+/// <see cref="ItemEvicting"/> event fires before the eviction (and may veto it by throwing) and the
+/// <see cref="ItemEvicted"/> event fires after.
+/// </description>
 /// </item>
 /// <item>
-/// <description><see cref="Dequeue"/> and <see cref="TryDequeue"/> - Remove and return the oldest element.</description>
-/// </item>
-/// <item>
-/// <description><see cref="Peek"/> and <see cref="TryPeek"/> - View the oldest element without removing it.</description>
+/// <description>
+/// <c>AllowOverwrite = false</c> — <see cref="Enqueue"/> throws
+/// <see cref="InvalidOperationException"/> when the buffer is full; <see cref="TryEnqueue"/> returns
+/// <see langword="false"/> without modifying state.
+/// </description>
 /// </item>
 /// </list>
+/// <para>Key operations:</para>
+/// <list type="bullet">
+/// <item><description><see cref="Enqueue(T)"/> / <see cref="TryEnqueue(T)"/> — add an element at the tail.</description></item>
+/// <item><description><see cref="Dequeue"/> / <see cref="TryDequeue(out T)"/> — remove and return the oldest (head) element.</description></item>
+/// <item><description><see cref="Peek"/> / <see cref="TryPeek(out T)"/> — read the oldest element without removing it.</description></item>
+/// <item><description>Inherited <see cref="RingBackedCollection{T}.TrimExcess"/> — shrink the backing array to <c>Count</c>.</description></item>
+/// </list>
 /// <para>
-/// The <see cref="RingBackedCollection{T}.Capacity"/> property defines the maximum number of elements the buffer can hold. If the
-/// buffer is full and <see cref="AllowOverwrite"/> is <see langword="false"/>, attempts to enqueue additional elements will throw an
-/// <see cref="InvalidOperationException"/>.
+/// For a double-ended counterpart with the same fixed-vs-growable choice, see <see cref="Deque{T}"/>.
+/// For thread-safe concurrent FIFO access, see
+/// <see cref="Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer{T}"/>; <see cref="CircularBuffer{T}"/>
+/// itself is not thread-safe.
 /// </para>
-/// <para><see cref="CircularBuffer{T}"/> accepts <see langword="null"/> values (for reference types) and allows duplicate elements.</para>
+/// <para>
+/// <see cref="CircularBuffer{T}"/> accepts <see langword="null"/> values for reference types and allows
+/// duplicate elements.
+/// </para>
 /// </remarks>
 [DebuggerDisplay("Count = {Count}")]
 [DebuggerTypeProxy(typeof(CircularBufferDebugView<>))]
