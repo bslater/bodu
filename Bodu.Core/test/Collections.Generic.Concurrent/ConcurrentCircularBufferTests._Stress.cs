@@ -852,4 +852,206 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity,
             "Count must remain within [0, Capacity] after high-concurrency stress.");
     }
+
+    // -----------------------------------------------------------------------------------------
+    // New: ToArray must produce a coherent generation window under sustained eviction pressure.
+    //
+    // Each producer enqueues items tagged with a globally monotonic generation. Every snapshot
+    // returned by ToArray must satisfy two invariants:
+    //   - generations are strictly increasing within the snapshot (no torn cross-generation mix);
+    //   - max - min generation < capacity (the entire snapshot must fit inside the buffer's
+    //     active window at some moment in time).
+    // A violation indicates the per-slot snapshot protocol returned a stale slot from a
+    // previous generation alongside a slot from a more recent generation.
+    // -----------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.ToArray" /> never returns a snapshot whose tagged
+    /// generations span more than the buffer capacity or break strict monotonicity, even under sustained
+    /// concurrent eviction.
+    /// </summary>
+    [TestMethod]
+    [DataRow(true)]
+    [DataRow(false)]
+    public void ToArray_WhenUnderConcurrentEvictionPressure_ShouldNeverReturnTornGenerationMix(
+        bool allowOverwrite)
+    {
+        const int capacity = 32;
+        var buffer = new ConcurrentCircularBuffer<TestItem>(capacity, allowOverwrite);
+        using var cts = new CancellationTokenSource();
+        using var startGate = new ManualResetEventSlim(false);
+
+        int generation = 0;
+        int monotonicityViolations = 0;
+        int windowViolations = 0;
+        int snapshotFaults = 0;
+        int snapshotsTaken = 0;
+
+        int writerThreads = Math.Max(2, Environment.ProcessorCount);
+        int readerThreads = 2;
+        const int durationMs = 2000;
+        const int deadlockTimeoutMs = durationMs + 5000;
+
+        var writers = Enumerable.Range(0, writerThreads).Select(_ =>
+            Task.Run(() =>
+            {
+                startGate.Wait();
+                while (!cts.Token.IsCancellationRequested)
+                {
+                    int gen = Interlocked.Increment(ref generation);
+                    buffer.TryEnqueue(new TestItem(gen));
+                }
+            }));
+
+        var readers = Enumerable.Range(0, readerThreads).Select(_ =>
+            Task.Run(() =>
+            {
+                startGate.Wait();
+                while (!cts.Token.IsCancellationRequested)
+                {
+                    TestItem[] snap;
+                    try
+                    {
+                        snap = buffer.ToArray();
+                    }
+                    catch
+                    {
+                        Interlocked.Increment(ref snapshotFaults);
+                        continue;
+                    }
+
+                    Interlocked.Increment(ref snapshotsTaken);
+                    if (snap.Length == 0) continue;
+
+                    int min = snap[0].Value;
+                    int max = snap[0].Value;
+                    bool monotonic = true;
+                    for (int i = 1; i < snap.Length; i++)
+                    {
+                        int v = snap[i].Value;
+                        if (v <= snap[i - 1].Value) monotonic = false;
+                        if (v < min) min = v;
+                        if (v > max) max = v;
+                    }
+
+                    if (!monotonic)
+                        Interlocked.Increment(ref monotonicityViolations);
+                    if (max - min >= capacity)
+                        Interlocked.Increment(ref windowViolations);
+                }
+            }));
+
+        Task[] allTasks = writers.Concat(readers).ToArray();
+        startGate.Set();
+        Thread.Sleep(durationMs);
+        cts.Cancel();
+        bool completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
+
+        TestContext.WriteLine(
+            $"AllowOverwrite={allowOverwrite}, SnapshotsTaken={snapshotsTaken}, " +
+            $"MonotonicityViolations={monotonicityViolations}, WindowViolations={windowViolations}, " +
+            $"SnapshotFaults={snapshotFaults}");
+
+        Assert.IsTrue(completed, $"Tasks did not complete within {deadlockTimeoutMs} ms.");
+        Assert.AreEqual(0, snapshotFaults, "ToArray must not throw under concurrent eviction pressure.");
+        Assert.AreEqual(0, monotonicityViolations,
+            "ToArray returned a snapshot whose generations were not strictly increasing — torn read.");
+        Assert.AreEqual(0, windowViolations,
+            "ToArray returned a snapshot spanning more generations than the buffer capacity — torn read.");
+    }
+
+    // -----------------------------------------------------------------------------------------
+    // New: indexer must always return a value that was in the live window during the call.
+    //
+    // The reader loops `buffer[i]` over the observed Count and asserts each returned generation
+    // is no greater than the latest enqueued generation at the time of the call. A returned
+    // generation greater than `latestSeen` would mean the indexer surfaced a value from a
+    // future generation that did not exist in the buffer at any point during the read.
+    // -----------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that the indexer returns only values that were genuinely in the live window during the call,
+    /// never a future or torn-generation value, while concurrent producers and consumers churn the buffer.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenContendedWithEnqueueAndDequeue_ShouldReturnAValueThatExisted()
+    {
+        const int capacity = 32;
+        var buffer = new ConcurrentCircularBuffer<TestItem>(capacity, allowOverwrite: true);
+        using var cts = new CancellationTokenSource();
+        using var startGate = new ManualResetEventSlim(false);
+
+        int generation = 0;
+        int futureValueViolations = 0;
+        int indexerFaults = 0;
+        int reads = 0;
+
+        int writerThreads = Math.Max(2, Environment.ProcessorCount);
+        int readerThreads = 2;
+        const int durationMs = 2000;
+        const int deadlockTimeoutMs = durationMs + 5000;
+
+        var writers = Enumerable.Range(0, writerThreads).Select(_ =>
+            Task.Run(() =>
+            {
+                startGate.Wait();
+                while (!cts.Token.IsCancellationRequested)
+                {
+                    int gen = Interlocked.Increment(ref generation);
+                    buffer.TryEnqueue(new TestItem(gen));
+                }
+            }));
+
+        var consumers = Enumerable.Range(0, 1).Select(_ =>
+            Task.Run(() =>
+            {
+                startGate.Wait();
+                while (!cts.Token.IsCancellationRequested)
+                    buffer.TryDequeue(out _);
+            }));
+
+        var indexers = Enumerable.Range(0, readerThreads).Select(_ =>
+            Task.Run(() =>
+            {
+                startGate.Wait();
+                while (!cts.Token.IsCancellationRequested)
+                {
+                    int latest = Volatile.Read(ref generation);
+                    int count = buffer.Count;
+                    for (int i = 0; i < count; i++)
+                    {
+                        try
+                        {
+                            TestItem item = buffer[i];
+                            Interlocked.Increment(ref reads);
+                            if (item is not null && item.Value > latest)
+                                Interlocked.Increment(ref futureValueViolations);
+                        }
+                        catch (ArgumentOutOfRangeException)
+                        {
+                            // Count shrank between observation and access — expected race.
+                        }
+                        catch
+                        {
+                            Interlocked.Increment(ref indexerFaults);
+                        }
+                    }
+                }
+            }));
+
+        Task[] allTasks = writers.Concat(consumers).Concat(indexers).ToArray();
+        startGate.Set();
+        Thread.Sleep(durationMs);
+        cts.Cancel();
+        bool completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
+
+        TestContext.WriteLine(
+            $"Reads={reads}, FutureValueViolations={futureValueViolations}, IndexerFaults={indexerFaults}");
+
+        Assert.IsTrue(completed, $"Tasks did not complete within {deadlockTimeoutMs} ms.");
+        Assert.AreEqual(0, indexerFaults, "Indexer must not throw apart from documented races.");
+        Assert.AreEqual(0, futureValueViolations,
+            "Indexer surfaced a value from a future generation that did not exist when the call started.");
+        Assert.IsTrue(reads > 0, "Indexer must have completed at least some successful reads.");
+    }
 }
