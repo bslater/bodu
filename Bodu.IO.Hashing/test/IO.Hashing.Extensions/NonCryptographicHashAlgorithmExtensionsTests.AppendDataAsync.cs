@@ -39,7 +39,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenStreamIsNull_ShouldThrowArgumentNullException()
     {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var algorithm = CreateAlgorithm();
 
         await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
             await algorithm.AppendDataAsync(null!));
@@ -51,7 +51,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenBufferSizeIsZero_ShouldThrowArgumentOutOfRangeException()
     {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var algorithm = CreateAlgorithm();
         using MemoryStream stream = new(SampleData);
 
         await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(async () =>
@@ -64,7 +64,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenBufferSizeIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var algorithm = CreateAlgorithm();
         using MemoryStream stream = new(SampleData);
 
         await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(async () =>
@@ -79,7 +79,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenStreamIsEmpty_ShouldNotContributeToHash()
     {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var algorithm = CreateAlgorithm();
         MonitoringNonCryptographicHashAlgorithm baseline = CreateAlgorithm();
 
         await algorithm.AppendDataAsync(new MemoryStream(Array.Empty<byte>()));
@@ -98,7 +98,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         reference.AppendData(SampleData.AsSpan());
         byte[] expected = reference.GetCurrentHash();
 
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new MemoryStream(SampleData));
 
         CollectionAssert.AreEqual(expected, algorithm.GetCurrentHash());
@@ -119,7 +119,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         reference.AppendData(combined.AsSpan());
         byte[] expected = reference.GetCurrentHash();
 
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new MemoryStream(part1));
         await algorithm.AppendDataAsync(new MemoryStream(part2));
 
@@ -142,7 +142,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         reference.AppendData(combined.AsSpan());
         byte[] expected = reference.GetCurrentHash();
 
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var algorithm = CreateAlgorithm();
         algorithm.AppendData(part1.AsSpan());
         await algorithm.AppendDataAsync(new MemoryStream(part2));
 
@@ -160,7 +160,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         reference.AppendData(SampleData.AsSpan());
         byte[] expected = reference.GetCurrentHash();
 
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new MemoryStream(SampleData), bufferSize: 1);
 
         CollectionAssert.AreEqual(expected, algorithm.GetCurrentHash());
@@ -178,7 +178,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         reference.AppendData(SampleData.AsSpan());
         byte[] expected = reference.GetCurrentHash();
 
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new FixedChunkStream(SampleData, chunkSize: 1));
 
         CollectionAssert.AreEqual(expected, algorithm.GetCurrentHash());
@@ -194,7 +194,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         reference.AppendData(SampleData.AsSpan());
         byte[] expected = reference.GetCurrentHash();
 
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new NonSeekableStream(SampleData));
 
         CollectionAssert.AreEqual(expected, algorithm.GetCurrentHash());
@@ -207,7 +207,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenSourceFaultsMidRead_ShouldPropagateIOException()
     {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var algorithm = CreateAlgorithm();
 
         await Assert.ThrowsExactlyAsync<IOException>(async () =>
             await algorithm.AppendDataAsync(new FaultingStream(SampleData, throwAfterBytes: 2)));
@@ -222,7 +222,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenTokenAlreadyCancelled_ShouldThrowOperationCanceledException()
     {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var algorithm = CreateAlgorithm();
         using MemoryStream stream = new(SampleData);
         using CancellationTokenSource cts = new();
         cts.Cancel();
@@ -239,7 +239,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenCancellationTriggeredMidStream_ShouldThrowOperationCanceledException()
     {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var algorithm = CreateAlgorithm();
         using CancellationTokenSource cts = new();
 
         // cancelAfterRead: 1 cancels the token after the first successful read; the next ReadAsync sees a

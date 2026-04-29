@@ -23,7 +23,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         snapshot.Append(NonCryptographicHashSharedInputs.Abc);
         byte[] expected = snapshot.GetCurrentHash();
 
-        NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
+        var algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
         byte[] actual = algorithm.GetHashAndReset();
@@ -40,7 +40,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void GetHashAndReset_AfterAppend_ShouldResetInstance(TVariant variant)
     {
-        NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
+        var algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.QuickBrownFox);
         _ = algorithm.GetHashAndReset();
 
@@ -58,7 +58,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void GetHashAndReset_WhenWritingToSpan_ShouldReturnHashAndResetInstance(TVariant variant)
     {
-        NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
+        var algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.Sequential0To255);
 
         byte[] destination = new byte[algorithm.HashLengthInBytes];

@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test;
+
 namespace Bodu.Security.Cryptography;
 
 [TestClass]
@@ -25,7 +27,7 @@ internal sealed partial class TwofishBlockCipherTests
         {
             BlockSize = 16,
             KeySize = keySize,
-            TestKey = CryptoTestUtilities.CreateIncrementalByteSequence(0, keySize),
+            TestKey = TestHelpers.GenerateIncrementalByteSequence(0, keySize),
         };
     }
 

@@ -6,6 +6,7 @@
 
 namespace Bodu.Security.Cryptography;
 
+using Bodu.Test;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using System.Security.Cryptography;
@@ -88,7 +89,7 @@ public sealed partial class OcbModeTransformTests
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x55);
         var iv = Enumerable.Repeat((byte)0x33, ExpectedBlockSize).ToArray();
-        var plaintext = CryptoTestUtilities.CreateIncrementalByteSequence(0, ExpectedBlockSize);
+        var plaintext = TestHelpers.GenerateIncrementalByteSequence(0, ExpectedBlockSize);
 
         var enc = CreateTransform(cipher, (byte[])iv.Clone());
         var ct = new byte[plaintext.Length + enc.TagSize];
@@ -144,7 +145,7 @@ public sealed partial class OcbModeTransformTests
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x55);
         var iv = new byte[ExpectedBlockSize];
         var aad = new byte[] { 0xCA, 0xFE, 0xBA, 0xBE };
-        var plaintext = CryptoTestUtilities.CreateIncrementalByteSequence(0, ExpectedBlockSize);
+        var plaintext = TestHelpers.GenerateIncrementalByteSequence(0, ExpectedBlockSize);
 
         var enc = CreateTransform(cipher, (byte[])iv.Clone());
         enc.ProcessAssociatedData(aad);

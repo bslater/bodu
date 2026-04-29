@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -33,7 +34,7 @@ public sealed partial class AesBlockCipherTests
         {
             BlockSize = 16,
             KeySize = keySize,
-            TestKey = CryptoTestUtilities.CreateIncrementalByteSequence(0, keySize),
+            TestKey = TestHelpers.GenerateIncrementalByteSequence(0, keySize),
         };
     }
 

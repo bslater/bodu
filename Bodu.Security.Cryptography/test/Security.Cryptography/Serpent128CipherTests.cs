@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -25,7 +27,7 @@ internal sealed class Serpent128CipherTests
     {
         BlockSize = 16,
         KeySize = 16,
-        TestKey = CryptoTestUtilities.CreateIncrementalByteSequence(0x00, 16),
+        TestKey = TestHelpers.GenerateIncrementalByteSequence(0x00, 16),
     };
 
     /// <inheritdoc />

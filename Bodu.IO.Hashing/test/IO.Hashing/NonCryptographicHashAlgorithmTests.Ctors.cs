@@ -19,7 +19,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void Ctor_WhenDefaultConstructed_ShouldReturnNonNullInstance(TVariant variant)
     {
-        NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
+        var algorithm = CreateAlgorithm(variant);
         Assert.IsNotNull(algorithm);
     }
 
@@ -34,7 +34,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     public void Ctor_WhenDefaultConstructed_ShouldReportExpectedHashLength(TVariant variant)
     {
         NonCryptographicHashAlgorithmSpecification specification = GetSpecification(variant);
-        NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
+        var algorithm = CreateAlgorithm(variant);
 
         Assert.AreEqual(specification.HashLengthInBytes, algorithm.HashLengthInBytes);
     }

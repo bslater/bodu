@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -61,8 +63,8 @@ internal static class Threefish512KnownAnswers
             Ciphertext = Convert.FromHexString(
                 "E304439626D45A2CB401CAD8D636249A6338330EB06D45DD8B36B90E97254779" +
                 "272A0A8D99463504784420EA18C9A725AF11DFFEA10162348927673D5C1CAF3D"),
-            Key = CryptoTestUtilities.CreateIncrementalByteSequence(0x10, 64),
-            Tweak = CryptoTestUtilities.CreateIncrementalByteSequence(0x00, 16),
+            Key = TestHelpers.GenerateIncrementalByteSequence(0x10, 64),
+            Tweak = TestHelpers.GenerateIncrementalByteSequence(0x00, 16),
         },
     ];
 }

@@ -94,7 +94,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
             _ = new XmlResourceNotableDateRuleProvider(null!, new ResourcePathResolver());
         });
 
-        Assert.AreEqual("xmlResourceName", ex.ParamName);
+        Assert.AreEqual("rootResourceName", ex.ParamName);
     }
 
     /// <summary>

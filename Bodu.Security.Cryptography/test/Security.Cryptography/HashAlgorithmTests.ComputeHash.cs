@@ -4,8 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Extensions;
 using Bodu.Test;
 using System.Security.Cryptography;
+using static Bodu.Security.Cryptography.AsconHashA256Tests;
 
 namespace Bodu.Security.Cryptography;
 
@@ -377,5 +379,27 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         Assert.IsTrue(
             nonZeroCount >= threshold,
             $"[{variant}] Expected at least {threshold} of {outputBytes} output bytes to be non-zero; got {nonZeroCount}.");
+    }
+
+    /// <summary>
+    /// Verifies that two inputs that span multiple input chunks produce different hashes.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(HashAlgorithmVariants))]
+    public void ComputeHash_ForMultiChunkInputs_ShouldProduceDistinctHashes(TVariant variant)
+    {
+        var specification = GetSpecification(variant);
+        using var algorithm = CreateAlgorithm(variant);
+
+        var bufferSize = (specification.IncrementalCoverageBytes ?? specification.InputBlockSize) * 2;
+        byte[] inputA = TestHelpers.GenerateRandomNonZeroBytes(bufferSize);
+        byte[] inputB = inputA.Copy()!;
+        inputB[bufferSize - 2] = 0x00;
+
+        byte[] hashA = algorithm.ComputeHash(inputA);
+        byte[] hashB = algorithm.ComputeHash(inputB);
+
+        CollectionAssert.AreNotEqual(hashA, hashB,
+            "Distinct multi-chunk inputs must produce different hashes.");
     }
 }

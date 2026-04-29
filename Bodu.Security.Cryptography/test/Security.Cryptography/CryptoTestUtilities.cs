@@ -59,60 +59,6 @@ internal static partial class CryptoTestUtilities
     }
 
     /// <summary>
-    /// Creates a cryptographically random byte array whose elements are all non-zero.
-    /// </summary>
-    /// <param name="count">/// The number of bytes to generate./// </param>
-    /// <returns>
-    /// A byte array containing <paramref name="count" /> cryptographically random non-zero bytes.
-    /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="count" /> is less than zero.
-    /// </exception>
-    public static byte[] GetRandomNonZeroBytes(int count)
-    {
-        ThrowHelper.ThrowIfNegative(count);
-
-        byte[] buffer = new byte[count];
-        CryptoHelpers.FillWithRandomNonZeroBytes(buffer);
-        return buffer;
-    }
-
-    /// <summary>
-    /// Creates a deterministic sequence of incrementing byte values.
-    /// </summary>
-    /// <param name="start">
-    /// The first byte value in the sequence.
-    /// </param>
-    /// <param name="count">
-    /// The number of bytes to generate.
-    /// </param>
-    /// <returns>
-    /// A byte array containing <paramref name="count" /> incrementing values starting at <paramref name="start" />.
-    /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="count" /> is less than zero.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// The requested sequence exceeds the range of <see cref="byte" />.
-    /// </exception>
-    public static byte[] CreateIncrementalByteSequence(byte start, int count)
-    {
-        ThrowHelper.ThrowIfLessThan(start, 0);
-        ThrowHelper.ThrowIfNegative(count);
-
-        if (count > (byte.MaxValue - start + 1))
-        {
-            throw new ArgumentException(
-                "The requested byte sequence exceeds the valid byte range.",
-                nameof(count));
-        }
-
-        return Enumerable.Range(start, count)
-                         .Select(static i => (byte)i)
-                         .ToArray();
-    }
-
-    /// <summary>
     /// Returns a key whose bit length falls outside all ranges in <paramref name="legalSizes" />,
     /// or <see langword="null" /> when every byte-aligned length from 1 to 512 bytes is legal.
     /// </summary>

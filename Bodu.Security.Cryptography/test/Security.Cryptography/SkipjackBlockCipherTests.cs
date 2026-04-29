@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test;
+
 namespace Bodu.Security.Cryptography;
 
 [TestClass]
@@ -15,7 +17,7 @@ internal sealed partial class SkipjackBlockCipherTests
     {
         BlockSize = 8,
         KeySize = 10,
-        TestKey = CryptoTestUtilities.CreateIncrementalByteSequence(0, 10),
+        TestKey = TestHelpers.GenerateIncrementalByteSequence(0, 10),
     };
 
     /// <inheritdocs/>

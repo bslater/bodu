@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -39,8 +41,8 @@ internal sealed class Serpent512CipherTests
                 BlockSize = 64,
                 KeySize = 64,
                 TweakSize = 16,
-                TestKey = CryptoTestUtilities.CreateIncrementalByteSequence(0x10, 64),
-                TestTweak = CryptoTestUtilities.CreateIncrementalByteSequence(0, 16),
+                TestKey = TestHelpers.GenerateIncrementalByteSequence(0x10, 64),
+                TestTweak = TestHelpers.GenerateIncrementalByteSequence(0, 16),
             },
             _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
         };

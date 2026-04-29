@@ -86,7 +86,9 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         if (bufferSize <= 0)
             throw new ArgumentOutOfRangeException(
-                nameof(bufferSize), bufferSize, "Buffer size must be greater than zero.");
+                nameof(bufferSize), 
+                bufferSize, 
+                "Buffer size must be greater than zero.");
 
         byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         try

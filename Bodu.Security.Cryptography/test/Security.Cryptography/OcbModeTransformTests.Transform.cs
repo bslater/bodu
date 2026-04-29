@@ -6,6 +6,7 @@
 
 namespace Bodu.Security.Cryptography;
 
+using Bodu.Test;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
@@ -31,7 +32,7 @@ public sealed partial class OcbModeTransformTests
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
         var iv = Enumerable.Repeat((byte)0x5A, ExpectedBlockSize).ToArray();
-        var plaintext = CryptoTestUtilities.GetRandomNonZeroBytes(ExpectedBlockSize * 3);
+        var plaintext = TestHelpers.GenerateRandomNonZeroBytes(ExpectedBlockSize * 3);
 
         var enc = CreateTransform(cipher, (byte[])iv.Clone(), tagLen);
         var ct = new byte[plaintext.Length + tagLen];
@@ -78,7 +79,7 @@ public sealed partial class OcbModeTransformTests
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
         var iv = new byte[ExpectedBlockSize];
-        var plaintext = CryptoTestUtilities.GetRandomNonZeroBytes(plaintextLength);
+        var plaintext = TestHelpers.GenerateRandomNonZeroBytes(plaintextLength);
 
         var enc = CreateTransform(cipher, (byte[])iv.Clone());
         var ct = new byte[plaintext.Length + enc.TagSize];
@@ -218,7 +219,7 @@ public sealed partial class OcbModeTransformTests
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
         var iv = Enumerable.Repeat((byte)0x11, ExpectedBlockSize).ToArray();
-        var plaintext = CryptoTestUtilities.GetRandomNonZeroBytes(ExpectedBlockSize * 2);
+        var plaintext = TestHelpers.GenerateRandomNonZeroBytes(ExpectedBlockSize * 2);
 
         var enc = CreateTransform(cipher, (byte[])iv.Clone());
         var ct = new byte[plaintext.Length + enc.TagSize];

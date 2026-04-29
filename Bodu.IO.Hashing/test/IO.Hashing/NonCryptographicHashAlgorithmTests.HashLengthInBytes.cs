@@ -20,7 +20,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     public void HashLengthInBytes_WhenQueried_ShouldMatchSpecification(TVariant variant)
     {
         NonCryptographicHashAlgorithmSpecification specification = GetSpecification(variant);
-        NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
+        var algorithm = CreateAlgorithm(variant);
 
         Assert.AreEqual(specification.HashLengthInBytes, algorithm.HashLengthInBytes);
 
@@ -37,7 +37,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void GetCurrentHash_WhenReturningDigest_ShouldHaveLengthMatchingHashLengthInBytes(TVariant variant)
     {
-        NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
+        var algorithm = CreateAlgorithm(variant);
         algorithm.Append(new byte[] { 0xAB, 0xCD, 0xEF });
 
         byte[] digest = algorithm.GetCurrentHash();

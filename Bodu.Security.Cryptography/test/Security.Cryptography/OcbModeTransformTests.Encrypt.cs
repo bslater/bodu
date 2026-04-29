@@ -6,6 +6,7 @@
 
 namespace Bodu.Security.Cryptography;
 
+using Bodu.Test;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
@@ -128,7 +129,7 @@ public sealed partial class OcbModeTransformTests
     public void Encrypt_WithDifferentNonces_ShouldProduceDifferentCiphertext()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var plaintext = CryptoTestUtilities.CreateIncrementalByteSequence(0, ExpectedBlockSize);
+        var plaintext = TestHelpers.GenerateIncrementalByteSequence(0, ExpectedBlockSize);
         var ivA = new byte[ExpectedBlockSize];
         var ivB = new byte[ExpectedBlockSize];
         ivB[0] = 0x01;

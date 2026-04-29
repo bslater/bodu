@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test;
+
 namespace Bodu.Security.Cryptography;
 
 internal sealed partial class CamelliaBlockCipherTests
@@ -54,8 +56,8 @@ internal sealed partial class CamelliaBlockCipherTests
     [TestMethod]
     public void EncryptThenDecrypt_WithKey128_ShouldRoundTripCorrectly()
     {
-        byte[] key = CryptoTestUtilities.CreateIncrementalByteSequence(0, 16);
-        byte[] plaintext = CryptoTestUtilities.CreateIncrementalByteSequence(0x80, 16);
+        byte[] key = TestHelpers.GenerateIncrementalByteSequence(0, 16);
+        byte[] plaintext = TestHelpers.GenerateIncrementalByteSequence(0x80, 16);
         byte[] ciphertext = new byte[16];
         byte[] recovered = new byte[16];
 
@@ -73,8 +75,8 @@ internal sealed partial class CamelliaBlockCipherTests
     [TestMethod]
     public void EncryptThenDecrypt_WithKey192_ShouldRoundTripCorrectly()
     {
-        byte[] key = CryptoTestUtilities.CreateIncrementalByteSequence(0, 24);
-        byte[] plaintext = CryptoTestUtilities.CreateIncrementalByteSequence(0x80, 16);
+        byte[] key = TestHelpers.GenerateIncrementalByteSequence(0, 24);
+        byte[] plaintext = TestHelpers.GenerateIncrementalByteSequence(0x80, 16);
         byte[] ciphertext = new byte[16];
         byte[] recovered = new byte[16];
 
@@ -92,8 +94,8 @@ internal sealed partial class CamelliaBlockCipherTests
     [TestMethod]
     public void EncryptThenDecrypt_WithKey256_ShouldRoundTripCorrectly()
     {
-        byte[] key = CryptoTestUtilities.CreateIncrementalByteSequence(0, 32);
-        byte[] plaintext = CryptoTestUtilities.CreateIncrementalByteSequence(0x80, 16);
+        byte[] key = TestHelpers.GenerateIncrementalByteSequence(0, 32);
+        byte[] plaintext = TestHelpers.GenerateIncrementalByteSequence(0x80, 16);
         byte[] ciphertext = new byte[16];
         byte[] recovered = new byte[16];
 
@@ -111,8 +113,8 @@ internal sealed partial class CamelliaBlockCipherTests
     [TestMethod]
     public void Encrypt_WhenCalledMultipleTimesWithSameInput_ShouldProduceSameOutput()
     {
-        byte[] key = CryptoTestUtilities.CreateIncrementalByteSequence(0, 16);
-        byte[] plaintext = CryptoTestUtilities.CreateIncrementalByteSequence(0x10, 16);
+        byte[] key = TestHelpers.GenerateIncrementalByteSequence(0, 16);
+        byte[] plaintext = TestHelpers.GenerateIncrementalByteSequence(0x10, 16);
         byte[] ct1 = new byte[16];
         byte[] ct2 = new byte[16];
 
@@ -133,8 +135,8 @@ internal sealed partial class CamelliaBlockCipherTests
     [DataRow(32)]
     public void Encrypt_WhenKeyIsValid_ShouldTransformBlock(int keyLength)
     {
-        byte[] key = CryptoTestUtilities.CreateIncrementalByteSequence(0, keyLength);
-        byte[] plaintext = CryptoTestUtilities.CreateIncrementalByteSequence(0xA0, 16);
+        byte[] key = TestHelpers.GenerateIncrementalByteSequence(0, keyLength);
+        byte[] plaintext = TestHelpers.GenerateIncrementalByteSequence(0xA0, 16);
         byte[] ciphertext = new byte[16];
 
         using var cipher = new CamelliaBlockCipher(key);

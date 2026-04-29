@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test;
+
 namespace Bodu.Security.Cryptography;
 
 [TestClass]
@@ -15,7 +17,7 @@ internal sealed partial class BlowfishBlockCipherTests
     {
         BlockSize = 8,
         KeySize = 8,
-        TestKey = CryptoTestUtilities.CreateIncrementalByteSequence(0, 8),
+        TestKey = TestHelpers.GenerateIncrementalByteSequence(0, 8),
     };
 
     /// <inerhitdocs/>

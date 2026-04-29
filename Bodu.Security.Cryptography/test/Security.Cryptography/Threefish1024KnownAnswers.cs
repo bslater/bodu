@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -67,8 +69,8 @@ internal static class Threefish1024KnownAnswers
                 "94F780E7FFAAE430D5D8AF8C70EEBBE1760F3B42B737A89CB363490D670314BD" +
                 "8AA41EE63C2E1F45FBD477922F8360B388D6125EA6C7AF0AD7056D01796E90C8" +
                 "3313F4150A5716B30ED5F569288AE974CE2B4347926FCE57DE44512177DD7CDE"),
-            Key = CryptoTestUtilities.CreateIncrementalByteSequence(0x10, 128),
-            Tweak = CryptoTestUtilities.CreateIncrementalByteSequence(0x00, 16),
+            Key = TestHelpers.GenerateIncrementalByteSequence(0x10, 128),
+            Tweak = TestHelpers.GenerateIncrementalByteSequence(0x00, 16),
         },
     ];
 }

@@ -54,6 +54,6 @@ public sealed class AmericasCalendarDataTests
             _ = AmericasCalendarData.CreateProvider(null!);
         });
 
-        Assert.AreEqual("xmlResourceName", ex.ParamName);
+        Assert.AreEqual("rootResourceName", ex.ParamName);
     }
 }

@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -32,8 +34,8 @@ internal sealed class Threefish256CipherTests
                 BlockSize = 32,
                 KeySize = 32,
                 TweakSize = 16,
-                TestKey = CryptoTestUtilities.CreateIncrementalByteSequence(0x10, 32),
-                TestTweak = CryptoTestUtilities.CreateIncrementalByteSequence(0, 16),
+                TestKey = TestHelpers.GenerateIncrementalByteSequence(0x10, 32),
+                TestTweak = TestHelpers.GenerateIncrementalByteSequence(0, 16),
             },
             _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
         };

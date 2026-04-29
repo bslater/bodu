@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Extensions;
 using Bodu.Test;
 using System.IO.Hashing;
 
@@ -37,7 +38,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void GetCurrentHash_WhenCalledRepeatedly_ShouldReturnSameDigest(TVariant variant)
     {
-        NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
+        var algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
         byte[] first = algorithm.GetCurrentHash();
@@ -57,7 +58,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void GetCurrentHash_WhenWritingToSpan_ShouldMatchArrayOverload(TVariant variant)
     {
-        NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
+        var algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.QuickBrownFox);
 
         byte[] expected = algorithm.GetCurrentHash();
@@ -67,5 +68,30 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
 
         Assert.AreEqual(algorithm.HashLengthInBytes, written);
         CollectionAssert.AreEqual(expected, destination);
+    }
+
+    /// <summary>
+    /// Verifies that two inputs that span multiple input chunks produce different hashes.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    public void GetCurrentHash_ForMultiChunkInputs_ShouldProduceDistinctHashes(TVariant variant)
+    {
+        var specification = GetSpecification(variant);
+        var algorithm = CreateAlgorithm(variant);
+
+        var bufferSize = (specification.IncrementalCoverageBytes ?? specification.HashLengthInBytes) * 4;
+        byte[] inputA = TestHelpers.GenerateRandomNonZeroBytes(bufferSize);
+        byte[] inputB = inputA.Copy()!;
+        inputB[bufferSize - 2] = 0x00;
+
+        algorithm.Append(inputA);
+        byte[] hashA = algorithm.GetHashAndReset();
+
+        algorithm.Append(inputB);
+        byte[] hashB = algorithm.GetHashAndReset();
+
+        CollectionAssert.AreNotEqual(hashA, hashB,
+            "Distinct multi-chunk inputs must produce different hashes.");
     }
 }

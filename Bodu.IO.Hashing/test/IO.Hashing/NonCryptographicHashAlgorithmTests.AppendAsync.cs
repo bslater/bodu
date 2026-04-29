@@ -44,7 +44,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [TestMethod]
     public async Task AppendAsync_WhenStreamIsNull_ShouldThrowArgumentNullException()
     {
-        NonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var algorithm = CreateAlgorithm();
 
         await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
         {
@@ -61,7 +61,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [TestMethod]
     public async Task AppendAsync_WhenCancellationRequested_ShouldThrowTaskCanceledException()
     {
-        NonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var algorithm = CreateAlgorithm();
         using MemoryStream stream = new(new byte[1024]);
 
         using CancellationTokenSource cts = new();
