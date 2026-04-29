@@ -131,7 +131,7 @@ public partial class IndexedPriorityQueueTests
     public void Update_WhenMixedWithEnqueueAndRemove_ShouldMaintainHeapInvariant()
     {
         var queue = new IndexedPriorityQueue<int, int>();
-        var rng = new Random(seed: 12345);
+        var rng = new Random(12345);
 
         for (int i = 0; i < 200; i++)
             queue.Enqueue(i, rng.Next(0, 1_000_000));
