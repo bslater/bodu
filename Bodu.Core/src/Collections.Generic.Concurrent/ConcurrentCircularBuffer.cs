@@ -184,14 +184,41 @@ public sealed partial class ConcurrentCircularBuffer<T>
         : this(capacity, allowOverwrite)
     {
         ThrowHelper.ThrowIfNull(collection);
-        var items = collection as T[] ?? collection.ToArray();
+        T[] items = collection as T[] ?? collection.ToArray();
 
         if (!allowOverwrite && items.Length > capacity)
             throw new InvalidOperationException(ResourceStrings.Arg_Invalid_ArrayLengthExceedsCapacity);
 
-        // Enqueue in order using the lock-free path (no concurrency during construction).
-        foreach (var item in items.Skip(Math.Max(0, items.Length - capacity)))
-            InternalEnqueue(item, throwIfFull: !allowOverwrite);
+        InitialFill(items);
+    }
+
+    /// <summary>
+    /// Populates the freshly-constructed buffer directly from <paramref name="items"/>, retaining the trailing
+    /// <see cref="Capacity"/> elements when the source is larger. The instance is not yet observable by other
+    /// threads at this point, so the lock-free producer protocol is bypassed.
+    /// </summary>
+    /// <param name="items">The materialised source elements.</param>
+    /// <remarks>
+    /// <para>
+    /// Writes occur in published-state form: each populated slot's <c>Sequence</c> is set to its publication
+    /// mark (<c>tail + 1</c>) and <see cref="_tail"/> is advanced once at the end. <see cref="_head"/> remains
+    /// zero, so the live region is <c>[0, tail)</c>.
+    /// </para>
+    /// </remarks>
+    private void InitialFill(T[] items)
+    {
+        int capacity = _capacity;
+        int sourceLength = items.Length;
+        int copyLength = sourceLength <= capacity ? sourceLength : capacity;
+        int sourceOffset = sourceLength - copyLength;
+
+        for (int i = 0; i < copyLength; i++)
+        {
+            _buffer[i].Value = items[sourceOffset + i];
+            _buffer[i].Sequence = i + 1;
+        }
+
+        _tail = copyLength;
     }
 
     /// <summary>

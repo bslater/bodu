@@ -304,4 +304,42 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, buffer.Count);
         Assert.AreEqual(5, buffer.Capacity);
     }
+
+    /// <summary>
+    /// Verifies that a buffer constructed exactly at capacity from a source collection accepts subsequent
+    /// producer-side eviction (when overwrite is enabled), confirming the per-slot publication state recorded
+    /// by the construction-time fill is observable by the lock-free producer protocol.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenSourceFillsCapacity_ShouldRemainConsistentWithSubsequentEnqueue()
+    {
+        TestItem[] source = Enumerable.Range(1, 4).Select(i => new TestItem(i)).ToArray();
+        var buffer = new ConcurrentCircularBuffer<TestItem>(source, capacity: 4, allowOverwrite: true);
+
+        Assert.AreEqual(4, buffer.Count);
+        Assert.AreEqual(4, buffer.Capacity);
+
+        buffer.Enqueue(new TestItem(5));
+
+        int[] values = buffer.ToArray().Select(x => x.Value).ToArray();
+        CollectionAssert.AreEqual(new[] { 2, 3, 4, 5 }, values);
+    }
+
+    /// <summary>
+    /// Verifies that a buffer constructed from a source larger than its capacity retains only the trailing
+    /// window and that subsequent <c>Dequeue</c> operations return elements in the correct FIFO order from that
+    /// window.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenSourceLargerThanCapacityAndAllowOverwriteTrue_ShouldKeepTrailingWindowAndDequeueInOrder()
+    {
+        TestItem[] source = Enumerable.Range(1, 7).Select(i => new TestItem(i)).ToArray();
+        var buffer = new ConcurrentCircularBuffer<TestItem>(source, capacity: 3, allowOverwrite: true);
+
+        Assert.AreEqual(3, buffer.Count);
+        Assert.AreEqual(5, buffer.Dequeue().Value);
+        Assert.AreEqual(6, buffer.Dequeue().Value);
+        Assert.AreEqual(7, buffer.Dequeue().Value);
+        Assert.AreEqual(0, buffer.Count);
+    }
 }
