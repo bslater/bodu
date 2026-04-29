@@ -635,7 +635,16 @@ internal class ResourceStrings {
             return ResourceManager.GetString("Arg_Required_ProviderInterface", resourceCulture);
         }
     }
-    
+
+    /// <summary>
+    ///   Looks up a localized string similar to The collection could not produce a stable snapshot under sustained concurrent modification..
+    /// </summary>
+    internal static string Concurrent_SnapshotUnstable {
+        get {
+            return ResourceManager.GetString("Concurrent_SnapshotUnstable", resourceCulture);
+        }
+    }
+
     /// <summary>
     ///   Looks up a localized string similar to Unrecognized file size format..
     /// </summary>

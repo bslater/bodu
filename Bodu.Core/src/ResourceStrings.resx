@@ -219,6 +219,9 @@
   <data name="Arg_Invalid_Conversion" xml:space="preserve">
     <value>The value cannot be converted to type {0}.</value>
   </data>
+  <data name="Concurrent_SnapshotUnstable" xml:space="preserve">
+    <value>The collection could not produce a stable snapshot under sustained concurrent modification.</value>
+  </data>
   <data name="Format_FileSize_Unrecognized" xml:space="preserve">
     <value>Unrecognized file size format.</value>
   </data>
