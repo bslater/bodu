@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Bodu.Collections.Generic;
@@ -259,6 +260,8 @@ public abstract partial class RingBackedCollection<T>
     /// <param name="item">The element to append.</param>
     protected void AddTail(T item)
     {
+        Debug.Assert(_count < _array.Length, "AddTail: caller must ensure Count < Capacity.");
+
         _array[_tail] = item;
         _tail = (_tail + 1) % _array.Length;
         _count++;
@@ -272,6 +275,8 @@ public abstract partial class RingBackedCollection<T>
     /// <param name="item">The element to prepend.</param>
     protected void AddHead(T item)
     {
+        Debug.Assert(_count < _array.Length, "AddHead: caller must ensure Count < Capacity.");
+
         int capacity = _array.Length;
         _head = (_head - 1 + capacity) % capacity;
         _array[_head] = item;
@@ -286,6 +291,8 @@ public abstract partial class RingBackedCollection<T>
     /// <returns>The element that was at the head.</returns>
     protected T RemoveHead()
     {
+        Debug.Assert(_count > 0, "RemoveHead: caller must ensure Count > 0.");
+
         T item = _array[_head];
         _array[_head] = default!;
         _head = (_head + 1) % _array.Length;
@@ -301,6 +308,8 @@ public abstract partial class RingBackedCollection<T>
     /// <returns>The element that was at the tail.</returns>
     protected T RemoveTail()
     {
+        Debug.Assert(_count > 0, "RemoveTail: caller must ensure Count > 0.");
+
         int capacity = _array.Length;
         _tail = (_tail - 1 + capacity) % capacity;
         T item = _array[_tail];
@@ -314,8 +323,12 @@ public abstract partial class RingBackedCollection<T>
     /// Returns the head element without removing it. The caller must ensure <c>Count &gt; 0</c>.
     /// </summary>
     /// <returns>The current head element.</returns>
-    protected T PeekHead() =>
-        _array[_head];
+    protected T PeekHead()
+    {
+        Debug.Assert(_count > 0, "PeekHead: caller must ensure Count > 0.");
+
+        return _array[_head];
+    }
 
     /// <summary>
     /// Returns the tail element without removing it. The caller must ensure <c>Count &gt; 0</c>.
@@ -323,6 +336,8 @@ public abstract partial class RingBackedCollection<T>
     /// <returns>The element immediately preceding <c>_tail</c> in modulo order.</returns>
     protected T PeekTail()
     {
+        Debug.Assert(_count > 0, "PeekTail: caller must ensure Count > 0.");
+
         int capacity = _array.Length;
         int tailIndex = (_tail - 1 + capacity) % capacity;
         return _array[tailIndex];
@@ -337,6 +352,8 @@ public abstract partial class RingBackedCollection<T>
     /// <remarks>The caller must ensure <c>Count == Capacity</c> before invoking.</remarks>
     protected void OverwriteTail(T item)
     {
+        Debug.Assert(_count == _array.Length, "OverwriteTail: caller must ensure Count == Capacity.");
+
         _array[_tail] = item;
         int next = (_tail + 1) % _array.Length;
         _head = next;
@@ -354,6 +371,8 @@ public abstract partial class RingBackedCollection<T>
     /// </param>
     protected void Resize(int newCapacity)
     {
+        Debug.Assert(newCapacity >= _count && newCapacity >= 1, "Resize: newCapacity must be >= max(Count, 1).");
+
         T[] newArray = new T[newCapacity];
         if (_count > 0)
             CopyToInternal(newArray, 0);

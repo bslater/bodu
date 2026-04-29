@@ -65,7 +65,7 @@ namespace Bodu.Collections.Generic;
 [DebuggerDisplay("Count = {Count}")]
 [DebuggerTypeProxy(typeof(CircularBufferDebugView<>))]
 [Serializable]
-public class CircularBuffer<T> : RingBackedCollection<T>
+public sealed class CircularBuffer<T> : RingBackedCollection<T>
 {
     private const int DefaultCapacity = 16;
 
@@ -182,8 +182,10 @@ public class CircularBuffer<T> : RingBackedCollection<T>
     /// <remarks>
     /// <para>This event is raised only when the buffer has reached its capacity and <see cref="AllowOverwrite"/> is <see langword="true"/>.</para>
     /// <para>
-    /// <b>Important:</b> If the event handler throws an exception, the item will not be evicted, and the <see cref="Enqueue"/> or
-    /// <see cref="TryEnqueue"/> operation will propagate that exception. Event handlers should therefore avoid throwing unless intentional.
+    /// <b>Important:</b> Any exception thrown from a handler vetoes the eviction in place — the oldest element is not removed,
+    /// the new element is not stored, the count, head, and tail indices are unchanged, and the exception propagates to the
+    /// caller of <see cref="Enqueue"/> or <see cref="TryEnqueue"/>. Event handlers should therefore avoid throwing unless the
+    /// veto is intentional.
     /// </para>
     /// </remarks>
     public event Action<T>? ItemEvicting;
