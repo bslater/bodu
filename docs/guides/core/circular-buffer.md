@@ -8,6 +8,10 @@ title: Circular buffer
 
 For concurrent access, use `ConcurrentCircularBuffer<T>` — a thread-safe wrapper that uses a `ReaderWriterLockSlim` internally.
 
+![CircularBuffer ring with Head, Tail, and overwrite/reject behaviour](../../images/diagrams/circular-buffer.svg)
+
+The backing array is allocated once. `Head` marks the oldest entry (the next `Dequeue` / `Peek` target) and `Tail` marks the next free slot (the next `Enqueue` target). Both indices advance with `(idx + 1) % Capacity`, which is what makes the storage a ring rather than a shifting array.
+
 ## Pattern 1 — basic enqueue and dequeue
 
 ```csharp

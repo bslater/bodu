@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 340" role="img" aria-labelledby="dq-t dq-d">
+  <title id="dq-t">Deque&lt;T&gt; — double-ended queue over a circular array</title>
+  <desc id="dq-d">A Deque is a contiguous backing array indexed circularly. Head marks the first logical element, Tail marks the last. AddFirst and RemoveFirst operate on the head end; AddLast and RemoveLast operate on the tail end. Both ends are amortised O(1). When the deque is full, AllowGrow=true reallocates and doubles the backing array, while AllowGrow=false rejects further inserts.</desc>
+
+  <defs>
+    <style>
+      .bg   { fill: #0F172A; }
+      .pan  { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .hdr  { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ttl  { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .lbl-l{ fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; }
+      .sub-l{ fill: #CBD5E1; font: 400 11px/1 "Segoe UI",Arial,sans-serif; }
+      .mut-l{ fill: #94A3B8; font: 400 10px/1 "Segoe UI",Arial,sans-serif; }
+      .slot      { fill: #1A2335; stroke: #475569; stroke-width: 1.2; }
+      .slot-full { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1.5; }
+      .slot-head { fill: #1E3A5F; stroke: #60A5FA; stroke-width: 1.8; }
+      .slot-tail { fill: #431407; stroke: #FBBF24; stroke-width: 1.8; }
+      .slot-text { fill: #F8FAFC; font: 700 13px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .idx       { fill: #94A3B8; font: 400 9px/1  "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .pin-h     { fill: #60A5FA; font: 700 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .pin-t     { fill: #FBBF24; font: 700 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .case-ok   { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1.2; }
+      .case-fix  { fill: #2A1B54; stroke: #A78BFA; stroke-width: 1.2; }
+      .wb        { stroke: #60A5FA; stroke-width: 1.5; fill: none; }
+      .wy        { stroke: #FBBF24; stroke-width: 1.5; fill: none; }
+      .wrap      { stroke: #94A3B8; stroke-width: 1.2; fill: none; stroke-dasharray: 4 3; }
+    </style>
+    <marker id="dq-ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#60A5FA"/>
+    </marker>
+    <marker id="dq-ay" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#FBBF24"/>
+    </marker>
+    <marker id="dq-aw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#94A3B8"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="820" height="340"/>
+
+  <g transform="translate(10 10)">
+    <rect class="pan" width="800" height="320" rx="8"/>
+    <rect class="hdr" width="800" height="30" rx="8"/>
+    <rect class="hdr" y="22" width="800" height="8"/>
+    <text class="ttl" x="16" y="20">Deque&lt;T&gt; — double-ended queue over a circular array</text>
+
+    <!-- Backing-array caption -->
+    <text class="mut-l" x="32" y="60">Backing array — length = Capacity (8). Indices wrap modulo Capacity.</text>
+
+    <!-- 8-cell row. Each cell 80x44, centred at x = 56 + i*92, y = 130. -->
+    <!-- Demonstrating wrap-around with Head=6, Tail=2, Count=5.
+         Logical order (head → tail) = arr[6], arr[7], arr[0], arr[1], arr[2] = D E F G H -->
+
+    <g transform="translate(0 130)">
+      <!-- [0] F -->
+      <g transform="translate(56 0)">
+        <rect class="slot-full" x="-40" y="-22" width="80" height="44" rx="5"/>
+        <text class="slot-text" x="0" y="6">F</text>
+        <text class="idx" x="0" y="-30">[0]</text>
+      </g>
+      <!-- [1] G -->
+      <g transform="translate(148 0)">
+        <rect class="slot-full" x="-40" y="-22" width="80" height="44" rx="5"/>
+        <text class="slot-text" x="0" y="6">G</text>
+        <text class="idx" x="0" y="-30">[1]</text>
+      </g>
+      <!-- [2] H — Tail -->
+      <g transform="translate(240 0)">
+        <rect class="slot-tail" x="-40" y="-22" width="80" height="44" rx="5"/>
+        <text class="slot-text" x="0" y="6">H</text>
+        <text class="idx" x="0" y="-30">[2]</text>
+      </g>
+      <!-- [3] empty -->
+      <g transform="translate(332 0)">
+        <rect class="slot" x="-40" y="-22" width="80" height="44" rx="5"/>
+        <text class="idx" x="0" y="-30">[3]</text>
+      </g>
+      <!-- [4] empty -->
+      <g transform="translate(424 0)">
+        <rect class="slot" x="-40" y="-22" width="80" height="44" rx="5"/>
+        <text class="idx" x="0" y="-30">[4]</text>
+      </g>
+      <!-- [5] empty -->
+      <g transform="translate(516 0)">
+        <rect class="slot" x="-40" y="-22" width="80" height="44" rx="5"/>
+        <text class="idx" x="0" y="-30">[5]</text>
+      </g>
+      <!-- [6] D — Head -->
+      <g transform="translate(608 0)">
+        <rect class="slot-head" x="-40" y="-22" width="80" height="44" rx="5"/>
+        <text class="slot-text" x="0" y="6">D</text>
+        <text class="idx" x="0" y="-30">[6]</text>
+      </g>
+      <!-- [7] E -->
+      <g transform="translate(700 0)">
+        <rect class="slot-full" x="-40" y="-22" width="80" height="44" rx="5"/>
+        <text class="slot-text" x="0" y="6">E</text>
+        <text class="idx" x="0" y="-30">[7]</text>
+      </g>
+    </g>
+
+    <!-- Wrap arc connecting [7] back to [0] -->
+    <path class="wrap" d="M 740 90 C 770 86, 770 162, 740 152"/>
+    <path class="wrap" d="M 56 152 C 26 162, 26 86, 56 90" marker-end="url(#dq-aw)"/>
+    <text class="mut-l" x="375" y="90" text-anchor="middle">indices wrap: arr[Capacity − 1] → arr[0]</text>
+
+    <!-- Logical-order caption directly under the cells -->
+    <text class="mut-l" x="400" y="178" text-anchor="middle">logical order (head → tail):  D · E · F · G · H</text>
+
+    <!-- Head pin label, anchored to slot [6] -->
+    <g transform="translate(608 208)">
+      <rect class="slot-head" x="-30" y="-12" width="60" height="22" rx="3"/>
+      <text class="pin-h" x="0" y="3" fill="#0F172A">Head</text>
+    </g>
+    <line class="wb" x1="608" y1="194" x2="608" y2="160" marker-end="url(#dq-ab)"/>
+
+    <!-- Tail pin label, anchored to slot [2] -->
+    <g transform="translate(240 208)">
+      <rect class="slot-tail" x="-30" y="-12" width="60" height="22" rx="3"/>
+      <text class="pin-t" x="0" y="3" fill="#0F172A">Tail</text>
+    </g>
+    <line class="wy" x1="240" y1="194" x2="240" y2="160" marker-end="url(#dq-ay)"/>
+
+    <!-- Head-end operations panel -->
+    <g transform="translate(20 240)">
+      <rect class="case-ok" width="160" height="60" rx="5" fill="none" stroke="#60A5FA"/>
+      <text class="lbl-l" x="80" y="18" text-anchor="middle" fill="#60A5FA">head end</text>
+      <text class="sub-l" x="80" y="34" text-anchor="middle">AddFirst → Head −−</text>
+      <text class="sub-l" x="80" y="50" text-anchor="middle">RemoveFirst → Head ++</text>
+    </g>
+
+    <!-- Centre AllowGrow comparison -->
+    <g transform="translate(192 240)">
+      <rect class="case-ok" width="220" height="60" rx="5"/>
+      <text class="lbl-l" x="14" y="18" fill="#2DD4BF">AllowGrow = true  (default)</text>
+      <text class="sub-l" x="14" y="34">Full → backing array doubles</text>
+      <text class="sub-l" x="14" y="50">in size; existing entries are rebased.</text>
+    </g>
+
+    <g transform="translate(420 240)">
+      <rect class="case-fix" width="220" height="60" rx="5"/>
+      <text class="lbl-l" x="14" y="18" fill="#C4B5FD">AllowGrow = false</text>
+      <text class="sub-l" x="14" y="34">Full → AddFirst / AddLast throw;</text>
+      <text class="sub-l" x="14" y="50">TryAdd* return false.</text>
+    </g>
+
+    <!-- Tail-end operations panel -->
+    <g transform="translate(652 240)">
+      <rect class="case-ok" width="128" height="60" rx="5" fill="none" stroke="#FBBF24"/>
+      <text class="lbl-l" x="64" y="18" text-anchor="middle" fill="#FBBF24">tail end</text>
+      <text class="sub-l" x="64" y="34" text-anchor="middle">AddLast → Tail ++</text>
+      <text class="sub-l" x="64" y="50" text-anchor="middle">RemoveLast → Tail −−</text>
+    </g>
+
+    <!-- Footer -->
+    <text class="mut-l" x="20" y="312">EnsureCapacity pre-allocates regardless of AllowGrow.  TrimExcess shrinks back to Count.  this[i] reads in logical (head-to-tail) order, not raw array order.</text>
+  </g>
+</svg>

@@ -8,6 +8,10 @@ title: Deque
 
 For a single-ended FIFO buffer with eviction-on-full semantics, see [Circular buffer](circular-buffer.md). For thread-safe concurrent FIFO access, use `ConcurrentCircularBuffer<T>` (a separate, lock-free implementation).
 
+![Deque backing array with Head, Tail, wrap-around, and AllowGrow behaviour](../../images/diagrams/deque.svg)
+
+`Head` and `Tail` index into a contiguous backing array but advance modulo `Capacity`, so the logical sequence may wrap past the end of the array. `AddFirst` / `RemoveFirst` operate at the head end; `AddLast` / `RemoveLast` operate at the tail end. The indexer `this[i]` reads in logical order, hiding the wrap from callers.
+
 ## Pattern 1 — growable double-ended queue (default)
 
 `new Deque<T>()` and `new Deque<T>(capacity)` both produce a growable deque. The capacity argument is a hint — the backing array doubles automatically when filled.
