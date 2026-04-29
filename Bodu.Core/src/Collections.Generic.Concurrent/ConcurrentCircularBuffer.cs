@@ -36,7 +36,13 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// </para>
 /// <para>
 /// When <see cref="AllowOverwrite"/> is <see langword="true"/>, enqueuing into a full buffer evicts the oldest
-/// element and raises the <see cref="ItemEvicted"/> event (after removal). Handler exceptions are swallowed.
+/// element and raises the <see cref="ItemEvicted"/> event (after removal). Handler exceptions are caught and
+/// suppressed; this differs intentionally from the non-concurrent <see cref="CircularBuffer{T}"/>, which
+/// propagates handler exceptions. Under MPMC the eviction has already been committed by the time the event
+/// fires (the head counter has advanced and the slot has been freed by another consumer or producer running in
+/// parallel), so propagating a handler exception cannot abort the eviction and would only obscure the cause of
+/// failure for unrelated callers. Subscribers that need to react to a throwing handler should perform their own
+/// catch/log in the handler body.
 /// </para>
 /// <para>
 /// The <see cref="Count"/> property is approximate under concurrency. For a stable point-in-time view of
@@ -45,6 +51,17 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// <para>
 /// Enumeration iterates over a true snapshot captured at the moment the enumerator is created and does not
 /// reflect subsequent changes.
+/// </para>
+/// <para>
+/// Slots are padded to 64 bytes — the standard cache-line size on x86/x64 hardware — to prevent false sharing
+/// between adjacent producer- and consumer-touched slots. Targets with larger cache lines (notably Apple Silicon
+/// and some ARM SoCs at 128 bytes) remain correct; the padding is conservative on those platforms but does not
+/// degrade throughput.
+/// </para>
+/// <para>
+/// The generic type parameter is constrained to <c>class?</c> because the slot value is published and cleared
+/// through <see cref="System.Threading.Volatile"/> overloads that target reference types. Value-type element
+/// support would require a different publication mechanism and is intentionally out of scope for this type.
 /// </para>
 /// </remarks>
 /// <example>
@@ -181,12 +198,34 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// Occurs immediately <b>after</b> an item has been evicted because a new item was enqueued into a full buffer while
     /// <see cref="AllowOverwrite"/> is <see langword="true"/>.
     /// </summary>
-    /// <remarks>Exceptions thrown by handlers are caught and ignored.</remarks>
+    /// <remarks>
+    /// <para>
+    /// Exceptions thrown by handlers are caught and suppressed. Each subscriber's invocation is guarded
+    /// independently so that a throwing handler cannot prevent later handlers from receiving the notification.
+    /// </para>
+    /// <para>
+    /// This differs from the non-concurrent <see cref="CircularBuffer{T}.ItemEvicted"/>, which propagates
+    /// handler exceptions to the caller of <see cref="Enqueue"/>. Under MPMC the eviction has already been
+    /// committed by the time this event fires, so propagating the exception would block the caller for a
+    /// failure unrelated to their own write and could not undo the eviction.
+    /// </para>
+    /// </remarks>
     public event Action<T>? ItemEvicted;
 
     /// <summary>
     /// Gets or sets a value indicating whether enqueuing into a full buffer evicts the oldest element.
     /// </summary>
+    /// <value>
+    /// <see langword="true"/> to evict the oldest element when full; <see langword="false"/> to throw or return
+    /// <see langword="false"/> from the producer-side methods.
+    /// </value>
+    /// <returns>The current overwrite policy.</returns>
+    /// <remarks>
+    /// Toggling this property concurrently with an in-flight <see cref="Enqueue"/> or <see cref="TryEnqueue"/>
+    /// is safe but may have a benign window where a producer that observed the previous value commits its
+    /// behaviour (eviction or rejection) before the new value takes effect. The window does not corrupt buffer
+    /// state.
+    /// </remarks>
     public bool AllowOverwrite
     {
         get => Volatile.Read(ref _allowOverwrite);
