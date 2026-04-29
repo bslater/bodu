@@ -1,0 +1,98 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="IndexedPriorityQueueTests.Capacity.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Collections.Generic;
+
+public partial class IndexedPriorityQueueTests
+{
+    /// <summary>
+    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.EnsureCapacity" /> grows the backing array.
+    /// </summary>
+    [TestMethod]
+    public void EnsureCapacity_WhenLargerThanCurrent_ShouldGrowBacking()
+    {
+        var queue = new IndexedPriorityQueue<string, int>(2);
+
+        int newCapacity = queue.EnsureCapacity(64);
+
+        Assert.IsTrue(newCapacity >= 64);
+        Assert.IsTrue(queue.Capacity >= 64);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.EnsureCapacity" /> does not shrink existing capacity.
+    /// </summary>
+    [TestMethod]
+    public void EnsureCapacity_WhenSmallerThanCurrent_ShouldPreserveCapacity()
+    {
+        var queue = new IndexedPriorityQueue<string, int>(64);
+
+        int newCapacity = queue.EnsureCapacity(8);
+
+        Assert.AreEqual(64, newCapacity);
+        Assert.AreEqual(64, queue.Capacity);
+    }
+
+    /// <summary>
+    /// Verifies that a negative argument to <see cref="IndexedPriorityQueue{TElement, TPriority}.EnsureCapacity" /> throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void EnsureCapacity_WhenNegative_ShouldThrowExactly()
+    {
+        var queue = new IndexedPriorityQueue<string, int>();
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = queue.EnsureCapacity(-1);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.TrimExcess" /> shrinks the backing array to <c>Count</c>.
+    /// </summary>
+    [TestMethod]
+    public void TrimExcess_WhenCapacityExceedsCount_ShouldShrinkToCount()
+    {
+        var queue = new IndexedPriorityQueue<string, int>(64);
+        queue.Enqueue("a", 1);
+        queue.Enqueue("b", 2);
+        queue.Enqueue("c", 3);
+
+        queue.TrimExcess();
+
+        Assert.AreEqual(3, queue.Capacity);
+        Assert.AreEqual(3, queue.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.TrimExcess" /> on an empty queue resets capacity to zero.
+    /// </summary>
+    [TestMethod]
+    public void TrimExcess_WhenQueueIsEmpty_ShouldResetCapacityToZero()
+    {
+        var queue = new IndexedPriorityQueue<string, int>(64);
+
+        queue.TrimExcess();
+
+        Assert.AreEqual(0, queue.Capacity);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.TrimExcess" /> preserves heap order.
+    /// </summary>
+    [TestMethod]
+    public void TrimExcess_WhenInvoked_ShouldPreserveDequeueOrder()
+    {
+        var queue = new IndexedPriorityQueue<int, int>(64);
+        for (int i = 0; i < 10; i++)
+            queue.Enqueue(i, 100 - i);
+
+        queue.TrimExcess();
+
+        var drained = DrainAll(queue);
+        AssertNonDecreasing(drained);
+    }
+}

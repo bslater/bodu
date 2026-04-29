@@ -1,0 +1,41 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="IndexedPriorityQueueTests.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Collections.Generic;
+
+[TestClass]
+public partial class IndexedPriorityQueueTests
+{
+    /// <summary>
+    /// Drains the queue and returns every element-priority pair in dequeue order.
+    /// </summary>
+    /// <param name="queue">The queue to drain.</param>
+    /// <returns>An array of pairs ordered by ascending priority.</returns>
+    private static KeyValuePair<TElement, TPriority>[] DrainAll<TElement, TPriority>(
+        IndexedPriorityQueue<TElement, TPriority> queue)
+        where TElement : notnull
+    {
+        var list = new List<KeyValuePair<TElement, TPriority>>(queue.Count);
+        while (queue.Count > 0)
+            list.Add(queue.Dequeue());
+        return list.ToArray();
+    }
+
+    /// <summary>
+    /// Asserts that the priorities of <paramref name="pairs"/> are non-decreasing under
+    /// <see cref="Comparer{T}.Default"/>.
+    /// </summary>
+    /// <param name="pairs">The drained pairs to validate.</param>
+    private static void AssertNonDecreasing<TElement, TPriority>(KeyValuePair<TElement, TPriority>[] pairs)
+        where TElement : notnull
+    {
+        var comparer = Comparer<TPriority>.Default;
+        for (int i = 1; i < pairs.Length; i++)
+            Assert.IsTrue(
+                comparer.Compare(pairs[i - 1].Value, pairs[i].Value) <= 0,
+                $"Priorities not non-decreasing at index {i}: {pairs[i - 1].Value} > {pairs[i].Value}");
+    }
+}
