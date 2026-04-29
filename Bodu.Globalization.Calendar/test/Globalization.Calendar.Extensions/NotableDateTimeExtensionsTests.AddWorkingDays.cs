@@ -127,4 +127,27 @@ public partial class NotableDateTimeExtensionsTests
             _ = input.AddWorkingDays(service, days);
         });
     }
+
+    /// <summary>
+    /// Verifies that the returned <see cref="DateTime" /> preserves the input <see cref="DateTime.Kind" /> and time-of-day across each
+    /// supported <see cref="DateTimeKind" /> value, including for the zero-days short-circuit and the directional walk paths.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(DateTimeKindPreservationTestData), DynamicDataSourceType.Method)]
+    public void AddWorkingDays_WhenCalled_ShouldPreserveKindAndTimeOfDay(DateTimeKind kind)
+    {
+        NotableDateService service = BuildService();
+        DateTime input = new DateTime(2026, 1, 6, 11, 22, 33, kind);
+
+        DateTime forward = input.AddWorkingDays(service, days: 2);
+        DateTime backward = input.AddWorkingDays(service, days: -2);
+        DateTime same = input.AddWorkingDays(service, days: 0);
+
+        Assert.AreEqual(kind, forward.Kind);
+        Assert.AreEqual(new TimeSpan(11, 22, 33), forward.TimeOfDay);
+        Assert.AreEqual(kind, backward.Kind);
+        Assert.AreEqual(new TimeSpan(11, 22, 33), backward.TimeOfDay);
+        Assert.AreEqual(kind, same.Kind);
+        Assert.AreEqual(new TimeSpan(11, 22, 33), same.TimeOfDay);
+    }
 }

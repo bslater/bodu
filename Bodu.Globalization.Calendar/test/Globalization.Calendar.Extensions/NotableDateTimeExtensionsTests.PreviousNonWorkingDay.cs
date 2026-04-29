@@ -124,4 +124,21 @@ public partial class NotableDateTimeExtensionsTests
             _ = DateTime.MinValue.PreviousNonWorkingDay(service);
         });
     }
+
+    /// <summary>
+    /// Verifies that the returned <see cref="DateTime" /> preserves the input <see cref="DateTime.Kind" /> and time-of-day across each
+    /// supported <see cref="DateTimeKind" /> value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(DateTimeKindPreservationTestData), DynamicDataSourceType.Method)]
+    public void PreviousNonWorkingDay_WhenCalled_ShouldPreserveKindAndTimeOfDay(DateTimeKind kind)
+    {
+        NotableDateService service = BuildService();
+        DateTime input = new DateTime(2026, 1, 6, 11, 22, 33, kind);
+
+        DateTime result = input.PreviousNonWorkingDay(service);
+
+        Assert.AreEqual(kind, result.Kind);
+        Assert.AreEqual(new TimeSpan(11, 22, 33), result.TimeOfDay);
+    }
 }
