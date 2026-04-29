@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.LastDayOfWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -14,27 +14,25 @@ namespace Bodu.Extensions;
 public static partial class DateOnlyExtensions
 {
     /// <summary>
-    /// Returns the last day of the week that contains the specified <see cref="DateOnly"/>, using the current culture's settings.
+    /// Returns a new <see cref="DateOnly"/> representing the last day of the week that contains the specified <paramref name="date"/>, using the last day of the week defined by <see cref="CultureInfo.CurrentCulture"/>.
     /// </summary>
-    /// <param name="date">The input <see cref="DateOnly"/> for which to determine the end of the week.</param>
-    /// <returns>A <see cref="DateOnly"/> representing the last day of the week that includes <paramref name="date"/>.</returns>
-    /// <remarks>This method uses <see cref="CultureInfo.CurrentCulture"/> to determine the last day of the week, inferred from <see cref="DateTimeFormatInfo.FirstDayOfWeek"/>.</remarks>
+    /// <param name="date">The date value used to determine the containing week.</param>
+    /// <returns>A <see cref="DateOnly"/> value set to the culturally defined last day of the week containing <paramref name="date"/>.</returns>
+    /// <remarks>
+    /// <para>This overload uses <see cref="CultureInfo.CurrentCulture"/> to determine the last day of the week, inferred from <see cref="DateTimeFormatInfo.FirstDayOfWeek"/>.</para>
+    /// </remarks>
     public static DateOnly LastDayOfWeek(this DateOnly date) => date.LastDayOfWeek(null!);
 
     /// <summary>
-    /// Returns the last day of the week that contains the specified <see cref="DateOnly"/>, using the provided or current culture.
+    /// Returns a new <see cref="DateOnly"/> representing the last day of the week that contains the specified <paramref name="date"/>, using the last day of the week defined by the supplied or current culture.
     /// </summary>
-    /// <param name="date">The input <see cref="DateOnly"/> for which to determine the end of the week.</param>
-    /// <param name="culture">
-    /// An optional <see cref="CultureInfo"/> used to determine the first day of the week via
-    /// <see cref="DateTimeFormatInfo.FirstDayOfWeek"/>. If <c>null</c>, <see cref="CultureInfo.CurrentCulture"/> is used.
-    /// </param>
-    /// <returns>A <see cref="DateOnly"/> representing the last day of the week that includes <paramref name="date"/>.</returns>
+    /// <param name="date">The date value used to determine the containing week.</param>
+    /// <param name="culture">An optional <see cref="CultureInfo"/> that defines the first day of the week via <see cref="DateTimeFormatInfo.FirstDayOfWeek"/>. If <see langword="null"/>, <see cref="CultureInfo.CurrentCulture"/> is used.</param>
+    /// <returns>A <see cref="DateOnly"/> value set to the culturally defined last day of the week containing <paramref name="date"/>.</returns>
     /// <remarks>
-    /// This method calculates the number of days to add to <paramref name="date"/> to reach the culturally defined last day of the week.
-    /// The result is validated to ensure it falls within the valid range of <see cref="DateOnly"/>.
+    /// <para>This method computes the day offset between <paramref name="date"/> and the culture-specific last day of the week, and adds that offset.</para>
     /// </remarks>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if the calculated result exceeds the supported range for <see cref="DateOnly"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the resulting date is earlier than <see cref="DateOnly.MinValue"/> or later than <see cref="DateOnly.MaxValue"/>.</exception>
     public static DateOnly LastDayOfWeek(this DateOnly date, CultureInfo culture)
     {
         culture ??= Thread.CurrentThread.CurrentCulture;
@@ -51,31 +49,18 @@ public static partial class DateOnlyExtensions
     }
 
     /// <summary>
-    /// Returns the last day of the week that contains the specified <see cref="DateOnly"/>, using the inferred start-of-week day from the
-    /// provided <see cref="CalendarWeekendDefinition"/>.
+    /// Returns a new <see cref="DateOnly"/> representing the last day of the week that contains the specified <paramref name="date"/>, using a start-of-week inferred from the specified <see cref="CalendarWeekendDefinition"/>.
     /// </summary>
-    /// <param name="date">The input <see cref="DateOnly"/> whose week context is evaluated.</param>
-    /// <param name="weekend">
-    /// A <see cref="CalendarWeekendDefinition"/> value used to infer the start of the week and determine the week's structure.
-    /// </param>
-    /// <returns>
-    /// A <see cref="DateOnly"/> value representing the last day of the week that contains <paramref name="date"/>. The returned value is
-    /// normalised to midnight and preserves the date context without a time component.
-    /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="weekend"/> is not a defined <see cref="CalendarWeekendDefinition"/> value, or if the resulting date
-    /// exceeds the valid <see cref="DateOnly"/> range.
-    /// </exception>
+    /// <param name="date">The date value used to determine the containing week.</param>
+    /// <param name="weekend">A <see cref="CalendarWeekendDefinition"/> used to infer the last day of the week. For example, <see cref="CalendarWeekendDefinition.SaturdaySunday"/> implies a Monday start (and therefore a Sunday end).</param>
+    /// <returns>A <see cref="DateOnly"/> value set to the last day of the week containing <paramref name="date"/>.</returns>
     /// <remarks>
-    /// This method uses the specified <paramref name="weekend"/> to infer the first day of the week, then calculates the last day as 6
-    /// days after the inferred start.
-    /// <para>
-    /// If <paramref name="weekend"/> is set to <see cref="CalendarWeekendDefinition.None"/>, the method defaults to using
-    /// <see cref="DayOfWeek.Monday"/> as the start of the week.
-    /// </para>
-    /// The result is offset forward from <paramref name="date"/> to the next occurrence of the inferred last day of the week, and is
-    /// returned with no time component (00:00:00).
+    /// <para>The method infers the start of the week based on the specified <paramref name="weekend"/> value, then calculates the last day as six days after the inferred start. If <see cref="CalendarWeekendDefinition.None"/> is supplied, the method defaults to using <see cref="DayOfWeek.Monday"/>.</para>
     /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="weekend"/> is not a defined <see cref="CalendarWeekendDefinition"/> value,
+    /// -or- the resulting date is earlier than <see cref="DateOnly.MinValue"/> or later than <see cref="DateOnly.MaxValue"/>.
+    /// </exception>
     public static DateOnly LastDayOfWeek(this DateOnly date, CalendarWeekendDefinition weekend)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(weekend);
