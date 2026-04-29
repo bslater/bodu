@@ -153,12 +153,20 @@ public sealed class CircularBuffer<T> : RingBackedCollection<T>
     /// <exception cref="InvalidOperationException">
     /// <paramref name="allowOverwrite"/> is <see langword="false"/> and the collection size exceeds <paramref name="capacity"/>.
     /// </exception>
+    /// <remarks>
+    /// When eviction is permitted, only the trailing <paramref name="capacity"/> elements would survive the base-ctor
+    /// trim, so the source is materialised through <see cref="Enumerable.TakeLast{TSource}"/> for non-array inputs to
+    /// bound the allocation. The no-overwrite path still requires a full enumeration to enforce the size contract.
+    /// </remarks>
     private static T[] MaterializeWithOverflowPolicy(IEnumerable<T> collection, int capacity, bool allowOverwrite)
     {
         ThrowHelper.ThrowIfNull(collection);
-        T[] items = collection as T[] ?? collection.ToArray();
 
-        if (!allowOverwrite && items.Length > capacity)
+        if (allowOverwrite)
+            return collection as T[] ?? collection.TakeLast(capacity).ToArray();
+
+        T[] items = collection as T[] ?? collection.ToArray();
+        if (items.Length > capacity)
             throw new InvalidOperationException(ResourceStrings.Arg_Invalid_ArrayLengthExceedsCapacity);
 
         return items;

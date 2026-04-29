@@ -96,18 +96,29 @@ public abstract partial class RingBackedCollection<T>
         ThrowHelper.ThrowIfNull(collection);
         ThrowHelper.ThrowIfOutOfRange(capacity, 1, Array.MaxLength);
 
-        T[] items = collection as T[] ?? collection.ToArray();
-
         _array = new T[capacity];
-        if (items.Length > capacity)
+
+        if (collection is T[] items)
         {
-            Array.Copy(items, items.Length - capacity, _array, 0, capacity);
-            _count = capacity;
+            if (items.Length > capacity)
+            {
+                Array.Copy(items, items.Length - capacity, _array, 0, capacity);
+                _count = capacity;
+            }
+            else
+            {
+                Array.Copy(items, _array, items.Length);
+                _count = items.Length;
+            }
         }
         else
         {
-            Array.Copy(items, _array, items.Length);
-            _count = items.Length;
+            // Bound peak allocation to `capacity` for arbitrarily large sources: TakeLast buffers at most `capacity`
+            // elements while consuming the enumerator once, so the trailing window is materialised without
+            // copying every preceding element.
+            T[] tail = collection.TakeLast(capacity).ToArray();
+            Array.Copy(tail, _array, tail.Length);
+            _count = tail.Length;
         }
 
         _head = 0;
