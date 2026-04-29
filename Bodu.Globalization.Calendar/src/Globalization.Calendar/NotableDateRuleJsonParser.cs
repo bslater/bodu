@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Extensions;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Text.Json;
