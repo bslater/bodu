@@ -23,6 +23,25 @@ public sealed partial class Adler32CTests
             Abc = "018D00C7",
             QuickBrownFox = "5BCD0FDA",
             Zeros16 = "00100001",
+
+            // Long-input regression vectors for issue #127 — Adler-32C uses modulus 65536, so
+            // expected digests are computed by the per-byte canonical recurrence (and verified
+            // against the scalar reference implementation) for the (byte)(i & 0xFF) sequence.
+            Additional = new[]
+            {
+                new NonCryptographicHashKnownAnswer
+                {
+                    Name = "ModuloByte1K",
+                    Input = AdlerSimdRegressionInputs.ModuloByte1K,
+                    ExpectedHex = "AE00FE01",
+                },
+                new NonCryptographicHashKnownAnswer
+                {
+                    Name = "ModuloByte8K",
+                    Input = AdlerSimdRegressionInputs.ModuloByte8K,
+                    ExpectedHex = "7000F001",
+                },
+            },
         },
     };
 

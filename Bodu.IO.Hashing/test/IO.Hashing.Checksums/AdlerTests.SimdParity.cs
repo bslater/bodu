@@ -28,9 +28,7 @@ public abstract partial class AdlerTests<TTest, TAlgorithm, TModulo>
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void Append_WhenInputEngagesSimdBranch_ShouldMatchPerByteScalarPath(SingleTestVariant variant)
     {
-        byte[] data = new byte[8192];
-        for (int i = 0; i < data.Length; i++)
-            data[i] = (byte)i;
+        byte[] data = AdlerSimdRegressionInputs.ModuloByte8K;
 
         NonCryptographicHashAlgorithm whole = CreateAlgorithm(variant);
         whole.Append(data);
@@ -40,5 +38,32 @@ public abstract partial class AdlerTests<TTest, TAlgorithm, TModulo>
             perByte.Append(data.AsSpan(i, 1));
 
         CollectionAssert.AreEqual(whole.GetCurrentHash(), perByte.GetCurrentHash());
+    }
+}
+
+/// <summary>
+/// Provides shared regression inputs used to pin Adler-style checksum behaviour against known canonical
+/// (zlib-cross-checked) digests on the SIMD-accelerated path.
+/// </summary>
+/// <remarks>
+/// Inputs are <c>(byte)(i &amp; 0xFF)</c> sequences sized to engage the SIMD branch (≥ 512 bytes). The
+/// 1 KiB vector matches the reproduction in issue #127 — it crosses the SIMD threshold but stays inside a
+/// single NMAX block. The 8 KiB vector additionally crosses the 5552-byte NMAX boundary so accumulator
+/// reduction at the chunk join is exercised.
+/// </remarks>
+internal static class AdlerSimdRegressionInputs
+{
+    /// <summary>The 1024-byte input <c>0x00, 0x01, …, 0xFF, 0x00, …</c> (four repetitions of 0..255).</summary>
+    public static readonly byte[] ModuloByte1K = Build(1024);
+
+    /// <summary>The 8192-byte input <c>0x00, 0x01, …, 0xFF, 0x00, …</c> (thirty-two repetitions of 0..255).</summary>
+    public static readonly byte[] ModuloByte8K = Build(8192);
+
+    private static byte[] Build(int length)
+    {
+        byte[] data = new byte[length];
+        for (int i = 0; i < length; i++)
+            data[i] = (byte)i;
+        return data;
     }
 }

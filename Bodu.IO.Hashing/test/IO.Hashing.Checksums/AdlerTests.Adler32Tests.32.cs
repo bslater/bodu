@@ -23,6 +23,25 @@ public sealed partial class Adler32Tests
             Abc = "018D00C7",
             QuickBrownFox = "5BCD0FDA",
             Zeros16 = "00100001",
+
+            // Long-input regression vectors for issue #127 — the buggy SIMD branch was not
+            // exercised by any pre-existing KAT (all < 512 bytes). Expected digests are the
+            // canonical zlib Adler-32 values for the (byte)(i & 0xFF) sequence at each length.
+            Additional = new[]
+            {
+                new NonCryptographicHashKnownAnswer
+                {
+                    Name = "ModuloByte1K",
+                    Input = AdlerSimdRegressionInputs.ModuloByte1K,
+                    ExpectedHex = "E4C9FE10",
+                },
+                new NonCryptographicHashKnownAnswer
+                {
+                    Name = "ModuloByte8K",
+                    Input = AdlerSimdRegressionInputs.ModuloByte8K,
+                    ExpectedHex = "3A54F0E2",
+                },
+            },
         },
     };
 
