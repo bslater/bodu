@@ -640,11 +640,17 @@ public sealed partial class ConcurrentCircularBuffer<T>
         /// <summary>The Vyukov sequence number used to coordinate producers and consumers for this slot.</summary>
         public int Sequence;
 
-        // Aligns Value to an 8-byte boundary on all supported platforms.
+#pragma warning disable CS0649 // Padding fields are deliberately unassigned; they exist only to enforce layout.
+
+        /// <summary>Aligns <see cref="Value"/> to an 8-byte boundary on all supported platforms.</summary>
         private readonly int _sequencePadding;
+
+#pragma warning restore CS0649
 
         /// <summary>The stored element. Written by the producer, cleared by the consumer.</summary>
         public T? Value;
+
+#pragma warning disable CS0649 // Padding fields are deliberately unassigned; they exist only to enforce layout.
 
         // Pads the struct to 64 bytes: 4 (Sequence) + 4 (pad) + 8 (Value ref) + 6×8 (pad) = 64.
         private readonly long _pad0;
@@ -653,5 +659,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
         private readonly long _pad3;
         private readonly long _pad4;
         private readonly long _pad5;
+
+#pragma warning restore CS0649
     }
 }
