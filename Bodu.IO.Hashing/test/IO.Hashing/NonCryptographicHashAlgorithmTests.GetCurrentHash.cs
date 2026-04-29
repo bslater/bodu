@@ -12,51 +12,21 @@ namespace Bodu.IO.Hashing;
 public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorithm, TVariant>
 {
     /// <summary>
-    /// Verifies that <see cref="NonCryptographicHashAlgorithm.GetCurrentHash()" /> returns the expected hash
-    /// value at each stage of incremental hashing as bytes from <c>0x00</c> onwards are appended in sequence.
+    /// Verifies that <see cref="NonCryptographicHashAlgorithm.GetCurrentHash()" /> returns the expected
+    /// hash value at each stage of true incremental hashing as bytes from <c>0x00</c> onwards are
+    /// appended in sequence.
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
-    /// <remarks>
-    /// Entry <c>i</c> in the expected sequence corresponds to the digest after <c>i</c> bytes have been
-    /// appended (so entry <c>0</c> is the empty-input hash). Variants that supply an empty expected sequence
-    /// are reported as inconclusive for this particular check.
-    /// </remarks>
+    /// <returns>A task that completes when all incremental stages have been verified.</returns>
     [TestMethod]
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
-    public void GetCurrentHash_WhenAppendingIncrementalData_ShouldReturnExpectedHashValueAtEachStep(TVariant variant)
-    {
-        var specification = GetSpecification(variant);
-        string[] expectedValues = GetIncrementalHashValue(variant).ToArray();
-
-        if (expectedValues.Length == 0)
-        {
-            Assert.Inconclusive($"No expected hashes defined for variant {variant}.");
-            return;
-        }
-
-        int stepCount = Math.Max(specification.HashLengthInBytes * 4, 16);
-
-        Assert.AreEqual(stepCount, expectedValues.Length,
-            $"Expected {stepCount} algorithm entries for variant '{variant}' " +
-            $"(HashLength={specification.HashLengthInBytes}), but got {expectedValues.Length}.");
-
-        var algorithm = CreateAlgorithm(variant);
-
-        for (int i = 0; i < stepCount; i++)
-        {
-            byte[] expected = Convert.FromHexString(expectedValues[i]);
-            byte[] actual = algorithm.GetCurrentHash();
-            TestHelpers.TraceWriteIfNotEqual(expected, actual);
-
-            CollectionAssert.AreEqual(
-                expected,
-                actual,
-                $"Hash mismatch for {typeof(TAlgorithm).Name} variant '{variant}' at incremental length {i}.");
-
-            if (i < expectedValues.Length - 1)
-                algorithm.Append(new[] { (byte)i });
-        }
-    }
+    public Task GetCurrentHash_WhenUsingIncrementalInput_ShouldMatchExpected(TVariant variant) =>
+        AssertIncrementalCurrentHashAsync(variant,
+            (algorithm, source) =>
+            {
+                algorithm.Append(source);
+                return Task.FromResult(algorithm.GetCurrentHash());
+            });
 
     /// <summary>
     /// Verifies that <see cref="NonCryptographicHashAlgorithm.GetCurrentHash()" /> is non-destructive and

@@ -36,6 +36,44 @@
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
+  <NotableDate name="Makar Sankranti">
+    <Rule name="Fixed Makar Sankranti"
+          category="Cultural"
+          comment="Solar harvest festival marking the sun's transition into Makara. Commonly observed on 14 January by modern civil-calendar convention, though astronomical timing can vary.">
+      <Fixed month="January" day="14" />
+      <Tag>HinduCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Pongal">
+    <Rule name="Fixed Pongal"
+          category="Cultural"
+          durationDays="4"
+          comment="Tamil harvest festival. The durationDays value of 4 represents the common sequence of Bhogi, Thai Pongal, Mattu Pongal, and Kaanum Pongal beginning on 14 January by modern civil-calendar convention.">
+      <Fixed month="January" day="14" />
+      <Tag>HinduCalendar</Tag>
+      <Tag>TamilTradition</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Saraswati Puja">
+    <Rule name="Saraswati Puja"
+          category="Religious"
+          comment="Vasant Panchami observance dedicated to Saraswati, goddess of learning, music, and the arts. Requires a custom INotableDateAlgorithm registered under the key 'saraswati-puja'.">
+      <Algorithm key="saraswati-puja" />
+      <Tag>HinduCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Maha Shivaratri">
+    <Rule name="Maha Shivaratri"
+          category="Religious"
+          comment="Great Night of Shiva. Observed on the fourteenth night of the dark fortnight in the Hindu month of Phalguna or Magha, depending on regional calendar convention. Requires a custom INotableDateAlgorithm registered under the key 'maha-shivaratri'.">
+      <Algorithm key="maha-shivaratri" />
+      <Tag>HinduCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
   <NotableDate name="Holi">
     <Rule name="Holi"
           category="Religious"
@@ -55,12 +93,42 @@
     </Rule>
   </NotableDate>
 
+  <NotableDate name="Raksha Bandhan">
+    <Rule name="Raksha Bandhan"
+          category="Cultural"
+          comment="Festival celebrating sibling bonds, observed on the full moon day of Shravana. Requires a custom INotableDateAlgorithm registered under the key 'raksha-bandhan'.">
+      <Algorithm key="raksha-bandhan" />
+      <Tag>HinduCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
   <NotableDate name="Janmashtami">
     <Rule name="Janmashtami"
           category="Religious"
           comment="The birthday of Lord Krishna, the eighth avatar of Vishnu. Observed on the eighth day (Ashtami) of the dark fortnight of Bhadrapada, typically in August or September. Celebrated with midnight prayer vigils, devotional singing, fasting, and the staging of Krishna's birth scene (jhankis). A public holiday in India and observed by Hindu communities worldwide. Requires a custom INotableDateAlgorithm registered under the key 'janmashtami'.">
       <Algorithm key="janmashtami" />
       <Tag>HinduCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Ganesh Chaturthi">
+    <Rule name="Ganesh Chaturthi"
+          category="Religious"
+          durationDays="10"
+          comment="Festival honouring Lord Ganesha, beginning on the fourth day of the bright fortnight of Bhadrapada. The durationDays value of 10 spans the common festival period through Anant Chaturdashi. Requires a custom INotableDateAlgorithm registered under the key 'ganesh-chaturthi'.">
+      <Algorithm key="ganesh-chaturthi" />
+      <Tag>HinduCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Onam">
+    <Rule name="Onam"
+          category="Cultural"
+          durationDays="10"
+          comment="Kerala harvest festival centred on Thiruvonam in the Malayalam month of Chingam. The durationDays value of 10 represents the common festival period from Atham to Thiruvonam. Requires a custom INotableDateAlgorithm registered under the key 'onam'.">
+      <Algorithm key="onam" />
+      <Tag>HinduCalendar</Tag>
+      <Tag>MalayaliTradition</Tag>
     </Rule>
   </NotableDate>
 
@@ -83,6 +151,15 @@
     </Rule>
   </NotableDate>
 
+  <NotableDate name="Karva Chauth">
+    <Rule name="Karva Chauth"
+          category="Cultural"
+          comment="Fasting observance commonly followed by married Hindu women, observed on the fourth day after the full moon in Kartik. Requires a custom INotableDateAlgorithm registered under the key 'karva-chauth'.">
+      <Algorithm key="karva-chauth" />
+      <Tag>HinduCalendar</Tag>
+    </Rule>
+  </NotableDate>
+
   <NotableDate name="Diwali">
     <Rule name="Diwali"
           category="Religious"
@@ -92,71 +169,5 @@
       <Tag>HinduCalendar</Tag>
     </Rule>
   </NotableDate>
-
-<NotableDate name="Maha Shivaratri">
-  <Rule name="Maha Shivaratri" category="Religious"
-        comment="Great Night of Shiva. Observed on the fourteenth night of the dark fortnight in the Hindu month of Phalguna or Magha, depending on regional calendar convention. Requires a custom INotableDateAlgorithm registered under the key 'maha-shivaratri'.">
-    <Algorithm key="maha-shivaratri" />
-    <Tag>HinduCalendar</Tag>
-  </Rule>
-</NotableDate>
-
-<NotableDate name="Ganesh Chaturthi">
-  <Rule name="Ganesh Chaturthi" category="Religious" durationDays="10"
-        comment="Festival honouring Lord Ganesha, beginning on the fourth day of the bright fortnight of Bhadrapada. The durationDays value of 10 spans the common festival period through Anant Chaturdashi. Requires a custom INotableDateAlgorithm registered under the key 'ganesh-chaturthi'.">
-    <Algorithm key="ganesh-chaturthi" />
-    <Tag>HinduCalendar</Tag>
-  </Rule>
-</NotableDate>
-
-<NotableDate name="Raksha Bandhan">
-  <Rule name="Raksha Bandhan" category="Cultural"
-        comment="Festival celebrating sibling bonds, observed on the full moon day of Shravana. Requires a custom INotableDateAlgorithm registered under the key 'raksha-bandhan'.">
-    <Algorithm key="raksha-bandhan" />
-    <Tag>HinduCalendar</Tag>
-  </Rule>
-</NotableDate>
-
-<NotableDate name="Makar Sankranti">
-  <Rule name="Fixed Makar Sankranti" category="Cultural"
-        comment="Solar harvest festival marking the sun's transition into Makara. Commonly observed on 14 January by modern civil-calendar convention, though astronomical timing can vary.">
-    <Fixed month="January" day="14" />
-    <Tag>HinduCalendar</Tag>
-  </Rule>
-</NotableDate>
-
-<NotableDate name="Pongal">
-  <Rule name="Fixed Pongal" category="Cultural" durationDays="4"
-        comment="Tamil harvest festival. The durationDays value of 4 represents the common sequence of Bhogi, Thai Pongal, Mattu Pongal, and Kaanum Pongal beginning on 14 January by modern civil-calendar convention.">
-    <Fixed month="January" day="14" />
-    <Tag>HinduCalendar</Tag>
-    <Tag>TamilTradition</Tag>
-  </Rule>
-</NotableDate>
-
-<NotableDate name="Karva Chauth">
-  <Rule name="Karva Chauth" category="Cultural"
-        comment="Fasting observance commonly followed by married Hindu women, observed on the fourth day after the full moon in Kartik. Requires a custom INotableDateAlgorithm registered under the key 'karva-chauth'.">
-    <Algorithm key="karva-chauth" />
-    <Tag>HinduCalendar</Tag>
-  </Rule>
-</NotableDate>
-
-<NotableDate name="Saraswati Puja">
-  <Rule name="Saraswati Puja" category="Religious"
-        comment="Vasant Panchami observance dedicated to Saraswati, goddess of learning, music, and the arts. Requires a custom INotableDateAlgorithm registered under the key 'saraswati-puja'.">
-    <Algorithm key="saraswati-puja" />
-    <Tag>HinduCalendar</Tag>
-  </Rule>
-</NotableDate>
-
-<NotableDate name="Onam">
-  <Rule name="Onam" category="Cultural" durationDays="10"
-        comment="Kerala harvest festival centred on Thiruvonam in the Malayalam month of Chingam. The durationDays value of 10 represents the common festival period from Atham to Thiruvonam. Requires a custom INotableDateAlgorithm registered under the key 'onam'.">
-    <Algorithm key="onam" />
-    <Tag>HinduCalendar</Tag>
-    <Tag>MalayaliTradition</Tag>
-  </Rule>
-</NotableDate>
 
 </NotableDates>

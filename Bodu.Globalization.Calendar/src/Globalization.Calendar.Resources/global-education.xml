@@ -15,6 +15,13 @@
     Fixed-date education and literacy observances.
   -->
 
+  <NotableDate name="International Day of Education">
+    <Rule name="Fixed International Day of Education" category="Observance" firstYear="2019"
+          comment="Proclaimed by the United Nations General Assembly in 2018 (resolution 73/25) and first observed on 24 January 2019, to celebrate education and its role in peace and development.">
+      <Fixed month="January" day="24" />
+    </Rule>
+  </NotableDate>
+
   <NotableDate name="World Book and Copyright Day">
     <Rule name="Fixed World Book and Copyright Day" category="Observance">
       <Fixed month="April" day="23" />
@@ -30,13 +37,6 @@
   <NotableDate name="World Teachers' Day">
     <Rule name="Fixed World Teachers' Day" category="Observance">
       <Fixed month="October" day="5" />
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="International Day of Education">
-    <Rule name="Fixed International Day of Education" category="Observance" firstYear="2019"
-          comment="Proclaimed by the United Nations General Assembly in 2018 (resolution 73/25) and first observed on 24 January 2019, to celebrate education and its role in peace and development.">
-      <Fixed month="January" day="24" />
     </Rule>
   </NotableDate>
 

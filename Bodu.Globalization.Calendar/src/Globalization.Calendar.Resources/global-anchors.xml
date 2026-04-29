@@ -1,27 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<NotableDates xmlns="urn:bodu:globalization:calendar">
+<!--
+  Anchor notable-date resource.
 
-  <NotableDate name="Orthodox Easter">
-    <Rule name="Orthodox Easter" category="Religious">
-      <Algorithm key="OrthodoxEaster" />
-      <Tag>Christian</Tag>
-      <Tag>Orthodox</Tag>
-      <Tag>Anchor</Tag>
-    </Rule>
-  </NotableDate>
+  These entries define base dates for use as OffsetFromAnchor anchors in
+  other rule files. They carry the 'Anchor' tag so consumers can distinguish
+  them from fully described cultural or civic notable-date entries.
+
+  Orthodox Easter is expressed as an Algorithm rule; computing the date
+  requires the Meeus Computus and cannot be expressed as a simple calendar
+  lookup. Register an INotableDateAlgorithm under the key 'OrthodoxEaster'.
+
+  Lunar New Year is expressed as a Fixed rule with calendarType set to
+  ChineseLunisolarCalendar (month 1, day 1). The durationDays value of 15
+  represents the traditional fifteen-day festival period; the anchor date
+  itself is always the first day. No algorithm registration is required.
+
+  Ramadan Start is expressed as a Fixed rule with calendarType set to
+  HijriCalendar (month 9, day 1) with sweepCalendarYears="true". The resolver
+  sweeps the Hijri year that contains 1 January of the requested Gregorian year
+  and the next, returning the first candidate whose Gregorian year matches. No
+  algorithm registration is required.
+
+  Algorithm keys used:
+    OrthodoxEaster — Julian-calendar Easter (Computus). Used as the base date
+                     for all Orthodox Christian moveable feast offsets.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <NotableDate name="Lunar New Year">
-    <Rule name="Lunar New Year" category="Cultural" durationDays="15">
-      <Algorithm key="ChineseLunarNewYear" />
+    <Rule name="Lunar New Year"
+          category="Cultural"
+          durationDays="15"
+          firstYear="1901"
+          lastYear="2100"
+          calendarType="System.Globalization.ChineseLunisolarCalendar"
+          comment="Anchor entry. The first day of the first month of the Chinese lunisolar year. The durationDays value of 15 spans the traditional New Year festival period. Resolved via the Fixed strategy using ChineseLunisolarCalendar (month 1, day 1).">
+      <Fixed month="1" day="1" />
       <Tag>Lunar</Tag>
       <Tag>Anchor</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Ramadan Start">
-    <Rule name="Ramadan Start" category="Religious" durationDays="30">
-      <Algorithm key="HijriRamadanStart" />
+    <Rule name="Ramadan Start"
+          category="Religious"
+          durationDays="30"
+          calendarType="System.Globalization.HijriCalendar"
+          comment="Anchor entry. The first day of Ramadan (month 9 of the Hijri calendar). The durationDays value of 30 represents the maximum month length; the actual month is 29 or 30 days depending on the year. Resolved via the Fixed strategy using HijriCalendar (month 9, day 1) with sweepCalendarYears.">
+      <Fixed month="9" day="1" sweepCalendarYears="true" />
       <Tag>Islamic</Tag>
+      <Tag>Anchor</Tag>
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Orthodox Easter">
+    <Rule name="Orthodox Easter" category="Religious">
+      <Algorithm key="OrthodoxEaster" />
+      <Tag>Christian</Tag>
+      <Tag>Orthodox</Tag>
       <Tag>Anchor</Tag>
     </Rule>
   </NotableDate>

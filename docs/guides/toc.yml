@@ -1,54 +1,76 @@
-# ./<Project Root Dir>/docs/guides/toc.yml
+- name: Overview
+  href: index.md
+- name: Algorithm families
+  href: algorithm-families.md
+- name: Bodu.Core
+  href: core/
+  items:
+    - name: Overview
+      href: core/index.md
+    - name: Collections
+      items:
+        - name: Circular buffer
+          href: core/circular-buffer.md
+        - name: Evicting dictionary
+          href: core/evicting-dictionary.md
+    - name: Primitives
+      items:
+        - name: WeekPattern
+          href: core/week-pattern.md
 - name: Bodu.IO.Hashing
   href: io-hashing/
   items:
     - name: Overview
       href: io-hashing/index.md
-    - name: Using CRC
-      href: io-hashing/crc.md
-    - name: CRC catalogue
-      href: io-hashing/crc-catalogue.md
-    - name: Using Fletcher
-      href: io-hashing/fletcher.md
-    - name: Using Adler
-      href: io-hashing/adler.md
-    - name: Using FNV
-      href: io-hashing/fnv.md
-    - name: Using CityHash
-      href: io-hashing/cityhash.md
-    - name: Using Pearson
-      href: io-hashing/pearson.md
-    - name: Classic string hashes
-      href: io-hashing/string-hashes.md
+    - name: Checksums
+      items:
+        - name: Using CRC
+          href: io-hashing/crc.md
+        - name: CRC catalogue
+          href: io-hashing/crc-catalogue.md
+        - name: Using Fletcher
+          href: io-hashing/fletcher.md
+        - name: Using Adler
+          href: io-hashing/adler.md
+    - name: Fingerprints
+      items:
+        - name: Using FNV
+          href: io-hashing/fnv.md
+        - name: Using CityHash
+          href: io-hashing/cityhash.md
+        - name: Using MurmurHash3
+          href: io-hashing/murmurhash3.md
+        - name: Using XxHash
+          href: io-hashing/xxhash.md
+        - name: Using Pearson
+          href: io-hashing/pearson.md
+        - name: Classic string hashes
+          href: io-hashing/string-hashes.md
+    - name: Check digits
+      items:
+        - name: Check digits overview
+          href: io-hashing/check-digits.md
 - name: Bodu.Security.Cryptography
   href: cryptography/
   items:
     - name: Overview
       href: cryptography/index.md
-    - name: Encryption basics
-      href: cryptography/encryption-basics.md
-    - name: Cipher block modes
-      href: cryptography/cipher-modes.md
-    - name: AEAD modes
-      href: cryptography/aead-modes.md
-    - name: Composing primitives
-      href: cryptography/composing-primitives.md
-    - name: Padding
-      href: cryptography/padding.md
-    - name: Hashing and checksums
-      href: cryptography/hashing.md
-    - name: ASCON family
+    - name: Encryption
+      items:
+        - name: Encryption basics
+          href: cryptography/encryption-basics.md
+        - name: Cipher block modes
+          href: cryptography/cipher-modes.md
+        - name: AEAD modes
+          href: cryptography/aead-modes.md
+        - name: Padding
+          href: cryptography/padding.md
+        - name: Composing primitives
+          href: cryptography/composing-primitives.md
+    - name: Hashing
       items:
         - name: Overview
-          href: cryptography/ascon.md
-        - name: Hashing
-          href: cryptography/ascon-hashing.md
-        - name: Extendable output (XOF)
-          href: cryptography/ascon-xof.md
-        - name: Authenticated encryption (AEAD)
-          href: cryptography/ascon-aead.md
-    - name: Hashing algorithms
-      items:
+          href: cryptography/hashing.md
         - name: Using SipHash
           href: cryptography/siphash.md
         - name: Using Poly1305
@@ -61,6 +83,16 @@
           href: cryptography/snefru.md
         - name: Using Merkle trees
           href: cryptography/merkle-trees.md
+    - name: ASCON family
+      items:
+        - name: Overview
+          href: cryptography/ascon.md
+        - name: Hashing
+          href: cryptography/ascon-hashing.md
+        - name: Extendable output (XOF)
+          href: cryptography/ascon-xof.md
+        - name: Authenticated encryption (AEAD)
+          href: cryptography/ascon-aead.md
     - name: Symmetric algorithms
       items:
         - name: Threefish-256
@@ -73,3 +105,12 @@
           href: cryptography/skipjack.md
         - name: Blowfish
           href: cryptography/blowfish.md
+- name: Bodu.Globalization.Calendar
+  href: calendar/
+  items:
+    - name: Overview
+      href: calendar/index.md
+    - name: Using NotableDateService
+      href: calendar/notable-dates.md
+    - name: Date calculation algorithms
+      href: calendar/algorithms.md

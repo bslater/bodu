@@ -6,19 +6,40 @@
 
 namespace Bodu.Globalization.Calendar;
 
-
 /// <summary>
 /// Resolves the canonical ordering, deduplication, or suppression of multiple <see cref="NotableDate" /> instances that fall on the
 /// same day.
 /// </summary>
 /// <remarks>
 /// <para>
-/// When two or more rules resolve to the same date for a given territory (for example a fixed bank holiday and a substitute observance,
-/// or Easter Monday landing on Anzac Day), the service consults its registered <see cref="INotableDateCollisionResolver" /> to decide
-/// how the overlapping dates should be presented. The default implementation simply orders by
-/// <see cref="NotableDate.Category" /> and <see cref="NotableDate.Name" />.
+/// When two or more rules resolve to the same date for a given territory — for example a fixed bank holiday and a substitute
+/// observance, or Easter Monday landing on Anzac Day — the service consults its registered
+/// <see cref="INotableDateCollisionResolver" /> to decide how the overlapping dates should be presented. The default implementation
+/// is <see cref="DefaultNotableDateCollisionResolver" />, which removes exact duplicates and orders results by
+/// <see cref="NotableDate.Category" /> then <see cref="NotableDate.Name" />.
+/// </para>
+/// <para>
+/// Supply a custom implementation via the <c>collisionResolver</c> parameter of the <see cref="NotableDateService" /> constructor
+/// to apply application-specific de-duplication, suppression, or ordering logic.
 /// </para>
 /// </remarks>
+/// <example>
+/// <para>An implementation that retains only the date with the lowest-valued <see cref="NotableDateCategory" />:</para>
+/// <code>
+/// public sealed class HighestPriorityCollisionResolver : INotableDateCollisionResolver
+/// {
+///     public IReadOnlyList&lt;NotableDate&gt; Resolve(DateTime date, IReadOnlyList&lt;NotableDate&gt; overlapping)
+///     {
+///         NotableDate winner = overlapping
+///             .OrderBy(d => (int)d.Category)
+///             .ThenBy(d => d.Name, StringComparer.OrdinalIgnoreCase)
+///             .First();
+///
+///         return new[] { winner };
+///     }
+/// }
+/// </code>
+/// </example>
 public interface INotableDateCollisionResolver
 {
 	/// <summary>

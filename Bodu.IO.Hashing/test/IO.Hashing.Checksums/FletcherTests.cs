@@ -17,7 +17,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// prefix, and sixteen-zero input stability — holds for every derived Fletcher variant. Size-specific known
 /// answers are supplied by the concrete test classes through
 /// <see cref="NonCryptographicHashAlgorithmSpecification.KnownAnswers" /> and
-/// <see cref="NonCryptographicHashAlgorithmTests{TTest, TAlgorithm, TVariant}.GetIncrementalHashValue(TVariant)" />.
+/// <see cref="NonCryptographicHashAlgorithmTests{TTest, TAlgorithm, TVariant}.GetExpectedHashesForIncrementalInput(TVariant)" />.
 /// </remarks>
 public abstract partial class FletcherTests<TTest, TAlgorithm>
     : NonCryptographicHashAlgorithmTests<TTest, TAlgorithm, SingleTestVariant>

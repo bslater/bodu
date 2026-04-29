@@ -22,10 +22,53 @@ namespace Bodu.Globalization.Calendar;
 /// rules.
 /// </para>
 /// <para>
+/// The <see cref="Strategy" /> property selects one of four resolution strategies:
+/// </para>
+/// <list type="bullet">
+/// <item><description><see cref="DateResolutionStrategy.Fixed" /> — resolves to an explicit month and day each year.</description></item>
+/// <item><description><see cref="DateResolutionStrategy.DayOfWeekInMonth" /> — resolves to the <em>n</em>th occurrence of a weekday within a month (for example, the second Monday of October).</description></item>
+/// <item><description><see cref="DateResolutionStrategy.Algorithm" /> — delegates to a registered <see cref="INotableDateAlgorithm" /> identified by <see cref="AlgorithmKey" /> (for example, Easter or Lunar New Year).</description></item>
+/// <item><description><see cref="DateResolutionStrategy.OffsetFromAnchor" /> — resolves by adding <see cref="OffsetDays" /> to the date produced by another named rule.</description></item>
+/// </list>
+/// <para>
 /// This type replaces the earlier <c>NotableDateDefinition</c>. The new name reads more naturally alongside <see cref="NotableDate" />:
 /// a <em>rule</em> produces <em>dates</em>.
 /// </para>
 /// </remarks>
+/// <example>
+/// <para>A fixed public holiday for Australia with a weekend roll-forward adjustment:</para>
+/// <code>
+/// NotableDateRule australiaDay = new NotableDateRule
+/// {
+///     Name = "Australia Day",
+///     Strategy = DateResolutionStrategy.Fixed,
+///     Category = NotableDateCategory.Public,
+///     Month = 1,
+///     Day = 26,
+///     TerritoryCode = "AU",
+///     IsNonWorkingDay = true,
+///     Tags = ImmutableArray.Create("Federal"),
+///     Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+///     {
+///         Key = "weekend-roll",
+///         Trigger = AdjustmentTrigger.IfWeekend,
+///         Action = AdjustmentAction.MoveToNextMonday,
+///         IsNonWorkingDay = true,
+///     }),
+/// };
+///
+/// // Algorithm-based rule (Easter Monday — offset from Easter Sunday):
+/// NotableDateRule easterMonday = new NotableDateRule
+/// {
+///     Name = "Easter Monday",
+///     Strategy = DateResolutionStrategy.OffsetFromAnchor,
+///     Category = NotableDateCategory.Public,
+///     AnchorRuleName = "Easter Sunday",
+///     OffsetDays = 1,
+///     IsNonWorkingDay = true,
+/// };
+/// </code>
+/// </example>
 public sealed record NotableDateRule
 {
 #if NET7_0_OR_GREATER

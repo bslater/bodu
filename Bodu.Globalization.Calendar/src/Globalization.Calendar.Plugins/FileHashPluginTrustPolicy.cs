@@ -23,6 +23,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </remarks>
 public sealed class FileHashPluginTrustPolicy : IPluginTrustPolicy
 {
+	/// <summary>A normalised, case-insensitive map from assembly name to the pinned SHA-256 digest.</summary>
 	private readonly IReadOnlyDictionary<string, byte[]> _allowedHashesByAssemblyName;
 
 	/// <summary>

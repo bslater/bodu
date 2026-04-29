@@ -1,0 +1,66 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="Threefish512KnownAnswers.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Security.Cryptography;
+
+/// <summary>
+/// Holds the curated <see cref="Threefish512Cipher" /> known-answer test vectors used by
+/// <see cref="ThreeFish512CipherTests" />. Mirrors the layout of <see cref="Threefish256KnownAnswers" /> at
+/// the wider 512-bit block size.
+/// </summary>
+/// <remarks>
+/// The two vectors mirror <see cref="ThreeFishCipherTestVariant.ZeroedKeyAndTweak" /> — an all-zero
+/// (key, tweak, plaintext) baseline — and <see cref="ThreeFishCipherTestVariant.DefaultKeyAndTweak" /> —
+/// the harness's incremental-byte default (key bytes 0x10..0x4F, tweak bytes 0x00..0x0F, descending
+/// plaintext FF..C0). The captured ciphertexts are the values produced by the in-tree Threefish-512 engine
+/// at the time the suite was authored and act as regression baselines against future engine changes.
+/// </remarks>
+internal static class Threefish512KnownAnswers
+{
+    /// <summary>
+    /// Returns the curated KAT vector for <paramref name="variant" />.
+    /// </summary>
+    public static IReadOnlyList<BlockCipherKnownAnswer> For(ThreeFishCipherTestVariant variant) => variant switch
+    {
+        ThreeFishCipherTestVariant.ZeroedKeyAndTweak => ZeroedKeyAndTweak,
+        ThreeFishCipherTestVariant.DefaultKeyAndTweak => DefaultKeyAndTweak,
+        _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
+    };
+
+    private const string ProfileInTreeRegression = "In-tree Threefish-512 regression baseline";
+
+    private static readonly BlockCipherKnownAnswer[] ZeroedKeyAndTweak =
+    [
+        new BlockCipherKnownAnswer
+        {
+            Name = "Threefish512_ZeroKeyZeroTweak_ZeroPlaintext",
+            Profile = ProfileInTreeRegression,
+            Plaintext = new byte[64],
+            Ciphertext = Convert.FromHexString(
+                "B1A2BBC6EF6025BC40EB3822161F36E375D1BB0AEE3186FBD19E47C5D479947B" +
+                "7BC2F8586E35F0CFF7E7F03084B0B7B1F1AB3961A580A3E97EB41EA14A6D7BBE"),
+            Key = new byte[64],
+            Tweak = new byte[16],
+        },
+    ];
+
+    private static readonly BlockCipherKnownAnswer[] DefaultKeyAndTweak =
+    [
+        new BlockCipherKnownAnswer
+        {
+            Name = "Threefish512_IncrementalKey_IncrementalTweak_DescendingPlaintext",
+            Profile = ProfileInTreeRegression,
+            Plaintext = Convert.FromHexString(
+                "FFFEFDFCFBFAF9F8F7F6F5F4F3F2F1F0EFEEEDECEBEAE9E8E7E6E5E4E3E2E1E0" +
+                "DFDEDDDCDBDAD9D8D7D6D5D4D3D2D1D0CFCECDCCCBCAC9C8C7C6C5C4C3C2C1C0"),
+            Ciphertext = Convert.FromHexString(
+                "E304439626D45A2CB401CAD8D636249A6338330EB06D45DD8B36B90E97254779" +
+                "272A0A8D99463504784420EA18C9A725AF11DFFEA10162348927673D5C1CAF3D"),
+            Key = CryptoTestUtilities.CreateIncrementalByteSequence(0x10, 64),
+            Tweak = CryptoTestUtilities.CreateIncrementalByteSequence(0x00, 16),
+        },
+    ];
+}

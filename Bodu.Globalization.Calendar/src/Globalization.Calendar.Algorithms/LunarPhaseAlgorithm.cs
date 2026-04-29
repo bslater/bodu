@@ -22,10 +22,10 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </remarks>
 internal static class LunarPhaseAlgorithm
 {
-	// J2000 epoch: January 1.5, 2000 = JDE 2451545.0 = 2000-01-01 12:00 UTC.
+	/// <summary>The J2000.0 epoch expressed as a <see cref="DateTime" /> (2000-01-01T12:00:00, kind unspecified), equal to JDE 2451545.0.</summary>
 	private static readonly DateTime J2000Epoch = new DateTime(2000, 1, 1, 12, 0, 0, DateTimeKind.Unspecified);
 
-	// Mean synodic month in days (IAU value).
+	/// <summary>The mean synodic month length in days (IAU value), used to advance the lunation index between search attempts.</summary>
 	private const double SynodicMonth = 29.530588861;
 
 	/// <summary>
@@ -75,6 +75,10 @@ internal static class LunarPhaseAlgorithm
 	/// Estimates the lunation index k near the given year and month.
 	/// For full moons k is a half-integer (e.g. 0.5, 1.5); for new moons k is an integer.
 	/// </summary>
+	/// <param name="year">The Gregorian year used to anchor the estimate.</param>
+	/// <param name="month">The Gregorian month (1–12) used to refine the estimate within the year.</param>
+	/// <param name="fullMoon"><see langword="true" /> to bias toward a full-moon lunation index; <see langword="false" /> for a new-moon index.</param>
+	/// <returns>The estimated lunation index k.</returns>
 	private static double EstimateK(int year, int month, bool fullMoon)
 	{
 		double approxYear = year + (month - 1) / 12.0;
@@ -89,6 +93,7 @@ internal static class LunarPhaseAlgorithm
 	/// <param name="k">
 	/// Integer k for a new moon; k + 0.5 for a full moon; k + 0.25 / k + 0.75 for quarter moons.
 	/// </param>
+	/// <returns>The Julian Day Ephemeris (JDE) in Terrestrial Dynamical Time.</returns>
 	private static double ComputeLunarPhaseJde(double k)
 	{
 		double T = k / 1236.85;

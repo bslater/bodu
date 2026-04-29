@@ -105,4 +105,22 @@ public partial class NotableDateRuleParserTests
 				<UseAll />
 			</UseFrom>
 		</NotableDates>";
+
+	public const string ReligiousRuleXml = @"
+		<NotableDates xmlns=""urn:bodu:globalization:calendar"">
+			<NotableDate name=""Eid al-Fitr"">
+				<Rule name=""Eid al-Fitr Rule"" category=""Religious"">
+					<Algorithm key=""islamic-eid-al-fitr"" />
+				</Rule>
+			</NotableDate>
+		</NotableDates>";
+
+	public const string CivicRuleXml = @"
+		<NotableDates xmlns=""urn:bodu:globalization:calendar"">
+			<NotableDate name=""Constitution Day"">
+				<Rule name=""Constitution Day Rule"" category=""Civic"">
+					<Fixed month=""July"" day=""17"" />
+				</Rule>
+			</NotableDate>
+		</NotableDates>";
 }

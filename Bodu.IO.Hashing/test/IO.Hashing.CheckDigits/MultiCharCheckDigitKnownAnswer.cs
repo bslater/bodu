@@ -4,13 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-
-// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="MultiCharCheckDigitKnownAnswer.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-// ---------------------------------------------------------------------------------------------------------------
-
 namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>

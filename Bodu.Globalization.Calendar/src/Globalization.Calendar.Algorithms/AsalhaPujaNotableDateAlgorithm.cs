@@ -4,12 +4,13 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using SysGlobal = System.Globalization;
 
 namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
-/// Provides a algorithm for determining the Gregorian date of Asalha Puja (Dharma Day) for a given year.
+/// Provides an algorithm for determining the Gregorian date of Asalha Puja (Dharma Day) for a given year.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -19,8 +20,8 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </para>
 /// <para>
 /// This algorithm returns the first full moon that falls on or after 15 June of the given year, which consistently matches the
-/// Thai Asanha Bucha observance. The next-day observance that begins Vassa (Buddhist Lent) is provided separately by
-/// <see cref="VassaStartNotableDateAlgorithm" />.
+/// Thai Asanha Bucha observance. The next-day observance that begins Vassa (Buddhist Lent) is expressed as an
+/// <c>OffsetFromAnchor</c> rule (+1 day from Asalha Puja) in the XML resource and requires no separate algorithm.
 /// </para>
 /// <para>
 /// The full moon date is computed using the Meeus Chapter 49 algorithm via <see cref="LunarPhaseAlgorithm" />, accurate to within
@@ -47,7 +48,7 @@ public sealed class AsalhaPujaNotableDateAlgorithm
 	public DateTime? GetDate(int year, SysGlobal.Calendar? calendar = null)
 	{
 		if (year < 1)
-			throw new ArgumentOutOfRangeException(nameof(year), "Year must be greater than or equal to 1.");
+			throw new ArgumentOutOfRangeException(nameof(year), CalendarStrings.ArgumentOutOfRangeException_YearOutOfRange);
 
 		DateTime? fullMoon = LunarPhaseAlgorithm.GetFullMoonOnOrAfter(new DateTime(year, 6, 15));
 		if (fullMoon is null)

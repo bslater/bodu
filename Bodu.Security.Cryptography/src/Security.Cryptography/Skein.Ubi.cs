@@ -13,6 +13,24 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class Skein<T>
 {
     /// <summary>
+    /// Returns the cached initial chaining value derived from the configuration block (and the optional KEY UBI phase
+    /// when a key is set). Exposed for Skein 1.3 Appendix B verification — the published IVs for the canonical unkeyed
+    /// hash configurations must equal the words returned here when the algorithm is constructed with no key and the
+    /// matching output size.
+    /// </summary>
+    /// <returns>A defensive copy of the chaining-value words that <see cref="Initialize" /> would seed the state with.</returns>
+    /// <remarks>
+    /// The first call computes and caches the IV; subsequent calls return clones of the cached value. Mutating the
+    /// returned array does not affect the algorithm's internal state.
+    /// </remarks>
+    internal ulong[] GetInitialChainingValueWords()
+    {
+        this.ThrowIfDisposed();
+        this.EnsureChainingValueInitialized();
+        return (ulong[])this._initialChainingValue.Clone();
+    }
+
+    /// <summary>
     /// Applies a single Skein <c>UBI</c> (Unique Block Iteration) compression step that folds <paramref name="block" />
     /// into the chaining state using the supplied tweak fields.
     /// </summary>

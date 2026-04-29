@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Reflection;
 using Bodu.IO.Hashing.Checksums;
 
 namespace Bodu.IO.Hashing.CheckDigits;
@@ -16,10 +17,11 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <typeparam name="TAlgorithm">The multi-character check-digit algorithm under test.</typeparam>
 /// <remarks>
 /// The harness drives assertions that every such algorithm must satisfy — algorithm name / alphabet /
-/// check-length exposure, streaming-equivalence with the static <c>Compute</c> helper at every prefix, idempotent
-/// <c>GetCurrentCheckDigits</c> reads, <c>Reset</c> semantics, round-trip between <c>Compute</c> and
-/// <c>IsValid</c>, rejection of out-of-alphabet input, and a data-driven set of known-answer vectors supplied
-/// through <see cref="GetSpecification" />.
+/// check-length exposure, streaming-equivalence with the static <c>Compute</c> helper, idempotent
+/// <c>GetCurrentCheckDigits</c> reads, <c>Reset</c> semantics, rejection of out-of-alphabet input, a data-driven
+/// set of known-answer vectors supplied through <see cref="GetSpecification" />, and a separate set of
+/// <c>IsValid</c> vectors supplied through <see cref="GetIsValidKnownAnswers" /> for algorithms whose canonical
+/// sequence layout differs from the streaming body order.
 /// </remarks>
 public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorithm>
     where TTest : MultiCharCheckDigitAlgorithmTests<TTest, TAlgorithm>, new()
@@ -27,10 +29,44 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
 {
     /// <summary>
     /// Returns the <see cref="MultiCharCheckDigitAlgorithmSpecification" /> describing the algorithm's expected
-    /// properties and known-answer vectors.
+    /// properties and known-answer vectors used for streaming, <c>Compute</c>, and <c>Reset</c> assertions.
     /// </summary>
     /// <returns>A non-null specification; its <c>KnownAnswers</c> must be non-empty.</returns>
     protected abstract MultiCharCheckDigitAlgorithmSpecification GetSpecification();
+
+    /// <summary>
+    /// Returns the set of explicit known-answer vectors used to exercise the algorithm's <c>IsValid</c> static
+    /// helper.
+    /// </summary>
+    /// <returns>
+    /// A non-null sequence of <see cref="MultiCharCheckDigitIsValidKnownAnswer" /> records. The default
+    /// implementation synthesises a positive vector from each <see cref="GetSpecification" /> entry by
+    /// concatenating <c>Body + ExpectedCheck</c>, then appends one negative vector per entry that flips the final
+    /// check character to a different decimal digit. Algorithms whose canonical form rearranges those characters
+    /// (for example IBAN) must override to supply the canonical text directly.
+    /// </returns>
+    protected virtual IEnumerable<MultiCharCheckDigitIsValidKnownAnswer> GetIsValidKnownAnswers()
+    {
+        MultiCharCheckDigitAlgorithmSpecification spec = GetSpecification();
+        foreach (MultiCharCheckDigitKnownAnswer vector in spec.KnownAnswers)
+        {
+            yield return new MultiCharCheckDigitIsValidKnownAnswer
+            {
+                Name = vector.Name,
+                Value = vector.Body + vector.ExpectedCheck,
+                ExpectedIsValid = true,
+            };
+
+            char lastExpected = vector.ExpectedCheck[^1];
+            char tampered = lastExpected == '0' ? '1' : '0';
+            yield return new MultiCharCheckDigitIsValidKnownAnswer
+            {
+                Name = vector.Name + "_TamperedLastCheckDigit",
+                Value = vector.Body + vector.ExpectedCheck[..^1] + tampered,
+                ExpectedIsValid = false,
+            };
+        }
+    }
 
     /// <summary>
     /// Creates a new instance of <typeparamref name="TAlgorithm" /> in its initial state.
@@ -48,12 +84,13 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <summary>
     /// Invokes the algorithm's static <c>IsValid</c> helper. Derived classes forward to the concrete type.
     /// </summary>
-    /// <param name="valueIncludingCheck">The full sequence including the trailing check code.</param>
+    /// <param name="value">The full sequence in its canonical form.</param>
     /// <returns><see langword="true" /> if the sequence is valid under the algorithm; otherwise, <see langword="false" />.</returns>
-    protected abstract bool IsValidStatic(ReadOnlySpan<char> valueIncludingCheck);
+    protected abstract bool IsValidStatic(ReadOnlySpan<char> value);
 
     /// <summary>
-    /// Returns an ordered dataset of known-answer vectors for use with MSTest data-driven tests.
+    /// Returns an ordered dataset of body / expected-check known-answer vectors for use with MSTest data-driven
+    /// tests covering the streaming and <c>Compute</c> surface.
     /// </summary>
     /// <returns>
     /// An enumerable sequence of <c>object[]</c> arrays in the form <c>{ name, body, expectedCheck }</c>.
@@ -66,256 +103,26 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     }
 
     /// <summary>
-    /// Verifies that a freshly constructed algorithm exposes the algorithm name, input alphabet, and check
-    /// length declared in the specification.
+    /// Returns an ordered dataset of <c>IsValid</c> known-answer vectors for use with MSTest data-driven tests.
     /// </summary>
-    [TestMethod]
-    public void Properties_WhenQueried_ShouldMatchSpecification()
+    /// <returns>
+    /// An enumerable sequence of <c>object[]</c> arrays in the form <c>{ name, value, expectedIsValid }</c>.
+    /// </returns>
+    public static IEnumerable<object[]> IsValidKnownAnswerData()
     {
-        TAlgorithm algorithm = CreateAlgorithm();
-        MultiCharCheckDigitAlgorithmSpecification spec = GetSpecification();
-
-        Assert.AreEqual(spec.AlgorithmName, algorithm.AlgorithmName);
-        Assert.AreEqual(spec.InputAlphabet, algorithm.InputAlphabet);
-        Assert.AreEqual(spec.CheckLength, algorithm.CheckLength);
+        foreach (MultiCharCheckDigitIsValidKnownAnswer vector in new TTest().GetIsValidKnownAnswers())
+            yield return new object[] { vector.Name, vector.Value, vector.ExpectedIsValid };
     }
 
     /// <summary>
-    /// Verifies that a freshly constructed algorithm reports the empty-body check code declared in the
-    /// specification, when one is declared.
+    /// Gets the display name used by <see cref="DynamicDataAttribute" /> for a test case row.
     /// </summary>
-    [TestMethod]
-    public void GetCurrentCheckDigits_WhenJustConstructed_ShouldReturnEmptyCheckDigits()
+    /// <param name="methodInfo">The <see cref="MethodInfo" /> for the test under construction (unused).</param>
+    /// <param name="data">The test case data row; the first element is expected to be the vector name.</param>
+    /// <returns>The vector name for the current test case.</returns>
+    public static string GetKnownAnswerTestName(MethodInfo methodInfo, object[] data)
     {
-        MultiCharCheckDigitAlgorithmSpecification spec = GetSpecification();
-        if (spec.EmptyCheckDigits is not string expected) return;
-
-        TAlgorithm algorithm = CreateAlgorithm();
-        Assert.AreEqual(expected, algorithm.GetCurrentCheckDigits());
-    }
-
-    /// <summary>
-    /// Verifies that appending a body in a single call produces the check code recorded for that known-answer
-    /// vector.
-    /// </summary>
-    /// <param name="name">A descriptive name for the vector (used in test output).</param>
-    /// <param name="body">The body characters to append.</param>
-    /// <param name="expectedCheck">The check code the algorithm is expected to emit.</param>
-    [TestMethod]
-    [DynamicData(nameof(KnownAnswerData))]
-    public void Append_WhenKnownAnswerIsAppendedInFull_ShouldProduceExpectedCheckDigits(string name, string body, string expectedCheck)
-    {
-        _ = name;
-        TAlgorithm algorithm = CreateAlgorithm();
-
-        algorithm.Append(body.AsSpan());
-
-        Assert.AreEqual(expectedCheck, algorithm.GetCurrentCheckDigits());
-    }
-
-    /// <summary>
-    /// Verifies that appending a body one character at a time produces the same check code as a single
-    /// span-based call.
-    /// </summary>
-    /// <param name="name">A descriptive name for the vector (used in test output).</param>
-    /// <param name="body">The body characters to append.</param>
-    /// <param name="expectedCheck">The check code the algorithm is expected to emit.</param>
-    [TestMethod]
-    [DynamicData(nameof(KnownAnswerData))]
-    public void Append_WhenKnownAnswerIsAppendedOneCharAtATime_ShouldProduceExpectedCheckDigits(string name, string body, string expectedCheck)
-    {
-        _ = name;
-        TAlgorithm algorithm = CreateAlgorithm();
-
-        foreach (char ch in body)
-            algorithm.Append(ch);
-
-        Assert.AreEqual(expectedCheck, algorithm.GetCurrentCheckDigits());
-    }
-
-    /// <summary>
-    /// Verifies that appending a body in two chunks produces the same check code as appending it in one call.
-    /// </summary>
-    /// <param name="name">A descriptive name for the vector (used in test output).</param>
-    /// <param name="body">The body characters to append.</param>
-    /// <param name="expectedCheck">The check code the algorithm is expected to emit.</param>
-    [TestMethod]
-    [DynamicData(nameof(KnownAnswerData))]
-    public void Append_WhenKnownAnswerIsSplitAcrossTwoChunks_ShouldProduceExpectedCheckDigits(string name, string body, string expectedCheck)
-    {
-        _ = name;
-        if (body.Length < 2) return;
-
-        TAlgorithm algorithm = CreateAlgorithm();
-        int split = body.Length / 2;
-
-        algorithm.Append(body.AsSpan(0, split));
-        algorithm.Append(body.AsSpan(split));
-
-        Assert.AreEqual(expectedCheck, algorithm.GetCurrentCheckDigits());
-    }
-
-    /// <summary>
-    /// Verifies that reading the current check code twice in succession — with no intervening appends — yields
-    /// the same value, proving the getter is non-destructive.
-    /// </summary>
-    [TestMethod]
-    public void GetCurrentCheckDigits_WhenReadRepeatedly_ShouldReturnSameValue()
-    {
-        TAlgorithm algorithm = CreateAlgorithm();
-        algorithm.Append("12345".AsSpan());
-
-        string first = algorithm.GetCurrentCheckDigits();
-        string second = algorithm.GetCurrentCheckDigits();
-        string third = algorithm.GetCurrentCheckDigits();
-
-        Assert.AreEqual(first, second);
-        Assert.AreEqual(second, third);
-    }
-
-    /// <summary>
-    /// Verifies that the span and string overloads of <c>GetCurrentCheckDigits</c> agree.
-    /// </summary>
-    /// <param name="name">A descriptive name for the vector (unused).</param>
-    /// <param name="body">The body characters.</param>
-    /// <param name="expectedCheck">The expected check code (unused in this cross-check).</param>
-    [TestMethod]
-    [DynamicData(nameof(KnownAnswerData))]
-    public void GetCurrentCheckDigits_SpanAndStringOverloads_ShouldAgree(string name, string body, string expectedCheck)
-    {
-        _ = name;
-        _ = expectedCheck;
-
-        TAlgorithm algorithm = CreateAlgorithm();
-        algorithm.Append(body.AsSpan());
-
-        Span<char> buffer = stackalloc char[algorithm.CheckLength];
-        int written = algorithm.GetCurrentCheckDigits(buffer);
-
-        Assert.AreEqual(algorithm.CheckLength, written);
-        Assert.AreEqual(algorithm.GetCurrentCheckDigits(), new string(buffer));
-    }
-
-    /// <summary>
-    /// Verifies that the static <c>Compute</c> helper returns the expected check code for every known-answer
-    /// vector.
-    /// </summary>
-    /// <param name="name">A descriptive name for the vector.</param>
-    /// <param name="body">The body characters.</param>
-    /// <param name="expectedCheck">The expected check code.</param>
-    [TestMethod]
-    [DynamicData(nameof(KnownAnswerData))]
-    public void Compute_WhenKnownAnswer_ShouldReturnExpectedCheckDigits(string name, string body, string expectedCheck)
-    {
-        _ = name;
-        Assert.AreEqual(expectedCheck, ComputeStatic(body.AsSpan()));
-    }
-
-    /// <summary>
-    /// Verifies that appending the algorithm's own computed check code to the body always yields a sequence
-    /// that <c>IsValid</c> accepts.
-    /// </summary>
-    /// <param name="name">A descriptive name for the vector.</param>
-    /// <param name="body">The body characters.</param>
-    /// <param name="expectedCheck">The expected check code.</param>
-    [TestMethod]
-    [DynamicData(nameof(KnownAnswerData))]
-    public void IsValid_WhenSequenceIncludesComputedCheckDigits_ShouldReturnTrue(string name, string body, string expectedCheck)
-    {
-        _ = name;
-        string full = body + expectedCheck;
-        Assert.IsTrue(IsValidStatic(full.AsSpan()), $"Expected '{full}' to be valid.");
-    }
-
-    /// <summary>
-    /// Verifies that substituting one character of the trailing check code for a different digit makes
-    /// <c>IsValid</c> reject the sequence.
-    /// </summary>
-    /// <param name="name">A descriptive name for the vector.</param>
-    /// <param name="body">The body characters.</param>
-    /// <param name="expectedCheck">The correct check code.</param>
-    [TestMethod]
-    [DynamicData(nameof(KnownAnswerData))]
-    public void IsValid_WhenLastCheckDigitIsTampered_ShouldReturnFalse(string name, string body, string expectedCheck)
-    {
-        _ = name;
-        char lastExpected = expectedCheck[^1];
-        for (char c = '0'; c <= '9'; c++)
-        {
-            if (c == lastExpected) continue;
-            string bad = body + expectedCheck[..^1] + c;
-            Assert.IsFalse(IsValidStatic(bad.AsSpan()), $"Expected '{bad}' to be invalid (swap of last check digit).");
-        }
-    }
-
-    /// <summary>
-    /// Verifies that <c>Reset</c> after an Append restores the algorithm to the empty-body check code declared
-    /// in the specification (when one is declared).
-    /// </summary>
-    [TestMethod]
-    public void Reset_AfterAppend_ShouldRestoreEmptyCheckDigits()
-    {
-        MultiCharCheckDigitAlgorithmSpecification spec = GetSpecification();
-        if (spec.EmptyCheckDigits is not string expected) return;
-
-        TAlgorithm algorithm = CreateAlgorithm();
-        algorithm.Append("1234".AsSpan());
-        algorithm.Reset();
-
-        Assert.AreEqual(expected, algorithm.GetCurrentCheckDigits());
-    }
-
-    /// <summary>
-    /// Verifies that Reset between two append runs discards the first run's accumulated state so that only the
-    /// second run contributes to the final check code.
-    /// </summary>
-    /// <param name="name">A descriptive name for the vector (used in test output).</param>
-    /// <param name="body">The body characters to append in the second run.</param>
-    /// <param name="expectedCheck">The check code the algorithm is expected to emit for the second run.</param>
-    [TestMethod]
-    [DynamicData(nameof(KnownAnswerData))]
-    public void Reset_BetweenAppends_ShouldDiscardPriorState(string name, string body, string expectedCheck)
-    {
-        _ = name;
-        TAlgorithm algorithm = CreateAlgorithm();
-
-        algorithm.Append("123456".AsSpan());
-        algorithm.Reset();
-        algorithm.Append(body.AsSpan());
-
-        Assert.AreEqual(expectedCheck, algorithm.GetCurrentCheckDigits());
-    }
-
-    /// <summary>
-    /// Verifies that <c>Append</c> rejects characters that fall outside the declared input alphabet.
-    /// </summary>
-    [TestMethod]
-    public void Append_WhenCharacterIsOutsideInputAlphabet_ShouldThrowArgumentOutOfRangeException()
-    {
-        MultiCharCheckDigitAlgorithmSpecification spec = GetSpecification();
-        char invalid = spec.InputAlphabet == CheckDigitInputAlphabet.DecimalDigits ? 'A' : '!';
-
-        TAlgorithm algorithm = CreateAlgorithm();
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            algorithm.Append(new[] { '1', invalid, '2' }.AsSpan());
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <c>GetCurrentCheckDigits</c> throws <see cref="ArgumentException" /> when the destination
-    /// span is shorter than <c>CheckLength</c>.
-    /// </summary>
-    [TestMethod]
-    public void GetCurrentCheckDigits_WhenDestinationTooSmall_ShouldThrowArgumentException()
-    {
-        TAlgorithm algorithm = CreateAlgorithm();
-        char[] tooSmall = new char[algorithm.CheckLength - 1];
-
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            algorithm.GetCurrentCheckDigits(tooSmall.AsSpan());
-        });
+        _ = methodInfo;
+        return (string)data[0];
     }
 }

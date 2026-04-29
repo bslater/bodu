@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Globalization.Calendar.Algorithms;
+using System.Globalization;
 using SysGlobal = System.Globalization;
 
 namespace Bodu.Globalization.Calendar.Providers;
@@ -17,20 +18,20 @@ namespace Bodu.Globalization.Calendar.Providers;
 /// date. The optional <see cref="SysGlobal.Calendar" /> parameter is accepted only when it is <see langword="null" /> or a
 /// <see cref="SysGlobal.JulianCalendar" />.
 /// </remarks>
-public sealed class OrthodoxEasterSundayNotableDateProvider 
+public sealed class OrthodoxEasterSundayNotableDateProvider
     : EasterSundayNotableDateProviderBase
 {
-
     /// <inheritdoc />
     public override int MinSupportedYear => 1;
-    
+
+    /// <summary>A shared <see cref="SysGlobal.JulianCalendar" /> instance used to project Julian Easter dates to Gregorian equivalents.</summary>
     private static readonly SysGlobal.JulianCalendar JulianCalendar = new();
 
     /// <inheritdoc />
     protected override string Name => "Orthodox Easter Sunday";
 
     /// <inheritdoc />
-    protected override NotableDateCategory Category => NotableDateCategory.Cultural;
+    protected override NotableDateCategory Category => NotableDateCategory.Religious;
 
     /// <inheritdoc />
     protected override Type? DefaultCalendarType => typeof(SysGlobal.JulianCalendar);
@@ -47,8 +48,8 @@ public sealed class OrthodoxEasterSundayNotableDateProvider
         }
 
         throw new NotSupportedException(
-            $"The calendar type '{calendar.GetType().FullName}' is not supported by {GetType().Name}. " +
-            $"Only {typeof(SysGlobal.JulianCalendar).FullName} is supported.");
+            string.Format(CultureInfo.InvariantCulture, CalendarStrings.NotSupportedException_CalendarTypeNotSupported,
+                calendar.GetType().FullName, GetType().Name, typeof(SysGlobal.JulianCalendar).FullName));
     }
 
     /// <inheritdoc />

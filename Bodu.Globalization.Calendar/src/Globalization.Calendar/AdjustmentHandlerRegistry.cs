@@ -12,7 +12,10 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 public sealed class AdjustmentHandlerRegistry : IAdjustmentHandlerRegistry
 {
+	/// <summary>The case-insensitive key-to-handler mapping maintained by this registry.</summary>
 	private readonly Dictionary<string, IAdjustmentHandler> _handlers = new(StringComparer.OrdinalIgnoreCase);
+
+	/// <summary>Lock protecting read-modify-write access to <see cref="_handlers" />.</summary>
 	private readonly object _gate = new();
 
 	/// <summary>
@@ -44,7 +47,7 @@ public sealed class AdjustmentHandlerRegistry : IAdjustmentHandlerRegistry
 	public AdjustmentHandlerRegistry Register(string key, IAdjustmentHandler handler)
 	{
 		if (string.IsNullOrWhiteSpace(key))
-			throw new ArgumentException("Key must not be null or whitespace.", nameof(key));
+			throw new ArgumentException(CalendarStrings.ArgumentException_KeyNullOrWhiteSpace, nameof(key));
 		if (handler is null)
 			throw new ArgumentNullException(nameof(handler));
 

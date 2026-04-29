@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 250" role="img" aria-labelledby="fg-t fg-d">
+  <title id="fg-t">NotableDateFilter — two-stage gate evaluation</title>
+  <desc id="fg-d">A filtered GetNotableDates call passes each rule through a primary gate before resolving its date, then passes each resolved NotableDate through a secondary gate. Rules that fail the primary gate are skipped entirely, avoiding the cost of date resolution. Dates that fail the secondary gate are discarded from the result.</desc>
+
+  <defs>
+    <style>
+      .bg  { fill: #0F172A; }
+      .pan { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .hdr { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ttl { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .lbl { fill: #F8FAFC; font: 700 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .sub { fill: #CBD5E1; font: 400 10px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .mut { fill: #94A3B8; font: 400 10px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .err { fill: #EF4444; font: 400 10px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .ok  { fill: #4ADE80; font: 400 10px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .rul { fill: #1E293B; stroke: #475569; stroke-width: 1; }
+      .gt1 { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1.5; }
+      .rsv { fill: #1E3A5F; stroke: #60A5FA; stroke-width: 1; }
+      .nd  { fill: #1E3A5F; stroke: #60A5FA; stroke-width: 1; }
+      .gt2 { fill: #2A1B54; stroke: #A78BFA; stroke-width: 1.5; }
+      .out { fill: #431407; stroke: #FBBF24; stroke-width: 1; }
+      .skp { fill: #1A0808; stroke: #7F1D1D; stroke-width: 1; stroke-dasharray: 3 2; }
+      .w   { stroke: #CBD5E1; stroke-width: 1.5; fill: none; }
+      .wt  { stroke: #2DD4BF; stroke-width: 1.5; fill: none; }
+      .wp  { stroke: #A78BFA; stroke-width: 1.5; fill: none; }
+      .we  { stroke: #EF4444; stroke-width: 1.3; fill: none; stroke-dasharray: 3 2; }
+    </style>
+    <marker id="a"  viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#CBD5E1"/>
+    </marker>
+    <marker id="at" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#2DD4BF"/>
+    </marker>
+    <marker id="ap" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#A78BFA"/>
+    </marker>
+    <marker id="ae" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#EF4444"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="820" height="250"/>
+
+  <g transform="translate(10 10)">
+    <rect class="pan" width="800" height="230" rx="8"/>
+    <rect class="hdr" width="800" height="30" rx="8"/>
+    <rect class="hdr" y="22" width="800" height="8"/>
+    <text class="ttl" x="16" y="20">NotableDateFilter — two-stage gate evaluation</text>
+
+    <!-- ROW: main flow at y=78–116 (h=38, center y=97) -->
+
+    <!-- NotableDateRule input -->
+    <g transform="translate(16 78)">
+      <rect class="rul" width="90" height="38" rx="5"/>
+      <text class="lbl" x="45" y="15">Notable</text>
+      <text class="lbl" x="45" y="28">DateRule</text>
+    </g>
+    <line class="w" x1="106" y1="97" x2="132" y2="97" marker-end="url(#a)"/>
+
+    <!-- PRIMARY gate -->
+    <g transform="translate(132 78)">
+      <rect class="gt1" width="96" height="38" rx="5"/>
+      <text class="lbl" fill="#2DD4BF" x="48" y="14">Primary gate</text>
+      <text class="sub" x="48" y="27">(rule-level)</text>
+    </g>
+
+    <!-- pass arrow -->
+    <line class="wt" x1="228" y1="97" x2="254" y2="97" marker-end="url(#at)"/>
+    <text class="ok" x="241" y="90">pass</text>
+
+    <!-- RESOLVE -->
+    <g transform="translate(254 78)">
+      <rect class="rsv" width="100" height="38" rx="5"/>
+      <text class="lbl" x="50" y="15">Resolve</text>
+      <text class="sub" x="50" y="28">anchor date</text>
+    </g>
+    <line class="w" x1="354" y1="97" x2="380" y2="97" marker-end="url(#a)"/>
+
+    <!-- NotableDate -->
+    <g transform="translate(380 78)">
+      <rect class="nd" width="100" height="38" rx="5"/>
+      <text class="lbl" x="50" y="15">Notable</text>
+      <text class="lbl" x="50" y="28">Date</text>
+    </g>
+    <line class="w" x1="480" y1="97" x2="506" y2="97" marker-end="url(#a)"/>
+
+    <!-- SECONDARY gate -->
+    <g transform="translate(506 78)">
+      <rect class="gt2" width="100" height="38" rx="5"/>
+      <text class="lbl" fill="#C4B5FD" x="50" y="14">Secondary gate</text>
+      <text class="sub" x="50" y="27">(date-level)</text>
+    </g>
+
+    <!-- pass arrow -->
+    <line class="wp" x1="606" y1="97" x2="632" y2="97" marker-end="url(#ap)"/>
+    <text class="ok" x="619" y="90">pass</text>
+
+    <!-- RESULT -->
+    <g transform="translate(632 78)">
+      <rect class="out" width="150" height="38" rx="5"/>
+      <text class="lbl" fill="#FBBF24" x="75" y="15">Result</text>
+      <text class="sub" x="75" y="28">included in output</text>
+    </g>
+
+    <!-- FAIL: primary gate → skip -->
+    <path class="we" d="M 180 116 L 180 150" marker-end="url(#ae)"/>
+    <g transform="translate(136 150)">
+      <rect class="skp" width="88" height="30" rx="4"/>
+      <text class="err" x="44" y="12">skip</text>
+      <text class="mut" x="44" y="25">no resolution</text>
+    </g>
+    <text class="err" x="176" y="143">fail</text>
+
+    <!-- FAIL: secondary gate → discard -->
+    <path class="we" d="M 556 116 L 556 150" marker-end="url(#ae)"/>
+    <g transform="translate(516 150)">
+      <rect class="skp" width="80" height="30" rx="4"/>
+      <text class="err" x="40" y="12">discard</text>
+      <text class="mut" x="40" y="25">not returned</text>
+    </g>
+    <text class="err" x="552" y="143">fail</text>
+
+    <!-- FOOTER: examples of each gate -->
+    <text class="mut" x="180" y="200" text-anchor="middle">ForCategory · WithTag · WithName</text>
+    <text class="mut" x="180" y="213" text-anchor="middle">WithAnyTag · IsNonWorkingDay</text>
+    <text class="sub" x="180" y="200" text-anchor="middle" opacity="0"/>
+    <text class="mut" x="556" y="200" text-anchor="middle">InDateRange · WasAdjusted</text>
+    <text class="mut" x="556" y="213" text-anchor="middle">WithMinDuration</text>
+
+    <!-- Footer labels -->
+    <text class="sub" x="180" y="188" text-anchor="middle" fill="#2DD4BF">rule-level predicates</text>
+    <text class="sub" x="556" y="188" text-anchor="middle" fill="#A78BFA">date-level predicates</text>
+  </g>
+</svg>

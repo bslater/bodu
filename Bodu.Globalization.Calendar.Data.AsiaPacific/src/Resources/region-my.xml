@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Malaysia notable-date resource. -->
+<NotableDates xmlns="urn:bodu:globalization:calendar"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <UseFrom resource="./global-islamic.xml">
+    <Use name="Eid al-Fitr" as="Hari Raya Aidilfitri" territory="MY" nonWorking="true" durationDays="2" />
+    <Use name="Eid al-Adha" as="Hari Raya Aidiladha" territory="MY" nonWorking="true" durationDays="2" />
+  </UseFrom>
+
+</NotableDates>

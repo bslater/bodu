@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -21,6 +22,27 @@ namespace Bodu.Globalization.Calendar;
 /// when the two are identical. Comparisons are performed case-insensitively against the canonical upper-case form.
 /// </para>
 /// </remarks>
+/// <example>
+/// <para>Parse and compare territory codes:</para>
+/// <code>
+/// // Parse a country-level territory:
+/// if (TerritoryCode.TryParse("AU", out TerritoryCode australia))
+///     Console.WriteLine(australia.Country);        // "AU"
+///
+/// // Parse a subdivision:
+/// TerritoryCode nsw = TerritoryCode.Parse("AU-NSW");
+/// Console.WriteLine(nsw.HasSubdivision);           // true
+/// Console.WriteLine(nsw.Subdivision);              // "NSW"
+/// Console.WriteLine(nsw);                          // "AU-NSW"
+///
+/// // Containment: AU contains AU-NSW but not NZ:
+/// Console.WriteLine(australia.Contains(nsw));      // true
+/// Console.WriteLine(nsw.Contains(australia));      // false
+///
+/// // Parse a comma-separated list (invalid entries are silently skipped):
+/// IReadOnlyList&lt;TerritoryCode&gt; codes = TerritoryCode.ParseList("AU, AU-NSW, AU-VIC");
+/// </code>
+/// </example>
 public readonly record struct TerritoryCode
 {
 	/// <summary>
@@ -92,7 +114,7 @@ public readonly record struct TerritoryCode
 		if (TryParse(value, out var result))
 			return result;
 
-		throw new FormatException($"'{value}' is not a valid ISO 3166-1/3166-2 territory code.");
+		throw new FormatException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.FormatException_TerritoryCodeInvalid, value));
 	}
 
 	/// <summary>

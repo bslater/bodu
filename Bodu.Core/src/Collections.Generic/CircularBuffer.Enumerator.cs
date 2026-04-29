@@ -37,7 +37,7 @@ public partial class CircularBuffer<T>
         internal Enumerator(CircularBuffer<T> circularBuffer)
         {
             _circularBuffer = circularBuffer;
-            _version = circularBuffer._version;
+            _version = circularBuffer._storage.Version;
             _currentIndex = -1;
             _current = default!;
             _iteratedCount = 0;
@@ -61,18 +61,18 @@ public partial class CircularBuffer<T>
         /// <inheritdoc />
         public bool MoveNext()
         {
-            if (_version != _circularBuffer._version)
+            if (_version != _circularBuffer._storage.Version)
                 throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
 
-            if (_iteratedCount >= _circularBuffer._count)
+            if (_iteratedCount >= _circularBuffer._storage.Count)
             {
                 _current = default!;
                 _currentIndex = -1; // Ended
                 return false;
             }
 
-            _currentIndex = (_circularBuffer._head + _iteratedCount) % _circularBuffer._capacity;
-            _current = _circularBuffer._internalBuffer[_currentIndex];
+            _currentIndex = (_circularBuffer._storage.Head + _iteratedCount) % _circularBuffer._storage.Capacity;
+            _current = _circularBuffer._storage.Array[_currentIndex];
             _iteratedCount++;
 
             return true;
@@ -81,7 +81,7 @@ public partial class CircularBuffer<T>
         /// <inheritdoc />
         public void Reset()
         {
-            if (_version != _circularBuffer._version)
+            if (_version != _circularBuffer._storage.Version)
                 throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
 
             _currentIndex = -1;

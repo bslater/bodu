@@ -77,7 +77,15 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     /// Gets the maximum accepted key length, in bytes, for this algorithm instance.
     /// </summary>
     /// <returns>The maximum number of bytes accepted as a secret key.</returns>
-    public int MaximumKeySize => this._maximumKeySize;
+    /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
+    public int MaximumKeySize
+    {
+        get
+        {
+            this.ThrowIfDisposed();
+            return this._maximumKeySize;
+        }
+    }
 
     /// <summary>
     /// Gets or sets the optional secret key used to compute a keyed MAC digest.

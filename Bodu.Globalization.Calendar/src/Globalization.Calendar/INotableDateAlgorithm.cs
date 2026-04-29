@@ -23,12 +23,12 @@ public interface INotableDateAlgorithm
 	/// </summary>
 	/// <param name="year">The target year for the calculation. Must be greater than or equal to 1.</param>
 	/// <param name="calendar">
-	/// Optional. A <see cref="SysGlobal.Calendar" /> instance representing the calendar system to use. If <c>null</c>, the default
+	/// An optional <see cref="SysGlobal.Calendar" /> instance representing the calendar system to use. When <see langword="null" />,
 	/// <see cref="SysGlobal.GregorianCalendar" /> is assumed.
 	/// </param>
 	/// <returns>
-	/// The computed <see cref="DateTime" /> representing the notable event in the given year and calendar system, or <c>null</c> if the
-	/// date cannot be determined.
+	/// The computed <see cref="DateTime" /> representing the notable event in the given year and calendar system, or
+	/// <see langword="null" /> if the date cannot be determined.
 	/// </returns>
 	/// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="year" /> is less than 1.</exception>
 	/// <exception cref="NotSupportedException">

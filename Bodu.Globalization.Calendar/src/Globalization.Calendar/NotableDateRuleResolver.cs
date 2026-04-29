@@ -24,7 +24,10 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 internal sealed class NotableDateRuleResolver
 {
+	/// <summary>A case-insensitive name-keyed lookup of every rule available for resolution, built once at construction.</summary>
 	private readonly IReadOnlyDictionary<string, NotableDateRule> _rulesByName;
+
+	/// <summary>An optional algorithm registry consulted for <see cref="DateResolutionStrategy.Algorithm" /> rules.</summary>
 	private readonly INotableDateAlgorithmRegistry? _algorithms;
 
 	/// <summary>
@@ -81,7 +84,7 @@ internal sealed class NotableDateRuleResolver
 		if (!resolving.Add(rule.Name))
 		{
 			var chain = string.Join(" -> ", resolving.Concat(new[] { rule.Name }));
-			throw new InvalidOperationException($"Circular dependency detected while resolving notable date rule '{rule.Name}': {chain}.");
+			throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.InvalidOperationException_CircularDependencyInRule, rule.Name, chain));
 		}
 
 		try
@@ -118,9 +121,17 @@ internal sealed class NotableDateRuleResolver
 						return null;
 					}
 
-					return rule.Month is { } gregorianMonth
-						? new DateTime(year, gregorianMonth, d1, 0, 0, 0, DateTimeKind.Unspecified)
-						: (DateTime?)null;
+					if (rule.Month is not { } gregorianMonth)
+						return null;
+
+					try
+					{
+						return new DateTime(year, gregorianMonth, d1, 0, 0, 0, DateTimeKind.Unspecified);
+					}
+					catch (ArgumentOutOfRangeException)
+					{
+						return null;
+					}
 
 				case DateResolutionStrategy.DayOfWeekInMonth:
 					if (rule.Month is { } m2 && rule.WeekOrdinal is { } ord && rule.DayOfWeek is { } dow)
@@ -134,7 +145,7 @@ internal sealed class NotableDateRuleResolver
 					return ResolveAlgorithm(rule, year);
 
 				default:
-					throw new NotSupportedException($"Unsupported date resolution strategy '{rule.Strategy}' on rule '{rule.Name}'.");
+					throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.NotSupportedException_UnsupportedDateResolutionStrategy, rule.Strategy, rule.Name));
 			}
 		}
 		finally
@@ -158,20 +169,27 @@ internal sealed class NotableDateRuleResolver
 			return null;
 
 		if (!_rulesByName.TryGetValue(rule.AnchorRuleName!, out var anchorRule))
-			throw new InvalidOperationException($"Anchor rule '{rule.AnchorRuleName}' referenced by '{rule.Name}' was not found.");
+			throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.InvalidOperationException_AnchorRuleNotFound, rule.AnchorRuleName, rule.Name));
 
 		var anchorDate = ResolveInternal(anchorRule, year, resolving);
 		if (anchorDate is null || rule.OffsetDays is not { } offset)
 			return null;
 
-		return anchorDate.Value.AddDays(offset);
+		try
+		{
+			return anchorDate.Value.AddDays(offset);
+		}
+		catch (ArgumentOutOfRangeException)
+		{
+			return null;
+		}
 	}
 
     /// <summary>
     /// Resolves a rule whose strategy is a registered <see cref="INotableDateAlgorithm" />,
     /// delegating to the configured algorithm registry.
     /// </summary>
-    /// <param name="rule">The rule bound to a algorithm strategy.</param>
+    /// <param name="rule">The rule bound to an algorithm strategy.</param>
     /// <param name="year">The civil year.</param>
     /// <returns>The calculated date, or <see langword="null" /> if the configured algorithm
     /// returns no date for the year.</returns>
@@ -180,7 +198,8 @@ internal sealed class NotableDateRuleResolver
 		// Prefer registry lookup (DI-friendly, decoupled from CLR type names).
 		if (!string.IsNullOrWhiteSpace(rule.AlgorithmKey)
 			&& _algorithms is not null
-			&& _algorithms.TryGet(rule.AlgorithmKey!, out var algorithm))
+			&& _algorithms.TryGet(rule.AlgorithmKey!, out var algorithm)
+			&& algorithm is not null)
 		{
 			return algorithm.GetDate(year);
 		}

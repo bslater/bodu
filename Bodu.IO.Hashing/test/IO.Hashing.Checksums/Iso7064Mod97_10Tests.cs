@@ -35,6 +35,6 @@ public sealed class Iso7064Mod97_10Tests : MultiCharCheckDigitAlgorithmTests<Iso
         Iso7064Mod97_10.Compute(body);
 
     /// <inheritdoc />
-    protected override bool IsValidStatic(ReadOnlySpan<char> valueIncludingCheck) =>
-        Iso7064Mod97_10.IsValid(valueIncludingCheck);
+    protected override bool IsValidStatic(ReadOnlySpan<char> value) =>
+        Iso7064Mod97_10.IsValid(value);
 }

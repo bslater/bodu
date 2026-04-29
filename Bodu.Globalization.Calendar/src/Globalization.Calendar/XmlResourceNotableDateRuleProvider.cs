@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Reflection;
 
 namespace Bodu.Globalization.Calendar;
@@ -19,7 +20,7 @@ namespace Bodu.Globalization.Calendar;
 /// <list type="number">
 /// <item><description>The supplied root resource is parsed.</description></item>
 /// <item><description>Each referenced source resource is loaded and recursively flattened, with cycle detection.</description></item>
-/// <item><description>For every <c>&lt;UseFrom&gt;</c> directive, the provider pulls the named rules (or every rule, when <c>&lt;UseAll&gt;</c> is present) from the source's flattened set, applies any per-directive scalar overrides, and adds the resulting rules to the local set.</description></item>
+/// <item><description>For every <c>&lt;UseFrom&gt;</c> directive, the provider pulls the named rules (or every rule when <c>&lt;UseAll&gt;</c> is present) from the source's flattened set, applies any per-directive scalar overrides, and adds the resulting rules to the local set.</description></item>
 /// <item><description>Locally declared <c>&lt;NotableDate&gt;</c> entries are added last and override any inherited rules with the same name.</description></item>
 /// </list>
 /// <para>
@@ -27,27 +28,83 @@ namespace Bodu.Globalization.Calendar;
 /// <c>&lt;Use&gt;</c> directive (or opt in via <c>&lt;UseAll /&gt;</c>) for that rule to appear in the consumer's flattened set.
 /// </para>
 /// </remarks>
+/// <example>
+/// <para>Load rules from an embedded XML resource in the entry assembly and construct a service:</para>
+/// <code>
+/// // The resource is stored as "MyApp/Calendar/Resources/custom-rules.xml" in the assembly manifest:
+/// var provider = new XmlResourceNotableDateRuleProvider(
+///     "MyApp/Calendar/Resources/custom-rules.xml",
+///     new ResourcePathResolver());
+///
+/// INotableDateService service = new NotableDateService(
+///     ruleProviders: new[] { provider },
+///     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+///
+/// // Load from a specific assembly (for example, a companion data assembly):
+/// Assembly resourceAssembly = Assembly.Load("MyApp.Resources");
+/// var crossAssemblyProvider = new XmlResourceNotableDateRuleProvider(
+///     "MyApp/Calendar/Resources/custom-rules.xml",
+///     new ResourcePathResolver(),
+///     assembly: resourceAssembly);
+///
+/// // Load from a chain of assemblies (data pack first, main library as fallback for &lt;UseFrom&gt; targets):
+/// var packProvider = new XmlResourceNotableDateRuleProvider(
+///     "MyApp/Calendar/Resources/region-us.xml",
+///     new ResourcePathResolver(),
+///     new[] { typeof(MyDataPack).Assembly, typeof(NotableDateService).Assembly });
+/// </code>
+/// </example>
 public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvider
 {
-    private readonly string _rootResourceName;
-    private readonly IResourcePathResolver _resourcePathResolver;
-    private readonly Assembly _assembly;
+	/// <summary>The logical path of the root XML resource file that seeds the flatten pipeline.</summary>
+	private readonly string _rootResourceName;
+
+	/// <summary>The path resolver used to translate relative <c>&lt;UseFrom&gt;</c> paths into fully qualified resource names.</summary>
+	private readonly IResourcePathResolver _resourcePathResolver;
+
+	/// <summary>The ordered list of assemblies searched for embedded manifest resources during flattening; the first assembly containing a requested resource wins.</summary>
+	private readonly IReadOnlyList<Assembly> _assemblies;
+
+	/// <summary>Thread-safe lazy backing store for the fully flattened rule list; populated on first call to <see cref="LoadRules" />.</summary>
 	private readonly Lazy<List<NotableDateRule>> _flattenedRules;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="XmlResourceNotableDateRuleProvider" /> class.
+    /// Initializes a new instance of the <see cref="XmlResourceNotableDateRuleProvider" /> class that resolves embedded resources
+    /// against a single assembly.
     /// </summary>
-    /// <param name="xmlResourceName">The full manifest resource name of the root XML payload. Must not be <see langword="null" />.</param>
-    /// <param name="resourcePathResolver">The full manifest resource name of the root XML payload. Must not be <see langword="null" />.</param>
-    /// <param name="assembly">The assembly containing the embedded resource(s). Defaults to the currently executing assembly.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="xmlResourceName" /> is <see langword="null" />.</exception>
+    /// <param name="xmlResourceName">The logical resource path of the root XML payload (e.g. <c>Bodu/Globalization/Calendar/Resources/global-all.xml</c>). Must not be <see langword="null" />.</param>
+    /// <param name="resourcePathResolver">The resolver used to translate relative <c>&lt;UseFrom&gt;</c> paths into fully qualified resource names. Must not be <see langword="null" />.</param>
+    /// <param name="assembly">The assembly containing the embedded resource(s). Defaults to the currently executing assembly when <see langword="null" />.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="xmlResourceName" /> or <paramref name="resourcePathResolver" /> is <see langword="null" />.</exception>
     public XmlResourceNotableDateRuleProvider(string xmlResourceName, IResourcePathResolver resourcePathResolver, Assembly? assembly = null)
-	{
-		_rootResourceName = xmlResourceName ?? throw new ArgumentNullException(nameof(xmlResourceName));
+        : this(xmlResourceName, resourcePathResolver, new[] { assembly ?? Assembly.GetExecutingAssembly() })
+	{ }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="XmlResourceNotableDateRuleProvider" /> class that resolves embedded resources
+    /// against an ordered chain of assemblies.
+    /// </summary>
+    /// <param name="xmlResourceName">The logical resource path of the root XML payload. Must not be <see langword="null" />.</param>
+    /// <param name="resourcePathResolver">The resolver used to translate relative <c>&lt;UseFrom&gt;</c> paths into fully qualified resource names. Must not be <see langword="null" />.</param>
+    /// <param name="assemblies">The ordered chain of assemblies searched for embedded resources; the first assembly containing a requested resource wins. Use this overload to layer a companion data pack over the main library, so <c>&lt;UseFrom&gt;</c> directives can resolve targets that live in a different assembly. Must not be <see langword="null" /> or empty, and must not contain <see langword="null" /> entries.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="xmlResourceName" />, <paramref name="resourcePathResolver" />, or <paramref name="assemblies" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="assemblies" /> is empty or contains a <see langword="null" /> entry.</exception>
+    public XmlResourceNotableDateRuleProvider(string xmlResourceName, IResourcePathResolver resourcePathResolver, IEnumerable<Assembly> assemblies)
+    {
+        _rootResourceName = xmlResourceName ?? throw new ArgumentNullException(nameof(xmlResourceName));
         _resourcePathResolver = resourcePathResolver ?? throw new ArgumentNullException(nameof(resourcePathResolver));
-		_assembly = assembly ?? Assembly.GetExecutingAssembly();
-		_flattenedRules = new Lazy<List<NotableDateRule>>(LoadAndFlatten, isThreadSafe: true);
-	}
+        if (assemblies is null) throw new ArgumentNullException(nameof(assemblies));
+
+        Assembly[] snapshot = assemblies.ToArray();
+        if (snapshot.Length == 0) throw new ArgumentException("At least one assembly must be supplied.", nameof(assemblies));
+        for (int i = 0; i < snapshot.Length; i++)
+        {
+            if (snapshot[i] is null) throw new ArgumentException("Assembly chain entries must not be null.", nameof(assemblies));
+        }
+
+        _assemblies = snapshot;
+        _flattenedRules = new Lazy<List<NotableDateRule>>(LoadAndFlatten, isThreadSafe: true);
+    }
 
 	/// <inheritdoc />
 	public IEnumerable<NotableDateRule> LoadRules() => _flattenedRules.Value;
@@ -71,8 +128,6 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 		return byKey.Values.ToList();
 	}
 
-
-
     /// <summary>
     /// Flattens a single parsed resource document into a rule dictionary keyed by
     /// <see cref="RuleKey" />, resolving &lt;Use&gt; directives against already-loaded sources.
@@ -89,7 +144,7 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 
 		if (!inProgress.Add(resourceName))
 			throw new InvalidOperationException(
-				$"Circular reference detected while flattening notable date resource '{resourceName}'.");
+				string.Format(CultureInfo.InvariantCulture, CalendarStrings.InvalidOperationException_CircularReferenceInResource, resourceName));
 
 		try
 		{
@@ -120,7 +175,7 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 					if (matches.Count == 0)
 					{
 						throw new InvalidOperationException(
-							$"Notable date rule '{directive.SourceRuleName}' was not found in source resource '{group.SourceResource}' (referenced from '{resourceName}').");
+							string.Format(CultureInfo.InvariantCulture, CalendarStrings.InvalidOperationException_RuleNotFoundInSource, directive.SourceRuleName, group.SourceResource, resourceName));
 					}
 
 					if (directive.ClearInherited)
@@ -177,6 +232,12 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 		}
 	}
 
+    /// <summary>
+    /// Converts a logical slash-delimited path into the dot-delimited manifest resource name used by
+    /// <see cref="System.Reflection.Assembly.GetManifestResourceStream(string)" />.
+    /// </summary>
+    /// <param name="logicalPath">The logical resource path to convert. Must not be <see langword="null" />, empty, or whitespace.</param>
+    /// <returns>The manifest resource name with slashes replaced by dots and leading/trailing separators stripped.</returns>
     private static string ToProviderPath(string logicalPath)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(logicalPath);
@@ -276,9 +337,9 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
         if (documentCache.TryGetValue(resourceName, out var cached))
 			return cached;
 
-		using var stream = _assembly.GetManifestResourceStream(resourceName)
+		using var stream = OpenManifestResourceStream(resourceName)
 			?? throw new FileNotFoundException(
-				$"Embedded XML resource '{resourceName}' was not found in assembly '{_assembly.FullName}'.");
+				string.Format(CultureInfo.InvariantCulture, CalendarStrings.FileNotFoundException_EmbeddedXmlResourceNotFound, resourceName, FormatAssemblyChain(_assemblies)));
 
 		using var reader = new StreamReader(stream);
 		var xml = reader.ReadToEnd();
@@ -287,4 +348,34 @@ public sealed class XmlResourceNotableDateRuleProvider : INotableDateRuleProvide
 		documentCache[resourceName] = document;
 		return document;
 	}
+
+    /// <summary>
+    /// Walks the configured assembly chain in order and returns the first manifest stream found for the supplied resource name.
+    /// </summary>
+    /// <param name="resourceName">The fully-qualified manifest resource name.</param>
+    /// <returns>The opened stream, or <see langword="null" /> when no assembly in the chain contains the resource.</returns>
+    private Stream? OpenManifestResourceStream(string resourceName)
+    {
+        for (int i = 0; i < _assemblies.Count; i++)
+        {
+            Stream? stream = _assemblies[i].GetManifestResourceStream(resourceName);
+            if (stream is not null)
+                return stream;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Formats the configured assembly chain as a comma-separated list of full names for inclusion in diagnostic messages.
+    /// </summary>
+    /// <param name="assemblies">The assembly chain to format.</param>
+    /// <returns>A human-readable, comma-separated list of assembly full names.</returns>
+    private static string FormatAssemblyChain(IReadOnlyList<Assembly> assemblies)
+    {
+        if (assemblies.Count == 1)
+            return assemblies[0].FullName ?? string.Empty;
+
+        return string.Join(", ", assemblies.Select(a => a.FullName ?? string.Empty));
+    }
 }

@@ -273,18 +273,36 @@ public sealed partial class NotableDateServiceTests
 	}
 
 	/// <summary>
-	/// Verifies that the parameterless constructor loads the embedded default XML resource
-	/// successfully and yields at least one notable date for a common year.
+	/// Verifies that the parameterless constructor loads the embedded minimal default XML resource successfully and yields the
+	/// single bundled rule (New Year's Day) for a common year.
 	/// </summary>
 	[TestMethod]
-    [Ignore("TODO: Need to investigate and fix the failure in this test")]
-    public void Constructor_WhenParameterless_ShouldLoadEmbeddedResourceWithoutThrowing()
+    public void Constructor_WhenParameterless_ShouldLoadEmbeddedDefaultMinimalResource()
 	{
 		var service = new NotableDateService();
 
 		IReadOnlyList<NotableDate> result = service.GetNotableDates(2026);
 
-		Assert.IsTrue(result.Count > 0, "expected the embedded NotableDates.xml to produce at least one rule for 2026");
+		Assert.IsTrue(result.Count > 0, "expected the embedded default-minimal.xml to produce at least one rule for 2026");
+		Assert.IsTrue(result.Any(d => d.Name == "New Year's Day"));
+	}
+
+	/// <summary>
+	/// Verifies that the parameterless constructor surfaces New Year's Day on 1 January and that no region-specific holiday
+	/// (for example Independence Day on 4 July) leaks into the minimal default — those rules must come from a companion data
+	/// pack such as <c>Bodu.Globalization.Calendar.Data.Americas</c>.
+	/// </summary>
+	[TestMethod]
+	public void GetNotableDates_WhenParameterless_ShouldReturnNewYearsDayAndExcludeRegionalHolidays_ForYear2026()
+	{
+		var service = new NotableDateService();
+
+		var newYears = service.GetNotableDates(new DateTime(2026, 1, 1));
+		var july4 = service.GetNotableDates(new DateTime(2026, 7, 4));
+
+		Assert.IsTrue(newYears.Any(d => d.Name == "New Year's Day"));
+		Assert.IsFalse(july4.Any(d => d.Name == "Independence Day"),
+			"Region-specific rules must not appear in the minimal default; they ship in companion data packs.");
 	}
 
 	// -----------------------------------------------------------------------------------------

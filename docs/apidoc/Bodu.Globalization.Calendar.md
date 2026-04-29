@@ -38,6 +38,18 @@ Reach for this library when a `DateTime.DayOfWeek` check is not enough: when you
 - <xref:Bodu.Globalization.Calendar.NotableDateAdjuster>, <xref:Bodu.Globalization.Calendar.IAdjustmentHandler>, <xref:Bodu.Globalization.Calendar.IAdjustmentHandlerRegistry>, <xref:Bodu.Globalization.Calendar.AdjustmentHandlerRegistry> — apply observance rules (e.g. *if a fixed holiday falls on a Saturday, observe it on the preceding Friday*) after the base date is resolved.
 - <xref:Bodu.Globalization.Calendar.AdjustmentTrigger>, <xref:Bodu.Globalization.Calendar.AdjustmentAction>, <xref:Bodu.Globalization.Calendar.AdjustmentReason>, <xref:Bodu.Globalization.Calendar.ObservanceAdjustment> — the adjustment-rule vocabulary.
 
+## Companion data packs
+
+National public-holiday data ships in three companion assemblies so it can be re-released without recompiling the main library:
+
+- **Bodu.Globalization.Calendar.Data.Americas** — United States, Canada.
+- **Bodu.Globalization.Calendar.Data.Europe** — Germany, Spain, France, United Kingdom, Ireland, Italy, Netherlands, Sweden.
+- **Bodu.Globalization.Calendar.Data.AsiaPacific** — Australia, China, India, Japan, South Korea, Malaysia, New Zealand, Singapore.
+
+Each pack exposes a static `<Pack>CalendarData` factory (for example `AmericasCalendarData.CreateUnitedStatesProvider()`) that constructs an <xref:Bodu.Globalization.Calendar.XmlResourceNotableDateRuleProvider> with the `[pack, main library]` assembly chain pre-wired. The parameterless `new NotableDateService()` constructor loads only the embedded `default-minimal.xml` (currently New Year's Day) — region-specific rules must come from one of the packs above (or your own provider).
+
+See the [Calendar data packs](../guides/calendar/data-packs.md) guide for composition patterns.
+
 ## Example
 
 ```csharp

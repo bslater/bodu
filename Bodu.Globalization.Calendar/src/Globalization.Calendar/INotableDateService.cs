@@ -13,10 +13,35 @@ namespace Bodu.Globalization.Calendar;
 /// <see cref="NotableDateRule" /> sources.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Implementations are responsible for combining base <see cref="INotableDateRuleProvider" /> sources with optional
 /// <see cref="INotableDateRuleOverrideProvider" /> layers, dispatching to the resolver and adjuster, caching results, and applying any
 /// registered <see cref="INotableDateCollisionResolver" /> and <see cref="INotableDateNameLocalizer" /> services to the output.
+/// </para>
+/// <para>
+/// The canonical implementation is <see cref="NotableDateService" />, which supports lazy per-year caching, thread-safe concurrent
+/// access, multi-day event spans, and composable <see cref="NotableDateFilter" /> predicates.
+/// </para>
 /// </remarks>
+/// <example>
+/// <para>Construct the service using the built-in global rule set, then query notable dates for Australia:</para>
+/// <code>
+/// INotableDateService service = new NotableDateService();
+///
+/// // All notable dates for Australia in 2026, ordered by date:
+/// IReadOnlyList&lt;NotableDate&gt; dates = service.GetNotableDates(2026, territoryCode: "AU");
+///
+/// // Only non-working public holidays in Australia:
+/// NotableDateFilter filter = NotableDateFilter
+///     .ForCategory(NotableDateCategory.Public)
+///     .And(NotableDateFilter.IsNonWorkingDay());
+///
+/// IReadOnlyList&lt;NotableDate&gt; holidays = service.GetNotableDates(2026, filter, "AU");
+///
+/// // Test whether Christmas Day 2026 is a non-working day for New South Wales:
+/// bool isNonWorking = service.IsNonWorkingDay(new DateTime(2026, 12, 25), "AU-NSW");
+/// </code>
+/// </example>
 public interface INotableDateService
 {
 	/// <summary>
@@ -45,6 +70,25 @@ public interface INotableDateService
 	IReadOnlyList<NotableDate> GetNotableDates(int year, string? territoryCode = null, Type? calendarType = null);
 
 	/// <summary>
+	/// Retrieves notable dates occurring within the supplied year that satisfy the supplied <paramref name="filter" />.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// The filter is applied in two stages. The primary gate is evaluated against each <see cref="NotableDateRule" /> before its date
+	/// is resolved; rules that fail the primary gate are skipped entirely. The secondary gate is then evaluated against each
+	/// materialised <see cref="NotableDate" />, discarding dates that do not satisfy the full filter criteria. Filtered queries
+	/// bypass the per-year cache so that unfiltered queries continue to return complete, cached results.
+	/// </para>
+	/// </remarks>
+	/// <param name="year">The year to query.</param>
+	/// <param name="filter">The filter to apply. Must not be <see langword="null" />.</param>
+	/// <param name="territoryCode">Optional territory scope.</param>
+	/// <param name="calendarType">Optional calendar scope.</param>
+	/// <returns>The matching notable dates ordered by anchor date.</returns>
+	/// <exception cref="ArgumentNullException">Thrown when <paramref name="filter" /> is <see langword="null" />.</exception>
+	IReadOnlyList<NotableDate> GetNotableDates(int year, NotableDateFilter filter, string? territoryCode = null, Type? calendarType = null);
+
+	/// <summary>
 	/// Retrieves every notable date intersecting the supplied inclusive range. Multi-day spans whose anchor falls outside the range
 	/// are still included if any day of the span lies within it.
 	/// </summary>
@@ -56,6 +100,27 @@ public interface INotableDateService
 	IReadOnlyList<NotableDate> GetNotableDates(DateTime startDate, DateTime endDate, string? territoryCode = null, Type? calendarType = null);
 
 	/// <summary>
+	/// Retrieves notable dates intersecting the supplied inclusive range that satisfy the supplied <paramref name="filter" />. Multi-day
+	/// spans are included when any day of the span lies within the range.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// The filter is applied in two stages. The primary gate is evaluated against each <see cref="NotableDateRule" /> before its date
+	/// is resolved; rules that fail the primary gate are skipped entirely. The secondary gate is then evaluated against each
+	/// materialised <see cref="NotableDate" />, discarding dates that do not satisfy the full filter criteria. Filtered queries
+	/// bypass the per-year cache so that unfiltered queries continue to return complete, cached results.
+	/// </para>
+	/// </remarks>
+	/// <param name="startDate">The inclusive start of the range.</param>
+	/// <param name="endDate">The inclusive end of the range.</param>
+	/// <param name="filter">The filter to apply. Must not be <see langword="null" />.</param>
+	/// <param name="territoryCode">Optional territory scope.</param>
+	/// <param name="calendarType">Optional calendar scope.</param>
+	/// <returns>The matching notable dates ordered by anchor date.</returns>
+	/// <exception cref="ArgumentNullException">Thrown when <paramref name="filter" /> is <see langword="null" />.</exception>
+	IReadOnlyList<NotableDate> GetNotableDates(DateTime startDate, DateTime endDate, NotableDateFilter filter, string? territoryCode = null, Type? calendarType = null);
+
+	/// <summary>
 	/// Retrieves every notable date that contains the supplied day, including multi-day spans whose anchor lies on a previous day.
 	/// </summary>
 	/// <param name="date">The day to query.</param>
@@ -63,6 +128,26 @@ public interface INotableDateService
 	/// <param name="calendarType">Optional calendar scope.</param>
 	/// <returns>The notable dates ordered by anchor date.</returns>
 	IReadOnlyList<NotableDate> GetNotableDates(DateTime date, string? territoryCode = null, Type? calendarType = null);
+
+	/// <summary>
+	/// Retrieves notable dates that contain the supplied day and satisfy the supplied <paramref name="filter" />, including multi-day
+	/// spans whose anchor lies on a previous day.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// The filter is applied in two stages. The primary gate is evaluated against each <see cref="NotableDateRule" /> before its date
+	/// is resolved; rules that fail the primary gate are skipped entirely. The secondary gate is then evaluated against each
+	/// materialised <see cref="NotableDate" />, discarding dates that do not satisfy the full filter criteria. Filtered queries
+	/// bypass the per-year cache so that unfiltered queries continue to return complete, cached results.
+	/// </para>
+	/// </remarks>
+	/// <param name="date">The day to query.</param>
+	/// <param name="filter">The filter to apply. Must not be <see langword="null" />.</param>
+	/// <param name="territoryCode">Optional territory scope.</param>
+	/// <param name="calendarType">Optional calendar scope.</param>
+	/// <returns>The matching notable dates ordered by anchor date.</returns>
+	/// <exception cref="ArgumentNullException">Thrown when <paramref name="filter" /> is <see langword="null" />.</exception>
+	IReadOnlyList<NotableDate> GetNotableDates(DateTime date, NotableDateFilter filter, string? territoryCode = null, Type? calendarType = null);
 
 	/// <summary>
 	/// Discards all cached notable dates so that subsequent queries regenerate them from the underlying providers.

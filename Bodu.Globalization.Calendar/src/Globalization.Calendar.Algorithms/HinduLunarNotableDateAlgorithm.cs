@@ -4,12 +4,13 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using SysGlobal = System.Globalization;
 
 namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
-/// Provides a algorithm for determining the approximate Gregorian date of a Hindu festival defined by a lunar month, paksha
+/// Provides an algorithm for determining the approximate Gregorian date of a Hindu festival defined by a lunar month, paksha
 /// (fortnight), and tithi (lunar day).
 /// </summary>
 /// <remarks>
@@ -57,11 +58,16 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 public sealed class HinduLunarNotableDateAlgorithm
 	: INotableDateAlgorithm
 {
-	// Length of a single tithi in days (synodic month / 30 tithis).
+	/// <summary>The duration of a single tithi in days, computed as the mean synodic month divided by 30 tithis.</summary>
 	private const double TithiDays = 29.530588861 / 30.0;
 
+	/// <summary>The Hindu lunar month in which the festival falls.</summary>
 	private readonly HinduLunarMonth _month;
+
+	/// <summary>The fortnight (bright or dark) within the month in which the tithi falls.</summary>
 	private readonly HinduPaksha _paksha;
+
+	/// <summary>The tithi number (1–15) within the paksha.</summary>
 	private readonly int _tithi;
 
 	/// <summary>
@@ -78,11 +84,11 @@ public sealed class HinduLunarNotableDateAlgorithm
 	public HinduLunarNotableDateAlgorithm(HinduLunarMonth month, HinduPaksha paksha, int tithi)
 	{
 		if (!Enum.IsDefined(typeof(HinduLunarMonth), month))
-			throw new ArgumentException($"'{month}' is not a defined HinduLunarMonth value.", nameof(month));
+			throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.ArgumentException_HinduLunarMonthUndefined, month), nameof(month));
 		if (!Enum.IsDefined(typeof(HinduPaksha), paksha))
-			throw new ArgumentException($"'{paksha}' is not a defined HinduPaksha value.", nameof(paksha));
+			throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.ArgumentException_HinduPakshaUndefined, paksha), nameof(paksha));
 		if (tithi < 1 || tithi > 15)
-			throw new ArgumentOutOfRangeException(nameof(tithi), "Tithi must be between 1 and 15.");
+			throw new ArgumentOutOfRangeException(nameof(tithi), CalendarStrings.ArgumentOutOfRangeException_TithiOutOfRange);
 
 		_month = month;
 		_paksha = paksha;
@@ -106,7 +112,7 @@ public sealed class HinduLunarNotableDateAlgorithm
 	public DateTime? GetDate(int year, SysGlobal.Calendar? calendar = null)
 	{
 		if (year < 1)
-			throw new ArgumentOutOfRangeException(nameof(year), "Year must be greater than or equal to 1.");
+			throw new ArgumentOutOfRangeException(nameof(year), CalendarStrings.ArgumentOutOfRangeException_YearOutOfRange);
 
 		// Find the new moon that begins the target lunar month.
 		int searchMonth = GetSearchMonth(_month);
@@ -159,6 +165,8 @@ public sealed class HinduLunarNotableDateAlgorithm
 	/// Returns the approximate Gregorian month in which the new moon starting the given Hindu lunar month typically falls.
 	/// Used to seed the new moon search with a sensible start date.
 	/// </summary>
+	/// <param name="month">The Hindu lunar month whose approximate Gregorian start month is required.</param>
+	/// <returns>The Gregorian month number (1–12) that is the best search-start approximation for the given lunar month.</returns>
 	private static int GetSearchMonth(HinduLunarMonth month) =>
 		month switch
 		{

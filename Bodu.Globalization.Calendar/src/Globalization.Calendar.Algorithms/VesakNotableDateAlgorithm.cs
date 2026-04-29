@@ -4,12 +4,13 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using SysGlobal = System.Globalization;
 
 namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
-/// Provides a algorithm for determining the Gregorian date of Vesak (Buddha Day) for a given year.
+/// Provides an algorithm for determining the Gregorian date of Vesak (Buddha Day) for a given year.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -47,7 +48,7 @@ public sealed class VesakNotableDateAlgorithm
 	public DateTime? GetDate(int year, SysGlobal.Calendar? calendar = null)
 	{
 		if (year < 1)
-			throw new ArgumentOutOfRangeException(nameof(year), "Year must be greater than or equal to 1.");
+			throw new ArgumentOutOfRangeException(nameof(year), CalendarStrings.ArgumentOutOfRangeException_YearOutOfRange);
 
 		DateTime? fullMoon = LunarPhaseAlgorithm.GetFullMoonOnOrAfter(new DateTime(year, 5, 1));
 		if (fullMoon is null)
@@ -56,6 +57,13 @@ public sealed class VesakNotableDateAlgorithm
 		return ProjectToCalendar(fullMoon.Value, calendar);
 	}
 
+	/// <summary>
+	/// Projects <paramref name="date" /> into the specified calendar system, or returns the Gregorian date unchanged when
+	/// <paramref name="calendar" /> is <see langword="null" /> or a <see cref="SysGlobal.GregorianCalendar" />.
+	/// </summary>
+	/// <param name="date">The Gregorian date to project.</param>
+	/// <param name="calendar">The target calendar system, or <see langword="null" /> for Gregorian.</param>
+	/// <returns>The date expressed in <paramref name="calendar" />, with <see cref="DateTimeKind.Unspecified" /> kind.</returns>
 	private static DateTime? ProjectToCalendar(DateTime date, SysGlobal.Calendar? calendar)
 	{
 		SysGlobal.Calendar targetCalendar = calendar ?? new SysGlobal.GregorianCalendar();

@@ -12,6 +12,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </summary>
 public sealed class DelegatingPluginTrustPolicy : IPluginTrustPolicy
 {
+	/// <summary>The delegate invoked to evaluate each candidate plugin context.</summary>
 	private readonly Func<PluginTrustContext, PluginTrustResult> _evaluator;
 
 	/// <summary>
