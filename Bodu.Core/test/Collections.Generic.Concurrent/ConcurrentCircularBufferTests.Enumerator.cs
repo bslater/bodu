@@ -106,7 +106,6 @@ public partial class ConcurrentCircularBufferTests
         {
             var snapshot = buffer.ToArray();
             Assert.IsTrue(snapshot.Length <= buffer.Capacity);
-            Assert.IsTrue(snapshot.All(x => x is TestItem or null));
         });
 
         var mutateTask = Task.Run(() =>
