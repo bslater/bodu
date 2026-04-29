@@ -116,9 +116,6 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
     private int _tail;
 
-    // Version for snapshot readers
-    private int _version;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="ConcurrentCircularBuffer{T}"/> class with default capacity and overwriting enabled.
     /// </summary>
@@ -166,7 +163,6 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
         _head = 0;
         _tail = 0;
-        _version = 0;
     }
 
     /// <summary>
@@ -717,7 +713,6 @@ public sealed partial class ConcurrentCircularBuffer<T>
                 T? value = Volatile.Read(ref slot.Value);
                 Volatile.Write(ref slot.Value, default!);
                 Volatile.Write(ref slot.Sequence, head + _capacity);
-                Interlocked.Increment(ref _version);
 
                 // AFTER removal: fire event; each handler is guarded independently so a throwing
                 // subscriber cannot prevent subsequent subscribers from receiving the notification.
@@ -781,8 +776,6 @@ public sealed partial class ConcurrentCircularBuffer<T>
                 item = Volatile.Read(ref slot.Value);
                 Volatile.Write(ref slot.Value, default!);
                 Volatile.Write(ref slot.Sequence, head + _capacity);
-
-                Interlocked.Increment(ref _version);
                 return true;
             }
             else if (diff < 0)
@@ -836,7 +829,6 @@ public sealed partial class ConcurrentCircularBuffer<T>
                 // write and publish
                 Volatile.Write(ref slot.Value, item);
                 Volatile.Write(ref slot.Sequence, tail + 1);
-                Interlocked.Increment(ref _version);
                 return true;
             }
             else if (diff < 0)
