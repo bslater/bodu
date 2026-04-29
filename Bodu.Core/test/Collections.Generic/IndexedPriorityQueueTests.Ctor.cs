@@ -182,4 +182,88 @@ public partial class IndexedPriorityQueueTests
         Assert.AreEqual(5, queue.Count);
         Assert.AreEqual(5, queue.Peek().Key); // smallest priority is element 5 with priority 95
     }
+
+    /// <summary>
+    /// Verifies that the items constructor accepts an empty <see cref="ICollection{T}" /> and produces an empty queue.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenItemsCollectionIsEmpty_ShouldCreateEmptyQueue()
+    {
+        var queue = new IndexedPriorityQueue<string, int>(Array.Empty<KeyValuePair<string, int>>());
+
+        Assert.AreEqual(0, queue.Count);
+        Assert.AreEqual(0, queue.Capacity);
+    }
+
+    /// <summary>
+    /// Verifies that the items constructor accepts an empty non-collection <see cref="IEnumerable{T}" /> and
+    /// produces an empty queue.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenItemsEnumerableIsEmpty_ShouldCreateEmptyQueue()
+    {
+        IEnumerable<KeyValuePair<string, int>> source = Enumerable.Empty<KeyValuePair<string, int>>();
+
+        var queue = new IndexedPriorityQueue<string, int>(source);
+
+        Assert.AreEqual(0, queue.Count);
+    }
+
+    /// <summary>
+    /// Verifies that supplying a reverse comparer to the items constructor produces a max-heap upon
+    /// <see cref="IndexedPriorityQueue{TElement, TPriority}.Dequeue" />.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenItemsAndReverseComparer_ShouldHeapifyAsMaxHeap()
+    {
+        IComparer<int> reverse = Comparer<int>.Create((a, b) => b.CompareTo(a));
+        var items = new[]
+        {
+            new KeyValuePair<string, int>("a", 10),
+            new KeyValuePair<string, int>("b", 30),
+            new KeyValuePair<string, int>("c", 20),
+        };
+
+        var queue = new IndexedPriorityQueue<string, int>(items, reverse, null);
+
+        Assert.AreEqual("b", queue.Peek().Key);
+    }
+
+    /// <summary>
+    /// Verifies that the items constructor uses the supplied element comparer when detecting duplicates.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenItemsContainCaseDuplicateAndComparerIsCaseInsensitive_ShouldThrowExactly()
+    {
+        var items = new[]
+        {
+            new KeyValuePair<string, int>("alpha", 1),
+            new KeyValuePair<string, int>("ALPHA", 2),
+        };
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = new IndexedPriorityQueue<string, int>(items, null, StringComparer.OrdinalIgnoreCase);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the items constructor produces a heap whose drained order is non-decreasing for a
+    /// large input that exercises the bottom-up <c>Heapify</c> path.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenItemsLarge_ShouldHeapifyToNonDecreasingDequeueOrder()
+    {
+        var rng = new Random(54321);
+        var items = Enumerable
+            .Range(0, 256)
+            .Select(i => new KeyValuePair<int, int>(i, rng.Next(0, 1_000_000)))
+            .ToArray();
+
+        var queue = new IndexedPriorityQueue<int, int>(items);
+        var drained = DrainAll(queue);
+
+        AssertNonDecreasing(drained);
+        Assert.AreEqual(256, drained.Length);
+    }
 }

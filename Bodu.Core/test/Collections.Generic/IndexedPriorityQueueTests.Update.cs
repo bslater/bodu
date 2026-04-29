@@ -125,6 +125,73 @@ public partial class IndexedPriorityQueueTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.Update" /> with a <see langword="null" /> element throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void Update_WhenElementIsNull_ShouldThrowExactly()
+    {
+        var queue = new IndexedPriorityQueue<string, int>();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            queue.Update(null!, 1);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.TryUpdate" /> with a <see langword="null" /> element throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void TryUpdate_WhenElementIsNull_ShouldThrowExactly()
+    {
+        var queue = new IndexedPriorityQueue<string, int>();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = queue.TryUpdate(null!, 1);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that updating an internal heap node (neither root nor a final leaf) repairs the heap so that
+    /// dequeue order remains non-decreasing.
+    /// </summary>
+    [TestMethod]
+    public void Update_WhenInternalNode_ShouldRepairHeap()
+    {
+        var queue = new IndexedPriorityQueue<int, int>();
+        for (int i = 0; i < 16; i++)
+            queue.Enqueue(i, i * 10);
+
+        queue.Update(7, -1);
+        queue.Update(3, 999);
+
+        var drained = DrainAll(queue);
+        AssertNonDecreasing(drained);
+        Assert.AreEqual(7, drained[0].Key);
+        Assert.AreEqual(3, drained[^1].Key);
+        Assert.AreEqual(16, drained.Length);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.Update" /> respects a reversed
+    /// priority comparer so the queue continues to behave as a max-heap after re-prioritisation.
+    /// </summary>
+    [TestMethod]
+    public void Update_WhenComparerIsReversed_ShouldPreserveMaxHeapBehaviour()
+    {
+        IComparer<int> reverse = Comparer<int>.Create((a, b) => b.CompareTo(a));
+        var queue = new IndexedPriorityQueue<string, int>(0, reverse);
+        queue.Enqueue("a", 10);
+        queue.Enqueue("b", 30);
+        queue.Enqueue("c", 20);
+
+        queue.Update("a", 100);
+
+        Assert.AreEqual("a", queue.Peek().Key);
+    }
+
+    /// <summary>
     /// Verifies that the heap remains valid after a long mixed sequence of Enqueue, Update, and Remove operations.
     /// </summary>
     [TestMethod]

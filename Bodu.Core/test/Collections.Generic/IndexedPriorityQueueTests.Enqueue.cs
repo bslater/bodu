@@ -119,4 +119,61 @@ public partial class IndexedPriorityQueueTests
 
         Assert.AreEqual("c", queue.Peek().Key);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.TryEnqueue" /> with a <see langword="null" /> element throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void TryEnqueue_WhenElementIsNull_ShouldThrowExactly()
+    {
+        var queue = new IndexedPriorityQueue<string, int>();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = queue.TryEnqueue(null!, 1);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.EnqueueOrUpdate" /> with a <see langword="null" /> element throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void EnqueueOrUpdate_WhenElementIsNull_ShouldThrowExactly()
+    {
+        var queue = new IndexedPriorityQueue<string, int>();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = queue.EnqueueOrUpdate(null!, 1);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a failed <see cref="IndexedPriorityQueue{TElement, TPriority}.TryEnqueue" /> does not overwrite the priority of the existing element.
+    /// </summary>
+    [TestMethod]
+    public void TryEnqueue_WhenElementIsDuplicate_ShouldPreserveExistingPriority()
+    {
+        var queue = new IndexedPriorityQueue<string, int>();
+        queue.Enqueue("a", 1);
+
+        bool added = queue.TryEnqueue("a", 99);
+
+        Assert.IsFalse(added);
+        Assert.AreEqual(1, queue.GetPriority("a"));
+    }
+
+    /// <summary>
+    /// Verifies that enqueuing into a queue created with zero initial capacity grows the backing storage from empty.
+    /// </summary>
+    [TestMethod]
+    public void Enqueue_WhenInitialCapacityIsZero_ShouldGrowFromEmpty()
+    {
+        var queue = new IndexedPriorityQueue<int, int>();
+
+        queue.Enqueue(1, 1);
+
+        Assert.AreEqual(1, queue.Count);
+        Assert.IsTrue(queue.Capacity >= 1);
+    }
 }

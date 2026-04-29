@@ -96,4 +96,46 @@ public partial class IndexedPriorityQueueTests
         Assert.IsFalse(queue.TryGetPriority("missing", out int priority));
         Assert.AreEqual(0, priority);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.GetPriority" /> with a <see langword="null" /> element throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void GetPriority_WhenElementIsNull_ShouldThrowExactly()
+    {
+        var queue = new IndexedPriorityQueue<string, int>();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = queue.GetPriority(null!);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.TryGetPriority" /> with a <see langword="null" /> element throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void TryGetPriority_WhenElementIsNull_ShouldThrowExactly()
+    {
+        var queue = new IndexedPriorityQueue<string, int>();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = queue.TryGetPriority(null!, out _);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.Contains" /> uses the configured
+    /// element comparer when matching case-insensitive variants.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenElementComparerIsCaseInsensitive_ShouldMatchCaseVariant()
+    {
+        var queue = new IndexedPriorityQueue<string, int>(0, null, StringComparer.OrdinalIgnoreCase);
+        queue.Enqueue("alpha", 1);
+
+        Assert.IsTrue(queue.Contains("ALPHA"));
+        Assert.AreEqual(1, queue.GetPriority("AlPhA"));
+    }
 }

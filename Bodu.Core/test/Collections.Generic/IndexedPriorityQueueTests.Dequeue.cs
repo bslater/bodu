@@ -88,6 +88,60 @@ public partial class IndexedPriorityQueueTests
     }
 
     /// <summary>
+    /// Verifies that dequeuing the only element empties the queue and clears the index.
+    /// </summary>
+    [TestMethod]
+    public void Dequeue_WhenSingleElement_ShouldEmptyQueue()
+    {
+        var queue = new IndexedPriorityQueue<string, int>();
+        queue.Enqueue("a", 1);
+
+        var head = queue.Dequeue();
+
+        Assert.AreEqual("a", head.Key);
+        Assert.AreEqual(0, queue.Count);
+        Assert.IsFalse(queue.Contains("a"));
+        Assert.IsFalse(queue.TryPeek(out _, out _));
+    }
+
+    /// <summary>
+    /// Verifies that draining a queue containing duplicate priorities yields exactly <c>Count</c> pairs in
+    /// non-decreasing priority order without losing or duplicating elements.
+    /// </summary>
+    [TestMethod]
+    public void Dequeue_WhenPrioritiesContainDuplicates_ShouldYieldEveryElementInOrder()
+    {
+        var queue = new IndexedPriorityQueue<int, int>();
+        int[] priorities = { 5, 1, 5, 3, 1, 3, 5, 1, 7 };
+        for (int i = 0; i < priorities.Length; i++)
+            queue.Enqueue(i, priorities[i]);
+
+        var drained = DrainAll(queue);
+
+        AssertNonDecreasing(drained);
+        Assert.AreEqual(priorities.Length, drained.Length);
+        CollectionAssert.AreEquivalent(
+            Enumerable.Range(0, priorities.Length).ToArray(),
+            drained.Select(p => p.Key).ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.TryDequeue" /> returns <see langword="false" />
+    /// once every element has been removed.
+    /// </summary>
+    [TestMethod]
+    public void TryDequeue_AfterAllElementsRemoved_ShouldReturnFalse()
+    {
+        var queue = new IndexedPriorityQueue<string, int>();
+        queue.Enqueue("a", 1);
+        _ = queue.Dequeue();
+
+        Assert.IsFalse(queue.TryDequeue(out string? element, out int priority));
+        Assert.IsNull(element);
+        Assert.AreEqual(0, priority);
+    }
+
+    /// <summary>
     /// Verifies that with a reverse priority comparer the queue behaves as a max-heap.
     /// </summary>
     [TestMethod]
