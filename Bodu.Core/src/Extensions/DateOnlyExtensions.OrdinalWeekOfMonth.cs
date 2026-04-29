@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.OrdinalWeekOfMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -11,20 +11,13 @@ namespace Bodu.Extensions;
 public static partial class DateOnlyExtensions
 {
     /// <summary>
-    /// Returns the ordinal occurrence of the weekday (e.g., first, second, third) for the specified <see cref="DateOnly"/> within its month.
+    /// Returns the <see cref="WeekOfMonthOrdinal"/> represented by the specified <see cref="DateOnly"/>, indicating the ordinal occurrence of its <see cref="DateOnly.DayOfWeek"/> within the month.
     /// </summary>
-    /// <param name="date">The <see cref="DateOnly"/> to evaluate.</param>
-    /// <returns>
-    /// A <see cref="WeekOfMonthOrdinal"/> value representing which occurrence of the <see cref="DateOnly.DayOfWeek"/> the given date
-    /// is, within the same calendar month (e.g., the 2nd Tuesday).
-    /// </returns>
+    /// <param name="date">The date value to evaluate.</param>
+    /// <returns>A <see cref="WeekOfMonthOrdinal"/> value indicating which occurrence of the weekday <paramref name="date"/> represents within its calendar month.</returns>
     /// <remarks>
-    /// The method calculates how many full weeks have passed since the first day of the month to determine the ordinal position of the
-    /// weekday for the given <paramref name="date"/>.
-    /// <para>
-    /// <b>Note:</b> The <see cref="WeekOfMonthOrdinal.Fifth"/> value is uncommon and only applies to months that contain five
-    /// occurrences of the specified <see cref="DayOfWeek"/>.
-    /// </para>
+    /// <para>The result is calculated by counting how many full seven-day intervals have passed since the start of the month, based on <see cref="DateOnly.Day"/>. For example, the 1st through 7th of the month yield <see cref="WeekOfMonthOrdinal.First"/>, while the 8th through 14th yield <see cref="WeekOfMonthOrdinal.Second"/>, and so on.</para>
+    /// <para><see cref="WeekOfMonthOrdinal.Fifth"/> is only returned when a month contains five occurrences of the given <see cref="DateOnly.DayOfWeek"/>.</para>
     /// </remarks>
     public static WeekOfMonthOrdinal OrdinalWeekOfMonth(this DateOnly date)
     {

@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.LastDayOfQuarter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -11,97 +11,33 @@ namespace Bodu.Extensions;
 public static partial class DateOnlyExtensions
 {
     /// <summary>
-    /// Returns a <see cref="DateOnly"/> representing the last day of the calendar quarter for the specified <paramref name="date"/>.
+    /// Returns a new <see cref="DateOnly"/> representing the last day of the calendar quarter that contains the specified <paramref name="date"/>, using the standard calendar quarter definition.
     /// </summary>
-    /// <param name="date">The <see cref="DateOnly"/> whose quarter is evaluated.</param>
-    /// <returns>A <see cref="DateOnly"/> value representing the last day of the quarter that includes <paramref name="date"/>.</returns>
+    /// <param name="date">The date value used to determine the containing quarter.</param>
+    /// <returns>A <see cref="DateOnly"/> value set to the last day of the quarter that contains <paramref name="date"/>.</returns>
     /// <remarks>
-    /// This method uses the standard calendar quarter definition:
+    /// <para>This overload uses the standard calendar alignment defined by <see cref="CalendarQuarterDefinition.JanuaryToDecember"/>:</para>
     /// <list type="bullet">
-    /// <item>
-    /// <term>Q1</term>
-    /// <description>January–March</description>
-    /// </item>
-    /// <item>
-    /// <term>Q2</term>
-    /// <description>April–June</description>
-    /// </item>
-    /// <item>
-    /// <term>Q3</term>
-    /// <description>July–September</description>
-    /// </item>
-    /// <item>
-    /// <term>Q4</term>
-    /// <description>October–December</description>
-    /// </item>
+    /// <item><term>Q1</term><description>January – March</description></item>
+    /// <item><term>Q2</term><description>April – June</description></item>
+    /// <item><term>Q3</term><description>July – September</description></item>
+    /// <item><term>Q4</term><description>October – December</description></item>
     /// </list>
     /// </remarks>
     public static DateOnly LastDayOfQuarter(this DateOnly date) => LastDayOfQuarter(date, CalendarQuarterDefinition.JanuaryToDecember);
 
     /// <summary>
-    /// Returns a <see cref="DateOnly"/> representing the last day of the specified <paramref name="quarter"/> in the given
-    /// <paramref name="year"/>, using the standard month-aligned calendar quarter definition.
+    /// Returns a new <see cref="DateOnly"/> representing the last day of the quarter that contains the specified <paramref name="date"/>, using the specified calendar quarter definition.
     /// </summary>
-    /// <param name="quarter">
-    /// The quarter number to evaluate (1 through 4), based on the conventional calendar quarters: Q1 = January–March, Q2 = April–June,
-    /// Q3 = July–September, Q4 = October–December.
-    /// </param>
-    /// <param name="year">
-    /// The calendar year used to evaluate the quarter. The returned date will represent the last day of the quarter relative to this year.
-    /// </param>
-    /// <returns>A <see cref="DateOnly"/> representing the final day of the specified calendar quarter in the given year.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="quarter"/> is not between 1 and 4 (inclusive).</exception>
+    /// <param name="date">The date value used to determine the containing quarter.</param>
+    /// <param name="definition">The <see cref="CalendarQuarterDefinition"/> that determines how quarter boundaries are aligned.</param>
+    /// <returns>A <see cref="DateOnly"/> value set to the last day of the corresponding quarter.</returns>
     /// <remarks>
-    /// <para>This method uses the <see cref="CalendarQuarterDefinition.JanuaryToDecember"/> structure as the default quarter system:</para>
-    /// <list type="bullet">
-    /// <item>
-    /// <term>Q1</term>
-    /// <description>January 1 – March 31</description>
-    /// </item>
-    /// <item>
-    /// <term>Q2</term>
-    /// <description>April 1 – June 30</description>
-    /// </item>
-    /// <item>
-    /// <term>Q3</term>
-    /// <description>July 1 – September 30</description>
-    /// </item>
-    /// <item>
-    /// <term>Q4</term>
-    /// <description>October 1 – December 31</description>
-    /// </item>
-    /// </list>
-    /// <para>
-    /// To evaluate alternate fiscal or day-aligned definitions, use the
-    /// <see cref="LastDayOfQuarter(CalendarQuarterDefinition, int, int)"/> or provider-based overloads.
-    /// </para>
+    /// <para>The <paramref name="definition"/> controls whether quarters are aligned to the first day of a month (e.g. January – March) or anchored to a custom day-of-month boundary.</para>
+    /// <para>For provider-driven (e.g. 4-4-5 fiscal) quarters, use the <see cref="LastDayOfQuarter(DateOnly, IQuarterDefinitionProvider)"/> overload instead.</para>
     /// </remarks>
-    public static DateOnly LastDayOfQuarter(int quarter, int year) => LastDayOfQuarter(CalendarQuarterDefinition.JanuaryToDecember, quarter, year);
-
-    /// <summary>
-    /// Returns the last day of the quarter that includes the specified <paramref name="date"/>, based on the provided <see cref="CalendarQuarterDefinition"/>.
-    /// </summary>
-    /// <param name="date">
-    /// The <see cref="DateOnly"/> to evaluate. The returned value will be the final calendar day of the quarter that contains this
-    /// date, as defined by the selected quarter structure.
-    /// </param>
-    /// <param name="definition">Specifies the quarter definition used to determine the last date of the quarter.</param>
-    /// <returns>A <see cref="DateOnly"/> representing the last day of the determined quarter.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="definition"/> is not a valid member of the <see cref="CalendarQuarterDefinition"/> enumeration.
-    /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown if <paramref name="definition"/> is <see cref="CalendarQuarterDefinition.Custom"/>. Use the
-    /// <see cref="LastDayOfQuarter(DateOnly, IQuarterDefinitionProvider)"/> overload with a custom
-    /// <see cref="IQuarterDefinitionProvider"/> implementation in this case.
-    /// </exception>
-    /// <remarks>
-    /// <para>
-    /// This method supports both month-aligned and day-aligned quarter structures. When the definition does not align to the first day
-    /// of a month, the result is computed based on the anchor day and adjusted accordingly.
-    /// </para>
-    /// <para>For non-standard quarter systems (e.g., 4-4-5 or 13-week models), use the provider-based overload <see cref="LastDayOfQuarter(DateOnly, IQuarterDefinitionProvider)"/>.</para>
-    /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="definition"/> is not a defined value of the <see cref="CalendarQuarterDefinition"/> enumeration.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if <paramref name="definition"/> is <see cref="CalendarQuarterDefinition.Custom"/>; use the provider-based overload instead.</exception>
     public static DateOnly LastDayOfQuarter(this DateOnly date, CalendarQuarterDefinition definition)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(definition);
@@ -115,31 +51,49 @@ public static partial class DateOnlyExtensions
     }
 
     /// <summary>
-    /// Returns the last day of the specified <paramref name="quarter"/> in the given <paramref name="year"/>, based on the provided <see cref="CalendarQuarterDefinition"/>.
+    /// Returns a new <see cref="DateOnly"/> representing the last day of the quarter that contains the specified <paramref name="date"/>, using a custom <see cref="IQuarterDefinitionProvider"/>.
     /// </summary>
-    /// <param name="definition">Specifies the quarter definition used to determine the last date of the quarter.</param>
-    /// <param name="quarter">
-    /// The quarter number to evaluate (1 through 4). Represents the Nth quarter following the definition’s anchor month and day.
-    /// </param>
-    /// <param name="year">
-    /// The reference calendar year. The result will represent the end date of the specified quarter relative to this year. If the
-    /// quarter ends in the next calendar year (based on modular month arithmetic), the year will be incremented accordingly.
-    /// </param>
-    /// <returns>A <see cref="DateOnly"/> representing the last day of the specified quarter in the applicable year.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="quarter"/> is not between 1 and 4 (inclusive), or if <paramref name="definition"/> is not a defined
-    /// value of the <see cref="CalendarQuarterDefinition"/> enumeration.
-    /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown if <paramref name="definition"/> is <see cref="CalendarQuarterDefinition.Custom"/>, which requires a provider-based
-    /// overload. Use the <see cref="LastDayOfQuarter(DateOnly, IQuarterDefinitionProvider)"/> method instead.
-    /// </exception>
+    /// <param name="date">The date value used to determine the containing quarter.</param>
+    /// <param name="provider">The <see cref="IQuarterDefinitionProvider"/> that defines custom quarter boundaries. Must not be <see langword="null"/>.</param>
+    /// <returns>A <see cref="DateOnly"/> value set to the last day of the quarter containing <paramref name="date"/>.</returns>
     /// <remarks>
-    /// <para>For month-aligned definitions (e.g., <c>07</c> for July), each quarter ends on the last day of the third month.</para>
-    /// <para>
-    /// For day-aligned definitions (e.g., <c>0406</c> for April 6), each quarter ends the day before the next quarter’s anchor day.
-    /// </para>
+    /// <para>This overload supports advanced or domain-specific quarter systems by delegating boundary logic to the supplied <paramref name="provider"/> — for example, 4-4-5 retail calendars or regional fiscal quarters.</para>
     /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="provider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="provider"/> returns a date outside the range of <see cref="DateOnly.MinValue"/> and <see cref="DateOnly.MaxValue"/>.</exception>
+    public static DateOnly LastDayOfQuarter(this DateOnly date, IQuarterDefinitionProvider provider)
+    {
+        ThrowHelper.ThrowIfNull(provider);
+        return provider.GetQuarterEndDate(date);
+    }
+
+    /// <summary>
+    /// Returns a new <see cref="DateOnly"/> representing the last day of the specified calendar <paramref name="quarter"/> in the given <paramref name="year"/>, using the standard calendar quarter definition.
+    /// </summary>
+    /// <param name="quarter">The quarter number, from 1 (Jan – Mar) through 4 (Oct – Dec).</param>
+    /// <param name="year">The calendar year of the result. Must be between the <c>Year</c> property values of <see cref="DateOnly.MinValue"/> and <see cref="DateOnly.MaxValue"/>, inclusive.</param>
+    /// <returns>A <see cref="DateOnly"/> value set to the last day of the specified quarter and year.</returns>
+    /// <remarks>
+    /// <para>This overload uses the standard calendar alignment defined by <see cref="CalendarQuarterDefinition.JanuaryToDecember"/>.</para>
+    /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="quarter"/> is less than 1 or greater than 4.</exception>
+    public static DateOnly LastDayOfQuarter(int quarter, int year) => LastDayOfQuarter(CalendarQuarterDefinition.JanuaryToDecember, quarter, year);
+
+    /// <summary>
+    /// Returns a new <see cref="DateOnly"/> representing the last day of the specified <paramref name="quarter"/> and <paramref name="year"/>, using the supplied calendar quarter definition.
+    /// </summary>
+    /// <param name="definition">The <see cref="CalendarQuarterDefinition"/> that determines how quarters are aligned.</param>
+    /// <param name="quarter">The quarter number, from 1 through 4.</param>
+    /// <param name="year">The calendar year of the result. Must be between the <c>Year</c> property values of <see cref="DateOnly.MinValue"/> and <see cref="DateOnly.MaxValue"/>, inclusive. If the quarter ends in the next calendar year (based on the definition's anchor), the year will be incremented accordingly.</param>
+    /// <returns>A <see cref="DateOnly"/> value set to the last day of the specified quarter.</returns>
+    /// <remarks>
+    /// <para>The <paramref name="definition"/> controls whether quarters are aligned to the first day of a month or anchored to a custom day-of-month boundary.</para>
+    /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="quarter"/> is less than 1 or greater than 4,
+    /// -or- <paramref name="definition"/> is not a defined value of the <see cref="CalendarQuarterDefinition"/> enumeration.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">Thrown if <paramref name="definition"/> is <see cref="CalendarQuarterDefinition.Custom"/>; use a provider-based overload instead.</exception>
     public static DateOnly LastDayOfQuarter(CalendarQuarterDefinition definition, int quarter, int year)
     {
         ThrowHelper.ThrowIfOutOfRange(quarter, 1, 4);
@@ -150,23 +104,5 @@ public static partial class DateOnlyExtensions
                 string.Format(ResourceStrings.Arg_Required_ProviderInterface, nameof(IQuarterDefinitionProvider)));
 
         return DateOnly.FromDayNumber(ComputeQuarterEndDayNumber(year, quarter, GetQuarterDefinition(definition)));
-    }
-
-    /// <summary>
-    /// Returns the last day of the quarter based on a custom <see cref="IQuarterDefinitionProvider"/> implementation.
-    /// </summary>
-    /// <param name="date">The <see cref="DateOnly"/> value whose quarter is being evaluated.</param>
-    /// <param name="provider">The <see cref="IQuarterDefinitionProvider"/> that defines custom quarter logic.</param>
-    /// <returns>A <see cref="DateOnly"/> representing the last calendar day of the applicable custom quarter.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="provider"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="provider"/> returns an invalid quarter boundary.</exception>
-    /// <remarks>
-    /// This method supports advanced quarter systems such as 4-4-5 accounting or domain-specific fiscal quarters by delegating logic to
-    /// the specified <paramref name="provider"/>.
-    /// </remarks>
-    public static DateOnly LastDayOfQuarter(this DateOnly date, IQuarterDefinitionProvider provider)
-    {
-        ThrowHelper.ThrowIfNull(provider);
-        return provider.GetQuarterEndDate(date);
     }
 }

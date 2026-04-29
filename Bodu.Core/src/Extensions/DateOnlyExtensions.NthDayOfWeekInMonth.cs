@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.NthDayOfWeekInMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -11,30 +11,19 @@ namespace Bodu.Extensions;
 public static partial class DateOnlyExtensions
 {
     /// <summary>
-    /// Returns a <see cref="DateOnly"/> representing the Nth occurrence of the specified <see cref="DayOfWeek"/> in the same month
-    /// and year as the given <paramref name="date"/>.
+    /// Returns a new <see cref="DateOnly"/> representing the specified ordinal occurrence of a <see cref="DayOfWeek"/> within the same calendar month and year as the specified <paramref name="date"/>.
     /// </summary>
-    /// <param name="date">The input <see cref="DateOnly"/> providing the month and year context (the day component is ignored).</param>
-    /// <param name="dayOfWeek">The day of the week to locate within the month.</param>
-    /// <param name="ordinal">
-    /// The ordinal occurrence to locate, such as <see cref="WeekOfMonthOrdinal.First"/>, <see cref="WeekOfMonthOrdinal.Second"/>, or <see cref="WeekOfMonthOrdinal.Last"/>.
-    /// <para>
-    /// <b>Note:</b><see cref="WeekOfMonthOrdinal.Fifth"/> only applies when a fifth instance of the specified weekday exists in the month.
-    /// </para>
-    /// </param>
-    /// <returns>
-    /// A <see cref="DateOnly"/> representing the specified Nth occurrence of <paramref name="dayOfWeek"/> within the same month and
-    /// year as <paramref name="date"/>.
-    /// </returns>
+    /// <param name="date">The date value whose month and year are used to determine the result. The day component is ignored.</param>
+    /// <param name="dayOfWeek">The <see cref="DayOfWeek"/> to locate within the month. For example, <see cref="DayOfWeek.Monday"/> returns the nth Monday.</param>
+    /// <param name="ordinal">The ordinal occurrence to return. Valid values are <see cref="WeekOfMonthOrdinal.First"/>, <see cref="WeekOfMonthOrdinal.Second"/>, <see cref="WeekOfMonthOrdinal.Third"/>, <see cref="WeekOfMonthOrdinal.Fourth"/>, <see cref="WeekOfMonthOrdinal.Fifth"/>, and <see cref="WeekOfMonthOrdinal.Last"/>. <see cref="WeekOfMonthOrdinal.Fifth"/> is valid only in months where five matching weekdays occur.</param>
+    /// <returns>A <see cref="DateOnly"/> value set to the requested occurrence of <paramref name="dayOfWeek"/> within the same calendar month and year as <paramref name="date"/>.</returns>
     /// <remarks>
-    /// <para>
-    /// If <paramref name="ordinal"/> is <see cref="WeekOfMonthOrdinal.Last"/>, the method returns the final matching weekday in the
-    /// month. For all other values, the result is calculated by counting from the first occurrence of the weekday in the month.
-    /// </para>
+    /// <para>For <see cref="WeekOfMonthOrdinal.Last"/>, the method returns the final matching <paramref name="dayOfWeek"/> in the month. For other ordinal values, the method locates the first matching weekday and offsets by a multiple of seven days to reach the desired ordinal.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="dayOfWeek"/> or <paramref name="ordinal"/> is not a defined enumeration value, or if the specified
-    /// occurrence does not exist within the month.
+    /// Thrown if <paramref name="dayOfWeek"/> is not a defined value of the <see cref="DayOfWeek"/> enumeration,
+    /// -or- <paramref name="ordinal"/> is not a defined value of the <see cref="WeekOfMonthOrdinal"/> enumeration,
+    /// -or- the requested <paramref name="ordinal"/> does not occur within the month (for example, a fifth Thursday in February).
     /// </exception>
     public static DateOnly NthDayOfWeekInMonth(this DateOnly date, DayOfWeek dayOfWeek, WeekOfMonthOrdinal ordinal)
     {
@@ -64,29 +53,23 @@ public static partial class DateOnlyExtensions
     }
 
     /// <summary>
-    /// Calculates the date of the Nth occurrence of a specified day of the week within a given month and year.
+    /// Returns a new <see cref="DateOnly"/> representing the specified ordinal occurrence of a <see cref="DayOfWeek"/> within the given calendar <paramref name="month"/> and <paramref name="year"/>.
     /// </summary>
-    /// <param name="year">The year for which to calculate the date. Must be between the <see cref="DateOnly.MinValue"/> and <see cref="DateOnly.MaxValue"/>.</param>
-    /// <param name="month">The month (1–12) for which to calculate the date.</param>
-    /// <param name="dayOfWeek">The <see cref="DayOfWeek"/> to find within the specified month.</param>
-    /// <param name="ordinal">
-    /// The ordinal occurrence of the specified day of the week to return (e.g. First, Second, Third, Fourth, Last). If the specified
-    /// ordinal does not occur in the given month (e.g., a fifth Monday in February), an <see cref="ArgumentOutOfRangeException"/> is thrown.
-    /// </param>
-    /// <returns>
-    /// A <see cref="DateOnly"/> representing the Nth occurrence of the specified <paramref name="dayOfWeek"/> in the given
-    /// <paramref name="month"/> and <paramref name="year"/>.
-    /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if the specified <paramref name="ordinal"/> does not correspond to a valid date in the given month.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown if the <paramref name="dayOfWeek"/> or <paramref name="ordinal"/> is not a defined enumeration value.
-    /// </exception>
+    /// <param name="year">The calendar year of the result. Must be between the <c>Year</c> property values of <see cref="DateOnly.MinValue"/> and <see cref="DateOnly.MaxValue"/>, inclusive.</param>
+    /// <param name="month">The calendar month of the result. Must be between 1 and 12, inclusive, where 1 represents January and 12 represents December.</param>
+    /// <param name="dayOfWeek">The <see cref="DayOfWeek"/> to locate within the month. For example, <see cref="DayOfWeek.Tuesday"/> returns the nth Tuesday.</param>
+    /// <param name="ordinal">The ordinal occurrence to return. Valid values are <see cref="WeekOfMonthOrdinal.First"/>, <see cref="WeekOfMonthOrdinal.Second"/>, <see cref="WeekOfMonthOrdinal.Third"/>, <see cref="WeekOfMonthOrdinal.Fourth"/>, <see cref="WeekOfMonthOrdinal.Fifth"/>, and <see cref="WeekOfMonthOrdinal.Last"/>. <see cref="WeekOfMonthOrdinal.Fifth"/> is valid only in months where five matching weekdays occur.</param>
+    /// <returns>A <see cref="DateOnly"/> value set to the requested occurrence of <paramref name="dayOfWeek"/> within the specified <paramref name="year"/> and <paramref name="month"/>.</returns>
     /// <remarks>
-    /// For <see cref="WeekOfMonthOrdinal.Last"/>, the last matching day of the week in the month is returned. For other ordinal
-    /// values, the method starts from the first matching day and adds full weeks to locate the Nth occurrence.
+    /// <para>For <see cref="WeekOfMonthOrdinal.Last"/>, the method returns the final matching <paramref name="dayOfWeek"/> in the month. For other ordinal values, the method locates the first matching weekday and offsets by a multiple of seven days to reach the desired ordinal.</para>
     /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="year"/> is less than the <c>Year</c> of <see cref="DateOnly.MinValue"/> or greater than that of <see cref="DateOnly.MaxValue"/>,
+    /// -or- <paramref name="month"/> is less than 1 or greater than 12,
+    /// -or- <paramref name="dayOfWeek"/> is not a defined value of the <see cref="DayOfWeek"/> enumeration,
+    /// -or- <paramref name="ordinal"/> is not a defined value of the <see cref="WeekOfMonthOrdinal"/> enumeration,
+    /// -or- the requested <paramref name="ordinal"/> does not occur within the month (for example, a fifth Thursday in February).
+    /// </exception>
     public static DateOnly NthDayOfWeekInMonth(int year, int month, DayOfWeek dayOfWeek, WeekOfMonthOrdinal ordinal)
     {
         ThrowHelper.ThrowIfOutOfRange(year, DateOnly.MinValue.Year, DateOnly.MaxValue.Year);
