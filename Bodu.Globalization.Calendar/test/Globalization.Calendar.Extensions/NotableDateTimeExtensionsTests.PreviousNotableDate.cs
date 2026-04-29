@@ -121,4 +121,74 @@ public partial class NotableDateTimeExtensionsTests
             _ = new DateTime(2026, 1, 1).PreviousNotableDate(service, filter: null!);
         });
     }
+
+    /// <summary>
+    /// Verifies that, with no rules configured, the search returns <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void PreviousNotableDate_WhenNoRulesConfigured_ShouldReturnNull()
+    {
+        NotableDateService service = BuildService();
+
+        NotableDate? result = new DateTime(2026, 1, 1).PreviousNotableDate(service);
+
+        Assert.IsNull(result);
+    }
+
+    /// <summary>
+    /// Verifies that when every configured rule resolves after <paramref name="dateTime" /> in the only resolvable years the search
+    /// returns <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void PreviousNotableDate_WhenNoRuleResolvesBeforeInput_ShouldReturnNull()
+    {
+        NotableDateService service = BuildService(Fixed("Holiday", 12, 31));
+
+        // Search starts at year 1; the only rule resolves to 0001-12-31 which is after the input — so no earlier year contains a hit.
+        NotableDate? result = new DateTime(1, 1, 1).PreviousNotableDate(service);
+
+        Assert.IsNull(result);
+    }
+
+    /// <summary>
+    /// Verifies that when a filter excludes every rule the search returns <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void PreviousNotableDate_WhenFilterExcludesEveryRule_ShouldReturnNull()
+    {
+        NotableDateService service = BuildService(Fixed("Festival", 4, 1, NotableDateCategory.Cultural));
+        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
+
+        NotableDate? result = new DateTime(1, 6, 15).PreviousNotableDate(service, filter);
+
+        Assert.IsNull(result);
+    }
+
+    /// <summary>
+    /// Verifies that an input lying inside a multi-day span is treated as after the span's anchor; the search returns the same span.
+    /// </summary>
+    [TestMethod]
+    public void PreviousNotableDate_WhenInputLiesInsideMultiDaySpan_ShouldReturnSpan()
+    {
+        NotableDateRule festival = Fixed("Festival", 6, 1) with { DurationDays = 5 };
+        NotableDateService service = BuildService(festival);
+
+        NotableDate? result = new DateTime(2026, 6, 3).PreviousNotableDate(service);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual("Festival", result.Name);
+        Assert.AreEqual(new DateTime(2026, 6, 1), result.Date);
+    }
+
+    /// <summary>
+    /// Verifies that supplying a <see langword="null" /> filter to the ambient overload throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void PreviousNotableDate_WhenAmbientFilterIsNull_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new DateTime(2026, 1, 1).PreviousNotableDate(filter: null!);
+        });
+    }
 }
