@@ -85,4 +85,30 @@ public partial class NotableDateTimeExtensionsTests
             _ = new DateTime(2026, 1, 1).GetNotableDates(service: null!);
         });
     }
+
+    /// <summary>
+    /// Verifies that supplying a <see langword="null" /> filter to the explicit-service overload throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void GetNotableDates_WhenExplicitFilterIsNull_ShouldThrowArgumentNullException()
+    {
+        NotableDateService service = BuildService();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new DateTime(2026, 1, 1).GetNotableDates(service, filter: null!);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that supplying a <see langword="null" /> filter to the ambient overload throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void GetNotableDates_WhenAmbientFilterIsNull_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new DateTime(2026, 1, 1).GetNotableDates(filter: null!);
+        });
+    }
 }

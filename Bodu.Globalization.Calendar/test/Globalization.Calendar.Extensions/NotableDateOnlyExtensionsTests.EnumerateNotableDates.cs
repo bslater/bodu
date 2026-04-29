@@ -71,4 +71,16 @@ public partial class NotableDateOnlyExtensionsTests
             _ = new DateOnly(2026, 1, 1).EnumerateNotableDates(new DateOnly(2026, 12, 31), service, filter: null!);
         });
     }
+
+    /// <summary>
+    /// Verifies that supplying a <see langword="null" /> filter to the ambient overload throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void EnumerateNotableDates_WhenAmbientFilterIsNull_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new DateOnly(2026, 1, 1).EnumerateNotableDates(new DateOnly(2026, 12, 31), filter: null!);
+        });
+    }
 }
