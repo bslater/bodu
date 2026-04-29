@@ -8,8 +8,10 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Concrete test class that exercises the <see cref="BlockCipherTransformTests{TTest, TCryptoTransform}" /> base tests against the
-/// wide-block tweakable <see cref="SerpentTransform" /> implementation (using <see cref="Serpent256" /> as the backing
-/// algorithm).
+/// wide-block tweakable <see cref="SerpentTransform" /> implementation, distinct from the standardised 128-bit
+/// <see cref="Serpent128Transform" /> covered by <see cref="Serpent128TransformTests" />. The wide-block engine has no published
+/// reference vectors, so this test class only exercises the transform-tier behavioural surface (construction, raw-block
+/// transform, disposal); KAT coverage is omitted by design and tracked separately — see issue #142.
 /// </summary>
 [TestClass]
 internal sealed class SerpentTransformTests

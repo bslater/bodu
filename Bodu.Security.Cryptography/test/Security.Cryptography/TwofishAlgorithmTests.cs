@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="TwofishTests.cs" company="PlaceholderCompany">
+// <copyright file="TwofishAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,9 +8,13 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
+/// <summary>
+/// Exercises the <see cref="Twofish" /> algorithm class against the shared <see cref="SymmetricAlgorithmTests{TTest, TAlgorithm}" />
+/// suite, verifying constructor defaults, key and IV generation, encryptor and decryptor creation, and disposal behaviour.
+/// </summary>
 [TestClass]
-public sealed partial class TwofishTests
-    : SymmetricAlgorithmTests<TwofishTests, Twofish>
+public sealed partial class TwofishAlgorithmTests
+    : SymmetricAlgorithmTests<TwofishAlgorithmTests, Twofish>
 {
     /// <inheritdoc />
     protected override Twofish CreateAlgorithm() => Twofish.Create();

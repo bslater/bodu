@@ -195,44 +195,4 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
             ExpectedOutput = answer.Ciphertext,
             CipherFactory = () => cipherFactory(answer),
         });
-
-    ///// <summary>
-    ///// Returns a fixed, deterministic key for use in tests that require stable output across runs.
-    ///// </summary>
-    ///// <param name="start">
-    ///// The first byte value in the generated sequence. Each subsequent byte is incremented by one from this starting value.
-    ///// </param>
-    ///// <returns>
-    ///// A non-null byte array containing <see cref="ExpectedKeySize" /> bytes of deterministic key material.
-    ///// </returns>
-    ///// <remarks>
-    ///// <para>
-    ///// The default implementation returns a sequence of incrementing byte values beginning at <paramref name="start" />
-    ///// and continuing for <see cref="ExpectedKeySize" /> bytes.
-    ///// </para>
-    ///// <para>
-    ///// Override this method if the algorithm requires key material with a specific structure, clamping, formatting,
-    ///// or other transformation in order to be valid for testing.
-    ///// </para>
-    ///// </remarks>
-    //protected virtual byte[] GetDeterministicKey(byte start) =>
-    //    CryptoTestUtilities.CreateIncrementalByteSequence(start, this.ExpectedKeySize);
-
-    ///// <summary>
-    ///// Returns a fixed, deterministic key for use in tests that require stable output across runs.
-    ///// </summary>
-    ///// <returns>
-    ///// A non-null byte array containing <see cref="ExpectedKeySize" /> bytes of deterministic key material.
-    ///// </returns>
-    ///// <remarks>
-    ///// <para>
-    ///// The default implementation calls <see cref="GetDeterministicKey(byte)" /> with a starting byte value of <c>0x10</c>.
-    ///// </para>
-    ///// <para>
-    ///// Override this method, or <see cref="GetDeterministicKey(byte)" />, if the algorithm requires key material
-    ///// with a specific structure, clamping, formatting, or other transformation in order to be valid for testing.
-    ///// </para>
-    ///// </remarks>
-    //protected virtual byte[] GetDeterministicKey() =>
-    //    this.GetDeterministicKey(0x10);
 }

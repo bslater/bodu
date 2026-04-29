@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="TwofishTests.CreateEncryptor.cs" company="PlaceholderCompany">
+// <copyright file="TwofishAlgorithmTests.CreateEncryptor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
-public sealed partial class TwofishTests
+public sealed partial class TwofishAlgorithmTests
 {
     /// <summary>
     /// Verifies that <see cref="Twofish.CreateEncryptor(byte[], byte[])" /> with an IV that is shorter than

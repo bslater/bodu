@@ -14,14 +14,11 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Skipjack pre-dates the published NIST KAT corpora, so the canonical published vectors are the
-/// single-bit-key avalanche cases used as a key-schedule sanity check by every reference implementation.
-/// They are sufficient to detect any divergence in the round-key byte ordering or the Rule&#160;A / Rule&#160;B
-/// alternation against the published cipher description.
-/// </para>
-/// <para>
-/// TODO(gh-144): Decide whether the current corpus is canonical (close as <c>not_planned</c>) or extend
-/// with derived chained vectors. See <see cref="BlockCipherKnownAnswer" /> for the gap policy.
+/// The corpus combines two well-established sources: the three single-bit-key avalanche cases (NSA Skipjack
+/// reference / Bouncy Castle), and the canonical FIPS 185 Section 8 vector reproduced from Bouncy Castle's
+/// <c>SkipjackTest.java</c>. Together they exercise both key-schedule sanity (avalanche) and the published
+/// reference round-trip (FIPS 185), sufficient to detect any divergence in round-key byte ordering or the
+/// Rule&#160;A / Rule&#160;B alternation. See issue #144 for the corpus decision history.
 /// </para>
 /// </remarks>
 internal static class SkipjackKnownAnswers
@@ -36,6 +33,8 @@ internal static class SkipjackKnownAnswers
     private const string AllZeroPlaintext = "0000000000000000";
 
     private const string ProfileNsaReference = "NSA Skipjack reference / Bouncy Castle";
+
+    private const string ProfileFips185 = "FIPS 185 Section 8 / Bouncy Castle SkipjackTest.java";
 
     private static readonly BlockCipherKnownAnswer[] Default =
     [
@@ -62,6 +61,14 @@ internal static class SkipjackKnownAnswers
             Plaintext = Convert.FromHexString(AllZeroPlaintext),
             Ciphertext = Convert.FromHexString("F76307829359FC11"),
             Key = Convert.FromHexString("00800000000000000000"),
+        },
+        new BlockCipherKnownAnswer
+        {
+            Name = "Fips185_Section8_CanonicalVector",
+            Profile = ProfileFips185,
+            Plaintext = Convert.FromHexString("33221100DDCCBBAA"),
+            Ciphertext = Convert.FromHexString("2587CAE27A12D300"),
+            Key = Convert.FromHexString("00998877665544332211"),
         },
     ];
 }

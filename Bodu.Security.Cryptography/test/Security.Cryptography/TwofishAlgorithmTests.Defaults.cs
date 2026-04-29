@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="TwofishTests.Defaults.cs" company="PlaceholderCompany">
+// <copyright file="TwofishAlgorithmTests.Defaults.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
-public sealed partial class TwofishTests
+public sealed partial class TwofishAlgorithmTests
 {
     /// <summary>
     /// Verifies that a newly constructed <see cref="Twofish" /> instance defaults to a 256-bit key size.

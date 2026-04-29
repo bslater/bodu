@@ -49,6 +49,8 @@ internal static class CamelliaKnownAnswers
 
     private const string ProfileRfc3713 = "RFC 3713 Appendix A";
 
+    private const string ProfileBouncyCastle = "Bouncy Castle CamelliaTest.java avalanche";
+
     private static readonly BlockCipherKnownAnswer[] Key128 =
     [
         new BlockCipherKnownAnswer
@@ -58,6 +60,22 @@ internal static class CamelliaKnownAnswers
             Plaintext = Convert.FromHexString(Plaintext),
             Ciphertext = Convert.FromHexString("67673138549669730857065648EABE43"),
             Key = Convert.FromHexString(Key128Hex),
+        },
+        new BlockCipherKnownAnswer
+        {
+            Name = "Camellia128_ZeroKey_HighBitPlaintext",
+            Profile = ProfileBouncyCastle,
+            Plaintext = Convert.FromHexString("80000000000000000000000000000000"),
+            Ciphertext = Convert.FromHexString("07923A39EB0A817D1C4D87BDB82D1F1C"),
+            Key = Convert.FromHexString("00000000000000000000000000000000"),
+        },
+        new BlockCipherKnownAnswer
+        {
+            Name = "Camellia128_HighBitKey_ZeroPlaintext",
+            Profile = ProfileBouncyCastle,
+            Plaintext = Convert.FromHexString("00000000000000000000000000000000"),
+            Ciphertext = Convert.FromHexString("6C227F749319A3AA7DA235A9BBA05A2C"),
+            Key = Convert.FromHexString("80000000000000000000000000000000"),
         },
     ];
 
