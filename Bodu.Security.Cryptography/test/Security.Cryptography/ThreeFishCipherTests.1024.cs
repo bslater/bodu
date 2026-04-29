@@ -10,10 +10,10 @@ namespace Bodu.Security.Cryptography;
 internal partial class ThreeFish1024CipherTests
     : ThreeFishCipherTests<ThreeFish1024CipherTests, Threefish1024Cipher>
 {
-    protected override BlockCipherSpecification GetSpecification(ThreeFishCipherTestVariant variant) =>
+    protected override BlockCipherSpecification GetSpecification(TweakableBlockCipherVariant variant) =>
         variant switch
         {
-            ThreeFishCipherTestVariant.ZeroedKeyAndTweak => new()
+            TweakableBlockCipherVariant.ZeroedKeyAndTweak => new()
             {
                 BlockSize = 128,
                 KeySize = 128,
@@ -21,7 +21,7 @@ internal partial class ThreeFish1024CipherTests
                 TestKey = new byte[128],
                 TestTweak = new byte[16],
             },
-            ThreeFishCipherTestVariant.DefaultKeyAndTweak => new()
+            TweakableBlockCipherVariant.DefaultKeyAndTweak => new()
             {
                 BlockSize = 128,
                 KeySize = 128,
@@ -41,13 +41,13 @@ internal partial class ThreeFish1024CipherTests
         return algo;
     }
 
-    protected override Threefish1024Cipher CreateBlockCipher(ThreeFishCipherTestVariant variant)
+    protected override Threefish1024Cipher CreateBlockCipher(TweakableBlockCipherVariant variant)
     {
         var spec = GetSpecification(variant);
         return new Threefish1024Cipher(spec.TestKey, spec.TestTweak);
     }
 
-    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(ThreeFishCipherTestVariant variant) =>
+    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(TweakableBlockCipherVariant variant) =>
         AdaptKnownAnswers(
             Threefish1024KnownAnswers.For(variant),
             answer => new Threefish1024Cipher(answer.Key!, answer.Tweak!));

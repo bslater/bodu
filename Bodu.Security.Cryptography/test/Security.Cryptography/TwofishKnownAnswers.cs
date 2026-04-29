@@ -26,11 +26,11 @@ internal static class TwofishKnownAnswers
     /// Returns the curated KAT vectors for <paramref name="variant" />. Each key size carries six vectors
     /// drawn from iteration steps 1–5 and 10 of the Twofish AES submission corpus.
     /// </summary>
-    public static IReadOnlyList<BlockCipherKnownAnswer> For(TwofishTestVariant variant) => variant switch
+    public static IReadOnlyList<BlockCipherKnownAnswer> For(BlockCipherKeyVariant variant) => variant switch
     {
-        TwofishTestVariant.Key128 => Key128,
-        TwofishTestVariant.Key192 => Key192,
-        TwofishTestVariant.Key256 => Key256,
+        BlockCipherKeyVariant.Key128 => Key128,
+        BlockCipherKeyVariant.Key192 => Key192,
+        BlockCipherKeyVariant.Key256 => Key256,
         _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
     };
 

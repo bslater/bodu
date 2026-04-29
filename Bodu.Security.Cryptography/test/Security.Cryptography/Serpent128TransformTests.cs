@@ -27,12 +27,12 @@ internal sealed class Serpent128TransformTests
 
     /// <inheritdoc />
     /// <remarks>
-    /// Flattens both <see cref="SerpentCipherTestVariant" /> values; only
-    /// <see cref="SerpentCipherTestVariant.DefaultKeyAndTweak" /> contributes a published Bouncy Castle
+    /// Flattens both <see cref="TweakableBlockCipherVariant" /> values; only
+    /// <see cref="TweakableBlockCipherVariant.DefaultKeyAndTweak" /> contributes a published Bouncy Castle
     /// vector — the zeroed variant returns an empty list and is silently skipped by the harness.
     /// </remarks>
     protected override IEnumerable<BlockCipherKnownAnswer> GetKnownAnswers() =>
-        Enum.GetValues<SerpentCipherTestVariant>().SelectMany(Serpent128KnownAnswers.For);
+        Enum.GetValues<TweakableBlockCipherVariant>().SelectMany(Serpent128KnownAnswers.For);
 
     /// <inheritdoc />
     protected override Serpent128Transform CreateTransformForKnownAnswer(BlockCipherKnownAnswer answer, bool forEncryption)

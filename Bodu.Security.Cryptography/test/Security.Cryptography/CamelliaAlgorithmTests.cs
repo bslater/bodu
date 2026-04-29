@@ -30,12 +30,12 @@ public sealed partial class CamelliaAlgorithmTests
 
     /// <inheritdoc />
     /// <remarks>
-    /// Flattens the per-key-size RFC 3713 Appendix A vectors across <see cref="CamelliaTestVariant.Key128" />,
-    /// <see cref="CamelliaTestVariant.Key192" />, and <see cref="CamelliaTestVariant.Key256" /> so each runs
+    /// Flattens the per-key-size RFC 3713 Appendix A vectors across <see cref="BlockCipherKeyVariant.Key128" />,
+    /// <see cref="BlockCipherKeyVariant.Key192" />, and <see cref="BlockCipherKeyVariant.Key256" /> so each runs
     /// through the Algorithm-layer harness in turn.
     /// </remarks>
     protected override IEnumerable<BlockCipherKnownAnswer> GetKnownAnswers() =>
-        Enum.GetValues<CamelliaTestVariant>().SelectMany(CamelliaKnownAnswers.For);
+        Enum.GetValues<BlockCipherKeyVariant>().SelectMany(CamelliaKnownAnswers.For);
 
     /// <inheritdoc />
     protected override Camellia CreateAlgorithmForKnownAnswer(BlockCipherKnownAnswer answer)

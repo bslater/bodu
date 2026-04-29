@@ -28,11 +28,11 @@ internal sealed class ThreefishTransformTests
 
     /// <inheritdoc />
     /// <remarks>
-    /// Flattens both <see cref="ThreeFishCipherTestVariant" /> values for the 256-bit Threefish block size,
+    /// Flattens both <see cref="TweakableBlockCipherVariant" /> values for the 256-bit Threefish block size,
     /// the size targeted by <see cref="ThreefishTransform" />.
     /// </remarks>
     protected override IEnumerable<BlockCipherKnownAnswer> GetKnownAnswers() =>
-        Enum.GetValues<ThreeFishCipherTestVariant>().SelectMany(Threefish256KnownAnswers.For);
+        Enum.GetValues<TweakableBlockCipherVariant>().SelectMany(Threefish256KnownAnswers.For);
 
     /// <inheritdoc />
     protected override ThreefishTransform CreateTransformForKnownAnswer(BlockCipherKnownAnswer answer, bool forEncryption)

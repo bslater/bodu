@@ -16,16 +16,16 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 [TestClass]
 public sealed partial class AesBlockCipherTests
-    : BlockCipherTests<AesBlockCipherTests, AesBlockCipher, AesTestVariant>
+    : BlockCipherTests<AesBlockCipherTests, AesBlockCipher, BlockCipherKeyVariant>
 {
     /// <inheritdoc />
-    protected override BlockCipherSpecification GetSpecification(AesTestVariant variant)
+    protected override BlockCipherSpecification GetSpecification(BlockCipherKeyVariant variant)
     {
         int keySize = variant switch
         {
-            AesTestVariant.Key128 => 16,
-            AesTestVariant.Key192 => 24,
-            AesTestVariant.Key256 => 32,
+            BlockCipherKeyVariant.Key128 => 16,
+            BlockCipherKeyVariant.Key192 => 24,
+            BlockCipherKeyVariant.Key256 => 32,
             _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
         };
 
@@ -38,22 +38,22 @@ public sealed partial class AesBlockCipherTests
     }
 
     /// <inheritdoc />
-    public override IEnumerable<AesTestVariant> GetBlockCipherVariants() => new[]
+    public override IEnumerable<BlockCipherKeyVariant> GetBlockCipherVariants() => new[]
     {
-        AesTestVariant.Key128,
-        AesTestVariant.Key192,
-        AesTestVariant.Key256,
+        BlockCipherKeyVariant.Key128,
+        BlockCipherKeyVariant.Key192,
+        BlockCipherKeyVariant.Key256,
     };
 
     /// <inheritdoc />
-    protected override AesBlockCipher CreateBlockCipher(AesTestVariant variant)
+    protected override AesBlockCipher CreateBlockCipher(BlockCipherKeyVariant variant)
     {
         BlockCipherSpecification spec = GetSpecification(variant);
         return new AesBlockCipher(spec.TestKey!);
     }
 
     /// <inheritdoc />
-    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(AesTestVariant variant) =>
+    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(BlockCipherKeyVariant variant) =>
         AdaptKnownAnswers(
             AesKnownAnswers.For(variant),
             answer => new AesBlockCipher(answer.Key!));

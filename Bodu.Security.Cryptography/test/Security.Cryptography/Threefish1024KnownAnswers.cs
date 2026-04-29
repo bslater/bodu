@@ -12,8 +12,8 @@ namespace Bodu.Security.Cryptography;
 /// and <see cref="Threefish512KnownAnswers" /> at the widest 1024-bit block size.
 /// </summary>
 /// <remarks>
-/// The two vectors mirror <see cref="ThreeFishCipherTestVariant.ZeroedKeyAndTweak" /> — an all-zero
-/// (key, tweak, plaintext) baseline — and <see cref="ThreeFishCipherTestVariant.DefaultKeyAndTweak" /> —
+/// The two vectors mirror <see cref="TweakableBlockCipherVariant.ZeroedKeyAndTweak" /> — an all-zero
+/// (key, tweak, plaintext) baseline — and <see cref="TweakableBlockCipherVariant.DefaultKeyAndTweak" /> —
 /// the harness's incremental-byte default (key bytes 0x10..0x8F, tweak bytes 0x00..0x0F, descending
 /// plaintext FF..80). The captured ciphertexts are the values produced by the in-tree Threefish-1024
 /// engine at the time the suite was authored and act as regression baselines against future engine
@@ -24,10 +24,10 @@ internal static class Threefish1024KnownAnswers
     /// <summary>
     /// Returns the curated KAT vector for <paramref name="variant" />.
     /// </summary>
-    public static IReadOnlyList<BlockCipherKnownAnswer> For(ThreeFishCipherTestVariant variant) => variant switch
+    public static IReadOnlyList<BlockCipherKnownAnswer> For(TweakableBlockCipherVariant variant) => variant switch
     {
-        ThreeFishCipherTestVariant.ZeroedKeyAndTweak => ZeroedKeyAndTweak,
-        ThreeFishCipherTestVariant.DefaultKeyAndTweak => DefaultKeyAndTweak,
+        TweakableBlockCipherVariant.ZeroedKeyAndTweak => ZeroedKeyAndTweak,
+        TweakableBlockCipherVariant.DefaultKeyAndTweak => DefaultKeyAndTweak,
         _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
     };
 

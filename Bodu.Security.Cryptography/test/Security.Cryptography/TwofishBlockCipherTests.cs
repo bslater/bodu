@@ -8,16 +8,16 @@ namespace Bodu.Security.Cryptography;
 
 [TestClass]
 internal sealed partial class TwofishBlockCipherTests
-    : BlockCipherTests<TwofishBlockCipherTests, TwofishBlockCipher, TwofishTestVariant>
+    : BlockCipherTests<TwofishBlockCipherTests, TwofishBlockCipher, BlockCipherKeyVariant>
 {
     /// <inheritdoc />
-    protected override BlockCipherSpecification GetSpecification(TwofishTestVariant variant)
+    protected override BlockCipherSpecification GetSpecification(BlockCipherKeyVariant variant)
     {
         var keySize = variant switch
         {
-            TwofishTestVariant.Key128 => 16,
-            TwofishTestVariant.Key192 => 24,
-            TwofishTestVariant.Key256 => 32,
+            BlockCipherKeyVariant.Key128 => 16,
+            BlockCipherKeyVariant.Key192 => 24,
+            BlockCipherKeyVariant.Key256 => 32,
             _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null)
         };
 
@@ -30,22 +30,22 @@ internal sealed partial class TwofishBlockCipherTests
     }
 
     /// <inheritdoc />
-    public override IEnumerable<TwofishTestVariant> GetBlockCipherVariants() => new[]
+    public override IEnumerable<BlockCipherKeyVariant> GetBlockCipherVariants() => new[]
     {
-        TwofishTestVariant.Key128,
-        TwofishTestVariant.Key192,
-        TwofishTestVariant.Key256,
+        BlockCipherKeyVariant.Key128,
+        BlockCipherKeyVariant.Key192,
+        BlockCipherKeyVariant.Key256,
     };
 
     /// <inheritdoc />
-    protected override TwofishBlockCipher CreateBlockCipher(TwofishTestVariant variant)
+    protected override TwofishBlockCipher CreateBlockCipher(BlockCipherKeyVariant variant)
     {
         var specification = GetSpecification(variant);
         return new TwofishBlockCipher(specification.TestKey);
     }
 
     /// <inheritdoc />
-    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(TwofishTestVariant variant) =>
+    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(BlockCipherKeyVariant variant) =>
         AdaptKnownAnswers(
             TwofishKnownAnswers.For(variant),
             answer => new TwofishBlockCipher(answer.Key!));

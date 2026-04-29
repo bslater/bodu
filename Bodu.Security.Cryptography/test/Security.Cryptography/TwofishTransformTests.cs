@@ -28,12 +28,12 @@ internal sealed class TwofishTransformTests
     /// <inheritdoc />
     /// <remarks>
     /// Flattens the per-key-size Twofish AES-submission ECB intermediate-values vectors across
-    /// <see cref="TwofishTestVariant.Key128" />, <see cref="TwofishTestVariant.Key192" />, and
-    /// <see cref="TwofishTestVariant.Key256" /> so the full 18-vector corpus runs through the
+    /// <see cref="BlockCipherKeyVariant.Key128" />, <see cref="BlockCipherKeyVariant.Key192" />, and
+    /// <see cref="BlockCipherKeyVariant.Key256" /> so the full 18-vector corpus runs through the
     /// Transform-layer harness in turn.
     /// </remarks>
     protected override IEnumerable<BlockCipherKnownAnswer> GetKnownAnswers() =>
-        Enum.GetValues<TwofishTestVariant>().SelectMany(TwofishKnownAnswers.For);
+        Enum.GetValues<BlockCipherKeyVariant>().SelectMany(TwofishKnownAnswers.For);
 
     /// <inheritdoc />
     protected override TwofishTransform CreateTransformForKnownAnswer(BlockCipherKnownAnswer answer, bool forEncryption)

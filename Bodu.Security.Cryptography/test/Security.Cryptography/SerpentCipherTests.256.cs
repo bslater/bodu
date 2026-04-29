@@ -22,10 +22,10 @@ internal partial class Serpent256CipherTests
     : SerpentCipherTests<Serpent256CipherTests, Serpent256Cipher>
 {
     /// <inheritdoc />
-    protected override BlockCipherSpecification GetSpecification(SerpentCipherTestVariant variant) =>
+    protected override BlockCipherSpecification GetSpecification(TweakableBlockCipherVariant variant) =>
         variant switch
         {
-            SerpentCipherTestVariant.ZeroedKeyAndTweak => new()
+            TweakableBlockCipherVariant.ZeroedKeyAndTweak => new()
             {
                 BlockSize = 32,
                 KeySize = 32,
@@ -33,7 +33,7 @@ internal partial class Serpent256CipherTests
                 TestKey = new byte[32],
                 TestTweak = new byte[16],
             },
-            SerpentCipherTestVariant.DefaultKeyAndTweak => new()
+            TweakableBlockCipherVariant.DefaultKeyAndTweak => new()
             {
                 BlockSize = 32,
                 KeySize = 32,
@@ -55,7 +55,7 @@ internal partial class Serpent256CipherTests
     }
 
     /// <inheritdoc />
-    protected override Serpent256Cipher CreateBlockCipher(SerpentCipherTestVariant variant)
+    protected override Serpent256Cipher CreateBlockCipher(TweakableBlockCipherVariant variant)
     {
         var specification = GetSpecification(variant);
         return new Serpent256Cipher(specification.TestKey, specification.TestTweak);
@@ -68,9 +68,9 @@ internal partial class Serpent256CipherTests
     /// <see cref="DecryptTestData" /> have at least one row (MSTest fails empty <c>[DynamicData]</c> sources). Algorithmic
     /// correctness is anchored by the inherited round-trip and determinism tests.
     /// </remarks>
-    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(SerpentCipherTestVariant variant)
+    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(TweakableBlockCipherVariant variant)
     {
-        if (variant == SerpentCipherTestVariant.DefaultKeyAndTweak)
+        if (variant == TweakableBlockCipherVariant.DefaultKeyAndTweak)
             yield break;
 
         var spec = GetSpecification(variant);

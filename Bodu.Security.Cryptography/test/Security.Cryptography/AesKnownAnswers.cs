@@ -25,11 +25,11 @@ internal static class AesKnownAnswers
     /// Returns the curated KAT vector for <paramref name="variant" />. FIPS-197 Appendix C publishes one
     /// vector per key size; future expansions may add additional rows without changing the calling shape.
     /// </summary>
-    public static IReadOnlyList<BlockCipherKnownAnswer> For(AesTestVariant variant) => variant switch
+    public static IReadOnlyList<BlockCipherKnownAnswer> For(BlockCipherKeyVariant variant) => variant switch
     {
-        AesTestVariant.Key128 => Key128,
-        AesTestVariant.Key192 => Key192,
-        AesTestVariant.Key256 => Key256,
+        BlockCipherKeyVariant.Key128 => Key128,
+        BlockCipherKeyVariant.Key192 => Key192,
+        BlockCipherKeyVariant.Key256 => Key256,
         _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
     };
 
