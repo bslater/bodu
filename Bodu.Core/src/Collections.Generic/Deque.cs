@@ -85,7 +85,7 @@ namespace Bodu.Collections.Generic;
 [DebuggerDisplay("Count = {Count}, Capacity = {Capacity}, AllowGrow = {AllowGrow}")]
 [DebuggerTypeProxy(typeof(DequeDebugView<>))]
 [Serializable]
-public sealed class Deque<T> : DequeBase<T>
+public sealed class Deque<T> : RingBackedCollection<T>
 {
     private const int DefaultCapacity = 16;
     private const int MinGrowCapacity = 4;
@@ -250,11 +250,14 @@ public sealed class Deque<T> : DequeBase<T>
     /// </remarks>
     public bool AllowGrow { get; set; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Adds <paramref name="item"/> to the head of the deque.
+    /// </summary>
+    /// <param name="item">The element to add. May be <see langword="null"/> for reference types.</param>
     /// <exception cref="InvalidOperationException">
     /// <see cref="AllowGrow"/> is <see langword="false"/> and the deque is already at capacity.
     /// </exception>
-    public override void AddFirst(T item)
+    public void AddFirst(T item)
     {
         if (Count == Capacity)
         {
@@ -267,11 +270,14 @@ public sealed class Deque<T> : DequeBase<T>
         AddHead(item);
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Adds <paramref name="item"/> to the tail of the deque.
+    /// </summary>
+    /// <param name="item">The element to add. May be <see langword="null"/> for reference types.</param>
     /// <exception cref="InvalidOperationException">
     /// <see cref="AllowGrow"/> is <see langword="false"/> and the deque is already at capacity.
     /// </exception>
-    public override void AddLast(T item)
+    public void AddLast(T item)
     {
         if (Count == Capacity)
         {
@@ -284,13 +290,20 @@ public sealed class Deque<T> : DequeBase<T>
         AddTail(item);
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Attempts to add <paramref name="item"/> to the head of the deque without throwing.
+    /// </summary>
+    /// <param name="item">The element to add. May be <see langword="null"/> for reference types.</param>
+    /// <returns>
+    /// <see langword="true"/> if the item was added; <see langword="false"/> if the deque was fixed-capacity
+    /// and full.
+    /// </returns>
     /// <remarks>
     /// Returns <see langword="true"/> after auto-growing when <see cref="AllowGrow"/> is <see langword="true"/>.
     /// Returns <see langword="false"/> without modifying state when <see cref="AllowGrow"/> is
     /// <see langword="false"/> and the deque is full.
     /// </remarks>
-    public override bool TryAddFirst(T item)
+    public bool TryAddFirst(T item)
     {
         if (Count == Capacity)
         {
@@ -304,13 +317,20 @@ public sealed class Deque<T> : DequeBase<T>
         return true;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Attempts to add <paramref name="item"/> to the tail of the deque without throwing.
+    /// </summary>
+    /// <param name="item">The element to add. May be <see langword="null"/> for reference types.</param>
+    /// <returns>
+    /// <see langword="true"/> if the item was added; <see langword="false"/> if the deque was fixed-capacity
+    /// and full.
+    /// </returns>
     /// <remarks>
     /// Returns <see langword="true"/> after auto-growing when <see cref="AllowGrow"/> is <see langword="true"/>.
     /// Returns <see langword="false"/> without modifying state when <see cref="AllowGrow"/> is
     /// <see langword="false"/> and the deque is full.
     /// </remarks>
-    public override bool TryAddLast(T item)
+    public bool TryAddLast(T item)
     {
         if (Count == Capacity)
         {
@@ -321,6 +341,126 @@ public sealed class Deque<T> : DequeBase<T>
         }
 
         AddTail(item);
+        return true;
+    }
+
+    /// <summary>
+    /// Removes and returns the head element.
+    /// </summary>
+    /// <returns>The element that was at the head.</returns>
+    /// <exception cref="InvalidOperationException">The deque is empty.</exception>
+    public T RemoveFirst()
+    {
+        if (Count == 0)
+            throw new InvalidOperationException(ResourceStrings.InvalidOperation_EmptySequence);
+
+        return RemoveHead();
+    }
+
+    /// <summary>
+    /// Removes and returns the tail element.
+    /// </summary>
+    /// <returns>The element that was at the tail.</returns>
+    /// <exception cref="InvalidOperationException">The deque is empty.</exception>
+    public T RemoveLast()
+    {
+        if (Count == 0)
+            throw new InvalidOperationException(ResourceStrings.InvalidOperation_EmptySequence);
+
+        return RemoveTail();
+    }
+
+    /// <summary>
+    /// Attempts to remove and return the head element without throwing when empty.
+    /// </summary>
+    /// <param name="item">When this method returns, contains the removed element if successful.</param>
+    /// <returns><see langword="true"/> if an element was removed; otherwise <see langword="false"/>.</returns>
+    public bool TryRemoveFirst(out T item)
+    {
+        if (Count == 0)
+        {
+            item = default!;
+            return false;
+        }
+
+        item = RemoveHead();
+        return true;
+    }
+
+    /// <summary>
+    /// Attempts to remove and return the tail element without throwing when empty.
+    /// </summary>
+    /// <param name="item">When this method returns, contains the removed element if successful.</param>
+    /// <returns><see langword="true"/> if an element was removed; otherwise <see langword="false"/>.</returns>
+    public bool TryRemoveLast(out T item)
+    {
+        if (Count == 0)
+        {
+            item = default!;
+            return false;
+        }
+
+        item = RemoveTail();
+        return true;
+    }
+
+    /// <summary>
+    /// Returns the head element without removing it.
+    /// </summary>
+    /// <returns>The current head element.</returns>
+    /// <exception cref="InvalidOperationException">The deque is empty.</exception>
+    public T PeekFirst()
+    {
+        if (Count == 0)
+            throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionEmpty);
+
+        return PeekHead();
+    }
+
+    /// <summary>
+    /// Returns the tail element without removing it.
+    /// </summary>
+    /// <returns>The current tail element.</returns>
+    /// <exception cref="InvalidOperationException">The deque is empty.</exception>
+    public T PeekLast()
+    {
+        if (Count == 0)
+            throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionEmpty);
+
+        return PeekTail();
+    }
+
+    /// <summary>
+    /// Attempts to read the head element without throwing when empty.
+    /// </summary>
+    /// <param name="item">When this method returns, contains the head element if available.</param>
+    /// <returns><see langword="true"/> if the head was read; otherwise <see langword="false"/>.</returns>
+    public bool TryPeekFirst(out T item)
+    {
+        if (Count == 0)
+        {
+            item = default!;
+            return false;
+        }
+
+        item = PeekHead();
+        return true;
+    }
+
+    /// <summary>
+    /// Attempts to read the tail element without throwing when empty.
+    /// </summary>
+    /// <param name="item">When this method returns, contains the tail element if available.</param>
+    /// <returns><see langword="true"/> if the tail was read; otherwise <see langword="false"/>.</returns>
+    public bool TryPeekLast(out T item)
+    {
+        if (Count == 0)
+        {
+            item = default!;
+            return false;
+        }
+
+        item = PeekTail();
         return true;
     }
 

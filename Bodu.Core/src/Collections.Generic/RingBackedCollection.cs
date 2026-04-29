@@ -14,8 +14,7 @@ namespace Bodu.Collections.Generic;
 /// <summary>
 /// Provides the shared low-level mechanics for ring-buffer-backed collections — a contiguous backing array,
 /// head/tail indices with modulo wrap, a live element count, and a structural-version counter — as a
-/// reusable base type for <see cref="CircularBuffer{T}"/> and <see cref="Deque{T}"/> (via
-/// <see cref="DequeBase{T}"/>).
+/// reusable base type for <see cref="CircularBuffer{T}"/> and <see cref="Deque{T}"/>.
 /// </summary>
 /// <typeparam name="T">Specifies the type of elements stored in the collection.</typeparam>
 /// <remarks>
@@ -39,7 +38,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// <list type="bullet">
 /// <item><description><see cref="CircularBuffer{T}"/> adds the single-ended <c>Enqueue</c> / <c>Dequeue</c> / <c>Peek</c> surface with an <c>AllowOverwrite</c> toggle and eviction events.</description></item>
-/// <item><description><see cref="DequeBase{T}"/> (and its sealed <see cref="Deque{T}"/> implementation) adds the double-ended <c>AddFirst</c> / <c>AddLast</c> / <c>RemoveFirst</c> / <c>RemoveLast</c> / <c>PeekFirst</c> / <c>PeekLast</c> surface, with an <c>AllowGrow</c> toggle for fixed-vs-growable behaviour.</description></item>
+/// <item><description><see cref="Deque{T}"/> adds the double-ended <c>AddFirst</c> / <c>AddLast</c> / <c>RemoveFirst</c> / <c>RemoveLast</c> / <c>PeekFirst</c> / <c>PeekLast</c> surface, with an <c>AllowGrow</c> toggle for fixed-vs-growable behaviour.</description></item>
 /// </list>
 /// <para>
 /// This type is not thread-safe. For thread-safe single-ended FIFO access, use
