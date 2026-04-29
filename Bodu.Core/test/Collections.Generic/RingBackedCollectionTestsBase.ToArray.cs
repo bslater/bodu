@@ -1,0 +1,63 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="RingBackedCollectionTestsBase.ToArray.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Collections.Generic;
+
+public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
+{
+    /// <summary>
+    /// Verifies that <see cref="ToArray(TCollection)"/> returns a new array of the correct length.
+    /// </summary>
+    [TestMethod]
+    public void ToArray_WhenCollectionHasItems_ShouldReturnArrayOfCorrectLength()
+    {
+        var collection = CreateCollection(3);
+        AddToTail(collection, 1);
+        AddToTail(collection, 2);
+
+        Assert.AreEqual(2, ToArray(collection).Length);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ToArray(TCollection)"/> returns an empty array when the collection is empty.
+    /// </summary>
+    [TestMethod]
+    public void ToArray_WhenCollectionIsEmpty_ShouldReturnEmptyArray()
+    {
+        var collection = CreateCollection(3);
+
+        Assert.AreEqual(0, ToArray(collection).Length);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ToArray(TCollection)"/> reflects head-to-tail order.
+    /// </summary>
+    [TestMethod]
+    public void ToArray_WhenCollectionHasItems_ShouldReturnHeadToTailOrder()
+    {
+        var collection = CreateCollection(5);
+        AddToTail(collection, 1);
+        AddToTail(collection, 2);
+        AddToTail(collection, 3);
+
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, ToArray(collection));
+    }
+
+    /// <summary>
+    /// Verifies that subsequent mutations do not affect the previously returned array.
+    /// </summary>
+    [TestMethod]
+    public void ToArray_WhenCalled_ShouldReturnIndependentCopy()
+    {
+        var collection = CreateCollection(3);
+        AddToTail(collection, 1);
+
+        var copy = ToArray(collection);
+        AddToTail(collection, 2);
+
+        Assert.AreEqual(1, copy.Length);
+    }
+}

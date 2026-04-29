@@ -9,31 +9,9 @@ namespace Bodu.Collections.Generic;
 public partial class DequeTests
 {
     /// <summary>
-    /// Verifies that <see cref="Deque{T}.TrimExcess"/> shrinks capacity to <see cref="Deque{T}.Count"/>.
-    /// </summary>
-    [TestMethod]
-    public void TrimExcess_WhenCalled_ShouldShrinkCapacityToCount()
-    {
-        var deque = new Deque<int>(100);
-        deque.AddLast(1);
-        deque.AddLast(2);
-        deque.TrimExcess();
-        Assert.AreEqual(2, deque.Capacity);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Deque{T}.TrimExcess"/> on an empty deque shrinks capacity to one.
-    /// </summary>
-    [TestMethod]
-    public void TrimExcess_WhenEmpty_ShouldShrinkToOne()
-    {
-        var deque = new Deque<int>(100);
-        deque.TrimExcess();
-        Assert.AreEqual(1, deque.Capacity);
-    }
-
-    /// <summary>
-    /// Verifies that subsequent operations after trimming work correctly and grow as needed.
+    /// Verifies that <see cref="Deque{T}"/> can grow again after <see cref="Deque{T}.TrimExcess"/> has
+    /// shrunk it. This is unique to <see cref="Deque{T}"/> because growable collections must remain
+    /// operational after a trim.
     /// </summary>
     [TestMethod]
     public void TrimExcess_WhenCalledThenAddLast_ShouldGrowAgain()
