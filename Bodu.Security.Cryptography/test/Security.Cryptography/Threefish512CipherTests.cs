@@ -1,15 +1,21 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ThreeFishCipherTests.512.cs" company="PlaceholderCompany">
+// <copyright file="Threefish512CipherTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Security.Cryptography;
 
+/// <summary>
+/// Concrete test class exercising <see cref="Threefish512Cipher" /> at the block-cipher tier through the shared
+/// <see cref="BlockCipherTests{TTest, TCipher, TVariant}" /> harness, parameterised over
+/// <see cref="TweakableBlockCipherVariant" />.
+/// </summary>
 [TestClass]
-internal partial class ThreeFish512CipherTests
-    : ThreeFishCipherTests<ThreeFish512CipherTests, Threefish512Cipher>
+internal sealed class Threefish512CipherTests
+    : BlockCipherTests<Threefish512CipherTests, Threefish512Cipher, TweakableBlockCipherVariant>
 {
+    /// <inheritdoc />
     protected override BlockCipherSpecification GetSpecification(TweakableBlockCipherVariant variant) =>
         variant switch
         {
@@ -29,26 +35,21 @@ internal partial class ThreeFish512CipherTests
                 TestKey = CryptoTestUtilities.CreateIncrementalByteSequence(0x10, 64),
                 TestTweak = CryptoTestUtilities.CreateIncrementalByteSequence(0, 16),
             },
-            _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null)
+            _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
         };
 
-    protected override Threefish CreateInitialisedAlgorithm()
-    {
-        var algo = Threefish512.Create();
-        algo.GenerateKey();
-        algo.GenerateIV();
-        algo.GenerateTweak();
-        return algo;
-    }
-
+    /// <inheritdoc />
     protected override Threefish512Cipher CreateBlockCipher(TweakableBlockCipherVariant variant)
     {
         var spec = GetSpecification(variant);
         return new Threefish512Cipher(spec.TestKey, spec.TestTweak);
     }
 
-    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(TweakableBlockCipherVariant variant) =>
-        AdaptKnownAnswers(
-            Threefish512KnownAnswers.For(variant),
-            answer => new Threefish512Cipher(answer.Key!, answer.Tweak!));
+    /// <inheritdoc />
+    protected override IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(TweakableBlockCipherVariant variant) =>
+        Threefish512KnownAnswers.For(variant);
+
+    /// <inheritdoc />
+    protected override IBlockCipher CreateBlockCipherForAnswer(BlockCipherKnownAnswer answer) =>
+        new Threefish512Cipher(answer.Key!, answer.Tweak!);
 }

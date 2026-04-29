@@ -34,14 +34,6 @@ internal sealed partial class CamelliaBlockCipherTests
     }
 
     /// <inheritdoc />
-    public override IEnumerable<BlockCipherKeyVariant> GetBlockCipherVariants() => new[]
-    {
-        BlockCipherKeyVariant.Key128,
-        BlockCipherKeyVariant.Key192,
-        BlockCipherKeyVariant.Key256,
-    };
-
-    /// <inheritdoc />
     protected override CamelliaBlockCipher CreateBlockCipher(BlockCipherKeyVariant variant)
     {
         BlockCipherSpecification spec = GetSpecification(variant);
@@ -49,8 +41,10 @@ internal sealed partial class CamelliaBlockCipherTests
     }
 
     /// <inheritdoc />
-    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(BlockCipherKeyVariant variant) =>
-        AdaptKnownAnswers(
-            CamelliaKnownAnswers.For(variant),
-            answer => new CamelliaBlockCipher(answer.Key!));
+    protected override IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(BlockCipherKeyVariant variant) =>
+        CamelliaKnownAnswers.For(variant);
+
+    /// <inheritdoc />
+    protected override IBlockCipher CreateBlockCipherForAnswer(BlockCipherKnownAnswer answer) =>
+        new CamelliaBlockCipher(answer.Key!);
 }

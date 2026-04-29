@@ -8,17 +8,21 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Holds the curated <see cref="Threefish256Cipher" /> known-answer test vectors used by
-/// <see cref="ThreeFish256CipherTests" />. Each row pins a (key, tweak, plaintext, ciphertext) tuple so the
+/// <see cref="Threefish256CipherTests" />. Each row pins a (key, tweak, plaintext, ciphertext) tuple so the
 /// vectors remain self-contained: subsequent changes to the variant specification cannot silently
 /// invalidate the captured ciphertext.
 /// </summary>
 /// <remarks>
+/// <para>
 /// The two vectors mirror <see cref="TweakableBlockCipherVariant.ZeroedKeyAndTweak" /> — an all-zero
 /// (key, tweak, plaintext) baseline — and <see cref="TweakableBlockCipherVariant.DefaultKeyAndTweak" /> —
 /// the harness's incremental-byte default (key bytes 0x10..0x2F, tweak bytes 0x00..0x0F, descending
-/// plaintext FF..E0). The captured ciphertexts are the values produced by the in-tree Threefish-256 engine
-/// at the time the suite was authored and therefore act as regression baselines against future engine
-/// changes.
+/// plaintext FF..E0). Both rows have been independently verified against the Skein 1.3 / NIST SHA-3
+/// submission reference (<c>wernerd/Skein3Fish</c> <c>ThreefishTest.java</c>): each captured
+/// little-endian byte stream equals the byte serialisation of the reference's published 64-bit word
+/// values, and the non-zero row matches the reference's Matyas-Meyer-Oseas feed-forward
+/// (<c>Encrypt(plaintext) ⊕ plaintext</c>) byte-for-byte across all four words.
+/// </para>
 /// </remarks>
 internal static class Threefish256KnownAnswers
 {
@@ -32,7 +36,7 @@ internal static class Threefish256KnownAnswers
         _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
     };
 
-    private const string ProfileInTreeRegression = "In-tree Threefish-256 regression baseline";
+    private const string ProfileInTreeRegression = "Skein 1.3 / NIST SHA-3 reference (verified equivalent)";
 
     private static readonly BlockCipherKnownAnswer[] ZeroedKeyAndTweak =
     [

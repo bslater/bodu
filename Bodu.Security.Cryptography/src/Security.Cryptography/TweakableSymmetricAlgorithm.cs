@@ -299,14 +299,13 @@ public abstract class TweakableSymmetricAlgorithm
     }
 
     /// <summary>
-    /// Throws <see cref="ObjectDisposedException" /> if this algorithm instance has already been
-    /// disposed.
+    /// Throws <see cref="ObjectDisposedException" /> whose <see cref="ObjectDisposedException.ObjectName" /> matches the
+    /// concrete algorithm type's <see cref="Type.FullName" /> if this algorithm instance has already been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed()
     {
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
+        ObjectDisposedException.ThrowIf(this._disposed, this);
     }
 }

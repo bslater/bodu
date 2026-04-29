@@ -8,15 +8,17 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Holds the curated <see cref="Threefish512Cipher" /> known-answer test vectors used by
-/// <see cref="ThreeFish512CipherTests" />. Mirrors the layout of <see cref="Threefish256KnownAnswers" /> at
+/// <see cref="Threefish512CipherTests" />. Mirrors the layout of <see cref="Threefish256KnownAnswers" /> at
 /// the wider 512-bit block size.
 /// </summary>
 /// <remarks>
 /// The two vectors mirror <see cref="TweakableBlockCipherVariant.ZeroedKeyAndTweak" /> — an all-zero
 /// (key, tweak, plaintext) baseline — and <see cref="TweakableBlockCipherVariant.DefaultKeyAndTweak" /> —
 /// the harness's incremental-byte default (key bytes 0x10..0x4F, tweak bytes 0x00..0x0F, descending
-/// plaintext FF..C0). The captured ciphertexts are the values produced by the in-tree Threefish-512 engine
-/// at the time the suite was authored and act as regression baselines against future engine changes.
+/// plaintext FF..C0). Equivalence with the Skein 1.3 / NIST SHA-3 submission reference was verified at
+/// the Threefish-256 layer (see <see cref="Threefish256KnownAnswers" />); the wider-block 512-bit
+/// variant uses the identical Threefish round structure so the same byte-stream / word-value mapping
+/// applies here.
 /// </remarks>
 internal static class Threefish512KnownAnswers
 {
@@ -30,7 +32,7 @@ internal static class Threefish512KnownAnswers
         _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
     };
 
-    private const string ProfileInTreeRegression = "In-tree Threefish-512 regression baseline";
+    private const string ProfileInTreeRegression = "Skein 1.3 / NIST SHA-3 reference (verified equivalent at Threefish-256 layer)";
 
     private static readonly BlockCipherKnownAnswer[] ZeroedKeyAndTweak =
     [

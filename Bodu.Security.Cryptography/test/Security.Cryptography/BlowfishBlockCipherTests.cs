@@ -19,21 +19,17 @@ internal sealed partial class BlowfishBlockCipherTests
     };
 
     /// <inerhitdocs/>
-    public override IEnumerable<SingleTestVariant> GetBlockCipherVariants() => new[]
-    {
-        SingleTestVariant.Default
-    };
-
-    /// <inerhitdocs/>
     protected override BlowfishBlockCipher CreateBlockCipher(SingleTestVariant variant)
     {
         var specification = GetSpecification(variant);
         return new BlowfishBlockCipher(specification.TestKey);
     }
 
-    /// <inerhitdocs/>
-    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(SingleTestVariant variant) =>
-        AdaptKnownAnswers(
-            BlowfishKnownAnswers.For(variant),
-            answer => new BlowfishBlockCipher(answer.Key!));
+    /// <inheritdoc />
+    protected override IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(SingleTestVariant variant) =>
+        BlowfishKnownAnswers.For(variant);
+
+    /// <inheritdoc />
+    protected override IBlockCipher CreateBlockCipherForAnswer(BlockCipherKnownAnswer answer) =>
+        new BlowfishBlockCipher(answer.Key!);
 }

@@ -13,10 +13,16 @@ namespace Bodu.Security.Cryptography;
 /// correct row to that variant's specification.
 /// </summary>
 /// <remarks>
+/// <para>
 /// All vectors target single-block ECB encryption with no padding or IV — the raw block primitive contract.
 /// The plaintext is identical across all three key sizes (RFC 3713 reuses the same 128-bit input); only the
 /// key length and ciphertext differ. The keys themselves share the same 128-bit prefix and append further
 /// bytes for 192- and 256-bit variants, exactly as published in the RFC.
+/// </para>
+/// <para>
+/// TODO(gh-143): Extend with chained / iterative vectors (NESSIE corpus, CRYPTREC evaluation) per the
+/// minimum-vector-set policy. See <see cref="BlockCipherKnownAnswer" /> for the gap policy.
+/// </para>
 /// </remarks>
 /// <seealso href="https://datatracker.ietf.org/doc/html/rfc3713#appendix-A">RFC 3713 Appendix A — Camellia test vectors</seealso>
 internal static class CamelliaKnownAnswers
@@ -43,6 +49,8 @@ internal static class CamelliaKnownAnswers
 
     private const string ProfileRfc3713 = "RFC 3713 Appendix A";
 
+    private const string ProfileBouncyCastle = "Bouncy Castle CamelliaTest.java avalanche";
+
     private static readonly BlockCipherKnownAnswer[] Key128 =
     [
         new BlockCipherKnownAnswer
@@ -52,6 +60,22 @@ internal static class CamelliaKnownAnswers
             Plaintext = Convert.FromHexString(Plaintext),
             Ciphertext = Convert.FromHexString("67673138549669730857065648EABE43"),
             Key = Convert.FromHexString(Key128Hex),
+        },
+        new BlockCipherKnownAnswer
+        {
+            Name = "Camellia128_ZeroKey_HighBitPlaintext",
+            Profile = ProfileBouncyCastle,
+            Plaintext = Convert.FromHexString("80000000000000000000000000000000"),
+            Ciphertext = Convert.FromHexString("07923A39EB0A817D1C4D87BDB82D1F1C"),
+            Key = Convert.FromHexString("00000000000000000000000000000000"),
+        },
+        new BlockCipherKnownAnswer
+        {
+            Name = "Camellia128_HighBitKey_ZeroPlaintext",
+            Profile = ProfileBouncyCastle,
+            Plaintext = Convert.FromHexString("00000000000000000000000000000000"),
+            Ciphertext = Convert.FromHexString("6C227F749319A3AA7DA235A9BBA05A2C"),
+            Key = Convert.FromHexString("80000000000000000000000000000000"),
         },
     ];
 

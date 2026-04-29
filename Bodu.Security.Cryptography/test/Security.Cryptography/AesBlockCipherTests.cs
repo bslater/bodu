@@ -38,14 +38,6 @@ public sealed partial class AesBlockCipherTests
     }
 
     /// <inheritdoc />
-    public override IEnumerable<BlockCipherKeyVariant> GetBlockCipherVariants() => new[]
-    {
-        BlockCipherKeyVariant.Key128,
-        BlockCipherKeyVariant.Key192,
-        BlockCipherKeyVariant.Key256,
-    };
-
-    /// <inheritdoc />
     protected override AesBlockCipher CreateBlockCipher(BlockCipherKeyVariant variant)
     {
         BlockCipherSpecification spec = GetSpecification(variant);
@@ -53,10 +45,12 @@ public sealed partial class AesBlockCipherTests
     }
 
     /// <inheritdoc />
-    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(BlockCipherKeyVariant variant) =>
-        AdaptKnownAnswers(
-            AesKnownAnswers.For(variant),
-            answer => new AesBlockCipher(answer.Key!));
+    protected override IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(BlockCipherKeyVariant variant) =>
+        AesKnownAnswers.For(variant);
+
+    /// <inheritdoc />
+    protected override IBlockCipher CreateBlockCipherForAnswer(BlockCipherKnownAnswer answer) =>
+        new AesBlockCipher(answer.Key!);
 
     /// <summary>
     /// Verifies that constructing with a <see langword="null" /> key throws

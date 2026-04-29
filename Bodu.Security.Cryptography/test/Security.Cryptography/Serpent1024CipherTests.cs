@@ -1,23 +1,26 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="SerpentCipherTests.512.cs" company="PlaceholderCompany">
+// <copyright file="Serpent1024CipherTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Concrete test class exercising the wide-block tweakable <see cref="Serpent512Cipher" /> engine.
+/// Concrete test class exercising the wide-block tweakable <see cref="Serpent1024Cipher" /> engine.
 /// </summary>
 /// <remarks>
-/// Serpent-512 is a non-standard construction with no published reference vectors. End-to-end correctness is covered by the
+/// <para>
+/// Serpent-1024 is a non-standard construction with no published reference vectors. End-to-end correctness is covered by the
 /// inherited round-trip tests in <see cref="BlockCipherTests{TTest, TCipher, TVariant}" />.
+/// </para>
+/// <para>
+/// TODO(gh-142): Decide vector strategy for wide-block Serpent. See <see cref="BlockCipherKnownAnswer" /> for the gap policy.
+/// </para>
 /// </remarks>
 [TestClass]
-internal partial class Serpent512CipherTests
-    : SerpentCipherTests<Serpent512CipherTests, Serpent512Cipher>
+internal sealed class Serpent1024CipherTests
+    : BlockCipherTests<Serpent1024CipherTests, Serpent1024Cipher, TweakableBlockCipherVariant>
 {
     /// <inheritdoc />
     protected override BlockCipherSpecification GetSpecification(TweakableBlockCipherVariant variant) =>
@@ -25,45 +28,35 @@ internal partial class Serpent512CipherTests
         {
             TweakableBlockCipherVariant.ZeroedKeyAndTweak => new()
             {
-                BlockSize = 64,
-                KeySize = 64,
+                BlockSize = 128,
+                KeySize = 128,
                 TweakSize = 16,
-                TestKey = new byte[64],
+                TestKey = new byte[128],
                 TestTweak = new byte[16],
             },
             TweakableBlockCipherVariant.DefaultKeyAndTweak => new()
             {
-                BlockSize = 64,
-                KeySize = 64,
+                BlockSize = 128,
+                KeySize = 128,
                 TweakSize = 16,
-                TestKey = CryptoTestUtilities.CreateIncrementalByteSequence(0x10, 64),
+                TestKey = CryptoTestUtilities.CreateIncrementalByteSequence(0x10, 128),
                 TestTweak = CryptoTestUtilities.CreateIncrementalByteSequence(0, 16),
             },
             _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
         };
 
     /// <inheritdoc />
-    protected override SymmetricAlgorithm CreateInitialisedAlgorithm()
-    {
-        var algorithm = Serpent512.Create();
-        algorithm.GenerateKey();
-        algorithm.GenerateIV();
-        algorithm.GenerateTweak();
-        return algorithm;
-    }
-
-    /// <inheritdoc />
-    protected override Serpent512Cipher CreateBlockCipher(TweakableBlockCipherVariant variant)
+    protected override Serpent1024Cipher CreateBlockCipher(TweakableBlockCipherVariant variant)
     {
         var specification = GetSpecification(variant);
-        return new Serpent512Cipher(specification.TestKey, specification.TestTweak);
+        return new Serpent1024Cipher(specification.TestKey, specification.TestTweak);
     }
 
     /// <inheritdoc />
     /// <remarks>
-    /// Serpent-512 is a non-standard construction with no externally vetted reference vectors. The single self-referential
-    /// vector below captures the cipher's own output at test-discovery time so that <see cref="EncryptTestData" /> and
-    /// <see cref="DecryptTestData" /> have at least one row (MSTest fails empty <c>[DynamicData]</c> sources). Algorithmic
+    /// Serpent-1024 is a non-standard construction with no externally vetted reference vectors. The single self-referential
+    /// vector below captures the cipher's own output at test-discovery time so that <c>EncryptTestData</c> and
+    /// <c>DecryptTestData</c> have at least one row (MSTest fails empty <c>[DynamicData]</c> sources). Algorithmic
     /// correctness is anchored by the inherited round-trip and determinism tests.
     /// </remarks>
     protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(TweakableBlockCipherVariant variant)
@@ -75,15 +68,15 @@ internal partial class Serpent512CipherTests
         byte[] input = new byte[spec.BlockSize];
         byte[] expected = new byte[spec.BlockSize];
 
-        using (var cipher = new Serpent512Cipher(spec.TestKey, spec.TestTweak))
+        using (var cipher = new Serpent1024Cipher(spec.TestKey, spec.TestTweak))
             cipher.Encrypt(input, expected);
 
         yield return new KnownAnswerTest
         {
-            Name           = "Serpent-512 / ZeroedKeyAndTweak / plaintext=00×64 (self-referential regression vector)",
-            Input          = input,
+            Name = "Serpent-1024 / ZeroedKeyAndTweak / plaintext=00×128 (self-referential regression vector)",
+            Input = input,
             ExpectedOutput = expected,
-            CipherFactory  = () => new Serpent512Cipher(spec.TestKey, spec.TestTweak),
+            CipherFactory = () => new Serpent1024Cipher(spec.TestKey, spec.TestTweak),
         };
     }
 }
