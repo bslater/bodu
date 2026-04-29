@@ -9,6 +9,8 @@ using System.Runtime.Serialization;
 
 namespace Bodu;
 
+#pragma warning disable SYSLIB0050 // Type or member is obsolete (formatter-based serialization)
+
 public partial class WeekPatternTests
 {
     /// <summary>
@@ -82,3 +84,5 @@ public partial class WeekPatternTests
         Assert.IsInstanceOfType<SerializationException>(ex.InnerException);
     }
 }
+
+#pragma warning restore SYSLIB0050
