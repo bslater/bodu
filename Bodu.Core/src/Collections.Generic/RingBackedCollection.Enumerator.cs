@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Deque.Enumerator.cs" company="PlaceholderCompany">
+// <copyright file="RingBackedCollection.Enumerator.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,23 +8,24 @@ using System;
 
 namespace Bodu.Collections.Generic;
 
-public partial class Deque<T>
+public abstract partial class RingBackedCollection<T>
 {
     /// <summary>
-    /// Enumerates the elements of a <see cref="Deque{T}"/> in head-to-tail order.
+    /// Enumerates the elements of a <see cref="RingBackedCollection{T}"/> in head-to-tail logical order.
     /// </summary>
     /// <remarks>
-    /// <para>Use the <see langword="foreach"/> statement to enumerate the deque rather than using this struct directly.</para>
+    /// <para>Use the <see langword="foreach"/> statement to enumerate the collection rather than using this struct directly.</para>
     /// <para>
-    /// The enumerator provides read-only access. Modifying the underlying deque after enumeration begins invalidates
-    /// the enumerator and causes <see cref="MoveNext"/> or <see cref="Reset"/> to throw <see cref="InvalidOperationException"/>.
+    /// The enumerator provides read-only access. Modifying the underlying collection after enumeration begins
+    /// invalidates the enumerator and causes <see cref="MoveNext"/> or <see cref="Reset"/> to throw
+    /// <see cref="InvalidOperationException"/>.
     /// </para>
     /// </remarks>
     [Serializable]
     public struct Enumerator :
         System.Collections.Generic.IEnumerator<T>
     {
-        private readonly Deque<T> _deque;
+        private readonly RingBackedCollection<T> _collection;
         private readonly int _version;
         private T _current;
         private int _currentIndex;
@@ -33,11 +34,11 @@ public partial class Deque<T>
         /// <summary>
         /// Initializes a new instance of the <see cref="Enumerator"/> struct.
         /// </summary>
-        /// <param name="deque">The deque to enumerate.</param>
-        internal Enumerator(Deque<T> deque)
+        /// <param name="collection">The collection to enumerate.</param>
+        internal Enumerator(RingBackedCollection<T> collection)
         {
-            _deque = deque;
-            _version = deque._storage.Version;
+            _collection = collection;
+            _version = collection._version;
             _currentIndex = -1;
             _current = default!;
             _iteratedCount = 0;
@@ -61,18 +62,18 @@ public partial class Deque<T>
         /// <inheritdoc />
         public bool MoveNext()
         {
-            if (_version != _deque._storage.Version)
+            if (_version != _collection._version)
                 throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
 
-            if (_iteratedCount >= _deque._storage.Count)
+            if (_iteratedCount >= _collection._count)
             {
                 _current = default!;
-                _currentIndex = -1;
+                _currentIndex = -1; // Ended
                 return false;
             }
 
-            _currentIndex = (_deque._storage.Head + _iteratedCount) % _deque._storage.Capacity;
-            _current = _deque._storage.Array[_currentIndex];
+            _currentIndex = (_collection._head + _iteratedCount) % _collection._array.Length;
+            _current = _collection._array[_currentIndex];
             _iteratedCount++;
 
             return true;
@@ -81,7 +82,7 @@ public partial class Deque<T>
         /// <inheritdoc />
         public void Reset()
         {
-            if (_version != _deque._storage.Version)
+            if (_version != _collection._version)
                 throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
 
             _currentIndex = -1;

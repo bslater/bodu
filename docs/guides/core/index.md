@@ -18,6 +18,11 @@ If you're looking for the generated API reference, see the [Bodu.Collections.Gen
 </div>
 
 <div class="bodu-card">
+  <h3><a href="deque.html">Deque</a></h3>
+  <p>Double-ended queue — <code>Deque&lt;T&gt;</code> with <code>AddFirst</code> / <code>AddLast</code> / <code>RemoveFirst</code> / <code>RemoveLast</code> in O(1). The <code>AllowGrow</code> flag toggles between automatic resize and a fixed-capacity throw-when-full mode.</p>
+</div>
+
+<div class="bodu-card">
   <h3><a href="evicting-dictionary.html">Evicting dictionary</a></h3>
   <p><code>EvictingDictionary&lt;TKey, TValue&gt;</code> — a fixed-capacity dictionary that automatically evicts entries using FIFO, LRU, or LFU policies. Drop-in cache primitive.</p>
 </div>
@@ -35,6 +40,8 @@ If you're looking for the generated API reference, see the [Bodu.Collections.Gen
 |---|---|---|
 | `CircularBuffer<T>` | `Bodu.Collections.Generic` | Fixed-size FIFO ring; throws or overwrites on full. |
 | `ConcurrentCircularBuffer<T>` | `Bodu.Collections.Generic.Concurrent` | Thread-safe variant of `CircularBuffer<T>`. |
+| `Deque<T>` | `Bodu.Collections.Generic` | Double-ended queue. Growable by default; toggle `AllowGrow` to lock to a fixed capacity. |
+| `RingBackedCollection<T>` | `Bodu.Collections.Generic` | Abstract base shared by `CircularBuffer<T>` and `Deque<T>` — extension point for new ring-backed collection types. |
 | `EvictingDictionary<TKey, TValue>` | `Bodu.Collections.Generic` | Capacity-bounded dictionary with FIFO / LRU / LFU eviction. |
 | `WeekPattern` | `Bodu` | Immutable bitmask struct representing selected days of the week. |
 | `IRandomGenerator` | `Bodu` | Abstraction over random number generators. |

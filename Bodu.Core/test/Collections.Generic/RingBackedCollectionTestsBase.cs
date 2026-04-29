@@ -11,8 +11,8 @@ namespace Bodu.Collections.Generic;
 
 /// <summary>
 /// Provides the shared test contract for ring-backed collections that expose at least a single-ended
-/// FIFO surface (head-pop / tail-push). Inherited by concrete test classes for
-/// <see cref="CircularBuffer{T}"/>, <see cref="ArrayDeque{T}"/>, and <see cref="Deque{T}"/>.
+/// FIFO surface (head-pop / tail-push). Inherited by <see cref="CircularBufferTests"/>,
+/// <see cref="DequeTests"/>, and <see cref="DequeFixedCapacityTests"/>.
 /// </summary>
 /// <typeparam name="TTest">
 /// The concrete test class (CRTP self-reference). Required so that <c>[DynamicData]</c> sources on the base can
@@ -31,8 +31,8 @@ namespace Bodu.Collections.Generic;
 /// <para>
 /// All tests in this base operate on <see langword="int"/> elements to keep the contract simple and to avoid
 /// adding a third generic parameter for the element type. Type-specific behaviours
-/// (e.g. <c>CircularBuffer.AllowOverwrite</c>, <c>ArrayDeque.IsFull</c>, <c>Deque.EnsureCapacity</c>) belong on
-/// the concrete test class, not here.
+/// (e.g. <c>CircularBuffer.AllowOverwrite</c>, <c>Deque.AllowGrow</c>, <c>Deque.IsFull</c>) belong on the
+/// concrete test class, not here.
 /// </para>
 /// </remarks>
 [TestClass]

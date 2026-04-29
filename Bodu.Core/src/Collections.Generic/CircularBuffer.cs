@@ -1,11 +1,10 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CircularBuffer.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -13,98 +12,66 @@ using System.Linq;
 namespace Bodu.Collections.Generic;
 
 /// <summary>
-/// Represents a first-in, first-out (FIFO) collection of elements using a fixed-size circular buffer with optional overwrite support.
+/// Represents a fixed-size, first-in first-out (FIFO) circular buffer with optional overwrite-on-full
+/// semantics. Elements are inserted at the tail and removed from the head; once the buffer reaches
+/// <see cref="RingBackedCollection{T}.Capacity"/>, the <see cref="AllowOverwrite"/> property determines
+/// whether further inserts evict the oldest element or are rejected.
 /// </summary>
-/// <typeparam name="T">Specifies the type of elements in the collection.</typeparam>
+/// <typeparam name="T">Specifies the type of elements stored in the buffer.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="CircularBuffer{T}"/> is a high-performance collection for storing a bounded number of elements in a circular manner.
-/// Elements are inserted at the tail and removed from the head. When the buffer reaches capacity, new elements overwrite the oldest
-/// entries if <see cref="AllowOverwrite"/> is <see langword="true"/>.
+/// <see cref="CircularBuffer{T}"/> is the single-ended member of the ring-backed collection family. Like
+/// <see cref="Deque{T}"/>, it stores its elements in a contiguous backing array using head and tail indices
+/// that wrap around modulo the capacity, giving O(1) cost for adds, removes, and peeks.
 /// </para>
 /// <para>
-/// This type is not thread-safe. If concurrent access is required, use
-/// <see cref="Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer{T}"/> instead.
+/// The behaviour on a full buffer is controlled by the mutable <see cref="AllowOverwrite"/> property:
 /// </para>
-/// <para>Key operations include:</para>
 /// <list type="bullet">
 /// <item>
-/// <description><see cref="Enqueue"/> and <see cref="TryEnqueue"/> - Add elements to the buffer.</description>
+/// <description>
+/// <c>AllowOverwrite = true</c> (the default for the parameterless and capacity-only constructors) — adds
+/// to a full buffer evict the oldest element to make room for the new one. The
+/// <see cref="ItemEvicting"/> event fires before the eviction (and may veto it by throwing) and the
+/// <see cref="ItemEvicted"/> event fires after.
+/// </description>
 /// </item>
 /// <item>
-/// <description><see cref="Dequeue"/> and <see cref="TryDequeue"/> - Remove and return the oldest element.</description>
-/// </item>
-/// <item>
-/// <description><see cref="Peek"/> and <see cref="TryPeek"/> - View the oldest element without removing it.</description>
+/// <description>
+/// <c>AllowOverwrite = false</c> — <see cref="Enqueue"/> throws
+/// <see cref="InvalidOperationException"/> when the buffer is full; <see cref="TryEnqueue"/> returns
+/// <see langword="false"/> without modifying state.
+/// </description>
 /// </item>
 /// </list>
+/// <para>Key operations:</para>
+/// <list type="bullet">
+/// <item><description><see cref="Enqueue(T)"/> / <see cref="TryEnqueue(T)"/> — add an element at the tail.</description></item>
+/// <item><description><see cref="Dequeue"/> / <see cref="TryDequeue(out T)"/> — remove and return the oldest (head) element.</description></item>
+/// <item><description><see cref="Peek"/> / <see cref="TryPeek(out T)"/> — read the oldest element without removing it.</description></item>
+/// <item><description>Inherited <see cref="RingBackedCollection{T}.TrimExcess"/> — shrink the backing array to <c>Count</c>.</description></item>
+/// </list>
 /// <para>
-/// The <see cref="Capacity"/> property defines the maximum number of elements the buffer can hold. If the buffer is full and
-/// <see cref="AllowOverwrite"/> is <see langword="false"/>, attempts to enqueue additional elements will throw an <see cref="InvalidOperationException"/>.
+/// For a double-ended counterpart with the same fixed-vs-growable choice, see <see cref="Deque{T}"/>.
+/// For thread-safe concurrent FIFO access, see
+/// <see cref="Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer{T}"/>; <see cref="CircularBuffer{T}"/>
+/// itself is not thread-safe.
 /// </para>
-/// <para><see cref="CircularBuffer{T}"/> accepts <see langword="null"/> values (for reference types) and allows duplicate elements.</para>
-/// <example>
-/// <code language="csharp">
-///<![CDATA[
-/// Create a circular buffer with capacity for 3 items
-/// var buffer = new CircularBuffer<int>(capacity: 3);
-///
-/// Enqueue three items
-/// buffer.Enqueue(1);
-/// buffer.Enqueue(2);
-/// buffer.Enqueue(3);                // Buffer now contains 1, 2, 3
-/// buffer.TryEnqueue(4);            // false
-///
-/// Attempt to add a fourth item (will throw if AllowOverwrite is false)
-/// try
-/// {
-///     buffer.Enqueue(4);            // InvalidOperationException
-/// }
-/// catch (InvalidOperationException ex)
-/// {
-///     Console.WriteLine("Buffer full: " + ex.Message);
-/// }
-///
-/// Enable overwrite mode to allow overwriting the oldest element
-/// buffer.AllowOverwrite = true;
-///
-/// Now enqueuing will overwrite the oldest item (1)
-/// buffer.Enqueue(4);                // Buffer now contains 2, 3, 4
-///
-/// Dequeue all items to verify the order
-/// while (buffer.TryDequeue(out int value))
-/// {
-///     Console.WriteLine(value);    // Outputs: 2, 3, 4
-/// }
-///]]>
-/// </code>
-/// </example>
+/// <para>
+/// <see cref="CircularBuffer{T}"/> accepts <see langword="null"/> values for reference types and allows
+/// duplicate elements.
+/// </para>
 /// </remarks>
 [DebuggerDisplay("Count = {Count}")]
 [DebuggerTypeProxy(typeof(CircularBufferDebugView<>))]
 [Serializable]
-public partial class CircularBuffer<T>
+public class CircularBuffer<T> : RingBackedCollection<T>
 {
     private const int DefaultCapacity = 16;
-#if !NET6_0_OR_GREATER
-    private const int MaxArrayLength = 0x7FFFFFC7; // 2,147,483,647 - 1
-#endif
-
-    private RingStorage<T> _storage;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CircularBuffer{T}"/> class using the default capacity and allowing overwrites by default.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// This constructor initialises the buffer with a default capacity defined by the internal <c>DefaultCapacity</c> constant. When the
-    /// buffer becomes full, new items will overwrite the oldest elements.
-    /// </para>
-    /// <para>
-    /// To customise capacity or overwrite behaviour, use an overloaded constructor such as
-    /// <see cref="CircularBuffer{T}.CircularBuffer(int)"/> or <see cref="CircularBuffer{T}.CircularBuffer(int, bool)"/>.
-    /// </para>
-    /// </remarks>
     public CircularBuffer()
         : this(DefaultCapacity, allowOverwrite: true) { }
 
@@ -113,12 +80,6 @@ public partial class CircularBuffer<T>
     /// </summary>
     /// <param name="capacity">The maximum number of elements the buffer can contain. Must be greater than zero.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="capacity"/> is less than or equal to zero.</exception>
-    /// <remarks>
-    /// <para>
-    /// When the number of items exceeds <paramref name="capacity"/>, older elements are automatically overwritten. To disable overwrites,
-    /// use the <see cref="CircularBuffer{T}.CircularBuffer(int, bool)"/> constructor with <c>allowOverwrite: false</c>.
-    /// </para>
-    /// </remarks>
     public CircularBuffer(int capacity)
         : this(capacity, allowOverwrite: true) { }
 
@@ -131,17 +92,9 @@ public partial class CircularBuffer<T>
     /// prevent adding new elements when the buffer has reached capacity, which will cause an exception to be thrown during insertion.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="capacity"/> is less than or equal to zero.</exception>
-    /// <remarks>
-    /// Use this constructor when you need to control whether the buffer should overwrite old data once full or strictly enforce capacity.
-    /// </remarks>
     public CircularBuffer(int capacity, bool allowOverwrite)
+        : base(capacity)
     {
-#if NET6_0_OR_GREATER
-        ThrowHelper.ThrowIfOutOfRange(capacity, 1, Array.MaxLength);
-#else
-        ThrowHelper.ThrowIfOutOfRange(capacity, 1, MaxArrayLength);
-#endif
-        _storage = new RingStorage<T>(capacity);
         AllowOverwrite = allowOverwrite;
     }
 
@@ -151,10 +104,6 @@ public partial class CircularBuffer<T>
     /// </summary>
     /// <param name="collection">The collection from which elements are copied. Must not be <see langword="null"/>.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="collection"/> is <see langword="null"/>.</exception>
-    /// <remarks>
-    /// The default capacity is defined by <c>DefaultCapacity</c>. If the collection contains more elements than the buffer can hold, only
-    /// the most recent items up to the buffer's capacity are retained. Older items are discarded during construction.
-    /// </remarks>
     public CircularBuffer(IEnumerable<T> collection)
         : this(collection, DefaultCapacity, allowOverwrite: true) { }
 
@@ -166,10 +115,6 @@ public partial class CircularBuffer<T>
     /// <param name="capacity">The maximum number of elements the buffer can contain. Must be greater than zero.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="collection"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="capacity"/> is less than or equal to zero.</exception>
-    /// <remarks>
-    /// If the number of elements in <paramref name="collection"/> exceeds <paramref name="capacity"/>, only the most recent items are
-    /// retained. Older items are discarded during construction.
-    /// </remarks>
     public CircularBuffer(IEnumerable<T> collection, int capacity)
         : this(collection, capacity, allowOverwrite: true) { }
 
@@ -189,26 +134,34 @@ public partial class CircularBuffer<T>
     /// <exception cref="InvalidOperationException">
     /// Thrown when <paramref name="allowOverwrite"/> is <see langword="false"/> and the collection contains more elements than the buffer capacity.
     /// </exception>
-    /// <remarks>
-    /// When the number of items in the collection exceeds the capacity, only the most recent items are copied into the buffer (if
-    /// overwriting is allowed).
-    /// </remarks>
     public CircularBuffer(IEnumerable<T> collection, int capacity, bool allowOverwrite)
+        : base(MaterializeWithOverflowPolicy(collection, capacity, allowOverwrite), capacity)
+    {
+        AllowOverwrite = allowOverwrite;
+    }
+
+    /// <summary>
+    /// Materialises <paramref name="collection"/> into an array exactly once and enforces the no-overwrite
+    /// overflow policy before the base constructor sees the source. Returning a <c>T[]</c> avoids a second
+    /// enumeration in the base ctor.
+    /// </summary>
+    /// <param name="collection">The collection from which elements will be copied.</param>
+    /// <param name="capacity">The maximum number of elements the buffer can contain.</param>
+    /// <param name="allowOverwrite">Whether eviction is permitted; controls whether the size check is enforced.</param>
+    /// <returns>The materialised array; never <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="collection"/> is <see langword="null"/>.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="allowOverwrite"/> is <see langword="false"/> and the collection size exceeds <paramref name="capacity"/>.
+    /// </exception>
+    private static T[] MaterializeWithOverflowPolicy(IEnumerable<T> collection, int capacity, bool allowOverwrite)
     {
         ThrowHelper.ThrowIfNull(collection);
-#if NET6_0_OR_GREATER
-        ThrowHelper.ThrowIfOutOfRange(capacity, 1, Array.MaxLength);
-#else
-        ThrowHelper.ThrowIfOutOfRange(capacity, 1, MaxArrayLength);
-#endif
-
         T[] items = collection as T[] ?? collection.ToArray();
 
-        if (items.Length > capacity && !allowOverwrite)
+        if (!allowOverwrite && items.Length > capacity)
             throw new InvalidOperationException(ResourceStrings.Arg_Invalid_ArrayLengthExceedsCapacity);
 
-        AllowOverwrite = allowOverwrite;
-        _storage.InitializeFrom(items, items.Length, capacity);
+        return items;
     }
 
     /// <summary>
@@ -217,26 +170,10 @@ public partial class CircularBuffer<T>
     /// <remarks>
     /// <para>This event is raised only when the buffer reaches capacity and <see cref="AllowOverwrite"/> is <see langword="true"/>.</para>
     /// <para>
-    /// It provides access to the evicted item, which has been removed from the buffer. You can use this event to log history, trigger
-    /// cleanup actions, or propagate notifications.
-    /// </para>
-    /// <para>
     /// <b>Important:</b> Exceptions thrown by event handlers are not caught and will propagate to the caller of <see cref="Enqueue"/>
     /// or <see cref="TryEnqueue"/>. Consumers should ensure event handlers are exception-safe.
     /// </para>
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// var buffer = new CircularBuffer<string>(capacity: 2, allowOverwrite: true);
-    /// buffer.ItemEvicted += item => Console.WriteLine($"Evicted: {item}");
-    ///
-    /// buffer.Enqueue("A");
-    /// buffer.Enqueue("B");
-    /// buffer.Enqueue("C"); // Triggers ItemEvicted for "A"
-    ///]]>
-    /// </code>
-    /// </example>
     public event Action<T>? ItemEvicted;
 
     /// <summary>
@@ -245,26 +182,10 @@ public partial class CircularBuffer<T>
     /// <remarks>
     /// <para>This event is raised only when the buffer has reached its capacity and <see cref="AllowOverwrite"/> is <see langword="true"/>.</para>
     /// <para>
-    /// It allows consumers to inspect the item that is about to be removed from the buffer. This can be useful for pre-eviction
-    /// validation, logging, synchronization with external systems, or veto logic.
-    /// </para>
-    /// <para>
     /// <b>Important:</b> If the event handler throws an exception, the item will not be evicted, and the <see cref="Enqueue"/> or
     /// <see cref="TryEnqueue"/> operation will propagate that exception. Event handlers should therefore avoid throwing unless intentional.
     /// </para>
     /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// var buffer = new CircularBuffer<string>(capacity: 2, allowOverwrite: true);
-    /// buffer.ItemEvicting += item => Console.WriteLine($"Evicting: {item}");
-    ///
-    /// buffer.Enqueue("A");
-    /// buffer.Enqueue("B");
-    /// buffer.Enqueue("C"); // Triggers ItemEvicting for "A"
-    ///]]>
-    /// </code>
-    /// </example>
     public event Action<T>? ItemEvicting;
 
     /// <summary>
@@ -275,130 +196,19 @@ public partial class CircularBuffer<T>
     /// <see langword="true"/> to overwrite the oldest item when the buffer is full; <see langword="false"/> to throw an exception instead
     /// of overwriting.
     /// </value>
-    /// <remarks>
-    /// <para>
-    /// When <see cref="AllowOverwrite"/> is set to <see langword="true"/>, the buffer permits new items to overwrite the oldest item once
-    /// <see cref="Capacity"/> is reached.
-    /// </para>
-    /// <para>
-    /// When set to <see langword="false"/>, attempting to <see cref="Enqueue(T)"/> or <see cref="TryEnqueue(T)"/> into a full buffer
-    /// will throw an <see cref="InvalidOperationException"/> or return <see langword="false"/>, respectively.
-    /// </para>
-    /// <para>This property can be toggled at runtime to change eviction behaviour dynamically.</para>
-    /// </remarks>
     public bool AllowOverwrite { get; set; }
-
-    /// <summary>
-    /// Gets the maximum number of elements that the <see cref="CircularBuffer{T}"/> can contain.
-    /// </summary>
-    /// <value>The total capacity of the buffer, which determines how many elements it can hold before reaching its limit.</value>
-    /// <remarks>
-    /// <para>
-    /// The <see cref="Capacity"/> is fixed at construction and defines the maximum number of items that can be stored in the buffer at
-    /// once. If <see cref="AllowOverwrite"/> is <see langword="true"/>, adding an item to a full buffer will evict the oldest item.
-    /// Otherwise, an exception is thrown or the addition fails depending on the method used.
-    /// </para>
-    /// <para>To reduce memory usage after elements are removed, use <see cref="TrimExcess"/> to shrink the buffer.</para>
-    /// </remarks>
-    public int Capacity => _storage.Capacity;
-
-    /// <summary>
-    /// Gets the element at the specified zero-based index from the oldest to the newest element.
-    /// </summary>
-    /// <param name="index">The zero-based index of the element to retrieve (0 refers to the oldest element).</param>
-    /// <returns>The element stored at the specified index within the buffer.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is negative or greater than or equal to <see cref="Count"/>.</exception>
-    /// <remarks>
-    /// <para>
-    /// The indexer provides read-only access to the elements in the buffer in logical order (from oldest to newest). Internally, the
-    /// circular structure is resolved to return the correct element corresponding to the requested index.
-    /// </para>
-    /// <para>
-    /// The index is relative to the logical start of the buffer. That is, <c>buffer[0]</c> returns the oldest element, and <c>buffer[Count
-    /// - 1]</c> returns the most recently added item.
-    /// </para>
-    /// </remarks>
-    public T this[int index]
-    {
-        get
-        {
-            ThrowHelper.ThrowIfLessThan(index, 0);
-            ThrowHelper.ThrowIfGreaterThanOrEqual(index, _storage.Count);
-
-            return _storage.GetAt(index);
-        }
-    }
-
-    /// <summary>
-    /// Removes all elements from the <see cref="CircularBuffer{T}"/>, resetting its state.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// This method clears the buffer by resetting internal state and clearing array contents. After calling <see cref="Clear"/>, the
-    /// buffer’s <see cref="Count"/> becomes <c>0</c>, but the <see cref="Capacity"/> remains unchanged.
-    /// </para>
-    /// <para>
-    /// Any subscribed <see cref="ItemEvicting"/> or <see cref="ItemEvicted"/> handlers are not invoked by this operation, as
-    /// <see cref="Clear"/> does not count as eviction.
-    /// </para>
-    /// </remarks>
-    public void Clear() =>
-        _storage.Clear();
-
-    /// <summary>
-    /// Determines whether the buffer contains a specific element.
-    /// </summary>
-    /// <param name="item">The element to locate in the buffer. Can be <see langword="null"/> for reference types.</param>
-    /// <returns><see langword="true"/> if <paramref name="item"/> exists in the buffer; otherwise, <see langword="false"/>.</returns>
-    /// <remarks>
-    /// <para>This method performs a linear scan from the oldest to the newest element using the default equality comparer for <typeparamref name="T"/>.</para>
-    /// <para>The search is read-only and does not modify the buffer's state.</para>
-    /// </remarks>
-    public bool Contains(T item) =>
-        _storage.Contains(item);
-
-    /// <summary>
-    /// Copies elements from the buffer to the specified target array, starting at the given array index.
-    /// </summary>
-    /// <param name="array">The destination array to copy elements into. Must not be <see langword="null"/>.</param>
-    /// <param name="index">The zero-based index in the destination array at which copying begins.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="array"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="index"/> is negative.</exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when the number of elements in the buffer exceeds the available space in the target array starting at the specified <paramref name="index"/>.
-    /// </exception>
-    /// <remarks>
-    /// <para>
-    /// Elements are copied in logical FIFO order-from the oldest to the newest. If the buffer is wrapped internally, this method handles
-    /// segmenting the copy operation appropriately.
-    /// </para>
-    /// <para>The target array must be large enough to accommodate the number of elements in the buffer.</para>
-    /// </remarks>
-    public void CopyTo(T[] array, int index)
-    {
-        ThrowHelper.ThrowIfNull(array);
-        ThrowHelper.ThrowIfNegative(index, nameof(index));
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, index + _storage.Count);
-
-        _storage.CopyToInternal(array, index);
-    }
 
     /// <summary>
     /// Removes and returns the oldest element from the buffer.
     /// </summary>
     /// <returns>The oldest element in the buffer.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the buffer is empty when <see cref="Dequeue"/> is called.</exception>
-    /// <remarks>
-    /// <para>
-    /// This method removes the element that has been in the buffer the longest (FIFO behaviour). If the buffer is empty, an
-    /// <see cref="InvalidOperationException"/> is thrown.
-    /// </para>
-    /// <para>Use <see cref="TryDequeue(out T)"/> to avoid exceptions when the buffer may be empty.</para>
-    /// </remarks>
     public T Dequeue()
     {
-        TryDequeueInternal(out T? item, throwIfEmpty: true);
-        return item;
+        if (Count == 0)
+            throw new InvalidOperationException(ResourceStrings.InvalidOperation_EmptySequence);
+
+        return RemoveHead();
     }
 
     /// <summary>
@@ -406,87 +216,19 @@ public partial class CircularBuffer<T>
     /// </summary>
     /// <param name="item">The element to add. Can be <see langword="null"/> for reference types.</param>
     /// <exception cref="InvalidOperationException">Thrown if the buffer is at full capacity and <see cref="AllowOverwrite"/> is <see langword="false"/>.</exception>
-    /// <remarks>
-    /// <para>
-    /// If <see cref="AllowOverwrite"/> is <see langword="true"/>, the oldest element in the buffer is evicted to make room for the new
-    /// item. If <see cref="AllowOverwrite"/> is <see langword="false"/>, an exception is thrown when the buffer is full.
-    /// </para>
-    /// <para>To avoid exceptions when the buffer may be full, use <see cref="TryEnqueue(T)"/> instead.</para>
-    /// </remarks>
     public void Enqueue(T item) => _ = TryEnqueueInternal(item, throwIfFull: true);
 
     /// <summary>
     /// Returns the oldest element in the <see cref="CircularBuffer{T}"/> without removing it.
     /// </summary>
     /// <returns>The element at the front of the buffer (the oldest item).</returns>
-    /// <exception cref="InvalidOperationException">Thrown when the buffer is empty (i.e., <see cref="Count"/> equals <c>0</c>).</exception>
-    /// <remarks>
-    /// Use <see cref="Peek"/> to inspect the current front of the buffer without modifying its contents. If you need to remove the item as
-    /// well, use <see cref="Dequeue"/>.
-    /// </remarks>
+    /// <exception cref="InvalidOperationException">Thrown when the buffer is empty (i.e., <see cref="RingBackedCollection{T}.Count"/> equals <c>0</c>).</exception>
     public T Peek()
     {
-        if (_storage.Count == 0)
+        if (Count == 0)
             throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionEmpty);
 
-        return _storage.PeekHead();
-    }
-
-    /// <summary>
-    /// Copies the contents of the <see cref="CircularBuffer{T}"/> to a new array.
-    /// </summary>
-    /// <returns>A new one-dimensional array containing the buffer's elements, ordered from oldest to newest.</returns>
-    /// <remarks>
-    /// This method creates a shallow copy of the buffer's contents. It is useful for inspection, snapshotting, or passing the elements
-    /// to APIs that require array input.
-    /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    /// <![CDATA[
-    /// var buffer = new CircularBuffer<int>(3);
-    /// buffer.Enqueue(1);
-    /// buffer.Enqueue(2);
-    /// buffer.Enqueue(3);
-    /// int[] copy = buffer.ToArray(); // copy = [1, 2, 3]
-    ///]]>
-    /// </code>
-    /// </example>
-    public T[] ToArray() =>
-        _storage.ToArray();
-
-    /// <summary>
-    /// Reduces the internal capacity of the <see cref="CircularBuffer{T}"/> to match the current number of elements, freeing unused memory.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// This method is useful in scenarios where the buffer previously had a large capacity but no longer needs to retain that size. It
-    /// creates a new internal array sized to the current <see cref="Count"/> and copies the existing elements into it.
-    /// </para>
-    /// <para>
-    /// If the buffer is empty, the internal storage is reduced to a minimal size (at least one element) to ensure the buffer remains operational.
-    /// </para>
-    /// <para>
-    /// After trimming, the <see cref="Capacity"/> will equal the current <see cref="Count"/>, and the buffer will be reset to a
-    /// zero-based internal index layout.
-    /// </para>
-    /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    /// <![CDATA[
-    /// var buffer = new CircularBuffer<string>(100);
-    /// buffer.Enqueue("A");
-    /// buffer.Enqueue("B");
-    /// buffer.TrimExcess(); // Reduces capacity to 2
-    ///]]>
-    ///</code>
-    /// </example>
-    public void TrimExcess()
-    {
-        int newCapacity = Math.Max(_storage.Count, 1);
-        if (newCapacity == _storage.Capacity)
-            return;
-
-        _storage.Resize(newCapacity);
+        return PeekHead();
     }
 
     /// <summary>
@@ -498,24 +240,17 @@ public partial class CircularBuffer<T>
     /// <returns>
     /// <see langword="true"/> if an item was successfully dequeued; otherwise, <see langword="false"/> if the buffer was empty.
     /// </returns>
-    /// <remarks>
-    /// <para>
-    /// This method is safe to call when the buffer may be empty. It avoids throwing <see cref="InvalidOperationException"/> and
-    /// instead returns <see langword="false"/> if no items are available.
-    /// </para>
-    /// <para>Use this method when performance is critical or when you want to avoid exception-based control flow in empty-buffer scenarios.</para>
-    /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// var buffer = new CircularBuffer<string>(2);
-    /// buffer.Enqueue("A");
-    /// if (buffer.TryDequeue(out var value))
-    ///     Console.WriteLine($"Removed: {value}");
-    ///]]>
-    /// </code>
-    /// </example>
-    public bool TryDequeue(out T item) => TryDequeueInternal(out item, throwIfEmpty: false);
+    public bool TryDequeue(out T item)
+    {
+        if (Count == 0)
+        {
+            item = default!;
+            return false;
+        }
+
+        item = RemoveHead();
+        return true;
+    }
 
     /// <summary>
     /// Attempts to add an element to the end of the <see cref="CircularBuffer{T}"/> without throwing an exception.
@@ -525,22 +260,6 @@ public partial class CircularBuffer<T>
     /// <see langword="true"/> if the item was successfully enqueued; <see langword="false"/> if the buffer is full and
     /// <see cref="AllowOverwrite"/> is <see langword="false"/>.
     /// </returns>
-    /// <remarks>
-    /// <para>
-    /// This method is safe to call when the buffer may be at capacity. It avoids throwing <see cref="InvalidOperationException"/> and
-    /// instead returns <see langword="false"/> if the item could not be enqueued.
-    /// </para>
-    /// <para>Use this method when performance is critical or when you want to avoid exception-based control flow in full-buffer scenarios.</para>
-    /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// var buffer = new CircularBuffer<string>(2, allowOverwrite: false);
-    /// if (!buffer.TryEnqueue("X"))
-    ///     Console.WriteLine("Item could not be added.");
-    ///]]>
-    /// </code>
-    /// </example>
     public bool TryEnqueue(T item) => TryEnqueueInternal(item, throwIfFull: false);
 
     /// <summary>
@@ -550,99 +269,34 @@ public partial class CircularBuffer<T>
     /// When this method returns, contains the oldest element if the buffer is not empty; otherwise, contains the default value for <typeparamref name="T"/>.
     /// </param>
     /// <returns><see langword="true"/> if an item was successfully retrieved; <see langword="false"/> if the buffer is empty.</returns>
-    /// <remarks>
-    /// <para>Use this method to inspect the oldest item in the buffer without modifying the buffer's contents.</para>
-    /// <para>
-    /// This method avoids throwing exceptions when the buffer is empty, making it suitable for high-throughput or exception-sensitive
-    /// code paths.
-    /// </para>
-    /// </remarks>
-    /// <example>
-    /// <code language="csharp">
-    ///<![CDATA[
-    /// var buffer = new CircularBuffer<int>(2);
-    /// buffer.Enqueue(10);
-    /// if (buffer.TryPeek(out int value))
-    ///     Console.WriteLine($"Peeked: {value}");
-    ///]]>
-    /// </code>
-    /// </example>
     public bool TryPeek(out T item)
     {
-        if (_storage.Count == 0)
+        if (Count == 0)
         {
             item = default!;
             return false;
         }
 
-        item = _storage.PeekHead();
+        item = PeekHead();
         return true;
     }
 
     /// <summary>
-    /// Attempts to remove and return the oldest element from the <see cref="CircularBuffer{T}"/>.
+    /// Single internal Enqueue implementation shared by <see cref="Enqueue"/> and <see cref="TryEnqueue"/>.
     /// </summary>
-    /// <param name="item">When this method returns, contains the dequeued item if successful; otherwise, the default value of <typeparamref name="T"/>.</param>
-    /// <param name="throwIfEmpty">
-    /// If <see langword="true"/>, throws an <see cref="InvalidOperationException"/> when the buffer is empty; if
-    /// <see langword="false"/>, returns <see langword="false"/> without throwing.
-    /// </param>
-    /// <returns>
-    /// <see langword="true"/> if an element was successfully dequeued; otherwise, <see langword="false"/> if the buffer was empty and
-    /// <paramref name="throwIfEmpty"/> was <see langword="false"/>.
-    /// </returns>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown when <paramref name="throwIfEmpty"/> is <see langword="true"/> and the buffer is empty.
-    /// </exception>
-    /// <remarks>
-    /// <para>
-    /// This internal method underpins both <see cref="Dequeue"/> and <see cref="TryDequeue"/>, and provides a shared path for controlled
-    /// exception handling.
-    /// </para>
-    /// </remarks>
-    private bool TryDequeueInternal(out T item, bool throwIfEmpty)
-    {
-        if (_storage.Count == 0)
-        {
-            if (throwIfEmpty)
-                throw new InvalidOperationException(ResourceStrings.InvalidOperation_EmptySequence);
-
-            item = default!;
-            return false;
-        }
-
-        item = _storage.RemoveHead();
-        return true;
-    }
-
-    /// <summary>
-    /// Attempts to enqueue an item into the internal <see cref="CircularBuffer{T}"/>.
-    /// </summary>
-    /// <param name="item">The element to add. Can be <see langword="null"/> for reference types.</param>
+    /// <param name="item">The element to add.</param>
     /// <param name="throwIfFull">
-    /// If <see langword="true"/>, throws an <see cref="InvalidOperationException"/> when the buffer is full and overwriting is
-    /// disallowed; otherwise, returns <see langword="false"/> without throwing.
+    /// If <see langword="true"/>, throws when the buffer is full and <see cref="AllowOverwrite"/> is <see langword="false"/>;
+    /// otherwise returns <see langword="false"/>.
     /// </param>
-    /// <returns>
-    /// <see langword="true"/> if the item was enqueued successfully; <see langword="false"/> if the buffer was full and overwriting was
-    /// disallowed and <paramref name="throwIfFull"/> was <see langword="false"/>.
-    /// </returns>
+    /// <returns><see langword="true"/> when the item was added (or evicted-and-replaced).</returns>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when <paramref name="throwIfFull"/> is <see langword="true"/> and the buffer is full while <see cref="AllowOverwrite"/> is
-    /// <see langword="false"/>, or the buffer’s capacity is zero.
+    /// <paramref name="throwIfFull"/> is <see langword="true"/> and the buffer is full while
+    /// <see cref="AllowOverwrite"/> is <see langword="false"/>.
     /// </exception>
-    /// <remarks>
-    /// <para>
-    /// This method is used by both <see cref="Enqueue"/> and <see cref="TryEnqueue"/> to centralize the enqueue logic and exception control.
-    /// </para>
-    /// <para>
-    /// If <see cref="AllowOverwrite"/> is enabled, the oldest element is evicted to make room for the new item, and the
-    /// <see cref="ItemEvicting"/> and <see cref="ItemEvicted"/> events are raised.
-    /// </para>
-    /// </remarks>
     private bool TryEnqueueInternal(T item, bool throwIfFull)
     {
-        if (_storage.Count == _storage.Capacity)
+        if (Count == Capacity)
         {
             if (!AllowOverwrite)
             {
@@ -652,18 +306,18 @@ public partial class CircularBuffer<T>
                 return false;
             }
 
-            // When full, _tail == _head, so the head element is the one about to be evicted. Capture it
-            // before raising ItemEvicting so a handler exception vetoes the eviction without mutating storage.
-            T overwritten = _storage.PeekHead();
+            // When full, head == tail, so PeekHead returns the slot the eviction will overwrite.
+            // Capture before raising ItemEvicting so a handler exception vetoes the eviction in place.
+            T overwritten = PeekHead();
             ItemEvicting?.Invoke(overwritten);
 
-            _storage.OverwriteTail(item);
+            OverwriteTail(item);
 
             ItemEvicted?.Invoke(overwritten);
         }
         else
         {
-            _storage.AddTail(item);
+            AddTail(item);
         }
 
         return true;
