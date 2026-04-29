@@ -21,7 +21,8 @@ namespace Bodu.IO.Hashing.Checksums;
 /// Adler checksums maintain two accumulators (A and B) and combine them to form the final checksum. Derived
 /// classes supply the modulus appropriate to the desired bit width (for example 65521 for Adler-32, or
 /// 4294967291 for Adler-64). The core hashing loop provides both a SIMD-accelerated path and a scalar
-/// fallback.
+/// fallback; the SIMD path applies the canonical positionally weighted block recurrence so that both paths
+/// produce identical digests for any input.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used
 /// for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -67,27 +68,48 @@ public abstract class Adler<T>
 
         if (Vector.IsHardwareAccelerated && length >= 512)
         {
+            int width = Vector<byte>.Count;
+            int half = Vector<ushort>.Count;
+            T widthT = T.CreateTruncating((uint)width);
+
             while (index < length)
             {
                 int remaining = Math.Min(length - index, NMAX);
                 int chunkEnd = index + remaining;
 
-                while (index + Vector<byte>.Count <= chunkEnd)
+                // Per width-byte block [b_1 .. b_V] starting from accumulators (A, B), the
+                // canonical Adler recurrence yields:
+                //     A_new = A + Σ b_i
+                //     B_new = B + V · A + Σ (V - i + 1) · b_i
+                // The positional weighting and the V·A carry term are essential — omitting
+                // either produces a digest that does not match the per-byte definition.
+                while (index + width <= chunkEnd)
                 {
-                    var vec = new Vector<byte>(source.Slice(index, Vector<byte>.Count));
+                    Vector<byte> vec = new Vector<byte>(source.Slice(index, width));
                     Vector.Widen(vec, out Vector<ushort> lo, out Vector<ushort> hi);
 
-                    T sum = T.Zero;
-                    for (int i = 0; i < Vector<ushort>.Count; i++)
-                        sum += T.CreateTruncating(lo[i]) + T.CreateTruncating(hi[i]);
+                    T sumBytes = T.Zero;
+                    T sumWeighted = T.Zero;
+                    for (int i = 0; i < half; i++)
+                    {
+                        T loByte = T.CreateTruncating(lo[i]);
+                        T hiByte = T.CreateTruncating(hi[i]);
+                        sumBytes += loByte + hiByte;
+                        sumWeighted += (T.CreateTruncating((uint)(width - i)) * loByte)
+                                     + (T.CreateTruncating((uint)(half - i)) * hiByte);
+                    }
 
-                    pA += sum;
-                    pB += pA;
+                    pB += (pA * widthT) + sumWeighted;
+                    pA += sumBytes;
 
-                    index += Vector<byte>.Count;
+                    index += width;
                 }
 
-                index = chunkEnd;
+                while (index < chunkEnd)
+                {
+                    pA += T.CreateTruncating(source[index++]);
+                    pB += pA;
+                }
 
                 pA %= this._modulo;
                 pB %= this._modulo;
