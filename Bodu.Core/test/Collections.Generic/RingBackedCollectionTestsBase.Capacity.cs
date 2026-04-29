@@ -9,18 +9,25 @@ namespace Bodu.Collections.Generic;
 public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
 {
     /// <summary>
-    /// Verifies that <see cref="GetCapacity(TCollection)"/> is at least the requested initial capacity.
-    /// Fixed-capacity types report exactly the requested value; growable types may report more.
+    /// Verifies that <see cref="GetCapacity(TCollection)"/> is at least the requested initial capacity, across
+    /// a range of sizes. Fixed-capacity types report exactly the requested value; growable types may report more.
     /// </summary>
+    /// <param name="capacity">The capacity hint passed to the constructor.</param>
     [TestMethod]
-    public void Capacity_WhenCustomCapacityProvided_ShouldBeAtLeastRequested()
+    [DataRow(1)]
+    [DataRow(2)]
+    [DataRow(7)]
+    [DataRow(16)]
+    [DataRow(64)]
+    [DataRow(1024)]
+    public void Capacity_WhenCustomCapacityProvided_ShouldBeAtLeastRequested(int capacity)
     {
-        var collection = CreateCollection(7);
+        var collection = CreateCollection(capacity);
 
         if (ReportsExactCapacity)
-            Assert.AreEqual(7, GetCapacity(collection));
+            Assert.AreEqual(capacity, GetCapacity(collection));
         else
-            Assert.IsTrue(GetCapacity(collection) >= 7);
+            Assert.IsTrue(GetCapacity(collection) >= capacity);
     }
 
     /// <summary>

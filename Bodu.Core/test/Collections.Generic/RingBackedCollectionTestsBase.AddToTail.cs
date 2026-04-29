@@ -42,13 +42,18 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
 
     /// <summary>
     /// Verifies that <see cref="AddToTail(TCollection, int)"/> increments <see cref="GetCount(TCollection)"/>
-    /// by one for each call.
+    /// by one for each call, exercised across multiple counts.
     /// </summary>
+    /// <param name="itemCount">The number of items to add.</param>
     [TestMethod]
-    public void AddToTail_WhenItemsAdded_ShouldIncrementCount()
+    [DataRow(1)]
+    [DataRow(2)]
+    [DataRow(8)]
+    [DataRow(64)]
+    public void AddToTail_WhenItemsAdded_ShouldIncrementCount(int itemCount)
     {
-        var collection = CreateCollection(5);
-        for (int i = 0; i < 5; i++)
+        var collection = CreateCollection(Math.Max(itemCount, 1));
+        for (int i = 0; i < itemCount; i++)
         {
             AddToTail(collection, i);
             Assert.AreEqual(i + 1, GetCount(collection));

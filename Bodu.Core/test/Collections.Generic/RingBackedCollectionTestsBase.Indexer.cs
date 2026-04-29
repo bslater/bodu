@@ -26,21 +26,27 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
 
     /// <summary>
     /// Verifies that the indexer returns the correct element when the storage has wrapped around the
-    /// internal array boundary.
+    /// internal array boundary, across a range of capacities.
     /// </summary>
+    /// <param name="capacity">The collection capacity. Drives where the wrap boundary falls.</param>
     [TestMethod]
-    public void Indexer_WhenStorageWrapped_ShouldReturnLogicalOrder()
+    [DataRow(2)]
+    [DataRow(3)]
+    [DataRow(5)]
+    [DataRow(16)]
+    public void Indexer_WhenStorageWrapped_ShouldReturnLogicalOrder(int capacity)
     {
-        var collection = CreateCollection(3);
-        AddToTail(collection, 1);
-        AddToTail(collection, 2);
-        AddToTail(collection, 3);
-        _ = RemoveFromHead(collection);
-        AddToTail(collection, 4); // wraps
+        // Fill to capacity, drain one, refill — this places the head past zero and the tail wrapped to slot zero.
+        var collection = CreateCollection(capacity);
+        for (int i = 0; i < capacity; i++)
+            AddToTail(collection, i);
 
-        Assert.AreEqual(2, GetAt(collection, 0));
-        Assert.AreEqual(3, GetAt(collection, 1));
-        Assert.AreEqual(4, GetAt(collection, 2));
+        _ = RemoveFromHead(collection);
+        AddToTail(collection, capacity); // wraps into slot 0
+
+        // Logical order is now [1, 2, ..., capacity]
+        for (int i = 0; i < capacity; i++)
+            Assert.AreEqual(i + 1, GetAt(collection, i));
     }
 
     /// <summary>

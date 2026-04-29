@@ -26,19 +26,29 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     }
 
     /// <summary>
-    /// Verifies that <see cref="CopyTo(TCollection, int[], int)"/> writes at the specified offset.
+    /// Verifies that <see cref="CopyTo(TCollection, int[], int)"/> writes at the specified offset, across
+    /// a range of starting positions.
     /// </summary>
+    /// <param name="offset">The destination offset to start copying at.</param>
     [TestMethod]
-    public void CopyTo_WhenIndexIsNonZero_ShouldStartAtOffset()
+    [DataRow(0)]
+    [DataRow(1)]
+    [DataRow(2)]
+    [DataRow(3)]
+    public void CopyTo_WhenIndexIsNonZero_ShouldStartAtOffset(int offset)
     {
         var collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
 
         var target = new int[5];
-        CopyTo(collection, target, 2);
+        CopyTo(collection, target, offset);
 
-        CollectionAssert.AreEqual(new[] { 0, 0, 1, 2, 0 }, target);
+        for (int i = 0; i < 5; i++)
+        {
+            int expected = i == offset ? 1 : i == offset + 1 ? 2 : 0;
+            Assert.AreEqual(expected, target[i], $"target[{i}] mismatch (offset={offset})");
+        }
     }
 
     /// <summary>

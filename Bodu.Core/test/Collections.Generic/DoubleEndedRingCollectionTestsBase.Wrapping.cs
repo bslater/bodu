@@ -9,20 +9,34 @@ namespace Bodu.Collections.Generic;
 public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollection>
 {
     /// <summary>
-    /// Verifies that filling the collection alternately from both ends preserves logical head-to-tail order.
+    /// Verifies that filling the collection alternately from both ends preserves logical head-to-tail order,
+    /// across a range of capacities (the wrap point varies with capacity).
     /// </summary>
+    /// <param name="capacity">The collection capacity (must be even and at least 2).</param>
     [TestMethod]
-    public void Wrapping_WhenFilledFromBothEnds_ShouldPreserveLogicalOrder()
+    [DataRow(2)]
+    [DataRow(4)]
+    [DataRow(6)]
+    [DataRow(16)]
+    public void Wrapping_WhenFilledFromBothEnds_ShouldPreserveLogicalOrder(int capacity)
     {
-        var collection = CreateCollection(6);
-        AddToTail(collection, 3);
-        AddToTail(collection, 4);
-        AddToTail(collection, 5);
-        AddToHead(collection, 2);
-        AddToHead(collection, 1);
-        AddToHead(collection, 0);
+        var collection = CreateCollection(capacity);
+        int half = capacity / 2;
 
-        CollectionAssert.AreEqual(new[] { 0, 1, 2, 3, 4, 5 }, ToArray(collection));
+        // Fill the right half via tail (values [half, half+1, ..., capacity-1])
+        for (int i = 0; i < half; i++)
+            AddToTail(collection, half + i);
+
+        // Fill the left half via head (values [half-1, half-2, ..., 0]; head-side prepends reverse the order)
+        for (int i = 0; i < half; i++)
+            AddToHead(collection, half - 1 - i);
+
+        // Logical order should be 0, 1, ..., capacity-1
+        var expected = new int[capacity];
+        for (int i = 0; i < capacity; i++)
+            expected[i] = i;
+
+        CollectionAssert.AreEqual(expected, ToArray(collection));
     }
 
     /// <summary>
