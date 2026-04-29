@@ -52,4 +52,18 @@ public partial class NotableDateTimeExtensionsTests
             _ = new DateTime(2026, 1, 5).EnumerateWorkingDays(new DateTime(2026, 1, 11), service: null!);
         });
     }
+
+    /// <summary>
+    /// Verifies that swapping the start and end boundaries still yields an ascending sequence equal to the in-order range.
+    /// </summary>
+    [TestMethod]
+    public void EnumerateWorkingDays_WhenBoundariesReversed_ShouldYieldAscendingSequence()
+    {
+        NotableDateService service = BuildService();
+
+        DateTime[] forward = new DateTime(2026, 1, 5).EnumerateWorkingDays(new DateTime(2026, 1, 11), service).ToArray();
+        DateTime[] reversed = new DateTime(2026, 1, 11).EnumerateWorkingDays(new DateTime(2026, 1, 5), service).ToArray();
+
+        CollectionAssert.AreEqual(forward, reversed);
+    }
 }

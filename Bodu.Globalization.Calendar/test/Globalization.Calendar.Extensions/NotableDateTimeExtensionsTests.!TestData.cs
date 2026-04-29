@@ -109,4 +109,17 @@ public partial class NotableDateTimeExtensionsTests
     /// <returns>A configured <see cref="NotableDateService" /> instance.</returns>
     private static NotableDateService BuildHolidayService(string? territory = null) =>
         BuildService(Fixed("Holiday", 4, 7, nonWorking: true, territory: territory));
+
+    /// <summary>
+    /// Provides boundary inputs that should throw <see cref="ArgumentOutOfRangeException" /> when adding working days would overrun
+    /// the <see cref="DateTime" /> range.
+    /// </summary>
+    /// <returns>A sequence of <c>(DateTime input, int days)</c> tuples, each one expected to throw.</returns>
+    public static IEnumerable<object[]> AddWorkingDaysOverflowTestData()
+    {
+        yield return new object[] { DateTime.MaxValue, 1 };   // positive overflow past MaxValue
+        yield return new object[] { DateTime.MinValue, -1 };  // negative overflow past MinValue
+        yield return new object[] { DateTime.MaxValue.AddDays(-1), 5 };  // multi-step positive overflow
+        yield return new object[] { DateTime.MinValue.AddDays(1), -5 };  // multi-step negative overflow
+    }
 }

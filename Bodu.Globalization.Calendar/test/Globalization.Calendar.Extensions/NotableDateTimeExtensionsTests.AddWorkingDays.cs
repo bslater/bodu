@@ -97,4 +97,34 @@ public partial class NotableDateTimeExtensionsTests
             _ = new DateTime(2026, 1, 6).AddWorkingDays(service: null!, days: 1);
         });
     }
+
+    /// <summary>
+    /// Verifies that signed-day arithmetic produces the expected working-day result across positive, negative and zero values.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(AddWorkingDaysSignedTestData), DynamicDataSourceType.Method)]
+    public void AddWorkingDays_WhenSignedDaysSupplied_ShouldReturnExpectedWorkingDay(DateTime input, int days, DateTime expected)
+    {
+        NotableDateService service = BuildService();
+
+        DateTime actual = input.AddWorkingDays(service, days);
+
+        Assert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that adding working days that would overrun <see cref="DateTime.MaxValue" /> or underrun
+    /// <see cref="DateTime.MinValue" /> throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(AddWorkingDaysOverflowTestData), DynamicDataSourceType.Method)]
+    public void AddWorkingDays_WhenApplyingDaysWouldOverrunRange_ShouldThrowArgumentOutOfRangeException(DateTime input, int days)
+    {
+        NotableDateService service = BuildService();
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = input.AddWorkingDays(service, days);
+        });
+    }
 }

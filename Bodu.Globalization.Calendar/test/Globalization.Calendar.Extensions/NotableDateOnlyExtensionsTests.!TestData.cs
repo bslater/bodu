@@ -98,4 +98,17 @@ public partial class NotableDateOnlyExtensionsTests
     /// <returns>A configured <see cref="NotableDateService" /> instance.</returns>
     private static NotableDateService BuildHolidayService(string? territory = null) =>
         BuildService(Fixed("Holiday", 4, 7, nonWorking: true, territory: territory));
+
+    /// <summary>
+    /// Provides boundary inputs that should throw <see cref="ArgumentOutOfRangeException" /> when adding working days would overrun
+    /// the <see cref="DateOnly" /> range.
+    /// </summary>
+    /// <returns>A sequence of <c>(DateOnly input, int days)</c> tuples, each one expected to throw.</returns>
+    public static IEnumerable<object[]> AddWorkingDaysOverflowTestData()
+    {
+        yield return new object[] { DateOnly.MaxValue, 1 };
+        yield return new object[] { DateOnly.MinValue, -1 };
+        yield return new object[] { DateOnly.MaxValue.AddDays(-1), 5 };
+        yield return new object[] { DateOnly.MinValue.AddDays(1), -5 };
+    }
 }

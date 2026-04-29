@@ -37,4 +37,18 @@ public partial class NotableDateOnlyExtensionsTests
             _ = new DateOnly(2026, 1, 5).EnumerateNonWorkingDays(new DateOnly(2026, 1, 11), service: null!);
         });
     }
+
+    /// <summary>
+    /// Verifies that swapping the start and end boundaries still yields an ascending sequence equal to the in-order range.
+    /// </summary>
+    [TestMethod]
+    public void EnumerateNonWorkingDays_WhenBoundariesReversed_ShouldYieldAscendingSequence()
+    {
+        NotableDateService service = BuildService();
+
+        DateOnly[] forward = new DateOnly(2026, 1, 5).EnumerateNonWorkingDays(new DateOnly(2026, 1, 11), service).ToArray();
+        DateOnly[] reversed = new DateOnly(2026, 1, 11).EnumerateNonWorkingDays(new DateOnly(2026, 1, 5), service).ToArray();
+
+        CollectionAssert.AreEqual(forward, reversed);
+    }
 }
