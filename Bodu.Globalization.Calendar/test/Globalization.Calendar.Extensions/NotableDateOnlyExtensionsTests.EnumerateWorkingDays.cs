@@ -51,4 +51,18 @@ public partial class NotableDateOnlyExtensionsTests
 
         CollectionAssert.AreEqual(forward, reversed);
     }
+
+    /// <summary>
+    /// Verifies that a single-day range yields one working day for weekdays and zero for weekends.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(SingleDayWorkingYieldTestData), DynamicDataSourceType.Method)]
+    public void EnumerateWorkingDays_WhenSingleDayRange_ShouldYieldExpectedCount(DateOnly day, int expected)
+    {
+        NotableDateService service = BuildService();
+
+        int actual = day.EnumerateWorkingDays(day, service).Count();
+
+        Assert.AreEqual(expected, actual);
+    }
 }

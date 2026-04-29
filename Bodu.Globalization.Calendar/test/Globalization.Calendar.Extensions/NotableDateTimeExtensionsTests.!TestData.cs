@@ -122,4 +122,29 @@ public partial class NotableDateTimeExtensionsTests
         yield return new object[] { DateTime.MaxValue.AddDays(-1), 5 };  // multi-step positive overflow
         yield return new object[] { DateTime.MinValue.AddDays(1), -5 };  // multi-step negative overflow
     }
+
+    /// <summary>
+    /// Provides single-day range inputs paired with their expected working-day yield count.
+    /// </summary>
+    /// <returns>A sequence of <c>(DateTime day, int expectedWorkingYieldCount)</c> tuples.</returns>
+    public static IEnumerable<object[]> SingleDayWorkingYieldTestData()
+    {
+        yield return new object[] { new DateTime(2026, 1, 5), 1 };  // Monday
+        yield return new object[] { new DateTime(2026, 1, 6), 1 };  // Tuesday
+        yield return new object[] { new DateTime(2026, 1, 9), 1 };  // Friday
+        yield return new object[] { new DateTime(2026, 1, 10), 0 }; // Saturday
+        yield return new object[] { new DateTime(2026, 1, 11), 0 }; // Sunday
+    }
+
+    /// <summary>
+    /// Provides single-day range inputs paired with their expected non-working-day yield count.
+    /// </summary>
+    /// <returns>A sequence of <c>(DateTime day, int expectedNonWorkingYieldCount)</c> tuples.</returns>
+    public static IEnumerable<object[]> SingleDayNonWorkingYieldTestData()
+    {
+        yield return new object[] { new DateTime(2026, 1, 5), 0 };  // Monday
+        yield return new object[] { new DateTime(2026, 1, 9), 0 };  // Friday
+        yield return new object[] { new DateTime(2026, 1, 10), 1 }; // Saturday
+        yield return new object[] { new DateTime(2026, 1, 11), 1 }; // Sunday
+    }
 }

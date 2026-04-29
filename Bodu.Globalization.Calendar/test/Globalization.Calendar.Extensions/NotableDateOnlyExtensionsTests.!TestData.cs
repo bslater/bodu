@@ -111,4 +111,29 @@ public partial class NotableDateOnlyExtensionsTests
         yield return new object[] { DateOnly.MaxValue.AddDays(-1), 5 };
         yield return new object[] { DateOnly.MinValue.AddDays(1), -5 };
     }
+
+    /// <summary>
+    /// Provides single-day range inputs paired with their expected working-day yield count.
+    /// </summary>
+    /// <returns>A sequence of <c>(DateOnly day, int expectedWorkingYieldCount)</c> tuples.</returns>
+    public static IEnumerable<object[]> SingleDayWorkingYieldTestData()
+    {
+        yield return new object[] { new DateOnly(2026, 1, 5), 1 };
+        yield return new object[] { new DateOnly(2026, 1, 6), 1 };
+        yield return new object[] { new DateOnly(2026, 1, 9), 1 };
+        yield return new object[] { new DateOnly(2026, 1, 10), 0 };
+        yield return new object[] { new DateOnly(2026, 1, 11), 0 };
+    }
+
+    /// <summary>
+    /// Provides single-day range inputs paired with their expected non-working-day yield count.
+    /// </summary>
+    /// <returns>A sequence of <c>(DateOnly day, int expectedNonWorkingYieldCount)</c> tuples.</returns>
+    public static IEnumerable<object[]> SingleDayNonWorkingYieldTestData()
+    {
+        yield return new object[] { new DateOnly(2026, 1, 5), 0 };
+        yield return new object[] { new DateOnly(2026, 1, 9), 0 };
+        yield return new object[] { new DateOnly(2026, 1, 10), 1 };
+        yield return new object[] { new DateOnly(2026, 1, 11), 1 };
+    }
 }
