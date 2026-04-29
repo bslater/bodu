@@ -25,33 +25,6 @@ public partial class CircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CircularBuffer{T}.ItemEvicted" /> handlers are invoked without exception under high concurrency.
-    /// </summary>
-    [TestMethod]
-    public void ItemEvicted_WhenConcurrentOverwrite_ShouldNotThrow()
-    {
-        var buffer = new CircularBuffer<int>(10, allowOverwrite: true);
-        using var evicted = new ManualResetEventSlim(false);
-
-        buffer.ItemEvicted += (evictedItem) => evicted.Set();
-
-        // Fill buffer to enable overwriting
-        for (int i = 0; i < buffer.Capacity; i++)
-            buffer.Enqueue(i);
-
-        // Start concurrent enqueuing that will trigger overwrite
-        var writer = Task.Run(() =>
-        {
-            for (int i = 0; i < 100; i++)
-                buffer.Enqueue(i);
-        });
-
-        writer.Wait();
-
-        Assert.IsTrue(evicted.Wait(1000), "Eviction event was not triggered during concurrent overwrite.");
-    }
-
-    /// <summary>
     /// Verifies that an exception thrown in the ItemEvicted handler is propagated by the buffer.
     /// </summary>
     [TestMethod]

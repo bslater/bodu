@@ -12,7 +12,7 @@ public partial class DequeTests
     /// Verifies that the parameterless constructor uses the default capacity hint.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenDefaultUsed_ShouldUseDefaultCapacity()
+    public void Ctor_WhenDefaultUsed_ShouldUseDefaultCapacity()
     {
         var deque = new Deque<int>();
         Assert.AreEqual(DefaultCapacity, deque.Capacity);
@@ -26,7 +26,7 @@ public partial class DequeTests
     [DataRow(1)]
     [DataRow(8)]
     [DataRow(64)]
-    public void Constructor_WhenCapacityProvided_ShouldUseSpecifiedCapacity(int capacity)
+    public void Ctor_WhenCapacityProvided_ShouldUseSpecifiedCapacity(int capacity)
     {
         var deque = new Deque<int>(capacity);
         Assert.AreEqual(capacity, deque.Capacity);
@@ -38,7 +38,7 @@ public partial class DequeTests
     [TestMethod]
     [DataRow(-1)]
     [DataRow(0)]
-    public void Constructor_WhenCapacityIsInvalid_ShouldThrowExactly(int capacity)
+    public void Ctor_WhenCapacityIsInvalid_ShouldThrowExactly(int capacity)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -50,7 +50,7 @@ public partial class DequeTests
     /// Verifies that constructing from a null collection throws <see cref="ArgumentNullException"/>.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenCollectionIsNull_ShouldThrowExactly()
+    public void Ctor_WhenCollectionIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -62,7 +62,7 @@ public partial class DequeTests
     /// Verifies that constructing from a collection adopts elements in order.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenCollectionProvided_ShouldAdoptElements()
+    public void Ctor_WhenCollectionProvided_ShouldAdoptElements()
     {
         var source = new[] { 1, 2, 3 };
         var deque = new Deque<int>(source);
@@ -73,7 +73,7 @@ public partial class DequeTests
     /// Verifies that constructing from a small collection still uses at least the default capacity.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenSmallCollectionProvided_ShouldUseAtLeastDefaultCapacity()
+    public void Ctor_WhenSmallCollectionProvided_ShouldUseAtLeastDefaultCapacity()
     {
         var deque = new Deque<int>(new[] { 1 });
         Assert.IsTrue(deque.Capacity >= DefaultCapacity);

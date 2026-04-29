@@ -16,7 +16,7 @@ public partial class DequeFixedCapacityTests
     [DataRow(1)]
     [DataRow(5)]
     [DataRow(16)]
-    public void Constructor_WhenAllowGrowFalse_ShouldUseExactCapacity(int capacity)
+    public void Ctor_WhenAllowGrowFalse_ShouldUseExactCapacity(int capacity)
     {
         var deque = new Deque<int>(capacity, allowGrow: false);
         Assert.AreEqual(capacity, deque.Capacity);
@@ -30,7 +30,7 @@ public partial class DequeFixedCapacityTests
     [TestMethod]
     [DataRow(-1)]
     [DataRow(0)]
-    public void Constructor_WhenAllowGrowFalseAndInvalidCapacity_ShouldThrowExactly(int capacity)
+    public void Ctor_WhenAllowGrowFalseAndInvalidCapacity_ShouldThrowExactly(int capacity)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -42,7 +42,7 @@ public partial class DequeFixedCapacityTests
     /// Verifies that the (collection, capacity, allowGrow=false) constructor adopts elements when they fit.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenAllowGrowFalseAndCollectionFits_ShouldAdoptElements()
+    public void Ctor_WhenAllowGrowFalseAndCollectionFits_ShouldAdoptElements()
     {
         var source = new[] { 1, 2, 3 };
         var deque = new Deque<int>(source, capacity: 5, allowGrow: false);
@@ -57,7 +57,7 @@ public partial class DequeFixedCapacityTests
     /// Verifies that the (collection, capacity, allowGrow=false) constructor throws when the source exceeds capacity.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenAllowGrowFalseAndCollectionExceedsCapacity_ShouldThrowExactly()
+    public void Ctor_WhenAllowGrowFalseAndCollectionExceedsCapacity_ShouldThrowExactly()
     {
         var source = new[] { 1, 2, 3, 4 };
 
@@ -71,7 +71,7 @@ public partial class DequeFixedCapacityTests
     /// Verifies that the (collection, capacity, allowGrow=false) constructor rejects a null source.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenAllowGrowFalseAndCollectionIsNull_ShouldThrowExactly()
+    public void Ctor_WhenAllowGrowFalseAndCollectionIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
