@@ -62,7 +62,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 ///]]>
 /// </example>
 [DebuggerDisplay("Count ≈ {Count}, Capacity = {Capacity}")]
-[DebuggerTypeProxy(typeof(CircularBufferDebugView<>))]
+[DebuggerTypeProxy(typeof(ConcurrentCircularBufferDebugView<>))]
 [Serializable]
 public sealed partial class ConcurrentCircularBuffer<T>
     where T : class?
