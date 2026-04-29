@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.IsFirstDayOfMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -11,7 +11,7 @@ namespace Bodu.Extensions;
 public static partial class DateTimeExtensions
 {
     /// <summary>
-    /// Returns an indication whether the specified <see cref="DateTime"/> falls on the first day of its month.
+    /// Determines whether the specified <see cref="DateTime"/> falls on the first day of its calendar month.
     /// </summary>
     /// <param name="dateTime">The date and time value to evaluate.</param>
     /// <returns><see langword="true"/> if <paramref name="dateTime"/> represents the first day of its month; otherwise, <see langword="false"/>.</returns>

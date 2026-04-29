@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.IsWeekend.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -11,35 +11,25 @@ namespace Bodu.Extensions;
 public static partial class DateOnlyExtensions
 {
     /// <summary>
-    /// Determines whether the specified <see cref="DateOnly"/> falls on a weekend using the default
-    /// <see cref="CalendarWeekendDefinition.SaturdaySunday"/> rule.
+    /// Determines whether the specified <see cref="DateOnly"/> falls on a weekend, using the default <see cref="CalendarWeekendDefinition.SaturdaySunday"/> rule.
     /// </summary>
-    /// <param name="date">The <see cref="DateOnly"/> to evaluate.</param>
-    /// <returns><see langword="true"/> if the <paramref name="date"/> occurs on Saturday or Sunday; otherwise, <see langword="false"/>.</returns>
-    /// <remarks>This method assumes the standard Western weekend definition, where weekends are Saturday and Sunday.</remarks>
+    /// <param name="date">The date value to evaluate.</param>
+    /// <returns><see langword="true"/> if <paramref name="date"/> falls on Saturday or Sunday; otherwise, <see langword="false"/>.</returns>
+    /// <remarks>
+    /// <para>This overload uses the standard weekend definition where Saturday and Sunday are considered weekend days.</para>
+    /// </remarks>
     public static bool IsWeekend(this DateOnly date) => DateTimeExtensions.IsWeekend(date.DayOfWeek, CalendarWeekendDefinition.SaturdaySunday, null);
 
     /// <summary>
-    /// Determines whether the specified <see cref="DateOnly"/> falls on a weekend, based on the provided
-    /// <see cref="CalendarWeekendDefinition"/> rule.
+    /// Determines whether the specified <see cref="DateOnly"/> falls on a weekend, using the supplied <see cref="CalendarWeekendDefinition"/> and an optional custom <paramref name="provider"/>.
     /// </summary>
-    /// <param name="date">The <see cref="DateOnly"/> to evaluate.</param>
-    /// <param name="weekend">
-    /// The <see cref="CalendarWeekendDefinition"/> value that defines which days are considered part of the weekend.
-    /// </param>
-    /// <param name="provider">
-    /// An optional custom <see cref="IWeekendDefinitionProvider"/> used when <paramref name="weekend"/> is <see cref="CalendarWeekendDefinition.Custom"/>.
-    /// </param>
-    /// <returns>
-    /// <see langword="true"/> if the <paramref name="date"/> occurs on a weekend day according to the specified rule or custom
-    /// provider; otherwise, <see langword="false"/>.
-    /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="weekend"/> is <see cref="CalendarWeekendDefinition.Custom"/> but no <paramref name="provider"/> is supplied.
-    /// </exception>
+    /// <param name="date">The date value to evaluate.</param>
+    /// <param name="weekend">The <see cref="CalendarWeekendDefinition"/> that determines which days are treated as weekend days.</param>
+    /// <param name="provider">An optional <see cref="IWeekendDefinitionProvider"/> that supplies custom weekend logic when <paramref name="weekend"/> is <see cref="CalendarWeekendDefinition.Custom"/>.</param>
+    /// <returns><see langword="true"/> if <paramref name="date"/> falls on a weekend day as defined by the supplied rule or provider; otherwise, <see langword="false"/>.</returns>
     /// <remarks>
-    /// Use this method to evaluate weekend status under different global or cultural definitions, such as Friday/Saturday in the Middle
-    /// East or Sunday-only in some business contexts.
+    /// <para>This method supports alternative weekend definitions used in different cultures and regions, such as Friday/Saturday or Sunday-only.</para>
     /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="weekend"/> is <see cref="CalendarWeekendDefinition.Custom"/> and <paramref name="provider"/> is <see langword="null"/>, or if <paramref name="weekend"/> is not a defined value of the <see cref="CalendarWeekendDefinition"/> enumeration.</exception>
     public static bool IsWeekend(this DateOnly date, CalendarWeekendDefinition weekend, IWeekendDefinitionProvider? provider = null) => DateTimeExtensions.IsWeekend(date.DayOfWeek, weekend, provider);
 }
