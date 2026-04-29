@@ -30,7 +30,10 @@ public static partial class DateTimeExtensions
     /// <remarks>
     /// <para>The method evaluates whether the <see cref="DateTime.DayOfWeek"/> of <paramref name="dateTime"/> is excluded from the weekend definition supplied by <paramref name="weekend"/> and optionally refined by <paramref name="provider"/>.</para>
     /// </remarks>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="weekend"/> is <see cref="CalendarWeekendDefinition.Custom"/> and <paramref name="provider"/> is <see langword="null"/>, or if <paramref name="weekend"/> is not a defined value of the <see cref="CalendarWeekendDefinition"/> enumeration.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="weekend"/> is not a defined value of the <see cref="CalendarWeekendDefinition"/> enumeration,
+    /// -or- <paramref name="weekend"/> is <see cref="CalendarWeekendDefinition.Custom"/> and <paramref name="provider"/> is <see langword="null"/>.
+    /// </exception>
     public static bool IsWeekday(this DateTime dateTime, CalendarWeekendDefinition weekend, IWeekendDefinitionProvider? provider = null) => !IsWeekend(dateTime, weekend, provider);
 
     /// <summary>
@@ -43,7 +46,10 @@ public static partial class DateTimeExtensions
     /// <remarks>
     /// <para>This method is equivalent to <c>!IsWeekend(dayOfWeek, weekend, provider)</c>.</para>
     /// </remarks>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="weekend"/> is <see cref="CalendarWeekendDefinition.Custom"/> and <paramref name="provider"/> is <see langword="null"/>, or if <paramref name="weekend"/> is not a defined value of the <see cref="CalendarWeekendDefinition"/> enumeration.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="weekend"/> is not a defined value of the <see cref="CalendarWeekendDefinition"/> enumeration,
+    /// -or- <paramref name="weekend"/> is <see cref="CalendarWeekendDefinition.Custom"/> and <paramref name="provider"/> is <see langword="null"/>.
+    /// </exception>
 #pragma warning disable S2190 // Loops and recursions should not be infinite
 
     public static bool IsWeekday(DayOfWeek dayOfWeek, CalendarWeekendDefinition weekend, IWeekendDefinitionProvider? provider = null) => !IsWeekday(dayOfWeek, weekend, provider);

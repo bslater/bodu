@@ -30,7 +30,10 @@ public static partial class DateTimeExtensions
     /// <remarks>
     /// <para>This method supports alternative weekend definitions used in different cultures and regions, such as Friday/Saturday or Sunday-only.</para>
     /// </remarks>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="weekend"/> is <see cref="CalendarWeekendDefinition.Custom"/> and <paramref name="provider"/> is <see langword="null"/>, or if <paramref name="weekend"/> is not a defined value of the <see cref="CalendarWeekendDefinition"/> enumeration.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="weekend"/> is not a defined value of the <see cref="CalendarWeekendDefinition"/> enumeration,
+    /// -or- <paramref name="weekend"/> is <see cref="CalendarWeekendDefinition.Custom"/> and <paramref name="provider"/> is <see langword="null"/>.
+    /// </exception>
     public static bool IsWeekend(this DateTime dateTime, CalendarWeekendDefinition weekend, IWeekendDefinitionProvider? provider = null) => IsWeekend(dateTime.DayOfWeek, weekend, provider);
 
     /// <summary>
@@ -43,7 +46,11 @@ public static partial class DateTimeExtensions
     /// <remarks>
     /// <para>This overload supports custom weekend evaluation logic via <paramref name="provider"/> when <paramref name="weekend"/> is <see cref="CalendarWeekendDefinition.Custom"/>.</para>
     /// </remarks>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="dayOfWeek"/> is not a defined value of the <see cref="DayOfWeek"/> enumeration, or if <paramref name="weekend"/> is not a defined value of the <see cref="CalendarWeekendDefinition"/> enumeration, or if <paramref name="weekend"/> is <see cref="CalendarWeekendDefinition.Custom"/> and <paramref name="provider"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="dayOfWeek"/> is not a defined value of the <see cref="DayOfWeek"/> enumeration,
+    /// -or- <paramref name="weekend"/> is not a defined value of the <see cref="CalendarWeekendDefinition"/> enumeration,
+    /// -or- <paramref name="weekend"/> is <see cref="CalendarWeekendDefinition.Custom"/> and <paramref name="provider"/> is <see langword="null"/>.
+    /// </exception>
     public static bool IsWeekend(DayOfWeek dayOfWeek, CalendarWeekendDefinition weekend, IWeekendDefinitionProvider? provider = null)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);

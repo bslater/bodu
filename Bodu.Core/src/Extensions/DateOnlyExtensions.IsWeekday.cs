@@ -30,6 +30,9 @@ public static partial class DateOnlyExtensions
     /// <remarks>
     /// <para>The method evaluates whether the <see cref="DateOnly.DayOfWeek"/> of <paramref name="date"/> is excluded from the weekend definition supplied by <paramref name="weekend"/> and optionally refined by <paramref name="provider"/>.</para>
     /// </remarks>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="weekend"/> is <see cref="CalendarWeekendDefinition.Custom"/> and <paramref name="provider"/> is <see langword="null"/>, or if <paramref name="weekend"/> is not a defined value of the <see cref="CalendarWeekendDefinition"/> enumeration.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="weekend"/> is not a defined value of the <see cref="CalendarWeekendDefinition"/> enumeration,
+    /// -or- <paramref name="weekend"/> is <see cref="CalendarWeekendDefinition.Custom"/> and <paramref name="provider"/> is <see langword="null"/>.
+    /// </exception>
     public static bool IsWeekday(this DateOnly date, CalendarWeekendDefinition weekend, IWeekendDefinitionProvider? provider = null) => !IsWeekend(date, weekend, provider);
 }
