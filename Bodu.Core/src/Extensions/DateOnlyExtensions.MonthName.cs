@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.MonthName.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,26 +13,23 @@ namespace Bodu.Extensions;
 public static partial class DateOnlyExtensions
 {
     /// <summary>
-    /// Returns the full name of the month for the specified <see cref="DateOnly"/>, using the formatting rules of the current culture.
+    /// Returns the full name of the month for the specified <see cref="DateOnly"/>, using the formatting rules of <see cref="CultureInfo.CurrentCulture"/>.
     /// </summary>
-    /// <param name="date">The <see cref="DateOnly"/> value whose month is used to determine the name.</param>
-    /// <returns>A <see cref="string"/> representing the localized full month name based on <see cref="CultureInfo.CurrentCulture"/>.</returns>
+    /// <param name="date">The date value whose month component is used to determine the name.</param>
+    /// <returns>A <see cref="string"/> containing the localised full month name, formatted using <see cref="CultureInfo.CurrentCulture"/>.</returns>
     /// <remarks>
-    /// This method retrieves the month name from <see cref="DateTimeFormatInfo.MonthNames"/> using the current culture's formatting.
+    /// <para>This overload uses the <see cref="DateTimeFormatInfo.GetMonthName(int)"/> method of the current culture to retrieve the month name. For culture-specific results, use the <see cref="MonthName(DateOnly, CultureInfo?)"/> overload.</para>
     /// </remarks>
     public static string MonthName(this DateOnly date) => date.MonthName((CultureInfo?)null);
 
     /// <summary>
-    /// Returns the full name of the month for the specified <see cref="DateOnly"/>, using the formatting rules of the specified <see cref="CultureInfo"/>.
+    /// Returns the full name of the month for the specified <see cref="DateOnly"/>, using the formatting rules of the supplied or current culture.
     /// </summary>
-    /// <param name="date">The <see cref="DateOnly"/> value whose month is used to determine the name.</param>
-    /// <param name="culture">
-    /// An optional <see cref="CultureInfo"/> used to format the result. If <c>null</c>, <see cref="CultureInfo.CurrentCulture"/> is used.
-    /// </param>
-    /// <returns>A <see cref="string"/> representing the localized full month name for the month of <paramref name="date"/>.</returns>
+    /// <param name="date">The date value whose month component is used to determine the name.</param>
+    /// <param name="culture">An optional <see cref="CultureInfo"/> used to format the result. If <see langword="null"/>, <see cref="CultureInfo.CurrentCulture"/> is used.</param>
+    /// <returns>A <see cref="string"/> containing the localised full month name for <paramref name="date"/>, formatted using the supplied or current culture.</returns>
     /// <remarks>
-    /// This method retrieves the month name from the <see cref="DateTimeFormatInfo.MonthNames"/> collection of the specified or
-    /// current culture.
+    /// <para>This overload uses the <see cref="DateTimeFormatInfo.GetMonthName(int)"/> method of the supplied or current culture to retrieve the month name.</para>
     /// </remarks>
-    public static string MonthName(this DateOnly date, CultureInfo? culture) => (culture ?? System.Globalization.CultureInfo.CurrentCulture).DateTimeFormat.GetMonthName(date.Month);
+    public static string MonthName(this DateOnly date, CultureInfo? culture) => (culture ?? CultureInfo.CurrentCulture).DateTimeFormat.GetMonthName(date.Month);
 }

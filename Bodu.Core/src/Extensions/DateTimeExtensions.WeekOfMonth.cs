@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.WeekOfMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -14,23 +14,14 @@ namespace Bodu.Extensions;
 public static partial class DateTimeExtensions
 {
     /// <summary>
-    /// Returns the 1-based week number of the month for the specified <see cref="DateTime"/>, using the current culture’s
-    /// <see cref="CalendarWeekRule"/> and <see cref="DayOfWeek"/> settings.
+    /// Returns the 1-based week number of the month for the specified <see cref="DateTime"/>, using the <see cref="CalendarWeekRule"/> and <see cref="DayOfWeek"/> settings of <see cref="CultureInfo.CurrentCulture"/>.
     /// </summary>
-    /// <param name="dateTime">The date to evaluate.</param>
-    /// <returns>An integer value indicating the week of the month in which <paramref name="dateTime"/> falls, starting at <c>1</c>.</returns>
+    /// <param name="dateTime">The date and time value to evaluate.</param>
+    /// <returns>An integer indicating the week of the month in which <paramref name="dateTime"/> falls, starting at <c>1</c>.</returns>
     /// <remarks>
-    /// <para>
-    /// The calculation is based on the difference between the week-of-year for <paramref name="dateTime"/> and the week-of-year for the
-    /// first day of its month, plus one.
-    /// </para>
-    /// <para>
-    /// Week numbering is determined by the current thread’s <see cref="CultureInfo.CurrentCulture"/>, specifically its
-    /// <see cref="DateTimeFormatInfo.CalendarWeekRule"/> and <see cref="DateTimeFormatInfo.FirstDayOfWeek"/>.
-    /// </para>
+    /// <para>The result is calculated by comparing the week-of-year for <paramref name="dateTime"/> against the week-of-year for the first day of its month, plus one.</para>
+    /// <para>Week numbering is determined by <see cref="CultureInfo.CurrentCulture"/>, specifically its <see cref="DateTimeFormatInfo.CalendarWeekRule"/> and <see cref="DateTimeFormatInfo.FirstDayOfWeek"/>.</para>
     /// </remarks>
-    /// <seealso cref="WeekOfMonth(DateTime, CultureInfo?)"/>
-    /// <seealso cref="WeekOfMonth(DateTime, CalendarWeekRule, DayOfWeek)"/>
     public static int WeekOfMonth(this DateTime dateTime)
     {
         CultureInfo culture = CultureInfo.CurrentCulture;
@@ -38,22 +29,14 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Returns the 1-based week number of the month for the specified <see cref="DateTime"/>, using calendar settings from the specified <paramref name="culture"/>.
+    /// Returns the 1-based week number of the month for the specified <see cref="DateTime"/>, using the calendar settings of the supplied or current culture.
     /// </summary>
-    /// <param name="dateTime">The date to evaluate.</param>
-    /// <param name="culture">
-    /// A <see cref="CultureInfo"/> that provides the calendar week rule and first day of the week. If <c>null</c>,
-    /// <see cref="CultureInfo.CurrentCulture"/> is used.
-    /// </param>
-    /// <returns>An integer value indicating the week of the month in which <paramref name="dateTime"/> falls, starting at <c>1</c>.</returns>
+    /// <param name="dateTime">The date and time value to evaluate.</param>
+    /// <param name="culture">An optional <see cref="CultureInfo"/> that supplies the <see cref="CalendarWeekRule"/> and <see cref="DayOfWeek"/> settings. If <see langword="null"/>, <see cref="CultureInfo.CurrentCulture"/> is used.</param>
+    /// <returns>An integer indicating the week of the month in which <paramref name="dateTime"/> falls, starting at <c>1</c>.</returns>
     /// <remarks>
-    /// <para>
-    /// This method uses the provided culture’s <see cref="DateTimeFormatInfo.CalendarWeekRule"/> and
-    /// <see cref="DateTimeFormatInfo.FirstDayOfWeek"/> to calculate the result.
-    /// </para>
+    /// <para>This overload uses the supplied culture's <see cref="DateTimeFormatInfo.CalendarWeekRule"/> and <see cref="DateTimeFormatInfo.FirstDayOfWeek"/> to compute the result.</para>
     /// </remarks>
-    /// <seealso cref="WeekOfMonth(DateTime)"/>
-    /// <seealso cref="WeekOfMonth(DateTime, CalendarWeekRule, DayOfWeek)"/>
     public static int WeekOfMonth(this DateTime dateTime, CultureInfo? culture)
     {
         culture ??= Thread.CurrentThread.CurrentCulture;
@@ -61,24 +44,19 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Returns the 1-based week number of the month for the specified <see cref="DateTime"/>, using the given <paramref name="weekRule"/>
-    /// and <paramref name="weekStart"/> values.
+    /// Returns the 1-based week number of the month for the specified <see cref="DateTime"/>, using the supplied <see cref="CalendarWeekRule"/> and <see cref="DayOfWeek"/> as the week-starting day.
     /// </summary>
-    /// <param name="dateTime">The date to evaluate.</param>
-    /// <param name="weekRule">The rule used to determine the first week of the year.</param>
-    /// <param name="weekStart">The first day of the week.</param>
-    /// <returns>An integer value indicating the week of the month in which <paramref name="dateTime"/> falls, starting at <c>1</c>.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="weekRule"/> or <paramref name="weekStart"/> is not a defined value of the corresponding enum.
-    /// </exception>
+    /// <param name="dateTime">The date and time value to evaluate.</param>
+    /// <param name="weekRule">The <see cref="CalendarWeekRule"/> that defines how the first week of the year is identified.</param>
+    /// <param name="weekStart">The <see cref="DayOfWeek"/> on which each week begins.</param>
+    /// <returns>An integer indicating the week of the month in which <paramref name="dateTime"/> falls, starting at <c>1</c>.</returns>
     /// <remarks>
-    /// <para>
-    /// The week of month is calculated by comparing the week-of-year for the target <paramref name="dateTime"/> with that of the first day
-    /// of the same month, using the specified rule and start day.
-    /// </para>
+    /// <para>The result is calculated by comparing the week-of-year for <paramref name="dateTime"/> against the week-of-year for the first day of its month, using the supplied rule and start day.</para>
     /// </remarks>
-    /// <seealso cref="WeekOfMonth(DateTime)"/>
-    /// <seealso cref="WeekOfMonth(DateTime, CultureInfo?)"/>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="weekRule"/> is not a defined value of the <see cref="CalendarWeekRule"/> enumeration,
+    /// -or- <paramref name="weekStart"/> is not a defined value of the <see cref="DayOfWeek"/> enumeration.
+    /// </exception>
     public static int WeekOfMonth(this DateTime dateTime, CalendarWeekRule weekRule, DayOfWeek weekStart)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(weekRule);
@@ -88,13 +66,13 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Calculates the 1-based week-of-month using raw tick data and specified calendar rules.
+    /// Calculates the 1-based week-of-month using the supplied calendar rules.
     /// </summary>
-    /// <param name="dateTime">The date to evaluate.</param>
-    /// <param name="weekRule">The <see cref="CalendarWeekRule" /> defining how the first week of the
-    /// month is identified.</param>
-    /// <param name="weekStart">The <see cref="DayOfWeek" /> on which each week begins.</param>
-    /// <returns>The 1-based week number of <paramref name="dateTime" /> within its month.</returns>
+    /// <param name="dateTime">The date and time value to evaluate.</param>
+    /// <param name="weekRule">The <see cref="CalendarWeekRule"/> that defines how the first week of the month is identified.</param>
+    /// <param name="weekStart">The <see cref="DayOfWeek"/> on which each week begins.</param>
+    /// <returns>The 1-based week number of <paramref name="dateTime"/> within its month.</returns>
+    /// <remarks>This helper performs no validation and is intended for internal use where all arguments are known to be valid.</remarks>
     private static int GetWeekOfMonth(DateTime dateTime, CalendarWeekRule weekRule, DayOfWeek weekStart)
     {
         DateTime firstOfMonth = new DateTime(dateTime.Year, dateTime.Month, 1);
