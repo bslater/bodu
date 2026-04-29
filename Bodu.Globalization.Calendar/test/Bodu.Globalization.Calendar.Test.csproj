@@ -88,6 +88,27 @@
     <EmbeddedResource Include="Globalization.Calendar\Fixtures\MultiRuleClearInherited.xml">
       <LogicalName>Bodu.Globalization.Calendar.Fixtures.MultiRuleClearInherited.xml</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\Source.json">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.Source.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\MultiRuleSource.json">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.MultiRuleSource.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\MixedJsonRefXml.json">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.MixedJsonRefXml.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\MixedXmlRefJson.xml">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.MixedXmlRefJson.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\MissingNameReferrer.json">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.MissingNameReferrer.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\CircularJsonA.json">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.CircularJsonA.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\Fixtures\CircularJsonB.json">
+      <LogicalName>Bodu.Globalization.Calendar.Fixtures.CircularJsonB.json</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

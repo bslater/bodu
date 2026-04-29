@@ -1,0 +1,23 @@
+{
+  "notableDates": [
+    {
+      "name": "King's Birthday",
+      "rules": [
+        {
+          "name": "June Variant",
+          "category": "Holiday",
+          "lastYear": 2015,
+          "dayOfWeekInMonth": { "month": "June", "dayOfWeek": "Monday", "weekOrdinal": "Second" },
+          "tags": ["SourceJune"]
+        },
+        {
+          "name": "October Variant",
+          "category": "Holiday",
+          "firstYear": 2016,
+          "dayOfWeekInMonth": { "month": "October", "dayOfWeek": "Monday", "weekOrdinal": "First" },
+          "tags": ["SourceOctober"]
+        }
+      ]
+    }
+  ]
+}
