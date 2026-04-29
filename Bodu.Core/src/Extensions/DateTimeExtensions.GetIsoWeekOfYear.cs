@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.GetIsoWeekOfYear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,24 +12,17 @@ namespace Bodu.Extensions;
 public static partial class DateTimeExtensions
 {
     /// <summary>
-    /// Returns the ISO 8601 week number for the specified <see cref="DateTime"/>.
+    /// Returns the ISO 8601 week number for the specified <paramref name="dateTime"/>.
     /// </summary>
-    /// <param name="dateTime">The <see cref="DateTime"/> value to evaluate.</param>
-    /// <returns>The ISO 8601 week number of the year that contains <paramref name="dateTime"/>, ranging from 1 to 53.</returns>
+    /// <param name="dateTime">The date and time value to evaluate.</param>
+    /// <returns>An integer in the range 1 – 53 representing the ISO 8601 week number that contains <paramref name="dateTime"/>.</returns>
     /// <remarks>
-    /// <para>This method uses the ISO 8601 standard for week numbering, where:</para>
+    /// <para>This method follows the ISO 8601 standard for week numbering, where:</para>
     /// <list type="bullet">
-    /// <item>
-    /// <description>Weeks begin on Monday.</description>
-    /// </item>
-    /// <item>
-    /// <description>Week 1 is the first week that contains at least four days in the new year.</description>
-    /// </item>
+    /// <item><description>weeks begin on Monday;</description></item>
+    /// <item><description>week 1 is the first week containing at least four days of the new year.</description></item>
     /// </list>
-    /// <para>
-    /// The result is computed using <see cref="CalendarWeekRule.FirstFourDayWeek"/> and <see cref="DayOfWeek.Monday"/> against the
-    /// date portion of <paramref name="dateTime"/>. Any time-of-day component is discarded before the calculation.
-    /// </para>
+    /// <para>The result is computed using <see cref="CalendarWeekRule.FirstFourDayWeek"/> and <see cref="DayOfWeek.Monday"/> against the date portion of <paramref name="dateTime"/>. Any time-of-day component is discarded before the calculation.</para>
     /// </remarks>
     public static int GetIsoWeekOfYear(this DateTime dateTime) =>
         GetWeekOfYear(TruncateToDateTicks(dateTime), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);

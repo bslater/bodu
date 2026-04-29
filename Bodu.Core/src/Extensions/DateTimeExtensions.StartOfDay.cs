@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.StartOfDay.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -11,35 +11,19 @@ namespace Bodu.Extensions;
 public static partial class DateTimeExtensions
 {
     /// <summary>
-    /// Returns a new <see cref="DateTime"/> representing the start of the calendar day that contains the specified <paramref name="dateTime"/>.
+    /// Returns a new <see cref="DateTime"/> representing the start of the calendar day (00:00:00) that contains the specified <paramref name="dateTime"/>.
     /// </summary>
-    /// <param name="dateTime">The <see cref="DateTime"/> whose date component is preserved while the time is reset to midnight.</param>
-    /// <returns>
-    /// A <see cref="DateTime"/> set to 00:00:00 on the same day as <paramref name="dateTime"/>.
-    /// </returns>
+    /// <param name="dateTime">The date and time value whose date is preserved while the time is reset to midnight.</param>
+    /// <returns>An object whose value is set to 00:00:00 on the same calendar day as <paramref name="dateTime"/>, with the original <see cref="DateTime.Kind"/> preserved.</returns>
     /// <remarks>
-    /// <para>
-    /// This method is functionally equivalent to accessing <c>dateTime.Date</c>, but unlike <c>DateTime.Date</c>, it preserves
-    /// the original <see cref="DateTime.Kind"/> value (e.g., <see cref="DateTimeKind.Utc"/>, <see cref="DateTimeKind.Local"/>, or
-    /// <see cref="DateTimeKind.Unspecified"/>).
-    /// </para>
-    /// <para>
-    /// This makes the method more suitable in contexts where preserving the time zone context of a <see cref="DateTime"/> is important,
-    /// such as when working with scheduled events or cross-system date calculations.
-    /// </para>
-    /// <para>
-    /// The <see cref="DateTime.Kind"/> property of the returned instance matches that of the original <paramref name="dateTime"/>.
-    /// </para>
-    /// <example>
-    /// The following example demonstrates how <see cref="StartOfDay"/> differs from <c>DateTime.Date</c>:
+    /// <para>This method is functionally equivalent to <see cref="Midnight(DateTime)"/> and to accessing <see cref="DateTime.Date"/>. It normalises the time component to midnight while retaining the date and <see cref="DateTime.Kind"/> of the input.</para>
+    /// <para><b>Example:</b></para>
     /// <code>
     ///<![CDATA[
-    /// var original = new DateTime(2024, 12, 5, 10, 45, 0, DateTimeKind.Utc);
-    /// var startOfDay = original.StartOfDay(); // 2024-12-05T00:00:00Z
-    /// var builtInDate = original.Date;        // 2024-12-05T00:00:00 (Kind = Unspecified)
+    /// var dt = new DateTime(2024, 12, 5, 10, 45, 0, DateTimeKind.Utc);
+    /// var result = dt.StartOfDay(); // → 2024-12-05 00:00:00 (Kind = Utc)
     ///]]>
     /// </code>
-    /// </example>
     /// </remarks>
     public static DateTime StartOfDay(this DateTime dateTime) => new DateTime(TruncateToDateTicks(dateTime), dateTime.Kind);
 }
