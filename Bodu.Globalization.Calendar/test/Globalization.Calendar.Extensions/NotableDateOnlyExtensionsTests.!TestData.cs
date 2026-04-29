@@ -78,17 +78,19 @@ public partial class NotableDateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Provides territory-scoping samples that assert a non-working rule fires only when the requested territory matches.
+    /// Provides territory-scoping samples expressing bidirectional containment: a query matches a rule when either side's
+    /// territory contains the other, and a <see langword="null" /> query matches any rule.
     /// </summary>
-    /// <returns>A sequence of <c>(string ruleTerritory, string queryTerritory, bool expectedNonWorking)</c> tuples.</returns>
+    /// <returns>A sequence of <c>(string ruleTerritory, string? queryTerritory, bool expectedNonWorking)</c> tuples.</returns>
     public static IEnumerable<object[]> TerritoryForwardingTestData()
     {
         yield return new object[] { "AU", "AU", true };
         yield return new object[] { "AU", "AU-NSW", true };
+        yield return new object[] { "AU-NSW", "AU", true };
         yield return new object[] { "AU-NSW", "AU-NSW", true };
         yield return new object[] { "AU-NSW", "AU-VIC", false };
         yield return new object[] { "AU", "NZ", false };
-        yield return new object[] { "AU", null!, false };
+        yield return new object[] { "AU", null!, true };
     }
 
     /// <summary>
