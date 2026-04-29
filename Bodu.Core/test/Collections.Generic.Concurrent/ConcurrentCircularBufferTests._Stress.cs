@@ -1007,7 +1007,7 @@ public partial class ConcurrentCircularBufferTests
             {
                 startGate.Wait();
                 while (!cts.Token.IsCancellationRequested)
-                    buffer.TryDequeue(out _);
+                    buffer.TryDequeue(out var _);
             }));
 
         var indexers = Enumerable.Range(0, readerThreads).Select(_ =>
