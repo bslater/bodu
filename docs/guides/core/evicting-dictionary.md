@@ -12,6 +12,10 @@ title: Evicting dictionary
 | `LeastRecentlyUsed` | The entry that was accessed furthest in the past. | General-purpose caches where recency predicts future use. |
 | `LeastFrequentlyUsed` | The entry with the lowest access count. | Long-lived caches where popularity predicts future use. |
 
+![EvictingDictionary entries with FIFO, LRU, and LFU eviction lanes](../../images/diagrams/evicting-dictionary.svg)
+
+Every entry carries three pieces of metadata — insertion timestamp, last-access timestamp, and access count. Each policy maintains its own ordering over those metadata, and the head of that ordering is the next victim. Reads via `this[key]` and `TryGetValue` update the recency and frequency metadata; `Touch` promotes a key without reading the value.
+
 ## Pattern 1 — LRU cache
 
 ```csharp

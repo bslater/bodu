@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 340" role="img" aria-labelledby="cb-t cb-d">
+  <title id="cb-t">CircularBuffer&lt;T&gt; — fixed-capacity FIFO ring</title>
+  <desc id="cb-d">A CircularBuffer is a contiguous array of slots arranged conceptually as a ring. A Head pointer marks the oldest element (read end) and a Tail pointer marks the next free slot (write end). Enqueue advances Tail, Dequeue advances Head, and both indices wrap modulo Capacity. When the buffer is full, AllowOverwrite=true overwrites the oldest entry and pushes Head forwards, while AllowOverwrite=false rejects the insert.</desc>
+
+  <defs>
+    <style>
+      .bg   { fill: #0F172A; }
+      .pan  { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .hdr  { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ttl  { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .lbl  { fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .lbl-l{ fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; }
+      .sub  { fill: #CBD5E1; font: 400 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .sub-l{ fill: #CBD5E1; font: 400 11px/1 "Segoe UI",Arial,sans-serif; }
+      .mut  { fill: #94A3B8; font: 400 10px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .mut-l{ fill: #94A3B8; font: 400 10px/1 "Segoe UI",Arial,sans-serif; }
+      .slot      { fill: #1A2335; stroke: #475569; stroke-width: 1.2; }
+      .slot-full { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1.5; }
+      .slot-head { fill: #1E3A5F; stroke: #60A5FA; stroke-width: 1.8; }
+      .slot-tail { fill: #431407; stroke: #FBBF24; stroke-width: 1.8; }
+      .slot-text { fill: #F8FAFC; font: 700 13px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .idx       { fill: #94A3B8; font: 400 9px/1  "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .pin-h     { fill: #60A5FA; font: 700 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .pin-t     { fill: #FBBF24; font: 700 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .case-ovr  { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1.2; }
+      .case-rej  { fill: #2A1B54; stroke: #A78BFA; stroke-width: 1.2; }
+      .ring      { fill: none; stroke: #334155; stroke-width: 1.2; stroke-dasharray: 3 3; }
+      .arc-cw    { stroke: #CBD5E1; stroke-width: 1.5; fill: none; }
+      .w         { stroke: #CBD5E1; stroke-width: 1.5; fill: none; }
+      .wt        { stroke: #2DD4BF; stroke-width: 1.5; fill: none; }
+      .wb        { stroke: #60A5FA; stroke-width: 1.5; fill: none; }
+      .wy        { stroke: #FBBF24; stroke-width: 1.5; fill: none; }
+    </style>
+    <marker id="cb-a"  viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#CBD5E1"/>
+    </marker>
+    <marker id="cb-ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#60A5FA"/>
+    </marker>
+    <marker id="cb-ay" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#FBBF24"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="820" height="340"/>
+
+  <g transform="translate(10 10)">
+    <rect class="pan" width="800" height="320" rx="8"/>
+    <rect class="hdr" width="800" height="30" rx="8"/>
+    <rect class="hdr" y="22" width="800" height="8"/>
+    <text class="ttl" x="16" y="20">CircularBuffer&lt;T&gt; — fixed-capacity FIFO ring</text>
+
+    <!-- Ring of 8 slots (clockwise from 12 o'clock).
+         center (200, 185), radius 95, slot size 36x36 -->
+    <circle class="ring" cx="200" cy="185" r="95"/>
+
+    <!-- slot 0 (12) - filled, value A -->
+    <g transform="translate(200 90)">
+      <rect class="slot-full" x="-22" y="-18" width="44" height="36" rx="4"/>
+      <text class="slot-text" x="0" y="5">A</text>
+      <text class="idx" x="0" y="-26">[0]</text>
+    </g>
+    <!-- slot 1 (1:30) - filled, value B -->
+    <g transform="translate(267 117)">
+      <rect class="slot-full" x="-22" y="-18" width="44" height="36" rx="4"/>
+      <text class="slot-text" x="0" y="5">B</text>
+      <text class="idx" x="32" y="-16">[1]</text>
+    </g>
+    <!-- slot 2 (3) - filled, value C -->
+    <g transform="translate(295 185)">
+      <rect class="slot-full" x="-22" y="-18" width="44" height="36" rx="4"/>
+      <text class="slot-text" x="0" y="5">C</text>
+      <text class="idx" x="36" y="4">[2]</text>
+    </g>
+    <!-- slot 3 (4:30) - tail, next free -->
+    <g transform="translate(267 253)">
+      <rect class="slot-tail" x="-22" y="-18" width="44" height="36" rx="4"/>
+      <text class="idx" x="32" y="20">[3]</text>
+    </g>
+    <!-- slot 4 (6) - empty -->
+    <g transform="translate(200 280)">
+      <rect class="slot" x="-22" y="-18" width="44" height="36" rx="4"/>
+      <text class="idx" x="0" y="-24">[4]</text>
+    </g>
+    <!-- slot 5 (7:30) - empty -->
+    <g transform="translate(133 253)">
+      <rect class="slot" x="-22" y="-18" width="44" height="36" rx="4"/>
+      <text class="idx" x="-22" y="22">[5]</text>
+    </g>
+    <!-- slot 6 (9) - empty -->
+    <g transform="translate(105 185)">
+      <rect class="slot" x="-22" y="-18" width="44" height="36" rx="4"/>
+      <text class="idx" x="-36" y="4">[6]</text>
+    </g>
+    <!-- slot 7 (10:30) - head, oldest entry -->
+    <g transform="translate(133 117)">
+      <rect class="slot-head" x="-22" y="-18" width="44" height="36" rx="4"/>
+      <text class="slot-text" x="0" y="5">Z</text>
+      <text class="idx" x="-32" y="-16">[7]</text>
+    </g>
+
+    <!-- Head pointer label (anchored to slot 7) -->
+    <g transform="translate(60 110)">
+      <rect class="slot-head" x="-30" y="-12" width="60" height="22" rx="3"/>
+      <text class="pin-h" x="0" y="3" fill="#0F172A">Head</text>
+    </g>
+    <line class="wb" x1="92" y1="110" x2="113" y2="113" marker-end="url(#cb-ab)"/>
+    <text class="mut-l" x="20" y="138">oldest →</text>
+    <text class="mut-l" x="20" y="150">Dequeue / Peek</text>
+
+    <!-- Tail pointer label (anchored to slot 3) -->
+    <g transform="translate(360 240)">
+      <rect class="slot-tail" x="-30" y="-12" width="60" height="22" rx="3"/>
+      <text class="pin-t" x="0" y="3" fill="#0F172A">Tail</text>
+    </g>
+    <line class="wy" x1="328" y1="248" x2="293" y2="252" marker-end="url(#cb-ay)"/>
+    <text class="mut" x="267" y="285">next free →</text>
+    <text class="mut" x="267" y="296">Enqueue writes here</text>
+
+    <!-- direction-of-rotation arc -->
+    <path class="arc-cw" d="M 200 145 A 40 40 0 0 1 240 185" marker-end="url(#cb-a)"/>
+    <text class="mut" x="215" y="158">advance</text>
+    <text class="mut" x="215" y="170">(idx + 1) % Cap</text>
+
+    <!-- Vertical separator between ring and right column -->
+    <line x1="400" y1="50" x2="400" y2="305" stroke="#334155" stroke-width="1" stroke-dasharray="3 3"/>
+
+    <!-- Right column heading -->
+    <text class="lbl-l" x="416" y="64">Behaviour when Count == Capacity</text>
+
+    <!-- AllowOverwrite = true case -->
+    <g transform="translate(416 78)">
+      <rect class="case-ovr" width="368" height="92" rx="5"/>
+      <text class="lbl-l" x="14" y="20" fill="#2DD4BF">AllowOverwrite = true  (default)</text>
+      <text class="sub-l" x="14" y="38">Tail wraps over Head: the oldest slot is overwritten</text>
+      <text class="sub-l" x="14" y="54">and Head advances by one. Count stays at Capacity.</text>
+      <text class="mut-l" x="14" y="74">Use for sliding windows — keep the most-recent N values.</text>
+    </g>
+
+    <!-- AllowOverwrite = false case -->
+    <g transform="translate(416 180)">
+      <rect class="case-rej" width="368" height="92" rx="5"/>
+      <text class="lbl-l" x="14" y="20" fill="#C4B5FD">AllowOverwrite = false</text>
+      <text class="sub-l" x="14" y="38">Enqueue throws InvalidOperationException;</text>
+      <text class="sub-l" x="14" y="54">TryEnqueue returns false. Buffer is unchanged.</text>
+      <text class="mut-l" x="14" y="74">Use for bounded producer / consumer queues.</text>
+    </g>
+
+    <!-- Footer note -->
+    <text class="mut-l" x="20" y="305">Backing array allocated once. Count / Capacity / IsFull / IsEmpty are O(1). ConcurrentCircularBuffer&lt;T&gt; wraps the same logic with a ReaderWriterLockSlim.</text>
+  </g>
+</svg>
