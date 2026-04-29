@@ -62,4 +62,21 @@ public partial class NotableDateOnlyExtensionsTests
             _ = new DateOnly(2026, 1, 1).GetNotableDatesInYear(filter: null!);
         });
     }
+
+    /// <summary>
+    /// Verifies that a filter restricts the returned set to matching notable dates only.
+    /// </summary>
+    [TestMethod]
+    public void GetNotableDatesInYear_WhenFilterApplied_ShouldReturnOnlyMatching()
+    {
+        NotableDateService service = BuildService(
+            Fixed("Festival", 4, 1, NotableDateCategory.Cultural),
+            Fixed("Christmas Day", 12, 25, NotableDateCategory.Holiday));
+        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
+
+        IReadOnlyList<NotableDate> result = new DateOnly(2026, 1, 1).GetNotableDatesInYear(service, filter);
+
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual("Christmas Day", result[0].Name);
+    }
 }

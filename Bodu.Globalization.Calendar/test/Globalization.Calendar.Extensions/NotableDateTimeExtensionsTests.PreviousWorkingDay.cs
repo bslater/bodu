@@ -151,4 +151,19 @@ public partial class NotableDateTimeExtensionsTests
             _ = DateTime.MinValue.PreviousWorkingDay(service);
         });
     }
+
+    /// <summary>
+    /// Verifies the result of retreating by the supplied <c>count</c> across a representative spread of single-step, multi-step,
+    /// weekend-bridging and weekend-input cases using an empty rule set.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(PreviousWorkingDayCountTestData), DynamicDataSourceType.Method)]
+    public void PreviousWorkingDay_WhenRetreatingCount_ShouldReturnExpectedDate(DateTime start, int count, DateTime expected)
+    {
+        NotableDateService service = BuildService();
+
+        DateTime actual = start.PreviousWorkingDay(service, count: count);
+
+        Assert.AreEqual(expected, actual);
+    }
 }

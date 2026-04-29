@@ -81,4 +81,19 @@ public partial class NotableDateOnlyExtensionsTests
             _ = new DateOnly(2026, 1, 6).IsNonWorkingDay(service: null!);
         });
     }
+
+    /// <summary>
+    /// Verifies the non-working classification across every day of a single calendar week under the default Saturday/Sunday weekend
+    /// definition.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(WorkingDayClassificationTestData), DynamicDataSourceType.Method)]
+    public void IsNonWorkingDay_WhenScannedAcrossWeek_ShouldReturnInverseOfWorkingClassification(DateOnly input, bool expectedWorking)
+    {
+        NotableDateService service = BuildService();
+
+        bool actual = input.IsNonWorkingDay(service);
+
+        Assert.AreEqual(!expectedWorking, actual);
+    }
 }

@@ -120,4 +120,19 @@ public partial class NotableDateTimeExtensionsTests
             _ = new DateTime(2026, 1, 6).IsWorkingDay(service: null!);
         });
     }
+
+    /// <summary>
+    /// Verifies the working-day classification across every day of a single calendar week under the default Saturday/Sunday weekend
+    /// definition.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(WorkingDayClassificationTestData), DynamicDataSourceType.Method)]
+    public void IsWorkingDay_WhenScannedAcrossWeek_ShouldReturnExpectedClassification(DateTime input, bool expected)
+    {
+        NotableDateService service = BuildService();
+
+        bool actual = input.IsWorkingDay(service);
+
+        Assert.AreEqual(expected, actual);
+    }
 }

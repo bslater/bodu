@@ -65,4 +65,19 @@ public partial class NotableDateOnlyExtensionsTests
 
         Assert.AreEqual(expected, actual);
     }
+
+    /// <summary>
+    /// Verifies that a non-working rule day inside the range is skipped.
+    /// </summary>
+    [TestMethod]
+    public void EnumerateWorkingDays_WhenNonWorkingRuleDayInRange_ShouldSkipIt()
+    {
+        NotableDateService service = BuildService(Fixed("Holiday", 1, 7, nonWorking: true));
+
+        DateOnly[] result = new DateOnly(2026, 1, 5).EnumerateWorkingDays(new DateOnly(2026, 1, 9), service).ToArray();
+
+        CollectionAssert.AreEqual(
+            new[] { new DateOnly(2026, 1, 5), new DateOnly(2026, 1, 6), new DateOnly(2026, 1, 8), new DateOnly(2026, 1, 9) },
+            result);
+    }
 }

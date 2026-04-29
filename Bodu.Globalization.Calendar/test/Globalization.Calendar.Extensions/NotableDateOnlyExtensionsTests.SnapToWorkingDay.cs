@@ -69,4 +69,17 @@ public partial class NotableDateOnlyExtensionsTests
             _ = new DateOnly(2026, 1, 3).SnapToWorkingDay(service: null!);
         });
     }
+
+    /// <summary>
+    /// Verifies that a non-working rule day snaps forward to the next working day.
+    /// </summary>
+    [TestMethod]
+    public void SnapToWorkingDay_WhenInputIsHoliday_ShouldSnapToNextWorkingDay()
+    {
+        NotableDateService service = BuildService(Fixed("Holiday", 1, 6, nonWorking: true));
+
+        DateOnly result = new DateOnly(2026, 1, 6).SnapToWorkingDay(service);
+
+        Assert.AreEqual(new DateOnly(2026, 1, 7), result);
+    }
 }
