@@ -8,6 +8,34 @@ using System.Reflection;
 
 namespace Bodu.Security.Cryptography;
 
+/// <summary>
+/// Base test class for <see cref="IBlockCipher" /> engines. Owns the data-driven encrypt / decrypt
+/// known-answer harness, the boundary-length and round-trip tests, and the disposal-state assertions
+/// shared by every cipher family in the suite.
+/// </summary>
+/// <typeparam name="TTest">The concrete test class — used to <c>new TTest()</c> from
+/// <see cref="DynamicDataAttribute" /> sources so static data-row generators can dispatch to instance
+/// overrides.</typeparam>
+/// <typeparam name="TCipher">The concrete <see cref="IBlockCipher" /> engine under test.</typeparam>
+/// <typeparam name="TVariant">The cipher's configuration enum — typically <c>SingleTestVariant</c>,
+/// <see cref="BlockCipherKeyVariant" />, or <see cref="TweakableBlockCipherVariant" />.</typeparam>
+/// <remarks>
+/// <para>
+/// This is the entry point of the three-layer cipher test architecture. KAT vectors curated in a
+/// per-cipher <c>&lt;Cipher&gt;KnownAnswers</c> static class (for example <c>SkipjackKnownAnswers</c>,
+/// <c>CamelliaKnownAnswers</c>) are consumed at the block-cipher layer here, and the same vectors flow
+/// through <see cref="BlockCipherTransformTests{TTest, TCryptoTransform}" /> and
+/// <see cref="SymmetricAlgorithmTests{TTest, TAlgorithm}" /> at the upper test layers.
+/// </para>
+/// <para>
+/// Concrete subclasses override four hooks: <see cref="GetSpecification" /> describing the variant under
+/// test, <see cref="GetBlockCipherVariants" /> enumerating the supported variants, <see cref="CreateBlockCipher(TVariant)" />
+/// constructing the engine, and <see cref="GetKnownAnswerTests" /> returning the KAT rows. The recommended
+/// shape for the last hook is a one-line delegation through <see cref="AdaptKnownAnswers" /> against the
+/// cipher's <c>&lt;Cipher&gt;KnownAnswers.For(variant)</c> accessor — see <see cref="BlockCipherKnownAnswer" />
+/// for the full architecture overview.
+/// </para>
+/// </remarks>
 [TestClass]
 public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     where TTest : BlockCipherTests<TTest, TCipher, TVariant>, new()

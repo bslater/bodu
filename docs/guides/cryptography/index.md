@@ -46,7 +46,7 @@ If you're looking for the generated API reference, see the [Bodu.Security.Crypto
 
 ## Symmetric ciphers
 
-Each of the five block ciphers ships with its own page containing a complete encrypt-and-decrypt walk-through using its native sizes:
+The five ciphers below ship with a dedicated walk-through page covering an encrypt-and-decrypt round-trip in their native sizes:
 
 | Cipher | Block | Key | Extras | Guide |
 |---|---|---|---|---|
@@ -56,7 +56,9 @@ Each of the five block ciphers ships with its own page containing a complete enc
 | `Skipjack` | 64 bits (8 B) | 80 bits (10 B) | — | [Using Skipjack](skipjack.md) |
 | `Blowfish` | 64 bits (8 B) | 32–448 bits, 8-bit steps | — | [Using Blowfish](blowfish.md) |
 
-All five share the same high-level shape: a `SymmetricAlgorithm` (or `TweakableSymmetricAlgorithm`) that you configure with `BlockMode`, `Padding`, `Key`, `IV` (and `Tweak` for Threefish), then drive with `CreateEncryptor()` / `CreateDecryptor()` or the `Encrypt` / `Decrypt` extension methods.
+The library also exposes `Camellia`, `Twofish`, and `Serpent128` — three additional 128-bit-block standard ciphers each accepting 128-/192-/256-bit keys — and the wide-block tweakable variants `Serpent256` / `Serpent512` / `Serpent1024`. None of those have a per-cipher walk-through page yet; consult the [API reference](../../apidoc/Bodu.Security.Cryptography.md) directly. AES sits one level lower in the public surface, exposed as `AesBlockCipher` over the BCL `Aes` engine so it pairs naturally with the AEAD mode transforms — see the [AEAD modes guide](aead-modes.md).
+
+All eleven share the same high-level shape: a `SymmetricAlgorithm` (or `TweakableSymmetricAlgorithm`) that you configure with `BlockMode`, `Padding`, `Key`, `IV` (and `Tweak` for the tweakable variants), then drive with `CreateEncryptor()` / `CreateDecryptor()` or the `Encrypt` / `Decrypt` extension methods. `AesBlockCipher` is the exception — it implements `IBlockCipher` directly rather than wrapping a `SymmetricAlgorithm` lifecycle.
 
 ## Hashing
 
