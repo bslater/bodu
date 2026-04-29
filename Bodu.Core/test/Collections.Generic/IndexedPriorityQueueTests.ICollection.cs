@@ -127,4 +127,123 @@ public partial class IndexedPriorityQueueTests
 
         Assert.AreEqual(2, collection.Count);
     }
+
+    /// <summary>
+    /// Verifies that <c>CopyTo</c> writes element-priority pairs into a destination typed as
+    /// <see cref="object" /> (the non-generic <c>SetValue</c> branch).
+    /// </summary>
+    [TestMethod]
+    public void ICollection_CopyTo_WhenDestinationIsObjectArray_ShouldCopyAllPairs()
+    {
+        var queue = new IndexedPriorityQueue<string, int>();
+        queue.Enqueue("a", 1);
+        queue.Enqueue("b", 2);
+        ICollection collection = queue;
+
+        var destination = new object?[2];
+        collection.CopyTo(destination, 0);
+
+        Assert.IsInstanceOfType<KeyValuePair<string, int>>(destination[0]);
+        Assert.IsInstanceOfType<KeyValuePair<string, int>>(destination[1]);
+        var keys = destination
+            .Cast<KeyValuePair<string, int>>()
+            .Select(p => p.Key)
+            .ToArray();
+        CollectionAssert.AreEquivalent(new[] { "a", "b" }, keys);
+    }
+
+    /// <summary>
+    /// Verifies that <c>CopyTo</c> with a destination element type that is incompatible with
+    /// <see cref="KeyValuePair{TKey, TValue}" /> throws <see cref="ArgumentException" />.
+    /// </summary>
+    [TestMethod]
+    public void ICollection_CopyTo_WhenDestinationElementTypeIsIncompatible_ShouldThrowExactly()
+    {
+        var queue = new IndexedPriorityQueue<string, int>();
+        queue.Enqueue("a", 1);
+        ICollection collection = queue;
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            collection.CopyTo(new int[8], 0);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <c>CopyTo</c> on an empty queue writes nothing and does not throw.
+    /// </summary>
+    [TestMethod]
+    public void ICollection_CopyTo_WhenQueueIsEmpty_ShouldNotThrow()
+    {
+        ICollection collection = new IndexedPriorityQueue<string, int>();
+
+        var destination = new KeyValuePair<string, int>[2];
+        destination[0] = new KeyValuePair<string, int>("sentinel", 42);
+        collection.CopyTo(destination, 1);
+
+        Assert.AreEqual("sentinel", destination[0].Key);
+        Assert.AreEqual(default, destination[1]);
+    }
+
+    /// <summary>
+    /// Verifies that <c>CopyTo</c> with an index that is in-range but leaves no room for the queue's
+    /// elements throws <see cref="ArgumentException" />.
+    /// </summary>
+    [TestMethod]
+    public void ICollection_CopyTo_WhenIndexLeavesInsufficientRoom_ShouldThrowExactly()
+    {
+        var queue = new IndexedPriorityQueue<string, int>();
+        queue.Enqueue("a", 1);
+        queue.Enqueue("b", 2);
+        ICollection collection = queue;
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            collection.CopyTo(new KeyValuePair<string, int>[3], 2);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <c>CopyTo</c> on a typed destination writes every element-priority pair exactly once.
+    /// </summary>
+    [TestMethod]
+    public void ICollection_CopyTo_WhenDestinationIsTypedArray_ShouldWriteEveryPair()
+    {
+        var queue = new IndexedPriorityQueue<int, int>();
+        for (int i = 0; i < 6; i++)
+            queue.Enqueue(i, 100 - i);
+        ICollection collection = queue;
+
+        var destination = new KeyValuePair<int, int>[6];
+        collection.CopyTo(destination, 0);
+
+        CollectionAssert.AreEquivalent(
+            Enumerable.Range(0, 6).ToArray(),
+            destination.Select(p => p.Key).ToArray());
+        CollectionAssert.AreEquivalent(
+            Enumerable.Range(0, 6).Select(i => 100 - i).ToArray(),
+            destination.Select(p => p.Value).ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IEnumerable{T}" /> exposes a per-call enumerator that does not interfere
+    /// with concurrent in-flight enumerators.
+    /// </summary>
+    [TestMethod]
+    public void ICollection_GetEnumerator_WhenInvokedTwice_ShouldReturnIndependentEnumerators()
+    {
+        var queue = new IndexedPriorityQueue<int, int>();
+        for (int i = 0; i < 4; i++)
+            queue.Enqueue(i, i);
+
+        IEnumerable<KeyValuePair<int, int>> enumerable = queue;
+        using var first = enumerable.GetEnumerator();
+        using var second = enumerable.GetEnumerator();
+
+        Assert.IsTrue(first.MoveNext());
+        Assert.IsTrue(second.MoveNext());
+
+        // Both enumerators independently observe the first element.
+        Assert.AreEqual(first.Current.Key, second.Current.Key);
+    }
 }

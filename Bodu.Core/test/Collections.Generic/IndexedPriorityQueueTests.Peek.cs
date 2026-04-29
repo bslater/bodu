@@ -66,4 +66,41 @@ public partial class IndexedPriorityQueueTests
         Assert.AreEqual("b", element);
         Assert.AreEqual(5, priority);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.TryPeek" /> returns <see langword="false" />
+    /// once every element has been drained from the queue.
+    /// </summary>
+    [TestMethod]
+    public void TryPeek_AfterDrainingQueue_ShouldReturnFalse()
+    {
+        var queue = new IndexedPriorityQueue<string, int>();
+        queue.Enqueue("a", 1);
+        queue.Enqueue("b", 2);
+        _ = queue.Dequeue();
+        _ = queue.Dequeue();
+
+        Assert.IsFalse(queue.TryPeek(out string? element, out int priority));
+        Assert.IsNull(element);
+        Assert.AreEqual(0, priority);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.Peek" /> does not mutate the queue,
+    /// allowing repeated peeks to return the same head pair.
+    /// </summary>
+    [TestMethod]
+    public void Peek_WhenInvokedRepeatedly_ShouldReturnSameHead()
+    {
+        var queue = new IndexedPriorityQueue<string, int>();
+        queue.Enqueue("a", 10);
+        queue.Enqueue("b", 5);
+
+        var first = queue.Peek();
+        var second = queue.Peek();
+
+        Assert.AreEqual(first.Key, second.Key);
+        Assert.AreEqual(first.Value, second.Value);
+        Assert.AreEqual(2, queue.Count);
+    }
 }

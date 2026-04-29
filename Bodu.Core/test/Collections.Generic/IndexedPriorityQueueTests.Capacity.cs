@@ -95,4 +95,74 @@ public partial class IndexedPriorityQueueTests
         var drained = DrainAll(queue);
         AssertNonDecreasing(drained);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.EnsureCapacity" /> with zero on a
+    /// non-empty queue returns the existing capacity unchanged.
+    /// </summary>
+    [TestMethod]
+    public void EnsureCapacity_WhenZero_ShouldReturnExistingCapacity()
+    {
+        var queue = new IndexedPriorityQueue<string, int>(8);
+
+        int newCapacity = queue.EnsureCapacity(0);
+
+        Assert.AreEqual(8, newCapacity);
+        Assert.AreEqual(8, queue.Capacity);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.EnsureCapacity" /> equal to the
+    /// existing capacity is a no-op.
+    /// </summary>
+    [TestMethod]
+    public void EnsureCapacity_WhenEqualToCurrent_ShouldReturnCurrent()
+    {
+        var queue = new IndexedPriorityQueue<string, int>(16);
+
+        int newCapacity = queue.EnsureCapacity(16);
+
+        Assert.AreEqual(16, newCapacity);
+        Assert.AreEqual(16, queue.Capacity);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.TrimExcess" /> is a no-op when the
+    /// backing array is already sized exactly to the element count.
+    /// </summary>
+    [TestMethod]
+    public void TrimExcess_WhenCapacityEqualsCount_ShouldBeNoOp()
+    {
+        var queue = new IndexedPriorityQueue<int, int>(3);
+        queue.Enqueue(1, 1);
+        queue.Enqueue(2, 2);
+        queue.Enqueue(3, 3);
+        Assert.AreEqual(3, queue.Capacity);
+
+        queue.TrimExcess();
+
+        Assert.AreEqual(3, queue.Capacity);
+        Assert.AreEqual(3, queue.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.EnsureCapacity" /> preserves the
+    /// existing element set when growing the backing array.
+    /// </summary>
+    [TestMethod]
+    public void EnsureCapacity_WhenGrowing_ShouldPreserveElements()
+    {
+        var queue = new IndexedPriorityQueue<int, int>(2);
+        for (int i = 0; i < 5; i++)
+            queue.Enqueue(i, 100 - i);
+
+        _ = queue.EnsureCapacity(64);
+
+        Assert.AreEqual(5, queue.Count);
+        for (int i = 0; i < 5; i++)
+            Assert.IsTrue(queue.Contains(i));
+
+        var drained = DrainAll(queue);
+        AssertNonDecreasing(drained);
+    }
 }

@@ -104,4 +104,82 @@ public partial class IndexedPriorityQueueTests
 
         Assert.AreEqual(99, queue.GetPriority("a"));
     }
+
+    /// <summary>
+    /// Verifies that removing an internal element whose replacement must sift upward repairs the heap.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenReplacementRequiresSiftUp_ShouldRepairHeap()
+    {
+        // The insertion order below produces a heap in which the tail slot's priority (15) is smaller
+        // than the priority being removed (100), forcing the trailing replacement to sift upward.
+        var queue = new IndexedPriorityQueue<int, int>();
+        queue.Enqueue(1, 10);
+        queue.Enqueue(2, 50);
+        queue.Enqueue(3, 20);
+        queue.Enqueue(4, 100);
+        queue.Enqueue(5, 200);
+        queue.Enqueue(6, 15);
+
+        Assert.IsTrue(queue.Remove(4));
+
+        var drained = DrainAll(queue);
+        AssertNonDecreasing(drained);
+        Assert.AreEqual(5, drained.Length);
+        CollectionAssert.AreEquivalent(new[] { 1, 2, 3, 5, 6 }, drained.Select(p => p.Key).ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that removing an internal element whose replacement must sift downward repairs the heap.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenReplacementRequiresSiftDown_ShouldRepairHeap()
+    {
+        // After inserts the trailing storage slot has a large priority; removing an internal node
+        // forces that node to sift down past smaller children.
+        var queue = new IndexedPriorityQueue<int, int>();
+        queue.Enqueue(1, 1);
+        queue.Enqueue(2, 5);
+        queue.Enqueue(3, 10);
+        queue.Enqueue(4, 7);
+        queue.Enqueue(5, 8);
+        queue.Enqueue(6, 999);
+
+        Assert.IsTrue(queue.Remove(2));
+
+        var drained = DrainAll(queue);
+        AssertNonDecreasing(drained);
+        Assert.AreEqual(5, drained.Length);
+    }
+
+    /// <summary>
+    /// Verifies that removing every element in arbitrary order leaves the queue empty and consistent.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenAllElementsRemoved_ShouldEmptyQueue()
+    {
+        var queue = new IndexedPriorityQueue<int, int>();
+        for (int i = 0; i < 20; i++)
+            queue.Enqueue(i, (i * 17) % 53);
+
+        foreach (int key in new[] { 7, 0, 19, 12, 3, 15, 1, 8, 11, 4, 18, 2, 16, 6, 13, 5, 10, 14, 9, 17 })
+            Assert.IsTrue(queue.Remove(key));
+
+        Assert.AreEqual(0, queue.Count);
+        Assert.IsFalse(queue.TryPeek(out _, out _));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.Remove" /> uses the configured
+    /// element comparer when matching case-insensitive variants.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenElementComparerIsCaseInsensitive_ShouldMatchCaseVariant()
+    {
+        var queue = new IndexedPriorityQueue<string, int>(0, null, StringComparer.OrdinalIgnoreCase);
+        queue.Enqueue("alpha", 1);
+
+        Assert.IsTrue(queue.Remove("ALPHA"));
+        Assert.AreEqual(0, queue.Count);
+    }
 }
