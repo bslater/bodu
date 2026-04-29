@@ -1,0 +1,11 @@
+{
+  "// comment": "Cherry-picks a rule that does not exist in Source.json — drives the InvalidOperationException path for missing source rules in the JSON flatten pipeline.",
+  "useFrom": [
+    {
+      "resource": "Bodu.Globalization.Calendar.Fixtures.Source.json",
+      "uses": [
+        { "name": "Nonexistent Rule" }
+      ]
+    }
+  ]
+}

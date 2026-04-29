@@ -1,0 +1,21 @@
+{
+  "// comment": "Circular-reference test fixture A. References CircularJsonB.json which references back, to drive the cross-format circular-reference path in NotableDateRuleResourceProviderBase.FlattenResource.",
+  "useFrom": [
+    {
+      "resource": "Bodu.Globalization.Calendar.Fixtures.CircularJsonB.json",
+      "useAll": true
+    }
+  ],
+  "notableDates": [
+    {
+      "name": "Circular JSON A Marker",
+      "rules": [
+        {
+          "name": "Circular JSON A Marker Rule",
+          "category": "Observance",
+          "fixed": { "month": "January", "day": 2 }
+        }
+      ]
+    }
+  ]
+}
