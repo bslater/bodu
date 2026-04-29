@@ -13,10 +13,16 @@ namespace Bodu.Security.Cryptography;
 /// <c>SkipjackTest</c> reference, which itself derives from the original NSA Skipjack specification.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Skipjack pre-dates the published NIST KAT corpora, so the canonical published vectors are the
 /// single-bit-key avalanche cases used as a key-schedule sanity check by every reference implementation.
 /// They are sufficient to detect any divergence in the round-key byte ordering or the Rule&#160;A / Rule&#160;B
 /// alternation against the published cipher description.
+/// </para>
+/// <para>
+/// TODO(gh-144): Decide whether the current corpus is canonical (close as <c>not_planned</c>) or extend
+/// with derived chained vectors. See <see cref="BlockCipherKnownAnswer" /> for the gap policy.
+/// </para>
 /// </remarks>
 internal static class SkipjackKnownAnswers
 {

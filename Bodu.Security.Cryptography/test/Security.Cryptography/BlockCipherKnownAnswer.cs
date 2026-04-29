@@ -21,12 +21,13 @@ namespace Bodu.Security.Cryptography;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <b>Block-cipher layer</b> — driven by <see cref="BlockCipherTests{TTest, TCipher, TVariant}" /> and its
-/// <c>GetKnownAnswerTests(variant)</c> override. Each per-cipher test class delegates to
-/// <c>BlockCipherTests&lt;,,&gt;.AdaptKnownAnswers</c>, which builds runnable
-/// <c>KnownAnswerTest</c> rows from a sequence of <see cref="BlockCipherKnownAnswer" /> records and a
-/// per-cipher engine factory. Asserts <c>IBlockCipher.Encrypt(plaintext) == ciphertext</c> and the
-/// reverse for decrypt.
+/// <b>Block-cipher layer</b> — driven by <see cref="BlockCipherTests{TTest, TCipher, TVariant}" />. Each
+/// per-cipher test class overrides two simple hooks: <c>GetKnownAnswers(variant)</c> returns the curated
+/// vector list, and <c>CreateBlockCipherForAnswer(answer)</c> constructs an engine that applies the row's
+/// key and (where applicable) tweak. The base class wires those hooks together via
+/// <c>AdaptKnownAnswers</c> to drive the encrypt and decrypt assertions; concrete classes need only
+/// override <c>GetKnownAnswerTests</c> directly when their vectors are runtime-generated rather than
+/// static (for example the wide-block Serpent self-referential regression rows).
 /// </description>
 /// </item>
 /// <item>
@@ -60,6 +61,26 @@ namespace Bodu.Security.Cryptography;
 /// When <see cref="Key" /> is <see langword="null" /> the harness falls back to the variant's default
 /// <c>TestKey</c> from <see cref="BlockCipherSpecification" />. <see cref="Tweak" /> is ignored by
 /// non-tweakable cipher families and should be left <see langword="null" /> for them.
+/// </para>
+/// <para>
+/// <b>Minimum vector set.</b> Every cipher's <c>&lt;Cipher&gt;KnownAnswers</c> file should contain at least:
+/// </para>
+/// <list type="bullet">
+/// <item><description>An all-zero key, all-zero plaintext row — basic regression sanity.</description></item>
+/// <item><description>An all-ones (or all-FF) key, all-ones plaintext row — regression sanity at the
+/// opposite extreme.</description></item>
+/// <item><description>One row sourced from a published reference (RFC, NIST, AES submission, vendor) where
+/// vectors are available. Set <see cref="Profile" /> to identify the source.</description></item>
+/// <item><description>(Recommended) at least one chained or multi-vector sequence to exercise key-schedule
+/// stability across iterations.</description></item>
+/// </list>
+/// <para>
+/// <b>Gap policy.</b> When a cipher has no published reference vectors, do <i>not</i> fabricate in-tree
+/// regression baselines as a substitute. Instead, file a GitHub tracking issue and reference it from a
+/// <c>TODO(gh-NNN):</c> comment in the per-cipher <c>&lt;Cipher&gt;KnownAnswers</c> file's
+/// <c>&lt;remarks&gt;</c>. This keeps the gap visible and the test data honest about its provenance.
+/// In-tree regression baselines that pre-date this policy should be tagged with their tracking issue and
+/// kept until authoritative vectors are sourced.
 /// </para>
 /// </remarks>
 public sealed record BlockCipherKnownAnswer

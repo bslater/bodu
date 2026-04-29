@@ -14,34 +14,29 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// This vector pins the byte-order and key-schedule conventions to the standard Linux kernel / Bouncy Castle
-/// layout: little-endian word packing and no external IP/FP permutation. The
-/// <see cref="TweakableBlockCipherVariant.ZeroedKeyAndTweak" /> variant ships no published KAT and contributes
-/// only to inherited round-trip and determinism coverage.
+/// layout: little-endian word packing and no external IP/FP permutation.
 /// </para>
 /// <para>
-/// The wide-block variants (Serpent-256, Serpent-512, Serpent-1024) are non-standard constructions with no
-/// published reference vectors and intentionally do not have their own <c>KnownAnswers</c> data files. They
-/// rely on self-referential regression vectors generated at test-discovery time, which cannot be expressed
-/// as static hex literals without first running the cipher engine being tested.
+/// Serpent-128 is non-tweakable and exposes a single configuration, so the accessor uses
+/// <see cref="SingleTestVariant" />. The wide-block Serpent variants (256 / 512 / 1024) are tweakable
+/// experimental constructions and live in their own KAT files.
+/// </para>
+/// <para>
+/// TODO(gh-145): Extend to the full Bouncy Castle Serpent test set plus chained vectors from the original
+/// AES submission. See <see cref="BlockCipherKnownAnswer" /> for the gap policy.
 /// </para>
 /// </remarks>
 internal static class Serpent128KnownAnswers
 {
     /// <summary>
-    /// Returns the curated KAT vectors for <paramref name="variant" />. Only
-    /// <see cref="TweakableBlockCipherVariant.DefaultKeyAndTweak" /> carries a published vector; the zeroed
-    /// variant returns an empty list.
+    /// Returns the curated KAT vectors for <paramref name="variant" />. Serpent-128 publishes a single
+    /// reference vector; the variant parameter is reserved for parity with other non-variant cipher families.
     /// </summary>
-    public static IReadOnlyList<BlockCipherKnownAnswer> For(TweakableBlockCipherVariant variant) => variant switch
-    {
-        TweakableBlockCipherVariant.ZeroedKeyAndTweak => Array.Empty<BlockCipherKnownAnswer>(),
-        TweakableBlockCipherVariant.DefaultKeyAndTweak => DefaultKeyAndTweak,
-        _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
-    };
+    public static IReadOnlyList<BlockCipherKnownAnswer> For(SingleTestVariant variant) => Default;
 
     private const string ProfileBouncyCastle = "Bouncy Castle SerpentTest.java";
 
-    private static readonly BlockCipherKnownAnswer[] DefaultKeyAndTweak =
+    private static readonly BlockCipherKnownAnswer[] Default =
     [
         new BlockCipherKnownAnswer
         {

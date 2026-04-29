@@ -28,11 +28,15 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="SymmetricAlgorithmTests{TTest, TAlgorithm}" /> at the upper test layers.
 /// </para>
 /// <para>
-/// Concrete subclasses override four hooks: <see cref="GetSpecification" /> describing the variant under
-/// test, <see cref="GetBlockCipherVariants" /> enumerating the supported variants, <see cref="CreateBlockCipher(TVariant)" />
-/// constructing the engine, and <see cref="GetKnownAnswerTests" /> returning the KAT rows. The recommended
-/// shape for the last hook is a one-line delegation through <see cref="AdaptKnownAnswers" /> against the
-/// cipher's <c>&lt;Cipher&gt;KnownAnswers.For(variant)</c> accessor — see <see cref="BlockCipherKnownAnswer" />
+/// Concrete subclasses override four canonical hooks: <see cref="GetSpecification" /> describing the variant
+/// under test, <see cref="CreateBlockCipher(TVariant)" /> constructing the engine for boundary-length tests,
+/// <see cref="GetKnownAnswers" /> returning the curated KAT vector list, and
+/// <see cref="CreateBlockCipherForAnswer" /> constructing a per-vector engine bound to that row's key and
+/// tweak. The base class supplies <see cref="GetBlockCipherVariants" /> from <see cref="Enum.GetValues(Type)" />
+/// — override only to deliberately exclude an enumeration member — and the default
+/// <see cref="GetKnownAnswerTests" /> wires the two KAT hooks together via <see cref="AdaptKnownAnswers" />.
+/// Override <see cref="GetKnownAnswerTests" /> directly only when vectors are runtime-generated rather than
+/// sourced from a static <c>&lt;Cipher&gt;KnownAnswers</c> class — see <see cref="BlockCipherKnownAnswer" />
 /// for the full architecture overview.
 /// </para>
 /// </remarks>
@@ -72,9 +76,12 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// </returns>
     /// <remarks>
     /// This method drives variant-specific tests. Each variant may represent a change in output size, internal round configuration, or
-    /// other block cipher-specific mode flags.
+    /// other block cipher-specific mode flags. The default implementation returns every member of <typeparamref name="TVariant" /> via
+    /// <see cref="Enum.GetValues(Type)" />, which is the right behaviour for every cipher family in the suite — override only when a
+    /// cipher needs to deliberately exclude an enumeration member from its test matrix.
     /// </remarks>
-    public abstract IEnumerable<TVariant> GetBlockCipherVariants();
+    public virtual IEnumerable<TVariant> GetBlockCipherVariants() =>
+        Enum.GetValues(typeof(TVariant)).Cast<TVariant>();
 
     /// <summary>
     /// Returns public writable properties of the algorithm under test for use in dynamic property validation.
@@ -121,14 +128,49 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     protected abstract TCipher CreateBlockCipher(TVariant variant);
 
     /// <summary>
-    /// Combines shared input vectors with expected output values to generate test vectors for a specific variant.
+    /// Returns the <see cref="BlockCipherKnownAnswer" /> vectors for <paramref name="variant" /> sourced from the
+    /// per-cipher <c>&lt;Cipher&gt;KnownAnswers</c> static class. The default implementation returns an empty list, which
+    /// is appropriate for ciphers that have no published vectors and rely on inherited round-trip and determinism
+    /// coverage instead.
+    /// </summary>
+    /// <param name="variant">The variant whose vectors should be returned.</param>
+    /// <returns>The KAT vectors for <paramref name="variant" />, or an empty list if none are published.</returns>
+    /// <remarks>
+    /// This is the canonical hook for cipher families with static published vectors — Skipjack, Blowfish, Camellia,
+    /// Twofish, Threefish 256/512/1024, Serpent-128, AES, and so on. Override <see cref="GetKnownAnswerTests" />
+    /// directly only when the vectors are runtime-generated (for example the wide-block Serpent self-referential
+    /// regression rows).
+    /// </remarks>
+    protected virtual IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(TVariant variant) =>
+        Array.Empty<BlockCipherKnownAnswer>();
+
+    /// <summary>
+    /// Constructs an <see cref="IBlockCipher" /> instance configured for a single KAT vector — applying its
+    /// <see cref="BlockCipherKnownAnswer.Key" /> and, for tweakable ciphers, its
+    /// <see cref="BlockCipherKnownAnswer.Tweak" />. The default implementation throws and must be overridden when
+    /// <see cref="GetKnownAnswers" /> returns a non-empty list.
+    /// </summary>
+    /// <param name="answer">The vector for which to construct an engine.</param>
+    /// <returns>A new <see cref="IBlockCipher" /> instance ready to encrypt or decrypt <paramref name="answer" />.</returns>
+    /// <exception cref="NotSupportedException">The concrete test class returns KAT vectors via
+    /// <see cref="GetKnownAnswers" /> but does not override this hook.</exception>
+    protected virtual IBlockCipher CreateBlockCipherForAnswer(BlockCipherKnownAnswer answer) =>
+        throw new NotSupportedException(
+            $"{GetType().Name} returns KAT vectors via {nameof(GetKnownAnswers)} but does not override {nameof(CreateBlockCipherForAnswer)}.");
+
+    /// <summary>
+    /// Generates the runnable <see cref="KnownAnswerTest" /> rows for <paramref name="variant" />. The default
+    /// implementation bridges <see cref="GetKnownAnswers" /> through <see cref="AdaptKnownAnswers" /> and
+    /// <see cref="CreateBlockCipherForAnswer" /> — the canonical shape for every cipher with static vectors.
+    /// Override directly when the vectors are runtime-generated.
     /// </summary>
     /// <param name="variant">The variant to generate test vectors for.</param>
     /// <returns>
     /// A sequence of <see cref="KnownAnswerTest" /> instances representing named test inputs and their expected
     /// ciphertext results.
     /// </returns>
-    protected abstract IEnumerable<KnownAnswerTest> GetKnownAnswerTests(TVariant variant);
+    protected virtual IEnumerable<KnownAnswerTest> GetKnownAnswerTests(TVariant variant) =>
+        AdaptKnownAnswers(GetKnownAnswers(variant), CreateBlockCipherForAnswer);
 
     /// <summary>
     /// Adapts a sequence of <see cref="BlockCipherKnownAnswer" /> vectors into the legacy

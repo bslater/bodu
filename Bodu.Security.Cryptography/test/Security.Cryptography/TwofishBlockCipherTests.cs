@@ -30,14 +30,6 @@ internal sealed partial class TwofishBlockCipherTests
     }
 
     /// <inheritdoc />
-    public override IEnumerable<BlockCipherKeyVariant> GetBlockCipherVariants() => new[]
-    {
-        BlockCipherKeyVariant.Key128,
-        BlockCipherKeyVariant.Key192,
-        BlockCipherKeyVariant.Key256,
-    };
-
-    /// <inheritdoc />
     protected override TwofishBlockCipher CreateBlockCipher(BlockCipherKeyVariant variant)
     {
         var specification = GetSpecification(variant);
@@ -45,8 +37,10 @@ internal sealed partial class TwofishBlockCipherTests
     }
 
     /// <inheritdoc />
-    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(BlockCipherKeyVariant variant) =>
-        AdaptKnownAnswers(
-            TwofishKnownAnswers.For(variant),
-            answer => new TwofishBlockCipher(answer.Key!));
+    protected override IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(BlockCipherKeyVariant variant) =>
+        TwofishKnownAnswers.For(variant);
+
+    /// <inheritdoc />
+    protected override IBlockCipher CreateBlockCipherForAnswer(BlockCipherKnownAnswer answer) =>
+        new TwofishBlockCipher(answer.Key!);
 }

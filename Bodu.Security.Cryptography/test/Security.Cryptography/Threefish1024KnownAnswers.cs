@@ -8,16 +8,22 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Holds the curated <see cref="Threefish1024Cipher" /> known-answer test vectors used by
-/// <see cref="ThreeFish1024CipherTests" />. Mirrors the layout of <see cref="Threefish256KnownAnswers" />
+/// <see cref="Threefish1024CipherTests" />. Mirrors the layout of <see cref="Threefish256KnownAnswers" />
 /// and <see cref="Threefish512KnownAnswers" /> at the widest 1024-bit block size.
 /// </summary>
 /// <remarks>
+/// <para>
 /// The two vectors mirror <see cref="TweakableBlockCipherVariant.ZeroedKeyAndTweak" /> — an all-zero
 /// (key, tweak, plaintext) baseline — and <see cref="TweakableBlockCipherVariant.DefaultKeyAndTweak" /> —
 /// the harness's incremental-byte default (key bytes 0x10..0x8F, tweak bytes 0x00..0x0F, descending
 /// plaintext FF..80). The captured ciphertexts are the values produced by the in-tree Threefish-1024
 /// engine at the time the suite was authored and act as regression baselines against future engine
 /// changes.
+/// </para>
+/// <para>
+/// TODO(gh-141): Replace these in-tree regression rows with vectors transcribed from the Skein 1.3 / NIST
+/// SHA-3 submission package. See <see cref="BlockCipherKnownAnswer" /> for the gap policy.
+/// </para>
 /// </remarks>
 internal static class Threefish1024KnownAnswers
 {

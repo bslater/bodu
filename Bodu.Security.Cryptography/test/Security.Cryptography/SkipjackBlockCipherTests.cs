@@ -19,21 +19,17 @@ internal sealed partial class SkipjackBlockCipherTests
     };
 
     /// <inheritdocs/>
-    public override IEnumerable<SingleTestVariant> GetBlockCipherVariants() => new[]
-    {
-        SingleTestVariant.Default
-    };
-
-    /// <inheritdocs/>
     protected override SkipjackBlockCipher CreateBlockCipher(SingleTestVariant variant)
     {
         var specification = GetSpecification(variant);
         return new SkipjackBlockCipher(specification.TestKey);
     }
 
-    /// <inheritdocs/>
-    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(SingleTestVariant variant) =>
-        AdaptKnownAnswers(
-            SkipjackKnownAnswers.For(variant),
-            answer => new SkipjackBlockCipher(answer.Key!));
+    /// <inheritdoc />
+    protected override IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(SingleTestVariant variant) =>
+        SkipjackKnownAnswers.For(variant);
+
+    /// <inheritdoc />
+    protected override IBlockCipher CreateBlockCipherForAnswer(BlockCipherKnownAnswer answer) =>
+        new SkipjackBlockCipher(answer.Key!);
 }

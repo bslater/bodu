@@ -47,10 +47,6 @@ internal sealed partial class SimpleReversingBlockCipherTests
         };
 
     /// <inheritdoc />
-    public override IEnumerable<SimpleReversingBlockSizeVariant> GetBlockCipherVariants() =>
-        Enum.GetValues<SimpleReversingBlockSizeVariant>();
-
-    /// <inheritdoc />
     protected override SimpleReversingBlockCipher CreateBlockCipher(SimpleReversingBlockSizeVariant variant)
     {
         int blockSizeBytes = (int)variant / 8;

@@ -13,10 +13,16 @@ namespace Bodu.Security.Cryptography;
 /// correct row to that variant's specification.
 /// </summary>
 /// <remarks>
+/// <para>
 /// All vectors target single-block ECB encryption with no padding or IV — the raw block primitive contract.
 /// The plaintext is identical across all three key sizes (RFC 3713 reuses the same 128-bit input); only the
 /// key length and ciphertext differ. The keys themselves share the same 128-bit prefix and append further
 /// bytes for 192- and 256-bit variants, exactly as published in the RFC.
+/// </para>
+/// <para>
+/// TODO(gh-143): Extend with chained / iterative vectors (NESSIE corpus, CRYPTREC evaluation) per the
+/// minimum-vector-set policy. See <see cref="BlockCipherKnownAnswer" /> for the gap policy.
+/// </para>
 /// </remarks>
 /// <seealso href="https://datatracker.ietf.org/doc/html/rfc3713#appendix-A">RFC 3713 Appendix A — Camellia test vectors</seealso>
 internal static class CamelliaKnownAnswers
