@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.LastDayOfWeekInMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -11,24 +11,15 @@ namespace Bodu.Extensions;
 public static partial class DateOnlyExtensions
 {
     /// <summary>
-    /// Returns the last occurrence of the specified <see cref="DayOfWeek"/> within the same month and year as the given <paramref name="date"/>.
+    /// Returns a new <see cref="DateOnly"/> representing the last occurrence of the specified <see cref="DayOfWeek"/> within the same calendar month and year as the specified <paramref name="date"/>.
     /// </summary>
-    /// <param name="date">The <see cref="DateOnly"/> whose month and year define the search range.</param>
-    /// <param name="dayOfWeek">
-    /// The <see cref="DayOfWeek"/> value to locate. For example, <see cref="DayOfWeek.Friday"/> returns the last Friday of the month.
-    /// </param>
-    /// <returns>
-    /// A <see cref="DateOnly"/> representing the last occurrence of <paramref name="dayOfWeek"/> in the same month and year as <paramref name="date"/>.
-    /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="dayOfWeek"/> is not a defined value in the <see cref="DayOfWeek"/> enumeration.
-    /// </exception>
+    /// <param name="date">The date value whose month and year are used to determine the result.</param>
+    /// <param name="dayOfWeek">The <see cref="DayOfWeek"/> to locate within the month. For example, <see cref="DayOfWeek.Monday"/> returns the last Monday.</param>
+    /// <returns>A <see cref="DateOnly"/> value set to the last occurrence of <paramref name="dayOfWeek"/> within the same calendar month and year as <paramref name="date"/>.</returns>
     /// <remarks>
-    /// <para>
-    /// The search begins at the last day of the month and proceeds backward until a matching <paramref name="dayOfWeek"/> is found.
-    /// </para>
-    /// <para>The returned date always falls within the same calendar month and year as <paramref name="date"/>.</para>
+    /// <para>The search begins on the last day of the month and proceeds backward to locate the last matching weekday.</para>
     /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="dayOfWeek"/> is not a defined value of the <see cref="DayOfWeek"/> enumeration.</exception>
     public static DateOnly LastDayOfWeekInMonth(this DateOnly date, DayOfWeek dayOfWeek)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
