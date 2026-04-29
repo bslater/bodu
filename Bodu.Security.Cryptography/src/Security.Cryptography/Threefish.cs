@@ -6,6 +6,7 @@
 
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -42,6 +43,8 @@ public abstract class Threefish
 
     private readonly int DefaultTweakSizeBytes;
 
+    private bool _disposed;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="Threefish" /> class with the specified block and tweak sizes.
     /// </summary>
@@ -58,6 +61,7 @@ public abstract class Threefish
         this.LegalBlockSizesValue = new[] { new KeySizes(blockSizeBits, blockSizeBits, 0) };
         this.LegalKeySizesValue = new[] { new KeySizes(blockSizeBits, blockSizeBits, 0) };
         this.LegalTweakSizesValue = new[] { new KeySizes(tweakSizeBits, tweakSizeBits, 0) };
+        this.TweakSizeValue = tweakSizeBits;
 
         this.ModeValue = CipherMode.CBC;
         this.Padding = PaddingMode.PKCS7;
@@ -77,6 +81,7 @@ public abstract class Threefish
     /// <inheritdoc />
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak)
     {
+        this.ThrowIfDisposed();
         this.Validate(rgbKey, rgbIV, tweak);
         var engine = this.CreateCipher(rgbKey, tweak);
         return new ThreefishTransform(engine, this.BlockMode, this.Padding, rgbIV, false);
@@ -85,22 +90,64 @@ public abstract class Threefish
     /// <inheritdoc />
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak)
     {
+        this.ThrowIfDisposed();
         this.Validate(rgbKey, rgbIV, tweak);
         var engine = this.CreateCipher(rgbKey, tweak);
         return new ThreefishTransform(engine, this.BlockMode, this.Padding, rgbIV, true);
     }
 
     /// <inheritdoc />
-    public override void GenerateIV() =>
+    public override void GenerateIV()
+    {
+        this.ThrowIfDisposed();
         this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeBytes);
+    }
 
     /// <inheritdoc />
-    public override void GenerateKey() =>
+    public override void GenerateKey()
+    {
+        this.ThrowIfDisposed();
         this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeBytes);
+    }
 
     /// <inheritdoc />
-    public override void GenerateTweak() =>
+    public override void GenerateTweak()
+    {
+        this.ThrowIfDisposed();
         this.TweakValue = CryptoHelpers.GetRandomNonZeroBytes(this.DefaultTweakSizeBytes);
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Marks the instance as disposed, zeroes any retained key and IV buffers, and delegates the tweak buffer cleanup to the
+    /// base implementation.
+    /// </remarks>
+    protected override void Dispose(bool disposing)
+    {
+        if (!this._disposed)
+        {
+            if (disposing)
+            {
+                CryptoHelpers.Clear(this.KeyValue);
+                CryptoHelpers.Clear(this.IVValue);
+            }
+
+            this._disposed = true;
+        }
+
+        base.Dispose(disposing);
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ObjectDisposedException" /> whose <see cref="ObjectDisposedException.ObjectName" /> matches the
+    /// concrete algorithm type's <see cref="Type.FullName" /> if the instance has been disposed.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ThrowIfDisposed()
+    {
+        ObjectDisposedException.ThrowIf(this._disposed, this);
+    }
 
     /// <summary>
     /// Instantiates the concrete Threefish block cipher with the specified key and tweak.
