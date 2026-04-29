@@ -45,7 +45,7 @@ public static partial class DateTimeExtensions
     /// <param name="dateTime">The <see cref="DateTime"/> value to convert.</param>
     /// <param name="includeFractionalSeconds">Indicates whether to include fractional seconds (7 digits) in the output.</param>
     /// <returns>A string representation of <paramref name="dateTime"/> in ISO 8601 format, with or without fractional seconds.</returns>
-    /// <remarks>Uses the "o" (round-trip) format when <paramref name="includeFractionalSeconds"/> is <c>true</c>; otherwise, uses "yyyy-MM-ddTHH:mm:ss".</remarks>
+    /// <remarks>Uses the "o" (round-trip) format when <paramref name="includeFractionalSeconds"/> is <see langword="true"/>; otherwise, uses "yyyy-MM-ddTHH:mm:ss".</remarks>
     public static string ToIsoString(this DateTime dateTime, bool includeFractionalSeconds)
     {
         string format = includeFractionalSeconds ? "o" : "yyyy-MM-ddTHH:mm:ss";
@@ -85,10 +85,7 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dateTime">The <see cref="DateTime"/> value to format.</param>
     /// <param name="format">A valid date-time format string (e.g., "yyyy-MM-ddTHH:mm:ss").</param>
-    /// <param name="culture">
-    /// An optional <see cref="CultureInfo"/> for culture-specific formatting. If <c>null</c>, <see cref="CultureInfo.InvariantCulture"/>
-    /// is used.
-    /// </param>
+    /// <param name="culture">An optional <see cref="CultureInfo"/> used for culture-specific formatting. If <see langword="null"/>, <see cref="CultureInfo.InvariantCulture"/> is used.</param>
     /// <returns>A formatted string representation of <paramref name="dateTime"/> using the specified format and culture.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="format"/> is <see langword="null"/> or empty.</exception>
     public static string ToIsoString(this DateTime dateTime, string format, CultureInfo? culture = null)

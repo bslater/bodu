@@ -20,10 +20,7 @@ public static partial class DateTimeExtensions
     /// The culture-defined week number to evaluate, starting at 1. The maximum valid value depends on the <see cref="CalendarWeekRule"/>
     /// and <see cref="DayOfWeek"/> used by the specified <paramref name="culture"/>.
     /// </param>
-    /// <param name="culture">
-    /// An optional <see cref="CultureInfo"/> used to determine the <see cref="CalendarWeekRule"/> and starting <see cref="DayOfWeek"/>.
-    /// If <c>null</c>, <see cref="CultureInfo.CurrentCulture"/> is used.
-    /// </param>
+    /// <param name="culture">An optional <see cref="CultureInfo"/> used to determine the <see cref="CalendarWeekRule"/> and starting <see cref="DayOfWeek"/>. If <see langword="null"/>, <see cref="CultureInfo.CurrentCulture"/> is used.</param>
     /// <returns>An object whose value is set to midnight (00:00:00) on the first date of the specified week in the specified year.</returns>
     /// <remarks>
     /// <para>
