@@ -1,0 +1,55 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="NotableDateTimeExtensionsTests.EnumerateNonWorkingDays.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Linq;
+using Bodu.Globalization.Calendar;
+
+namespace Bodu.Extensions;
+
+public partial class NotableDateTimeExtensionsTests
+{
+    /// <summary>
+    /// Verifies that the enumeration yields the Saturday and Sunday inside a one-week range.
+    /// </summary>
+    [TestMethod]
+    public void EnumerateNonWorkingDays_WhenOneWeekRange_ShouldYieldWeekend()
+    {
+        NotableDateService service = BuildService();
+
+        DateTime[] result = new DateTime(2026, 1, 5).EnumerateNonWorkingDays(new DateTime(2026, 1, 11), service).ToArray();
+
+        CollectionAssert.AreEqual(
+            new[] { new DateTime(2026, 1, 10), new DateTime(2026, 1, 11) },
+            result);
+    }
+
+    /// <summary>
+    /// Verifies that a non-working rule day is included.
+    /// </summary>
+    [TestMethod]
+    public void EnumerateNonWorkingDays_WhenNonWorkingRuleDayInRange_ShouldIncludeIt()
+    {
+        NotableDateService service = BuildService(Fixed("Holiday", 1, 7, nonWorking: true));
+
+        DateTime[] result = new DateTime(2026, 1, 5).EnumerateNonWorkingDays(new DateTime(2026, 1, 11), service).ToArray();
+
+        CollectionAssert.AreEqual(
+            new[] { new DateTime(2026, 1, 7), new DateTime(2026, 1, 10), new DateTime(2026, 1, 11) },
+            result);
+    }
+
+    /// <summary>
+    /// Verifies that supplying a <see langword="null" /> service throws <see cref="ArgumentNullException" /> eagerly.
+    /// </summary>
+    [TestMethod]
+    public void EnumerateNonWorkingDays_WhenServiceIsNull_ShouldThrowArgumentNullExceptionEagerly()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new DateTime(2026, 1, 5).EnumerateNonWorkingDays(new DateTime(2026, 1, 11), service: null!);
+        });
+    }
+}
