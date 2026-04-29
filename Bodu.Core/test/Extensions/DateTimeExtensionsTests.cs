@@ -14,7 +14,7 @@ namespace Bodu.Extensions;
 [TestClass]
 public partial class DateTimeExtensionsTests
 {
-    public static readonly FirstAndLastDayData[] FirstAndLastDayOfWeekTestData =
+    public static readonly FirstAndLastDateData[] FirstAndLastDayOfWeekTestData =
     {
         // === Saturday–Sunday weekend => week starts Monday (2024-01-01), ends Sunday (2024-01-07)
         new() { Input = new DateTime(2024, 1, 1), Weekend = CalendarWeekendDefinition.SaturdaySunday, ExpectedFirst = new DateTime(2024, 1, 1), ExpectedLast = new DateTime(2024, 1, 7) },
@@ -89,7 +89,7 @@ public partial class DateTimeExtensionsTests
         new() { Input = new DateTime(2024, 04, 15), CultureInfo = CultureInfo.GetCultureInfo("fr-FR"), ExpectedFirst = new DateTime(2024, 04, 15), ExpectedLast = new DateTime(2024, 04, 21) }, // Monday (next week)
     };
 
-    public static readonly FirstAndLastDayData[] FirstAndLastDayOMonthDataTestData =
+    public static readonly FirstAndLastDateData[] FirstAndLastDayOMonthDataTestData =
     {
         // Regular months in 2023
         new() { Input = new DateTime(2023, 01, 15, 8, 0, 0), ExpectedFirst = new DateTime(2023, 01, 01, 0, 0, 0), ExpectedLast =    new DateTime(2023, 01, 31, 0, 0, 0) },
@@ -116,7 +116,7 @@ public partial class DateTimeExtensionsTests
         new() { Input = DateTime.MaxValue, ExpectedFirst = new DateTime(DateTime.MaxValue.Year, DateTime.MaxValue.Month, 1, 0, 0, 0), ExpectedLast = new DateTime(DateTime.MaxValue.Year, DateTime.MaxValue.Month, DateTime.DaysInMonth(DateTime.MaxValue.Year, DateTime.MaxValue.Month), 0, 0, 0) }
     };
 
-    public static readonly FirstAndLastDayData[] FirstAndLastDayOYearDataTestData =
+    public static readonly FirstAndLastDateData[] FirstAndLastDayOYearDataTestData =
     {
     };
 

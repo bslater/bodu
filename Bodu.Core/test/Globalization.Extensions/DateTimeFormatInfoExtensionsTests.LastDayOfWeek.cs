@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="DateTimeFormatInfoExtensionsTests.LastDayOfWeek.cs" company="PlaceholderCompany">
+// <copyright file="DateTimeFormatInfoExtensionsTests.LastDateOfWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -13,10 +13,10 @@ namespace Bodu.Globalization.Extensions;
 public partial class DateTimeFormatInfoExtensionsTests
 {
     /// <summary>
-    /// Provides (FirstDayOfWeek, expected LastDayOfWeek) pairs for the cyclic derivation
-    /// <c>(FirstDayOfWeek + 6) mod 7</c>.
+    /// Provides (FirstDateOfWeek, expected LastDateOfWeek) pairs for the cyclic derivation
+    /// <c>(FirstDateOfWeek + 6) mod 7</c>.
     /// </summary>
-    public static IEnumerable<object[]> LastDayOfWeekTestData()
+    public static IEnumerable<object[]> LastDateOfWeekTestData()
     {
         yield return new object[] { DayOfWeek.Sunday, DayOfWeek.Saturday };
         yield return new object[] { DayOfWeek.Monday, DayOfWeek.Sunday };
@@ -28,11 +28,11 @@ public partial class DateTimeFormatInfoExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeFormatInfoExtensions.LastDayOfWeek" />, when FirstDayOfWeekIsSpecified, returns the expected value.
+    /// Verifies that <see cref="DateTimeFormatInfoExtensions.LastDateOfWeek" />, when FirstDateOfWeekIsSpecified, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(LastDayOfWeekTestData), DynamicDataSourceType.Method)]
-    public void LastDayOfWeek_WhenFirstDayOfWeekIsSpecified_ShouldReturnDaySixPositionsLater(
+    [DynamicData(nameof(LastDateOfWeekTestData), DynamicDataSourceType.Method)]
+    public void LastDateOfWeek_WhenFirstDayOfWeekIsSpecified_ShouldReturnDaySixPositionsLater(
         DayOfWeek firstDayOfWeek, DayOfWeek expected)
     {
         DateTimeFormatInfo info = (DateTimeFormatInfo)CultureInfo.InvariantCulture.DateTimeFormat.Clone();
@@ -44,10 +44,10 @@ public partial class DateTimeFormatInfoExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeFormatInfoExtensions.LastDayOfWeek" />, when UsingEnGbCulture, returns the expected value.
+    /// Verifies that <see cref="DateTimeFormatInfoExtensions.LastDateOfWeek" />, when UsingEnGbCulture, returns the expected value.
     /// </summary>
     [TestMethod]
-    public void LastDayOfWeek_WhenUsingEnGbCulture_ShouldReturnSunday()
+    public void LastDateOfWeek_WhenUsingEnGbCulture_ShouldReturnSunday()
     {
         DateTimeFormatInfo info = CultureInfo.GetCultureInfo("en-GB").DateTimeFormat;
 
@@ -57,10 +57,10 @@ public partial class DateTimeFormatInfoExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeFormatInfoExtensions.LastDayOfWeek" />, when UsingEnUsCulture, returns the expected value.
+    /// Verifies that <see cref="DateTimeFormatInfoExtensions.LastDateOfWeek" />, when UsingEnUsCulture, returns the expected value.
     /// </summary>
     [TestMethod]
-    public void LastDayOfWeek_WhenUsingEnUsCulture_ShouldReturnSaturday()
+    public void LastDateOfWeek_WhenUsingEnUsCulture_ShouldReturnSaturday()
     {
         DateTimeFormatInfo info = CultureInfo.GetCultureInfo("en-US").DateTimeFormat;
 
@@ -70,16 +70,16 @@ public partial class DateTimeFormatInfoExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeFormatInfoExtensions.LastDayOfWeek" />, when InfoIsNull, throws <see cref="ArgumentNullException" />.
+    /// Verifies that <see cref="DateTimeFormatInfoExtensions.LastDateOfWeek" />, when InfoIsNull, throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void LastDayOfWeek_WhenInfoIsNull_ShouldThrowArgumentNullException()
+    public void LastDateOfWeek_WhenInfoIsNull_ShouldThrowArgumentNullException()
     {
         DateTimeFormatInfo? info = null;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = info!.LastDayOfWeek();
+            _ = info!.LastDateOfWeek();
         });
     }
 }

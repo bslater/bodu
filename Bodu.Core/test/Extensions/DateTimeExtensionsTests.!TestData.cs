@@ -207,7 +207,7 @@ public partial class DateTimeExtensionsTests
         MidnightTestData()
             .Select(o => new object[] { o[0], ((DateTime)o[0]).Date.AddDays(1).AddTicks(-1) });
 
-    public static IEnumerable<object[]> FirstDayOfMonthDataTestData()
+    public static IEnumerable<object[]> FirstDateOfMonthDataTestData()
     {
         // Regular months in 2023
         yield return new object[] { new DateTime(2023, 01, 15), new DateTime(2023, 01, 01) };
@@ -234,12 +234,12 @@ public partial class DateTimeExtensionsTests
         yield return new object[] { DateTime.MaxValue, new DateTime(DateTime.MaxValue.Year, DateTime.MaxValue.Month, 1) };
     }
 
-    public static IEnumerable<object[]> FirstDayOfQuarterDateTimeJanuaryDecemberTestData() =>
-        DateTimeExtensionsTests.FirstDayOfQuarterDateTimeTestData()
+    public static IEnumerable<object[]> FirstDateOfQuarterDateTimeJanuaryDecemberTestData() =>
+        DateTimeExtensionsTests.FirstDateOfQuarterDateTimeTestData()
             .Where(o => (CalendarQuarterDefinition)o[1] == CalendarQuarterDefinition.JanuaryToDecember)
             .Select(o => new object[] { o[0], o[2] });
 
-    public static IEnumerable<object[]> FirstDayOfQuarterDateTimeTestData()
+    public static IEnumerable<object[]> FirstDateOfQuarterDateTimeTestData()
     {
         // January–December
         yield return new object[] { new DateTime(2024, 01, 01), CalendarQuarterDefinition.JanuaryToDecember, new DateTime(2024, 01, 01) };
@@ -331,7 +331,7 @@ public partial class DateTimeExtensionsTests
         yield return new object[] { new DateTime(2025, 03, 24), CalendarQuarterDefinition.March25ToMarch24, new DateTime(2024, 12, 25) };
     }
 
-    public static IEnumerable<object[]> FirstDayOfQuarterTestData()
+    public static IEnumerable<object[]> FirstDateOfQuarterTestData()
     {
         yield return new object[] { 2024, 1, CalendarQuarterDefinition.JanuaryToDecember, new DateTime(2024, 01, 01) };
         yield return new object[] { 2024, 2, CalendarQuarterDefinition.JanuaryToDecember, new DateTime(2024, 04, 01) };
@@ -363,12 +363,12 @@ public partial class DateTimeExtensionsTests
         yield return new object[] { 2024, 4, CalendarQuarterDefinition.March25ToMarch24, new DateTime(2024, 12, 25) };
     }
 
-    public static IEnumerable<object[]> FirstDayOfQuarterYearQuarterJanuaryDecemberTestData() =>
-        DateTimeExtensionsTests.FirstDayOfQuarterTestData()
+    public static IEnumerable<object[]> FirstDateOfQuarterYearQuarterJanuaryDecemberTestData() =>
+        DateTimeExtensionsTests.FirstDateOfQuarterTestData()
             .Where(o => (CalendarQuarterDefinition)o[2] == CalendarQuarterDefinition.JanuaryToDecember)
             .Select(o => new object[] { o[0], o[1], o[3] });
 
-    public static IEnumerable<object[]> FirstDayOfWeekCultureInfoTestData()
+    public static IEnumerable<object[]> FirstDateOfWeekCultureInfoTestData()
     {
         yield return new object[] { new DateTime(2024, 04, 08), CultureInfo.GetCultureInfo("en-US"), new DateTime(2024, 04, 07) };
         yield return new object[] { new DateTime(2024, 04, 09), CultureInfo.GetCultureInfo("en-US"), new DateTime(2024, 04, 07) };
@@ -425,7 +425,7 @@ public partial class DateTimeExtensionsTests
         yield return new object[] { new DateTime(2024, 04, 15), CultureInfo.GetCultureInfo("ru-RU"), new DateTime(2024, 04, 15) };
     }
 
-    public static IEnumerable<object[]> FirstDayOfWeekDefinitionTestData()
+    public static IEnumerable<object[]> FirstDateOfWeekDefinitionTestData()
     {
         yield return new object[] { new DateTime(2024, 04, 08), CalendarWeekendDefinition.SaturdaySunday, new DateTime(2024, 04, 08) };
         yield return new object[] { new DateTime(2024, 04, 09), CalendarWeekendDefinition.SaturdaySunday, new DateTime(2024, 04, 08) };
@@ -482,7 +482,7 @@ public partial class DateTimeExtensionsTests
         yield return new object[] { new DateTime(2024, 04, 15), CalendarWeekendDefinition.None, new DateTime(2024, 04, 15) };
     }
 
-    public static IEnumerable<object[]> FirstDayOfWeekInMonthTestData()
+    public static IEnumerable<object[]> FirstDateOfWeekInMonthTestData()
     {
         yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Sunday, new DateTime(2024, 04, 07) };
         yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Monday, new DateTime(2024, 04, 01) };
@@ -504,12 +504,12 @@ public partial class DateTimeExtensionsTests
         yield return new object[] { DateTime.MaxValue.AddDays(-1), DayOfWeek.Monday, new DateTime(DateTime.MaxValue.Year, DateTime.MaxValue.Month, 06) };
     }
 
-    public static IEnumerable<object[]> FirstDayOfWeekInQuarterDateTimeJanuaryDecemberTestData() =>
-        DateTimeExtensionsTests.FirstDayOfWeekInQuarterDateTimeTestData()
+    public static IEnumerable<object[]> FirstDateOfWeekInQuarterDateTimeJanuaryDecemberTestData() =>
+        DateTimeExtensionsTests.FirstDateOfWeekInQuarterDateTimeTestData()
             .Where(o => (CalendarQuarterDefinition)o[1] == CalendarQuarterDefinition.JanuaryToDecember)
             .Select(o => new object[] { o[0], o[2], o[3] });
 
-    public static IEnumerable<object[]> FirstDayOfWeekInQuarterDateTimeTestData()
+    public static IEnumerable<object[]> FirstDateOfWeekInQuarterDateTimeTestData()
     {
         // JanuaryToDecember
         yield return new object[] { new DateTime(2024, 1, 1), CalendarQuarterDefinition.JanuaryToDecember, DayOfWeek.Sunday, new DateTime(2024, 1, 7) };
@@ -1114,7 +1114,7 @@ public partial class DateTimeExtensionsTests
         yield return new object[] { new DateTime(2024, 12, 1), CalendarQuarterDefinition.OctoberToSeptember, DayOfWeek.Saturday, new DateTime(2024, 10, 5) };
     }
 
-    public static IEnumerable<object[]> FirstDayOfWeekInQuarterTestData()
+    public static IEnumerable<object[]> FirstDateOfWeekInQuarterTestData()
     {
         yield return new object[] { 2024, 1, CalendarQuarterDefinition.JanuaryToDecember, DayOfWeek.Sunday, new DateTime(2024, 1, 7) };
         yield return new object[] { 2024, 1, CalendarQuarterDefinition.JanuaryToDecember, DayOfWeek.Monday, new DateTime(2024, 1, 1) };
@@ -1314,12 +1314,12 @@ public partial class DateTimeExtensionsTests
         yield return new object[] { 2024, 4, CalendarQuarterDefinition.OctoberToSeptember, DayOfWeek.Saturday, new DateTime(2025, 7, 5) };
     }
 
-    public static IEnumerable<object[]> FirstDayOfWeekInQuarterYearQuarterJanuaryDecemberTestData() =>
-        DateTimeExtensionsTests.FirstDayOfWeekInQuarterTestData()
+    public static IEnumerable<object[]> FirstDateOfWeekInQuarterYearQuarterJanuaryDecemberTestData() =>
+        DateTimeExtensionsTests.FirstDateOfWeekInQuarterTestData()
             .Where(o => (CalendarQuarterDefinition)o[2] == CalendarQuarterDefinition.JanuaryToDecember)
             .Select(o => new object[] { o[0], o[1], o[3], o[4] });
 
-    public static IEnumerable<object[]> FirstDayOfWeekInYearTestData()
+    public static IEnumerable<object[]> FirstDateOfWeekInYearTestData()
     {
         yield return new object[] { new DateTime(2024, 10, 15), DayOfWeek.Sunday, new DateTime(2024, 01, 07) };
         yield return new object[] { new DateTime(2024, 06, 15), DayOfWeek.Monday, new DateTime(2024, 01, 01) };
@@ -1341,7 +1341,7 @@ public partial class DateTimeExtensionsTests
         yield return new object[] { DateTime.MaxValue, DayOfWeek.Monday, new DateTime(DateTime.MaxValue.Year, 01, 04) };
     }
 
-    public static IEnumerable<object[]> FirstDayOfYearTestData()
+    public static IEnumerable<object[]> FirstDateOfYearTestData()
     {
         yield return new object[] { new DateTime(2023, 02, 28), new DateTime(2023, 01, 01) };
         yield return new object[] { new DateTime(2024, 10, 15), new DateTime(2024, 01, 01) };
@@ -1356,33 +1356,33 @@ public partial class DateTimeExtensionsTests
         yield return new object[] { DateTime.MaxValue, new DateTime(DateTime.MaxValue.Year, 01, 01) };
     }
 
-    public static IEnumerable<object[]> IsFirstDayOfMonthTestData() =>
-        FirstDayOfMonthDataTestData()
+    public static IEnumerable<object[]> IsFirstDateOfMonthTestData() =>
+        FirstDateOfMonthDataTestData()
             .Select(o => new object[] { o[1] });
 
-    public static IEnumerable<object[]> IsFirstDayOfQuarterJanuaryDecemberTestData() =>
-        IsFirstDayOfQuarterTestData()
+    public static IEnumerable<object[]> IsFirstDateOfQuarterJanuaryDecemberTestData() =>
+        IsFirstDateOfQuarterTestData()
             .Where(o => (CalendarQuarterDefinition)o[1] == CalendarQuarterDefinition.JanuaryToDecember)
             .Select(o => new object[] { o[0] });
 
-    public static IEnumerable<object[]> IsFirstDayOfQuarterTestData() =>
-        FirstDayOfQuarterTestData()
+    public static IEnumerable<object[]> IsFirstDateOfQuarterTestData() =>
+        FirstDateOfQuarterTestData()
             .Select(o => new object[] { o[3], o[2] });
 
-    public static IEnumerable<object[]> IsLastDayOfMonthDataTestData() =>
-        LastDayOfMonthDataTestData()
+    public static IEnumerable<object[]> IsLastDateOfMonthDataTestData() =>
+        LastDateOfMonthDataTestData()
             .Select(o => new object[] { o[1] });
 
-    public static IEnumerable<object[]> IsLastDayOfQuarterJanuaryDecemberTestData() =>
-        LastDayOfQuarterDateTimeTestData()
+    public static IEnumerable<object[]> IsLastDateOfQuarterJanuaryDecemberTestData() =>
+        LastDateOfQuarterDateTimeTestData()
             .Where(o => (CalendarQuarterDefinition)o[1] == CalendarQuarterDefinition.JanuaryToDecember)
             .Select(o => new object[] { o[0], (DateTime)o[0] == (DateTime)o[2] });
 
-    public static IEnumerable<object[]> IsLastDayOfQuarterTestData() =>
-        LastDayOfQuarterTestData()
+    public static IEnumerable<object[]> IsLastDateOfQuarterTestData() =>
+        LastDateOfQuarterTestData()
             .Select(o => new object[] { o[3], o[2] });
 
-    public static IEnumerable<object[]> IsNotFirstDayOfMonthTestData() =>
+    public static IEnumerable<object[]> IsNotFirstDateOfMonthTestData() =>
         Enumerable.Range(1, 12)
             .SelectMany(month =>
             {
@@ -1391,12 +1391,12 @@ public partial class DateTimeExtensionsTests
                                  .Select(day => new object[] { new DateTime(2024, month, day) });
             });
 
-    public static IEnumerable<object[]> IsNotFirstDayOfQuarterTestData() =>
-        FirstDayOfQuarterDateTimeTestData()
+    public static IEnumerable<object[]> IsNotFirstDateOfQuarterTestData() =>
+        FirstDateOfQuarterDateTimeTestData()
             .Where(o => (DateTime)o[0] != (DateTime)o[2])
             .Select(o => new object[] { o[0], o[1] });
 
-    public static IEnumerable<object[]> IsNotLastDayOfMonthTestData() =>
+    public static IEnumerable<object[]> IsNotLastDateOfMonthTestData() =>
         Enumerable.Range(1, 12)
             .SelectMany(month =>
             {
@@ -1405,12 +1405,12 @@ public partial class DateTimeExtensionsTests
                                  .Select(day => new object[] { new DateTime(2024, month, day) });
             });
 
-    public static IEnumerable<object[]> IsNotLastDayOfQuarterTestData() =>
-                LastDayOfQuarterDateTimeTestData()
+    public static IEnumerable<object[]> IsNotLastDateOfQuarterTestData() =>
+                LastDateOfQuarterDateTimeTestData()
             .Where(o => (DateTime)o[0] != (DateTime)o[2])
             .Select(o => new object[] { o[0], o[1] });
 
-    public static IEnumerable<object[]> LastDayOfMonthDataTestData()
+    public static IEnumerable<object[]> LastDateOfMonthDataTestData()
     {
         // Regular months in 2023
         yield return new object[] { new DateTime(2023, 01, 15), new DateTime(2023, 01, 31) };
@@ -1437,12 +1437,12 @@ public partial class DateTimeExtensionsTests
         yield return new object[] { DateTime.MaxValue, new DateTime(DateTime.MaxValue.Year, DateTime.MaxValue.Month, DateTime.DaysInMonth(DateTime.MaxValue.Year, DateTime.MaxValue.Month)) };
     }
 
-    public static IEnumerable<object[]> LastDayOfQuarterDateTimeJanuaryDecemberTestData() =>
-        DateTimeExtensionsTests.LastDayOfQuarterDateTimeTestData()
+    public static IEnumerable<object[]> LastDateOfQuarterDateTimeJanuaryDecemberTestData() =>
+        DateTimeExtensionsTests.LastDateOfQuarterDateTimeTestData()
             .Where(o => (CalendarQuarterDefinition)o[1] == CalendarQuarterDefinition.JanuaryToDecember)
             .Select(o => new object[] { o[0], o[2] });
 
-    public static IEnumerable<object[]> LastDayOfQuarterDateTimeTestData()
+    public static IEnumerable<object[]> LastDateOfQuarterDateTimeTestData()
     {
         // January–December
         yield return new object[] { new DateTime(2024, 01, 01), CalendarQuarterDefinition.JanuaryToDecember, new DateTime(2024, 03, 31) };
@@ -1534,12 +1534,12 @@ public partial class DateTimeExtensionsTests
         yield return new object[] { new DateTime(2025, 03, 24), CalendarQuarterDefinition.March25ToMarch24, new DateTime(2025, 03, 24) };
     }
 
-    public static IEnumerable<object[]> LastDayOfQuarterJanuaryDecemberTestData() =>
-        DateTimeExtensionsTests.LastDayOfQuarterTestData()
+    public static IEnumerable<object[]> LastDateOfQuarterJanuaryDecemberTestData() =>
+        DateTimeExtensionsTests.LastDateOfQuarterTestData()
             .Where(o => (CalendarQuarterDefinition)o[2] == CalendarQuarterDefinition.JanuaryToDecember)
             .Select(o => new object[] { o[0], o[1], o[3] });
 
-    public static IEnumerable<object[]> LastDayOfQuarterTestData()
+    public static IEnumerable<object[]> LastDateOfQuarterTestData()
     {
         yield return new object[] { 2024, 1, CalendarQuarterDefinition.JanuaryToDecember, new DateTime(2024, 03, 31) };
         yield return new object[] { 2024, 2, CalendarQuarterDefinition.JanuaryToDecember, new DateTime(2024, 06, 30) };
@@ -1571,7 +1571,7 @@ public partial class DateTimeExtensionsTests
         yield return new object[] { 2024, 4, CalendarQuarterDefinition.March25ToMarch24, new DateTime(2025, 03, 24) };
     }
 
-    public static IEnumerable<object[]> LastDayOfWeekCultureInfoTestData()
+    public static IEnumerable<object[]> LastDateOfWeekCultureInfoTestData()
     {
         yield return new object[] { new DateTime(2024, 04, 08), CultureInfo.GetCultureInfo("en-US"), new DateTime(2024, 04, 13) };
         yield return new object[] { new DateTime(2024, 04, 09), CultureInfo.GetCultureInfo("en-US"), new DateTime(2024, 04, 13) };
@@ -1628,7 +1628,7 @@ public partial class DateTimeExtensionsTests
         yield return new object[] { new DateTime(2024, 04, 15), CultureInfo.GetCultureInfo("ru-RU"), new DateTime(2024, 04, 21) };
     }
 
-    public static IEnumerable<object[]> LastDayOfWeekDefinitionTestData()
+    public static IEnumerable<object[]> LastDateOfWeekDefinitionTestData()
     {
         yield return new object[] { new DateTime(2024, 04, 08), CalendarWeekendDefinition.SaturdaySunday, new DateTime(2024, 04, 14) };
         yield return new object[] { new DateTime(2024, 04, 09), CalendarWeekendDefinition.SaturdaySunday, new DateTime(2024, 04, 14) };
@@ -1685,7 +1685,7 @@ public partial class DateTimeExtensionsTests
         yield return new object[] { new DateTime(2024, 04, 15), CalendarWeekendDefinition.None, new DateTime(2024, 04, 21) };
     }
 
-    public static IEnumerable<object[]> LastDayOfWeekInMonthTestData()
+    public static IEnumerable<object[]> LastDateOfWeekInMonthTestData()
     {
         yield return new object[] { new DateTime(2024, 04, 30), DayOfWeek.Sunday, new DateTime(2024, 04, 28) };
         yield return new object[] { new DateTime(2024, 04, 30), DayOfWeek.Monday, new DateTime(2024, 04, 29) };
@@ -1707,7 +1707,7 @@ public partial class DateTimeExtensionsTests
         yield return new object[] { DateTime.MaxValue, DateTime.MaxValue.DayOfWeek, DateTime.MaxValue.Date };
     }
 
-    public static IEnumerable<object[]> LastDayOfWeekInYearTestData()
+    public static IEnumerable<object[]> LastDateOfWeekInYearTestData()
     {
         yield return new object[] { new DateTime(2024, 12, 31), DayOfWeek.Sunday, new DateTime(2024, 12, 29) };
         yield return new object[] { new DateTime(2024, 12, 31), DayOfWeek.Monday, new DateTime(2024, 12, 30) };
@@ -1729,7 +1729,7 @@ public partial class DateTimeExtensionsTests
         yield return new object[] { DateTime.MaxValue, DateTime.MaxValue.DayOfWeek, DateTime.MaxValue.Date };
     }
 
-    public static IEnumerable<object[]> LastDayOfYearTestData()
+    public static IEnumerable<object[]> LastDateOfYearTestData()
     {
         yield return new object[] { new DateTime(2023, 02, 28), new DateTime(2023, 12, 31) };
         yield return new object[] { new DateTime(2024, 10, 15), new DateTime(2024, 12, 31) };
@@ -1912,7 +1912,7 @@ public partial class DateTimeExtensionsTests
         yield return new object[] { 2024, 12, new CultureInfo("nb-NO"), "desember" };
     }
 
-    public static IEnumerable<object[]> NextDayOfWeekTestData()
+    public static IEnumerable<object[]> NextDateOfWeekTestData()
     {
         yield return new object[] { new DateTime(2024, 04, 19, 02, 30, 10), DayOfWeek.Monday, new DateTime(2024, 04, 22, 02, 30, 10) };
         yield return new object[] { new DateTime(2024, 04, 15, 12, 00, 00), DayOfWeek.Tuesday, new DateTime(2024, 04, 16, 12, 00, 00) };
@@ -1923,7 +1923,7 @@ public partial class DateTimeExtensionsTests
         yield return new object[] { new DateTime(2024, 04, 15, 06, 33, 44), DayOfWeek.Sunday, new DateTime(2024, 04, 21, 06, 33, 44) };
     }
 
-    public static IEnumerable<object[]> NthDayOfWeekInMonthTestData()
+    public static IEnumerable<object[]> NthDateOfWeekInMonthTestData()
     {
         yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOfMonthOrdinal.First, new DateTime(2024, 04, 02) };
         yield return new object[] { new DateTime(2024, 04, 01), DayOfWeek.Tuesday, WeekOfMonthOrdinal.Second, new DateTime(2024, 04, 09) };
@@ -1974,7 +1974,7 @@ public partial class DateTimeExtensionsTests
         yield return new object[] { new DateTime(2023, 02, 01), DayOfWeek.Tuesday, WeekOfMonthOrdinal.Last, new DateTime(2023, 02, 28) };   // Non-Leap year - last Thursday
     }
 
-    public static IEnumerable<object[]> PreviousDayOfWeekTestData()
+    public static IEnumerable<object[]> PreviousDateOfWeekTestData()
     {
         yield return new object[] { new DateTime(2024, 04, 18, 14, 30, 00), DayOfWeek.Monday, new DateTime(2024, 04, 15, 14, 30, 00) };
         yield return new object[] { new DateTime(2024, 04, 21, 05, 00, 00), DayOfWeek.Tuesday, new DateTime(2024, 04, 16, 05, 00, 00) };
