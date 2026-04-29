@@ -12,7 +12,7 @@ namespace Bodu.Collections.Generic;
 /// <summary>
 /// Provides the shared test contract for ring-backed collections that expose a full double-ended interface
 /// (head-side <c>AddFirst</c> / <c>RemoveFirst</c> / <c>PeekFirst</c> in addition to tail-side operations).
-/// Inherited by concrete test classes for <see cref="ArrayDeque{T}"/> and <see cref="Deque{T}"/>.
+/// Inherited by <see cref="DequeTests"/> (growable mode) and <see cref="DequeFixedCapacityTests"/> (fixed-capacity mode).
 /// </summary>
 /// <typeparam name="TTest">The concrete test class (CRTP self-reference).</typeparam>
 /// <typeparam name="TCollection">The collection type under test.</typeparam>

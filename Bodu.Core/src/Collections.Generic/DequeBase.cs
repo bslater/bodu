@@ -11,16 +11,16 @@ namespace Bodu.Collections.Generic;
 
 /// <summary>
 /// Provides the shared public surface for double-ended ring-backed collections. Inherited by
-/// <see cref="ArrayDeque{T}"/> (fixed-capacity) and <see cref="Deque{T}"/> (growable). Defines the
-/// remove-side and peek-side operations once; derived types override the add-side operations to enforce
-/// type-specific capacity policy.
+/// <see cref="Deque{T}"/>, which selects fixed-capacity or growable behaviour at runtime via its
+/// <see cref="Deque{T}.AllowGrow"/> property. Defines the remove-side and peek-side operations once;
+/// derived types override the add-side operations to enforce their capacity policy.
 /// </summary>
 /// <typeparam name="T">Specifies the type of elements stored in the deque.</typeparam>
 /// <remarks>
 /// <para>
 /// The remove and peek operations have identical semantics regardless of capacity policy, so they live on
-/// the base. The add operations differ — fixed-capacity deques throw when full, while growable deques
-/// resize the backing array — so <see cref="AddFirst(T)"/>, <see cref="AddLast(T)"/>,
+/// the base. The add operations differ between policies — when full, fixed-capacity deques throw and
+/// growable deques resize the backing array — so <see cref="AddFirst(T)"/>, <see cref="AddLast(T)"/>,
 /// <see cref="TryAddFirst(T)"/>, and <see cref="TryAddLast(T)"/> are abstract and must be implemented by
 /// concrete types.
 /// </para>

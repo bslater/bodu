@@ -13,17 +13,17 @@ namespace Bodu.Collections.Generic;
 /// <summary>
 /// Provides the shared low-level mechanics for ring-buffer-backed collections — a contiguous backing array,
 /// head/tail indices with modulo wrap, a live element count, and a structural-version counter — as a
-/// reusable base type. Inherited by <see cref="CircularBuffer{T}"/>, <see cref="ArrayDeque{T}"/>, and
-/// <see cref="Deque{T}"/>.
+/// reusable base type. Inherited by <see cref="CircularBuffer{T}"/> and <see cref="Deque{T}"/> (via
+/// <see cref="DequeBase{T}"/>).
 /// </summary>
 /// <typeparam name="T">Specifies the type of elements stored in the collection.</typeparam>
 /// <remarks>
 /// <para>
 /// Concrete derived types layer their own public surface on top of the protected primitives exposed here:
 /// <see cref="CircularBuffer{T}"/> adds a single-ended <c>Enqueue</c>/<c>Dequeue</c>/<c>Peek</c> API with
-/// optional eviction, and <see cref="DequeBase{T}"/> (with its <see cref="ArrayDeque{T}"/> and
-/// <see cref="Deque{T}"/> implementations) adds the double-ended <c>AddFirst</c>/<c>AddLast</c> /
-/// <c>RemoveFirst</c>/<c>RemoveLast</c> / <c>PeekFirst</c>/<c>PeekLast</c> API.
+/// optional eviction, and <see cref="DequeBase{T}"/> (with its <see cref="Deque{T}"/> implementation) adds
+/// the double-ended <c>AddFirst</c>/<c>AddLast</c> / <c>RemoveFirst</c>/<c>RemoveLast</c> /
+/// <c>PeekFirst</c>/<c>PeekLast</c> API.
 /// </para>
 /// <para>
 /// The protected mutators (<see cref="AddTail(T)"/>, <see cref="AddHead(T)"/>, <see cref="RemoveHead"/>,
