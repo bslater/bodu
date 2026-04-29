@@ -1,0 +1,24 @@
+{
+  "// comment": "Root JSON document whose useFrom targets the XML Source.xml fixture — exercises JSON->XML cross-format references through the shared base provider.",
+  "useFrom": [
+    {
+      "resource": "Bodu.Globalization.Calendar.Fixtures.Source.xml",
+      "uses": [
+        { "name": "Shared Alpha" },
+        { "name": "Shared Beta" }
+      ]
+    }
+  ],
+  "notableDates": [
+    {
+      "name": "Mixed Json Local",
+      "rules": [
+        {
+          "name": "Mixed Json Local Rule",
+          "category": "Observance",
+          "fixed": { "month": "March", "day": 4 }
+        }
+      ]
+    }
+  ]
+}

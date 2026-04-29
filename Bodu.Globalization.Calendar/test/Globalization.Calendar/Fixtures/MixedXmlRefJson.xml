@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Root XML document whose UseFrom targets the JSON Source.json fixture — exercises
+  XML->JSON cross-format references through the shared base provider.
+-->
+<NotableDates xmlns="urn:bodu:globalization:calendar">
+  <UseFrom resource="Bodu.Globalization.Calendar.Fixtures.Source.json">
+    <Use name="Shared Alpha" />
+    <Use name="Shared Beta" />
+  </UseFrom>
+  <NotableDate name="Mixed Xml Local">
+    <Rule name="Mixed Xml Local Rule" category="Observance">
+      <Fixed month="March" day="4" />
+    </Rule>
+  </NotableDate>
+</NotableDates>

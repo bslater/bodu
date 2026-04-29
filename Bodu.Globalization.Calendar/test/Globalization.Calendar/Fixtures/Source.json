@@ -1,0 +1,25 @@
+{
+  "// comment": "JSON peer of Source.xml — two cherry-pickable rules used by JSON provider tests and mixed-format graphs.",
+  "notableDates": [
+    {
+      "name": "Shared Alpha",
+      "rules": [
+        {
+          "name": "Shared Alpha Rule",
+          "category": "Observance",
+          "fixed": { "month": "January", "day": 2 }
+        }
+      ]
+    },
+    {
+      "name": "Shared Beta",
+      "rules": [
+        {
+          "name": "Shared Beta Rule",
+          "category": "Observance",
+          "fixed": { "month": "February", "day": 3 }
+        }
+      ]
+    }
+  ]
+}

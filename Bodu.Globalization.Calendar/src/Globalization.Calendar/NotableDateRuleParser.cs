@@ -21,9 +21,9 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// XML inputs are validated against the embedded <c>NotableDates.xsd</c> schema before parsing. JSON parsing is intentionally not yet
-/// reinstated; the previous incomplete implementation has been preserved as a documented stub at the bottom of this file for future
-/// completion.
+/// XML inputs are validated against the embedded <c>NotableDates.xsd</c> schema before parsing. The JSON authoring
+/// counterpart lives in <see cref="NotableDateRuleJsonParser" /> and produces the same
+/// <see cref="ParsedNotableDateDocument" /> output.
 /// </para>
 /// <para>
 /// This class replaces <c>NotableDateDefinitionParser</c>. The new schema vocabulary uses <c>Rule</c> as the per-definition element and
@@ -676,13 +676,4 @@ public static class NotableDateRuleParser
 		if (e.Severity == XmlSeverityType.Error)
 			throw new XmlSchemaValidationException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.XmlSchemaValidationException_SchemaValidationError, e.Message), e.Exception);
 	}
-
-	// ----------------------------------------------------------------------------
-	// JSON parser placeholder (preserved for future implementation)
-	// ----------------------------------------------------------------------------
-	//
-	// The previous incomplete JSON parser has been intentionally kept out of the
-	// public surface until it can be reinstated against the new NotableDateRule
-	// vocabulary. When implementing, mirror ParseXml: validate against a JSON
-	// schema (or strict deserialiser), then map each item through ApplyStrategySpecifics.
 }
