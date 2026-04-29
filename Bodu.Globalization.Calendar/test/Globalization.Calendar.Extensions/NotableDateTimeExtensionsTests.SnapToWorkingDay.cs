@@ -83,4 +83,21 @@ public partial class NotableDateTimeExtensionsTests
             _ = new DateTime(2026, 1, 3).SnapToWorkingDay(service: null!);
         });
     }
+
+    /// <summary>
+    /// Verifies that the snap-forward path preserves the input <see cref="DateTime.Kind" /> and time-of-day across each supported
+    /// <see cref="DateTimeKind" /> value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(DateTimeKindPreservationTestData), DynamicDataSourceType.Method)]
+    public void SnapToWorkingDay_WhenSnapForward_ShouldPreserveKindAndTimeOfDay(DateTimeKind kind)
+    {
+        NotableDateService service = BuildService();
+        DateTime input = new DateTime(2026, 1, 3, 11, 22, 33, kind); // Saturday
+
+        DateTime result = input.SnapToWorkingDay(service);
+
+        Assert.AreEqual(kind, result.Kind);
+        Assert.AreEqual(new TimeSpan(11, 22, 33), result.TimeOfDay);
+    }
 }

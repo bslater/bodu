@@ -81,4 +81,32 @@ public partial class NotableDateOnlyExtensionsTests
             _ = new DateOnly(2026, 1, 6).IsWorkingDay(service: null!);
         });
     }
+
+    /// <summary>
+    /// Verifies the working-day classification across every day of a single calendar week under the default Saturday/Sunday weekend
+    /// definition.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(WorkingDayClassificationTestData), DynamicDataSourceType.Method)]
+    public void IsWorkingDay_WhenScannedAcrossWeek_ShouldReturnExpectedClassification(DateOnly input, bool expected)
+    {
+        NotableDateService service = BuildService();
+
+        bool actual = input.IsWorkingDay(service);
+
+        Assert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that a weekday matching a notable but working rule (a cultural observance) remains a working day.
+    /// </summary>
+    [TestMethod]
+    public void IsWorkingDay_WhenWeekdayMatchesWorkingRule_ShouldReturnTrue()
+    {
+        NotableDateService service = BuildService(Fixed("Cultural Day", 6, 5, NotableDateCategory.Cultural, nonWorking: false));
+
+        bool result = new DateOnly(2026, 6, 5).IsWorkingDay(service);
+
+        Assert.IsTrue(result);
+    }
 }

@@ -97,4 +97,57 @@ public partial class NotableDateTimeExtensionsTests
             _ = new DateTime(2026, 1, 6).AddWorkingDays(service: null!, days: 1);
         });
     }
+
+    /// <summary>
+    /// Verifies that signed-day arithmetic produces the expected working-day result across positive, negative and zero values.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(AddWorkingDaysSignedTestData), DynamicDataSourceType.Method)]
+    public void AddWorkingDays_WhenSignedDaysSupplied_ShouldReturnExpectedWorkingDay(DateTime input, int days, DateTime expected)
+    {
+        NotableDateService service = BuildService();
+
+        DateTime actual = input.AddWorkingDays(service, days);
+
+        Assert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that adding working days that would overrun <see cref="DateTime.MaxValue" /> or underrun
+    /// <see cref="DateTime.MinValue" /> throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(AddWorkingDaysOverflowTestData), DynamicDataSourceType.Method)]
+    public void AddWorkingDays_WhenApplyingDaysWouldOverrunRange_ShouldThrowArgumentOutOfRangeException(DateTime input, int days)
+    {
+        NotableDateService service = BuildService();
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = input.AddWorkingDays(service, days);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the returned <see cref="DateTime" /> preserves the input <see cref="DateTime.Kind" /> and time-of-day across each
+    /// supported <see cref="DateTimeKind" /> value, including for the zero-days short-circuit and the directional walk paths.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(DateTimeKindPreservationTestData), DynamicDataSourceType.Method)]
+    public void AddWorkingDays_WhenCalled_ShouldPreserveKindAndTimeOfDay(DateTimeKind kind)
+    {
+        NotableDateService service = BuildService();
+        DateTime input = new DateTime(2026, 1, 6, 11, 22, 33, kind);
+
+        DateTime forward = input.AddWorkingDays(service, days: 2);
+        DateTime backward = input.AddWorkingDays(service, days: -2);
+        DateTime same = input.AddWorkingDays(service, days: 0);
+
+        Assert.AreEqual(kind, forward.Kind);
+        Assert.AreEqual(new TimeSpan(11, 22, 33), forward.TimeOfDay);
+        Assert.AreEqual(kind, backward.Kind);
+        Assert.AreEqual(new TimeSpan(11, 22, 33), backward.TimeOfDay);
+        Assert.AreEqual(kind, same.Kind);
+        Assert.AreEqual(new TimeSpan(11, 22, 33), same.TimeOfDay);
+    }
 }
