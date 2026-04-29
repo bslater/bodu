@@ -12,16 +12,16 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 [TestClass]
 internal sealed partial class CamelliaBlockCipherTests
-    : BlockCipherTests<CamelliaBlockCipherTests, CamelliaBlockCipher, CamelliaTestVariant>
+    : BlockCipherTests<CamelliaBlockCipherTests, CamelliaBlockCipher, BlockCipherKeyVariant>
 {
     /// <inheritdoc />
-    protected override BlockCipherSpecification GetSpecification(CamelliaTestVariant variant)
+    protected override BlockCipherSpecification GetSpecification(BlockCipherKeyVariant variant)
     {
         int keySize = variant switch
         {
-            CamelliaTestVariant.Key128 => 16,
-            CamelliaTestVariant.Key192 => 24,
-            CamelliaTestVariant.Key256 => 32,
+            BlockCipherKeyVariant.Key128 => 16,
+            BlockCipherKeyVariant.Key192 => 24,
+            BlockCipherKeyVariant.Key256 => 32,
             _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null)
         };
 
@@ -34,22 +34,22 @@ internal sealed partial class CamelliaBlockCipherTests
     }
 
     /// <inheritdoc />
-    public override IEnumerable<CamelliaTestVariant> GetBlockCipherVariants() => new[]
+    public override IEnumerable<BlockCipherKeyVariant> GetBlockCipherVariants() => new[]
     {
-        CamelliaTestVariant.Key128,
-        CamelliaTestVariant.Key192,
-        CamelliaTestVariant.Key256,
+        BlockCipherKeyVariant.Key128,
+        BlockCipherKeyVariant.Key192,
+        BlockCipherKeyVariant.Key256,
     };
 
     /// <inheritdoc />
-    protected override CamelliaBlockCipher CreateBlockCipher(CamelliaTestVariant variant)
+    protected override CamelliaBlockCipher CreateBlockCipher(BlockCipherKeyVariant variant)
     {
         BlockCipherSpecification spec = GetSpecification(variant);
         return new CamelliaBlockCipher(spec.TestKey!);
     }
 
     /// <inheritdoc />
-    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(CamelliaTestVariant variant) =>
+    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(BlockCipherKeyVariant variant) =>
         AdaptKnownAnswers(
             CamelliaKnownAnswers.For(variant),
             answer => new CamelliaBlockCipher(answer.Key!));

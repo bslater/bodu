@@ -8,7 +8,7 @@
 |---|---|---|
 | **Bodu.Core** | Fixed-capacity collections (circular buffer, evicting dictionary), buffer conversion helpers, array and text extensions, argument-validation helpers. | `net8.0` |
 | **Bodu.IO.Hashing** | Non-cryptographic checksums on `System.IO.Hashing.NonCryptographicHashAlgorithm` — the full CRC RevEng catalogue (widths 1–64 bits) and the Fletcher 16 / 32 / 64 family, with shared lookup-table caching and resumable hashing. | `net8.0` |
-| **Bodu.Security.Cryptography** | Managed block ciphers (Threefish, Blowfish, Skipjack), AEAD mode transforms for AES, keyed and cryptographic hashes (SipHash, Tiger), Merkle-tree hashing, and the classic non-cryptographic hash families (Adler, FNV, CityHash). | `net8.0` |
+| **Bodu.Security.Cryptography** | Managed block ciphers (Threefish, Serpent, Camellia, Twofish, Blowfish, Skipjack), an AES adapter paired with AEAD mode transforms, keyed and cryptographic hashes (SipHash, Tiger, ASCON), Merkle-tree hashing, and the classic non-cryptographic hash families (Adler, FNV, CityHash). | `net8.0` |
 | **Bodu.Globalization.Calendar** | Notable-date resolution and dynamic calendar calculators (Easter, Lunar New Year), driven from a pluggable XML rule source with an observance-adjustment pipeline. | `net8.0` |
 
 Each package is versioned and released independently. Take the one you need and ignore the others — there are no cross-package runtime dependencies. `Bodu.IO.Hashing` and `Bodu.Security.Cryptography` both depend on `Bodu.Core` for shared argument-validation helpers.

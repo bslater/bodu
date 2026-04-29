@@ -9,7 +9,7 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Holds the curated <see cref="CamelliaBlockCipher" /> known-answer test vectors used by
 /// <see cref="CamelliaBlockCipherTests" />, transcribed verbatim from RFC 3713 Appendix A. Each per-variant
-/// collection is keyed on a <see cref="CamelliaTestVariant" /> value so the test fixture can attach the
+/// collection is keyed on a <see cref="BlockCipherKeyVariant" /> value so the test fixture can attach the
 /// correct row to that variant's specification.
 /// </summary>
 /// <remarks>
@@ -25,11 +25,11 @@ internal static class CamelliaKnownAnswers
     /// Returns the curated KAT vectors for <paramref name="variant" />. RFC 3713 publishes one vector per
     /// key size; future expansions may add additional rows without changing the calling shape.
     /// </summary>
-    public static IReadOnlyList<BlockCipherKnownAnswer> For(CamelliaTestVariant variant) => variant switch
+    public static IReadOnlyList<BlockCipherKnownAnswer> For(BlockCipherKeyVariant variant) => variant switch
     {
-        CamelliaTestVariant.Key128 => Key128,
-        CamelliaTestVariant.Key192 => Key192,
-        CamelliaTestVariant.Key256 => Key256,
+        BlockCipherKeyVariant.Key128 => Key128,
+        BlockCipherKeyVariant.Key192 => Key192,
+        BlockCipherKeyVariant.Key256 => Key256,
         _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
     };
 

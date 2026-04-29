@@ -17,10 +17,10 @@ internal partial class Serpent128CipherTests
     : SerpentCipherTests<Serpent128CipherTests, Serpent128Cipher>
 {
     /// <inheritdoc />
-    protected override BlockCipherSpecification GetSpecification(SerpentCipherTestVariant variant) =>
+    protected override BlockCipherSpecification GetSpecification(TweakableBlockCipherVariant variant) =>
         variant switch
         {
-            SerpentCipherTestVariant.ZeroedKeyAndTweak => new()
+            TweakableBlockCipherVariant.ZeroedKeyAndTweak => new()
             {
                 BlockSize = 16,
                 KeySize = 16,
@@ -28,7 +28,7 @@ internal partial class Serpent128CipherTests
                 TestKey = new byte[16],
                 TestTweak = null,
             },
-            SerpentCipherTestVariant.DefaultKeyAndTweak => new()
+            TweakableBlockCipherVariant.DefaultKeyAndTweak => new()
             {
                 BlockSize = 16,
                 KeySize = 16,
@@ -49,14 +49,14 @@ internal partial class Serpent128CipherTests
     }
 
     /// <inheritdoc />
-    protected override Serpent128Cipher CreateBlockCipher(SerpentCipherTestVariant variant)
+    protected override Serpent128Cipher CreateBlockCipher(TweakableBlockCipherVariant variant)
     {
         var specification = GetSpecification(variant);
         return new Serpent128Cipher(specification.TestKey);
     }
 
     /// <inheritdoc />
-    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(SerpentCipherTestVariant variant) =>
+    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(TweakableBlockCipherVariant variant) =>
         AdaptKnownAnswers(
             Serpent128KnownAnswers.For(variant),
             answer => new Serpent128Cipher(answer.Key!));

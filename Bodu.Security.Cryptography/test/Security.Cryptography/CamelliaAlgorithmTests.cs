@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Security.Cryptography;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -25,4 +27,26 @@ public sealed partial class CamelliaAlgorithmTests
             DefaultKeySizeBits = 256,
             LegalKeySizesBits = [128, 192, 256],
         };
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Flattens the per-key-size RFC 3713 Appendix A vectors across <see cref="BlockCipherKeyVariant.Key128" />,
+    /// <see cref="BlockCipherKeyVariant.Key192" />, and <see cref="BlockCipherKeyVariant.Key256" /> so each runs
+    /// through the Algorithm-layer harness in turn.
+    /// </remarks>
+    protected override IEnumerable<BlockCipherKnownAnswer> GetKnownAnswers() =>
+        Enum.GetValues<BlockCipherKeyVariant>().SelectMany(CamelliaKnownAnswers.For);
+
+    /// <inheritdoc />
+    protected override Camellia CreateAlgorithmForKnownAnswer(BlockCipherKnownAnswer answer)
+    {
+        var algorithm = new Camellia
+        {
+            Mode = CipherMode.ECB,
+            Padding = PaddingMode.None,
+        };
+        algorithm.Key = answer.Key!;
+        algorithm.IV = new byte[algorithm.BlockSize / 8];
+        return algorithm;
+    }
 }

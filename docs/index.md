@@ -52,7 +52,7 @@ Four independent NuGet packages that share a single solution, a single set of co
 <div class="bodu-card">
   <img src="images/hero-crypto.svg" alt="Bodu.Security.Cryptography" />
   <h3>Bodu.Security.Cryptography</h3>
-  <p>Managed block ciphers (Threefish 256 / 512 / 1024, Blowfish, Skipjack), AEAD mode transforms for AES, keyed and cryptographic hashes (SipHash, Tiger), Merkle-tree hashing, and the classic non-cryptographic hash families (Adler, FNV-1a, CityHash).</p>
+  <p>Managed block ciphers (Threefish 256 / 512 / 1024, Serpent 128 / 256 / 512 / 1024, Camellia, Twofish, Blowfish, Skipjack), an AES adapter paired with AEAD mode transforms, keyed and cryptographic hashes (SipHash, Tiger, ASCON), Merkle-tree hashing, and the classic non-cryptographic hash families (Adler, FNV-1a, CityHash).</p>
   <div class="bodu-card-links">
     <a href="api/Bodu.Security.Cryptography.html">Overview</a>
     <a href="guides/cryptography/">Guides</a>

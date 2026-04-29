@@ -9,15 +9,58 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Verifies the public <see cref="AesBlockCipher" /> adapter: key-size validation, single-block
-/// encrypt / decrypt round-trip against the BCL's <see cref="Aes" />, and disposal semantics.
+/// Verifies the public <see cref="AesBlockCipher" /> adapter against the shared
+/// <see cref="BlockCipherTests{TTest, TCipher, TVariant}" /> suite — including BlockSize, Encrypt, Decrypt,
+/// disposal, and FIPS-197 known-answer coverage across the three AES key sizes — plus a small set of
+/// adapter-specific contract tests (constructor argument validation, BCL output parity, double dispose).
 /// </summary>
 [TestClass]
-public sealed class AesBlockCipherTests
+public sealed partial class AesBlockCipherTests
+    : BlockCipherTests<AesBlockCipherTests, AesBlockCipher, BlockCipherKeyVariant>
 {
+    /// <inheritdoc />
+    protected override BlockCipherSpecification GetSpecification(BlockCipherKeyVariant variant)
+    {
+        int keySize = variant switch
+        {
+            BlockCipherKeyVariant.Key128 => 16,
+            BlockCipherKeyVariant.Key192 => 24,
+            BlockCipherKeyVariant.Key256 => 32,
+            _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
+        };
+
+        return new BlockCipherSpecification
+        {
+            BlockSize = 16,
+            KeySize = keySize,
+            TestKey = CryptoTestUtilities.CreateIncrementalByteSequence(0, keySize),
+        };
+    }
+
+    /// <inheritdoc />
+    public override IEnumerable<BlockCipherKeyVariant> GetBlockCipherVariants() => new[]
+    {
+        BlockCipherKeyVariant.Key128,
+        BlockCipherKeyVariant.Key192,
+        BlockCipherKeyVariant.Key256,
+    };
+
+    /// <inheritdoc />
+    protected override AesBlockCipher CreateBlockCipher(BlockCipherKeyVariant variant)
+    {
+        BlockCipherSpecification spec = GetSpecification(variant);
+        return new AesBlockCipher(spec.TestKey!);
+    }
+
+    /// <inheritdoc />
+    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(BlockCipherKeyVariant variant) =>
+        AdaptKnownAnswers(
+            AesKnownAnswers.For(variant),
+            answer => new AesBlockCipher(answer.Key!));
+
     /// <summary>
     /// Verifies that constructing with a <see langword="null" /> key throws
-    /// <see cref="ArgumentNullException" />.
+    /// <see cref="ArgumentNullException" />. AES-specific contract not covered by the generic base.
     /// </summary>
     [TestMethod]
     public void Ctor_WhenKeyIsNull_ShouldThrowArgumentNullException()
@@ -27,7 +70,10 @@ public sealed class AesBlockCipherTests
 
     /// <summary>
     /// Verifies that construction fails with <see cref="CryptographicException" /> when the supplied
-    /// key length is not one of the three AES variants (128 / 192 / 256 bits).
+    /// key length is not one of the three AES variants (128 / 192 / 256 bits). The BCL surfaces the
+    /// validation error as <see cref="CryptographicException" /> rather than the more general
+    /// <see cref="ArgumentException" /> family used by other cipher engines, so this contract is asserted
+    /// explicitly here rather than via the inherited generic tests.
     /// </summary>
     [DataTestMethod]
     [DataRow(0)]
@@ -43,51 +89,9 @@ public sealed class AesBlockCipherTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="AesBlockCipher.BlockSize" /> reports the fixed AES block size of
-    /// 16 bytes regardless of key length.
-    /// </summary>
-    [DataTestMethod]
-    [DataRow(16)]
-    [DataRow(24)]
-    [DataRow(32)]
-    public void BlockSize_ForAnyValidKeyLength_ShouldBe16(int keyLength)
-    {
-        using var cipher = new AesBlockCipher(new byte[keyLength]);
-        Assert.AreEqual(16, cipher.BlockSize);
-    }
-
-    /// <summary>
-    /// Verifies that a single block encrypted by <see cref="AesBlockCipher" /> is recovered
-    /// byte-for-byte by a subsequent <see cref="AesBlockCipher.Decrypt" /> call using the same key.
-    /// </summary>
-    [DataTestMethod]
-    [DataRow(16)]
-    [DataRow(24)]
-    [DataRow(32)]
-    public void EncryptThenDecrypt_ShouldRecoverOriginalPlaintextBlock(int keyLength)
-    {
-        byte[] key = new byte[keyLength];
-        RandomNumberGenerator.Fill(key);
-
-        byte[] plaintext = new byte[16];
-        RandomNumberGenerator.Fill(plaintext);
-
-        byte[] ciphertext = new byte[16];
-        byte[] recovered = new byte[16];
-
-        using (var cipher = new AesBlockCipher(key))
-            cipher.Encrypt(plaintext, ciphertext);
-
-        using (var cipher = new AesBlockCipher(key))
-            cipher.Decrypt(ciphertext, recovered);
-
-        CollectionAssert.AreEqual(plaintext, recovered);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="AesBlockCipher" /> produces byte-for-byte identical output to the
     /// BCL's <see cref="Aes.EncryptEcb(ReadOnlySpan{byte}, Span{byte}, PaddingMode)" /> — confirming
-    /// the adapter applies no additional transformation.
+    /// the adapter applies no additional transformation beyond delegating to the underlying engine.
     /// </summary>
     [TestMethod]
     public void Encrypt_ForSingleBlock_ShouldMatchBclEncryptEcb()
@@ -110,36 +114,8 @@ public sealed class AesBlockCipherTests
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="AesBlockCipher.Encrypt" /> after <see cref="AesBlockCipher.Dispose" />
-    /// throws <see cref="ObjectDisposedException" />.
-    /// </summary>
-    [TestMethod]
-    public void Encrypt_AfterDispose_ShouldThrowObjectDisposedException()
-    {
-        var cipher = new AesBlockCipher(new byte[16]);
-        cipher.Dispose();
-
-        byte[] input = new byte[16], output = new byte[16];
-        Assert.ThrowsExactly<ObjectDisposedException>(() => cipher.Encrypt(input, output));
-    }
-
-    /// <summary>
-    /// Verifies that calling <see cref="AesBlockCipher.Decrypt" /> after <see cref="AesBlockCipher.Dispose" />
-    /// throws <see cref="ObjectDisposedException" />.
-    /// </summary>
-    [TestMethod]
-    public void Decrypt_AfterDispose_ShouldThrowObjectDisposedException()
-    {
-        var cipher = new AesBlockCipher(new byte[16]);
-        cipher.Dispose();
-
-        byte[] input = new byte[16], output = new byte[16];
-        Assert.ThrowsExactly<ObjectDisposedException>(() => cipher.Decrypt(input, output));
-    }
-
-    /// <summary>
     /// Verifies that <see cref="AesBlockCipher.Dispose" /> is idempotent — calling it twice does not
-    /// throw.
+    /// throw. Adapter-specific contract not covered by the generic base.
     /// </summary>
     [TestMethod]
     public void Dispose_WhenCalledTwice_ShouldNotThrow()

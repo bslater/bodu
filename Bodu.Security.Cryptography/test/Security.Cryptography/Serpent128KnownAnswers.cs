@@ -15,7 +15,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// This vector pins the byte-order and key-schedule conventions to the standard Linux kernel / Bouncy Castle
 /// layout: little-endian word packing and no external IP/FP permutation. The
-/// <see cref="SerpentCipherTestVariant.ZeroedKeyAndTweak" /> variant ships no published KAT and contributes
+/// <see cref="TweakableBlockCipherVariant.ZeroedKeyAndTweak" /> variant ships no published KAT and contributes
 /// only to inherited round-trip and determinism coverage.
 /// </para>
 /// <para>
@@ -29,13 +29,13 @@ internal static class Serpent128KnownAnswers
 {
     /// <summary>
     /// Returns the curated KAT vectors for <paramref name="variant" />. Only
-    /// <see cref="SerpentCipherTestVariant.DefaultKeyAndTweak" /> carries a published vector; the zeroed
+    /// <see cref="TweakableBlockCipherVariant.DefaultKeyAndTweak" /> carries a published vector; the zeroed
     /// variant returns an empty list.
     /// </summary>
-    public static IReadOnlyList<BlockCipherKnownAnswer> For(SerpentCipherTestVariant variant) => variant switch
+    public static IReadOnlyList<BlockCipherKnownAnswer> For(TweakableBlockCipherVariant variant) => variant switch
     {
-        SerpentCipherTestVariant.ZeroedKeyAndTweak => Array.Empty<BlockCipherKnownAnswer>(),
-        SerpentCipherTestVariant.DefaultKeyAndTweak => DefaultKeyAndTweak,
+        TweakableBlockCipherVariant.ZeroedKeyAndTweak => Array.Empty<BlockCipherKnownAnswer>(),
+        TweakableBlockCipherVariant.DefaultKeyAndTweak => DefaultKeyAndTweak,
         _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
     };
 
