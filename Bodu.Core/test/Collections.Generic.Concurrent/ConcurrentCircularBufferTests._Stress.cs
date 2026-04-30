@@ -887,6 +887,11 @@ public partial class ConcurrentCircularBufferTests
         int snapshotFaults = 0;
         int snapshotsTaken = 0;
 
+        // Serialises gen-allocation with the enqueue so the stamped gen matches insertion order; without
+        // this, two writers can allocate gen=N,N+1 and lose the tail-CAS race in the opposite order,
+        // leaving the buffer non-monotonic for reasons unrelated to ToArray's snapshot protocol.
+        object writerLock = new object();
+
         int writerThreads = Math.Max(2, Environment.ProcessorCount);
         int readerThreads = 2;
         const int durationMs = 2000;
@@ -898,8 +903,11 @@ public partial class ConcurrentCircularBufferTests
                 startGate.Wait();
                 while (!cts.Token.IsCancellationRequested)
                 {
-                    int gen = Interlocked.Increment(ref generation);
-                    buffer.TryEnqueue(new TestItem(gen));
+                    lock (writerLock)
+                    {
+                        int gen = ++generation;
+                        buffer.TryEnqueue(new TestItem(gen));
+                    }
                 }
             }));
 
