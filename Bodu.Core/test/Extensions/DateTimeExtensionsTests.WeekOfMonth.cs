@@ -39,7 +39,7 @@ public partial class DateTimeExtensionsTests
     public void WeekOfMonth_WhenUsingCultureInfo_ShouldRespectCultureSettings()
     {
         var date = new DateTime(2024, 05, 15);
-        var culture = new CultureInfo("en-US") { DateTimeFormat = { FirstDateOfWeek = DayOfWeek.Sunday } };
+        var culture = new CultureInfo("en-US") { DateTimeFormat = { FirstDayOfWeek = DayOfWeek.Sunday } };
         var expected = date.WeekOfMonth(culture.DateTimeFormat.CalendarWeekRule, culture.DateTimeFormat.FirstDayOfWeek);
         var actual = date.WeekOfMonth(culture);
         Assert.AreEqual(expected, actual);
