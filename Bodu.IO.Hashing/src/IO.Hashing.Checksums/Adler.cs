@@ -128,8 +128,12 @@ public abstract class Adler<T>
             }
         }
 
-        this.PartA = pA;
-        this.PartB = pB;
+        // Reduce on every Append boundary so the stored state is always canonical (Part* < _modulo).
+        // The SIMD branch already reduces per chunk; the scalar fallback only reduces at NMAX hits,
+        // so without this a sub-NMAX Append (e.g. per-byte) would leave PartA/PartB unreduced and
+        // GetCurrentHashCore would emit a non-canonical digest.
+        this.PartA = pA % this._modulo;
+        this.PartB = pB % this._modulo;
     }
 
     /// <inheritdoc />
