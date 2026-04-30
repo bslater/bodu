@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Skein.256.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -36,11 +36,6 @@ public sealed class Skein256
     : Skein<Skein256>
 {
     /// <summary>
-    /// The state / block size, in bytes, of the Skein-256 variant.
-    /// </summary>
-    public const int BlockSizeBytes = 32;
-
-    /// <summary>
     /// The set of output sizes, in bits, permitted by <see cref="Skein256" />.
     /// </summary>
     private static readonly int[] PermittedHashSizes = { 128, 160, 224, 256 };
@@ -62,6 +57,6 @@ public sealed class Skein256
     /// <paramref name="hashSize" /> is not one of the permitted output sizes for Skein-256.
     /// </exception>
     public Skein256(int hashSize)
-        : base(new Threefish256Cipher(new byte[BlockSizeBytes], new byte[16]), hashSize, PermittedHashSizes)
+        : base(new Threefish256Cipher(new byte[32], new byte[16]), hashSize, PermittedHashSizes)
     { }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Skein.512.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -36,11 +36,6 @@ public sealed class Skein512
     : Skein<Skein512>
 {
     /// <summary>
-    /// The state / block size, in bytes, of the Skein-512 variant.
-    /// </summary>
-    public const int BlockSizeBytes = 64;
-
-    /// <summary>
     /// The set of output sizes, in bits, permitted by <see cref="Skein512" />.
     /// </summary>
     private static readonly int[] PermittedHashSizes = { 128, 160, 224, 256, 384, 512 };
@@ -62,6 +57,6 @@ public sealed class Skein512
     /// <paramref name="hashSize" /> is not one of the permitted output sizes for Skein-512.
     /// </exception>
     public Skein512(int hashSize)
-        : base(new Threefish512Cipher(new byte[BlockSizeBytes], new byte[16]), hashSize, PermittedHashSizes)
+        : base(new Threefish512Cipher(new byte[64], new byte[16]), hashSize, PermittedHashSizes)
     { }
 }
