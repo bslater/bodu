@@ -72,7 +72,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
 
         /// <inheritdoc />
         public KeyValuePair<TElement, TPriority> Current =>
-            _index < 0
+            (_index < 0 || _index >= _queue._size)
                 ? throw new InvalidOperationException(ResourceStrings.InvalidOperation_EnumeratorNotOnElement)
                 : _current;
 
@@ -94,7 +94,9 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
             int next = _index + 1;
             if (next >= _queue._size)
             {
-                _index = -1;
+                // Park at _size (not -1) so subsequent MoveNext calls cannot regress into the
+                // valid range; -1 would make `next` resolve to 0 and silently restart iteration.
+                _index = _queue._size;
                 _current = default!;
                 return false;
             }

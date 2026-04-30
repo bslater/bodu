@@ -923,15 +923,26 @@ public partial class ConcurrentCircularBufferTests
                     Interlocked.Increment(ref snapshotsTaken);
                     if (snap.Length == 0) continue;
 
-                    int min = snap[0].Value;
-                    int max = snap[0].Value;
+                    // ToArray's best-effort fallback path may write default(T) — null for TestItem —
+                    // for slots that could not be stabilised within the retry budget. Skip those
+                    // when checking monotonicity and the live-window bound; they are documented and
+                    // are not torn-generation reads.
+                    int firstNonNull = 0;
+                    while (firstNonNull < snap.Length && snap[firstNonNull] is null) firstNonNull++;
+                    if (firstNonNull == snap.Length) continue;
+
+                    int min = snap[firstNonNull].Value;
+                    int max = snap[firstNonNull].Value;
                     bool monotonic = true;
-                    for (int i = 1; i < snap.Length; i++)
+                    int prev = snap[firstNonNull].Value;
+                    for (int i = firstNonNull + 1; i < snap.Length; i++)
                     {
+                        if (snap[i] is null) continue;
                         int v = snap[i].Value;
-                        if (v <= snap[i - 1].Value) monotonic = false;
+                        if (v <= prev) monotonic = false;
                         if (v < min) min = v;
                         if (v > max) max = v;
+                        prev = v;
                     }
 
                     if (!monotonic)
@@ -1007,7 +1018,7 @@ public partial class ConcurrentCircularBufferTests
             {
                 startGate.Wait();
                 while (!cts.Token.IsCancellationRequested)
-                    buffer.TryDequeue(out _);
+                    buffer.TryDequeue(out var _);
             }));
 
         var indexers = Enumerable.Range(0, readerThreads).Select(_ =>
@@ -1016,13 +1027,19 @@ public partial class ConcurrentCircularBufferTests
                 startGate.Wait();
                 while (!cts.Token.IsCancellationRequested)
                 {
-                    int latest = Volatile.Read(ref generation);
                     int count = buffer.Count;
                     for (int i = 0; i < count; i++)
                     {
                         try
                         {
                             TestItem item = buffer[i];
+
+                            // Sample `generation` AFTER the indexer returns so it is a true upper
+                            // bound on values that could have been published when the read landed.
+                            // Sampling before the call leaves a window where writers can advance
+                            // `generation` and enqueue a newer item, causing legitimate races to
+                            // be misclassified as future-value violations.
+                            int latest = Volatile.Read(ref generation);
                             Interlocked.Increment(ref reads);
                             if (item is not null && item.Value > latest)
                                 Interlocked.Increment(ref futureValueViolations);
