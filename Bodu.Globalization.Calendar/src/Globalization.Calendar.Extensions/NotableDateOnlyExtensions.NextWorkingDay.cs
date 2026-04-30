@@ -18,7 +18,7 @@ public static partial class NotableDateOnlyExtensions
     /// <param name="count">The number of working days to advance. Must be greater than or equal to zero.</param>
     /// <param name="territoryCode">An optional territory scope.</param>
     /// <param name="calendarType">An optional calendar scope forwarded to the service for rule resolution.</param>
-    /// <returns>A <see cref="DateOnly" /> representing the requested working day.</returns>
+    /// <returns>A new <see cref="DateOnly" /> instance whose value represents the requested working day. When <paramref name="count" /> is zero, a fresh copy of <paramref name="date" /> is returned.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="count" /> is negative or when advancing would overrun <see cref="DateOnly.MaxValue" />.</exception>
     public static DateOnly NextWorkingDay(this DateOnly date, int count = 1, string? territoryCode = null, Type? calendarType = null) =>
         NextWorkingDay(date, NotableDateContext.Default, count, territoryCode, calendarType);
@@ -32,7 +32,7 @@ public static partial class NotableDateOnlyExtensions
     /// <param name="count">The number of working days to advance. Must be greater than or equal to zero.</param>
     /// <param name="territoryCode">An optional territory scope.</param>
     /// <param name="calendarType">An optional calendar scope forwarded to the service for rule resolution.</param>
-    /// <returns>A <see cref="DateOnly" /> representing the requested working day.</returns>
+    /// <returns>A new <see cref="DateOnly" /> instance whose value represents the requested working day. When <paramref name="count" /> is zero, a fresh copy of <paramref name="date" /> is returned.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="service" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="count" /> is negative or when advancing would overrun <see cref="DateOnly.MaxValue" />.</exception>
     public static DateOnly NextWorkingDay(this DateOnly date, INotableDateService service, int count = 1, string? territoryCode = null, Type? calendarType = null)
@@ -40,7 +40,7 @@ public static partial class NotableDateOnlyExtensions
         ThrowHelper.ThrowIfNull(service);
         ThrowHelper.ThrowIfNegative(count);
 
-        if (count == 0) return date;
+        if (count == 0) return DateOnly.FromDayNumber(date.DayNumber);
 
         int dayNumber = date.DayNumber;
         int remaining = count;

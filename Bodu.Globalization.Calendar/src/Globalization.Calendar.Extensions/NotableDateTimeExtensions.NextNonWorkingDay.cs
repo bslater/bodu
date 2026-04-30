@@ -18,7 +18,7 @@ public static partial class NotableDateTimeExtensions
     /// <param name="count">The number of non-working days to advance. Must be greater than or equal to zero.</param>
     /// <param name="territoryCode">An optional territory scope.</param>
     /// <param name="calendarType">An optional calendar scope forwarded to the service for rule resolution.</param>
-    /// <returns>A <see cref="DateTime" /> whose date component is the requested non-working day, preserving the original <see cref="DateTime.Kind" /> and time-of-day.</returns>
+    /// <returns>A new <see cref="DateTime" /> instance whose date component is the requested non-working day, with the time-of-day and original <see cref="DateTime.Kind" /> of <paramref name="dateTime" /> preserved. When <paramref name="count" /> is zero, a fresh copy of <paramref name="dateTime" /> is returned.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="count" /> is negative or when advancing would overrun <see cref="DateTime.MaxValue" />.</exception>
     public static DateTime NextNonWorkingDay(this DateTime dateTime, int count = 1, string? territoryCode = null, Type? calendarType = null) =>
         NextNonWorkingDay(dateTime, NotableDateContext.Default, count, territoryCode, calendarType);
@@ -32,7 +32,7 @@ public static partial class NotableDateTimeExtensions
     /// <param name="count">The number of non-working days to advance. Must be greater than or equal to zero.</param>
     /// <param name="territoryCode">An optional territory scope.</param>
     /// <param name="calendarType">An optional calendar scope forwarded to the service for rule resolution.</param>
-    /// <returns>A <see cref="DateTime" /> whose date component is the requested non-working day, preserving the original <see cref="DateTime.Kind" /> and time-of-day.</returns>
+    /// <returns>A new <see cref="DateTime" /> instance whose date component is the requested non-working day, with the time-of-day and original <see cref="DateTime.Kind" /> of <paramref name="dateTime" /> preserved. When <paramref name="count" /> is zero, a fresh copy of <paramref name="dateTime" /> is returned.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="service" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="count" /> is negative or when advancing would overrun <see cref="DateTime.MaxValue" />.</exception>
     public static DateTime NextNonWorkingDay(this DateTime dateTime, INotableDateService service, int count = 1, string? territoryCode = null, Type? calendarType = null)
