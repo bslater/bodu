@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Deque.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -91,6 +91,12 @@ public sealed class Deque<T> : RingBackedCollection<T>
     private const int MinGrowCapacity = 4;
 
     /// <summary>
+    /// Sentinel value passed to the private ctor to indicate that the (IEnumerable) overload should derive its
+    /// capacity as <c>max(items.Length, DefaultCapacity)</c>.
+    /// </summary>
+    private const int UseFloorCapacity = -1;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="Deque{T}"/> class with the default initial capacity and
     /// auto-grow enabled.
     /// </summary>
@@ -161,25 +167,24 @@ public sealed class Deque<T> : RingBackedCollection<T>
         : this(Materialize(collection), capacity, allowGrow) { }
 
     /// <summary>
-    /// Sentinel value passed to the private ctor to indicate that the (IEnumerable) overload should derive its
-    /// capacity as <c>max(items.Length, DefaultCapacity)</c>.
+    /// Initializes a new instance of the <see cref="Deque{T}"/> class using a pre-materialised
+    /// array of elements, with the specified capacity and growth policy.
     /// </summary>
-    private const int UseFloorCapacity = -1;
-
-    /// <summary>
-    /// Single private ctor that drives all IEnumerable-based public overloads from one materialised array.
-    /// Validates the no-grow overflow contract before delegating to the base, and bumps the capacity to fit
-    /// when growth is allowed so the base ctor never truncates.
-    /// </summary>
-    /// <param name="items">The materialised source elements; never <see langword="null"/>.</param>
-    /// <param name="capacity">The requested capacity, or <see cref="UseFloorCapacity"/> for the bare-IEnumerable overload.</param>
-    /// <param name="allowGrow">Whether subsequent adds should auto-grow.</param>
+    /// <param name="items">The source elements to populate the deque. Must not be <see langword="null"/>.</param>
+    /// <param name="capacity">
+    /// The initial backing-array capacity, or <see cref="UseFloorCapacity"/> to derive the capacity
+    /// from <paramref name="items"/>.
+    /// </param>
+    /// <param name="allowGrow">
+    /// <see langword="true"/> to allow the deque to expand its backing array when full;
+    /// <see langword="false"/> for fixed-capacity behaviour.
+    /// </param>
     /// <exception cref="InvalidOperationException">
     /// <paramref name="allowGrow"/> is <see langword="false"/>, an explicit capacity was supplied, and
-    /// <paramref name="items"/> contains more elements than the capacity.
+    /// <paramref name="items"/> contains more elements than <paramref name="capacity"/>.
     /// </exception>
     private Deque(T[] items, int capacity, bool allowGrow)
-        : base(ValidateItems(items, capacity, allowGrow), ResolveCapacity(items, capacity, allowGrow))
+            : base(ValidateItems(items, capacity, allowGrow), ResolveCapacity(items, capacity, allowGrow))
     {
         AllowGrow = allowGrow;
     }
