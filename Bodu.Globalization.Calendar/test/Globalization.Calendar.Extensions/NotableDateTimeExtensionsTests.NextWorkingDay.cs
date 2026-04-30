@@ -158,7 +158,7 @@ public partial class NotableDateTimeExtensionsTests
     /// weekend-bridging and weekend-input cases using an empty rule set.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(NextWorkingDayCountTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(NextWorkingDayCountTestData))]
     public void NextWorkingDay_WhenAdvancingCount_ShouldReturnExpectedDate(DateTime start, int count, DateTime expected)
     {
         NotableDateService service = BuildService();

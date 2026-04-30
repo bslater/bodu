@@ -15,7 +15,7 @@ public partial class NotableDateTimeExtensionsTests
     /// the supplied <c>territoryCode</c> to the service and observes bidirectional territory containment.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(TerritoryForwardingTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(TerritoryForwardingTestData))]
     public void IsNonWorkingDay_WhenTerritoryForwarded_ShouldHonourBidirectionalContainment(string ruleTerritory, string? queryTerritory, bool expected)
     {
         NotableDateService service = BuildHolidayService(ruleTerritory);
@@ -30,7 +30,7 @@ public partial class NotableDateTimeExtensionsTests
     /// skips the holiday only when the query territory is in scope; otherwise the holiday is treated as a working day.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(TerritoryForwardingTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(TerritoryForwardingTestData))]
     public void NextWorkingDay_WhenTerritoryForwarded_ShouldHonourBidirectionalContainment(string ruleTerritory, string? queryTerritory, bool expectedSkipsHoliday)
     {
         NotableDateService service = BuildHolidayService(ruleTerritory);
@@ -47,7 +47,7 @@ public partial class NotableDateTimeExtensionsTests
     /// forwards the territory and excludes the holiday only when the query is in scope.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(TerritoryForwardingTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(TerritoryForwardingTestData))]
     public void WorkingDaysBetween_WhenTerritoryForwarded_ShouldHonourBidirectionalContainment(string ruleTerritory, string? queryTerritory, bool expectedExcludesHoliday)
     {
         NotableDateService service = BuildHolidayService(ruleTerritory);

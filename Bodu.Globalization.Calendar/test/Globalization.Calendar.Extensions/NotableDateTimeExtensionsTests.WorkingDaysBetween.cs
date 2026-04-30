@@ -113,7 +113,7 @@ public partial class NotableDateTimeExtensionsTests
     /// Verifies the count returned across a representative spread of single-day, full-week, multi-week and reversed-boundary inputs.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(WorkingDaysBetweenRangeTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(WorkingDaysBetweenRangeTestData))]
     public void WorkingDaysBetween_WhenScannedAcrossRanges_ShouldReturnExpectedCount(DateTime start, DateTime end, int expected)
     {
         NotableDateService service = BuildService();

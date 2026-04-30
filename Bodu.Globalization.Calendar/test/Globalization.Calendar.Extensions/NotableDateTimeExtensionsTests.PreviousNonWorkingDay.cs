@@ -130,7 +130,7 @@ public partial class NotableDateTimeExtensionsTests
     /// supported <see cref="DateTimeKind" /> value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeKindPreservationTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeKindPreservationTestData))]
     public void PreviousNonWorkingDay_WhenCalled_ShouldPreserveKindAndTimeOfDay(DateTimeKind kind)
     {
         NotableDateService service = BuildService();

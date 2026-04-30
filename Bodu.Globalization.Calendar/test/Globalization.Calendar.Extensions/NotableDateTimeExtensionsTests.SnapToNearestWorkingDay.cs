@@ -102,7 +102,7 @@ public partial class NotableDateTimeExtensionsTests
     /// <see cref="DateTimeKind" /> value, regardless of whether the closest working day lies forward or backward.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeKindPreservationTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeKindPreservationTestData))]
     public void SnapToNearestWorkingDay_WhenSnapped_ShouldPreserveKindAndTimeOfDay(DateTimeKind kind)
     {
         NotableDateService service = BuildService();
