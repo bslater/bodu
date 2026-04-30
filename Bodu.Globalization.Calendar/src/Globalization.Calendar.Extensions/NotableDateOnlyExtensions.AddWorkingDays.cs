@@ -18,7 +18,7 @@ public static partial class NotableDateOnlyExtensions
     /// <param name="days">The signed number of working days to apply. Positive values advance, negative values retreat, and zero returns the input unchanged regardless of whether it is a working day.</param>
     /// <param name="territoryCode">An optional territory scope.</param>
     /// <param name="calendarType">An optional calendar scope forwarded to the service for rule resolution.</param>
-    /// <returns>A <see cref="DateOnly" /> representing the requested working day.</returns>
+    /// <returns>A new <see cref="DateOnly" /> instance whose value represents the requested working day. When <paramref name="days" /> is zero, a fresh copy of <paramref name="date" /> is returned.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when applying <paramref name="days" /> would overrun <see cref="DateOnly.MaxValue" /> or underrun <see cref="DateOnly.MinValue" />.</exception>
     public static DateOnly AddWorkingDays(this DateOnly date, int days, string? territoryCode = null, Type? calendarType = null) =>
         AddWorkingDays(date, NotableDateContext.Default, days, territoryCode, calendarType);
@@ -32,14 +32,14 @@ public static partial class NotableDateOnlyExtensions
     /// <param name="days">The signed number of working days to apply. Positive values advance, negative values retreat, and zero returns the input unchanged regardless of whether it is a working day.</param>
     /// <param name="territoryCode">An optional territory scope.</param>
     /// <param name="calendarType">An optional calendar scope forwarded to the service for rule resolution.</param>
-    /// <returns>A <see cref="DateOnly" /> representing the requested working day.</returns>
+    /// <returns>A new <see cref="DateOnly" /> instance whose value represents the requested working day. When <paramref name="days" /> is zero, a fresh copy of <paramref name="date" /> is returned.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="service" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when applying <paramref name="days" /> would overrun <see cref="DateOnly.MaxValue" /> or underrun <see cref="DateOnly.MinValue" />.</exception>
     public static DateOnly AddWorkingDays(this DateOnly date, INotableDateService service, int days, string? territoryCode = null, Type? calendarType = null)
     {
         ThrowHelper.ThrowIfNull(service);
 
-        if (days == 0) return date;
+        if (days == 0) return DateOnly.FromDayNumber(date.DayNumber);
         return days > 0
             ? NextWorkingDay(date, service, days, territoryCode, calendarType)
             : PreviousWorkingDay(date, service, -days, territoryCode, calendarType);
