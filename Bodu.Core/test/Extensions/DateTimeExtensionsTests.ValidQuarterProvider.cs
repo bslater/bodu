@@ -18,7 +18,7 @@ public partial class DateTimeExtensionsTests
     /// </summary>
     public sealed class ValidQuarterProvider : IQuarterDefinitionProvider
     {
-        public static IEnumerable<object[]> FirstDayOfQuarterTestData()
+        public static IEnumerable<object[]> FirstDateOfQuarterTestData()
         {
             yield return new object[] { new DateTime(2024, 01, 01), new DateTime(2023, 12, 01) };
             yield return new object[] { new DateTime(2024, 02, 01), new DateTime(2023, 12, 01) };
@@ -34,7 +34,7 @@ public partial class DateTimeExtensionsTests
             yield return new object[] { new DateTime(2023, 12, 01), new DateTime(2023, 12, 01) };
         }
 
-        public static IEnumerable<object[]> FirstDayOfWeekInQuarterTestData()
+        public static IEnumerable<object[]> FirstDateOfWeekInQuarterTestData()
         {
             yield return new object[] { new DateTime(2024, 01, 01), DayOfWeek.Monday, new DateTime(2023, 12, 04) };
             yield return new object[] { new DateTime(2024, 02, 01), DayOfWeek.Tuesday, new DateTime(2023, 12, 05) };
@@ -50,15 +50,15 @@ public partial class DateTimeExtensionsTests
             yield return new object[] { new DateTime(2023, 12, 01), DayOfWeek.Friday, new DateTime(2023, 12, 01) };
         }
 
-        public static IEnumerable<object[]> IsFirstDayOfQuarterTestData() =>
-            FirstDayOfQuarterTestData()
+        public static IEnumerable<object[]> IsFirstDateOfQuarterTestData() =>
+            FirstDateOfQuarterTestData()
                 .Select(o => new object[] { o[0], (DateTime)o[0] == (DateTime)o[1] });
 
-        public static IEnumerable<object[]> IsLastDayOfQuarterTestData() =>
-            LastDayOfQuarterTestData()
+        public static IEnumerable<object[]> IsLastDateOfQuarterTestData() =>
+            LastDateOfQuarterTestData()
                 .Select(o => new object[] { o[0], (DateTime)o[0] == (DateTime)o[1] });
 
-        public static IEnumerable<object[]> LastDayOfQuarterTestData()
+        public static IEnumerable<object[]> LastDateOfQuarterTestData()
         {
             yield return new object[] { new DateTime(2024, 01, 31), new DateTime(2024, 02, 29) };
             yield return new object[] { new DateTime(2024, 02, 29), new DateTime(2024, 02, 29) };

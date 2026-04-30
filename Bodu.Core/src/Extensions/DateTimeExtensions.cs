@@ -683,7 +683,7 @@ public static partial class DateTimeExtensions
     /// is optimised for internal date calculations.
     /// </para>
     /// </remarks>
-    private static long GetFirstDayOfMonthTicks(DateTime dateTime) => DateTimeExtensions.GetDateTicks(dateTime.Year, dateTime.Month, 1);
+    private static long GetFirstDateOfMonthTicks(DateTime dateTime) => DateTimeExtensions.GetDateTicks(dateTime.Year, dateTime.Month, 1);
 
     /// <summary>
     /// Returns the number of ticks at midnight on the first specified weekday in the given month.
@@ -701,9 +701,9 @@ public static partial class DateTimeExtensions
     /// </para>
     /// <para>It avoids allocation by returning a raw tick count and is suitable for high-performance date logic.</para>
     /// </remarks>
-    private static long GetFirstDayOfWeekInMonthTicks(DateTime dateTime, DayOfWeek dayOfWeek)
+    private static long GetFirstDateOfWeekInMonthTicks(DateTime dateTime, DayOfWeek dayOfWeek)
     {
-        long ticks = DateTimeExtensions.GetFirstDayOfMonthTicks(dateTime);
+        long ticks = DateTimeExtensions.GetFirstDateOfMonthTicks(dateTime);
         ticks += ((dayOfWeek - DateTimeExtensions.GetDayOfWeekFromTicks(ticks) + 7) % 7) * DateTimeExtensions.TicksPerDay;
         return ticks;
     }
@@ -730,7 +730,7 @@ public static partial class DateTimeExtensions
     /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static long GetFirstDayOfWeekInMonthTicks(int year, int month, DayOfWeek dayOfWeek)
+    private static long GetFirstDateOfWeekInMonthTicks(int year, int month, DayOfWeek dayOfWeek)
     {
         long ticks = DateTimeExtensions.GetDateTicks(year, month, 1);
         ticks += ((dayOfWeek - DateTimeExtensions.GetDayOfWeekFromTicks(ticks) + 7) % 7) * DateTimeExtensions.TicksPerDay;
@@ -773,7 +773,7 @@ public static partial class DateTimeExtensions
     /// for internal calendar calculations.
     /// </para>
     /// </remarks>
-    private static long GetLastDayOfMonthTicks(DateTime dateTime) => DateTimeExtensions.GetDateTicks(dateTime.Year, dateTime.Month, dateTime.DaysInMonth());
+    private static long GetLastDateOfMonthTicks(DateTime dateTime) => DateTimeExtensions.GetDateTicks(dateTime.Year, dateTime.Month, dateTime.DaysInMonth());
 
     /// <summary>
     /// Returns the tick count that represents the last day of week in the current month of the <see cref="System.DateTime"/>.
@@ -783,7 +783,7 @@ public static partial class DateTimeExtensions
     /// <returns>The tick count at midnight of the last <paramref name="dayOfWeek" /> in the month
     /// containing <paramref name="ticks" />.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static long GetLastDayOfWeekInMonth(long ticks, DayOfWeek dayOfWeek)
+    private static long GetLastDateOfWeekInMonth(long ticks, DayOfWeek dayOfWeek)
     {
         ticks += ((dayOfWeek - DateTimeExtensions.GetDayOfWeekFromTicks(ticks) - 7) % 7) * DateTimeExtensions.TicksPerDay;
         return ticks;
@@ -796,7 +796,7 @@ public static partial class DateTimeExtensions
     /// <param name="dayOfWeek">The <see cref="DayOfWeek" /> to locate.</param>
     /// <returns>The tick count at midnight of the last <paramref name="dayOfWeek" /> in
     /// <paramref name="dateTime" />'s month.</returns>
-    private static long GetLastDayOfWeekInMonthAsTicks(DateTime dateTime, DayOfWeek dayOfWeek) => DateTimeExtensions.GetLastDayOfWeekInMonth(DateTimeExtensions.GetLastDayOfMonthTicks(dateTime), dayOfWeek);
+    private static long GetLastDateOfWeekInMonthAsTicks(DateTime dateTime, DayOfWeek dayOfWeek) => DateTimeExtensions.GetLastDateOfWeekInMonth(DateTimeExtensions.GetLastDateOfMonthTicks(dateTime), dayOfWeek);
 
     /// <summary>
     /// Returns the number of ticks at midnight on the last specified weekday in the given year and month.
@@ -814,7 +814,7 @@ public static partial class DateTimeExtensions
     /// <para>No validation is performed; the caller is responsible for ensuring all parameters are within valid calendar ranges.</para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static long GetLastDayOfWeekInMonthAsTicks(int year, int month, DayOfWeek dayOfWeek)
+    private static long GetLastDateOfWeekInMonthAsTicks(int year, int month, DayOfWeek dayOfWeek)
     {
         long ticks = DateTimeExtensions.GetDateTicks(year, month, DateTime.DaysInMonth(year, month));
         ticks += ((dayOfWeek - DateTimeExtensions.GetDayOfWeekFromTicks(ticks) - 7) % 7) * DateTimeExtensions.TicksPerDay;
