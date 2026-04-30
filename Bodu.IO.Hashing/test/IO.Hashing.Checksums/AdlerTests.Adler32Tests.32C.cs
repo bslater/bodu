@@ -22,10 +22,11 @@ public sealed partial class Adler32CTests
             Empty = "00000001",
             Abc = "018D00C7",
 
-            // QuickBrownFox suppressed — tracked by issue #167 (Adler/Fletcher KAT mismatch
-            // observed on PR #166 CI: index 1 expected 0xCD, actual 0xDC). Restore once the
-            // root cause is identified and fixed.
-            // QuickBrownFox = "5BCD0FDA",
+            // Canonical Adler-32C (modulus 65536) of "The quick brown fox jumps over the
+            // lazy dog", derived from the per-byte recurrence and verified against the
+            // scalar reference implementation. Distinct from canonical Adler-32 because
+            // 89037 mod 65536 = 0x5BCD whereas 89037 mod 65521 = 0x5BDC.
+            QuickBrownFox = "5BCD0FDA",
             Zeros16 = "00100001",
 
             // Long-input regression vectors for issue #127 — Adler-32C uses modulus 65536, so
