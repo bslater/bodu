@@ -18,7 +18,7 @@ public static partial class NotableDateTimeExtensions
     /// <param name="count">The number of working days to retreat. Must be greater than or equal to zero. When zero the input is returned unchanged.</param>
     /// <param name="territoryCode">An optional territory scope.</param>
     /// <param name="calendarType">An optional calendar scope forwarded to the service for rule resolution.</param>
-    /// <returns>A <see cref="DateTime" /> whose date component is the requested working day. The <see cref="DateTime.Kind" /> and time-of-day components of <paramref name="dateTime" /> are preserved.</returns>
+    /// <returns>A new <see cref="DateTime" /> instance whose date component is the requested working day, with the time-of-day and original <see cref="DateTime.Kind" /> of <paramref name="dateTime" /> preserved. When <paramref name="count" /> is zero, a fresh copy of <paramref name="dateTime" /> is returned.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="count" /> is negative or when retreating would underrun <see cref="DateTime.MinValue" />.</exception>
     public static DateTime PreviousWorkingDay(this DateTime dateTime, int count = 1, string? territoryCode = null, Type? calendarType = null) =>
         PreviousWorkingDay(dateTime, NotableDateContext.Default, count, territoryCode, calendarType);
@@ -32,7 +32,7 @@ public static partial class NotableDateTimeExtensions
     /// <param name="count">The number of working days to retreat. Must be greater than or equal to zero. When zero the input is returned unchanged.</param>
     /// <param name="territoryCode">An optional territory scope.</param>
     /// <param name="calendarType">An optional calendar scope forwarded to the service for rule resolution.</param>
-    /// <returns>A <see cref="DateTime" /> whose date component is the requested working day. The <see cref="DateTime.Kind" /> and time-of-day components of <paramref name="dateTime" /> are preserved.</returns>
+    /// <returns>A new <see cref="DateTime" /> instance whose date component is the requested working day, with the time-of-day and original <see cref="DateTime.Kind" /> of <paramref name="dateTime" /> preserved. When <paramref name="count" /> is zero, a fresh copy of <paramref name="dateTime" /> is returned.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="service" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="count" /> is negative or when retreating would underrun <see cref="DateTime.MinValue" />.</exception>
     public static DateTime PreviousWorkingDay(this DateTime dateTime, INotableDateService service, int count = 1, string? territoryCode = null, Type? calendarType = null)

@@ -18,7 +18,7 @@ public static partial class NotableDateTimeExtensions
     /// <param name="days">The signed number of working days to apply. Positive values advance, negative values retreat, and zero returns the input unchanged regardless of whether it is a working day.</param>
     /// <param name="territoryCode">An optional territory scope.</param>
     /// <param name="calendarType">An optional calendar scope forwarded to the service for rule resolution.</param>
-    /// <returns>A <see cref="DateTime" /> whose date component is the requested working day, preserving the original <see cref="DateTime.Kind" /> and time-of-day components.</returns>
+    /// <returns>A new <see cref="DateTime" /> instance whose date component is the requested working day, with the time-of-day and original <see cref="DateTime.Kind" /> of <paramref name="dateTime" /> preserved. When <paramref name="days" /> is zero, a fresh copy of <paramref name="dateTime" /> is returned.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when applying <paramref name="days" /> would overrun <see cref="DateTime.MaxValue" /> or underrun <see cref="DateTime.MinValue" />.</exception>
     public static DateTime AddWorkingDays(this DateTime dateTime, int days, string? territoryCode = null, Type? calendarType = null) =>
         AddWorkingDays(dateTime, NotableDateContext.Default, days, territoryCode, calendarType);
@@ -32,7 +32,7 @@ public static partial class NotableDateTimeExtensions
     /// <param name="days">The signed number of working days to apply. Positive values advance, negative values retreat, and zero returns the input unchanged regardless of whether it is a working day.</param>
     /// <param name="territoryCode">An optional territory scope.</param>
     /// <param name="calendarType">An optional calendar scope forwarded to the service for rule resolution.</param>
-    /// <returns>A <see cref="DateTime" /> whose date component is the requested working day, preserving the original <see cref="DateTime.Kind" /> and time-of-day components.</returns>
+    /// <returns>A new <see cref="DateTime" /> instance whose date component is the requested working day, with the time-of-day and original <see cref="DateTime.Kind" /> of <paramref name="dateTime" /> preserved. When <paramref name="days" /> is zero, a fresh copy of <paramref name="dateTime" /> is returned.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="service" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when applying <paramref name="days" /> would overrun <see cref="DateTime.MaxValue" /> or underrun <see cref="DateTime.MinValue" />.</exception>
     /// <remarks>
