@@ -80,13 +80,13 @@ public static partial class DateOnlyExtensions
         switch (ordinal)
         {
             case Extensions.WeekOfMonthOrdinal.First:
-                return DateOnly.FromDayNumber(DateOnlyExtensions.GetFirstDayOfWeekInMonthDayNumber(year, month, dayOfWeek));
+                return DateOnly.FromDayNumber(DateOnlyExtensions.GetFirstDateOfWeekInMonthDayNumber(year, month, dayOfWeek));
 
             case Extensions.WeekOfMonthOrdinal.Last:
-                return DateOnly.FromDayNumber(DateOnlyExtensions.GetLastDayOfWeekInMonthDayNumber(year, month, dayOfWeek));
+                return DateOnly.FromDayNumber(DateOnlyExtensions.GetLastDateOfWeekInMonthDayNumber(year, month, dayOfWeek));
 
             default:
-                var result = DateOnly.FromDayNumber(DateOnlyExtensions.GetFirstDayOfWeekInMonthDayNumber(year, month, dayOfWeek) + (((int)ordinal - 1) * 7));
+                var result = DateOnly.FromDayNumber(DateOnlyExtensions.GetFirstDateOfWeekInMonthDayNumber(year, month, dayOfWeek) + (((int)ordinal - 1) * 7));
 
                 if (result.Month != month)
                     throw new ArgumentOutOfRangeException(

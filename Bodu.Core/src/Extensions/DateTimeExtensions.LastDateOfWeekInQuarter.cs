@@ -26,7 +26,7 @@ public static partial class DateTimeExtensions
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
         (int year, int quarter) = DateTimeExtensions.GetQuarterAndYearFromDate(CalendarQuarterDefinition.JanuaryToDecember, dateTime);
-        return DateTimeExtensions.GetLastDayOfWeekInQuarterInternal(
+        return DateTimeExtensions.GetLastDateOfWeekInQuarterInternal(
             year,
             quarter,
             dayOfWeek,
@@ -60,7 +60,7 @@ public static partial class DateTimeExtensions
                 string.Format(ResourceStrings.Arg_Required_ProviderInterface, nameof(IQuarterDefinitionProvider)));
 
         (int year, int quarter) = DateTimeExtensions.GetQuarterAndYearFromDate(definition, dateTime);
-        return DateTimeExtensions.GetLastDayOfWeekInQuarterInternal(
+        return DateTimeExtensions.GetLastDateOfWeekInQuarterInternal(
             year,
             quarter,
             dayOfWeek,
@@ -106,13 +106,13 @@ public static partial class DateTimeExtensions
     /// -or- <paramref name="quarter"/> is less than 1 or greater than 4,
     /// -or- <paramref name="dayOfWeek"/> is not a defined value of the <see cref="DayOfWeek"/> enumeration.
     /// </exception>
-    public static DateTime GetLastDayOfWeekInQuarter(int year, int quarter, DayOfWeek dayOfWeek)
+    public static DateTime GetLastDateOfWeekInQuarter(int year, int quarter, DayOfWeek dayOfWeek)
     {
         ThrowHelper.ThrowIfOutOfRange(year, DateTimeExtensions.MinYear, DateTimeExtensions.MaxYear);
         ThrowHelper.ThrowIfOutOfRange(quarter, 1, 4);
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        return DateTimeExtensions.GetLastDayOfWeekInQuarterInternal(
+        return DateTimeExtensions.GetLastDateOfWeekInQuarterInternal(
             year,
             quarter,
             dayOfWeek,
@@ -139,7 +139,7 @@ public static partial class DateTimeExtensions
     /// -or- <paramref name="definition"/> is not a defined value of the <see cref="CalendarQuarterDefinition"/> enumeration.
     /// </exception>
     /// <exception cref="InvalidOperationException">Thrown if <paramref name="definition"/> is <see cref="CalendarQuarterDefinition.Custom"/>; use the provider-based overload instead.</exception>
-    public static DateTime GetLastDayOfWeekInQuarter(int year, int quarter, DayOfWeek dayOfWeek, CalendarQuarterDefinition definition)
+    public static DateTime GetLastDateOfWeekInQuarter(int year, int quarter, DayOfWeek dayOfWeek, CalendarQuarterDefinition definition)
     {
         ThrowHelper.ThrowIfOutOfRange(year, DateTimeExtensions.MinYear, DateTimeExtensions.MaxYear);
         ThrowHelper.ThrowIfOutOfRange(quarter, 1, 4);
@@ -150,7 +150,7 @@ public static partial class DateTimeExtensions
             throw new InvalidOperationException(
                 string.Format(ResourceStrings.Arg_Required_ProviderInterface, nameof(IQuarterDefinitionProvider)));
 
-        return DateTimeExtensions.GetLastDayOfWeekInQuarterInternal(
+        return DateTimeExtensions.GetLastDateOfWeekInQuarterInternal(
             year,
             quarter,
             dayOfWeek,
@@ -168,7 +168,7 @@ public static partial class DateTimeExtensions
     /// <param name="kind">The <see cref="DateTimeKind"/> applied to the resulting <see cref="DateTime"/>.</param>
     /// <returns>An object whose value is set to midnight (00:00:00) on the last occurrence of <paramref name="dayOfWeek"/> within the specified quarter, using <paramref name="kind"/>.</returns>
     /// <remarks>This helper performs no validation and is intended for internal use where all arguments are known to be valid.</remarks>
-    private static DateTime GetLastDayOfWeekInQuarterInternal(int year, int quarter, DayOfWeek dayOfWeek, CalendarQuarterDefinition definition, DateTimeKind kind)
+    private static DateTime GetLastDateOfWeekInQuarterInternal(int year, int quarter, DayOfWeek dayOfWeek, CalendarQuarterDefinition definition, DateTimeKind kind)
     {
         long ticks = ComputeQuarterStartTicks(year, quarter, GetQuarterDefinition(definition));
         ticks += ((dayOfWeek - GetDayOfWeekFromTicks(ticks) + 7) % 7) * TicksPerDay;

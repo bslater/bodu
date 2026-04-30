@@ -25,7 +25,7 @@ public static partial class DateTimeExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        return new DateTime(GetFirstDayOfWeekInMonthTicks(dateTime, dayOfWeek), dateTime.Kind);
+        return new DateTime(GetFirstDateOfWeekInMonthTicks(dateTime, dayOfWeek), dateTime.Kind);
     }
 
     /// <summary>
@@ -44,7 +44,7 @@ public static partial class DateTimeExtensions
     /// -or- <paramref name="month"/> is less than 1 or greater than 12,
     /// -or- <paramref name="dayOfWeek"/> is not a defined value of the <see cref="DayOfWeek"/> enumeration.
     /// </exception>
-    public static DateTime GetFirstDayOfWeekInMonth(int year, int month, DayOfWeek dayOfWeek)
+    public static DateTime GetFirstDateOfWeekInMonth(int year, int month, DayOfWeek dayOfWeek)
     {
         ThrowHelper.ThrowIfOutOfRange(year, DateTimeExtensions.MinYear, DateTimeExtensions.MaxYear);
         ThrowHelper.ThrowIfOutOfRange(month, 1, 12);

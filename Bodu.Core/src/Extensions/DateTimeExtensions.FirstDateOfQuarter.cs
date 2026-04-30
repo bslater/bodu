@@ -84,7 +84,7 @@ public static partial class DateTimeExtensions
     /// Thrown if <paramref name="year"/> is less than the <c>Year</c> of <see cref="DateTime.MinValue"/> or greater than that of <see cref="DateTime.MaxValue"/>,
     /// -or- <paramref name="quarter"/> is less than 1 or greater than 4.
     /// </exception>
-    public static DateTime GetFirstDayOfQuarter(int year, int quarter) => GetFirstDayOfQuarter(year, quarter, CalendarQuarterDefinition.JanuaryToDecember);
+    public static DateTime GetFirstDateOfQuarter(int year, int quarter) => GetFirstDateOfQuarter(year, quarter, CalendarQuarterDefinition.JanuaryToDecember);
 
     /// <summary>
     /// Returns a new <see cref="DateTime"/> representing the first day of the specified <paramref name="quarter"/> and <paramref name="year"/>, using the supplied calendar quarter definition.
@@ -102,7 +102,7 @@ public static partial class DateTimeExtensions
     /// -or- <paramref name="definition"/> is not a defined value of the <see cref="CalendarQuarterDefinition"/> enumeration.
     /// </exception>
     /// <exception cref="InvalidOperationException">Thrown if <paramref name="definition"/> is <see cref="CalendarQuarterDefinition.Custom"/>; use a provider-based overload instead.</exception>
-    public static DateTime GetFirstDayOfQuarter(int year, int quarter, CalendarQuarterDefinition definition)
+    public static DateTime GetFirstDateOfQuarter(int year, int quarter, CalendarQuarterDefinition definition)
     {
         ThrowHelper.ThrowIfOutOfRange(quarter, 1, 4);
         ThrowHelper.ThrowIfEnumValueIsUndefined(definition);

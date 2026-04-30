@@ -100,7 +100,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.LastDateOfWeek"/> returns the expected actual based on the specified weekend definition.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.GetLastDayOfWeekWithDefinitionTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.GetLastDateOfWeekWithDefinitionTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
     public void LastDateOfWeek_WhenUsingWeekendDefinition_ShouldReturnExpectedEnd(DateTime inputDateTime, CalendarWeekendDefinition weekend,  DateTime expectedDateTime)
     {
         var input = DateOnly.FromDateTime(inputDateTime);

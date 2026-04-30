@@ -163,7 +163,7 @@ public partial class DateTimeExtensionsTests
     }
 
     // =========================================================================
-    // Static: GetLastDayOfWeekInQuarter(int, int, DayOfWeek)
+    // Static: GetLastDateOfWeekInQuarter(int, int, DayOfWeek)
     // Same forward-from-start behaviour as instance calendar overload.
     // =========================================================================
 
@@ -171,10 +171,10 @@ public partial class DateTimeExtensionsTests
     /// Verifies that the static year/quarter overload returns the expected date under the current forward-from-start behaviour.
     /// </summary>
     [TestMethod]
-    public void GetLastDayOfWeekInQuarter_WhenUsingYearAndQuarter_ShouldReturnExpectedDate()
+    public void GetLastDateOfWeekInQuarter_WhenUsingYearAndQuarter_ShouldReturnExpectedDate()
     {
         // Q1 2024 starts Mon 1 Jan. Target Sunday → first Sunday = 7 Jan.
-        DateTime actual = DateTimeExtensions.GetLastDayOfWeekInQuarter(2024, 1, DayOfWeek.Sunday);
+        DateTime actual = DateTimeExtensions.GetLastDateOfWeekInQuarter(2024, 1, DayOfWeek.Sunday);
         Assert.AreEqual(new DateTime(2024, 1, 7), actual);
     }
 
@@ -185,11 +185,11 @@ public partial class DateTimeExtensionsTests
     [DataRow(0)]
     [DataRow(5)]
     [DataRow(-1)]
-    public void GetLastDayOfWeekInQuarter_WhenQuarterIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int quarter)
+    public void GetLastDateOfWeekInQuarter_WhenQuarterIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int quarter)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = DateTimeExtensions.GetLastDayOfWeekInQuarter(2024, quarter, DayOfWeek.Monday);
+            _ = DateTimeExtensions.GetLastDateOfWeekInQuarter(2024, quarter, DayOfWeek.Monday);
         });
     }
 
@@ -199,11 +199,11 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     [DataRow(0)]
     [DataRow(10000)]
-    public void GetLastDayOfWeekInQuarter_WhenYearIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int year)
+    public void GetLastDateOfWeekInQuarter_WhenYearIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int year)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = DateTimeExtensions.GetLastDayOfWeekInQuarter(year, 1, DayOfWeek.Monday);
+            _ = DateTimeExtensions.GetLastDateOfWeekInQuarter(year, 1, DayOfWeek.Monday);
         });
     }
 
@@ -211,25 +211,25 @@ public partial class DateTimeExtensionsTests
     /// Verifies that the static year/quarter overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="DayOfWeek" />.
     /// </summary>
     [TestMethod]
-    public void GetLastDayOfWeekInQuarter_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
+    public void GetLastDateOfWeekInQuarter_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = DateTimeExtensions.GetLastDayOfWeekInQuarter(2024, 1, (DayOfWeek)999);
+            _ = DateTimeExtensions.GetLastDateOfWeekInQuarter(2024, 1, (DayOfWeek)999);
         });
     }
 
     // =========================================================================
-    // Static: GetLastDayOfWeekInQuarter(int, int, DayOfWeek, CalendarQuarterDefinition)
+    // Static: GetLastDateOfWeekInQuarter(int, int, DayOfWeek, CalendarQuarterDefinition)
     // =========================================================================
 
     /// <summary>
     /// Verifies that the static definition overload returns the expected date under the current forward-from-start behaviour.
     /// </summary>
     [TestMethod]
-    public void GetLastDayOfWeekInQuarter_WhenUsingDefinitionOverload_ShouldReturnExpectedDate()
+    public void GetLastDateOfWeekInQuarter_WhenUsingDefinitionOverload_ShouldReturnExpectedDate()
     {
-        DateTime actual = DateTimeExtensions.GetLastDayOfWeekInQuarter(2024, 1, DayOfWeek.Sunday, CalendarQuarterDefinition.JanuaryToDecember);
+        DateTime actual = DateTimeExtensions.GetLastDateOfWeekInQuarter(2024, 1, DayOfWeek.Sunday, CalendarQuarterDefinition.JanuaryToDecember);
         Assert.AreEqual(new DateTime(2024, 1, 7), actual);
     }
 
@@ -237,11 +237,11 @@ public partial class DateTimeExtensionsTests
     /// Verifies that the static definition overload throws <see cref="InvalidOperationException" /> when given <see cref="CalendarQuarterDefinition.Custom" />.
     /// </summary>
     [TestMethod]
-    public void GetLastDayOfWeekInQuarter_WhenDefinitionIsCustom_ShouldThrowInvalidOperationException()
+    public void GetLastDateOfWeekInQuarter_WhenDefinitionIsCustom_ShouldThrowInvalidOperationException()
     {
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            _ = DateTimeExtensions.GetLastDayOfWeekInQuarter(2024, 1, DayOfWeek.Monday, CalendarQuarterDefinition.Custom);
+            _ = DateTimeExtensions.GetLastDateOfWeekInQuarter(2024, 1, DayOfWeek.Monday, CalendarQuarterDefinition.Custom);
         });
     }
 
@@ -249,11 +249,11 @@ public partial class DateTimeExtensionsTests
     /// Verifies that the static definition overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="CalendarQuarterDefinition" /> value.
     /// </summary>
     [TestMethod]
-    public void GetLastDayOfWeekInQuarter_WhenDefinitionIsInvalid_ShouldThrowArgumentOutOfRangeException()
+    public void GetLastDateOfWeekInQuarter_WhenDefinitionIsInvalid_ShouldThrowArgumentOutOfRangeException()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = DateTimeExtensions.GetLastDayOfWeekInQuarter(2024, 1, DayOfWeek.Monday, (CalendarQuarterDefinition)999);
+            _ = DateTimeExtensions.GetLastDateOfWeekInQuarter(2024, 1, DayOfWeek.Monday, (CalendarQuarterDefinition)999);
         });
     }
 }

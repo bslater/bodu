@@ -68,7 +68,7 @@ public static partial class DateOnlyExtensions
     /// scheduling boundaries tied to weekdays.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static int GetFirstDayOfWeekInMonthDayNumber(int year, int month, DayOfWeek dayOfWeek) => DateTimeExtensions.GetDayNumberUnchecked(year, month, 1)
+    internal static int GetFirstDateOfWeekInMonthDayNumber(int year, int month, DayOfWeek dayOfWeek) => DateTimeExtensions.GetDayNumberUnchecked(year, month, 1)
             + (((int)dayOfWeek - (int)GetDayOfWeekFromDayNumber(DateTimeExtensions.GetDayNumberUnchecked(year, month, 1)) + 7) % 7);
 
     /// <summary>
@@ -88,7 +88,7 @@ public static partial class DateOnlyExtensions
     /// alignment to business rules and event planning.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static int GetLastDayOfWeekInMonthDayNumber(int year, int month, DayOfWeek dayOfWeek) => DateTimeExtensions.GetDayNumberUnchecked(year, month, DateTime.DaysInMonth(year, month))
+    internal static int GetLastDateOfWeekInMonthDayNumber(int year, int month, DayOfWeek dayOfWeek) => DateTimeExtensions.GetDayNumberUnchecked(year, month, DateTime.DaysInMonth(year, month))
             - (((int)GetDayOfWeekFromDayNumber(DateTimeExtensions.GetDayNumberUnchecked(year, month, DateTime.DaysInMonth(year, month))) - (int)dayOfWeek + 7) % 7);
 
     /// <summary>

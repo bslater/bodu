@@ -34,13 +34,13 @@ public static partial class DateTimeExtensions
         switch (ordinal)
         {
             case Extensions.WeekOfMonthOrdinal.First:
-                return new DateTime(GetFirstDayOfWeekInMonthTicks(dateTime, dayOfWeek), dateTime.Kind);
+                return new DateTime(GetFirstDateOfWeekInMonthTicks(dateTime, dayOfWeek), dateTime.Kind);
 
             case Extensions.WeekOfMonthOrdinal.Last:
                 return dateTime.LastDateOfWeekInMonth(dayOfWeek);
 
             default:
-                var result = new DateTime(GetFirstDayOfWeekInMonthTicks(dateTime, dayOfWeek) + (((int)ordinal - 1) * TicksPerWeek), dateTime.Kind);
+                var result = new DateTime(GetFirstDateOfWeekInMonthTicks(dateTime, dayOfWeek) + (((int)ordinal - 1) * TicksPerWeek), dateTime.Kind);
 
                 if (result.Month != dateTime.Month)
                     throw new ArgumentOutOfRangeException(
@@ -70,7 +70,7 @@ public static partial class DateTimeExtensions
     /// -or- <paramref name="ordinal"/> is not a defined value of the <see cref="WeekOfMonthOrdinal"/> enumeration,
     /// -or- the requested <paramref name="ordinal"/> does not occur within the month (for example, a fifth Thursday in February).
     /// </exception>
-    public static DateTime GetNthDayOfWeekInMonth(int year, int month, DayOfWeek dayOfWeek, WeekOfMonthOrdinal ordinal)
+    public static DateTime GetNthDateOfWeekInMonth(int year, int month, DayOfWeek dayOfWeek, WeekOfMonthOrdinal ordinal)
     {
         ThrowHelper.ThrowIfOutOfRange(year, MinYear, MaxYear);
         ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
@@ -80,13 +80,13 @@ public static partial class DateTimeExtensions
         switch (ordinal)
         {
             case Extensions.WeekOfMonthOrdinal.First:
-                return new DateTime(GetFirstDayOfWeekInMonthTicks(year, month, dayOfWeek), DateTimeKind.Unspecified);
+                return new DateTime(GetFirstDateOfWeekInMonthTicks(year, month, dayOfWeek), DateTimeKind.Unspecified);
 
             case Extensions.WeekOfMonthOrdinal.Last:
-                return new DateTime(GetLastDayOfWeekInMonthAsTicks(year, month, dayOfWeek), DateTimeKind.Unspecified);
+                return new DateTime(GetLastDateOfWeekInMonthAsTicks(year, month, dayOfWeek), DateTimeKind.Unspecified);
 
             default:
-                var result = new DateTime(GetFirstDayOfWeekInMonthTicks(year, month, dayOfWeek) + (((int)ordinal - 1) * TicksPerWeek), DateTimeKind.Unspecified);
+                var result = new DateTime(GetFirstDateOfWeekInMonthTicks(year, month, dayOfWeek) + (((int)ordinal - 1) * TicksPerWeek), DateTimeKind.Unspecified);
 
                 if (result.Month != month)
                     throw new ArgumentOutOfRangeException(

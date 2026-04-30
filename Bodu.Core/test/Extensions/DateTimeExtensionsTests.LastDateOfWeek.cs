@@ -120,7 +120,7 @@ public partial class DateTimeExtensionsTests
         Assert.AreEqual(max.Date, actual);
     }
 
-    public static IEnumerable<object[]> GetLastDayOfWeekWithDefinitionTestData() =>
+    public static IEnumerable<object[]> GetLastDateOfWeekWithDefinitionTestData() =>
         FirstAndLastDayOfWeekTestData
             .Where(e => e.Weekend.HasValue)
             .Select(e => new object[] { e.Input, e.Weekend.Value, e.ExpectedLast });
@@ -129,7 +129,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.LastDateOfWeek"/> returns the expected actual based on the specified weekend definition.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetLastDayOfWeekWithDefinitionTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetLastDateOfWeekWithDefinitionTestData), DynamicDataSourceType.Method)]
     public void LastDateOfWeek_WhenUsingWeekendDefinition_ShouldReturnExpectedEnd(DateTime input, CalendarWeekendDefinition weekend, DateTime expected)
     {
         var actual = input.LastDateOfWeek(weekend);

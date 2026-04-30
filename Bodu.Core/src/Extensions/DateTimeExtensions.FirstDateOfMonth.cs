@@ -26,7 +26,7 @@ public static partial class DateTimeExtensions
     ///]]>
     /// </code>
     /// </remarks>
-    public static DateTime FirstDateOfMonth(this DateTime dateTime) => new DateTime(GetFirstDayOfMonthTicks(dateTime), dateTime.Kind);
+    public static DateTime FirstDateOfMonth(this DateTime dateTime) => new DateTime(GetFirstDateOfMonthTicks(dateTime), dateTime.Kind);
 
     /// <summary>
     /// Returns a new <see cref="DateTime"/> representing the first day of the specified calendar month and year.
@@ -42,7 +42,7 @@ public static partial class DateTimeExtensions
     /// Thrown if <paramref name="year"/> is less than the <c>Year</c> of <see cref="DateTime.MinValue"/> or greater than that of <see cref="DateTime.MaxValue"/>,
     /// -or- <paramref name="month"/> is less than 1 or greater than 12.
     /// </exception>
-    public static DateTime GetFirstDayOfMonth(int year, int month)
+    public static DateTime GetFirstDateOfMonth(int year, int month)
     {
         ThrowHelper.ThrowIfOutOfRange(year, DateTime.MinValue.Year, DateTime.MaxValue.Year);
         ThrowHelper.ThrowIfOutOfRange(month, 1, 12);

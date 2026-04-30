@@ -25,7 +25,7 @@ public static partial class DateTimeExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        long ticks = GetLastDayOfWeekInMonthAsTicks(dateTime, dayOfWeek);
+        long ticks = GetLastDateOfWeekInMonthAsTicks(dateTime, dayOfWeek);
         return new DateTime(ticks, dateTime.Kind);
     }
 
@@ -45,13 +45,13 @@ public static partial class DateTimeExtensions
     /// -or- <paramref name="month"/> is less than 1 or greater than 12,
     /// -or- <paramref name="dayOfWeek"/> is not a defined value of the <see cref="DayOfWeek"/> enumeration.
     /// </exception>
-    public static DateTime GetLastDayOfWeekInMonth(int year, int month, DayOfWeek dayOfWeek)
+    public static DateTime GetLastDateOfWeekInMonth(int year, int month, DayOfWeek dayOfWeek)
     {
         ThrowHelper.ThrowIfOutOfRange(year, MinYear, MaxYear);
         ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        long ticks = GetLastDayOfWeekInMonth(GetDateTicks(year, month, DateTime.DaysInMonth(year, month)), dayOfWeek);
+        long ticks = GetLastDateOfWeekInMonth(GetDateTicks(year, month, DateTime.DaysInMonth(year, month)), dayOfWeek);
         return new DateTime(ticks, DateTimeKind.Unspecified);
     }
 }

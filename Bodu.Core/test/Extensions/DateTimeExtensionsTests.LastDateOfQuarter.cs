@@ -43,13 +43,13 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.GetLastDayOfQuarter(int, int, CalendarQuarterDefinition)" /> computes the expected quarter-end for each <c>(year, quarter, definition)</c> triple.
+    /// Verifies that <see cref="DateTimeExtensions.GetLastDateOfQuarter(int, int, CalendarQuarterDefinition)" /> computes the expected quarter-end for each <c>(year, quarter, definition)</c> triple.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(LastDateOfQuarterTestData), DynamicDataSourceType.Method)]
     public void LastDateOfQuarter_WhenUsingQuarterAndDefinition_ShouldReturnExpectedDate(int year,int quarter, CalendarQuarterDefinition definition, DateTime expected)
     {
-        var actual = DateTimeExtensions.GetLastDayOfQuarter(year, quarter, definition);
+        var actual = DateTimeExtensions.GetLastDateOfQuarter(year, quarter, definition);
 
         Assert.AreEqual(expected, actual);
     }
@@ -83,13 +83,13 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.GetLastDayOfQuarter(int, int)" /> with the default January-to-December definition returns the expected quarter-end for each <c>(year, quarter)</c> pair.
+    /// Verifies that <see cref="DateTimeExtensions.GetLastDateOfQuarter(int, int)" /> with the default January-to-December definition returns the expected quarter-end for each <c>(year, quarter)</c> pair.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(LastDateOfQuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
     public void LastDateOfQuarter_WhenUsingQuarterAndCalendarDefinition_ShouldReturnExpectedDate(int year, int quarter, DateTime expected)
     {
-        var actual = DateTimeExtensions.GetLastDayOfQuarter(year, quarter);
+        var actual = DateTimeExtensions.GetLastDateOfQuarter(year, quarter);
 
         Assert.AreEqual(expected, actual);
     }
@@ -163,7 +163,7 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that the static <see cref="DateTimeExtensions.GetLastDayOfQuarter(int, int, CalendarQuarterDefinition)" /> overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined definition.
+    /// Verifies that the static <see cref="DateTimeExtensions.GetLastDateOfQuarter(int, int, CalendarQuarterDefinition)" /> overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined definition.
     /// </summary>
     [TestMethod]
     public void LastDateOfQuarter_WhenDefinitionIsInvalid_WithYearAndQuarter_ShouldThrowExactly()
@@ -172,7 +172,7 @@ public partial class DateTimeExtensionsTests
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = DateTimeExtensions.GetLastDayOfQuarter(2025, 1, definition);
+            _ = DateTimeExtensions.GetLastDateOfQuarter(2025, 1, definition);
         });
     }
 
@@ -187,7 +187,7 @@ public partial class DateTimeExtensionsTests
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = DateTimeExtensions.GetLastDayOfQuarter(2025, quarter, CalendarQuarterDefinition.JanuaryToDecember);
+            _ = DateTimeExtensions.GetLastDateOfQuarter(2025, quarter, CalendarQuarterDefinition.JanuaryToDecember);
         });
     }
 
@@ -202,37 +202,37 @@ public partial class DateTimeExtensionsTests
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = DateTimeExtensions.GetLastDayOfQuarter(2025, quarter);
+            _ = DateTimeExtensions.GetLastDateOfQuarter(2025, quarter);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.GetLastDayOfQuarter(int, int, CalendarQuarterDefinition)" /> throws <see cref="ArgumentOutOfRangeException" /> for year values outside <c>1..9999</c>.
+    /// Verifies that <see cref="DateTimeExtensions.GetLastDateOfQuarter(int, int, CalendarQuarterDefinition)" /> throws <see cref="ArgumentOutOfRangeException" /> for year values outside <c>1..9999</c>.
     /// </summary>
     [TestMethod]
     [DataRow(-1)]
     [DataRow(0)]
     [DataRow(10_000)]
-    public void GetLastDayOfQuarter_WhenYearIsOutOfRange_WithDefinition_ShouldThrowExactly(int year)
+    public void GetLastDateOfQuarter_WhenYearIsOutOfRange_WithDefinition_ShouldThrowExactly(int year)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = DateTimeExtensions.GetLastDayOfQuarter(year, 1, CalendarQuarterDefinition.JanuaryToDecember);
+            _ = DateTimeExtensions.GetLastDateOfQuarter(year, 1, CalendarQuarterDefinition.JanuaryToDecember);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.GetLastDayOfQuarter(int, int)" /> throws <see cref="ArgumentOutOfRangeException" /> for year values outside <c>1..9999</c>.
+    /// Verifies that <see cref="DateTimeExtensions.GetLastDateOfQuarter(int, int)" /> throws <see cref="ArgumentOutOfRangeException" /> for year values outside <c>1..9999</c>.
     /// </summary>
     [TestMethod]
     [DataRow(-1)]
     [DataRow(0)]
     [DataRow(10_000)]
-    public void GetLastDayOfQuarter_WhenYearIsOutOfRange_ShouldThrowExactly(int year)
+    public void GetLastDateOfQuarter_WhenYearIsOutOfRange_ShouldThrowExactly(int year)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = DateTimeExtensions.GetLastDayOfQuarter(year, 1);
+            _ = DateTimeExtensions.GetLastDateOfQuarter(year, 1);
         });
     }
 

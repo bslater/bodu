@@ -30,7 +30,7 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that the static <see cref="DateTimeExtensions.GetNthDayOfWeekInMonth(int, int, DayOfWeek, WeekOfMonthOrdinal)" /> overload returns the same nth-occurrence date as the instance overload.
+    /// Verifies that the static <see cref="DateTimeExtensions.GetNthDateOfWeekInMonth(int, int, DayOfWeek, WeekOfMonthOrdinal)" /> overload returns the same nth-occurrence date as the instance overload.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(NthDateOfWeekInMonthTestData),  DynamicDataSourceType.Method)]
@@ -38,7 +38,7 @@ public partial class DateTimeExtensionsTests
     {
         int year = input.Year, month = input.Month;
 
-        var actual = DateTimeExtensions.GetNthDayOfWeekInMonth(year, month, dayOfWeek, ordinal);
+        var actual = DateTimeExtensions.GetNthDateOfWeekInMonth(year, month, dayOfWeek, ordinal);
 
         Assert.AreEqual(expected, actual);
     }
