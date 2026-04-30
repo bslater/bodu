@@ -79,7 +79,7 @@ public partial class DateTimeFormatInfoExtensionsTests
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = info!.LastDateOfWeek();
+            _ = info!.LastDayOfWeek();
         });
     }
 }

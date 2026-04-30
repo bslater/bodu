@@ -135,7 +135,7 @@ internal sealed class NotableDateRuleResolver
 
 				case DateResolutionStrategy.DayOfWeekInMonth:
 					if (rule.Month is { } m2 && rule.WeekOrdinal is { } ord && rule.DayOfWeek is { } dow)
-						return DateTimeExtensions.GetNthDayOfWeekInMonth(year, m2, dow, ord);
+						return DateTimeExtensions.GetNthDateOfWeekInMonth(year, m2, dow, ord);
 					return null;
 
 				case DateResolutionStrategy.OffsetFromAnchor:
