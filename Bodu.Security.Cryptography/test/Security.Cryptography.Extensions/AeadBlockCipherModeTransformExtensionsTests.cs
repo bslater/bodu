@@ -160,6 +160,27 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that <c>Encrypt</c> followed by <c>Decrypt</c> using EAX + AES recovers the original
+    /// plaintext with associated data.
+    /// </summary>
+    [TestMethod]
+    public void Eax_RoundTrip_ShouldRecoverPlaintext()
+    {
+        byte[] key = NewKey();
+        byte[] iv = NewIv();
+
+        byte[] cipherWithTag;
+        using (var cipher = new AesBlockCipher(key))
+            cipherWithTag = new EaxModeTransform(cipher, iv).Encrypt(Plaintext, AssociatedData.AsSpan().AsReadOnly());
+
+        byte[] recovered;
+        using (var cipher = new AesBlockCipher(key))
+            recovered = new EaxModeTransform(cipher, iv).Decrypt(cipherWithTag, AssociatedData.AsSpan().AsReadOnly());
+
+        CollectionAssert.AreEqual(Plaintext, recovered);
+    }
+
+    /// <summary>
     /// Verifies that a single flipped bit in the authentication tag causes the
     /// <see cref="AeadBlockCipherModeTransformExtensions.Decrypt(IAeadBlockCipherModeTransform, ReadOnlySpan{byte}, ReadOnlySpan{byte})" />
     /// overload to throw <see cref="CryptographicException" />.
