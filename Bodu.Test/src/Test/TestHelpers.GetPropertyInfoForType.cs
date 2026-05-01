@@ -27,7 +27,7 @@ public static partial class TestHelpers
     /// The binding flags used to select properties on each type in the inheritance chain.
     /// </param>
     /// <returns>
-    /// A sequence of <see cref="object[]" /> values, each containing a single <see cref="PropertyInfo" />.
+    /// A sequence of <c>object[]</c> values, each containing a single <see cref="PropertyInfo" />.
     /// If no matching properties are found, a single row containing <see langword="null" /> is returned.
     /// </returns>
     public static IEnumerable<object[]> GetPropertyInfoForType<T>(

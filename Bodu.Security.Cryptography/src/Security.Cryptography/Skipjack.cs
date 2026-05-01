@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
@@ -140,7 +141,7 @@ public sealed class Skipjack
     /// <exception cref="CryptographicException">
     /// <paramref name="rgbKey" /> is not exactly 10 bytes in length, or <paramref name="rgbIV" /> is not exactly 8 bytes in length.
     /// </exception>
-    public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV)
+    public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         this.ThrowIfDisposed();
         this.Validate(rgbKey, rgbIV);
@@ -166,7 +167,7 @@ public sealed class Skipjack
     /// <exception cref="CryptographicException">
     /// <paramref name="rgbKey" /> is not exactly 10 bytes in length, or <paramref name="rgbIV" /> is not exactly 8 bytes in length.
     /// </exception>
-    public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV)
+    public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         this.ThrowIfDisposed();
         this.Validate(rgbKey, rgbIV);
@@ -270,7 +271,7 @@ public sealed class Skipjack
     /// <param name="iv">The initialisation vector to validate.</param>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
     /// <exception cref="CryptographicException">The key or IV length is not valid for this algorithm.</exception>
-    private void Validate(byte[] key, byte[] iv)
+    private void Validate(byte[] key, [NotNull] byte[]? iv)
     {
         ThrowHelper.ThrowIfNull(key);
         ThrowHelper.ThrowIfNull(iv);
