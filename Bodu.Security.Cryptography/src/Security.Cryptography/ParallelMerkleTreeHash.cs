@@ -93,7 +93,31 @@ namespace Bodu.Security.Cryptography;
 /// guarantees that every node a worker promotes into level N+1 arrives before level N+1's channel
 /// is closed, eliminating the lost-node race that would otherwise cause finalisation to deadlock.
 /// </para>
+/// <para>
+/// <strong>When to choose ParallelMerkleTreeHash.</strong> Pick this for very large inputs where
+/// leaf hashing dominates the cost and the tree shape (block size, fan-out, leaf algorithm) must
+/// match a specific protocol — multi-gigabyte content stores, distributed integrity checks, log
+/// audits. For smaller inputs the channel/task setup overhead can outweigh the parallel speed-up;
+/// reach for <see cref="MerkleTreeHash"/> when the workload is short or single-threaded simplicity
+/// is preferable. If a fixed tree shape is acceptable, <see cref="Blake3"/>'s built-in tree mode is
+/// faster again and avoids the per-leaf <see cref="HashAlgorithm"/> instantiation cost.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+///
+/// // SHA-256 leaves, 64 KiB blocks, fan-out of 4 — a typical large-content configuration.
+/// using var merkle = new ParallelMerkleTreeHash(
+///     algorithmFactory: () =&gt; SHA256.Create(),
+///     blockSize: 64 * 1024,
+///     fanOut: 4);
+///
+/// using FileStream fs = File.OpenRead("very-large.bin");
+/// byte[] root = await merkle.ComputeHashAsync(fs, cancellationToken);
+/// </code>
+/// </example>
 /// <seealso href="../guides/cryptography/hashing.html#pattern-6--merkle-trees">Merkle-tree recipes in the hashing guide</seealso>
 public sealed class ParallelMerkleTreeHash : IDisposable
 {
