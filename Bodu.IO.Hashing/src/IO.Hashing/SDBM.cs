@@ -19,8 +19,31 @@ namespace Bodu.IO.Hashing;
 /// <c><![CDATA[hash = byte + (hash << 6) + (hash << 16) - hash]]></c>, producing good distribution for short
 /// and medium-length keys at minimal cost.
 /// </para>
+/// <para>
+/// <strong>When to choose SDBM.</strong> SDBM is the public-domain hash from the NDBM/SDBM database library
+/// and the historical default in many Unix tools — pick it when interoperating with code that has
+/// standardised on the SDBM mix, or when a small, dependency-free 32-bit hash is sufficient. Empirically
+/// SDBM gives slightly better distribution than <see cref="Bernstein"/> and <see cref="ApHash"/> on short
+/// keys at the same per-byte cost. For modern hash-table workloads prefer <see cref="Fnv1a32"/> (better
+/// avalanche, same cost) or <see cref="MurmurHash3_32"/> (markedly better distribution on inputs longer than
+/// ~16 bytes).
+/// </para>
+/// <para>
+/// <strong>Output and lifecycle.</strong> Produces a 32-bit (4-byte) digest in little-endian byte order.
+/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()"/> is non-destructive;
+/// instances are not thread-safe.
+/// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used
 /// for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// var sdbm = new SDBM();
+/// byte[] digest = sdbm.ComputeHash(System.Text.Encoding.UTF8.GetBytes("dbm-key"));
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class SDBM
     : NonCryptographicHashAlgorithm
