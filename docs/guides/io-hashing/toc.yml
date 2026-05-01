@@ -1,16 +1,6 @@
 - name: Overview
   href: index.md
-- name: Checksums
-  items:
-    - name: Using CRC
-      href: crc.md
-    - name: CRC catalogue
-      href: crc-catalogue.md
-    - name: Using Fletcher
-      href: fletcher.md
-    - name: Using Adler
-      href: adler.md
-- name: Fingerprints
+- name: Bodu.IO.Hashing — Fingerprints
   items:
     - name: Using FNV
       href: fnv.md
@@ -24,7 +14,17 @@
       href: pearson.md
     - name: Classic string hashes
       href: string-hashes.md
-- name: Check digits
+- name: Bodu.IO.Hashing.Checksums
+  items:
+    - name: Using CRC
+      href: crc.md
+    - name: CRC catalogue
+      href: crc-catalogue.md
+    - name: Using Fletcher
+      href: fletcher.md
+    - name: Using Adler
+      href: adler.md
+- name: Bodu.IO.Hashing.CheckDigits
   items:
     - name: Check digits overview
       href: check-digits.md

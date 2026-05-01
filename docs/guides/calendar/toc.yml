@@ -1,8 +1,16 @@
 - name: Overview
   href: index.md
-- name: Using NotableDateService
-  href: notable-dates.md
-- name: Calendar data packs
-  href: data-packs.md
-- name: Date calculation algorithms
-  href: algorithms.md
+- name: Bodu.Globalization.Calendar — Service
+  items:
+    - name: Using NotableDateService
+      href: notable-dates.md
+    - name: Authoring notable date rules
+      href: rule-authoring.md
+- name: Bodu.Globalization.Calendar.Algorithms
+  items:
+    - name: Date calculation algorithms
+      href: algorithms.md
+- name: Bodu.Globalization.Calendar.Data.* — Data packs
+  items:
+    - name: Calendar data packs
+      href: data-packs.md
