@@ -34,6 +34,23 @@ namespace Bodu.Security.Cryptography;
 /// <c>securityLevel</c> selects the SHAKE variant. <see cref="HashAlgorithm.ComputeHash(byte[])" /> therefore produces
 /// exactly <c>outputBits / 8</c> bytes regardless of which security level is chosen.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>State: 1600 bits (200 bytes); Keccak-f[1600] permutation.</description></item>
+///   <item><description>Output size: configurable, any positive multiple of 8 bits.</description></item>
+///   <item><description>Security level: 128 (SHAKE128) or 256 (SHAKE256).</description></item>
+///   <item><description>Domain separation: <c>0x1F</c>; multi-rate padding (pad10*1).</description></item>
+///   <item><description>Specification: NIST FIPS 202.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose SHAKE.</strong> Pick SHAKE when an extendable-output function is genuinely required
+/// — KMAC inputs, post-quantum signature schemes, hash-based DRBGs, and any protocol that needs more than the
+/// fixed-length output of SHA-3 / SHA-256. For ordinary fixed-length hashing prefer SHA-3 (FIPS 202) or
+/// <see cref="Blake3"/> (faster on commodity hardware). Use SHAKE128 when 128-bit security is sufficient and
+/// throughput matters; use SHAKE256 when the higher capacity is required.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

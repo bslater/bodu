@@ -22,7 +22,31 @@ namespace Bodu.Security.Cryptography;
 /// operations. The number of initialisation, transformation, and finalisation rounds, the hash output size, and the input block size
 /// are all configurable. See <a href="https://en.wikipedia.org/wiki/CubeHash">Wikipedia</a> for an overview.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>State size: 1024 bits (32 × 32-bit words).</description></item>
+///   <item><description>Output size: configurable, <see cref="MinHashSize"/>–<see cref="MaxHashSize"/> bits (default 512).</description></item>
+///   <item><description>Input block size: configurable, <see cref="MinInputBlockSize"/>–<see cref="MaxInputBlockSize"/> bytes (default 32).</description></item>
+///   <item><description>Rounds: initialisation, per-block, and finalisation counts each independently configurable up to <see cref="MaxRounds"/>; defaults are 16 / 16 / 32.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose CubeHash.</strong> Pick CubeHash for academic study, cryptographic competition
+/// reproducibility, or interop with code that has settled on a specific CubeHash parameterisation. The defaults
+/// (CubeHash 16/32/+160/512) match the SHA-3 competition submission. For new general-purpose cryptographic
+/// hashing prefer SHA-2, SHA-3, or <see cref="Blake2b"/>.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.Security.Cryptography;
+///
+/// // Default parameters: 512-bit output, 32-byte input block, 16/16/32 rounds.
+/// using var cube = new CubeHash();
+/// byte[] digest = cube.ComputeHash(message);
+/// </code>
+/// </example>
 public sealed class CubeHash
     : System.Security.Cryptography.HashAlgorithm
 {
