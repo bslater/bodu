@@ -24,12 +24,40 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="BlockMode" /> property. The default mode is <see cref="CipherBlockMode.CBC" /> with
 /// <see cref="PaddingMode.PKCS7" /> padding.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Block size: 64 bits (8 bytes).</description></item>
+///   <item><description>Key size: 80 bits (10 bytes), fixed.</description></item>
+///   <item><description>32 rounds, unbalanced Feistel network.</description></item>
+///   <item><description>Default mode: <see cref="CipherBlockMode.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose Skipjack.</strong> Only when reading or producing data encrypted under a Skipjack-based
+/// legacy system, or when reproducing published test vectors for research. For any new design use
+/// <see cref="System.Security.Cryptography.Aes"/> or another 128-bit block cipher.
+/// </para>
 /// <note type="important">
 /// Because of its 80-bit key and 64-bit block, Skipjack offers no modern security margin and must not be used to protect sensitive
 /// data in new applications. The 64-bit block size also exposes it to birthday-bound attacks (SWEET32) when large volumes of data
 /// are encrypted under the same key. Prefer a modern cipher such as AES.
 /// </note>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// // Legacy interop only — do not use Skipjack to protect new data.
+/// using var skipjack = new Skipjack();
+/// skipjack.Key = legacyKeyMaterial;       // exactly 10 bytes
+/// skipjack.IV  = RandomNumberGenerator.GetBytes(8); // matches the 64-bit block
+///
+/// byte[] ciphertext = skipjack.Encrypt(legacyPlaintext);
+/// </code>
+/// </example>
 /// <seealso href="../guides/cryptography/skipjack.html">Using Skipjack (guide with full encrypt / decrypt examples)</seealso>
 /// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>

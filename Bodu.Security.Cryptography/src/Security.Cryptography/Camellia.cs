@@ -26,7 +26,37 @@ namespace Bodu.Security.Cryptography;
 /// cipher modes via the <see cref="BlockMode" /> property. The default mode is <see cref="CipherBlockMode.CBC" />
 /// with <see cref="PaddingMode.PKCS7" /> padding and a default key size of 256 bits.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Block size: 128 bits (16 bytes).</description></item>
+///   <item><description>Key sizes: 128 (18 rounds), 192 or 256 bits (24 rounds).</description></item>
+///   <item><description>Specification: RFC 3713; approved by ISO/IEC, CRYPTREC, and NESSIE.</description></item>
+///   <item><description>Default mode: <see cref="CipherBlockMode.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose Camellia.</strong> Pick Camellia when standards-body approval matters — Japanese
+/// CRYPTREC, European NESSIE, and ISO/IEC all list Camellia. It is the standard alternative to AES in many
+/// non-US jurisdictions and TLS implementations. Performance characteristics are comparable to AES in software;
+/// for new general-purpose work without a procurement constraint <see cref="System.Security.Cryptography.Aes"/>
+/// is the more widely accelerated default.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// using var camellia = new Camellia();
+/// camellia.GenerateKey(); // 256-bit by default
+/// camellia.GenerateIV();
+///
+/// byte[] ciphertext = camellia.Encrypt(plaintext);
+/// byte[] roundTrip  = camellia.Decrypt(ciphertext);
+/// </code>
+/// </example>
 /// <seealso href="../guides/cryptography/camellia.html">Using Camellia</seealso>
 /// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>
