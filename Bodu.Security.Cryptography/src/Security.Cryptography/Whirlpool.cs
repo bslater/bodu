@@ -30,6 +30,21 @@ namespace Bodu.Security.Cryptography;
 /// hashing has started throws <see cref="CryptographicUnexpectedOperationException" />. Calling
 /// <see cref="Initialize" /> returns the instance to the reconfigurable state.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Output size: 512 bits (64 bytes), fixed.</description></item>
+///   <item><description>Block size: 64 bytes (512 bits); 256-bit big-endian length field.</description></item>
+///   <item><description>Internal cipher <c>W</c> on the wide-trail (Rijndael-family) design principle.</description></item>
+///   <item><description>Selectable revision: <see cref="WhirlpoolVersion.WhirlpoolInfo0"/> (2000), <see cref="WhirlpoolVersion.WhirlpoolInfo1"/> (Whirlpool-T, 2001), or <see cref="WhirlpoolVersion.WhirlpoolInfo3"/> (ISO/IEC 10118-3, 2003 — default).</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose Whirlpool.</strong> Pick Whirlpool when interoperability with software that produces
+/// or expects ISO/IEC 10118-3 Whirlpool digests is required — TrueCrypt-era disk encryption metadata, certain
+/// European e-government standards, and some content-addressed stores. For a modern 512-bit cryptographic hash
+/// without an interop constraint use SHA-512 or <see cref="Blake2b"/>; both are faster on contemporary hardware.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
