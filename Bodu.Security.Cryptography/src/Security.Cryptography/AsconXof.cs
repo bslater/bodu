@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsconXof.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -164,7 +164,7 @@ public abstract class AsconXof<T>
     {
         this.ThrowIfDisposed();
         if (this._squeezing)
-            throw new InvalidOperationException(ResourceStrings.CryptographicException_XofSqueezeAfterAbsorb);
+            throw new InvalidOperationException(CryptoResourceStrings.CryptographicException_XofSqueezeAfterAbsorb);
 
         this.ProcessInputBlocks(data);
     }

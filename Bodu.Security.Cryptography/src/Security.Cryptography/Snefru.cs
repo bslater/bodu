@@ -79,7 +79,7 @@ public abstract partial class Snefru<T>
     {
         if (Array.IndexOf(ValidHashSizes, hashSize) == -1)
             throw new ArgumentOutOfRangeException(nameof(hashSize),
-                string.Format(ResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
 
         this._state = new uint[hashSize >> 5];
         HashSizeValue = hashSize;

@@ -72,7 +72,7 @@ public sealed class EcbModeTransform : IBlockCipherModeTransform
     {
         int blockSize = this._cipher.BlockSize;
 
-        ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize);
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 
         for (int offset = 0; offset < input.Length; offset += blockSize)

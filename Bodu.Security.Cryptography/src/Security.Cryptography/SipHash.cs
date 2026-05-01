@@ -103,7 +103,7 @@ public abstract class SipHash<T>
     {
         if (Array.IndexOf(ValidHashSizes, hashSize) == -1)
             throw new ArgumentOutOfRangeException(nameof(hashSize),
-                string.Format(ResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
 
         this.KeyValue = new byte[KeySize];
         CryptoHelpers.FillWithRandomNonZeroBytes(this.KeyValue);
@@ -206,12 +206,6 @@ public abstract class SipHash<T>
             this._finalizationRounds = value;
         }
     }
-
-    /// <inheritdoc />
-    public override int InputBlockSize => BlockSize;
-
-    /// <inheritdoc />
-    public override int OutputBlockSize => BlockSize;
 
     /// <summary>
     /// Releases the unmanaged resources used by the algorithm and clears the key from memory.

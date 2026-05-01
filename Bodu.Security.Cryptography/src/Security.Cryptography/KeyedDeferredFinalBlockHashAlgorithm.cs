@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KeyedDeferredFinalBlockHashAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -148,7 +148,7 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
 
             if (value.Length > this._maximumKeySize)
                 throw new CryptographicException(
-                    string.Format(ResourceStrings.CryptographicException_InvalidKeySize, value.Length, $"0..{this._maximumKeySize}"));
+                    string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize, value.Length, $"0..{this._maximumKeySize}"));
 
             this.KeyValue = value.Length > 0 ? value.Copy() : null;
             this.Initialize();

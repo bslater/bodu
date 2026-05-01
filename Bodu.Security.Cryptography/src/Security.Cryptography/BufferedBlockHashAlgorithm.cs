@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BufferedBlockHashAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -252,13 +252,11 @@ public abstract class BufferedBlockHashAlgorithm<T>
     {
         ThrowHelper.ThrowIfNull(array);
         this.ThrowIfDisposed();
+        CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(array, ibStart, cbSize);
 
 #if !NET6_0_OR_GREATER
-        ThrowHelper.ThrowIfLessThan(ibStart, 0);
-        ThrowHelper.ThrowIfLessThan(cbSize, 0);
-        ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
         if (this._finalized)
-            throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
         this.HashCore(array.AsSpan(ibStart, cbSize));
@@ -289,6 +287,6 @@ public abstract class BufferedBlockHashAlgorithm<T>
     protected void ThrowIfInvalidState()
     {
         if (this.State != 0)
-            throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_ReconfigurationNotAllowed);
     }
 }

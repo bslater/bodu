@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Blake3.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -165,24 +165,6 @@ public sealed class Blake3
     /// <see langword="true" />; the implementation accumulates arbitrary-length input internally.
     /// </returns>
     public override bool CanTransformMultipleBlocks => true;
-
-    /// <summary>
-    /// Gets the preferred input block size, in bytes, used when feeding data through
-    /// <see cref="System.Security.Cryptography.CryptoStream" />.
-    /// </summary>
-    /// <returns>
-    /// <see cref="BlockSize" /> (64 bytes) — one BLAKE3 compression block.
-    /// </returns>
-    public override int InputBlockSize => BlockSize;
-
-    /// <summary>
-    /// Gets the output block size, in bytes.
-    /// </summary>
-    /// <returns>
-    /// <see cref="OutLen" /> (32 bytes), the fixed 256-bit digest length produced by this
-    /// implementation.
-    /// </returns>
-    public override int OutputBlockSize => OutLen;
 
     /// <inheritdoc />
     public override void Initialize()

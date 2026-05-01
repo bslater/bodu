@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Blake2b.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -116,7 +116,7 @@ public sealed class Blake2b : KeyedDeferredFinalBlockHashAlgorithm<Blake2b>
         if (Array.IndexOf(ValidHashSizes, hashSize) < 0)
             throw new ArgumentOutOfRangeException(
                 nameof(hashSize),
-                string.Format(ResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
 
         this.HashSizeValue = hashSize;
         this.InitializeHashState();
@@ -127,12 +127,6 @@ public sealed class Blake2b : KeyedDeferredFinalBlockHashAlgorithm<Blake2b>
 
     /// <inheritdoc />
     public override bool CanTransformMultipleBlocks => true;
-
-    /// <inheritdoc />
-    public override int InputBlockSize => BlockSizeBytesValue;
-
-    /// <inheritdoc />
-    public override int OutputBlockSize => this.HashSizeValue / 8;
 
     /// <summary>
     /// Gets or sets the size, in bits, of the final computed hash output.
@@ -168,7 +162,7 @@ public sealed class Blake2b : KeyedDeferredFinalBlockHashAlgorithm<Blake2b>
             if (Array.IndexOf(ValidHashSizes, value) < 0)
                 throw new ArgumentOutOfRangeException(
                     nameof(value),
-                    string.Format(ResourceStrings.CryptographicException_InvalidHashSize, value, string.Join(", ", ValidHashSizes)));
+                    string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, value, string.Join(", ", ValidHashSizes)));
 
             this.HashSizeValue = value;
         }

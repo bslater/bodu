@@ -48,8 +48,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="ResourceStrings.resx">
-      <LastGenOutput>ResourceStrings.Designer.cs</LastGenOutput>
+    <EmbeddedResource Include="CryptoResourceStrings.resx">
+      <LastGenOutput>CryptoResourceStrings.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>
@@ -59,10 +59,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="ResourceStrings.Designer.cs">
-      <DependentUpon>ResourceStrings.resx</DependentUpon>
+    <Compile Update="CryptoCryptoResourceStrings.Designer.cs">
+      <DependentUpon>CryptoCryptoResourceStrings.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="CryptoResourceStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CryptoResourceStrings.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 

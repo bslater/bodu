@@ -219,4 +219,13 @@
   <data name="CryptographicException_XofCustomizationAfterAbsorb" xml:space="preserve">
     <value>The customization string must be set before any data is absorbed.</value>
   </data>
+  <data name="CryptographicException_Invalid_BlockLengthMultipleOf" xml:space="preserve">
+    <value>The input data length must be a multiple of the block size ({0} bytes).</value>
+  </data>
+  <data name="CryptographicException_Invalid_BlockLengthPositiveMultipleOf" xml:space="preserve">
+    <value>The input data length must be a positive multiple of the block size ({0} bytes).</value>
+  </data>
+  <data name="InvalidOperationException_TransformAlreadyFinalized" xml:space="preserve">
+    <value>The cryptographic transform has already been finalized and cannot be reused.</value>
+  </data>
 </root>

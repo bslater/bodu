@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsconHash.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -98,12 +98,6 @@ public abstract partial class AsconHash<T>
 
     /// <inheritdoc />
     public override bool CanTransformMultipleBlocks => true;
-
-    /// <inheritdoc />
-    public override int InputBlockSize => 8;
-
-    /// <inheritdoc />
-    public override int OutputBlockSize => 32;
 
     /// <inheritdoc />
     public override void Initialize()

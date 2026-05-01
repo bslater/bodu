@@ -24,7 +24,9 @@ public partial class ICryptoTransformExtensionsTests
         ICryptoTransform? transform = null;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
-            transform!.TransformBlock(new byte[] { 1, 2, 3, 4 }));
+        {
+            transform!.TransformBlock(new byte[] { 1, 2, 3, 4 });
+        });
     }
 
     /// <summary>
@@ -37,7 +39,9 @@ public partial class ICryptoTransformExtensionsTests
         using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
-            transform.TransformBlock(null!));
+        {
+            transform.TransformBlock(null!);
+        });
     }
 
     /// <summary>
@@ -70,8 +74,10 @@ public partial class ICryptoTransformExtensionsTests
     {
         using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
-        Assert.ThrowsExactly<ArgumentException>(() =>
-            transform.TransformBlock(Array.Empty<byte>()));
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            transform.TransformBlock(Array.Empty<byte>());
+        });
     }
 
     /// <summary>

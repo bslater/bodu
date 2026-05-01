@@ -323,8 +323,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             return;
         }
 
-        int coverage = specification.IncrementalCoverageBytes
-            ?? (specification.InputBlockSize > 1 ? specification.InputBlockSize * 8 : 16);
+        int coverage = specification.HashBlockSize > 1 ? specification.HashBlockSize : 16;
         int maxLength = coverage + 1;
         int expectedEntryCount = maxLength + 1;
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsconAead128.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -187,7 +187,7 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
     {
         this.ThrowIfDisposed();
         if (this._aadProcessed)
-            throw new InvalidOperationException(ResourceStrings.CryptographicException_AssociatedDataAlreadyProcessed);
+            throw new InvalidOperationException(CryptoResourceStrings.CryptographicException_AssociatedDataAlreadyProcessed);
 
         if (!associatedData.IsEmpty)
         {
@@ -234,7 +234,7 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
         int required = plaintext.Length + TagBytes;
         if (output.Length < required)
             throw new ArgumentException(
-                string.Format(ResourceStrings.CryptographicException_OutputBufferTooSmall, required),
+                string.Format(CryptoResourceStrings.CryptographicException_OutputBufferTooSmall, required),
                 nameof(output));
 
         int inOff  = 0;
@@ -300,13 +300,13 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
 
         if (ciphertextWithTag.Length < TagBytes)
             throw new ArgumentException(
-                string.Format(ResourceStrings.CryptographicException_CiphertextTooShort, TagBytes),
+                string.Format(CryptoResourceStrings.CryptographicException_CiphertextTooShort, TagBytes),
                 nameof(ciphertextWithTag));
 
         int ptLen = ciphertextWithTag.Length - TagBytes;
         if (output.Length < ptLen)
             throw new ArgumentException(
-                string.Format(ResourceStrings.CryptographicException_OutputBufferTooSmall, ptLen),
+                string.Format(CryptoResourceStrings.CryptographicException_OutputBufferTooSmall, ptLen),
                 nameof(output));
 
         ReadOnlySpan<byte> ciphertext = ciphertextWithTag.Slice(0, ptLen);
@@ -354,7 +354,7 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
         {
             // Wipe recovered plaintext before throwing — do not expose unauthenticated data.
             CryptographicOperations.ZeroMemory(output.Slice(0, ptLen));
-            throw new CryptographicException(ResourceStrings.CryptographicException_AuthenticationTagMismatch);
+            throw new CryptographicException(CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
         }
 
         return ptLen;
@@ -401,6 +401,6 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
     private void ThrowIfAadNotProcessed()
     {
         if (!this._aadProcessed)
-            throw new InvalidOperationException(ResourceStrings.CryptographicException_AssociatedDataNotProcessed);
+            throw new InvalidOperationException(CryptoResourceStrings.CryptographicException_AssociatedDataNotProcessed);
     }
 }

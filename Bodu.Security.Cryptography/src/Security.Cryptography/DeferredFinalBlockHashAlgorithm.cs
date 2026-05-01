@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DeferredFinalBlockHashAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -91,7 +91,7 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
 
 #if !NET6_0_OR_GREATER
     if (this._finalized)
-        throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+        throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
         int pos = 0;
@@ -134,7 +134,7 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
 
 #if !NET6_0_OR_GREATER
     if (this._finalized)
-        throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+        throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
         Span<byte> residualSpan = this._residualBlock.Span;

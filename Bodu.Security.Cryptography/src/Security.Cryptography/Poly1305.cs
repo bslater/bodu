@@ -123,12 +123,6 @@ public sealed class Poly1305
     /// <inheritdoc />
     public override bool CanTransformMultipleBlocks => true;
 
-    /// <inheritdoc />
-    public override int InputBlockSize => BlockSize;
-
-    /// <inheritdoc />
-    public override int OutputBlockSize => BlockSize;
-
     /// <summary>
     /// Releases the unmanaged resources used by the algorithm and clears the key from memory.
     /// </summary>

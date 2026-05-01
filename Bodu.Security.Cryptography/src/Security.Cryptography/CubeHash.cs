@@ -241,27 +241,6 @@ public sealed class CubeHash
     }
 
     /// <summary>
-    /// Gets the input block size, in bytes, used by consumers of the <see cref="CubeHash" /> algorithm, such as
-    /// <see cref="System.Security.Cryptography.CryptoStream" />.
-    /// </summary>
-    /// <remarks>
-    /// This value reflects the configured <see cref="TransformBlockSize" />, which determines how many bytes are
-    /// accumulated before a transformation round is triggered internally. While this value does not impact the
-    /// correctness of the hash, feeding data in aligned blocks may improve performance in stream-based scenarios.
-    /// </remarks>
-    public override int InputBlockSize => this.TransformBlockSize;
-
-    /// <summary>
-    /// Gets the output block size, in bytes, produced per transformation step — equal to <see cref="InputBlockSize" />.
-    /// </summary>
-    /// <remarks>
-    /// CubeHash is based on a sponge construction in which the same block size governs both input absorption and
-    /// output production. This value therefore mirrors <see cref="TransformBlockSize" /> rather than the final digest
-    /// length, which is expressed separately through <see cref="System.Security.Cryptography.HashAlgorithm.HashSize" />.
-    /// </remarks>
-    public override int OutputBlockSize => this.TransformBlockSize;
-
-    /// <summary>
     /// Gets or sets the number of transformation rounds applied to each full input block.
     /// </summary>
     /// <remarks>
@@ -389,7 +368,7 @@ public sealed class CubeHash
         ThrowHelper.ThrowIfLessThan(cbSize, 0);
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
         if (finalized)
-            throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
         this.EnsureInitialized();
         this.HashCore(array.AsSpan(ibStart, cbSize));
@@ -457,7 +436,7 @@ public sealed class CubeHash
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
         if (finalized)
-            throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
         finalized = true;
         State = 2;
 #endif
@@ -615,6 +594,6 @@ public sealed class CubeHash
     private void ThrowIfInvalidState()
     {
         if (this.State != 0)
-            throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_ReconfigurationNotAllowed);
     }
 }

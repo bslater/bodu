@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Whirlpool.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -81,12 +81,6 @@ public sealed partial class Whirlpool
     /// <inheritdoc />
     public override bool CanTransformMultipleBlocks => true;
 
-    /// <inheritdoc />
-    public override int InputBlockSize => BlockSizeBytesValue;
-
-    /// <inheritdoc />
-    public override int OutputBlockSize => HashSizeBytesValue;
-
     /// <summary>
     /// Gets or sets the published <see cref="WhirlpoolVersion" /> used to compute the hash value.
     /// </summary>
@@ -118,7 +112,7 @@ public sealed partial class Whirlpool
         {
             this.ThrowIfDisposed();
             if (this._inputConsumed)
-                throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
+                throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_ReconfigurationNotAllowed);
             ThrowHelper.ThrowIfEnumValueIsUndefined(value);
 
             this._version = value;

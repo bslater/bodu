@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Shake.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -133,11 +133,11 @@ public sealed class Shake : HashAlgorithm
     {
         if (outputBits <= 0 || outputBits % 8 != 0)
             throw new ArgumentOutOfRangeException(nameof(outputBits),
-                string.Format(ResourceStrings.CryptographicException_InvalidHashSize, outputBits, "any positive multiple of 8"));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, outputBits, "any positive multiple of 8"));
 
         if (Array.IndexOf(s_validSecurityLevels, securityLevel) == -1)
             throw new ArgumentOutOfRangeException(nameof(securityLevel),
-                string.Format(ResourceStrings.CryptographicException_InvalidHashSize, securityLevel, string.Join(", ", s_validSecurityLevels)));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, securityLevel, string.Join(", ", s_validSecurityLevels)));
 
         this.HashSizeValue = outputBits;
         this._securityLevel = securityLevel;
@@ -150,12 +150,6 @@ public sealed class Shake : HashAlgorithm
 
     /// <inheritdoc />
     public override bool CanTransformMultipleBlocks => true;
-
-    /// <inheritdoc />
-    public override int InputBlockSize => this._rateBytes;
-
-    /// <inheritdoc />
-    public override int OutputBlockSize => this.HashSizeValue / 8;
 
     /// <summary>
     /// Gets the security level, in bits, of the SHAKE variant in use.
@@ -203,7 +197,7 @@ public sealed class Shake : HashAlgorithm
 
             if (value <= 0 || value % 8 != 0)
                 throw new ArgumentOutOfRangeException(nameof(value),
-                    string.Format(ResourceStrings.CryptographicException_InvalidHashSize, value, "any positive multiple of 8"));
+                    string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, value, "any positive multiple of 8"));
 
             this.HashSizeValue = value;
         }
@@ -447,6 +441,6 @@ public sealed class Shake : HashAlgorithm
     private void ThrowIfInvalidState()
     {
         if (this.State != 0)
-            throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_ReconfigurationNotAllowed);
     }
 }

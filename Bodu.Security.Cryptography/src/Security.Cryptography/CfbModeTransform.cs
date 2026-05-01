@@ -82,7 +82,7 @@ public sealed class CfbModeTransform : IBlockCipherModeTransform
     {
         int blockSize = this._cipher.BlockSize;
 
-        ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize);
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 
         Span<byte> feedback = stackalloc byte[blockSize];

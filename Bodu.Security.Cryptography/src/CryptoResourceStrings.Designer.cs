@@ -22,14 +22,14 @@ namespace Bodu {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ResourceStrings {
+    internal class CryptoResourceStrings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ResourceStrings() {
+        internal CryptoResourceStrings() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Bodu {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Bodu.ResourceStrings", typeof(ResourceStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Bodu.CryptoResourceStrings", typeof(CryptoResourceStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -111,6 +111,60 @@ namespace Bodu {
         internal static string CryptographicException_AlreadyFinalized {
             get {
                 return ResourceManager.GetString("CryptographicException_AlreadyFinalized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Associated data has already been processed and cannot be supplied again..
+        /// </summary>
+        internal static string CryptographicException_AssociatedDataAlreadyProcessed {
+            get {
+                return ResourceManager.GetString("CryptographicException_AssociatedDataAlreadyProcessed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Associated data must be processed before encrypting or decrypting..
+        /// </summary>
+        internal static string CryptographicException_AssociatedDataNotProcessed {
+            get {
+                return ResourceManager.GetString("CryptographicException_AssociatedDataNotProcessed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authentication tag verification failed. The ciphertext or associated data may have been tampered with..
+        /// </summary>
+        internal static string CryptographicException_AuthenticationTagMismatch {
+            get {
+                return ResourceManager.GetString("CryptographicException_AuthenticationTagMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The ciphertext is too short to contain a {0}-byte authentication tag..
+        /// </summary>
+        internal static string CryptographicException_CiphertextTooShort {
+            get {
+                return ResourceManager.GetString("CryptographicException_CiphertextTooShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The input data length must be a multiple of the block size ({0} bytes)..
+        /// </summary>
+        internal static string CryptographicException_Invalid_BlockLengthMultipleOf {
+            get {
+                return ResourceManager.GetString("CryptographicException_Invalid_BlockLengthMultipleOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The input data length must be a positive multiple of the block size ({0} bytes)..
+        /// </summary>
+        internal static string CryptographicException_Invalid_BlockLengthPositiveMultipleOf {
+            get {
+                return ResourceManager.GetString("CryptographicException_Invalid_BlockLengthPositiveMultipleOf", resourceCulture);
             }
         }
         
@@ -196,6 +250,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The output buffer is too small. At least {0} bytes are required..
+        /// </summary>
+        internal static string CryptographicException_OutputBufferTooSmall {
+            get {
+                return ResourceManager.GetString("CryptographicException_OutputBufferTooSmall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Input length must be a multiple of the block size when using PaddingMode.None..
         /// </summary>
         internal static string CryptographicException_PaddingModeNone_InputNotAligned {
@@ -228,6 +291,24 @@ namespace Bodu {
         internal static string CryptographicException_TweakNotSet {
             get {
                 return ResourceManager.GetString("CryptographicException_TweakNotSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The customization string must be set before any data is absorbed..
+        /// </summary>
+        internal static string CryptographicException_XofCustomizationAfterAbsorb {
+            get {
+                return ResourceManager.GetString("CryptographicException_XofCustomizationAfterAbsorb", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data cannot be absorbed after squeezing has begun. Call Initialize() to reset the instance..
+        /// </summary>
+        internal static string CryptographicException_XofSqueezeAfterAbsorb {
+            get {
+                return ResourceManager.GetString("CryptographicException_XofSqueezeAfterAbsorb", resourceCulture);
             }
         }
         
@@ -302,67 +383,13 @@ namespace Bodu {
                 return ResourceManager.GetString("InvalidOperation_BufferNotFull", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Associated data has already been processed and cannot be supplied again.
+        ///   Looks up a localized string similar to The cryptographic transform has already been finalized and cannot be reused..
         /// </summary>
-        internal static string CryptographicException_AssociatedDataAlreadyProcessed {
+        internal static string InvalidOperationException_TransformAlreadyFinalized {
             get {
-                return ResourceManager.GetString("CryptographicException_AssociatedDataAlreadyProcessed", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Associated data must be processed before encrypting or decrypting.
-        /// </summary>
-        internal static string CryptographicException_AssociatedDataNotProcessed {
-            get {
-                return ResourceManager.GetString("CryptographicException_AssociatedDataNotProcessed", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Authentication tag verification failed.
-        /// </summary>
-        internal static string CryptographicException_AuthenticationTagMismatch {
-            get {
-                return ResourceManager.GetString("CryptographicException_AuthenticationTagMismatch", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The output buffer is too small. At least {0} bytes are required.
-        /// </summary>
-        internal static string CryptographicException_OutputBufferTooSmall {
-            get {
-                return ResourceManager.GetString("CryptographicException_OutputBufferTooSmall", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The ciphertext is too short to contain a {0}-byte authentication tag.
-        /// </summary>
-        internal static string CryptographicException_CiphertextTooShort {
-            get {
-                return ResourceManager.GetString("CryptographicException_CiphertextTooShort", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Data cannot be absorbed after squeezing has begun.
-        /// </summary>
-        internal static string CryptographicException_XofSqueezeAfterAbsorb {
-            get {
-                return ResourceManager.GetString("CryptographicException_XofSqueezeAfterAbsorb", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The customization string must be set before any data is absorbed.
-        /// </summary>
-        internal static string CryptographicException_XofCustomizationAfterAbsorb {
-            get {
-                return ResourceManager.GetString("CryptographicException_XofCustomizationAfterAbsorb", resourceCulture);
+                return ResourceManager.GetString("InvalidOperationException_TransformAlreadyFinalized", resourceCulture);
             }
         }
     }

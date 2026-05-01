@@ -85,7 +85,7 @@ public sealed partial class Tiger
     {
         if (Array.IndexOf(ValidHashSizes, hashSize) == -1)
             throw new ArgumentOutOfRangeException(nameof(hashSize),
-                string.Format(ResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
 
         this.HashSizeValue = hashSize;
     }
@@ -119,12 +119,6 @@ public sealed partial class Tiger
     /// <inheritdoc />
     public override bool CanTransformMultipleBlocks => true;
 
-    /// <inheritdoc />
-    public override int InputBlockSize => 64;
-
-    /// <inheritdoc />
-    public override int OutputBlockSize => this.HashSizeValue / 8;
-
     /// <summary>
     /// Gets or sets the size, in bits, of the final computed hash output.
     /// </summary>
@@ -150,7 +144,7 @@ public sealed partial class Tiger
 
             if (Array.IndexOf(ValidHashSizes, value) == -1)
                 throw new ArgumentOutOfRangeException(nameof(value),
-                    string.Format(ResourceStrings.CryptographicException_InvalidHashSize, value, string.Join(", ", ValidHashSizes)));
+                    string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, value, string.Join(", ", ValidHashSizes)));
 
             this.HashSizeValue = value;
         }

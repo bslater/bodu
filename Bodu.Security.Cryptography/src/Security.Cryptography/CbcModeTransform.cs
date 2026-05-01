@@ -84,7 +84,7 @@ public sealed class CbcModeTransform
     {
         int blockSize = this._cipher.BlockSize;
 
-        ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 
         Span<byte> tempBlock = stackalloc byte[blockSize];

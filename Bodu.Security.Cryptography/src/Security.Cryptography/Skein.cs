@@ -123,7 +123,7 @@ public abstract partial class Skein<T>
             throw new ArgumentOutOfRangeException(
                 nameof(hashSizeBits),
                 string.Format(
-                    ResourceStrings.CryptographicException_InvalidHashSize,
+                    CryptoResourceStrings.CryptographicException_InvalidHashSize,
                     hashSizeBits,
                     string.Join(", ", validHashSizesBits)));
         }
@@ -183,7 +183,7 @@ public abstract partial class Skein<T>
             if (value.Length > MaxKeySizeBytes)
                 throw new CryptographicException(
                     string.Format(
-                        ResourceStrings.CryptographicException_InvalidKeySize,
+                        CryptoResourceStrings.CryptographicException_InvalidKeySize,
                         value.Length,
                         $"0..{MaxKeySizeBytes}"));
 
@@ -191,18 +191,6 @@ public abstract partial class Skein<T>
             this._isChainingValueCached = false;
         }
     }
-
-    /// <summary>
-    /// Gets the number of bytes absorbed per Threefish block — equivalently, the Skein state size in bytes.
-    /// </summary>
-    /// <returns>The block size, in bytes, for this Skein variant (32, 64, or 128).</returns>
-    public override int InputBlockSize => this.BlockSizeBytes;
-
-    /// <summary>
-    /// Gets the output block size, in bytes, produced per Skein transformation step — mirrors <see cref="InputBlockSize" />.
-    /// </summary>
-    /// <returns>The block size, in bytes, for this Skein variant (32, 64, or 128).</returns>
-    public override int OutputBlockSize => this.BlockSizeBytes;
 
     /// <summary>
     /// Gets the fully qualified algorithm name, including the state size and the configured output size.
@@ -232,13 +220,12 @@ public abstract partial class Skein<T>
         this.ThrowIfDisposed();
 
         if (this.KeyValue is null)
-            throw new CryptographicException(ResourceStrings.CryptographicException_KeyNotSet);
+            throw new CryptographicException(CryptoResourceStrings.CryptographicException_KeyNotSet);
 
 #if !NET6_0_OR_GREATER
         this.State = 0;
         this._finalized = false;
 #endif
-
         this._pendingBytes = 0;
         this._messageBytesProcessed = 0UL;
         this._hasProcessedAnyMessageBlock = false;
@@ -259,7 +246,7 @@ public abstract partial class Skein<T>
         ThrowHelper.ThrowIfLessThan(cbSize, 0);
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
         if (this._finalized)
-            throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
         this.HashCore(array.AsSpan(ibStart, cbSize));
@@ -272,7 +259,7 @@ public abstract partial class Skein<T>
 
 #if !NET6_0_OR_GREATER
         if (this._finalized)
-            throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
         this.EnsureChainingStateReadyForHashing();
@@ -291,7 +278,7 @@ public abstract partial class Skein<T>
 
 #if !NET6_0_OR_GREATER
         if (this._finalized)
-            throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
         this._finalized = true;
         this.State = 2;
 #endif

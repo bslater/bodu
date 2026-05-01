@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Camellia.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -290,14 +290,14 @@ public sealed class Camellia
 
         if (key.Length != this.KeySizeBytes)
             throw new CryptographicException(
-                string.Format(ResourceStrings.CryptographicException_InvalidKeySize,
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize,
                               key.Length * 8,
                               CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)),
                 nameof(key));
 
         if (iv!.Length != this.BlockSizeBytes)
             throw new CryptographicException(
-                string.Format(ResourceStrings.CryptographicException_InvalidIVSize,
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidIVSize,
                               iv.Length * 8,
                               CryptoHelpers.FormatLegalSizes(this.LegalBlockSizesValue)),
                 nameof(iv));

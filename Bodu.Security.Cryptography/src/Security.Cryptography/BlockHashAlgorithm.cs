@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockHashAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -120,7 +120,7 @@ public abstract class BlockHashAlgorithm<T>
 
 #if !NET6_0_OR_GREATER
     if (this._finalized)
-        throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+        throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
         this.ProcessBlocks(source);
@@ -140,7 +140,7 @@ public abstract class BlockHashAlgorithm<T>
 
 #if !NET6_0_OR_GREATER
     if (this._finalized)
-        throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+        throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
         if (this.ShouldPadFinalBlock())
