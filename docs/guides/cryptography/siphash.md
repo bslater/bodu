@@ -130,4 +130,4 @@ See the [hashing overview](hashing.md#pattern-4--verifying-a-hash) for the gener
 - [Hashing overview](hashing.md) — how SipHash fits alongside cryptographic digests and non-cryptographic fingerprints.
 - [Using Tiger](tiger.md) — a keyless cryptographic digest when you don't have a secret to carry around.
 - [Using Poly1305](poly1305.md) — one-time authenticator that pairs with a stream cipher (the classic Poly1305/ChaCha20 AEAD construction).
-- [Bodu.IO.Hashing — FNV, CityHash, Adler](../io-hashing/) — the non-keyed, non-adversarial alternatives for trusted inputs.
+- [Bodu.IO.Hashing — FNV, CityHash, Adler](../io-hashing/index.md) — the non-keyed, non-adversarial alternatives for trusted inputs.
