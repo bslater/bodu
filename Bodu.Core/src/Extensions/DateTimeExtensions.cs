@@ -11,9 +11,51 @@ using System.Runtime.CompilerServices;
 namespace Bodu.Extensions;
 
 /// <summary>
-/// Provides a set of <see langword="static"/> ( <see langword="Shared"/> in Visual Basic) methods that extend the
-/// <see cref="System.DateTime"/> class.
+/// Provides calendar-arithmetic, period-anchoring, ISO-aware, and tick-level operations over <see cref="DateTime"/> for code that
+/// outgrows the BCL surface — fiscal calendars, ISO 8601 week numbering, weekend rules, and high-throughput tick math.
 /// </summary>
+/// <remarks>
+/// <para>
+/// <see cref="DateTime"/> exposes raw fields and a handful of arithmetic operators but leaves the harder calendar work — locating
+/// the first Monday of a quarter, snapping to the start or end of a day, computing ISO weeks, or converting between time zones and
+/// epochs — to the caller. This class concentrates that work in a single, allocation-aware extension surface so that scheduling,
+/// reporting, and calendar-driven code does not need to drop down to <see cref="System.Globalization.Calendar"/> or hand-rolled
+/// tick math.
+/// </para>
+/// <para>
+/// The API surface groups into: period anchors (<c>FirstDateOfMonth</c>, <c>FirstDateOfQuarter</c>, <c>LastDateOfYear</c> and the
+/// matching <c>LastDateOf…</c> set), day-boundary helpers (<c>StartOfDay</c>, <c>EndOfDay</c>, <c>Midday</c>, <c>Midnight</c>,
+/// <c>Truncate</c>), weekday navigation (<c>NextDateOfWeek</c>, <c>PreviousDateOfWeek</c>, <c>NearestDateOfWeek</c>,
+/// <c>NextWeekday</c>, <c>NthDateOfWeekInMonth</c>), period predicates and numbering (<c>IsLeapYear</c>, <c>IsWeekend</c>,
+/// <c>IsInRange</c>, <c>WeekOfMonth</c>, <c>WeekOfYear</c>, <c>IsoWeekOfYear</c>, <c>IsoYear</c>, <c>Quarter</c>), and conversions
+/// (<c>ToDateOnly</c>, <c>ToDateTimeOffset</c>, <c>ToIsoString</c>, <c>ToTimeSpan</c>, the <c>UnixTime</c>/epoch family).
+/// </para>
+/// <para>
+/// Many helpers operate directly on <see cref="DateTime.Ticks"/> to avoid intermediate <see cref="DateTime"/> allocations and
+/// favour method-impl <c>AggressiveInlining</c> for hot-path calendar code. Operations that read culture data
+/// (<c>DayName</c>, <c>MonthName</c>, ISO week calculations against a <see cref="System.Globalization.CultureInfo"/>) accept the
+/// culture explicitly or fall back to <see cref="System.Globalization.CultureInfo.CurrentCulture"/>; pure date arithmetic is
+/// culture-neutral and deterministic. The <see cref="DateTime.Kind"/> of the input is preserved unless an explicit conversion is
+/// requested. <see cref="ArgumentOutOfRangeException"/> is thrown whenever a result would leave the supported
+/// <see cref="DateTime"/> range.
+/// </para>
+/// <example>
+/// <code language="csharp">
+/// var dt = new DateTime(2025, 4, 30, 14, 35, 0, DateTimeKind.Utc);
+///
+/// // Snap to the start and end of the same day, preserving Kind.
+/// DateTime startOfDay = dt.StartOfDay();   // 2025-04-30T00:00:00Z
+/// DateTime endOfDay   = dt.EndOfDay();     // 2025-04-30T23:59:59.9999999Z
+///
+/// // ISO 8601 week-of-year and matching ISO year.
+/// int isoWeek = dt.IsoWeekOfYear();        // 18
+/// int isoYear = dt.IsoYear();              // 2025
+///
+/// // Walk to the first Monday strictly after this date.
+/// DateTime nextMonday = dt.NextDateOfWeek(DayOfWeek.Monday); // 2025-05-05T14:35:00Z
+/// </code>
+/// </example>
+/// </remarks>
 public static partial class DateTimeExtensions
 {
     /// <summary>
