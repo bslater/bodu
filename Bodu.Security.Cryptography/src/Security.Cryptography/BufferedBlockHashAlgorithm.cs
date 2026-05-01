@@ -37,6 +37,38 @@ namespace Bodu.Security.Cryptography;
 /// <item><description><see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" /> consumes the input span using the buffering shape required by the algorithm family.</description></item>
 /// <item><description><see cref="HashAlgorithm.HashFinal" /> finalises the computation and returns the digest.</description></item>
 /// </list>
+/// <para>
+/// <strong>Don't derive from this class directly.</strong> Use one of the four pattern-specific bases that
+/// extend it — the buffering loops and finalisation shapes differ enough that the right derivation point
+/// depends on which family the algorithm belongs to:
+/// </para>
+/// <list type="bullet">
+///   <item>
+///     <term>Merkle–Damgård, unkeyed</term>
+///     <description><see cref="BlockHashAlgorithm{T}"/> — Tiger, Whirlpool, Snefru, the SHA-2 family,
+///     classic block-padding hashes that finalise by padding the last partial block.</description>
+///   </item>
+///   <item>
+///     <term>Merkle–Damgård, keyed</term>
+///     <description><see cref="KeyedBlockHashAlgorithm{T}"/> — Poly1305, SipHash, and any keyed hash whose
+///     finalisation is "pad then compress".</description>
+///   </item>
+///   <item>
+///     <term>Blake-style, unkeyed</term>
+///     <description><see cref="DeferredFinalBlockHashAlgorithm{T}"/> — BLAKE3 and other algorithms that need
+///     to defer the last full block so a finalisation flag can be set.</description>
+///   </item>
+///   <item>
+///     <term>Blake-style, optionally keyed</term>
+///     <description><see cref="KeyedDeferredFinalBlockHashAlgorithm{T}"/> — BLAKE2b, BLAKE2s, and the RFC 7693
+///     keyed-MAC variants of BLAKE-family hashes.</description>
+///   </item>
+/// </list>
+/// <para>
+/// Derive from <see cref="BufferedBlockHashAlgorithm{T}"/> directly only when implementing a <em>new</em>
+/// buffering pattern that doesn't fit either family — e.g. a sponge construction with a non-Merkle–Damgård
+/// finalisation step.
+/// </para>
 /// </remarks>
 public abstract class BufferedBlockHashAlgorithm<T>
     : HashAlgorithm
