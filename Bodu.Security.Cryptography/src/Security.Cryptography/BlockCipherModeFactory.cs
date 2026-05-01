@@ -11,6 +11,22 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Creates <see cref="IBlockCipherModeTransform" /> instances that wrap an <see cref="IBlockCipher" /> with a standard chaining mode.
 /// </summary>
+/// <remarks>
+/// <para>
+/// The factory dispatches a <see cref="CipherBlockMode"/> enumeration value to the matching mode-transform
+/// implementation. Used internally by every <see cref="System.Security.Cryptography.SymmetricAlgorithm"/> in
+/// this library when its <see cref="System.Security.Cryptography.SymmetricAlgorithm.Mode"/> is set, so that
+/// the same enum value selects the appropriate transform regardless of which cipher is in play.
+/// </para>
+/// <para>
+/// <strong>What this factory covers and does not cover.</strong> Only the classic confidentiality-only modes
+/// (ECB, CBC, CFB, OFB, CTR) are dispatched here. <see cref="CtsModeTransform"/> and <see cref="XtsModeTransform"/>
+/// are not in the <see cref="CipherBlockMode"/> enumeration and must be constructed directly. Authenticated
+/// modes have their own contract and lifecycle — construct an
+/// <see cref="IAeadBlockCipherModeTransform"/> implementation directly, or use the helpers on
+/// <see cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions"/>.
+/// </para>
+/// </remarks>
 /// <example>
 /// The following example composes a block cipher, a CBC mode transform, and PKCS#7 padding to encrypt a message:
 /// <code>
