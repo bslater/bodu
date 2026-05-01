@@ -21,6 +21,22 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// For the highest security margin, use <see cref="AsconHash256" />, which applies Ascon-p12 at every phase.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Output size: 256 bits (32 bytes), fixed.</description></item>
+///   <item><description>State: 320 bits sponge; rate: 64 bits (8 bytes).</description></item>
+///   <item><description>Permutation: Ascon-p12 for initialisation and the first squeeze; Ascon-p8 for absorption and subsequent squeezes.</description></item>
+///   <item><description>Specification: NIST SP 800-232 (ASCON family).</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose ASCON-HASHA256.</strong> Pick this when ASCON-family interop is required and message
+/// throughput matters more than the extra round-count margin of <see cref="AsconHash256"/> — typical for IoT
+/// gateways and lightweight protocols that hash sustained streams of telemetry. For maximum margin use
+/// <see cref="AsconHash256"/>; for non-ASCON throughput-sensitive hashing on commodity hardware
+/// <see cref="Blake3"/> is faster still.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
