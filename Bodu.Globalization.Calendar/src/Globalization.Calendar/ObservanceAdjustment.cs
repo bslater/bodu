@@ -24,6 +24,14 @@ namespace Bodu.Globalization.Calendar;
 /// targeted and overridden by <c>&lt;Use&gt;</c> directives when the rule is inherited by another resource.
 /// </para>
 /// <para>
+/// When an adjustment activates the <see cref="NotableDateService" /> emits an <em>additional</em> <see cref="NotableDate" />
+/// at the adjusted date, leaving the original calculated date in place so consumers see both the actual and the observed
+/// occurrence. The shifted occurrence carries an <see cref="AdjustmentReason" /> on its
+/// <see cref="NotableDate.AdjustmentReason" /> property, naming the trigger and action that caused the shift; this also flips
+/// <see cref="NotableDate.WasAdjusted" /> to <see langword="true" />. When <see cref="IsNonWorkingDay" /> is set on the
+/// adjustment, that value overrides the rule's non-working flag for the shifted occurrence only.
+/// </para>
+/// <para>
 /// This type replaces the earlier <c>NotableDateAdjustmentRule</c>. The new name distinguishes the adjustment <em>specification</em>
 /// from the resolution <em>rule</em> that owns it.
 /// </para>
