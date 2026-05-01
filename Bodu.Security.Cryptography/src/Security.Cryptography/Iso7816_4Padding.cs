@@ -14,12 +14,31 @@ namespace Bodu.Security.Cryptography;
 /// padding). The first pad byte is <c>0x80</c> and remaining pad bytes are <c>0x00</c>.
 /// </summary>
 /// <remarks>
+/// <para>
 /// A full block of padding is always added when the input is already block-aligned so
 /// that <see cref="Unpad" /> can unambiguously recover the original length by locating
 /// the terminator. The scheme is widely used in smart-card protocols, SHA-3/Keccak and
 /// CMAC. <see cref="Unpad" /> validates in constant time over the final block to resist
 /// padding-oracle side channels.
+/// </para>
+/// <para>
+/// <strong>When to choose ISO/IEC 7816-4.</strong> Pick this when interoperating with smart-card, EMV, or
+/// ISO crypto tooling — the <c>0x80</c>/<c>0x00</c> sentinel scheme is the standard there. It is also the
+/// padding used by the SHA-3 / Keccak family and by CMAC. For general-purpose .NET / Java / OpenSSL interop
+/// prefer <see cref="Pkcs7Padding"/>; for AEAD modes that handle their own alignment use
+/// <see cref="NoPadding"/>.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.Security.Cryptography;
+///
+/// IPaddingStrategy padding = new Iso7816_4Padding();
+/// byte[] padded = padding.Pad(plaintext, blockSize: 16);
+/// // padded ends with 0x80 followed by zero or more 0x00 bytes.
+/// byte[] recovered = padding.Unpad(padded, blockSize: 16);
+/// </code>
+/// </example>
 public sealed class Iso7816_4Padding : IPaddingStrategy
 {
     /// <inheritdoc />

@@ -41,7 +41,33 @@ namespace Bodu.Security.Cryptography;
 /// The tag size is fixed at 16 bytes (the full GHASH output). The IV is used directly as the initial
 /// counter J0; for standard GCM with 96-bit nonces, the caller should pad to blockSize.
 /// </para>
+/// <para>
+/// <strong>When to use GCM.</strong> The default modern AEAD mode — TLS 1.2/1.3, IPsec ESP, SSH, QUIC, and
+/// most file-format AEAD layers all use AES-GCM. Single-pass, parallelisable, hardware-accelerated on
+/// AES-NI / PCLMULQDQ, and the fastest AEAD on commodity x86/ARM. The cost is fragility under nonce reuse:
+/// a single repeated <c>(key, nonce)</c> pair leaks the GHASH key and forfeits authentication forever.
+/// Use only when the caller can <em>guarantee</em> nonce uniqueness — usually via a 96-bit counter or
+/// a random nonce drawn from a large enough space. For nonce-misuse resistance prefer
+/// <see cref="GcmSivModeTransform"/> or <see cref="SivModeTransform"/>; for constrained environments prefer
+/// <see cref="CcmModeTransform"/>; for a single-pass alternative without GCM's fragility profile prefer
+/// <see cref="OcbModeTransform"/>.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// using IBlockCipher cipher = new AesBlockCipher(key);
+/// byte[] iv = BuildGcmIv(nonce); // standard 96-bit nonce padded to the cipher block size
+/// using IAeadBlockCipherModeTransform gcm = new GcmModeTransform(cipher, iv);
+///
+/// byte[] sealed_   = gcm.Encrypt(plaintext, associatedData: header);
+/// using IAeadBlockCipherModeTransform dec = new GcmModeTransform(cipher, iv);
+/// byte[] recovered = dec.Decrypt(sealed_, associatedData: header);
+/// </code>
+/// </example>
 /// <seealso href="../guides/cryptography/aead-modes.html#gcm--the-workhorse">GCM walk-through in the AEAD-modes guide</seealso>
 /// <seealso cref="AesBlockCipher" />
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />

@@ -33,9 +33,38 @@ namespace Bodu.Security.Cryptography;
 /// and accumulated using modular arithmetic modulo <c>2¹³⁰ - 5</c>. After processing all blocks, the accumulator is finalized by adding
 /// the second half of the key <c>s</c> and serialising the result as the final MAC tag.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Tag size: 128 bits (16 bytes), fixed.</description></item>
+///   <item><description>Key size: 256 bits (32 bytes) — first half is clamped to <c>r</c>, second half is the nonce-derived <c>s</c>.</description></item>
+///   <item><description>Block size: 16 bytes; arithmetic modulo <c>2¹³⁰ − 5</c>.</description></item>
+///   <item><description>Specification: RFC 8439 (ChaCha20-Poly1305).</description></item>
+///   <item><description><strong>Single-use:</strong> a key must authenticate exactly one message.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose Poly1305.</strong> Reach for Poly1305 when implementing or extending a Poly1305-based
+/// AEAD (ChaCha20-Poly1305 in TLS 1.3, SSH, WireGuard, Noise) or when authenticating a single message with a
+/// fresh per-message key derived from a stream cipher. For multi-message keyed authentication use HMAC-SHA-256,
+/// <see cref="Blake2b"/>-MAC, or <see cref="SipHash64"/> / <see cref="SipHash128"/> — none of which share Poly1305's
+/// one-time-key restriction.
+/// </para>
 /// <note type="important">This algorithm is a <b>one-time authenticator</b> and must <b>not</b> be used with the same key for multiple
 /// messages. Reusing a key with different inputs <b>compromises</b> the cryptographic security and may lead to forgery attacks.</note>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+///
+/// // The 32-byte key MUST be unique per message — typically derived from a stream cipher's keystream.
+/// byte[] oneTimeKey = DerivePoly1305KeyFromChaCha20(sessionKey, nonce);
+///
+/// using var poly = new Poly1305 { Key = oneTimeKey };
+/// byte[] tag = poly.ComputeHash(message);
+/// </code>
+/// </example>
 public sealed class Poly1305
     : KeyedBlockHashAlgorithm<Poly1305>
 {

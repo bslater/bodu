@@ -27,7 +27,17 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="Key" /> property setter validates the supplied byte array against that length, stores a defensive copy in
 /// <see cref="KeyValue" />, and then invokes <see cref="OnKeyChanged" /> so the derived algorithm can rebuild any key-dependent state.
 /// </para>
+/// <para>
+/// <strong>When to derive from this class.</strong> Pick <see cref="KeyedBlockHashAlgorithm{T}"/> for keyed
+/// hashes that follow the Merkle–Damgård pad-and-finalise pattern and require a fixed-length key —
+/// <see cref="Poly1305"/> (32-byte key) and <see cref="SipHash{T}"/> (16-byte key) are the canonical users.
+/// For BLAKE-family hashes that accept an <em>optional</em> variable-length key derive from
+/// <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}"/> instead. For unkeyed Merkle–Damgård hashes use
+/// <see cref="BlockHashAlgorithm{T}"/> directly.
+/// </para>
 /// </remarks>
+/// <seealso cref="BlockHashAlgorithm{T}"/>
+/// <seealso cref="KeyedDeferredFinalBlockHashAlgorithm{T}"/>
 public abstract class KeyedBlockHashAlgorithm<T>
     : BlockHashAlgorithm<T>
     where T : KeyedBlockHashAlgorithm<T>, new()

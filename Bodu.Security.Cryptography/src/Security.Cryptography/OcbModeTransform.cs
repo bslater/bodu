@@ -43,7 +43,29 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// The L array uses GF(2^128) doubling with polynomial x^128 + x^7 + x^2 + x + 1 (big-endian).
 /// </para>
+/// <para>
+/// <strong>When to use OCB3.</strong> Pick OCB3 when you want a single-pass AEAD mode without GCM's
+/// catastrophic-on-nonce-reuse profile — OCB still requires nonces to be unique per key, but the failure
+/// mode is graceful (only that one message's confidentiality is lost; the GHASH-key-leak amplification
+/// does not apply). OCB historically had patent encumbrances that limited adoption; the patents have since
+/// been placed into the public domain, but <see cref="GcmModeTransform"/> remains the more widely deployed
+/// choice in practice. For nonce-misuse resistance prefer <see cref="GcmSivModeTransform"/> or
+/// <see cref="SivModeTransform"/>; for constrained environments prefer <see cref="CcmModeTransform"/>.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// using IBlockCipher cipher = new AesBlockCipher(key);
+/// byte[] iv = BuildOcbIv(nonce); // first 12 bytes of the IV are the nonce
+/// using IAeadBlockCipherModeTransform ocb = new OcbModeTransform(cipher, iv, tagLen: 16);
+///
+/// byte[] sealed_ = ocb.Encrypt(plaintext, associatedData: header);
+/// </code>
+/// </example>
 /// <seealso href="../guides/cryptography/aead-modes.html#ocb3--single-pass-rfc-7253">OCB3 walk-through in the AEAD-modes guide</seealso>
 /// <seealso cref="AesBlockCipher" />
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />

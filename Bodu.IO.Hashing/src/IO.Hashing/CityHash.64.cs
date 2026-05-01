@@ -20,10 +20,34 @@ namespace Bodu.IO.Hashing;
 /// consumes 64-byte blocks using two pairs of seeded weak hash accumulators for inputs of 65 bytes or more. All paths converge through
 /// the shared <c>HashLen16</c> finaliser, which applies two rounds of multiply-shift-XOR to distribute entropy across all output bits.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Output size: 64 bits (8 bytes), little-endian.</description></item>
+///   <item><description>Variant: <c>CityHash64</c>.</description></item>
+///   <item><description>Length-dispatched mixing: 0–16, 17–32, 33–64, and 65+ byte paths.</description></item>
+///   <item><description>Block size on the long path: 64 bytes.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose CityHash64.</strong> The general-purpose default for 64-bit non-cryptographic
+/// hashing — fingerprints, content-based sharding, deduplication keys. <see cref="MurmurHash3_128"/> gives
+/// twice the bits at slightly lower throughput on long inputs; <see cref="Fnv1a64"/> is preferable only for
+/// very small fixed-length keys where simplicity matters more than distribution.
+/// </para>
 /// <note type="important">
 /// This algorithm is <b>not</b> cryptographically secure and must <b>not</b> be used for password hashing, digital signatures, or any
 /// application requiring adversarial collision resistance.
 /// </note>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// var city = new CityHash64();
+/// byte[] fingerprint = city.ComputeHash(blob);
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class CityHash64
     : CityHash<CityHash64>

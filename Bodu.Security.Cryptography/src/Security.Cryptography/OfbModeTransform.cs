@@ -27,7 +27,33 @@ namespace Bodu.Security.Cryptography;
 /// The initialisation vector must equal the cipher block size in length and must never be reused under the same
 /// key, otherwise keystreams collide and confidentiality is lost.
 /// </para>
+/// <para>
+/// <strong>When to use OFB.</strong> Pick OFB only for legacy interop. For stream-cipher behaviour
+/// <see cref="CtrModeTransform"/> is the modern default — it parallelises, supports random access, and is the
+/// mode used by every major AEAD construction. OFB's main historical advantage was that bit errors in
+/// transmission do not propagate, but unauthenticated stream ciphers cannot detect those errors at all, so the
+/// guarantee is rarely useful in practice. As with CFB, OFB has no built-in authentication; reach for an AEAD
+/// mode (<see cref="GcmModeTransform"/>, <see cref="EaxModeTransform"/>) when integrity matters.
+/// </para>
+/// <para>
+/// OFB's keystream depends only on the IV and the key, so it is sequential at generation but the resulting
+/// keystream can be precomputed and cached if needed.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+///
+/// // Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.OFB instead of using this directly.
+/// using IBlockCipher cipher = new AesBlockCipher(key);
+/// byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize); // unique per message
+/// IBlockCipherModeTransform ofb = new OfbModeTransform(cipher, iv);
+///
+/// byte[] ciphertext = new byte[plaintext.Length];
+/// int written = ofb.Transform(plaintext, ciphertext, encrypt: true);
+/// </code>
+/// </example>
 /// <seealso href="../guides/cryptography/cipher-modes.html#ofb--synchronous-stream-cipher">OFB walk-through in the cipher-modes guide</seealso>
 public sealed class OfbModeTransform : IBlockCipherModeTransform
 {

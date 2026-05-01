@@ -32,6 +32,21 @@ namespace Bodu.Security.Cryptography;
 /// Although no longer recommended for new security-sensitive applications, Tiger has not been broken in the classical collision
 /// sense and is still useful for legacy interoperability and as a fast integrity hash.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Output size: 128, 160, or 192 bits — internally always 192 bits, then truncated.</description></item>
+///   <item><description>Block size: 64 bytes (512 bits); three 64-bit state variables.</description></item>
+///   <item><description>Three passes per block, eight S-box rounds per pass; optimised for 64-bit hosts.</description></item>
+///   <item><description>Padding variant: <see cref="TigerHashingVariant.Tiger"/> (<c>0x01</c>) or <see cref="TigerHashingVariant.Tiger2"/> (<c>0x80</c>).</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose Tiger.</strong> Pick Tiger only for legacy interoperability — TigerTree (Merkle hash
+/// of Tiger-192 leaves) is still seen in older P2P and content-addressed storage systems. For any new security
+/// design use a SHA-2 family member or <see cref="Blake2b"/>; for fast non-cryptographic fingerprinting the
+/// algorithms in <c>Bodu.IO.Hashing</c> are usually a better fit.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

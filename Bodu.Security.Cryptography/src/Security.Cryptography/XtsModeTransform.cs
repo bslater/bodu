@@ -40,7 +40,33 @@ namespace Bodu.Security.Cryptography;
 /// GF(2^128) multiplication uses the primitive polynomial x^128 + x^7 + x^2 + x + 1 with
 /// little-endian bit representation (byte 0, bit 0 = coefficient of x^0), identical to IEEE 1619.
 /// </para>
+/// <para>
+/// <strong>When to use XTS.</strong> The standard mode for sector-level disk encryption — used by
+/// BitLocker, FileVault, dm-crypt/LUKS, VeraCrypt, and the IEEE 1619 disk-encryption specification. XTS is
+/// designed specifically for the random-access, fixed-size-block setting where ciphertext expansion is
+/// impossible (the on-disk sector size cannot grow), which means it provides confidentiality but
+/// <em>no authentication</em>. Do not use XTS for protecting messages over untrusted channels — pick an
+/// AEAD mode (<see cref="GcmModeTransform"/>, <see cref="EaxModeTransform"/>) for that. For new disk
+/// encryption designs that can afford a per-sector tag, AEAD-based alternatives (Adiantum, AES-XTS-HMAC,
+/// or storage-specific AEAD modes) provide stronger guarantees.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+///
+/// // XTS uses two independent keys — Key1 for data, Key2 for the tweak. Never share keys.
+/// using IBlockCipher data  = new AesBlockCipher(key1);
+/// using IBlockCipher tweak = new AesBlockCipher(key2);
+/// byte[] sectorNumber = BitConverter.GetBytes((long)42); // little-endian sector number, padded to block size
+/// Array.Resize(ref sectorNumber, data.BlockSize);
+/// IBlockCipherModeTransform xts = new XtsModeTransform(data, tweak, sectorNumber);
+///
+/// byte[] ciphertext = new byte[plaintext.Length];
+/// int written = xts.Transform(plaintext, ciphertext, encrypt: true);
+/// </code>
+/// </example>
 public sealed class XtsModeTransform : IBlockCipherModeTransform
 {
     private readonly IBlockCipher _dataCipher;

@@ -26,7 +26,34 @@ namespace Bodu.Security.Cryptography;
 /// under the same key weakens confidentiality. The instance retains the most recent ciphertext block as the chaining value, so
 /// successive calls to <see cref="Transform" /> continue the stream.
 /// </para>
+/// <para>
+/// <strong>When to use CBC.</strong> The traditional confidentiality-only mode — the right pick when
+/// interoperating with legacy protocols (TLS up to 1.2, JCE defaults, many file formats) or when an
+/// authenticated mode is impractical. CBC requires plaintext to be a multiple of the block size, so it is
+/// almost always paired with <see cref="Pkcs7Padding"/>. For new designs prefer <see cref="GcmModeTransform"/>
+/// or <see cref="EaxModeTransform"/>, both of which authenticate as well as encrypt; CBC plus a separate
+/// MAC is fragile and easy to misuse. Decryption with strippable padding is vulnerable to padding-oracle
+/// attacks unless the padding check is performed in constant time and never leaks via timing or error messages.
+/// </para>
+/// <para>
+/// CBC is sequential — neither encryption nor decryption parallelises across blocks within a single message.
+/// Random access into the ciphertext is not supported.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+///
+/// // Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.CBC instead of using this directly.
+/// using IBlockCipher cipher = new AesBlockCipher(key);
+/// byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize); // unique per message
+/// IBlockCipherModeTransform cbc = new CbcModeTransform(cipher, iv);
+///
+/// byte[] ciphertext = new byte[paddedPlaintext.Length];
+/// int written = cbc.Transform(paddedPlaintext, ciphertext, encrypt: true);
+/// </code>
+/// </example>
 /// <seealso href="../guides/cryptography/cipher-modes.html#cbc--the-default">CBC walk-through in the cipher-modes guide</seealso>
 public sealed class CbcModeTransform
     : IBlockCipherModeTransform

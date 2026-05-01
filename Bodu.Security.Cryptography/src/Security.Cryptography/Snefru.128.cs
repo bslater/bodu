@@ -17,9 +17,30 @@ namespace Bodu.Security.Cryptography;
 /// applying 8 rounds of S-box substitution and word rotation per block. On finalisation the state is XOR-folded from the permuted
 /// buffer and serialised in big-endian byte order. See <see cref="Snefru{T}" /> for shared background.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Output size: 128 bits (16 bytes).</description></item>
+///   <item><description>Block size: 48 bytes; 4-word internal state; 8 rounds per block.</description></item>
+///   <item><description>Status: <strong>broken</strong> — practical collision attacks are known.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose Snefru128.</strong> For academic study and interop with archival data only. For new
+/// security-sensitive work use SHA-2 or <see cref="Blake2b"/>; for 128-bit non-cryptographic fingerprinting use a
+/// <c>Bodu.IO.Hashing</c> algorithm such as <see cref="Bodu.IO.Hashing.MurmurHash3_128"/>.
+/// </para>
 /// <note type="important">Snefru is considered broken and <b>not</b> suitable for password hashing, digital signatures, or secure
 /// data integrity checks.</note>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.Security.Cryptography;
+///
+/// using var snefru = new Snefru128();
+/// byte[] digest = snefru.ComputeHash(legacyMessage);
+/// </code>
+/// </example>
 public sealed class Snefru128 : Snefru<Snefru128>
 {
     /// <summary>

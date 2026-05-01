@@ -36,9 +36,19 @@ namespace Bodu.Security.Cryptography;
 /// Each input block is processed by 8 rounds consisting of an S-box substitution step followed by a word-wise circular rotation.
 /// After all input has been absorbed, the internal state is serialised in big-endian byte order to produce the final digest.
 /// </para>
+/// <para>
+/// <strong>When to choose Snefru.</strong> Academic study and legacy interop only — Snefru has practical
+/// collision attacks against both the 2-pass and 4-pass variants and is one of the earliest cryptographic
+/// hashes ever published. Pick <see cref="Snefru128"/> for 128-bit output and <see cref="Snefru256"/> for
+/// 256-bit output. For any new security-sensitive cryptographic hashing use SHA-2, SHA-3, or
+/// <see cref="Blake2b"/>; for non-cryptographic fingerprinting use a member of <c>Bodu.IO.Hashing</c>.
+/// </para>
 /// <note type="important">This algorithm is <b>not</b> considered secure by modern cryptographic standards and should <b>not</b> be
 /// used for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// </remarks>
+/// <seealso cref="Snefru128"/>
+/// <seealso cref="Snefru256"/>
+/// <seealso cref="BlockHashAlgorithm{T}"/>
 public abstract partial class Snefru<T>
     : BlockHashAlgorithm<T>
     where T : Snefru<T>, new()

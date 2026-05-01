@@ -36,6 +36,37 @@ namespace Bodu.Security.Cryptography;
 /// All implementations are stateful and not thread-safe. A new instance must be created for each
 /// message.
 /// </para>
+/// <para>
+/// <strong>API surface.</strong> The library ships several implementations clustered by trade-off:
+/// </para>
+/// <list type="bullet">
+///   <item>
+///     <term>Default high-throughput AEAD</term>
+///     <description><see cref="GcmModeTransform"/> — single-pass, hardware-accelerated, fragile under nonce reuse.</description>
+///   </item>
+///   <item>
+///     <term>Constrained-environment AEAD</term>
+///     <description><see cref="CcmModeTransform"/> — two-pass, no Galois-field arithmetic, used by Zigbee / Bluetooth Mesh.</description>
+///   </item>
+///   <item>
+///     <term>Two-pass alternatives</term>
+///     <description><see cref="EaxModeTransform"/> — flexible nonce length, OMAC-based authentication.</description>
+///   </item>
+///   <item>
+///     <term>Misuse-resistant</term>
+///     <description><see cref="GcmSivModeTransform"/> (RFC 8452) and <see cref="SivModeTransform"/> (RFC 5297) — nonce reuse only leaks message-equality.</description>
+///   </item>
+///   <item>
+///     <term>Single-pass without GCM's failure profile</term>
+///     <description><see cref="OcbModeTransform"/> — RFC 7253, single-pass, graceful nonce-reuse failure.</description>
+///   </item>
+/// </list>
+/// <para>
+/// Most callers should reach for the helper methods on
+/// <see cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions"/> instead of calling
+/// <see cref="ProcessAssociatedData"/> + <see cref="Encrypt"/>/<see cref="Decrypt"/> directly — those wrappers
+/// size the output buffer correctly and return a single freshly allocated array.
+/// </para>
 /// </remarks>
 /// <seealso href="../guides/cryptography/aead-modes.html">Using AEAD modes (guide with GCM, CCM, OCB3, SIV, and GCM-SIV examples)</seealso>
 /// <seealso cref="AesBlockCipher" />

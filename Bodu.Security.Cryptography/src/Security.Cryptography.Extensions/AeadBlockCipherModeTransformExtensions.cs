@@ -10,23 +10,79 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography.Extensions;
 
 /// <summary>
-/// Provides one-shot convenience wrappers around <see cref="IAeadBlockCipherModeTransform" />
-/// that handle associated-data processing, output buffer sizing, and the ciphertext + tag layout
-/// in a single call.
+/// Extends <see cref="IAeadBlockCipherModeTransform"/> with one-shot encrypt/decrypt overloads that handle the
+/// associated-data step, size the output buffer correctly, and return the ciphertext + tag (or recovered plaintext) as
+/// a single freshly allocated array.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The raw <see cref="IAeadBlockCipherModeTransform" /> contract requires callers to call
-/// <see cref="IAeadBlockCipherModeTransform.ProcessAssociatedData" /> before <see cref="IAeadBlockCipherModeTransform.Encrypt" />
-/// or <see cref="IAeadBlockCipherModeTransform.Decrypt" />, size the output buffer to
-/// <c>plaintext.Length + TagSize</c> (or <c>ciphertextWithTag.Length - TagSize</c>), and
-/// interpret the return value. These extension methods collapse all of that into a single call
-/// that returns a correctly sized <see cref="byte" /> array.
+/// AEAD ("authenticated encryption with associated data") modes — GCM, CCM, EAX, GCM-SIV, AES-SIV, Ascon — encrypt
+/// confidential plaintext while simultaneously authenticating the ciphertext together with a separate stream of
+/// associated data that travels in the clear (packet headers, message metadata, …). The
+/// <see cref="IAeadBlockCipherModeTransform"/> contract gives callers maximum control: invoke
+/// <see cref="IAeadBlockCipherModeTransform.ProcessAssociatedData"/>, size the output buffer to
+/// <c>plaintext.Length + TagSize</c> (or <c>ciphertextWithTag.Length - TagSize</c>), call
+/// <see cref="IAeadBlockCipherModeTransform.Encrypt"/> or <see cref="IAeadBlockCipherModeTransform.Decrypt"/>, and
+/// interpret the return value. This class collapses that fixed sequence into a single call that returns a correctly
+/// sized array, matching the shape of <c>AesGcm.Encrypt</c> / <c>AesGcm.Decrypt</c> in the BCL but parameterised over
+/// <em>any</em> AEAD transform implementation.
 /// </para>
 /// <para>
-/// AEAD transforms are stateful and single-use. Construct a new transform per message and pass
-/// it to exactly one of these extension methods.
+/// The API surface is symmetric and intentionally small:
 /// </para>
+/// <list type="bullet">
+///   <item>
+///     <term><c>Encrypt(transform, plaintext)</c></term>
+///     <description>One-shot encrypt with no associated data — equivalent to passing
+///     <see cref="System.ReadOnlySpan{T}.Empty"/>.</description>
+///   </item>
+///   <item>
+///     <term><c>Encrypt(transform, plaintext, associatedData)</c></term>
+///     <description>One-shot encrypt with associated data; returns ciphertext concatenated with the
+///     <see cref="IAeadBlockCipherModeTransform.TagSize"/>-byte authentication tag.</description>
+///   </item>
+///   <item>
+///     <term><c>Decrypt(transform, ciphertextWithTag)</c></term>
+///     <description>One-shot decrypt with no associated data; throws on tag mismatch.</description>
+///   </item>
+///   <item>
+///     <term><c>Decrypt(transform, ciphertextWithTag, associatedData)</c></term>
+///     <description>One-shot decrypt and tag-verify; returns the recovered plaintext, or throws
+///     <see cref="CryptographicException"/> on a failed tag check.</description>
+///   </item>
+/// </list>
+/// <para>
+/// AEAD transforms are <strong>stateful and single-use within a message</strong>: instantiate a new transform per
+/// message, call exactly one of these helpers, and dispose. The associated-data argument must match byte-for-byte
+/// between the encrypt and decrypt calls — even a single-bit difference will cause the tag check to fail. Tag
+/// verification is constant-time inside the transform implementation, so timing leaks are not a concern. Output arrays
+/// are always sized exactly: <c>plaintext.Length + TagSize</c> on encrypt, <c>ciphertextWithTag.Length - TagSize</c> on
+/// decrypt.
+/// </para>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using System.Text;
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// byte[] key    = RandomNumberGenerator.GetBytes(32);
+/// byte[] nonce  = RandomNumberGenerator.GetBytes(12);
+/// byte[] header = Encoding.UTF8.GetBytes("v=1;msg=42");
+///
+/// // 1. Encrypt with associated data; receive ciphertext + tag in a single buffer.
+/// using IAeadBlockCipherModeTransform enc = new GcmModeTransform(key, nonce);
+/// byte[] sealed_ = enc.Encrypt(plaintext, associatedData: header);
+///
+/// // 2. Decrypt and verify in one call. A tampered tag or header throws CryptographicException.
+/// using IAeadBlockCipherModeTransform dec = new GcmModeTransform(key, nonce);
+/// byte[] recovered = dec.Decrypt(sealed_, associatedData: header);
+///
+/// // 3. Same shape with a different mode — Ascon, EAX, GCM-SIV all interchange behind IAeadBlockCipherModeTransform.
+/// using IAeadBlockCipherModeTransform enc2 = new AsconAead128(key, nonce);
+/// byte[] sealedAscon = enc2.Encrypt(plaintext);
+/// </code>
+/// </example>
 /// </remarks>
 /// <seealso href="../guides/cryptography/aead-modes.html">Using AEAD modes (guide with full encrypt / decrypt examples)</seealso>
 public static class AeadBlockCipherModeTransformExtensions

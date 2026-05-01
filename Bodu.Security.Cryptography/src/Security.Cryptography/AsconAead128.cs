@@ -56,23 +56,43 @@ namespace Bodu.Security.Cryptography;
 /// Call <see cref="ProcessAssociatedData" /> before <see cref="Encrypt" /> or <see cref="Decrypt" />. Pass an empty span
 /// if there is no associated data.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Key size: 128 bits (16 bytes).</description></item>
+///   <item><description>Nonce size: 128 bits (16 bytes), must be unique per key.</description></item>
+///   <item><description>Tag size: 128 bits (16 bytes).</description></item>
+///   <item><description>State: 320-bit sponge; rate: 16 bytes; permutation Ascon-p12 (init/finalise) + Ascon-p8 (absorb).</description></item>
+///   <item><description>Specification: NIST SP 800-232 (ASCON family).</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose Ascon-AEAD128.</strong> The right pick when NIST's lightweight-cryptography
+/// selection is required, or for resource-constrained targets (microcontrollers, IoT) where the Ascon
+/// permutation's small state and short round count are an advantage over GCM's GHASH multiplications. For
+/// general-purpose AEAD on commodity x86/ARM hardware <see cref="GcmModeTransform"/> remains faster thanks
+/// to AES-NI/PCLMULQDQ; for nonce-misuse resistance prefer <see cref="GcmSivModeTransform"/> or
+/// <see cref="SivModeTransform"/>. Unlike the AES-based AEAD modes, Ascon does not depend on a separate
+/// block cipher — pair it with the related <see cref="AsconHash256"/> / <see cref="AsconHashA256"/> hashes
+/// or <see cref="AsconXof128"/> XOF when building a fully Ascon-based protocol.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
-/// // Encryption
-/// using var enc = new AsconAead128(key, nonce);
-/// enc.ProcessAssociatedData(associatedData);
-/// byte[] ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
-/// enc.Encrypt(plaintext, ciphertext);
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
 ///
-/// // Decryption
-/// using var dec = new AsconAead128(key, nonce);
-/// dec.ProcessAssociatedData(associatedData);
-/// byte[] recovered = new byte[ciphertext.Length - AsconAead128.TagBytes];
-/// dec.Decrypt(ciphertext, recovered);
+/// // Most callers should reach for the AeadBlockCipherModeTransformExtensions helpers,
+/// // which size the output buffer and return a single freshly allocated array.
+/// using IAeadBlockCipherModeTransform enc = new AsconAead128(key, nonce);
+/// byte[] sealed_   = enc.Encrypt(plaintext, associatedData: header);
+/// using IAeadBlockCipherModeTransform dec = new AsconAead128(key, nonce);
+/// byte[] recovered = dec.Decrypt(sealed_, associatedData: header);
 /// </code>
 /// </example>
 /// <seealso href="https://doi.org/10.6028/NIST.SP.800-232">NIST SP 800-232 (ASCON)</seealso>
+/// <seealso cref="IAeadBlockCipherModeTransform"/>
+/// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions"/>
 public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
 {
     /// <summary>The required key size in bytes (128 bits).</summary>

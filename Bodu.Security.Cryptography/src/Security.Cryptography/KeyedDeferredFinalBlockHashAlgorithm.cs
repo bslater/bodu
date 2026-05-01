@@ -35,7 +35,16 @@ namespace Bodu.Security.Cryptography;
 /// variables and encode the key length into the parameter block, and <see cref="DeferredFinalBlockHashAlgorithm{T}.ProcessBlock" /> /
 /// <see cref="DeferredFinalBlockHashAlgorithm{T}.ProcessFinalBlock" /> as required by the grandparent.
 /// </para>
+/// <para>
+/// <strong>When to derive from this class.</strong> Pick <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}"/>
+/// for BLAKE-family hashes that accept an optional, variable-length key per RFC 7693 §2.8 — the canonical
+/// users are <see cref="Blake2b"/> and <see cref="Blake2s"/>. For BLAKE-family hashes without a key (e.g.
+/// <see cref="Blake3"/>) derive from <see cref="DeferredFinalBlockHashAlgorithm{T}"/>. For Merkle–Damgård
+/// keyed hashes with a fixed-length key (Poly1305, SipHash) derive from <see cref="KeyedBlockHashAlgorithm{T}"/>.
+/// </para>
 /// </remarks>
+/// <seealso cref="DeferredFinalBlockHashAlgorithm{T}"/>
+/// <seealso cref="KeyedBlockHashAlgorithm{T}"/>
 public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     : DeferredFinalBlockHashAlgorithm<T>
     where T : KeyedDeferredFinalBlockHashAlgorithm<T>, new()

@@ -37,11 +37,43 @@ using System.Runtime.CompilerServices;
 /// <see cref="Hash64Len0to16(ReadOnlySpan{byte})" />) and algorithm constants are defined here and are
 /// available to all derived variants. Supported output sizes are 32, 64, and 128 bits.
 /// </para>
+/// <para>
+/// <strong>When to choose CityHash.</strong> CityHash was designed for short-to-medium strings on 64-bit
+/// CPUs and tends to outperform <see cref="MurmurHash3{T}"/> on long inputs while matching it on short ones.
+/// It is the typical choice for in-memory hash tables, fingerprinting, and content-based sharding when both
+/// throughput and distribution quality matter. Pick <see cref="CityHash32"/> for 32-bit slot indexes,
+/// <see cref="CityHash64"/> for general-purpose 64-bit hashing, and <see cref="CityHash128"/> for low-collision
+/// fingerprinting of large key spaces. For very small fixed-length keys, <see cref="Fnv{TSelf}"/> is simpler
+/// and competitive; for adversarial inputs use a member of <c>Bodu.Security.Cryptography</c> instead.
+/// </para>
+/// <para>
+/// <strong>Buffering caveat.</strong> Because the algorithm needs the whole message before mixing, the base
+/// class buffers every appended byte until <see cref="GetCurrentHashCore(Span{byte})"/> is called. Memory
+/// consumption grows linearly with input length between resets — avoid feeding it multi-gigabyte streams.
+/// Instances are not thread-safe; share behind explicit synchronisation.
+/// </para>
 /// <note type="important">
 /// CityHash is <b>not</b> cryptographically secure. It must <b>not</b> be used for password hashing, digital
 /// signatures, or any application that requires collision resistance under adversarial conditions.
 /// </note>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// // 64-bit fingerprint of a content blob — typical use case.
+/// var city = new CityHash64();
+/// byte[] fingerprint = city.ComputeHash(blob);
+///
+/// // Stream-hash a moderately sized file. Note: CityHash buffers fully — prefer Crc / xxHash for very large streams.
+/// using FileStream fs = File.OpenRead("payload.bin");
+/// byte[] streamDigest = city.ComputeHash(fs);
+/// </code>
+/// </example>
 /// </remarks>
+/// <seealso cref="CityHash32"/>
+/// <seealso cref="CityHash64"/>
+/// <seealso cref="CityHash128"/>
 public abstract class CityHash<T>
     : NonCryptographicHashAlgorithm
     where T : CityHash<T>, new()

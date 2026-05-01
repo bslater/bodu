@@ -29,7 +29,26 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="BlockCipherTransform(IBlockCipher, CipherBlockMode, PaddingMode, byte[], bool)" /> with the
 /// appropriate arguments. All transform logic is handled by this base class.
 /// </para>
+/// <para>
+/// <strong>How this fits with the rest of the library.</strong> <see cref="BlockCipherTransform"/> is the
+/// glue layer that turns a low-level <see cref="IBlockCipher"/> into the
+/// <see cref="System.Security.Cryptography.ICryptoTransform"/> contract that
+/// <see cref="System.Security.Cryptography.CryptoStream"/>, <c>SymmetricAlgorithm.CreateEncryptor()</c>, and
+/// the rest of the BCL crypto pipeline expect. Every <see cref="System.Security.Cryptography.SymmetricAlgorithm"/>
+/// in this library returns an instance of a derived class from its <c>CreateEncryptor</c> /
+/// <c>CreateDecryptor</c> overrides — for example, <c>BlowfishTransform</c>, <c>CamelliaTransform</c>,
+/// <c>SkipjackTransform</c>, <c>TwofishTransform</c>, <c>SerpentTransform</c>, <c>ThreefishTransform</c>.
+/// </para>
+/// <para>
+/// Derive from this class only when adding a new symmetric algorithm to the library. Most callers never
+/// touch this type directly — they use <see cref="System.Security.Cryptography.SymmetricAlgorithm.Mode"/>
+/// and <see cref="System.Security.Cryptography.SymmetricAlgorithm.Padding"/> to configure encryption and let
+/// the existing transform infrastructure handle the wiring.
+/// </para>
 /// </remarks>
+/// <seealso cref="IBlockCipher"/>
+/// <seealso cref="IBlockCipherModeTransform"/>
+/// <seealso cref="IPaddingStrategy"/>
 public abstract class BlockCipherTransform : ICryptoTransform
 {
     private readonly IBlockCipher _cipher;

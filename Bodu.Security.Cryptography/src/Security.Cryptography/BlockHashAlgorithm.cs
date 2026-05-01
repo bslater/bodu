@@ -30,7 +30,22 @@ namespace Bodu.Security.Cryptography;
 /// <item><description><see cref="PadBlock" /> pads the final input segment and encodes the total message length.</description></item>
 /// <item><description><see cref="ProcessFinalBlock" /> finalises the hash computation and returns the resulting digest.</description></item>
 /// </list>
+/// <para>
+/// <strong>When to derive from this class.</strong> Pick <see cref="BlockHashAlgorithm{T}"/> for any classic
+/// Merkle–Damgård cryptographic hash — the family includes the SHA-2 hashes, Tiger, Whirlpool, Snefru, and
+/// similar designs that finalise by appending a length-encoding pad to the last partial block. For the
+/// BLAKE-family pattern (final-block flag, no length-encoding pad) derive from
+/// <see cref="DeferredFinalBlockHashAlgorithm{T}"/> instead. For a keyed Merkle–Damgård hash (Poly1305,
+/// SipHash) derive from <see cref="KeyedBlockHashAlgorithm{T}"/>, which adds key handling on top of this
+/// base. For non-cryptographic block hashes (Fletcher, CRC) the parallel
+/// <see cref="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm{T}"/> base is the right pick — it integrates
+/// with <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm"/> rather than <see cref="HashAlgorithm"/>.
+/// </para>
 /// </remarks>
+/// <seealso cref="BufferedBlockHashAlgorithm{T}"/>
+/// <seealso cref="DeferredFinalBlockHashAlgorithm{T}"/>
+/// <seealso cref="KeyedBlockHashAlgorithm{T}"/>
+/// <seealso cref="KeyedDeferredFinalBlockHashAlgorithm{T}"/>
 public abstract class BlockHashAlgorithm<T>
     : BufferedBlockHashAlgorithm<T>
     where T : BlockHashAlgorithm<T>, new()

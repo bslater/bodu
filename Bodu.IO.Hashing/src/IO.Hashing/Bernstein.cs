@@ -26,8 +26,37 @@ namespace Bodu.IO.Hashing;
 /// algorithm has not yet consumed input. <see cref="Reset" /> returns the instance to the reconfigurable
 /// state.
 /// </para>
+/// <para>
+/// <strong>When to choose Bernstein.</strong> djb2 is the canonical "C-style" hash for short string keys —
+/// language symbol tables, environment-variable maps, and small associative containers. Pick it when
+/// interoperating with code that has standardised on djb2 (Perl, Python's older string hash, Tcl variable
+/// tables, etc.) or when the seed/variant flexibility is useful. Empirically the XOR-modified form
+/// (<c>djb2a</c>, <see cref="UseModifiedAlgorithm"/> set to <see langword="true"/>) gives slightly better
+/// avalanche than the default additive form. For new code without an interop constraint, <see cref="Fnv1a32"/>
+/// is a closely related but better-distributing default; <see cref="MurmurHash3_32"/> is preferable for
+/// inputs longer than a few dozen bytes.
+/// </para>
+/// <para>
+/// <strong>Output and lifecycle.</strong> Produces a 32-bit (4-byte) digest in little-endian byte order.
+/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()"/> is non-destructive;
+/// instances are not thread-safe.
+/// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used
 /// for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// // Default djb2 with the canonical 5381 seed.
+/// var djb2 = new Bernstein();
+/// byte[] digest = djb2.ComputeHash(System.Text.Encoding.UTF8.GetBytes("symbol"));
+///
+/// // XOR-modified djb2a, generally better distribution.
+/// var djb2a = new Bernstein { UseModifiedAlgorithm = true };
+/// byte[] digestA = djb2a.ComputeHash(System.Text.Encoding.UTF8.GetBytes("symbol"));
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class Bernstein
     : NonCryptographicHashAlgorithm

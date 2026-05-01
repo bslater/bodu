@@ -43,7 +43,37 @@ namespace Bodu.Security.Cryptography;
 /// For a concurrent level-worker pipeline over the same tree structure, see
 /// <see cref="ParallelMerkleTreeHash" />.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Leaf algorithm: any <see cref="HashAlgorithm"/>, supplied via an <see cref="IHashAlgorithmFactory{T}"/> or factory delegate.</description></item>
+///   <item><description>Block size: configurable, default 1024 bytes — the input chunk that becomes one leaf.</description></item>
+///   <item><description>Fan-out: configurable, default 3 — number of children combined into each parent.</description></item>
+///   <item><description>Tail handling: partial final blocks are zero-padded; short final groups at internal levels promote without padding.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose MerkleTreeHash.</strong> Pick this when you need explicit control over the leaf hash,
+/// block size, or fan-out — content-addressed storage with audit-friendly tree shapes, BitTorrent-style chunked
+/// integrity, or producing root hashes whose construction must match a specific protocol. For maximum throughput
+/// over very large inputs use <see cref="ParallelMerkleTreeHash"/>; if a fixed tree shape with a fixed leaf hash
+/// is acceptable, <see cref="Blake3"/> is faster and ships its own tree mode internally.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+///
+/// // SHA-256 leaves, 4 KiB blocks, fan-out of 4.
+/// using var merkle = new MerkleTreeHash(
+///     algorithmFactory: () =&gt; SHA256.Create(),
+///     blockSize: 4096,
+///     fanOut: 4);
+///
+/// byte[] root = merkle.ComputeHash(payload);
+/// </code>
+/// </example>
 /// <seealso href="../guides/cryptography/hashing.html#pattern-6--merkle-trees">Merkle-tree recipes in the hashing guide</seealso>
 public sealed class MerkleTreeHash : IDisposable
 {

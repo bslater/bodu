@@ -46,7 +46,32 @@ namespace Bodu.Security.Cryptography;
 /// Ciphertext is output as <c>C || SIV</c> (ciphertext then tag), consistent with the
 /// <see cref="IAeadBlockCipherModeTransform" /> convention.
 /// </para>
+/// <para>
+/// <strong>When to use SIV.</strong> Pick AES-SIV when deterministic authenticated encryption is wanted —
+/// key wrapping (RFC 5297 §6 / RFC 5649), envelope encryption schemes that need stable ciphertext for
+/// deduplication, or any context that cannot maintain a per-message nonce. SIV is two-pass and slower than
+/// <see cref="GcmModeTransform"/> on commodity hardware, but it has the strongest misuse-resistance profile
+/// in this library: re-encrypting the same <c>(plaintext, AAD)</c> tuple produces the same ciphertext, but
+/// distinct messages remain confidential and authentic. <see cref="GcmSivModeTransform"/> is the RFC 8452
+/// alternative — same misuse-resistance category, different MAC (POLYVAL) and key schedule, typically
+/// faster on AES-NI/PCLMULQDQ hardware.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// // SIV uses a doubled key: first half drives the MAC, second half drives CTR encryption.
+/// using IBlockCipher s2v = new AesBlockCipher(macKey);
+/// using IBlockCipher ctr = new AesBlockCipher(encKey);
+/// byte[] iv = new byte[s2v.BlockSize]; // ignored by SIV — present for interface compatibility
+/// using IAeadBlockCipherModeTransform siv = new SivModeTransform(s2v, ctr, iv);
+///
+/// byte[] sealed_ = siv.Encrypt(plaintext, associatedData: header);
+/// </code>
+/// </example>
 /// <seealso href="../guides/cryptography/aead-modes.html#siv--misuse-resistant">SIV walk-through in the AEAD-modes guide</seealso>
 /// <seealso cref="AesBlockCipher" />
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />

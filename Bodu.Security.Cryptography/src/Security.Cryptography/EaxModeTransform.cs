@@ -40,7 +40,31 @@ namespace Bodu.Security.Cryptography;
 /// computes <c>N'</c> internally. Ciphertext is output as <c>C ‖ T</c> (ciphertext then tag),
 /// consistent with the <see cref="IAeadBlockCipherModeTransform" /> convention.
 /// </para>
+/// <para>
+/// <strong>When to use EAX.</strong> Pick EAX when an unencumbered, two-pass AEAD with a flexible nonce
+/// length (the OMAC-derived <c>N'</c> means EAX accepts nonces up to the cipher block size) is wanted —
+/// some embedded protocols and historical industry standards require it. EAX is roughly half the throughput
+/// of <see cref="GcmModeTransform"/> on commodity hardware but does not depend on Galois-field arithmetic
+/// and has no patent concerns. For new general-purpose AEAD prefer GCM; for nonce-misuse resistance prefer
+/// <see cref="GcmSivModeTransform"/> or <see cref="SivModeTransform"/>; for single-pass AEAD without GCM's
+/// catastrophic-on-reuse profile prefer <see cref="OcbModeTransform"/>.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// using IBlockCipher cipher = new AesBlockCipher(key);
+/// byte[] nonce = RandomNumberGenerator.GetBytes(cipher.BlockSize); // unique per message
+/// using IAeadBlockCipherModeTransform eax = new EaxModeTransform(cipher, nonce);
+///
+/// byte[] sealed_   = eax.Encrypt(plaintext, associatedData: header);
+/// using IAeadBlockCipherModeTransform dec = new EaxModeTransform(cipher, nonce);
+/// byte[] recovered = dec.Decrypt(sealed_, associatedData: header);
+/// </code>
+/// </example>
 /// <seealso href="../guides/cryptography/aead-modes.html#eax--two-pass-fse-2004">EAX walk-through in the AEAD-modes guide</seealso>
 /// <seealso cref="AesBlockCipher" />
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />

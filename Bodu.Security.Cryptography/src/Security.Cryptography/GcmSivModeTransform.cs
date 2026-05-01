@@ -44,7 +44,33 @@ namespace Bodu.Security.Cryptography;
 /// Ciphertext is output as <c>C || Tag</c> (16-byte tag appended), consistent with the
 /// <see cref="IAeadBlockCipherModeTransform" /> convention.
 /// </para>
+/// <para>
+/// <strong>When to use GCM-SIV.</strong> The right modern AEAD pick when nonce uniqueness cannot be
+/// guaranteed — distributed systems where a coordinator might re-issue the same nonce after a crash, key
+/// wrapping, deduplication, or any context where a fresh nonce per message is impractical. Under nonce
+/// reuse, GCM-SIV's only leak is that two identical <c>(plaintext, AAD)</c> pairs encrypt to identical
+/// ciphertexts — confidentiality and authenticity for distinct messages remain intact. Throughput is lower
+/// than <see cref="GcmModeTransform"/> because of the two-pass MAC-then-encrypt structure; for
+/// nonce-disciplined high-throughput contexts prefer GCM. <see cref="SivModeTransform"/> is the AES-SIV
+/// (RFC 5297) sibling — also misuse-resistant but with a different MAC (S2V) and key schedule.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// using IBlockCipher master = new AesBlockCipher(masterKey);
+/// byte[] iv = BuildSivIv(nonce); // 12-byte nonce padded to the cipher block size
+/// using IAeadBlockCipherModeTransform sivlike = new GcmSivModeTransform(
+///     masterCipher: master,
+///     cipherFactory: derivedKey =&gt; new AesBlockCipher(derivedKey),
+///     iv: iv);
+///
+/// byte[] sealed_ = sivlike.Encrypt(plaintext, associatedData: header);
+/// </code>
+/// </example>
 /// <seealso href="../guides/cryptography/aead-modes.html#gcm-siv--the-modern-replacement-for-gcm">GCM-SIV walk-through in the AEAD-modes guide</seealso>
 /// <seealso cref="AesBlockCipher" />
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />

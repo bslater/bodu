@@ -15,8 +15,31 @@ namespace Bodu.IO.Hashing;
 /// The FNV-1 variant performs multiplication before XOR. The 32-bit configuration uses prime
 /// <c>0x01000193</c> and offset basis <c>0x811C9DC5</c>.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Output size: 32 bits (4 bytes), little-endian.</description></item>
+///   <item><description>Offset basis: <c>0x811C9DC5</c>.</description></item>
+///   <item><description>FNV prime: <c>0x01000193</c>.</description></item>
+///   <item><description>Variant: FNV-1 (multiply, then XOR).</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose Fnv132.</strong> Pick <see cref="Fnv132"/> only when reproducing a digest from
+/// existing FNV-1 32-bit consumers. For new code prefer <see cref="Fnv1a32"/>: same parameters, better
+/// avalanche, identical cost.
+/// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used
 /// for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// var fnv = new Fnv132();
+/// byte[] digest = fnv.ComputeHash(System.Text.Encoding.UTF8.GetBytes("key"));
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class Fnv132
     : Fnv<Fnv132>

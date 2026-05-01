@@ -37,7 +37,30 @@ namespace Bodu.Security.Cryptography;
 /// Counter block A_i: byte 0 = 0x02, bytes 1–12 = nonce, bytes 13–15 = counter (big-endian).
 /// AAD length is encoded as a 2-byte big-endian prefix (supports up to 65 279 bytes).
 /// </para>
+/// <para>
+/// <strong>When to use CCM.</strong> Pick CCM when interoperability with constrained-environment standards
+/// is required — IEEE 802.15.4 / Zigbee, Bluetooth Mesh, IPsec ESP, and TLS 1.2 with the AES-CCM cipher
+/// suites all use it. CCM is two-pass over the message (CBC-MAC then CTR), so it is slower than
+/// <see cref="GcmModeTransform"/> on commodity hardware, but it has no Galois-field arithmetic and is easier
+/// to implement correctly on minimal microcontrollers. For new general-purpose AEAD on x86/ARM hosts prefer
+/// GCM; for nonce-misuse resistance prefer <see cref="GcmSivModeTransform"/> or <see cref="SivModeTransform"/>.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// using IBlockCipher cipher = new AesBlockCipher(key);
+/// byte[] iv = BuildCcmIv(nonce); // 12-byte nonce in the first 12 bytes of the IV
+/// using IAeadBlockCipherModeTransform ccm = new CcmModeTransform(cipher, iv);
+///
+/// byte[] sealed_   = ccm.Encrypt(plaintext, associatedData: header);
+/// using IAeadBlockCipherModeTransform dec = new CcmModeTransform(cipher, iv);
+/// byte[] recovered = dec.Decrypt(sealed_, associatedData: header);
+/// </code>
+/// </example>
 /// <seealso href="../guides/cryptography/aead-modes.html#ccm--a-two-pass-alternative">CCM walk-through in the AEAD-modes guide</seealso>
 /// <seealso cref="AesBlockCipher" />
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />

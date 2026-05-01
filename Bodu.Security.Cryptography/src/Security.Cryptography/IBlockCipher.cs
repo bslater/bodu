@@ -21,7 +21,30 @@ namespace Bodu.Security.Cryptography;
 /// Implementations must release all sensitive key material when <see cref="IDisposable.Dispose" /> is called and should be safe to
 /// invoke repeatedly for the lifetime of the instance.
 /// </para>
+/// <para>
+/// <strong>How this fits with the rest of the library.</strong> <see cref="IBlockCipher"/> is the lowest-level
+/// primitive in the cipher stack. Three layers sit on top of it:
+/// </para>
+/// <list type="bullet">
+///   <item><description>An <see cref="IBlockCipherModeTransform"/> wraps a cipher with a chaining strategy
+///   (CBC, CTR, …) — built via <see cref="BlockCipherModeFactory.Create(CipherBlockMode, IBlockCipher, byte[])"/>.</description></item>
+///   <item><description>An <see cref="IPaddingStrategy"/> aligns input to the cipher block size — built via
+///   <see cref="PaddingFactory.Create(System.Security.Cryptography.PaddingMode)"/>.</description></item>
+///   <item><description><see cref="BlockCipherTransform"/> bundles a cipher, mode, and padding into a single
+///   <see cref="System.Security.Cryptography.ICryptoTransform"/> — the integration point used by every
+///   <see cref="System.Security.Cryptography.SymmetricAlgorithm"/> in this library.</description></item>
+/// </list>
+/// <para>
+/// Most callers never instantiate <see cref="IBlockCipher"/> directly — they use a
+/// <see cref="System.Security.Cryptography.SymmetricAlgorithm"/> (Aes, Twofish, Camellia, Threefish, Serpent,
+/// Skipjack, Blowfish), set Key/IV/Mode/Padding, and let the library compose the layers. Direct use of this
+/// interface is appropriate when implementing a new mode, plugging a non-<c>SymmetricAlgorithm</c> cipher
+/// engine into the existing mode infrastructure, or building higher-level constructions on top.
+/// </para>
 /// </remarks>
+/// <seealso cref="IBlockCipherModeTransform"/>
+/// <seealso cref="IAeadBlockCipherModeTransform"/>
+/// <seealso cref="BlockCipherTransform"/>
 public interface IBlockCipher
     : System.IDisposable
 {

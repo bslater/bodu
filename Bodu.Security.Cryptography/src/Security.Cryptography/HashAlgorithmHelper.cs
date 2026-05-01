@@ -18,25 +18,40 @@ namespace Bodu.Security.Cryptography;
 /// Provides high-performance utility methods for one-shot hashing using factory-created <see cref="HashAlgorithm" /> instances.
 /// </summary>
 /// <remarks>
+/// <para>
 /// These methods simplify hashing workflows by accepting an <see cref="IHashAlgorithmFactory{T}" /> implementation, allowing
 /// consumers to construct and configure hash algorithms (including keyed or parameterized variants) without managing lifecycle manually.
+/// </para>
 /// <para>
 /// This is ideal for use cases that require stateless or ephemeral hashing operations without incremental updates or state reuse.
+/// Each call constructs a fresh algorithm instance, runs the hash, and disposes deterministically — callers do not need to
+/// track <see cref="System.IDisposable"/> lifetimes themselves.
 /// </para>
+/// <para>
+/// <strong>When to choose this over the BCL.</strong> Pick <see cref="HashAlgorithmHelper"/> when the algorithm
+/// requires per-call configuration (a key, round counts, a variant flag) — the factory consistently applies
+/// it to every fresh instance. For stateless one-shot hashing of unconfigured algorithms (SHA-256, SHA-512)
+/// the BCL's static <c>HashData</c> on each algorithm class is simpler and faster. For tree-hashing workloads
+/// pass the same factory into <see cref="MerkleTreeHash"/> or <see cref="ParallelMerkleTreeHash"/>.
+/// </para>
+/// </remarks>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// var factory = HashAlgorithmFactory.From(() => new SipHash
+/// // Configured SipHash-2-4 factory; the configuration applies to every call to HashData.
+/// var factory = HashAlgorithmFactory.From(() => new SipHash64
 /// {
 ///     Key = key,
 ///     CompressionRounds = 2,
-///     FinalizationRounds = 4
+///     FinalizationRounds = 4,
 /// });
 /// byte[] hash = HashAlgorithmHelper.HashData(factory, input);
 ///]]>
 /// </code>
 /// </example>
-/// </remarks>
+/// <seealso cref="IHashAlgorithmFactory{T}"/>
+/// <seealso cref="HashAlgorithmFactory"/>
+/// <seealso cref="DelegateHashAlgorithmFactory{T}"/>
 public static class HashAlgorithmHelper
 {
     /// <summary>
