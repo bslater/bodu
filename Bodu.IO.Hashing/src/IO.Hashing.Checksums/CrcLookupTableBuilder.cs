@@ -4,20 +4,40 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-
-// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CrcLookupTableBuilder.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-// ---------------------------------------------------------------------------------------------------------------
-
 using Bodu.Extensions;
 
 namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
-/// A utility class for handling CRC operations such as generating CRC lookup tables.
+/// Generates the precomputed lookup tables that drive the byte-at-a-time inner loop of <see cref="Crc"/>, given the
+/// width, polynomial, and input-reflection mode of a <see cref="CrcStandard"/>.
 /// </summary>
+/// <remarks>
+/// <para>
+/// The naive bit-by-bit CRC algorithm is straightforward but processes only one input bit per iteration. The standard
+/// production technique is to precompute a small table of partial CRCs — one entry per possible input byte under the
+/// chosen polynomial — so the per-byte cost collapses to a single XOR plus a table lookup. <see cref="CrcLookupTableBuilder"/>
+/// is the routine that builds that table; <see cref="Crc"/> consumes it and <see cref="CrcLookupTableCache"/> caches it
+/// across instances so the construction cost is paid at most once per <c>(width, polynomial, reflectIn)</c> tuple.
+/// </para>
+/// <para>
+/// <strong>When you would call this directly.</strong> Most callers should not — <see cref="Crc"/> resolves its lookup
+/// table automatically through <see cref="Crc.GlobalCache"/>. Reach for <see cref="BuildLookupTable(int, ulong, bool)"/>
+/// directly when implementing a custom CRC engine outside the <see cref="Crc"/> hierarchy, when running diagnostics
+/// against a known-good table, or when populating a hand-rolled cache for an unusual polynomial that the global cache
+/// is not the right home for.
+/// </para>
+/// <para>
+/// <strong>Output shape.</strong> The returned table contains <c>1 &lt;&lt; min(size, 8)</c> entries (256 for any width
+/// of 8 bits or more, smaller for sub-byte widths). Each entry is masked to <c>size</c> bits and is suitable for direct
+/// XOR into a CRC register of the corresponding width. Output bit reflection (the <c>ReflectOut</c> step) is <em>not</em>
+/// applied here — that is a finalisation step performed by the engine after the table-driven loop completes.
+/// </para>
+/// <para>The method is pure, deterministic, and allocation-bounded by the table size; results are safe to cache and share.</para>
+/// </remarks>
+/// <seealso cref="Crc"/>
+/// <seealso cref="CrcStandard"/>
+/// <seealso cref="CrcLookupTableCache"/>
 public static class CrcLookupTableBuilder
 {
     /// <summary>
