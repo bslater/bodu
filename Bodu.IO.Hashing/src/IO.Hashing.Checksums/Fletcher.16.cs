@@ -18,8 +18,32 @@ namespace Bodu.IO.Hashing.Checksums;
 /// used in network protocols, embedded systems, and file integrity checks where performance and simplicity are preferred
 /// over cryptographic strength.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Output size: 16 bits (2 bytes).</description></item>
+///   <item><description>Accumulator width: two 8-bit rolling sums (A and B).</description></item>
+///   <item><description>Modulus: <c>255</c>.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose Fletcher16.</strong> Pick <see cref="Fletcher16"/> for embedded protocols and
+/// short-frame links where 16 bits is enough — Modbus ASCII, RPL message integrity, and similar
+/// resource-constrained settings. For general file integrity prefer <see cref="Fletcher32"/>; for stronger
+/// error-detection guarantees prefer a 16-bit CRC such as <see cref="Crc"/> with
+/// <see cref="CrcStandard.CRC16_MODBUS"/>.
+/// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for password
 /// hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.IO.Hashing.Checksums;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// var f16 = new Fletcher16();
+/// byte[] checksum = f16.ComputeHash(framePayload);
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class Fletcher16
     : Fletcher<Fletcher16>
