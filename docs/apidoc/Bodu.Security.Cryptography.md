@@ -35,7 +35,7 @@ For non-cryptographic checksums and hash-table hashes (CRC, Fletcher, Adler, FNV
 - <xref:Bodu.Security.Cryptography.SipHash128> — 128-bit SipHash variant for longer-output keyed hashing.
 - <xref:Bodu.Security.Cryptography.Poly1305> — one-time authenticator; pairs with a stream cipher for a MAC-with-AEAD construction.
 - <xref:Bodu.Security.Cryptography.Tiger> — cryptographic hash by Anderson and Biham optimised for 64-bit platforms; supports 128 / 160 / 192-bit output with Tiger or Tiger2 padding.
-- <xref:Bodu.Security.Cryptography.Snefru> — a cryptographic hash by Ralph Merkle (broken; included for research).
+- <xref:Bodu.Security.Cryptography.Snefru128>, <xref:Bodu.Security.Cryptography.Snefru256> — a cryptographic hash by Ralph Merkle (broken; included for research).
 - <xref:Bodu.Security.Cryptography.CubeHash> — Bernstein's SHA-3 competition candidate.
 - <xref:Bodu.Security.Cryptography.MerkleTreeHash>, <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> — Merkle-tree root hashing with partial verification.
 

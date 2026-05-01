@@ -385,30 +385,6 @@ public abstract partial class Skein<T>
     }
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException" /> if the instance has already been disposed.
-    /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed()
-    {
-#if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this._disposed, this);
-#else
-        if (this._disposed)
-            throw new ObjectDisposedException(this.GetType().Name);
-#endif
-    }
-
-    /// <summary>
-    /// Throws if the algorithm has begun processing input and can no longer be reconfigured.
-    /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfInvalidState()
-    {
-        if (this.State != 0)
-            throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
-    }
-
-    /// <summary>
     /// Ensures the initial chaining value derived from the configuration (and optional key) UBI phases has been
     /// computed and cached for fast reuse on subsequent <see cref="Initialize" /> calls.
     /// </summary>

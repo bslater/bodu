@@ -143,7 +143,7 @@ public sealed class Blake2b : KeyedDeferredFinalBlockHashAlgorithm<Blake2b>
     /// The full BLAKE2b compression is always run using all 512 bits of internal state. Shorter output lengths
     /// are produced by truncating the serialised state after finalisation. The property may only be changed
     /// before hashing has begun; once <see cref="HashAlgorithm.TransformBlock" /> or a <c>ComputeHash</c>
-    /// overload has been called, the value is immutable until <see cref="Initialize" /> is called.
+    /// overload has been called, the value is immutable until <see cref="HashAlgorithm.Initialize" /> is called.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The assigned value is not one of 128, 160, 192, 224, 256, 384, or 512.

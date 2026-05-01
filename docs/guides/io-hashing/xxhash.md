@@ -71,7 +71,7 @@ byte[] full = xxh.GetCurrentHash();
 xxh.Reset();                             // discards the buffer, keeps the seed
 ```
 
-> **Memory note.** The internal buffer grows with each `Append`. For very large inputs where you want constant-memory processing, use a streaming algorithm — <xref:Bodu.IO.Hashing.Fnv1a64>, <xref:Bodu.IO.Hashing.Crc>, or <xref:Bodu.IO.Hashing.Fletcher32> all update state in place with no internal buffer.
+> **Memory note.** The internal buffer grows with each `Append`. For very large inputs where you want constant-memory processing, use a streaming algorithm — <xref:Bodu.IO.Hashing.Fnv1a64>, <xref:Bodu.IO.Hashing.Checksums.Crc>, or <xref:Bodu.IO.Hashing.Checksums.Fletcher32> all update state in place with no internal buffer.
 
 ## Pattern 4 — streaming a file
 

@@ -114,5 +114,5 @@ INotableDateService service = NotableDateService.Create(
 ## Where to go next
 
 - **[Bodu.Globalization.Calendar introduction](index.md)** — namespaces, headline types, scenarios.
-- **[Bodu.Globalization.Calendar guides](../../guides/calendar/)** — `NotableDateService` patterns, algorithms, rule authoring, data packs.
+- **[Bodu.Globalization.Calendar guides](../../guides/calendar/index.md)** — `NotableDateService` patterns, algorithms, rule authoring, data packs.
 - **[Bodu.Globalization.Calendar API reference](../../apidoc/Bodu.Globalization.Calendar.md)** — full type-by-type docs.

@@ -31,12 +31,12 @@ A **`NotableDateRule`** is an authored recipe — strategy, category, territory,
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="notable-dates.html">Using NotableDateService</a></h3>
+  <h3><a href="notable-dates.md">Using NotableDateService</a></h3>
   <p>The main entry point — resolving notable dates for a year, filtering by territory and category, querying a date range, layering override providers, and working-day arithmetic over <code>DateOnly</code> / <code>DateTime</code>.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="rule-authoring.html">Authoring notable date rules</a></h3>
+  <h3><a href="rule-authoring.md">Authoring notable date rules</a></h3>
   <p>How to add your own rules — as in-code objects, embedded XML / JSON resource files, or companion assemblies — and how to layer runtime overrides.</p>
 </div>
 
@@ -47,7 +47,7 @@ A **`NotableDateRule`** is an authored recipe — strategy, category, territory,
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="algorithms.html">Date calculation algorithms</a></h3>
+  <h3><a href="algorithms.md">Date calculation algorithms</a></h3>
   <p>The built-in algorithm types — Easter (Gregorian / Orthodox), Hindu Lunar, Losar, Vesak, Asalha Puja, Qingming, Lunar phase — with registration guidance and a custom-algorithm walk-through.</p>
 </div>
 
@@ -58,7 +58,7 @@ A **`NotableDateRule`** is an authored recipe — strategy, category, territory,
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="data-packs.html">Calendar data packs</a></h3>
+  <h3><a href="data-packs.md">Calendar data packs</a></h3>
   <p>The official <code>Bodu.Globalization.Calendar.Data.*</code> companion assemblies — Americas, Europe, and Asia-Pacific — and how to compose them with the resolution pipeline.</p>
 </div>
 

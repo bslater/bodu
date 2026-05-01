@@ -77,7 +77,7 @@ public sealed class SipHash64
     /// <description>64</description>
     /// </item>
     /// <item>
-    /// <term><see cref="SipHash{T}.Key" /></term>
+    /// <term><see cref="KeyedBlockHashAlgorithm{T}.Key" /></term>
     /// <description>Cryptographically random 16-byte key containing no zero bytes.</description>
     /// </item>
     /// </list>

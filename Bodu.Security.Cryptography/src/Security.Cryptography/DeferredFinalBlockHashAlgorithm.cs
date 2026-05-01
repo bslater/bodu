@@ -36,7 +36,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>Derived classes must implement the following:</para>
 /// <list type="bullet">
-/// <item><description><see cref="OnInitialize" /> resets the algorithm-specific chaining variables to their initial state.</description></item>
+/// <item><description><see cref="BufferedBlockHashAlgorithm{T}.OnInitialize" /> resets the algorithm-specific chaining variables to their initial state.</description></item>
 /// <item><description><see cref="ProcessBlock" /> compresses a single block, receiving the per-block counter and the finalisation flag.</description></item>
 /// <item><description><see cref="ProcessFinalBlock" /> extracts the digest from the chaining variables after the final compression has run.</description></item>
 /// </list>

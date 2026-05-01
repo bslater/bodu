@@ -123,7 +123,7 @@ ASCON is a good choice when:
   cryptographic surface area and simplifying key management.
 
 On x86-64 targets with AES-NI and SHA extensions, the BCL's hardware-accelerated
-<xref:System.Security.Cryptography.SHA256?displayProperty=nameWithType> and `AesGcm` will
+`System.Security.Cryptography.SHA256` and `AesGcm` will
 typically outperform software ASCON in raw throughput. Use ASCON when standards compliance,
 portability, or XOF/AEAD requirements point to it — not primarily for throughput on
 well-provisioned servers.

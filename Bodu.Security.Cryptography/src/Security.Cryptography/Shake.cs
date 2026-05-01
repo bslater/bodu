@@ -16,7 +16,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="Shake" /> is built on the same <c>Keccak-f[1600]</c> permutation as <see cref="Sha3" />, operating over
+/// <see cref="Shake" /> is built on the same <c>Keccak-f[1600]</c> permutation as <c>SHA-3</c>, operating over
 /// a 1600-bit (200-byte) state. The two SHAKE variants differ only in their rate and, therefore, their security margin:
 /// </para>
 /// <list type="bullet">

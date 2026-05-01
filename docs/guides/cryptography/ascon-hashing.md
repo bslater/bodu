@@ -153,7 +153,7 @@ Each `ComputeHash` call resets the internal state before processing the next mes
 ## Pattern 6 — verifying a digest in constant time
 
 Always compare digests in constant time. Use the BCL's
-<xref:System.Security.Cryptography.CryptographicOperations.FixedTimeEquals*> directly, or the
+`CryptographicOperations.FixedTimeEquals` directly, or the
 `VerifyHash` extension method from `Bodu.Security.Cryptography.Extensions`:
 
 ```csharp

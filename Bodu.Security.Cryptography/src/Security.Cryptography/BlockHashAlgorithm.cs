@@ -38,8 +38,8 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="DeferredFinalBlockHashAlgorithm{T}"/> instead. For a keyed Merkle–Damgård hash (Poly1305,
 /// SipHash) derive from <see cref="KeyedBlockHashAlgorithm{T}"/>, which adds key handling on top of this
 /// base. For non-cryptographic block hashes (Fletcher, CRC) the parallel
-/// <see cref="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm{T}"/> base is the right pick — it integrates
-/// with <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm"/> rather than <see cref="HashAlgorithm"/>.
+/// <c>Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm&lt;T&gt;</c> base is the right pick — it integrates
+/// with <c>System.IO.Hashing.NonCryptographicHashAlgorithm</c> rather than <see cref="HashAlgorithm"/>.
 /// </para>
 /// </remarks>
 /// <seealso cref="BufferedBlockHashAlgorithm{T}"/>

@@ -146,5 +146,5 @@ byte[] root = tree.GetHashAndReset();
 
 - **[Bodu.Security.Cryptography introduction](index.md)** — namespaces, headline types, scenarios.
 - **[Algorithm families](../algorithm-families.md)** — cipher subtypes, hash shapes, and the cross-library map.
-- **[Bodu.Security.Cryptography guides](../../guides/cryptography/)** — encryption basics, modes, padding, AEAD, hashing.
+- **[Bodu.Security.Cryptography guides](../../guides/cryptography/index.md)** — encryption basics, modes, padding, AEAD, hashing.
 - **[Bodu.Security.Cryptography API reference](../../apidoc/Bodu.Security.Cryptography.md)** — full type-by-type docs.

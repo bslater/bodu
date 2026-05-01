@@ -317,4 +317,4 @@ See the [ASCON family guide](../guides/cryptography/ascon.md) for selection guid
 - [Bodu.Globalization.Calendar](calendar/index.md) — notable date resolution and calculators.
 
 **Guides**
-- [Bodu.Core guides](../guides/core/) · [Bodu.IO.Hashing guides](../guides/io-hashing/) · [Bodu.Security.Cryptography guides](../guides/cryptography/) · [Bodu.Globalization.Calendar guides](../guides/calendar/)
+- [Bodu.Core guides](../guides/core/index.md) · [Bodu.IO.Hashing guides](../guides/io-hashing/index.md) · [Bodu.Security.Cryptography guides](../guides/cryptography/index.md) · [Bodu.Globalization.Calendar guides](../guides/calendar/index.md)

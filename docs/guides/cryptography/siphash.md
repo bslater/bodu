@@ -121,7 +121,7 @@ See the [hashing overview](hashing.md#pattern-4--verifying-a-hash) for the gener
 
 ## What SipHash is not
 
-- **Not a MAC for long messages.** SipHash was built specifically for short inputs; if you need a MAC over files or network frames, reach for HMAC-SHA-256 (<xref:System.Security.Cryptography.HMACSHA256?displayProperty=nameWithType>) or <xref:Bodu.Security.Cryptography.Poly1305>.
+- **Not a MAC for long messages.** SipHash was built specifically for short inputs; if you need a MAC over files or network frames, reach for HMAC-SHA-256 (`System.Security.Cryptography.HMACSHA256`) or <xref:Bodu.Security.Cryptography.Poly1305>.
 - **Not a cryptographic hash.** SipHash is a PRF — it resists collision and preimage only while the key stays secret. For a keyless collision-resistant digest, use SHA-256 or <xref:Bodu.Security.Cryptography.Tiger>.
 - **Not deterministic across keys.** Two instances with different keys produce unrelated outputs for the same input. That is the point.
 

@@ -6,7 +6,7 @@ title: Cipher block modes
 
 This page walks through each of the five classic block cipher modes exposed via <xref:Bodu.Security.Cryptography.CipherBlockMode>, shows a complete encrypt-and-decrypt round-trip for each, and calls out the IV rules and security trade-offs.
 
-For the data-flow visualisation, see the panels on the [CipherBlockMode API page](../../api/Bodu.Security.Cryptography.CipherBlockMode.html). Each panel in that diagram corresponds to one section below.
+For the data-flow visualisation, see the panels on the <xref:Bodu.Security.Cryptography.CipherBlockMode> API page. Each panel in that diagram corresponds to one section below.
 
 ## CBC — the default
 

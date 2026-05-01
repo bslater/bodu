@@ -318,6 +318,10 @@ public sealed class Crc
     public override bool Equals(object? obj)
         => obj is Crc other && this._standard.Equals(other._standard);
 
+    /// <inheritdoc />
+    public override int GetHashCode()
+        => this._standard.GetHashCode();
+
     /// <summary>
     /// Returns the working-state representation of <see cref="CrcStandard.InitialValue" />, applying input reflection
     /// when required.
