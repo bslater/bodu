@@ -26,7 +26,30 @@ namespace Bodu.Security.Cryptography;
 /// Derived classes must override <see cref="CreateEncryptor(byte[], byte[], byte[])" />,
 /// <see cref="CreateDecryptor(byte[], byte[], byte[])" />, and <see cref="GenerateTweak" />.
 /// </para>
+/// <para>
+/// <strong>What is a tweak?</strong> A tweak is a third keying input alongside key and IV — a per-message
+/// (or per-position) value that varies the cipher's behaviour without renegotiating the key. Tweaks are
+/// what make tweakable block ciphers a natural fit for disk encryption (the sector number is the tweak),
+/// authenticated modes built from the cipher (the message position is the tweak), and protocols that need
+/// to bind ciphertext to a position or message identifier.
+/// </para>
+/// <para>
+/// <strong>Concrete implementations.</strong> The library ships <see cref="Threefish256"/>,
+/// <see cref="Threefish512"/>, and <see cref="Threefish1024"/> as the production tweakable ciphers (Threefish
+/// is the cipher under the hood of Skein). The <see cref="Serpent256"/>/<see cref="Serpent512"/>/<see cref="Serpent1024"/>
+/// wide-block variants are also tweakable but non-standard — see their headers for the experimental-only caveat.
+/// </para>
+/// <para>
+/// <strong>Companion try-pattern helpers.</strong> The
+/// <see cref="Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions"/> class adds
+/// <c>TryCreateEncryptor</c> and <c>TryCreateDecryptor</c> wrappers that return <see langword="false"/> when
+/// the supplied key/IV/tweak combination is invalid — useful when keying material is user-supplied.
+/// </para>
 /// </remarks>
+/// <seealso cref="Threefish256"/>
+/// <seealso cref="Threefish512"/>
+/// <seealso cref="Threefish1024"/>
+/// <seealso cref="Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions"/>
 public abstract class TweakableSymmetricAlgorithm
     : System.Security.Cryptography.SymmetricAlgorithm
 {
