@@ -101,5 +101,5 @@ Only `Crc` currently implements `IResumableHashAlgorithm` (reverse-finalise a st
 
 - **[Getting started](getting-started.md)** — install + one minimal sample per subfamily.
 - **[Algorithm families](../algorithm-families.md)** — fingerprints vs checksums vs check digits, plus the cryptographic families.
-- **[Bodu.IO.Hashing guides](../../guides/io-hashing/)** — recipe-style walk-throughs per algorithm.
+- **[Bodu.IO.Hashing guides](../../guides/io-hashing/index.md)** — recipe-style walk-throughs per algorithm.
 - **[Bodu.IO.Hashing API reference](../../apidoc/Bodu.IO.Hashing.md)** — full type-by-type docs.

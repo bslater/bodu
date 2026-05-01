@@ -1,6 +1,6 @@
 # Articles
 
-Narrative documentation and library overviews complement the auto-generated [API reference](../api/).
+Narrative documentation and library overviews complement the auto-generated [API reference](xref:Bodu).
 
 ## Library overviews
 
@@ -20,10 +20,10 @@ Each library has a dedicated overview page that introduces its purpose, lists it
 
 ## Guides
 
-- **[Bodu.Core guides](../guides/core/)** — circular buffer, deque, evicting dictionary, week pattern.
-- **[Bodu.IO.Hashing guides](../guides/io-hashing/)** — fingerprints, checksums (CRC, Fletcher, Adler), and check digits.
-- **[Bodu.Security.Cryptography guides](../guides/cryptography/)** — encryption basics, cipher block modes, AEAD, padding, composing primitives, keyed and cryptographic hashing, the ASCON family.
-- **[Bodu.Globalization.Calendar guides](../guides/calendar/)** — `NotableDateService`, calculators, rule authoring, data packs.
+- **[Bodu.Core guides](../guides/core/index.md)** — circular buffer, deque, evicting dictionary, week pattern.
+- **[Bodu.IO.Hashing guides](../guides/io-hashing/index.md)** — fingerprints, checksums (CRC, Fletcher, Adler), and check digits.
+- **[Bodu.Security.Cryptography guides](../guides/cryptography/index.md)** — encryption basics, cipher block modes, AEAD, padding, composing primitives, keyed and cryptographic hashing, the ASCON family.
+- **[Bodu.Globalization.Calendar guides](../guides/calendar/index.md)** — `NotableDateService`, calculators, rule authoring, data packs.
 
 ## Project documentation
 

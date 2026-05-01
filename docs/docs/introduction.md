@@ -31,7 +31,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
   <div class="bodu-card-links">
     <a href="core/index.html">Introduction</a>
     <a href="core/getting-started.html">Getting started</a>
-    <a href="../guides/core/">Guides</a>
+    <a href="../guides/core/index.html">Guides</a>
   </div>
 </div>
 
@@ -41,7 +41,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
   <div class="bodu-card-links">
     <a href="io-hashing/index.html">Introduction</a>
     <a href="io-hashing/getting-started.html">Getting started</a>
-    <a href="../guides/io-hashing/">Guides</a>
+    <a href="../guides/io-hashing/index.html">Guides</a>
   </div>
 </div>
 
@@ -51,7 +51,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
   <div class="bodu-card-links">
     <a href="cryptography/index.html">Introduction</a>
     <a href="cryptography/getting-started.html">Getting started</a>
-    <a href="../guides/cryptography/">Guides</a>
+    <a href="../guides/cryptography/index.html">Guides</a>
   </div>
 </div>
 
@@ -61,7 +61,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
   <div class="bodu-card-links">
     <a href="calendar/index.html">Introduction</a>
     <a href="calendar/getting-started.html">Getting started</a>
-    <a href="../guides/calendar/">Guides</a>
+    <a href="../guides/calendar/index.html">Guides</a>
   </div>
 </div>
 
@@ -104,4 +104,4 @@ The solution uses **MSTest** with a partial-class test layout that mirrors the s
 - **[Getting started](getting-started.md)** — prerequisites, install commands, and a one-minute sample from each library.
 - **[Algorithm families](algorithm-families.md)** — the cross-library taxonomy of fingerprints, checksums, check digits, cryptographic hashes, keyed hashes, and symmetric ciphers.
 - **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md).
-- **[API reference](../api/)** — the full auto-generated type-by-type documentation.
+- **[API reference](xref:Bodu)** — the full auto-generated type-by-type documentation.

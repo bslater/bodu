@@ -45,7 +45,7 @@ Four independent NuGet packages that share a single solution, a single set of co
   <p>Non-cryptographic checksums built on <code>System.IO.Hashing.NonCryptographicHashAlgorithm</code> — the full CRC RevEng catalogue (widths 1–64 bits) and the Fletcher family (16 / 32 / 64 bits), with shared lookup-table caching and resumable hashing.</p>
   <div class="bodu-card-links">
     <a href="api/Bodu.IO.Hashing.html">Overview</a>
-    <a href="guides/io-hashing/">Guides</a>
+    <a href="guides/io-hashing/index.html">Guides</a>
   </div>
 </div>
 
@@ -55,7 +55,7 @@ Four independent NuGet packages that share a single solution, a single set of co
   <p>Managed block ciphers (Threefish 256 / 512 / 1024, Serpent 128 / 256 / 512 / 1024, Camellia, Twofish, Blowfish, Skipjack), an AES adapter paired with AEAD mode transforms, keyed and cryptographic hashes (SipHash, Tiger, ASCON), Merkle-tree hashing, and the classic non-cryptographic hash families (Adler, FNV-1a, CityHash).</p>
   <div class="bodu-card-links">
     <a href="api/Bodu.Security.Cryptography.html">Overview</a>
-    <a href="guides/cryptography/">Guides</a>
+    <a href="guides/cryptography/index.html">Guides</a>
   </div>
 </div>
 
@@ -103,6 +103,6 @@ dotnet add package Bodu.Globalization.Calendar.Data.AsiaPacific
 <div class="bodu-nav">
   <a href="docs/introduction.html">Introduction</a>
   <a href="docs/getting-started.html">Getting started</a>
-  <a href="api/">API reference</a>
-  <a href="articles/">Articles</a>
+  <a href="api/Bodu.html">API reference</a>
+  <a href="articles/index.html">Articles</a>
 </div>

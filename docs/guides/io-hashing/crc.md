@@ -4,7 +4,7 @@ title: Using CRC
 
 # Using CRC
 
-**Bodu.IO.Hashing** ships a single <xref:Bodu.IO.Hashing.Checksum.Crc> engine that can compute any CRC of widths 1–64 bits. The parameters — polynomial, initial value, input / output reflection, XOR-out — are packed into an immutable <xref:Bodu.IO.Hashing.Checksum.CrcStandard> that you pass to the constructor.
+**Bodu.IO.Hashing** ships a single <xref:Bodu.IO.Hashing.Checksums.Crc> engine that can compute any CRC of widths 1–64 bits. The parameters — polynomial, initial value, input / output reflection, XOR-out — are packed into an immutable <xref:Bodu.IO.Hashing.Checksums.CrcStandard> that you pass to the constructor.
 
 ![Table-driven CRC pipeline](../../images/diagrams/crc-pipeline.svg)
 
@@ -27,7 +27,7 @@ The default constructor `new Crc()` is equivalent to `new Crc(CrcStandard.CRC32_
 
 ## Pattern 2 — pick from the enum
 
-For anything outside the short list of strongly-typed properties, use the <xref:Bodu.IO.Hashing.Checksum.CrcStandards> enum. Every canonical CRC RevEng entry has a member.
+For anything outside the short list of strongly-typed properties, use the <xref:Bodu.IO.Hashing.Checksums.CrcStandards> enum. Every canonical CRC RevEng entry has a member.
 
 ```csharp
 using Bodu.IO.Hashing;
@@ -36,7 +36,7 @@ using var crc16 = new Crc(CrcStandard.Get(CrcStandards.CRC16_XMODEM));
 using var crc8  = new Crc(CrcStandard.Get(CrcStandards.CRC8_SAEJ1850));
 ```
 
-Instances are memoised inside <xref:Bodu.IO.Hashing.Checksum.CrcStandard>, so repeated calls to `Get` for the same entry return the same reference.
+Instances are memoised inside <xref:Bodu.IO.Hashing.Checksums.CrcStandard>, so repeated calls to `Get` for the same entry return the same reference.
 
 ## Pattern 3 — look up by name (including aliases)
 
@@ -51,7 +51,7 @@ using var b = new Crc(CrcStandard.FromName("PKZIP"));          // same underlyin
 
 ## Pattern 4 — a custom parameter set
 
-If your target isn't in the catalogue, construct a <xref:Bodu.IO.Hashing.Checksum.CrcStandard> directly.
+If your target isn't in the catalogue, construct a <xref:Bodu.IO.Hashing.Checksums.CrcStandard> directly.
 
 ```csharp
 using Bodu.IO.Hashing;
@@ -73,7 +73,7 @@ Widths 1–64 bits are supported. `CrcStandard` validates the width at construct
 
 ## Pattern 5 — streaming over bytes
 
-Because <xref:Bodu.IO.Hashing.Checksum.Crc> derives from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>, the BCL streaming helpers apply. Call `Append` as many times as you like, then `GetCurrentHash` to finalise.
+Because <xref:Bodu.IO.Hashing.Checksums.Crc> derives from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>, the BCL streaming helpers apply. Call `Append` as many times as you like, then `GetCurrentHash` to finalise.
 
 ```csharp
 using Bodu.IO.Hashing;
@@ -97,7 +97,7 @@ byte[] fingerprint = crc.GetCurrentHash();
 
 ## Pattern 6 — resume from a stored digest
 
-<xref:Bodu.IO.Hashing.Checksum.Crc> implements <xref:Bodu.IO.Hashing.IResumableHashAlgorithm>, which lets you reverse-finalise a digest you computed earlier, append new bytes, and finalise again. Handy for append-only logs and chunked uploads where rehashing the whole input is expensive.
+<xref:Bodu.IO.Hashing.Checksums.Crc> implements <xref:Bodu.IO.Hashing.IResumableHashAlgorithm>, which lets you reverse-finalise a digest you computed earlier, append new bytes, and finalise again. Handy for append-only logs and chunked uploads where rehashing the whole input is expensive.
 
 ```csharp
 using System.Text;
@@ -117,7 +117,7 @@ The combined digest is identical to what you'd get from a single pass over the c
 
 ## Pattern 7 — sharing lookup tables
 
-Every `Crc` instance with the same (width, polynomial, reflect-in) triple shares a single 256-entry lookup table through <xref:Bodu.IO.Hashing.Checksum.Crc.GlobalCache>. This means constructing a hundred `Crc(CrcStandard.CRC32_ISOHDLC)` instances allocates one table, not a hundred.
+Every `Crc` instance with the same (width, polynomial, reflect-in) triple shares a single 256-entry lookup table through <xref:Bodu.IO.Hashing.Checksums.Crc.GlobalCache>. This means constructing a hundred `Crc(CrcStandard.CRC32_ISOHDLC)` instances allocates one table, not a hundred.
 
 ```csharp
 using Bodu.IO.Hashing;
