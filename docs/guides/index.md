@@ -15,7 +15,7 @@ General-purpose building blocks: bounded collections, eviction-aware caches, day
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="core/">Overview</a></h3>
+  <h3><a href="core/index.md">Overview</a></h3>
   <p>Namespace map (<code>Bodu.Collections.Generic</code>, <code>Bodu</code>) — key types and which guide covers each.</p>
 </div>
 
@@ -50,7 +50,7 @@ Non-cryptographic hashing — fingerprints, checksums, and check digits — buil
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="io-hashing/">Overview</a></h3>
+  <h3><a href="io-hashing/index.md">Overview</a></h3>
   <p>Namespace map (<code>Bodu.IO.Hashing</code>, <code>.Checksums</code>, <code>.CheckDigits</code>) — key types and which guide covers each.</p>
 </div>
 
@@ -138,7 +138,7 @@ Cryptographic primitives with a formal adversary model — block ciphers, AEAD c
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="cryptography/">Overview</a></h3>
+  <h3><a href="cryptography/index.md">Overview</a></h3>
   <p>Namespace map and selection table for cipher, hash, and AEAD families.</p>
 </div>
 
@@ -300,7 +300,7 @@ Rule-driven notable date (public holiday, observance, festival) resolution for a
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="calendar/">Overview</a></h3>
+  <h3><a href="calendar/index.md">Overview</a></h3>
   <p>Resolution pipeline, namespace map, and key-type table.</p>
 </div>
 

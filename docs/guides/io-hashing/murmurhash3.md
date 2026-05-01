@@ -147,5 +147,5 @@ Reach for **MurmurHash3** when you need a seeded 32- or 128-bit fingerprint with
 - [Using XxHash](xxhash.md) — another high-quality seeded fingerprint family.
 - [Using FNV](fnv.md) — constant-memory streaming alternative.
 - [Using CityHash](cityhash.md) — fastest throughput on large inputs.
-- [Algorithm families](../algorithm-families.md) — when to use a fingerprint vs a checksum vs a keyed hash.
+- [Algorithm families](../../docs/algorithm-families.md) — when to use a fingerprint vs a checksum vs a keyed hash.
 - [Bodu.IO.Hashing namespace page](../../apidoc/Bodu.IO.Hashing.md) — key types and design notes.

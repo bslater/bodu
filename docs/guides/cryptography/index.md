@@ -8,7 +8,7 @@ Recipe-style walk-throughs for **Bodu.Security.Cryptography**, organised by the 
 
 If you have not yet installed the package or want the high-level shape of the library, start with the [Bodu.Security.Cryptography introduction](../../docs/cryptography/index.md) and the [getting-started page](../../docs/cryptography/getting-started.md). Not sure which primitive to use? See [Algorithm families](../../docs/algorithm-families.md).
 
-For the auto-generated API reference, see the [Bodu.Security.Cryptography namespace page](../../apidoc/Bodu.Security.Cryptography.md). For non-cryptographic checksums and fingerprints, see the [Bodu.IO.Hashing guides](../io-hashing/).
+For the auto-generated API reference, see the [Bodu.Security.Cryptography namespace page](../../apidoc/Bodu.Security.Cryptography.md). For non-cryptographic checksums and fingerprints, see the [Bodu.IO.Hashing guides](../io-hashing/index.md).
 
 ## Namespace map
 
@@ -153,5 +153,5 @@ The library also exposes `Whirlpool`, `Blake2b`, `Blake2s`, `Blake3`, `Skein256`
 - [Bodu.Security.Cryptography introduction](../../docs/cryptography/index.md) — namespaces, headline types, scenarios.
 - [Bodu.Security.Cryptography getting started](../../docs/cryptography/getting-started.md) — install and minimal samples per subfamily.
 - [Algorithm families](../../docs/algorithm-families.md) — cipher subtypes, hash structural shapes, cross-library map.
-- [Bodu.IO.Hashing guides](../io-hashing/) — non-cryptographic checksums and fingerprints.
+- [Bodu.IO.Hashing guides](../io-hashing/index.md) — non-cryptographic checksums and fingerprints.
 - [Bodu.Security.Cryptography API reference](../../apidoc/Bodu.Security.Cryptography.md) — full type-by-type docs.
