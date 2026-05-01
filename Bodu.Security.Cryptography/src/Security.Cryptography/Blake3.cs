@@ -40,6 +40,23 @@ namespace Bodu.Security.Cryptography;
 /// This implementation supports the standard, unkeyed hash mode only. Keyed-hash and
 /// key-derivation modes are not exposed.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Output size: 256 bits (32 bytes), fixed.</description></item>
+///   <item><description>Block size: 64 bytes; chunk size: 1024 bytes (the leaf of the hash tree).</description></item>
+///   <item><description>Construction: binary Merkle tree over chunks, ARX compression derived from BLAKE2 / ChaCha.</description></item>
+///   <item><description>Mode: standard unkeyed hash only — keyed hash and KDF modes are not exposed.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose BLAKE3.</strong> Reach for BLAKE3 when raw throughput on long inputs is the priority
+/// — its tree structure is naturally parallel-friendly and outperforms <see cref="Blake2b"/>, SHA-2, and SHA-3
+/// on multi-megabyte messages. For short inputs the difference shrinks and any of the BLAKE2 / SHA-2 variants is
+/// fine. Use <see cref="Blake2b"/> if a configurable output size or RFC 7693-compatible MAC mode is required;
+/// use <see cref="MerkleTreeHash"/> or <see cref="ParallelMerkleTreeHash"/> if you want explicit control over the
+/// tree shape and the underlying leaf hash.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

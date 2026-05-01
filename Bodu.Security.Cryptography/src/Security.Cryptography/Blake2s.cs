@@ -33,6 +33,21 @@ namespace Bodu.Security.Cryptography;
 /// 64 bytes and prepended as the first message block, and the key length is encoded into the parameter block so
 /// that keyed and unkeyed digests of the same message are always distinct.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Output size: configurable — 128, 160, 192, 224, or 256 bits.</description></item>
+///   <item><description>Block size: 64 bytes (512 bits); 8 × 32-bit state words; 10 rounds.</description></item>
+///   <item><description>Optional key: 1–32 bytes for BLAKE2s-MAC mode (RFC 7693 §2.8).</description></item>
+///   <item><description>Specification: RFC 7693; optimised for 8/16/32-bit hosts.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose BLAKE2s.</strong> Pick BLAKE2s on 32-bit hosts, embedded targets, or any time the
+/// output is at most 32 bytes — the 32-bit-word design beats <see cref="Blake2b"/> on those platforms.
+/// On 64-bit hosts and for outputs longer than 32 bytes, <see cref="Blake2b"/> is faster. For very large
+/// parallel workloads <see cref="Blake3"/> is faster still and supports tree hashing natively.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

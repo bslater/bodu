@@ -33,6 +33,22 @@ namespace Bodu.Security.Cryptography;
 /// 128 bytes and prepended as the first message block, and the key length is encoded into the parameter block so
 /// that keyed and unkeyed digests of the same message are always distinct.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Output size: configurable — 128, 160, 192, 224, 256, 384, or 512 bits.</description></item>
+///   <item><description>Block size: 128 bytes (1024 bits); 8 × 64-bit state words; 12 rounds.</description></item>
+///   <item><description>Optional key: 1–64 bytes for BLAKE2b-MAC mode (RFC 7693 §2.8).</description></item>
+///   <item><description>Specification: RFC 7693; optimised for 64-bit hosts.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose BLAKE2b.</strong> The right pick on 64-bit platforms when SHA-2 / SHA-3 throughput
+/// matters but compatibility with those standards is not required — BLAKE2b is faster than SHA-512 in software
+/// while offering the same security level. Use <see cref="Blake2s"/> on 32-bit hosts or for output sizes up to
+/// 32 bytes. For tree-hashing or genuinely large parallel workloads <see cref="Blake3"/> is faster again. As a
+/// keyed MAC, BLAKE2b-MAC is competitive with HMAC-SHA-256 / Poly1305 and avoids the double-hash overhead of HMAC.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
