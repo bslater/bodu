@@ -1,6 +1,6 @@
 - name: Overview
   href: index.md
-- name: Collections
+- name: Bodu.Collections.Generic
   items:
     - name: Circular buffer
       href: circular-buffer.md
@@ -8,7 +8,7 @@
       href: deque.md
     - name: Evicting dictionary
       href: evicting-dictionary.md
-- name: Primitives
+- name: Bodu (root namespace)
   items:
     - name: WeekPattern
       href: week-pattern.md

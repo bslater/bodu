@@ -3,3 +3,29 @@
   href: introduction.md
 - name: Getting Started
   href: getting-started.md
+- name: Algorithm families
+  href: algorithm-families.md
+- name: Bodu.Core
+  items:
+    - name: Introduction
+      href: core/index.md
+    - name: Getting started
+      href: core/getting-started.md
+- name: Bodu.IO.Hashing
+  items:
+    - name: Introduction
+      href: io-hashing/index.md
+    - name: Getting started
+      href: io-hashing/getting-started.md
+- name: Bodu.Security.Cryptography
+  items:
+    - name: Introduction
+      href: cryptography/index.md
+    - name: Getting started
+      href: cryptography/getting-started.md
+- name: Bodu.Globalization.Calendar
+  items:
+    - name: Introduction
+      href: calendar/index.md
+    - name: Getting started
+      href: calendar/getting-started.md
