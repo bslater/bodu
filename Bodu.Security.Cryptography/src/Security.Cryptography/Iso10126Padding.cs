@@ -14,12 +14,29 @@ namespace Bodu.Security.Cryptography;
 /// random bytes followed by a trailing byte holding the padding length <c>N</c>.
 /// </summary>
 /// <remarks>
+/// <para>
 /// A full block of padding is always added when the input is already block-aligned so
 /// that <see cref="Unpad" /> can unambiguously recover the original length. The interior
 /// pad bytes are not reconstructable on decryption, so only the trailing length byte is
 /// validated. ISO 10126 was withdrawn by ISO in 2007; it is supported for interoperability
 /// with existing ciphertexts.
+/// </para>
+/// <para>
+/// <strong>When to choose ISO 10126.</strong> Only for legacy interop. The random pad bytes carry no
+/// security benefit over <see cref="Pkcs7Padding"/> and the standard has been formally withdrawn. For new
+/// designs use PKCS#7 with an authenticated mode, or pair an AEAD mode with <see cref="NoPadding"/>.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.Security.Cryptography;
+///
+/// // Legacy interop only — padding bytes are random; only the final length byte is validated.
+/// IPaddingStrategy padding = new Iso10126Padding();
+/// byte[] padded = padding.Pad(plaintext, blockSize: 16);
+/// byte[] recovered = padding.Unpad(padded, blockSize: 16);
+/// </code>
+/// </example>
 public sealed class Iso10126Padding : IPaddingStrategy
 {
     /// <inheritdoc />
