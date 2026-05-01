@@ -21,7 +21,7 @@ Related namespaces in the same library:
 
 - <xref:Bodu.Buffers> — low-overhead conversion helpers between raw byte arrays and arrays of unmanaged types (`BufferConverter`).
 - <xref:Bodu.Extensions> — array helpers (`ArrayExtensions`) for slicing, copying, clearing, and reversing.
-- <xref:Bodu.Text> — `BaseEncoding` entry points for Base16, Base24, Base32, and Base64.
+- <xref:Bodu.Text.BaseEncoding> — `BaseEncoding` entry points for Base16, Base24, Base32, and Base64.
 - <xref:Bodu> — `ThrowHelper` centralises argument validation; `IRandomGenerator` abstracts random generation for testability.
 
 ## Example
