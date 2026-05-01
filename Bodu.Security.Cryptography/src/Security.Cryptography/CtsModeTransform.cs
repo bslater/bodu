@@ -38,7 +38,30 @@ namespace Bodu.Security.Cryptography;
 /// The input to <see cref="Transform" /> must be at least one full block long. For inputs of exactly
 /// one block, the result is identical to standard CBC encryption or decryption.
 /// </para>
+/// <para>
+/// <strong>When to use CTS.</strong> Pick CTS when ciphertext length must equal plaintext length and the
+/// input is not block-aligned — typical in fixed-size record formats, network frames with strict size
+/// budgets, and on-disk layouts where adding padding bytes is impossible. CTS shares CBC's lack of
+/// authentication and its sequential nature; for new general-purpose encryption an AEAD mode
+/// (<see cref="GcmModeTransform"/>, <see cref="EaxModeTransform"/>) is preferable. The variant implemented
+/// here is CS3 / IEEE 1619 (the order used by NIST SP 800-38A Addendum and most modern interop).
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+///
+/// // Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.CTS instead of using this directly.
+/// using IBlockCipher cipher = new AesBlockCipher(key);
+/// byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize);
+/// IBlockCipherModeTransform cts = new CtsModeTransform(cipher, iv);
+///
+/// // CTS preserves length: plaintext.Length == ciphertext.Length, no padding required.
+/// byte[] ciphertext = new byte[plaintext.Length];
+/// int written = cts.Transform(plaintext, ciphertext, encrypt: true);
+/// </code>
+/// </example>
 public sealed class CtsModeTransform : IBlockCipherModeTransform
 {
     private readonly IBlockCipher _cipher;

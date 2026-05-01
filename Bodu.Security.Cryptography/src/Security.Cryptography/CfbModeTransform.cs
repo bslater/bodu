@@ -26,7 +26,33 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// The initialisation vector must equal the cipher block size in length and should be unique and unpredictable per message under a given key.
 /// </para>
+/// <para>
+/// <strong>When to use CFB.</strong> Pick CFB only for interoperability with legacy formats — it was the
+/// stream-cipher mode of choice in PGP / OpenPGP and certain disk-encryption layouts. CFB removes the padding
+/// requirement that <see cref="CbcModeTransform"/> imposes, but inherits the same lack of authentication and
+/// adds bit-flip propagation across multiple blocks. For new code prefer <see cref="CtrModeTransform"/> for
+/// stream-cipher behaviour, or an AEAD mode (<see cref="GcmModeTransform"/>, <see cref="EaxModeTransform"/>)
+/// for authenticated encryption.
+/// </para>
+/// <para>
+/// CFB is sequential at the block level: each ciphertext block must be produced before the next can be
+/// computed, so the mode does not parallelise within a message.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+///
+/// // Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.CFB instead of using this directly.
+/// using IBlockCipher cipher = new AesBlockCipher(key);
+/// byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize);
+/// IBlockCipherModeTransform cfb = new CfbModeTransform(cipher, iv);
+///
+/// byte[] ciphertext = new byte[plaintext.Length];
+/// int written = cfb.Transform(plaintext, ciphertext, encrypt: true);
+/// </code>
+/// </example>
 /// <seealso href="../guides/cryptography/cipher-modes.html#cfb--self-synchronising-stream-cipher">CFB walk-through in the cipher-modes guide</seealso>
 public sealed class CfbModeTransform : IBlockCipherModeTransform
 {
