@@ -107,5 +107,5 @@ Reach for **XxHash64** when you want seeded, high-throughput 64-bit fingerprints
 - [Using MurmurHash3](murmurhash3.md) — seeded fingerprint with 128-bit output.
 - [Using CityHash](cityhash.md) — fastest throughput on large inputs.
 - [Using FNV](fnv.md) — constant-memory streaming fingerprint.
-- [Algorithm families](../algorithm-families.md) — fingerprints vs checksums vs keyed hashes.
+- [Algorithm families](../../docs/algorithm-families.md) — fingerprints vs checksums vs keyed hashes.
 - [Bodu.IO.Hashing namespace page](../../apidoc/Bodu.IO.Hashing.md) — key types and design notes.
