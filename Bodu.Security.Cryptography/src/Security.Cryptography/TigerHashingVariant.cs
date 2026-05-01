@@ -16,10 +16,20 @@ namespace Bodu.Security.Cryptography;
 /// Specifies the padding variant used by the <see cref="Bodu.Security.Cryptography.Tiger" /> hashing algorithm.
 /// </summary>
 /// <remarks>
+/// <para>
 /// The <see cref="TigerHashingVariant" /> enumeration differentiates between the original Tiger algorithm and the modified Tiger2
 /// variant. These variants are identical in their core compression function but differ in how the final padding byte is applied during
 /// hash finalization.
+/// </para>
+/// <para>
+/// Pick <see cref="Tiger"/> when reproducing or interoperating with output from the original Anderson/Biham
+/// reference implementation, and <see cref="Tiger2"/> when matching modern Tiger-based tooling or
+/// TigerTree variants — most contemporary code paths use <see cref="Tiger2"/> by default. Aside from the
+/// final padding byte the two variants are bit-identical, so the same key material and message produce
+/// otherwise indistinguishable internal computation.
+/// </para>
 /// </remarks>
+/// <seealso cref="Bodu.Security.Cryptography.Tiger"/>
 public enum TigerHashingVariant
 {
     /// <summary>
