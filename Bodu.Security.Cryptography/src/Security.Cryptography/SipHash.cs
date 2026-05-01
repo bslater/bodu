@@ -37,6 +37,14 @@ namespace Bodu.Security.Cryptography;
 /// input has been processed, <see cref="FinalizationRounds" /> rounds are applied to produce the final digest. The defaults
 /// (<c>c = 2</c>, <c>d = 4</c>) correspond to the standard <c>SipHash-2-4</c> parameterisation.
 /// </para>
+/// <para>
+/// <strong>When to choose SipHash.</strong> SipHash is the de-facto standard for protecting hash tables and
+/// bloom filters against collision-based denial-of-service attacks — Python, Ruby, Rust, Perl, and OpenBSD's
+/// stdlib all use it for that purpose. Pick <see cref="SipHash64"/> when 64 bits is enough; pick
+/// <see cref="SipHash128"/> when collision pressure on the tag width matters. For protocol-level message
+/// authentication over long messages prefer HMAC-SHA-256 or <see cref="Blake2b"/>-MAC. Do not use SipHash
+/// where the key may be exposed — its security target is hash-flooding resistance, not generic MAC strength.
+/// </para>
 /// </remarks>
 /// <example>
 /// The following example configures a <see cref="SipHash64" /> instance to use the stronger <c>SipHash-4-8</c> parameter set.

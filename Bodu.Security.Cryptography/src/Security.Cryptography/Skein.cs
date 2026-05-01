@@ -44,7 +44,20 @@ namespace Bodu.Security.Cryptography;
 /// key-derivation identifiers, and nonce modes are not exposed; the corresponding Skein tweak types are reserved for
 /// potential future extension (see <see cref="SkeinTweakType" />).
 /// </para>
+/// <para>
+/// <strong>When to choose Skein.</strong> Pick the Skein family for interop with code that has standardised on
+/// it (the SHA-3 finalist round attracted a long tail of adopters, and Skein remains common in research code).
+/// Skein-512 is the recommended default; Skein-256 is the narrower variant and Skein-1024 the widest. For new
+/// general-purpose cryptographic hashing without an interop requirement <see cref="Blake2b"/> is faster on
+/// commodity 64-bit hardware and SHA-2 / SHA-3 are more widely deployed. The Threefish primitive itself is
+/// also available standalone via <see cref="Threefish"/>.
+/// </para>
 /// </remarks>
+/// <seealso cref="Skein256"/>
+/// <seealso cref="Skein512"/>
+/// <seealso cref="Skein1024"/>
+/// <seealso cref="Threefish"/>
+/// <seealso cref="KeyedBlockHashAlgorithm{T}"/>
 public abstract partial class Skein<T>
     : KeyedBlockHashAlgorithm<T>
     where T : Skein<T>, new()
