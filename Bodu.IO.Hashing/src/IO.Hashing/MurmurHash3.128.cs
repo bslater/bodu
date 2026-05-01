@@ -25,10 +25,39 @@ using System.Runtime.CompilerServices;
 /// A 32-bit seed may be supplied at construction time. Both accumulators are initialised to the same seed
 /// value, matching the behaviour of the reference <c>MurmurHash3_x64_128</c> implementation.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Output size: 128 bits (16 bytes), little-endian.</description></item>
+///   <item><description>Variant: <c>MurmurHash3_x64_128</c> — optimised for 64-bit platforms.</description></item>
+///   <item><description>Block size: 16 bytes; tail pass for remaining 1–15 bytes.</description></item>
+///   <item><description>Seed: 32 bits, applied to both accumulators; defaults to <c>0</c>.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose MurmurHash3_128.</strong> Pick this when collision pressure makes 32 or 64 bits
+/// inadequate — content fingerprinting, deduplication keys, large bloom filters. Output is also useful as a
+/// pair of 64-bit halves for two-hash cuckoo or split-key schemes.
+/// <see cref="CityHash128"/> is a comparable alternative with similar quality and slightly better throughput
+/// on long inputs on modern 64-bit CPUs.
+/// </para>
 /// <note type="important">
 /// This algorithm is <b>not</b> cryptographically secure and must <b>not</b> be used for password hashing,
 /// digital signatures, or any application requiring adversarial collision resistance.
 /// </note>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// // 128-bit fingerprint of a content blob.
+/// var m = new MurmurHash3_128();
+/// byte[] fingerprint = m.ComputeHash(blob);
+///
+/// // Custom seed to isolate a second hash family for cuckoo / bloom-filter use.
+/// var m2 = new MurmurHash3_128(seed: 0xC2B2AE35u);
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class MurmurHash3_128
     : MurmurHash3<MurmurHash3_128>
