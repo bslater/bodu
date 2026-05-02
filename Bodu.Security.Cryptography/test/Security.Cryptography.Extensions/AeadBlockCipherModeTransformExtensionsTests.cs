@@ -27,6 +27,10 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
     private static byte[] NewIv() => new byte[16] { 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11,
                                                      0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19 };
 
+    // GCM's public byte[] constructor requires a 96-bit (12-byte) nonce per NIST SP 800-38D §5.2.1.1.
+    private static byte[] NewGcmNonce() => new byte[12] { 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11,
+                                                          0x12, 0x13, 0x14, 0x15 };
+
     /// <summary>
     /// Verifies that <c>Encrypt</c> followed by <c>Decrypt</c> using GCM + AES recovers the original
     /// plaintext when associated data is supplied on both sides.
@@ -35,7 +39,7 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
     public void Gcm_RoundTrip_WithAssociatedData_ShouldRecoverPlaintext()
     {
         byte[] key = NewKey();
-        byte[] iv = NewIv();
+        byte[] iv = NewGcmNonce();
 
         byte[] cipherWithTag;
         using (var cipher = new AesBlockCipher(key))
@@ -56,7 +60,7 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
     public void Gcm_RoundTrip_NoAssociatedData_ShouldRecoverPlaintext()
     {
         byte[] key = NewKey();
-        byte[] iv = NewIv();
+        byte[] iv = NewGcmNonce();
 
         byte[] cipherWithTag;
         using (var cipher = new AesBlockCipher(key))
@@ -189,7 +193,7 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
     public void Decrypt_WhenTagIsTampered_ShouldThrowCryptographicException()
     {
         byte[] key = NewKey();
-        byte[] iv = NewIv();
+        byte[] iv = NewGcmNonce();
 
         byte[] cipherWithTag;
         using (var cipher = new AesBlockCipher(key))
@@ -214,7 +218,7 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
     public void Decrypt_WhenAssociatedDataDiffers_ShouldThrowCryptographicException()
     {
         byte[] key = NewKey();
-        byte[] iv = NewIv();
+        byte[] iv = NewGcmNonce();
 
         byte[] cipherWithTag;
         using (var cipher = new AesBlockCipher(key))
@@ -264,7 +268,7 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
     public void Decrypt_WhenInputShorterThanTag_ShouldThrowArgumentException()
     {
         byte[] key = NewKey();
-        byte[] iv = NewIv();
+        byte[] iv = NewGcmNonce();
         using var cipher = new AesBlockCipher(key);
         var aead = new GcmModeTransform(cipher, iv);
 
