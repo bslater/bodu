@@ -1,8 +1,10 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResolutionService.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
+using Bodu.Extensions;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -13,10 +15,6 @@ namespace Bodu.Globalization.Calendar;
 /// <para>
 /// This service is intentionally separate from <see cref="NotableDateService" /> while the revised architecture is being
 /// validated. It owns only the new resolution pipeline and avoids the legacy year-cache and recursive generation model.
-/// </para>
-/// <para>
-/// The service currently materialises base occurrences through <see cref="NotableDateResolutionEngine" />. Observance
-/// adjustments and dynamic window expansion are expected to be added in later slices.
 /// </para>
 /// </remarks>
 internal sealed class NotableDateResolutionService
@@ -31,11 +29,21 @@ internal sealed class NotableDateResolutionService
     /// <param name="ruleProviders">The rule providers used to load notable-date rules.</param>
     /// <param name="algorithmRegistry">The optional algorithm registry used to resolve algorithm-backed rules.</param>
     /// <param name="collisionResolver">The optional collision resolver applied to emitted dates.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="ruleProviders" /> is <see langword="null" />.</exception>
+    /// <param name="weekendDefinition">The weekend definition used by observance adjustment processing.</param>
+    /// <param name="weekendProvider">The optional custom weekend provider.</param>
+    /// <param name="adjustmentHandlers">The optional custom adjustment handler registry.</param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="ruleProviders" /> is <see langword="null" />, or <paramref name="weekendProvider" /> is
+    /// <see langword="null" /> when <paramref name="weekendDefinition" /> is <see cref="CalendarWeekendDefinition.Custom" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="weekendDefinition" /> is not defined.</exception>
     public NotableDateResolutionService(
         IEnumerable<INotableDateRuleProvider> ruleProviders,
         INotableDateAlgorithmRegistry? algorithmRegistry = null,
-        INotableDateCollisionResolver? collisionResolver = null)
+        INotableDateCollisionResolver? collisionResolver = null,
+        CalendarWeekendDefinition weekendDefinition = CalendarWeekendDefinition.SaturdaySunday,
+        IWeekendDefinitionProvider? weekendProvider = null,
+        IAdjustmentHandlerRegistry? adjustmentHandlers = null)
     {
         ArgumentNullException.ThrowIfNull(ruleProviders);
 
@@ -51,7 +59,12 @@ internal sealed class NotableDateResolutionService
             calculationAnchors,
             anchorRelativeRules);
 
-        this.resolutionEngine = new NotableDateResolutionEngine(occurrenceResolver);
+        INotableDateResolutionAdjustmentProcessor adjustmentProcessor = new NotableDateResolutionAdjustmentProcessor(
+            weekendDefinition,
+            weekendProvider,
+            adjustmentHandlers);
+
+        this.resolutionEngine = new NotableDateResolutionEngine(occurrenceResolver, adjustmentProcessor);
     }
 
     /// <summary>

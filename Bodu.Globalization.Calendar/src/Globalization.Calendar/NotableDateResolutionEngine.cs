@@ -12,24 +12,27 @@ namespace Bodu.Globalization.Calendar;
 /// <remarks>
 /// <para>
 /// This engine is the integration seam between the rule occurrence resolver and the chronological resolution window.
-/// This initial implementation materialises base occurrences only. Observance adjustments and dynamic window expansion
-/// are intentionally handled by later refactoring slices.
 /// </para>
 /// </remarks>
 internal sealed class NotableDateResolutionEngine : INotableDateResolutionEngine
 {
     private readonly INotableDateRuleOccurrenceResolver occurrenceResolver;
+    private readonly INotableDateResolutionAdjustmentProcessor? adjustmentProcessor;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateResolutionEngine" /> class.
     /// </summary>
     /// <param name="occurrenceResolver">The resolver used to materialise base rule occurrences.</param>
+    /// <param name="adjustmentProcessor">The optional processor used to apply observance adjustments.</param>
     /// <exception cref="ArgumentNullException"><paramref name="occurrenceResolver" /> is <see langword="null" />.</exception>
-    public NotableDateResolutionEngine(INotableDateRuleOccurrenceResolver occurrenceResolver)
+    public NotableDateResolutionEngine(
+        INotableDateRuleOccurrenceResolver occurrenceResolver,
+        INotableDateResolutionAdjustmentProcessor? adjustmentProcessor = null)
     {
         ArgumentNullException.ThrowIfNull(occurrenceResolver);
 
         this.occurrenceResolver = occurrenceResolver;
+        this.adjustmentProcessor = adjustmentProcessor;
     }
 
     /// <inheritdoc />
@@ -38,8 +41,9 @@ internal sealed class NotableDateResolutionEngine : INotableDateResolutionEngine
         ArgumentNullException.ThrowIfNull(request);
 
         NotableDateResolutionWindow window = new(request.StartDate, request.EndDate);
+        IReadOnlyList<ResolvedNotableDateOccurrence> occurrences = occurrenceResolver.ResolveOccurrences(request);
 
-        foreach (ResolvedNotableDateOccurrence occurrence in occurrenceResolver.ResolveOccurrences(request))
+        foreach (ResolvedNotableDateOccurrence occurrence in occurrences)
         {
             if (ShouldEmit(occurrence, request))
             {
@@ -50,6 +54,8 @@ internal sealed class NotableDateResolutionEngine : INotableDateResolutionEngine
                 window.AddBlocker(occurrence.BaseDate);
             }
         }
+
+        adjustmentProcessor?.ApplyAdjustments(window, occurrences);
 
         return window.OutputDates;
     }
