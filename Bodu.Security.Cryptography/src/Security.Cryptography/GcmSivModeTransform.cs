@@ -74,7 +74,9 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="../guides/cryptography/aead-modes.html#gcm-siv--the-modern-replacement-for-gcm">GCM-SIV walk-through in the AEAD-modes guide</seealso>
 /// <seealso cref="AesBlockCipher" />
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />
-public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
+public sealed class GcmSivModeTransform
+    : IAeadBlockCipherModeTransform
+    , IDisposable
 {
     private const int TagLengthBytes = 16;
     private const int NonceLengthBytes = 12;
@@ -84,6 +86,7 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
     private readonly byte[] _nonce;            // 12-byte nonce
     private byte[]? _aad;
     private bool _aadProcessed;
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GcmSivModeTransform" /> class.
@@ -102,6 +105,9 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
     /// </param>
     /// <exception cref="ArgumentNullException">Any argument is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="iv" /> length does not equal the cipher block size.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="cipherFactory" /> returned <see langword="null" />.
+    /// </exception>
     public GcmSivModeTransform(IBlockCipher masterCipher, Func<byte[], IBlockCipher> cipherFactory, byte[] iv)
     {
         if (masterCipher is null) throw new ArgumentNullException(nameof(masterCipher));
@@ -116,18 +122,37 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
 
         // Derive K_auth and K_enc per RFC 8452 Section 4.
         // Each call: E_K(LE32(i) || nonce), take first 8 bytes.
-        (this._authKey, byte[] encKeyMaterial) = DeriveKeys(masterCipher, this._nonce);
-        this._encCipher = cipherFactory(encKeyMaterial);
+        (byte[] authKey, byte[] encKeyMaterial) = DeriveKeys(masterCipher, this._nonce);
+
+        try
+        {
+            this._authKey = authKey;
+            this._encCipher = cipherFactory(encKeyMaterial)
+                ?? throw new InvalidOperationException("The cipher factory returned null.");
+        }
+        catch
+        {
+            CryptographicOperations.ZeroMemory(authKey);
+            throw;
+        }
+        finally
+        {
+            CryptographicOperations.ZeroMemory(encKeyMaterial);
+        }
     }
 
     /// <inheritdoc />
     public int TagSize => TagLengthBytes;
 
     /// <inheritdoc />
+    /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
     {
+        this.ThrowIfDisposed();
+
         if (this._aadProcessed)
             throw new InvalidOperationException("AssociatedData has already been processed.");
+
         this._aad = associatedData.ToArray();
         this._aadProcessed = true;
     }
@@ -135,6 +160,8 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
     /// <inheritdoc />
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
+        this.ThrowIfDisposed();
+
         int required = plaintext.Length + TagSize;
         if (output.Length < required)
             throw new ArgumentException($"Output must be at least {required} bytes.", nameof(output));
@@ -153,6 +180,8 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
     /// <inheritdoc />
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
+        this.ThrowIfDisposed();
+
         if (ciphertextWithTag.Length < TagSize)
             throw new ArgumentException($"Input must be at least {TagSize} bytes.", nameof(ciphertextWithTag));
         int plaintextLength = ciphertextWithTag.Length - TagSize;
@@ -177,6 +206,50 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
         return plaintextLength;
     }
 
+    /// <summary>
+    /// Releases the resources used by this instance and clears retained authentication key, nonce,
+    /// associated-data state, and the derived encryption cipher.
+    /// </summary>
+    /// <remarks>
+    /// The supplied master cipher is not disposed by this type. Ownership of the master cipher remains with the caller.
+    /// The derived encryption cipher created by the supplied factory is owned by this transform and is disposed here.
+    /// </remarks>
+    public void Dispose()
+    {
+        this.Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Releases the resources used by this instance.
+    /// </summary>
+    /// <param name="disposing">
+    /// <see langword="true" /> to release managed resources; <see langword="false" /> to release unmanaged resources only.
+    /// </param>
+    private void Dispose(bool disposing)
+    {
+        if (this._disposed)
+            return;
+
+        if (disposing)
+        {
+            if (this._encCipher is IDisposable disposableCipher)
+                disposableCipher.Dispose();
+
+            CryptographicOperations.ZeroMemory(this._authKey);
+            CryptographicOperations.ZeroMemory(this._nonce);
+
+            if (this._aad is not null)
+            {
+                CryptographicOperations.ZeroMemory(this._aad);
+                this._aad = null;
+            }
+
+            this._aadProcessed = false;
+        }
+
+        this._disposed = true;
+    }
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
     /// <summary>
@@ -199,33 +272,66 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
         byte[] authKey = new byte[blockSize];
         byte[] encKey = new byte[blockSize];
 
+        byte[]? b0 = null;
+        byte[]? b1 = null;
+        byte[]? b2 = null;
+        byte[]? b3 = null;
+
+        try
+        {
+            // K_auth = first 8 bytes of call(0) || first 8 bytes of call(1).
+            b0 = Derive(0);
+            b1 = Derive(1);
+            b0.AsSpan(0, 8).CopyTo(authKey.AsSpan(0));
+            b1.AsSpan(0, 8).CopyTo(authKey.AsSpan(8));
+
+            // K_enc = first 8 bytes of call(2) || first 8 bytes of call(3).
+            b2 = Derive(2);
+            b3 = Derive(3);
+            b2.AsSpan(0, 8).CopyTo(encKey.AsSpan(0));
+            b3.AsSpan(0, 8).CopyTo(encKey.AsSpan(8));
+
+            return (authKey, encKey);
+        }
+        catch
+        {
+            CryptographicOperations.ZeroMemory(authKey);
+            CryptographicOperations.ZeroMemory(encKey);
+            throw;
+        }
+        finally
+        {
+            CryptoHelpers.ClearAndNullify(ref b3);
+            CryptoHelpers.ClearAndNullify(ref b2);
+            CryptoHelpers.ClearAndNullify(ref b1);
+            CryptoHelpers.ClearAndNullify(ref b0);
+        }
+
         byte[] Derive(int counter)
         {
             byte[] block = new byte[blockSize];
-            // Little-endian 32-bit counter in first 4 bytes.
-            block[0] = (byte)(counter);
-            block[1] = (byte)(counter >> 8);
-            block[2] = (byte)(counter >> 16);
-            block[3] = (byte)(counter >> 24);
-            nonce.CopyTo(block, 4);
             byte[] output = new byte[blockSize];
-            cipher.Encrypt(block, output);
-            return output;
+
+            try
+            {
+                // Little-endian 32-bit counter in first 4 bytes.
+                block[0] = (byte)counter;
+                block[1] = (byte)(counter >> 8);
+                block[2] = (byte)(counter >> 16);
+                block[3] = (byte)(counter >> 24);
+
+                nonce.CopyTo(block, 4);
+
+                cipher.Encrypt(block, output);
+
+                return output;
+            }
+            finally
+            {
+                CryptographicOperations.ZeroMemory(block);
+            }
         }
-
-        // K_auth = first 8 bytes of call(0) || first 8 bytes of call(1).
-        byte[] b0 = Derive(0), b1 = Derive(1);
-        b0.AsSpan(0, 8).CopyTo(authKey.AsSpan(0));
-        b1.AsSpan(0, 8).CopyTo(authKey.AsSpan(8));
-
-        // K_enc = first 8 bytes of call(2) || first 8 bytes of call(3).
-        byte[] b2 = Derive(2), b3 = Derive(3);
-        b2.AsSpan(0, 8).CopyTo(encKey.AsSpan(0));
-        b3.AsSpan(0, 8).CopyTo(encKey.AsSpan(8));
-
-        return (authKey, encKey);
     }
-
     /// <summary>
     /// Computes the GCM-SIV tag per RFC 8452 Section 5.2.
     /// POLYVAL(K_auth, len(A)||len(C), A blocks, C blocks) XOR nonce, then clear bit 31 and 63,
@@ -407,4 +513,10 @@ public sealed class GcmSivModeTransform : IAeadBlockCipherModeTransform
     {
         for (int i = 0; i < result.Length; i++) result[i] = (byte)(a[i] ^ b[i]);
     }
+
+    /// <summary>
+    /// Throws <see cref="ObjectDisposedException" /> if this instance has been disposed.
+    /// </summary>
+    private void ThrowIfDisposed() =>
+        ObjectDisposedException.ThrowIf(this._disposed, this);
 }
