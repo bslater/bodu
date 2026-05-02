@@ -101,6 +101,15 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// the keystream. Skipped for modes whose ciphertext does not depend on the supplied IV
     /// (e.g. SIV, where the IV is ignored).
     /// </summary>
+    /// <remarks>
+    /// Uses a real AES backing cipher rather than <see cref="MonitoringBlockCipher" /> because
+    /// OCB surrounds the cipher call with pre- and post-XOR operations that cancel under a
+    /// linear cipher (RFC 7253 §2.6: <c>C_i = ENCIPHER(K, P_i ⊕ Offset_i) ⊕ Offset_i</c>),
+    /// collapsing OCB ciphertext to <c>P ⊕ mask</c> independent of the nonce. Real AES breaks
+    /// this linearity and exercises the genuine nonce-dependence path. Other AEAD modes
+    /// (GCM, CCM, EAX, GCM-SIV) use the cipher as a CTR/PRF keystream and would observe a
+    /// nonce-dependent ciphertext under either backing cipher.
+    /// </remarks>
     [TestMethod]
     public void Encrypt_WithDifferentNonces_ShouldProduceDifferentCiphertext()
     {
@@ -117,11 +126,14 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         var iv2 = CreateInitializationVector();
         iv2[0] = 0x02;
 
-        var t1 = MakeTransform(iv1);
+        using var cipher1 = new AesBlockCipherFixture(new byte[16]);
+        using var cipher2 = new AesBlockCipherFixture(new byte[16]);
+
+        var t1 = CreateTransform(cipher1, iv1);
         var out1 = new byte[plaintext.Length + t1.TagSize];
         t1.Encrypt(plaintext, out1);
 
-        var t2 = MakeTransform(iv2);
+        var t2 = CreateTransform(cipher2, iv2);
         var out2 = new byte[plaintext.Length + t2.TagSize];
         t2.Encrypt(plaintext, out2);
 
