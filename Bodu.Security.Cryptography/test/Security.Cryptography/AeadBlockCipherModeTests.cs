@@ -8,7 +8,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Base test class for <see cref="IAeadBlockCipherModeTransform" /> implementations, providing
-/// constructor validation (via <see cref="CipherModeTestsBase{TTransform}" />) together with
+/// constructor validation via <see cref="CipherModeTestsBase{TTransform}" /> together with
 /// per-method tests partitioned across the following partial files:
 /// <list type="bullet">
 /// <item><description><c>AeadBlockCipherModeTests.Encrypt.cs</c> — <see cref="IAeadBlockCipherModeTransform.Encrypt" /> argument validation and output-size tests.</description></item>
@@ -19,15 +19,20 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The three constructor-validation tests (<c>Ctor_*</c>) and the shared properties
+/// The constructor-validation tests and shared mode metadata
 /// (<see cref="CipherModeTestsBase{TTransform}.ExpectedBlockSize" />,
 /// <see cref="CipherModeTestsBase{TTransform}.IvParameterName" />,
-/// <see cref="CipherModeTestsBase{TTransform}.UsesInitializationVector" />) live in
-/// <see cref="CipherModeTestsBase{TTransform}" /> and are inherited here.
+/// <see cref="CipherModeTestsBase{TTransform}.UsesInitializationVector" />, and the expected initialisation-value
+/// size) live in <see cref="CipherModeTestsBase{TTransform}" /> and are inherited here.
 /// </para>
 /// <para>
-/// Concrete test classes (e.g. <c>GcmModeTransformTests</c>) must live in their own files and
-/// inherit from this class directly — they must not be embedded here.
+/// AEAD modes use a 128-bit block cipher, but their public initialisation value is mode-specific. For example,
+/// GCM accepts a 96-bit nonce rather than a 128-bit block-sized IV. Concrete tests should override the inherited
+/// initialisation-value metadata where required.
+/// </para>
+/// <para>
+/// Concrete test classes, such as <c>GcmModeTransformTests</c>, must live in their own files and inherit from
+/// this class directly. They must not be embedded here.
 /// </para>
 /// </remarks>
 /// <typeparam name="TTransform">The <see cref="IAeadBlockCipherModeTransform" /> type under test.</typeparam>
@@ -37,21 +42,30 @@ public abstract partial class AeadBlockCipherModeTests<TTransform>
     where TTransform : IAeadBlockCipherModeTransform
 {
     /// <summary>
-    /// AEAD modes (GCM, CCM, GCM-SIV) target 128-bit (16-byte) blocks. This overrides the
-    /// base-class default of 8 bytes used by the generic block-cipher mode tests.
+    /// AEAD modes such as GCM, CCM, and GCM-SIV target 128-bit block ciphers.
     /// </summary>
     protected override int ExpectedBlockSize => 16;
 
-    // IvParameterName       → inherited as "iv"   — correct for all current AEAD modes
-    // UsesInitializationVector → inherited as true — all AEAD modes require an IV
+    /// <summary>
+    /// Creates a zero-filled initialisation value using the expected size for the transform under test.
+    /// </summary>
+    /// <returns>
+    /// A new initialisation value suitable for constructing the transform under test.
+    /// </returns>
+    /// <remarks>
+    /// Most AEAD modes use a block-sized initialisation value. GCM overrides the expected size to 12 bytes because
+    /// its public constructor accepts a 96-bit nonce.
+    /// </remarks>
+    protected virtual byte[] CreateInitializationVector() =>
+        new byte[ExpectedInitializationVectorSize];
 
     /// <summary>
-    /// Returns a transform constructed with the default test cipher (<see cref="MonitoringBlockCipher" />
-    /// with <c>xorMask=0xAA</c>) and an all-zero IV. Used by tests that do not need to inspect
-    /// the cipher or IV directly.
+    /// Returns a transform constructed with the default test cipher, using a correctly-sized all-zero
+    /// initialisation value for the transform under test.
     /// </summary>
+    /// <returns>A new transform instance.</returns>
     private TTransform MakeTransform() =>
         CreateTransform(
             new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA),
-            new byte[ExpectedBlockSize]);
+            CreateInitializationVector());
 }

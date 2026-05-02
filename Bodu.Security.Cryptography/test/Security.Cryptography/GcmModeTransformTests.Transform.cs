@@ -24,8 +24,8 @@ public sealed partial class GcmModeTransformTests
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
         var plaintext = new byte[ExpectedBlockSize];
 
-        var iv1 = new byte[ExpectedBlockSize]; iv1[0] = 0x01;
-        var iv2 = new byte[ExpectedBlockSize]; iv2[0] = 0x02;
+        var iv1 = CreateInitializationVector(); iv1[0] = 0x01;
+        var iv2 = CreateInitializationVector(); iv2[0] = 0x02;
 
         var t1 = new GcmModeTransform(cipher, iv1);
         var out1 = new byte[plaintext.Length + t1.TagSize];
@@ -46,7 +46,7 @@ public sealed partial class GcmModeTransformTests
     public void Encrypt_ShouldProduceNonZeroTag()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = new byte[ExpectedBlockSize];
+        var iv = CreateInitializationVector();
         var plaintext = new byte[ExpectedBlockSize];
         plaintext[0] = 0x42;
 
@@ -69,7 +69,7 @@ public sealed partial class GcmModeTransformTests
     public void Encrypt_WithDifferentAad_ShouldProduceDifferentTag()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = new byte[ExpectedBlockSize];
+        var iv = CreateInitializationVector();
         var plaintext = new byte[ExpectedBlockSize];
 
         var t1 = new GcmModeTransform(cipher, iv);

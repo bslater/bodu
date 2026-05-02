@@ -5,52 +5,48 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Buffers.Binary;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Applies Galois/Counter Mode (GCM) to an underlying <see cref="IBlockCipher" />, providing single-pass
-/// authenticated encryption with associated data (AEAD).
+/// Applies Galois/Counter Mode (GCM) to a 128-bit block cipher, providing single-pass authenticated
+/// encryption with associated data (AEAD) per NIST SP 800-38D.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — a CTR-style keystream produces ciphertext from plaintext, and a polynomial MAC computed over nonce, associated data, and ciphertext yields the authentication tag." />
+/// GCM combines counter-mode encryption with GHASH authentication over <c>GF(2¹²⁸)</c>:
 /// </para>
-/// <para>
-/// GCM is the canonical instance of the generic AEAD shape shown above: the top pipeline is the
-/// <b>Keystream Generator (CTR)</b> panel, and the bottom pipeline is the <b>MAC / polynomial hash</b>
-/// panel specialised to GHASH. The nonce feeds both pipelines (<c>J0</c> on the top for the counter base
-/// and implicitly on the bottom as the tag-finalising key), and the resulting <em>ciphertext</em> output is
-/// routed into the MAC alongside the <em>associated data</em>.
-/// </para>
-/// <para>
-/// GCM combines CTR-mode encryption with GHASH authentication over GF(2^128):
 /// <list type="bullet">
-/// <item><description>Hash key: H = E(0^128)</description></item>
-/// <item><description>Initial counter J0 derived from the IV.</description></item>
-/// <item><description>Ciphertext: C_i = P_i ⊕ E(counter_i), counter incremented per block.</description></item>
-/// <item><description>Tag: T = GHASH(H, AAD, C) ⊕ E(J0).</description></item>
+///   <item><description>Hash subkey: <c>H = E_K(0¹²⁸)</c>.</description></item>
+///   <item><description>Initial counter <c>J0 = nonce ‖ 0x00000001</c>; payload counter starts at <c>J0 + 1</c>.</description></item>
+///   <item><description>Ciphertext: <c>C_i = P_i ⊕ E_K(counter_i)</c>, counter incremented per block.</description></item>
+///   <item><description>Tag: <c>T = GHASH_H(AAD ‖ C ‖ len(AAD)‖len(C)) ⊕ E_K(J0)</c>.</description></item>
 /// </list>
+/// <para>
+/// GF(2¹²⁸) multiplication uses the irreducible polynomial <c>x¹²⁸ + x⁷ + x² + x + 1</c> with
+/// big-endian bit ordering and the reduction constant <c>0xE1</c> in the most-significant byte.
 /// </para>
 /// <para>
-/// GF(2^128) multiplication uses the irreducible polynomial x^128 + x^7 + x^2 + x + 1 with
-/// big-endian bit ordering, and the reduction constant 0xE1 in the most-significant byte.
+/// <strong>Nonce length.</strong> This implementation accepts only the 96-bit (12-byte) nonce form, which
+/// is what every interoperable GCM consumer uses (TLS 1.2/1.3, IPsec ESP, SSH, QUIC). The
+/// SP 800-38D §7.1 GHASH-based derivation for other nonce lengths is intentionally not supported.
 /// </para>
 /// <para>
-/// The tag size is fixed at 16 bytes (the full GHASH output). The IV is used directly as the initial
-/// counter J0; for standard GCM with 96-bit nonces, the caller should pad to blockSize.
+/// <strong>Lifecycle.</strong> Each instance encrypts or decrypts exactly one message. A second call to
+/// <see cref="Encrypt" /> or <see cref="Decrypt" /> throws <see cref="InvalidOperationException" />.
+/// The instance must be disposed when finished; <see cref="Dispose" /> clears the GHASH subkey,
+/// initial counter, running counter, and cached associated data. The supplied
+/// <see cref="IBlockCipher" /> is not disposed by this type — ownership remains with the caller.
 /// </para>
 /// <para>
-/// <strong>When to use GCM.</strong> The default modern AEAD mode — TLS 1.2/1.3, IPsec ESP, SSH, QUIC, and
-/// most file-format AEAD layers all use AES-GCM. Single-pass, parallelisable, hardware-accelerated on
-/// AES-NI / PCLMULQDQ, and the fastest AEAD on commodity x86/ARM. The cost is fragility under nonce reuse:
-/// a single repeated <c>(key, nonce)</c> pair leaks the GHASH key and forfeits authentication forever.
-/// Use only when the caller can <em>guarantee</em> nonce uniqueness — usually via a 96-bit counter or
-/// a random nonce drawn from a large enough space. For nonce-misuse resistance prefer
-/// <see cref="GcmSivModeTransform"/> or <see cref="SivModeTransform"/>; for constrained environments prefer
-/// <see cref="CcmModeTransform"/>; for a single-pass alternative without GCM's fragility profile prefer
-/// <see cref="OcbModeTransform"/>.
+/// <strong>When to use GCM.</strong> The default modern AEAD mode — single-pass, parallelisable, and
+/// hardware-accelerated on AES-NI / PCLMULQDQ. The cost is fragility under nonce reuse: a single
+/// repeated <c>(key, nonce)</c> pair leaks the GHASH subkey and forfeits authentication forever.
+/// For nonce-misuse resistance prefer <see cref="GcmSivModeTransform" /> or
+/// <see cref="SivModeTransform" />; for constrained environments prefer <see cref="CcmModeTransform" />;
+/// for a single-pass alternative without GCM's failure profile prefer <see cref="OcbModeTransform" />.
 /// </para>
 /// </remarks>
 /// <example>
@@ -60,128 +56,287 @@ namespace Bodu.Security.Cryptography;
 /// using Bodu.Security.Cryptography.Extensions;
 ///
 /// using IBlockCipher cipher = new AesBlockCipher(key);
-/// byte[] iv = BuildGcmIv(nonce); // standard 96-bit nonce padded to the cipher block size
-/// using IAeadBlockCipherModeTransform gcm = new GcmModeTransform(cipher, iv);
+/// using IAeadBlockCipherModeTransform enc = new GcmModeTransform(cipher, nonce);
+/// byte[] sealed_   = enc.Encrypt(plaintext, associatedData: header);
 ///
-/// byte[] sealed_   = gcm.Encrypt(plaintext, associatedData: header);
-/// using IAeadBlockCipherModeTransform dec = new GcmModeTransform(cipher, iv);
+/// using IAeadBlockCipherModeTransform dec = new GcmModeTransform(cipher, nonce);
 /// byte[] recovered = dec.Decrypt(sealed_, associatedData: header);
 /// </code>
 /// </example>
-/// <seealso href="../guides/cryptography/aead-modes.html#gcm--the-workhorse">GCM walk-through in the AEAD-modes guide</seealso>
+/// <seealso href="https://doi.org/10.6028/NIST.SP.800-38D">NIST SP 800-38D (GCM/GMAC)</seealso>
 /// <seealso cref="AesBlockCipher" />
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />
-public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
+public sealed class GcmModeTransform
+    : IAeadBlockCipherModeTransform
+    , IDisposable
 {
+    /// <summary>The fixed GCM block size in bytes (128 bits).</summary>
+    private const int BlockSizeBytes = 16;
+
+    /// <summary>The required GCM nonce size in bytes (96 bits).</summary>
+    private const int NonceSizeBytes = 12;
+
+    /// <summary>The GCM authentication tag size in bytes (128 bits).</summary>
     private const int DefaultTagSize = 16;
 
     private readonly IBlockCipher _cipher;
-    private readonly byte[] _h;          // hash key = E(0^128)
-    private readonly byte[] _j0;         // initial counter (base for tag and first keystream)
-    private readonly byte[] _counter;    // running CTR counter (incremented per block)
+    private byte[]? _h;          // GHASH subkey H = E_K(0¹²⁸)
+    private byte[]? _j0;         // initial counter J0 (base for the tag)
+    private byte[]? _counter;    // running CTR counter (incremented per block)
     private byte[]? _aad;
     private bool _aadProcessed;
+    private bool _completed;
+    private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GcmModeTransform" /> class.
+    /// Initialises a new instance of the <see cref="GcmModeTransform" /> class with a 96-bit GCM nonce.
     /// </summary>
-    /// <param name="cipher">The block cipher. Must have a 16-byte (128-bit) block size.</param>
-    /// <param name="iv">
-    /// The initialisation vector used as the base counter J0. Must equal the cipher block size.
-    /// A defensive copy is taken.
-    /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException"><paramref name="iv" /> length does not equal the cipher block size.</exception>
-    public GcmModeTransform(IBlockCipher cipher, byte[] iv)
+    /// <param name="cipher">The 128-bit block cipher used by GCM.</param>
+    /// <param name="nonce">The 96-bit (12-byte) nonce. Must be unique per key.</param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="cipher" /> or <paramref name="nonce" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="cipher" /> does not have a 16-byte block size, or <paramref name="nonce" /> is not
+    /// exactly <see cref="NonceSizeBytes" /> bytes.
+    /// </exception>
+    public GcmModeTransform(IBlockCipher cipher, byte[] nonce)
+        : this(
+            cipher,
+            nonce is null ? throw new ArgumentNullException(nameof(nonce)) : new ReadOnlySpan<byte>(nonce),
+            nameof(nonce),
+            useInitialCounterBlock: false)
+    {
+    }
+
+    /// <summary>
+    /// Initialises a new instance of the <see cref="GcmModeTransform" /> class with a 96-bit GCM nonce.
+    /// </summary>
+    /// <param name="cipher">The 128-bit block cipher used by GCM.</param>
+    /// <param name="nonce">The 96-bit (12-byte) nonce. Must be unique per key.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="cipher" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="cipher" /> does not have a 16-byte block size, or <paramref name="nonce" /> is not
+    /// exactly <see cref="NonceSizeBytes" /> bytes.
+    /// </exception>
+    public GcmModeTransform(IBlockCipher cipher, ReadOnlySpan<byte> nonce)
+        : this(cipher, nonce, nameof(nonce), useInitialCounterBlock: false)
+    {
+    }
+
+    /// <summary>Unified private constructor; either derives J0 from a 12-byte nonce or uses a precomputed J0 directly.</summary>
+    /// <param name="cipher">The 128-bit block cipher used by GCM.</param>
+    /// <param name="nonceOrJ0">Either a 12-byte nonce or a 16-byte precomputed J0, depending on <paramref name="useInitialCounterBlock" />.</param>
+    /// <param name="parameterName">The name of the parameter from the calling overload, used in <see cref="ArgumentException" /> messages.</param>
+    /// <param name="useInitialCounterBlock">When <see langword="true" />, treats <paramref name="nonceOrJ0" /> as a precomputed J0 block; otherwise as a 12-byte nonce.</param>
+    private GcmModeTransform(
+        IBlockCipher cipher,
+        ReadOnlySpan<byte> nonceOrJ0,
+        string parameterName,
+        bool useInitialCounterBlock)
     {
         this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
-        if (iv is null) throw new ArgumentNullException(nameof(iv));
-        if (iv.Length != cipher.BlockSize)
+
+        if (cipher.BlockSize != BlockSizeBytes)
             throw new ArgumentException(
-                $"IV length ({iv.Length}) must equal the cipher block size ({cipher.BlockSize}).",
-                nameof(iv));
+                $"GCM requires a block cipher with a {BlockSizeBytes}-byte block size.",
+                nameof(cipher));
 
-        // H = E_K(0^blockSize) — the GHASH hash key.
-        this._h = new byte[cipher.BlockSize];
-        cipher.Encrypt(new byte[cipher.BlockSize], this._h);
+        if (useInitialCounterBlock)
+        {
+            if (nonceOrJ0.Length != BlockSizeBytes)
+                throw new ArgumentException(
+                    $"The initial counter block must be exactly {BlockSizeBytes} bytes.",
+                    parameterName);
+        }
+        else
+        {
+            if (nonceOrJ0.Length != NonceSizeBytes)
+                throw new ArgumentException(
+                    $"The GCM nonce must be exactly {NonceSizeBytes} bytes.",
+                    parameterName);
+        }
 
-        // J0 is the base counter for the tag; counter starts at J0 + 1 for data.
-        this._j0 = (byte[])iv.Clone();
-        this._counter = (byte[])iv.Clone();
-        IncrementCounter32(this._counter); // counter for first data block = J0 + 1
+        this._h = new byte[BlockSizeBytes];
+        this._j0 = new byte[BlockSizeBytes];
+        this._counter = new byte[BlockSizeBytes];
+
+        // H = E_K(0¹²⁸).
+        Span<byte> zeroBlock = stackalloc byte[BlockSizeBytes];
+        this._cipher.Encrypt(zeroBlock, this._h);
+
+        // Build J0.
+        if (useInitialCounterBlock)
+        {
+            nonceOrJ0.CopyTo(this._j0);
+        }
+        else
+        {
+            // J0 = nonce || 0x00000001.
+            nonceOrJ0.CopyTo(this._j0);
+            this._j0[15] = 0x01;
+        }
+
+        // CTR counter starts at inc32(J0); J0 itself is reserved for the tag.
+        this._j0.CopyTo(this._counter, 0);
+        IncrementCounter32(this._counter);
     }
 
     /// <inheritdoc />
     public int TagSize => DefaultTagSize;
 
+    /// <summary>
+    /// Creates a <see cref="GcmModeTransform" /> from a precomputed 128-bit initial counter block.
+    /// Test-only entry point exposed via <c>InternalsVisibleTo</c> to support test vectors that publish
+    /// <c>J0</c> directly.
+    /// </summary>
+    /// <param name="cipher">The 128-bit block cipher used by GCM.</param>
+    /// <param name="initialCounterBlock">The precomputed 16-byte initial counter block, <c>J0</c>.</param>
+    /// <returns>A new <see cref="GcmModeTransform" /> initialised with the supplied <c>J0</c>.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="cipher" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="cipher" /> does not have a 16-byte block size, or <paramref name="initialCounterBlock" />
+    /// is not exactly 16 bytes.
+    /// </exception>
+    internal static GcmModeTransform CreateForTesting(IBlockCipher cipher, ReadOnlySpan<byte> initialCounterBlock) =>
+        new GcmModeTransform(cipher, initialCounterBlock, nameof(initialCounterBlock), useInitialCounterBlock: true);
+
     /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Associated data has already been processed, or the instance has already completed encryption or decryption.
+    /// </exception>
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
     {
+        this.ThrowIfDisposed();
+        this.ThrowIfCompleted();
+
         if (this._aadProcessed)
-            throw new InvalidOperationException("AssociatedData has already been processed.");
-        this._aad = associatedData.ToArray();
+            throw new InvalidOperationException(
+                CryptoResourceStrings.CryptographicException_AssociatedDataAlreadyProcessed);
+
+        this._aad = associatedData.IsEmpty ? Array.Empty<byte>() : associatedData.ToArray();
         this._aadProcessed = true;
     }
 
     /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">The instance has already encrypted or decrypted a message.</exception>
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
-        int required = plaintext.Length + TagSize;
+        this.ThrowIfDisposed();
+        this.ThrowIfCompleted();
+
+        int required = checked(plaintext.Length + DefaultTagSize);
         if (output.Length < required)
             throw new ArgumentException(
-                $"Output buffer must be at least {required} bytes (plaintext + tag).",
+                string.Format(CryptoResourceStrings.CryptographicException_OutputBufferTooSmall, required),
                 nameof(output));
 
-        EnsureAadProcessed();
+        try
+        {
+            this.EnsureAssociatedDataProcessed();
 
-        // Encrypt plaintext with CTR → ciphertext.
-        Span<byte> ciphertext = output.Slice(0, plaintext.Length);
-        ApplyCtr(plaintext, ciphertext);
+            Span<byte> ciphertext = output.Slice(0, plaintext.Length);
+            this.ApplyCtr(plaintext, ciphertext);
 
-        // Compute tag: GHASH(H, AAD, C) XOR E(J0).
-        byte[] tag = ComputeTag(this._aad.AsSpan(), ciphertext);
-        tag.AsSpan().CopyTo(output.Slice(plaintext.Length));
+            Span<byte> tag = stackalloc byte[DefaultTagSize];
+            try
+            {
+                this.ComputeTag(this._aad.AsSpan(), ciphertext, tag);
+                tag.CopyTo(output.Slice(plaintext.Length, DefaultTagSize));
 
-        return required;
+                return required;
+            }
+            finally
+            {
+                CryptographicOperations.ZeroMemory(tag);
+            }
+        }
+        finally
+        {
+            this._completed = true;
+        }
     }
 
     /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">The instance has already encrypted or decrypted a message.</exception>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
-        if (ciphertextWithTag.Length < TagSize)
+        this.ThrowIfDisposed();
+        this.ThrowIfCompleted();
+
+        if (ciphertextWithTag.Length < DefaultTagSize)
             throw new ArgumentException(
-                $"Input must be at least {TagSize} bytes (tag only with no ciphertext).",
+                string.Format(CryptoResourceStrings.CryptographicException_CiphertextTooShort, DefaultTagSize),
                 nameof(ciphertextWithTag));
 
-        int plaintextLength = ciphertextWithTag.Length - TagSize;
+        int plaintextLength = ciphertextWithTag.Length - DefaultTagSize;
         if (output.Length < plaintextLength)
             throw new ArgumentException(
-                $"Output buffer must be at least {plaintextLength} bytes.",
+                string.Format(CryptoResourceStrings.CryptographicException_OutputBufferTooSmall, plaintextLength),
                 nameof(output));
 
-        EnsureAadProcessed();
+        try
+        {
+            this.EnsureAssociatedDataProcessed();
 
-        ReadOnlySpan<byte> ciphertext = ciphertextWithTag.Slice(0, plaintextLength);
-        ReadOnlySpan<byte> receivedTag = ciphertextWithTag.Slice(plaintextLength);
+            ReadOnlySpan<byte> ciphertext = ciphertextWithTag.Slice(0, plaintextLength);
+            ReadOnlySpan<byte> receivedTag = ciphertextWithTag.Slice(plaintextLength, DefaultTagSize);
 
-        // Verify tag before decrypting (constant-time comparison).
-        byte[] expectedTag = ComputeTag(this._aad.AsSpan(), ciphertext);
-        if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
-            throw new CryptographicException("GCM authentication tag verification failed.");
+            Span<byte> expectedTag = stackalloc byte[DefaultTagSize];
+            try
+            {
+                this.ComputeTag(this._aad.AsSpan(), ciphertext, expectedTag);
 
-        // Decrypt with CTR.
-        ApplyCtr(ciphertext, output.Slice(0, plaintextLength));
+                // Verify before producing plaintext. On failure, output is untouched — no wipe needed.
+                if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
+                    throw new CryptographicException(
+                        CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
 
-        return plaintextLength;
+                this.ApplyCtr(ciphertext, output.Slice(0, plaintextLength));
+
+                return plaintextLength;
+            }
+            finally
+            {
+                CryptographicOperations.ZeroMemory(expectedTag);
+            }
+        }
+        finally
+        {
+            this._completed = true;
+        }
+    }
+
+    /// <summary>
+    /// Releases all resources used by this instance and clears the GHASH subkey, initial counter,
+    /// running counter, and cached associated data from memory. Idempotent. Does not dispose the
+    /// supplied <see cref="IBlockCipher" /> — ownership remains with the caller.
+    /// </summary>
+    public void Dispose()
+    {
+        if (this._disposed) return;
+
+        CryptoHelpers.ClearAndNullify(ref this._h);
+        CryptoHelpers.ClearAndNullify(ref this._j0);
+        CryptoHelpers.ClearAndNullify(ref this._counter);
+        CryptoHelpers.ClearAndNullify(ref this._aad);
+
+        this._completed = true;
+        this._disposed = true;
+
+        GC.SuppressFinalize(this);
     }
 
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Ensures the associated-data (AAD) GHASH contribution has been finalised exactly once
-    /// before payload bytes are processed; no-op on subsequent invocations.
+    /// Ensures the associated-data contribution has been finalised exactly once before payload bytes are
+    /// processed; treats an unset AAD as empty.
     /// </summary>
-    private void EnsureAadProcessed()
+    private void EnsureAssociatedDataProcessed()
     {
         if (!this._aadProcessed)
         {
@@ -191,141 +346,173 @@ public sealed class GcmModeTransform : IAeadBlockCipherModeTransform
     }
 
     /// <summary>
-    /// Applies CTR mode: for each block, computes keystream = E(counter), XORs with input,
+    /// Applies CTR mode: for each block, computes <c>keystream = E_K(counter)</c>, XORs with input,
     /// increments the counter.
     /// </summary>
     /// <param name="input">The input bytes to XOR with the CTR keystream.</param>
     /// <param name="output">The destination span; must be at least <paramref name="input" />.Length bytes.</param>
     private void ApplyCtr(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        int blockSize = this._cipher.BlockSize;
-        Span<byte> keystream = stackalloc byte[blockSize];
-
-        for (int offset = 0; offset < input.Length; offset += blockSize)
+        Span<byte> keystream = stackalloc byte[BlockSizeBytes];
+        try
         {
-            this._cipher.Encrypt(this._counter, keystream);
-            IncrementCounter32(this._counter);
+            byte[] counter = this._counter!;
 
-            int remaining = Math.Min(blockSize, input.Length - offset);
-            for (int i = 0; i < remaining; i++)
-                output[offset + i] = (byte)(input[offset + i] ^ keystream[i]);
+            for (int offset = 0; offset < input.Length; offset += BlockSizeBytes)
+            {
+                this._cipher.Encrypt(counter, keystream);
+                IncrementCounter32(counter);
+
+                int remaining = Math.Min(BlockSizeBytes, input.Length - offset);
+                for (int i = 0; i < remaining; i++)
+                    output[offset + i] = (byte)(input[offset + i] ^ keystream[i]);
+            }
+        }
+        finally
+        {
+            CryptographicOperations.ZeroMemory(keystream);
         }
     }
 
     /// <summary>
-    /// Computes the GCM authentication tag: T = GHASH(H, AAD, C) ⊕ E(J0).
+    /// Computes the GCM authentication tag <c>T = GHASH_H(AAD ‖ C ‖ len(AAD)‖len(C)) ⊕ E_K(J0)</c>
+    /// into <paramref name="destination" />.
     /// </summary>
     /// <param name="aad">The associated authenticated data.</param>
     /// <param name="ciphertext">The ciphertext bytes authenticated by the tag.</param>
-    /// <returns>The computed 128-bit GCM authentication tag.</returns>
-    private byte[] ComputeTag(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> ciphertext)
+    /// <param name="destination">The destination span (16 bytes).</param>
+    private void ComputeTag(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> ciphertext, Span<byte> destination)
     {
-        int blockSize = this._cipher.BlockSize;
-        byte[] y = new byte[blockSize]; // GHASH accumulator
+        Span<byte> y = stackalloc byte[BlockSizeBytes];
+        Span<byte> lengthBlock = stackalloc byte[BlockSizeBytes];
+        Span<byte> encryptedJ0 = stackalloc byte[BlockSizeBytes];
 
-        // GHASH over AAD.
-        GhashUpdate(y, aad);
+        try
+        {
+            ReadOnlySpan<byte> h = this._h!;
 
-        // GHASH over ciphertext.
-        GhashUpdate(y, ciphertext);
+            GhashUpdate(y, h, aad);
+            GhashUpdate(y, h, ciphertext);
 
-        // GHASH length block: [len(AAD)]_64 || [len(C)]_64 in bits, big-endian.
-        byte[] lenBlock = new byte[blockSize];
-        WriteBigEndian64((ulong)aad.Length * 8, lenBlock, 0);
-        WriteBigEndian64((ulong)ciphertext.Length * 8, lenBlock, 8);
-        GhashBlock(y, lenBlock);
+            // Length block: [len(AAD)]_64 || [len(C)]_64 in bits, big-endian.
+            BinaryPrimitives.WriteUInt64BigEndian(lengthBlock.Slice(0, 8), checked((ulong)aad.Length * 8));
+            BinaryPrimitives.WriteUInt64BigEndian(lengthBlock.Slice(8, 8), checked((ulong)ciphertext.Length * 8));
+            GhashBlock(y, h, lengthBlock);
 
-        // T = y ⊕ E(J0).
-        byte[] eJ0 = new byte[blockSize];
-        this._cipher.Encrypt(this._j0, eJ0);
-        for (int i = 0; i < blockSize; i++)
-            y[i] ^= eJ0[i];
-
-        return y;
+            // T = y ⊕ E_K(J0).
+            this._cipher.Encrypt(this._j0!, encryptedJ0);
+            for (int i = 0; i < BlockSizeBytes; i++)
+                destination[i] = (byte)(y[i] ^ encryptedJ0[i]);
+        }
+        finally
+        {
+            CryptographicOperations.ZeroMemory(encryptedJ0);
+            CryptographicOperations.ZeroMemory(lengthBlock);
+            CryptographicOperations.ZeroMemory(y);
+        }
     }
 
     /// <summary>Feeds <paramref name="data" /> into the GHASH accumulator <paramref name="y" /> block by block.</summary>
     /// <param name="y">The running GHASH accumulator (16 bytes); updated in place.</param>
+    /// <param name="h">The GHASH subkey.</param>
     /// <param name="data">The input bytes to fold into the GHASH state.</param>
-    private void GhashUpdate(byte[] y, ReadOnlySpan<byte> data)
+    private static void GhashUpdate(Span<byte> y, ReadOnlySpan<byte> h, ReadOnlySpan<byte> data)
     {
-        int blockSize = this._cipher.BlockSize;
-        for (int offset = 0; offset < data.Length; offset += blockSize)
+        Span<byte> block = stackalloc byte[BlockSizeBytes];
+        try
         {
-            int remaining = Math.Min(blockSize, data.Length - offset);
-            byte[] block = new byte[blockSize];
-            data.Slice(offset, remaining).CopyTo(block);
-            GhashBlock(y, block);
+            for (int offset = 0; offset < data.Length; offset += BlockSizeBytes)
+            {
+                block.Clear();
+
+                int remaining = Math.Min(BlockSizeBytes, data.Length - offset);
+                data.Slice(offset, remaining).CopyTo(block);
+
+                GhashBlock(y, h, block);
+            }
+        }
+        finally
+        {
+            CryptographicOperations.ZeroMemory(block);
         }
     }
 
-    /// <summary>Processes one 16-byte block through GHASH: y = (y ⊕ block) * H.</summary>
+    /// <summary>Processes one 16-byte block through GHASH: <c>y = (y ⊕ block) · H</c>.</summary>
     /// <param name="y">The running GHASH accumulator (16 bytes); updated in place.</param>
+    /// <param name="h">The GHASH subkey.</param>
     /// <param name="block">A single 16-byte block to fold into <paramref name="y" />.</param>
-    private void GhashBlock(byte[] y, byte[] block)
+    private static void GhashBlock(Span<byte> y, ReadOnlySpan<byte> h, ReadOnlySpan<byte> block)
     {
-        for (int i = 0; i < y.Length; i++)
+        for (int i = 0; i < BlockSizeBytes; i++)
             y[i] ^= block[i];
-        GhashMultiply(y, this._h, y);
+
+        GhashMultiply(y, h, y);
     }
 
     /// <summary>
-    /// Multiplies <paramref name="x" /> by <paramref name="h" /> in GF(2^128) using the GCM
-    /// irreducible polynomial x^128 + x^7 + x^2 + x + 1, with big-endian bit ordering.
-    /// Result is written into <paramref name="result" /> (may alias <paramref name="x" />).
+    /// Multiplies <paramref name="x" /> by <paramref name="h" /> in GF(2¹²⁸) using the GCM irreducible
+    /// polynomial <c>x¹²⁸ + x⁷ + x² + x + 1</c>, with big-endian bit ordering. Result is written into
+    /// <paramref name="result" /> (may alias <paramref name="x" />).
     /// </summary>
     /// <param name="x">The left operand block (16 bytes).</param>
     /// <param name="h">The hash subkey <c>H</c> (16 bytes).</param>
-    /// <param name="result">The destination span (16 bytes); receives <c>x · H</c> in GF(2<sup>128</sup>).</param>
+    /// <param name="result">The destination span (16 bytes); receives <c>x · H</c>.</param>
     private static void GhashMultiply(ReadOnlySpan<byte> x, ReadOnlySpan<byte> h, Span<byte> result)
     {
-        Span<byte> z = stackalloc byte[16]; // accumulator
-        Span<byte> v = stackalloc byte[16];
-        h.CopyTo(v);
+        Span<byte> z = stackalloc byte[BlockSizeBytes];
+        Span<byte> v = stackalloc byte[BlockSizeBytes];
 
-        for (int i = 0; i < 128; i++)
+        try
         {
-            // If bit i of x is set (bit 0 = MSB of byte 0).
-            if ((x[i >> 3] & (0x80 >> (i & 7))) != 0)
-                for (int j = 0; j < 16; j++) z[j] ^= v[j];
+            h.CopyTo(v);
 
-            // Right-shift v by 1 bit (big-endian).
-            bool lsb = (v[15] & 1) != 0;
-            for (int j = 15; j > 0; j--)
-                v[j] = (byte)((v[j] >> 1) | ((v[j - 1] & 1) << 7));
-            v[0] >>= 1;
+            for (int i = 0; i < 128; i++)
+            {
+                if ((x[i >> 3] & (0x80 >> (i & 7))) != 0)
+                    for (int j = 0; j < BlockSizeBytes; j++) z[j] ^= v[j];
 
-            // If LSB was set, reduce by R = 0xE1 || 0...0 (represents x^7 + x^2 + x + 1).
-            if (lsb) v[0] ^= 0xE1;
+                bool lsb = (v[15] & 0x01) != 0;
+
+                for (int j = 15; j > 0; j--)
+                    v[j] = (byte)((v[j] >> 1) | ((v[j - 1] & 0x01) << 7));
+                v[0] >>= 1;
+
+                // Reduce by R = 0xE1 || 0…0 (representing x⁷ + x² + x + 1) when the shifted-out bit is set.
+                if (lsb) v[0] ^= 0xE1;
+            }
+
+            z.CopyTo(result);
         }
-
-        z.CopyTo(result);
+        finally
+        {
+            CryptographicOperations.ZeroMemory(v);
+            CryptographicOperations.ZeroMemory(z);
+        }
     }
 
     /// <summary>
-    /// Increments the 32-bit big-endian counter in the last 4 bytes of <paramref name="counter" />.
+    /// Increments the 32-bit big-endian counter in the last 4 bytes of <paramref name="counter" /> per
+    /// NIST SP 800-38D <c>inc32</c>.
     /// </summary>
-    /// <param name="counter">The 16-byte CTR block; its low 32 bits are incremented in place per NIST SP 800-38D.</param>
-    private static void IncrementCounter32(byte[] counter)
+    /// <param name="counter">The 16-byte CTR block; its low 32 bits are incremented in place.</param>
+    private static void IncrementCounter32(Span<byte> counter)
     {
         for (int i = counter.Length - 1; i >= counter.Length - 4; i--)
             if (++counter[i] != 0) break;
     }
 
+    /// <summary>Throws <see cref="ObjectDisposedException" /> if this instance has been disposed.</summary>
+    private void ThrowIfDisposed() =>
+        ObjectDisposedException.ThrowIf(this._disposed, this);
+
     /// <summary>
-    /// Writes <paramref name="value" /> into <paramref name="buffer" /> in big-endian byte order
-    /// starting at <paramref name="offset" />.
+    /// Throws <see cref="InvalidOperationException" /> if this instance has already encrypted or decrypted
+    /// a message. GCM transforms are single-use; create a fresh instance per message.
     /// </summary>
-    /// <param name="value">The 64-bit value to serialise.</param>
-    /// <param name="buffer">The destination buffer; must contain at least 8 bytes at
-    /// <paramref name="offset" />.</param>
-    /// <param name="offset">The byte offset at which to begin writing.</param>
-    private static void WriteBigEndian64(ulong value, byte[] buffer, int offset)
+    private void ThrowIfCompleted()
     {
-        for (int i = 7; i >= 0; i--)
-        {
-            buffer[offset + i] = (byte)(value & 0xFF);
-            value >>= 8;
-        }
+        if (this._completed)
+            throw new InvalidOperationException(
+                "This GCM transform has already completed and cannot be reused. Create a new instance per message.");
     }
 }

@@ -167,23 +167,34 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
         }
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Releases the unmanaged resources used by the <see cref="HashAlgorithm" /> and optionally releases the managed resources.
+    /// </summary>
+    /// <param name="disposing">
+    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release
+    /// only unmanaged resources.
+    /// </param>
     /// <remarks>
+    /// <para>
     /// Clears the chaining state, releases the framework <see cref="HashAlgorithm.HashValue" /> array, and zeros
-    /// <see cref="HashAlgorithm.HashSizeValue" />. Calls <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}.OnDispose" />
-    /// to securely erase any stored key material. The inherited residual buffer is cleared by the grandparent
-    /// before this hook runs.
+    /// <see cref="HashAlgorithm.HashSizeValue" /> when <paramref name="disposing" /> is <see langword="true" />.
+    /// </para>
+    /// <para>
+    /// Retained key material owned by <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}" /> is cleared by the base
+    /// implementation when this method delegates to <c>base.Dispose(disposing)</c>. The inherited residual buffer is
+    /// cleared further down the dispose chain.
+    /// </para>
     /// </remarks>
-    protected override void OnDispose(bool disposing)
+    protected override void Dispose(bool disposing)
     {
         if (disposing)
         {
-            Array.Clear(this._h, 0, this._h.Length);
+            CryptoHelpers.Clear(this._h);
             CryptoHelpers.ClearAndNullify(ref this.HashValue);
             this.HashSizeValue = 0;
         }
 
-        base.OnDispose(disposing);
+        base.Dispose(disposing);
     }
 
     /// <summary>

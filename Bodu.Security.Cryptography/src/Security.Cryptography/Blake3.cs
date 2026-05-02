@@ -186,22 +186,24 @@ public sealed class Blake3
         s_iv.CopyTo(_chunkCv, 0);
     }
 
-    /// <inheritdoc />
     /// <remarks>
     /// Clears the CV stack, zeroes <see cref="_chunkCv" />, releases the framework
     /// <see cref="HashAlgorithm.HashValue" /> array, and zeroes
-    /// <see cref="HashAlgorithm.HashSizeValue" />. The inherited residual buffer is cleared by
-    /// the grandparent before this hook runs.
+    /// <see cref="HashAlgorithm.HashSizeValue" />. The inherited residual buffer is
+    /// cleared by the base implementation when <see cref="Dispose(bool)" /> delegates
+    /// to <c>base.Dispose(disposing)</c>.
     /// </remarks>
-    protected override void OnDispose(bool disposing)
+    protected override void Dispose(bool disposing)
     {
         if (disposing)
         {
             _cvStack.Clear();
-            Array.Clear(_chunkCv, 0, _chunkCv.Length);
+            CryptoHelpers.Clear(_chunkCv);
             CryptoHelpers.ClearAndNullify(ref HashValue);
             HashSizeValue = 0;
         }
+
+        base.Dispose(disposing);
     }
 
     /// <summary>

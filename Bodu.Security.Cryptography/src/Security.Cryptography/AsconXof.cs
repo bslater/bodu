@@ -264,8 +264,9 @@ public abstract class AsconXof<T>
         if (disposing)
         {
             this._state.Clear();
-            Array.Clear(this._residualBuffer, 0, BlockSize);
-            Array.Clear(this._squeezeBuffer,  0, BlockSize);
+            CryptoHelpers.Clear(ref this._state);
+            CryptoHelpers.Clear(this._residualBuffer);
+            CryptoHelpers.Clear(this._squeezeBuffer);
         }
 
         this._disposed = true;

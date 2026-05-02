@@ -35,15 +35,23 @@ public abstract partial class AeadBlockCipherModeTests<TTransform>
     [TestMethod]
     public void Decrypt_WhenOutputIsTooSmall_ShouldThrowArgumentException()
     {
-        var transform = MakeTransform();
+        var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
+        byte[] iv = CreateInitializationVector();
 
         // Produce valid ciphertext+tag so the buffer-size check is the only failure path.
-        var pt = new byte[ExpectedBlockSize];
-        var buf = new byte[pt.Length + transform.TagSize];
-        transform.Encrypt(pt, buf);
+        byte[] plaintext = new byte[ExpectedBlockSize];
+
+        var encTransform = CreateTransform(cipher, iv);
+        byte[] ciphertextWithTag = new byte[plaintext.Length + encTransform.TagSize];
+
+        _ = encTransform.Encrypt(plaintext, ciphertextWithTag);
+
+        var decTransform = CreateTransform(cipher, iv);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
-            transform.Decrypt(buf, Array.Empty<byte>()));
+        {
+            _ = decTransform.Decrypt(ciphertextWithTag, Array.Empty<byte>());
+        });
     }
 
     // ── Tamper detection ──────────────────────────────────────────────────────────────────────
@@ -57,7 +65,7 @@ public abstract partial class AeadBlockCipherModeTests<TTransform>
     public void Decrypt_WhenCiphertextTampered_ShouldThrowCryptographicException()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = new byte[ExpectedBlockSize];
+        var iv = CreateInitializationVector();
         var plaintext = new byte[ExpectedBlockSize];
 
         var encTransform = CreateTransform(cipher, iv);
@@ -81,7 +89,7 @@ public abstract partial class AeadBlockCipherModeTests<TTransform>
     public void Decrypt_WhenTagTampered_ShouldThrowCryptographicException()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = new byte[ExpectedBlockSize];
+        var iv = CreateInitializationVector();
         var plaintext = new byte[ExpectedBlockSize];
 
         var encTransform = CreateTransform(cipher, iv);
@@ -105,7 +113,7 @@ public abstract partial class AeadBlockCipherModeTests<TTransform>
     public void Decrypt_WhenAadDoesNotMatch_ShouldThrowCryptographicException()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = new byte[ExpectedBlockSize];
+        var iv = CreateInitializationVector();
         var plaintext = new byte[ExpectedBlockSize];
 
         var encTransform = CreateTransform(cipher, iv);
@@ -132,7 +140,7 @@ public abstract partial class AeadBlockCipherModeTests<TTransform>
     public void EncryptThenDecrypt_WithNoAad_ShouldRecoverPlaintext()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = new byte[ExpectedBlockSize];
+        var iv = CreateInitializationVector();
         var plaintext = new byte[ExpectedBlockSize * 3];
         for (int i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)i;
 
@@ -157,7 +165,7 @@ public abstract partial class AeadBlockCipherModeTests<TTransform>
     public void EncryptThenDecrypt_WithAad_ShouldRecoverPlaintext()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = new byte[ExpectedBlockSize];
+        var iv = CreateInitializationVector();
         var aad = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
         var plaintext = new byte[ExpectedBlockSize * 2];
         for (int i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)(i + 1);
@@ -184,7 +192,7 @@ public abstract partial class AeadBlockCipherModeTests<TTransform>
     public void EncryptThenDecrypt_WithEmptyPlaintext_ShouldSucceed()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = new byte[ExpectedBlockSize];
+        var iv = CreateInitializationVector();
         var encTransform = CreateTransform(cipher, iv);
         var buf = new byte[encTransform.TagSize];
         encTransform.Encrypt(ReadOnlySpan<byte>.Empty, buf);

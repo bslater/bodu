@@ -193,14 +193,17 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
 
     /// <inheritdoc />
     /// <remarks>
-    /// Securely erases the stored key material by calling
-    /// <see cref="CryptoHelpers.ClearAndNullify{T}(ref T[])" /> on <see cref="KeyValue" />. The inherited
-    /// residual buffer is cleared by the grandparent before this hook runs.
+    /// Clears the retained key material held by <see cref="KeyValue" />. The inherited residual buffer and framework hash
+    /// state are cleared by the base implementation when this method delegates to <c>base.Dispose(disposing)</c>.
     /// </remarks>
-    protected override void OnDispose(bool disposing)
+    protected override void Dispose(bool disposing)
     {
         if (disposing)
+        {
             CryptoHelpers.ClearAndNullify(ref this.KeyValue);
+        }
+
+        base.Dispose(disposing);
     }
 
     /// <summary>

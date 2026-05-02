@@ -167,17 +167,21 @@ public abstract class BufferedBlockHashAlgorithm<T>
     protected abstract void OnInitialize();
 
     /// <summary>
-    /// Releases the unmanaged resources used by the algorithm and zeros the residual buffer. Forwards to
-    /// <see cref="OnDispose(bool)" /> so that derived classes may clear any algorithm-specific secret material.
+    /// Releases the resources used by the algorithm and zeros the residual buffer.
     /// </summary>
     /// <param name="disposing">
     /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release
     /// only unmanaged resources.
     /// </param>
     /// <remarks>
-    /// The dispose latch ensures that subsequent calls are no-ops and that <see cref="OnDispose(bool)" /> runs at
-    /// most once. Derived classes should not check or set <see cref="_disposed" /> directly &#8212; instead they should
-    /// override <see cref="OnDispose(bool)" /> to clear their own state.
+    /// <para>
+    /// The dispose latch ensures that subsequent calls are no-ops and that the residual buffer is cleared at most once.
+    /// </para>
+    /// <para>
+    /// Derived classes that hold algorithm-specific state, buffers, keys, or other secret material should override
+    /// <see cref="Dispose(bool)" />, clear their own state when <paramref name="disposing" /> is <see langword="true" />,
+    /// and then call the base implementation.
+    /// </para>
     /// </remarks>
     protected override void Dispose(bool disposing)
     {
@@ -188,27 +192,10 @@ public abstract class BufferedBlockHashAlgorithm<T>
             CryptoHelpers.Clear(this._residualBlock);
             this._residualBytes = 0;
             this._totalBytes = 0UL;
-            this.OnDispose(disposing);
         }
 
         this._disposed = true;
         base.Dispose(disposing);
-    }
-
-    /// <summary>
-    /// Hook invoked by <see cref="Dispose(bool)" /> while <paramref name="disposing" /> is <see langword="true" /> and
-    /// before the dispose latch is set. Derived classes override this to overwrite any algorithm-specific secret
-    /// material such as chaining variables, key schedule, or precomputed state vectors.
-    /// </summary>
-    /// <param name="disposing">
-    /// Always <see langword="true" /> for the current call; the parameter is forwarded so that derived implementations
-    /// may follow the standard <see cref="IDisposable" /> pattern if they prefer.
-    /// </param>
-    /// <remarks>
-    /// The default implementation is a no-op so that derived classes with no algorithm-side secrets pay no overhead.
-    /// </remarks>
-    protected virtual void OnDispose(bool disposing)
-    {
     }
 
     /// <summary>

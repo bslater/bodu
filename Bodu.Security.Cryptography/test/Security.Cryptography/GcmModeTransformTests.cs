@@ -10,6 +10,15 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class GcmModeTransformTests
     : AeadBlockCipherModeTests<GcmModeTransform>
 {
+
+    private const int NonceSizeBytes = 12;
+
+    /// <inheritdoc />
+    protected override string IvParameterName => "nonce";
+
+    /// <inheritdoc />
+    protected override int ExpectedInitializationVectorSize => NonceSizeBytes;
+
     protected override GcmModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
         => new GcmModeTransform(cipher, iv);
 }

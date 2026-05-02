@@ -72,6 +72,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso cref="AesBlockCipher" />
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />
 public interface IAeadBlockCipherModeTransform
+//TODO: implement the System.IDisposable pattern for all concrete implementations, and add a Dispose() method to this interface. This will allow using blocks and ensure that sensitive data is cleared from memory when the transform is no longer needed.
 {
     /// <summary>Gets the size of the authentication tag produced by this mode, in bytes.</summary>
     int TagSize { get; }
