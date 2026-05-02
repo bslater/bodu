@@ -22,6 +22,8 @@ internal sealed class NotableDateResolutionService
     private readonly IReadOnlyList<NotableDateRule> effectiveRules;
     private readonly INotableDateResolutionEngine resolutionEngine;
     private readonly INotableDateCollisionResolver? collisionResolver;
+    private readonly CalendarWeekendDefinition weekendDefinition;
+    private readonly IWeekendDefinitionProvider? weekendProvider;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateResolutionService" /> class.
@@ -47,8 +49,16 @@ internal sealed class NotableDateResolutionService
     {
         ArgumentNullException.ThrowIfNull(ruleProviders);
 
+        if (!Enum.IsDefined(weekendDefinition))
+            throw new ArgumentOutOfRangeException(nameof(weekendDefinition), weekendDefinition, "The weekend definition is not defined.");
+
+        if (weekendDefinition == CalendarWeekendDefinition.Custom && weekendProvider is null)
+            throw new ArgumentNullException(nameof(weekendProvider));
+
         this.effectiveRules = LoadRules(ruleProviders);
         this.collisionResolver = collisionResolver;
+        this.weekendDefinition = weekendDefinition;
+        this.weekendProvider = weekendProvider;
 
         NotableDateRuleResolver ruleResolver = new(this.effectiveRules, algorithmRegistry);
         ICalculationAnchorResolver calculationAnchors = new CachingCalculationAnchorResolver(this.effectiveRules, ruleResolver);
@@ -86,6 +96,109 @@ internal sealed class NotableDateResolutionService
         IReadOnlyList<NotableDate> resolved = resolutionEngine.Resolve(request);
 
         return ApplyCollisionResolution(resolved);
+    }
+
+    /// <summary>
+    /// Gets notable dates whose rule anchor date falls within the specified civil year.
+    /// </summary>
+    /// <param name="year">The civil year to query.</param>
+    /// <param name="territoryCode">The optional territory context.</param>
+    /// <param name="calendarType">The optional calendar type context.</param>
+    /// <param name="filter">The optional notable-date filter.</param>
+    /// <returns>The resolved notable dates.</returns>
+    public IReadOnlyList<NotableDate> GetNotableDates(
+        int year,
+        string? territoryCode = null,
+        Type? calendarType = null,
+        NotableDateFilter? filter = null)
+    {
+        NotableDateResolutionRequest request = new(
+            new DateTime(year, 1, 1),
+            new DateTime(year, 12, 31),
+            NotableDateResolutionProjection.AnchorDate,
+            territoryCode,
+            calendarType,
+            filter);
+
+        return Resolve(request);
+    }
+
+    /// <summary>
+    /// Gets notable dates whose observed date span intersects the specified date.
+    /// </summary>
+    /// <param name="date">The date to query.</param>
+    /// <param name="territoryCode">The optional territory context.</param>
+    /// <param name="calendarType">The optional calendar type context.</param>
+    /// <param name="filter">The optional notable-date filter.</param>
+    /// <returns>The resolved notable dates.</returns>
+    public IReadOnlyList<NotableDate> GetNotableDates(
+        DateTime date,
+        string? territoryCode = null,
+        Type? calendarType = null,
+        NotableDateFilter? filter = null)
+    {
+        DateTime day = date.Date;
+
+        NotableDateResolutionRequest request = new(
+            day,
+            day,
+            NotableDateResolutionProjection.ObservedDate,
+            territoryCode,
+            calendarType,
+            filter);
+
+        return Resolve(request);
+    }
+
+    /// <summary>
+    /// Gets notable dates whose observed date span intersects the specified date range.
+    /// </summary>
+    /// <param name="startDate">The inclusive start date.</param>
+    /// <param name="endDate">The inclusive end date.</param>
+    /// <param name="territoryCode">The optional territory context.</param>
+    /// <param name="calendarType">The optional calendar type context.</param>
+    /// <param name="filter">The optional notable-date filter.</param>
+    /// <returns>The resolved notable dates.</returns>
+    /// <exception cref="ArgumentException"><paramref name="endDate" /> is earlier than <paramref name="startDate" />.</exception>
+    public IReadOnlyList<NotableDate> GetNotableDates(
+        DateTime startDate,
+        DateTime endDate,
+        string? territoryCode = null,
+        Type? calendarType = null,
+        NotableDateFilter? filter = null)
+    {
+        NotableDateResolutionRequest request = new(
+            startDate,
+            endDate,
+            NotableDateResolutionProjection.ObservedDate,
+            territoryCode,
+            calendarType,
+            filter);
+
+        return Resolve(request);
+    }
+
+    /// <summary>
+    /// Determines whether the specified date is a weekend or a resolved non-working notable date.
+    /// </summary>
+    /// <param name="date">The date to test.</param>
+    /// <param name="territoryCode">The optional territory context.</param>
+    /// <param name="calendarType">The optional calendar type context.</param>
+    /// <returns><see langword="true" /> when the date is non-working; otherwise, <see langword="false" />.</returns>
+    public bool IsNonWorkingDay(
+        DateTime date,
+        string? territoryCode = null,
+        Type? calendarType = null)
+    {
+        DateTime day = date.Date;
+
+        if (day.IsWeekend(weekendDefinition, weekendProvider))
+            return true;
+
+        return GetNotableDates(day, territoryCode, calendarType)
+            .Any(notable => notable.IsNonWorkingDay &&
+                notable.Date.Date <= day &&
+                notable.EndDate.Date >= day);
     }
 
     /// <summary>
