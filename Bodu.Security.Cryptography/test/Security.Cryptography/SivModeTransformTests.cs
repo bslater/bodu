@@ -17,6 +17,14 @@ public sealed partial class SivModeTransformTests : AeadBlockCipherModeTests<Siv
 {
     protected override int ExpectedBlockSize => 16;
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// SIV (RFC 5297, as implemented here) ignores the supplied IV: the synthetic IV is derived
+    /// deterministically from the key, AAD, and plaintext via S2V/CMAC. The ciphertext therefore
+    /// does not vary with the input IV and the nonce-variation tests do not apply.
+    /// </remarks>
+    protected override bool NonceAffectsCiphertext => false;
+
     // Fixed keys used for all structural / tamper-detection tests.
     // Using real AES with distinct K1 and K2 prevents the degenerate authentication fixed-point
     // that arises when a simple XOR cipher is used for both S2V (K1) and CTR (K2): with any

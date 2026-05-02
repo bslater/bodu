@@ -47,6 +47,18 @@ public abstract partial class AeadBlockCipherModeTests<TTransform>
     protected override int ExpectedBlockSize => 16;
 
     /// <summary>
+    /// Gets a value indicating whether changing the initialisation vector (nonce) under a fixed key
+    /// changes the produced ciphertext and tag. Defaults to <see langword="true" /> for nonce-based
+    /// AEADs (GCM, CCM, EAX, OCB, GCM-SIV).
+    /// </summary>
+    /// <remarks>
+    /// SIV (RFC 5297, as implemented here) overrides this to <see langword="false" />: the supplied
+    /// IV is ignored and the synthetic IV is derived deterministically from the key, AAD, and
+    /// plaintext, so the nonce-variation tests do not apply.
+    /// </remarks>
+    protected virtual bool NonceAffectsCiphertext => true;
+
+    /// <summary>
     /// Creates a zero-filled initialisation value using the expected size for the transform under test.
     /// </summary>
     /// <returns>
@@ -64,8 +76,20 @@ public abstract partial class AeadBlockCipherModeTests<TTransform>
     /// initialisation value for the transform under test.
     /// </summary>
     /// <returns>A new transform instance.</returns>
-    private TTransform MakeTransform() =>
+    protected TTransform MakeTransform() =>
         CreateTransform(
             new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA),
             CreateInitializationVector());
+
+    /// <summary>
+    /// Returns a fresh transform constructed with the default test cipher and the supplied
+    /// initialisation value, allowing concrete tests to share state between encrypting and
+    /// decrypting instances built atop the same monitoring cipher and IV.
+    /// </summary>
+    /// <param name="iv">The initialisation value to seed the transform with.</param>
+    /// <returns>A new transform instance.</returns>
+    private TTransform MakeTransform(byte[] iv) =>
+        CreateTransform(
+            new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA),
+            iv);
 }
