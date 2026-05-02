@@ -13,9 +13,16 @@ namespace Bodu.Globalization.Calendar;
 /// <para>
 /// This engine is the integration seam between the rule occurrence resolver and the chronological resolution window.
 /// </para>
+/// <para>
+/// When adjustment processing is enabled, the engine materialises a small padded source window around the requested output
+/// window. This allows adjusted dates whose original anchor lies just outside the requested range to still be projected into
+/// the caller's observed-date output.
+/// </para>
 /// </remarks>
 internal sealed class NotableDateResolutionEngine : INotableDateResolutionEngine
 {
+    private const int AdjustmentMaterialisationPaddingDays = 14;
+
     private readonly INotableDateRuleOccurrenceResolver occurrenceResolver;
     private readonly INotableDateResolutionAdjustmentProcessor? adjustmentProcessor;
 
@@ -41,7 +48,8 @@ internal sealed class NotableDateResolutionEngine : INotableDateResolutionEngine
         ArgumentNullException.ThrowIfNull(request);
 
         NotableDateResolutionWindow window = new(request.StartDate, request.EndDate);
-        IReadOnlyList<ResolvedNotableDateOccurrence> occurrences = occurrenceResolver.ResolveOccurrences(request);
+        NotableDateResolutionRequest materialisationRequest = CreateMaterialisationRequest(request);
+        IReadOnlyList<ResolvedNotableDateOccurrence> occurrences = occurrenceResolver.ResolveOccurrences(materialisationRequest);
 
         foreach (ResolvedNotableDateOccurrence occurrence in occurrences)
         {
@@ -61,10 +69,32 @@ internal sealed class NotableDateResolutionEngine : INotableDateResolutionEngine
     }
 
     /// <summary>
-    /// Determines whether a resolved occurrence should be emitted for the request projection.
+    /// Creates the occurrence materialisation request used by the engine.
+    /// </summary>
+    /// <param name="request">The caller's original request.</param>
+    /// <returns>The materialisation request.</returns>
+    private NotableDateResolutionRequest CreateMaterialisationRequest(NotableDateResolutionRequest request)
+    {
+        if (adjustmentProcessor is null)
+            return request;
+
+        DateTime startDate = AddDaysWithinRange(request.StartDate, -AdjustmentMaterialisationPaddingDays);
+        DateTime endDate = AddDaysWithinRange(request.EndDate, AdjustmentMaterialisationPaddingDays);
+
+        return new NotableDateResolutionRequest(
+            startDate,
+            endDate,
+            request.Projection,
+            request.TerritoryCode,
+            request.CalendarType,
+            request.Filter);
+    }
+
+    /// <summary>
+    /// Determines whether a resolved occurrence should be emitted for the original request projection.
     /// </summary>
     /// <param name="occurrence">The resolved occurrence.</param>
-    /// <param name="request">The resolution request.</param>
+    /// <param name="request">The original resolution request.</param>
     /// <returns><see langword="true" /> when the occurrence should be emitted; otherwise, <see langword="false" />.</returns>
     private static bool ShouldEmit(
         ResolvedNotableDateOccurrence occurrence,
@@ -80,6 +110,25 @@ internal sealed class NotableDateResolutionEngine : INotableDateResolutionEngine
 
             _ => throw new ArgumentOutOfRangeException(nameof(request), request.Projection, "The requested projection is not supported."),
         };
+
+    /// <summary>
+    /// Adds days to a date while preserving <see cref="DateTime" /> bounds.
+    /// </summary>
+    /// <param name="date">The source date.</param>
+    /// <param name="days">The number of days to add.</param>
+    /// <returns>The adjusted date, clamped to the supported <see cref="DateTime" /> range.</returns>
+    private static DateTime AddDaysWithinRange(DateTime date, int days)
+    {
+        DateTime value = date.Date;
+
+        if (days < 0 && value <= DateTime.MinValue.AddDays(-days))
+            return DateTime.MinValue.Date;
+
+        if (days > 0 && value >= DateTime.MaxValue.AddDays(-days))
+            return DateTime.MaxValue.Date;
+
+        return value.AddDays(days);
+    }
 
     /// <summary>
     /// Determines whether two inclusive date spans intersect.
