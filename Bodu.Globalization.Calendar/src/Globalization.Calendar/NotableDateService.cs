@@ -79,11 +79,11 @@ public sealed class NotableDateService : INotableDateService
 	/// <summary>The resolver that turns each rule into an anchor date for a given year.</summary>
 	private readonly NotableDateRuleResolver _resolver;
 
-	/// <summary>The adjuster that evaluates observance adjustments against a resolved anchor date.</summary>
-	private readonly NotableDateAdjuster _adjuster;
+    /// <summary>The optional registry of custom adjustment handlers used during generation.</summary>
+    private readonly IAdjustmentHandlerRegistry? _adjustmentHandlers;
 
-	/// <summary>The resolver that arbitrates when multiple rules produce a date on the same day.</summary>
-	private readonly INotableDateCollisionResolver _collisionResolver;
+    /// <summary>The resolver that arbitrates when multiple rules produce a date on the same day.</summary>
+    private readonly INotableDateCollisionResolver _collisionResolver;
 
 	/// <summary>The optional localizer used to translate notable date names into the active culture.</summary>
 	private readonly INotableDateNameLocalizer? _nameLocalizer;
@@ -202,14 +202,8 @@ public sealed class NotableDateService : INotableDateService
 
         _effectiveRules = ApplyOverrides(_baseRules, _overrideProviders);
 		_resolver = new NotableDateRuleResolver(_effectiveRules, effectiveRegistry);
-		_adjuster = new NotableDateAdjuster(
-			IsWeekend,
-			IsNonWorkingDay,
-			_weekendDefinition,
-			_weekendProvider,
-			adjustmentHandlers,
-			ResolveByName);
-	}
+        _adjustmentHandlers = adjustmentHandlers;
+    }
 
 	// --------------------------------------------------------------------------------------
 	// INotableDateService surface
@@ -411,136 +405,187 @@ public sealed class NotableDateService : INotableDateService
 	}
 
     /// <summary>
-    /// Materialises the notable dates for <paramref name="year" /> by invoking every configured
-    /// rule, applying observance adjustments, and de-duplicating by rule identity.
+    /// Materialises the notable dates for <paramref name="year" /> by resolving every configured rule, adding all base dates
+    /// to a generation-local context, and then applying observance adjustments against that completed base-date view.
     /// </summary>
     /// <param name="year">The civil year to generate.</param>
     /// <returns>The notable dates for <paramref name="year" />, in unspecified order.</returns>
-	private IReadOnlyList<NotableDate> GenerateYear(int year)
-	{
-		var output = new List<NotableDate>();
-
-		foreach (var rule in _effectiveRules)
-		{
-			if (!NotableDateRuleResolver.IsApplicable(rule, year))
-				continue;
-
-			DateTime? anchor;
-			try
-			{
-				anchor = _resolver.ResolveAnchorDate(rule, year);
-			}
-			catch (InvalidOperationException)
-			{
-				// Surface broken rules at query time, not at construction time, so a single bad rule does not poison the cache.
-				continue;
-			}
-
-			if (anchor is null)
-				continue;
-
-			foreach (var territory in ExpandTerritories(rule.TerritoryCode))
-			{
-				if (IsRemovedByOverride(rule, year, territory))
-					continue;
-
-				var baseDate = BuildNotableDate(rule, anchor.Value, territory, adjustmentReason: null);
-				output.Add(baseDate);
-
-				foreach (var adjustment in rule.Adjustments.OrderBy(a => a.Priority))
-				{
-					if (!NotableDateAdjuster.IsInScope(adjustment, year, territory, rule.CalendarType))
-						continue;
-
-					var result = _adjuster.Apply(adjustment, rule, anchor.Value, territory, rule.CalendarType);
-					if (!result.Activated || result.AdjustedDate.Date == anchor.Value.Date)
-						continue;
-
-					// When the adjustment declares a more specific territory than the rule itself (e.g. an Anzac
-					// Day substitute scoped to AU-WA sitting on a country-level AU rule), tag the emitted
-					// occurrence with that narrower scope so downstream filtering and delineation reflect where
-					// the substitute is actually observed.
-					string? emittedTerritory = !string.IsNullOrEmpty(adjustment.TerritoryCode)
-						? adjustment.TerritoryCode
-						: territory;
-
-					bool isNonWorking = result.IsNonWorkingOverride ?? rule.IsNonWorkingDay ?? false;
-					var reason = new AdjustmentReason(anchor.Value, result.Trigger, result.Action, result.HandlerKey);
-					output.Add(BuildNotableDate(rule, result.AdjustedDate, emittedTerritory, reason, isNonWorking));
-				}
-			}
-		}
-
-		return output;
-	}
+    private IReadOnlyList<NotableDate> GenerateYear(int year)
+    {
+        return GenerateYearCore(year);
+    }
 
     /// <summary>
-    /// Materialises the notable dates for <paramref name="year" /> by invoking every rule that passes the primary gate of
-    /// <paramref name="filter" />, applying observance adjustments, and retaining only those dates that pass the secondary gate.
-    /// Results are never written to the per-year cache so that unfiltered queries continue to receive complete cached results.
+    /// Materialises the notable dates for <paramref name="year" /> and returns only those that satisfy
+    /// <paramref name="filter" />.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Filtered generation intentionally resolves the complete year before applying the date-level filter. This ensures filtered
+    /// queries compute the same adjusted dates as unfiltered queries; otherwise, a primary rule filter could exclude a blocking
+    /// non-working holiday from the generation context and change substitute-day calculation.
+    /// </para>
+    /// </remarks>
+    /// <param name="year">The civil year to generate.</param>
+    /// <param name="filter">The filter to apply to the generated dates.</param>
+    /// <returns>The filtered notable dates for <paramref name="year" />, in unspecified order.</returns>
+    private IReadOnlyList<NotableDate> GenerateYearFiltered(int year, NotableDateFilter filter)
+    {
+        return GenerateYearCore(year)
+            .Where(filter.IsMatch)
+            .ToList();
+    }
+
+    /// <summary>
+    /// Generates the complete notable-date set for a year using a generation-local context.
     /// </summary>
     /// <param name="year">The civil year to generate.</param>
-    /// <param name="filter">The filter whose primary gate is applied before date resolution and whose secondary gate is applied to
-    /// each materialised date.</param>
-    /// <returns>The filtered notable dates for <paramref name="year" />, in unspecified order.</returns>
-	private IReadOnlyList<NotableDate> GenerateYearFiltered(int year, NotableDateFilter filter)
-	{
-		List<NotableDate> output = new();
+    /// <returns>The generated notable dates.</returns>
+    private IReadOnlyList<NotableDate> GenerateYearCore(int year)
+    {
+        List<ResolvedNotableDateOccurrence> occurrences = ResolveBaseOccurrences(year);
 
-		foreach (NotableDateRule rule in _effectiveRules)
-		{
-			if (!NotableDateRuleResolver.IsApplicable(rule, year))
-				continue;
+        NotableDateGenerationContext context = new();
 
-			if (!filter.IsRuleEligible(rule))
-				continue;
+        foreach (ResolvedNotableDateOccurrence occurrence in occurrences)
+        {
+            context.Add(occurrence.BaseDate);
+        }
 
-			DateTime? anchor;
-			try
-			{
-				anchor = _resolver.ResolveAnchorDate(rule, year);
-			}
-			catch (InvalidOperationException)
-			{
-				continue;
-			}
+        NotableDateAdjuster adjuster = CreateAdjuster(context);
 
-			if (anchor is null)
-				continue;
+        foreach (ResolvedNotableDateOccurrence occurrence in OrderForAdjustment(occurrences))
+        {
+            foreach (ObservanceAdjustment adjustment in occurrence.Rule.Adjustments.OrderBy(adjustment => adjustment.Priority))
+            {
+                if (!NotableDateAdjuster.IsInScope(
+                        adjustment,
+                        year,
+                        occurrence.TerritoryCode,
+                        occurrence.Rule.CalendarType))
+                {
+                    continue;
+                }
 
-			foreach (string? territory in ExpandTerritories(rule.TerritoryCode))
-			{
-				if (IsRemovedByOverride(rule, year, territory))
-					continue;
+                AdjustmentApplyResult result = adjuster.Apply(
+                    adjustment,
+                    occurrence.Rule,
+                    occurrence.AnchorDate,
+                    occurrence.TerritoryCode,
+                    occurrence.Rule.CalendarType);
 
-				NotableDate baseDate = BuildNotableDate(rule, anchor.Value, territory, adjustmentReason: null);
-				if (filter.IsMatch(baseDate))
-					output.Add(baseDate);
+                if (!result.Activated || result.AdjustedDate.Date == occurrence.AnchorDate.Date)
+                    continue;
 
-				foreach (ObservanceAdjustment adjustment in rule.Adjustments.OrderBy(a => a.Priority))
-				{
-					if (!NotableDateAdjuster.IsInScope(adjustment, year, territory, rule.CalendarType))
-						continue;
+                string? emittedTerritory = !string.IsNullOrEmpty(adjustment.TerritoryCode)
+                    ? adjustment.TerritoryCode
+                    : occurrence.TerritoryCode;
 
-					AdjustmentApplyResult result = _adjuster.Apply(adjustment, rule, anchor.Value, territory, rule.CalendarType);
-					if (!result.Activated || result.AdjustedDate.Date == anchor.Value.Date)
-						continue;
+                bool isNonWorking = result.IsNonWorkingOverride ?? occurrence.Rule.IsNonWorkingDay ?? false;
 
-					string? emittedTerritory = !string.IsNullOrEmpty(adjustment.TerritoryCode)
-						? adjustment.TerritoryCode
-						: territory;
+                AdjustmentReason reason = new(
+                    occurrence.AnchorDate,
+                    result.Trigger,
+                    result.Action,
+                    result.HandlerKey);
 
-					bool isNonWorking = result.IsNonWorkingOverride ?? rule.IsNonWorkingDay ?? false;
-					AdjustmentReason reason = new(anchor.Value, result.Trigger, result.Action, result.HandlerKey);
-					NotableDate adjustedDate = BuildNotableDate(rule, result.AdjustedDate, emittedTerritory, reason, isNonWorking);
-					if (filter.IsMatch(adjustedDate))
-						output.Add(adjustedDate);
-				}
-			}
-		}
+                NotableDate adjustedDate = BuildNotableDate(
+                    occurrence.Rule,
+                    result.AdjustedDate,
+                    emittedTerritory,
+                    reason,
+                    isNonWorking);
 
-		return output;
-	}
+                context.Add(adjustedDate);
+            }
+        }
+
+        return context.Output;
+    }
+
+    /// <summary>
+    /// Resolves all base notable-date occurrences for the specified year without applying adjustments.
+    /// </summary>
+    /// <param name="year">The civil year to resolve.</param>
+    /// <returns>The resolved base occurrences.</returns>
+    private List<ResolvedNotableDateOccurrence> ResolveBaseOccurrences(int year)
+    {
+        List<ResolvedNotableDateOccurrence> occurrences = new();
+
+        foreach (NotableDateRule rule in _effectiveRules)
+        {
+            if (!NotableDateRuleResolver.IsApplicable(rule, year))
+                continue;
+
+            DateTime? anchor;
+
+            try
+            {
+                anchor = _resolver.ResolveAnchorDate(rule, year);
+            }
+            catch (InvalidOperationException)
+            {
+                // Surface broken rules at query time, not at construction time, so a single bad rule does not poison the cache.
+                continue;
+            }
+
+            if (anchor is null)
+                continue;
+
+            foreach (string? territory in ExpandTerritories(rule.TerritoryCode))
+            {
+                if (IsRemovedByOverride(rule, year, territory))
+                    continue;
+
+                NotableDate baseDate = BuildNotableDate(
+                    rule,
+                    anchor.Value,
+                    territory,
+                    adjustmentReason: null);
+
+                occurrences.Add(new ResolvedNotableDateOccurrence(
+                    rule,
+                    anchor.Value,
+                    territory,
+                    baseDate));
+            }
+        }
+
+        return occurrences;
+    }
+
+    /// <summary>
+    /// Orders base occurrences for deterministic adjustment evaluation.
+    /// </summary>
+    /// <param name="occurrences">The base occurrences to order.</param>
+    /// <returns>The ordered occurrences.</returns>
+    private static IEnumerable<ResolvedNotableDateOccurrence> OrderForAdjustment(IEnumerable<ResolvedNotableDateOccurrence> occurrences)
+    {
+        return occurrences
+            .OrderBy(occurrence => occurrence.AnchorDate)
+            .ThenBy(occurrence => occurrence.Rule.Priority)
+            .ThenBy(occurrence => occurrence.Rule.Name, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(occurrence => occurrence.TerritoryCode, StringComparer.OrdinalIgnoreCase);
+    }
+
+
+    /// <summary>
+    /// Creates an adjustment evaluator bound to the supplied generation context.
+    /// </summary>
+    /// <param name="context">The generation context.</param>
+    /// <returns>An adjustment evaluator that does not call back into the public year cache.</returns>
+    private NotableDateAdjuster CreateAdjuster(NotableDateGenerationContext context)
+    {
+        return new NotableDateAdjuster(
+            IsWeekend,
+            (date, territoryCode, calendarType) =>
+                context.IsNonWorkingDay(date, territoryCode, calendarType, IsWeekend),
+            _weekendDefinition,
+            _weekendProvider,
+            _adjustmentHandlers,
+            (ruleName, year, territoryCode, calendarType) =>
+                context.ResolveByName(ruleName, year, territoryCode, calendarType));
+    }
 
     /// <summary>
     /// Constructs a <see cref="NotableDate" /> from a rule, its resolved date, and any
