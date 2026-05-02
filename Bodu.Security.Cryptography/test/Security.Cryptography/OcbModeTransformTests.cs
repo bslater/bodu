@@ -13,7 +13,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 /// </summary>
 [TestClass]
 public sealed partial class OcbModeTransformTests
-    : AeadBlockCipherModeTests<OcbModeTransform>
+    : AeadBlockCipherModeTests<OcbModeTransformTests, OcbModeTransform>
 {
     protected override int ExpectedBlockSize => 16;
 

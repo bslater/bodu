@@ -8,7 +8,7 @@ namespace Bodu.Security.Cryptography;
 
 [TestClass]
 public sealed partial class GcmModeTransformTests
-    : AeadBlockCipherModeTests<GcmModeTransform>
+    : AeadBlockCipherModeTests<GcmModeTransformTests, GcmModeTransform>
 {
 
     private const int NonceSizeBytes = 12;

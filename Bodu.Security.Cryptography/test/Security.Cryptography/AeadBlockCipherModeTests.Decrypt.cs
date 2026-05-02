@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
-public abstract partial class AeadBlockCipherModeTests<TTransform>
+public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
 {
     // ── Argument validation ───────────────────────────────────────────────────────────────────
 
@@ -102,6 +102,37 @@ public abstract partial class AeadBlockCipherModeTests<TTransform>
         Assert.ThrowsExactly<CryptographicException>(() =>
             decTransform.Decrypt(buf, new byte[plaintext.Length]),
             "Decrypt must throw CryptographicException when the tag is tampered.");
+    }
+
+    /// <summary>
+    /// Verifies that decrypting under a different nonce than was used to produce the
+    /// ciphertext causes <see cref="IAeadBlockCipherModeTransform.Decrypt" /> to throw
+    /// <see cref="CryptographicException" />. Skipped for modes whose ciphertext does not
+    /// depend on the supplied IV.
+    /// </summary>
+    [TestMethod]
+    public void Decrypt_WithWrongNonce_ShouldThrowCryptographicException()
+    {
+        if (!NonceAffectsCiphertext)
+        {
+            Assert.Inconclusive($"{typeof(TTransform).Name} ciphertext does not depend on the supplied IV.");
+            return;
+        }
+
+        var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
+        var ivEnc = CreateInitializationVector();
+        var ivDec = CreateInitializationVector();
+        ivDec[0] = 0x01; // nonce differs
+        var plaintext = new byte[ExpectedBlockSize];
+
+        var encTransform = CreateTransform(cipher, ivEnc);
+        var buf = new byte[plaintext.Length + encTransform.TagSize];
+        encTransform.Encrypt(plaintext, buf);
+
+        var decTransform = CreateTransform(cipher, ivDec);
+        Assert.ThrowsExactly<CryptographicException>(() =>
+            decTransform.Decrypt(buf, new byte[plaintext.Length]),
+            "Decrypting with a different nonce must throw CryptographicException.");
     }
 
     /// <summary>

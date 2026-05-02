@@ -8,7 +8,7 @@ namespace Bodu.Security.Cryptography;
 
 [TestClass]
 public sealed partial class EaxModeTransformTests
-    : AeadBlockCipherModeTests<EaxModeTransform>
+    : AeadBlockCipherModeTests<EaxModeTransformTests, EaxModeTransform>
 {
     /// <inheritdoc />
     protected override EaxModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
