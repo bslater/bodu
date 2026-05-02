@@ -62,7 +62,8 @@ internal sealed class NotableDateResolutionService
         INotableDateResolutionAdjustmentProcessor adjustmentProcessor = new NotableDateResolutionAdjustmentProcessor(
             weekendDefinition,
             weekendProvider,
-            adjustmentHandlers);
+            adjustmentHandlers,
+            occurrenceResolver);
 
         this.resolutionEngine = new NotableDateResolutionEngine(occurrenceResolver, adjustmentProcessor);
     }

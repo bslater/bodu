@@ -55,7 +55,7 @@ internal sealed class NotableDateResolutionEngine : INotableDateResolutionEngine
             }
         }
 
-        adjustmentProcessor?.ApplyAdjustments(window, occurrences);
+        adjustmentProcessor?.ApplyAdjustments(window, request, occurrences);
 
         return window.OutputDates;
     }

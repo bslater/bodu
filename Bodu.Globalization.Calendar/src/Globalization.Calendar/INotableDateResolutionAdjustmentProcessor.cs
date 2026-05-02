@@ -15,11 +15,14 @@ internal interface INotableDateResolutionAdjustmentProcessor
     /// Applies adjustments for the specified base occurrences.
     /// </summary>
     /// <param name="window">The resolution window containing the known base occurrences.</param>
+    /// <param name="request">The originating resolution request.</param>
     /// <param name="occurrences">The base occurrences to evaluate for adjustment.</param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="window" /> or <paramref name="occurrences" /> is <see langword="null" />.
+    /// <paramref name="window" />, <paramref name="request" />, or <paramref name="occurrences" /> is
+    /// <see langword="null" />.
     /// </exception>
     void ApplyAdjustments(
         NotableDateResolutionWindow window,
+        NotableDateResolutionRequest request,
         IReadOnlyList<ResolvedNotableDateOccurrence> occurrences);
 }
