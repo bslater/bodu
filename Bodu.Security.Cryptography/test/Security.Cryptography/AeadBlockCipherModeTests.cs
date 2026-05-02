@@ -35,10 +35,15 @@ namespace Bodu.Security.Cryptography;
 /// this class directly. They must not be embedded here.
 /// </para>
 /// </remarks>
+/// <typeparam name="TTest">
+/// The concrete test class itself. Required so that static <see cref="DynamicDataAttribute" /> data
+/// sources can instantiate the test class via <c>new TTest()</c> and read virtual exclusion lists.
+/// </typeparam>
 /// <typeparam name="TTransform">The <see cref="IAeadBlockCipherModeTransform" /> type under test.</typeparam>
 [TestClass]
-public abstract partial class AeadBlockCipherModeTests<TTransform>
+public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     : CipherModeTestsBase<TTransform>
+    where TTest : AeadBlockCipherModeTests<TTest, TTransform>, new()
     where TTransform : IAeadBlockCipherModeTransform
 {
     /// <summary>
@@ -57,6 +62,44 @@ public abstract partial class AeadBlockCipherModeTests<TTransform>
     /// plaintext, so the nonce-variation tests do not apply.
     /// </remarks>
     protected virtual bool NonceAffectsCiphertext => true;
+
+    /// <summary>
+    /// Gets the additional field names excluded from disposal validation. Override in a derived
+    /// test class to suppress fields that are intentionally retained after disposal.
+    /// </summary>
+    protected virtual IReadOnlyCollection<string> ExcludedFieldNames => [];
+
+    /// <summary>
+    /// Gets the additional writable-property names excluded from disposal validation. Override in
+    /// a derived test class to suppress properties that are intentionally accessible after
+    /// disposal.
+    /// </summary>
+    protected virtual IReadOnlyCollection<string> ExcludedWriteablePropertyNames => [];
+
+    /// <summary>
+    /// The combined set of field names excluded from disposal validation. Shared by the static
+    /// <see cref="DynamicDataAttribute" /> data sources, which cannot access virtual instance members.
+    /// </summary>
+    private IReadOnlyCollection<string> GetExcludedFieldNames() =>
+        ExcludedFieldNames
+            .Concat([
+                // lifecycle bookkeeping flags common to every AEAD transform implementation
+                "_disposed",
+                "_completed",
+                "_aadProcessed",
+            ])
+            .Distinct()
+            .ToArray();
+
+    /// <summary>
+    /// The combined set of writable-property names excluded from disposal validation. Shared by
+    /// the static <see cref="DynamicDataAttribute" /> data sources, which cannot access virtual
+    /// instance members.
+    /// </summary>
+    private IReadOnlyCollection<string> GetExcludedWriteablePropertyNames() =>
+        ExcludedWriteablePropertyNames
+            .Distinct()
+            .ToArray();
 
     /// <summary>
     /// Creates a zero-filled initialisation value using the expected size for the transform under test.

@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography;
 /// Tests for <see cref="SivModeTransform" /> (RFC 5297 — AES-SIV with CMAC and S2V).
 /// </summary>
 [TestClass]
-public sealed partial class SivModeTransformTests : AeadBlockCipherModeTests<SivModeTransform>
+public sealed partial class SivModeTransformTests : AeadBlockCipherModeTests<SivModeTransformTests, SivModeTransform>
 {
     protected override int ExpectedBlockSize => 16;
 

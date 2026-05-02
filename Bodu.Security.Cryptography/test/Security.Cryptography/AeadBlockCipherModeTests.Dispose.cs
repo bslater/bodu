@@ -9,22 +9,12 @@ using System.Reflection;
 
 namespace Bodu.Security.Cryptography;
 
-public abstract partial class AeadBlockCipherModeTests<TTransform>
+public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
 {
     /// <summary>
-    /// Names of fields whose values are allowed to remain non-default after disposal because they
-    /// represent lifecycle bookkeeping rather than sensitive cryptographic material.
-    /// </summary>
-    private static readonly string[] DisposableFieldExclusions =
-    [
-        "_disposed",
-        "_completed",
-        "_aadProcessed",
-    ];
-
-    /// <summary>
     /// Enumerates the writable instance fields of <typeparamref name="TTransform" /> that should be
-    /// cleared, zeroed, or nullified by <see cref="System.IDisposable.Dispose" />.
+    /// cleared, zeroed, or nullified by <see cref="System.IDisposable.Dispose" />, after applying
+    /// the per-test exclusion list contributed by <see cref="ExcludedFieldNames" />.
     /// </summary>
     /// <returns>
     /// A sequence of single-element object arrays, each wrapping one <see cref="FieldInfo" />
@@ -33,18 +23,22 @@ public abstract partial class AeadBlockCipherModeTests<TTransform>
     public static IEnumerable<object[]> GetDisposableFields() =>
         TestHelpers.GetFieldInfoForType<TTransform>(
             excludeReadOnly: true,
-            excludeFileds: DisposableFieldExclusions);
+            excludeFileds: new TTest().GetExcludedFieldNames()?.ToArray() ?? []);
 
     /// <summary>
-    /// Enumerates the publicly writable instance properties of <typeparamref name="TTransform" />.
-    /// AEAD transforms typically expose no writable properties, in which case this enumeration is
-    /// empty and the corresponding tests resolve to <see cref="Assert.Inconclusive(string)" />.
+    /// Enumerates the publicly writable instance properties of <typeparamref name="TTransform" />,
+    /// after applying the per-test exclusion list contributed by
+    /// <see cref="ExcludedWriteablePropertyNames" />. AEAD transforms typically expose no writable
+    /// properties, in which case this enumeration is empty and the corresponding tests resolve to
+    /// <see cref="Assert.Inconclusive(string)" />.
     /// </summary>
     /// <returns>
     /// A sequence of single-element object arrays, each wrapping one <see cref="PropertyInfo" />.
     /// </returns>
     public static IEnumerable<object[]> GetWritableProperties() =>
-        TestHelpers.GetPropertyInfoForType<TTransform>(TestHelpers.PropertyAccessMode.Write);
+        TestHelpers.GetPropertyInfoForType<TTransform>(
+            TestHelpers.PropertyAccessMode.Write,
+            excludeProperties: new TTest().GetExcludedWriteablePropertyNames()?.ToArray() ?? []);
 
     // ── Dispose lifecycle ─────────────────────────────────────────────────────────────────────
 

@@ -9,13 +9,13 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Shared base for all block cipher mode transform test classes. Provides the constructor parameter
 /// and factory surface common to both <see cref="BlockCipherModeTests{TMode}" /> and
-/// <see cref="AeadBlockCipherModeTests{TTransform}" />, and owns the three constructor-validation
+/// <see cref="AeadBlockCipherModeTests{TTest, TTransform}" />, and owns the three constructor-validation
 /// tests that apply to every mode regardless of whether it uses <c>Transform</c> or <c>Encrypt</c>/<c>Decrypt</c>.
 /// </summary>
 /// <remarks>
 /// <para>
 /// Concrete test classes never inherit directly from this type. The two intermediate base classes
-/// (<see cref="BlockCipherModeTests{TMode}" /> and <see cref="AeadBlockCipherModeTests{TTransform}" />)
+/// (<see cref="BlockCipherModeTests{TMode}" /> and <see cref="AeadBlockCipherModeTests{TTest, TTransform}" />)
 /// partition the modes by interface and add the tests specific to their respective API shapes.
 /// </para>
 /// <para>
@@ -24,7 +24,7 @@ namespace Bodu.Security.Cryptography;
 ///   CipherModeTestsBase&lt;T&gt;
 ///   ├── BlockCipherModeTests&lt;TMode&gt;    — IBlockCipherModeTransform modes (ECB, CBC, CFB, OFB, CTR, XTS, OCB, EAX, SIV, CTS)
 ///   │   └── CbcModeTransformTests, CtrModeTransformTests, … (concrete)
-///   └── AeadBlockCipherModeTests&lt;TTransform&gt; — IAeadBlockCipherModeTransform modes (GCM, CCM, GCM-SIV)
+///   └── AeadBlockCipherModeTests&lt;TTest, TTransform&gt; — IAeadBlockCipherModeTransform modes (GCM, CCM, GCM-SIV)
 ///       └── GcmModeTransformTests, CcmModeTransformTests, … (concrete)
 /// </code>
 /// </para>
@@ -38,7 +38,7 @@ public abstract partial class CipherModeTestsBase<TTransform>
     /// <summary>
     /// Gets the block size in bytes used when constructing <see cref="MonitoringBlockCipher" />
     /// instances in tests. Defaults to 8 (64-bit), matching the <see cref="BlockCipherModeTests{TMode}" />
-    /// baseline. <see cref="AeadBlockCipherModeTests{TTransform}" /> overrides this to 16 because
+    /// baseline. <see cref="AeadBlockCipherModeTests{TTest, TTransform}" /> overrides this to 16 because
     /// GCM, CCM, and GCM-SIV are defined only for 128-bit blocks.
     /// </summary>
     protected virtual int ExpectedBlockSize => 8;

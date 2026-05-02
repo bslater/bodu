@@ -6,7 +6,7 @@
 
 namespace Bodu.Security.Cryptography;
 
-public abstract partial class AeadBlockCipherModeTests<TTransform>
+public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
 {
     // ── Argument validation ───────────────────────────────────────────────────────────────────
 
