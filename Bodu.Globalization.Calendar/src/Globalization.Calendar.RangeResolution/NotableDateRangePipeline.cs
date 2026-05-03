@@ -289,8 +289,10 @@ internal sealed class NotableDateRangePipeline
 				bool adjustedIntersects = Intersects(plan.Request.StartDate, plan.Request.EndDate, adjusted.Date, adjusted.EndDate);
 				bool filterMatch = plan.Request.Filter is null || plan.Request.Filter.IsMatch(adjusted);
 
+				// Always promote to Adjusted when the adjusted date lands inside the request window. The emission step
+				// independently checks whether the base date also intersects, so we never lose the base when both are visible.
 				if (adjustedIntersects && filterMatch)
-					entry.State = entry.State == NotableDateCacheState.InWindow ? NotableDateCacheState.InWindow : NotableDateCacheState.Adjusted;
+					entry.State = NotableDateCacheState.Adjusted;
 				else if (entry.State == NotableDateCacheState.Computed)
 					entry.State = NotableDateCacheState.AdjustedBlocker;
 			}
@@ -310,11 +312,15 @@ internal sealed class NotableDateRangePipeline
 		foreach (NotableDateCacheEntry entry in cache.EmissableEntries())
 		{
 			if (entry.State == NotableDateCacheState.InWindow)
+			{
 				emitted.Add(entry.BaseNotable);
+				continue;
+			}
 
 			if (entry.State == NotableDateCacheState.Adjusted && entry.Adjusted is not null)
 			{
-				// Emit both the base and the adjusted form when the base date also lies inside the window.
+				// Emit the base date when it independently intersects the request — this is the canonical "Dec 31 falls on
+				// Saturday so we observe it on Monday too" pair where both anchor and substitute are visible to the caller.
 				if (Intersects(plan.Request.StartDate, plan.Request.EndDate, entry.BaseNotable.Date, entry.BaseNotable.EndDate)
 					&& (plan.Request.Filter is null || plan.Request.Filter.IsMatch(entry.BaseNotable)))
 				{
@@ -325,7 +331,11 @@ internal sealed class NotableDateRangePipeline
 			}
 		}
 
+		// Defensive: never emit a notable date whose span lies outside the requested window. The state transitions above already
+		// enforce this, but the explicit guard catches any future regression in the state machine without re-introducing the
+		// "phantom Dec 31" leak that originally surfaced when state preservation was conditional.
 		return emitted
+			.Where(n => Intersects(plan.Request.StartDate, plan.Request.EndDate, n.Date, n.EndDate))
 			.OrderBy(n => n.Date)
 			.ThenBy(n => n.Name, StringComparer.OrdinalIgnoreCase)
 			.ThenBy(n => n.TerritoryCode, StringComparer.OrdinalIgnoreCase)

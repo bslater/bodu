@@ -186,6 +186,110 @@ public sealed class NotableDateRangePipelineTests
 	}
 
 	/// <summary>
+	/// Verifies that a request whose window spans both the original Dec 31 anchor and its rolled-forward Jan 3 observance returns
+	/// both occurrences — the actual calendar holiday and the observed substitute — and does not duplicate or lose either one.
+	/// </summary>
+	[TestMethod]
+	public void Resolve_WhenWindowSpansBothAnchorAndAdjustedObservance_ShouldEmitBaseAndAdjustedDates()
+	{
+		NotableDateRule yearEnd = new()
+		{
+			Name = "Year-End Holiday",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Holiday,
+			Month = 12,
+			Day = 31,
+			IsNonWorkingDay = true,
+			Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+			{
+				Key = "weekend-substitute",
+				Trigger = AdjustmentTrigger.IfWeekend,
+				Action = AdjustmentAction.MoveToNextNonWorkingDay,
+				IsNonWorkingDay = true,
+			}),
+		};
+
+		NotableDateRule secondJan = new()
+		{
+			Name = "New Year Second Day",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Holiday,
+			Month = 1,
+			Day = 2,
+			IsNonWorkingDay = true,
+		};
+
+		NotableDateService service = new(
+			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(yearEnd, secondJan) },
+			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+
+		IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
+			new DateTime(2022, 12, 25),
+			new DateTime(2023, 1, 5));
+
+		NotableDate[] yearEndOccurrences = resolved.Where(n => n.Name == "Year-End Holiday").ToArray();
+		Assert.AreEqual(2, yearEndOccurrences.Length,
+			"Spanning [25 Dec 2022, 5 Jan 2023] should return both the actual 31 Dec anchor and the 3 Jan observance.");
+
+		NotableDate baseDate = yearEndOccurrences.Single(n => n.Date == new DateTime(2022, 12, 31));
+		NotableDate observed = yearEndOccurrences.Single(n => n.Date == new DateTime(2023, 1, 3));
+
+		Assert.IsFalse(baseDate.WasAdjusted, "The Dec 31 base occurrence must not carry an AdjustmentReason.");
+		Assert.IsTrue(observed.WasAdjusted, "The Jan 3 observance must carry an AdjustmentReason.");
+		Assert.IsNotNull(observed.AdjustmentReason);
+		Assert.AreEqual(new DateTime(2022, 12, 31), observed.AdjustmentReason.OriginalDate);
+	}
+
+	/// <summary>
+	/// Verifies that a single-day query for the rolled-forward Jan 3 observance does not leak the prior-year Dec 31 anchor into
+	/// the output even though the anchor was materialised internally to support the adjustment chain.
+	/// </summary>
+	[TestMethod]
+	public void Resolve_WhenSingleDayWindowOnAdjustedDate_ShouldNotLeakAnchorOutsideWindow()
+	{
+		NotableDateRule yearEnd = new()
+		{
+			Name = "Year-End Holiday",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Holiday,
+			Month = 12,
+			Day = 31,
+			IsNonWorkingDay = true,
+			Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+			{
+				Key = "weekend-substitute",
+				Trigger = AdjustmentTrigger.IfWeekend,
+				Action = AdjustmentAction.MoveToNextNonWorkingDay,
+				IsNonWorkingDay = true,
+			}),
+		};
+
+		NotableDateRule secondJan = new()
+		{
+			Name = "New Year Second Day",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Holiday,
+			Month = 1,
+			Day = 2,
+			IsNonWorkingDay = true,
+		};
+
+		NotableDateService service = new(
+			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(yearEnd, secondJan) },
+			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+
+		IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
+			new DateTime(2023, 1, 3),
+			new DateTime(2023, 1, 3));
+
+		Assert.AreEqual(1, resolved.Count,
+			$"Expected exactly one notable date for [3 Jan, 3 Jan]; got: {string.Join(", ", resolved.Select(n => $"{n.Name}@{n.Date:yyyy-MM-dd}"))}.");
+
+		Assert.IsFalse(resolved.Any(n => n.Date.Year != 2023 || n.Date.Month != 1 || n.Date.Day != 3),
+			$"Every emitted date must intersect the requested window [3 Jan 2023, 3 Jan 2023].");
+	}
+
+	/// <summary>
 	/// Verifies that <see cref="NotableDateService.ResolvedWindows" /> exposes the union of every range that has been resolved,
 	/// merging overlapping or adjacent windows into the minimum number of disjoint intervals.
 	/// </summary>
