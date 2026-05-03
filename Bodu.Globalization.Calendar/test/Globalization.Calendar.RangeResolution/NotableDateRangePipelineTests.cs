@@ -186,6 +186,76 @@ public sealed class NotableDateRangePipelineTests
 	}
 
 	/// <summary>
+	/// Verifies that <see cref="NotableDateService.ResolvedWindows" /> exposes the union of every range that has been resolved,
+	/// merging overlapping or adjacent windows into the minimum number of disjoint intervals.
+	/// </summary>
+	[TestMethod]
+	public void ResolvedWindows_WhenMultipleRangesResolved_ShouldExposeMergedDisjointIntervals()
+	{
+		NotableDateService service = new(
+			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider() },
+			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+
+		Assert.AreEqual(0, service.ResolvedWindows.Count, "Service should report no resolved windows on construction.");
+
+		_ = service.ResolveNotableDatesInRange(new DateTime(2026, 1, 1), new DateTime(2026, 3, 31));
+		_ = service.ResolveNotableDatesInRange(new DateTime(2026, 4, 1), new DateTime(2026, 6, 30));
+		_ = service.ResolveNotableDatesInRange(new DateTime(2026, 9, 1), new DateTime(2026, 12, 31));
+
+		IReadOnlyList<DateRange> windows = service.ResolvedWindows;
+
+		Assert.AreEqual(2, windows.Count, "Adjacent Q1+Q2 windows should merge; the disjoint Q4 window stays separate.");
+		Assert.AreEqual(new DateTime(2026, 1, 1), windows[0].StartDate);
+		Assert.AreEqual(new DateTime(2026, 6, 30), windows[0].EndDate);
+		Assert.AreEqual(new DateTime(2026, 9, 1), windows[1].StartDate);
+		Assert.AreEqual(new DateTime(2026, 12, 31), windows[1].EndDate);
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="NotableDateService.IsRangeResolved" /> returns true for a range fully inside a previously resolved
+	/// window and false for one that spans a gap between two windows.
+	/// </summary>
+	[TestMethod]
+	public void IsRangeResolved_WhenProbeFitsAndStraddlesResolvedWindows_ShouldReturnExpectedResults()
+	{
+		NotableDateService service = new(
+			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider() },
+			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+
+		_ = service.ResolveNotableDatesInRange(new DateTime(2026, 1, 1), new DateTime(2026, 3, 31));
+		_ = service.ResolveNotableDatesInRange(new DateTime(2026, 9, 1), new DateTime(2026, 12, 31));
+
+		Assert.IsTrue(service.IsRangeResolved(new DateTime(2026, 2, 1), new DateTime(2026, 2, 28)),
+			"February 2026 lies inside the resolved Q1 window.");
+
+		Assert.IsFalse(service.IsRangeResolved(new DateTime(2026, 2, 1), new DateTime(2026, 10, 31)),
+			"A range that bridges the unresolved Q2/Q3 gap is not fully resolved.");
+
+		Assert.IsFalse(service.IsRangeResolved(new DateTime(2026, 5, 1), new DateTime(2026, 5, 31)),
+			"May 2026 has not been resolved.");
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="NotableDateService.Invalidate()" /> clears the resolved-windows tracker so consumers see an empty
+	/// list after invalidation.
+	/// </summary>
+	[TestMethod]
+	public void Invalidate_AfterRangesResolved_ShouldEmptyResolvedWindows()
+	{
+		NotableDateService service = new(
+			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider() },
+			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+
+		_ = service.ResolveNotableDatesInRange(new DateTime(2026, 1, 1), new DateTime(2026, 3, 31));
+		Assert.AreEqual(1, service.ResolvedWindows.Count);
+
+		service.Invalidate();
+
+		Assert.AreEqual(0, service.ResolvedWindows.Count);
+		Assert.IsFalse(service.IsRangeResolved(new DateTime(2026, 2, 1), new DateTime(2026, 2, 28)));
+	}
+
+	/// <summary>
 	/// Verifies that <see cref="NotableDateService.ResolveNotableDatesInRange" /> throws
 	/// <see cref="ArgumentException" /> when the end date precedes the start date.
 	/// </summary>
