@@ -305,35 +305,33 @@ internal sealed class NotableDateRangePipeline
 	/// <param name="plan">The active resolution plan.</param>
 	/// <param name="cache">The shared cache.</param>
 	/// <returns>The emission list, ordered by observed date and rule name.</returns>
+	/// <remarks>
+	/// <para>
+	/// Emission policy: an observance adjustment replaces the base anchor — when an entry's <see cref="NotableDateCacheState" /> is
+	/// <see cref="NotableDateCacheState.Adjusted" /> only the <see cref="NotableDateCacheEntry.Adjusted" /> form is emitted, never
+	/// the underlying anchor. This guarantees that the emitted count equals the notable-date count for the requested window.
+	/// </para>
+	/// </remarks>
 	private static IReadOnlyList<NotableDate> BuildEmissionList(NotableDateRangePlan plan, NotableDateRangeResolutionCache cache)
 	{
 		List<NotableDate> emitted = new();
 
 		foreach (NotableDateCacheEntry entry in cache.EmissableEntries())
 		{
-			if (entry.State == NotableDateCacheState.InWindow)
+			if (entry.State == NotableDateCacheState.Adjusted && entry.Adjusted is not null)
 			{
-				emitted.Add(entry.BaseNotable);
+				// Adjusted form supersedes the base — the original anchor is recorded on the adjusted date's AdjustmentReason
+				// rather than emitted as a separate entry.
+				emitted.Add(entry.Adjusted);
 				continue;
 			}
 
-			if (entry.State == NotableDateCacheState.Adjusted && entry.Adjusted is not null)
-			{
-				// Emit the base date when it independently intersects the request — this is the canonical "Dec 31 falls on
-				// Saturday so we observe it on Monday too" pair where both anchor and substitute are visible to the caller.
-				if (Intersects(plan.Request.StartDate, plan.Request.EndDate, entry.BaseNotable.Date, entry.BaseNotable.EndDate)
-					&& (plan.Request.Filter is null || plan.Request.Filter.IsMatch(entry.BaseNotable)))
-				{
-					emitted.Add(entry.BaseNotable);
-				}
-
-				emitted.Add(entry.Adjusted);
-			}
+			if (entry.State == NotableDateCacheState.InWindow)
+				emitted.Add(entry.BaseNotable);
 		}
 
-		// Defensive: never emit a notable date whose span lies outside the requested window. The state transitions above already
-		// enforce this, but the explicit guard catches any future regression in the state machine without re-introducing the
-		// "phantom Dec 31" leak that originally surfaced when state preservation was conditional.
+		// Defensive: never emit a notable date whose span lies outside the requested window. The state transitions enforce this on
+		// their own, but the explicit guard catches any future regression in the state machine.
 		return emitted
 			.Where(n => Intersects(plan.Request.StartDate, plan.Request.EndDate, n.Date, n.EndDate))
 			.OrderBy(n => n.Date)

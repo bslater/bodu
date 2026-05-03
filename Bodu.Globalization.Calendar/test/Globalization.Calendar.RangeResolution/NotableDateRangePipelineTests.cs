@@ -186,11 +186,12 @@ public sealed class NotableDateRangePipelineTests
 	}
 
 	/// <summary>
-	/// Verifies that a request whose window spans both the original Dec 31 anchor and its rolled-forward Jan 3 observance returns
-	/// both occurrences — the actual calendar holiday and the observed substitute — and does not duplicate or lose either one.
+	/// Verifies that a request whose window covers both the original Dec 31 anchor and its rolled-forward Jan 3 observance
+	/// returns only the adjusted observance — adjusted dates supersede the base anchor so the emitted count equals the
+	/// notable-date count.
 	/// </summary>
 	[TestMethod]
-	public void Resolve_WhenWindowSpansBothAnchorAndAdjustedObservance_ShouldEmitBaseAndAdjustedDates()
+	public void Resolve_WhenWindowSpansBothAnchorAndAdjustedObservance_ShouldEmitOnlyAdjustedDate()
 	{
 		NotableDateRule yearEnd = new()
 		{
@@ -228,16 +229,18 @@ public sealed class NotableDateRangePipelineTests
 			new DateTime(2023, 1, 5));
 
 		NotableDate[] yearEndOccurrences = resolved.Where(n => n.Name == "Year-End Holiday").ToArray();
-		Assert.AreEqual(2, yearEndOccurrences.Length,
-			"Spanning [25 Dec 2022, 5 Jan 2023] should return both the actual 31 Dec anchor and the 3 Jan observance.");
+		Assert.AreEqual(1, yearEndOccurrences.Length,
+			$"An adjusted observance must replace the base anchor; got: {string.Join(", ", yearEndOccurrences.Select(n => $"{n.Date:yyyy-MM-dd}"))}.");
 
-		NotableDate baseDate = yearEndOccurrences.Single(n => n.Date == new DateTime(2022, 12, 31));
-		NotableDate observed = yearEndOccurrences.Single(n => n.Date == new DateTime(2023, 1, 3));
-
-		Assert.IsFalse(baseDate.WasAdjusted, "The Dec 31 base occurrence must not carry an AdjustmentReason.");
-		Assert.IsTrue(observed.WasAdjusted, "The Jan 3 observance must carry an AdjustmentReason.");
+		NotableDate observed = yearEndOccurrences.Single();
+		Assert.AreEqual(new DateTime(2023, 1, 3), observed.Date, "The single emitted occurrence must be the adjusted Jan 3 form.");
+		Assert.IsTrue(observed.WasAdjusted, "The emitted occurrence must carry an AdjustmentReason.");
 		Assert.IsNotNull(observed.AdjustmentReason);
-		Assert.AreEqual(new DateTime(2022, 12, 31), observed.AdjustmentReason.OriginalDate);
+		Assert.AreEqual(new DateTime(2022, 12, 31), observed.AdjustmentReason.OriginalDate,
+			"The AdjustmentReason must record the suppressed Dec 31 anchor as the original date.");
+
+		Assert.IsFalse(resolved.Any(n => n.Date == new DateTime(2022, 12, 31)),
+			"The Dec 31 anchor is suppressed by its adjustment and must not appear in the output.");
 	}
 
 	/// <summary>
