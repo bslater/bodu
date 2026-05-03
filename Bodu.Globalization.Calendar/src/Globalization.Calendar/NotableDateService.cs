@@ -82,6 +82,9 @@ public sealed class NotableDateService : INotableDateService
     /// <summary>The optional registry of custom adjustment handlers used during generation.</summary>
     private readonly IAdjustmentHandlerRegistry? _adjustmentHandlers;
 
+    /// <summary>The lazily constructed prototype range-resolution pipeline used by <see cref="ResolveNotableDatesInRange" />.</summary>
+    private RangeResolution.NotableDateRangePipeline? _rangePipeline;
+
     /// <summary>The resolver that arbitrates when multiple rules produce a date on the same day.</summary>
     private readonly INotableDateCollisionResolver _collisionResolver;
 
@@ -351,12 +354,82 @@ public sealed class NotableDateService : INotableDateService
 	public void Invalidate()
 	{
 		_yearCache.Clear();
+		_rangePipeline = null;
 	}
 
 	/// <inheritdoc />
 	public void Invalidate(int year)
 	{
 		_yearCache.TryRemove(year, out _);
+	}
+
+	// --------------------------------------------------------------------------------------
+	// Prototype range-resolution pipeline
+	// --------------------------------------------------------------------------------------
+
+	/// <summary>
+	/// Resolves notable dates whose observed date intersects the supplied chronological window using the prototype range-resolution
+	/// pipeline. Collateral dates that originate outside the requested range are admitted when an observance adjustment rolls them
+	/// into the window or when an offset rule projects an out-of-window anchor date inside.
+	/// </summary>
+	/// <param name="startDate">The inclusive start date of the requested window.</param>
+	/// <param name="endDate">The inclusive end date of the requested window. Must not be earlier than <paramref name="startDate" />.</param>
+	/// <param name="territoryCode">The optional territory context.</param>
+	/// <param name="calendarType">The optional calendar context.</param>
+	/// <param name="filter">The optional notable-date filter.</param>
+	/// <returns>The resolved notable dates ordered by observed date.</returns>
+	/// <exception cref="ArgumentException"><paramref name="endDate" /> is earlier than <paramref name="startDate" />.</exception>
+	/// <remarks>
+	/// <para>
+	/// TODO: Once the prototype is validated against the existing window-based overloads, evaluate promoting this method to
+	/// <see cref="INotableDateService" /> and routing the existing
+	/// <see cref="GetNotableDates(DateTime, DateTime, string?, Type?)" /> and
+	/// <see cref="GetNotableDates(DateTime, DateTime, NotableDateFilter, string?, Type?)" /> overloads through the new pipeline.
+	/// </para>
+	/// </remarks>
+	public IReadOnlyList<NotableDate> ResolveNotableDatesInRange(
+		DateTime startDate,
+		DateTime endDate,
+		string? territoryCode = null,
+		Type? calendarType = null,
+		NotableDateFilter? filter = null)
+	{
+		RangeResolution.NotableDateRangeRequest request = new(
+			startDate,
+			endDate,
+			territoryCode,
+			calendarType,
+			filter);
+
+		RangeResolution.NotableDateRangePipeline pipeline = _rangePipeline ??= BuildRangePipeline();
+		IReadOnlyList<NotableDate> resolved = pipeline.Resolve(request);
+
+		List<NotableDate> localised = new(resolved.Count);
+		foreach (NotableDate notable in resolved)
+			localised.Add(LocaliseIfNeeded(notable));
+
+		return localised
+			.GroupBy(n => n.Date.Date)
+			.OrderBy(g => g.Key)
+			.SelectMany(g => _collisionResolver.Resolve(g.Key, g.ToList()) ?? Array.Empty<NotableDate>())
+			.ToList();
+	}
+
+	/// <summary>
+	/// Constructs the prototype range-resolution pipeline using the service's effective rule set, resolver, and weekend / handler
+	/// configuration.
+	/// </summary>
+	/// <returns>The constructed pipeline.</returns>
+	private RangeResolution.NotableDateRangePipeline BuildRangePipeline()
+	{
+		RangeResolution.RuleStaticAnalysis analysis = RangeResolution.RuleStaticAnalysis.Build(_effectiveRules);
+
+		return new RangeResolution.NotableDateRangePipeline(
+			analysis,
+			_resolver,
+			_weekendDefinition,
+			_weekendProvider,
+			_adjustmentHandlers);
 	}
 
 	// --------------------------------------------------------------------------------------
