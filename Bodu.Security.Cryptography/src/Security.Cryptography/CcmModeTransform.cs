@@ -38,6 +38,13 @@ namespace Bodu.Security.Cryptography;
 /// AAD length is encoded as a 2-byte big-endian prefix (supports up to 65 279 bytes).
 /// </para>
 /// <para>
+/// <strong>Lifecycle.</strong> Each instance encrypts or decrypts exactly one message. A second call
+/// to <see cref="Encrypt" /> or <see cref="Decrypt" /> — including after a tag-mismatch failure —
+/// throws <see cref="InvalidOperationException" />. The supplied <see cref="IBlockCipher" /> is not
+/// disposed by this type; ownership remains with the caller. <see cref="Dispose" /> clears the
+/// retained nonce and cached associated-data state.
+/// </para>
+/// <para>
 /// <strong>When to use CCM.</strong> Pick CCM when interoperability with constrained-environment standards
 /// is required — IEEE 802.15.4 / Zigbee, Bluetooth Mesh, IPsec ESP, and TLS 1.2 with the AES-CCM cipher
 /// suites all use it. CCM is two-pass over the message (CBC-MAC then CTR), so it is slower than

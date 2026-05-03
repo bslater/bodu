@@ -47,9 +47,11 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="IAeadBlockCipherModeTransform" /> convention.
 /// </para>
 /// <para>
-/// <strong>Lifecycle.</strong> The supplied <see cref="IBlockCipher" /> instances are not disposed by this
-/// type; ownership remains with the caller. <see cref="Dispose" /> clears cached associated-data state and
-/// prevents further use of the transform.
+/// <strong>Lifecycle.</strong> Each instance encrypts or decrypts exactly one message. A second call
+/// to <see cref="Encrypt" /> or <see cref="Decrypt" /> — including after a tag-mismatch failure —
+/// throws <see cref="InvalidOperationException" />. The supplied <see cref="IBlockCipher" /> instances
+/// are not disposed by this type; ownership remains with the caller. <see cref="Dispose" /> clears
+/// cached associated-data state.
 /// </para>
 /// <para>
 /// <strong>When to use SIV.</strong> Pick AES-SIV when deterministic authenticated encryption is wanted —

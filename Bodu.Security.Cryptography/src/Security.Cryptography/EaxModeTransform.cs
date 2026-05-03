@@ -41,9 +41,11 @@ namespace Bodu.Security.Cryptography;
 /// consistent with the <see cref="IAeadBlockCipherModeTransform" /> convention.
 /// </para>
 /// <para>
-/// <strong>Lifecycle.</strong> The supplied <see cref="IBlockCipher" /> is not disposed by this type;
-/// ownership remains with the caller. <see cref="Dispose" /> clears the retained nonce and cached
-/// associated-data state and prevents further use of the transform.
+/// <strong>Lifecycle.</strong> Each instance encrypts or decrypts exactly one message. A second call
+/// to <see cref="Encrypt" /> or <see cref="Decrypt" /> — including after a tag-mismatch failure —
+/// throws <see cref="InvalidOperationException" />. The supplied <see cref="IBlockCipher" /> is not
+/// disposed by this type; ownership remains with the caller. <see cref="Dispose" /> clears the
+/// retained nonce and cached associated-data state.
 /// </para>
 /// <para>
 /// <strong>When to use EAX.</strong> Pick EAX when an unencumbered, two-pass AEAD with a flexible nonce
