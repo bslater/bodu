@@ -233,4 +233,77 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
 
         Assert.AreEqual(0, written, "Decrypting empty ciphertext must return 0.");
     }
+
+    /// <summary>
+    /// Verifies that <see cref="IAeadBlockCipherModeTransform.Decrypt" /> recovers the original
+    /// plaintext when the associated data spans multiple cipher blocks. AAD processing has a
+    /// distinct full-block code path versus the partial-block path, so a multi-block AAD
+    /// exercises the full-block branch end-to-end.
+    /// </summary>
+    [TestMethod]
+    public void EncryptThenDecrypt_WithMultiBlockAad_ShouldRecoverPlaintext()
+    {
+        using var cipher = new AesBlockCipherFixture(new byte[16]);
+        var iv = CreateInitializationVector();
+
+        // Three full cipher blocks of AAD (48 bytes for a 16-byte block size) so the AAD-hashing
+        // path iterates beyond a single block on every implementation.
+        byte[] aad = new byte[ExpectedBlockSize * 3];
+        for (int i = 0; i < aad.Length; i++) aad[i] = (byte)(i + 0xA0);
+
+        byte[] plaintext = new byte[ExpectedBlockSize * 2];
+        for (int i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)i;
+
+        var encTransform = CreateTransform(cipher, (byte[])iv.Clone());
+        encTransform.ProcessAssociatedData(aad);
+        byte[] buf = new byte[plaintext.Length + encTransform.TagSize];
+        encTransform.Encrypt(plaintext, buf);
+
+        var decTransform = CreateTransform(cipher, (byte[])iv.Clone());
+        decTransform.ProcessAssociatedData(aad);
+        byte[] recovered = new byte[plaintext.Length];
+        decTransform.Decrypt(buf, recovered);
+
+        CollectionAssert.AreEqual(plaintext, recovered,
+            "Decrypt with multi-block AAD must recover the original plaintext.");
+    }
+
+    // ── Security guarantees ───────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Verifies that <see cref="IAeadBlockCipherModeTransform.Decrypt" /> zeroes the entire output
+    /// buffer before throwing <see cref="CryptographicException" /> when authentication fails,
+    /// preventing unverified plaintext from leaking through the output array.
+    /// </summary>
+    /// <remarks>
+    /// Releasing unverified plaintext to the caller is a well-known AEAD security failure mode.
+    /// Implementations must call <see cref="System.Security.Cryptography.CryptographicOperations.ZeroMemory(System.Span{byte})" />
+    /// on the output span before propagating the tag-mismatch exception. Uses real AES so the
+    /// authentication failure cannot be masked by the linearity of <see cref="MonitoringBlockCipher" />.
+    /// </remarks>
+    [TestMethod]
+    public void Decrypt_OnAuthenticationFailure_ShouldZeroOutputBuffer()
+    {
+        using var cipher = new AesBlockCipherFixture(new byte[16]);
+        var iv = CreateInitializationVector();
+        byte[] plaintext = new byte[ExpectedBlockSize * 2];
+        for (int i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)(i + 1);
+
+        var encTransform = CreateTransform(cipher, (byte[])iv.Clone());
+        byte[] buf = new byte[plaintext.Length + encTransform.TagSize];
+        encTransform.Encrypt(plaintext, buf);
+        buf[0] ^= 0xFF; // tamper the ciphertext
+
+        byte[] output = new byte[plaintext.Length];
+        Array.Fill(output, (byte)0xCC); // sentinel — any non-zero value
+
+        var decTransform = CreateTransform(cipher, (byte[])iv.Clone());
+        Assert.ThrowsExactly<CryptographicException>(() =>
+            decTransform.Decrypt(buf, output));
+
+        CollectionAssert.AreEqual(
+            new byte[plaintext.Length], output,
+            $"{typeof(TTransform).Name} must zero the output buffer on authentication failure " +
+            "(CryptographicOperations.ZeroMemory) so unverified plaintext cannot leak.");
+    }
 }
