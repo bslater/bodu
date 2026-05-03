@@ -73,41 +73,7 @@ public sealed partial class OcbModeTransformTests
 
     // ── Security properties ───────────────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// Verifies that <see cref="OcbModeTransform.Decrypt" /> zeroes the entire output buffer
-    /// before throwing <see cref="CryptographicException" /> when authentication fails.
-    /// </summary>
-    /// <remarks>
-    /// Releasing unverified plaintext to the caller is a well-known AEAD security failure
-    /// mode. The implementation must call <see cref="CryptographicOperations.ZeroMemory" />
-    /// on the output span before propagating the exception, so that any partially decrypted
-    /// bytes cannot leak through the output array even if the caller catches the exception
-    /// and inspects the buffer.
-    /// </remarks>
-    [TestMethod]
-    public void Decrypt_OnAuthenticationFailure_ShouldZeroOutputBuffer()
-    {
-        using var cipher = new AesBlockCipherFixture(new byte[16]);
-        var iv = new byte[ExpectedBlockSize];
-        var plaintext = new byte[ExpectedBlockSize * 2 + 5]; // multi-block with partial
-
-        var enc = new OcbModeTransform(cipher, (byte[])iv.Clone());
-        var ct = new byte[plaintext.Length + enc.TagSize];
-        enc.Encrypt(plaintext, ct);
-        ct[0] ^= 0xFF;          // corrupt the first ciphertext byte
-
-        var output = new byte[plaintext.Length];
-        Array.Fill(output, (byte)0xCC);     // sentinel: any non-zero value
-
-        var dec = new OcbModeTransform(cipher, (byte[])iv.Clone());
-        Assert.ThrowsExactly<CryptographicException>(() => dec.Decrypt(ct, output));
-
-        CollectionAssert.AreEqual(
-            new byte[plaintext.Length],
-            output,
-            "Output buffer must be completely zeroed after authentication failure " +
-            "(CryptographicOperations.ZeroMemory).");
-    }
+    // Decrypt_OnAuthenticationFailure_ShouldZeroOutputBuffer is now in AeadBlockCipherModeTests.Decrypt.cs.
 
     // ── Return value ──────────────────────────────────────────────────────────────────────────
 

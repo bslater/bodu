@@ -41,9 +41,11 @@ namespace Bodu.Security.Cryptography;
 /// consistent with the <see cref="IAeadBlockCipherModeTransform" /> convention.
 /// </para>
 /// <para>
-/// <strong>Lifecycle.</strong> The supplied <see cref="IBlockCipher" /> is not disposed by this type;
-/// ownership remains with the caller. <see cref="Dispose" /> clears the retained nonce and cached
-/// associated-data state and prevents further use of the transform.
+/// <strong>Lifecycle.</strong> Each instance encrypts or decrypts exactly one message. A second call
+/// to <see cref="Encrypt" /> or <see cref="Decrypt" /> — including after a tag-mismatch failure —
+/// throws <see cref="InvalidOperationException" />. The supplied <see cref="IBlockCipher" /> is not
+/// disposed by this type; ownership remains with the caller. <see cref="Dispose" /> clears the
+/// retained nonce and cached associated-data state.
 /// </para>
 /// <para>
 /// <strong>When to use EAX.</strong> Pick EAX when an unencumbered, two-pass AEAD with a flexible nonce
@@ -83,6 +85,7 @@ public sealed class EaxModeTransform
     private readonly byte[] _nonce;     // raw user nonce, defensive clone
     private byte[]? _aad;
     private bool _aadProcessed;
+    private bool _completed;
     private bool _disposed;
 
     /// <summary>
@@ -130,6 +133,7 @@ public sealed class EaxModeTransform
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
         this.ThrowIfDisposed();
+        this.ThrowIfCompleted();
 
         int required = plaintext.Length + TagSize;
         if (output.Length < required)
@@ -166,6 +170,7 @@ public sealed class EaxModeTransform
             ClearIfNotNull(nPrime);
             ClearIfNotNull(hPrime);
             ClearIfNotNull(cPrime);
+            this._completed = true;
         }
     }
 
@@ -173,6 +178,7 @@ public sealed class EaxModeTransform
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
         this.ThrowIfDisposed();
+        this.ThrowIfCompleted();
 
         if (ciphertextWithTag.Length < TagSize)
             throw new ArgumentException(
@@ -219,7 +225,19 @@ public sealed class EaxModeTransform
             ClearIfNotNull(cPrime);
             ClearIfNotNull(hPrime);
             ClearIfNotNull(nPrime);
+            this._completed = true;
         }
+    }
+
+    /// <summary>
+    /// Throws <see cref="InvalidOperationException" /> if this transform has already encrypted or
+    /// decrypted a message. EAX transforms are single-use; create a fresh instance per message.
+    /// </summary>
+    private void ThrowIfCompleted()
+    {
+        if (this._completed)
+            throw new InvalidOperationException(
+                "This EAX transform has already completed and cannot be reused. Create a new instance per message.");
     }
 
     /// <summary>
