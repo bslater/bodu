@@ -281,8 +281,8 @@ internal sealed class NotableDateRuleOccurrenceResolver : INotableDateRuleOccurr
     /// <returns>The candidate civil years.</returns>
     private static IEnumerable<int> GetCandidateYears(NotableDateResolutionRequest request)
     {
-        int startYear = request.StartDate.Year - 1;
-        int endYear = request.EndDate.Year + 1;
+        int startYear = request.StartDate.Year;
+        int endYear = request.EndDate.Year;
 
         for (int year = startYear; year <= endYear; year++)
             yield return year;

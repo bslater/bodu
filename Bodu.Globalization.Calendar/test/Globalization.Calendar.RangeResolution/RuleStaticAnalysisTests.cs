@@ -20,7 +20,7 @@ public sealed class RuleStaticAnalysisTests
 	{
 		Name = name,
 		Strategy = DateResolutionStrategy.Fixed,
-		Category = NotableDateCategory.Public,
+		Category = NotableDateCategory.Holiday,
 		Month = month,
 		Day = day,
 	};
@@ -29,7 +29,7 @@ public sealed class RuleStaticAnalysisTests
 	{
 		Name = name,
 		Strategy = DateResolutionStrategy.Algorithm,
-		Category = NotableDateCategory.Public,
+		Category = NotableDateCategory.Holiday,
 		AlgorithmKey = algorithmKey,
 	};
 
@@ -37,7 +37,7 @@ public sealed class RuleStaticAnalysisTests
 	{
 		Name = name,
 		Strategy = DateResolutionStrategy.OffsetFromAnchor,
-		Category = NotableDateCategory.Public,
+		Category = NotableDateCategory.Holiday,
 		AnchorRuleName = anchorRuleName,
 		OffsetDays = offsetDays,
 	};

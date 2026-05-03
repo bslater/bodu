@@ -26,8 +26,8 @@ public sealed class NotableDateResolutionServiceDynamicExpansionTests
             FixedNonWorkingRule("New Year Second Day", month: 1, day: 2));
 
         NotableDateResolutionRequest request = new(
-            new DateTime(2022, 1, 1),
-            new DateTime(2022, 12, 31),
+            new DateTime(2022, 12, 1),
+            new DateTime(2023, 3, 31),
             NotableDateResolutionProjection.AnchorDate);
 
         IReadOnlyList<NotableDate> actual = service.Resolve(request);
