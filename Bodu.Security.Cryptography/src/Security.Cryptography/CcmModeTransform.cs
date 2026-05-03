@@ -78,6 +78,7 @@ public sealed class CcmModeTransform
     private readonly byte[] _nonce;
     private byte[]? _aad;
     private bool _aadProcessed;
+    private bool _completed;
     private bool _disposed;
 
     /// <summary>
@@ -118,6 +119,7 @@ public sealed class CcmModeTransform
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
         this.ThrowIfDisposed();
+        ThrowIfCompleted();
 
         int required = plaintext.Length + TagSize;
         if (output.Length < required)
@@ -130,6 +132,7 @@ public sealed class CcmModeTransform
 
         EncryptCtr(plaintext, output.Slice(0, plaintext.Length), startIndex: 1);
         encTag.AsSpan(0, TagSize).CopyTo(output.Slice(plaintext.Length));
+        this._completed = true;
         return required;
     }
 
@@ -137,6 +140,7 @@ public sealed class CcmModeTransform
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
         this.ThrowIfDisposed();
+        ThrowIfCompleted();
 
         if (ciphertextWithTag.Length < TagSize)
             throw new ArgumentException($"Input must be at least {TagSize} bytes.", nameof(ciphertextWithTag));
@@ -158,10 +162,23 @@ public sealed class CcmModeTransform
         if (!CryptographicOperations.FixedTimeEquals(encTag.AsSpan(0, TagSize), receivedTag))
         {
             CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
+            this._completed = true;
             throw new CryptographicException("CCM authentication tag verification failed.");
         }
 
+        this._completed = true;
         return plaintextLength;
+    }
+
+    /// <summary>
+    /// Throws <see cref="InvalidOperationException" /> if this transform has already encrypted or
+    /// decrypted a message. CCM transforms are single-use; create a fresh instance per message.
+    /// </summary>
+    private void ThrowIfCompleted()
+    {
+        if (this._completed)
+            throw new InvalidOperationException(
+                "This CCM transform has already completed and cannot be reused. Create a new instance per message.");
     }
 
     /// <summary>

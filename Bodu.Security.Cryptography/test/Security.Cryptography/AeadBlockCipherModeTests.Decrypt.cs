@@ -54,6 +54,30 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         });
     }
 
+    /// <summary>
+    /// Verifies that <see cref="IAeadBlockCipherModeTransform.Decrypt" /> throws
+    /// <see cref="InvalidOperationException" /> when called a second time on the same instance.
+    /// AEAD transforms are single-use per message; a fresh instance is required for each decrypt.
+    /// </summary>
+    [TestMethod]
+    public void Decrypt_WhenCalledTwice_ShouldThrowInvalidOperationException()
+    {
+        var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
+        var iv = CreateInitializationVector();
+        var plaintext = new byte[ExpectedBlockSize];
+
+        var encTransform = CreateTransform(cipher, (byte[])iv.Clone());
+        var buf = new byte[plaintext.Length + encTransform.TagSize];
+        encTransform.Encrypt(plaintext, buf);
+
+        var decTransform = CreateTransform(cipher, (byte[])iv.Clone());
+        decTransform.Decrypt(buf, new byte[plaintext.Length]);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+            decTransform.Decrypt(buf, new byte[plaintext.Length]),
+            $"{typeof(TTransform).Name} must reject a second Decrypt call on the same instance.");
+    }
+
     // ── Tamper detection ──────────────────────────────────────────────────────────────────────
 
     /// <summary>

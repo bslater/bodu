@@ -90,6 +90,7 @@ public sealed class OcbModeTransform
     private readonly byte[][] _lArray;     // L[0] = double(L_$), L[1] = double(L[0]), …
     private byte[]? _aad;
     private bool _aadProcessed;
+    private bool _completed;
     private bool _disposed;
 
     /// <summary>
@@ -191,6 +192,7 @@ public sealed class OcbModeTransform
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
         this.ThrowIfDisposed();
+        this.ThrowIfCompleted();
 
         int required = plaintext.Length + TagSize;
         if (output.Length < required)
@@ -293,6 +295,7 @@ public sealed class OcbModeTransform
             ClearIfNotNull(block);
             ClearIfNotNull(checksum);
             ClearIfNotNull(offset);
+            this._completed = true;
         }
     }
 
@@ -300,6 +303,7 @@ public sealed class OcbModeTransform
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
         this.ThrowIfDisposed();
+        this.ThrowIfCompleted();
 
         if (ciphertextWithTag.Length < TagSize)
             throw new ArgumentException($"Input must be at least {TagSize} bytes.", nameof(ciphertextWithTag));
@@ -412,7 +416,19 @@ public sealed class OcbModeTransform
             ClearIfNotNull(block);
             ClearIfNotNull(checksum);
             ClearIfNotNull(offset);
+            this._completed = true;
         }
+    }
+
+    /// <summary>
+    /// Throws <see cref="InvalidOperationException" /> if this transform has already encrypted or
+    /// decrypted a message. OCB transforms are single-use; create a fresh instance per message.
+    /// </summary>
+    private void ThrowIfCompleted()
+    {
+        if (this._completed)
+            throw new InvalidOperationException(
+                "This OCB transform has already completed and cannot be reused. Create a new instance per message.");
     }
 
     /// <summary>
