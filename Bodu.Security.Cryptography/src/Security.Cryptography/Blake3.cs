@@ -7,6 +7,7 @@
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -423,24 +424,14 @@ public sealed class Blake3
     private static void G(uint[] state, int a, int b, int c, int d, uint mx, uint my)
     {
         state[a] = state[a] + state[b] + mx;
-        state[d] = RotateRight(state[d] ^ state[a], 16);
+        state[d] = (state[d] ^ state[a]).RotateBitsRightUnchecked(16);
         state[c] = state[c] + state[d];
-        state[b] = RotateRight(state[b] ^ state[c], 12);
+        state[b] = (state[b] ^ state[c]).RotateBitsRightUnchecked(12);
         state[a] = state[a] + state[b] + my;
-        state[d] = RotateRight(state[d] ^ state[a], 8);
+        state[d] = (state[d] ^ state[a]).RotateBitsRightUnchecked(8);
         state[c] = state[c] + state[d];
-        state[b] = RotateRight(state[b] ^ state[c], 7);
+        state[b] = (state[b] ^ state[c]).RotateBitsRightUnchecked(7);
     }
-
-    /// <summary>
-    /// Rotates <paramref name="value" /> right by <paramref name="bits" /> positions.
-    /// </summary>
-    /// <param name="value">The value to rotate.</param>
-    /// <param name="bits">The number of bit positions to rotate right.</param>
-    /// <returns>The rotated value.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static uint RotateRight(uint value, int bits) =>
-        (value >> bits) | (value << (32 - bits));
 
     // ---- block and parent processing ----
 

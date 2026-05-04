@@ -7,6 +7,7 @@
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -320,14 +321,17 @@ public sealed class Shake : HashAlgorithm
 
             for (int x = 0; x < 5; x++)
             {
-                ulong d = c[(x + 4) % 5] ^ RotateLeft(c[(x + 1) % 5], 1);
+                ulong d = c[(x + 4) % 5] ^ c[(x + 1) % 5].RotateBitsLeftUnchecked(1);
                 for (int y = 0; y < 5; y++)
                     state[x + y * 5] ^= d;
             }
 
             // ρ and π combined: rotate each lane and scatter to the π-permuted position.
+            // s_rho[0] is 0; RotateBitsLeftUnchecked delegates to BitOperations.RotateLeft, which
+            // handles a zero shift correctly without the undefined `value >> 64` shift the hand-rolled
+            // form would produce.
             for (int i = 0; i < StateWords; i++)
-                b[s_pi[i]] = RotateLeft(state[i], s_rho[i]);
+                b[s_pi[i]] = state[i].RotateBitsLeftUnchecked(s_rho[i]);
 
             // χ (chi): non-linear mixing within each row.
             for (int y = 0; y < 5; y++)
@@ -389,16 +393,6 @@ public sealed class Shake : HashAlgorithm
                 destination[baseOffset + b] = (byte)(lane >> (8 * b));
         }
     }
-
-    /// <summary>
-    /// Rotates a 64-bit value left by the specified number of bits.
-    /// </summary>
-    /// <param name="value">The value to rotate.</param>
-    /// <param name="shift">The number of bit positions to rotate left. Must be in the range [0, 63].</param>
-    /// <returns>The value rotated left by <paramref name="shift" /> positions.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ulong RotateLeft(ulong value, int shift) =>
-        shift == 0 ? value : (value << shift) | (value >> (64 - shift));
 
     /// <summary>
     /// Absorbs the supplied span into the sponge, filling the internal rate buffer and invoking

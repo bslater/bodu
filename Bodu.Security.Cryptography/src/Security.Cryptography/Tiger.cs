@@ -199,8 +199,8 @@ public sealed partial class Tiger
         this.ThrowIfDisposed();
         base.Initialize();
 #if !NET6_0_OR_GREATER
-        State = 0;
-        finalized = false;
+        this.State = 0;
+        this._finalized = false;
 #endif
         this._state0 = 0x0123456789ABCDEF;
         this._state1 = 0xFEDCBA9876543210;
