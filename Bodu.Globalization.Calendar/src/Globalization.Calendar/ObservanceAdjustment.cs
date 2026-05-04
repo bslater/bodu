@@ -163,4 +163,27 @@ public sealed record ObservanceAdjustment
 	/// Gets an optional dictionary of parameters forwarded to the registered <see cref="IAdjustmentHandler" />.
 	/// </summary>
 	public IReadOnlyDictionary<string, string>? HandlerParameters { get; init; }
+
+	/// <summary>
+	/// Gets the optional explicit upper bound on how far this adjustment can shift the calculated date in either direction,
+	/// expressed in days. When set, the chronological range-resolution pipeline uses this value to size the per-rule and global
+	/// fringe envelope so that adjustments whose actual reach exceeds the action's default heuristic are admitted by the fringe
+	/// pass.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// This property is consumed only by the prototype range-resolution pipeline (<c>NotableDateService.ResolveNotableDatesInRange</c>).
+	/// Authors should set it when:
+	/// </para>
+	/// <list type="bullet">
+	///   <item><description><see cref="Action" /> is <see cref="AdjustmentAction.Custom" /> and the custom handler shifts more than ±31 days.</description></item>
+	///   <item><description><see cref="Action" /> is <see cref="AdjustmentAction.ReplaceWithNamedDate" /> and the named replacement is more than ±31 days from the original date.</description></item>
+	///   <item><description>The author wants to declare a tighter envelope than the default heuristic for performance reasons.</description></item>
+	/// </list>
+	/// <para>
+	/// The value is interpreted as a symmetric absolute envelope: the adjustment may shift the date by at most <c>±value</c> days.
+	/// When <see langword="null" />, the pipeline falls back to action-specific defaults (for example, <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> ≈ +7 days).
+	/// </para>
+	/// </remarks>
+	public int? MaxAdjustmentReachDays { get; init; }
 }

@@ -12,23 +12,51 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The planner is the deterministic, side-effect-free step that decides which rules and which civil years are eligible to be
-/// materialised for the request. It expands the request window by the rule set's static reach to admit collateral dates that may
-/// roll into or out of the request through observance adjustments.
+/// Rule selection is deliberately simple: a rule is eligible when it passes the static territory, calendar, and filter checks.
+/// The main pass evaluates each eligible rule for every civil year that the request window spans, materialising the rule's
+/// resolved date and admitting it when it intersects the window.
+/// </para>
+/// <para>
+/// Cross-year roll-overs (for example, <c>31 Dec</c> with a forward observance adjustment landing on <c>3 Jan</c>) are handled by
+/// a separate fringe pass at the pipeline level. The planner identifies which adjacent civil years that pass needs to scan and
+/// the fringe day-window itself; the actual fringe materialisation lives in the pipeline.
 /// </para>
 /// </remarks>
 internal sealed class NotableDateRangePlanner
 {
+	/// <summary>
+	/// The default fringe distance in days, applied either side of the request window when scanning for adjustment-driven
+	/// candidates. Most observance adjustments shift dates by less than a week (weekend roll-forward, weekday substitute), so
+	/// seven days is a safe envelope that covers <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> chains in typical rule
+	/// sets without inflating the search space.
+	/// </summary>
+	public const int DefaultFringeDays = 7;
+
 	private readonly RuleStaticAnalysis _analysis;
+	private readonly int _fringeDays;
 
 	/// <summary>
-	/// Initialises a new instance of the <see cref="NotableDateRangePlanner" /> class.
+	/// Initialises a new instance of the <see cref="NotableDateRangePlanner" /> class with the default fringe distance.
 	/// </summary>
 	/// <param name="analysis">The static rule analysis to use when planning requests.</param>
 	/// <exception cref="ArgumentNullException"><paramref name="analysis" /> is <see langword="null" />.</exception>
 	public NotableDateRangePlanner(RuleStaticAnalysis analysis)
+		: this(analysis, DefaultFringeDays)
+	{
+	}
+
+	/// <summary>
+	/// Initialises a new instance of the <see cref="NotableDateRangePlanner" /> class with an explicit fringe distance.
+	/// </summary>
+	/// <param name="analysis">The static rule analysis to use when planning requests.</param>
+	/// <param name="fringeDays">The fringe distance in days, applied either side of the request window when scanning for adjustment-driven candidates.</param>
+	/// <exception cref="ArgumentNullException"><paramref name="analysis" /> is <see langword="null" />.</exception>
+	/// <exception cref="ArgumentOutOfRangeException"><paramref name="fringeDays" /> is negative.</exception>
+	public NotableDateRangePlanner(RuleStaticAnalysis analysis, int fringeDays)
 	{
 		_analysis = analysis ?? throw new ArgumentNullException(nameof(analysis));
+		if (fringeDays < 0) throw new ArgumentOutOfRangeException(nameof(fringeDays), fringeDays, "The fringe distance must not be negative.");
+		_fringeDays = fringeDays;
 	}
 
 	/// <summary>
@@ -41,14 +69,8 @@ internal sealed class NotableDateRangePlanner
 	{
 		if (request is null) throw new ArgumentNullException(nameof(request));
 
-		// To find rule anchors that may land inside the request window after observance adjustment / duration:
-		//   An anchor with a forward-most shift of GlobalMaxReach can land as late as anchor + GlobalMaxReach. For it to reach
-		//   request.Start, the anchor must be on or after request.Start - GlobalMaxReach.
-		//   An anchor with a backward-most shift of GlobalMinReach (negative) can land as early as anchor + GlobalMinReach. For it
-		//   to be on or before request.End, the anchor must be on or before request.End - GlobalMinReach.
-		DateTime effectiveStart = AddDaysClamped(request.StartDate, -_analysis.GlobalMaxReach);
-		DateTime effectiveEnd = AddDaysClamped(request.EndDate, -_analysis.GlobalMinReach);
-
+		// Eligible rules: filtered by static territory, calendar, and filter checks. Year applicability is deferred to per-(rule,
+		// year) materialisation since FirstYear / LastYear / OccurrenceYears bounds depend on the year being resolved.
 		List<RuleStaticProfile> eligible = new();
 		foreach (RuleStaticProfile profile in _analysis.Profiles)
 		{
@@ -56,11 +78,37 @@ internal sealed class NotableDateRangePlanner
 				eligible.Add(profile);
 		}
 
+		// Main pass candidate years: just the years that the request window itself spans. No global reach expansion.
 		List<int> candidateYears = new();
-		for (int year = effectiveStart.Year; year <= effectiveEnd.Year; year++)
+		for (int year = request.StartDate.Year; year <= request.EndDate.Year; year++)
 			candidateYears.Add(year);
 
+		// Fringe pass: only relevant if the request window touches a year boundary inside the fringe distance. The fringe scans
+		// rules whose un-adjusted date sits within ±effectiveFringeDays of the request edges so the adjustment phase can roll
+		// them in. The effective distance is the larger of the configured default and the rule set's worst-case reach so unusual
+		// adjustment actions (large AddDays, ReplaceWithNamedDate, Custom) widen the fringe automatically.
+		int effectiveFringeDays = _fringeDays > _analysis.GlobalFringeReach ? _fringeDays : _analysis.GlobalFringeReach;
+		DateTime fringeStart = AddDaysClamped(request.StartDate, -effectiveFringeDays);
+		DateTime fringeEnd = AddDaysClamped(request.EndDate, effectiveFringeDays);
+
+		HashSet<int> fringeYearSet = new();
+		for (int year = fringeStart.Year; year <= fringeEnd.Year; year++)
+		{
+			if (year < request.StartDate.Year || year > request.EndDate.Year)
+				fringeYearSet.Add(year);
+		}
+
+		List<int> fringeYears = fringeYearSet.OrderBy(y => y).ToList();
+
+		// Anchor years per algorithmic root. Tight envelope: only the years the request range spans, plus any fringe years (since
+		// a fringe-pass offset rule may need an adjacent-year algorithmic anchor). Keeps Easter / Lunar New Year / Vesak
+		// computation count to the minimum that covers the request without conservative ±1-year padding.
 		Dictionary<string, IReadOnlyList<int>> anchorYearsByName = new(StringComparer.OrdinalIgnoreCase);
+
+		HashSet<int> anchorYearSet = new(candidateYears);
+		foreach (int year in fringeYears)
+			anchorYearSet.Add(year);
+		List<int> anchorYears = anchorYearSet.OrderBy(y => y).ToList();
 
 		foreach (RuleStaticProfile profile in eligible)
 		{
@@ -69,47 +117,21 @@ internal sealed class NotableDateRangePlanner
 
 			string anchorName = profile.RootAnchorRuleName!;
 			if (!anchorYearsByName.ContainsKey(anchorName))
-				anchorYearsByName[anchorName] = ComputeAnchorYears(request, profile);
+				anchorYearsByName[anchorName] = anchorYears;
 		}
 
 		return new NotableDateRangePlan(
 			request,
-			effectiveStart,
-			effectiveEnd,
 			eligible,
 			candidateYears,
+			fringeYears,
+			fringeStart,
+			fringeEnd,
 			anchorYearsByName);
 	}
 
 	/// <summary>
-	/// Computes the civil years for which an algorithmic anchor must be resolved so that every eligible dependent has access to it.
-	/// </summary>
-	/// <param name="request">The originating request.</param>
-	/// <param name="profile">A profile that depends on the algorithmic anchor.</param>
-	/// <returns>The civil years that must be resolved.</returns>
-	/// <remarks>
-	/// <para>
-	/// The conservative default is <c>[request.Year − 1, request.Year, request.Year + 1, …, request.EndYear + 1]</c>. This covers
-	/// the practical envelope of every algorithmic anchor in use today (Easter, Lunar New Year, Vesak, Asalha Puja, etc.) without
-	/// requiring per-algorithm bounds metadata. Year-by-year over-computation is bounded because <see cref="NotableDateRangeResolutionCache.ResolveAnchor" />
-	/// caches the result.
-	/// </para>
-	/// </remarks>
-	private static IReadOnlyList<int> ComputeAnchorYears(NotableDateRangeRequest request, RuleStaticProfile profile)
-	{
-		_ = profile;
-		List<int> years = new();
-		int startYear = request.StartDate.Year - 1;
-		int endYear = request.EndDate.Year + 1;
-
-		for (int year = startYear; year <= endYear; year++)
-			years.Add(year);
-
-		return years;
-	}
-
-	/// <summary>
-	/// Determines whether the rule may contribute to the request based on territory, calendar, year bounds, and filter eligibility.
+	/// Determines whether the rule may contribute to the request based on territory, calendar, and filter eligibility.
 	/// </summary>
 	/// <param name="profile">The profile under test.</param>
 	/// <param name="request">The originating request.</param>
@@ -127,7 +149,6 @@ internal sealed class NotableDateRangePlanner
 		if (!RuleMayApplyToTerritory(rule, request.TerritoryCode))
 			return false;
 
-		// Year applicability is left to the resolver per (rule, year) since it depends on FirstYear/LastYear/OccurrenceYears.
 		return true;
 	}
 

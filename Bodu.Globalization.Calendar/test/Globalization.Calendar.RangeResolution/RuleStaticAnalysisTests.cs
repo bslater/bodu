@@ -154,10 +154,11 @@ public sealed class RuleStaticAnalysisTests
 	}
 
 	/// <summary>
-	/// Verifies that the global reach envelope reflects the worst-case adjustment shifts and durations across every rule.
+	/// Verifies that per-rule reach is captured on the profile so the pipeline can size fringe scans by individual adjustment
+	/// behaviour rather than by a single global envelope.
 	/// </summary>
 	[TestMethod]
-	public void Build_WhenRulesHaveAdjustments_ShouldComputeGlobalReachEnvelope()
+	public void Build_WhenRuleHasForwardRollingAdjustment_ShouldCapturePerRuleForwardReach()
 	{
 		NotableDateRule rollForward = Fixed("New Year's Day", 1, 1) with
 		{
@@ -177,9 +178,93 @@ public sealed class RuleStaticAnalysisTests
 
 		RuleStaticAnalysis analysis = RuleStaticAnalysis.Build(new[] { rollForward, longSpan });
 
-		// MoveToNextNonWorkingDay is estimated at +7 forward reach in this prototype; duration adds 6 to the festival week.
-		Assert.IsTrue(analysis.GlobalMaxReach >= 7, $"Expected GlobalMaxReach >= 7, got {analysis.GlobalMaxReach}.");
-		Assert.IsTrue(analysis.GlobalMinReach <= 0);
+		RuleStaticProfile rollProfile = analysis.Profiles.Single(p => p.Rule.Name == "New Year's Day");
+		RuleStaticProfile spanProfile = analysis.Profiles.Single(p => p.Rule.Name == "Festival Week");
+
+		// MoveToNextNonWorkingDay is estimated at +7 forward reach in this prototype.
+		Assert.IsTrue(rollProfile.MaxObservedReach >= 7, $"Expected MaxObservedReach >= 7 for adjustment, got {rollProfile.MaxObservedReach}.");
+		Assert.AreEqual(0, rollProfile.MinObservedReach);
+
+		// Festival Week has no adjustment but a 7-day span so MaxObservedReach reflects DurationDays - 1.
+		Assert.AreEqual(6, spanProfile.MaxObservedReach);
+		Assert.AreEqual(0, spanProfile.MinObservedReach);
+	}
+
+	/// <summary>
+	/// Verifies that the <see cref="ObservanceAdjustment.MaxAdjustmentReachDays" /> property overrides the action's default reach
+	/// estimate so an author-declared envelope flows into <see cref="RuleStaticAnalysis.GlobalFringeReach" />.
+	/// </summary>
+	[TestMethod]
+	public void Build_WhenAdjustmentDeclaresExplicitMaxReach_ShouldHonourItForGlobalFringeReach()
+	{
+		NotableDateRule custom = Fixed("Custom Reach Holiday", 7, 1) with
+		{
+			Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+			{
+				Key = "big-shift",
+				Trigger = AdjustmentTrigger.Always,
+				Action = AdjustmentAction.Custom,
+				HandlerKey = "test-handler",
+				MaxAdjustmentReachDays = 90,
+			}),
+		};
+
+		RuleStaticAnalysis analysis = RuleStaticAnalysis.Build(new[] { custom });
+
+		Assert.AreEqual(90, analysis.GlobalFringeReach,
+			"Author-declared MaxAdjustmentReachDays should set the analysis's global fringe reach.");
+
+		RuleStaticProfile profile = analysis.Profiles.Single();
+		Assert.AreEqual(90, profile.MaxObservedReach);
+		Assert.AreEqual(-90, profile.MinObservedReach);
+	}
+
+	/// <summary>
+	/// Verifies that an unconfigured custom adjustment falls back to the conservative ±31 day default envelope.
+	/// </summary>
+	[TestMethod]
+	public void Build_WhenCustomAdjustmentDoesNotDeclareReach_ShouldUseDefaultEnvelope()
+	{
+		NotableDateRule custom = Fixed("Default Reach Holiday", 7, 1) with
+		{
+			Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+			{
+				Key = "default-shift",
+				Trigger = AdjustmentTrigger.Always,
+				Action = AdjustmentAction.Custom,
+				HandlerKey = "test-handler",
+			}),
+		};
+
+		RuleStaticAnalysis analysis = RuleStaticAnalysis.Build(new[] { custom });
+
+		Assert.AreEqual(31, analysis.GlobalFringeReach);
+	}
+
+	/// <summary>
+	/// Verifies that an explicit reach declaration on a built-in action overrides the action's heuristic estimate so authors can
+	/// declare a tighter envelope when they know the actual reach.
+	/// </summary>
+	[TestMethod]
+	public void Build_WhenAddDaysActionHasExplicitTighterMaxReach_ShouldHonourTheDeclaration()
+	{
+		// AddDays with OffsetDays = 60 would heuristically yield (0, 60). The explicit MaxAdjustmentReachDays = 5 forces the
+		// envelope to (-5, 5), which is what the author actually wants for fringe sizing.
+		NotableDateRule misdeclared = Fixed("Bounded Shift", 7, 1) with
+		{
+			Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+			{
+				Key = "tight",
+				Trigger = AdjustmentTrigger.IfWeekend,
+				Action = AdjustmentAction.AddDays,
+				OffsetDays = 60,
+				MaxAdjustmentReachDays = 5,
+			}),
+		};
+
+		RuleStaticAnalysis analysis = RuleStaticAnalysis.Build(new[] { misdeclared });
+
+		Assert.AreEqual(5, analysis.GlobalFringeReach);
 	}
 
 	/// <summary>

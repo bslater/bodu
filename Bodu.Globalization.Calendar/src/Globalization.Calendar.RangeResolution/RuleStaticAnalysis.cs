@@ -12,9 +12,8 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The analysis exposes per-rule <see cref="RuleStaticProfile" /> records, look-up indexes for offset-relative dependencies, and the
-/// global day-delta envelope across the entire rule set. It is built once from the effective rule list and re-used by every
-/// range-resolution request.
+/// The analysis exposes per-rule <see cref="RuleStaticProfile" /> records and a look-up index for offset-relative dependencies.
+/// It is built once from the effective rule list and re-used by every range-resolution request.
 /// </para>
 /// </remarks>
 internal sealed class RuleStaticAnalysis
@@ -29,20 +28,17 @@ internal sealed class RuleStaticAnalysis
 	/// <param name="profiles">The static profile per rule.</param>
 	/// <param name="profilesByRuleName">The case-insensitive lookup of profiles by rule name.</param>
 	/// <param name="dependentsByAnchor">The case-insensitive lookup of profiles whose root anchor is the keyed rule name.</param>
-	/// <param name="globalMinReach">The most-negative reach across every profile.</param>
-	/// <param name="globalMaxReach">The most-positive reach across every profile.</param>
+	/// <param name="globalFringeReach">The maximum absolute reach across every profile, used by the planner to size fringe scans.</param>
 	private RuleStaticAnalysis(
 		List<RuleStaticProfile> profiles,
 		Dictionary<string, RuleStaticProfile> profilesByRuleName,
 		Dictionary<string, List<RuleStaticProfile>> dependentsByAnchor,
-		int globalMinReach,
-		int globalMaxReach)
+		int globalFringeReach)
 	{
 		_profiles = profiles;
 		_profilesByRuleName = profilesByRuleName;
 		_dependentsByAnchor = dependentsByAnchor;
-		GlobalMinReach = globalMinReach;
-		GlobalMaxReach = globalMaxReach;
+		GlobalFringeReach = globalFringeReach;
 	}
 
 	/// <summary>
@@ -51,16 +47,18 @@ internal sealed class RuleStaticAnalysis
 	public IReadOnlyList<RuleStaticProfile> Profiles => _profiles;
 
 	/// <summary>
-	/// Gets the most-negative day delta across every rule's observable reach. Used to scope the effective resolution range
-	/// backwards from the request window.
+	/// Gets the maximum absolute day-delta across every rule's observable reach (forward or backward). Used by the planner to size
+	/// the fringe scan distance so that adjustment shifts and multi-day spans extending across year boundaries are admitted into
+	/// the fringe pass.
 	/// </summary>
-	public int GlobalMinReach { get; }
-
-	/// <summary>
-	/// Gets the most-positive day delta across every rule's observable reach. Used to scope the effective resolution range
-	/// forwards from the request window.
-	/// </summary>
-	public int GlobalMaxReach { get; }
+	/// <remarks>
+	/// <para>
+	/// This is intentionally distinct from per-rule reach: the planner needs a single fringe distance to decide which adjacent
+	/// civil years to scan, while the pipeline filters individual fringe-year materialisations using each rule's own
+	/// <see cref="RuleStaticProfile.MinObservedReach" /> / <see cref="RuleStaticProfile.MaxObservedReach" />.
+	/// </para>
+	/// </remarks>
+	public int GlobalFringeReach { get; }
 
 	/// <summary>
 	/// Attempts to retrieve a profile for the rule with the supplied name.
@@ -132,16 +130,16 @@ internal sealed class RuleStaticAnalysis
 			}
 		}
 
-		int globalMin = 0;
-		int globalMax = 0;
-
+		int globalFringeReach = 0;
 		foreach (RuleStaticProfile profile in profiles)
 		{
-			if (profile.MinObservedReach < globalMin) globalMin = profile.MinObservedReach;
-			if (profile.MaxObservedReach > globalMax) globalMax = profile.MaxObservedReach;
+			int forward = profile.MaxObservedReach > 0 ? profile.MaxObservedReach : 0;
+			int backward = profile.MinObservedReach < 0 ? -profile.MinObservedReach : 0;
+			int magnitude = forward > backward ? forward : backward;
+			if (magnitude > globalFringeReach) globalFringeReach = magnitude;
 		}
 
-		return new RuleStaticAnalysis(profiles, profilesByRuleName, dependentsByAnchor, globalMin, globalMax);
+		return new RuleStaticAnalysis(profiles, profilesByRuleName, dependentsByAnchor, globalFringeReach);
 	}
 
 	/// <summary>
@@ -264,8 +262,14 @@ internal sealed class RuleStaticAnalysis
 	/// short and this prototype caps the static estimate at one week.
 	/// </para>
 	/// </remarks>
-	private static (int Min, int Max) EstimateAdjustmentReach(ObservanceAdjustment adjustment) =>
-		adjustment.Action switch
+	private static (int Min, int Max) EstimateAdjustmentReach(ObservanceAdjustment adjustment)
+	{
+		// Author-declared reach takes precedence over heuristic estimates. The envelope is treated as symmetric (±value) so a
+		// single property covers both forward and backward handlers without forcing every author to think about direction.
+		if (adjustment.MaxAdjustmentReachDays is { } declared && declared >= 0)
+			return (-declared, declared);
+
+		return adjustment.Action switch
 		{
 			AdjustmentAction.None => (0, 0),
 			AdjustmentAction.AddDays => adjustment.OffsetDays >= 0
@@ -275,7 +279,11 @@ internal sealed class RuleStaticAnalysis
 			AdjustmentAction.MoveToPreviousWeekday => (-3, 0),
 			AdjustmentAction.MoveToNextNonWorkingDay => (0, 7),
 			AdjustmentAction.ReplaceWithNamedDate => (-31, 31),
-			AdjustmentAction.Custom => (-7, 7),
+			// Custom handlers are arbitrary by definition. Default to a conservative ±31-day envelope so handlers whose shift
+			// fits inside one month are admitted out of the box. Authors whose handlers shift further must declare their reach
+			// via <see cref="ObservanceAdjustment.MaxAdjustmentReachDays" />.
+			AdjustmentAction.Custom => (-31, 31),
 			_ => (0, 0),
 		};
+	}
 }

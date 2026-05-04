@@ -85,6 +85,12 @@ public sealed class NotableDateService : INotableDateService
     /// <summary>The lazily constructed prototype range-resolution pipeline used by <see cref="ResolveNotableDatesInRange" />.</summary>
     private RangeResolution.NotableDateRangePipeline? _rangePipeline;
 
+    /// <summary>The chronological windows resolved by <see cref="ResolveNotableDatesInRange" /> since the last <see cref="Invalidate()" /> call.</summary>
+    private readonly RangeResolution.ResolvedWindowSet _resolvedWindows = new();
+
+    /// <summary>Lock protecting concurrent updates to <see cref="_resolvedWindows" />.</summary>
+    private readonly object _resolvedWindowsGate = new();
+
     /// <summary>The resolver that arbitrates when multiple rules produce a date on the same day.</summary>
     private readonly INotableDateCollisionResolver _collisionResolver;
 
@@ -355,6 +361,10 @@ public sealed class NotableDateService : INotableDateService
 	{
 		_yearCache.Clear();
 		_rangePipeline = null;
+		lock (_resolvedWindowsGate)
+		{
+			_resolvedWindows.Clear();
+		}
 	}
 
 	/// <inheritdoc />
@@ -404,6 +414,14 @@ public sealed class NotableDateService : INotableDateService
 		RangeResolution.NotableDateRangePipeline pipeline = _rangePipeline ??= BuildRangePipeline();
 		IReadOnlyList<NotableDate> resolved = pipeline.Resolve(request);
 
+		// Record the request window so consumers can introspect what the service has been asked to resolve. The window is recorded
+		// regardless of whether a filter was applied — it represents queried coverage, not result coverage. Filtered queries
+		// therefore still extend the known window.
+		lock (_resolvedWindowsGate)
+		{
+			_resolvedWindows.Add(new DateRange(request.StartDate, request.EndDate));
+		}
+
 		List<NotableDate> localised = new(resolved.Count);
 		foreach (NotableDate notable in resolved)
 			localised.Add(LocaliseIfNeeded(notable));
@@ -413,6 +431,50 @@ public sealed class NotableDateService : INotableDateService
 			.OrderBy(g => g.Key)
 			.SelectMany(g => _collisionResolver.Resolve(g.Key, g.ToList()) ?? Array.Empty<NotableDate>())
 			.ToList();
+	}
+
+	/// <summary>
+	/// Gets the chronological windows that have been resolved by <see cref="ResolveNotableDatesInRange" /> since the service was
+	/// constructed or <see cref="Invalidate()" /> was last called. The list is sorted ascending by start date and contains the
+	/// minimum number of disjoint intervals describing the same coverage.
+	/// </summary>
+	/// <returns>
+	/// A snapshot of the disjoint <see cref="DateRange" /> instances representing the union of every requested window. An empty
+	/// list indicates that no range request has been served yet.
+	/// </returns>
+	/// <remarks>
+	/// <para>
+	/// The property reflects the windows the consumer has <em>asked about</em>, not the rule-set's effective range. Adjacent or
+	/// overlapping requests are merged. The returned list is a snapshot; subsequent calls to
+	/// <see cref="ResolveNotableDatesInRange" /> may extend it.
+	/// </para>
+	/// </remarks>
+	public IReadOnlyList<DateRange> ResolvedWindows
+	{
+		get
+		{
+			lock (_resolvedWindowsGate)
+			{
+				return _resolvedWindows.Ranges.ToArray();
+			}
+		}
+	}
+
+	/// <summary>
+	/// Determines whether the supplied chronological range has already been resolved in its entirety by a previous call to
+	/// <see cref="ResolveNotableDatesInRange" />.
+	/// </summary>
+	/// <param name="startDate">The inclusive start of the range to test.</param>
+	/// <param name="endDate">The inclusive end of the range to test. Must not be earlier than <paramref name="startDate" />.</param>
+	/// <returns><see langword="true" /> when every day in the supplied range is covered by a single resolved window; otherwise, <see langword="false" />.</returns>
+	public bool IsRangeResolved(DateTime startDate, DateTime endDate)
+	{
+		DateRange probe = new(startDate.Date, endDate.Date);
+
+		lock (_resolvedWindowsGate)
+		{
+			return _resolvedWindows.Covers(probe);
+		}
 	}
 
 	/// <summary>

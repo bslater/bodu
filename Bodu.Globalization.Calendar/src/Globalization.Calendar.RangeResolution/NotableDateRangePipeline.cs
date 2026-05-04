@@ -69,12 +69,24 @@ internal sealed class NotableDateRangePipeline
 	/// <param name="request">The range request.</param>
 	/// <returns>The resolved notable dates, ordered by observed date.</returns>
 	/// <exception cref="ArgumentNullException"><paramref name="request" /> is <see langword="null" />.</exception>
+	/// <remarks>
+	/// <para>
+	/// Resolution runs in two passes followed by an adjustment phase:
+	/// </para>
+	/// <list type="number">
+	///   <item><description><b>Main pass</b> — every eligible rule is materialised for the civil years that the request range spans. Rules whose resolved date falls inside the request window enter the cache in <see cref="NotableDateCacheState.InWindow" />; those just outside enter as <see cref="NotableDateCacheState.Computed" /> for adjustment context.</description></item>
+	///   <item><description><b>Fringe pass</b> — for each adjacent civil year the request window touches inside the planner's fringe distance, every <see cref="RuleTier.Fixed" /> rule with at least one adjustment is materialised when its resolved date falls inside the fringe window. This catches cross-year roll-overs such as <c>31 Dec</c> rolling forward to <c>3 Jan</c> without a global reach expansion.</description></item>
+	///   <item><description><b>Adjustment phase</b> — observance adjustments are applied using the cache as the non-working day context. Adjusted dates that intersect the request promote the entry to <see cref="NotableDateCacheState.Adjusted" /> and supersede the base on emission.</description></item>
+	/// </list>
+	/// </remarks>
 	public IReadOnlyList<NotableDate> Resolve(NotableDateRangeRequest request)
 	{
 		if (request is null) throw new ArgumentNullException(nameof(request));
 
 		NotableDateRangePlan plan = _planner.Plan(request);
 		NotableDateRangeResolutionCache cache = new();
+
+		// Pass 1 — main: rules whose resolved date for years the request spans may intersect (or directly feed) the window.
 
 		// Tier 1: Fixed and DayOfWeekInMonth.
 		foreach (RuleStaticProfile profile in plan.EligibleRules)
@@ -90,7 +102,7 @@ internal sealed class NotableDateRangePipeline
 			ProcessOffsetFromCached(profile, plan, cache);
 		}
 
-		// Tier 3: Algorithmic anchors — compute exactly the demanded years.
+		// Tier 3: Algorithmic anchors — compute exactly the demanded years (request years ∪ fringe years).
 		ProcessAlgorithmicAnchors(plan, cache);
 
 		// Tier 4: OffsetFromAlgorithmic — anchor available in the cache from Tier 3.
@@ -100,10 +112,141 @@ internal sealed class NotableDateRangePipeline
 			ProcessOffsetFromCached(profile, plan, cache);
 		}
 
+		// Pass 2 — fringe: scan adjacent year boundaries for Tier 1 rules with adjustments that may roll into the window.
+		ProcessFringePass(plan, cache);
+
 		// Adjustment phase — uses the cache as non-working day context.
 		ApplyAdjustments(plan, cache);
 
 		return BuildEmissionList(plan, cache);
+	}
+
+	/// <summary>
+	/// Materialises adjacent-year rules whose observance adjustment chain or multi-day duration may project an emission into the
+	/// requested window. Covers two fringe-relevant categories: rules with at least one <see cref="ObservanceAdjustment" /> and
+	/// rules with <see cref="NotableDateRule.DurationDays" /> greater than one.
+	/// </summary>
+	/// <param name="plan">The active resolution plan.</param>
+	/// <param name="cache">The shared cache being populated.</param>
+	/// <remarks>
+	/// <para>
+	/// The fringe pass handles three concrete classes of cross-year contribution:
+	/// </para>
+	/// <list type="bullet">
+	///   <item><description><b>Tier 1 (Fixed) with adjustment</b> — for example, a <c>31 Dec</c> holiday whose <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> rolls forward into the new year.</description></item>
+	///   <item><description><b>Tier 2 (OffsetFromFixed) with adjustment</b> — for example, <c>"Day after Christmas"</c> with a weekend roll-forward. The rule's root anchor is materialised on-demand for the fringe year if Pass 1 did not load it.</description></item>
+	///   <item><description><b>Tier 1 (Fixed) with multi-day duration</b> — for example, a seven-day festival starting <c>30 Dec</c> whose span reaches into early January.</description></item>
+	/// </list>
+	/// <para>
+	/// Algorithmic and offset-from-algorithmic tiers are already covered by the main pass — the planner unions fringe years into
+	/// <see cref="NotableDateRangePlan.GetAnchorYears" /> so Tier 3 / Tier 4 read those years directly.
+	/// </para>
+	/// <para>
+	/// Per-rule filtering uses each profile's <see cref="RuleStaticProfile.MinObservedReach" /> /
+	/// <see cref="RuleStaticProfile.MaxObservedReach" /> envelope rather than the planner-wide fringe window, so a rule with a
+	/// large adjustment shift (for example, <see cref="AdjustmentAction.AddDays" /> = 60) is correctly admitted while a rule with
+	/// a small reach is not over-scanned.
+	/// </para>
+	/// </remarks>
+	private void ProcessFringePass(NotableDateRangePlan plan, NotableDateRangeResolutionCache cache)
+	{
+		if (plan.FringeYears.Count == 0) return;
+
+		foreach (RuleStaticProfile profile in plan.EligibleRules)
+		{
+			// Algorithmic and OffsetFromAlgorithmic are covered by the main pass via plan.GetAnchorYears.
+			if (profile.Tier == RuleTier.Algorithmic || profile.Tier == RuleTier.OffsetFromAlgorithmic) continue;
+
+			// Skip rules that cannot contribute through the fringe — neither an adjustment nor a multi-day span.
+			bool hasAdjustments = !profile.Rule.Adjustments.IsDefaultOrEmpty;
+			bool hasMultiDaySpan = profile.Rule.DurationDays > 1;
+			if (!hasAdjustments && !hasMultiDaySpan) continue;
+
+			foreach (int year in plan.FringeYears)
+			{
+				if (!NotableDateRuleResolver.IsApplicable(profile.Rule, year))
+					continue;
+
+				DateTime? anchor = ResolveFringeAnchor(profile, year, plan, cache);
+				if (anchor is null) continue;
+
+				// Per-rule emission envelope: [anchor + MinObservedReach, anchor + MaxObservedReach]. Includes both observance
+				// adjustment shifts and multi-day duration. Skip when the envelope cannot intersect the request window.
+				DateTime potentialStart = SafeAddDays(anchor.Value.Date, profile.MinObservedReach);
+				DateTime potentialEnd = SafeAddDays(anchor.Value.Date, profile.MaxObservedReach);
+
+				if (potentialStart > plan.Request.EndDate || potentialEnd < plan.Request.StartDate)
+					continue;
+
+				AddEntries(profile, year, anchor.Value, plan, cache);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Resolves the anchor date of a fringe-year rule. Tier 1 rules use the rule resolver directly; Tier 2 rules read the root
+	/// anchor from the cache, materialising it on-demand when the main pass did not process it for this year.
+	/// </summary>
+	/// <param name="profile">The rule profile being materialised.</param>
+	/// <param name="year">The fringe-year being processed.</param>
+	/// <param name="plan">The active resolution plan.</param>
+	/// <param name="cache">The shared cache being populated.</param>
+	/// <returns>The resolved anchor date, or <see langword="null" /> when the rule does not apply or the anchor is unavailable.</returns>
+	private DateTime? ResolveFringeAnchor(
+		RuleStaticProfile profile,
+		int year,
+		NotableDateRangePlan plan,
+		NotableDateRangeResolutionCache cache)
+	{
+		if (profile.Tier == RuleTier.Fixed)
+		{
+			try { return _ruleResolver.ResolveAnchorDate(profile.Rule, year); }
+			catch (InvalidOperationException) { return null; }
+		}
+
+		if (profile.Tier != RuleTier.OffsetFromFixed) return null;
+		if (string.IsNullOrWhiteSpace(profile.RootAnchorRuleName)) return null;
+
+		DateTime? rootAnchor = cache.ResolveAnchor(profile.RootAnchorRuleName!, year);
+
+		if (rootAnchor is null)
+		{
+			// On-demand: the main pass only materialises Tier 1 rules for candidate years, so the root anchor of a Tier 2 fringe
+			// rule may be missing for the fringe year. Materialise it here so this offset rule (and any sibling Tier 2 rules in
+			// the fringe pass that share the same root) can read it. The anchor enters the cache as Computed unless its own
+			// resolved date independently lands in the request window.
+			if (!_analysis.TryGetProfile(profile.RootAnchorRuleName!, out RuleStaticProfile rootProfile)) return null;
+			if (rootProfile.Tier != RuleTier.Fixed) return null;
+			if (!NotableDateRuleResolver.IsApplicable(rootProfile.Rule, year)) return null;
+
+			DateTime? rootDate;
+			try { rootDate = _ruleResolver.ResolveAnchorDate(rootProfile.Rule, year); }
+			catch (InvalidOperationException) { return null; }
+
+			if (rootDate is null) return null;
+
+			AddEntries(rootProfile, year, rootDate.Value, plan, cache);
+			rootAnchor = rootDate;
+		}
+
+		try { return rootAnchor.Value.Date.AddDays(profile.OffsetFromRoot); }
+		catch (ArgumentOutOfRangeException) { return null; }
+	}
+
+	/// <summary>
+	/// Adds days to a date, clamping to the supported <see cref="DateTime" /> range.
+	/// </summary>
+	/// <param name="date">The source date.</param>
+	/// <param name="days">The number of days to add (may be negative).</param>
+	/// <returns>The resulting date, clamped to the supported range.</returns>
+	private static DateTime SafeAddDays(DateTime date, int days)
+	{
+		DateTime value = date.Date;
+
+		if (days < 0 && value <= DateTime.MinValue.AddDays(-days)) return DateTime.MinValue.Date;
+		if (days > 0 && value >= DateTime.MaxValue.AddDays(-days)) return DateTime.MaxValue.Date;
+
+		return value.AddDays(days);
 	}
 
 	/// <summary>
@@ -289,8 +432,10 @@ internal sealed class NotableDateRangePipeline
 				bool adjustedIntersects = Intersects(plan.Request.StartDate, plan.Request.EndDate, adjusted.Date, adjusted.EndDate);
 				bool filterMatch = plan.Request.Filter is null || plan.Request.Filter.IsMatch(adjusted);
 
+				// Always promote to Adjusted when the adjusted date lands inside the request window. The emission step
+				// independently checks whether the base date also intersects, so we never lose the base when both are visible.
 				if (adjustedIntersects && filterMatch)
-					entry.State = entry.State == NotableDateCacheState.InWindow ? NotableDateCacheState.InWindow : NotableDateCacheState.Adjusted;
+					entry.State = NotableDateCacheState.Adjusted;
 				else if (entry.State == NotableDateCacheState.Computed)
 					entry.State = NotableDateCacheState.AdjustedBlocker;
 			}
@@ -303,29 +448,35 @@ internal sealed class NotableDateRangePipeline
 	/// <param name="plan">The active resolution plan.</param>
 	/// <param name="cache">The shared cache.</param>
 	/// <returns>The emission list, ordered by observed date and rule name.</returns>
+	/// <remarks>
+	/// <para>
+	/// Emission policy: an observance adjustment replaces the base anchor — when an entry's <see cref="NotableDateCacheState" /> is
+	/// <see cref="NotableDateCacheState.Adjusted" /> only the <see cref="NotableDateCacheEntry.Adjusted" /> form is emitted, never
+	/// the underlying anchor. This guarantees that the emitted count equals the notable-date count for the requested window.
+	/// </para>
+	/// </remarks>
 	private static IReadOnlyList<NotableDate> BuildEmissionList(NotableDateRangePlan plan, NotableDateRangeResolutionCache cache)
 	{
 		List<NotableDate> emitted = new();
 
 		foreach (NotableDateCacheEntry entry in cache.EmissableEntries())
 		{
-			if (entry.State == NotableDateCacheState.InWindow)
-				emitted.Add(entry.BaseNotable);
-
 			if (entry.State == NotableDateCacheState.Adjusted && entry.Adjusted is not null)
 			{
-				// Emit both the base and the adjusted form when the base date also lies inside the window.
-				if (Intersects(plan.Request.StartDate, plan.Request.EndDate, entry.BaseNotable.Date, entry.BaseNotable.EndDate)
-					&& (plan.Request.Filter is null || plan.Request.Filter.IsMatch(entry.BaseNotable)))
-				{
-					emitted.Add(entry.BaseNotable);
-				}
-
+				// Adjusted form supersedes the base — the original anchor is recorded on the adjusted date's AdjustmentReason
+				// rather than emitted as a separate entry.
 				emitted.Add(entry.Adjusted);
+				continue;
 			}
+
+			if (entry.State == NotableDateCacheState.InWindow)
+				emitted.Add(entry.BaseNotable);
 		}
 
+		// Defensive: never emit a notable date whose span lies outside the requested window. The state transitions enforce this on
+		// their own, but the explicit guard catches any future regression in the state machine.
 		return emitted
+			.Where(n => Intersects(plan.Request.StartDate, plan.Request.EndDate, n.Date, n.EndDate))
 			.OrderBy(n => n.Date)
 			.ThenBy(n => n.Name, StringComparer.OrdinalIgnoreCase)
 			.ThenBy(n => n.TerritoryCode, StringComparer.OrdinalIgnoreCase)
