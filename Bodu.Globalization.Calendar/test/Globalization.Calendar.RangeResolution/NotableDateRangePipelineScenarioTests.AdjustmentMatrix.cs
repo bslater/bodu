@@ -374,7 +374,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 			OffsetDays = 0,
 		};
 
-		NotableDateRule probe = MakeProbeRule(7, 1, ImmutableArray.Create(adjustment));
+		NotableDateRule probe = MakeProbeRule(2026, 7, 1, ImmutableArray.Create(adjustment));
 		NotableDateService service = BuildService(probe);
 
 		IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
@@ -396,6 +396,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 		// Anchor: Wed 1 Jul 2026 (working day). Adjustment Always + MoveToNextNonWorkingDay.
 		// Wed → walk Thu 2 Jul (clean) → return Thu 2 Jul. Without blockers, the walk stops on the very next weekday.
 		NotableDateRule withoutBlockers = MakeProbeRule(
+			year: 2026,
 			month: 7,
 			day: 1,
 			adjustments: ImmutableArray.Create(MakeAddOneDayAdjustment() with
@@ -599,19 +600,25 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	};
 
 	/// <summary>
-	/// Builds a fixed-date probe rule with the supplied month, day, and adjustments.
+	/// Builds a fixed-date probe rule constrained to a single civil year so an adjustment whose shift crosses a year boundary
+	/// does not cause the rule to be materialised twice (once per neighbouring candidate year). The
+	/// <see cref="NotableDateRule.FirstYear" /> / <see cref="NotableDateRule.LastYear" /> bounds make the rule applicable only in
+	/// the supplied <paramref name="year" />.
 	/// </summary>
+	/// <param name="year">The single civil year the rule applies to.</param>
 	/// <param name="month">The fixed month.</param>
 	/// <param name="day">The fixed day.</param>
 	/// <param name="adjustments">The adjustments attached to the rule.</param>
 	/// <returns>The probe rule.</returns>
-	private static NotableDateRule MakeProbeRule(int month, int day, ImmutableArray<ObservanceAdjustment> adjustments) => new()
+	private static NotableDateRule MakeProbeRule(int year, int month, int day, ImmutableArray<ObservanceAdjustment> adjustments) => new()
 	{
 		Name = "Probe",
 		Strategy = DateResolutionStrategy.Fixed,
 		Category = NotableDateCategory.Holiday,
 		Month = month,
 		Day = day,
+		FirstYear = year,
+		LastYear = year,
 		IsNonWorkingDay = true,
 		Adjustments = adjustments,
 	};
@@ -637,7 +644,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// <param name="expectedActivation">Whether the adjustment is expected to fire.</param>
 	private static void AssertCustomAdjustmentActivation(ObservanceAdjustment adjustment, DateTime anchor, bool expectedActivation)
 	{
-		NotableDateRule probe = MakeProbeRule(anchor.Month, anchor.Day, ImmutableArray.Create(adjustment));
+		NotableDateRule probe = MakeProbeRule(anchor.Year, anchor.Month, anchor.Day, ImmutableArray.Create(adjustment));
 		NotableDateService service = BuildService(probe);
 
 		// Window covers the anchor and any potential AddDays(+1) shift. Always extend at least one day past the anchor so the
@@ -671,7 +678,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// <param name="expectedAdjusted">The expected adjusted date.</param>
 	private static void AssertActionShiftDate(ObservanceAdjustment adjustment, DateTime anchor, DateTime expectedAdjusted)
 	{
-		NotableDateRule probe = MakeProbeRule(anchor.Month, anchor.Day, ImmutableArray.Create(adjustment));
+		NotableDateRule probe = MakeProbeRule(anchor.Year, anchor.Month, anchor.Day, ImmutableArray.Create(adjustment));
 		NotableDateService service = BuildService(probe);
 
 		DateTime windowStart = anchor < expectedAdjusted ? anchor : expectedAdjusted;
