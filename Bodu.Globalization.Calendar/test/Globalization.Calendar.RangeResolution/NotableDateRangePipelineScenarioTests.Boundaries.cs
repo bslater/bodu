@@ -304,12 +304,12 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// </summary>
 	[DataTestMethod]
 	[DataRow(2026, 7, 1, 1, 2026, 7, 2)]      // +1 day
-	[DataRow(2026, 7, 1, 365, 2027, 7, 1)]    // +1 year
-	[DataRow(2026, 7, 1, 730, 2028, 7, 1)]    // +2 years (leap year between)
-	[DataRow(2026, 7, 1, 3650, 2036, 6, 28)]  // +10 years
+	[DataRow(2026, 7, 1, 365, 2027, 7, 1)]    // +1 year (no leap day in [Jul 1 2026, Jul 1 2027))
+	[DataRow(2026, 7, 1, 730, 2028, 6, 30)]   // +2 years − 1 day: Feb 29 2028 falls in [Jul 1 2027, Jul 1 2028) so the second year is 366 days
+	[DataRow(2026, 7, 1, 3650, 2036, 6, 28)]  // +10 years − 3 days: leap days 2028, 2032, 2036 contribute 3 extra days
 	[DataRow(2026, 7, 1, -1, 2026, 6, 30)]    // -1 day
-	[DataRow(2026, 7, 1, -365, 2025, 7, 1)]   // -1 year
-	[DataRow(2026, 7, 1, -3650, 2016, 7, 4)]  // -10 years
+	[DataRow(2026, 7, 1, -365, 2025, 7, 1)]   // -1 year (no leap day in [Jul 1 2025, Jul 1 2026))
+	[DataRow(2026, 7, 1, -3650, 2016, 7, 3)]  // -10 years + 2 days: leap days 2020, 2024 contribute 2 extra days (2016 leap day is before Jul 1 2016)
 	public void Resolve_WhenOffsetRuleProjectionStaysInRange_ShouldEmitAtProjectedDate(
 		int anchorYear, int anchorMonth, int anchorDay,
 		int offsetDays,
