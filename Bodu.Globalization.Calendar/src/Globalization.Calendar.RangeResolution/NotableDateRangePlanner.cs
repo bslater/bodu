@@ -84,9 +84,12 @@ internal sealed class NotableDateRangePlanner
 			candidateYears.Add(year);
 
 		// Fringe pass: only relevant if the request window touches a year boundary inside the fringe distance. The fringe scans
-		// rules whose un-adjusted date sits within ±_fringeDays of the request edges so the adjustment phase can roll them in.
-		DateTime fringeStart = AddDaysClamped(request.StartDate, -_fringeDays);
-		DateTime fringeEnd = AddDaysClamped(request.EndDate, _fringeDays);
+		// rules whose un-adjusted date sits within ±effectiveFringeDays of the request edges so the adjustment phase can roll
+		// them in. The effective distance is the larger of the configured default and the rule set's worst-case reach so unusual
+		// adjustment actions (large AddDays, ReplaceWithNamedDate, Custom) widen the fringe automatically.
+		int effectiveFringeDays = _fringeDays > _analysis.GlobalFringeReach ? _fringeDays : _analysis.GlobalFringeReach;
+		DateTime fringeStart = AddDaysClamped(request.StartDate, -effectiveFringeDays);
+		DateTime fringeEnd = AddDaysClamped(request.EndDate, effectiveFringeDays);
 
 		HashSet<int> fringeYearSet = new();
 		for (int year = fringeStart.Year; year <= fringeEnd.Year; year++)

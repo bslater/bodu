@@ -28,20 +28,37 @@ internal sealed class RuleStaticAnalysis
 	/// <param name="profiles">The static profile per rule.</param>
 	/// <param name="profilesByRuleName">The case-insensitive lookup of profiles by rule name.</param>
 	/// <param name="dependentsByAnchor">The case-insensitive lookup of profiles whose root anchor is the keyed rule name.</param>
+	/// <param name="globalFringeReach">The maximum absolute reach across every profile, used by the planner to size fringe scans.</param>
 	private RuleStaticAnalysis(
 		List<RuleStaticProfile> profiles,
 		Dictionary<string, RuleStaticProfile> profilesByRuleName,
-		Dictionary<string, List<RuleStaticProfile>> dependentsByAnchor)
+		Dictionary<string, List<RuleStaticProfile>> dependentsByAnchor,
+		int globalFringeReach)
 	{
 		_profiles = profiles;
 		_profilesByRuleName = profilesByRuleName;
 		_dependentsByAnchor = dependentsByAnchor;
+		GlobalFringeReach = globalFringeReach;
 	}
 
 	/// <summary>
 	/// Gets the profile for every rule processed by the pipeline, in input order.
 	/// </summary>
 	public IReadOnlyList<RuleStaticProfile> Profiles => _profiles;
+
+	/// <summary>
+	/// Gets the maximum absolute day-delta across every rule's observable reach (forward or backward). Used by the planner to size
+	/// the fringe scan distance so that adjustment shifts and multi-day spans extending across year boundaries are admitted into
+	/// the fringe pass.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// This is intentionally distinct from per-rule reach: the planner needs a single fringe distance to decide which adjacent
+	/// civil years to scan, while the pipeline filters individual fringe-year materialisations using each rule's own
+	/// <see cref="RuleStaticProfile.MinObservedReach" /> / <see cref="RuleStaticProfile.MaxObservedReach" />.
+	/// </para>
+	/// </remarks>
+	public int GlobalFringeReach { get; }
 
 	/// <summary>
 	/// Attempts to retrieve a profile for the rule with the supplied name.
@@ -113,7 +130,16 @@ internal sealed class RuleStaticAnalysis
 			}
 		}
 
-		return new RuleStaticAnalysis(profiles, profilesByRuleName, dependentsByAnchor);
+		int globalFringeReach = 0;
+		foreach (RuleStaticProfile profile in profiles)
+		{
+			int forward = profile.MaxObservedReach > 0 ? profile.MaxObservedReach : 0;
+			int backward = profile.MinObservedReach < 0 ? -profile.MinObservedReach : 0;
+			int magnitude = forward > backward ? forward : backward;
+			if (magnitude > globalFringeReach) globalFringeReach = magnitude;
+		}
+
+		return new RuleStaticAnalysis(profiles, profilesByRuleName, dependentsByAnchor, globalFringeReach);
 	}
 
 	/// <summary>
@@ -247,7 +273,10 @@ internal sealed class RuleStaticAnalysis
 			AdjustmentAction.MoveToPreviousWeekday => (-3, 0),
 			AdjustmentAction.MoveToNextNonWorkingDay => (0, 7),
 			AdjustmentAction.ReplaceWithNamedDate => (-31, 31),
-			AdjustmentAction.Custom => (-7, 7),
+			// Custom handlers are arbitrary by definition. Use a conservative ±31-day envelope so a custom shift up to one month
+			// either side is captured by the planner's fringe scan. Rules with handlers that shift further must be redesigned to
+			// declare their reach explicitly (future <c>MaxAdjustmentReachDays</c> property on <see cref="ObservanceAdjustment" />).
+			AdjustmentAction.Custom => (-31, 31),
 			_ => (0, 0),
 		};
 }

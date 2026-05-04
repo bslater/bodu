@@ -293,14 +293,152 @@ public sealed class NotableDateRangePipelineTests
 	}
 
 	/// <summary>
+	/// Verifies that a Tier 2 (OffsetFromFixed) rule with an observance adjustment in a fringe year is materialised by the fringe
+	/// pass and that its root anchor is fetched on-demand when the main pass did not load it for that year.
+	/// </summary>
+	[TestMethod]
+	public void Resolve_WhenOffsetFromFixedRuleWithAdjustmentRollsForwardFromFringeYear_ShouldEmitObservedDate()
+	{
+		// Tier 1 fixed anchor with no adjustment of its own. The fringe pass skips it directly (no adjustment, no multi-day) so
+		// reaching the offset rule below requires the on-demand anchor materialisation path.
+		NotableDateRule yearEndAnchor = new()
+		{
+			Name = "Year-End Anchor",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Holiday,
+			Month = 12,
+			Day = 30,
+			IsNonWorkingDay = true,
+		};
+
+		// Tier 2 offset-from-fixed: Year-End Anchor + 1, with an unconditional +5 day shift. (anchor 30 Dec) + 1 + 5 = 5 Jan.
+		NotableDateRule yearEndBonus = new()
+		{
+			Name = "Year-End Bonus",
+			Strategy = DateResolutionStrategy.OffsetFromAnchor,
+			Category = NotableDateCategory.Holiday,
+			AnchorRuleName = "Year-End Anchor",
+			OffsetDays = 1,
+			IsNonWorkingDay = true,
+			Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+			{
+				Key = "shift-5",
+				Trigger = AdjustmentTrigger.Always,
+				Action = AdjustmentAction.AddDays,
+				OffsetDays = 5,
+				IsNonWorkingDay = true,
+			}),
+		};
+
+		NotableDateService service = new(
+			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(yearEndAnchor, yearEndBonus) },
+			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+
+		// Request entirely in 2027 so 2026 is a fringe year. The Tier 2 Year-End Bonus 2026 anchors on Year-End Anchor 2026
+		// (Dec 30 2026) which Pass 1 does NOT materialise. The fringe pass must on-demand materialise the anchor before computing
+		// the offset and applying the +5 day shift to Jan 5 2027.
+		IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
+			new DateTime(2027, 1, 4),
+			new DateTime(2027, 1, 10));
+
+		NotableDate observed = resolved.SingleOrDefault(n => n.Name == "Year-End Bonus")
+			?? throw new AssertFailedException("Expected Year-End Bonus to be emitted via the fringe pass with on-demand anchor materialisation.");
+
+		Assert.AreEqual(new DateTime(2027, 1, 5), observed.Date);
+		Assert.IsTrue(observed.WasAdjusted);
+		Assert.IsNotNull(observed.AdjustmentReason);
+		Assert.AreEqual(new DateTime(2026, 12, 31), observed.AdjustmentReason.OriginalDate);
+	}
+
+	/// <summary>
+	/// Verifies that a multi-day rule whose anchor sits in an adjacent year and whose span reaches into the requested window is
+	/// materialised by the fringe pass and emitted with the correct duration metadata.
+	/// </summary>
+	[TestMethod]
+	public void Resolve_WhenMultiDayRuleSpansAcrossYearBoundaryIntoRequest_ShouldEmitFromAdjacentYear()
+	{
+		// A 7-day festival starting 30 December — the span runs Dec 30 .. Jan 5 (inclusive).
+		NotableDateRule festival = new()
+		{
+			Name = "Year-End Festival",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Cultural,
+			Month = 12,
+			Day = 30,
+			DurationDays = 7,
+			IsNonWorkingDay = false,
+		};
+
+		NotableDateService service = new(
+			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(festival) },
+			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+
+		IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
+			new DateTime(2026, 1, 1),
+			new DateTime(2026, 1, 31));
+
+		NotableDate festivalDate = resolved.SingleOrDefault(n => n.Name == "Year-End Festival")
+			?? throw new AssertFailedException("Expected the prior-year festival span to surface inside the January window.");
+
+		Assert.AreEqual(new DateTime(2025, 12, 30), festivalDate.Date,
+			"Anchor must remain at Dec 30 of the prior year so consumers can identify the originating day.");
+		Assert.AreEqual(7, festivalDate.DurationDays);
+		Assert.AreEqual(new DateTime(2026, 1, 5), festivalDate.EndDate);
+	}
+
+	/// <summary>
+	/// Verifies that the planner's fringe distance widens to accommodate rules with unusually large
+	/// <see cref="AdjustmentAction.AddDays" /> shifts so a cross-year adjustment whose result lands inside the requested window is
+	/// admitted by the fringe pass even though it sits outside the planner's default 7-day envelope.
+	/// </summary>
+	[TestMethod]
+	public void Resolve_WhenRuleHasLargeCrossYearAddDaysAdjustment_ShouldExtendFringeDistanceToCoverIt()
+	{
+		// Rule anchored on 1 Dec each year, unconditionally shifts +60 days. 1 Dec + 60 = 30 Jan of the following year. With
+		// the planner's default 7-day fringe this would not be admitted; the rule set's GlobalFringeReach must widen the fringe
+		// distance to 60 days so the prior-year anchor (1 Dec 2025) becomes a fringe-year candidate for a January 2026 request.
+		NotableDateRule shifted = new()
+		{
+			Name = "Sixty-Day Shifted Holiday",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Public,
+			Month = 12,
+			Day = 1,
+			IsNonWorkingDay = true,
+			Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+			{
+				Key = "shift-60",
+				Trigger = AdjustmentTrigger.Always,
+				Action = AdjustmentAction.AddDays,
+				OffsetDays = 60,
+				IsNonWorkingDay = true,
+			}),
+		};
+
+		NotableDateService service = new(
+			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(shifted) },
+			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+
+		// Anchor 1 Dec 2025 + 60 days = 30 Jan 2026. The request ends 5 Feb 2026 so the adjusted date lands inside.
+		IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
+			new DateTime(2026, 1, 25),
+			new DateTime(2026, 2, 5));
+
+		NotableDate match = resolved.SingleOrDefault(n => n.Name == "Sixty-Day Shifted Holiday")
+			?? throw new AssertFailedException("A +60 day adjustment should be admitted by the fringe pass when its envelope reaches the request.");
+
+		Assert.AreEqual(new DateTime(2026, 1, 30), match.Date);
+		Assert.IsTrue(match.WasAdjusted);
+		Assert.AreEqual(new DateTime(2025, 12, 1), match.AdjustmentReason!.OriginalDate);
+	}
+
+	/// <summary>
 	/// Verifies that a request whose window does not touch a year boundary inside the planner's fringe distance does not
 	/// materialise rules from adjacent years — the fringe pass is skipped entirely when no fringe years are needed.
 	/// </summary>
 	[TestMethod]
 	public void Resolve_WhenWindowIsNotNearYearBoundary_ShouldNotMaterialiseAdjacentYearRules()
 	{
-		bool christmasResolveCalled = false;
-
 		NotableDateRule christmas = new()
 		{
 			Name = "Christmas Day",
@@ -332,8 +470,6 @@ public sealed class NotableDateRangePipelineTests
 		// July request — no fringe year crossing required. Mid-Year Holiday emitted; Christmas not.
 		Assert.IsTrue(resolved.Any(n => n.Name == "Mid-Year Holiday" && n.Date == new DateTime(2026, 7, 1)));
 		Assert.IsFalse(resolved.Any(n => n.Name == "Christmas Day"));
-
-		_ = christmasResolveCalled;
 	}
 
 	/// <summary>
