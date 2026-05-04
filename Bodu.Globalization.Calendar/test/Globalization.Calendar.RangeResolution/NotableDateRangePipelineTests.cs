@@ -433,6 +433,57 @@ public sealed class NotableDateRangePipelineTests
 	}
 
 	/// <summary>
+	/// Verifies that a custom <see cref="AdjustmentAction.Custom" /> handler that shifts further than the default ±31 day envelope
+	/// is admitted by the fringe pass when the rule declares
+	/// <see cref="ObservanceAdjustment.MaxAdjustmentReachDays" /> explicitly.
+	/// </summary>
+	[TestMethod]
+	public void Resolve_WhenCustomHandlerExceedsDefaultEnvelopeAndDeclaresExplicitReach_ShouldEmitFromAdjacentYear()
+	{
+		// Custom handler that always shifts +90 days. Declared via MaxAdjustmentReachDays = 90 so the planner widens the fringe.
+		const int shiftDays = 90;
+
+		AdjustmentHandlerRegistry handlers = new();
+		handlers.Register("ninety-day-shift", new ShiftByDaysHandler(shiftDays));
+
+		NotableDateRule rule = new()
+		{
+			Name = "Long-Reach Holiday",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Public,
+			Month = 11,
+			Day = 1,
+			IsNonWorkingDay = true,
+			Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+			{
+				Key = "ninety-day-shift",
+				Trigger = AdjustmentTrigger.Custom,
+				Action = AdjustmentAction.Custom,
+				HandlerKey = "ninety-day-shift",
+				MaxAdjustmentReachDays = shiftDays,
+				IsNonWorkingDay = true,
+			}),
+		};
+
+		NotableDateService service = new(
+			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
+			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+			adjustmentHandlers: handlers);
+
+		// Anchor 1 Nov 2025 + 90 days = 30 Jan 2026. Default ±31 fringe would not admit this; the explicit declaration must.
+		IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
+			new DateTime(2026, 1, 25),
+			new DateTime(2026, 2, 5));
+
+		NotableDate observed = resolved.SingleOrDefault(n => n.Name == "Long-Reach Holiday")
+			?? throw new AssertFailedException("Expected the custom-handler-shifted occurrence to be emitted via the widened fringe.");
+
+		Assert.AreEqual(new DateTime(2026, 1, 30), observed.Date);
+		Assert.IsTrue(observed.WasAdjusted);
+		Assert.AreEqual(new DateTime(2025, 11, 1), observed.AdjustmentReason!.OriginalDate);
+	}
+
+	/// <summary>
 	/// Verifies that a request whose window does not touch a year boundary inside the planner's fringe distance does not
 	/// materialise rules from adjacent years — the fringe pass is skipped entirely when no fringe years are needed.
 	/// </summary>
@@ -602,5 +653,22 @@ public sealed class NotableDateRangePipelineTests
 
 			return new DateTime(year, month, day);
 		}
+	}
+
+	/// <summary>
+	/// Custom <see cref="IAdjustmentHandler" /> used by the explicit-reach integration test. Shifts the supplied date by a fixed
+	/// number of days every time it is consulted.
+	/// </summary>
+	private sealed class ShiftByDaysHandler : IAdjustmentHandler
+	{
+		private readonly int _shiftDays;
+
+		public ShiftByDaysHandler(int shiftDays)
+		{
+			_shiftDays = shiftDays;
+		}
+
+		public AdjustmentHandlerResult Apply(AdjustmentHandlerContext context) =>
+			new(true, context.Date.AddDays(_shiftDays), IsNonWorkingOverride: null);
 	}
 }

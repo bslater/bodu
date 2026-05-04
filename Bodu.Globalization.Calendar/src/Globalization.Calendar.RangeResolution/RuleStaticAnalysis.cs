@@ -262,8 +262,14 @@ internal sealed class RuleStaticAnalysis
 	/// short and this prototype caps the static estimate at one week.
 	/// </para>
 	/// </remarks>
-	private static (int Min, int Max) EstimateAdjustmentReach(ObservanceAdjustment adjustment) =>
-		adjustment.Action switch
+	private static (int Min, int Max) EstimateAdjustmentReach(ObservanceAdjustment adjustment)
+	{
+		// Author-declared reach takes precedence over heuristic estimates. The envelope is treated as symmetric (±value) so a
+		// single property covers both forward and backward handlers without forcing every author to think about direction.
+		if (adjustment.MaxAdjustmentReachDays is { } declared && declared >= 0)
+			return (-declared, declared);
+
+		return adjustment.Action switch
 		{
 			AdjustmentAction.None => (0, 0),
 			AdjustmentAction.AddDays => adjustment.OffsetDays >= 0
@@ -273,10 +279,11 @@ internal sealed class RuleStaticAnalysis
 			AdjustmentAction.MoveToPreviousWeekday => (-3, 0),
 			AdjustmentAction.MoveToNextNonWorkingDay => (0, 7),
 			AdjustmentAction.ReplaceWithNamedDate => (-31, 31),
-			// Custom handlers are arbitrary by definition. Use a conservative ±31-day envelope so a custom shift up to one month
-			// either side is captured by the planner's fringe scan. Rules with handlers that shift further must be redesigned to
-			// declare their reach explicitly (future <c>MaxAdjustmentReachDays</c> property on <see cref="ObservanceAdjustment" />).
+			// Custom handlers are arbitrary by definition. Default to a conservative ±31-day envelope so handlers whose shift
+			// fits inside one month are admitted out of the box. Authors whose handlers shift further must declare their reach
+			// via <see cref="ObservanceAdjustment.MaxAdjustmentReachDays" />.
 			AdjustmentAction.Custom => (-31, 31),
 			_ => (0, 0),
 		};
+	}
 }
