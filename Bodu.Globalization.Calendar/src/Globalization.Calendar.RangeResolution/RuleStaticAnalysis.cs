@@ -12,9 +12,8 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The analysis exposes per-rule <see cref="RuleStaticProfile" /> records, look-up indexes for offset-relative dependencies, and the
-/// global day-delta envelope across the entire rule set. It is built once from the effective rule list and re-used by every
-/// range-resolution request.
+/// The analysis exposes per-rule <see cref="RuleStaticProfile" /> records and a look-up index for offset-relative dependencies.
+/// It is built once from the effective rule list and re-used by every range-resolution request.
 /// </para>
 /// </remarks>
 internal sealed class RuleStaticAnalysis
@@ -29,38 +28,20 @@ internal sealed class RuleStaticAnalysis
 	/// <param name="profiles">The static profile per rule.</param>
 	/// <param name="profilesByRuleName">The case-insensitive lookup of profiles by rule name.</param>
 	/// <param name="dependentsByAnchor">The case-insensitive lookup of profiles whose root anchor is the keyed rule name.</param>
-	/// <param name="globalMinReach">The most-negative reach across every profile.</param>
-	/// <param name="globalMaxReach">The most-positive reach across every profile.</param>
 	private RuleStaticAnalysis(
 		List<RuleStaticProfile> profiles,
 		Dictionary<string, RuleStaticProfile> profilesByRuleName,
-		Dictionary<string, List<RuleStaticProfile>> dependentsByAnchor,
-		int globalMinReach,
-		int globalMaxReach)
+		Dictionary<string, List<RuleStaticProfile>> dependentsByAnchor)
 	{
 		_profiles = profiles;
 		_profilesByRuleName = profilesByRuleName;
 		_dependentsByAnchor = dependentsByAnchor;
-		GlobalMinReach = globalMinReach;
-		GlobalMaxReach = globalMaxReach;
 	}
 
 	/// <summary>
 	/// Gets the profile for every rule processed by the pipeline, in input order.
 	/// </summary>
 	public IReadOnlyList<RuleStaticProfile> Profiles => _profiles;
-
-	/// <summary>
-	/// Gets the most-negative day delta across every rule's observable reach. Used to scope the effective resolution range
-	/// backwards from the request window.
-	/// </summary>
-	public int GlobalMinReach { get; }
-
-	/// <summary>
-	/// Gets the most-positive day delta across every rule's observable reach. Used to scope the effective resolution range
-	/// forwards from the request window.
-	/// </summary>
-	public int GlobalMaxReach { get; }
 
 	/// <summary>
 	/// Attempts to retrieve a profile for the rule with the supplied name.
@@ -132,16 +113,7 @@ internal sealed class RuleStaticAnalysis
 			}
 		}
 
-		int globalMin = 0;
-		int globalMax = 0;
-
-		foreach (RuleStaticProfile profile in profiles)
-		{
-			if (profile.MinObservedReach < globalMin) globalMin = profile.MinObservedReach;
-			if (profile.MaxObservedReach > globalMax) globalMax = profile.MaxObservedReach;
-		}
-
-		return new RuleStaticAnalysis(profiles, profilesByRuleName, dependentsByAnchor, globalMin, globalMax);
+		return new RuleStaticAnalysis(profiles, profilesByRuleName, dependentsByAnchor);
 	}
 
 	/// <summary>

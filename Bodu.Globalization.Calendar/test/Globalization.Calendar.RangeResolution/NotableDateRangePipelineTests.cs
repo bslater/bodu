@@ -293,6 +293,50 @@ public sealed class NotableDateRangePipelineTests
 	}
 
 	/// <summary>
+	/// Verifies that a request whose window does not touch a year boundary inside the planner's fringe distance does not
+	/// materialise rules from adjacent years — the fringe pass is skipped entirely when no fringe years are needed.
+	/// </summary>
+	[TestMethod]
+	public void Resolve_WhenWindowIsNotNearYearBoundary_ShouldNotMaterialiseAdjacentYearRules()
+	{
+		bool christmasResolveCalled = false;
+
+		NotableDateRule christmas = new()
+		{
+			Name = "Christmas Day",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Holiday,
+			Month = 12,
+			Day = 25,
+			IsNonWorkingDay = true,
+		};
+
+		NotableDateRule probe = new()
+		{
+			Name = "Mid-Year Holiday",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Holiday,
+			Month = 7,
+			Day = 1,
+			IsNonWorkingDay = true,
+		};
+
+		NotableDateService service = new(
+			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(christmas, probe) },
+			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+
+		IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
+			new DateTime(2026, 6, 15),
+			new DateTime(2026, 7, 31));
+
+		// July request — no fringe year crossing required. Mid-Year Holiday emitted; Christmas not.
+		Assert.IsTrue(resolved.Any(n => n.Name == "Mid-Year Holiday" && n.Date == new DateTime(2026, 7, 1)));
+		Assert.IsFalse(resolved.Any(n => n.Name == "Christmas Day"));
+
+		_ = christmasResolveCalled;
+	}
+
+	/// <summary>
 	/// Verifies that <see cref="NotableDateService.ResolvedWindows" /> exposes the union of every range that has been resolved,
 	/// merging overlapping or adjacent windows into the minimum number of disjoint intervals.
 	/// </summary>

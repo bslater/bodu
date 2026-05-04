@@ -69,12 +69,24 @@ internal sealed class NotableDateRangePipeline
 	/// <param name="request">The range request.</param>
 	/// <returns>The resolved notable dates, ordered by observed date.</returns>
 	/// <exception cref="ArgumentNullException"><paramref name="request" /> is <see langword="null" />.</exception>
+	/// <remarks>
+	/// <para>
+	/// Resolution runs in two passes followed by an adjustment phase:
+	/// </para>
+	/// <list type="number">
+	///   <item><description><b>Main pass</b> — every eligible rule is materialised for the civil years that the request range spans. Rules whose resolved date falls inside the request window enter the cache in <see cref="NotableDateCacheState.InWindow" />; those just outside enter as <see cref="NotableDateCacheState.Computed" /> for adjustment context.</description></item>
+	///   <item><description><b>Fringe pass</b> — for each adjacent civil year the request window touches inside the planner's fringe distance, every <see cref="RuleTier.Fixed" /> rule with at least one adjustment is materialised when its resolved date falls inside the fringe window. This catches cross-year roll-overs such as <c>31 Dec</c> rolling forward to <c>3 Jan</c> without a global reach expansion.</description></item>
+	///   <item><description><b>Adjustment phase</b> — observance adjustments are applied using the cache as the non-working day context. Adjusted dates that intersect the request promote the entry to <see cref="NotableDateCacheState.Adjusted" /> and supersede the base on emission.</description></item>
+	/// </list>
+	/// </remarks>
 	public IReadOnlyList<NotableDate> Resolve(NotableDateRangeRequest request)
 	{
 		if (request is null) throw new ArgumentNullException(nameof(request));
 
 		NotableDateRangePlan plan = _planner.Plan(request);
 		NotableDateRangeResolutionCache cache = new();
+
+		// Pass 1 — main: rules whose resolved date for years the request spans may intersect (or directly feed) the window.
 
 		// Tier 1: Fixed and DayOfWeekInMonth.
 		foreach (RuleStaticProfile profile in plan.EligibleRules)
@@ -90,7 +102,7 @@ internal sealed class NotableDateRangePipeline
 			ProcessOffsetFromCached(profile, plan, cache);
 		}
 
-		// Tier 3: Algorithmic anchors — compute exactly the demanded years.
+		// Tier 3: Algorithmic anchors — compute exactly the demanded years (request years ∪ fringe years).
 		ProcessAlgorithmicAnchors(plan, cache);
 
 		// Tier 4: OffsetFromAlgorithmic — anchor available in the cache from Tier 3.
@@ -100,10 +112,71 @@ internal sealed class NotableDateRangePipeline
 			ProcessOffsetFromCached(profile, plan, cache);
 		}
 
+		// Pass 2 — fringe: scan adjacent year boundaries for Tier 1 rules with adjustments that may roll into the window.
+		ProcessFringePass(plan, cache);
+
 		// Adjustment phase — uses the cache as non-working day context.
 		ApplyAdjustments(plan, cache);
 
 		return BuildEmissionList(plan, cache);
+	}
+
+	/// <summary>
+	/// Materialises Tier 1 rules with at least one observance adjustment for adjacent civil years inside the planner's fringe
+	/// distance, admitting only those whose resolved date sits within the fringe window.
+	/// </summary>
+	/// <param name="plan">The active resolution plan.</param>
+	/// <param name="cache">The shared cache being populated.</param>
+	/// <remarks>
+	/// <para>
+	/// This pass handles cross-year roll-overs. For example, a request <c>[3 Jan 2023, 3 Jan 2023]</c> needs to know about the
+	/// prior-year <c>31 Dec 2022</c> rule (whose resolved date is in the fringe window <c>[27 Dec 2022, 10 Jan 2023]</c>) so that
+	/// the adjustment phase can roll it forward to <c>3 Jan 2023</c>. Rules without adjustments are skipped because they cannot
+	/// contribute through this mechanism.
+	/// </para>
+	/// <para>
+	/// Algorithmic and offset-from-algorithmic tiers do not need a separate fringe pass — the planner already unions fringe years
+	/// into <see cref="NotableDateRangePlan.GetAnchorYears" />, so Tier 3 / Tier 4 in the main pass cover those cases.
+	/// </para>
+	/// <para>
+	/// <b>Limitation:</b> offset-from-fixed rules with adjustments in fringe years are not handled here because their root anchor
+	/// in the fringe year is not materialised by the main pass. Add the rule's fixed anchor to the rule set's main-year processing
+	/// or extend this pass if such a configuration becomes necessary.
+	/// </para>
+	/// </remarks>
+	private void ProcessFringePass(NotableDateRangePlan plan, NotableDateRangeResolutionCache cache)
+	{
+		if (plan.FringeYears.Count == 0) return;
+
+		foreach (RuleStaticProfile profile in plan.EligibleRules)
+		{
+			if (profile.Tier != RuleTier.Fixed) continue;
+			if (profile.Rule.Adjustments.IsDefaultOrEmpty) continue;
+
+			foreach (int year in plan.FringeYears)
+			{
+				if (!NotableDateRuleResolver.IsApplicable(profile.Rule, year))
+					continue;
+
+				DateTime? anchor;
+				try
+				{
+					anchor = _ruleResolver.ResolveAnchorDate(profile.Rule, year);
+				}
+				catch (InvalidOperationException)
+				{
+					continue;
+				}
+
+				if (anchor is null) continue;
+
+				// Only admit fringe candidates close enough to the request edges that an adjustment could shift them inside.
+				DateTime resolved = anchor.Value.Date;
+				if (resolved < plan.FringeStartDate || resolved > plan.FringeEndDate) continue;
+
+				AddEntries(profile, year, anchor.Value, plan, cache);
+			}
+		}
 	}
 
 	/// <summary>

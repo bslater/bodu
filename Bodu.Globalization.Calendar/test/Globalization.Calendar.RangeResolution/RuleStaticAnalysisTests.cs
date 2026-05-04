@@ -154,10 +154,11 @@ public sealed class RuleStaticAnalysisTests
 	}
 
 	/// <summary>
-	/// Verifies that the global reach envelope reflects the worst-case adjustment shifts and durations across every rule.
+	/// Verifies that per-rule reach is captured on the profile so the pipeline can size fringe scans by individual adjustment
+	/// behaviour rather than by a single global envelope.
 	/// </summary>
 	[TestMethod]
-	public void Build_WhenRulesHaveAdjustments_ShouldComputeGlobalReachEnvelope()
+	public void Build_WhenRuleHasForwardRollingAdjustment_ShouldCapturePerRuleForwardReach()
 	{
 		NotableDateRule rollForward = Fixed("New Year's Day", 1, 1) with
 		{
@@ -177,9 +178,16 @@ public sealed class RuleStaticAnalysisTests
 
 		RuleStaticAnalysis analysis = RuleStaticAnalysis.Build(new[] { rollForward, longSpan });
 
-		// MoveToNextNonWorkingDay is estimated at +7 forward reach in this prototype; duration adds 6 to the festival week.
-		Assert.IsTrue(analysis.GlobalMaxReach >= 7, $"Expected GlobalMaxReach >= 7, got {analysis.GlobalMaxReach}.");
-		Assert.IsTrue(analysis.GlobalMinReach <= 0);
+		RuleStaticProfile rollProfile = analysis.Profiles.Single(p => p.Rule.Name == "New Year's Day");
+		RuleStaticProfile spanProfile = analysis.Profiles.Single(p => p.Rule.Name == "Festival Week");
+
+		// MoveToNextNonWorkingDay is estimated at +7 forward reach in this prototype.
+		Assert.IsTrue(rollProfile.MaxObservedReach >= 7, $"Expected MaxObservedReach >= 7 for adjustment, got {rollProfile.MaxObservedReach}.");
+		Assert.AreEqual(0, rollProfile.MinObservedReach);
+
+		// Festival Week has no adjustment but a 7-day span so MaxObservedReach reflects DurationDays - 1.
+		Assert.AreEqual(6, spanProfile.MaxObservedReach);
+		Assert.AreEqual(0, spanProfile.MinObservedReach);
 	}
 
 	/// <summary>

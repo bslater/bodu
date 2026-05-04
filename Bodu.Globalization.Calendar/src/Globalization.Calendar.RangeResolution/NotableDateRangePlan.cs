@@ -12,9 +12,14 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The plan holds the effective resolution range (the request window expanded by the global static reach), the rules eligible to
-/// contribute to the request, and the precise civil years per algorithmic anchor that must be computed. The pipeline iterates the
-/// plan exactly — no rule is processed and no algorithm is invoked outside of what the plan authorises.
+/// The plan describes which rules are eligible to contribute to the request, which civil years they will be materialised against,
+/// and which years of each algorithmic anchor must be computed. The pipeline iterates the plan exactly — no rule is processed and
+/// no algorithm is invoked outside of what the plan authorises.
+/// </para>
+/// <para>
+/// Cross-year observance roll-overs (for example, <c>31 Dec</c> rolling forward to <c>3 Jan</c>) are handled by a fringe pass that
+/// the pipeline runs after the main pass. The plan exposes <see cref="FringeYears" /> so the pipeline knows which adjacent years
+/// to scan for adjustment-driven candidates without polluting <see cref="CandidateYears" />.
 /// </para>
 /// </remarks>
 internal sealed class NotableDateRangePlan
@@ -25,24 +30,27 @@ internal sealed class NotableDateRangePlan
 	/// Initialises a new instance of the <see cref="NotableDateRangePlan" /> class.
 	/// </summary>
 	/// <param name="request">The originating request.</param>
-	/// <param name="effectiveRangeStart">The inclusive start of the effective range.</param>
-	/// <param name="effectiveRangeEnd">The inclusive end of the effective range.</param>
 	/// <param name="eligibleRules">The rule profiles that may contribute to the request.</param>
-	/// <param name="candidateYears">The civil years considered by the planner for direct rule materialisation.</param>
+	/// <param name="candidateYears">The civil years considered by the main pass for direct rule materialisation.</param>
+	/// <param name="fringeYears">The adjacent civil years scanned by the fringe pass for adjustment-driven candidates.</param>
+	/// <param name="fringeStartDate">The inclusive start of the fringe scan window.</param>
+	/// <param name="fringeEndDate">The inclusive end of the fringe scan window.</param>
 	/// <param name="anchorYearsByName">The civil years per algorithmic anchor that must be computed.</param>
 	public NotableDateRangePlan(
 		NotableDateRangeRequest request,
-		DateTime effectiveRangeStart,
-		DateTime effectiveRangeEnd,
 		IReadOnlyList<RuleStaticProfile> eligibleRules,
 		IReadOnlyList<int> candidateYears,
+		IReadOnlyList<int> fringeYears,
+		DateTime fringeStartDate,
+		DateTime fringeEndDate,
 		Dictionary<string, IReadOnlyList<int>> anchorYearsByName)
 	{
 		Request = request;
-		EffectiveRangeStart = effectiveRangeStart;
-		EffectiveRangeEnd = effectiveRangeEnd;
 		EligibleRules = eligibleRules;
 		CandidateYears = candidateYears;
+		FringeYears = fringeYears;
+		FringeStartDate = fringeStartDate;
+		FringeEndDate = fringeEndDate;
 		_anchorYearsByName = anchorYearsByName;
 	}
 
@@ -52,25 +60,30 @@ internal sealed class NotableDateRangePlan
 	public NotableDateRangeRequest Request { get; }
 
 	/// <summary>
-	/// Gets the inclusive start of the effective range — the request start expanded by the global static reach so that all rules
-	/// whose adjustments may roll into the request window are visible.
-	/// </summary>
-	public DateTime EffectiveRangeStart { get; }
-
-	/// <summary>
-	/// Gets the inclusive end of the effective range — the request end expanded by the global static reach.
-	/// </summary>
-	public DateTime EffectiveRangeEnd { get; }
-
-	/// <summary>
 	/// Gets the rule profiles that may contribute to the request, in input order.
 	/// </summary>
 	public IReadOnlyList<RuleStaticProfile> EligibleRules { get; }
 
 	/// <summary>
-	/// Gets the civil years considered for direct rule materialisation (one per year between the effective range start and end).
+	/// Gets the civil years considered by the main materialisation pass — one entry per year that the request window spans.
 	/// </summary>
 	public IReadOnlyList<int> CandidateYears { get; }
+
+	/// <summary>
+	/// Gets the adjacent civil years scanned by the fringe pass for rules whose observance adjustment may roll a date from outside
+	/// the request window into it. Empty when the request window does not touch a year boundary inside the fringe distance.
+	/// </summary>
+	public IReadOnlyList<int> FringeYears { get; }
+
+	/// <summary>
+	/// Gets the inclusive start of the fringe scan window — the request start minus the fringe distance.
+	/// </summary>
+	public DateTime FringeStartDate { get; }
+
+	/// <summary>
+	/// Gets the inclusive end of the fringe scan window — the request end plus the fringe distance.
+	/// </summary>
+	public DateTime FringeEndDate { get; }
 
 	/// <summary>
 	/// Gets the civil years that must be resolved for each algorithmic anchor name.
