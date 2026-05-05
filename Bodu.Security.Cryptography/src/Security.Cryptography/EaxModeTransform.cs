@@ -211,9 +211,14 @@ public sealed class EaxModeTransform
             for (int i = 0; i < TagSize; i++)
                 expectedTag[i] = (byte)(nPrime[i] ^ hPrime[i] ^ cPrime[i]);
 
-            // Constant-time tag comparison; throw before emitting any plaintext.
+            // Constant-time tag comparison; throw before emitting any plaintext. On failure, also
+            // zero any data the caller may have pre-seeded into the output buffer — defence-in-depth
+            // aligned with AsconAead128.Decrypt.
             if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
+            {
+                CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
                 throw new CryptographicException("EAX authentication tag verification failed.");
+            }
 
             CtrEncrypt(ciphertext, output.Slice(0, plaintextLength), nPrime);
 

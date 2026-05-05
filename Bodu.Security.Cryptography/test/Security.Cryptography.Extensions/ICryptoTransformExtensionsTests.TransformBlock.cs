@@ -66,18 +66,28 @@ public partial class ICryptoTransformExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="ICryptoTransformExtensions.TransformBlock(ICryptoTransform,byte[])" />
-    /// throws <see cref="ArgumentException" /> when given an empty array, since a zero-length block
-    /// is not a meaningful input for any block cipher operation.
+    /// returns an empty byte array when given an empty input, matching the
+    /// <see cref="ICryptoTransform" /> contract that a zero-byte <c>TransformBlock</c> is a no-op
+    /// that produces no output and does not advance any chaining state.
     /// </summary>
+    /// <remarks>
+    /// Pre-#200 the underlying <c>BlockCipherTransform.TransformBlock</c> used
+    /// <c>ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize)</c> with the default
+    /// <c>throwIfZero == true</c>, so this call surfaced a
+    /// <see cref="CryptographicException" />. PRs #200 and the consolidation in #202 switched both
+    /// validators to <c>throwIfZero: false</c> to comply with the framework contract; this test
+    /// pins the new behaviour.
+    /// </remarks>
     [TestMethod]
-    public void TransformBlock_WhenArrayIsEmpty_ShouldThrowArgumentException()
+    public void TransformBlock_WhenArrayIsEmpty_ShouldReturnEmptyResult()
     {
         using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
-        Assert.ThrowsExactly<CryptographicException>(() =>
-        {
-            transform.TransformBlock(Array.Empty<byte>());
-        });
+        byte[] result = transform.TransformBlock(Array.Empty<byte>());
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(0, result.Length,
+            "TransformBlock with an empty input must produce an empty output, not throw.");
     }
 
     /// <summary>
