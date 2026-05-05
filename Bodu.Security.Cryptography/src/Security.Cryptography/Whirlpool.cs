@@ -121,8 +121,9 @@ public sealed partial class Whirlpool
 
     /// <inheritdoc />
     /// <remarks>Clears the eight 64-bit chaining variables and unlatches the <see cref="Version" /> setter.</remarks>
-    protected override void OnInitialize()
+    public override void Initialize()
     {
+        base.Initialize();
         Array.Clear(this._state);
         this._inputConsumed = false;
     }

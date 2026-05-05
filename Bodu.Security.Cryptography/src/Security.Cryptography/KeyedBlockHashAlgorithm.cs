@@ -137,8 +137,9 @@ public abstract class KeyedBlockHashAlgorithm<T>
     /// </exception>
     public override void Initialize()
     {
-        // base.Initialize() throws ObjectDisposedException on a disposed instance, clears the residual
-        // buffer and counters, and invokes the OnInitialize hook on the most-derived class.
+        // base.Initialize() throws ObjectDisposedException on a disposed instance and clears the residual
+        // buffer and counters. Derived classes follow the BCL convention of calling base.Initialize() and
+        // then resetting their own state in their own Initialize override.
         base.Initialize();
 
         // A keyed MAC is unusable without a key. We refuse to silently regenerate one:

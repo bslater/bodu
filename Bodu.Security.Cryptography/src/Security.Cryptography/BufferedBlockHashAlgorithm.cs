@@ -33,7 +33,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>Derived classes must implement the following:</para>
 /// <list type="bullet">
-/// <item><description><see cref="OnInitialize" /> resets any algorithm-specific state (chaining variables, IV, schedule).</description></item>
+/// <item><description><see cref="HashAlgorithm.Initialize" /> resets any algorithm-specific state (chaining variables, IV, schedule). Override and call <c>base.Initialize()</c> first.</description></item>
 /// <item><description><see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})" /> consumes the input span using the buffering shape required by the algorithm family.</description></item>
 /// <item><description><see cref="HashAlgorithm.HashFinal" /> finalises the computation and returns the digest.</description></item>
 /// </list>
@@ -125,9 +125,9 @@ public abstract class BufferedBlockHashAlgorithm<T>
     /// Thrown when <paramref name="blockSize" /> is less than or equal to zero.
     /// </exception>
     /// <remarks>
-    /// Allocates the residual buffer at <paramref name="blockSize" /> bytes. Derived classes are expected to call
-    /// their own <c>InitializeState()</c> equivalent from their constructor (and again from <see cref="OnInitialize" />)
-    /// so that the algorithm state matches the freshly-cleared residual buffer.
+    /// Allocates the residual buffer at <paramref name="blockSize" /> bytes. Derived classes are expected to override
+    /// <see cref="Initialize" />, call <c>base.Initialize()</c> first to clear the inherited buffer and counters, then
+    /// reset their own algorithm-specific state so the two halves stay in sync.
     /// </remarks>
     protected BufferedBlockHashAlgorithm(int blockSize)
     {
@@ -137,15 +137,23 @@ public abstract class BufferedBlockHashAlgorithm<T>
     }
 
     /// <summary>
-    /// Resets the algorithm to its initial state. Clears the residual buffer, resets the running byte total, and then
-    /// invokes <see cref="OnInitialize" /> so that derived classes may reset any algorithm-specific state such as
-    /// chaining variables or key-derived schedule.
+    /// Resets the algorithm to its initial state by clearing the residual buffer and the running byte total.
+    /// Derived classes override this method, call <c>base.Initialize()</c> first, and then reset their own
+    /// algorithm-specific state (chaining variables, IV, key-derived schedule).
     /// </summary>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <remarks>
+    /// <para>
     /// This method does not reset the <see cref="HashAlgorithm.State" /> property explicitly on .NET 6+ targets &#8212;
     /// the framework manages that transition. On earlier targets, derived classes that need the already-finalised
     /// guard should reset their <c>_finalized</c> backing field from their own <c>Initialize</c> override.
+    /// </para>
+    /// <para>
+    /// Derived classes that need to validate state before the reset (for example, a keyed MAC that refuses to be
+    /// re-initialised when no key has been set) should perform that validation before calling
+    /// <c>base.Initialize()</c>. Once the base call returns, the residual buffer is empty,
+    /// <see cref="_residualBytes" /> is <c>0</c>, and <see cref="_totalBytes" /> is <c>0</c>.
+    /// </para>
     /// </remarks>
     public override void Initialize()
     {
@@ -153,20 +161,7 @@ public abstract class BufferedBlockHashAlgorithm<T>
         this._residualBlock.Span.Clear();
         this._residualBytes = 0;
         this._totalBytes = 0UL;
-        this.OnInitialize();
     }
-
-    /// <summary>
-    /// Hook invoked by <see cref="Initialize" /> after the shared residual buffer and counters have been cleared.
-    /// Derived classes implement this to reset their algorithm-specific state, for example chaining variables, the
-    /// initialisation vector, or key-derived schedule.
-    /// </summary>
-    /// <remarks>
-    /// By contract, when this method runs the residual buffer is empty, <see cref="_residualBytes" /> is <c>0</c>,
-    /// and <see cref="_totalBytes" /> is <c>0</c>. Implementations should not touch the buffer or the counter; doing
-    /// so risks desynchronising the two halves of the algorithm state.
-    /// </remarks>
-    protected abstract void OnInitialize();
 
     /// <summary>
     /// Releases the resources used by the algorithm and zeros the residual buffer.

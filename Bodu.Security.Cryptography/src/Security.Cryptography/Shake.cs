@@ -217,8 +217,12 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     }
 
     /// <inheritdoc />
-    /// <remarks>Clears the 1600-bit Keccak state. The inherited residual rate buffer is cleared by the base class.</remarks>
-    protected override void OnInitialize() => Array.Clear(this._state);
+    /// <remarks>Clears the 1600-bit Keccak state. The inherited residual rate buffer and counters are cleared by the base call.</remarks>
+    public override void Initialize()
+    {
+        base.Initialize();
+        Array.Clear(this._state);
+    }
 
     /// <summary>
     /// Releases the resources used by this instance and clears the internal sponge state.

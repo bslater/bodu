@@ -195,8 +195,9 @@ public sealed partial class Tiger
 
     /// <inheritdoc />
     /// <remarks>Restores the three 64-bit chaining variables to their Tiger-specified initial constants.</remarks>
-    protected override void OnInitialize()
+    public override void Initialize()
     {
+        base.Initialize();
         this._state0 = 0x0123456789ABCDEF;
         this._state1 = 0xFEDCBA9876543210;
         this._state2 = 0xF096A5B4C3B2E187;

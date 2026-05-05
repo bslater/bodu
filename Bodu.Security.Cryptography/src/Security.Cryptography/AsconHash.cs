@@ -104,8 +104,9 @@ public abstract partial class AsconHash<T>
     /// Loads the pre-computed initial state directly — no permutation is needed because the constants
     /// supplied by the derived class are already the result of applying Ascon-p12 to the raw IV.
     /// </remarks>
-    protected override void OnInitialize()
+    public override void Initialize()
     {
+        base.Initialize();
         this._state = new AsconState { S0 = this._iv0, S1 = this._iv1, S2 = this._iv2, S3 = this._iv3, S4 = this._iv4 };
         this._useP12ForFinalPad = false;
     }

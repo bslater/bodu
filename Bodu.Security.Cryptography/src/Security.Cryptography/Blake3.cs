@@ -168,24 +168,19 @@ public sealed class Blake3
     public override bool CanTransformMultipleBlocks => true;
 
     /// <inheritdoc />
+    /// <remarks>
+    /// Clears the CV stack and restores <see cref="_chunkCv" /> to the BLAKE3 initialisation vector, ready for a new
+    /// chunk. The inherited residual buffer and counters are cleared by the base call (which also throws
+    /// <see cref="ObjectDisposedException" /> if the instance has been disposed).
+    /// </remarks>
     public override void Initialize()
     {
-        ThrowIfDisposed();
         base.Initialize();
-    }
-
-    // ---- DeferredFinalBlockHashAlgorithm<T> implementation ----
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// Clears the CV stack and restores <see cref="_chunkCv" /> to the BLAKE3 initialisation
-    /// vector, ready for a new chunk.
-    /// </remarks>
-    protected override void OnInitialize()
-    {
         _cvStack.Clear();
         s_iv.CopyTo(_chunkCv, 0);
     }
+
+    // ---- DeferredFinalBlockHashAlgorithm<T> implementation ----
 
     /// <remarks>
     /// Clears the CV stack, zeroes <see cref="_chunkCv" />, releases the framework

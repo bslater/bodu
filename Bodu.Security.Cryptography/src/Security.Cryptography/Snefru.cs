@@ -75,7 +75,7 @@ public abstract partial class Snefru<T>
             throw new ArgumentOutOfRangeException(nameof(hashSize),
                 string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
 
-        // _state is zero-filled by `new`; OnInitialize re-clears it on every Initialize() call.
+        // _state is zero-filled by `new`; Initialize re-clears it on every reset.
         this._state = new uint[hashSize >> 5];
         HashSizeValue = hashSize;
     }
@@ -88,7 +88,11 @@ public abstract partial class Snefru<T>
 
     /// <inheritdoc />
     /// <remarks>Clears the Snefru chaining state to all zeros, as required by the algorithm specification.</remarks>
-    protected override void OnInitialize() => Array.Clear(this._state);
+    public override void Initialize()
+    {
+        base.Initialize();
+        Array.Clear(this._state);
+    }
 
     /// <summary>
     /// Releases resources used by the algorithm and clears the internal state and working buffer.
