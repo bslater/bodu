@@ -11,19 +11,55 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
 {
     /// <summary>
-    /// Verifies that <see cref="ICryptoTransform.TransformFinalBlock" /> throws
-    /// <see cref="ArgumentNullException" /> when <c>inputBuffer</c> is <see langword="null" />.
+    /// Verifies that <see cref="ICryptoTransform.TransformFinalBlock(byte[], int, int)" />
+    /// still rejects a <see langword="null" /> input buffer with <see cref="ArgumentNullException" />,
+    /// distinct from a zero-length input which is permitted (see
+    /// <see cref="TransformFinalBlock_WhenEncryptingEmptyInput_ShouldNotThrow" />).
     /// Regression guard for transforms that previously threw <see cref="NullReferenceException" /> via <c>.AsSpan</c>.
     /// </summary>
+    /// <param name="answer">
+    /// The vector under test, or <see langword="null" /> when the subclass declares no Transform-layer KATs.
+    /// </param>
     [TestMethod]
-    public void TransformFinalBlock_WhenInputBufferIsNull_ShouldThrowArgumentNullException_fix()
+    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerDisplayName))]
+    public void TransformFinalBlock_WhenInputBufferIsNull_ShouldThrowArgumentNullException(BlockCipherKnownAnswer? answer)
     {
-        using var transform = CreateAlgorithm();
+        if (answer is null)
+        {
+            Assert.Inconclusive($"{typeof(TTest).Name} declares no Transform-layer KAT vectors via {nameof(GetKnownAnswers)}.");
+            return;
+        }
+
+        using TCryptoTransform transform = CreateTransformForKnownAnswer(answer, forEncryption: true);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = transform.TransformFinalBlock(null!, 0, 0);
         });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ICryptoTransform.TransformFinalBlock(byte[], int, int)" /> accepts
+    /// an empty final input span when encrypting. The contract distinguishes between a zero-length
+    /// final block (valid — the padding layer emits whatever the scheme requires) and a non-zero
+    /// partial block (still invalid).
+    /// </summary>
+    /// <param name="answer">
+    /// The vector under test, or <see langword="null" /> when the subclass declares no Transform-layer KATs.
+    /// </param>
+    [TestMethod]
+    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerDisplayName))]
+    public void TransformFinalBlock_WhenEncryptingEmptyInput_ShouldNotThrow(BlockCipherKnownAnswer? answer)
+    {
+        if (answer is null)
+        {
+            Assert.Inconclusive($"{typeof(TTest).Name} declares no Transform-layer KAT vectors via {nameof(GetKnownAnswers)}.");
+            return;
+        }
+
+        using TCryptoTransform transform = CreateTransformForKnownAnswer(answer, forEncryption: true);
+
+        _ = transform.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
     }
 
     /// <summary>
