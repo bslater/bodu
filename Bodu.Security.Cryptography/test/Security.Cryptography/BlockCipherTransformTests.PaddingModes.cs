@@ -115,7 +115,7 @@ public sealed class BlockCipherTransformTests_PaddingModes
     [DataRow(PaddingMode.ANSIX923)]
     [DataRow(PaddingMode.ISO10126)]
     [TestMethod]
-    public void CryptoStream_WhenResidualPlaintextAndLengthRecoverablePadding_ShouldRoundTrip(PaddingMode padding)
+    public void CryptoStream_WhenResidualPlaintextAndLengthRecoverablePadding_ShouldRoundTrip_fix(PaddingMode padding)
     {
         using var algorithm = CreateAlgorithm(padding);
         int blockBytes = algorithm.BlockSize / 8;
@@ -140,7 +140,7 @@ public sealed class BlockCipherTransformTests_PaddingModes
     /// trailing zero bytes — they are indistinguishable from legitimate plaintext zeros.
     /// </summary>
     [TestMethod]
-    public void CryptoStream_WhenResidualPlaintextAndZerosPadding_ShouldRecoverPrefixWithTrailingZeros()
+    public void CryptoStream_WhenResidualPlaintextAndZerosPadding_ShouldRecoverPrefixWithTrailingZeros_fix()
     {
         using var algorithm = CreateAlgorithm(PaddingMode.Zeros);
         int blockBytes = algorithm.BlockSize / 8;
@@ -173,7 +173,7 @@ public sealed class BlockCipherTransformTests_PaddingModes
     [DataRow(PaddingMode.ANSIX923)]
     [DataRow(PaddingMode.ISO10126)]
     [TestMethod]
-    public void CryptoStream_WhenWritingInUnalignedChunks_ShouldRoundTrip(PaddingMode padding)
+    public void CryptoStream_WhenWritingInUnalignedChunks_ShouldRoundTrip_fix(PaddingMode padding)
     {
         using var algorithm = CreateAlgorithm(padding);
         byte[] plaintext = Enumerable.Range(0, 41).Select(i => (byte)(i * 7 + 11)).ToArray();
