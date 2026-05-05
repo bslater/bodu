@@ -201,7 +201,7 @@ internal sealed class NotableDateRuleResolver
 			&& _algorithms.TryGet(rule.AlgorithmKey!, out var algorithm)
 			&& algorithm is not null)
 		{
-			return algorithm.GetDate(year);
+			return SafeInvoke(algorithm, year);
 		}
 
 		// Fallback: legacy CLR type instantiation, for compatibility with rules authored before the registry existed.
@@ -209,10 +209,36 @@ internal sealed class NotableDateRuleResolver
 		{
 			INotableDateAlgorithm? legacyAlgorithm = TryCreateAlgorithm(rule);
 			if (legacyAlgorithm is not null)
-				return legacyAlgorithm.GetDate(year);
+				return SafeInvoke(legacyAlgorithm, year);
 		}
 
 		return null;
+	}
+
+	/// <summary>
+	/// Invokes <see cref="INotableDateAlgorithm.GetDate" /> defensively. The contract is that <c>GetDate</c> returns
+	/// <see langword="null" /> when the algorithm does not produce a date for the supplied year; any exception thrown by an
+	/// algorithm implementation is treated as the same outcome so a single misbehaving algorithm cannot abort the entire
+	/// resolution. <see cref="OperationCanceledException" /> is intentionally NOT swallowed so cooperative cancellation
+	/// behaves correctly when an algorithm participates in a cancellable host.
+	/// </summary>
+	/// <param name="algorithm">The algorithm to invoke.</param>
+	/// <param name="year">The civil year to compute.</param>
+	/// <returns>The computed date, or <see langword="null" /> when the algorithm declines to produce one or throws.</returns>
+	private static DateTime? SafeInvoke(INotableDateAlgorithm algorithm, int year)
+	{
+		try
+		{
+			return algorithm.GetDate(year);
+		}
+		catch (OperationCanceledException)
+		{
+			throw;
+		}
+		catch
+		{
+			return null;
+		}
 	}
 
     /// <summary>
