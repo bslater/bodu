@@ -80,6 +80,35 @@ public sealed class BlockCipherTransformTests_EmptyInput
     }
 
     /// <summary>
+    /// Verifies that <see cref="ICryptoTransform.TransformBlock(byte[], int, int, byte[], int)" />
+    /// invoked with <c>inputCount == 0</c> returns <c>0</c> rather than raising
+    /// <see cref="CryptographicException" /> from the unguarded
+    /// <c>ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize)</c> validator. The
+    /// <see cref="ICryptoTransform" /> contract treats a zero-byte <c>TransformBlock</c> as a
+    /// no-op — <see cref="CryptoStream" /> and other framework consumers can reach this path
+    /// after a flush even when no further data has been written.
+    /// </summary>
+    [TestMethod]
+    public void TransformBlock_WhenInputCountIsZero_ShouldReturnZero_fix()
+    {
+        using var algorithm = new Skipjack
+        {
+            Padding = PaddingMode.PKCS7,
+            Mode = CipherMode.CBC,
+        };
+        algorithm.GenerateKey();
+        algorithm.GenerateIV();
+
+        using ICryptoTransform transform = algorithm.CreateEncryptor();
+        byte[] outputBuffer = new byte[algorithm.BlockSize / 8];
+
+        int written = transform.TransformBlock(System.Array.Empty<byte>(), 0, 0, outputBuffer, 0);
+
+        Assert.AreEqual(0, written,
+            "TransformBlock with inputCount == 0 must return 0 rather than throw.");
+    }
+
+    /// <summary>
     /// Verifies that <see cref="CryptoStream" /> can flush a freshly-opened
     /// <see cref="ICryptoTransform" /> without writing any data first — the
     /// <see cref="CryptoStream.FlushFinalBlock" /> path always invokes

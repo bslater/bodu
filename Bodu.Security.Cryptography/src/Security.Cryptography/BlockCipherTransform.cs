@@ -213,9 +213,13 @@ public abstract class BlockCipherTransform : ICryptoTransform
         CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(outputBuffer, outputOffset, inputCount);
 
         ReadOnlySpan<byte> input = inputBuffer.AsSpan(inputOffset, inputCount);
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, this._cipher.BlockSize);
+
+        // Allow zero-length input: per the ICryptoTransform contract a zero-byte TransformBlock
+        // call must return 0 rather than throw. CryptoStream and similar callers may invoke this
+        // path with no buffered data after a flush.
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, this._cipher.BlockSize, throwIfZero: false);
         Span<byte> output = outputBuffer.AsSpan(outputOffset, inputCount);
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(output, this._cipher.BlockSize);
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(output, this._cipher.BlockSize, throwIfZero: false);
 
         if (this._encrypt)
             return this._mode.Transform(input, output, true);
