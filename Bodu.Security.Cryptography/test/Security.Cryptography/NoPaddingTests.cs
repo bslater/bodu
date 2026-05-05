@@ -16,6 +16,13 @@ public sealed partial class NoPaddingTests
 
     /// <inheritdoc />
     /// <remarks>
+    /// <see cref="NoPadding.Unpad" /> ignores its <c>blockSize</c> parameter — it returns the input unchanged
+    /// regardless of alignment. The block-size validation tests are therefore inapplicable.
+    /// </remarks>
+    protected override bool ValidatesBlockSizeOnUnpad => false;
+
+    /// <inheritdoc />
+    /// <remarks>
     /// <see cref="NoPadding.Pad" /> rejects input whose length is not already a multiple of the block size, so the
     /// round-trip test only exercises residual 0.
     /// </remarks>

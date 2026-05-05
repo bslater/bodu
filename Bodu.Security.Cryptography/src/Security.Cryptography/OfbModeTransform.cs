@@ -83,7 +83,8 @@ public sealed class OfbModeTransform : IBlockCipherModeTransform
     {
         int blockSize = this._cipher.BlockSize;
 
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize);
+        // Empty input is a no-op, consistent with CbcModeTransform.
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 
         Span<byte> keystream = stackalloc byte[blockSize];
