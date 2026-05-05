@@ -220,6 +220,8 @@ public abstract class SipHash<T>
         if (disposing)
         {
             this._v0 = this._v1 = this._v2 = this._v3 = 0;
+            this._compressionRounds = 0;
+            this._finalizationRounds = 0;
         }
 
         base.Dispose(disposing);

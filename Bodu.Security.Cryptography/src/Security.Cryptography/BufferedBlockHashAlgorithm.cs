@@ -201,8 +201,10 @@ public abstract class BufferedBlockHashAlgorithm<T>
         if (disposing)
         {
             CryptoHelpers.Clear(this._residualBlock);
+            CryptoHelpers.ClearAndNullify(ref this.HashValue);
             this._residualBytes = 0;
             this._totalBytes = 0UL;
+            this.HashSizeValue = 0;
         }
 
         this._disposed = true;

@@ -374,6 +374,11 @@ public abstract partial class Skein<T>
             CryptoHelpers.Clear(this._ubiCipherOutput);
 
             this._cipher.Dispose();
+
+            this._isChainingValueCached = false;
+            this._pendingBytes = 0;
+            this._messageBytesProcessed = 0UL;
+            this._hasProcessedAnyMessageBlock = false;
         }
 
         base.Dispose(disposing);

@@ -329,6 +329,12 @@ public sealed class CubeHash
                 CryptoHelpers.ClearAndNullify(ref this._initializedState!);
                 this._isInitializedStateCached = false;
             }
+
+            this._finalizationRounds = 0;
+            this._initializationRounds = 0;
+            this._rounds = 0;
+            this._inputBlockSizeBytes = 0;
+            this._pendingBytes = 0;
         }
 
         this._disposed = true;
