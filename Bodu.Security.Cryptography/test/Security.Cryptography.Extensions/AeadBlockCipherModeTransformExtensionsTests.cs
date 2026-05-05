@@ -107,7 +107,7 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
         using var transform = NewTransform();
         int expectedLength = Plaintext.Length + transform.TagSize;
 
-        byte[] result = transform.Encrypt(Plaintext, AssociatedData);
+        byte[] result = transform.Encrypt(Plaintext, (ReadOnlySpan<byte>)AssociatedData);
 
         Assert.AreEqual(expectedLength, result.Length,
             "Encrypt wrapper must return a buffer of length plaintext.Length + TagSize.");
@@ -121,10 +121,10 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
     public void Decrypt_ShouldReturnArrayOfCiphertextLengthMinusTagSize()
     {
         using var encTransform = NewTransform();
-        byte[] ciphertextWithTag = encTransform.Encrypt(Plaintext, AssociatedData);
+        byte[] ciphertextWithTag = encTransform.Encrypt(Plaintext, (ReadOnlySpan<byte>)AssociatedData);
 
         using var decTransform = NewTransform();
-        byte[] recovered = decTransform.Decrypt(ciphertextWithTag, AssociatedData);
+        byte[] recovered = decTransform.Decrypt(ciphertextWithTag, (ReadOnlySpan<byte>)AssociatedData);
 
         Assert.AreEqual(Plaintext.Length, recovered.Length,
             "Decrypt wrapper must return a buffer of length ciphertextWithTag.Length - TagSize.");
@@ -144,7 +144,7 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            transform.Decrypt(tooShort, AssociatedData);
+            transform.Decrypt(tooShort, (ReadOnlySpan<byte>)AssociatedData);
         });
     }
 

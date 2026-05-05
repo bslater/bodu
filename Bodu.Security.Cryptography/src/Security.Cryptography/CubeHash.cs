@@ -335,6 +335,11 @@ public sealed class CubeHash
             this._rounds = 0;
             this._inputBlockSizeBytes = 0;
             this._pendingBytes = 0;
+
+            // CubeHash extends HashAlgorithm directly (not BufferedBlockHashAlgorithm),
+            // so the centralised HashValue / HashSizeValue clearing in the latter does not apply here.
+            CryptoHelpers.ClearAndNullify(ref this.HashValue);
+            this.HashSizeValue = 0;
         }
 
         this._disposed = true;
