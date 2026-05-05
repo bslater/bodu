@@ -89,15 +89,20 @@ public sealed class Poly1305
     private bool _disposed = false;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Poly1305" /> class.
+    /// Initializes a new instance of the <see cref="Poly1305" /> class with no key set.
     /// </summary>
+    /// <remarks>
+    /// Unlike most keyed hash algorithms, <see cref="Poly1305" /> deliberately does not auto-generate a random key
+    /// in its constructor. Poly1305 is a one-time authenticator and reusing the same key against multiple messages
+    /// breaks its security guarantees; an instance with an unsolicited random key tempts callers to drive
+    /// <see cref="HashAlgorithm.ComputeHash(byte[])" /> twice and silently produce a forgeable tag the second time.
+    /// Callers must therefore set <see cref="KeyedBlockHashAlgorithm{T}.Key" /> explicitly before computing a hash;
+    /// failing to do so causes <see cref="Initialize" /> to raise a <see cref="CryptographicException" />.
+    /// </remarks>
     public Poly1305()
         : base(BlockSize, KeySize)
     {
         this.HashSizeValue = 128;
-        this.KeyValue = new byte[KeySize];
-        CryptoHelpers.FillWithRandomNonZeroBytes(this.KeyValue);
-        this.OnKeyChanged();
     }
 
     /// <summary>
@@ -251,12 +256,13 @@ public sealed class Poly1305
         // is retained until Dispose so that the framework's automatic re-initialisation
         // (invoked by ComputeHash via CaptureHashCodeAndReinitialize) can succeed without
         // tripping the key-set check in Initialize.
-        this.finalized = true;
+        this._finalized = true;
         this.State = 2;
 #endif
         // Key material is no longer needed — zero it immediately to enforce
         // Poly1305's one-time-use guarantee and limit key exposure in memory.
-        CryptoHelpers.Clear(this.KeyValue);
+        if (this.KeyValue is not null)
+            CryptoHelpers.Clear(this.KeyValue);
 
         return tag.ToArray();
     }
@@ -279,7 +285,9 @@ public sealed class Poly1305
         // the constructor's default-key setup.
         Array.Clear(this._acc);
 
-        ReadOnlySpan<byte> key = this.KeyValue;
+        // OnKeyChanged is only invoked by the Key setter and Initialize, both of which guarantee
+        // KeyValue is non-null and of the expected length before this point.
+        ReadOnlySpan<byte> key = this.KeyValue!;
 
         // Load and clamp the first 128 bits of the key as the polynomial 'r' key Clamp 'r' by setting/clearing specific bits to avoid
         // vulnerabilities as per RFC 8439, Section 2.5.1

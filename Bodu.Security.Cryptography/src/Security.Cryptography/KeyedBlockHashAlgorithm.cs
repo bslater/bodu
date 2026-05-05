@@ -45,7 +45,14 @@ public abstract class KeyedBlockHashAlgorithm<T>
     /// <summary>
     /// Internal storage for the key used by the algorithm. Always assigned via defensive copy and cleared on disposal.
     /// </summary>
-    protected byte[] KeyValue = null!;
+    /// <remarks>
+    /// Declared <see cref="byte" />[] nullable to honestly reflect that the field can be observed in three states:
+    /// <see langword="null" /> on a freshly-constructed instance whose constructor has not yet seeded a key, after
+    /// <see cref="Dispose(bool)" /> has cleared it, and between assignments. The <see cref="Key" /> getter and
+    /// <see cref="Initialize" /> validation both treat a <see langword="null" /> value as a contract violation and
+    /// throw a <see cref="CryptographicException" />.
+    /// </remarks>
+    protected byte[]? KeyValue;
 
     /// <summary>
     /// Holds the required key size, in bytes, that the derived algorithm accepts. Supplied via the constructor.
@@ -103,6 +110,10 @@ public abstract class KeyedBlockHashAlgorithm<T>
         get
         {
             this.ThrowIfDisposed();
+
+            if (this.KeyValue is null)
+                throw new CryptographicException(CryptoResourceStrings.CryptographicException_KeyNotSet);
+
             return this.KeyValue.Copy();
         }
 
@@ -183,7 +194,7 @@ public abstract class KeyedBlockHashAlgorithm<T>
 
         if (disposing)
         {
-            CryptoHelpers.ClearAndNullify(ref this.KeyValue!);
+            CryptoHelpers.ClearAndNullify(ref this.KeyValue);
         }
 
         this._disposed = true;

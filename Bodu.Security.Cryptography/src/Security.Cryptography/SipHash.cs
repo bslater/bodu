@@ -304,9 +304,12 @@ public abstract class SipHash<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected override void OnKeyChanged()
     {
-        // Fix: use little-endian reads to match the SipHash specification and ProcessBlock; prior code used host-endian BitConverter, which would produce incorrect digests on big-endian hosts.
-        ulong k0 = BinaryPrimitives.ReadUInt64LittleEndian(this.KeyValue.AsSpan(0));
-        ulong k1 = BinaryPrimitives.ReadUInt64LittleEndian(this.KeyValue.AsSpan(8));
+        // OnKeyChanged is only invoked by the Key setter and Initialize, both of which guarantee
+        // KeyValue is non-null and of the expected length before this point.
+        // Use little-endian reads to match the SipHash specification and ProcessBlock; prior code used
+        // host-endian BitConverter, which would produce incorrect digests on big-endian hosts.
+        ulong k0 = BinaryPrimitives.ReadUInt64LittleEndian(this.KeyValue!.AsSpan(0));
+        ulong k1 = BinaryPrimitives.ReadUInt64LittleEndian(this.KeyValue!.AsSpan(8));
         this._v0 = InitialStates[0] ^ k0;
         this._v1 = InitialStates[1] ^ k1;
         this._v2 = InitialStates[2] ^ k0;
