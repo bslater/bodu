@@ -75,6 +75,20 @@ public abstract class BufferedBlockHashAlgorithm<T>
     where T : BufferedBlockHashAlgorithm<T>, new()
 {
     /// <summary>
+    /// Gets the canonical, fully-qualified algorithm name for this instance, including any size or variant
+    /// qualifiers (for example, <c>"Tiger/192"</c>, <c>"Skein-512-256"</c>, <c>"BLAKE2b-512"</c>,
+    /// <c>"ASCON-HASH256"</c>, <c>"SipHash-2-4-64"</c>).
+    /// </summary>
+    /// <returns>A string identifying the algorithm and its current configuration.</returns>
+    /// <remarks>
+    /// Derived classes implement this property to expose a stable, consumer-facing identifier suitable for
+    /// logging, telemetry, registry keys, or interop with hash-name catalogues. Implementations should be
+    /// pure and side-effect-free — the value may be queried before any input has been consumed and after
+    /// disposal as part of error reporting.
+    /// </remarks>
+    public abstract string AlgorithmName { get; }
+
+    /// <summary>
     /// The fixed size, in bytes, of each block consumed by the algorithm.
     /// </summary>
     protected readonly int BlockSizeBytes;

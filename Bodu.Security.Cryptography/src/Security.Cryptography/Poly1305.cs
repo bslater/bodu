@@ -128,6 +128,17 @@ public sealed class Poly1305
     /// <inheritdoc />
     public override bool CanTransformMultipleBlocks => true;
 
+    /// <inheritdoc />
+    /// <remarks>The published name is simply <c>"Poly1305"</c>; the 128-bit tag width is fixed by the specification.</remarks>
+    public override string AlgorithmName
+    {
+        get
+        {
+            this.ThrowIfDisposed();
+            return "Poly1305";
+        }
+    }
+
     /// <summary>
     /// Releases the unmanaged resources used by the algorithm and clears the key from memory.
     /// </summary>

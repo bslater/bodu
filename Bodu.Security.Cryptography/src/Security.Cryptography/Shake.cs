@@ -164,6 +164,20 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     /// <inheritdoc />
     public override bool CanTransformMultipleBlocks => true;
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// Returns either <c>"SHAKE128"</c> or <c>"SHAKE256"</c> matching the security level selected at construction.
+    /// The output length is independent of the algorithm name and is reflected by <see cref="HashSize" />.
+    /// </remarks>
+    public override string AlgorithmName
+    {
+        get
+        {
+            this.ThrowIfDisposed();
+            return $"SHAKE{this._securityLevel}";
+        }
+    }
+
     /// <summary>
     /// Gets the security level, in bits, of the SHAKE variant in use.
     /// </summary>

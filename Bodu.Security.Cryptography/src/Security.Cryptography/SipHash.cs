@@ -130,7 +130,7 @@ public abstract class SipHash<T>
     /// </item>
     /// </list>
     /// </remarks>          
-    public string AlgorithmName
+    public override string AlgorithmName
     {
         get
         {

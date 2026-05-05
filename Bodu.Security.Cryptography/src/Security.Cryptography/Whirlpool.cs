@@ -81,6 +81,25 @@ public sealed partial class Whirlpool
     /// <inheritdoc />
     public override bool CanTransformMultipleBlocks => true;
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// Returns one of <c>"Whirlpool-0"</c>, <c>"Whirlpool-T"</c>, or <c>"Whirlpool"</c> matching the configured
+    /// <see cref="Version" /> — corresponding to the 2000, 2001, and ISO/IEC 10118-3 (2003) revisions respectively.
+    /// </remarks>
+    public override string AlgorithmName
+    {
+        get
+        {
+            this.ThrowIfDisposed();
+            return this._version switch
+            {
+                WhirlpoolVersion.WhirlpoolInfo1 => "Whirlpool-0",
+                WhirlpoolVersion.WhirlpoolInfo2 => "Whirlpool-T",
+                _ => "Whirlpool",
+            };
+        }
+    }
+
     /// <summary>
     /// Gets or sets the published <see cref="WhirlpoolVersion" /> used to compute the hash value.
     /// </summary>

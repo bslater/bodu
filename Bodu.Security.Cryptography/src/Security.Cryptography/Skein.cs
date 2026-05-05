@@ -197,7 +197,7 @@ public abstract partial class Skein<T>
     /// </summary>
     /// <returns>A string of the form <c>"Skein-<i>s</i>-<i>h</i>"</c> — e.g. <c>"Skein-512-256"</c>.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    public string AlgorithmName
+    public override string AlgorithmName
     {
         get
         {

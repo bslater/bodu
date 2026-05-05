@@ -168,6 +168,17 @@ public sealed class Blake3
     public override bool CanTransformMultipleBlocks => true;
 
     /// <inheritdoc />
+    /// <remarks>BLAKE3 has a fixed 256-bit default output; the published name is simply <c>"BLAKE3"</c>.</remarks>
+    public override string AlgorithmName
+    {
+        get
+        {
+            this.ThrowIfDisposed();
+            return "BLAKE3";
+        }
+    }
+
+    /// <inheritdoc />
     /// <remarks>
     /// Clears the CV stack and restores <see cref="_chunkCv" /> to the BLAKE3 initialisation vector, ready for a new
     /// chunk. The inherited residual buffer and counters are cleared by the base call (which also throws

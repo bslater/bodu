@@ -104,7 +104,7 @@ public sealed partial class Tiger
     /// finalization to match the configured <see cref="HashSize" />.
     /// </para>
     /// </remarks>
-    public string AlgorithmName
+    public override string AlgorithmName
     {
         get
         {

@@ -87,6 +87,17 @@ public abstract partial class Snefru<T>
     public override bool CanTransformMultipleBlocks => true;
 
     /// <inheritdoc />
+    /// <remarks>The format is <c>"Snefru/<i>n</i>"</c>, where <i>n</i> is the configured output size in bits.</remarks>
+    public override string AlgorithmName
+    {
+        get
+        {
+            this.ThrowIfDisposed();
+            return $"Snefru/{this.HashSizeValue}";
+        }
+    }
+
+    /// <inheritdoc />
     /// <remarks>Clears the Snefru chaining state to all zeros, as required by the algorithm specification.</remarks>
     public override void Initialize()
     {
