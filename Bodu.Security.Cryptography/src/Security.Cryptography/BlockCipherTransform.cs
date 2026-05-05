@@ -178,7 +178,11 @@ public abstract class BlockCipherTransform : ICryptoTransform
 
         this.ClearDeferredInput();
 
+        // Cascade disposal to the mode transform so it can zero its chaining vector, counter,
+        // tweak, or feedback register before the underlying cipher is released.
+        this._mode.Dispose();
         this._cipher.Dispose();
+
         this._disposed = true;
         GC.SuppressFinalize(this);
     }
