@@ -63,12 +63,22 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     }
 
     /// <summary>
-    /// Verifies that <see cref="ICryptoTransform.TransformFinalBlock(byte[], int, int)" /> rejects an input
-    /// count that is not an exact multiple of <see cref="ICryptoTransform.InputBlockSize" /> for raw block
-    /// cipher transforms.
+    /// Verifies that <see cref="ICryptoTransform.TransformFinalBlock(byte[], int, int)" /> on an
+    /// encryptor with the default <see cref="PaddingMode.PKCS7" /> accepts a partial-block input
+    /// and pads it out to exactly one full block of ciphertext.
     /// </summary>
+    /// <remarks>
+    /// Pre-#208 <see cref="BlockCipherTransform.TransformFinalBlock" /> ran an
+    /// alignment-multiple validator on the raw input <strong>before</strong> the padding step,
+    /// so this call surfaced a <see cref="CryptographicException" /> with a
+    /// "block length must be a positive multiple" message — incompatible with the
+    /// <see cref="System.Security.Cryptography.CryptoStream.FlushFinalBlock" /> contract that
+    /// hands off whatever residual sits in its buffer (typically <c>1..blockSize-1</c> bytes
+    /// after the last aligned chunk has flowed through <c>TransformBlock</c>). #208 moved the
+    /// alignment check off the encrypt path entirely; this test pins the corrected behaviour.
+    /// </remarks>
     [TestMethod]
-    public void TransformFinalBlock_WhenInputCountIsNotMultipleOfInputBlockSize_ShouldThrowCryptographicException()
+    public void TransformFinalBlock_WhenInputCountIsNotMultipleOfInputBlockSize_ShouldPadAndEncrypt_fix()
     {
         using var transform = CreateAlgorithm();
 
@@ -80,10 +90,10 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
 
         byte[] inputBuffer = new byte[transform.InputBlockSize - 1];
 
-        Assert.ThrowsExactly<CryptographicException>(() =>
-        {
-            _ = transform.TransformFinalBlock(inputBuffer, 0, inputBuffer.Length);
-        });
+        byte[] cipherText = transform.TransformFinalBlock(inputBuffer, 0, inputBuffer.Length);
+
+        Assert.AreEqual(transform.InputBlockSize, cipherText.Length,
+            "PKCS7-padded partial-block input must produce exactly one block of ciphertext.");
     }
 
     /// <summary>
