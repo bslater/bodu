@@ -66,9 +66,9 @@ public partial class ICryptoTransformExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="ICryptoTransformExtensions.TransformBlock(ICryptoTransform,byte[])" />
-    /// returns an empty byte array when given an empty input, matching the
-    /// <see cref="ICryptoTransform" /> contract that a zero-byte <c>TransformBlock</c> is a no-op
-    /// that produces no output and does not advance any chaining state.
+    /// returns zero when given an empty input, matching the <see cref="ICryptoTransform" /> contract
+    /// that a zero-byte <c>TransformBlock</c> is a no-op that writes no output and does not advance
+    /// any chaining state.
     /// </summary>
     /// <remarks>
     /// Pre-#200 the underlying <c>BlockCipherTransform.TransformBlock</c> used
@@ -79,15 +79,14 @@ public partial class ICryptoTransformExtensionsTests
     /// pins the new behaviour.
     /// </remarks>
     [TestMethod]
-    public void TransformBlock_WhenArrayIsEmpty_ShouldReturnEmptyResult()
+    public void TransformBlock_WhenArrayIsEmpty_ShouldReturnZero()
     {
         using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
-        byte[] result = transform.TransformBlock(Array.Empty<byte>());
+        int written = transform.TransformBlock(Array.Empty<byte>());
 
-        Assert.IsNotNull(result);
-        Assert.AreEqual(0, result.Length,
-            "TransformBlock with an empty input must produce an empty output, not throw.");
+        Assert.AreEqual(0, written,
+            "TransformBlock with an empty input must report zero bytes written, not throw.");
     }
 
     /// <summary>
