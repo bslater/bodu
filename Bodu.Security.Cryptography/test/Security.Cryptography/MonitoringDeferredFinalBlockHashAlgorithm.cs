@@ -26,6 +26,9 @@ public sealed class MonitoringDeferredFinalBlockHashAlgorithm
     /// </summary>
     public int InitializeCallCount { get; private set; }
 
+    /// <inheritdoc />
+    public override string AlgorithmName => nameof(MonitoringDeferredFinalBlockHashAlgorithm);
+
     /// <summary>
     /// Initialises a new instance with the default 8-byte block size and an 8-bit digest.
     /// </summary>

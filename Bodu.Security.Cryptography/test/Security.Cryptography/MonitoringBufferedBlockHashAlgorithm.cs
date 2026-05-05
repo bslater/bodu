@@ -42,6 +42,9 @@ public sealed class MonitoringBufferedBlockHashAlgorithm
     /// </summary>
     public bool? LastDisposeFlag { get; private set; }
 
+    /// <inheritdoc />
+    public override string AlgorithmName => nameof(MonitoringBufferedBlockHashAlgorithm);
+
     /// <summary>
     /// Initialises a new instance with the default 8-byte block size.
     /// </summary>
