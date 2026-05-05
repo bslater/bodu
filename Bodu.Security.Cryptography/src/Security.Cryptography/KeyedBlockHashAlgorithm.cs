@@ -137,15 +137,9 @@ public abstract class KeyedBlockHashAlgorithm<T>
     /// </exception>
     public override void Initialize()
     {
-        this.ThrowIfDisposed();
+        // base.Initialize() throws ObjectDisposedException on a disposed instance, clears the residual
+        // buffer and counters, and invokes the OnInitialize hook on the most-derived class.
         base.Initialize();
-
-#if !NET6_0_OR_GREATER
-        // Reset state and finalised flag so a freshly-initialised instance may accept
-        // new input. On .NET 6+ the framework manages these transitions automatically.
-        this.State = 0;
-        this._finalized = false;
-#endif
 
         // A keyed MAC is unusable without a key. We refuse to silently regenerate one:
         // callers must explicitly set Key (or invoke GenerateKey on subclasses that

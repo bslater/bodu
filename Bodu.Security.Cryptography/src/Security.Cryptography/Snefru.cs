@@ -63,12 +63,6 @@ public abstract partial class Snefru<T>
 
     private bool _disposed = false;
 
-#if !NET6_0_OR_GREATER
-
-    // Required for .NET Standard 2.0 or older frameworks
-    private bool _finalized;
-#endif
-
     /// <summary>
     /// Initializes a new instance of the <see cref="Snefru{T}" /> class with the specified output hash size.
     /// </summary>
@@ -81,10 +75,9 @@ public abstract partial class Snefru<T>
             throw new ArgumentOutOfRangeException(nameof(hashSize),
                 string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
 
+        // _state is zero-filled by `new`; OnInitialize re-clears it on every Initialize() call.
         this._state = new uint[hashSize >> 5];
         HashSizeValue = hashSize;
-
-        InitializeState();
     }
 
     /// <inheritdoc />
@@ -94,13 +87,8 @@ public abstract partial class Snefru<T>
     public override bool CanTransformMultipleBlocks => true;
 
     /// <inheritdoc />
-    public override void Initialize()
-    {
-        this.ThrowIfDisposed();
-
-        base.Initialize();
-        InitializeState();
-    }
+    /// <remarks>Clears the Snefru chaining state to all zeros, as required by the algorithm specification.</remarks>
+    protected override void OnInitialize() => Array.Clear(this._state);
 
     /// <summary>
     /// Releases resources used by the algorithm and clears the internal state and working buffer.
@@ -239,12 +227,6 @@ public abstract partial class Snefru<T>
             this._buffer[last] ^= sboxEntry;
         }
     }
-
-    /// <summary>
-    /// Clears the internal state array to prepare for new input.
-    /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void InitializeState() => Array.Clear(this._state);
 
     /// <summary>
     /// Performs a circular right bitwise rotation on each word in the internal buffer.

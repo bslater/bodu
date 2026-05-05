@@ -155,13 +155,6 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
         }
     }
 
-    /// <inheritdoc />
-    public override void Initialize()
-    {
-        this.ThrowIfDisposed();
-        base.Initialize();
-    }
-
     /// <summary>
     /// Resets the algorithm-specific hash state and, if a key has been set, injects the key block as the first
     /// message block. Sealed so that the key-injection protocol cannot be accidentally bypassed by derived classes.

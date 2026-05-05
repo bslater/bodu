@@ -141,6 +141,7 @@ public abstract class BufferedBlockHashAlgorithm<T>
     /// invokes <see cref="OnInitialize" /> so that derived classes may reset any algorithm-specific state such as
     /// chaining variables or key-derived schedule.
     /// </summary>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <remarks>
     /// This method does not reset the <see cref="HashAlgorithm.State" /> property explicitly on .NET 6+ targets &#8212;
     /// the framework manages that transition. On earlier targets, derived classes that need the already-finalised
@@ -148,6 +149,7 @@ public abstract class BufferedBlockHashAlgorithm<T>
     /// </remarks>
     public override void Initialize()
     {
+        this.ThrowIfDisposed();
         this._residualBlock.Span.Clear();
         this._residualBytes = 0;
         this._totalBytes = 0UL;
