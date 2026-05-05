@@ -89,4 +89,14 @@ public sealed class EcbModeTransform : IBlockCipherModeTransform
 
         return input.Length;
     }
+
+    /// <summary>
+    /// Releases the resources used by this instance. ECB holds no per-message chaining state, so
+    /// this is a no-op beyond satisfying the <see cref="IBlockCipherModeTransform" /> contract.
+    /// The underlying <see cref="IBlockCipher" /> is not disposed by this type — ownership remains
+    /// with the caller.
+    /// </summary>
+    public void Dispose()
+    {
+    }
 }

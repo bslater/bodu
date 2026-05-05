@@ -43,6 +43,11 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
     /// because its public constructor accepts a block-sized IV — no nonce-length special-casing —
     /// keeping the test focus on the wrapper, not the underlying mode.
     /// </summary>
+    [TestMethod]
+    public void Gcm_RoundTrip_WithAssociatedData_ShouldRecoverPlaintext()
+    {
+        byte[] key = NewKey();
+        byte[] iv = NewGcmNonce();
     private static IAeadBlockCipherModeTransform NewTransform() =>
         new CcmModeTransform(new AesBlockCipher(NewKey()), NewIv());
 
@@ -212,6 +217,23 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
         using var decTransform = NewTransform();
         byte[] recovered = decTransform.Decrypt(ciphertextWithTag);
 
+    /// <summary>
+    /// Verifies that <see cref="AeadBlockCipherModeTransformExtensions.Decrypt(IAeadBlockCipherModeTransform, ReadOnlySpan{byte}, ReadOnlySpan{byte})" />
+    /// throws <see cref="ArgumentException" /> when the ciphertext+tag input is shorter than the tag size.
+    /// </summary>
+    [TestMethod]
+    public void Decrypt_WhenInputShorterThanTag_ShouldThrowArgumentException()
+    {
+        byte[] key = NewKey();
+        byte[] iv = NewGcmNonce();
+        using var cipher = new AesBlockCipher(key);
+        var aead = new GcmModeTransform(cipher, iv);
+
+        byte[] tooShort = new byte[aead.TagSize - 1];
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            aead.Decrypt(tooShort, AssociatedData);
+        });
         CollectionAssert.AreEqual(Plaintext, recovered,
             "Decrypt without AAD must recover plaintext encrypted with the matching no-AAD overload.");
     }
