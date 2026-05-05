@@ -42,7 +42,6 @@ public abstract partial class AsconHash<T>
     private readonly ulong _iv3;
     private readonly ulong _iv4;
 
-    private bool _disposed;
     private bool _useP12ForFinalPad;
     private AsconState _state;
 
@@ -120,16 +119,13 @@ public abstract partial class AsconHash<T>
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.IsDisposed) return;
 
         if (disposing)
         {
-            CryptoHelpers.ClearAndNullify(ref this.HashValue);
             this._state.Clear();
-            this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
         base.Dispose(disposing);
     }
 

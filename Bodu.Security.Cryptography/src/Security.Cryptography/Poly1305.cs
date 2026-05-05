@@ -86,8 +86,6 @@ public sealed class Poly1305
 
     // Polynomial accumulator
 
-    private bool _disposed = false;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="Poly1305" /> class with no key set.
     /// </summary>
@@ -148,20 +146,16 @@ public sealed class Poly1305
     /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.IsDisposed) return;
 
         if (disposing)
         {
-            CryptoHelpers.ClearAndNullify(ref this.HashValue);
             CryptoHelpers.Clear(this._acc);
             CryptoHelpers.Clear(this._r);
             CryptoHelpers.Clear(this._key);
             CryptoHelpers.Clear(this._s);
-
-            this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
         base.Dispose(disposing);
     }
 

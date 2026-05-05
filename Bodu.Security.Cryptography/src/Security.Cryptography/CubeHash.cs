@@ -323,16 +323,11 @@ public sealed class CubeHash
 
         if (disposing)
         {
-            this._finalizationRounds = this._initializationRounds = this._rounds = this._inputBlockSizeBytes = this._pendingBytes = 0;
-
-            if (this._state != null)
+            if (this._state is not null)
             {
-                CryptoHelpers.ClearAndNullify(ref this.HashValue);
                 CryptoHelpers.ClearAndNullify(ref this._state!);
                 CryptoHelpers.ClearAndNullify(ref this._initializedState!);
-
                 this._isInitializedStateCached = false;
-                this.HashSizeValue = 0;
             }
         }
 

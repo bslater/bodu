@@ -61,8 +61,6 @@ public abstract partial class Snefru<T>
     private readonly uint[] _buffer = new uint[TotalWords];          // internal working buffer used for permutation and round processing.
     private readonly uint[] _state;                                  // internal state used to accumulate the hash output across input blocks.
 
-    private bool _disposed = false;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="Snefru{T}" /> class with the specified output hash size.
     /// </summary>
@@ -113,18 +111,14 @@ public abstract partial class Snefru<T>
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.IsDisposed) return;
 
         if (disposing)
         {
             CryptoHelpers.Clear(this._buffer);
             CryptoHelpers.Clear(this._state);
-            CryptoHelpers.ClearAndNullify(ref HashValue);
-
-            this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
         base.Dispose(disposing);
     }
 

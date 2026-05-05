@@ -202,12 +202,12 @@ public sealed class Blake3
     /// </remarks>
     protected override void Dispose(bool disposing)
     {
+        if (this.IsDisposed) return;
+
         if (disposing)
         {
             _cvStack.Clear();
             CryptoHelpers.Clear(_chunkCv);
-            CryptoHelpers.ClearAndNullify(ref HashValue);
-            HashSizeValue = 0;
         }
 
         base.Dispose(disposing);

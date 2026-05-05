@@ -89,7 +89,6 @@ public abstract class SipHash<T>
 
     private static readonly int[] ValidHashSizes = { 64, 128 };
     private int _compressionRounds;
-    private bool _disposed = false;
     private int _finalizationRounds;
     private ulong _v0, _v1, _v2, _v3;
 
@@ -216,19 +215,13 @@ public abstract class SipHash<T>
     /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.IsDisposed) return;
 
         if (disposing)
         {
-            CryptoHelpers.ClearAndNullify(ref this.HashValue);
-
             this._v0 = this._v1 = this._v2 = this._v3 = 0;
-            this._compressionRounds = 0;
-            this._finalizationRounds = 0;
-            this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
         base.Dispose(disposing);
     }
 

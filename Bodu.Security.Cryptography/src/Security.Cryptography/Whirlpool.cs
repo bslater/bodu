@@ -63,7 +63,6 @@ public sealed partial class Whirlpool
     private readonly ulong[] _state = new ulong[8];
     private WhirlpoolVersion _version = WhirlpoolVersion.WhirlpoolInfo3;
     private bool _inputConsumed;
-    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Whirlpool" /> class configured for
@@ -170,16 +169,13 @@ public sealed partial class Whirlpool
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.IsDisposed) return;
 
         if (disposing)
         {
             CryptoHelpers.Clear(this._state);
-            CryptoHelpers.ClearAndNullify(ref this.HashValue);
-            this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
         base.Dispose(disposing);
     }
 

@@ -261,6 +261,20 @@ public abstract class BufferedBlockHashAlgorithm<T>
     }
 
     /// <summary>
+    /// Gets a value indicating whether this instance has been disposed. Read-only and updated exactly once by
+    /// <see cref="Dispose(bool)" /> after the residual buffer and counters have been cleared.
+    /// </summary>
+    /// <returns><see langword="true" /> once disposal has begun; otherwise <see langword="false" />.</returns>
+    /// <remarks>
+    /// Derived classes follow the canonical dispose pattern — guard the body of their own
+    /// <see cref="Dispose(bool)" /> override with <c>if (this.IsDisposed) return;</c>, clear their own state when
+    /// <c>disposing</c> is <see langword="true" />, and call <c>base.Dispose(disposing)</c> last. Derived classes
+    /// must not declare a private <c>_disposed</c> field of their own — the latch is owned exclusively by this
+    /// base class.
+    /// </remarks>
+    protected bool IsDisposed => this._disposed;
+
+    /// <summary>
     /// Throws an <see cref="ObjectDisposedException" /> if the instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">Thrown when the instance has already been disposed.</exception>

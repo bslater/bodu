@@ -93,7 +93,6 @@ public abstract partial class Skein<T>
     private ulong _messageBytesProcessed;
     private bool _hasProcessedAnyMessageBlock;
     private bool _isChainingValueCached;
-    private bool _disposed;
 
 #if !NET6_0_OR_GREATER
     private bool _finalized;
@@ -349,7 +348,7 @@ public abstract partial class Skein<T>
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.IsDisposed) return;
 
         if (disposing)
         {
@@ -357,17 +356,10 @@ public abstract partial class Skein<T>
             CryptoHelpers.Clear(this._initialChainingValue);
             CryptoHelpers.Clear(this._pendingBlock);
             CryptoHelpers.Clear(this._ubiCipherOutput);
-            CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
             this._cipher.Dispose();
-            this._isChainingValueCached = false;
-            this._pendingBytes = 0;
-            this._messageBytesProcessed = 0UL;
-            this._hasProcessedAnyMessageBlock = false;
-            this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
         base.Dispose(disposing);
     }
 

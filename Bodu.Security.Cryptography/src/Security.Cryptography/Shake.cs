@@ -104,7 +104,6 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
 
     private readonly ulong[] _state = new ulong[StateWords];
     private readonly int _securityLevel;
-    private bool _disposed;
 
     /// <summary>
     /// Initialises a new instance of the <see cref="Shake" /> class with a 256-bit output using SHAKE128 internals.
@@ -247,16 +246,13 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.IsDisposed) return;
 
         if (disposing)
         {
             CryptoHelpers.Clear(this._state);
-            CryptoHelpers.ClearAndNullify(ref this.HashValue);
-            this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
         base.Dispose(disposing);
     }
 

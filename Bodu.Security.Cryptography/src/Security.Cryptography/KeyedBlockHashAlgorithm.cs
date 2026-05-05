@@ -59,8 +59,6 @@ public abstract class KeyedBlockHashAlgorithm<T>
     /// </summary>
     protected readonly int KeySizeValue;
 
-    private bool _disposed = false;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="KeyedBlockHashAlgorithm{T}" /> class with the specified input block size and
     /// required key size.
@@ -190,14 +188,13 @@ public abstract class KeyedBlockHashAlgorithm<T>
     /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.IsDisposed) return;
 
         if (disposing)
         {
             CryptoHelpers.ClearAndNullify(ref this.KeyValue);
         }
 
-        this._disposed = true;
         base.Dispose(disposing);
     }
 }

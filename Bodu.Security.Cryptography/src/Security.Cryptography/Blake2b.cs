@@ -200,11 +200,11 @@ public sealed class Blake2b : KeyedDeferredFinalBlockHashAlgorithm<Blake2b>
     /// </remarks>
     protected override void Dispose(bool disposing)
     {
+        if (this.IsDisposed) return;
+
         if (disposing)
         {
             CryptoHelpers.Clear(this._h);
-            CryptoHelpers.ClearAndNullify(ref this.HashValue);
-            this.HashSizeValue = 0;
         }
 
         base.Dispose(disposing);
