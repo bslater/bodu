@@ -7,6 +7,16 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
+/// Probes <see cref="IBlockCipherModeTransform" /> implementations for an empty-input
+/// inconsistency: <see cref="CbcModeTransform.Transform" /> uses
+/// <c>CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false)</c>,
+/// so a zero-length input is a documented no-op (see <c>CbcModeTransformTests.Transform_WithEmptyInput_ShouldNotThrow</c>).
+/// <see cref="CfbModeTransform" />, <see cref="OfbModeTransform" />, <see cref="EcbModeTransform" />,
+/// and <see cref="XtsModeTransform" /> all use the default <c>throwIfZero: true</c>, so a zero-length
+/// input raises <see cref="System.Security.Cryptography.CryptographicException" /> with a
+/// "block length must be a positive multiple" message — contradicting the CBC contract and the
+/// natural expectation that processing zero bytes is a no-op.
+/// </summary>
 /// Pins the empty-input no-op contract for every <see cref="IBlockCipherModeTransform" />
 /// implementation. <see cref="CbcModeTransform" />, <see cref="CfbModeTransform" />,
 /// <see cref="OfbModeTransform" />, <see cref="EcbModeTransform" />, and
@@ -36,6 +46,10 @@ public abstract partial class BlockCipherModeTests<TMode>
 
     /// <summary>
     /// Verifies that <see cref="IBlockCipherModeTransform.Transform" /> with a zero-length input
+    /// span is a no-op rather than throwing — the consistency contract that
+    /// <see cref="CbcModeTransform" /> already honours via <c>throwIfZero: false</c>. The other
+    /// confidentiality-only modes currently throw <see cref="System.Security.Cryptography.CryptographicException" />
+    /// here; this test fails until they are aligned with CBC.
     /// span is a no-op rather than throwing — the consistency contract every mode honours via
     /// <c>throwIfZero: false</c> as of #200.
     /// </summary>
