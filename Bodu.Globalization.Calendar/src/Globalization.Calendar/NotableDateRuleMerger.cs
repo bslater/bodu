@@ -64,6 +64,13 @@ internal static class NotableDateRuleMerger
 		return merged;
 	}
 
+	/// <summary>
+	/// Resolves the effective name for the merged rule, applying body name → flat local name → source name precedence.
+	/// </summary>
+	/// <param name="sourceName">The inherited rule name.</param>
+	/// <param name="flatLocalName">The <c>as</c> attribute on the <c>&lt;Use&gt;</c> directive, if any.</param>
+	/// <param name="bodyName">The name declared inside the override body, if any.</param>
+	/// <returns>The resolved name.</returns>
 	private static string ResolveName(string sourceName, string? flatLocalName, string? bodyName)
 	{
 		if (!string.IsNullOrWhiteSpace(bodyName))
@@ -73,6 +80,13 @@ internal static class NotableDateRuleMerger
 		return sourceName;
 	}
 
+	/// <summary>
+	/// Merges the override tag list into the inherited tag set, optionally clearing the inherited baseline first.
+	/// </summary>
+	/// <param name="inherited">The tag set from the source rule.</param>
+	/// <param name="overrideTags">Additional tags declared in the override body.</param>
+	/// <param name="clearTags">When <see langword="true" />, the inherited tags are discarded before adding override tags.</param>
+	/// <returns>The merged tag set.</returns>
 	private static ImmutableHashSet<string> MergeTags(
 		ImmutableHashSet<string> inherited,
 		ImmutableArray<string> overrideTags,
@@ -95,6 +109,15 @@ internal static class NotableDateRuleMerger
 		return builder.ToImmutable();
 	}
 
+	/// <summary>
+	/// Merges the override adjustments into the inherited adjustment list. Matching keys replace their inherited counterpart
+	/// in place; non-matching keys are appended. The inherited baseline may be cleared first when <paramref name="clearAdjustments" />
+	/// is <see langword="true" />.
+	/// </summary>
+	/// <param name="inherited">The adjustment list from the source rule.</param>
+	/// <param name="overrideAdjustments">Adjustments declared in the override body.</param>
+	/// <param name="clearAdjustments">When <see langword="true" />, the inherited adjustments are discarded before merging.</param>
+	/// <returns>The merged adjustment list.</returns>
 	private static ImmutableArray<ObservanceAdjustment> MergeAdjustments(
 		ImmutableArray<ObservanceAdjustment> inherited,
 		ImmutableArray<ObservanceAdjustment> overrideAdjustments,
@@ -125,6 +148,13 @@ internal static class NotableDateRuleMerger
 		return builder.ToImmutable();
 	}
 
+	/// <summary>
+	/// Finds the index of the adjustment whose <see cref="ObservanceAdjustment.Key" /> matches <paramref name="key" />
+	/// (case-insensitive), or returns <c>-1</c> if not found.
+	/// </summary>
+	/// <param name="builder">The mutable adjustment list being searched.</param>
+	/// <param name="key">The key to locate.</param>
+	/// <returns>The zero-based index, or <c>-1</c> when no match is found.</returns>
 	private static int IndexOfKey(ImmutableArray<ObservanceAdjustment>.Builder builder, string key)
 	{
 		for (int i = 0; i < builder.Count; i++)
@@ -136,6 +166,14 @@ internal static class NotableDateRuleMerger
 		return -1;
 	}
 
+	/// <summary>
+	/// Replaces all strategy-specific fields on <paramref name="rule" /> with the values from <paramref name="body" />,
+	/// clearing fields that are irrelevant to the new strategy.
+	/// </summary>
+	/// <param name="rule">The rule whose strategy fields are being replaced.</param>
+	/// <param name="strategy">The new resolution strategy.</param>
+	/// <param name="body">The override body supplying the replacement field values.</param>
+	/// <returns>A new rule with the strategy and its associated fields replaced.</returns>
 	private static NotableDateRule ApplyStrategyOverride(NotableDateRule rule, DateResolutionStrategy strategy, NotableDateRuleOverrideBody body) =>
 		strategy switch
 		{

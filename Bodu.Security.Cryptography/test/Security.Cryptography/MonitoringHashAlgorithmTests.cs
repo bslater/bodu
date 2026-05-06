@@ -18,6 +18,13 @@ public partial class MonitoringHashAlgorithmTests
         InputBlockSize = 1,
         OutputBlockSize = 1,
         MinNonZeroBytesForLongInput = 2,
+        KnownAnswers = new()
+        {
+            Empty = "00000000",
+            Abc = "C6000000",
+            Zeros16 = "00000000",
+            QuickBrownFox = "D90F0000",
+        },
     };
 
     /// <inheritdoc />
@@ -59,12 +66,4 @@ public partial class MonitoringHashAlgorithmTests
         "78000000", "88000000",
     };
 
-    /// <inheritdoc />
-    protected override IReadOnlyDictionary<string, string> GetExpectedHashesForNamedInputs(SingleTestVariant variant) => new Dictionary<string, string>
-    {
-        ["Empty"] = "00000000",
-        ["ABC"] = "C6000000",
-        ["Zeros_16"] = "00000000",
-        ["QuickBrownFox"] = "D90F0000",
-    };
 }

@@ -18,6 +18,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </remarks>
 public sealed class CompositePluginTrustPolicy : IPluginTrustPolicy
 {
+	/// <summary>The ordered list of child policies evaluated in sequence; the first rejection short-circuits the rest.</summary>
 	private readonly ImmutableArray<IPluginTrustPolicy> _policies;
 
 	/// <summary>

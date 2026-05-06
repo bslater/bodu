@@ -34,7 +34,35 @@ namespace Bodu.Security.Cryptography;
 /// recovers the XOR of the two plaintexts — so callers must ensure each counter value is used at
 /// most once per key.
 /// </para>
+/// <para>
+/// <strong>When to use CTR.</strong> The right confidentiality-only mode for new code that needs random
+/// access, parallelisable encryption, or a stream-cipher shape — disk encryption layers without
+/// authentication, network protocols where authentication is provided separately, and anywhere a precomputed
+/// keystream is useful. CTR is also the keystream layer of the major AEAD modes; if you need authentication
+/// as well, reach for <see cref="GcmModeTransform"/> (CTR + GHASH) or <see cref="EaxModeTransform"/>
+/// (CTR + OMAC) directly rather than building it on top of bare CTR.
+/// </para>
+/// <para>
+/// The counter increment is parallelisable: every block's keystream can be produced independently, so
+/// throughput scales with available cores or SIMD width.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+///
+/// // Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.CTR instead of using this directly.
+/// using IBlockCipher cipher = new AesBlockCipher(key);
+/// // Initial counter is typically `nonce || zero-counter`; the nonce must never repeat under one key.
+/// byte[] initialCounter = BuildInitialCounter(nonce);
+/// IBlockCipherModeTransform ctr = new CtrModeTransform(cipher, initialCounter);
+///
+/// byte[] ciphertext = new byte[plaintext.Length];
+/// int written = ctr.Transform(plaintext, ciphertext, encrypt: true);
+/// // The same call shape decrypts: encrypt: true / encrypt: false produce identical results.
+/// </code>
+/// </example>
 /// <seealso href="../guides/cryptography/cipher-modes.html#ctr--parallel-seekable-stream-shaped">CTR walk-through in the cipher-modes guide</seealso>
 public sealed class CtrModeTransform : IBlockCipherModeTransform
 {
@@ -42,6 +70,7 @@ public sealed class CtrModeTransform : IBlockCipherModeTransform
     private readonly byte[] _initialCounter;
     private readonly byte[] _counter;
     private bool _counterWrapped;
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CtrModeTransform" /> class.
@@ -92,6 +121,23 @@ public sealed class CtrModeTransform : IBlockCipherModeTransform
         }
 
         return input.Length;
+    }
+
+    /// <summary>
+    /// Releases the resources used by this instance and zeroes the retained counter state so that
+    /// key-equivalent counter values do not linger in memory after disposal. The underlying
+    /// <see cref="IBlockCipher" /> is not disposed by this type — ownership remains with the caller.
+    /// </summary>
+    /// <remarks>Idempotent.</remarks>
+    public void Dispose()
+    {
+        if (this._disposed)
+            return;
+
+        CryptographicOperations.ZeroMemory(this._counter);
+        CryptographicOperations.ZeroMemory(this._initialCounter);
+        this._disposed = true;
+        GC.SuppressFinalize(this);
     }
 
     // ── Private helpers ────────────────────────────────────────────────────────────────────────

@@ -10,9 +10,48 @@ using System.Runtime.CompilerServices;
 namespace Bodu.Extensions;
 
 /// <summary>
-/// Provides a set of <see langword="static"/> ( <see langword="Shared"/> in Visual Basic) methods that extend the
-/// <see cref="System.DateOnly"/> class.
+/// Provides calendar-arithmetic operations over <see cref="DateOnly"/> — age, period anchors, weekday navigation, week and quarter
+/// numbering, and culture-aware formatting helpers — that complement the small surface shipped with <see cref="DateOnly"/> itself.
 /// </summary>
+/// <remarks>
+/// <para>
+/// <see cref="DateOnly"/> intentionally exposes very little behaviour beyond a numeric day count, leaving callers to build calendar
+/// logic by hand or to fall back to <see cref="DateTime"/>. This class supplies the period and weekday arithmetic that most
+/// scheduling, reporting, and fiscal-calendar code needs, expressed directly on <see cref="DateOnly"/> so the time component
+/// cannot leak in by accident.
+/// </para>
+/// <para>
+/// The API surface clusters into four groups: relative period anchors (<c>FirstDateOfMonth</c>, <c>FirstDateOfQuarter</c>,
+/// <c>FirstDateOfYear</c> and their <c>LastDateOf…</c> counterparts), weekday navigation (<c>NextDateOfWeek</c>,
+/// <c>PreviousDateOfWeek</c>, <c>NearestDateOfWeek</c>, <c>NthDateOfWeekInMonth</c>), period predicates and counters
+/// (<c>IsLeapYear</c>, <c>IsWeekend</c>, <c>IsInRange</c>, <c>WeekOfMonth</c>, <c>WeekOfYear</c>, <c>Quarter</c>), and culture-aware
+/// formatting (<c>DayName</c>, <c>MonthName</c>).
+/// </para>
+/// <para>
+/// Methods that emit text or read <see cref="System.Globalization.Calendar"/> data accept an optional culture or calendar
+/// argument; when omitted they fall back to <see cref="System.Globalization.CultureInfo.CurrentCulture"/>, so the same call
+/// produces different text on different threads. Methods that perform pure date arithmetic (period anchors, weekday navigation)
+/// are culture-neutral, allocation-free, and deterministic. <see cref="ArgumentOutOfRangeException"/> is thrown when an
+/// arithmetic operation would leave the supported <see cref="DateOnly"/> range.
+/// </para>
+/// <example>
+/// <code language="csharp">
+/// var date = new DateOnly(2025, 4, 30);
+///
+/// // Anchor to the first Monday in this month.
+/// DateOnly firstMonday = date.FirstDateOfWeekInMonth(DayOfWeek.Monday);
+/// // => 2025-04-07
+///
+/// // Walk to the previous Friday, even if today is already a Friday.
+/// DateOnly priorFriday = date.PreviousDateOfWeek(DayOfWeek.Friday);
+/// // => 2025-04-25
+///
+/// // Compute the calendar week within the month using ISO rules.
+/// int weekOfMonth = date.WeekOfMonth(CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+/// // => 5
+/// </code>
+/// </example>
+/// </remarks>
 public static partial class DateOnlyExtensions
 {
     /// <summary>
@@ -68,7 +107,7 @@ public static partial class DateOnlyExtensions
     /// scheduling boundaries tied to weekdays.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static int GetFirstDayOfWeekInMonthDayNumber(int year, int month, DayOfWeek dayOfWeek) => DateTimeExtensions.GetDayNumberUnchecked(year, month, 1)
+    internal static int GetFirstDateOfWeekInMonthDayNumber(int year, int month, DayOfWeek dayOfWeek) => DateTimeExtensions.GetDayNumberUnchecked(year, month, 1)
             + (((int)dayOfWeek - (int)GetDayOfWeekFromDayNumber(DateTimeExtensions.GetDayNumberUnchecked(year, month, 1)) + 7) % 7);
 
     /// <summary>
@@ -88,7 +127,7 @@ public static partial class DateOnlyExtensions
     /// alignment to business rules and event planning.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static int GetLastDayOfWeekInMonthDayNumber(int year, int month, DayOfWeek dayOfWeek) => DateTimeExtensions.GetDayNumberUnchecked(year, month, DateTime.DaysInMonth(year, month))
+    internal static int GetLastDateOfWeekInMonthDayNumber(int year, int month, DayOfWeek dayOfWeek) => DateTimeExtensions.GetDayNumberUnchecked(year, month, DateTime.DaysInMonth(year, month))
             - (((int)GetDayOfWeekFromDayNumber(DateTimeExtensions.GetDayNumberUnchecked(year, month, DateTime.DaysInMonth(year, month))) - (int)dayOfWeek + 7) % 7);
 
     /// <summary>

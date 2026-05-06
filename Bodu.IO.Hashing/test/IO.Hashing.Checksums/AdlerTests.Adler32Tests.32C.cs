@@ -21,8 +21,32 @@ public sealed partial class Adler32CTests
         {
             Empty = "00000001",
             Abc = "018D00C7",
+
+            // Canonical Adler-32C (modulus 65536) of "The quick brown fox jumps over the
+            // lazy dog", derived from the per-byte recurrence and verified against the
+            // scalar reference implementation. Distinct from canonical Adler-32 because
+            // 89037 mod 65536 = 0x5BCD whereas 89037 mod 65521 = 0x5BDC.
             QuickBrownFox = "5BCD0FDA",
             Zeros16 = "00100001",
+
+            // Long-input regression vectors for issue #127 — Adler-32C uses modulus 65536, so
+            // expected digests are computed by the per-byte canonical recurrence (and verified
+            // against the scalar reference implementation) for the (byte)(i & 0xFF) sequence.
+            Additional = new[]
+            {
+                new NonCryptographicHashKnownAnswer
+                {
+                    Name = "ModuloByte1K",
+                    Input = AdlerSimdRegressionInputs.ModuloByte1K,
+                    ExpectedHex = "AE00FE01",
+                },
+                new NonCryptographicHashKnownAnswer
+                {
+                    Name = "ModuloByte8K",
+                    Input = AdlerSimdRegressionInputs.ModuloByte8K,
+                    ExpectedHex = "7000F001",
+                },
+            },
         },
     };
 
@@ -31,10 +55,16 @@ public sealed partial class Adler32CTests
     /// Entries are the documented Adler-32C known-answer sequence for incremental inputs
     /// <c>[]</c>, <c>[0x00]</c>, <c>[0x00, 0x01]</c>, … <c>[0x00 .. 0x0E]</c>.
     /// </remarks>
-    protected override IEnumerable<string> GetIncrementalHashValue(SingleTestVariant variant) => new[]
+    protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
     {
-        "00000001", "00010001", "00030002", "00070004", "000E0007", "0019000B",
-        "00290010", "003F0016", "005C001D", "00810025", "00AF002E", "00E70038",
+        "00000001", "00010001", "00030002", "00070004",
+        "000E0007", "0019000B", "00290010", "003F0016",
+        "005C001D", "00810025", "00AF002E", "00E70038",
         "012A0043", "0179004F", "01D5005C", "023F006A",
+        "02B80079", "03410089", "03DB009A", "048700AC",
+        "054600BF", "061900D3", "070100E8", "07FF00FE",
+        "09140115", "0A41012D", "0B870146", "0CE70160",
+        "0E62017B", "0FF90197", "11AD01B4", "137F01D2",
+        "157001F1", "17810211",
     };
 }

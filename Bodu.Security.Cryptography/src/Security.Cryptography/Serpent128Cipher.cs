@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Serpent128Cipher.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -63,7 +63,7 @@ public sealed class Serpent128Cipher
     {
         if (key.Length != 16 && key.Length != 24 && key.Length != 32)
             throw new ArgumentException(
-                string.Format(ResourceStrings.CryptographicException_InvalidKeySize, key.Length * 8, "128, 192, 256"),
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize, key.Length * 8, "128, 192, 256"),
                 nameof(key));
 
         this._roundKeys = new uint[RoundKeyWordCount];
@@ -79,7 +79,7 @@ public sealed class Serpent128Cipher
         this.ThrowIfDisposed();
         if (input.Length != BlockSizeBytes || output.Length != BlockSizeBytes)
             throw new ArgumentException(
-                string.Format(ResourceStrings.CryptographicException_InvalidBlockLength, BlockSizeBytes));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, BlockSizeBytes));
 
         uint x0 = BinaryReadUInt32LE(input, 0);
         uint x1 = BinaryReadUInt32LE(input, 4);
@@ -127,7 +127,7 @@ public sealed class Serpent128Cipher
         this.ThrowIfDisposed();
         if (input.Length != BlockSizeBytes || output.Length != BlockSizeBytes)
             throw new ArgumentException(
-                string.Format(ResourceStrings.CryptographicException_InvalidBlockLength, BlockSizeBytes));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, BlockSizeBytes));
 
         uint x0 = BinaryReadUInt32LE(input, 0);
         uint x1 = BinaryReadUInt32LE(input, 4);

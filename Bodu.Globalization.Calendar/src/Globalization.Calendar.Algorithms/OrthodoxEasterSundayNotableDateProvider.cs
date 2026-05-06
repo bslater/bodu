@@ -18,20 +18,20 @@ namespace Bodu.Globalization.Calendar.Providers;
 /// date. The optional <see cref="SysGlobal.Calendar" /> parameter is accepted only when it is <see langword="null" /> or a
 /// <see cref="SysGlobal.JulianCalendar" />.
 /// </remarks>
-public sealed class OrthodoxEasterSundayNotableDateProvider 
+public sealed class OrthodoxEasterSundayNotableDateProvider
     : EasterSundayNotableDateProviderBase
 {
-
     /// <inheritdoc />
     public override int MinSupportedYear => 1;
-    
+
+    /// <summary>A shared <see cref="SysGlobal.JulianCalendar" /> instance used to project Julian Easter dates to Gregorian equivalents.</summary>
     private static readonly SysGlobal.JulianCalendar JulianCalendar = new();
 
     /// <inheritdoc />
     protected override string Name => "Orthodox Easter Sunday";
 
     /// <inheritdoc />
-    protected override NotableDateCategory Category => NotableDateCategory.Cultural;
+    protected override NotableDateCategory Category => NotableDateCategory.Religious;
 
     /// <inheritdoc />
     protected override Type? DefaultCalendarType => typeof(SysGlobal.JulianCalendar);

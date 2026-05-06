@@ -23,6 +23,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </remarks>
 public sealed class StrongNamePluginTrustPolicy : IPluginTrustPolicy
 {
+	/// <summary>The set of normalised, lowercase-hex public-key tokens that are permitted to load.</summary>
 	private readonly HashSet<string> _allowedTokens;
 
 	/// <summary>
@@ -49,9 +50,15 @@ public sealed class StrongNamePluginTrustPolicy : IPluginTrustPolicy
 			: new PluginTrustResult(Trusted: false, Reason: $"Public-key token '{token}' is not in the allowlist.");
 	}
 
+	/// <summary>Normalises a public-key token string to trimmed lowercase, returning an empty string for <see langword="null" /> input.</summary>
+	/// <param name="token">The raw token string.</param>
+	/// <returns>The normalised lowercase token.</returns>
 	private static string NormaliseToken(string token) =>
 		(token ?? string.Empty).Trim().ToLowerInvariant();
 
+	/// <summary>Converts a byte array to its lowercase hexadecimal string representation.</summary>
+	/// <param name="bytes">The bytes to convert.</param>
+	/// <returns>A lowercase hex string of length <c>bytes.Length * 2</c>.</returns>
 	private static string ToHexString(byte[] bytes)
 	{
 		var chars = new char[bytes.Length * 2];
@@ -65,5 +72,8 @@ public sealed class StrongNamePluginTrustPolicy : IPluginTrustPolicy
 		return new string(chars);
 	}
 
+	/// <summary>Returns the lowercase hex character for a nibble value in the range 0–15.</summary>
+	/// <param name="nibble">The nibble value (0–15).</param>
+	/// <returns>The corresponding lowercase hexadecimal character.</returns>
 	private static char GetHexChar(int nibble) => (char)(nibble < 10 ? '0' + nibble : 'a' + (nibble - 10));
 }

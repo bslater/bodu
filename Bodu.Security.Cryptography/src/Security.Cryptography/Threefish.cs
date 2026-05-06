@@ -6,6 +6,7 @@
 
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -24,9 +25,29 @@ namespace Bodu.Security.Cryptography;
 /// The <see cref="BlockMode" /> property replaces the standard <see cref="SymmetricAlgorithm.Mode" /> property, enabling the use of
 /// additional or non-standard block cipher modes such as <see cref="CipherBlockMode.CTR" /> and <see cref="CipherBlockMode.OFB" />.
 /// </para>
+/// <para>
+/// <strong>Concrete variants.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description><see cref="Threefish256"/> — 256-bit block, 256-bit key, 128-bit tweak.</description></item>
+///   <item><description><see cref="Threefish512"/> — 512-bit block, 512-bit key, 128-bit tweak (the recommended general-purpose default).</description></item>
+///   <item><description><see cref="Threefish1024"/> — 1024-bit block, 1024-bit key, 128-bit tweak.</description></item>
+/// </list>
+/// <para>
+/// Threefish is the cipher under the UBI mode of <see cref="Skein{T}"/> — the same key-and-tweak primitive that
+/// drives Skein's hash compression. For a non-tweakable, hardware-accelerated default prefer
+/// <see cref="System.Security.Cryptography.Aes"/>. For try-pattern transform creation that surfaces bad
+/// key/IV/tweak combinations as a <see langword="false"/> return, see
+/// <see cref="Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions"/>.
+/// </para>
 /// <note type="important">This class is not intended to be instantiated directly. Use <see cref="Threefish256" />,
 /// <see cref="Threefish512" />, or <see cref="Threefish1024" /> instead.</note>
 /// </remarks>
+/// <seealso cref="Threefish256"/>
+/// <seealso cref="Threefish512"/>
+/// <seealso cref="Threefish1024"/>
+/// <seealso cref="TweakableSymmetricAlgorithm"/>
+/// <seealso cref="Skein{T}"/>
 public abstract class Threefish
     : TweakableSymmetricAlgorithm
 {
@@ -41,6 +62,8 @@ public abstract class Threefish
     protected readonly int KeySizeBytes;
 
     private readonly int DefaultTweakSizeBytes;
+
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Threefish" /> class with the specified block and tweak sizes.
@@ -58,6 +81,7 @@ public abstract class Threefish
         this.LegalBlockSizesValue = new[] { new KeySizes(blockSizeBits, blockSizeBits, 0) };
         this.LegalKeySizesValue = new[] { new KeySizes(blockSizeBits, blockSizeBits, 0) };
         this.LegalTweakSizesValue = new[] { new KeySizes(tweakSizeBits, tweakSizeBits, 0) };
+        this.TweakSizeValue = tweakSizeBits;
 
         this.ModeValue = CipherMode.CBC;
         this.Padding = PaddingMode.PKCS7;
@@ -77,6 +101,7 @@ public abstract class Threefish
     /// <inheritdoc />
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak)
     {
+        this.ThrowIfDisposed();
         this.Validate(rgbKey, rgbIV, tweak);
         var engine = this.CreateCipher(rgbKey, tweak);
         return new ThreefishTransform(engine, this.BlockMode, this.Padding, rgbIV, false);
@@ -85,22 +110,64 @@ public abstract class Threefish
     /// <inheritdoc />
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak)
     {
+        this.ThrowIfDisposed();
         this.Validate(rgbKey, rgbIV, tweak);
         var engine = this.CreateCipher(rgbKey, tweak);
         return new ThreefishTransform(engine, this.BlockMode, this.Padding, rgbIV, true);
     }
 
     /// <inheritdoc />
-    public override void GenerateIV() =>
+    public override void GenerateIV()
+    {
+        this.ThrowIfDisposed();
         this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeBytes);
+    }
 
     /// <inheritdoc />
-    public override void GenerateKey() =>
+    public override void GenerateKey()
+    {
+        this.ThrowIfDisposed();
         this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeBytes);
+    }
 
     /// <inheritdoc />
-    public override void GenerateTweak() =>
+    public override void GenerateTweak()
+    {
+        this.ThrowIfDisposed();
         this.TweakValue = CryptoHelpers.GetRandomNonZeroBytes(this.DefaultTweakSizeBytes);
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Marks the instance as disposed, zeroes any retained key and IV buffers, and delegates the tweak buffer cleanup to the
+    /// base implementation.
+    /// </remarks>
+    protected override void Dispose(bool disposing)
+    {
+        if (!this._disposed)
+        {
+            if (disposing)
+            {
+                CryptoHelpers.Clear(this.KeyValue);
+                CryptoHelpers.Clear(this.IVValue);
+            }
+
+            this._disposed = true;
+        }
+
+        base.Dispose(disposing);
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ObjectDisposedException" /> whose <see cref="ObjectDisposedException.ObjectName" /> matches the
+    /// concrete algorithm type's <see cref="Type.FullName" /> if the instance has been disposed.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ThrowIfDisposed()
+    {
+        ObjectDisposedException.ThrowIf(this._disposed, this);
+    }
 
     /// <summary>
     /// Instantiates the concrete Threefish block cipher with the specified key and tweak.
@@ -129,15 +196,15 @@ public abstract class Threefish
 
         if (key.Length != this.KeySizeBytes)
             throw new CryptographicException(
-                string.Format(ResourceStrings.CryptographicException_InvalidKeySize, key.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize, key.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)));
 
         // Fix: normalise IV length failure to CryptographicException for consistency with the key/tweak branches and with Skipjack.Validate.
         if (iv.Length != this.BlockSizeBytes)
             throw new CryptographicException(
-                string.Format(ResourceStrings.CryptographicException_InvalidIVSize, iv.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalBlockSizes)));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidIVSize, iv.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalBlockSizes)));
 
         if (tweak.Length != this.DefaultTweakSizeBytes)
             throw new CryptographicException(
-                string.Format(ResourceStrings.CryptographicException_InvalidTweakSize, tweak.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalTweakSizes)));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidTweakSize, tweak.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalTweakSizes)));
     }
 }

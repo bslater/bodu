@@ -16,7 +16,26 @@ namespace Bodu.Globalization.Calendar;
 /// supplied by dependency injection or test code. This makes definitions resilient to assembly renames and allows algorithms to
 /// declare constructor dependencies.
 /// </para>
+/// <para>
+/// The built-in implementation is <see cref="NotableDateAlgorithmRegistry" />, which accepts pre-constructed algorithm instances
+/// and looks them up case-insensitively by key.
+/// </para>
 /// </remarks>
+/// <example>
+/// <para>Register algorithms and pass the registry to <see cref="NotableDateService" />:</para>
+/// <code>
+/// NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
+///     .Register("easter-sunday", new GregorianEasterSundayNotableDateProvider())
+///     .Register("orthodox-easter", new OrthodoxEasterSundayNotableDateProvider());
+///
+/// NotableDateService service = new NotableDateService(
+///     ruleProviders: new[] { new XmlResourceNotableDateRuleProvider(
+///         "MyApp/Calendar/Resources/rules.xml",
+///         new ResourcePathResolver()) },
+///     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+///     algorithmRegistry: registry);
+/// </code>
+/// </example>
 public interface INotableDateAlgorithmRegistry
 {
 	/// <summary>
@@ -24,13 +43,13 @@ public interface INotableDateAlgorithmRegistry
 	/// </summary>
 	/// <param name="key">The registry key. Must not be <see langword="null" /> or whitespace.</param>
 	/// <param name="algorithm">When this method returns <see langword="true" />, contains the resolved algorithm.</param>
-	/// <returns><see langword="true" /> if a algorithm is registered for <paramref name="key" />; otherwise <see langword="false" />.</returns>
+	/// <returns><see langword="true" /> if an algorithm is registered for <paramref name="key" />; otherwise <see langword="false" />.</returns>
 	bool TryGet(string key, out INotableDateAlgorithm algorithm);
 
 	/// <summary>
-	/// Indicates whether a algorithm is registered against the specified key.
+	/// Indicates whether an algorithm is registered against the specified key.
 	/// </summary>
 	/// <param name="key">The registry key.</param>
-	/// <returns><see langword="true" /> if a algorithm is registered; otherwise <see langword="false" />.</returns>
+	/// <returns><see langword="true" /> if an algorithm is registered; otherwise <see langword="false" />.</returns>
 	bool Contains(string key);
 }

@@ -18,6 +18,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 public sealed class EasterSundayNotableDateAlgorithm
 	: INotableDateAlgorithm
 {
+	/// <summary>Shared per-process cache of computed Easter dates, keyed by year and calendar identity string.</summary>
 	private static readonly ConcurrentDictionary<(int year, string calendarId), DateTime> _easterCache = new();
 
 	/// <inheritdoc />
@@ -42,7 +43,7 @@ public sealed class EasterSundayNotableDateAlgorithm
 		return _easterCache.GetOrAdd(key, _ =>
 		{
 			int month, day;
-			if (year >= 1583)
+			if (year >= 1583 && calendar is not System.Globalization.JulianCalendar)
 			{
 				// Gregorian calendar algorithm (Computus)
 				int a = year % 19;

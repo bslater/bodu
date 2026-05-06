@@ -27,8 +27,29 @@ namespace Bodu.IO.Hashing;
 /// use case — but should be avoided for very large streams where a block-oriented, fixed-memory hash would be
 /// more appropriate.
 /// </para>
+/// <para>
+/// <strong>When to choose SuperFastHash.</strong> SuperFastHash predates MurmurHash and was designed by
+/// Paul Hsieh for in-memory hash tables of short keys (32-byte block sums and similar). It has been
+/// superseded by the MurmurHash3 / CityHash / xxHash generation, which beat it on every measurable axis —
+/// pick it only when reproducing a digest from existing SuperFastHash-based code. For new work on short keys
+/// prefer <see cref="MurmurHash3_32"/> or <see cref="Fnv1a32"/>; for streaming and very large inputs prefer
+/// <see cref="CityHash64"/> or a CRC variant via <see cref="Bodu.IO.Hashing.Checksums.Crc"/>.
+/// </para>
+/// <para>
+/// Instances are not thread-safe; share behind explicit synchronisation.
+/// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used
 /// for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// // Suited to short keys; avoid for multi-megabyte streams (the input is fully buffered).
+/// var sfh = new SuperFastHash();
+/// byte[] digest = sfh.ComputeHash(System.Text.Encoding.UTF8.GetBytes("short-key"));
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class SuperFastHash
     : NonCryptographicHashAlgorithm

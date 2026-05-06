@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.DaysInYear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,36 +13,23 @@ namespace Bodu.Extensions;
 public static partial class DateTimeExtensions
 {
     /// <summary>
-    /// Returns the number of days in the calendar year of the specified <see cref="DateTime"/>, using the current culture's calendar.
+    /// Returns the number of days in the calendar year of the specified <see cref="DateTime"/>, using the calendar of <see cref="CultureInfo.CurrentCulture"/>.
     /// </summary>
-    /// <param name="dateTime">The <see cref="DateTime"/> for which to calculate the number of days in its calendar year.</param>
-    /// <returns>
-    /// The total number of days in the year corresponding to <paramref name="dateTime"/>, as defined by the current culture's <see cref="Calendar"/>.
-    /// </returns>
+    /// <param name="dateTime">The date and time value whose year is used to determine the result.</param>
+    /// <returns>The total number of days in the year of <paramref name="dateTime"/>, as defined by the calendar of <see cref="CultureInfo.CurrentCulture"/>.</returns>
     /// <remarks>
-    /// This method uses the calendar defined by <see cref="CultureInfo.CurrentCulture"/>. The result may vary depending on the calendar
-    /// system (e.g., Gregorian, Hebrew, Hijri).
+    /// <para>This overload uses the calendar defined by <see cref="CultureInfo.CurrentCulture"/>. The result may vary depending on the calendar system (e.g. Gregorian, Hebrew, Hijri).</para>
     /// </remarks>
-    public static int DaysInYear(this DateTime dateTime)
-    {
-        return dateTime.DaysInYear((Calendar?)null);
-    }
+    public static int DaysInYear(this DateTime dateTime) => dateTime.DaysInYear((Calendar?)null);
 
     /// <summary>
-    /// Returns the number of days in the calendar year of the specified <see cref="DateTime"/>, using the specified <see cref="Calendar"/>.
+    /// Returns the number of days in the calendar year of the specified <see cref="DateTime"/>, using the supplied or current calendar.
     /// </summary>
-    /// <param name="dateTime">The <see cref="DateTime"/> whose year is evaluated.</param>
-    /// <param name="calendar">
-    /// The <see cref="Calendar"/> used to determine the number of days in the year. If <c>null</c>, the current culture's calendar is used.
-    /// </param>
-    /// <returns>The number of days in the year of <paramref name="dateTime"/>, based on the provided or fallback calendar.</returns>
+    /// <param name="dateTime">The date and time value whose year is used to determine the result.</param>
+    /// <param name="calendar">An optional <see cref="Calendar"/> used to evaluate the result. If <see langword="null"/>, the calendar of <see cref="CultureInfo.CurrentCulture"/> is used.</param>
+    /// <returns>The number of days in the year of <paramref name="dateTime"/>, based on the supplied or fallback calendar.</returns>
     /// <remarks>
-    /// Use this method when you want to explicitly calculate based on a specific calendar system (e.g., <see cref="GregorianCalendar"/>,
-    /// <see cref="HebrewCalendar"/>). If <paramref name="calendar"/> is <see langword="null"/>, the calendar from
-    /// <see cref="CultureInfo.CurrentCulture"/> is used.
+    /// <para>Use this overload when you want to explicitly calculate based on a specific calendar system (e.g. <see cref="GregorianCalendar"/>, <see cref="HebrewCalendar"/>). If <paramref name="calendar"/> is <see langword="null"/>, the calendar of <see cref="CultureInfo.CurrentCulture"/> is used.</para>
     /// </remarks>
-    public static int DaysInYear(this DateTime dateTime, Calendar? calendar)
-    {
-        return (calendar ?? CultureInfo.CurrentCulture.Calendar).GetDaysInYear(dateTime.Year);
-    }
+    public static int DaysInYear(this DateTime dateTime, Calendar? calendar) => (calendar ?? CultureInfo.CurrentCulture.Calendar).GetDaysInYear(dateTime.Year);
 }

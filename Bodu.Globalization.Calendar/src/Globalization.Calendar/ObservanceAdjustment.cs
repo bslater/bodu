@@ -19,10 +19,48 @@ namespace Bodu.Globalization.Calendar;
 /// generation and may be scoped to a single territory, calendar, or year range.
 /// </para>
 /// <para>
+/// Multiple adjustments on a single rule allow layered logic — for example, one entry rolls a Saturday observance to Friday and a
+/// second entry rolls a Sunday observance to Monday — while <see cref="Key" /> identifiers allow individual entries to be
+/// targeted and overridden by <c>&lt;Use&gt;</c> directives when the rule is inherited by another resource.
+/// </para>
+/// <para>
+/// When an adjustment activates the <see cref="NotableDateService" /> emits an <em>additional</em> <see cref="NotableDate" />
+/// at the adjusted date, leaving the original calculated date in place so consumers see both the actual and the observed
+/// occurrence. The shifted occurrence carries an <see cref="AdjustmentReason" /> on its
+/// <see cref="NotableDate.AdjustmentReason" /> property, naming the trigger and action that caused the shift; this also flips
+/// <see cref="NotableDate.WasAdjusted" /> to <see langword="true" />. When <see cref="IsNonWorkingDay" /> is set on the
+/// adjustment, that value overrides the rule's non-working flag for the shifted occurrence only.
+/// </para>
+/// <para>
 /// This type replaces the earlier <c>NotableDateAdjustmentRule</c>. The new name distinguishes the adjustment <em>specification</em>
 /// from the resolution <em>rule</em> that owns it.
 /// </para>
 /// </remarks>
+/// <example>
+/// <para>Roll a public holiday to Monday when it falls on a weekend, scoped to all Australian territories:</para>
+/// <code>
+/// ObservanceAdjustment rollToMonday = new ObservanceAdjustment
+/// {
+///     Key = "weekend-to-monday",
+///     Trigger = AdjustmentTrigger.IfWeekend,
+///     Action = AdjustmentAction.MoveToNextMonday,
+///     TerritoryCode = "AU",
+///     IsNonWorkingDay = true,
+/// };
+///
+/// // In Western Australia only, move ANZAC Day observance from Sunday to Monday:
+/// ObservanceAdjustment waSubstitute = new ObservanceAdjustment
+/// {
+///     Key = "anzac-day-wa-sub",
+///     Trigger = AdjustmentTrigger.IfDayOfWeek,
+///     DayOfWeek = DayOfWeek.Sunday,
+///     Action = AdjustmentAction.MoveToNextMonday,
+///     TerritoryCode = "AU-WA",
+///     IsNonWorkingDay = true,
+///     Priority = 10,
+/// };
+/// </code>
+/// </example>
 public sealed record ObservanceAdjustment
 {
 	/// <summary>

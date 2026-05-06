@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.NextOccurrence.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -11,33 +11,24 @@ namespace Bodu.Extensions;
 public static partial class DateOnlyExtensions
 {
     /// <summary>
-    /// Calculates the next occurrence of a periodic event based on a given start date and recurrence interval, relative to a specified
-    /// point in time.
+    /// Returns a new <see cref="DateOnly"/> representing the next occurrence of a recurring event that starts at <paramref name="start"/> and repeats every <paramref name="intervalDays"/> days, occurring on or after the specified <paramref name="after"/> date.
     /// </summary>
-    /// <param name="start">The <see cref="DateOnly"/> representing the initial start date of the recurring event.</param>
-    /// <param name="intervalDays">The number of days between each recurrence. Must be greater than zero.</param>
-    /// <param name="after">A <see cref="DateOnly"/> after which the next occurrence should be found.</param>
-    /// <returns>
-    /// A <see cref="DateOnly"/> representing the next occurrence of the event after the specified <paramref name="after"/> date.
-    /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="intervalDays"/> is less than or equal to zero.</exception>
+    /// <param name="start">The date value representing the initial reference point of the recurring event.</param>
+    /// <param name="intervalDays">The fixed number of days between successive occurrences. Must be greater than zero.</param>
+    /// <param name="after">The date after which the next occurrence must fall.</param>
+    /// <returns>A <see cref="DateOnly"/> value representing the next occurrence of the event aligned with <paramref name="start"/> and recurring every <paramref name="intervalDays"/> days, on or after <paramref name="after"/>.</returns>
     /// <remarks>
-    /// The returned date is aligned with the <paramref name="start"/> date and repeats every <paramref name="intervalDays"/> days.
-    /// </remarks>
-    /// <example>
-    /// The following example finds the next occurrence of an event that starts on January 1, 2024 and repeats every 5 days, after a
-    /// given reference date:
+    /// <para>If <paramref name="after"/> is earlier than <paramref name="start"/>, the method returns <paramref name="start"/>. Otherwise, it computes the smallest multiple of <paramref name="intervalDays"/> added to <paramref name="start"/> that occurs after <paramref name="after"/>.</para>
+    /// <para><b>Example:</b></para>
     /// <code>
     ///<![CDATA[
     /// var start = new DateOnly(2024, 1, 1);
     /// var after = new DateOnly(2024, 1, 12);
-    /// int intervalDays = 5;
-    ///
-    /// var next = start.NextOccurrence(intervalDays, after);
-    /// // Output: 2024-01-16
+    /// var next = start.NextOccurrence(intervalDays: 5, after); // → 2024-01-16
     ///]]>
     /// </code>
-    /// </example>
+    /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="intervalDays"/> is less than or equal to zero.</exception>
     public static DateOnly NextOccurrence(this DateOnly start, int intervalDays, DateOnly after)
     {
         ThrowHelper.ThrowIfLessThanOrEqual(intervalDays, 0);

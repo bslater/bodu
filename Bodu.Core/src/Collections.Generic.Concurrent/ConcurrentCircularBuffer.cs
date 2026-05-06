@@ -36,7 +36,13 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// </para>
 /// <para>
 /// When <see cref="AllowOverwrite"/> is <see langword="true"/>, enqueuing into a full buffer evicts the oldest
-/// element and raises the <see cref="ItemEvicted"/> event (after removal). Handler exceptions are swallowed.
+/// element and raises the <see cref="ItemEvicted"/> event (after removal). Handler exceptions are caught and
+/// suppressed; this differs intentionally from the non-concurrent <see cref="CircularBuffer{T}"/>, which
+/// propagates handler exceptions. Under MPMC the eviction has already been committed by the time the event
+/// fires (the head counter has advanced and the slot has been freed by another consumer or producer running in
+/// parallel), so propagating a handler exception cannot abort the eviction and would only obscure the cause of
+/// failure for unrelated callers. Subscribers that need to react to a throwing handler should perform their own
+/// catch/log in the handler body.
 /// </para>
 /// <para>
 /// The <see cref="Count"/> property is approximate under concurrency. For a stable point-in-time view of
@@ -45,6 +51,17 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// <para>
 /// Enumeration iterates over a true snapshot captured at the moment the enumerator is created and does not
 /// reflect subsequent changes.
+/// </para>
+/// <para>
+/// Slots are padded to 64 bytes — the standard cache-line size on x86/x64 hardware — to prevent false sharing
+/// between adjacent producer- and consumer-touched slots. Targets with larger cache lines (notably Apple Silicon
+/// and some ARM SoCs at 128 bytes) remain correct; the padding is conservative on those platforms but does not
+/// degrade throughput.
+/// </para>
+/// <para>
+/// The generic type parameter is constrained to <c>class?</c> because the slot value is published and cleared
+/// through <see cref="System.Threading.Volatile"/> overloads that target reference types. Value-type element
+/// support would require a different publication mechanism and is intentionally out of scope for this type.
 /// </para>
 /// </remarks>
 /// <example>
@@ -62,13 +79,26 @@ namespace Bodu.Collections.Generic.Concurrent;
 ///]]>
 /// </example>
 [DebuggerDisplay("Count ≈ {Count}, Capacity = {Capacity}")]
-[DebuggerTypeProxy(typeof(CircularBufferDebugView<>))]
+[DebuggerTypeProxy(typeof(ConcurrentCircularBufferDebugView<>))]
 [Serializable]
 public sealed partial class ConcurrentCircularBuffer<T>
     where T : class?
 {
     private const int DefaultCapacity = 16;
     private const int MinCapacity = 2;
+
+    /// <summary>
+    /// Maximum number of complete snapshot/index/contains attempts before falling back to a best-effort or
+    /// failing read. Sized for sustained-contention scenarios; under typical load a snapshot stabilises on
+    /// the first attempt.
+    /// </summary>
+    private const int SnapshotOuterRetryBudget = 64;
+
+    /// <summary>
+    /// Maximum number of seqlock pre/post sequence-read retries on a single slot before treating the slot
+    /// as unstable and aborting the surrounding snapshot or index read.
+    /// </summary>
+    private const int SlotReadRetryBudget = 8;
 
     // Immutable after construction
     private readonly Slot[] _buffer;
@@ -85,9 +115,6 @@ public sealed partial class ConcurrentCircularBuffer<T>
     private int _head;
 
     private int _tail;
-
-    // Version for snapshot readers
-    private int _version;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ConcurrentCircularBuffer{T}"/> class with default capacity and overwriting enabled.
@@ -136,7 +163,6 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
         _head = 0;
         _tail = 0;
-        _version = 0;
     }
 
     /// <summary>
@@ -167,26 +193,75 @@ public sealed partial class ConcurrentCircularBuffer<T>
         : this(capacity, allowOverwrite)
     {
         ThrowHelper.ThrowIfNull(collection);
-        var items = collection as T[] ?? collection.ToArray();
+        T[] items = collection as T[] ?? collection.ToArray();
 
         if (!allowOverwrite && items.Length > capacity)
             throw new InvalidOperationException(ResourceStrings.Arg_Invalid_ArrayLengthExceedsCapacity);
 
-        // Enqueue in order using the lock-free path (no concurrency during construction).
-        foreach (var item in items.Skip(Math.Max(0, items.Length - capacity)))
-            InternalEnqueue(item, throwIfFull: !allowOverwrite);
+        InitialFill(items);
+    }
+
+    /// <summary>
+    /// Populates the freshly-constructed buffer directly from <paramref name="items"/>, retaining the trailing
+    /// <see cref="Capacity"/> elements when the source is larger. The instance is not yet observable by other
+    /// threads at this point, so the lock-free producer protocol is bypassed.
+    /// </summary>
+    /// <param name="items">The materialised source elements.</param>
+    /// <remarks>
+    /// <para>
+    /// Writes occur in published-state form: each populated slot's <c>Sequence</c> is set to its publication
+    /// mark (<c>tail + 1</c>) and <see cref="_tail"/> is advanced once at the end. <see cref="_head"/> remains
+    /// zero, so the live region is <c>[0, tail)</c>.
+    /// </para>
+    /// </remarks>
+    private void InitialFill(T[] items)
+    {
+        int capacity = _capacity;
+        int sourceLength = items.Length;
+        int copyLength = sourceLength <= capacity ? sourceLength : capacity;
+        int sourceOffset = sourceLength - copyLength;
+
+        for (int i = 0; i < copyLength; i++)
+        {
+            _buffer[i].Value = items[sourceOffset + i];
+            _buffer[i].Sequence = i + 1;
+        }
+
+        _tail = copyLength;
     }
 
     /// <summary>
     /// Occurs immediately <b>after</b> an item has been evicted because a new item was enqueued into a full buffer while
     /// <see cref="AllowOverwrite"/> is <see langword="true"/>.
     /// </summary>
-    /// <remarks>Exceptions thrown by handlers are caught and ignored.</remarks>
+    /// <remarks>
+    /// <para>
+    /// Exceptions thrown by handlers are caught and suppressed. Each subscriber's invocation is guarded
+    /// independently so that a throwing handler cannot prevent later handlers from receiving the notification.
+    /// </para>
+    /// <para>
+    /// This differs from the non-concurrent <see cref="CircularBuffer{T}.ItemEvicted"/>, which propagates
+    /// handler exceptions to the caller of <see cref="Enqueue"/>. Under MPMC the eviction has already been
+    /// committed by the time this event fires, so propagating the exception would block the caller for a
+    /// failure unrelated to their own write and could not undo the eviction.
+    /// </para>
+    /// </remarks>
     public event Action<T>? ItemEvicted;
 
     /// <summary>
     /// Gets or sets a value indicating whether enqueuing into a full buffer evicts the oldest element.
     /// </summary>
+    /// <value>
+    /// <see langword="true"/> to evict the oldest element when full; <see langword="false"/> to throw or return
+    /// <see langword="false"/> from the producer-side methods.
+    /// </value>
+    /// <returns>The current overwrite policy.</returns>
+    /// <remarks>
+    /// Toggling this property concurrently with an in-flight <see cref="Enqueue"/> or <see cref="TryEnqueue"/>
+    /// is safe but may have a benign window where a producer that observed the previous value commits its
+    /// behaviour (eviction or rejection) before the new value takes effect. The window does not corrupt buffer
+    /// state.
+    /// </remarks>
     public bool AllowOverwrite
     {
         get => Volatile.Read(ref _allowOverwrite);
@@ -199,21 +274,58 @@ public sealed partial class ConcurrentCircularBuffer<T>
     public int Capacity => _capacity;
 
     /// <summary>
-    /// Gets the element at the specified zero-based logical index relative to the oldest element (snapshot-based).
+    /// Gets the element at the specified zero-based logical index relative to the oldest element.
     /// </summary>
-    /// <param name="index">The zero-based index of the element to retrieve. Must be non-negative and less than <see cref="Count"/>.</param>
-    /// <returns>The element at the specified logical index within the snapshot.</returns>
+    /// <param name="index">
+    /// The zero-based index of the element to retrieve. Must be non-negative and less than <see cref="Count"/>
+    /// observed at the moment of the call.
+    /// </param>
+    /// <returns>The element that was at the specified logical position during the call.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="index"/> is less than zero, or greater than or equal to the number of elements in the buffer at the time of the call.
+    /// <paramref name="index"/> is negative, or is greater than or equal to the number of elements in the
+    /// buffer observed at the time of the call.
     /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The buffer is under sustained concurrent modification and a stable single-slot read could not be
+    /// obtained within the retry budget.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// The accessor performs a sequence-validated single-slot read; it does not allocate a snapshot. Two
+    /// consecutive index reads (for example, <c>buffer[i]</c> followed by <c>buffer[i + 1]</c>) are not
+    /// jointly atomic — concurrent producers or consumers may modify the buffer between the two reads.
+    /// Callers that require joint atomicity across multiple positions should call <see cref="ToArray"/> once
+    /// and index the resulting array.
+    /// </para>
+    /// </remarks>
     public T this[int index]
     {
         get
         {
             ThrowHelper.ThrowIfLessThan(index, 0);
-            var snapshot = ToArray();
-            ThrowHelper.ThrowIfGreaterThanOrEqual(index, snapshot.Length);
-            return snapshot[index];
+
+            SpinWait spinner = default;
+            for (int outerAttempt = 0; outerAttempt < SnapshotOuterRetryBudget; outerAttempt++)
+            {
+                int head = Volatile.Read(ref _head);
+                int tail = Volatile.Read(ref _tail);
+                int count = tail - head;
+                if (count < 0) count = 0;
+                if (count > _capacity) count = _capacity;
+
+                ThrowHelper.ThrowIfGreaterThanOrEqual(index, count);
+
+                int position = head + index;
+                if (TryReadStableSlot(SlotIndex(position), position + 1, out T? value)
+                    && Volatile.Read(ref _head) == head)
+                {
+                    return value!;
+                }
+
+                spinner.SpinOnce();
+            }
+
+            throw new InvalidOperationException(ResourceStrings.Concurrent_SnapshotUnstable);
         }
     }
 
@@ -243,18 +355,63 @@ public sealed partial class ConcurrentCircularBuffer<T>
     }
 
     /// <summary>
-    /// Determines whether a snapshot of the buffer contains the specified element.
+    /// Determines whether the buffer contains the specified element using
+    /// <see cref="EqualityComparer{T}.Default"/>.
     /// </summary>
     /// <param name="item">The element to locate. May be <see langword="null"/>.</param>
-    /// <returns><see langword="true"/> if the element was found in the snapshot; otherwise, <see langword="false"/>.</returns>
+    /// <returns>
+    /// <see langword="true"/> if a sequence-stable read found a match within the live region during the call;
+    /// otherwise <see langword="false"/>.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// Walks the live region using a sequence-validated direct slot scan; no array allocation occurs in the
+    /// common case. Under sustained concurrent modification the scan restarts; if the retry budget is
+    /// exhausted, a single coherent <see cref="ToArray"/> snapshot is used as a fallback.
+    /// </para>
+    /// </remarks>
     public bool Contains(T? item)
     {
-        var comparer = EqualityComparer<T?>.Default;
-        foreach (var x in ToArray())
+        EqualityComparer<T?> comparer = EqualityComparer<T?>.Default;
+        SpinWait spinner = default;
+
+        for (int outerAttempt = 0; outerAttempt < SnapshotOuterRetryBudget; outerAttempt++)
+        {
+            int head = Volatile.Read(ref _head);
+            int tail = Volatile.Read(ref _tail);
+            int count = tail - head;
+            if (count <= 0) return false;
+            if (count > _capacity) count = _capacity;
+
+            bool slotFailure = false;
+            for (int i = 0; i < count; i++)
+            {
+                int position = head + i;
+                if (!TryReadStableSlot(SlotIndex(position), position + 1, out T? value))
+                {
+                    slotFailure = true;
+                    break;
+                }
+
+                if (comparer.Equals(value, item))
+                    return true;
+            }
+
+            // No match in this pass: only conclude false if the head has not advanced (otherwise our window
+            // shifted under us and the missing element may have been retroactively reclaimed before we read it).
+            if (!slotFailure && Volatile.Read(ref _head) == head)
+                return false;
+
+            spinner.SpinOnce();
+        }
+
+        // Fallback after exhausting the retry budget: a single coherent snapshot pass.
+        foreach (T? x in ToArray())
         {
             if (comparer.Equals(x, item))
                 return true;
         }
+
         return false;
     }
 
@@ -313,52 +470,140 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// Returns a snapshot of the buffer's contents in FIFO order.
     /// </summary>
     /// <returns>
-    /// An array containing the elements observed in the buffer, ordered from oldest to newest. Returns an empty array if the buffer
-    /// is empty.
+    /// An array containing the elements observed in the buffer, ordered from oldest to newest. Returns an empty
+    /// array if the buffer is empty.
     /// </returns>
     /// <remarks>
     /// <para>
-    /// This method uses a versioned retry loop to obtain a consistent snapshot. Up to 64 attempts are made to read a stable slice.
-    /// If the buffer is under sustained write pressure and a stable snapshot cannot be obtained, a best-effort read is returned.
+    /// Each slot in the snapshot is read using a sequence-validated seqlock pattern: the slot's coordination
+    /// sequence is read both before and after the value, and the read is committed only when both sequence
+    /// observations match the expected published mark. This guarantees the value, when committed, was the
+    /// element published at that logical position — never a value from an earlier or later generation.
+    /// </para>
+    /// <para>
+    /// If a slot cannot be stabilised within its retry budget, the entire snapshot is restarted. After the
+    /// outer retry budget is exhausted under sustained churn, a best-effort snapshot is returned in which
+    /// individual slots that still cannot be stabilised contribute the default value of <typeparamref name="T"/>;
+    /// every committed slot in that fallback path is still sequence-validated, so a torn or stale-generation
+    /// reference is never returned.
     /// </para>
     /// </remarks>
     public T[] ToArray()
     {
-        var spinner = default(SpinWait);
+        SpinWait spinner = default;
 
-        for (int attempt = 0; attempt < 64; attempt++)
+        for (int outerAttempt = 0; outerAttempt < SnapshotOuterRetryBudget; outerAttempt++)
         {
-            int v1 = Volatile.Read(ref _version);
             int head = Volatile.Read(ref _head);
             int tail = Volatile.Read(ref _tail);
 
             int count = tail - head;
             if (count <= 0) return Array.Empty<T>();
-            if (count > _capacity) count = _capacity; // defensive clamp
+            if (count > _capacity) count = _capacity;
 
-            var result = new T[count];
+            T[] result = new T[count];
+            bool slotFailure = false;
+
             for (int i = 0; i < count; i++)
             {
-                T? slotValue = Volatile.Read(ref _buffer[SlotIndex(head + i)].Value);
-                result[i] = slotValue!;
+                int position = head + i;
+                if (!TryReadStableSlot(SlotIndex(position), position + 1, out T? value))
+                {
+                    slotFailure = true;
+                    break;
+                }
+
+                result[i] = value!;
             }
 
-            int v2 = Volatile.Read(ref _version);
-            if (v1 == v2) return result;
+            // Final coherence check: confirm the head has not advanced past the position we used to lay the
+            // window out, otherwise our slots may have been retroactively reclaimed and re-published into a
+            // different generation that we just happened to read consistently.
+            if (!slotFailure && Volatile.Read(ref _head) == head)
+                return result;
+
             spinner.SpinOnce();
         }
 
-        // Fallback best-effort snapshot after exhausting retry budget
-        int h = Volatile.Read(ref _head);
-        int t = Volatile.Read(ref _tail);
-        int c = Math.Clamp(t - h, 0, _capacity);
-        var res = new T[c];
-        for (int i = 0; i < c; i++)
+        return BestEffortSnapshot();
+    }
+
+    /// <summary>
+    /// Produces a best-effort snapshot when the standard <see cref="ToArray"/> retry budget is exhausted.
+    /// Each slot is still sequence-validated; slots that cannot be stabilised are written as
+    /// <see langword="default"/> rather than as a torn or stale-generation value.
+    /// </summary>
+    /// <returns>The best-effort snapshot array.</returns>
+    private T[] BestEffortSnapshot()
+    {
+        int head = Volatile.Read(ref _head);
+        int tail = Volatile.Read(ref _tail);
+        int count = Math.Clamp(tail - head, 0, _capacity);
+        if (count == 0) return Array.Empty<T>();
+
+        T[] result = new T[count];
+        for (int i = 0; i < count; i++)
         {
-            T? slotValue = Volatile.Read(ref _buffer[SlotIndex(h + i)].Value);
-            res[i] = slotValue!;
+            int position = head + i;
+            if (TryReadStableSlot(SlotIndex(position), position + 1, out T? value))
+                result[i] = value!;
+
+            // Otherwise leave result[i] at default(T): null for the class? constraint on this type.
         }
-        return res;
+
+        return result;
+    }
+
+    /// <summary>
+    /// Attempts a sequence-validated read of the slot at the given physical index, expecting the slot to be
+    /// in the published state for the supplied logical position.
+    /// </summary>
+    /// <param name="slotIndex">The physical slot index; must be in the range <c>[0, _capacity)</c>.</param>
+    /// <param name="expectedSequence">
+    /// The publication sequence the slot is expected to carry (<c>position + 1</c> for the slot's logical
+    /// head-relative position).
+    /// </param>
+    /// <param name="value">
+    /// On <see langword="true"/>, contains the committed value read from the slot. On <see langword="false"/>,
+    /// contains <see langword="default"/>.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the slot was observed in the expected published state both before and
+    /// after the value read; <see langword="false"/> when the slot has been reclaimed, has not yet been
+    /// published, or could not be stabilised within the inner retry budget.
+    /// </returns>
+    /// <remarks>
+    /// Implements the seqlock read protocol: read sequence, read value, re-read sequence; commit when both
+    /// sequence reads equal <paramref name="expectedSequence"/>. A divergence between the two sequence reads
+    /// indicates the slot has been touched by a concurrent producer or consumer between the value read and
+    /// the post-check.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private bool TryReadStableSlot(int slotIndex, int expectedSequence, out T? value)
+    {
+        SpinWait spinner = default;
+        for (int attempt = 0; attempt < SlotReadRetryBudget; attempt++)
+        {
+            int seqPre = Volatile.Read(ref _buffer[slotIndex].Sequence);
+            if (seqPre - expectedSequence != 0)
+            {
+                value = default;
+                return false;
+            }
+
+            T? candidate = Volatile.Read(ref _buffer[slotIndex].Value);
+            int seqPost = Volatile.Read(ref _buffer[slotIndex].Sequence);
+            if (seqPost == seqPre)
+            {
+                value = candidate;
+                return true;
+            }
+
+            spinner.SpinOnce();
+        }
+
+        value = default;
+        return false;
     }
 
     /// <summary>
@@ -468,7 +713,6 @@ public sealed partial class ConcurrentCircularBuffer<T>
                 T? value = Volatile.Read(ref slot.Value);
                 Volatile.Write(ref slot.Value, default!);
                 Volatile.Write(ref slot.Sequence, head + _capacity);
-                Interlocked.Increment(ref _version);
 
                 // AFTER removal: fire event; each handler is guarded independently so a throwing
                 // subscriber cannot prevent subsequent subscribers from receiving the notification.
@@ -532,8 +776,6 @@ public sealed partial class ConcurrentCircularBuffer<T>
                 item = Volatile.Read(ref slot.Value);
                 Volatile.Write(ref slot.Value, default!);
                 Volatile.Write(ref slot.Sequence, head + _capacity);
-
-                Interlocked.Increment(ref _version);
                 return true;
             }
             else if (diff < 0)
@@ -587,7 +829,6 @@ public sealed partial class ConcurrentCircularBuffer<T>
                 // write and publish
                 Volatile.Write(ref slot.Value, item);
                 Volatile.Write(ref slot.Sequence, tail + 1);
-                Interlocked.Increment(ref _version);
                 return true;
             }
             else if (diff < 0)
@@ -640,11 +881,17 @@ public sealed partial class ConcurrentCircularBuffer<T>
         /// <summary>The Vyukov sequence number used to coordinate producers and consumers for this slot.</summary>
         public int Sequence;
 
-        // Aligns Value to an 8-byte boundary on all supported platforms.
+#pragma warning disable CS0649 // Padding fields are deliberately unassigned; they exist only to enforce layout.
+
+        /// <summary>Aligns <see cref="Value"/> to an 8-byte boundary on all supported platforms.</summary>
         private readonly int _sequencePadding;
+
+#pragma warning restore CS0649
 
         /// <summary>The stored element. Written by the producer, cleared by the consumer.</summary>
         public T? Value;
+
+#pragma warning disable CS0649 // Padding fields are deliberately unassigned; they exist only to enforce layout.
 
         // Pads the struct to 64 bytes: 4 (Sequence) + 4 (pad) + 8 (Value ref) + 6×8 (pad) = 64.
         private readonly long _pad0;
@@ -653,5 +900,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
         private readonly long _pad3;
         private readonly long _pad4;
         private readonly long _pad5;
+
+#pragma warning restore CS0649
     }
 }

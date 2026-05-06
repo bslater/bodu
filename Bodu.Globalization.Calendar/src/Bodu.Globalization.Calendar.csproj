@@ -14,6 +14,13 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!-- Minor bump: the parameterless NotableDateService() ctor now loads
+         only default-minimal.xml. Region-specific holiday rules ship in the
+         new Bodu.Globalization.Calendar.Data.* companion packages. -->
+    <Version>1.1.0</Version>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <DefineConstants>$(DefineConstants);NETSTANDARD2_0</DefineConstants>
   </PropertyGroup>
@@ -42,6 +49,7 @@
   <ItemGroup>
     <None Remove="Globalization.Calendar.Resources\christian-gregorian.xml" />
     <None Remove="Globalization.Calendar.Resources\christian-orthodox.xml" />
+    <None Remove="Globalization.Calendar.Resources\default-minimal.xml" />
     <None Remove="Globalization.Calendar.Resources\global-all.xml" />
     <None Remove="Globalization.Calendar.Resources\global-core.xml" />
     <None Remove="Globalization.Calendar.Resources\global-cultural.xml" />
@@ -51,15 +59,6 @@
     <None Remove="Globalization.Calendar.Resources\global-remembrance.xml" />
     <None Remove="Globalization.Calendar.Resources\global-social.xml" />
     <None Remove="Globalization.Calendar.Resources\global-un.xml" />
-    <None Remove="Globalization.Calendar.Resources\global.core.xml" />
-    <None Remove="Globalization.Calendar.Resources\global.cultural.xml" />
-    <None Remove="Globalization.Calendar.Resources\global.education.xml" />
-    <None Remove="Globalization.Calendar.Resources\global.environment.xml" />
-    <None Remove="Globalization.Calendar.Resources\global.health.xml" />
-    <None Remove="Globalization.Calendar.Resources\global.remembrance.xml" />
-    <None Remove="Globalization.Calendar.Resources\global.social.xml" />
-    <None Remove="Globalization.Calendar.Resources\global.un.xml" />
-    <None Remove="Globalization.Calendar.Resources\global._all.xml" />
     <None Remove="Globalization.Calendar\NotableDates.xml" />
     <None Remove="Globalization.Calendar\NotableDates.xsd" />
     <None Remove="Globalization.Calendar.Resources\global-animals.xml" />
@@ -71,9 +70,6 @@
     <None Remove="Globalization.Calendar.Resources\global-jewish.xml" />
     <None Remove="Globalization.Calendar.Resources\global-lunar.xml" />
     <None Remove="Globalization.Calendar.Resources\global-science.xml" />
-    <None Remove="Globalization.Calendar.Resources\region-ca.xml" />
-    <None Remove="Globalization.Calendar.Resources\region-de.xml" />
-    <None Remove="Globalization.Calendar.Resources\region-nz.xml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -85,6 +81,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Globalization.Calendar.Resources\christian-gregorian.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\christian-orthodox.xml" />
+    <EmbeddedResource Include="Globalization.Calendar.Resources\default-minimal.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-all.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-core.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-cultural.xml" />
@@ -107,13 +104,6 @@
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-jewish.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-lunar.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-science.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\region-au.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\region-ca.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\region-de.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\region-fr.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\region-gb.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\region-nz.xml" />
-    <EmbeddedResource Include="Globalization.Calendar.Resources\region-us.xml" />
     <EmbeddedResource Include="CalendarStrings.resx">
       <LastGenOutput>CalendarStrings.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>

@@ -8,60 +8,6 @@ namespace Bodu.Security.Cryptography;
 
 public partial class AsconAead128Tests
 {
-    // ── Constructor validation ────────────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Verifies that the <see cref="AsconAead128(byte[], byte[])" /> constructor throws
-    /// <see cref="ArgumentNullException" /> when the key array is <see langword="null" />.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenKeyIsNull_ShouldThrowArgumentNullException()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = new AsconAead128(null!, ValidNonce);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that the <see cref="AsconAead128(byte[], byte[])" /> constructor throws
-    /// <see cref="ArgumentNullException" /> when the nonce array is <see langword="null" />.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenNonceIsNull_ShouldThrowArgumentNullException()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = new AsconAead128(ValidKey, null!);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that the <see cref="AsconAead128(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />
-    /// constructor throws <see cref="ArgumentException" /> when the key is the wrong size.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenKeyIsWrongSize_ShouldThrowArgumentException()
-    {
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            _ = new AsconAead128(new byte[15], ValidNonce);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that the <see cref="AsconAead128(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />
-    /// constructor throws <see cref="ArgumentException" /> when the nonce is the wrong size.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenNonceIsWrongSize_ShouldThrowArgumentException()
-    {
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            _ = new AsconAead128(ValidKey, new byte[15]);
-        });
-    }
-
     // ── Encrypt argument validation ───────────────────────────────────────────────────────────
 
     /// <summary>
@@ -171,4 +117,27 @@ public partial class AsconAead128Tests
 
         CollectionAssert.AreEqual(output1, output2, "Encrypt must be deterministic for the same key, nonce, and plaintext.");
     }
+
+    // ── Single-use lifecycle ─────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Verifies that <see cref="AsconAead128.Encrypt" /> cannot be called more than once after associated data has been processed.
+    /// </summary>
+    [TestMethod]
+    public void Encrypt_WhenCalledTwiceAfterAssociatedDataProcessed_ShouldThrowInvalidOperationException()
+    {
+        byte[] plaintext = [0x01, 0x02, 0x03, 0x04];
+        byte[] output1 = new byte[plaintext.Length + AsconAead128.TagBytes];
+        byte[] output2 = new byte[plaintext.Length + AsconAead128.TagBytes];
+
+        using AsconAead128 sut = MakeInstance();
+
+        _ = sut.Encrypt(plaintext, output1);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = sut.Encrypt(plaintext, output2);
+        });
+    }
+
 }

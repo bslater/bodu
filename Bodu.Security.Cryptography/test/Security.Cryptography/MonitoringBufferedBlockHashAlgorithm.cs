@@ -7,13 +7,15 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Test-oriented derivation of <see cref="BufferedBlockHashAlgorithm{T}" /> that records each call to the
-/// hooks defined by the base class and exposes the protected residual-buffer state for assertion. Used to
-/// verify the buffered-block contract in isolation without depending on any concrete cryptographic algorithm.
+/// Test-oriented derivation of <see cref="BufferedBlockHashAlgorithm{T}" /> that records calls into selected base-class
+/// extension points and exposes the protected residual-buffer state for assertion. Used to verify the buffered-block
+/// contract in isolation without depending on any concrete cryptographic algorithm.
 /// </summary>
 public sealed class MonitoringBufferedBlockHashAlgorithm
     : BufferedBlockHashAlgorithm<MonitoringBufferedBlockHashAlgorithm>
 {
+    private bool _disposeObserved;
+
     /// <summary>
     /// Lengths of every span passed to <see cref="HashCore(ReadOnlySpan{byte})" />, in invocation order. Lets tests
     /// verify that the byte-array overload forwarded to the span overload with the expected slice length.
@@ -21,20 +23,27 @@ public sealed class MonitoringBufferedBlockHashAlgorithm
     public List<int> CapturedSpanLengths { get; } = new();
 
     /// <summary>
-    /// Number of times <see cref="OnInitialize" /> has been invoked across the lifetime of the instance.
+    /// Number of times <see cref="Initialize" /> has been invoked across the lifetime of the instance.
     /// </summary>
-    public int OnInitializeCallCount { get; private set; }
+    public int InitializeCallCount { get; private set; }
 
     /// <summary>
-    /// Number of times <see cref="OnDispose(bool)" /> has been invoked across the lifetime of the instance.
+    /// Number of times this test instance has observed the first call to <see cref="Dispose(bool)" />.
     /// </summary>
+    /// <remarks>
+    /// The value is latched so it preserves the old template-hook behaviour where disposal observation occurred at most
+    /// once per instance.
+    /// </remarks>
     public int OnDisposeCallCount { get; private set; }
 
     /// <summary>
-    /// Captures the <c>disposing</c> argument from the most recent invocation of <see cref="OnDispose(bool)" />, or
-    /// <see langword="null" /> if it has never been invoked.
+    /// Captures the <c>disposing</c> argument from the first observed invocation of <see cref="Dispose(bool)" />, or
+    /// <see langword="null" /> if disposal has not yet been observed.
     /// </summary>
     public bool? LastDisposeFlag { get; private set; }
+
+    /// <inheritdoc />
+    public override string AlgorithmName => nameof(MonitoringBufferedBlockHashAlgorithm);
 
     /// <summary>
     /// Initialises a new instance with the default 8-byte block size.
@@ -104,16 +113,23 @@ public sealed class MonitoringBufferedBlockHashAlgorithm
     }
 
     /// <inheritdoc />
-    protected override void OnInitialize()
+    public override void Initialize()
     {
-        this.OnInitializeCallCount++;
+        base.Initialize();
+        this.InitializeCallCount++;
     }
 
     /// <inheritdoc />
-    protected override void OnDispose(bool disposing)
+    protected override void Dispose(bool disposing)
     {
-        this.OnDisposeCallCount++;
-        this.LastDisposeFlag = disposing;
+        if (!this._disposeObserved)
+        {
+            this.OnDisposeCallCount++;
+            this.LastDisposeFlag = disposing;
+            this._disposeObserved = true;
+        }
+
+        base.Dispose(disposing);
     }
 
     /// <inheritdoc />

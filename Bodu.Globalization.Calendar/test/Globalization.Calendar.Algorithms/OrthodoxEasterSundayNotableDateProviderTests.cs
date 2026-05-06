@@ -83,7 +83,7 @@ public sealed class OrthodoxEasterSundayNotableDateProviderTests
 		Assert.AreEqual(1, result.Count);
 		NotableDate notable = result[0];
 		Assert.AreEqual("Orthodox Easter Sunday", notable.Name);
-		Assert.AreEqual(NotableDateCategory.Cultural, notable.Category);
+		Assert.AreEqual(NotableDateCategory.Religious, notable.Category);
 		Assert.AreEqual(typeof(SysGlob.JulianCalendar), notable.CalendarType);
 		Assert.AreEqual(1, notable.DurationDays);
 		Assert.IsFalse(notable.IsNonWorkingDay);

@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test;
 using System.Reflection;
 using System.Security.Cryptography;
 
@@ -39,7 +40,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// implementations where configuration changes are no longer allowed once data has been processed.
     /// </remarks>
     [TestMethod]
-    [DynamicData(nameof(GetWritableProperties))]
+    [DynamicData(nameof(GetWritableProperties), DynamicDataDisplayName = nameof(TestHelpers.GetDisposablePropertyDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
     public void TransformBlock_WhenPropertySetAfterTransform_ShouldThrowExactly(PropertyInfo property)
     {
         if (property is null)
@@ -79,5 +80,58 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         {
             Assert.Fail($"Unexpected exception when setting property '{property.Name}': {ex.GetType().Name} - {ex.Message}");
         }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="HashAlgorithm.TransformBlock(byte[], int, int, byte[]?, int)" />
+    /// copies the selected input bytes to the supplied output buffer.
+    /// </summary>
+    [TestMethod]
+    public void TransformBlock_WhenOutputBufferProvided_ShouldCopyInputToOutput()
+    {
+        using var algorithm = CreateAlgorithm();
+
+        byte[] input = CryptoTestUtilities.ByteSequence256[..32];
+        byte[] output = new byte[input.Length];
+
+        _ = algorithm.TransformBlock(input, 0, input.Length, output, 0);
+
+        CollectionAssert.AreEqual(input, output);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="HashAlgorithm.TransformBlock(byte[], int, int, byte[]?, int)" />
+    /// copies the selected input bytes to the requested output offset.
+    /// </summary>
+    [TestMethod]
+    public void TransformBlock_WhenOutputOffsetIsNonZero_ShouldCopyInputAtOutputOffset()
+    {
+        using var algorithm = CreateAlgorithm();
+
+        byte[] input = CryptoTestUtilities.ByteSequence256[..32];
+        byte[] output = Enumerable.Repeat((byte)0xA5, input.Length + 8).ToArray();
+
+        byte[] expected = Enumerable.Repeat((byte)0xA5, input.Length + 8).ToArray();
+        Buffer.BlockCopy(input, 0, expected, 4, input.Length);
+
+        _ = algorithm.TransformBlock(input, 0, input.Length, output, 4);
+
+        CollectionAssert.AreEqual(expected, output);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="HashAlgorithm.TransformBlock(byte[], int, int, byte[]?, int)" />
+    /// succeeds when <c>outputBuffer</c> is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void TransformBlock_WhenOutputBufferIsNull_ShouldSucceed()
+    {
+        using var algorithm = CreateAlgorithm();
+
+        byte[] input = CryptoTestUtilities.ByteSequence256[..32];
+
+        int bytesWritten = algorithm.TransformBlock(input, 0, input.Length, null, 0);
+
+        Assert.AreEqual(input.Length, bytesWritten);
     }
 }

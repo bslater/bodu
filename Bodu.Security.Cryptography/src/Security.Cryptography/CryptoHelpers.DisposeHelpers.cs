@@ -73,6 +73,35 @@ public static partial class CryptoHelpers
     }
 
     /// <summary>
+    /// Securely zeroes the bytes of an unmanaged value in place.
+    /// </summary>
+    /// <typeparam name="T">The unmanaged value type to clear.</typeparam>
+    /// <param name="value">A reference to the value whose contents will be overwritten with zeroes.</param>
+    /// <remarks>
+    /// <para>
+    /// This method treats the supplied value as a contiguous sequence of bytes and overwrites those bytes using
+    /// <see cref="CryptographicOperations.ZeroMemory" />.
+    /// </para>
+    /// <para>
+    /// This is useful for clearing stack-allocated values, struct fields, and other unmanaged state that may contain
+    /// sensitive material, such as cipher state, counters, tweak words, hash chaining values, authentication accumulators,
+    /// or expanded-key fragments.
+    /// </para>
+    /// <para>
+    /// Only the storage location referenced by <paramref name="value" /> is cleared. This method cannot clear previous
+    /// copies that may have existed in registers, temporary locals, copied structs, arrays, native buffers, crash dumps,
+    /// or other runtime-managed locations.
+    /// </para>
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Clear<T>(ref T value)
+        where T : unmanaged
+    {
+        CryptographicOperations.ZeroMemory(
+            MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref value, 1)));
+    }
+
+    /// <summary>
     /// Securely clears the contents of a <see cref="MemoryStream" /> by overwriting its underlying buffer with zeros,
     /// resetting its length, and disposing the stream.
     /// </summary>

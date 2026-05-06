@@ -91,7 +91,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     public void Encrypt_WhenCalled_ShouldNotModifyInputBuffer()
     {
         using var cipher = CreateBlockCipher();
-        byte[] original = CryptoTestUtilities.GetRandomNonZeroBytes(cipher.BlockSize);
+        byte[] original = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize);
         byte[] input = original.ToArray();
         byte[] output = new byte[cipher.BlockSize];
 
@@ -112,7 +112,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         using var cipher1 = CreateBlockCipher(variant);
         using var cipher2 = CreateBlockCipher(variant);
 
-        byte[] input = CryptoTestUtilities.GetRandomNonZeroBytes(cipher1.BlockSize);
+        byte[] input = TestHelpers.GenerateRandomNonZeroBytes(cipher1.BlockSize);
 
         byte[] output1 = new byte[specification.BlockSize];
         byte[] output2 = new byte[specification.BlockSize];
@@ -134,7 +134,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         var specification = GetSpecification(variant);
         using var cipher = CreateBlockCipher(variant);
 
-        byte[] input = CryptoTestUtilities.GetRandomNonZeroBytes(cipher.BlockSize);
+        byte[] input = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize);
 
         byte[] output1 = new byte[specification.BlockSize];
         byte[] output2 = new byte[specification.BlockSize];
@@ -198,7 +198,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     {
         using var cipher = CreateBlockCipher();
 
-        byte[] original = CryptoTestUtilities.GetRandomNonZeroBytes(cipher.BlockSize);
+        byte[] original = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize);
         byte[] buffer = (byte[])original.Clone();
 
         cipher.Encrypt(buffer, buffer);

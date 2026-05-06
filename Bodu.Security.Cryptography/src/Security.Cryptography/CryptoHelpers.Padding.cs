@@ -69,20 +69,20 @@ public static partial class CryptoHelpers
 
             default:
                 throw new CryptographicException(
-                    string.Format(ResourceStrings.CryptographicException_InvalidPropertyValue, nameof(SymmetricAlgorithm.Padding)));
+                    string.Format(CryptoResourceStrings.CryptographicException_InvalidPropertyValue, nameof(SymmetricAlgorithm.Padding)));
         }
 
         int padCount = source[^1];
         if (padCount <= 0 || padCount > blockSizeBytes)
-            throw new CryptographicException(ResourceStrings.CryptographicException_InvalidPadding);
+            throw new CryptographicException(CryptoResourceStrings.CryptographicException_InvalidPadding);
 
         ReadOnlySpan<byte> padRegion = source[^padCount..];
 
         if (padding == PaddingMode.PKCS7 && !IsUniformPadding(padRegion, (byte)padCount))
-            throw new CryptographicException(ResourceStrings.CryptographicException_InvalidPadding);
+            throw new CryptographicException(CryptoResourceStrings.CryptographicException_InvalidPadding);
 
         if (padding == PaddingMode.ANSIX923 && !IsUniformPadding(padRegion[..^1], 0x00))
-            throw new CryptographicException(ResourceStrings.CryptographicException_InvalidPadding);
+            throw new CryptographicException(CryptoResourceStrings.CryptographicException_InvalidPadding);
 
         int unpadded = count - padCount;
         source.Slice(0, unpadded).CopyTo(destination);
@@ -141,13 +141,13 @@ public static partial class CryptoHelpers
 
             default:
                 throw new CryptographicException(
-                    string.Format(ResourceStrings.CryptographicException_InvalidPropertyValue, nameof(SymmetricAlgorithm.Padding)));
+                    string.Format(CryptoResourceStrings.CryptographicException_InvalidPropertyValue, nameof(SymmetricAlgorithm.Padding)));
         }
 
         ThrowHelper.ThrowIfLessThan(blockSizeBytes, 1);
 
         if (padding == PaddingMode.None && source.Length % blockSizeBytes != 0)
-            throw new CryptographicException(ResourceStrings.CryptographicException_PaddingModeNone_InputNotAligned);
+            throw new CryptographicException(CryptoResourceStrings.CryptographicException_PaddingModeNone_InputNotAligned);
 
         int padCount = blockSizeBytes - (source.Length % blockSizeBytes);
         if (padCount == blockSizeBytes && (padding == PaddingMode.None || padding == PaddingMode.Zeros))

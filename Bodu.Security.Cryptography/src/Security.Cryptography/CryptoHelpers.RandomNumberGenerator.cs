@@ -39,54 +39,80 @@ public static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Attempts to fill the provided span with cryptographically secure random bytes that do not include <c>0x00</c>, retrying
-    /// a bounded number of times.
+    /// Attempts to fill the provided span with cryptographically secure random bytes that do not include <c>0x00</c>, redrawing
+    /// each individual zero byte up to a bounded number of times.
     /// </summary>
     /// <param name="buffer">The span to fill.</param>
     /// <returns>
     /// <see langword="true" /> if the buffer was filled successfully without any zero bytes; otherwise, <see langword="false" />
-    /// once the retry limit has been reached.
+    /// once the per-byte redraw limit has been reached for any position.
     /// </returns>
-    /// <remarks>Intended for performance-sensitive scenarios where indefinite retry is undesirable.</remarks>
+    /// <remarks>
+    /// Uses per-byte rejection sampling: the buffer is filled once, and only positions that came up zero are individually
+    /// redrawn. This scales linearly with buffer length rather than exponentially, so the failure probability stays
+    /// negligible (≈ 256<sup>-8</sup> per byte) regardless of how large the buffer is. Intended for performance-sensitive
+    /// scenarios where indefinite retry is undesirable.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool TryFillWithRandomNonZeroBytes(Span<byte> buffer)
     {
-        const int maxAttempts = 5;
+        const int maxRedrawsPerByte = 8;
 
 #if NETSTANDARD2_0
-using (var rng = RandomNumberGenerator.Create())
-{
-    byte[] temp = new byte[buffer.Length];
-
-    try
-    {
-        for (int i = 0; i < maxAttempts; i++)
+        using (var rng = RandomNumberGenerator.Create())
         {
-            rng.GetBytes(temp);
-            if (Array.IndexOf(temp, (byte)0) < 0)
+            byte[] temp = new byte[buffer.Length];
+            try
             {
+                rng.GetBytes(temp);
+
+                // Per-byte rejection: only redraw the positions that came up zero.
+                byte[] single = new byte[1];
+                for (int i = 0; i < temp.Length; i++)
+                {
+                    int redraws = 0;
+                    while (temp[i] == 0)
+                    {
+                        if (redraws == maxRedrawsPerByte)
+                            return false;
+
+                        rng.GetBytes(single);
+                        temp[i] = single[0];
+                        redraws++;
+                    }
+                }
+
+                single[0] = 0;
                 temp.CopyTo(buffer);
                 return true;
             }
+            finally
+            {
+                // Wipe temp so any random bytes drawn (success or failure path) do not linger on the managed heap.
+                Array.Clear(temp, 0, temp.Length);
+            }
         }
-    }
-    finally
-    {
-        // Wipe temp so any random bytes that were drawn (on the successful copy
-        // path as well as the retry-exhaustion path) do not linger on the managed heap.
-        Array.Clear(temp, 0, temp.Length);
-    }
-}
 #else
-        for (int i = 0; i < maxAttempts; i++)
-        {
-            RandomNumberGenerator.Fill(buffer);
-            if (buffer.IndexOf((byte)0) < 0)
-                return true;
-        }
-#endif
+        RandomNumberGenerator.Fill(buffer);
 
-        return false;
+        // Per-byte rejection: only redraw the positions that came up zero.
+        Span<byte> single = stackalloc byte[1];
+        for (int i = 0; i < buffer.Length; i++)
+        {
+            int redraws = 0;
+            while (buffer[i] == 0)
+            {
+                if (redraws == maxRedrawsPerByte)
+                    return false;
+
+                RandomNumberGenerator.Fill(single);
+                buffer[i] = single[0];
+                redraws++;
+            }
+        }
+
+        return true;
+#endif
     }
 
     /// <summary>

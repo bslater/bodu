@@ -37,7 +37,7 @@ public abstract partial class BlockCipherModeTests<TMode>
         var input = new byte[ExpectedBlockSize + 1];
         var output = new byte[input.Length];
 
-        Assert.ThrowsExactly<ArgumentException>(() =>
+        Assert.ThrowsExactly<CryptographicException>(() =>
         {
             transform.Transform(input, output, encrypt: true);
         });

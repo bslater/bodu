@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Skein.512.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,6 +21,21 @@ namespace Bodu.Security.Cryptography;
 /// a <c>KEY</c> UBI phase to the standard <c>CFG → MSG → OUT</c> pipeline. The key length is not fixed: any byte
 /// sequence from zero up to <see cref="Skein{T}.MaxKeySizeBytes" /> bytes is valid.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>State / block size: 512 bits (64 bytes).</description></item>
+///   <item><description>Output sizes: 128, 160, 224, 256, 384, or 512 bits — default 512.</description></item>
+///   <item><description>Underlying cipher: <see cref="Threefish512Cipher"/> tweakable block cipher under UBI mode.</description></item>
+///   <item><description>Optional variable-length key: 0–<see cref="Skein{T}.MaxKeySizeBytes"/> bytes.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose Skein-512.</strong> The general-purpose Skein default, recommended by the Skein 1.3
+/// specification — pick this when reproducing or interoperating with Skein-based digests. For new code without
+/// an interop requirement <see cref="Blake2b"/> is faster on contemporary 64-bit hardware and SHA-2 / SHA-3 are
+/// more widely deployed. Use <see cref="Skein256"/> for narrower state, <see cref="Skein1024"/> for the widest.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
@@ -35,11 +50,6 @@ namespace Bodu.Security.Cryptography;
 public sealed class Skein512
     : Skein<Skein512>
 {
-    /// <summary>
-    /// The state / block size, in bytes, of the Skein-512 variant.
-    /// </summary>
-    public const int BlockSizeBytes = 64;
-
     /// <summary>
     /// The set of output sizes, in bits, permitted by <see cref="Skein512" />.
     /// </summary>
@@ -62,6 +72,6 @@ public sealed class Skein512
     /// <paramref name="hashSize" /> is not one of the permitted output sizes for Skein-512.
     /// </exception>
     public Skein512(int hashSize)
-        : base(new Threefish512Cipher(new byte[BlockSizeBytes], new byte[16]), hashSize, PermittedHashSizes)
+        : base(new Threefish512Cipher(new byte[64], new byte[16]), hashSize, PermittedHashSizes)
     { }
 }

@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Extensions;
 using Bodu.Test;
 using System.IO.Hashing;
 
@@ -12,51 +13,21 @@ namespace Bodu.IO.Hashing;
 public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorithm, TVariant>
 {
     /// <summary>
-    /// Verifies that <see cref="NonCryptographicHashAlgorithm.GetCurrentHash()" /> returns the expected hash
-    /// value at each stage of incremental hashing as bytes from <c>0x00</c> onwards are appended in sequence.
+    /// Verifies that <see cref="NonCryptographicHashAlgorithm.GetCurrentHash()" /> returns the expected
+    /// hash value at each stage of true incremental hashing as bytes from <c>0x00</c> onwards are
+    /// appended in sequence.
     /// </summary>
     /// <param name="variant">The algorithm variant under test.</param>
-    /// <remarks>
-    /// Entry <c>i</c> in the expected sequence corresponds to the digest after <c>i</c> bytes have been
-    /// appended (so entry <c>0</c> is the empty-input hash). Variants that supply an empty expected sequence
-    /// are reported as inconclusive for this particular check.
-    /// </remarks>
+    /// <returns>A task that completes when all incremental stages have been verified.</returns>
     [TestMethod]
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
-    public void GetCurrentHash_WhenAppendingIncrementalData_ShouldReturnExpectedHashValueAtEachStep(TVariant variant)
-    {
-        var specification = GetSpecification(variant);
-        string[] expectedValues = GetIncrementalHashValue(variant).ToArray();
-
-        if (expectedValues.Length == 0)
-        {
-            Assert.Inconclusive($"No expected hashes defined for variant {variant}.");
-            return;
-        }
-
-        int stepCount = Math.Max(specification.HashLengthInBytes * 4, 16);
-
-        Assert.AreEqual(stepCount, expectedValues.Length,
-            $"Expected {stepCount} algorithm entries for variant '{variant}' " +
-            $"(HashLength={specification.HashLengthInBytes}), but got {expectedValues.Length}.");
-
-        var algorithm = CreateAlgorithm(variant);
-
-        for (int i = 0; i < stepCount; i++)
-        {
-            byte[] expected = Convert.FromHexString(expectedValues[i]);
-            byte[] actual = algorithm.GetCurrentHash();
-            TestHelpers.TraceWriteIfNotEqual(expected, actual);
-
-            CollectionAssert.AreEqual(
-                expected,
-                actual,
-                $"Hash mismatch for {typeof(TAlgorithm).Name} variant '{variant}' at incremental length {i}.");
-
-            if (i < expectedValues.Length - 1)
-                algorithm.Append(new[] { (byte)i });
-        }
-    }
+    public Task GetCurrentHash_WhenUsingIncrementalInput_ShouldMatchExpected(TVariant variant) =>
+        AssertIncrementalCurrentHashAsync(variant,
+            (algorithm, source) =>
+            {
+                algorithm.Append(source);
+                return Task.FromResult(algorithm.GetCurrentHash());
+            });
 
     /// <summary>
     /// Verifies that <see cref="NonCryptographicHashAlgorithm.GetCurrentHash()" /> is non-destructive and
@@ -67,7 +38,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void GetCurrentHash_WhenCalledRepeatedly_ShouldReturnSameDigest(TVariant variant)
     {
-        NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
+        var algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
         byte[] first = algorithm.GetCurrentHash();
@@ -87,7 +58,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void GetCurrentHash_WhenWritingToSpan_ShouldMatchArrayOverload(TVariant variant)
     {
-        NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
+        var algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.QuickBrownFox);
 
         byte[] expected = algorithm.GetCurrentHash();
@@ -97,5 +68,30 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
 
         Assert.AreEqual(algorithm.HashLengthInBytes, written);
         CollectionAssert.AreEqual(expected, destination);
+    }
+
+    /// <summary>
+    /// Verifies that two inputs that span multiple input chunks produce different hashes.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    public void GetCurrentHash_ForMultiChunkInputs_ShouldProduceDistinctHashes(TVariant variant)
+    {
+        var specification = GetSpecification(variant);
+        var algorithm = CreateAlgorithm(variant);
+
+        var bufferSize = (specification.IncrementalCoverageBytes ?? specification.HashLengthInBytes) * 4;
+        byte[] inputA = TestHelpers.GenerateRandomNonZeroBytes(bufferSize);
+        byte[] inputB = inputA.Copy()!;
+        inputB[bufferSize - 2] = 0x00;
+
+        algorithm.Append(inputA);
+        byte[] hashA = algorithm.GetHashAndReset();
+
+        algorithm.Append(inputB);
+        byte[] hashB = algorithm.GetHashAndReset();
+
+        CollectionAssert.AreNotEqual(hashA, hashB,
+            "Distinct multi-chunk inputs must produce different hashes.");
     }
 }

@@ -46,6 +46,11 @@ namespace Bodu.Security.Cryptography;
 public sealed class AesBlockCipher
     : IBlockCipher
 {
+    /// <summary>
+    /// The fixed AES block size in bytes (128 bits).
+    /// </summary>
+    public const int BlockSizeBytes = 16;
+
     private readonly Aes _aes;
     private bool _disposed;
 
@@ -68,7 +73,7 @@ public sealed class AesBlockCipher
 
     /// <inheritdoc />
     /// <value>Always 16 (128 bits), the fixed AES block size.</value>
-    public int BlockSize => this._aes.BlockSize / 8;
+    public int BlockSize => BlockSizeBytes;
 
     /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
@@ -77,6 +82,8 @@ public sealed class AesBlockCipher
     /// </exception>
     public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeBytes);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBytes);
         ObjectDisposedException.ThrowIf(this._disposed, this);
         this._aes.EncryptEcb(input, output, PaddingMode.None);
     }
@@ -88,6 +95,8 @@ public sealed class AesBlockCipher
     /// </exception>
     public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeBytes);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBytes);
         ObjectDisposedException.ThrowIf(this._disposed, this);
         this._aes.DecryptEcb(input, output, PaddingMode.None);
     }

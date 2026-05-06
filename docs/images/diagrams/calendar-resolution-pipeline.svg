@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 300" role="img" aria-labelledby="cp-t cp-d">
+  <title id="cp-t">NotableDateService — resolution pipeline</title>
+  <desc id="cp-d">Rule providers and optional override providers are merged into an effective rule set. The resolver dispatches each rule by strategy — Fixed, DayOfWeekInMonth, Algorithm, or OffsetFromAnchor — producing an anchor date. The adjuster evaluates ObservanceAdjustment rules. Resolved dates are stored in a thread-safe per-year cache and returned by GetNotableDates.</desc>
+
+  <defs>
+    <style>
+      .bg   { fill: #0F172A; }
+      .pan  { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .hdr  { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ttl  { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .lbl  { fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .sub  { fill: #CBD5E1; font: 400 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .mut  { fill: #94A3B8; font: 400 10px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .inp  { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1; }
+      .inp-d{ fill: #1A2335; stroke: #475569; stroke-width: 1; stroke-dasharray: 4 3; }
+      .rsv  { fill: #1E3A5F; stroke: #60A5FA; stroke-width: 1; }
+      .adj  { fill: #2A1B54; stroke: #A78BFA; stroke-width: 1; }
+      .cch  { fill: #431407; stroke: #FBBF24; stroke-width: 1; }
+      .bdg  { fill: #0F172A; stroke: #334155; stroke-width: 1; }
+      .bdg-t{ fill: #93C5FD; font: 400 10px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .w    { stroke: #CBD5E1; stroke-width: 1.5; fill: none; }
+      .wt   { stroke: #2DD4BF; stroke-width: 1.5; fill: none; }
+      .wm   { stroke: #475569; stroke-width: 1.4; fill: none; stroke-dasharray: 4 3; }
+    </style>
+    <marker id="a"  viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#CBD5E1"/>
+    </marker>
+    <marker id="at" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#2DD4BF"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="820" height="300"/>
+
+  <g transform="translate(10 10)">
+    <rect class="pan" width="800" height="280" rx="8"/>
+    <rect class="hdr" width="800" height="30" rx="8"/>
+    <rect class="hdr" y="22" width="800" height="8"/>
+    <text class="ttl" x="16" y="20">NotableDateService — resolution pipeline</text>
+
+    <!-- INPUT: INotableDateRuleProvider -->
+    <g transform="translate(20 52)">
+      <rect class="inp" width="176" height="40" rx="5"/>
+      <text class="lbl" fill="#2DD4BF" x="88" y="16">INotableDateRuleProvider(s)</text>
+      <text class="mut" x="88" y="30">base rules (XML, database, …)</text>
+    </g>
+
+    <!-- INPUT: INotableDateRuleOverrideProvider -->
+    <g transform="translate(20 108)">
+      <rect class="inp-d" width="176" height="40" rx="5"/>
+      <text class="lbl" fill="#94A3B8" x="88" y="15">INotableDateRule</text>
+      <text class="lbl" fill="#94A3B8" x="88" y="29">OverrideProvider(s)</text>
+    </g>
+    <text class="mut" x="108" y="162">optional</text>
+
+    <!-- Arrows: providers → resolver -->
+    <path class="wt" d="M 196 72 L 240 72" marker-end="url(#at)"/>
+    <path class="wm" d="M 196 128 L 222 128 L 222 88 L 240 88"/>
+
+    <!-- RESOLVER box -->
+    <g transform="translate(240 52)">
+      <rect class="rsv" width="320" height="72" rx="5"/>
+      <text class="lbl" x="160" y="18">NotableDateRuleResolver</text>
+      <rect class="bdg" x="8"   y="27" width="52"  height="18" rx="3"/>
+      <text class="bdg-t" x="34"  y="39">Fixed</text>
+      <rect class="bdg" x="66"  y="27" width="72"  height="18" rx="3"/>
+      <text class="bdg-t" x="102" y="39">DayOfWeek</text>
+      <rect class="bdg" x="144" y="27" width="68"  height="18" rx="3"/>
+      <text class="bdg-t" x="178" y="39">Algorithm</text>
+      <rect class="bdg" x="218" y="27" width="94"  height="18" rx="3"/>
+      <text class="bdg-t" x="265" y="39">OffsetFromAnchor</text>
+    </g>
+
+    <!-- Arrow: resolver → adjuster -->
+    <line class="w" x1="400" y1="124" x2="400" y2="144" marker-end="url(#a)"/>
+
+    <!-- ADJUSTER box -->
+    <g transform="translate(240 144)">
+      <rect class="adj" width="320" height="48" rx="5"/>
+      <text class="lbl" x="160" y="19">NotableDateAdjuster</text>
+      <text class="sub" x="160" y="36">ObservanceAdjustment rules (weekend roll, territory scope, …)</text>
+    </g>
+
+    <!-- Arrow: adjuster → cache -->
+    <line class="w" x1="400" y1="192" x2="400" y2="210" marker-end="url(#a)"/>
+
+    <!-- CACHE bar -->
+    <g transform="translate(240 210)">
+      <rect class="cch" width="320" height="22" rx="3"/>
+      <text class="lbl" fill="#FBBF24" x="160" y="15">per-year cache  (thread-safe ConcurrentDictionary)</text>
+    </g>
+
+    <!-- Arrow: cache → output -->
+    <line class="w" x1="560" y1="221" x2="590" y2="221" marker-end="url(#a)"/>
+
+    <!-- OUTPUT -->
+    <g transform="translate(590 208)">
+      <rect class="cch" width="190" height="36" rx="5"/>
+      <text class="lbl" fill="#FBBF24" x="95" y="15">GetNotableDates(…)</text>
+      <text class="mut" x="95" y="28">IReadOnlyList&lt;NotableDate&gt;</text>
+    </g>
+
+    <text class="mut" x="400" y="252" text-anchor="middle">Invalidate() / Invalidate(year) — clears one year or the entire cache</text>
+  </g>
+</svg>

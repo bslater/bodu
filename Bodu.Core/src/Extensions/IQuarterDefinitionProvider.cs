@@ -25,15 +25,15 @@ namespace Bodu.Extensions;
 /// <para>Methods that support this interface include:</para>
 /// <list type="bullet">
 /// <item><see cref="DateTimeExtensions.Quarter(DateTime, IQuarterDefinitionProvider)"/></item>
-/// <item><see cref="DateTimeExtensions.FirstDayOfQuarter(DateTime, IQuarterDefinitionProvider)"/></item>
-/// <item><see cref="DateTimeExtensions.LastDayOfQuarter(DateTime, IQuarterDefinitionProvider)"/></item>
-/// <item><see cref="DateTimeExtensions.IsFirstDayOfQuarter(DateTime, IQuarterDefinitionProvider)"/></item>
-/// <item><see cref="DateTimeExtensions.IsLastDayOfQuarter(DateTime, IQuarterDefinitionProvider)"/></item>
+/// <item><see cref="DateTimeExtensions.FirstDateOfQuarter(DateTime, IQuarterDefinitionProvider)"/></item>
+/// <item><see cref="DateTimeExtensions.LastDateOfQuarter(DateTime, IQuarterDefinitionProvider)"/></item>
+/// <item><see cref="DateTimeExtensions.IsFirstDateOfQuarter(DateTime, IQuarterDefinitionProvider)"/></item>
+/// <item><see cref="DateTimeExtensions.IsLastDateOfQuarter(DateTime, IQuarterDefinitionProvider)"/></item>
 /// <item><see cref="DateOnlyExtensions.Quarter(DateOnly, IQuarterDefinitionProvider)"/></item>
-/// <item><see cref="DateOnlyExtensions.FirstDayOfQuarter(DateOnly, IQuarterDefinitionProvider)"/></item>
-/// <item><see cref="DateOnlyExtensions.LastDayOfQuarter(DateOnly, IQuarterDefinitionProvider)"/></item>
-/// <item><see cref="DateOnlyExtensions.IsFirstDayOfQuarter(DateOnly, IQuarterDefinitionProvider)"/></item>
-/// <item><see cref="DateOnlyExtensions.IsLastDayOfQuarter(DateOnly, IQuarterDefinitionProvider)"/></item>
+/// <item><see cref="DateOnlyExtensions.FirstDateOfQuarter(DateOnly, IQuarterDefinitionProvider)"/></item>
+/// <item><see cref="DateOnlyExtensions.LastDateOfQuarter(DateOnly, IQuarterDefinitionProvider)"/></item>
+/// <item><see cref="DateOnlyExtensions.IsFirstDateOfQuarter(DateOnly, IQuarterDefinitionProvider)"/></item>
+/// <item><see cref="DateOnlyExtensions.IsLastDateOfQuarter(DateOnly, IQuarterDefinitionProvider)"/></item>
 /// </list>
 /// </remarks>
 public interface IQuarterDefinitionProvider

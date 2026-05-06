@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
@@ -24,12 +25,40 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="BlockMode" /> property. The default mode is <see cref="CipherBlockMode.CBC" /> with
 /// <see cref="PaddingMode.PKCS7" /> padding.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Block size: 64 bits (8 bytes).</description></item>
+///   <item><description>Key size: 80 bits (10 bytes), fixed.</description></item>
+///   <item><description>32 rounds, unbalanced Feistel network.</description></item>
+///   <item><description>Default mode: <see cref="CipherBlockMode.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose Skipjack.</strong> Only when reading or producing data encrypted under a Skipjack-based
+/// legacy system, or when reproducing published test vectors for research. For any new design use
+/// <see cref="System.Security.Cryptography.Aes"/> or another 128-bit block cipher.
+/// </para>
 /// <note type="important">
 /// Because of its 80-bit key and 64-bit block, Skipjack offers no modern security margin and must not be used to protect sensitive
 /// data in new applications. The 64-bit block size also exposes it to birthday-bound attacks (SWEET32) when large volumes of data
 /// are encrypted under the same key. Prefer a modern cipher such as AES.
 /// </note>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// // Legacy interop only — do not use Skipjack to protect new data.
+/// using var skipjack = new Skipjack();
+/// skipjack.Key = legacyKeyMaterial;       // exactly 10 bytes
+/// skipjack.IV  = RandomNumberGenerator.GetBytes(8); // matches the 64-bit block
+///
+/// byte[] ciphertext = skipjack.Encrypt(legacyPlaintext);
+/// </code>
+/// </example>
 /// <seealso href="../guides/cryptography/skipjack.html">Using Skipjack (guide with full encrypt / decrypt examples)</seealso>
 /// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>
@@ -112,7 +141,7 @@ public sealed class Skipjack
     /// <exception cref="CryptographicException">
     /// <paramref name="rgbKey" /> is not exactly 10 bytes in length, or <paramref name="rgbIV" /> is not exactly 8 bytes in length.
     /// </exception>
-    public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV)
+    public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         this.ThrowIfDisposed();
         this.Validate(rgbKey, rgbIV);
@@ -138,7 +167,7 @@ public sealed class Skipjack
     /// <exception cref="CryptographicException">
     /// <paramref name="rgbKey" /> is not exactly 10 bytes in length, or <paramref name="rgbIV" /> is not exactly 8 bytes in length.
     /// </exception>
-    public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV)
+    public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         this.ThrowIfDisposed();
         this.Validate(rgbKey, rgbIV);
@@ -242,7 +271,7 @@ public sealed class Skipjack
     /// <param name="iv">The initialisation vector to validate.</param>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
     /// <exception cref="CryptographicException">The key or IV length is not valid for this algorithm.</exception>
-    private void Validate(byte[] key, byte[] iv)
+    private void Validate(byte[] key, [NotNull] byte[]? iv)
     {
         ThrowHelper.ThrowIfNull(key);
         ThrowHelper.ThrowIfNull(iv);
@@ -250,14 +279,14 @@ public sealed class Skipjack
         // Key length must match the fixed 80-bit key size exactly — Skipjack does not support variable-length keys.
         if (key.Length != this.KeySizeBytes)
             throw new CryptographicException(
-                string.Format(ResourceStrings.CryptographicException_InvalidKeySize,
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize,
                               key.Length * 8,
                               CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)),
                 nameof(key));
 
         if (iv.Length != this.BlockSizeBytes)
             throw new CryptographicException(
-                string.Format(ResourceStrings.CryptographicException_InvalidIVSize,
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidIVSize,
                               iv.Length * 8,
                               CryptoHelpers.FormatLegalSizes(this.LegalBlockSizesValue)),
                 nameof(iv));

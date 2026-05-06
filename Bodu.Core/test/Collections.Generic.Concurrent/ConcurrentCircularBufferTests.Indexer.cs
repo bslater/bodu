@@ -138,4 +138,29 @@ public partial class ConcurrentCircularBufferTests
         Task.WaitAll(reader, writer);
         Assert.AreEqual(0, errors.Count, "Indexer threw during concurrent enqueue.");
     }
+
+    /// <summary>
+    /// Documents the indexer contract: two consecutive index reads are not jointly atomic. A producer or
+    /// consumer running between the two calls may shift the live window, so callers needing joint atomicity
+    /// across multiple positions must take a single <c>ToArray</c> snapshot and index the resulting array.
+    /// </summary>
+    /// <remarks>
+    /// In the absence of concurrent mutation each call is well-defined and consecutive reads observe the
+    /// expected adjacent values. This test records the contract rather than asserting non-atomicity directly,
+    /// which would require a deterministic interleaving harness.
+    /// </remarks>
+    [TestMethod]
+    public void Indexer_WhenCalledTwiceConsecutivelyOnQuiescentBuffer_ShouldReturnAdjacentValues()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
+        buffer.Enqueue(new TestItem(100));
+        buffer.Enqueue(new TestItem(200));
+        buffer.Enqueue(new TestItem(300));
+
+        TestItem first = buffer[0];
+        TestItem second = buffer[1];
+
+        Assert.AreEqual(100, first.Value);
+        Assert.AreEqual(200, second.Value);
+    }
 }

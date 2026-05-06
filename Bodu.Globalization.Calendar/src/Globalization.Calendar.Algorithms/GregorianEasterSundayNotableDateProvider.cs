@@ -17,7 +17,7 @@ namespace Bodu.Globalization.Calendar.Providers;
 /// This provider always uses the Gregorian computus. The optional <see cref="SysGlobal.Calendar" /> parameter is accepted only when it
 /// is <see langword="null" /> or a <see cref="SysGlobal.GregorianCalendar" />.
 /// </remarks>
-public sealed class GregorianEasterSundayNotableDateProvider 
+public sealed class GregorianEasterSundayNotableDateProvider
     : EasterSundayNotableDateProviderBase
 {
     /// <inheritdoc />
@@ -26,7 +26,7 @@ public sealed class GregorianEasterSundayNotableDateProvider
     protected override string Name => "Easter Sunday";
 
     /// <inheritdoc />
-    protected override NotableDateCategory Category => NotableDateCategory.Cultural;
+    protected override NotableDateCategory Category => NotableDateCategory.Religious;
 
     /// <inheritdoc />
     protected override Type? DefaultCalendarType => typeof(SysGlobal.GregorianCalendar);

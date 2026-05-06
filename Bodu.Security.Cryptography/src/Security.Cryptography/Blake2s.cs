@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Blake2s.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -7,6 +7,7 @@
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -23,27 +24,54 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// This implementation inherits its residual buffer, byte-counter and lookahead-buffering loop from
-/// <see cref="DeferredFinalBlockHashAlgorithm{T}" />: the final message block is not compressed until
+/// <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}" />: the final message block is not compressed until
 /// <see cref="HashAlgorithm.HashFinal" /> is called, at which point the <c>finalization</c> flag is set and the
 /// output bytes are serialised in little-endian order then truncated to the configured output length.
 /// </para>
 /// <para>
-/// Keyed and tree-hashing modes are not currently exposed; this implementation targets the sequential,
-/// unkeyed digest profile.
+/// Supplying a non-empty <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}.Key" /> switches the instance into
+/// the keyed <c>BLAKE2s-MAC</c> mode defined in RFC 7693 Section 2.8. The key (1–32 bytes) is zero-padded to
+/// 64 bytes and prepended as the first message block, and the key length is encoded into the parameter block so
+/// that keyed and unkeyed digests of the same message are always distinct.
+/// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Output size: configurable — 128, 160, 192, 224, or 256 bits.</description></item>
+///   <item><description>Block size: 64 bytes (512 bits); 8 × 32-bit state words; 10 rounds.</description></item>
+///   <item><description>Optional key: 1–32 bytes for BLAKE2s-MAC mode (RFC 7693 §2.8).</description></item>
+///   <item><description>Specification: RFC 7693; optimised for 8/16/32-bit hosts.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose BLAKE2s.</strong> Pick BLAKE2s on 32-bit hosts, embedded targets, or any time the
+/// output is at most 32 bytes — the 32-bit-word design beats <see cref="Blake2b"/> on those platforms.
+/// On 64-bit hosts and for outputs longer than 32 bytes, <see cref="Blake2b"/> is faster. For very large
+/// parallel workloads <see cref="Blake3"/> is faster still and supports tree hashing natively.
 /// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
+/// // Unkeyed hash
 /// using var blake2s = new Blake2s(256);
 /// byte[] digest = blake2s.ComputeHash(message);
+///
+/// // Keyed MAC (BLAKE2s-MAC-256)
+/// using var mac = new Blake2s(256) { Key = myKey };
+/// byte[] tag = mac.ComputeHash(message);
 /// </code>
 /// </example>
-public sealed class Blake2s : DeferredFinalBlockHashAlgorithm<Blake2s>
+public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
 {
     /// <summary>
     /// The set of output sizes, in bits, accepted by this algorithm.
     /// </summary>
     public static readonly int[] ValidHashSizes = { 128, 160, 192, 224, 256 };
+
+    /// <summary>
+    /// The maximum accepted key length, in bytes, for the keyed <c>BLAKE2s-MAC</c> mode.
+    /// </summary>
+    public const int MaxKeySize = 32;
 
     /// <summary>
     /// The block size, in bytes, processed by each compression call.
@@ -83,15 +111,15 @@ public sealed class Blake2s : DeferredFinalBlockHashAlgorithm<Blake2s>
     /// <paramref name="hashSize" /> is not one of the supported output sizes.
     /// </exception>
     public Blake2s(int hashSize)
-        : base(BlockSizeBytesValue)
+        : base(BlockSizeBytesValue, MaxKeySize)
     {
         if (Array.IndexOf(ValidHashSizes, hashSize) < 0)
             throw new ArgumentOutOfRangeException(
                 nameof(hashSize),
-                string.Format(ResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
 
         this.HashSizeValue = hashSize;
-        this.InitializeState();
+        this.InitializeHashState();
     }
 
     /// <inheritdoc />
@@ -101,10 +129,15 @@ public sealed class Blake2s : DeferredFinalBlockHashAlgorithm<Blake2s>
     public override bool CanTransformMultipleBlocks => true;
 
     /// <inheritdoc />
-    public override int InputBlockSize => BlockSizeBytesValue;
-
-    /// <inheritdoc />
-    public override int OutputBlockSize => this.HashSizeValue / 8;
+    /// <remarks>The format is <c>"BLAKE2s-<i>n</i>"</c>, where <i>n</i> is the configured digest size in bits.</remarks>
+    public override string AlgorithmName
+    {
+        get
+        {
+            this.ThrowIfDisposed();
+            return $"BLAKE2s-{this.HashSizeValue}";
+        }
+    }
 
     /// <summary>
     /// Gets or sets the size, in bits, of the final computed hash output.
@@ -115,7 +148,7 @@ public sealed class Blake2s : DeferredFinalBlockHashAlgorithm<Blake2s>
     /// The full BLAKE2s compression is always run using all 256 bits of internal state. Shorter output lengths
     /// are produced by truncating the serialised state after finalisation. The property may only be changed
     /// before hashing has begun; once <see cref="HashAlgorithm.TransformBlock" /> or a <c>ComputeHash</c>
-    /// overload has been called, the value is immutable until <see cref="Initialize" /> is called.
+    /// overload has been called, the value is immutable until <see cref="HashAlgorithm.Initialize" /> is called.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The assigned value is not one of 128, 160, 192, 224, or 256.
@@ -140,42 +173,40 @@ public sealed class Blake2s : DeferredFinalBlockHashAlgorithm<Blake2s>
             if (Array.IndexOf(ValidHashSizes, value) < 0)
                 throw new ArgumentOutOfRangeException(
                     nameof(value),
-                    string.Format(ResourceStrings.CryptographicException_InvalidHashSize, value, string.Join(", ", ValidHashSizes)));
+                    string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, value, string.Join(", ", ValidHashSizes)));
 
             this.HashSizeValue = value;
         }
     }
 
-    /// <inheritdoc />
-    public override void Initialize()
-    {
-        this.ThrowIfDisposed();
-        base.Initialize();
-    }
-
-    /// <inheritdoc />
+    /// <summary>
+    /// Releases the unmanaged resources used by the <see cref="HashAlgorithm" /> and optionally releases the managed resources.
+    /// </summary>
+    /// <param name="disposing">
+    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release
+    /// only unmanaged resources.
+    /// </param>
     /// <remarks>
-    /// Restores the internal hash-state words to the BLAKE2s initialisation values for the configured output size.
-    /// Invoked from <see cref="DeferredFinalBlockHashAlgorithm{T}.Initialize" /> after the inherited residual buffer
-    /// and counter have been cleared.
-    /// </remarks>
-    protected override void OnInitialize() =>
-        this.InitializeState();
-
-    /// <inheritdoc />
-    /// <remarks>
+    /// <para>
     /// Clears the chaining state, releases the framework <see cref="HashAlgorithm.HashValue" /> array, and zeros
-    /// <see cref="HashAlgorithm.HashSizeValue" />. The inherited residual buffer is cleared by the grandparent
-    /// before this hook runs.
+    /// <see cref="HashAlgorithm.HashSizeValue" /> when <paramref name="disposing" /> is <see langword="true" />.
+    /// </para>
+    /// <para>
+    /// Retained key material owned by <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}" /> is cleared by the base
+    /// implementation when this method delegates to <c>base.Dispose(disposing)</c>. The inherited residual buffer is
+    /// cleared further down the dispose chain.
+    /// </para>
     /// </remarks>
-    protected override void OnDispose(bool disposing)
+    protected override void Dispose(bool disposing)
     {
+        if (this.IsDisposed) return;
+
         if (disposing)
         {
-            Array.Clear(this._h, 0, this._h.Length);
-            CryptoHelpers.ClearAndNullify(ref this.HashValue);
-            this.HashSizeValue = 0;
+            CryptoHelpers.Clear(this._h);
         }
+
+        base.Dispose(disposing);
     }
 
     /// <summary>
@@ -270,18 +301,19 @@ public sealed class Blake2s : DeferredFinalBlockHashAlgorithm<Blake2s>
         return output;
     }
 
-    /// <summary>
-    /// Sets the eight internal hash-state words to the BLAKE2s initialisation values, then applies the
-    /// parameter block XOR for an unkeyed digest of <see cref="HashAlgorithm.HashSizeValue" /> / 8 bytes.
-    /// </summary>
-    private void InitializeState()
+    /// <inheritdoc />
+    /// <remarks>
+    /// Copies the BLAKE2s IV into the eight internal hash-state words, then applies the parameter block XOR
+    /// encoding the digest length and key length per RFC 7693: <c>h[0] ^= 0x01010000 ^ (kk &lt;&lt; 8) ^ nn</c>.
+    /// </remarks>
+    protected override void InitializeHashState()
     {
         s_iv.CopyTo(this._h, 0);
 
-        // Parameter block: fan-out=1, max depth=1, digest length=nn, no key (kk=0).
-        // h[0] ^= 0x01010000 ^ (kk << 8) ^ nn
+        // Parameter block: fan-out=1, max depth=1, digest length=nn, key length=kk.
         int nn = this.HashSizeValue / 8;
-        this._h[0] ^= 0x01010000U ^ (uint)nn;
+        int kk = this.KeyValue?.Length ?? 0;
+        this._h[0] ^= 0x01010000U ^ ((uint)kk << 8) ^ (uint)nn;
     }
 
     /// <summary>
@@ -298,22 +330,12 @@ public sealed class Blake2s : DeferredFinalBlockHashAlgorithm<Blake2s>
     private static void G(Span<uint> v, int a, int b, int c, int d, uint x, uint y)
     {
         v[a] += v[b] + x;
-        v[d] = RotateRight(v[d] ^ v[a], 16);
+        v[d] = (v[d] ^ v[a]).RotateBitsRightUnchecked(16);
         v[c] += v[d];
-        v[b] = RotateRight(v[b] ^ v[c], 12);
+        v[b] = (v[b] ^ v[c]).RotateBitsRightUnchecked(12);
         v[a] += v[b] + y;
-        v[d] = RotateRight(v[d] ^ v[a], 8);
+        v[d] = (v[d] ^ v[a]).RotateBitsRightUnchecked(8);
         v[c] += v[d];
-        v[b] = RotateRight(v[b] ^ v[c], 7);
+        v[b] = (v[b] ^ v[c]).RotateBitsRightUnchecked(7);
     }
-
-    /// <summary>
-    /// Rotates a 32-bit unsigned integer right by the specified number of bits.
-    /// </summary>
-    /// <param name="value">The value to rotate.</param>
-    /// <param name="bits">The number of positions to rotate right.</param>
-    /// <returns>The rotated value.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static uint RotateRight(uint value, int bits) =>
-        (value >> bits) | (value << (32 - bits));
 }

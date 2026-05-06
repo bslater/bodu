@@ -11,10 +11,29 @@ namespace Bodu.Globalization.Calendar;
 /// an embedded XML resource, JSON document, database, or external configuration system.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Rule providers are loaded once per <see cref="NotableDateService" /> instance. To express runtime-only modifications such as
 /// disabling a holiday or adding a one-off observance, use an <see cref="INotableDateRuleOverrideProvider" /> alongside the base
 /// providers.
+/// </para>
+/// <para>
+/// The built-in implementation is <see cref="XmlResourceNotableDateRuleProvider" />, which loads rules from an embedded XML resource
+/// and recursively resolves cherry-pick directives across linked resource files.
+/// </para>
 /// </remarks>
+/// <example>
+/// <para>A minimal in-memory implementation for testing or dynamic rule sets:</para>
+/// <code>
+/// public sealed class InMemoryRuleProvider : INotableDateRuleProvider
+/// {
+///     private readonly IReadOnlyList&lt;NotableDateRule&gt; _rules;
+///
+///     public InMemoryRuleProvider(IReadOnlyList&lt;NotableDateRule&gt; rules) =&gt; _rules = rules;
+///
+///     public IEnumerable&lt;NotableDateRule&gt; LoadRules() =&gt; _rules;
+/// }
+/// </code>
+/// </example>
 public interface INotableDateRuleProvider
 {
 	/// <summary>

@@ -22,17 +22,17 @@ public enum AdjustmentAction
 	None = 0,
 
 	/// <summary>
-	/// Adds <c>ObservanceAdjustment.OffsetDays</c> to the calculated date. Negative values move backwards.
+	/// Adds <see cref="ObservanceAdjustment.OffsetDays" /> to the calculated date. Negative values move backwards.
 	/// </summary>
 	AddDays,
 
 	/// <summary>
-	/// Moves the date forward to the next weekday as defined by the configured <c>CalendarWeekendDefinition</c>.
+	/// Moves the date forward to the next weekday as defined by the configured <see cref="Bodu.Extensions.CalendarWeekendDefinition" />.
 	/// </summary>
 	MoveToNextWeekday,
 
 	/// <summary>
-	/// Moves the date backward to the previous weekday as defined by the configured <c>CalendarWeekendDefinition</c>.
+	/// Moves the date backward to the previous weekday as defined by the configured <see cref="Bodu.Extensions.CalendarWeekendDefinition" />.
 	/// </summary>
 	MoveToPreviousWeekday,
 
@@ -43,13 +43,13 @@ public enum AdjustmentAction
 	MoveToNextNonWorkingDay,
 
 	/// <summary>
-	/// Replaces the date with the resolved date of another notable date rule named by <c>ObservanceAdjustment.TargetRuleName</c>.
+	/// Replaces the date with the resolved date of another notable date rule named by <see cref="ObservanceAdjustment.TargetRuleName" />.
 	/// </summary>
 	ReplaceWithNamedDate,
 
 	/// <summary>
 	/// Delegates the adjustment to a registered <see cref="IAdjustmentHandler" /> looked up by
-	/// <c>ObservanceAdjustment.HandlerKey</c>.
+	/// <see cref="ObservanceAdjustment.HandlerKey" />.
 	/// </summary>
 	Custom,
 }

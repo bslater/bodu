@@ -21,15 +21,50 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// XML inputs are validated against the embedded <c>NotableDates.xsd</c> schema before parsing. JSON parsing is intentionally not yet
-/// reinstated; the previous incomplete implementation has been preserved as a documented stub at the bottom of this file for future
-/// completion.
+/// XML inputs are validated against the embedded <c>NotableDates.xsd</c> schema before parsing. Schema violations surface as
+/// <see cref="XmlSchemaValidationException" /> so authoring errors are caught at parse time rather than at first query. The JSON
+/// authoring counterpart lives in <see cref="NotableDateRuleJsonParser" /> and produces the same
+/// <see cref="ParsedNotableDateDocument" /> output, so downstream loaders can treat both source formats uniformly.
+/// </para>
+/// <para>
+/// The parser is the bottom of the rule-loading stack: it converts authored markup into the in-memory rule objects that
+/// <see cref="XmlResourceNotableDateRuleProvider" /> assembles into a flat rule set, that <see cref="NotableDateService" /> then
+/// resolves into <see cref="NotableDate" /> values. Use the <see cref="ParseXml(string)" /> overloads when only the local rules
+/// matter; use <see cref="ParseDocument(string)" /> when <c>&lt;Use&gt;</c> cherry-pick directives must also be inspected (for
+/// example to walk a graph of imported resources).
 /// </para>
 /// <para>
 /// This class replaces <c>NotableDateDefinitionParser</c>. The new schema vocabulary uses <c>Rule</c> as the per-definition element and
 /// names the strategy child elements <c>Fixed</c>, <c>DayOfWeekInMonth</c>, <c>OffsetFromAnchor</c>, and <c>Algorithm</c>.
 /// </para>
 /// </remarks>
+/// <example>
+/// <para>Parse an inline XML payload into a list of <see cref="NotableDateRule" /> instances:</para>
+/// <code>
+/// const string xml = """
+///     &lt;NotableDates xmlns="urn:bodu:globalization:calendar"&gt;
+///       &lt;Rule name="Australia Day" category="Public" territoryCode="AU" isNonWorkingDay="true"&gt;
+///         &lt;Fixed month="1" day="26" /&gt;
+///         &lt;Adjustment key="weekend-roll"
+///                     trigger="IfWeekend"
+///                     action="MoveToNextMonday"
+///                     isNonWorkingDay="true" /&gt;
+///       &lt;/Rule&gt;
+///       &lt;Rule name="Easter Sunday" category="Religious"&gt;
+///         &lt;Algorithm key="easter-sunday" /&gt;
+///       &lt;/Rule&gt;
+///     &lt;/NotableDates&gt;
+///     """;
+///
+/// List&lt;NotableDateRule&gt; rules = NotableDateRuleParser.ParseXml(xml);
+/// // rules[0] is the Fixed Australia Day rule with one weekend-roll adjustment.
+/// // rules[1] is the Algorithm-backed Easter Sunday rule.
+///
+/// // When &lt;Use&gt; directives also matter, parse the full document instead:
+/// ParsedNotableDateDocument document = NotableDateRuleParser.ParseDocument(xml);
+/// IReadOnlyList&lt;NotableDateRuleUseGroup&gt; imports = document.UseGroups;
+/// </code>
+/// </example>
 public static class NotableDateRuleParser
 {
 	private static readonly XNamespace Namespace = "urn:bodu:globalization:calendar";
@@ -676,13 +711,4 @@ public static class NotableDateRuleParser
 		if (e.Severity == XmlSeverityType.Error)
 			throw new XmlSchemaValidationException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.XmlSchemaValidationException_SchemaValidationError, e.Message), e.Exception);
 	}
-
-	// ----------------------------------------------------------------------------
-	// JSON parser placeholder (preserved for future implementation)
-	// ----------------------------------------------------------------------------
-	//
-	// The previous incomplete JSON parser has been intentionally kept out of the
-	// public surface until it can be reinstated against the new NotableDateRule
-	// vocabulary. When implementing, mirror ParseXml: validate against a JSON
-	// schema (or strict deserialiser), then map each item through ApplyStrategySpecifics.
 }

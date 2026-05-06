@@ -10,7 +10,7 @@ using SysGlobal = System.Globalization;
 namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
-/// Provides a algorithm for determining the Gregorian date of the Qingming solar term (清明節) for a given year.
+/// Provides an algorithm for determining the Gregorian date of the Qingming solar term (清明節) for a given year.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -32,11 +32,13 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 public sealed class QingmingNotableDateAlgorithm
 	: INotableDateAlgorithm
 {
-	// Fraction of the tropical year corresponding to 15 degrees of solar longitude.
-	// Tropical year ≈ 365.2422 days; 1° = 365.2422/360 days; 15° = 15.2184 days.
+	/// <summary>
+	/// The number of days corresponding to 15° of solar longitude (one solar term), computed as the tropical year length
+	/// (365.2422 days) multiplied by 15/360.
+	/// </summary>
 	private const double DegreesToDays15 = 15.0 * 365.2422 / 360.0;
 
-	// J2000 epoch expressed as a DateTime. This is January 1, 2000 at 12:00:00 UT (noon).
+	/// <summary>The J2000.0 epoch expressed as a <see cref="DateTime" /> (2000-01-01T12:00:00 UT, kind unspecified), equal to JDE 2451545.0.</summary>
 	private static readonly DateTime J2000Epoch = new DateTime(2000, 1, 1, 12, 0, 0, DateTimeKind.Unspecified);
 
 	/// <summary>
@@ -85,6 +87,8 @@ public sealed class QingmingNotableDateAlgorithm
 	/// Computes the Julian Day Ephemeris (JDE) of the vernal equinox for the given Gregorian year using the Meeus polynomial
 	/// (Table 27.a) and the 24-term correction (Table 27.c).
 	/// </summary>
+	/// <param name="year">The Gregorian year for which the vernal equinox JDE is computed.</param>
+	/// <returns>The Julian Day Ephemeris of the vernal equinox in Terrestrial Dynamical Time.</returns>
 	private static double ComputeVernalEquinoxJde(int year)
 	{
 		double Y = (year - 2000) / 1000.0;
@@ -116,8 +120,10 @@ public sealed class QingmingNotableDateAlgorithm
 	private static double DegToRad(double degrees) =>
 		degrees * (Math.PI / 180.0);
 
-	// Meeus Table 27.c — periodic correction terms for the March equinox.
-	// Each row is (amplitude, phase [°], rate [°/Julian century]).
+	/// <summary>
+	/// Periodic correction terms from Meeus Table 27.c for the March equinox. Each entry is
+	/// (amplitude, phase [°], rate [°/Julian century]).
+	/// </summary>
 	private static readonly (double A, double B, double C)[] s_correctionTerms =
 	[
 		(485,  324.96, 1934.136),

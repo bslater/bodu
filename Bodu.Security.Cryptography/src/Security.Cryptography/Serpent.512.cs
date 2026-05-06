@@ -21,11 +21,42 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// For other block sizes, see <see cref="Serpent256" /> and <see cref="Serpent1024" />.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Block size: 512 bits (64 bytes).</description></item>
+///   <item><description>Key size: 512 bits (64 bytes).</description></item>
+///   <item><description>Tweak size: 128 bits (16 bytes).</description></item>
+///   <item><description>64 rounds; tweak subkey injected every 4 rounds.</description></item>
+///   <item><description>Default mode: <see cref="CipherBlockMode.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose Serpent-512.</strong> Pick the wide-block Serpent variants only for experimental work
+/// where a tweakable wide-block cipher with Serpent's round function is wanted. <see cref="Threefish512"/> is a
+/// better-studied alternative for the same role. Use <see cref="Serpent128"/> for any production scenario that
+/// requires interoperable Serpent.
+/// </para>
 /// <note type="important">
-/// Serpent-512 (this type) is a **non-standard Serpent-derived construction** and is not interoperable with any reference
-/// Serpent implementation. For standard, externally vetted Serpent, use <see cref="Serpent128" />.
+/// Serpent-512 (this type) is a <strong>non-standard Serpent-derived construction</strong> and is not interoperable with any
+/// reference Serpent implementation. For standard, externally vetted Serpent, use <see cref="Serpent128" />.
 /// </note>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// using var serpent = Serpent512.Create();
+/// serpent.Key   = RandomNumberGenerator.GetBytes(64); // 512-bit key
+/// serpent.IV    = RandomNumberGenerator.GetBytes(64); // matches the 512-bit block
+/// serpent.Tweak = RandomNumberGenerator.GetBytes(16); // 128-bit tweak
+///
+/// byte[] ciphertext = serpent.Encrypt(plaintext);
+/// byte[] roundTrip  = serpent.Decrypt(ciphertext);
+/// </code>
+/// </example>
 public sealed class Serpent512
     : Serpent
 {

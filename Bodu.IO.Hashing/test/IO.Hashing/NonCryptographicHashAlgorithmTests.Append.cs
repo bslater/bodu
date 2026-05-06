@@ -19,7 +19,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void Append_WhenInputIsEmpty_ShouldLeaveHashUnchanged(TVariant variant)
     {
-        NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
+        var algorithm = CreateAlgorithm(variant);
         NonCryptographicHashAlgorithm baseline = CreateAlgorithm(variant);
 
         algorithm.Append(ReadOnlySpan<byte>.Empty);
@@ -85,7 +85,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(KnownAnswerTestData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
     public void Append_WhenUsingNamedInput_ShouldProduceExpectedHash(TVariant variant, string testName, byte[] input, byte[] expected)
     {
-        NonCryptographicHashAlgorithm algorithm = CreateAlgorithm(variant);
+        var algorithm = CreateAlgorithm(variant);
         algorithm.Append(input);
 
         byte[] actual = algorithm.GetCurrentHash();

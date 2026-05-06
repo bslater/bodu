@@ -441,7 +441,7 @@ public static partial class ThrowHelper
     /// <param name="offset">The zero-based starting index within the array.</param>
     /// <param name="count">The number of elements to access from <paramref name="offset"/>.</param>
     /// <param name="paramArrayName">The name of the array parameter. Supplied automatically by the compiler.</param>
-    /// <param name="paramIndexName">The name of the index parameter. Supplied automatically by the compiler.</param>
+    /// <param name="paramOffsetName">The name of the index parameter. Supplied automatically by the compiler.</param>
     /// <param name="paramCountName">The name of the count parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="array"/> is <see langword="null"/>.
@@ -456,7 +456,7 @@ public static partial class ThrowHelper
     public static void ThrowIfArrayOffsetOrCountInvalid(
         Array array, int offset, int count,
         [CallerArgumentExpression(nameof(array))] string? paramArrayName = null,
-        [CallerArgumentExpression(nameof(offset))] string? paramIndexName = null,
+        [CallerArgumentExpression(nameof(offset))] string? paramOffsetName = null,
         [CallerArgumentExpression(nameof(count))] string? paramCountName = null)
     {
         if (array is null)
@@ -464,19 +464,19 @@ public static partial class ThrowHelper
 
         if (offset < 0 || offset > array.Length)
             throw new ArgumentOutOfRangeException(
-                paramIndexName,
-                string.Format(ResourceStrings.Arg_Invalid_ArrayOffset, paramArrayName));
+                paramOffsetName,
+                string.Format(ResourceStrings.Arg_Invalid_ArrayOffset, paramOffsetName));
 
         if (count < 0 || count > array.Length)
             throw new ArgumentOutOfRangeException(
                 paramCountName,
-                string.Format(ResourceStrings.Arg_Invalid_ArrayOffset, paramArrayName));
+                string.Format(ResourceStrings.Arg_Invalid_ArrayOffset, paramCountName));
 
         if (count > array.Length - offset)
             throw new ArgumentException(
                 string.Format(
                     ResourceStrings.Arg_Invalid_ArrayOffsetOrLength,
-                    paramIndexName,
+                    paramOffsetName,
                     paramCountName,
                     paramArrayName));
     }
@@ -548,7 +548,7 @@ public static partial class ThrowHelper
     /// The name of the span parameter. Supplied automatically by the compiler via
     /// <see cref="CallerArgumentExpressionAttribute"/>.
     /// </param>
-    /// <param name="paramIndexName">
+    /// <param name="paramOffsetName">
     /// The name of the index parameter. Supplied automatically by the compiler via
     /// <see cref="CallerArgumentExpressionAttribute"/>.
     /// </param>
@@ -589,24 +589,24 @@ public static partial class ThrowHelper
     public static void ThrowIfSpanOffsetOrCountInvalid<T>(
         ReadOnlySpan<T> span, int offset, int count,
         [CallerArgumentExpression(nameof(span))] string? paramSpanName = null,
-        [CallerArgumentExpression(nameof(offset))] string? paramIndexName = null,
+        [CallerArgumentExpression(nameof(offset))] string? paramOffsetName = null,
         [CallerArgumentExpression(nameof(count))] string? paramCountName = null)
     {
         if (offset < 0 || offset > span.Length)
             throw new ArgumentOutOfRangeException(
-                paramIndexName,
-                string.Format(ResourceStrings.Arg_Invalid_ArrayOffset, paramSpanName));
+                paramOffsetName,
+                string.Format(ResourceStrings.Arg_Invalid_ArrayOffset, paramOffsetName));
 
         if (count < 0 || count > span.Length)
             throw new ArgumentOutOfRangeException(
                 paramCountName,
-                string.Format(ResourceStrings.Arg_Invalid_ArrayOffset, paramSpanName));
+                string.Format(ResourceStrings.Arg_Invalid_ArrayOffset, paramCountName));
 
         if (count > span.Length - offset)
             throw new ArgumentException(
                 string.Format(
                     ResourceStrings.Arg_Invalid_ArrayOffsetOrLength,
-                    paramIndexName,
+                    paramOffsetName,
                     paramCountName,
                     paramSpanName));
     }
@@ -1455,6 +1455,8 @@ public static partial class ThrowHelper
         ReadOnlySpan<T> span, int divisor, bool throwIfZero = true,
         [CallerArgumentExpression(nameof(span))] string? paramName = null)
     {
+        ThrowHelper.ThrowIfZeroOrNegative(divisor);
+
         if ((throwIfZero && span.Length == 0) || span.Length % divisor != 0)
             throw new ArgumentException(
                 string.Format(ResourceStrings.Arg_Invalid_SpanLengthMultipleOf, divisor),
@@ -1556,7 +1558,7 @@ public static partial class ThrowHelper
     /// Thrown when <paramref name="value"/> is empty or contains only whitespace characters.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIsNullOrWhiteSpace(
+    public static void ThrowIfNullOrWhiteSpace(
         string value,
         [CallerArgumentExpression(nameof(value))] string? paramName = null)
     {

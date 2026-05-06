@@ -6,8 +6,9 @@
 
 namespace Bodu.Test.IO;
 
-// <summary>
-/// A test stream that simulates slow I/O by sleeping on each read, to trigger cancellation scenarios. </summary>
+/// <summary>
+/// A test stream that simulates slow I/O by sleeping on each read, to trigger cancellation scenarios.
+/// </summary>
 public sealed class ThrottledIncrementingByteStream
     : IncrementingByteStream
 {

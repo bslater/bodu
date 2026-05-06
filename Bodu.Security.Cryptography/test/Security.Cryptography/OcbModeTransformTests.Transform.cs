@@ -6,6 +6,7 @@
 
 namespace Bodu.Security.Cryptography;
 
+using Bodu.Test;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
@@ -31,7 +32,7 @@ public sealed partial class OcbModeTransformTests
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
         var iv = Enumerable.Repeat((byte)0x5A, ExpectedBlockSize).ToArray();
-        var plaintext = CryptoTestUtilities.GetRandomNonZeroBytes(ExpectedBlockSize * 3);
+        var plaintext = TestHelpers.GenerateRandomNonZeroBytes(ExpectedBlockSize * 3);
 
         var enc = CreateTransform(cipher, (byte[])iv.Clone(), tagLen);
         var ct = new byte[plaintext.Length + tagLen];
@@ -78,7 +79,7 @@ public sealed partial class OcbModeTransformTests
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
         var iv = new byte[ExpectedBlockSize];
-        var plaintext = CryptoTestUtilities.GetRandomNonZeroBytes(plaintextLength);
+        var plaintext = TestHelpers.GenerateRandomNonZeroBytes(plaintextLength);
 
         var enc = CreateTransform(cipher, (byte[])iv.Clone());
         var ct = new byte[plaintext.Length + enc.TagSize];
@@ -207,28 +208,4 @@ public sealed partial class OcbModeTransformTests
             "IV bytes 12–15 are nonce padding and must not influence the ciphertext or tag.");
     }
 
-    // ── Default round-trip ────────────────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Verifies that a plaintext encrypted and then decrypted with the same key, nonce,
-    /// and default tag length is recovered byte-for-byte without modification.
-    /// </summary>
-    [TestMethod]
-    public void EncryptThenDecrypt_WithSameKeyAndNonce_ShouldRecoverPlaintext()
-    {
-        var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = Enumerable.Repeat((byte)0x11, ExpectedBlockSize).ToArray();
-        var plaintext = CryptoTestUtilities.GetRandomNonZeroBytes(ExpectedBlockSize * 2);
-
-        var enc = CreateTransform(cipher, (byte[])iv.Clone());
-        var ct = new byte[plaintext.Length + enc.TagSize];
-        enc.Encrypt(plaintext, ct);
-
-        var dec = CreateTransform(cipher, (byte[])iv.Clone());
-        var recovered = new byte[plaintext.Length];
-        dec.Decrypt(ct, recovered);
-
-        CollectionAssert.AreEqual(plaintext, recovered,
-            "OCB round-trip must recover the original plaintext.");
-    }
 }

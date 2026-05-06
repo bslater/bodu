@@ -34,8 +34,8 @@ Four independent NuGet packages that share a single solution, a single set of co
   <h3>Bodu.Core</h3>
   <p>Fixed-capacity collections (circular buffer, evicting dictionary), buffer conversion, array and text utilities, and a centralised argument-validation helper.</p>
   <div class="bodu-card-links">
-    <a href="api/Bodu.Collections.Generic.html">Overview</a>
-    <a href="api/Bodu.html">API reference</a>
+    <a href="xref:Bodu.Collections.Generic">Overview</a>
+    <a href="xref:Bodu">API reference</a>
   </div>
 </div>
 
@@ -44,28 +44,29 @@ Four independent NuGet packages that share a single solution, a single set of co
   <h3>Bodu.IO.Hashing</h3>
   <p>Non-cryptographic checksums built on <code>System.IO.Hashing.NonCryptographicHashAlgorithm</code> — the full CRC RevEng catalogue (widths 1–64 bits) and the Fletcher family (16 / 32 / 64 bits), with shared lookup-table caching and resumable hashing.</p>
   <div class="bodu-card-links">
-    <a href="api/Bodu.IO.Hashing.html">Overview</a>
-    <a href="guides/io-hashing/">Guides</a>
+    <a href="xref:Bodu.IO.Hashing">Overview</a>
+    <a href="guides/io-hashing/index.md">Guides</a>
   </div>
 </div>
 
 <div class="bodu-card">
   <img src="images/hero-crypto.svg" alt="Bodu.Security.Cryptography" />
   <h3>Bodu.Security.Cryptography</h3>
-  <p>Managed block ciphers (Threefish 256 / 512 / 1024, Blowfish, Skipjack), AEAD mode transforms for AES, keyed and cryptographic hashes (SipHash, Tiger), Merkle-tree hashing, and the classic non-cryptographic hash families (Adler, FNV-1a, CityHash).</p>
+  <p>Managed block ciphers (Threefish 256 / 512 / 1024, Serpent 128 / 256 / 512 / 1024, Camellia, Twofish, Blowfish, Skipjack), an AES adapter paired with AEAD mode transforms, keyed and cryptographic hashes (SipHash, Tiger, ASCON), Merkle-tree hashing, and the classic non-cryptographic hash families (Adler, FNV-1a, CityHash).</p>
   <div class="bodu-card-links">
-    <a href="api/Bodu.Security.Cryptography.html">Overview</a>
-    <a href="guides/cryptography/">Guides</a>
+    <a href="xref:Bodu.Security.Cryptography">Overview</a>
+    <a href="guides/cryptography/index.md">Guides</a>
   </div>
 </div>
 
 <div class="bodu-card">
   <img src="images/hero-calendar.svg" alt="Bodu.Globalization.Calendar" />
   <h3>Bodu.Globalization.Calendar</h3>
-  <p>Notable-date resolution with fixed, rule-based, offset-based, and dynamic calculators — including Gregorian-computus Easter and lunar-calendar Lunar New Year — driven by a pluggable XML rule source and adjustment pipeline.</p>
+  <p>Notable-date resolution with fixed, rule-based, offset-based, and dynamic calculators — including Gregorian-computus Easter and lunar-calendar Lunar New Year — driven by a pluggable XML rule source and adjustment pipeline. Region-specific public-holiday rules ship in companion <code>Data.Americas</code>, <code>Data.Europe</code>, and <code>Data.AsiaPacific</code> packs that ship and re-release independently of the main library.</p>
   <div class="bodu-card-links">
-    <a href="api/Bodu.Globalization.Calendar.html">Overview</a>
-    <a href="api/Bodu.Globalization.Calendar.html">API reference</a>
+    <a href="xref:Bodu.Globalization.Calendar">Overview</a>
+    <a href="guides/calendar/data-packs.md">Data packs</a>
+    <a href="xref:Bodu.Globalization.Calendar">API reference</a>
   </div>
 </div>
 
@@ -80,6 +81,11 @@ dotnet add package Bodu.Core
 dotnet add package Bodu.IO.Hashing
 dotnet add package Bodu.Security.Cryptography
 dotnet add package Bodu.Globalization.Calendar
+
+# Optional region-specific calendar data packs:
+dotnet add package Bodu.Globalization.Calendar.Data.Americas
+dotnet add package Bodu.Globalization.Calendar.Data.Europe
+dotnet add package Bodu.Globalization.Calendar.Data.AsiaPacific
 ```
 
 </div>
@@ -95,8 +101,8 @@ dotnet add package Bodu.Globalization.Calendar
 ## Where to go next
 
 <div class="bodu-nav">
-  <a href="docs/introduction.html">Introduction</a>
-  <a href="docs/getting-started.html">Getting started</a>
-  <a href="api/">API reference</a>
-  <a href="articles/">Articles</a>
+  <a href="docs/introduction.md">Introduction</a>
+  <a href="docs/getting-started.md">Getting started</a>
+  <a href="xref:Bodu">API reference</a>
+  <a href="articles/index.md">Articles</a>
 </div>

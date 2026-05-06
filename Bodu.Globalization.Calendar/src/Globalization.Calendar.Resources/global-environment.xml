@@ -15,30 +15,6 @@
     Fixed-date environmental observances.
   -->
 
-  <NotableDate name="World Water Day">
-    <Rule name="Fixed World Water Day" category="Observance">
-      <Fixed month="March" day="22" />
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="Earth Day">
-    <Rule name="Fixed Earth Day" category="Observance">
-      <Fixed month="April" day="22" />
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="World Environment Day">
-    <Rule name="Fixed World Environment Day" category="Observance">
-      <Fixed month="June" day="5" />
-    </Rule>
-  </NotableDate>
-
-  <NotableDate name="World Oceans Day">
-    <Rule name="Fixed World Oceans Day" category="Observance">
-      <Fixed month="June" day="8" />
-    </Rule>
-  </NotableDate>
-
   <NotableDate name="World Wetlands Day">
     <Rule name="Fixed World Wetlands Day" category="Observance" firstYear="1997"
           comment="First observed in 1997 to mark the anniversary of the signing of the Ramsar Convention on Wetlands on 2 February 1971 in Ramsar, Iran.">
@@ -53,10 +29,41 @@
     </Rule>
   </NotableDate>
 
+  <NotableDate name="World Water Day">
+    <Rule name="Fixed World Water Day" category="Observance">
+      <Fixed month="March" day="22" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Earth Hour">
+    <Rule name="Last Saturday In March Earth Hour" category="Observance" firstYear="2007"
+          comment="A global environmental awareness event associated with switching off non-essential lights for one hour, now generally held on the last Saturday in March at 8:30 pm local time.">
+      <DayOfWeekInMonth month="March" dayOfWeek="Saturday" weekOrdinal="Last" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="Earth Day">
+    <Rule name="Fixed Earth Day" category="Observance">
+      <Fixed month="April" day="22" />
+    </Rule>
+  </NotableDate>
+
   <NotableDate name="International Day for Biological Diversity">
     <Rule name="Fixed International Day for Biological Diversity" category="Observance" firstYear="2001"
           comment="Proclaimed by the United Nations in 2000 (resolution 55/201). Observed annually on 22 May, the date of the adoption of the text of the Convention on Biological Diversity in 1992.">
       <Fixed month="May" day="22" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Environment Day">
+    <Rule name="Fixed World Environment Day" category="Observance">
+      <Fixed month="June" day="5" />
+    </Rule>
+  </NotableDate>
+
+  <NotableDate name="World Oceans Day">
+    <Rule name="Fixed World Oceans Day" category="Observance">
+      <Fixed month="June" day="8" />
     </Rule>
   </NotableDate>
 
@@ -73,15 +80,6 @@
       <Fixed month="December" day="5" />
     </Rule>
   </NotableDate>
-
-
-  <NotableDate name="Earth Hour">
-    <Rule name="Last Saturday In March Earth Hour" category="Observance" firstYear="2007"
-          comment="A global environmental awareness event associated with switching off non-essential lights for one hour, now generally held on the last Saturday in March at 8:30 pm local time.">
-      <DayOfWeekInMonth month="March" dayOfWeek="Saturday" weekOrdinal="Last" />
-    </Rule>
-  </NotableDate>
-
 
   <!--
     Multi-day environmental observances.

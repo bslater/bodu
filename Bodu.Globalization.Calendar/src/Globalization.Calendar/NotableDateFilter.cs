@@ -15,7 +15,7 @@ namespace Bodu.Globalization.Calendar;
 /// <para>
 /// Filters are created via the static factory methods on this class — for example <see cref="ForCategory" />, <see cref="WithTag" />,
 /// <see cref="InDateRange" /> — and combined through <see cref="And" />, <see cref="Or" />, <see cref="AllOf" />, and
-/// <see cref="AnyOf" />. Every instance is immutable; composition always returns a new <see cref="NotableDateFilter" />.
+/// <see cref="AnyOf" />. Every instance is immutable; composition always produces a new <see cref="NotableDateFilter" />.
 /// </para>
 /// <para>
 /// <b>Primary gate (rule-level)</b>: Predicates backed by <see cref="NotableDateRule" /> metadata that the service evaluates before
@@ -40,11 +40,48 @@ namespace Bodu.Globalization.Calendar;
 /// call rather than only on the first (cold) access.
 /// </para>
 /// </remarks>
+/// <example>
+/// <para>Compose filters and query notable dates from a service:</para>
+/// <code>
+/// INotableDateService service = new NotableDateService();
+///
+/// // Non-working public holidays for New South Wales in 2026:
+/// NotableDateFilter filter = NotableDateFilter
+///     .ForCategory(NotableDateCategory.Public)
+///     .And(NotableDateFilter.IsNonWorkingDay());
+///
+/// IReadOnlyList&lt;NotableDate&gt; holidays = service.GetNotableDates(2026, filter, "AU-NSW");
+///
+/// // Public or cultural dates tagged "Christian":
+/// NotableDateFilter christian = NotableDateFilter
+///     .ForAnyCategory(NotableDateCategory.Public, NotableDateCategory.Cultural)
+///     .And(NotableDateFilter.WithTag("Christian"));
+///
+/// // Dates whose span intersects Easter week 2026:
+/// NotableDateFilter easterWeek = NotableDateFilter.InDateRange(
+///     new DateTime(2026, 4, 5),
+///     new DateTime(2026, 4, 12));
+///
+/// // Combine multiple constraints using AllOf:
+/// NotableDateFilter combined = NotableDateFilter.AllOf(
+///     NotableDateFilter.ForCategory(NotableDateCategory.Public),
+///     NotableDateFilter.IsNonWorkingDay(),
+///     NotableDateFilter.WithName("Christmas Day"));
+/// </code>
+/// </example>
 public sealed class NotableDateFilter
 {
+	/// <summary>The primary gate predicate evaluated against each <see cref="NotableDateRule" /> before date resolution.</summary>
 	private readonly Func<NotableDateRule, bool> _ruleGate;
+
+	/// <summary>The secondary gate predicate evaluated against each materialised <see cref="NotableDate" />.</summary>
 	private readonly Func<NotableDate, bool> _dateGate;
 
+	/// <summary>
+	/// Initialises a new <see cref="NotableDateFilter" /> with explicit primary and secondary gate delegates.
+	/// </summary>
+	/// <param name="ruleGate">The primary gate predicate evaluated against each rule before date resolution.</param>
+	/// <param name="dateGate">The secondary gate predicate evaluated against each materialised date.</param>
 	private NotableDateFilter(Func<NotableDateRule, bool> ruleGate, Func<NotableDate, bool> dateGate)
 	{
 		_ruleGate = ruleGate;
@@ -94,7 +131,7 @@ public sealed class NotableDateFilter
 	/// <exception cref="ArgumentException">Thrown when <paramref name="tag" /> is empty or whitespace.</exception>
 	public static NotableDateFilter WithTag(string tag)
 	{
-		ThrowHelper.ThrowIfNullOrEmpty(tag);
+		ThrowHelper.ThrowIfNullOrWhiteSpace(tag);
 
 		return new(
 			rule => rule.Tags.Any(t => string.Equals(t, tag, StringComparison.OrdinalIgnoreCase)),
@@ -149,7 +186,7 @@ public sealed class NotableDateFilter
 	/// <exception cref="ArgumentException">Thrown when <paramref name="name" /> is empty or whitespace.</exception>
 	public static NotableDateFilter WithName(string name)
 	{
-		ThrowHelper.ThrowIfNullOrEmpty(name);
+		ThrowHelper.ThrowIfNullOrWhiteSpace(name);
 
 		return new(
 			rule => string.Equals(rule.Name, name, StringComparison.OrdinalIgnoreCase),

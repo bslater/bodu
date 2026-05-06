@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OcbModeTransformTests.Encrypt.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,7 +12,7 @@ using System.Linq;
 
 public sealed partial class OcbModeTransformTests
 {
-    // ── Output length ─────────────────────────────────────────────────────────────────────────
+    // ── Output length — non-default tag lengths ───────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that <see cref="OcbModeTransform.Encrypt" /> writes exactly
@@ -34,20 +34,6 @@ public sealed partial class OcbModeTransformTests
 
         Assert.AreEqual(plaintext.Length + tagLen, written,
             $"Encrypt must return |PT| + tagLen bytes (tagLen = {tagLen}).");
-    }
-
-    /// <summary>
-    /// Verifies that the value returned by <see cref="OcbModeTransform.Encrypt" /> equals
-    /// <c>|PT| + TagSize</c> for a multi-block plaintext using the default tag length.
-    /// </summary>
-    [TestMethod]
-    public void Encrypt_OutputLength_ShouldBePlaintextLengthPlusTagSize()
-    {
-        var enc = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x00), new byte[ExpectedBlockSize]);
-        var pt = new byte[ExpectedBlockSize * 3];
-        var output = new byte[pt.Length + enc.TagSize];
-        int n = enc.Encrypt(pt, output);
-        Assert.AreEqual(pt.Length + enc.TagSize, n);
     }
 
     // ── Domain separation ─────────────────────────────────────────────────────────────────────
@@ -91,58 +77,7 @@ public sealed partial class OcbModeTransformTests
             "Tags computed under different TAGLEN values must differ (no prefix relationship).");
     }
 
-    // ── Nonce / key sensitivity ───────────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Verifies that encrypting an empty plaintext produces output consisting of exactly
-    /// <see cref="OcbModeTransform.TagSize" /> bytes — the authentication tag only, with
-    /// no ciphertext bytes preceding it.
-    /// </summary>
-    /// <remarks>
-    /// RFC 7253 §2.6 defines the tag for empty plaintext as
-    /// <c>T = ENCIPHER(K, L_$ XOR Offset_0 XOR zeros(128)) XOR HASH(K, A)</c>, where
-    /// Offset_0 is not advanced (no block loop runs) and the checksum is the zero block.
-    /// </remarks>
-    [TestMethod]
-    public void Encrypt_WithEmptyPlaintext_ShouldProduceTagOnly()
-    {
-        var enc = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x00), new byte[ExpectedBlockSize]);
-        var output = new byte[enc.TagSize];
-        int n = enc.Encrypt(ReadOnlySpan<byte>.Empty, output);
-        Assert.AreEqual(enc.TagSize, n,
-            "Encrypting empty plaintext must write exactly TagSize bytes.");
-    }
-
-    /// <summary>
-    /// Verifies that two encryptions of the same plaintext under the same key but different
-    /// nonces produce different ciphertext, confirming that the nonce uniquely determines
-    /// each encryption.
-    /// </summary>
-    /// <remarks>
-    /// The nonce determines Offset_0 via the K_top stretch (RFC 7253 §2.4); any difference
-    /// in the nonce propagates into every per-block offset and therefore into every
-    /// ciphertext byte. Nonce reuse with the same key would expose plaintext XOR
-    /// relationships between two messages.
-    /// </remarks>
-    [TestMethod]
-    public void Encrypt_WithDifferentNonces_ShouldProduceDifferentCiphertext()
-    {
-        var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var plaintext = CryptoTestUtilities.CreateIncrementalByteSequence(0, ExpectedBlockSize);
-        var ivA = new byte[ExpectedBlockSize];
-        var ivB = new byte[ExpectedBlockSize];
-        ivB[0] = 0x01;
-
-        var encA = CreateTransform(cipher, ivA);
-        var encB = CreateTransform(cipher, ivB);
-        var ctA = new byte[plaintext.Length + encA.TagSize];
-        var ctB = new byte[plaintext.Length + encB.TagSize];
-        encA.Encrypt(plaintext, ctA);
-        encB.Encrypt(plaintext, ctB);
-
-        CollectionAssert.AreNotEqual(ctA, ctB,
-            "Different nonces must produce different OCB ciphertext.");
-    }
+    // ── Key sensitivity ───────────────────────────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that encrypting the same plaintext and AAD under two different keys produces
@@ -171,76 +106,5 @@ public sealed partial class OcbModeTransformTests
 
         CollectionAssert.AreNotEqual(ct1, ct2,
             "Different keys must produce different ciphertext and tag.");
-    }
-
-    // ── Determinism ───────────────────────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Verifies that <see cref="OcbModeTransform.Encrypt" /> is deterministic: two independent
-    /// instances constructed from the same key and nonce, given the same AAD and plaintext,
-    /// must produce identical ciphertext and tag.
-    /// </summary>
-    /// <remarks>
-    /// OCB3 is a deterministic AEAD — unlike nonce-misuse-resistant schemes, it does not
-    /// introduce internal randomness. Determinism is required for correctness: the receiver
-    /// must be able to reproduce the sender's tag exactly in order to verify it.
-    /// </remarks>
-    [TestMethod]
-    public void Encrypt_WithIdenticalInputs_ShouldAlwaysProduceSameOutput()
-    {
-        using var cipher1 = new AesBlockCipherFixture(new byte[16]);
-        using var cipher2 = new AesBlockCipherFixture(new byte[16]);
-        var iv = new byte[ExpectedBlockSize];
-        var aad = new byte[] { 0x01, 0x02, 0x03 };
-        var plaintext = new byte[ExpectedBlockSize * 2 + 7]; // multi-block with partial
-
-        var enc1 = new OcbModeTransform(cipher1, (byte[])iv.Clone());
-        enc1.ProcessAssociatedData(aad);
-        var ct1 = new byte[plaintext.Length + enc1.TagSize];
-        enc1.Encrypt(plaintext, ct1);
-
-        var enc2 = new OcbModeTransform(cipher2, (byte[])iv.Clone());
-        enc2.ProcessAssociatedData(aad);
-        var ct2 = new byte[plaintext.Length + enc2.TagSize];
-        enc2.Encrypt(plaintext, ct2);
-
-        CollectionAssert.AreEqual(ct1, ct2,
-            "OCB3 is deterministic: identical key, nonce, AAD, and plaintext must always " +
-            "produce identical ciphertext and tag.");
-    }
-
-    // ── AAD equivalence ───────────────────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Verifies that explicitly passing an empty span to
-    /// <see cref="OcbModeTransform.ProcessAssociatedData" /> produces the same ciphertext
-    /// and tag as never calling <c>ProcessAssociatedData</c> at all.
-    /// </summary>
-    /// <remarks>
-    /// RFC 7253 §4 defines <c>HASH(K, A)</c> of an empty string as <c>zeros(128)</c>.
-    /// Whether the caller explicitly supplies an empty span or omits the call (causing
-    /// <c>EnsureAadProcessed</c> to default to an empty array), the tag computation
-    /// path is identical.
-    /// </remarks>
-    [TestMethod]
-    public void Encrypt_WithExplicitEmptyAad_ShouldProduceSameOutputAsNoAadCall()
-    {
-        using var cipher1 = new AesBlockCipherFixture(new byte[16]);
-        using var cipher2 = new AesBlockCipherFixture(new byte[16]);
-        var iv = new byte[ExpectedBlockSize];
-        var plaintext = new byte[ExpectedBlockSize * 2 + 5];
-
-        var withEmpty = new OcbModeTransform(cipher1, (byte[])iv.Clone());
-        withEmpty.ProcessAssociatedData(ReadOnlySpan<byte>.Empty);
-        var ct1 = new byte[plaintext.Length + withEmpty.TagSize];
-        withEmpty.Encrypt(plaintext, ct1);
-
-        var withNone = new OcbModeTransform(cipher2, (byte[])iv.Clone());
-        // No ProcessAssociatedData call — EnsureAadProcessed defaults to empty.
-        var ct2 = new byte[plaintext.Length + withNone.TagSize];
-        withNone.Encrypt(plaintext, ct2);
-
-        CollectionAssert.AreEqual(ct1, ct2,
-            "ProcessAssociatedData with an empty span must be equivalent to omitting the call.");
     }
 }

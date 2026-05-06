@@ -85,7 +85,7 @@ public sealed class GregorianEasterSundayNotableDateProviderTests
 		Assert.AreEqual(1, result.Count);
 		NotableDate notable = result[0];
 		Assert.AreEqual("Easter Sunday", notable.Name);
-		Assert.AreEqual(NotableDateCategory.Cultural, notable.Category);
+		Assert.AreEqual(NotableDateCategory.Religious, notable.Category);
 		Assert.AreEqual(typeof(SysGlob.GregorianCalendar), notable.CalendarType);
 		Assert.AreEqual(1, notable.DurationDays);
 		Assert.IsFalse(notable.IsNonWorkingDay);
