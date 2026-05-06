@@ -286,16 +286,17 @@ public abstract class BlockCipherTransform : ICryptoTransform
 
         ReadOnlySpan<byte> input = inputBuffer.AsSpan(inputOffset, inputCount);
 
-        // Allow zero-length input: PKCS7 / ANSI X.923 / ISO 10126 / ISO 7816-4 always emit a
-        // padding block for empty plaintext, and CryptoStream.FlushFinalBlock invokes this method
-        // with whatever residual sits in its buffer — including zero bytes after a block-aligned
-        // write or an empty Encrypt call.
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, this._cipher.BlockSize, throwIfZero: false);
-
         try
         {
             if (this._encrypt)
             {
+                // Encrypt path: the padding scheme accepts any input length and emits an
+                // aligned buffer, so the alignment check belongs after Pad — not on the raw
+                // input. CryptoStream.FlushFinalBlock routinely arrives here with whatever
+                // residual sits in its buffer (including the 1..blockSize-1 bytes left over
+                // after the last aligned chunk has been forwarded to TransformBlock), and
+                // PKCS7 / ANSIX923 / ISO10126 / ISO7816-4 always emit a padding block for
+                // empty plaintext too.
                 byte[] padded = this._padding.Pad(input, this._cipher.BlockSize);
                 byte[] output = new byte[padded.Length];
 
@@ -311,7 +312,16 @@ public abstract class BlockCipherTransform : ICryptoTransform
             }
             else
             {
+                // Decrypt path: ciphertext must be block-aligned once any deferred buffer is
+                // re-attached. Validate the combined length so a malformed final call surfaces
+                // as a CryptographicException with a recognisable message rather than crashing
+                // deeper in the mode transform.
                 byte[] combined = Combine(this._deferredInput, input);
+                CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(
+                    combined,
+                    this._cipher.BlockSize,
+                    throwIfZero: false);
+
                 byte[] decrypted = new byte[combined.Length];
 
                 try
