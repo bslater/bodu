@@ -169,11 +169,18 @@ public sealed class HashAlgorithmHelperTests
     /// </summary>
     private sealed class DisposalProbe : HashAlgorithm
     {
+        // HashSizeValue is in bits and must match the byte length returned by HashFinal —
+        // the framework's TryHashFinal validates this and throws InvalidOperationException
+        // ("The algorithm's implementation is incorrect.") on mismatch.
+        private const int HashSizeBits = 256;
+        private const int HashSizeBytes = HashSizeBits / 8;
+
         public int DisposedCount { get; private set; }
 
         public DisposalProbe()
         {
             this.HashSizeValue = 32;
+            this.HashSizeValue = HashSizeBits;
         }
 
         public override void Initialize() { }
@@ -181,6 +188,7 @@ public sealed class HashAlgorithmHelperTests
         protected override void HashCore(byte[] array, int ibStart, int cbSize) { }
 
         protected override byte[] HashFinal() => new byte[32];
+        protected override byte[] HashFinal() => new byte[HashSizeBytes];
 
         protected override void Dispose(bool disposing)
         {

@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
@@ -59,6 +60,7 @@ public sealed class OfbModeTransform : IBlockCipherModeTransform
 {
     private readonly IBlockCipher _cipher;
     private readonly byte[] _currentIv;
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OfbModeTransform" /> class with the specified cipher and initialisation vector.
@@ -106,5 +108,21 @@ public sealed class OfbModeTransform : IBlockCipherModeTransform
         }
 
         return input.Length;
+    }
+
+    /// <summary>
+    /// Releases the resources used by this instance and zeroes the running feedback register so
+    /// that key-equivalent keystream state does not linger in memory after disposal. The underlying
+    /// <see cref="IBlockCipher" /> is not disposed by this type — ownership remains with the caller.
+    /// </summary>
+    /// <remarks>Idempotent.</remarks>
+    public void Dispose()
+    {
+        if (this._disposed)
+            return;
+
+        CryptographicOperations.ZeroMemory(this._currentIv);
+        this._disposed = true;
+        GC.SuppressFinalize(this);
     }
 }

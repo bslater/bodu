@@ -130,12 +130,20 @@ public sealed class BlockCipherTransformTests_EmptyInput
         using ICryptoTransform encryptor = algorithm.CreateEncryptor();
         using var output = new MemoryStream();
         using (var crypto = new CryptoStream(output, encryptor, CryptoStreamMode.Write))
+        long writtenLength;
+        using (var crypto = new CryptoStream(output, encryptor, CryptoStreamMode.Write, leaveOpen: true))
         {
             // Do not write any data; FlushFinalBlock should still produce one PKCS7 padding block.
             crypto.FlushFinalBlock();
         }
 
         Assert.AreEqual(algorithm.BlockSize / 8, output.Length,
+        // Capture length while output is still open — the prior version disposed CryptoStream first
+        // (which closes the underlying MemoryStream by default) and then read output.Length, hitting
+        // ObjectDisposedException. leaveOpen: true plus this read order keeps the stream usable.
+        writtenLength = output.Length;
+
+        Assert.AreEqual(algorithm.BlockSize / 8, writtenLength,
             "Flushing a CryptoStream without writing any data under PKCS7 should still emit one block of padding.");
     }
 }

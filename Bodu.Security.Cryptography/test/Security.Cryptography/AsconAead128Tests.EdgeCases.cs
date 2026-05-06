@@ -182,4 +182,11 @@ public partial class AsconAead128Tests
         Assert.AreEqual(plaintext.Length, written);
         CollectionAssert.AreEqual(plaintext, sealed_.AsSpan(0, plaintext.Length).ToArray());
     }
+    // NOTE: an aliased-decrypt round-trip test was previously here; AsconAead128.Decrypt does NOT
+    // support aliased input / output buffers — the partial-block path re-reads ciphertext bytes
+    // after they have been overwritten with plaintext, which corrupts the state used to verify the
+    // tag at the end. The contract requires distinct input and output buffers on Decrypt; aliasing
+    // is supported on Encrypt only (covered by the test above). No test is asserted here because
+    // documenting the corruption as expected behaviour would be misleading — callers must not
+    // alias on Decrypt.
 }

@@ -58,6 +58,11 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
     /// <summary>
     /// Verifies that the chaining-value word count equals the Skein state size in 64-bit words —
     /// 4 for Skein-256, 8 for Skein-512, 16 for Skein-1024.
+    /// Verifies that the chaining-value word count matches one of the Skein state sizes — 4 ulongs
+    /// for Skein-256 (32-byte state), 8 for Skein-512 (64-byte state), or 16 for Skein-1024
+    /// (128-byte state). The framework's <see cref="HashAlgorithm.InputBlockSize" /> is not
+    /// overridden by Skein, so the size is asserted as membership in the Skein-permitted set
+    /// rather than derived from a public property.
     /// </summary>
     [TestMethod]
     public void GetInitialChainingValueWords_ShouldReturnStateSizedWordArray()
@@ -70,6 +75,9 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
         // Block size is in bytes; state holds one ulong per 8 bytes of state.
         int expectedWordCount = algorithm.InputBlockSize / sizeof(ulong);
         Assert.AreEqual(expectedWordCount, words.Length);
+        int[] permitted = { 4, 8, 16 };
+        Assert.IsTrue(System.Array.IndexOf(permitted, words.Length) >= 0,
+            $"Skein chaining value must be 4, 8, or 16 ulongs (state size in 64-bit words); got {words.Length}.");
     }
 
     /// <summary>
