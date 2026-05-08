@@ -38,6 +38,13 @@ namespace Bodu.Security.Cryptography;
 /// AAD length is encoded as a 2-byte big-endian prefix (supports up to 65 279 bytes).
 /// </para>
 /// <para>
+/// <strong>Lifecycle.</strong> Each instance encrypts or decrypts exactly one message. A second call
+/// to <see cref="Encrypt" /> or <see cref="Decrypt" /> — including after a tag-mismatch failure —
+/// throws <see cref="InvalidOperationException" />. The supplied <see cref="IBlockCipher" /> is not
+/// disposed by this type; ownership remains with the caller. <see cref="Dispose" /> clears the
+/// retained nonce and cached associated-data state.
+/// </para>
+/// <para>
 /// <strong>When to use CCM.</strong> Pick CCM when interoperability with constrained-environment standards
 /// is required — IEEE 802.15.4 / Zigbee, Bluetooth Mesh, IPsec ESP, and TLS 1.2 with the AES-CCM cipher
 /// suites all use it. CCM is two-pass over the message (CBC-MAC then CTR), so it is slower than
@@ -78,6 +85,7 @@ public sealed class CcmModeTransform
     private readonly byte[] _nonce;
     private byte[]? _aad;
     private bool _aadProcessed;
+    private bool _completed;
     private bool _disposed;
 
     /// <summary>
@@ -118,6 +126,7 @@ public sealed class CcmModeTransform
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
         this.ThrowIfDisposed();
+        ThrowIfCompleted();
 
         int required = plaintext.Length + TagSize;
         if (output.Length < required)
@@ -130,6 +139,7 @@ public sealed class CcmModeTransform
 
         EncryptCtr(plaintext, output.Slice(0, plaintext.Length), startIndex: 1);
         encTag.AsSpan(0, TagSize).CopyTo(output.Slice(plaintext.Length));
+        this._completed = true;
         return required;
     }
 
@@ -137,6 +147,7 @@ public sealed class CcmModeTransform
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
         this.ThrowIfDisposed();
+        ThrowIfCompleted();
 
         if (ciphertextWithTag.Length < TagSize)
             throw new ArgumentException($"Input must be at least {TagSize} bytes.", nameof(ciphertextWithTag));
@@ -158,10 +169,23 @@ public sealed class CcmModeTransform
         if (!CryptographicOperations.FixedTimeEquals(encTag.AsSpan(0, TagSize), receivedTag))
         {
             CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
+            this._completed = true;
             throw new CryptographicException("CCM authentication tag verification failed.");
         }
 
+        this._completed = true;
         return plaintextLength;
+    }
+
+    /// <summary>
+    /// Throws <see cref="InvalidOperationException" /> if this transform has already encrypted or
+    /// decrypted a message. CCM transforms are single-use; create a fresh instance per message.
+    /// </summary>
+    private void ThrowIfCompleted()
+    {
+        if (this._completed)
+            throw new InvalidOperationException(
+                "This CCM transform has already completed and cannot be reused. Create a new instance per message.");
     }
 
     /// <summary>

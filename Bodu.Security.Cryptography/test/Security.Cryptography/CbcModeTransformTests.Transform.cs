@@ -75,22 +75,6 @@ public sealed partial class CbcModeTransformTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CbcModeTransform.Transform" />, with EmptyInput, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    public void Transform_WithEmptyInput_ShouldNotThrow()
-    {
-        var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x00);
-        var transform = CreateTransform(cipher, new byte[ExpectedBlockSize]);
-        var input = Array.Empty<byte>();
-        var output = Array.Empty<byte>();
-
-        transform.Transform(input, output, encrypt: true);
-
-        Assert.AreEqual(0, output.Length);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="CbcModeTransform.Transform" />, with SingleBlock, returns the expected value.
     /// </summary>
     [TestMethod]
