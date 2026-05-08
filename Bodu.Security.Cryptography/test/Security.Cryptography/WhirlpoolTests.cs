@@ -18,8 +18,7 @@ public partial class WhirlpoolTests
 {
     private static readonly HashAlgorithmSpecification BaseWhirlpoolSpecification = new()
     {
-        InputBlockSize = 64,
-        OutputBlockSize = 64,
+        HashBlockSize = 64,
         HashSize = 512,
         LongInputLength = 256,
         BoundaryLengths = [1, 64, 128, 192],

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ByteBuffer.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -106,7 +106,7 @@ internal sealed class ByteBuffer
     public byte[] GetBytes()
     {
         if (!this.IsFull)
-            throw new InvalidOperationException(ResourceStrings.InvalidOperation_BufferNotFull);
+            throw new InvalidOperationException(CryptoResourceStrings.InvalidOperation_BufferNotFull);
 
         this._index = EmptyIndex;
         return this._internalBuffer;

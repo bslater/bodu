@@ -58,7 +58,7 @@ public sealed class Pkcs7Padding : IPaddingStrategy
         if (blockSize <= 0)
             throw new ArgumentOutOfRangeException(
                 nameof(blockSize),
-                string.Format(ResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
+                string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
 
         int paddingLength = blockSize - (input.Length % blockSize);
         if (paddingLength == 0)
@@ -82,6 +82,11 @@ public sealed class Pkcs7Padding : IPaddingStrategy
     /// <exception cref="CryptographicException">Thrown if the padding is invalid or malformed.</exception>
     public byte[] Unpad(ReadOnlySpan<byte> input, int blockSize)
     {
+        if (blockSize <= 0)
+            throw new ArgumentOutOfRangeException(
+                nameof(blockSize),
+                string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
+
         // Constant-time padding verification to mitigate CBC padding-oracle attacks (Vaudenay 2002).
         if (input.Length == 0 || input.Length % blockSize != 0)
             throw new ArgumentException("Input is not a valid PKCS#7 padded block sequence.", nameof(input));

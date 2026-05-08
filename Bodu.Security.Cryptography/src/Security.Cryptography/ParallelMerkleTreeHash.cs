@@ -219,7 +219,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
         this._algorithmFactory = algorithmFactory ?? throw new ArgumentNullException(nameof(algorithmFactory));
         this._blockSize = blockSize > 0 ? blockSize : throw new ArgumentOutOfRangeException(
                                                         nameof(blockSize),
-                                                        string.Format(ResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
+                                                        string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
         this._fanOut = fanOut >= 2 ? fanOut : throw new ArgumentOutOfRangeException(nameof(fanOut), "Fan-out must be at least 2.");
         this._blockBuffer = new byte[blockSize];
     }

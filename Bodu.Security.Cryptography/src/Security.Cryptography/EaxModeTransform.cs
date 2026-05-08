@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EaxModeTransform.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -68,7 +68,9 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="../guides/cryptography/aead-modes.html#eax--two-pass-fse-2004">EAX walk-through in the AEAD-modes guide</seealso>
 /// <seealso cref="AesBlockCipher" />
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />
-public sealed class EaxModeTransform : IAeadBlockCipherModeTransform
+public sealed class EaxModeTransform
+    : IAeadBlockCipherModeTransform
+    , IDisposable
 {
     private const int DefaultTagSize = 16;
 
@@ -76,6 +78,8 @@ public sealed class EaxModeTransform : IAeadBlockCipherModeTransform
     private readonly byte[] _nonce;     // raw user nonce, defensive clone
     private byte[]? _aad;
     private bool _aadProcessed;
+    private bool _completed;
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EaxModeTransform" /> class.
@@ -109,8 +113,11 @@ public sealed class EaxModeTransform : IAeadBlockCipherModeTransform
     /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
     {
+        this.ThrowIfDisposed();
+
         if (this._aadProcessed)
             throw new InvalidOperationException("AssociatedData has already been processed.");
+
         this._aad = associatedData.ToArray();
         this._aadProcessed = true;
     }
@@ -118,6 +125,9 @@ public sealed class EaxModeTransform : IAeadBlockCipherModeTransform
     /// <inheritdoc />
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
+        this.ThrowIfDisposed();
+        this.ThrowIfCompleted();
+
         int required = plaintext.Length + TagSize;
         if (output.Length < required)
             throw new ArgumentException(
@@ -126,26 +136,43 @@ public sealed class EaxModeTransform : IAeadBlockCipherModeTransform
 
         EnsureAadProcessed();
 
-        byte[] nPrime = Omac(0, this._nonce);
-        byte[] hPrime = Omac(1, this._aad!);
+        byte[]? nPrime = null;
+        byte[]? hPrime = null;
+        byte[]? cPrime = null;
 
-        // CTR-encrypt plaintext into output[..plaintext.Length] using N' as the initial counter.
-        Span<byte> ciphertext = output.Slice(0, plaintext.Length);
-        CtrEncrypt(plaintext, ciphertext, nPrime);
+        try
+        {
+            nPrime = Omac(0, this._nonce);
+            hPrime = Omac(1, this._aad!);
 
-        byte[] cPrime = Omac(2, ciphertext);
+            // CTR-encrypt plaintext into output[..plaintext.Length] using N' as the initial counter.
+            Span<byte> ciphertext = output.Slice(0, plaintext.Length);
+            CtrEncrypt(plaintext, ciphertext, nPrime);
 
-        // Tag = N' XOR H' XOR C'.
-        Span<byte> tag = output.Slice(plaintext.Length, TagSize);
-        for (int i = 0; i < TagSize; i++)
-            tag[i] = (byte)(nPrime[i] ^ hPrime[i] ^ cPrime[i]);
+            cPrime = Omac(2, ciphertext);
 
-        return required;
+            // Tag = N' XOR H' XOR C'.
+            Span<byte> tag = output.Slice(plaintext.Length, TagSize);
+            for (int i = 0; i < TagSize; i++)
+                tag[i] = (byte)(nPrime[i] ^ hPrime[i] ^ cPrime[i]);
+
+            return required;
+        }
+        finally
+        {
+            ClearIfNotNull(nPrime);
+            ClearIfNotNull(hPrime);
+            ClearIfNotNull(cPrime);
+            this._completed = true;
+        }
     }
 
     /// <inheritdoc />
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
+        this.ThrowIfDisposed();
+        this.ThrowIfCompleted();
+
         if (ciphertextWithTag.Length < TagSize)
             throw new ArgumentException(
                 $"Input must be at least {TagSize} bytes (tag only with no ciphertext).",
@@ -162,25 +189,99 @@ public sealed class EaxModeTransform : IAeadBlockCipherModeTransform
         ReadOnlySpan<byte> ciphertext = ciphertextWithTag.Slice(0, plaintextLength);
         ReadOnlySpan<byte> receivedTag = ciphertextWithTag.Slice(plaintextLength);
 
-        byte[] nPrime = Omac(0, this._nonce);
-        byte[] hPrime = Omac(1, this._aad!);
-        byte[] cPrime = Omac(2, ciphertext);
+        byte[]? nPrime = null;
+        byte[]? hPrime = null;
+        byte[]? cPrime = null;
+        byte[]? expectedTag = null;
 
-        byte[] expectedTag = new byte[TagSize];
-        for (int i = 0; i < TagSize; i++)
-            expectedTag[i] = (byte)(nPrime[i] ^ hPrime[i] ^ cPrime[i]);
+        try
+        {
+            nPrime = Omac(0, this._nonce);
+            hPrime = Omac(1, this._aad!);
+            cPrime = Omac(2, ciphertext);
 
-        // Constant-time tag comparison; throw before emitting any plaintext.
-        if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
-            throw new CryptographicException("EAX authentication tag verification failed.");
+            expectedTag = new byte[TagSize];
+            for (int i = 0; i < TagSize; i++)
+                expectedTag[i] = (byte)(nPrime[i] ^ hPrime[i] ^ cPrime[i]);
 
-        CtrEncrypt(ciphertext, output.Slice(0, plaintextLength), nPrime);
+            // Constant-time tag comparison; throw before emitting any plaintext. On failure, also
+            // zero any data the caller may have pre-seeded into the output buffer — defence-in-depth
+            // aligned with AsconAead128.Decrypt.
+            if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
+            {
+                CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
+                throw new CryptographicException("EAX authentication tag verification failed.");
+            }
 
-        return plaintextLength;
+            CtrEncrypt(ciphertext, output.Slice(0, plaintextLength), nPrime);
+
+            return plaintextLength;
+        }
+        finally
+        {
+            ClearIfNotNull(expectedTag);
+            ClearIfNotNull(cPrime);
+            ClearIfNotNull(hPrime);
+            ClearIfNotNull(nPrime);
+            this._completed = true;
+        }
+    }
+
+    /// <summary>
+    /// Throws <see cref="InvalidOperationException" /> if this transform has already encrypted or
+    /// decrypted a message. EAX transforms are single-use; create a fresh instance per message.
+    /// </summary>
+    private void ThrowIfCompleted()
+    {
+        if (this._completed)
+            throw new InvalidOperationException(
+                "This EAX transform has already completed and cannot be reused. Create a new instance per message.");
+    }
+
+    /// <summary>
+    /// Releases the resources used by this instance and clears retained nonce and associated-data state from memory.
+    /// </summary>
+    /// <remarks>
+    /// The supplied <see cref="IBlockCipher" /> is not disposed by this type. Ownership remains with the caller.
+    /// </remarks>
+    public void Dispose()
+    {
+        this.Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Releases the resources used by this instance.
+    /// </summary>
+    /// <param name="disposing">
+    /// <see langword="true" /> to release managed resources; <see langword="false" /> to release unmanaged resources only.
+    /// </param>
+    private void Dispose(bool disposing)
+    {
+        if (this._disposed)
+            return;
+
+        if (disposing)
+        {
+            CryptographicOperations.ZeroMemory(this._nonce);
+
+            if (this._aad is not null)
+            {
+                CryptographicOperations.ZeroMemory(this._aad);
+                this._aad = null;
+            }
+
+            this._aadProcessed = false;
+        }
+
+        this._disposed = true;
     }
 
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// Ensures the associated-data contribution has been initialised before payload processing.
+    /// </summary>
     private void EnsureAadProcessed()
     {
         if (!this._aadProcessed)
@@ -198,9 +299,18 @@ public sealed class EaxModeTransform : IAeadBlockCipherModeTransform
     {
         int blockSize = this._cipher.BlockSize;
         byte[] prefixed = new byte[blockSize + m.Length];
-        prefixed[blockSize - 1] = t; // [t]_n = (blockSize − 1) zero bytes, then t
-        m.CopyTo(prefixed.AsSpan(blockSize));
-        return ComputeCmac(prefixed);
+
+        try
+        {
+            prefixed[blockSize - 1] = t; // [t]_n = (blockSize − 1) zero bytes, then t
+            m.CopyTo(prefixed.AsSpan(blockSize));
+
+            return ComputeCmac(prefixed);
+        }
+        finally
+        {
+            CryptographicOperations.ZeroMemory(prefixed);
+        }
     }
 
     /// <summary>
@@ -210,45 +320,80 @@ public sealed class EaxModeTransform : IAeadBlockCipherModeTransform
     {
         int blockSize = this._cipher.BlockSize;
 
-        // Subkey generation: K1 = dbl(E(0^n)), K2 = dbl(K1).
+        byte[] zeroBlock = new byte[blockSize];
         byte[] l = new byte[blockSize];
-        this._cipher.Encrypt(new byte[blockSize], l);
-        byte[] k1 = (byte[])l.Clone(); Dbl(k1);
-        byte[] k2 = (byte[])k1.Clone(); Dbl(k2);
-
+        byte[] k1 = new byte[blockSize];
+        byte[] k2 = new byte[blockSize];
         byte[] mac = new byte[blockSize];
-        int totalBlocks = (message.Length + blockSize - 1) / blockSize;
-        bool lastIsFull = message.Length > 0 && message.Length % blockSize == 0;
-        if (message.Length == 0) { totalBlocks = 1; lastIsFull = false; }
-
-        for (int blockIdx = 0; blockIdx < totalBlocks - 1; blockIdx++)
-        {
-            byte[] block = new byte[blockSize];
-            message.Slice(blockIdx * blockSize, blockSize).CopyTo(block);
-            Xor(mac, block, mac);
-            this._cipher.Encrypt(mac, mac);
-        }
-
-        // Last block: pad with 0x80 || 0…0 if partial, then XOR K1 (full) or K2 (partial).
         byte[] lastBlock = new byte[blockSize];
-        if (message.Length > 0)
-        {
-            int lastOffset = (totalBlocks - 1) * blockSize;
-            int lastLen = message.Length - lastOffset;
-            message.Slice(lastOffset, lastLen).CopyTo(lastBlock);
-            if (!lastIsFull) lastBlock[lastLen] = 0x80;
-        }
-        else
-        {
-            lastBlock[0] = 0x80; // empty message: pad = 0x80 || 0...0
-        }
 
-        byte[] subkey = lastIsFull ? k1 : k2;
-        Xor(lastBlock, subkey, lastBlock);
-        Xor(mac, lastBlock, mac);
-        this._cipher.Encrypt(mac, mac);
+        try
+        {
+            // Subkey generation: K1 = dbl(E(0^n)), K2 = dbl(K1).
+            this._cipher.Encrypt(zeroBlock, l);
 
-        return mac;
+            l.CopyTo(k1, 0);
+            Dbl(k1);
+
+            k1.CopyTo(k2, 0);
+            Dbl(k2);
+
+            int totalBlocks = (message.Length + blockSize - 1) / blockSize;
+            bool lastIsFull = message.Length > 0 && message.Length % blockSize == 0;
+
+            if (message.Length == 0)
+            {
+                totalBlocks = 1;
+                lastIsFull = false;
+            }
+
+            for (int blockIdx = 0; blockIdx < totalBlocks - 1; blockIdx++)
+            {
+                byte[] block = new byte[blockSize];
+
+                try
+                {
+                    message.Slice(blockIdx * blockSize, blockSize).CopyTo(block);
+                    Xor(mac, block, mac);
+                    this._cipher.Encrypt(mac, mac);
+                }
+                finally
+                {
+                    CryptographicOperations.ZeroMemory(block);
+                }
+            }
+
+            // Last block: pad with 0x80 || 0…0 if partial, then XOR K1 (full) or K2 (partial).
+            if (message.Length > 0)
+            {
+                int lastOffset = (totalBlocks - 1) * blockSize;
+                int lastLen = message.Length - lastOffset;
+
+                message.Slice(lastOffset, lastLen).CopyTo(lastBlock);
+
+                if (!lastIsFull)
+                    lastBlock[lastLen] = 0x80;
+            }
+            else
+            {
+                lastBlock[0] = 0x80; // empty message: pad = 0x80 || 0...0
+            }
+
+            byte[] subkey = lastIsFull ? k1 : k2;
+            Xor(lastBlock, subkey, lastBlock);
+            Xor(mac, lastBlock, mac);
+            this._cipher.Encrypt(mac, mac);
+
+            return mac;
+        }
+        finally
+        {
+            CryptographicOperations.ZeroMemory(lastBlock);
+            CryptographicOperations.ZeroMemory(k2);
+            CryptographicOperations.ZeroMemory(k1);
+            CryptographicOperations.ZeroMemory(l);
+            CryptographicOperations.ZeroMemory(zeroBlock);
+        }
     }
 
     /// <summary>
@@ -262,15 +407,24 @@ public sealed class EaxModeTransform : IAeadBlockCipherModeTransform
         byte[] ctr = (byte[])counter.Clone();
         Span<byte> ks = stackalloc byte[blockSize];
 
-        for (int offset = 0; offset < input.Length; offset += blockSize)
+        try
         {
-            this._cipher.Encrypt(ctr, ks);
-            for (int i = ctr.Length - 1; i >= 0; i--)
-                if (++ctr[i] != 0) break;
+            for (int offset = 0; offset < input.Length; offset += blockSize)
+            {
+                this._cipher.Encrypt(ctr, ks);
 
-            int len = Math.Min(blockSize, input.Length - offset);
-            for (int i = 0; i < len; i++)
-                output[offset + i] = (byte)(input[offset + i] ^ ks[i]);
+                for (int i = ctr.Length - 1; i >= 0; i--)
+                    if (++ctr[i] != 0) break;
+
+                int len = Math.Min(blockSize, input.Length - offset);
+                for (int i = 0; i < len; i++)
+                    output[offset + i] = (byte)(input[offset + i] ^ ks[i]);
+            }
+        }
+        finally
+        {
+            CryptographicOperations.ZeroMemory(ks);
+            CryptographicOperations.ZeroMemory(ctr);
         }
     }
 
@@ -281,14 +435,37 @@ public sealed class EaxModeTransform : IAeadBlockCipherModeTransform
     private static void Dbl(byte[] x)
     {
         bool msb = (x[0] & 0x80) != 0;
+
         for (int i = 0; i < x.Length - 1; i++)
             x[i] = (byte)((x[i] << 1) | (x[i + 1] >> 7));
+
         x[x.Length - 1] <<= 1;
-        if (msb) x[x.Length - 1] ^= 0x87;
+
+        if (msb)
+            x[x.Length - 1] ^= 0x87;
     }
 
+    /// <summary>
+    /// XORs two equally-sized input spans into <paramref name="result" />.
+    /// </summary>
     private static void Xor(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, Span<byte> result)
     {
-        for (int i = 0; i < result.Length; i++) result[i] = (byte)(a[i] ^ b[i]);
+        for (int i = 0; i < result.Length; i++)
+            result[i] = (byte)(a[i] ^ b[i]);
     }
+
+    /// <summary>
+    /// Clears <paramref name="value" /> when it is not <see langword="null" />.
+    /// </summary>
+    private static void ClearIfNotNull(byte[]? value)
+    {
+        if (value is not null)
+            CryptographicOperations.ZeroMemory(value);
+    }
+
+    /// <summary>
+    /// Throws <see cref="ObjectDisposedException" /> if this instance has been disposed.
+    /// </summary>
+    private void ThrowIfDisposed() =>
+        ObjectDisposedException.ThrowIf(this._disposed, this);
 }

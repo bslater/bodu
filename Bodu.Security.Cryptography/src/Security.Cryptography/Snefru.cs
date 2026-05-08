@@ -61,14 +61,6 @@ public abstract partial class Snefru<T>
     private readonly uint[] _buffer = new uint[TotalWords];          // internal working buffer used for permutation and round processing.
     private readonly uint[] _state;                                  // internal state used to accumulate the hash output across input blocks.
 
-    private bool _disposed = false;
-
-#if !NET6_0_OR_GREATER
-
-    // Required for .NET Standard 2.0 or older frameworks
-    private bool _finalized;
-#endif
-
     /// <summary>
     /// Initializes a new instance of the <see cref="Snefru{T}" /> class with the specified output hash size.
     /// </summary>
@@ -79,12 +71,11 @@ public abstract partial class Snefru<T>
     {
         if (Array.IndexOf(ValidHashSizes, hashSize) == -1)
             throw new ArgumentOutOfRangeException(nameof(hashSize),
-                string.Format(ResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
 
+        // _state is zero-filled by `new`; Initialize re-clears it on every reset.
         this._state = new uint[hashSize >> 5];
         HashSizeValue = hashSize;
-
-        InitializeState();
     }
 
     /// <inheritdoc />
@@ -94,12 +85,22 @@ public abstract partial class Snefru<T>
     public override bool CanTransformMultipleBlocks => true;
 
     /// <inheritdoc />
+    /// <remarks>The format is <c>"Snefru/<i>n</i>"</c>, where <i>n</i> is the configured output size in bits.</remarks>
+    public override string AlgorithmName
+    {
+        get
+        {
+            this.ThrowIfDisposed();
+            return $"Snefru/{this.HashSizeValue}";
+        }
+    }
+
+    /// <inheritdoc />
+    /// <remarks>Clears the Snefru chaining state to all zeros, as required by the algorithm specification.</remarks>
     public override void Initialize()
     {
-        this.ThrowIfDisposed();
-
         base.Initialize();
-        InitializeState();
+        Array.Clear(this._state);
     }
 
     /// <summary>
@@ -110,18 +111,14 @@ public abstract partial class Snefru<T>
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.IsDisposed) return;
 
         if (disposing)
         {
             CryptoHelpers.Clear(this._buffer);
             CryptoHelpers.Clear(this._state);
-            CryptoHelpers.ClearAndNullify(ref HashValue);
-
-            this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
         base.Dispose(disposing);
     }
 
@@ -239,12 +236,6 @@ public abstract partial class Snefru<T>
             this._buffer[last] ^= sboxEntry;
         }
     }
-
-    /// <summary>
-    /// Clears the internal state array to prepare for new input.
-    /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void InitializeState() => Array.Clear(this._state);
 
     /// <summary>
     /// Performs a circular right bitwise rotation on each word in the internal buffer.

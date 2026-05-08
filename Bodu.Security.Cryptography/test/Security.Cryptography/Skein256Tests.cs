@@ -31,8 +31,7 @@ public partial class Skein256Tests
         new KeyedAlgorithmSpecification
         {
             HashSize = OutputBitsFor(variant),
-            InputBlockSize = 32,
-            OutputBlockSize = 32,
+            HashBlockSize = 32,
             IsStateless = false,
             LongInputLength = 200,
             BoundaryLengths = [1, 8, 16, 32, 64, 128],

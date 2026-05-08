@@ -8,7 +8,7 @@ title: Using Tiger
 
 Tiger derives from <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>, so any API that accepts a standard .NET hash accepts Tiger.
 
-> For new work where interoperability isn't a constraint, prefer the BCL's hardware-accelerated <xref:System.Security.Cryptography.SHA256?displayProperty=nameWithType> or <xref:System.Security.Cryptography.SHA512?displayProperty=nameWithType>. Use Tiger when you need to match an existing Tiger-based system, or as part of a Tiger Tree Hash (see the Merkle tree guide).
+> For new work where interoperability isn't a constraint, prefer the BCL's hardware-accelerated `System.Security.Cryptography.SHA256` or `System.Security.Cryptography.SHA512`. Use Tiger when you need to match an existing Tiger-based system, or as part of a Tiger Tree Hash (see the Merkle tree guide).
 
 ## Fixed sizes at a glance
 
@@ -93,7 +93,7 @@ For larger files where you want to verify ranges of the file without rehashing t
 
 ## Pattern 5 — verifying a digest
 
-Compare digests in constant time. The `VerifyHash` helper in `Bodu.Security.Cryptography.Extensions` wraps <xref:System.Security.Cryptography.CryptographicOperations.FixedTimeEquals*>:
+Compare digests in constant time. The `VerifyHash` helper in `Bodu.Security.Cryptography.Extensions` wraps `CryptographicOperations.FixedTimeEquals`:
 
 ```csharp
 using Bodu.Security.Cryptography;

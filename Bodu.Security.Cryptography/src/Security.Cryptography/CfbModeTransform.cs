@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
@@ -58,6 +59,7 @@ public sealed class CfbModeTransform : IBlockCipherModeTransform
 {
     private readonly IBlockCipher _cipher;
     private readonly byte[] _currentIv;
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CfbModeTransform" /> class with the specified cipher and initialisation vector.
@@ -82,7 +84,8 @@ public sealed class CfbModeTransform : IBlockCipherModeTransform
     {
         int blockSize = this._cipher.BlockSize;
 
-        ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize);
+        // Empty input is a no-op, consistent with CbcModeTransform.
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 
         Span<byte> feedback = stackalloc byte[blockSize];
@@ -116,5 +119,21 @@ public sealed class CfbModeTransform : IBlockCipherModeTransform
         }
 
         return input.Length;
+    }
+
+    /// <summary>
+    /// Releases the resources used by this instance and zeroes the running feedback register so
+    /// that key-equivalent state does not linger in memory after disposal. The underlying
+    /// <see cref="IBlockCipher" /> is not disposed by this type — ownership remains with the caller.
+    /// </summary>
+    /// <remarks>Idempotent.</remarks>
+    public void Dispose()
+    {
+        if (this._disposed)
+            return;
+
+        CryptographicOperations.ZeroMemory(this._currentIv);
+        this._disposed = true;
+        GC.SuppressFinalize(this);
     }
 }

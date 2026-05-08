@@ -121,7 +121,7 @@ See the [hashing overview](hashing.md#pattern-4--verifying-a-hash) for the gener
 
 ## What SipHash is not
 
-- **Not a MAC for long messages.** SipHash was built specifically for short inputs; if you need a MAC over files or network frames, reach for HMAC-SHA-256 (<xref:System.Security.Cryptography.HMACSHA256?displayProperty=nameWithType>) or <xref:Bodu.Security.Cryptography.Poly1305>.
+- **Not a MAC for long messages.** SipHash was built specifically for short inputs; if you need a MAC over files or network frames, reach for HMAC-SHA-256 (`System.Security.Cryptography.HMACSHA256`) or <xref:Bodu.Security.Cryptography.Poly1305>.
 - **Not a cryptographic hash.** SipHash is a PRF — it resists collision and preimage only while the key stays secret. For a keyless collision-resistant digest, use SHA-256 or <xref:Bodu.Security.Cryptography.Tiger>.
 - **Not deterministic across keys.** Two instances with different keys produce unrelated outputs for the same input. That is the point.
 
@@ -130,4 +130,4 @@ See the [hashing overview](hashing.md#pattern-4--verifying-a-hash) for the gener
 - [Hashing overview](hashing.md) — how SipHash fits alongside cryptographic digests and non-cryptographic fingerprints.
 - [Using Tiger](tiger.md) — a keyless cryptographic digest when you don't have a secret to carry around.
 - [Using Poly1305](poly1305.md) — one-time authenticator that pairs with a stream cipher (the classic Poly1305/ChaCha20 AEAD construction).
-- [Bodu.IO.Hashing — FNV, CityHash, Adler](../io-hashing/) — the non-keyed, non-adversarial alternatives for trusted inputs.
+- [Bodu.IO.Hashing — FNV, CityHash, Adler](../io-hashing/index.md) — the non-keyed, non-adversarial alternatives for trusted inputs.

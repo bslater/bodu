@@ -18,4 +18,11 @@ public sealed partial class CtsModeTransformTests
     /// <c>Transform_WhenInputNotBlockAligned_ShouldThrow</c> test is suppressed for this mode.
     /// </summary>
     protected override bool RequiresBlockAlignedInput => false;
+
+    /// <summary>
+    /// CTS explicitly rejects sub-block input — it requires at least one full block by design.
+    /// The empty-input no-op contract that <see cref="CbcModeTransform" /> honours therefore does
+    /// not apply here.
+    /// </summary>
+    protected override bool AcceptsEmptyInput => false;
 }

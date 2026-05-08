@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsconXof.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -164,7 +164,7 @@ public abstract class AsconXof<T>
     {
         this.ThrowIfDisposed();
         if (this._squeezing)
-            throw new InvalidOperationException(ResourceStrings.CryptographicException_XofSqueezeAfterAbsorb);
+            throw new InvalidOperationException(CryptoResourceStrings.CryptographicException_XofSqueezeAfterAbsorb);
 
         this.ProcessInputBlocks(data);
     }
@@ -264,8 +264,9 @@ public abstract class AsconXof<T>
         if (disposing)
         {
             this._state.Clear();
-            Array.Clear(this._residualBuffer, 0, BlockSize);
-            Array.Clear(this._squeezeBuffer,  0, BlockSize);
+            CryptoHelpers.Clear(ref this._state);
+            CryptoHelpers.Clear(this._residualBuffer);
+            CryptoHelpers.Clear(this._squeezeBuffer);
         }
 
         this._disposed = true;

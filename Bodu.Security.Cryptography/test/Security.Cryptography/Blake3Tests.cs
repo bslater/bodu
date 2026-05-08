@@ -16,10 +16,8 @@ public partial class Blake3Tests
     private static readonly HashAlgorithmSpecification Specification = new()
     {
         HashSize = 256,
-        InputBlockSize = 64,
-        OutputBlockSize = 32,
         LongInputLength = 2048,
-        IncrementalCoverageBytes = 1024,
+        HashBlockSize = 1024,
         BoundaryLengths = [1, 512, 1024, 1025, 2048],
         MinNonZeroBytesForLongInput = 28,
         KnownAnswers = new()

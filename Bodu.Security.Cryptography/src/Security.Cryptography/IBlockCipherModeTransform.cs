@@ -53,7 +53,7 @@ namespace Bodu.Security.Cryptography;
 /// consumer. Most modes reset cleanly when constructed afresh — there is no in-place reset method on this interface.
 /// </para>
 /// </remarks>
-public interface IBlockCipherModeTransform
+public interface IBlockCipherModeTransform : System.IDisposable
 {
     /// <summary>
     /// Transforms <paramref name="input" /> under the mode's chaining strategy and writes the result to <paramref name="output" />.

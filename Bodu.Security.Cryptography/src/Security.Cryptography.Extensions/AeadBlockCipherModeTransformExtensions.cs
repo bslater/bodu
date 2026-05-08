@@ -132,6 +132,10 @@ public static class AeadBlockCipherModeTransformExtensions
     /// A newly allocated byte array of length <c>plaintext.Length + transform.TagSize</c>.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="transform" /> is <see langword="null" />.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The transform has already encrypted or decrypted a message. AEAD transforms are single-use
+    /// per message — construct a fresh instance.
+    /// </exception>
     public static byte[] Encrypt(
         this IAeadBlockCipherModeTransform transform,
         ReadOnlySpan<byte> plaintext)
@@ -159,6 +163,10 @@ public static class AeadBlockCipherModeTransformExtensions
     /// </exception>
     /// <exception cref="CryptographicException">
     /// The authentication tag did not verify. The returned buffer is not written in this case.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The transform has already encrypted or decrypted a message, including after a previous
+    /// tag-mismatch failure. AEAD transforms are single-use per message — construct a fresh instance.
     /// </exception>
     public static byte[] Decrypt(
         this IAeadBlockCipherModeTransform transform,
@@ -194,6 +202,10 @@ public static class AeadBlockCipherModeTransformExtensions
     /// <returns>A newly allocated byte array containing the recovered plaintext.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="transform" /> is <see langword="null" />.</exception>
     /// <exception cref="CryptographicException">The authentication tag did not verify.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The transform has already encrypted or decrypted a message, including after a previous
+    /// tag-mismatch failure. AEAD transforms are single-use per message — construct a fresh instance.
+    /// </exception>
     public static byte[] Decrypt(
         this IAeadBlockCipherModeTransform transform,
         ReadOnlySpan<byte> ciphertextWithTag)

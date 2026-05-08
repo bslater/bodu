@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Blake2s.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -7,6 +7,7 @@
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -115,7 +116,7 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
         if (Array.IndexOf(ValidHashSizes, hashSize) < 0)
             throw new ArgumentOutOfRangeException(
                 nameof(hashSize),
-                string.Format(ResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
 
         this.HashSizeValue = hashSize;
         this.InitializeHashState();
@@ -128,10 +129,15 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
     public override bool CanTransformMultipleBlocks => true;
 
     /// <inheritdoc />
-    public override int InputBlockSize => BlockSizeBytesValue;
-
-    /// <inheritdoc />
-    public override int OutputBlockSize => this.HashSizeValue / 8;
+    /// <remarks>The format is <c>"BLAKE2s-<i>n</i>"</c>, where <i>n</i> is the configured digest size in bits.</remarks>
+    public override string AlgorithmName
+    {
+        get
+        {
+            this.ThrowIfDisposed();
+            return $"BLAKE2s-{this.HashSizeValue}";
+        }
+    }
 
     /// <summary>
     /// Gets or sets the size, in bits, of the final computed hash output.
@@ -142,7 +148,7 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
     /// The full BLAKE2s compression is always run using all 256 bits of internal state. Shorter output lengths
     /// are produced by truncating the serialised state after finalisation. The property may only be changed
     /// before hashing has begun; once <see cref="HashAlgorithm.TransformBlock" /> or a <c>ComputeHash</c>
-    /// overload has been called, the value is immutable until <see cref="Initialize" /> is called.
+    /// overload has been called, the value is immutable until <see cref="HashAlgorithm.Initialize" /> is called.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The assigned value is not one of 128, 160, 192, 224, or 256.
@@ -167,29 +173,40 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
             if (Array.IndexOf(ValidHashSizes, value) < 0)
                 throw new ArgumentOutOfRangeException(
                     nameof(value),
-                    string.Format(ResourceStrings.CryptographicException_InvalidHashSize, value, string.Join(", ", ValidHashSizes)));
+                    string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, value, string.Join(", ", ValidHashSizes)));
 
             this.HashSizeValue = value;
         }
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Releases the unmanaged resources used by the <see cref="HashAlgorithm" /> and optionally releases the managed resources.
+    /// </summary>
+    /// <param name="disposing">
+    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release
+    /// only unmanaged resources.
+    /// </param>
     /// <remarks>
+    /// <para>
     /// Clears the chaining state, releases the framework <see cref="HashAlgorithm.HashValue" /> array, and zeros
-    /// <see cref="HashAlgorithm.HashSizeValue" />. Calls <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}.OnDispose" />
-    /// to securely erase any stored key material. The inherited residual buffer is cleared by the grandparent
-    /// before this hook runs.
+    /// <see cref="HashAlgorithm.HashSizeValue" /> when <paramref name="disposing" /> is <see langword="true" />.
+    /// </para>
+    /// <para>
+    /// Retained key material owned by <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}" /> is cleared by the base
+    /// implementation when this method delegates to <c>base.Dispose(disposing)</c>. The inherited residual buffer is
+    /// cleared further down the dispose chain.
+    /// </para>
     /// </remarks>
-    protected override void OnDispose(bool disposing)
+    protected override void Dispose(bool disposing)
     {
+        if (this.IsDisposed) return;
+
         if (disposing)
         {
-            Array.Clear(this._h, 0, this._h.Length);
-            CryptoHelpers.ClearAndNullify(ref this.HashValue);
-            this.HashSizeValue = 0;
+            CryptoHelpers.Clear(this._h);
         }
 
-        base.OnDispose(disposing);
+        base.Dispose(disposing);
     }
 
     /// <summary>
@@ -313,22 +330,12 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
     private static void G(Span<uint> v, int a, int b, int c, int d, uint x, uint y)
     {
         v[a] += v[b] + x;
-        v[d] = RotateRight(v[d] ^ v[a], 16);
+        v[d] = (v[d] ^ v[a]).RotateBitsRightUnchecked(16);
         v[c] += v[d];
-        v[b] = RotateRight(v[b] ^ v[c], 12);
+        v[b] = (v[b] ^ v[c]).RotateBitsRightUnchecked(12);
         v[a] += v[b] + y;
-        v[d] = RotateRight(v[d] ^ v[a], 8);
+        v[d] = (v[d] ^ v[a]).RotateBitsRightUnchecked(8);
         v[c] += v[d];
-        v[b] = RotateRight(v[b] ^ v[c], 7);
+        v[b] = (v[b] ^ v[c]).RotateBitsRightUnchecked(7);
     }
-
-    /// <summary>
-    /// Rotates a 32-bit unsigned integer right by the specified number of bits.
-    /// </summary>
-    /// <param name="value">The value to rotate.</param>
-    /// <param name="bits">The number of positions to rotate right.</param>
-    /// <returns>The rotated value.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static uint RotateRight(uint value, int bits) =>
-        (value >> bits) | (value << (32 - bits));
 }

@@ -104,9 +104,9 @@ fnv.Reset();                          // back to FNV offset basis
 
 ## FNV vs the other non-cryptographic hashes in this package
 
-- **vs <xref:Bodu.IO.Hashing.Adler32>** — FNV distributes shorter inputs more evenly; Adler is marginally faster on long buffers and is the checksum specified by zlib / PNG.
+- **vs <xref:Bodu.IO.Hashing.Checksums.Adler32>** — FNV distributes shorter inputs more evenly; Adler is marginally faster on long buffers and is the checksum specified by zlib / PNG.
 - **vs <xref:Bodu.IO.Hashing.CityHash64>** — CityHash is substantially faster on long inputs (SIMD-friendly by design) and distributes better on both short and long data. FNV wins on code simplicity and on determinism across languages/libraries.
-- **vs <xref:Bodu.IO.Hashing.Crc>** — CRC is specified for wire formats and has provably good burst-error detection; FNV is a better default for in-memory fingerprinting where you control both ends.
+- **vs <xref:Bodu.IO.Hashing.Checksums.Crc>** — CRC is specified for wire formats and has provably good burst-error detection; FNV is a better default for in-memory fingerprinting where you control both ends.
 - **vs <xref:Bodu.Security.Cryptography.SipHash64>** — SipHash is keyed and resists adversarial collisions; FNV does not. Pick SipHash whenever untrusted input can reach the hash function.
 
 ## Where to go next
