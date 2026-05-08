@@ -52,12 +52,14 @@ namespace Bodu.Security.Cryptography.Extensions;
 ///   </item>
 /// </list>
 /// <para>
-/// AEAD transforms are <strong>stateful and single-use within a message</strong>: instantiate a new transform per
-/// message, call exactly one of these helpers, and dispose. The associated-data argument must match byte-for-byte
-/// between the encrypt and decrypt calls — even a single-bit difference will cause the tag check to fail. Tag
-/// verification is constant-time inside the transform implementation, so timing leaks are not a concern. Output arrays
-/// are always sized exactly: <c>plaintext.Length + TagSize</c> on encrypt, <c>ciphertextWithTag.Length - TagSize</c> on
-/// decrypt.
+/// AEAD transforms are <strong>stateful and single-use per message</strong>: instantiate a new transform per
+/// message, call exactly one of these helpers, and dispose. A second call to <c>Encrypt</c> or <c>Decrypt</c> on
+/// the same underlying transform — including after a tag-mismatch <see cref="CryptographicException"/> — throws
+/// <see cref="InvalidOperationException"/>; recover by constructing a fresh transform with the same
+/// <c>(key, nonce)</c>. The associated-data argument must match byte-for-byte between the encrypt and decrypt calls
+/// — even a single-bit difference will cause the tag check to fail. Tag verification is constant-time inside the
+/// transform implementation, so timing leaks are not a concern. Output arrays are always sized exactly:
+/// <c>plaintext.Length + TagSize</c> on encrypt, <c>ciphertextWithTag.Length - TagSize</c> on decrypt.
 /// </para>
 /// <example>
 /// <code language="csharp">
@@ -132,6 +134,10 @@ public static class AeadBlockCipherModeTransformExtensions
     /// A newly allocated byte array of length <c>plaintext.Length + transform.TagSize</c>.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="transform" /> is <see langword="null" />.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The transform has already encrypted or decrypted a message. AEAD transforms are single-use
+    /// per message — construct a fresh instance.
+    /// </exception>
     public static byte[] Encrypt(
         this IAeadBlockCipherModeTransform transform,
         ReadOnlySpan<byte> plaintext)
@@ -159,6 +165,10 @@ public static class AeadBlockCipherModeTransformExtensions
     /// </exception>
     /// <exception cref="CryptographicException">
     /// The authentication tag did not verify. The returned buffer is not written in this case.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The transform has already encrypted or decrypted a message, including after a previous
+    /// tag-mismatch failure. AEAD transforms are single-use per message — construct a fresh instance.
     /// </exception>
     public static byte[] Decrypt(
         this IAeadBlockCipherModeTransform transform,
@@ -194,6 +204,10 @@ public static class AeadBlockCipherModeTransformExtensions
     /// <returns>A newly allocated byte array containing the recovered plaintext.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="transform" /> is <see langword="null" />.</exception>
     /// <exception cref="CryptographicException">The authentication tag did not verify.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The transform has already encrypted or decrypted a message, including after a previous
+    /// tag-mismatch failure. AEAD transforms are single-use per message — construct a fresh instance.
+    /// </exception>
     public static byte[] Decrypt(
         this IAeadBlockCipherModeTransform transform,
         ReadOnlySpan<byte> ciphertextWithTag)

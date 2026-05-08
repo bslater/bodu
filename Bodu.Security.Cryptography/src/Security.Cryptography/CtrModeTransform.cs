@@ -70,6 +70,7 @@ public sealed class CtrModeTransform : IBlockCipherModeTransform
     private readonly byte[] _initialCounter;
     private readonly byte[] _counter;
     private bool _counterWrapped;
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CtrModeTransform" /> class.
@@ -120,6 +121,23 @@ public sealed class CtrModeTransform : IBlockCipherModeTransform
         }
 
         return input.Length;
+    }
+
+    /// <summary>
+    /// Releases the resources used by this instance and zeroes the retained counter state so that
+    /// key-equivalent counter values do not linger in memory after disposal. The underlying
+    /// <see cref="IBlockCipher" /> is not disposed by this type — ownership remains with the caller.
+    /// </summary>
+    /// <remarks>Idempotent.</remarks>
+    public void Dispose()
+    {
+        if (this._disposed)
+            return;
+
+        CryptographicOperations.ZeroMemory(this._counter);
+        CryptographicOperations.ZeroMemory(this._initialCounter);
+        this._disposed = true;
+        GC.SuppressFinalize(this);
     }
 
     // ── Private helpers ────────────────────────────────────────────────────────────────────────

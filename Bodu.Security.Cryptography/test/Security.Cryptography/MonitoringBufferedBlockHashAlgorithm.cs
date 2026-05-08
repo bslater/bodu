@@ -23,9 +23,9 @@ public sealed class MonitoringBufferedBlockHashAlgorithm
     public List<int> CapturedSpanLengths { get; } = new();
 
     /// <summary>
-    /// Number of times <see cref="OnInitialize" /> has been invoked across the lifetime of the instance.
+    /// Number of times <see cref="Initialize" /> has been invoked across the lifetime of the instance.
     /// </summary>
-    public int OnInitializeCallCount { get; private set; }
+    public int InitializeCallCount { get; private set; }
 
     /// <summary>
     /// Number of times this test instance has observed the first call to <see cref="Dispose(bool)" />.
@@ -41,6 +41,9 @@ public sealed class MonitoringBufferedBlockHashAlgorithm
     /// <see langword="null" /> if disposal has not yet been observed.
     /// </summary>
     public bool? LastDisposeFlag { get; private set; }
+
+    /// <inheritdoc />
+    public override string AlgorithmName => nameof(MonitoringBufferedBlockHashAlgorithm);
 
     /// <summary>
     /// Initialises a new instance with the default 8-byte block size.
@@ -110,9 +113,10 @@ public sealed class MonitoringBufferedBlockHashAlgorithm
     }
 
     /// <inheritdoc />
-    protected override void OnInitialize()
+    public override void Initialize()
     {
-        this.OnInitializeCallCount++;
+        base.Initialize();
+        this.InitializeCallCount++;
     }
 
     /// <inheritdoc />

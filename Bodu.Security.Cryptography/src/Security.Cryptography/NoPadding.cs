@@ -51,6 +51,11 @@ public sealed class NoPadding : IPaddingStrategy
     /// <exception cref="ArgumentException">Thrown if the length of <paramref name="input" /> is not a multiple of <paramref name="blockSize" />.</exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
     {
+        if (blockSize <= 0)
+            throw new ArgumentOutOfRangeException(
+                nameof(blockSize),
+                string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
+
         if (input.Length % blockSize != 0)
             throw new ArgumentException("Input must be a multiple of block size when using no padding.", nameof(input));
         return input.ToArray();
