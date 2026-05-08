@@ -166,18 +166,18 @@ public sealed class DeferredFinalBlockHashAlgorithmTests
     }
 
     /// <summary>
-    /// Verifies that <c>Initialize</c> propagates through to the <see cref="DeferredFinalBlockHashAlgorithm{T}.OnInitialize" />
-    /// hook, ensuring derived algorithm-specific state is reset on every <c>ComputeHash</c> call.
+    /// Verifies that calling <c>Initialize</c> on a derived <see cref="DeferredFinalBlockHashAlgorithm{T}" /> runs the
+    /// derived override, ensuring algorithm-specific state is reset on every <c>ComputeHash</c> call.
     /// </summary>
     [TestMethod]
-    public void Initialize_WhenCalled_ShouldInvokeOnInitialize()
+    public void Initialize_WhenCalled_ShouldRunDerivedOverride()
     {
         using var sut = new MonitoringDeferredFinalBlockHashAlgorithm(BlockSize);
-        int baseline = sut.OnInitializeCallCount;
+        int baseline = sut.InitializeCallCount;
 
         sut.Initialize();
 
-        Assert.AreEqual(baseline + 1, sut.OnInitializeCallCount);
+        Assert.AreEqual(baseline + 1, sut.InitializeCallCount);
     }
 
     private static byte[] SequentialBytes(int length)

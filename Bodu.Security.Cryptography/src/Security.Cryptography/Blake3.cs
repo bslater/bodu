@@ -7,6 +7,7 @@
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -167,24 +168,30 @@ public sealed class Blake3
     public override bool CanTransformMultipleBlocks => true;
 
     /// <inheritdoc />
-    public override void Initialize()
+    /// <remarks>BLAKE3 has a fixed 256-bit default output; the published name is simply <c>"BLAKE3"</c>.</remarks>
+    public override string AlgorithmName
     {
-        ThrowIfDisposed();
-        base.Initialize();
+        get
+        {
+            this.ThrowIfDisposed();
+            return "BLAKE3";
+        }
     }
-
-    // ---- DeferredFinalBlockHashAlgorithm<T> implementation ----
 
     /// <inheritdoc />
     /// <remarks>
-    /// Clears the CV stack and restores <see cref="_chunkCv" /> to the BLAKE3 initialisation
-    /// vector, ready for a new chunk.
+    /// Clears the CV stack and restores <see cref="_chunkCv" /> to the BLAKE3 initialisation vector, ready for a new
+    /// chunk. The inherited residual buffer and counters are cleared by the base call (which also throws
+    /// <see cref="ObjectDisposedException" /> if the instance has been disposed).
     /// </remarks>
-    protected override void OnInitialize()
+    public override void Initialize()
     {
+        base.Initialize();
         _cvStack.Clear();
         s_iv.CopyTo(_chunkCv, 0);
     }
+
+    // ---- DeferredFinalBlockHashAlgorithm<T> implementation ----
 
     /// <remarks>
     /// Clears the CV stack, zeroes <see cref="_chunkCv" />, releases the framework
@@ -195,12 +202,12 @@ public sealed class Blake3
     /// </remarks>
     protected override void Dispose(bool disposing)
     {
+        if (this.IsDisposed) return;
+
         if (disposing)
         {
             _cvStack.Clear();
             CryptoHelpers.Clear(_chunkCv);
-            CryptoHelpers.ClearAndNullify(ref HashValue);
-            HashSizeValue = 0;
         }
 
         base.Dispose(disposing);
@@ -423,24 +430,14 @@ public sealed class Blake3
     private static void G(uint[] state, int a, int b, int c, int d, uint mx, uint my)
     {
         state[a] = state[a] + state[b] + mx;
-        state[d] = RotateRight(state[d] ^ state[a], 16);
+        state[d] = (state[d] ^ state[a]).RotateBitsRightUnchecked(16);
         state[c] = state[c] + state[d];
-        state[b] = RotateRight(state[b] ^ state[c], 12);
+        state[b] = (state[b] ^ state[c]).RotateBitsRightUnchecked(12);
         state[a] = state[a] + state[b] + my;
-        state[d] = RotateRight(state[d] ^ state[a], 8);
+        state[d] = (state[d] ^ state[a]).RotateBitsRightUnchecked(8);
         state[c] = state[c] + state[d];
-        state[b] = RotateRight(state[b] ^ state[c], 7);
+        state[b] = (state[b] ^ state[c]).RotateBitsRightUnchecked(7);
     }
-
-    /// <summary>
-    /// Rotates <paramref name="value" /> right by <paramref name="bits" /> positions.
-    /// </summary>
-    /// <param name="value">The value to rotate.</param>
-    /// <param name="bits">The number of bit positions to rotate right.</param>
-    /// <returns>The rotated value.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static uint RotateRight(uint value, int bits) =>
-        (value >> bits) | (value << (32 - bits));
 
     // ---- block and parent processing ----
 

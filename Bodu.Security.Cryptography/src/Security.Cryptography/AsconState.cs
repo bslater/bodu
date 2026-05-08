@@ -5,8 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
-using System.Numerics;
 using System.Runtime.CompilerServices;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -96,11 +96,11 @@ internal struct AsconState
             s1 ^= s0; s0 ^= s4; s3 ^= s2; s2 = ~s2;
 
             // Linear diffusion layer: each word XORed with two rotated copies.
-            s0 ^= BitOperations.RotateRight(s0, 19) ^ BitOperations.RotateRight(s0, 28);
-            s1 ^= BitOperations.RotateRight(s1, 61) ^ BitOperations.RotateRight(s1, 39);
-            s2 ^= BitOperations.RotateRight(s2,  1) ^ BitOperations.RotateRight(s2,  6);
-            s3 ^= BitOperations.RotateRight(s3, 10) ^ BitOperations.RotateRight(s3, 17);
-            s4 ^= BitOperations.RotateRight(s4,  7) ^ BitOperations.RotateRight(s4, 41);
+            s0 ^= s0.RotateBitsRightUnchecked(19) ^ s0.RotateBitsRightUnchecked(28);
+            s1 ^= s1.RotateBitsRightUnchecked(61) ^ s1.RotateBitsRightUnchecked(39);
+            s2 ^= s2.RotateBitsRightUnchecked( 1) ^ s2.RotateBitsRightUnchecked( 6);
+            s3 ^= s3.RotateBitsRightUnchecked(10) ^ s3.RotateBitsRightUnchecked(17);
+            s4 ^= s4.RotateBitsRightUnchecked( 7) ^ s4.RotateBitsRightUnchecked(41);
         }
 
         this.S0 = s0; this.S1 = s1; this.S2 = s2; this.S3 = s3; this.S4 = s4;
