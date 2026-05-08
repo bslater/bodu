@@ -25,9 +25,29 @@ namespace Bodu.Security.Cryptography;
 /// The <see cref="BlockMode" /> property replaces the standard <see cref="SymmetricAlgorithm.Mode" /> property, enabling the use of
 /// additional or non-standard block cipher modes such as <see cref="CipherBlockMode.CTR" /> and <see cref="CipherBlockMode.OFB" />.
 /// </para>
+/// <para>
+/// <strong>Concrete variants.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description><see cref="Threefish256"/> — 256-bit block, 256-bit key, 128-bit tweak.</description></item>
+///   <item><description><see cref="Threefish512"/> — 512-bit block, 512-bit key, 128-bit tweak (the recommended general-purpose default).</description></item>
+///   <item><description><see cref="Threefish1024"/> — 1024-bit block, 1024-bit key, 128-bit tweak.</description></item>
+/// </list>
+/// <para>
+/// Threefish is the cipher under the UBI mode of <see cref="Skein{T}"/> — the same key-and-tweak primitive that
+/// drives Skein's hash compression. For a non-tweakable, hardware-accelerated default prefer
+/// <see cref="System.Security.Cryptography.Aes"/>. For try-pattern transform creation that surfaces bad
+/// key/IV/tweak combinations as a <see langword="false"/> return, see
+/// <see cref="Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions"/>.
+/// </para>
 /// <note type="important">This class is not intended to be instantiated directly. Use <see cref="Threefish256" />,
 /// <see cref="Threefish512" />, or <see cref="Threefish1024" /> instead.</note>
 /// </remarks>
+/// <seealso cref="Threefish256"/>
+/// <seealso cref="Threefish512"/>
+/// <seealso cref="Threefish1024"/>
+/// <seealso cref="TweakableSymmetricAlgorithm"/>
+/// <seealso cref="Skein{T}"/>
 public abstract class Threefish
     : TweakableSymmetricAlgorithm
 {
@@ -176,15 +196,15 @@ public abstract class Threefish
 
         if (key.Length != this.KeySizeBytes)
             throw new CryptographicException(
-                string.Format(ResourceStrings.CryptographicException_InvalidKeySize, key.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize, key.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)));
 
         // Fix: normalise IV length failure to CryptographicException for consistency with the key/tweak branches and with Skipjack.Validate.
         if (iv.Length != this.BlockSizeBytes)
             throw new CryptographicException(
-                string.Format(ResourceStrings.CryptographicException_InvalidIVSize, iv.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalBlockSizes)));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidIVSize, iv.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalBlockSizes)));
 
         if (tweak.Length != this.DefaultTweakSizeBytes)
             throw new CryptographicException(
-                string.Format(ResourceStrings.CryptographicException_InvalidTweakSize, tweak.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalTweakSizes)));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidTweakSize, tweak.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalTweakSizes)));
     }
 }

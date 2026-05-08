@@ -14,7 +14,7 @@ Snefru is a 1990 cryptographic hash by Ralph Merkle, named after the Egyptian ph
 Both derive from a shared `Snefru<T>` base, which in turn derives from <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>.
 
 > [!IMPORTANT]
-> Snefru is **cryptographically broken**. Eli Biham showed practical collisions on Snefru-2 (the published 2-pass variant) in 2008. The implementation in this package is provided for **interoperability with legacy systems and for research**, not for protecting real data. For any new work where you need a cryptographic hash, use the BCL's <xref:System.Security.Cryptography.SHA256?displayProperty=nameWithType> / <xref:System.Security.Cryptography.SHA512?displayProperty=nameWithType>, or <xref:Bodu.Security.Cryptography.Tiger> if you need 192-bit output.
+> Snefru is **cryptographically broken**. Eli Biham showed practical collisions on Snefru-2 (the published 2-pass variant) in 2008. The implementation in this package is provided for **interoperability with legacy systems and for research**, not for protecting real data. For any new work where you need a cryptographic hash, use the BCL's `System.Security.Cryptography.SHA256` / `System.Security.Cryptography.SHA512`, or <xref:Bodu.Security.Cryptography.Tiger> if you need 192-bit output.
 
 ## Pattern 1 — compute a digest
 

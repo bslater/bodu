@@ -13,9 +13,28 @@ namespace Bodu.Security.Cryptography;
 /// Implements zero-byte padding, appending <c>0x00</c> bytes until the input aligns with the cipher block size.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Zero padding is not self-describing and cannot be unambiguously removed when the plaintext itself may end in zero bytes. Use this
 /// strategy only when the original plaintext length is recorded out-of-band or the data is known never to contain trailing zeros.
+/// </para>
+/// <para>
+/// <strong>When to choose zero padding.</strong> Pick zero padding only when the surrounding format already
+/// records the plaintext length explicitly (e.g. a length-prefixed protocol frame or fixed-size record), or
+/// when the plaintext is text that cannot legitimately contain trailing <c>0x00</c> bytes. For ordinary
+/// length-recoverable padding pick <see cref="Pkcs7Padding"/>; for AEAD modes that handle alignment
+/// internally pick <see cref="NoPadding"/>.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.Security.Cryptography;
+///
+/// // Caller is responsible for tracking the original plaintext length —
+/// // Unpad here returns the padded buffer unchanged.
+/// IPaddingStrategy padding = new ZeroPadding();
+/// byte[] padded = padding.Pad(plaintext, blockSize: 16);
+/// </code>
+/// </example>
 public sealed class ZeroPadding : IPaddingStrategy
 {
     /// <inheritdoc />
@@ -33,7 +52,7 @@ public sealed class ZeroPadding : IPaddingStrategy
         if (blockSize <= 0)
             throw new ArgumentOutOfRangeException(
                 nameof(blockSize),
-                string.Format(ResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
+                string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
 
         int paddingLength = blockSize - (input.Length % blockSize);
         if (paddingLength == blockSize)

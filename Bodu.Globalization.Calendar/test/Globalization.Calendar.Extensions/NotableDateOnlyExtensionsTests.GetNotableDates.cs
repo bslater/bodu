@@ -50,4 +50,65 @@ public partial class NotableDateOnlyExtensionsTests
             _ = new DateOnly(2026, 1, 1).GetNotableDates(service: null!);
         });
     }
+
+    /// <summary>
+    /// Verifies that supplying a <see langword="null" /> filter to the explicit-service overload throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void GetNotableDates_WhenExplicitFilterIsNull_ShouldThrowArgumentNullException()
+    {
+        NotableDateService service = BuildService();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new DateOnly(2026, 1, 1).GetNotableDates(service, filter: null!);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that supplying a <see langword="null" /> filter to the ambient overload throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void GetNotableDates_WhenAmbientFilterIsNull_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new DateOnly(2026, 1, 1).GetNotableDates(filter: null!);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a filter restricts the returned set to matching notable dates only.
+    /// </summary>
+    [TestMethod]
+    public void GetNotableDates_WhenFilterApplied_ShouldReturnOnlyMatching()
+    {
+        NotableDateService service = BuildService(Fixed("Christmas Day", 12, 25, NotableDateCategory.Holiday));
+        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Cultural);
+
+        IReadOnlyList<NotableDate> result = new DateOnly(2026, 12, 25).GetNotableDates(service, filter);
+
+        Assert.AreEqual(0, result.Count);
+    }
+
+    /// <summary>
+    /// Verifies that the ambient-service overload routes through <see cref="NotableDateContext.Default" />.
+    /// </summary>
+    [TestMethod]
+    public void GetNotableDates_WhenUsingAmbientService_ShouldDelegateToDefaultContext()
+    {
+        NotableDateService service = BuildService(Fixed("Holiday", 1, 1));
+        try
+        {
+            NotableDateContext.Default = service;
+
+            IReadOnlyList<NotableDate> result = new DateOnly(2026, 1, 1).GetNotableDates();
+
+            Assert.AreEqual(1, result.Count);
+        }
+        finally
+        {
+            NotableDateContext.Reset();
+        }
+    }
 }

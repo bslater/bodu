@@ -6,6 +6,7 @@
 
 using Bodu.Extensions;
 using Bodu.Test;
+using Bodu.Test.IO;
 using System.Security.Cryptography;
 using static Bodu.Security.Cryptography.AsconHashA256Tests;
 
@@ -35,22 +36,48 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="HashAlgorithm.ComputeHash(byte[])" /> after streaming begins completes successfully, and does
-    /// not depend on previous TransformBlock state.
+    /// Verifies that <see cref="HashAlgorithm.ComputeHash(byte[], int, int)" /> completes the current streaming
+    /// operation when called after <see cref="HashAlgorithm.TransformBlock(byte[], int, int, byte[]?, int)" />.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_AfterTransformBlock_ShouldIgnorePriorStreaming()
+    public void ComputeHash_WhenCalledAfterTransformBlock_ShouldIncludePriorStreamingInput()
+    {
+        byte[] block1 = CryptoTestUtilities.ByteSequence256[..128];
+        byte[] block2 = CryptoTestUtilities.ByteSequence256[128..256];
+
+        byte[] combined = new byte[block1.Length + block2.Length];
+        Buffer.BlockCopy(block1, 0, combined, 0, block1.Length);
+        Buffer.BlockCopy(block2, 0, combined, block1.Length, block2.Length);
+
+        using var expectedAlgorithm = CreateAlgorithm();
+        byte[] expected = expectedAlgorithm.ComputeHash(combined);
+
+        using var algorithm = CreateAlgorithm();
+
+        _ = algorithm.TransformBlock(block1, 0, block1.Length, null, 0);
+
+        byte[] actual = algorithm.ComputeHash(block2, 0, block2.Length);
+
+        CollectionAssert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="HashAlgorithm.Hash" /> remains unavailable after
+    /// <see cref="HashAlgorithm.ComputeHash(byte[], int, int)" /> is called during an active streaming operation.
+    /// </summary>
+    [TestMethod]
+    public void Hash_Get_WhenComputeHashCalledAfterTransformBlock_ShouldThrowCryptographicUnexpectedOperationException()
     {
         using var algorithm = CreateAlgorithm();
 
-        // Begin a partial stream operation
-        algorithm.TransformBlock(CryptoTestUtilities.ByteSequence256, 0, 128, null, 0);
+        _ = algorithm.TransformBlock(CryptoTestUtilities.ByteSequence256, 0, 128, null, 0);
 
-        // Call ComputeHash independently
-        var hash = algorithm.ComputeHash(CryptoTestUtilities.ByteSequence256);
+        _ = algorithm.ComputeHash(CryptoTestUtilities.ByteSequence256, 128, 128);
 
-        Assert.IsNotNull(algorithm);
-        Assert.AreEqual(algorithm.HashSize / 8, hash.Length);
+        Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
+        {
+            _ = algorithm.Hash;
+        });
     }
 
     /// <summary>
@@ -391,7 +418,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         var specification = GetSpecification(variant);
         using var algorithm = CreateAlgorithm(variant);
 
-        var bufferSize = (specification.IncrementalCoverageBytes ?? specification.InputBlockSize) * 2;
+        var bufferSize = specification.HashBlockSize * 2;
         byte[] inputA = TestHelpers.GenerateRandomNonZeroBytes(bufferSize);
         byte[] inputB = inputA.Copy()!;
         inputB[bufferSize - 2] = 0x00;
@@ -402,4 +429,103 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         CollectionAssert.AreNotEqual(hashA, hashB,
             "Distinct multi-chunk inputs must produce different hashes.");
     }
+
+    /// <summary>
+    /// Verifies that <see cref="HashAlgorithm.ComputeHash(byte[])" /> completes the current streaming
+    /// operation when called with empty input after multiple
+    /// <see cref="HashAlgorithm.TransformBlock(byte[], int, int, byte[]?, int)" /> calls.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHash_WhenCalledWithEmptyInputAfterMultipleTransformBlocks_ShouldIncludePriorStreamingInput()
+    {
+        byte[] block1 = CryptoTestUtilities.ByteSequence256[..128];
+        byte[] block2 = CryptoTestUtilities.ByteSequence256[128..256];
+
+        using var expectedAlgorithm = CreateAlgorithm();
+        byte[] expected = expectedAlgorithm.ComputeHash(CryptoTestUtilities.ByteSequence256);
+
+        using var algorithm = CreateAlgorithm();
+
+        _ = algorithm.TransformBlock(block1, 0, block1.Length, null, 0);
+        _ = algorithm.TransformBlock(block2, 0, block2.Length, null, 0);
+
+        byte[] actual = algorithm.ComputeHash(Array.Empty<byte>());
+
+        CollectionAssert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="HashAlgorithm.ComputeHash(byte[])" /> populates
+    /// <see cref="HashAlgorithm.Hash" /> with the computed hash value.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHash_WhenCalled_ShouldPopulateHashProperty()
+    {
+        using var algorithm = CreateAlgorithm();
+
+        byte[] actual = algorithm.ComputeHash(CryptoTestUtilities.ByteSequence256);
+
+        Assert.IsNotNull(algorithm.Hash);
+        CollectionAssert.AreEqual(actual, algorithm.Hash);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="HashAlgorithm.ComputeHash(Stream)" /> returns the expected empty-input hash
+    /// when the supplied stream has no data.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHash_WhenStreamIsEmpty_ShouldReturnExpectedEmptyHash()
+    {
+        using var algorithm = CreateAlgorithm();
+        using var stream = new MemoryStream(Array.Empty<byte>());
+
+        byte[] actual = algorithm.ComputeHash(stream);
+
+        CollectionAssert.AreEqual(ExpectedEmptyInputHash, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="HashAlgorithm.ComputeHash(Stream)" /> hashes from the stream's current position
+    /// rather than from the beginning of the stream.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHash_WhenStreamPositionIsNonZero_ShouldHashFromCurrentPosition()
+    {
+        byte[] prefix = CryptoTestUtilities.ByteSequence256[..32];
+        byte[] payload = CryptoTestUtilities.ByteSequence256[32..128];
+
+        byte[] buffer = new byte[prefix.Length + payload.Length];
+        Buffer.BlockCopy(prefix, 0, buffer, 0, prefix.Length);
+        Buffer.BlockCopy(payload, 0, buffer, prefix.Length, payload.Length);
+
+        using var expectedAlgorithm = CreateAlgorithm();
+        byte[] expected = expectedAlgorithm.ComputeHash(payload);
+
+        using var algorithm = CreateAlgorithm();
+        using var stream = new MemoryStream(buffer);
+
+        stream.Position = prefix.Length;
+
+        byte[] actual = algorithm.ComputeHash(stream);
+
+        CollectionAssert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="HashAlgorithm.ComputeHash(Stream)" /> propagates an exception thrown by the
+    /// source stream during a read operation.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHash_WhenStreamThrowsDuringRead_ShouldPropagateException()
+    {
+        using var algorithm = CreateAlgorithm();
+        using var stream = new FaultingStream(new byte[0], 0);
+
+        Assert.ThrowsExactly<IOException>(() =>
+        {
+            _ = algorithm.ComputeHash(stream);
+        });
+    }
+
+  
 }

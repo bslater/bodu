@@ -152,4 +152,19 @@ public partial class NotableDateTimeExtensionsTests
             _ = DateTime.MaxValue.NextWorkingDay(service);
         });
     }
+
+    /// <summary>
+    /// Verifies the result of advancing by the supplied <c>count</c> across a representative spread of single-step, multi-step,
+    /// weekend-bridging and weekend-input cases using an empty rule set.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(NextWorkingDayCountTestData))]
+    public void NextWorkingDay_WhenAdvancingCount_ShouldReturnExpectedDate(DateTime start, int count, DateTime expected)
+    {
+        NotableDateService service = BuildService();
+
+        DateTime actual = start.NextWorkingDay(service, count: count);
+
+        Assert.AreEqual(expected, actual);
+    }
 }

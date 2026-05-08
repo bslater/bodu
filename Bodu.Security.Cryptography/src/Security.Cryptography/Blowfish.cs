@@ -28,11 +28,40 @@ namespace Bodu.Security.Cryptography;
 /// For further details on the algorithm, see
 /// <a href="https://www.schneier.com/academic/blowfish/">https://www.schneier.com/academic/blowfish/</a>.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Block size: 64 bits (8 bytes).</description></item>
+///   <item><description>Key size: variable, 32–448 bits (4–56 bytes).</description></item>
+///   <item><description>16-round Feistel network with key-dependent S-boxes initialised from the digits of π.</description></item>
+///   <item><description>Default mode: <see cref="CipherBlockMode.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose Blowfish.</strong> Pick Blowfish only for interoperability with legacy systems that
+/// already use it — its 64-bit block size invites SWEET32 birthday-bound attacks once roughly 32 GiB has been
+/// encrypted under one key. For new designs use <see cref="System.Security.Cryptography.Aes"/>; bcrypt-style
+/// password hashing schemes that derive from Blowfish are not in scope of this class.
+/// </para>
 /// <note type="important">
 /// Blowfish has a 64-bit block size, which makes it vulnerable to birthday-bound attacks (SWEET32) when large volumes of data are
 /// encrypted under the same key. For new applications, a cipher with a 128-bit or larger block size (such as AES) should be preferred.
 /// </note>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// // Legacy interop only.
+/// using var blowfish = new Blowfish();
+/// blowfish.Key = legacyKeyMaterial;             // 4–56 bytes
+/// blowfish.IV  = RandomNumberGenerator.GetBytes(8); // matches the 64-bit block
+///
+/// byte[] ciphertext = blowfish.Encrypt(legacyPlaintext);
+/// </code>
+/// </example>
 /// <seealso href="../guides/cryptography/blowfish.html">Using Blowfish (guide with full encrypt / decrypt examples)</seealso>
 /// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>
@@ -292,14 +321,14 @@ public sealed class Blowfish
         // schedule is driven from the caller-supplied material without padding or truncation.
         if (key.Length != this.KeySizeBytes)
             throw new CryptographicException(
-                string.Format(ResourceStrings.CryptographicException_InvalidKeySize,
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize,
                               key.Length * 8,
                               CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)),
                 nameof(key));
 
         if (iv.Length != this.BlockSizeBytes)
             throw new CryptographicException(
-                string.Format(ResourceStrings.CryptographicException_InvalidIVSize,
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidIVSize,
                               iv.Length * 8,
                               CryptoHelpers.FormatLegalSizes(this.LegalBlockSizesValue)),
                 nameof(iv));

@@ -52,4 +52,32 @@ public partial class NotableDateTimeExtensionsTests
             _ = new DateTime(2026, 1, 5).EnumerateNonWorkingDays(new DateTime(2026, 1, 11), service: null!);
         });
     }
+
+    /// <summary>
+    /// Verifies that swapping the start and end boundaries still yields an ascending sequence equal to the in-order range.
+    /// </summary>
+    [TestMethod]
+    public void EnumerateNonWorkingDays_WhenBoundariesReversed_ShouldYieldAscendingSequence()
+    {
+        NotableDateService service = BuildService();
+
+        DateTime[] forward = new DateTime(2026, 1, 5).EnumerateNonWorkingDays(new DateTime(2026, 1, 11), service).ToArray();
+        DateTime[] reversed = new DateTime(2026, 1, 11).EnumerateNonWorkingDays(new DateTime(2026, 1, 5), service).ToArray();
+
+        CollectionAssert.AreEqual(forward, reversed);
+    }
+
+    /// <summary>
+    /// Verifies that a single-day range yields one non-working day for weekends and zero for weekdays.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(SingleDayNonWorkingYieldTestData))]
+    public void EnumerateNonWorkingDays_WhenSingleDayRange_ShouldYieldExpectedCount(DateTime day, int expected)
+    {
+        NotableDateService service = BuildService();
+
+        int actual = day.EnumerateNonWorkingDays(day, service).Count();
+
+        Assert.AreEqual(expected, actual);
+    }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DeferredFinalBlockHashAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -36,11 +36,24 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>Derived classes must implement the following:</para>
 /// <list type="bullet">
-/// <item><description><see cref="OnInitialize" /> resets the algorithm-specific chaining variables to their initial state.</description></item>
+/// <item><description><see cref="HashAlgorithm.Initialize" /> resets the algorithm-specific chaining variables to their initial state. Override and call <c>base.Initialize()</c> first.</description></item>
 /// <item><description><see cref="ProcessBlock" /> compresses a single block, receiving the per-block counter and the finalisation flag.</description></item>
 /// <item><description><see cref="ProcessFinalBlock" /> extracts the digest from the chaining variables after the final compression has run.</description></item>
 /// </list>
+/// <para>
+/// <strong>When to derive from this class.</strong> Pick <see cref="DeferredFinalBlockHashAlgorithm{T}"/> for
+/// the BLAKE family and any other algorithm whose compression function takes an explicit
+/// "is this the final block?" flag rather than padding the trailing partial block with a length encoding —
+/// <see cref="Blake3"/> is the canonical user. For BLAKE2-style hashes that also accept an optional secret
+/// key (<see cref="Blake2b"/>, <see cref="Blake2s"/>) derive from
+/// <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}"/>, which adds RFC 7693 key-block handling on top of
+/// this base. For Merkle–Damgård hashes (SHA-2, Tiger, Whirlpool) use <see cref="BlockHashAlgorithm{T}"/>.
+/// </para>
 /// </remarks>
+/// <seealso cref="BufferedBlockHashAlgorithm{T}"/>
+/// <seealso cref="BlockHashAlgorithm{T}"/>
+/// <seealso cref="KeyedBlockHashAlgorithm{T}"/>
+/// <seealso cref="KeyedDeferredFinalBlockHashAlgorithm{T}"/>
 public abstract class DeferredFinalBlockHashAlgorithm<T>
     : BufferedBlockHashAlgorithm<T>
     where T : DeferredFinalBlockHashAlgorithm<T>, new()
@@ -78,7 +91,7 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
 
 #if !NET6_0_OR_GREATER
     if (this._finalized)
-        throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+        throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
         int pos = 0;
@@ -121,7 +134,7 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
 
 #if !NET6_0_OR_GREATER
     if (this._finalized)
-        throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+        throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
         Span<byte> residualSpan = this._residualBlock.Span;

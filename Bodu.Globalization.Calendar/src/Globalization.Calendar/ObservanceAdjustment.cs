@@ -24,6 +24,14 @@ namespace Bodu.Globalization.Calendar;
 /// targeted and overridden by <c>&lt;Use&gt;</c> directives when the rule is inherited by another resource.
 /// </para>
 /// <para>
+/// When an adjustment activates the <see cref="NotableDateService" /> emits an <em>additional</em> <see cref="NotableDate" />
+/// at the adjusted date, leaving the original calculated date in place so consumers see both the actual and the observed
+/// occurrence. The shifted occurrence carries an <see cref="AdjustmentReason" /> on its
+/// <see cref="NotableDate.AdjustmentReason" /> property, naming the trigger and action that caused the shift; this also flips
+/// <see cref="NotableDate.WasAdjusted" /> to <see langword="true" />. When <see cref="IsNonWorkingDay" /> is set on the
+/// adjustment, that value overrides the rule's non-working flag for the shifted occurrence only.
+/// </para>
+/// <para>
 /// This type replaces the earlier <c>NotableDateAdjustmentRule</c>. The new name distinguishes the adjustment <em>specification</em>
 /// from the resolution <em>rule</em> that owns it.
 /// </para>
@@ -155,4 +163,27 @@ public sealed record ObservanceAdjustment
 	/// Gets an optional dictionary of parameters forwarded to the registered <see cref="IAdjustmentHandler" />.
 	/// </summary>
 	public IReadOnlyDictionary<string, string>? HandlerParameters { get; init; }
+
+	/// <summary>
+	/// Gets the optional explicit upper bound on how far this adjustment can shift the calculated date in either direction,
+	/// expressed in days. When set, the chronological range-resolution pipeline uses this value to size the per-rule and global
+	/// fringe envelope so that adjustments whose actual reach exceeds the action's default heuristic are admitted by the fringe
+	/// pass.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// This property is consumed only by the prototype range-resolution pipeline (<c>NotableDateService.ResolveNotableDatesInRange</c>).
+	/// Authors should set it when:
+	/// </para>
+	/// <list type="bullet">
+	///   <item><description><see cref="Action" /> is <see cref="AdjustmentAction.Custom" /> and the custom handler shifts more than ±31 days.</description></item>
+	///   <item><description><see cref="Action" /> is <see cref="AdjustmentAction.ReplaceWithNamedDate" /> and the named replacement is more than ±31 days from the original date.</description></item>
+	///   <item><description>The author wants to declare a tighter envelope than the default heuristic for performance reasons.</description></item>
+	/// </list>
+	/// <para>
+	/// The value is interpreted as a symmetric absolute envelope: the adjustment may shift the date by at most <c>±value</c> days.
+	/// When <see langword="null" />, the pipeline falls back to action-specific defaults (for example, <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> ≈ +7 days).
+	/// </para>
+	/// </remarks>
+	public int? MaxAdjustmentReachDays { get; init; }
 }

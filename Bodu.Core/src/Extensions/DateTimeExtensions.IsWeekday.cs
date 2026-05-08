@@ -50,9 +50,5 @@ public static partial class DateTimeExtensions
     /// Thrown if <paramref name="weekend"/> is not a defined value of the <see cref="CalendarWeekendDefinition"/> enumeration,
     /// -or- <paramref name="weekend"/> is <see cref="CalendarWeekendDefinition.Custom"/> and <paramref name="provider"/> is <see langword="null"/>.
     /// </exception>
-#pragma warning disable S2190 // Loops and recursions should not be infinite
-
-    public static bool IsWeekday(DayOfWeek dayOfWeek, CalendarWeekendDefinition weekend, IWeekendDefinitionProvider? provider = null) => !IsWeekday(dayOfWeek, weekend, provider);
-
-#pragma warning restore S2190 // Loops and recursions should not be infinite
+    public static bool IsWeekday(DayOfWeek dayOfWeek, CalendarWeekendDefinition weekend, IWeekendDefinitionProvider? provider = null) => !IsWeekend(dayOfWeek, weekend, provider);
 }

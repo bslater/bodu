@@ -23,8 +23,34 @@ namespace Bodu.IO.Hashing;
 /// When computing multi-byte hashes (for example a 64-bit digest), the algorithm is repeated for each byte
 /// of the result, using a different initialisation for each output byte to reduce collisions.
 /// </para>
+/// <para>
+/// <strong>When to choose Pearson.</strong> Pearson is interesting in two niches: extremely small lookup
+/// tables — a Pearson byte is the cheapest way to hash a key into a 256-bucket index — and resource-poor
+/// embedded targets where a 256-byte permutation table is small enough to fit in cache and a 64-bit-sized
+/// hash can be assembled from eight independent 8-bit hashes without ever needing wide-integer arithmetic.
+/// For modern hash-table workloads with realistic key spaces, prefer <see cref="Fnv1a32"/> /
+/// <see cref="Fnv1a64"/> or <see cref="MurmurHash3{T}"/>; Pearson's per-byte distribution is weaker than
+/// those alternatives.
+/// </para>
+/// <para>
+/// <strong>Output and lifecycle.</strong> Output size is set by the constructor's <c>hashSize</c> argument
+/// (a multiple of 8 bits, typically 8, 16, 32, or 64). The digest is emitted in little-endian byte order.
+/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()"/> is non-destructive;
+/// instances are not thread-safe.
+/// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used
 /// for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// // 8-byte (64-bit) Pearson digest assembled from eight permutation passes,
+/// // using one of the canonical lookup tables.
+/// var pearson = new Pearson(hashSizeBits: 64, PearsonTableType.Pearson);
+/// byte[] digest = pearson.ComputeHash(System.Text.Encoding.UTF8.GetBytes("payload"));
+/// </code>
+/// </example>
 /// </remarks>
 public sealed partial class Pearson
     : NonCryptographicHashAlgorithm

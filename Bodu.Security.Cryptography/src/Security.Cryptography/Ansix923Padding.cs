@@ -14,11 +14,29 @@ namespace Bodu.Security.Cryptography;
 /// <c>0x00</c> followed by a trailing byte holding the padding length <c>N</c>.
 /// </summary>
 /// <remarks>
+/// <para>
 /// A full block of padding is always added when the input is already block-aligned so
 /// that <see cref="Unpad" /> can unambiguously recover the original length. Valid values
 /// of <c>N</c> lie in the range <c>1..blockSize</c>. <see cref="Unpad" /> validates in
 /// constant time to resist padding-oracle side channels.
+/// </para>
+/// <para>
+/// <strong>When to choose ANSI X.923.</strong> Pick this when interoperating with legacy financial /
+/// banking systems or formats that explicitly require the X.923 layout. For all other cases use
+/// <see cref="Pkcs7Padding"/> — it is the modern standard and is what every mainstream library expects by
+/// default.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.Security.Cryptography;
+///
+/// IPaddingStrategy padding = new Ansix923Padding();
+/// byte[] padded = padding.Pad(plaintext, blockSize: 16);
+/// // padded ends with N-1 zero bytes followed by a single byte holding N.
+/// byte[] recovered = padding.Unpad(padded, blockSize: 16);
+/// </code>
+/// </example>
 public sealed class Ansix923Padding : IPaddingStrategy
 {
     /// <inheritdoc />
@@ -37,7 +55,7 @@ public sealed class Ansix923Padding : IPaddingStrategy
         if (blockSize <= 0)
             throw new ArgumentOutOfRangeException(
                 nameof(blockSize),
-                string.Format(ResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
+                string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
 
         int paddingLength = blockSize - (input.Length % blockSize);
         if (paddingLength == 0)
@@ -63,6 +81,11 @@ public sealed class Ansix923Padding : IPaddingStrategy
     /// <exception cref="CryptographicException">Thrown if the padding is invalid or malformed.</exception>
     public byte[] Unpad(ReadOnlySpan<byte> input, int blockSize)
     {
+        if (blockSize <= 0)
+            throw new ArgumentOutOfRangeException(
+                nameof(blockSize),
+                string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
+
         // Constant-time verification to mitigate CBC padding-oracle attacks.
         if (input.Length == 0 || input.Length % blockSize != 0)
             throw new ArgumentException("Input is not a valid ANSI X.923 padded block sequence.", nameof(input));

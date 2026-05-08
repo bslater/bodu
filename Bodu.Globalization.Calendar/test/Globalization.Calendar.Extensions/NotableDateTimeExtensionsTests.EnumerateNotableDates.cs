@@ -71,4 +71,32 @@ public partial class NotableDateTimeExtensionsTests
             _ = new DateTime(2026, 1, 1).EnumerateNotableDates(new DateTime(2026, 12, 31), service, filter: null!);
         });
     }
+
+    /// <summary>
+    /// Verifies that supplying a <see langword="null" /> filter to the ambient overload throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void EnumerateNotableDates_WhenAmbientFilterIsNull_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new DateTime(2026, 1, 1).EnumerateNotableDates(new DateTime(2026, 12, 31), filter: null!);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that swapping the start and end boundaries still yields the same notable-date sequence as the in-order range.
+    /// </summary>
+    [TestMethod]
+    public void EnumerateNotableDates_WhenBoundariesReversed_ShouldYieldSameSequence()
+    {
+        NotableDateService service = BuildService(
+            Fixed("New Year's Day", 1, 1),
+            Fixed("Christmas Day", 12, 25));
+
+        NotableDate[] forward = new DateTime(2026, 1, 1).EnumerateNotableDates(new DateTime(2026, 12, 31), service).ToArray();
+        NotableDate[] reversed = new DateTime(2026, 12, 31).EnumerateNotableDates(new DateTime(2026, 1, 1), service).ToArray();
+
+        CollectionAssert.AreEqual(forward, reversed);
+    }
 }

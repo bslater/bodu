@@ -107,4 +107,59 @@ public partial class NotableDateOnlyExtensionsTests
             _ = new DateOnly(2026, 1, 1).PreviousNotableDate(service, filter: null!);
         });
     }
+
+    /// <summary>
+    /// Verifies that an input matching a rule's anchor is treated as <i>not</i> previous; the prior occurrence is returned instead.
+    /// </summary>
+    [TestMethod]
+    public void PreviousNotableDate_WhenInputMatchesAnchor_ShouldReturnPriorOccurrence()
+    {
+        NotableDateService service = BuildService(Fixed("New Year's Day", 1, 1));
+
+        NotableDate? result = new DateOnly(2026, 1, 1).PreviousNotableDate(service);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(new DateTime(2025, 1, 1), result.Date);
+    }
+
+    /// <summary>
+    /// Verifies that, with no rules configured, the search returns <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void PreviousNotableDate_WhenNoRulesConfigured_ShouldReturnNull()
+    {
+        NotableDateService service = BuildService();
+
+        NotableDate? result = new DateOnly(2026, 1, 1).PreviousNotableDate(service);
+
+        Assert.IsNull(result);
+    }
+
+    /// <summary>
+    /// Verifies that an input lying inside a multi-day span is treated as after the span's anchor; the search returns the same span.
+    /// </summary>
+    [TestMethod]
+    public void PreviousNotableDate_WhenInputLiesInsideMultiDaySpan_ShouldReturnSpan()
+    {
+        NotableDateRule festival = Fixed("Festival", 6, 1) with { DurationDays = 5 };
+        NotableDateService service = BuildService(festival);
+
+        NotableDate? result = new DateOnly(2026, 6, 3).PreviousNotableDate(service);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual("Festival", result.Name);
+        Assert.AreEqual(new DateTime(2026, 6, 1), result.Date);
+    }
+
+    /// <summary>
+    /// Verifies that supplying a <see langword="null" /> filter to the ambient overload throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void PreviousNotableDate_WhenAmbientFilterIsNull_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new DateOnly(2026, 1, 1).PreviousNotableDate(filter: null!);
+        });
+    }
 }

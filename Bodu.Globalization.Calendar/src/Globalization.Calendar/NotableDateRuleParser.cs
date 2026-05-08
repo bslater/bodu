@@ -21,15 +21,50 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// XML inputs are validated against the embedded <c>NotableDates.xsd</c> schema before parsing. The JSON authoring
-/// counterpart lives in <see cref="NotableDateRuleJsonParser" /> and produces the same
-/// <see cref="ParsedNotableDateDocument" /> output.
+/// XML inputs are validated against the embedded <c>NotableDates.xsd</c> schema before parsing. Schema violations surface as
+/// <see cref="XmlSchemaValidationException" /> so authoring errors are caught at parse time rather than at first query. The JSON
+/// authoring counterpart lives in <see cref="NotableDateRuleJsonParser" /> and produces the same
+/// <see cref="ParsedNotableDateDocument" /> output, so downstream loaders can treat both source formats uniformly.
+/// </para>
+/// <para>
+/// The parser is the bottom of the rule-loading stack: it converts authored markup into the in-memory rule objects that
+/// <see cref="XmlResourceNotableDateRuleProvider" /> assembles into a flat rule set, that <see cref="NotableDateService" /> then
+/// resolves into <see cref="NotableDate" /> values. Use the <see cref="ParseXml(string)" /> overloads when only the local rules
+/// matter; use <see cref="ParseDocument(string)" /> when <c>&lt;Use&gt;</c> cherry-pick directives must also be inspected (for
+/// example to walk a graph of imported resources).
 /// </para>
 /// <para>
 /// This class replaces <c>NotableDateDefinitionParser</c>. The new schema vocabulary uses <c>Rule</c> as the per-definition element and
 /// names the strategy child elements <c>Fixed</c>, <c>DayOfWeekInMonth</c>, <c>OffsetFromAnchor</c>, and <c>Algorithm</c>.
 /// </para>
 /// </remarks>
+/// <example>
+/// <para>Parse an inline XML payload into a list of <see cref="NotableDateRule" /> instances:</para>
+/// <code>
+/// const string xml = """
+///     &lt;NotableDates xmlns="urn:bodu:globalization:calendar"&gt;
+///       &lt;Rule name="Australia Day" category="Public" territoryCode="AU" isNonWorkingDay="true"&gt;
+///         &lt;Fixed month="1" day="26" /&gt;
+///         &lt;Adjustment key="weekend-roll"
+///                     trigger="IfWeekend"
+///                     action="MoveToNextMonday"
+///                     isNonWorkingDay="true" /&gt;
+///       &lt;/Rule&gt;
+///       &lt;Rule name="Easter Sunday" category="Religious"&gt;
+///         &lt;Algorithm key="easter-sunday" /&gt;
+///       &lt;/Rule&gt;
+///     &lt;/NotableDates&gt;
+///     """;
+///
+/// List&lt;NotableDateRule&gt; rules = NotableDateRuleParser.ParseXml(xml);
+/// // rules[0] is the Fixed Australia Day rule with one weekend-roll adjustment.
+/// // rules[1] is the Algorithm-backed Easter Sunday rule.
+///
+/// // When &lt;Use&gt; directives also matter, parse the full document instead:
+/// ParsedNotableDateDocument document = NotableDateRuleParser.ParseDocument(xml);
+/// IReadOnlyList&lt;NotableDateRuleUseGroup&gt; imports = document.UseGroups;
+/// </code>
+/// </example>
 public static class NotableDateRuleParser
 {
 	private static readonly XNamespace Namespace = "urn:bodu:globalization:calendar";
@@ -191,7 +226,7 @@ public static class NotableDateRuleParser
 				"DayOfWeekInMonth" => DateResolutionStrategy.DayOfWeekInMonth,
 				"Algorithm" => DateResolutionStrategy.Algorithm,
 				"OffsetFromAnchor" => DateResolutionStrategy.OffsetFromAnchor,
-				_ => throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.InvalidOperationException_UnknownStrategyElementOnOverrideRule, strategyElement.Name.LocalName))
+				_ => throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_UnknownStrategyElementOnOverrideRule, strategyElement.Name.LocalName))
 			};
 
 		// The inner <Rule>'s name attribute is treated as a rule-level identifier (RuleName), used by the merger to target a
@@ -282,7 +317,7 @@ public static class NotableDateRuleParser
 		{
 			if (!seen.Add(adjustment.Key))
 				throw new InvalidOperationException(
-					string.Format(CultureInfo.InvariantCulture, CalendarStrings.InvalidOperationException_DuplicateAdjustmentKey, adjustment.Key, contextElement.Name.LocalName));
+					string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_DuplicateAdjustmentKey, adjustment.Key, contextElement.Name.LocalName));
 		}
 	}
 
@@ -300,7 +335,7 @@ public static class NotableDateRuleParser
 		{
 			var strategyElement = ruleElement.Elements()
 				.FirstOrDefault(e => IsStrategyElement(e.Name.LocalName))
-				?? throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.InvalidOperationException_RuleMissingStrategy, name));
+				?? throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_RuleMissingStrategy, name));
 
 			var strategy = strategyElement.Name.LocalName switch
 			{
@@ -308,7 +343,7 @@ public static class NotableDateRuleParser
 				"DayOfWeekInMonth" => DateResolutionStrategy.DayOfWeekInMonth,
 				"Algorithm" => DateResolutionStrategy.Algorithm,
 				"OffsetFromAnchor" => DateResolutionStrategy.OffsetFromAnchor,
-				_ => throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.InvalidOperationException_UnknownStrategyElementOnRule, strategyElement.Name.LocalName, name))
+				_ => throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_UnknownStrategyElementOnRule, strategyElement.Name.LocalName, name))
 			};
 
 			var adjustments = ruleElement.Elements(Namespace + "Adjustment")
@@ -394,7 +429,7 @@ public static class NotableDateRuleParser
 				AlgorithmMonth = GetOptionalAttribute(strategyElement, "month"),
 				AlgorithmDay = ParseOptionalInt(strategyElement, "day"),
 			},
-			_ => throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.NotSupportedException_UnsupportedStrategy, rule.Strategy)),
+			_ => throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.NotSupportedException_UnsupportedStrategy, rule.Strategy)),
 		};
 	}
 
@@ -437,7 +472,7 @@ public static class NotableDateRuleParser
     /// <exception cref="FormatException">The attribute is missing on <paramref name="element" />.</exception>
 	private static string GetRequiredAttribute(XElement element, string attributeName) =>
 		element.Attribute(attributeName)?.Value
-			?? throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.InvalidOperationException_MissingRequiredAttribute, attributeName, element.Name.LocalName));
+			?? throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_MissingRequiredAttribute, attributeName, element.Name.LocalName));
 
     /// <summary>
     /// Returns the value of <paramref name="attributeName" /> on <paramref name="element" />,
@@ -452,7 +487,7 @@ public static class NotableDateRuleParser
 	private static TEnum ParseRequiredEnum<TEnum>(XElement element, string attributeName) where TEnum : struct, Enum =>
 		Enum.TryParse<TEnum>(GetRequiredAttribute(element, attributeName), ignoreCase: true, out var result)
 			? result
-			: throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.InvalidOperationException_InvalidAttributeValue, attributeName, element.Name.LocalName));
+			: throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_InvalidAttributeValue, attributeName, element.Name.LocalName));
 
 	private static TEnum? ParseOptionalEnum<TEnum>(XElement element, string attributeName) where TEnum : struct, Enum
 	{
@@ -553,7 +588,7 @@ public static class NotableDateRuleParser
 			&& numeric is >= 1 and <= 13)
 			return numeric;
 
-		throw new FormatException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.FormatException_InvalidMonthValueGregorian, monthName));
+		throw new FormatException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.FormatException_InvalidMonthValueGregorian, monthName));
 	}
 
     /// <summary>
@@ -610,7 +645,7 @@ public static class NotableDateRuleParser
 			return (null, token);
 
 		throw new FormatException(
-			string.Format(CultureInfo.InvariantCulture, CalendarStrings.FormatException_InvalidMonthValueHebrew, token));
+			string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.FormatException_InvalidMonthValueHebrew, token));
 	}
 
 	// ----------------------------------------------------------------------------
@@ -627,7 +662,7 @@ public static class NotableDateRuleParser
 		const string schemaResourceName = "Bodu.Globalization.Calendar.NotableDates.xsd";
 
 		using var stream = assembly.GetManifestResourceStream(schemaResourceName)
-			?? throw new FileNotFoundException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.FileNotFoundException_EmbeddedSchemaResourceNotFound, schemaResourceName, assembly.FullName));
+			?? throw new FileNotFoundException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.FileNotFoundException_EmbeddedSchemaResourceNotFound, schemaResourceName, assembly.FullName));
 
 		var schemaSet = new XmlSchemaSet();
 		schemaSet.Add(null, XmlReader.Create(stream));
@@ -674,6 +709,6 @@ public static class NotableDateRuleParser
 	private static void HandleValidationEvent(object? sender, ValidationEventArgs e)
 	{
 		if (e.Severity == XmlSeverityType.Error)
-			throw new XmlSchemaValidationException(string.Format(CultureInfo.InvariantCulture, CalendarStrings.XmlSchemaValidationException_SchemaValidationError, e.Message), e.Exception);
+			throw new XmlSchemaValidationException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.XmlSchemaValidationException_SchemaValidationError, e.Message), e.Exception);
 	}
 }

@@ -14,7 +14,7 @@ namespace Bodu.Test.IO;
 /// <para>
 /// <see cref="CanSeek" /> returns <see langword="false" /> and both <see cref="Position" /> and
 /// <see cref="Length" /> throw <see cref="NotSupportedException" />, matching the contract of
-/// streams such as <see cref="NetworkStream" /> or a raw pipe endpoint. Any attempt to call
+/// streams such as <see cref="System.Net.Sockets.NetworkStream" /> or a raw pipe endpoint. Any attempt to call
 /// <see cref="Seek" /> or set <see cref="Position" /> also throws.
 /// </para>
 /// <para>

@@ -48,7 +48,7 @@ public sealed class OrthodoxEasterSundayNotableDateProvider
         }
 
         throw new NotSupportedException(
-            string.Format(CultureInfo.InvariantCulture, CalendarStrings.NotSupportedException_CalendarTypeNotSupported,
+            string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.NotSupportedException_CalendarTypeNotSupported,
                 calendar.GetType().FullName, GetType().Name, typeof(SysGlobal.JulianCalendar).FullName));
     }
 

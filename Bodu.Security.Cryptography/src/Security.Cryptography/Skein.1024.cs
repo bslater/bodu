@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Skein.1024.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,6 +21,21 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="Skein{T}.Key" /> turns the instance into the keyed Skein-MAC-1024 variant by prepending a <c>KEY</c> UBI
 /// phase to the standard <c>CFG → MSG → OUT</c> pipeline.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>State / block size: 1024 bits (128 bytes).</description></item>
+///   <item><description>Output sizes: 384, 512, or 1024 bits — default 1024.</description></item>
+///   <item><description>Underlying cipher: <see cref="Threefish1024Cipher"/> tweakable block cipher under UBI mode.</description></item>
+///   <item><description>Optional variable-length key: 0–<see cref="Skein{T}.MaxKeySizeBytes"/> bytes.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose Skein-1024.</strong> The widest-state Skein variant — pick it when you want the
+/// largest security margin in the Skein family or when the surrounding system explicitly requires Skein-1024.
+/// Throughput on short inputs is lower than <see cref="Skein512"/>; for general use the 512-bit variant is the
+/// recommended Skein default.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
@@ -32,11 +47,6 @@ namespace Bodu.Security.Cryptography;
 public sealed class Skein1024
     : Skein<Skein1024>
 {
-    /// <summary>
-    /// The state / block size, in bytes, of the Skein-1024 variant.
-    /// </summary>
-    public const int BlockSizeBytes = 128;
-
     /// <summary>
     /// The set of output sizes, in bits, permitted by <see cref="Skein1024" />.
     /// </summary>
@@ -59,6 +69,6 @@ public sealed class Skein1024
     /// <paramref name="hashSize" /> is not one of the permitted output sizes for Skein-1024.
     /// </exception>
     public Skein1024(int hashSize)
-        : base(new Threefish1024Cipher(new byte[BlockSizeBytes], new byte[16]), hashSize, PermittedHashSizes)
+        : base(new Threefish1024Cipher(new byte[128], new byte[16]), hashSize, PermittedHashSizes)
     { }
 }

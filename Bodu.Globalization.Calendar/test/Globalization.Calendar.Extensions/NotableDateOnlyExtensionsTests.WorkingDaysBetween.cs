@@ -82,4 +82,18 @@ public partial class NotableDateOnlyExtensionsTests
             _ = new DateOnly(2026, 1, 5).WorkingDaysBetween(new DateOnly(2026, 1, 11), service: null!);
         });
     }
+
+    /// <summary>
+    /// Verifies the count returned across a representative spread of single-day, full-week, multi-week and reversed-boundary inputs.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(WorkingDaysBetweenRangeTestData))]
+    public void WorkingDaysBetween_WhenScannedAcrossRanges_ShouldReturnExpectedCount(DateOnly start, DateOnly end, int expected)
+    {
+        NotableDateService service = BuildService();
+
+        int actual = start.WorkingDaysBetween(end, service);
+
+        Assert.AreEqual(expected, actual);
+    }
 }

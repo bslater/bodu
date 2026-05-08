@@ -177,11 +177,8 @@ Block ciphers encrypt a fixed-size block of data under a secret key, producing a
 |---|---|---|---|
 | `Skipjack` | 64 bits (8 B) | 80 bits (10 B) | NSA design, declassified 1998. The 80-bit key is below modern security margins. **Legacy and interoperability use only.** |
 | `Blowfish` | 64 bits (8 B) | 32–448 bits (variable) | Bruce Schneier, 1993. Expensive key schedule; 64-bit block is a practical limitation for large data volumes (birthday bound ≈ 4 GB). |
-| `Camellia` | 128 bits (16 B) | 128 / 192 / 256 bits | NTT and Mitsubishi (RFC 3713). ISO/IEC 18033-3 standard; comparable security margin to AES at matching key size. |
-| `Twofish` | 128 bits (16 B) | 128 / 192 / 256 bits | Schneier et al., AES finalist (1998). Conservative design with extensive published cryptanalysis; widely used outside the AES standard itself. |
-| `Serpent128` | 128 bits (16 B) | 128 / 192 / 256 bits | Anderson, Biham, and Knudsen, AES finalist (1998). Highest security margin among the AES finalists; slower than Rijndael / Twofish in software. |
 
-All five expose the standard `SymmetricAlgorithm` lifecycle: set `BlockMode`, `Padding`, `Key`, and `IV`; call `CreateEncryptor()` / `CreateDecryptor()`. AES is exposed slightly differently — through the lower-level `AesBlockCipher` adapter over the BCL `Aes` engine — so it pairs naturally with the AEAD mode transforms; see the [AEAD modes guide](cryptography/aead-modes.md).
+Both expose the standard `SymmetricAlgorithm` lifecycle: set `BlockMode`, `Padding`, `Key`, and `IV`; call `CreateEncryptor()` / `CreateDecryptor()`.
 
 → Guides: [Using Skipjack](cryptography/skipjack.md) · [Using Blowfish](cryptography/blowfish.md) · [Cipher block modes](cryptography/cipher-modes.md) · [Padding](cryptography/padding.md)
 
@@ -204,11 +201,8 @@ Typical uses: disk encryption (block/sector number as tweak), per-record encrypt
 | `Threefish256` | 256 bits (32 B) | 256 bits (32 B) | 128 bits (16 B) | Core of Skein-256. Smallest Threefish variant. |
 | `Threefish512` | 512 bits (64 B) | 512 bits (64 B) | 128 bits (16 B) | Core of Skein-512. Recommended general-purpose variant. |
 | `Threefish1024` | 1024 bits (128 B) | 1024 bits (128 B) | 128 bits (16 B) | Highest security margin; most padding waste for short messages. |
-| `Serpent256` | 256 bits (32 B) | 256 bits (32 B) | 128 bits (16 B) | Wide-block tweakable Serpent construction. **Non-standard** — no published reference vectors; built on the round function of `Serpent128`. |
-| `Serpent512` | 512 bits (64 B) | 512 bits (64 B) | 128 bits (16 B) | Wide-block tweakable Serpent construction. **Non-standard** — see `Serpent256`. |
-| `Serpent1024` | 1024 bits (128 B) | 1024 bits (128 B) | 128 bits (16 B) | Wide-block tweakable Serpent construction. **Non-standard** — see `Serpent256`. |
 
-All six expose `TweakableSymmetricAlgorithm`, which adds a `Tweak` property and `GenerateTweak()` to the standard `SymmetricAlgorithm` surface. Configure `BlockMode`, `Padding`, `Key`, `IV`, and `Tweak`; then call `CreateEncryptor()` / `CreateDecryptor()` or the `Encrypt` / `Decrypt` extension methods.
+All three expose `TweakableSymmetricAlgorithm`, which adds a `Tweak` property and `GenerateTweak()` to the standard `SymmetricAlgorithm` surface. Configure `BlockMode`, `Padding`, `Key`, `IV`, and `Tweak`; then call `CreateEncryptor()` / `CreateDecryptor()` or the `Encrypt` / `Decrypt` extension methods.
 
 → Guides: [Using Threefish-256](cryptography/threefish-256.md) · [Using Threefish-512](cryptography/threefish-512.md) · [Using Threefish-1024](cryptography/threefish-1024.md) · [Encryption basics](cryptography/encryption-basics.md)
 

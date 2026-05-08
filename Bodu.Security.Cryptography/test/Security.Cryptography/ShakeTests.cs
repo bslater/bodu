@@ -42,8 +42,7 @@ public partial class ShakeTests
             ShakeVariant.Shake128 => new HashAlgorithmSpecification
             {
                 HashSize = 256,
-                InputBlockSize = 168,
-                OutputBlockSize = 32,
+                HashBlockSize = 168,
                 LongInputLength = 336,
                 BoundaryLengths = [1, 167, 168, 169, 336],
                 MinNonZeroBytesForLongInput = 30,
@@ -58,8 +57,7 @@ public partial class ShakeTests
             ShakeVariant.Shake256 => new HashAlgorithmSpecification
             {
                 HashSize = 256,
-                InputBlockSize = 136,
-                OutputBlockSize = 32,
+                HashBlockSize = 168,
                 LongInputLength = 272,
                 BoundaryLengths = [1, 135, 136, 137, 272],
                 MinNonZeroBytesForLongInput = 30,

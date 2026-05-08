@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
-public abstract partial class AeadBlockCipherModeTests<TTransform>
+public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
 {
     // ── Real-cipher round-trip ────────────────────────────────────────────────────────────────
 
@@ -26,7 +26,7 @@ public abstract partial class AeadBlockCipherModeTests<TTransform>
 
         using var cipher = new AesBlockCipherFixture(key);
 
-        byte[] iv = new byte[cipher.BlockSize];
+        var iv = CreateInitializationVector();
         byte[] aad = new byte[20];
         byte[] plaintext = new byte[cipher.BlockSize * 4];
         RandomNumberGenerator.Fill(iv);

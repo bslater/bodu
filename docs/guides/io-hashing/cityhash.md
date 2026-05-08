@@ -68,7 +68,7 @@ byte[] full = city.GetCurrentHash();
 city.Reset();                              // discards the buffer
 ```
 
-The practical consequence is that memory use grows linearly with the amount of data appended between `Reset` calls. If you need to hash a long stream without buffering, reach for <xref:Bodu.IO.Hashing.Fnv1a64>, <xref:Bodu.IO.Hashing.Crc>, or one of the <xref:Bodu.IO.Hashing.Fletcher32>-family types — they update in place.
+The practical consequence is that memory use grows linearly with the amount of data appended between `Reset` calls. If you need to hash a long stream without buffering, reach for <xref:Bodu.IO.Hashing.Fnv1a64>, <xref:Bodu.IO.Hashing.Checksums.Crc>, or one of the <xref:Bodu.IO.Hashing.Checksums.Fletcher32>-family types — they update in place.
 
 ## Pattern 4 — file hashing
 
@@ -85,13 +85,13 @@ using (var stream = File.OpenRead("asset.bin"))
 byte[] fingerprint = city.GetCurrentHash();
 ```
 
-For very large files where you do not want the whole buffer in memory, do the hashing chunk-by-chunk with an incremental non-cryptographic algorithm (<xref:Bodu.IO.Hashing.Crc>, <xref:Bodu.IO.Hashing.Fnv1a64>) or use a Merkle tree — see the [cryptography hashing guide](../cryptography/hashing.md) for the `MerkleTreeHash` pattern.
+For very large files where you do not want the whole buffer in memory, do the hashing chunk-by-chunk with an incremental non-cryptographic algorithm (<xref:Bodu.IO.Hashing.Checksums.Crc>, <xref:Bodu.IO.Hashing.Fnv1a64>) or use a Merkle tree — see the [cryptography hashing guide](../cryptography/hashing.md) for the `MerkleTreeHash` pattern.
 
 ## CityHash vs the other non-cryptographic hashes in this package
 
 - **vs <xref:Bodu.IO.Hashing.Fnv1a64>** — CityHash is faster on long inputs (SIMD-friendly); FNV uses constant memory regardless of input size.
-- **vs <xref:Bodu.IO.Hashing.Adler32>** — Adler is tuned for short checksums and has a fixed 4-byte digest. CityHash dominates for general-purpose in-memory fingerprinting.
-- **vs <xref:Bodu.IO.Hashing.Crc>** — CRC is defined by wire specifications and has provable burst-error detection; CityHash is a better default when you control both endpoints and want the best speed/quality trade-off.
+- **vs <xref:Bodu.IO.Hashing.Checksums.Adler32>** — Adler is tuned for short checksums and has a fixed 4-byte digest. CityHash dominates for general-purpose in-memory fingerprinting.
+- **vs <xref:Bodu.IO.Hashing.Checksums.Crc>** — CRC is defined by wire specifications and has provable burst-error detection; CityHash is a better default when you control both endpoints and want the best speed/quality trade-off.
 - **vs <xref:Bodu.Security.Cryptography.SipHash64>** — SipHash is keyed and resists adversarial collisions; CityHash does not. Use SipHash whenever untrusted input can reach the hash function.
 
 CityHash is **not cryptographic**. An attacker who can choose inputs can construct collisions trivially. Do not use it to authenticate or to key-derive.

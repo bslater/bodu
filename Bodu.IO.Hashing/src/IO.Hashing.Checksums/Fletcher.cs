@@ -22,9 +22,44 @@ using System.Runtime.CompilerServices;
 /// combines them into the final hash. Derived types <see cref="Fletcher16" />, <see cref="Fletcher32" />, and
 /// <see cref="Fletcher64" /> select the output width.
 /// </para>
+/// <para>
+/// <strong>When to choose Fletcher.</strong> Fletcher was designed as a cheaper alternative to CRC for
+/// detecting accidental corruption in network protocols and file formats — TCP, Modbus ASCII, and ZFS all use
+/// a Fletcher variant. It catches single-bit errors and many burst errors at a fraction of CRC's per-byte
+/// cost, making it attractive on resource-constrained microcontrollers and in tight inner loops. Pick
+/// <see cref="Fletcher16"/> for embedded protocols where 16 bits is enough,
+/// <see cref="Fletcher32"/> as the workhorse for general file-integrity work, and <see cref="Fletcher64"/>
+/// when a wider checksum reduces collision pressure on large datasets. For stronger error-detection
+/// guarantees prefer <see cref="Crc"/>; for hash-table keying prefer
+/// <see cref="Bodu.IO.Hashing.MurmurHash3{T}"/> or <see cref="Bodu.IO.Hashing.CityHash{T}"/>, which give
+/// better avalanche than any positional-sum scheme.
+/// </para>
+/// <para>
+/// <strong>Lifecycle and threading.</strong> Inherits the standard
+/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Append(System.ReadOnlySpan{byte})"/> /
+/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Reset"/> /
+/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()"/> shape via
+/// <see cref="BlockNonCryptographicHashAlgorithm{T}"/>. Snapshotting is non-destructive — call
+/// <c>GetCurrentHash</c> as often as needed. Instances are not thread-safe; share behind explicit
+/// synchronisation, or allocate one per consumer.
+/// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for password
 /// hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.IO.Hashing.Checksums;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// // 32-bit Fletcher checksum of a packet payload.
+/// var fletcher = new Fletcher32();
+/// byte[] checksum = fletcher.ComputeHash(payload);
+/// </code>
+/// </example>
 /// </remarks>
+/// <seealso cref="Fletcher16"/>
+/// <seealso cref="Fletcher32"/>
+/// <seealso cref="Fletcher64"/>
+/// <seealso cref="Crc"/>
 public abstract class Fletcher<TSelf>
     : BlockNonCryptographicHashAlgorithm<TSelf>
     where TSelf : Fletcher<TSelf>, new()

@@ -84,7 +84,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// </summary>
     /// <param name="field">The field to inspect for zeroed or null state.</param>
     [TestMethod]
-    [DynamicData(nameof(GetDisposableFields))]
+    [DynamicData(nameof(GetDisposableFields), DynamicDataDisplayName = nameof(TestHelpers.GetDisposableFieldDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
     public void Dispose_WhenCalled_ShouldZeroPrivateField(FieldInfo field)
     {
         if (field is null)

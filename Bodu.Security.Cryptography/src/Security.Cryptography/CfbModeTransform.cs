@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
@@ -26,12 +27,39 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// The initialisation vector must equal the cipher block size in length and should be unique and unpredictable per message under a given key.
 /// </para>
+/// <para>
+/// <strong>When to use CFB.</strong> Pick CFB only for interoperability with legacy formats — it was the
+/// stream-cipher mode of choice in PGP / OpenPGP and certain disk-encryption layouts. CFB removes the padding
+/// requirement that <see cref="CbcModeTransform"/> imposes, but inherits the same lack of authentication and
+/// adds bit-flip propagation across multiple blocks. For new code prefer <see cref="CtrModeTransform"/> for
+/// stream-cipher behaviour, or an AEAD mode (<see cref="GcmModeTransform"/>, <see cref="EaxModeTransform"/>)
+/// for authenticated encryption.
+/// </para>
+/// <para>
+/// CFB is sequential at the block level: each ciphertext block must be produced before the next can be
+/// computed, so the mode does not parallelise within a message.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+///
+/// // Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.CFB instead of using this directly.
+/// using IBlockCipher cipher = new AesBlockCipher(key);
+/// byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize);
+/// IBlockCipherModeTransform cfb = new CfbModeTransform(cipher, iv);
+///
+/// byte[] ciphertext = new byte[plaintext.Length];
+/// int written = cfb.Transform(plaintext, ciphertext, encrypt: true);
+/// </code>
+/// </example>
 /// <seealso href="../guides/cryptography/cipher-modes.html#cfb--self-synchronising-stream-cipher">CFB walk-through in the cipher-modes guide</seealso>
 public sealed class CfbModeTransform : IBlockCipherModeTransform
 {
     private readonly IBlockCipher _cipher;
     private readonly byte[] _currentIv;
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CfbModeTransform" /> class with the specified cipher and initialisation vector.
@@ -56,7 +84,8 @@ public sealed class CfbModeTransform : IBlockCipherModeTransform
     {
         int blockSize = this._cipher.BlockSize;
 
-        ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize);
+        // Empty input is a no-op, consistent with CbcModeTransform.
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 
         Span<byte> feedback = stackalloc byte[blockSize];
@@ -90,5 +119,21 @@ public sealed class CfbModeTransform : IBlockCipherModeTransform
         }
 
         return input.Length;
+    }
+
+    /// <summary>
+    /// Releases the resources used by this instance and zeroes the running feedback register so
+    /// that key-equivalent state does not linger in memory after disposal. The underlying
+    /// <see cref="IBlockCipher" /> is not disposed by this type — ownership remains with the caller.
+    /// </summary>
+    /// <remarks>Idempotent.</remarks>
+    public void Dispose()
+    {
+        if (this._disposed)
+            return;
+
+        CryptographicOperations.ZeroMemory(this._currentIv);
+        this._disposed = true;
+        GC.SuppressFinalize(this);
     }
 }

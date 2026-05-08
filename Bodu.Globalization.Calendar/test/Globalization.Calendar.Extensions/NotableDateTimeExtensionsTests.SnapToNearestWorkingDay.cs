@@ -96,4 +96,21 @@ public partial class NotableDateTimeExtensionsTests
             _ = new DateTime(2026, 1, 3).SnapToNearestWorkingDay(service: null!);
         });
     }
+
+    /// <summary>
+    /// Verifies that the snap path preserves the input <see cref="DateTime.Kind" /> and time-of-day across each supported
+    /// <see cref="DateTimeKind" /> value, regardless of whether the closest working day lies forward or backward.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(DateTimeKindPreservationTestData))]
+    public void SnapToNearestWorkingDay_WhenSnapped_ShouldPreserveKindAndTimeOfDay(DateTimeKind kind)
+    {
+        NotableDateService service = BuildService();
+        DateTime input = new DateTime(2026, 1, 3, 11, 22, 33, kind); // Saturday → snaps backward
+
+        DateTime result = input.SnapToNearestWorkingDay(service);
+
+        Assert.AreEqual(kind, result.Kind);
+        Assert.AreEqual(new TimeSpan(11, 22, 33), result.TimeOfDay);
+    }
 }

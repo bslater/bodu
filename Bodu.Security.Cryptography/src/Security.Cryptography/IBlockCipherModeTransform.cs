@@ -22,8 +22,43 @@ namespace Bodu.Security.Cryptography;
 /// Padding is not handled by this interface. Callers must align input to the cipher block size using an
 /// <see cref="IPaddingStrategy" /> before invoking <see cref="Transform" />.
 /// </para>
+/// <para>
+/// <strong>API surface.</strong> The library ships several implementations clustered into three groups:
+/// </para>
+/// <list type="bullet">
+///   <item>
+///     <term>Classic confidentiality-only modes</term>
+///     <description><see cref="EcbModeTransform"/>, <see cref="CbcModeTransform"/>, <see cref="CfbModeTransform"/>,
+///     <see cref="OfbModeTransform"/>, <see cref="CtrModeTransform"/>, <see cref="CtsModeTransform"/>.</description>
+///   </item>
+///   <item>
+///     <term>Disk-encryption mode</term>
+///     <description><see cref="XtsModeTransform"/>.</description>
+///   </item>
+///   <item>
+///     <term>Authenticated modes (AEAD)</term>
+///     <description>Implement the richer <see cref="IAeadBlockCipherModeTransform"/> contract instead —
+///     <see cref="GcmModeTransform"/>, <see cref="CcmModeTransform"/>, <see cref="EaxModeTransform"/>,
+///     <see cref="GcmSivModeTransform"/>, <see cref="OcbModeTransform"/>, <see cref="SivModeTransform"/>.</description>
+///   </item>
+/// </list>
+/// <para>
+/// Most callers should configure modes through <see cref="System.Security.Cryptography.SymmetricAlgorithm.Mode"/>
+/// (which accepts a <see cref="CipherBlockMode"/> and dispatches via <see cref="BlockCipherModeFactory"/>) rather
+/// than constructing this interface directly. Direct use is appropriate when wiring a custom block cipher into the
+/// existing mode infrastructure or building a higher-level construction on top.
+/// </para>
+/// <para>
+/// Implementations are stateful and not thread-safe; share behind explicit synchronisation, or allocate one per
+/// consumer. Most modes reset cleanly when constructed afresh — there is no in-place reset method on this interface.
+/// </para>
+/// <para>
+/// Implementations own mutable cryptographic state (chaining vectors, feedback registers, counters, tweaks) and
+/// must implement <see cref="IDisposable" /> to zero that state on disposal. Callers should treat instances as
+/// single-use within a message and dispose them when finished.
+/// </para>
 /// </remarks>
-public interface IBlockCipherModeTransform
+public interface IBlockCipherModeTransform : System.IDisposable
 {
     /// <summary>
     /// Transforms <paramref name="input" /> under the mode's chaining strategy and writes the result to <paramref name="output" />.

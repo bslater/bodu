@@ -9,7 +9,14 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Defines the direction of a cryptographic transformation.
 /// </summary>
-/// <remarks>This enumeration is used to distinguish between encryption and decryption operations in cryptographic transform implementations.</remarks>
+/// <remarks>
+/// <para>
+/// Used by helper APIs that take a single direction argument rather than separate <c>Encrypt</c> /
+/// <c>Decrypt</c> overloads. The lower-level <see cref="IBlockCipherModeTransform.Transform(System.ReadOnlySpan{byte}, System.Span{byte}, bool)"/>
+/// uses a <see cref="bool"/> instead because the transform contract predates this enumeration; either
+/// representation expresses the same choice.
+/// </para>
+/// </remarks>
 public enum TransformMode
 {
     /// <summary>

@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
+using static Bodu.Security.Cryptography.AsconHashA256Tests;
 
 namespace Bodu.Security.Cryptography;
 
@@ -248,6 +249,70 @@ Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(
         // For .NET 5 and later, subsequent calls to TransformFinalBlock are allowed. In this case, we do not expect an exception.
         algorithm.TransformFinalBlock(buffer, 0, 0);
 #endif
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="HashAlgorithm.TransformFinalBlock(byte[], int, int)" />
+    /// returns a copy of the selected final input segment.
+    /// </summary>
+    [TestMethod]
+    public void TransformFinalBlock_WhenCalled_ShouldReturnInputSegmentCopy()
+    {
+        using var algorithm = CreateAlgorithm();
+
+        byte[] input = CryptoTestUtilities.ByteSequence256[..32];
+
+        byte[] actual = algorithm.TransformFinalBlock(input, 0, input.Length);
+
+        CollectionAssert.AreEqual(input, actual);
+        Assert.AreNotSame(input, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="HashAlgorithm.TransformFinalBlock(byte[], int, int)" />
+    /// returns only the selected input segment when <c>inputOffset</c> is non-zero.
+    /// </summary>
+    [TestMethod]
+    public void TransformFinalBlock_WhenInputOffsetIsNonZero_ShouldReturnOnlySelectedInputRange()
+    {
+        using var algorithm = CreateAlgorithm();
+
+        byte[] expected = CryptoTestUtilities.ByteSequence256[16..48];
+        byte[] input = new byte[expected.Length + 32];
+
+        Buffer.BlockCopy(expected, 0, input, 16, expected.Length);
+
+        byte[] actual = algorithm.TransformFinalBlock(input, 16, expected.Length);
+
+        CollectionAssert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that a second call to <see cref="HashAlgorithm.TransformFinalBlock(byte[], int, int)" />
+    /// starts a new hash cycle after the previous hash operation has been finalised.
+    /// </summary>
+    [TestMethod]
+    public void TransformFinalBlock_WhenCalledAgainAfterFinalization_ShouldStartNewHashCycle()
+    {
+        var specification = GetSpecification(DefaultVariant);
+
+        if (!specification.CanReuseTransform)
+        {
+            Assert.Inconclusive(
+                $"[Algorithm does not support reuse after a completed transform; skipping start new hash check.");
+            return;
+        }
+
+        using var algorithm = CreateAlgorithm();
+
+        byte[] input = CryptoTestUtilities.ByteSequence256[..32];
+
+        _ = algorithm.TransformFinalBlock(input, 0, input.Length);
+        _ = algorithm.Hash;
+
+        _ = algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+
+        CollectionAssert.AreEqual(ExpectedEmptyInputHash, algorithm.Hash);
     }
 
     private void FeedWithPartialBlocks(HashAlgorithm algorithm, byte[] input)

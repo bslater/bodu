@@ -21,6 +21,11 @@ public sealed partial class Adler32CTests
         {
             Empty = "00000001",
             Abc = "018D00C7",
+
+            // Canonical Adler-32C (modulus 65536) of "The quick brown fox jumps over the
+            // lazy dog", derived from the per-byte recurrence and verified against the
+            // scalar reference implementation. Distinct from canonical Adler-32 because
+            // 89037 mod 65536 = 0x5BCD whereas 89037 mod 65521 = 0x5BDC.
             QuickBrownFox = "5BCD0FDA",
             Zeros16 = "00100001",
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Twofish.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -23,11 +23,42 @@ namespace Bodu.Security.Cryptography;
 /// cipher modes via the <see cref="BlockMode" /> property. The default mode is <see cref="CipherBlockMode.CBC" />
 /// with <see cref="PaddingMode.PKCS7" /> padding.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Block size: 128 bits (16 bytes).</description></item>
+///   <item><description>Key sizes: 128, 192, or 256 bits.</description></item>
+///   <item><description>16-round Feistel structure with key-dependent S-boxes and an MDS-based linear layer.</description></item>
+///   <item><description>Default mode: <see cref="CipherBlockMode.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose Twofish.</strong> Pick Twofish when interoperability with existing Twofish-based code
+/// or formats is required, or when you want an AES finalist with strong software performance and a different
+/// design philosophy from AES. For new general-purpose work, <see cref="System.Security.Cryptography.Aes"/> is
+/// the right default — hardware acceleration on most modern CPUs makes it the fastest option as well as the most
+/// widely vetted. Reach for <see cref="Serpent128"/> when you specifically want the higher round count
+/// conservatism of that AES finalist.
+/// </para>
 /// <note type="important">
 /// For new general-purpose application encryption, prefer <see cref="Aes" /> unless Twofish compatibility is
 /// specifically required.
 /// </note>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// using var twofish = new Twofish();
+/// twofish.GenerateKey(); // 256-bit by default
+/// twofish.GenerateIV();
+///
+/// byte[] ciphertext = twofish.Encrypt(plaintext);
+/// byte[] roundTrip  = twofish.Decrypt(ciphertext);
+/// </code>
+/// </example>
 /// <seealso href="../guides/cryptography/twofish.html">Using Twofish (guide with full encrypt / decrypt examples)</seealso>
 /// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>
@@ -171,14 +202,14 @@ public sealed class Twofish
 
         if (key.Length != this.KeySizeBytes)
             throw new CryptographicException(
-                string.Format(ResourceStrings.CryptographicException_InvalidKeySize,
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize,
                               key.Length * 8,
                               CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)),
                 nameof(key));
 
         if (iv.Length != this.BlockSizeBytes)
             throw new CryptographicException(
-                string.Format(ResourceStrings.CryptographicException_InvalidIVSize,
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidIVSize,
                               iv.Length * 8,
                               CryptoHelpers.FormatLegalSizes(this.LegalBlockSizesValue)),
                 nameof(iv));
