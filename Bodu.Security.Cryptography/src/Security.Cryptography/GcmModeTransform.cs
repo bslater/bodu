@@ -290,10 +290,15 @@ public sealed class GcmModeTransform
             {
                 this.ComputeTag(this._aad.AsSpan(), ciphertext, expectedTag);
 
-                // Verify before producing plaintext. On failure, output is untouched — no wipe needed.
+                // Verify before producing plaintext. On failure, zero whatever the caller passed in
+                // so a pre-filled output buffer cannot leak data the caller may have used to seed
+                // the destination — defence-in-depth aligned with AsconAead128.Decrypt.
                 if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
+                {
+                    CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
                     throw new CryptographicException(
                         CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
+                }
 
                 this.ApplyCtr(ciphertext, output.Slice(0, plaintextLength));
 

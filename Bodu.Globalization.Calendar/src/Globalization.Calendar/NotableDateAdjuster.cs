@@ -213,17 +213,30 @@ internal sealed class NotableDateAdjuster
 		string? territoryCode,
 		Type? calendarType)
 	{
-		DateTime adjusted = adjustment.Action switch
+		// Day-arithmetic actions (AddDays, MoveToNextWeekday, MoveToPreviousWeekday, MoveToNextNonWorkingDay) all eventually call
+		// DateTime.AddDays / DateTime.AddTicks, which throw ArgumentOutOfRangeException when the result would land outside the
+		// supported range (years 1..9999). Catch that here so a single misconfigured adjustment does not abort the entire
+		// resolution; the activated result simply falls back to the original date and downstream "AdjustedDate == original"
+		// short-circuits in the pipeline treat it as a no-op.
+		DateTime adjusted;
+		try
 		{
-			AdjustmentAction.None => original,
-			AdjustmentAction.AddDays => original.AddDays(adjustment.OffsetDays),
-			AdjustmentAction.MoveToNextWeekday => original.NextWeekday(_weekendDefinition, _weekendProvider),
-			AdjustmentAction.MoveToPreviousWeekday => original.PreviousWeekday(_weekendDefinition, _weekendProvider),
-			AdjustmentAction.MoveToNextNonWorkingDay => MoveToNextNonWorkingDay(original, territoryCode, calendarType),
-			AdjustmentAction.ReplaceWithNamedDate => ResolveReplacement(adjustment, original, territoryCode, calendarType),
-			AdjustmentAction.Custom => ApplyCustomHandler(adjustment, rule, original, territoryCode, calendarType).AdjustedDate,
-			_ => original,
-		};
+			adjusted = adjustment.Action switch
+			{
+				AdjustmentAction.None => original,
+				AdjustmentAction.AddDays => original.AddDays(adjustment.OffsetDays),
+				AdjustmentAction.MoveToNextWeekday => original.NextWeekday(_weekendDefinition, _weekendProvider),
+				AdjustmentAction.MoveToPreviousWeekday => original.PreviousWeekday(_weekendDefinition, _weekendProvider),
+				AdjustmentAction.MoveToNextNonWorkingDay => MoveToNextNonWorkingDay(original, territoryCode, calendarType),
+				AdjustmentAction.ReplaceWithNamedDate => ResolveReplacement(adjustment, original, territoryCode, calendarType),
+				AdjustmentAction.Custom => ApplyCustomHandler(adjustment, rule, original, territoryCode, calendarType).AdjustedDate,
+				_ => original,
+			};
+		}
+		catch (ArgumentOutOfRangeException)
+		{
+			adjusted = original;
+		}
 
 		return new AdjustmentApplyResult(true, adjusted, adjustment.Trigger, adjustment.Action, adjustment.HandlerKey, adjustment.IsNonWorkingDay);
 	}
