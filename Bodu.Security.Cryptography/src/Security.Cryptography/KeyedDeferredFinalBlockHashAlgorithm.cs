@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KeyedDeferredFinalBlockHashAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,8 +21,8 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// This class extends <see cref="DeferredFinalBlockHashAlgorithm{T}" /> with optional key-handling logic shared by
 /// keyed BLAKE-family hashes such as <see cref="Blake2b" /> and <see cref="Blake2s" />. It centralises defensive
-/// copying, key-length validation, secure disposal of secret material, and the sealed <see cref="OnInitialize" />
-/// hook that orchestrates hash-state reset followed by key-block injection when a key is set.
+/// copying, key-length validation, secure disposal of secret material, and the sealed <see cref="Initialize" />
+/// override that orchestrates hash-state reset followed by key-block injection when a key is set.
 /// </para>
 /// <para>
 /// The key is optional: assigning an empty array (or never assigning a key) places the instance in the standard
@@ -148,31 +148,23 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
 
             if (value.Length > this._maximumKeySize)
                 throw new CryptographicException(
-                    string.Format(ResourceStrings.CryptographicException_InvalidKeySize, value.Length, $"0..{this._maximumKeySize}"));
+                    string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize, value.Length, $"0..{this._maximumKeySize}"));
 
             this.KeyValue = value.Length > 0 ? value.Copy() : null;
             this.Initialize();
         }
     }
 
-    /// <inheritdoc />
-    public override void Initialize()
-    {
-        this.ThrowIfDisposed();
-        base.Initialize();
-    }
-
     /// <summary>
-    /// Resets the algorithm-specific hash state and, if a key has been set, injects the key block as the first
-    /// message block. Sealed so that the key-injection protocol cannot be accidentally bypassed by derived classes.
+    /// Resets the algorithm to its initial state. Clears the inherited residual buffer and counters via
+    /// <c>base.Initialize()</c>, then rebuilds the algorithm-specific hash state through
+    /// <see cref="InitializeHashState" /> and, when a key has been set, injects the key block as the first message
+    /// block. Sealed so that the key-injection protocol cannot be accidentally bypassed by derived classes.
     /// </summary>
-    /// <remarks>
-    /// Invoked by <see cref="HashAlgorithm.Initialize" /> after the inherited residual buffer and counters have
-    /// been cleared. Calls <see cref="InitializeHashState" /> first, then feeds the zero-padded key block through
-    /// the buffering infrastructure when <see cref="KeyValue" /> is non-<see langword="null" />.
-    /// </remarks>
-    protected sealed override void OnInitialize()
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    public sealed override void Initialize()
     {
+        base.Initialize();
         this.InitializeHashState();
 
         if (this.KeyValue is not null)
@@ -182,25 +174,28 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     /// <summary>
     /// Resets the algorithm-specific chaining variables to their initialisation values and encodes any
     /// configuration parameters (such as digest length and key length) into the parameter block. Called by the
-    /// sealed <see cref="OnInitialize" /> before key-block injection.
+    /// sealed <see cref="Initialize" /> before key-block injection.
     /// </summary>
     /// <remarks>
     /// Implementations should read <see cref="KeyValue" /> to determine the key length (<c>kk</c>) for
     /// parameter-block encoding, as <see cref="KeyValue" /> is already updated to the new value before
-    /// <see cref="OnInitialize" /> runs.
+    /// <see cref="Initialize" /> runs.
     /// </remarks>
     protected abstract void InitializeHashState();
 
     /// <inheritdoc />
     /// <remarks>
-    /// Securely erases the stored key material by calling
-    /// <see cref="CryptoHelpers.ClearAndNullify{T}(ref T[])" /> on <see cref="KeyValue" />. The inherited
-    /// residual buffer is cleared by the grandparent before this hook runs.
+    /// Clears the retained key material held by <see cref="KeyValue" />. The inherited residual buffer and framework hash
+    /// state are cleared by the base implementation when this method delegates to <c>base.Dispose(disposing)</c>.
     /// </remarks>
-    protected override void OnDispose(bool disposing)
+    protected override void Dispose(bool disposing)
     {
         if (disposing)
+        {
             CryptoHelpers.ClearAndNullify(ref this.KeyValue);
+        }
+
+        base.Dispose(disposing);
     }
 
     /// <summary>

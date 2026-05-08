@@ -13,9 +13,25 @@ namespace Bodu.Security.Cryptography;
 /// Tests for <see cref="SivModeTransform" /> (RFC 5297 — AES-SIV with CMAC and S2V).
 /// </summary>
 [TestClass]
-public sealed partial class SivModeTransformTests : AeadBlockCipherModeTests<SivModeTransform>
+public sealed partial class SivModeTransformTests : AeadBlockCipherModeTests<SivModeTransformTests, SivModeTransform>
 {
     protected override int ExpectedBlockSize => 16;
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// SIV (RFC 5297, as implemented here) ignores the supplied IV: the synthetic IV is derived
+    /// deterministically from the key, AAD, and plaintext via S2V/CMAC. The ciphertext therefore
+    /// does not vary with the input IV and the nonce-variation tests do not apply.
+    /// </remarks>
+    protected override bool NonceAffectsCiphertext => false;
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// The test factory below intentionally discards the supplied <paramref name="cipher" /> and
+    /// constructs the transform from fixed AES-128 instances, so a null cipher never reaches
+    /// <see cref="SivModeTransform" />'s production constructor through the test surface.
+    /// </remarks>
+    protected override bool ValidatesCipherArgument => false;
 
     // Fixed keys used for all structural / tamper-detection tests.
     // Using real AES with distinct K1 and K2 prevents the degenerate authentication fixed-point

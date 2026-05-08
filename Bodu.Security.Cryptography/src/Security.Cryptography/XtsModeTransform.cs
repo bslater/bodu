@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
@@ -69,9 +70,10 @@ namespace Bodu.Security.Cryptography;
 /// </example>
 public sealed class XtsModeTransform : IBlockCipherModeTransform
 {
-    private readonly IBlockCipher _dataCipher;
+    private readonly IBlockCipher _cipher;
     private readonly IBlockCipher _tweakCipher;
     private readonly byte[] _tweak; // sector number / tweak value
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="XtsModeTransform" /> class.
@@ -93,7 +95,7 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
     /// </exception>
     public XtsModeTransform(IBlockCipher dataCipher, IBlockCipher tweakCipher, byte[] tweak)
     {
-        this._dataCipher = dataCipher ?? throw new ArgumentNullException(nameof(dataCipher));
+        this._cipher = dataCipher ?? throw new ArgumentNullException(nameof(dataCipher));
         this._tweakCipher = tweakCipher ?? throw new ArgumentNullException(nameof(tweakCipher));
         if (tweak is null) throw new ArgumentNullException(nameof(tweak));
         if (tweakCipher.BlockSize != dataCipher.BlockSize)
@@ -111,10 +113,10 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        int blockSize = this._dataCipher.BlockSize;
-        if (input.Length % blockSize != 0)
-            throw new ArgumentException(
-                $"XTS requires block-aligned input; {input.Length} is not a multiple of {blockSize}.", nameof(input));
+        int blockSize = this._cipher.BlockSize;
+
+        // Empty input is a no-op, consistent with CbcModeTransform.
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 
         // T_0 = tweakCipher.Encrypt(sector_number)
@@ -131,9 +133,9 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
             // XEX: out = cipher(in XOR T) XOR T
             for (int i = 0; i < blockSize; i++) buf[i] = (byte)(inBlock[i] ^ T[i]);
             if (encrypt)
-                this._dataCipher.Encrypt(buf, outBlock);
+                this._cipher.Encrypt(buf, outBlock);
             else
-                this._dataCipher.Decrypt(buf, outBlock);
+                this._cipher.Decrypt(buf, outBlock);
             for (int i = 0; i < blockSize; i++) outBlock[i] ^= T[i];
 
             // Advance tweak: T = α ⊗ T in GF(2^128), little-endian, poly 0x87 reduction.
@@ -141,6 +143,23 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
         }
 
         return input.Length;
+    }
+
+    /// <summary>
+    /// Releases the resources used by this instance and zeroes the retained tweak so that
+    /// key-equivalent state does not linger in memory after disposal. The underlying data and
+    /// tweak <see cref="IBlockCipher" /> instances are not disposed by this type — ownership
+    /// remains with the caller.
+    /// </summary>
+    /// <remarks>Idempotent.</remarks>
+    public void Dispose()
+    {
+        if (this._disposed)
+            return;
+
+        CryptographicOperations.ZeroMemory(this._tweak);
+        this._disposed = true;
+        GC.SuppressFinalize(this);
     }
 
     // ── Private helpers ────────────────────────────────────────────────────────────────────────

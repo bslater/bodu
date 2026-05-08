@@ -33,8 +33,10 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </para>
 /// <para>
-/// All implementations are stateful and not thread-safe. A new instance must be created for each
-/// message.
+/// All implementations are stateful, not thread-safe, and <strong>single-use per message</strong>.
+/// A second call to <see cref="Encrypt" /> or <see cref="Decrypt" /> on the same instance — including
+/// after a tag-mismatch failure — throws <see cref="System.InvalidOperationException" />. Construct
+/// a fresh transform for every message and dispose it when finished.
 /// </para>
 /// <para>
 /// <strong>API surface.</strong> The library ships several implementations clustered by trade-off:
@@ -72,6 +74,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso cref="AesBlockCipher" />
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />
 public interface IAeadBlockCipherModeTransform
+    : System.IDisposable
 {
     /// <summary>Gets the size of the authentication tag produced by this mode, in bytes.</summary>
     int TagSize { get; }
@@ -83,6 +86,10 @@ public interface IAeadBlockCipherModeTransform
     /// <param name="associatedData">
     /// The bytes to authenticate. May be empty to indicate no associated data.
     /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// Associated data has already been processed on this instance, or the instance has already
+    /// completed an <see cref="Encrypt" /> or <see cref="Decrypt" /> operation.
+    /// </exception>
     void ProcessAssociatedData(ReadOnlySpan<byte> associatedData);
 
     /// <summary>
@@ -96,6 +103,10 @@ public interface IAeadBlockCipherModeTransform
     /// </param>
     /// <returns>Total bytes written: <c>plaintext.Length + TagSize</c>.</returns>
     /// <exception cref="ArgumentException"><paramref name="output" /> is too small.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The instance has already encrypted or decrypted a message. AEAD transforms are single-use
+    /// per message — construct a fresh instance.
+    /// </exception>
     int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output);
 
     /// <summary>
@@ -114,6 +125,10 @@ public interface IAeadBlockCipherModeTransform
     /// <exception cref="ArgumentException">
     /// <paramref name="ciphertextWithTag" /> is shorter than <see cref="TagSize" /> bytes, or
     /// <paramref name="output" /> is too small.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The instance has already encrypted or decrypted a message, including after a previous
+    /// tag-mismatch failure. AEAD transforms are single-use per message — construct a fresh instance.
     /// </exception>
     int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output);
 }

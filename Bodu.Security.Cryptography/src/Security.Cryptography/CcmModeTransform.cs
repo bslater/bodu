@@ -38,6 +38,13 @@ namespace Bodu.Security.Cryptography;
 /// AAD length is encoded as a 2-byte big-endian prefix (supports up to 65 279 bytes).
 /// </para>
 /// <para>
+/// <strong>Lifecycle.</strong> Each instance encrypts or decrypts exactly one message. A second call
+/// to <see cref="Encrypt" /> or <see cref="Decrypt" /> — including after a tag-mismatch failure —
+/// throws <see cref="InvalidOperationException" />. The supplied <see cref="IBlockCipher" /> is not
+/// disposed by this type; ownership remains with the caller. <see cref="Dispose" /> clears the
+/// retained nonce and cached associated-data state.
+/// </para>
+/// <para>
 /// <strong>When to use CCM.</strong> Pick CCM when interoperability with constrained-environment standards
 /// is required — IEEE 802.15.4 / Zigbee, Bluetooth Mesh, IPsec ESP, and TLS 1.2 with the AES-CCM cipher
 /// suites all use it. CCM is two-pass over the message (CBC-MAC then CTR), so it is slower than
@@ -64,7 +71,9 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="../guides/cryptography/aead-modes.html#ccm--a-two-pass-alternative">CCM walk-through in the AEAD-modes guide</seealso>
 /// <seealso cref="AesBlockCipher" />
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />
-public sealed class CcmModeTransform : IAeadBlockCipherModeTransform
+public sealed class CcmModeTransform
+    : IAeadBlockCipherModeTransform
+    , IDisposable
 {
     private const int NonceLengthBytes = 12;
     private const int TagLengthBytes = 16;
@@ -76,6 +85,8 @@ public sealed class CcmModeTransform : IAeadBlockCipherModeTransform
     private readonly byte[] _nonce;
     private byte[]? _aad;
     private bool _aadProcessed;
+    private bool _completed;
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance. The first 12 bytes of <paramref name="iv" /> are used as the CCM nonce.
@@ -98,20 +109,29 @@ public sealed class CcmModeTransform : IAeadBlockCipherModeTransform
     public int TagSize => TagLengthBytes;
 
     /// <inheritdoc />
+    /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
     {
+        this.ThrowIfDisposed();
+
         if (this._aadProcessed)
             throw new InvalidOperationException("AssociatedData has already been processed.");
+
         this._aad = associatedData.ToArray();
         this._aadProcessed = true;
     }
 
     /// <inheritdoc />
+    /// <inheritdoc />
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
+        this.ThrowIfDisposed();
+        ThrowIfCompleted();
+
         int required = plaintext.Length + TagSize;
         if (output.Length < required)
             throw new ArgumentException($"Output must be at least {required} bytes.", nameof(output));
+
         EnsureAadProcessed();
 
         byte[] mac = ComputeCbcMac(this._aad.AsSpan(), plaintext);
@@ -119,32 +139,92 @@ public sealed class CcmModeTransform : IAeadBlockCipherModeTransform
 
         EncryptCtr(plaintext, output.Slice(0, plaintext.Length), startIndex: 1);
         encTag.AsSpan(0, TagSize).CopyTo(output.Slice(plaintext.Length));
+        this._completed = true;
         return required;
     }
 
     /// <inheritdoc />
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
+        this.ThrowIfDisposed();
+        ThrowIfCompleted();
+
         if (ciphertextWithTag.Length < TagSize)
             throw new ArgumentException($"Input must be at least {TagSize} bytes.", nameof(ciphertextWithTag));
+
         int plaintextLength = ciphertextWithTag.Length - TagSize;
         if (output.Length < plaintextLength)
             throw new ArgumentException($"Output must be at least {plaintextLength} bytes.", nameof(output));
+
         EnsureAadProcessed();
 
         ReadOnlySpan<byte> ciphertext = ciphertextWithTag.Slice(0, plaintextLength);
         ReadOnlySpan<byte> receivedTag = ciphertextWithTag.Slice(plaintextLength);
 
         EncryptCtr(ciphertext, output.Slice(0, plaintextLength), startIndex: 1);
+
         byte[] mac = ComputeCbcMac(this._aad.AsSpan(), output.Slice(0, plaintextLength));
         byte[] encTag = XorWithCtrBlock(mac, counterIndex: 0);
 
         if (!CryptographicOperations.FixedTimeEquals(encTag.AsSpan(0, TagSize), receivedTag))
         {
             CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
+            this._completed = true;
             throw new CryptographicException("CCM authentication tag verification failed.");
         }
+
+        this._completed = true;
         return plaintextLength;
+    }
+
+    /// <summary>
+    /// Throws <see cref="InvalidOperationException" /> if this transform has already encrypted or
+    /// decrypted a message. CCM transforms are single-use; create a fresh instance per message.
+    /// </summary>
+    private void ThrowIfCompleted()
+    {
+        if (this._completed)
+            throw new InvalidOperationException(
+                "This CCM transform has already completed and cannot be reused. Create a new instance per message.");
+    }
+
+    /// <summary>
+    /// Releases the resources used by this instance and clears retained nonce and associated-data state from memory.
+    /// </summary>
+    /// <remarks>
+    /// The supplied <see cref="IBlockCipher" /> is not disposed by this type. Ownership remains with the caller.
+    /// </remarks>
+    public void Dispose()
+    {
+        this.Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Releases the resources used by this instance.
+    /// </summary>
+    /// <param name="disposing">
+    /// <see langword="true" /> to release managed resources; <see langword="false" /> to release unmanaged resources only.
+    /// </param>
+    private void Dispose(bool disposing)
+    {
+        if (this._disposed)
+            return;
+
+        if (disposing)
+        {
+            CryptographicOperations.ZeroMemory(this._nonce);
+
+            if (this._aad is not null)
+            {
+                CryptographicOperations.ZeroMemory(this._aad);
+                this._aad = null;
+            }
+
+            this._aadProcessed = false;
+        }
+
+        this._disposed = true;
     }
 
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
@@ -269,4 +349,10 @@ public sealed class CcmModeTransform : IAeadBlockCipherModeTransform
                 output[offset + i] = (byte)(input[offset + i] ^ ks[i]);
         }
     }
+
+    /// <summary>
+    /// Throws <see cref="ObjectDisposedException" /> if this instance has been disposed.
+    /// </summary>
+    private void ThrowIfDisposed() =>
+        ObjectDisposedException.ThrowIf(this._disposed, this);
 }

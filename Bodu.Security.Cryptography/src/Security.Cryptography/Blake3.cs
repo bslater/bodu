@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Blake3.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -7,6 +7,7 @@
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -166,60 +167,50 @@ public sealed class Blake3
     /// </returns>
     public override bool CanTransformMultipleBlocks => true;
 
-    /// <summary>
-    /// Gets the preferred input block size, in bytes, used when feeding data through
-    /// <see cref="System.Security.Cryptography.CryptoStream" />.
-    /// </summary>
-    /// <returns>
-    /// <see cref="BlockSize" /> (64 bytes) — one BLAKE3 compression block.
-    /// </returns>
-    public override int InputBlockSize => BlockSize;
-
-    /// <summary>
-    /// Gets the output block size, in bytes.
-    /// </summary>
-    /// <returns>
-    /// <see cref="OutLen" /> (32 bytes), the fixed 256-bit digest length produced by this
-    /// implementation.
-    /// </returns>
-    public override int OutputBlockSize => OutLen;
-
     /// <inheritdoc />
-    public override void Initialize()
+    /// <remarks>BLAKE3 has a fixed 256-bit default output; the published name is simply <c>"BLAKE3"</c>.</remarks>
+    public override string AlgorithmName
     {
-        ThrowIfDisposed();
-        base.Initialize();
+        get
+        {
+            this.ThrowIfDisposed();
+            return "BLAKE3";
+        }
     }
-
-    // ---- DeferredFinalBlockHashAlgorithm<T> implementation ----
 
     /// <inheritdoc />
     /// <remarks>
-    /// Clears the CV stack and restores <see cref="_chunkCv" /> to the BLAKE3 initialisation
-    /// vector, ready for a new chunk.
+    /// Clears the CV stack and restores <see cref="_chunkCv" /> to the BLAKE3 initialisation vector, ready for a new
+    /// chunk. The inherited residual buffer and counters are cleared by the base call (which also throws
+    /// <see cref="ObjectDisposedException" /> if the instance has been disposed).
     /// </remarks>
-    protected override void OnInitialize()
+    public override void Initialize()
     {
+        base.Initialize();
         _cvStack.Clear();
         s_iv.CopyTo(_chunkCv, 0);
     }
 
-    /// <inheritdoc />
+    // ---- DeferredFinalBlockHashAlgorithm<T> implementation ----
+
     /// <remarks>
     /// Clears the CV stack, zeroes <see cref="_chunkCv" />, releases the framework
     /// <see cref="HashAlgorithm.HashValue" /> array, and zeroes
-    /// <see cref="HashAlgorithm.HashSizeValue" />. The inherited residual buffer is cleared by
-    /// the grandparent before this hook runs.
+    /// <see cref="HashAlgorithm.HashSizeValue" />. The inherited residual buffer is
+    /// cleared by the base implementation when <see cref="Dispose(bool)" /> delegates
+    /// to <c>base.Dispose(disposing)</c>.
     /// </remarks>
-    protected override void OnDispose(bool disposing)
+    protected override void Dispose(bool disposing)
     {
+        if (this.IsDisposed) return;
+
         if (disposing)
         {
             _cvStack.Clear();
-            Array.Clear(_chunkCv, 0, _chunkCv.Length);
-            CryptoHelpers.ClearAndNullify(ref HashValue);
-            HashSizeValue = 0;
+            CryptoHelpers.Clear(_chunkCv);
         }
+
+        base.Dispose(disposing);
     }
 
     /// <summary>
@@ -439,24 +430,14 @@ public sealed class Blake3
     private static void G(uint[] state, int a, int b, int c, int d, uint mx, uint my)
     {
         state[a] = state[a] + state[b] + mx;
-        state[d] = RotateRight(state[d] ^ state[a], 16);
+        state[d] = (state[d] ^ state[a]).RotateBitsRightUnchecked(16);
         state[c] = state[c] + state[d];
-        state[b] = RotateRight(state[b] ^ state[c], 12);
+        state[b] = (state[b] ^ state[c]).RotateBitsRightUnchecked(12);
         state[a] = state[a] + state[b] + my;
-        state[d] = RotateRight(state[d] ^ state[a], 8);
+        state[d] = (state[d] ^ state[a]).RotateBitsRightUnchecked(8);
         state[c] = state[c] + state[d];
-        state[b] = RotateRight(state[b] ^ state[c], 7);
+        state[b] = (state[b] ^ state[c]).RotateBitsRightUnchecked(7);
     }
-
-    /// <summary>
-    /// Rotates <paramref name="value" /> right by <paramref name="bits" /> positions.
-    /// </summary>
-    /// <param name="value">The value to rotate.</param>
-    /// <param name="bits">The number of bit positions to rotate right.</param>
-    /// <returns>The rotated value.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static uint RotateRight(uint value, int bits) =>
-        (value >> bits) | (value << (32 - bits));
 
     // ---- block and parent processing ----
 

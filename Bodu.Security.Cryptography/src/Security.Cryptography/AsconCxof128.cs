@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsconCxof128.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -105,7 +105,7 @@ public sealed class AsconCxof128 : AsconXof<AsconCxof128>
     {
         this.ThrowIfDisposed();
         if (this._customized || this._absorbed)
-            throw new InvalidOperationException(ResourceStrings.CryptographicException_XofCustomizationAfterAbsorb);
+            throw new InvalidOperationException(CryptoResourceStrings.CryptographicException_XofCustomizationAfterAbsorb);
 
         // Absorb Z through the standard sponge pipeline, then finalize the customization
         // phase with Ascon padding and pb rounds to close the customization domain.

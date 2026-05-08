@@ -316,21 +316,21 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
 
         if (key.Length != KeySizeBytes)
             throw new CryptographicException(
-                string.Format(ResourceStrings.CryptographicException_InvalidKeySize,
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize,
                               key.Length * 8,
                               CryptoHelpers.FormatLegalSizes(LegalKeySizesValue)),
                 nameof(key));
 
         if (iv.Length != BlockSizeBytes)
             throw new CryptographicException(
-                string.Format(ResourceStrings.CryptographicException_InvalidIVSize,
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidIVSize,
                               iv.Length * 8,
                               CryptoHelpers.FormatLegalSizes(LegalBlockSizesValue)),
                 nameof(iv));
 
         if (tweak.Length != TweakSizeBytes)
             throw new CryptographicException(
-                string.Format(ResourceStrings.CryptographicException_InvalidTweakSize,
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidTweakSize,
                               tweak.Length * 8,
                               CryptoHelpers.FormatLegalSizes(LegalTweakSizesValue)),
                 nameof(tweak));

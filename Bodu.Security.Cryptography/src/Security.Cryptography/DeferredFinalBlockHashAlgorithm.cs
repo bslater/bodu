@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DeferredFinalBlockHashAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -36,7 +36,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>Derived classes must implement the following:</para>
 /// <list type="bullet">
-/// <item><description><see cref="BufferedBlockHashAlgorithm{T}.OnInitialize" /> resets the algorithm-specific chaining variables to their initial state.</description></item>
+/// <item><description><see cref="HashAlgorithm.Initialize" /> resets the algorithm-specific chaining variables to their initial state. Override and call <c>base.Initialize()</c> first.</description></item>
 /// <item><description><see cref="ProcessBlock" /> compresses a single block, receiving the per-block counter and the finalisation flag.</description></item>
 /// <item><description><see cref="ProcessFinalBlock" /> extracts the digest from the chaining variables after the final compression has run.</description></item>
 /// </list>
@@ -91,7 +91,7 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
 
 #if !NET6_0_OR_GREATER
     if (this._finalized)
-        throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+        throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
         int pos = 0;
@@ -134,7 +134,7 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
 
 #if !NET6_0_OR_GREATER
     if (this._finalized)
-        throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+        throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
         Span<byte> residualSpan = this._residualBlock.Span;

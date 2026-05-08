@@ -14,26 +14,10 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 {
     /// <summary>
-    /// Verifies that <see cref="HashAlgorithmExtensions.ComputeHashAsync" /> throws ObjectDisposedException when the algorithm is disposed.
-    /// </summary>
-    [TestMethod]
-    public async Task ComputeHashAsync_ComputeHashAsync_WhenAlgorithmDisposed_ShouldThrowExactly()
-    {
-        var algorithm = CreateAlgorithm();
-        algorithm.Dispose();
-
-        using var stream = new MemoryStream(new byte[16]);
-        await Assert.ThrowsExactlyAsync<ObjectDisposedException>(async () =>
-        {
-            await algorithm.ComputeHashAsync(stream);
-        });
-    }
-
-    /// <summary>
     /// Verifies that <see cref="HashAlgorithmExtensions.ComputeHashAsync" /> throws TaskCanceledException when cancellation token is triggered.
     /// </summary>
     [TestMethod]
-    public async Task ComputeHashAsync_ComputeHashAsync_WithCancelledToken_ShouldThrowExactly()
+    public async Task ComputeHashAsync_WithCancelledToken_ShouldThrowExactly()
     {
         using var algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(new byte[4096]);
@@ -50,7 +34,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// Verifies that <see cref="HashAlgorithmExtensions.ComputeHashAsync" /> throws ArgumentNullException when passed a null stream directly.
     /// </summary>
     [TestMethod]
-    public async Task ComputeHashAsync_ComputeHashAsync_WithNullStream_ShouldThrowExactly()
+    public async Task ComputeHashAsync_WithNullStream_ShouldThrowExactly()
     {
         using var algorithm = CreateAlgorithm();
         await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
@@ -297,5 +281,25 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         Trace.WriteLine($"Read Count: {monitoredStream.Reads.Count}");
         Trace.WriteLine($"First Read: {monitoredStream.Reads.FirstOrDefault()}");
         Trace.WriteLine($"Last Read : {monitoredStream.Reads.LastOrDefault()}");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="HashAlgorithm.ComputeHashAsync(Stream, CancellationToken)" /> throws an
+    /// <see cref="ObjectDisposedException" /> before reading from the supplied stream when the algorithm has been disposed.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHashAsync_WhenAlgorithmDisposed_ShouldThrowSynchronouslyAndNotReadStream()
+    {
+        var algorithm = CreateAlgorithm();
+        algorithm.Dispose();
+
+        using var stream = new ThrowOnReadStream();
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            _ = algorithm.ComputeHashAsync(stream);
+        });
+
+        Assert.IsFalse(stream.WasRead);
     }
 }

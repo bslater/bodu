@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -17,14 +19,37 @@ namespace Bodu.Security.Cryptography;
 [TestClass]
 public partial class AsconAead128Tests
 {
-    private static readonly byte[] ValidKey   = new byte[AsconAead128.KeyBytes];
+    private static readonly byte[] ValidKey = new byte[AsconAead128.KeyBytes];
     private static readonly byte[] ValidNonce = new byte[AsconAead128.NonceBytes];
 
     static AsconAead128Tests()
     {
-        for (int i = 0; i < ValidKey.Length;   i++) ValidKey[i]   = (byte)i;
+        for (int i = 0; i < ValidKey.Length; i++) ValidKey[i] = (byte)i;
         for (int i = 0; i < ValidNonce.Length; i++) ValidNonce[i] = (byte)(i + 0x10);
     }
+
+    private static readonly string[] DisposableFieldExclusions =
+    [
+        // Disposal state flags are allowed to remain non-default.
+        "_disposed",
+
+        // The completion flag is expected to become true once the instance is no longer reusable.
+        "_completed",
+
+        // AAD lifecycle bookkeeping is not sensitive key/state material.
+        "_aadProcessed"
+    ];
+
+    /// <summary>
+    /// Enumerates the private instance fields that should be zeroed or reset after disposal.
+    /// </summary>
+    /// <returns>
+    /// A sequence of fields to inspect after <see cref="AsconAead128.Dispose" /> has completed.
+    /// </returns>
+    public static IEnumerable<object[]> GetDisposableFields() =>
+        TestHelpers.GetFieldInfoForType<AsconAead128>(
+            excludeReadOnly: false,
+            excludeFileds: DisposableFieldExclusions);
 
     /// <summary>
     /// Creates a fresh <see cref="AsconAead128" /> instance using the shared test key and nonce,
@@ -38,52 +63,5 @@ public partial class AsconAead128Tests
         AsconAead128 instance = new AsconAead128(ValidKey, ValidNonce);
         instance.ProcessAssociatedData(aad);
         return instance;
-    }
-
-    // ── TagSize ───────────────────────────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Verifies that <see cref="AsconAead128.TagSize" /> returns 16 (128 bits), as required by
-    /// NIST SP 800-232 for Ascon-AEAD128.
-    /// </summary>
-    [TestMethod]
-    public void TagSize_ShouldReturn16()
-    {
-        using AsconAead128 sut = new AsconAead128(ValidKey, ValidNonce);
-        Assert.AreEqual(16, sut.TagSize);
-    }
-
-    // ── ProcessAssociatedData state-machine ───────────────────────────────────────────────────
-
-    /// <summary>
-    /// Verifies that calling <see cref="AsconAead128.ProcessAssociatedData" /> a second time throws
-    /// <see cref="InvalidOperationException" />.
-    /// </summary>
-    [TestMethod]
-    public void ProcessAssociatedData_WhenCalledTwice_ShouldThrowInvalidOperationException()
-    {
-        using AsconAead128 sut = new AsconAead128(ValidKey, ValidNonce);
-        sut.ProcessAssociatedData(ReadOnlySpan<byte>.Empty);
-
-        Assert.ThrowsExactly<InvalidOperationException>(() =>
-        {
-            sut.ProcessAssociatedData(ReadOnlySpan<byte>.Empty);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that calling <see cref="AsconAead128.ProcessAssociatedData" /> on a disposed
-    /// instance throws <see cref="ObjectDisposedException" />.
-    /// </summary>
-    [TestMethod]
-    public void ProcessAssociatedData_WhenDisposed_ShouldThrowObjectDisposedException()
-    {
-        AsconAead128 sut = new AsconAead128(ValidKey, ValidNonce);
-        sut.Dispose();
-
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            sut.ProcessAssociatedData(ReadOnlySpan<byte>.Empty);
-        });
     }
 }

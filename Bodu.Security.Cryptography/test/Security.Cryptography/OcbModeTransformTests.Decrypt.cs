@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OcbModeTransformTests.Decrypt.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -6,9 +6,7 @@
 
 namespace Bodu.Security.Cryptography;
 
-using Bodu.Test;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
 using System.Security.Cryptography;
 
 public sealed partial class OcbModeTransformTests
@@ -73,130 +71,9 @@ public sealed partial class OcbModeTransformTests
             "Decrypting with a mismatched tagLen must fail tag verification.");
     }
 
-    // ── Tamper detection (AES cipher) ─────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Verifies that a one-byte mutation of any ciphertext byte causes
-    /// <see cref="OcbModeTransform.Decrypt" /> to throw <see cref="CryptographicException" />.
-    /// </summary>
-    /// <remarks>
-    /// Any alteration to the ciphertext produces incorrect plaintext during decryption,
-    /// which changes the checksum accumulated across the plaintext blocks. The recomputed
-    /// tag therefore diverges from the received tag and verification fails.
-    /// </remarks>
-    [TestMethod]
-    public void Decrypt_WhenCiphertextIsTampered_ShouldThrowCryptographicException()
-    {
-        var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x55);
-        var iv = Enumerable.Repeat((byte)0x33, ExpectedBlockSize).ToArray();
-        var plaintext = TestHelpers.GenerateIncrementalByteSequence(0, ExpectedBlockSize);
-
-        var enc = CreateTransform(cipher, (byte[])iv.Clone());
-        var ct = new byte[plaintext.Length + enc.TagSize];
-        enc.Encrypt(plaintext, ct);
-        ct[0] ^= 0xFF;
-
-        var dec = CreateTransform(cipher, (byte[])iv.Clone());
-        Assert.ThrowsExactly<CryptographicException>(() =>
-            dec.Decrypt(ct, new byte[plaintext.Length]));
-    }
-
-    /// <summary>
-    /// Verifies that a one-bit mutation of the authentication tag causes
-    /// <see cref="OcbModeTransform.Decrypt" /> to throw <see cref="CryptographicException" />.
-    /// </summary>
-    /// <remarks>
-    /// The tag comparison is performed with <see cref="CryptographicOperations.FixedTimeEquals" />
-    /// to prevent timing side-channels. This test confirms that even a single-bit difference
-    /// in the received tag is detected, regardless of the plaintext content.
-    /// </remarks>
-    [TestMethod]
-    public void Decrypt_WhenTagIsTampered_ShouldThrowCryptographicException()
-    {
-        var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var iv = new byte[ExpectedBlockSize];
-        var plaintext = new byte[] { 0x01, 0x02, 0x03, 0x04 };
-
-        var enc = CreateTransform(cipher, (byte[])iv.Clone());
-        var ct = new byte[plaintext.Length + enc.TagSize];
-        enc.Encrypt(plaintext, ct);
-        ct[ct.Length - 1] ^= 0x01;
-
-        var dec = CreateTransform(cipher, (byte[])iv.Clone());
-        Assert.ThrowsExactly<CryptographicException>(() =>
-            dec.Decrypt(ct, new byte[plaintext.Length]));
-    }
-
-    /// <summary>
-    /// Verifies that supplying different associated data during decryption than was
-    /// used during encryption causes <see cref="OcbModeTransform.Decrypt" /> to throw
-    /// <see cref="CryptographicException" />.
-    /// </summary>
-    /// <remarks>
-    /// In OCB3 the associated data is authenticated but not encrypted via the
-    /// <c>HASH(K, A)</c> function defined in RFC 7253 §4. Any change to the AAD alters
-    /// the HASH result, which XORs directly into the authentication tag. The recomputed
-    /// tag therefore diverges from the received tag even when the ciphertext itself is
-    /// unmodified.
-    /// </remarks>
-    [TestMethod]
-    public void Decrypt_WhenAadIsTampered_ShouldThrowCryptographicException()
-    {
-        var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x55);
-        var iv = new byte[ExpectedBlockSize];
-        var aad = new byte[] { 0xCA, 0xFE, 0xBA, 0xBE };
-        var plaintext = TestHelpers.GenerateIncrementalByteSequence(0, ExpectedBlockSize);
-
-        var enc = CreateTransform(cipher, (byte[])iv.Clone());
-        enc.ProcessAssociatedData(aad);
-        var ct = new byte[plaintext.Length + enc.TagSize];
-        enc.Encrypt(plaintext, ct);
-
-        var badAad = (byte[])aad.Clone();
-        badAad[0] ^= 0xFF;
-        var dec = CreateTransform(cipher, (byte[])iv.Clone());
-        dec.ProcessAssociatedData(badAad);
-        Assert.ThrowsExactly<CryptographicException>(() =>
-            dec.Decrypt(ct, new byte[plaintext.Length]));
-    }
-
     // ── Security properties ───────────────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// Verifies that <see cref="OcbModeTransform.Decrypt" /> zeroes the entire output buffer
-    /// before throwing <see cref="CryptographicException" /> when authentication fails.
-    /// </summary>
-    /// <remarks>
-    /// Releasing unverified plaintext to the caller is a well-known AEAD security failure
-    /// mode. The implementation must call <see cref="CryptographicOperations.ZeroMemory" />
-    /// on the output span before propagating the exception, so that any partially decrypted
-    /// bytes cannot leak through the output array even if the caller catches the exception
-    /// and inspects the buffer.
-    /// </remarks>
-    [TestMethod]
-    public void Decrypt_OnAuthenticationFailure_ShouldZeroOutputBuffer()
-    {
-        using var cipher = new AesBlockCipherFixture(new byte[16]);
-        var iv = new byte[ExpectedBlockSize];
-        var plaintext = new byte[ExpectedBlockSize * 2 + 5]; // multi-block with partial
-
-        var enc = new OcbModeTransform(cipher, (byte[])iv.Clone());
-        var ct = new byte[plaintext.Length + enc.TagSize];
-        enc.Encrypt(plaintext, ct);
-        ct[0] ^= 0xFF;          // corrupt the first ciphertext byte
-
-        var output = new byte[plaintext.Length];
-        Array.Fill(output, (byte)0xCC);     // sentinel: any non-zero value
-
-        var dec = new OcbModeTransform(cipher, (byte[])iv.Clone());
-        Assert.ThrowsExactly<CryptographicException>(() => dec.Decrypt(ct, output));
-
-        CollectionAssert.AreEqual(
-            new byte[plaintext.Length],
-            output,
-            "Output buffer must be completely zeroed after authentication failure " +
-            "(CryptographicOperations.ZeroMemory).");
-    }
+    // Decrypt_OnAuthenticationFailure_ShouldZeroOutputBuffer is now in AeadBlockCipherModeTests.Decrypt.cs.
 
     // ── Return value ──────────────────────────────────────────────────────────────────────────
 

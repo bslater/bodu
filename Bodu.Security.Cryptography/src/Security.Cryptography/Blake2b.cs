@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Blake2b.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -7,6 +7,7 @@
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -116,7 +117,7 @@ public sealed class Blake2b : KeyedDeferredFinalBlockHashAlgorithm<Blake2b>
         if (Array.IndexOf(ValidHashSizes, hashSize) < 0)
             throw new ArgumentOutOfRangeException(
                 nameof(hashSize),
-                string.Format(ResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
 
         this.HashSizeValue = hashSize;
         this.InitializeHashState();
@@ -129,10 +130,15 @@ public sealed class Blake2b : KeyedDeferredFinalBlockHashAlgorithm<Blake2b>
     public override bool CanTransformMultipleBlocks => true;
 
     /// <inheritdoc />
-    public override int InputBlockSize => BlockSizeBytesValue;
-
-    /// <inheritdoc />
-    public override int OutputBlockSize => this.HashSizeValue / 8;
+    /// <remarks>The format is <c>"BLAKE2b-<i>n</i>"</c>, where <i>n</i> is the configured digest size in bits.</remarks>
+    public override string AlgorithmName
+    {
+        get
+        {
+            this.ThrowIfDisposed();
+            return $"BLAKE2b-{this.HashSizeValue}";
+        }
+    }
 
     /// <summary>
     /// Gets or sets the size, in bits, of the final computed hash output.
@@ -168,29 +174,40 @@ public sealed class Blake2b : KeyedDeferredFinalBlockHashAlgorithm<Blake2b>
             if (Array.IndexOf(ValidHashSizes, value) < 0)
                 throw new ArgumentOutOfRangeException(
                     nameof(value),
-                    string.Format(ResourceStrings.CryptographicException_InvalidHashSize, value, string.Join(", ", ValidHashSizes)));
+                    string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, value, string.Join(", ", ValidHashSizes)));
 
             this.HashSizeValue = value;
         }
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Releases the unmanaged resources used by the <see cref="HashAlgorithm" /> and optionally releases the managed resources.
+    /// </summary>
+    /// <param name="disposing">
+    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release
+    /// only unmanaged resources.
+    /// </param>
     /// <remarks>
+    /// <para>
     /// Clears the chaining state, releases the framework <see cref="HashAlgorithm.HashValue" /> array, and zeros
-    /// <see cref="HashAlgorithm.HashSizeValue" />. Calls <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}.OnDispose" />
-    /// to securely erase any stored key material. The inherited residual buffer is cleared by the grandparent
-    /// before this hook runs.
+    /// <see cref="HashAlgorithm.HashSizeValue" /> when <paramref name="disposing" /> is <see langword="true" />.
+    /// </para>
+    /// <para>
+    /// Retained key material owned by <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}" /> is cleared by the base
+    /// implementation when this method delegates to <c>base.Dispose(disposing)</c>. The inherited residual buffer is
+    /// cleared further down the dispose chain.
+    /// </para>
     /// </remarks>
-    protected override void OnDispose(bool disposing)
+    protected override void Dispose(bool disposing)
     {
+        if (this.IsDisposed) return;
+
         if (disposing)
         {
-            Array.Clear(this._h, 0, this._h.Length);
-            CryptoHelpers.ClearAndNullify(ref this.HashValue);
-            this.HashSizeValue = 0;
+            CryptoHelpers.Clear(this._h);
         }
 
-        base.OnDispose(disposing);
+        base.Dispose(disposing);
     }
 
     /// <summary>
@@ -314,22 +331,12 @@ public sealed class Blake2b : KeyedDeferredFinalBlockHashAlgorithm<Blake2b>
     private static void G(Span<ulong> v, int a, int b, int c, int d, ulong x, ulong y)
     {
         v[a] += v[b] + x;
-        v[d] = RotateRight(v[d] ^ v[a], 32);
+        v[d] = (v[d] ^ v[a]).RotateBitsRightUnchecked(32);
         v[c] += v[d];
-        v[b] = RotateRight(v[b] ^ v[c], 24);
+        v[b] = (v[b] ^ v[c]).RotateBitsRightUnchecked(24);
         v[a] += v[b] + y;
-        v[d] = RotateRight(v[d] ^ v[a], 16);
+        v[d] = (v[d] ^ v[a]).RotateBitsRightUnchecked(16);
         v[c] += v[d];
-        v[b] = RotateRight(v[b] ^ v[c], 63);
+        v[b] = (v[b] ^ v[c]).RotateBitsRightUnchecked(63);
     }
-
-    /// <summary>
-    /// Rotates a 64-bit unsigned integer right by the specified number of bits.
-    /// </summary>
-    /// <param name="value">The value to rotate.</param>
-    /// <param name="bits">The number of positions to rotate right.</param>
-    /// <returns>The rotated value.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ulong RotateRight(ulong value, int bits) =>
-        (value >> bits) | (value << (64 - bits));
 }

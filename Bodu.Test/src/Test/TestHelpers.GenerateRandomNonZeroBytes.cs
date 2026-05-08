@@ -29,11 +29,11 @@ public static partial class TestHelpers
 
         System.Security.Cryptography.RandomNumberGenerator.Fill(buffer);
 
+        Span<byte> value = stackalloc byte[1];
         for (int i = 0; i < buffer.Length; i++)
         {
             while (buffer[i] == 0)
             {
-                Span<byte> value = stackalloc byte[1];
                 System.Security.Cryptography.RandomNumberGenerator.Fill(value);
                 buffer[i] = value[0];
             }

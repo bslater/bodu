@@ -1,0 +1,231 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CrcSpecificationNotFound_Unknown" xml:space="preserve">
+    <value>Unknown CRC crcParameters specified.</value>
+  </data>
+  <data name="CryptographicException_AlreadyFinalized" xml:space="preserve">
+    <value>TransformFinalBlock has already been called for this hash computation.</value>
+  </data>
+  <data name="CryptographicException_InvalidBlockLength" xml:space="preserve">
+    <value>Length of the block must be {0}.</value>
+  </data>
+  <data name="CryptographicException_InvalidBlockLengthMultipleOf" xml:space="preserve">
+    <value>Length of the block must be a multiple of {0}.</value>
+  </data>
+  <data name="CryptographicException_InvalidHashSize" xml:space="preserve">
+    <value>Invalid hash size: {0}. Valid sizes are: {1}.</value>
+  </data>
+  <data name="CryptographicException_InvalidIVSize" xml:space="preserve">
+    <value>Invalid IV size: {0}. Valid sizes are: {1}.</value>
+  </data>
+  <data name="CryptographicException_InvalidKeySize" xml:space="preserve">
+    <value>Invalid key size: {0}. Valid sizes are: {1}.</value>
+  </data>
+  <data name="CryptographicException_InvalidPadding" xml:space="preserve">
+    <value>The input block contains invalid padding and cannot be depadded. The padding bytes do not match the expected format for the specified padding mode.</value>
+  </data>
+  <data name="CryptographicException_InvalidPropertyValue" xml:space="preserve">
+    <value>The specified value for '{0}' is not supported by this algorithm.</value>
+  </data>
+  <data name="CryptographicException_InvalidTweakSize" xml:space="preserve">
+    <value>Invalid tweak size: {0}. Valid sizes are: {1}.</value>
+  </data>
+  <data name="CryptographicException_PaddingModeNone_InputNotAligned" xml:space="preserve">
+    <value>Input length must be a multiple of the block size when using PaddingMode.None.</value>
+  </data>
+  <data name="CryptographicException_ReconfigurationNotAllowed" xml:space="preserve">
+    <value>The algorithm is already in use and cannot be reconfigured after computation has started.</value>
+  </data>
+  <data name="CryptographicException_TransformBeyondEndOfBuffer" xml:space="preserve">
+    <value>Attempt to transform beyond the end of buffer.</value>
+  </data>
+  <data name="CryptographicException_TweakNotSet" xml:space="preserve">
+    <value>The tweak has not been set. Call GenerateTweak or assign a valid value before use.</value>
+  </data>
+  <data name="Cryptography_CRC_UpdateHash" xml:space="preserve">
+    <value>Cannot update hash code after the first write to the stream.</value>
+  </data>
+  <data name="Cryptography_NonCompliantFIPSAlgorithm" xml:space="preserve">
+    <value>This implementation is not part of the Windows Platform FIPS validated cryptographic algorithms.</value>
+  </data>
+  <data name="Cryptography_PartialBlock" xml:space="preserve">
+    <value>The input data is not a complete block.</value>
+  </data>
+  <data name="Cryptography_Pearson_InvalidTable" xml:space="preserve">
+    <value>Table contains duplicate values or does not contain 256 elements.</value>
+  </data>
+  <data name="Cryptography_Twofish_InvalidCount" xml:space="preserve">
+    <value>Input length is not divisible by block size.</value>
+  </data>
+  <data name="Cryptography_UnexpectedOpertation_PropertySetAfterStreamWrite" xml:space="preserve">
+    <value>The property '{0}' cannot be changed after the first write to the stream.</value>
+  </data>
+  <data name="Cryptography_UnexpectedValue" xml:space="preserve">
+    <value>An error occurred due to a unexpected value.</value>
+  </data>
+  <data name="InvalidOperation_BufferNotFull" xml:space="preserve">
+    <value>The buffer must be full before its contents can be retrieved.</value>
+  </data>
+  <data name="CryptographicException_KeyNotSet" xml:space="preserve">
+    <value>The keyed hash algorithm cannot be initialized because its key has been cleared and must not be regenerated automatically.</value>
+  </data>
+  <data name="ArgumentException_InvalidBlockLength" xml:space="preserve">
+    <value>Invalid block size {0}. Size of block must be {1}.</value>
+  </data>
+  <data name="ArgumentException_InvalidIvLength" xml:space="preserve">
+    <value>Invalid IV size {0}. Size of IV must be {1}.</value>
+  </data>
+  <data name="ArgumentException_InvalidTweakLength" xml:space="preserve">
+    <value>Invalid tweak size {0}. Size of tweak must be {1}.</value>
+  </data>
+  <data name="ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan" xml:space="preserve">
+    <value>Specified block size must be greater than {0}.</value>
+  </data>
+  <data name="CryptographicException_AssociatedDataAlreadyProcessed" xml:space="preserve">
+    <value>Associated data has already been processed and cannot be supplied again.</value>
+  </data>
+  <data name="CryptographicException_AssociatedDataNotProcessed" xml:space="preserve">
+    <value>Associated data must be processed before encrypting or decrypting.</value>
+  </data>
+  <data name="CryptographicException_AuthenticationTagMismatch" xml:space="preserve">
+    <value>Authentication tag verification failed. The ciphertext or associated data may have been tampered with.</value>
+  </data>
+  <data name="CryptographicException_OutputBufferTooSmall" xml:space="preserve">
+    <value>The output buffer is too small. At least {0} bytes are required.</value>
+  </data>
+  <data name="CryptographicException_CiphertextTooShort" xml:space="preserve">
+    <value>The ciphertext is too short to contain a {0}-byte authentication tag.</value>
+  </data>
+  <data name="CryptographicException_XofSqueezeAfterAbsorb" xml:space="preserve">
+    <value>Data cannot be absorbed after squeezing has begun. Call Initialize() to reset the instance.</value>
+  </data>
+  <data name="CryptographicException_XofCustomizationAfterAbsorb" xml:space="preserve">
+    <value>The customization string must be set before any data is absorbed.</value>
+  </data>
+  <data name="CryptographicException_Invalid_BlockLengthMultipleOf" xml:space="preserve">
+    <value>The input data length must be a multiple of the block size ({0} bytes).</value>
+  </data>
+  <data name="CryptographicException_Invalid_BlockLengthPositiveMultipleOf" xml:space="preserve">
+    <value>The input data length must be a positive multiple of the block size ({0} bytes).</value>
+  </data>
+  <data name="InvalidOperationException_TransformAlreadyFinalized" xml:space="preserve">
+    <value>The cryptographic transform has already been finalized and cannot be reused.</value>
+  </data>
+</root>

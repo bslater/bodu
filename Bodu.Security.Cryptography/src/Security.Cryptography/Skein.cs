@@ -93,7 +93,6 @@ public abstract partial class Skein<T>
     private ulong _messageBytesProcessed;
     private bool _hasProcessedAnyMessageBlock;
     private bool _isChainingValueCached;
-    private bool _disposed;
 
 #if !NET6_0_OR_GREATER
     private bool _finalized;
@@ -123,7 +122,7 @@ public abstract partial class Skein<T>
             throw new ArgumentOutOfRangeException(
                 nameof(hashSizeBits),
                 string.Format(
-                    ResourceStrings.CryptographicException_InvalidHashSize,
+                    CryptoResourceStrings.CryptographicException_InvalidHashSize,
                     hashSizeBits,
                     string.Join(", ", validHashSizesBits)));
         }
@@ -183,7 +182,7 @@ public abstract partial class Skein<T>
             if (value.Length > MaxKeySizeBytes)
                 throw new CryptographicException(
                     string.Format(
-                        ResourceStrings.CryptographicException_InvalidKeySize,
+                        CryptoResourceStrings.CryptographicException_InvalidKeySize,
                         value.Length,
                         $"0..{MaxKeySizeBytes}"));
 
@@ -193,23 +192,11 @@ public abstract partial class Skein<T>
     }
 
     /// <summary>
-    /// Gets the number of bytes absorbed per Threefish block — equivalently, the Skein state size in bytes.
-    /// </summary>
-    /// <returns>The block size, in bytes, for this Skein variant (32, 64, or 128).</returns>
-    public override int InputBlockSize => this.BlockSizeBytes;
-
-    /// <summary>
-    /// Gets the output block size, in bytes, produced per Skein transformation step — mirrors <see cref="InputBlockSize" />.
-    /// </summary>
-    /// <returns>The block size, in bytes, for this Skein variant (32, 64, or 128).</returns>
-    public override int OutputBlockSize => this.BlockSizeBytes;
-
-    /// <summary>
     /// Gets the fully qualified algorithm name, including the state size and the configured output size.
     /// </summary>
     /// <returns>A string of the form <c>"Skein-<i>s</i>-<i>h</i>"</c> — e.g. <c>"Skein-512-256"</c>.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    public string AlgorithmName
+    public override string AlgorithmName
     {
         get
         {
@@ -232,13 +219,12 @@ public abstract partial class Skein<T>
         this.ThrowIfDisposed();
 
         if (this.KeyValue is null)
-            throw new CryptographicException(ResourceStrings.CryptographicException_KeyNotSet);
+            throw new CryptographicException(CryptoResourceStrings.CryptographicException_KeyNotSet);
 
 #if !NET6_0_OR_GREATER
         this.State = 0;
         this._finalized = false;
 #endif
-
         this._pendingBytes = 0;
         this._messageBytesProcessed = 0UL;
         this._hasProcessedAnyMessageBlock = false;
@@ -259,7 +245,7 @@ public abstract partial class Skein<T>
         ThrowHelper.ThrowIfLessThan(cbSize, 0);
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
         if (this._finalized)
-            throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
         this.HashCore(array.AsSpan(ibStart, cbSize));
@@ -272,7 +258,7 @@ public abstract partial class Skein<T>
 
 #if !NET6_0_OR_GREATER
         if (this._finalized)
-            throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
         this.EnsureChainingStateReadyForHashing();
@@ -291,7 +277,7 @@ public abstract partial class Skein<T>
 
 #if !NET6_0_OR_GREATER
         if (this._finalized)
-            throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
         this._finalized = true;
         this.State = 2;
 #endif
@@ -324,34 +310,50 @@ public abstract partial class Skein<T>
         return digest;
     }
 
-    /// <summary>
-    /// Processes a single aligned message block. Unused — Skein overrides <see cref="HashCore(ReadOnlySpan{byte})" />
-    /// and <see cref="HashFinal" /> directly rather than participating in the
-    /// <see cref="BlockHashAlgorithm{T}" /> <c>ProcessBlock → PadBlock → ProcessFinalBlock</c> pipeline, because the
-    /// UBI mode requires a one-block lookahead that the pipeline does not express.
-    /// </summary>
-    /// <param name="block">Ignored.</param>
-    /// <exception cref="InvalidOperationException">Always thrown — this method is not expected to be invoked.</exception>
-    protected override void ProcessBlock(ReadOnlySpan<byte> block) =>
-        throw new InvalidOperationException("Skein bypasses the BlockHashAlgorithm ProcessBlock pipeline.");
+    // ----------------------------------------------------------------------------------------------------
+    // Pipeline-bypass overrides.
+    //
+    // Skein inherits the Merkle–Damgård <c>ProcessBlock → PadBlock → ProcessFinalBlock</c> abstracts from
+    // <see cref="KeyedBlockHashAlgorithm{T}" /> for compatibility with the keyed-block test infrastructure,
+    // but the UBI compression mode requires a one-block lookahead that the pipeline does not express. The
+    // overrides above (Initialize, HashCore, HashFinal) drive UBI directly, so the inherited pipeline
+    // methods are unreachable from any happy-path code path. They remain present as defensive contract
+    // markers — anyone routing input through the inherited pipeline by mistake gets a loud, immediate
+    // <see cref="InvalidOperationException" /> rather than silently incorrect output. Re-parenting Skein
+    // onto a non-pipeline base would remove these throws but would also force a parallel refactor of the
+    // shared keyed-block test infrastructure (SkeinTests → KeyedBlockHashAlgorithmTests → BlockHashAlgorithmTests),
+    // which exceeds the value of removing the markers.
+    // ----------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Pads the final partial block. Unused — see <see cref="ProcessBlock" />.
+    /// Pipeline contract marker — see the section comment above. Skein's UBI lookahead bypasses
+    /// <c>ProcessBlock</c> entirely; this override exists only to fail loudly if the inherited
+    /// Merkle–Damgård pipeline is ever wired up against a Skein instance.
+    /// </summary>
+    /// <param name="block">Ignored.</param>
+    /// <exception cref="InvalidOperationException">Always thrown — this method is not on the happy path.</exception>
+    protected override void ProcessBlock(ReadOnlySpan<byte> block) =>
+        throw new InvalidOperationException("Skein bypasses the BlockHashAlgorithm ProcessBlock pipeline; UBI lookahead requires HashCore / HashFinal to drive compression directly.");
+
+    /// <summary>
+    /// Pipeline contract marker — see the section comment above. Skein's UBI tweak field carries the
+    /// equivalent of the Merkle–Damgård length encoding, so <c>PadBlock</c> is unreachable.
     /// </summary>
     /// <param name="block">Ignored.</param>
     /// <param name="messageLength">Ignored.</param>
     /// <returns>Never returns — always throws.</returns>
-    /// <exception cref="InvalidOperationException">Always thrown — this method is not expected to be invoked.</exception>
+    /// <exception cref="InvalidOperationException">Always thrown — this method is not on the happy path.</exception>
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength) =>
-        throw new InvalidOperationException("Skein bypasses the BlockHashAlgorithm PadBlock pipeline.");
+        throw new InvalidOperationException("Skein bypasses the BlockHashAlgorithm PadBlock pipeline; UBI encodes message length in the tweak.");
 
     /// <summary>
-    /// Finalises the computation via the block pipeline. Unused — see <see cref="ProcessBlock" />.
+    /// Pipeline contract marker — see the section comment above. Skein finalises via the OUTPUT UBI phase
+    /// driven from <see cref="HashFinal" />.
     /// </summary>
     /// <returns>Never returns — always throws.</returns>
-    /// <exception cref="InvalidOperationException">Always thrown — this method is not expected to be invoked.</exception>
+    /// <exception cref="InvalidOperationException">Always thrown — this method is not on the happy path.</exception>
     protected override byte[] ProcessFinalBlock() =>
-        throw new InvalidOperationException("Skein bypasses the BlockHashAlgorithm ProcessFinalBlock pipeline.");
+        throw new InvalidOperationException("Skein bypasses the BlockHashAlgorithm ProcessFinalBlock pipeline; the OUTPUT UBI phase is driven from HashFinal.");
 
     /// <summary>
     /// Releases the unmanaged resources used by the algorithm, securely clears all intermediate state, and disposes the
@@ -362,7 +364,7 @@ public abstract partial class Skein<T>
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.IsDisposed) return;
 
         if (disposing)
         {
@@ -370,17 +372,15 @@ public abstract partial class Skein<T>
             CryptoHelpers.Clear(this._initialChainingValue);
             CryptoHelpers.Clear(this._pendingBlock);
             CryptoHelpers.Clear(this._ubiCipherOutput);
-            CryptoHelpers.ClearAndNullify(ref this.HashValue);
 
             this._cipher.Dispose();
+
             this._isChainingValueCached = false;
             this._pendingBytes = 0;
             this._messageBytesProcessed = 0UL;
             this._hasProcessedAnyMessageBlock = false;
-            this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
         base.Dispose(disposing);
     }
 

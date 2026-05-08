@@ -52,7 +52,7 @@ public sealed class ZeroPadding : IPaddingStrategy
         if (blockSize <= 0)
             throw new ArgumentOutOfRangeException(
                 nameof(blockSize),
-                string.Format(ResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
+                string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
 
         int paddingLength = blockSize - (input.Length % blockSize);
         if (paddingLength == blockSize)
