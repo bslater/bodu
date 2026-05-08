@@ -179,7 +179,6 @@ public sealed class HashAlgorithmHelperTests
 
         public DisposalProbe()
         {
-            this.HashSizeValue = 32;
             this.HashSizeValue = HashSizeBits;
         }
 
@@ -187,7 +186,6 @@ public sealed class HashAlgorithmHelperTests
 
         protected override void HashCore(byte[] array, int ibStart, int cbSize) { }
 
-        protected override byte[] HashFinal() => new byte[32];
         protected override byte[] HashFinal() => new byte[HashSizeBytes];
 
         protected override void Dispose(bool disposing)
