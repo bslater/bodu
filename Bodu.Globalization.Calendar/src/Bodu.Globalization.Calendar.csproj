@@ -104,8 +104,8 @@
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-jewish.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-lunar.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-science.xml" />
-    <EmbeddedResource Include="CalendarStrings.resx">
-      <LastGenOutput>CalendarStrings.Designer.cs</LastGenOutput>
+    <EmbeddedResource Include="CalendarResourceStrings.resx">
+      <LastGenOutput>CalendarResourceStrings.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>
@@ -115,8 +115,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="CalendarStrings.Designer.cs">
-      <DependentUpon>CalendarStrings.resx</DependentUpon>
+    <Compile Update="CalendarResourceStrings.Designer.cs">
+      <DependentUpon>CalendarResourceStrings.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>

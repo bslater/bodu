@@ -142,7 +142,7 @@ public abstract class NotableDateRuleResourceProviderBase : INotableDateRuleProv
 
 		if (!inProgress.Add(resourceName))
 			throw new InvalidOperationException(
-				string.Format(CultureInfo.InvariantCulture, CalendarStrings.InvalidOperationException_CircularReferenceInResource, resourceName));
+				string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_CircularReferenceInResource, resourceName));
 
 		try
 		{
@@ -173,7 +173,7 @@ public abstract class NotableDateRuleResourceProviderBase : INotableDateRuleProv
 					if (matches.Count == 0)
 					{
 						throw new InvalidOperationException(
-							string.Format(CultureInfo.InvariantCulture, CalendarStrings.InvalidOperationException_RuleNotFoundInSource, directive.SourceRuleName, group.SourceResource, resourceName));
+							string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_RuleNotFoundInSource, directive.SourceRuleName, group.SourceResource, resourceName));
 					}
 
 					if (directive.ClearInherited)
@@ -338,7 +338,7 @@ public abstract class NotableDateRuleResourceProviderBase : INotableDateRuleProv
 
 		using var stream = OpenManifestResourceStream(resourceName)
 			?? throw new FileNotFoundException(
-				string.Format(CultureInfo.InvariantCulture, CalendarStrings.FileNotFoundException_EmbeddedXmlResourceNotFound, resourceName, FormatAssemblyChain(_assemblies)));
+				string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.FileNotFoundException_EmbeddedXmlResourceNotFound, resourceName, FormatAssemblyChain(_assemblies)));
 
 		using var reader = new StreamReader(stream);
 		var content = reader.ReadToEnd();
