@@ -12,6 +12,26 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
 
     /// <summary>
     /// Verifies that <see cref="IAeadBlockCipherModeTransform.Encrypt" /> throws
+    /// <see cref="InvalidOperationException" /> when called a second time on the same instance.
+    /// AEAD transforms are single-use per message — each (key, nonce) pair must be used at most
+    /// once for encryption to preserve the security guarantees of the mode.
+    /// </summary>
+    [TestMethod]
+    public void Encrypt_WhenCalledTwice_ShouldThrowInvalidOperationException()
+    {
+        var transform = MakeTransform();
+        var plaintext = new byte[ExpectedBlockSize];
+        var output = new byte[plaintext.Length + transform.TagSize];
+
+        transform.Encrypt(plaintext, output);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+            transform.Encrypt(plaintext, output),
+            $"{typeof(TTransform).Name} must reject a second Encrypt call on the same instance.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IAeadBlockCipherModeTransform.Encrypt" /> throws
     /// <see cref="ArgumentException" /> when the output buffer is too small to hold both
     /// the ciphertext and the authentication tag.
     /// </summary>

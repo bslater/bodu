@@ -70,6 +70,30 @@ public abstract partial class CipherModeTestsBase<TTransform>
     }
 
     /// <summary>
+    /// Verifies that constructing the mode transform with a <see langword="null" /> cipher throws
+    /// <see cref="ArgumentNullException" />. Skipped for modes whose test factory deliberately
+    /// ignores the cipher argument (e.g. SIV, which uses fixed AES keys via the test override).
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCipherIsNull_ShouldThrowArgumentNullException()
+    {
+        if (!ValidatesCipherArgument)
+        {
+            Assert.Inconclusive($"{typeof(TTransform).Name}'s test factory does not forward a null cipher to the production constructor.");
+            return;
+        }
+
+        var iv = UsesInitializationVector
+            ? new byte[ExpectedInitializationVectorSize]
+            : Array.Empty<byte>();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = CreateTransform(null!, iv);
+        });
+    }
+
+    /// <summary>
     /// Verifies that constructing the mode transform with a valid cipher and a correctly-sized initialisation value
     /// completes without throwing.
     /// </summary>

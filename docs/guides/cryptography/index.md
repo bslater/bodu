@@ -6,6 +6,7 @@ title: Bodu.Security.Cryptography guides
 
 Recipe-style walk-throughs for **Bodu.Security.Cryptography**, organised by the type hierarchy of the library: foundations → standard ciphers → tweakable ciphers → AEAD → cryptographic hashes → keyed hashes → ASCON.
 
+If you're looking for the generated API reference, see the [Bodu.Security.Cryptography namespace page](../../apidoc/Bodu.Security.Cryptography.md). For non-cryptographic checksums (CRC, Fletcher), see the [Bodu.IO.Hashing guides](../io-hashing/). Not sure which primitive to use? See the [algorithm families overview](../algorithm-families.md).
 If you have not yet installed the package or want the high-level shape of the library, start with the [Bodu.Security.Cryptography introduction](../../docs/cryptography/index.md) and the [getting-started page](../../docs/cryptography/getting-started.md). Not sure which primitive to use? See [Algorithm families](../../docs/algorithm-families.md).
 
 For the auto-generated API reference, see the [Bodu.Security.Cryptography namespace page](../../apidoc/Bodu.Security.Cryptography.md). For non-cryptographic checksums and fingerprints, see the [Bodu.IO.Hashing guides](../io-hashing/index.md).

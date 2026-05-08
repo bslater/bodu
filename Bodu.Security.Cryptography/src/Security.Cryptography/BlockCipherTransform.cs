@@ -178,7 +178,11 @@ public abstract class BlockCipherTransform : ICryptoTransform
 
         this.ClearDeferredInput();
 
+        // Cascade disposal to the mode transform so it can zero its chaining vector, counter,
+        // tweak, or feedback register before the underlying cipher is released.
+        this._mode.Dispose();
         this._cipher.Dispose();
+
         this._disposed = true;
         GC.SuppressFinalize(this);
     }
@@ -213,9 +217,13 @@ public abstract class BlockCipherTransform : ICryptoTransform
         CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(outputBuffer, outputOffset, inputCount);
 
         ReadOnlySpan<byte> input = inputBuffer.AsSpan(inputOffset, inputCount);
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, this._cipher.BlockSize);
+
+        // Allow zero-length input: per the ICryptoTransform contract a zero-byte TransformBlock
+        // call must return 0 rather than throw. CryptoStream and similar callers may invoke this
+        // path with no buffered data after a flush.
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, this._cipher.BlockSize, throwIfZero: false);
         Span<byte> output = outputBuffer.AsSpan(outputOffset, inputCount);
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(output, this._cipher.BlockSize);
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(output, this._cipher.BlockSize, throwIfZero: false);
 
         if (this._encrypt)
             return this._mode.Transform(input, output, true);
@@ -283,6 +291,13 @@ public abstract class BlockCipherTransform : ICryptoTransform
         {
             if (this._encrypt)
             {
+                // Encrypt path: the padding scheme accepts any input length and emits an
+                // aligned buffer, so the alignment check belongs after Pad — not on the raw
+                // input. CryptoStream.FlushFinalBlock routinely arrives here with whatever
+                // residual sits in its buffer (including the 1..blockSize-1 bytes left over
+                // after the last aligned chunk has been forwarded to TransformBlock), and
+                // PKCS7 / ANSIX923 / ISO10126 / ISO7816-4 always emit a padding block for
+                // empty plaintext too.
                 byte[] padded = this._padding.Pad(input, this._cipher.BlockSize);
                 byte[] output = new byte[padded.Length];
 
@@ -298,7 +313,16 @@ public abstract class BlockCipherTransform : ICryptoTransform
             }
             else
             {
+                // Decrypt path: ciphertext must be block-aligned once any deferred buffer is
+                // re-attached. Validate the combined length so a malformed final call surfaces
+                // as a CryptographicException with a recognisable message rather than crashing
+                // deeper in the mode transform.
                 byte[] combined = Combine(this._deferredInput, input);
+                CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(
+                    combined,
+                    this._cipher.BlockSize,
+                    throwIfZero: false);
+
                 byte[] decrypted = new byte[combined.Length];
 
                 try
