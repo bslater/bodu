@@ -55,6 +55,7 @@ internal sealed class NotableDateRangePipeline
 		NotableDateRuleResolver ruleResolver,
 		BoduExt.CalendarWeekendDefinition weekendDefinition,
 		BoduExt.IWeekendDefinitionProvider? weekendProvider = null,
+		IAdjustmentHandlerRegistry? handlerRegistry = null)
 		IAdjustmentHandlerRegistry? handlerRegistry = null,
 		IReadOnlyList<RuleRemoval>? overrideRemovals = null)
 	{
@@ -356,6 +357,7 @@ internal sealed class NotableDateRangePipeline
 
 	/// <summary>
 	/// Builds and adds cache entries for the supplied rule, anchor year, and anchor date, expanding the rule's authored territory
+	/// list into one entry per territory that matches the request context.
 	/// list into one entry per territory that matches the request context. Entries suppressed by an override
 	/// <see cref="RuleRemoval" /> for the supplied year and territory are skipped before reaching the cache.
 	/// </summary>
@@ -364,6 +366,7 @@ internal sealed class NotableDateRangePipeline
 	/// <param name="anchorDate">The resolved anchor date.</param>
 	/// <param name="plan">The active resolution plan.</param>
 	/// <param name="cache">The shared cache being populated.</param>
+	private static void AddEntries(
 	private void AddEntries(
 		RuleStaticProfile profile,
 		int year,
