@@ -286,12 +286,6 @@ public abstract class BlockCipherTransform : ICryptoTransform
 
         ReadOnlySpan<byte> input = inputBuffer.AsSpan(inputOffset, inputCount);
 
-        // Allow zero-length input: PKCS7 / ANSI X.923 / ISO 10126 / ISO 7816-4 always emit a
-        // padding block for empty plaintext, and CryptoStream.FlushFinalBlock invokes this method
-        // with whatever residual sits in its buffer — including zero bytes after a block-aligned
-        // write or an empty Encrypt call.
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, this._cipher.BlockSize, throwIfZero: false);
-
         try
         {
             if (this._encrypt)

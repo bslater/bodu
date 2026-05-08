@@ -7,12 +7,11 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Probes the <see cref="IPaddingStrategy" /> contract for unexpected exceptions when the supplied
-/// <c>blockSize</c> is invalid. Currently every length-validating <c>Unpad</c> implementation
-/// evaluates <c>input.Length % blockSize</c> before validating the block size — passing
-/// <c>blockSize == 0</c> therefore surfaces a <see cref="DivideByZeroException" /> instead of the
-/// expected <see cref="ArgumentOutOfRangeException" /> documented by every <c>Pad</c> overload.
-/// These tests assert the corrected, contract-aligned behaviour and fail until the bug is fixed.
+/// Pins the <see cref="IPaddingStrategy" /> contract for invalid <c>blockSize</c> values across
+/// both <c>Pad</c> and <c>Unpad</c>. Every implementation must throw
+/// <see cref="ArgumentOutOfRangeException" /> when <c>blockSize &lt;= 0</c> rather than letting the
+/// modulo arithmetic surface a <see cref="DivideByZeroException" /> or silently succeeding for
+/// inputs whose length happens to be a multiple of <c>|blockSize|</c>.
 /// </summary>
 /// Pins the <see cref="IPaddingStrategy" /> contract for invalid <c>blockSize</c> values across
 /// both <c>Pad</c> and <c>Unpad</c>. Every implementation must throw

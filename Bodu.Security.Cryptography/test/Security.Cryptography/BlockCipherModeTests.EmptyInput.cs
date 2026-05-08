@@ -7,15 +7,14 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Probes <see cref="IBlockCipherModeTransform" /> implementations for an empty-input
-/// inconsistency: <see cref="CbcModeTransform.Transform" /> uses
-/// <c>CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false)</c>,
-/// so a zero-length input is a documented no-op (see <c>CbcModeTransformTests.Transform_WithEmptyInput_ShouldNotThrow</c>).
-/// <see cref="CfbModeTransform" />, <see cref="OfbModeTransform" />, <see cref="EcbModeTransform" />,
-/// and <see cref="XtsModeTransform" /> all use the default <c>throwIfZero: true</c>, so a zero-length
-/// input raises <see cref="System.Security.Cryptography.CryptographicException" /> with a
-/// "block length must be a positive multiple" message — contradicting the CBC contract and the
-/// natural expectation that processing zero bytes is a no-op.
+/// Pins the empty-input no-op contract for every <see cref="IBlockCipherModeTransform" />
+/// implementation. <see cref="CbcModeTransform" />, <see cref="CfbModeTransform" />,
+/// <see cref="OfbModeTransform" />, <see cref="EcbModeTransform" />, and
+/// <see cref="XtsModeTransform" /> all call
+/// <c>CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false)</c>
+/// (the consolidation in #200), so a zero-length input must be a no-op that returns zero bytes
+/// written. <see cref="CtsModeTransform" /> requires at least one full block by design and opts
+/// out via <see cref="AcceptsEmptyInput" />.
 /// </summary>
 /// Pins the empty-input no-op contract for every <see cref="IBlockCipherModeTransform" />
 /// implementation. <see cref="CbcModeTransform" />, <see cref="CfbModeTransform" />,
