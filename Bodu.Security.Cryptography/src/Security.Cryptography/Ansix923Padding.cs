@@ -81,6 +81,11 @@ public sealed class Ansix923Padding : IPaddingStrategy
     /// <exception cref="CryptographicException">Thrown if the padding is invalid or malformed.</exception>
     public byte[] Unpad(ReadOnlySpan<byte> input, int blockSize)
     {
+        if (blockSize <= 0)
+            throw new ArgumentOutOfRangeException(
+                nameof(blockSize),
+                string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
+
         // Constant-time verification to mitigate CBC padding-oracle attacks.
         if (input.Length == 0 || input.Length % blockSize != 0)
             throw new ArgumentException("Input is not a valid ANSI X.923 padded block sequence.", nameof(input));

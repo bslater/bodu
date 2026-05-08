@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
+using static Bodu.Security.Cryptography.AsconHashA256Tests;
 
 namespace Bodu.Security.Cryptography;
 
@@ -77,5 +78,31 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
             first,
             second,
             $"[{variant}] Residual block state was not reset by Initialize — identical inputs produced different digests.");
+    }
+
+    /// <summary>
+    /// Verifies that calling <see cref="HashAlgorithm.Initialize" /> on a disposed algorithm
+    /// instance throws <see cref="ObjectDisposedException" /> rather
+    /// than touching the cleared internal state.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(HashAlgorithmVariants))]
+    public void Initialize_WhenCalledAfterDispose_ShouldThrowExactly(TVariant variant)
+    {
+        var specification = GetSpecification(variant);
+
+        if (!specification.CanReuseTransform)
+        {
+            Assert.Inconclusive(
+                $"[{variant}] Algorithm does not support reuse after a completed transform; skipping residual state check.");
+            return;
+        }
+        using var algorithm = CreateAlgorithm(variant);
+        algorithm.Dispose();
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            algorithm.Initialize();
+        });
     }
 }
