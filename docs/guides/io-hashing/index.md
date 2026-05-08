@@ -72,6 +72,20 @@ For the auto-generated API reference, see the [Bodu.IO.Hashing namespace page](.
 </div>
 
 <div class="bodu-card">
+  <h3><a href="murmurhash3.html">Using MurmurHash3</a></h3>
+  <p>Austin Appleby's MurmurHash3 in 32-bit and x64-128-bit variants — seeded, excellent avalanche, widely used in databases and probabilistic data structures.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="xxhash.html">Using XxHash</a></h3>
+  <p>Yann Collet's XxHash32 and XxHash64 — high-throughput seeded fingerprints for hash tables and routing.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="check-digits.html">Check digits</a></h3>
+  <p>Luhn, Damm, Verhoeff, EAN, GTIN, ISIN, IBAN, ISBN, SEDOL, CUSIP, ABA routing, LEI — single-character validators for human-readable identifiers.</p>
+</div>
+
   <h3><a href="fletcher.md">Using Fletcher</a></h3>
   <p>Twin-accumulator checksums in 16, 32, and 64 bits — catches transpositions a simple sum or XOR misses.</p>
 </div>
@@ -116,6 +130,11 @@ Only `Crc` currently implements `IResumableHashAlgorithm` — see the [CRC guide
 
 ## Where to go next
 
+- [Algorithm families](../algorithm-families.md) — how fingerprints, checksums, and check digits differ from each other and from the cryptographic families in `Bodu.Security.Cryptography`.
+- [Check digits](check-digits.md) — Luhn, Damm, Verhoeff, EAN, GTIN, ISIN, IBAN, ISBN, SEDOL, CUSIP, ABA routing, and LEI validation algorithms.
+- [Using MurmurHash3](murmurhash3.md) — seeded 32- and 128-bit fingerprints with excellent avalanche.
+- [Using XxHash](xxhash.md) — high-throughput seeded 32- and 64-bit fingerprints.
+- [Bodu.Security.Cryptography hashing guide](../cryptography/hashing.md) — keyed hashes (SipHash), cryptographic digests (Tiger, CubeHash, Snefru), one-time authenticators (Poly1305), and Merkle trees.
 - [Bodu.IO.Hashing introduction](../../docs/io-hashing/index.md) — namespaces, headline types, scenarios.
 - [Bodu.IO.Hashing getting started](../../docs/io-hashing/getting-started.md) — install and minimal samples.
 - [Algorithm families](../../docs/algorithm-families.md) — fingerprint vs checksum vs check digit, plus the cryptographic families.

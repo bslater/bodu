@@ -13,6 +13,12 @@ namespace Bodu.Security.Cryptography;
 /// modulo arithmetic surface a <see cref="DivideByZeroException" /> or silently succeeding for
 /// inputs whose length happens to be a multiple of <c>|blockSize|</c>.
 /// </summary>
+/// Pins the <see cref="IPaddingStrategy" /> contract for invalid <c>blockSize</c> values across
+/// both <c>Pad</c> and <c>Unpad</c>. Every implementation must throw
+/// <see cref="ArgumentOutOfRangeException" /> when <c>blockSize &lt;= 0</c> rather than letting the
+/// modulo arithmetic surface a <see cref="DivideByZeroException" /> or silently succeeding for
+/// inputs whose length happens to be a multiple of <c>|blockSize|</c>.
+/// </summary>
 /// <remarks>
 /// Strategies whose <c>Unpad</c> ignores <c>blockSize</c> (<see cref="NoPadding" />,
 /// <see cref="ZeroPadding" />) opt out of the <c>Unpad</c>-side checks via

@@ -16,6 +16,15 @@ namespace Bodu.Security.Cryptography;
 /// written. <see cref="CtsModeTransform" /> requires at least one full block by design and opts
 /// out via <see cref="AcceptsEmptyInput" />.
 /// </summary>
+/// Pins the empty-input no-op contract for every <see cref="IBlockCipherModeTransform" />
+/// implementation. <see cref="CbcModeTransform" />, <see cref="CfbModeTransform" />,
+/// <see cref="OfbModeTransform" />, <see cref="EcbModeTransform" />, and
+/// <see cref="XtsModeTransform" /> all call
+/// <c>CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false)</c>
+/// (the consolidation in #200), so a zero-length input must be a no-op that returns zero bytes
+/// written. <see cref="CtsModeTransform" /> requires at least one full block by design and opts
+/// out via <see cref="AcceptsEmptyInput" />.
+/// </summary>
 /// <remarks>
 /// Pre-#200 every mode except CBC used the default <c>throwIfZero: true</c>, so a zero-length
 /// input surfaced <see cref="System.Security.Cryptography.CryptographicException" /> with a
@@ -36,6 +45,10 @@ public abstract partial class BlockCipherModeTests<TMode>
 
     /// <summary>
     /// Verifies that <see cref="IBlockCipherModeTransform.Transform" /> with a zero-length input
+    /// span is a no-op rather than throwing — the consistency contract that
+    /// <see cref="CbcModeTransform" /> already honours via <c>throwIfZero: false</c>. The other
+    /// confidentiality-only modes currently throw <see cref="System.Security.Cryptography.CryptographicException" />
+    /// here; this test fails until they are aligned with CBC.
     /// span is a no-op rather than throwing — the consistency contract every mode honours via
     /// <c>throwIfZero: false</c> as of #200.
     /// </summary>

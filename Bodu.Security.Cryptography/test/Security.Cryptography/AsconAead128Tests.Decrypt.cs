@@ -230,4 +230,55 @@ public partial class AsconAead128Tests
             _ = sut.Decrypt(ciphertext, recovered);
         });
     }
+
+
+    /// <summary>
+    /// Verifies that <see cref="AsconAead128.Decrypt" /> with the input and output buffers
+    /// referencing overlapping memory still recovers the plaintext when the tag is valid.
+    /// </summary>
+    [TestMethod]
+    public void Decrypt_WhenInputAndOutputAlias_ShouldRecoverPlaintext()
+    {
+        byte[] plaintext = Enumerable.Range(0, 21).Select(i => (byte)(i * 3 + 1)).ToArray();
+
+        byte[] sealed_ = new byte[plaintext.Length + AsconAead128.TagBytes];
+        using (AsconAead128 enc = MakeInstance())
+            enc.Encrypt(plaintext, sealed_);
+
+        // Decrypt in-place over the same buffer — output starts at the head of `sealed_`.
+        using AsconAead128 dec = MakeInstance();
+        int written = dec.Decrypt(sealed_, sealed_);
+
+        Assert.AreEqual(plaintext.Length, written);
+        CollectionAssert.AreEqual(plaintext, sealed_.AsSpan(0, plaintext.Length).ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that when <see cref="AsconAead128.Decrypt" /> raises
+    /// <see cref="CryptographicException" /> on tag mismatch the candidate plaintext is zeroed in
+    /// the destination buffer to avoid leaking unauthenticated material.
+    /// </summary>
+    [TestMethod]
+    public void Decrypt_WhenTagMismatch_ShouldZeroDestinationBuffer()
+    {
+        byte[] plaintext = Enumerable.Range(0, 16).Select(i => (byte)(i + 1)).ToArray();
+
+        using AsconAead128 enc = MakeInstance();
+        byte[] sealed_ = new byte[plaintext.Length + AsconAead128.TagBytes];
+        enc.Encrypt(plaintext, sealed_);
+
+        sealed_[sealed_.Length - 1] ^= 0x01;
+
+        using AsconAead128 dec = MakeInstance();
+        byte[] recovered = new byte[plaintext.Length];
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            dec.Decrypt(sealed_, recovered);
+        });
+
+        foreach (byte b in recovered)
+            Assert.AreEqual(0, b, "Decrypt must zero the destination buffer on tag mismatch.");
+    }
+
 }
