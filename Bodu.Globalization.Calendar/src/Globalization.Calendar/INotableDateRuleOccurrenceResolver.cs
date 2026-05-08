@@ -1,0 +1,21 @@
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="INotableDateRuleOccurrenceResolver.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Globalization.Calendar;
+
+/// <summary>
+/// Resolves notable-date rule occurrences for an internal chronological request.
+/// </summary>
+internal interface INotableDateRuleOccurrenceResolver
+{
+    /// <summary>
+    /// Resolves base notable-date occurrences for the specified request.
+    /// </summary>
+    /// <param name="request">The resolution request.</param>
+    /// <returns>The resolved base occurrences.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="request" /> is <see langword="null" />.</exception>
+    IReadOnlyList<ResolvedNotableDateOccurrence> ResolveOccurrences(NotableDateResolutionRequest request);
+}

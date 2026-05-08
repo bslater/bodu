@@ -29,6 +29,7 @@ int next   = buffer.Peek();      // 2, non-destructive
 
 ## Pattern 2 — bounded buffer that rejects excess
 
+By default, `AllowOverwrite` is `false` — enqueueing into a full buffer throws `InvalidOperationException`. Use `TryEnqueue` to avoid exceptions:
 The capacity-only and default constructors set `AllowOverwrite = true` (sliding-window semantics — see Pattern 3). Pass `allowOverwrite: false` to flip the buffer into bounded mode, where `Enqueue` into a full buffer throws `InvalidOperationException`. Use `TryEnqueue` to avoid exceptions:
 
 ```csharp
@@ -45,6 +46,7 @@ bool added = buffer.TryEnqueue("d");   // false — buffer is full
 
 ## Pattern 3 — ring buffer that overwrites the oldest entry
 
+Set `allowOverwrite: true` to implement a sliding window of the most-recent *N* values:
 `AllowOverwrite = true` — the default — implements a sliding window of the most-recent *N* values:
 
 ```csharp
