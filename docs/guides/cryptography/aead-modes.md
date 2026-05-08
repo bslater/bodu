@@ -198,7 +198,7 @@ The factory expression `static k => new AesBlockCipher(k)` is the canonical form
 
 ## One-transform, one-message
 
-Every AEAD transform in this library is **stateful and single-use**. Construct a new transform for every message — do not attempt to call `Encrypt` twice on the same instance. The extension methods enforce this by invoking `ProcessAssociatedData` internally, which most implementations allow only once.
+Every AEAD transform in this library is **stateful and single-use**. A second call to `Encrypt` or `Decrypt` on the same instance — *including after a tag-mismatch failure* — throws <xref:System.InvalidOperationException>. The contract is enforced uniformly across `GcmModeTransform`, `CcmModeTransform`, `EaxModeTransform`, `OcbModeTransform`, `GcmSivModeTransform`, and `SivModeTransform`.
 
 The pattern throughout these examples —
 
@@ -207,7 +207,24 @@ using (var cipher = new AesBlockCipher(key))
     cipherWithTag = new GcmModeTransform(cipher, iv).Encrypt(plaintext, aad);
 ```
 
-— constructs a fresh `AesBlockCipher` and a fresh `GcmModeTransform` inside the `using`, runs one encryption, and lets them both fall out of scope.
+— constructs a fresh `AesBlockCipher` and a fresh `GcmModeTransform` inside the `using`, runs one encryption, and lets them both fall out of scope. Build a separate transform for the matching `Decrypt`:
+
+```csharp
+using (var cipher = new AesBlockCipher(key))
+    recovered = new GcmModeTransform(cipher, iv).Decrypt(cipherWithTag, aad);
+```
+
+Reusing the encrypting transform to decrypt the round-tripped output, or calling `Encrypt` a second time to encrypt a follow-up message, will throw:
+
+```csharp
+using var cipher = new AesBlockCipher(key);
+var aead = new GcmModeTransform(cipher, iv);
+
+byte[] first  = aead.Encrypt(plaintextA, aad);
+byte[] second = aead.Encrypt(plaintextB, aad); // throws InvalidOperationException
+```
+
+The same enforcement applies to `Decrypt`. After a `CryptographicException` from a tag-mismatch, the instance is also burned — recover by constructing a fresh transform with the same `(key, nonce)`, never by retrying on the same one.
 
 ## Tamper detection
 

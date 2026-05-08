@@ -47,9 +47,11 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="IAeadBlockCipherModeTransform" /> convention.
 /// </para>
 /// <para>
-/// <strong>Lifecycle.</strong> The supplied <see cref="IBlockCipher" /> instances are not disposed by this
-/// type; ownership remains with the caller. <see cref="Dispose" /> clears cached associated-data state and
-/// prevents further use of the transform.
+/// <strong>Lifecycle.</strong> Each instance encrypts or decrypts exactly one message. A second call
+/// to <see cref="Encrypt" /> or <see cref="Decrypt" /> — including after a tag-mismatch failure —
+/// throws <see cref="InvalidOperationException" />. The supplied <see cref="IBlockCipher" /> instances
+/// are not disposed by this type; ownership remains with the caller. <see cref="Dispose" /> clears
+/// cached associated-data state.
 /// </para>
 /// <para>
 /// <strong>When to use SIV.</strong> Pick AES-SIV when deterministic authenticated encryption is wanted —
@@ -91,6 +93,7 @@ public sealed class SivModeTransform
     private readonly IBlockCipher _ctrCipher;
     private byte[]? _aad;
     private bool _aadProcessed;
+    private bool _completed;
     private bool _disposed;
 
     /// <summary>
@@ -156,6 +159,7 @@ public sealed class SivModeTransform
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
         this.ThrowIfDisposed();
+        this.ThrowIfCompleted();
 
         int required = plaintext.Length + TagSize;
         if (output.Length < required)
@@ -187,6 +191,7 @@ public sealed class SivModeTransform
         {
             ClearIfNotNull(ctrSeed);
             ClearIfNotNull(siv);
+            this._completed = true;
         }
     }
 
@@ -194,6 +199,7 @@ public sealed class SivModeTransform
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
         this.ThrowIfDisposed();
+        this.ThrowIfCompleted();
 
         if (ciphertextWithTag.Length < TagSize)
             throw new ArgumentException($"Input must be at least {TagSize} bytes.", nameof(ciphertextWithTag));
@@ -233,7 +239,19 @@ public sealed class SivModeTransform
         {
             ClearIfNotNull(expectedSiv);
             ClearIfNotNull(ctrSeed);
+            this._completed = true;
         }
+    }
+
+    /// <summary>
+    /// Throws <see cref="InvalidOperationException" /> if this transform has already encrypted or
+    /// decrypted a message. SIV transforms are single-use; create a fresh instance per message.
+    /// </summary>
+    private void ThrowIfCompleted()
+    {
+        if (this._completed)
+            throw new InvalidOperationException(
+                "This SIV transform has already completed and cannot be reused. Create a new instance per message.");
     }
 
     /// <summary>
