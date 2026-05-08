@@ -86,15 +86,6 @@ public abstract class BlockHashAlgorithm<T>
     /// </summary>
     protected virtual bool AllowUnalignedFinalBlock => false;
 
-    /// <inheritdoc />
-    /// <remarks>
-    /// The Merkle&#8211;Damg&#229;rd base owns no algorithm-side state &#8212; the chaining variables, IV, and any
-    /// schedule live entirely in derived classes. The empty body satisfies the grandparent's abstract contract.
-    /// </remarks>
-    protected override void OnInitialize()
-    {
-    }
-
     /// <summary>
     /// Processes the entirety of the input <paramref name="source" /> and feeds it into the computation pipeline. This method updates
     /// the internal hash state accordingly by consuming the entire input span.

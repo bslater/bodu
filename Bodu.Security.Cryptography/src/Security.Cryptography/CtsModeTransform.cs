@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
@@ -67,6 +68,7 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     private readonly IBlockCipher _cipher;
     private readonly byte[] _iv;
     private readonly byte[] _currentIv; // running CBC chaining vector
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CtsModeTransform" /> class.
@@ -259,5 +261,22 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
             penultimateOut[i] = (byte)(block[i] ^ this._currentIv[i]);
 
         return input.Length;
+    }
+
+    /// <summary>
+    /// Releases the resources used by this instance and zeroes the seed and running CBC chaining
+    /// vector so that key-equivalent state does not linger in memory after disposal. The underlying
+    /// <see cref="IBlockCipher" /> is not disposed by this type — ownership remains with the caller.
+    /// </summary>
+    /// <remarks>Idempotent.</remarks>
+    public void Dispose()
+    {
+        if (this._disposed)
+            return;
+
+        CryptographicOperations.ZeroMemory(this._iv);
+        CryptographicOperations.ZeroMemory(this._currentIv);
+        this._disposed = true;
+        GC.SuppressFinalize(this);
     }
 }

@@ -62,7 +62,6 @@ public sealed partial class Tiger
 
     private static readonly int[] ValidHashSizes = { 128, 160, 192 };
 
-    private bool _disposed = false;
     private ulong _state0 = 0x0123456789ABCDEF;
     private ulong _state1 = 0xFEDCBA9876543210;
     private ulong _state2 = 0xF096A5B4C3B2E187;
@@ -104,7 +103,7 @@ public sealed partial class Tiger
     /// finalization to match the configured <see cref="HashSize" />.
     /// </para>
     /// </remarks>
-    public string AlgorithmName
+    public override string AlgorithmName
     {
         get
         {
@@ -194,14 +193,10 @@ public sealed partial class Tiger
     }
 
     /// <inheritdoc />
+    /// <remarks>Restores the three 64-bit chaining variables to their Tiger-specified initial constants.</remarks>
     public override void Initialize()
     {
-        this.ThrowIfDisposed();
         base.Initialize();
-#if !NET6_0_OR_GREATER
-        State = 0;
-        finalized = false;
-#endif
         this._state0 = 0x0123456789ABCDEF;
         this._state1 = 0xFEDCBA9876543210;
         this._state2 = 0xF096A5B4C3B2E187;
@@ -215,16 +210,13 @@ public sealed partial class Tiger
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.IsDisposed) return;
+
         if (disposing)
         {
-            CryptoHelpers.ClearAndNullify(ref this.HashValue);
-
             this._state0 = this._state1 = this._state2 = 0;
-            this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
         base.Dispose(disposing);
     }
 
