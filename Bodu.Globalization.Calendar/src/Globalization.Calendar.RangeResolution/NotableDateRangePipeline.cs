@@ -36,7 +36,10 @@ internal sealed class NotableDateRangePipeline
 	private readonly BoduExt.CalendarWeekendDefinition _weekendDefinition;
 	private readonly BoduExt.IWeekendDefinitionProvider? _weekendProvider;
 	private readonly IAdjustmentHandlerRegistry? _handlerRegistry;
+<<<<<<< claude/adjustment-matrix-tests
+=======
 	private readonly IReadOnlyList<RuleRemoval> _overrideRemovals;
+>>>>>>> master
 
 	/// <summary>
 	/// Initialises a new instance of the <see cref="NotableDateRangePipeline" /> class.
@@ -46,7 +49,10 @@ internal sealed class NotableDateRangePipeline
 	/// <param name="weekendDefinition">The weekend definition used during adjustment evaluation.</param>
 	/// <param name="weekendProvider">The optional custom weekend provider.</param>
 	/// <param name="handlerRegistry">The optional custom adjustment handler registry.</param>
+<<<<<<< claude/adjustment-matrix-tests
+=======
 	/// <param name="overrideRemovals">The override removals consulted when materialising rules. Each entry suppresses a rule for matching years and territories.</param>
+>>>>>>> master
 	/// <exception cref="ArgumentNullException">
 	/// <paramref name="analysis" /> or <paramref name="ruleResolver" /> is <see langword="null" />.
 	/// </exception>
@@ -56,8 +62,11 @@ internal sealed class NotableDateRangePipeline
 		BoduExt.CalendarWeekendDefinition weekendDefinition,
 		BoduExt.IWeekendDefinitionProvider? weekendProvider = null,
 		IAdjustmentHandlerRegistry? handlerRegistry = null)
+<<<<<<< claude/adjustment-matrix-tests
+=======
 		IAdjustmentHandlerRegistry? handlerRegistry = null,
 		IReadOnlyList<RuleRemoval>? overrideRemovals = null)
+>>>>>>> master
 	{
 		_analysis = analysis ?? throw new ArgumentNullException(nameof(analysis));
 		_ruleResolver = ruleResolver ?? throw new ArgumentNullException(nameof(ruleResolver));
@@ -65,7 +74,10 @@ internal sealed class NotableDateRangePipeline
 		_weekendDefinition = weekendDefinition;
 		_weekendProvider = weekendProvider;
 		_handlerRegistry = handlerRegistry;
+<<<<<<< claude/adjustment-matrix-tests
+=======
 		_overrideRemovals = overrideRemovals ?? Array.Empty<RuleRemoval>();
+>>>>>>> master
 	}
 
 	/// <summary>
@@ -358,8 +370,11 @@ internal sealed class NotableDateRangePipeline
 	/// <summary>
 	/// Builds and adds cache entries for the supplied rule, anchor year, and anchor date, expanding the rule's authored territory
 	/// list into one entry per territory that matches the request context.
+<<<<<<< claude/adjustment-matrix-tests
+=======
 	/// list into one entry per territory that matches the request context. Entries suppressed by an override
 	/// <see cref="RuleRemoval" /> for the supplied year and territory are skipped before reaching the cache.
+>>>>>>> master
 	/// </summary>
 	/// <param name="profile">The rule profile being materialised.</param>
 	/// <param name="year">The anchor year.</param>
@@ -367,7 +382,10 @@ internal sealed class NotableDateRangePipeline
 	/// <param name="plan">The active resolution plan.</param>
 	/// <param name="cache">The shared cache being populated.</param>
 	private static void AddEntries(
+<<<<<<< claude/adjustment-matrix-tests
+=======
 	private void AddEntries(
+>>>>>>> master
 		RuleStaticProfile profile,
 		int year,
 		DateTime anchorDate,
@@ -376,9 +394,12 @@ internal sealed class NotableDateRangePipeline
 	{
 		foreach (string? territory in EnumerateApplicableTerritories(profile.Rule, plan.Request.TerritoryCode))
 		{
+<<<<<<< claude/adjustment-matrix-tests
+=======
 			if (IsRemovedByOverride(profile.Rule, year, territory))
 				continue;
 
+>>>>>>> master
 			NotableDate notable = BuildNotableDate(profile.Rule, anchorDate, territory, adjustmentReason: null);
 
 			NotableDateCacheState state = NotableDateCacheState.Computed;
@@ -584,6 +605,8 @@ internal sealed class NotableDateRangePipeline
 	/// <returns><see langword="true" /> when the spans intersect.</returns>
 	private static bool Intersects(DateTime leftStart, DateTime leftEnd, DateTime rightStart, DateTime rightEnd) =>
 		rightStart.Date <= leftEnd.Date && rightEnd.Date >= leftStart.Date;
+<<<<<<< claude/adjustment-matrix-tests
+=======
 
 	/// <summary>
 	/// Determines whether any configured <see cref="RuleRemoval" /> suppresses the supplied rule for the supplied civil year
@@ -617,4 +640,5 @@ internal sealed class NotableDateRangePipeline
 
 		return false;
 	}
+>>>>>>> master
 }
