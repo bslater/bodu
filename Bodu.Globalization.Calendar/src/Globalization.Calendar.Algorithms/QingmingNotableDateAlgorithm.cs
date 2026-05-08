@@ -61,7 +61,7 @@ public sealed class QingmingNotableDateAlgorithm
 	public DateTime? GetDate(int year, SysGlobal.Calendar? calendar = null)
 	{
 		if (year < 1)
-			throw new ArgumentOutOfRangeException(nameof(year), CalendarStrings.ArgumentOutOfRangeException_YearOutOfRange);
+			throw new ArgumentOutOfRangeException(nameof(year), CalendarResourceStrings.ArgumentOutOfRangeException_YearOutOfRange);
 
 		double equinoxJde = ComputeVernalEquinoxJde(year);
 		double qingmingJde = equinoxJde + DegreesToDays15;

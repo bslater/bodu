@@ -29,9 +29,9 @@ Reach for this library when a `DateTime.DayOfWeek` check is not enough: when you
 
 **Dynamic calculators**
 
-- <xref:Bodu.Globalization.Calendar.INotableDateCalculator>, <xref:Bodu.Globalization.Calendar.INotableDateCalculatorRegistry>, <xref:Bodu.Globalization.Calendar.NotableDateCalculatorRegistry> — the contract and registry for year-keyed date computation.
-- <xref:Bodu.Globalization.Calendar.Calculators.EasterSundayNotableDateCalculator> — Gregorian Computus from 1583 onwards; falls back to the Julian algorithm for earlier years. Results are cached per year.
-- <xref:Bodu.Globalization.Calendar.Calculators.LunarNewYearNotableDateCalculator> — Lunar New Year from lunar-calendar computation.
+- <xref:Bodu.Globalization.Calendar.INotableDateAlgorithm>, <xref:Bodu.Globalization.Calendar.INotableDateAlgorithmRegistry>, <xref:Bodu.Globalization.Calendar.NotableDateAlgorithmRegistry> — the contract and registry for year-keyed date computation.
+- <xref:Bodu.Globalization.Calendar.Algorithms.EasterSundayNotableDateAlgorithm> — Gregorian Computus from 1583 onwards; falls back to the Julian algorithm for earlier years. Results are cached per year.
+- <xref:Bodu.Globalization.Calendar.Algorithms.HinduLunarNotableDateAlgorithm>, <xref:Bodu.Globalization.Calendar.Algorithms.LosarNotableDateAlgorithm>, <xref:Bodu.Globalization.Calendar.Algorithms.VesakNotableDateAlgorithm>, <xref:Bodu.Globalization.Calendar.Algorithms.AsalhaPujaNotableDateAlgorithm>, <xref:Bodu.Globalization.Calendar.Algorithms.QingmingNotableDateAlgorithm> — lunar- and solar-term based notable-date algorithms.
 
 **Adjustment pipeline**
 
@@ -67,4 +67,4 @@ DateTime goodFriday2026 = easter2026.AddDays(-2);
 - **Thread safety.** Calculators cache their results per year internally and are **safe for concurrent reads** after any first-compute. A `NotableDateService` built with a stable set of definitions may be shared across requests.
 - **Culture and adjustment.** A <xref:Bodu.Globalization.Calendar.NotableDate> tracks both its original calculated date and its adjusted date — so a rule like "if a fixed holiday falls on a Saturday, observe it on the preceding Friday" is applied transparently while still preserving the original for audit and display.
 - **Target framework.** `net8.0`.
-- **Extensibility.** Implement <xref:Bodu.Globalization.Calendar.INotableDateCalculator> to add your own dynamic calculator (e.g. Orthodox Easter, Rosh Hashanah, Diwali) and register it with <xref:Bodu.Globalization.Calendar.NotableDateService> alongside the built-in fixed, rule-based, and offset-based definitions — or plug a custom <xref:Bodu.Globalization.Calendar.INotableDateRuleProvider> to source rules from somewhere other than the embedded XML.
+- **Extensibility.** Implement <xref:Bodu.Globalization.Calendar.INotableDateAlgorithm> to add your own dynamic calculator (e.g. Orthodox Easter, Rosh Hashanah, Diwali) and register it with <xref:Bodu.Globalization.Calendar.NotableDateService> alongside the built-in fixed, rule-based, and offset-based definitions — or plug a custom <xref:Bodu.Globalization.Calendar.INotableDateRuleProvider> to source rules from somewhere other than the embedded XML.

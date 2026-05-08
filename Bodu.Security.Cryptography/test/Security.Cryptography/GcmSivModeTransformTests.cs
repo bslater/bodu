@@ -8,7 +8,7 @@ namespace Bodu.Security.Cryptography;
 
 [TestClass]
 public sealed partial class GcmSivModeTransformTests
-    : AeadBlockCipherModeTests<GcmSivModeTransform>
+    : AeadBlockCipherModeTests<GcmSivModeTransformTests, GcmSivModeTransform>
 {
     protected override GcmSivModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
         => new GcmSivModeTransform(cipher, k => new AesBlockCipherFixture(k), iv);

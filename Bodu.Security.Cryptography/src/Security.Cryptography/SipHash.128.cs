@@ -18,7 +18,30 @@ namespace Bodu.Security.Cryptography;
 /// <c>d</c> is the number of finalisation rounds. The default configuration corresponds to <c>SipHash-2-4</c>.
 /// </para>
 /// <para>See <see cref="SipHash{T}" /> for a description of the round structure.</para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Tag size: 128 bits (16 bytes).</description></item>
+///   <item><description>Key size: 128 bits (16 bytes).</description></item>
+///   <item><description>Default parameterisation: SipHash-2-4 (2 compression rounds, 4 finalisation rounds).</description></item>
+///   <item><description>Multi-message key reuse is supported — unlike <see cref="Poly1305"/>.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose SipHash128.</strong> Pick <see cref="SipHash128"/> over <see cref="SipHash64"/> when
+/// the wider 128-bit tag is required — multi-tenant hash tables with very large key spaces, fingerprint-style
+/// cache keys, or short-message authentication where 64 bits would be marginal. For protocol-level MACs over
+/// long messages prefer HMAC-SHA-256 or <see cref="Blake2b"/>-MAC.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.Security.Cryptography;
+///
+/// using var sip = new SipHash128 { Key = sessionKey };
+/// byte[] tag = sip.ComputeHash(message);
+/// </code>
+/// </example>
 public sealed class SipHash128
     : SipHash<SipHash128>
 {
@@ -46,7 +69,7 @@ public sealed class SipHash128
     /// <description>128</description>
     /// </item>
     /// <item>
-    /// <term><see cref="SipHash{T}.Key" /></term>
+    /// <term><see cref="KeyedBlockHashAlgorithm{T}.Key" /></term>
     /// <description>Cryptographically random 16-byte key containing no zero bytes.</description>
     /// </item>
     /// </list>

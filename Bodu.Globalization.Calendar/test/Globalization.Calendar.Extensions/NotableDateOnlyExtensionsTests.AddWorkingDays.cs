@@ -101,7 +101,7 @@ public partial class NotableDateOnlyExtensionsTests
     /// Verifies that signed-day arithmetic produces the expected working-day result across positive, negative and zero values.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(AddWorkingDaysSignedTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(AddWorkingDaysSignedTestData))]
     public void AddWorkingDays_WhenSignedDaysSupplied_ShouldReturnExpectedWorkingDay(DateOnly input, int days, DateOnly expected)
     {
         NotableDateService service = BuildService();
@@ -116,7 +116,7 @@ public partial class NotableDateOnlyExtensionsTests
     /// <see cref="DateOnly.MinValue" /> throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(AddWorkingDaysOverflowTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(AddWorkingDaysOverflowTestData))]
     public void AddWorkingDays_WhenApplyingDaysWouldOverrunRange_ShouldThrowArgumentOutOfRangeException(DateOnly input, int days)
     {
         NotableDateService service = BuildService();

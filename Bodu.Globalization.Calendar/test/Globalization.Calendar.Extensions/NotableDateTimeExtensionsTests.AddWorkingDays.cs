@@ -102,7 +102,7 @@ public partial class NotableDateTimeExtensionsTests
     /// Verifies that signed-day arithmetic produces the expected working-day result across positive, negative and zero values.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(AddWorkingDaysSignedTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(AddWorkingDaysSignedTestData))]
     public void AddWorkingDays_WhenSignedDaysSupplied_ShouldReturnExpectedWorkingDay(DateTime input, int days, DateTime expected)
     {
         NotableDateService service = BuildService();
@@ -117,7 +117,7 @@ public partial class NotableDateTimeExtensionsTests
     /// <see cref="DateTime.MinValue" /> throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(AddWorkingDaysOverflowTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(AddWorkingDaysOverflowTestData))]
     public void AddWorkingDays_WhenApplyingDaysWouldOverrunRange_ShouldThrowArgumentOutOfRangeException(DateTime input, int days)
     {
         NotableDateService service = BuildService();
@@ -133,7 +133,7 @@ public partial class NotableDateTimeExtensionsTests
     /// supported <see cref="DateTimeKind" /> value, including for the zero-days short-circuit and the directional walk paths.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeKindPreservationTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeKindPreservationTestData))]
     public void AddWorkingDays_WhenCalled_ShouldPreserveKindAndTimeOfDay(DateTimeKind kind)
     {
         NotableDateService service = BuildService();

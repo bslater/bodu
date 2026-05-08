@@ -83,7 +83,7 @@ using var stream = File.OpenRead("large-archive.bin");
 byte[] root = await merkle.ComputeHashAsync(stream, diagnostics: null, CancellationToken.None);
 ```
 
-The parallel version produces the same root as the sequential one when called with the same `(algorithmFactory, blockSize, fanOut)` — the parallelism is in *how* the tree is built, not *what* tree is built. The level-worker / dispatcher layout is drawn in the [`ParallelMerkleTreeHash` class documentation](../../api/Bodu.Security.Cryptography.ParallelMerkleTreeHash.html).
+The parallel version produces the same root as the sequential one when called with the same `(algorithmFactory, blockSize, fanOut)` — the parallelism is in *how* the tree is built, not *what* tree is built. The level-worker / dispatcher layout is drawn in the <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> class documentation.
 
 ![Parallel Merkle tree pipeline](../../images/diagrams/parallel-merkle-tree.svg)
 
@@ -122,10 +122,10 @@ Diagnostics are optional; pass `null` when you don't need them and the pipeline 
 - **Content addressing.** Git, IPFS, and BitTorrent all use Merkle (or Merkle-like) trees so that identical sub-contents can be deduplicated and so that corruption is detected at the chunk level.
 - **Streaming integrity.** You want to authenticate chunks of a stream as they arrive, without waiting for the whole thing to buffer.
 
-For a single end-to-end file digest where partial verification is not a requirement, a plain <xref:Bodu.Security.Cryptography.Tiger> or <xref:System.Security.Cryptography.SHA256?displayProperty=nameWithType> is simpler and does not need a tree.
+For a single end-to-end file digest where partial verification is not a requirement, a plain <xref:Bodu.Security.Cryptography.Tiger> or `System.Security.Cryptography.SHA256` is simpler and does not need a tree.
 
 ## Where to go next
 
 - [Hashing overview](hashing.md) — where Merkle trees sit alongside the other families.
 - [Using Tiger](tiger.md) — a common leaf-hash choice for content-addressed systems.
-- [`MerkleTreeHash` class doc](../../api/Bodu.Security.Cryptography.MerkleTreeHash.html) · [`ParallelMerkleTreeHash` class doc](../../api/Bodu.Security.Cryptography.ParallelMerkleTreeHash.html).
+- <xref:Bodu.Security.Cryptography.MerkleTreeHash> · <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash>.

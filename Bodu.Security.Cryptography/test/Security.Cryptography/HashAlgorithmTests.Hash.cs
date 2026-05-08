@@ -46,4 +46,38 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             _ = algorithm.Hash;
         });
     }
+
+    /// <summary>
+    /// Verifies that repeated reads of <see cref="HashAlgorithm.Hash" /> after
+    /// <see cref="HashAlgorithm.TransformFinalBlock(byte[], int, int)" /> return the same final hash value.
+    /// </summary>
+    [TestMethod]
+    public void Hash_Get_WhenCalledRepeatedlyAfterTransformFinalBlock_ShouldReturnSameHash()
+    {
+        using var algorithm = CreateAlgorithm();
+
+        _ = algorithm.TransformFinalBlock(CryptoTestUtilities.ByteSequence256, 0, 256);
+
+        byte[] first = algorithm.Hash!;
+        byte[] second = algorithm.Hash!;
+
+        CollectionAssert.AreEqual(first, second);
+    }
+
+    /// <summary>
+    /// Verifies that calling <see cref="HashAlgorithm.TransformBlock(byte[], int, int, byte[]?, int)" />
+    /// with a zero-length input does not finalise the hash computation.
+    /// </summary>
+    [TestMethod]
+    public void Hash_Get_WhenOnlyZeroLengthTransformBlockCalled_ShouldThrowCryptographicUnexpectedOperationException()
+    {
+        using var algorithm = CreateAlgorithm();
+
+        _ = algorithm.TransformBlock(Array.Empty<byte>(), 0, 0, null, 0);
+
+        Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
+        {
+            _ = algorithm.Hash;
+        });
+    }
 }

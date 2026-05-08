@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Serpent128.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -30,7 +30,38 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="Serpent1024" />. Those variants are a non-standard Serpent-derived construction; the type on this page is the
 /// canonical, externally vetted 128-bit cipher.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Block size: 128 bits (16 bytes).</description></item>
+///   <item><description>Key sizes: 128, 192, or 256 bits.</description></item>
+///   <item><description>Default mode: <see cref="CipherBlockMode.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
+///   <item><description>32 rounds, 8 × 4-bit S-boxes, bitsliced linear transform.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose Serpent128.</strong> Pick Serpent when a deliberately conservative AES alternative is
+/// wanted — the 32-round design has a wider security margin than AES's 14 rounds at 256-bit key, at the cost of
+/// noticeably lower throughput. For general-purpose encryption with hardware acceleration prefer
+/// <see cref="System.Security.Cryptography.Aes"/>; for an alternative AES finalist with better software
+/// performance prefer <see cref="Twofish"/>. Use <see cref="Camellia"/> when ISO/IEC, CRYPTREC, or NESSIE approval
+/// is a procurement requirement.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// using var serpent = new Serpent128();
+/// serpent.GenerateKey(); // 256-bit by default
+/// serpent.GenerateIV();
+///
+/// byte[] ciphertext = serpent.Encrypt(plaintext);
+/// byte[] roundTrip  = serpent.Decrypt(ciphertext);
+/// </code>
+/// </example>
 /// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>
 /// <seealso href="../guides/cryptography/padding.html">Padding</seealso>
@@ -168,11 +199,11 @@ public sealed class Serpent128
         int keyBits = key.Length * 8;
         if (keyBits != 128 && keyBits != 192 && keyBits != 256)
             throw new CryptographicException(
-                string.Format(ResourceStrings.CryptographicException_InvalidKeySize, keyBits, CryptoHelpers.FormatLegalSizes(SerpentKeySizes)));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize, keyBits, CryptoHelpers.FormatLegalSizes(SerpentKeySizes)));
 
         if (iv!.Length * 8 != BlockSizeBits)
             throw new CryptographicException(
-                string.Format(ResourceStrings.CryptographicException_InvalidIVSize, iv.Length * 8, CryptoHelpers.FormatLegalSizes(SerpentBlockSizes)));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidIVSize, iv.Length * 8, CryptoHelpers.FormatLegalSizes(SerpentBlockSizes)));
     }
 
     /// <summary>

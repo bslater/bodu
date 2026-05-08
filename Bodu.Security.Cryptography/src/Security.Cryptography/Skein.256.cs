@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Skein.256.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,6 +21,22 @@ namespace Bodu.Security.Cryptography;
 /// a <c>KEY</c> UBI phase to the standard <c>CFG → MSG → OUT</c> pipeline. The key length is not fixed: any byte
 /// sequence from zero up to <see cref="Skein{T}.MaxKeySizeBytes" /> bytes is valid.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>State / block size: 256 bits (32 bytes).</description></item>
+///   <item><description>Output sizes: 128, 160, 224, or 256 bits — default 256.</description></item>
+///   <item><description>Underlying cipher: <see cref="Threefish256Cipher"/> tweakable block cipher under UBI mode.</description></item>
+///   <item><description>Optional variable-length key: 0–<see cref="Skein{T}.MaxKeySizeBytes"/> bytes.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose Skein-256.</strong> The narrowest Skein variant — pick it when 32-byte output is enough
+/// and the surrounding system has standardised on Skein. <see cref="Skein512"/> is the more common default and
+/// offers a stronger security margin; <see cref="Skein1024"/> is for cases that want the widest state. For new
+/// general-purpose hashing without an interop constraint <see cref="Blake2b"/> or SHA-2 is the more widely
+/// deployed default.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
@@ -35,11 +51,6 @@ namespace Bodu.Security.Cryptography;
 public sealed class Skein256
     : Skein<Skein256>
 {
-    /// <summary>
-    /// The state / block size, in bytes, of the Skein-256 variant.
-    /// </summary>
-    public const int BlockSizeBytes = 32;
-
     /// <summary>
     /// The set of output sizes, in bits, permitted by <see cref="Skein256" />.
     /// </summary>
@@ -62,6 +73,6 @@ public sealed class Skein256
     /// <paramref name="hashSize" /> is not one of the permitted output sizes for Skein-256.
     /// </exception>
     public Skein256(int hashSize)
-        : base(new Threefish256Cipher(new byte[BlockSizeBytes], new byte[16]), hashSize, PermittedHashSizes)
+        : base(new Threefish256Cipher(new byte[32], new byte[16]), hashSize, PermittedHashSizes)
     { }
 }

@@ -1,34 +1,38 @@
 # ./<Project Root Dir>/docs/guides/cryptography/toc.yml
 - name: Overview
   href: index.md
-- name: Encryption basics
-  href: encryption-basics.md
-- name: Cipher block modes
-  href: cipher-modes.md
-- name: AEAD modes
-  href: aead-modes.md
-- name: Composing primitives
-  href: composing-primitives.md
-- name: Padding
-  href: padding.md
-- name: ASCON family
+- name: Foundations
   items:
-    - name: Overview
-      href: ascon.md
-    - name: Hashing
-      href: ascon-hashing.md
-    - name: Extendable output (XOF)
-      href: ascon-xof.md
-    - name: Authenticated encryption (AEAD)
-      href: ascon-aead.md
-- name: Hashing and checksums
-  href: hashing.md
-- name: Hashing algorithms
+    - name: Encryption basics
+      href: encryption-basics.md
+    - name: Cipher block modes
+      href: cipher-modes.md
+    - name: Padding
+      href: padding.md
+    - name: Composing primitives
+      href: composing-primitives.md
+- name: Symmetric ciphers — Standard
   items:
-    - name: Using SipHash
-      href: siphash.md
-    - name: Using Poly1305
-      href: poly1305.md
+    - name: Using Skipjack
+      href: skipjack.md
+    - name: Using Blowfish
+      href: blowfish.md
+- name: Symmetric ciphers — Tweakable
+  items:
+    - name: Using Threefish-256
+      href: threefish-256.md
+    - name: Using Threefish-512
+      href: threefish-512.md
+    - name: Using Threefish-1024
+      href: threefish-1024.md
+- name: Symmetric ciphers — AEAD
+  items:
+    - name: AEAD modes (AES + transform)
+      href: aead-modes.md
+- name: Cryptographic hashes
+  items:
+    - name: Hashing overview
+      href: hashing.md
     - name: Using Tiger
       href: tiger.md
     - name: Using CubeHash
@@ -37,15 +41,19 @@
       href: snefru.md
     - name: Using Merkle trees
       href: merkle-trees.md
-- name: Symmetric algorithms
+- name: Keyed hashes (MAC)
   items:
-    - name: Threefish-256
-      href: threefish-256.md
-    - name: Threefish-512
-      href: threefish-512.md
-    - name: Threefish-1024
-      href: threefish-1024.md
-    - name: Skipjack
-      href: skipjack.md
-    - name: Blowfish
-      href: blowfish.md
+    - name: Using SipHash
+      href: siphash.md
+    - name: Using Poly1305
+      href: poly1305.md
+- name: ASCON family
+  items:
+    - name: ASCON overview
+      href: ascon.md
+    - name: ASCON hashing
+      href: ascon-hashing.md
+    - name: ASCON extendable output (XOF)
+      href: ascon-xof.md
+    - name: ASCON authenticated encryption (AEAD)
+      href: ascon-aead.md

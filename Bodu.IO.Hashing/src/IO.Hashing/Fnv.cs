@@ -25,9 +25,42 @@ namespace Bodu.IO.Hashing;
 /// <item><term>FNV-1</term><description>multiplication followed by XOR.</description></item>
 /// <item><term>FNV-1a</term><description>XOR followed by multiplication.</description></item>
 /// </list>
+/// <para>
+/// <strong>When to choose FNV.</strong> FNV is byte-at-a-time, allocation-free, and trivially fast on small
+/// inputs — a common choice for hashing identifiers, dictionary keys, and cache lookups in hot paths. For most
+/// new code prefer <see cref="Fnv1a32"/> or <see cref="Fnv1a64"/>: the FNV-1a ordering has measurably better
+/// avalanche than the original FNV-1. For inputs longer than a few hundred bytes,
+/// <see cref="MurmurHash3{T}"/> or <see cref="CityHash{T}"/> generally distribute better and are faster on
+/// modern CPUs; FNV's strength is its simplicity and predictable performance on short keys.
+/// </para>
+/// <para>
+/// <strong>Output size and lifecycle.</strong> The digest length is fixed by the constructor's
+/// <c>hashSize</c> argument (32 or 64 bits) and emitted in little-endian byte order.
+/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()"/> is non-destructive and may
+/// be called any number of times during a running hash; <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Reset"/>
+/// returns the running state to its initial offset basis.
+/// </para>
+/// <para>
+/// <strong>Thread safety.</strong> Instances are not thread-safe; share behind explicit synchronisation, or
+/// allocate one per consumer.
+/// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used
 /// for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// // Pick a width and variant; FNV-1a is the recommended default.
+/// var fnv = new Fnv1a64();
+/// byte[] digest = fnv.ComputeHash(System.Text.Encoding.UTF8.GetBytes("user@example.com"));
+/// </code>
+/// </example>
 /// </remarks>
+/// <seealso cref="Fnv132"/>
+/// <seealso cref="Fnv1a32"/>
+/// <seealso cref="Fnv164"/>
+/// <seealso cref="Fnv1a64"/>
 public abstract class Fnv<TSelf>
     : NonCryptographicHashAlgorithm
     where TSelf : Fnv<TSelf>, new()

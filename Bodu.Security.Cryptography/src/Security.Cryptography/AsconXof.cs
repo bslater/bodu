@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsconXof.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -41,7 +41,28 @@ namespace Bodu.Security.Cryptography;
 /// the remaining rate bytes retain their current state values. The transition from absorption to squeezing always applies
 /// the full 12-round permutation (Ascon-p12). Subsequent squeeze blocks use pb rounds between extractions.
 /// </para>
+/// <para>
+/// <strong>Don't derive from this class directly.</strong> Use one of the two concrete XOFs that extend it:
+/// </para>
+/// <list type="bullet">
+///   <item>
+///     <term><see cref="AsconXof128"/></term>
+///     <description>Plain Ascon XOF — variable-length output without a customization string.</description>
+///   </item>
+///   <item>
+///     <term><see cref="AsconCxof128"/></term>
+///     <description>Customizable Ascon XOF — accepts a customization string before absorption to domain-separate output families.</description>
+///   </item>
+/// </list>
+/// <para>
+/// For fixed-length Ascon hashing use <see cref="AsconHash256"/> or <see cref="AsconHashA256"/>; for the AEAD
+/// member of the Ascon suite use <see cref="AsconAead128"/>.
+/// </para>
 /// </remarks>
+/// <seealso cref="AsconXof128"/>
+/// <seealso cref="AsconCxof128"/>
+/// <seealso cref="AsconHash{T}"/>
+/// <seealso href="https://doi.org/10.6028/NIST.SP.800-232">NIST SP 800-232 (ASCON)</seealso>
 public abstract class AsconXof<T>
     : IDisposable
     where T : AsconXof<T>, new()
@@ -143,7 +164,7 @@ public abstract class AsconXof<T>
     {
         this.ThrowIfDisposed();
         if (this._squeezing)
-            throw new InvalidOperationException(ResourceStrings.CryptographicException_XofSqueezeAfterAbsorb);
+            throw new InvalidOperationException(CryptoResourceStrings.CryptographicException_XofSqueezeAfterAbsorb);
 
         this.ProcessInputBlocks(data);
     }
@@ -243,8 +264,9 @@ public abstract class AsconXof<T>
         if (disposing)
         {
             this._state.Clear();
-            Array.Clear(this._residualBuffer, 0, BlockSize);
-            Array.Clear(this._squeezeBuffer,  0, BlockSize);
+            CryptoHelpers.Clear(ref this._state);
+            CryptoHelpers.Clear(this._residualBuffer);
+            CryptoHelpers.Clear(this._squeezeBuffer);
         }
 
         this._disposed = true;

@@ -78,7 +78,7 @@ public sealed class Threefish256Cipher
         this.ThrowIfDisposed();
         if (input.Length != this.BlockSize || output.Length != this.BlockSize)
             throw new ArgumentException(
-                string.Format(ResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize));
 
         Span<ulong> block = stackalloc ulong[this.BlockWords];
         MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);
@@ -145,7 +145,7 @@ public sealed class Threefish256Cipher
         this.ThrowIfDisposed();
         if (input.Length != this.BlockSize || output.Length != this.BlockSize)
             throw new ArgumentException(
-                string.Format(ResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize));
 
         Span<ulong> block = stackalloc ulong[this.BlockWords];
         MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);

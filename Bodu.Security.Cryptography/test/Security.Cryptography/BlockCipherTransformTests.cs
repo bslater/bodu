@@ -15,6 +15,7 @@ namespace Bodu.Security.Cryptography;
 /// <typeparam name="TTest">The concrete test class, used to resolve per-row known-answer vectors for
 /// <see cref="DynamicDataAttribute" /> sources via the standard <c>new TTest()</c> dispatch idiom.</typeparam>
 /// <typeparam name="TCryptoTransform">The concrete block cipher transform type under test.</typeparam>
+[TestClass]
 public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     : CryptoTransformTests<TCryptoTransform>
     where TTest : BlockCipherTransformTests<TTest, TCryptoTransform>, new()

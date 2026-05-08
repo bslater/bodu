@@ -8,7 +8,7 @@ The Fletcher checksum family maintains two running accumulators, **A** and **B**
 
 ![Fletcher twin-accumulator structure](../../images/diagrams/fletcher-accumulators.svg)
 
-**Bodu.IO.Hashing** provides three widths: <xref:Bodu.IO.Hashing.Fletcher16>, <xref:Bodu.IO.Hashing.Fletcher32>, and <xref:Bodu.IO.Hashing.Fletcher64>. All three derive from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>.
+**Bodu.IO.Hashing** provides three widths: <xref:Bodu.IO.Hashing.Checksums.Fletcher16>, <xref:Bodu.IO.Hashing.Checksums.Fletcher32>, and <xref:Bodu.IO.Hashing.Checksums.Fletcher64>. All three derive from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>.
 
 ## Pattern 1 — compute a digest in one call
 
@@ -72,9 +72,9 @@ Fletcher's block size is fixed by the width (Fletcher-16 works in 1-byte words, 
 
 | Width | Use when | Notes |
 |---|---|---|
-| <xref:Bodu.IO.Hashing.Fletcher16> | Tiny frames, embedded protocols, when 16 bits of collision space is enough. | 1-byte blocks, fastest; same collision properties as CRC-16 for short inputs. |
-| <xref:Bodu.IO.Hashing.Fletcher32> | General-purpose file and buffer checksums; the most common choice. | 2-byte blocks; comparable to CRC-32 for error detection on uncorrelated noise, cheaper to compute. |
-| <xref:Bodu.IO.Hashing.Fletcher64> | Large buffers where a 32-bit space is uncomfortable. | 4-byte blocks; rarely needed, but useful for very long streams. |
+| <xref:Bodu.IO.Hashing.Checksums.Fletcher16> | Tiny frames, embedded protocols, when 16 bits of collision space is enough. | 1-byte blocks, fastest; same collision properties as CRC-16 for short inputs. |
+| <xref:Bodu.IO.Hashing.Checksums.Fletcher32> | General-purpose file and buffer checksums; the most common choice. | 2-byte blocks; comparable to CRC-32 for error detection on uncorrelated noise, cheaper to compute. |
+| <xref:Bodu.IO.Hashing.Checksums.Fletcher64> | Large buffers where a 32-bit space is uncomfortable. | 4-byte blocks; rarely needed, but useful for very long streams. |
 
 ## Fletcher vs CRC
 

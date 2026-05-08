@@ -37,6 +37,14 @@ namespace Bodu.Security.Cryptography;
 /// input has been processed, <see cref="FinalizationRounds" /> rounds are applied to produce the final digest. The defaults
 /// (<c>c = 2</c>, <c>d = 4</c>) correspond to the standard <c>SipHash-2-4</c> parameterisation.
 /// </para>
+/// <para>
+/// <strong>When to choose SipHash.</strong> SipHash is the de-facto standard for protecting hash tables and
+/// bloom filters against collision-based denial-of-service attacks — Python, Ruby, Rust, Perl, and OpenBSD's
+/// stdlib all use it for that purpose. Pick <see cref="SipHash64"/> when 64 bits is enough; pick
+/// <see cref="SipHash128"/> when collision pressure on the tag width matters. For protocol-level message
+/// authentication over long messages prefer HMAC-SHA-256 or <see cref="Blake2b"/>-MAC. Do not use SipHash
+/// where the key may be exposed — its security target is hash-flooding resistance, not generic MAC strength.
+/// </para>
 /// </remarks>
 /// <example>
 /// The following example configures a <see cref="SipHash64" /> instance to use the stronger <c>SipHash-4-8</c> parameter set.
@@ -81,9 +89,8 @@ public abstract class SipHash<T>
 
     private static readonly int[] ValidHashSizes = { 64, 128 };
     private int _compressionRounds;
-    private bool _disposed = false;
     private int _finalizationRounds;
-    private ulong v0, v1, v2, v3;
+    private ulong _v0, _v1, _v2, _v3;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SipHash{T}" /> class with a specified hash size.
@@ -95,7 +102,7 @@ public abstract class SipHash<T>
     {
         if (Array.IndexOf(ValidHashSizes, hashSize) == -1)
             throw new ArgumentOutOfRangeException(nameof(hashSize),
-                string.Format(ResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
 
         this.KeyValue = new byte[KeySize];
         CryptoHelpers.FillWithRandomNonZeroBytes(this.KeyValue);
@@ -122,7 +129,7 @@ public abstract class SipHash<T>
     /// </item>
     /// </list>
     /// </remarks>          
-    public string AlgorithmName
+    public override string AlgorithmName
     {
         get
         {
@@ -199,12 +206,6 @@ public abstract class SipHash<T>
         }
     }
 
-    /// <inheritdoc />
-    public override int InputBlockSize => BlockSize;
-
-    /// <inheritdoc />
-    public override int OutputBlockSize => BlockSize;
-
     /// <summary>
     /// Releases the unmanaged resources used by the algorithm and clears the key from memory.
     /// </summary>
@@ -214,19 +215,15 @@ public abstract class SipHash<T>
     /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.IsDisposed) return;
 
         if (disposing)
         {
-            CryptoHelpers.ClearAndNullify(ref this.HashValue);
-
-            this.v0 = this.v1 = this.v2 = this.v3 = 0;
+            this._v0 = this._v1 = this._v2 = this._v3 = 0;
             this._compressionRounds = 0;
             this._finalizationRounds = 0;
-            this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
         base.Dispose(disposing);
     }
 
@@ -261,16 +258,11 @@ public abstract class SipHash<T>
     protected override void ProcessBlock(ReadOnlySpan<byte> block)
     {
         var b = BinaryPrimitives.ReadUInt64LittleEndian(block);
-        this.v3 ^= b;
+        this._v3 ^= b;
         this.PerformSipRounds(this._compressionRounds);
-        this.v0 ^= b;
+        this._v0 ^= b;
     }
 
-    //    // Buffer any remaining residual bytes
-    //    residualBytes = end - pos;
-    //    if (residualBytes > 0)
-    //        buffer.AsSpan(pos, residualBytes).CopyTo(residualSpan);
-    //}
     /// <summary>
     /// Finalizes the hash computation and produces the output hash value.
     /// </summary>
@@ -278,22 +270,22 @@ public abstract class SipHash<T>
     /// <remarks>Combines all partial input and applies the finalization round logic based on the configured output size.</remarks>
     protected override byte[] ProcessFinalBlock()
     {
-        this.v2 ^= (this.HashSizeValue == 64) ? 0xffUL : 0xeeUL;
+        this._v2 ^= (this.HashSizeValue == 64) ? 0xffUL : 0xeeUL;
         this.PerformSipRounds(this._finalizationRounds);
 
         byte[] hash = new byte[this.HashSizeValue / 8];
 
         // First 64-bit output
-        ulong h0 = this.v0 ^ this.v1 ^ this.v2 ^ this.v3;
+        ulong h0 = this._v0 ^ this._v1 ^ this._v2 ^ this._v3;
         MemoryMarshal.Write(hash.AsSpan(0, 8), in h0);
 
         // Optional second block for SipHash-128
         if (this.HashSizeValue == 128)
         {
-            this.v1 ^= 0xdd;
+            this._v1 ^= 0xdd;
             this.PerformSipRounds(this._finalizationRounds);
 
-            ulong h1 = this.v0 ^ this.v1 ^ this.v2 ^ this.v3;
+            ulong h1 = this._v0 ^ this._v1 ^ this._v2 ^ this._v3;
             MemoryMarshal.Write(hash.AsSpan(8, 8), in h1);
         }
 
@@ -307,15 +299,18 @@ public abstract class SipHash<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected override void OnKeyChanged()
     {
-        // Fix: use little-endian reads to match the SipHash specification and ProcessBlock; prior code used host-endian BitConverter, which would produce incorrect digests on big-endian hosts.
-        ulong k0 = BinaryPrimitives.ReadUInt64LittleEndian(this.KeyValue.AsSpan(0));
-        ulong k1 = BinaryPrimitives.ReadUInt64LittleEndian(this.KeyValue.AsSpan(8));
-        this.v0 = InitialStates[0] ^ k0;
-        this.v1 = InitialStates[1] ^ k1;
-        this.v2 = InitialStates[2] ^ k0;
-        this.v3 = InitialStates[3] ^ k1;
+        // OnKeyChanged is only invoked by the Key setter and Initialize, both of which guarantee
+        // KeyValue is non-null and of the expected length before this point.
+        // Use little-endian reads to match the SipHash specification and ProcessBlock; prior code used
+        // host-endian BitConverter, which would produce incorrect digests on big-endian hosts.
+        ulong k0 = BinaryPrimitives.ReadUInt64LittleEndian(this.KeyValue!.AsSpan(0));
+        ulong k1 = BinaryPrimitives.ReadUInt64LittleEndian(this.KeyValue!.AsSpan(8));
+        this._v0 = InitialStates[0] ^ k0;
+        this._v1 = InitialStates[1] ^ k1;
+        this._v2 = InitialStates[2] ^ k0;
+        this._v3 = InitialStates[3] ^ k1;
 
-        if (this.HashSizeValue == 128) this.v1 ^= 0xee;
+        if (this.HashSizeValue == 128) this._v1 ^= 0xee;
     }
 
     /// <summary>
@@ -326,7 +321,7 @@ public abstract class SipHash<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void PerformSipRounds(int iterations)
     {
-        ulong r0 = this.v0, r1 = this.v1, r2 = this.v2, r3 = this.v3;
+        ulong r0 = this._v0, r1 = this._v1, r2 = this._v2, r3 = this._v3;
 
         for (int i = 0; i < iterations; i++)
         {
@@ -346,29 +341,6 @@ public abstract class SipHash<T>
             r2 = r2.RotateBitsLeftUnchecked(32);
         }
 
-        this.v0 = r0; this.v1 = r1; this.v2 = r2; this.v3 = r3;
+        this._v0 = r0; this._v1 = r1; this._v2 = r2; this._v3 = r3;
     }
-
-    ///// <summary>
-    ///// Processes one or more blocks of input data into the SipHash internal state.
-    ///// </summary>
-    ///// <param name="buffer">The byte array containing the input data.</param>
-    ///// <param name="offset">The byte offset in the buffer to start reading from.</param>
-    ///// <param name="length">The number of bytes to process.</param>
-    ///// <remarks>Handles buffering of partial blocks and invokes <see cref="ProcessBlock" /> for each complete block.</remarks>
-    //private void ProcessBlocks(byte[] buffer, int offset, int length)
-    //{
-    //    int pos = offset;
-    //    Span<byte> residualSpan = residualByteBuffer.Span;
-
-    // Handle residual bytes from the previous call if (residualBytes > 0) { int remaining = BlockSize - residualBytes;
-
-    // if (length >= remaining) { // Fill up the buffer and process one full block buffer.AsSpan(pos,
-    // remaining).CopyTo(residualSpan[residualBytes..]); ulong block = MemoryMarshal.Read<ulong>(residualSpan); ProcessBlock(block);
-
-    // residualBytes = 0; pos += remaining; } else { // Not enough to complete a block, just append to residuals buffer.AsSpan(pos,
-    // length).CopyTo(residualSpan[residualBytes..]); residualBytes += length; return; } }
-
-    // Process full blocks directly from the input int end = offset + length; while (pos + BlockSize <= end) { ulong block =
-    // MemoryMarshal.Read<ulong>(buffer.AsSpan(pos, BlockSize)); ProcessBlock(block); pos += BlockSize; }
 }

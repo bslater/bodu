@@ -11,29 +11,93 @@ using System;
 using System.IO.Hashing;
 
 /// <summary>
-/// Base class for non-cryptographic hash algorithms that consume input in fixed-size blocks. Handles residual buffering,
-/// block alignment, total-length tracking, and optional final-block padding on behalf of derived implementations.
+/// Base class for non-cryptographic hash algorithms whose internal state advances one fixed-size block at a time —
+/// handles residual buffering, block alignment, total-length tracking, snapshot-based <c>GetCurrentHash</c>, and
+/// optional final-block padding so that derived implementations only need to express the per-block compression step.
 /// </summary>
-/// <typeparam name="T">The concrete hash algorithm derived from this class. Must expose a public parameterless constructor.</typeparam>
+/// <typeparam name="T">
+/// The concrete hash algorithm type derived from this class. Must expose a public parameterless constructor so the base
+/// class can satisfy its <c>new()</c> constraint when constructing snapshot clones.
+/// </typeparam>
 /// <remarks>
 /// <para>
-/// Input data is accumulated into an internal buffer until a complete block of <see cref="BlockSizeBytes" /> is available,
-/// at which point it is passed to <see cref="ProcessBlock" />. Any residual bytes left over when
-/// <see cref="GetCurrentHashCore" /> is invoked are padded via <see cref="PadBlock" /> before a final call to
-/// <see cref="ProcessFinalBlock" /> produces the digest.
+/// Many non-cryptographic hashes — Murmur, CityHash, Pearson, the FNV variants — define their compression step over a
+/// fixed block size (4, 8, 16, or 32 bytes) and must buffer trailing bytes that do not fill a complete block. Writing
+/// that buffering loop correctly is fiddly: handle straddling input, accumulate the running message length, and pad
+/// once on finalisation. <see cref="BlockNonCryptographicHashAlgorithm{T}"/> centralises that machinery so derived
+/// types only express the algorithm-specific behaviour.
 /// </para>
-/// <para>Derived classes must implement the following:</para>
+/// <para>
+/// <strong>Inheritance contract.</strong> Derived classes implement four members and may override two more:
+/// </para>
 /// <list type="bullet">
-/// <item><description><see cref="ProcessBlock" /> processes a single complete block of input data.</description></item>
-/// <item><description><see cref="PadBlock" /> pads the final input segment and encodes the total message length.</description></item>
-/// <item><description><see cref="ProcessFinalBlock" /> finalises the hash computation and returns the resulting digest.</description></item>
+///   <item><description><see cref="ProcessBlock(System.ReadOnlySpan{byte})"/> — compress a single complete block.</description></item>
+///   <item><description><see cref="PadBlock(System.ReadOnlySpan{byte}, ulong)"/> — pad the final partial block and encode the total message length.</description></item>
+///   <item><description><see cref="ProcessFinalBlock"/> — emit the final digest from the accumulator.</description></item>
+///   <item><description><see cref="Clone"/> — produce a state-equivalent copy used for non-destructive snapshotting.</description></item>
+///   <item><description><see cref="ResetState"/> (optional) — restore algorithm-specific accumulators on <see cref="Reset"/>.</description></item>
+///   <item><description><see cref="ShouldPadFinalBlock"/> / <see cref="AllowUnalignedFinalBlock"/> (optional) — opt out of padding, or pass the padded result as a single block instead of splitting it block-aligned.</description></item>
 /// </list>
 /// <para>
-/// Unlike cryptographic hashes derived from <see cref="System.Security.Cryptography.HashAlgorithm" />, instances of
-/// <see cref="BlockNonCryptographicHashAlgorithm{T}" /> do not participate in <see cref="System.Security.Cryptography.ICryptoTransform" />
-/// pipelines. They are intended for integrity checks, fingerprinting, and hash-table workloads — not for security-sensitive contexts.
+/// <strong>Lifecycle.</strong> Input arrives via the standard
+/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Append(System.ReadOnlySpan{byte})"/> entry point and is
+/// drained block-by-block into the residual buffer. <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()"/>
+/// is intentionally non-destructive: the base class clones the live instance via <see cref="Clone"/>, runs padding and
+/// finalisation on the clone, and copies the digest into the destination span. Callers may inspect the running hash as
+/// often as they like without disturbing further input. <see cref="Reset"/> clears the residual buffer and total length
+/// before invoking <see cref="ResetState"/>.
 /// </para>
+/// <para>
+/// <strong>Snapshot helpers for derived <see cref="Clone"/> implementations.</strong> Three protected accessors —
+/// <see cref="ResidualByteCount"/>, <see cref="ResidualBytes"/>, and <see cref="TotalLength"/> — expose the base-class
+/// state, and <see cref="CopyResidualStateFrom(BlockNonCryptographicHashAlgorithm{T})"/> performs the corresponding
+/// write-side step. Derived <see cref="Clone"/> implementations typically allocate a new instance, copy
+/// algorithm-specific accumulators field-by-field, and finish with a call to
+/// <see cref="CopyResidualStateFrom(BlockNonCryptographicHashAlgorithm{T})"/>.
+/// </para>
+/// <para>
+/// <strong>Suitability.</strong> Like every other type in <c>Bodu.IO.Hashing</c>, derivations of this class produce
+/// <em>non-cryptographic</em> digests intended for integrity checks, fingerprinting, hash-table keys, and bloom-filter
+/// inputs. They do not provide preimage or collision resistance and must not be used for password hashing, message
+/// authentication, or any security-sensitive context — use a member of <c>Bodu.Security.Cryptography</c> or the BCL's
+/// <see cref="System.Security.Cryptography.HashAlgorithm"/> hierarchy instead. Instances are not thread-safe; share
+/// behind explicit synchronisation.
+/// </para>
+/// <example>
+/// <code language="csharp">
+/// // Sketch of a derived block hash. The base class drives buffering and snapshotting;
+/// // the derived type only expresses how a single block changes the accumulator.
+/// public sealed class MyBlockHash : BlockNonCryptographicHashAlgorithm&lt;MyBlockHash&gt;
+/// {
+///     private uint _state;
+///
+///     public MyBlockHash() : base(hashLengthInBytes: 4, blockSize: 16) { }
+///
+///     protected override void ProcessBlock(ReadOnlySpan&lt;byte&gt; block)
+///     {
+///         // mix the 16-byte block into _state ...
+///     }
+///
+///     protected override byte[] PadBlock(ReadOnlySpan&lt;byte&gt; trailing, ulong messageLength)
+///     {
+///         // append a 0x80 byte, zero-pad, then write `messageLength` little-endian, return one or more whole blocks.
+///         return Array.Empty&lt;byte&gt;();
+///     }
+///
+///     protected override byte[] ProcessFinalBlock() =&gt; BitConverter.GetBytes(_state);
+///
+///     protected override MyBlockHash Clone()
+///     {
+///         var copy = new MyBlockHash { _state = _state };
+///         copy.CopyResidualStateFrom(this);
+///         return copy;
+///     }
+/// }
+/// </code>
+/// </example>
 /// </remarks>
+/// <seealso cref="System.IO.Hashing.NonCryptographicHashAlgorithm"/>
+/// <seealso cref="IResumableHashAlgorithm"/>
 public abstract class BlockNonCryptographicHashAlgorithm<T>
     : NonCryptographicHashAlgorithm
     where T : BlockNonCryptographicHashAlgorithm<T>, new()

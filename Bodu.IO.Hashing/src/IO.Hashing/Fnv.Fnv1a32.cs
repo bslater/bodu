@@ -16,8 +16,32 @@ namespace Bodu.IO.Hashing;
 /// behaviour relative to the original FNV-1 form. The 32-bit configuration uses prime <c>0x01000193</c> and
 /// offset basis <c>0x811C9DC5</c>.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Output size: 32 bits (4 bytes), little-endian.</description></item>
+///   <item><description>Offset basis: <c>0x811C9DC5</c>.</description></item>
+///   <item><description>FNV prime: <c>0x01000193</c>.</description></item>
+///   <item><description>Variant: FNV-1a (XOR, then multiply).</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose Fnv1a32.</strong> The recommended 32-bit FNV variant — better avalanche than
+/// <see cref="Fnv132"/> at identical cost. Pick it for hash-table keying of short strings or identifiers when
+/// 32 bits is enough; reach for <see cref="MurmurHash3_32"/> on inputs longer than ~16 bytes or when SMHasher
+/// quality matters, and for <see cref="Fnv1a64"/> when 64 bits would meaningfully reduce collisions.
+/// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used
 /// for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// var fnv = new Fnv1a32();
+/// byte[] digest = fnv.ComputeHash(System.Text.Encoding.UTF8.GetBytes("user@example.com"));
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class Fnv1a32
     : Fnv<Fnv1a32>

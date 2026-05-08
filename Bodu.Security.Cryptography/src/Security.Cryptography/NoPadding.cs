@@ -14,9 +14,29 @@ namespace Bodu.Security.Cryptography;
 /// already a multiple of the cipher block size.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Use this strategy only when the plaintext length is guaranteed to be block-aligned, for example when encrypting fixed-size records
 /// or when another framing layer already handles length information.
+/// </para>
+/// <para>
+/// <strong>When to choose no padding.</strong> The right pick under modes that handle alignment themselves —
+/// CTR (<see cref="CtrModeTransform"/>), CTS (<see cref="CtsModeTransform"/>), and every AEAD mode
+/// (<see cref="GcmModeTransform"/>, <see cref="CcmModeTransform"/>, <see cref="EaxModeTransform"/>,
+/// <see cref="GcmSivModeTransform"/>, <see cref="OcbModeTransform"/>, <see cref="SivModeTransform"/>) — none
+/// of which require the caller to align input to the cipher block size. Also the right pick when encrypting
+/// fixed-size on-disk records under XTS. For length-recoverable padding under CBC or ECB use
+/// <see cref="Pkcs7Padding"/>.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.Security.Cryptography;
+///
+/// // Caller guarantees that `plaintext.Length` is a multiple of the block size.
+/// IPaddingStrategy padding = new NoPadding();
+/// byte[] aligned = padding.Pad(plaintext, blockSize: 16); // throws if not aligned
+/// </code>
+/// </example>
 public sealed class NoPadding : IPaddingStrategy
 {
     /// <inheritdoc />
@@ -31,6 +51,11 @@ public sealed class NoPadding : IPaddingStrategy
     /// <exception cref="ArgumentException">Thrown if the length of <paramref name="input" /> is not a multiple of <paramref name="blockSize" />.</exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
     {
+        if (blockSize <= 0)
+            throw new ArgumentOutOfRangeException(
+                nameof(blockSize),
+                string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
+
         if (input.Length % blockSize != 0)
             throw new ArgumentException("Input must be a multiple of block size when using no padding.", nameof(input));
         return input.ToArray();

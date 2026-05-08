@@ -15,26 +15,98 @@ using System.IO.Hashing;
 using System.Runtime.CompilerServices;
 
 /// <summary>
-/// Computes CRC (Cyclic Redundancy Check) values for arbitrary input data using a configurable <see cref="CrcStandard" />.
-/// This class cannot be inherited.
+/// General-purpose CRC (Cyclic Redundancy Check) engine driven by a <see cref="CrcStandard"/> parameter set —
+/// supports any catalogue width from 1 to 64 bits, snapshot-style intermediate digests, and resumption of a previous
+/// digest with additional input.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="Crc" /> supports CRC widths from 1 to 64 bits and honours the polynomial, initial value, input/output
-/// reflection, and final XOR value supplied by <see cref="CrcStandard" />. Precomputed lookup tables are cached via
-/// <see cref="GlobalCache" /> and shared across instances that use identical parameters.
+/// CRCs are the workhorse of integrity checks in storage, networking, and file formats: every <c>.zip</c>, <c>.png</c>,
+/// Ethernet frame, USB packet, and Modbus message uses one. Each protocol bakes in slightly different choices —
+/// polynomial, initial value, input/output bit reflection, final XOR — and the same byte sequence can produce a
+/// different digest under <c>CRC-16/ARC</c>, <c>CRC-16/MODBUS</c>, or <c>CRC-32/ISO-HDLC</c>. Rather than ship a class
+/// per variant, <see cref="Crc"/> consumes the parameters from a <see cref="CrcStandard"/> and the same engine
+/// computes the right answer for every catalogue entry.
 /// </para>
 /// <para>
-/// Instances derive from <see cref="NonCryptographicHashAlgorithm" />, exposing the standard
-/// <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" /> / <see cref="NonCryptographicHashAlgorithm.Reset" /> /
-/// <see cref="NonCryptographicHashAlgorithm.GetCurrentHash()" /> surface. The final reflection, XOR-out, and
-/// width-masking step is performed on a snapshot of the accumulator, so
-/// <see cref="NonCryptographicHashAlgorithm.GetCurrentHash()" /> is non-destructive and may be called multiple times
-/// without disturbing in-progress hashing.
+/// <strong>Picking a standard.</strong> The full RevEng catalogue is exposed two ways:
 /// </para>
-/// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
-/// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
+/// <list type="bullet">
+///   <item>
+///     <term><see cref="CrcStandard"/> static properties</term>
+///     <description>For the common entries (<see cref="CrcStandard.CRC32_ISOHDLC"/>,
+///     <see cref="CrcStandard.CRC32_ISCSI"/>, <see cref="CrcStandard.CRC16_MODBUS"/>, …) — direct, allocation-free
+///     references to the canonical instance.</description>
+///   </item>
+///   <item>
+///     <term><see cref="CrcStandard.Get(CrcStandards)"/> with a <see cref="CrcStandards"/> enum value</term>
+///     <description>For programmatic look-up across the full catalogue (e.g. when reading a configuration value).</description>
+///   </item>
+///   <item>
+///     <term><see cref="CrcStandard.FromName(string)"/></term>
+///     <description>Resolves both canonical names and aliases — <c>"CRC-32"</c>, <c>"PKZIP"</c>,
+///     <c>"CRC-32/ISO-HDLC"</c> all return the same instance.</description>
+///   </item>
+/// </list>
+/// <para>
+/// <strong>API surface.</strong> <see cref="Crc"/> derives from
+/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm"/> and exposes the standard
+/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Append(System.ReadOnlySpan{byte})"/> /
+/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Reset"/> /
+/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()"/> shape. The
+/// <see cref="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions"/> companion adds one-shot
+/// <c>ComputeHash</c>, stream variants, and constant-time <c>VerifyHash</c> / <c>TryVerifyHash</c> on top.
+/// </para>
+/// <para>
+/// <strong>Snapshot semantics.</strong> The final reflection, XOR-out, and width mask are applied to a
+/// <em>copy</em> of the running accumulator, so <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()"/>
+/// can be called as often as the caller likes without disturbing further <c>Append</c> calls — useful for emitting
+/// progressive checksums of an unfinished stream.
+/// </para>
+/// <para>
+/// <strong>Resumption.</strong> <see cref="Crc"/> implements <see cref="IResumableHashAlgorithm"/>: given a previously
+/// emitted digest and additional bytes, it produces the digest of the concatenated input <em>without</em> needing the
+/// original bytes back — handy for log-tail integrity checks and content-addressed storage. Resumption is only valid
+/// against a digest produced by an instance configured with the same <see cref="CrcStandard"/>.
+/// </para>
+/// <para>
+/// <strong>Performance.</strong> Lookup tables are precomputed once per
+/// <c>(width, polynomial, reflectIn)</c> tuple and shared via <see cref="GlobalCache"/>, so creating multiple
+/// <see cref="Crc"/> instances for the same standard is cheap. The hot path uses byte-at-a-time table lookups; for
+/// throughput-critical code consider re-using a single instance and feeding it large spans rather than repeatedly
+/// constructing new ones. Instances are <strong>not thread-safe</strong>; share behind explicit synchronisation.
+/// </para>
+/// <note type="important">CRC is <strong>not</strong> cryptographically secure. It detects accidental corruption,
+/// not adversarial tampering — collisions are easy to construct. Use a member of <c>Bodu.Security.Cryptography</c> or
+/// <see cref="System.Security.Cryptography.HashAlgorithm"/> for password hashing, digital signatures, message
+/// authentication, or any context where a determined attacker could choose the input.</note>
+/// <example>
+/// <code language="csharp">
+/// using System.IO.Hashing;
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Checksums;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// // 1. Standard PKZIP / Ethernet CRC-32 of a buffer.
+/// var crc32 = new Crc(CrcStandard.CRC32_ISOHDLC);
+/// byte[] digest = crc32.ComputeHash(File.ReadAllBytes("payload.bin"));
+///
+/// // 2. Modbus RTU — different polynomial/init/reflect choices, same engine.
+/// var modbus = new Crc(CrcStandard.CRC16_MODBUS);
+/// modbus.Append(frameHeader);
+/// modbus.Append(framePayload);
+/// byte[] frameCrc = modbus.GetCurrentHash();   // non-destructive snapshot
+///
+/// // 3. Resumption — fold an appended log segment into yesterday's digest without re-reading the original bytes.
+/// var resumable = (IResumableHashAlgorithm)new Crc(CrcStandard.CRC32_ISOHDLC);
+/// byte[] updated = resumable.ComputeHashFrom(digest, File.ReadAllBytes("payload.appended.bin"));
+/// </code>
+/// </example>
 /// </remarks>
+/// <seealso cref="CrcStandard"/>
+/// <seealso cref="CrcStandards"/>
+/// <seealso cref="CrcLookupTableCache"/>
+/// <seealso cref="IResumableHashAlgorithm"/>
 public sealed class Crc
     : NonCryptographicHashAlgorithm
     , IResumableHashAlgorithm

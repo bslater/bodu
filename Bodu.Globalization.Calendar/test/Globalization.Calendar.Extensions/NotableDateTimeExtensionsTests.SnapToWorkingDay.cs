@@ -89,7 +89,7 @@ public partial class NotableDateTimeExtensionsTests
     /// <see cref="DateTimeKind" /> value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeKindPreservationTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeKindPreservationTestData))]
     public void SnapToWorkingDay_WhenSnapForward_ShouldPreserveKindAndTimeOfDay(DateTimeKind kind)
     {
         NotableDateService service = BuildService();

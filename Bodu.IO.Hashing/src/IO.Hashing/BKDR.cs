@@ -21,8 +21,32 @@ namespace Bodu.IO.Hashing;
 /// multiplier must be one of the supported values (31, 131, 1313, 13131, 131313, 1313131, 13131313, 131313131,
 /// 1313131313) and can be reassigned only while the algorithm has not yet consumed any input.
 /// </para>
+/// <para>
+/// <strong>When to choose BKDR.</strong> BKDR is the polynomial rolling hash from K&amp;R's "The C Programming
+/// Language" — a textbook choice for symbol tables, lexer keyword maps, and other small-string keying tasks.
+/// Pick it when interoperating with code that already uses the K&amp;R formulation, or when the input is a
+/// short identifier and avalanche quality matters less than predictable behaviour. For modern hash-table
+/// workloads prefer <see cref="Fnv1a32"/> (better avalanche on the same per-byte cost) or
+/// <see cref="MurmurHash3_32"/> (much better distribution on inputs longer than ~16 bytes).
+/// </para>
+/// <para>
+/// <strong>Output and lifecycle.</strong> Produces a 32-bit (4-byte) digest in little-endian byte order.
+/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()"/> is non-destructive;
+/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Reset"/> returns the instance to its
+/// reconfigurable, pre-input state. Instances are not thread-safe.
+/// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used
 /// for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// // Default seed (131); appropriate for short identifier keys.
+/// var bkdr = new BKDR();
+/// byte[] digest = bkdr.ComputeHash(System.Text.Encoding.UTF8.GetBytes("Identifier"));
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class BKDR
     : NonCryptographicHashAlgorithm

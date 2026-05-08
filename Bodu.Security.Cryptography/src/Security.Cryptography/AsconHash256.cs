@@ -19,6 +19,22 @@ namespace Bodu.Security.Cryptography;
 /// For applications where throughput is a higher priority than maximum security margin, consider
 /// <see cref="AsconHashA256" />, which uses an 8-round permutation during absorption (Ascon-p8) and is otherwise identical.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Output size: 256 bits (32 bytes), fixed.</description></item>
+///   <item><description>State: 320 bits sponge; rate: 64 bits (8 bytes).</description></item>
+///   <item><description>Permutation: Ascon-p12 at every phase (initialisation, absorption, squeezing).</description></item>
+///   <item><description>Specification: NIST SP 800-232 (ASCON family).</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose ASCON-HASH256.</strong> Pick this when NIST's lightweight-cryptography selection
+/// is the procurement requirement, or for resource-constrained targets (microcontrollers, IoT) where ASCON's
+/// small state and software-friendly permutation are an advantage over SHA-2 / SHA-3. For maximum throughput on
+/// commodity 64-bit hardware <see cref="Blake2b"/> or <see cref="Blake3"/> typically win; for the higher-throughput
+/// ASCON variant accept the smaller absorption-round margin and use <see cref="AsconHashA256"/>.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

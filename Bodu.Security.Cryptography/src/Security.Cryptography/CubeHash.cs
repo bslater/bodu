@@ -5,10 +5,10 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -22,7 +22,31 @@ namespace Bodu.Security.Cryptography;
 /// operations. The number of initialisation, transformation, and finalisation rounds, the hash output size, and the input block size
 /// are all configurable. See <a href="https://en.wikipedia.org/wiki/CubeHash">Wikipedia</a> for an overview.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>State size: 1024 bits (32 × 32-bit words).</description></item>
+///   <item><description>Output size: configurable, <see cref="MinHashSize"/>–<see cref="MaxHashSize"/> bits (default 512).</description></item>
+///   <item><description>Input block size: configurable, <see cref="MinInputBlockSize"/>–<see cref="MaxInputBlockSize"/> bytes (default 32).</description></item>
+///   <item><description>Rounds: initialisation, per-block, and finalisation counts each independently configurable up to <see cref="MaxRounds"/>; defaults are 16 / 16 / 32.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose CubeHash.</strong> Pick CubeHash for academic study, cryptographic competition
+/// reproducibility, or interop with code that has settled on a specific CubeHash parameterisation. The defaults
+/// (CubeHash 16/32/+160/512) match the SHA-3 competition submission. For new general-purpose cryptographic
+/// hashing prefer SHA-2, SHA-3, or <see cref="Blake2b"/>.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.Security.Cryptography;
+///
+/// // Default parameters: 512-bit output, 32-byte input block, 16/16/32 rounds.
+/// using var cube = new CubeHash();
+/// byte[] digest = cube.ComputeHash(message);
+/// </code>
+/// </example>
 public sealed class CubeHash
     : System.Security.Cryptography.HashAlgorithm
 {
@@ -217,27 +241,6 @@ public sealed class CubeHash
     }
 
     /// <summary>
-    /// Gets the input block size, in bytes, used by consumers of the <see cref="CubeHash" /> algorithm, such as
-    /// <see cref="System.Security.Cryptography.CryptoStream" />.
-    /// </summary>
-    /// <remarks>
-    /// This value reflects the configured <see cref="TransformBlockSize" />, which determines how many bytes are
-    /// accumulated before a transformation round is triggered internally. While this value does not impact the
-    /// correctness of the hash, feeding data in aligned blocks may improve performance in stream-based scenarios.
-    /// </remarks>
-    public override int InputBlockSize => this.TransformBlockSize;
-
-    /// <summary>
-    /// Gets the output block size, in bytes, produced per transformation step — equal to <see cref="InputBlockSize" />.
-    /// </summary>
-    /// <remarks>
-    /// CubeHash is based on a sponge construction in which the same block size governs both input absorption and
-    /// output production. This value therefore mirrors <see cref="TransformBlockSize" /> rather than the final digest
-    /// length, which is expressed separately through <see cref="System.Security.Cryptography.HashAlgorithm.HashSize" />.
-    /// </remarks>
-    public override int OutputBlockSize => this.TransformBlockSize;
-
-    /// <summary>
     /// Gets or sets the number of transformation rounds applied to each full input block.
     /// </summary>
     /// <remarks>
@@ -298,8 +301,8 @@ public sealed class CubeHash
     {
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
-        State = 0;
-        finalized = false;
+        this.State = 0;
+        this._finalized = false;
 #endif
         this._pendingBytes = 0;
 
@@ -320,17 +323,23 @@ public sealed class CubeHash
 
         if (disposing)
         {
-            this._finalizationRounds = this._initializationRounds = this._rounds = this._inputBlockSizeBytes = this._pendingBytes = 0;
-
-            if (this._state != null)
+            if (this._state is not null)
             {
-                CryptoHelpers.ClearAndNullify(ref this.HashValue);
                 CryptoHelpers.ClearAndNullify(ref this._state!);
                 CryptoHelpers.ClearAndNullify(ref this._initializedState!);
-
                 this._isInitializedStateCached = false;
-                this.HashSizeValue = 0;
             }
+
+            this._finalizationRounds = 0;
+            this._initializationRounds = 0;
+            this._rounds = 0;
+            this._inputBlockSizeBytes = 0;
+            this._pendingBytes = 0;
+
+            // CubeHash extends HashAlgorithm directly (not BufferedBlockHashAlgorithm),
+            // so the centralised HashValue / HashSizeValue clearing in the latter does not apply here.
+            CryptoHelpers.ClearAndNullify(ref this.HashValue);
+            this.HashSizeValue = 0;
         }
 
         this._disposed = true;
@@ -364,8 +373,8 @@ public sealed class CubeHash
         ThrowHelper.ThrowIfLessThan(ibStart, 0);
         ThrowHelper.ThrowIfLessThan(cbSize, 0);
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
-        if (finalized)
-            throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+        if (this._finalized)
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
         this.EnsureInitialized();
         this.HashCore(array.AsSpan(ibStart, cbSize));
@@ -432,10 +441,10 @@ public sealed class CubeHash
     {
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
-        if (finalized)
-            throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
-        finalized = true;
-        State = 2;
+        if (this._finalized)
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
+        this._finalized = true;
+        this.State = 2;
 #endif
         this.EnsureInitialized();
 
@@ -506,7 +515,7 @@ public sealed class CubeHash
 
             // Steps 3+4: rotate temp left by 7 into lower; XOR lower with upper
             for (int i = 0; i < 16; i++)
-                lower[i] = BitOperations.RotateLeft(temp[i], 7) ^ upper[i];
+                lower[i] = temp[i].RotateBitsLeftUnchecked(7) ^ upper[i];
 
             // Step 5: scatter upper into temp via XOR-2 permutation; copy back to upper
             for (int i = 0; i < 16; i++)
@@ -522,7 +531,7 @@ public sealed class CubeHash
 
             // Steps 8+9: rotate temp left by 11 into lower; XOR lower with upper
             for (int i = 0; i < 16; i++)
-                lower[i] = BitOperations.RotateLeft(temp[i], 11) ^ upper[i];
+                lower[i] = temp[i].RotateBitsLeftUnchecked(11) ^ upper[i];
 
             // Step 10: scatter upper into temp via XOR-1 permutation; copy back to upper
             for (int i = 0; i < 16; i++)
@@ -591,6 +600,6 @@ public sealed class CubeHash
     private void ThrowIfInvalidState()
     {
         if (this.State != 0)
-            throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_ReconfigurationNotAllowed);
     }
 }

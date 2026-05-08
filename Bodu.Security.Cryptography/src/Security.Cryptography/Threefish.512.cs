@@ -21,7 +21,38 @@ namespace Bodu.Security.Cryptography;
 /// or format-preserving encryption where a tweak is useful.
 /// </para>
 /// <para>For other block sizes, see <see cref="Threefish256" /> and <see cref="Threefish1024" />.</para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Block size: 512 bits (64 bytes).</description></item>
+///   <item><description>Key size: 512 bits (64 bytes).</description></item>
+///   <item><description>Tweak size: 128 bits (16 bytes).</description></item>
+///   <item><description>Default mode: <see cref="CipherBlockMode.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose Threefish-512.</strong> The most common Threefish width — the wider 512-bit block lifts
+/// the birthday bound to <c>~2<sup>256</sup></c> blocks, removing the SWEET32-style concerns that 64-bit and 128-bit
+/// block ciphers run into when re-used heavily under one key. A natural fit when building Skein-style constructions
+/// (Skein-512 wraps this engine under the UBI mode). Use <see cref="Threefish256"/> when the smaller block matches
+/// the surrounding scheme; use <see cref="Threefish1024"/> when even more block width is required.
+/// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions;
+///
+/// using var tf = Threefish512.Create();
+/// tf.Key   = RandomNumberGenerator.GetBytes(64); // 512-bit key
+/// tf.IV    = RandomNumberGenerator.GetBytes(64); // matches the 512-bit block
+/// tf.Tweak = RandomNumberGenerator.GetBytes(16); // 128-bit tweak
+///
+/// byte[] ciphertext = tf.Encrypt(plaintext);
+/// byte[] roundTrip  = tf.Decrypt(ciphertext);
+/// </code>
+/// </example>
 /// <seealso href="../guides/cryptography/threefish-512.html">Using Threefish-512 (guide with full encrypt / decrypt examples)</seealso>
 /// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>

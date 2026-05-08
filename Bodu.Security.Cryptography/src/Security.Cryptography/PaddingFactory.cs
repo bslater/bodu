@@ -17,6 +17,20 @@ namespace Bodu.Security.Cryptography;
 /// Creates <see cref="IPaddingStrategy" /> instances for the framework
 /// <see cref="PaddingMode" /> values and for the extended <see cref="BoduPaddingMode" /> values.
 /// </summary>
+/// <remarks>
+/// <para>
+/// The factory dispatches a padding-scheme enumeration value to the matching <see cref="IPaddingStrategy"/>
+/// implementation. Used internally by every <see cref="System.Security.Cryptography.SymmetricAlgorithm"/> in
+/// this library when its <see cref="System.Security.Cryptography.SymmetricAlgorithm.Padding"/> is set.
+/// </para>
+/// <para>
+/// Two overloads are provided. <see cref="Create(PaddingMode)"/> dispatches the BCL-standard
+/// <see cref="PaddingMode"/> values (PKCS7, Zeros, None, ANSI X.923, ISO 10126).
+/// <see cref="Create(BoduPaddingMode)"/> additionally supports <see cref="BoduPaddingMode.ISO7816_4"/>, the
+/// "one-and-zeros" scheme used by smart cards and SHA-3 / Keccak — pick this overload when integrating with
+/// code that uses the <see cref="BoduPaddingMode"/> superset.
+/// </para>
+/// </remarks>
 /// <seealso href="../guides/cryptography/padding.html">Padding guide — PKCS7, Zeros, None, ANSI X.923, ISO 10126 and ISO/IEC 7816-4 with worked examples</seealso>
 public static class PaddingFactory
 {

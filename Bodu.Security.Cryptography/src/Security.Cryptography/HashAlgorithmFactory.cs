@@ -13,14 +13,34 @@ namespace Bodu.Security.Cryptography;
 /// Provides static factory helpers for constructing delegate-based implementations of <see cref="IHashAlgorithmFactory{T}" />.
 /// </summary>
 /// <remarks>
+/// <para>
 /// This class simplifies creation of lightweight hash algorithm factories that encapsulate algorithm configuration logic, particularly
 /// useful for one-shot hashing scenarios where consumers need to consistently configure algorithm instances (e.g., setting a key,
 /// tuning rounds, or enabling specific variants).
+/// </para>
 /// <para>
 /// The returned factory instances are typically passed into <see cref="HashAlgorithmHelper" /> methods to compute hashes from spans,
-/// streams, or buffers in a memory-safe and reusable way.
+/// streams, or buffers in a memory-safe and reusable way. The same factory works with <see cref="MerkleTreeHash"/> and
+/// <see cref="ParallelMerkleTreeHash"/> for tree-hashing pipelines that need a fresh leaf-hash instance per node.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code language="csharp">
+/// using System.Security.Cryptography;
+/// using Bodu.Security.Cryptography;
+///
+/// // 1. Bare SHA-256 factory.
+/// IHashAlgorithmFactory&lt;SHA256&gt; sha256 = HashAlgorithmFactory.From(() =&gt; SHA256.Create());
+/// byte[] digest = HashAlgorithmHelper.HashData(sha256, payload);
+///
+/// // 2. Configured keyed-hash factory — applied consistently every time the consumer constructs an instance.
+/// IHashAlgorithmFactory&lt;SipHash64&gt; sip = HashAlgorithmFactory.From(() =&gt; new SipHash64 { Key = sessionKey });
+/// byte[] tag = HashAlgorithmHelper.HashData(sip, message);
+/// </code>
+/// </example>
+/// <seealso cref="IHashAlgorithmFactory{T}"/>
+/// <seealso cref="DelegateHashAlgorithmFactory{T}"/>
+/// <seealso cref="HashAlgorithmHelper"/>
 public static class HashAlgorithmFactory
 {
     /// <summary>

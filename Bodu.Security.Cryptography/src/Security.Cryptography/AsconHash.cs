@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsconHash.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -42,7 +42,6 @@ public abstract partial class AsconHash<T>
     private readonly ulong _iv3;
     private readonly ulong _iv4;
 
-    private bool _disposed;
     private bool _useP12ForFinalPad;
     private AsconState _state;
 
@@ -84,7 +83,7 @@ public abstract partial class AsconHash<T>
     /// <value>A string such as <c>"ASCON-HASH256"</c> or <c>"ASCON-HASHA256"</c> identifying the variant.</value>
     /// <returns>The algorithm identifier string supplied at construction.</returns>
     /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
-    public string AlgorithmName
+    public override string AlgorithmName
     {
         get
         {
@@ -100,19 +99,13 @@ public abstract partial class AsconHash<T>
     public override bool CanTransformMultipleBlocks => true;
 
     /// <inheritdoc />
-    public override int InputBlockSize => 8;
-
-    /// <inheritdoc />
-    public override int OutputBlockSize => 32;
-
-    /// <inheritdoc />
+    /// <remarks>
+    /// Loads the pre-computed initial state directly — no permutation is needed because the constants
+    /// supplied by the derived class are already the result of applying Ascon-p12 to the raw IV.
+    /// </remarks>
     public override void Initialize()
     {
-        this.ThrowIfDisposed();
         base.Initialize();
-
-        // Load the pre-computed initial state directly — no permutation is needed because these
-        // values are already the result of applying Ascon-p12 to the raw IV constant.
         this._state = new AsconState { S0 = this._iv0, S1 = this._iv1, S2 = this._iv2, S3 = this._iv3, S4 = this._iv4 };
         this._useP12ForFinalPad = false;
     }
@@ -126,16 +119,13 @@ public abstract partial class AsconHash<T>
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.IsDisposed) return;
 
         if (disposing)
         {
-            CryptoHelpers.ClearAndNullify(ref this.HashValue);
             this._state.Clear();
-            this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
         base.Dispose(disposing);
     }
 

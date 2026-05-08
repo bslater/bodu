@@ -87,7 +87,7 @@ public partial class NotableDateOnlyExtensionsTests
     /// definition.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(WorkingDayClassificationTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(WorkingDayClassificationTestData))]
     public void IsWorkingDay_WhenScannedAcrossWeek_ShouldReturnExpectedClassification(DateOnly input, bool expected)
     {
         NotableDateService service = BuildService();

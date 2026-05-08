@@ -14,12 +14,24 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <typeparam name="T">The concrete <see cref="HashAlgorithm" /> type this factory produces.</typeparam>
 /// <remarks>
+/// <para>
 /// This factory allows consumers to specify the construction logic for the hash algorithm via a delegate. It is particularly useful for
 /// scenarios requiring configuration of keyed or parameterized algorithms where DI or explicit configuration is preferred.
+/// </para>
 /// <para>
 /// Common use cases include configuring <see cref="KeyedHashAlgorithm" /> instances or variant-based hashes such as SipHash or CubeHash.
 /// </para>
+/// <para>
+/// <strong>Construction.</strong> Most callers use <see cref="HashAlgorithmFactory.From{T}(System.Func{T})"/>
+/// to wrap a delegate rather than calling this constructor directly — the static helper makes the call site
+/// read more naturally and avoids the trailing generic-type repetition. Direct construction is appropriate
+/// when the type needs to be assigned to a field that has the concrete <see cref="DelegateHashAlgorithmFactory{T}"/>
+/// type rather than the <see cref="IHashAlgorithmFactory{T}"/> interface.
+/// </para>
 /// </remarks>
+/// <seealso cref="IHashAlgorithmFactory{T}"/>
+/// <seealso cref="HashAlgorithmFactory"/>
+/// <seealso cref="HashAlgorithmHelper"/>
 public sealed class DelegateHashAlgorithmFactory<T> :
     Bodu.Security.Cryptography.IHashAlgorithmFactory<T>
     where T : System.Security.Cryptography.HashAlgorithm

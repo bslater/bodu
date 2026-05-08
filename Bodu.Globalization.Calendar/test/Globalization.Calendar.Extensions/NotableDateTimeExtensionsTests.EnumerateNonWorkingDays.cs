@@ -71,7 +71,7 @@ public partial class NotableDateTimeExtensionsTests
     /// Verifies that a single-day range yields one non-working day for weekends and zero for weekdays.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(SingleDayNonWorkingYieldTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(SingleDayNonWorkingYieldTestData))]
     public void EnumerateNonWorkingDays_WhenSingleDayRange_ShouldYieldExpectedCount(DateTime day, int expected)
     {
         NotableDateService service = BuildService();

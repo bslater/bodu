@@ -20,10 +20,34 @@ namespace Bodu.IO.Hashing;
 /// three interleaved accumulators for 25 or more bytes. All paths converge through the <c>Mur</c> and <c>Mix</c> primitives defined in
 /// <see cref="CityHash{T}" />.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Output size: 32 bits (4 bytes), little-endian.</description></item>
+///   <item><description>Variant: <c>CityHash32</c>.</description></item>
+///   <item><description>Length-dispatched mixing: 0–4, 5–12, 13–24, and 25+ byte paths.</description></item>
+///   <item><description>Seedless — for seeded variants prefer <see cref="MurmurHash3_32"/>.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose CityHash32.</strong> Pick <see cref="CityHash32"/> for 32-bit slot indexes when
+/// throughput on long inputs matters — it edges <see cref="MurmurHash3_32"/> on 64-bit hosts. For short
+/// fixed-length keys <see cref="Fnv1a32"/> is simpler and competitive; if a seed is needed (bloom filters,
+/// hash-flooding mitigation) prefer <see cref="MurmurHash3_32"/>.
+/// </para>
 /// <note type="important">
 /// This algorithm is <b>not</b> cryptographically secure and must <b>not</b> be used for password hashing, digital signatures, or
 /// any application requiring adversarial collision resistance.
 /// </note>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// var city = new CityHash32();
+/// byte[] digest = city.ComputeHash(System.Text.Encoding.UTF8.GetBytes("session-key"));
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class CityHash32
     : CityHash<CityHash32>
