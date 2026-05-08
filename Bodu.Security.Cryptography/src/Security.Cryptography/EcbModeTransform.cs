@@ -72,7 +72,8 @@ public sealed class EcbModeTransform : IBlockCipherModeTransform
     {
         int blockSize = this._cipher.BlockSize;
 
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize);
+        // Empty input is a no-op, consistent with CbcModeTransform.
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 
         for (int offset = 0; offset < input.Length; offset += blockSize)
@@ -87,5 +88,15 @@ public sealed class EcbModeTransform : IBlockCipherModeTransform
         }
 
         return input.Length;
+    }
+
+    /// <summary>
+    /// Releases the resources used by this instance. ECB holds no per-message chaining state, so
+    /// this is a no-op beyond satisfying the <see cref="IBlockCipherModeTransform" /> contract.
+    /// The underlying <see cref="IBlockCipher" /> is not disposed by this type — ownership remains
+    /// with the caller.
+    /// </summary>
+    public void Dispose()
+    {
     }
 }

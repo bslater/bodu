@@ -45,6 +45,14 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="IAeadBlockCipherModeTransform" /> convention.
 /// </para>
 /// <para>
+/// <strong>Lifecycle.</strong> Each instance encrypts or decrypts exactly one message. A second call
+/// to <see cref="Encrypt" /> or <see cref="Decrypt" /> — including after a tag-mismatch failure —
+/// throws <see cref="InvalidOperationException" />. The supplied master cipher is not disposed by
+/// this type; ownership remains with the caller. The derived encryption cipher created by the
+/// supplied factory is owned by this transform and is disposed when <see cref="Dispose" /> is called,
+/// along with the cached authentication key, nonce, and associated-data state.
+/// </para>
+/// <para>
 /// <strong>When to use GCM-SIV.</strong> The right modern AEAD pick when nonce uniqueness cannot be
 /// guaranteed — distributed systems where a coordinator might re-issue the same nonce after a crash, key
 /// wrapping, deduplication, or any context where a fresh nonce per message is impractical. Under nonce
@@ -86,6 +94,7 @@ public sealed class GcmSivModeTransform
     private readonly byte[] _nonce;            // 12-byte nonce
     private byte[]? _aad;
     private bool _aadProcessed;
+    private bool _completed;
     private bool _disposed;
 
     /// <summary>
@@ -161,26 +170,35 @@ public sealed class GcmSivModeTransform
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
         this.ThrowIfDisposed();
+        this.ThrowIfCompleted();
 
         int required = plaintext.Length + TagSize;
         if (output.Length < required)
             throw new ArgumentException($"Output must be at least {required} bytes.", nameof(output));
         EnsureAadProcessed();
 
-        // Tag = E(K_enc, POLYVAL(K_auth, AAD, PT) XOR nonce) with bits [31] and [63] cleared.
-        byte[] tag = ComputeTag(this._aad.AsSpan(), plaintext);
+        try
+        {
+            // Tag = E(K_enc, POLYVAL(K_auth, AAD, PT) XOR nonce) with bits [31] and [63] cleared.
+            byte[] tag = ComputeTag(this._aad.AsSpan(), plaintext);
 
-        // Encrypt plaintext with CTR(K_enc) seeded from tag.
-        byte[] ctrIv = BuildCtrIv(tag);
-        CtrEncrypt(plaintext, output.Slice(0, plaintext.Length), ctrIv);
-        tag.CopyTo(output.Slice(plaintext.Length));
-        return required;
+            // Encrypt plaintext with CTR(K_enc) seeded from tag.
+            byte[] ctrIv = BuildCtrIv(tag);
+            CtrEncrypt(plaintext, output.Slice(0, plaintext.Length), ctrIv);
+            tag.CopyTo(output.Slice(plaintext.Length));
+            return required;
+        }
+        finally
+        {
+            this._completed = true;
+        }
     }
 
     /// <inheritdoc />
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
         this.ThrowIfDisposed();
+        this.ThrowIfCompleted();
 
         if (ciphertextWithTag.Length < TagSize)
             throw new ArgumentException($"Input must be at least {TagSize} bytes.", nameof(ciphertextWithTag));
@@ -189,21 +207,39 @@ public sealed class GcmSivModeTransform
             throw new ArgumentException($"Output must be at least {plaintextLength} bytes.", nameof(output));
         EnsureAadProcessed();
 
-        ReadOnlySpan<byte> ciphertext = ciphertextWithTag.Slice(0, plaintextLength);
-        ReadOnlySpan<byte> receivedTag = ciphertextWithTag.Slice(plaintextLength);
-
-        // Decrypt CTR.
-        byte[] ctrIv = BuildCtrIv(receivedTag.ToArray());
-        CtrEncrypt(ciphertext, output.Slice(0, plaintextLength), ctrIv);
-
-        // Recompute and verify tag.
-        byte[] expectedTag = ComputeTag(this._aad.AsSpan(), output.Slice(0, plaintextLength));
-        if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
+        try
         {
-            CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
-            throw new CryptographicException("GCM-SIV authentication tag verification failed.");
+            ReadOnlySpan<byte> ciphertext = ciphertextWithTag.Slice(0, plaintextLength);
+            ReadOnlySpan<byte> receivedTag = ciphertextWithTag.Slice(plaintextLength);
+
+            // Decrypt CTR.
+            byte[] ctrIv = BuildCtrIv(receivedTag.ToArray());
+            CtrEncrypt(ciphertext, output.Slice(0, plaintextLength), ctrIv);
+
+            // Recompute and verify tag.
+            byte[] expectedTag = ComputeTag(this._aad.AsSpan(), output.Slice(0, plaintextLength));
+            if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
+            {
+                CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
+                throw new CryptographicException("GCM-SIV authentication tag verification failed.");
+            }
+            return plaintextLength;
         }
-        return plaintextLength;
+        finally
+        {
+            this._completed = true;
+        }
+    }
+
+    /// <summary>
+    /// Throws <see cref="InvalidOperationException" /> if this transform has already encrypted or
+    /// decrypted a message. GCM-SIV transforms are single-use; create a fresh instance per message.
+    /// </summary>
+    private void ThrowIfCompleted()
+    {
+        if (this._completed)
+            throw new InvalidOperationException(
+                "This GCM-SIV transform has already completed and cannot be reused. Create a new instance per message.");
     }
 
     /// <summary>
