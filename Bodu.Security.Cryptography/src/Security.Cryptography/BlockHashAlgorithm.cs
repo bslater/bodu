@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockHashAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -30,7 +30,22 @@ namespace Bodu.Security.Cryptography;
 /// <item><description><see cref="PadBlock" /> pads the final input segment and encodes the total message length.</description></item>
 /// <item><description><see cref="ProcessFinalBlock" /> finalises the hash computation and returns the resulting digest.</description></item>
 /// </list>
+/// <para>
+/// <strong>When to derive from this class.</strong> Pick <see cref="BlockHashAlgorithm{T}"/> for any classic
+/// Merkle–Damgård cryptographic hash — the family includes the SHA-2 hashes, Tiger, Whirlpool, Snefru, and
+/// similar designs that finalise by appending a length-encoding pad to the last partial block. For the
+/// BLAKE-family pattern (final-block flag, no length-encoding pad) derive from
+/// <see cref="DeferredFinalBlockHashAlgorithm{T}"/> instead. For a keyed Merkle–Damgård hash (Poly1305,
+/// SipHash) derive from <see cref="KeyedBlockHashAlgorithm{T}"/>, which adds key handling on top of this
+/// base. For non-cryptographic block hashes (Fletcher, CRC) the parallel
+/// <c>Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm&lt;T&gt;</c> base is the right pick — it integrates
+/// with <c>System.IO.Hashing.NonCryptographicHashAlgorithm</c> rather than <see cref="HashAlgorithm"/>.
+/// </para>
 /// </remarks>
+/// <seealso cref="BufferedBlockHashAlgorithm{T}"/>
+/// <seealso cref="DeferredFinalBlockHashAlgorithm{T}"/>
+/// <seealso cref="KeyedBlockHashAlgorithm{T}"/>
+/// <seealso cref="KeyedDeferredFinalBlockHashAlgorithm{T}"/>
 public abstract class BlockHashAlgorithm<T>
     : BufferedBlockHashAlgorithm<T>
     where T : BlockHashAlgorithm<T>, new()
@@ -71,15 +86,6 @@ public abstract class BlockHashAlgorithm<T>
     /// </summary>
     protected virtual bool AllowUnalignedFinalBlock => false;
 
-    /// <inheritdoc />
-    /// <remarks>
-    /// The Merkle&#8211;Damg&#229;rd base owns no algorithm-side state &#8212; the chaining variables, IV, and any
-    /// schedule live entirely in derived classes. The empty body satisfies the grandparent's abstract contract.
-    /// </remarks>
-    protected override void OnInitialize()
-    {
-    }
-
     /// <summary>
     /// Processes the entirety of the input <paramref name="source" /> and feeds it into the computation pipeline. This method updates
     /// the internal hash state accordingly by consuming the entire input span.
@@ -105,7 +111,7 @@ public abstract class BlockHashAlgorithm<T>
 
 #if !NET6_0_OR_GREATER
     if (this._finalized)
-        throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+        throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
         this.ProcessBlocks(source);
@@ -125,7 +131,7 @@ public abstract class BlockHashAlgorithm<T>
 
 #if !NET6_0_OR_GREATER
     if (this._finalized)
-        throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_AlreadyFinalized);
+        throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
 
         if (this.ShouldPadFinalBlock())

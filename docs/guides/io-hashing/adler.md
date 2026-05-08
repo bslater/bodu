@@ -4,15 +4,15 @@ title: Using Adler
 
 # Using Adler
 
-The Adler checksum — introduced by Mark Adler for zlib — maintains two running sums, **A** and **B**, reduced modulo a prime. It is cheap, position-dependent (so it catches transpositions), and the canonical <xref:Bodu.IO.Hashing.Adler32> is the checksum embedded in every zlib stream.
+The Adler checksum — introduced by Mark Adler for zlib — maintains two running sums, **A** and **B**, reduced modulo a prime. It is cheap, position-dependent (so it catches transpositions), and the canonical <xref:Bodu.IO.Hashing.Checksums.Adler32> is the checksum embedded in every zlib stream.
 
 **Bodu.IO.Hashing** provides three variants:
 
 | Type | Width | Modulus | Intended use |
 |---|---|---|---|
-| <xref:Bodu.IO.Hashing.Adler32> | 32 bits | 65521 (largest prime below 2¹⁶) | Canonical Adler-32 — zlib, PNG, rsync. |
-| <xref:Bodu.IO.Hashing.Adler32C> | 32 bits | 65536 | SIMD-friendly variant; faster on vector pipelines, **not** wire-compatible with Adler-32. |
-| <xref:Bodu.IO.Hashing.Adler64> | 64 bits | 4294967291 (largest prime below 2³²) | Extended width for long buffers where a 32-bit space is uncomfortable. |
+| <xref:Bodu.IO.Hashing.Checksums.Adler32> | 32 bits | 65521 (largest prime below 2¹⁶) | Canonical Adler-32 — zlib, PNG, rsync. |
+| <xref:Bodu.IO.Hashing.Checksums.Adler32C> | 32 bits | 65536 | SIMD-friendly variant; faster on vector pipelines, **not** wire-compatible with Adler-32. |
+| <xref:Bodu.IO.Hashing.Checksums.Adler64> | 64 bits | 4294967291 (largest prime below 2³²) | Extended width for long buffers where a 32-bit space is uncomfortable. |
 
 All three derive from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> via a shared `Adler<T>` base.
 
@@ -89,9 +89,9 @@ outputStream.Write(trailer);
 
 ## Picking a variant
 
-- **Need interoperability with zlib, PNG, rsync, or any tool that speaks RFC 1950?** Use <xref:Bodu.IO.Hashing.Adler32>. The modulus (65521) and initial state (`A=1, B=0`) are fixed by the specification.
-- **Hashing large buffers in a hot loop on a SIMD-capable CPU?** Use <xref:Bodu.IO.Hashing.Adler32C>. The power-of-two modulus removes the `% 65521` reduction and lets auto-vectorisation stay vectorised. The digest is **not** interchangeable with Adler-32.
-- **Checksumming very long streams where a 32-bit space is uncomfortable?** Use <xref:Bodu.IO.Hashing.Adler64>. Four bytes of digest become eight.
+- **Need interoperability with zlib, PNG, rsync, or any tool that speaks RFC 1950?** Use <xref:Bodu.IO.Hashing.Checksums.Adler32>. The modulus (65521) and initial state (`A=1, B=0`) are fixed by the specification.
+- **Hashing large buffers in a hot loop on a SIMD-capable CPU?** Use <xref:Bodu.IO.Hashing.Checksums.Adler32C>. The power-of-two modulus removes the `% 65521` reduction and lets auto-vectorisation stay vectorised. The digest is **not** interchangeable with Adler-32.
+- **Checksumming very long streams where a 32-bit space is uncomfortable?** Use <xref:Bodu.IO.Hashing.Checksums.Adler64>. Four bytes of digest become eight.
 
 ## Adler vs Fletcher vs CRC
 

@@ -26,10 +26,35 @@ namespace Bodu.IO.Hashing;
 /// The digest is emitted as two consecutive little-endian 64-bit words (<c>First</c> followed by
 /// <c>Second</c>), matching the encoding convention used by <see cref="CityHash64" />.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Output size: 128 bits (16 bytes), little-endian, two 64-bit words.</description></item>
+///   <item><description>Variant: <c>CityHash128</c>.</description></item>
+///   <item><description>Length-dispatched mixing: &lt;128-byte and 128+-byte paths.</description></item>
+///   <item><description>Block size on the long path: 128 bytes.</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose CityHash128.</strong> Pick <see cref="CityHash128"/> for low-collision fingerprinting
+/// of large key spaces — content-addressed storage, deduplication, two-hash cuckoo / split-key schemes that
+/// can use the two 64-bit halves independently. <see cref="MurmurHash3_128"/> is the closest alternative; it
+/// supports a constructor seed but is typically slightly slower on long inputs on 64-bit CPUs.
+/// </para>
 /// <note type="important">
 /// This algorithm is <b>not</b> cryptographically secure and must <b>not</b> be used for password hashing,
 /// digital signatures, or any application requiring adversarial collision resistance.
 /// </note>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.IO.Hashing;
+/// using Bodu.IO.Hashing.Extensions;
+///
+/// var city = new CityHash128();
+/// byte[] fingerprint = city.ComputeHash(blob);
+/// // fingerprint = [low 64 bits || high 64 bits], each little-endian.
+/// </code>
+/// </example>
 /// </remarks>
 public sealed class CityHash128
     : CityHash<CityHash128>

@@ -36,6 +36,7 @@
     <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0' And '$(TargetFramework)' != 'netstandard2.1'">
         <Compile Remove="ThrowHelper.NetStandard.cs" />
     </ItemGroup>
+    <!-- Exclude the BaseEncoding helpers from compilation; they are not part of the published API surface. -->
     <ItemGroup>
         <Compile Remove="Text\**" />
         <None Remove="Text\**" />

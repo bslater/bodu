@@ -1,6 +1,6 @@
 # Articles
 
-Narrative documentation and library overviews complement the auto-generated [API reference](../api/).
+Narrative documentation and library overviews complement the auto-generated [API reference](xref:Bodu).
 
 ## Library overviews
 

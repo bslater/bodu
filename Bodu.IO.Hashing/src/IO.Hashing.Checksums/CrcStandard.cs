@@ -9,8 +9,95 @@ using System.Runtime.Serialization;
 namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
-/// Represents an immutable set of parameters (polynomial, width, reflection, initial value, final XOR) that describe a specific CRC algorithm.
+/// Immutable parameter bundle that fully describes a CRC variant — width, polynomial, initial value, input/output bit
+/// reflection, and final XOR — and serves as the lookup key into the RevEng catalogue used by <see cref="Crc"/>.
 /// </summary>
+/// <remarks>
+/// <para>
+/// Every CRC variant in the wild differs from every other along the same five dimensions — the polynomial, the
+/// initial register value, whether input bits are reflected as they enter the register, whether the final register is
+/// reflected on the way out, and what value the register is XOR-ed with at the end. <c>CRC-32/ISO-HDLC</c> and
+/// <c>CRC-32/BZIP2</c> share a polynomial but disagree on reflection; <c>CRC-16/MODBUS</c> and <c>CRC-16/USB</c> share
+/// nearly everything but the initial value. <see cref="CrcStandard"/> captures one such parameter bundle as an
+/// immutable, equatable, serialisable value, decoupling the choice of variant from the engine that runs it.
+/// </para>
+/// <para>
+/// <strong>Three ways to obtain a standard.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item>
+///     <term>Catalogue properties</term>
+///     <description><see cref="CRC32_ISOHDLC"/>, <see cref="CRC32_ISCSI"/>, <see cref="CRC16_MODBUS"/>,
+///     <see cref="CRC16_KERMIT"/>, <see cref="CRC64_XZ"/>, … — direct named accessors for the common entries that
+///     return the canonical, cached <see cref="CrcStandard"/> instance.</description>
+///   </item>
+///   <item>
+///     <term><see cref="Get(CrcStandards)"/></term>
+///     <description>Materialises any catalogue entry from its <see cref="CrcStandards"/> enum value — useful when the
+///     choice is data-driven (e.g. read from configuration).</description>
+///   </item>
+///   <item>
+///     <term><see cref="FromName(string)"/></term>
+///     <description>Resolves canonical names <em>and</em> published aliases — <c>"CRC-32"</c>, <c>"PKZIP"</c>,
+///     <c>"CRC-32/XZ"</c>, <c>"CRC-32/ADCCP"</c> all return the same <see cref="CRC32_ISOHDLC"/> instance.</description>
+///   </item>
+///   <item>
+///     <term>Direct construction</term>
+///     <description>The
+///     <see cref="CrcStandard(string, int, ulong, ulong, bool, bool, ulong)"/> constructor accepts custom parameters
+///     for variants that are not in the RevEng catalogue. Width must lie within
+///     <see cref="MinSize"/>..<see cref="MaxSize"/>.</description>
+///   </item>
+/// </list>
+/// <para>
+/// <strong>How it pairs with <see cref="Crc"/>.</strong> The hash engine reads <see cref="Polynomial"/> and
+/// <see cref="ReflectIn"/> to fetch (or build) a precomputed lookup table from
+/// <see cref="CrcLookupTableCache"/>, seeds the running register with <see cref="InitialValue"/>, and applies
+/// <see cref="ReflectOut"/> + <see cref="XOrOut"/> when emitting the final digest. Multiple <see cref="Crc"/>
+/// instances configured with the same <see cref="CrcStandard"/> share the same lookup table, so creating fresh
+/// engines for the same standard is inexpensive.
+/// </para>
+/// <para>
+/// <strong>Equality and serialisation.</strong> <see cref="CrcStandard"/> is a value-style type: two instances are
+/// equal iff every parameter matches (the <see cref="Name"/> is informational only and does not affect identity).
+/// <see cref="System.Runtime.Serialization.ISerializable"/> support is provided so a chosen standard can survive
+/// process boundaries unchanged.
+/// </para>
+/// <para>
+/// <strong>Coverage and limits.</strong> Sizes are constrained to <see cref="MinSize"/>..<see cref="MaxSize"/> bits;
+/// any wider variant in the RevEng catalogue (currently only <c>CRC-82/DARC</c>) is intentionally omitted because it
+/// will not fit in the <see cref="ulong"/>-backed register. Instances are immutable and therefore safe to share
+/// across threads.
+/// </para>
+/// <example>
+/// <code language="csharp">
+/// using Bodu.IO.Hashing.Checksums;
+///
+/// // 1. Direct named accessor — most callers want exactly this.
+/// var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
+///
+/// // 2. Data-driven look-up — pick the variant from a configuration value.
+/// CrcStandards configured = Enum.Parse&lt;CrcStandards&gt;(config["CrcVariant"]);
+/// var configuredCrc = new Crc(CrcStandard.Get(configured));
+///
+/// // 3. Look-up by alias — accept legacy or vendor names supplied by users.
+/// CrcStandard pkzip = CrcStandard.FromName("PKZIP");          // same instance as CRC32_ISOHDLC
+/// CrcStandard ccitt = CrcStandard.FromName("CRC-CCITT");      // resolves to CRC16_KERMIT
+///
+/// // 4. Custom variant (not in the RevEng catalogue): a 12-bit CRC with bespoke parameters.
+/// var custom = new CrcStandard(
+///     name: "CRC-12/MY-SPEC",
+///     size: 12,
+///     polynomial:   0x80F,
+///     initialValue: 0x000,
+///     reflectIn: false, reflectOut: false,
+///     xOrOut: 0x000);
+/// </code>
+/// </example>
+/// </remarks>
+/// <seealso cref="Crc"/>
+/// <seealso cref="CrcStandards"/>
+/// <seealso cref="CrcLookupTableCache"/>
 [Serializable]
 public sealed partial class CrcStandard
     : System.Runtime.Serialization.ISerializable

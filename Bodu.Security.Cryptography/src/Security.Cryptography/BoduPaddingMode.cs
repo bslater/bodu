@@ -25,7 +25,17 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="PaddingFactory.Create(BoduPaddingMode)" /> to obtain the matching
 /// <see cref="IPaddingStrategy" /> implementation.
 /// </para>
+/// <para>
+/// <strong>When to use this enum vs the framework <see cref="PaddingMode"/>.</strong> Use
+/// <see cref="PaddingMode"/> for any code path that interoperates with
+/// <see cref="System.Security.Cryptography.SymmetricAlgorithm.Padding"/>; use
+/// <see cref="BoduPaddingMode"/> only when <see cref="ISO7816_4"/> is required. The two are interchangeable
+/// for the first five values — a <see cref="PaddingMode"/> value can be assigned to a
+/// <see cref="BoduPaddingMode"/> by cast and will behave identically.
+/// </para>
 /// </remarks>
+/// <seealso cref="PaddingFactory"/>
+/// <seealso cref="IPaddingStrategy"/>
 public enum BoduPaddingMode
 {
     /// <summary>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SerpentBlockCipher.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -60,12 +60,12 @@ public abstract partial class SerpentBlockCipher
     {
         if (key.Length != this.BlockSize)
             throw new ArgumentException(
-                string.Format(ResourceStrings.CryptographicException_InvalidKeySize, key.Length * 8, this.BlockSize * 8),
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize, key.Length * 8, this.BlockSize * 8),
                 nameof(key));
 
         if (tweak.Length != TweakSizeBytes)
             throw new ArgumentException(
-                string.Format(ResourceStrings.CryptographicException_InvalidTweakSize, tweak.Length * 8, TweakSizeBytes * 8),
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidTweakSize, tweak.Length * 8, TweakSizeBytes * 8),
                 nameof(tweak));
 
         this.TweakSchedule = new uint[5];
@@ -91,7 +91,7 @@ public abstract partial class SerpentBlockCipher
         this.ThrowIfDisposed();
         if (input.Length != this.BlockSize || output.Length != this.BlockSize)
             throw new ArgumentException(
-                string.Format(ResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize));
 
         int w = this.BlockWords;
         int rounds = this.Rounds;
@@ -136,7 +136,7 @@ public abstract partial class SerpentBlockCipher
         this.ThrowIfDisposed();
         if (input.Length != this.BlockSize || output.Length != this.BlockSize)
             throw new ArgumentException(
-                string.Format(ResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize));
 
         int w = this.BlockWords;
         int rounds = this.Rounds;

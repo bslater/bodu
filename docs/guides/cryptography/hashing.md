@@ -16,18 +16,18 @@ This page is the cross-cutting overview — how the families relate, which to ch
 - [Using ASCON-HASH256 and ASCON-HASHA256](ascon.md) — NIST SP 800-232 sponge digests; two variants trading margin for throughput.
 - [Using Merkle trees](merkle-trees.md) — tree-structured streaming integrity.
 
-> **Looking for CRC, Fletcher, Adler, FNV, CityHash, Pearson, Bernstein, BKDR, SDBM, JSHash, Elf64, ApHash, or Pjw32?** Those non-cryptographic families live in the companion <xref:Bodu.IO.Hashing> package, built on <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>. See the [Bodu.IO.Hashing guides](../io-hashing/).
+> **Looking for CRC, Fletcher, Adler, FNV, CityHash, Pearson, Bernstein, BKDR, SDBM, JSHash, Elf64, ApHash, or Pjw32?** Those non-cryptographic families live in the companion <xref:Bodu.IO.Hashing> package, built on <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>. See the [Bodu.IO.Hashing guides](../io-hashing/index.md).
 
 ## Pick the right tool
 
 | If you need… | Use | Why |
 |---|---|---|
-| A fast non-cryptographic fingerprint for hash tables, bucketing, caches | <xref:Bodu.IO.Hashing.Adler32>, <xref:Bodu.IO.Hashing.Fnv1a32>, <xref:Bodu.IO.Hashing.Fnv1a64>, <xref:Bodu.IO.Hashing.CityHash64> | Cheap, well-spread, **not** cryptographic. |
+| A fast non-cryptographic fingerprint for hash tables, bucketing, caches | <xref:Bodu.IO.Hashing.Checksums.Adler32>, <xref:Bodu.IO.Hashing.Fnv1a32>, <xref:Bodu.IO.Hashing.Fnv1a64>, <xref:Bodu.IO.Hashing.CityHash64> | Cheap, well-spread, **not** cryptographic. |
 | A hash-table key or short fingerprint, resistant to collision-DoS | <xref:Bodu.Security.Cryptography.SipHash64>, <xref:Bodu.Security.Cryptography.SipHash128> | Keyed, collision-resistant for short inputs. |
-| A cryptographic digest for signatures, fingerprints, or content addressing | <xref:Bodu.Security.Cryptography.Tiger>, or <xref:System.Security.Cryptography.SHA256?displayProperty=nameWithType> (BCL) | Collision-resistant against active attackers. |
+| A cryptographic digest for signatures, fingerprints, or content addressing | <xref:Bodu.Security.Cryptography.Tiger>, or `System.Security.Cryptography.SHA256` (BCL) | Collision-resistant against active attackers. |
 | A NIST-standardised 256-bit digest with a small state footprint (SP 800-232) | <xref:Bodu.Security.Cryptography.AsconHash256>, <xref:Bodu.Security.Cryptography.AsconHashA256> | Two variants: max margin (`ASCON-HASH256`) or higher throughput (`ASCON-HASHA256`). |
 | A rolling integrity check over a long stream with partial re-verification | <xref:Bodu.Security.Cryptography.MerkleTreeHash>, <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> | Subtree recomputation without rehashing the whole input. |
-| An on-the-wire CRC (zlib, PNG, Modbus, iSCSI, …) or a Fletcher checksum | <xref:Bodu.IO.Hashing.Crc>, <xref:Bodu.IO.Hashing.Fletcher32> | Non-cryptographic, `System.IO.Hashing` contract — see the [Bodu.IO.Hashing guides](../io-hashing/). |
+| An on-the-wire CRC (zlib, PNG, Modbus, iSCSI, …) or a Fletcher checksum | <xref:Bodu.IO.Hashing.Checksums.Crc>, <xref:Bodu.IO.Hashing.Checksums.Fletcher32> | Non-cryptographic, `System.IO.Hashing` contract — see the [Bodu.IO.Hashing guides](../io-hashing/index.md). |
 
 ## Pattern 1 — a classic non-cryptographic fingerprint
 
@@ -81,11 +81,11 @@ using var tiger = new Tiger();     // 192-bit default; set HashSize for 128/160
 byte[] digest = tiger.ComputeHash(data);
 ```
 
-For brand-new work, prefer the BCL's <xref:System.Security.Cryptography.SHA256?displayProperty=nameWithType> or <xref:System.Security.Cryptography.SHA512?displayProperty=nameWithType> — they are hardware-accelerated on most modern CPUs.
+For brand-new work, prefer the BCL's `System.Security.Cryptography.SHA256` or `System.Security.Cryptography.SHA512` — they are hardware-accelerated on most modern CPUs.
 
 ## Pattern 4 — verifying a hash
 
-Computing a hash is half the job; comparing it in constant time is the other half. The `HashAlgorithmExtensions` class (in `Bodu.Security.Cryptography.Extensions`) provides a `VerifyHash` helper that does the comparison with <xref:System.Security.Cryptography.CryptographicOperations.FixedTimeEquals*>:
+Computing a hash is half the job; comparing it in constant time is the other half. The `HashAlgorithmExtensions` class (in `Bodu.Security.Cryptography.Extensions`) provides a `VerifyHash` helper that does the comparison with `CryptographicOperations.FixedTimeEquals`:
 
 ```csharp
 using Bodu.Security.Cryptography;
@@ -146,11 +146,11 @@ byte[] root = merkle.ComputeHash(stream);
 
 Each leaf is a SHA-256 of a 4 KiB block; each internal node is a SHA-256 of two concatenated child hashes. The root changes if any byte of the input changes.
 
-For large inputs where you want to overlap leaf hashing with tree reduction, use <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> — see the [class documentation](../../api/Bodu.Security.Cryptography.ParallelMerkleTreeHash.html) for the swim-lane diagram of how its dispatcher and level-workers interact.
+For large inputs where you want to overlap leaf hashing with tree reduction, use <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> — see the class documentation for the swim-lane diagram of how its dispatcher and level-workers interact.
 
 ## Where to go next
 
 - [Encryption basics](encryption-basics.md) — symmetric encryption in this library.
 - [Cipher block modes](cipher-modes.md) — ECB / CBC / CFB / OFB / CTR with worked examples.
-- [Bodu.IO.Hashing guides](../io-hashing/) — CRC, Fletcher, Adler, FNV, CityHash, and the classic string hashes on `System.IO.Hashing.NonCryptographicHashAlgorithm`.
-- [MerkleTreeHash class doc](../../api/Bodu.Security.Cryptography.MerkleTreeHash.html) · [ParallelMerkleTreeHash class doc](../../api/Bodu.Security.Cryptography.ParallelMerkleTreeHash.html).
+- [Bodu.IO.Hashing guides](../io-hashing/index.md) — CRC, Fletcher, Adler, FNV, CityHash, and the classic string hashes on `System.IO.Hashing.NonCryptographicHashAlgorithm`.
+- <xref:Bodu.Security.Cryptography.MerkleTreeHash> · <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash>.

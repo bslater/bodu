@@ -20,6 +20,32 @@ namespace Bodu.Security.Cryptography;
 /// Implementations must ensure that padding is applied correctly and that unpadding validates or strips padding bytes in accordance
 /// with the scheme’s rules.
 /// </para>
+/// <para>
+/// <strong>Built-in implementations.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description><see cref="Pkcs7Padding"/> — RFC 5652 / PKCS#7 (the de-facto standard).</description></item>
+///   <item><description><see cref="Ansix923Padding"/> — ANSI X.923 (zero pad with length byte).</description></item>
+///   <item><description><see cref="Iso10126Padding"/> — ISO 10126 (random pad with length byte).</description></item>
+///   <item><description><see cref="Iso7816_4Padding"/> — ISO/IEC 7816-4 (<c>0x80</c> sentinel followed by zeros).</description></item>
+///   <item><description><see cref="ZeroPadding"/> — pad with zero bytes; <strong>not</strong> length-recoverable.</description></item>
+///   <item><description><see cref="NoPadding"/> — pass-through; the caller guarantees alignment.</description></item>
+/// </list>
+/// <para>
+/// <strong>Choosing a scheme.</strong> Pick <see cref="Pkcs7Padding"/> for any new design that requires
+/// length-recoverable padding under a confidentiality-only mode (CBC, ECB). Pick <see cref="Iso7816_4Padding"/>
+/// when interoperating with smartcard / EMV / ISO crypto tooling. Pick <see cref="ZeroPadding"/> only when the
+/// plaintext format itself encodes its length (so the trailing zeros can be discarded by the application
+/// layer) — and prefer one of the self-describing schemes otherwise. <see cref="NoPadding"/> is appropriate
+/// when the surrounding mode handles alignment itself (CTR, CTS, AEAD modes).
+/// </para>
+/// <para>
+/// Most callers go through <see cref="System.Security.Cryptography.SymmetricAlgorithm.Padding"/> (which
+/// dispatches via <see cref="PaddingFactory"/>) rather than constructing implementations directly. Direct
+/// use is appropriate when wiring custom transforms that do not extend
+/// <see cref="System.Security.Cryptography.SymmetricAlgorithm"/>. Implementations are stateless and safe to
+/// share across threads.
+/// </para>
 /// </remarks>
 public interface IPaddingStrategy
 {

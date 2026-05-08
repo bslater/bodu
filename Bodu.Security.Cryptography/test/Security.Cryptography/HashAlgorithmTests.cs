@@ -197,6 +197,12 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
                 "HashSize",
                 "InputBlockSize",
                 "OutputBlockSize",
+
+                // IsDisposed is the protected disposed-state probe on BufferedBlockHashAlgorithm{T}.
+                // It exists specifically so derived classes can no-op a second Dispose() without throwing,
+                // so it must remain readable after disposal — the inverse of the rule this test enforces
+                // for every other property.
+                "IsDisposed",
             ])
             .Distinct()
             .ToArray();
@@ -323,8 +329,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             return;
         }
 
-        int coverage = specification.IncrementalCoverageBytes
-            ?? (specification.InputBlockSize > 1 ? specification.InputBlockSize * 8 : 16);
+        int coverage = specification.HashBlockSize > 1 ? specification.HashBlockSize : 16;
         int maxLength = coverage + 1;
         int expectedEntryCount = maxLength + 1;
 

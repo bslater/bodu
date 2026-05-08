@@ -15,7 +15,43 @@ namespace Bodu.Globalization.Calendar;
 /// registry intentionally exposes registration as a constructor-time concern; consumers wiring up dependency injection should populate
 /// the registry once during start-up and pass it to <see cref="NotableDateService" />.
 /// </para>
+/// <para>
+/// At resolution time the service consults this registry whenever a <see cref="NotableDateRule" /> declares
+/// <see cref="DateResolutionStrategy.Algorithm" />. The looked-up <see cref="INotableDateAlgorithm" /> supplies the anchor date
+/// only — every other field on the emitted <see cref="NotableDate" /> (name, category, tags, territory, calendar, non-working
+/// flag, duration, observance adjustments) comes from the rule itself. This means a single registered algorithm can power any
+/// number of rules: Easter Sunday, Easter Monday (offset +1 from Easter Sunday), Good Friday (offset −2), and Holy Saturday
+/// (offset −1) typically all resolve through one registered <c>"easter-sunday"</c> algorithm.
+/// </para>
 /// </remarks>
+/// <example>
+/// <para>
+/// Register two Easter algorithms and bind a rule to one by key. The resulting <see cref="NotableDate" /> carries the date
+/// produced by the algorithm, but its name, category, and territory come from the rule:
+/// </para>
+/// <code>
+/// // Compose the registry once at start-up:
+/// NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
+///     .Register("easter-sunday",   new GregorianEasterSundayNotableDateProvider())
+///     .Register("orthodox-easter", new OrthodoxEasterSundayNotableDateProvider());
+///
+/// // Author a rule that resolves through the algorithm:
+/// NotableDateRule easterSunday = new NotableDateRule
+/// {
+///     Name = "Easter Sunday",
+///     Strategy = DateResolutionStrategy.Algorithm,
+///     Category = NotableDateCategory.Religious,
+///     AlgorithmKey = "easter-sunday",
+///     Tags = ImmutableHashSet.Create("Christian", "Easter"),
+/// };
+///
+/// // Wire registry into the service so DateResolutionStrategy.Algorithm rules can be resolved:
+/// NotableDateService service = new NotableDateService(
+///     ruleProviders: new[] { new InMemoryRuleProvider(new[] { easterSunday }) },
+///     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+///     algorithmRegistry: registry);
+/// </code>
+/// </example>
 public sealed class NotableDateAlgorithmRegistry : INotableDateAlgorithmRegistry
 {
 	/// <summary>The case-insensitive key-to-algorithm mapping maintained by this registry.</summary>
@@ -53,7 +89,7 @@ public sealed class NotableDateAlgorithmRegistry : INotableDateAlgorithmRegistry
 	public NotableDateAlgorithmRegistry Register(string key, INotableDateAlgorithm algorithm)
 	{
 		if (string.IsNullOrWhiteSpace(key))
-			throw new ArgumentException(CalendarStrings.ArgumentException_KeyNullOrWhiteSpace, nameof(key));
+			throw new ArgumentException(CalendarResourceStrings.ArgumentException_KeyNullOrWhiteSpace, nameof(key));
 		if (algorithm is null)
 			throw new ArgumentNullException(nameof(algorithm));
 

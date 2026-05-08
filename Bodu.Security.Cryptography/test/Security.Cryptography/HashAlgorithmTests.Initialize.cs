@@ -140,4 +140,69 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         Assert.IsNotNull(second);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="HashAlgorithm.Initialize" /> discards input previously supplied through
+    /// <see cref="HashAlgorithm.TransformBlock(byte[], int, int, byte[]?, int)" />.
+    /// </summary>
+    [TestMethod]
+    public void Initialize_WhenCalledAfterTransformBlock_ShouldDiscardPriorInput()
+    {
+        using var algorithm = CreateAlgorithm();
+
+        algorithm.TransformBlock(CryptoTestUtilities.ByteSequence256, 0, 128, null, 0);
+        algorithm.Initialize();
+
+        _ = algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+
+        CollectionAssert.AreEqual(ExpectedEmptyInputHash, algorithm.Hash);
+    }
+
+    /// <summary>
+    /// Verifies that calling <see cref="HashAlgorithm.Initialize" /> before streaming input allows a normal
+    /// hash operation to complete successfully.
+    /// </summary>
+    [TestMethod]
+    public void Initialize_WhenCalledBeforeTransformBlock_ShouldAllowNormalHashing()
+    {
+        byte[] block1 = CryptoTestUtilities.ByteSequence256[..128];
+        byte[] block2 = CryptoTestUtilities.ByteSequence256[128..256];
+
+        byte[] combined = new byte[block1.Length + block2.Length];
+        Buffer.BlockCopy(block1, 0, combined, 0, block1.Length);
+        Buffer.BlockCopy(block2, 0, combined, block1.Length, block2.Length);
+
+        using var expectedAlgorithm = CreateAlgorithm();
+        byte[] expected = expectedAlgorithm.ComputeHash(combined);
+
+        using var algorithm = CreateAlgorithm();
+
+        algorithm.Initialize();
+
+        _ = algorithm.TransformBlock(block1, 0, block1.Length, null, 0);
+        _ = algorithm.TransformFinalBlock(block2, 0, block2.Length);
+
+        CollectionAssert.AreEqual(expected, algorithm.Hash);
+    }
+
+    /// <summary>
+    /// Verifies that calling <see cref="HashAlgorithm.Initialize" /> multiple times before hashing leaves the
+    /// algorithm in a valid clean state.
+    /// </summary>
+    [TestMethod]
+    public void Initialize_WhenCalledTwice_ShouldAllowNormalHashing()
+    {
+        byte[] input = CryptoTestUtilities.ByteSequence256[..128];
+
+        using var expectedAlgorithm = CreateAlgorithm();
+        byte[] expected = expectedAlgorithm.ComputeHash(input);
+
+        using var algorithm = CreateAlgorithm();
+
+        algorithm.Initialize();
+        algorithm.Initialize();
+
+        _ = algorithm.TransformFinalBlock(input, 0, input.Length);
+
+        CollectionAssert.AreEqual(expected, algorithm.Hash);
+    }
 }

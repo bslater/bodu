@@ -27,7 +27,7 @@ For the auto-generated API reference, see the [Bodu.Security.Cryptography namesp
 </div>
 
 <div class="bodu-card">
-  <h3><a href="cipher-modes.html">Cipher block modes</a></h3>
+  <h3><a href="cipher-modes.md">Cipher block modes</a></h3>
   <p>ECB, CBC, CFB, OFB, CTR — one worked round-trip per mode, with notes on when each is appropriate and when it is not.</p>
 </div>
 

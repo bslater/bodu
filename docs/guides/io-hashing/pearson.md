@@ -113,7 +113,7 @@ pearson.Reset();                             // back to the initial offsets
 
 - **vs <xref:Bodu.IO.Hashing.Fnv1a32>** — FNV-1a has better distribution on short inputs and no table memory footprint. Pearson wins when you need a specific output width (e.g. 96 or 160 bits) without stretching a native-width hash.
 - **vs <xref:Bodu.IO.Hashing.CityHash64>** — CityHash is much faster on long inputs and distributes better. Reach for Pearson when you want the table to be a tunable parameter — e.g. in academic work on hash-function quality.
-- **vs <xref:Bodu.IO.Hashing.Crc>** — CRC is specified for wire formats and has provable burst-error detection. Pearson is a general-purpose fingerprint, not a checksum with error-detection guarantees.
+- **vs <xref:Bodu.IO.Hashing.Checksums.Crc>** — CRC is specified for wire formats and has provable burst-error detection. Pearson is a general-purpose fingerprint, not a checksum with error-detection guarantees.
 
 Pearson is **not cryptographic**. Choosing a different table does not make it adversary-resistant — an attacker who knows the table can construct collisions immediately. For adversarial settings, use <xref:Bodu.Security.Cryptography.SipHash64>.
 

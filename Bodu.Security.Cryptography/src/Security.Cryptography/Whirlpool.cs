@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Whirlpool.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -30,6 +30,21 @@ namespace Bodu.Security.Cryptography;
 /// hashing has started throws <see cref="CryptographicUnexpectedOperationException" />. Calling
 /// <see cref="Initialize" /> returns the instance to the reconfigurable state.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Output size: 512 bits (64 bytes), fixed.</description></item>
+///   <item><description>Block size: 64 bytes (512 bits); 256-bit big-endian length field.</description></item>
+///   <item><description>Internal cipher <c>W</c> on the wide-trail (Rijndael-family) design principle.</description></item>
+///   <item><description>Selectable revision: <see cref="WhirlpoolVersion.WhirlpoolInfo1"/> (Whirlpool-0, 2000), <see cref="WhirlpoolVersion.WhirlpoolInfo2"/> (Whirlpool-T, 2001), or <see cref="WhirlpoolVersion.WhirlpoolInfo3"/> (ISO/IEC 10118-3, 2003 — default).</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose Whirlpool.</strong> Pick Whirlpool when interoperability with software that produces
+/// or expects ISO/IEC 10118-3 Whirlpool digests is required — TrueCrypt-era disk encryption metadata, certain
+/// European e-government standards, and some content-addressed stores. For a modern 512-bit cryptographic hash
+/// without an interop constraint use SHA-512 or <see cref="Blake2b"/>; both are faster on contemporary hardware.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
@@ -48,7 +63,6 @@ public sealed partial class Whirlpool
     private readonly ulong[] _state = new ulong[8];
     private WhirlpoolVersion _version = WhirlpoolVersion.WhirlpoolInfo3;
     private bool _inputConsumed;
-    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Whirlpool" /> class configured for
@@ -67,10 +81,23 @@ public sealed partial class Whirlpool
     public override bool CanTransformMultipleBlocks => true;
 
     /// <inheritdoc />
-    public override int InputBlockSize => BlockSizeBytesValue;
-
-    /// <inheritdoc />
-    public override int OutputBlockSize => HashSizeBytesValue;
+    /// <remarks>
+    /// Returns one of <c>"Whirlpool-0"</c>, <c>"Whirlpool-T"</c>, or <c>"Whirlpool"</c> matching the configured
+    /// <see cref="Version" /> — corresponding to the 2000, 2001, and ISO/IEC 10118-3 (2003) revisions respectively.
+    /// </remarks>
+    public override string AlgorithmName
+    {
+        get
+        {
+            this.ThrowIfDisposed();
+            return this._version switch
+            {
+                WhirlpoolVersion.WhirlpoolInfo1 => "Whirlpool-0",
+                WhirlpoolVersion.WhirlpoolInfo2 => "Whirlpool-T",
+                _ => "Whirlpool",
+            };
+        }
+    }
 
     /// <summary>
     /// Gets or sets the published <see cref="WhirlpoolVersion" /> used to compute the hash value.
@@ -103,7 +130,7 @@ public sealed partial class Whirlpool
         {
             this.ThrowIfDisposed();
             if (this._inputConsumed)
-                throw new CryptographicUnexpectedOperationException(ResourceStrings.CryptographicException_ReconfigurationNotAllowed);
+                throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_ReconfigurationNotAllowed);
             ThrowHelper.ThrowIfEnumValueIsUndefined(value);
 
             this._version = value;
@@ -111,9 +138,9 @@ public sealed partial class Whirlpool
     }
 
     /// <inheritdoc />
+    /// <remarks>Clears the eight 64-bit chaining variables and unlatches the <see cref="Version" /> setter.</remarks>
     public override void Initialize()
     {
-        this.ThrowIfDisposed();
         base.Initialize();
         Array.Clear(this._state);
         this._inputConsumed = false;
@@ -142,16 +169,13 @@ public sealed partial class Whirlpool
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.IsDisposed) return;
 
         if (disposing)
         {
             CryptoHelpers.Clear(this._state);
-            CryptoHelpers.ClearAndNullify(ref this.HashValue);
-            this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
         base.Dispose(disposing);
     }
 

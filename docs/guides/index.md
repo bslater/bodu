@@ -296,6 +296,49 @@ Cryptographic primitives with a formal adversary model — block ciphers, AEAD c
 ## Bodu.Globalization.Calendar
 
 Rule-driven notable date (public holiday, observance, festival) resolution for any year, territory, or calendar system.
+  <h3><a href="io-hashing/index.md">Overview</a></h3>
+  <p>Namespace map (<code>Bodu.IO.Hashing</code>, <code>.Checksums</code>, <code>.CheckDigits</code>) — key types and which guide covers each.</p>
+</div>
+
+</div>
+
+### `Bodu.IO.Hashing` — Fingerprints
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="io-hashing/fnv.md">Using FNV</a></h3>
+  <p>FNV-1 and FNV-1a at 32- and 64-bit widths — the textbook constant-memory fingerprint.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="io-hashing/cityhash.md">Using CityHash</a></h3>
+  <p>32-, 64-, and 128-bit Google CityHash — SIMD-friendly fingerprint for long inputs.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="io-hashing/murmurhash3.md">Using MurmurHash3</a></h3>
+  <p>32- and x64-128-bit MurmurHash3 — seeded, excellent avalanche.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="io-hashing/xxhash.md">Using XxHash</a></h3>
+  <p>XxHash32 and XxHash64 — high-throughput seeded fingerprints.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="io-hashing/pearson.md">Using Pearson</a></h3>
+  <p>Table-driven hash with output widths from 8 to 2048 bits.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="io-hashing/string-hashes.md">Classic string hashes</a></h3>
+  <p>Bernstein, BKDR, SDBM, JSHash, Elf64, ApHash, PJW.</p>
+</div>
+
+</div>
+
+### `Bodu.IO.Hashing.Checksums` — Checksums
 
 <div class="bodu-cards">
 

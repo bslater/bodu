@@ -32,6 +32,21 @@ namespace Bodu.Security.Cryptography;
 /// Although no longer recommended for new security-sensitive applications, Tiger has not been broken in the classical collision
 /// sense and is still useful for legacy interoperability and as a fast integrity hash.
 /// </para>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Output size: 128, 160, or 192 bits — internally always 192 bits, then truncated.</description></item>
+///   <item><description>Block size: 64 bytes (512 bits); three 64-bit state variables.</description></item>
+///   <item><description>Three passes per block, eight S-box rounds per pass; optimised for 64-bit hosts.</description></item>
+///   <item><description>Padding variant: <see cref="TigerHashingVariant.Tiger"/> (<c>0x01</c>) or <see cref="TigerHashingVariant.Tiger2"/> (<c>0x80</c>).</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose Tiger.</strong> Pick Tiger only for legacy interoperability — TigerTree (Merkle hash
+/// of Tiger-192 leaves) is still seen in older P2P and content-addressed storage systems. For any new security
+/// design use a SHA-2 family member or <see cref="Blake2b"/>; for fast non-cryptographic fingerprinting the
+/// algorithms in <c>Bodu.IO.Hashing</c> are usually a better fit.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
@@ -47,7 +62,6 @@ public sealed partial class Tiger
 
     private static readonly int[] ValidHashSizes = { 128, 160, 192 };
 
-    private bool _disposed = false;
     private ulong _state0 = 0x0123456789ABCDEF;
     private ulong _state1 = 0xFEDCBA9876543210;
     private ulong _state2 = 0xF096A5B4C3B2E187;
@@ -70,7 +84,7 @@ public sealed partial class Tiger
     {
         if (Array.IndexOf(ValidHashSizes, hashSize) == -1)
             throw new ArgumentOutOfRangeException(nameof(hashSize),
-                string.Format(ResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
 
         this.HashSizeValue = hashSize;
     }
@@ -89,7 +103,7 @@ public sealed partial class Tiger
     /// finalization to match the configured <see cref="HashSize" />.
     /// </para>
     /// </remarks>
-    public string AlgorithmName
+    public override string AlgorithmName
     {
         get
         {
@@ -103,12 +117,6 @@ public sealed partial class Tiger
 
     /// <inheritdoc />
     public override bool CanTransformMultipleBlocks => true;
-
-    /// <inheritdoc />
-    public override int InputBlockSize => 64;
-
-    /// <inheritdoc />
-    public override int OutputBlockSize => this.HashSizeValue / 8;
 
     /// <summary>
     /// Gets or sets the size, in bits, of the final computed hash output.
@@ -135,7 +143,7 @@ public sealed partial class Tiger
 
             if (Array.IndexOf(ValidHashSizes, value) == -1)
                 throw new ArgumentOutOfRangeException(nameof(value),
-                    string.Format(ResourceStrings.CryptographicException_InvalidHashSize, value, string.Join(", ", ValidHashSizes)));
+                    string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, value, string.Join(", ", ValidHashSizes)));
 
             this.HashSizeValue = value;
         }
@@ -185,14 +193,10 @@ public sealed partial class Tiger
     }
 
     /// <inheritdoc />
+    /// <remarks>Restores the three 64-bit chaining variables to their Tiger-specified initial constants.</remarks>
     public override void Initialize()
     {
-        this.ThrowIfDisposed();
         base.Initialize();
-#if !NET6_0_OR_GREATER
-        State = 0;
-        finalized = false;
-#endif
         this._state0 = 0x0123456789ABCDEF;
         this._state1 = 0xFEDCBA9876543210;
         this._state2 = 0xF096A5B4C3B2E187;
@@ -206,16 +210,13 @@ public sealed partial class Tiger
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.IsDisposed) return;
+
         if (disposing)
         {
-            CryptoHelpers.ClearAndNullify(ref this.HashValue);
-
             this._state0 = this._state1 = this._state2 = 0;
-            this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
         base.Dispose(disposing);
     }
 

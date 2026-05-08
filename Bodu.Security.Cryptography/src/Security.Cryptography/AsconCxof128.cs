@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsconCxof128.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -32,6 +32,24 @@ namespace Bodu.Security.Cryptography;
 /// <item><description>Call <see cref="AsconXof{T}.Squeeze" /> to produce output.</description></item>
 /// <item><description>Call <see cref="AsconXof{T}.Initialize" /> to reset for reuse.</description></item>
 /// </list>
+/// <para>
+/// <strong>Parameters at a glance.</strong>
+/// </para>
+/// <list type="bullet">
+///   <item><description>Output size: variable, any positive multiple of 8 bits.</description></item>
+///   <item><description>Customisation string: optional bytes absorbed before message data, domain-separates outputs.</description></item>
+///   <item><description>State: 320-bit sponge; rate: 8 bytes (64 bits).</description></item>
+///   <item><description>Permutation: Ascon-p12 for transitions; Ascon-p8 between absorption rounds.</description></item>
+///   <item><description>Specification: NIST SP 800-232 (ASCON family).</description></item>
+/// </list>
+/// <para>
+/// <strong>When to choose Ascon-CXOF128.</strong> Pick the customisable XOF when you need multiple
+/// independent output streams from one primitive — KMAC-style domain separation per protocol layer,
+/// per-purpose KDFs (signing-key vs. encryption-key vs. binding-tag), or hash-based DRBGs that must not
+/// collide across applications. For uncustomised XOF output use <see cref="AsconXof128"/>; for fixed-length
+/// 256-bit hashes use <see cref="AsconHash256"/>; for the AEAD member of the suite use
+/// <see cref="AsconAead128"/>.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
@@ -87,7 +105,7 @@ public sealed class AsconCxof128 : AsconXof<AsconCxof128>
     {
         this.ThrowIfDisposed();
         if (this._customized || this._absorbed)
-            throw new InvalidOperationException(ResourceStrings.CryptographicException_XofCustomizationAfterAbsorb);
+            throw new InvalidOperationException(CryptoResourceStrings.CryptographicException_XofCustomizationAfterAbsorb);
 
         // Absorb Z through the standard sponge pipeline, then finalize the customization
         // phase with Ascon padding and pb rounds to close the customization domain.

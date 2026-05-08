@@ -92,6 +92,8 @@ For the auto-generated API reference, see the [Bodu.IO.Hashing namespace page](.
   <p>Luhn, Damm, Verhoeff, EAN, GTIN, UPC, ISIN, ABA routing — single-character validators. Plus IBAN, ISBN, SEDOL, CUSIP, LEI from <code>Bodu.IO.Hashing.Checksums</code>.</p>
 </div>
 
+  <h3><a href="fletcher.md">Using Fletcher</a></h3>
+  <p>Twin-accumulator checksums in 16, 32, and 64 bits — catches transpositions a simple sum or XOR misses.</p>
 </div>
 
 ## Common lifecycle
