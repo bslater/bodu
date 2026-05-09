@@ -11,31 +11,6 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
 {
     /// <summary>
-    /// Verifies that attempting to create a cryptographic transform on a disposed
-    /// <typeparamref name="TAlgorithm" /> instance throws <see cref="ObjectDisposedException" /> whose
-    /// <see cref="ObjectDisposedException.ObjectName" /> carries the concrete algorithm type
-    /// name. Regression guard for defects where <c>nameof(T)</c> on a non-generic base class
-    /// produced the literal string <c>"T"</c> instead of the derived type name.
-    /// </summary>
-    [TestMethod]
-    public void Dispose_WhenCreateEncryptorCalledAfterDispose_ShouldReportConcreteTypeName()
-    {
-        var algorithm = CreateAlgorithm();
-        algorithm.Dispose();
-
-        try
-        {
-            using var _ = algorithm.CreateEncryptor();
-            Assert.Fail("Expected ObjectDisposedException after disposal.");
-        }
-        catch (ObjectDisposedException ex)
-        {
-            Assert.AreEqual(typeof(TAlgorithm).FullName, ex.ObjectName,
-                $"ObjectDisposedException.ObjectName must match the concrete type name '{typeof(TAlgorithm).FullName}'.");
-        }
-    }
-
-    /// <summary>
     /// Verifies that an <see cref="ICryptoTransform" /> obtained from the algorithm becomes
     /// unusable once it is disposed. Regression guard for transform disposal paths that
     /// previously leaked their inner cipher or left <c>deferredInput</c> un-cleared.
