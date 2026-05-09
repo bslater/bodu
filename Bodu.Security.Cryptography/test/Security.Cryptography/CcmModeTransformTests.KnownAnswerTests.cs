@@ -86,6 +86,7 @@ public sealed partial class CcmModeTransformTests
     /// Verifies that <see cref="CcmModeTransform.Encrypt" />, EmptyPlaintextAndAad, TagShouldBe16Bytes, returns the expected value.
     /// </summary>
     [TestMethod]
+    [TestCategory("Regression")]
     public void Encrypt_EmptyPlaintextAndAad_TagShouldBe16Bytes()
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);

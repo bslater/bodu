@@ -89,6 +89,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     /// <param name="answer">The vector under test, or <see langword="null" /> when the subclass declares no
     /// Transform-layer KATs (in which case the test asserts <see cref="Assert.Inconclusive(string)" />).</param>
     [TestMethod]
+    [TestCategory("Regression")]
     [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerDisplayName))]
     public void TransformFinalBlock_WhenEncryptingKnownAnswer_ShouldProduceExpectedCiphertext(BlockCipherKnownAnswer? answer)
     {
@@ -117,6 +118,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     /// <param name="answer">The vector under test, or <see langword="null" /> when the subclass declares no
     /// Transform-layer KATs (in which case the test asserts <see cref="Assert.Inconclusive(string)" />).</param>
     [TestMethod]
+    [TestCategory("Regression")]
     [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerDisplayName))]
     public void TransformFinalBlock_WhenDecryptingKnownAnswer_ShouldRecoverExpectedPlaintext(BlockCipherKnownAnswer? answer)
     {

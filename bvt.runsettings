@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <RunConfiguration>
+    <!-- Use all available logical processors -->
+    <MaxCpuCount>0</MaxCpuCount>
+
+    <!-- Optional: Disable app domain creation to improve test performance -->
+    <DisableAppDomain>true</DisableAppDomain>
+
+    <!-- Kill the test session if it runs longer than 10 minutes per assembly -->
+    <TestSessionTimeout>600000</TestSessionTimeout>
+
+    <!--
+      Build verification (BVT): runs every test that is NOT tagged Regression or Stress. This is the default
+      build/CI run: structural, exception, property, and contract tests stay in; exhaustive known-answer
+      catalogues, multi-decade calendar tables, large parameter sweeps, and long stress loops stay out.
+      Pass this file via the dotnet test settings switch, e.g. /p:RunSettingsFilePath=bvt.runsettings.
+    -->
+    <TestCaseFilter>TestCategory!=Regression&amp;TestCategory!=Stress</TestCaseFilter>
+  </RunConfiguration>
+</RunSettings>

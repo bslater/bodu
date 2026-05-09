@@ -24,6 +24,7 @@ public sealed partial class CtsModeTransformTests
     /// exercises the ciphertext-stealing branch of the implementation.
     /// </summary>
     [TestMethod]
+    [TestCategory("Regression")]
     public void Transform_WithRealAesCipher_NonAlignedInput_ShouldRoundTrip()
     {
         byte[] key = new byte[16];

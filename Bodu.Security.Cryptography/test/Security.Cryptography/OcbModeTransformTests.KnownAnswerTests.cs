@@ -212,6 +212,7 @@ public sealed partial class OcbModeTransformTests
     /// by RFC 7253 §2.4 when TAGLEN is not a multiple of 128 bits.
     /// </remarks>
     [TestMethod]
+    [TestCategory("Regression")]
     [DynamicData(nameof(OcbKatData), DynamicDataDisplayName = nameof(GetKatDisplayName))]
     public void Encrypt_WithRfc7253Vector_ShouldMatchExpected(
         string keyHex, string ivHex, string aadHex, string ptHex,
@@ -246,6 +247,7 @@ public sealed partial class OcbModeTransformTests
     /// hex string, guarding against any accidental size mismatch in the test data.
     /// </remarks>
     [TestMethod]
+    [TestCategory("Regression")]
     [DynamicData(nameof(OcbKatData), DynamicDataDisplayName = nameof(GetKatDisplayName))]
     public void Decrypt_WithRfc7253Vector_ShouldRecoverPlaintext(
         string keyHex, string ivHex, string aadHex, string ptHex,

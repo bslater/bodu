@@ -50,6 +50,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <param name="body">The body characters.</param>
     /// <param name="expectedCheck">The expected check code (unused in this cross-check).</param>
     [TestMethod]
+    [TestCategory("Regression")]
     [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
     public void GetCurrentCheckDigits_SpanAndStringOverloads_ShouldAgree(string name, string body, string expectedCheck)
     {

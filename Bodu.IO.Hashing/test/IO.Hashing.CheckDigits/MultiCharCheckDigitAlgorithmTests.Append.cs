@@ -31,6 +31,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <param name="body">The body characters to append.</param>
     /// <param name="expectedCheck">The check code the algorithm is expected to emit.</param>
     [TestMethod]
+    [TestCategory("Regression")]
     [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
     public void Append_WhenKnownAnswerIsAppendedInFull_ShouldProduceExpectedCheckDigits(string name, string body, string expectedCheck)
     {
@@ -50,6 +51,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <param name="body">The body characters to append.</param>
     /// <param name="expectedCheck">The check code the algorithm is expected to emit.</param>
     [TestMethod]
+    [TestCategory("Regression")]
     [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
     public void Append_WhenKnownAnswerIsAppendedOneCharAtATime_ShouldProduceExpectedCheckDigits(string name, string body, string expectedCheck)
     {
@@ -69,6 +71,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <param name="body">The body characters to append.</param>
     /// <param name="expectedCheck">The check code the algorithm is expected to emit.</param>
     [TestMethod]
+    [TestCategory("Regression")]
     [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
     public void Append_WhenKnownAnswerIsSplitAcrossTwoChunks_ShouldProduceExpectedCheckDigits(string name, string body, string expectedCheck)
     {
