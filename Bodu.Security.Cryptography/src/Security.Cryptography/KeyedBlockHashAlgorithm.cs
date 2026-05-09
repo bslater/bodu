@@ -45,14 +45,19 @@ public abstract class KeyedBlockHashAlgorithm<T>
     /// <summary>
     /// Internal storage for the key used by the algorithm. Always assigned via defensive copy and cleared on disposal.
     /// </summary>
-    protected byte[] KeyValue = null!;
+    /// <remarks>
+    /// Declared <see cref="byte" />[] nullable to honestly reflect that the field can be observed in three states:
+    /// <see langword="null" /> on a freshly-constructed instance whose constructor has not yet seeded a key, after
+    /// <see cref="Dispose(bool)" /> has cleared it, and between assignments. The <see cref="Key" /> getter and
+    /// <see cref="Initialize" /> validation both treat a <see langword="null" /> value as a contract violation and
+    /// throw a <see cref="CryptographicException" />.
+    /// </remarks>
+    protected byte[]? KeyValue;
 
     /// <summary>
     /// Holds the required key size, in bytes, that the derived algorithm accepts. Supplied via the constructor.
     /// </summary>
     protected readonly int KeySizeValue;
-
-    private bool _disposed = false;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="KeyedBlockHashAlgorithm{T}" /> class with the specified input block size and
@@ -103,6 +108,10 @@ public abstract class KeyedBlockHashAlgorithm<T>
         get
         {
             this.ThrowIfDisposed();
+
+            if (this.KeyValue is null)
+                throw new CryptographicException(CryptoResourceStrings.CryptographicException_KeyNotSet);
+
             return this.KeyValue.Copy();
         }
 
@@ -137,15 +146,10 @@ public abstract class KeyedBlockHashAlgorithm<T>
     /// </exception>
     public override void Initialize()
     {
-        this.ThrowIfDisposed();
+        // base.Initialize() throws ObjectDisposedException on a disposed instance and clears the residual
+        // buffer and counters. Derived classes follow the BCL convention of calling base.Initialize() and
+        // then resetting their own state in their own Initialize override.
         base.Initialize();
-
-#if !NET6_0_OR_GREATER
-        // Reset state and finalised flag so a freshly-initialised instance may accept
-        // new input. On .NET 6+ the framework manages these transitions automatically.
-        this.State = 0;
-        this.finalized = false;
-#endif
 
         // A keyed MAC is unusable without a key. We refuse to silently regenerate one:
         // callers must explicitly set Key (or invoke GenerateKey on subclasses that
@@ -184,14 +188,13 @@ public abstract class KeyedBlockHashAlgorithm<T>
     /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.IsDisposed) return;
 
         if (disposing)
         {
-            CryptoHelpers.ClearAndNullify(ref this.KeyValue!);
+            CryptoHelpers.ClearAndNullify(ref this.KeyValue);
         }
 
-        this._disposed = true;
         base.Dispose(disposing);
     }
 }

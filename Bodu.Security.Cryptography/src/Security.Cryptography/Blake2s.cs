@@ -7,6 +7,7 @@
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -127,6 +128,17 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
     /// <inheritdoc />
     public override bool CanTransformMultipleBlocks => true;
 
+    /// <inheritdoc />
+    /// <remarks>The format is <c>"BLAKE2s-<i>n</i>"</c>, where <i>n</i> is the configured digest size in bits.</remarks>
+    public override string AlgorithmName
+    {
+        get
+        {
+            this.ThrowIfDisposed();
+            return $"BLAKE2s-{this.HashSizeValue}";
+        }
+    }
+
     /// <summary>
     /// Gets or sets the size, in bits, of the final computed hash output.
     /// </summary>
@@ -187,11 +199,11 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
     /// </remarks>
     protected override void Dispose(bool disposing)
     {
+        if (this.IsDisposed) return;
+
         if (disposing)
         {
             CryptoHelpers.Clear(this._h);
-            CryptoHelpers.ClearAndNullify(ref this.HashValue);
-            this.HashSizeValue = 0;
         }
 
         base.Dispose(disposing);
@@ -318,22 +330,12 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
     private static void G(Span<uint> v, int a, int b, int c, int d, uint x, uint y)
     {
         v[a] += v[b] + x;
-        v[d] = RotateRight(v[d] ^ v[a], 16);
+        v[d] = (v[d] ^ v[a]).RotateBitsRightUnchecked(16);
         v[c] += v[d];
-        v[b] = RotateRight(v[b] ^ v[c], 12);
+        v[b] = (v[b] ^ v[c]).RotateBitsRightUnchecked(12);
         v[a] += v[b] + y;
-        v[d] = RotateRight(v[d] ^ v[a], 8);
+        v[d] = (v[d] ^ v[a]).RotateBitsRightUnchecked(8);
         v[c] += v[d];
-        v[b] = RotateRight(v[b] ^ v[c], 7);
+        v[b] = (v[b] ^ v[c]).RotateBitsRightUnchecked(7);
     }
-
-    /// <summary>
-    /// Rotates a 32-bit unsigned integer right by the specified number of bits.
-    /// </summary>
-    /// <param name="value">The value to rotate.</param>
-    /// <param name="bits">The number of positions to rotate right.</param>
-    /// <returns>The rotated value.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static uint RotateRight(uint value, int bits) =>
-        (value >> bits) | (value << (32 - bits));
 }
