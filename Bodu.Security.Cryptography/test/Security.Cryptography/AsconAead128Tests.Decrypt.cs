@@ -280,5 +280,4 @@ public partial class AsconAead128Tests
         foreach (byte b in recovered)
             Assert.AreEqual(0, b, "Decrypt must zero the destination buffer on tag mismatch.");
     }
-
 }
