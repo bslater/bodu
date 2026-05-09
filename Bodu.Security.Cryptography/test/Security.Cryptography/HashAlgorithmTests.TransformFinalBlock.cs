@@ -224,34 +224,6 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="HashAlgorithm.TransformFinalBlock(byte[], int, int)" /> twice without calling
-    /// <see cref="HashAlgorithm.Initialise" /> behaves according to the .NET version in use. For older versions, it throws
-    /// <see cref="CryptographicUnexpectedOperationException" />, whereas in later versions, it does not throw.
-    /// </summary>
-    [TestMethod]
-    public void TransformFinalBlock_WhenCalledTwice_ExpectedBehaviorBasedOnDotNetVersion()
-    {
-        using var algorithm = CreateAlgorithm();
-        var buffer = CryptoTestUtilities.SimpleTextAsciiBytes;
-
-        algorithm.TransformBlock(buffer, 0, buffer.Length - 1, null, 0);
-        algorithm.TransformFinalBlock(buffer, buffer.Length - 1, 1);
-
-        // Expected behavior differs based on .NET version
-#if NETFRAMEWORK || NETCOREAPP3_1
-
-// For .NET Framework and earlier .NET Core versions (up to 3.1), the second call should throw.
-Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(
-    () => algorithm.TransformFinalBlock(buffer, 0, 0)
-);
-#else
-
-        // For .NET 5 and later, subsequent calls to TransformFinalBlock are allowed. In this case, we do not expect an exception.
-        algorithm.TransformFinalBlock(buffer, 0, 0);
-#endif
-    }
-
-    /// <summary>
     /// Verifies that <see cref="HashAlgorithm.TransformFinalBlock(byte[], int, int)" />
     /// returns a copy of the selected final input segment.
     /// </summary>

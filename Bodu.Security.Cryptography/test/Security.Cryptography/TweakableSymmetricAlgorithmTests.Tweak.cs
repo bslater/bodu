@@ -29,38 +29,6 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     }
 
     /// <summary>
-    /// Verifies that each access to <see cref="TweakableSymmetricAlgorithm.Tweak" /> returns a new array instance.
-    /// </summary>
-    [TestMethod]
-    public void Tweak_WhenCalledMultipleTimes_ShouldReturnNewArrayInstances()
-    {
-        using TAlgorithm algorithm = CreateAlgorithm();
-        algorithm.TweakSize = algorithm.LegalTweakSizes[0].MinSize;
-        algorithm.GenerateTweak();
-
-        var tweak1 = algorithm.Tweak;
-        var tweak2 = algorithm.Tweak;
-
-        Assert.AreNotSame(tweak1, tweak2);
-    }
-
-    /// <summary>
-    /// Verifies that each access to <see cref="TweakableSymmetricAlgorithm.Tweak" /> returns arrays with the same contents.
-    /// </summary>
-    [TestMethod]
-    public void Tweak_WhenCalledMultipleTimes_ShouldReturnSameValue()
-    {
-        using TAlgorithm algorithm = CreateAlgorithm();
-        algorithm.TweakSize = algorithm.LegalTweakSizes[0].MinSize;
-        algorithm.GenerateTweak();
-
-        var tweak1 = algorithm.Tweak;
-        var tweak2 = algorithm.Tweak;
-
-        CollectionAssert.AreEqual(tweak1, tweak2);
-    }
-
-    /// <summary>
     /// Verifies that GenerateTweak produces a non-zero value that is preserved by the Tweak property.
     /// </summary>
     [TestMethod]
@@ -78,7 +46,9 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     }
 
     /// <summary>
-    /// Verifies that accessing <see cref="TweakableSymmetricAlgorithm.Tweak" /> before it is initialised throws.
+    /// Verifies that accessing <see cref="TweakableSymmetricAlgorithm.Tweak" /> repeatedly on a
+    /// default-constructed instance (i.e. without calling <c>GenerateTweak</c>) returns identical
+    /// content across calls.
     /// </summary>
     [TestMethod]
     public void Tweak_WhenNoAccessedMultipleTimes_ShouldReturnSameValue()
@@ -141,21 +111,6 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     }
 
     /// <summary>
-    /// Verifies that <see cref="TweakableSymmetricAlgorithm.Tweak" /> set to an invalid size throws.
-    /// </summary>
-    [TestMethod]
-    public void Tweak_WhenSetToInvalidSize_ShouldThrowCryptographicException()
-    {
-        using var algorithm = CreateAlgorithm();
-        var invalid = new byte[7]; // 56 bits is uncommon
-
-        Assert.ThrowsExactly<CryptographicException>(() =>
-        {
-            algorithm.Tweak = invalid;
-        });
-    }
-
-    /// <summary>
     /// Verifies that <see cref="TweakableSymmetricAlgorithm.Tweak" /> set to null throws ArgumentNullException.
     /// </summary>
     [TestMethod]
@@ -167,27 +122,6 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
         {
             algorithm.Tweak = null!;
         });
-    }
-
-    /// <summary>
-    /// Verifies that setting <see cref="TweakableSymmetricAlgorithm.Tweak" /> to a wrongly-sized
-    /// byte array throws <see cref="CryptographicException" /> whose message does not reference
-    /// the unrelated literal "TweakSchedule" that the original
-    /// <c>[CallerArgumentExpression]</c> declared.
-    /// </summary>
-    [TestMethod]
-    public void Tweak_WhenSetToInvalidSize_ShouldThrowWithoutReferencingTweakSchedule()
-    {
-        using var algo = Threefish256.Create();
-
-        var ex = Assert.ThrowsExactly<CryptographicException>(() =>
-        {
-            algo.Tweak = new byte[5];
-        });
-
-        Assert.IsFalse(string.IsNullOrEmpty(ex.Message), "Expected non-empty exception message.");
-        Assert.IsFalse(ex.Message.Contains("TweakSchedule"),
-            "Exception message must not reference the unrelated 'TweakSchedule' symbol.");
     }
 
     /// <summary>

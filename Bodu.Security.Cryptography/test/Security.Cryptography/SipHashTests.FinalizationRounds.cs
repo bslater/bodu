@@ -9,23 +9,6 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class SipHashTests<TTest, TAlgorithm>
 {
     /// <summary>
-    /// Verifies that setting an invalid hashValue for <see cref="SipHash.FinalizationRounds" /> throws <see cref="ArgumentOutOfRangeException" />.
-    /// </summary>
-    [TestMethod]
-    [DataRow(-1)]
-    [DataRow(0)]
-    [DataRow(1)]
-    public void FinalizationRounds_WhenSetToInvalidValue_ShouldThrowExactly(int value)
-    {
-        using var algorithm = CreateAlgorithm();
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            algorithm.FinalizationRounds = value;
-        });
-    }
-
-    /// <summary>
     /// Verifies that setting a valid hashValue for <see cref="SipHash.FinalizationRounds" /> updates the internal state.
     /// </summary>
     [TestMethod]

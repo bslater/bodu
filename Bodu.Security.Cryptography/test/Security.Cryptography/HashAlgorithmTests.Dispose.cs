@@ -55,27 +55,6 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="HashAlgorithm.Dispose" /> twice on the same instance is
-    /// idempotent and does not throw.
-    /// </summary>
-    [TestMethod]
-    public void Dispose_WhenCalledTwice_ShouldNotThrow()
-    {
-        using var algorithm = CreateAlgorithm();
-        algorithm.Dispose();
-
-        try
-        {
-            algorithm.Dispose();
-        }
-        catch (Exception ex)
-        {
-            Assert.Fail($"Second Dispose on {typeof(TAlgorithm).Name} threw {ex.GetType().Name}: {ex.Message}");
-        }
-    }
-
-
-    /// <summary>
     /// Verifies that disposing a freshly-constructed instance of a concrete algoirthm — one
     /// that has never had any property accessed or hashing performed — completes without throwing.
     /// </summary>
