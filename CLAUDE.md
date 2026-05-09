@@ -56,6 +56,16 @@ dotnet test  Bodu.Core/test/Bodu.Core.UnitTests.csproj --settings test.runsettin
 
 `test.runsettings` enables parallel execution (`MaxCpuCount=0`) and disables AppDomains.
 
+## Branching and Commits
+
+- **One branch per session, by default.** Use the branch the harness designates at session start (typically `claude/<topic>-<id>`) and make multiple commits to it as the session progresses. Do not spin up additional branches for each edit, fix, or intermediate step within the same session.
+- **Commit incrementally.** Prefer a fresh commit per logical step over batching unrelated changes into one large commit. The branch should accumulate work across the session, not be replaced.
+- **Exceptions that justify additional branches:**
+  - Resolving conflicts on multiple existing PR branches — each PR has its own remote head that must be checked out and pushed back to.
+  - Work that must land on a specific pre-existing branch other than the session branch.
+  In these cases, use disposable local branches and delete them once the work is pushed.
+- **Push** to the session branch when changes are ready; do not push to `master` directly.
+
 ## Test Conventions
 
 - Framework: **MSTest** (`Microsoft.VisualStudio.TestTools.UnitTesting`, `[TestClass]` / `[TestMethod]`). Do **not** introduce xUnit or NUnit.
