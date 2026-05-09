@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Verhoeff.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -40,7 +40,7 @@ public sealed partial class Verhoeff
     // the new digit's permutation value p[k, v] is left-multiplied onto it — matching the left-to-right
     // accumulation of the static rtl walk c_{i+1} = d[c_i, p[j, digit]]. D5 is non-abelian, so operand
     // order is load-bearing.
-    private readonly byte[] _c = new byte[8];
+    private readonly byte[] c = new byte[8];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Verhoeff" /> class.
@@ -64,19 +64,19 @@ public sealed partial class Verhoeff
 
             int v = ch - '0';
             for (int k = 0; k < 8; k++)
-                next[k] = D[P[k, v], this._c[(k + 1) & 7]];
+                next[k] = d[p[k, v], this.c[(k + 1) & 7]];
 
-            next.CopyTo(this._c);
+            next.CopyTo(this.c);
         }
     }
 
     /// <inheritdoc />
     public override void Reset() =>
-        Array.Clear(this._c);
+        Array.Clear(this.c);
 
     /// <inheritdoc />
     public override char GetCurrentCheckDigit() =>
-        (char)('0' + Inv[this._c[1]]);
+        (char)('0' + inv[this.c[1]]);
 
     /// <summary>
     /// Computes the Verhoeff check digit for the supplied body of decimal digits without allocating a streaming
@@ -96,10 +96,10 @@ public sealed partial class Verhoeff
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
-            c = D[c, P[j & 7, ch - '0']];
+            c = d[c, p[j & 7, ch - '0']];
         }
 
-        return (char)('0' + Inv[c]);
+        return (char)('0' + inv[c]);
     }
 
     /// <summary>
@@ -120,7 +120,7 @@ public sealed partial class Verhoeff
             char ch = digitsIncludingCheck[i];
             if ((uint)(ch - '0') > 9u) return false;
 
-            c = D[c, P[j & 7, ch - '0']];
+            c = d[c, p[j & 7, ch - '0']];
         }
 
         return c == 0;

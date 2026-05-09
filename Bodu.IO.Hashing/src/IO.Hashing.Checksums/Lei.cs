@@ -1,12 +1,12 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Lei.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.CheckDigits;
-
 namespace Bodu.IO.Hashing.Checksums;
+
+using Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Computes the two-digit check sequence of a Legal Entity Identifier (LEI) as specified by ISO 17442. This
@@ -39,7 +39,7 @@ public sealed class Lei
     /// <summary>The fixed check-code length of <c>2</c> decimal digits.</summary>
     public const int CheckDigits = 2;
 
-    private readonly Iso7064Mod97_10 _engine = new();
+    private readonly Iso7064Mod97_10 engine = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Lei" /> class.
@@ -59,15 +59,15 @@ public sealed class Lei
 
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body) =>
-        _engine.Append(body);
+        engine.Append(body);
 
     /// <inheritdoc />
     public override void Reset() =>
-        _engine.Reset();
+        engine.Reset();
 
     /// <inheritdoc />
     public override int GetCurrentCheckDigits(Span<char> destination) =>
-        _engine.GetCurrentCheckDigits(destination);
+        engine.GetCurrentCheckDigits(destination);
 
     /// <summary>
     /// Computes the LEI check digits for the supplied body without allocating a streaming instance.

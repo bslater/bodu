@@ -4,12 +4,12 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+namespace Bodu.IO.Hashing;
+
 using System.Buffers.Binary;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
-
-namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Computes a 32-bit non-cryptographic hash using the BKDR polynomial rolling algorithm from Kernighan and
@@ -65,9 +65,9 @@ public sealed class BKDR
         31U, 131U, 1313U, 13131U, 131313U, 1313131U, 13131313U, 131313131U, 1313131313U,
     };
 
-    private uint _seed;
-    private uint _workingHash;
-    private bool _started;
+    private uint seed;
+    private uint workingHash;
+    private bool started;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BKDR" /> class with the default seed of <c>131</c>.
@@ -91,8 +91,8 @@ public sealed class BKDR
         : base(HashLength)
     {
         ValidateSeed(seed);
-        this._seed = seed;
-        this._workingHash = seed;
+        this.seed = seed;
+        this.workingHash = seed;
     }
 
     /// <summary>
@@ -108,14 +108,14 @@ public sealed class BKDR
     /// </exception>
     public uint Seed
     {
-        get => this._seed;
+        get => this.seed;
 
         set
         {
             this.ThrowIfInvalidState();
             ValidateSeed(value);
-            this._seed = value;
-            this._workingHash = value;
+            this.seed = value;
+            this.workingHash = value;
         }
     }
 
@@ -125,27 +125,27 @@ public sealed class BKDR
         if (source.Length == 0)
             return;
 
-        uint v = this._workingHash;
-        uint seed = this._seed;
+        uint v = this.workingHash;
+        uint seed = this.seed;
         foreach (byte b in source)
         {
             v = (v * seed) + b;
         }
 
-        this._workingHash = v;
-        this._started = true;
+        this.workingHash = v;
+        this.started = true;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        this._workingHash = this._seed;
-        this._started = false;
+        this.workingHash = this.seed;
+        this.started = false;
     }
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt32BigEndian(destination, this._workingHash);
+        BinaryPrimitives.WriteUInt32BigEndian(destination, this.workingHash);
 
     private static void ValidateSeed(uint value)
     {
@@ -171,7 +171,7 @@ public sealed class BKDR
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfInvalidState()
     {
-        if (this._started)
+        if (this.started)
             throw new CryptographicUnexpectedOperationException(ReconfigurationNotAllowed);
     }
 }

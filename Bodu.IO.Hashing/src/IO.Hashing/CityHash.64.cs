@@ -4,11 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+namespace Bodu.IO.Hashing;
+
 using Bodu.Extensions;
 using System.Buffers.Binary;
-
-
-namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Computes a 64-bit (8-byte) non-cryptographic hash using the <c>CityHash64</c> variant by Google. This class cannot be inherited.
@@ -120,15 +119,15 @@ public sealed class CityHash64
         ulong g = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 8));
         ulong h = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 16)) * mul;
 
-        ulong u = (a + g).RotateBitsRightUnchecked(43) + (b.RotateBitsRightUnchecked(30) + c) * 9;
+        ulong u = (a + g).RotateBitsRightUnchecked(43) + ((b.RotateBitsRightUnchecked(30) + c) * 9);
         ulong v = ((a + g) ^ d) + f + 1;
         ulong w = (u + v).ReverseBytesUnchecked() * mul;
         ulong x = (e + f).RotateBitsRightUnchecked(42) + c;
         ulong y = ((v + w).ReverseBytesUnchecked() + h) * mul;
         ulong z = e + f + c;
 
-        a = ((x + z) * mul + y).ReverseBytesUnchecked() + b;
-        b = ShiftMix((z + a) * mul + d + h) * mul;
+        a = (((x + z) * mul) + y).ReverseBytesUnchecked() + b;
+        b = ShiftMix(((z + a) * mul) + d + h) * mul;
 
         return b + x;
     }
@@ -167,7 +166,7 @@ public sealed class CityHash64
         var (w0, w1) = WeakHashLen32WithSeeds(s.Slice(len - 32), y + K1, x);
 
         // Fold the first 8 bytes of the head into x to anchor the start of the input.
-        x = x * K1 + BinaryPrimitives.ReadUInt64LittleEndian(s);
+        x = (x * K1) + BinaryPrimitives.ReadUInt64LittleEndian(s);
 
         // Align remaining length down to a 64-byte boundary for the main loop.
         int remaining = (len - 1) & ~63;
@@ -194,7 +193,7 @@ public sealed class CityHash64
         while (remaining != 0);
 
         return HashLen16(
-            HashLen16(v0, w0) + ShiftMix(y) * K1 + z,
+            HashLen16(v0, w0) + (ShiftMix(y) * K1) + z,
             HashLen16(v1, w1) + x);
     }
 }

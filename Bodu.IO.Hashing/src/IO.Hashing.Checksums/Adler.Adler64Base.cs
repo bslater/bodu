@@ -1,12 +1,12 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Adler.Adler64Base.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Buffers.Binary;
-
 namespace Bodu.IO.Hashing.Checksums;
+
+using System.Buffers.Binary;
 
 /// <summary>
 /// Provides a reusable base class for <c>Adler-64</c> style checksum algorithms using <see cref="ulong" />
@@ -35,7 +35,7 @@ public abstract class Adler64Base
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
-        ulong hash = (this.PartB << 32) | this.PartA;
+        ulong hash = (this.partB << 32) | this.partA;
         BinaryPrimitives.WriteUInt64BigEndian(destination, hash);
     }
 }

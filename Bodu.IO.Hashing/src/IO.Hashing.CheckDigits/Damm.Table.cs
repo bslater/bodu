@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Damm.Table.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,7 +10,7 @@ public sealed partial class Damm
 {
     // Standard totally antisymmetric quasigroup of order 10 proposed by H. Michael Damm (2004).
     // Indexed as Table[interim, digit]. Row 0 column d gives the check digit of a single-digit body 'd'.
-    private static readonly byte[,] Table = new byte[10, 10]
+    private static readonly byte[,] table = new byte[10, 10]
     {
         { 0, 3, 1, 7, 5, 9, 8, 6, 4, 2 },
         { 7, 0, 9, 2, 1, 5, 4, 8, 6, 3 },

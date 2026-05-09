@@ -4,11 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+namespace Bodu.IO.Hashing;
+
 using Bodu.Extensions;
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
-
-namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Computes a 128-bit (16-byte) non-cryptographic hash using the <c>CityHash128</c> variant by Google. This
@@ -131,9 +131,9 @@ public sealed class CityHash128
         ulong y = seedHigh;
         ulong z = (ulong)source.Length * K1;
 
-        ulong v0 = (y ^ K1).RotateBitsRightUnchecked(49) * K1 + BinaryPrimitives.ReadUInt64LittleEndian(source);
-        ulong v1 = v0.RotateBitsRightUnchecked(42) * K1 + BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(8));
-        ulong w0 = (y + z).RotateBitsRightUnchecked(35) * K1 + x;
+        ulong v0 = ((y ^ K1).RotateBitsRightUnchecked(49) * K1) + BinaryPrimitives.ReadUInt64LittleEndian(source);
+        ulong v1 = (v0.RotateBitsRightUnchecked(42) * K1) + BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(8));
+        ulong w0 = ((y + z).RotateBitsRightUnchecked(35) * K1) + x;
         ulong w1 = (x + BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(88))).RotateBitsRightUnchecked(53) * K1;
 
         int offset = 0;
@@ -167,8 +167,8 @@ public sealed class CityHash128
         while (remaining >= 128);
 
         x += (v0 + z).RotateBitsRightUnchecked(49) * K0;
-        y = y * K0 + w1.RotateBitsRightUnchecked(37);
-        z = z * K0 + w0.RotateBitsRightUnchecked(27);
+        y = (y * K0) + w1.RotateBitsRightUnchecked(37);
+        z = (z * K0) + w0.RotateBitsRightUnchecked(27);
         w0 *= 9;
         v0 *= K0;
 
@@ -178,9 +178,9 @@ public sealed class CityHash128
         for (int tailDone = 0; tailDone < remaining;)
         {
             tailDone += 32;
-            y = (x + y).RotateBitsRightUnchecked(42) * K0 + v1;
+            y = ((x + y).RotateBitsRightUnchecked(42) * K0) + v1;
             w0 += BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(tailEnd - tailDone + 16));
-            x = x * K0 + w0;
+            x = (x * K0) + w0;
             z += w1 + BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(tailEnd - tailDone));
             w1 += v0;
             (v0, v1) = WeakHashLen32WithSeeds(source.Slice(tailEnd - tailDone), v0 + z, v1);
@@ -214,7 +214,7 @@ public sealed class CityHash128
         if (l <= 0)
         {
             a = ShiftMix(a * K1) * K1;
-            c = b * K1 + Hash64Len0to16(source);
+            c = (b * K1) + Hash64Len0to16(source);
             d = ShiftMix(a + (len >= 8 ? BinaryPrimitives.ReadUInt64LittleEndian(source) : c));
         }
         else

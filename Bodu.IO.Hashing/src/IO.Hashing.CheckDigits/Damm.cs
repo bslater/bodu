@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Damm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -30,7 +30,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed partial class Damm
     : CheckDigitAlgorithm
 {
-    private byte _interim;
+    private byte interim;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Damm" /> class.
@@ -45,26 +45,26 @@ public sealed partial class Damm
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)
     {
-        byte interim = this._interim;
+        byte interim = this.interim;
         for (int i = 0; i < digits.Length; i++)
         {
             char ch = digits[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
-            interim = Table[interim, ch - '0'];
+            interim = table[interim, ch - '0'];
         }
 
-        this._interim = interim;
+        this.interim = interim;
     }
 
     /// <inheritdoc />
     public override void Reset() =>
-        this._interim = 0;
+        this.interim = 0;
 
     /// <inheritdoc />
     public override char GetCurrentCheckDigit() =>
-        (char)('0' + this._interim);
+        (char)('0' + this.interim);
 
     /// <summary>
     /// Computes the Damm check digit for the supplied body of decimal digits without allocating a streaming
@@ -84,7 +84,7 @@ public sealed partial class Damm
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
-            interim = Table[interim, ch - '0'];
+            interim = table[interim, ch - '0'];
         }
 
         return (char)('0' + interim);
@@ -108,7 +108,7 @@ public sealed partial class Damm
             char ch = digitsIncludingCheck[i];
             if ((uint)(ch - '0') > 9u) return false;
 
-            interim = Table[interim, ch - '0'];
+            interim = table[interim, ch - '0'];
         }
 
         return interim == 0;

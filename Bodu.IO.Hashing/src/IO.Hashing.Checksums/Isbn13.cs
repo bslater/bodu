@@ -1,12 +1,12 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Isbn13.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.CheckDigits;
-
 namespace Bodu.IO.Hashing.Checksums;
+
+using Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Computes the check digit of a 13-digit International Standard Book Number using the ISBN-13 weighted
@@ -32,9 +32,9 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Isbn13
     : CheckDigitAlgorithm
 {
-    private int _sumEvenHypothesis;
-    private int _sumOddHypothesis;
-    private int _count;
+    private int sumEvenHypothesis;
+    private int sumOddHypothesis;
+    private int count;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Isbn13" /> class.
@@ -49,9 +49,9 @@ public sealed class Isbn13
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)
     {
-        int sumEven = _sumEvenHypothesis;
-        int sumOdd = _sumOddHypothesis;
-        int count = _count;
+        int sumEven = sumEvenHypothesis;
+        int sumOdd = sumOddHypothesis;
+        int count = this.count;
 
         for (int i = 0; i < digits.Length; i++)
         {
@@ -79,23 +79,23 @@ public sealed class Isbn13
             count++;
         }
 
-        _sumEvenHypothesis = sumEven;
-        _sumOddHypothesis = sumOdd;
-        _count = count;
+        sumEvenHypothesis = sumEven;
+        sumOddHypothesis = sumOdd;
+        this.count = count;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        _sumEvenHypothesis = 0;
-        _sumOddHypothesis = 0;
-        _count = 0;
+        sumEvenHypothesis = 0;
+        sumOddHypothesis = 0;
+        count = 0;
     }
 
     /// <inheritdoc />
     public override char GetCurrentCheckDigit()
     {
-        int sum = (_count & 1) == 0 ? _sumEvenHypothesis : _sumOddHypothesis;
+        int sum = (count & 1) == 0 ? sumEvenHypothesis : sumOddHypothesis;
         return (char)('0' + ((10 - (sum % 10)) % 10));
     }
 

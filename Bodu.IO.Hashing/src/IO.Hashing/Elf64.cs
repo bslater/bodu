@@ -4,12 +4,12 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+namespace Bodu.IO.Hashing;
+
 using System.Buffers.Binary;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
-
-namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Computes a 64-bit non-cryptographic hash using the ELF (Executable and Linkable Format) hash algorithm
@@ -57,9 +57,9 @@ public sealed class Elf64
     private const string ReconfigurationNotAllowed =
         "The algorithm is already in use and cannot be reconfigured after computation has started.";
 
-    private ulong _seed;
-    private ulong _workingHash;
-    private bool _started;
+    private ulong seed;
+    private ulong workingHash;
+    private bool started;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Elf64" /> class with a seed of <c>0</c>.
@@ -76,8 +76,8 @@ public sealed class Elf64
     public Elf64(ulong seed)
         : base(HashLength)
     {
-        this._seed = seed;
-        this._workingHash = seed;
+        this.seed = seed;
+        this.workingHash = seed;
     }
 
     /// <summary>
@@ -90,13 +90,13 @@ public sealed class Elf64
     /// </exception>
     public ulong Seed
     {
-        get => this._seed;
+        get => this.seed;
 
         set
         {
             this.ThrowIfInvalidState();
-            this._seed = value;
-            this._workingHash = value;
+            this.seed = value;
+            this.workingHash = value;
         }
     }
 
@@ -107,7 +107,7 @@ public sealed class Elf64
         if (source.Length == 0)
             return;
 
-        ulong v = this._workingHash;
+        ulong v = this.workingHash;
         foreach (byte b in source)
         {
             v = (v << 4) + b;
@@ -117,25 +117,25 @@ public sealed class Elf64
             v &= ~high;
         }
 
-        this._workingHash = v;
-        this._started = true;
+        this.workingHash = v;
+        this.started = true;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        this._workingHash = this._seed;
-        this._started = false;
+        this.workingHash = this.seed;
+        this.started = false;
     }
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt64BigEndian(destination, this._workingHash);
+        BinaryPrimitives.WriteUInt64BigEndian(destination, this.workingHash);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfInvalidState()
     {
-        if (this._started)
+        if (this.started)
             throw new CryptographicUnexpectedOperationException(ReconfigurationNotAllowed);
     }
 }

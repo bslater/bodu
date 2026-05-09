@@ -103,7 +103,7 @@ public sealed class MurmurHash3_32
 
             h1 ^= k1;
             h1 = RotateLeft(h1, 13);
-            h1 = unchecked(h1 * 5u + 0xE6546B64u);
+            h1 = unchecked((h1 * 5u) + 0xE6546B64u);
         }
 
         // Tail: process remaining 1–3 bytes.

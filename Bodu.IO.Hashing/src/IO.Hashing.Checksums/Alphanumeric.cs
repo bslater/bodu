@@ -1,12 +1,14 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Alphanumeric.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Runtime.CompilerServices;
-
 namespace Bodu.IO.Hashing.Checksums;
+
+using System.Globalization;
+using System.Resources;
+using System.Runtime.CompilerServices;
 
 /// <summary>
 /// Provides shared helpers for expanding and validating the ASCII uppercase alphanumeric alphabet used by ISO 7064
@@ -54,10 +56,14 @@ internal static class Alphanumeric
         if (ch == '*') return 36;
         if (ch == '@') return 37;
         if (ch == '#') return 38;
+
         throw new ArgumentOutOfRangeException(
             nameof(ch),
             ch,
-            $"Character '{ch}' (U+{(int)ch:X4}) is not a valid CUSIP character ('0'-'9', 'A'-'Z', '*', '@', or '#').");
+            FormatInvalidCharacterMessage(
+                ch,
+                "CUSIP",
+                "'0'-'9', 'A'-'Z', '*', '@', or '#'"));
     }
 
     /// <summary>
@@ -77,7 +83,10 @@ internal static class Alphanumeric
                 throw new ArgumentOutOfRangeException(
                     paramName,
                     ch,
-                    $"Character '{ch}' (U+{(int)ch:X4}) is not an ASCII uppercase alphanumeric character ('0' to '9' or 'A' to 'Z').");
+                    FormatInvalidCharacterMessage(
+                        ch,
+                        "ASCII uppercase alphanumeric",
+                        "'0' to '9' or 'A' to 'Z'"));
         }
     }
 
@@ -97,10 +106,14 @@ internal static class Alphanumeric
             if ((uint)(ch - '0') <= 9u) continue;
             if ((uint)(ch - 'A') <= 25u) continue;
             if (ch == '*' || ch == '@' || ch == '#') continue;
+
             throw new ArgumentOutOfRangeException(
                 paramName,
                 ch,
-                $"Character '{ch}' (U+{(int)ch:X4}) is not a valid CUSIP character ('0'-'9', 'A'-'Z', '*', '@', or '#').");
+                FormatInvalidCharacterMessage(
+                    ch,
+                    "CUSIP",
+                    "'0'-'9', 'A'-'Z', '*', '@', or '#'"));
         }
     }
 
@@ -121,10 +134,14 @@ internal static class Alphanumeric
             char ch = value[i];
             if ((uint)(ch - '0') <= 9u) continue;
             if ((uint)(ch - 'A') <= 25u && !IsVowel(ch)) continue;
+
             throw new ArgumentOutOfRangeException(
                 paramName,
                 ch,
-                $"Character '{ch}' (U+{(int)ch:X4}) is not a valid SEDOL character ('0'-'9' or uppercase consonant; vowels A/E/I/O/U are not permitted).");
+                FormatInvalidCharacterMessage(
+                    ch,
+                    "SEDOL",
+                    "'0'-'9' or uppercase consonant; vowels A/E/I/O/U are not permitted"));
         }
     }
 
@@ -136,4 +153,17 @@ internal static class Alphanumeric
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsVowel(char ch) =>
         ch == 'A' || ch == 'E' || ch == 'I' || ch == 'O' || ch == 'U';
+
+    private static string FormatInvalidCharacterMessage(
+        char ch,
+        string characterSetName,
+        string validCharacterDescription)
+    {
+        return string.Format(
+            HashingResourceStrings.ArgumentOutOfRange_InvalidCharacterForCharacterSet,
+            ch,
+            (int)ch,
+            characterSetName,
+            validCharacterDescription);
+    }
 }

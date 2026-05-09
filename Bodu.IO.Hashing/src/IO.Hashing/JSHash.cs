@@ -4,10 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+namespace Bodu.IO.Hashing;
+
 using System.Buffers.Binary;
 using System.IO.Hashing;
-
-namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Computes a 32-bit non-cryptographic hash using Justin Sobel's JSHash bitwise mixing function. This class
@@ -50,7 +50,7 @@ public sealed class JSHash
     private const int HashLength = 4;
     private const uint Seed = 0x4E67C6A7;
 
-    private uint _workingHash = Seed;
+    private uint workingHash = Seed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="JSHash" /> class seeded with the canonical
@@ -64,19 +64,19 @@ public sealed class JSHash
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
-        uint v = this._workingHash;
+        uint v = this.workingHash;
         foreach (byte b in source)
         {
             v ^= (v << 5) + (v >> 2) + b;
         }
 
-        this._workingHash = v;
+        this.workingHash = v;
     }
 
     /// <inheritdoc />
-    public override void Reset() => this._workingHash = Seed;
+    public override void Reset() => this.workingHash = Seed;
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt32LittleEndian(destination, this._workingHash);
+        BinaryPrimitives.WriteUInt32LittleEndian(destination, this.workingHash);
 }

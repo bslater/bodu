@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Crc.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -111,7 +111,7 @@ public sealed class Crc
     : NonCryptographicHashAlgorithm
     , IResumableHashAlgorithm
 {
-    private static Lazy<CrcLookupTableCache> s_globalLookupTableCache =
+    private static Lazy<CrcLookupTableCache> globalLookupTableCache =
         new(() => new CrcLookupTableCache());
 
     private readonly CrcStandard _standard;
@@ -155,12 +155,12 @@ public sealed class Crc
     /// <exception cref="ArgumentNullException">The value being assigned is <see langword="null" />.</exception>
     public static CrcLookupTableCache GlobalCache
     {
-        get => s_globalLookupTableCache.Value;
+        get => globalLookupTableCache.Value;
 
         set
         {
             ThrowHelper.ThrowIfNull(value);
-            s_globalLookupTableCache = new Lazy<CrcLookupTableCache>(() => value);
+            globalLookupTableCache = new Lazy<CrcLookupTableCache>(() => value);
         }
     }
 

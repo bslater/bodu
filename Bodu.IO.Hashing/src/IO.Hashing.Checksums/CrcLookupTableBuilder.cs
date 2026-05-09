@@ -1,12 +1,12 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CrcLookupTableBuilder.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
-
 namespace Bodu.IO.Hashing.Checksums;
+
+using Bodu.Extensions;
 
 /// <summary>
 /// Generates the precomputed lookup tables that drive the byte-at-a-time inner loop of <see cref="Crc"/>, given the

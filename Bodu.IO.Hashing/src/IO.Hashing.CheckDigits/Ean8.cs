@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.Checksums;
-
 namespace Bodu.IO.Hashing.CheckDigits;
+
+using Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Computes the check digit of an 8-digit European Article Number / Global Trade Item Number-8 barcode using the
@@ -34,9 +34,9 @@ public sealed class Ean8
     /// <summary>The required full-sequence length of <c>8</c> decimal digits.</summary>
     public const int SequenceLength = 8;
 
-    private int _sumEvenHypothesis;
-    private int _sumOddHypothesis;
-    private int _count;
+    private int sumEvenHypothesis;
+    private int sumOddHypothesis;
+    private int count;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Ean8" /> class.
@@ -51,9 +51,9 @@ public sealed class Ean8
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)
     {
-        int sumEven = _sumEvenHypothesis;
-        int sumOdd = _sumOddHypothesis;
-        int count = _count;
+        int sumEven = sumEvenHypothesis;
+        int sumOdd = sumOddHypothesis;
+        int count = this.count;
 
         for (int i = 0; i < digits.Length; i++)
         {
@@ -78,23 +78,23 @@ public sealed class Ean8
             count++;
         }
 
-        _sumEvenHypothesis = sumEven;
-        _sumOddHypothesis = sumOdd;
-        _count = count;
+        sumEvenHypothesis = sumEven;
+        sumOddHypothesis = sumOdd;
+        this.count = count;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        _sumEvenHypothesis = 0;
-        _sumOddHypothesis = 0;
-        _count = 0;
+        sumEvenHypothesis = 0;
+        sumOddHypothesis = 0;
+        count = 0;
     }
 
     /// <inheritdoc />
     public override char GetCurrentCheckDigit()
     {
-        int sum = (_count & 1) == 0 ? _sumEvenHypothesis : _sumOddHypothesis;
+        int sum = (count & 1) == 0 ? sumEvenHypothesis : sumOddHypothesis;
         return (char)('0' + ((10 - (sum % 10)) % 10));
     }
 

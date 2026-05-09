@@ -1,12 +1,12 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CheckDigitOutputAlphabet.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.CheckDigits;
-
 namespace Bodu.IO.Hashing.Checksums;
+
+using Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Identifies the alphabet from which a single-character check-digit algorithm may emit its check character.

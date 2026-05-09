@@ -1,16 +1,16 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonCryptographicHashAlgorithmExtensions.VerifyHash.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.IO.Hashing.Extensions;
 
 using Bodu;
 using System;
 using System.IO;
 using System.IO.Hashing;
 using System.Text;
-
-namespace Bodu.IO.Hashing.Extensions;
 
 public static partial class NonCryptographicHashAlgorithmExtensions
 {

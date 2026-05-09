@@ -75,7 +75,7 @@ public abstract class MurmurHash3<T>
 {
     private static readonly int[] ValidHashSizes = { 32, 128 };
 
-    private readonly MemoryStream _inputBuffer = new();
+    private readonly MemoryStream inputBuffer = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MurmurHash3{T}" /> class with the specified hash output
@@ -102,20 +102,20 @@ public abstract class MurmurHash3<T>
     public override void Append(ReadOnlySpan<byte> source)
     {
         if (source.Length > 0)
-            this._inputBuffer.Write(source);
+            this.inputBuffer.Write(source);
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        this._inputBuffer.SetLength(0);
-        this._inputBuffer.Position = 0;
+        this.inputBuffer.SetLength(0);
+        this.inputBuffer.Position = 0;
     }
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
-        byte[] data = this._inputBuffer.ToArray();
+        byte[] data = this.inputBuffer.ToArray();
         byte[] digest = this.ComputeHashCore(data);
         digest.AsSpan(0, this.HashLengthInBytes).CopyTo(destination);
     }

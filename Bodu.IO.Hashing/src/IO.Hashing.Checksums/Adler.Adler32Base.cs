@@ -1,12 +1,12 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Adler.Adler32Base.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Buffers.Binary;
-
 namespace Bodu.IO.Hashing.Checksums;
+
+using System.Buffers.Binary;
 
 /// <summary>
 /// Provides a reusable base class for <c>Adler-32</c> style checksum algorithms using <see cref="uint" />
@@ -39,7 +39,7 @@ public abstract class Adler32Base
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
-        uint hash = (this.PartB << 16) | this.PartA;
+        uint hash = (this.partB << 16) | this.partA;
         BinaryPrimitives.WriteUInt32BigEndian(destination, hash);
     }
 }

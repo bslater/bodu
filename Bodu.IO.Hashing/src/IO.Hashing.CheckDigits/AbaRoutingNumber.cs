@@ -1,12 +1,12 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AbaRoutingNumber.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.Checksums;
-
 namespace Bodu.IO.Hashing.CheckDigits;
+
+using Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Computes the check digit of a 9-digit American Bankers Association (ABA) routing transit number using the
@@ -66,7 +66,7 @@ public sealed class AbaRoutingNumber
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
-            _digits.Add(ch - '0');
+            this._digits.Add(ch - '0');
         }
     }
 

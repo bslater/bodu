@@ -37,9 +37,9 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class Luhn
     : CheckDigitAlgorithm
 {
-    private int _sumEvenHypothesis;
-    private int _sumOddHypothesis;
-    private int _count;
+    private int sumEvenHypothesis;
+    private int sumOddHypothesis;
+    private int count;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Luhn" /> class.
@@ -54,9 +54,9 @@ public sealed class Luhn
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)
     {
-        int sumEven = this._sumEvenHypothesis;
-        int sumOdd = this._sumOddHypothesis;
-        int count = this._count;
+        int sumEven = this.sumEvenHypothesis;
+        int sumOdd = this.sumOddHypothesis;
+        int count = this.count;
 
         for (int i = 0; i < digits.Length; i++)
         {
@@ -84,23 +84,23 @@ public sealed class Luhn
             count++;
         }
 
-        this._sumEvenHypothesis = sumEven;
-        this._sumOddHypothesis = sumOdd;
-        this._count = count;
+        this.sumEvenHypothesis = sumEven;
+        this.sumOddHypothesis = sumOdd;
+        this.count = count;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        this._sumEvenHypothesis = 0;
-        this._sumOddHypothesis = 0;
-        this._count = 0;
+        this.sumEvenHypothesis = 0;
+        this.sumOddHypothesis = 0;
+        this.count = 0;
     }
 
     /// <inheritdoc />
     public override char GetCurrentCheckDigit()
     {
-        int sum = (this._count & 1) == 0 ? this._sumEvenHypothesis : this._sumOddHypothesis;
+        int sum = (this.count & 1) == 0 ? this.sumEvenHypothesis : this.sumOddHypothesis;
         return (char)('0' + ((10 - (sum % 10)) % 10));
     }
 

@@ -4,11 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+namespace Bodu.IO.Hashing;
+
 using System.Buffers.Binary;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
-
-namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Provides a base class for the Fowler-Noll-Vo (FNV) hash family, supporting both the FNV-1 and FNV-1a
@@ -67,12 +67,12 @@ public abstract class Fnv<TSelf>
 {
     private static readonly int[] ValidHashSizes = { 32, 64 };
 
-    private readonly int _hashSizeBits;
-    private readonly ulong _offsetBasis;
-    private readonly ulong _prime;
-    private readonly bool _useFnv1a;
+    private readonly int hashSizeBits;
+    private readonly ulong offsetBasis;
+    private readonly ulong prime;
+    private readonly bool useFnv1a;
 
-    private ulong _workingHash;
+    private ulong workingHash;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Fnv{TSelf}" /> class using the specified configuration
@@ -92,11 +92,11 @@ public abstract class Fnv<TSelf>
         : base(
             hashLengthInBytes: ValidateHashSize(hashSize) / 8)
     {
-        this._hashSizeBits = hashSize;
-        this._prime = prime;
-        this._offsetBasis = offsetBasis;
-        this._useFnv1a = useFnv1a;
-        this._workingHash = offsetBasis;
+        this.hashSizeBits = hashSize;
+        this.prime = prime;
+        this.offsetBasis = offsetBasis;
+        this.useFnv1a = useFnv1a;
+        this.workingHash = offsetBasis;
         this.AlgorithmName = $"FNV-{(useFnv1a ? "1a" : "1")}-{hashSize}";
     }
 
@@ -109,22 +109,22 @@ public abstract class Fnv<TSelf>
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
-        if (this._useFnv1a)
+        if (this.useFnv1a)
             this.AppendFnv1a(source);
         else
             this.AppendFnv1(source);
     }
 
     /// <inheritdoc />
-    public override void Reset() => this._workingHash = this._offsetBasis;
+    public override void Reset() => this.workingHash = this.offsetBasis;
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
         Span<byte> buffer = stackalloc byte[8];
-        BinaryPrimitives.WriteUInt64BigEndian(buffer, this._workingHash);
+        BinaryPrimitives.WriteUInt64BigEndian(buffer, this.workingHash);
 
-        switch (this._hashSizeBits)
+        switch (this.hashSizeBits)
         {
             case 32:
                 buffer.Slice(4, 4).CopyTo(destination);
@@ -150,28 +150,28 @@ public abstract class Fnv<TSelf>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendFnv1(ReadOnlySpan<byte> source)
     {
-        ulong hash = this._workingHash;
-        ulong prime = this._prime;
+        ulong hash = this.workingHash;
+        ulong prime = this.prime;
         for (int i = 0; i < source.Length; i++)
         {
             hash *= prime;
             hash ^= source[i];
         }
 
-        this._workingHash = hash;
+        this.workingHash = hash;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendFnv1a(ReadOnlySpan<byte> source)
     {
-        ulong hash = this._workingHash;
-        ulong prime = this._prime;
+        ulong hash = this.workingHash;
+        ulong prime = this.prime;
         for (int i = 0; i < source.Length; i++)
         {
             hash ^= source[i];
             hash *= prime;
         }
 
-        this._workingHash = hash;
+        this.workingHash = hash;
     }
 }

@@ -1,12 +1,12 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CrcLookupTableCache.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Concurrent;
-
 namespace Bodu.IO.Hashing.Checksums;
+
+using System.Collections.Concurrent;
 
 /// <summary>
 /// Thread-safe cache of precomputed CRC lookup tables keyed by width, polynomial, and input reflection — amortises

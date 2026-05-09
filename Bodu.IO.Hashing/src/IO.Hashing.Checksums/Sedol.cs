@@ -1,12 +1,12 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Sedol.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.CheckDigits;
-
 namespace Bodu.IO.Hashing.Checksums;
+
+using Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Computes the check digit of a 7-character Stock Exchange Daily Official List (SEDOL) identifier using the
@@ -41,8 +41,8 @@ public sealed class Sedol
 
     private static readonly int[] Weights = [1, 3, 1, 7, 3, 9];
 
-    private int _sum;
-    private int _count;
+    private int sum;
+    private int count;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Sedol" /> class.
@@ -63,8 +63,8 @@ public sealed class Sedol
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        int sum = _sum;
-        int count = _count;
+        int sum = this.sum;
+        int count = this.count;
 
         for (int i = 0; i < body.Length; i++)
         {
@@ -80,20 +80,20 @@ public sealed class Sedol
             count++;
         }
 
-        _sum = sum;
-        _count = count;
+        this.sum = sum;
+        this.count = count;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        _sum = 0;
-        _count = 0;
+        sum = 0;
+        count = 0;
     }
 
     /// <inheritdoc />
     public override char GetCurrentCheckDigit() =>
-        (char)('0' + ((10 - (_sum % 10)) % 10));
+        (char)('0' + ((10 - (sum % 10)) % 10));
 
     /// <summary>
     /// Computes the SEDOL check digit for the supplied body without allocating a streaming instance.

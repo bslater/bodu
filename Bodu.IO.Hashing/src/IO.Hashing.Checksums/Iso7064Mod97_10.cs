@@ -1,12 +1,12 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Iso7064Mod97_10.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.CheckDigits;
-
 namespace Bodu.IO.Hashing.Checksums;
+
+using Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Computes the 2-character check code of an alphanumeric string using the ISO 7064 <c>MOD 97-10</c> pure
@@ -40,7 +40,7 @@ public sealed class Iso7064Mod97_10
     /// <summary>The fixed check-code length of <c>2</c> decimal digits.</summary>
     public const int CheckDigits = 2;
 
-    private int _r;
+    private int r;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Iso7064Mod97_10" /> class.
@@ -61,7 +61,7 @@ public sealed class Iso7064Mod97_10
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        int r = _r;
+        int r = this.r;
         for (int i = 0; i < body.Length; i++)
         {
             char ch = body[i];
@@ -79,12 +79,12 @@ public sealed class Iso7064Mod97_10
             }
         }
 
-        _r = r;
+        this.r = r;
     }
 
     /// <inheritdoc />
     public override void Reset() =>
-        _r = 0;
+        r = 0;
 
     /// <inheritdoc />
     public override int GetCurrentCheckDigits(Span<char> destination)
@@ -92,7 +92,7 @@ public sealed class Iso7064Mod97_10
         if (destination.Length < CheckLength)
             throw new ArgumentException($"Destination span must be at least {CheckLength} characters long.", nameof(destination));
 
-        int full = (_r * 100) % 97;
+        int full = (r * 100) % 97;
         int check = (98 - full) % 97;
         destination[0] = (char)('0' + (check / 10));
         destination[1] = (char)('0' + (check % 10));

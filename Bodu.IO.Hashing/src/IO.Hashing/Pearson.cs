@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.IO.Hashing;
-
 namespace Bodu.IO.Hashing;
+
+using System.IO.Hashing;
 
 /// <summary>
 /// Computes the hash for the input data using the <c>Pearson</c> hash algorithm. This variant applies a
@@ -77,8 +77,7 @@ public sealed partial class Pearson
     /// </summary>
     public Pearson()
         : this(MinHashSizeBits, PearsonTableType.Pearson)
-    {
-    }
+    { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Pearson" /> class with the specified hash size and a
@@ -139,7 +138,7 @@ public sealed partial class Pearson
     {
         ThrowHelper.ThrowIfNull(permutationTable);
         if (permutationTable.Length != 256 || permutationTable.Distinct().Count() != 256)
-            throw new ArgumentException(IOResourceStrings.ArgumentException_PearsonInvalidTable, nameof(permutationTable));
+            throw new ArgumentException(HashingResourceStrings.ArgumentException_PearsonInvalidTable, nameof(permutationTable));
 
         this._tableType = PearsonTableType.UserDefined;
         this._permutationTable = (byte[])permutationTable.Clone();
@@ -220,21 +219,8 @@ public sealed partial class Pearson
 
     private static int ValidateHashSize(int hashSizeBits)
     {
-        if (hashSizeBits < MinHashSizeBits || hashSizeBits > MaxHashSizeBits)
-        {
-            throw new ArgumentOutOfRangeException(
-                nameof(hashSizeBits),
-                hashSizeBits,
-                $"Hash size must be in the inclusive range [{MinHashSizeBits}, {MaxHashSizeBits}].");
-        }
-
-        if ((hashSizeBits % 8) != 0)
-        {
-            throw new ArgumentOutOfRangeException(
-                nameof(hashSizeBits),
-                hashSizeBits,
-                "Hash size must be a positive multiple of 8.");
-        }
+        ThrowHelper.ThrowIfOutOfRange(hashSizeBits, MinHashSizeBits, MaxHashSizeBits);
+        ThrowHelper.ThrowIfNotPositiveMultipleOf(hashSizeBits, 8, nameof(hashSizeBits));
 
         return hashSizeBits;
     }
@@ -247,7 +233,7 @@ public sealed partial class Pearson
         PearsonTableType.SHA256Constants => (byte[])SHA256ConstantsTable.Value.Clone(),
         _ => throw new ArgumentOutOfRangeException(
                 nameof(type),
-                string.Format(Bodu.ResourceStrings.Arg_OutOfRangeException_EnumValue, type, typeof(PearsonTableType).Name))
+                string.Format(ResourceStrings.Arg_OutOfRangeException_EnumValue, type, typeof(PearsonTableType).Name))
 
     };
 }

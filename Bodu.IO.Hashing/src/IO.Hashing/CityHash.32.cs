@@ -4,11 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+namespace Bodu.IO.Hashing;
+
 using Bodu.Extensions;
 using System.Buffers.Binary;
-
-
-namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Computes a 32-bit (4-byte) non-cryptographic hash using the <c>CityHash32</c> variant by Google. This class cannot be inherited.
@@ -91,7 +90,7 @@ public sealed class CityHash32
 
         foreach (byte t in s)
         {
-            b = unchecked(b * C1 + t);
+            b = unchecked((b * C1) + t);
             c ^= b;
         }
 
@@ -161,17 +160,17 @@ public sealed class CityHash32
         uint a4 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 20, 4)).RotateBitsRightUnchecked(17) * C2;
 
         h ^= a0;
-        h = h.RotateBitsRightUnchecked(19) * 5 + HashMagic;
+        h = (h.RotateBitsRightUnchecked(19) * 5) + HashMagic;
         h ^= a2;
-        h = h.RotateBitsRightUnchecked(19) * 5 + HashMagic;
+        h = (h.RotateBitsRightUnchecked(19) * 5) + HashMagic;
 
         g ^= a1;
-        g = g.RotateBitsRightUnchecked(19) * 5 + HashMagic;
+        g = (g.RotateBitsRightUnchecked(19) * 5) + HashMagic;
         g ^= a3;
-        g = g.RotateBitsRightUnchecked(19) * 5 + HashMagic;
+        g = (g.RotateBitsRightUnchecked(19) * 5) + HashMagic;
 
         f += a4;
-        f = f.RotateBitsRightUnchecked(19) * 5 + HashMagic;
+        f = (f.RotateBitsRightUnchecked(19) * 5) + HashMagic;
 
         // Iteratively consume 20-byte blocks from the start of the input.
         int iters = (len - 1) / 20;
@@ -187,16 +186,16 @@ public sealed class CityHash32
             uint b4 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(offset + 16, 4));
 
             h ^= b0;
-            h = h.RotateBitsRightUnchecked(18) * 5 + HashMagic;
+            h = (h.RotateBitsRightUnchecked(18) * 5) + HashMagic;
 
             f += b1;
             f = f.RotateBitsRightUnchecked(19) * C1;
 
             g += b2;
-            g = g.RotateBitsRightUnchecked(18) * 5 + HashMagic;
+            g = (g.RotateBitsRightUnchecked(18) * 5) + HashMagic;
 
             h ^= b3 + b1;
-            h = h.RotateBitsRightUnchecked(19) * 5 + HashMagic;
+            h = (h.RotateBitsRightUnchecked(19) * 5) + HashMagic;
 
             g ^= b4;
             g = BinaryPrimitives.ReverseEndianness(g) * 5;
@@ -217,9 +216,9 @@ public sealed class CityHash32
         f = f.RotateBitsRightUnchecked(11) * C1;
         f = f.RotateBitsRightUnchecked(17) * C1;
 
-        h = (h + g).RotateBitsRightUnchecked(19) * 5 + HashMagic;
+        h = ((h + g).RotateBitsRightUnchecked(19) * 5) + HashMagic;
         h = h.RotateBitsRightUnchecked(17) * C1;
-        h = (h + f).RotateBitsRightUnchecked(19) * 5 + HashMagic;
+        h = ((h + f).RotateBitsRightUnchecked(19) * 5) + HashMagic;
         h = h.RotateBitsRightUnchecked(17) * C1;
 
         return h;

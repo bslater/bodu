@@ -1,16 +1,16 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonCryptographicHashAlgorithmExtensions.AppendData.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.IO.Hashing.Extensions;
 
 using Bodu;
 using System;
 using System.Buffers;
 using System.IO;
 using System.IO.Hashing;
-
-namespace Bodu.IO.Hashing.Extensions;
 
 public static partial class NonCryptographicHashAlgorithmExtensions
 {
@@ -86,8 +86,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         if (bufferSize <= 0)
             throw new ArgumentOutOfRangeException(
-                nameof(bufferSize), 
-                bufferSize, 
+                nameof(bufferSize),
+                bufferSize,
                 "Buffer size must be greater than zero.");
 
         byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);

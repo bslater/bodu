@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.Checksums;
-
 namespace Bodu.IO.Hashing.CheckDigits;
+
+using Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Represents the abstract base class from which single-character check-digit algorithms that operate on a wider

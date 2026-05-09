@@ -4,11 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+namespace Bodu.IO.Hashing;
+
 using System.Buffers.Binary;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
-
-namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Computes a 32-bit non-cryptographic hash using Peter J. Weinberger's PJW shift-and-fold algorithm (as
@@ -53,7 +53,7 @@ public sealed class Pjw32
     private const uint LowBitsMask = 0x0FFFFFFFu;
     private const int Shift = 28;
 
-    private uint _workingHash;
+    private uint workingHash;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Pjw32" /> class.
@@ -67,7 +67,7 @@ public sealed class Pjw32
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override void Append(ReadOnlySpan<byte> source)
     {
-        uint v = this._workingHash;
+        uint v = this.workingHash;
         foreach (byte b in source)
         {
             v = (v << 4) + b;
@@ -76,13 +76,13 @@ public sealed class Pjw32
             v &= LowBitsMask;
         }
 
-        this._workingHash = v;
+        this.workingHash = v;
     }
 
     /// <inheritdoc />
-    public override void Reset() => this._workingHash = 0;
+    public override void Reset() => this.workingHash = 0;
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt32BigEndian(destination, this._workingHash);
+        BinaryPrimitives.WriteUInt32BigEndian(destination, this.workingHash);
 }

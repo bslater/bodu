@@ -109,7 +109,7 @@ public abstract class CityHash<T>
 
     private static readonly int[] ValidHashSizes = { 32, 64, 128 };
 
-    private readonly MemoryStream _inputBuffer = new();
+    private readonly MemoryStream inputBuffer = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CityHash{T}" /> class with the specified hash output
@@ -128,14 +128,14 @@ public abstract class CityHash<T>
     public override void Append(ReadOnlySpan<byte> source)
     {
         if (source.Length > 0)
-            this._inputBuffer.Write(source);
+            this.inputBuffer.Write(source);
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        this._inputBuffer.SetLength(0);
-        this._inputBuffer.Position = 0;
+        this.inputBuffer.SetLength(0);
+        this.inputBuffer.Position = 0;
     }
 
     /// <inheritdoc />
@@ -143,7 +143,7 @@ public abstract class CityHash<T>
     {
         // CityHash is a one-shot algorithm; finalisation re-runs over the accumulated buffer so that
         // GetCurrentHash remains non-destructive and may be invoked multiple times.
-        byte[] data = this._inputBuffer.ToArray();
+        byte[] data = this.inputBuffer.ToArray();
         byte[] digest = this.ComputeHashCore(data);
         digest.AsSpan(0, this.HashLengthInBytes).CopyTo(destination);
     }
@@ -293,7 +293,7 @@ public abstract class CityHash<T>
             ulong mul = K2 + (ulong)(len * 2);
             ulong a = BinaryPrimitives.ReadUInt64LittleEndian(s) + K2;
             ulong b = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 8));
-            ulong c = b.RotateBitsRightUnchecked(37) * mul + a;
+            ulong c = (b.RotateBitsRightUnchecked(37) * mul) + a;
             ulong d = (a.RotateBitsRightUnchecked(25) + b) * mul;
             return HashLen16(c, d, mul);
         }

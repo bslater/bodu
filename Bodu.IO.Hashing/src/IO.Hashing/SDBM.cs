@@ -4,10 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+namespace Bodu.IO.Hashing;
+
 using System.Buffers.Binary;
 using System.IO.Hashing;
-
-namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Computes a 32-bit non-cryptographic hash using the SDBM algorithm popularised by the public-domain NDBM
@@ -50,7 +50,7 @@ public sealed class SDBM
 {
     private const int HashLength = 4;
 
-    private uint _workingHash;
+    private uint workingHash;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SDBM" /> class.
@@ -63,19 +63,19 @@ public sealed class SDBM
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
-        uint v = this._workingHash;
+        uint v = this.workingHash;
         foreach (byte b in source)
         {
             v = b + (v << 6) + (v << 16) - v;
         }
 
-        this._workingHash = v;
+        this.workingHash = v;
     }
 
     /// <inheritdoc />
-    public override void Reset() => this._workingHash = 0;
+    public override void Reset() => this.workingHash = 0;
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt32BigEndian(destination, this._workingHash);
+        BinaryPrimitives.WriteUInt32BigEndian(destination, this.workingHash);
 }

@@ -25,9 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="IOResourceStrings.resx">
+    <EmbeddedResource Include="HashingResourceStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>IOResourceStrings.Designer.cs</LastGenOutput>
+      <LastGenOutput>HashingResourceStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 
@@ -71,10 +71,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="IOResourceStrings.Designer.cs">
+    <Compile Update="HashingResourceStrings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>IOResourceStrings.resx</DependentUpon>
+      <DependentUpon>HashingResourceStrings.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 

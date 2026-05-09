@@ -1,12 +1,12 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Iso7064Mod11_2.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.CheckDigits;
-
 namespace Bodu.IO.Hashing.Checksums;
+
+using Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Computes the single-character check of a decimal string using the ISO 7064 <c>MOD 11-2</c> pure algorithm.
@@ -33,7 +33,7 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Iso7064Mod11_2
     : AlphanumericCheckDigitAlgorithm
 {
-    private int _p;
+    private int p;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Iso7064Mod11_2" /> class.
@@ -54,7 +54,7 @@ public sealed class Iso7064Mod11_2
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        int p = _p;
+        int p = this.p;
         for (int i = 0; i < body.Length; i++)
         {
             char ch = body[i];
@@ -64,17 +64,17 @@ public sealed class Iso7064Mod11_2
             p = ((p + (ch - '0')) * 2) % 11;
         }
 
-        _p = p;
+        this.p = p;
     }
 
     /// <inheritdoc />
     public override void Reset() =>
-        _p = 0;
+        p = 0;
 
     /// <inheritdoc />
     public override char GetCurrentCheckDigit()
     {
-        int c = (12 - _p) % 11;
+        int c = (12 - p) % 11;
         return c == 10 ? 'X' : (char)('0' + c);
     }
 

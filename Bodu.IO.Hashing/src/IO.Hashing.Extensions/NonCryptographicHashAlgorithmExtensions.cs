@@ -1,12 +1,12 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonCryptographicHashAlgorithmExtensions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.IO.Hashing;
-
 namespace Bodu.IO.Hashing.Extensions;
+
+using System.IO.Hashing;
 
 /// <summary>
 /// Extends <see cref="NonCryptographicHashAlgorithm"/> with one-shot hashing, streaming and async input,

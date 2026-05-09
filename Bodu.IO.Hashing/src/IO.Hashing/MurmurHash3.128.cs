@@ -101,7 +101,7 @@ public sealed class MurmurHash3_128
         for (int i = 0; i < nblocks; i++)
         {
             ulong k1 = BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(i * 16, 8));
-            ulong k2 = BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(i * 16 + 8, 8));
+            ulong k2 = BinaryPrimitives.ReadUInt64LittleEndian(source.Slice((i * 16) + 8, 8));
 
             k1 = unchecked(k1 * C1);
             k1 = RotateLeft(k1, 31);
@@ -110,7 +110,7 @@ public sealed class MurmurHash3_128
 
             h1 = RotateLeft(h1, 27);
             h1 = unchecked(h1 + h2);
-            h1 = unchecked(h1 * 5uL + 0x52DCE729uL);
+            h1 = unchecked((h1 * 5uL) + 0x52DCE729uL);
 
             k2 = unchecked(k2 * C2);
             k2 = RotateLeft(k2, 33);
@@ -119,7 +119,7 @@ public sealed class MurmurHash3_128
 
             h2 = RotateLeft(h2, 31);
             h2 = unchecked(h2 + h1);
-            h2 = unchecked(h2 * 5uL + 0x38495AB5uL);
+            h2 = unchecked((h2 * 5uL) + 0x38495AB5uL);
         }
 
         // Tail: process remaining 1–15 bytes.

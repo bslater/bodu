@@ -1,13 +1,13 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Adler.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+namespace Bodu.IO.Hashing.Checksums;
+
 using System.IO.Hashing;
 using System.Numerics;
-
-namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Provides a generic base class for Adler-style checksum algorithms parameterised by the accumulator type.
@@ -66,12 +66,12 @@ public abstract class Adler<T>
     /// <summary>
     /// The A accumulator, initialised to one and updated with each input byte.
     /// </summary>
-    protected T PartA;
+    protected T partA;
 
     /// <summary>
-    /// The B accumulator, which holds the running sum of <see cref="PartA" /> across all processed bytes.
+    /// The B accumulator, which holds the running sum of <see cref="partA" /> across all processed bytes.
     /// </summary>
-    protected T PartB;
+    protected T partB;
 
     private readonly T _modulo;
 
@@ -85,8 +85,8 @@ public abstract class Adler<T>
         : base(hashLengthInBytes)
     {
         this._modulo = modulo;
-        this.PartA = T.One;
-        this.PartB = T.Zero;
+        this.partA = T.One;
+        this.partB = T.Zero;
     }
 
     /// <inheritdoc />
@@ -95,8 +95,8 @@ public abstract class Adler<T>
         const int NMAX = 5552;
         int length = source.Length;
         int index = 0;
-        T pA = this.PartA;
-        T pB = this.PartB;
+        T pA = this.partA;
+        T pB = this.partB;
 
         if (Vector.IsHardwareAccelerated && length >= 512)
         {
@@ -117,7 +117,7 @@ public abstract class Adler<T>
                 // either produces a digest that does not match the per-byte definition.
                 while (index + width <= chunkEnd)
                 {
-                    Vector<byte> vec = new Vector<byte>(source.Slice(index, width));
+                    var vec = new Vector<byte>(source.Slice(index, width));
                     Vector.Widen(vec, out Vector<ushort> lo, out Vector<ushort> hi);
 
                     T sumBytes = T.Zero;
@@ -164,14 +164,14 @@ public abstract class Adler<T>
         // The SIMD branch already reduces per chunk; the scalar fallback only reduces at NMAX hits,
         // so without this a sub-NMAX Append (e.g. per-byte) would leave PartA/PartB unreduced and
         // GetCurrentHashCore would emit a non-canonical digest.
-        this.PartA = pA % this._modulo;
-        this.PartB = pB % this._modulo;
+        this.partA = pA % this._modulo;
+        this.partB = pB % this._modulo;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        this.PartA = T.One;
-        this.PartB = T.Zero;
+        this.partA = T.One;
+        this.partB = T.Zero;
     }
 }

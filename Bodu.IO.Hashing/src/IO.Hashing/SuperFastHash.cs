@@ -4,11 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+namespace Bodu.IO.Hashing;
+
 using System.Buffers.Binary;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
-
-namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Computes a 32-bit non-cryptographic hash using Paul Hsieh's <c>SuperFastHash</c> algorithm, intended for
@@ -56,7 +56,7 @@ public sealed class SuperFastHash
 {
     private const int HashLength = 4;
 
-    private readonly MemoryStream _buffer = new();
+    private readonly MemoryStream buffer = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SuperFastHash" /> class.
@@ -68,16 +68,16 @@ public sealed class SuperFastHash
 
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source) =>
-        this._buffer.Write(source);
+        this.buffer.Write(source);
 
     /// <inheritdoc />
     public override void Reset() =>
-        this._buffer.SetLength(0);
+        this.buffer.SetLength(0);
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
-        ReadOnlySpan<byte> data = this._buffer.GetBuffer().AsSpan(0, (int)this._buffer.Length);
+        ReadOnlySpan<byte> data = this.buffer.GetBuffer().AsSpan(0, (int)this.buffer.Length);
         BinaryPrimitives.WriteUInt32LittleEndian(destination, Compute(data));
     }
 

@@ -4,12 +4,12 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+namespace Bodu.IO.Hashing;
+
 using System.Buffers.Binary;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
-
-namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Computes a 32-bit non-cryptographic hash using Daniel J. Bernstein's djb2 algorithm, optionally using the
@@ -70,10 +70,10 @@ public sealed class Bernstein
     private const string ReconfigurationNotAllowed =
         "The algorithm is already in use and cannot be reconfigured after computation has started.";
 
-    private uint _initialValue;
-    private bool _useModified;
-    private uint _workingHash;
-    private bool _started;
+    private uint initialValue;
+    private bool useModified;
+    private uint workingHash;
+    private bool started;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Bernstein" /> class with the canonical djb2 seed
@@ -96,9 +96,9 @@ public sealed class Bernstein
     public Bernstein(uint initialValue, bool useModifiedAlgorithm)
         : base(HashLength)
     {
-        this._initialValue = initialValue;
-        this._useModified = useModifiedAlgorithm;
-        this._workingHash = initialValue;
+        this.initialValue = initialValue;
+        this.useModified = useModifiedAlgorithm;
+        this.workingHash = initialValue;
     }
 
     /// <summary>
@@ -111,13 +111,13 @@ public sealed class Bernstein
     /// </exception>
     public uint InitialValue
     {
-        get => this._initialValue;
+        get => this.initialValue;
 
         set
         {
             this.ThrowIfInvalidState();
-            this._initialValue = value;
-            this._workingHash = value;
+            this.initialValue = value;
+            this.workingHash = value;
         }
     }
 
@@ -134,12 +134,12 @@ public sealed class Bernstein
     /// </exception>
     public bool UseModifiedAlgorithm
     {
-        get => this._useModified;
+        get => this.useModified;
 
         set
         {
             this.ThrowIfInvalidState();
-            this._useModified = value;
+            this.useModified = value;
         }
     }
 
@@ -149,53 +149,53 @@ public sealed class Bernstein
         if (source.Length == 0)
             return;
 
-        if (this._useModified)
+        if (this.useModified)
             this.AppendModified(source);
         else
             this.AppendOriginal(source);
 
-        this._started = true;
+        this.started = true;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        this._workingHash = this._initialValue;
-        this._started = false;
+        this.workingHash = this.initialValue;
+        this.started = false;
     }
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt32BigEndian(destination, this._workingHash);
+        BinaryPrimitives.WriteUInt32BigEndian(destination, this.workingHash);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendOriginal(ReadOnlySpan<byte> source)
     {
-        uint v = this._workingHash;
+        uint v = this.workingHash;
         foreach (byte b in source)
         {
             v = ((v << 5) + v) + b;
         }
 
-        this._workingHash = v;
+        this.workingHash = v;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendModified(ReadOnlySpan<byte> source)
     {
-        uint v = this._workingHash;
+        uint v = this.workingHash;
         foreach (byte b in source)
         {
             v = ((v << 5) + v) ^ b;
         }
 
-        this._workingHash = v;
+        this.workingHash = v;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfInvalidState()
     {
-        if (this._started)
+        if (this.started)
             throw new CryptographicUnexpectedOperationException(ReconfigurationNotAllowed);
     }
 }

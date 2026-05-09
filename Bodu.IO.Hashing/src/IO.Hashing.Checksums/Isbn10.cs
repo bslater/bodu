@@ -1,12 +1,12 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Isbn10.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.CheckDigits;
-
 namespace Bodu.IO.Hashing.Checksums;
+
+using Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Computes the check character of a 10-character International Standard Book Number using the ISBN-10 weighted
@@ -36,8 +36,8 @@ public sealed class Isbn10
     /// <summary>The required full-sequence length of <c>10</c> characters.</summary>
     public const int SequenceLength = 10;
 
-    private int _sum;
-    private int _count;
+    private int sum;
+    private int count;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Isbn10" /> class.
@@ -58,8 +58,8 @@ public sealed class Isbn10
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        int sum = _sum;
-        int count = _count;
+        int sum = this.sum;
+        int count = this.count;
         for (int i = 0; i < body.Length; i++)
         {
             char ch = body[i];
@@ -74,21 +74,21 @@ public sealed class Isbn10
             count++;
         }
 
-        _sum = sum;
-        _count = count;
+        this.sum = sum;
+        this.count = count;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        _sum = 0;
-        _count = 0;
+        sum = 0;
+        count = 0;
     }
 
     /// <inheritdoc />
     public override char GetCurrentCheckDigit()
     {
-        int check = (11 - (((_sum % 11) + 11) % 11)) % 11;
+        int check = (11 - (((sum % 11) + 11) % 11)) % 11;
         return check == 10 ? 'X' : (char)('0' + check);
     }
 

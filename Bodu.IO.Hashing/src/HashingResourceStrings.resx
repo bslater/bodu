@@ -120,4 +120,7 @@
   <data name="ArgumentException_PearsonInvalidTable" xml:space="preserve">
     <value>Table must contain 256 unique bytes.</value>
   </data>
+  <data name="ArgumentOutOfRange_InvalidCharacterForCharacterSet" xml:space="preserve">
+    <value>Character '{0}' (U+{1:X4}) is not a valid {2} character ({3}).</value>
+  </data>
 </root>

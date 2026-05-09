@@ -22,14 +22,14 @@ namespace Bodu {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class IOResourceStrings {
+    internal class HashingResourceStrings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal IOResourceStrings() {
+        internal HashingResourceStrings() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Bodu {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Bodu.IOResourceStrings", typeof(IOResourceStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Bodu.HashingResourceStrings", typeof(HashingResourceStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -66,6 +66,15 @@ namespace Bodu {
         internal static string ArgumentException_PearsonInvalidTable {
             get {
                 return ResourceManager.GetString("ArgumentException_PearsonInvalidTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Character &apos;{0}&apos; (U+{1:X4}) is not a valid {2} character ({3})..
+        /// </summary>
+        internal static string ArgumentOutOfRange_InvalidCharacterForCharacterSet {
+            get {
+                return ResourceManager.GetString("ArgumentOutOfRange_InvalidCharacterForCharacterSet", resourceCulture);
             }
         }
     }

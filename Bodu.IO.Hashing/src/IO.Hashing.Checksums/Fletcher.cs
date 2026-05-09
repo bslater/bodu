@@ -66,11 +66,11 @@ public abstract class Fletcher<TSelf>
 {
     private static readonly int[] ValidHashSizes = { 16, 32, 64 };
 
-    private readonly int _hashSizeBits;
-    private readonly ulong _modulus;
+    private readonly int hashSizeBits;
+    private readonly ulong modulus;
 
-    private ulong _partA;
-    private ulong _partB;
+    private ulong partA;
+    private ulong partB;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Fletcher{TSelf}" /> class with the specified hash size.
@@ -89,8 +89,8 @@ public abstract class Fletcher<TSelf>
                     nameof(hashSize)),
             blockSize: hashSize / 16)
     {
-        this._hashSizeBits = hashSize;
-        this._modulus = (1UL << (hashSize / 2)) - 1;
+        this.hashSizeBits = hashSize;
+        this.modulus = (1UL << (hashSize / 2)) - 1;
         this.AlgorithmName = $"Fletcher-{hashSize}";
     }
 
@@ -103,16 +103,16 @@ public abstract class Fletcher<TSelf>
     /// <inheritdoc />
     protected override void ResetState()
     {
-        this._partA = 0;
-        this._partB = 0;
+        this.partA = 0;
+        this.partB = 0;
     }
 
     /// <inheritdoc />
     protected override TSelf Clone()
     {
         TSelf clone = new();
-        clone._partA = this._partA;
-        clone._partB = this._partB;
+        clone.partA = this.partA;
+        clone.partB = this.partB;
         clone.CopyResidualStateFrom(this);
         return clone;
     }
@@ -135,15 +135,15 @@ public abstract class Fletcher<TSelf>
             b |= ((ulong)block[i]) << ((this.BlockSizeBytes - (i + 1)) << 3);
         }
 
-        this._partA = (this._partA + b) % this._modulus;
-        this._partB = (this._partB + this._partA) % this._modulus;
+        this.partA = (this.partA + b) % this.modulus;
+        this.partB = (this.partB + this.partA) % this.modulus;
     }
 
     /// <inheritdoc />
     protected override byte[] ProcessFinalBlock()
     {
-        ulong finalHash = (this._partA << (this._hashSizeBits / 2)) | this._partB;
-        return finalHash.GetBytes().SliceInternal(0, this._hashSizeBits / 8);
+        ulong finalHash = (this.partA << (this.hashSizeBits / 2)) | this.partB;
+        return finalHash.GetBytes().SliceInternal(0, this.hashSizeBits / 8);
     }
 
     /// <inheritdoc />
