@@ -44,13 +44,6 @@ namespace Bodu.Security.Cryptography;
 /// The L array uses GF(2^128) doubling with polynomial x^128 + x^7 + x^2 + x + 1 (big-endian).
 /// </para>
 /// <para>
-/// <strong>Lifecycle.</strong> Each instance encrypts or decrypts exactly one message. A second call
-/// to <see cref="Encrypt" /> or <see cref="Decrypt" /> — including after a tag-mismatch failure —
-/// throws <see cref="InvalidOperationException" />. The supplied <see cref="IBlockCipher" /> is
-/// not disposed by this type; ownership remains with the caller. <see cref="Dispose" /> clears the
-/// retained nonce, OCB offset constants, and cached associated-data state.
-/// </para>
-/// <para>
 /// <strong>When to use OCB3.</strong> Pick OCB3 when you want a single-pass AEAD mode without GCM's
 /// catastrophic-on-nonce-reuse profile — OCB still requires nonces to be unique per key, but the failure
 /// mode is graceful (only that one message's confidentiality is lost; the GHASH-key-leak amplification

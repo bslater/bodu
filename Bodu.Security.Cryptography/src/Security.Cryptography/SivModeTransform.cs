@@ -47,13 +47,6 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="IAeadBlockCipherModeTransform" /> convention.
 /// </para>
 /// <para>
-/// <strong>Lifecycle.</strong> Each instance encrypts or decrypts exactly one message. A second call
-/// to <see cref="Encrypt" /> or <see cref="Decrypt" /> — including after a tag-mismatch failure —
-/// throws <see cref="InvalidOperationException" />. The supplied <see cref="IBlockCipher" /> instances
-/// are not disposed by this type; ownership remains with the caller. <see cref="Dispose" /> clears
-/// cached associated-data state.
-/// </para>
-/// <para>
 /// <strong>When to use SIV.</strong> Pick AES-SIV when deterministic authenticated encryption is wanted —
 /// key wrapping (RFC 5297 §6 / RFC 5649), envelope encryption schemes that need stable ciphertext for
 /// deduplication, or any context that cannot maintain a per-message nonce. SIV is two-pass and slower than
