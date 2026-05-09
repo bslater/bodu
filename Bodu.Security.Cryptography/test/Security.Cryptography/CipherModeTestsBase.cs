@@ -57,6 +57,15 @@ public abstract partial class CipherModeTestsBase<TTransform>
     /// </summary>
     protected virtual bool UsesInitializationVector => true;
 
+    /// <summary>
+    /// Gets a value indicating whether this mode's public constructor validates the cipher
+    /// argument and throws <see cref="ArgumentNullException" /> on <see langword="null" />.
+    /// Defaults to <see langword="true" />. SIV overrides to <see langword="false" /> because
+    /// its test factory ignores the cipher argument and uses fixed AES keys, so a null cipher
+    /// never reaches the production constructor through the test surface.
+    /// </summary>
+    protected virtual bool ValidatesCipherArgument => true;
+
     // ── Abstract factory ──────────────────────────────────────────────────────────────────────
 
     /// <summary>

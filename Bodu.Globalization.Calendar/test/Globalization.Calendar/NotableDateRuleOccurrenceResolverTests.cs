@@ -52,6 +52,8 @@ public sealed class NotableDateRuleOccurrenceResolverTests
         Assert.IsFalse(actual.Any(occurrence => occurrence.BaseDate.Name == "Good Friday"));
 
         Assert.AreEqual(3, CountingEasterAlgorithm.CallCount);
+        // The resolver uses a tight candidate-year envelope ([request.Year]); a single 2024 request invokes the algorithm once.
+        Assert.AreEqual(1, CountingEasterAlgorithm.CallCount);
     }
 
     /// <summary>
@@ -109,6 +111,10 @@ public sealed class NotableDateRuleOccurrenceResolverTests
         // Candidate years are conservative: 2023, 2024, 2025.
         // The second request reuses those same anchor-year calculations instead of invoking the algorithm again.
         Assert.AreEqual(3, CountingEasterAlgorithm.CallCount);
+        // The resolver caches the Easter 2024 anchor on the first request; the second request reuses it instead of invoking
+        // the algorithm again. With the tight [request.Year] candidate-year envelope, both requests target Easter 2024 only,
+        // so the algorithm runs exactly once across the two calls.
+        Assert.AreEqual(1, CountingEasterAlgorithm.CallCount);
     }
 
     /// <summary>
