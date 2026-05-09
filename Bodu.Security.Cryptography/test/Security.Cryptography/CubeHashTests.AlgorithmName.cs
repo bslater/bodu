@@ -37,6 +37,25 @@ public partial class CubeHashTests
         Assert.AreEqual(expected, algorithm.AlgorithmName);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="CubeHash.AlgorithmName" /> returns the documented format
+    /// <c>CubeHash{r}+{b}/{w}+{f}-{h}</c> using the algorithm's current property values.
+    /// </summary>
+    [TestMethod]
+    public void AlgorithmName_WhenReadAfterCustomConfiguration_ShouldFormatAllParameters()
+    {
+        using var algorithm = new CubeHash
+        {
+            InitializationRounds = 16,
+            Rounds = 16,
+            TransformBlockSize = 32,
+            FinalizationRounds = 32,
+            HashSize = 256,
+        };
+
+        Assert.AreEqual("CubeHash16+16/32+32-256", algorithm.AlgorithmName);
+    }
+
     private static string GetAlgorithmName(CubeHash algorithm) =>
         $"CubeHash{algorithm.InitializationRounds}+{algorithm.Rounds}/{algorithm.TransformBlockSize}+{algorithm.FinalizationRounds}-{algorithm.HashSize}";
 }

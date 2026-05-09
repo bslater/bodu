@@ -36,4 +36,20 @@ public partial class AsconHashA256Tests
 
         Assert.IsNotNull(ex);
     }
+
+    /// <summary>
+    /// Verifies that reading <see cref="AsconHash{T}.AlgorithmName" /> after disposal throws
+    /// <see cref="ObjectDisposedException" />.
+    /// </summary>
+    [TestMethod]
+    public void AlgorithmName_WhenAccessedAfterDispose_ShouldThrowExactly()
+    {
+        var algorithm = new AsconHashA256();
+        algorithm.Dispose();
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            _ = algorithm.AlgorithmName;
+        });
+    }
 }

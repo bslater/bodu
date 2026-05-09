@@ -1,30 +1,29 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="SipHashTests.Dispose.cs" company="PlaceholderCompany">
+// <copyright file="SipHashTests.Initialize.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
+using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
 public abstract partial class SipHashTests<TTest, TAlgorithm>
 {
     /// <summary>
-    /// Verifies that calling <see cref="System.Security.Cryptography.HashAlgorithm.Dispose()" /> twice on a SipHash instance is
-    /// idempotent and does not throw.
+    /// Verifies that calling <see cref="HashAlgorithm.Initialize" /> on a disposed instance throws
+    /// <see cref="ObjectDisposedException" /> rather than touching the cleared key buffer or
+    /// invoking <c>OnKeyChanged</c> against null state.
     /// </summary>
     [TestMethod]
-    public void Dispose_WhenCalledTwice_ShouldNotThrow()
+    public void Initialize_WhenCalledAfterDispose_ShouldThrowExactly()
     {
         var algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
-        try
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
-            algorithm.Dispose();
-        }
-        catch (Exception ex)
-        {
-            Assert.Fail($"Second Dispose on {typeof(TAlgorithm).Name} threw {ex.GetType().Name}: {ex.Message}");
-        }
+            algorithm.Initialize();
+        });
     }
 }

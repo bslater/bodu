@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Security.Cryptography;
+
 namespace Bodu.Security.Cryptography;
 
 public partial class TigerTests
@@ -110,5 +112,39 @@ public partial class TigerTests
 
         Assert.AreEqual(TigerHashingVariant.Tiger, algorithm.Variant, $"{nameof(Tiger.Variant)} should remain unchanged.");
         Assert.AreEqual(128, algorithm.HashSize, $"{nameof(Tiger.HashSize)} should update.");
+    }
+
+    /// <summary>
+    /// Verifies that reading <see cref="Tiger.HashSize" /> after disposal throws
+    /// <see cref="ObjectDisposedException" /> rather than returning a stale value.
+    /// </summary>
+    [TestMethod]
+    public void HashSize_WhenAccessedAfterDispose_ShouldThrowExactly()
+    {
+        var algorithm = CreateAlgorithm();
+        algorithm.Dispose();
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            _ = algorithm.HashSize;
+        });
+    }
+
+    /// <summary>
+    /// Verifies that setting <see cref="Tiger.HashSize" /> after <see cref="HashAlgorithm.TransformBlock" />
+    /// has been called throws <see cref="CryptographicUnexpectedOperationException" /> rather than
+    /// silently mutating the digest length mid-computation.
+    /// </summary>
+    [TestMethod]
+    public void HashSize_WhenSetAfterTransformBlock_ShouldThrowExactly()
+    {
+        using var algorithm = CreateAlgorithm();
+        byte[] input = new byte[] { 0x01, 0x02, 0x03 };
+        algorithm.TransformBlock(input, 0, input.Length, null, 0);
+
+        Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
+        {
+            algorithm.HashSize = 128;
+        });
     }
 }

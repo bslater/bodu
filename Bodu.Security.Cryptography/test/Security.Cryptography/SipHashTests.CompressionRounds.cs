@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Security.Cryptography;
+
 namespace Bodu.Security.Cryptography;
 
 public abstract partial class SipHashTests<TTest, TAlgorithm>
@@ -63,5 +65,76 @@ public abstract partial class SipHashTests<TTest, TAlgorithm>
         }
 
         CollectionAssert.AreNotEqual(hashWithRounds4, hashWithRounds8, "Hashes should differ when compression rounds are different.");
+    }
+
+    /// <summary>
+    /// Verifies that reading <see cref="SipHash{T}.CompressionRounds" /> after disposal throws
+    /// <see cref="ObjectDisposedException" /> rather than returning the cleared (0) backing field.
+    /// </summary>
+    [TestMethod]
+    public void CompressionRounds_WhenAccessedAfterDispose_ShouldThrowExactly()
+    {
+        var algorithm = CreateAlgorithm();
+        algorithm.Dispose();
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            _ = algorithm.CompressionRounds;
+        });
+    }
+
+    /// <summary>
+    /// Verifies that assigning <see cref="SipHash{T}.CompressionRounds" /> after disposal throws
+    /// <see cref="ObjectDisposedException" /> rather than silently mutating cleared state.
+    /// </summary>
+    [TestMethod]
+    public void CompressionRounds_WhenSetAfterDispose_ShouldThrowExactly()
+    {
+        var algorithm = CreateAlgorithm();
+        algorithm.Dispose();
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            algorithm.CompressionRounds = 4;
+        });
+    }
+
+    /// <summary>
+    /// Verifies that mutating <see cref="SipHash{T}.CompressionRounds" /> after
+    /// <see cref="HashAlgorithm.TransformBlock" /> has been called throws
+    /// <see cref="CryptographicUnexpectedOperationException" /> rather than silently
+    /// reconfiguring the round count mid-computation.
+    /// </summary>
+    [TestMethod]
+    public void CompressionRounds_WhenSetAfterTransformBlock_ShouldThrowExactly()
+    {
+        using var algorithm = CreateAlgorithm();
+        byte[] input = new byte[16];
+        algorithm.TransformBlock(input, 0, input.Length, null, 0);
+
+        Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
+        {
+            algorithm.CompressionRounds = 4;
+        });
+    }
+
+    /// <summary>
+    /// Verifies that assigning <see cref="SipHash{T}.CompressionRounds" /> to extreme values around
+    /// the boundary throws <see cref="ArgumentOutOfRangeException" /> only for values strictly below
+    /// <see cref="SipHash{T}.MinCompressionRounds" /> (and never some other unexpected exception).
+    /// </summary>
+    [TestMethod]
+    [DataRow(int.MinValue)]
+    [DataRow(-1)]
+    [DataRow(0)]
+    [DataRow(1)]
+    public void CompressionRounds_WhenSetBelowMinimum_ShouldThrowExactly(int value)
+    {
+        using var algorithm = CreateAlgorithm();
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            algorithm.CompressionRounds = value;
+        });
     }
 }

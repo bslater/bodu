@@ -1,0 +1,55 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="Blake2bTests.Ctor.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Security.Cryptography;
+
+namespace Bodu.Security.Cryptography;
+
+public partial class Blake2bTests
+{
+    /// <summary>
+    /// Verifies that constructing a <see cref="Blake2b" /> with an unsupported hash size throws
+    /// <see cref="ArgumentOutOfRangeException" /> rather than allowing the bad size to silently
+    /// propagate to <see cref="HashAlgorithm.HashSize" />.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(1)]
+    [DataRow(7)]
+    [DataRow(8)]
+    [DataRow(127)]
+    [DataRow(129)]
+    [DataRow(513)]
+    [DataRow(-1)]
+    [DataRow(int.MinValue)]
+    [DataRow(int.MaxValue)]
+    public void Ctor_WhenHashSizeIsInvalid_ShouldThrowExactly(int hashSize)
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new Blake2b(hashSize);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that constructing a <see cref="Blake2b" /> with each documented valid hash size
+    /// succeeds and reports the corresponding <see cref="HashAlgorithm.HashSize" /> value.
+    /// </summary>
+    [TestMethod]
+    [DataRow(128)]
+    [DataRow(160)]
+    [DataRow(192)]
+    [DataRow(224)]
+    [DataRow(256)]
+    [DataRow(384)]
+    [DataRow(512)]
+    public void Ctor_WhenHashSizeIsValid_ShouldSetHashSize(int hashSize)
+    {
+        using var algorithm = new Blake2b(hashSize);
+
+        Assert.AreEqual(hashSize, algorithm.HashSize);
+    }
+}

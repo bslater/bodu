@@ -1,30 +1,30 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="SipHashTests.Dispose.cs" company="PlaceholderCompany">
+// <copyright file="SkipjackBlockCipherTests.Dispose.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Security.Cryptography;
 
-public abstract partial class SipHashTests<TTest, TAlgorithm>
+internal sealed partial class SkipjackBlockCipherTests
 {
     /// <summary>
-    /// Verifies that calling <see cref="System.Security.Cryptography.HashAlgorithm.Dispose()" /> twice on a SipHash instance is
-    /// idempotent and does not throw.
+    /// Verifies that calling <see cref="SkipjackBlockCipher.Dispose" /> twice is idempotent and
+    /// does not throw.
     /// </summary>
     [TestMethod]
     public void Dispose_WhenCalledTwice_ShouldNotThrow()
     {
-        var algorithm = CreateAlgorithm();
-        algorithm.Dispose();
+        var cipher = new SkipjackBlockCipher(new byte[10]);
+        cipher.Dispose();
 
         try
         {
-            algorithm.Dispose();
+            cipher.Dispose();
         }
         catch (Exception ex)
         {
-            Assert.Fail($"Second Dispose on {typeof(TAlgorithm).Name} threw {ex.GetType().Name}: {ex.Message}");
+            Assert.Fail($"Second Dispose on SkipjackBlockCipher threw {ex.GetType().Name}: {ex.Message}");
         }
     }
 }

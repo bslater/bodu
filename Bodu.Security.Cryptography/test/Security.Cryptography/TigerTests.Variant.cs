@@ -88,4 +88,24 @@ public partial class TigerTests
             var _ = algorithm.Variant;
         });
     }
+
+    /// <summary>
+    /// Verifies that assigning an undefined <see cref="TigerHashingVariant" /> value to
+    /// <see cref="Tiger.Variant" /> throws <see cref="ArgumentOutOfRangeException" /> via the
+    /// enum-defined-value guard rather than a raw cast pass-through.
+    /// </summary>
+    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(2)]
+    [DataRow(int.MaxValue)]
+    [DataRow(int.MinValue)]
+    public void Variant_WhenSetToUndefinedEnum_ShouldThrowExactly(int rawValue)
+    {
+        using var algorithm = CreateAlgorithm();
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            algorithm.Variant = (TigerHashingVariant)rawValue;
+        });
+    }
 }
