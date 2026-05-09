@@ -63,6 +63,7 @@ public sealed partial class GcmSivModeTransformTests
     /// Verifies that <see cref="GcmSivModeTransform.Encrypt" />, with Rfc8452 Vector, matches Expected.
     /// </summary>
     [TestMethod]
+    [TestCategory("Regression")]
     [DynamicData(nameof(GcmSivRfc8452Vectors))]
     public void Encrypt_WithRfc8452Vector_ShouldMatchExpected(
         string keyHex, string nonceHex, string aadHex, string ptHex, string expectedOutputHex)
@@ -82,6 +83,7 @@ public sealed partial class GcmSivModeTransformTests
     /// Verifies that <see cref="GcmSivModeTransform.Decrypt" />, with Rfc8452Vector, returns the expected value.
     /// </summary>
     [TestMethod]
+    [TestCategory("Regression")]
     [DynamicData(nameof(GcmSivRfc8452Vectors))]
     public void Decrypt_WithRfc8452Vector_ShouldRecoverPlaintext(
         string keyHex, string nonceHex, string aadHex, string ptHex, string expectedOutputHex)
@@ -105,6 +107,7 @@ public sealed partial class GcmSivModeTransformTests
     /// Verifies that <see cref="GcmSivModeTransform.Decrypt" />, when TagIsCorrupted, throws <see cref="CryptographicException" />.
     /// </summary>
     [TestMethod]
+    [TestCategory("Regression")]
     public void Decrypt_WhenTagIsCorrupted_ShouldThrowCryptographicException()
     {
         byte[] masterKey = new byte[16];
@@ -129,6 +132,7 @@ public sealed partial class GcmSivModeTransformTests
     /// Verifies that <see cref="GcmSivModeTransform.EncryptThenDecrypt" />, with RandomKey, returns the expected value.
     /// </summary>
     [TestMethod]
+    [TestCategory("Regression")]
     public void EncryptThenDecrypt_WithRandomKey_ShouldRoundTrip()
     {
         var rng = RandomNumberGenerator.Create();

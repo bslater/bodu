@@ -32,6 +32,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     /// <param name="body">The body digits to append in the second run.</param>
     /// <param name="expectedCheck">The check digit the algorithm is expected to emit for the second run.</param>
     [TestMethod]
+    [TestCategory("Regression")]
     [DynamicData(nameof(KnownAnswerData))]
     public void Reset_BetweenAppends_ShouldDiscardPriorState(string name, string body, char expectedCheck)
     {

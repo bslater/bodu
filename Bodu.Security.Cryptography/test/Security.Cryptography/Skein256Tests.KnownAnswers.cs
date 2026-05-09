@@ -12,6 +12,7 @@ public partial class Skein256Tests
     /// Verifies that <see cref="Skein256.AlgorithmName" /> formats the state size and the configured output size.
     /// </summary>
     [TestMethod]
+    [TestCategory("Regression")]
     public void AlgorithmName_WhenConfiguredWithOutputSize_ShouldReturnFormattedName()
     {
         using var skein = new Skein256(224);

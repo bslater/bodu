@@ -50,9 +50,13 @@ Nullable reference types are enabled everywhere. `ImplicitUsings` is enabled for
 
 ```bash
 dotnet build Bodu.sln
-dotnet test  Bodu.sln --settings test.runsettings
-dotnet test  Bodu.Core/test/Bodu.Core.UnitTests.csproj --settings test.runsettings
+dotnet test  Bodu.sln --settings bvt.runsettings              # default build run (BVT)
+dotnet test  Bodu.sln --settings smoke.runsettings            # smoke only
+dotnet test  Bodu.sln --settings regression.runsettings       # full regression
+dotnet test  Bodu.Core/test/Bodu.Core.Test.csproj --settings bvt.runsettings
 ```
+
+See **Test Tiers** below for the category convention each runsettings file applies.
 
 `test.runsettings` enables parallel execution (`MaxCpuCount=0`) and disables AppDomains.
 
@@ -61,6 +65,33 @@ dotnet test  Bodu.Core/test/Bodu.Core.UnitTests.csproj --settings test.runsettin
 - Framework: **MSTest** (`Microsoft.VisualStudio.TestTools.UnitTesting`, `[TestClass]` / `[TestMethod]`). Do **not** introduce xUnit or NUnit.
 - Tests live in `<Project>/test/` and are organised as **partial classes** that mirror the source layout — e.g. `CircularBuffer.cs` → `CircularBufferTests.Enqueue.cs`, `CircularBufferTests.Dequeue.cs`. Extend the existing partial class when adding tests for an existing type.
 - No shared test base classes; each test is self-contained.
+
+### Test Tiers (Smoke / BVT / Regression / Stress)
+
+The suite is partitioned into tiers via `[TestCategory(...)]` so the build can run a fast subset by default and the exhaustive set on demand. Tier names are also exposed as constants on `Bodu.Test.TestCategories` for projects that reference `Bodu.Test`; either the constant or the literal string works.
+
+| Tier | Tag | Purpose |
+|---|---|---|
+| **Smoke** | `[TestCategory("Smoke")]` | One happy-path test per primary public type. Catches catastrophic breakage. |
+| **BVT** *(default)* | *(no category)* | Structural, exception, property, and contract tests. |
+| **Regression** | `[TestCategory("Regression")]` | Exhaustive vector tables, full algorithm catalogues, large parameter sweeps, multi-decade calendar tables. Excluded from BVT. |
+| **Stress** | `[TestCategory("Stress")]` | Long-running, high-iteration loops. Excluded from BVT. |
+
+Run-settings files at the repository root drive each tier:
+
+```bash
+dotnet test Bodu.sln --settings smoke.runsettings        # Smoke only
+dotnet test Bodu.sln --settings bvt.runsettings          # BVT (default build run)
+dotnet test Bodu.sln --settings regression.runsettings   # Everything
+dotnet test Bodu.sln --settings test.runsettings         # Everything (legacy alias)
+```
+
+Conventions:
+
+- Default a new test to **BVT** by leaving `TestCategory` unset.
+- Mark a test **Regression** when it is data-driven over a published vector table, an exhaustive catalogue, or a wide parameter sweep that duplicates structural coverage.
+- Mark a test **Smoke** sparingly — one per primary type, exercising the most important public method on a happy-path input.
+- Pre-existing `[TestCategory("Stress")]` tags retain their semantics.
 
 ### Test Method Naming
 

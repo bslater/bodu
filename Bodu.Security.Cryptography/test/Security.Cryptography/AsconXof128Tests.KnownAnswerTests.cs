@@ -25,6 +25,7 @@ public partial class AsconXof128Tests
     /// <param name="inputLength">Length of the sequential input message.</param>
     /// <param name="outputLength">Requested output length in bytes.</param>
     [TestMethod]
+    [TestCategory("Regression")]
     [DataRow(0,  32)]
     [DataRow(0,  64)]
     [DataRow(1,  32)]
@@ -52,6 +53,7 @@ public partial class AsconXof128Tests
     /// </summary>
     /// <param name="inputLength">Length of the sequential input message.</param>
     [TestMethod]
+    [TestCategory("Regression")]
     [DataRow(0)]
     [DataRow(1)]
     [DataRow(7)]
@@ -75,6 +77,7 @@ public partial class AsconXof128Tests
     /// input lengths — i.e., adding one byte to the message always changes the output.
     /// </summary>
     [TestMethod]
+    [TestCategory("Regression")]
     [DataRow(0, 1)]
     [DataRow(1, 2)]
     [DataRow(7, 8)]
@@ -101,6 +104,7 @@ public partial class AsconXof128Tests
     /// <param name="outputLength">Requested output length in bytes.</param>
     /// <param name="expectedHex">Expected digest as an uppercase hex string.</param>
     [TestMethod]
+    [TestCategory("Regression")]
     [DataRow(0,  32, "D2AE52E6FD7D4925B8A85DD1E3BAC87A5338708D13CE92F851868ED5782EF084")]
     [DataRow(1,  32, "ECF9BA491725E622581E6431AC0BAF832589273CE1E22010B96427BD574F5AAF")]
     [DataRow(7,  32, "00D1187AC3662C5A2EEE4D4EC4D1E66F8760A24FC5B9F3FFBC6A9FCAA12A6525")]

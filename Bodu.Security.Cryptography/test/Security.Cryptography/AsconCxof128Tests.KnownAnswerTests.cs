@@ -27,6 +27,7 @@ public partial class AsconCxof128Tests
     /// <param name="messageLength">Length of the sequential message.</param>
     /// <param name="outputLength">Requested output length in bytes.</param>
     [TestMethod]
+    [TestCategory("Regression")]
     [DataRow(0, 0,  32)]
     [DataRow(0, 1,  32)]
     [DataRow(1, 0,  32)]
@@ -62,6 +63,7 @@ public partial class AsconCxof128Tests
     /// <param name="customizationLength">Length of the sequential customisation string.</param>
     /// <param name="messageLength">Length of the sequential message.</param>
     [TestMethod]
+    [TestCategory("Regression")]
     [DataRow(0, 0)]
     [DataRow(0, 8)]
     [DataRow(8, 0)]
@@ -94,6 +96,7 @@ public partial class AsconCxof128Tests
     /// Verifies that incrementing the message length by one byte always changes the output.
     /// </summary>
     [TestMethod]
+    [TestCategory("Regression")]
     [DataRow(0,  0,  1)]
     [DataRow(0,  7,  8)]
     [DataRow(0,  8,  9)]
@@ -132,6 +135,7 @@ public partial class AsconCxof128Tests
     /// <param name="outputLength">Requested output length in bytes.</param>
     /// <param name="expectedHex">Expected digest as an uppercase hex string.</param>
     [TestMethod]
+    [TestCategory("Regression")]
     [DataRow(0,  0,  32, "5F3BAD7F21E67C1A86D198604EFB594C096B80C43223679EDE3B16BD1BEE6BE5")]
     [DataRow(0,  1,  32, "410EF74BBF6E16EACAF8EA9E8691CB77E7D6CE449AD8D3DD489965254B5846BF")]
     [DataRow(1,  0,  32, "DD73FB03019376173D6B0DA8C86D3D1CE04607AE7738C99DFAE54710A9702A3D")]

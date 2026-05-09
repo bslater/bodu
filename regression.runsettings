@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <RunConfiguration>
+    <!-- Use all available logical processors -->
+    <MaxCpuCount>0</MaxCpuCount>
+
+    <!-- Optional: Disable app domain creation to improve test performance -->
+    <DisableAppDomain>true</DisableAppDomain>
+
+    <!-- Kill the test session if it runs longer than 10 minutes per assembly -->
+    <TestSessionTimeout>600000</TestSessionTimeout>
+
+    <!--
+      Full regression: runs every test in the suite, including Smoke, BVT, Regression, and Stress tiers. This
+      is the comprehensive run executed before a release or on-demand.
+      Pass this file via the dotnet test settings switch, e.g. /p:RunSettingsFilePath=regression.runsettings.
+    -->
+  </RunConfiguration>
+</RunSettings>

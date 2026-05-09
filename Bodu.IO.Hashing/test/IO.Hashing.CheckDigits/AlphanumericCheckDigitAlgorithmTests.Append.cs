@@ -17,6 +17,7 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
     /// <param name="body">The body characters to append.</param>
     /// <param name="expectedCheck">The check character the algorithm is expected to emit.</param>
     [TestMethod]
+    [TestCategory("Regression")]
     [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName =nameof(GetKnownAnswerTestName))]
     public void Append_WhenKnownAnswerIsAppendedInFull_ShouldProduceExpectedCheckDigit(string name, string body, char expectedCheck)
     {
@@ -36,6 +37,7 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
     /// <param name="body">The body characters to append.</param>
     /// <param name="expectedCheck">The check character the algorithm is expected to emit.</param>
     [TestMethod]
+    [TestCategory("Regression")]
     [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
     public void Append_WhenKnownAnswerIsAppendedOneCharAtATime_ShouldProduceExpectedCheckDigit(string name, string body, char expectedCheck)
     {
@@ -56,6 +58,7 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
     /// <param name="body">The body characters to append.</param>
     /// <param name="expectedCheck">The check character the algorithm is expected to emit.</param>
     [TestMethod]
+    [TestCategory("Regression")]
     [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
     public void Append_WhenKnownAnswerIsSplitAcrossTwoChunks_ShouldProduceExpectedCheckDigit(string name, string body, char expectedCheck)
     {
