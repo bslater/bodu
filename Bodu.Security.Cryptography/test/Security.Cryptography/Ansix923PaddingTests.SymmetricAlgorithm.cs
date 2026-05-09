@@ -1,0 +1,140 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="Ansix923PaddingTests.SymmetricAlgorithm.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+namespace Bodu.Security.Cryptography;
+
+/// <summary>
+/// ANSI X.923 round-trip tests driven across every concrete <see cref="SymmetricAlgorithm" />
+/// declared in the library. ANSI X.923 is a length-recoverable padding scheme — every input
+/// (including empty and already-block-aligned) produces ciphertext that is one block longer
+/// than the plaintext, padded out with zero bytes followed by a length byte. These tests
+/// pin the encrypt/decrypt round-trip across <see cref="CryptoStream" /> for empty,
+/// block-aligned, residual, and unaligned-chunked input shapes.
+/// </summary>
+public sealed partial class Ansix923PaddingTests
+{
+    /// <summary>
+    /// Verifies that an empty plaintext encrypted through a <see cref="CryptoStream" /> under
+    /// <see cref="PaddingMode.ANSIX923" /> produces exactly one block of ciphertext (the
+    /// all-pad block) and round-trips back to an empty plaintext on decrypt.
+    /// </summary>
+    /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(SymmetricAlgorithmTestData), DynamicDataDisplayName = nameof(GetSymmetricAlgorithmDisplayName))]
+    public void CryptoStream_WhenEmptyPlaintext_ShouldEmitOnePaddedBlockAndRoundTrip(System.Type algorithmType)
+    {
+        using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.ANSIX923);
+        int blockBytes = algorithm.BlockSize / 8;
+
+        byte[] cipherText = EncryptThroughCryptoStream(algorithm, System.Array.Empty<byte>());
+
+        Assert.AreEqual(blockBytes, cipherText.Length,
+            $"Empty plaintext under ANSIX923 on {algorithmType.Name} should produce exactly one block of padded ciphertext.");
+
+        byte[] recovered = DecryptThroughCryptoStream(algorithm, cipherText);
+
+        Assert.AreEqual(0, recovered.Length,
+            $"Decrypting one ANSIX923-padded block of empty plaintext on {algorithmType.Name} should recover an empty array.");
+    }
+
+    /// <summary>
+    /// Verifies that a block-aligned plaintext round-trips through <see cref="CryptoStream" />
+    /// under <see cref="PaddingMode.ANSIX923" /> — ANSI X.923 always appends a full block of
+    /// padding (since the input is already aligned), and the decrypt pipeline strips it back off.
+    /// </summary>
+    /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(SymmetricAlgorithmTestData), DynamicDataDisplayName = nameof(GetSymmetricAlgorithmDisplayName))]
+    public void CryptoStream_WhenBlockAlignedPlaintext_ShouldRoundTrip(System.Type algorithmType)
+    {
+        using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.ANSIX923);
+        int blockBytes = algorithm.BlockSize / 8;
+        byte[] plaintext = Enumerable.Range(0, blockBytes * 2).Select(i => (byte)(i + 1)).ToArray();
+
+        byte[] cipherText = EncryptThroughCryptoStream(algorithm, plaintext);
+
+        Assert.AreEqual(plaintext.Length + blockBytes, cipherText.Length,
+            $"Block-aligned plaintext under ANSIX923 on {algorithmType.Name} should produce ciphertext one block longer than the plaintext.");
+
+        byte[] recovered = DecryptThroughCryptoStream(algorithm, cipherText);
+
+        CollectionAssert.AreEqual(plaintext, recovered,
+            $"Block-aligned plaintext under ANSIX923 on {algorithmType.Name} did not round-trip through CryptoStream.");
+    }
+
+    /// <summary>
+    /// Verifies that a sub-block plaintext round-trips through <see cref="CryptoStream" /> under
+    /// <see cref="PaddingMode.ANSIX923" /> — the trailing residual is padded out to the next
+    /// block boundary, and the decrypt pipeline recovers the original prefix.
+    /// </summary>
+    /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(SymmetricAlgorithmTestData), DynamicDataDisplayName = nameof(GetSymmetricAlgorithmDisplayName))]
+    public void CryptoStream_WhenResidualPlaintext_ShouldRoundTrip(System.Type algorithmType)
+    {
+        using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.ANSIX923);
+        int blockBytes = algorithm.BlockSize / 8;
+        byte[] plaintext = Enumerable.Range(0, blockBytes + 3).Select(i => (byte)(i + 1)).ToArray();
+
+        byte[] cipherText = EncryptThroughCryptoStream(algorithm, plaintext);
+
+        Assert.AreEqual(0, cipherText.Length % blockBytes,
+            $"ANSIX923 ciphertext on {algorithmType.Name} must be block-aligned.");
+        Assert.IsTrue(cipherText.Length > plaintext.Length,
+            $"Residual plaintext under ANSIX923 on {algorithmType.Name} should grow to the next block boundary.");
+
+        byte[] recovered = DecryptThroughCryptoStream(algorithm, cipherText);
+
+        CollectionAssert.AreEqual(plaintext, recovered,
+            $"Residual plaintext under ANSIX923 on {algorithmType.Name} did not round-trip through CryptoStream.");
+    }
+
+    /// <summary>
+    /// Verifies that a multi-write <see cref="CryptoStream" /> session — calling
+    /// <see cref="Stream.Write(byte[], int, int)" /> several times with chunks of varying sizes
+    /// that do not align with the cipher's block boundary — still produces ciphertext that
+    /// decrypts to the concatenated plaintext under <see cref="PaddingMode.ANSIX923" />.
+    /// </summary>
+    /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(SymmetricAlgorithmTestData), DynamicDataDisplayName = nameof(GetSymmetricAlgorithmDisplayName))]
+    public void CryptoStream_WhenWritingInUnalignedChunks_ShouldRoundTrip(System.Type algorithmType)
+    {
+        using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.ANSIX923);
+        byte[] plaintext = Enumerable.Range(0, 41).Select(i => (byte)(i * 7 + 11)).ToArray();
+        int[] chunkSizes = new[] { 1, 3, 5, 7, 11, 13 };
+
+        byte[] cipherText;
+        using (var output = new MemoryStream())
+        {
+            using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
+            using (var crypto = new CryptoStream(output, encryptor, CryptoStreamMode.Write, leaveOpen: true))
+            {
+                int offset = 0;
+                int chunkIndex = 0;
+                while (offset < plaintext.Length)
+                {
+                    int len = System.Math.Min(chunkSizes[chunkIndex % chunkSizes.Length], plaintext.Length - offset);
+                    crypto.Write(plaintext, offset, len);
+                    offset += len;
+                    chunkIndex++;
+                }
+            }
+
+            cipherText = output.ToArray();
+        }
+
+        byte[] recovered = DecryptThroughCryptoStream(algorithm, cipherText);
+
+        CollectionAssert.AreEqual(plaintext, recovered,
+            $"Chunked write under ANSIX923 on {algorithmType.Name} did not round-trip through CryptoStream.");
+    }
+}
