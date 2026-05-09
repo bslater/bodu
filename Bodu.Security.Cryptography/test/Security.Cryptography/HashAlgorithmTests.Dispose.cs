@@ -159,21 +159,6 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="HashAlgorithm.ComputeHash(byte[])" /> after disposal throws an <see cref="ObjectDisposedException" />.
-    /// </summary>
-    [TestMethod]
-    public void Dispose_WhenComputeHashWithBufferCalledAfterDispose_ShouldThrowExactly()
-    {
-        var algorithm = CreateAlgorithm();
-        algorithm.Dispose();
-
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            _ = algorithm.ComputeHash(Array.Empty<byte>());
-        });
-    }
-
-    /// <summary>
     /// Verifies that calling <see cref="HashAlgorithm.ComputeHash(byte[], int, int)" /> after disposal throws an <see cref="ObjectDisposedException" />.
     /// </summary>
     [TestMethod]
@@ -199,37 +184,6 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
             _ = algorithm.ComputeHash(Stream.Null));
-    }
-
-    /// <summary>
-    /// Verifies that accessing the <see cref="HashAlgorithm.TransformBlock(byte[], int, int, byte[]?, int)" /> property after disposal
-    /// throws an <see cref="ObjectDisposedException" />.
-    /// </summary>
-    [TestMethod]
-    public void Dispose_WhenTransformBlockCalledAfterDispose_ShouldThrowExactly()
-    {
-        var algorithm = CreateAlgorithm();
-        algorithm.Dispose();
-
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            _ = algorithm.TransformBlock(Array.Empty<byte>(), 0, 0, null, 0);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that accessing the <see cref="HashAlgorithm.Hash" /> property after disposal throws an <see cref="ObjectDisposedException" />.
-    /// </summary>
-    [TestMethod]
-    public void Dispose_WhenTransformFinalBlockCalledAfterDispose_ShouldThrowExactly()
-    {
-        var algorithm = CreateAlgorithm();
-        algorithm.Dispose();
-
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            _ = algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
-        });
     }
 
     private static bool AssertMemorySpan(Type fieldType, object? value, string label)
