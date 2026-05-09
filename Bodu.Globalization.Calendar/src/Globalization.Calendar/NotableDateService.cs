@@ -492,6 +492,8 @@ public sealed class NotableDateService : INotableDateService
 			_weekendDefinition,
 			_weekendProvider,
 			_adjustmentHandlers);
+			_adjustmentHandlers,
+			_overrideRemovals);
 	}
 
 	// --------------------------------------------------------------------------------------

@@ -1,5 +1,12 @@
 - name: Overview
   href: index.md
+- name: Collections
+  items:
+    - name: Circular buffer
+      href: circular-buffer.md
+    - name: Evicting dictionary
+      href: evicting-dictionary.md
+- name: Primitives
 - name: Bodu.Collections.Generic
   items:
     - name: Circular buffer
