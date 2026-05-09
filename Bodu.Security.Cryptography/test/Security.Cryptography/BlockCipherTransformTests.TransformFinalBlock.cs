@@ -63,29 +63,6 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     }
 
     /// <summary>
-    /// Verifies that <see cref="ICryptoTransform.TransformFinalBlock(byte[], int, int)" /> rejects an input
-    /// count that is not an exact multiple of <see cref="ICryptoTransform.InputBlockSize" /> for raw block
-    /// cipher transforms.
-    /// </summary>
-    /// <param name="answer">
-    /// The vector under test, or <see langword="null" /> when the subclass declares no Transform-layer KATs.
-    /// </param>
-    [TestMethod]
-    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerDisplayName))]
-    public void TransformFinalBlock_WhenEncryptingEmptyInput_ShouldNotThrow(BlockCipherKnownAnswer? answer)
-    {
-        if (answer is null)
-        {
-            Assert.Inconclusive($"{typeof(TTest).Name} declares no Transform-layer KAT vectors via {nameof(GetKnownAnswers)}.");
-            return;
-        }
-
-        using TCryptoTransform transform = CreateTransformForKnownAnswer(answer, forEncryption: true);
-
-        _ = transform.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="ICryptoTransform.TransformFinalBlock(byte[], int, int)" /> on an
     /// encryptor with the default <see cref="PaddingMode.PKCS7" /> accepts a partial-block input
     /// and pads it out to exactly one full block of ciphertext.

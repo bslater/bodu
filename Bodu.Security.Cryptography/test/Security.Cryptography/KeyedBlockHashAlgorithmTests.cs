@@ -45,6 +45,38 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
         };
 
     /// <summary>
+    /// Creates a new instance of the hash algorithm under test using the specified key.
+    /// </summary>
+    /// <param name="key">
+    /// The key to assign to the newly constructed algorithm instance.
+    /// </param>
+    /// <returns>
+    /// A newly constructed instance of <typeparamref name="TAlgorithm" />, initialised with
+    /// <paramref name="key" />.
+    /// </returns>
+    /// <remarks>
+    /// Override this method if the algorithm under test requires special construction, such as constructor
+    /// parameters, key clamping, key normalisation, or post-initialisation setup.
+    /// </remarks>
+    protected virtual TAlgorithm CreateAlgorithm(byte[] key) =>
+        new TAlgorithm
+        {
+            Key = key
+        };
+
+    /// <summary>
+    /// Creates a new instance of the algorithm for the specified <paramref name="variant" />.
+    /// </summary>
+    /// <param name="variant">The variant to instantiate.</param>
+    /// <returns>A new instance of <typeparamref name="TAlgorithm" /> configured for the given variant.</returns>
+    protected virtual TAlgorithm CreateAlgorithm(TVariant variant, byte[] key)
+    {
+        var algorithm = CreateAlgorithm(variant);
+        algorithm.Key = key;
+        return algorithm;
+    }
+
+    /// <summary>
     /// Generates a unique, valid cryptographic key for use with the current algorithm under test.
     /// </summary>
     /// <returns>A non-null, non-empty <see cref="byte" /> array containing a randomly generated key suitable for the algorithm.</returns>

@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Extensions;
+using Bodu.Test;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -501,4 +502,79 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
         Assert.AreNotEqual(Convert.ToHexString(hash1), Convert.ToHexString(hash2),
             $"[{variant}] Reversing the key bytes must yield a different digest.");
     }
+
+
+    /// <summary>
+    /// Verifies that supplying a non-empty <see cref="Skein{T}.Key" /> causes the digest to differ from the plain,
+    /// unkeyed hash of the same input — confirming that the preliminary <c>KEY</c> UBI phase actually influences the
+    /// chaining value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(HashAlgorithmVariants))]
+    public void ComputeHash_WhenKeyIsSet_ShouldDifferFromUnkeyedHashOfSameInput(TVariant variant)
+    {
+        if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
+        {
+            Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping invalid test case.");
+            return;
+        }
+
+        byte[] data = (byte[])CryptoTestUtilities.ByteSequence256.Clone();
+
+        byte[] plainHash;
+        using (var plain = CreateAlgorithm(variant))
+            plainHash = plain.ComputeHash(data);
+
+        byte[] macHash;
+        byte[] key = TestHelpers.GenerateRandomNonZeroBytes(specification.MinKeyLength);
+        using (var mac = CreateAlgorithm(variant, key))
+            macHash = mac.ComputeHash(data);
+
+        CollectionAssert.AreNotEqual(plainHash, macHash);
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="Skein{T}.Key" /> getter returns a defensive copy so external callers cannot
+    /// mutate the internal key material through the accessor.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(HashAlgorithmVariants))]
+    public void Key_WhenGetterCalledTwice_ShouldReturnIndependentCopies(TVariant variant)
+    {
+        if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
+        {
+            Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping invalid test case.");
+            return;
+        }
+        using var algorithm = CreateAlgorithm(variant, specification.TestKey);
+
+        byte[] first = algorithm.Key;
+        first[0] = 0xFF;
+
+        byte[] second = algorithm.Key;
+
+        CollectionAssert.AreEqual(specification.TestKey, second);
+    }
+
+    /// <summary>
+    /// Verifies that assigning a key longer than <see cref="Skein{T}.MaxKeySizeBytes" /> throws
+    /// <see cref="System.Security.Cryptography.CryptographicException" />.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(HashAlgorithmVariants))]
+    public void Key_WhenAssignedLongerThanMaximum_ShouldThrowCryptographicException(TVariant variant)
+    {
+        if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
+        {
+            Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping invalid test case.");
+            return;
+        }
+        using var algorithm = CreateAlgorithm(variant);
+
+        Assert.ThrowsExactly<System.Security.Cryptography.CryptographicException>(() =>
+        {
+            algorithm.Key = new byte[algorithm.Key.Length + 1];
+        });
+    }
+
 }

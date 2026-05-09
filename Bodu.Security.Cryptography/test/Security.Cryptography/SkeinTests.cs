@@ -75,27 +75,6 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
         variant.ToString().StartsWith("Mac_", StringComparison.Ordinal);
 
     /// <summary>
-    /// Verifies that supplying a non-empty <see cref="Skein{T}.Key" /> causes the digest to differ from the plain,
-    /// unkeyed hash of the same input — confirming that the preliminary <c>KEY</c> UBI phase actually influences the
-    /// chaining value.
-    /// </summary>
-    [TestMethod]
-    public void ComputeHash_WhenKeyIsSet_ShouldDifferFromUnkeyedHashOfSameInput()
-    {
-        byte[] input = Enumerable.Range(0, 80).Select(i => (byte)((i * 31) + 7)).ToArray();
-
-        byte[] plainHash;
-        using (var plain = new TAlgorithm())
-            plainHash = plain.ComputeHash(input);
-
-        byte[] macHash;
-        using (var mac = new TAlgorithm { Key = SkeinTestKey })
-            macHash = mac.ComputeHash(input);
-
-        CollectionAssert.AreNotEqual(plainHash, macHash);
-    }
-
-    /// <summary>
     /// Verifies that a MAC key longer than one Skein state block is correctly processed through the multi-block
     /// <c>KEY</c> UBI loop and produces a repeatable digest across runs.
     /// </summary>
@@ -120,37 +99,5 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
 
         CollectionAssert.AreEqual(first, second);
         Assert.AreEqual(reference.HashSize / 8, first.Length);
-    }
-
-    /// <summary>
-    /// Verifies that the <see cref="Skein{T}.Key" /> getter returns a defensive copy so external callers cannot
-    /// mutate the internal key material through the accessor.
-    /// </summary>
-    [TestMethod]
-    public void Key_WhenGetterCalledTwice_ShouldReturnIndependentCopies()
-    {
-        using var skein = new TAlgorithm { Key = new byte[] { 1, 2, 3, 4 } };
-
-        byte[] first = skein.Key;
-        first[0] = 0xFF;
-
-        byte[] second = skein.Key;
-
-        CollectionAssert.AreEqual(new byte[] { 1, 2, 3, 4 }, second);
-    }
-
-    /// <summary>
-    /// Verifies that assigning a key longer than <see cref="Skein{T}.MaxKeySizeBytes" /> throws
-    /// <see cref="System.Security.Cryptography.CryptographicException" />.
-    /// </summary>
-    [TestMethod]
-    public void Key_WhenAssignedLongerThanMaximum_ShouldThrowCryptographicException()
-    {
-        using var skein = new TAlgorithm();
-
-        Assert.ThrowsExactly<System.Security.Cryptography.CryptographicException>(() =>
-        {
-            skein.Key = new byte[Skein<TAlgorithm>.MaxKeySizeBytes + 1];
-        });
     }
 }
