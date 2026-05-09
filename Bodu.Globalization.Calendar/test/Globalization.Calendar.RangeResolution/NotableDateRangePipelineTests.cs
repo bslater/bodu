@@ -401,6 +401,7 @@ public sealed class NotableDateRangePipelineTests
 		{
 			Name = "Sixty-Day Shifted Holiday",
 			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Public,
 			Category = NotableDateCategory.Holiday,
 			Month = 12,
 			Day = 1,
@@ -450,6 +451,7 @@ public sealed class NotableDateRangePipelineTests
 		{
 			Name = "Long-Reach Holiday",
 			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Public,
 			Category = NotableDateCategory.Holiday,
 			Month = 11,
 			Day = 1,
