@@ -26,6 +26,19 @@ internal sealed class Serpent128TransformTests
     }
 
     /// <inheritdoc />
+    protected override SymmetricAlgorithm CreateSymmetricAlgorithm(PaddingMode padding)
+    {
+        var algorithm = new Serpent128
+        {
+            Padding = padding,
+            Mode = CipherMode.CBC,
+        };
+        algorithm.GenerateKey();
+        algorithm.GenerateIV();
+        return algorithm;
+    }
+
+    /// <inheritdoc />
     protected override IEnumerable<BlockCipherKnownAnswer> GetKnownAnswers() =>
         Serpent128KnownAnswers.For(SingleTestVariant.Default);
 

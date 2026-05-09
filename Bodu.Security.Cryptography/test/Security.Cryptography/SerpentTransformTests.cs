@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Security.Cryptography;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -25,5 +27,19 @@ internal sealed class SerpentTransformTests
         algorithm.GenerateIV();
         algorithm.GenerateTweak();
         return (SerpentTransform)algorithm.CreateEncryptor(algorithm.Key, algorithm.IV, algorithm.Tweak);
+    }
+
+    /// <inheritdoc />
+    protected override SymmetricAlgorithm CreateSymmetricAlgorithm(PaddingMode padding)
+    {
+        var algorithm = new Serpent256
+        {
+            Padding = padding,
+            Mode = CipherMode.CBC,
+        };
+        algorithm.GenerateKey();
+        algorithm.GenerateIV();
+        algorithm.GenerateTweak();
+        return algorithm;
     }
 }

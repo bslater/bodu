@@ -26,6 +26,19 @@ internal sealed class SkipjackTransformTests
     }
 
     /// <inheritdoc />
+    protected override SymmetricAlgorithm CreateSymmetricAlgorithm(PaddingMode padding)
+    {
+        var algorithm = new Skipjack
+        {
+            Padding = padding,
+            Mode = CipherMode.CBC,
+        };
+        algorithm.GenerateKey();
+        algorithm.GenerateIV();
+        return algorithm;
+    }
+
+    /// <inheritdoc />
     protected override IEnumerable<BlockCipherKnownAnswer> GetKnownAnswers() =>
         SkipjackKnownAnswers.For(SingleTestVariant.Default);
 
