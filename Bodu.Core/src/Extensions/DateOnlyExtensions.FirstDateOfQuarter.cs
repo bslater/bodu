@@ -77,7 +77,7 @@ public static partial class DateOnlyExtensions
     /// <para>This overload uses the standard calendar alignment defined by <see cref="CalendarQuarterDefinition.JanuaryToDecember"/>.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="quarter"/> is less than 1 or greater than 4.</exception>
-    public static DateOnly GetFirstDateOfQuarter(int year, int quarter) => GetFirstDateOfQuarter(year, quarter, CalendarQuarterDefinition.JanuaryToDecember);
+    public static DateOnly GetFirstDateOfQuarter(int quarter, int year) => GetFirstDateOfQuarter(CalendarQuarterDefinition.JanuaryToDecember, quarter, year);
 
     /// <summary>
     /// Returns a new <see cref="DateOnly"/> representing the first day of the specified <paramref name="quarter"/> and <paramref name="year"/>, using the supplied calendar quarter definition.
@@ -94,7 +94,7 @@ public static partial class DateOnlyExtensions
     /// -or- <paramref name="definition"/> is not a defined value of the <see cref="CalendarQuarterDefinition"/> enumeration.
     /// </exception>
     /// <exception cref="InvalidOperationException">Thrown if <paramref name="definition"/> is <see cref="CalendarQuarterDefinition.Custom"/>; use a provider-based overload instead.</exception>
-    public static DateOnly GetFirstDateOfQuarter(int year, int quarter, CalendarQuarterDefinition definition)
+    public static DateOnly GetFirstDateOfQuarter(CalendarQuarterDefinition definition, int quarter, int year)
     {
         ThrowHelper.ThrowIfOutOfRange(quarter, 1, 4);
         ThrowHelper.ThrowIfEnumValueIsUndefined(definition);

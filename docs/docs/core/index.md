@@ -79,6 +79,6 @@ Small text and XML helpers used internally by the other Bodu packages; available
 ## Where to go next
 
 - **[Getting started](getting-started.md)** — install the package and run a minimal sample for each scenario above.
-- **[Bodu.Core guides](../../guides/core/index.md)** — recipe-style walk-throughs for the headline types.
+- **[Bodu.Core guides](../../guides/core/)** — recipe-style walk-throughs for the headline types.
 - **[Bodu.Collections.Generic API reference](../../apidoc/Bodu.Collections.Generic.md)** — full namespace overview.
 - **[Algorithm families](../algorithm-families.md)** — how Bodu.Core relates to the hashing and cryptography libraries (it doesn't directly — but its `ThrowHelper` is used everywhere).

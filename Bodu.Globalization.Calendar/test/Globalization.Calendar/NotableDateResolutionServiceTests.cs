@@ -113,6 +113,7 @@ public sealed class NotableDateResolutionServiceTests
         Assert.IsFalse(actual.Any(date => date.Name == "Palm Sunday"));
         Assert.IsFalse(actual.Any(date => date.Name == "Good Friday"));
 
+        Assert.AreEqual(3, CountingEasterAlgorithm.CallCount);
         // The service uses a tight candidate-year envelope ([request.Year]); a single 2024 request invokes the algorithm once.
         Assert.AreEqual(1, CountingEasterAlgorithm.CallCount);
     }
@@ -152,6 +153,7 @@ public sealed class NotableDateResolutionServiceTests
         Assert.AreEqual("Palm Sunday", palmSunday[0].Name);
         Assert.AreEqual(new DateTime(2024, 3, 24), palmSunday[0].Date);
 
+        Assert.AreEqual(3, CountingEasterAlgorithm.CallCount);
         // With the tight [request.Year] candidate-year envelope, both requests target Easter 2024 only, so the second request
         // reuses the cached anchor and the algorithm runs exactly once across the two calls.
         Assert.AreEqual(1, CountingEasterAlgorithm.CallCount);

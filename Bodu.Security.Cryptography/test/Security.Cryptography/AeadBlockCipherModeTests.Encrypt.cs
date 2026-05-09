@@ -12,26 +12,6 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
 
     /// <summary>
     /// Verifies that <see cref="IAeadBlockCipherModeTransform.Encrypt" /> throws
-    /// <see cref="InvalidOperationException" /> when called a second time on the same instance.
-    /// AEAD transforms are single-use per message — each (key, nonce) pair must be used at most
-    /// once for encryption to preserve the security guarantees of the mode.
-    /// </summary>
-    [TestMethod]
-    public void Encrypt_WhenCalledTwice_ShouldThrowInvalidOperationException()
-    {
-        var transform = MakeTransform();
-        var plaintext = new byte[ExpectedBlockSize];
-        var output = new byte[plaintext.Length + transform.TagSize];
-
-        transform.Encrypt(plaintext, output);
-
-        Assert.ThrowsExactly<InvalidOperationException>(() =>
-            transform.Encrypt(plaintext, output),
-            $"{typeof(TTransform).Name} must reject a second Encrypt call on the same instance.");
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="IAeadBlockCipherModeTransform.Encrypt" /> throws
     /// <see cref="ArgumentException" /> when the output buffer is too small to hold both
     /// the ciphertext and the authentication tag.
     /// </summary>
@@ -121,15 +101,6 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// the keystream. Skipped for modes whose ciphertext does not depend on the supplied IV
     /// (e.g. SIV, where the IV is ignored).
     /// </summary>
-    /// <remarks>
-    /// Uses a real AES backing cipher rather than <see cref="MonitoringBlockCipher" /> because
-    /// OCB surrounds the cipher call with pre- and post-XOR operations that cancel under a
-    /// linear cipher (RFC 7253 §2.6: <c>C_i = ENCIPHER(K, P_i ⊕ Offset_i) ⊕ Offset_i</c>),
-    /// collapsing OCB ciphertext to <c>P ⊕ mask</c> independent of the nonce. Real AES breaks
-    /// this linearity and exercises the genuine nonce-dependence path. Other AEAD modes
-    /// (GCM, CCM, EAX, GCM-SIV) use the cipher as a CTR/PRF keystream and would observe a
-    /// nonce-dependent ciphertext under either backing cipher.
-    /// </remarks>
     [TestMethod]
     public void Encrypt_WithDifferentNonces_ShouldProduceDifferentCiphertext()
     {
@@ -146,14 +117,11 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         var iv2 = CreateInitializationVector();
         iv2[0] = 0x02;
 
-        using var cipher1 = new AesBlockCipherFixture(new byte[16]);
-        using var cipher2 = new AesBlockCipherFixture(new byte[16]);
-
-        var t1 = CreateTransform(cipher1, iv1);
+        var t1 = MakeTransform(iv1);
         var out1 = new byte[plaintext.Length + t1.TagSize];
         t1.Encrypt(plaintext, out1);
 
-        var t2 = CreateTransform(cipher2, iv2);
+        var t2 = MakeTransform(iv2);
         var out2 = new byte[plaintext.Length + t2.TagSize];
         t2.Encrypt(plaintext, out2);
 

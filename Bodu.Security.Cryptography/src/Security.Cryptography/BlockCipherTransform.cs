@@ -285,6 +285,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
         CryptoHelpers.ThrowIfArrayOffsetOrCountInvalid(inputBuffer, inputOffset, inputCount);
 
         ReadOnlySpan<byte> input = inputBuffer.AsSpan(inputOffset, inputCount);
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, this._cipher.BlockSize, throwIfZero: false);
 
         try
         {

@@ -492,11 +492,8 @@ public sealed class NotableDateService : INotableDateService
 			_weekendDefinition,
 			_weekendProvider,
 			_adjustmentHandlers);
-<<<<<<< claude/adjustment-matrix-tests
-=======
 			_adjustmentHandlers,
 			_overrideRemovals);
->>>>>>> master
 	}
 
 	// --------------------------------------------------------------------------------------

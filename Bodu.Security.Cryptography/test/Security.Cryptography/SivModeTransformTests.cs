@@ -25,14 +25,6 @@ public sealed partial class SivModeTransformTests : AeadBlockCipherModeTests<Siv
     /// </remarks>
     protected override bool NonceAffectsCiphertext => false;
 
-    /// <inheritdoc />
-    /// <remarks>
-    /// The test factory below intentionally discards the supplied <paramref name="cipher" /> and
-    /// constructs the transform from fixed AES-128 instances, so a null cipher never reaches
-    /// <see cref="SivModeTransform" />'s production constructor through the test surface.
-    /// </remarks>
-    protected override bool ValidatesCipherArgument => false;
-
     // Fixed keys used for all structural / tamper-detection tests.
     // Using real AES with distinct K1 and K2 prevents the degenerate authentication fixed-point
     // that arises when a simple XOR cipher is used for both S2V (K1) and CTR (K2): with any
