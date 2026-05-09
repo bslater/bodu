@@ -50,6 +50,7 @@ Non-cryptographic hashing — fingerprints, checksums, and check digits — buil
 <div class="bodu-cards">
 
 <div class="bodu-card">
+  <h3><a href="io-hashing/index.md">Overview</a></h3>
   <h3><a href="io-hashing/">Overview</a></h3>
   <p>Namespace map (<code>Bodu.IO.Hashing</code>, <code>.Checksums</code>, <code>.CheckDigits</code>) — key types and which guide covers each.</p>
 </div>
