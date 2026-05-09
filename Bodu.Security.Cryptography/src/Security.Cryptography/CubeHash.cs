@@ -5,10 +5,10 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -301,8 +301,8 @@ public sealed class CubeHash
     {
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
-        State = 0;
-        finalized = false;
+        this.State = 0;
+        this._finalized = false;
 #endif
         this._pendingBytes = 0;
 
@@ -323,17 +323,23 @@ public sealed class CubeHash
 
         if (disposing)
         {
-            this._finalizationRounds = this._initializationRounds = this._rounds = this._inputBlockSizeBytes = this._pendingBytes = 0;
-
-            if (this._state != null)
+            if (this._state is not null)
             {
-                CryptoHelpers.ClearAndNullify(ref this.HashValue);
                 CryptoHelpers.ClearAndNullify(ref this._state!);
                 CryptoHelpers.ClearAndNullify(ref this._initializedState!);
-
                 this._isInitializedStateCached = false;
-                this.HashSizeValue = 0;
             }
+
+            this._finalizationRounds = 0;
+            this._initializationRounds = 0;
+            this._rounds = 0;
+            this._inputBlockSizeBytes = 0;
+            this._pendingBytes = 0;
+
+            // CubeHash extends HashAlgorithm directly (not BufferedBlockHashAlgorithm),
+            // so the centralised HashValue / HashSizeValue clearing in the latter does not apply here.
+            CryptoHelpers.ClearAndNullify(ref this.HashValue);
+            this.HashSizeValue = 0;
         }
 
         this._disposed = true;
@@ -367,7 +373,7 @@ public sealed class CubeHash
         ThrowHelper.ThrowIfLessThan(ibStart, 0);
         ThrowHelper.ThrowIfLessThan(cbSize, 0);
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
-        if (finalized)
+        if (this._finalized)
             throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
 #endif
         this.EnsureInitialized();
@@ -435,10 +441,10 @@ public sealed class CubeHash
     {
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
-        if (finalized)
+        if (this._finalized)
             throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
-        finalized = true;
-        State = 2;
+        this._finalized = true;
+        this.State = 2;
 #endif
         this.EnsureInitialized();
 
@@ -509,7 +515,7 @@ public sealed class CubeHash
 
             // Steps 3+4: rotate temp left by 7 into lower; XOR lower with upper
             for (int i = 0; i < 16; i++)
-                lower[i] = BitOperations.RotateLeft(temp[i], 7) ^ upper[i];
+                lower[i] = temp[i].RotateBitsLeftUnchecked(7) ^ upper[i];
 
             // Step 5: scatter upper into temp via XOR-2 permutation; copy back to upper
             for (int i = 0; i < 16; i++)
@@ -525,7 +531,7 @@ public sealed class CubeHash
 
             // Steps 8+9: rotate temp left by 11 into lower; XOR lower with upper
             for (int i = 0; i < 16; i++)
-                lower[i] = BitOperations.RotateLeft(temp[i], 11) ^ upper[i];
+                lower[i] = temp[i].RotateBitsLeftUnchecked(11) ^ upper[i];
 
             // Step 10: scatter upper into temp via XOR-1 permutation; copy back to upper
             for (int i = 0; i < 16; i++)

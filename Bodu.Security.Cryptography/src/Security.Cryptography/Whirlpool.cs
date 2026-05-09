@@ -63,7 +63,6 @@ public sealed partial class Whirlpool
     private readonly ulong[] _state = new ulong[8];
     private WhirlpoolVersion _version = WhirlpoolVersion.WhirlpoolInfo3;
     private bool _inputConsumed;
-    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Whirlpool" /> class configured for
@@ -80,6 +79,25 @@ public sealed partial class Whirlpool
 
     /// <inheritdoc />
     public override bool CanTransformMultipleBlocks => true;
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Returns one of <c>"Whirlpool-0"</c>, <c>"Whirlpool-T"</c>, or <c>"Whirlpool"</c> matching the configured
+    /// <see cref="Version" /> — corresponding to the 2000, 2001, and ISO/IEC 10118-3 (2003) revisions respectively.
+    /// </remarks>
+    public override string AlgorithmName
+    {
+        get
+        {
+            this.ThrowIfDisposed();
+            return this._version switch
+            {
+                WhirlpoolVersion.WhirlpoolInfo1 => "Whirlpool-0",
+                WhirlpoolVersion.WhirlpoolInfo2 => "Whirlpool-T",
+                _ => "Whirlpool",
+            };
+        }
+    }
 
     /// <summary>
     /// Gets or sets the published <see cref="WhirlpoolVersion" /> used to compute the hash value.
@@ -120,9 +138,9 @@ public sealed partial class Whirlpool
     }
 
     /// <inheritdoc />
+    /// <remarks>Clears the eight 64-bit chaining variables and unlatches the <see cref="Version" /> setter.</remarks>
     public override void Initialize()
     {
-        this.ThrowIfDisposed();
         base.Initialize();
         Array.Clear(this._state);
         this._inputConsumed = false;
@@ -151,16 +169,13 @@ public sealed partial class Whirlpool
     /// </param>
     protected override void Dispose(bool disposing)
     {
-        if (this._disposed) return;
+        if (this.IsDisposed) return;
 
         if (disposing)
         {
             CryptoHelpers.Clear(this._state);
-            CryptoHelpers.ClearAndNullify(ref this.HashValue);
-            this.HashSizeValue = 0;
         }
 
-        this._disposed = true;
         base.Dispose(disposing);
     }
 

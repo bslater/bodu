@@ -55,18 +55,18 @@ public sealed class BufferedBlockHashAlgorithmTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BufferedBlockHashAlgorithm{T}.Initialize" /> invokes the
-    /// <see cref="BufferedBlockHashAlgorithm{T}.OnInitialize" /> hook.
+    /// Verifies that calling <see cref="BufferedBlockHashAlgorithm{T}.Initialize" /> on a derived class invokes the
+    /// derived override.
     /// </summary>
     [TestMethod]
-    public void Initialize_WhenCalled_ShouldInvokeOnInitialize()
+    public void Initialize_WhenCalled_ShouldRunDerivedOverride()
     {
         using var sut = new MonitoringBufferedBlockHashAlgorithm();
-        int baseline = sut.OnInitializeCallCount;
+        int baseline = sut.InitializeCallCount;
 
         sut.Initialize();
 
-        Assert.AreEqual(baseline + 1, sut.OnInitializeCallCount);
+        Assert.AreEqual(baseline + 1, sut.InitializeCallCount);
     }
 
     /// <summary>
@@ -87,21 +87,20 @@ public sealed class BufferedBlockHashAlgorithmTests
     }
 
     /// <summary>
-    /// Verifies that repeated calls to <see cref="BufferedBlockHashAlgorithm{T}.Initialize" /> invoke
-    /// <see cref="BufferedBlockHashAlgorithm{T}.OnInitialize" /> on every call, ensuring derived state is rebuilt
-    /// each time.
+    /// Verifies that repeated calls to <see cref="BufferedBlockHashAlgorithm{T}.Initialize" /> run the derived
+    /// override on every call, ensuring derived state is rebuilt each time.
     /// </summary>
     [TestMethod]
-    public void Initialize_WhenCalledMultipleTimes_ShouldInvokeOnInitializeEachTime()
+    public void Initialize_WhenCalledMultipleTimes_ShouldRunDerivedOverrideEachTime()
     {
         using var sut = new MonitoringBufferedBlockHashAlgorithm();
-        int baseline = sut.OnInitializeCallCount;
+        int baseline = sut.InitializeCallCount;
 
         sut.Initialize();
         sut.Initialize();
         sut.Initialize();
 
-        Assert.AreEqual(baseline + 3, sut.OnInitializeCallCount);
+        Assert.AreEqual(baseline + 3, sut.InitializeCallCount);
     }
 
     /// <summary>

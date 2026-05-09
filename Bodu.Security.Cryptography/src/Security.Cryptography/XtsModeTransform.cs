@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
@@ -72,6 +73,7 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
     private readonly IBlockCipher _cipher;
     private readonly IBlockCipher _tweakCipher;
     private readonly byte[] _tweak; // sector number / tweak value
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="XtsModeTransform" /> class.
@@ -113,7 +115,8 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
     {
         int blockSize = this._cipher.BlockSize;
 
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize);
+        // Empty input is a no-op, consistent with CbcModeTransform.
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 
         // T_0 = tweakCipher.Encrypt(sector_number)
@@ -140,6 +143,23 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
         }
 
         return input.Length;
+    }
+
+    /// <summary>
+    /// Releases the resources used by this instance and zeroes the retained tweak so that
+    /// key-equivalent state does not linger in memory after disposal. The underlying data and
+    /// tweak <see cref="IBlockCipher" /> instances are not disposed by this type — ownership
+    /// remains with the caller.
+    /// </summary>
+    /// <remarks>Idempotent.</remarks>
+    public void Dispose()
+    {
+        if (this._disposed)
+            return;
+
+        CryptographicOperations.ZeroMemory(this._tweak);
+        this._disposed = true;
+        GC.SuppressFinalize(this);
     }
 
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
