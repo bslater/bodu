@@ -45,7 +45,7 @@ public static partial class IEnumerableExtensions
         if (!enumerator.MoveNext())
             throw new InvalidOperationException(ResourceStrings.InvalidOperation_EmptySequence);
 
-        int index = -1;
+        var index = -1;
         TSource value = default!;
         do
         {
@@ -88,7 +88,7 @@ public static partial class IEnumerableExtensions
         ThrowHelper.ThrowIfNull(source);
         ThrowHelper.ThrowIfNull(func);
 
-        int index = -1;
+        var index = -1;
         TAccumulate value = seed;
         foreach (TSource item in source)
         {
@@ -220,7 +220,7 @@ public static partial class IEnumerableExtensions
         ThrowHelper.ThrowIfNull(func1);
         ThrowHelper.ThrowIfNull(func2);
 
-        int index = -1;
+        var index = -1;
         T1 value1 = seed1;
         T2 value2 = seed2;
         foreach (TSource item in source)
@@ -403,7 +403,7 @@ public static partial class IEnumerableExtensions
         ThrowHelper.ThrowIfNull(func2);
         ThrowHelper.ThrowIfNull(func3);
 
-        int index = -1;
+        var index = -1;
         T1 value1 = seed1;
         T2 value2 = seed2;
         T3 value3 = seed3;

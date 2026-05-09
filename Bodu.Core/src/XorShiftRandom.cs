@@ -68,7 +68,7 @@ public sealed class XorShiftRandom :
     public override int Next(int minValue, int maxValue)
     {
         ThrowHelper.ThrowIfGreaterThanOrEqualOther(minValue, maxValue);
-        uint range = (uint)(maxValue - minValue);
+        var range = (uint)(maxValue - minValue);
         return minValue + (int)(NextUInt32() % range);
     }
 
@@ -78,11 +78,11 @@ public sealed class XorShiftRandom :
     {
         ThrowHelper.ThrowIfNull(buffer);
 
-        for (int i = 0; i < buffer.Length; i++)
+        for (var i = 0; i < buffer.Length; i++)
         {
             if ((i & 3) == 0)
             {
-                uint rnd = NextUInt32();
+                var rnd = NextUInt32();
                 buffer[i++] = (byte)(rnd & 0xFF);
                 if (i < buffer.Length) buffer[i++] = (byte)((rnd >> 8) & 0xFF);
                 if (i < buffer.Length) buffer[i++] = (byte)((rnd >> 16) & 0xFF);
@@ -102,7 +102,7 @@ public sealed class XorShiftRandom :
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private uint NextUInt32()
     {
-        uint t = _x ^ (_x << 11);
+        var t = _x ^ (_x << 11);
         _x = _y;
         _y = _z;
         _z = _w;

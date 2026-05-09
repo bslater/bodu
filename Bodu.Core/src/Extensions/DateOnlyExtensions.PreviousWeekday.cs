@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.PreviousWeekday.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public static partial class DateOnlyExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(weekend);
 
-        int dayNumber = date.DayNumber;
+        var dayNumber = date.DayNumber;
         do
         {
             dayNumber -= 1;
@@ -49,7 +49,7 @@ public static partial class DateOnlyExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(weekend);
 
-        int dayNumber = date.DayNumber;
+        var dayNumber = date.DayNumber;
         do
         {
             dayNumber -= 1;

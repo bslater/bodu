@@ -44,7 +44,7 @@ public static partial class ThrowHelper
         if (array is null)
             throw new ArgumentNullException(paramName);
 
-        foreach (object? item in array)
+        foreach (var item in array)
         {
             if (item is null) continue;
 
@@ -658,7 +658,28 @@ public static partial class ThrowHelper
     {
         ThrowIfNull(collection, paramName);
         if (collection.Count < minCount)
-            throw new ArgumentException(ResourceStrings.Arg_Invalid_CollectionTooSmall, paramName);
+            throw new ArgumentException(
+                string.Format(ResourceStrings.Arg_Invalid_CollectionTooSmall, minCount),
+                paramName);
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ArgumentException"/> if the collection is  empty.
+    /// </summary>
+    /// <typeparam name="T">The element type of the collection.</typeparam>
+    /// <param name="collection">The collection to validate.</param>
+    /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <c>collection.Count is 0.</c>.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfCollectionIsEmpty<T>(
+        ICollection<T> collection,
+        [CallerArgumentExpression(nameof(collection))] string? paramName = null)
+    {
+        ThrowIfNull(collection, paramName);
+        if (collection.Count == 0)
+            throw new ArgumentException(ResourceStrings.Arg_Invalid_CollectionIsEmpty, paramName);
     }
 
     /// <summary>

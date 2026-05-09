@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.Add.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -46,10 +46,10 @@ public static partial class DateTimeExtensions
     public static DateTime Add(this DateTime dateTime, int years, int months, double days)
     {
         // Extract parts from original date
-        dateTime.GetDateParts(out int y, out int m, out int d);
+        dateTime.GetDateParts(out var y, out var m, out var d);
 
         // Adjust year/month
-        int i = m + months - 1 + (years * 12);
+        var i = m + months - 1 + (years * 12);
         if (i >= 0)
         {
             m = (i % 12) + 1;
@@ -62,8 +62,8 @@ public static partial class DateTimeExtensions
         }
 
         // Clamp day
-        int day = Math.Min(d, DateTime.DaysInMonth(y, m));
-        long totalTicks = GetDateTicks(y, m, day) + GetTimeTicks(dateTime);
+        var day = Math.Min(d, DateTime.DaysInMonth(y, m));
+        var totalTicks = GetDateTicks(y, m, day) + GetTimeTicks(dateTime);
 
         // Add fractional days (if any)
         if (Math.Abs(days) > Epsilon)

@@ -229,7 +229,7 @@ public partial struct WeekPattern : IEnumerable<DayOfWeek>
     /// <returns>An enumerator over the selected days.</returns>
     public IEnumerator<DayOfWeek> GetEnumerator()
     {
-        for (int i = 0; i < 7; i++)
+        for (var i = 0; i < 7; i++)
         {
             if ((_selectedDays & (ShiftValue << (6 - i))) != 0)
                 yield return (DayOfWeek)i;

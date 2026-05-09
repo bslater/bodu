@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IndexedPriorityQueue.ICollection.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -30,7 +30,6 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority> :
     /// <see langword="false"/>; <see cref="IndexedPriorityQueue{TElement, TPriority}"/> is not thread-safe.
     /// </summary>
     /// <value>Always <see langword="false"/>.</value>
-    /// <returns>Always <see langword="false"/>.</returns>
     bool ICollection.IsSynchronized => false;
 
     /// <summary>
@@ -64,7 +63,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority> :
         {
             if (array is KeyValuePair<TElement, TPriority>[] typedArray)
             {
-                for (int i = 0; i < _size; i++)
+                for (var i = 0; i < _size; i++)
                 {
                     (TElement Element, TPriority Priority) node = _nodes[i];
                     typedArray[index + i] = new KeyValuePair<TElement, TPriority>(node.Element, node.Priority);
@@ -72,7 +71,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority> :
             }
             else
             {
-                for (int i = 0; i < _size; i++)
+                for (var i = 0; i < _size; i++)
                 {
                     (TElement Element, TPriority Priority) node = _nodes[i];
                     array.SetValue(new KeyValuePair<TElement, TPriority>(node.Element, node.Priority), index + i);

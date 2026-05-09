@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.NextOccurrence.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -37,8 +37,8 @@ public static partial class DateTimeExtensions
         if (after <= dateTime)
             return dateTime;
 
-        double intervalsPassed = (double)(after - dateTime).Ticks / interval.Ticks;
-        long nextIntervalCount = (long)Math.Ceiling(intervalsPassed);
+        var intervalsPassed = (double)(after - dateTime).Ticks / interval.Ticks;
+        var nextIntervalCount = (long)Math.Ceiling(intervalsPassed);
 
         return dateTime.AddTicks(nextIntervalCount * interval.Ticks);
     }

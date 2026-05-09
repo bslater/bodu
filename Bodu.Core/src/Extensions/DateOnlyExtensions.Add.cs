@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.Add.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -37,21 +37,21 @@ public static partial class DateOnlyExtensions
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the resulting date is earlier than <see cref="DateOnly.MinValue"/> or later than <see cref="DateOnly.MaxValue"/>.</exception>
     public static DateOnly Add(this DateOnly date, int years, int months, int days)
     {
-        date.GetDateParts(out int year, out int month, out int day);
+        date.GetDateParts(out var year, out var month, out var day);
 
         // Convert months to total and update year/month accordingly
-        int totalMonths = ((year * 12) + (month - 1)) + ((years * 12) + months);
+        var totalMonths = ((year * 12) + (month - 1)) + ((years * 12) + months);
         year = totalMonths / 12;
         month = (totalMonths % 12) + 1;
 
         // Clamp day based on new month/year
-        bool isLeap = DateTime.IsLeapYear(year);
-        int[] daysInMonths = isLeap ? DateTimeExtensions.DaysToMonth366 : DateTimeExtensions.DaysToMonth365;
-        int maxDay = daysInMonths[month] - daysInMonths[month - 1];
+        var isLeap = DateTime.IsLeapYear(year);
+        var daysInMonths = isLeap ? DateTimeExtensions.DaysToMonth366 : DateTimeExtensions.DaysToMonth365;
+        var maxDay = daysInMonths[month] - daysInMonths[month - 1];
         if (day > maxDay)
             day = maxDay;
 
-        int dayNumber = DateTimeExtensions.GetDayNumberUnchecked(year, month, day);
+        var dayNumber = DateTimeExtensions.GetDayNumberUnchecked(year, month, day);
 
         // Add days if necessary
         if (days != 0)

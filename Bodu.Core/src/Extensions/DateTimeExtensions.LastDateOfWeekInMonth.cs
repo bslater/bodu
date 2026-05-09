@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.LastDateOfWeekInMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public static partial class DateTimeExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        long ticks = GetLastDateOfWeekInMonthAsTicks(dateTime, dayOfWeek);
+        var ticks = GetLastDateOfWeekInMonthAsTicks(dateTime, dayOfWeek);
         return new DateTime(ticks, dateTime.Kind);
     }
 
@@ -51,7 +51,7 @@ public static partial class DateTimeExtensions
         ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        long ticks = GetLastDateOfWeekInMonth(GetDateTicks(year, month, DateTime.DaysInMonth(year, month)), dayOfWeek);
+        var ticks = GetLastDateOfWeekInMonth(GetDateTicks(year, month, DateTime.DaysInMonth(year, month)), dayOfWeek);
         return new DateTime(ticks, DateTimeKind.Unspecified);
     }
 }

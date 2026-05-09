@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBuffer.IProducerConsumerCollection.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -42,7 +42,7 @@ public partial class ConcurrentCircularBuffer<T> :
     /// </remarks>
     bool IProducerConsumerCollection<T>.TryTake([MaybeNullWhen(false)] out T item)
     {
-        bool taken = TryDequeue(out T? value);
+        var taken = TryDequeue(out T? value);
         item = value!;
         return taken;
     }

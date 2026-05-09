@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferDebugView.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -27,7 +27,7 @@ internal sealed class ConcurrentCircularBufferDebugView<T>
     private readonly ConcurrentCircularBuffer<T> _buffer;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="ConcurrentCircularBufferDebugView{T}"/> class.
+    /// Initializes a new instance of the <see cref="ConcurrentCircularBufferDebugView{T}"/> class.
     /// </summary>
     /// <param name="buffer">The buffer instance to expose to the debugger. Must not be <see langword="null"/>.</param>
     /// <exception cref="ArgumentNullException"><paramref name="buffer"/> is <see langword="null"/>.</exception>

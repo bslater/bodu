@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NumericExtensions.Unchecked.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -241,7 +241,7 @@ public static partial class NumericExtensions
     {
         byte result = 0;
 
-        for (int i = 0; i < bitLength; i++)
+        for (var i = 0; i < bitLength; i++)
         {
             result = (byte)((result << 1) | (value & 1));
             value >>= 1;
@@ -273,7 +273,7 @@ public static partial class NumericExtensions
     {
         ushort result = 0;
 
-        for (int i = 0; i < bitLength; i++)
+        for (var i = 0; i < bitLength; i++)
         {
             result = (ushort)((result << 1) | (value & 1));
             value >>= 1;
@@ -305,7 +305,7 @@ public static partial class NumericExtensions
     {
         uint result = 0;
 
-        for (int i = 0; i < bitLength; i++)
+        for (var i = 0; i < bitLength; i++)
         {
             result = (result << 1) | (value & 1);
             value >>= 1;
@@ -337,7 +337,7 @@ public static partial class NumericExtensions
     {
         ulong result = 0;
 
-        for (int i = 0; i < bitLength; i++)
+        for (var i = 0; i < bitLength; i++)
         {
             result = (result << 1) | (value & 1);
             value >>= 1;

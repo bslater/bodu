@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.FirstDateOfQuarter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -123,7 +123,7 @@ public static partial class DateTimeExtensions
     /// <remarks>This helper performs no validation and is intended for internal use where the <paramref name="definition"/> is known to be valid.</remarks>
     private static DateTime FirstDateOfQuarterInternal(this DateTime dateTime, CalendarQuarterDefinition definition)
     {
-        (int year, int quarter) = GetQuarterAndYearFromDate(definition, referenceDate: dateTime);
+        (var year, var quarter) = GetQuarterAndYearFromDate(definition, referenceDate: dateTime);
         return new DateTime(ComputeQuarterStartTicks(year, quarter, GetQuarterDefinition(definition)), dateTime.Kind);
     }
 }

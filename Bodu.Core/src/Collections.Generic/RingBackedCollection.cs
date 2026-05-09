@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RingBackedCollection.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -176,7 +176,7 @@ public abstract partial class RingBackedCollection<T>
     {
         if (_count > 0)
         {
-            int capacity = _array.Length;
+            var capacity = _array.Length;
             if (_head < _tail)
             {
                 Array.Clear(_array, _head, _count);
@@ -210,7 +210,7 @@ public abstract partial class RingBackedCollection<T>
             return Array.IndexOf(_array, item, _head, _count) >= 0;
         }
 
-        int firstSegmentLength = _array.Length - _head;
+        var firstSegmentLength = _array.Length - _head;
         if (Array.IndexOf(_array, item, _head, firstSegmentLength) >= 0)
             return true;
 
@@ -256,7 +256,7 @@ public abstract partial class RingBackedCollection<T>
     /// </summary>
     public void TrimExcess()
     {
-        int newCapacity = Math.Max(_count, 1);
+        var newCapacity = Math.Max(_count, 1);
         if (newCapacity == _array.Length)
             return;
 
@@ -287,7 +287,7 @@ public abstract partial class RingBackedCollection<T>
     {
         Debug.Assert(_count < _array.Length, "AddHead: caller must ensure Count < Capacity.");
 
-        int capacity = _array.Length;
+        var capacity = _array.Length;
         _head = (_head - 1 + capacity) % capacity;
         _array[_head] = item;
         _count++;
@@ -320,7 +320,7 @@ public abstract partial class RingBackedCollection<T>
     {
         Debug.Assert(_count > 0, "RemoveTail: caller must ensure Count > 0.");
 
-        int capacity = _array.Length;
+        var capacity = _array.Length;
         _tail = (_tail - 1 + capacity) % capacity;
         T item = _array[_tail];
         _array[_tail] = default!;
@@ -348,8 +348,8 @@ public abstract partial class RingBackedCollection<T>
     {
         Debug.Assert(_count > 0, "PeekTail: caller must ensure Count > 0.");
 
-        int capacity = _array.Length;
-        int tailIndex = (_tail - 1 + capacity) % capacity;
+        var capacity = _array.Length;
+        var tailIndex = (_tail - 1 + capacity) % capacity;
         return _array[tailIndex];
     }
 
@@ -365,7 +365,7 @@ public abstract partial class RingBackedCollection<T>
         Debug.Assert(_count == _array.Length, "OverwriteTail: caller must ensure Count == Capacity.");
 
         _array[_tail] = item;
-        int next = (_tail + 1) % _array.Length;
+        var next = (_tail + 1) % _array.Length;
         _head = next;
         _tail = next;
         _version++;
@@ -411,7 +411,7 @@ public abstract partial class RingBackedCollection<T>
         }
         else
         {
-            int firstSegmentLength = _array.Length - _head;
+            var firstSegmentLength = _array.Length - _head;
             Array.Copy(_array, _head, destination, destinationIndex, firstSegmentLength);
             Array.Copy(_array, 0, destination, destinationIndex + firstSegmentLength, _tail);
         }

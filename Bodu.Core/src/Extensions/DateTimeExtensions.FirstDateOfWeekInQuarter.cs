@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.FirstDateOfWeekInQuarter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public static partial class DateTimeExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        (int year, int quarter) = DateTimeExtensions.GetQuarterAndYearFromDate(CalendarQuarterDefinition.JanuaryToDecember, dateTime);
+        (var year, var quarter) = DateTimeExtensions.GetQuarterAndYearFromDate(CalendarQuarterDefinition.JanuaryToDecember, dateTime);
         return DateTimeExtensions.GetFirstDateOfWeekInQuarterInternal(
             year,
             quarter,
@@ -59,7 +59,7 @@ public static partial class DateTimeExtensions
             throw new InvalidOperationException(
                 string.Format(ResourceStrings.Arg_Required_ProviderInterface, nameof(IQuarterDefinitionProvider)));
 
-        (int year, int quarter) = DateTimeExtensions.GetQuarterAndYearFromDate(definition, dateTime);
+        (var year, var quarter) = DateTimeExtensions.GetQuarterAndYearFromDate(definition, dateTime);
         return DateTimeExtensions.GetFirstDateOfWeekInQuarterInternal(
             year,
             quarter,
@@ -170,7 +170,7 @@ public static partial class DateTimeExtensions
     /// <remarks>This helper performs no validation and is intended for internal use where all arguments are known to be valid.</remarks>
     private static DateTime GetFirstDateOfWeekInQuarterInternal(int year, int quarter, DayOfWeek dayOfWeek, CalendarQuarterDefinition definition, DateTimeKind kind)
     {
-        long ticks = ComputeQuarterStartTicks(year, quarter, GetQuarterDefinition(definition));
+        var ticks = ComputeQuarterStartTicks(year, quarter, GetQuarterDefinition(definition));
         ticks += ((dayOfWeek - GetDayOfWeekFromTicks(ticks) + 7) % 7) * TicksPerDay;
         return new DateTime(ticks, kind);
     }

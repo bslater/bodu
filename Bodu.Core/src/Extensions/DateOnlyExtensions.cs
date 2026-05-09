@@ -146,7 +146,7 @@ public static partial class DateOnlyExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static int GetNearestDayOfWeek(int dayNumber, DayOfWeek dayOfWeek)
     {
-        int delta = ((int)dayOfWeek - (int)GetDayOfWeekFromDayNumber(dayNumber) + 7) % 7;
+        var delta = ((int)dayOfWeek - (int)GetDayOfWeekFromDayNumber(dayNumber) + 7) % 7;
         return dayNumber + (delta > 3 ? delta - 7 : delta);
     }
 
@@ -184,7 +184,7 @@ public static partial class DateOnlyExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static int GetPreviousDayOfWeekFromDayNumber(int days, DayOfWeek dayOfWeek)
     {
-        int delta = ((int)dayOfWeek - (int)GetDayOfWeekFromDayNumber(days) - 7) % 7;
+        var delta = ((int)dayOfWeek - (int)GetDayOfWeekFromDayNumber(days) - 7) % 7;
 
         // When dayOfWeek matches the current day, C# modulo yields 0 rather than -7.
         // Always return a non-zero negative value so callers reliably step backward.

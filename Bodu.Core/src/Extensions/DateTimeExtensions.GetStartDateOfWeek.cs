@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.GetStartDateOfWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -34,14 +34,14 @@ public static partial class DateTimeExtensions
         DateTimeFormatInfo dfi = (culture ?? CultureInfo.CurrentCulture).DateTimeFormat;
 
         // Compute ticks for the first day of the year
-        long ticks = GetDateTicks(year, 1, 1);
+        var ticks = GetDateTicks(year, 1, 1);
 
         // Compute the ticks from the first week start
         ticks -= GetTicksSincePreviousOrSameDayOfWeek(ticks, dfi.FirstDayOfWeek);
         ticks += (week - 1) * 7L * TimeSpan.TicksPerDay;
 
         // Validate week number
-        int resultWeek = GetWeekOfYear(ticks, dfi.CalendarWeekRule, dfi.FirstDayOfWeek);
+        var resultWeek = GetWeekOfYear(ticks, dfi.CalendarWeekRule, dfi.FirstDayOfWeek);
         if (resultWeek != week)
             throw new ArgumentOutOfRangeException(
                 nameof(week),

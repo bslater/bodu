@@ -169,7 +169,7 @@ public sealed class PooledBufferBuilder<T> :
     {
         if (_internalBuffer.Length > 0)
         {
-            bool clear = RuntimeHelpers.IsReferenceOrContainsReferences<T>();
+            var clear = RuntimeHelpers.IsReferenceOrContainsReferences<T>();
             ArrayPool<T>.Shared.Return(_internalBuffer, clear);
         }
     }

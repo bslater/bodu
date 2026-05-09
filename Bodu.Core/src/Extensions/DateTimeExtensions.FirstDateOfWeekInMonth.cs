@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.FirstDateOfWeekInMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -50,7 +50,7 @@ public static partial class DateTimeExtensions
         ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        long ticks = DateTimeExtensions.GetDateTicks(year, month, 1);
+        var ticks = DateTimeExtensions.GetDateTicks(year, month, 1);
         ticks += DateTimeExtensions.GetTicksUntilNextOrSameDayOfWeek(ticks, dayOfWeek);
         return new DateTime(ticks, DateTimeKind.Unspecified);
     }

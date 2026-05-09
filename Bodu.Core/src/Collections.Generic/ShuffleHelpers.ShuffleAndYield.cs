@@ -45,11 +45,11 @@ public static partial class ShuffleHelpers
             T[] buffer = source.ToArray(); // Copy the source array to avoid modifying it
             ThrowHelper.ThrowIfCountExceedsAvailable(count, buffer.Length);
 
-            int available = buffer.Length;
+            var available = buffer.Length;
 
             while (count-- > 0)
             {
-                int i = rng.Next(available);
+                var i = rng.Next(available);
                 yield return buffer[i];
                 buffer[i] = buffer[--available]; // Replace used item with the last unselected one
             }
@@ -78,11 +78,11 @@ public static partial class ShuffleHelpers
         ThrowHelper.ThrowIfCountExceedsAvailable(count, array.Length);
 
         T[] buffer = array.ToArray(); // Copy the source array to avoid modifying it
-        int available = buffer.Length;
+        var available = buffer.Length;
 
         while (count-- > 0)
         {
-            int i = rng.Next(available);
+            var i = rng.Next(available);
             yield return buffer[i];
             buffer[i] = buffer[--available]; // Replace used item with the last unselected one
         }
@@ -178,11 +178,11 @@ public static partial class ShuffleHelpers
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static IEnumerable<T> ShuffleAndYieldInternal<T>(T[] array, IRandomGenerator rng, int count)
     {
-        int available = array.Length;
+        var available = array.Length;
 
         while (count-- > 0)
         {
-            int i = rng.Next(available);
+            var i = rng.Next(available);
             yield return array[i];
             array[i] = array[--available]; // Replace used item with the last unselected one
         }

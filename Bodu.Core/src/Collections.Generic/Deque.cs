@@ -498,8 +498,8 @@ public sealed class Deque<T> : RingBackedCollection<T>
     /// <param name="minCapacity">The minimum capacity that the new backing array must satisfy.</param>
     private void Grow(int minCapacity)
     {
-        int doubled = Math.Max(MinGrowCapacity, Capacity * 2);
-        int newCapacity = Math.Max(minCapacity, doubled);
+        var doubled = Math.Max(MinGrowCapacity, Capacity * 2);
+        var newCapacity = Math.Max(minCapacity, doubled);
 
         if ((uint)newCapacity > (uint)Array.MaxLength)
             newCapacity = Array.MaxLength;

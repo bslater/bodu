@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.FirstDateOfWeekInMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public static partial class DateOnlyExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        int baseDayNumber = DateTimeExtensions.GetDayNumberUnchecked(date.Year, date.Month, 1);
+        var baseDayNumber = DateTimeExtensions.GetDayNumberUnchecked(date.Year, date.Month, 1);
         return DateOnly.FromDayNumber(baseDayNumber + (((int)dayOfWeek - (int)GetDayOfWeekFromDayNumber(baseDayNumber) + 7) % 7));
     }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.LastDateOfWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -40,12 +40,12 @@ public static partial class DateTimeExtensions
         culture ??= Thread.CurrentThread.CurrentCulture;
         DayOfWeek lastDayOfWeek = culture.DateTimeFormat.LastDayOfWeek();
 
-        long baseTicks = TruncateToDateTicks(dateTime);
-        long offsetTicks = dateTime.DayOfWeek == lastDayOfWeek
+        var baseTicks = TruncateToDateTicks(dateTime);
+        var offsetTicks = dateTime.DayOfWeek == lastDayOfWeek
             ? 0
             : GetTicksUntilNextOrSameDayOfWeek(dateTime, lastDayOfWeek);
 
-        long dateTicks = baseTicks + offsetTicks;
+        var dateTicks = baseTicks + offsetTicks;
 
         if ((ulong)dateTicks > (ulong)DateTime.MaxValue.Ticks)
             throw new ArgumentOutOfRangeException(
@@ -75,8 +75,8 @@ public static partial class DateTimeExtensions
         DayOfWeek startOfWeek = GetWeekStartDay(weekend);
         var endOfWeek = (DayOfWeek)(((int)startOfWeek + 6) % 7);
 
-        int offsetDays = ((int)endOfWeek - (int)dateTime.DayOfWeek + 7) % 7;
-        long dateTicks = dateTime.Ticks + (offsetDays * TicksPerDay);
+        var offsetDays = ((int)endOfWeek - (int)dateTime.DayOfWeek + 7) % 7;
+        var dateTicks = dateTime.Ticks + (offsetDays * TicksPerDay);
 
         if ((ulong)dateTicks > (ulong)DateTime.MaxValue.Ticks)
             throw new ArgumentOutOfRangeException(

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.FirstDateOfWeekInQuarter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -29,8 +29,8 @@ public static partial class DateOnlyExtensions
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
         ThrowHelper.ThrowIfEnumValueIsUndefined(definition);
 
-        (int year, int quarter) = GetQuarterAndYearFromDate(definition, referenceDate: date);
-        int days = ComputeQuarterStartDayNumber(year, quarter, GetQuarterDefinition(definition));
+        (var year, var quarter) = GetQuarterAndYearFromDate(definition, referenceDate: date);
+        var days = ComputeQuarterStartDayNumber(year, quarter, GetQuarterDefinition(definition));
         days += (dayOfWeek - DateOnlyExtensions.GetDayOfWeekFromDayNumber(days) + 7) % 7;
         return DateOnly.FromDayNumber(days);
     }
@@ -57,7 +57,7 @@ public static partial class DateOnlyExtensions
         ThrowHelper.ThrowIfOutOfRange(quarter, 1, 4);
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        int days = ComputeQuarterStartDayNumber(year, quarter, GetQuarterDefinition(definition));
+        var days = ComputeQuarterStartDayNumber(year, quarter, GetQuarterDefinition(definition));
         days += (dayOfWeek - DateOnlyExtensions.GetDayOfWeekFromDayNumber(days) + 7) % 7;
         return DateOnly.FromDayNumber(days);
     }

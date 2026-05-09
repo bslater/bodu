@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.PreviousWeekday.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public static partial class DateTimeExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(weekend);
 
-        long ticks = dateTime.Ticks;
+        var ticks = dateTime.Ticks;
         do
         {
             ticks -= TicksPerDay;
@@ -49,7 +49,7 @@ public static partial class DateTimeExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(weekend);
 
-        long ticks = dateTime.Ticks;
+        var ticks = dateTime.Ticks;
         do
         {
             ticks -= TicksPerDay;

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.NextOccurrence.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -36,8 +36,8 @@ public static partial class DateOnlyExtensions
         if (after < start)
             return start;
 
-        int daysPassed = after.DayNumber - start.DayNumber;
-        int intervalsPassed = (daysPassed + intervalDays) / intervalDays;
+        var daysPassed = after.DayNumber - start.DayNumber;
+        var intervalsPassed = (daysPassed + intervalDays) / intervalDays;
         return start.AddDays(intervalsPassed * intervalDays);
     }
 }

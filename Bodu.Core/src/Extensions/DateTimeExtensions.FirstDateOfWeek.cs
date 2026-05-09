@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.FirstDateOfWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -40,10 +40,10 @@ public static partial class DateTimeExtensions
         culture ??= Thread.CurrentThread.CurrentCulture;
         DayOfWeek firstDayOfWeek = culture.DateTimeFormat.FirstDayOfWeek;
 
-        long baseTicks = TruncateToDateTicks(dateTime);
-        long offsetTicks = ((7 + (dateTime.DayOfWeek - firstDayOfWeek)) % 7) * TicksPerDay;
+        var baseTicks = TruncateToDateTicks(dateTime);
+        var offsetTicks = ((7 + (dateTime.DayOfWeek - firstDayOfWeek)) % 7) * TicksPerDay;
 
-        long ticks = baseTicks - offsetTicks;
+        var ticks = baseTicks - offsetTicks;
 
         if ((ulong)ticks > (ulong)DateTime.MaxValue.Ticks)
             throw new ArgumentOutOfRangeException(
@@ -72,8 +72,8 @@ public static partial class DateTimeExtensions
         ThrowHelper.ThrowIfEnumValueIsUndefined(weekend);
         DayOfWeek startOfWeek = GetWeekStartDay(weekend);
 
-        int offsetDays = (7 + (dateTime.DayOfWeek - startOfWeek)) % 7;
-        long dateTicks = dateTime.Ticks - (offsetDays * TicksPerDay);
+        var offsetDays = (7 + (dateTime.DayOfWeek - startOfWeek)) % 7;
+        var dateTicks = dateTime.Ticks - (offsetDays * TicksPerDay);
 
         if ((ulong)dateTicks > (ulong)DateTime.MaxValue.Ticks)
             throw new ArgumentOutOfRangeException(

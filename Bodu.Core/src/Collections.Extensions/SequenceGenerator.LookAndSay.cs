@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequenceGenerator.LookAndSay.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -50,17 +50,17 @@ public static partial class SequenceGenerator
     {
         ThrowHelper.ThrowIfLessThan(count, 1);
 
-        string current = "1";
-        for (int i = 0; i < count; i++)
+        var current = "1";
+        for (var i = 0; i < count; i++)
         {
             yield return current;
 
             var next = new StringBuilder();
-            int j = 0;
+            var j = 0;
             while (j < current.Length)
             {
-                char digit = current[j];
-                int runLength = 1;
+                var digit = current[j];
+                var runLength = 1;
                 while (j + runLength < current.Length && current[j + runLength] == digit)
                     runLength++;
                 next.Append(runLength).Append(digit);

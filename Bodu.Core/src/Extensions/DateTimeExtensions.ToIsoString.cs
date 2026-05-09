@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.ToIsoString.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -45,7 +45,7 @@ public static partial class DateTimeExtensions
     /// </remarks>
     public static string ToIsoString(this DateTime dateTime, bool includeFractionalSeconds)
     {
-        string format = includeFractionalSeconds ? "o" : "yyyy-MM-ddTHH:mm:ss";
+        var format = includeFractionalSeconds ? "o" : "yyyy-MM-ddTHH:mm:ss";
         return dateTime.ToString(format, CultureInfo.InvariantCulture);
     }
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.NthDateOfWeekInMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -39,7 +39,7 @@ public static partial class DateOnlyExtensions
                 return date.LastDateOfWeekInMonth(dayOfWeek);
 
             default:
-                int dayNumber = DateTimeExtensions.GetDayNumberUnchecked(date.Year, date.Month, 1);
+                var dayNumber = DateTimeExtensions.GetDayNumberUnchecked(date.Year, date.Month, 1);
                 var result = DateOnly.FromDayNumber(
                     dayNumber + (((int)dayOfWeek - (int)GetDayOfWeekFromDayNumber(dayNumber) + 7) % 7) + (((int)ordinal - 1) * 7));
 

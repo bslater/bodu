@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RingBackedCollection.ICollection.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,13 +10,8 @@ using System.Threading;
 
 namespace Bodu.Collections.Generic;
 
-#pragma warning disable CA1010 // Generic interface should also be implemented
-#pragma warning disable CA1710 // Identifiers should have correct suffix
-
-public abstract partial class RingBackedCollection<T> :
-#pragma warning restore CA1710 // Identifiers should have correct suffix
-#pragma warning restore CA1010 // Generic interface should also be implemented
-    System.Collections.ICollection
+public abstract partial class RingBackedCollection<T>
+    : System.Collections.ICollection
 {
     [NonSerialized]
     private object? _syncRoot;
@@ -29,7 +24,6 @@ public abstract partial class RingBackedCollection<T> :
     /// returns <see langword="false"/>; ring-backed collections are not thread-safe by themselves.
     /// </summary>
     /// <value>Always <see langword="false"/>.</value>
-    /// <returns>Always <see langword="false"/>.</returns>
     /// <remarks>
     /// External synchronization is the caller's responsibility. For a thread-safe FIFO buffer, see
     /// <see cref="Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer{T}"/>.

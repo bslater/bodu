@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.LastDateOfWeekInQuarter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -29,8 +29,8 @@ public static partial class DateOnlyExtensions
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
         ThrowHelper.ThrowIfEnumValueIsUndefined(definition);
 
-        (int year, int quarter) = GetQuarterAndYearFromDate(definition, referenceDate: date);
-        int dayNumber = ComputeQuarterEndDayNumber(year, quarter, GetQuarterDefinition(definition));
+        (var year, var quarter) = GetQuarterAndYearFromDate(definition, referenceDate: date);
+        var dayNumber = ComputeQuarterEndDayNumber(year, quarter, GetQuarterDefinition(definition));
         dayNumber += (dayOfWeek - DateOnlyExtensions.GetDayOfWeekFromDayNumber(dayNumber) + 7) % 7;
         return DateOnly.FromDayNumber(dayNumber);
     }
@@ -57,7 +57,7 @@ public static partial class DateOnlyExtensions
         ThrowHelper.ThrowIfOutOfRange(quarter, 1, 4);
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        int dayNumber = ComputeQuarterEndDayNumber(year, quarter, GetQuarterDefinition(definition));
+        var dayNumber = ComputeQuarterEndDayNumber(year, quarter, GetQuarterDefinition(definition));
         dayNumber += (dayOfWeek - DateOnlyExtensions.GetDayOfWeekFromDayNumber(dayNumber) + 7) % 7;
         return DateOnly.FromDayNumber(dayNumber);
     }

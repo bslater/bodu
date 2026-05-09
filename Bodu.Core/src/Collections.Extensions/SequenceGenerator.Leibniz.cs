@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequenceGenerator.Leibniz.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -63,9 +63,9 @@ public static partial class SequenceGenerator
         ThrowHelper.ThrowIfLessThan(max, 0);
         ThrowHelper.ThrowIfGreaterThanOther(min, max);
 
-        for (int n = 0; ; n++)
+        for (var n = 0; ; n++)
         {
-            double term = Math.Pow(-1, n) / ((2 * n) + 1);
+            var term = Math.Pow(-1, n) / ((2 * n) + 1);
 
             if (Math.Abs(term) < min)
                 continue;

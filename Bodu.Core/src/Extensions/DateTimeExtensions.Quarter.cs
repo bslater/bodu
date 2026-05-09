@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.Quarter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -58,7 +58,7 @@ public static partial class DateTimeExtensions
     {
         ThrowHelper.ThrowIfNull(provider);
 
-        int quarter = provider.GetQuarter(dateTime);
+        var quarter = provider.GetQuarter(dateTime);
 
         if (quarter is < 1 or > 4)
             throw new ArgumentOutOfRangeException(nameof(provider), ResourceStrings.Arg_OutOfRange_InvalidQuarterNumber);
@@ -80,13 +80,13 @@ public static partial class DateTimeExtensions
         int quarter,
         (uint defMonth, uint defDay) definition)
     {
-        uint q = (uint)(quarter - 1);
+        var q = (uint)(quarter - 1);
 
         // Calculate the month where this quarter ends
-        uint endMonth = ((((q + 1U) * 3U) + definition.defMonth - 1U) % 12U) + 1U;
+        var endMonth = ((((q + 1U) * 3U) + definition.defMonth - 1U) % 12U) + 1U;
 
         // If the end month is less than or equal to the anchor month, it also wraps
-        int endYear = (endMonth <= definition.defMonth) ? year + 1 : year;
+        var endYear = (endMonth <= definition.defMonth) ? year + 1 : year;
 
         // Return ticks
         return GetDateTicks(endYear, (int)endMonth, (int)definition.defDay) - TicksPerDay;
@@ -106,13 +106,13 @@ public static partial class DateTimeExtensions
         int quarter,
         (uint defMonth, uint defDay) definition)
     {
-        uint q = (uint)(quarter - 1);
+        var q = (uint)(quarter - 1);
 
         // Calculate the month where this quarter starts
-        uint startMonth = (((q * 3U) + definition.defMonth - 1U) % 12U) + 1U;
+        var startMonth = (((q * 3U) + definition.defMonth - 1U) % 12U) + 1U;
 
         // If the start month is before the anchor month, it wraps into the *next calendar year*
-        int startYear = (startMonth < definition.defMonth) ? year + 1 : year;
+        var startYear = (startMonth < definition.defMonth) ? year + 1 : year;
 
         // Return ticks
         return GetDateTicks(startYear, (int)startMonth, (int)definition.defDay);
@@ -131,17 +131,17 @@ public static partial class DateTimeExtensions
         (uint defMonth, uint defDay) defMonthDay = GetQuarterDefinition(definition);
 
         // Determine the quarter number (1–4) for the provided reference date
-        int q = GetQuarterForDate(referenceDate, defMonthDay);
-        int y = referenceDate.Year;
+        var q = GetQuarterForDate(referenceDate, defMonthDay);
+        var y = referenceDate.Year;
 
         // Compute the actual calendar month when the resolved quarter starts
-        uint startMonth = ((((uint)(q - 1) * 3U) + defMonthDay.defMonth - 1U) % 12U) + 1U;
+        var startMonth = ((((uint)(q - 1) * 3U) + defMonthDay.defMonth - 1U) % 12U) + 1U;
 
         // Adjust the start year if the start month falls in the next calendar year
-        int startYear = (startMonth < defMonthDay.defMonth) ? y + 1 : y;
+        var startYear = (startMonth < defMonthDay.defMonth) ? y + 1 : y;
 
         // Calculate the tick count for the quarter start date
-        long startTicks = GetDateTicks(startYear, (int)startMonth, (int)defMonthDay.defDay);
+        var startTicks = GetDateTicks(startYear, (int)startMonth, (int)defMonthDay.defDay);
 
         // If the start date is after the reference date, back up to the previous fiscal year
         if (startTicks > referenceDate.Ticks)
@@ -160,9 +160,9 @@ public static partial class DateTimeExtensions
     private static (uint defMonth, uint defDay) GetQuarterDefinition(CalendarQuarterDefinition definition)
     {
         // Unpack MMDD value: e.g., 406 = 4/06
-        uint def = (uint)definition;
-        uint defMonth = def / 100U;
-        uint defDay = def % 100U;
+        var def = (uint)definition;
+        var defMonth = def / 100U;
+        var defDay = def % 100U;
 
         return new (defMonth, defDay);
     }
@@ -178,14 +178,14 @@ public static partial class DateTimeExtensions
     private static int GetQuarterForDate(this DateTime dateTime, (uint defMonth, uint defDay) definition)
     {
         // Compute quarter number using modular offset from anchor month
-        int quarter = (((dateTime.Month + 12 - (int)definition.defMonth) % 12) / 3) + 1;
+        var quarter = (((dateTime.Month + 12 - (int)definition.defMonth) % 12) / 3) + 1;
 
         // If anchor day is not the 1st, check if we are in the quarter's start month but still before the anchor day - in that case, we
         // belong to the previous quarter
         if (definition.defDay != 1)
         {
             // Compute the actual start month for the resolved quarter
-            uint quarterStartMonth = ((((uint)(quarter - 1) * 3U) + definition.defMonth - 1U) % 12U) + 1U;
+            var quarterStartMonth = ((((uint)(quarter - 1) * 3U) + definition.defMonth - 1U) % 12U) + 1U;
 
             // If we're in the quarter's start month but before the anchor day, back up a quarter
             if ((uint)dateTime.Month == quarterStartMonth && (uint)dateTime.Day < definition.defDay)

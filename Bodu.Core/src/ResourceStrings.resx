@@ -139,7 +139,7 @@
     <value>The array contains non-numeric values.</value>
   </data>
   <data name="Arg_Invalid_CollectionTooSmall" xml:space="preserve">
-    <value>The collection contains insufficient elements.</value>
+    <value>The collection contains insufficient elements. At least {0} element(s) are required.</value>
   </data>
   <data name="Arg_Invalid_ArrayLengthExceedsCapacity" xml:space="preserve">
     <value>The number of elements to copy exceeds the capacity available.</value>
@@ -455,5 +455,8 @@
   </data>
   <data name="NotSupported_ConcurrentSyncRoot" xml:space="preserve">
     <value>The SyncRoot property may not be used for the synchronization of concurrent collections.</value>
+  </data>
+  <data name="Arg_Invalid_CollectionIsEmpty" xml:space="preserve">
+    <value>The collection is empty.</value>
   </data>
 </root>

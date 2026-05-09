@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.IsFirstDateOfQuarter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public static partial class DateTimeExtensions
     /// </remarks>
     public static bool IsFirstDateOfQuarter(this DateTime dateTime)
     {
-        (int year, int quarter) = GetQuarterAndYearFromDate(CalendarQuarterDefinition.JanuaryToDecember, referenceDate: dateTime);
+        (var year, var quarter) = GetQuarterAndYearFromDate(CalendarQuarterDefinition.JanuaryToDecember, referenceDate: dateTime);
         return dateTime.Date.Ticks == ComputeQuarterStartTicks(year, quarter, GetQuarterDefinition(CalendarQuarterDefinition.JanuaryToDecember));
     }
 
@@ -44,7 +44,7 @@ public static partial class DateTimeExtensions
             throw new InvalidOperationException(
                 string.Format(ResourceStrings.Arg_Required_ProviderInterface, nameof(IQuarterDefinitionProvider)));
 
-        (int year, int quarter) = GetQuarterAndYearFromDate(definition, referenceDate: dateTime);
+        (var year, var quarter) = GetQuarterAndYearFromDate(definition, referenceDate: dateTime);
         return dateTime.Date.Ticks == ComputeQuarterStartTicks(year, quarter, GetQuarterDefinition(definition));
     }
 

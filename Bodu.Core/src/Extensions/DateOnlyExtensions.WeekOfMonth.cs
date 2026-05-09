@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.WeekOfMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -62,7 +62,7 @@ public static partial class DateOnlyExtensions
         ThrowHelper.ThrowIfEnumValueIsUndefined(weekRule);
         ThrowHelper.ThrowIfEnumValueIsUndefined(weekStart);
         DateOnly firstOfMonth = new DateOnly(date.Year, date.Month, 1);
-        int offsetDays = ((int)firstOfMonth.DayOfWeek - (int)weekStart + 7) % 7;
+        var offsetDays = ((int)firstOfMonth.DayOfWeek - (int)weekStart + 7) % 7;
         return (date.Day + offsetDays - 1) / 7 + 1;
     }
 }

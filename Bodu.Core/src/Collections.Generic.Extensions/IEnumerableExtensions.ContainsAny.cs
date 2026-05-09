@@ -50,7 +50,7 @@ public static partial class IEnumerableExtensions
 
         // Capture the item count once; EnsureMaterialized returns ICollection<T> where possible,
         // making this check O(1) and avoiding enumerator allocation for the empty-sequence fast path.
-        int? itemsCount = items is ICollection<T> ic ? ic.Count : (int?)null;
+        var itemsCount = items is ICollection<T> ic ? ic.Count : (int?)null;
 
         if (itemsCount == 0)
             return false;
@@ -58,7 +58,7 @@ public static partial class IEnumerableExtensions
         // Build the membership HashSet from the smaller of the two collections to minimise both
         // allocation and fill cost. When source is known to be smaller, build from source and
         // iterate items; otherwise, build from items (always materialised, typically smaller).
-        bool sourceIsSmaller = itemsCount.HasValue
+        var sourceIsSmaller = itemsCount.HasValue
             && source is ICollection<T> sourceCollection
             && sourceCollection.Count < itemsCount.Value;
 

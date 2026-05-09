@@ -63,7 +63,7 @@ public sealed partial class ConcurrentCircularBuffer<T> :
         /// <inheritdoc />
         public bool MoveNext()
         {
-            int next = _index + 1;
+            var next = _index + 1;
             if (next < _snapshot.Length)
             {
                 _current = _snapshot[next];

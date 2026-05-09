@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.FirstDateOfQuarter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -46,7 +46,7 @@ public static partial class DateOnlyExtensions
             throw new InvalidOperationException(
                 string.Format(ResourceStrings.Arg_Required_ProviderInterface, nameof(IQuarterDefinitionProvider)));
 
-        (int year, int quarter) = GetQuarterAndYearFromDate(definition, referenceDate: date);
+        (var year, var quarter) = GetQuarterAndYearFromDate(definition, referenceDate: date);
         return DateOnly.FromDayNumber(ComputeQuarterStartDayNumber(year, quarter, GetQuarterDefinition(definition)));
     }
 
@@ -70,8 +70,8 @@ public static partial class DateOnlyExtensions
     /// <summary>
     /// Returns a new <see cref="DateOnly"/> representing the first day of the specified calendar <paramref name="quarter"/> in the given <paramref name="year"/>, using the standard calendar quarter definition.
     /// </summary>
-    /// <param name="year">The calendar year of the result. Must be between the <c>Year</c> property values of <see cref="DateOnly.MinValue"/> and <see cref="DateOnly.MaxValue"/>, inclusive.</param>
     /// <param name="quarter">The quarter number, from 1 (Jan – Mar) through 4 (Oct – Dec).</param>
+    /// <param name="year">The calendar year of the result. Must be between the <c>Year</c> property values of <see cref="DateOnly.MinValue"/> and <see cref="DateOnly.MaxValue"/>, inclusive.</param>
     /// <returns>A <see cref="DateOnly"/> value set to the first day of the specified quarter and year.</returns>
     /// <remarks>
     /// <para>This overload uses the standard calendar alignment defined by <see cref="CalendarQuarterDefinition.JanuaryToDecember"/>.</para>
@@ -82,9 +82,9 @@ public static partial class DateOnlyExtensions
     /// <summary>
     /// Returns a new <see cref="DateOnly"/> representing the first day of the specified <paramref name="quarter"/> and <paramref name="year"/>, using the supplied calendar quarter definition.
     /// </summary>
-    /// <param name="year">The calendar year of the result. Must be between the <c>Year</c> property values of <see cref="DateOnly.MinValue"/> and <see cref="DateOnly.MaxValue"/>, inclusive. If the quarter begins in the next calendar year (based on the definition's anchor), the year will be incremented accordingly.</param>
-    /// <param name="quarter">The quarter number, from 1 through 4.</param>
     /// <param name="definition">The <see cref="CalendarQuarterDefinition"/> that determines how quarters are aligned.</param>
+    /// <param name="quarter">The quarter number, from 1 through 4.</param>
+    /// <param name="year">The calendar year of the result. Must be between the <c>Year</c> property values of <see cref="DateOnly.MinValue"/> and <see cref="DateOnly.MaxValue"/>, inclusive. If the quarter begins in the next calendar year (based on the definition's anchor), the year will be incremented accordingly.</param>
     /// <returns>A <see cref="DateOnly"/> value set to the first day of the specified quarter.</returns>
     /// <remarks>
     /// <para>The <paramref name="definition"/> controls whether quarters are aligned to the first day of a month or anchored to a custom day-of-month boundary.</para>

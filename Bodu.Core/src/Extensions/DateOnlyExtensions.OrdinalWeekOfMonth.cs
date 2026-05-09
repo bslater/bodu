@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.OrdinalWeekOfMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public static partial class DateOnlyExtensions
     /// </remarks>
     public static WeekOfMonthOrdinal OrdinalWeekOfMonth(this DateOnly date)
     {
-        int ordinal = ((date.Day - 1) / 7) + 1;
+        var ordinal = ((date.Day - 1) / 7) + 1;
         return (WeekOfMonthOrdinal)ordinal;
     }
 }

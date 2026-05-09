@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.GetFirstDateOfIsoWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -36,7 +36,7 @@ public static partial class DateTimeExtensions
         ThrowHelper.ThrowIfOutOfRange(isoYear, DateTime.MinValue.Year, DateTime.MaxValue.Year);
         ThrowHelper.ThrowIfOutOfRange(isoWeek, 1, GetIsoWeeksInYear(isoYear));
 
-        long ticks = GetDateTicks(isoYear, 1, 4);
+        var ticks = GetDateTicks(isoYear, 1, 4);
         ticks += (
             1 - ((((int)GetDayOfWeekFromTicks(ticks) + 6) % 7) + 1) + // Backtrack to Monday
             ((isoWeek - 1) * 7)) // Advance to target week

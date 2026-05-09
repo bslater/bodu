@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.OrdinalWeekOfMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public static partial class DateTimeExtensions
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the calculated ordinal does not correspond to a defined value of the <see cref="WeekOfMonthOrdinal"/> enumeration.</exception>
     public static WeekOfMonthOrdinal OrdinalWeekOfMonth(this DateTime dateTime)
     {
-        int ordinal = ((dateTime.Day - 1) / 7) + 1;
+        var ordinal = ((dateTime.Day - 1) / 7) + 1;
 
         ThrowHelper.ThrowIfEnumValueIsUndefined<WeekOfMonthOrdinal>((WeekOfMonthOrdinal)ordinal);
 

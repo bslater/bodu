@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequenceGenerator.Farey.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -52,9 +52,9 @@ public static partial class SequenceGenerator
 
         while (c <= order)
         {
-            int k = (order + b) / d;
-            int tempA = c;
-            int tempB = d;
+            var k = (order + b) / d;
+            var tempA = c;
+            var tempB = d;
 
             c = (k * c) - a;
             d = (k * d) - b;

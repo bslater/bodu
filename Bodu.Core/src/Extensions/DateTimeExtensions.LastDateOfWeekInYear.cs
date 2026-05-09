@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.LastDateOfWeekInYear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public static partial class DateTimeExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        long ticks = GetDateTicks(dateTime.Year, 12, 31);
+        var ticks = GetDateTicks(dateTime.Year, 12, 31);
         ticks -= GetTicksSincePreviousOrSameDayOfWeek(ticks, dayOfWeek);
         return new DateTime(ticks, dateTime.Kind);
     }

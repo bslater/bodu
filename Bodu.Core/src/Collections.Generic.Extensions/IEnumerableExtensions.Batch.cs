@@ -88,13 +88,13 @@ public static partial class IEnumerableExtensions
         {
             using IEnumerator<TSource> enumerator = source.GetEnumerator();
 
-            int index = 0; // Tracks the global index across all batches
+            var index = 0; // Tracks the global index across all batches
 
             while (enumerator.MoveNext())
             {
                 // Allocate a fixed-size array for the current batch; size is known up-front.
                 var batch = new TResult[size];
-                int count = 0;
+                var count = 0;
 
                 do
                 {
@@ -172,7 +172,7 @@ public static partial class IEnumerableExtensions
         {
             using IEnumerator<TSource> enumerator = source.GetEnumerator();
             var buffer = new PooledBufferBuilder<TResult>(size);
-            int index = 0;
+            var index = 0;
 
             try
             {

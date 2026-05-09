@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequenceGenerator.Range.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -98,7 +98,7 @@ public static partial class SequenceGenerator
                 yield return start;
         }
 
-        for (int i = start; step > 0 ? i <= stop : i >= stop;)
+        for (var i = start; step > 0 ? i <= stop : i >= stop;)
         {
             yield return i;
 
@@ -155,7 +155,7 @@ public static partial class SequenceGenerator
         ThrowHelper.ThrowIfLessThan(count, 0);
         ThrowHelper.ThrowIfSequenceRangeOverflows(start, count);
 
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
             yield return start + i;
     }
 }

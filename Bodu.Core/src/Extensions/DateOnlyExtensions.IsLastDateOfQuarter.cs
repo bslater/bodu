@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.IsLastDateOfQuarter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public static partial class DateOnlyExtensions
     /// </remarks>
     public static bool IsLastDateOfQuarter(this DateOnly date)
     {
-        (int year, int quarter) = GetQuarterAndYearFromDate(CalendarQuarterDefinition.JanuaryToDecember, referenceDate: date);
+        (var year, var quarter) = GetQuarterAndYearFromDate(CalendarQuarterDefinition.JanuaryToDecember, referenceDate: date);
         return date.DayNumber == ComputeQuarterEndDayNumber(year, quarter, GetQuarterDefinition(CalendarQuarterDefinition.JanuaryToDecember));
     }
 
@@ -40,7 +40,7 @@ public static partial class DateOnlyExtensions
             throw new InvalidOperationException(
                 string.Format(ResourceStrings.Arg_Required_ProviderInterface, nameof(IQuarterDefinitionProvider)));
 
-        (int year, int quarter) = GetQuarterAndYearFromDate(definition, referenceDate: date);
+        (var year, var quarter) = GetQuarterAndYearFromDate(definition, referenceDate: date);
         return date.DayNumber == ComputeQuarterEndDayNumber(year, quarter, GetQuarterDefinition(definition));
     }
 

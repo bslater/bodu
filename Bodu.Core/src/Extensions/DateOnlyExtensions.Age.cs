@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.Age.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -35,13 +35,13 @@ public static partial class DateOnlyExtensions
     /// </remarks>
     public static int Age(this DateOnly date, DateOnly asAtDate)
     {
-        date.GetDateParts(out int birthYear, out int birthMonth, out int birthDay);
-        asAtDate.GetDateParts(out int asAtYear, out int asAtMonth, out int asAtDay);
+        date.GetDateParts(out var birthYear, out var birthMonth, out var birthDay);
+        asAtDate.GetDateParts(out var asAtYear, out var asAtMonth, out var asAtDay);
 
         if (birthMonth == 2 && birthDay == 29 && !DateTime.IsLeapYear(asAtYear))
             birthDay = 28;
 
-        int age = asAtYear - birthYear;
+        var age = asAtYear - birthYear;
 
         if (asAtMonth < birthMonth || (asAtMonth == birthMonth && asAtDay < birthDay))
             age--;

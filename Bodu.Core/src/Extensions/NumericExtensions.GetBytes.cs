@@ -42,7 +42,7 @@ public static partial class NumericExtensions
     /// </remarks>
     public static byte[] GetBytes<T>(this T value, bool asBigEndian = false)
     {
-        byte[] bytes = value switch
+        var bytes = value switch
         {
             byte b => new[] { b },
             sbyte sb => new[] { unchecked((byte)sb) },

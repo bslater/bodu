@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IndexedPriorityQueue.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -188,7 +188,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
 
         if (items is ICollection<KeyValuePair<TElement, TPriority>> collection)
         {
-            int initialCapacity = collection.Count;
+            var initialCapacity = collection.Count;
             _nodes = initialCapacity == 0
                 ? Array.Empty<(TElement, TPriority)>()
                 : new (TElement, TPriority)[initialCapacity];
@@ -264,7 +264,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     {
         ThrowHelper.ThrowIfNull(element);
 
-        if (!_index.TryGetValue(element, out int slot))
+        if (!_index.TryGetValue(element, out var slot))
             throw new KeyNotFoundException(string.Format(ElementNotFoundMessageFormat, element));
 
         return _nodes[slot].Priority;
@@ -284,7 +284,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     {
         ThrowHelper.ThrowIfNull(element);
 
-        if (_index.TryGetValue(element, out int slot))
+        if (_index.TryGetValue(element, out var slot))
         {
             priority = _nodes[slot].Priority;
             return true;
@@ -372,7 +372,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     {
         ThrowHelper.ThrowIfNull(element);
 
-        if (_index.TryGetValue(element, out int slot))
+        if (_index.TryGetValue(element, out var slot))
         {
             UpdateAt(slot, priority);
             return false;
@@ -434,7 +434,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     {
         ThrowHelper.ThrowIfNull(element);
 
-        if (!_index.TryGetValue(element, out int slot))
+        if (!_index.TryGetValue(element, out var slot))
             throw new KeyNotFoundException(string.Format(ElementNotFoundMessageFormat, element));
 
         UpdateAt(slot, priority);
@@ -451,7 +451,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     {
         ThrowHelper.ThrowIfNull(element);
 
-        if (!_index.TryGetValue(element, out int slot))
+        if (!_index.TryGetValue(element, out var slot))
             return false;
 
         UpdateAt(slot, priority);
@@ -468,7 +468,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     {
         ThrowHelper.ThrowIfNull(element);
 
-        if (!_index.TryGetValue(element, out int slot))
+        if (!_index.TryGetValue(element, out var slot))
             return false;
 
         RemoveAt(slot);
@@ -536,7 +536,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// Enumeration is in heap-storage order, not priority order. To enumerate in priority order, drain the
     /// queue with successive <see cref="Dequeue"/> calls.
     /// </remarks>
-    public Enumerator GetEnumerator() => new(this);
+    public Enumerator GetEnumerator() => new Enumerator(this);
 
     /// <summary>
     /// Inserts an element-priority pair without performing input validation. The element must not be present.
@@ -548,7 +548,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
         if (_size == _nodes.Length)
             Grow(_size + 1);
 
-        int slot = _size;
+        var slot = _size;
         _nodes[slot] = (element, priority);
         _index[element] = slot;
         _size++;
@@ -580,7 +580,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     private void UpdateAt(int slot, TPriority newPriority)
     {
         TPriority oldPriority = _nodes[slot].Priority;
-        int direction = _comparer.Compare(newPriority, oldPriority);
+        var direction = _comparer.Compare(newPriority, oldPriority);
         if (direction == 0)
             return;
 
@@ -600,7 +600,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// <param name="slot">The slot in <see cref="_nodes"/> to remove.</param>
     private void RemoveAt(int slot)
     {
-        int lastIndex = _size - 1;
+        var lastIndex = _size - 1;
         (TElement Element, TPriority Priority) removed = _nodes[slot];
         _index.Remove(removed.Element);
 
@@ -610,7 +610,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
             _nodes[slot] = moved;
             _index[moved.Element] = slot;
 
-            int direction = _comparer.Compare(moved.Priority, removed.Priority);
+            var direction = _comparer.Compare(moved.Priority, removed.Priority);
             if (direction < 0)
                 SiftUp(slot);
             else if (direction > 0)
@@ -630,7 +630,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     {
         while (slot > 0)
         {
-            int parent = (slot - 1) >> 1;
+            var parent = (slot - 1) >> 1;
             if (_comparer.Compare(_nodes[slot].Priority, _nodes[parent].Priority) >= 0)
                 break;
 
@@ -645,12 +645,12 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// <param name="slot">The starting slot to sift downward.</param>
     private void SiftDown(int slot)
     {
-        int half = _size >> 1;
+        var half = _size >> 1;
         while (slot < half)
         {
-            int left = (slot << 1) + 1;
-            int right = left + 1;
-            int target = (right < _size && _comparer.Compare(_nodes[right].Priority, _nodes[left].Priority) < 0)
+            var left = (slot << 1) + 1;
+            var right = left + 1;
+            var target = (right < _size && _comparer.Compare(_nodes[right].Priority, _nodes[left].Priority) < 0)
                 ? right
                 : left;
 
@@ -683,7 +683,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// <remarks>Used only by the <see cref="IEnumerable{T}"/> constructor before the queue is observable.</remarks>
     private void Heapify()
     {
-        for (int i = (_size - 2) >> 1; i >= 0; i--)
+        for (var i = (_size - 2) >> 1; i >= 0; i--)
             SiftDown(i);
     }
 
@@ -694,7 +694,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     /// <param name="minCapacity">The minimum capacity required after the resize.</param>
     private void Grow(int minCapacity)
     {
-        int newCapacity = _nodes.Length == 0 ? DefaultGrowCapacity : _nodes.Length * 2;
+        var newCapacity = _nodes.Length == 0 ? DefaultGrowCapacity : _nodes.Length * 2;
         if ((uint)newCapacity > Array.MaxLength)
             newCapacity = Array.MaxLength;
         if (newCapacity < minCapacity)

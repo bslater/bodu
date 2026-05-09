@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.Age.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -35,13 +35,13 @@ public static partial class DateTimeExtensions
     /// </remarks>
     public static int Age(this DateTime dateTime, DateTime atDate)
     {
-        dateTime.GetDateParts(out int birthYear, out int birthMonth, out int birthDay);
-        atDate.GetDateParts(out int atYear, out int atMonth, out int atDay);
+        dateTime.GetDateParts(out var birthYear, out var birthMonth, out var birthDay);
+        atDate.GetDateParts(out var atYear, out var atMonth, out var atDay);
 
         if (birthMonth == 2 && birthDay == 29 && !DateTime.IsLeapYear(atYear))
             birthDay = 28;
 
-        int age = atYear - birthYear;
+        var age = atYear - birthYear;
 
         if (atMonth < birthMonth || (atMonth == birthMonth && atDay < birthDay))
             age--;

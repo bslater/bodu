@@ -40,7 +40,7 @@ public partial struct WeekPattern
         if (formatInfo is null)
         {
             // Auto-detect binary: if the first character is '0' or '1', treat the whole string as binary.
-            char firstChar = char.ToUpperInvariant(input[0]);
+            var firstChar = char.ToUpperInvariant(input[0]);
             isBinary = firstChar == '0' || firstChar == '1';
         }
         else
@@ -56,13 +56,13 @@ public partial struct WeekPattern
             };
         }
 
-        for (int i = 0; i < 7; i++)
+        for (var i = 0; i < 7; i++)
         {
-            char c = input[i];
+            var c = input[i];
 
             if (isBinary)
             {
-                bool bitSet = c switch
+                var bitSet = c switch
                 {
                     '0' => false,
                     '1' => true,
@@ -84,15 +84,15 @@ public partial struct WeekPattern
                 // but only when no explicit ordering was given.
                 if (isMondayStart is null)
                 {
-                    char normalized = char.ToUpperInvariant(c);
+                    var normalized = char.ToUpperInvariant(c);
                     if (normalized == WeekdaySymbols[i] || i == 6)
                         isMondayStart = false; // Sunday-first: symbol matches Sunday-first position
                     else if (normalized == WeekdaySymbols[(i + 1) % 7])
                         isMondayStart = true;  // Monday-first: symbol matches Monday-first position
                 }
 
-                int dayIndex = isMondayStart == true ? (i + 1) % 7 : i;
-                char normalizedDay = char.ToUpperInvariant(c);
+                var dayIndex = isMondayStart == true ? (i + 1) % 7 : i;
+                var normalizedDay = char.ToUpperInvariant(c);
 
                 if (normalizedDay == WeekdaySymbols[dayIndex])
                 {
@@ -165,7 +165,7 @@ public partial struct WeekPattern
 
         if (format.Length == 1)
         {
-            char c = format[0];
+            var c = format[0];
             info = c switch
             {
                 'S' => ('S', null, false),  // Sunday-first, infer unselected char from input
@@ -185,13 +185,13 @@ public partial struct WeekPattern
 
         if (format.Length == 2)
         {
-            char startDayChar = format[0];
-            char specChar = format[1];
+            var startDayChar = format[0];
+            var specChar = format[1];
 
             if (startDayChar is not('S' or 'M'))
                 return false;
 
-            char unselected = specChar switch
+            var unselected = specChar switch
             {
                 'U' => '_',
                 'D' => '-',

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.LastDateOfWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -38,7 +38,7 @@ public static partial class DateOnlyExtensions
         culture ??= Thread.CurrentThread.CurrentCulture;
         DayOfWeek lastDayOfWeek = culture.DateTimeFormat.LastDayOfWeek();
 
-        int dayNumber = date.DayNumber + (((int)lastDayOfWeek - (int)date.DayOfWeek + 7) % 7);
+        var dayNumber = date.DayNumber + (((int)lastDayOfWeek - (int)date.DayOfWeek + 7) % 7);
 
         if (dayNumber < DateOnly.MinValue.DayNumber || dayNumber > DateOnly.MaxValue.DayNumber)
             throw new ArgumentOutOfRangeException(
@@ -67,7 +67,7 @@ public static partial class DateOnlyExtensions
         DayOfWeek startOfWeek = DateTimeExtensions.GetWeekStartDay(weekend);
         var endOfWeek = (DayOfWeek)(((int)startOfWeek + 6) % 7);
 
-        int dayNumber = date.DayNumber + (((int)endOfWeek - (int)date.DayOfWeek + 7) % 7);
+        var dayNumber = date.DayNumber + (((int)endOfWeek - (int)date.DayOfWeek + 7) % 7);
 
         if (dayNumber < DateOnly.MinValue.DayNumber || dayNumber > DateOnly.MaxValue.DayNumber)
             throw new ArgumentOutOfRangeException(

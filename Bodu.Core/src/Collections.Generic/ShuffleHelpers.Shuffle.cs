@@ -28,9 +28,9 @@ public static partial class ShuffleHelpers
         ThrowHelper.ThrowIfNull(array);
         ThrowHelper.ThrowIfNull(rng);
 
-        for (int i = array.Length - 1; i > 0; i--)
+        for (var i = array.Length - 1; i > 0; i--)
         {
-            int j = rng.Next(i + 1);
+            var j = rng.Next(i + 1);
             (array[i], array[j]) = (array[j], array[i]);
         }
     }
@@ -53,9 +53,9 @@ public static partial class ShuffleHelpers
     {
         ThrowHelper.ThrowIfNull(rng);
 
-        for (int i = span.Length - 1; i > 0; i--)
+        for (var i = span.Length - 1; i > 0; i--)
         {
-            int j = rng.Next(i + 1);
+            var j = rng.Next(i + 1);
             (span[i], span[j]) = (span[j], span[i]);
         }
     }

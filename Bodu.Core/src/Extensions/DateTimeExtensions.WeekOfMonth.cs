@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.WeekOfMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -76,7 +76,7 @@ public static partial class DateTimeExtensions
     private static int GetWeekOfMonth(DateTime dateTime, CalendarWeekRule weekRule, DayOfWeek weekStart)
     {
         DateTime firstOfMonth = new DateTime(dateTime.Year, dateTime.Month, 1);
-        int offsetDays = ((int)firstOfMonth.DayOfWeek - (int)weekStart + 7) % 7;
+        var offsetDays = ((int)firstOfMonth.DayOfWeek - (int)weekStart + 7) % 7;
         return (dateTime.Day + offsetDays - 1) / 7 + 1;
     }
 }

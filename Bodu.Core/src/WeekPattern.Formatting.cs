@@ -71,15 +71,15 @@ public partial struct WeekPattern : System.IFormattable
     /// <exception cref="ArgumentException">Thrown if <paramref name="format"/> is not recognised.</exception>
     public string ToString(string? format, IFormatProvider? provider)
     {
-        (char? startDay, char? unselectedChar, bool isBinary) = ParseFormatForToString(format);
+        (var startDay, var unselectedChar, var isBinary) = ParseFormatForToString(format);
         unselectedChar ??= '_';
-        bool isMondayStart = startDay == 'M';
-        char[] buffer = new char[7];
+        var isMondayStart = startDay == 'M';
+        var buffer = new char[7];
 
-        for (int i = 0; i < 7; i++)
+        for (var i = 0; i < 7; i++)
         {
-            int dayIndex = isMondayStart ? (i + 1) % 7 : i;
-            bool selected = this[(DayOfWeek)dayIndex];
+            var dayIndex = isMondayStart ? (i + 1) % 7 : i;
+            var selected = this[(DayOfWeek)dayIndex];
 
             buffer[i] = selected
                 ? (isBinary ? '1' : WeekdaySymbols[dayIndex])

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.FirstDateOfWeekInYear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public static partial class DateOnlyExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        int dayNumber = DateTimeExtensions.GetDayNumberUnchecked(date.Year, 1, 1);
+        var dayNumber = DateTimeExtensions.GetDayNumberUnchecked(date.Year, 1, 1);
         return DateOnly.FromDayNumber(dayNumber + (((int)dayOfWeek - (int)GetDayOfWeekFromDayNumber(dayNumber) + 7) % 7));
     }
 }
