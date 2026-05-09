@@ -1,9 +1,5 @@
 - name: Overview
   href: index.md
-- name: Using NotableDateService
-  href: notable-dates.md
-- name: Date calculation algorithms
-  href: algorithms.md
 - name: Bodu.Globalization.Calendar — Service
   items:
     - name: Using NotableDateService

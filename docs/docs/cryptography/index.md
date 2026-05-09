@@ -129,5 +129,5 @@ The package contains five subfamilies. They share base classes but differ struct
 
 - **[Getting started](getting-started.md)** — install + minimal sample for a cipher, an AEAD round-trip, a keyed hash, and a digest.
 - **[Algorithm families](../algorithm-families.md)** — cipher subtypes, hash structural shapes, and the cross-library map.
-- **[Bodu.Security.Cryptography guides](../../guides/cryptography/index.md)** — recipe-style walk-throughs.
+- **[Bodu.Security.Cryptography guides](../../guides/cryptography/)** — recipe-style walk-throughs.
 - **[Bodu.Security.Cryptography API reference](../../apidoc/Bodu.Security.Cryptography.md)** — full type-by-type docs.

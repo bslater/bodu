@@ -63,20 +63,18 @@ using Bodu.Security.Cryptography;
 using Bodu.Security.Cryptography.Extensions;
 
 byte[] key   = RandomNumberGenerator.GetBytes(32); // AES-256
-byte[] nonce = RandomNumberGenerator.GetBytes(12); // GCM requires a 12-byte nonce
+byte[] nonce = RandomNumberGenerator.GetBytes(12);
 byte[] aad   = "header"u8.ToArray();
 byte[] data  = "the quick brown fox"u8.ToArray();
 
-byte[] cipherWithTag;
-using (var cipher = new AesBlockCipher(key))
-    cipherWithTag = new GcmModeTransform(cipher, nonce).Encrypt(data, aad);
+using var aes = new AesBlockCipher(key);
+var       gcm = new GcmModeTransform();
 
-byte[] recovered;
-using (var cipher = new AesBlockCipher(key))
-    recovered = new GcmModeTransform(cipher, nonce).Decrypt(cipherWithTag, aad);
+(byte[] ciphertext, byte[] tag) = aes.EncryptAead(gcm, nonce, data, aad);
+byte[]  recovered                = aes.DecryptAead(gcm, nonce, ciphertext, tag, aad);
 ```
 
-Each `GcmModeTransform` is single-use per message — the encrypt and decrypt sides each construct a fresh transform. A second call to `Encrypt` or `Decrypt` on the same instance throws <xref:System.InvalidOperationException>. Swap `GcmModeTransform` for `CcmModeTransform`, `OcbModeTransform`, `EaxModeTransform`, `SivModeTransform`, or `GcmSivModeTransform` (note that GCM specifically requires a 12-byte nonce; the others accept a block-sized IV).
+Swap `GcmModeTransform` for `CcmModeTransform`, `OcbModeTransform`, `EaxModeTransform`, `SivModeTransform`, or `GcmSivModeTransform`.
 
 ### AEAD — ASCON-AEAD128 (no separate cipher)
 
@@ -148,5 +146,5 @@ byte[] root = tree.GetHashAndReset();
 
 - **[Bodu.Security.Cryptography introduction](index.md)** — namespaces, headline types, scenarios.
 - **[Algorithm families](../algorithm-families.md)** — cipher subtypes, hash shapes, and the cross-library map.
-- **[Bodu.Security.Cryptography guides](../../guides/cryptography/index.md)** — encryption basics, modes, padding, AEAD, hashing.
+- **[Bodu.Security.Cryptography guides](../../guides/cryptography/)** — encryption basics, modes, padding, AEAD, hashing.
 - **[Bodu.Security.Cryptography API reference](../../apidoc/Bodu.Security.Cryptography.md)** — full type-by-type docs.

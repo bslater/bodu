@@ -1,6 +1,6 @@
 - name: Overview
   href: index.md
-- name: Collections
+- name: Bodu.Collections.Generic
   items:
     - name: Circular buffer
       href: circular-buffer.md

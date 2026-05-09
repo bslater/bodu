@@ -105,5 +105,5 @@ public static double Average(IReadOnlyList<int> values)
 ## Where to go next
 
 - **[Bodu.Core introduction](index.md)** — namespaces, headline types, scenarios.
-- **[Bodu.Core guides](../../guides/core/index.md)** — recipe-style walk-throughs.
+- **[Bodu.Core guides](../../guides/core/)** — recipe-style walk-throughs.
 - **[Bodu.Collections.Generic API reference](../../apidoc/Bodu.Collections.Generic.md)** — full type-by-type docs.
