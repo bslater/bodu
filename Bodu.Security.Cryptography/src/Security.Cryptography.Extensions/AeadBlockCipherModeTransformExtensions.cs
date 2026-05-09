@@ -52,14 +52,12 @@ namespace Bodu.Security.Cryptography.Extensions;
 ///   </item>
 /// </list>
 /// <para>
-/// AEAD transforms are <strong>stateful and single-use per message</strong>: instantiate a new transform per
-/// message, call exactly one of these helpers, and dispose. A second call to <c>Encrypt</c> or <c>Decrypt</c> on
-/// the same underlying transform — including after a tag-mismatch <see cref="CryptographicException"/> — throws
-/// <see cref="InvalidOperationException"/>; recover by constructing a fresh transform with the same
-/// <c>(key, nonce)</c>. The associated-data argument must match byte-for-byte between the encrypt and decrypt calls
-/// — even a single-bit difference will cause the tag check to fail. Tag verification is constant-time inside the
-/// transform implementation, so timing leaks are not a concern. Output arrays are always sized exactly:
-/// <c>plaintext.Length + TagSize</c> on encrypt, <c>ciphertextWithTag.Length - TagSize</c> on decrypt.
+/// AEAD transforms are <strong>stateful and single-use within a message</strong>: instantiate a new transform per
+/// message, call exactly one of these helpers, and dispose. The associated-data argument must match byte-for-byte
+/// between the encrypt and decrypt calls — even a single-bit difference will cause the tag check to fail. Tag
+/// verification is constant-time inside the transform implementation, so timing leaks are not a concern. Output arrays
+/// are always sized exactly: <c>plaintext.Length + TagSize</c> on encrypt, <c>ciphertextWithTag.Length - TagSize</c> on
+/// decrypt.
 /// </para>
 /// <example>
 /// <code language="csharp">

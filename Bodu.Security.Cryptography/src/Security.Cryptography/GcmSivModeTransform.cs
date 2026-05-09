@@ -45,14 +45,6 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="IAeadBlockCipherModeTransform" /> convention.
 /// </para>
 /// <para>
-/// <strong>Lifecycle.</strong> Each instance encrypts or decrypts exactly one message. A second call
-/// to <see cref="Encrypt" /> or <see cref="Decrypt" /> — including after a tag-mismatch failure —
-/// throws <see cref="InvalidOperationException" />. The supplied master cipher is not disposed by
-/// this type; ownership remains with the caller. The derived encryption cipher created by the
-/// supplied factory is owned by this transform and is disposed when <see cref="Dispose" /> is called,
-/// along with the cached authentication key, nonce, and associated-data state.
-/// </para>
-/// <para>
 /// <strong>When to use GCM-SIV.</strong> The right modern AEAD pick when nonce uniqueness cannot be
 /// guaranteed — distributed systems where a coordinator might re-issue the same nonce after a crash, key
 /// wrapping, deduplication, or any context where a fresh nonce per message is impractical. Under nonce

@@ -26,32 +26,32 @@ For the auto-generated API reference, see the [Bodu.IO.Hashing namespace page](.
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="fnv.md">Using FNV</a></h3>
+  <h3><a href="fnv.html">Using FNV</a></h3>
   <p>FNV-1 and FNV-1a at 32 and 64 bits — simple, fast, textbook fingerprint for in-memory hash tables.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="cityhash.md">Using CityHash</a></h3>
+  <h3><a href="cityhash.html">Using CityHash</a></h3>
   <p>32-, 64-, and 128-bit CityHash — Google's SIMD-friendly fingerprint for long inputs.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="murmurhash3.md">Using MurmurHash3</a></h3>
+  <h3><a href="murmurhash3.html">Using MurmurHash3</a></h3>
   <p>Austin Appleby's MurmurHash3 in 32-bit and x64-128-bit variants — seeded, excellent avalanche.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="xxhash.md">Using XxHash</a></h3>
+  <h3><a href="xxhash.html">Using XxHash</a></h3>
   <p>Yann Collet's XxHash32 and XxHash64 — high-throughput seeded fingerprints.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="pearson.md">Using Pearson</a></h3>
+  <h3><a href="pearson.html">Using Pearson</a></h3>
   <p>Pearson's table-driven hash with output widths from 8 to 2048 bits.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="string-hashes.md">Classic string hashes</a></h3>
+  <h3><a href="string-hashes.html">Classic string hashes</a></h3>
   <p>Bernstein (djb2), BKDR, SDBM, JSHash, Elf64, ApHash, PJW.</p>
 </div>
 
@@ -62,36 +62,22 @@ For the auto-generated API reference, see the [Bodu.IO.Hashing namespace page](.
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="crc.md">Using CRC</a></h3>
+  <h3><a href="crc.html">Using CRC</a></h3>
   <p>The <code>Crc</code> engine and <code>CrcStandard</code>; <code>CrcStandards</code> enum; named lookups; custom parameter sets; lookup-table caches; resumable hashing.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="crc-catalogue.md">CRC catalogue</a></h3>
+  <h3><a href="crc-catalogue.html">CRC catalogue</a></h3>
   <p>The full table of named CRC standards from the RevEng catalogue — name, width, class, enum value, and aliases.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="murmurhash3.html">Using MurmurHash3</a></h3>
-  <p>Austin Appleby's MurmurHash3 in 32-bit and x64-128-bit variants — seeded, excellent avalanche, widely used in databases and probabilistic data structures.</p>
-</div>
-
-<div class="bodu-card">
-  <h3><a href="xxhash.html">Using XxHash</a></h3>
-  <p>Yann Collet's XxHash32 and XxHash64 — high-throughput seeded fingerprints for hash tables and routing.</p>
-</div>
-
-<div class="bodu-card">
-  <h3><a href="check-digits.html">Check digits</a></h3>
-  <p>Luhn, Damm, Verhoeff, EAN, GTIN, ISIN, IBAN, ISBN, SEDOL, CUSIP, ABA routing, LEI — single-character validators for human-readable identifiers.</p>
-</div>
-
-  <h3><a href="fletcher.md">Using Fletcher</a></h3>
+  <h3><a href="fletcher.html">Using Fletcher</a></h3>
   <p>Twin-accumulator checksums in 16, 32, and 64 bits — catches transpositions a simple sum or XOR misses.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="adler.md">Using Adler</a></h3>
+  <h3><a href="adler.html">Using Adler</a></h3>
   <p>Adler-32 (zlib), Adler-32C (SIMD), Adler-64.</p>
 </div>
 
@@ -102,10 +88,12 @@ For the auto-generated API reference, see the [Bodu.IO.Hashing namespace page](.
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="check-digits.md">Check digits overview</a></h3>
+  <h3><a href="check-digits.html">Check digits overview</a></h3>
   <p>Luhn, Damm, Verhoeff, EAN, GTIN, UPC, ISIN, ABA routing — single-character validators. Plus IBAN, ISBN, SEDOL, CUSIP, LEI from <code>Bodu.IO.Hashing.Checksums</code>.</p>
 </div>
 
+  <h3><a href="fletcher.md">Using Fletcher</a></h3>
+  <p>Twin-accumulator checksums in 16, 32, and 64 bits — catches transpositions a simple sum or XOR misses.</p>
 </div>
 
 ## Common lifecycle
@@ -130,11 +118,6 @@ Only `Crc` currently implements `IResumableHashAlgorithm` — see the [CRC guide
 
 ## Where to go next
 
-- [Algorithm families](../algorithm-families.md) — how fingerprints, checksums, and check digits differ from each other and from the cryptographic families in `Bodu.Security.Cryptography`.
-- [Check digits](check-digits.md) — Luhn, Damm, Verhoeff, EAN, GTIN, ISIN, IBAN, ISBN, SEDOL, CUSIP, ABA routing, and LEI validation algorithms.
-- [Using MurmurHash3](murmurhash3.md) — seeded 32- and 128-bit fingerprints with excellent avalanche.
-- [Using XxHash](xxhash.md) — high-throughput seeded 32- and 64-bit fingerprints.
-- [Bodu.Security.Cryptography hashing guide](../cryptography/hashing.md) — keyed hashes (SipHash), cryptographic digests (Tiger, CubeHash, Snefru), one-time authenticators (Poly1305), and Merkle trees.
 - [Bodu.IO.Hashing introduction](../../docs/io-hashing/index.md) — namespaces, headline types, scenarios.
 - [Bodu.IO.Hashing getting started](../../docs/io-hashing/getting-started.md) — install and minimal samples.
 - [Algorithm families](../../docs/algorithm-families.md) — fingerprint vs checksum vs check digit, plus the cryptographic families.

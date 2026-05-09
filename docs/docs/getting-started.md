@@ -106,5 +106,5 @@ For the rule-driven `NotableDateService`, territory filtering, the observance-ad
 - **[Introduction](introduction.md)** — what each library is for and how they fit together.
 - **[Algorithm families](algorithm-families.md)** — the cross-library taxonomy if your problem touches hashing, checksums, or encryption.
 - **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md).
-- **[API reference](xref:Bodu)** — the full auto-generated type-by-type documentation.
-- **Guides:** [Bodu.Core](../guides/core/index.md) · [Bodu.IO.Hashing](../guides/io-hashing/index.md) · [Bodu.Security.Cryptography](../guides/cryptography/index.md) · [Bodu.Globalization.Calendar](../guides/calendar/index.md).
+- **[API reference](../api/)** — the full auto-generated type-by-type documentation.
+- **Guides:** [Bodu.Core](../guides/core/) · [Bodu.IO.Hashing](../guides/io-hashing/) · [Bodu.Security.Cryptography](../guides/cryptography/) · [Bodu.Globalization.Calendar](../guides/calendar/).

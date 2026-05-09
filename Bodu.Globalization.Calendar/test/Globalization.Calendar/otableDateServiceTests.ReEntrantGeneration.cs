@@ -269,6 +269,31 @@ public sealed partial class NotableDateServiceTests
             }),
         };
 
+        yield return new object[]
+        {
+        new ForwardSubstituteKat(
+            "Cross-year substitute should skip weekend and next-year fixed non-working holiday.",
+            2022,
+            new[]
+            {
+                Fixed("Year-End Holiday", 12, 31, nonWorking: true) with
+                {
+                    Adjustments = ImmutableArray.Create(CreateForwardSubstituteAdjustment("year-end-substitute")),
+                },
+                Fixed("New Year Second Day", 1, 2, nonWorking: true) with
+                {
+                    Adjustments = ImmutableArray.Create(CreateForwardSubstituteAdjustment("new-year-second-day-substitute")),
+                },
+            },
+            new[]
+            {
+                new ExpectedNotableDateKat("Year-End Holiday", new DateTime(2023, 1, 3), WasAdjusted: true),
+            },
+            new[]
+            {
+                new BlockedDateKat("Year-End Holiday", new DateTime(2023, 1, 2)),
+            }),
+        };
         // TODO: Re-enable the cross-year known-answer case once the existing NotableDateService is routed through the new
         // RangeResolution pipeline (see follow-up to PR #188). The case relies on a MoveToNextNonWorkingDay walk crossing a
         // calendar-year boundary and observing a non-working holiday in the adjacent year, which the existing engine cannot do

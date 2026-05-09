@@ -29,6 +29,7 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </para>
 /// </remarks>
 [TestClass]
+public sealed class NotableDateRangePipelineScenarioTests
 public sealed partial class NotableDateRangePipelineScenarioTests
 {
 	// =====================================================================================================================

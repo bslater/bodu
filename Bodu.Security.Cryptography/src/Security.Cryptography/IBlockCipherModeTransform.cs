@@ -52,11 +52,6 @@ namespace Bodu.Security.Cryptography;
 /// Implementations are stateful and not thread-safe; share behind explicit synchronisation, or allocate one per
 /// consumer. Most modes reset cleanly when constructed afresh — there is no in-place reset method on this interface.
 /// </para>
-/// <para>
-/// Implementations own mutable cryptographic state (chaining vectors, feedback registers, counters, tweaks) and
-/// must implement <see cref="IDisposable" /> to zero that state on disposal. Callers should treat instances as
-/// single-use within a message and dispose them when finished.
-/// </para>
 /// </remarks>
 public interface IBlockCipherModeTransform : System.IDisposable
 {

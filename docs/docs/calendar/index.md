@@ -93,5 +93,5 @@ Companion-pack rule providers (Americas / Europe / AsiaPacific). The data ships 
 ## Where to go next
 
 - **[Getting started](getting-started.md)** — install + minimal samples for the algorithm, the service, and working-day arithmetic.
-- **[Bodu.Globalization.Calendar guides](../../guides/calendar/index.md)** — using `NotableDateService`, calculators, rule authoring, data packs.
+- **[Bodu.Globalization.Calendar guides](../../guides/calendar/)** — using `NotableDateService`, calculators, rule authoring, data packs.
 - **[Bodu.Globalization.Calendar API reference](../../apidoc/Bodu.Globalization.Calendar.md)** — full type-by-type docs.

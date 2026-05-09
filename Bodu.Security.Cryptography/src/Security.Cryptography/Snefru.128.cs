@@ -28,7 +28,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// <strong>When to choose Snefru128.</strong> For academic study and interop with archival data only. For new
 /// security-sensitive work use SHA-2 or <see cref="Blake2b"/>; for 128-bit non-cryptographic fingerprinting use a
-/// <c>Bodu.IO.Hashing</c> algorithm such as <c>Bodu.IO.Hashing.MurmurHash3_128</c>.
+/// <c>Bodu.IO.Hashing</c> algorithm such as <see cref="Bodu.IO.Hashing.MurmurHash3_128"/>.
 /// </para>
 /// <note type="important">Snefru is considered broken and <b>not</b> suitable for password hashing, digital signatures, or secure
 /// data integrity checks.</note>
