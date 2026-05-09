@@ -65,4 +65,26 @@ public abstract partial class SipHashTests<TTest, TAlgorithm>
 
         CollectionAssert.AreNotEqual(hashWithRounds4, hashWithRounds8, "Hashes should differ when finalization rounds are different.");
     }
+
+    /// <summary>
+    /// Verifies that assigning <see cref="SipHash{T}.FinalizationRounds" /> to extreme values around
+    /// the boundary throws <see cref="ArgumentOutOfRangeException" /> only for values strictly below
+    /// <see cref="SipHash{T}.MinFinalizationRounds" /> (and never some other unexpected exception).
+    /// </summary>
+    [TestMethod]
+    [DataRow(int.MinValue)]
+    [DataRow(-1)]
+    [DataRow(0)]
+    [DataRow(1)]
+    [DataRow(2)]
+    [DataRow(3)]
+    public void FinalizationRounds_WhenSetBelowMinimum_ShouldThrowExactly(int value)
+    {
+        using var algorithm = CreateAlgorithm();
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            algorithm.FinalizationRounds = value;
+        });
+    }
 }

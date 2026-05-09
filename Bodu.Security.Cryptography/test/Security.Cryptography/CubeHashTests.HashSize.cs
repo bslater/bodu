@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Security.Cryptography;
+
 namespace Bodu.Security.Cryptography;
 
 public partial class CubeHashTests
@@ -140,5 +142,48 @@ public partial class CubeHashTests
         Assert.AreEqual(32, algorithm.FinalizationRounds, $"{nameof(CubeHash.FinalizationRounds)} should remain unchanged.");
         Assert.AreEqual(32, algorithm.TransformBlockSize, $"{nameof(CubeHash.TransformBlockSize)} should remain unchanged.");
         Assert.AreEqual(128, algorithm.HashSize, $"{nameof(CubeHash.HashSize)} should update.");
+    }
+
+    /// <summary>
+    /// Verifies that assigning <see cref="CubeHash.HashSize" /> to a value that is not a positive
+    /// multiple of 8 throws <see cref="ArgumentOutOfRangeException" /> rather than producing a
+    /// digest of unexpected length.
+    /// </summary>
+    [TestMethod]
+    [DataRow(9)]
+    [DataRow(15)]
+    [DataRow(17)]
+    [DataRow(31)]
+    [DataRow(33)]
+    [DataRow(127)]
+    [DataRow(129)]
+    [DataRow(255)]
+    [DataRow(511)]
+    public void HashSize_WhenSetToNonMultipleOfEight_ShouldThrowExactly(int value)
+    {
+        using var algorithm = CreateAlgorithm();
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            algorithm.HashSize = value;
+        });
+    }
+
+    /// <summary>
+    /// Verifies that assigning <see cref="CubeHash.HashSize" /> after
+    /// <see cref="HashAlgorithm.TransformBlock" /> has been called throws
+    /// <see cref="CryptographicUnexpectedOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void HashSize_WhenSetAfterTransformBlock_ShouldThrowExactly()
+    {
+        using var algorithm = CreateAlgorithm();
+        byte[] input = new byte[] { 0x01, 0x02, 0x03 };
+        algorithm.TransformBlock(input, 0, input.Length, null, 0);
+
+        Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
+        {
+            algorithm.HashSize = 256;
+        });
     }
 }

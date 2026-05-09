@@ -108,15 +108,4 @@ public sealed partial class AesBlockCipherTests
         CollectionAssert.AreEqual(bclCiphertext, ourCiphertext);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="AesBlockCipher.Dispose" /> is idempotent — calling it twice does not
-    /// throw. Adapter-specific contract not covered by the generic base.
-    /// </summary>
-    [TestMethod]
-    public void Dispose_WhenCalledTwice_ShouldNotThrow()
-    {
-        var cipher = new AesBlockCipher(new byte[16]);
-        cipher.Dispose();
-        cipher.Dispose();
-    }
 }

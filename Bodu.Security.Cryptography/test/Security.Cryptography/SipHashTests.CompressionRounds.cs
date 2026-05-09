@@ -64,4 +64,24 @@ public abstract partial class SipHashTests<TTest, TAlgorithm>
 
         CollectionAssert.AreNotEqual(hashWithRounds4, hashWithRounds8, "Hashes should differ when compression rounds are different.");
     }
+
+    /// <summary>
+    /// Verifies that assigning <see cref="SipHash{T}.CompressionRounds" /> to extreme values around
+    /// the boundary throws <see cref="ArgumentOutOfRangeException" /> only for values strictly below
+    /// <see cref="SipHash{T}.MinCompressionRounds" /> (and never some other unexpected exception).
+    /// </summary>
+    [TestMethod]
+    [DataRow(int.MinValue)]
+    [DataRow(-1)]
+    [DataRow(0)]
+    [DataRow(1)]
+    public void CompressionRounds_WhenSetBelowMinimum_ShouldThrowExactly(int value)
+    {
+        using var algorithm = CreateAlgorithm();
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            algorithm.CompressionRounds = value;
+        });
+    }
 }

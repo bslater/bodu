@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Security.Cryptography;
+
 namespace Bodu.Security.Cryptography;
 
 public partial class CubeHashTests
@@ -134,5 +136,23 @@ public partial class CubeHashTests
         Assert.AreEqual(32, algorithm.FinalizationRounds, $"{nameof(CubeHash.FinalizationRounds)} should remain unchanged.");
         Assert.AreEqual(20, algorithm.TransformBlockSize, $"{nameof(CubeHash.TransformBlockSize)} should update.");
         Assert.AreEqual(256, algorithm.HashSize, $"{nameof(CubeHash.HashSize)} should remain unchanged.");
+    }
+
+    /// <summary>
+    /// Verifies that assigning <see cref="CubeHash.TransformBlockSize" /> after
+    /// <see cref="HashAlgorithm.TransformBlock" /> has been called throws
+    /// <see cref="CryptographicUnexpectedOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void TransformBlockSize_WhenSetAfterTransformBlock_ShouldThrowExactly()
+    {
+        using var algorithm = CreateAlgorithm();
+        byte[] input = new byte[] { 0x01, 0x02, 0x03 };
+        algorithm.TransformBlock(input, 0, input.Length, null, 0);
+
+        Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
+        {
+            algorithm.TransformBlockSize = 64;
+        });
     }
 }
