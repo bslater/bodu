@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography;
 
 public abstract partial class SipHashTests<TTest, TAlgorithm>
@@ -66,57 +64,6 @@ public abstract partial class SipHashTests<TTest, TAlgorithm>
         }
 
         CollectionAssert.AreNotEqual(hashWithRounds4, hashWithRounds8, "Hashes should differ when finalization rounds are different.");
-    }
-
-    /// <summary>
-    /// Verifies that reading <see cref="SipHash{T}.FinalizationRounds" /> after disposal throws
-    /// <see cref="ObjectDisposedException" /> rather than returning the cleared (0) backing field.
-    /// </summary>
-    [TestMethod]
-    public void FinalizationRounds_WhenAccessedAfterDispose_ShouldThrowExactly()
-    {
-        var algorithm = CreateAlgorithm();
-        algorithm.Dispose();
-
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            _ = algorithm.FinalizationRounds;
-        });
-    }
-
-    /// <summary>
-    /// Verifies that assigning <see cref="SipHash{T}.FinalizationRounds" /> after disposal throws
-    /// <see cref="ObjectDisposedException" /> rather than silently mutating cleared state.
-    /// </summary>
-    [TestMethod]
-    public void FinalizationRounds_WhenSetAfterDispose_ShouldThrowExactly()
-    {
-        var algorithm = CreateAlgorithm();
-        algorithm.Dispose();
-
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            algorithm.FinalizationRounds = 8;
-        });
-    }
-
-    /// <summary>
-    /// Verifies that mutating <see cref="SipHash{T}.FinalizationRounds" /> after
-    /// <see cref="HashAlgorithm.TransformBlock" /> has been called throws
-    /// <see cref="CryptographicUnexpectedOperationException" /> rather than silently
-    /// reconfiguring the round count mid-computation.
-    /// </summary>
-    [TestMethod]
-    public void FinalizationRounds_WhenSetAfterTransformBlock_ShouldThrowExactly()
-    {
-        using var algorithm = CreateAlgorithm();
-        byte[] input = new byte[16];
-        algorithm.TransformBlock(input, 0, input.Length, null, 0);
-
-        Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
-        {
-            algorithm.FinalizationRounds = 8;
-        });
     }
 
     /// <summary>

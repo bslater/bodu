@@ -91,4 +91,44 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
         }
     }
 
+    /// <summary>
+    /// Verifies that calling <see cref="SymmetricAlgorithm.Dispose()" /> twice on the same
+    /// instance is idempotent and does not throw.
+    /// </summary>
+    [TestMethod]
+    public void Dispose_WhenCalledTwice_ShouldNotThrow()
+    {
+        var algorithm = CreateAlgorithm();
+        algorithm.Dispose();
+
+        try
+        {
+            algorithm.Dispose();
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail($"Second Dispose on {typeof(TAlgorithm).Name} threw {ex.GetType().Name}: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that disposing a freshly-constructed <typeparamref name="TAlgorithm" /> instance —
+    /// one that has never had any property accessed or transform created — completes without
+    /// throwing. Regression guard for disposal paths that touch lazily-initialised state without
+    /// null checks.
+    /// </summary>
+    [TestMethod]
+    public void Dispose_WhenInstanceUntouched_ShouldNotThrow()
+    {
+        var algorithm = CreateAlgorithm();
+
+        try
+        {
+            algorithm.Dispose();
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail($"Disposing an untouched {typeof(TAlgorithm).Name} instance threw {ex.GetType().Name}: {ex.Message}");
+        }
+    }
 }

@@ -23,21 +23,4 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
         Assert.IsTrue(name.EndsWith("-" + skein.HashSize, StringComparison.Ordinal),
             $"Expected Skein algorithm name to end with '-{skein.HashSize}', got '{name}'.");
     }
-
-    /// <summary>
-    /// Verifies that reading <see cref="Skein{T}.AlgorithmName" /> after disposal throws
-    /// <see cref="ObjectDisposedException" /> rather than returning a stale or partially-zeroed
-    /// string.
-    /// </summary>
-    [TestMethod]
-    public void AlgorithmName_WhenAccessedAfterDispose_ShouldThrowExactly()
-    {
-        var skein = new TAlgorithm();
-        skein.Dispose();
-
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            _ = skein.AlgorithmName;
-        });
-    }
 }

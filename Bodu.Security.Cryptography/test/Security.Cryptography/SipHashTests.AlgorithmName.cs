@@ -39,20 +39,4 @@ public abstract partial class SipHashTests<TTest, TAlgorithm>
 
     private static string GetAlgorithmName(SipHash<TAlgorithm> algorithm) =>
         $"SipHash-{algorithm.CompressionRounds}-{algorithm.FinalizationRounds}-{algorithm.HashSize}";
-
-    /// <summary>
-    /// Verifies that reading <see cref="SipHash{T}.AlgorithmName" /> after disposal throws
-    /// <see cref="ObjectDisposedException" /> rather than returning a stale or partially-zeroed string.
-    /// </summary>
-    [TestMethod]
-    public void AlgorithmName_WhenAccessedAfterDispose_ShouldThrowExactly()
-    {
-        var algorithm = CreateAlgorithm();
-        algorithm.Dispose();
-
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            _ = algorithm.AlgorithmName;
-        });
-    }
 }

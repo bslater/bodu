@@ -141,4 +141,24 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
             cipher.Encrypt(buffer, buffer);
         });
     }
+
+    /// <summary>
+    /// Verifies that calling <see cref="IDisposable.Dispose" /> twice on the same
+    /// <typeparamref name="TCipher" /> instance is idempotent and does not throw.
+    /// </summary>
+    [TestMethod]
+    public void Dispose_WhenCalledTwice_ShouldNotThrow()
+    {
+        var cipher = CreateBlockCipher();
+        cipher.Dispose();
+
+        try
+        {
+            cipher.Dispose();
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail($"Second Dispose on {typeof(TCipher).Name} threw {ex.GetType().Name}: {ex.Message}");
+        }
+    }
 }
