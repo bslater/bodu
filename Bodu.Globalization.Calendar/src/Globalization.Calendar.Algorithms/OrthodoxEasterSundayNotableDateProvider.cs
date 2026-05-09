@@ -55,14 +55,14 @@ public sealed class OrthodoxEasterSundayNotableDateProvider
     /// <inheritdoc />
     protected override DateTime CalculateDate(int year)
     {
-        int a = year % 4;
-        int b = year % 7;
-        int c = year % 19;
-        int d = (19 * c + 15) % 30;
-        int e = (2 * a + (4 * b) - d + 34) % 7;
-        int f = d + e + 114;
-        int month = f / 31;
-        int day = (f % 31) + 1;
+        var a = year % 4;
+        var b = year % 7;
+        var c = year % 19;
+        var d = (19 * c + 15) % 30;
+        var e = (2 * a + (4 * b) - d + 34) % 7;
+        var f = d + e + 114;
+        var month = f / 31;
+        var day = (f % 31) + 1;
 
         return JulianCalendar.ToDateTime(year, month, day, 0, 0, 0, 0);
     }

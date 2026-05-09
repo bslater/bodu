@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRuleParser.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -165,7 +165,7 @@ public static class NotableDateRuleParser
 	private static NotableDateRuleUseGroup ParseUseGroup(XElement useFromElement)
 	{
 		var resource = GetRequiredAttribute(useFromElement, "resource");
-		bool useAll = useFromElement.Element(Namespace + "UseAll") is not null;
+		var useAll = useFromElement.Element(Namespace + "UseAll") is not null;
 
 		var uses = useFromElement.Elements(Namespace + "Use")
 			.Select(ParseUseDirective)
@@ -539,7 +539,7 @@ public static class NotableDateRuleParser
 		var day = GetOptionalAttribute(element, dayAttr);
 		if (month is null || day is null) return null;
 
-		int monthValue = ParseMonth(month);
+		var monthValue = ParseMonth(month);
 		if (!int.TryParse(day, NumberStyles.Integer, CultureInfo.InvariantCulture, out var dayValue)) return null;
 
 		// Year is irrelevant for comparison-date authoring; the adjuster reprojects onto the resolved year.
@@ -584,7 +584,7 @@ public static class NotableDateRuleParser
 		if (DateTime.TryParseExact(monthName, "MMMM", CultureInfo.InvariantCulture, DateTimeStyles.None, out var result))
 			return result.Month;
 
-		if (int.TryParse(monthName, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric)
+		if (int.TryParse(monthName, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric)
 			&& numeric is >= 1 and <= 13)
 			return numeric;
 
@@ -619,12 +619,12 @@ public static class NotableDateRuleParser
 		if (DateTime.TryParseExact(token, "MMMM", CultureInfo.InvariantCulture, DateTimeStyles.None, out var result))
 			return (result.Month, null);
 
-		if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric)
+		if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric)
 			&& numeric is >= 1 and <= 13)
 			return (numeric, null);
 
 		// Hebrew months with a fixed calendar position — always at the same 1-based index.
-		int? simpleHebrew = token switch
+		var simpleHebrew = token switch
 		{
 			"Tishri" => 1,
 			"Heshvan" => 2,

@@ -180,7 +180,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// <summary>
 	/// Verifies that a request spanning many decades emits an annual rule once per civil year in chronological order.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(2000, 2009, 10)]
 	[DataRow(1990, 2030, 41)]
 	[DataRow(2020, 2120, 101)]
@@ -302,7 +302,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that an offset rule whose projection lands inside the supported <see cref="DateTime" /> range emits as
 	/// expected, including offsets that cross many year boundaries.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(2026, 7, 1, 1, 2026, 7, 2)]      // +1 day
 	[DataRow(2026, 7, 1, 365, 2027, 7, 1)]    // +1 year (no leap day in [Jul 1 2026, Jul 1 2027))
 	[DataRow(2026, 7, 1, 730, 2028, 6, 30)]   // +2 years − 1 day: Feb 29 2028 falls in [Jul 1 2027, Jul 1 2028) so the second year is 366 days

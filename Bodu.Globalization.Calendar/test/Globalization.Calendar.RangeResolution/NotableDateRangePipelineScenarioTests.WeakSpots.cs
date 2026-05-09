@@ -52,7 +52,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that an <see cref="DateResolutionStrategy.OffsetFromAnchor" /> rule whose
 	/// <see cref="NotableDateRule.AnchorRuleName" /> is <see langword="null" /> or whitespace is silently skipped.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(null!)]
 	[DataRow("")]
 	[DataRow("   ")]
@@ -143,7 +143,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that <see cref="NotableDateRule.DurationDays" /> values of zero or below are clamped to a single-day span
 	/// when emitted — the pipeline guarantees a minimum span of one day even when authors specify nonsensical inputs.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(0)]
 	[DataRow(-1)]
 	[DataRow(-365)]
@@ -182,7 +182,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that a rule with no authored territory (<see langword="null" />) and a rule with an empty-string territory
 	/// behave identically — both are treated as global.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(null!)]
 	[DataRow("")]
 	public void Resolve_WhenRuleTerritoryIsNullOrEmpty_ShouldBeTreatedAsGlobal(string? territoryCode)
@@ -392,7 +392,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that <see cref="AdjustmentAction.ReplaceWithNamedDate" /> with a <see langword="null" /> or whitespace
 	/// <see cref="ObservanceAdjustment.TargetRuleName" /> falls back to the original anchor.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(null!)]
 	[DataRow("")]
 	[DataRow("   ")]
@@ -564,7 +564,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that the same calendar day expressed with different <see cref="DateTimeKind" /> values produces identical
 	/// emission results — the pipeline normalises via <c>.Date</c> and the kind component does not influence resolution.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow((int)DateTimeKind.Unspecified)]
 	[DataRow((int)DateTimeKind.Utc)]
 	[DataRow((int)DateTimeKind.Local)]

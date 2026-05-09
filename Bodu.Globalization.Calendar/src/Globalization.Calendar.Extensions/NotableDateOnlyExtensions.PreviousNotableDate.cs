@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateOnlyExtensions.PreviousNotableDate.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -48,11 +48,11 @@ public static partial class NotableDateOnlyExtensions
     {
         ThrowHelper.ThrowIfNull(service);
 
-        DateTime threshold = date.ToDateTime(TimeOnly.MinValue);
-        for (int year = date.Year; year >= DateOnly.MinValue.Year; year--)
+        var threshold = date.ToDateTime(TimeOnly.MinValue);
+        for (var year = date.Year; year >= DateOnly.MinValue.Year; year--)
         {
             IReadOnlyList<NotableDate> notableDates = service.GetNotableDates(year, territoryCode, calendarType);
-            for (int i = notableDates.Count - 1; i >= 0; i--)
+            for (var i = notableDates.Count - 1; i >= 0; i--)
             {
                 if (notableDates[i].Date.Date < threshold)
                     return notableDates[i];
@@ -78,11 +78,11 @@ public static partial class NotableDateOnlyExtensions
         ThrowHelper.ThrowIfNull(service);
         ThrowHelper.ThrowIfNull(filter);
 
-        DateTime threshold = date.ToDateTime(TimeOnly.MinValue);
-        for (int year = date.Year; year >= DateOnly.MinValue.Year; year--)
+        var threshold = date.ToDateTime(TimeOnly.MinValue);
+        for (var year = date.Year; year >= DateOnly.MinValue.Year; year--)
         {
             IReadOnlyList<NotableDate> notableDates = service.GetNotableDates(year, filter, territoryCode, calendarType);
-            for (int i = notableDates.Count - 1; i >= 0; i--)
+            for (var i = notableDates.Count - 1; i >= 0; i--)
             {
                 if (notableDates[i].Date.Date < threshold)
                     return notableDates[i];

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateAdjuster.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -102,7 +102,7 @@ internal sealed class NotableDateAdjuster
 			// for rule territory "AU") lets a subdivision-specific substitute fire
 			// during generation of the parent rule; the emitted occurrence is then
 			// tagged with the adjustment's own territory by the generator.
-			bool matched = false;
+			var matched = false;
 			foreach (var scoped in TerritoryCode.ParseList(adjustment.TerritoryCode))
 			{
 				if (scoped.Contains(requested) || requested.Contains(scoped))
@@ -305,7 +305,7 @@ internal sealed class NotableDateAdjuster
 		// That working day is promoted to a non-working substitute. For example, if Boxing Day falls on Saturday,
 		// the walk skips Sunday and lands on Monday, which becomes the public holiday substitute.
 		DateTime cursor = original.AddDays(1);
-		for (int i = 0; i < 366; i++, cursor = cursor.AddDays(1))
+		for (var i = 0; i < 366; i++, cursor = cursor.AddDays(1))
 		{
 			if (!_isNonWorkingDay(cursor, territoryCode, calendarType))
 				return cursor;

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ResolvedWindowSet.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -41,7 +41,7 @@ internal sealed class ResolvedWindowSet
 		DateTime end = range.EndDate.Date;
 
 		List<DateRange> retained = new(_ranges.Count + 1);
-		bool merged = false;
+		var merged = false;
 
 		foreach (DateRange existing in _ranges)
 		{

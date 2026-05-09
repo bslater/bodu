@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRangePlanner.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -80,25 +80,25 @@ internal sealed class NotableDateRangePlanner
 
 		// Main pass candidate years: just the years that the request window itself spans. No global reach expansion.
 		List<int> candidateYears = new();
-		for (int year = request.StartDate.Year; year <= request.EndDate.Year; year++)
+		for (var year = request.StartDate.Year; year <= request.EndDate.Year; year++)
 			candidateYears.Add(year);
 
 		// Fringe pass: only relevant if the request window touches a year boundary inside the fringe distance. The fringe scans
 		// rules whose un-adjusted date sits within ±effectiveFringeDays of the request edges so the adjustment phase can roll
 		// them in. The effective distance is the larger of the configured default and the rule set's worst-case reach so unusual
 		// adjustment actions (large AddDays, ReplaceWithNamedDate, Custom) widen the fringe automatically.
-		int effectiveFringeDays = _fringeDays > _analysis.GlobalFringeReach ? _fringeDays : _analysis.GlobalFringeReach;
+		var effectiveFringeDays = _fringeDays > _analysis.GlobalFringeReach ? _fringeDays : _analysis.GlobalFringeReach;
 		DateTime fringeStart = AddDaysClamped(request.StartDate, -effectiveFringeDays);
 		DateTime fringeEnd = AddDaysClamped(request.EndDate, effectiveFringeDays);
 
 		HashSet<int> fringeYearSet = new();
-		for (int year = fringeStart.Year; year <= fringeEnd.Year; year++)
+		for (var year = fringeStart.Year; year <= fringeEnd.Year; year++)
 		{
 			if (year < request.StartDate.Year || year > request.EndDate.Year)
 				fringeYearSet.Add(year);
 		}
 
-		List<int> fringeYears = fringeYearSet.OrderBy(y => y).ToList();
+		var fringeYears = fringeYearSet.OrderBy(y => y).ToList();
 
 		// Anchor years per algorithmic root. Tight envelope: only the years the request range spans, plus any fringe years (since
 		// a fringe-pass offset rule may need an adjacent-year algorithmic anchor). Keeps Easter / Lunar New Year / Vesak
@@ -106,16 +106,16 @@ internal sealed class NotableDateRangePlanner
 		Dictionary<string, IReadOnlyList<int>> anchorYearsByName = new(StringComparer.OrdinalIgnoreCase);
 
 		HashSet<int> anchorYearSet = new(candidateYears);
-		foreach (int year in fringeYears)
+		foreach (var year in fringeYears)
 			anchorYearSet.Add(year);
-		List<int> anchorYears = anchorYearSet.OrderBy(y => y).ToList();
+		var anchorYears = anchorYearSet.OrderBy(y => y).ToList();
 
 		foreach (RuleStaticProfile profile in eligible)
 		{
 			if (!profile.DependsOnAlgorithmicAnchor) continue;
 			if (string.IsNullOrWhiteSpace(profile.RootAnchorRuleName)) continue;
 
-			string anchorName = profile.RootAnchorRuleName!;
+			var anchorName = profile.RootAnchorRuleName!;
 			if (!anchorYearsByName.ContainsKey(anchorName))
 				anchorYearsByName[anchorName] = anchorYears;
 		}

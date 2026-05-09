@@ -102,7 +102,7 @@ internal sealed class NotableDateRuleOccurrenceResolver : INotableDateRuleOccurr
             if (!IsRuleEligible(rule, request))
                 continue;
 
-            foreach (int year in GetCandidateYears(request))
+            foreach (var year in GetCandidateYears(request))
             {
                 DateTime? anchorDate = ResolveDirectAnchorDate(rule, year);
 
@@ -142,17 +142,17 @@ internal sealed class NotableDateRuleOccurrenceResolver : INotableDateRuleOccurr
         List<ResolvedNotableDateOccurrence> occurrences,
         HashSet<OccurrenceKey> seen)
     {
-        foreach (string anchorRuleName in anchorRuleNames)
+        foreach (var anchorRuleName in anchorRuleNames)
         {
-            foreach (int year in GetCandidateYears(request))
+            foreach (var year in GetCandidateYears(request))
             {
                 DateTime? anchorDate = calculationAnchors.Resolve(anchorRuleName, year);
 
                 if (anchorDate is null)
                     continue;
 
-                int minOffsetDays = (request.StartDate - anchorDate.Value.Date).Days;
-                int maxOffsetDays = (request.EndDate - anchorDate.Value.Date).Days;
+                var minOffsetDays = (request.StartDate - anchorDate.Value.Date).Days;
+                var maxOffsetDays = (request.EndDate - anchorDate.Value.Date).Days;
 
                 IReadOnlyList<NotableDateRule> matchingRules = anchorRelativeRules.FindRules(
                     anchorRuleName,
@@ -199,7 +199,7 @@ internal sealed class NotableDateRuleOccurrenceResolver : INotableDateRuleOccurr
         List<ResolvedNotableDateOccurrence> occurrences,
         HashSet<OccurrenceKey> seen)
     {
-        foreach (string? territoryCode in EnumerateApplicableTerritoryCodes(rule, request.TerritoryCode))
+        foreach (var territoryCode in EnumerateApplicableTerritoryCodes(rule, request.TerritoryCode))
         {
             NotableDate notable = BuildNotableDate(rule, anchorDate.Date, territoryCode);
 
@@ -281,10 +281,10 @@ internal sealed class NotableDateRuleOccurrenceResolver : INotableDateRuleOccurr
     /// <returns>The candidate civil years.</returns>
     private static IEnumerable<int> GetCandidateYears(NotableDateResolutionRequest request)
     {
-        int startYear = request.StartDate.Year;
-        int endYear = request.EndDate.Year;
+        var startYear = request.StartDate.Year;
+        var endYear = request.EndDate.Year;
 
-        for (int year = startYear; year <= endYear; year++)
+        for (var year = startYear; year <= endYear; year++)
             yield return year;
     }
 
@@ -304,7 +304,7 @@ internal sealed class NotableDateRuleOccurrenceResolver : INotableDateRuleOccurr
             yield break;
         }
 
-        foreach (string territoryCode in rule.TerritoryCode.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        foreach (var territoryCode in rule.TerritoryCode.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
         {
             if (string.IsNullOrWhiteSpace(territoryCode))
                 continue;
@@ -327,7 +327,7 @@ internal sealed class NotableDateRuleOccurrenceResolver : INotableDateRuleOccurr
         if (string.IsNullOrWhiteSpace(rule.TerritoryCode))
             return true;
 
-        foreach (string territoryCode in rule.TerritoryCode.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        foreach (var territoryCode in rule.TerritoryCode.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
         {
             if (TerritoryMatches(territoryCode, requestedTerritoryCode))
                 return true;

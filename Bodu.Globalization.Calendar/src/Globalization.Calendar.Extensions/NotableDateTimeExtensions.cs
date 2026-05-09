@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateTimeExtensions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ namespace Bodu.Extensions;
 /// overloads; convenience-oriented call sites should use the ambient ones.
 /// </para>
 /// <para>
-/// Day-stepping inside walk and counting members is performed in Gregorian ticks. The <paramref name="calendarType" /> argument is
+/// Day-stepping inside walk and counting members is performed in Gregorian ticks. The <c>calendarType</c> argument is
 /// forwarded to the service for rule resolution and is not used to drive day arithmetic; the configured calendar handlers on the
 /// service therefore determine which rules contribute to working-day classification.
 /// </para>

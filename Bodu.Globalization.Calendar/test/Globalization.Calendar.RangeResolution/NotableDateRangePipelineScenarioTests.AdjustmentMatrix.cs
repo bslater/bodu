@@ -19,7 +19,7 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 public sealed partial class NotableDateRangePipelineScenarioTests
 {
 	// =====================================================================================================================
-	// Trigger activation matrix — one DataTestMethod per AdjustmentTrigger value.
+	// Trigger activation matrix — one TestMethod per AdjustmentTrigger value.
 	//
 	// Each test pairs the trigger with a deterministic AddDays(+1) action so "rule fired" is observable as
 	// `WasAdjusted == true && Date == anchor.AddDays(1)`, and "rule did not fire" as `WasAdjusted == false && Date == anchor`.
@@ -28,7 +28,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// <summary>
 	/// Verifies that <see cref="AdjustmentTrigger.Always" /> fires unconditionally regardless of the anchor's weekday.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(2026, 1, 1)]   // Thursday
 	[DataRow(2026, 6, 13)]  // Saturday
 	[DataRow(2026, 6, 14)]  // Sunday
@@ -44,7 +44,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// <summary>
 	/// Verifies that <see cref="AdjustmentTrigger.IfWeekend" /> fires only when the anchor lands on Saturday or Sunday.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(2026, 12, 25, false)] // Friday
 	[DataRow(2026, 12, 26, true)]  // Saturday
 	[DataRow(2026, 12, 27, true)]  // Sunday
@@ -61,7 +61,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// <summary>
 	/// Verifies that <see cref="AdjustmentTrigger.IfWeekday" /> fires only on weekdays under the configured weekend definition.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(2026, 12, 25, true)]  // Friday
 	[DataRow(2026, 12, 26, false)] // Saturday
 	[DataRow(2026, 12, 27, false)] // Sunday
@@ -79,7 +79,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that <see cref="AdjustmentTrigger.IfLeapYear" /> fires for years divisible by four (with the standard Gregorian
 	/// leap-year exceptions handled by <see cref="DateTime.IsLeapYear" />).
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(2024, 7, 1, true)]   // Leap
 	[DataRow(2025, 7, 1, false)]  // Non-leap
 	[DataRow(2026, 7, 1, false)]  // Non-leap
@@ -98,7 +98,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// <summary>
 	/// Verifies that <see cref="AdjustmentTrigger.IfDayOfWeek" /> with <c>DayOfWeek.Sunday</c> fires only on Sundays.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(2026, 7, 1, false)]  // Wednesday
 	[DataRow(2026, 7, 2, false)]  // Thursday
 	[DataRow(2026, 7, 5, true)]   // Sunday
@@ -122,7 +122,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that <see cref="AdjustmentTrigger.IfBeforeFixedDate" /> fires when the anchor is strictly earlier than the
 	/// year-projected comparison date.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(2026, 1, 1, true)]   // 1 Jan < 4 Apr → fire
 	[DataRow(2026, 4, 3, true)]   // 3 Apr < 4 Apr → fire
 	[DataRow(2026, 4, 4, false)]  // 4 Apr is NOT strictly less than 4 Apr → no fire
@@ -146,7 +146,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that <see cref="AdjustmentTrigger.IfAfterFixedDate" /> fires when the anchor is strictly later than the
 	/// year-projected comparison date.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(2026, 1, 1, false)]
 	[DataRow(2026, 4, 4, false)]  // Not strictly greater
 	[DataRow(2026, 4, 5, true)]   // 5 Apr > 4 Apr → fire
@@ -169,7 +169,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that <see cref="AdjustmentTrigger.IfNthOccurrenceInMonth" /> fires only when the anchor's day-of-month falls in
 	/// the seven-day block that <see cref="WeekOfMonthOrdinal" /> identifies (days 1-7 = First, 8-14 = Second, …).
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(2026, 6, 1, (int)WeekOfMonthOrdinal.First, true)]    // Day 1 → First
 	[DataRow(2026, 6, 7, (int)WeekOfMonthOrdinal.First, true)]    // Day 7 → First
 	[DataRow(2026, 6, 8, (int)WeekOfMonthOrdinal.First, false)]   // Day 8 → Second
@@ -273,7 +273,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	}
 
 	// =====================================================================================================================
-	// Action shift matrix — one DataTestMethod per AdjustmentAction value (using AdjustmentTrigger.Always so the action's
+	// Action shift matrix — one TestMethod per AdjustmentAction value (using AdjustmentTrigger.Always so the action's
 	// shift is always observable).
 	// =====================================================================================================================
 
@@ -281,7 +281,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that <see cref="AdjustmentAction.AddDays" /> shifts the anchor by the configured offset, including negative
 	/// offsets that cross month and year boundaries.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(1, 2026, 7, 1, 2026, 7, 2)]
 	[DataRow(7, 2026, 7, 1, 2026, 7, 8)]
 	[DataRow(31, 2026, 7, 1, 2026, 8, 1)]      // Cross month forward
@@ -313,7 +313,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that <see cref="AdjustmentAction.MoveToNextWeekday" /> always advances at least one day and skips Saturday and
 	/// Sunday under the configured Saturday/Sunday weekend definition.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(2026, 12, 25, 2026, 12, 28)] // Fri → Mon (skip Sat/Sun)
 	[DataRow(2026, 12, 26, 2026, 12, 28)] // Sat → Mon
 	[DataRow(2026, 12, 27, 2026, 12, 28)] // Sun → Mon
@@ -338,7 +338,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that <see cref="AdjustmentAction.MoveToPreviousWeekday" /> always retreats at least one day and skips Saturday
 	/// and Sunday under the configured weekend definition.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(2026, 12, 28, 2026, 12, 25)] // Mon → Fri (skip Sun/Sat)
 	[DataRow(2026, 12, 27, 2026, 12, 25)] // Sun → Fri
 	[DataRow(2026, 12, 26, 2026, 12, 25)] // Sat → Fri

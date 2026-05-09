@@ -122,7 +122,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// </para>
 	/// </remarks>
 	[Ignore("Pending: range-resolution pipeline does not currently honour override RuleRemoval entries.")]
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(2023, true)]   // before range
 	[DataRow(2024, false)]  // start of range
 	[DataRow(2025, false)]  // mid range

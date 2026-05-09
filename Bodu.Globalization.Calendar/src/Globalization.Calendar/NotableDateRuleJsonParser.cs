@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRuleJsonParser.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -259,7 +259,7 @@ public static class NotableDateRuleJsonParser
 	/// </summary>
 	private static DateResolutionStrategy DetectRuleStrategy(RuleDto dto, string notableDateName)
 	{
-		int count = 0;
+		var count = 0;
 		DateResolutionStrategy result = default;
 
 		if (dto.Fixed is not null) { result = DateResolutionStrategy.Fixed; count++; }
@@ -284,7 +284,7 @@ public static class NotableDateRuleJsonParser
 	/// </summary>
 	private static DateResolutionStrategy? DetectOverrideStrategy(OverrideRuleDto dto)
 	{
-		int count = 0;
+		var count = 0;
 		DateResolutionStrategy result = default;
 
 		if (dto.Fixed is not null) { result = DateResolutionStrategy.Fixed; count++; }
@@ -503,7 +503,7 @@ public static class NotableDateRuleJsonParser
 		if (string.IsNullOrWhiteSpace(month) || day is null)
 			return null;
 
-		int monthValue = ParseMonth(month);
+		var monthValue = ParseMonth(month);
 		return new DateTime(2000, monthValue, day.Value, 0, 0, 0, DateTimeKind.Unspecified);
 	}
 
@@ -518,7 +518,7 @@ public static class NotableDateRuleJsonParser
 		if (DateTime.TryParseExact(monthName, "MMMM", CultureInfo.InvariantCulture, DateTimeStyles.None, out var result))
 			return result.Month;
 
-		if (int.TryParse(monthName, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric)
+		if (int.TryParse(monthName, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric)
 			&& numeric is >= 1 and <= 13)
 			return numeric;
 
@@ -537,11 +537,11 @@ public static class NotableDateRuleJsonParser
 		if (DateTime.TryParseExact(token, "MMMM", CultureInfo.InvariantCulture, DateTimeStyles.None, out var result))
 			return (result.Month, null);
 
-		if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric)
+		if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric)
 			&& numeric is >= 1 and <= 13)
 			return (numeric, null);
 
-		int? simpleHebrew = token switch
+		var simpleHebrew = token switch
 		{
 			"Tishri" => 1,
 			"Heshvan" => 2,

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StrongNamePluginTrustPolicy.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -40,11 +40,11 @@ public sealed class StrongNamePluginTrustPolicy : IPluginTrustPolicy
 	/// <inheritdoc />
 	public PluginTrustResult Evaluate(PluginTrustContext context)
 	{
-		byte[]? tokenBytes = context.AssemblyName.GetPublicKeyToken();
+		var tokenBytes = context.AssemblyName.GetPublicKeyToken();
 		if (tokenBytes is null || tokenBytes.Length == 0)
 			return new PluginTrustResult(Trusted: false, Reason: "Plugin assembly is not strong-named.");
 
-		string token = ToHexString(tokenBytes);
+		var token = ToHexString(tokenBytes);
 		return _allowedTokens.Contains(token)
 			? new PluginTrustResult(Trusted: true, Reason: null)
 			: new PluginTrustResult(Trusted: false, Reason: $"Public-key token '{token}' is not in the allowlist.");
@@ -62,9 +62,9 @@ public sealed class StrongNamePluginTrustPolicy : IPluginTrustPolicy
 	private static string ToHexString(byte[] bytes)
 	{
 		var chars = new char[bytes.Length * 2];
-		for (int i = 0; i < bytes.Length; i++)
+		for (var i = 0; i < bytes.Length; i++)
 		{
-			byte b = bytes[i];
+			var b = bytes[i];
 			chars[i * 2] = GetHexChar(b >> 4);
 			chars[(i * 2) + 1] = GetHexChar(b & 0x0F);
 		}

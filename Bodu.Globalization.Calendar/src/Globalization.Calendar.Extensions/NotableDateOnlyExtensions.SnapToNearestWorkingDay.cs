@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateOnlyExtensions.SnapToNearestWorkingDay.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -50,8 +50,8 @@ public static partial class NotableDateOnlyExtensions
         DateOnly forward = NextWorkingDay(date, service, count: 1, territoryCode, calendarType);
         DateOnly backward = PreviousWorkingDay(date, service, count: 1, territoryCode, calendarType);
 
-        int forwardGap = forward.DayNumber - date.DayNumber;
-        int backwardGap = date.DayNumber - backward.DayNumber;
+        var forwardGap = forward.DayNumber - date.DayNumber;
+        var backwardGap = date.DayNumber - backward.DayNumber;
 
         return forwardGap <= backwardGap ? forward : backward;
     }

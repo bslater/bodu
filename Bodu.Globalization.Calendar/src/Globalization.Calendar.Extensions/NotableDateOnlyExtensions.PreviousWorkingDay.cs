@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateOnlyExtensions.PreviousWorkingDay.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -42,15 +42,15 @@ public static partial class NotableDateOnlyExtensions
 
         if (count == 0) return DateOnly.FromDayNumber(date.DayNumber);
 
-        int dayNumber = date.DayNumber;
-        int remaining = count;
+        var dayNumber = date.DayNumber;
+        var remaining = count;
         while (remaining > 0)
         {
             if (dayNumber <= DateOnly.MinValue.DayNumber)
                 throw new ArgumentOutOfRangeException(nameof(count), "Retreating the requested number of working days would underrun DateOnly.MinValue.");
 
             dayNumber--;
-            DateOnly candidate = DateOnly.FromDayNumber(dayNumber);
+            var candidate = DateOnly.FromDayNumber(dayNumber);
             if (!service.IsNonWorkingDay(candidate.ToDateTime(TimeOnly.MinValue), territoryCode, calendarType))
                 remaining--;
         }

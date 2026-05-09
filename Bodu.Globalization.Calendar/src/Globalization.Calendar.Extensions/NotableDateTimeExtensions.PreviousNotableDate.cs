@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateTimeExtensions.PreviousNotableDate.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -56,10 +56,10 @@ public static partial class NotableDateTimeExtensions
         ThrowHelper.ThrowIfNull(service);
 
         DateTime threshold = dateTime.Date;
-        for (int year = dateTime.Year; year >= DateTime.MinValue.Year; year--)
+        for (var year = dateTime.Year; year >= DateTime.MinValue.Year; year--)
         {
             IReadOnlyList<NotableDate> notableDates = service.GetNotableDates(year, territoryCode, calendarType);
-            for (int i = notableDates.Count - 1; i >= 0; i--)
+            for (var i = notableDates.Count - 1; i >= 0; i--)
             {
                 if (notableDates[i].Date.Date < threshold)
                     return notableDates[i];
@@ -86,10 +86,10 @@ public static partial class NotableDateTimeExtensions
         ThrowHelper.ThrowIfNull(filter);
 
         DateTime threshold = dateTime.Date;
-        for (int year = dateTime.Year; year >= DateTime.MinValue.Year; year--)
+        for (var year = dateTime.Year; year >= DateTime.MinValue.Year; year--)
         {
             IReadOnlyList<NotableDate> notableDates = service.GetNotableDates(year, filter, territoryCode, calendarType);
-            for (int i = notableDates.Count - 1; i >= 0; i--)
+            for (var i = notableDates.Count - 1; i >= 0; i--)
             {
                 if (notableDates[i].Date.Date < threshold)
                     return notableDates[i];

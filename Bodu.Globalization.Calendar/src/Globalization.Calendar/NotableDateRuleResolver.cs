@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRuleResolver.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -108,7 +108,7 @@ internal sealed class NotableDateRuleResolver
 						{
 							try
 							{
-								DateTime converted = cal.ToDateTime(year, m1, d1, 0, 0, 0, 0);
+								var converted = cal.ToDateTime(year, m1, d1, 0, 0, 0, 0);
 								return DateTime.SpecifyKind(converted.Date, DateTimeKind.Unspecified);
 							}
 							catch (ArgumentOutOfRangeException)
@@ -234,7 +234,7 @@ internal sealed class NotableDateRuleResolver
 				if (parameters.Length != 2) continue;
 				if (parameters[1].ParameterType != typeof(int)) continue;
 
-				if (!TryCoerceMonthArgument(monthToken, parameters[0].ParameterType, out object? monthValue))
+				if (!TryCoerceMonthArgument(monthToken, parameters[0].ParameterType, out var monthValue))
 					continue;
 
 				try
@@ -330,21 +330,21 @@ internal sealed class NotableDateRuleResolver
 		if (year < cal.MinSupportedDateTime.Year || year >= cal.MaxSupportedDateTime.Year)
 			return null;
 
-		int monthsInYear = cal.GetMonthsInYear(year);
-		int leapMonth = cal.GetLeapMonth(year);
+		var monthsInYear = cal.GetMonthsInYear(year);
+		var leapMonth = cal.GetLeapMonth(year);
 
 		// GetLeapMonth returns the 1-based position of the intercalary month within the calendar's consecutive
 		// 1..N month sequence, or 0 for a non-leap year. Conventional ordinal months at or after the leap slot
 		// need their calendar index incremented by one to skip past the intercalary month.
-		int calendarMonth = (leapMonth > 0 && lunarMonth >= leapMonth) ? lunarMonth + 1 : lunarMonth;
+		var calendarMonth = (leapMonth > 0 && lunarMonth >= leapMonth) ? lunarMonth + 1 : lunarMonth;
 		if (calendarMonth > monthsInYear)
 			return null;
 
-		int daysInMonth = cal.GetDaysInMonth(year, calendarMonth);
+		var daysInMonth = cal.GetDaysInMonth(year, calendarMonth);
 		if (day > daysInMonth)
 			return null;
 
-		DateTime result = cal.ToDateTime(year, calendarMonth, day, 0, 0, 0, 0);
+		var result = cal.ToDateTime(year, calendarMonth, day, 0, 0, 0, 0);
 		return DateTime.SpecifyKind(result.Date, DateTimeKind.Unspecified);
 	}
 
@@ -371,12 +371,12 @@ internal sealed class NotableDateRuleResolver
 			return null;
 		}
 
-		for (int h = calYearForJan1; h <= calYearForJan1 + 1; h++)
+		for (var h = calYearForJan1; h <= calYearForJan1 + 1; h++)
 		{
 			int monthNumber;
 			if (rule.CalendarMonthAlias is { } alias)
 			{
-				bool isLeapYear = cal.GetMonthsInYear(h) == 13;
+				var isLeapYear = cal.GetMonthsInYear(h) == 13;
 				monthNumber = ResolveHebrewMonthAlias(alias, isLeapYear);
 				if (monthNumber < 0)
 					continue;
@@ -463,7 +463,7 @@ internal sealed class NotableDateRuleResolver
 
 		if (rule.OccurrenceYears is { } interval && interval > 0)
 		{
-			int origin = rule.FirstYear ?? 0;
+			var origin = rule.FirstYear ?? 0;
 			if (((year - origin) % interval) != 0)
 				return false;
 		}

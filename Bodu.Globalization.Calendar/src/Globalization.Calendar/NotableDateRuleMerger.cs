@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRuleMerger.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -157,7 +157,7 @@ internal static class NotableDateRuleMerger
 	/// <returns>The zero-based index, or <c>-1</c> when no match is found.</returns>
 	private static int IndexOfKey(ImmutableArray<ObservanceAdjustment>.Builder builder, string key)
 	{
-		for (int i = 0; i < builder.Count; i++)
+		for (var i = 0; i < builder.Count; i++)
 		{
 			if (string.Equals(builder[i].Key, key, StringComparison.OrdinalIgnoreCase))
 				return i;

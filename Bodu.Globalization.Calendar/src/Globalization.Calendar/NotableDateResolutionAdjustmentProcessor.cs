@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResolutionAdjustmentProcessor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -158,11 +158,11 @@ internal sealed class NotableDateResolutionAdjustmentProcessor : INotableDateRes
                 if (!result.Activated || result.AdjustedDate.Date == occurrence.AnchorDate.Date)
                     continue;
 
-                string? emittedTerritory = !string.IsNullOrEmpty(adjustment.TerritoryCode)
+                var emittedTerritory = !string.IsNullOrEmpty(adjustment.TerritoryCode)
                     ? adjustment.TerritoryCode
                     : occurrence.TerritoryCode;
 
-                bool isNonWorking = result.IsNonWorkingOverride ?? occurrence.Rule.IsNonWorkingDay ?? false;
+                var isNonWorking = result.IsNonWorkingOverride ?? occurrence.Rule.IsNonWorkingDay ?? false;
 
                 AdjustmentReason reason = new(
                     occurrence.AnchorDate,

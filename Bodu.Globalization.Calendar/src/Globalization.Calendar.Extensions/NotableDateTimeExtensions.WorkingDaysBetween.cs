@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateTimeExtensions.WorkingDaysBetween.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -48,7 +48,7 @@ public static partial class NotableDateTimeExtensions
 
         DateTime cursor = startDate.Date;
         DateTime end = endDate.Date;
-        int count = 0;
+        var count = 0;
         while (cursor <= end)
         {
             if (!service.IsNonWorkingDay(cursor, territoryCode, calendarType))

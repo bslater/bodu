@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDate.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -145,7 +145,7 @@ public sealed record NotableDate
 			if (TerritoryCode is null && CalendarType is null)
 				return Name;
 
-			string? calendarSuffix = CalendarType?.Name.Replace("Calendar", string.Empty, StringComparison.OrdinalIgnoreCase);
+			var calendarSuffix = CalendarType?.Name.Replace("Calendar", string.Empty, StringComparison.OrdinalIgnoreCase);
 			var parts = new[] { TerritoryCode, calendarSuffix }.Where(s => !string.IsNullOrEmpty(s));
 			return $"{Name} ({string.Join(", ", parts)})";
 		}

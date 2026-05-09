@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateOnlyExtensions.EnumerateWorkingDays.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -53,11 +53,11 @@ public static partial class NotableDateOnlyExtensions
     {
         if (endDate < startDate) (startDate, endDate) = (endDate, startDate);
 
-        int dayNumber = startDate.DayNumber;
-        int endDayNumber = endDate.DayNumber;
+        var dayNumber = startDate.DayNumber;
+        var endDayNumber = endDate.DayNumber;
         while (dayNumber <= endDayNumber)
         {
-            DateOnly cursor = DateOnly.FromDayNumber(dayNumber);
+            var cursor = DateOnly.FromDayNumber(dayNumber);
             if (!service.IsNonWorkingDay(cursor.ToDateTime(TimeOnly.MinValue), territoryCode, calendarType))
                 yield return cursor;
             dayNumber++;

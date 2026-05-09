@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FileHashPluginTrustPolicy.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -63,8 +63,8 @@ public sealed class FileHashPluginTrustPolicy : IPluginTrustPolicy
 			return new PluginTrustResult(Trusted: false, Reason: $"Assembly '{name}' hash length mismatch.");
 
 		// Constant-time comparison is overkill for a plain integrity check, but cheap — use it anyway.
-		int diff = 0;
-		for (int i = 0; i < expected.Length; i++)
+		var diff = 0;
+		for (var i = 0; i < expected.Length; i++)
 			diff |= expected[i] ^ context.FileHash[i];
 
 		return diff == 0

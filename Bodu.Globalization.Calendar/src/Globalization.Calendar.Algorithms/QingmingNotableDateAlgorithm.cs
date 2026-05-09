@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="QingmingNotableDateAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -63,11 +63,11 @@ public sealed class QingmingNotableDateAlgorithm
 		if (year < 1)
 			throw new ArgumentOutOfRangeException(nameof(year), CalendarResourceStrings.ArgumentOutOfRangeException_YearOutOfRange);
 
-		double equinoxJde = ComputeVernalEquinoxJde(year);
-		double qingmingJde = equinoxJde + DegreesToDays15;
+		var equinoxJde = ComputeVernalEquinoxJde(year);
+		var qingmingJde = equinoxJde + DegreesToDays15;
 
 		DateTime rawUtc = JdeToDateTime(qingmingJde);
-		DateTime dateOnly = DateTime.SpecifyKind(rawUtc.Date, DateTimeKind.Unspecified);
+		var dateOnly = DateTime.SpecifyKind(rawUtc.Date, DateTimeKind.Unspecified);
 
 		SysGlobal.Calendar targetCalendar = calendar ?? new SysGlobal.GregorianCalendar();
 
@@ -91,22 +91,22 @@ public sealed class QingmingNotableDateAlgorithm
 	/// <returns>The Julian Day Ephemeris of the vernal equinox in Terrestrial Dynamical Time.</returns>
 	private static double ComputeVernalEquinoxJde(int year)
 	{
-		double Y = (year - 2000) / 1000.0;
+		var Y = (year - 2000) / 1000.0;
 
 		// Meeus Table 27.a — mean JDE of the March equinox.
-		double jde0 = 2451623.80984
+		var jde0 = 2451623.80984
 			+ 365242.37404 * Y
 			+ 0.05169 * Y * Y
 			- 0.00411 * Y * Y * Y
 			- 0.00057 * Y * Y * Y * Y;
 
 		// Meeus Table 27.c — periodic correction terms (units: 0.00001 day × coefficient).
-		double T = (jde0 - 2451545.0) / 36525.0;
-		double W = DegToRad(35999.373 * T - 2.47);
-		double lambda = 1.0 + 0.0334 * Math.Cos(W) + 0.0007 * Math.Cos(2.0 * W);
+		var T = (jde0 - 2451545.0) / 36525.0;
+		var W = DegToRad(35999.373 * T - 2.47);
+		var lambda = 1.0 + 0.0334 * Math.Cos(W) + 0.0007 * Math.Cos(2.0 * W);
 
-		double S = 0.0;
-		foreach ((double a, double b, double c) in s_correctionTerms)
+		var S = 0.0;
+		foreach ((var a, var b, var c) in s_correctionTerms)
 			S += a * Math.Cos(DegToRad(b + c * T));
 
 		return jde0 + (0.00001 * S / lambda);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="LunarPhaseAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -36,11 +36,11 @@ internal static class LunarPhaseAlgorithm
 	internal static DateTime? GetFullMoonOnOrAfter(DateTime notBefore)
 	{
 		// Estimate the lunation index k for the notBefore date, biased toward full moons (k = n + 0.5).
-		double k = EstimateK(notBefore.Year, notBefore.Month, fullMoon: true);
+		var k = EstimateK(notBefore.Year, notBefore.Month, fullMoon: true);
 
-		for (int attempts = 0; attempts < 3; attempts++, k += 1.0)
+		for (var attempts = 0; attempts < 3; attempts++, k += 1.0)
 		{
-			double jde = ComputeLunarPhaseJde(k);
+			var jde = ComputeLunarPhaseJde(k);
 			DateTime candidate = JdeToDate(jde);
 
 			if (candidate >= notBefore.Date)
@@ -57,11 +57,11 @@ internal static class LunarPhaseAlgorithm
 	/// <returns>The UTC date of the new moon, or <see langword="null" /> if none can be computed in range.</returns>
 	internal static DateTime? GetNewMoonOnOrAfter(DateTime notBefore)
 	{
-		double k = EstimateK(notBefore.Year, notBefore.Month, fullMoon: false);
+		var k = EstimateK(notBefore.Year, notBefore.Month, fullMoon: false);
 
-		for (int attempts = 0; attempts < 3; attempts++, k += 1.0)
+		for (var attempts = 0; attempts < 3; attempts++, k += 1.0)
 		{
-			double jde = ComputeLunarPhaseJde(k);
+			var jde = ComputeLunarPhaseJde(k);
 			DateTime candidate = JdeToDate(jde);
 
 			if (candidate >= notBefore.Date)
@@ -81,8 +81,8 @@ internal static class LunarPhaseAlgorithm
 	/// <returns>The estimated lunation index k.</returns>
 	private static double EstimateK(int year, int month, bool fullMoon)
 	{
-		double approxYear = year + (month - 1) / 12.0;
-		double k = (approxYear - 2000.0) * 12.3685;
+		var approxYear = year + (month - 1) / 12.0;
+		var k = (approxYear - 2000.0) * 12.3685;
 		k = fullMoon ? Math.Floor(k) + 0.5 : Math.Round(k);
 		return k;
 	}
@@ -96,28 +96,28 @@ internal static class LunarPhaseAlgorithm
 	/// <returns>The Julian Day Ephemeris (JDE) in Terrestrial Dynamical Time.</returns>
 	private static double ComputeLunarPhaseJde(double k)
 	{
-		double T = k / 1236.85;
-		double T2 = T * T;
-		double T3 = T2 * T;
-		double T4 = T2 * T2;
+		var T = k / 1236.85;
+		var T2 = T * T;
+		var T3 = T2 * T;
+		var T4 = T2 * T2;
 
 		// Mean JDE (Meeus eq. 49.1)
-		double jde = 2451550.09766
+		var jde = 2451550.09766
 			+ SynodicMonth * k
 			+ 0.00015437 * T2
 			- 0.000000150 * T3
 			+ 0.00000000073 * T4;
 
-		double E = 1.0 - 0.002516 * T - 0.0000074 * T2;
-		double E2 = E * E;
+		var E = 1.0 - 0.002516 * T - 0.0000074 * T2;
+		var E2 = E * E;
 
 		// Mean anomalies and argument of latitude (degrees)
-		double M = DegToRad(  2.5534  + 29.10535670 * k - 0.0000014 * T2 - 0.00000011 * T3);
-		double Mp = DegToRad(201.5643 + 385.81693528 * k + 0.0107582 * T2 + 0.00001238 * T3 - 0.000000058 * T4);
-		double F = DegToRad( 160.7108 + 390.67050284 * k - 0.0016118 * T2 - 0.00000227 * T3 + 0.000000011 * T4);
-		double Om = DegToRad( 124.7746 - 1.56375588 * k + 0.0020672 * T2 + 0.00000215 * T3);
+		var M = DegToRad(  2.5534  + 29.10535670 * k - 0.0000014 * T2 - 0.00000011 * T3);
+		var Mp = DegToRad(201.5643 + 385.81693528 * k + 0.0107582 * T2 + 0.00001238 * T3 - 0.000000058 * T4);
+		var F = DegToRad( 160.7108 + 390.67050284 * k - 0.0016118 * T2 - 0.00000227 * T3 + 0.000000011 * T4);
+		var Om = DegToRad( 124.7746 - 1.56375588 * k + 0.0020672 * T2 + 0.00000215 * T3);
 
-		bool isFullMoon = Math.Abs(k - Math.Floor(k) - 0.5) < 1e-9;
+		var isFullMoon = Math.Abs(k - Math.Floor(k) - 0.5) < 1e-9;
 
 		if (isFullMoon)
 		{
@@ -179,7 +179,7 @@ internal static class LunarPhaseAlgorithm
 		}
 
 		// Additional correction W (Meeus eq. 49.2)
-		double W = 0.000325 * Math.Sin(DegToRad(299.77 + 0.107408 * k - 0.009173 * T2))
+		var W = 0.000325 * Math.Sin(DegToRad(299.77 + 0.107408 * k - 0.009173 * T2))
 			+ 0.000165 * Math.Sin(DegToRad(251.88 + 0.016321 * k))
 			+ 0.000164 * Math.Sin(DegToRad(251.83 + 26.651886 * k))
 			+ 0.000126 * Math.Sin(DegToRad(349.42 + 36.412478 * k))

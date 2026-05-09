@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateFilter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -112,10 +112,9 @@ public sealed class NotableDateFilter
 	/// <exception cref="ArgumentException">Thrown when <paramref name="categories" /> contains no elements.</exception>
 	public static NotableDateFilter ForAnyCategory(params NotableDateCategory[] categories)
 	{
-		ThrowHelper.ThrowIfNull(categories);
-		if (categories.Length == 0) throw new ArgumentException("At least one category must be supplied.", nameof(categories));
+        ThrowHelper.ThrowIfCollectionTooSmall(categories, 1);
 
-		HashSet<NotableDateCategory> set = new(categories);
+        HashSet<NotableDateCategory> set = new(categories);
 		return new(
 			rule => set.Contains(rule.Category),
 			date => set.Contains(date.Category));
@@ -148,10 +147,9 @@ public sealed class NotableDateFilter
 	/// <exception cref="ArgumentException">Thrown when <paramref name="tags" /> contains no elements.</exception>
 	public static NotableDateFilter WithAnyTag(params string[] tags)
 	{
-		ThrowHelper.ThrowIfNull(tags);
-		if (tags.Length == 0) throw new ArgumentException("At least one tag must be supplied.", nameof(tags));
+        ThrowHelper.ThrowIfCollectionTooSmall(tags, 1);
 
-		HashSet<string> set = new(tags, StringComparer.OrdinalIgnoreCase);
+        HashSet<string> set = new(tags, StringComparer.OrdinalIgnoreCase);
 		return new(
 			rule => rule.Tags.Any(t => set.Contains(t)),
 			date => date.Tags.Any(t => set.Contains(t)));
@@ -167,10 +165,9 @@ public sealed class NotableDateFilter
 	/// <exception cref="ArgumentException">Thrown when <paramref name="tags" /> contains no elements.</exception>
 	public static NotableDateFilter WithAllTags(params string[] tags)
 	{
-		ThrowHelper.ThrowIfNull(tags);
-		if (tags.Length == 0) throw new ArgumentException("At least one tag must be supplied.", nameof(tags));
+        ThrowHelper.ThrowIfCollectionTooSmall(tags, 1);
 
-		HashSet<string> required = new(tags, StringComparer.OrdinalIgnoreCase);
+        HashSet<string> required = new(tags, StringComparer.OrdinalIgnoreCase);
 		return new(
 			rule => required.All(t => rule.Tags.Any(rt => string.Equals(rt, t, StringComparison.OrdinalIgnoreCase))),
 			date => required.All(t => date.Tags.Any(dt => string.Equals(dt, t, StringComparison.OrdinalIgnoreCase))));
@@ -203,10 +200,9 @@ public sealed class NotableDateFilter
 	/// <exception cref="ArgumentException">Thrown when <paramref name="names" /> contains no elements.</exception>
 	public static NotableDateFilter WithAnyName(params string[] names)
 	{
-		ThrowHelper.ThrowIfNull(names);
-		if (names.Length == 0) throw new ArgumentException("At least one name must be supplied.", nameof(names));
+        ThrowHelper.ThrowIfCollectionTooSmall(names, 1);
 
-		HashSet<string> set = new(names, StringComparer.OrdinalIgnoreCase);
+        HashSet<string> set = new(names, StringComparer.OrdinalIgnoreCase);
 		return new(
 			rule => set.Contains(rule.Name),
 			date => set.Contains(date.Name));
@@ -252,9 +248,7 @@ public sealed class NotableDateFilter
 	/// <exception cref="ArgumentException">Thrown when <paramref name="endDate" /> is earlier than <paramref name="startDate" />.</exception>
 	public static NotableDateFilter InDateRange(DateTime startDate, DateTime endDate)
 	{
-		if (endDate < startDate)
-			throw new ArgumentException(
-				$"endDate ({endDate:d}) must not be earlier than startDate ({startDate:d}).", nameof(endDate));
+		ThrowHelper.ThrowIfLessThan(endDate, startDate);
 
 		DateTime start = startDate.Date;
 		DateTime end = endDate.Date;
@@ -354,8 +348,7 @@ public sealed class NotableDateFilter
 	/// <exception cref="ArgumentException">Thrown when <paramref name="filters" /> contains no elements.</exception>
 	public static NotableDateFilter AllOf(params NotableDateFilter[] filters)
 	{
-		ThrowHelper.ThrowIfNull(filters);
-		if (filters.Length == 0) throw new ArgumentException("At least one filter must be supplied.", nameof(filters));
+        ThrowHelper.ThrowIfCollectionTooSmall(filters, 1);
 
 		return filters.Aggregate((acc, next) => acc.And(next));
 	}
@@ -372,10 +365,9 @@ public sealed class NotableDateFilter
 	/// <exception cref="ArgumentException">Thrown when <paramref name="filters" /> contains no elements.</exception>
 	public static NotableDateFilter AnyOf(params NotableDateFilter[] filters)
 	{
-		ThrowHelper.ThrowIfNull(filters);
-		if (filters.Length == 0) throw new ArgumentException("At least one filter must be supplied.", nameof(filters));
+        ThrowHelper.ThrowIfCollectionTooSmall(filters, 1);
 
-		return filters.Aggregate((acc, next) => acc.Or(next));
+        return filters.Aggregate((acc, next) => acc.Or(next));
 	}
 
 	// --------------------------------------------------------------------------------------

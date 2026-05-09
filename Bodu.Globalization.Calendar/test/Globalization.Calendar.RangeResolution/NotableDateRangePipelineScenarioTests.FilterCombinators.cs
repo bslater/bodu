@@ -32,7 +32,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that <see cref="NotableDateFilter.ForCategory" /> emits only rules whose <see cref="NotableDateCategory" />
 	/// matches the requested category.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow("Holiday", "Christmas Day,Boxing Day,Australia Day,Year-End Holiday")]
 	[DataRow("Religious", "Hanukkah")]
 	[DataRow("Cultural", "Lunar Festival")]
@@ -71,7 +71,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that <see cref="NotableDateFilter.WithTag" /> emits rules whose tag set contains the supplied tag
 	/// (case-insensitive).
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow("Christian", "Christmas Day,Boxing Day")]
 	[DataRow("Public", "Christmas Day,Boxing Day,Australia Day,Bank Holiday,Year-End Holiday")]
 	[DataRow("CHRISTIAN", "Christmas Day,Boxing Day")] // case-insensitive
@@ -117,7 +117,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// <summary>
 	/// Verifies that <see cref="NotableDateFilter.WithName" /> emits only rules whose name matches case-insensitively.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow("Christmas Day", "Christmas Day")]
 	[DataRow("CHRISTMAS DAY", "Christmas Day")]
 	[DataRow("christmas day", "Christmas Day")]
@@ -164,7 +164,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that <see cref="NotableDateFilter.WithMinDuration" /> emits only rules whose
 	/// <see cref="NotableDateRule.DurationDays" /> meets or exceeds the supplied minimum.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(1, "Christmas Day,Boxing Day,Lunar Festival,Hanukkah,Australia Day,Labour Day,Bank Holiday,Year-End Holiday")]
 	[DataRow(2, "Lunar Festival,Hanukkah")]
 	[DataRow(7, "Lunar Festival,Hanukkah")]

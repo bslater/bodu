@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TerritoryCode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -85,7 +85,7 @@ public readonly record struct TerritoryCode
 			return false;
 
 		ReadOnlySpan<char> span = value.AsSpan().Trim();
-		int dashIndex = span.IndexOf('-');
+		var dashIndex = span.IndexOf('-');
 
 		ReadOnlySpan<char> countrySpan = dashIndex >= 0 ? span.Slice(0, dashIndex) : span;
 		ReadOnlySpan<char> subSpan = dashIndex >= 0 ? span.Slice(dashIndex + 1) : ReadOnlySpan<char>.Empty;
@@ -96,8 +96,8 @@ public readonly record struct TerritoryCode
 		if (dashIndex >= 0 && (subSpan.Length < 1 || subSpan.Length > 3 || !IsAllAsciiAlphanumeric(subSpan)))
 			return false;
 
-		string country = countrySpan.ToString().ToUpperInvariant();
-		string? subdivision = dashIndex >= 0 ? subSpan.ToString().ToUpperInvariant() : null;
+		var country = countrySpan.ToString().ToUpperInvariant();
+		var subdivision = dashIndex >= 0 ? subSpan.ToString().ToUpperInvariant() : null;
 
 		result = new TerritoryCode(country, subdivision);
 		return true;
@@ -200,9 +200,9 @@ public readonly record struct TerritoryCode
 	{
 		foreach (var c in value)
 		{
-			bool isUpper = c >= 'A' && c <= 'Z';
-			bool isLower = c >= 'a' && c <= 'z';
-			bool isDigit = c >= '0' && c <= '9';
+			var isUpper = c >= 'A' && c <= 'Z';
+			var isLower = c >= 'a' && c <= 'z';
+			var isDigit = c >= '0' && c <= '9';
 			if (!isUpper && !isLower && !isDigit)
 				return false;
 		}

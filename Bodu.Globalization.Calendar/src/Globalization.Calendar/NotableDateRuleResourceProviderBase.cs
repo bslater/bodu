@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRuleResourceProviderBase.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -95,7 +95,7 @@ public abstract class NotableDateRuleResourceProviderBase : INotableDateRuleProv
 
 		Assembly[] snapshot = assemblies.ToArray();
 		if (snapshot.Length == 0) throw new ArgumentException("At least one assembly must be supplied.", nameof(assemblies));
-		for (int i = 0; i < snapshot.Length; i++)
+		for (var i = 0; i < snapshot.Length; i++)
 		{
 			if (snapshot[i] is null) throw new ArgumentException("Assembly chain entries must not be null.", nameof(assemblies));
 		}
@@ -198,7 +198,7 @@ public abstract class NotableDateRuleResourceProviderBase : INotableDateRuleProv
 						// The override body applies to: a single match unconditionally; every match when no RuleName is supplied;
 						// or only the rule whose RuleName matches when the body explicitly identifies one. Other matches receive
 						// the directive's flat scalars (territory, nonWorking, etc.) without the body's per-rule overrides.
-						bool isOverrideTarget = matches.Count == 1
+						var isOverrideTarget = matches.Count == 1
 							|| string.IsNullOrWhiteSpace(targetRuleName)
 							|| string.Equals(sourceRule.RuleName, targetRuleName, StringComparison.OrdinalIgnoreCase);
 
@@ -358,7 +358,7 @@ public abstract class NotableDateRuleResourceProviderBase : INotableDateRuleProv
 	/// <returns>The opened stream, or <see langword="null" /> when no assembly in the chain contains the resource.</returns>
 	private Stream? OpenManifestResourceStream(string resourceName)
 	{
-		for (int i = 0; i < _assemblies.Count; i++)
+		for (var i = 0; i < _assemblies.Count; i++)
 		{
 			Stream? stream = _assemblies[i].GetManifestResourceStream(resourceName);
 			if (stream is not null)

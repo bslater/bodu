@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateTimeExtensions.GetNotableDatesInMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -48,8 +48,8 @@ public static partial class NotableDateTimeExtensions
     {
         ThrowHelper.ThrowIfNull(service);
 
-        DateTime firstOfMonth = new DateTime(dateTime.Year, dateTime.Month, 1);
-        DateTime lastOfMonth = new DateTime(dateTime.Year, dateTime.Month, DateTime.DaysInMonth(dateTime.Year, dateTime.Month));
+        var firstOfMonth = new DateTime(dateTime.Year, dateTime.Month, 1);
+        var lastOfMonth = new DateTime(dateTime.Year, dateTime.Month, DateTime.DaysInMonth(dateTime.Year, dateTime.Month));
         return service.GetNotableDates(firstOfMonth, lastOfMonth, territoryCode, calendarType);
     }
 
@@ -69,8 +69,8 @@ public static partial class NotableDateTimeExtensions
         ThrowHelper.ThrowIfNull(service);
         ThrowHelper.ThrowIfNull(filter);
 
-        DateTime firstOfMonth = new DateTime(dateTime.Year, dateTime.Month, 1);
-        DateTime lastOfMonth = new DateTime(dateTime.Year, dateTime.Month, DateTime.DaysInMonth(dateTime.Year, dateTime.Month));
+        var firstOfMonth = new DateTime(dateTime.Year, dateTime.Month, 1);
+        var lastOfMonth = new DateTime(dateTime.Year, dateTime.Month, DateTime.DaysInMonth(dateTime.Year, dateTime.Month));
         return service.GetNotableDates(firstOfMonth, lastOfMonth, filter, territoryCode, calendarType);
     }
 }

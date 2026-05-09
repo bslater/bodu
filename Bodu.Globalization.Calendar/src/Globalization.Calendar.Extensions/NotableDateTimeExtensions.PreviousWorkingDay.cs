@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateTimeExtensions.PreviousWorkingDay.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -42,15 +42,15 @@ public static partial class NotableDateTimeExtensions
 
         if (count == 0) return new DateTime(dateTime.Ticks, dateTime.Kind);
 
-        long ticks = dateTime.Ticks;
-        int remaining = count;
+        var ticks = dateTime.Ticks;
+        var remaining = count;
         while (remaining > 0)
         {
             if (ticks - DateTime.MinValue.Ticks < DateTimeExtensions.TicksPerDay)
                 throw new ArgumentOutOfRangeException(nameof(count), "Retreating the requested number of working days would underrun DateTime.MinValue.");
 
             ticks -= DateTimeExtensions.TicksPerDay;
-            DateTime candidate = new DateTime(ticks, dateTime.Kind);
+            var candidate = new DateTime(ticks, dateTime.Kind);
             if (!service.IsNonWorkingDay(candidate, territoryCode, calendarType))
                 remaining--;
         }

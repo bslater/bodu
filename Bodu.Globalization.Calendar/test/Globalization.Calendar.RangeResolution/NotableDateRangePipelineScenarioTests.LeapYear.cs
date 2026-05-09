@@ -27,7 +27,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that a fixed-date rule on 29 February emits only in leap years and is silently skipped in non-leap years
 	/// (including the century rule 2100 and the divisible-by-400 century 2400).
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(2020, true)]   // Divisible by 4 → leap
 	[DataRow(2021, false)]
 	[DataRow(2022, false)]
@@ -76,7 +76,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that an offset rule whose root anchor resolves only in leap years ("Day After Leap Day = Feb 29 + 1") emits
 	/// in leap years and is silently skipped in non-leap years because the anchor itself does not resolve.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(2020, true, 2020, 3, 1)]
 	[DataRow(2023, false, 0, 0, 0)]
 	[DataRow(2024, true, 2024, 3, 1)]
@@ -132,7 +132,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// the actual last Monday in both leap and non-leap years (the extra day in a leap year does not change the last-Monday
 	/// position when 29 Feb is not itself a Monday).
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(2024, 2, 26)] // Leap year. Feb 29 = Thu; Mondays in Feb: 5, 12, 19, 26. Last Mon = 26 Feb 2024.
 	[DataRow(2025, 2, 24)] // Non-leap. Feb 28 = Fri; Mondays: 3, 10, 17, 24. Last Mon = 24 Feb 2025.
 	[DataRow(2026, 2, 23)] // Non-leap. Feb 28 = Sat; Mondays: 2, 9, 16, 23. Last Mon = 23 Feb 2026.
@@ -171,7 +171,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// 29 February in its end date inside a leap year and skips it in a non-leap year. The end date is computed inclusively
 	/// from <c>Date + (DurationDays - 1)</c>.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(2024, 2024, 3, 1)] // Leap year. Span Feb 27, 28, 29, Mar 1.
 	[DataRow(2025, 2025, 3, 2)] // Non-leap. Span Feb 27, 28, Mar 1, Mar 2 — same number of days, different end.
 	public void LeapYear_MultiDaySpanFromFeb27_ShouldStraddleLeapDayCorrectly(
@@ -212,7 +212,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that a rule with an <see cref="AdjustmentTrigger.IfLeapYear" /> + <see cref="AdjustmentAction.AddDays" />(+1)
 	/// adjustment shifts only in leap years and emits the unchanged base anchor in non-leap years.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(2024, true)]   // Leap
 	[DataRow(2025, false)]
 	[DataRow(2026, false)]
@@ -270,7 +270,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// of 29 February correctly clamps to 28 February in non-leap years, matching the resolver's
 	/// <c>ProjectComparisonDate</c> fallback path.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(2025, 2, 27, true)]    // Non-leap year. Anchor 27 Feb 2025 < projected 28 Feb 2025 → fires.
 	[DataRow(2025, 2, 28, false)]   // Non-leap year. Anchor 28 Feb 2025 strict < 28 Feb 2025 is false → no fire.
 	[DataRow(2024, 2, 28, true)]    // Leap year. Projected = 29 Feb 2024. Anchor 28 Feb 2024 < 29 Feb 2024 → fires.
@@ -324,7 +324,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Easter is the first Sunday after the first ecclesiastical full moon following the spring equinox; the leap-year status
 	/// of the year affects the calendar but the algorithm's published outputs are well-defined.
 	/// </summary>
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(2023, 4, 9)]   // Non-leap
 	[DataRow(2024, 3, 31)]  // Leap
 	[DataRow(2025, 4, 20)]

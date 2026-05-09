@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HinduLunarNotableDateAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -115,12 +115,12 @@ public sealed class HinduLunarNotableDateAlgorithm
 			throw new ArgumentOutOfRangeException(nameof(year), CalendarResourceStrings.ArgumentOutOfRangeException_YearOutOfRange);
 
 		// Find the new moon that begins the target lunar month.
-		int searchMonth = GetSearchMonth(_month);
-		int searchYear = searchMonth == 1 ? year - 1 : year;
+		var searchMonth = GetSearchMonth(_month);
+		var searchYear = searchMonth == 1 ? year - 1 : year;
 		if (searchYear < 1)
 			searchYear = year;
 
-		DateTime searchStart = new DateTime(searchYear, searchMonth, 1);
+		var searchStart = new DateTime(searchYear, searchMonth, 1);
 		DateTime? monthNewMoon = LunarPhaseAlgorithm.GetNewMoonOnOrAfter(searchStart);
 		if (monthNewMoon is null)
 			return null;
@@ -145,7 +145,7 @@ public sealed class HinduLunarNotableDateAlgorithm
 			result = fullMoon.Value.AddDays((_tithi - 1) * TithiDays);
 		}
 
-		DateTime dateOnly = DateTime.SpecifyKind(result.Date, DateTimeKind.Unspecified);
+		var dateOnly = DateTime.SpecifyKind(result.Date, DateTimeKind.Unspecified);
 
 		SysGlobal.Calendar targetCalendar = calendar ?? new SysGlobal.GregorianCalendar();
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateOnlyExtensions.NextNotableDate.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -48,8 +48,8 @@ public static partial class NotableDateOnlyExtensions
     {
         ThrowHelper.ThrowIfNull(service);
 
-        DateTime threshold = date.ToDateTime(TimeOnly.MinValue);
-        for (int year = date.Year; year <= DateOnly.MaxValue.Year; year++)
+        var threshold = date.ToDateTime(TimeOnly.MinValue);
+        for (var year = date.Year; year <= DateOnly.MaxValue.Year; year++)
         {
             IReadOnlyList<NotableDate> notableDates = service.GetNotableDates(year, territoryCode, calendarType);
             foreach (NotableDate notable in notableDates)
@@ -78,8 +78,8 @@ public static partial class NotableDateOnlyExtensions
         ThrowHelper.ThrowIfNull(service);
         ThrowHelper.ThrowIfNull(filter);
 
-        DateTime threshold = date.ToDateTime(TimeOnly.MinValue);
-        for (int year = date.Year; year <= DateOnly.MaxValue.Year; year++)
+        var threshold = date.ToDateTime(TimeOnly.MinValue);
+        for (var year = date.Year; year <= DateOnly.MaxValue.Year; year++)
         {
             IReadOnlyList<NotableDate> notableDates = service.GetNotableDates(year, filter, territoryCode, calendarType);
             foreach (NotableDate notable in notableDates)

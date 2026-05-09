@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateService.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -261,7 +261,7 @@ public sealed class NotableDateService : INotableDateService
 		if (endDate < startDate) (startDate, endDate) = (endDate, startDate);
 
 		List<NotableDate> results = new();
-		for (int year = startDate.Year; year <= endDate.Year; year++)
+		for (var year = startDate.Year; year <= endDate.Year; year++)
 		{
 			IReadOnlyList<NotableDate> perYear = GetOrGenerateYear(year);
 			foreach (NotableDate notable in perYear)
@@ -289,7 +289,7 @@ public sealed class NotableDateService : INotableDateService
 		if (endDate < startDate) (startDate, endDate) = (endDate, startDate);
 
 		List<NotableDate> results = new();
-		for (int year = startDate.Year; year <= endDate.Year; year++)
+		for (var year = startDate.Year; year <= endDate.Year; year++)
 		{
 			IReadOnlyList<NotableDate> perYear = GenerateYearFiltered(year, filter);
 			foreach (NotableDate notable in perYear)
@@ -314,7 +314,7 @@ public sealed class NotableDateService : INotableDateService
 		List<NotableDate> results = new();
 
 		// Multi-day spans may have started in the previous year; check both years to cover wrap-around.
-		foreach (int year in new[] { date.Year - 1, date.Year })
+		foreach (var year in new[] { date.Year - 1, date.Year })
 		{
 			if (year < 1) continue;
 
@@ -339,7 +339,7 @@ public sealed class NotableDateService : INotableDateService
 		List<NotableDate> results = new();
 
 		// Multi-day spans may have started in the previous year; check both years to cover wrap-around.
-		foreach (int year in new[] { date.Year - 1, date.Year })
+		foreach (var year in new[] { date.Year - 1, date.Year })
 		{
 			if (year < 1) continue;
 
@@ -484,7 +484,7 @@ public sealed class NotableDateService : INotableDateService
 	/// <returns>The constructed pipeline.</returns>
 	private RangeResolution.NotableDateRangePipeline BuildRangePipeline()
 	{
-		RangeResolution.RuleStaticAnalysis analysis = RangeResolution.RuleStaticAnalysis.Build(_effectiveRules);
+		var analysis = RangeResolution.RuleStaticAnalysis.Build(_effectiveRules);
 
 		return new RangeResolution.NotableDateRangePipeline(
 			analysis,
@@ -613,11 +613,11 @@ public sealed class NotableDateService : INotableDateService
                 if (!result.Activated || result.AdjustedDate.Date == occurrence.AnchorDate.Date)
                     continue;
 
-                string? emittedTerritory = !string.IsNullOrEmpty(adjustment.TerritoryCode)
+                var emittedTerritory = !string.IsNullOrEmpty(adjustment.TerritoryCode)
                     ? adjustment.TerritoryCode
                     : occurrence.TerritoryCode;
 
-                bool isNonWorking = result.IsNonWorkingOverride ?? occurrence.Rule.IsNonWorkingDay ?? false;
+                var isNonWorking = result.IsNonWorkingOverride ?? occurrence.Rule.IsNonWorkingDay ?? false;
 
                 AdjustmentReason reason = new(
                     occurrence.AnchorDate,
@@ -668,7 +668,7 @@ public sealed class NotableDateService : INotableDateService
             if (anchor is null)
                 continue;
 
-            foreach (string? territory in ExpandTerritories(rule.TerritoryCode))
+            foreach (var territory in ExpandTerritories(rule.TerritoryCode))
             {
                 if (IsRemovedByOverride(rule, year, territory))
                     continue;
@@ -953,12 +953,12 @@ public sealed class NotableDateService : INotableDateService
 		return null;
 	}
 
-	/// <summary>
-	/// Layers two <see cref="INotableDateAlgorithmRegistry" /> instances: <paramref name="primary" /> is consulted first; on a
-	/// miss, <paramref name="fallback" /> is consulted. Used to compose host-supplied algorithms with plugin-supplied ones so
-	/// the host retains precedence on key collisions.
-	/// </summary>
-	private sealed class CompositeAlgorithmRegistry : INotableDateAlgorithmRegistry
+    /// <summary>
+    /// Layers two <see cref="INotableDateAlgorithmRegistry" /> instances: <c>primary</c> is consulted first; on a
+    /// miss, <c>fallback</c> is consulted. Used to compose host-supplied algorithms with plugin-supplied ones so
+    /// the host retains precedence on key collisions.
+    /// </summary>
+    private sealed class CompositeAlgorithmRegistry : INotableDateAlgorithmRegistry
 	{
 		/// <summary>The host-supplied registry consulted first; its registrations take precedence on key collisions.</summary>
 		private readonly INotableDateAlgorithmRegistry _primary;

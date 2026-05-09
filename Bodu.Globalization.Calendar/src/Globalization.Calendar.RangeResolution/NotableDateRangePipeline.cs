@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRangePipeline.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -162,11 +162,11 @@ internal sealed class NotableDateRangePipeline
 			if (profile.Tier == RuleTier.Algorithmic || profile.Tier == RuleTier.OffsetFromAlgorithmic) continue;
 
 			// Skip rules that cannot contribute through the fringe — neither an adjustment nor a multi-day span.
-			bool hasAdjustments = !profile.Rule.Adjustments.IsDefaultOrEmpty;
-			bool hasMultiDaySpan = profile.Rule.DurationDays > 1;
+			var hasAdjustments = !profile.Rule.Adjustments.IsDefaultOrEmpty;
+			var hasMultiDaySpan = profile.Rule.DurationDays > 1;
 			if (!hasAdjustments && !hasMultiDaySpan) continue;
 
-			foreach (int year in plan.FringeYears)
+			foreach (var year in plan.FringeYears)
 			{
 				if (!NotableDateRuleResolver.IsApplicable(profile.Rule, year))
 					continue;
@@ -261,7 +261,7 @@ internal sealed class NotableDateRangePipeline
 	/// <param name="cache">The shared cache being populated.</param>
 	private void ProcessDirect(RuleStaticProfile profile, NotableDateRangePlan plan, NotableDateRangeResolutionCache cache)
 	{
-		foreach (int year in plan.CandidateYears)
+		foreach (var year in plan.CandidateYears)
 		{
 			if (!NotableDateRuleResolver.IsApplicable(profile.Rule, year))
 				continue;
@@ -289,13 +289,13 @@ internal sealed class NotableDateRangePipeline
 	/// <param name="cache">The shared cache being populated.</param>
 	private void ProcessAlgorithmicAnchors(NotableDateRangePlan plan, NotableDateRangeResolutionCache cache)
 	{
-		foreach (string anchorName in plan.RequiredAnchorNames())
+		foreach (var anchorName in plan.RequiredAnchorNames())
 		{
 			if (!_analysis.TryGetProfile(anchorName, out RuleStaticProfile profile)) continue;
 			if (profile.Tier != RuleTier.Algorithmic) continue;
 
 			IReadOnlyList<int> years = plan.GetAnchorYears(anchorName);
-			foreach (int year in years)
+			foreach (var year in years)
 			{
 				if (!NotableDateRuleResolver.IsApplicable(profile.Rule, year))
 					continue;
@@ -332,7 +332,7 @@ internal sealed class NotableDateRangePipeline
 			? plan.GetAnchorYears(profile.RootAnchorRuleName!)
 			: plan.CandidateYears;
 
-		foreach (int year in years)
+		foreach (var year in years)
 		{
 			if (!NotableDateRuleResolver.IsApplicable(profile.Rule, year))
 				continue;
@@ -371,7 +371,7 @@ internal sealed class NotableDateRangePipeline
 		NotableDateRangePlan plan,
 		NotableDateRangeResolutionCache cache)
 	{
-		foreach (string? territory in EnumerateApplicableTerritories(profile.Rule, plan.Request.TerritoryCode))
+		foreach (var territory in EnumerateApplicableTerritories(profile.Rule, plan.Request.TerritoryCode))
 		{
 			if (IsRemovedByOverride(profile.Rule, year, territory))
 				continue;
@@ -406,7 +406,7 @@ internal sealed class NotableDateRangePipeline
 			(name, year, territory, calendar) => cache.ResolveObservedByName(name, year, territory, calendar));
 
 		// Snapshot first — entries can be mutated as adjustments are applied.
-		List<NotableDateCacheEntry> snapshot = cache.Entries.ToList();
+		var snapshot = cache.Entries.ToList();
 
 		foreach (NotableDateCacheEntry entry in snapshot)
 		{
@@ -427,18 +427,18 @@ internal sealed class NotableDateRangePipeline
 				if (!result.Activated || result.AdjustedDate.Date == entry.BaseNotable.Date.Date)
 					continue;
 
-				string? emittedTerritory = !string.IsNullOrEmpty(adjustment.TerritoryCode)
+				var emittedTerritory = !string.IsNullOrEmpty(adjustment.TerritoryCode)
 					? adjustment.TerritoryCode
 					: entry.BaseNotable.TerritoryCode;
 
-				bool isNonWorking = result.IsNonWorkingOverride ?? entry.Rule.IsNonWorkingDay ?? false;
+				var isNonWorking = result.IsNonWorkingOverride ?? entry.Rule.IsNonWorkingDay ?? false;
 				AdjustmentReason reason = new(entry.BaseNotable.Date, result.Trigger, result.Action, result.HandlerKey);
 				NotableDate adjusted = BuildNotableDate(entry.Rule, result.AdjustedDate, emittedTerritory, reason, isNonWorking);
 
 				entry.Adjusted = adjusted;
 
-				bool adjustedIntersects = Intersects(plan.Request.StartDate, plan.Request.EndDate, adjusted.Date, adjusted.EndDate);
-				bool filterMatch = plan.Request.Filter is null || plan.Request.Filter.IsMatch(adjusted);
+				var adjustedIntersects = Intersects(plan.Request.StartDate, plan.Request.EndDate, adjusted.Date, adjusted.EndDate);
+				var filterMatch = plan.Request.Filter is null || plan.Request.Filter.IsMatch(adjusted);
 
 				// Always promote to Adjusted when the adjusted date lands inside the request window. The emission step
 				// independently checks whether the base date also intersects, so we never lose the base when both are visible.

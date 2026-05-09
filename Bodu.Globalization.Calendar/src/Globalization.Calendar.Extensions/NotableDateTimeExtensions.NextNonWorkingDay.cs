@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateTimeExtensions.NextNonWorkingDay.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -42,15 +42,15 @@ public static partial class NotableDateTimeExtensions
 
         if (count == 0) return new DateTime(dateTime.Ticks, dateTime.Kind);
 
-        long ticks = dateTime.Ticks;
-        int remaining = count;
+        var ticks = dateTime.Ticks;
+        var remaining = count;
         while (remaining > 0)
         {
             if (DateTime.MaxValue.Ticks - ticks < DateTimeExtensions.TicksPerDay)
                 throw new ArgumentOutOfRangeException(nameof(count), "Advancing the requested number of non-working days would overrun DateTime.MaxValue.");
 
             ticks += DateTimeExtensions.TicksPerDay;
-            DateTime candidate = new DateTime(ticks, dateTime.Kind);
+            var candidate = new DateTime(ticks, dateTime.Kind);
             if (service.IsNonWorkingDay(candidate, territoryCode, calendarType))
                 remaining--;
         }

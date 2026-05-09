@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RuleStaticAnalysis.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -130,12 +130,12 @@ internal sealed class RuleStaticAnalysis
 			}
 		}
 
-		int globalFringeReach = 0;
+		var globalFringeReach = 0;
 		foreach (RuleStaticProfile profile in profiles)
 		{
-			int forward = profile.MaxObservedReach > 0 ? profile.MaxObservedReach : 0;
-			int backward = profile.MinObservedReach < 0 ? -profile.MinObservedReach : 0;
-			int magnitude = forward > backward ? forward : backward;
+			var forward = profile.MaxObservedReach > 0 ? profile.MaxObservedReach : 0;
+			var backward = profile.MinObservedReach < 0 ? -profile.MinObservedReach : 0;
+			var magnitude = forward > backward ? forward : backward;
 			if (magnitude > globalFringeReach) globalFringeReach = magnitude;
 		}
 
@@ -150,16 +150,16 @@ internal sealed class RuleStaticAnalysis
 	/// <returns>The constructed profile.</returns>
 	private static RuleStaticProfile BuildProfile(NotableDateRule rule, IReadOnlyDictionary<string, NotableDateRule> rulesByName)
 	{
-		(RuleTier baseTier, string? rootAnchor, int offsetFromRoot) = ClassifyRule(rule, rulesByName);
+		(RuleTier baseTier, var rootAnchor, var offsetFromRoot) = ClassifyRule(rule, rulesByName);
 
-		ComputeAdjustmentReach(rule, out int adjustmentMin, out int adjustmentMax);
+		ComputeAdjustmentReach(rule, out var adjustmentMin, out var adjustmentMax);
 
-		int durationDays = Math.Max(1, rule.DurationDays);
+		var durationDays = Math.Max(1, rule.DurationDays);
 
 		// MinObservedReach: the most-negative day delta the rule can produce relative to its own anchor.
 		// MaxObservedReach: the most-positive day delta the rule can produce, including duration end-day.
-		int minReach = Math.Min(0, adjustmentMin);
-		int maxReach = Math.Max(durationDays - 1, adjustmentMax + (durationDays - 1));
+		var minReach = Math.Min(0, adjustmentMin);
+		var maxReach = Math.Max(durationDays - 1, adjustmentMax + (durationDays - 1));
 
 		return new RuleStaticProfile(rule, baseTier, rootAnchor, offsetFromRoot, minReach, maxReach);
 	}
@@ -204,7 +204,7 @@ internal sealed class RuleStaticAnalysis
 	{
 		HashSet<string> visited = new(StringComparer.OrdinalIgnoreCase);
 		NotableDateRule current = rule;
-		int aggregateOffset = 0;
+		var aggregateOffset = 0;
 
 		while (current.Strategy == DateResolutionStrategy.OffsetFromAnchor)
 		{
@@ -244,7 +244,7 @@ internal sealed class RuleStaticAnalysis
 
 		foreach (ObservanceAdjustment adjustment in rule.Adjustments)
 		{
-			(int low, int high) = EstimateAdjustmentReach(adjustment);
+			(var low, var high) = EstimateAdjustmentReach(adjustment);
 			if (low < minDelta) minDelta = low;
 			if (high > maxDelta) maxDelta = high;
 		}
