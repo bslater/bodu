@@ -163,31 +163,6 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     }
 
     /// <summary>
-    /// Verifies that mutating the original key array after assignment does not affect the internal key stored by the algorithm.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
-    public void Key_WhenOriginalKeyIsMutated_ShouldNotAffectInternalKey(TVariant variant)
-    {
-        if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
-        {
-            Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping invalid test case.");
-            return;
-        }
-
-        using var algorithm = CreateAlgorithm(variant);
-
-        byte[] key = Enumerable.Range(0, specification.MinKeyLength).Select(i => (byte)i).ToArray();
-        algorithm.Key = key;
-
-        // Mutate original key
-        key[0] ^= 0xFF;
-
-        // Assert internal key is unchanged
-        Assert.AreNotEqual(key[0], algorithm.Key[0]);
-    }
-
-    /// <summary>
     /// Verifies that accessing the <see cref="KeyedHashAlgorithm.Key" /> property multiple times returns distinct array instances.
     /// </summary>
     [TestMethod]

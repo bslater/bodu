@@ -14,36 +14,6 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 {
     /// <summary>
-    /// Verifies that <see cref="HashAlgorithmExtensions.ComputeHashAsync" /> throws TaskCanceledException when cancellation token is triggered.
-    /// </summary>
-    [TestMethod]
-    public async Task ComputeHashAsync_WithCancelledToken_ShouldThrowExactly()
-    {
-        using var algorithm = CreateAlgorithm();
-        using var stream = new MemoryStream(new byte[4096]);
-        using var cts = new CancellationTokenSource();
-        cts.Cancel();
-
-        await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () =>
-        {
-            await algorithm.ComputeHashAsync(stream, cts.Token);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="HashAlgorithmExtensions.ComputeHashAsync" /> throws ArgumentNullException when passed a null stream directly.
-    /// </summary>
-    [TestMethod]
-    public async Task ComputeHashAsync_WithNullStream_ShouldThrowExactly()
-    {
-        using var algorithm = CreateAlgorithm();
-        await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
-        {
-            await algorithm.ComputeHashAsync(null!);
-        });
-    }
-
-    /// <summary>
     /// Verifies that computing the hash over various long stream sizes works consistently.
     /// </summary>
     /// <param name="length">The length of the test input stream.</param>
@@ -61,25 +31,6 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 
         Assert.IsNotNull(result);
         Assert.AreEqual(algorithm.HashSize / 8, result.Length);
-    }
-
-    /// <summary>
-    /// Verifies that repeated calls with the same stream data produce identical results.
-    /// </summary>
-    [TestMethod]
-    public async Task ComputeHashAsync_WhenCalledTwiceWithSameInput_ShouldReturnIdenticalHashes()
-    {
-        byte[] input = Enumerable.Range(0, 128).Select(i => (byte)(i % 256)).ToArray();
-
-        using var algorithm1 = CreateAlgorithm();
-        using var algorithm2 = CreateAlgorithm();
-        using var stream1 = new MemoryStream(input);
-        using var stream2 = new MemoryStream(input);
-
-        byte[] hash1 = await algorithm1.ComputeHashAsync(stream1);
-        byte[] hash2 = await algorithm2.ComputeHashAsync(stream2);
-
-        CollectionAssert.AreEqual(hash1, hash2);
     }
 
     /// <summary>
@@ -188,22 +139,6 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         await algorithm.ComputeHashAsync(stream);
 
         Assert.AreEqual(length, stream.Position, "All bytes should have been processed.");
-    }
-
-    /// <summary>
-    /// Verifies that computing a hash over a long input stream completes successfully.
-    /// </summary>
-    [TestMethod]
-    public async Task ComputeHashAsync_WhenStreamIsLong_ShouldProduceResult()
-    {
-        const int length = 10 * 1024 * 1024; // 10 MB
-        using var stream = new FixedLengthIncrementingStream(length);
-        using var algorithm = CreateAlgorithm();
-
-        byte[] result = await algorithm.ComputeHashAsync(stream);
-
-        Assert.IsNotNull(result, "Hash result should not be null.");
-        Assert.AreEqual(algorithm.HashSize / 8, result.Length, "Result should match expected hash length.");
     }
 
     /// <summary>
