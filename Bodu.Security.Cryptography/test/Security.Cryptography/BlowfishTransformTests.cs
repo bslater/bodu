@@ -26,19 +26,6 @@ internal sealed class BlowfishTransformTests
     }
 
     /// <inheritdoc />
-    protected override SymmetricAlgorithm CreateSymmetricAlgorithm(PaddingMode padding)
-    {
-        var algorithm = new Blowfish
-        {
-            Padding = padding,
-            Mode = CipherMode.CBC,
-        };
-        algorithm.GenerateKey();
-        algorithm.GenerateIV();
-        return algorithm;
-    }
-
-    /// <inheritdoc />
     protected override IEnumerable<BlockCipherKnownAnswer> GetKnownAnswers() =>
         BlowfishKnownAnswers.For(SingleTestVariant.Default);
 

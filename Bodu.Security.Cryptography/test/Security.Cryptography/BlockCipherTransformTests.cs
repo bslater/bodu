@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -23,15 +21,4 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     where TTest : BlockCipherTransformTests<TTest, TCryptoTransform>, new()
     where TCryptoTransform : BlockCipherTransform
 {
-    /// <summary>
-    /// Creates a fully-configured <see cref="SymmetricAlgorithm" /> for the cipher under test, with
-    /// the supplied <paramref name="padding" /> mode, <see cref="CipherMode.CBC" /> selected as the
-    /// block cipher mode, and a freshly-generated key and IV. Concrete subclasses construct their
-    /// own algorithm type and configure the standard padding+mode pair so the hoisted padding and
-    /// empty-input regression tests can drive every cipher in the library through the same
-    /// <see cref="CryptoStream" /> contract.
-    /// </summary>
-    /// <param name="padding">The <see cref="PaddingMode" /> to apply to the algorithm.</param>
-    /// <returns>An owned <see cref="SymmetricAlgorithm" /> instance ready to encrypt or decrypt.</returns>
-    protected abstract SymmetricAlgorithm CreateSymmetricAlgorithm(PaddingMode padding);
 }

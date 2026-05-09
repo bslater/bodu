@@ -26,19 +26,6 @@ internal sealed class CamelliaTransformTests
     }
 
     /// <inheritdoc />
-    protected override SymmetricAlgorithm CreateSymmetricAlgorithm(PaddingMode padding)
-    {
-        var algorithm = new Camellia
-        {
-            Padding = padding,
-            Mode = CipherMode.CBC,
-        };
-        algorithm.GenerateKey();
-        algorithm.GenerateIV();
-        return algorithm;
-    }
-
-    /// <inheritdoc />
     /// <remarks>
     /// Flattens the per-key-size RFC 3713 Appendix A vectors across <see cref="BlockCipherKeyVariant.Key128" />,
     /// <see cref="BlockCipherKeyVariant.Key192" />, and <see cref="BlockCipherKeyVariant.Key256" /> so each runs

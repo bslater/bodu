@@ -12,15 +12,15 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Drives <see cref="BlockCipherTransform" /> through the standard <see cref="CryptoStream" />
-/// pipeline for every <see cref="PaddingMode" /> the cipher under test supports. The PKCS7
-/// regression coverage in <c>BlockCipherTransformTests.EmptyInput.cs</c> only exercised
-/// <see cref="PaddingMode.PKCS7" /> — these tests pin the round-trip contract for
-/// <see cref="PaddingMode.None" />, <see cref="PaddingMode.Zeros" />,
-/// <see cref="PaddingMode.ANSIX923" /> and <see cref="PaddingMode.ISO10126" /> too, so a future
-/// refactor of the padding/finaliser path cannot silently regress one mode while the others
-/// stay green.
+/// pipeline for every <see cref="PaddingMode" /> Skipjack supports. The earlier coverage in
+/// <see cref="BlockCipherTransformTests_EmptyInput" /> only exercised <see cref="PaddingMode.PKCS7" />
+/// — these tests pin the round-trip contract for <see cref="PaddingMode.None" />,
+/// <see cref="PaddingMode.Zeros" />, <see cref="PaddingMode.ANSIX923" /> and
+/// <see cref="PaddingMode.ISO10126" /> too, so a future refactor of the padding/finaliser path
+/// cannot silently regress one mode while the others stay green.
 /// </summary>
-public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
+[TestClass]
+public sealed class BlockCipherTransformTests_PaddingModes
 {
     /// <summary>
     /// Verifies that an empty plaintext encrypted through a <see cref="CryptoStream" /> under
@@ -33,7 +33,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     [TestMethod]
     public void CryptoStream_WhenEmptyPlaintextAndLengthRecoverablePadding_ShouldEmitOnePaddedBlockAndRoundTrip(PaddingMode padding)
     {
-        using var algorithm = CreateSymmetricAlgorithm(padding);
+        using var algorithm = CreateAlgorithm(padding);
         int blockBytes = algorithm.BlockSize / 8;
 
         byte[] cipherText = EncryptThroughCryptoStream(algorithm, System.Array.Empty<byte>());
@@ -58,7 +58,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     [TestMethod]
     public void CryptoStream_WhenEmptyPlaintextAndNonRecoverablePadding_ShouldEmitEmptyCiphertext(PaddingMode padding)
     {
-        using var algorithm = CreateSymmetricAlgorithm(padding);
+        using var algorithm = CreateAlgorithm(padding);
 
         byte[] cipherText = EncryptThroughCryptoStream(algorithm, System.Array.Empty<byte>());
 
@@ -84,7 +84,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     [TestMethod]
     public void CryptoStream_WhenBlockAlignedPlaintext_ShouldRoundTrip(PaddingMode padding)
     {
-        using var algorithm = CreateSymmetricAlgorithm(padding);
+        using var algorithm = CreateAlgorithm(padding);
         int blockBytes = algorithm.BlockSize / 8;
         byte[] plaintext = Enumerable.Range(0, blockBytes * 2).Select(i => (byte)(i + 1)).ToArray();
 
@@ -117,7 +117,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     [TestMethod]
     public void CryptoStream_WhenResidualPlaintextAndLengthRecoverablePadding_ShouldRoundTrip_fix(PaddingMode padding)
     {
-        using var algorithm = CreateSymmetricAlgorithm(padding);
+        using var algorithm = CreateAlgorithm(padding);
         int blockBytes = algorithm.BlockSize / 8;
         byte[] plaintext = Enumerable.Range(0, blockBytes + 3).Select(i => (byte)(i + 1)).ToArray();
 
@@ -142,7 +142,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     [TestMethod]
     public void CryptoStream_WhenResidualPlaintextAndZerosPadding_ShouldRecoverPrefixWithTrailingZeros_fix()
     {
-        using var algorithm = CreateSymmetricAlgorithm(PaddingMode.Zeros);
+        using var algorithm = CreateAlgorithm(PaddingMode.Zeros);
         int blockBytes = algorithm.BlockSize / 8;
         byte[] plaintext = Enumerable.Range(0, blockBytes + 3).Select(i => (byte)(i + 1)).ToArray();
 
@@ -175,7 +175,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     [TestMethod]
     public void CryptoStream_WhenWritingInUnalignedChunks_ShouldRoundTrip_fix(PaddingMode padding)
     {
-        using var algorithm = CreateSymmetricAlgorithm(padding);
+        using var algorithm = CreateAlgorithm(padding);
         byte[] plaintext = Enumerable.Range(0, 41).Select(i => (byte)(i * 7 + 11)).ToArray();
         int[] chunkSizes = new[] { 1, 3, 5, 7, 11, 13 };
 
@@ -203,6 +203,21 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
 
         CollectionAssert.AreEqual(plaintext, recovered,
             $"Chunked write under {padding} did not round-trip through CryptoStream.");
+    }
+
+    /// <summary>
+    /// Builds a Skipjack algorithm with the supplied padding mode and a fixed CBC configuration.
+    /// </summary>
+    private static Skipjack CreateAlgorithm(PaddingMode padding)
+    {
+        Skipjack algorithm = new Skipjack
+        {
+            Padding = padding,
+            Mode = CipherMode.CBC,
+        };
+        algorithm.GenerateKey();
+        algorithm.GenerateIV();
+        return algorithm;
     }
 
     /// <summary>

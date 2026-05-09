@@ -23,7 +23,8 @@ namespace Bodu.Security.Cryptography;
 /// "block length must be a positive multiple" message, contradicting the standard expectation
 /// that a PKCS7-padded empty input produces exactly one block of all-pad bytes.
 /// </summary>
-public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
+[TestClass]
+public sealed class BlockCipherTransformTests_EmptyInput
 {
     /// <summary>
     /// Verifies that encrypting an empty plaintext with <see cref="PaddingMode.PKCS7" /> produces
@@ -33,7 +34,13 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     [TestMethod]
     public void Encrypt_WhenInputIsEmptyAndPaddingIsPkcs7_ShouldProduceOneBlockAndRoundTrip_fix()
     {
-        using var algorithm = CreateSymmetricAlgorithm(PaddingMode.PKCS7);
+        using var algorithm = new Skipjack
+        {
+            Padding = PaddingMode.PKCS7,
+            Mode = CipherMode.CBC,
+        };
+        algorithm.GenerateKey();
+        algorithm.GenerateIV();
 
         byte[] cipherText = algorithm.Encrypt(System.ReadOnlySpan<byte>.Empty);
 
@@ -48,8 +55,8 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
 
     /// <summary>
     /// Verifies that <see cref="BlockCipherTransform.TransformFinalBlock(byte[], int, int)" />
-    /// invoked directly with <c>inputCount == 0</c> on a PKCS7 encryptor produces a single block
-    /// of padded ciphertext rather than throwing. The framework's
+    /// invoked directly with <c>inputCount == 0</c> on a Skipjack PKCS7 encryptor produces a
+    /// single block of padded ciphertext rather than throwing. The framework's
     /// <see cref="CryptoStream.FlushFinalBlock" /> always invokes this path with whatever residual
     /// data sits in its buffer — including zero bytes — so rejecting zero-length input breaks
     /// every encrypt/decrypt pipeline that flows through <see cref="CryptoStream" />.
@@ -57,7 +64,13 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     [TestMethod]
     public void TransformFinalBlock_WhenInputCountIsZeroAndPaddingIsPkcs7_ShouldProduceOnePaddedBlock_fix()
     {
-        using var algorithm = CreateSymmetricAlgorithm(PaddingMode.PKCS7);
+        using var algorithm = new Skipjack
+        {
+            Padding = PaddingMode.PKCS7,
+            Mode = CipherMode.CBC,
+        };
+        algorithm.GenerateKey();
+        algorithm.GenerateIV();
 
         using ICryptoTransform transform = algorithm.CreateEncryptor();
         byte[] result = transform.TransformFinalBlock(System.Array.Empty<byte>(), 0, 0);
@@ -78,7 +91,13 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     [TestMethod]
     public void TransformBlock_WhenInputCountIsZero_ShouldReturnZero_fix()
     {
-        using var algorithm = CreateSymmetricAlgorithm(PaddingMode.PKCS7);
+        using var algorithm = new Skipjack
+        {
+            Padding = PaddingMode.PKCS7,
+            Mode = CipherMode.CBC,
+        };
+        algorithm.GenerateKey();
+        algorithm.GenerateIV();
 
         using ICryptoTransform transform = algorithm.CreateEncryptor();
         byte[] outputBuffer = new byte[algorithm.BlockSize / 8];
@@ -100,7 +119,13 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     [TestMethod]
     public void CryptoStream_WhenFlushedWithoutWritingAnyData_ShouldProduceOnePkcs7PaddedBlock_fix()
     {
-        using var algorithm = CreateSymmetricAlgorithm(PaddingMode.PKCS7);
+        using var algorithm = new Skipjack
+        {
+            Padding = PaddingMode.PKCS7,
+            Mode = CipherMode.CBC,
+        };
+        algorithm.GenerateKey();
+        algorithm.GenerateIV();
 
         using ICryptoTransform encryptor = algorithm.CreateEncryptor();
         using var output = new MemoryStream();

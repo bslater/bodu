@@ -26,19 +26,6 @@ internal sealed class TwofishTransformTests
     }
 
     /// <inheritdoc />
-    protected override SymmetricAlgorithm CreateSymmetricAlgorithm(PaddingMode padding)
-    {
-        var algorithm = new Twofish
-        {
-            Padding = padding,
-            Mode = CipherMode.CBC,
-        };
-        algorithm.GenerateKey();
-        algorithm.GenerateIV();
-        return algorithm;
-    }
-
-    /// <inheritdoc />
     /// <remarks>
     /// Flattens the per-key-size Twofish AES-submission ECB intermediate-values vectors across
     /// <see cref="BlockCipherKeyVariant.Key128" />, <see cref="BlockCipherKeyVariant.Key192" />, and

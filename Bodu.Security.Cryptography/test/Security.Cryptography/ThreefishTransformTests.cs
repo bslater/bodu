@@ -29,20 +29,6 @@ internal sealed class ThreefishTransformTests
     }
 
     /// <inheritdoc />
-    protected override SymmetricAlgorithm CreateSymmetricAlgorithm(PaddingMode padding)
-    {
-        var algorithm = new Threefish256
-        {
-            Padding = padding,
-            Mode = CipherMode.CBC,
-        };
-        algorithm.GenerateKey();
-        algorithm.GenerateIV();
-        algorithm.GenerateTweak();
-        return algorithm;
-    }
-
-    /// <inheritdoc />
     /// <remarks>
     /// Aggregates the curated Threefish-256, Threefish-512, and Threefish-1024 KAT data sets — flattening both
     /// <see cref="TweakableBlockCipherVariant" /> rows for each size — so every Threefish block size is exercised
