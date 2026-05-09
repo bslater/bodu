@@ -36,6 +36,7 @@ internal sealed class NotableDateRangePipeline
 	private readonly BoduExt.CalendarWeekendDefinition _weekendDefinition;
 	private readonly BoduExt.IWeekendDefinitionProvider? _weekendProvider;
 	private readonly IAdjustmentHandlerRegistry? _handlerRegistry;
+	private readonly IReadOnlyList<RuleRemoval> _overrideRemovals;
 
 	/// <summary>
 	/// Initialises a new instance of the <see cref="NotableDateRangePipeline" /> class.
@@ -45,6 +46,7 @@ internal sealed class NotableDateRangePipeline
 	/// <param name="weekendDefinition">The weekend definition used during adjustment evaluation.</param>
 	/// <param name="weekendProvider">The optional custom weekend provider.</param>
 	/// <param name="handlerRegistry">The optional custom adjustment handler registry.</param>
+	/// <param name="overrideRemovals">The override removals consulted when materialising rules. Each entry suppresses a rule for matching years and territories.</param>
 	/// <exception cref="ArgumentNullException">
 	/// <paramref name="analysis" /> or <paramref name="ruleResolver" /> is <see langword="null" />.
 	/// </exception>
@@ -54,6 +56,8 @@ internal sealed class NotableDateRangePipeline
 		BoduExt.CalendarWeekendDefinition weekendDefinition,
 		BoduExt.IWeekendDefinitionProvider? weekendProvider = null,
 		IAdjustmentHandlerRegistry? handlerRegistry = null)
+		IAdjustmentHandlerRegistry? handlerRegistry = null,
+		IReadOnlyList<RuleRemoval>? overrideRemovals = null)
 	{
 		_analysis = analysis ?? throw new ArgumentNullException(nameof(analysis));
 		_ruleResolver = ruleResolver ?? throw new ArgumentNullException(nameof(ruleResolver));
@@ -61,6 +65,7 @@ internal sealed class NotableDateRangePipeline
 		_weekendDefinition = weekendDefinition;
 		_weekendProvider = weekendProvider;
 		_handlerRegistry = handlerRegistry;
+		_overrideRemovals = overrideRemovals ?? Array.Empty<RuleRemoval>();
 	}
 
 	/// <summary>
@@ -353,6 +358,8 @@ internal sealed class NotableDateRangePipeline
 	/// <summary>
 	/// Builds and adds cache entries for the supplied rule, anchor year, and anchor date, expanding the rule's authored territory
 	/// list into one entry per territory that matches the request context.
+	/// list into one entry per territory that matches the request context. Entries suppressed by an override
+	/// <see cref="RuleRemoval" /> for the supplied year and territory are skipped before reaching the cache.
 	/// </summary>
 	/// <param name="profile">The rule profile being materialised.</param>
 	/// <param name="year">The anchor year.</param>
@@ -360,6 +367,7 @@ internal sealed class NotableDateRangePipeline
 	/// <param name="plan">The active resolution plan.</param>
 	/// <param name="cache">The shared cache being populated.</param>
 	private static void AddEntries(
+	private void AddEntries(
 		RuleStaticProfile profile,
 		int year,
 		DateTime anchorDate,
@@ -368,6 +376,9 @@ internal sealed class NotableDateRangePipeline
 	{
 		foreach (string? territory in EnumerateApplicableTerritories(profile.Rule, plan.Request.TerritoryCode))
 		{
+			if (IsRemovedByOverride(profile.Rule, year, territory))
+				continue;
+
 			NotableDate notable = BuildNotableDate(profile.Rule, anchorDate, territory, adjustmentReason: null);
 
 			NotableDateCacheState state = NotableDateCacheState.Computed;
@@ -573,4 +584,37 @@ internal sealed class NotableDateRangePipeline
 	/// <returns><see langword="true" /> when the spans intersect.</returns>
 	private static bool Intersects(DateTime leftStart, DateTime leftEnd, DateTime rightStart, DateTime rightEnd) =>
 		rightStart.Date <= leftEnd.Date && rightEnd.Date >= leftStart.Date;
+
+	/// <summary>
+	/// Determines whether any configured <see cref="RuleRemoval" /> suppresses the supplied rule for the supplied civil year
+	/// and territory context. Mirrors the suppression semantics applied by the legacy
+	/// <c>NotableDateService.GenerateYear</c> path so override removals behave consistently across both pipelines.
+	/// </summary>
+	/// <param name="rule">The rule under consideration.</param>
+	/// <param name="year">The civil year being materialised.</param>
+	/// <param name="territory">The territory the entry would be tagged with, or <see langword="null" /> for territory-neutral.</param>
+	/// <returns><see langword="true" /> when at least one configured removal matches; otherwise, <see langword="false" />.</returns>
+	private bool IsRemovedByOverride(NotableDateRule rule, int year, string? territory)
+	{
+		foreach (RuleRemoval removal in _overrideRemovals)
+		{
+			if (!string.Equals(removal.RuleName, rule.Name, StringComparison.OrdinalIgnoreCase))
+				continue;
+
+			if (removal.FromYear is { } from && year < from) continue;
+			if (removal.ToYear is { } to && year > to) continue;
+
+			if (!string.IsNullOrEmpty(removal.TerritoryCode))
+			{
+				if (string.IsNullOrEmpty(territory)) continue;
+				if (!TerritoryCode.TryParse(removal.TerritoryCode, out TerritoryCode removalScope)) continue;
+				if (!TerritoryCode.TryParse(territory, out TerritoryCode actual)) continue;
+				if (!removalScope.Contains(actual)) continue;
+			}
+
+			return true;
+		}
+
+		return false;
+	}
 }

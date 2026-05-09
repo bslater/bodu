@@ -7,6 +7,7 @@
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -128,6 +129,17 @@ public sealed class Blake2b : KeyedDeferredFinalBlockHashAlgorithm<Blake2b>
     /// <inheritdoc />
     public override bool CanTransformMultipleBlocks => true;
 
+    /// <inheritdoc />
+    /// <remarks>The format is <c>"BLAKE2b-<i>n</i>"</c>, where <i>n</i> is the configured digest size in bits.</remarks>
+    public override string AlgorithmName
+    {
+        get
+        {
+            this.ThrowIfDisposed();
+            return $"BLAKE2b-{this.HashSizeValue}";
+        }
+    }
+
     /// <summary>
     /// Gets or sets the size, in bits, of the final computed hash output.
     /// </summary>
@@ -188,11 +200,11 @@ public sealed class Blake2b : KeyedDeferredFinalBlockHashAlgorithm<Blake2b>
     /// </remarks>
     protected override void Dispose(bool disposing)
     {
+        if (this.IsDisposed) return;
+
         if (disposing)
         {
             CryptoHelpers.Clear(this._h);
-            CryptoHelpers.ClearAndNullify(ref this.HashValue);
-            this.HashSizeValue = 0;
         }
 
         base.Dispose(disposing);
@@ -319,22 +331,12 @@ public sealed class Blake2b : KeyedDeferredFinalBlockHashAlgorithm<Blake2b>
     private static void G(Span<ulong> v, int a, int b, int c, int d, ulong x, ulong y)
     {
         v[a] += v[b] + x;
-        v[d] = RotateRight(v[d] ^ v[a], 32);
+        v[d] = (v[d] ^ v[a]).RotateBitsRightUnchecked(32);
         v[c] += v[d];
-        v[b] = RotateRight(v[b] ^ v[c], 24);
+        v[b] = (v[b] ^ v[c]).RotateBitsRightUnchecked(24);
         v[a] += v[b] + y;
-        v[d] = RotateRight(v[d] ^ v[a], 16);
+        v[d] = (v[d] ^ v[a]).RotateBitsRightUnchecked(16);
         v[c] += v[d];
-        v[b] = RotateRight(v[b] ^ v[c], 63);
+        v[b] = (v[b] ^ v[c]).RotateBitsRightUnchecked(63);
     }
-
-    /// <summary>
-    /// Rotates a 64-bit unsigned integer right by the specified number of bits.
-    /// </summary>
-    /// <param name="value">The value to rotate.</param>
-    /// <param name="bits">The number of positions to rotate right.</param>
-    /// <returns>The rotated value.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ulong RotateRight(ulong value, int bits) =>
-        (value >> bits) | (value << (64 - bits));
 }
