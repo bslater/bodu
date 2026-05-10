@@ -1,4 +1,4 @@
-﻿# ---------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------
 # Global settings
 # ---------------------------------------------------------------------------------------------------------------
 
@@ -216,9 +216,13 @@ dotnet_diagnostic.SA1101.severity = none
 
 dotnet_diagnostic.CA1062.severity = warning    # Validate arguments of public methods
 dotnet_diagnostic.CA2208.severity = warning    # Instantiate ArgumentExceptions correctly
-dotnet_diagnostic.CA1510.severity = suggestion # Use ArgumentNullException.ThrowIfNull
-dotnet_diagnostic.CA1511.severity = suggestion # Use ArgumentException.ThrowIf
-dotnet_diagnostic.CA1512.severity = suggestion # Use ArgumentOutOfRangeException.ThrowIfOutOfRange
+
+# CA1510–CA1512 suggest switching to BCL ThrowIf* shorthands.  This codebase uses the
+# project-level ThrowHelper.ThrowIfNull/ThrowIfGreaterThan/… helpers instead (defined in
+# Bodu.Core), so these suggestions would recommend the wrong fix.
+dotnet_diagnostic.CA1510.severity = none # Use ArgumentNullException.ThrowIfNull — prefer ThrowHelper
+dotnet_diagnostic.CA1511.severity = none # Use ArgumentException.ThrowIf — prefer ThrowHelper
+dotnet_diagnostic.CA1512.severity = none # Use ArgumentOutOfRangeException.ThrowIfOutOfRange — prefer ThrowHelper
 
 # ---------------------------------------------------------------------------------------------------------------
 # Member ordering (StyleCop)
@@ -237,6 +241,11 @@ dotnet_diagnostic.SA1309.severity = none
 
 # Using directives outside namespace.
 dotnet_diagnostic.SA1200.severity = none
+
+# Allow s_camelCase static readonly fields.
+# SA1311 expects static readonly fields to begin with an upper-case letter,
+# which conflicts with the modern .NET runtime-style s_ prefix convention.
+dotnet_diagnostic.SA1311.severity = none
 
 # Braces: SA1503 ("braces must not be omitted") is suppressed to permit clear,
 # single-line braceless bodies. Multi-line bodies are still enforced by
@@ -273,3 +282,15 @@ dotnet_analyzer_diagnostic.category-StyleCop.CSharp.MaintainabilityRules.severit
 
 # SA1312: Variable names should begin with lower-case letter
 dotnet_diagnostic.SA1312.severity = silent
+
+# ---------------------------------------------------------------------------------------------------------------
+# Test file overrides — relax rules that are noisy and unhelpful in test code
+# ---------------------------------------------------------------------------------------------------------------
+
+[**/*Tests.cs]
+# Underscore separators in test method names (e.g. Method_WhenX_ShouldY) are idiomatic MSTest.
+dotnet_diagnostic.CA1707.severity = none
+# Documentation is not required on test methods and test classes.
+dotnet_diagnostic.SA1600.severity = none
+dotnet_diagnostic.SA1601.severity = none
+dotnet_diagnostic.CS1591.severity = none

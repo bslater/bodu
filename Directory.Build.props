@@ -1,0 +1,18 @@
+<Project>
+
+  <!--
+    Single import point for shared build metadata, WarningsAsErrors for XML-doc codes,
+    and other solution-wide properties defined in bld/Bodu.props.
+    Projects no longer carry their own <Import> for this file.
+  -->
+  <Import Project="$(MSBuildThisFileDirectory)bld/Bodu.props" />
+
+  <PropertyGroup>
+    <!--
+      Enforce IDE-style code rules (IDExxxx diagnostics) at build time so that
+      formatting and code-style regressions surface in CI rather than only in the IDE.
+    -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
+</Project>
