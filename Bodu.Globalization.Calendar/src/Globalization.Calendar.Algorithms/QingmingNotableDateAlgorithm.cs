@@ -112,11 +112,19 @@ public sealed class QingmingNotableDateAlgorithm
 		return jde0 + (0.00001 * S / lambda);
 	}
 
-	/// <summary>Converts a Julian Day Ephemeris to a <see cref="DateTime" /> relative to the J2000 epoch.</summary>
+	/// <summary>
+	/// Converts a Julian Day Ephemeris to a <see cref="DateTime" /> relative to the J2000 epoch.
+	/// </summary>
+	/// <param name="jde">The Julian Day Ephemeris in Terrestrial Dynamical Time.</param>
+	/// <returns>The corresponding <see cref="DateTime" /> with <see cref="DateTime.Kind" /> set to <see cref="DateTimeKind.Unspecified" />.</returns>
 	private static DateTime JdeToDateTime(double jde) =>
 		J2000Epoch.AddDays(jde - 2451545.0);
 
-	/// <summary>Converts degrees to radians.</summary>
+	/// <summary>
+	/// Converts an angle expressed in degrees to radians.
+	/// </summary>
+	/// <param name="degrees">The angle, in degrees.</param>
+	/// <returns>The equivalent angle in radians.</returns>
 	private static double DegToRad(double degrees) =>
 		degrees * (Math.PI / 180.0);
 

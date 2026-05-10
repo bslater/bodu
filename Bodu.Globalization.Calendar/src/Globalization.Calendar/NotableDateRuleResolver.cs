@@ -31,7 +31,7 @@ internal sealed class NotableDateRuleResolver
 	private readonly INotableDateAlgorithmRegistry? _algorithms;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="NotableDateRuleResolver" /> class.
+	/// Initialises a new instance of the <see cref="NotableDateRuleResolver" /> class.
 	/// </summary>
 	/// <param name="rules">The rules available for resolution. Must not be <see langword="null" />.</param>
 	/// <param name="algorithms">Optional algorithm registry consulted for <see cref="DateResolutionStrategy.Algorithm" /> rules.</param>

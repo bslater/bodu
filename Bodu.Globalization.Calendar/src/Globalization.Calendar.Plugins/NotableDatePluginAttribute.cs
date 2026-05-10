@@ -28,7 +28,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 public sealed class NotableDatePluginAttribute : Attribute
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="NotableDatePluginAttribute" /> class.
+	/// Initialises a new instance of the <see cref="NotableDatePluginAttribute" /> class.
 	/// </summary>
 	/// <param name="pluginType">The plugin entry-point type. Must not be <see langword="null" />. The loader verifies that the type implements <see cref="INotableDatePlugin" />; activation failures are surfaced as <see cref="PluginActivationException" />.</param>
 	/// <exception cref="ArgumentNullException">Thrown when <paramref name="pluginType" /> is <see langword="null" />.</exception>

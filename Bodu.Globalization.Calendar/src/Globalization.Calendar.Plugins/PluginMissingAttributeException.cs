@@ -13,7 +13,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 public sealed class PluginMissingAttributeException : NotableDatePluginException
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="PluginMissingAttributeException" /> class.
+	/// Initialises a new instance of the <see cref="PluginMissingAttributeException" /> class.
 	/// </summary>
 	/// <param name="assemblyPath">The path of the plugin assembly that failed the check.</param>
 	/// <param name="reason">Description of the specific fault (missing attribute, attribute PluginType does not implement the interface, etc.).</param>

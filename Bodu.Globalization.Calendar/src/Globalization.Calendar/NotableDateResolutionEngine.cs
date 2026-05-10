@@ -27,7 +27,7 @@ internal sealed class NotableDateResolutionEngine : INotableDateResolutionEngine
     private readonly INotableDateResolutionAdjustmentProcessor? adjustmentProcessor;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="NotableDateResolutionEngine" /> class.
+    /// Initialises a new instance of the <see cref="NotableDateResolutionEngine" /> class.
     /// </summary>
     /// <param name="occurrenceResolver">The resolver used to materialise base rule occurrences.</param>
     /// <param name="adjustmentProcessor">The optional processor used to apply observance adjustments.</param>

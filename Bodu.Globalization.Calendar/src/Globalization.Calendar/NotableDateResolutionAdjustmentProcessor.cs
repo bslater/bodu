@@ -30,7 +30,7 @@ internal sealed class NotableDateResolutionAdjustmentProcessor : INotableDateRes
     private readonly INotableDateRuleOccurrenceResolver? occurrenceResolver;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="NotableDateResolutionAdjustmentProcessor" /> class.
+    /// Initialises a new instance of the <see cref="NotableDateResolutionAdjustmentProcessor" /> class.
     /// </summary>
     /// <param name="weekendDefinition">The weekend definition used for weekend checks.</param>
     /// <param name="weekendProvider">The optional custom weekend provider.</param>

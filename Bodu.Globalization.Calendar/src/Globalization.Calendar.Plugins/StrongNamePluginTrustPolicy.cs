@@ -27,7 +27,7 @@ public sealed class StrongNamePluginTrustPolicy : IPluginTrustPolicy
 	private readonly HashSet<string> _allowedTokens;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="StrongNamePluginTrustPolicy" /> class.
+	/// Initialises a new instance of the <see cref="StrongNamePluginTrustPolicy" /> class.
 	/// </summary>
 	/// <param name="allowedPublicKeyTokens">The lowercase-hex public-key tokens to admit. Must not be <see langword="null" />. An empty collection rejects every assembly.</param>
 	/// <exception cref="ArgumentNullException">Thrown when <paramref name="allowedPublicKeyTokens" /> is <see langword="null" />.</exception>

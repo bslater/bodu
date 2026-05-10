@@ -51,7 +51,7 @@ namespace Bodu.Globalization.Calendar;
 public sealed record AdjustmentReason
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="AdjustmentReason" /> record.
+	/// Initialises a new instance of the <see cref="AdjustmentReason" /> record.
 	/// </summary>
 	/// <param name="originalDate">The date that was originally calculated before the adjustment fired.</param>
 	/// <param name="trigger">The trigger condition that activated the adjustment.</param>

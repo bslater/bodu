@@ -35,7 +35,7 @@ public sealed class ExternalPluginLoader
 	private readonly IPluginTrustPolicy _trustPolicy;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="ExternalPluginLoader" /> class.
+	/// Initialises a new instance of the <see cref="ExternalPluginLoader" /> class.
 	/// </summary>
 	/// <param name="trustPolicy">The trust policy to consult before loading each plugin assembly. Must not be <see langword="null" />. Use <see cref="AllowAllPluginTrustPolicy" /> only in development and unit tests; production hosts must supply an allowlist-style policy such as <see cref="FileHashPluginTrustPolicy" /> or <see cref="StrongNamePluginTrustPolicy" />, optionally composed via <see cref="CompositePluginTrustPolicy" />.</param>
 	/// <exception cref="ArgumentNullException">Thrown when <paramref name="trustPolicy" /> is <see langword="null" />.</exception>
@@ -118,6 +118,12 @@ public sealed class ExternalPluginLoader
 	/// canonical (preventing duplicate <c>Bodu.Globalization.Calendar</c> loads in each plugin context). Private dependencies
 	/// that the plugin bundles alongside its DLL are loaded automatically by the plugin's own <see cref="AssemblyLoadContext" />.
 	/// </summary>
+	/// <param name="context">The plugin's <see cref="AssemblyLoadContext" /> raising the resolve event.</param>
+	/// <param name="name">The <see cref="AssemblyName" /> being requested.</param>
+	/// <returns>
+	/// The matching assembly already loaded into <see cref="AssemblyLoadContext.Default" />, or <see langword="null" /> when no
+	/// host-level match is found and the plugin's own context should attempt the load instead.
+	/// </returns>
 	private static Assembly? ResolveFromHostOrAlongside(AssemblyLoadContext context, AssemblyName name)
 	{
 		if (string.IsNullOrEmpty(name.Name))

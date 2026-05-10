@@ -62,7 +62,7 @@ namespace Bodu.Globalization.Calendar;
 public sealed class XmlResourceNotableDateRuleProvider : NotableDateRuleResourceProviderBase
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="XmlResourceNotableDateRuleProvider" /> class that resolves embedded resources
+	/// Initialises a new instance of the <see cref="XmlResourceNotableDateRuleProvider" /> class that resolves embedded resources
 	/// against a single assembly.
 	/// </summary>
 	/// <param name="xmlResourceName">The logical resource path of the root XML payload (e.g. <c>Bodu/Globalization/Calendar/Resources/global-all.xml</c>). Must not be <see langword="null" />.</param>
@@ -75,7 +75,7 @@ public sealed class XmlResourceNotableDateRuleProvider : NotableDateRuleResource
 	}
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="XmlResourceNotableDateRuleProvider" /> class that resolves embedded resources
+	/// Initialises a new instance of the <see cref="XmlResourceNotableDateRuleProvider" /> class that resolves embedded resources
 	/// against an ordered chain of assemblies.
 	/// </summary>
 	/// <param name="xmlResourceName">The logical resource path of the root XML payload. Must not be <see langword="null" />.</param>

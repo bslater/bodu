@@ -26,7 +26,7 @@ internal sealed class NotableDateResolutionService
     private readonly IWeekendDefinitionProvider? weekendProvider;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="NotableDateResolutionService" /> class.
+    /// Initialises a new instance of the <see cref="NotableDateResolutionService" /> class.
     /// </summary>
     /// <param name="ruleProviders">The rule providers used to load notable-date rules.</param>
     /// <param name="algorithmRegistry">The optional algorithm registry used to resolve algorithm-backed rules.</param>

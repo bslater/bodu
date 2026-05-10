@@ -13,7 +13,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 public sealed class PluginActivationException : NotableDatePluginException
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="PluginActivationException" /> class.
+	/// Initialises a new instance of the <see cref="PluginActivationException" /> class.
 	/// </summary>
 	/// <param name="assemblyPath">The path of the plugin assembly whose declared type could not be activated.</param>
 	/// <param name="pluginType">The declared plugin type, if discoverable.</param>

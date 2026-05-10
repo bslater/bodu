@@ -24,7 +24,7 @@ internal sealed class NotableDateResolutionWindow
     private readonly List<ResolvedNotableDateOccurrence> _baseOccurrences = new();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="NotableDateResolutionWindow" /> class.
+    /// Initialises a new instance of the <see cref="NotableDateResolutionWindow" /> class.
     /// </summary>
     /// <param name="startDate">The inclusive start of the known chronological window.</param>
     /// <param name="endDate">The inclusive end of the known chronological window.</param>

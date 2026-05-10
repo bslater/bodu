@@ -48,7 +48,7 @@ public abstract class NotableDateRuleResourceProviderBase : INotableDateRuleProv
 	private readonly Lazy<List<NotableDateRule>> _flattenedRules;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="NotableDateRuleResourceProviderBase" /> class that resolves
+	/// Initialises a new instance of the <see cref="NotableDateRuleResourceProviderBase" /> class that resolves
 	/// embedded resources against a single assembly.
 	/// </summary>
 	/// <param name="rootResourceName">The logical resource path of the root payload (for example
@@ -68,7 +68,7 @@ public abstract class NotableDateRuleResourceProviderBase : INotableDateRuleProv
 	}
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="NotableDateRuleResourceProviderBase" /> class that resolves
+	/// Initialises a new instance of the <see cref="NotableDateRuleResourceProviderBase" /> class that resolves
 	/// embedded resources against an ordered chain of assemblies.
 	/// </summary>
 	/// <param name="rootResourceName">The logical resource path of the root payload. Must not be

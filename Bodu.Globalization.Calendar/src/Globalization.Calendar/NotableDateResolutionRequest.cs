@@ -12,7 +12,7 @@ namespace Bodu.Globalization.Calendar;
 internal sealed record NotableDateResolutionRequest
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="NotableDateResolutionRequest" /> class.
+    /// Initialises a new instance of the <see cref="NotableDateResolutionRequest" /> class.
     /// </summary>
     /// <param name="startDate">The inclusive start of the requested window.</param>
     /// <param name="endDate">The inclusive end of the requested window.</param>
