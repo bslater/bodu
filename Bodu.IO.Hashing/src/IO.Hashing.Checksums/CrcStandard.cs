@@ -100,8 +100,8 @@ using System.Runtime.Serialization;
 /// <seealso cref="CrcLookupTableCache"/>
 [Serializable]
 public sealed partial class CrcStandard
-    : System.Runtime.Serialization.ISerializable
-    , System.IEquatable<CrcStandard>
+    : System.Runtime.Serialization.ISerializable,
+      System.IEquatable<CrcStandard>
 {
     /// <summary>
     /// The maximum size allowed for a CRC standard (in bits).
@@ -145,7 +145,8 @@ public sealed partial class CrcStandard
     {
         ThrowHelper.ThrowIfNull(info);
 
-        this.Name = info.GetString(nameof(this.Name))!;
+        string? serializedName = info.GetString(nameof(this.Name));
+        this.Name = serializedName!;
         this.Size = info.GetInt32(nameof(this.Size));
         this.Polynomial = info.GetUInt64(nameof(this.Polynomial));
         this.InitialValue = info.GetUInt64(nameof(this.InitialValue));

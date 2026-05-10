@@ -6,7 +6,6 @@
 
 namespace Bodu.IO.Hashing.Extensions;
 
-using Bodu;
 using System;
 using System.IO;
 using System.IO.Hashing;
@@ -53,9 +52,9 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         byte[] expectedHash,
         CancellationToken cancellationToken = default)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
-        ThrowHelper.ThrowIfNull(stream);
-        ThrowHelper.ThrowIfNull(expectedHash);
+        ArgumentNullException.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(stream);
+        ArgumentNullException.ThrowIfNull(expectedHash);
 
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -107,9 +106,9 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         string expectedHex,
         CancellationToken cancellationToken = default)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
-        ThrowHelper.ThrowIfNull(stream);
-        ThrowHelper.ThrowIfNull(expectedHex);
+        ArgumentNullException.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(stream);
+        ArgumentNullException.ThrowIfNull(expectedHex);
 
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -166,8 +165,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         ReadOnlyMemory<byte> expectedHash,
         CancellationToken cancellationToken = default)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
-        ThrowHelper.ThrowIfNull(stream);
+        ArgumentNullException.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(stream);
 
         cancellationToken.ThrowIfCancellationRequested();
 

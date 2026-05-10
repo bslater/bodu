@@ -245,7 +245,7 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     /// </summary>
     /// <remarks>Exposed to derived types that snapshot state in <see cref="Clone" />.</remarks>
     protected ReadOnlySpan<byte> ResidualBytes =>
-        new(this.residualByteBuffer, 0, this.residualBytes);
+        new ReadOnlySpan<byte>(this.residualByteBuffer, 0, this.residualBytes);
 
     /// <summary>
     /// Gets the total number of bytes that have been passed to <see cref="Append(ReadOnlySpan{byte})" /> since the
@@ -262,7 +262,7 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
     protected void CopyResidualStateFrom(BlockNonCryptographicHashAlgorithm<T> source)
     {
-        ThrowHelper.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(source);
         source.residualByteBuffer.AsSpan(0, source.residualBytes).CopyTo(this.residualByteBuffer);
         this.residualBytes = source.residualBytes;
         this.totalLength = source.totalLength;

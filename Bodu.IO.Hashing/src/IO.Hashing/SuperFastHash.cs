@@ -56,7 +56,7 @@ public sealed class SuperFastHash
 {
     private const int HashLength = 4;
 
-    private readonly MemoryStream buffer = new();
+    private readonly MemoryStream buffer = new MemoryStream();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SuperFastHash" /> class.

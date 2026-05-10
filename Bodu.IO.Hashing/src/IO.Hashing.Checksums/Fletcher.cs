@@ -110,7 +110,7 @@ public abstract class Fletcher<TSelf>
     /// <inheritdoc />
     protected override TSelf Clone()
     {
-        TSelf clone = new();
+        TSelf clone = new TSelf();
         clone.partA = this.partA;
         clone.partB = this.partB;
         clone.CopyResidualStateFrom(this);

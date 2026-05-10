@@ -75,7 +75,7 @@ public abstract class MurmurHash3<T>
 {
     private static readonly int[] ValidHashSizes = { 32, 128 };
 
-    private readonly MemoryStream inputBuffer = new();
+    private readonly MemoryStream inputBuffer = new MemoryStream();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MurmurHash3{T}" /> class with the specified hash output

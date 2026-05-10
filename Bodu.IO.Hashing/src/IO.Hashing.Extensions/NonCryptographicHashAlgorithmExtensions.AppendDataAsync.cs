@@ -6,7 +6,6 @@
 
 namespace Bodu.IO.Hashing.Extensions;
 
-using Bodu;
 using System;
 using System.Buffers;
 using System.IO;
@@ -73,8 +72,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         int bufferSize = 4096,
         CancellationToken cancellationToken = default)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
-        ThrowHelper.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(source);
 
         if (bufferSize <= 0)
             throw new ArgumentOutOfRangeException(

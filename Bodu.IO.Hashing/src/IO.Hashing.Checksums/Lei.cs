@@ -39,7 +39,7 @@ public sealed class Lei
     /// <summary>The fixed check-code length of <c>2</c> decimal digits.</summary>
     public const int CheckDigits = 2;
 
-    private readonly Iso7064Mod97_10 engine = new();
+    private readonly Iso7064Mod97_10 engine = new Iso7064Mod97_10();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Lei" /> class.

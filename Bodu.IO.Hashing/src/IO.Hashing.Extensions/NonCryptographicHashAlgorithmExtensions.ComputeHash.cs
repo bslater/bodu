@@ -25,8 +25,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// </exception>
     public static byte[] ComputeHash(this NonCryptographicHashAlgorithm algorithm, byte[] buffer)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
-        ThrowHelper.ThrowIfNull(buffer);
+        ArgumentNullException.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(buffer);
 
         algorithm.Append(buffer);
         return algorithm.GetHashAndReset();
@@ -52,8 +52,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         int offset,
         int count)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
-        ThrowHelper.ThrowIfNull(buffer);
+        ArgumentNullException.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(buffer);
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(buffer, offset, count);
 
         algorithm.Append(buffer.AsSpan(offset, count));
@@ -73,7 +73,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         this NonCryptographicHashAlgorithm algorithm,
         ReadOnlySpan<byte> data)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(algorithm);
 
         algorithm.Append(data);
         return algorithm.GetHashAndReset();
@@ -97,8 +97,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         Stream source,
         int bufferSize = 4096)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
-        ThrowHelper.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(source);
         ThrowHelper.ThrowIfZeroOrNegative(bufferSize);
 
         byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
