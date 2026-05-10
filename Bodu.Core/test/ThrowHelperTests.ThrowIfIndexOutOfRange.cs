@@ -64,11 +64,9 @@ public partial class ThrowHelperTests
     [DataRow(-1)]         // negative index
     public void ThrowIfIndexOutOfRange_ReadOnlySpan_WhenIndexIsInvalid_ShouldThrowArgumentOutOfRangeException(int index)
     {
-        ReadOnlySpan<int> span = TestArray;
-
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            ThrowHelper.ThrowIfIndexOutOfRange(index, span);
+            ThrowHelper.ThrowIfIndexOutOfRange(index, new ReadOnlySpan<int>(TestArray));
         });
     }
 
@@ -98,11 +96,9 @@ public partial class ThrowHelperTests
     [DataRow(-1)]         // negative index
     public void ThrowIfIndexOutOfRange_Span_WhenIndexIsInvalid_ShouldThrowArgumentOutOfRangeException(int index)
     {
-        Span<int> span = new int[] { 1, 2, 3, 4, 5 };
-
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            ThrowHelper.ThrowIfIndexOutOfRange(index, span);
+            ThrowHelper.ThrowIfIndexOutOfRange(index, new Span<int>(new int[] { 1, 2, 3, 4, 5 }));
         });
     }
 
