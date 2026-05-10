@@ -22,12 +22,16 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 internal sealed class NotableDateGenerationContext
 {
+    /// <summary>The full output sequence emitted so far during generation.</summary>
     private readonly List<NotableDate> _output = new();
+
+    /// <summary>The subset of <see cref="_output" /> flagged non-working, used for working-day arithmetic during generation.</summary>
     private readonly List<NotableDate> _nonWorkingDates = new();
 
     /// <summary>
     /// Gets the generated output accumulated so far.
     /// </summary>
+    /// <returns>A read-only snapshot of the dates emitted into the context so far. Never <see langword="null" />.</returns>
     public IReadOnlyList<NotableDate> Output => _output;
 
     /// <summary>

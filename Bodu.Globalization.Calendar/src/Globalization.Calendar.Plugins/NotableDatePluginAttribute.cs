@@ -40,5 +40,6 @@ public sealed class NotableDatePluginAttribute : Attribute
 	/// <summary>
 	/// Gets the plugin entry-point type declared on the assembly.
 	/// </summary>
+	/// <returns>The CLR <see cref="Type" /> the loader instantiates when activating the plugin. Never <see langword="null" />.</returns>
 	public Type PluginType { get; }
 }

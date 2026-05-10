@@ -22,16 +22,19 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </remarks>
 internal sealed class NotableDateRangeResolutionCache
 {
+	/// <summary>The backing dictionary keyed by <see cref="NotableDateCacheKey" />.</summary>
 	private readonly Dictionary<NotableDateCacheKey, NotableDateCacheEntry> _entries = new();
 
 	/// <summary>
 	/// Gets the live entry sequence in arbitrary order.
 	/// </summary>
+	/// <returns>An enumeration of every <see cref="NotableDateCacheEntry" /> currently in the cache. Iteration order is not defined.</returns>
 	public IEnumerable<NotableDateCacheEntry> Entries => _entries.Values;
 
 	/// <summary>
 	/// Gets the number of entries currently in the cache.
 	/// </summary>
+	/// <returns>A non-negative entry count.</returns>
 	public int Count => _entries.Count;
 
 	/// <summary>

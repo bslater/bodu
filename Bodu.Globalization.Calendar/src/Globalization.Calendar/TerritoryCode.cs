@@ -59,17 +59,20 @@ public readonly record struct TerritoryCode
 	/// <summary>
 	/// Gets the two-letter ISO 3166-1 alpha-2 country code (e.g. <c>AU</c>, <c>US</c>).
 	/// </summary>
+	/// <returns>The upper-case two-letter country code. Never <see langword="null" /> for an initialised value.</returns>
 	public string Country { get; }
 
 	/// <summary>
 	/// Gets the optional ISO 3166-2 subdivision code (e.g. <c>NSW</c>, <c>CA</c>), or <see langword="null" /> when the territory refers
 	/// to the country as a whole.
 	/// </summary>
+	/// <returns>The upper-case subdivision code, or <see langword="null" /> for a country-level territory.</returns>
 	public string? Subdivision { get; }
 
 	/// <summary>
 	/// Gets a value indicating whether this territory refers to a subdivision rather than a whole country.
 	/// </summary>
+	/// <returns><see langword="true" /> when <see cref="Subdivision" /> is non-<see langword="null" />; otherwise <see langword="false" />.</returns>
 	public bool HasSubdivision => Subdivision is not null;
 
 	/// <summary>

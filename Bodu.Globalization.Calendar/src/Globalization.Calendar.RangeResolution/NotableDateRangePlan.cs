@@ -24,6 +24,7 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </remarks>
 internal sealed class NotableDateRangePlan
 {
+	/// <summary>The civil years that must be resolved for each algorithmic anchor rule name.</summary>
 	private readonly Dictionary<string, IReadOnlyList<int>> _anchorYearsByName;
 
 	/// <summary>
@@ -57,32 +58,38 @@ internal sealed class NotableDateRangePlan
 	/// <summary>
 	/// Gets the originating request.
 	/// </summary>
+	/// <returns>The <see cref="NotableDateRangeRequest" /> the plan was computed for. Never <see langword="null" />.</returns>
 	public NotableDateRangeRequest Request { get; }
 
 	/// <summary>
 	/// Gets the rule profiles that may contribute to the request, in input order.
 	/// </summary>
+	/// <returns>A read-only list of <see cref="RuleStaticProfile" /> entries, in stable input order.</returns>
 	public IReadOnlyList<RuleStaticProfile> EligibleRules { get; }
 
 	/// <summary>
 	/// Gets the civil years considered by the main materialisation pass — one entry per year that the request window spans.
 	/// </summary>
+	/// <returns>An ordered list of four-digit civil years. Never <see langword="null" /> and never empty for a valid request.</returns>
 	public IReadOnlyList<int> CandidateYears { get; }
 
 	/// <summary>
 	/// Gets the adjacent civil years scanned by the fringe pass for rules whose observance adjustment may roll a date from outside
 	/// the request window into it. Empty when the request window does not touch a year boundary inside the fringe distance.
 	/// </summary>
+	/// <returns>An ordered list of four-digit civil years. Empty when no fringe scan is required; never <see langword="null" />.</returns>
 	public IReadOnlyList<int> FringeYears { get; }
 
 	/// <summary>
 	/// Gets the inclusive start of the fringe scan window — the request start minus the fringe distance.
 	/// </summary>
+	/// <returns>The earliest <see cref="DateTime" /> the fringe pass considers when looking for adjustment-driven candidates.</returns>
 	public DateTime FringeStartDate { get; }
 
 	/// <summary>
 	/// Gets the inclusive end of the fringe scan window — the request end plus the fringe distance.
 	/// </summary>
+	/// <returns>The latest <see cref="DateTime" /> the fringe pass considers when looking for adjustment-driven candidates.</returns>
 	public DateTime FringeEndDate { get; }
 
 	/// <summary>

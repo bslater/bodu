@@ -22,11 +22,13 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </remarks>
 internal sealed class ResolvedWindowSet
 {
+	/// <summary>The backing list of disjoint <see cref="DateRange" /> intervals, kept sorted by start date.</summary>
 	private readonly List<DateRange> _ranges = new();
 
 	/// <summary>
 	/// Gets the disjoint chronological windows currently tracked, in ascending order of <see cref="DateRange.StartDate" />.
 	/// </summary>
+	/// <returns>A read-only list of disjoint <see cref="DateRange" /> entries. Empty when nothing has been tracked yet.</returns>
 	public IReadOnlyList<DateRange> Ranges => _ranges;
 
 	/// <summary>

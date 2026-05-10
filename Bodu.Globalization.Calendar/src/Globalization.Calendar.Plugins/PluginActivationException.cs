@@ -28,10 +28,12 @@ public sealed class PluginActivationException : NotableDatePluginException
 	/// <summary>
 	/// Gets the path of the plugin assembly whose declared type could not be activated.
 	/// </summary>
+	/// <returns>The absolute filesystem path supplied at construction. Never <see langword="null" />.</returns>
 	public string AssemblyPath { get; }
 
 	/// <summary>
 	/// Gets the declared plugin type, or <see langword="null" /> if it could not be resolved.
 	/// </summary>
+	/// <returns>The CLR <see cref="Type" /> declared by the plugin's <see cref="NotableDatePluginAttribute" />, or <see langword="null" /> when the type could not be located.</returns>
 	public Type? PluginType { get; }
 }

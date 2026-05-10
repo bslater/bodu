@@ -27,10 +27,12 @@ public sealed class PluginMissingAttributeException : NotableDatePluginException
 	/// <summary>
 	/// Gets the path of the plugin assembly that failed the check.
 	/// </summary>
+	/// <returns>The absolute filesystem path supplied at construction. Never <see langword="null" />.</returns>
 	public string AssemblyPath { get; }
 
 	/// <summary>
 	/// Gets the description of the specific fault.
 	/// </summary>
+	/// <returns>A human-readable explanation of why the attribute check failed. Never <see langword="null" />.</returns>
 	public string Reason { get; }
 }

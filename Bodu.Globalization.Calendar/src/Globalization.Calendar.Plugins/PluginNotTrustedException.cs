@@ -27,10 +27,12 @@ public sealed class PluginNotTrustedException : NotableDatePluginException
 	/// <summary>
 	/// Gets the path of the rejected plugin assembly.
 	/// </summary>
+	/// <returns>The absolute filesystem path supplied at construction. Never <see langword="null" />.</returns>
 	public string AssemblyPath { get; }
 
 	/// <summary>
 	/// Gets the reason surfaced by the trust policy, or <see langword="null" />.
 	/// </summary>
+	/// <returns>The trust policy's stated reason for rejection, or <see langword="null" /> when the policy did not supply one.</returns>
 	public string? Reason { get; }
 }

@@ -18,8 +18,13 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </remarks>
 internal sealed class RuleStaticAnalysis
 {
+	/// <summary>The case-insensitive look-up of static profiles keyed by canonical rule name.</summary>
 	private readonly Dictionary<string, RuleStaticProfile> _profilesByRuleName;
+
+	/// <summary>The case-insensitive look-up of profiles whose root anchor matches the keyed rule name.</summary>
 	private readonly Dictionary<string, List<RuleStaticProfile>> _dependentsByAnchor;
+
+	/// <summary>The full set of static profiles in input order.</summary>
 	private readonly List<RuleStaticProfile> _profiles;
 
 	/// <summary>
@@ -44,6 +49,7 @@ internal sealed class RuleStaticAnalysis
 	/// <summary>
 	/// Gets the profile for every rule processed by the pipeline, in input order.
 	/// </summary>
+	/// <returns>A read-only list of <see cref="RuleStaticProfile" /> entries in stable input order.</returns>
 	public IReadOnlyList<RuleStaticProfile> Profiles => _profiles;
 
 	/// <summary>
@@ -58,6 +64,7 @@ internal sealed class RuleStaticAnalysis
 	/// <see cref="RuleStaticProfile.MinObservedReach" /> / <see cref="RuleStaticProfile.MaxObservedReach" />.
 	/// </para>
 	/// </remarks>
+	/// <returns>A non-negative day count expressing the largest possible adjustment shift across the rule set.</returns>
 	public int GlobalFringeReach { get; }
 
 	/// <summary>

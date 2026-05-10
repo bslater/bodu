@@ -76,32 +76,38 @@ public sealed record NotableDateRule
 	/// <summary>
 	/// Gets the unique name of the notable date this rule produces (e.g. <c>"Christmas Day"</c>, <c>"Anzac Day"</c>).
 	/// </summary>
+	/// <returns>The canonical notable date title. Required at construction; never <see langword="null" />.</returns>
 	public required string Name { get; init; }
 
 	/// <summary>
 	/// Gets the resolution strategy that determines how the anchor date is calculated for each year.
 	/// </summary>
+	/// <returns>One of the defined <see cref="DateResolutionStrategy" /> values. Required at construction.</returns>
 	public required DateResolutionStrategy Strategy { get; init; }
 
 	/// <summary>
 	/// Gets the primary category for the produced notable date. Use <see cref="Tags" /> for additional, non-exclusive classification.
 	/// </summary>
+	/// <returns>One of the defined <see cref="NotableDateCategory" /> values. Required at construction.</returns>
 	public required NotableDateCategory Category { get; init; }
 #else
 
 	/// <summary>
 	/// Gets the unique name of the notable date this rule produces.
 	/// </summary>
+	/// <returns>The canonical notable date title. Defaults to <see cref="string.Empty" /> when not assigned.</returns>
 	public string Name { get; init; } = string.Empty;
 
 	/// <summary>
 	/// Gets the resolution strategy that determines how the anchor date is calculated for each year.
 	/// </summary>
+	/// <returns>One of the defined <see cref="DateResolutionStrategy" /> values.</returns>
 	public DateResolutionStrategy Strategy { get; init; }
 
 	/// <summary>
 	/// Gets the primary category for the produced notable date.
 	/// </summary>
+	/// <returns>One of the defined <see cref="NotableDateCategory" /> values.</returns>
 	public NotableDateCategory Category { get; init; }
 #endif
 
@@ -127,11 +133,13 @@ public sealed record NotableDateRule
 	/// <summary>
 	/// Gets the inclusive first year the rule is applicable, or <see langword="null" /> for no lower bound.
 	/// </summary>
+	/// <returns>A four-digit civil year, or <see langword="null" /> when the rule has no earliest applicability bound.</returns>
 	public int? FirstYear { get; init; }
 
 	/// <summary>
 	/// Gets the inclusive last year the rule is applicable, or <see langword="null" /> for no upper bound.
 	/// </summary>
+	/// <returns>A four-digit civil year, or <see langword="null" /> when the rule has no final applicability bound.</returns>
 	public int? LastYear { get; init; }
 
 	/// <summary>
@@ -141,37 +149,44 @@ public sealed record NotableDateRule
 	/// Useful for quadrennial events such as Olympic Games or fixed-term elections. <see cref="FirstYear" /> defines the cadence
 	/// origin; if it is not set, the cadence is anchored at year zero.
 	/// </remarks>
+	/// <returns>A positive cadence in years, or <see langword="null" /> when the rule resolves every year within its bounds.</returns>
 	public int? OccurrenceYears { get; init; }
 
 	/// <summary>
 	/// Gets the calendar system the rule is authored against (e.g. <see cref="SysGlobal.GregorianCalendar" />).
 	/// </summary>
+	/// <returns>The CLR <see cref="Type" /> of the authoring calendar, or <see langword="null" /> to indicate the Gregorian calendar.</returns>
 	public Type? CalendarType { get; init; }
 
 	/// <summary>
 	/// Gets the comma-separated list of territory codes that scope the rule, or <see langword="null" /> for global applicability.
 	/// </summary>
+	/// <returns>A comma-separated ISO 3166-style territory list, or <see langword="null" /> when the rule applies to every territory.</returns>
 	public string? TerritoryCode { get; init; }
 
 	/// <summary>
 	/// Gets a value indicating whether the produced notable date should be flagged as a non-working day.
 	/// </summary>
+	/// <returns><see langword="true" /> when the resolved <see cref="NotableDate" /> is non-working; <see langword="false" /> when working; <see langword="null" /> to defer to the calendar default.</returns>
 	public bool? IsNonWorkingDay { get; init; }
 
 	/// <summary>
 	/// Gets the duration of the notable date in days. Defaults to one (a single-day event). Multi-day spans (Hanukkah, Ramadan,
 	/// festival weeks) use values greater than one.
 	/// </summary>
+	/// <returns>A positive day count. The default is <c>1</c>.</returns>
 	public int DurationDays { get; init; } = 1;
 
 	/// <summary>
 	/// Gets the priority used to break ties when multiple rules resolve to the same date. Lower values win.
 	/// </summary>
+	/// <returns>An integer priority. The default is <c>100</c>.</returns>
 	public int Priority { get; init; } = 100;
 
 	/// <summary>
 	/// Gets a set of optional tags providing non-exclusive classification (e.g. <c>"Christian"</c>, <c>"Public"</c>, <c>"Federal"</c>).
 	/// </summary>
+	/// <returns>An immutable hash set of tag values. Empty when no tags are authored; never <see langword="null" />.</returns>
 	public ImmutableHashSet<string> Tags { get; init; } = ImmutableHashSet<string>.Empty;
 
 	// --- Fixed strategy fields ---------------------------------------------------------------
@@ -179,11 +194,13 @@ public sealed record NotableDateRule
 	/// <summary>
 	/// Gets the day of the month for <see cref="DateResolutionStrategy.Fixed" /> and <see cref="DateResolutionStrategy.DayOfWeekInMonth" />.
 	/// </summary>
+	/// <returns>A day-of-month in the range <c>1</c>..<c>31</c>, or <see langword="null" /> when the strategy does not require it.</returns>
 	public int? Day { get; init; }
 
 	/// <summary>
 	/// Gets the month of the year for <see cref="DateResolutionStrategy.Fixed" /> and <see cref="DateResolutionStrategy.DayOfWeekInMonth" />.
 	/// </summary>
+	/// <returns>A month number in the range <c>1</c>..<c>12</c>, or <see langword="null" /> when the strategy does not require it.</returns>
 	public int? Month { get; init; }
 
 	/// <summary>
@@ -200,6 +217,7 @@ public sealed record NotableDateRule
 	/// resolve to the correct Gregorian date in leap lunar years.
 	/// </para>
 	/// </remarks>
+	/// <returns><see langword="true" /> to advance past intercalary months when ordinal mapping; otherwise <see langword="false" />.</returns>
 	public bool SkipLeapMonth { get; init; }
 
 	/// <summary>
@@ -215,6 +233,7 @@ public sealed record NotableDateRule
 	/// year and the next, returning the first candidate whose Gregorian year matches.
 	/// </para>
 	/// </remarks>
+	/// <returns><see langword="true" /> to evaluate both candidate calendar years; otherwise <see langword="false" />.</returns>
 	public bool SweepCalendarYears { get; init; }
 
 	/// <summary>
@@ -229,6 +248,7 @@ public sealed record NotableDateRule
 	/// months with a fixed calendar position (Tishri through AdarII) are stored directly in <see cref="Month" />.
 	/// </para>
 	/// </remarks>
+	/// <returns>The textual month alias, or <see langword="null" /> when the rule does not require alias resolution.</returns>
 	public string? CalendarMonthAlias { get; init; }
 
 	// --- DayOfWeekInMonth strategy fields ----------------------------------------------------
@@ -236,11 +256,13 @@ public sealed record NotableDateRule
 	/// <summary>
 	/// Gets the weekday for <see cref="DateResolutionStrategy.DayOfWeekInMonth" /> (e.g. the <em>Monday</em> in "first Monday of October").
 	/// </summary>
+	/// <returns>A <see cref="System.DayOfWeek" /> value, or <see langword="null" /> when the strategy does not require it.</returns>
 	public DayOfWeek? DayOfWeek { get; init; }
 
 	/// <summary>
 	/// Gets the ordinal position of the weekday within the month for <see cref="DateResolutionStrategy.DayOfWeekInMonth" />.
 	/// </summary>
+	/// <returns>One of the defined <see cref="WeekOfMonthOrdinal" /> values, or <see langword="null" /> when the strategy does not require it.</returns>
 	public WeekOfMonthOrdinal? WeekOrdinal { get; init; }
 
 	// --- OffsetFromAnchor strategy fields ----------------------------------------------------
@@ -248,11 +270,13 @@ public sealed record NotableDateRule
 	/// <summary>
 	/// Gets the name of another <see cref="NotableDateRule" /> used as the anchor for <see cref="DateResolutionStrategy.OffsetFromAnchor" />.
 	/// </summary>
+	/// <returns>The anchor rule's <see cref="Name" />, or <see langword="null" /> when the strategy does not require an anchor.</returns>
 	public string? AnchorRuleName { get; init; }
 
 	/// <summary>
 	/// Gets the integer day offset applied to the anchor for <see cref="DateResolutionStrategy.OffsetFromAnchor" />.
 	/// </summary>
+	/// <returns>A signed day offset (positive moves forward, negative moves backward), or <see langword="null" /> when the strategy does not require it.</returns>
 	public int? OffsetDays { get; init; }
 
 	// --- Algorithm strategy fields ----------------------------------------------------------
@@ -260,6 +284,7 @@ public sealed record NotableDateRule
 	/// <summary>
 	/// Gets the registry key used to look up an <see cref="INotableDateAlgorithm" /> for <see cref="DateResolutionStrategy.Algorithm" />.
 	/// </summary>
+	/// <returns>The algorithm registry key, or <see langword="null" /> when the rule resolves via <see cref="AlgorithmType" /> instead.</returns>
 	public string? AlgorithmKey { get; init; }
 
 	/// <summary>
@@ -267,6 +292,7 @@ public sealed record NotableDateRule
 	/// <see cref="AlgorithmKey" /> is not registered. Provided for backward compatibility with rules authored against the previous
 	/// <c>NotableDateAlgorithmType</c> field.
 	/// </summary>
+	/// <returns>The CLR <see cref="Type" /> of the algorithm, or <see langword="null" /> when the rule resolves via <see cref="AlgorithmKey" />.</returns>
 	public Type? AlgorithmType { get; init; }
 
 	/// <summary>
@@ -280,12 +306,14 @@ public sealed record NotableDateRule
 	/// receives the raw value. Unused when the rule resolves through an <see cref="AlgorithmKey" /> registered on an
 	/// <see cref="INotableDateAlgorithmRegistry" />.
 	/// </remarks>
+	/// <returns>The raw month token to forward to the algorithm constructor, or <see langword="null" /> when no month argument is supplied.</returns>
 	public string? AlgorithmMonth { get; init; }
 
 	/// <summary>
 	/// Gets the optional day-of-month value passed to the algorithm constructor alongside <see cref="AlgorithmMonth" /> when the
 	/// rule's <see cref="AlgorithmType" /> exposes a two-argument <c>(month, day)</c> constructor.
 	/// </summary>
+	/// <returns>The day-of-month value to forward to the algorithm constructor, or <see langword="null" /> when no day argument is supplied.</returns>
 	public int? AlgorithmDay { get; init; }
 
 	// --- Adjustments + metadata --------------------------------------------------------------
@@ -293,10 +321,12 @@ public sealed record NotableDateRule
 	/// <summary>
 	/// Gets the observance adjustments evaluated against the resolved date. Defaults to an empty array (never default-uninitialised).
 	/// </summary>
+	/// <returns>An immutable array of <see cref="ObservanceAdjustment" /> entries in evaluation order. Empty when no adjustments are authored.</returns>
 	public ImmutableArray<ObservanceAdjustment> Adjustments { get; init; } = ImmutableArray<ObservanceAdjustment>.Empty;
 
 	/// <summary>
 	/// Gets an optional human-readable comment describing the rule's intent or provenance.
 	/// </summary>
+	/// <returns>The free-form comment text, or <see langword="null" /> when no comment was authored.</returns>
 	public string? Comment { get; init; }
 }

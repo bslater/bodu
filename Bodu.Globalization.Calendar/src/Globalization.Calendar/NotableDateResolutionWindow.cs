@@ -18,9 +18,16 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 internal sealed class NotableDateResolutionWindow
 {
+    /// <summary>The full set of notable dates known to the window, including both emitted and blocker entries.</summary>
     private readonly List<NotableDate> _knownDates = new();
+
+    /// <summary>The subset of <see cref="_knownDates" /> emitted to callers in the resolution output.</summary>
     private readonly List<NotableDate> _outputDates = new();
+
+    /// <summary>The subset of <see cref="_knownDates" /> flagged non-working, used for working-day arithmetic.</summary>
     private readonly List<NotableDate> _nonWorkingDates = new();
+
+    /// <summary>The base occurrences materialised into the window, used to drive observance-adjustment evaluation.</summary>
     private readonly List<ResolvedNotableDateOccurrence> _baseOccurrences = new();
 
     /// <summary>
@@ -44,26 +51,31 @@ internal sealed class NotableDateResolutionWindow
     /// <summary>
     /// Gets the inclusive start of the known chronological window.
     /// </summary>
+    /// <returns>The earliest <see cref="DateTime" /> the window currently spans.</returns>
     public DateTime StartDate { get; private set; }
 
     /// <summary>
     /// Gets the inclusive end of the known chronological window.
     /// </summary>
+    /// <returns>The latest <see cref="DateTime" /> the window currently spans.</returns>
     public DateTime EndDate { get; private set; }
 
     /// <summary>
     /// Gets the emitted dates in chronological order.
     /// </summary>
+    /// <returns>A read-only chronological snapshot of the dates that should appear in the resolution output. Never <see langword="null" />.</returns>
     public IReadOnlyList<NotableDate> OutputDates => Sort(_outputDates);
 
     /// <summary>
     /// Gets all known dates in chronological order, including blockers that are not emitted.
     /// </summary>
+    /// <returns>A read-only chronological snapshot of the full known set, including blocker entries. Never <see langword="null" />.</returns>
     public IReadOnlyList<NotableDate> KnownDates => Sort(_knownDates);
 
     /// <summary>
     /// Gets the base occurrences that have been materialised into the window.
     /// </summary>
+    /// <returns>A read-only list of <see cref="ResolvedNotableDateOccurrence" /> entries ordered by anchor date, priority, name, and territory.</returns>
     public IReadOnlyList<ResolvedNotableDateOccurrence> BaseOccurrences => _baseOccurrences
         .OrderBy(occurrence => occurrence.AnchorDate)
         .ThenBy(occurrence => occurrence.Rule.Priority)
