@@ -92,6 +92,60 @@ public partial class MultiValueDictionaryTests
         Assert.IsFalse(sut.ContainsKey("k"));
     }
 
+    /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Remove(TKey,TValue)"/> removes the first occurrence and preserves remaining values when the value appears at the first position.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenValueIsFirstInList_ShouldPreserveRemaining()
+    {
+        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+        sut.Add("k", 10);
+        sut.Add("k", 20);
+        sut.Add("k", 30);
+
+        bool result = sut.Remove("k", 10);
+
+        Assert.IsTrue(result);
+        Assert.AreEqual(2, sut.Count);
+        CollectionAssert.AreEqual(new[] { 20, 30 }, sut["k"].ToList());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Remove(TKey,TValue)"/> removes the value and preserves remaining when the value appears at the last position.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenValueIsLastInList_ShouldPreserveRemaining()
+    {
+        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+        sut.Add("k", 10);
+        sut.Add("k", 20);
+        sut.Add("k", 30);
+
+        bool result = sut.Remove("k", 30);
+
+        Assert.IsTrue(result);
+        Assert.AreEqual(2, sut.Count);
+        CollectionAssert.AreEqual(new[] { 10, 20 }, sut["k"].ToList());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Remove(TKey,TValue)"/> removes only one occurrence when the same value appears multiple times under a key.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenValueAppearsMultipleTimes_ShouldRemoveOnlyOneOccurrence()
+    {
+        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+        sut.Add("k", 5);
+        sut.Add("k", 5);
+        sut.Add("k", 5);
+
+        bool result = sut.Remove("k", 5);
+
+        Assert.IsTrue(result);
+        Assert.AreEqual(2, sut.Count);
+        Assert.AreEqual(2, sut["k"].Count);
+    }
+
     // --------------------------------------------------------
     // RemoveAll(TKey)
     // --------------------------------------------------------

@@ -142,4 +142,52 @@ public partial class MultiValueDictionaryTests
         Assert.AreEqual(3, sut.Count);
         Assert.AreEqual(1, sut.KeyCount);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.AddRange"/> does not create a key entry when the values sequence is empty and the key is new.
+    /// </summary>
+    [TestMethod]
+    public void AddRange_WhenEmptySequenceForNewKey_ShouldNotCreateKey()
+    {
+        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+
+        sut.AddRange("k", Array.Empty<int>());
+
+        Assert.AreEqual(0, sut.KeyCount);
+        Assert.AreEqual(0, sut.Count);
+        Assert.IsFalse(sut.ContainsKey("k"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.AddRange"/> does not modify the count when the values sequence is empty and the key already exists.
+    /// </summary>
+    [TestMethod]
+    public void AddRange_WhenEmptySequenceForExistingKey_ShouldNotModifyCount()
+    {
+        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+        sut.Add("k", 1);
+        int countBefore = sut.Count;
+
+        sut.AddRange("k", Array.Empty<int>());
+
+        Assert.AreEqual(countBefore, sut.Count);
+        Assert.AreEqual(1, sut.KeyCount);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Add"/> correctly maintains <see cref="MultiValueDictionary{TKey,TValue}.Count"/> across multiple keys.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenMultipleKeysUsed_ShouldMaintainTotalCount()
+    {
+        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+
+        sut.Add("a", 1);
+        sut.Add("b", 2);
+        sut.Add("c", 3);
+        sut.Add("a", 4);
+
+        Assert.AreEqual(4, sut.Count);
+        Assert.AreEqual(3, sut.KeyCount);
+    }
 }

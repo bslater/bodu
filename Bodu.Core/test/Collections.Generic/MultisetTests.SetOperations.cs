@@ -204,4 +204,258 @@ public partial class MultisetTests
         Assert.AreEqual(2, a.Count);
         Assert.AreEqual(2, b.Count);
     }
+
+    // --------------------------------------------------------
+    // Union — empty operands
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Union"/> returns an empty multiset when both operands are empty.
+    /// </summary>
+    [TestMethod]
+    public void Union_WhenBothEmpty_ShouldReturnEmpty()
+    {
+        Multiset<int> a = new Multiset<int>();
+        Multiset<int> b = new Multiset<int>();
+
+        Multiset<int> result = a.Union(b);
+
+        Assert.AreEqual(0, result.Count);
+        Assert.AreEqual(0, result.DistinctCount);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Union"/> returns a copy of the right operand when the left operand is empty.
+    /// </summary>
+    [TestMethod]
+    public void Union_WhenLeftIsEmpty_ShouldReturnCopyOfRight()
+    {
+        Multiset<int> a = new Multiset<int>();
+        Multiset<int> b = new Multiset<int>(new[] { 1, 1, 2 });
+
+        Multiset<int> result = a.Union(b);
+
+        Assert.AreEqual(3, result.Count);
+        Assert.AreEqual(2, result.CountOf(1));
+        Assert.AreEqual(1, result.CountOf(2));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Union"/> returns a copy of the left operand when the right operand is empty.
+    /// </summary>
+    [TestMethod]
+    public void Union_WhenRightIsEmpty_ShouldReturnCopyOfLeft()
+    {
+        Multiset<int> a = new Multiset<int>(new[] { 1, 1, 2 });
+        Multiset<int> b = new Multiset<int>();
+
+        Multiset<int> result = a.Union(b);
+
+        Assert.AreEqual(3, result.Count);
+        Assert.AreEqual(2, result.CountOf(1));
+        Assert.AreEqual(1, result.CountOf(2));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Union"/> with itself returns a multiset with the same element counts.
+    /// </summary>
+    [TestMethod]
+    public void Union_WithSelf_ShouldReturnSameCounts()
+    {
+        Multiset<int> a = new Multiset<int>(new[] { 1, 1, 1, 2, 2 });
+
+        Multiset<int> result = a.Union(a);
+
+        Assert.AreEqual(3, result.CountOf(1));
+        Assert.AreEqual(2, result.CountOf(2));
+        Assert.AreEqual(5, result.Count);
+    }
+
+    // --------------------------------------------------------
+    // Intersect — empty operands
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Intersect"/> returns an empty multiset when both operands are empty.
+    /// </summary>
+    [TestMethod]
+    public void Intersect_WhenBothEmpty_ShouldReturnEmpty()
+    {
+        Multiset<int> a = new Multiset<int>();
+        Multiset<int> b = new Multiset<int>();
+
+        Multiset<int> result = a.Intersect(b);
+
+        Assert.AreEqual(0, result.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Intersect"/> returns an empty multiset when the left operand is empty.
+    /// </summary>
+    [TestMethod]
+    public void Intersect_WhenLeftIsEmpty_ShouldReturnEmpty()
+    {
+        Multiset<int> a = new Multiset<int>();
+        Multiset<int> b = new Multiset<int>(new[] { 1, 2, 3 });
+
+        Multiset<int> result = a.Intersect(b);
+
+        Assert.AreEqual(0, result.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Intersect"/> returns an empty multiset when the right operand is empty.
+    /// </summary>
+    [TestMethod]
+    public void Intersect_WhenRightIsEmpty_ShouldReturnEmpty()
+    {
+        Multiset<int> a = new Multiset<int>(new[] { 1, 2, 3 });
+        Multiset<int> b = new Multiset<int>();
+
+        Multiset<int> result = a.Intersect(b);
+
+        Assert.AreEqual(0, result.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Intersect"/> with itself returns a multiset with the same element counts.
+    /// </summary>
+    [TestMethod]
+    public void Intersect_WithSelf_ShouldReturnSameCounts()
+    {
+        Multiset<int> a = new Multiset<int>(new[] { 1, 1, 1, 2, 2 });
+
+        Multiset<int> result = a.Intersect(a);
+
+        Assert.AreEqual(3, result.CountOf(1));
+        Assert.AreEqual(2, result.CountOf(2));
+        Assert.AreEqual(5, result.Count);
+    }
+
+    // --------------------------------------------------------
+    // Except — empty operands
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Except"/> returns an empty multiset when both operands are empty.
+    /// </summary>
+    [TestMethod]
+    public void Except_WhenBothEmpty_ShouldReturnEmpty()
+    {
+        Multiset<int> a = new Multiset<int>();
+        Multiset<int> b = new Multiset<int>();
+
+        Multiset<int> result = a.Except(b);
+
+        Assert.AreEqual(0, result.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Except"/> returns an empty multiset when the left operand is empty.
+    /// </summary>
+    [TestMethod]
+    public void Except_WhenLeftIsEmpty_ShouldReturnEmpty()
+    {
+        Multiset<int> a = new Multiset<int>();
+        Multiset<int> b = new Multiset<int>(new[] { 1, 2, 3 });
+
+        Multiset<int> result = a.Except(b);
+
+        Assert.AreEqual(0, result.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Except"/> returns a copy of the left operand when the right operand is empty.
+    /// </summary>
+    [TestMethod]
+    public void Except_WhenRightIsEmpty_ShouldReturnCopyOfLeft()
+    {
+        Multiset<int> a = new Multiset<int>(new[] { 1, 1, 2 });
+        Multiset<int> b = new Multiset<int>();
+
+        Multiset<int> result = a.Except(b);
+
+        Assert.AreEqual(2, result.CountOf(1));
+        Assert.AreEqual(1, result.CountOf(2));
+        Assert.AreEqual(3, result.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Except"/> with itself returns an empty multiset.
+    /// </summary>
+    [TestMethod]
+    public void Except_WithSelf_ShouldReturnEmpty()
+    {
+        Multiset<int> a = new Multiset<int>(new[] { 1, 1, 1, 2, 2 });
+
+        Multiset<int> result = a.Except(a);
+
+        Assert.AreEqual(0, result.Count);
+        Assert.AreEqual(0, result.DistinctCount);
+    }
+
+    // --------------------------------------------------------
+    // Sum — empty operands
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Sum"/> returns an empty multiset when both operands are empty.
+    /// </summary>
+    [TestMethod]
+    public void Sum_WhenBothEmpty_ShouldReturnEmpty()
+    {
+        Multiset<int> a = new Multiset<int>();
+        Multiset<int> b = new Multiset<int>();
+
+        Multiset<int> result = a.Sum(b);
+
+        Assert.AreEqual(0, result.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Sum"/> returns a copy of the right operand when the left operand is empty.
+    /// </summary>
+    [TestMethod]
+    public void Sum_WhenLeftIsEmpty_ShouldReturnCopyOfRight()
+    {
+        Multiset<int> a = new Multiset<int>();
+        Multiset<int> b = new Multiset<int>(new[] { 1, 1, 2 });
+
+        Multiset<int> result = a.Sum(b);
+
+        Assert.AreEqual(2, result.CountOf(1));
+        Assert.AreEqual(1, result.CountOf(2));
+        Assert.AreEqual(3, result.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Sum"/> returns a copy of the left operand when the right operand is empty.
+    /// </summary>
+    [TestMethod]
+    public void Sum_WhenRightIsEmpty_ShouldReturnCopyOfLeft()
+    {
+        Multiset<int> a = new Multiset<int>(new[] { 1, 1, 2 });
+        Multiset<int> b = new Multiset<int>();
+
+        Multiset<int> result = a.Sum(b);
+
+        Assert.AreEqual(2, result.CountOf(1));
+        Assert.AreEqual(1, result.CountOf(2));
+        Assert.AreEqual(3, result.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Sum"/> with itself returns a multiset with doubled element counts.
+    /// </summary>
+    [TestMethod]
+    public void Sum_WithSelf_ShouldReturnDoubledCounts()
+    {
+        Multiset<int> a = new Multiset<int>(new[] { 1, 1, 1, 2, 2 });
+
+        Multiset<int> result = a.Sum(a);
+
+        Assert.AreEqual(6, result.CountOf(1));
+        Assert.AreEqual(4, result.CountOf(2));
+        Assert.AreEqual(10, result.Count);
+    }
 }

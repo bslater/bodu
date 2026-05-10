@@ -175,4 +175,201 @@ public partial class MultisetTests
         int[] values = dest.Cast<int>().OrderBy(x => x).ToArray();
         CollectionAssert.AreEqual(new[] { 5, 5, 6 }, values);
     }
+
+    // --------------------------------------------------------
+    // Enumerator — Current before MoveNext
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that accessing <see cref="Multiset{T}.Enumerator.Current"/> before the first call to
+    /// <see cref="Multiset{T}.Enumerator.MoveNext"/> throws <see cref="InvalidOperationException"/>.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_CurrentBeforeMoveNext_ShouldThrowInvalidOperationException()
+    {
+        Multiset<int> sut = new Multiset<int>();
+        sut.Add(1);
+        Multiset<int>.Enumerator en = sut.GetEnumerator();
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = en.Current;
+        });
+    }
+
+    // --------------------------------------------------------
+    // Enumerator — Current after exhaustion
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that accessing <see cref="Multiset{T}.Enumerator.Current"/> after the enumerator is exhausted throws <see cref="InvalidOperationException"/>.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_AfterExhaustion_CurrentShouldThrowInvalidOperationException()
+    {
+        Multiset<int> sut = new Multiset<int>();
+        sut.Add(42);
+        Multiset<int>.Enumerator en = sut.GetEnumerator();
+        while (en.MoveNext()) { }
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = en.Current;
+        });
+    }
+
+    // --------------------------------------------------------
+    // Enumerator — Reset
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Enumerator.Reset"/> repositions the enumerator to before the first element,
+    /// allowing the multiset to be enumerated again from the beginning.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_WhenReset_ShouldAllowReEnumeration()
+    {
+        Multiset<int> sut = new Multiset<int>();
+        sut.Add(1, 2);
+        sut.Add(2, 1);
+
+        Multiset<int>.Enumerator en = sut.GetEnumerator();
+        List<int> firstPass = new List<int>();
+        while (en.MoveNext())
+            firstPass.Add(en.Current);
+
+        en.Reset();
+
+        List<int> secondPass = new List<int>();
+        while (en.MoveNext())
+            secondPass.Add(en.Current);
+
+        firstPass.Sort();
+        secondPass.Sort();
+        CollectionAssert.AreEqual(firstPass, secondPass);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Enumerator.Reset"/> throws <see cref="InvalidOperationException"/>
+    /// when the multiset has been modified after the enumerator was created.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_WhenResetAfterModification_ShouldThrowInvalidOperationException()
+    {
+        Multiset<int> sut = new Multiset<int>();
+        sut.Add(1);
+        Multiset<int>.Enumerator en = sut.GetEnumerator();
+        sut.Add(2);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            en.Reset();
+        });
+    }
+
+    // --------------------------------------------------------
+    // Enumerator — RemoveAll invalidation
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that the enumerator throws <see cref="InvalidOperationException"/> when the multiset is modified via <see cref="Multiset{T}.RemoveAll"/> during enumeration.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_WhenModifiedDuringEnumerationViaRemoveAll_ShouldThrowInvalidOperationException()
+    {
+        Multiset<int> sut = new Multiset<int>(new[] { 1, 2, 3 });
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            foreach (int _ in sut)
+                sut.RemoveAll(1);
+        });
+    }
+
+    // --------------------------------------------------------
+    // Enumerator — Add(T, int) invalidation
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that the enumerator throws <see cref="InvalidOperationException"/> when the multiset is modified via <see cref="Multiset{T}.Add(T, int)"/> during enumeration.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_WhenModifiedDuringEnumerationViaAddWithCount_ShouldThrowInvalidOperationException()
+    {
+        Multiset<int> sut = new Multiset<int>(new[] { 1, 2, 3 });
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            foreach (int _ in sut)
+                sut.Add(99, 3);
+        });
+    }
+
+    // --------------------------------------------------------
+    // Distinct — empty multiset
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Distinct()"/> yields no elements when the multiset is empty.
+    /// </summary>
+    [TestMethod]
+    public void Distinct_WhenEmpty_ShouldYieldNoElements()
+    {
+        Multiset<string> sut = new Multiset<string>();
+
+        Assert.AreEqual(0, sut.Distinct().Count());
+    }
+
+    // --------------------------------------------------------
+    // Frequencies — empty multiset
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Frequencies()"/> yields no pairs when the multiset is empty.
+    /// </summary>
+    [TestMethod]
+    public void Frequencies_WhenEmpty_ShouldYieldNoPairs()
+    {
+        Multiset<string> sut = new Multiset<string>();
+
+        Assert.AreEqual(0, sut.Frequencies().Count());
+    }
+
+    // --------------------------------------------------------
+    // Distinct — RemoveAll invalidation
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Distinct()"/> throws <see cref="InvalidOperationException"/> when the multiset is modified via <see cref="Multiset{T}.RemoveAll"/> during enumeration.
+    /// </summary>
+    [TestMethod]
+    public void Distinct_WhenModifiedViaRemoveAllDuringEnumeration_ShouldThrowInvalidOperationException()
+    {
+        Multiset<int> sut = new Multiset<int>(new[] { 1, 2, 3 });
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            foreach (int _ in sut.Distinct())
+                sut.RemoveAll(1);
+        });
+    }
+
+    // --------------------------------------------------------
+    // Frequencies — RemoveAll invalidation
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Frequencies()"/> throws <see cref="InvalidOperationException"/> when the multiset is modified via <see cref="Multiset{T}.RemoveAll"/> during enumeration.
+    /// </summary>
+    [TestMethod]
+    public void Frequencies_WhenModifiedViaRemoveAllDuringEnumeration_ShouldThrowInvalidOperationException()
+    {
+        Multiset<int> sut = new Multiset<int>(new[] { 1, 2, 3 });
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            foreach (KeyValuePair<int, int> _ in sut.Frequencies())
+                sut.RemoveAll(1);
+        });
+    }
 }

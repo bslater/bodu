@@ -178,6 +178,18 @@ public partial class MultiValueDictionaryTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.ContainsKey"/> returns <see langword="true"/> when the key is present.
+    /// </summary>
+    [TestMethod]
+    public void ContainsKey_WhenKeyPresent_ShouldReturnTrue()
+    {
+        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+        sut.Add("k", 1);
+
+        Assert.IsTrue(sut.ContainsKey("k"));
+    }
+
+    /// <summary>
     /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.ContainsKey"/> throws <see cref="ArgumentNullException"/> for a null key.
     /// </summary>
     [TestMethod]
@@ -192,7 +204,88 @@ public partial class MultiValueDictionaryTests
     }
 
     // --------------------------------------------------------
-    // Clear
+    // Count — edge cases
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Count"/> decrements when the last value is removed from a key, eliminating the key entry.
+    /// </summary>
+    [TestMethod]
+    public void Count_WhenLastValueRemovedFromKey_ShouldDecrementByOne()
+    {
+        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+        sut.Add("k", 42);
+
+        sut.Remove("k", 42);
+
+        Assert.AreEqual(0, sut.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.KeyCount"/> decrements to zero after the last value is removed from the only key.
+    /// </summary>
+    [TestMethod]
+    public void KeyCount_WhenLastValueRemovedFromKey_ShouldDecrementToZero()
+    {
+        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+        sut.Add("k", 42);
+
+        sut.Remove("k", 42);
+
+        Assert.AreEqual(0, sut.KeyCount);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Count"/> is correctly decremented after <see cref="MultiValueDictionary{TKey,TValue}.RemoveAll"/>.
+    /// </summary>
+    [TestMethod]
+    public void Count_AfterRemoveAll_ShouldReflectRemovedValues()
+    {
+        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+        sut.Add("a", 1);
+        sut.Add("a", 2);
+        sut.Add("a", 3);
+        sut.Add("b", 4);
+
+        sut.RemoveAll("a");
+
+        Assert.AreEqual(1, sut.Count);
+        Assert.AreEqual(1, sut.KeyCount);
+    }
+
+    // --------------------------------------------------------
+    // Keys — edge cases
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Keys"/> is empty when the dictionary contains no entries.
+    /// </summary>
+    [TestMethod]
+    public void Keys_WhenEmpty_ShouldBeEmpty()
+    {
+        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+
+        Assert.AreEqual(0, sut.Keys.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Keys"/> no longer contains a key after all its values are removed via <see cref="MultiValueDictionary{TKey,TValue}.RemoveAll"/>.
+    /// </summary>
+    [TestMethod]
+    public void Keys_AfterRemoveAll_ShouldNotContainRemovedKey()
+    {
+        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+        sut.Add("x", 1);
+        sut.Add("y", 2);
+
+        sut.RemoveAll("x");
+
+        CollectionAssert.DoesNotContain(sut.Keys.ToList(), "x");
+        CollectionAssert.Contains(sut.Keys.ToList(), "y");
+    }
+
+    // --------------------------------------------------------
+    // Clear — edge cases
     // --------------------------------------------------------
 
     /// <summary>
@@ -210,5 +303,38 @@ public partial class MultiValueDictionaryTests
         Assert.AreEqual(0, sut.Count);
         Assert.AreEqual(0, sut.KeyCount);
         Assert.IsFalse(sut.ContainsKey("a"));
+    }
+
+    /// <summary>
+    /// Verifies that calling <see cref="MultiValueDictionary{TKey,TValue}.Clear"/> on an already-empty dictionary leaves it in a valid empty state.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenAlreadyEmpty_ShouldRemainEmpty()
+    {
+        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+
+        sut.Clear();
+
+        Assert.AreEqual(0, sut.Count);
+        Assert.AreEqual(0, sut.KeyCount);
+    }
+
+    /// <summary>
+    /// Verifies that entries added after <see cref="MultiValueDictionary{TKey,TValue}.Clear"/> are tracked correctly.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenCalledThenItemsReAdded_ShouldTrackNewItems()
+    {
+        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+        sut.Add("old", 1);
+        sut.Clear();
+
+        sut.Add("new", 10);
+        sut.Add("new", 20);
+
+        Assert.AreEqual(2, sut.Count);
+        Assert.AreEqual(1, sut.KeyCount);
+        Assert.IsFalse(sut.ContainsKey("old"));
+        Assert.IsTrue(sut.ContainsKey("new"));
     }
 }

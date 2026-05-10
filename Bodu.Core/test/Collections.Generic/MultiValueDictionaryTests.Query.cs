@@ -162,4 +162,113 @@ public partial class MultiValueDictionaryTests
 
         Assert.IsTrue(sut.ContainsValue("k", 42));
     }
+
+    // --------------------------------------------------------
+    // GetValues — live view
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that the list returned by <see cref="MultiValueDictionary{TKey,TValue}.GetValues"/> reflects values added to the same key after the call.
+    /// </summary>
+    [TestMethod]
+    public void GetValues_WhenReturned_ShouldReflectSubsequentAdditions()
+    {
+        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+        sut.Add("k", 1);
+
+        IReadOnlyList<int> view = sut.GetValues("k");
+        sut.Add("k", 2);
+
+        Assert.AreEqual(2, view.Count);
+        Assert.AreEqual(2, view[1]);
+    }
+
+    // --------------------------------------------------------
+    // TryGetValues — live view
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that the list returned by <see cref="MultiValueDictionary{TKey,TValue}.TryGetValues"/> reflects values added to the same key after the call.
+    /// </summary>
+    [TestMethod]
+    public void TryGetValues_WhenReturned_ShouldReflectSubsequentAdditions()
+    {
+        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+        sut.Add("k", 10);
+
+        bool found = sut.TryGetValues("k", out IReadOnlyList<int> view);
+        Assert.IsTrue(found);
+
+        sut.Add("k", 20);
+
+        Assert.AreEqual(2, view.Count);
+        Assert.AreEqual(20, view[1]);
+    }
+
+    // --------------------------------------------------------
+    // Indexer — live view
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that the list returned by the indexer reflects values added to the same key after the call.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenKeyPresent_ShouldReflectSubsequentAdditions()
+    {
+        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+        sut.Add("k", 100);
+
+        IReadOnlyList<int> view = sut["k"];
+        sut.Add("k", 200);
+
+        Assert.AreEqual(2, view.Count);
+        Assert.AreEqual(200, view[1]);
+    }
+
+    // --------------------------------------------------------
+    // Null values
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that a <see langword="null"/> value can be stored and retrieved under a key.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenValueIsNull_ShouldStoreAndRetrieveNull()
+    {
+        MultiValueDictionary<string, string?> sut = new MultiValueDictionary<string, string?>();
+
+        sut.Add("k", null);
+
+        Assert.AreEqual(1, sut.Count);
+        Assert.IsNull(sut["k"][0]);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.ContainsValue"/> returns <see langword="true"/> when the stored value is <see langword="null"/>.
+    /// </summary>
+    [TestMethod]
+    public void ContainsValue_WhenValueIsNull_ShouldReturnTrue()
+    {
+        MultiValueDictionary<string, string?> sut = new MultiValueDictionary<string, string?>();
+        sut.Add("k", null);
+
+        Assert.IsTrue(sut.ContainsValue("k", null));
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null"/> value can be removed from a key's value list.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenValueIsNull_ShouldRemoveNullEntry()
+    {
+        MultiValueDictionary<string, string?> sut = new MultiValueDictionary<string, string?>();
+        sut.Add("k", null);
+        sut.Add("k", "other");
+
+        bool removed = sut.Remove("k", null);
+
+        Assert.IsTrue(removed);
+        Assert.AreEqual(1, sut.Count);
+        CollectionAssert.AreEqual(new[] { "other" }, sut["k"].ToList());
+    }
 }

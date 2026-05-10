@@ -106,6 +106,34 @@ public partial class MultisetTests
         Assert.AreEqual(1, sut.CountOf("c"));
     }
 
+    /// <summary>
+    /// Verifies that constructing from an empty collection produces an empty multiset.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenEmptyCollectionProvided_ShouldBeEmpty()
+    {
+        Multiset<string> sut = new Multiset<string>(Array.Empty<string>());
+
+        Assert.AreEqual(0, sut.Count);
+        Assert.AreEqual(0, sut.DistinctCount);
+    }
+
+    /// <summary>
+    /// Verifies that constructing from a collection with a custom comparer uses the specified comparer for element equality.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCollectionAndComparerProvided_ShouldUseSpecifiedComparer()
+    {
+        Multiset<string> sut = new Multiset<string>(
+            new[] { "A", "a", "B" },
+            StringComparer.OrdinalIgnoreCase);
+
+        Assert.AreEqual(3, sut.Count);
+        Assert.AreEqual(2, sut.DistinctCount);
+        Assert.AreEqual(2, sut.CountOf("a"));
+        Assert.AreEqual(1, sut.CountOf("b"));
+    }
+
     // --------------------------------------------------------
     // Count and DistinctCount
     // --------------------------------------------------------
@@ -177,6 +205,33 @@ public partial class MultisetTests
         Assert.IsFalse(sut.Contains("world"));
     }
 
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Contains"/> returns <see langword="false"/> after all occurrences of an element have been removed.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenAllOccurrencesRemoved_ShouldReturnFalse()
+    {
+        Multiset<string> sut = new Multiset<string>();
+        sut.Add("x", 3);
+        sut.RemoveAll("x");
+
+        Assert.IsFalse(sut.Contains("x"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Contains"/> returns <see langword="true"/> after an element is re-added following removal.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenElementReaddedAfterRemoval_ShouldReturnTrue()
+    {
+        Multiset<string> sut = new Multiset<string>();
+        sut.Add("y");
+        sut.Remove("y");
+        sut.Add("y");
+
+        Assert.IsTrue(sut.Contains("y"));
+    }
+
     // --------------------------------------------------------
     // CountOf
     // --------------------------------------------------------
@@ -206,6 +261,19 @@ public partial class MultisetTests
         Assert.AreEqual(3, sut.CountOf(5));
     }
 
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.CountOf"/> returns the decremented multiplicity after one occurrence is removed.
+    /// </summary>
+    [TestMethod]
+    public void CountOf_WhenOneOccurrenceRemovedFromMultiple_ShouldReturnDecremented()
+    {
+        Multiset<int> sut = new Multiset<int>();
+        sut.Add(3, 4);
+        sut.Remove(3);
+
+        Assert.AreEqual(3, sut.CountOf(3));
+    }
+
     // --------------------------------------------------------
     // Clear
     // --------------------------------------------------------
@@ -223,6 +291,36 @@ public partial class MultisetTests
         Assert.AreEqual(0, sut.Count);
         Assert.AreEqual(0, sut.DistinctCount);
         Assert.IsFalse(sut.Contains("a"));
+    }
+
+    /// <summary>
+    /// Verifies that calling <see cref="Multiset{T}.Clear"/> on an already-empty multiset leaves it in a valid empty state.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenAlreadyEmpty_ShouldRemainEmpty()
+    {
+        Multiset<int> sut = new Multiset<int>();
+
+        sut.Clear();
+
+        Assert.AreEqual(0, sut.Count);
+        Assert.AreEqual(0, sut.DistinctCount);
+    }
+
+    /// <summary>
+    /// Verifies that items added after <see cref="Multiset{T}.Clear"/> are tracked correctly.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenCalledThenItemsReAdded_ShouldTrackNewItems()
+    {
+        Multiset<string> sut = new Multiset<string>(["old", "old"]);
+        sut.Clear();
+        sut.Add("new", 3);
+
+        Assert.AreEqual(3, sut.Count);
+        Assert.AreEqual(1, sut.DistinctCount);
+        Assert.AreEqual(3, sut.CountOf("new"));
+        Assert.IsFalse(sut.Contains("old"));
     }
 
     // --------------------------------------------------------
@@ -290,5 +388,56 @@ public partial class MultisetTests
         {
             sut.CopyTo(new int[2], 0);
         });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.CopyTo"/> throws <see cref="ArgumentException"/> when the remaining space after the offset is insufficient.
+    /// </summary>
+    [TestMethod]
+    public void CopyTo_WhenRemainingSpaceAfterOffsetIsInsufficient_ShouldThrowArgumentException()
+    {
+        Multiset<int> sut = new Multiset<int>();
+        sut.Add(1);
+        sut.Add(2);
+        sut.Add(3);
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            sut.CopyTo(new int[5], 3);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.CopyTo"/> does not modify the destination array when the multiset is empty.
+    /// </summary>
+    [TestMethod]
+    public void CopyTo_WhenMultisetIsEmpty_ShouldNotModifyArray()
+    {
+        Multiset<int> sut = new Multiset<int>();
+        int[] dest = new int[] { 99, 88 };
+
+        sut.CopyTo(dest, 0);
+
+        Assert.AreEqual(99, dest[0]);
+        Assert.AreEqual(88, dest[1]);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.CopyTo"/> copies elements starting at the specified array index.
+    /// </summary>
+    [TestMethod]
+    public void CopyTo_WhenOffsetSpecified_ShouldCopyAtCorrectPosition()
+    {
+        Multiset<int> sut = new Multiset<int>();
+        sut.Add(42, 2);
+        int[] dest = new int[5];
+
+        sut.CopyTo(dest, 2);
+
+        Assert.AreEqual(0, dest[0]);
+        Assert.AreEqual(0, dest[1]);
+        Assert.AreEqual(42, dest[2]);
+        Assert.AreEqual(42, dest[3]);
+        Assert.AreEqual(0, dest[4]);
     }
 }
