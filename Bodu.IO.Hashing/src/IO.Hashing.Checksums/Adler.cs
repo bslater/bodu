@@ -4,10 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Checksums;
-
 using System.IO.Hashing;
 using System.Numerics;
+
+namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Provides a generic base class for Adler-style checksum algorithms parameterised by the accumulator type.

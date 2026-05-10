@@ -1,12 +1,12 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Pearson.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing;
-
 using System.IO.Hashing;
+
+namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Computes the hash for the input data using the <c>Pearson</c> hash algorithm. This variant applies a

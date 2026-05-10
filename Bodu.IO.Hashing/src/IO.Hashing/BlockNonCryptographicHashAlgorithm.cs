@@ -1,14 +1,14 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockNonCryptographicHashAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing;
-
 using Bodu;
 using System;
 using System.IO.Hashing;
+
+namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Base class for non-cryptographic hash algorithms whose internal state advances one fixed-size block at a time —

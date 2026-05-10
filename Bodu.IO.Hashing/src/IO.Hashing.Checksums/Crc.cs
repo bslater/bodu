@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Checksums;
-
 using Bodu;
 using Bodu.Extensions;
 using Bodu.IO.Hashing;
@@ -13,6 +11,8 @@ using System;
 using System.Buffers.Binary;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
+
+namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// General-purpose CRC (Cyclic Redundancy Check) engine driven by a <see cref="CrcStandard"/> parameter set —

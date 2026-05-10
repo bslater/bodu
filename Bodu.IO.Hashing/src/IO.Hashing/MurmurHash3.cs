@@ -1,14 +1,14 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MurmurHash3.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing;
-
 using System.IO;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
+
+namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Base class for the <c>MurmurHash3</c> family of non-cryptographic hash algorithms by Austin Appleby. See the

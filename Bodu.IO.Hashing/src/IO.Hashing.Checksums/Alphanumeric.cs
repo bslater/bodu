@@ -4,11 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Checksums;
-
 using System.Globalization;
 using System.Resources;
 using System.Runtime.CompilerServices;
+
+namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Provides shared helpers for expanding and validating the ASCII uppercase alphanumeric alphabet used by ISO 7064

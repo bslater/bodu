@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Extensions;
-
 using System.IO.Hashing;
+
+namespace Bodu.IO.Hashing.Extensions;
 
 /// <summary>
 /// Extends <see cref="NonCryptographicHashAlgorithm"/> with one-shot hashing, streaming and async input,

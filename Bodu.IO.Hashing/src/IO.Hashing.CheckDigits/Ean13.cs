@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.CheckDigits;
-
 using Bodu.IO.Hashing.Checksums;
+
+namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Computes the check digit of a 13-digit European Article Number / Global Trade Item Number-13 barcode using the

@@ -1,16 +1,16 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CityHash.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-namespace Bodu.IO.Hashing;
 
 using Bodu.Extensions;
 using System.Buffers.Binary;
 using System.IO;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
+
+namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Base class for the <c>CityHash</c> family of non-cryptographic hash algorithms developed by Google. See

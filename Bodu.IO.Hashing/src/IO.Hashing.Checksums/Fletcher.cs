@@ -1,16 +1,16 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Fletcher.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-namespace Bodu.IO.Hashing.Checksums;
 
 using Bodu.Extensions;
 using Bodu.IO.Hashing;
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
+
+namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Provides a base class for the Fletcher checksum family (Fletcher-16, Fletcher-32, Fletcher-64).

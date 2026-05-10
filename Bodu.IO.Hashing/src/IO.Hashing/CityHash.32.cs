@@ -4,10 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing;
-
 using Bodu.Extensions;
 using System.Buffers.Binary;
+
+namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Computes a 32-bit (4-byte) non-cryptographic hash using the <c>CityHash32</c> variant by Google. This class cannot be inherited.

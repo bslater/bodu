@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Checksums;
-
 using System.Collections.Concurrent;
+
+namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Thread-safe cache of precomputed CRC lookup tables keyed by width, polynomial, and input reflection — amortises

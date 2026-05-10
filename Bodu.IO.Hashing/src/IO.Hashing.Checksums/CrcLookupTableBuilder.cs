@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Checksums;
-
 using Bodu.Extensions;
+
+namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Generates the precomputed lookup tables that drive the byte-at-a-time inner loop of <see cref="Crc"/>, given the
