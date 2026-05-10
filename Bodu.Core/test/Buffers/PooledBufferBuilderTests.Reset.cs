@@ -20,7 +20,7 @@ public partial class PooledBufferBuilderTests
 
         builder.Reset();
 
-        Assert.AreEqual(0, builder.Count);
+        Assert.AreEqual(0, builder.WrittenCount);
     }
 
     /// <summary>
@@ -51,8 +51,8 @@ public partial class PooledBufferBuilderTests
 
         builder.Append(99);
 
-        Assert.AreEqual(1, builder.Count);
-        Assert.AreEqual(99, builder.AsSpan()[0]);
+        Assert.AreEqual(1, builder.WrittenCount);
+        Assert.AreEqual(99, builder.WrittenSpan[0]);
     }
 
     /// <summary>
@@ -72,8 +72,8 @@ public partial class PooledBufferBuilderTests
         // should have been cleared. We verify indirectly: a second append writes to slot 0
         // and the span contains exactly that element.
         builder.Append("new");
-        Assert.AreEqual(1, builder.Count);
-        Assert.AreEqual("new", builder.AsSpan()[0]);
+        Assert.AreEqual(1, builder.WrittenCount);
+        Assert.AreEqual("new", builder.WrittenSpan[0]);
     }
 
     /// <summary>

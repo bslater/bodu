@@ -22,7 +22,7 @@ public partial class PooledBufferBuilderTests
         bool success = builder.TryCopyFrom(source);
 
         Assert.IsTrue(success);
-        CollectionAssert.AreEqual(source, builder.AsSpan().ToArray());
+        CollectionAssert.AreEqual(source, builder.WrittenSpan.ToArray());
     }
 
     /// <summary>
@@ -38,8 +38,8 @@ public partial class PooledBufferBuilderTests
         var replacement = new System.Collections.Generic.List<int> { 1, 2 };
         builder.TryCopyFrom(replacement);
 
-        Assert.AreEqual(2, builder.Count);
-        CollectionAssert.AreEqual(replacement, builder.AsSpan().ToArray());
+        Assert.AreEqual(2, builder.WrittenCount);
+        CollectionAssert.AreEqual(replacement, builder.WrittenSpan.ToArray());
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public partial class PooledBufferBuilderTests
 
         Assert.IsFalse(success);
         // Builder should be unchanged.
-        CollectionAssert.AreEqual(new[] { 10, 20 }, builder.AsSpan().ToArray());
+        CollectionAssert.AreEqual(new[] { 10, 20 }, builder.WrittenSpan.ToArray());
     }
 
     /// <summary>

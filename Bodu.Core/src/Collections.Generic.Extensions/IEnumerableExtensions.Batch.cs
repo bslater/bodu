@@ -180,15 +180,15 @@ public static partial class IEnumerableExtensions
                 {
                     buffer.Append(selector(enumerator.Current, index++));
 
-                    if (buffer.Count == size)
+                    if (buffer.WrittenCount == size)
                     {
-                        yield return buffer.AsSpan().ToArray();
+                        yield return buffer.WrittenSpan.ToArray();
                         buffer.Reset();
                     }
                 }
 
-                if (buffer.Count > 0)
-                    yield return buffer.AsSpan().ToArray();
+                if (buffer.WrittenCount > 0)
+                    yield return buffer.WrittenSpan.ToArray();
             }
             finally
             {

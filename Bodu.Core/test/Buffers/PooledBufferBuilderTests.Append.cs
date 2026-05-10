@@ -19,8 +19,8 @@ public partial class PooledBufferBuilderTests
 
         builder.Append(42);
 
-        Assert.AreEqual(1, builder.Count);
-        Assert.AreEqual(42, builder.AsSpan()[0]);
+        Assert.AreEqual(1, builder.WrittenCount);
+        Assert.AreEqual(42, builder.WrittenSpan[0]);
     }
 
     /// <summary>
@@ -36,7 +36,7 @@ public partial class PooledBufferBuilderTests
         builder.Append(2);
         builder.Append(3);
 
-        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, builder.AsSpan().ToArray());
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, builder.WrittenSpan.ToArray());
     }
 
     /// <summary>
@@ -51,8 +51,8 @@ public partial class PooledBufferBuilderTests
         for (int i = 0; i < 10; i++)
             builder.Append(i);
 
-        Assert.AreEqual(10, builder.Count);
-        CollectionAssert.AreEqual(Enumerable.Range(0, 10).ToArray(), builder.AsSpan().ToArray());
+        Assert.AreEqual(10, builder.WrittenCount);
+        CollectionAssert.AreEqual(Enumerable.Range(0, 10).ToArray(), builder.WrittenSpan.ToArray());
     }
 
     /// <summary>

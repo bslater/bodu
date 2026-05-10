@@ -18,8 +18,8 @@ public partial class PooledBufferBuilderTests
         using var builder = new PooledBufferBuilder<int>();
 
         builder.AppendRange(source);
-        var span = builder.AsSpan();
-        var array = builder.AsArray();
+        System.ReadOnlySpan<int> span = builder.WrittenSpan;
+        int[] array = builder.AsArray();
 
         CollectionAssert.AreEqual(span.ToArray(), array.Take(span.Length).ToArray());
     }

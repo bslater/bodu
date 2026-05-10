@@ -19,14 +19,14 @@ public partial class PooledBufferBuilderTests
         builder.AppendRange(Enumerable.Range(1, 5));
         builder.Dispose();
 
-        Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = builder.Count; });
+        Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = builder.WrittenCount; });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = builder.Capacity; });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.Append(1); });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.AppendRange(new[] { 1 }); });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.AppendRange(new[] { 1 }.AsSpan()); });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = builder.AsArray(); });
-        Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = builder.AsSpan(); });
-        Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = builder.AsMemory(); });
+        Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = builder.WrittenSpan; });
+        Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = builder.WrittenMemory; });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.Reset(); });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.TryCopyFrom(new System.Collections.Generic.List<int>()); });
     }

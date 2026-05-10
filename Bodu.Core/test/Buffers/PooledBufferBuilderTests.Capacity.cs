@@ -34,7 +34,7 @@ public partial class PooledBufferBuilderTests
             builder.Append(i);
 
         Assert.IsTrue(builder.Capacity > initialCapacity);
-        Assert.IsTrue(builder.Capacity >= builder.Count);
+        Assert.IsTrue(builder.Capacity >= builder.WrittenCount);
     }
 
     /// <summary>

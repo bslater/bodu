@@ -51,11 +51,11 @@ public sealed class PooledBufferBuilder<T> : System.IDisposable
     }
 
     /// <summary>
-    /// Gets the number of elements currently buffered.
+    /// Gets the number of elements that have been written to the buffer.
     /// </summary>
-    /// <returns>The count of elements that have been appended and not yet discarded by <see cref="Reset"/>.</returns>
+    /// <returns>The count of elements appended and not yet discarded by <see cref="Reset"/>.</returns>
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
-    public int Count
+    public int WrittenCount
     {
         get
         {
@@ -69,7 +69,7 @@ public sealed class PooledBufferBuilder<T> : System.IDisposable
     /// </summary>
     /// <returns>
     /// The length of the underlying rented array. This value is always greater than or equal to
-    /// <see cref="Count"/> and may be larger than the capacity requested at construction due to
+    /// <see cref="WrittenCount"/> and may be larger than the capacity requested at construction due to
     /// <see cref="ArrayPool{T}"/> rounding behaviour.
     /// </returns>
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
@@ -79,6 +79,40 @@ public sealed class PooledBufferBuilder<T> : System.IDisposable
         {
             ThrowIfDisposed();
             return _internalBuffer.Length;
+        }
+    }
+
+    /// <summary>
+    /// Gets a <see cref="ReadOnlyMemory{T}"/> representing the elements written to the buffer.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="ReadOnlyMemory{T}"/> containing exactly the first <see cref="WrittenCount"/> buffered
+    /// elements.
+    /// </returns>
+    /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
+    public ReadOnlyMemory<T> WrittenMemory
+    {
+        get
+        {
+            ThrowIfDisposed();
+            return _internalBuffer.AsMemory(0, _count);
+        }
+    }
+
+    /// <summary>
+    /// Gets a <see cref="ReadOnlySpan{T}"/> representing the elements written to the buffer.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="ReadOnlySpan{T}"/> containing exactly the first <see cref="WrittenCount"/> buffered
+    /// elements.
+    /// </returns>
+    /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
+    public ReadOnlySpan<T> WrittenSpan
+    {
+        get
+        {
+            ThrowIfDisposed();
+            return _internalBuffer.AsSpan(0, _count);
         }
     }
 
@@ -143,8 +177,8 @@ public sealed class PooledBufferBuilder<T> : System.IDisposable
     /// Returns the internal array used by the buffer.
     /// </summary>
     /// <returns>
-    /// The underlying rented array. Only the first <see cref="Count"/> elements are valid; the remainder may
-    /// contain uninitialised or pooled data.
+    /// The underlying rented array. Only the first <see cref="WrittenCount"/> elements are valid; the remainder
+    /// may contain uninitialised or pooled data.
     /// </returns>
     /// <remarks>The returned array is not a copy. Modifying it directly will corrupt the internal state.</remarks>
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
@@ -152,28 +186,6 @@ public sealed class PooledBufferBuilder<T> : System.IDisposable
     {
         ThrowIfDisposed();
         return _internalBuffer;
-    }
-
-    /// <summary>
-    /// Returns a <see cref="Memory{T}"/> representing the valid portion of the buffered data.
-    /// </summary>
-    /// <returns>A <see cref="Memory{T}"/> containing exactly the first <see cref="Count"/> buffered elements.</returns>
-    /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
-    public Memory<T> AsMemory()
-    {
-        ThrowIfDisposed();
-        return _internalBuffer.AsMemory(0, _count);
-    }
-
-    /// <summary>
-    /// Returns a <see cref="Span{T}"/> representing the valid portion of the buffered data.
-    /// </summary>
-    /// <returns>A <see cref="Span{T}"/> containing exactly the first <see cref="Count"/> buffered elements.</returns>
-    /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
-    public Span<T> AsSpan()
-    {
-        ThrowIfDisposed();
-        return _internalBuffer.AsSpan(0, _count);
     }
 
     /// <summary>
@@ -221,7 +233,8 @@ public sealed class PooledBufferBuilder<T> : System.IDisposable
     /// </returns>
     /// <remarks>
     /// When successful, any previously buffered data is discarded and replaced with the contents of
-    /// <paramref name="source"/>. The current rented array is reused when its capacity is sufficient.
+    /// <paramref name="source"/>. The current rented array is reused when its capacity is sufficient, and
+    /// <see cref="WrittenCount"/> is set to the source element count.
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
