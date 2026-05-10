@@ -50,7 +50,7 @@ public sealed class JSHash
     private const int HashLength = 4;
     private const uint Seed = 0x4E67C6A7;
 
-    private uint workingHash = Seed;
+    private uint _workingHash = Seed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="JSHash" /> class seeded with the canonical
@@ -64,19 +64,19 @@ public sealed class JSHash
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
-        uint v = this.workingHash;
+        uint v = this._workingHash;
         foreach (byte b in source)
         {
             v ^= (v << 5) + (v >> 2) + b;
         }
 
-        this.workingHash = v;
+        this._workingHash = v;
     }
 
     /// <inheritdoc />
-    public override void Reset() => this.workingHash = Seed;
+    public override void Reset() => this._workingHash = Seed;
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt32LittleEndian(destination, this.workingHash);
+        BinaryPrimitives.WriteUInt32LittleEndian(destination, this._workingHash);
 }

@@ -137,10 +137,10 @@ public abstract class Fnv<TSelf>
 
     private static int ValidateHashSize(int hashSize)
     {
-        if (Array.IndexOf(ValidHashSizes, hashSize) == -1)
+        if (Array.IndexOf(s_validHashSizes, hashSize) == -1)
         {
             throw new ArgumentException(
-                $"Invalid hash size: {hashSize}. Valid sizes are: {string.Join(", ", ValidHashSizes)}.",
+                $"Invalid hash size: {hashSize}. Valid sizes are: {string.Join(", ", s_validHashSizes)}.",
                 nameof(hashSize));
         }
 
@@ -150,28 +150,28 @@ public abstract class Fnv<TSelf>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendFnv1(ReadOnlySpan<byte> source)
     {
-        ulong hash = this.workingHash;
-        ulong prime = this.prime;
+        ulong hash = this._workingHash;
+        ulong prime = this._prime;
         for (int i = 0; i < source.Length; i++)
         {
             hash *= prime;
             hash ^= source[i];
         }
 
-        this.workingHash = hash;
+        this._workingHash = hash;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendFnv1a(ReadOnlySpan<byte> source)
     {
-        ulong hash = this.workingHash;
-        ulong prime = this.prime;
+        ulong hash = this._workingHash;
+        ulong prime = this._prime;
         for (int i = 0; i < source.Length; i++)
         {
             hash ^= source[i];
             hash *= prime;
         }
 
-        this.workingHash = hash;
+        this._workingHash = hash;
     }
 }

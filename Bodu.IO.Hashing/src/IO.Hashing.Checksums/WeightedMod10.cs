@@ -17,7 +17,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// The algorithms in this family all take the form:
 /// </para>
 /// <para>
-/// <c>sum = Σ w_i · d_i  mod 10</c>, <c>check = (10 - sum) mod 10</c>
+/// <c>sum = Σ w_i · d_i  mod 10</c>, <c>check = (10 - sum) mod 10</c>.
 /// </para>
 /// <para>
 /// where <c>w_i</c> is a fixed-period weight pattern indexed from the <em>right-hand</em> data digit. ISBN-13 /

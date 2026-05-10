@@ -53,7 +53,7 @@ public sealed class Pjw32
     private const uint LowBitsMask = 0x0FFFFFFFu;
     private const int Shift = 28;
 
-    private uint workingHash;
+    private uint _workingHash;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Pjw32" /> class.
@@ -67,7 +67,7 @@ public sealed class Pjw32
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override void Append(ReadOnlySpan<byte> source)
     {
-        uint v = this.workingHash;
+        uint v = this._workingHash;
         foreach (byte b in source)
         {
             v = (v << 4) + b;
@@ -76,13 +76,13 @@ public sealed class Pjw32
             v &= LowBitsMask;
         }
 
-        this.workingHash = v;
+        this._workingHash = v;
     }
 
     /// <inheritdoc />
-    public override void Reset() => this.workingHash = 0;
+    public override void Reset() => this._workingHash = 0;
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt32BigEndian(destination, this.workingHash);
+        BinaryPrimitives.WriteUInt32BigEndian(destination, this._workingHash);
 }

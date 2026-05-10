@@ -50,7 +50,7 @@ public sealed class SDBM
 {
     private const int HashLength = 4;
 
-    private uint workingHash;
+    private uint _workingHash;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SDBM" /> class.
@@ -63,19 +63,19 @@ public sealed class SDBM
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
-        uint v = this.workingHash;
+        uint v = this._workingHash;
         foreach (byte b in source)
         {
             v = b + (v << 6) + (v << 16) - v;
         }
 
-        this.workingHash = v;
+        this._workingHash = v;
     }
 
     /// <inheritdoc />
-    public override void Reset() => this.workingHash = 0;
+    public override void Reset() => this._workingHash = 0;
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt32BigEndian(destination, this.workingHash);
+        BinaryPrimitives.WriteUInt32BigEndian(destination, this._workingHash);
 }

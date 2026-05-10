@@ -73,9 +73,9 @@ public abstract class MurmurHash3<T>
     : NonCryptographicHashAlgorithm
     where T : MurmurHash3<T>, new()
 {
-    private static readonly int[] ValidHashSizes = { 32, 128 };
+    private static readonly int[] s_validHashSizes = { 32, 128 };
 
-    private readonly MemoryStream inputBuffer = new MemoryStream();
+    private readonly MemoryStream _inputBuffer = new MemoryStream();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MurmurHash3{T}" /> class with the specified hash output
@@ -102,20 +102,20 @@ public abstract class MurmurHash3<T>
     public override void Append(ReadOnlySpan<byte> source)
     {
         if (source.Length > 0)
-            this.inputBuffer.Write(source);
+            this._inputBuffer.Write(source);
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        this.inputBuffer.SetLength(0);
-        this.inputBuffer.Position = 0;
+        this._inputBuffer.SetLength(0);
+        this._inputBuffer.Position = 0;
     }
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
-        byte[] data = this.inputBuffer.ToArray();
+        byte[] data = this._inputBuffer.ToArray();
         byte[] digest = this.ComputeHashCore(data);
         digest.AsSpan(0, this.HashLengthInBytes).CopyTo(destination);
     }
@@ -161,12 +161,12 @@ public abstract class MurmurHash3<T>
 
     private static int ValidateHashSize(int hashSize)
     {
-        if (Array.IndexOf(ValidHashSizes, hashSize) == -1)
+        if (Array.IndexOf(s_validHashSizes, hashSize) == -1)
         {
             throw new ArgumentOutOfRangeException(
                 nameof(hashSize),
                 hashSize,
-                $"Invalid hash size: {hashSize}. Valid sizes are: {string.Join(", ", ValidHashSizes)}.");
+                $"Invalid hash size: {hashSize}. Valid sizes are: {string.Join(", ", s_validHashSizes)}.");
         }
 
         return hashSize;
