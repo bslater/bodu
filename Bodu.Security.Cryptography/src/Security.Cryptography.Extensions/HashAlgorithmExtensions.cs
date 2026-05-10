@@ -40,8 +40,11 @@ namespace Bodu.Security.Cryptography.Extensions;
 ///   <item>
 ///     <term>Try-pattern verification</term>
 ///     <description><c>TryVerifyHash</c> / <c>TryVerifyHashAsync</c> — non-throwing counterparts that return
-///     <see langword="false"/> for malformed expected hashes and <see langword="true"/> only when the inputs round-trip
-///     and match. Suitable when the expected hash is user-supplied.</description>
+///     <see langword="false"/> for any <see langword="null" /> data parameter (<c>input</c>, <c>expectedHash</c>,
+///     <c>expectedHex</c>, <c>encoding</c>, <c>stream</c>), for malformed expected hashes, and for any internal failure;
+///     <see langword="true"/> is returned only when the inputs round-trip and match. <see cref="ArgumentNullException"/>
+///     is thrown only when <c>algorithm</c> itself is <see langword="null"/>. Suitable when the expected hash is
+///     user-supplied.</description>
 ///   </item>
 /// </list>
 /// <para>

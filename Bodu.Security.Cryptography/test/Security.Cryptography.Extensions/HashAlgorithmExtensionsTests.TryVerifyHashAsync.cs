@@ -19,10 +19,16 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// <see langword="false" /> rather than propagating.
 /// </para>
 /// <para>
-/// The byte-array and string overloads still raise <see cref="ArgumentNullException" /> for
-/// null inputs, encoding, or expected hash, because those represent programmer errors. The
-/// stream overload is more forgiving and returns <see langword="false" /> for a null stream or
-/// null expected hash.
+/// Every <see langword="null" /> data parameter (<c>input</c>, <c>expectedHash</c>,
+/// <c>expectedHex</c>, <c>encoding</c>, <c>stream</c>) also surfaces as <see langword="false" />.
+/// Only a <see langword="null" /> <c>algorithm</c> receiver still raises
+/// <see cref="ArgumentNullException" />, since the extension method cannot dispatch without one.
+/// </para>
+/// <para>
+/// The byte-array and string overloads run synchronously: they delegate to the corresponding
+/// <c>TryVerifyHash</c> method and complete via <see cref="Task.FromResult{TResult}" />. A
+/// pre-cancelled <see cref="CancellationToken" /> is honoured by short-circuiting to
+/// <see langword="false" />.
 /// </para>
 /// </remarks>
 public partial class HashAlgorithmExtensionsTests
@@ -302,75 +308,108 @@ public partial class HashAlgorithmExtensionsTests
             "TryVerifyHashAsync must return false when cancelled mid-stream — OperationCanceledException is swallowed by the try-pattern.");
     }
 
-    // ─── Argument validation (non-stream overloads) ───────────────────────────────────────────
-    // These overloads still throw ArgumentNullException: the byte-array overload rejects a null
-    // input (unlike the stream overload, which returns false) and the string overload rejects
-    // null string/encoding/hash arguments.
-
     /// <summary>
-    /// Verifies that a null byte-array input raises <see cref="ArgumentNullException" />.
+    /// Verifies that a null expected hex on the stream overload returns <see langword="false" />
+    /// rather than throwing.
     /// </summary>
     [TestMethod]
-    public async Task TryVerifyHashAsync_WhenByteArrayInputIsNull_ShouldThrowArgumentNullException()
+    public async Task TryVerifyHashAsync_WhenStreamExpectedHexIsNull_ShouldReturnFalse()
     {
         using var algorithm = CreateAlgorithm();
-        await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
-        {
-            await algorithm.TryVerifyHashAsync((byte[])null!, SampleHash);
-        });
+        using var stream = new MemoryStream(SampleData);
+        bool result = await algorithm.TryVerifyHashAsync(stream, (string)null!);
+        Assert.IsFalse(result);
     }
 
     /// <summary>
-    /// Verifies that a null expected hash on the byte-array overload raises
-    /// <see cref="ArgumentNullException" />.
+    /// Verifies that a pre-cancelled token short-circuits the byte-array overload to
+    /// <see langword="false" /> instead of executing the verification.
     /// </summary>
     [TestMethod]
-    public async Task TryVerifyHashAsync_WhenByteArrayExpectedHashIsNull_ShouldThrowArgumentNullException()
+    public async Task TryVerifyHashAsync_WhenTokenIsPreCancelled_ForByteArray_ShouldReturnFalse()
     {
         using var algorithm = CreateAlgorithm();
-        await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
-        {
-            await algorithm.TryVerifyHashAsync(SampleData, (byte[])null!);
-        });
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        bool result = await algorithm.TryVerifyHashAsync(SampleData, SampleHash, cts.Token);
+
+        Assert.IsFalse(result);
+    }
+
+    // ─── Graceful false returns (non-stream overloads) ────────────────────────────────────────
+    // The byte-array and string overloads now delegate synchronously to TryVerifyHash and follow
+    // the same contract: every null data parameter returns false instead of throwing.
+
+    /// <summary>
+    /// Verifies that a null byte-array input returns <see langword="false" /> rather than
+    /// throwing.
+    /// </summary>
+    [TestMethod]
+    public async Task TryVerifyHashAsync_WhenByteArrayInputIsNull_ShouldReturnFalse()
+    {
+        using var algorithm = CreateAlgorithm();
+        bool result = await algorithm.TryVerifyHashAsync((byte[])null!, SampleHash);
+        Assert.IsFalse(result);
     }
 
     /// <summary>
-    /// Verifies that a null string input raises <see cref="ArgumentNullException" />.
+    /// Verifies that a null expected hash on the byte-array overload returns
+    /// <see langword="false" /> rather than throwing.
     /// </summary>
     [TestMethod]
-    public async Task TryVerifyHashAsync_WhenStringInputIsNull_ShouldThrowArgumentNullException()
+    public async Task TryVerifyHashAsync_WhenByteArrayExpectedHashIsNull_ShouldReturnFalse()
     {
         using var algorithm = CreateAlgorithm();
-        await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
-        {
-            await algorithm.TryVerifyHashAsync(null!, SampleEncoding, SampleStringHash);
-        });
+        bool result = await algorithm.TryVerifyHashAsync(SampleData, (byte[])null!);
+        Assert.IsFalse(result);
     }
 
     /// <summary>
-    /// Verifies that a null encoding raises <see cref="ArgumentNullException" />.
+    /// Verifies that a null expected hex on the byte-array overload returns
+    /// <see langword="false" /> rather than throwing.
     /// </summary>
     [TestMethod]
-    public async Task TryVerifyHashAsync_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    public async Task TryVerifyHashAsync_WhenByteArrayExpectedHexIsNull_ShouldReturnFalse()
     {
         using var algorithm = CreateAlgorithm();
-        await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
-        {
-            await algorithm.TryVerifyHashAsync(SampleString, null!, SampleStringHash);
-        });
+        bool result = await algorithm.TryVerifyHashAsync(SampleData, (string)null!);
+        Assert.IsFalse(result);
     }
 
     /// <summary>
-    /// Verifies that a null expected hash on the string+encoding overload raises
-    /// <see cref="ArgumentNullException" />.
+    /// Verifies that a null string input on the string+encoding overload returns
+    /// <see langword="false" /> rather than throwing.
     /// </summary>
     [TestMethod]
-    public async Task TryVerifyHashAsync_WhenStringExpectedHashIsNull_ShouldThrowArgumentNullException()
+    public async Task TryVerifyHashAsync_WhenStringInputIsNull_ShouldReturnFalse()
     {
         using var algorithm = CreateAlgorithm();
-        await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
-        {
-            await algorithm.TryVerifyHashAsync(SampleString, SampleEncoding, null!);
-        });
+        bool result = await algorithm.TryVerifyHashAsync(null!, SampleEncoding, SampleStringHash);
+        Assert.IsFalse(result);
+    }
+
+    /// <summary>
+    /// Verifies that a null encoding on the string+encoding overload returns
+    /// <see langword="false" /> rather than throwing.
+    /// </summary>
+    [TestMethod]
+    public async Task TryVerifyHashAsync_WhenEncodingIsNull_ShouldReturnFalse()
+    {
+        using var algorithm = CreateAlgorithm();
+        bool result = await algorithm.TryVerifyHashAsync(SampleString, null!, SampleStringHash);
+        Assert.IsFalse(result);
+    }
+
+    /// <summary>
+    /// Verifies that a null expected hash on the string+encoding overload returns
+    /// <see langword="false" /> rather than throwing.
+    /// </summary>
+    [TestMethod]
+    public async Task TryVerifyHashAsync_WhenStringExpectedHashIsNull_ShouldReturnFalse()
+    {
+        using var algorithm = CreateAlgorithm();
+        bool result = await algorithm.TryVerifyHashAsync(SampleString, SampleEncoding, null!);
+        Assert.IsFalse(result);
     }
 }

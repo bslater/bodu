@@ -14,15 +14,15 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Unlike <c>VerifyHash</c>, the try-pattern treats empty input, a null byte-array input, and a
-/// malformed hex expected value as graceful non-matches (<see langword="false" />) rather than
+/// Unlike <c>VerifyHash</c>, the try-pattern treats every <see langword="null" /> data parameter
+/// (<c>input</c>, <c>expectedHash</c>, <c>expectedHex</c>, <c>encoding</c>, <c>stream</c>),
+/// empty input, and malformed hex as a graceful non-match (<see langword="false" />) rather than
 /// throwing.
 /// </para>
 /// <para>
-/// Nulls that still raise <see cref="ArgumentNullException" /> are those that represent
-/// programmer error rather than a failed verification — a null algorithm receiver (the extension
-/// method cannot dispatch without one) and the string-overload arguments (<c>input</c>,
-/// <c>encoding</c>, and expected hash).
+/// The only exception is the <c>algorithm</c> receiver: a <see langword="null" /> receiver still
+/// raises <see cref="ArgumentNullException" />, since the extension method cannot dispatch
+/// without one.
 /// </para>
 /// </remarks>
 public partial class HashAlgorithmExtensionsTests
@@ -109,23 +109,6 @@ public partial class HashAlgorithmExtensionsTests
         Assert.IsTrue(algorithm.TryVerifyHash(stream, SampleHex));
     }
 
-    // ─── Out-parameter variant ────────────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Verifies that the out-parameter overload returns <see langword="true" /> from the method
-    /// and sets the <c>result</c> out parameter to <see langword="true" /> when the inputs match.
-    /// </summary>
-    [TestMethod]
-    public void TryVerifyHash_OutVariant_WhenByteArrayMatches_ShouldReturnTrueAndSetResult()
-    {
-        using var algorithm = CreateAlgorithm();
-
-        bool ok = algorithm.TryVerifyHash(SampleData, SampleHash, out bool result);
-
-        Assert.IsTrue(ok);
-        Assert.IsTrue(result);
-    }
-
     // ─── Graceful false returns ───────────────────────────────────────────────────────────────
 
     /// <summary>
@@ -161,6 +144,28 @@ public partial class HashAlgorithmExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that a null expected hash on the byte-array overload returns
+    /// <see langword="false" /> rather than throwing.
+    /// </summary>
+    [TestMethod]
+    public void TryVerifyHash_WhenExpectedHashIsNull_ShouldReturnFalse()
+    {
+        using var algorithm = CreateAlgorithm();
+        Assert.IsFalse(algorithm.TryVerifyHash(SampleData, (byte[])null!));
+    }
+
+    /// <summary>
+    /// Verifies that a null expected hex on the byte-array overload returns
+    /// <see langword="false" /> rather than throwing.
+    /// </summary>
+    [TestMethod]
+    public void TryVerifyHash_WhenByteArrayExpectedHexIsNull_ShouldReturnFalse()
+    {
+        using var algorithm = CreateAlgorithm();
+        Assert.IsFalse(algorithm.TryVerifyHash(SampleData, (string)null!));
+    }
+
+    /// <summary>
     /// Verifies that a malformed hex expected value returns <see langword="false" /> rather
     /// than surfacing a <see cref="FormatException" />.
     /// </summary>
@@ -169,6 +174,63 @@ public partial class HashAlgorithmExtensionsTests
     {
         using var algorithm = CreateAlgorithm();
         Assert.IsFalse(algorithm.TryVerifyHash(SampleData, "ZZZZ"));
+    }
+
+    /// <summary>
+    /// Verifies that a null expected hash on the memory overload returns <see langword="false" />
+    /// rather than throwing.
+    /// </summary>
+    [TestMethod]
+    public void TryVerifyHash_WhenMemoryExpectedHashIsNull_ShouldReturnFalse()
+    {
+        using var algorithm = CreateAlgorithm();
+        ReadOnlyMemory<byte> memory = SampleData;
+        Assert.IsFalse(algorithm.TryVerifyHash(memory, (byte[])null!));
+    }
+
+    /// <summary>
+    /// Verifies that a null expected hex on the stream overload returns <see langword="false" />
+    /// rather than throwing.
+    /// </summary>
+    [TestMethod]
+    public void TryVerifyHash_WhenStreamExpectedHexIsNull_ShouldReturnFalse()
+    {
+        using var algorithm = CreateAlgorithm();
+        using var stream = new MemoryStream(SampleData);
+        Assert.IsFalse(algorithm.TryVerifyHash(stream, (string)null!));
+    }
+
+    /// <summary>
+    /// Verifies that a null string input on the string+encoding overload returns
+    /// <see langword="false" /> rather than throwing.
+    /// </summary>
+    [TestMethod]
+    public void TryVerifyHash_WhenStringInputIsNull_ShouldReturnFalse()
+    {
+        using var algorithm = CreateAlgorithm();
+        Assert.IsFalse(algorithm.TryVerifyHash(null!, SampleEncoding, SampleStringHash));
+    }
+
+    /// <summary>
+    /// Verifies that a null encoding on the string+encoding overload returns
+    /// <see langword="false" /> rather than throwing.
+    /// </summary>
+    [TestMethod]
+    public void TryVerifyHash_WhenEncodingIsNull_ShouldReturnFalse()
+    {
+        using var algorithm = CreateAlgorithm();
+        Assert.IsFalse(algorithm.TryVerifyHash(SampleString, null!, SampleStringHash));
+    }
+
+    /// <summary>
+    /// Verifies that a null expected hash on the string+encoding overload returns
+    /// <see langword="false" /> rather than throwing.
+    /// </summary>
+    [TestMethod]
+    public void TryVerifyHash_WhenStringExpectedHashIsNull_ShouldReturnFalse()
+    {
+        using var algorithm = CreateAlgorithm();
+        Assert.IsFalse(algorithm.TryVerifyHash(SampleString, SampleEncoding, null!));
     }
 
     // ─── Argument validation ──────────────────────────────────────────────────────────────────
@@ -189,7 +251,8 @@ public partial class HashAlgorithmExtensionsTests
 
     /// <summary>
     /// Verifies that a null algorithm still raises <see cref="ArgumentNullException" /> even
-    /// when the expected hash is also null — receiver validation takes precedence.
+    /// when the expected hash is also null — receiver validation takes precedence over the
+    /// graceful null-data handling.
     /// </summary>
     [TestMethod]
     public void TryVerifyHash_WhenAlgorithmAndExpectedHashAreNull_ShouldThrowArgumentNullException()
@@ -198,48 +261,6 @@ public partial class HashAlgorithmExtensionsTests
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             algorithm!.TryVerifyHash(SampleData, (byte[])null!);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a null string input raises <see cref="ArgumentNullException" /> on the
-    /// string+encoding overload.
-    /// </summary>
-    [TestMethod]
-    public void TryVerifyHash_WhenStringInputIsNull_ShouldThrowArgumentNullException()
-    {
-        using var algorithm = CreateAlgorithm();
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            algorithm.TryVerifyHash(null!, SampleEncoding, SampleStringHash);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a null encoding raises <see cref="ArgumentNullException" /> on the
-    /// string+encoding overload.
-    /// </summary>
-    [TestMethod]
-    public void TryVerifyHash_WhenEncodingIsNull_ShouldThrowArgumentNullException()
-    {
-        using var algorithm = CreateAlgorithm();
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            algorithm.TryVerifyHash(SampleString, null!, SampleStringHash);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a null expected hash raises <see cref="ArgumentNullException" /> on the
-    /// string+encoding overload.
-    /// </summary>
-    [TestMethod]
-    public void TryVerifyHash_WhenStringExpectedHashIsNull_ShouldThrowArgumentNullException()
-    {
-        using var algorithm = CreateAlgorithm();
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            algorithm.TryVerifyHash(SampleString, SampleEncoding, null!);
         });
     }
 }

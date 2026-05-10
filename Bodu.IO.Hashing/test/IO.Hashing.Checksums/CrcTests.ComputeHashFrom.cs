@@ -11,20 +11,32 @@ public partial class CrcTests
     /// <summary>
     /// Verifies that <see cref="Crc.ComputeHashFrom(System.ReadOnlySpan{byte}, System.ReadOnlySpan{byte})" />
     /// continues a prior hash by undoing finalisation and hashing additional data, yielding the same digest as
-    /// a single-shot hash over the combined input.
+    /// a single-shot hash over the combined input. Covers each reflection branch:
+    /// <list type="bullet">
+    ///   <item><c>CRC32_ISOHDLC</c> — fully reflecting (<c>ReflectIn = ReflectOut = true</c>).</item>
+    ///   <item><c>CRC16_XMODEM</c> — non-reflecting (<c>ReflectIn = ReflectOut = false</c>).</item>
+    ///   <item><c>CRC12_UMTS</c> — asymmetric (<c>ReflectIn != ReflectOut</c>) so the bit-reversal branch in
+    ///   <see cref="Crc.TryComputeHashFrom" /> is exercised.</item>
+    /// </list>
     /// </summary>
+    /// <param name="standardId">The CRC catalogue entry under test.</param>
     [TestMethod]
-    public void ComputeHashFrom_WhenResumedWithAdditionalInput_ShouldMatchSingleShotCombinedHash()
+    [DataRow(CrcStandards.CRC32_ISOHDLC)]
+    [DataRow(CrcStandards.CRC16_XMODEM)]
+    [DataRow(CrcStandards.CRC12_UMTS)]
+    public void ComputeHashFrom_WhenResumed_ShouldMatchSingleShotCombinedHash(CrcStandards standardId)
     {
+        CrcStandard standard = CrcStandard.Get(standardId);
+
         byte[] first = new byte[] { 0x31, 0x32, 0x33, 0x34 };
         byte[] rest = new byte[] { 0x35, 0x36, 0x37, 0x38, 0x39 };
 
-        byte[] firstHash = new Crc(CrcStandard.CRC32_ISOHDLC).ComputeHash(first);
+        byte[] firstHash = new Crc(standard).ComputeHash(first);
 
-        Crc resumer = new(CrcStandard.CRC32_ISOHDLC);
+        Crc resumer = new(standard);
         byte[] resumed = resumer.ComputeHashFrom(firstHash, rest);
 
-        byte[] combined = new Crc(CrcStandard.CRC32_ISOHDLC).ComputeHash(RevEngCheckInput);
+        byte[] combined = new Crc(standard).ComputeHash(RevEngCheckInput);
         CollectionAssert.AreEqual(combined, resumed);
     }
 
@@ -115,33 +127,18 @@ public partial class CrcTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Crc.TryComputeHashFrom" /> throws
-    /// <see cref="System.ArgumentException" /> with <c>ParamName</c> equal to <c>previousHash</c> when the
-    /// supplied prior digest is shorter than <see cref="Crc.HashLengthInBytes" />.
+    /// Verifies that <see cref="Crc.TryComputeHashFrom" /> throws <see cref="System.ArgumentException" /> with
+    /// <c>ParamName</c> equal to <c>previousHash</c> when the supplied prior digest is shorter or longer than
+    /// <see cref="Crc.HashLengthInBytes" />.
     /// </summary>
+    /// <param name="lengthDelta">The difference between the prior-hash length and <see cref="Crc.HashLengthInBytes" />.</param>
     [TestMethod]
-    public void TryComputeHashFrom_WhenPreviousHashLengthIsTooShort_ShouldThrowArgumentException()
+    [DataRow(-1)]
+    [DataRow(+1)]
+    public void TryComputeHashFrom_WhenPreviousHashLengthMismatches_ShouldThrowArgumentException(int lengthDelta)
     {
         Crc crc = new(CrcStandard.CRC32_ISOHDLC);
-        byte[] previousHash = new byte[crc.HashLengthInBytes - 1];
-        byte[] newData = new byte[] { 0x01 };
-        byte[] destination = new byte[crc.HashLengthInBytes];
-
-        var ex = Assert.ThrowsExactly<System.ArgumentException>(
-            () => crc.TryComputeHashFrom(previousHash, newData, destination, out _));
-        Assert.AreEqual("previousHash", ex.ParamName);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Crc.TryComputeHashFrom" /> throws
-    /// <see cref="System.ArgumentException" /> with <c>ParamName</c> equal to <c>previousHash</c> when the
-    /// supplied prior digest is longer than <see cref="Crc.HashLengthInBytes" />.
-    /// </summary>
-    [TestMethod]
-    public void TryComputeHashFrom_WhenPreviousHashLengthIsTooLong_ShouldThrowArgumentException()
-    {
-        Crc crc = new(CrcStandard.CRC32_ISOHDLC);
-        byte[] previousHash = new byte[crc.HashLengthInBytes + 1];
+        byte[] previousHash = new byte[crc.HashLengthInBytes + lengthDelta];
         byte[] newData = new byte[] { 0x01 };
         byte[] destination = new byte[crc.HashLengthInBytes];
 
@@ -191,45 +188,4 @@ public partial class CrcTests
         CollectionAssert.AreEqual(combined, destination);
     }
 
-    /// <summary>
-    /// Verifies that resume semantics hold for a non-reflecting CRC (<c>CRC-16/XMODEM</c>), exercising the
-    /// <c>ReflectIn == ReflectOut == false</c> branch inside <see cref="Crc.TryComputeHashFrom" /> where bit
-    /// reversal is skipped.
-    /// </summary>
-    [TestMethod]
-    public void ComputeHashFrom_WhenStandardIsNonReflecting_ShouldMatchSingleShotCombinedHash()
-    {
-        byte[] first = new byte[] { 0x31, 0x32, 0x33, 0x34 };
-        byte[] rest = new byte[] { 0x35, 0x36, 0x37, 0x38, 0x39 };
-
-        byte[] firstHash = new Crc(CrcStandard.CRC16_XMODEM).ComputeHash(first);
-
-        Crc resumer = new(CrcStandard.CRC16_XMODEM);
-        byte[] resumed = resumer.ComputeHashFrom(firstHash, rest);
-
-        byte[] combined = new Crc(CrcStandard.CRC16_XMODEM).ComputeHash(RevEngCheckInput);
-        CollectionAssert.AreEqual(combined, resumed);
-    }
-
-    /// <summary>
-    /// Verifies that resume semantics hold for a CRC whose input reflection differs from its output reflection
-    /// (<c>CRC-12/UMTS</c>, <c>ReflectIn=false, ReflectOut=true</c>), exercising the <c>ReflectIn ^ ReflectOut</c>
-    /// branch in <see cref="Crc.TryComputeHashFrom" /> that applies bit reversal when undoing finalisation.
-    /// </summary>
-    [TestMethod]
-    public void ComputeHashFrom_WhenReflectInDiffersFromReflectOut_ShouldMatchSingleShotCombinedHash()
-    {
-        CrcStandard asymmetric = CrcStandard.Get(CrcStandards.CRC12_UMTS);
-
-        byte[] first = new byte[] { 0x31, 0x32, 0x33, 0x34 };
-        byte[] rest = new byte[] { 0x35, 0x36, 0x37, 0x38, 0x39 };
-
-        byte[] firstHash = new Crc(asymmetric).ComputeHash(first);
-
-        Crc resumer = new(asymmetric);
-        byte[] resumed = resumer.ComputeHashFrom(firstHash, rest);
-
-        byte[] combined = new Crc(asymmetric).ComputeHash(RevEngCheckInput);
-        CollectionAssert.AreEqual(combined, resumed);
-    }
 }

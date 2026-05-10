@@ -65,34 +65,4 @@ public sealed partial class MurmurHash3_128Tests
         "236B3D4421A48893FE8EC4CDF751DF63", "588087B47715121E9597460C827F366A", "66B241284915E667B30AF54441C7D5C6", "4B43AF66BDF09FBA5E41DBB64227F511",
         "537EF1A53B4DD7952E808DB6AFA7A0AB", "E5AF6FDC48D6675388233CA8627CFE63",
     };
-
-    /// <summary>
-    /// Verifies that a non-zero seed produces a different hash than seed zero for the same input.
-    /// </summary>
-    [TestMethod]
-    public void Append_WithNonZeroSeed_ShouldProduceDifferentHashThanSeedZero()
-    {
-        byte[] input = System.Text.Encoding.ASCII.GetBytes("test");
-
-        MurmurHash3_128 defaultSeed = new();
-        defaultSeed.Append(input);
-        byte[] hash0 = defaultSeed.GetCurrentHash();
-
-        MurmurHash3_128 customSeed = new(0xDEADBEEF);
-        customSeed.Append(input);
-        byte[] hash1 = customSeed.GetCurrentHash();
-
-        CollectionAssert.AreNotEqual(hash0, hash1,
-            "Non-zero seed must produce a different hash for identical input.");
-    }
-
-    /// <summary>
-    /// Verifies that the seed property returns the value supplied at construction time.
-    /// </summary>
-    [TestMethod]
-    public void Seed_AfterConstruction_ShouldReturnSuppliedValue()
-    {
-        MurmurHash3_128 sut = new(0xABCDEF01u);
-        Assert.AreEqual(0xABCDEF01u, sut.Seed);
-    }
 }

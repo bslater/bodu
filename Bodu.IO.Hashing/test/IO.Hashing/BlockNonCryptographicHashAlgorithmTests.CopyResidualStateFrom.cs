@@ -1,0 +1,24 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="BlockNonCryptographicHashAlgorithmTests.CopyResidualStateFrom.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.IO.Hashing;
+
+public partial class BlockNonCryptographicHashAlgorithmTests
+{
+    /// <summary>
+    /// Verifies that <see cref="BlockNonCryptographicHashAlgorithm{T}.CopyResidualStateFrom" /> throws
+    /// <see cref="ArgumentNullException" /> with <c>ParamName</c> equal to <c>source</c> when invoked with a
+    /// <see langword="null" /> source instance.
+    /// </summary>
+    [TestMethod]
+    public void CopyResidualStateFrom_WhenSourceIsNull_ShouldThrowArgumentNullException()
+    {
+        RecordingBlockHasher hasher = new();
+
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() => hasher.CopyFromExposed(null));
+        Assert.AreEqual("source", ex.ParamName);
+    }
+}
