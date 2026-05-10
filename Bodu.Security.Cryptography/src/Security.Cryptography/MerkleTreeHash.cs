@@ -288,7 +288,7 @@ public sealed class MerkleTreeHash : IDisposable
                 for (int j = 0; j < groupSize; j++)
                     bufferBuilder.AppendRange(this._currentLevel[i + j]);
 
-                nextLevel.Add(this.ComputeLeafHash(bufferBuilder.AsSpan()));
+                nextLevel.Add(this.ComputeLeafHash(bufferBuilder.WrittenSpan));
             }
 
             this._currentLevel = nextLevel;
