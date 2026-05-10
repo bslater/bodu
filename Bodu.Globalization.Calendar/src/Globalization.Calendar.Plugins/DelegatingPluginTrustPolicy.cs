@@ -16,7 +16,7 @@ public sealed class DelegatingPluginTrustPolicy : IPluginTrustPolicy
 	private readonly Func<PluginTrustContext, PluginTrustResult> _evaluator;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="DelegatingPluginTrustPolicy" /> class.
+	/// Initialises a new instance of the <see cref="DelegatingPluginTrustPolicy" /> class.
 	/// </summary>
 	/// <param name="evaluator">The callback invoked to evaluate each candidate. Must not be <see langword="null" />.</param>
 	/// <exception cref="ArgumentNullException">Thrown when <paramref name="evaluator" /> is <see langword="null" />.</exception>

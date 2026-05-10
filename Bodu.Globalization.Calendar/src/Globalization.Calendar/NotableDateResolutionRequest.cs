@@ -12,7 +12,7 @@ namespace Bodu.Globalization.Calendar;
 internal sealed record NotableDateResolutionRequest
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="NotableDateResolutionRequest" /> class.
+    /// Initialises a new instance of the <see cref="NotableDateResolutionRequest" /> class.
     /// </summary>
     /// <param name="startDate">The inclusive start of the requested window.</param>
     /// <param name="endDate">The inclusive end of the requested window.</param>
@@ -46,30 +46,36 @@ internal sealed record NotableDateResolutionRequest
     /// <summary>
     /// Gets the inclusive start of the requested window.
     /// </summary>
+    /// <returns>The window's start <see cref="DateTime" /> with the time-of-day component truncated.</returns>
     public DateTime StartDate { get; }
 
     /// <summary>
     /// Gets the inclusive end of the requested window.
     /// </summary>
+    /// <returns>The window's end <see cref="DateTime" /> with the time-of-day component truncated.</returns>
     public DateTime EndDate { get; }
 
     /// <summary>
     /// Gets the projection semantics requested by the caller.
     /// </summary>
+    /// <returns>One of the defined <see cref="NotableDateResolutionProjection" /> values.</returns>
     public NotableDateResolutionProjection Projection { get; }
 
     /// <summary>
     /// Gets the optional territory context.
     /// </summary>
+    /// <returns>The ISO 3166-style territory code, or <see langword="null" /> when the request is unscoped.</returns>
     public string? TerritoryCode { get; }
 
     /// <summary>
     /// Gets the optional calendar type context.
     /// </summary>
+    /// <returns>The CLR <see cref="Type" /> of the requesting calendar, or <see langword="null" /> when unscoped.</returns>
     public Type? CalendarType { get; }
 
     /// <summary>
     /// Gets the optional notable-date filter.
     /// </summary>
+    /// <returns>The <see cref="NotableDateFilter" /> applied to the resolution result, or <see langword="null" /> when no filter is supplied.</returns>
     public NotableDateFilter? Filter { get; }
 }

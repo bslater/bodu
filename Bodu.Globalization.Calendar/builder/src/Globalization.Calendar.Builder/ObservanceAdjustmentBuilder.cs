@@ -27,20 +27,49 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 public sealed class ObservanceAdjustmentBuilder
 {
+    /// <summary>The activation condition set via <see cref="When(AdjustmentTrigger)" />, or <see langword="null" /> until configured.</summary>
     private AdjustmentTrigger? _trigger;
+
+    /// <summary>The modification action set via <see cref="Action(AdjustmentAction)" />, or <see langword="null" /> until configured.</summary>
     private AdjustmentAction? _action;
+
+    /// <summary>The day-of-week qualifier set via <see cref="OnDayOfWeek(DayOfWeek)" />, consumed by <see cref="AdjustmentTrigger.IfDayOfWeek" />.</summary>
     private DayOfWeek? _dayOfWeek;
+
+    /// <summary>The non-working override set via <see cref="NonWorking(bool)" />, or <see langword="null" /> to inherit the rule's value.</summary>
     private bool? _isNonWorkingDay;
+
+    /// <summary>The signed day offset set via <see cref="OffsetDays(int)" />, consumed by <see cref="AdjustmentAction.AddDays" />. Defaults to <c>0</c>.</summary>
     private int _offsetDays;
+
+    /// <summary>The territory scope set via <see cref="Territory(string)" />, or <see langword="null" /> when unscoped.</summary>
     private string? _territoryCode;
+
+    /// <summary>The calendar scope set via <see cref="CalendarType(Type)" />, or <see langword="null" /> when unscoped.</summary>
     private Type? _calendarType;
+
+    /// <summary>The inclusive earliest effective year set via <see cref="FromYear(int)" />, or <see langword="null" /> for no lower bound.</summary>
     private int? _effectiveFromYear;
+
+    /// <summary>The inclusive latest effective year set via <see cref="ToYear(int)" />, or <see langword="null" /> for no upper bound.</summary>
     private int? _effectiveToYear;
+
+    /// <summary>The month component of the comparison date set via <see cref="ComparisonDate(int, int)" />, paired with <see cref="_comparisonDay" />.</summary>
     private int? _comparisonMonth;
+
+    /// <summary>The day component of the comparison date set via <see cref="ComparisonDate(int, int)" />, paired with <see cref="_comparisonMonth" />.</summary>
     private int? _comparisonDay;
+
+    /// <summary>The ordinal occurrence set via <see cref="OrdinalOccurrence(WeekOfMonthOrdinal)" />, consumed by <see cref="AdjustmentTrigger.IfNthOccurrenceInMonth" />.</summary>
     private WeekOfMonthOrdinal? _weekOrdinal;
+
+    /// <summary>The target rule name set via <see cref="Target(string)" />, consumed by <see cref="AdjustmentAction.ReplaceWithNamedDate" />.</summary>
     private string? _targetRuleName;
+
+    /// <summary>The evaluation priority set via <see cref="Priority(int)" /> (lower wins). Defaults to <c>100</c> to mirror <see cref="ObservanceAdjustment.Priority" />.</summary>
     private int _priority = 100;
+
+    /// <summary>The custom-handler registry key set via <see cref="HandlerKey(string)" />, consumed by <see cref="AdjustmentTrigger.Custom" />/<see cref="AdjustmentAction.Custom" />.</summary>
     private string? _handlerKey;
 
     /// <summary>

@@ -29,7 +29,7 @@ internal sealed class NotableDateRuleOccurrenceResolver : INotableDateRuleOccurr
     private readonly IReadOnlyList<string> anchorRuleNames;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="NotableDateRuleOccurrenceResolver" /> class.
+    /// Initialises a new instance of the <see cref="NotableDateRuleOccurrenceResolver" /> class.
     /// </summary>
     /// <param name="rules">The rules available for occurrence resolution.</param>
     /// <param name="ruleResolver">The resolver used for direct rule-date calculation.</param>

@@ -34,6 +34,7 @@ internal sealed record RuleStaticProfile(
 	/// <summary>
 	/// Gets a value indicating whether this rule depends transitively on an algorithmic anchor.
 	/// </summary>
+	/// <returns><see langword="true" /> when <see cref="Tier" /> is <see cref="RuleTier.Algorithmic" /> or <see cref="RuleTier.OffsetFromAlgorithmic" />; otherwise <see langword="false" />.</returns>
 	public bool DependsOnAlgorithmicAnchor =>
 		Tier == RuleTier.Algorithmic || Tier == RuleTier.OffsetFromAlgorithmic;
 
@@ -41,11 +42,13 @@ internal sealed record RuleStaticProfile(
 	/// Gets the inclusive upper bound on how far an observed date for this rule can move in the positive direction relative to its
 	/// own anchor.
 	/// </summary>
+	/// <returns>A non-negative day count expressing the rule's maximum forward shift.</returns>
 	public int MaxForwardReach => MaxObservedReach;
 
 	/// <summary>
 	/// Gets the inclusive lower bound on how far an observed date for this rule can move in the negative direction relative to its
 	/// own anchor.
 	/// </summary>
+	/// <returns>A non-positive day count expressing the rule's maximum backward shift.</returns>
 	public int MinBackwardReach => MinObservedReach;
 }

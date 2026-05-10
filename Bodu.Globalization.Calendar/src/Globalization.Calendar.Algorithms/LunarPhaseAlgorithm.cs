@@ -197,14 +197,22 @@ internal static class LunarPhaseAlgorithm
 		return jde + W;
 	}
 
-	/// <summary>Converts a Julian Day Ephemeris to a <see cref="DateTime" /> date (day-only, kind unspecified).</summary>
+	/// <summary>
+	/// Converts a Julian Day Ephemeris to a <see cref="DateTime" /> date.
+	/// </summary>
+	/// <param name="jde">The Julian Day Ephemeris in Terrestrial Dynamical Time.</param>
+	/// <returns>The corresponding day-only <see cref="DateTime" /> with <see cref="DateTime.Kind" /> set to <see cref="DateTimeKind.Unspecified" />.</returns>
 	private static DateTime JdeToDate(double jde)
 	{
 		DateTime raw = J2000Epoch.AddDays(jde - 2451545.0);
 		return DateTime.SpecifyKind(raw.Date, DateTimeKind.Unspecified);
 	}
 
-	/// <summary>Converts degrees to radians.</summary>
+	/// <summary>
+	/// Converts an angle expressed in degrees to radians.
+	/// </summary>
+	/// <param name="degrees">The angle, in degrees.</param>
+	/// <returns>The equivalent angle in radians.</returns>
 	private static double DegToRad(double degrees) =>
 		degrees * (Math.PI / 180.0);
 }

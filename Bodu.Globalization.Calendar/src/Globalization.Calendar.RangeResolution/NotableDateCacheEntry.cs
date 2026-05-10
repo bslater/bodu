@@ -44,37 +44,44 @@ internal sealed class NotableDateCacheEntry
 	/// <summary>
 	/// Gets the static profile of the originating rule.
 	/// </summary>
+	/// <returns>The <see cref="RuleStaticProfile" /> supplied at construction. Never <see langword="null" />.</returns>
 	public RuleStaticProfile Profile { get; }
 
 	/// <summary>
 	/// Gets the civil year of the anchor date used to materialise <see cref="BaseNotable" />.
 	/// </summary>
+	/// <returns>A four-digit civil year.</returns>
 	public int AnchorYear { get; }
 
 	/// <summary>
 	/// Gets the materialised base notable date (pre-adjustment).
 	/// </summary>
+	/// <returns>The base <see cref="NotableDate" /> supplied at construction. Never <see langword="null" />.</returns>
 	public NotableDate BaseNotable { get; }
 
 	/// <summary>
 	/// Gets or sets the materialised observed notable date produced by an observance adjustment, or <see langword="null" /> when no
 	/// adjustment has been applied.
 	/// </summary>
+	/// <returns>The adjusted <see cref="NotableDate" />, or <see langword="null" /> when no adjustment has fired for this entry.</returns>
 	public NotableDate? Adjusted { get; set; }
 
 	/// <summary>
 	/// Gets or sets the entry's emission qualification state.
 	/// </summary>
+	/// <returns>One of the defined <see cref="NotableDateCacheState" /> values.</returns>
 	public NotableDateCacheState State { get; set; }
 
 	/// <summary>
 	/// Gets the originating rule.
 	/// </summary>
+	/// <returns>The <see cref="NotableDateRule" /> referenced by <see cref="Profile" />. Never <see langword="null" />.</returns>
 	public NotableDateRule Rule => Profile.Rule;
 
 	/// <summary>
 	/// Gets a value indicating whether the entry should be emitted to the caller in the resolution output.
 	/// </summary>
+	/// <returns><see langword="true" /> when <see cref="State" /> is <see cref="NotableDateCacheState.InWindow" /> or <see cref="NotableDateCacheState.Adjusted" />; otherwise <see langword="false" />.</returns>
 	public bool IsEmissable =>
 		State == NotableDateCacheState.InWindow || State == NotableDateCacheState.Adjusted;
 }

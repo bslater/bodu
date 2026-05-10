@@ -37,6 +37,7 @@ namespace Bodu.Globalization.Calendar;
 /// </example>
 public sealed class InlineNotableDateRuleProvider : INotableDateRuleProvider
 {
+    /// <summary>The pre-built rules supplied at construction and returned unchanged from <see cref="LoadRules" />.</summary>
     private readonly IReadOnlyList<NotableDateRule> _rules;
 
     /// <summary>

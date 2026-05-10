@@ -40,7 +40,7 @@ namespace Bodu.Globalization.Calendar;
 public sealed class JsonResourceNotableDateRuleProvider : NotableDateRuleResourceProviderBase
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="JsonResourceNotableDateRuleProvider" /> class that resolves embedded
+	/// Initialises a new instance of the <see cref="JsonResourceNotableDateRuleProvider" /> class that resolves embedded
 	/// resources against a single assembly.
 	/// </summary>
 	/// <param name="jsonResourceName">The logical resource path of the root JSON payload (for example
@@ -57,7 +57,7 @@ public sealed class JsonResourceNotableDateRuleProvider : NotableDateRuleResourc
 	}
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="JsonResourceNotableDateRuleProvider" /> class that resolves embedded
+	/// Initialises a new instance of the <see cref="JsonResourceNotableDateRuleProvider" /> class that resolves embedded
 	/// resources against an ordered chain of assemblies.
 	/// </summary>
 	/// <param name="jsonResourceName">The logical resource path of the root JSON payload. Must not be

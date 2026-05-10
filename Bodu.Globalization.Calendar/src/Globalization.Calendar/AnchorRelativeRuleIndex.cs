@@ -24,7 +24,7 @@ internal sealed class AnchorRelativeRuleIndex
     private readonly Dictionary<string, SortedDictionary<int, List<NotableDateRule>>> _rulesByAnchorAndOffset;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AnchorRelativeRuleIndex" /> class.
+    /// Initialises a new instance of the <see cref="AnchorRelativeRuleIndex" /> class.
     /// </summary>
     /// <param name="rules">The rules to index.</param>
     /// <exception cref="ArgumentNullException"><paramref name="rules" /> is <see langword="null" />.</exception>

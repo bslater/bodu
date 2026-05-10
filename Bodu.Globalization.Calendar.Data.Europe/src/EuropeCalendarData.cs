@@ -58,7 +58,11 @@ public static class EuropeCalendarData
     /// <summary>The logical resource name for the Sweden region payload.</summary>
     public const string SwedenResourceName = "Bodu/Globalization/Calendar/Resources/region-se.xml";
 
-    /// <summary>The pack assembly. Exposed for advanced scenarios such as building a custom assembly chain.</summary>
+    /// <summary>
+    /// Gets the assembly that hosts the pack's embedded XML resources. Exposed for advanced scenarios such as building a custom
+    /// assembly chain.
+    /// </summary>
+    /// <returns>The <see cref="Assembly" /> in which the pack's region payloads are embedded. Never <see langword="null" />.</returns>
     public static Assembly DataAssembly => typeof(EuropeCalendarData).Assembly;
 
     /// <summary>Creates a Germany rule provider.</summary>

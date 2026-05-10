@@ -27,7 +27,7 @@ public sealed class FileHashPluginTrustPolicy : IPluginTrustPolicy
 	private readonly IReadOnlyDictionary<string, byte[]> _allowedHashesByAssemblyName;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="FileHashPluginTrustPolicy" /> class.
+	/// Initialises a new instance of the <see cref="FileHashPluginTrustPolicy" /> class.
 	/// </summary>
 	/// <param name="allowedHashesByAssemblyName">Dictionary of trusted assembly names mapped to their SHA-256 digests. Assembly names are compared case-insensitively. Must not be <see langword="null" />.</param>
 	/// <exception cref="ArgumentNullException">Thrown when <paramref name="allowedHashesByAssemblyName" /> is <see langword="null" />.</exception>

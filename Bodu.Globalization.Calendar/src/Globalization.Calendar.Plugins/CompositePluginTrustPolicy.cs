@@ -22,7 +22,7 @@ public sealed class CompositePluginTrustPolicy : IPluginTrustPolicy
 	private readonly ImmutableArray<IPluginTrustPolicy> _policies;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="CompositePluginTrustPolicy" /> class.
+	/// Initialises a new instance of the <see cref="CompositePluginTrustPolicy" /> class.
 	/// </summary>
 	/// <param name="policies">The child policies, evaluated in the order supplied. Must not be <see langword="null" /> and must contain at least one non-<see langword="null" /> policy.</param>
 	/// <exception cref="ArgumentNullException">Thrown when <paramref name="policies" /> is <see langword="null" />.</exception>

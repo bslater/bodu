@@ -118,7 +118,7 @@ public sealed class NotableDateService : INotableDateService
 	private readonly ThreadLocal<HashSet<int>> _generatingYears = new(() => new HashSet<int>());
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="NotableDateService" /> class using the embedded minimal default rule set
+	/// Initialises a new instance of the <see cref="NotableDateService" /> class using the embedded minimal default rule set
 	/// (currently a single rule for New Year's Day). Region-specific holidays must be supplied via the full constructor by passing
 	/// providers from the <c>Bodu.Globalization.Calendar.Data.*</c> companion assemblies.
 	/// </summary>
@@ -128,7 +128,7 @@ public sealed class NotableDateService : INotableDateService
 	{ }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="NotableDateService" /> class.
+    /// Initialises a new instance of the <see cref="NotableDateService" /> class.
     /// </summary>
     /// <param name="ruleProviders">Sources of base notable date rules. Must not be <see langword="null" />.</param>
     /// <param name="weekendDefinition">The weekend definition to apply when evaluating weekends.</param>

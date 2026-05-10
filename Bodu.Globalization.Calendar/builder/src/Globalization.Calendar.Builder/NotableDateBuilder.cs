@@ -27,6 +27,7 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 public sealed class NotableDateBuilder
 {
+    /// <summary>The list of rule builders accumulated by <see cref="AddRule(System.Action{NotableDateRuleBuilder})" />.</summary>
     private readonly List<NotableDateRuleBuilder> _rules = [];
 
     /// <summary>

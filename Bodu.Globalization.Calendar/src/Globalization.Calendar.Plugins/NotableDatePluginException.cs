@@ -19,7 +19,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 public class NotableDatePluginException : Exception
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="NotableDatePluginException" /> class with a message.
+	/// Initialises a new instance of the <see cref="NotableDatePluginException" /> class with a message.
 	/// </summary>
 	/// <param name="message">The exception message.</param>
 	public NotableDatePluginException(string message) : base(message)
@@ -27,7 +27,7 @@ public class NotableDatePluginException : Exception
 	}
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="NotableDatePluginException" /> class with a message and an inner exception.
+	/// Initialises a new instance of the <see cref="NotableDatePluginException" /> class with a message and an inner exception.
 	/// </summary>
 	/// <param name="message">The exception message.</param>
 	/// <param name="innerException">The underlying cause.</param>

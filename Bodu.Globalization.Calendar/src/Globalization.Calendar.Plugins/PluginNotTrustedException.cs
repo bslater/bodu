@@ -13,7 +13,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 public sealed class PluginNotTrustedException : NotableDatePluginException
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="PluginNotTrustedException" /> class.
+	/// Initialises a new instance of the <see cref="PluginNotTrustedException" /> class.
 	/// </summary>
 	/// <param name="assemblyPath">The path of the rejected plugin.</param>
 	/// <param name="reason">The trust policy's stated reason, or <see langword="null" /> if the policy did not supply one.</param>
@@ -27,10 +27,12 @@ public sealed class PluginNotTrustedException : NotableDatePluginException
 	/// <summary>
 	/// Gets the path of the rejected plugin assembly.
 	/// </summary>
+	/// <returns>The absolute filesystem path supplied at construction. Never <see langword="null" />.</returns>
 	public string AssemblyPath { get; }
 
 	/// <summary>
 	/// Gets the reason surfaced by the trust policy, or <see langword="null" />.
 	/// </summary>
+	/// <returns>The trust policy's stated reason for rejection, or <see langword="null" /> when the policy did not supply one.</returns>
 	public string? Reason { get; }
 }

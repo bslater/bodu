@@ -23,11 +23,13 @@ public readonly record struct DateRange(DateTime StartDate, DateTime EndDate)
 	/// <summary>
 	/// Gets a value indicating whether the range is non-empty (<see cref="StartDate" /> is on or before <see cref="EndDate" />).
 	/// </summary>
+	/// <returns><see langword="true" /> when the range covers at least one day; <see langword="false" /> when inverted.</returns>
 	public bool IsValid => StartDate.Date <= EndDate.Date;
 
 	/// <summary>
 	/// Gets the inclusive number of days covered by the range. Returns zero when the range is inverted.
 	/// </summary>
+	/// <returns>A non-negative day count, or <c>0</c> when <see cref="IsValid" /> is <see langword="false" />.</returns>
 	public int DayCount => IsValid ? (int)(EndDate.Date - StartDate.Date).TotalDays + 1 : 0;
 
 	/// <summary>
