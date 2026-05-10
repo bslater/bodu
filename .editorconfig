@@ -171,7 +171,7 @@ csharp_style_prefer_primary_constructors = false:silent
 csharp_style_prefer_local_over_anonymous_function = true:suggestion
 csharp_style_prefer_index_operator = true:suggestion
 csharp_style_prefer_range_operator = true:suggestion
-csharp_style_implicit_object_creation_when_type_is_apparent = true:suggestion
+csharp_style_implicit_object_creation_when_type_is_apparent = false:silent
 csharp_style_prefer_tuple_swap = true:suggestion
 csharp_style_prefer_utf8_string_literals = true:suggestion
 csharp_style_inlined_variable_declaration = true:suggestion
@@ -301,3 +301,7 @@ dotnet_diagnostic.CA1707.severity = none
 dotnet_diagnostic.SA1600.severity = none
 dotnet_diagnostic.SA1601.severity = none
 dotnet_diagnostic.CS1591.severity = none
+# Inline array literals in test data providers are intentional — they keep expected values
+# co-located with the inputs they describe. CA1861 would scatter them into static fields
+# for no practical benefit since data providers are called once by the test runner.
+dotnet_diagnostic.CA1861.severity = none
