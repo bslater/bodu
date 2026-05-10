@@ -56,7 +56,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
         private bool _beforeFirst;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="Enumerator"/> struct for the specified dictionary.
+        /// Initializes a new instance of the <see cref="MultiValueDictionary{TKey, TValue}.Enumerator"/> struct for the specified dictionary.
         /// </summary>
         /// <param name="dictionary">The dictionary to enumerate.</param>
         internal Enumerator(MultiValueDictionary<TKey, TValue> dictionary)

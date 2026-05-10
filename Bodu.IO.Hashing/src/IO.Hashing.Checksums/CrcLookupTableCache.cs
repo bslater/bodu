@@ -62,7 +62,7 @@ public class CrcLookupTableCache
     private readonly ConcurrentDictionary<string, ulong[]> localCache;
 
     /// <summary>
-    /// Initialises a new, empty <see cref="CrcLookupTableCache" />.
+    /// Initializes a new instance of the <see cref="CrcLookupTableCache"/> class.
     /// </summary>
     public CrcLookupTableCache()
     {

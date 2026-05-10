@@ -108,11 +108,11 @@ using System.Runtime.CompilerServices;
 /// <seealso cref="CrcLookupTableCache"/>
 /// <seealso cref="IResumableHashAlgorithm"/>
 public sealed class Crc
-    : NonCryptographicHashAlgorithm
-    , IResumableHashAlgorithm
+    : NonCryptographicHashAlgorithm,
+      IResumableHashAlgorithm
 {
     private static Lazy<CrcLookupTableCache> globalLookupTableCache =
-        new(() => new CrcLookupTableCache());
+        new Lazy<CrcLookupTableCache>(() => new CrcLookupTableCache());
 
     private readonly CrcStandard _standard;
     private readonly int _hashSizeBits;
@@ -142,6 +142,8 @@ public sealed class Crc
     public Crc(CrcStandard crcStandard)
         : base(hashLengthInBytes: HashLengthInBytesFor(crcStandard))
     {
+        ArgumentNullException.ThrowIfNull(crcStandard);
+
         this._standard = crcStandard;
         this._hashSizeBits = crcStandard.Size;
         this._lookupTable = GlobalCache.GetLookupTable(crcStandard.Size, crcStandard.Polynomial, crcStandard.ReflectIn);
@@ -317,6 +319,13 @@ public sealed class Crc
     /// <inheritdoc />
     public override bool Equals(object? obj)
         => obj is Crc other && this._standard.Equals(other._standard);
+
+    /// <summary>
+    /// Returns a hash code for this <see cref="Crc" /> instance, consistent with its equality semantics.
+    /// </summary>
+    /// <returns>A hash code derived from the configured <see cref="CrcStandard" />.</returns>
+    public override int GetHashCode() =>
+        this._standard.GetHashCode();
 
     /// <summary>
     /// Returns the working-state representation of <see cref="CrcStandard.InitialValue" />, applying input reflection

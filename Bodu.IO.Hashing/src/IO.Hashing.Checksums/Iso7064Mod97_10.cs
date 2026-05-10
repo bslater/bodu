@@ -109,7 +109,7 @@ public sealed class Iso7064Mod97_10
     /// </exception>
     public static string Compute(ReadOnlySpan<char> body)
     {
-        Iso7064Mod97_10 engine = new();
+        Iso7064Mod97_10 engine = new Iso7064Mod97_10();
         engine.Append(body);
         return engine.GetCurrentCheckDigits();
     }

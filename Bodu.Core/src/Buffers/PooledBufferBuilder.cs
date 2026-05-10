@@ -226,7 +226,9 @@ public sealed class PooledBufferBuilder<T> :
         ThrowHelper.ThrowIfNegative(count);
 
         if (count > _internalBuffer.Length - _count)
-            throw new ArgumentOutOfRangeException(nameof(count), count,
+            throw new ArgumentOutOfRangeException(
+                nameof(count),
+                count,
                 "Cannot advance past the end of the current buffer.");
 
         _count += count;

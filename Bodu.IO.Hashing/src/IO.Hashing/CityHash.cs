@@ -109,7 +109,7 @@ public abstract class CityHash<T>
 
     private static readonly int[] ValidHashSizes = { 32, 64, 128 };
 
-    private readonly MemoryStream inputBuffer = new();
+    private readonly MemoryStream inputBuffer = new MemoryStream();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CityHash{T}" /> class with the specified hash output
@@ -273,7 +273,8 @@ public abstract class CityHash<T>
             BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(8)),
             BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(16)),
             BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(24)),
-            a, b);
+            a,
+            b);
 
     /// <summary>
     /// Hashes 0 to 16 bytes to a 64-bit value, selecting a byte-, word-, or double-word code path based on

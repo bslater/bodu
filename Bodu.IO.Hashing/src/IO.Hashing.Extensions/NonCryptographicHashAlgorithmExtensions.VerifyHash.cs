@@ -6,7 +6,6 @@
 
 namespace Bodu.IO.Hashing.Extensions;
 
-using Bodu;
 using System;
 using System.IO;
 using System.IO.Hashing;
@@ -38,9 +37,9 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// </remarks>
     public static bool VerifyHash(this NonCryptographicHashAlgorithm algorithm, byte[] input, byte[] expectedHash)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
-        ThrowHelper.ThrowIfNull(input);
-        ThrowHelper.ThrowIfNull(expectedHash);
+        ArgumentNullException.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(expectedHash);
 
         algorithm.Reset();
         algorithm.Append(input);
@@ -81,9 +80,9 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// </remarks>
     public static bool VerifyHash(this NonCryptographicHashAlgorithm algorithm, byte[] input, string expectedHex)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
-        ThrowHelper.ThrowIfNull(input);
-        ThrowHelper.ThrowIfNull(expectedHex);
+        ArgumentNullException.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(expectedHex);
 
         byte[] expectedBytes;
         try
@@ -126,9 +125,9 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// </remarks>
     public static bool VerifyHash(this NonCryptographicHashAlgorithm algorithm, Stream stream, byte[] expectedHash)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
-        ThrowHelper.ThrowIfNull(stream);
-        ThrowHelper.ThrowIfNull(expectedHash);
+        ArgumentNullException.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(stream);
+        ArgumentNullException.ThrowIfNull(expectedHash);
 
         algorithm.Reset();
         algorithm.AppendData(stream);
@@ -171,9 +170,9 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// </remarks>
     public static bool VerifyHash(this NonCryptographicHashAlgorithm algorithm, Stream stream, string expectedHex)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
-        ThrowHelper.ThrowIfNull(stream);
-        ThrowHelper.ThrowIfNull(expectedHex);
+        ArgumentNullException.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(stream);
+        ArgumentNullException.ThrowIfNull(expectedHex);
 
         byte[] expectedBytes;
         try
@@ -216,7 +215,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         ReadOnlySpan<byte> input,
         ReadOnlySpan<byte> expectedHash)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(algorithm);
 
         algorithm.Reset();
         algorithm.Append(input);
@@ -249,8 +248,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         ReadOnlyMemory<byte> input,
         byte[] expectedHash)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
-        ThrowHelper.ThrowIfNull(expectedHash);
+        ArgumentNullException.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(expectedHash);
 
         return algorithm.VerifyHash(input.Span, expectedHash);
     }
@@ -280,10 +279,10 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         Encoding encoding,
         byte[] expectedHash)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
-        ThrowHelper.ThrowIfNull(text);
-        ThrowHelper.ThrowIfNull(encoding);
-        ThrowHelper.ThrowIfNull(expectedHash);
+        ArgumentNullException.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(text);
+        ArgumentNullException.ThrowIfNull(encoding);
+        ArgumentNullException.ThrowIfNull(expectedHash);
 
         byte[] data = encoding.GetBytes(text);
 

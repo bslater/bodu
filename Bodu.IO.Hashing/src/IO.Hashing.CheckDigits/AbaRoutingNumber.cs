@@ -45,7 +45,7 @@ public sealed class AbaRoutingNumber
     // length is known. To preserve the streaming contract (Append / GetCurrentCheckDigit at any point), the
     // implementation buffers the running list of digit values (at most 8) and recomputes the weighted sum on
     // each GetCurrentCheckDigit call. This is acceptably cheap given the tiny fixed body length.
-    private readonly List<int> _digits = new(BodyLength);
+    private readonly List<int> _digits = new List<int>(BodyLength);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AbaRoutingNumber" /> class.
@@ -77,7 +77,7 @@ public sealed class AbaRoutingNumber
     /// <inheritdoc />
     public override char GetCurrentCheckDigit()
     {
-        ReadOnlySpan<int> weights = [7, 3, 1];
+        ReadOnlySpan<int> weights = new int[] { 7, 3, 1 };
         int count = _digits.Count;
         int sum = 0;
         for (int i = count - 1, j = 0; i >= 0; i--, j++)

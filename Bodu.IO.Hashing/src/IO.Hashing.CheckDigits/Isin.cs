@@ -40,7 +40,7 @@ public sealed class Isin
     /// <summary>The required full-sequence length of <c>12</c> characters.</summary>
     public const int SequenceLength = 12;
 
-    private readonly Luhn luhn = new();
+    private readonly Luhn luhn = new Luhn();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Isin" /> class.
@@ -100,7 +100,7 @@ public sealed class Isin
     /// </exception>
     public static char Compute(ReadOnlySpan<char> body)
     {
-        Isin isin = new();
+        Isin isin = new Isin();
         isin.Append(body);
         return isin.GetCurrentCheckDigit();
     }

@@ -6,7 +6,6 @@
 
 namespace Bodu.IO.Hashing.Extensions;
 
-using Bodu;
 using System;
 using System.IO;
 using System.IO.Hashing;
@@ -43,7 +42,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         byte[] expectedHash,
         CancellationToken cancellationToken = default)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(algorithm);
 
         if (stream == null || expectedHash == null)
             return false;
@@ -87,8 +86,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         string expectedHex,
         CancellationToken cancellationToken = default)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
-        ThrowHelper.ThrowIfNull(expectedHex);
+        ArgumentNullException.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(expectedHex);
 
         if (stream == null)
             return false;
@@ -128,7 +127,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         ReadOnlyMemory<byte> expectedHash,
         CancellationToken cancellationToken = default)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(algorithm);
 
         if (stream == null)
             return false;
@@ -172,13 +171,13 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         byte[] expectedHash,
         CancellationToken cancellationToken = default)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
-        ThrowHelper.ThrowIfNull(input);
-        ThrowHelper.ThrowIfNull(expectedHash);
+        ArgumentNullException.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(expectedHash);
 
         try
         {
-            using MemoryStream stream = new(input, writable: false);
+            using MemoryStream stream = new MemoryStream(input, writable: false);
             return await algorithm.VerifyHashAsync(stream, expectedHash, cancellationToken).ConfigureAwait(false);
         }
         catch
@@ -220,13 +219,13 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         string expectedHex,
         CancellationToken cancellationToken = default)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
-        ThrowHelper.ThrowIfNull(input);
-        ThrowHelper.ThrowIfNull(expectedHex);
+        ArgumentNullException.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(expectedHex);
 
         try
         {
-            using MemoryStream stream = new(input, writable: false);
+            using MemoryStream stream = new MemoryStream(input, writable: false);
             return await algorithm.VerifyHashAsync(stream, expectedHex, cancellationToken).ConfigureAwait(false);
         }
         catch
@@ -267,15 +266,15 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         byte[] expectedHash,
         CancellationToken cancellationToken = default)
     {
-        ThrowHelper.ThrowIfNull(algorithm);
-        ThrowHelper.ThrowIfNull(input);
-        ThrowHelper.ThrowIfNull(encoding);
-        ThrowHelper.ThrowIfNull(expectedHash);
+        ArgumentNullException.ThrowIfNull(algorithm);
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(encoding);
+        ArgumentNullException.ThrowIfNull(expectedHash);
 
         try
         {
             byte[] inputBytes = encoding.GetBytes(input);
-            using MemoryStream stream = new(inputBytes, writable: false);
+            using MemoryStream stream = new MemoryStream(inputBytes, writable: false);
             return await algorithm.VerifyHashAsync(stream, expectedHash, cancellationToken).ConfigureAwait(false);
         }
         catch

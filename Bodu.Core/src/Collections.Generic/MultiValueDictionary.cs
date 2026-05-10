@@ -48,7 +48,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     where TKey : notnull
 {
     /// <summary>Shared empty list returned by the indexer and <see cref="TryGetValues"/> when a key is absent.</summary>
-    private static readonly IReadOnlyList<TValue> s_emptyValues = Array.Empty<TValue>();
+    private static readonly IReadOnlyList<TValue> EmptyValues = Array.Empty<TValue>();
 
     /// <summary>The equality comparer used to determine key equality.</summary>
     private readonly IEqualityComparer<TKey> _comparer;
@@ -63,14 +63,14 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     private int _version;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="MultiValueDictionary{TKey, TValue}"/> class that is
+    /// Initializes a new instance of the <see cref="MultiValueDictionary{TKey, TValue}"/> class that is
     /// empty and uses the default equality comparer for keys.
     /// </summary>
     public MultiValueDictionary()
         : this((IEqualityComparer<TKey>?)null) { }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="MultiValueDictionary{TKey, TValue}"/> class that is
+    /// Initializes a new instance of the <see cref="MultiValueDictionary{TKey, TValue}"/> class that is
     /// empty and uses the specified equality comparer for keys.
     /// </summary>
     /// <param name="comparer">
@@ -125,7 +125,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// callers may safely iterate the result without first checking <see cref="ContainsKey"/>.
     /// </remarks>
     public IReadOnlyList<TValue> this[TKey key] =>
-        _map.TryGetValue(key, out List<TValue>? values) ? values : s_emptyValues;
+        _map.TryGetValue(key, out List<TValue>? values) ? values : EmptyValues;
 
     /// <summary>
     /// Appends <paramref name="value"/> to the list of values associated with <paramref name="key"/>.
@@ -272,7 +272,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
             return true;
         }
 
-        values = s_emptyValues;
+        values = EmptyValues;
         return false;
     }
 

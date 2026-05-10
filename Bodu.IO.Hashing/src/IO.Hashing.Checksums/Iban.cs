@@ -134,7 +134,7 @@ public sealed class Iban
     /// </exception>
     public static string Compute(ReadOnlySpan<char> body)
     {
-        Iban iban = new();
+        Iban iban = new Iban();
         iban.Append(body);
         return iban.GetCurrentCheckDigits();
     }

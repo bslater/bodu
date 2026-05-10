@@ -56,7 +56,7 @@ public sealed partial class Multiset<T>
         private bool _beforeFirst;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="Enumerator"/> struct for the specified multiset.
+        /// Initializes a new instance of the <see cref="Multiset{T}.Enumerator"/> struct for the specified multiset.
         /// </summary>
         /// <param name="multiset">The multiset to enumerate.</param>
         internal Enumerator(Multiset<T> multiset)

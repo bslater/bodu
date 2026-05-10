@@ -26,7 +26,7 @@ internal sealed class MultiValueDictionaryDebugView<TKey, TValue>
     private readonly MultiValueDictionary<TKey, TValue> _dictionary;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="MultiValueDictionaryDebugView{TKey, TValue}"/> class.
+    /// Initializes a new instance of the <see cref="MultiValueDictionaryDebugView{TKey, TValue}"/> class.
     /// </summary>
     /// <param name="dictionary">The dictionary instance to inspect. Must not be <see langword="null"/>.</param>
     /// <exception cref="ArgumentNullException"><paramref name="dictionary"/> is <see langword="null"/>.</exception>

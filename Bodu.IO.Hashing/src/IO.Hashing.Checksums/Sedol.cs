@@ -39,7 +39,7 @@ public sealed class Sedol
     /// <summary>The required full-sequence length of <c>7</c> characters.</summary>
     public const int SequenceLength = 7;
 
-    private static readonly int[] Weights = [1, 3, 1, 7, 3, 9];
+    private static readonly int[] Weights = new int[] { 1, 3, 1, 7, 3, 9 };
 
     private int sum;
     private int count;

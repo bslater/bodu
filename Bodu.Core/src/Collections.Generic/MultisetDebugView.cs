@@ -25,7 +25,7 @@ internal sealed class MultisetDebugView<T>
     private readonly Multiset<T> _multiset;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="MultisetDebugView{T}"/> class.
+    /// Initializes a new instance of the <see cref="MultisetDebugView{T}"/> class.
     /// </summary>
     /// <param name="multiset">The multiset instance to inspect. Must not be <see langword="null"/>.</param>
     /// <exception cref="ArgumentNullException"><paramref name="multiset"/> is <see langword="null"/>.</exception>
