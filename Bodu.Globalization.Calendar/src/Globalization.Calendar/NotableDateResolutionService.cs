@@ -81,6 +81,7 @@ internal sealed class NotableDateResolutionService
     /// <summary>
     /// Gets the effective rules loaded by this resolution service.
     /// </summary>
+    /// <returns>A read-only list of <see cref="NotableDateRule" /> entries forming the post-merge effective rule set.</returns>
     internal IReadOnlyList<NotableDateRule> EffectiveRules => effectiveRules;
 
     /// <summary>
