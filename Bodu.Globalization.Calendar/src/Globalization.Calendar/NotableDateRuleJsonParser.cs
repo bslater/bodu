@@ -91,6 +91,8 @@ public static class NotableDateRuleJsonParser
 	/// <summary>
 	/// Maps a <see cref="UseFromDto" /> onto a <see cref="NotableDateRuleUseGroup" />.
 	/// </summary>
+	/// <param name="dto">The DTO to map. Must declare a non-empty resource path.</param>
+	/// <returns>The mapped <see cref="NotableDateRuleUseGroup" />.</returns>
 	private static NotableDateRuleUseGroup MapUseGroup(UseFromDto dto)
 	{
 		if (string.IsNullOrWhiteSpace(dto.Resource))
@@ -107,6 +109,8 @@ public static class NotableDateRuleJsonParser
 	/// <summary>
 	/// Maps a <see cref="UseDto" /> onto a <see cref="NotableDateRuleUseDirective" />.
 	/// </summary>
+	/// <param name="dto">The DTO to map. Must declare a non-empty source rule name.</param>
+	/// <returns>The mapped <see cref="NotableDateRuleUseDirective" />.</returns>
 	private static NotableDateRuleUseDirective MapUseDirective(UseDto dto)
 	{
 		if (string.IsNullOrWhiteSpace(dto.Name))
@@ -136,6 +140,8 @@ public static class NotableDateRuleJsonParser
 	/// <summary>
 	/// Maps an <see cref="OverrideRuleDto" /> onto a <see cref="NotableDateRuleOverrideBody" />.
 	/// </summary>
+	/// <param name="dto">The override DTO to map.</param>
+	/// <returns>The mapped <see cref="NotableDateRuleOverrideBody" />.</returns>
 	private static NotableDateRuleOverrideBody MapOverrideBody(OverrideRuleDto dto)
 	{
 		var strategy = DetectOverrideStrategy(dto);
@@ -172,6 +178,8 @@ public static class NotableDateRuleJsonParser
 	/// <summary>
 	/// Expands a <see cref="NotableDateDto" /> into one rule per <c>rules[]</c> entry.
 	/// </summary>
+	/// <param name="dto">The notable-date DTO whose rules are being expanded. Must declare a non-empty name.</param>
+	/// <returns>The sequence of rules derived from the DTO.</returns>
 	private static IEnumerable<NotableDateRule> MapNotableDate(NotableDateDto dto)
 	{
 		if (string.IsNullOrWhiteSpace(dto.Name))
@@ -187,6 +195,9 @@ public static class NotableDateRuleJsonParser
 	/// <summary>
 	/// Maps a single <see cref="RuleDto" /> onto a fully populated <see cref="NotableDateRule" />.
 	/// </summary>
+	/// <param name="notableDateName">The owning notable-date name.</param>
+	/// <param name="dto">The rule DTO to map.</param>
+	/// <returns>The mapped <see cref="NotableDateRule" />.</returns>
 	private static NotableDateRule MapRule(string notableDateName, RuleDto dto)
 	{
 		var strategy = DetectRuleStrategy(dto, notableDateName);
@@ -224,6 +235,8 @@ public static class NotableDateRuleJsonParser
 	/// <summary>
 	/// Maps an <see cref="AdjustmentDto" /> onto an <see cref="ObservanceAdjustment" />.
 	/// </summary>
+	/// <param name="dto">The adjustment DTO to map. Must declare a non-empty key.</param>
+	/// <returns>The mapped <see cref="ObservanceAdjustment" />.</returns>
 	private static ObservanceAdjustment MapAdjustment(AdjustmentDto dto)
 	{
 		if (string.IsNullOrWhiteSpace(dto.Key))
@@ -257,6 +270,9 @@ public static class NotableDateRuleJsonParser
 	/// <summary>
 	/// Determines which strategy a <see cref="RuleDto" /> declared, enforcing exactly-one-of-N selection.
 	/// </summary>
+	/// <param name="dto">The rule DTO whose strategy is being inspected.</param>
+	/// <param name="notableDateName">The owning notable-date name, used for diagnostic messages.</param>
+	/// <returns>The detected <see cref="DateResolutionStrategy" />.</returns>
 	private static DateResolutionStrategy DetectRuleStrategy(RuleDto dto, string notableDateName)
 	{
 		int count = 0;
@@ -282,6 +298,8 @@ public static class NotableDateRuleJsonParser
 	/// Determines which strategy an <see cref="OverrideRuleDto" /> declared, allowing zero or one. Returns
 	/// <see langword="null" /> when no strategy is specified (the override inherits the source's strategy).
 	/// </summary>
+	/// <param name="dto">The override DTO whose strategy is being inspected.</param>
+	/// <returns>The detected strategy, or <see langword="null" /> when none is declared.</returns>
 	private static DateResolutionStrategy? DetectOverrideStrategy(OverrideRuleDto dto)
 	{
 		int count = 0;
@@ -305,6 +323,9 @@ public static class NotableDateRuleJsonParser
 	/// <summary>
 	/// Applies strategy-specific fields from <paramref name="dto" /> onto <paramref name="rule" />.
 	/// </summary>
+	/// <param name="rule">The rule receiving strategy-specific fields.</param>
+	/// <param name="dto">The rule DTO carrying the strategy specifics.</param>
+	/// <returns>The rule with strategy-specific fields populated.</returns>
 	private static NotableDateRule ApplyStrategySpecifics(NotableDateRule rule, RuleDto dto)
 	{
 		switch (rule.Strategy)
@@ -365,6 +386,9 @@ public static class NotableDateRuleJsonParser
 	/// <summary>
 	/// Applies strategy-specific fields from an override DTO onto <paramref name="body" />.
 	/// </summary>
+	/// <param name="body">The override body receiving strategy-specific fields.</param>
+	/// <param name="dto">The override DTO carrying the strategy specifics.</param>
+	/// <returns>The override body with strategy-specific fields populated.</returns>
 	private static NotableDateRuleOverrideBody ApplyStrategySpecificsToBody(NotableDateRuleOverrideBody body, OverrideRuleDto dto)
 	{
 		switch (body.Strategy)
@@ -428,6 +452,10 @@ public static class NotableDateRuleJsonParser
 	/// <summary>
 	/// Returns <paramref name="value" /> if non-empty, otherwise throws referring to the field by name.
 	/// </summary>
+	/// <param name="value">The candidate value to validate.</param>
+	/// <param name="fieldName">The field name used in diagnostic messages.</param>
+	/// <param name="contextName">The owning context name used in diagnostic messages.</param>
+	/// <returns>The validated non-empty string.</returns>
 	private static string RequireString(string? value, string fieldName, string contextName)
 	{
 		if (string.IsNullOrWhiteSpace(value))
@@ -440,6 +468,10 @@ public static class NotableDateRuleJsonParser
 	/// <summary>
 	/// Returns <paramref name="value" /> if it has a value, otherwise throws referring to the field by name.
 	/// </summary>
+	/// <param name="value">The candidate value to validate.</param>
+	/// <param name="fieldName">The field name used in diagnostic messages.</param>
+	/// <param name="contextName">The owning context name used in diagnostic messages.</param>
+	/// <returns>The validated integer value.</returns>
 	private static int RequireInt(int? value, string fieldName, string contextName)
 	{
 		if (value is null)
@@ -452,6 +484,11 @@ public static class NotableDateRuleJsonParser
 	/// <summary>
 	/// Parses a required enum-valued field, throwing when missing or unrecognised.
 	/// </summary>
+	/// <typeparam name="TEnum">The target enum type.</typeparam>
+	/// <param name="raw">The raw string value to parse.</param>
+	/// <param name="fieldName">The field name used in diagnostic messages.</param>
+	/// <param name="contextName">The owning context name used in diagnostic messages.</param>
+	/// <returns>The parsed enum value.</returns>
 	private static TEnum ParseRequiredEnum<TEnum>(string? raw, string fieldName, string contextName)
 		where TEnum : struct, Enum
 	{
@@ -469,6 +506,11 @@ public static class NotableDateRuleJsonParser
 	/// <summary>
 	/// Parses an optional enum-valued field, returning <see langword="null" /> when absent.
 	/// </summary>
+	/// <typeparam name="TEnum">The target enum type.</typeparam>
+	/// <param name="raw">The raw string value to parse, or <see langword="null" />.</param>
+	/// <param name="fieldName">The field name used in diagnostic messages.</param>
+	/// <param name="contextName">The owning context name used in diagnostic messages.</param>
+	/// <returns>The parsed enum value, or <see langword="null" /> when <paramref name="raw" /> is absent.</returns>
 	private static TEnum? ParseOptionalEnum<TEnum>(string? raw, string fieldName, string contextName)
 		where TEnum : struct, Enum
 	{
@@ -485,6 +527,9 @@ public static class NotableDateRuleJsonParser
 	/// <summary>
 	/// Resolves <paramref name="typeName" /> to a CLR type assignable to <typeparamref name="TBase" />.
 	/// </summary>
+	/// <typeparam name="TBase">The base type the resolved type must be assignable to.</typeparam>
+	/// <param name="typeName">The fully qualified type name to resolve, or <see langword="null" />.</param>
+	/// <returns>The resolved <see cref="Type" />, or <see langword="null" /> when the name is absent or unresolvable.</returns>
 	private static Type? ParseOptionalType<TBase>(string? typeName)
 	{
 		if (string.IsNullOrWhiteSpace(typeName))
@@ -498,6 +543,9 @@ public static class NotableDateRuleJsonParser
 	/// Builds a synthetic comparison <see cref="DateTime" /> from a (month, day) pair, returning
 	/// <see langword="null" /> when either is absent.
 	/// </summary>
+	/// <param name="month">The month token, or <see langword="null" />.</param>
+	/// <param name="day">The day of month, or <see langword="null" />.</param>
+	/// <returns>The synthetic <see cref="DateTime" />, or <see langword="null" /> when either input is absent.</returns>
 	private static DateTime? ParseOptionalMonthDay(string? month, int? day)
 	{
 		if (string.IsNullOrWhiteSpace(month) || day is null)
@@ -510,6 +558,8 @@ public static class NotableDateRuleJsonParser
 	/// <summary>
 	/// Parses an English Gregorian month name or numeric month token (1–13).
 	/// </summary>
+	/// <param name="monthName">The month token to parse.</param>
+	/// <returns>The parsed month number.</returns>
 	private static int ParseMonth(string monthName)
 	{
 		if (string.IsNullOrWhiteSpace(monthName))
@@ -529,6 +579,8 @@ public static class NotableDateRuleJsonParser
 	/// <summary>
 	/// Parses a Fixed-strategy month token, returning either a numeric month or a Hebrew calendar alias.
 	/// </summary>
+	/// <param name="token">The month token to parse.</param>
+	/// <returns>A tuple of <c>(numericMonth, alias)</c>: exactly one of the two is non-<see langword="null" />.</returns>
 	private static (int? numericMonth, string? alias) ParseMonthToken(string token)
 	{
 		if (string.IsNullOrWhiteSpace(token))
@@ -566,6 +618,8 @@ public static class NotableDateRuleJsonParser
 	/// <summary>
 	/// Enforces the per-rule uniqueness invariant on adjustment keys.
 	/// </summary>
+	/// <param name="adjustments">The adjustments whose keys are being validated.</param>
+	/// <param name="contextName">The owning context name used in diagnostic messages.</param>
 	private static void EnsureUniqueAdjustmentKeys(ImmutableArray<ObservanceAdjustment> adjustments, string contextName)
 	{
 		var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);

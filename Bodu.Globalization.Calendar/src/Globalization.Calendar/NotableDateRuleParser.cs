@@ -208,6 +208,8 @@ public static class NotableDateRuleParser
     /// Parses the nested &lt;Rule&gt; override body inside a &lt;Use&gt; directive into a
     /// <see cref="NotableDateRuleOverrideBody" />.
     /// </summary>
+    /// <param name="ruleElement">The nested &lt;Rule&gt; XML element.</param>
+    /// <returns>The parsed override body.</returns>
     /// <remarks>
     /// The nested form is structurally identical to a standalone &lt;Rule&gt; but every child
     /// element is optional: the strategy may be absent (inherit the source strategy), and Tag
@@ -267,6 +269,9 @@ public static class NotableDateRuleParser
     /// override body. Mirrors <see cref="ApplyStrategySpecifics(NotableDateRule, XElement)" />
     /// but writes to a <see cref="NotableDateRuleOverrideBody" />.
     /// </summary>
+    /// <param name="body">The override body receiving strategy-specific fields.</param>
+    /// <param name="strategyElement">The XML element describing the strategy.</param>
+    /// <returns>The override body with strategy-specific fields populated.</returns>
 	private static NotableDateRuleOverrideBody ApplyStrategySpecificsToBody(NotableDateRuleOverrideBody body, XElement strategyElement)
 	{
 		if (body.Strategy == DateResolutionStrategy.Fixed)
@@ -310,6 +315,8 @@ public static class NotableDateRuleParser
     /// Enforces the per-rule uniqueness invariant on adjustment keys — the same invariant the
     /// merge pipeline relies on when deciding between replace and append semantics.
     /// </summary>
+    /// <param name="adjustments">The adjustments whose keys are being validated.</param>
+    /// <param name="contextElement">The owning XML element used in diagnostic messages.</param>
 	private static void EnsureUniqueAdjustmentKeys(ImmutableArray<ObservanceAdjustment> adjustments, XElement contextElement)
 	{
 		var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
