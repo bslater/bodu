@@ -544,7 +544,7 @@ public sealed class CubeHash
     /// XORs a full input block into the state starting at word zero. Uses a direct reinterpretation cast on
     /// little-endian platforms with word-aligned block sizes; falls back to byte-by-byte XOR otherwise.
     /// </summary>
-    /// <param name="block">The input block to XOR into the state. Must have length equal to <see cref="inputBlockSizeBytes" />.</param>
+    /// <param name="block">The input block to XOR into the state. Must have length equal to <see cref="TransformBlockSize" />.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void XorBlockIntoState(ReadOnlySpan<byte> block)
     {
