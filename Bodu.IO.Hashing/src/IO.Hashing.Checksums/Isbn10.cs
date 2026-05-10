@@ -36,8 +36,8 @@ public sealed class Isbn10
     /// <summary>The required full-sequence length of <c>10</c> characters.</summary>
     public const int SequenceLength = 10;
 
-    private int sum;
-    private int count;
+    private int _sum;
+    private int _count;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Isbn10" /> class.
@@ -58,8 +58,8 @@ public sealed class Isbn10
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        int sum = this.sum;
-        int count = this.count;
+        int sum = this._sum;
+        int count = this._count;
         for (int i = 0; i < body.Length; i++)
         {
             char ch = body[i];
@@ -74,21 +74,21 @@ public sealed class Isbn10
             count++;
         }
 
-        this.sum = sum;
-        this.count = count;
+        this._sum = sum;
+        this._count = count;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        sum = 0;
-        count = 0;
+        _sum = 0;
+        _count = 0;
     }
 
     /// <inheritdoc />
     public override char GetCurrentCheckDigit()
     {
-        int check = (11 - (((sum % 11) + 11) % 11)) % 11;
+        int check = (11 - (((_sum % 11) + 11) % 11)) % 11;
         return check == 10 ? 'X' : (char)('0' + check);
     }
 

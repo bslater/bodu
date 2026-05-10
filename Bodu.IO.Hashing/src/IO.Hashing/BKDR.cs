@@ -60,14 +60,14 @@ public sealed class BKDR
     private const string ReconfigurationNotAllowed =
         "The algorithm is already in use and cannot be reconfigured after computation has started.";
 
-    private static readonly uint[] ValidSeedValues =
+    private static readonly uint[] s_validSeedValues =
     {
         31U, 131U, 1313U, 13131U, 131313U, 1313131U, 13131313U, 131313131U, 1313131313U,
     };
 
-    private uint seed;
-    private uint workingHash;
-    private bool started;
+    private uint _seed;
+    private uint _workingHash;
+    private bool _started;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BKDR" /> class with the default seed of <c>131</c>.
@@ -91,8 +91,8 @@ public sealed class BKDR
         : base(HashLength)
     {
         ValidateSeed(seed);
-        this.seed = seed;
-        this.workingHash = seed;
+        this._seed = seed;
+        this._workingHash = seed;
     }
 
     /// <summary>
@@ -108,14 +108,14 @@ public sealed class BKDR
     /// </exception>
     public uint Seed
     {
-        get => this.seed;
+        get => this._seed;
 
         set
         {
             this.ThrowIfInvalidState();
             ValidateSeed(value);
-            this.seed = value;
-            this.workingHash = value;
+            this._seed = value;
+            this._workingHash = value;
         }
     }
 
@@ -125,31 +125,31 @@ public sealed class BKDR
         if (source.Length == 0)
             return;
 
-        uint v = this.workingHash;
-        uint seed = this.seed;
+        uint v = this._workingHash;
+        uint seed = this._seed;
         foreach (byte b in source)
         {
             v = (v * seed) + b;
         }
 
-        this.workingHash = v;
-        this.started = true;
+        this._workingHash = v;
+        this._started = true;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        this.workingHash = this.seed;
-        this.started = false;
+        this._workingHash = this._seed;
+        this._started = false;
     }
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt32BigEndian(destination, this.workingHash);
+        BinaryPrimitives.WriteUInt32BigEndian(destination, this._workingHash);
 
     private static void ValidateSeed(uint value)
     {
-        if (Array.IndexOf(ValidSeedValues, value) == -1)
+        if (Array.IndexOf(s_validSeedValues, value) == -1)
         {
             throw new ArgumentException(
                 $"The value {value} is not a supported BKDR seed.",
@@ -171,7 +171,7 @@ public sealed class BKDR
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfInvalidState()
     {
-        if (this.started)
+        if (this._started)
             throw new CryptographicUnexpectedOperationException(ReconfigurationNotAllowed);
     }
 }
