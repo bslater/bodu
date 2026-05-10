@@ -182,13 +182,8 @@ public static partial class IEnumerableExtensions
 
                     if (buffer.Count == size)
                     {
-                        // Snapshot the batch before resetting the buffer for the next batch.
-                        // If PooledBufferBuilder exposes a Reset() or Clear() method that retains
-                        // the rented array, prefer that over Dispose + re-create to avoid a pool
-                        // round-trip on every batch boundary.
                         yield return buffer.AsSpan().ToArray();
-                        buffer.Dispose();
-                        buffer = new PooledBufferBuilder<TResult>(size);
+                        buffer.Reset();
                     }
                 }
 
