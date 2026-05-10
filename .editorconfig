@@ -266,6 +266,11 @@ dotnet_diagnostic.SA1004.severity = none    # Documentation spacing rule suppres
 # Comma spacing
 dotnet_diagnostic.SA1001.severity = warning # Commas should be spaced correctly
 
+# SA1010 incorrectly flags C# 12 collection expressions ([], [item, ...]) as a spacing
+# violation. The rule predates collection expression syntax and cannot be fixed at the
+# call site — suppression is the only option.
+dotnet_diagnostic.SA1010.severity = none
+
 # IDE0290: Use primary constructor — suppressed; conflicts with XML <param> documentation standard.
 dotnet_diagnostic.IDE0290.severity = none
 
