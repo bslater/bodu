@@ -135,7 +135,7 @@ public sealed partial class Whirlpool
     }
 
     /// <summary>
-    /// Builds the flat 8 × 256 multiplication table used by <see cref="RoundFunction" /> for the supplied
+    /// Builds the flat 8 × 256 multiplication table used by <see cref="ApplyRound" /> for the supplied
     /// <paramref name="sbox" /> and diffusion coefficients <paramref name="mds" />.
     /// </summary>
     /// <param name="sbox">The 256-byte S-box selected for the configured variant.</param>

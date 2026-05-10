@@ -37,7 +37,7 @@ namespace Bodu.Security.Cryptography;
 ///   <item><description>Output size: 512 bits (64 bytes), fixed.</description></item>
 ///   <item><description>Block size: 64 bytes (512 bits); 256-bit big-endian length field.</description></item>
 ///   <item><description>Internal cipher <c>W</c> on the wide-trail (Rijndael-family) design principle.</description></item>
-///   <item><description>Selectable revision: <see cref="WhirlpoolVersion.WhirlpoolInfo0"/> (2000), <see cref="WhirlpoolVersion.WhirlpoolInfo1"/> (Whirlpool-T, 2001), or <see cref="WhirlpoolVersion.WhirlpoolInfo3"/> (ISO/IEC 10118-3, 2003 — default).</description></item>
+///   <item><description>Selectable revision: <see cref="WhirlpoolVersion.WhirlpoolInfo1"/> (2000), <see cref="WhirlpoolVersion.WhirlpoolInfo1"/> (Whirlpool-T, 2001), or <see cref="WhirlpoolVersion.WhirlpoolInfo3"/> (ISO/IEC 10118-3, 2003 — default).</description></item>
 /// </list>
 /// <para>
 /// <strong>When to choose Whirlpool.</strong> Pick Whirlpool when interoperability with software that produces

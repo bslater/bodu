@@ -39,7 +39,7 @@ namespace Bodu.Security.Cryptography;
 /// SipHash) derive from <see cref="KeyedBlockHashAlgorithm{T}"/>, which adds key handling on top of this
 /// base. For non-cryptographic block hashes (Fletcher, CRC) the parallel
 /// <c>BlockNonCryptographicHashAlgorithm&lt;T&gt;</c> base in <c>Bodu.IO.Hashing</c> is the right pick — it integrates
-/// with <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm"/> rather than <see cref="HashAlgorithm"/>.
+/// with <c>NonCryptographicHashAlgorithm</c> rather than <see cref="HashAlgorithm"/>.
 /// </para>
 /// </remarks>
 /// <seealso cref="BufferedBlockHashAlgorithm{T}"/>
