@@ -22,10 +22,10 @@ public partial class ComparableHelperTests
     /// Verifies that Min returns the smaller of two <see cref="SimpleTestObject" /> values, handling nulls appropriately.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetMinTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetMinTestData))]
     public void Min_WhenComparingTwoValues_ShouldReturnSmaller(SimpleTestObject? first, SimpleTestObject? second, SimpleTestObject? expected)
     {
-        var actual = ComparableHelper.Min(first, second);
+        SimpleTestObject? actual = ComparableHelper.Min(first, second);
         Assert.AreEqual(expected, actual);
     }
 }

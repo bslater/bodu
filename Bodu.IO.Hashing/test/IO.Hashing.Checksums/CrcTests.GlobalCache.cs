@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CrcTests.GlobalCache.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public partial class CrcTests
         CrcLookupTableCache cache = Crc.GlobalCache;
         Assert.IsNotNull(cache);
 
-        ulong[] table = cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
+        var table = cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
         Assert.IsNotNull(table);
         Assert.AreEqual(256, table.Length);
     }
@@ -52,7 +52,7 @@ public partial class CrcTests
     [TestMethod]
     public void GlobalCache_WhenAssignedNull_ShouldThrowArgumentNullException()
     {
-        var ex = Assert.ThrowsExactly<System.ArgumentNullException>(() => Crc.GlobalCache = null!);
+        ArgumentNullException ex = Assert.ThrowsExactly<System.ArgumentNullException>(() => Crc.GlobalCache = null!);
         Assert.AreEqual("value", ex.ParamName);
     }
 }

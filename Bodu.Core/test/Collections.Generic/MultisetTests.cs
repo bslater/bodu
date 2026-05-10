@@ -112,7 +112,7 @@ public partial class MultisetTests
     [TestMethod]
     public void Ctor_WhenEmptyCollectionProvided_ShouldBeEmpty()
     {
-        Multiset<string> sut = new Multiset<string>(Array.Empty<string>());
+        Multiset<string> sut = new Multiset<string>([]);
 
         Assert.AreEqual(0, sut.Count);
         Assert.AreEqual(0, sut.DistinctCount);
@@ -125,7 +125,7 @@ public partial class MultisetTests
     public void Ctor_WhenCollectionAndComparerProvided_ShouldUseSpecifiedComparer()
     {
         Multiset<string> sut = new Multiset<string>(
-            new[] { "A", "a", "B" },
+            ["A", "a", "B"],
             StringComparer.OrdinalIgnoreCase);
 
         Assert.AreEqual(3, sut.Count);
@@ -365,10 +365,10 @@ public partial class MultisetTests
         sut.Add(10, 3);
         sut.Add(20, 2);
 
-        int[] dest = new int[5];
+        var dest = new int[5];
         sut.CopyTo(dest, 0);
 
-        int[] sorted = (int[])dest.Clone();
+        var sorted = (int[])dest.Clone();
         System.Array.Sort(sorted);
         CollectionAssert.AreEqual(new[] { 10, 10, 10, 20, 20 }, sorted);
     }
@@ -414,7 +414,7 @@ public partial class MultisetTests
     public void CopyTo_WhenMultisetIsEmpty_ShouldNotModifyArray()
     {
         Multiset<int> sut = new Multiset<int>();
-        int[] dest = new int[] { 99, 88 };
+        int[] dest = [99, 88];
 
         sut.CopyTo(dest, 0);
 
@@ -430,7 +430,7 @@ public partial class MultisetTests
     {
         Multiset<int> sut = new Multiset<int>();
         sut.Add(42, 2);
-        int[] dest = new int[5];
+        var dest = new int[5];
 
         sut.CopyTo(dest, 2);
 

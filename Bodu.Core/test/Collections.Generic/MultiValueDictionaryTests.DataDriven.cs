@@ -29,7 +29,7 @@ public partial class MultiValueDictionaryTests
     {
         MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
 
-        for (int i = 0; i < valueCount; i++)
+        for (var i = 0; i < valueCount; i++)
             sut.Add("k", i);
 
         Assert.AreEqual(valueCount, sut.Count);
@@ -53,11 +53,11 @@ public partial class MultiValueDictionaryTests
     public void RemoveAll_WhenKeyHasVariousValueCounts_ShouldRemoveAllAndUpdateCount(int valueCount)
     {
         MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-        for (int i = 0; i < valueCount; i++)
+        for (var i = 0; i < valueCount; i++)
             sut.Add("k", i);
         sut.Add("other", 99);
 
-        bool result = sut.RemoveAll("k");
+        var result = sut.RemoveAll("k");
 
         Assert.IsTrue(result);
         Assert.AreEqual(1, sut.Count);
@@ -81,7 +81,7 @@ public partial class MultiValueDictionaryTests
     public void AddRange_WhenSequenceHasVaryingLength_ShouldAppendAllInOrder(int length)
     {
         MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-        int[] values = Enumerable.Range(0, length).ToArray();
+        var values = Enumerable.Range(0, length).ToArray();
 
         sut.AddRange("k", values);
 
@@ -106,11 +106,11 @@ public partial class MultiValueDictionaryTests
     public void Remove_WhenValueIsAtVariousPositions_ShouldRemoveExactlyOne(int listSize, int positionToRemove)
     {
         MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-        for (int i = 0; i < listSize; i++)
+        for (var i = 0; i < listSize; i++)
             sut.Add("k", i * 10);
 
-        int valueToRemove = positionToRemove * 10;
-        bool result = sut.Remove("k", valueToRemove);
+        var valueToRemove = positionToRemove * 10;
+        var result = sut.Remove("k", valueToRemove);
 
         Assert.IsTrue(result);
         Assert.AreEqual(listSize - 1, sut.Count);
@@ -133,8 +133,8 @@ public partial class MultiValueDictionaryTests
     public void GetValues_WhenRetrieved_ShouldPreserveInsertionOrder(int valueCount)
     {
         MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-        int[] expected = Enumerable.Range(0, valueCount).Select(i => i * 7).ToArray();
-        foreach (int v in expected)
+        var expected = Enumerable.Range(0, valueCount).Select(i => i * 7).ToArray();
+        foreach (var v in expected)
             sut.Add("k", v);
 
         System.Collections.Generic.IReadOnlyList<int> actual = sut.GetValues("k");

@@ -23,10 +23,7 @@ public partial class IComparableExtensionsTests
     [DataRow(0, 5, true, DisplayName = "Value below reference returns true")]
     [DataRow(5, 5, true, DisplayName = "Value equal to reference returns true")]
     [DataRow(10, 5, false, DisplayName = "Value above reference returns false")]
-    public void IsLessThanOrEqual_WhenEvaluatingIntegerValues_ShouldReturnExpectedResult(int value, int other, bool expected)
-    {
-        Assert.AreEqual(expected, value.IsLessThanOrEqual(other));
-    }
+    public void IsLessThanOrEqual_WhenEvaluatingIntegerValues_ShouldReturnExpectedResult(int value, int other, bool expected) => Assert.AreEqual(expected, value.IsLessThanOrEqual(other));
 
     /// <summary>
     /// Verifies that <c>IsLessThanOrEqual</c> works correctly with a reference type (string) using natural ordering.
@@ -35,10 +32,7 @@ public partial class IComparableExtensionsTests
     [DataRow("aardvark", "apple", true, DisplayName = "String before reference returns true")]
     [DataRow("apple", "apple", true, DisplayName = "String equal to reference returns true")]
     [DataRow("banana", "apple", false, DisplayName = "String after reference returns false")]
-    public void IsLessThanOrEqual_WhenEvaluatingStringValues_ShouldReturnExpectedResult(string value, string other, bool expected)
-    {
-        Assert.AreEqual(expected, value.IsLessThanOrEqual(other));
-    }
+    public void IsLessThanOrEqual_WhenEvaluatingStringValues_ShouldReturnExpectedResult(string value, string other, bool expected) => Assert.AreEqual(expected, value.IsLessThanOrEqual(other));
 
     /// <summary>
     /// Verifies that <c>IsLessThanOrEqual</c> returns <see langword="false"/> when the reference value is <see langword="null"/>.
@@ -88,7 +82,7 @@ public partial class IComparableExtensionsTests
     {
         IComparer<int>? comparer = null;
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = 5.IsLessThanOrEqual(10, comparer!);
         });

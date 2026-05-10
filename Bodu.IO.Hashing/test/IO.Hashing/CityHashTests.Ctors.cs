@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CityHashTests.Ctors.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -51,6 +51,6 @@ public abstract partial class CityHashTests<TTest, TAlgorithm>
         {
         }
 
-        protected override byte[] ComputeHashCore(ReadOnlySpan<byte> source) => Array.Empty<byte>();
+        protected override byte[] ComputeHashCore(ReadOnlySpan<byte> source) => [];
     }
 }

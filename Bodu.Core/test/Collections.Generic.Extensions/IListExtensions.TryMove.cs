@@ -17,22 +17,22 @@ public sealed partial class IListExtensionsTests_TryMove
     /// Provides valid <c>TryMove</c> scenarios covering left-moves, right-moves, move-to-end,
     /// and same-position no-ops.
     /// </summary>
-    public static IEnumerable<object[]> GetTryMoveTestCases() => new[]
-    {
+    public static IEnumerable<object[]> GetTryMoveTestCases() =>
+    [
         new object[] { new[] { "a", "b", "c", "d", "e" }, 3, 0, new[] { "d", "a", "b", "c", "e" } },
-        new object[] { new[] { "a", "b", "c", "d", "e" }, 0, 4, new[] { "b", "c", "d", "a", "e" } },
-        new object[] { new[] { "a", "b", "c", "d", "e" }, 0, 5, new[] { "b", "c", "d", "e", "a" } },
-        new object[] { new[] { "a", "b", "c", "d", "e" }, 2, 2, new[] { "a", "b", "c", "d", "e" } },
-        new object[] { new[] { "a", "b", "c", "d", "e" }, 2, 3, new[] { "a", "b", "c", "d", "e" } },
-        new object[] { new[] { "a", "b" }, 0, 2, new[] { "b", "a" } },
-    };
+        [new[] { "a", "b", "c", "d", "e" }, 0, 4, new[] { "b", "c", "d", "a", "e" }],
+        [new[] { "a", "b", "c", "d", "e" }, 0, 5, new[] { "b", "c", "d", "e", "a" }],
+        [new[] { "a", "b", "c", "d", "e" }, 2, 2, new[] { "a", "b", "c", "d", "e" }],
+        [new[] { "a", "b", "c", "d", "e" }, 2, 3, new[] { "a", "b", "c", "d", "e" }],
+        [new[] { "a", "b" }, 0, 2, new[] { "b", "a" }],
+    ];
 
     /// <summary>
     /// Verifies that <c>TryMove</c> correctly repositions the specified element and returns <see langword="true" />
     /// for in-range valid scenarios, including same-position and adjacent-insertion-point no-ops.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetTryMoveTestCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetTryMoveTestCases))]
     public void TryMove_WhenArgumentsAreValid_ForIndexScenarios_ShouldMoveElementAndReturnTrue(
         string[] initial,
         int oldIndex,
@@ -41,7 +41,7 @@ public sealed partial class IListExtensionsTests_TryMove
     {
         var list = new List<string>(initial);
 
-        bool result = list.TryMove(oldIndex, newIndex);
+        var result = list.TryMove(oldIndex, newIndex);
 
         Assert.IsTrue(result);
         CollectionAssert.AreEqual(expected, list);
@@ -56,7 +56,7 @@ public sealed partial class IListExtensionsTests_TryMove
     {
         var list = new List<int> { 10, 20, 30, 40 };
 
-        bool result = list.TryMove(2, 2);
+        var result = list.TryMove(2, 2);
 
         Assert.IsTrue(result);
         CollectionAssert.AreEqual(new[] { 10, 20, 30, 40 }, list);
@@ -71,7 +71,7 @@ public sealed partial class IListExtensionsTests_TryMove
     {
         var list = new List<int> { 10, 20, 30, 40 };
 
-        bool result = list.TryMove(1, 2);
+        var result = list.TryMove(1, 2);
 
         Assert.IsTrue(result);
         CollectionAssert.AreEqual(new[] { 10, 20, 30, 40 }, list);
@@ -90,7 +90,7 @@ public sealed partial class IListExtensionsTests_TryMove
     {
         var list = new List<int> { 1, 2, 3, 4, 5 };
 
-        bool result = list.TryMove(oldIndex, newIndex);
+        var result = list.TryMove(oldIndex, newIndex);
 
         Assert.IsFalse(result);
         CollectionAssert.AreEqual(new[] { 1, 2, 3, 4, 5 }, list);
@@ -119,7 +119,7 @@ public sealed partial class IListExtensionsTests_TryMove
     {
         IList<string> list = new Collection<string> { "a", "b", "c", "d" };
 
-        bool result = list.TryMove(0, 3);
+        var result = list.TryMove(0, 3);
 
         Assert.IsTrue(result);
         CollectionAssert.AreEqual(new[] { "b", "c", "a", "d" }, (Collection<string>)list);

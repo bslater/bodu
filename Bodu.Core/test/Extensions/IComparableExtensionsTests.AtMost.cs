@@ -22,10 +22,7 @@ public partial class IComparableExtensionsTests
     [DataRow(0, 5, 0, DisplayName = "Value below ceiling returns value")]
     [DataRow(5, 5, 5, DisplayName = "Value on ceiling returns value")]
     [DataRow(10, 5, 5, DisplayName = "Value above ceiling returns ceiling")]
-    public void AtMost_WhenEvaluatingIntegerValues_ShouldReturnExpectedResult(int value, int max, int expected)
-    {
-        Assert.AreEqual(expected, value.AtMost(max));
-    }
+    public void AtMost_WhenEvaluatingIntegerValues_ShouldReturnExpectedResult(int value, int max, int expected) => Assert.AreEqual(expected, value.AtMost(max));
 
     /// <summary>
     /// Verifies that <c>AtMost</c> works correctly with a reference type (string) using natural ordering.
@@ -33,10 +30,7 @@ public partial class IComparableExtensionsTests
     [TestMethod]
     [DataRow("aardvark", "apple", "aardvark", DisplayName = "String below ceiling returns value")]
     [DataRow("banana", "apple", "apple", DisplayName = "String above ceiling returns ceiling")]
-    public void AtMost_WhenEvaluatingStringValues_ShouldReturnExpectedResult(string value, string max, string expected)
-    {
-        Assert.AreEqual(expected, value.AtMost(max));
-    }
+    public void AtMost_WhenEvaluatingStringValues_ShouldReturnExpectedResult(string value, string max, string expected) => Assert.AreEqual(expected, value.AtMost(max));
 
     // =========================================================================
     // AtMost<T>(T, T, IComparer<T>)
@@ -66,7 +60,7 @@ public partial class IComparableExtensionsTests
     {
         IComparer<int>? comparer = null;
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = 5.AtMost(10, comparer!);
         });

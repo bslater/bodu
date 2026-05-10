@@ -15,10 +15,10 @@ public partial class CrcLookupTableBuilderTests
     public void BuildLookupTable_AllOnesPolynomial_ShouldNotOverflow()
     {
         const int size = 16;
-        ulong poly = (1UL << size) - 1;
+        var poly = (1UL << size) - 1;
         var table = CrcLookupTableBuilder.BuildLookupTable(size, poly, false);
 
-        ulong mask = ulong.MaxValue >> (64 - size);
+        var mask = ulong.MaxValue >> (64 - size);
         foreach (var value in table)
         {
             Assert.IsTrue((value & ~mask) == 0);
@@ -32,11 +32,11 @@ public partial class CrcLookupTableBuilderTests
     public void BuildLookupTable_PolynomialHasExcessBits_ShouldStillMaskCorrectly()
     {
         const int size = 4;
-        ulong poly = 0xFFUL; // Higher than 4 bits
+        var poly = 0xFFUL; // Higher than 4 bits
         var table = CrcLookupTableBuilder.BuildLookupTable(size, poly, false);
 
-        ulong mask = ulong.MaxValue >> (64 - size);
-        foreach (ulong entry in table)
+        var mask = ulong.MaxValue >> (64 - size);
+        foreach (var entry in table)
         {
             Assert.IsTrue((entry & ~mask) == 0, $"Entry {entry:X} exceeds size {size} bits.");
         }
@@ -50,9 +50,9 @@ public partial class CrcLookupTableBuilderTests
     {
         const int size = 16;
         var table = CrcLookupTableBuilder.BuildLookupTable(size, 0x8005UL, false);
-        ulong mask = ulong.MaxValue >> (64 - size);
+        var mask = ulong.MaxValue >> (64 - size);
 
-        foreach (ulong value in table)
+        foreach (var value in table)
         {
             Assert.AreEqual(value, value & mask, $"Value {value:X} exceeds {size}-bit mask.");
         }
@@ -81,8 +81,8 @@ public partial class CrcLookupTableBuilderTests
         var reflected = CrcLookupTableBuilder.BuildLookupTable(size, polynomial, true);
         var nonReflected = CrcLookupTableBuilder.BuildLookupTable(size, polynomial, false);
 
-        bool anyDifference = false;
-        for (int i = 0; i < reflected.Length; i++)
+        var anyDifference = false;
+        for (var i = 0; i < reflected.Length; i++)
         {
             if (reflected[i] != nonReflected[i])
             {
@@ -102,7 +102,7 @@ public partial class CrcLookupTableBuilderTests
     {
         var table = CrcLookupTableBuilder.BuildLookupTable(64, 0x42F0E1EBA9EA3693UL, false);
 
-        foreach (ulong value in table)
+        foreach (var value in table)
         {
             Assert.IsTrue(value <= ulong.MaxValue, "Value should not exceed 64 bits.");
         }
@@ -136,7 +136,7 @@ public partial class CrcLookupTableBuilderTests
     [DataRow(65)]
     public void BuildLookupTable_WhenSizeIsInvalid_ShouldReportSizeParamName(int size)
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(
             () => CrcLookupTableBuilder.BuildLookupTable(size, 0x1UL, false));
         Assert.AreEqual("size", ex.ParamName);
     }
@@ -150,7 +150,7 @@ public partial class CrcLookupTableBuilderTests
     [TestMethod]
     public void BuildLookupTable_WhenStandardIsCRC8_SMBUS_ShouldMatchPublishedEntries()
     {
-        ulong[] table = CrcLookupTableBuilder.BuildLookupTable(8, 0x07UL, reflectIn: false);
+        var table = CrcLookupTableBuilder.BuildLookupTable(8, 0x07UL, reflectIn: false);
 
         Assert.AreEqual(256, table.Length);
         Assert.AreEqual(0x00UL, table[0x00]);
@@ -167,8 +167,8 @@ public partial class CrcLookupTableBuilderTests
     [TestMethod]
     public void BuildLookupTable_WhenReflected_ShouldBeBitReversedAgainstNonReflected()
     {
-        ulong[] nonReflected = CrcLookupTableBuilder.BuildLookupTable(8, 0x07UL, reflectIn: false);
-        ulong[] reflected = CrcLookupTableBuilder.BuildLookupTable(8, 0x07UL, reflectIn: true);
+        var nonReflected = CrcLookupTableBuilder.BuildLookupTable(8, 0x07UL, reflectIn: false);
+        var reflected = CrcLookupTableBuilder.BuildLookupTable(8, 0x07UL, reflectIn: true);
 
         // Non-reflected table[1] is 0x07; reflected table[0x80] computes the CRC for the "reflected"
         // single-bit input 0x01, which should match the bit-reverse of 0x07 = 0b00000111 → 0b11100000 = 0xE0.
@@ -188,12 +188,12 @@ public partial class CrcLookupTableBuilderTests
     [DataRow(7)]
     public void BuildLookupTable_WhenSizeIsLessThanEight_AndReflected_ShouldProduceTwoEntryMaskedTable(int size)
     {
-        ulong[] table = CrcLookupTableBuilder.BuildLookupTable(size, 0x1UL, reflectIn: true);
+        var table = CrcLookupTableBuilder.BuildLookupTable(size, 0x1UL, reflectIn: true);
 
         Assert.AreEqual(2, table.Length);
 
-        ulong mask = ulong.MaxValue >> (64 - size);
-        foreach (ulong entry in table)
+        var mask = ulong.MaxValue >> (64 - size);
+        foreach (var entry in table)
             Assert.IsTrue((entry & ~mask) == 0, $"Entry {entry:X} exceeds size {size} bits.");
     }
 
@@ -204,7 +204,7 @@ public partial class CrcLookupTableBuilderTests
     public void BuildLookupTable_WhenSizeIsOne_ShouldRespectBitMasking()
     {
         var table = CrcLookupTableBuilder.BuildLookupTable(1, 0x01, false);
-        foreach (ulong entry in table)
+        foreach (var entry in table)
         {
             Assert.IsTrue(entry == 0 || entry == 1, "Only 1-bit values should appear.");
         }

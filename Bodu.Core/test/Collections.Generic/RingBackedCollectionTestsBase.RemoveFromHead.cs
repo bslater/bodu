@@ -15,7 +15,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void RemoveFromHead_WhenItemsPresent_ShouldReturnOldestAndDecrementCount()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         AddToTail(collection, 3);
@@ -32,7 +32,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void RemoveFromHead_WhenCalledRepeatedly_ShouldDrainToEmpty()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         AddToTail(collection, 3);
@@ -50,7 +50,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void RemoveFromHead_WhenEmpty_ShouldThrowExactly()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             _ = RemoveFromHead(collection);
@@ -64,7 +64,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void RemoveFromHead_WhenInterleavedWithAdds_ShouldRetainFifoOrder()
     {
-        var collection = CreateCollection(4);
+        TCollection collection = CreateCollection(4);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         Assert.AreEqual(1, RemoveFromHead(collection));

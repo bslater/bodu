@@ -13,20 +13,14 @@ public partial class WeekPatternTests
     /// argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void EqualsObject_WhenNull_ShouldReturnFalse()
-    {
-        Assert.IsFalse(new WeekPattern(DayOfWeek.Monday).Equals(null));
-    }
+    public void EqualsObject_WhenNull_ShouldReturnFalse() => Assert.IsFalse(new WeekPattern(DayOfWeek.Monday).Equals(null));
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.Equals(object)" /> returns <see langword="false" /> when the
     /// argument is of an incompatible type.
     /// </summary>
     [TestMethod]
-    public void EqualsObject_WhenDifferentType_ShouldReturnFalse()
-    {
-        Assert.IsFalse(new WeekPattern(DayOfWeek.Monday).Equals("not a WeekPattern"));
-    }
+    public void EqualsObject_WhenDifferentType_ShouldReturnFalse() => Assert.IsFalse(new WeekPattern(DayOfWeek.Monday).Equals("not a WeekPattern"));
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.Equals(object)" /> returns the expected result when the
@@ -70,10 +64,7 @@ public partial class WeekPatternTests
     [DataRow((byte)1, (byte)1, true)]
     [DataRow((byte)0, (byte)1, false)]
     [DataRow((byte)7, (byte)5, false)]
-    public void EqualsWeekPattern_WhenComparing_ShouldReturnExpectedResult(byte first, byte second, bool expected)
-    {
-        Assert.AreEqual(expected, WeekPattern.FromByte(first).Equals(WeekPattern.FromByte(second)));
-    }
+    public void EqualsWeekPattern_WhenComparing_ShouldReturnExpectedResult(byte first, byte second, bool expected) => Assert.AreEqual(expected, WeekPattern.FromByte(first).Equals(WeekPattern.FromByte(second)));
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.Equals(byte)" /> returns the expected result when comparing
@@ -85,8 +76,5 @@ public partial class WeekPatternTests
     [DataRow((byte)127, (byte)127, true)]
     [DataRow((byte)3, (byte)7, false)]
     [DataRow((byte)5, (byte)10, false)]
-    public void EqualsByte_WhenComparing_ShouldReturnExpectedResult(byte first, byte second, bool expected)
-    {
-        Assert.AreEqual(expected, WeekPattern.FromByte(first).Equals(second));
-    }
+    public void EqualsByte_WhenComparing_ShouldReturnExpectedResult(byte first, byte second, bool expected) => Assert.AreEqual(expected, WeekPattern.FromByte(first).Equals(second));
 }

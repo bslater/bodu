@@ -40,7 +40,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// implementations where configuration changes are no longer allowed once data has been processed.
     /// </remarks>
     [TestMethod]
-    [DynamicData(nameof(GetWritableProperties), DynamicDataDisplayName = nameof(TestHelpers.GetDisposablePropertyDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
+    [DynamicData(nameof(GetAlgorithmWritableProperties), DynamicDataDisplayName = nameof(TestHelpers.GetTypePropertyDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
     public void TransformBlock_WhenPropertySetAfterTransform_ShouldThrowExactly(PropertyInfo property)
     {
         if (property is null)

@@ -21,7 +21,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.Midday" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(MiddayTestData), DynamicDataSourceType.Method )]
+    [DynamicData(nameof(MiddayTestData) )]
     public void Midday_WhenCalled_ShouldSetTimeToNoon(DateTime input, DateTime expected)
     {
         var actual = input.Midday();

@@ -367,11 +367,11 @@ public sealed class BlowfishBlockCipher
         if (!this._disposed)
         {
             // Securely zero all sensitive key material.
-            Array.Clear(this._p, 0, this._p.Length);
-            Array.Clear(this._s0, 0, this._s0.Length);
-            Array.Clear(this._s1, 0, this._s1.Length);
-            Array.Clear(this._s2, 0, this._s2.Length);
-            Array.Clear(this._s3, 0, this._s3.Length);
+            CryptoHelpers.Clear(this._p);
+            CryptoHelpers.Clear(this._s0);
+            CryptoHelpers.Clear(this._s1);
+            CryptoHelpers.Clear(this._s2);
+            CryptoHelpers.Clear(this._s3);
 
             this._disposed = true;
         }

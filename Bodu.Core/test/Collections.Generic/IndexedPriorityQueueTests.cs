@@ -32,8 +32,8 @@ public partial class IndexedPriorityQueueTests
     private static void AssertNonDecreasing<TElement, TPriority>(KeyValuePair<TElement, TPriority>[] pairs)
         where TElement : notnull
     {
-        var comparer = Comparer<TPriority>.Default;
-        for (int i = 1; i < pairs.Length; i++)
+        Comparer<TPriority> comparer = Comparer<TPriority>.Default;
+        for (var i = 1; i < pairs.Length; i++)
             Assert.IsTrue(
                 comparer.Compare(pairs[i - 1].Value, pairs[i].Value) <= 0,
                 $"Priorities not non-decreasing at index {i}: {pairs[i - 1].Value} > {pairs[i].Value}");

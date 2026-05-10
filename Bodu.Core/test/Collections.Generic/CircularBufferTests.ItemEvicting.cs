@@ -32,7 +32,7 @@ public partial class CircularBufferTests
     [TestMethod]
     public void ItemEvicting_WhenOverwriteIsDisabled_ShouldNotFire()
     {
-        bool anyEventFired = false;
+        var anyEventFired = false;
         var buffer = new CircularBuffer<int>(2, allowOverwrite: false);
         buffer.ItemEvicting += _ => anyEventFired = true;
 
@@ -50,7 +50,7 @@ public partial class CircularBufferTests
     [TestMethod]
     public void ItemEvicting_WhenBufferHasAvailableCapacity_ShouldNotFire()
     {
-        bool anyEventFired = false;
+        var anyEventFired = false;
         var buffer = new CircularBuffer<int>(3, allowOverwrite: true);
         buffer.ItemEvicting += _ => anyEventFired = true;
 

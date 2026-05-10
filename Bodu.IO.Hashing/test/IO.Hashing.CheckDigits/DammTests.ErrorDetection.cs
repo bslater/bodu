@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DammTests.ErrorDetection.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,16 +16,16 @@ public sealed partial class DammTests
     [TestMethod]
     public void IsValid_WhenAnySingleDigitIsSubstituted_ShouldReturnFalse()
     {
-        char check = Damm.Compute(SingleDigitSeedBody.AsSpan());
-        string valid = SingleDigitSeedBody + check;
+        var check = Damm.Compute(SingleDigitSeedBody.AsSpan());
+        var valid = SingleDigitSeedBody + check;
 
         Assert.IsTrue(Damm.IsValid(valid.AsSpan()), "Precondition: baseline must be valid.");
 
-        char[] buffer = valid.ToCharArray();
-        for (int i = 0; i < buffer.Length; i++)
+        var buffer = valid.ToCharArray();
+        for (var i = 0; i < buffer.Length; i++)
         {
-            char original = buffer[i];
-            for (char c = '0'; c <= '9'; c++)
+            var original = buffer[i];
+            for (var c = '0'; c <= '9'; c++)
             {
                 if (c == original) continue;
                 buffer[i] = c;
@@ -45,11 +45,11 @@ public sealed partial class DammTests
     [TestMethod]
     public void IsValid_WhenAdjacentDigitsAreTransposed_ShouldReturnFalse()
     {
-        char check = Damm.Compute(SingleDigitSeedBody.AsSpan());
-        string valid = SingleDigitSeedBody + check;
-        char[] buffer = valid.ToCharArray();
+        var check = Damm.Compute(SingleDigitSeedBody.AsSpan());
+        var valid = SingleDigitSeedBody + check;
+        var buffer = valid.ToCharArray();
 
-        for (int i = 0; i < buffer.Length - 1; i++)
+        for (var i = 0; i < buffer.Length - 1; i++)
         {
             if (buffer[i] == buffer[i + 1]) continue;
 

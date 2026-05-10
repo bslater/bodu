@@ -314,23 +314,23 @@ public partial class MultiValueDictionaryTests
     public void Add_WhenManyKeysAndValuesAdded_ShouldRetrieveAllCorrectly()
     {
         MultiValueDictionary<int, int> sut = new MultiValueDictionary<int, int>();
-        int keyCount = 200;
-        int valuesPerKey = 10;
+        var keyCount = 200;
+        var valuesPerKey = 10;
 
-        for (int k = 0; k < keyCount; k++)
+        for (var k = 0; k < keyCount; k++)
         {
-            for (int v = 0; v < valuesPerKey; v++)
+            for (var v = 0; v < valuesPerKey; v++)
                 sut.Add(k, v);
         }
 
         Assert.AreEqual(keyCount * valuesPerKey, sut.Count);
         Assert.AreEqual(keyCount, sut.KeyCount);
 
-        for (int k = 0; k < keyCount; k++)
+        for (var k = 0; k < keyCount; k++)
         {
             IReadOnlyList<int> values = sut[k];
             Assert.AreEqual(valuesPerKey, values.Count);
-            for (int v = 0; v < valuesPerKey; v++)
+            for (var v = 0; v < valuesPerKey; v++)
                 Assert.AreEqual(v, values[v]);
         }
     }

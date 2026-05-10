@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SmokeTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -26,10 +26,10 @@ public sealed class SmokeTests
     public void Crc_ComputeHash_ForCrc32IsoHdlcReferenceInput_ShouldMatchPublishedCheck()
     {
         Crc crc = new(CrcStandard.Get(CrcStandards.CRC32_ISOHDLC));
-        byte[] digest = crc.ComputeHash(Encoding.ASCII.GetBytes("123456789"));
+        var digest = crc.ComputeHash(Encoding.ASCII.GetBytes("123456789"));
 
         Assert.AreEqual(4, digest.Length);
-        uint actual = (uint)digest[0] | ((uint)digest[1] << 8) | ((uint)digest[2] << 16) | ((uint)digest[3] << 24);
+        var actual = (uint)digest[0] | ((uint)digest[1] << 8) | ((uint)digest[2] << 16) | ((uint)digest[3] << 24);
         Assert.AreEqual(0xCBF43926u, actual);
     }
 
@@ -42,7 +42,7 @@ public sealed class SmokeTests
     {
         Fletcher16 fletcher = new();
         fletcher.Append(Encoding.ASCII.GetBytes("abcde"));
-        byte[] digest = fletcher.GetCurrentHash();
+        var digest = fletcher.GetCurrentHash();
 
         Assert.AreEqual(2, digest.Length);
         Assert.IsTrue(digest[0] != 0 || digest[1] != 0, "Non-empty input should produce a non-zero Fletcher-16 digest.");
@@ -57,7 +57,7 @@ public sealed class SmokeTests
     {
         Fletcher32 fletcher = new();
         fletcher.Append(Encoding.ASCII.GetBytes("abcdefgh"));
-        byte[] digest = fletcher.GetCurrentHash();
+        var digest = fletcher.GetCurrentHash();
 
         Assert.AreEqual(4, digest.Length);
     }
@@ -71,7 +71,7 @@ public sealed class SmokeTests
     {
         Adler32 adler = new();
         adler.Append(Encoding.ASCII.GetBytes("Wikipedia"));
-        byte[] digest = adler.GetCurrentHash();
+        var digest = adler.GetCurrentHash();
 
         Assert.AreEqual(4, digest.Length);
     }

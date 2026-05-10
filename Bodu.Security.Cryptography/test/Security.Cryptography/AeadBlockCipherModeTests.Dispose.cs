@@ -23,7 +23,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     public static IEnumerable<object[]> GetDisposableFields() =>
         TestHelpers.GetFieldInfoForType<TTransform>(
             excludeReadOnly: true,
-            excludeFileds: new TTest().GetExcludedFieldNames()?.ToArray() ?? []);
+            excludeFields: new TTest().GetExcludedFieldNames()?.ToArray() ?? []);
 
     /// <summary>
     /// Enumerates the publicly writable instance properties of <typeparamref name="TTransform" />,
@@ -115,7 +115,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     [TestMethod]
     [DynamicData(
         nameof(GetDisposableFields),
-        DynamicDataDisplayName = nameof(TestHelpers.GetDisposableFieldDisplayName),
+        DynamicDataDisplayName = nameof(TestHelpers.GetTypeFieldDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
     public void Dispose_WhenCalled_ShouldZeroPrivateField(FieldInfo field)
     {
@@ -155,7 +155,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     [TestMethod]
     [DynamicData(
         nameof(GetWritableProperties),
-        DynamicDataDisplayName = nameof(TestHelpers.GetDisposablePropertyDisplayName),
+        DynamicDataDisplayName = nameof(TestHelpers.GetTypePropertyDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
     public void Dispose_WhenAssigningProperty_ShouldThrowExactly(PropertyInfo property)
     {

@@ -37,7 +37,7 @@ public partial class MultiValueDictionaryTests
     {
         MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
 
-        bool result = sut.Remove("missing", 1);
+        var result = sut.Remove("missing", 1);
 
         Assert.IsFalse(result);
     }
@@ -51,7 +51,7 @@ public partial class MultiValueDictionaryTests
         MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
         sut.Add("k", 1);
 
-        bool result = sut.Remove("k", 99);
+        var result = sut.Remove("k", 99);
 
         Assert.IsFalse(result);
         Assert.AreEqual(1, sut.Count);
@@ -68,7 +68,7 @@ public partial class MultiValueDictionaryTests
         sut.Add("k", 2);
         sut.Add("k", 3);
 
-        bool result = sut.Remove("k", 2);
+        var result = sut.Remove("k", 2);
 
         Assert.IsTrue(result);
         Assert.AreEqual(2, sut.Count);
@@ -103,7 +103,7 @@ public partial class MultiValueDictionaryTests
         sut.Add("k", 20);
         sut.Add("k", 30);
 
-        bool result = sut.Remove("k", 10);
+        var result = sut.Remove("k", 10);
 
         Assert.IsTrue(result);
         Assert.AreEqual(2, sut.Count);
@@ -121,7 +121,7 @@ public partial class MultiValueDictionaryTests
         sut.Add("k", 20);
         sut.Add("k", 30);
 
-        bool result = sut.Remove("k", 30);
+        var result = sut.Remove("k", 30);
 
         Assert.IsTrue(result);
         Assert.AreEqual(2, sut.Count);
@@ -139,7 +139,7 @@ public partial class MultiValueDictionaryTests
         sut.Add("k", 5);
         sut.Add("k", 5);
 
-        bool result = sut.Remove("k", 5);
+        var result = sut.Remove("k", 5);
 
         Assert.IsTrue(result);
         Assert.AreEqual(2, sut.Count);
@@ -172,7 +172,7 @@ public partial class MultiValueDictionaryTests
     {
         MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
 
-        bool result = sut.RemoveAll("missing");
+        var result = sut.RemoveAll("missing");
 
         Assert.IsFalse(result);
     }
@@ -189,7 +189,7 @@ public partial class MultiValueDictionaryTests
         sut.Add("x", 3);
         sut.Add("y", 4);
 
-        bool result = sut.RemoveAll("x");
+        var result = sut.RemoveAll("x");
 
         Assert.IsTrue(result);
         Assert.AreEqual(1, sut.Count);

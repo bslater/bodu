@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BernsteinTests.UseModifiedAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class BernsteinTests
     [TestMethod]
     public void UseModifiedAlgorithm_WhenSetBeforeHashing_ShouldAffectResult()
     {
-        byte[] input = NonCryptographicHashSharedInputs.Abc;
+        var input = NonCryptographicHashSharedInputs.Abc;
 
         Bernstein original = new();
         Bernstein modified = new() { UseModifiedAlgorithm = true };

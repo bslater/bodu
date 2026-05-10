@@ -29,8 +29,8 @@ public partial class IndexedPriorityQueueTests
     {
         ICollection collection = new IndexedPriorityQueue<string, int>();
 
-        object first = collection.SyncRoot;
-        object second = collection.SyncRoot;
+        var first = collection.SyncRoot;
+        var second = collection.SyncRoot;
 
         Assert.IsNotNull(first);
         Assert.AreSame(first, second);
@@ -210,7 +210,7 @@ public partial class IndexedPriorityQueueTests
     public void ICollection_CopyTo_WhenDestinationIsTypedArray_ShouldWriteEveryPair()
     {
         var queue = new IndexedPriorityQueue<int, int>();
-        for (int i = 0; i < 6; i++)
+        for (var i = 0; i < 6; i++)
             queue.Enqueue(i, 100 - i);
         ICollection collection = queue;
 
@@ -233,12 +233,12 @@ public partial class IndexedPriorityQueueTests
     public void ICollection_GetEnumerator_WhenInvokedTwice_ShouldReturnIndependentEnumerators()
     {
         var queue = new IndexedPriorityQueue<int, int>();
-        for (int i = 0; i < 4; i++)
+        for (var i = 0; i < 4; i++)
             queue.Enqueue(i, i);
 
         IEnumerable<KeyValuePair<int, int>> enumerable = queue;
-        using var first = enumerable.GetEnumerator();
-        using var second = enumerable.GetEnumerator();
+        using IEnumerator<KeyValuePair<int, int>> first = enumerable.GetEnumerator();
+        using IEnumerator<KeyValuePair<int, int>> second = enumerable.GetEnumerator();
 
         Assert.IsTrue(first.MoveNext());
         Assert.IsTrue(second.MoveNext());

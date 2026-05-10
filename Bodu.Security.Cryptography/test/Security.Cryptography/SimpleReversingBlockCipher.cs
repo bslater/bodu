@@ -161,6 +161,7 @@ internal sealed class SimpleReversingBlockCipher
     {
         if (disposed) return;
 
+        CryptoHelpers.Clear(this.Key);
         CryptographicOperations.ZeroMemory(Key);
         Key = Array.Empty<byte>();
 

@@ -15,7 +15,7 @@ namespace Bodu.Extensions;
 public partial class DateTimeExtensionsTests
 {
     public static readonly FirstAndLastDateData[] FirstAndLastDayOfWeekTestData =
-    {
+    [
         // === Saturday–Sunday weekend => week starts Monday (2024-01-01), ends Sunday (2024-01-07)
         new() { Input = new DateTime(2024, 1, 1), Weekend = CalendarWeekendDefinition.SaturdaySunday, ExpectedFirst = new DateTime(2024, 1, 1), ExpectedLast = new DateTime(2024, 1, 7) },
         new() { Input = new DateTime(2024, 1, 2), Weekend = CalendarWeekendDefinition.SaturdaySunday, ExpectedFirst = new DateTime(2024, 1, 1), ExpectedLast = new DateTime(2024, 1, 7) },
@@ -87,10 +87,10 @@ public partial class DateTimeExtensionsTests
         new() { Input = new DateTime(2024, 04, 13), CultureInfo = CultureInfo.GetCultureInfo("fr-FR"), ExpectedFirst = new DateTime(2024, 04, 08), ExpectedLast = new DateTime(2024, 04, 14) }, // Saturday
         new() { Input = new DateTime(2024, 04, 14), CultureInfo = CultureInfo.GetCultureInfo("fr-FR"), ExpectedFirst = new DateTime(2024, 04, 08), ExpectedLast = new DateTime(2024, 04, 14) }, // Sunday
         new() { Input = new DateTime(2024, 04, 15), CultureInfo = CultureInfo.GetCultureInfo("fr-FR"), ExpectedFirst = new DateTime(2024, 04, 15), ExpectedLast = new DateTime(2024, 04, 21) }, // Monday (next week)
-    };
+    ];
 
     public static readonly FirstAndLastDateData[] FirstAndLastDayOMonthDataTestData =
-    {
+    [
         // Regular months in 2023
         new() { Input = new DateTime(2023, 01, 15, 8, 0, 0), ExpectedFirst = new DateTime(2023, 01, 01, 0, 0, 0), ExpectedLast =    new DateTime(2023, 01, 31, 0, 0, 0) },
         new() { Input = new DateTime(2023, 02, 28, 23, 59, 59), ExpectedFirst = new DateTime(2023, 02, 01, 0, 0, 0), ExpectedLast = new DateTime(2023, 02, 28, 0, 0, 0) },
@@ -114,13 +114,13 @@ public partial class DateTimeExtensionsTests
         // Boundary checks
         new() { Input = DateTime.MinValue, ExpectedFirst = new DateTime(DateTime.MinValue.Year, DateTime.MinValue.Month, 1, 0, 0, 0), ExpectedLast = new DateTime(DateTime.MinValue.Year, DateTime.MinValue.Month, DateTime.DaysInMonth(DateTime.MinValue.Year, DateTime.MinValue.Month), 0, 0, 0) },
         new() { Input = DateTime.MaxValue, ExpectedFirst = new DateTime(DateTime.MaxValue.Year, DateTime.MaxValue.Month, 1, 0, 0, 0), ExpectedLast = new DateTime(DateTime.MaxValue.Year, DateTime.MaxValue.Month, DateTime.DaysInMonth(DateTime.MaxValue.Year, DateTime.MaxValue.Month), 0, 0, 0) }
-    };
+    ];
 
     public static readonly FirstAndLastDateData[] FirstAndLastDayOYearDataTestData =
-    {
-    };
+    [
+    ];
 
-    private static readonly DateTime UnixEpochUtc = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+    private static readonly DateTime s_unixEpochUtc = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
     public static CultureInfo TestCulture
     {

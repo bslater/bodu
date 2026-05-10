@@ -137,12 +137,12 @@ public static partial class DateTimeExtensions
     /// <summary>
     /// Cumulative day counts at the start of each month in a non-leap year (365 days).
     /// </summary>
-    internal static readonly int[] DaysToMonth365 = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
+    internal static readonly int[] DaysToMonth365 = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
 
     /// <summary>
     /// Cumulative day counts at the start of each month in a leap year (366 days).
     /// </summary>
-    internal static readonly int[] DaysToMonth366 = { 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 };
+    internal static readonly int[] DaysToMonth366 = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366];
 
     /// <summary>
     /// Represents the number of days in 100 years. This field is constant.
@@ -574,7 +574,7 @@ public static partial class DateTimeExtensions
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static long GetTicksToPreviousDayOfWeek(DateTime dateTime, DayOfWeek dayOfWeek) =>
-        DateTimeExtensions.TicksPerDay * ((((((int)dayOfWeek - (int)dateTime.DayOfWeek) - 7) % 7) - 7) % 7);
+        DateTimeExtensions.TicksPerDay * (((((int)dayOfWeek - (int)dateTime.DayOfWeek - 7) % 7) - 7) % 7);
 
     /// <summary>
     /// Calculates the number of ticks between the specified <paramref name="ticks"/> value and the
@@ -940,7 +940,7 @@ public static partial class DateTimeExtensions
             // fall in the next year to make it belong to next year's week 1.
             var date = new DateTime(ticks, DateTimeKind.Unspecified);
             var daysInYear = DateTime.IsLeapYear(date.Year) ? 366 : 365;
-            var daysInNextYear = (offset + weekNum * 7) - daysInYear;
+            var daysInNextYear = (offset + (weekNum * 7)) - daysInYear;
             if (daysInNextYear >= fullDays)
                 return 1;
 

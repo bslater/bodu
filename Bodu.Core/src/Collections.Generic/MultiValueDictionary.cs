@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultiValueDictionary.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -48,13 +48,13 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     where TKey : notnull
 {
     /// <summary>Shared empty list returned by the indexer and <see cref="TryGetValues"/> when a key is absent.</summary>
-    private static readonly IReadOnlyList<TValue> EmptyValues = Array.Empty<TValue>();
+    private static readonly IReadOnlyList<TValue> s_emptyValues = [];
 
     /// <summary>The equality comparer used to determine key equality.</summary>
     private readonly IEqualityComparer<TKey> _comparer;
 
     /// <summary>The backing dictionary mapping each key to its ordered list of values.</summary>
-    private Dictionary<TKey, List<TValue>> _map;
+    private readonly Dictionary<TKey, List<TValue>> _map;
 
     /// <summary>The total number of value entries across all keys.</summary>
     private int _count;
@@ -125,7 +125,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// callers may safely iterate the result without first checking <see cref="ContainsKey"/>.
     /// </remarks>
     public IReadOnlyList<TValue> this[TKey key] =>
-        _map.TryGetValue(key, out List<TValue>? values) ? values : EmptyValues;
+        _map.TryGetValue(key, out List<TValue>? values) ? values : s_emptyValues;
 
     /// <summary>
     /// Appends <paramref name="value"/> to the list of values associated with <paramref name="key"/>.
@@ -169,9 +169,9 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
             _map[key] = list;
         }
 
-        int before = list.Count;
+        var before = list.Count;
         list.AddRange(values);
-        int added = list.Count - before;
+        var added = list.Count - before;
 
         if (added > 0)
         {
@@ -272,7 +272,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
             return true;
         }
 
-        values = EmptyValues;
+        values = s_emptyValues;
         return false;
     }
 
@@ -343,7 +343,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// <exception cref="InvalidOperationException">The dictionary was modified after enumeration began.</exception>
     public IEnumerable<KeyValuePair<TKey, TValue>> Flatten()
     {
-        int version = _version;
+        var version = _version;
         foreach (KeyValuePair<TKey, List<TValue>> entry in _map)
         {
             foreach (TValue value in entry.Value)

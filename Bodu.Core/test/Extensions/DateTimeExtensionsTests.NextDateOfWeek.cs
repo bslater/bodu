@@ -21,7 +21,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.NextDateOfWeek(DateTime, DayOfWeek)" /> returns the next occurrence of the requested <see cref="DayOfWeek" /> for each <c>(input, target)</c> pair.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(NextDateOfWeekTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(NextDateOfWeekTestData))]
     public void NextDateOfWeek_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek targetDay, DateTime expected)
     {
             var actual = input.NextDateOfWeek(targetDay);

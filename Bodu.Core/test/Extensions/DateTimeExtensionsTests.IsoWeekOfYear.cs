@@ -33,10 +33,10 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.IsoWeekOfYear" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetIsoWeekOfYearTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetIsoWeekOfYearTestData))]
     public void IsoWeekOfYear_WhenCalled_ShouldReturnExpectedWeekNumber(DateTime input, int expected)
     {
-        int actual = input.IsoWeekOfYear();
+        var actual = input.IsoWeekOfYear();
         Assert.AreEqual(expected, actual);
     }
 
@@ -47,7 +47,7 @@ public partial class DateTimeExtensionsTests
     public void IsoWeekOfYear_WhenCalled_ShouldReturnValueInRange1To53()
     {
         DateTime input = new DateTime(2024, 8, 15);
-        int actual = input.IsoWeekOfYear();
+        var actual = input.IsoWeekOfYear();
         Assert.IsTrue(actual >= 1 && actual <= 53);
     }
 
@@ -81,8 +81,8 @@ public partial class DateTimeExtensionsTests
     public void IsoWeekOfYear_WhenCalled_ShouldMatchIsoWeekCalculator(int year, int month, int day)
     {
         DateTime input = new DateTime(year, month, day);
-        int expected = ISOWeek.GetWeekOfYear(input);
-        int actual = input.IsoWeekOfYear();
+        var expected = ISOWeek.GetWeekOfYear(input);
+        var actual = input.IsoWeekOfYear();
         Assert.AreEqual(expected, actual);
     }
 }

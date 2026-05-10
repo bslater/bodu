@@ -22,7 +22,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.LastDateOfWeek(DateOnly, CultureInfo)" /> returns the expected week end for the supplied culture's first-day-of-week.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.LastDateOfWeekCultureInfoTestData),typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.LastDateOfWeekCultureInfoTestData),typeof(DateTimeExtensionsTests))]
     public void LastDateOfWeek_WhenCurrentCultureSet_ShouldReturnExpectedStart(DateTime inputDateTime, CultureInfo culture, DateTime expectedDateTime)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
@@ -37,7 +37,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that passing a <see langword="null" /> <see cref="CultureInfo" /> falls back to <see cref="CultureInfo.CurrentCulture" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.LastDateOfWeekCultureInfoTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.LastDateOfWeekCultureInfoTestData), typeof(DateTimeExtensionsTests))]
     public void LastDateOfWeek_WhenCultureIsNull_ShouldUseCurrentCulture(DateTime inputDateTime, CultureInfo culture, DateTime expectedDateTime)
     {
         var originalCulture = CultureInfo.CurrentCulture;
@@ -100,7 +100,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.LastDateOfWeek"/> returns the expected actual based on the specified weekend definition.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.GetLastDateOfWeekWithDefinitionTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.GetLastDateOfWeekWithDefinitionTestData), typeof(DateTimeExtensionsTests))]
     public void LastDateOfWeek_WhenUsingWeekendDefinition_ShouldReturnExpectedEnd(DateTime inputDateTime, CalendarWeekendDefinition weekend,  DateTime expectedDateTime)
     {
         var input = DateOnly.FromDateTime(inputDateTime);

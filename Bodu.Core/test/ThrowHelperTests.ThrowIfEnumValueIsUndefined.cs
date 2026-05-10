@@ -28,8 +28,5 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DataRow(TestEnum.A)]
     [DataRow(TestEnum.B)]
-    public void ThrowIfEnumValueIsUndefined_WhenValueIsDefined_ShouldNotThrow(TestEnum value)
-    {
-        ThrowHelper.ThrowIfEnumValueIsUndefined(value);
-    }
+    public void ThrowIfEnumValueIsUndefined_WhenValueIsDefined_ShouldNotThrow(TestEnum value) => ThrowHelper.ThrowIfEnumValueIsUndefined(value);
 }

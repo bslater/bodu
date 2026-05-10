@@ -11,13 +11,16 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     </PropertyGroup>
+    
     <PropertyGroup Condition="'$(AllowUnsafeBlocks)' == 'true'">
         <DefineConstants>$(DefineConstants);ALLOW_UNSAFE</DefineConstants>
     </PropertyGroup>
+    
     <!-- Exclude files that are not supported in .NET Standard 2.0 -->
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
         <Compile Remove="Buffers\PooledBufferBuilder*.cs" />
     </ItemGroup>
+    
     <!-- Exclude files that are not supported in .NET Standard -->
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'">
         <Compile Remove="Extensions\DateOnly*.cs" />
@@ -28,18 +31,20 @@
                                        CallerArgumentExpressionAttribute is unavailable.
       - ThrowHelper_CallerExpression.cs : compiled for all other targets (net5.0+), where
                                           CallerArgumentExpressionAttribute is supported.
-  -->
+    -->
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'">
         <Compile Remove="ThrowHelper.CallerExpression.cs" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0' And '$(TargetFramework)' != 'netstandard2.1'">
         <Compile Remove="ThrowHelper.NetStandard.cs" />
     </ItemGroup>
+    
     <!-- Exclude the BaseEncoding helpers from compilation; they are not part of the published API surface. -->
     <ItemGroup>
         <Compile Remove="Text\**" />
         <None Remove="Text\**" />
     </ItemGroup>
+    
     <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
             <_Parameter1>Bodu.CoreLib.Test</_Parameter1>
@@ -54,16 +59,12 @@
             <_Parameter1>Bodu.IO.Hashing</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
+    
     <ItemGroup>
         <EmbeddedResource Include="ResourceStrings.resx">
             <Generator>ResXFileCodeGenerator</Generator>
             <LastGenOutput>ResourceStrings.Designer.cs</LastGenOutput>
         </EmbeddedResource>
-    </ItemGroup>
-    <ItemGroup>
-        <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-    </ItemGroup>
-    <ItemGroup>
         <Compile Update="ResourceStrings.Designer.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>

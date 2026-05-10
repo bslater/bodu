@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BernsteinTests.InitialValue.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -27,7 +27,7 @@ public partial class BernsteinTests
     [TestMethod]
     public void InitialValue_WhenSetBeforeHashing_ShouldAffectResult()
     {
-        byte[] input = NonCryptographicHashSharedInputs.Abc;
+        var input = NonCryptographicHashSharedInputs.Abc;
 
         Bernstein a = new() { InitialValue = 1U };
         Bernstein b = new() { InitialValue = 2U };
@@ -43,7 +43,7 @@ public partial class BernsteinTests
     [TestMethod]
     public void InitialValue_WhenSameValue_ShouldProduceSameHash()
     {
-        byte[] input = NonCryptographicHashSharedInputs.Abc;
+        var input = NonCryptographicHashSharedInputs.Abc;
 
         Bernstein a = new() { InitialValue = 0xABCDEFU };
         Bernstein b = new() { InitialValue = 0xABCDEFU };
@@ -89,7 +89,7 @@ public partial class BernsteinTests
         Bernstein algorithm = new() { InitialValue = 0U };
         algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
-        byte[] digest = algorithm.GetCurrentHash();
+        var digest = algorithm.GetCurrentHash();
         Assert.AreEqual(4, digest.Length);
     }
 
@@ -102,7 +102,7 @@ public partial class BernsteinTests
         Bernstein algorithm = new() { InitialValue = uint.MaxValue };
         algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
-        byte[] digest = algorithm.GetCurrentHash();
+        var digest = algorithm.GetCurrentHash();
         Assert.IsNotNull(digest);
     }
 }

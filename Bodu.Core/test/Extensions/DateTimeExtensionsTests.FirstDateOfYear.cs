@@ -20,7 +20,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.FirstDateOfYear" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(FirstDateOfYearTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(FirstDateOfYearTestData))]
     public void FirstDateOfYear_WhenCalled_ShouldReturnExpectedStartOfYear(DateTime input, DateTime expected)
     {
         DateTime actual = input.FirstDateOfYear();

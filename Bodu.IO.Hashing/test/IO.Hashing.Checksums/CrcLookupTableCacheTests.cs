@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CrcLookupTableCacheTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,11 +13,9 @@ namespace Bodu.IO.Hashing.Checksums;
 [TestClass]
 public partial class CrcLookupTableCacheTests
 {
-    private CrcLookupTableCache cache = null!;
+    private CrcLookupTableCache _cache = null!;
 
     [TestInitialize]
-    public void SetUp()
-    {
-        cache = new CrcLookupTableCache();
-    }
+    public void SetUp() =>
+        _cache = new CrcLookupTableCache();
 }

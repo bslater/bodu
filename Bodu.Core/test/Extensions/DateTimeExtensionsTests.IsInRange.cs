@@ -8,7 +8,7 @@ namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
-    private static readonly DateTime SampleDate = new(2024, 4, 15); // 15-Apr-2024
+    private static readonly DateTime s_sampleDate = new(2024, 4, 15); // 15-Apr-2024
 
     /// <summary>
     /// Provides test cases for verifying <see cref="DateTimeExtensions.IsInRange(DateTime?, DateTime, DateTime)" />.
@@ -19,7 +19,7 @@ public partial class DateTimeExtensionsTests
             yield return new object[] { (DateTime?)testCase[0], testCase[1], testCase[2], testCase[3] };
 
         // additional nullable-specific test case
-        yield return new object[] { null, SampleDate.AddDays(-10), SampleDate.AddDays(10), false }; // Null input
+        yield return new object[] { null, s_sampleDate.AddDays(-10), s_sampleDate.AddDays(10), false }; // Null input
     }
 
     /// <summary>
@@ -27,11 +27,11 @@ public partial class DateTimeExtensionsTests
     /// </summary>
     public static IEnumerable<object[]> GetIsInRangeTestCases()
     {
-        yield return new object[] { SampleDate, SampleDate.AddDays(-1), SampleDate.AddDays(1), true };    // Inside range
-        yield return new object[] { SampleDate, SampleDate, SampleDate.AddDays(2), true };                // Equal to start
-        yield return new object[] { SampleDate, SampleDate.AddDays(-2), SampleDate, true };               // Equal to end
-        yield return new object[] { SampleDate, SampleDate.AddDays(1), SampleDate.AddDays(5), false };    // Before range
-        yield return new object[] { SampleDate, SampleDate.AddDays(-5), SampleDate.AddDays(-1), false };  // After range
+        yield return new object[] { s_sampleDate, s_sampleDate.AddDays(-1), s_sampleDate.AddDays(1), true };    // Inside range
+        yield return new object[] { s_sampleDate, s_sampleDate, s_sampleDate.AddDays(2), true };                // Equal to start
+        yield return new object[] { s_sampleDate, s_sampleDate.AddDays(-2), s_sampleDate, true };               // Equal to end
+        yield return new object[] { s_sampleDate, s_sampleDate.AddDays(1), s_sampleDate.AddDays(5), false };    // Before range
+        yield return new object[] { s_sampleDate, s_sampleDate.AddDays(-5), s_sampleDate.AddDays(-1), false };  // After range
     }
 
     /// <summary>
@@ -42,10 +42,10 @@ public partial class DateTimeExtensionsTests
     /// <param name="end">The end of the range.</param>
     /// <param name="expected">The expected actual.</param>
     [TestMethod]
-    [DynamicData(nameof(GetIsInRangeTestCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetIsInRangeTestCases))]
     public void IsInRange_ForDateTime_ShouldReturnExpectedResult(DateTime value, DateTime start, DateTime end, bool expected)
     {
-        bool actual = value.IsInRange(start, end);
+        var actual = value.IsInRange(start, end);
 
         Assert.AreEqual(expected, actual, $"Failed for value={value:yyyy-MM-dd}, start={start:yyyy-MM-dd}, end={end:yyyy-MM-dd}");
     }
@@ -58,10 +58,10 @@ public partial class DateTimeExtensionsTests
     /// <param name="end">The end of the range.</param>
     /// <param name="expected">The expected actual.</param>
     [TestMethod]
-    [DynamicData(nameof(GetIsInRangeNullableTestCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetIsInRangeNullableTestCases))]
     public void IsInRange_ForNullableDateTime_ShouldReturnExpectedResult(DateTime? value, DateTime start, DateTime end, bool expected)
     {
-        bool actual = value.IsInRange(start, end);
+        var actual = value.IsInRange(start, end);
 
         Assert.AreEqual(expected, actual, $"Failed for value={(value.HasValue ? value.Value.ToString("yyyy-MM-dd") : "null")}, start={start:yyyy-MM-dd}, end={end:yyyy-MM-dd}");
     }

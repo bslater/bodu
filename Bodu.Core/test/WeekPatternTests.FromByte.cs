@@ -16,10 +16,7 @@ public partial class WeekPatternTests
     [DataRow((byte)0, 0)]
     [DataRow((byte)1, 1)]
     [DataRow((byte)127, 7)]
-    public void FromByte_WhenValidValue_ShouldCreateExpectedPattern(byte input, int expectedCount)
-    {
-        Assert.AreEqual(expectedCount, WeekPattern.FromByte(input).Count);
-    }
+    public void FromByte_WhenValidValue_ShouldCreateExpectedPattern(byte input, int expectedCount) => Assert.AreEqual(expectedCount, WeekPattern.FromByte(input).Count);
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.FromByte" /> correctly maps each bit position of a known
@@ -45,8 +42,5 @@ public partial class WeekPatternTests
     /// when the supplied value exceeds the maximum valid bitmask of 127.
     /// </summary>
     [TestMethod]
-    public void FromByte_WhenValueGreaterThanMax_ShouldThrowException()
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => WeekPattern.FromByte(128));
-    }
+    public void FromByte_WhenValueGreaterThanMax_ShouldThrowException() => Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => WeekPattern.FromByte(128));
 }

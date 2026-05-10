@@ -21,10 +21,10 @@ public partial class ConcurrentCircularBufferTests
         ConcurrentCircularBuffer<TestItem> buffer,
         params int[] expectedValues)
     {
-        var snapshot = buffer.ToArray();
+        TestItem[] snapshot = buffer.ToArray();
         Assert.AreEqual(expectedValues.Length, snapshot.Length, "Buffer item count mismatch.");
 
-        for (int i = 0; i < expectedValues.Length; i++)
+        for (var i = 0; i < expectedValues.Length; i++)
         {
             Assert.IsNotNull(snapshot[i], $"Item at index {i} was null.");
             Assert.AreEqual(expectedValues[i], snapshot[i].Value, $"Item at index {i} did not match expected value.");
@@ -37,11 +37,11 @@ public partial class ConcurrentCircularBufferTests
         int minInclusive,
         int maxInclusive)
     {
-        var snapshot = buffer.ToArray();
+        TestItem[] snapshot = buffer.ToArray();
 
         Assert.AreEqual(expectedCount, snapshot.Length, $"Expected buffer to contain {expectedCount} items.");
 
-        foreach (var item in snapshot)
+        foreach (TestItem item in snapshot)
         {
             Assert.IsNotNull(item, "Buffer contained a null item.");
             Assert.IsTrue(item.Value >= minInclusive && item.Value <= maxInclusive,

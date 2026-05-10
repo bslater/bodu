@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultiCharCheckDigitAlgorithmTests.Append.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
         TAlgorithm algorithm = CreateAlgorithm();
         TAlgorithm baseline = CreateAlgorithm();
 
-        algorithm.Append(ReadOnlySpan<char>.Empty);
+        algorithm.Append([]);
 
         Assert.AreEqual(baseline.GetCurrentCheckDigits(), algorithm.GetCurrentCheckDigits());
     }
@@ -58,7 +58,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
         _ = name;
         TAlgorithm algorithm = CreateAlgorithm();
 
-        foreach (char ch in body)
+        foreach (var ch in body)
             algorithm.Append(ch);
 
         Assert.AreEqual(expectedCheck, algorithm.GetCurrentCheckDigits());
@@ -79,7 +79,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
         if (body.Length < 2) return;
 
         TAlgorithm algorithm = CreateAlgorithm();
-        int split = body.Length / 2;
+        var split = body.Length / 2;
 
         algorithm.Append(body.AsSpan(0, split));
         algorithm.Append(body.AsSpan(split));

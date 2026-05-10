@@ -24,7 +24,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that the parameterless <see cref="DateTimeExtensions.FirstDateOfWeek(DateTime)" /> overload uses <see cref="CultureInfo.CurrentCulture" /> to determine the week start.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(FirstDateOfWeekCultureInfoTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(FirstDateOfWeekCultureInfoTestData))]
     public void FirstDateOfWeek_WhenCurrentCultureSet_ShouldReturnExpectedStart(DateTime input, CultureInfo culture, DateTime expected)
     {
         var originalCulture = CultureInfo.CurrentCulture;
@@ -47,7 +47,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeek(DateTime, CultureInfo)" /> returns the expected week start for the supplied culture's first-day-of-week.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(FirstDateOfWeekCultureInfoTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(FirstDateOfWeekCultureInfoTestData))]
     public void FirstDateOfWeek_WhenCulture_ShouldReturnExpectedStart(DateTime input, CultureInfo culture, DateTime expected)
     {
         DateTime actual = input.FirstDateOfWeek(culture);
@@ -151,7 +151,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeek"/> returns the expected actual based on the specified weekend definition.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(FirstDateOfWeekDefinitionTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(FirstDateOfWeekDefinitionTestData))]
     public void FirstDateOfWeek_WhenUsingWeekendDefinition_ShouldReturnExpectedStart(DateTime input, CalendarWeekendDefinition weekend, DateTime expected)
     {
         var actual = input.FirstDateOfWeek(weekend);
@@ -220,7 +220,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that the weekend-definition overload preserves the input's <see cref="DateTime.Kind" /> across every <c>(definition, kind)</c> combination.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CalendarWeekendDefinitionDateTimeKindTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CalendarWeekendDefinitionDateTimeKindTestData))]
     public void FirstDateOfWeek_WhenWeekendDefinitionAndKindIsSet_ShouldPreserveKind(CalendarWeekendDefinition definition, DateTimeKind kind)
     {
         DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);

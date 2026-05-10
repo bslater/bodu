@@ -31,15 +31,15 @@ public partial class WeekPatternTests
 
         ((ISerializable)original).GetObjectData(info, context);
 
-        var ctor = typeof(WeekPattern).GetConstructor(
+        ConstructorInfo? ctor = typeof(WeekPattern).GetConstructor(
             BindingFlags.NonPublic | BindingFlags.Instance,
             binder: null,
-            types: new[] { typeof(SerializationInfo), typeof(StreamingContext) },
+            types: [typeof(SerializationInfo), typeof(StreamingContext)],
             modifiers: null);
 
         Assert.IsNotNull(ctor, "The private serialisation constructor must exist on WeekPattern.");
 
-        var deserialized = (WeekPattern)ctor.Invoke(new object[] { info, context });
+        var deserialized = (WeekPattern)ctor.Invoke([info, context]);
         Assert.AreEqual(original, deserialized,
             $"Round-tripped instance must equal the original for bitmask {mask}.");
     }
@@ -70,16 +70,16 @@ public partial class WeekPatternTests
 
         info.AddValue("_selectedDays", (byte)200);
 
-        var ctor = typeof(WeekPattern).GetConstructor(
+        ConstructorInfo? ctor = typeof(WeekPattern).GetConstructor(
             BindingFlags.NonPublic | BindingFlags.Instance,
             binder: null,
-            types: new[] { typeof(SerializationInfo), typeof(StreamingContext) },
+            types: [typeof(SerializationInfo), typeof(StreamingContext)],
             modifiers: null);
 
         Assert.IsNotNull(ctor);
 
-        var ex = Assert.ThrowsExactly<TargetInvocationException>(() =>
-            ctor.Invoke(new object[] { info, context }));
+        TargetInvocationException ex = Assert.ThrowsExactly<TargetInvocationException>(() =>
+            ctor.Invoke([info, context]));
 
         Assert.IsInstanceOfType<SerializationException>(ex.InnerException);
     }

@@ -21,7 +21,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfYear" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests. FirstDateOfYearTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests. FirstDateOfYearTestData), typeof(DateTimeExtensionsTests))]
     public void FirstDateOfYear_WhenCalled_ShouldReturnExpectedStartOfYear(DateTime inputDateTime, DateTime expectedDateTime)
     {
         DateOnly input = DateOnly.FromDateTime(inputDateTime);

@@ -29,14 +29,12 @@
   </ItemGroup>
 
   <!-- Exclude files that are not supported in .net standards -->
-
   <ItemGroup>
     <Compile Remove="Collections.Generic.Concurrent\ConcurrentCircularBufferTests.TrimExcess.cs" />
     <Compile Remove="Extensions\DateOnlyExtensionsTests.NextOccurrence.cs" />
   </ItemGroup>
 
   <!-- Exclude files that are incompatible with netstandard2.0 -->
-
   <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>

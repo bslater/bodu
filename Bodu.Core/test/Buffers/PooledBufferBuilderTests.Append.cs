@@ -48,7 +48,7 @@ public partial class PooledBufferBuilderTests
     {
         using var builder = new PooledBufferBuilder<int>(2);
 
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
             builder.Append(i);
 
         Assert.AreEqual(10, builder.WrittenCount);
@@ -79,7 +79,7 @@ public partial class PooledBufferBuilderTests
     public void Append_WhenCalledAfterReset_ShouldWriteToStartOfBuffer()
     {
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(new[] { 1, 2, 3 });
+        builder.AppendRange([1, 2, 3]);
         builder.Reset();
 
         builder.Append(42);

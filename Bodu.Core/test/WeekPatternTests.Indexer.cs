@@ -13,7 +13,7 @@ public partial class WeekPatternTests
     /// at construction.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetValidDays), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetValidDays))]
     public void IndexerGet_WhenDayIsSelected_ShouldReturnTrue(DayOfWeek day)
     {
         var pattern = new WeekPattern(day);

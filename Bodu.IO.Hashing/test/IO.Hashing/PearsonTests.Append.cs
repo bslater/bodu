@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PearsonTests.Append.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public partial class PearsonTests
         Pearson algorithm = new(bits, Pearson.PearsonTableType.Pearson);
         algorithm.Append(Encoding.ASCII.GetBytes("abc"));
 
-        byte[] result = algorithm.GetCurrentHash();
+        var result = algorithm.GetCurrentHash();
         Assert.AreEqual(bits / 8, result.Length);
     }
 }

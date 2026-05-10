@@ -22,7 +22,7 @@ public partial class MultisetTests
     {
         Multiset<int> sut = new Multiset<int>();
 
-        bool result = sut.Remove(99);
+        var result = sut.Remove(99);
 
         Assert.IsFalse(result);
     }
@@ -36,7 +36,7 @@ public partial class MultisetTests
         Multiset<int> sut = new Multiset<int>();
         sut.Add(1, 3);
 
-        bool result = sut.Remove(1);
+        var result = sut.Remove(1);
 
         Assert.IsTrue(result);
         Assert.AreEqual(2, sut.CountOf(1));
@@ -87,7 +87,7 @@ public partial class MultisetTests
     {
         Multiset<int> sut = new Multiset<int>();
 
-        bool result = sut.RemoveAll(42);
+        var result = sut.RemoveAll(42);
 
         Assert.IsFalse(result);
     }
@@ -100,7 +100,7 @@ public partial class MultisetTests
     {
         Multiset<string> sut = new Multiset<string>(["x", "x", "x", "y"]);
 
-        bool result = sut.RemoveAll("x");
+        var result = sut.RemoveAll("x");
 
         Assert.IsTrue(result);
         Assert.AreEqual(0, sut.CountOf("x"));

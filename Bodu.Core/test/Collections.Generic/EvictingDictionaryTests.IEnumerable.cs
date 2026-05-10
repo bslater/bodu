@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Collections;
+
 namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
@@ -20,7 +22,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add(3, "C");
 
         var actual = new List<KeyValuePair<int, string>>();
-        foreach (var kvp in dictionary)
+        foreach (KeyValuePair<int, string> kvp in dictionary)
         {
             actual.Add(kvp);
         }
@@ -39,7 +41,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("y", "2");
 
         var actual = new List<KeyValuePair<string, string>>();
-        var enumerator = ((System.Collections.IEnumerable)dictionary).GetEnumerator();
+        IEnumerator enumerator = ((System.Collections.IEnumerable)dictionary).GetEnumerator();
 
         while (enumerator.MoveNext())
         {
@@ -57,7 +59,7 @@ public partial class EvictingDictionaryTests
     public void IEnumerable_GenericGetEnumerator_WhenDictionaryIsEmpty_ShouldReturnNoElements()
     {
         var dictionary = new EvictingDictionary<string, int>(3);
-        var enumerator = dictionary.GetEnumerator();
+        IEnumerator<KeyValuePair<string, int>> enumerator = dictionary.GetEnumerator();
 
         Assert.IsFalse(enumerator.MoveNext());
     }
@@ -70,7 +72,7 @@ public partial class EvictingDictionaryTests
     public void GetEnumerator_WhenDictionaryIsMutatedByAddDuringEnumeration_ShouldThrowException()
     {
         var dictionary = new EvictingDictionary<int, int>(10);
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
             dictionary.Add(i, i);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -87,7 +89,7 @@ public partial class EvictingDictionaryTests
     public void GetEnumerator_WhenDictionaryIsMutatedByRemoveDuringEnumeration_ShouldThrowException()
     {
         var dictionary = new EvictingDictionary<int, int>(10);
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
             dictionary.Add(i, i);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -104,7 +106,7 @@ public partial class EvictingDictionaryTests
     public void GetEnumerator_WhenDictionaryIsClearedDuringEnumeration_ShouldThrowException()
     {
         var dictionary = new EvictingDictionary<int, int>(10);
-        for (int i = 0; i < 3; i++)
+        for (var i = 0; i < 3; i++)
             dictionary.Add(i, i);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>

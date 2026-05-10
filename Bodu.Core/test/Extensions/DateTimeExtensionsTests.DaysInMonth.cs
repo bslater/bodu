@@ -21,7 +21,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.DaysInMonth" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DaysInMonthTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DaysInMonthTestData))]
     public void DaysInMonth_WhenCalled_ShouldReturnDaysInMonth(DateTime input, int expected)
     {
         var actual = input.DaysInMonth();

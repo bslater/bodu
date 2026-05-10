@@ -141,7 +141,7 @@ public partial class EvictingDictionaryTests
         dictionary.Touch("a"); // a is now MRU
 
         // MRU enumerates from most-recent to least-recent: a, c, b.
-        var expected = new[]
+        KeyValuePair<string, int>[] expected = new[]
         {
             new KeyValuePair<string, int>("a", 1),
             new KeyValuePair<string, int>("c", 3),

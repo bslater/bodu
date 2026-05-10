@@ -60,7 +60,7 @@ public partial class SpanExtensionsTests
     [TestMethod]
     public void Reverse_WhenCalled_ForReadOnlySpan_ShouldNotModifySource()
     {
-        int[] original = Ints;
+        var original = Ints;
         _ = ((ReadOnlySpan<int>)original).Reverse();
         AssertIntsSourceIsUnmodified(original);
     }
@@ -72,7 +72,7 @@ public partial class SpanExtensionsTests
     [TestMethod]
     public void Reverse_WhenCalled_ForReadOnlySpan_ShouldReturnIndependentAllocation()
     {
-        int[] original = Ints;
+        var original = Ints;
         Span<int> result = ((ReadOnlySpan<int>)original).Reverse();
         result[0] = 99;
         AssertIntsSourceIsUnmodified(original);
@@ -147,7 +147,7 @@ public partial class SpanExtensionsTests
     [TestMethod]
     public void Reverse_WhenCalled_ForReadOnlySpanIndexCount_ShouldNotModifySource()
     {
-        int[] original = Ints;
+        var original = Ints;
         _ = ((ReadOnlySpan<int>)original).Reverse(1, 3);
         AssertIntsSourceIsUnmodified(original);
     }
@@ -176,7 +176,7 @@ public partial class SpanExtensionsTests
     public void Reverse_WhenIndexIsInvalid_ForReadOnlySpanIndexCount_ShouldThrowArgumentOutOfRangeException(
         int index, int count, string expectedParamName)
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             Ints.AsSpan().AsReadOnly().Reverse(index, count);
         });
@@ -194,7 +194,7 @@ public partial class SpanExtensionsTests
     public void Reverse_WhenCountIsInvalid_ForReadOnlySpanIndexCount_ShouldThrowArgumentOutOfRangeException(
         int index, int count, string expectedParamName)
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             Ints.AsSpan().AsReadOnly().Reverse(index, count);
         });
@@ -244,7 +244,7 @@ public partial class SpanExtensionsTests
     [TestMethod]
     public void Reverse_WhenCalled_ForReadOnlySpanRange_ShouldNotModifySource()
     {
-        int[] original = Ints;
+        var original = Ints;
         _ = ((ReadOnlySpan<int>)original).Reverse(1..4);
         AssertIntsSourceIsUnmodified(original);
     }
@@ -316,7 +316,7 @@ public partial class SpanExtensionsTests
     [TestMethod]
     public void Reverse_WhenCalled_ForMutableSpan_ShouldNotModifySource()
     {
-        int[] original = Ints;
+        var original = Ints;
         _ = ((Span<int>)original).Reverse();
         AssertIntsSourceIsUnmodified(original);
     }
@@ -332,7 +332,7 @@ public partial class SpanExtensionsTests
     public void Reverse_WhenIndexIsInvalid_ForMutableSpanIndexCount_ShouldThrowArgumentOutOfRangeException(
         int index, int count, string expectedParamName)
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(            () =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(            () =>
         {
             Ints.AsSpan().Reverse(index, count);
         });
@@ -351,7 +351,7 @@ public partial class SpanExtensionsTests
         int index, int count, string expectedParamName)
     {
         Span<int> source = Ints;
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(            () =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(            () =>
         {
             Ints.AsSpan().Reverse(index, count);
         });

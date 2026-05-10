@@ -23,11 +23,11 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     /// <summary>
     /// Provides <see cref="RandomizationMode"/> values that require a non-null count parameter.
     /// </summary>
-    public static IEnumerable<object[]> GetModesRequiringCount() => new[]
-    {
+    public static IEnumerable<object[]> GetModesRequiringCount() =>
+    [
         new object[] { RandomizationMode.ReservoirSample },
-        new object[] { RandomizationMode.LazyShuffle },
-    };
+        [RandomizationMode.LazyShuffle],
+    ];
 
     // =========================================================================
     // Default overload — Randomize<T>(IEnumerable<T>)
@@ -40,9 +40,9 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [TestMethod]
     public void Randomize_WhenCalled_ForDefaultOverload_ShouldReturnPermutationOfSource()
     {
-        int[] source = Enumerable.Range(1, 20).ToArray();
+        var source = Enumerable.Range(1, 20).ToArray();
 
-        int[] result = source.Randomize().ToArray();
+        var result = source.Randomize().ToArray();
 
         CollectionAssert.AreEquivalent(source, result);
     }
@@ -73,9 +73,9 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [TestMethod]
     public void Randomize_WhenModeIsBufferAllAndCountIsNull_ShouldReturnPermutationOfSource()
     {
-        int[] source = Enumerable.Range(1, 10).ToArray();
+        var source = Enumerable.Range(1, 10).ToArray();
 
-        int[] result = source.Randomize(RandomizationMode.BufferAll, CreateSeededRng()).ToArray();
+        var result = source.Randomize(RandomizationMode.BufferAll, CreateSeededRng()).ToArray();
 
         CollectionAssert.AreEquivalent(source, result);
     }
@@ -87,12 +87,12 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [TestMethod]
     public void Randomize_WhenModeIsBufferAllAndCountIsPositive_ShouldReturnRequestedNumberOfElements()
     {
-        int[] source = Enumerable.Range(1, 10).ToArray();
+        var source = Enumerable.Range(1, 10).ToArray();
 
-        int[] result = source.Randomize(RandomizationMode.BufferAll, CreateSeededRng(), count: 4).ToArray();
+        var result = source.Randomize(RandomizationMode.BufferAll, CreateSeededRng(), count: 4).ToArray();
 
         Assert.AreEqual(4, result.Length);
-        foreach (int value in result)
+        foreach (var value in result)
             CollectionAssert.Contains(source, value);
     }
 
@@ -101,15 +101,15 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     /// all of which are members of the source sequence.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetModesRequiringCount), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetModesRequiringCount))]
     public void Randomize_WhenModeRequiresCount_ShouldReturnRequestedNumberOfElements(RandomizationMode mode)
     {
-        int[] source = Enumerable.Range(1, 20).ToArray();
+        var source = Enumerable.Range(1, 20).ToArray();
 
-        int[] result = source.Randomize(mode, CreateSeededRng(), count: 5).ToArray();
+        var result = source.Randomize(mode, CreateSeededRng(), count: 5).ToArray();
 
         Assert.AreEqual(5, result.Length);
-        foreach (int value in result)
+        foreach (var value in result)
             CollectionAssert.Contains(source, value);
     }
 
@@ -120,9 +120,9 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [TestMethod]
     public void Randomize_WhenModeIsStreamWindowed_ShouldReturnPermutationOfSource()
     {
-        int[] source = Enumerable.Range(1, 30).ToArray();
+        var source = Enumerable.Range(1, 30).ToArray();
 
-        int[] result = source.Randomize(RandomizationMode.StreamWindowed, CreateSeededRng()).ToArray();
+        var result = source.Randomize(RandomizationMode.StreamWindowed, CreateSeededRng()).ToArray();
 
         CollectionAssert.AreEquivalent(source, result);
     }
@@ -147,7 +147,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [TestMethod]
     public void Randomize_WhenRngIsNull_ShouldThrowArgumentNullException()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
         IRandomGenerator? rng = null;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -162,7 +162,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [TestMethod]
     public void Randomize_WhenCountIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -176,7 +176,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [TestMethod]
     public void Randomize_WhenModeIsUndefined_ShouldThrowArgumentOutOfRangeException()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -189,12 +189,12 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     /// throw <see cref="ArgumentException" /> with parameter name <c>count</c> when count is null.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetModesRequiringCount), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetModesRequiringCount))]
     public void Randomize_WhenCountIsNullForCountRequiringMode_ShouldThrowArgumentException(RandomizationMode mode)
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = source.Randomize(mode, CreateSeededRng(), count: null);
         });
@@ -210,7 +210,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [TestMethod]
     public void Randomize_WhenCountExceedsSourceLength_ForBufferAllMode_ShouldThrowArgumentException()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -225,7 +225,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [TestMethod]
     public void Randomize_WhenCountExceedsSourceLength_ForReservoirSampleMode_ShouldThrowArgumentOutOfRangeException()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -240,7 +240,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [TestMethod]
     public void Randomize_WhenModeIsStreamWindowed_ShouldDeferExecution()
     {
-        bool wasEnumerated = false;
+        var wasEnumerated = false;
 
         IEnumerable<int> source = Tracked();
 
@@ -268,7 +268,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [TestMethod]
     public void Randomize_WhenRngIsNull_ShouldThrowImmediatelyWithoutEnumeratingSource()
     {
-        bool wasEnumerated = false;
+        var wasEnumerated = false;
 
         IEnumerable<int> source = Tracked();
 

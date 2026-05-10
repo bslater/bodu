@@ -22,7 +22,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.WeekOfYear" />, with Culture, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(WeekOfYearCalendarWeekTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(WeekOfYearCalendarWeekTestData))]
     public void WeekOfYear_WithCulture_ShouldReturnExpected(DateTime input, CalendarWeekRule rule, DayOfWeek firstDay, int expected)
     {
         int actual = input.WeekOfYear(rule, firstDay);
@@ -34,7 +34,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.WeekOfYear" />, with CalendarWeek, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(WeekOfYearCultureTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(WeekOfYearCultureTestData))]
     public void WeekOfYear_WithCalendarWeek_ShouldReturnExpected(DateTime input, CultureInfo culture, int expected)
     {
         int actual = input.WeekOfYear(culture);

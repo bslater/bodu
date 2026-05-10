@@ -95,7 +95,7 @@ public partial class MultiValueDictionaryTests
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            sut.AddRange(null!, new[] { 1, 2 });
+            sut.AddRange(null!, [1, 2]);
         });
     }
 
@@ -122,7 +122,7 @@ public partial class MultiValueDictionaryTests
         MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
         sut.Add("k", 1);
 
-        sut.AddRange("k", new[] { 2, 3, 4 });
+        sut.AddRange("k", [2, 3, 4]);
 
         Assert.AreEqual(4, sut.Count);
         Assert.AreEqual(1, sut.KeyCount);
@@ -137,7 +137,7 @@ public partial class MultiValueDictionaryTests
     {
         MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
 
-        sut.AddRange("new", new[] { 10, 20, 30 });
+        sut.AddRange("new", [10, 20, 30]);
 
         Assert.AreEqual(3, sut.Count);
         Assert.AreEqual(1, sut.KeyCount);
@@ -151,7 +151,7 @@ public partial class MultiValueDictionaryTests
     {
         MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
 
-        sut.AddRange("k", Array.Empty<int>());
+        sut.AddRange("k", []);
 
         Assert.AreEqual(0, sut.KeyCount);
         Assert.AreEqual(0, sut.Count);
@@ -166,9 +166,9 @@ public partial class MultiValueDictionaryTests
     {
         MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
         sut.Add("k", 1);
-        int countBefore = sut.Count;
+        var countBefore = sut.Count;
 
-        sut.AddRange("k", Array.Empty<int>());
+        sut.AddRange("k", []);
 
         Assert.AreEqual(countBefore, sut.Count);
         Assert.AreEqual(1, sut.KeyCount);

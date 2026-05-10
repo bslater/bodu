@@ -13,10 +13,10 @@ public partial class DateTimeExtensionsTests
     /// years for various date combinations.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.AgeTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.AgeTestData))]
     public void Age_WhenCalculatedAgainstDate_ShouldReturnExpected(DateTime input, DateTime atDate, int expected)
     {
-        int actual = input.Age(atDate);
+        var actual = input.Age(atDate);
 
         Assert.AreEqual(expected, actual);
     }
@@ -29,8 +29,8 @@ public partial class DateTimeExtensionsTests
     public void Age_WhenUsingDefaultToday_ShouldMatchExplicitCall()
     {
         DateTime birth = DateTime.Today.AddYears(-1);
-        int expected = birth.Age(DateTime.Today);
-        int actual = birth.Age();
+        var expected = birth.Age(DateTime.Today);
+        var actual = birth.Age();
 
         Assert.AreEqual(expected, actual, "Default overload did not match Age(input, DateTime.Today)");
     }
@@ -53,7 +53,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void Age_WhenUsingMinAndMaxDateOnly_ShouldNotThrow()
     {
-        int age = DateOnly.MinValue.Age(DateOnly.MaxValue);
+        var age = DateOnly.MinValue.Age(DateOnly.MaxValue);
         Assert.IsTrue(age > 0);
     }
 }

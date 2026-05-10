@@ -49,7 +49,7 @@ public partial class AsconAead128Tests
     public static IEnumerable<object[]> GetDisposableFields() =>
         TestHelpers.GetFieldInfoForType<AsconAead128>(
             excludeReadOnly: false,
-            excludeFileds: DisposableFieldExclusions);
+            excludeFields: DisposableFieldExclusions);
 
     /// <summary>
     /// Creates a fresh <see cref="AsconAead128" /> instance using the shared test key and nonce,

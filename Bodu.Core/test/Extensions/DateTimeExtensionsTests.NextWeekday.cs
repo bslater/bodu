@@ -23,7 +23,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.NextWeekday(DateTime, CalendarWeekendDefinition)" /> returns the next non-weekend date when Saturday and Sunday are defined as the weekend.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(NextWeekdaySaturdaySundayDateTimeTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(NextWeekdaySaturdaySundayDateTimeTestData))]
     public void NextWeekday_WhenWeekendIsSaturdaySunday_ShouldReturnExpectedDate(DateTime input, DateTime expected)
     {
         DateTime actual = input.NextWeekday(CalendarWeekendDefinition.SaturdaySunday);

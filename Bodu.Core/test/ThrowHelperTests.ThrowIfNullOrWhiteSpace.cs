@@ -48,8 +48,5 @@ public partial class ThrowHelperTests
     [DataRow("  trimmed")]
     [DataRow("middle space")]
     [TestMethod]
-    public void ThrowIfNullOrWhiteSpace_WhenValueIsValid_ShouldNotThrow(string value)
-    {
-        ThrowHelper.ThrowIfNullOrWhiteSpace(value);
-    }
+    public void ThrowIfNullOrWhiteSpace_WhenValueIsValid_ShouldNotThrow(string value) => ThrowHelper.ThrowIfNullOrWhiteSpace(value);
 }

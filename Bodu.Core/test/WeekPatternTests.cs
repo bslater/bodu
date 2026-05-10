@@ -236,16 +236,16 @@ public partial class WeekPatternTests
     /// </summary>
     private static IEnumerable<object[]> GetAllBitmaskPermutationTestData()
     {
-        char[] symbols = new[] { 'S', 'M', 'T', 'W', 'T', 'F', 'S' };
+        char[] symbols = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
-        for (int mask = 0b0000000; mask <= 0b1111111; mask++)
+        for (var mask = 0b0000000; mask <= 0b1111111; mask++)
         {
             var symbolBuilder = new char[7];
             var binaryBuilder = new char[7];
 
-            for (int i = 0; i < 7; i++)
+            for (var i = 0; i < 7; i++)
             {
-                bool bitSet = ((mask >> (6 - i)) & 1) == 1;
+                var bitSet = ((mask >> (6 - i)) & 1) == 1;
                 symbolBuilder[i] = bitSet ? symbols[i] : '_';
                 binaryBuilder[i] = bitSet ? '1' : '0';
             }

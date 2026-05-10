@@ -127,11 +127,11 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void Range_WhenCalled_ShouldDeferExecution()
     {
-        int start = 1;
-        int stop = 10;
+        var start = 1;
+        var stop = 10;
 
         AssertExecutionIsDeferred("Range", _ =>
-            SequenceGenerator.Range(start, stop), new[] { start, stop });
+            SequenceGenerator.Range(start, stop), [start, stop]);
     }
 
     /// <summary>
@@ -140,10 +140,10 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void Range_WhenStepIsSpecified_ShouldDeferExecution()
     {
-        int start = 1;
-        int stop = 10;
+        var start = 1;
+        var stop = 10;
 
         AssertExecutionIsDeferred("Range", _ =>
-            SequenceGenerator.Range(start, stop, 1), new[] { start, stop });
+            SequenceGenerator.Range(start, stop, 1), [start, stop]);
     }
 }

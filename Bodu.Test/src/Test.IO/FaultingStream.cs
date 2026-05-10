@@ -29,7 +29,7 @@ namespace Bodu.Test.IO;
 public sealed class FaultingStream 
     : System.IO.MemoryStream
 {
-    private int bytesRead;
+    private int _bytesRead;
 
     /// <summary>
     /// Initialises a new instance of <see cref="FaultingStream" />.
@@ -59,14 +59,14 @@ public sealed class FaultingStream
     /// <summary>
     /// Gets the total number of bytes that have been successfully read so far.
     /// </summary>
-    public int BytesRead => this.bytesRead;
+    public int BytesRead => this._bytesRead;
 
     /// <inheritdoc />
     public override int Read(byte[] buffer, int offset, int count)
     {
         this.ThrowIfFaulted();
         int n = base.Read(buffer, offset, count);
-        this.bytesRead += n;
+        this._bytesRead += n;
         return n;
     }
 
@@ -75,15 +75,15 @@ public sealed class FaultingStream
     {
         this.ThrowIfFaulted();
         int n = await base.ReadAsync(buffer, cancellationToken);
-        this.bytesRead += n;
+        this._bytesRead += n;
         return n;
     }
 
     private void ThrowIfFaulted()
     {
-        if (this.bytesRead >= this.ThrowAfterBytes)
+        if (this._bytesRead >= this.ThrowAfterBytes)
             throw new IOException(
                 $"Simulated stream fault after {this.ThrowAfterBytes} bytes " +
-                $"({this.bytesRead} bytes read so far).");
+                $"({this._bytesRead} bytes read so far).");
     }
 }

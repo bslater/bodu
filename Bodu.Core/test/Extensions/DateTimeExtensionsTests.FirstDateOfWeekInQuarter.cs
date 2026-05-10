@@ -22,7 +22,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeekInQuarter(DateTime, DayOfWeek, CalendarQuarterDefinition)" /> returns the expected first occurrence of the given <see cref="DayOfWeek" /> within each <see cref="CalendarQuarterDefinition" /> boundary.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(FirstDateOfWeekInQuarterDateTimeTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(FirstDateOfWeekInQuarterDateTimeTestData))]
     public void FirstDateOfWeekInQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedDate(DateTime input, CalendarQuarterDefinition definition, DayOfWeek dayOfWeek, DateTime expected)
     {
         var actual = input.FirstDateOfWeekInQuarter(dayOfWeek, definition);
@@ -33,7 +33,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that the parameterless-definition <see cref="DateTimeExtensions.FirstDateOfWeekInQuarter(DateTime, DayOfWeek)" /> overload returns the expected first-weekday occurrence using the January-to-December quarter boundaries.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(FirstDateOfWeekInQuarterDateTimeJanuaryDecemberTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(FirstDateOfWeekInQuarterDateTimeJanuaryDecemberTestData))]
     public void FirstDateOfWeekInQuarter_WhenUsingDateOnly_ShouldReturnExpectedStartOfCalendarQuarter(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
     {
         var actual = input.FirstDateOfWeekInQuarter(dayOfWeek);
@@ -44,7 +44,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.GetFirstDateOfWeekInQuarter(int, int, DayOfWeek, CalendarQuarterDefinition)" /> computes the expected first-weekday occurrence for each <c>(year, quarter, dayOfWeek, definition)</c> tuple.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(FirstDateOfWeekInQuarterTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(FirstDateOfWeekInQuarterTestData))]
     public void FirstDateOfWeekInQuarter_WhenUsingQuarterAndDefinition_ShouldReturnExpectedDate(int year, int quarter, CalendarQuarterDefinition definition, DayOfWeek dayOfWeek, DateTime expected)
     {
         var actual = DateTimeExtensions.GetFirstDateOfWeekInQuarter(year, quarter, dayOfWeek, definition);
@@ -55,7 +55,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.GetFirstDateOfWeekInQuarter(int, int, DayOfWeek)" /> with the default January-to-December definition returns the expected first-weekday occurrence.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(FirstDateOfWeekInQuarterYearQuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(FirstDateOfWeekInQuarterYearQuarterJanuaryDecemberTestData))]
     public void FirstDateOfWeekInQuarter_WhenUsingQuarterAndCalendarDefinition_ShouldReturnExpectedDate(int year, int quarter, DayOfWeek dayOfWeek, DateTime expected)
     {
         var actual = DateTimeExtensions.GetFirstDateOfWeekInQuarter(year, quarter, dayOfWeek);
@@ -95,7 +95,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeekInQuarter" /> returns the correct date using a valid quarter provider.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.FirstDateOfWeekInQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.FirstDateOfWeekInQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider))]
     public void FirstDateOfWeekInQuarter_WhenUsingValidQuarterProvider_ShouldReturnExpectedDate(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
     {
         var provider = new ValidQuarterProvider();
@@ -217,7 +217,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeekInQuarter(DateTime, DayOfWeek, CalendarQuarterDefinition)" /> preserves the input's <see cref="DateTime.Kind" /> across every <c>(definition, kind)</c> combination.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CalendarQuarterDefinitionDateTimeKindTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CalendarQuarterDefinitionDateTimeKindTestData))]
     public void FirstDateOfWeekInQuarter_WhenQuarterAndDefinitionAndKindIsSet_ShouldPreserveKind(CalendarQuarterDefinition definition, DateTimeKind kind)
     {
         DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);

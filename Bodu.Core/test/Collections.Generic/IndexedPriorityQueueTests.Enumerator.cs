@@ -15,11 +15,11 @@ public partial class IndexedPriorityQueueTests
     public void Enumerator_WhenWalkingHeap_ShouldYieldAllElementsExactlyOnce()
     {
         var queue = new IndexedPriorityQueue<int, int>();
-        for (int i = 0; i < 20; i++)
+        for (var i = 0; i < 20; i++)
             queue.Enqueue(i, 100 - i);
 
         var seen = new HashSet<int>();
-        foreach (var pair in queue)
+        foreach (KeyValuePair<int, int> pair in queue)
             Assert.IsTrue(seen.Add(pair.Key), $"duplicate element {pair.Key}");
 
         Assert.AreEqual(20, seen.Count);
@@ -34,7 +34,7 @@ public partial class IndexedPriorityQueueTests
         var queue = new IndexedPriorityQueue<string, int>();
         queue.Enqueue("a", 1);
 
-        var enumerator = queue.GetEnumerator();
+        IndexedPriorityQueue<string, int>.Enumerator enumerator = queue.GetEnumerator();
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             _ = enumerator.Current;
@@ -48,10 +48,10 @@ public partial class IndexedPriorityQueueTests
     public void Enumerator_WhenQueueMutatedDuringEnumeration_ShouldInvalidateEnumerator()
     {
         var queue = new IndexedPriorityQueue<int, int>();
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
             queue.Enqueue(i, i);
 
-        var enumerator = queue.GetEnumerator();
+        IndexedPriorityQueue<int, int>.Enumerator enumerator = queue.GetEnumerator();
         Assert.IsTrue(enumerator.MoveNext());
 
         queue.Enqueue(99, 99);
@@ -69,16 +69,16 @@ public partial class IndexedPriorityQueueTests
     public void Enumerator_WhenReset_ShouldRestartEnumeration()
     {
         var queue = new IndexedPriorityQueue<int, int>();
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
             queue.Enqueue(i, i);
 
-        var enumerator = queue.GetEnumerator();
+        IndexedPriorityQueue<int, int>.Enumerator enumerator = queue.GetEnumerator();
         while (enumerator.MoveNext())
         {
         }
 
         enumerator.Reset();
-        int count = 0;
+        var count = 0;
         while (enumerator.MoveNext())
             count++;
 
@@ -94,7 +94,7 @@ public partial class IndexedPriorityQueueTests
         var queue = new IndexedPriorityQueue<string, int>();
         queue.Enqueue("a", 1);
 
-        var enumerator = queue.GetEnumerator();
+        IndexedPriorityQueue<string, int>.Enumerator enumerator = queue.GetEnumerator();
         queue.Enqueue("b", 2);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -110,7 +110,7 @@ public partial class IndexedPriorityQueueTests
     public void Enumerator_WhenDisposed_ShouldNotThrow()
     {
         var queue = new IndexedPriorityQueue<string, int>();
-        var enumerator = queue.GetEnumerator();
+        IndexedPriorityQueue<string, int>.Enumerator enumerator = queue.GetEnumerator();
         enumerator.Dispose();
     }
 
@@ -121,10 +121,10 @@ public partial class IndexedPriorityQueueTests
     public void Enumerator_WhenDequeueDuringEnumeration_ShouldInvalidateEnumerator()
     {
         var queue = new IndexedPriorityQueue<int, int>();
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
             queue.Enqueue(i, i);
 
-        var enumerator = queue.GetEnumerator();
+        IndexedPriorityQueue<int, int>.Enumerator enumerator = queue.GetEnumerator();
         Assert.IsTrue(enumerator.MoveNext());
 
         _ = queue.Dequeue();
@@ -142,10 +142,10 @@ public partial class IndexedPriorityQueueTests
     public void Enumerator_WhenRemoveDuringEnumeration_ShouldInvalidateEnumerator()
     {
         var queue = new IndexedPriorityQueue<int, int>();
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
             queue.Enqueue(i, i);
 
-        var enumerator = queue.GetEnumerator();
+        IndexedPriorityQueue<int, int>.Enumerator enumerator = queue.GetEnumerator();
         Assert.IsTrue(enumerator.MoveNext());
 
         Assert.IsTrue(queue.Remove(2));
@@ -163,10 +163,10 @@ public partial class IndexedPriorityQueueTests
     public void Enumerator_WhenClearDuringEnumeration_ShouldInvalidateEnumerator()
     {
         var queue = new IndexedPriorityQueue<int, int>();
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
             queue.Enqueue(i, i);
 
-        var enumerator = queue.GetEnumerator();
+        IndexedPriorityQueue<int, int>.Enumerator enumerator = queue.GetEnumerator();
         Assert.IsTrue(enumerator.MoveNext());
 
         queue.Clear();
@@ -185,10 +185,10 @@ public partial class IndexedPriorityQueueTests
     public void Enumerator_WhenUpdateChangesPriorityDuringEnumeration_ShouldInvalidateEnumerator()
     {
         var queue = new IndexedPriorityQueue<int, int>();
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
             queue.Enqueue(i, i);
 
-        var enumerator = queue.GetEnumerator();
+        IndexedPriorityQueue<int, int>.Enumerator enumerator = queue.GetEnumerator();
         Assert.IsTrue(enumerator.MoveNext());
 
         queue.Update(3, -1);
@@ -209,7 +209,7 @@ public partial class IndexedPriorityQueueTests
         var queue = new IndexedPriorityQueue<int, int>();
         queue.Enqueue(1, 1);
 
-        var enumerator = queue.GetEnumerator();
+        IndexedPriorityQueue<int, int>.Enumerator enumerator = queue.GetEnumerator();
         Assert.IsTrue(enumerator.MoveNext());
 
         Assert.IsTrue(queue.EnqueueOrUpdate(2, 2));
@@ -231,7 +231,7 @@ public partial class IndexedPriorityQueueTests
         queue.Enqueue(1, 1);
         queue.Enqueue(2, 2);
 
-        var enumerator = queue.GetEnumerator();
+        IndexedPriorityQueue<int, int>.Enumerator enumerator = queue.GetEnumerator();
         while (enumerator.MoveNext())
         {
         }
@@ -250,7 +250,7 @@ public partial class IndexedPriorityQueueTests
         var queue = new IndexedPriorityQueue<int, int>();
         queue.Enqueue(1, 1);
 
-        var enumerator = queue.GetEnumerator();
+        IndexedPriorityQueue<int, int>.Enumerator enumerator = queue.GetEnumerator();
         while (enumerator.MoveNext())
         {
         }
@@ -269,12 +269,12 @@ public partial class IndexedPriorityQueueTests
     public void Enumerator_WhenAccessedViaGenericInterface_ShouldYieldAllElements()
     {
         var queue = new IndexedPriorityQueue<int, int>();
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
             queue.Enqueue(i, i);
 
         IEnumerable<KeyValuePair<int, int>> enumerable = queue;
         var seen = new HashSet<int>();
-        foreach (var pair in enumerable)
+        foreach (KeyValuePair<int, int> pair in enumerable)
             Assert.IsTrue(seen.Add(pair.Key));
 
         Assert.AreEqual(10, seen.Count);
@@ -288,12 +288,12 @@ public partial class IndexedPriorityQueueTests
     public void Enumerator_WhenAccessedViaNonGenericInterface_ShouldYieldAllElements()
     {
         var queue = new IndexedPriorityQueue<int, int>();
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
             queue.Enqueue(i, i);
 
         System.Collections.IEnumerable enumerable = queue;
         var seen = new HashSet<int>();
-        foreach (object? entry in enumerable)
+        foreach (var entry in enumerable)
         {
             Assert.IsInstanceOfType<KeyValuePair<int, int>>(entry);
             var pair = (KeyValuePair<int, int>)entry!;
@@ -311,15 +311,15 @@ public partial class IndexedPriorityQueueTests
     public void Enumerator_WhenUpdateIsNoOp_ShouldRemainValidThroughout()
     {
         var queue = new IndexedPriorityQueue<int, int>();
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
             queue.Enqueue(i, i);
 
-        var enumerator = queue.GetEnumerator();
+        IndexedPriorityQueue<int, int>.Enumerator enumerator = queue.GetEnumerator();
         Assert.IsTrue(enumerator.MoveNext());
 
         queue.Update(2, 2);
 
-        int remaining = 1;
+        var remaining = 1;
         while (enumerator.MoveNext())
             remaining++;
 
@@ -334,10 +334,10 @@ public partial class IndexedPriorityQueueTests
     public void Enumerator_WhenTrimExcessInvoked_ShouldRemainValid()
     {
         var queue = new IndexedPriorityQueue<int, int>(64);
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
             queue.Enqueue(i, i);
 
-        var enumerator = queue.GetEnumerator();
+        IndexedPriorityQueue<int, int>.Enumerator enumerator = queue.GetEnumerator();
         Assert.IsTrue(enumerator.MoveNext());
 
         queue.TrimExcess();
@@ -357,7 +357,7 @@ public partial class IndexedPriorityQueueTests
     public void Enumerator_WhenQueueIsEmpty_ShouldReturnFalseImmediately()
     {
         var queue = new IndexedPriorityQueue<int, int>();
-        var enumerator = queue.GetEnumerator();
+        IndexedPriorityQueue<int, int>.Enumerator enumerator = queue.GetEnumerator();
 
         Assert.IsFalse(enumerator.MoveNext());
     }

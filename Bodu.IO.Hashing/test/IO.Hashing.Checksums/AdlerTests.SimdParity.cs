@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdlerTests.SimdParity.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -28,13 +28,13 @@ public abstract partial class AdlerTests<TTest, TAlgorithm, TModulo>
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void Append_WhenInputEngagesSimdBranch_ShouldMatchPerByteScalarPath(SingleTestVariant variant)
     {
-        byte[] data = AdlerSimdRegressionInputs.ModuloByte8K;
+        var data = AdlerSimdRegressionInputs.ModuloByte8K;
 
         NonCryptographicHashAlgorithm whole = CreateAlgorithm(variant);
         whole.Append(data);
 
         NonCryptographicHashAlgorithm perByte = CreateAlgorithm(variant);
-        for (int i = 0; i < data.Length; i++)
+        for (var i = 0; i < data.Length; i++)
             perByte.Append(data.AsSpan(i, 1));
 
         CollectionAssert.AreEqual(whole.GetCurrentHash(), perByte.GetCurrentHash());
@@ -61,8 +61,8 @@ internal static class AdlerSimdRegressionInputs
 
     private static byte[] Build(int length)
     {
-        byte[] data = new byte[length];
-        for (int i = 0; i < length; i++)
+        var data = new byte[length];
+        for (var i = 0; i < length; i++)
             data[i] = (byte)i;
         return data;
     }

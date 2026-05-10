@@ -31,7 +31,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.ToDateOnly" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(ToDateOnlyTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(ToDateOnlyTestData))]
     public void ToDateOnly_WhenCalled_ShouldReturnExpectedDateOnly(DateTime input, DateTime expectedDateTime)
     {
         var expected = DateOnly.FromDateTime(expectedDateTime);

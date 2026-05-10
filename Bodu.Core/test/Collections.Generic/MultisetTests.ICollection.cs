@@ -51,8 +51,8 @@ public partial class MultisetTests
     {
         ICollection sut = new Multiset<int>();
 
-        object first = sut.SyncRoot;
-        object second = sut.SyncRoot;
+        var first = sut.SyncRoot;
+        var second = sut.SyncRoot;
 
         Assert.AreSame(first, second);
     }
@@ -180,7 +180,7 @@ public partial class MultisetTests
     public void ICollectionCopyTo_WhenMultisetIsEmpty_ShouldNotModifyArray()
     {
         ICollection sut = new Multiset<int>();
-        object[] dest = new object[] { 99 };
+        object[] dest = [99];
 
         sut.CopyTo(dest, 0);
 
@@ -200,7 +200,7 @@ public partial class MultisetTests
         Multiset<int> multiset = new Multiset<int>();
         multiset.Add(7, 2);
         ICollection sut = multiset;
-        object[] dest = new object[4];
+        var dest = new object[4];
 
         sut.CopyTo(dest, 2);
 

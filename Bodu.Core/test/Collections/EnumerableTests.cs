@@ -22,14 +22,14 @@ public abstract partial class EnumerableTests
         Func<IEnumerable<TSource>, IEnumerable> invokeExtensionMethod,
         IEnumerable<TSource> values)
     {
-        bool wasEnumerated = false;
+        var wasEnumerated = false;
 
         var source = new TrackingEnumerable<TSource>(
             values,
             onEnumerate: () => wasEnumerated = true
         );
 
-        var actual = invokeExtensionMethod(source);
+        IEnumerable actual = invokeExtensionMethod(source);
 
         Assert.IsFalse(wasEnumerated, $"[{methodName}] should defer execution.");
     }
@@ -45,14 +45,14 @@ public abstract partial class EnumerableTests
         Func<IEnumerable<TSource>, IEnumerable> invokeExtensionMethod,
         IEnumerable<TSource> values)
     {
-        bool wasEnumerated = false;
+        var wasEnumerated = false;
 
         var source = new TrackingEnumerable<TSource>(
             values,
             onEnumerate: () => wasEnumerated = true
         );
 
-        var actual = invokeExtensionMethod(source);
+        IEnumerable actual = invokeExtensionMethod(source);
 
         // Trigger enumeration
         _ = actual.GetEnumerator().MoveNext();

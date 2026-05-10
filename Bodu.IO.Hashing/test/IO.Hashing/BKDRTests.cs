@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BKDRTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -83,8 +83,8 @@ public sealed partial class BKDRTests
             "165FCFD1", "7307580F", "DCC20FCA", "F74E147C",
             "8CF47B93", "211B3C59",
         },
-        BKDRVariant.Seed31 => new[]
-        {
+        BKDRVariant.Seed31 =>
+        [
             "0000001F", "000003C1", "00007460", "000E17A2",
             "01B4DCA1", "34E6B783", "67F038E2", "9616E364",
             "2CC58923", "6BEB9B45", "1187CD64", "1F71DF26",
@@ -94,9 +94,9 @@ public sealed partial class BKDRTests
             "527E5B2B", "FD4D0A4D", "AC543F6C", "DE33AE2E",
             "E84217AD", "2000DE0F", "E01AE3EE", "234199F0",
             "44F1A42F", "5942E1D1",
-        },
-        BKDRVariant.Seed1313 => new[]
-        {
+        ],
+        BKDRVariant.Seed1313 =>
+        [
             "00000521", "001A4E41", "86EB5B62", "FD1FB1A4",
             "3F8E1A27", "F7D4220B", "17029A70", "045A1876",
             "5217753D", "0A504DE5", "E5DF838E", "FF61BB58",
@@ -106,7 +106,7 @@ public sealed partial class BKDRTests
             "E9FD3E35", "1BDC0DED", "E3A36CA6", "89303F80",
             "A075AF9B", "FB99AA17", "6F216014", "FA2DC6B2",
             "24C81711", "A63E4E51",
-        },
+        ],
         _ => throw new ArgumentOutOfRangeException(nameof(variant)),
     };
 }

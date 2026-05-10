@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultiCharCheckDigitAlgorithmTests.GetCurrentCheckDigits.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -35,9 +35,9 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
         TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Append("12345".AsSpan());
 
-        string first = algorithm.GetCurrentCheckDigits();
-        string second = algorithm.GetCurrentCheckDigits();
-        string third = algorithm.GetCurrentCheckDigits();
+        var first = algorithm.GetCurrentCheckDigits();
+        var second = algorithm.GetCurrentCheckDigits();
+        var third = algorithm.GetCurrentCheckDigits();
 
         Assert.AreEqual(first, second);
         Assert.AreEqual(second, third);
@@ -61,7 +61,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
         algorithm.Append(body.AsSpan());
 
         Span<char> buffer = stackalloc char[algorithm.CheckLength];
-        int written = algorithm.GetCurrentCheckDigits(buffer);
+        var written = algorithm.GetCurrentCheckDigits(buffer);
 
         Assert.AreEqual(algorithm.CheckLength, written);
         Assert.AreEqual(algorithm.GetCurrentCheckDigits(), new string(buffer));

@@ -113,7 +113,7 @@ public partial class IndexedPriorityQueueTests
     [TestMethod]
     public void Ctor_WhenItemsProvided_ShouldPopulateQueue()
     {
-        var items = new[]
+        KeyValuePair<string, int>[] items = new[]
         {
             new KeyValuePair<string, int>("c", 30),
             new KeyValuePair<string, int>("a", 10),
@@ -134,7 +134,7 @@ public partial class IndexedPriorityQueueTests
     [TestMethod]
     public void Ctor_WhenItemsProvided_ShouldDequeueInPriorityOrder()
     {
-        var items = new[]
+        KeyValuePair<int, int>[] items = new[]
         {
             new KeyValuePair<int, int>(1, 50),
             new KeyValuePair<int, int>(2, 10),
@@ -144,7 +144,7 @@ public partial class IndexedPriorityQueueTests
         };
 
         var queue = new IndexedPriorityQueue<int, int>(items);
-        var drained = DrainAll(queue);
+        KeyValuePair<int, int>[] drained = DrainAll(queue);
 
         AssertNonDecreasing(drained);
         CollectionAssert.AreEqual(new[] { 2, 4, 5, 3, 1 }, drained.Select(p => p.Key).ToArray());
@@ -156,7 +156,7 @@ public partial class IndexedPriorityQueueTests
     [TestMethod]
     public void Ctor_WhenItemsContainDuplicateKey_ShouldThrowExactly()
     {
-        var items = new[]
+        KeyValuePair<string, int>[] items = new[]
         {
             new KeyValuePair<string, int>("a", 1),
             new KeyValuePair<string, int>("a", 2),
@@ -189,7 +189,7 @@ public partial class IndexedPriorityQueueTests
     [TestMethod]
     public void Ctor_WhenItemsCollectionIsEmpty_ShouldCreateEmptyQueue()
     {
-        var queue = new IndexedPriorityQueue<string, int>(Array.Empty<KeyValuePair<string, int>>());
+        var queue = new IndexedPriorityQueue<string, int>([]);
 
         Assert.AreEqual(0, queue.Count);
         Assert.AreEqual(0, queue.Capacity);
@@ -202,7 +202,7 @@ public partial class IndexedPriorityQueueTests
     [TestMethod]
     public void Ctor_WhenItemsEnumerableIsEmpty_ShouldCreateEmptyQueue()
     {
-        IEnumerable<KeyValuePair<string, int>> source = Enumerable.Empty<KeyValuePair<string, int>>();
+        IEnumerable<KeyValuePair<string, int>> source = [];
 
         var queue = new IndexedPriorityQueue<string, int>(source);
 
@@ -217,7 +217,7 @@ public partial class IndexedPriorityQueueTests
     public void Ctor_WhenItemsAndReverseComparer_ShouldHeapifyAsMaxHeap()
     {
         IComparer<int> reverse = Comparer<int>.Create((a, b) => b.CompareTo(a));
-        var items = new[]
+        KeyValuePair<string, int>[] items = new[]
         {
             new KeyValuePair<string, int>("a", 10),
             new KeyValuePair<string, int>("b", 30),
@@ -235,7 +235,7 @@ public partial class IndexedPriorityQueueTests
     [TestMethod]
     public void Ctor_WhenItemsContainCaseDuplicateAndComparerIsCaseInsensitive_ShouldThrowExactly()
     {
-        var items = new[]
+        KeyValuePair<string, int>[] items = new[]
         {
             new KeyValuePair<string, int>("alpha", 1),
             new KeyValuePair<string, int>("ALPHA", 2),
@@ -255,13 +255,13 @@ public partial class IndexedPriorityQueueTests
     public void Ctor_WhenItemsLarge_ShouldHeapifyToNonDecreasingDequeueOrder()
     {
         var rng = new Random(54321);
-        var items = Enumerable
+        KeyValuePair<int, int>[] items = Enumerable
             .Range(0, 256)
             .Select(i => new KeyValuePair<int, int>(i, rng.Next(0, 1_000_000)))
             .ToArray();
 
         var queue = new IndexedPriorityQueue<int, int>(items);
-        var drained = DrainAll(queue);
+        KeyValuePair<int, int>[] drained = DrainAll(queue);
 
         AssertNonDecreasing(drained);
         Assert.AreEqual(256, drained.Length);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonCryptographicHashAlgorithmExtensionsTests.TryVerifyHashAsync.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -31,10 +31,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task TryVerifyHashAsync_WhenStreamMatchesByteArray_ShouldReturnTrue()
     {
-        var algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(SampleData);
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
 
-        bool result = await algorithm.TryVerifyHashAsync(stream, SampleHash);
+        var result = await algorithm.TryVerifyHashAsync(stream, s_sampleHash);
 
         Assert.IsTrue(result);
     }
@@ -45,11 +45,11 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task TryVerifyHashAsync_WhenStreamDoesNotMatchByteArray_ShouldReturnFalse()
     {
-        var algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(SampleData);
-        byte[] wrong = BitConverter.GetBytes((uint)999);
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
+        var wrong = BitConverter.GetBytes((uint)999);
 
-        bool result = await algorithm.TryVerifyHashAsync(stream, wrong);
+        var result = await algorithm.TryVerifyHashAsync(stream, wrong);
 
         Assert.IsFalse(result);
     }
@@ -60,9 +60,9 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task TryVerifyHashAsync_WhenStreamIsNull_ForByteArrayOverload_ShouldReturnFalse()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        bool result = await algorithm.TryVerifyHashAsync((Stream)null!, SampleHash);
+        var result = await algorithm.TryVerifyHashAsync((Stream)null!, s_sampleHash);
 
         Assert.IsFalse(result);
     }
@@ -73,10 +73,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task TryVerifyHashAsync_WhenExpectedHashIsNull_ShouldReturnFalse()
     {
-        var algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(SampleData);
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
 
-        bool result = await algorithm.TryVerifyHashAsync(stream, (byte[])null!);
+        var result = await algorithm.TryVerifyHashAsync(stream, (byte[])null!);
 
         Assert.IsFalse(result);
     }
@@ -89,10 +89,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task TryVerifyHashAsync_WhenStreamMatchesHex_ShouldReturnTrue()
     {
-        var algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(SampleData);
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
 
-        bool result = await algorithm.TryVerifyHashAsync(stream, SampleHex);
+        var result = await algorithm.TryVerifyHashAsync(stream, s_sampleHex);
 
         Assert.IsTrue(result);
     }
@@ -103,9 +103,9 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task TryVerifyHashAsync_WhenStreamIsNull_ForHexOverload_ShouldReturnFalse()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        bool result = await algorithm.TryVerifyHashAsync((Stream)null!, SampleHex);
+        var result = await algorithm.TryVerifyHashAsync((Stream)null!, s_sampleHex);
 
         Assert.IsFalse(result);
     }
@@ -116,10 +116,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task TryVerifyHashAsync_WhenHexStringIsMalformed_ShouldReturnFalse()
     {
-        var algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(SampleData);
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
 
-        bool result = await algorithm.TryVerifyHashAsync(stream, "ZZZZZZZZ");
+        var result = await algorithm.TryVerifyHashAsync(stream, "ZZZZZZZZ");
 
         Assert.IsFalse(result);
     }
@@ -132,11 +132,11 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task TryVerifyHashAsync_WhenStreamMatchesMemory_ShouldReturnTrue()
     {
-        var algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(SampleData);
-        ReadOnlyMemory<byte> expected = SampleHash;
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
+        ReadOnlyMemory<byte> expected = s_sampleHash;
 
-        bool result = await algorithm.TryVerifyHashAsync(stream, expected);
+        var result = await algorithm.TryVerifyHashAsync(stream, expected);
 
         Assert.IsTrue(result);
     }
@@ -147,10 +147,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task TryVerifyHashAsync_WhenStreamIsNull_ForMemoryOverload_ShouldReturnFalse()
     {
-        var algorithm = CreateAlgorithm();
-        ReadOnlyMemory<byte> expected = SampleHash;
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        ReadOnlyMemory<byte> expected = s_sampleHash;
 
-        bool result = await algorithm.TryVerifyHashAsync((Stream)null!, expected);
+        var result = await algorithm.TryVerifyHashAsync((Stream)null!, expected);
 
         Assert.IsFalse(result);
     }
@@ -163,9 +163,9 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task TryVerifyHashAsync_WhenByteArrayMatchesByteArray_ShouldReturnTrue()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        bool result = await algorithm.TryVerifyHashAsync(SampleData, SampleHash);
+        var result = await algorithm.TryVerifyHashAsync(s_sampleData, s_sampleHash);
 
         Assert.IsTrue(result);
     }
@@ -176,9 +176,9 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task TryVerifyHashAsync_WhenByteArrayMatchesHex_ShouldReturnTrue()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        bool result = await algorithm.TryVerifyHashAsync(SampleData, SampleHex);
+        var result = await algorithm.TryVerifyHashAsync(s_sampleData, s_sampleHex);
 
         Assert.IsTrue(result);
     }
@@ -189,10 +189,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task TryVerifyHashAsync_WhenByteArrayDoesNotMatch_ShouldReturnFalse()
     {
-        var algorithm = CreateAlgorithm();
-        byte[] wrong = BitConverter.GetBytes((uint)999);
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var wrong = BitConverter.GetBytes((uint)999);
 
-        bool result = await algorithm.TryVerifyHashAsync(SampleData, wrong);
+        var result = await algorithm.TryVerifyHashAsync(s_sampleData, wrong);
 
         Assert.IsFalse(result);
     }
@@ -205,9 +205,9 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task TryVerifyHashAsync_WhenStringEncodedMatches_ShouldReturnTrue()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        bool result = await algorithm.TryVerifyHashAsync(SampleString, SampleEncoding, SampleStringHash);
+        var result = await algorithm.TryVerifyHashAsync(s_sampleString, s_sampleEncoding, s_sampleStringHash);
 
         Assert.IsTrue(result);
     }
@@ -218,10 +218,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task TryVerifyHashAsync_WhenStringEncodedDoesNotMatch_ShouldReturnFalse()
     {
-        var algorithm = CreateAlgorithm();
-        byte[] wrong = BitConverter.GetBytes((uint)999);
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var wrong = BitConverter.GetBytes((uint)999);
 
-        bool result = await algorithm.TryVerifyHashAsync(SampleString, SampleEncoding, wrong);
+        var result = await algorithm.TryVerifyHashAsync(s_sampleString, s_sampleEncoding, wrong);
 
         Assert.IsFalse(result);
     }
@@ -235,10 +235,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public async Task TryVerifyHashAsync_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
     {
         NonCryptographicHashAlgorithm? algorithm = null;
-        using MemoryStream stream = new(SampleData);
+        using MemoryStream stream = new(s_sampleData);
 
         await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
-            await algorithm!.TryVerifyHashAsync(stream, SampleHash));
+            await algorithm!.TryVerifyHashAsync(stream, s_sampleHash));
     }
 
     /// <summary>
@@ -247,8 +247,8 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task TryVerifyHashAsync_WhenExpectedHexIsNull_ShouldThrowArgumentNullException()
     {
-        var algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(SampleData);
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
 
         await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
             await algorithm.TryVerifyHashAsync(stream, (string)null!));

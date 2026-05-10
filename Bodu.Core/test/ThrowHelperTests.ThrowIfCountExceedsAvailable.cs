@@ -31,8 +31,5 @@ public partial class ThrowHelperTests
     [DataRow(0, 5)]
     [DataRow(3, 5)]
     [DataRow(5, 5)]
-    public void ThrowIfCountExceedsAvailable_WhenCountIsValid_ShouldNotThrow(int count, int available)
-    {
-        ThrowHelper.ThrowIfCountExceedsAvailable(count, available);
-    }
+    public void ThrowIfCountExceedsAvailable_WhenCountIsValid_ShouldNotThrow(int count, int available) => ThrowHelper.ThrowIfCountExceedsAvailable(count, available);
 }

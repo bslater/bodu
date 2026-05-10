@@ -21,7 +21,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.LastDateOfWeekInMonth" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(LastDateOfWeekInMonthTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(LastDateOfWeekInMonthTestData))]
     public void LastDateOfWeekInMonth_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
     {
         DateTime actual = input.LastDateOfWeekInMonth(dayOfWeek);

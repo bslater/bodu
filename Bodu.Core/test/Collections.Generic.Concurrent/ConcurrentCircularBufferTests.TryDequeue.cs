@@ -22,7 +22,7 @@ public partial class ConcurrentCircularBufferTests
         Parallel.For(0, 1000, i => buffer.Enqueue(new TestItem(i)));
 
         // Drain what's there
-        int count = 0;
+        var count = 0;
         while (buffer.TryDequeue(out _)) count++;
 
         Assert.IsTrue(count >= 0 && count <= buffer.Capacity);
@@ -66,7 +66,7 @@ public partial class ConcurrentCircularBufferTests
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(2, allowOverwrite: true);
 
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             buffer.Enqueue(new TestItem(i));
             _ = buffer.TryDequeue(out _);
@@ -82,14 +82,14 @@ public partial class ConcurrentCircularBufferTests
     public void TryDequeue_WhenClearInterleaves_ShouldReturnFalseOnceEmptiedWithoutThrowing()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(8);
-        for (int i = 0; i < 6; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < 6; i++) buffer.Enqueue(new TestItem(i));
 
         var exceptions = new ConcurrentBag<Exception>();
         var done = new ManualResetEventSlim(false);
 
         var clearer = Task.Run(() =>
         {
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 buffer.Clear();
                 Thread.SpinWait(20);
@@ -125,7 +125,7 @@ public partial class ConcurrentCircularBufferTests
 
         var writer = Task.Run(() =>
         {
-            for (int i = 0; i < 20; i++)
+            for (var i = 0; i < 20; i++)
             {
                 buffer.Enqueue(new TestItem(i));
                 Thread.Sleep(1);
@@ -134,9 +134,9 @@ public partial class ConcurrentCircularBufferTests
 
         var reader = Task.Run(() =>
         {
-            for (int i = 0; i < 50; i++)
+            for (var i = 0; i < 50; i++)
             {
-                if (buffer.TryDequeue(out var item) && item != null)
+                if (buffer.TryDequeue(out TestItem? item) && item != null)
                 {
                     Interlocked.Increment(ref dequeuedCount);
                     Interlocked.Exchange(ref success, 1);
@@ -158,13 +158,13 @@ public partial class ConcurrentCircularBufferTests
     public void TryDequeue_WhenManyConsumersAgainstPreloadedBuffer_ShouldDrainAllItems()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(20);
-        for (int i = 0; i < 20; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < 20; i++) buffer.Enqueue(new TestItem(i));
 
         var dequeued = new ConcurrentBag<int>();
 
         Parallel.For(0, 20, _ =>
         {
-            if (buffer.TryDequeue(out var item) && item != null)
+            if (buffer.TryDequeue(out TestItem? item) && item != null)
                 dequeued.Add(item.Value);
         });
 
@@ -179,12 +179,12 @@ public partial class ConcurrentCircularBufferTests
     public void TryDequeue_WhenMultipleConsumers_ShouldDequeueEachItemAtMostOnce()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(30);
-        for (int i = 0; i < 30; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < 30; i++) buffer.Enqueue(new TestItem(i));
 
         var dequeued = new ConcurrentBag<int>();
-        var tasks = Enumerable.Range(0, 5).Select(_ => Task.Run(() =>
+        Task[] tasks = Enumerable.Range(0, 5).Select(_ => Task.Run(() =>
         {
-            while (buffer.TryDequeue(out var item))
+            while (buffer.TryDequeue(out TestItem? item))
                 if (item != null) dequeued.Add(item.Value);
         })).ToArray();
 
@@ -209,7 +209,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(null);
 
         int nulls = 0, nonNulls = 0;
-        while (buffer.TryDequeue(out var item))
+        while (buffer.TryDequeue(out TestItem? item))
         {
             if (item is null) nulls++; else nonNulls++;
         }
@@ -225,10 +225,10 @@ public partial class ConcurrentCircularBufferTests
     public void TryDequeue_WhenSingleThreaded_ShouldReturnInFifoOrder()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(5);
-        for (int i = 0; i < 3; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < 3; i++) buffer.Enqueue(new TestItem(i));
 
         var results = new TestItem[3];
-        for (int i = 0; i < 3; i++)
+        for (var i = 0; i < 3; i++)
             Assert.IsTrue(buffer.TryDequeue(out results[i]));
 
         CollectionAssert.AreEqual(new[] { 0, 1, 2 }, results.Select(r => r.Value).ToArray());

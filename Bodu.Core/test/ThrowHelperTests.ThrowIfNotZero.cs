@@ -29,8 +29,5 @@ public partial class ThrowHelperTests
     /// </summary>
     [TestMethod]
     [DataRow(0)]
-    public void ThrowIfNotZero_WhenValueIsZero_ShouldNotThrow(int value)
-    {
-        ThrowHelper.ThrowIfNotZero(value);
-    }
+    public void ThrowIfNotZero_WhenValueIsZero_ShouldNotThrow(int value) => ThrowHelper.ThrowIfNotZero(value);
 }

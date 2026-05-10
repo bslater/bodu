@@ -58,7 +58,7 @@ public partial class WeekPatternTests
     {
         var pattern = WeekPattern.FromByte(0b1111111);
         var days = pattern.ToList();
-        var expected = new[]
+        DayOfWeek[] expected = new[]
         {
             DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday,
             DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday
@@ -76,7 +76,7 @@ public partial class WeekPatternTests
     public void GetEnumerator_WhenWeekdays_ShouldYieldWeekdaysInOrder()
     {
         var days = WeekPattern.Weekdays.ToList();
-        var expected = new[]
+        DayOfWeek[] expected = new[]
         {
             DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday,
             DayOfWeek.Thursday, DayOfWeek.Friday

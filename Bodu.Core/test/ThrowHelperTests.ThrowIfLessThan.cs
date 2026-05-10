@@ -32,10 +32,7 @@ public partial class ThrowHelperTests
     [DataRow(0, 0)]
     [DataRow(6, 5)]
     [DataRow(int.MaxValue, int.MinValue)]
-    public void ThrowIfLessThan_WhenValueIsGreaterThanOrEqualToMin_ShouldNotThrow(int value, int min)
-    {
-        ThrowHelper.ThrowIfLessThan(value, min);
-    }
+    public void ThrowIfLessThan_WhenValueIsGreaterThanOrEqualToMin_ShouldNotThrow(int value, int min) => ThrowHelper.ThrowIfLessThan(value, min);
 
     // Nullable overloads
 
@@ -57,10 +54,7 @@ public partial class ThrowHelperTests
     /// </summary>
     [TestMethod]
     [DataRow(null, 5, false)]
-    public void ThrowIfLessThan_Nullable_WhenValueIsNullAndThrowIfNullIsFalse_ShouldNotThrow(int? value, int min, bool throwIfNull)
-    {
-        ThrowHelper.ThrowIfLessThan(value, min, throwIfNull);
-    }
+    public void ThrowIfLessThan_Nullable_WhenValueIsNullAndThrowIfNullIsFalse_ShouldNotThrow(int? value, int min, bool throwIfNull) => ThrowHelper.ThrowIfLessThan(value, min, throwIfNull);
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfLessThan" />, Nullable, when ValueIsLessThanMin, throws <see cref="ArgumentOutOfRangeException" />.
@@ -82,8 +76,5 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DataRow(5, 5, false)]
     [DataRow(6, 5, false)]
-    public void ThrowIfLessThan_Nullable_WhenValueIsGreaterThanOrEqualToMin_ShouldNotThrow(int? value, int min, bool throwIfNull)
-    {
-        ThrowHelper.ThrowIfLessThan(value, min, throwIfNull);
-    }
+    public void ThrowIfLessThan_Nullable_WhenValueIsGreaterThanOrEqualToMin_ShouldNotThrow(int? value, int min, bool throwIfNull) => ThrowHelper.ThrowIfLessThan(value, min, throwIfNull);
 }

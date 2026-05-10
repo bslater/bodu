@@ -71,7 +71,7 @@ public partial class ConcurrentCircularBufferTests
         IProducerConsumerCollection<TestItem> sut =
             new ConcurrentCircularBuffer<TestItem>(capacity: 4);
 
-        bool taken = sut.TryTake(out TestItem? item);
+        var taken = sut.TryTake(out TestItem? item);
 
         Assert.IsFalse(taken);
         Assert.IsNull(item);
@@ -118,7 +118,7 @@ public partial class ConcurrentCircularBufferTests
         TestItem[] viaConcrete = concrete.ToArray();
 
         Assert.AreEqual(viaConcrete.Length, viaInterface.Length);
-        for (int i = 0; i < viaConcrete.Length; i++)
+        for (var i = 0; i < viaConcrete.Length; i++)
             Assert.AreEqual(viaConcrete[i].Value, viaInterface[i].Value);
 
         TestItem[] copyTarget = new TestItem[5];

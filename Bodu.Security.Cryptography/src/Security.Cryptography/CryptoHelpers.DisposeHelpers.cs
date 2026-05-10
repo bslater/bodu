@@ -19,7 +19,8 @@ public static partial class CryptoHelpers
     /// <typeparam name="T">The element type. Must be unmanaged.</typeparam>
     /// <param name="memory">The memory buffer to clear.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Clear<T>(Memory<T> memory) where T : unmanaged
+    public static void Clear<T>(Memory<T> memory)
+        where T : unmanaged
     {
         CryptographicOperations.ZeroMemory(MemoryMarshal.AsBytes(memory.Span));
     }
@@ -30,9 +31,25 @@ public static partial class CryptoHelpers
     /// <typeparam name="T">The element type. Must be unmanaged.</typeparam>
     /// <param name="span">The span to clear.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Clear<T>(Span<T> span) where T : unmanaged
+    public static void Clear<T>(Span<T> span)
+        where T : unmanaged
     {
         CryptographicOperations.ZeroMemory(MemoryMarshal.AsBytes(span));
+    }
+
+    /// <summary>
+    /// Securely zeroes the contents of an unmanaged array using <see cref="CryptographicOperations.ZeroMemory" />.
+    /// </summary>
+    /// <param name="array">The array whose contents will be securely zeroed. If <see langword="null" />, the call is a no-op.</param>
+    /// <remarks>
+    /// Unlike <see cref="ClearAndNullify{T}(ref T[])" />, this overload does not nullify the caller's reference. It is useful for
+    /// clearing the contents of readonly fields or shared buffers whose reference must remain valid.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Clear(byte[] array)
+    {
+        if (array is null) return;
+        CryptographicOperations.ZeroMemory(array);
     }
 
     /// <summary>
@@ -45,7 +62,8 @@ public static partial class CryptoHelpers
     /// clearing the contents of readonly fields or shared buffers whose reference must remain valid.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Clear<T>(T[] array) where T : unmanaged
+    public static void Clear<T>(T[] array)
+        where T : unmanaged
     {
         if (array is null) return;
         CryptographicOperations.ZeroMemory(MemoryMarshal.AsBytes(array.AsSpan()));
@@ -62,7 +80,8 @@ public static partial class CryptoHelpers
     /// hash state.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ClearAndNullify<T>(ref T[]? array) where T : unmanaged
+    public static void ClearAndNullify<T>(ref T[]? array)
+        where T : unmanaged
     {
         if (array is null) return;
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AlphanumericCheckDigitAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -77,7 +77,7 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
     /// </returns>
     public static string GetKnownAnswerTestName(MethodInfo methodInfo, object[] data)
     {
-        string name = (string)data[0];
+        var name = (string)data[0];
         return $"{name}";
     }
 }

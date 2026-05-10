@@ -24,20 +24,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="HashingResourceStrings.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>HashingResourceStrings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="System.IO.Hashing" Version="10.0.7" />
   </ItemGroup>
+
   <ItemGroup>
+    <EmbeddedResource Include="HashingResourceStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>HashingResourceStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <Compile Update="HashingResourceStrings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

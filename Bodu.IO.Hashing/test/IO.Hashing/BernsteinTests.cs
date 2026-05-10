@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BernsteinTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -70,8 +70,8 @@ public sealed partial class BernsteinTests
             "C452B57F", "4EA9657B", "23D614F8", "9E98B416",
             "71AF36F5", "A79615B5",
         },
-        BernsteinHashVariant.Modified => new[]
-        {
+        BernsteinHashVariant.Modified =>
+        [
             "00001505", "0002B5A5", "00596A44", "0B86B2C6",
             "7C5D0B85", "07FE7C21", "07CE0044", "018E08C2",
             "334F2105", "9D3341AD", "439B7744", "B70A5FCE",
@@ -81,7 +81,7 @@ public sealed partial class BernsteinTests
             "DB21C505", "3F5A65BD", "2AA71D44", "7F8AC5DE",
             "70E38185", "8D53B239", "37C9F944", "310921DA",
             "522D5D05", "97D8FD85",
-        },
+        ],
         _ => throw new ArgumentOutOfRangeException(nameof(variant)),
     };
 }

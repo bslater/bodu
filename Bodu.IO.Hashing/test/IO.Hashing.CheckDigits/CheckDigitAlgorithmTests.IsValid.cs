@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CheckDigitAlgorithmTests.IsValid.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     public void IsValid_WhenSequenceIncludesComputedCheckDigit_ShouldReturnTrue(string name, string body, char expectedCheck)
     {
         _ = name;
-        string full = body + expectedCheck;
+        var full = body + expectedCheck;
         Assert.IsTrue(IsValidStatic(full.AsSpan()), $"Expected '{full}' to be valid.");
     }
 
@@ -38,10 +38,10 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     public void IsValid_WhenCheckDigitIsTampered_ShouldReturnFalse(string name, string body, char expectedCheck)
     {
         _ = name;
-        for (char c = '0'; c <= '9'; c++)
+        for (var c = '0'; c <= '9'; c++)
         {
             if (c == expectedCheck) continue;
-            string bad = body + c;
+            var bad = body + c;
             Assert.IsFalse(IsValidStatic(bad.AsSpan()), $"Expected '{bad}' to be invalid (swap of check digit).");
         }
     }
@@ -63,6 +63,6 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void IsValid_WhenInputIsEmpty_ShouldReturnTrue()
     {
-        Assert.IsTrue(IsValidStatic(ReadOnlySpan<char>.Empty));
+        Assert.IsTrue(IsValidStatic([]));
     }
 }

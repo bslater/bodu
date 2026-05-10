@@ -34,7 +34,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.PreviousWeekday(DateOnly, CalendarWeekendDefinition)" /> returns the prior non-weekend date when Saturday and Sunday are defined as the weekend.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(PreviousWeekdaySaturdaySundayTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(PreviousWeekdaySaturdaySundayTestData))]
     public void PreviousWeekday_WhenWeekendIsSaturdaySunday_ShouldReturnExpectedDate(DateOnly date, DateOnly expected)
     {
         DateOnly actual = date.PreviousWeekday(CalendarWeekendDefinition.SaturdaySunday);

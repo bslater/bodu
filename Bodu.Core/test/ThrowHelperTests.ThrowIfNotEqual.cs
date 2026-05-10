@@ -47,20 +47,14 @@ public partial class ThrowHelperTests
     [DataRow(1, 1)]
     [DataRow(-5, -5)]
     [DataRow(int.MaxValue, int.MaxValue)]
-    public void ThrowIfNotEqual_WhenIntValuesAreEqual_ShouldNotThrow(int value, int other)
-    {
-        ThrowHelper.ThrowIfNotEqual(value, other);
-    }
+    public void ThrowIfNotEqual_WhenIntValuesAreEqual_ShouldNotThrow(int value, int other) => ThrowHelper.ThrowIfNotEqual(value, other);
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotEqual{T}" /> does not throw when two string values
     /// are equal.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNotEqual_WhenStringValuesAreEqual_ShouldNotThrow()
-    {
-        ThrowHelper.ThrowIfNotEqual("hello", "hello");
-    }
+    public void ThrowIfNotEqual_WhenStringValuesAreEqual_ShouldNotThrow() => ThrowHelper.ThrowIfNotEqual("hello", "hello");
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotEqual{T}" /> reports the correct parameter name in the
@@ -69,7 +63,7 @@ public partial class ThrowHelperTests
     [TestMethod]
     public void ThrowIfNotEqual_WhenValuesAreNotEqual_ShouldReportParamName()
     {
-        int value = 10;
+        var value = 10;
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ThrowHelper.ThrowIfNotEqual(value, 42, "value");

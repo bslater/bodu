@@ -14,10 +14,10 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.WeekOfMonth(DateTime, CalendarWeekRule, DayOfWeek)" /> returns the expected week index for each <c>(date, rule, firstDay)</c> triple.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(WeekOfMonthCalendarWeekRuleTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(WeekOfMonthCalendarWeekRuleTestData))]
     public void WeekOfMonth_WithCalendarWeekAndRule_ShouldReturnExpected(DateTime input, CalendarWeekRule rule, DayOfWeek firstDay, int expected)
     {
-        int actual = input.WeekOfMonth(rule, firstDay);
+        var actual = input.WeekOfMonth(rule, firstDay);
         Assert.AreEqual(expected, actual);
     }
 
@@ -25,10 +25,10 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.WeekOfMonth(DateTime, CultureInfo)" /> returns the expected week index for each <c>(date, culture)</c> pair.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(WeekOfMonthCultureTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(WeekOfMonthCultureTestData))]
     public void WeekOfMonth_WithCulture_ShouldReturnExpected(DateTime input, CultureInfo culture, int expected)
     {
-        int actual = input.WeekOfMonth(culture);
+        var actual = input.WeekOfMonth(culture);
         Assert.AreEqual(expected, actual);
     }
 
@@ -83,12 +83,12 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void WeekOfMonth_WhenCultureIsNull_ShouldUseCurrentCulture()
     {
-        var original = CultureInfo.CurrentCulture;
+        CultureInfo original = CultureInfo.CurrentCulture;
         try
         {
             CultureInfo.CurrentCulture = new CultureInfo("fr-FR"); // Starts week on Monday
             DateTime input = new(2024, 01, 08); // 2nd Monday of Jan 2024
-            int week = input.WeekOfMonth(); // Should use fr-FR's firstDayOfWeek (Monday)
+            var week = input.WeekOfMonth(); // Should use fr-FR's firstDayOfWeek (Monday)
 
             Assert.AreEqual(2, week); // Jan 8 falls in 2nd full week
         }

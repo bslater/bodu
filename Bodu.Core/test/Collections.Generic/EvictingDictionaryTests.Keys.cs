@@ -30,7 +30,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("B", 2);
         dictionary.Add("C", 3);
 
-        var keys = dictionary.Keys;
+        ICollection<string> keys = dictionary.Keys;
 
         Assert.AreEqual(3, keys.Count);
         CollectionAssert.Contains(keys.ToList(), "A");
@@ -108,8 +108,8 @@ public partial class EvictingDictionaryTests
         var dictionary = new EvictingDictionary<string, int>(3);
         dictionary.Add("A", 1);
 
-        var first = dictionary.Keys;
-        var second = dictionary.Keys;
+        ICollection<string> first = dictionary.Keys;
+        ICollection<string> second = dictionary.Keys;
 
         Assert.AreSame(first, second);
     }
@@ -123,7 +123,7 @@ public partial class EvictingDictionaryTests
         var dictionary = new EvictingDictionary<string, int>(5);
         dictionary.Add("A", 1);
 
-        var keys = dictionary.Keys;
+        ICollection<string> keys = dictionary.Keys;
         dictionary.Add("B", 2);
 
         Assert.AreEqual(2, keys.Count);

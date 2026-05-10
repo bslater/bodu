@@ -22,7 +22,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.GetQuarter" />, when UsingQuarterDefinition, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.QuarterTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.QuarterTestData), typeof(DateTimeExtensionsTests))]
     public void GetQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedQuarter(DateTime inputDateTime, CalendarQuarterDefinition definition, int expected)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
@@ -36,7 +36,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.GetQuarter" />, when OnlyDateOnly, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.QuarterJanuaryDecemberTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.QuarterJanuaryDecemberTestData), typeof(DateTimeExtensionsTests))]
     public void GetQuarter_WhenOnlyDateOnly_ShouldReturnExpectedQuarter(DateTime inputDateTime, int expected)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
@@ -50,7 +50,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.GetQuarter" />, when UsingValidProvider, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.QuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.QuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider))]
     public void GetQuarter_WhenUsingValidProvider_ShouldReturnExpectedQuarter(DateTime inputDate, int expected)
     {
         var input = DateOnly.FromDateTime(inputDate);
