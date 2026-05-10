@@ -95,7 +95,7 @@ public sealed class Poly1305
     /// breaks its security guarantees; an instance with an unsolicited random key tempts callers to drive
     /// <see cref="HashAlgorithm.ComputeHash(byte[])" /> twice and silently produce a forgeable tag the second time.
     /// Callers must therefore set <see cref="KeyedBlockHashAlgorithm{T}.Key" /> explicitly before computing a hash;
-    /// failing to do so causes <see cref="Initialize" /> to raise a <see cref="CryptographicException" />.
+    /// failing to do so causes <see cref="HashAlgorithm.Initialize" /> to raise a <see cref="CryptographicException" />.
     /// </remarks>
     public Poly1305()
         : base(BlockSize, KeySize)

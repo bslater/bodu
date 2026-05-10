@@ -34,7 +34,7 @@ public abstract partial class Skein<T>
     /// Applies a single Skein <c>UBI</c> (Unique Block Iteration) compression step that folds <paramref name="block" />
     /// into the chaining state using the supplied tweak fields.
     /// </summary>
-    /// <param name="block">The block to absorb. Must be exactly <see cref="BlockHashAlgorithm{T}.BlockSizeBytes" /> bytes long.</param>
+    /// <param name="block">The block to absorb. Must be exactly <see cref="BufferedBlockHashAlgorithm{T}.BlockSizeBytes" /> bytes long.</param>
     /// <param name="type">The UBI block type, which occupies bits 120..125 of the tweak.</param>
     /// <param name="first">Whether this is the first UBI call in the current stage. Sets bit 126 of the tweak.</param>
     /// <param name="final">Whether this is the final UBI call in the current stage. Sets bit 127 of the tweak.</param>
@@ -91,7 +91,7 @@ public abstract partial class Skein<T>
     /// Builds the 32-byte configuration block defined by Skein 1.3 §3.5.1 and zero-pads it out to the current state
     /// size.
     /// </summary>
-    /// <param name="destination">A buffer of <see cref="BlockHashAlgorithm{T}.BlockSizeBytes" /> bytes that receives the packed configuration block.</param>
+    /// <param name="destination">A buffer of <see cref="BufferedBlockHashAlgorithm{T}.BlockSizeBytes" /> bytes that receives the packed configuration block.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void BuildConfigurationBlock(Span<byte> destination)
     {

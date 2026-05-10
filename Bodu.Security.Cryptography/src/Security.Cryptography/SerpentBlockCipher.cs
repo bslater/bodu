@@ -50,7 +50,7 @@ public abstract partial class SerpentBlockCipher
     /// Initializes a new instance of the <see cref="SerpentBlockCipher" /> class using the specified key and tweak.
     /// </summary>
     /// <param name="key">
-    /// The encryption key. Its length in bytes must equal the variant block size (<see cref="BlockSize" />).
+    /// The encryption key. Its length in bytes must equal the variant block size (<see cref="IBlockCipher.BlockSize" />).
     /// </param>
     /// <param name="tweak">The 16-byte (128-bit) tweak value.</param>
     /// <exception cref="ArgumentException">

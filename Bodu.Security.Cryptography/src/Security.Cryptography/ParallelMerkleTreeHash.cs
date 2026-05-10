@@ -661,9 +661,6 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// relying on a null-forgiving operator across separate statements.
     /// </para>
     /// </remarks>
-    /// <param name="hashes">The child hashes to combine.</param>
-    /// <param name="sourceLevel">The level from which the children came.</param>
-    /// <param name="parentIndex">The index of the resulting parent node within level <paramref name="sourceLevel"/> + 1.</param>
     /// <param name="hashes">The child hashes being combined.</param>
     /// <param name="sourceLevel">The tree level that produced <paramref name="hashes" />.</param>
     /// <param name="parentIndex">The zero-based index of the parent node being computed.</param>

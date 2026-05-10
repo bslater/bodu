@@ -57,7 +57,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// </para>
 /// <para>
 /// For non-cryptographic algorithms (CRC, xxHash, Fletcher, …) prefer the
-/// <see cref="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions"/> companion in <c>Bodu.IO.Hashing</c>;
+/// <c>NonCryptographicHashAlgorithmExtensions</c> companion in <c>Bodu.IO.Hashing</c>;
 /// both surfaces follow the same naming so call sites read identically.
 /// </para>
 /// <example>
