@@ -65,14 +65,14 @@ public abstract class Fnv<TSelf>
     : NonCryptographicHashAlgorithm
     where TSelf : Fnv<TSelf>, new()
 {
-    private static readonly int[] ValidHashSizes = { 32, 64 };
+    private static readonly int[] s_validHashSizes = { 32, 64 };
 
-    private readonly int hashSizeBits;
-    private readonly ulong offsetBasis;
-    private readonly ulong prime;
-    private readonly bool useFnv1a;
+    private readonly int _hashSizeBits;
+    private readonly ulong _offsetBasis;
+    private readonly ulong _prime;
+    private readonly bool _useFnv1a;
 
-    private ulong workingHash;
+    private ulong _workingHash;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Fnv{TSelf}" /> class using the specified configuration
@@ -92,11 +92,11 @@ public abstract class Fnv<TSelf>
         : base(
             hashLengthInBytes: ValidateHashSize(hashSize) / 8)
     {
-        this.hashSizeBits = hashSize;
-        this.prime = prime;
-        this.offsetBasis = offsetBasis;
-        this.useFnv1a = useFnv1a;
-        this.workingHash = offsetBasis;
+        this._hashSizeBits = hashSize;
+        this._prime = prime;
+        this._offsetBasis = offsetBasis;
+        this._useFnv1a = useFnv1a;
+        this._workingHash = offsetBasis;
         this.AlgorithmName = $"FNV-{(useFnv1a ? "1a" : "1")}-{hashSize}";
     }
 
@@ -109,22 +109,22 @@ public abstract class Fnv<TSelf>
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
-        if (this.useFnv1a)
+        if (this._useFnv1a)
             this.AppendFnv1a(source);
         else
             this.AppendFnv1(source);
     }
 
     /// <inheritdoc />
-    public override void Reset() => this.workingHash = this.offsetBasis;
+    public override void Reset() => this._workingHash = this._offsetBasis;
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
         Span<byte> buffer = stackalloc byte[8];
-        BinaryPrimitives.WriteUInt64BigEndian(buffer, this.workingHash);
+        BinaryPrimitives.WriteUInt64BigEndian(buffer, this._workingHash);
 
-        switch (this.hashSizeBits)
+        switch (this._hashSizeBits)
         {
             case 32:
                 buffer.Slice(4, 4).CopyTo(destination);
