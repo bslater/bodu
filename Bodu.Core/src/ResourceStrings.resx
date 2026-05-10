@@ -459,4 +459,28 @@
   <data name="Arg_Invalid_CollectionIsEmpty" xml:space="preserve">
     <value>The collection is empty.</value>
   </data>
+  <data name="Arg_Invalid_CollectionReadOnly" xml:space="preserve">
+    <value>The collection must not be read-only.</value>
+  </data>
+  <data name="Arg_Invalid_PowerOfTwo" xml:space="preserve">
+    <value>The value must be a positive power of two.</value>
+  </data>
+  <data name="Arg_Invalid_StringLength" xml:space="preserve">
+    <value>The string length must be exactly {0} characters.</value>
+  </data>
+  <data name="Arg_Invalid_StringLengthRange" xml:space="preserve">
+    <value>The string length must be between {0} and {1} characters.</value>
+  </data>
+  <data name="Arg_Invalid_StringTooLong" xml:space="preserve">
+    <value>The string must not exceed {0} characters.</value>
+  </data>
+  <data name="Arg_Invalid_ValuesNotEqual" xml:space="preserve">
+    <value>The value must equal {0}.</value>
+  </data>
+  <data name="Arg_OutOfRange_NotFinite" xml:space="preserve">
+    <value>Value must be a finite number (not NaN or infinity).</value>
+  </data>
+  <data name="Arg_OutOfRange_ValuesEqual" xml:space="preserve">
+    <value>The value must not equal {0}.</value>
+  </data>
 </root>

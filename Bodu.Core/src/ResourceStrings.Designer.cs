@@ -167,7 +167,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_CollectionIsEmpty", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The collection must not be read-only..
+        /// </summary>
+        internal static string Arg_Invalid_CollectionReadOnly {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_CollectionReadOnly", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The collection contains insufficient elements. At least {0} element(s) are required..
         /// </summary>
@@ -284,7 +293,16 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_PositiveMultipleOf", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The value must be a positive power of two..
+        /// </summary>
+        internal static string Arg_Invalid_PowerOfTwo {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_PowerOfTwo", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The value is a single Unicode surrogate character, which must be written as a pair. Consider passing a character array instead..
         /// </summary>
@@ -356,13 +374,49 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_StringNullOrEmpty", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The string length must be exactly {0} characters..
+        /// </summary>
+        internal static string Arg_Invalid_StringLength {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_StringLength", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The string length must be between {0} and {1} characters..
+        /// </summary>
+        internal static string Arg_Invalid_StringLengthRange {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_StringLengthRange", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The string must not exceed {0} characters..
+        /// </summary>
+        internal static string Arg_Invalid_StringTooLong {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_StringTooLong", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The value for &apos;{0}&apos; must be {1}, but was {2}..
         /// </summary>
         internal static string Arg_Invalid_ValueForOperation {
             get {
                 return ResourceManager.GetString("Arg_Invalid_ValueForOperation", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The value must equal {0}..
+        /// </summary>
+        internal static string Arg_Invalid_ValuesNotEqual {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ValuesNotEqual", resourceCulture);
             }
         }
         
@@ -599,7 +653,25 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_OutOfRange_SequenceRangeOverflow", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Value must be a finite number (not NaN or infinity)..
+        /// </summary>
+        internal static string Arg_OutOfRange_NotFinite {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_NotFinite", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The value must not equal {0}..
+        /// </summary>
+        internal static string Arg_OutOfRange_ValuesEqual {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_ValuesEqual", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Week {0} is not valid for the year {1} using culture {2}..
         /// </summary>
