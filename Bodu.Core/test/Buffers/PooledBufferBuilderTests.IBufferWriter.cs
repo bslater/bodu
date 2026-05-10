@@ -245,4 +245,80 @@ public partial class PooledBufferBuilderTests
 
         CollectionAssert.AreEqual(new[] { 100, 200, 300 }, builder.WrittenSpan.ToArray());
     }
+
+    /// <summary>
+    /// Verifies that calling <see cref="PooledBufferBuilder{T}.GetSpan"/> without a subsequent
+    /// <see cref="PooledBufferBuilder{T}.Advance"/> does not change <see cref="PooledBufferBuilder{T}.WrittenCount"/>.
+    /// </summary>
+    [TestMethod]
+    public void GetSpan_WhenCalledWithoutAdvance_ShouldNotChangeWrittenCount()
+    {
+        using var builder = new PooledBufferBuilder<int>(16);
+        builder.Append(1);
+        int countBefore = builder.WrittenCount;
+
+        _ = builder.GetSpan(4);
+
+        Assert.AreEqual(countBefore, builder.WrittenCount);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.GetMemory"/> with a negative size hint throws
+    /// <see cref="ArgumentOutOfRangeException"/>.
+    /// </summary>
+    [TestMethod]
+    public void GetMemory_WhenSizeHintIsNegative_ShouldThrowArgumentOutOfRangeException()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = builder.GetMemory(-1);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a second call to <see cref="PooledBufferBuilder{T}.GetSpan"/> after
+    /// <see cref="PooledBufferBuilder{T}.Advance"/> starts at the correct position.
+    /// </summary>
+    [TestMethod]
+    public void GetSpan_WhenCalledAfterAdvance_ShouldStartAtCorrectOffset()
+    {
+        using var builder = new PooledBufferBuilder<int>(16);
+
+        System.Span<int> first = builder.GetSpan(3);
+        first[0] = 1;
+        first[1] = 2;
+        first[2] = 3;
+        builder.Advance(3);
+
+        System.Span<int> second = builder.GetSpan(2);
+        second[0] = 4;
+        second[1] = 5;
+        builder.Advance(2);
+
+        CollectionAssert.AreEqual(new[] { 1, 2, 3, 4, 5 }, builder.WrittenSpan.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that interleaving <see cref="PooledBufferBuilder{T}.Append"/> with
+    /// <see cref="PooledBufferBuilder{T}.GetSpan"/> and <see cref="PooledBufferBuilder{T}.Advance"/> accumulates
+    /// all elements in the correct order.
+    /// </summary>
+    [TestMethod]
+    public void IBufferWriter_WhenInterleavedWithAppend_ShouldAccumulateAllElementsInOrder()
+    {
+        using var builder = new PooledBufferBuilder<int>(16);
+
+        builder.Append(1);
+
+        System.Span<int> span = builder.GetSpan(2);
+        span[0] = 2;
+        span[1] = 3;
+        builder.Advance(2);
+
+        builder.Append(4);
+
+        CollectionAssert.AreEqual(new[] { 1, 2, 3, 4 }, builder.WrittenSpan.ToArray());
+    }
 }

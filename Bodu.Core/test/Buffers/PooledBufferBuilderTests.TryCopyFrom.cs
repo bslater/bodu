@@ -92,6 +92,22 @@ public partial class PooledBufferBuilderTests
         });
     }
 
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.TryCopyFrom"/> with an empty collection resets
+    /// <see cref="PooledBufferBuilder{T}.WrittenCount"/> to zero.
+    /// </summary>
+    [TestMethod]
+    public void TryCopyFrom_WhenEmptyCollectionPassed_ShouldSucceedAndSetCountToZero()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+        builder.AppendRange(new[] { 1, 2, 3 });
+
+        bool success = builder.TryCopyFrom(new System.Collections.Generic.List<int>());
+
+        Assert.IsTrue(success);
+        Assert.AreEqual(0, builder.WrittenCount);
+    }
+
     // ---------------------------------------------------------------------------
     // Helper: an IReadOnlyCollection<int> that does NOT implement ICollection<int>
     // ---------------------------------------------------------------------------

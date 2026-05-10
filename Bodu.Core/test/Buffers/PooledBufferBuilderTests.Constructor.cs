@@ -63,4 +63,28 @@ public partial class PooledBufferBuilderTests
         Assert.AreEqual(0, builder.WrittenCount);
         Assert.IsTrue(builder.Capacity >= 256);
     }
+
+    /// <summary>
+    /// Verifies that a freshly constructed <see cref="PooledBufferBuilder{T}"/> is assignable to
+    /// <see cref="System.Buffers.IBufferWriter{T}"/>.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenConstructed_ShouldBeAssignableToIBufferWriter()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+
+        Assert.IsInstanceOfType<System.Buffers.IBufferWriter<int>>(builder);
+    }
+
+    /// <summary>
+    /// Verifies that a freshly constructed <see cref="PooledBufferBuilder{T}"/> is assignable to
+    /// <see cref="System.Buffers.IMemoryOwner{T}"/>.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenConstructed_ShouldBeAssignableToIMemoryOwner()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+
+        Assert.IsInstanceOfType<System.Buffers.IMemoryOwner<int>>(builder);
+    }
 }

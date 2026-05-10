@@ -69,4 +69,36 @@ public partial class PooledBufferBuilderTests
             _ = builder.DangerousGetArray();
         });
     }
+
+    /// <summary>
+    /// Verifies that the <see cref="System.ArraySegment{T}"/> returned by
+    /// <see cref="PooledBufferBuilder{T}.DangerousGetArray"/> always has an offset of zero.
+    /// </summary>
+    [TestMethod]
+    public void DangerousGetArray_WhenCalled_ShouldReturnSegmentWithOffsetZero()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+        builder.AppendRange(new[] { 1, 2, 3 });
+
+        System.ArraySegment<int> segment = builder.DangerousGetArray();
+
+        Assert.AreEqual(0, segment.Offset);
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="System.ArraySegment{T}"/> returned by
+    /// <see cref="PooledBufferBuilder{T}.DangerousGetArray"/> has a count of zero after
+    /// <see cref="PooledBufferBuilder{T}.Reset"/> is called.
+    /// </summary>
+    [TestMethod]
+    public void DangerousGetArray_WhenResetCalled_ShouldReturnSegmentWithCountZero()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+        builder.AppendRange(new[] { 1, 2, 3 });
+        builder.Reset();
+
+        System.ArraySegment<int> segment = builder.DangerousGetArray();
+
+        Assert.AreEqual(0, segment.Count);
+    }
 }

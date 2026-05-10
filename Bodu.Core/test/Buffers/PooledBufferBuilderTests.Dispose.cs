@@ -38,8 +38,10 @@ public partial class PooledBufferBuilderTests
         Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.CopyTo(new int[4]); });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = builder.DangerousGetArray(); });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.Sort(); });
+        Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.Sort((a, b) => a.CompareTo(b)); });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.Reset(); });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.TryCopyFrom(new System.Collections.Generic.List<int>()); });
+        Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = ((System.Buffers.IMemoryOwner<int>)builder).Memory; });
     }
 
     /// <summary>

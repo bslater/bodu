@@ -91,4 +91,48 @@ public partial class PooledBufferBuilderTests
             builder.Reset();
         });
     }
+
+    /// <summary>
+    /// Verifies that calling <see cref="PooledBufferBuilder{T}.Reset"/> on an already-empty builder succeeds
+    /// without throwing.
+    /// </summary>
+    [TestMethod]
+    public void Reset_WhenBuilderIsAlreadyEmpty_ShouldSucceedWithoutError()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+
+        builder.Reset(); // should not throw
+        Assert.AreEqual(0, builder.WrittenCount);
+    }
+
+    /// <summary>
+    /// Verifies that calling <see cref="PooledBufferBuilder{T}.Reset"/> multiple times leaves the builder in an
+    /// empty state each time.
+    /// </summary>
+    [TestMethod]
+    public void Reset_WhenCalledMultipleTimes_ShouldRemainEmpty()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+        builder.AppendRange(new[] { 1, 2, 3 });
+
+        builder.Reset();
+        builder.Reset();
+
+        Assert.AreEqual(0, builder.WrittenCount);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.WrittenSpan"/> is empty after
+    /// <see cref="PooledBufferBuilder{T}.Reset"/> is called.
+    /// </summary>
+    [TestMethod]
+    public void Reset_WhenFollowedByWrittenSpan_ShouldReturnEmptySpan()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+        builder.AppendRange(new[] { 10, 20, 30 });
+
+        builder.Reset();
+
+        Assert.AreEqual(0, builder.WrittenSpan.Length);
+    }
 }

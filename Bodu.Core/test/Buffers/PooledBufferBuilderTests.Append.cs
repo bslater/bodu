@@ -70,4 +70,21 @@ public partial class PooledBufferBuilderTests
             builder.Append(1);
         });
     }
+
+    /// <summary>
+    /// Verifies that calling <see cref="PooledBufferBuilder{T}.Append"/> after <see cref="PooledBufferBuilder{T}.Reset"/>
+    /// writes to the start of the buffer and produces a single-element span.
+    /// </summary>
+    [TestMethod]
+    public void Append_WhenCalledAfterReset_ShouldWriteToStartOfBuffer()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+        builder.AppendRange(new[] { 1, 2, 3 });
+        builder.Reset();
+
+        builder.Append(42);
+
+        Assert.AreEqual(1, builder.WrittenCount);
+        Assert.AreEqual(42, builder.WrittenSpan[0]);
+    }
 }

@@ -101,4 +101,63 @@ public partial class PooledBufferBuilderTests
             builder.Sort();
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.Sort(Comparison{T})"/> throws
+    /// <see cref="ObjectDisposedException"/> after the builder has been disposed.
+    /// </summary>
+    [TestMethod]
+    public void Sort_WhenDisposed_ShouldThrowObjectDisposedException_UsingComparison()
+    {
+        var builder = new PooledBufferBuilder<int>();
+        builder.Dispose();
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            builder.Sort((a, b) => a.CompareTo(b));
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.Sort()"/> on an empty builder completes without throwing.
+    /// </summary>
+    [TestMethod]
+    public void Sort_WhenBuilderIsEmpty_ShouldSucceedWithoutError()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+
+        builder.Sort(); // should not throw
+        Assert.AreEqual(0, builder.WrittenCount);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.Sort()"/> on a single-element builder completes without
+    /// throwing and preserves the element.
+    /// </summary>
+    [TestMethod]
+    public void Sort_WhenSingleElement_ShouldSucceedAndPreserveElement()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+        builder.Append(42);
+
+        builder.Sort();
+
+        Assert.AreEqual(1, builder.WrittenCount);
+        Assert.AreEqual(42, builder.WrittenSpan[0]);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.Sort(IComparer{T})"/> with a <see langword="null"/> comparer
+    /// argument uses the default comparer and sorts correctly.
+    /// </summary>
+    [TestMethod]
+    public void Sort_WhenExplicitComparerIsNull_ShouldUseDefaultComparerAndSortAscending()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+        builder.AppendRange(new[] { 3, 1, 2 });
+
+        builder.Sort((Comparer<int>?)null);
+
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, builder.WrittenSpan.ToArray());
+    }
 }

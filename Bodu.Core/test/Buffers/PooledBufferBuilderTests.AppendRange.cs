@@ -147,4 +147,65 @@ public partial class PooledBufferBuilderTests
 
         CollectionAssert.AreEqual(expected, builder.WrittenSpan.ToArray());
     }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.AppendRange(System.Collections.Generic.IEnumerable{T})"/>
+    /// with an empty sequence does not change <see cref="PooledBufferBuilder{T}.WrittenCount"/>.
+    /// </summary>
+    [TestMethod]
+    public void AppendRange_WhenSourceIsEmpty_ShouldNotChangeWrittenCount_UsingIEnumerable()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+        builder.Append(1);
+
+        builder.AppendRange(System.Linq.Enumerable.Empty<int>());
+
+        Assert.AreEqual(1, builder.WrittenCount);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.AppendRange(System.Collections.Generic.IEnumerable{T})"/>
+    /// with an empty <see cref="System.Collections.Generic.List{T}"/> does not change
+    /// <see cref="PooledBufferBuilder{T}.WrittenCount"/> (ICollection fast-path with count zero).
+    /// </summary>
+    [TestMethod]
+    public void AppendRange_WhenCollectionIsEmpty_ShouldNotChangeWrittenCount_UsingICollectionFastPath()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+        builder.Append(7);
+
+        builder.AppendRange(new System.Collections.Generic.List<int>());
+
+        Assert.AreEqual(1, builder.WrittenCount);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.AppendRange(System.ReadOnlySpan{T})"/> with an empty span
+    /// does not change <see cref="PooledBufferBuilder{T}.WrittenCount"/>.
+    /// </summary>
+    [TestMethod]
+    public void AppendRange_WhenSpanIsEmpty_ShouldNotChangeWrittenCount_UsingReadOnlySpan()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+        builder.Append(5);
+
+        builder.AppendRange(System.ReadOnlySpan<int>.Empty);
+
+        Assert.AreEqual(1, builder.WrittenCount);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.AppendRange(System.ReadOnlyMemory{T})"/> with an empty
+    /// memory region does not change <see cref="PooledBufferBuilder{T}.WrittenCount"/>.
+    /// </summary>
+    [TestMethod]
+    public void AppendRange_WhenMemoryIsEmpty_ShouldNotChangeWrittenCount_UsingReadOnlyMemory()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+        builder.Append(3);
+
+        builder.AppendRange(System.ReadOnlyMemory<int>.Empty);
+
+        Assert.AreEqual(1, builder.WrittenCount);
+    }
 }

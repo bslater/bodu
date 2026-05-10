@@ -72,4 +72,36 @@ public partial class PooledBufferBuilderTests
             builder.CopyTo(new int[4]);
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.CopyTo"/> on an empty builder into an empty span succeeds
+    /// without throwing.
+    /// </summary>
+    [TestMethod]
+    public void CopyTo_WhenBuilderIsEmpty_ShouldSucceedWithEmptyDestination()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+
+        builder.CopyTo(System.Span<int>.Empty); // should not throw
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.CopyTo"/> into a destination larger than
+    /// <see cref="PooledBufferBuilder{T}.WrittenCount"/> copies only the written elements and leaves the
+    /// remaining destination slots untouched.
+    /// </summary>
+    [TestMethod]
+    public void CopyTo_WhenDestinationIsLargerThanWrittenCount_ShouldCopyOnlyWrittenElements()
+    {
+        int[] expected = { 1, 2, 3 };
+        using var builder = new PooledBufferBuilder<int>();
+        builder.AppendRange(expected);
+
+        int[] destination = new int[10]; // larger than WrittenCount
+        builder.CopyTo(destination);
+
+        CollectionAssert.AreEqual(expected, destination.Take(builder.WrittenCount).ToArray());
+        // remaining slots stay at default value
+        Assert.AreEqual(0, destination[3]);
+    }
 }

@@ -82,4 +82,50 @@ public partial class PooledBufferBuilderTests
             builder.EnsureCapacity(16);
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.EnsureCapacity"/> with a minimum of zero succeeds without
+    /// changing <see cref="PooledBufferBuilder{T}.Capacity"/>.
+    /// </summary>
+    [TestMethod]
+    public void EnsureCapacity_WhenMinimumIsZero_ShouldSucceedWithoutChangingCapacity()
+    {
+        using var builder = new PooledBufferBuilder<int>(16);
+        int capacityBefore = builder.Capacity;
+
+        builder.EnsureCapacity(0);
+
+        Assert.AreEqual(capacityBefore, builder.Capacity);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.EnsureCapacity"/> when the minimum exactly equals the
+    /// current capacity does not trigger a growth.
+    /// </summary>
+    [TestMethod]
+    public void EnsureCapacity_WhenMinimumEqualsCurrentCapacity_ShouldNotGrow()
+    {
+        using var builder = new PooledBufferBuilder<int>(16);
+        int currentCapacity = builder.Capacity;
+
+        builder.EnsureCapacity(currentCapacity);
+
+        Assert.AreEqual(currentCapacity, builder.Capacity);
+    }
+
+    /// <summary>
+    /// Verifies that existing written elements are preserved after <see cref="PooledBufferBuilder{T}.EnsureCapacity"/>
+    /// triggers a buffer growth.
+    /// </summary>
+    [TestMethod]
+    public void EnsureCapacity_WhenGrowthOccurs_ShouldPreserveExistingContents()
+    {
+        int[] expected = { 10, 20, 30 };
+        using var builder = new PooledBufferBuilder<int>(4);
+        builder.AppendRange(expected);
+
+        builder.EnsureCapacity(512);
+
+        CollectionAssert.AreEqual(expected, builder.WrittenSpan.ToArray());
+    }
 }

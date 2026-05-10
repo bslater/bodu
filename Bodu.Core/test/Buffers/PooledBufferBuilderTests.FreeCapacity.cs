@@ -62,4 +62,36 @@ public partial class PooledBufferBuilderTests
             _ = builder.FreeCapacity;
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.FreeCapacity"/> is not changed by calling
+    /// <see cref="PooledBufferBuilder{T}.GetSpan"/> without a subsequent <see cref="PooledBufferBuilder{T}.Advance"/>.
+    /// </summary>
+    [TestMethod]
+    public void FreeCapacity_WhenGetSpanCalledWithoutAdvance_ShouldRemainUnchanged()
+    {
+        using var builder = new PooledBufferBuilder<int>(16);
+        builder.Append(1);
+        int freeCapacityBefore = builder.FreeCapacity;
+
+        _ = builder.GetSpan(4); // does not commit data
+
+        Assert.AreEqual(freeCapacityBefore, builder.FreeCapacity);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.FreeCapacity"/> is reduced by the amount passed to
+    /// <see cref="PooledBufferBuilder{T}.Advance"/>.
+    /// </summary>
+    [TestMethod]
+    public void FreeCapacity_WhenAdvanceCalled_ShouldDecreaseByAdvanceAmount()
+    {
+        using var builder = new PooledBufferBuilder<int>(16);
+        int freeCapacityBefore = builder.FreeCapacity;
+        _ = builder.GetSpan(4);
+
+        builder.Advance(4);
+
+        Assert.AreEqual(freeCapacityBefore - 4, builder.FreeCapacity);
+    }
 }

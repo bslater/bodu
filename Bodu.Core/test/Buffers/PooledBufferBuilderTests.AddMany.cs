@@ -82,4 +82,35 @@ public partial class PooledBufferBuilderTests
             builder.AddMany(1, 3);
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.AddMany"/> with a count of one appends exactly a single
+    /// copy of the value.
+    /// </summary>
+    [TestMethod]
+    public void AddMany_WhenCountIsOne_ShouldAppendExactlySingleCopy()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+
+        builder.AddMany(99, 1);
+
+        Assert.AreEqual(1, builder.WrittenCount);
+        Assert.AreEqual(99, builder.WrittenSpan[0]);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.AddMany"/> fills all slots correctly when
+    /// <typeparamref name="T"/> is a reference type.
+    /// </summary>
+    [TestMethod]
+    public void AddMany_WhenReferenceType_ShouldFillAllSlotsWithSameReference()
+    {
+        const string value = "hello";
+        using var builder = new PooledBufferBuilder<string>();
+
+        builder.AddMany(value, 4);
+
+        Assert.AreEqual(4, builder.WrittenCount);
+        Assert.IsTrue(builder.WrittenSpan.ToArray().All(v => ReferenceEquals(v, value)));
+    }
 }
