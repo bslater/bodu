@@ -180,9 +180,9 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <summary>
     /// Enumerates all instance fields in the algorithm and its base types to validate disposal state.
     /// </summary>
-    public static IEnumerable<object[]> GetDisposableFields() =>
+    public static IEnumerable<object[]> GetAlgorithmFields() =>
         TestHelpers.GetFieldInfoForType<TAlgorithm>(
-            excludeFileds: new TTest().GetExcludedFieldNames()?.ToArray() ?? []);
+            excludeFields: new TTest().GetExcludedFieldNames()?.ToArray() ?? []);
 
     /// <summary>
     /// Gets the property names excluded from disposal validation tests. Override in a derived class to suppress
@@ -234,7 +234,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <summary>
     /// Returns all publicly readable properties on <typeparamref name="TAlgorithm" /> as test data for disposal validation.
     /// </summary>
-    public static IEnumerable<object[]> GetReadableProperties() =>
+    public static IEnumerable<object[]> GetAlgorithmReadableProperties() =>
         TestHelpers.GetPropertyInfoForType<TAlgorithm>(
             TestHelpers.PropertyAccessMode.Read,
             excludeProperties: new TTest().GetExcludedReadablePropertyNames()?.ToArray() ?? []);
@@ -242,7 +242,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <summary>
     /// Returns all publicly writable properties on <typeparamref name="TAlgorithm" /> as test data for disposal validation.
     /// </summary>
-    public static IEnumerable<object[]> GetWritableProperties() =>
+    public static IEnumerable<object[]> GetAlgorithmWritableProperties() =>
         TestHelpers.GetPropertyInfoForType<TAlgorithm>(
             TestHelpers.PropertyAccessMode.Write,
             excludeProperties: new TTest().GetExcludedWriteablePropertyNames()?.ToArray() ?? []);

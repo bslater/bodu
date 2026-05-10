@@ -21,7 +21,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.GetQuarter" />, when UsingQuarterDefinition, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(QuarterTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(QuarterTestData))]
     public void GetQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedQuarter(DateTime input, CalendarQuarterDefinition definition, int expected)
     {
         int actual = input.Quarter(definition);
@@ -33,7 +33,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.GetQuarter" />, when OnlyDateTime, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(QuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(QuarterJanuaryDecemberTestData))]
     public void GetQuarter_WhenOnlyDateTime_ShouldReturnExpectedQuarter(DateTime input, int expected)
     {
         int actual = input.Quarter();
@@ -45,7 +45,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.GetQuarter" />, when UsingValidProvider, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.QuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.QuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider))]
     public void GetQuarter_WhenUsingValidProvider_ShouldReturnExpectedQuarter(DateTime input, int expected)
     {
         var provider = new DateTimeExtensionsTests.ValidQuarterProvider();

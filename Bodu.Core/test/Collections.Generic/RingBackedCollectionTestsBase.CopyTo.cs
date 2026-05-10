@@ -14,7 +14,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void CopyTo_WhenCollectionHasElements_ShouldCopyInOrder()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         AddToTail(collection, 3);
@@ -37,16 +37,16 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [DataRow(3)]
     public void CopyTo_WhenIndexIsNonZero_ShouldStartAtOffset(int offset)
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
 
         var target = new int[5];
         CopyTo(collection, target, offset);
 
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
         {
-            int expected = i == offset ? 1 : i == offset + 1 ? 2 : 0;
+            var expected = i == offset ? 1 : i == offset + 1 ? 2 : 0;
             Assert.AreEqual(expected, target[i], $"target[{i}] mismatch (offset={offset})");
         }
     }
@@ -57,7 +57,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void CopyTo_WhenStorageWrapped_ShouldCopyInLogicalOrder()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         AddToTail(collection, 3);
@@ -76,7 +76,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void CopyTo_WhenArrayIsNull_ShouldThrowExactly()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -91,7 +91,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void CopyTo_WhenIndexIsNegative_ShouldThrowExactly()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
 
         var target = new int[3];
@@ -107,7 +107,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void CopyTo_WhenArrayTooSmall_ShouldThrowExactly()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         AddToTail(collection, 3);

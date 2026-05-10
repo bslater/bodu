@@ -23,10 +23,7 @@ public partial class IComparableExtensionsTests
     [DataRow(1, 5, 1, DisplayName = "Receiver smaller returns receiver")]
     [DataRow(5, 1, 1, DisplayName = "Argument smaller returns argument")]
     [DataRow(5, 5, 5, DisplayName = "Equal values return receiver")]
-    public void Min_WhenEvaluatingIntegerValues_ShouldReturnExpectedResult(int value, int other, int expected)
-    {
-        Assert.AreEqual(expected, value.Min(other));
-    }
+    public void Min_WhenEvaluatingIntegerValues_ShouldReturnExpectedResult(int value, int other, int expected) => Assert.AreEqual(expected, value.Min(other));
 
     /// <summary>
     /// Verifies that <c>Min</c> works correctly with a reference type (string) using natural ordering.
@@ -34,10 +31,7 @@ public partial class IComparableExtensionsTests
     [TestMethod]
     [DataRow("apple", "banana", "apple", DisplayName = "Receiver smaller returns receiver")]
     [DataRow("banana", "apple", "apple", DisplayName = "Argument smaller returns argument")]
-    public void Min_WhenEvaluatingStringValues_ShouldReturnExpectedResult(string value, string other, string expected)
-    {
-        Assert.AreEqual(expected, value.Min(other));
-    }
+    public void Min_WhenEvaluatingStringValues_ShouldReturnExpectedResult(string value, string other, string expected) => Assert.AreEqual(expected, value.Min(other));
 
     // =========================================================================
     // Min<T>(T, T, IComparer<T>)
@@ -65,7 +59,7 @@ public partial class IComparableExtensionsTests
     {
         IComparer<int>? comparer = null;
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = 5.Min(1, comparer!);
         });

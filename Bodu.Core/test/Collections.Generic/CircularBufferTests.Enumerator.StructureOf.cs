@@ -17,7 +17,7 @@ public partial class CircularBufferTests
     [TestCategory("Structural")]
     public void StructureOf_CircularBufferEnumerator_ShouldBeStructType()
     {
-        var enumeratorType = typeof(CircularBuffer<int>.Enumerator);
+        Type enumeratorType = typeof(CircularBuffer<int>.Enumerator);
         Assert.IsTrue(enumeratorType.IsValueType, "Enumerator must be a value type (struct).");
     }
 
@@ -28,7 +28,7 @@ public partial class CircularBufferTests
     [TestCategory("Structural")]
     public void StructureOf_CircularBufferEnumerator_ShouldExposeOnlyImmutablePublicProperties()
     {
-        var enumeratorType = typeof(CircularBuffer<int>.Enumerator);
+        Type enumeratorType = typeof(CircularBuffer<int>.Enumerator);
 
         var mutableProperties = enumeratorType
             .GetProperties(BindingFlags.Instance | BindingFlags.Public)

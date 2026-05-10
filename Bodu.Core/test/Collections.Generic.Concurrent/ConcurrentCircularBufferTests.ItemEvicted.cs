@@ -163,7 +163,7 @@ public partial class ConcurrentCircularBufferTests
         };
 
         // Fill buffer
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
             buffer.Enqueue(new TestItem(i));
 
         // Concurrent overwrites

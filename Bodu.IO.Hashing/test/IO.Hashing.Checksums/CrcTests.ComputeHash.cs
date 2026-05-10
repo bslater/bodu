@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CrcTests.ComputeHash.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public partial class CrcTests
     public void ComputeHash_WhenInputIsReferenceString_ForCRC32_ISOHDLC_ShouldMatchPublishedCheck()
     {
         Crc crc = new(CrcStandard.CRC32_ISOHDLC);
-        byte[] hash = crc.ComputeHash(RevEngCheckInput);
+        var hash = crc.ComputeHash(s_revEngCheckInput);
 
         CollectionAssert.AreEqual(new byte[] { 0x26, 0x39, 0xF4, 0xCB }, hash);
     }
@@ -35,9 +35,9 @@ public partial class CrcTests
         Crc crc = new(CrcStandard.CRC32_ISOHDLC);
 
         _ = crc.ComputeHash(Encoding.ASCII.GetBytes("first input, different length"));
-        byte[] second = crc.ComputeHash(RevEngCheckInput);
+        var second = crc.ComputeHash(s_revEngCheckInput);
 
-        byte[] reference = new Crc(CrcStandard.CRC32_ISOHDLC).ComputeHash(RevEngCheckInput);
+        var reference = new Crc(CrcStandard.CRC32_ISOHDLC).ComputeHash(s_revEngCheckInput);
         CollectionAssert.AreEqual(reference, second);
     }
 
@@ -54,10 +54,10 @@ public partial class CrcTests
     {
         Crc oneShot = CreateAlgorithm(variant);
         Crc streaming = CreateAlgorithm(variant);
-        streaming.Append(RevEngCheckInput);
+        streaming.Append(s_revEngCheckInput);
 
-        byte[] oneShotHash = oneShot.ComputeHash(RevEngCheckInput);
-        byte[] streamingHash = streaming.GetCurrentHash();
+        var oneShotHash = oneShot.ComputeHash(s_revEngCheckInput);
+        var streamingHash = streaming.GetCurrentHash();
 
         CollectionAssert.AreEqual(streamingHash, oneShotHash);
     }
@@ -72,10 +72,10 @@ public partial class CrcTests
     public void ComputeHash_WhenInputIsEmpty_ShouldMatchSpecificationEmptyDigest(CrcTestVariant variant)
     {
         NonCryptographicHashAlgorithmSpecification specification = GetSpecification(variant);
-        byte[] expected = System.Convert.FromHexString(specification.KnownAnswers.Empty!);
+        var expected = System.Convert.FromHexString(specification.KnownAnswers.Empty!);
 
         Crc crc = CreateAlgorithm(variant);
-        byte[] actual = crc.ComputeHash(System.Array.Empty<byte>());
+        var actual = crc.ComputeHash([]);
 
         CollectionAssert.AreEqual(expected, actual);
     }

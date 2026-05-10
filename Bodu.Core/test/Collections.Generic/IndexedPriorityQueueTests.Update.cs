@@ -52,9 +52,9 @@ public partial class IndexedPriorityQueueTests
         queue.Enqueue("a", 5);
         queue.Enqueue("b", 10);
 
-        using var enumerator = ((IEnumerable<KeyValuePair<string, int>>)queue).GetEnumerator();
+        using IEnumerator<KeyValuePair<string, int>> enumerator = ((IEnumerable<KeyValuePair<string, int>>)queue).GetEnumerator();
         queue.Update("a", 5);
-        bool moved = enumerator.MoveNext();
+        var moved = enumerator.MoveNext();
 
         Assert.IsTrue(moved);
     }
@@ -160,13 +160,13 @@ public partial class IndexedPriorityQueueTests
     public void Update_WhenInternalNode_ShouldRepairHeap()
     {
         var queue = new IndexedPriorityQueue<int, int>();
-        for (int i = 0; i < 16; i++)
+        for (var i = 0; i < 16; i++)
             queue.Enqueue(i, i * 10);
 
         queue.Update(7, -1);
         queue.Update(3, 999);
 
-        var drained = DrainAll(queue);
+        KeyValuePair<int, int>[] drained = DrainAll(queue);
         AssertNonDecreasing(drained);
         Assert.AreEqual(7, drained[0].Key);
         Assert.AreEqual(3, drained[^1].Key);
@@ -200,16 +200,16 @@ public partial class IndexedPriorityQueueTests
         var queue = new IndexedPriorityQueue<int, int>();
         var rng = new Random(12345);
 
-        for (int i = 0; i < 200; i++)
+        for (var i = 0; i < 200; i++)
             queue.Enqueue(i, rng.Next(0, 1_000_000));
 
-        for (int i = 0; i < 200; i += 3)
+        for (var i = 0; i < 200; i += 3)
             queue.Update(i, rng.Next(0, 1_000_000));
 
-        for (int i = 0; i < 200; i += 7)
+        for (var i = 0; i < 200; i += 7)
             queue.Remove(i);
 
-        var drained = DrainAll(queue);
+        KeyValuePair<int, int>[] drained = DrainAll(queue);
         AssertNonDecreasing(drained);
     }
 }

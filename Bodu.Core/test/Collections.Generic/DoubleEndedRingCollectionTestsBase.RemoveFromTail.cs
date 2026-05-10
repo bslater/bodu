@@ -15,7 +15,7 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
     [TestMethod]
     public void RemoveFromTail_WhenItemsPresent_ShouldReturnTailAndDecrementCount()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         AddToTail(collection, 3);
@@ -32,7 +32,7 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
     [TestMethod]
     public void RemoveFromTail_WhenCalledRepeatedly_ShouldDrainToEmpty()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         AddToTail(collection, 3);
@@ -49,7 +49,7 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
     [TestMethod]
     public void RemoveFromTail_WhenEmpty_ShouldThrowExactly()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             _ = RemoveFromTail(collection);

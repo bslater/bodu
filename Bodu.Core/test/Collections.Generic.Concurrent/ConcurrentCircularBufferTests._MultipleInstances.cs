@@ -16,16 +16,16 @@ public partial class ConcurrentCircularBufferTests
         [TestMethod]
         public void MultipleInstances_WhenAccessedInParallel_ShouldRemainThreadSafe()
         {
-            var buffers = Enumerable.Range(0, 5)
+        ConcurrentCircularBuffer<TestItem>[] buffers = Enumerable.Range(0, 5)
                 .Select(_ => new ConcurrentCircularBuffer<TestItem>(20, allowOverwrite: true))
                 .ToArray();
 
             Parallel.ForEach(buffers, buffer =>
             {
-                for (int i = 0; i < 100; i++)
+                for (var i = 0; i < 100; i++)
                     buffer.Enqueue(new TestItem(i));
 
-                var snapshot = buffer.ToArray();
+                TestItem[] snapshot = buffer.ToArray();
                 Assert.IsTrue(snapshot.Length <= 20, "Snapshot must not exceed capacity.");
                 Assert.IsTrue(snapshot.All(x => x is not null), "No null elements expected here.");
                 Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity, "Count must remain within bounds.");
@@ -44,12 +44,12 @@ public partial class ConcurrentCircularBufferTests
             Parallel.Invoke(
                 () =>
                 {
-                    for (int i = 0; i < 50; i++)
+                    for (var i = 0; i < 50; i++)
                         buffer1.Enqueue(new TestItem(i));
                 },
                 () =>
                 {
-                    for (int i = 100; i < 150; i++)
+                    for (var i = 100; i < 150; i++)
                         buffer2.Enqueue(new TestItem(i));
                 });
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BKDRTests.Append.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public partial class BKDRTests
     [TestMethod]
     public void Append_WhenSeedDiffers_ShouldProduceDifferentHash()
     {
-        byte[] input = new byte[] { 0x10, 0x20, 0x30 };
+        byte[] input = [0x10, 0x20, 0x30];
 
         BKDR a = new(131313U);
         BKDR b = new(13131U);

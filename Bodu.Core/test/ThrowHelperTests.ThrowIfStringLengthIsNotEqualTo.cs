@@ -48,8 +48,5 @@ public partial class ThrowHelperTests
     [DataRow("x", 1)]
     [DataRow("US", 2)]          // typical country code length
     [DataRow("AAPLUSS00000", 12)] // ISIN-length string
-    public void ThrowIfStringLengthIsNotEqualTo_WhenLengthMatches_ShouldNotThrow(string value, int expectedLength)
-    {
-        ThrowHelper.ThrowIfStringLengthIsNotEqualTo(value, expectedLength);
-    }
+    public void ThrowIfStringLengthIsNotEqualTo_WhenLengthMatches_ShouldNotThrow(string value, int expectedLength) => ThrowHelper.ThrowIfStringLengthIsNotEqualTo(value, expectedLength);
 }

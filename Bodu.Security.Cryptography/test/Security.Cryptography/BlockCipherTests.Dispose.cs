@@ -12,19 +12,6 @@ namespace Bodu.Security.Cryptography;
 
 public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
 {
-    private static string[] IgnoreFieldNames => new[]
-    {
-        "HashSizeValue",
-        "State",
-        "disposed",
-        "_disposed",
-    };
-
-    /// <summary>
-    /// Enumerates all instance fields in the algorithm and its base types to validate disposal state.
-    /// </summary>
-    public static IEnumerable<object[]> GetDisposableFields() => TestHelpers.GetFieldInfoForType<TCipher>(excludeFileds: IgnoreFieldNames);
-
     /// <summary>
     /// Verifies that writable public properties on a hash algorithm throw an <see cref="ObjectDisposedException" /> when set after the
     /// algorithm instance has been disposed.
@@ -34,8 +21,8 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// This test uses reflection to reassign the property's current hashValue after calling <see cref="HashAlgorithm.Dispose" />. This
     /// ensures concrete <see cref="HashAlgorithm" /> implementations enforce correct disposal behaviour.
     /// </remarks>
-    [TestMethod]
-    [DynamicData(nameof(GetWritableProperties))]
+    [TestMethod(UnfoldingStrategy = TestDataSourceUnfoldingStrategy.Unfold)]
+    [DynamicData(nameof(GetAlgorithmWritableProperties), DynamicDataDisplayName = nameof(TestHelpers.GetTypePropertyDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
     public void Dispose_WhenAssigningProperty_ShouldThrowExactly(PropertyInfo property)
     {
         if (property is null)
@@ -83,9 +70,9 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// Verifies that a disposable algorithm properly zeroes or nullifies its internal fields after disposal.
     /// </summary>
     /// <param name="field">The field to inspect for zeroed or null state.</param>
-    [TestMethod]
-    [DynamicData(nameof(GetDisposableFields), DynamicDataDisplayName = nameof(TestHelpers.GetDisposableFieldDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
-    public void Dispose_WhenCalled_ShouldZeroPrivateField(FieldInfo field)
+    [TestMethod(UnfoldingStrategy = TestDataSourceUnfoldingStrategy.Unfold)]
+    [DynamicData(nameof(GetAlgorithmFields), DynamicDataDisplayName = nameof(TestHelpers.GetTypeFieldDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
+    public void Dispose_WhenCalled_ShouldZeroDeclaredField(FieldInfo field)
     {
         if (field is null)
         {

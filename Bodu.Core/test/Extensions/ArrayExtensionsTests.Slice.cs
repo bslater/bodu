@@ -25,9 +25,9 @@ public partial class ArrayExtensionsTests
     [DataRow(5, new int[0])]
     public void Slice_WhenStartingFromIndex_ForTypedArray_ShouldReturnTrailingElements(int index, int[] expected)
     {
-        int[] source = { 1, 2, 3, 4, 5 };
+        int[] source = [1, 2, 3, 4, 5];
 
-        int[] result = source.Slice(index);
+        var result = source.Slice(index);
 
         CollectionAssert.AreEqual(expected, result);
     }
@@ -38,9 +38,9 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Slice_WhenCalled_ForTypedArrayIndexOnly_ShouldReturnNewAllocation()
     {
-        int[] source = { 1, 2, 3, 4, 5 };
+        int[] source = [1, 2, 3, 4, 5];
 
-        int[] result = source.Slice(0);
+        var result = source.Slice(0);
 
         Assert.IsFalse(ReferenceEquals(source, result));
     }
@@ -65,7 +65,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Slice_WhenIndexIsNegative_ForTypedArrayIndexOnly_ShouldThrowArgumentOutOfRangeException()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -79,7 +79,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Slice_WhenIndexExceedsLength_ForTypedArrayIndexOnly_ShouldThrowArgumentOutOfRangeException()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -103,9 +103,9 @@ public partial class ArrayExtensionsTests
     [DataRow(5, 0, new int[0])]
     public void Slice_WhenRangeIsValid_ForTypedArrayIndexCount_ShouldReturnExpectedElements(int index, int count, int[] expected)
     {
-        int[] source = { 1, 2, 3, 4, 5 };
+        int[] source = [1, 2, 3, 4, 5];
 
-        int[] result = source.Slice(index, count);
+        var result = source.Slice(index, count);
 
         CollectionAssert.AreEqual(expected, result);
     }
@@ -116,9 +116,9 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Slice_WhenRangeIsValid_ForTypedArrayIndexCount_ShouldReturnArrayOfRequestedLength()
     {
-        int[] source = { 1, 2, 3, 4, 5 };
+        int[] source = [1, 2, 3, 4, 5];
 
-        int[] result = source.Slice(1, 3);
+        var result = source.Slice(1, 3);
 
         Assert.AreEqual(3, result.Length);
     }
@@ -129,9 +129,9 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Slice_WhenMutated_ForTypedArrayIndexCount_ShouldNotAffectSource()
     {
-        int[] source = { 1, 2, 3, 4, 5 };
+        int[] source = [1, 2, 3, 4, 5];
 
-        int[] result = source.Slice(1, 3);
+        var result = source.Slice(1, 3);
         result[0] = 99;
 
         Assert.AreEqual(2, source[1]);
@@ -146,9 +146,9 @@ public partial class ArrayExtensionsTests
         var a = new object();
         var b = new object();
         var c = new object();
-        object[] source = { a, b, c };
+        object[] source = [a, b, c];
 
-        object[] result = source.Slice(1, 2);
+        var result = source.Slice(1, 2);
 
         Assert.AreSame(b, result[0]);
         Assert.AreSame(c, result[1]);
@@ -178,7 +178,7 @@ public partial class ArrayExtensionsTests
     [DataRow(0, 10, DisplayName = "Count exceeds array length")]
     public void Slice_WhenArgumentsAreInvalid_ForTypedArrayIndexCount_ShouldThrowArgumentOutOfRangeException(int index, int count)
     {
-        int[] source = { 1, 2, 3, 4, 5 };
+        int[] source = [1, 2, 3, 4, 5];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -192,7 +192,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Slice_WhenIndexPlusCountExceedsLength_ForTypedArrayIndexCount_ShouldThrowArgumentException()
     {
-        int[] source = { 1, 2, 3, 4, 5 };
+        int[] source = [1, 2, 3, 4, 5];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

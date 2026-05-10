@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CityHashTests.128.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -94,16 +94,16 @@ public sealed partial class CityHash128Tests
     private static KnownAnswerTest[] BuildSelfConsistencyVectors()
     {
         (string Name, byte[] Input)[] namedInputs =
-        {
+        [
             ("Empty", NonCryptographicHashSharedInputs.Empty),
             ("Abc", NonCryptographicHashSharedInputs.Abc),
             ("QuickBrownFox", NonCryptographicHashSharedInputs.QuickBrownFox),
             ("Zeros16", NonCryptographicHashSharedInputs.Zeros16),
             ("Sequential0To255", NonCryptographicHashSharedInputs.Sequential0To255),
-        };
+        ];
 
         var vectors = new KnownAnswerTest[namedInputs.Length];
-        for (int i = 0; i < namedInputs.Length; i++)
+        for (var i = 0; i < namedInputs.Length; i++)
         {
             CityHash128 algorithm = new();
             algorithm.Append(namedInputs[i].Input);

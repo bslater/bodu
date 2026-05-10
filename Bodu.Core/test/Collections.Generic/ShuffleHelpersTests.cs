@@ -29,22 +29,22 @@ public partial class ShuffleHelpersTests
         int maxOutliers = 2,
         string label = "Shuffle")
     {
-        int outliers = 0;
+        var outliers = 0;
 
-        for (int col = 0; col < size; col++) // For each value from 0 to (size - 1)
+        for (var col = 0; col < size; col++) // For each value from 0 to (size - 1)
         {
-            int total = 0;
+            var total = 0;
 
             // Sum how many times this value appeared across all index positions
-            for (int row = 0; row < size; row++)
+            for (var row = 0; row < size; row++)
                 total += tracker[row, col];
 
-            double average = total / (double)size; // Expected appearances per index (uniformly distributed)
-            double stdDev = Math.Sqrt(average * (1 - 1.0 / size)); // Binomial standard deviation
+            var average = total / (double)size; // Expected appearances per index (uniformly distributed)
+            var stdDev = Math.Sqrt(average * (1 - 1.0 / size)); // Binomial standard deviation
 
-            for (int row = 0; row < size; row++) // For each possible position
+            for (var row = 0; row < size; row++) // For each possible position
             {
-                double diff = Math.Abs(tracker[row, col] - average); // Deviation from expected value
+                var diff = Math.Abs(tracker[row, col] - average); // Deviation from expected value
 
                 // Flag outliers that deviate more than ±3σ from the mean
                 if (diff > 3 * stdDev)

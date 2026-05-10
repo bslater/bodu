@@ -52,8 +52,8 @@ public partial class MultisetTests
     [TestMethod]
     public void Union_WhenCalled_ShouldNotMutateOperands()
     {
-        Multiset<int> a = new Multiset<int>(new[] { 1, 1, 2 });
-        Multiset<int> b = new Multiset<int>(new[] { 2, 3 });
+        Multiset<int> a = new Multiset<int>([1, 1, 2]);
+        Multiset<int> b = new Multiset<int>([2, 3]);
 
         _ = a.Union(b);
 
@@ -102,8 +102,8 @@ public partial class MultisetTests
     [TestMethod]
     public void Intersect_WhenNoSharedElements_ShouldReturnEmpty()
     {
-        Multiset<int> a = new Multiset<int>(new[] { 1, 2 });
-        Multiset<int> b = new Multiset<int>(new[] { 3, 4 });
+        Multiset<int> a = new Multiset<int>([1, 2]);
+        Multiset<int> b = new Multiset<int>([3, 4]);
 
         Multiset<int> result = a.Intersect(b);
 
@@ -188,8 +188,8 @@ public partial class MultisetTests
     [TestCategory("Regression")]
     public void SetOperations_WhenResultMutated_ShouldNotAffectOperands()
     {
-        Multiset<int> a = new Multiset<int>(new[] { 1, 2 });
-        Multiset<int> b = new Multiset<int>(new[] { 2, 3 });
+        Multiset<int> a = new Multiset<int>([1, 2]);
+        Multiset<int> b = new Multiset<int>([2, 3]);
 
         Multiset<int> union = a.Union(b);
         Multiset<int> intersect = a.Intersect(b);
@@ -231,7 +231,7 @@ public partial class MultisetTests
     public void Union_WhenLeftIsEmpty_ShouldReturnCopyOfRight()
     {
         Multiset<int> a = new Multiset<int>();
-        Multiset<int> b = new Multiset<int>(new[] { 1, 1, 2 });
+        Multiset<int> b = new Multiset<int>([1, 1, 2]);
 
         Multiset<int> result = a.Union(b);
 
@@ -246,7 +246,7 @@ public partial class MultisetTests
     [TestMethod]
     public void Union_WhenRightIsEmpty_ShouldReturnCopyOfLeft()
     {
-        Multiset<int> a = new Multiset<int>(new[] { 1, 1, 2 });
+        Multiset<int> a = new Multiset<int>([1, 1, 2]);
         Multiset<int> b = new Multiset<int>();
 
         Multiset<int> result = a.Union(b);
@@ -262,7 +262,7 @@ public partial class MultisetTests
     [TestMethod]
     public void Union_WithSelf_ShouldReturnSameCounts()
     {
-        Multiset<int> a = new Multiset<int>(new[] { 1, 1, 1, 2, 2 });
+        Multiset<int> a = new Multiset<int>([1, 1, 1, 2, 2]);
 
         Multiset<int> result = a.Union(a);
 
@@ -296,7 +296,7 @@ public partial class MultisetTests
     public void Intersect_WhenLeftIsEmpty_ShouldReturnEmpty()
     {
         Multiset<int> a = new Multiset<int>();
-        Multiset<int> b = new Multiset<int>(new[] { 1, 2, 3 });
+        Multiset<int> b = new Multiset<int>([1, 2, 3]);
 
         Multiset<int> result = a.Intersect(b);
 
@@ -309,7 +309,7 @@ public partial class MultisetTests
     [TestMethod]
     public void Intersect_WhenRightIsEmpty_ShouldReturnEmpty()
     {
-        Multiset<int> a = new Multiset<int>(new[] { 1, 2, 3 });
+        Multiset<int> a = new Multiset<int>([1, 2, 3]);
         Multiset<int> b = new Multiset<int>();
 
         Multiset<int> result = a.Intersect(b);
@@ -323,7 +323,7 @@ public partial class MultisetTests
     [TestMethod]
     public void Intersect_WithSelf_ShouldReturnSameCounts()
     {
-        Multiset<int> a = new Multiset<int>(new[] { 1, 1, 1, 2, 2 });
+        Multiset<int> a = new Multiset<int>([1, 1, 1, 2, 2]);
 
         Multiset<int> result = a.Intersect(a);
 
@@ -357,7 +357,7 @@ public partial class MultisetTests
     public void Except_WhenLeftIsEmpty_ShouldReturnEmpty()
     {
         Multiset<int> a = new Multiset<int>();
-        Multiset<int> b = new Multiset<int>(new[] { 1, 2, 3 });
+        Multiset<int> b = new Multiset<int>([1, 2, 3]);
 
         Multiset<int> result = a.Except(b);
 
@@ -370,7 +370,7 @@ public partial class MultisetTests
     [TestMethod]
     public void Except_WhenRightIsEmpty_ShouldReturnCopyOfLeft()
     {
-        Multiset<int> a = new Multiset<int>(new[] { 1, 1, 2 });
+        Multiset<int> a = new Multiset<int>([1, 1, 2]);
         Multiset<int> b = new Multiset<int>();
 
         Multiset<int> result = a.Except(b);
@@ -386,7 +386,7 @@ public partial class MultisetTests
     [TestMethod]
     public void Except_WithSelf_ShouldReturnEmpty()
     {
-        Multiset<int> a = new Multiset<int>(new[] { 1, 1, 1, 2, 2 });
+        Multiset<int> a = new Multiset<int>([1, 1, 1, 2, 2]);
 
         Multiset<int> result = a.Except(a);
 
@@ -419,7 +419,7 @@ public partial class MultisetTests
     public void Sum_WhenLeftIsEmpty_ShouldReturnCopyOfRight()
     {
         Multiset<int> a = new Multiset<int>();
-        Multiset<int> b = new Multiset<int>(new[] { 1, 1, 2 });
+        Multiset<int> b = new Multiset<int>([1, 1, 2]);
 
         Multiset<int> result = a.Sum(b);
 
@@ -434,7 +434,7 @@ public partial class MultisetTests
     [TestMethod]
     public void Sum_WhenRightIsEmpty_ShouldReturnCopyOfLeft()
     {
-        Multiset<int> a = new Multiset<int>(new[] { 1, 1, 2 });
+        Multiset<int> a = new Multiset<int>([1, 1, 2]);
         Multiset<int> b = new Multiset<int>();
 
         Multiset<int> result = a.Sum(b);
@@ -450,7 +450,7 @@ public partial class MultisetTests
     [TestMethod]
     public void Sum_WithSelf_ShouldReturnDoubledCounts()
     {
-        Multiset<int> a = new Multiset<int>(new[] { 1, 1, 1, 2, 2 });
+        Multiset<int> a = new Multiset<int>([1, 1, 1, 2, 2]);
 
         Multiset<int> result = a.Sum(a);
 

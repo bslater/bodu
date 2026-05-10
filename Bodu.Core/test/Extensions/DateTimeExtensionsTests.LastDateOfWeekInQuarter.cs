@@ -41,7 +41,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that the instance calendar-default overload locks in the currently observed forward-from-start behaviour (returning the first, not last, occurrence of the target day).
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(LastDateOfWeekInQuarterCalendarObservedTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(LastDateOfWeekInQuarterCalendarObservedTestData))]
     public void LastDateOfWeekInQuarter_WhenUsingCalendarDefault_ShouldReturnExpectedDate(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
     {
         DateTime actual = input.LastDateOfWeekInQuarter(dayOfWeek);

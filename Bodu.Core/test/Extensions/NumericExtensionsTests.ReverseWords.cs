@@ -29,7 +29,7 @@ public partial class NumericExtensionsTests
     [DataRow((ushort)0x0001, (ushort)0x0100, "single bit in low byte → high byte")]
     public void ReverseWords_WhenValueIsUShort_ShouldSwapBytes(ushort value, ushort expected, string description)
     {
-        ushort actual = value.ReverseWords();
+        var actual = value.ReverseWords();
 
         Trace.WriteLineIf(actual != expected, $"[{description}]");
         Trace.WriteLineIf(actual != expected, $"value   : {value:X4}");
@@ -70,7 +70,7 @@ public partial class NumericExtensionsTests
     [DataRow(0xFF00FF00U, 0x00FF00FFU, "high bytes only in each word")]
     public void ReverseWords_WhenValueIsUInt_ShouldSwapBytesWithinEachWord(uint value, uint expected, string description)
     {
-        uint actual = value.ReverseWords();
+        var actual = value.ReverseWords();
 
         Trace.WriteLineIf(actual != expected, $"[{description}]");
         Trace.WriteLineIf(actual != expected, $"value   : {value:X8}");
@@ -125,7 +125,7 @@ public partial class NumericExtensionsTests
     [DataRow(0xFF00FF00FF00FF00UL, 0x00FF00FF00FF00FFUL, "high bytes only in each word")]
     public void ReverseWords_WhenValueIsULong_ShouldSwapBytesWithinEachWord(ulong value, ulong expected, string description)
     {
-        ulong actual = value.ReverseWords();
+        var actual = value.ReverseWords();
 
         Trace.WriteLineIf(actual != expected, $"[{description}]");
         Trace.WriteLineIf(actual != expected, $"value   : {value:X16}");
@@ -220,7 +220,7 @@ public partial class NumericExtensionsTests
         new byte[] { 0x02, 0x01, 0x04, 0x03, 0x06, 0x05 })]
     public void ReverseWords_WhenByteArrayIsValid_ShouldSwapEachAdjacentPair(byte[] bytes, byte[] expected)
     {
-        byte[] actual = bytes.ReverseWords();
+        var actual = bytes.ReverseWords();
 
         Trace.WriteLineIf(!actual.AsSpan().SequenceEqual(expected), $"Input   : {BitConverter.ToString(bytes)}");
         Trace.WriteLineIf(!actual.AsSpan().SequenceEqual(expected), $"Expected: {BitConverter.ToString(expected)}");
@@ -236,8 +236,8 @@ public partial class NumericExtensionsTests
     [TestMethod]
     public void ReverseWords_WhenByteArrayIsValid_ShouldNotMutateOriginalArray()
     {
-        byte[] input = { 0xAA, 0xBB, 0xCC, 0xDD };
-        byte[] snapshot = (byte[])input.Clone();
+        byte[] input = [0xAA, 0xBB, 0xCC, 0xDD];
+        var snapshot = (byte[])input.Clone();
 
         _ = input.ReverseWords();
 

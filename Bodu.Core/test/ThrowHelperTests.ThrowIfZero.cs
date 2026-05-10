@@ -29,8 +29,5 @@ public partial class ThrowHelperTests
     [DataRow(-1)]
     [DataRow(int.MinValue)]
     [DataRow(int.MaxValue)]
-    public void ThrowIfZero_WhenValueIsNonZero_ShouldNotThrow(int value)
-    {
-        ThrowHelper.ThrowIfZero(value);
-    }
+    public void ThrowIfZero_WhenValueIsNonZero_ShouldNotThrow(int value) => ThrowHelper.ThrowIfZero(value);
 }

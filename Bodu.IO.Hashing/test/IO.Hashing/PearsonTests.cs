@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PearsonTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -78,30 +78,30 @@ public sealed partial class PearsonTests
             "A3", "7B", "C9", "04",
             "54", "3C",
         },
-        Pearson.PearsonTableType.AESSBox => new[]
-        {
+        Pearson.PearsonTableType.AESSBox =>
+        [
             "00", "63", "AA", "C2",
             "78", "10", "59", "CF",
             "E8", "E1", "9B", "81",
             "7E", "40", "E3", "55",
             "BE", "E4",
-        },
-        Pearson.PearsonTableType.CRC32HighByte => new[]
-        {
+        ],
+        Pearson.PearsonTableType.CRC32HighByte =>
+        [
             "00", "00", "77", "20",
             "A2", "3F", "C6", "9B",
             "F9", "CA", "02", "0E",
             "70", "59", "6C", "A3",
             "DF", "0B",
-        },
-        Pearson.PearsonTableType.SHA256Constants => new[]
-        {
+        ],
+        Pearson.PearsonTableType.SHA256Constants =>
+        [
             "00", "48", "87", "63",
             "B3", "0F", "A0", "09",
             "E6", "56", "FF", "05",
             "E6", "06", "3C", "34",
             "1E", "E6",
-        },
+        ],
         _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
     };
 }

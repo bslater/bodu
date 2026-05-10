@@ -21,7 +21,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.StartOfDay" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(MidnightTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(MidnightTestData))]
     public void StartOfDay_WhenCalled_ShouldSetTimeToMidnight(DateTime input, DateTime expected)
     {
         DateTime actual = input.StartOfDay();

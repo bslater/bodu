@@ -22,10 +22,10 @@ public partial class ComparableHelperTests
     /// Verifies that Max returns the larger of two <see cref="SimpleTestObject" /> values, handling nulls appropriately.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetMaxTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetMaxTestData))]
     public void Max_WhenComparingTwoValues_ShouldReturnLarger(SimpleTestObject? first, SimpleTestObject? second, SimpleTestObject? expected)
     {
-        var actual = ComparableHelper.Max(first, second);
+        SimpleTestObject? actual = ComparableHelper.Max(first, second);
         Assert.AreEqual(expected, actual);
     }
 }

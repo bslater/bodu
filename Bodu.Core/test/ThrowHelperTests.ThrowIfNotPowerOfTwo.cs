@@ -72,10 +72,7 @@ public partial class ThrowHelperTests
     [DataRow(128)]
     [DataRow(1024)]
     [DataRow(1073741824)] // 2^30
-    public void ThrowIfNotPowerOfTwo_WhenValueIsPowerOfTwo_ShouldNotThrow(int value)
-    {
-        ThrowHelper.ThrowIfNotPowerOfTwo(value);
-    }
+    public void ThrowIfNotPowerOfTwo_WhenValueIsPowerOfTwo_ShouldNotThrow(int value) => ThrowHelper.ThrowIfNotPowerOfTwo(value);
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotPowerOfTwo{T}" /> works correctly with <see cref="long" />
@@ -84,10 +81,7 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DataRow(4294967296L)]  // 2^32 — valid power of two, exceeds int range
     [DataRow(1099511627776L)] // 2^40
-    public void ThrowIfNotPowerOfTwo_WhenValueIsLongPowerOfTwo_ShouldNotThrow(long value)
-    {
-        ThrowHelper.ThrowIfNotPowerOfTwo(value);
-    }
+    public void ThrowIfNotPowerOfTwo_WhenValueIsLongPowerOfTwo_ShouldNotThrow(long value) => ThrowHelper.ThrowIfNotPowerOfTwo(value);
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotPowerOfTwo{T}" /> throws

@@ -50,11 +50,11 @@ public partial class MultisetTests
     [TestMethod]
     public void Enumerator_WhenModifiedDuringEnumerationViaAdd_ShouldThrowInvalidOperationException()
     {
-        Multiset<int> sut = new Multiset<int>(new[] { 1, 2, 3 });
+        Multiset<int> sut = new Multiset<int>([1, 2, 3]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (int _ in sut)
+            foreach (var _ in sut)
                 sut.Add(99);
         });
     }
@@ -65,11 +65,11 @@ public partial class MultisetTests
     [TestMethod]
     public void Enumerator_WhenModifiedDuringEnumerationViaRemove_ShouldThrowInvalidOperationException()
     {
-        Multiset<int> sut = new Multiset<int>(new[] { 1, 2, 3 });
+        Multiset<int> sut = new Multiset<int>([1, 2, 3]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (int _ in sut)
+            foreach (var _ in sut)
                 sut.Remove(1);
         });
     }
@@ -80,11 +80,11 @@ public partial class MultisetTests
     [TestMethod]
     public void Enumerator_WhenClearedDuringEnumeration_ShouldThrowInvalidOperationException()
     {
-        Multiset<int> sut = new Multiset<int>(new[] { 1, 2, 3 });
+        Multiset<int> sut = new Multiset<int>([1, 2, 3]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (int _ in sut)
+            foreach (var _ in sut)
                 sut.Clear();
         });
     }
@@ -112,11 +112,11 @@ public partial class MultisetTests
     [TestMethod]
     public void Distinct_WhenModifiedDuringEnumeration_ShouldThrowInvalidOperationException()
     {
-        Multiset<int> sut = new Multiset<int>(new[] { 1, 2, 3 });
+        Multiset<int> sut = new Multiset<int>([1, 2, 3]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (int _ in sut.Distinct())
+            foreach (var _ in sut.Distinct())
                 sut.Add(99);
         });
     }
@@ -146,7 +146,7 @@ public partial class MultisetTests
     [TestMethod]
     public void Frequencies_WhenModifiedDuringEnumeration_ShouldThrowInvalidOperationException()
     {
-        Multiset<int> sut = new Multiset<int>(new[] { 1, 2, 3 });
+        Multiset<int> sut = new Multiset<int>([1, 2, 3]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -169,10 +169,10 @@ public partial class MultisetTests
         sut.Add(5, 2);
         sut.Add(6, 1);
 
-        object[] dest = new object[3];
+        var dest = new object[3];
         ((System.Collections.ICollection)sut).CopyTo(dest, 0);
 
-        int[] values = dest.Cast<int>().OrderBy(x => x).ToArray();
+        var values = dest.Cast<int>().OrderBy(x => x).ToArray();
         CollectionAssert.AreEqual(new[] { 5, 5, 6 }, values);
     }
 
@@ -277,11 +277,11 @@ public partial class MultisetTests
     [TestMethod]
     public void Enumerator_WhenModifiedDuringEnumerationViaRemoveAll_ShouldThrowInvalidOperationException()
     {
-        Multiset<int> sut = new Multiset<int>(new[] { 1, 2, 3 });
+        Multiset<int> sut = new Multiset<int>([1, 2, 3]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (int _ in sut)
+            foreach (var _ in sut)
                 sut.RemoveAll(1);
         });
     }
@@ -296,11 +296,11 @@ public partial class MultisetTests
     [TestMethod]
     public void Enumerator_WhenModifiedDuringEnumerationViaAddWithCount_ShouldThrowInvalidOperationException()
     {
-        Multiset<int> sut = new Multiset<int>(new[] { 1, 2, 3 });
+        Multiset<int> sut = new Multiset<int>([1, 2, 3]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (int _ in sut)
+            foreach (var _ in sut)
                 sut.Add(99, 3);
         });
     }
@@ -345,11 +345,11 @@ public partial class MultisetTests
     [TestMethod]
     public void Distinct_WhenModifiedViaRemoveAllDuringEnumeration_ShouldThrowInvalidOperationException()
     {
-        Multiset<int> sut = new Multiset<int>(new[] { 1, 2, 3 });
+        Multiset<int> sut = new Multiset<int>([1, 2, 3]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (int _ in sut.Distinct())
+            foreach (var _ in sut.Distinct())
                 sut.RemoveAll(1);
         });
     }
@@ -364,7 +364,7 @@ public partial class MultisetTests
     [TestMethod]
     public void Frequencies_WhenModifiedViaRemoveAllDuringEnumeration_ShouldThrowInvalidOperationException()
     {
-        Multiset<int> sut = new Multiset<int>(new[] { 1, 2, 3 });
+        Multiset<int> sut = new Multiset<int>([1, 2, 3]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {

@@ -35,7 +35,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void Constructor_WhenEmptyArrayProvided_ShouldBeEmpty()
     {
-        var pattern = new WeekPattern(new DayOfWeek[0]);
+        var pattern = new WeekPattern([]);
         Assert.AreEqual(0, pattern.Count);
     }
 

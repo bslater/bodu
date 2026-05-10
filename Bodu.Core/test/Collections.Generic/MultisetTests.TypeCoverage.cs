@@ -80,7 +80,7 @@ public partial class MultisetTests
         Multiset<Point> sut = new Multiset<Point>();
         sut.Add(new Point(1, 2), 3);
 
-        bool removed = sut.Remove(new Point(1, 2));
+        var removed = sut.Remove(new Point(1, 2));
 
         Assert.IsTrue(removed);
         Assert.AreEqual(2, sut.CountOf(new Point(1, 2)));
@@ -190,7 +190,7 @@ public partial class MultisetTests
         sut.Add(new Point(7, 100));
         sut.Add(new Point(7, 200));
 
-        bool removed = sut.Remove(new Point(7, 999));
+        var removed = sut.Remove(new Point(7, 999));
 
         Assert.IsTrue(removed);
         Assert.AreEqual(1, sut.CountOf(new Point(7, 0)));

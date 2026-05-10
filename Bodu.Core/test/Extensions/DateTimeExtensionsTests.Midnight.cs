@@ -20,7 +20,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.Midnight" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(MidnightTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(MidnightTestData))]
     public void Midnight_WhenCalled_ShouldSetTimeToNoon(DateTime input, DateTime expected)
     {
         DateTime actual = input.Midnight();

@@ -36,7 +36,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.NextWeekday(DateOnly, CalendarWeekendDefinition)" /> returns the next non-weekend date when Saturday and Sunday are defined as the weekend.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(NextWeekdaySaturdaySundayTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(NextWeekdaySaturdaySundayTestData))]
     public void NextWeekday_WhenWeekendIsSaturdaySunday_ShouldReturnExpectedDate(DateOnly date, DateOnly expected)
     {
         DateOnly actual = date.NextWeekday(CalendarWeekendDefinition.SaturdaySunday);

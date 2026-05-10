@@ -22,7 +22,7 @@ public partial class AsconAead128Tests
     /// </para>
     /// </remarks>
     [TestMethod]
-    [DynamicData(nameof(GetDisposableFields), DynamicDataDisplayName = nameof(TestHelpers.GetDisposableFieldDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
+    [DynamicData(nameof(GetDisposableFields), DynamicDataDisplayName = nameof(TestHelpers.GetTypeFieldDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
     public void Dispose_WhenCalled_ShouldZeroPrivateField(FieldInfo field)
     {
         if (field is null)

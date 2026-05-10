@@ -21,7 +21,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     {
         IEnumerable<int> source = null!;
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Aggregate((acc, x, i) => acc + x);
         });
@@ -36,10 +36,10 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenFuncIsNull_ForDefaultSeedOverload_ShouldThrowArgumentNullException()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
         Func<int, int, int, int> func = null!;
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Aggregate(func);
         });
@@ -55,7 +55,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     {
         IEnumerable<int> source = null!;
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Aggregate(0, (acc, x, i) => acc + x);
         });
@@ -70,10 +70,10 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenFuncIsNull_ForSeededOverload_ShouldThrowArgumentNullException()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
         Func<int, int, int, int> func = null!;
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Aggregate(0, func);
         });
@@ -88,10 +88,10 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenResultSelectorIsNull_ForSelectorOverload_ShouldThrowArgumentNullException()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
         Func<int, string> resultSelector = null!;
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Aggregate(0, (acc, x, i) => acc + x, resultSelector);
         });
@@ -105,9 +105,9 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenSourceIsEmpty_ForDefaultSeedOverload_ShouldThrowInvalidOperationException()
     {
-        int[] source = Array.Empty<int>();
+        int[] source = [];
 
-        var ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        InvalidOperationException ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             _ = source.Aggregate((acc, x, i) => acc + x);
         });
@@ -122,10 +122,10 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenSourceIsEmpty_ForSeededOverload_ShouldReturnSeedUnchanged()
     {
-        int[] source = Array.Empty<int>();
-        int invocations = 0;
+        int[] source = [];
+        var invocations = 0;
 
-        int result = source.Aggregate(42, (acc, x, i) =>
+        var result = source.Aggregate(42, (acc, x, i) =>
         {
             invocations++;
             return acc + x;
@@ -141,9 +141,9 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenSourceIsEmpty_ForSelectorOverload_ShouldApplySelectorToSeed()
     {
-        int[] source = Array.Empty<int>();
+        int[] source = [];
 
-        string result = source.Aggregate(7, (acc, x, i) => acc + x, acc => $"value={acc}");
+        var result = source.Aggregate(7, (acc, x, i) => acc + x, acc => $"value={acc}");
 
         Assert.AreEqual("value=7", result);
     }
@@ -154,7 +154,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenInvoked_ShouldPassMonotonicIndexStartingAtZero()
     {
-        int[] source = { 10, 20, 30, 40 };
+        int[] source = [10, 20, 30, 40];
         var capturedIndices = new List<int>();
 
         _ = source.Aggregate(0, (acc, x, i) =>
@@ -173,9 +173,9 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenInvoked_ForDefaultSeedOverload_ShouldStartFromDefault()
     {
-        int[] source = { 5, 10, 20 };
+        int[] source = [5, 10, 20];
 
-        int result = source.Aggregate((acc, x, i) => acc + x);
+        var result = source.Aggregate((acc, x, i) => acc + x);
 
         // default(int) + 5 + 10 + 20 == 35
         Assert.AreEqual(35, result);
@@ -187,10 +187,10 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenInvoked_ForSeededOverload_ShouldApplyAccumulatorInOrderWithIndex()
     {
-        int[] source = { 1, 2, 3, 4 };
+        int[] source = [1, 2, 3, 4];
 
         // 0 + (1*0) + (2*1) + (3*2) + (4*3) == 20
-        int result = source.Aggregate(0, (acc, x, i) => acc + (x * i));
+        var result = source.Aggregate(0, (acc, x, i) => acc + (x * i));
 
         Assert.AreEqual(20, result);
     }
@@ -201,9 +201,9 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenAccumulatorDiffersFromElementType_ShouldReturnExpectedResult()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
 
-        string result = source.Aggregate(
+        var result = source.Aggregate(
             "[",
             (acc, x, i) => acc + (i == 0 ? string.Empty : ",") + x);
 
@@ -216,10 +216,10 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenResultSelectorProvided_ShouldTransformFinalAccumulator()
     {
-        int[] source = { 2, 3, 5, 7 };
+        int[] source = [2, 3, 5, 7];
 
         // sum = 17, selector doubles it -> 34
-        int result = source.Aggregate(0, (acc, x, i) => acc + x, acc => acc * 2);
+        var result = source.Aggregate(0, (acc, x, i) => acc + x, acc => acc * 2);
 
         Assert.AreEqual(34, result);
     }
@@ -230,7 +230,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenInvoked_ForSeededOverload_ShouldEnumerateSourceOnce()
     {
-        int enumerationCount = 0;
+        var enumerationCount = 0;
 
         IEnumerable<int> Source()
         {
@@ -254,7 +254,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     {
         IEnumerable<int> source = null!;
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Aggregate(0, 0, (a, x) => a + x, (a, x) => a + x);
         });
@@ -269,16 +269,16 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenFuncIsNull_ForTwoFuncNoIndex_ShouldThrowArgumentNullException()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
         Func<int, int, int> nullFunc = null!;
 
-        var ex1 = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex1 = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Aggregate(0, 0, nullFunc, (a, x) => a + x);
         });
         Assert.AreEqual("func1", ex1.ParamName);
 
-        var ex2 = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex2 = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Aggregate(0, 0, (a, x) => a + x, nullFunc);
         });
@@ -294,7 +294,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     {
         IEnumerable<int> source = null!;
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Aggregate(0, 0, (a, x, i) => a + x, (a, x, i) => a + x);
         });
@@ -309,16 +309,16 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenFuncIsNull_ForTwoFuncWithIndex_ShouldThrowArgumentNullException()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
         Func<int, int, int, int> nullFunc = null!;
 
-        var ex1 = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex1 = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Aggregate(0, 0, nullFunc, (a, x, i) => a + x);
         });
         Assert.AreEqual("func1", ex1.ParamName);
 
-        var ex2 = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex2 = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Aggregate(0, 0, (a, x, i) => a + x, nullFunc);
         });
@@ -332,10 +332,10 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenResultSelectorIsNull_ForTwoFuncWithSelector_ShouldThrowArgumentNullException()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
         Func<int, int, string> resultSelector = null!;
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Aggregate(0, 0, (a, x) => a + x, (a, x) => a + x, resultSelector);
         });
@@ -352,7 +352,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     {
         IEnumerable<int> source = null!;
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Aggregate(
                 0, 0, 0,
@@ -371,10 +371,10 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenFuncIsNull_ForThreeFuncNoIndex_ShouldThrowArgumentNullException()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
         Func<int, int, int> nullFunc = null!;
 
-        var ex3 = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex3 = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Aggregate(
                 0, 0, 0,
@@ -394,7 +394,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     {
         IEnumerable<int> source = null!;
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Aggregate(
                 0, 0, 0,
@@ -413,10 +413,10 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenResultSelectorIsNull_ForThreeFuncWithSelector_ShouldThrowArgumentNullException()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
         Func<int, int, int, string> resultSelector = null!;
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Aggregate(
                 0, 0, 0,
@@ -435,9 +435,9 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenInvoked_ForTwoFuncNoIndex_ShouldReturnBothFinalValues()
     {
-        int[] source = { 3, 1, 4, 1, 5, 9, 2, 6 };
+        int[] source = [3, 1, 4, 1, 5, 9, 2, 6];
 
-        (int min, int max) = source.Aggregate(
+        (var min, var max) = source.Aggregate(
             seed1: int.MaxValue,
             seed2: int.MinValue,
             func1: (acc, x) => Math.Min(acc, x),
@@ -454,7 +454,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenInvoked_ForTwoFuncWithIndex_ShouldShareMonotonicIndexAcrossFuncs()
     {
-        int[] source = { 10, 20, 30, 40 };
+        int[] source = [10, 20, 30, 40];
         var captured1 = new List<int>();
         var captured2 = new List<int>();
 
@@ -474,9 +474,9 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenInvoked_ForTwoFuncWithSelector_ShouldTransformTuple()
     {
-        int[] source = { 1, 2, 3, 4 };
+        int[] source = [1, 2, 3, 4];
 
-        string result = source.Aggregate(
+        var result = source.Aggregate(
             seed1: 0,
             seed2: 0,
             func1: (acc, x) => acc + x,
@@ -492,10 +492,10 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenInvoked_ForTwoFuncWithIndexAndSelector_ShouldTransformTuple()
     {
-        int[] source = { 2, 4, 6 };
+        int[] source = [2, 4, 6];
 
         // weighted sum: 2*0 + 4*1 + 6*2 = 16; count: 3
-        string result = source.Aggregate(
+        var result = source.Aggregate(
             seed1: 0,
             seed2: 0,
             func1: (acc, x, i) => acc + (x * i),
@@ -511,9 +511,9 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenSourceIsEmpty_ForTwoFuncNoIndex_ShouldReturnSeedsUnchanged()
     {
-        int[] source = Array.Empty<int>();
+        int[] source = [];
 
-        (int v1, int v2) = source.Aggregate(11, 22, (a, x) => a + x, (a, x) => a + x);
+        (var v1, var v2) = source.Aggregate(11, 22, (a, x) => a + x, (a, x) => a + x);
 
         Assert.AreEqual(11, v1);
         Assert.AreEqual(22, v2);
@@ -525,9 +525,9 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenInvoked_ForThreeFuncNoIndex_ShouldReturnAllThreeFinalValues()
     {
-        int[] source = { 3, 1, 4, 1, 5, 9, 2, 6 };
+        int[] source = [3, 1, 4, 1, 5, 9, 2, 6];
 
-        (int sum, int count, int max) = source.Aggregate(
+        (var sum, var count, var max) = source.Aggregate(
             seed1: 0,
             seed2: 0,
             seed3: int.MinValue,
@@ -547,7 +547,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenInvoked_ForThreeFuncWithIndex_ShouldShareMonotonicIndexAcrossFuncs()
     {
-        int[] source = { 5, 6, 7 };
+        int[] source = [5, 6, 7];
         var captured1 = new List<int>();
         var captured2 = new List<int>();
         var captured3 = new List<int>();
@@ -571,10 +571,10 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenInvoked_ForThreeFuncWithSelector_ShouldTransformTuple()
     {
-        int[] source = { 2, 4, 6, 8 };
+        int[] source = [2, 4, 6, 8];
 
         // sum=20, count=4, product=2*4*6*8=384 → "20/4/384"
-        string result = source.Aggregate(
+        var result = source.Aggregate(
             seed1: 0,
             seed2: 0,
             seed3: 1,
@@ -592,9 +592,9 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenSourceIsEmpty_ForThreeFuncNoIndex_ShouldReturnSeedsUnchanged()
     {
-        int[] source = Array.Empty<int>();
+        int[] source = [];
 
-        (int v1, int v2, int v3) = source.Aggregate(
+        (var v1, var v2, var v3) = source.Aggregate(
             11, 22, 33,
             (a, x) => a + x,
             (a, x) => a + x,
@@ -611,7 +611,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenInvoked_ForMultiAccumulator_ShouldEnumerateSourceOnce()
     {
-        int enumerationCount2 = 0;
+        var enumerationCount2 = 0;
         IEnumerable<int> TwoFuncSource()
         {
             enumerationCount2++;
@@ -623,7 +623,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
         _ = TwoFuncSource().Aggregate(0, 0, (a, x) => a + x, (a, _) => a + 1);
         Assert.AreEqual(1, enumerationCount2);
 
-        int enumerationCount3 = 0;
+        var enumerationCount3 = 0;
         IEnumerable<int> ThreeFuncSource()
         {
             enumerationCount3++;

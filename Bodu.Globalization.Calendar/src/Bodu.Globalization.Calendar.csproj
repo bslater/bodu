@@ -13,13 +13,6 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <!-- Minor bump: the parameterless NotableDateService() ctor now loads
-         only default-minimal.xml. Region-specific holiday rules ship in the
-         new Bodu.Globalization.Calendar.Data.* companion packages. -->
-    <Version>1.1.0</Version>
-  </PropertyGroup>
-
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <DefineConstants>$(DefineConstants);NETSTANDARD2_0</DefineConstants>
   </PropertyGroup>
@@ -103,17 +96,17 @@
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-jewish.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-lunar.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-science.xml" />
-    <EmbeddedResource Include="CalendarResourceStrings.resx">
-      <LastGenOutput>CalendarResourceStrings.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
   </ItemGroup>
-
+    
   <ItemGroup>
+    <EmbeddedResource Include="CalendarResourceStrings.resx">
+      <LastGenOutput>CalendarResourceStrings.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <Compile Update="CalendarResourceStrings.Designer.cs">
       <DependentUpon>CalendarResourceStrings.resx</DependentUpon>
       <DesignTime>True</DesignTime>

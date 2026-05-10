@@ -16,12 +16,12 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Enumerator_WhenCollectionHasItems_ShouldIterateInHeadToTailOrder()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         AddToTail(collection, 3);
 
-        var enumerator = collection.GetEnumerator();
+        IEnumerator<int> enumerator = collection.GetEnumerator();
         var collected = new List<int>();
         while (enumerator.MoveNext())
             collected.Add(enumerator.Current);
@@ -35,11 +35,11 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Enumerator_WhenAddToTailCalledDuringIteration_ShouldThrowOnMoveNext()
     {
-        var collection = CreateCollection(5);
+        TCollection collection = CreateCollection(5);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
 
-        var enumerator = collection.GetEnumerator();
+        IEnumerator<int> enumerator = collection.GetEnumerator();
         Assert.IsTrue(enumerator.MoveNext());
         AddToTail(collection, 3);
 
@@ -52,12 +52,12 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Enumerator_WhenRemoveFromHeadCalledDuringIteration_ShouldThrowOnMoveNext()
     {
-        var collection = CreateCollection(5);
+        TCollection collection = CreateCollection(5);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         AddToTail(collection, 3);
 
-        var enumerator = collection.GetEnumerator();
+        IEnumerator<int> enumerator = collection.GetEnumerator();
         Assert.IsTrue(enumerator.MoveNext());
         _ = RemoveFromHead(collection);
 
@@ -70,11 +70,11 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Enumerator_WhenClearCalledDuringIteration_ShouldThrowOnMoveNext()
     {
-        var collection = CreateCollection(5);
+        TCollection collection = CreateCollection(5);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
 
-        var enumerator = collection.GetEnumerator();
+        IEnumerator<int> enumerator = collection.GetEnumerator();
         Assert.IsTrue(enumerator.MoveNext());
         Clear(collection);
 
@@ -87,10 +87,10 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Enumerator_WhenMutatedThenReset_ShouldThrowOnReset()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
 
-        var enumerator = collection.GetEnumerator();
+        IEnumerator<int> enumerator = collection.GetEnumerator();
         AddToTail(collection, 2);
 
         Assert.ThrowsExactly<InvalidOperationException>(() => enumerator.Reset());
@@ -102,10 +102,10 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Enumerator_WhenCurrentAccessedBeforeMoveNext_ShouldThrowExactly()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
 
-        var enumerator = collection.GetEnumerator();
+        IEnumerator<int> enumerator = collection.GetEnumerator();
 
         Assert.ThrowsExactly<InvalidOperationException>(() => { _ = enumerator.Current; });
     }
@@ -116,10 +116,10 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Enumerator_WhenCurrentAccessedAfterExhaustion_ShouldThrowExactly()
     {
-        var collection = CreateCollection(2);
+        TCollection collection = CreateCollection(2);
         AddToTail(collection, 1);
 
-        var enumerator = collection.GetEnumerator();
+        IEnumerator<int> enumerator = collection.GetEnumerator();
         while (enumerator.MoveNext()) { }
 
         Assert.ThrowsExactly<InvalidOperationException>(() => { _ = enumerator.Current; });
@@ -131,12 +131,12 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Enumerator_WhenResetCalledWithoutModification_ShouldRestartIteration()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 10);
         AddToTail(collection, 20);
         AddToTail(collection, 30);
 
-        var enumerator = collection.GetEnumerator();
+        IEnumerator<int> enumerator = collection.GetEnumerator();
         var firstPass = new List<int>();
         while (enumerator.MoveNext())
             firstPass.Add(enumerator.Current);

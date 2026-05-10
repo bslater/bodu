@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockNonCryptographicHashAlgorithmTests.Append.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -45,12 +45,12 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     public void Append_WhenInputSpansMultipleFullBlocks_ShouldEmitEachBlockInOrder()
     {
         RecordingBlockHasher hasher = new();
-        byte[] input = new byte[]
-        {
+        byte[] input =
+        [
             0x01, 0x02, 0x03, 0x04,
             0x05, 0x06, 0x07, 0x08,
             0x09, 0x0A, 0x0B, 0x0C,
-        };
+        ];
         hasher.Append(input);
 
         Assert.AreEqual(3, hasher.Blocks.Count);

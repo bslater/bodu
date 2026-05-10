@@ -13,16 +13,14 @@ public partial class WeekPatternTests
     /// argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void CompareToObject_WhenNull_ShouldReturnGreaterThanZero()
-    {
-        Assert.IsTrue(new WeekPattern(DayOfWeek.Monday).CompareTo(null) > 0);
-    }
+    public void CompareToObject_WhenNull_ShouldReturnGreaterThanZero() => 
+        Assert.IsGreaterThan(0, new WeekPattern(DayOfWeek.Monday).CompareTo(null));
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.CompareTo(object)" /> returns a value whose sign correctly
     /// reflects the ordinal relationship when the argument is a boxed <see cref="WeekPattern" />.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow((byte)0, (byte)0, 0)]
     [DataRow((byte)1, (byte)0, 1)]
     [DataRow((byte)0, (byte)1, -1)]
@@ -40,7 +38,7 @@ public partial class WeekPatternTests
     /// Verifies that <see cref="WeekPattern.CompareTo(object)" /> returns a value whose sign correctly
     /// reflects the ordinal relationship when the argument is a boxed <see cref="byte" />.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow((byte)0, (byte)0, 0)]
     [DataRow((byte)1, (byte)0, 1)]
     [DataRow((byte)0, (byte)1, -1)]
@@ -54,12 +52,12 @@ public partial class WeekPatternTests
     /// <summary>
     /// Provides object values of types incompatible with <see cref="WeekPattern.CompareTo(object)" />.
     /// </summary>
-    public static IEnumerable<object[]> InvalidTypesForCompareTo => new[]
-    {
-        new object[] { "invalid" },
-        new object[] { DateTime.Now },
-        new object[] { new() }
-    };
+    public static IEnumerable<object[]> InvalidTypesForCompareTo =>
+    [
+        ["invalid"],
+        [DateTime.Now],
+        [new()]
+    ];
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.CompareTo(object)" /> throws <see cref="ArgumentException" />
@@ -77,7 +75,7 @@ public partial class WeekPatternTests
     /// Verifies that <see cref="WeekPattern.CompareTo(WeekPattern)" /> returns a value whose sign
     /// correctly reflects the ordinal relationship between two instances.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow((byte)0, (byte)0, 0)]
     [DataRow((byte)1, (byte)0, 1)]
     [DataRow((byte)0, (byte)1, -1)]
@@ -93,7 +91,7 @@ public partial class WeekPatternTests
     /// Verifies that <see cref="WeekPattern.CompareTo(byte)" /> returns a value whose sign correctly
     /// reflects the ordinal relationship between the instance and a raw bitmask.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow((byte)0, (byte)0, 0)]
     [DataRow((byte)1, (byte)0, 1)]
     [DataRow((byte)0, (byte)1, -1)]

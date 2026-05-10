@@ -36,7 +36,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that the instance overload returns the expected first occurrence of the requested <see cref="DayOfWeek" /> within the January-to-December quarter for the given input.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(FirstDateOfWeekInQuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(FirstDateOfWeekInQuarterJanuaryDecemberTestData))]
     public void FirstDateOfWeekInQuarter_WhenUsingJanuaryToDecember_ShouldReturnExpectedDate(DateOnly input, DayOfWeek dayOfWeek, DateOnly expected)
     {
         DateOnly actual = input.FirstDateOfWeekInQuarter(dayOfWeek, CalendarQuarterDefinition.JanuaryToDecember);

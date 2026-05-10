@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultiCharCheckDigitAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -57,8 +57,8 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
                 ExpectedIsValid = true,
             };
 
-            char lastExpected = vector.ExpectedCheck[^1];
-            char tampered = lastExpected == '0' ? '1' : '0';
+            var lastExpected = vector.ExpectedCheck[^1];
+            var tampered = lastExpected == '0' ? '1' : '0';
             yield return new MultiCharCheckDigitIsValidKnownAnswer
             {
                 Name = vector.Name + "_TamperedLastCheckDigit",

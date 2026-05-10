@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonCryptographicHashAlgorithmTests.TryGetCurrentHash.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,13 +20,13 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void TryGetCurrentHash_WhenDestinationIsExactSize_ShouldReturnTrueAndWriteHash(TVariant variant)
     {
-        var algorithm = CreateAlgorithm(variant);
+        TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
-        byte[] expected = algorithm.GetCurrentHash();
-        byte[] destination = new byte[algorithm.HashLengthInBytes];
+        var expected = algorithm.GetCurrentHash();
+        var destination = new byte[algorithm.HashLengthInBytes];
 
-        bool succeeded = algorithm.TryGetCurrentHash(destination, out int written);
+        var succeeded = algorithm.TryGetCurrentHash(destination, out var written);
 
         Assert.IsTrue(succeeded);
         Assert.AreEqual(algorithm.HashLengthInBytes, written);
@@ -42,17 +42,17 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void TryGetCurrentHash_WhenDestinationIsTooSmall_ShouldReturnFalse(TVariant variant)
     {
-        var algorithm = CreateAlgorithm(variant);
+        TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
-        byte[] destination = new byte[algorithm.HashLengthInBytes - 1];
+        var destination = new byte[algorithm.HashLengthInBytes - 1];
         if (destination.Length == 0)
         {
             Assert.Inconclusive($"Hash length for variant '{variant}' ({algorithm.HashLengthInBytes})is too small to test undersized destination.");
             return;
         }
 
-        bool succeeded = algorithm.TryGetCurrentHash(destination, out int written);
+        var succeeded = algorithm.TryGetCurrentHash(destination, out var written);
 
         Assert.IsFalse(succeeded);
         Assert.AreEqual(0, written);
@@ -67,13 +67,13 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void TryGetCurrentHash_WhenSuccessful_ShouldNotMutateAccumulatorState(TVariant variant)
     {
-        var algorithm = CreateAlgorithm(variant);
+        TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.QuickBrownFox);
 
-        byte[] first = new byte[algorithm.HashLengthInBytes];
+        var first = new byte[algorithm.HashLengthInBytes];
         Assert.IsTrue(algorithm.TryGetCurrentHash(first, out _));
 
-        byte[] second = algorithm.GetCurrentHash();
+        var second = algorithm.GetCurrentHash();
         CollectionAssert.AreEqual(first, second);
     }
 }

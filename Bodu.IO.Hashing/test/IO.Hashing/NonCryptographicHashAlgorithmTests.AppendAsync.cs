@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonCryptographicHashAlgorithmTests.AppendAsync.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public async Task AppendAsync_WhenHashingStream_ShouldMatchSynchronousAppend(TVariant variant)
     {
-        byte[] data = NonCryptographicHashSharedInputs.Sequential0To255;
+        var data = NonCryptographicHashSharedInputs.Sequential0To255;
 
         NonCryptographicHashAlgorithm streaming = CreateAlgorithm(variant);
         using (MemoryStream source = new(data))
@@ -44,7 +44,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [TestMethod]
     public async Task AppendAsync_WhenStreamIsNull_ShouldThrowArgumentNullException()
     {
-        var algorithm = CreateAlgorithm();
+        TAlgorithm algorithm = CreateAlgorithm();
 
         await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
         {
@@ -61,7 +61,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [TestMethod]
     public async Task AppendAsync_WhenCancellationRequested_ShouldThrowTaskCanceledException()
     {
-        var algorithm = CreateAlgorithm();
+        TAlgorithm algorithm = CreateAlgorithm();
         using MemoryStream stream = new(new byte[1024]);
 
         using CancellationTokenSource cts = new();

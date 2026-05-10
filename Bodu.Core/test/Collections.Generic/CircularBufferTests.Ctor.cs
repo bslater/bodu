@@ -67,7 +67,7 @@ public partial class CircularBufferTests
     [TestMethod]
     public void Ctor_WhenArrayProvided_ShouldPreserveOrder()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
         var buffer = new CircularBuffer<int>(source, 5);
         CollectionAssert.AreEqual(source, buffer.ToArray());
     }
@@ -78,7 +78,7 @@ public partial class CircularBufferTests
     [TestMethod]
     public void Ctor_WhenArrayProvided_ShouldSetCorrectCount()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
         var buffer = new CircularBuffer<int>(source, 5);
         Assert.AreEqual(3, buffer.Count);
     }
@@ -158,7 +158,7 @@ public partial class CircularBufferTests
     [TestMethod]
     public void Ctor_WhenCollectionExceedsCapacity_ShouldTrimOldItems()
     {
-        var buffer = new CircularBuffer<int>(new[] { 1, 2, 3, 4 }, 2);
+        var buffer = new CircularBuffer<int>([1, 2, 3, 4], 2);
         CollectionAssert.AreEqual(new[] { 3, 4 }, buffer.ToArray());
     }
 
@@ -298,7 +298,7 @@ public partial class CircularBufferTests
 
         Assert.AreEqual(3, buffer.Count);
 
-        string?[] result = buffer.ToArray();
+        var result = buffer.ToArray();
         Assert.AreEqual("A", result[0]);
         Assert.IsNull(result[1]);
         Assert.AreEqual("B", result[2]);
@@ -311,7 +311,7 @@ public partial class CircularBufferTests
     [TestMethod]
     public void Ctor_WhenEmptyCollectionAndValidCapacity_ShouldCreateEmptyBuffer()
     {
-        var buffer = new CircularBuffer<int>(Array.Empty<int>(), 5);
+        var buffer = new CircularBuffer<int>([], 5);
 
         Assert.AreEqual(0, buffer.Count);
         Assert.AreEqual(5, buffer.Capacity);

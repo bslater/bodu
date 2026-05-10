@@ -167,12 +167,12 @@ public static partial class TestHelpers
         throw new NotSupportedException($"Unsupported field type: {fieldType}");
     }
 
-    public static string GetDisposableFieldDisplayName(MethodInfo methodInfo, object[] data) =>
+    public static string GetTypeFieldDisplayName(MethodInfo methodInfo, object[] data) =>
         data.Length > 0 && data[0] is FieldInfo field
             ? $"{field.DeclaringType?.Name}.{field.Name}"
             : $"{methodInfo.Name}_NoDisposableFields";
 
-    public static string GetDisposablePropertyDisplayName(MethodInfo methodInfo, object[] data) =>
+    public static string GetTypePropertyDisplayName(MethodInfo methodInfo, object[] data) =>
         data.Length > 0 && data[0] is PropertyInfo property
             ? $"{property.DeclaringType?.Name}.{property.Name}"
             : $"{methodInfo.Name}_NoDisposableProperties";

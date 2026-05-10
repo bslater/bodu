@@ -84,13 +84,13 @@ public partial class ConcurrentCircularBufferTests
     public void CopyTo_WhenConcurrentClear_ShouldNotThrow()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(5);
-        for (int i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
 
         var exceptions = new ConcurrentBag<Exception>();
 
         var clearer = Task.Run(() =>
         {
-            for (int i = 0; i < 50; i++)
+            for (var i = 0; i < 50; i++)
             {
                 buffer.Clear();
                 Thread.SpinWait(10);
@@ -99,7 +99,7 @@ public partial class ConcurrentCircularBufferTests
 
         var copier = Task.Run(() =>
         {
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 try
                 {
@@ -126,14 +126,14 @@ public partial class ConcurrentCircularBufferTests
     public void CopyTo_WhenConcurrentEnqueue_ShouldNotThrowAndProduceWellSizedCopies()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(10);
-        for (int i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
 
         var exceptions = new ConcurrentBag<Exception>();
         var copies = new ConcurrentBag<TestItem[]>();
 
         var writer = Task.Run(() =>
         {
-            for (int i = 5; i < 50; i++)
+            for (var i = 5; i < 50; i++)
             {
                 buffer.TryEnqueue(new TestItem(i));
                 Thread.SpinWait(10);
@@ -142,7 +142,7 @@ public partial class ConcurrentCircularBufferTests
 
         var copier = Task.Run(() =>
         {
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 try
                 {

@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Reflection;
+
 namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
@@ -24,7 +26,7 @@ public partial class EvictingDictionaryTests
     [TestMethod]
     public void Policy_Property_ShouldBeReadOnly()
     {
-        var prop = typeof(EvictingDictionary<string, int>).GetProperty(nameof(EvictingDictionary<string, int>.Policy));
+        PropertyInfo? prop = typeof(EvictingDictionary<string, int>).GetProperty(nameof(EvictingDictionary<string, int>.Policy));
         Assert.IsNotNull(prop);
         Assert.IsFalse(prop!.CanWrite, "The Policy property should be read-only.");
     }

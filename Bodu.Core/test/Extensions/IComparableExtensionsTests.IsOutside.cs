@@ -83,7 +83,7 @@ public void IsOutside_WhenComparerIsNull_ShouldThrowArgumentNullException()
 {
     IComparer<int>? comparer = null;
 
-    var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
     {
         _ = 5.IsOutside(1, 10, comparer!);
     });

@@ -21,7 +21,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.LastDateOfYear" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(LastDateOfYearTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(LastDateOfYearTestData))]
     public void LastDateOfYear_WhenCalled_ShouldReturnDecember31(DateTime input, DateTime expected)
     {
         DateTime actual = input.LastDateOfYear();

@@ -23,7 +23,7 @@ public partial class WeekPatternTests
     public void Without_WhenSelectedDayProvided_ShouldReturnInstanceWithDayRemoved(DayOfWeek day)
     {
         var original = WeekPattern.FromByte(0b1111111);
-        var result = original.Without(day);
+        WeekPattern result = original.Without(day);
 
         Assert.IsFalse(result.Contains(day));
         Assert.AreEqual(6, result.Count);
@@ -37,7 +37,7 @@ public partial class WeekPatternTests
     public void Without_WhenCalled_ShouldPreserveOtherDays()
     {
         var original = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
-        var result = original.Without(DayOfWeek.Wednesday);
+        WeekPattern result = original.Without(DayOfWeek.Wednesday);
 
         Assert.IsTrue(result.Contains(DayOfWeek.Monday));
         Assert.IsFalse(result.Contains(DayOfWeek.Wednesday));
@@ -53,7 +53,7 @@ public partial class WeekPatternTests
     public void Without_WhenDayNotSelected_ShouldReturnEquivalentInstance()
     {
         var original = new WeekPattern(DayOfWeek.Monday);
-        var result = original.Without(DayOfWeek.Friday);
+        WeekPattern result = original.Without(DayOfWeek.Friday);
 
         Assert.AreEqual(original, result);
         Assert.AreEqual(1, result.Count);
@@ -81,7 +81,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void Without_WhenAllDaysRemoved_ShouldProduceEmptyPattern()
     {
-        var result = WeekPattern.FromByte(0b1111111)
+        WeekPattern result = WeekPattern.FromByte(0b1111111)
             .Without(DayOfWeek.Sunday)
             .Without(DayOfWeek.Monday)
             .Without(DayOfWeek.Tuesday)

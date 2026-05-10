@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Elf64Tests.Append.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public partial class Elf64Tests
     [TestMethod]
     public void Append_WhenSeedDiffers_ShouldProduceDifferentHash()
     {
-        byte[] input = new byte[] { 0x10, 0x20, 0x30 };
+        byte[] input = [0x10, 0x20, 0x30];
 
         Elf64 a = new(seed: 0UL);
         Elf64 b = new(seed: 131UL);

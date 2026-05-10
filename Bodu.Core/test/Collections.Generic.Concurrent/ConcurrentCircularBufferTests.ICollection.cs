@@ -185,7 +185,7 @@ public partial class ConcurrentCircularBufferTests
         var sentinel1 = new TestItem(9);
         var sentinel2 = new TestItem(8);
         var sentinel3 = new TestItem(7);
-        var array = new[] { sentinel1, sentinel2, sentinel3 };
+        TestItem[] array = new[] { sentinel1, sentinel2, sentinel3 };
         ((ICollection)buffer).CopyTo(array, 0);
         Assert.AreSame(sentinel1, array[0],
             "Index 0 should still reference the original sentinel item when the buffer is empty.");

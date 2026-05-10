@@ -27,7 +27,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
                 source: source,
                 childSelector: e => e.Children
             ),
-            expectedResult: new[] { "Root", "A", "B", "B1", "B2", "C", "C1", "C1A", "C2", "C2A", "C2B", "C2C", "D", "E" },
+            expectedResult: ["Root", "A", "B", "B1", "B2", "C", "C1", "C1A", "C2", "C2A", "C2B", "C2C", "D", "E"],
             resultSelector: e => e.Name
         );
 
@@ -39,7 +39,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
                 childSelector: e => e.Children,
                 selector: (e, i) => $"{i}:{e.Name}"
             ),
-            expectedResult: new[] { "0:Root", "0:A", "1:B", "0:B1", "1:B2", "2:C", "0:C1", "0:C1A", "1:C2", "0:C2A", "1:C2B", "2:C2C", "3:D", "4:E" }
+            expectedResult: ["0:Root", "0:A", "1:B", "0:B1", "1:B2", "2:C", "0:C1", "0:C1A", "1:C2", "0:C2A", "1:C2B", "2:C2C", "3:D", "4:E"]
         );
 
         yield return new EnumerableTestPlan<Node>(
@@ -50,7 +50,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
                 childSelector: e => e.Children,
                 selector: (e, i, d) => $"{new string('-', d)}{i}:{e.Name}"
             ),
-            expectedResult: new[] { "0:Root", "-0:A", "-1:B", "--0:B1", "--1:B2", "-2:C", "--0:C1", "---0:C1A", "--1:C2", "---0:C2A", "---1:C2B", "---2:C2C", "-3:D", "-4:E" }
+            expectedResult: ["0:Root", "-0:A", "-1:B", "--0:B1", "--1:B2", "-2:C", "--0:C1", "---0:C1A", "--1:C2", "---0:C2A", "---1:C2B", "---2:C2C", "-3:D", "-4:E"]
         );
 
         yield return new EnumerableTestPlan<Node>(
@@ -62,7 +62,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
                 selector: (e, i, d) => $"{new string('-', d)}{i}:{e.Name}",
                 recursionControl: e => e.Stop ? RecursiveSelectControl.YieldAndExit : RecursiveSelectControl.YieldAndRecurse
             ),
-            expectedResult: new[] { "0:Root", "-0:A", "-1:B", "--0:B1" }
+            expectedResult: ["0:Root", "-0:A", "-1:B", "--0:B1"]
         );
 
         yield return new EnumerableTestPlan<Node>(
@@ -74,7 +74,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
                 selector: (e, i, d) => $"{new string('-', d)}{i}:{e.Name}",
                 recursionControl: e => e.Stop ? RecursiveSelectControl.SkipOnly : RecursiveSelectControl.YieldAndRecurse
             ),
-            expectedResult: new[] { "0:Root", "-0:A", "-1:B", "--1:B2", "-2:C", "--1:C2", "---0:C2A", "---2:C2C", "-3:D" }
+            expectedResult: ["0:Root", "-0:A", "-1:B", "--1:B2", "-2:C", "--1:C2", "---0:C2A", "---2:C2C", "-3:D"]
         );
 
         yield return new EnumerableTestPlan<Node>(
@@ -86,7 +86,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
                 selector: (e, i, d) => $"{new string('-', d)}{i}:{e.Name}",
                 recursionControl: e => RecursiveSelectControl.SkipAndRecurse
             ),
-            expectedResult: Array.Empty<string>()
+            expectedResult: []
         );
 
         yield return new EnumerableTestPlan<Node>(
@@ -98,7 +98,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
                 selector: (e, i, d) => $"{new string('-', d)}{i}:{e.Name}",
                 recursionControl: e => RecursiveSelectControl.YieldAndExit
             ),
-            expectedResult: new[] { "0:Root" }
+            expectedResult: ["0:Root"]
         );
 
         yield return new EnumerableTestPlan<Node>(
@@ -110,7 +110,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
                 selector: (e, i, d) => $"{new string('-', d)}{i}:{e.Name}",
                 recursionControl: e => RecursiveSelectControl.SkipAndBreak
             ),
-            expectedResult: Array.Empty<string>()
+            expectedResult: []
         );
 
         yield return new EnumerableTestPlan<Node>(
@@ -122,7 +122,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
                 selector: (e, i, d) => $"{new string('-', d)}{i}:{e.Name}",
                 recursionControl: e => e.Name[0] == 'C' ? RecursiveSelectControl.YieldAndRecurse : RecursiveSelectControl.SkipAndRecurse
             ),
-            expectedResult: new[] { "-2:C", "--0:C1", "---0:C1A", "--1:C2", "---0:C2A", "---1:C2B", "---2:C2C" }
+            expectedResult: ["-2:C", "--0:C1", "---0:C1A", "--1:C2", "---0:C2A", "---1:C2B", "---2:C2C"]
         );
 
         yield return new EnumerableTestPlan<Node>(
@@ -134,7 +134,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
                 selector: (e, i, d) => $"{new string('-', d)}{i}:{e.Name}",
                 recursionControl: e => e.Stop ? RecursiveSelectControl.YieldOnly : RecursiveSelectControl.YieldAndRecurse
             ),
-            expectedResult: new[] { "0:Root", "-0:A", "-1:B", "--0:B1", "--1:B2", "-2:C", "--0:C1", "--1:C2", "---0:C2A", "---1:C2B", "---2:C2C", "-3:D", "-4:E" }
+            expectedResult: ["0:Root", "-0:A", "-1:B", "--0:B1", "--1:B2", "-2:C", "--0:C1", "--1:C2", "---0:C2A", "---1:C2B", "---2:C2C", "-3:D", "-4:E"]
         );
 
         yield return new EnumerableTestPlan<Node>(
@@ -146,7 +146,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
                 selector: (e, i, d) => $"{new string('-', d)}{i}:{e.Name}",
                 recursionControl: e => e.Name == "Root" ? RecursiveSelectControl.RecurseOnly : RecursiveSelectControl.YieldAndRecurse
             ),
-            expectedResult: new[] { "-0:A", "-1:B", "--0:B1", "--1:B2", "-2:C", "--0:C1", "---0:C1A", "--1:C2", "---0:C2A", "---1:C2B", "---2:C2C", "-3:D", "-4:E" }
+            expectedResult: ["-0:A", "-1:B", "--0:B1", "--1:B2", "-2:C", "--0:C1", "---0:C1A", "--1:C2", "---0:C2A", "---1:C2B", "---2:C2C", "-3:D", "-4:E"]
         );
 
         yield return new EnumerableTestPlan<Node>(
@@ -158,7 +158,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
                 selector: (e, i, d) => $"{new string('-', d)}{i}:{e.Name}",
                 recursionControl: e => e.Stop ? RecursiveSelectControl.SkipAndExit : RecursiveSelectControl.YieldAndRecurse
             ),
-            expectedResult: new[] { "0:Root", "-0:A", "-1:B" }
+            expectedResult: ["0:Root", "-0:A", "-1:B"]
         );
 
         yield return new EnumerableTestPlan<Node>(
@@ -177,7 +177,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
                     _ => RecursiveSelectControl.YieldAndRecurse
                 }
             ),
-            expectedResult: new[] { "0:Root", "-0:A", "--0:B1" }
+            expectedResult: ["0:Root", "-0:A", "--0:B1"]
         );
 
         yield return new EnumerableTestPlan<Node>(
@@ -189,7 +189,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
                 selector: (e, i, d) => $"{new string('-', d)}{i}:{e.Name}",
                 recursionControl: e => e.Name == "C2B" ? RecursiveSelectControl.SkipOnly : RecursiveSelectControl.YieldAndRecurse
             ),
-            expectedResult: new[] { "0:Root", "-0:A", "-1:B", "--0:B1", "--1:B2", "-2:C", "--0:C1", "---0:C1A", "--1:C2", "---0:C2A", "---2:C2C", "-3:D", "-4:E" }
+            expectedResult: ["0:Root", "-0:A", "-1:B", "--0:B1", "--1:B2", "-2:C", "--0:C1", "---0:C1A", "--1:C2", "---0:C2A", "---2:C2C", "-3:D", "-4:E"]
         );
     }
 
@@ -197,31 +197,22 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     /// Verifies that the method under test does not trigger enumeration until it is explicitly enumerated.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetDeferredExecutionCases), DynamicDataSourceType.Method)]
-    public void RecursiveSelect_WhenCalled_ShouldDeferExecution(EnumerableTestPlan<Node> testCase)
-    {
-        AssertExecutionIsDeferred(testCase.Name, testCase.Invoke, testCase.Source);
-    }
+    [DynamicData(nameof(GetDeferredExecutionCases))]
+    public void RecursiveSelect_WhenCalled_ShouldDeferExecution(EnumerableTestPlan<Node> testCase) => AssertExecutionIsDeferred(testCase.Name, testCase.Invoke, testCase.Source);
 
     /// <summary>
     /// Verifies that the method under test triggers enumeration when explicitly iterated.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetDeferredExecutionCases), DynamicDataSourceType.Method)]
-    public void RecursiveSelect_WhenEnumerated_ShouldTriggerExecution(EnumerableTestPlan<Node> testCase)
-    {
-        AssertExecutionOccursOnEnumeration(testCase.Name, testCase.Invoke, testCase.Source);
-    }
+    [DynamicData(nameof(GetDeferredExecutionCases))]
+    public void RecursiveSelect_WhenEnumerated_ShouldTriggerExecution(EnumerableTestPlan<Node> testCase) => AssertExecutionOccursOnEnumeration(testCase.Name, testCase.Invoke, testCase.Source);
 
     /// <summary>
     /// Verifies that the method under test triggers enumeration when explicitly iterated.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetDeferredExecutionCases), DynamicDataSourceType.Method)]
-    public void RecursiveSelect_WhenEnumerated_ShouldReturnExpectedResults(EnumerableTestPlan<Node> testCase)
-    {
-        AssertExecutionReturnsExpectedResults(testCase.Name, testCase.Invoke, testCase.Source, testCase.ExpectedResult, testCase.ResultSelector);
-    }
+    [DynamicData(nameof(GetDeferredExecutionCases))]
+    public void RecursiveSelect_WhenEnumerated_ShouldReturnExpectedResults(EnumerableTestPlan<Node> testCase) => AssertExecutionReturnsExpectedResults(testCase.Name, testCase.Invoke, testCase.Source, testCase.ExpectedResult, testCase.ResultSelector);
 
     /// <summary>
     /// Verifies that calling RecursiveSelect throws <see cref="ArgumentNullException" /> when the source sequence is <c>null</c>.
@@ -231,7 +222,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     {
         IEnumerable<object>? source = null!;
         Assert.ThrowsExactly<ArgumentNullException>(
-            () => source.RecursiveSelect(_ => Enumerable.Empty<object>()).ToList()
+            () => source.RecursiveSelect(_ => []).ToList()
         );
     }
 
@@ -258,7 +249,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
         var source = new[] { new object() };
         Assert.ThrowsExactly<ArgumentNullException>(
             () => source.RecursiveSelect(
-                childSelector: _ => Enumerable.Empty<object>(),
+                childSelector: _ => [],
                 selector: (Func<object, object>)null!
             ).ToList()
         );
@@ -273,7 +264,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
         var source = new[] { new object() };
         Assert.ThrowsExactly<ArgumentNullException>(
             () => source.RecursiveSelect(
-                childSelector: _ => Enumerable.Empty<object>(),
+                childSelector: _ => [],
                 selector: (Func<object, int, object>)null!
             ).ToList()
         );
@@ -288,7 +279,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
         var source = new[] { new object() };
         Assert.ThrowsExactly<ArgumentNullException>(
             () => source.RecursiveSelect(
-                childSelector: _ => Enumerable.Empty<object>(),
+                childSelector: _ => [],
                 selector: (Func<object, int, int, object>)null!
             ).Cast<Node>().ToList()
         );
@@ -304,7 +295,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
         var source = new[] { new object() };
         Assert.ThrowsExactly<ArgumentNullException>(
             () => source.RecursiveSelect(
-                childSelector: _ => Enumerable.Empty<object>(),
+                childSelector: _ => [],
                 selector: (Func<object, int, int, object>)null!,
                 recursionControl: _ => RecursiveSelectControl.YieldAndRecurse
             ).Cast<Node>().ToList()
@@ -320,7 +311,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
         var source = new[] { new object() };
         Assert.ThrowsExactly<ArgumentNullException>(
             () => source.RecursiveSelect(
-                childSelector: _ => Enumerable.Empty<object>(),
+                childSelector: _ => [],
                 selector: (e, i, d) => e,
                 recursionControl: (Func<object, RecursiveSelectControl>)null!
             ).Cast<Node>().ToList()
@@ -333,8 +324,8 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     [TestMethod]
     public void RecursiveSelect_WithEmptySource_ShouldReturnEmpty()
     {
-        object[] source = Array.Empty<object>();
-        var actual = source.RecursiveSelect(n => Array.Empty<object>()).ToList();
+        object[] source = [];
+        var actual = source.RecursiveSelect(n => []).ToList();
         Assert.AreEqual(0, actual.Count);
     }
 

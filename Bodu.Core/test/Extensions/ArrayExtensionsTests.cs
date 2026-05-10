@@ -38,29 +38,29 @@ public partial class ArrayExtensionsTests
     /// An odd-length unmanaged integer array. Exercises the
     /// <see cref="GC.AllocateUninitializedArray{T}"/> allocation path.
     /// </summary>
-    protected static int[] Ints => new[] { 1, 2, 3, 4, 5 };
+    protected static int[] Ints => [1, 2, 3, 4, 5];
 
     /// <summary>An even-length unmanaged integer array.</summary>
-    protected static int[] TwoInts => new[] { 1, 2 };
+    protected static int[] TwoInts => [1, 2];
 
     /// <summary>A single-element unmanaged integer array.</summary>
-    protected static int[] OneInt => new[] { 42 };
+    protected static int[] OneInt => [42];
 
     /// <summary>An empty unmanaged integer array.</summary>
-    protected static int[] NoInts => Array.Empty<int>();
+    protected static int[] NoInts => [];
 
     /// <summary>
     /// An odd-length reference-type array. Exercises the safe <c>new T[]</c>
     /// allocation path.
     /// </summary>
-    protected static string?[] Strings => new[] { "a", "b", "c", "d", "e" };
+    protected static string?[] Strings => ["a", "b", "c", "d", "e"];
 
     /// <summary>
     /// An odd-length array of <see cref="Wrapper"/> structs. Exercises the safe
     /// allocation path for structs that contain reference fields.
     /// </summary>
     protected static Wrapper[] Wrappers =>
-        new[] { new Wrapper("a"), new Wrapper("b"), new Wrapper("c") };
+        [new Wrapper("a"), new Wrapper("b"), new Wrapper("c")];
 
     // -------------------------------------------------------------------------
     // Data sources — full reverse, varying lengths
@@ -71,13 +71,12 @@ public partial class ArrayExtensionsTests
     /// full-reverse data-driven tests, covering odd, even, single-element, and empty cases.
     /// </summary>
     public static IEnumerable<object[]> FullReverseIntData =>
-        new[]
-        {
+        [
             new object[] { new[] { 1, 2, 3, 4, 5 }, new[] { 5, 4, 3, 2, 1 } }, // odd length
-            new object[] { new[] { 1, 2, 3, 4 },    new[] { 4, 3, 2, 1 }    }, // even length
-            new object[] { new[] { 42 },             new[] { 42 }            }, // single element
-            new object[] { Array.Empty<int>(),       Array.Empty<int>()      }, // empty
-        };
+            [new[] { 1, 2, 3, 4 },    new[] { 4, 3, 2, 1 }], // even length
+            [new[] { 42 },             new[] { 42 }], // single element
+            [Array.Empty<int>(),       Array.Empty<int>()], // empty
+        ];
 
     // -------------------------------------------------------------------------
     // Data sources — partial reverse, index + count
@@ -88,27 +87,25 @@ public partial class ArrayExtensionsTests
     /// tests, covering middle, first, last, and full-length section positions.
     /// </summary>
     public static IEnumerable<object[]> PartialReverseIntData =>
-        new[]
-        {
+        [
             new object[] { 1, 3, new[] { 1, 4, 3, 2, 5 } }, // middle section
-            new object[] { 0, 3, new[] { 3, 2, 1, 4, 5 } }, // first section
-            new object[] { 2, 3, new[] { 1, 2, 5, 4, 3 } }, // last section
-            new object[] { 0, 5, new[] { 5, 4, 3, 2, 1 } }, // full array
-        };
+            [0, 3, new[] { 3, 2, 1, 4, 5 }], // first section
+            [2, 3, new[] { 1, 2, 5, 4, 3 }], // last section
+            [0, 5, new[] { 5, 4, 3, 2, 1 }], // full array
+        ];
 
     /// <summary>
     /// Provides (index, count) pairs where count is zero or one, confirming the
     /// operation produces a straight copy with no reversal performed.
     /// </summary>
     public static IEnumerable<object[]> DegenerateCountData =>
-        new[]
-        {
+        [
             new object[] { 0, 0 }, // count zero at start
-            new object[] { 2, 0 }, // count zero at middle
-            new object[] { 0, 1 }, // count one at start
-            new object[] { 2, 1 }, // count one at middle
-            new object[] { 4, 1 }, // count one at last element
-        };
+            [2, 0], // count zero at middle
+            [0, 1], // count one at start
+            [2, 1], // count one at middle
+            [4, 1], // count one at last element
+        ];
 
     // -------------------------------------------------------------------------
     // Data sources — Range expressions
@@ -122,16 +119,15 @@ public partial class ArrayExtensionsTests
     /// end-relative, full-span, empty, and single-element ranges.
     /// </summary>
     public static IEnumerable<object[]> ReverseIntRangeData =>
-        new[]
-        {
+        [
             new object[] { 1, 4, false, false, new[] { 1, 4, 3, 2, 5 } }, // 1..4   start-relative, middle
-            new object[] { 4, 1, true,  true,  new[] { 1, 4, 3, 2, 5 } }, // ^4..^1 end-relative, equivalent
-            new object[] { 0, 0, false, true,  new[] { 5, 4, 3, 2, 1 } }, // 0..^0  full array
-            new object[] { 0, 3, false, false, new[] { 3, 2, 1, 4, 5 } }, // 0..3   first section
-            new object[] { 2, 5, false, false, new[] { 1, 2, 5, 4, 3 } }, // 2..5   last section
-            new object[] { 2, 2, false, false, new[] { 1, 2, 3, 4, 5 } }, // 2..2   empty range — straight copy
-            new object[] { 2, 3, false, false, new[] { 1, 2, 3, 4, 5 } }, // 2..3   single element — straight copy
-        };
+            [4, 1, true,  true,  new[] { 1, 4, 3, 2, 5 }], // ^4..^1 end-relative, equivalent
+            [0, 0, false, true,  new[] { 5, 4, 3, 2, 1 }], // 0..^0  full array
+            [0, 3, false, false, new[] { 3, 2, 1, 4, 5 }], // 0..3   first section
+            [2, 5, false, false, new[] { 1, 2, 5, 4, 3 }], // 2..5   last section
+            [2, 2, false, false, new[] { 1, 2, 3, 4, 5 }], // 2..2   empty range — straight copy
+            [2, 3, false, false, new[] { 1, 2, 3, 4, 5 }], // 2..3   single element — straight copy
+        ];
 
     // -------------------------------------------------------------------------
     // Data sources — non-generic Array, element type coverage
@@ -142,25 +138,23 @@ public partial class ArrayExtensionsTests
     /// non-generic full-reverse data-driven tests.
     /// </summary>
     public static IEnumerable<object[]> NonGenericArrayFullReverseData =>
-        new[]
-        {
+        [
             new object[] { new int[]    { 1, 2, 3, 4, 5 }, new int[]    { 5, 4, 3, 2, 1 } },
-            new object[] { new string[] { "a", "b", "c" }, new string[] { "c", "b", "a" } },
-            new object[] { Array.Empty<int>(),             Array.Empty<int>()             },
-        };
+            [new string[] { "a", "b", "c" }, new string[] { "c", "b", "a" }],
+            [Array.Empty<int>(),             Array.Empty<int>()],
+        ];
 
     /// <summary>
     /// Provides (Range, expected int[]) pairs for non-generic Array Range-based
     /// data-driven tests over <c>{ 1, 2, 3, 4, 5 }</c>.
     /// </summary>
     public static IEnumerable<object[]> NonGenericArrayRangeData =>
-        new[]
-        {
+        [
             new object[] { 0,  0,  false, false, new[] { 1, 2, 3, 4, 5 } }, // 0..0   empty range, no-op
-            new object[] { 1,  4,  false, false, new[] { 1, 4, 3, 2, 5 } }, // 1..4   start-relative
-            new object[] { 4,  1,  true,  true,  new[] { 1, 4, 3, 2, 5 } }, // ^4..^1 end-relative
-            new object[] { 0,  0,  false, true,  new[] { 5, 4, 3, 2, 1 } }, // 0..^0  full array
-        };
+            [1,  4,  false, false, new[] { 1, 4, 3, 2, 5 }], // 1..4   start-relative
+            [4,  1,  true,  true,  new[] { 1, 4, 3, 2, 5 }], // ^4..^1 end-relative
+            [0,  0,  false, true,  new[] { 5, 4, 3, 2, 1 }], // 0..^0  full array
+        ];
 
     // -------------------------------------------------------------------------
     // Data sources — ReverseCore<T> and ReverseArrayCore
@@ -172,15 +166,14 @@ public partial class ArrayExtensionsTests
     /// full-span, partial, and degenerate cases.
     /// </summary>
     public static IEnumerable<object[]> ReverseCoreData =>
-        new[]
-        {
+        [
             new object[] { 0, 5, new[] { 5, 4, 3, 2, 1 } }, // full reverse
-            new object[] { 1, 3, new[] { 1, 4, 3, 2, 5 } }, // partial — middle
-            new object[] { 0, 3, new[] { 3, 2, 1, 4, 5 } }, // partial — first section
-            new object[] { 2, 3, new[] { 1, 2, 5, 4, 3 } }, // partial — last section
-            new object[] { 2, 0, new[] { 1, 2, 3, 4, 5 } }, // count zero — straight copy
-            new object[] { 2, 1, new[] { 1, 2, 3, 4, 5 } }, // count one — straight copy
-        };
+            [1, 3, new[] { 1, 4, 3, 2, 5 }], // partial — middle
+            [0, 3, new[] { 3, 2, 1, 4, 5 }], // partial — first section
+            [2, 3, new[] { 1, 2, 5, 4, 3 }], // partial — last section
+            [2, 0, new[] { 1, 2, 3, 4, 5 }], // count zero — straight copy
+            [2, 1, new[] { 1, 2, 3, 4, 5 }], // count one — straight copy
+        ];
 
     // -------------------------------------------------------------------------
     // Shared assertion helpers

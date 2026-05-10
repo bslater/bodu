@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CrcStandardTests.GetObjectData.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -36,11 +36,11 @@ public partial class CrcStandardTests
         System.Reflection.ConstructorInfo? deserCtor = typeof(CrcStandard).GetConstructor(
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance,
             binder: null,
-            types: new[] { typeof(SerializationInfo), typeof(StreamingContext) },
+            types: [typeof(SerializationInfo), typeof(StreamingContext)],
             modifiers: null);
         Assert.IsNotNull(deserCtor, "Private deserialisation constructor must exist.");
 
-        CrcStandard restored = (CrcStandard)deserCtor!.Invoke(new object[] { info, new StreamingContext(StreamingContextStates.All) });
+        var restored = (CrcStandard)deserCtor!.Invoke([info, new StreamingContext(StreamingContextStates.All)]);
         Assert.IsTrue(original.Equals(restored));
         Assert.AreEqual(original.GetHashCode(), restored.GetHashCode());
     }
@@ -55,8 +55,10 @@ public partial class CrcStandardTests
     {
         CrcStandard standard = CreateReference();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(
-            () => ((ISerializable)standard).GetObjectData(null!, new StreamingContext(StreamingContextStates.All)));
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(            () =>
+        {
+            ((ISerializable)standard).GetObjectData(null!, new StreamingContext(StreamingContextStates.All));
+        });
         Assert.AreEqual("info", ex.ParamName);
     }
 }

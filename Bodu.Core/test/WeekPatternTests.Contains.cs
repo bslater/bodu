@@ -49,7 +49,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void Contains_WhenCalledOnEmpty_ShouldReturnFalseForAllDays()
     {
-        var pattern = WeekPattern.Empty;
+        WeekPattern pattern = WeekPattern.Empty;
 
         foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
             Assert.IsFalse(pattern.Contains(day), $"{day} should not be contained in Empty.");
@@ -62,7 +62,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void Contains_WhenComparedToIndexer_ShouldReturnIdenticalResult()
     {
-        var pattern = WeekPattern.Weekdays;
+        WeekPattern pattern = WeekPattern.Weekdays;
 
         foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
             Assert.AreEqual(pattern[day], pattern.Contains(day),
@@ -79,7 +79,7 @@ public partial class WeekPatternTests
     [DataRow(99)]
     public void Contains_WhenInvalidDay_ShouldThrowArgumentOutOfRangeException(int invalidDay)
     {
-        var pattern = WeekPattern.Empty;
+        WeekPattern pattern = WeekPattern.Empty;
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = pattern.Contains((DayOfWeek)invalidDay);

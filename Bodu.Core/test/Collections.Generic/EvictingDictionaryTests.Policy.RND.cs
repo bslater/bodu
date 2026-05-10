@@ -140,7 +140,7 @@ public partial class EvictingDictionaryTests
         const int trials = 200;
         var evictedKeys = new HashSet<string>();
 
-        for (int i = 0; i < trials; i++)
+        for (var i = 0; i < trials; i++)
         {
             var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.RandomReplacement);
             dictionary.Add("A", 1);

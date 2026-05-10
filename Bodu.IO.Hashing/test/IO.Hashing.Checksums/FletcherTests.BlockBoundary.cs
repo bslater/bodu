@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FletcherTests.BlockBoundary.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -33,24 +33,24 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
     [DataRow(65)]
     public void Append_WhenInputStraddlesBlockBoundary_ShouldMatchAcrossSubmissionStyles(int length)
     {
-        byte[] input = new byte[length];
-        for (int i = 0; i < length; i++)
+        var input = new byte[length];
+        for (var i = 0; i < length; i++)
             input[i] = (byte)i;
 
         TAlgorithm whole = CreateAlgorithm();
         whole.Append(input);
 
         TAlgorithm chunked = CreateAlgorithm();
-        int third = length / 3;
+        var third = length / 3;
         chunked.Append(input.AsSpan(0, third));
         chunked.Append(input.AsSpan(third, third));
         chunked.Append(input.AsSpan(third * 2, length - (third * 2)));
 
         TAlgorithm perByte = CreateAlgorithm();
-        foreach (byte b in input)
+        foreach (var b in input)
             perByte.Append(new[] { b });
 
-        byte[] wholeHash = whole.GetCurrentHash();
+        var wholeHash = whole.GetCurrentHash();
         CollectionAssert.AreEqual(wholeHash, chunked.GetCurrentHash(),
             $"Chunked append produced a different digest than single-shot for length {length}.");
         CollectionAssert.AreEqual(wholeHash, perByte.GetCurrentHash(),
@@ -65,8 +65,8 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
     [TestMethod]
     public void GetCurrentHash_WhenCalledMidStream_ShouldNotDisturbSubsequentHashing()
     {
-        byte[] input = new byte[32];
-        for (int i = 0; i < input.Length; i++)
+        var input = new byte[32];
+        for (var i = 0; i < input.Length; i++)
             input[i] = (byte)(i ^ 0xAA);
 
         TAlgorithm observed = CreateAlgorithm();

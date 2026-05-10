@@ -10,7 +10,7 @@ public static class NodeSampleTree
 {
     public static Node[] BuildSampleTree()
     {
-        return new[] {
+        return [
             new  Node
             {
                 Name = "Root",
@@ -57,6 +57,6 @@ public static class NodeSampleTree
                     new Node{Name="E",Stop=true},
                 }
             }
-        };
+        ];
     }
 }

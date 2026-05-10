@@ -18,7 +18,7 @@ public partial class PooledBufferBuilderTests
     public void Sort_WhenCalledWithDefaultComparer_ShouldSortWrittenElementsAscending()
     {
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(new[] { 5, 1, 4, 2, 3 });
+        builder.AppendRange([5, 1, 4, 2, 3]);
 
         builder.Sort();
 
@@ -33,7 +33,7 @@ public partial class PooledBufferBuilderTests
     public void Sort_WhenCalledWithExplicitComparer_ShouldSortUsingThatComparer()
     {
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(new[] { 1, 3, 5, 2, 4 });
+        builder.AppendRange([1, 3, 5, 2, 4]);
 
         builder.Sort(Comparer<int>.Create((a, b) => b.CompareTo(a))); // descending
 
@@ -48,7 +48,7 @@ public partial class PooledBufferBuilderTests
     public void Sort_WhenCalledWithComparison_ShouldSortUsingThatComparison()
     {
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(new[] { 3, 1, 4, 1, 5 });
+        builder.AppendRange([3, 1, 4, 1, 5]);
 
         builder.Sort((a, b) => a.CompareTo(b));
 
@@ -79,7 +79,7 @@ public partial class PooledBufferBuilderTests
     public void Sort_WhenCalled_ShouldNotChangeWrittenCount()
     {
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(new[] { 3, 1, 2 });
+        builder.AppendRange([3, 1, 2]);
 
         builder.Sort();
 
@@ -154,7 +154,7 @@ public partial class PooledBufferBuilderTests
     public void Sort_WhenExplicitComparerIsNull_ShouldUseDefaultComparerAndSortAscending()
     {
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(new[] { 3, 1, 2 });
+        builder.AppendRange([3, 1, 2]);
 
         builder.Sort((Comparer<int>?)null);
 

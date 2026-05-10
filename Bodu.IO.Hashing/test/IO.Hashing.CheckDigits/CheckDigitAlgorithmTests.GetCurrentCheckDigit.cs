@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CheckDigitAlgorithmTests.GetCurrentCheckDigit.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,9 +18,9 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
         TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Append("12345".AsSpan());
 
-        char first = algorithm.GetCurrentCheckDigit();
-        char second = algorithm.GetCurrentCheckDigit();
-        char third = algorithm.GetCurrentCheckDigit();
+        var first = algorithm.GetCurrentCheckDigit();
+        var second = algorithm.GetCurrentCheckDigit();
+        var third = algorithm.GetCurrentCheckDigit();
 
         Assert.AreEqual(first, second);
         Assert.AreEqual(second, third);

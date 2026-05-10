@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonCryptographicHashAlgorithmTests.GetHashAndReset.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,12 +21,12 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     {
         NonCryptographicHashAlgorithm snapshot = CreateAlgorithm(variant);
         snapshot.Append(NonCryptographicHashSharedInputs.Abc);
-        byte[] expected = snapshot.GetCurrentHash();
+        var expected = snapshot.GetCurrentHash();
 
-        var algorithm = CreateAlgorithm(variant);
+        TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
-        byte[] actual = algorithm.GetHashAndReset();
+        var actual = algorithm.GetHashAndReset();
 
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -40,7 +40,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void GetHashAndReset_AfterAppend_ShouldResetInstance(TVariant variant)
     {
-        var algorithm = CreateAlgorithm(variant);
+        TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.QuickBrownFox);
         _ = algorithm.GetHashAndReset();
 
@@ -58,11 +58,11 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void GetHashAndReset_WhenWritingToSpan_ShouldReturnHashAndResetInstance(TVariant variant)
     {
-        var algorithm = CreateAlgorithm(variant);
+        TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.Sequential0To255);
 
-        byte[] destination = new byte[algorithm.HashLengthInBytes];
-        int written = algorithm.GetHashAndReset(destination);
+        var destination = new byte[algorithm.HashLengthInBytes];
+        var written = algorithm.GetHashAndReset(destination);
 
         Assert.AreEqual(algorithm.HashLengthInBytes, written);
 

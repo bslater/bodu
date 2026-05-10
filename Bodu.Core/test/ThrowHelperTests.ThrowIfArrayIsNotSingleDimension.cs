@@ -12,7 +12,7 @@ public partial class ThrowHelperTests
     /// Verifies that <see cref="ThrowHelper.ThrowIfArrayIsNotSingleDimension" />, when ArrayIsMultiDimensional, throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetMultiDimensionalArrayTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetMultiDimensionalArrayTestData))]
     public void ThrowIfArrayIsNotSingleDimension_WhenArrayIsMultiDimensional_ShouldThrowExactly(Array array)
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
@@ -25,11 +25,8 @@ public partial class ThrowHelperTests
     /// Verifies that <see cref="ThrowHelper.ThrowIfArrayIsNotSingleDimension" />, when ArrayIsSingleDimension, NotThrow.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetSingleDimensionalArrayTestData), DynamicDataSourceType.Method)]
-    public void ThrowIfArrayIsNotSingleDimension_WhenArrayIsSingleDimension_ShouldNotThrow(Array array)
-    {
-        ThrowHelper.ThrowIfArrayMultidimensional(array);
-    }
+    [DynamicData(nameof(GetSingleDimensionalArrayTestData))]
+    public void ThrowIfArrayIsNotSingleDimension_WhenArrayIsSingleDimension_ShouldNotThrow(Array array) => ThrowHelper.ThrowIfArrayMultidimensional(array);
 
     private static IEnumerable<object[]> GetMultiDimensionalArrayTestData()
     {
@@ -41,7 +38,7 @@ public partial class ThrowHelperTests
     private static IEnumerable<object[]> GetSingleDimensionalArrayTestData()
     {
         yield return new object[] { new int[5] };
-        yield return new object[] { new double[0] };
+        yield return new object[] { Array.Empty<double>() };
         yield return new object[] { new string[3] };
     }
 }

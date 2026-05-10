@@ -22,7 +22,7 @@ public partial class PooledBufferBuilderTests
         Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = builder.WrittenCount; });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = builder.Capacity; });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.Append(1); });
-        Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.AppendRange(new[] { 1 }); });
+        Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.AppendRange([1]); });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.AppendRange(new[] { 1 }.AsSpan()); });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = builder.AsArray(); });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = builder.WrittenSpan; });
@@ -51,7 +51,7 @@ public partial class PooledBufferBuilderTests
     public void Dispose_WhenInvokedMultipleTimes_ShouldNotThrow_UsingPooledBufferBuilder()
     {
         var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(new[] { 1, 2, 3 });
+        builder.AppendRange([1, 2, 3]);
 
         builder.Dispose();
         builder.Dispose(); // no exception expected

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FletcherCtorGuardTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -30,7 +30,7 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
     [DataRow(-1)]
     public void Ctor_WhenHashSizeIsNotSupported_ShouldThrowArgumentException(int hashSize)
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(() => new TestFletcher(hashSize));
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => new TestFletcher(hashSize));
         Assert.AreEqual("hashSize", ex.ParamName);
         StringAssert.StartsWith(ex.Message, "Invalid hash size:");
     }

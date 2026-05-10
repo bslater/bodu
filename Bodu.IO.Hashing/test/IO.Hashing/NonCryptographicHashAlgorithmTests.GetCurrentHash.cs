@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonCryptographicHashAlgorithmTests.GetCurrentHash.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -38,12 +38,12 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void GetCurrentHash_WhenCalledRepeatedly_ShouldReturnSameDigest(TVariant variant)
     {
-        var algorithm = CreateAlgorithm(variant);
+        TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.Abc);
 
-        byte[] first = algorithm.GetCurrentHash();
-        byte[] second = algorithm.GetCurrentHash();
-        byte[] third = algorithm.GetCurrentHash();
+        var first = algorithm.GetCurrentHash();
+        var second = algorithm.GetCurrentHash();
+        var third = algorithm.GetCurrentHash();
 
         CollectionAssert.AreEqual(first, second);
         CollectionAssert.AreEqual(second, third);
@@ -58,13 +58,13 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void GetCurrentHash_WhenWritingToSpan_ShouldMatchArrayOverload(TVariant variant)
     {
-        var algorithm = CreateAlgorithm(variant);
+        TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Append(NonCryptographicHashSharedInputs.QuickBrownFox);
 
-        byte[] expected = algorithm.GetCurrentHash();
+        var expected = algorithm.GetCurrentHash();
 
-        byte[] destination = new byte[algorithm.HashLengthInBytes];
-        int written = algorithm.GetCurrentHash(destination);
+        var destination = new byte[algorithm.HashLengthInBytes];
+        var written = algorithm.GetCurrentHash(destination);
 
         Assert.AreEqual(algorithm.HashLengthInBytes, written);
         CollectionAssert.AreEqual(expected, destination);
@@ -77,19 +77,19 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void GetCurrentHash_ForMultiChunkInputs_ShouldProduceDistinctHashes(TVariant variant)
     {
-        var specification = GetSpecification(variant);
-        var algorithm = CreateAlgorithm(variant);
+        NonCryptographicHashAlgorithmSpecification specification = GetSpecification(variant);
+        TAlgorithm algorithm = CreateAlgorithm(variant);
 
         var bufferSize = (specification.IncrementalCoverageBytes ?? specification.HashLengthInBytes) * 4;
-        byte[] inputA = TestHelpers.GenerateRandomNonZeroBytes(bufferSize);
-        byte[] inputB = inputA.Copy()!;
+        var inputA = TestHelpers.GenerateRandomNonZeroBytes(bufferSize);
+        var inputB = inputA.Copy()!;
         inputB[bufferSize - 2] = 0x00;
 
         algorithm.Append(inputA);
-        byte[] hashA = algorithm.GetHashAndReset();
+        var hashA = algorithm.GetHashAndReset();
 
         algorithm.Append(inputB);
-        byte[] hashB = algorithm.GetHashAndReset();
+        var hashB = algorithm.GetHashAndReset();
 
         CollectionAssert.AreNotEqual(hashA, hashB,
             "Distinct multi-chunk inputs must produce different hashes.");

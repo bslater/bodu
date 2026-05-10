@@ -23,7 +23,7 @@ public partial class DateOnlyExtensionsTests
     public void ToIsoString_WhenUtcKind_ShouldReturnUtcFormatted(string inputStr, DateTimeKind kind, string expected)
     {
         DateTime input = DateTime.Parse(inputStr, null, DateTimeStyles.AdjustToUniversal).ToUniversalTime();
-        string actual = input.ToIsoString();
+        var actual = input.ToIsoString();
         Assert.AreEqual(expected, actual);
     }
 
@@ -36,7 +36,7 @@ public partial class DateOnlyExtensionsTests
     public void ToIsoString_WithIncludeFractionalSeconds_ShouldRespectOption(string dateTimeStr, bool includeFraction, string? expected)
     {
         DateTime input = DateTime.Parse(dateTimeStr, CultureInfo.InvariantCulture);
-        string actual = input.ToIsoString(includeFraction);
+        var actual = input.ToIsoString(includeFraction);
 
         if (expected != null)
             Assert.AreEqual(expected, actual);
@@ -54,7 +54,7 @@ public partial class DateOnlyExtensionsTests
     public void ToIsoString_WithExplicitKind_ShouldRespectKind(string dateTimeStr, DateTimeKind kind, string? expected)
     {
         DateTime input = DateTime.SpecifyKind(DateTime.Parse(dateTimeStr, CultureInfo.InvariantCulture), kind);
-        string actual = input.ToIsoString(kind);
+        var actual = input.ToIsoString(kind);
 
         if (expected != null)
         {
@@ -78,7 +78,7 @@ public partial class DateOnlyExtensionsTests
     public void ToIsoString_WithCustomFormat_ShouldReturnExpected(string inputStr, string format, string expected)
     {
         DateTime input = DateTime.Parse(inputStr, CultureInfo.InvariantCulture);
-        string actual = input.ToIsoString(format);
+        var actual = input.ToIsoString(format);
         Assert.AreEqual(expected, actual);
     }
 

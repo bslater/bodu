@@ -183,11 +183,11 @@ public partial class MultisetTests
     {
         Multiset<int> sut = new Multiset<int>();
         sut.Add(7, 2);
-        int[] dest = new int[offset + 2];
+        var dest = new int[offset + 2];
 
         sut.CopyTo(dest, offset);
 
-        for (int i = 0; i < offset; i++)
+        for (var i = 0; i < offset; i++)
             Assert.AreEqual(0, dest[i], $"Slot {i} before offset should be untouched.");
 
         Assert.AreEqual(7, dest[offset]);

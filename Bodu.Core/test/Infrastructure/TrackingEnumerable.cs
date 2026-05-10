@@ -14,30 +14,30 @@ namespace Bodu.Infrastructure;
 /// <typeparam name="T">The element type.</typeparam>
 public sealed class TrackingEnumerable<T> : IEnumerable<T>
 {
-    private readonly IEnumerable<T> source;
-    private readonly Action onEnumerate;
-    private readonly Action<int>? onItemAccess;
+    private readonly IEnumerable<T> _source;
+    private readonly Action _onEnumerate;
+    private readonly Action<int>? _onItemAccess;
 
-    private int itemsEnumerated = 0;
-    private bool enumeratorCreated = false;
-    private bool enforceSingleEnumeration;
+    private int _itemsEnumerated = 0;
+    private bool _enumeratorCreated = false;
+    private bool _enforceSingleEnumeration;
 
     /// <summary>
     /// Gets whether the enumerable has been enumerated at least once.
     /// </summary>
-    public bool HasEnumerated => enumeratorCreated;
+    public bool HasEnumerated => _enumeratorCreated;
 
     /// <summary>
     /// Gets the number of items enumerated (only tracked in first enumeration).
     /// </summary>
-    public int ItemsEnumerated => itemsEnumerated;
+    public int ItemsEnumerated => _itemsEnumerated;
 
     /// <summary>
     /// Enables enforcement of one-time enumeration.
     /// </summary>
     public TrackingEnumerable<T> EnforceSingleEnumeration()
     {
-        enforceSingleEnumeration = true;
+        _enforceSingleEnumeration = true;
         return this;
     }
 
@@ -49,24 +49,24 @@ public sealed class TrackingEnumerable<T> : IEnumerable<T>
     /// <param name="onItemAccess">An optional callback for each item accessed.</param>
     public TrackingEnumerable(IEnumerable<T> source, Action? onEnumerate = null, Action<int>? onItemAccess = null)
     {
-        this.source = source ?? throw new ArgumentNullException(nameof(source));
-        this.onEnumerate = onEnumerate ?? (() => { });
-        this.onItemAccess = onItemAccess;
+        this._source = source ?? throw new ArgumentNullException(nameof(source));
+        this._onEnumerate = onEnumerate ?? (() => { });
+        this._onItemAccess = onItemAccess;
     }
 
     public IEnumerator<T> GetEnumerator()
     {
-        if (enumeratorCreated && enforceSingleEnumeration)
+        if (_enumeratorCreated && _enforceSingleEnumeration)
             throw new InvalidOperationException("Sequence cannot be enumerated more than once.");
 
-        enumeratorCreated = true;
-        onEnumerate();
+        _enumeratorCreated = true;
+        _onEnumerate();
 
-        int index = 0;
-        foreach (var item in source)
+        var index = 0;
+        foreach (T? item in _source)
         {
-            onItemAccess?.Invoke(index);
-            itemsEnumerated = ++index;
+            _onItemAccess?.Invoke(index);
+            _itemsEnumerated = ++index;
             yield return item;
         }
     }

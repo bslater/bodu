@@ -22,20 +22,14 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     [DynamicData(nameof(FullReverseIntData), typeof(ArrayExtensionsTests))]
     public void Reverse_WhenSourceHasDifferentLengths_ForTypedArray_ShouldReturnAllElementsReversed(
-        int[] input, int[] expected)
-    {
-        CollectionAssert.AreEqual(expected, input.Reverse());
-    }
+        int[] input, int[] expected) => CollectionAssert.AreEqual(expected, input.Reverse());
 
     /// <summary>
     /// Verifies that reversing a typed array of reference-type elements returns all
     /// elements in reverse order, exercising the safe <c>new T[]</c> allocation path.
     /// </summary>
     [TestMethod]
-    public void Reverse_WhenCalled_ForTypedArrayOfReferenceType_ShouldReturnElementsReversed()
-    {
-        CollectionAssert.AreEqual(new[] { "e", "d", "c", "b", "a" }, Strings.Reverse());
-    }
+    public void Reverse_WhenCalled_ForTypedArrayOfReferenceType_ShouldReturnElementsReversed() => CollectionAssert.AreEqual(new[] { "e", "d", "c", "b", "a" }, Strings.Reverse());
 
     /// <summary>
     /// Verifies that reversing a typed array of structs containing reference fields returns
@@ -57,7 +51,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Reverse_WhenCalled_ForTypedArray_ShouldNotModifySource()
     {
-        int[] original = Ints;
+        var original = Ints;
         _ = original.Reverse();
         AssertIntsSourceIsUnmodified(original);
     }
@@ -69,7 +63,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Reverse_WhenCalled_ForTypedArray_ShouldReturnNewAllocation()
     {
-        int[] original = Ints;
+        var original = Ints;
         AssertIsNewAllocation(original, original.Reverse());
     }
 
@@ -81,7 +75,7 @@ public partial class ArrayExtensionsTests
     public void Reverse_WhenSourceIsNull_ForTypedArray_ShouldThrowException()
     {
         int[]? source = null;
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(
             () => source!.Reverse());
         Assert.AreEqual("source", ex.ParamName);
     }
@@ -97,10 +91,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     [DynamicData(nameof(PartialReverseIntData), typeof(ArrayExtensionsTests))]
     public void Reverse_WhenRangeIsValid_ForTypedArrayIndexCount_ShouldReverseOnlyNominatedElements(
-        int index, int count, int[] expected)
-    {
-        CollectionAssert.AreEqual(expected, Ints.Reverse(index, count));
-    }
+        int index, int count, int[] expected) => CollectionAssert.AreEqual(expected, Ints.Reverse(index, count));
 
     /// <summary>
     /// Verifies that a count of zero or one on a typed array returns a straight copy
@@ -109,10 +100,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     [DynamicData(nameof(DegenerateCountData), typeof(ArrayExtensionsTests))]
     public void Reverse_WhenCountIsZeroOrOne_ForTypedArrayIndexCount_ShouldReturnStraightCopy(
-        int index, int count)
-    {
-        CollectionAssert.AreEqual(Ints, Ints.Reverse(index, count));
-    }
+        int index, int count) => CollectionAssert.AreEqual(Ints, Ints.Reverse(index, count));
 
     /// <summary>
     /// Verifies that elements outside the nominated range are copied unchanged
@@ -121,7 +109,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Reverse_WhenRangeIsMiddleSection_ForTypedArrayIndexCount_ShouldLeaveOuterElementsUnchanged()
     {
-        int[] result = Ints.Reverse(index: 1, count: 3);
+        var result = Ints.Reverse(index: 1, count: 3);
         Assert.AreEqual(Ints[0], result[0]);
         Assert.AreEqual(Ints[4], result[4]);
     }
@@ -132,7 +120,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Reverse_WhenCalled_ForTypedArrayIndexCount_ShouldNotModifySource()
     {
-        int[] original = Ints;
+        var original = Ints;
         _ = original.Reverse(1, 3);
         AssertIntsSourceIsUnmodified(original);
     }
@@ -146,7 +134,7 @@ public partial class ArrayExtensionsTests
     public void Reverse_WhenSourceIsNull_ForTypedArrayIndexCount_ShouldThrowException()
     {
         int[]? source = null;
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(            () =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(            () =>
         {
             source!.Reverse(0, 1);
         });
@@ -164,7 +152,7 @@ public partial class ArrayExtensionsTests
     public void Reverse_WhenIndexIsInvalid_ForTypedArrayIndexCount_ShouldThrowArgumentOutOfRangeException(
         int index, int count, string expectedParamName)
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(            () =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(            () =>
         {
             Ints.Reverse(index, count);
         });
@@ -183,7 +171,7 @@ public partial class ArrayExtensionsTests
     public void Reverse_WhenCountIsInvalid_ForTypedArrayIndexCount_ShouldThrowArgumentOutOfRangeException(
         int index, int count, string expectedParamName)
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             Ints.Reverse(index, count);
         });
@@ -232,7 +220,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Reverse_WhenCalled_ForTypedArrayRange_ShouldNotModifySource()
     {
-        int[] original = Ints;
+        var original = Ints;
         _ = original.Reverse(1..4);
         AssertIntsSourceIsUnmodified(original);
     }
@@ -246,7 +234,7 @@ public partial class ArrayExtensionsTests
     public void Reverse_WhenSourceIsNull_ForTypedArrayRange_ShouldThrowException()
     {
         int[]? source = null;
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(            () =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(            () =>
         {
             source!.Reverse(1..3);
         });
@@ -301,7 +289,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Reverse_WhenCalled_ForNonGenericArray_ShouldNotModifySource()
     {
-        int[] original = Ints;
+        var original = Ints;
         _ = ((Array)original).Reverse();
         AssertIntsSourceIsUnmodified(original);
     }
@@ -314,7 +302,7 @@ public partial class ArrayExtensionsTests
     public void Reverse_WhenSourceIsNull_ForNonGenericArray_ShouldThrowException()
     {
         Array? source = null;
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(            () =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(            () =>
         {
             source!.Reverse();
         });
@@ -386,7 +374,7 @@ public partial class ArrayExtensionsTests
     public void Reverse_WhenSourceIsNull_ForNonGenericArrayIndexCount_ShouldThrowException()
     {
         Array? source = null;
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(            () =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(            () =>
         {
             source!.Reverse(0, 1);
         });
@@ -402,7 +390,7 @@ public partial class ArrayExtensionsTests
     public void Reverse_WhenSourceIsMultidimensional_ForNonGenericArrayIndexCount_ShouldThrowException()
     {
         Array source = new int[2, 3];
-        var ex = Assert.ThrowsExactly<ArgumentException>(            () =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(            () =>
         {
             source.Reverse(0, 1);
         });
@@ -420,7 +408,7 @@ public partial class ArrayExtensionsTests
     public void Reverse_WhenIndexIsInvalid_ForNonGenericArrayIndexCount_ShouldThrowArgumentOutOfRangeException(
         int index, int count, string expectedParamName)
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(            () =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(            () =>
         {
             ((Array)Ints).Reverse(index, count);
         });
@@ -438,7 +426,7 @@ public partial class ArrayExtensionsTests
     public void Reverse_WhenCountIsInvalid_ForNonGenericArrayIndexCount_ShouldThrowArgumentOutOfRangeException(
         int index, int count, string expectedParamName)
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(            () =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(            () =>
         {
             ((Array)Ints).Reverse(index, count);
         });
@@ -457,7 +445,7 @@ public partial class ArrayExtensionsTests
         // ThrowIfArrayOffsetOrCountInvalid raises ArgumentException (not
         // ArgumentOutOfRangeException) for the combination case, aligning with the
         // contract of Array.Reverse which also throws ArgumentException here.
-        var ex = Assert.ThrowsExactly<ArgumentException>(            () =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(            () =>
         {
             ((Array)Ints).Reverse(index: 3, count: 3);
         });
@@ -491,7 +479,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Reverse_WhenCalled_ForNonGenericArrayRange_ShouldNotModifySource()
     {
-        int[] original = Ints;
+        var original = Ints;
         _ = ((Array)original).Reverse(1..4);
         AssertIntsSourceIsUnmodified(original);
     }
@@ -505,7 +493,7 @@ public partial class ArrayExtensionsTests
     public void Reverse_WhenSourceIsNull_ForNonGenericArrayRange_ShouldThrowException()
     {
         Array? source = null;
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(            () =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(            () =>
         {
             source!.Reverse(1..3);
         });
@@ -521,7 +509,7 @@ public partial class ArrayExtensionsTests
     public void Reverse_WhenSourceIsMultidimensional_ForNonGenericArrayRange_ShouldThrowException()
     {
         Array source = new int[2, 3];
-        var ex = Assert.ThrowsExactly<ArgumentException>(            () =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(            () =>
         {
             source.Reverse(0..1);
         });
@@ -555,10 +543,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     [DynamicData(nameof(ReverseCoreData), typeof(ArrayExtensionsTests))]
     public void ReverseCore_WhenCalledWithValidBounds_ForGenericCore_ShouldProduceCorrectResult(
-        int index, int count, int[] expected)
-    {
-        CollectionAssert.AreEqual(expected, ArrayExtensions.ReverseCore<int>(Ints, index, count));
-    }
+        int index, int count, int[] expected) => CollectionAssert.AreEqual(expected, ArrayExtensions.ReverseCore<int>(Ints, index, count));
 
     /// <summary>
     /// Verifies that <see cref="ArrayExtensions.ReverseCore{T}"/> returns a
@@ -577,19 +562,13 @@ public partial class ArrayExtensionsTests
     /// whose length matches the full source length, even when only a slice is reversed.
     /// </summary>
     [TestMethod]
-    public void ReverseCore_WhenPartialRangeIsSpecified_ForGenericCore_ShouldReturnResultWithFullSourceLength()
-    {
-        Assert.AreEqual(Ints.Length, ArrayExtensions.ReverseCore<int>(Ints, 1, 2).Length);
-    }
+    public void ReverseCore_WhenPartialRangeIsSpecified_ForGenericCore_ShouldReturnResultWithFullSourceLength() => Assert.AreEqual(Ints.Length, ArrayExtensions.ReverseCore<int>(Ints, 1, 2).Length);
 
     /// <summary>
     /// Verifies that an empty source returns an empty result.
     /// </summary>
     [TestMethod]
-    public void ReverseCore_WhenSourceIsEmpty_ForGenericCore_ShouldReturnEmptyArray()
-    {
-        Assert.AreEqual(0, ArrayExtensions.ReverseCore<int>(NoInts, 0, 0).Length);
-    }
+    public void ReverseCore_WhenSourceIsEmpty_ForGenericCore_ShouldReturnEmptyArray() => Assert.AreEqual(0, ArrayExtensions.ReverseCore<int>(NoInts, 0, 0).Length);
 
     /// <summary>
     /// Verifies that unmanaged element types produce the correct result, exercising

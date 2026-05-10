@@ -14,7 +14,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Contains_WhenItemIsPresent_ShouldReturnTrue()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
 
@@ -27,7 +27,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Contains_WhenItemIsAbsent_ShouldReturnFalse()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
 
         Assert.IsFalse(Contains(collection, 99));
@@ -39,7 +39,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Contains_WhenCollectionIsEmpty_ShouldReturnFalse()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         Assert.IsFalse(Contains(collection, 0));
     }
 
@@ -49,7 +49,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Contains_WhenStorageWrapped_ShouldFindItemInSecondSegment()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         AddToTail(collection, 3);

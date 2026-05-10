@@ -63,8 +63,5 @@ public partial class ThrowHelperTests
     [DataRow("abcde", 2, 10)]   // within range
     [DataRow("", 0, 5)]         // min = 0, empty string valid
     [DataRow("x", 1, 1)]        // min == max == length
-    public void ThrowIfStringLengthOutOfRange_WhenLengthIsWithinRange_ShouldNotThrow(string value, int minLength, int maxLength)
-    {
-        ThrowHelper.ThrowIfStringLengthOutOfRange(value, minLength, maxLength);
-    }
+    public void ThrowIfStringLengthOutOfRange_WhenLengthIsWithinRange_ShouldNotThrow(string value, int minLength, int maxLength) => ThrowHelper.ThrowIfStringLengthOutOfRange(value, minLength, maxLength);
 }

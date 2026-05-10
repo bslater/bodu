@@ -14,7 +14,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void PeekHead_WhenItemsPresent_ShouldReturnHeadWithoutRemoving()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
 
@@ -29,7 +29,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void PeekHead_AfterRemoveFromHead_ShouldReturnNewHead()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         _ = RemoveFromHead(collection);
@@ -44,7 +44,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void PeekHead_WhenEmpty_ShouldThrowExactly()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             _ = PeekHead(collection);

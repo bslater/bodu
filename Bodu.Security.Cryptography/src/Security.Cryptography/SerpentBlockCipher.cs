@@ -39,12 +39,12 @@ public abstract partial class SerpentBlockCipher
     /// The expanded tweak schedule — five cycling 32-bit entries
     /// <c>[T0, T1, T2, T3, T0 ^ T1 ^ T2 ^ T3]</c> — XOR-injected at the tail of the state every four rounds.
     /// </summary>
-    private protected readonly uint[] TweakSchedule;
+    private protected readonly uint[] _tweakSchedule;
 
     /// <summary>
     /// The expanded round-key schedule, laid out as <c>(Rounds + 1) * BlockWords</c> contiguous 32-bit words.
     /// </summary>
-    private protected readonly uint[] RoundKeys;
+    private protected readonly uint[] _roundKeys;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SerpentBlockCipher" /> class using the specified key and tweak.
@@ -68,10 +68,10 @@ public abstract partial class SerpentBlockCipher
                 string.Format(CryptoResourceStrings.CryptographicException_InvalidTweakSize, tweak.Length * 8, TweakSizeBytes * 8),
                 nameof(tweak));
 
-        this.TweakSchedule = new uint[5];
-        BuildTweakSchedule(tweak, this.TweakSchedule);
+        this._tweakSchedule = new uint[5];
+        BuildTweakSchedule(tweak, this._tweakSchedule);
 
-        this.RoundKeys = new uint[(this.Rounds + 1) * this.BlockWords];
+        this._roundKeys = new uint[(this.Rounds + 1) * this.BlockWords];
         this.BuildRoundKeys(key);
     }
 
@@ -100,8 +100,8 @@ public abstract partial class SerpentBlockCipher
         for (int i = 0; i < w; i++)
             state[i] = BinaryPrimitives.ReadUInt32LittleEndian(input.Slice(i * 4, 4));
 
-        uint[] rk = this.RoundKeys;
-        uint[] tw = this.TweakSchedule;
+        uint[] rk = this._roundKeys;
+        uint[] tw = this._tweakSchedule;
         int injection = 0;
 
         for (int r = 0; r < rounds - 1; r++)
@@ -145,8 +145,8 @@ public abstract partial class SerpentBlockCipher
         for (int i = 0; i < w; i++)
             state[i] = BinaryPrimitives.ReadUInt32LittleEndian(input.Slice(i * 4, 4));
 
-        uint[] rk = this.RoundKeys;
-        uint[] tw = this.TweakSchedule;
+        uint[] rk = this._roundKeys;
+        uint[] tw = this._tweakSchedule;
 
         // The last Encrypt injection used counter value (rounds / 4 - 1); Decrypt unwinds in reverse order starting here.
         int injection = (rounds / 4) - 1;
@@ -184,8 +184,8 @@ public abstract partial class SerpentBlockCipher
 
         if (disposing)
         {
-            CryptoHelpers.Clear(this.RoundKeys);
-            CryptoHelpers.Clear(this.TweakSchedule);
+            CryptoHelpers.Clear(this._roundKeys);
+            CryptoHelpers.Clear(this._tweakSchedule);
         }
 
         base.Dispose(disposing);
@@ -339,7 +339,7 @@ public abstract partial class SerpentBlockCipher
     }
 
     /// <summary>
-    /// Expands <paramref name="key" /> into the <see cref="RoundKeys" /> schedule, producing <c>Rounds + 1</c> round keys of
+    /// Expands <paramref name="key" /> into the <see cref="_roundKeys" /> schedule, producing <c>Rounds + 1</c> round keys of
     /// <see cref="BlockWords" /> 32-bit words each.
     /// </summary>
     /// <param name="key">The raw key bytes; length must equal <c>BlockWords * 4</c>.</param>
@@ -358,7 +358,7 @@ public abstract partial class SerpentBlockCipher
         for (int i = 0; i < w; i++)
             seed[i] = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(i * 4, 4));
 
-        int prekeyLength = w + this.RoundKeys.Length;
+        int prekeyLength = w + this._roundKeys.Length;
         uint[] prekeysArray = new uint[prekeyLength];
         try
         {
@@ -384,10 +384,10 @@ public abstract partial class SerpentBlockCipher
                     ApplySBox(sboxIndex, ref x0, ref x1, ref x2, ref x3);
 
                     int dst = r * w + g * 4;
-                    this.RoundKeys[dst] = x0;
-                    this.RoundKeys[dst + 1] = x1;
-                    this.RoundKeys[dst + 2] = x2;
-                    this.RoundKeys[dst + 3] = x3;
+                    this._roundKeys[dst] = x0;
+                    this._roundKeys[dst + 1] = x1;
+                    this._roundKeys[dst + 2] = x2;
+                    this._roundKeys[dst + 3] = x3;
                 }
             }
         }

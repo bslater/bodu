@@ -47,20 +47,14 @@ public partial class ThrowHelperTests
     [DataRow(1, 2)]
     [DataRow(-1, 0)]
     [DataRow(int.MinValue, int.MaxValue)]
-    public void ThrowIfEqual_WhenIntValuesAreNotEqual_ShouldNotThrow(int value, int other)
-    {
-        ThrowHelper.ThrowIfEqual(value, other);
-    }
+    public void ThrowIfEqual_WhenIntValuesAreNotEqual_ShouldNotThrow(int value, int other) => ThrowHelper.ThrowIfEqual(value, other);
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfEqual{T}" /> does not throw when two string values
     /// are different.
     /// </summary>
     [TestMethod]
-    public void ThrowIfEqual_WhenStringValuesAreNotEqual_ShouldNotThrow()
-    {
-        ThrowHelper.ThrowIfEqual("hello", "world");
-    }
+    public void ThrowIfEqual_WhenStringValuesAreNotEqual_ShouldNotThrow() => ThrowHelper.ThrowIfEqual("hello", "world");
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfEqual{T}" /> reports the correct parameter name in the
@@ -69,7 +63,7 @@ public partial class ThrowHelperTests
     [TestMethod]
     public void ThrowIfEqual_WhenValuesAreEqual_ShouldReportParamName()
     {
-        int value = 42;
+        var value = 42;
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             ThrowHelper.ThrowIfEqual(value, 42, "value");

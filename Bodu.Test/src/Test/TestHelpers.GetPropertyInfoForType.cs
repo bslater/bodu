@@ -50,7 +50,7 @@ public static partial class TestHelpers
                 }
 
                 bool canRead = property.GetMethod is not null;
-                bool canWrite = property.SetMethod is not null;
+                bool canWrite = property.SetMethod is not null && !property.SetMethod.IsPrivate;
 
                 bool matches = accessMode switch
                 {

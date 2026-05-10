@@ -102,7 +102,7 @@ public partial class ConcurrentCircularBufferTests
 
         // Writer: toggle until both states have been observed (or a safety bound). Small delay
         // between toggles to create interleavings on fast CPUs.
-        for (int i = 0; i < 50_000 && !(seenTrue.IsSet && seenFalse.IsSet); i++)
+        for (var i = 0; i < 50_000 && !(seenTrue.IsSet && seenFalse.IsSet); i++)
         {
             buffer.AllowOverwrite = (i % 2 == 0);
             Thread.SpinWait(50);
@@ -130,11 +130,11 @@ public partial class ConcurrentCircularBufferTests
     public void AllowOverwrite_WhenToggledConcurrently_ShouldRemainThreadSafe()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(5, false);
-        int lastWritten = 0; // 0 = false, 1 = true; tracked with Volatile to avoid tearing
+        var lastWritten = 0; // 0 = false, 1 = true; tracked with Volatile to avoid tearing
 
         Parallel.For(0, 1000, i =>
         {
-            bool value = (i % 2 == 0);
+            var value = (i % 2 == 0);
             buffer.AllowOverwrite = value;
             Volatile.Write(ref lastWritten, value ? 1 : 0);
 
@@ -145,7 +145,7 @@ public partial class ConcurrentCircularBufferTests
         // visible write. We cannot assert an exact value because the last write is
         // non-deterministic, but we can confirm the property is readable without error
         // and returns a value consistent with what was written by some thread.
-        bool final = buffer.AllowOverwrite;
+        var final = buffer.AllowOverwrite;
         Assert.IsTrue(final == true || final == false,
             "AllowOverwrite must remain a valid bool value after concurrent toggles.");
 
@@ -178,7 +178,7 @@ public partial class ConcurrentCircularBufferTests
         {
             togglerPrimed.Wait();
 
-            for (int i = 0; i < 200; i++)
+            for (var i = 0; i < 200; i++)
             {
                 try
                 {
@@ -201,7 +201,7 @@ public partial class ConcurrentCircularBufferTests
 
             // Continue alternating starting from i = 1 so the next write is true, preserving
             // the original true/false cadence after the primed false state.
-            for (int i = 1; i < 200; i++)
+            for (var i = 1; i < 200; i++)
             {
                 buffer.AllowOverwrite = (i % 2 == 0);
                 Thread.SpinWait(2000);
@@ -229,7 +229,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(3));
 
         var exceptions = new ConcurrentBag<Exception>();
-        int successes = 0;
+        var successes = 0;
 
         // Handshake: the toggler establishes AllowOverwrite = false before the writer's first
         // Enqueue, guaranteeing at least one deterministic InvalidOperationException against
@@ -241,7 +241,7 @@ public partial class ConcurrentCircularBufferTests
         {
             togglerPrimed.Wait();
 
-            for (int i = 0; i < 2000; i++)
+            for (var i = 0; i < 2000; i++)
             {
                 try
                 {
@@ -264,7 +264,7 @@ public partial class ConcurrentCircularBufferTests
 
             // Continue alternating starting from i = 1 so the next write is true, preserving
             // the original true/false cadence after the primed false state.
-            for (int i = 1; i < 2000; i++)
+            for (var i = 1; i < 2000; i++)
             {
                 buffer.AllowOverwrite = (i % 2 == 0);
                 Thread.SpinWait(400);

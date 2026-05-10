@@ -17,30 +17,27 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
     /// Provides scenarios for <c>ContainsAny</c> covering partial overlap, no overlap,
     /// empty sequences, and duplicate-item handling.
     /// </summary>
-    public static IEnumerable<object[]> GetContainsAnyTestCases() => new[]
-    {
+    public static IEnumerable<object[]> GetContainsAnyTestCases() =>
+    [
         new object[] { new[] { 1, 2, 3, 4, 5 }, new[] { 2 }, true },
-        new object[] { new[] { 1, 2, 3, 4, 5 }, new[] { 6, 7, 8 }, false },
-        new object[] { new[] { 1, 2, 3, 4, 5 }, new[] { 9, 3, 7 }, true },
-        new object[] { new[] { 1, 2, 3, 4, 5 }, Array.Empty<int>(), false },
-        new object[] { Array.Empty<int>(), new[] { 1, 2, 3 }, false },
-        new object[] { Array.Empty<int>(), Array.Empty<int>(), false },
-        new object[] { new[] { 1, 1, 1 }, new[] { 1 }, true },
-    };
+        [new[] { 1, 2, 3, 4, 5 }, new[] { 6, 7, 8 }, false],
+        [new[] { 1, 2, 3, 4, 5 }, new[] { 9, 3, 7 }, true],
+        [new[] { 1, 2, 3, 4, 5 }, Array.Empty<int>(), false],
+        [Array.Empty<int>(), new[] { 1, 2, 3 }, false],
+        [Array.Empty<int>(), Array.Empty<int>(), false],
+        [new[] { 1, 1, 1 }, new[] { 1 }, true],
+    ];
 
     /// <summary>
     /// Verifies that <c>ContainsAny</c> correctly reports whether at least one query item appears
     /// in the source sequence across overlap, non-overlap, empty, and duplicate cases.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetContainsAnyTestCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetContainsAnyTestCases))]
     public void ContainsAny_WhenEvaluatingIntegerSequences_ShouldReturnExpectedResult(
         int[] source,
         int[] items,
-        bool expected)
-    {
-        Assert.AreEqual(expected, source.ContainsAny(items));
-    }
+        bool expected) => Assert.AreEqual(expected, source.ContainsAny(items));
 
     /// <summary>
     /// Verifies the smaller-source optimisation branch: when <paramref name="source"/> is a known
@@ -50,8 +47,8 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
     [TestMethod]
     public void ContainsAny_WhenSourceIsSmallerThanItems_ShouldReturnExpectedResult()
     {
-        int[] source = { 42, 99 };
-        int[] items = Enumerable.Range(0, 100).ToArray();
+        int[] source = [42, 99];
+        var items = Enumerable.Range(0, 100).ToArray();
 
         Assert.IsTrue(source.ContainsAny(items));
     }
@@ -63,7 +60,7 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
     [TestMethod]
     public void ContainsAny_WhenItemsHasUnknownSize_ShouldReturnExpectedResult()
     {
-        int[] source = { 1, 2, 3, 4, 5 };
+        int[] source = [1, 2, 3, 4, 5];
         IEnumerable<int> items = LazyRange(10, 3);
 
         Assert.IsFalse(source.ContainsAny(items));
@@ -71,7 +68,7 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
 
         static IEnumerable<int> LazyRange(int start, int count)
         {
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
                 yield return start + i;
         }
     }
@@ -82,8 +79,8 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
     [TestMethod]
     public void ContainsAny_WhenUsingCaseInsensitiveComparer_ShouldReturnTrue()
     {
-        string[] source = { "Apple", "Banana" };
-        string[] items = { "CHERRY", "BANANA" };
+        string[] source = ["Apple", "Banana"];
+        string[] items = ["CHERRY", "BANANA"];
 
         Assert.IsTrue(source.ContainsAny(items, StringComparer.OrdinalIgnoreCase));
     }
@@ -98,7 +95,7 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = source!.ContainsAny(new[] { 1 });
+            _ = source!.ContainsAny([1]);
         });
     }
 
@@ -108,7 +105,7 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
     [TestMethod]
     public void ContainsAny_WhenItemsIsNull_ShouldThrowArgumentNullException()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
         IEnumerable<int>? items = null;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>

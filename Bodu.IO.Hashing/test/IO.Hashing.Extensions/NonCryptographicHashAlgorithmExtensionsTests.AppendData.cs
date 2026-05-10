@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonCryptographicHashAlgorithmExtensionsTests.AppendData.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -29,7 +29,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            algorithm!.AppendData(new ReadOnlySpan<byte>(new byte[] { 1, 2, 3 }));
+            algorithm!.AppendData(new ReadOnlySpan<byte>([1, 2, 3]));
         });
     }
 
@@ -41,10 +41,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void AppendData_WhenSpanIsEmpty_ShouldNotContributeToHash()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         MonitoringNonCryptographicHashAlgorithm baseline = CreateAlgorithm();
 
-        algorithm.AppendData(ReadOnlySpan<byte>.Empty);
+        algorithm.AppendData([]);
 
         CollectionAssert.AreEqual(baseline.GetCurrentHash(), algorithm.GetCurrentHash());
     }
@@ -55,10 +55,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void AppendData_WhenSpanContainsData_ShouldContributeToHash()
     {
-        var algorithm = CreateAlgorithm();
-        byte[] expected = BitConverter.GetBytes((uint)(1 + 2 + 3 + 4));
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var expected = BitConverter.GetBytes((uint)(1 + 2 + 3 + 4));
 
-        algorithm.AppendData(new ReadOnlySpan<byte>(new byte[] { 1, 2, 3, 4 }));
+        algorithm.AppendData(new ReadOnlySpan<byte>([1, 2, 3, 4]));
 
         CollectionAssert.AreEqual(expected, algorithm.GetCurrentHash());
     }
@@ -69,11 +69,11 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void AppendData_WhenCalledMultipleTimes_ShouldAccumulateAllBytes()
     {
-        var algorithm = CreateAlgorithm();
-        byte[] expected = BitConverter.GetBytes((uint)(10 + 20 + 30 + 40));
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var expected = BitConverter.GetBytes((uint)(10 + 20 + 30 + 40));
 
-        algorithm.AppendData(new ReadOnlySpan<byte>(new byte[] { 10, 20 }));
-        algorithm.AppendData(new ReadOnlySpan<byte>(new byte[] { 30, 40 }));
+        algorithm.AppendData(new ReadOnlySpan<byte>([10, 20]));
+        algorithm.AppendData(new ReadOnlySpan<byte>([30, 40]));
 
         CollectionAssert.AreEqual(expected, algorithm.GetCurrentHash());
     }
@@ -86,10 +86,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void AppendData_WhenCalled_ShouldInvokeAppendOnce()
     {
-        var algorithm = CreateAlgorithm();
-        int before = algorithm.AppendCallCount;
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var before = algorithm.AppendCallCount;
 
-        algorithm.AppendData(new ReadOnlySpan<byte>(new byte[] { 1, 2, 3 }));
+        algorithm.AppendData(new ReadOnlySpan<byte>([1, 2, 3]));
 
         Assert.AreEqual(before + 1, algorithm.AppendCallCount);
     }
@@ -104,7 +104,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public void AppendData_WhenAlgorithmIsNull_ForStreamOverload_ShouldThrowArgumentNullException()
     {
         NonCryptographicHashAlgorithm? algorithm = null;
-        using MemoryStream stream = new(SampleData);
+        using MemoryStream stream = new(s_sampleData);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -119,7 +119,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void AppendData_WhenStreamIsNull_ShouldThrowArgumentNullException()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -133,8 +133,8 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void AppendData_WhenBufferSizeIsZero_ShouldThrowArgumentOutOfRangeException()
     {
-        var algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(SampleData);
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -148,8 +148,8 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void AppendData_WhenBufferSizeIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        var algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(SampleData);
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -165,10 +165,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void AppendData_WhenStreamIsEmpty_ShouldNotContributeToHash()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         MonitoringNonCryptographicHashAlgorithm baseline = CreateAlgorithm();
 
-        algorithm.AppendData(new MemoryStream(Array.Empty<byte>()));
+        algorithm.AppendData(new MemoryStream([]));
 
         CollectionAssert.AreEqual(baseline.GetCurrentHash(), algorithm.GetCurrentHash());
     }
@@ -182,8 +182,8 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         MonitoringNonCryptographicHashAlgorithm fromStream = CreateAlgorithm();
         MonitoringNonCryptographicHashAlgorithm fromSpan = CreateAlgorithm();
 
-        fromStream.AppendData(new MemoryStream(SampleData));
-        fromSpan.AppendData(SampleData.AsSpan());
+        fromStream.AppendData(new MemoryStream(s_sampleData));
+        fromSpan.AppendData(s_sampleData.AsSpan());
 
         CollectionAssert.AreEqual(fromSpan.GetCurrentHash(), fromStream.GetCurrentHash());
     }
@@ -196,11 +196,11 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public void AppendData_WhenBufferSizeSmallerThanInput_ShouldProduceCorrectHash()
     {
         MonitoringNonCryptographicHashAlgorithm reference = CreateAlgorithm();
-        reference.AppendData(SampleData.AsSpan());
-        byte[] expected = reference.GetCurrentHash();
+        reference.AppendData(s_sampleData.AsSpan());
+        var expected = reference.GetCurrentHash();
 
-        var algorithm = CreateAlgorithm();
-        algorithm.AppendData(new MemoryStream(SampleData), bufferSize: 1);
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        algorithm.AppendData(new MemoryStream(s_sampleData), bufferSize: 1);
 
         CollectionAssert.AreEqual(expected, algorithm.GetCurrentHash());
     }
@@ -212,11 +212,11 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public void AppendData_WhenSourceIsFixedChunkStream_ShouldProduceCorrectHash()
     {
         MonitoringNonCryptographicHashAlgorithm reference = CreateAlgorithm();
-        reference.AppendData(SampleData.AsSpan());
-        byte[] expected = reference.GetCurrentHash();
+        reference.AppendData(s_sampleData.AsSpan());
+        var expected = reference.GetCurrentHash();
 
-        var algorithm = CreateAlgorithm();
-        algorithm.AppendData(new FixedChunkStream(SampleData, chunkSize: 1));
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        algorithm.AppendData(new FixedChunkStream(s_sampleData, chunkSize: 1));
 
         CollectionAssert.AreEqual(expected, algorithm.GetCurrentHash());
     }
@@ -228,11 +228,11 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void AppendData_WhenSourceFaultsMidRead_ShouldPropagateIOException()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<IOException>(() =>
         {
-            algorithm.AppendData(new FaultingStream(SampleData, throwAfterBytes: 2));
+            algorithm.AppendData(new FaultingStream(s_sampleData, throwAfterBytes: 2));
         });
     }
 }

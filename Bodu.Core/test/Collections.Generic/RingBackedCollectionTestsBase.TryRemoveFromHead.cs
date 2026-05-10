@@ -15,10 +15,10 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void TryRemoveFromHead_WhenItemsPresent_ShouldReturnTrueAndHead()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 10);
 
-        Assert.IsTrue(TryRemoveFromHead(collection, out int item));
+        Assert.IsTrue(TryRemoveFromHead(collection, out var item));
         Assert.AreEqual(10, item);
         Assert.IsTrue(GetIsEmpty(collection));
     }
@@ -30,8 +30,8 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void TryRemoveFromHead_WhenEmpty_ShouldReturnFalseAndDefault()
     {
-        var collection = CreateCollection(3);
-        Assert.IsFalse(TryRemoveFromHead(collection, out int item));
+        TCollection collection = CreateCollection(3);
+        Assert.IsFalse(TryRemoveFromHead(collection, out var item));
         Assert.AreEqual(default, item);
     }
 
@@ -42,8 +42,8 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void TryRemoveFromHead_WhenEmpty_ShouldNotModifyState()
     {
-        var collection = CreateCollection(3);
-        int capacityBefore = GetCapacity(collection);
+        TCollection collection = CreateCollection(3);
+        var capacityBefore = GetCapacity(collection);
 
         _ = TryRemoveFromHead(collection, out _);
 

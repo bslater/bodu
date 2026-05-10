@@ -27,7 +27,7 @@ public partial class PooledBufferBuilderTests
     [TestMethod]
     public void WrittenMemory_WhenItemsBuffered_ShouldReturnMemoryMatchingCountAndContents()
     {
-        int[] expected = { 5, 10, 15 };
+        int[] expected = [5, 10, 15];
         using var builder = new PooledBufferBuilder<int>();
         builder.AppendRange(expected);
 

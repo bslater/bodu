@@ -37,7 +37,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.NearestDateOfWeek(DateOnly, DayOfWeek)" /> returns the closest occurrence of the requested <see cref="DayOfWeek" /> in either direction.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(NearestDateOfWeekTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(NearestDateOfWeekTestData))]
     public void NearestDateOfWeek_WhenCalled_ShouldReturnExpectedDate(DateOnly date, DayOfWeek dayOfWeek, DateOnly expected)
     {
         DateOnly actual = date.NearestDateOfWeek(dayOfWeek);

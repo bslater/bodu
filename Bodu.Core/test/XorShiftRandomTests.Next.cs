@@ -33,9 +33,9 @@ public partial class XorShiftRandomTests
     public void Next_ShouldBeInRange_WhenGivenBounds(int min, int max)
     {
         var rng = new XorShiftRandom();
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
-            int value = rng.Next(min, max);
+            var value = rng.Next(min, max);
             Assert.IsTrue(value >= min && value < max, $"Value {value} was not in range [{min}, {max}).");
         }
     }
@@ -52,8 +52,8 @@ public partial class XorShiftRandomTests
         var rng1 = new XorShiftRandom(seed);
         var rng2 = new XorShiftRandom(seed + 1);
 
-        int value1 = rng1.Next();
-        int value2 = rng2.Next();
+        var value1 = rng1.Next();
+        var value2 = rng2.Next();
 
         Assert.AreNotEqual(value1, value2, "Different seeds should produce different sequences.");
     }
@@ -65,7 +65,7 @@ public partial class XorShiftRandomTests
     public void Next_WhenCalled_ShouldReturnPositiveInteger()
     {
         var rng = new XorShiftRandom();
-        int value = rng.Next();
+        var value = rng.Next();
         Assert.IsTrue(value >= 0);
     }
 
@@ -78,7 +78,7 @@ public partial class XorShiftRandomTests
         var rng = new XorShiftRandom();
         var values = new HashSet<int>();
 
-        for (int i = 0; i < 50; i++)
+        for (var i = 0; i < 50; i++)
         {
             values.Add(rng.Next(1000));
         }
@@ -95,9 +95,9 @@ public partial class XorShiftRandomTests
     public void Next_WhenCalledWithinAndMax_ShouldRespectBounds(int min, int max)
     {
         var rng = new XorShiftRandom(42);
-        for (int i = 0; i < 1000; i++)
+        for (var i = 0; i < 1000; i++)
         {
-            int value = rng.Next(min, max);
+            var value = rng.Next(min, max);
             Assert.IsTrue(value >= min && value < max);
         }
     }
@@ -113,9 +113,9 @@ public partial class XorShiftRandomTests
     public void Next_WhenCalledWithMax_ShouldReturnWithinRange(int maxValue)
     {
         var rng = new XorShiftRandom(42);
-        for (int i = 0; i < 1000; i++)
+        for (var i = 0; i < 1000; i++)
         {
-            int value = rng.Next(maxValue);
+            var value = rng.Next(maxValue);
             Assert.IsTrue(value >= 0 && value < maxValue);
         }
     }
@@ -127,7 +127,7 @@ public partial class XorShiftRandomTests
     public void Next_WhenMaxValueIsOne_ShouldAlwaysReturnZero()
     {
         var rng = new XorShiftRandom();
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
         {
             Assert.AreEqual(0, rng.Next(1), "Next(1) should always return 0.");
         }
@@ -140,7 +140,7 @@ public partial class XorShiftRandomTests
     public void Next_WhenMaxValueIsPositive_ShouldReturnValueInRange()
     {
         var rng = new XorShiftRandom();
-        int actual = rng.Next(100);
+        var actual = rng.Next(100);
 
         Assert.IsTrue(actual >= 0 && actual < 100, $"Result {actual} is out of expected range.");
     }
@@ -154,8 +154,8 @@ public partial class XorShiftRandomTests
         var rng1 = new XorShiftRandom(100);
         var rng2 = new XorShiftRandom(200);
 
-        bool differenceFound = false;
-        for (int i = 0; i < 20; i++)
+        var differenceFound = false;
+        for (var i = 0; i < 20; i++)
         {
             if (rng1.Next(1000) != rng2.Next(1000))
             {
@@ -174,9 +174,9 @@ public partial class XorShiftRandomTests
     public void Next_WithMaxValue_ShouldReturnInExpectedRange()
     {
         var rng = new XorShiftRandom();
-        for (int i = 0; i < 1000; i++)
+        for (var i = 0; i < 1000; i++)
         {
-            int actual = rng.Next(100);
+            var actual = rng.Next(100);
             Assert.IsTrue(actual >= 0 && actual < 100);
         }
     }
@@ -200,9 +200,9 @@ public partial class XorShiftRandomTests
     public void Next_WithMinAndMax_ShouldReturnWithinRange()
     {
         var rng = new XorShiftRandom();
-        for (int i = 0; i < 1000; i++)
+        for (var i = 0; i < 1000; i++)
         {
-            int actual = rng.Next(10, 20);
+            var actual = rng.Next(10, 20);
             Assert.IsTrue(actual >= 10 && actual < 20);
         }
     }
@@ -231,7 +231,7 @@ public partial class XorShiftRandomTests
         var rng1 = new XorShiftRandom(seed);
         var rng2 = new XorShiftRandom(seed);
 
-        for (int i = 0; i < 20; i++)
+        for (var i = 0; i < 20; i++)
         {
             Assert.AreEqual(rng1.Next(1000), rng2.Next(1000), $"Mismatch at iteration {i}");
         }

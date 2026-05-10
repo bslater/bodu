@@ -33,8 +33,5 @@ public partial class ThrowHelperTests
     [DataRow(StringComparison.InvariantCultureIgnoreCase)]
     [DataRow(StringComparison.Ordinal)]
     [DataRow(StringComparison.OrdinalIgnoreCase)]
-    public void ThrowIfInvalidStringComparison_WhenValueIsValid_ShouldNotThrow(StringComparison stringComparison)
-    {
-        ThrowHelper.ThrowIfInvalidStringComparison(stringComparison);
-    }
+    public void ThrowIfInvalidStringComparison_WhenValueIsValid_ShouldNotThrow(StringComparison stringComparison) => ThrowHelper.ThrowIfInvalidStringComparison(stringComparison);
 }

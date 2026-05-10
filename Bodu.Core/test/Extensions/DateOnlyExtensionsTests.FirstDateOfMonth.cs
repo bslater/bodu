@@ -21,7 +21,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfMonth" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfMonthDataTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfMonthDataTestData), typeof(DateTimeExtensionsTests))]
     public void FirstDateOfMonth_WhenCalled_ShouldReturnExpectedDate(DateTime inputDateTime, DateTime expectedDateTime)
     {
         var input = DateOnly.FromDateTime(inputDateTime);

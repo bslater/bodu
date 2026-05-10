@@ -29,8 +29,5 @@ public partial class ThrowHelperTests
     [DataRow(null, true, false)]
     [DataRow("ok", true, true)]
     [DataRow("ok", false, true)]
-    public void ThrowIfConditionallyRequiredParameterIsNull_WhenConditionDoesNotMatchOrValueIsNotNull_ShouldNotThrow(string? value, bool condition, bool matchValue)
-    {
-        ThrowHelper.ThrowIfConditionallyRequiredParameterIsNull(value, condition, matchValue);
-    }
+    public void ThrowIfConditionallyRequiredParameterIsNull_WhenConditionDoesNotMatchOrValueIsNotNull_ShouldNotThrow(string? value, bool condition, bool matchValue) => ThrowHelper.ThrowIfConditionallyRequiredParameterIsNull(value, condition, matchValue);
 }

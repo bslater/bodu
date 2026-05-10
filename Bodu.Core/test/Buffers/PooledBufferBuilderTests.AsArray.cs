@@ -21,7 +21,7 @@ public partial class PooledBufferBuilderTests
 
         builder.AppendRange(source);
         System.ReadOnlySpan<int> span = builder.WrittenSpan;
-        int[] array = builder.AsArray();
+        var array = builder.AsArray();
 
         CollectionAssert.AreEqual(span.ToArray(), array.Take(span.Length).ToArray());
     }
@@ -34,7 +34,7 @@ public partial class PooledBufferBuilderTests
     {
         using var builder = new PooledBufferBuilder<int>();
 
-        int[] array = builder.AsArray();
+        var array = builder.AsArray();
 
         Assert.IsNotNull(array);
     }
@@ -49,7 +49,7 @@ public partial class PooledBufferBuilderTests
         using var builder = new PooledBufferBuilder<int>();
         builder.Append(1);
 
-        int[] array = builder.AsArray();
+        var array = builder.AsArray();
         array[0] = 99;
 
         Assert.AreEqual(99, builder.WrittenSpan[0]);

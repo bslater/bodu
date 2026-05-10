@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonCryptographicHashAlgorithmExtensionsTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -28,22 +28,22 @@ namespace Bodu.IO.Hashing.Extensions;
 public partial class NonCryptographicHashAlgorithmExtensionsTests
 {
     /// <summary>Deterministic sample input whose additive byte sum is 10.</summary>
-    private static readonly byte[] SampleData = { 1, 2, 3, 4 };
+    private static readonly byte[] s_sampleData = [1, 2, 3, 4];
 
-    /// <summary>Expected hash of <see cref="SampleData" /> (byte sum = 10, platform byte order uint).</summary>
-    private static readonly byte[] SampleHash = BitConverter.GetBytes((uint)(1 + 2 + 3 + 4));
+    /// <summary>Expected hash of <see cref="s_sampleData" /> (byte sum = 10, platform byte order uint).</summary>
+    private static readonly byte[] s_sampleHash = BitConverter.GetBytes((uint)(1 + 2 + 3 + 4));
 
-    /// <summary>Uppercase hex representation of <see cref="SampleHash" />.</summary>
-    private static readonly string SampleHex = Convert.ToHexString(SampleHash);
+    /// <summary>Uppercase hex representation of <see cref="s_sampleHash" />.</summary>
+    private static readonly string s_sampleHex = Convert.ToHexString(s_sampleHash);
 
     /// <summary>Sample ASCII string whose encoded byte sum is 394 (<c>'a'</c>+<c>'b'</c>+<c>'c'</c>+<c>'d'</c>).</summary>
-    private static readonly string SampleString = "abcd";
+    private static readonly string s_sampleString = "abcd";
 
-    /// <summary>Expected hash of <see cref="SampleString" /> encoded as ASCII.</summary>
-    private static readonly byte[] SampleStringHash = BitConverter.GetBytes((uint)(97 + 98 + 99 + 100));
+    /// <summary>Expected hash of <see cref="s_sampleString" /> encoded as ASCII.</summary>
+    private static readonly byte[] s_sampleStringHash = BitConverter.GetBytes((uint)(97 + 98 + 99 + 100));
 
-    /// <summary>The encoding paired with <see cref="SampleString" /> and <see cref="SampleStringHash" />.</summary>
-    private static readonly Encoding SampleEncoding = Encoding.ASCII;
+    /// <summary>The encoding paired with <see cref="s_sampleString" /> and <see cref="s_sampleStringHash" />.</summary>
+    private static readonly Encoding s_sampleEncoding = Encoding.ASCII;
 
     /// <summary>
     /// Creates a fresh <see cref="MonitoringNonCryptographicHashAlgorithm" /> instance for a single test.

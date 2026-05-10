@@ -13,7 +13,7 @@ public partial class DateTimeExtensionsTests
     /// day of the month.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.IsLastDateOfMonthDataTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.IsLastDateOfMonthDataTestData))]
     public void IsLastDateOfMonth_WhenDateIsLastDay_ShouldReturnTrue(DateTime input)
     {
         var actual = input.IsLastDateOfMonth();
@@ -26,7 +26,7 @@ public partial class DateTimeExtensionsTests
     /// the last day of the month.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.IsNotLastDateOfMonthTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.IsNotLastDateOfMonthTestData))]
     public void IsLastDateOfMonth_WhenDateIsNotLastDay_ShouldReturnFalse(DateTime input)
     {
         var actual = input.IsLastDateOfMonth();
