@@ -59,7 +59,11 @@ public static class AsiaPacificCalendarData
     /// <summary>The logical resource name for the Singapore region payload.</summary>
     public const string SingaporeResourceName = "Bodu/Globalization/Calendar/Resources/region-sg.xml";
 
-    /// <summary>The pack assembly. Exposed for advanced scenarios such as building a custom assembly chain.</summary>
+    /// <summary>
+    /// Gets the assembly that hosts the pack's embedded XML resources. Exposed for advanced scenarios such as building a custom
+    /// assembly chain.
+    /// </summary>
+    /// <returns>The <see cref="Assembly" /> in which the pack's region payloads are embedded. Never <see langword="null" />.</returns>
     public static Assembly DataAssembly => typeof(AsiaPacificCalendarData).Assembly;
 
     /// <summary>Creates an Australia rule provider.</summary>

@@ -39,7 +39,11 @@ public static class AmericasCalendarData
     /// <summary>The logical resource name for the Canada region payload.</summary>
     public const string CanadaResourceName = "Bodu/Globalization/Calendar/Resources/region-ca.xml";
 
-    /// <summary>The pack assembly. Exposed for advanced scenarios such as building a custom assembly chain.</summary>
+    /// <summary>
+    /// Gets the assembly that hosts the pack's embedded XML resources. Exposed for advanced scenarios such as building a custom
+    /// assembly chain.
+    /// </summary>
+    /// <returns>The <see cref="Assembly" /> in which the pack's region payloads are embedded. Never <see langword="null" />.</returns>
     public static Assembly DataAssembly => typeof(AmericasCalendarData).Assembly;
 
     /// <summary>
