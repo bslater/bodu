@@ -40,7 +40,7 @@ public sealed class Iso7064Mod97_10
     /// <summary>The fixed check-code length of <c>2</c> decimal digits.</summary>
     public const int CheckDigits = 2;
 
-    private int r;
+    private int _r;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Iso7064Mod97_10" /> class.
@@ -61,7 +61,7 @@ public sealed class Iso7064Mod97_10
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        int r = this.r;
+        int r = this._r;
         for (int i = 0; i < body.Length; i++)
         {
             char ch = body[i];
@@ -79,12 +79,12 @@ public sealed class Iso7064Mod97_10
             }
         }
 
-        this.r = r;
+        this._r = r;
     }
 
     /// <inheritdoc />
     public override void Reset() =>
-        r = 0;
+        _r = 0;
 
     /// <inheritdoc />
     public override int GetCurrentCheckDigits(Span<char> destination)
@@ -92,7 +92,7 @@ public sealed class Iso7064Mod97_10
         if (destination.Length < CheckLength)
             throw new ArgumentException($"Destination span must be at least {CheckLength} characters long.", nameof(destination));
 
-        int full = (r * 100) % 97;
+        int full = (_r * 100) % 97;
         int check = (98 - full) % 97;
         destination[0] = (char)('0' + (check / 10));
         destination[1] = (char)('0' + (check % 10));

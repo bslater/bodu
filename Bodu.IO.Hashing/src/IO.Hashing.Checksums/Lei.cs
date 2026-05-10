@@ -39,7 +39,7 @@ public sealed class Lei
     /// <summary>The fixed check-code length of <c>2</c> decimal digits.</summary>
     public const int CheckDigits = 2;
 
-    private readonly Iso7064Mod97_10 engine = new Iso7064Mod97_10();
+    private readonly Iso7064Mod97_10 _engine = new Iso7064Mod97_10();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Lei" /> class.
@@ -59,15 +59,15 @@ public sealed class Lei
 
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body) =>
-        engine.Append(body);
+        _engine.Append(body);
 
     /// <inheritdoc />
     public override void Reset() =>
-        engine.Reset();
+        _engine.Reset();
 
     /// <inheritdoc />
     public override int GetCurrentCheckDigits(Span<char> destination) =>
-        engine.GetCurrentCheckDigits(destination);
+        _engine.GetCurrentCheckDigits(destination);
 
     /// <summary>
     /// Computes the LEI check digits for the supplied body without allocating a streaming instance.
