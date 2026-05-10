@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\bld\Bodu.props" />
 
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
