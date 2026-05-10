@@ -27,7 +27,10 @@ namespace Bodu.Buffers;
 /// round-trip. Call <see cref="Dispose"/> when the builder is no longer needed.
 /// </para>
 /// </remarks>
-public sealed class PooledBufferBuilder<T> : System.IDisposable, System.Buffers.IBufferWriter<T>
+public sealed class PooledBufferBuilder<T> :
+    System.IDisposable,
+    System.Buffers.IBufferWriter<T>,
+    System.Buffers.IMemoryOwner<T>
 {
     private int _count;
     private bool _disposed;
@@ -48,6 +51,20 @@ public sealed class PooledBufferBuilder<T> : System.IDisposable, System.Buffers.
         ThrowHelper.ThrowIfLessThan(initialCapacity, 1);
         _internalBuffer = ArrayPool<T>.Shared.Rent(initialCapacity);
         _count = 0;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether no elements have been written to the buffer.
+    /// </summary>
+    /// <returns><see langword="true"/> if <see cref="WrittenCount"/> is zero; otherwise <see langword="false"/>.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
+    public bool IsEmpty
+    {
+        get
+        {
+            ThrowIfDisposed();
+            return _count == 0;
+        }
     }
 
     /// <summary>
@@ -275,6 +292,95 @@ public sealed class PooledBufferBuilder<T> : System.IDisposable, System.Buffers.
     }
 
     /// <summary>
+    /// Appends all elements from the specified <see cref="ReadOnlyMemory{T}"/> to the buffer, growing the
+    /// internal array if necessary.
+    /// </summary>
+    /// <param name="source">The memory region of elements to append.</param>
+    /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
+    public void AppendRange(ReadOnlyMemory<T> source) =>
+        AppendRange(source.Span);
+
+    /// <summary>
+    /// Appends <paramref name="count"/> copies of <paramref name="value"/> to the buffer, growing the internal
+    /// array if necessary.
+    /// </summary>
+    /// <param name="value">The value to repeat.</param>
+    /// <param name="count">The number of times to append <paramref name="value"/>. Must be non-negative.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="count"/> is negative.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
+    public void AddMany(T value, int count)
+    {
+        ThrowIfDisposed();
+        ThrowHelper.ThrowIfNegative(count);
+
+        GrowIfNeeded(_count + count);
+        _internalBuffer.AsSpan(_count, count).Fill(value);
+        _count += count;
+    }
+
+    /// <summary>
+    /// Copies the written elements into <paramref name="destination"/>.
+    /// </summary>
+    /// <param name="destination">
+    /// The target span. Must be at least <see cref="WrittenCount"/> elements long.
+    /// </param>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="destination"/> is too small.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
+    public void CopyTo(Span<T> destination)
+    {
+        ThrowIfDisposed();
+        ThrowHelper.ThrowIfDestinationSpanTooSmall<T, T>(WrittenSpan, destination);
+        _internalBuffer.AsSpan(0, _count).CopyTo(destination);
+    }
+
+    /// <summary>
+    /// Returns an <see cref="ArraySegment{T}"/> that aliases the underlying rented array, bounded to the written
+    /// region.
+    /// </summary>
+    /// <returns>
+    /// An <see cref="ArraySegment{T}"/> starting at offset 0 with a count equal to <see cref="WrittenCount"/>.
+    /// The segment points directly into pooled memory and must not be used after <see cref="Dispose"/> is called.
+    /// </returns>
+    /// <remarks>
+    /// This method is an escape hatch for APIs that require a <c>byte[]</c> or <see cref="ArraySegment{T}"/>
+    /// rather than a <see cref="Span{T}"/> or <see cref="Memory{T}"/>. Treat the returned segment as
+    /// borrowed — do not retain it beyond the lifetime of this builder.
+    /// </remarks>
+    /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
+    public ArraySegment<T> DangerousGetArray()
+    {
+        ThrowIfDisposed();
+        return new ArraySegment<T>(_internalBuffer, 0, _count);
+    }
+
+    /// <summary>
+    /// Sorts the written elements in place using the specified comparer, or the default comparer when
+    /// <paramref name="comparer"/> is <see langword="null"/>.
+    /// </summary>
+    /// <param name="comparer">
+    /// The comparer to use, or <see langword="null"/> to use <see cref="System.Collections.Generic.Comparer{T}.Default"/>.
+    /// </param>
+    /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
+    public void Sort(IComparer<T>? comparer = null)
+    {
+        ThrowIfDisposed();
+        Array.Sort(_internalBuffer, 0, _count, comparer);
+    }
+
+    /// <summary>
+    /// Sorts the written elements in place using the specified comparison delegate.
+    /// </summary>
+    /// <param name="comparison">The comparison to use. Must not be <see langword="null"/>.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="comparison"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
+    public void Sort(Comparison<T> comparison)
+    {
+        ThrowIfDisposed();
+        ThrowHelper.ThrowIfNull(comparison);
+        _internalBuffer.AsSpan(0, _count).Sort(comparison);
+    }
+
+    /// <summary>
     /// Releases the pooled buffer and resets the internal state of the builder.
     /// </summary>
     /// <remarks>After calling this method, further operations on the instance will throw <see cref="ObjectDisposedException"/>.</remarks>
@@ -286,6 +392,21 @@ public sealed class PooledBufferBuilder<T> : System.IDisposable, System.Buffers.
             _internalBuffer = Array.Empty<T>();
             _count = 0;
             _disposed = true;
+        }
+    }
+
+    /// <summary>
+    /// Gets the written region of the buffer as a <see cref="Memory{T}"/>, as required by
+    /// <see cref="System.Buffers.IMemoryOwner{T}"/>.
+    /// </summary>
+    /// <returns>A <see cref="Memory{T}"/> covering exactly the first <see cref="WrittenCount"/> elements.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
+    Memory<T> IMemoryOwner<T>.Memory
+    {
+        get
+        {
+            ThrowIfDisposed();
+            return _internalBuffer.AsMemory(0, _count);
         }
     }
 

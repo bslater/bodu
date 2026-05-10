@@ -32,6 +32,12 @@ public partial class PooledBufferBuilderTests
         Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = builder.GetMemory(); });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.Advance(0); });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.EnsureCapacity(1); });
+        Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = builder.IsEmpty; });
+        Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.AppendRange(System.ReadOnlyMemory<int>.Empty); });
+        Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.AddMany(0, 1); });
+        Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.CopyTo(new int[4]); });
+        Assert.ThrowsExactly<ObjectDisposedException>(() => { _ = builder.DangerousGetArray(); });
+        Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.Sort(); });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.Reset(); });
         Assert.ThrowsExactly<ObjectDisposedException>(() => { builder.TryCopyFrom(new System.Collections.Generic.List<int>()); });
     }

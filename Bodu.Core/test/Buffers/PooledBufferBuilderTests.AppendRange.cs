@@ -132,4 +132,19 @@ public partial class PooledBufferBuilderTests
             builder.AppendRange(new[] { 1, 2, 3 }.AsSpan());
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.AppendRange(System.ReadOnlyMemory{T})"/> appends all
+    /// elements from the memory region in order.
+    /// </summary>
+    [TestMethod]
+    public void AppendRange_WhenMemoryProvided_ShouldAppendAllItemsInOrder_UsingReadOnlyMemory()
+    {
+        int[] expected = { 2, 4, 6, 8 };
+        using var builder = new PooledBufferBuilder<int>();
+
+        builder.AppendRange(expected.AsMemory());
+
+        CollectionAssert.AreEqual(expected, builder.WrittenSpan.ToArray());
+    }
 }
