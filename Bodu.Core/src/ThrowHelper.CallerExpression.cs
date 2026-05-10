@@ -12,7 +12,6 @@ using Bodu.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Bodu;
 
@@ -206,7 +205,7 @@ public static partial class ThrowHelper
     /// <paramref name="minimumLength"/> elements.
     /// </summary>
     /// <typeparam name="T">The element type of the span.</typeparam>
-    /// <param name="span">The array to validate. Must not be <see langword="null"/>.</param>
+    /// <param name="span">The span to validate.</param>
     /// <param name="minimumLength">
     /// The minimum number of elements that <paramref name="span"/> must contain.
     /// </param>
@@ -214,16 +213,14 @@ public static partial class ThrowHelper
     /// The name of the span parameter. Supplied automatically by the compiler via
     /// <see cref="CallerArgumentExpressionAttribute"/>.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="span"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when <c>span.Length</c> is less than <paramref name="minimumLength"/>.
     /// </exception>
     /// <remarks>
-    /// Use this overload when the caller may supply a larger span than required and the
-    /// excess elements are simply ignored — for example, a buffer that must hold at least
-    /// a full cipher block but may be larger. When the length must be exact, use
+    /// <see cref="System.Span{T}"/> is a value type and cannot be <see langword="null"/>; no null guard
+    /// is required or possible. Use this overload when the caller may supply a larger span than required
+    /// and the excess elements are simply ignored — for example, a buffer that must hold at least a full
+    /// cipher block but may be larger. When the length must be exact, use
     /// <see cref="ThrowIfSpanLengthIsNotEqualTo{T}(Span{T}, int, string)"/> instead.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -263,7 +260,7 @@ public static partial class ThrowHelper
     /// <paramref name="minimumLength"/> elements.
     /// </summary>
     /// <typeparam name="T">The element type of the span.</typeparam>
-    /// <param name="span">The array to validate. Must not be <see langword="null"/>.</param>
+    /// <param name="span">The read-only span to validate.</param>
     /// <param name="minimumLength">
     /// The minimum number of elements that <paramref name="span"/> must contain.
     /// </param>
@@ -271,15 +268,13 @@ public static partial class ThrowHelper
     /// The name of the span parameter. Supplied automatically by the compiler via
     /// <see cref="CallerArgumentExpressionAttribute"/>.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="span"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when <c>span.Length</c> is less than <paramref name="minimumLength"/>.
     /// </exception>
     /// <remarks>
-    /// Use this overload when the caller may supply a larger span than required and the
-    /// excess elements are simply ignored — for example, a buffer that must hold at least
+    /// <see cref="System.ReadOnlySpan{T}"/> is a value type and cannot be <see langword="null"/>; no null
+    /// guard is required or possible. Use this overload when the caller may supply a larger span than
+    /// required and the excess elements are simply ignored — for example, a buffer that must hold at least
     /// a full cipher block but may be larger. When the length must be exact, use
     /// <see cref="ThrowIfSpanLengthIsNotEqualTo{T}(ReadOnlySpan{T}, int, string)"/> instead.
     /// </remarks>
@@ -610,6 +605,7 @@ public static partial class ThrowHelper
                     paramCountName,
                     paramSpanName));
     }
+
     /// <summary>
     /// Throws an <see cref="ArgumentNullException"/> if the array is <see langword="null"/>, or an
     /// <see cref="ArgumentException"/> if it is not assignable to <typeparamref name="TExpected"/>[].
@@ -645,9 +641,12 @@ public static partial class ThrowHelper
     /// <paramref name="minCount"/> elements.
     /// </summary>
     /// <typeparam name="T">The element type of the collection.</typeparam>
-    /// <param name="collection">The collection to validate.</param>
+    /// <param name="collection">The collection to validate. Must not be <see langword="null"/>.</param>
     /// <param name="minCount">The minimum number of required elements.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="collection"/> is <see langword="null"/>.
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when <c>collection.Count &lt; minCount</c>.
     /// </exception>
@@ -664,13 +663,16 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentException"/> if the collection is  empty.
+    /// Throws an <see cref="ArgumentException"/> if the collection is empty.
     /// </summary>
     /// <typeparam name="T">The element type of the collection.</typeparam>
-    /// <param name="collection">The collection to validate.</param>
+    /// <param name="collection">The collection to validate. Must not be <see langword="null"/>.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="collection"/> is <see langword="null"/>.
+    /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <c>collection.Count is 0.</c>.
+    /// Thrown when <c>collection.Count == 0</c>.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfCollectionIsEmpty<T>(
@@ -777,7 +779,7 @@ public static partial class ThrowHelper
 
         if (destination.Length < source.Length)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_DestinationTooSmall, "span", destination.Length),
+                string.Format(ResourceStrings.Arg_Invalid_DestinationTooSmall, "array", destination.Length),
                 paramDestinationName);
     }
 
@@ -825,7 +827,7 @@ public static partial class ThrowHelper
         if (!Enum.IsDefined(typeof(TEnum), value))
             throw new ArgumentOutOfRangeException(
                 paramName,
-                string.Format(ResourceStrings.Arg_OutOfRangeException_EnumValue, value, typeof(TEnum).Name));
+                string.Format(ResourceStrings.Arg_OutOfRangeException_EnumValue, typeof(TEnum).Name, value));
     }
 
     /// <summary>
