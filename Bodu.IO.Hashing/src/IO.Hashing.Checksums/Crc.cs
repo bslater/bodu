@@ -111,7 +111,7 @@ public sealed class Crc
     : NonCryptographicHashAlgorithm,
       IResumableHashAlgorithm
 {
-    private static Lazy<CrcLookupTableCache> globalLookupTableCache =
+    private static Lazy<CrcLookupTableCache> s_globalLookupTableCache =
         new Lazy<CrcLookupTableCache>(() => new CrcLookupTableCache());
 
     private readonly CrcStandard _standard;
@@ -157,12 +157,12 @@ public sealed class Crc
     /// <exception cref="ArgumentNullException">The value being assigned is <see langword="null" />.</exception>
     public static CrcLookupTableCache GlobalCache
     {
-        get => globalLookupTableCache.Value;
+        get => s_globalLookupTableCache.Value;
 
         set
         {
             ThrowHelper.ThrowIfNull(value);
-            globalLookupTableCache = new Lazy<CrcLookupTableCache>(() => value);
+            s_globalLookupTableCache = new Lazy<CrcLookupTableCache>(() => value);
         }
     }
 

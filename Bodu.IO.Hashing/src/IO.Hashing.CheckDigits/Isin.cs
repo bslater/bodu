@@ -40,7 +40,7 @@ public sealed class Isin
     /// <summary>The required full-sequence length of <c>12</c> characters.</summary>
     public const int SequenceLength = 12;
 
-    private readonly Luhn luhn = new Luhn();
+    private readonly Luhn _luhn = new Luhn();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Isin" /> class.
@@ -66,13 +66,13 @@ public sealed class Isin
             char ch = body[i];
             if ((uint)(ch - '0') <= 9u)
             {
-                luhn.Append(ch);
+                _luhn.Append(ch);
             }
             else if ((uint)(ch - 'A') <= 25u)
             {
                 int value = ch - 'A' + 10;
-                luhn.Append((char)('0' + (value / 10)));
-                luhn.Append((char)('0' + (value % 10)));
+                _luhn.Append((char)('0' + (value / 10)));
+                _luhn.Append((char)('0' + (value % 10)));
             }
             else
             {
@@ -83,11 +83,11 @@ public sealed class Isin
 
     /// <inheritdoc />
     public override void Reset() =>
-        luhn.Reset();
+        _luhn.Reset();
 
     /// <inheritdoc />
     public override char GetCurrentCheckDigit() =>
-        luhn.GetCurrentCheckDigit();
+        _luhn.GetCurrentCheckDigit();
 
     /// <summary>
     /// Computes the ISIN check digit for the supplied body without allocating a streaming instance.
