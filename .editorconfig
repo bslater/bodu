@@ -242,9 +242,11 @@ dotnet_diagnostic.SA1309.severity = none
 # Using directives outside namespace.
 dotnet_diagnostic.SA1200.severity = none
 
-# Allow s_camelCase static readonly fields.
-# SA1311 expects static readonly fields to begin with an upper-case letter,
-# which conflicts with the modern .NET runtime-style s_ prefix convention.
+# Allow s_camelCase static fields.
+# SA1308 bans the s_/m_/t_ prefixes outright, and SA1311 expects static readonly
+# fields to begin with an upper-case letter — both conflict with the modern .NET
+# runtime-style s_ prefix convention enforced by IDE1006.
+dotnet_diagnostic.SA1308.severity = none
 dotnet_diagnostic.SA1311.severity = none
 
 # Braces: SA1503 ("braces must not be omitted") is suppressed to permit clear,
