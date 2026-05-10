@@ -29,43 +29,99 @@ namespace Bodu.Globalization.Calendar;
 public sealed class NotableDateRuleBuilder
 {
     // Common rule fields
+
+    /// <summary>The rule-level identifier set via <see cref="RuleName(string)" />, or <see langword="null" /> when not authored.</summary>
     private string? _ruleName;
+
+    /// <summary>The primary category set via <see cref="Category(NotableDateCategory)" />.</summary>
     private NotableDateCategory _category;
+
+    /// <summary>The non-working flag set via <see cref="NonWorking(bool)" />, or <see langword="null" /> to defer to the calendar default.</summary>
     private bool? _isNonWorkingDay;
+
+    /// <summary>The inclusive first applicable year set via <see cref="FirstYear(int)" />, or <see langword="null" /> for no lower bound.</summary>
     private int? _firstYear;
+
+    /// <summary>The inclusive last applicable year set via <see cref="LastYear(int)" />, or <see langword="null" /> for no upper bound.</summary>
     private int? _lastYear;
+
+    /// <summary>The recurrence cadence set via <see cref="OccurrenceYears(int)" />, or <see langword="null" /> to resolve every applicable year.</summary>
     private int? _occurrenceYears;
+
+    /// <summary>The duration in days set via <see cref="Duration(int)" />, or <see langword="null" /> to default to <c>1</c> at build time.</summary>
     private int? _durationDays;
+
+    /// <summary>The integer priority set via <see cref="Priority(int)" /> (lower wins), or <see langword="null" /> to default to <c>100</c> at build time.</summary>
     private int? _priority;
+
+    /// <summary>The comma-separated territory list set via <see cref="Territory(string)" />, or <see langword="null" /> when unscoped.</summary>
     private string? _territoryCode;
+
+    /// <summary>The calendar type set via <see cref="CalendarType(Type)" />, or <see langword="null" /> to indicate the Gregorian calendar.</summary>
     private Type? _calendarType;
+
+    /// <summary>The free-form comment set via <see cref="Comment(string)" />, or <see langword="null" /> when none is authored.</summary>
     private string? _comment;
+
+    /// <summary>The list of tag values accumulated by <see cref="AddTag(string)" />.</summary>
     private readonly List<string> _tags = [];
+
+    /// <summary>The observance adjustments accumulated by <see cref="AddAdjustment(string, System.Action{ObservanceAdjustmentBuilder})" />, each paired with its merge key.</summary>
     private readonly List<(string Key, ObservanceAdjustmentBuilder Builder)> _adjustments = [];
 
     // Strategy discriminator
+
+    /// <summary>The selected resolution strategy, set by the strategy-specific configurator (<see cref="Fixed(int, int, bool, bool)" />, <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOfMonthOrdinal)" />, <see cref="OffsetFromAnchor(string, int)" />, or <see cref="Algorithm(string?, Type?, string?, int?)" />).</summary>
     private DateResolutionStrategy? _strategy;
 
     // Fixed strategy
+
+    /// <summary>The numeric month set by <see cref="Fixed(int, int, bool, bool)" /> when a Gregorian month number is supplied; mutually exclusive with <see cref="_fixedMonthToken" />.</summary>
     private int? _fixedMonthNumber;
+
+    /// <summary>The textual month token set by <see cref="Fixed(string, int, bool, bool)" /> for non-Gregorian or alias-based months; mutually exclusive with <see cref="_fixedMonthNumber" />.</summary>
     private string? _fixedMonthToken;
+
+    /// <summary>The day-of-month set by either <see cref="Fixed(int, int, bool, bool)" /> overload.</summary>
     private int? _fixedDay;
+
+    /// <summary>The skip-leap-month flag set by either <see cref="Fixed(int, int, bool, bool)" /> overload, consumed by lunisolar resolution.</summary>
     private bool _skipLeapMonth;
+
+    /// <summary>The sweep-calendar-years flag set by either <see cref="Fixed(int, int, bool, bool)" /> overload, consumed by calendars whose year boundary does not align with the Gregorian year.</summary>
     private bool _sweepCalendarYears;
 
     // DayOfWeekInMonth strategy
+
+    /// <summary>The month component set by <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOfMonthOrdinal)" />.</summary>
     private int? _dowMonth;
+
+    /// <summary>The weekday set by <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOfMonthOrdinal)" />.</summary>
     private DayOfWeek? _dowDayOfWeek;
+
+    /// <summary>The ordinal occurrence within the month set by <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOfMonthOrdinal)" />.</summary>
     private WeekOfMonthOrdinal? _dowWeekOrdinal;
 
     // OffsetFromAnchor strategy
+
+    /// <summary>The name of the anchor rule set by <see cref="OffsetFromAnchor(string, int)" />.</summary>
     private string? _anchorRuleName;
+
+    /// <summary>The signed day offset relative to the anchor set by <see cref="OffsetFromAnchor(string, int)" />.</summary>
     private int? _offsetDays;
 
     // Algorithm strategy
+
+    /// <summary>The algorithm registry key set by <see cref="Algorithm(string?, Type?, string?, int?)" />, or <see langword="null" /> when resolving via <see cref="_algorithmType" />.</summary>
     private string? _algorithmKey;
+
+    /// <summary>The algorithm CLR type set by <see cref="Algorithm(string?, Type?, string?, int?)" />, or <see langword="null" /> when resolving via <see cref="_algorithmKey" />.</summary>
     private Type? _algorithmType;
+
+    /// <summary>The optional month token forwarded to the algorithm constructor, set by <see cref="Algorithm(string?, Type?, string?, int?)" />.</summary>
     private string? _algorithmMonth;
+
+    /// <summary>The optional day-of-month forwarded to the algorithm constructor, set by <see cref="Algorithm(string?, Type?, string?, int?)" />.</summary>
     private int? _algorithmDay;
 
     /// <summary>

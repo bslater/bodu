@@ -58,8 +58,10 @@ namespace Bodu.Globalization.Calendar;
 /// </example>
 public sealed class NotableDateDocumentBuilder
 {
+    /// <summary>The XML namespace applied to the produced <c>NotableDates</c> document, matching <c>NotableDates.xsd</c>.</summary>
     private static readonly XNamespace SchemaNamespace = XNamespace.Get("urn:bodu:globalization:calendar");
 
+    /// <summary>The notable date entries accumulated by <see cref="AddDate(string, System.Action{NotableDateBuilder})" />, each paired with its canonical name.</summary>
     private readonly List<(string Name, NotableDateBuilder Builder)> _dates = [];
 
     /// <summary>
@@ -159,6 +161,16 @@ public sealed class NotableDateDocumentBuilder
     public INotableDateRuleProvider ToProvider() =>
         new InlineNotableDateRuleProvider(Build());
 
+    /// <summary>
+    /// Builds the underlying <see cref="XDocument" /> shared by <see cref="ToXDocument" /> and <see cref="ToXml" />.
+    /// </summary>
+    /// <returns>
+    /// An <see cref="XDocument" /> whose root is a <c>&lt;NotableDates&gt;</c> element in the
+    /// <c>urn:bodu:globalization:calendar</c> namespace, containing one child per accumulated notable date entry in the order they were added.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when any notable date entry contains no rules, or when a rule has no resolution strategy selected.
+    /// </exception>
     private XDocument BuildDocument()
     {
         XElement root = new(SchemaNamespace + "NotableDates");
