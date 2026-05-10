@@ -9,227 +9,58 @@ namespace Bodu.IO.Hashing.Checksums;
 public partial class CrcLookupTableCacheTests
 {
     /// <summary>
-    /// Verifies that the <see cref="CrcLookupTableCache" /> correctly returns the CRC lookup table for known parameters.
+    /// Verifies that <see cref="CrcLookupTableCache.GetLookupTable" /> returns a non-null table whose length is
+    /// <c>2^min(size, 8)</c> for every valid combination of <paramref name="size" />, <paramref name="polynomial" />,
+    /// and <paramref name="reflectIn" /> — covering the inclusive boundaries (1-bit and 64-bit), the common
+    /// 16/32-bit widths, and the polynomial edge values (zero and all-ones).
     /// </summary>
+    /// <param name="size">The CRC width in bits.</param>
+    /// <param name="polynomial">The CRC polynomial.</param>
+    /// <param name="reflectIn">Whether input bytes are bit-reflected.</param>
+    /// <param name="expectedLength">The expected lookup-table length.</param>
     [TestMethod]
-    public void GetLookupTable_WhenKnownParameters_ShouldReturnCorrectTable()
+    [DataRow(1, 0x1UL, false, 2)]
+    [DataRow(1, 0x04C11DB7UL, true, 2)]
+    [DataRow(16, 0x1EDC6F41UL, false, 256)]
+    [DataRow(32, 0x04C11DB7UL, true, 256)]
+    [DataRow(32, 0x0UL, true, 256)]
+    [DataRow(32, 0xFFFFFFFFUL, true, 256)]
+    [DataRow(64, 0x04C11DB7UL, false, 256)]
+    [DataRow(64, 0x1UL, false, 256)]
+    public void GetLookupTable_WhenParametersAreValid_ShouldReturnTableOfExpectedLength(
+        int size, ulong polynomial, bool reflectIn, int expectedLength)
     {
-        int size = 32;
-        ulong polynomial = 0x04C11DB7;
-        bool reflectIn = true;
+        ulong[] table = cache.GetLookupTable(size, polynomial, reflectIn);
 
-        var result = cache.GetLookupTable(size, polynomial, reflectIn);
-        Assert.IsNotNull(result);
-        Assert.AreEqual(256, result.Length); // Validate the size of the lookup table
+        Assert.IsNotNull(table);
+        Assert.AreEqual(expectedLength, table.Length);
     }
 
     /// <summary>
-    /// Verifies that the <see cref="CrcLookupTableCache" /> returns different lookup tables for different parameters.
-    /// </summary>
-    [TestMethod]
-    public void GetLookupTable_WhenDifferentParameters_ShouldCacheDifferentTables()
-    {
-        int size1 = 32;
-        ulong polynomial1 = 0x04C11DB7;
-        bool reflectIn1 = true;
-        int size2 = 16;
-        ulong polynomial2 = 0x1EDC6F41;
-        bool reflectIn2 = false;
-
-        var result1 = cache.GetLookupTable(size1, polynomial1, reflectIn1);
-        var result2 = cache.GetLookupTable(size2, polynomial2, reflectIn2);
-
-        // Ensure different lookup tables are cached for different parameters
-        Assert.AreNotEqual(result1, result2);
-    }
-
-    /// <summary>
-    /// Verifies that the cached CRC lookup table arrays are not modified.
-    /// </summary>
-    [TestMethod]
-    public void GetLookupTable_WhenModified_ShouldNotModifyCachedArrays()
-    {
-        int size = 32;
-        ulong polynomial = 0x04C11DB7;
-        bool reflectIn = true;
-
-        var result = cache.GetLookupTable(size, polynomial, reflectIn).ToArray();
-        result[0] = 123456; // Modify the array returned by GetLookupTable
-
-        // Verify that the array in the cache remains unchanged
-        var cachedResult = cache.GetLookupTable(size, polynomial, reflectIn);
-        Assert.AreNotEqual(123456UL, cachedResult[0]);
-    }
-
-    /// <summary>
-    /// Verifies that the <see cref="CrcLookupTableCache" /> handles concurrent access correctly.
-    /// </summary>
-    [TestMethod]
-    public void GetLookupTable_WhenCalledConcurrently_ShouldHandleConcurrentAccess()
-    {
-        int size = 32;
-        ulong polynomial = 0x04C11DB7;
-        bool reflectIn = true;
-
-        var threads = new Task[100];
-        var successFlag = new bool[100];
-
-        for (int i = 0; i < 100; i++)
-        {
-            int threadIndex = i;
-            threads[i] = Task.Run(() =>
-            {
-                var result = cache.GetLookupTable(size, polynomial, reflectIn);
-                successFlag[threadIndex] = result != null; // Use the captured threadIndex
-            });
-        }
-
-        Task.WhenAll(threads).Wait();
-
-        // Verify that all threads successfully retrieved the lookup table
-        foreach (var success in successFlag)
-        {
-            Assert.IsTrue(success);
-        }
-    }
-
-    /// <summary>
-    /// Verifies that the <see cref="CrcLookupTableCache" /> correctly handles edge cases for size and polynomial parameters.
-    /// </summary>
-    [TestMethod]
-    public void GetLookupTable_WhenSizeOrPolynomialEdgeCases_ShouldHandleEdgeCases()
-    {
-        // Test with minimal size (1-bit CRC)
-        var result1 = cache.GetLookupTable(1, 0x04C11DB7, true);
-        Assert.IsNotNull(result1);
-        Assert.AreEqual(2, result1.Length);
-
-        // Test with maximum size (64-bit CRC)
-        var result2 = cache.GetLookupTable(64, 0x04C11DB7, false);
-        Assert.IsNotNull(result2);
-        Assert.AreEqual(256, result2.Length);
-
-        // Test with large polynomial hashValue
-        var result3 = cache.GetLookupTable(32, 0xFFFFFFFF, true);
-        Assert.IsNotNull(result3);
-    }
-
-    /// <summary>
-    /// Verifies that the <see cref="CrcLookupTableCache" /> correctly handles the zero polynomial case.
-    /// </summary>
-    [TestMethod]
-    public void GetLookupTable_WhenPolynomialIsZero_ShouldHandleZeroPolynomial()
-    {
-        int size = 32;
-        ulong polynomial = 0x0; // Zero polynomial
-        bool reflectIn = true;
-
-        var result = cache.GetLookupTable(size, polynomial, reflectIn);
-        Assert.IsNotNull(result);
-        Assert.AreEqual(256, result.Length); // Verify correct table size
-    }
-
-    /// <summary>
-    /// Verifies that the <see cref="CrcLookupTableCache" /> correctly handles the reflectIn parameter.
-    /// </summary>
-    [TestMethod]
-    public void GetLookupTable_WhenReflectInChanges_ShouldHandleReflectInParameter()
-    {
-        int size = 32;
-        ulong polynomial = 0x04C11DB7;
-        bool reflectIn = true;
-
-        var result1 = cache.GetLookupTable(size, polynomial, reflectIn);
-        reflectIn = false;
-        var result2 = cache.GetLookupTable(size, polynomial, reflectIn);
-
-        // Ensure that reflectIn changes the lookup table
-        Assert.AreNotSame(result1, result2);
-    }
-
-    /// <summary>
-    /// Verifies that repeated lookups with identical parameters return the same shared array reference from the cache.
+    /// Verifies that repeated lookups with identical parameters return the same shared array reference from the
+    /// cache, so callers observe the precomputed table without paying for repeated allocation or initialisation.
     /// </summary>
     [TestMethod]
     public void GetLookupTable_WhenCalledWithSameParameters_ShouldReturnCachedInstance()
     {
-        int size = 32;
-        ulong polynomial = 0x04C11DB7;
-        bool reflectIn = true;
+        ulong[] first = cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
+        ulong[] second = cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
 
-        var firstCallResult = cache.GetLookupTable(size, polynomial, reflectIn);
-        var secondCallResult = cache.GetLookupTable(size, polynomial, reflectIn);
-
-        // Cache hits share a single underlying table across callers.
-        Assert.AreSame(firstCallResult, secondCallResult);
+        Assert.AreSame(first, second);
     }
 
     /// <summary>
-    /// Verifies that the <see cref="CrcLookupTableCache" /> returns the different instances for the same parameters.
+    /// Verifies that varying any single keying parameter (<c>size</c>, <c>polynomial</c>, or <c>reflectIn</c>)
+    /// produces a distinct cached table, so cache hits are scoped strictly to the full key tuple.
     /// </summary>
     [TestMethod]
-    public void GetLookupTable_WhenCalledWithSameParameters_ShouldReturnCachedValue()
+    public void GetLookupTable_WhenAnyParameterChanges_ShouldReturnDistinctTable()
     {
-        int size = 32;
-        ulong polynomial = 0x04C11DB7;
-        bool reflectIn = true;
+        ulong[] baseline = cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
 
-        var firstCallResult = cache.GetLookupTable(size, polynomial, reflectIn);
-        var secondCallResult = cache.GetLookupTable(size, polynomial, reflectIn);
-
-        // Assert that the result from the second call contain the same values as the first
-        CollectionAssert.AreEqual(firstCallResult, secondCallResult);
-    }
-
-    /// <summary>
-    /// Verifies that the <see cref="CrcLookupTableCache" /> returns different lookup tables for different CRC parameters.
-    /// </summary>
-    [TestMethod]
-    public void GetLookupTable_WhenCalledWithDifferentParameters_ShouldReturnNewValue()
-    {
-        int size1 = 32;
-        ulong polynomial1 = 0x04C11DB7;
-        bool reflectIn1 = true;
-
-        var firstCallResult = cache.GetLookupTable(size1, polynomial1, reflectIn1);
-
-        int size2 = 16;
-        ulong polynomial2 = 0xA833982B;
-        bool reflectIn2 = false;
-
-        var secondCallResult = cache.GetLookupTable(size2, polynomial2, reflectIn2);
-
-        // Assert that the result is different for the two different parameter sets (cache miss)
-        Assert.AreNotSame(firstCallResult, secondCallResult);
-    }
-
-    /// <summary>
-    /// Verifies that the <see cref="CrcLookupTableCache" /> throws an exception when the <paramref name="size" /> is outside the valid range.
-    /// </summary>
-    [TestMethod]
-    [DataRow(0, false)] // Below min size
-    [DataRow(16, true)] // Valid size
-    [DataRow(64, true)] // Valid size
-    [DataRow(128, false)] // Above max size
-    public void GetLookupTable_WhenSizeIsOutsideValidRange_ShouldThrowException(int size, bool shouldPass)
-    {
-        ulong polynomial = 0x04C11DB7;
-        bool reflectIn = true;
-
-        if (shouldPass)
-        {
-            // If the size is valid, it should succeed
-            var lookupTable = cache.GetLookupTable(size, polynomial, reflectIn);
-            Assert.IsNotNull(lookupTable);
-        }
-        else
-        {
-            // If the size is invalid, we expect an exception
-            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-            {
-                cache.GetLookupTable(size, polynomial, reflectIn);
-            });
-        }
+        Assert.AreNotSame(baseline, cache.GetLookupTable(16, 0x04C11DB7UL, reflectIn: true));
+        Assert.AreNotSame(baseline, cache.GetLookupTable(32, 0x1EDC6F41UL, reflectIn: true));
+        Assert.AreNotSame(baseline, cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: false));
     }
 
     /// <summary>
@@ -237,10 +68,13 @@ public partial class CrcLookupTableCacheTests
     /// whose <c>ParamName</c> is <c>size</c>, confirming the <see cref="ThrowHelper" /> contract propagates
     /// through the cache lookup path.
     /// </summary>
+    /// <param name="size">The invalid CRC width under test.</param>
     [TestMethod]
+    [DataRow(int.MinValue)]
     [DataRow(-1)]
     [DataRow(0)]
     [DataRow(65)]
+    [DataRow(128)]
     [DataRow(int.MaxValue)]
     public void GetLookupTable_WhenSizeIsInvalid_ShouldReportSizeParamName(int size)
     {
@@ -250,34 +84,42 @@ public partial class CrcLookupTableCacheTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CrcLookupTableCache.GetLookupTable" /> succeeds at the inclusive boundary
-    /// values <see cref="CrcStandard.MinSize" /> (1-bit) and <see cref="CrcStandard.MaxSize" /> (64-bit).
+    /// Verifies that mutating a copy of a cached lookup table does not affect subsequent lookups returned by
+    /// the cache for the same parameters.
     /// </summary>
     [TestMethod]
-    [DataRow(1, 2)]
-    [DataRow(64, 256)]
-    public void GetLookupTable_WhenSizeIsBoundaryValue_ShouldReturnExpectedTable(int size, int expectedLength)
+    public void GetLookupTable_WhenModified_ShouldNotModifyCachedArrays()
     {
-        ulong[] table = cache.GetLookupTable(size, 0x1UL, reflectIn: false);
+        ulong[] copy = cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true).ToArray();
+        copy[0] = 123456;
 
-        Assert.IsNotNull(table);
-        Assert.AreEqual(expectedLength, table.Length);
+        ulong[] cached = cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
+        Assert.AreNotEqual(123456UL, cached[0]);
     }
 
     /// <summary>
-    /// Verifies that the cache returns a <see cref="ulong" /> array whose contents match the shared precomputed table.
+    /// Verifies that concurrent lookups for the same parameters all succeed, exercising the cache's
+    /// thread-safety contract under contention.
     /// </summary>
     [TestMethod]
-    public void GetLookupTable_ShouldReturnSharedArray()
+    public void GetLookupTable_WhenCalledConcurrently_ShouldHandleConcurrentAccess()
     {
-        int size = 32;
-        ulong polynomial = 0x04C11DB7;
-        bool reflectIn = true;
+        var threads = new Task[100];
+        var successFlag = new bool[100];
 
-        ulong[] cachedResult = cache.GetLookupTable(size, polynomial, reflectIn);
+        for (int i = 0; i < 100; i++)
+        {
+            int threadIndex = i;
+            threads[i] = Task.Run(() =>
+            {
+                var result = cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
+                successFlag[threadIndex] = result != null;
+            });
+        }
 
-        Assert.IsNotNull(cachedResult);
-        Assert.AreEqual(256, cachedResult.Length);
-        Assert.AreSame(cachedResult, cache.GetLookupTable(size, polynomial, reflectIn));
+        Task.WhenAll(threads).Wait();
+
+        foreach (var success in successFlag)
+            Assert.IsTrue(success);
     }
 }

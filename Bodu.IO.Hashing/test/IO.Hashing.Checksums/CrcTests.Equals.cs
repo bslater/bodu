@@ -36,25 +36,16 @@ public partial class CrcTests
 
     /// <summary>
     /// Verifies that <see cref="Crc.Equals(object?)" /> returns <see langword="false" /> when the comparand is
-    /// <see langword="null" />.
+    /// <see langword="null" /> or an object of an unrelated type.
     /// </summary>
+    /// <param name="other">The comparand passed to <see cref="Crc.Equals(object?)" />.</param>
     [TestMethod]
-    public void Equals_WhenObjIsNull_ShouldReturnFalse()
+    [DataRow(null)]
+    [DataRow("not a Crc")]
+    public void Equals_WhenObjIsNullOrDifferentType_ShouldReturnFalse(object? other)
     {
         Crc a = new(CrcStandard.CRC32_ISOHDLC);
 
-        Assert.IsFalse(a.Equals(null));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Crc.Equals(object?)" /> returns <see langword="false" /> when the comparand is
-    /// an object of an unrelated type.
-    /// </summary>
-    [TestMethod]
-    public void Equals_WhenObjIsDifferentType_ShouldReturnFalse()
-    {
-        Crc a = new(CrcStandard.CRC32_ISOHDLC);
-
-        Assert.IsFalse(a.Equals("not a Crc"));
+        Assert.IsFalse(a.Equals(other));
     }
 }

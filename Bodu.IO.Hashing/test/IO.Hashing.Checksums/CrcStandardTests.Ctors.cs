@@ -33,33 +33,19 @@ public partial class CrcStandardTests
     }
 
     /// <summary>
-    /// Verifies that constructing a <see cref="CrcStandard" /> with a <paramref name="size" /> below
-    /// <see cref="CrcStandard.MinSize" /> throws <see cref="ArgumentOutOfRangeException" /> with <c>ParamName</c>
-    /// equal to <c>size</c>.
+    /// Verifies that constructing a <see cref="CrcStandard" /> with a <paramref name="size" /> outside the
+    /// inclusive range [<see cref="CrcStandard.MinSize" />, <see cref="CrcStandard.MaxSize" />] throws
+    /// <see cref="ArgumentOutOfRangeException" /> with <c>ParamName</c> equal to <c>size</c>.
     /// </summary>
     /// <param name="size">The invalid width under test.</param>
     [TestMethod]
-    [DataRow(0)]
-    [DataRow(-1)]
     [DataRow(int.MinValue)]
-    public void Ctor_WhenSizeIsBelowMin_ShouldThrowArgumentOutOfRangeException(int size)
-    {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(
-            () => new CrcStandard("Test", size, 0x1UL, 0x0UL, false, false, 0x0UL));
-        Assert.AreEqual("size", ex.ParamName);
-    }
-
-    /// <summary>
-    /// Verifies that constructing a <see cref="CrcStandard" /> with a <paramref name="size" /> above
-    /// <see cref="CrcStandard.MaxSize" /> throws <see cref="ArgumentOutOfRangeException" /> with <c>ParamName</c>
-    /// equal to <c>size</c>.
-    /// </summary>
-    /// <param name="size">The invalid width under test.</param>
-    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(0)]
     [DataRow(65)]
     [DataRow(128)]
     [DataRow(int.MaxValue)]
-    public void Ctor_WhenSizeIsAboveMax_ShouldThrowArgumentOutOfRangeException(int size)
+    public void Ctor_WhenSizeIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int size)
     {
         var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(
             () => new CrcStandard("Test", size, 0x1UL, 0x0UL, false, false, 0x0UL));
