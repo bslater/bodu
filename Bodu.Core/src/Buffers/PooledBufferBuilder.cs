@@ -27,7 +27,7 @@ namespace Bodu.Buffers;
 /// round-trip. Call <see cref="Dispose"/> when the builder is no longer needed.
 /// </para>
 /// </remarks>
-public sealed class PooledBufferBuilder<T> : System.IDisposable
+public sealed class PooledBufferBuilder<T> : System.IDisposable, System.Buffers.IBufferWriter<T>
 {
     private int _count;
     private bool _disposed;
@@ -83,6 +83,23 @@ public sealed class PooledBufferBuilder<T> : System.IDisposable
     }
 
     /// <summary>
+    /// Gets the number of elements that can be written to the buffer before the next growth.
+    /// </summary>
+    /// <returns>
+    /// The number of remaining slots in the current rented array — equivalent to
+    /// <see cref="Capacity"/> minus <see cref="WrittenCount"/>.
+    /// </returns>
+    /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
+    public int FreeCapacity
+    {
+        get
+        {
+            ThrowIfDisposed();
+            return _internalBuffer.Length - _count;
+        }
+    }
+
+    /// <summary>
     /// Gets a <see cref="ReadOnlyMemory{T}"/> representing the elements written to the buffer.
     /// </summary>
     /// <returns>
@@ -124,7 +141,7 @@ public sealed class PooledBufferBuilder<T> : System.IDisposable
     public void Append(T item)
     {
         ThrowIfDisposed();
-        EnsureCapacity(_count + 1);
+        GrowIfNeeded(_count + 1);
         _internalBuffer[_count++] = item;
     }
 
@@ -146,7 +163,7 @@ public sealed class PooledBufferBuilder<T> : System.IDisposable
 
         if (source is ICollection<T> col)
         {
-            EnsureCapacity(_count + col.Count);
+            GrowIfNeeded(_count + col.Count);
             col.CopyTo(_internalBuffer, _count);
             _count += col.Count;
             return;
@@ -154,7 +171,7 @@ public sealed class PooledBufferBuilder<T> : System.IDisposable
 
         foreach (T item in source)
         {
-            EnsureCapacity(_count + 1);
+            GrowIfNeeded(_count + 1);
             _internalBuffer[_count++] = item;
         }
     }
@@ -168,9 +185,78 @@ public sealed class PooledBufferBuilder<T> : System.IDisposable
     public void AppendRange(ReadOnlySpan<T> source)
     {
         ThrowIfDisposed();
-        EnsureCapacity(_count + source.Length);
+        GrowIfNeeded(_count + source.Length);
         source.CopyTo(_internalBuffer.AsSpan(_count));
         _count += source.Length;
+    }
+
+    /// <summary>
+    /// Notifies the builder that <paramref name="count"/> elements were written into the span or memory most
+    /// recently returned by <see cref="GetSpan"/> or <see cref="GetMemory"/>.
+    /// </summary>
+    /// <param name="count">
+    /// The number of elements written. Must be non-negative and must not exceed the length of the buffer most
+    /// recently returned by <see cref="GetSpan"/> or <see cref="GetMemory"/>.
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="count"/> is negative or would advance <see cref="WrittenCount"/> past the end
+    /// of the current internal buffer.
+    /// </exception>
+    /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
+    public void Advance(int count)
+    {
+        ThrowIfDisposed();
+        ThrowHelper.ThrowIfNegative(count);
+
+        if (count > _internalBuffer.Length - _count)
+            throw new ArgumentOutOfRangeException(nameof(count), count,
+                "Cannot advance past the end of the current buffer.");
+
+        _count += count;
+    }
+
+    /// <summary>
+    /// Returns a <see cref="Memory{T}"/> of at least <paramref name="sizeHint"/> elements into which the caller
+    /// can write, automatically growing the buffer if necessary.
+    /// </summary>
+    /// <param name="sizeHint">
+    /// The minimum number of elements required. When zero or negative, at least one element of free space is
+    /// ensured. The returned memory may be larger than the hint.
+    /// </param>
+    /// <returns>
+    /// A writable <see cref="Memory{T}"/> beginning at the current write position and spanning all free
+    /// capacity. Call <see cref="Advance"/> after writing to commit the data.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="sizeHint"/> is negative.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
+    public Memory<T> GetMemory(int sizeHint = 0)
+    {
+        ThrowIfDisposed();
+        ThrowHelper.ThrowIfNegative(sizeHint);
+        GrowIfNeeded(_count + (sizeHint > 0 ? sizeHint : 1));
+        return _internalBuffer.AsMemory(_count);
+    }
+
+    /// <summary>
+    /// Returns a <see cref="Span{T}"/> of at least <paramref name="sizeHint"/> elements into which the caller
+    /// can write, automatically growing the buffer if necessary.
+    /// </summary>
+    /// <param name="sizeHint">
+    /// The minimum number of elements required. When zero or negative, at least one element of free space is
+    /// ensured. The returned span may be larger than the hint.
+    /// </param>
+    /// <returns>
+    /// A writable <see cref="Span{T}"/> beginning at the current write position and spanning all free capacity.
+    /// Call <see cref="Advance"/> after writing to commit the data.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="sizeHint"/> is negative.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
+    public Span<T> GetSpan(int sizeHint = 0)
+    {
+        ThrowIfDisposed();
+        ThrowHelper.ThrowIfNegative(sizeHint);
+        GrowIfNeeded(_count + (sizeHint > 0 ? sizeHint : 1));
+        return _internalBuffer.AsSpan(_count);
     }
 
     /// <summary>
@@ -246,7 +332,7 @@ public sealed class PooledBufferBuilder<T> : System.IDisposable
         if (source is ICollection<T> col)
         {
             Reset();
-            EnsureCapacity(col.Count);
+            GrowIfNeeded(col.Count);
             col.CopyTo(_internalBuffer, 0);
             _count = col.Count;
             return true;
@@ -259,9 +345,21 @@ public sealed class PooledBufferBuilder<T> : System.IDisposable
     /// Ensures the internal buffer can hold at least <paramref name="minimum"/> elements, growing via a new
     /// pooled allocation when needed.
     /// </summary>
-    /// <param name="minimum">The minimum required capacity.</param>
+    /// <param name="minimum">
+    /// The minimum total capacity required. Must be non-negative. No-ops when the current
+    /// <see cref="Capacity"/> already satisfies the request.
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="minimum"/> is negative.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
+    public void EnsureCapacity(int minimum)
+    {
+        ThrowIfDisposed();
+        ThrowHelper.ThrowIfNegative(minimum);
+        GrowIfNeeded(minimum);
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void EnsureCapacity(int minimum)
+    private void GrowIfNeeded(int minimum)
     {
         if (minimum <= _internalBuffer.Length)
             return;
