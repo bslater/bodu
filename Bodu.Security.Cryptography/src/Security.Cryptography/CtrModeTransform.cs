@@ -87,13 +87,11 @@ public sealed class CtrModeTransform : IBlockCipherModeTransform
     /// </exception>
     public CtrModeTransform(IBlockCipher cipher, byte[] initialCounter)
     {
-        this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
-        if (initialCounter is null) throw new ArgumentNullException(nameof(initialCounter));
-        if (initialCounter.Length != cipher.BlockSize)
-            throw new ArgumentException(
-                $"initialCounter length ({initialCounter.Length}) must equal the cipher block size ({cipher.BlockSize}).",
-                nameof(initialCounter));
+        ThrowHelper.ThrowIfNull(cipher);
+        ThrowHelper.ThrowIfNull(initialCounter);
+        CryptoHelpers.ThrowIfIvLengthInvalid(initialCounter, cipher.BlockSize);
 
+        this._cipher = cipher;
         this._initialCounter = (byte[])initialCounter.Clone();
         this._counter = (byte[])initialCounter.Clone();
     }
@@ -109,8 +107,7 @@ public sealed class CtrModeTransform : IBlockCipherModeTransform
         for (var offset = 0; offset < input.Length; offset += blockSize)
         {
             if (this._counterWrapped)
-                throw new CryptographicException(
-                    "The CTR counter has wrapped to its initial value. Continuing would reuse the keystream.");
+                throw new CryptographicException(CryptoResourceStrings.CryptographicException_CtrCounterWrapped);
 
             this._cipher.Encrypt(this._counter, keystream);
             this.IncrementCounter();

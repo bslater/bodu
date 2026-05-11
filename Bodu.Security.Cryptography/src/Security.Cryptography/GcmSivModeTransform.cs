@@ -108,22 +108,12 @@ public sealed class GcmSivModeTransform
     /// <exception cref="InvalidOperationException">
     /// <paramref name="cipherFactory"/> returned <see langword="null"/>.
     /// </exception>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Style",
-        "IDE0011:Add braces",
-        Justification = "Single-statement guard clauses intentionally omit braces to match the project style; multi-line throw expressions remain clear because each condition has only one control-flow outcome.")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Roslynator",
-        "RCS1001:Add braces (when expression spans over multiple lines)",
-        Justification = "The multi-line throw expressions are single guard-clause bodies; omitting braces keeps validation paths compact without reducing control-flow clarity.")]
     public GcmSivModeTransform(IBlockCipher masterCipher, Func<byte[], IBlockCipher> cipherFactory, byte[] iv)
     {
-        if (masterCipher is null) throw new ArgumentNullException(nameof(masterCipher));
-        if (cipherFactory is null) throw new ArgumentNullException(nameof(cipherFactory));
-        if (iv is null) throw new ArgumentNullException(nameof(iv));
-        if (iv.Length != masterCipher.BlockSize)
-            throw new ArgumentException(
-                $"IV length ({iv.Length}) must equal the cipher block size ({masterCipher.BlockSize}).", nameof(iv));
+        ThrowHelper.ThrowIfNull(masterCipher);
+        ThrowHelper.ThrowIfNull(cipherFactory);
+        ThrowHelper.ThrowIfNull(iv);
+        CryptoHelpers.ThrowIfIvLengthInvalid(iv, masterCipher.BlockSize);
 
         this._nonce = new byte[NonceLengthBytes];
         iv.AsSpan(0, NonceLengthBytes).CopyTo(this._nonce);
@@ -156,9 +146,7 @@ public sealed class GcmSivModeTransform
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
     {
         this.ThrowIfDisposed();
-
-        if (this._aadProcessed)
-            throw new InvalidOperationException("AssociatedData has already been processed.");
+        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(this._aadProcessed);
 
         this._aad = associatedData.ToArray();
         this._aadProcessed = true;
@@ -171,8 +159,7 @@ public sealed class GcmSivModeTransform
         this.ThrowIfCompleted();
 
         var required = plaintext.Length + TagSize;
-        if (output.Length < required)
-            throw new ArgumentException($"Output must be at least {required} bytes.", nameof(output));
+        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
         EnsureAadProcessed();
 
         try
@@ -198,11 +185,9 @@ public sealed class GcmSivModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        if (ciphertextWithTag.Length < TagSize)
-            throw new ArgumentException($"Input must be at least {TagSize} bytes.", nameof(ciphertextWithTag));
+        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSize);
         var plaintextLength = ciphertextWithTag.Length - TagSize;
-        if (output.Length < plaintextLength)
-            throw new ArgumentException($"Output must be at least {plaintextLength} bytes.", nameof(output));
+        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
         EnsureAadProcessed();
 
         try
@@ -219,7 +204,8 @@ public sealed class GcmSivModeTransform
             if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
             {
                 CryptoHelpers.Clear(output.Slice(0, plaintextLength));
-                throw new CryptographicException("GCM-SIV authentication tag verification failed.");
+                throw new CryptographicException(
+                    CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
             }
             return plaintextLength;
         }
@@ -233,20 +219,8 @@ public sealed class GcmSivModeTransform
     /// Throws <see cref="InvalidOperationException"/> if this transform has already encrypted or
     /// decrypted a message. GCM-SIV transforms are single-use; create a fresh instance per message.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Style",
-        "IDE0011:Add braces",
-        Justification = "Single-statement guard clauses intentionally omit braces to match the project style; multi-line throw expressions remain clear because each condition has only one control-flow outcome.")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Roslynator",
-        "RCS1001:Add braces (when expression spans over multiple lines)",
-        Justification = "The multi-line throw expressions are single guard-clause bodies; omitting braces keeps validation paths compact without reducing control-flow clarity.")]
-    private void ThrowIfCompleted()
-    {
-        if (this._completed)
-            throw new InvalidOperationException(
-                "This GCM-SIV transform has already completed and cannot be reused. Create a new instance per message.");
-    }
+    private void ThrowIfCompleted() =>
+        CryptoHelpers.ThrowIfAlreadyCompleted(this._completed);
 
     /// <summary>
     /// Releases the resources used by this instance and clears retained authentication key, nonce,
@@ -559,6 +533,6 @@ public sealed class GcmSivModeTransform
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
-            throw new ObjectDisposedException(nameof(Skipjack));
+            throw new ObjectDisposedException(nameof(GcmSivModeTransform));
 #endif
 }

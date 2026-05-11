@@ -128,7 +128,8 @@ public abstract class BlockCipherTransform : ICryptoTransform
     /// <exception cref="ArgumentNullException"><paramref name="cipher"/> is <see langword="null"/>.</exception>
     protected BlockCipherTransform(IBlockCipher cipher, CipherBlockMode cipherMode, PaddingMode paddingMode, byte[] iv, bool encrypt)
     {
-        this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
+        ThrowHelper.ThrowIfNull(cipher);
+        this._cipher = cipher;
         this._encrypt = encrypt;
         this._mode = BlockCipherModeFactory.Create(cipherMode, cipher, iv);
         this._padding = PaddingFactory.Create(paddingMode);
@@ -153,7 +154,8 @@ public abstract class BlockCipherTransform : ICryptoTransform
     /// <exception cref="ArgumentNullException"><paramref name="cipher"/> is <see langword="null"/>.</exception>
     protected BlockCipherTransform(IBlockCipher cipher, CipherBlockMode cipherMode, BoduPaddingMode paddingMode, byte[] iv, bool encrypt)
     {
-        this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
+        ThrowHelper.ThrowIfNull(cipher);
+        this._cipher = cipher;
         this._encrypt = encrypt;
         this._mode = BlockCipherModeFactory.Create(cipherMode, cipher, iv);
         this._padding = PaddingFactory.Create(paddingMode);

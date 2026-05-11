@@ -114,7 +114,7 @@ public sealed class GcmModeTransform
     public GcmModeTransform(IBlockCipher cipher, byte[] nonce)
         : this(
             cipher,
-            nonce is null ? throw new ArgumentNullException(nameof(nonce)) : new ReadOnlySpan<byte>(nonce),
+            ValidateAndWrap(nonce),
             nameof(nonce),
             useInitialCounterBlock: false)
     {
@@ -146,26 +146,33 @@ public sealed class GcmModeTransform
         string parameterName,
         bool useInitialCounterBlock)
     {
-        this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
+        ThrowHelper.ThrowIfNull(cipher);
+        this._cipher = cipher;
 
         if (cipher.BlockSize != BlockSizeBytes)
+        {
             throw new ArgumentException(
                 $"GCM requires a block cipher with a {BlockSizeBytes}-byte block size.",
                 nameof(cipher));
+        }
 
         if (useInitialCounterBlock)
         {
             if (nonceOrJ0.Length != BlockSizeBytes)
+            {
                 throw new ArgumentException(
                     $"The initial counter block must be exactly {BlockSizeBytes} bytes.",
                     parameterName);
+            }
         }
         else
         {
             if (nonceOrJ0.Length != NonceSizeBytes)
+            {
                 throw new ArgumentException(
                     $"The GCM nonce must be exactly {NonceSizeBytes} bytes.",
                     parameterName);
+            }
         }
 
         this._h = new byte[BlockSizeBytes];
@@ -220,11 +227,8 @@ public sealed class GcmModeTransform
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
     {
         this.ThrowIfDisposed();
-        this.ThrowIfCompleted();
-
-        if (this._aadProcessed)
-            throw new InvalidOperationException(
-                CryptoResourceStrings.CryptographicException_AssociatedDataAlreadyProcessed);
+        CryptoHelpers.ThrowIfAlreadyCompleted(this._completed);
+        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(this._aadProcessed);
 
         this._aad = associatedData.IsEmpty ? Array.Empty<byte>() : associatedData.ToArray();
         this._aadProcessed = true;
@@ -239,10 +243,7 @@ public sealed class GcmModeTransform
         this.ThrowIfCompleted();
 
         var required = checked(plaintext.Length + DefaultTagSize);
-        if (output.Length < required)
-            throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_OutputBufferTooSmall, required),
-                nameof(output));
+        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
 
         try
         {
@@ -278,16 +279,10 @@ public sealed class GcmModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        if (ciphertextWithTag.Length < DefaultTagSize)
-            throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_CiphertextTooShort, DefaultTagSize),
-                nameof(ciphertextWithTag));
+        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, DefaultTagSize);
 
         var plaintextLength = ciphertextWithTag.Length - DefaultTagSize;
-        if (output.Length < plaintextLength)
-            throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_OutputBufferTooSmall, plaintextLength),
-                nameof(output));
+        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
 
         try
         {
@@ -523,17 +518,26 @@ public sealed class GcmModeTransform
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
-            throw new ObjectDisposedException(nameof(Skipjack));
+            throw new ObjectDisposedException(nameof(GcmModeTransform));
 #endif
 
     /// <summary>
     /// Throws <see cref="InvalidOperationException"/> if this instance has already encrypted or decrypted
     /// a message. GCM transforms are single-use; create a fresh instance per message.
     /// </summary>
-    private void ThrowIfCompleted()
+    private void ThrowIfCompleted() =>
+        CryptoHelpers.ThrowIfAlreadyCompleted(this._completed);
+
+    /// <summary>
+    /// Validates that <paramref name="nonce"/> is not <see langword="null"/> and wraps it in a
+    /// <see cref="ReadOnlySpan{T}"/> for use in the private constructor chain.
+    /// </summary>
+    /// <param name="nonce">The nonce byte array to validate and wrap.</param>
+    /// <returns>A <see cref="ReadOnlySpan{Byte}"/> over <paramref name="nonce"/>.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="nonce"/> is <see langword="null"/>.</exception>
+    private static ReadOnlySpan<byte> ValidateAndWrap(byte[] nonce)
     {
-        if (this._completed)
-            throw new InvalidOperationException(
-                "This GCM transform has already completed and cannot be reused. Create a new instance per message.");
+        ThrowHelper.ThrowIfNull(nonce);
+        return new ReadOnlySpan<byte>(nonce);
     }
 }

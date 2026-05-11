@@ -109,10 +109,8 @@ public sealed class OcbModeTransform
     /// </exception>
     public OcbModeTransform(IBlockCipher cipher, byte[] iv, int tagLen = 16)
     {
-        this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
-
-        if (iv is null)
-            throw new ArgumentNullException(nameof(iv));
+        ThrowHelper.ThrowIfNull(cipher);
+        ThrowHelper.ThrowIfNull(iv);
 
         if (cipher.BlockSize != BlockSizeBytes)
         {
@@ -121,12 +119,7 @@ public sealed class OcbModeTransform
                 nameof(cipher));
         }
 
-        if (iv.Length != cipher.BlockSize)
-        {
-            throw new ArgumentException(
-                $"IV length ({iv.Length}) must equal the cipher block size ({cipher.BlockSize}).",
-                nameof(iv));
-        }
+        CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
 
         if (tagLen < 1 || tagLen > cipher.BlockSize)
         {
@@ -134,6 +127,8 @@ public sealed class OcbModeTransform
                 $"Tag length ({tagLen}) must be between 1 and the cipher block size ({cipher.BlockSize}).",
                 nameof(tagLen));
         }
+
+        this._cipher = cipher;
 
         this._nonce = new byte[NonceLengthBytes];
         iv.AsSpan(0, NonceLengthBytes).CopyTo(this._nonce);
@@ -175,8 +170,7 @@ public sealed class OcbModeTransform
     {
         this.ThrowIfDisposed();
 
-        if (this._aadProcessed)
-            throw new InvalidOperationException("AssociatedData has already been processed.");
+        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(this._aadProcessed);
 
         this._aad = associatedData.ToArray();
         this._aadProcessed = true;
@@ -189,8 +183,7 @@ public sealed class OcbModeTransform
         this.ThrowIfCompleted();
 
         var required = plaintext.Length + TagSize;
-        if (output.Length < required)
-            throw new ArgumentException($"Output must be at least {required} bytes.", nameof(output));
+        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
 
         EnsureAadProcessed();
 
@@ -299,12 +292,10 @@ public sealed class OcbModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        if (ciphertextWithTag.Length < TagSize)
-            throw new ArgumentException($"Input must be at least {TagSize} bytes.", nameof(ciphertextWithTag));
+        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSize);
 
         var plaintextLength = ciphertextWithTag.Length - TagSize;
-        if (output.Length < plaintextLength)
-            throw new ArgumentException($"Output must be at least {plaintextLength} bytes.", nameof(output));
+        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
 
         EnsureAadProcessed();
 
@@ -398,7 +389,7 @@ public sealed class OcbModeTransform
             if (!CryptographicOperations.FixedTimeEquals(tagInput.AsSpan(0, this._tagLen), receivedTag))
             {
                 CryptoHelpers.Clear(output.Slice(0, plaintextLength));
-                throw new CryptographicException("OCB authentication tag verification failed.");
+                throw new CryptographicException(CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
             }
 
             return plaintextLength;
@@ -418,12 +409,8 @@ public sealed class OcbModeTransform
     /// Throws <see cref="InvalidOperationException"/> if this transform has already encrypted or
     /// decrypted a message. OCB transforms are single-use; create a fresh instance per message.
     /// </summary>
-    private void ThrowIfCompleted()
-    {
-        if (this._completed)
-            throw new InvalidOperationException(
-                "This OCB transform has already completed and cannot be reused. Create a new instance per message.");
-    }
+    private void ThrowIfCompleted() =>
+        CryptoHelpers.ThrowIfAlreadyCompleted(this._completed);
 
     /// <summary>
     /// Releases the resources used by this instance and clears retained nonce, OCB offset constants,
@@ -680,6 +667,6 @@ public sealed class OcbModeTransform
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
-            throw new ObjectDisposedException(nameof(Skipjack));
+            throw new ObjectDisposedException(nameof(OcbModeTransform));
 #endif
 }

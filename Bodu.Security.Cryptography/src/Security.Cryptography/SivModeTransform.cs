@@ -102,11 +102,9 @@ public sealed class SivModeTransform
     /// </exception>
     public SivModeTransform(IBlockCipher s2vCipher, IBlockCipher ctrCipher, byte[] iv)
     {
-        this._s2vCipher = s2vCipher ?? throw new ArgumentNullException(nameof(s2vCipher));
-        this._ctrCipher = ctrCipher ?? throw new ArgumentNullException(nameof(ctrCipher));
-
-        if (iv is null)
-            throw new ArgumentNullException(nameof(iv));
+        ThrowHelper.ThrowIfNull(s2vCipher);
+        ThrowHelper.ThrowIfNull(ctrCipher);
+        ThrowHelper.ThrowIfNull(iv);
 
         if (s2vCipher.BlockSize != BlockSizeBytes)
         {
@@ -122,12 +120,10 @@ public sealed class SivModeTransform
                 nameof(ctrCipher));
         }
 
-        if (iv.Length != s2vCipher.BlockSize)
-        {
-            throw new ArgumentException(
-                $"IV length ({iv.Length}) must equal the cipher block size ({s2vCipher.BlockSize}).",
-                nameof(iv));
-        }
+        CryptoHelpers.ThrowIfIvLengthInvalid(iv, s2vCipher.BlockSize);
+
+        this._s2vCipher = s2vCipher;
+        this._ctrCipher = ctrCipher;
 
         // iv is intentionally unused — SIV derives its own synthetic IV.
     }
@@ -140,8 +136,7 @@ public sealed class SivModeTransform
     {
         this.ThrowIfDisposed();
 
-        if (this._aadProcessed)
-            throw new InvalidOperationException("AssociatedData has already been processed.");
+        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(this._aadProcessed);
 
         this._aad = associatedData.ToArray();
         this._aadProcessed = true;
@@ -154,8 +149,7 @@ public sealed class SivModeTransform
         this.ThrowIfCompleted();
 
         var required = plaintext.Length + TagSize;
-        if (output.Length < required)
-            throw new ArgumentException($"Output must be at least {required} bytes.", nameof(output));
+        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
 
         EnsureAadProcessed();
 
@@ -193,12 +187,10 @@ public sealed class SivModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        if (ciphertextWithTag.Length < TagSize)
-            throw new ArgumentException($"Input must be at least {TagSize} bytes.", nameof(ciphertextWithTag));
+        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSize);
 
         var plaintextLength = ciphertextWithTag.Length - TagSize;
-        if (output.Length < plaintextLength)
-            throw new ArgumentException($"Output must be at least {plaintextLength} bytes.", nameof(output));
+        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
 
         EnsureAadProcessed();
 
@@ -222,7 +214,7 @@ public sealed class SivModeTransform
             if (!CryptographicOperations.FixedTimeEquals(expectedSiv, receivedSiv))
             {
                 CryptoHelpers.Clear(output.Slice(0, plaintextLength));
-                throw new CryptographicException("SIV authentication verification failed.");
+                throw new CryptographicException(CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
             }
 
             return plaintextLength;
@@ -239,12 +231,8 @@ public sealed class SivModeTransform
     /// Throws <see cref="InvalidOperationException"/> if this transform has already encrypted or
     /// decrypted a message. SIV transforms are single-use; create a fresh instance per message.
     /// </summary>
-    private void ThrowIfCompleted()
-    {
-        if (this._completed)
-            throw new InvalidOperationException(
-                "This SIV transform has already completed and cannot be reused. Create a new instance per message.");
-    }
+    private void ThrowIfCompleted() =>
+        CryptoHelpers.ThrowIfAlreadyCompleted(this._completed);
 
     /// <summary>
     /// Releases the resources used by this instance and clears retained associated-data state from memory.
@@ -525,6 +513,6 @@ public sealed class SivModeTransform
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
-            throw new ObjectDisposedException(nameof(Skipjack));
+            throw new ObjectDisposedException(nameof(SivModeTransform));
 #endif
 }

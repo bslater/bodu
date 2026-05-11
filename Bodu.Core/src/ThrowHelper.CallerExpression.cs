@@ -11,6 +11,7 @@
 using Bodu.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
@@ -1295,7 +1296,7 @@ public static partial class ThrowHelper
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNull<T>(
-        T value,
+        [NotNull] T value,
         [CallerArgumentExpression(nameof(value))] string? paramName = null)
     {
         if (value is null)
@@ -1315,7 +1316,7 @@ public static partial class ThrowHelper
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNull<T>(
-        T value, string message,
+        [NotNull] T value, string message,
         [CallerArgumentExpression(nameof(value))] string? paramName = null)
     {
         if (value is null)

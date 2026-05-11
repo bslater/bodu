@@ -86,21 +86,12 @@ public sealed class CcmModeTransform
     /// </summary>
     /// <exception cref="ArgumentNullException"><paramref name="cipher"/> or <paramref name="iv"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="iv"/> length does not equal the cipher block size.</exception>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Style",
-        "IDE0011:Add braces",
-        Justification = "Single-statement guard clauses intentionally omit braces to match the project style; multi-line throw expressions remain clear because each condition has only one control-flow outcome.")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Roslynator",
-        "RCS1001:Add braces (when expression spans over multiple lines)",
-        Justification = "The multi-line throw expressions are single guard-clause bodies; omitting braces keeps validation paths compact without reducing control-flow clarity.")]
     public CcmModeTransform(IBlockCipher cipher, byte[] iv)
     {
-        this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
-        if (iv is null) throw new ArgumentNullException(nameof(iv));
-        if (iv.Length != cipher.BlockSize)
-            throw new ArgumentException(
-                $"IV length ({iv.Length}) must equal the cipher block size ({cipher.BlockSize}).", nameof(iv));
+        ThrowHelper.ThrowIfNull(cipher);
+        this._cipher = cipher;
+        ThrowHelper.ThrowIfNull(iv);
+        CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
 
         this._nonce = new byte[NonceLengthBytes];
         iv.AsSpan(0, NonceLengthBytes).CopyTo(this._nonce);
@@ -114,8 +105,7 @@ public sealed class CcmModeTransform
     {
         this.ThrowIfDisposed();
 
-        if (this._aadProcessed)
-            throw new InvalidOperationException("AssociatedData has already been processed.");
+        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(this._aadProcessed);
 
         this._aad = associatedData.ToArray();
         this._aadProcessed = true;
@@ -128,8 +118,7 @@ public sealed class CcmModeTransform
         ThrowIfCompleted();
 
         var required = plaintext.Length + TagSize;
-        if (output.Length < required)
-            throw new ArgumentException($"Output must be at least {required} bytes.", nameof(output));
+        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
 
         EnsureAadProcessed();
 
@@ -148,12 +137,10 @@ public sealed class CcmModeTransform
         this.ThrowIfDisposed();
         ThrowIfCompleted();
 
-        if (ciphertextWithTag.Length < TagSize)
-            throw new ArgumentException($"Input must be at least {TagSize} bytes.", nameof(ciphertextWithTag));
+        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSize);
 
         var plaintextLength = ciphertextWithTag.Length - TagSize;
-        if (output.Length < plaintextLength)
-            throw new ArgumentException($"Output must be at least {plaintextLength} bytes.", nameof(output));
+        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
 
         EnsureAadProcessed();
 
@@ -169,7 +156,7 @@ public sealed class CcmModeTransform
         {
             CryptoHelpers.Clear(output.Slice(0, plaintextLength));
             this._completed = true;
-            throw new CryptographicException("CCM authentication tag verification failed.");
+            throw new CryptographicException(CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
         }
 
         this._completed = true;
@@ -180,20 +167,8 @@ public sealed class CcmModeTransform
     /// Throws <see cref="InvalidOperationException"/> if this transform has already encrypted or
     /// decrypted a message. CCM transforms are single-use; create a fresh instance per message.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Style",
-        "IDE0011:Add braces",
-        Justification = "Single-statement guard clauses intentionally omit braces to match the project style; multi-line throw expressions remain clear because each condition has only one control-flow outcome.")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Roslynator",
-        "RCS1001:Add braces (when expression spans over multiple lines)",
-        Justification = "The multi-line throw expressions are single guard-clause bodies; omitting braces keeps validation paths compact without reducing control-flow clarity.")]
-    private void ThrowIfCompleted()
-    {
-        if (this._completed)
-            throw new InvalidOperationException(
-                "This CCM transform has already completed and cannot be reused. Create a new instance per message.");
-    }
+    private void ThrowIfCompleted() =>
+        CryptoHelpers.ThrowIfAlreadyCompleted(this._completed);
 
     /// <summary>
     /// Releases the resources used by this instance and clears retained nonce and associated-data state from memory.
@@ -378,6 +353,6 @@ public sealed class CcmModeTransform
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
-            throw new ObjectDisposedException(nameof(Skipjack));
+            throw new ObjectDisposedException(nameof(CcmModeTransform));
 #endif
 }

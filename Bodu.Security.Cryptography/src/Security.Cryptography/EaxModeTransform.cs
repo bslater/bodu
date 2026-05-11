@@ -96,12 +96,10 @@ public sealed class EaxModeTransform
     /// </exception>
     public EaxModeTransform(IBlockCipher cipher, byte[] iv)
     {
-        this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
-        if (iv is null) throw new ArgumentNullException(nameof(iv));
-        if (iv.Length != cipher.BlockSize)
-            throw new ArgumentException(
-                $"IV length ({iv.Length}) must equal the cipher block size ({cipher.BlockSize}).",
-                nameof(iv));
+        ThrowHelper.ThrowIfNull(cipher);
+        this._cipher = cipher;
+        ThrowHelper.ThrowIfNull(iv);
+        CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
 
         this._nonce = (byte[])iv.Clone();
     }
@@ -114,8 +112,7 @@ public sealed class EaxModeTransform
     {
         this.ThrowIfDisposed();
 
-        if (this._aadProcessed)
-            throw new InvalidOperationException("AssociatedData has already been processed.");
+        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(this._aadProcessed);
 
         this._aad = associatedData.ToArray();
         this._aadProcessed = true;
@@ -128,10 +125,7 @@ public sealed class EaxModeTransform
         this.ThrowIfCompleted();
 
         var required = plaintext.Length + TagSize;
-        if (output.Length < required)
-            throw new ArgumentException(
-                $"Output buffer must be at least {required} bytes (plaintext + tag).",
-                nameof(output));
+        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
 
         EnsureAadProcessed();
 
@@ -172,16 +166,10 @@ public sealed class EaxModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        if (ciphertextWithTag.Length < TagSize)
-            throw new ArgumentException(
-                $"Input must be at least {TagSize} bytes (tag only with no ciphertext).",
-                nameof(ciphertextWithTag));
+        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSize);
 
         var plaintextLength = ciphertextWithTag.Length - TagSize;
-        if (output.Length < plaintextLength)
-            throw new ArgumentException(
-                $"Output buffer must be at least {plaintextLength} bytes.",
-                nameof(output));
+        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
 
         EnsureAadProcessed();
 
@@ -209,7 +197,7 @@ public sealed class EaxModeTransform
             if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
             {
                 CryptoHelpers.Clear(output.Slice(0, plaintextLength));
-                throw new CryptographicException("EAX authentication tag verification failed.");
+                throw new CryptographicException(CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
             }
 
             CtrEncrypt(ciphertext, output.Slice(0, plaintextLength), nPrime);
@@ -230,12 +218,8 @@ public sealed class EaxModeTransform
     /// Throws <see cref="InvalidOperationException"/> if this transform has already encrypted or
     /// decrypted a message. EAX transforms are single-use; create a fresh instance per message.
     /// </summary>
-    private void ThrowIfCompleted()
-    {
-        if (this._completed)
-            throw new InvalidOperationException(
-                "This EAX transform has already completed and cannot be reused. Create a new instance per message.");
-    }
+    private void ThrowIfCompleted() =>
+        CryptoHelpers.ThrowIfAlreadyCompleted(this._completed);
 
     /// <summary>
     /// Releases the resources used by this instance and clears retained nonce and associated-data state from memory.
@@ -456,6 +440,6 @@ public sealed class EaxModeTransform
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
-            throw new ObjectDisposedException(nameof(Skipjack));
+            throw new ObjectDisposedException(nameof(EaxModeTransform));
 #endif
 }

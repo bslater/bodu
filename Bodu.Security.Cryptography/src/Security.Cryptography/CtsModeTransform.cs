@@ -82,13 +82,11 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     /// <exception cref="ArgumentException"><paramref name="iv"/> length does not equal the cipher block size.</exception>
     public CtsModeTransform(IBlockCipher cipher, byte[] iv)
     {
-        this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
-        if (iv is null) throw new ArgumentNullException(nameof(iv));
-        if (iv.Length != cipher.BlockSize)
-            throw new ArgumentException(
-                $"IV length ({iv.Length}) must equal the cipher block size ({cipher.BlockSize}).",
-                nameof(iv));
+        ThrowHelper.ThrowIfNull(cipher);
+        ThrowHelper.ThrowIfNull(iv);
+        CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
 
+        this._cipher = cipher;
         this._iv = (byte[])iv.Clone();
         this._currentIv = (byte[])iv.Clone();
     }
@@ -99,9 +97,11 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
         var blockSize = this._cipher.BlockSize;
 
         if (input.Length < blockSize)
+        {
             throw new ArgumentException(
-                $"CTS requires at least one full block ({blockSize} bytes) of input.",
+                string.Format(CryptoResourceStrings.ArgumentException_CtsInputTooShort, blockSize),
                 nameof(input));
+        }
 
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 

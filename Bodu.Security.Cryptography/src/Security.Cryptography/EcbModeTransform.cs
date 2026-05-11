@@ -64,7 +64,9 @@ public sealed class EcbModeTransform : IBlockCipherModeTransform
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher"/> is <see langword="null"/>.</exception>
     public EcbModeTransform(IBlockCipher cipher)
     {
-        this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
+        ThrowHelper.ThrowIfNull(cipher);
+
+        this._cipher = cipher;
     }
 
     /// <inheritdoc />

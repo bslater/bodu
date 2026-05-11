@@ -70,13 +70,11 @@ public sealed class CbcModeTransform
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher"/> or <paramref name="iv"/> is <see langword="null"/>.</exception>
     public CbcModeTransform(IBlockCipher cipher, byte[] iv)
     {
-        this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
-        if (iv is null)
-            throw new ArgumentNullException(nameof(iv));
-        if (iv.Length != cipher.BlockSize)
-            throw new ArgumentException(
-                $"IV length ({iv.Length}) must equal the cipher block size ({cipher.BlockSize}).",
-                nameof(iv));
+        ThrowHelper.ThrowIfNull(cipher);
+        ThrowHelper.ThrowIfNull(iv);
+        CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
+
+        this._cipher = cipher;
         this._currentIv = (byte[])iv.Clone(); // Used to track the evolving IV during transformation
     }
 

@@ -65,7 +65,7 @@ public sealed class AesBlockCipher
     /// <exception cref="CryptographicException"><paramref name="key"/> length is not 16, 24, or 32 bytes.</exception>
     public AesBlockCipher(byte[] key)
     {
-        if (key is null) throw new ArgumentNullException(nameof(key));
+        ThrowHelper.ThrowIfNull(key);
 
         this._aes = Aes.Create();
         this._aes.Key = key; // BCL validates length and throws CryptographicException on mismatch.

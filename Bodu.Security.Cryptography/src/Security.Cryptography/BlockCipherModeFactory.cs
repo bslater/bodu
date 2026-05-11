@@ -58,8 +58,7 @@ public static class BlockCipherModeFactory
         IBlockCipher cipher,
         byte[]? iv = null)
     {
-        if (cipher == null)
-            throw new ArgumentNullException(nameof(cipher));
+        ThrowHelper.ThrowIfNull(cipher);
 
         var blockSize = cipher.BlockSize;
 
@@ -102,11 +101,15 @@ public static class BlockCipherModeFactory
     private static void ValidateIv(string name, byte[]? iv, int requiredLength)
     {
         if (iv is null)
+        {
             throw new ArgumentException("An initialisation vector is required for this mode.", name);
+        }
 
         if (iv.Length != requiredLength)
+        {
             throw new ArgumentException(
                 $"The initialisation vector must be {requiredLength * 8} bits ({requiredLength} bytes) long; the supplied IV is {iv.Length * 8} bits ({iv.Length} bytes).",
                 name);
+        }
     }
 }
