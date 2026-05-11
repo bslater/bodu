@@ -97,7 +97,7 @@ public static class HashAlgorithmHelper
         ThrowHelper.ThrowIfNull(stream);
 
         using T algorithm = factory.Create();
-        AppendDataFromStreamInternalAsync(algorithm, stream, isAsync: false, default).GetAwaiter().GetResult();
+        AppendDataFromStreamInternal(algorithm, stream);
 
         return algorithm.Hash ?? throw new CryptographicException("Hash algorithm did not produce a value.");
     }
@@ -122,7 +122,7 @@ public static class HashAlgorithmHelper
         ThrowHelper.ThrowIfNull(stream);
 
         using T algorithm = factory.Create();
-        await AppendDataFromStreamInternalAsync(algorithm, stream, isAsync: true, cancellationToken).ConfigureAwait(false);
+        await AppendDataFromStreamInternalAsync(algorithm, stream, cancellationToken).ConfigureAwait(false);
 
         return algorithm.Hash ?? throw new CryptographicException("Hash algorithm did not produce a value.");
     }
@@ -151,49 +151,45 @@ public static class HashAlgorithmHelper
     }
 
     /// <summary>
-    /// Reads all bytes from a stream and feeds them into the hash algorithm incrementally.
+    /// Reads all bytes from <paramref name="stream"/> synchronously and feeds them into <paramref name="algorithm"/>.
     /// </summary>
     /// <param name="algorithm">The hash algorithm receiving the data.</param>
     /// <param name="stream">The input stream to read from.</param>
-    /// <param name="isAsync">Indicates whether the stream should be read asynchronously.</param>
-    /// <param name="cancellationToken">The optional cancellation token for async operations.</param>
-    /// <returns>A task representing the completion of the data append operation.</returns>
-    /// <remarks>
-    /// This method is used by both <see cref="HashData{T}(IHashAlgorithmFactory{T}, Stream)"/> and
-    /// <see cref="HashDataAsync{T}(IHashAlgorithmFactory{T}, Stream, CancellationToken)"/> to centralise the stream-to-hash logic.
-    /// </remarks>
-    private static async ValueTask AppendDataFromStreamInternalAsync(HashAlgorithm algorithm, Stream stream, bool isAsync, CancellationToken cancellationToken)
+    private static void AppendDataFromStreamInternal(HashAlgorithm algorithm, Stream stream)
     {
-        // Rent a reusable buffer from the shared pool
         var buffer = ArrayPool<byte>.Shared.Rent(8192);
         try
         {
             int bytesRead;
-
-            // Use async path if requested
-            if (isAsync)
-            {
-                while ((bytesRead = await stream.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken).ConfigureAwait(false)) > 0)
-                {
-                    // Feed buffer segment into the hash algorithm
-                    algorithm.TransformBlock(buffer, 0, bytesRead, null, 0);
-                }
-            }
-            else
-            {
-                while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
-                {
-                    algorithm.TransformBlock(buffer, 0, bytesRead, null, 0);
-                }
-            }
-
-            // Finalize the hash to flush internal state
+            while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
+                algorithm.TransformBlock(buffer, 0, bytesRead, null, 0);
             algorithm.TransformFinalBlock([], 0, 0);
         }
         finally
         {
-            // Always return buffer to the pool, clearing any plaintext to prevent leaking
-            // caller secrets to the next pool consumer.
+            ArrayPool<byte>.Shared.Return(buffer, clearArray: true);
+        }
+    }
+
+    /// <summary>
+    /// Reads all bytes from <paramref name="stream"/> asynchronously and feeds them into <paramref name="algorithm"/>.
+    /// </summary>
+    /// <param name="algorithm">The hash algorithm receiving the data.</param>
+    /// <param name="stream">The input stream to read from.</param>
+    /// <param name="cancellationToken">The cancellation token for the async reads.</param>
+    /// <returns>A task that completes when the stream has been fully consumed and the hash finalised.</returns>
+    private static async ValueTask AppendDataFromStreamInternalAsync(HashAlgorithm algorithm, Stream stream, CancellationToken cancellationToken)
+    {
+        var buffer = ArrayPool<byte>.Shared.Rent(8192);
+        try
+        {
+            int bytesRead;
+            while ((bytesRead = await stream.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken).ConfigureAwait(false)) > 0)
+                algorithm.TransformBlock(buffer, 0, bytesRead, null, 0);
+            algorithm.TransformFinalBlock([], 0, 0);
+        }
+        finally
+        {
             ArrayPool<byte>.Shared.Return(buffer, clearArray: true);
         }
     }
