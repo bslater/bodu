@@ -35,7 +35,7 @@ public partial class DateTimeExtensionsTests
     [DataRow("2024-04-20T15:30:45.1234567", true, null)] // Validate that it returns a valid round-trip
     public void ToIsoString_WithIncludeFractionalSeconds_ShouldRespectOption(string dateTimeStr, bool includeFraction, string? expected)
     {
-        DateTime input = DateTime.Parse(dateTimeStr, CultureInfo.InvariantCulture);
+        var input = DateTime.Parse(dateTimeStr, CultureInfo.InvariantCulture);
         var actual = input.ToIsoString(includeFraction);
 
         if (expected != null)
@@ -53,7 +53,7 @@ public partial class DateTimeExtensionsTests
     [DataRow("2024-04-20T15:30:45", DateTimeKind.Unspecified, "2024-04-20T15:30:45.0000000")]
     public void ToIsoString_WithExplicitKind_ShouldRespectKind(string dateTimeStr, DateTimeKind kind, string? expected)
     {
-        DateTime input = DateTime.SpecifyKind(DateTime.Parse(dateTimeStr, CultureInfo.InvariantCulture), kind);
+        var input = DateTime.SpecifyKind(DateTime.Parse(dateTimeStr, CultureInfo.InvariantCulture), kind);
         var actual = input.ToIsoString(kind);
 
         if (expected != null)
@@ -63,7 +63,7 @@ public partial class DateTimeExtensionsTests
         else
         {
             // Parse back and confirm the kind is preserved
-            DateTime parsed = DateTime.Parse(actual, null, DateTimeStyles.RoundtripKind);
+            var parsed = DateTime.Parse(actual, null, DateTimeStyles.RoundtripKind);
             Assert.AreEqual(DateTimeKind.Local, parsed.Kind, "Expected kind mismatch for local input.");
             Assert.IsTrue(actual.StartsWith("2024-04-20T15:30:45"), "Expected prefix missing.");
         }
@@ -77,7 +77,7 @@ public partial class DateTimeExtensionsTests
     [DataRow("2024-04-20T15:30:45", "HH:mm:ss", "15:30:45")]
     public void ToIsoString_WithCustomFormat_ShouldReturnExpected(string inputStr, string format, string expected)
     {
-        DateTime input = DateTime.Parse(inputStr, CultureInfo.InvariantCulture);
+        var input = DateTime.Parse(inputStr, CultureInfo.InvariantCulture);
         var actual = input.ToIsoString(format);
         Assert.AreEqual(expected, actual);
     }
@@ -88,7 +88,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void ToIsoString_WithEmptyFormat_ShouldThrowExactly()
     {
-        DateTime input = new DateTime(2024, 4, 20);
+        var input = new DateTime(2024, 4, 20);
         Assert.ThrowsExactly<ArgumentNullException>(() => input.ToIsoString(""));
     }
 }

@@ -127,7 +127,7 @@ public partial class DateTimeExtensionsTests
     public void Add_WhenInDstTransitionZone_ShouldRespectTimezone(string inputDate, int years, int months, double days, string expectedDate, string timeZoneId)
     {
         var tz = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
-        DateTime input = DateTime.Parse(inputDate, null, DateTimeStyles.AssumeLocal);
+        var input = DateTime.Parse(inputDate, null, DateTimeStyles.AssumeLocal);
         var unspecified = DateTime.SpecifyKind(input, DateTimeKind.Unspecified);
         var expected = DateTime.Parse(expectedDate);
 

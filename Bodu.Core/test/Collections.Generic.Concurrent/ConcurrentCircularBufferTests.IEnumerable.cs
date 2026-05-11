@@ -153,7 +153,7 @@ public partial class ConcurrentCircularBufferTests
 
         TestItem[] fromToArray = buffer.ToArray();
 
-        TestItem[] fromCopyTo = new TestItem[buffer.Count];
+        var fromCopyTo = new TestItem[buffer.Count];
         buffer.CopyTo(fromCopyTo, 0);
 
         CollectionAssert.AreEqual(fromToArray, fromCopyTo);
@@ -175,7 +175,7 @@ public partial class ConcurrentCircularBufferTests
 
         TestItem[] fromToArray = buffer.ToArray();
 
-        TestItem[] fromCopyTo = new TestItem[buffer.Count];
+        var fromCopyTo = new TestItem[buffer.Count];
         buffer.CopyTo(fromCopyTo, 0);
 
         CollectionAssert.AreEqual(fromToArray, fromCopyTo);

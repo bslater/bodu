@@ -45,11 +45,12 @@ public partial class ThrowHelperTests
     [TestMethod]
     public void ThrowIfReadOnly_WhenCollectionIsArray_ShouldThrowArgumentException()
     {
-        ICollection<int> array = [1, 2, 3];
+        int[] array = [1, 2, 3];
+        ICollection<int> collection = array;
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            ThrowHelper.ThrowIfReadOnly(array);
+            ThrowHelper.ThrowIfReadOnly(collection);
         });
     }
 

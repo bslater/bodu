@@ -28,13 +28,18 @@ public partial class PooledBufferBuilderTests
     public void Capacity_WhenCapacityExceeded_ShouldIncreaseAfterGrowth()
     {
         using var builder = new PooledBufferBuilder<int>(2);
-        var initialCapacity = builder.Capacity;
+        int initialCapacity = builder.Capacity;
 
-        for (var i = 0; i < 10; i++)
+        for (var i = 0; i <= initialCapacity; i++)
             builder.Append(i);
 
-        Assert.IsTrue(builder.Capacity > initialCapacity);
-        Assert.IsTrue(builder.Capacity >= builder.WrittenCount);
+        Assert.IsTrue(
+            builder.Capacity > initialCapacity,
+            $"Expected capacity to grow beyond {initialCapacity}, but actual capacity was {builder.Capacity}.");
+
+        Assert.IsTrue(
+            builder.Capacity >= builder.WrittenCount,
+            $"Expected capacity {builder.Capacity} to be at least written count {builder.WrittenCount}.");
     }
 
     /// <summary>

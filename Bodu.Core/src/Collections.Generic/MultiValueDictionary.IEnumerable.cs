@@ -11,39 +11,38 @@ using System.Collections.Generic;
 namespace Bodu.Collections.Generic;
 
 public sealed partial class MultiValueDictionary<TKey, TValue>
-    : System.Collections.Generic.IEnumerable<KeyValuePair<TKey, IReadOnlyList<TValue>>>
+    : IEnumerable<KeyValuePair<TKey, IReadOnlyList<TValue>>>
 {
     /// <summary>
-    /// Returns an enumerator that iterates the key–value-list pairs in the
-    /// <see cref="MultiValueDictionary{TKey, TValue}"/>.
+    /// Returns an enumerator that iterates the key-value-list pairs in the dictionary.
     /// </summary>
-    /// <returns>An <see cref="Enumerator"/> for the dictionary.</returns>
+    /// <returns>An <see cref="Enumerator" /> for the dictionary.</returns>
     /// <remarks>
-    /// The enumerator captures a structural-version token at creation. Any subsequent structural
-    /// modification — including <see cref="Add"/>, <see cref="Remove"/>, <see cref="RemoveAll"/>, or
-    /// <see cref="Clear"/> — invalidates the enumerator. The next call to
-    /// <see cref="Enumerator.MoveNext"/> or <see cref="Enumerator.Reset"/> throws
-    /// <see cref="InvalidOperationException"/>.
+    /// The enumerator captures a structural-version token at creation. Any subsequent structural modification
+    /// invalidates the enumerator. The next call to <see cref="Enumerator.MoveNext" /> or
+    /// <see cref="Enumerator.Reset" /> throws <see cref="InvalidOperationException" />.
     /// </remarks>
     public Enumerator GetEnumerator() => new Enumerator(this);
 
     /// <inheritdoc />
-    IEnumerator<KeyValuePair<TKey, IReadOnlyList<TValue>>>
-        IEnumerable<KeyValuePair<TKey, IReadOnlyList<TValue>>>.GetEnumerator() =>
+    IEnumerator<KeyValuePair<TKey, IReadOnlyList<TValue>>> IEnumerable<KeyValuePair<TKey, IReadOnlyList<TValue>>>.GetEnumerator() =>
         new Enumerator(this);
 
     /// <inheritdoc />
     IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 
     /// <summary>
-    /// Enumerates the key–value-list pairs in a <see cref="MultiValueDictionary{TKey, TValue}"/>.
+    /// Enumerates the key-value-list pairs in a <see cref="MultiValueDictionary{TKey, TValue}" />.
     /// </summary>
     /// <remarks>
-    /// <para>Use the <see langword="foreach"/> statement to enumerate the dictionary rather than using this struct directly.</para>
     /// <para>
-    /// The enumerator provides read-only access. Modifying the underlying dictionary after enumeration
-    /// begins invalidates the enumerator and causes <see cref="MoveNext"/> or <see cref="Reset"/> to
-    /// throw <see cref="InvalidOperationException"/>.
+    /// Use the <see langword="foreach" /> statement to enumerate the dictionary rather than using this struct
+    /// directly.
+    /// </para>
+    /// <para>
+    /// The enumerator provides read-only access. Modifying the underlying dictionary after enumeration begins
+    /// invalidates the enumerator and causes <see cref="MoveNext" /> or <see cref="Reset" /> to throw
+    /// <see cref="InvalidOperationException" />.
     /// </para>
     /// </remarks>
     [Serializable]
@@ -51,12 +50,12 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     {
         private readonly MultiValueDictionary<TKey, TValue> _dictionary;
         private readonly int _version;
-        private Dictionary<TKey, List<TValue>>.Enumerator _inner;
+        private Dictionary<TKey, ValueBucket>.Enumerator _inner;
         private KeyValuePair<TKey, IReadOnlyList<TValue>> _current;
-        private bool _beforeFirst;
+        private bool _hasCurrent;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MultiValueDictionary{TKey, TValue}.Enumerator"/> struct for the specified dictionary.
+        /// Initializes a new instance of the <see cref="MultiValueDictionary{TKey, TValue}.Enumerator" /> struct.
         /// </summary>
         /// <param name="dictionary">The dictionary to enumerate.</param>
         internal Enumerator(MultiValueDictionary<TKey, TValue> dictionary)
@@ -65,20 +64,20 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
             _version = dictionary._version;
             _inner = dictionary._map.GetEnumerator();
             _current = default;
-            _beforeFirst = true;
+            _hasCurrent = false;
         }
 
         /// <summary>
-        /// Gets the key–value-list pair at the current position of the enumerator.
+        /// Gets the key-value-list pair at the current position of the enumerator.
         /// </summary>
-        /// <returns>The key–value-list pair at the current enumerator position.</returns>
+        /// <value>The key-value-list pair at the current enumerator position.</value>
         /// <exception cref="InvalidOperationException">
-        /// The enumerator is positioned before the first element or after the last element.
+        /// Thrown when the enumerator is not positioned on an element.
         /// </exception>
         public KeyValuePair<TKey, IReadOnlyList<TValue>> Current =>
-            _beforeFirst
-                ? throw new InvalidOperationException(ResourceStrings.InvalidOperation_EnumeratorNotOnElement)
-                : _current;
+            _hasCurrent
+                ? _current
+                : throw new InvalidOperationException(ResourceStrings.InvalidOperation_EnumeratorNotOnElement);
 
         /// <inheritdoc />
         object IEnumerator.Current => Current;
@@ -87,13 +86,14 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
         public void Dispose() => _inner.Dispose();
 
         /// <summary>
-        /// Advances the enumerator to the next key–value-list pair.
+        /// Advances the enumerator to the next key-value-list pair.
         /// </summary>
         /// <returns>
-        /// <see langword="true"/> if the enumerator was successfully advanced to the next pair;
-        /// <see langword="false"/> if the enumerator has passed the end of the collection.
+        /// <see langword="true" /> if the enumerator advanced to the next pair; otherwise, <see langword="false" />.
         /// </returns>
-        /// <exception cref="InvalidOperationException">The dictionary was modified after the enumerator was created.</exception>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when the dictionary was modified after the enumerator was created.
+        /// </exception>
         public bool MoveNext()
         {
             if (_version != _dictionary._version)
@@ -102,20 +102,23 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
             if (!_inner.MoveNext())
             {
                 _current = default;
-                _beforeFirst = true;
+                _hasCurrent = false;
                 return false;
             }
 
-            KeyValuePair<TKey, List<TValue>> pair = _inner.Current;
-            _current = new KeyValuePair<TKey, IReadOnlyList<TValue>>(pair.Key, pair.Value);
-            _beforeFirst = false;
+            KeyValuePair<TKey, ValueBucket> pair = _inner.Current;
+            _current = new KeyValuePair<TKey, IReadOnlyList<TValue>>(pair.Key, pair.Value.ReadOnlyValues);
+            _hasCurrent = true;
+
             return true;
         }
 
         /// <summary>
-        /// Sets the enumerator to its initial position, before the first element in the dictionary.
+        /// Sets the enumerator to its initial position.
         /// </summary>
-        /// <exception cref="InvalidOperationException">The dictionary was modified after the enumerator was created.</exception>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when the dictionary was modified after the enumerator was created.
+        /// </exception>
         public void Reset()
         {
             if (_version != _dictionary._version)
@@ -124,7 +127,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
             _inner.Dispose();
             _inner = _dictionary._map.GetEnumerator();
             _current = default;
-            _beforeFirst = true;
+            _hasCurrent = false;
         }
     }
 }

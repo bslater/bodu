@@ -35,7 +35,7 @@ public partial class DateTimeFormatInfoExtensionsTests
     public void LastDateOfWeek_WhenFirstDayOfWeekIsSpecified_ShouldReturnDaySixPositionsLater(
         DayOfWeek firstDayOfWeek, DayOfWeek expected)
     {
-        DateTimeFormatInfo info = (DateTimeFormatInfo)CultureInfo.InvariantCulture.DateTimeFormat.Clone();
+        var info = (DateTimeFormatInfo)CultureInfo.InvariantCulture.DateTimeFormat.Clone();
         info.FirstDayOfWeek = firstDayOfWeek;
 
         DayOfWeek actual = info.LastDayOfWeek();

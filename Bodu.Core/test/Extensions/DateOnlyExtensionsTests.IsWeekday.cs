@@ -34,7 +34,7 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void IsWeekday_WhenCustomRuleMissingProvider_ShouldThrowExactly()
     {
-        DateTime date = new DateTime(2024, 4, 19);
+        var date = new DateTime(2024, 4, 19);
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = date.IsWeekday(CalendarWeekendDefinition.Custom, null!);

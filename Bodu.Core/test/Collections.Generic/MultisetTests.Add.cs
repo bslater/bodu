@@ -21,11 +21,11 @@ public partial class MultisetTests
     [TestMethod]
     public void Add_WhenItemAdded_ShouldIncrementCount()
     {
-        Multiset<int> sut = new Multiset<int>();
+        var mvd = new Multiset<int>();
 
-        sut.Add(1);
+        mvd.Add(1);
 
-        Assert.AreEqual(1, sut.Count);
+        Assert.AreEqual(1, mvd.Count);
     }
 
     /// <summary>
@@ -34,14 +34,14 @@ public partial class MultisetTests
     [TestMethod]
     public void Add_WhenSameItemAddedTwice_ShouldIncrementCountOf()
     {
-        Multiset<int> sut = new Multiset<int>();
+        var mvd = new Multiset<int>();
 
-        sut.Add(7);
-        sut.Add(7);
+        mvd.Add(7);
+        mvd.Add(7);
 
-        Assert.AreEqual(2, sut.CountOf(7));
-        Assert.AreEqual(2, sut.Count);
-        Assert.AreEqual(1, sut.DistinctCount);
+        Assert.AreEqual(2, mvd.CountOf(7));
+        Assert.AreEqual(2, mvd.Count);
+        Assert.AreEqual(1, mvd.DistinctCount);
     }
 
     /// <summary>
@@ -50,13 +50,13 @@ public partial class MultisetTests
     [TestMethod]
     public void Add_WhenDistinctItemsAdded_ShouldIncrementDistinctCount()
     {
-        Multiset<string> sut = new Multiset<string>();
+        var mvd = new Multiset<string>();
 
-        sut.Add("a");
-        sut.Add("b");
-        sut.Add("a");
+        mvd.Add("a");
+        mvd.Add("b");
+        mvd.Add("a");
 
-        Assert.AreEqual(2, sut.DistinctCount);
+        Assert.AreEqual(2, mvd.DistinctCount);
     }
 
     // --------------------------------------------------------
@@ -69,11 +69,11 @@ public partial class MultisetTests
     [TestMethod]
     public void Add_WhenCountIsZero_ShouldThrowArgumentOutOfRangeException()
     {
-        Multiset<int> sut = new Multiset<int>();
+        var mvd = new Multiset<int>();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            sut.Add(1, 0);
+            mvd.Add(1, 0);
         });
     }
 
@@ -83,11 +83,11 @@ public partial class MultisetTests
     [TestMethod]
     public void Add_WhenCountIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        Multiset<int> sut = new Multiset<int>();
+        var mvd = new Multiset<int>();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            sut.Add(1, -3);
+            mvd.Add(1, -3);
         });
     }
 
@@ -97,12 +97,12 @@ public partial class MultisetTests
     [TestMethod]
     public void Add_WhenCountIsPositive_ShouldAddMultipleOccurrences()
     {
-        Multiset<int> sut = new Multiset<int>();
+        var mvd = new Multiset<int>();
 
-        sut.Add(42, 5);
+        mvd.Add(42, 5);
 
-        Assert.AreEqual(5, sut.CountOf(42));
-        Assert.AreEqual(5, sut.Count);
+        Assert.AreEqual(5, mvd.CountOf(42));
+        Assert.AreEqual(5, mvd.Count);
     }
 
     /// <summary>
@@ -111,14 +111,14 @@ public partial class MultisetTests
     [TestMethod]
     public void Add_WhenCalledMultipleTimesForSameElement_ShouldAccumulateCounts()
     {
-        Multiset<string> sut = new Multiset<string>();
+        var mvd = new Multiset<string>();
 
-        sut.Add("x", 3);
-        sut.Add("x", 4);
+        mvd.Add("x", 3);
+        mvd.Add("x", 4);
 
-        Assert.AreEqual(7, sut.CountOf("x"));
-        Assert.AreEqual(7, sut.Count);
-        Assert.AreEqual(1, sut.DistinctCount);
+        Assert.AreEqual(7, mvd.CountOf("x"));
+        Assert.AreEqual(7, mvd.Count);
+        Assert.AreEqual(1, mvd.DistinctCount);
     }
 
     /// <summary>
@@ -128,20 +128,20 @@ public partial class MultisetTests
     [TestCategory("Regression")]
     public void Add_WhenManyDistinctItemsAdded_ShouldTrackAllCountsAccurately()
     {
-        Multiset<int> sut = new Multiset<int>();
+        var mvd = new Multiset<int>();
         var expectedTotal = 0;
 
         for (var i = 0; i < 1000; i++)
         {
             var count = (i % 5) + 1;
-            sut.Add(i, count);
+            mvd.Add(i, count);
             expectedTotal += count;
         }
 
-        Assert.AreEqual(expectedTotal, sut.Count);
-        Assert.AreEqual(1000, sut.DistinctCount);
+        Assert.AreEqual(expectedTotal, mvd.Count);
+        Assert.AreEqual(1000, mvd.DistinctCount);
 
         for (var i = 0; i < 1000; i++)
-            Assert.AreEqual((i % 5) + 1, sut.CountOf(i));
+            Assert.AreEqual((i % 5) + 1, mvd.CountOf(i));
     }
 }

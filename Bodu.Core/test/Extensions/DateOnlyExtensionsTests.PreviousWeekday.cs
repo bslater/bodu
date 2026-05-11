@@ -48,7 +48,7 @@ public partial class DateOnlyExtensionsTests
     public void PreviousWeekday_WhenWeekendIsFridaySaturday_ShouldSkipSaturdayAndFriday()
     {
         // Sun 21 Apr 2024 → skip Sat 20, Fri 19 → Thu 18 Apr.
-        DateOnly input = new DateOnly(2024, 4, 21);
+        var input = new DateOnly(2024, 4, 21);
         DateOnly actual = input.PreviousWeekday(CalendarWeekendDefinition.FridaySaturday);
         Assert.AreEqual(new DateOnly(2024, 4, 18), actual);
     }
@@ -61,7 +61,7 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void PreviousWeekday_WhenWeekendIsNone_ShouldRetreatOneDay()
     {
-        DateOnly input = new DateOnly(2024, 4, 21);
+        var input = new DateOnly(2024, 4, 21);
 
         DateOnly actual = input.PreviousWeekday(CalendarWeekendDefinition.None);
 
@@ -74,7 +74,7 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void PreviousWeekday_WhenWeekendIsInvalid_ShouldThrowArgumentOutOfRangeException()
     {
-        DateOnly input = new DateOnly(2024, 4, 22);
+        var input = new DateOnly(2024, 4, 22);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -92,7 +92,7 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void PreviousWeekday_WhenProviderIsNull_ShouldUseWeekendEnum()
     {
-        DateOnly input = new DateOnly(2024, 4, 22); // Monday
+        var input = new DateOnly(2024, 4, 22); // Monday
         DateOnly actual = input.PreviousWeekday(CalendarWeekendDefinition.SaturdaySunday, provider: null);
         Assert.AreEqual(new DateOnly(2024, 4, 19), actual);
     }
@@ -103,7 +103,7 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void PreviousWeekday_WhenProviderOverload_WeekendIsInvalid_ShouldThrowArgumentOutOfRangeException()
     {
-        DateOnly input = new DateOnly(2024, 4, 22);
+        var input = new DateOnly(2024, 4, 22);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

@@ -45,15 +45,15 @@ public partial class MultisetTests
     [TestMethod]
     public void Multiset_WithValueTypeStruct_ShouldTrackByValue()
     {
-        Multiset<Point> sut = new Multiset<Point>();
-        sut.Add(new Point(1, 2));
-        sut.Add(new Point(1, 2));
-        sut.Add(new Point(3, 4));
+        var mvd = new Multiset<Point>();
+        mvd.Add(new Point(1, 2));
+        mvd.Add(new Point(1, 2));
+        mvd.Add(new Point(3, 4));
 
-        Assert.AreEqual(3, sut.Count);
-        Assert.AreEqual(2, sut.DistinctCount);
-        Assert.AreEqual(2, sut.CountOf(new Point(1, 2)));
-        Assert.AreEqual(1, sut.CountOf(new Point(3, 4)));
+        Assert.AreEqual(3, mvd.Count);
+        Assert.AreEqual(2, mvd.DistinctCount);
+        Assert.AreEqual(2, mvd.CountOf(new Point(1, 2)));
+        Assert.AreEqual(1, mvd.CountOf(new Point(3, 4)));
     }
 
     /// <summary>
@@ -63,11 +63,11 @@ public partial class MultisetTests
     [TestMethod]
     public void Contains_WithValueTypeStruct_ShouldMatchByValue()
     {
-        Multiset<Point> sut = new Multiset<Point>();
-        sut.Add(new Point(5, 10));
+        var mvd = new Multiset<Point>();
+        mvd.Add(new Point(5, 10));
 
-        Assert.IsTrue(sut.Contains(new Point(5, 10)));
-        Assert.IsFalse(sut.Contains(new Point(5, 99)));
+        Assert.IsTrue(mvd.Contains(new Point(5, 10)));
+        Assert.IsFalse(mvd.Contains(new Point(5, 99)));
     }
 
     /// <summary>
@@ -77,13 +77,13 @@ public partial class MultisetTests
     [TestMethod]
     public void Remove_WithValueTypeStruct_ShouldRemoveByValue()
     {
-        Multiset<Point> sut = new Multiset<Point>();
-        sut.Add(new Point(1, 2), 3);
+        var mvd = new Multiset<Point>();
+        mvd.Add(new Point(1, 2), 3);
 
-        var removed = sut.Remove(new Point(1, 2));
+        var removed = mvd.Remove(new Point(1, 2));
 
         Assert.IsTrue(removed);
-        Assert.AreEqual(2, sut.CountOf(new Point(1, 2)));
+        Assert.AreEqual(2, mvd.CountOf(new Point(1, 2)));
     }
 
     /// <summary>
@@ -93,11 +93,11 @@ public partial class MultisetTests
     [TestMethod]
     public void SetOperations_WithValueTypeStruct_ShouldApplyValueEquality()
     {
-        Multiset<Point> a = new Multiset<Point>();
+        var a = new Multiset<Point>();
         a.Add(new Point(1, 2), 3);
         a.Add(new Point(3, 4), 1);
 
-        Multiset<Point> b = new Multiset<Point>();
+        var b = new Multiset<Point>();
         b.Add(new Point(1, 2), 1);
         b.Add(new Point(5, 6), 2);
 
@@ -123,17 +123,17 @@ public partial class MultisetTests
     [TestMethod]
     public void Multiset_WithReferenceTypeElements_ShouldTrackByReferenceByDefault()
     {
-        Widget w1 = new Widget(1);
-        Widget w2 = new Widget(1);
+        var w1 = new Widget(1);
+        var w2 = new Widget(1);
 
-        Multiset<Widget> sut = new Multiset<Widget>();
-        sut.Add(w1);
-        sut.Add(w2);
+        var mvd = new Multiset<Widget>();
+        mvd.Add(w1);
+        mvd.Add(w2);
 
-        Assert.AreEqual(2, sut.Count);
-        Assert.AreEqual(2, sut.DistinctCount);
-        Assert.AreEqual(1, sut.CountOf(w1));
-        Assert.AreEqual(1, sut.CountOf(w2));
+        Assert.AreEqual(2, mvd.Count);
+        Assert.AreEqual(2, mvd.DistinctCount);
+        Assert.AreEqual(1, mvd.CountOf(w1));
+        Assert.AreEqual(1, mvd.CountOf(w2));
     }
 
     /// <summary>
@@ -143,18 +143,18 @@ public partial class MultisetTests
     [TestMethod]
     public void Remove_WithReferenceTypeElement_ShouldRemoveSpecificInstance()
     {
-        Widget w1 = new Widget(99);
-        Widget w2 = new Widget(99);
+        var w1 = new Widget(99);
+        var w2 = new Widget(99);
 
-        Multiset<Widget> sut = new Multiset<Widget>();
-        sut.Add(w1);
-        sut.Add(w2);
+        var mvd = new Multiset<Widget>();
+        mvd.Add(w1);
+        mvd.Add(w2);
 
-        sut.Remove(w1);
+        mvd.Remove(w1);
 
-        Assert.AreEqual(1, sut.Count);
-        Assert.IsFalse(sut.Contains(w1));
-        Assert.IsTrue(sut.Contains(w2));
+        Assert.AreEqual(1, mvd.Count);
+        Assert.IsFalse(mvd.Contains(w1));
+        Assert.IsTrue(mvd.Contains(w2));
     }
 
     // --------------------------------------------------------
@@ -168,15 +168,15 @@ public partial class MultisetTests
     [TestMethod]
     public void Multiset_WithCustomEqualityComparer_ShouldUseComparerForElementEquality()
     {
-        Multiset<Point> sut = new Multiset<Point>(new XOnlyComparer());
-        sut.Add(new Point(1, 10));
-        sut.Add(new Point(1, 99));
-        sut.Add(new Point(2, 50));
+        var mvd = new Multiset<Point>(new XOnlyComparer());
+        mvd.Add(new Point(1, 10));
+        mvd.Add(new Point(1, 99));
+        mvd.Add(new Point(2, 50));
 
-        Assert.AreEqual(3, sut.Count);
-        Assert.AreEqual(2, sut.DistinctCount);
-        Assert.AreEqual(2, sut.CountOf(new Point(1, 0)));
-        Assert.AreEqual(1, sut.CountOf(new Point(2, 0)));
+        Assert.AreEqual(3, mvd.Count);
+        Assert.AreEqual(2, mvd.DistinctCount);
+        Assert.AreEqual(2, mvd.CountOf(new Point(1, 0)));
+        Assert.AreEqual(1, mvd.CountOf(new Point(2, 0)));
     }
 
     /// <summary>
@@ -186,13 +186,13 @@ public partial class MultisetTests
     [TestMethod]
     public void Remove_WithCustomEqualityComparer_ShouldLocateElementViaComparer()
     {
-        Multiset<Point> sut = new Multiset<Point>(new XOnlyComparer());
-        sut.Add(new Point(7, 100));
-        sut.Add(new Point(7, 200));
+        var mvd = new Multiset<Point>(new XOnlyComparer());
+        mvd.Add(new Point(7, 100));
+        mvd.Add(new Point(7, 200));
 
-        var removed = sut.Remove(new Point(7, 999));
+        var removed = mvd.Remove(new Point(7, 999));
 
         Assert.IsTrue(removed);
-        Assert.AreEqual(1, sut.CountOf(new Point(7, 0)));
+        Assert.AreEqual(1, mvd.CountOf(new Point(7, 0)));
     }
 }

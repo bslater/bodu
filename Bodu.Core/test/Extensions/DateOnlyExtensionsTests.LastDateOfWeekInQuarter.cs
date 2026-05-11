@@ -49,7 +49,7 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void LastDateOfWeekInQuarter_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
     {
-        DateOnly input = new DateOnly(2024, 4, 20);
+        var input = new DateOnly(2024, 4, 20);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -63,7 +63,7 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void LastDateOfWeekInQuarter_WhenDefinitionIsInvalid_ShouldThrowArgumentOutOfRangeException()
     {
-        DateOnly input = new DateOnly(2024, 4, 20);
+        var input = new DateOnly(2024, 4, 20);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

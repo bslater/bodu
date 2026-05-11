@@ -45,7 +45,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void NearestDateOfWeek_WhenCalled_ShouldPreserveInputKind()
     {
-        DateTime dateTime = new DateTime(2024, 4, 17, 0, 0, 0, DateTimeKind.Local);
+        var dateTime = new DateTime(2024, 4, 17, 0, 0, 0, DateTimeKind.Local);
         DateTime actual = dateTime.NearestDateOfWeek(DayOfWeek.Monday);
         Assert.AreEqual(DateTimeKind.Local, actual.Kind);
     }
@@ -56,7 +56,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void NearestDateOfWeek_WhenTiedBetweenPastAndFuture_ShouldReturnEarlierDate()
     {
-        DateTime dateTime = new DateTime(2024, 4, 17);
+        var dateTime = new DateTime(2024, 4, 17);
         DateTime actual = dateTime.NearestDateOfWeek(DayOfWeek.Sunday);
         Assert.AreEqual(new DateTime(2024, 4, 14), actual);
     }
@@ -67,7 +67,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void NearestDateOfWeek_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
     {
-        DateTime dateTime = new DateTime(2024, 4, 17);
+        var dateTime = new DateTime(2024, 4, 17);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

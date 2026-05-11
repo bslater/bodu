@@ -23,9 +23,9 @@ public partial class MultisetTests
     [TestMethod]
     public void ICollectionIsSynchronized_ShouldReturnFalse()
     {
-        ICollection sut = new Multiset<int>();
+        ICollection mvd = new Multiset<int>();
 
-        Assert.IsFalse(sut.IsSynchronized);
+        Assert.IsFalse(mvd.IsSynchronized);
     }
 
     // --------------------------------------------------------
@@ -38,9 +38,9 @@ public partial class MultisetTests
     [TestMethod]
     public void ICollectionSyncRoot_ShouldReturnNonNull()
     {
-        ICollection sut = new Multiset<int>();
+        ICollection mvd = new Multiset<int>();
 
-        Assert.IsNotNull(sut.SyncRoot);
+        Assert.IsNotNull(mvd.SyncRoot);
     }
 
     /// <summary>
@@ -49,10 +49,10 @@ public partial class MultisetTests
     [TestMethod]
     public void ICollectionSyncRoot_WhenCalledMultipleTimes_ShouldReturnSameInstance()
     {
-        ICollection sut = new Multiset<int>();
+        ICollection mvd = new Multiset<int>();
 
-        var first = sut.SyncRoot;
-        var second = sut.SyncRoot;
+        var first = mvd.SyncRoot;
+        var second = mvd.SyncRoot;
 
         Assert.AreSame(first, second);
     }
@@ -67,9 +67,9 @@ public partial class MultisetTests
     [TestMethod]
     public void ICollectionIsReadOnly_ShouldReturnFalse()
     {
-        ICollection<int> sut = new Multiset<int>();
+        ICollection<int> mvd = new Multiset<int>();
 
-        Assert.IsFalse(sut.IsReadOnly);
+        Assert.IsFalse(mvd.IsReadOnly);
     }
 
     // --------------------------------------------------------
@@ -82,12 +82,12 @@ public partial class MultisetTests
     [TestMethod]
     public void ICollectionCopyTo_WhenArrayIsNull_ShouldThrowArgumentNullException()
     {
-        ICollection sut = new Multiset<int>();
-        ((Multiset<int>)sut).Add(1);
+        ICollection mvd = new Multiset<int>();
+        ((Multiset<int>)mvd).Add(1);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            sut.CopyTo(null!, 0);
+            mvd.CopyTo(null!, 0);
         });
     }
 
@@ -101,11 +101,11 @@ public partial class MultisetTests
     [TestMethod]
     public void ICollectionCopyTo_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        ICollection sut = new Multiset<int>();
+        ICollection mvd = new Multiset<int>();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            sut.CopyTo(new object[5], -1);
+            mvd.CopyTo(new object[5], -1);
         });
     }
 
@@ -119,15 +119,15 @@ public partial class MultisetTests
     [TestMethod]
     public void ICollectionCopyTo_WhenArrayIsTooSmall_ShouldThrowArgumentException()
     {
-        Multiset<int> multiset = new Multiset<int>();
+        var multiset = new Multiset<int>();
         multiset.Add(1);
         multiset.Add(2);
         multiset.Add(3);
-        ICollection sut = multiset;
+        ICollection mvd = multiset;
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            sut.CopyTo(new object[2], 0);
+            mvd.CopyTo(new object[2], 0);
         });
     }
 
@@ -141,11 +141,11 @@ public partial class MultisetTests
     [TestMethod]
     public void ICollectionCopyTo_WhenArrayIsMultidimensional_ShouldThrowArgumentException()
     {
-        ICollection sut = new Multiset<int>();
+        ICollection mvd = new Multiset<int>();
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            sut.CopyTo(new object[2, 2], 0);
+            mvd.CopyTo(new object[2, 2], 0);
         });
     }
 
@@ -159,13 +159,13 @@ public partial class MultisetTests
     [TestMethod]
     public void ICollectionCopyTo_WhenElementTypeIsIncompatible_ShouldThrowArgumentException()
     {
-        Multiset<string> multiset = new Multiset<string>();
+        var multiset = new Multiset<string>();
         multiset.Add("hello");
-        ICollection sut = multiset;
+        ICollection mvd = multiset;
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            sut.CopyTo(new int[1], 0);
+            mvd.CopyTo(new int[1], 0);
         });
     }
 
@@ -179,10 +179,10 @@ public partial class MultisetTests
     [TestMethod]
     public void ICollectionCopyTo_WhenMultisetIsEmpty_ShouldNotModifyArray()
     {
-        ICollection sut = new Multiset<int>();
+        ICollection mvd = new Multiset<int>();
         object[] dest = [99];
 
-        sut.CopyTo(dest, 0);
+        mvd.CopyTo(dest, 0);
 
         Assert.AreEqual(99, dest[0]);
     }
@@ -197,12 +197,12 @@ public partial class MultisetTests
     [TestMethod]
     public void ICollectionCopyTo_WhenOffsetSpecified_ShouldCopyAtCorrectPosition()
     {
-        Multiset<int> multiset = new Multiset<int>();
+        var multiset = new Multiset<int>();
         multiset.Add(7, 2);
-        ICollection sut = multiset;
+        ICollection mvd = multiset;
         var dest = new object[4];
 
-        sut.CopyTo(dest, 2);
+        mvd.CopyTo(dest, 2);
 
         Assert.IsNull(dest[0]);
         Assert.IsNull(dest[1]);

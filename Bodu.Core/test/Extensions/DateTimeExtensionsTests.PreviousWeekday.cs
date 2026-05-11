@@ -36,7 +36,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void PreviousWeekday_WhenWeekendIsFridaySaturday_ShouldSkipSaturdayAndFriday()
     {
-        DateTime input = new DateTime(2024, 4, 21); // Sunday
+        var input = new DateTime(2024, 4, 21); // Sunday
         DateTime actual = input.PreviousWeekday(CalendarWeekendDefinition.FridaySaturday);
         Assert.AreEqual(new DateTime(2024, 4, 18), actual); // Thursday
     }
@@ -49,7 +49,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void PreviousWeekday_WhenWeekendIsNone_ShouldRetreatOneDay()
     {
-        DateTime input = new DateTime(2024, 4, 21);
+        var input = new DateTime(2024, 4, 21);
 
         DateTime actual = input.PreviousWeekday(CalendarWeekendDefinition.None);
 
@@ -62,7 +62,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void PreviousWeekday_WhenCalled_ShouldPreserveInputKind()
     {
-        DateTime input = new DateTime(2024, 4, 22, 0, 0, 0, DateTimeKind.Utc);
+        var input = new DateTime(2024, 4, 22, 0, 0, 0, DateTimeKind.Utc);
         DateTime actual = input.PreviousWeekday(CalendarWeekendDefinition.SaturdaySunday);
         Assert.AreEqual(DateTimeKind.Utc, actual.Kind);
     }
@@ -73,7 +73,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void PreviousWeekday_WhenCalled_ShouldPreserveTimeOfDay()
     {
-        DateTime input = new DateTime(2024, 4, 22, 9, 15, 0);
+        var input = new DateTime(2024, 4, 22, 9, 15, 0);
         DateTime actual = input.PreviousWeekday(CalendarWeekendDefinition.SaturdaySunday);
         Assert.AreEqual(new TimeSpan(9, 15, 0), actual.TimeOfDay);
     }
@@ -84,7 +84,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void PreviousWeekday_WhenWeekendIsInvalid_ShouldThrowArgumentOutOfRangeException()
     {
-        DateTime input = new DateTime(2024, 4, 22);
+        var input = new DateTime(2024, 4, 22);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -102,7 +102,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void PreviousWeekday_WhenProviderIsNull_ShouldUseWeekendEnum()
     {
-        DateTime input = new DateTime(2024, 4, 22);
+        var input = new DateTime(2024, 4, 22);
         DateTime actual = input.PreviousWeekday(CalendarWeekendDefinition.SaturdaySunday, provider: null);
         Assert.AreEqual(new DateTime(2024, 4, 19), actual);
     }
@@ -113,7 +113,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void PreviousWeekday_WhenUsingCustomProvider_ShouldApplyProviderRule()
     {
-        DateTime input = new DateTime(2024, 4, 20); // Saturday
+        var input = new DateTime(2024, 4, 20); // Saturday
         IWeekendDefinitionProvider provider = new FridayOnlyWeekendProvider();
 
         // Only Friday is weekend per provider. Previous calendar day is Fri 19 → weekend, so skip to Thu 18.
@@ -127,7 +127,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void PreviousWeekday_WhenProviderOverload_WeekendIsInvalid_ShouldThrowArgumentOutOfRangeException()
     {
-        DateTime input = new DateTime(2024, 4, 22);
+        var input = new DateTime(2024, 4, 22);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

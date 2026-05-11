@@ -166,8 +166,8 @@ public partial class FiscalWeekQuarterProviderTests
             dayOfWeek: DayOfWeek.Saturday,
             isFiscalYearEnd: true);
 
-        DateTime dateTime = new DateTime(2024, 6, 15);
-        DateOnly dateOnly = DateOnly.FromDateTime(dateTime);
+        var dateTime = new DateTime(2024, 6, 15);
+        var dateOnly = DateOnly.FromDateTime(dateTime);
 
         Assert.AreEqual(provider.GetQuarter(dateTime), provider.GetQuarter(dateOnly));
         Assert.AreEqual(

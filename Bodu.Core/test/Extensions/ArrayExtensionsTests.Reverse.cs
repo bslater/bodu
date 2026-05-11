@@ -637,7 +637,7 @@ public partial class ArrayExtensionsTests
     [DataRow(typeof(string), DisplayName = "string — reference type")]
     public void ReverseArrayCore_WhenCalled_ForNonGenericCore_ShouldPreserveElementType(Type elementType)
     {
-        Array source = Array.CreateInstance(elementType, 3);
+        var source = Array.CreateInstance(elementType, 3);
         Array result = ArrayExtensions.ReverseArrayCore(source, 0, source.Length);
         Assert.AreEqual(elementType, result.GetType().GetElementType());
     }

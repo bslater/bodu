@@ -221,7 +221,7 @@ public partial class WeekPatternTests
     [DataRow((byte)127)]
     public void ImplicitConversionToByte_WhenRoundTripped_ShouldMatchOriginal(byte original)
     {
-        WeekPattern pattern = WeekPattern.FromByte(original);
+        var pattern = WeekPattern.FromByte(original);
         byte converted = pattern;
         Assert.AreEqual(original, converted);
     }

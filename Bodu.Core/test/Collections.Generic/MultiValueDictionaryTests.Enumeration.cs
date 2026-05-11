@@ -23,16 +23,16 @@ public partial class MultiValueDictionaryTests
     [TestMethod]
     public void Flatten_WhenCalled_ShouldYieldOnePairPerValueEntry()
     {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-        sut.Add("a", 1);
-        sut.Add("a", 2);
-        sut.Add("b", 3);
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+        mvd.Add("a", 2);
+        mvd.Add("b", 3);
 
-        List<KeyValuePair<string, int>> flat = sut.Flatten().ToList();
+        var flat = mvd.Flatten().ToList();
 
         Assert.AreEqual(3, flat.Count);
 
-        List<KeyValuePair<string, int>> sorted = flat.OrderBy(p => p.Key).ThenBy(p => p.Value).ToList();
+        var sorted = flat.OrderBy(p => p.Key).ThenBy(p => p.Value).ToList();
         Assert.AreEqual(new KeyValuePair<string, int>("a", 1), sorted[0]);
         Assert.AreEqual(new KeyValuePair<string, int>("a", 2), sorted[1]);
         Assert.AreEqual(new KeyValuePair<string, int>("b", 3), sorted[2]);
@@ -44,9 +44,9 @@ public partial class MultiValueDictionaryTests
     [TestMethod]
     public void Flatten_WhenEmpty_ShouldReturnNoPairs()
     {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+        var mvd = new MultiValueDictionary<string, int>();
 
-        Assert.AreEqual(0, sut.Flatten().Count());
+        Assert.AreEqual(0, mvd.Flatten().Count());
     }
 
     /// <summary>
@@ -55,14 +55,14 @@ public partial class MultiValueDictionaryTests
     [TestMethod]
     public void Flatten_WhenModifiedDuringEnumeration_ShouldThrowInvalidOperationException()
     {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-        sut.Add("a", 1);
-        sut.Add("b", 2);
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+        mvd.Add("b", 2);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (KeyValuePair<string, int> _ in sut.Flatten())
-                sut.Add("c", 3);
+            foreach (KeyValuePair<string, int> _ in mvd.Flatten())
+                mvd.Add("c", 3);
         });
     }
 
@@ -76,12 +76,12 @@ public partial class MultiValueDictionaryTests
     [TestMethod]
     public void Enumerator_WhenEnumerated_ShouldYieldOneEntryPerKey()
     {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-        sut.Add("a", 1);
-        sut.Add("a", 2);
-        sut.Add("b", 3);
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+        mvd.Add("a", 2);
+        mvd.Add("b", 3);
 
-        List<KeyValuePair<string, IReadOnlyList<int>>> entries = sut.ToList();
+        var entries = mvd.ToList();
 
         Assert.AreEqual(2, entries.Count);
     }
@@ -92,13 +92,13 @@ public partial class MultiValueDictionaryTests
     [TestMethod]
     public void Enumerator_WhenModifiedDuringEnumeration_ShouldThrowInvalidOperationException()
     {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-        sut.Add("a", 1);
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (KeyValuePair<string, IReadOnlyList<int>> _ in sut)
-                sut.Add("b", 2);
+            foreach (KeyValuePair<string, IReadOnlyList<int>> _ in mvd)
+                mvd.Add("b", 2);
         });
     }
 
@@ -113,9 +113,9 @@ public partial class MultiValueDictionaryTests
     [TestMethod]
     public void Enumerator_CurrentBeforeMoveNext_ShouldThrowInvalidOperationException()
     {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-        sut.Add("a", 1);
-        MultiValueDictionary<string, int>.Enumerator en = sut.GetEnumerator();
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+        MultiValueDictionary<string, int>.Enumerator en = mvd.GetEnumerator();
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -133,9 +133,9 @@ public partial class MultiValueDictionaryTests
     [TestMethod]
     public void Enumerator_AfterExhaustion_CurrentShouldThrowInvalidOperationException()
     {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-        sut.Add("a", 1);
-        MultiValueDictionary<string, int>.Enumerator en = sut.GetEnumerator();
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+        MultiValueDictionary<string, int>.Enumerator en = mvd.GetEnumerator();
         while (en.MoveNext()) { }
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -155,18 +155,18 @@ public partial class MultiValueDictionaryTests
     [TestMethod]
     public void Enumerator_WhenReset_ShouldAllowReEnumeration()
     {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-        sut.Add("a", 1);
-        sut.Add("b", 2);
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+        mvd.Add("b", 2);
 
-        MultiValueDictionary<string, int>.Enumerator en = sut.GetEnumerator();
-        List<string> firstPass = new List<string>();
+        MultiValueDictionary<string, int>.Enumerator en = mvd.GetEnumerator();
+        var firstPass = new List<string>();
         while (en.MoveNext())
             firstPass.Add(en.Current.Key);
 
         en.Reset();
 
-        List<string> secondPass = new List<string>();
+        var secondPass = new List<string>();
         while (en.MoveNext())
             secondPass.Add(en.Current.Key);
 
@@ -181,10 +181,10 @@ public partial class MultiValueDictionaryTests
     [TestMethod]
     public void Enumerator_WhenResetAfterModification_ShouldThrowInvalidOperationException()
     {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-        sut.Add("a", 1);
-        MultiValueDictionary<string, int>.Enumerator en = sut.GetEnumerator();
-        sut.Add("b", 2);
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+        MultiValueDictionary<string, int>.Enumerator en = mvd.GetEnumerator();
+        mvd.Add("b", 2);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -202,14 +202,14 @@ public partial class MultiValueDictionaryTests
     [TestMethod]
     public void Enumerator_WhenModifiedViaRemoveAll_ShouldThrowInvalidOperationException()
     {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-        sut.Add("a", 1);
-        sut.Add("b", 2);
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+        mvd.Add("b", 2);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (KeyValuePair<string, IReadOnlyList<int>> _ in sut)
-                sut.RemoveAll("a");
+            foreach (KeyValuePair<string, IReadOnlyList<int>> _ in mvd)
+                mvd.RemoveAll("a");
         });
     }
 
@@ -219,14 +219,14 @@ public partial class MultiValueDictionaryTests
     [TestMethod]
     public void Enumerator_WhenModifiedViaClear_ShouldThrowInvalidOperationException()
     {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-        sut.Add("a", 1);
-        sut.Add("b", 2);
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+        mvd.Add("b", 2);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (KeyValuePair<string, IReadOnlyList<int>> _ in sut)
-                sut.Clear();
+            foreach (KeyValuePair<string, IReadOnlyList<int>> _ in mvd)
+                mvd.Clear();
         });
     }
 
@@ -236,14 +236,14 @@ public partial class MultiValueDictionaryTests
     [TestMethod]
     public void Enumerator_WhenModifiedViaRemove_ShouldThrowInvalidOperationException()
     {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-        sut.Add("a", 1);
-        sut.Add("b", 2);
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+        mvd.Add("b", 2);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (KeyValuePair<string, IReadOnlyList<int>> _ in sut)
-                sut.Remove("a", 1);
+            foreach (KeyValuePair<string, IReadOnlyList<int>> _ in mvd)
+                mvd.Remove("a", 1);
         });
     }
 
@@ -257,31 +257,37 @@ public partial class MultiValueDictionaryTests
     [TestMethod]
     public void Flatten_WhenModifiedViaRemoveAll_ShouldThrowInvalidOperationException()
     {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-        sut.Add("a", 1);
-        sut.Add("b", 2);
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+        mvd.Add("b", 2);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (KeyValuePair<string, int> _ in sut.Flatten())
-                sut.RemoveAll("a");
+            foreach (KeyValuePair<string, int> _ in mvd.Flatten())
+                mvd.RemoveAll("a");
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Flatten"/> throws <see cref="InvalidOperationException"/> when the dictionary is cleared during enumeration.
+    /// Verifies that <see cref="MultiValueDictionary{TKey, TValue}.Flatten" /> throws
+    /// <see cref="InvalidOperationException" /> when the dictionary is cleared after enumeration has begun.
     /// </summary>
     [TestMethod]
-    public void Flatten_WhenModifiedViaClear_ShouldThrowInvalidOperationException()
+    public void Flatten_WhenClearedAfterEnumerationBegins_ShouldThrowInvalidOperationException()
     {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-        sut.Add("a", 1);
-        sut.Add("b", 2);
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+        mvd.Add("b", 2);
+
+        using IEnumerator<KeyValuePair<string, int>> enumerator = mvd.Flatten().GetEnumerator();
+
+        Assert.IsTrue(enumerator.MoveNext(), "Expected Flatten to yield at least one item before mutation.");
+
+        mvd.Clear();
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (KeyValuePair<string, int> _ in sut.Flatten())
-                sut.Clear();
+            _ = enumerator.MoveNext();
         });
     }
 
@@ -291,14 +297,14 @@ public partial class MultiValueDictionaryTests
     [TestMethod]
     public void Flatten_WhenModifiedViaRemove_ShouldThrowInvalidOperationException()
     {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-        sut.Add("a", 1);
-        sut.Add("a", 2);
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+        mvd.Add("a", 2);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (KeyValuePair<string, int> _ in sut.Flatten())
-                sut.Remove("a", 1);
+            foreach (KeyValuePair<string, int> _ in mvd.Flatten())
+                mvd.Remove("a", 1);
         });
     }
 
@@ -313,25 +319,49 @@ public partial class MultiValueDictionaryTests
     [TestCategory("Regression")]
     public void Add_WhenManyKeysAndValuesAdded_ShouldRetrieveAllCorrectly()
     {
-        MultiValueDictionary<int, int> sut = new MultiValueDictionary<int, int>();
+        var mvd = new MultiValueDictionary<int, int>();
         var keyCount = 200;
         var valuesPerKey = 10;
 
         for (var k = 0; k < keyCount; k++)
         {
             for (var v = 0; v < valuesPerKey; v++)
-                sut.Add(k, v);
+                mvd.Add(k, v);
         }
 
-        Assert.AreEqual(keyCount * valuesPerKey, sut.Count);
-        Assert.AreEqual(keyCount, sut.KeyCount);
+        Assert.AreEqual(keyCount * valuesPerKey, mvd.Count);
+        Assert.AreEqual(keyCount, mvd.KeyCount);
 
         for (var k = 0; k < keyCount; k++)
         {
-            IReadOnlyList<int> values = sut[k];
+            IReadOnlyList<int> values = mvd[k];
             Assert.AreEqual(valuesPerKey, values.Count);
             for (var v = 0; v < valuesPerKey; v++)
                 Assert.AreEqual(v, values[v]);
         }
+    }
+
+    /// <summary>
+    /// Verifies that read-only operations do not invalidate an active enumerator.
+    /// </summary>
+    [TestMethod]
+    public void ReadOperations_WhenCalledDuringEnumeration_ShouldNotInvalidateActiveEnumerator()
+    {
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+
+        using MultiValueDictionary<string, int>.Enumerator enumerator = mvd.GetEnumerator();
+
+        _ = mvd.Count;
+        _ = mvd.KeyCount;
+        _ = mvd.Keys.Count;
+        _ = mvd.ContainsKey("a");
+        _ = mvd.ContainsValue("a", 1);
+        _ = mvd.TryGetValues("a", out _);
+        _ = mvd["a"];
+
+        Assert.IsTrue(enumerator.MoveNext());
+        Assert.AreEqual("a", enumerator.Current.Key);
+        Assert.IsFalse(enumerator.MoveNext());
     }
 }

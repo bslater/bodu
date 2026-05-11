@@ -49,7 +49,7 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void FirstDateOfWeekInQuarter_WhenDateFallsOnTargetDayOfWeekFirstInQuarter_ShouldReturnSameDate()
     {
-        DateOnly input = new DateOnly(2024, 1, 1); // Monday, Q1 start
+        var input = new DateOnly(2024, 1, 1); // Monday, Q1 start
         DateOnly actual = input.FirstDateOfWeekInQuarter(DayOfWeek.Monday, CalendarQuarterDefinition.JanuaryToDecember);
         Assert.AreEqual(new DateOnly(2024, 1, 1), actual);
     }
@@ -60,7 +60,7 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void FirstDateOfWeekInQuarter_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
     {
-        DateOnly input = new DateOnly(2024, 4, 20);
+        var input = new DateOnly(2024, 4, 20);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -74,7 +74,7 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void FirstDateOfWeekInQuarter_WhenDefinitionIsInvalid_ShouldThrowArgumentOutOfRangeException()
     {
-        DateOnly input = new DateOnly(2024, 4, 20);
+        var input = new DateOnly(2024, 4, 20);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

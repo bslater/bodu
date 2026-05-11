@@ -20,9 +20,9 @@ public partial class MultisetTests
     [TestMethod]
     public void Remove_WhenElementAbsent_ShouldReturnFalse()
     {
-        Multiset<int> sut = new Multiset<int>();
+        var mvd = new Multiset<int>();
 
-        var result = sut.Remove(99);
+        var result = mvd.Remove(99);
 
         Assert.IsFalse(result);
     }
@@ -33,15 +33,15 @@ public partial class MultisetTests
     [TestMethod]
     public void Remove_WhenElementPresent_ShouldReturnTrueAndDecrementCount()
     {
-        Multiset<int> sut = new Multiset<int>();
-        sut.Add(1, 3);
+        var mvd = new Multiset<int>();
+        mvd.Add(1, 3);
 
-        var result = sut.Remove(1);
+        var result = mvd.Remove(1);
 
         Assert.IsTrue(result);
-        Assert.AreEqual(2, sut.CountOf(1));
-        Assert.AreEqual(2, sut.Count);
-        Assert.AreEqual(1, sut.DistinctCount);
+        Assert.AreEqual(2, mvd.CountOf(1));
+        Assert.AreEqual(2, mvd.Count);
+        Assert.AreEqual(1, mvd.DistinctCount);
     }
 
     /// <summary>
@@ -50,14 +50,14 @@ public partial class MultisetTests
     [TestMethod]
     public void Remove_WhenLastOccurrenceRemoved_ShouldEliminateElement()
     {
-        Multiset<string> sut = new Multiset<string>();
-        sut.Add("only");
+        var mvd = new Multiset<string>();
+        mvd.Add("only");
 
-        sut.Remove("only");
+        mvd.Remove("only");
 
-        Assert.AreEqual(0, sut.Count);
-        Assert.AreEqual(0, sut.DistinctCount);
-        Assert.IsFalse(sut.Contains("only"));
+        Assert.AreEqual(0, mvd.Count);
+        Assert.AreEqual(0, mvd.DistinctCount);
+        Assert.IsFalse(mvd.Contains("only"));
     }
 
     /// <summary>
@@ -66,13 +66,13 @@ public partial class MultisetTests
     [TestMethod]
     public void Remove_WhenOneElementRemoved_ShouldNotAffectOtherElements()
     {
-        Multiset<string> sut = new Multiset<string>(["a", "a", "b", "b", "b"]);
+        var mvd = new Multiset<string>(["a", "a", "b", "b", "b"]);
 
-        sut.Remove("a");
+        mvd.Remove("a");
 
-        Assert.AreEqual(1, sut.CountOf("a"));
-        Assert.AreEqual(3, sut.CountOf("b"));
-        Assert.AreEqual(4, sut.Count);
+        Assert.AreEqual(1, mvd.CountOf("a"));
+        Assert.AreEqual(3, mvd.CountOf("b"));
+        Assert.AreEqual(4, mvd.Count);
     }
 
     // --------------------------------------------------------
@@ -85,9 +85,9 @@ public partial class MultisetTests
     [TestMethod]
     public void RemoveAll_WhenElementAbsent_ShouldReturnFalse()
     {
-        Multiset<int> sut = new Multiset<int>();
+        var mvd = new Multiset<int>();
 
-        var result = sut.RemoveAll(42);
+        var result = mvd.RemoveAll(42);
 
         Assert.IsFalse(result);
     }
@@ -98,15 +98,15 @@ public partial class MultisetTests
     [TestMethod]
     public void RemoveAll_WhenElementPresent_ShouldReturnTrueAndRemoveAllOccurrences()
     {
-        Multiset<string> sut = new Multiset<string>(["x", "x", "x", "y"]);
+        var mvd = new Multiset<string>(["x", "x", "x", "y"]);
 
-        var result = sut.RemoveAll("x");
+        var result = mvd.RemoveAll("x");
 
         Assert.IsTrue(result);
-        Assert.AreEqual(0, sut.CountOf("x"));
-        Assert.IsFalse(sut.Contains("x"));
-        Assert.AreEqual(1, sut.Count);
-        Assert.AreEqual(1, sut.DistinctCount);
+        Assert.AreEqual(0, mvd.CountOf("x"));
+        Assert.IsFalse(mvd.Contains("x"));
+        Assert.AreEqual(1, mvd.Count);
+        Assert.AreEqual(1, mvd.DistinctCount);
     }
 
     /// <summary>
@@ -115,13 +115,13 @@ public partial class MultisetTests
     [TestMethod]
     public void RemoveAll_WhenCalled_ShouldNotAffectOtherElements()
     {
-        Multiset<int> sut = new Multiset<int>();
-        sut.Add(1, 5);
-        sut.Add(2, 3);
+        var mvd = new Multiset<int>();
+        mvd.Add(1, 5);
+        mvd.Add(2, 3);
 
-        sut.RemoveAll(1);
+        mvd.RemoveAll(1);
 
-        Assert.AreEqual(3, sut.CountOf(2));
-        Assert.AreEqual(3, sut.Count);
+        Assert.AreEqual(3, mvd.CountOf(2));
+        Assert.AreEqual(3, mvd.Count);
     }
 }
