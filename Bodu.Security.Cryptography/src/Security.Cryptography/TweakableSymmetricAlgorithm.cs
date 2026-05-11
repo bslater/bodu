@@ -176,7 +176,7 @@ public abstract class TweakableSymmetricAlgorithm
 
     /// <inheritdoc />
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV) =>
-        this.CreateDecryptor(rgbKey, rgbIV!, this.Tweak);
+        this.CreateDecryptor(rgbKey, rgbIV, this.Tweak);
 
     /// <summary>
     /// Creates a symmetric decryptor using the specified key, initialisation vector (IV), and tweak value.
@@ -195,11 +195,11 @@ public abstract class TweakableSymmetricAlgorithm
     /// This method must be implemented by derived types to support decryption with a tweak, as required by tweakable block ciphers such
     /// as Threefish.
     /// </remarks>
-    public abstract ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak);
+    public abstract ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak);
 
     /// <inheritdoc />
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV) =>
-        this.CreateEncryptor(rgbKey, rgbIV!, this.Tweak);
+        this.CreateEncryptor(rgbKey, rgbIV, this.Tweak);
 
     /// <inheritdoc />
     public override ICryptoTransform CreateEncryptor() =>
@@ -222,7 +222,7 @@ public abstract class TweakableSymmetricAlgorithm
     /// This method must be implemented by derived types to support encryption with a tweak, as required by tweakable block ciphers such
     /// as Threefish.
     /// </remarks>
-    public abstract ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak);
+    public abstract ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak);
 
     /// <summary>
     /// Generates a new tweak value for the algorithm based on the current <see cref="TweakSize"/>.

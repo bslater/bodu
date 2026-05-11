@@ -361,10 +361,9 @@ public sealed class Blowfish
         "Roslynator",
         "RCS1001:Add braces (when expression spans over multiple lines)",
         Justification = "The multi-line throw expressions are single guard-clause bodies; omitting braces keeps validation paths compact without reducing control-flow clarity.")]
-    private void Validate(byte[] key, byte[] iv)
+    private void Validate(byte[] key, byte[]? iv)
     {
         ThrowHelper.ThrowIfNull(key);
-        ThrowHelper.ThrowIfNull(iv);
 
         // Key length must match the currently configured KeySize exactly — not merely fall within the legal range — because the key
         // schedule is driven from the caller-supplied material without padding or truncation.
@@ -376,13 +375,7 @@ public sealed class Blowfish
                     CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)),
                 nameof(key));
 
-        if (iv.Length != this.BlockSizeBytes)
-            throw new CryptographicException(
-                string.Format(
-                    CryptoResourceStrings.CryptographicException_InvalidIVSize,
-                    iv.Length * 8,
-                    CryptoHelpers.FormatLegalSizes(this.LegalBlockSizesValue)),
-                nameof(iv));
+        CryptoHelpers.ThrowIfInvalidIVForMode(iv, this.BlockMode, this.BlockSizeBytes, this.LegalBlockSizesValue);
     }
 
     /// <summary>

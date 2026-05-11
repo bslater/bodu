@@ -14,6 +14,10 @@ public partial class SimpleReversingTweakableSymmetricAlgorithmTests
     protected override SimpleReversingTweakableSymmetricAlgorithm CreateAlgorithm() => new SimpleReversingTweakableSymmetricAlgorithm();
 
     /// <inheritdoc />
+    protected override void SetEcbMode(SimpleReversingTweakableSymmetricAlgorithm algorithm) =>
+        algorithm.BlockMode = CipherBlockMode.ECB;
+
+    /// <inheritdoc />
     protected override SymmetricAlgorithmSpecification GetSpecification() =>
         new SymmetricAlgorithmSpecification
         {

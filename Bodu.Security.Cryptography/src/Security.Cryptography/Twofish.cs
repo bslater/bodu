@@ -235,10 +235,10 @@ public sealed class Twofish
 
     private static IBlockCipher CreateCipher(byte[] key) => new TwofishBlockCipher(key);
 
-    private void Validate(byte[] key, byte[] iv)
+    private void Validate(byte[] key, byte[]? iv)
     {
         CryptoHelpers.ThrowIfInvalidKeySize(key, this.KeySizeBytes, this.LegalKeySizesValue);
-        CryptoHelpers.ThrowIfInvalidBlockSize(iv, this.BlockSizeBytes, this.LegalBlockSizesValue);
+        CryptoHelpers.ThrowIfInvalidIVForMode(iv, this.BlockMode, this.BlockSizeBytes, this.LegalBlockSizesValue);
     }
 
     /// <summary>

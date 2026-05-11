@@ -56,7 +56,7 @@ public sealed class SimpleReversingCryptoTransform
         SimpleReversingBlockCipher cipher,
         CipherBlockMode cipherMode,
         PaddingMode paddingMode,
-        byte[] iv,
+        byte[]? iv,
         bool encrypt)
     {
         this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));

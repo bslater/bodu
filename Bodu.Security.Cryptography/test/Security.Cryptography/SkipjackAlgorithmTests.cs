@@ -16,6 +16,10 @@ public sealed partial class SkipjackAlgorithmTests
     protected override Skipjack CreateAlgorithm() => new Skipjack();
 
     /// <inheritdoc />
+    protected override void SetEcbMode(Skipjack algorithm) =>
+        algorithm.BlockMode = CipherBlockMode.ECB;
+
+    /// <inheritdoc />
     protected override SymmetricAlgorithmSpecification GetSpecification() =>
         new SymmetricAlgorithmSpecification
         {

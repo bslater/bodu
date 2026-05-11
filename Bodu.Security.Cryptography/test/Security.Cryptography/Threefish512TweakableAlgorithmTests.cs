@@ -21,6 +21,10 @@ public sealed partial class Threefish512TweakableAlgorithmTests
     protected override Threefish512 CreateAlgorithm() => Threefish512.Create();
 
     /// <inheritdoc />
+    protected override void SetEcbMode(Threefish512 algorithm) =>
+        algorithm.BlockMode = CipherBlockMode.ECB;
+
+    /// <inheritdoc />
     protected override SymmetricAlgorithmSpecification GetSpecification() =>
         new SymmetricAlgorithmSpecification
         {

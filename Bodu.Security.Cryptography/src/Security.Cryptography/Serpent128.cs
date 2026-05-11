@@ -180,7 +180,7 @@ public sealed class Serpent128
         this.Validate(rgbKey, rgbIV);
 
         IBlockCipher engine = new Serpent128Cipher(rgbKey);
-        return new Serpent128Transform(engine, this.BlockMode, this.BlockPadding, rgbIV!, false);
+        return new Serpent128Transform(engine, this.BlockMode, this.BlockPadding, rgbIV, false);
     }
 
     /// <inheritdoc />
@@ -190,7 +190,7 @@ public sealed class Serpent128
         this.Validate(rgbKey, rgbIV);
 
         IBlockCipher engine = new Serpent128Cipher(rgbKey);
-        return new Serpent128Transform(engine, this.BlockMode, this.BlockPadding, rgbIV!, true);
+        return new Serpent128Transform(engine, this.BlockMode, this.BlockPadding, rgbIV, true);
     }
 
     /// <inheritdoc />
@@ -235,16 +235,13 @@ public sealed class Serpent128
     private void Validate(byte[] key, byte[]? iv)
     {
         ThrowHelper.ThrowIfNull(key);
-        ThrowHelper.ThrowIfNull(iv);
 
         var keyBits = key.Length * 8;
         if (keyBits != 128 && keyBits != 192 && keyBits != 256)
             throw new CryptographicException(
                 string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize, keyBits, CryptoHelpers.FormatLegalSizes(s_serpentKeySizes)));
 
-        if (iv!.Length * 8 != BlockSizeBits)
-            throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidIVSize, iv.Length * 8, CryptoHelpers.FormatLegalSizes(s_serpentBlockSizes)));
+        CryptoHelpers.ThrowIfInvalidIVForMode(iv, this.BlockMode, BlockSizeBits / 8, s_serpentBlockSizes);
     }
 
     /// <summary>

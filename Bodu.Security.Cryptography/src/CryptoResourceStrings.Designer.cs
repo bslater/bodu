@@ -196,6 +196,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The cipher mode specified requires that an initialization vector (IV) be used..
+        /// </summary>
+        internal static string CryptographicException_IVRequiredForMode {
+            get {
+                return ResourceManager.GetString("CryptographicException_IVRequiredForMode", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Length of the block must be {0}..
         /// </summary>
         internal static string CryptographicException_InvalidBlockLength {

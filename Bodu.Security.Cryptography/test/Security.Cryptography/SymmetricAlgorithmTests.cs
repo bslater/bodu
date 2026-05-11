@@ -30,6 +30,13 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     protected abstract SymmetricAlgorithmSpecification GetSpecification();
 
     /// <summary>
+    /// Configures <paramref name="algorithm"/> to use ECB mode. Used by base-class tests that exercise the
+    /// ECB-specific null-IV contract.
+    /// </summary>
+    /// <param name="algorithm">The algorithm instance to reconfigure.</param>
+    protected abstract void SetEcbMode(TAlgorithm algorithm);
+
+    /// <summary>
     /// Returns one row per entry in <see cref="SymmetricAlgorithmSpecification.LegalKeySizesBits" /> for use as a
     /// <see cref="DynamicDataAttribute" /> source in parameterised tests.
     /// </summary>

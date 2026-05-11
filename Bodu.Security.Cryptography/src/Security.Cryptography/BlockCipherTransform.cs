@@ -126,7 +126,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
     /// <see langword="true"/> to configure for encryption; <see langword="false"/> for decryption.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="cipher"/> is <see langword="null"/>.</exception>
-    protected BlockCipherTransform(IBlockCipher cipher, CipherBlockMode cipherMode, PaddingMode paddingMode, byte[] iv, bool encrypt)
+    protected BlockCipherTransform(IBlockCipher cipher, CipherBlockMode cipherMode, PaddingMode paddingMode, byte[]? iv, bool encrypt)
     {
         this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
         this._encrypt = encrypt;
@@ -151,7 +151,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
     /// <see langword="true"/> to configure for encryption; <see langword="false"/> for decryption.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="cipher"/> is <see langword="null"/>.</exception>
-    protected BlockCipherTransform(IBlockCipher cipher, CipherBlockMode cipherMode, BlockPaddingMode paddingMode, byte[] iv, bool encrypt)
+    protected BlockCipherTransform(IBlockCipher cipher, CipherBlockMode cipherMode, BlockPaddingMode paddingMode, byte[]? iv, bool encrypt)
     {
         this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
         this._encrypt = encrypt;

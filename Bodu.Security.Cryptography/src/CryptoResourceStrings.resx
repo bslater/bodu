@@ -123,6 +123,9 @@
   <data name="CryptographicException_AlreadyFinalized" xml:space="preserve">
     <value>TransformFinalBlock has already been called for this hash computation.</value>
   </data>
+  <data name="CryptographicException_IVRequiredForMode" xml:space="preserve">
+    <value>The cipher mode specified requires that an initialization vector (IV) be used.</value>
+  </data>
   <data name="CryptographicException_InvalidBlockLength" xml:space="preserve">
     <value>Length of the block must be {0}.</value>
   </data>

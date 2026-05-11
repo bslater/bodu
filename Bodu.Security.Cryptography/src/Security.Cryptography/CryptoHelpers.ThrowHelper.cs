@@ -247,6 +247,43 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
+    /// Validates an initialisation vector against the configured <paramref name="mode"/>.
+    /// </summary>
+    /// <param name="iv">The initialisation vector to validate, or <see langword="null"/>.</param>
+    /// <param name="mode">The configured cipher mode.</param>
+    /// <param name="blockSizeBytes">The required IV length in bytes when the mode requires one.</param>
+    /// <param name="legalBlockSizes">The legal block sizes for the algorithm, used for error formatting.</param>
+    /// <param name="paramName">The parameter name. Supplied automatically by the compiler.</param>
+    /// <exception cref="CryptographicException">
+    /// Thrown when <paramref name="iv"/> is <see langword="null"/> and <paramref name="mode"/> is not
+    /// <see cref="CipherBlockMode.ECB"/>, or when <paramref name="iv"/> is non-null but does not have
+    /// the required length.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfInvalidIVForMode(
+        byte[]? iv,
+        CipherBlockMode mode,
+        int blockSizeBytes,
+        KeySizes[] legalBlockSizes,
+        [CallerArgumentExpression(nameof(iv))] string? paramName = null)
+    {
+        if (iv is null)
+        {
+            if (mode == CipherBlockMode.ECB) return;
+            throw new CryptographicException(CryptoResourceStrings.CryptographicException_IVRequiredForMode);
+        }
+
+        ThrowHelper.ThrowIfNull(legalBlockSizes);
+
+        if (iv.Length != blockSizeBytes)
+            throw new CryptographicException(
+                string.Format(
+                    CryptoResourceStrings.CryptographicException_InvalidIVSize,
+                    iv.Length * 8,
+                    CryptoHelpers.FormatLegalSizes(legalBlockSizes)));
+    }
+
+    /// <summary>
     /// Throws an <see cref="ArgumentException"/> if the length of <paramref name="iv"/> does not equal
     /// <paramref name="expectedLength"/>.
     /// </summary>

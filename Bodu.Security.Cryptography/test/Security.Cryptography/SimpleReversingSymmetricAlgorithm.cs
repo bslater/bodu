@@ -166,10 +166,10 @@ public sealed class SimpleReversingSymmetricAlgorithm
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         ThrowIfDisposed();
-        Validate(rgbKey, rgbIV!);
+        Validate(rgbKey, rgbIV);
         return new SimpleReversingCryptoTransform(
             CreateCipher(rgbKey, BlockSizeBytes),
-            blockMode, PaddingValue, rgbIV!, encrypt: true);
+            blockMode, PaddingValue, rgbIV, encrypt: true);
     }
 
     /// <summary>
@@ -187,10 +187,10 @@ public sealed class SimpleReversingSymmetricAlgorithm
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         ThrowIfDisposed();
-        Validate(rgbKey, rgbIV!);
+        Validate(rgbKey, rgbIV);
         return new SimpleReversingCryptoTransform(
             CreateCipher(rgbKey, BlockSizeBytes),
-            blockMode, PaddingValue, rgbIV!, encrypt: false);
+            blockMode, PaddingValue, rgbIV, encrypt: false);
     }
 
     // ── Key and IV generation ─────────────────────────────────────────────────────────────────
@@ -254,10 +254,9 @@ public sealed class SimpleReversingSymmetricAlgorithm
     /// </summary>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
     /// <exception cref="CryptographicException">The key or IV length is not valid for this algorithm.</exception>
-    private void Validate(byte[] key, byte[] iv)
+    private void Validate(byte[] key, byte[]? iv)
     {
         ThrowHelper.ThrowIfNull(key);
-        ThrowHelper.ThrowIfNull(iv);
 
         if (key.Length != KeySizeBytes)
             throw new CryptographicException(
@@ -266,12 +265,7 @@ public sealed class SimpleReversingSymmetricAlgorithm
                               CryptoHelpers.FormatLegalSizes(LegalKeySizesValue)),
                 nameof(key));
 
-        if (iv.Length != BlockSizeBytes)
-            throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidIVSize,
-                              iv.Length * 8,
-                              CryptoHelpers.FormatLegalSizes(LegalBlockSizesValue)),
-                nameof(iv));
+        CryptoHelpers.ThrowIfInvalidIVForMode(iv, blockMode, BlockSizeBytes, LegalBlockSizesValue);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -20,6 +20,10 @@ public sealed partial class BlowfishAlgorithmTests
     protected override Blowfish CreateAlgorithm() => Blowfish.Create();
 
     /// <inheritdoc />
+    protected override void SetEcbMode(Blowfish algorithm) =>
+        algorithm.BlockMode = CipherBlockMode.ECB;
+
+    /// <inheritdoc />
     protected override SymmetricAlgorithmSpecification GetSpecification() =>
         new SymmetricAlgorithmSpecification
         {

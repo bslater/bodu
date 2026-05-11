@@ -140,7 +140,7 @@ public abstract class Threefish
     }
 
     /// <inheritdoc />
-    public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak)
+    public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak)
     {
         this.ThrowIfDisposed();
         this.Validate(rgbKey, rgbIV, tweak);
@@ -149,7 +149,7 @@ public abstract class Threefish
     }
 
     /// <inheritdoc />
-    public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak)
+    public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak)
     {
         this.ThrowIfDisposed();
         this.Validate(rgbKey, rgbIV, tweak);
@@ -234,21 +234,16 @@ public abstract class Threefish
     /// <param name="tweak">The tweak value.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/>, <paramref name="iv"/>, or <paramref name="tweak"/> is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">Thrown when any input does not match the required length.</exception>
-    protected void Validate(byte[] key, byte[] iv, byte[] tweak)
+    protected void Validate(byte[] key, byte[]? iv, byte[] tweak)
     {
-        // Fix: guard against null arguments to preserve ArgumentNullException contract (previously threw NullReferenceException via .Length).
         ThrowHelper.ThrowIfNull(key);
-        ThrowHelper.ThrowIfNull(iv);
         ThrowHelper.ThrowIfNull(tweak);
 
         if (key.Length != this.KeySizeBytes)
             throw new CryptographicException(
                 string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize, key.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)));
 
-        // Fix: normalise IV length failure to CryptographicException for consistency with the key/tweak branches and with Skipjack.Validate.
-        if (iv.Length != this.BlockSizeBytes)
-            throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidIVSize, iv.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalBlockSizes)));
+        CryptoHelpers.ThrowIfInvalidIVForMode(iv, this.BlockMode, this.BlockSizeBytes, this.LegalBlockSizes);
 
         if (tweak.Length != this._defaultTweakSizeBytes)
             throw new CryptographicException(

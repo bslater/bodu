@@ -19,6 +19,10 @@ public partial class Serpent512TweakableAlgorithmTests
     protected override Serpent512 CreateAlgorithm() => new Serpent512();
 
     /// <inheritdoc />
+    protected override void SetEcbMode(Serpent512 algorithm) =>
+        algorithm.BlockMode = CipherBlockMode.ECB;
+
+    /// <inheritdoc />
     protected override SymmetricAlgorithmSpecification GetSpecification() =>
         new SymmetricAlgorithmSpecification
         {

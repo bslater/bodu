@@ -122,7 +122,7 @@ public abstract class Serpent
     }
 
     /// <inheritdoc />
-    public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak)
+    public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak)
     {
         this.ThrowIfDisposed();
         this.Validate(rgbKey, rgbIV, tweak);
@@ -132,7 +132,7 @@ public abstract class Serpent
     }
 
     /// <inheritdoc />
-    public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak)
+    public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak)
     {
         this.ThrowIfDisposed();
         this.Validate(rgbKey, rgbIV, tweak);
@@ -220,19 +220,16 @@ public abstract class Serpent
     /// Thrown when <paramref name="key"/>, <paramref name="iv"/>, or <paramref name="tweak"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="CryptographicException">Thrown when any input does not match the required length.</exception>
-    protected void Validate(byte[] key, byte[] iv, byte[] tweak)
+    protected void Validate(byte[] key, byte[]? iv, byte[] tweak)
     {
         ThrowHelper.ThrowIfNull(key);
-        ThrowHelper.ThrowIfNull(iv);
         ThrowHelper.ThrowIfNull(tweak);
 
         if (key.Length != this.KeySizeBytes)
             throw new CryptographicException(
                 string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize, key.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)));
 
-        if (iv.Length != this.BlockSizeBytes)
-            throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidIVSize, iv.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalBlockSizes)));
+        CryptoHelpers.ThrowIfInvalidIVForMode(iv, this.BlockMode, this.BlockSizeBytes, this.LegalBlockSizes);
 
         if (tweak.Length != this._defaultTweakSizeBytes)
             throw new CryptographicException(

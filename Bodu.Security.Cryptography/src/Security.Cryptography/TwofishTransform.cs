@@ -27,7 +27,7 @@ internal sealed class TwofishTransform
     /// <param name="paddingMode">The padding scheme to apply to the final block.</param>
     /// <param name="iv">The initialisation vector for the cipher mode.</param>
     /// <param name="encrypt"><see langword="true"/> to configure for encryption; <see langword="false"/> for decryption.</param>
-    internal TwofishTransform(IBlockCipher cipher, CipherBlockMode cipherMode, BlockPaddingMode paddingMode, byte[] iv, bool encrypt)
+    internal TwofishTransform(IBlockCipher cipher, CipherBlockMode cipherMode, BlockPaddingMode paddingMode, byte[]? iv, bool encrypt)
         : base(cipher, cipherMode, paddingMode, iv, encrypt)
     {
     }

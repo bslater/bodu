@@ -322,8 +322,9 @@ public sealed class Camellia
     /// </summary>
     /// <param name="key">The key to validate.</param>
     /// <param name="iv">The initialisation vector to validate.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> or <paramref name="iv"/> is <see langword="null"/>.</exception>
-    /// <exception cref="CryptographicException">The key or IV length is not valid for this algorithm.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+    /// <exception cref="CryptographicException">The key or IV length is not valid for this algorithm, or the configured
+    /// mode requires an IV and <paramref name="iv"/> is <see langword="null"/>.</exception>
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
       "Style",
       "IDE0011:Add braces",
@@ -335,7 +336,6 @@ public sealed class Camellia
     private void Validate(byte[] key, byte[]? iv)
     {
         ThrowHelper.ThrowIfNull(key);
-        ThrowHelper.ThrowIfNull(iv);
 
         if (key.Length != this.KeySizeBytes)
             throw new CryptographicException(
@@ -345,13 +345,7 @@ public sealed class Camellia
                     CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)),
                 nameof(key));
 
-        if (iv!.Length != this.BlockSizeBytes)
-            throw new CryptographicException(
-                string.Format(
-                    CryptoResourceStrings.CryptographicException_InvalidIVSize,
-                    iv.Length * 8,
-                    CryptoHelpers.FormatLegalSizes(this.LegalBlockSizesValue)),
-                nameof(iv));
+        CryptoHelpers.ThrowIfInvalidIVForMode(iv, this.BlockMode, this.BlockSizeBytes, this.LegalBlockSizesValue);
     }
 
     /// <summary>

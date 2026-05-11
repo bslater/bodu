@@ -20,6 +20,10 @@ public sealed partial class CamelliaAlgorithmTests
     protected override Camellia CreateAlgorithm() => new Camellia();
 
     /// <inheritdoc />
+    protected override void SetEcbMode(Camellia algorithm) =>
+        algorithm.BlockMode = CipherBlockMode.ECB;
+
+    /// <inheritdoc />
     protected override SymmetricAlgorithmSpecification GetSpecification() =>
         new SymmetricAlgorithmSpecification
         {
