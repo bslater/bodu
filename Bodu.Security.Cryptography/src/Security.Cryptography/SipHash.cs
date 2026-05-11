@@ -77,9 +77,9 @@ public abstract class SipHash<T>
     /// </summary>
     public const int MinFinalizationRounds = 4;
 
-    private static readonly int BlockSize = 8;
+    private static readonly int s_blockSize = 8;
 
-    private static readonly ulong[] InitialStates = new ulong[]
+    private static readonly ulong[] s_initialStates = new ulong[]
     {
         0x736f6d6570736575UL,
         0x646f72616e646f6dUL,
@@ -87,7 +87,7 @@ public abstract class SipHash<T>
         0x7465646279746573UL,
     };
 
-    private static readonly int[] ValidHashSizes = { 64, 128 };
+    private static readonly int[] s_validHashSizes = { 64, 128 };
     private int _compressionRounds;
     private int _finalizationRounds;
     private ulong _v0, _v1, _v2, _v3;
@@ -98,11 +98,15 @@ public abstract class SipHash<T>
     /// <param name="hashSize">The desired size of the final hash in bits. Supported values are 64 or 128.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="hashSize"/> is not supported.</exception>
     protected SipHash(int hashSize)
-        : base(BlockSize, KeySize)
+        : base(s_blockSize, KeySize)
     {
-        if (Array.IndexOf(ValidHashSizes, hashSize) == -1)
-            throw new ArgumentOutOfRangeException(nameof(hashSize),
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
+        if (Array.IndexOf(s_validHashSizes, hashSize) == -1)
+            throw new ArgumentOutOfRangeException(
+                nameof(hashSize),
+                string.Format(
+                    CryptoResourceStrings.CryptographicException_InvalidHashSize,
+                    hashSize,
+                    string.Join(", ", s_validHashSizes)));
 
         this.KeyValue = new byte[KeySize];
         CryptoHelpers.FillWithRandomNonZeroBytes(this.KeyValue);
@@ -128,7 +132,7 @@ public abstract class SipHash<T>
     /// <description><c>x</c>: output hash size in bits</description>
     /// </item>
     /// </list>
-    /// </remarks>          
+    /// </remarks>
     public override string AlgorithmName
     {
         get
@@ -305,10 +309,10 @@ public abstract class SipHash<T>
         // host-endian BitConverter, which would produce incorrect digests on big-endian hosts.
         var k0 = BinaryPrimitives.ReadUInt64LittleEndian(this.KeyValue!.AsSpan(0));
         var k1 = BinaryPrimitives.ReadUInt64LittleEndian(this.KeyValue!.AsSpan(8));
-        this._v0 = InitialStates[0] ^ k0;
-        this._v1 = InitialStates[1] ^ k1;
-        this._v2 = InitialStates[2] ^ k0;
-        this._v3 = InitialStates[3] ^ k1;
+        this._v0 = s_initialStates[0] ^ k0;
+        this._v1 = s_initialStates[1] ^ k1;
+        this._v2 = s_initialStates[2] ^ k0;
+        this._v3 = s_initialStates[3] ^ k1;
 
         if (this.HashSizeValue == 128) this._v1 ^= 0xee;
     }

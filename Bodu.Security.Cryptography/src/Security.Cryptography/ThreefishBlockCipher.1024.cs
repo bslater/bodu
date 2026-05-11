@@ -57,6 +57,7 @@ public sealed class Threefish1024Cipher
     protected override int BlockWords => 16;
 
     /// <inheritdoc />
+#pragma warning disable SA1137 // Elements should have the same indentation
     protected override int[] RotationSchedule => new int[]
     {
         24, 13,  8, 47,  8, 17, 22, 37,
@@ -68,6 +69,7 @@ public sealed class Threefish1024Cipher
         31, 44, 47, 46, 19, 42, 44, 25,
          9, 48, 35, 52, 23, 31, 37, 20
     };
+#pragma warning restore SA1137 // Elements should have the same indentation
 
     /// <inheritdoc />
     protected override int Rounds => 80;
@@ -89,8 +91,8 @@ public sealed class Threefish1024Cipher
         Span<ulong> block = stackalloc ulong[this.BlockWords];
         MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);
 
-        var key = this.KeySchedule;
-        var tweak = this.TweakSchedule;
+        var key = this._keySchedule;
+        var tweak = this._tweakSchedule;
         var rot = this.RotationSchedule;
 
         for (var d = (this.Rounds / 4) - 1; d >= 1; d -= 2)
@@ -241,8 +243,8 @@ public sealed class Threefish1024Cipher
         Span<ulong> block = stackalloc ulong[this.BlockWords];
         MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);
 
-        var key = this.KeySchedule;
-        var tweak = this.TweakSchedule;
+        var key = this._keySchedule;
+        var tweak = this._tweakSchedule;
         var rot = this.RotationSchedule;
 
         block[0] += key[0];

@@ -237,7 +237,11 @@ public sealed class CcmModeTransform
     /// </summary>
     private void EnsureAadProcessed()
     {
-        if (!this._aadProcessed) { this._aad = Array.Empty<byte>(); this._aadProcessed = true; }
+        if (!this._aadProcessed)
+        {
+            this._aad = Array.Empty<byte>();
+            this._aadProcessed = true;
+        }
     }
 
     /// <summary>
@@ -370,5 +374,10 @@ public sealed class CcmModeTransform
     /// Throws <see cref="ObjectDisposedException"/> if this instance has been disposed.
     /// </summary>
     private void ThrowIfDisposed() =>
+#if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
+#else
+        if (this._disposed)
+            throw new ObjectDisposedException(nameof(Skipjack));
+#endif
 }

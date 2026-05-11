@@ -73,11 +73,11 @@ public sealed class Serpent128
     /// </summary>
     internal const int BlockSizeBits = 128;
 
-    private static readonly KeySizes[] SerpentBlockSizes = { new KeySizes(BlockSizeBits, BlockSizeBits, 0) };
+    private static readonly KeySizes[] s_serpentBlockSizes = { new KeySizes(BlockSizeBits, BlockSizeBits, 0) };
 
     // Serpent permits 128-, 192-, or 256-bit keys (the three AES key sizes). The step is 64 bits so the range
     // is expressed exactly by a single KeySizes entry.
-    private static readonly KeySizes[] SerpentKeySizes = { new KeySizes(128, 256, 64) };
+    private static readonly KeySizes[] s_serpentKeySizes = { new KeySizes(128, 256, 64) };
 
     private bool _disposed;
 
@@ -95,10 +95,10 @@ public sealed class Serpent128
     public Serpent128()
     {
         this.BlockSizeValue = BlockSizeBits;
-        this.LegalBlockSizesValue = SerpentBlockSizes;
+        this.LegalBlockSizesValue = s_serpentBlockSizes;
 
         this.KeySizeValue = 128;
-        this.LegalKeySizesValue = SerpentKeySizes;
+        this.LegalKeySizesValue = s_serpentKeySizes;
 
         this.FeedbackSizeValue = 8;
         this.ModeValue = CipherMode.CBC;
@@ -199,11 +199,11 @@ public sealed class Serpent128
         var keyBits = key.Length * 8;
         if (keyBits != 128 && keyBits != 192 && keyBits != 256)
             throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize, keyBits, CryptoHelpers.FormatLegalSizes(SerpentKeySizes)));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize, keyBits, CryptoHelpers.FormatLegalSizes(s_serpentKeySizes)));
 
         if (iv!.Length * 8 != BlockSizeBits)
             throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidIVSize, iv.Length * 8, CryptoHelpers.FormatLegalSizes(SerpentBlockSizes)));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidIVSize, iv.Length * 8, CryptoHelpers.FormatLegalSizes(s_serpentBlockSizes)));
     }
 
     /// <summary>
@@ -213,6 +213,11 @@ public sealed class Serpent128
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed()
     {
+#if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
+#else
+        if (this._disposed)
+            throw new ObjectDisposedException(nameof(Skipjack));
+#endif
     }
 }

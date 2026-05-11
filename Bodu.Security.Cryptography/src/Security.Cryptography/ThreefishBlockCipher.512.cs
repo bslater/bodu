@@ -85,8 +85,8 @@ public sealed class Threefish512Cipher
         Span<ulong> block = stackalloc ulong[this.BlockWords];
         MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);
 
-        var key = this.KeySchedule;
-        var tweak = this.TweakSchedule;
+        var key = this._keySchedule;
+        var tweak = this._tweakSchedule;
         var rot = this.RotationSchedule;
 
         for (var d = (this.Rounds / 4) - 1; d >= 1; d -= 2)
@@ -175,8 +175,8 @@ public sealed class Threefish512Cipher
         Span<ulong> block = stackalloc ulong[this.BlockWords];
         MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);
 
-        var key = this.KeySchedule;
-        var tweak = this.TweakSchedule;
+        var key = this._keySchedule;
+        var tweak = this._tweakSchedule;
         var rot = this.RotationSchedule;
 
         block[0] += key[0];

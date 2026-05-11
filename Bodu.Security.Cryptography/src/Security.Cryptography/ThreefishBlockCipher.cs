@@ -44,19 +44,19 @@ public abstract partial class ThreefishBlockCipher
     /// subkey injection.
     /// </summary>
     // KeySchedule: [K0, K1, K2, K3, K4=parity, K0, K1, K2, K3]
-    private protected readonly ulong[] KeySchedule;
+    private protected readonly ulong[] _keySchedule;
 
     /// <summary>
     /// The expanded tweak schedule, containing the two tweak words, their XOR, and the repeated tweak words used during subkey
     /// injection.
     /// </summary>
     // TweakSchedule: [T0, T1, T2=T0^T1, T0, T1]
-    private protected readonly ulong[] TweakSchedule;
+    private protected readonly ulong[] _tweakSchedule;
 
     /// <summary>
     /// Indicates whether the instance has been disposed.
     /// </summary>
-    private protected bool disposed = false;
+    private protected bool _disposed = false;
 
     private const ulong KeyParityValue = 0x1BD11BDAA9FC1A22;
 
@@ -76,24 +76,24 @@ public abstract partial class ThreefishBlockCipher
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(tweak, 16);
 
         // Key schedule initialization: 4 words + parity + duplicated key
-        this.KeySchedule = new ulong[this.BlockWords * 2 + 1];
-        MemoryMarshal.Cast<byte, ulong>(key).CopyTo(this.KeySchedule);
+        this._keySchedule = new ulong[this.BlockWords * 2 + 1];
+        MemoryMarshal.Cast<byte, ulong>(key).CopyTo(this._keySchedule);
         var parity = KeyParityValue;
         for (var i = 0; i < this.BlockWords; i++)
         {
-            var word = this.KeySchedule[i];
+            var word = this._keySchedule[i];
             parity ^= word;
-            this.KeySchedule[this.BlockWords + 1 + i] = word; // repeat key word
+            this._keySchedule[this.BlockWords + 1 + i] = word; // repeat key word
         }
 
-        this.KeySchedule[this.BlockWords] = parity;
+        this._keySchedule[this.BlockWords] = parity;
 
         // Tweak schedule initialization: T0, T1, T2 = T0^T1, then duplicate T0/T1
-        this.TweakSchedule = new ulong[5];
-        MemoryMarshal.Cast<byte, ulong>(tweak).CopyTo(this.TweakSchedule);
-        this.TweakSchedule[2] = this.TweakSchedule[0] ^ this.TweakSchedule[1];
-        this.TweakSchedule[3] = this.TweakSchedule[0];
-        this.TweakSchedule[4] = this.TweakSchedule[1];
+        this._tweakSchedule = new ulong[5];
+        MemoryMarshal.Cast<byte, ulong>(tweak).CopyTo(this._tweakSchedule);
+        this._tweakSchedule[2] = this._tweakSchedule[0] ^ this._tweakSchedule[1];
+        this._tweakSchedule[3] = this._tweakSchedule[0];
+        this._tweakSchedule[4] = this._tweakSchedule[1];
     }
 
     /// <summary>
@@ -157,7 +157,7 @@ public abstract partial class ThreefishBlockCipher
     /// This hook is intended for the Skein hash construction, whose UBI mode of operation invokes Threefish once per
     /// block with a freshly derived key (the current chaining value) and a recomputed tweak (encoding block type,
     /// position, and the first/final flags). Rebuilding the schedules in place avoids per-block allocation of the
-    /// <see cref="KeySchedule"/> and <see cref="TweakSchedule"/> arrays.
+    /// <see cref="_keySchedule"/> and <see cref="_tweakSchedule"/> arrays.
     /// </para>
     /// <para>
     /// The implementation mirrors the constructor's schedule setup exactly: key parity is recomputed as
@@ -172,22 +172,22 @@ public abstract partial class ThreefishBlockCipher
         this.ThrowIfDisposed();
 
         // Repopulate the key schedule: [K0..K(n-1), parity, K0..K(n-1)].
-        MemoryMarshal.Cast<byte, ulong>(key).CopyTo(this.KeySchedule);
+        MemoryMarshal.Cast<byte, ulong>(key).CopyTo(this._keySchedule);
         var parity = KeyParityValue;
         for (var i = 0; i < this.BlockWords; i++)
         {
-            var word = this.KeySchedule[i];
+            var word = this._keySchedule[i];
             parity ^= word;
-            this.KeySchedule[this.BlockWords + 1 + i] = word;
+            this._keySchedule[this.BlockWords + 1 + i] = word;
         }
 
-        this.KeySchedule[this.BlockWords] = parity;
+        this._keySchedule[this.BlockWords] = parity;
 
         // Repopulate the tweak schedule: [T0, T1, T0^T1, T0, T1].
-        MemoryMarshal.Cast<byte, ulong>(tweak).CopyTo(this.TweakSchedule);
-        this.TweakSchedule[2] = this.TweakSchedule[0] ^ this.TweakSchedule[1];
-        this.TweakSchedule[3] = this.TweakSchedule[0];
-        this.TweakSchedule[4] = this.TweakSchedule[1];
+        MemoryMarshal.Cast<byte, ulong>(tweak).CopyTo(this._tweakSchedule);
+        this._tweakSchedule[2] = this._tweakSchedule[0] ^ this._tweakSchedule[1];
+        this._tweakSchedule[3] = this._tweakSchedule[0];
+        this._tweakSchedule[4] = this._tweakSchedule[1];
     }
 
     /// <summary>
@@ -223,15 +223,15 @@ public abstract partial class ThreefishBlockCipher
     /// <param name="disposing">Whether the method was called from <see cref="Dispose"/>.</param>
     protected virtual void Dispose(bool disposing)
     {
-        if (this.disposed) return;
+        if (this._disposed) return;
 
         if (disposing)
         {
-            CryptoHelpers.Clear(this.KeySchedule);  // Securely zeros content
-            CryptoHelpers.Clear(this.TweakSchedule);
+            CryptoHelpers.Clear(this._keySchedule);  // Securely zeros content
+            CryptoHelpers.Clear(this._tweakSchedule);
         }
 
-        this.disposed = true;
+        this._disposed = true;
     }
 
     /// <summary>
@@ -242,10 +242,10 @@ public abstract partial class ThreefishBlockCipher
     protected void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(this.disposed, this);
+        ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
-    if (disposed)
-        throw new ObjectDisposedException(this.GetType().Name);
+        if (disposed)
+            throw new ObjectDisposedException(this.GetType().Name);
 #endif
     }
 }

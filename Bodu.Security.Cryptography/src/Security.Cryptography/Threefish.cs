@@ -61,7 +61,7 @@ public abstract class Threefish
     /// </summary>
     protected readonly int KeySizeBytes;
 
-    private readonly int DefaultTweakSizeBytes;
+    private readonly int _defaultTweakSizeBytes;
 
     private bool _disposed;
 
@@ -76,7 +76,7 @@ public abstract class Threefish
         this.FeedbackSizeValue = 8;
 
         this.BlockSizeBytes = this.KeySizeBytes = blockSizeBits / 8;
-        this.DefaultTweakSizeBytes = tweakSizeBits / 8;
+        this._defaultTweakSizeBytes = tweakSizeBits / 8;
 
         this.LegalBlockSizesValue = new[] { new KeySizes(blockSizeBits, blockSizeBits, 0) };
         this.LegalKeySizesValue = new[] { new KeySizes(blockSizeBits, blockSizeBits, 0) };
@@ -134,7 +134,7 @@ public abstract class Threefish
     public override void GenerateTweak()
     {
         this.ThrowIfDisposed();
-        this.TweakValue = CryptoHelpers.GetRandomNonZeroBytes(this.DefaultTweakSizeBytes);
+        this.TweakValue = CryptoHelpers.GetRandomNonZeroBytes(this._defaultTweakSizeBytes);
     }
 
     /// <inheritdoc />
@@ -166,7 +166,12 @@ public abstract class Threefish
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed()
     {
+#if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
+#else
+        if (disposed)
+            throw new ObjectDisposedException(this.GetType().Name);
+#endif
     }
 
     /// <summary>
@@ -203,7 +208,7 @@ public abstract class Threefish
             throw new CryptographicException(
                 string.Format(CryptoResourceStrings.CryptographicException_InvalidIVSize, iv.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalBlockSizes)));
 
-        if (tweak.Length != this.DefaultTweakSizeBytes)
+        if (tweak.Length != this._defaultTweakSizeBytes)
             throw new CryptographicException(
                 string.Format(CryptoResourceStrings.CryptographicException_InvalidTweakSize, tweak.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalTweakSizes)));
     }

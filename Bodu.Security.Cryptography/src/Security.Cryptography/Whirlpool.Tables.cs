@@ -33,13 +33,13 @@ public sealed partial class Whirlpool
         switch (version)
         {
             case WhirlpoolVersion.WhirlpoolInfo1:
-                return s_tablesInfo1 ?? BuildAndCacheTables(ref s_tablesInfo1, SBoxWhirlpool0, MdsOriginal);
+                return s_tablesInfo1 ?? BuildAndCacheTables(ref s_tablesInfo1, s_sBoxWhirlpool0, s_mdsOriginal);
 
             case WhirlpoolVersion.WhirlpoolInfo2:
-                return s_tablesInfo2 ?? BuildAndCacheTables(ref s_tablesInfo2, BuildMiniBoxSBox(), MdsOriginal);
+                return s_tablesInfo2 ?? BuildAndCacheTables(ref s_tablesInfo2, BuildMiniBoxSBox(), s_mdsOriginal);
 
             case WhirlpoolVersion.WhirlpoolInfo3:
-                return s_tablesInfo3 ?? BuildAndCacheTables(ref s_tablesInfo3, BuildMiniBoxSBox(), MdsFinal);
+                return s_tablesInfo3 ?? BuildAndCacheTables(ref s_tablesInfo3, BuildMiniBoxSBox(), s_mdsFinal);
 
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);

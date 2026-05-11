@@ -32,7 +32,7 @@ public sealed class TwofishBlockCipher
     private const int ExpandedKeyWords = 40;
     private const int SBoxLength = 256;
 
-    private static readonly byte[,] Mds =
+    private static readonly byte[,] s_mds =
     {
         { 0x01, 0xEF, 0x5B, 0x5B },
         { 0x5B, 0xEF, 0xEF, 0x01 },
@@ -40,7 +40,7 @@ public sealed class TwofishBlockCipher
         { 0xEF, 0x01, 0xEF, 0x5B },
     };
 
-    private static readonly byte[,] Rs =
+    private static readonly byte[,] s_rs =
     {
         { 0x01, 0xA4, 0x55, 0x87, 0x5A, 0x58, 0xDB, 0x9E },
         { 0xA4, 0x56, 0x82, 0xF3, 0x1E, 0xC6, 0x68, 0xE5 },
@@ -48,13 +48,13 @@ public sealed class TwofishBlockCipher
         { 0xA4, 0x55, 0x87, 0x5A, 0x58, 0xDB, 0x9E, 0x03 },
     };
 
-    private static readonly byte[] Q0 = CreateQ(
+    private static readonly byte[] s_q0 = CreateQ(
         new byte[] { 0x8, 0x1, 0x7, 0xD, 0x6, 0xF, 0x3, 0x2, 0x0, 0xB, 0x5, 0x9, 0xE, 0xC, 0xA, 0x4 },
         new byte[] { 0xE, 0xC, 0xB, 0x8, 0x1, 0x2, 0x3, 0x5, 0xF, 0x4, 0xA, 0x6, 0x7, 0x0, 0x9, 0xD },
         new byte[] { 0xB, 0xA, 0x5, 0xE, 0x6, 0xD, 0x9, 0x0, 0xC, 0x8, 0xF, 0x3, 0x2, 0x4, 0x7, 0x1 },
         new byte[] { 0xD, 0x7, 0xF, 0x4, 0x1, 0x2, 0x6, 0xE, 0x9, 0xB, 0x3, 0x0, 0x8, 0x5, 0xC, 0xA });
 
-    private static readonly byte[] Q1 = CreateQ(
+    private static readonly byte[] s_q1 = CreateQ(
         new byte[] { 0x2, 0x8, 0xB, 0xD, 0xF, 0x7, 0x6, 0xE, 0x3, 0x1, 0x9, 0x4, 0x0, 0xA, 0xC, 0x5 },
         new byte[] { 0x1, 0xE, 0x2, 0xB, 0x4, 0xC, 0x3, 0x7, 0x6, 0xD, 0xA, 0x5, 0xF, 0x9, 0x0, 0x8 },
         new byte[] { 0x4, 0xC, 0x7, 0x5, 0x1, 0x6, 0x9, 0xA, 0x0, 0xE, 0xD, 0x8, 0x2, 0xB, 0x3, 0xF },
@@ -225,7 +225,7 @@ public sealed class TwofishBlockCipher
 
                 for (var column = 0; column < 8; column++)
                 {
-                    value ^= GfMul(Rs[row, column], key[(8 * i) + column], 0x4D);
+                    value ^= GfMul(s_rs[row, column], key[(8 * i) + column], 0x4D);
                 }
 
                 word |= value << (8 * row);
@@ -287,33 +287,33 @@ public sealed class TwofishBlockCipher
 
         if (k == 4)
         {
-            value = ((i == 1 || i == 2) ? Q0[value] : Q1[value]) ^
+            value = ((i == 1 || i == 2) ? s_q0[value] : s_q1[value]) ^
                     (byte)(l[3] >> (8 * i));
         }
 
         if (k >= 3)
         {
-            value = ((i == 2 || i == 3) ? Q0[value] : Q1[value]) ^
+            value = ((i == 2 || i == 3) ? s_q0[value] : s_q1[value]) ^
                     (byte)(l[2] >> (8 * i));
         }
 
-        value = ((i == 0 || i == 2) ? Q0[value] : Q1[value]) ^
+        value = ((i == 0 || i == 2) ? s_q0[value] : s_q1[value]) ^
                 (byte)(l[1] >> (8 * i));
 
-        value = ((i == 0 || i == 1) ? Q0[value] : Q1[value]) ^
+        value = ((i == 0 || i == 1) ? s_q0[value] : s_q1[value]) ^
                 (byte)(l[0] >> (8 * i));
 
-        value = (i == 1 || i == 3) ? Q0[value] : Q1[value];
+        value = (i == 1 || i == 3) ? s_q0[value] : s_q1[value];
 
         return MdsMultiplyColumn(i, (byte)value);
     }
 
     private static uint MdsMultiplyColumn(int column, byte value)
     {
-        var z0 = GfMul(Mds[0, column], value, 0x69);
-        var z1 = GfMul(Mds[1, column], value, 0x69);
-        var z2 = GfMul(Mds[2, column], value, 0x69);
-        var z3 = GfMul(Mds[3, column], value, 0x69);
+        var z0 = GfMul(s_mds[0, column], value, 0x69);
+        var z1 = GfMul(s_mds[1, column], value, 0x69);
+        var z2 = GfMul(s_mds[2, column], value, 0x69);
+        var z3 = GfMul(s_mds[3, column], value, 0x69);
 
         return z0 | (z1 << 8) | (z2 << 16) | (z3 << 24);
     }
@@ -379,8 +379,8 @@ public sealed class TwofishBlockCipher
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(nameof(TwofishBlockCipher));
+        if (disposed)
+            throw new ObjectDisposedException(this.GetType().Name);
 #endif
     }
 }

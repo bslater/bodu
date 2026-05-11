@@ -42,13 +42,13 @@ public abstract partial class SerpentBlockCipherBase
     /// <summary>
     /// Indicates whether the instance has been disposed.
     /// </summary>
-    private protected bool disposed;
+    private protected bool _disposed;
 
     /// <summary>
     /// The eight Serpent S-boxes, indexed <c>[sboxIndex * 16 + nibble]</c>.
     /// </summary>
-    private static readonly byte[] s_sBoxes = new byte[]
-    {
+    private static readonly byte[] s_sBoxes =
+    [
         // S0
         3, 8, 15, 1, 10, 6, 5, 11, 14, 13, 4, 2, 7, 0, 9, 12,
         // S1
@@ -65,7 +65,7 @@ public abstract partial class SerpentBlockCipherBase
         7, 2, 12, 5, 8, 4, 6, 11, 14, 9, 1, 15, 13, 3, 10, 0,
         // S7
         1, 13, 15, 0, 14, 8, 2, 11, 7, 4, 12, 10, 9, 3, 5, 6,
-    };
+    ];
 
     /// <summary>
     /// The eight Serpent inverse S-boxes, indexed <c>[sboxIndex * 16 + nibble]</c>.
@@ -123,7 +123,7 @@ public abstract partial class SerpentBlockCipherBase
     /// </param>
     protected virtual void Dispose(bool disposing)
     {
-        this.disposed = true;
+        this._disposed = true;
     }
 
     /// <summary>
@@ -133,7 +133,12 @@ public abstract partial class SerpentBlockCipherBase
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfDisposed()
     {
-        ObjectDisposedException.ThrowIf(this.disposed, this);
+#if NET8_0_OR_GREATER
+        ObjectDisposedException.ThrowIf(this._disposed, this);
+#else
+        if (this._disposed)
+            throw new ObjectDisposedException(nameof(Skipjack));
+#endif
     }
 
     /// <summary>
