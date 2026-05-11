@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+#pragma warning disable SYSLIB0050 // CrcStandard intentionally implements ISerializable; these tests exercise that contract.
+
 using System.Runtime.Serialization;
 
 namespace Bodu.IO.Hashing.Checksums;
