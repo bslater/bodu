@@ -351,16 +351,6 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     public byte[] ComputeHash(byte[] data, int offset, int count, MerkleTreeDiagnostics? diagnostics = null) =>
         this.ComputeHash(new ReadOnlySpan<byte>(data, offset, count), diagnostics);
 
-
-    /// <inheritdoc />
-    public void Dispose()
-    {
-        if (this._disposed) return;
-        this._disposed = true;
-        this._cts.Cancel();
-        this._cts.Dispose();
-    }
-
     // -----------------------------------------------------------------------------------------
     // Reset — restores the instance to a clean state for the next computation
     // -----------------------------------------------------------------------------------------
@@ -600,7 +590,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
 
         // Complete → await → advance: each iteration closes one level and waits for its
         // worker to finish all promotions before the next level's channel is closed.
-        for (var level = 0; this._levelChannels.TryGetValue(level, out Channel<byte[]>? channel); level++)
+        for (var level = 0; this._levelChannels.TryGetValue(level, out var channel); level++)
         {
             channel.Writer.Complete();
             await this._levelWorkers[level];
@@ -625,7 +615,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// <returns>A task that completes when every level worker has drained and exited.</returns>
     private async Task DrainWorkersAsync()
     {
-        for (var level = 0; this._levelChannels.TryGetValue(level, out Channel<byte[]>? channel); level++)
+        for (var level = 0; this._levelChannels.TryGetValue(level, out var channel); level++)
         {
             channel.Writer.TryComplete();
             try { await this._levelWorkers[level]; }
@@ -648,7 +638,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// <returns>The hash computed by a freshly-created <see cref="HashAlgorithm"/>.</returns>
     private byte[] HashSpan(ReadOnlySpan<byte> data)
     {
-        using HashAlgorithm hasher = this._algorithmFactory();
+        using var hasher = this._algorithmFactory();
         var result = new byte[hasher.HashSize / 8];
         if (!hasher.TryComputeHash(data, result, out _))
             throw new CryptographicException("TryComputeHash returned false; the output buffer may be too small.");
@@ -678,7 +668,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// <returns>The combined parent hash.</returns>
     private byte[] CombineAndHash(List<byte[]> hashes, int sourceLevel, int parentIndex)
     {
-        using HashAlgorithm hasher = this._algorithmFactory();
+        using var hasher = this._algorithmFactory();
 
         // Feed all but the last child via TransformBlock — purely state accumulation, no output.
         for (var i = 0; i < hashes.Count - 1; i++)
@@ -720,5 +710,14 @@ public sealed class ParallelMerkleTreeHash : IDisposable
         if (this._disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        if (this._disposed) return;
+        this._disposed = true;
+        this._cts.Cancel();
+        this._cts.Dispose();
     }
 }

@@ -98,9 +98,9 @@ public sealed class EaxModeTransform
     public EaxModeTransform(IBlockCipher cipher, byte[] iv)
     {
         ThrowHelper.ThrowIfNull(cipher);
-        this._cipher = cipher;
-        ThrowHelper.ThrowIfNull(iv);
         CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
+
+        this._cipher = cipher;
 
         this._nonce = (byte[])iv.Clone();
     }
@@ -197,7 +197,7 @@ public sealed class EaxModeTransform
             // aligned with AsconAead128.Decrypt.
             if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
             {
-                CryptoHelpers.Clear(output.Slice(0, plaintextLength));
+                CryptoHelpers.Clear(output[..plaintextLength]);
                 throw new CryptographicException(CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
             }
 
@@ -233,17 +233,6 @@ public sealed class EaxModeTransform
         this.Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
-    /// <summary>
-    /// Throws <see cref="InvalidOperationException"/> if this transform has already encrypted or
-    /// decrypted a message. EAX transforms are single-use; create a fresh instance per message.
-    /// </summary>
-    private void ThrowIfCompleted()
-    {
-        if (this._completed)
-            throw new InvalidOperationException(
-                "This EAX transform has already completed and cannot be reused. Create a new instance per message.");
-    }
-
 
     /// <summary>
     /// Releases the resources used by this instance.

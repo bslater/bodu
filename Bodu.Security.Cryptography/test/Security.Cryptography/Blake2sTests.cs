@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Blake2sTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -230,7 +230,7 @@ public partial class Blake2sTests
     [TestMethod]
     public void ComputeHash_ForAllSupportedSizes_ShouldReturnCorrectLength()
     {
-        foreach (int size in Blake2s.ValidHashSizes)
+        foreach (int size in Blake2s.s_permittedHashSizes)
         {
             using Blake2s sut = new(size);
             byte[] hash = sut.ComputeHash(Array.Empty<byte>());

@@ -111,7 +111,7 @@ public sealed class OcbModeTransform
     public OcbModeTransform(IBlockCipher cipher, byte[] iv, int tagLen = 16)
     {
         ThrowHelper.ThrowIfNull(cipher);
-        ThrowHelper.ThrowIfNull(iv);
+        CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
 
         if (cipher.BlockSize != BlockSizeBytes)
         {
@@ -119,8 +119,6 @@ public sealed class OcbModeTransform
                 $"OCB requires a block cipher with a {BlockSizeBytes}-byte block size.",
                 nameof(cipher));
         }
-
-        CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
 
         if (tagLen < 1 || tagLen > cipher.BlockSize)
         {
@@ -389,7 +387,7 @@ public sealed class OcbModeTransform
 
             if (!CryptographicOperations.FixedTimeEquals(tagInput.AsSpan(0, this._tagLen), receivedTag))
             {
-                CryptoHelpers.Clear(output.Slice(0, plaintextLength));
+                CryptoHelpers.Clear(output[..plaintextLength]);
                 throw new CryptographicException(CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
             }
 
@@ -424,17 +422,6 @@ public sealed class OcbModeTransform
     {
         this.Dispose(disposing: true);
         GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
-    /// Throws <see cref="InvalidOperationException"/> if this transform has already encrypted or
-    /// decrypted a message. OCB transforms are single-use; create a fresh instance per message.
-    /// </summary>
-    private void ThrowIfCompleted()
-    {
-        if (this._completed)
-            throw new InvalidOperationException(
-                "This OCB transform has already completed and cannot be reused. Create a new instance per message.");
     }
 
     /// <summary>

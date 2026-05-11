@@ -46,7 +46,7 @@ public static partial class CryptoHelpers
     /// clearing the contents of readonly fields or shared buffers whose reference must remain valid.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Clear(byte[] array)
+    public static void Clear(byte[]? array)
     {
         if (array is null) return;
         CryptographicOperations.ZeroMemory(array);

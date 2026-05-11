@@ -90,9 +90,8 @@ public sealed class CcmModeTransform
     public CcmModeTransform(IBlockCipher cipher, byte[] iv)
     {
         ThrowHelper.ThrowIfNull(cipher);
-        this._cipher = cipher;
-        ThrowHelper.ThrowIfNull(iv);
         CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
+        this._cipher = cipher;
 
         this._nonce = new byte[NonceLengthBytes];
         iv.AsSpan(0, NonceLengthBytes).CopyTo(this._nonce);
@@ -155,7 +154,7 @@ public sealed class CcmModeTransform
 
         if (!CryptographicOperations.FixedTimeEquals(encTag.AsSpan(0, TagSize), receivedTag))
         {
-            CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
+            CryptographicOperations.ZeroMemory(output[..plaintextLength]);
             this._completed = true;
             throw new CryptographicException(CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
         }

@@ -71,7 +71,6 @@ public sealed class OfbModeTransform : IBlockCipherModeTransform
     public OfbModeTransform(IBlockCipher cipher, byte[] iv)
     {
         ThrowHelper.ThrowIfNull(cipher);
-        ThrowHelper.ThrowIfNull(iv);
         CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
 
         this._cipher = cipher;

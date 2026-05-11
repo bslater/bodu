@@ -246,8 +246,8 @@ public sealed class Camellia
             if (disposing)
             {
                 // Zero sensitive key material and IV buffers so their contents do not linger in managed memory.
-                CryptoHelpers.Clear(this.KeyValue!);
-                CryptoHelpers.Clear(this.IVValue!);
+                CryptoHelpers.Clear(this.KeyValue);
+                CryptoHelpers.Clear(this.IVValue);
             }
 
             _disposed = true;

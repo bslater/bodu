@@ -105,7 +105,7 @@ public sealed class SivModeTransform
     {
         ThrowHelper.ThrowIfNull(s2vCipher);
         ThrowHelper.ThrowIfNull(ctrCipher);
-        ThrowHelper.ThrowIfNull(iv);
+        CryptoHelpers.ThrowIfIvLengthInvalid(iv, s2vCipher.BlockSize);
 
         if (s2vCipher.BlockSize != BlockSizeBytes)
         {
@@ -120,8 +120,6 @@ public sealed class SivModeTransform
                 $"SIV requires a CTR cipher with a {BlockSizeBytes}-byte block size.",
                 nameof(ctrCipher));
         }
-
-        CryptoHelpers.ThrowIfIvLengthInvalid(iv, s2vCipher.BlockSize);
 
         this._s2vCipher = s2vCipher;
         this._ctrCipher = ctrCipher;
@@ -214,7 +212,7 @@ public sealed class SivModeTransform
             expectedSiv = S2V(this._aad!, output[..plaintextLength]);
             if (!CryptographicOperations.FixedTimeEquals(expectedSiv, receivedSiv))
             {
-                CryptoHelpers.Clear(output.Slice(0, plaintextLength));
+                CryptoHelpers.Clear(output[..plaintextLength]);
                 throw new CryptographicException(CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
             }
 

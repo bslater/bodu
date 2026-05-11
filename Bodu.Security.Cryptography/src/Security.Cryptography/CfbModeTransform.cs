@@ -70,7 +70,6 @@ public sealed class CfbModeTransform : IBlockCipherModeTransform
     public CfbModeTransform(IBlockCipher cipher, byte[] iv)
     {
         ThrowHelper.ThrowIfNull(cipher);
-        ThrowHelper.ThrowIfNull(iv);
         CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
 
         this._cipher = cipher;

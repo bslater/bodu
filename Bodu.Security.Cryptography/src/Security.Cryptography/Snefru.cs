@@ -56,7 +56,7 @@ public abstract partial class Snefru<T>
     private const int TotalWords = 16;                              // number of 32-bit words in the working buffer.
     private const int Mask = TotalWords - 1;                        // bitmask to constrain index calculations to the buffer length; inlined as an immediate by the JIT.
     private static readonly int[] s_shifts = [16, 8, 16, 24];       // fixed bitwise rotation amounts applied after each S-box round.
-    private static readonly int[] s_validHashSizes = [128, 256];
+    private static readonly int[] s_permittedHashSizes = [128, 256];
 
     private readonly uint[] _buffer = new uint[TotalWords];         // internal working buffer used for permutation and round processing.
     private readonly uint[] _state;                                 // internal state used to accumulate the hash output across input blocks.
@@ -69,13 +69,7 @@ public abstract partial class Snefru<T>
     protected Snefru(int hashSize)
         : base(64 - (hashSize >> 3)) // BlockSizeBytes = 64 - outputBytes
     {
-        if (Array.IndexOf(s_validHashSizes, hashSize) == -1)
-            throw new ArgumentOutOfRangeException(
-                nameof(hashSize),
-                string.Format(
-                    CryptoResourceStrings.CryptographicException_InvalidHashSize,
-                    hashSize,
-                    string.Join(", ", s_validHashSizes)));
+        CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
 
         // _state is zero-filled by `new`; Initialize re-clears it on every reset.
         this._state = new uint[hashSize >> 5];

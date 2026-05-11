@@ -116,16 +116,7 @@ public abstract partial class Skein<T>
     private protected Skein(ThreefishBlockCipher cipher, int hashSizeBits, int[] validHashSizesBits)
         : base(blockSize: cipher.BlockSize, keySize: cipher.BlockSize)
     {
-        if (Array.IndexOf(validHashSizesBits, hashSizeBits) < 0)
-        {
-            cipher.Dispose();
-            throw new ArgumentOutOfRangeException(
-                nameof(hashSizeBits),
-                string.Format(
-                    CryptoResourceStrings.CryptographicException_InvalidHashSize,
-                    hashSizeBits,
-                    string.Join(", ", validHashSizesBits)));
-        }
+        CryptoHelpers.ThrowIfInvalidHashSize(hashSizeBits, validHashSizesBits);
 
         this._cipher = cipher;
         this.HashSizeValue = hashSizeBits;

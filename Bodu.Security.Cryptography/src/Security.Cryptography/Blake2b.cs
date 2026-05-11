@@ -67,7 +67,7 @@ public sealed class Blake2b : KeyedDeferredFinalBlockHashAlgorithm<Blake2b>
     /// <summary>
     /// The set of output sizes, in bits, accepted by this algorithm.
     /// </summary>
-    public static readonly int[] ValidHashSizes = [128, 160, 192, 224, 256, 384, 512];
+    private static readonly int[] s_permittedHashSizes = [128, 160, 192, 224, 256, 384, 512];
 
     /// <summary>
     /// The maximum accepted key length, in bytes, for the keyed <c>BLAKE2b-MAC</c> mode.
@@ -114,10 +114,7 @@ public sealed class Blake2b : KeyedDeferredFinalBlockHashAlgorithm<Blake2b>
     public Blake2b(int hashSize)
         : base(BlockSizeBytesValue, MaxKeySize)
     {
-        if (Array.IndexOf(ValidHashSizes, hashSize) < 0)
-            throw new ArgumentOutOfRangeException(
-                nameof(hashSize),
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
+        CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
 
         this.HashSizeValue = hashSize;
         this.InitializeHashState();
@@ -171,10 +168,7 @@ public sealed class Blake2b : KeyedDeferredFinalBlockHashAlgorithm<Blake2b>
             this.ThrowIfDisposed();
             this.ThrowIfInvalidState();
 
-            if (Array.IndexOf(ValidHashSizes, value) < 0)
-                throw new ArgumentOutOfRangeException(
-                    nameof(value),
-                    string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, value, string.Join(", ", ValidHashSizes)));
+            CryptoHelpers.ThrowIfInvalidHashSize(value, s_permittedHashSizes);
 
             this.HashSizeValue = value;
         }
@@ -231,24 +225,25 @@ public sealed class Blake2b : KeyedDeferredFinalBlockHashAlgorithm<Blake2b>
             m[i] = BinaryPrimitives.ReadUInt64LittleEndian(block.Slice(i * 8, 8));
 
         // Initialise the 16-element working vector.
-        Span<ulong> v = stackalloc ulong[16];
-        v[0] = this._h[0];
-        v[1] = this._h[1];
-        v[2] = this._h[2];
-        v[3] = this._h[3];
-        v[4] = this._h[4];
-        v[5] = this._h[5];
-        v[6] = this._h[6];
-        v[7] = this._h[7];
-        v[8] = s_iv[0];
-        v[9] = s_iv[1];
-        v[10] = s_iv[2];
-        v[11] = s_iv[3];
-        v[12] = s_iv[4] ^ totalBytesIncludingThisBlock;
-        v[13] = s_iv[5];          // counter high word (always 0 for messages < 2^64 bytes)
-        v[14] = s_iv[6];
-        v[15] = s_iv[7];
-
+        Span<ulong> v =
+        [
+            this._h[0],
+            this._h[1],
+            this._h[2],
+            this._h[3],
+            this._h[4],
+            this._h[5],
+            this._h[6],
+            this._h[7],
+            s_iv[0],
+            s_iv[1],
+            s_iv[2],
+            s_iv[3],
+            s_iv[4] ^ totalBytesIncludingThisBlock,
+            s_iv[5],          // counter high word (always 0 for messages < 2^64 bytes)
+            s_iv[6],
+            s_iv[7],
+        ];
         if (isFinal)
             v[14] = ~v[14];
 

@@ -61,6 +61,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CTS mode requires at least one full block ({0} bytes) of input..
+        /// </summary>
+        internal static string ArgumentException_CtsInputTooShort {
+            get {
+                return ResourceManager.GetString("ArgumentException_CtsInputTooShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid block size {0}. Size of block must be {1}..
         /// </summary>
         internal static string ArgumentException_InvalidBlockLength {
@@ -147,6 +156,24 @@ namespace Bodu {
         internal static string CryptographicException_CiphertextTooShort {
             get {
                 return ResourceManager.GetString("CryptographicException_CiphertextTooShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The CTR counter has wrapped to its initial value. Continuing would reuse the keystream..
+        /// </summary>
+        internal static string CryptographicException_CtrCounterWrapped {
+            get {
+                return ResourceManager.GetString("CryptographicException_CtrCounterWrapped", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid hash size: The hash size must be a positive multiple of {0} bytes..
+        /// </summary>
+        internal static string CryptographicException_HashSize_PositiveMultipleOf {
+            get {
+                return ResourceManager.GetString("CryptographicException_HashSize_PositiveMultipleOf", resourceCulture);
             }
         }
         

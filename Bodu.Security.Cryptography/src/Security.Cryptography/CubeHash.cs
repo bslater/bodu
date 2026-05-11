@@ -137,7 +137,7 @@ public sealed class CubeHash
     /// </item>
     /// </list>
     /// <para>Example: <c>CubeHash16+32/32+32-256</c>.</para>
-    /// </remarks>           
+    /// </remarks>
     public string AlgorithmName
     {
         get
