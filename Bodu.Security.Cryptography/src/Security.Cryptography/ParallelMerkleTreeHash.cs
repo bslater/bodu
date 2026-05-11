@@ -307,7 +307,12 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     {
         this.Reset(diagnostics, this._cts.Token);
         this.ProcessBytes(data);
-        return this.FinalizeAsync().GetAwaiter().GetResult();
+
+        // Task.Run escapes any captured synchronisation context so that the async workers
+        // (which themselves run on thread-pool threads) can complete without deadlocking.
+#pragma warning disable VSTHRD002 // Avoid problematic synchronous waits
+        return Task.Run(this.FinalizeAsync).GetAwaiter().GetResult();
+#pragma warning restore VSTHRD002
     }
 
     /// <summary>
@@ -617,7 +622,13 @@ public sealed class ParallelMerkleTreeHash : IDisposable
         for (var level = 0; this._levelChannels.TryGetValue(level, out var channel); level++)
         {
             channel.Writer.Complete();
-            await this._levelWorkers[level];
+
+            // _levelWorkers[level] is intentionally a background Task started via Task.Run in
+            // SubmitLeaf. Awaiting it here is correct: sequential bottom-up draining requires
+            // that level N finishes before level N+1 is closed.
+#pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
+            await this._levelWorkers[level].ConfigureAwait(false);
+#pragma warning restore VSTHRD003
         }
 
         return this._rootHash ?? throw new InvalidOperationException("No input data was provided.");
@@ -642,7 +653,9 @@ public sealed class ParallelMerkleTreeHash : IDisposable
         for (var level = 0; this._levelChannels.TryGetValue(level, out var channel); level++)
         {
             channel.Writer.TryComplete();
-            try { await this._levelWorkers[level]; }
+#pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
+            try { await this._levelWorkers[level].ConfigureAwait(false); }
+#pragma warning restore VSTHRD003
             catch { }
         }
     }
