@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashAlgorithmTests.Dispose.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// properties, and that the thrown <see cref="ObjectDisposedException" /> correctly identifies the disposed type.
     /// </remarks>
     [TestMethod]
-    [DynamicData(nameof(GetReadableProperties), DynamicDataDisplayName = nameof(TestHelpers.GetDisposablePropertyDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
+    [DynamicData(nameof(GetAlgorithmReadableProperties), DynamicDataDisplayName = nameof(TestHelpers.GetTypePropertyDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
     public void Dispose_WhenReadingProperty_ShouldThrowExactly(PropertyInfo property)
     {
         if (property is null)
@@ -85,7 +85,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <see cref="ObjectDisposedException" /> correctly identifies the disposed type.
     /// </remarks>
     [TestMethod]
-    [DynamicData(nameof(GetWritableProperties), DynamicDataDisplayName = nameof(TestHelpers.GetDisposablePropertyDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
+    [DynamicData(nameof(GetAlgorithmWritableProperties), DynamicDataDisplayName = nameof(TestHelpers.GetTypeFieldDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
     public void Dispose_WhenAssigningProperty_ShouldThrowExactly(PropertyInfo property)
     {
         if (property is null)
@@ -137,7 +137,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// </summary>
     /// <param name="field">The field to inspect for zeroed or null state.</param>
     [TestMethod]
-    [DynamicData(nameof(GetDisposableFields), DynamicDataDisplayName = nameof(TestHelpers.GetDisposableFieldDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
+    [DynamicData(nameof(GetAlgorithmFields), DynamicDataDisplayName = nameof(TestHelpers.GetTypeFieldDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
     public void Dispose_WhenCalled_ShouldZeroPrivateField(FieldInfo field)
     {
         if (field is null)

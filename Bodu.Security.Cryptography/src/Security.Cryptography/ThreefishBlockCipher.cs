@@ -97,7 +97,7 @@ public abstract partial class ThreefishBlockCipher
     }
 
     /// <summary>
-    /// Finalises the instance by releasing unmanaged resources before it is reclaimed by garbage collection.
+    /// Finalizes an instance of the <see cref="ThreefishBlockCipher"/> class.
     /// </summary>
     ~ThreefishBlockCipher()
     {

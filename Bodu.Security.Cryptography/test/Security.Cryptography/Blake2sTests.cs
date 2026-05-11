@@ -42,6 +42,9 @@ public partial class Blake2sTests
     };
 
     /// <inheritdoc />
+    protected override IEnumerable<int> GetHashAlgorithmSizes() => [128, 160, 192, 224, 256];
+
+    /// <inheritdoc />
     protected override Blake2sVariant DefaultVariant => Blake2sVariant.Blake2s_256;
 
     /// <inheritdoc />
@@ -222,20 +225,6 @@ public partial class Blake2sTests
         {
             _ = new Blake2s(hashSize);
         });
-    }
-
-    /// <summary>
-    /// Verifies that all supported hash sizes produce a non-empty digest of the expected length.
-    /// </summary>
-    [TestMethod]
-    public void ComputeHash_ForAllSupportedSizes_ShouldReturnCorrectLength()
-    {
-        foreach (int size in Blake2s.s_permittedHashSizes)
-        {
-            using Blake2s sut = new(size);
-            byte[] hash = sut.ComputeHash(Array.Empty<byte>());
-            Assert.AreEqual(size / 8, hash.Length, $"Expected {size / 8} bytes for {size}-bit output.");
-        }
     }
 
     /// <summary>

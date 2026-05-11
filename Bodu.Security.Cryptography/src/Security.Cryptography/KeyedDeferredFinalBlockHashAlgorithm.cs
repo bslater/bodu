@@ -54,6 +54,10 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     /// unkeyed digest profile; otherwise a defensive copy of the caller-supplied key. Always assigned via defensive
     /// copy and cleared on disposal.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "StyleCop.CSharp.NamingRules",
+        "SA1306:Field names should begin with lower-case letter",
+        Justification = "The field intentionally follows the protected field naming pattern used by HashAlgorithm, such as HashSizeValue, because it forms part of the inherited algorithm-state surface for derived cryptographic types.")]
     protected byte[]? KeyValue;
 
     /// <summary>

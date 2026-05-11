@@ -52,11 +52,19 @@ public abstract class KeyedBlockHashAlgorithm<T>
     /// <see cref="Initialize"/> validation both treat a <see langword="null"/> value as a contract violation and
     /// throw a <see cref="CryptographicException"/>.
     /// </remarks>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "StyleCop.CSharp.NamingRules",
+        "SA1306:Field names should begin with lower-case letter",
+        Justification = "The field intentionally follows the protected field naming pattern used by HashAlgorithm, such as HashSizeValue, because it forms part of the inherited algorithm-state surface for derived cryptographic types.")]
     protected byte[]? KeyValue;
 
     /// <summary>
     /// Holds the required key size, in bytes, that the derived algorithm accepts. Supplied via the constructor.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "StyleCop.CSharp.NamingRules",
+        "SA1306:Field names should begin with lower-case letter",
+        Justification = "The field intentionally follows the protected field naming pattern used by HashAlgorithm, such as HashSizeValue, because it forms part of the inherited algorithm-state surface for derived cryptographic types.")]
     protected readonly int KeySizeValue;
 
     /// <summary>

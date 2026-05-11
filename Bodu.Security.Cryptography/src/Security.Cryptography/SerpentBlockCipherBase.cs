@@ -91,7 +91,7 @@ public abstract partial class SerpentBlockCipherBase
     ];
 
     /// <summary>
-    /// Finalises the instance by releasing unmanaged resources before it is reclaimed by garbage collection.
+    /// Finalizes an instance of the <see cref="SerpentBlockCipherBase"/> class.
     /// </summary>
     ~SerpentBlockCipherBase()
     {
