@@ -251,6 +251,9 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
         if (_map.Count == 0)
             return;
 
+        foreach (ValueBucket bucket in _map.Values)
+            bucket.Values.Clear();
+
         _map.Clear();
         _count = 0;
         _version++;
@@ -387,6 +390,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
             return false;
 
         _count -= bucket.Values.Count;
+        bucket.Values.Clear();
         _map.Remove(key);
         _version++;
 
