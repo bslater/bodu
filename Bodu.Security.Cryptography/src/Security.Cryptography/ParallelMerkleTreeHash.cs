@@ -9,6 +9,7 @@ using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Channels;
@@ -255,7 +256,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(input);
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        this.ThrowIfDisposed();
 
         var linked = CancellationTokenSource.CreateLinkedTokenSource(this._cts.Token, cancellationToken);
         try
@@ -383,7 +384,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// <param name="activeToken">The cancellation token associated with the current hashing session.</param>
     private void Reset(MerkleTreeDiagnostics? diagnostics, CancellationToken activeToken)
     {
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        this.ThrowIfDisposed();
 
         // Discard all channels and workers from the previous computation. By the time Reset is
         // called, FinalizeAsync has already awaited every worker to completion, so clearing these
@@ -703,4 +704,21 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     // -----------------------------------------------------------------------------------------
     // Disposal
     // -----------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when any public method or property is accessed after the instance has been disposed.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ThrowIfDisposed()
+    {
+#if NET8_0_OR_GREATER
+        ObjectDisposedException.ThrowIf(this._disposed, this);
+#else
+        if (this._disposed)
+            throw new ObjectDisposedException(this.GetType().Name);
+#endif
+    }
 }

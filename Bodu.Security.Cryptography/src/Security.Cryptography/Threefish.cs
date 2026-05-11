@@ -159,17 +159,18 @@ public abstract class Threefish
     }
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException"/> whose <see cref="ObjectDisposedException.ObjectName"/> matches the
-    /// concrete algorithm type's <see cref="Type.FullName"/> if the instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
     /// </summary>
-    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when any public method or property is accessed after the instance has been disposed.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
-        if (disposed)
+        if (this._disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
     }

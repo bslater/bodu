@@ -209,7 +209,9 @@ public sealed class Serpent128
     /// <summary>
     /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
     /// </summary>
-    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when any public method or property is accessed after the instance has been disposed.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed()
     {
@@ -217,7 +219,7 @@ public sealed class Serpent128
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
-            throw new ObjectDisposedException(nameof(Skipjack));
+            throw new ObjectDisposedException(this.GetType().Name);
 #endif
     }
 }

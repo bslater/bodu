@@ -275,8 +275,11 @@ public abstract class AsconXof<T>
     }
 
     /// <summary>
-    /// Throws <see cref="ObjectDisposedException"/> if this instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
     /// </summary>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when any public method or property is accessed after the instance has been disposed.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfDisposed()
     {
@@ -287,7 +290,6 @@ public abstract class AsconXof<T>
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
     }
-
 
     /// <summary>
     /// Finalises a sponge absorption phase by padding the residual buffer with <c>0x01</c> at the next unused byte

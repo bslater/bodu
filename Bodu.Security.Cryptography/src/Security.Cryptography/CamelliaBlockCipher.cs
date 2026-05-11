@@ -705,16 +705,18 @@ public sealed class CamelliaBlockCipher
     private static int RotateRight1(int x) => ((x >> 1) | (x << 7)) & 0xFF;
 
     /// <summary>
-    /// Throws <see cref="ObjectDisposedException"/> if this cipher instance has already been disposed.
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
     /// </summary>
-    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when any public method or property is accessed after the instance has been disposed.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
-        if (disposed)
+        if (this._disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
     }

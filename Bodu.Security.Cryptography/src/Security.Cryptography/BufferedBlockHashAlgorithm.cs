@@ -277,9 +277,11 @@ public abstract class BufferedBlockHashAlgorithm<T>
     protected bool IsDisposed => this._disposed;
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException"/> if the instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
     /// </summary>
-    /// <exception cref="ObjectDisposedException">Thrown when the instance has already been disposed.</exception>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when any public method or property is accessed after the instance has been disposed.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfDisposed()
     {

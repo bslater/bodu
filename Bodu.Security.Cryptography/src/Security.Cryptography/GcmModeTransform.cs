@@ -6,6 +6,7 @@
 
 using System;
 using System.Buffers.Binary;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -512,14 +513,22 @@ public sealed class GcmModeTransform
             if (++counter[i] != 0) break;
     }
 
-    /// <summary>Throws <see cref="ObjectDisposedException"/> if this instance has been disposed.</summary>
-    private void ThrowIfDisposed() =>
+    /// <summary>
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when any public method or property is accessed after the instance has been disposed.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ThrowIfDisposed()
+    {
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
-            throw new ObjectDisposedException(nameof(GcmModeTransform));
+            throw new ObjectDisposedException(this.GetType().Name);
 #endif
+    }
 
     /// <summary>
     /// Throws <see cref="InvalidOperationException"/> if this instance has already encrypted or decrypted

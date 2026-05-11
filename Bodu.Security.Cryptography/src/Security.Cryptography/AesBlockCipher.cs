@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -84,7 +85,7 @@ public sealed class AesBlockCipher
     {
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeBytes);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBytes);
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        this.ThrowIfDisposed();
         this._aes.EncryptEcb(input, output, PaddingMode.None);
     }
 
@@ -97,8 +98,25 @@ public sealed class AesBlockCipher
     {
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeBytes);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBytes);
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        this.ThrowIfDisposed();
         this._aes.DecryptEcb(input, output, PaddingMode.None);
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when any public method or property is accessed after the instance has been disposed.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ThrowIfDisposed()
+    {
+#if NET8_0_OR_GREATER
+        ObjectDisposedException.ThrowIf(this._disposed, this);
+#else
+        if (this._disposed)
+            throw new ObjectDisposedException(this.GetType().Name);
+#endif
     }
 
     /// <summary>

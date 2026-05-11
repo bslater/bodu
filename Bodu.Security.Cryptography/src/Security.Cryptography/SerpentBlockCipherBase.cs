@@ -127,9 +127,11 @@ public abstract partial class SerpentBlockCipherBase
     }
 
     /// <summary>
-    /// Throws an exception if the instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
     /// </summary>
-    /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when any public method or property is accessed after the instance has been disposed.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfDisposed()
     {
@@ -137,7 +139,7 @@ public abstract partial class SerpentBlockCipherBase
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
-            throw new ObjectDisposedException(nameof(Skipjack));
+            throw new ObjectDisposedException(this.GetType().Name);
 #endif
     }
 

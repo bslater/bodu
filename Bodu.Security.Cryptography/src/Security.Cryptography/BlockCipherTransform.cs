@@ -211,7 +211,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
     /// </exception>
     public int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount, byte[] outputBuffer, int outputOffset)
     {
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        this.ThrowIfDisposed();
         this.ThrowIfFinalized();
 
         ThrowHelper.ThrowIfNull(inputBuffer);
@@ -281,7 +281,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
     /// <exception cref="CryptographicException">The padding is invalid or cannot be removed during decryption.</exception>
     public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
     {
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        this.ThrowIfDisposed();
         this.ThrowIfFinalized();
 
         ThrowHelper.ThrowIfNull(inputBuffer);
@@ -345,6 +345,23 @@ public abstract class BlockCipherTransform : ICryptoTransform
             this.ClearDeferredInput();
             this._finalized = true;
         }
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when any public method or property is accessed after the instance has been disposed.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ThrowIfDisposed()
+    {
+#if NET8_0_OR_GREATER
+        ObjectDisposedException.ThrowIf(this._disposed, this);
+#else
+        if (this._disposed)
+            throw new ObjectDisposedException(this.GetType().Name);
+#endif
     }
 
     /// <summary>
