@@ -88,6 +88,28 @@ public abstract partial class PaddingStrategyTests<TPadding>
     }
 
     /// <summary>
+    /// Instantiates <paramref name="algorithmType"/> via its parameterless constructor and configures it with
+    /// <see cref="CipherMode.CBC"/>, the requested extended <paramref name="padding"/>, a freshly-generated key and IV,
+    /// plus a tweak when the algorithm derives from <see cref="TweakableSymmetricAlgorithm"/>. The algorithm must
+    /// implement <see cref="IBoduPaddingAlgorithm"/> to accept extended padding modes.
+    /// </summary>
+    /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm"/> type to instantiate.</param>
+    /// <param name="padding">The extended padding mode to apply.</param>
+    /// <returns>A ready-to-use <see cref="SymmetricAlgorithm"/> instance.</returns>
+    protected static SymmetricAlgorithm CreateConfiguredAlgorithm(Type algorithmType, BoduPaddingMode padding)
+    {
+        var algorithm = (SymmetricAlgorithm)Activator.CreateInstance(algorithmType)!;
+        algorithm.Mode = CipherMode.CBC;
+        algorithm.GenerateKey();
+        algorithm.GenerateIV();
+        if (algorithm is TweakableSymmetricAlgorithm tweakable)
+            tweakable.GenerateTweak();
+        if (algorithm is IBoduPaddingAlgorithm boduAlgorithm)
+            boduAlgorithm.BoduPadding = padding;
+        return algorithm;
+    }
+
+    /// <summary>
     /// Encrypts <paramref name="plaintext" /> by writing it through a <see cref="CryptoStream" />
     /// wrapped around <paramref name="algorithm" />'s encryptor, returning the captured ciphertext.
     /// </summary>

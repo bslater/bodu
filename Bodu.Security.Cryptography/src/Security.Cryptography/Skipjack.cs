@@ -64,7 +64,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>
 /// <seealso href="../guides/cryptography/padding.html">Padding</seealso>
 public sealed class Skipjack
-    : SymmetricAlgorithm
+    : SymmetricAlgorithm, IBoduPaddingAlgorithm
 {
     /// <summary>
     /// The Skipjack block size, in bits.
@@ -83,6 +83,8 @@ public sealed class Skipjack
     private static readonly KeySizes[] s_skipjackKeySizes = [new KeySizes(KeySizeBits, KeySizeBits, 0)];
 
     private bool _disposed = false;
+
+    private BoduPaddingMode? _boduPadding;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Skipjack"/> class with the fixed 80-bit key size and 64-bit block size, CBC
@@ -125,6 +127,22 @@ public sealed class Skipjack
     public CipherBlockMode BlockMode { get; set; } = CipherBlockMode.CBC;
 
     /// <summary>
+    /// Gets or sets the extended padding mode. When non-<see langword="null"/>, overrides
+    /// <see cref="SymmetricAlgorithm.Padding"/> during transform creation, enabling schemes such as
+    /// <see cref="BoduPaddingMode.ISO7816_4"/> that have no <see cref="PaddingMode"/> counterpart.
+    /// Set to <see langword="null"/> to revert to <see cref="SymmetricAlgorithm.Padding"/>.
+    /// </summary>
+    /// <value>
+    /// The <see cref="BoduPaddingMode"/> to use when creating transforms, or <see langword="null"/> to use
+    /// <see cref="SymmetricAlgorithm.Padding"/>.
+    /// </value>
+    public BoduPaddingMode? BoduPadding
+    {
+        get => this._boduPadding;
+        set => this._boduPadding = value;
+    }
+
+    /// <summary>
     /// Creates a symmetric <see cref="Skipjack"/> decryptor using the specified key and initialisation vector.
     /// </summary>
     /// <param name="rgbKey">
@@ -147,6 +165,8 @@ public sealed class Skipjack
         this.Validate(rgbKey, rgbIV);
 
         IBlockCipher engine = CreateCipher(rgbKey);
+        if (this._boduPadding.HasValue)
+            return new SkipjackTransform(engine, this.BlockMode, this._boduPadding.Value, rgbIV, false);
         return new SkipjackTransform(engine, this.BlockMode, this.Padding, rgbIV, false);
     }
 
@@ -173,6 +193,8 @@ public sealed class Skipjack
         this.Validate(rgbKey, rgbIV);
 
         IBlockCipher engine = CreateCipher(rgbKey);
+        if (this._boduPadding.HasValue)
+            return new SkipjackTransform(engine, this.BlockMode, this._boduPadding.Value, rgbIV, true);
         return new SkipjackTransform(engine, this.BlockMode, this.Padding, rgbIV, true);
     }
 

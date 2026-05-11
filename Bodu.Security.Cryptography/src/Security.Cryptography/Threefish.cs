@@ -49,7 +49,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso cref="TweakableSymmetricAlgorithm"/>
 /// <seealso cref="Skein{T}"/>
 public abstract class Threefish
-    : TweakableSymmetricAlgorithm
+    : TweakableSymmetricAlgorithm, IBoduPaddingAlgorithm
 {
     /// <summary>
     /// The block size in bytes.
@@ -64,6 +64,8 @@ public abstract class Threefish
     private readonly int _defaultTweakSizeBytes;
 
     private bool _disposed;
+
+    private BoduPaddingMode? _boduPadding;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Threefish"/> class with the specified block and tweak sizes.
@@ -98,12 +100,30 @@ public abstract class Threefish
     /// </remarks>
     public CipherBlockMode BlockMode { get; set; } = CipherBlockMode.CBC;
 
+    /// <summary>
+    /// Gets or sets the extended padding mode. When non-<see langword="null"/>, overrides
+    /// <see cref="SymmetricAlgorithm.Padding"/> during transform creation, enabling schemes such as
+    /// <see cref="BoduPaddingMode.ISO7816_4"/> that have no <see cref="PaddingMode"/> counterpart.
+    /// Set to <see langword="null"/> to revert to <see cref="SymmetricAlgorithm.Padding"/>.
+    /// </summary>
+    /// <value>
+    /// The <see cref="BoduPaddingMode"/> to use when creating transforms, or <see langword="null"/> to use
+    /// <see cref="SymmetricAlgorithm.Padding"/>.
+    /// </value>
+    public BoduPaddingMode? BoduPadding
+    {
+        get => this._boduPadding;
+        set => this._boduPadding = value;
+    }
+
     /// <inheritdoc />
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak)
     {
         this.ThrowIfDisposed();
         this.Validate(rgbKey, rgbIV, tweak);
         IBlockCipher engine = this.CreateCipher(rgbKey, tweak);
+        if (this._boduPadding.HasValue)
+            return new ThreefishTransform(engine, this.BlockMode, this._boduPadding.Value, rgbIV, false);
         return new ThreefishTransform(engine, this.BlockMode, this.Padding, rgbIV, false);
     }
 
@@ -113,6 +133,8 @@ public abstract class Threefish
         this.ThrowIfDisposed();
         this.Validate(rgbKey, rgbIV, tweak);
         IBlockCipher engine = this.CreateCipher(rgbKey, tweak);
+        if (this._boduPadding.HasValue)
+            return new ThreefishTransform(engine, this.BlockMode, this._boduPadding.Value, rgbIV, true);
         return new ThreefishTransform(engine, this.BlockMode, this.Padding, rgbIV, true);
     }
 

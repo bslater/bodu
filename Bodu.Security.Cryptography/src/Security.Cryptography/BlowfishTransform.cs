@@ -39,4 +39,21 @@ internal sealed class BlowfishTransform
         : base(cipher, cipherMode, paddingMode, iv, encrypt)
     {
     }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BlowfishTransform"/> class using an extended padding scheme.
+    /// </summary>
+    /// <param name="cipher">The configured <see cref="IBlockCipher"/> engine to use. Must not be <see langword="null"/>.</param>
+    /// <param name="cipherMode">The block cipher mode of operation.</param>
+    /// <param name="paddingMode">
+    /// The extended padding scheme. Accepts values beyond <see cref="PaddingMode"/>, including
+    /// <see cref="BoduPaddingMode.ISO7816_4"/>.
+    /// </param>
+    /// <param name="iv">The initialisation vector for the cipher mode. Must not be <see langword="null"/> for any mode other than ECB.</param>
+    /// <param name="encrypt"><see langword="true"/> to configure for encryption; <see langword="false"/> for decryption.</param>
+    /// <exception cref="System.ArgumentNullException"><paramref name="cipher"/> is <see langword="null"/>.</exception>
+    internal BlowfishTransform(IBlockCipher cipher, CipherBlockMode cipherMode, BoduPaddingMode paddingMode, byte[] iv, bool encrypt)
+        : base(cipher, cipherMode, paddingMode, iv, encrypt)
+    {
+    }
 }

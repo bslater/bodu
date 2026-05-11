@@ -66,7 +66,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>
 /// <seealso href="../guides/cryptography/padding.html">Padding</seealso>
 public sealed class Serpent128
-    : SymmetricAlgorithm
+    : SymmetricAlgorithm, IBoduPaddingAlgorithm
 {
     /// <summary>
     /// The Serpent block size, in bits.
@@ -82,6 +82,8 @@ public sealed class Serpent128
     private bool _disposed;
 
     private CipherBlockMode _blockMode = CipherBlockMode.CBC;
+
+    private BoduPaddingMode? _boduPadding;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Serpent128"/> class with default parameters.
@@ -127,6 +129,22 @@ public sealed class Serpent128
     }
 
     /// <summary>
+    /// Gets or sets the extended padding mode. When non-<see langword="null"/>, overrides
+    /// <see cref="SymmetricAlgorithm.Padding"/> during transform creation, enabling schemes such as
+    /// <see cref="BoduPaddingMode.ISO7816_4"/> that have no <see cref="PaddingMode"/> counterpart.
+    /// Set to <see langword="null"/> to revert to <see cref="SymmetricAlgorithm.Padding"/>.
+    /// </summary>
+    /// <value>
+    /// The <see cref="BoduPaddingMode"/> to use when creating transforms, or <see langword="null"/> to use
+    /// <see cref="SymmetricAlgorithm.Padding"/>.
+    /// </value>
+    public BoduPaddingMode? BoduPadding
+    {
+        get => this._boduPadding;
+        set => this._boduPadding = value;
+    }
+
+    /// <summary>
     /// Creates a new <see cref="Serpent128"/> instance with default parameters.
     /// </summary>
     /// <returns>A new <see cref="Serpent128"/> instance.</returns>
@@ -139,6 +157,8 @@ public sealed class Serpent128
         this.Validate(rgbKey, rgbIV);
 
         IBlockCipher engine = new Serpent128Cipher(rgbKey);
+        if (this._boduPadding.HasValue)
+            return new Serpent128Transform(engine, this.BlockMode, this._boduPadding.Value, rgbIV!, false);
         return new Serpent128Transform(engine, this.BlockMode, this.Padding, rgbIV!, false);
     }
 
@@ -149,6 +169,8 @@ public sealed class Serpent128
         this.Validate(rgbKey, rgbIV);
 
         IBlockCipher engine = new Serpent128Cipher(rgbKey);
+        if (this._boduPadding.HasValue)
+            return new Serpent128Transform(engine, this.BlockMode, this._boduPadding.Value, rgbIV!, true);
         return new Serpent128Transform(engine, this.BlockMode, this.Padding, rgbIV!, true);
     }
 
