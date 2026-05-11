@@ -18,13 +18,13 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 
-        byte[] input1 = CryptoTestUtilities.SimpleTextAsciiBytes;
-        byte[] input2 = CryptoTestUtilities.ByteSequence256;
+        var input1 = CryptoTestUtilities.SimpleTextAsciiBytes;
+        var input2 = CryptoTestUtilities.ByteSequence256;
 
-        byte[] hash1 = algorithm.ComputeHash(input1);
+        var hash1 = algorithm.ComputeHash(input1);
 
         algorithm.Initialize(); // reset state
-        byte[] hash2 = algorithm.ComputeHash(input2);
+        var hash2 = algorithm.ComputeHash(input2);
 
         Assert.AreNotEqual(Convert.ToHexString(hash1), Convert.ToHexString(hash2), "Hashes should differ between independent inputs.");
     }
@@ -38,9 +38,9 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 
-        byte[] input = CryptoTestUtilities.ByteSequence256;
+        var input = CryptoTestUtilities.ByteSequence256;
         algorithm.TransformFinalBlock(input, 0, input.Length);
-        byte[] hash1 = algorithm.Hash!;
+        var hash1 = algorithm.Hash!;
 
         if (!algorithm.CanReuseTransform)
         {
@@ -49,14 +49,14 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             algorithm.Initialize();
 
             // Either the key was cleared or a new random key was assigned; hash must differ.
-            byte[] hash2 = algorithm.ComputeHash(input);
+            var hash2 = algorithm.ComputeHash(input);
             CollectionAssert.AreNotEqual(hash1, hash2, "One-shot MAC should not yield the same result after reinitialization.");
         }
         else
         {
             algorithm.Initialize();
 
-            byte[] hash2 = algorithm.ComputeHash(input);
+            var hash2 = algorithm.ComputeHash(input);
             CollectionAssert.AreEqual(hash1, hash2, "Hashes should match after reinitializing with the same input.");
         }
     }
@@ -69,14 +69,14 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 
-        byte[] part1 = CryptoTestUtilities.SimpleTextAsciiBytes.Take(4).ToArray();
-        byte[] part2 = CryptoTestUtilities.SimpleTextAsciiBytes.Skip(4).ToArray();
+        var part1 = CryptoTestUtilities.SimpleTextAsciiBytes.Take(4).ToArray();
+        var part2 = CryptoTestUtilities.SimpleTextAsciiBytes.Skip(4).ToArray();
 
         algorithm.TransformBlock(part1, 0, part1.Length, null, 0);
         algorithm.Initialize(); // Reset mid-hash
 
         // Start a new hash
-        byte[] result = algorithm.ComputeHash(part2);
+        var result = algorithm.ComputeHash(part2);
 
         Assert.IsNotNull(result);
 
@@ -129,10 +129,10 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     {
         HashAlgorithmSpecification specification = GetSpecification(variant);
         using TAlgorithm algorithm = CreateAlgorithm(variant);
-        int blockSize = specification.InputBlockSize;
+        var blockSize = specification.InputBlockSize;
 
         // Feed partial input — do NOT finalise — then reset
-        byte[] input = Enumerable.Range(0, blockSize + (blockSize / 2))
+        var input = Enumerable.Range(0, blockSize + (blockSize / 2))
                                  .Select(i => (byte)((i * 31) + 7))
                                  .ToArray();
 
@@ -171,14 +171,14 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         }
 
         using TAlgorithm algorithm = CreateAlgorithm(variant);
-        int blockSize = specification.InputBlockSize;
-        byte[] input = Enumerable.Range(0, blockSize + (blockSize / 2))
+        var blockSize = specification.InputBlockSize;
+        var input = Enumerable.Range(0, blockSize + (blockSize / 2))
                                  .Select(i => (byte)((i * 31) + 7))
                                  .ToArray();
 
-        byte[] first = algorithm.ComputeHash(input);
+        var first = algorithm.ComputeHash(input);
         algorithm.Initialize();
-        byte[] second = algorithm.ComputeHash(input);
+        var second = algorithm.ComputeHash(input);
 
         CollectionAssert.AreEqual(
             first,
@@ -219,15 +219,15 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void Initialize_WhenCalledBeforeTransformBlock_ShouldAllowNormalHashing()
     {
-        byte[] block1 = CryptoTestUtilities.ByteSequence256[..128];
-        byte[] block2 = CryptoTestUtilities.ByteSequence256[128..256];
+        var block1 = CryptoTestUtilities.ByteSequence256[..128];
+        var block2 = CryptoTestUtilities.ByteSequence256[128..256];
 
-        byte[] combined = new byte[block1.Length + block2.Length];
+        var combined = new byte[block1.Length + block2.Length];
         Buffer.BlockCopy(block1, 0, combined, 0, block1.Length);
         Buffer.BlockCopy(block2, 0, combined, block1.Length, block2.Length);
 
         using TAlgorithm expectedAlgorithm = CreateAlgorithm();
-        byte[] expected = expectedAlgorithm.ComputeHash(combined);
+        var expected = expectedAlgorithm.ComputeHash(combined);
 
         using TAlgorithm algorithm = CreateAlgorithm();
 
@@ -246,10 +246,10 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void Initialize_WhenCalledTwice_ShouldAllowNormalHashing()
     {
-        byte[] input = CryptoTestUtilities.ByteSequence256[..128];
+        var input = CryptoTestUtilities.ByteSequence256[..128];
 
         using TAlgorithm expectedAlgorithm = CreateAlgorithm();
-        byte[] expected = expectedAlgorithm.ComputeHash(input);
+        var expected = expectedAlgorithm.ComputeHash(input);
 
         using TAlgorithm algorithm = CreateAlgorithm();
 

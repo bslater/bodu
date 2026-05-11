@@ -21,9 +21,9 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
 
         foreach (KeySizes range in algorithm.LegalTweakSizes)
         {
-            int step = range.SkipSize == 0 ? range.MaxSize - range.MinSize : range.SkipSize;
+            var step = range.SkipSize == 0 ? range.MaxSize - range.MinSize : range.SkipSize;
 
-            for (int bits = range.MinSize; bits <= range.MaxSize; bits += step)
+            for (var bits = range.MinSize; bits <= range.MaxSize; bits += step)
             {
                 Assert.IsTrue(
                     algorithm.ValidTweakSize(bits),
@@ -47,7 +47,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
         using TAlgorithm algorithm = CreateAlgorithm();
 
         // Boundary sentinels that must always be invalid regardless of algorithm.
-        foreach (int sentinel in new[] { int.MinValue, -1, 0, int.MaxValue })
+        foreach (var sentinel in new[] { int.MinValue, -1, 0, int.MaxValue })
         {
             Assert.IsFalse(
                 algorithm.ValidTweakSize(sentinel),
@@ -55,7 +55,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
         }
 
         // Derive an invalid byte-aligned size from the algorithm's own legal ranges.
-        int? invalidBits = FindInvalidTweakSize(algorithm.LegalTweakSizes);
+        var invalidBits = FindInvalidTweakSize(algorithm.LegalTweakSizes);
 
         if (invalidBits is null)
         {
@@ -77,9 +77,9 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// </summary>
     private static int? FindInvalidTweakSize(KeySizes[] legalSizes)
     {
-        for (int bytes = 1; bytes <= 512; bytes++)
+        for (var bytes = 1; bytes <= 512; bytes++)
         {
-            int bits = bytes * 8;
+            var bits = bytes * 8;
             if (!IsLegalKeySize(bits, legalSizes))
                 return bits;
         }

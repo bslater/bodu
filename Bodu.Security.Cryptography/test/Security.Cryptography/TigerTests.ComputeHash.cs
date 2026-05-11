@@ -19,7 +19,7 @@ public partial class TigerTests
         if (variants.Length < 2)
             Assert.Inconclusive("Not enough variants to test.");
 
-        byte[] input = new byte[0];
+        var input = new byte[0];
         var actual = new List<byte[]>();
         foreach (TigerHashingVariant variant in variants)
         {

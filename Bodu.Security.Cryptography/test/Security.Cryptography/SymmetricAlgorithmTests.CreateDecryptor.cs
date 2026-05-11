@@ -11,8 +11,10 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
 {
     /// <summary>
-    /// Verifies that setting <see cref="SymmetricAlgorithm.CreateDecryptor" /> after the algorithm has been disposed throws
-    /// an <see cref="ObjectDisposedException" />.
+    /// Verifies that attempting to create a cryptographic transform on a disposed
+    /// <typeparamref name="TAlgorithm" /> instance throws <see cref="ObjectDisposedException" /> whose
+    /// <see cref="ObjectDisposedException.ObjectName" /> carries the concrete algorithm type
+    /// name.
     /// </summary>
     [TestMethod]
     public void CreateDecryptor_WhenSetAfterDispose_ShouldThrowObjectDisposedException()
@@ -20,35 +22,13 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
         TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        var ex = Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
             _ = algorithm.CreateDecryptor();
         });
-    }
 
-    /// <summary>
-    /// Verifies that attempting to create a cryptographic transform on a disposed
-    /// <typeparamref name="TAlgorithm" /> instance throws <see cref="ObjectDisposedException" /> whose
-    /// <see cref="ObjectDisposedException.ObjectName" /> carries the concrete algorithm type
-    /// name. Regression guard for defects where <c>nameof(T)</c> on a non-generic base class
-    /// produced the literal string <c>"T"</c> instead of the derived type name.
-    /// </summary>
-    [TestMethod]
-    public void CreateDecryptor_WhenDisposes_ShouldReportConcreteTypeName()
-    {
-        TAlgorithm algorithm = CreateAlgorithm();
-        algorithm.Dispose();
-
-        try
-        {
-            using ICryptoTransform _ = algorithm.CreateDecryptor();
-            Assert.Fail("Expected ObjectDisposedException after disposal.");
-        }
-        catch (ObjectDisposedException ex)
-        {
-            Assert.AreEqual(typeof(TAlgorithm).FullName, ex.ObjectName,
-                $"ObjectDisposedException.ObjectName must match the concrete type name '{typeof(TAlgorithm).FullName}'.");
-        }
+        Assert.AreEqual(typeof(TAlgorithm).FullName, ex.ObjectName,
+             $"ObjectDisposedException.ObjectName must match the concrete type name '{typeof(TAlgorithm).FullName}'.");
     }
 
     /// <summary>
@@ -56,13 +36,16 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// <see cref="ArgumentNullException" /> when the key is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void CreateDecryptor_WhenKeyIsNull_ShouldThrowArgumentNullException_fix()
+    public void CreateDecryptor_WhenKeyIsNull_ShouldThrowArgumentNullException()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 
+        byte[] key = null!;
+        var iv = new byte[algorithm.BlockSize / 8];
+
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = algorithm.CreateDecryptor(null!, new byte[algorithm.BlockSize / 8]);
+            _ = algorithm.CreateDecryptor(key, iv);
         });
     }
 
@@ -71,13 +54,54 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// <see cref="ArgumentNullException" /> when the IV is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void CreateDecryptor_WhenIvIsNull_ShouldThrowArgumentNullException_fix()
+    public void CreateDecryptor_WhenIvIsNull_ShouldThrowArgumentNullException()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 
+        var key = new byte[algorithm.KeySize / 8];
+        byte[] iv = null!;
+
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = algorithm.CreateDecryptor(new byte[algorithm.KeySize / 8], null!);
+            _ = algorithm.CreateDecryptor(key, iv);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="SymmetricAlgorithm.CreateDecryptor(byte[], byte[])" /> throws
+    /// <see cref="CryptographicException" /> (not <see cref="ArgumentException" />) when the IV length does not
+    /// match the configured block size.
+    /// </summary>
+    [TestMethod]
+    public void CreateDecryptor_WhenIvLengthIsInvalid_ShouldThrowCryptographicException()
+    {
+        using TAlgorithm algorithm = CreateAlgorithm();
+
+        var key = new byte[algorithm.KeySize / 8];
+        var badIv = new byte[(algorithm.BlockSize / 8) + 1];
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            using ICryptoTransform _ = algorithm.CreateDecryptor(key, badIv);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="SymmetricAlgorithm.CreateDecryptor(byte[], byte[])" /> throws
+    /// <see cref="CryptographicException" /> (not <see cref="ArgumentException" />) when the Key length does not
+    /// match the configured key size.
+    /// </summary>
+    [TestMethod]
+    public void CreateDecryptor_WhenKeyLengthIsInvalid_ShouldThrowCryptographicException()
+    {
+        using TAlgorithm algorithm = CreateAlgorithm();
+
+        var badKey = new byte[(algorithm.KeySize / 8) + 1];
+        var iv = new byte[algorithm.BlockSize / 8];
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            using ICryptoTransform _ = algorithm.CreateDecryptor(badKey, iv);
         });
     }
 }

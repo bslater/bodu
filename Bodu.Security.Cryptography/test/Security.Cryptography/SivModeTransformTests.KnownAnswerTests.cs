@@ -86,7 +86,7 @@ public sealed partial class SivModeTransformTests
         var transform = new SivModeTransform(s2vCipher, ctrCipher, new byte[16]);
         transform.ProcessAssociatedData(ad);
         var output = new byte[expectedPlaintext.Length];
-        int written = transform.Decrypt(ciphertextWithTag, output);
+        var written = transform.Decrypt(ciphertextWithTag, output);
 
         Assert.AreEqual(expectedPlaintext.Length, written);
         CollectionAssert.AreEqual(expectedPlaintext, output,

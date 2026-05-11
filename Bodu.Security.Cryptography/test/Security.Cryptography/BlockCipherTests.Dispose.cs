@@ -53,7 +53,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         }
         catch (TargetInvocationException tie) when (tie.InnerException is ObjectDisposedException)
         {
-            // ✅ Expected: disposed object should not allow configuration
+            // Expected: disposed object should not allow configuration
         }
         catch (Exception ex)
         {
@@ -85,8 +85,8 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         cipher.Encrypt(buffer, buffer);
         cipher.Dispose();
 
-        object? value = field.GetValue(cipher);
-        string label = $"Field '{field.DeclaringType},{field.Name}'";
+        var value = field.GetValue(cipher);
+        var label = $"Field '{field.DeclaringType},{field.Name}'";
 
         var result = TestHelpers.AssertFieldValueIsNullOrDefault(field, cipher);
 

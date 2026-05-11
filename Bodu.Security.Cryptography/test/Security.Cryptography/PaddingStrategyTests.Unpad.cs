@@ -26,15 +26,15 @@ public abstract partial class PaddingStrategyTests<TPadding>
 
         TPadding padding = CreatePadding();
 
-        byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 4);
-        byte[] padded = padding.Pad(plaintext, BlockSize);
+        var plaintext = CreatePlaintextWithResidual(BlockSize - 4);
+        var padded = padding.Pad(plaintext, BlockSize);
 
         // Tamper with a byte inside the padding region. PKCS#7 padding occupies the last
         // padLen bytes of the final block, where padLen is the trailing length byte. Flipping
         // the first padding byte preserves the declared length but corrupts the content so
         // the constant-time padding verifier rejects the block.
         int padLen = padded[padded.Length - 1];
-        int firstPaddingByteIndex = padded.Length - padLen;
+        var firstPaddingByteIndex = padded.Length - padLen;
         padded[firstPaddingByteIndex] ^= 0xFF;
 
         CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(padded, BlockSize));
@@ -56,8 +56,8 @@ public abstract partial class PaddingStrategyTests<TPadding>
 
         TPadding padding = CreatePadding();
 
-        byte[] input = new byte[BlockSize];
-        for (int i = 0; i < BlockSize - 1; i++)
+        var input = new byte[BlockSize];
+        for (var i = 0; i < BlockSize - 1; i++)
             input[i] = 0xAA;
         input[BlockSize - 1] = 0x00;
 
@@ -78,8 +78,8 @@ public abstract partial class PaddingStrategyTests<TPadding>
 
         TPadding padding = CreatePadding();
 
-        byte[] input = new byte[BlockSize];
-        for (int i = 0; i < BlockSize - 1; i++)
+        var input = new byte[BlockSize];
+        for (var i = 0; i < BlockSize - 1; i++)
             input[i] = 0xAA;
         input[BlockSize - 1] = 0xFF;
 

@@ -99,7 +99,7 @@ public sealed partial class OcbModeTransformTests
         enc.Encrypt(plaintext, ct);
 
         var dec = new OcbModeTransform(cipher, (byte[])iv.Clone());
-        int written = dec.Decrypt(ct, new byte[ptLen]);
+        var written = dec.Decrypt(ct, new byte[ptLen]);
 
         Assert.AreEqual(ptLen, written,
             $"Decrypt must return the plaintext byte count ({ptLen}) as the written value.");

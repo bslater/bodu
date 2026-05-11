@@ -41,16 +41,16 @@ public partial class AsconCxof128Tests
     public void GetHash_WithVariousLengths_ShouldProduceCorrectOutputLength(
         int customizationLength, int messageLength, int outputLength)
     {
-        byte[] customization = new byte[customizationLength];
-        for (int i = 0; i < customizationLength; i++) customization[i] = (byte)i;
+        var customization = new byte[customizationLength];
+        for (var i = 0; i < customizationLength; i++) customization[i] = (byte)i;
 
-        byte[] message = new byte[messageLength];
-        for (int i = 0; i < messageLength; i++) message[i] = (byte)i;
+        var message = new byte[messageLength];
+        for (var i = 0; i < messageLength; i++) message[i] = (byte)i;
 
         using AsconCxof128 cxof = new AsconCxof128();
         cxof.Customize(customization);
         cxof.Absorb(message);
-        byte[] actual = cxof.GetHash(outputLength);
+        var actual = cxof.GetHash(outputLength);
 
         Assert.AreEqual(outputLength, actual.Length,
             $"GetHash must return {outputLength} bytes for customize={customizationLength}, message={messageLength}.");
@@ -72,21 +72,21 @@ public partial class AsconCxof128Tests
     public void GetHash_CalledTwiceWithSameInputs_ShouldProduceIdenticalOutput(
         int customizationLength, int messageLength)
     {
-        byte[] customization = new byte[customizationLength];
-        for (int i = 0; i < customizationLength; i++) customization[i] = (byte)i;
+        var customization = new byte[customizationLength];
+        for (var i = 0; i < customizationLength; i++) customization[i] = (byte)i;
 
-        byte[] message = new byte[messageLength];
-        for (int i = 0; i < messageLength; i++) message[i] = (byte)i;
+        var message = new byte[messageLength];
+        for (var i = 0; i < messageLength; i++) message[i] = (byte)i;
 
         using AsconCxof128 first = new AsconCxof128();
         first.Customize(customization);
         first.Absorb(message);
-        byte[] output1 = first.GetHash(32);
+        var output1 = first.GetHash(32);
 
         using AsconCxof128 second = new AsconCxof128();
         second.Customize(customization);
         second.Absorb(message);
-        byte[] output2 = second.GetHash(32);
+        var output2 = second.GetHash(32);
 
         CollectionAssert.AreEqual(output1, output2,
             $"CXOF128 must be deterministic for customize={customizationLength}, message={messageLength}.");
@@ -105,21 +105,21 @@ public partial class AsconCxof128Tests
     public void GetHash_ConsecutiveMessageLengths_ShouldProduceDifferentOutputs(
         int customizationLength, int msgLen1, int msgLen2)
     {
-        byte[] customization = new byte[customizationLength];
-        for (int i = 0; i < customizationLength; i++) customization[i] = (byte)i;
+        var customization = new byte[customizationLength];
+        for (var i = 0; i < customizationLength; i++) customization[i] = (byte)i;
 
-        byte[] msg1 = new byte[msgLen1]; for (int i = 0; i < msgLen1; i++) msg1[i] = (byte)i;
-        byte[] msg2 = new byte[msgLen2]; for (int i = 0; i < msgLen2; i++) msg2[i] = (byte)i;
+        var msg1 = new byte[msgLen1]; for (var i = 0; i < msgLen1; i++) msg1[i] = (byte)i;
+        var msg2 = new byte[msgLen2]; for (var i = 0; i < msgLen2; i++) msg2[i] = (byte)i;
 
         using AsconCxof128 c1 = new AsconCxof128();
         c1.Customize(customization);
         c1.Absorb(msg1);
-        byte[] output1 = c1.GetHash(32);
+        var output1 = c1.GetHash(32);
 
         using AsconCxof128 c2 = new AsconCxof128();
         c2.Customize(customization);
         c2.Absorb(msg2);
-        byte[] output2 = c2.GetHash(32);
+        var output2 = c2.GetHash(32);
 
         CollectionAssert.AreNotEqual(output1, output2,
             $"CXOF128 with message lengths {msgLen1} and {msgLen2} must produce different outputs.");
@@ -148,16 +148,16 @@ public partial class AsconCxof128Tests
     public void GetHash_WhenGivenKnownInputs_ShouldMatchReferenceDigest(
         int customizationLength, int messageLength, int outputLength, string expectedHex)
     {
-        byte[] customization = new byte[customizationLength];
-        for (int i = 0; i < customizationLength; i++) customization[i] = (byte)i;
+        var customization = new byte[customizationLength];
+        for (var i = 0; i < customizationLength; i++) customization[i] = (byte)i;
 
-        byte[] message = new byte[messageLength];
-        for (int i = 0; i < messageLength; i++) message[i] = (byte)i;
+        var message = new byte[messageLength];
+        for (var i = 0; i < messageLength; i++) message[i] = (byte)i;
 
         using AsconCxof128 cxof = new AsconCxof128();
         cxof.Customize(customization);
         cxof.Absorb(message);
-        byte[] actual = cxof.GetHash(outputLength);
+        var actual = cxof.GetHash(outputLength);
 
         Assert.AreEqual(
             expectedHex,

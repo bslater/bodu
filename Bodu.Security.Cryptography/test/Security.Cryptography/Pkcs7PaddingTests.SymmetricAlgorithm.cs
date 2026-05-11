@@ -36,14 +36,14 @@ public sealed partial class Pkcs7PaddingTests
     public void Encrypt_WhenInputIsEmpty_ShouldProduceOneBlockAndRoundTrip(System.Type algorithmType)
     {
         using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
-        int blockBytes = algorithm.BlockSize / 8;
+        var blockBytes = algorithm.BlockSize / 8;
 
-        byte[] cipherText = algorithm.Encrypt(System.ReadOnlySpan<byte>.Empty);
+        var cipherText = algorithm.Encrypt(System.ReadOnlySpan<byte>.Empty);
 
         Assert.AreEqual(blockBytes, cipherText.Length,
             $"PKCS7-padded empty input on {algorithmType.Name} should produce exactly one block of ciphertext.");
 
-        byte[] recovered = algorithm.Decrypt(cipherText);
+        var recovered = algorithm.Decrypt(cipherText);
 
         Assert.AreEqual(0, recovered.Length,
             $"Decrypting one PKCS7-padded block of empty plaintext on {algorithmType.Name} should produce an empty array.");
@@ -62,10 +62,10 @@ public sealed partial class Pkcs7PaddingTests
     public void TransformFinalBlock_WhenInputCountIsZero_ShouldProduceOnePaddedBlock(System.Type algorithmType)
     {
         using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
-        int blockBytes = algorithm.BlockSize / 8;
+        var blockBytes = algorithm.BlockSize / 8;
 
         using ICryptoTransform transform = algorithm.CreateEncryptor();
-        byte[] result = transform.TransformFinalBlock(System.Array.Empty<byte>(), 0, 0);
+        var result = transform.TransformFinalBlock(System.Array.Empty<byte>(), 0, 0);
 
         Assert.AreEqual(blockBytes, result.Length,
             $"TransformFinalBlock with zero-length input under PKCS7 on {algorithmType.Name} " +
@@ -86,12 +86,12 @@ public sealed partial class Pkcs7PaddingTests
     public void TransformBlock_WhenInputCountIsZero_ShouldReturnZero(System.Type algorithmType)
     {
         using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
-        int blockBytes = algorithm.BlockSize / 8;
+        var blockBytes = algorithm.BlockSize / 8;
 
         using ICryptoTransform transform = algorithm.CreateEncryptor();
-        byte[] outputBuffer = new byte[blockBytes];
+        var outputBuffer = new byte[blockBytes];
 
-        int written = transform.TransformBlock(System.Array.Empty<byte>(), 0, 0, outputBuffer, 0);
+        var written = transform.TransformBlock(System.Array.Empty<byte>(), 0, 0, outputBuffer, 0);
 
         Assert.AreEqual(0, written,
             $"TransformBlock with inputCount == 0 on {algorithmType.Name} must return 0 rather than throw.");
@@ -109,7 +109,7 @@ public sealed partial class Pkcs7PaddingTests
     public void CryptoStream_WhenFlushedWithoutWritingAnyData_ShouldProduceOnePaddedBlock(System.Type algorithmType)
     {
         using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
-        int blockBytes = algorithm.BlockSize / 8;
+        var blockBytes = algorithm.BlockSize / 8;
 
         using ICryptoTransform encryptor = algorithm.CreateEncryptor();
         using var output = new MemoryStream();
@@ -138,15 +138,15 @@ public sealed partial class Pkcs7PaddingTests
     public void CryptoStream_WhenBlockAlignedPlaintext_ShouldRoundTrip(System.Type algorithmType)
     {
         using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
-        int blockBytes = algorithm.BlockSize / 8;
-        byte[] plaintext = Enumerable.Range(0, blockBytes * 2).Select(i => (byte)(i + 1)).ToArray();
+        var blockBytes = algorithm.BlockSize / 8;
+        var plaintext = Enumerable.Range(0, blockBytes * 2).Select(i => (byte)(i + 1)).ToArray();
 
-        byte[] cipherText = EncryptThroughCryptoStream(algorithm, plaintext);
+        var cipherText = EncryptThroughCryptoStream(algorithm, plaintext);
 
         Assert.AreEqual(plaintext.Length + blockBytes, cipherText.Length,
             $"Block-aligned plaintext under PKCS7 on {algorithmType.Name} should produce ciphertext one block longer than the plaintext.");
 
-        byte[] recovered = DecryptThroughCryptoStream(algorithm, cipherText);
+        var recovered = DecryptThroughCryptoStream(algorithm, cipherText);
 
         CollectionAssert.AreEqual(plaintext, recovered,
             $"Block-aligned plaintext under PKCS7 on {algorithmType.Name} did not round-trip through CryptoStream.");
@@ -163,17 +163,17 @@ public sealed partial class Pkcs7PaddingTests
     public void CryptoStream_WhenResidualPlaintext_ShouldRoundTrip(System.Type algorithmType)
     {
         using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
-        int blockBytes = algorithm.BlockSize / 8;
-        byte[] plaintext = Enumerable.Range(0, blockBytes + 3).Select(i => (byte)(i + 1)).ToArray();
+        var blockBytes = algorithm.BlockSize / 8;
+        var plaintext = Enumerable.Range(0, blockBytes + 3).Select(i => (byte)(i + 1)).ToArray();
 
-        byte[] cipherText = EncryptThroughCryptoStream(algorithm, plaintext);
+        var cipherText = EncryptThroughCryptoStream(algorithm, plaintext);
 
         Assert.AreEqual(0, cipherText.Length % blockBytes,
             $"PKCS7 ciphertext on {algorithmType.Name} must be block-aligned.");
         Assert.IsTrue(cipherText.Length > plaintext.Length,
             $"Residual plaintext under PKCS7 on {algorithmType.Name} should grow to the next block boundary.");
 
-        byte[] recovered = DecryptThroughCryptoStream(algorithm, cipherText);
+        var recovered = DecryptThroughCryptoStream(algorithm, cipherText);
 
         CollectionAssert.AreEqual(plaintext, recovered,
             $"Residual plaintext under PKCS7 on {algorithmType.Name} did not round-trip through CryptoStream.");
@@ -194,8 +194,8 @@ public sealed partial class Pkcs7PaddingTests
     public void CryptoStream_WhenWritingInUnalignedChunks_ShouldRoundTrip(System.Type algorithmType)
     {
         using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
-        byte[] plaintext = Enumerable.Range(0, 41).Select(i => (byte)(i * 7 + 11)).ToArray();
-        int[] chunkSizes = new[] { 1, 3, 5, 7, 11, 13 };
+        var plaintext = Enumerable.Range(0, 41).Select(i => (byte)(i * 7 + 11)).ToArray();
+        var chunkSizes = new[] { 1, 3, 5, 7, 11, 13 };
 
         byte[] cipherText;
         using (var output = new MemoryStream())
@@ -203,11 +203,11 @@ public sealed partial class Pkcs7PaddingTests
             using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
             using (var crypto = new CryptoStream(output, encryptor, CryptoStreamMode.Write, leaveOpen: true))
             {
-                int offset = 0;
-                int chunkIndex = 0;
+                var offset = 0;
+                var chunkIndex = 0;
                 while (offset < plaintext.Length)
                 {
-                    int len = System.Math.Min(chunkSizes[chunkIndex % chunkSizes.Length], plaintext.Length - offset);
+                    var len = System.Math.Min(chunkSizes[chunkIndex % chunkSizes.Length], plaintext.Length - offset);
                     crypto.Write(plaintext, offset, len);
                     offset += len;
                     chunkIndex++;
@@ -217,7 +217,7 @@ public sealed partial class Pkcs7PaddingTests
             cipherText = output.ToArray();
         }
 
-        byte[] recovered = DecryptThroughCryptoStream(algorithm, cipherText);
+        var recovered = DecryptThroughCryptoStream(algorithm, cipherText);
 
         CollectionAssert.AreEqual(plaintext, recovered,
             $"Chunked write under PKCS7 on {algorithmType.Name} did not round-trip through CryptoStream.");

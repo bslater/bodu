@@ -58,8 +58,8 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 
         _ = algorithm.TransformFinalBlock(CryptoTestUtilities.ByteSequence256, 0, 256);
 
-        byte[] first = algorithm.Hash!;
-        byte[] second = algorithm.Hash!;
+        var first = algorithm.Hash!;
+        var second = algorithm.Hash!;
 
         CollectionAssert.AreEqual(first, second);
     }

@@ -135,7 +135,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
 
         transform.Dispose();
 
-        string label = $"Field '{field.DeclaringType?.Name}.{field.Name}' was not cleared by Dispose.";
+        var label = $"Field '{field.DeclaringType?.Name}.{field.Name}' was not cleared by Dispose.";
 
         Assert.IsTrue(
             TestHelpers.AssertFieldValueIsNullOrDefault(field, transform),

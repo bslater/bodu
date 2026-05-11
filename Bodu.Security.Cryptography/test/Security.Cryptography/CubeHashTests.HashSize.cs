@@ -37,7 +37,7 @@ public partial class CubeHashTests
     public void HashSize_WhenSetAfterHashing_ShouldNotThrow()
     {
         var algorithm = new CubeHash();
-        byte[] input = new byte[] { 1, 2, 3 };
+        var input = new byte[] { 1, 2, 3 };
 
         algorithm.ComputeHash(input);
 
@@ -53,13 +53,13 @@ public partial class CubeHashTests
     [TestMethod]
     public void HashSize_WhenDifferentValuesUsed_ShouldProduceDifferentHashes()
     {
-        byte[] input = new byte[] { 0x10, 0x20, 0x30 };
+        var input = new byte[] { 0x10, 0x20, 0x30 };
 
         var algorithmA = new CubeHash { HashSize = 224 };
         var algorithmB = new CubeHash { HashSize = 256 };
 
-        byte[] resultA = algorithmA.ComputeHash(input);
-        byte[] resultB = algorithmB.ComputeHash(input);
+        var resultA = algorithmA.ComputeHash(input);
+        var resultB = algorithmB.ComputeHash(input);
 
         CollectionAssert.AreNotEqual(resultA, resultB);
     }
@@ -96,7 +96,7 @@ public partial class CubeHashTests
     public void HashSize_WhenSetToValidValue_ShouldBeAssigned(int size)
     {
         using CubeHash algorithm = CreateAlgorithm();
-        int original = algorithm.HashSize;
+        var original = algorithm.HashSize;
         algorithm.HashSize = size;
 
         Assert.AreEqual(size, algorithm.HashSize);
@@ -109,8 +109,8 @@ public partial class CubeHashTests
     public void HashSize_WhenSetToValidValue_ShouldUpdateCorrectly()
     {
         using CubeHash algorithm = CreateAlgorithm();
-        int size = 256;
-        int original = algorithm.HashSize;
+        var size = 256;
+        var original = algorithm.HashSize;
         algorithm.HashSize = size;
 
         Assert.AreEqual(size, algorithm.HashSize);
@@ -175,7 +175,7 @@ public partial class CubeHashTests
     public void HashSize_WhenSetAfterTransformBlock_ShouldThrowExactly()
     {
         using CubeHash algorithm = CreateAlgorithm();
-        byte[] input = new byte[] { 0x01, 0x02, 0x03 };
+        var input = new byte[] { 0x01, 0x02, 0x03 };
         algorithm.TransformBlock(input, 0, input.Length, null, 0);
 
         Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>

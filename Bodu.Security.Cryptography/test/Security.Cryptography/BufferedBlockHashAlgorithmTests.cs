@@ -62,7 +62,7 @@ public sealed class BufferedBlockHashAlgorithmTests
     public void Initialize_WhenCalled_ShouldRunDerivedOverride()
     {
         using var sut = new MonitoringBufferedBlockHashAlgorithm();
-        int baseline = sut.InitializeCallCount;
+        var baseline = sut.InitializeCallCount;
 
         sut.Initialize();
 
@@ -94,7 +94,7 @@ public sealed class BufferedBlockHashAlgorithmTests
     public void Initialize_WhenCalledMultipleTimes_ShouldRunDerivedOverrideEachTime()
     {
         using var sut = new MonitoringBufferedBlockHashAlgorithm();
-        int baseline = sut.InitializeCallCount;
+        var baseline = sut.InitializeCallCount;
 
         sut.Initialize();
         sut.Initialize();
@@ -174,7 +174,7 @@ public sealed class BufferedBlockHashAlgorithmTests
     public void HashCore_WhenCalledWithSlice_ShouldForwardSliceLengthToSpanOverload()
     {
         using var sut = new MonitoringBufferedBlockHashAlgorithm();
-        byte[] input = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        var input = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
         sut.InvokeHashCore(input, ibStart: 2, cbSize: 5);
         sut.InvokeHashCore(input, ibStart: 0, cbSize: 0);

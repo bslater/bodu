@@ -17,10 +17,10 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void CryptoStream_WhenReadingThroughHashAlgorithm_ShouldProduceExpectedHash()
     {
-        byte[] input = CryptoTestUtilities.ByteSequence256;
+        var input = CryptoTestUtilities.ByteSequence256;
 
         using TAlgorithm expectedAlgorithm = CreateAlgorithm();
-        byte[] expected = expectedAlgorithm.ComputeHash(input);
+        var expected = expectedAlgorithm.ComputeHash(input);
 
         using TAlgorithm algorithm = CreateAlgorithm();
         using var source = new MemoryStream(input);
@@ -38,10 +38,10 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void CryptoStream_WhenWritingThroughHashAlgorithm_ShouldProduceExpectedHash()
     {
-        byte[] input = CryptoTestUtilities.ByteSequence256;
+        var input = CryptoTestUtilities.ByteSequence256;
 
         using TAlgorithm expectedAlgorithm = CreateAlgorithm();
-        byte[] expected = expectedAlgorithm.ComputeHash(input);
+        var expected = expectedAlgorithm.ComputeHash(input);
 
         using TAlgorithm algorithm = CreateAlgorithm();
         using Stream output = Stream.Null;

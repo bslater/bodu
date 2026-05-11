@@ -104,7 +104,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 
         var test = new TTest();
 
-        foreach (int hashSize in test.GetHashAlgorithmVariants()
+        foreach (var hashSize in test.GetHashAlgorithmVariants()
             .Select(variant => test.GetSpecification(variant).HashSize)
             .Concat(test.GetHashAlgorithmSizes())
             .Distinct()
@@ -174,14 +174,14 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             return;
         }
 
-        string? emptyA = GetSpecification(variant).KnownAnswers.Empty;
+        var emptyA = GetSpecification(variant).KnownAnswers.Empty;
         if (emptyA is null)
         {
             Assert.Inconclusive($"No empty-input known answer defined for variant '{variant}'; skipping consistency check.");
             return;
         }
 
-        string emptyB = incrementalHashes[0];
+        var emptyB = incrementalHashes[0];
         Assert.AreEqual(emptyA, emptyB, "Expected hash value for 'Empty' named input should equal the first item of incremental input.");
     }
 
@@ -402,9 +402,9 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             return;
         }
 
-        int coverage = specification.HashBlockSize > 1 ? specification.HashBlockSize : 16;
-        int maxLength = coverage + 1;
-        int expectedEntryCount = maxLength + 1;
+        var coverage = specification.HashBlockSize > 1 ? specification.HashBlockSize : 16;
+        var maxLength = coverage + 1;
+        var expectedEntryCount = maxLength + 1;
 
         Assert.AreEqual(expectedEntryCount, expectedHashes.Length,
             $"Expected {expectedEntryCount} algorithm entries for variant '{variant}' " +
@@ -413,17 +413,17 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             $"but got {expectedHashes.Length}.");
 
         TAlgorithm algorithm = CreateAlgorithm(variant);
-        byte[] input = new byte[maxLength];
+        var input = new byte[maxLength];
 
         try
         {
-            for (int byteCount = 0; byteCount <= maxLength; byteCount++)
+            for (var byteCount = 0; byteCount <= maxLength; byteCount++)
             {
                 if (byteCount > 0)
                     input[byteCount - 1] = unchecked((byte)(byteCount - 1));
 
-                byte[] expected = Convert.FromHexString(expectedHashes[byteCount]);
-                byte[] actual = await invoke(algorithm, input, byteCount).ConfigureAwait(false);
+                var expected = Convert.FromHexString(expectedHashes[byteCount]);
+                var actual = await invoke(algorithm, input, byteCount).ConfigureAwait(false);
 
                 TestHelpers.TraceWriteIfNotEqual(expected, actual);
 

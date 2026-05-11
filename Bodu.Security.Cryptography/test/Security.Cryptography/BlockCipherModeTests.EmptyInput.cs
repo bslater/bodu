@@ -53,7 +53,7 @@ public abstract partial class BlockCipherModeTests<TMode>
     /// <c>throwIfZero: false</c> as of #200.
     /// </summary>
     [TestMethod]
-    public void Transform_WhenInputIsEmpty_ShouldBeNoOp_fix()
+    public void Transform_WhenInputIsEmpty_ShouldBeNoOp()
     {
         if (!AcceptsEmptyInput)
         {
@@ -68,7 +68,7 @@ public abstract partial class BlockCipherModeTests<TMode>
             : new byte[ExpectedBlockSize];
         TMode transform = CreateTransform(cipher, iv);
 
-        int written = 0;
+        var written = 0;
         try
         {
             written = transform.Transform(System.ReadOnlySpan<byte>.Empty, System.Span<byte>.Empty, encrypt: true);

@@ -16,7 +16,7 @@ public abstract partial class SipHashTests<TTest, TAlgorithm>
     public void AlgorithmName_WhenUsingVariant_ShouldReturnCorrectlyFormattedString(SipHashVariant variant)
     {
         using TAlgorithm algorithm = CreateAlgorithm(variant);
-        string expected = GetAlgorithmName(algorithm);
+        var expected = GetAlgorithmName(algorithm);
 
         Assert.AreEqual(expected, algorithm.AlgorithmName);
     }
@@ -32,7 +32,7 @@ public abstract partial class SipHashTests<TTest, TAlgorithm>
             CompressionRounds = 3,
             FinalizationRounds = 5
         };
-        string expected = GetAlgorithmName(algorithm);
+        var expected = GetAlgorithmName(algorithm);
 
         Assert.AreEqual(expected, algorithm.AlgorithmName);
     }

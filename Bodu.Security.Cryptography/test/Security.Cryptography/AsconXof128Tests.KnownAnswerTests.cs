@@ -38,10 +38,10 @@ public partial class AsconXof128Tests
     public void HashData_WithVariousInputLengths_ShouldProduceCorrectOutputLength(
         int inputLength, int outputLength)
     {
-        byte[] message = new byte[inputLength];
-        for (int i = 0; i < inputLength; i++) message[i] = (byte)i;
+        var message = new byte[inputLength];
+        for (var i = 0; i < inputLength; i++) message[i] = (byte)i;
 
-        byte[] actual = AsconXof128.HashData(message, outputLength);
+        var actual = AsconXof128.HashData(message, outputLength);
 
         Assert.AreEqual(outputLength, actual.Length,
             $"HashData({inputLength}, {outputLength}) must return exactly {outputLength} bytes.");
@@ -62,11 +62,11 @@ public partial class AsconXof128Tests
     [DataRow(16)]
     public void HashData_CalledTwiceWithSameInput_ShouldProduceIdenticalOutput(int inputLength)
     {
-        byte[] message = new byte[inputLength];
-        for (int i = 0; i < inputLength; i++) message[i] = (byte)i;
+        var message = new byte[inputLength];
+        for (var i = 0; i < inputLength; i++) message[i] = (byte)i;
 
-        byte[] first  = AsconXof128.HashData(message, 32);
-        byte[] second = AsconXof128.HashData(message, 32);
+        var first  = AsconXof128.HashData(message, 32);
+        var second = AsconXof128.HashData(message, 32);
 
         CollectionAssert.AreEqual(first, second,
             $"HashData must be deterministic for {inputLength}-byte sequential input.");
@@ -86,11 +86,11 @@ public partial class AsconXof128Tests
     [DataRow(16, 17)]
     public void HashData_ConsecutiveInputLengths_ShouldProduceDifferentOutputs(int len1, int len2)
     {
-        byte[] msg1 = new byte[len1]; for (int i = 0; i < len1; i++) msg1[i] = (byte)i;
-        byte[] msg2 = new byte[len2]; for (int i = 0; i < len2; i++) msg2[i] = (byte)i;
+        var msg1 = new byte[len1]; for (var i = 0; i < len1; i++) msg1[i] = (byte)i;
+        var msg2 = new byte[len2]; for (var i = 0; i < len2; i++) msg2[i] = (byte)i;
 
-        byte[] output1 = AsconXof128.HashData(msg1, 32);
-        byte[] output2 = AsconXof128.HashData(msg2, 32);
+        var output1 = AsconXof128.HashData(msg1, 32);
+        var output2 = AsconXof128.HashData(msg2, 32);
 
         CollectionAssert.AreNotEqual(output1, output2,
             $"HashData for {len1}-byte and {len2}-byte inputs must produce different outputs.");
@@ -116,10 +116,10 @@ public partial class AsconXof128Tests
     public void HashData_WhenGivenKnownInput_ShouldMatchReferenceDigest(
         int inputLength, int outputLength, string expectedHex)
     {
-        byte[] message = new byte[inputLength];
-        for (int i = 0; i < inputLength; i++) message[i] = (byte)i;
+        var message = new byte[inputLength];
+        for (var i = 0; i < inputLength; i++) message[i] = (byte)i;
 
-        byte[] actual = AsconXof128.HashData(message, outputLength);
+        var actual = AsconXof128.HashData(message, outputLength);
 
         Assert.AreEqual(
             expectedHex,

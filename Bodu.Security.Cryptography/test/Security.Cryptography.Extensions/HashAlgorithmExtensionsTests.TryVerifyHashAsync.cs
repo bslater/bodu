@@ -42,7 +42,7 @@ public partial class HashAlgorithmExtensionsTests
     public async Task TryVerifyHashAsync_WhenByteArrayMatches_ShouldReturnTrue()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        bool result = await algorithm.TryVerifyHashAsync(SampleData, SampleHash);
+        var result = await algorithm.TryVerifyHashAsync(SampleData, SampleHash);
         Assert.IsTrue(result);
     }
 
@@ -54,7 +54,7 @@ public partial class HashAlgorithmExtensionsTests
     public async Task TryVerifyHashAsync_WhenByteArrayMatchesHex_ShouldReturnTrue()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        bool result = await algorithm.TryVerifyHashAsync(SampleData, SampleHex);
+        var result = await algorithm.TryVerifyHashAsync(SampleData, SampleHex);
         Assert.IsTrue(result);
     }
 
@@ -65,7 +65,7 @@ public partial class HashAlgorithmExtensionsTests
     public async Task TryVerifyHashAsync_WhenEncodedStringMatches_ShouldReturnTrue()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        bool result = await algorithm.TryVerifyHashAsync(SampleString, SampleEncoding, SampleStringHash);
+        var result = await algorithm.TryVerifyHashAsync(SampleString, SampleEncoding, SampleStringHash);
         Assert.IsTrue(result);
     }
 
@@ -78,7 +78,7 @@ public partial class HashAlgorithmExtensionsTests
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(SampleData);
-        bool result = await algorithm.TryVerifyHashAsync(stream, SampleHash);
+        var result = await algorithm.TryVerifyHashAsync(stream, SampleHash);
         Assert.IsTrue(result);
     }
 
@@ -91,7 +91,7 @@ public partial class HashAlgorithmExtensionsTests
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(SampleData);
-        bool result = await algorithm.TryVerifyHashAsync(stream, SampleHex);
+        var result = await algorithm.TryVerifyHashAsync(stream, SampleHex);
         Assert.IsTrue(result);
     }
 
@@ -105,7 +105,7 @@ public partial class HashAlgorithmExtensionsTests
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(SampleData);
         ReadOnlyMemory<byte> expected = SampleHash;
-        bool result = await algorithm.TryVerifyHashAsync(stream, expected);
+        var result = await algorithm.TryVerifyHashAsync(stream, expected);
         Assert.IsTrue(result);
     }
 
@@ -225,9 +225,9 @@ public partial class HashAlgorithmExtensionsTests
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var baseStream = new MemoryStream(new byte[] { 2, 3 });
         using var monitored = new MonitoringStream(baseStream);
-        byte[] expected = BitConverter.GetBytes((uint)5); // additive hash of { 2, 3 }
+        var expected = BitConverter.GetBytes((uint)5); // additive hash of { 2, 3 }
 
-        bool result = await algorithm.TryVerifyHashAsync(monitored, expected);
+        var result = await algorithm.TryVerifyHashAsync(monitored, expected);
 
         Assert.IsTrue(result,
             "TryVerifyHashAsync must return true when the stream content matches the expected hash.");
@@ -244,8 +244,8 @@ public partial class HashAlgorithmExtensionsTests
     public async Task TryVerifyHashAsync_WhenHashDoesNotMatch_ShouldReturnFalse()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        byte[] badHash = BitConverter.GetBytes((uint)1234);
-        bool result = await algorithm.TryVerifyHashAsync(SampleData, badHash);
+        var badHash = BitConverter.GetBytes((uint)1234);
+        var result = await algorithm.TryVerifyHashAsync(SampleData, badHash);
         Assert.IsFalse(result);
     }
 
@@ -256,7 +256,7 @@ public partial class HashAlgorithmExtensionsTests
     public async Task TryVerifyHashAsync_WhenStreamIsNull_ShouldReturnFalse()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        bool result = await algorithm.TryVerifyHashAsync((Stream)null!, SampleHash);
+        var result = await algorithm.TryVerifyHashAsync((Stream)null!, SampleHash);
         Assert.IsFalse(result);
     }
 
@@ -269,7 +269,7 @@ public partial class HashAlgorithmExtensionsTests
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(SampleData);
-        bool result = await algorithm.TryVerifyHashAsync(stream, (byte[])null!);
+        var result = await algorithm.TryVerifyHashAsync(stream, (byte[])null!);
         Assert.IsFalse(result);
     }
 
@@ -284,7 +284,7 @@ public partial class HashAlgorithmExtensionsTests
         using var stream = new FaultingStream(
             CryptoTestUtilities.CreateDeterministicBytes(64), throwAfterBytes: 16);
 
-        bool result = await algorithm.TryVerifyHashAsync(stream, new byte[4]);
+        var result = await algorithm.TryVerifyHashAsync(stream, new byte[4]);
 
         Assert.IsFalse(result,
             "TryVerifyHashAsync must return false when the source stream faults — IOException is swallowed by the try-pattern.");
@@ -302,7 +302,7 @@ public partial class HashAlgorithmExtensionsTests
         using var stream = new CancellationTriggerStream(
             new IncrementingByteStream(1024), cts, cancelAfterRead: 2);
 
-        bool result = await algorithm.TryVerifyHashAsync(stream, new byte[4], cts.Token);
+        var result = await algorithm.TryVerifyHashAsync(stream, new byte[4], cts.Token);
 
         Assert.IsFalse(result,
             "TryVerifyHashAsync must return false when cancelled mid-stream — OperationCanceledException is swallowed by the try-pattern.");
@@ -317,7 +317,7 @@ public partial class HashAlgorithmExtensionsTests
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(SampleData);
-        bool result = await algorithm.TryVerifyHashAsync(stream, (string)null!);
+        var result = await algorithm.TryVerifyHashAsync(stream, (string)null!);
         Assert.IsFalse(result);
     }
 
@@ -332,7 +332,7 @@ public partial class HashAlgorithmExtensionsTests
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        bool result = await algorithm.TryVerifyHashAsync(SampleData, SampleHash, cts.Token);
+        var result = await algorithm.TryVerifyHashAsync(SampleData, SampleHash, cts.Token);
 
         Assert.IsFalse(result);
     }
@@ -349,7 +349,7 @@ public partial class HashAlgorithmExtensionsTests
     public async Task TryVerifyHashAsync_WhenByteArrayInputIsNull_ShouldReturnFalse()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        bool result = await algorithm.TryVerifyHashAsync((byte[])null!, SampleHash);
+        var result = await algorithm.TryVerifyHashAsync((byte[])null!, SampleHash);
         Assert.IsFalse(result);
     }
 
@@ -361,7 +361,7 @@ public partial class HashAlgorithmExtensionsTests
     public async Task TryVerifyHashAsync_WhenByteArrayExpectedHashIsNull_ShouldReturnFalse()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        bool result = await algorithm.TryVerifyHashAsync(SampleData, (byte[])null!);
+        var result = await algorithm.TryVerifyHashAsync(SampleData, (byte[])null!);
         Assert.IsFalse(result);
     }
 
@@ -373,7 +373,7 @@ public partial class HashAlgorithmExtensionsTests
     public async Task TryVerifyHashAsync_WhenByteArrayExpectedHexIsNull_ShouldReturnFalse()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        bool result = await algorithm.TryVerifyHashAsync(SampleData, (string)null!);
+        var result = await algorithm.TryVerifyHashAsync(SampleData, (string)null!);
         Assert.IsFalse(result);
     }
 
@@ -385,7 +385,7 @@ public partial class HashAlgorithmExtensionsTests
     public async Task TryVerifyHashAsync_WhenStringInputIsNull_ShouldReturnFalse()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        bool result = await algorithm.TryVerifyHashAsync(null!, SampleEncoding, SampleStringHash);
+        var result = await algorithm.TryVerifyHashAsync(null!, SampleEncoding, SampleStringHash);
         Assert.IsFalse(result);
     }
 
@@ -397,7 +397,7 @@ public partial class HashAlgorithmExtensionsTests
     public async Task TryVerifyHashAsync_WhenEncodingIsNull_ShouldReturnFalse()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        bool result = await algorithm.TryVerifyHashAsync(SampleString, null!, SampleStringHash);
+        var result = await algorithm.TryVerifyHashAsync(SampleString, null!, SampleStringHash);
         Assert.IsFalse(result);
     }
 
@@ -409,7 +409,7 @@ public partial class HashAlgorithmExtensionsTests
     public async Task TryVerifyHashAsync_WhenStringExpectedHashIsNull_ShouldReturnFalse()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        bool result = await algorithm.TryVerifyHashAsync(SampleString, SampleEncoding, null!);
+        var result = await algorithm.TryVerifyHashAsync(SampleString, SampleEncoding, null!);
         Assert.IsFalse(result);
     }
 }

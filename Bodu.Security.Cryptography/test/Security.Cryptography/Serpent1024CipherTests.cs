@@ -67,8 +67,8 @@ internal sealed class Serpent1024CipherTests
             yield break;
 
         BlockCipherSpecification spec = GetSpecification(variant);
-        byte[] input = new byte[spec.BlockSize];
-        byte[] expected = new byte[spec.BlockSize];
+        var input = new byte[spec.BlockSize];
+        var expected = new byte[spec.BlockSize];
 
         using (var cipher = new Serpent1024Cipher(spec.TestKey, spec.TestTweak))
             cipher.Encrypt(input, expected);

@@ -66,9 +66,9 @@ internal static partial class CryptoTestUtilities
     {
         // Try byte-aligned lengths from 1 up to a generous ceiling.
         // The first length (in bits) that is not covered by any legal range becomes the invalid key.
-        for (int bytes = 1; bytes <= 512; bytes++)
+        for (var bytes = 1; bytes <= 512; bytes++)
         {
-            int bits = bytes * 8;
+            var bits = bytes * 8;
             if (!IsLegalKeySize(bits, legalSizes))
                 return new byte[bytes];
         }

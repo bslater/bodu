@@ -111,13 +111,13 @@ public sealed class HashAlgorithmHelperTests
     [TestMethod]
     public void HashData_Span_ShouldMatchDirectAlgorithmOutput()
     {
-        byte[] input = Enumerable.Range(0, 96).Select(i => (byte)i).ToArray();
+        var input = Enumerable.Range(0, 96).Select(i => (byte)i).ToArray();
 
-        byte[] viaHelper = HashAlgorithmHelper.HashData(
+        var viaHelper = HashAlgorithmHelper.HashData(
             HashAlgorithmFactory.From<MD5>(MD5.Create),
             input);
 
-        byte[] direct = MD5.HashData(input);
+        var direct = MD5.HashData(input);
 
         CollectionAssert.AreEqual(direct, viaHelper);
     }
@@ -131,14 +131,14 @@ public sealed class HashAlgorithmHelperTests
     [TestMethod]
     public void HashData_Stream_ShouldMatchSpanOverloadForSameContent()
     {
-        byte[] input = Enumerable.Range(0, 32 * 1024).Select(i => (byte)(i & 0xFF)).ToArray();
+        var input = Enumerable.Range(0, 32 * 1024).Select(i => (byte)(i & 0xFF)).ToArray();
 
-        byte[] viaSpan = HashAlgorithmHelper.HashData(
+        var viaSpan = HashAlgorithmHelper.HashData(
             HashAlgorithmFactory.From<SHA256>(SHA256.Create),
             input);
 
         using var stream = new MemoryStream(input);
-        byte[] viaStream = HashAlgorithmHelper.HashData(
+        var viaStream = HashAlgorithmHelper.HashData(
             HashAlgorithmFactory.From<SHA256>(SHA256.Create),
             stream);
 

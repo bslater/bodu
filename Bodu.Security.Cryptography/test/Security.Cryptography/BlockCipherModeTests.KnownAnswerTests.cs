@@ -22,18 +22,18 @@ public abstract partial class BlockCipherModeTests<TMode>
     [TestCategory("Regression")]
     public void Transform_WithRealAesCipher_RandomKey_ShouldRoundTrip()
     {
-        byte[] key = new byte[16];
+        var key = new byte[16];
         RandomNumberGenerator.Fill(key);
 
         using var cipher = new AesBlockCipherFixture(key);
 
-        byte[] iv = new byte[cipher.BlockSize];
+        var iv = new byte[cipher.BlockSize];
         RandomNumberGenerator.Fill(iv);
 
-        byte[] plaintext = new byte[cipher.BlockSize * 4];
+        var plaintext = new byte[cipher.BlockSize * 4];
         RandomNumberGenerator.Fill(plaintext);
-        byte[] ciphertext = new byte[plaintext.Length];
-        byte[] recovered = new byte[plaintext.Length];
+        var ciphertext = new byte[plaintext.Length];
+        var recovered = new byte[plaintext.Length];
 
         CreateTransform(cipher, (byte[])iv.Clone()).Transform(plaintext, ciphertext, encrypt: true);
         CreateTransform(cipher, (byte[])iv.Clone()).Transform(ciphertext, recovered, encrypt: false);

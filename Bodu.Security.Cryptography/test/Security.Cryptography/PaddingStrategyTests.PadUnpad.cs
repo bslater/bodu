@@ -19,7 +19,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
     {
         TPadding padding = CreatePadding();
 
-        for (int residual = 0; residual < BlockSize; residual++)
+        for (var residual = 0; residual < BlockSize; residual++)
         {
             // Skip unaligned residuals for strategies that cannot round-trip them. NoPadding rejects unaligned input
             // outright, and ZeroPadding cannot distinguish its own padding from legitimate trailing zero bytes, so
@@ -27,12 +27,12 @@ public abstract partial class PaddingStrategyTests<TPadding>
             if (residual > 0 && !SupportsUnalignedInput)
                 continue;
 
-            byte[] plaintext = CreatePlaintextWithResidual(residual);
-            byte[] padded = padding.Pad(plaintext, BlockSize);
+            var plaintext = CreatePlaintextWithResidual(residual);
+            var padded = padding.Pad(plaintext, BlockSize);
             Assert.AreEqual(0, padded.Length % BlockSize,
                 $"Padded output must be a multiple of the block size (residual {residual}).");
 
-            byte[] unpadded = padding.Unpad(padded, BlockSize);
+            var unpadded = padding.Unpad(padded, BlockSize);
             CollectionAssert.AreEqual(plaintext, unpadded,
                 $"Round-trip should return the original plaintext (residual {residual}).");
         }

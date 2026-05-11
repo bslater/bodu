@@ -31,7 +31,7 @@ public partial class HashAlgorithmExtensionsTests
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         byte[] input = { 1, 2, 3, 4 };
-        byte[] expected = BitConverter.GetBytes((uint)(1 + 2 + 3 + 4));
+        var expected = BitConverter.GetBytes((uint)(1 + 2 + 3 + 4));
         Assert.IsTrue(algorithm.VerifyHash(input, expected));
     }
 
@@ -43,7 +43,7 @@ public partial class HashAlgorithmExtensionsTests
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         byte[] input = { 10, 10 };
-        string expectedHex = Convert.ToHexString(BitConverter.GetBytes((uint)20));
+        var expectedHex = Convert.ToHexString(BitConverter.GetBytes((uint)20));
         Assert.IsTrue(algorithm.VerifyHash(input, expectedHex));
     }
 
@@ -57,7 +57,7 @@ public partial class HashAlgorithmExtensionsTests
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         ReadOnlySpan<byte> input = new byte[] { 6, 6 };
         ReadOnlyMemory<byte> memory = input.ToArray();
-        byte[] expected = BitConverter.GetBytes((uint)12);
+        var expected = BitConverter.GetBytes((uint)12);
 
         Assert.IsTrue(algorithm.VerifyHash(input, expected));
         Assert.IsTrue(algorithm.VerifyHash(memory, expected));
@@ -73,8 +73,8 @@ public partial class HashAlgorithmExtensionsTests
     public void VerifyHash_WhenEncodedStringMatches_ShouldReturnTrue()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        string input = "ABC"; // ASCII bytes sum to 65 + 66 + 67 = 198
-        byte[] expected = BitConverter.GetBytes((uint)198);
+        var input = "ABC"; // ASCII bytes sum to 65 + 66 + 67 = 198
+        var expected = BitConverter.GetBytes((uint)198);
         Assert.IsTrue(algorithm.VerifyHash(input, Encoding.ASCII, expected));
     }
 
@@ -89,7 +89,7 @@ public partial class HashAlgorithmExtensionsTests
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(new byte[] { 5, 5, 5 });
-        byte[] expected = BitConverter.GetBytes((uint)15);
+        var expected = BitConverter.GetBytes((uint)15);
         Assert.IsTrue(algorithm.VerifyHash(stream, expected));
     }
 
@@ -103,7 +103,7 @@ public partial class HashAlgorithmExtensionsTests
     public void VerifyHash_WhenHashDoesNotMatch_ShouldReturnFalse()
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
-        byte[] expected = BitConverter.GetBytes((uint)999);
+        var expected = BitConverter.GetBytes((uint)999);
         Assert.IsFalse(algorithm.VerifyHash(SampleData, expected));
     }
 

@@ -18,7 +18,7 @@ public partial class TweakableSymmetricAlgorithmExtensionsTests
     public void TryCreateDecryptor_WhenIVIsNull_ShouldReturnFalseAndNullOutput()
     {
         using TweakableSymmetricAlgorithm algorithm = CreateAlgorithm();
-        bool result = algorithm.TryCreateDecryptor(new byte[algorithm.KeySize / 8], null!, new byte[algorithm.TweakSize / 8], out ICryptoTransform? transform);
+        var result = algorithm.TryCreateDecryptor(new byte[algorithm.KeySize / 8], null!, new byte[algorithm.TweakSize / 8], out ICryptoTransform? transform);
 
         Assert.IsFalse(result);
         Assert.IsNull(transform);
@@ -37,7 +37,7 @@ public partial class TweakableSymmetricAlgorithmExtensionsTests
         var iv = new byte[(algorithm.BlockSize / 8) + 1]; // one byte too long
         var tweak = new byte[algorithm.TweakSize / 8];
 
-        bool result = algorithm.TryCreateDecryptor(key, iv, tweak, out ICryptoTransform? transform);
+        var result = algorithm.TryCreateDecryptor(key, iv, tweak, out ICryptoTransform? transform);
         Assert.IsFalse(result);
         Assert.IsNull(transform);
     }
@@ -50,7 +50,7 @@ public partial class TweakableSymmetricAlgorithmExtensionsTests
     public void TryCreateDecryptor_WhenKeyIsNull_ShouldReturnFalseAndNullOutput()
     {
         using TweakableSymmetricAlgorithm algorithm = CreateAlgorithm();
-        bool result = algorithm.TryCreateDecryptor(null!, new byte[algorithm.BlockSize / 8], new byte[algorithm.TweakSize / 8], out ICryptoTransform? transform);
+        var result = algorithm.TryCreateDecryptor(null!, new byte[algorithm.BlockSize / 8], new byte[algorithm.TweakSize / 8], out ICryptoTransform? transform);
 
         Assert.IsFalse(result);
         Assert.IsNull(transform);
@@ -64,7 +64,7 @@ public partial class TweakableSymmetricAlgorithmExtensionsTests
     {
         using TweakableSymmetricAlgorithm algorithm = CreateAlgorithm();
 
-        bool result = algorithm.TryCreateDecryptor(out ICryptoTransform? transform);
+        var result = algorithm.TryCreateDecryptor(out ICryptoTransform? transform);
 
         Assert.IsTrue(result);
         Assert.IsNotNull(transform);
@@ -84,7 +84,7 @@ public partial class TweakableSymmetricAlgorithmExtensionsTests
         var iv = new byte[algorithm.BlockSize / 8];
         var tweak = new byte[algorithm.TweakSize / 8];
 
-        bool result = algorithm.TryCreateDecryptor(key, iv, tweak, out ICryptoTransform? transform);
+        var result = algorithm.TryCreateDecryptor(key, iv, tweak, out ICryptoTransform? transform);
         Assert.IsFalse(result);
         Assert.IsNull(transform);
     }
@@ -97,7 +97,7 @@ public partial class TweakableSymmetricAlgorithmExtensionsTests
     public void TryCreateDecryptor_WhenTweakIsNull_ShouldReturnFalseAndNullOutput()
     {
         using TweakableSymmetricAlgorithm algorithm = CreateAlgorithm();
-        bool result = algorithm.TryCreateDecryptor(new byte[algorithm.KeySize / 8], new byte[algorithm.BlockSize / 8], null!, out ICryptoTransform? transform);
+        var result = algorithm.TryCreateDecryptor(new byte[algorithm.KeySize / 8], new byte[algorithm.BlockSize / 8], null!, out ICryptoTransform? transform);
 
         Assert.IsFalse(result);
         Assert.IsNull(transform);
@@ -116,7 +116,7 @@ public partial class TweakableSymmetricAlgorithmExtensionsTests
         var iv = new byte[algorithm.BlockSize / 8];
         var tweak = new byte[(algorithm.TweakSize / 8) + 1]; // one bytes too long
 
-        bool result = algorithm.TryCreateDecryptor(key, iv, tweak, out ICryptoTransform? transform);
+        var result = algorithm.TryCreateDecryptor(key, iv, tweak, out ICryptoTransform? transform);
         Assert.IsFalse(result);
         Assert.IsNull(transform);
     }
@@ -133,7 +133,7 @@ public partial class TweakableSymmetricAlgorithmExtensionsTests
         var iv = new byte[algorithm.BlockSize / 8];
         var tweak = new byte[algorithm.TweakSize / 8];
 
-        bool result = algorithm.TryCreateDecryptor(key, iv, tweak, out ICryptoTransform transform);
+        var result = algorithm.TryCreateDecryptor(key, iv, tweak, out ICryptoTransform transform);
         Assert.IsTrue(result);
         Assert.IsNotNull(transform);
     }

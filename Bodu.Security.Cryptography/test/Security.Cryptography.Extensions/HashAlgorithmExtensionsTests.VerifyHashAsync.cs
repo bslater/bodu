@@ -69,7 +69,7 @@ public partial class HashAlgorithmExtensionsTests
     {
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(SampleData);
-        byte[] badHash = BitConverter.GetBytes((uint)9999);
+        var badHash = BitConverter.GetBytes((uint)9999);
         Assert.IsFalse(await algorithm.VerifyHashAsync(stream, badHash));
     }
 
@@ -89,7 +89,7 @@ public partial class HashAlgorithmExtensionsTests
         using var baseStream = new MemoryStream(SampleData);
         using var monitored = new MonitoringStream(baseStream);
 
-        bool result = await algorithm.VerifyHashAsync(monitored, "ZZZZ");
+        var result = await algorithm.VerifyHashAsync(monitored, "ZZZZ");
 
         Assert.IsFalse(result);
         Assert.AreEqual(0, monitored.Reads.Count);
@@ -214,9 +214,9 @@ public partial class HashAlgorithmExtensionsTests
         using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var baseStream = new MemoryStream(new byte[] { 2, 3 });
         using var monitored = new MonitoringStream(baseStream);
-        byte[] expected = BitConverter.GetBytes((uint)5); // additive hash of { 2, 3 }
+        var expected = BitConverter.GetBytes((uint)5); // additive hash of { 2, 3 }
 
-        bool result = await algorithm.VerifyHashAsync(monitored, expected);
+        var result = await algorithm.VerifyHashAsync(monitored, expected);
 
         Assert.IsTrue(result);
         Assert.IsTrue(monitored.Reads.Count > 0);

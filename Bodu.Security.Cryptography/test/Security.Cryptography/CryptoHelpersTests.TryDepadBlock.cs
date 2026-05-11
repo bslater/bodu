@@ -18,10 +18,10 @@ public partial class CryptoHelpersTests
     public void TryDepadBlock_WhenValidPadding_ShouldReturnTrue(
         PaddingMode padding, string inputHex, string expectedHex)
     {
-        byte[] input = Convert.FromHexString(inputHex);
+        var input = Convert.FromHexString(inputHex);
         Span<byte> destination = new byte[input.Length];
 
-        bool result = CryptoHelpers.TryDepadBlock(padding, input.Length, input, destination, out int written);
+        var result = CryptoHelpers.TryDepadBlock(padding, input.Length, input, destination, out var written);
 
         Assert.IsTrue(result);
     }
@@ -34,12 +34,12 @@ public partial class CryptoHelpersTests
     public void TryDepadBlock_WhenValidPadding_ShouldReturnExpectedLength(
         PaddingMode padding, string inputHex, string expectedHex)
     {
-        byte[] input = Convert.FromHexString(inputHex);
-        byte[] expected = Convert.FromHexString(expectedHex);
+        var input = Convert.FromHexString(inputHex);
+        var expected = Convert.FromHexString(expectedHex);
         var expectedLength = expected.Length;
         Span<byte> destination = new byte[input.Length];
 
-        CryptoHelpers.TryDepadBlock(padding, input.Length, input, destination, out int written);
+        CryptoHelpers.TryDepadBlock(padding, input.Length, input, destination, out var written);
 
         Assert.AreEqual(expectedLength, written);
     }
@@ -52,12 +52,12 @@ public partial class CryptoHelpersTests
     public void TryDepadBlock_WhenValidPadding_ShouldReturnExpectedResult(
         PaddingMode padding, string inputHex, string expectedHex)
     {
-        byte[] input = Convert.FromHexString(inputHex);
-        byte[] expected = Convert.FromHexString(expectedHex);
+        var input = Convert.FromHexString(inputHex);
+        var expected = Convert.FromHexString(expectedHex);
         var expectedLength = expected.Length;
         Span<byte> destination = new byte[input.Length];
 
-        CryptoHelpers.TryDepadBlock(padding, input.Length, input, destination, out int written);
+        CryptoHelpers.TryDepadBlock(padding, input.Length, input, destination, out var written);
 
         CollectionAssert.AreEqual(input.Take(expectedLength).ToArray(), destination.Slice(0, written).ToArray());
     }
@@ -69,10 +69,10 @@ public partial class CryptoHelpersTests
     [DynamicData(nameof(CryptoHelpersTests.InvalidDepaddingCases))]
     public void TryDepadBlock_WhenInvalidPadding_ShouldReturnFalse(PaddingMode padding, string inputHex, int blockSizeBytes, Type exceptionType)
     {
-        byte[] input = Convert.FromHexString(inputHex);
+        var input = Convert.FromHexString(inputHex);
         Span<byte> destination = new byte[input.Length];
 
-        bool result = CryptoHelpers.TryDepadBlock(padding, blockSizeBytes, input, destination, out int written);
+        var result = CryptoHelpers.TryDepadBlock(padding, blockSizeBytes, input, destination, out var written);
 
         Assert.IsFalse(result);
         Assert.AreEqual(0, written);

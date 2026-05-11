@@ -23,7 +23,7 @@ internal sealed partial class TwofishBlockCipherTests
     [DataRow(33)]
     public void Ctor_WhenKeyLengthIsInvalid_ShouldThrowArgumentException(int keyLength)
     {
-        byte[] key = new byte[keyLength];
+        var key = new byte[keyLength];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -41,7 +41,7 @@ internal sealed partial class TwofishBlockCipherTests
     [DataRow(32)]
     public void Ctor_WhenKeyLengthIsValid_ShouldNotThrow(int keyLength)
     {
-        byte[] key = new byte[keyLength];
+        var key = new byte[keyLength];
 
         using var cipher = new TwofishBlockCipher(key);
         Assert.IsNotNull(cipher);

@@ -95,7 +95,7 @@ public partial class ParallelMerkleTreeHashTests
         hasher.ComputeHash(MakeData(dataLength), diagnostics);
 
         IReadOnlyList<MerkleTreeDiagnosticNode> leaves = diagnostics.GetLevel(0);
-        for (int i = 0; i < leaves.Count; i++)
+        for (var i = 0; i < leaves.Count; i++)
             Assert.AreEqual(i, leaves[i].Index,
                 $"Leaf at position {i} has unexpected index {leaves[i].Index}.");
     }
@@ -109,7 +109,7 @@ public partial class ParallelMerkleTreeHashTests
     {
         var diagnostics = new MerkleTreeDiagnostics();
         using var hasher = new ParallelMerkleTreeHash(Factory, blockSize: 4, fanOut: 2);
-        byte[] root = hasher.ComputeHash(MakeData(8), diagnostics);
+        var root = hasher.ComputeHash(MakeData(8), diagnostics);
 
         MerkleTreeDiagnosticNode? rootNode = diagnostics.Root;
         Assert.IsNotNull(rootNode);
@@ -177,7 +177,7 @@ public partial class ParallelMerkleTreeHashTests
         MerkleTreeDiagnosticNode internal_ = diagnostics.GetAllNodes().Single(n => !n.IsLeaf);
 
         Assert.AreEqual(leaves.Count, internal_.ChildHashes.Count);
-        for (int i = 0; i < leaves.Count; i++)
+        for (var i = 0; i < leaves.Count; i++)
             CollectionAssert.AreEqual(leaves[i].Hash, internal_.ChildHashes[i],
                 $"Child hash {i} does not match leaf {i}.");
     }
@@ -197,7 +197,7 @@ public partial class ParallelMerkleTreeHashTests
         using var hasher = new ParallelMerkleTreeHash(Factory, blockSize: 4, fanOut: 2);
         hasher.ComputeHash(MakeData(12), diagnostics);
 
-        bool valid = diagnostics.Validate(Factory, out IReadOnlyList<string>? errors);
+        var valid = diagnostics.Validate(Factory, out IReadOnlyList<string>? errors);
 
         Assert.IsTrue(valid, "Validate must return true for a correctly computed tree.");
         Assert.AreEqual(0, errors.Count, "Validate must produce no errors for a correctly computed tree.");
@@ -235,7 +235,7 @@ public partial class ParallelMerkleTreeHashTests
         MerkleTreeDiagnosticNode internalNode = diagnostics.GetAllNodes().First(n => !n.IsLeaf);
         internalNode.Hash[0] ^= 0xFF;
 
-        bool valid = diagnostics.Validate(Factory, out IReadOnlyList<string>? errors);
+        var valid = diagnostics.Validate(Factory, out IReadOnlyList<string>? errors);
         Assert.IsFalse(valid, "Validate must return false when a node hash is corrupted.");
         Assert.IsTrue(errors.Count > 0, "Validate must report at least one error.");
     }
@@ -251,7 +251,7 @@ public partial class ParallelMerkleTreeHashTests
         using var hasher = new ParallelMerkleTreeHash(Factory, blockSize: 4, fanOut: 2);
         hasher.ComputeHash(MakeData(12), diagnostics); // 3 leaves → remainder of 1
 
-        bool valid = diagnostics.Validate(Factory, out IReadOnlyList<string>? errors);
+        var valid = diagnostics.Validate(Factory, out IReadOnlyList<string>? errors);
         Assert.IsTrue(valid, string.Join("; ", errors));
     }
 
@@ -285,12 +285,12 @@ public partial class ParallelMerkleTreeHashTests
     {
         var diagnostics = new MerkleTreeDiagnostics();
         using var hasher = new ParallelMerkleTreeHash(Factory, blockSize: 4, fanOut: 2);
-        byte[] root = hasher.ComputeHash(MakeData(8), diagnostics);
+        var root = hasher.ComputeHash(MakeData(8), diagnostics);
 
         using var writer = new StringWriter();
         diagnostics.WriteTo(writer);
 
-        string output = writer.ToString();
+        var output = writer.ToString();
         Assert.IsTrue(output.Length > 0, "WriteTo should produce non-empty output.");
         StringAssert.Contains(output, Convert.ToHexString(root),
             "WriteTo output should include the root hash.");
@@ -329,9 +329,9 @@ public partial class ParallelMerkleTreeHashTests
         hasher.ComputeHash(MakeData(16), diagnostics); // 4 leaves → 2 internal → 1 root
 
         IReadOnlyList<MerkleTreeDiagnosticNode> nodes = diagnostics.GetAllNodes();
-        for (int i = 1; i < nodes.Count; i++)
+        for (var i = 1; i < nodes.Count; i++)
         {
-            bool ordered = nodes[i].Level > nodes[i - 1].Level ||
+            var ordered = nodes[i].Level > nodes[i - 1].Level ||
                            (nodes[i].Level == nodes[i - 1].Level && nodes[i].Index >= nodes[i - 1].Index);
             Assert.IsTrue(ordered,
                 $"Node [{nodes[i].Level}:{nodes[i].Index}] is out of order " +
@@ -373,7 +373,7 @@ public partial class ParallelMerkleTreeHashTests
     [TestMethod]
     public void Diagnostics_WhenFreshInstancePerCall_ShouldIsolateEachComputationsTrace()
     {
-        byte[] data = MakeData(8); // 2 leaves + 1 internal = 3 nodes per call
+        var data = MakeData(8); // 2 leaves + 1 internal = 3 nodes per call
 
         using var hasher = new ParallelMerkleTreeHash(Factory, blockSize: 4, fanOut: 2);
 
@@ -396,16 +396,16 @@ public partial class ParallelMerkleTreeHashTests
     [TestMethod]
     public void Diagnostics_WhenFreshInstancePerCall_EachShouldPassValidation()
     {
-        byte[] data = MakeData(12);
+        var data = MakeData(12);
 
         using var hasher = new ParallelMerkleTreeHash(Factory, blockSize: 4, fanOut: 2);
 
-        for (int i = 0; i < 3; i++)
+        for (var i = 0; i < 3; i++)
         {
             var diag = new MerkleTreeDiagnostics();
             hasher.ComputeHash(data, diag);
 
-            bool valid = diag.Validate(Factory, out IReadOnlyList<string>? errors);
+            var valid = diag.Validate(Factory, out IReadOnlyList<string>? errors);
             Assert.IsTrue(valid, $"Call {i + 1} diagnostics failed validation: {string.Join("; ", errors)}");
         }
     }

@@ -35,7 +35,7 @@ public partial class CubeHashTests
     public void Rounds_WhenSetAfterHashing_ShouldNotThrow()
     {
         var algorithm = new CubeHash();
-        byte[] input = new byte[] { 1, 2, 3 };
+        var input = new byte[] { 1, 2, 3 };
 
         algorithm.ComputeHash(input);
 
@@ -50,13 +50,13 @@ public partial class CubeHashTests
     [TestMethod]
     public void Rounds_WhenDifferentValuesUsed_ShouldProduceDifferentHashes()
     {
-        byte[] input = new byte[] { 0x10, 0x20, 0x30 };
+        var input = new byte[] { 0x10, 0x20, 0x30 };
 
         var algorithmA = new CubeHash { Rounds = 32 };
         var algorithmB = new CubeHash { Rounds = 64 };
 
-        byte[] resultA = algorithmA.ComputeHash(input);
-        byte[] resultB = algorithmB.ComputeHash(input);
+        var resultA = algorithmA.ComputeHash(input);
+        var resultB = algorithmB.ComputeHash(input);
 
         CollectionAssert.AreNotEqual(resultA, resultB);
     }
@@ -90,7 +90,7 @@ public partial class CubeHashTests
     public void Rounds_WhenSetToValidValue_ShouldBeAssigned(int size)
     {
         using CubeHash algorithm = CreateAlgorithm();
-        int original = algorithm.Rounds;
+        var original = algorithm.Rounds;
         algorithm.Rounds = size;
 
         Assert.AreEqual(size, algorithm.Rounds);
@@ -103,8 +103,8 @@ public partial class CubeHashTests
     public void Rounds_WhenSetToValidValue_ShouldUpdateCorrectly()
     {
         using CubeHash algorithm = CreateAlgorithm();
-        int round = 100;
-        int original = algorithm.Rounds;
+        var round = 100;
+        var original = algorithm.Rounds;
         algorithm.Rounds = round;
 
         Assert.AreEqual(round, algorithm.Rounds);

@@ -60,7 +60,7 @@ public sealed class HashAlgorithmFactoryTests
     [TestMethod]
     public void From_WhenBuilderProvided_ShouldInvokeBuilderOncePerCreate()
     {
-        int callCount = 0;
+        var callCount = 0;
         DelegateHashAlgorithmFactory<MD5> factory = HashAlgorithmFactory.From(() =>
         {
             callCount++;

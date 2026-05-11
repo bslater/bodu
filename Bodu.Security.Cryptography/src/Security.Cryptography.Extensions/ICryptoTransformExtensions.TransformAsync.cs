@@ -72,11 +72,11 @@ public static partial class ICryptoTransformExtensions
 
         // Use a pooled buffer cleared on return so plaintext read from sourceStream cannot leak
         // to a subsequent pool consumer.
-        var buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
+        byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         try
         {
             var cryptoStream = new CryptoStream(targetStream, transform, CryptoStreamMode.Write, leaveOpen: true);
-            var completed = false;
+            bool completed = false;
 
             try
             {
@@ -185,9 +185,9 @@ public static partial class ICryptoTransformExtensions
         ThrowHelper.ThrowIfNull(transform);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(destination.Span, 0, input.Length + transform.OutputBlockSize);
 
-        MemoryStream ms = new MemoryStream(input.Length + transform.OutputBlockSize);
+        var ms = new MemoryStream(input.Length + transform.OutputBlockSize);
         CryptoStream? cryptoStream = null;
-        var completed = false;
+        bool completed = false;
 
         try
         {

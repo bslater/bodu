@@ -261,9 +261,9 @@ public sealed partial class OcbModeTransformTests
 
         var transform = new OcbModeTransform(cipher, iv, tagLength);
         transform.ProcessAssociatedData(aad);
-        int plaintextLength = ciphertextWithTag.Length - transform.TagSize;
+        var plaintextLength = ciphertextWithTag.Length - transform.TagSize;
         var output = new byte[plaintextLength];
-        int written = transform.Decrypt(ciphertextWithTag, output);
+        var written = transform.Decrypt(ciphertextWithTag, output);
 
         Assert.AreEqual(plaintextLength, written);
         CollectionAssert.AreEqual(expectedPlaintext, output,

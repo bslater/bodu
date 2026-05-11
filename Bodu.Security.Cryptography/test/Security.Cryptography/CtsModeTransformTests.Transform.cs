@@ -51,7 +51,7 @@ public sealed partial class CtsModeTransformTests
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
         var iv = Enumerable.Repeat((byte)0x11, ExpectedBlockSize).ToArray();
-        int length = ExpectedBlockSize + ExpectedBlockSize / 2; // 1.5 blocks
+        var length = ExpectedBlockSize + ExpectedBlockSize / 2; // 1.5 blocks
 
         var plaintext = Enumerable.Range(0, length).Select(i => (byte)i).ToArray();
         var ciphertext = new byte[length];
@@ -72,12 +72,12 @@ public sealed partial class CtsModeTransformTests
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
         var iv = new byte[ExpectedBlockSize];
-        int length = ExpectedBlockSize + 7;
+        var length = ExpectedBlockSize + 7;
 
         var input = new byte[length];
         var output = new byte[length];
 
-        int written = CreateTransform(cipher, iv).Transform(input, output, encrypt: true);
+        var written = CreateTransform(cipher, iv).Transform(input, output, encrypt: true);
 
         Assert.AreEqual(length, written,
             "CTS must write exactly input.Length bytes — no padding.");
@@ -113,7 +113,7 @@ public sealed partial class CtsModeTransformTests
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
         var iv = new byte[ExpectedBlockSize];
-        int length = ExpectedBlockSize + 5;
+        var length = ExpectedBlockSize + 5;
 
         var input = Enumerable.Range(0, length).Select(i => (byte)i).ToArray();
         var ctsOutput = new byte[length];
@@ -137,7 +137,7 @@ public sealed partial class CtsModeTransformTests
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xBB);
         var iv = Enumerable.Repeat((byte)0x44, ExpectedBlockSize).ToArray();
-        int length = ExpectedBlockSize * 4 + 9; // 4 full blocks + 9 bytes
+        var length = ExpectedBlockSize * 4 + 9; // 4 full blocks + 9 bytes
 
         var plaintext = Enumerable.Range(0, length).Select(i => (byte)(i * 3)).ToArray();
         var ciphertext = new byte[length];

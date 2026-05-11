@@ -101,7 +101,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
         using TAlgorithm algorithm = CreateAlgorithmForKnownAnswer(answer);
         using ICryptoTransform encryptor = algorithm.CreateEncryptor();
 
-        byte[] actual = encryptor.TransformFinalBlock(answer.Plaintext, 0, answer.Plaintext.Length);
+        var actual = encryptor.TransformFinalBlock(answer.Plaintext, 0, answer.Plaintext.Length);
 
         CollectionAssert.AreEqual(
             answer.Ciphertext,
@@ -131,7 +131,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
         using TAlgorithm algorithm = CreateAlgorithmForKnownAnswer(answer);
         using ICryptoTransform decryptor = algorithm.CreateDecryptor();
 
-        byte[] actual = decryptor.TransformFinalBlock(answer.Ciphertext, 0, answer.Ciphertext.Length);
+        var actual = decryptor.TransformFinalBlock(answer.Ciphertext, 0, answer.Ciphertext.Length);
 
         CollectionAssert.AreEqual(
             answer.Plaintext,

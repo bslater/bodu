@@ -23,7 +23,7 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
         using TAlgorithm algo = CreateAlgorithm();
         try
         {
-            byte[] tag = algo.ComputeHash(new byte[] { 1, 2, 3, 4, 5 });
+            var tag = algo.ComputeHash(new byte[] { 1, 2, 3, 4, 5 });
             Assert.IsNotNull(tag);
         }
         catch (NotImplementedException)
@@ -51,19 +51,19 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
         HashAlgorithmSpecification specification = GetSpecification(variant);
         // Exercise every residual length from 0 up to 2x the configured input block size
         // so we hit every branch of any residual-handling PadBlock path.
-        int limit = Math.Max(16, specification.InputBlockSize * 2);
-        for (int len = 0; len < limit; len++)
+        var limit = Math.Max(16, specification.InputBlockSize * 2);
+        for (var len = 0; len < limit; len++)
         {
             using TAlgorithm algo = CreateAlgorithm();
-            byte[] data = new byte[len];
+            var data = new byte[len];
             try
             {
-                byte[] tag = algo.ComputeHash(data);
+                var tag = algo.ComputeHash(data);
                 Assert.IsNotNull(tag);
             }
             catch (Exception ex)
             {
-                string message = ex.Message ?? string.Empty;
+                var message = ex.Message ?? string.Empty;
                 Assert.IsFalse(
                     message.Contains('\0'),
                     $"Exception message for input length {len} must not contain NUL characters.");

@@ -20,7 +20,7 @@ public partial class Blake2bTests
     public void HashSize_WhenSetAfterTransformBlock_ShouldThrowExactly()
     {
         using var algorithm = new Blake2b();
-        byte[] input = new byte[] { 0x01, 0x02, 0x03 };
+        var input = new byte[] { 0x01, 0x02, 0x03 };
         algorithm.TransformBlock(input, 0, input.Length, null, 0);
 
         Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
@@ -44,7 +44,7 @@ public partial class Blake2bTests
     public void HashSize_WhenSetToInvalidValue_ShouldThrowExactly(int value)
     {
         using var algorithm = new Blake2b();
-        int originalSize = algorithm.HashSize;
+        var originalSize = algorithm.HashSize;
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

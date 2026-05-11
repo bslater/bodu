@@ -35,7 +35,7 @@ public partial class AsconAead128Tests
     public void Encrypt_WhenOutputBufferTooSmall_ShouldThrowArgumentException()
     {
         using AsconAead128 sut = MakeInstance();
-        byte[] plaintext = new byte[8];
+        var plaintext = new byte[8];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -68,13 +68,13 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void Encrypt_ShouldReturnPlaintextLengthPlusTagBytes()
     {
-        byte[] plaintext = new byte[37]; // non-multiple of block to exercise partial-block path
-        for (int i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)i;
+        var plaintext = new byte[37]; // non-multiple of block to exercise partial-block path
+        for (var i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)i;
 
         using AsconAead128 sut = MakeInstance();
-        byte[] output = new byte[plaintext.Length + AsconAead128.TagBytes];
+        var output = new byte[plaintext.Length + AsconAead128.TagBytes];
 
-        int written = sut.Encrypt(plaintext, output);
+        var written = sut.Encrypt(plaintext, output);
 
         Assert.AreEqual(plaintext.Length + AsconAead128.TagBytes, written);
     }
@@ -87,15 +87,15 @@ public partial class AsconAead128Tests
     public void Encrypt_WhenPlaintextEmpty_ShouldProduceTagOnly()
     {
         using AsconAead128 sut = MakeInstance();
-        byte[] output = new byte[AsconAead128.TagBytes];
+        var output = new byte[AsconAead128.TagBytes];
 
-        int written = sut.Encrypt(ReadOnlySpan<byte>.Empty, output);
+        var written = sut.Encrypt(ReadOnlySpan<byte>.Empty, output);
 
         Assert.AreEqual(AsconAead128.TagBytes, written);
 
         // The tag must not be all-zero.
-        bool allZero = true;
-        foreach (byte b in output) { if (b != 0) { allZero = false; break; } }
+        var allZero = true;
+        foreach (var b in output) { if (b != 0) { allZero = false; break; } }
         Assert.IsFalse(allZero, "The authentication tag for an empty plaintext must not be all zero.");
     }
 
@@ -108,8 +108,8 @@ public partial class AsconAead128Tests
     {
         byte[] plaintext = [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08];
 
-        byte[] output1 = new byte[plaintext.Length + AsconAead128.TagBytes];
-        byte[] output2 = new byte[plaintext.Length + AsconAead128.TagBytes];
+        var output1 = new byte[plaintext.Length + AsconAead128.TagBytes];
+        var output2 = new byte[plaintext.Length + AsconAead128.TagBytes];
 
         using AsconAead128 enc1 = MakeInstance();
         enc1.Encrypt(plaintext, output1);
@@ -129,8 +129,8 @@ public partial class AsconAead128Tests
     public void Encrypt_WhenCalledTwiceAfterAssociatedDataProcessed_ShouldThrowInvalidOperationException()
     {
         byte[] plaintext = [0x01, 0x02, 0x03, 0x04];
-        byte[] output1 = new byte[plaintext.Length + AsconAead128.TagBytes];
-        byte[] output2 = new byte[plaintext.Length + AsconAead128.TagBytes];
+        var output1 = new byte[plaintext.Length + AsconAead128.TagBytes];
+        var output2 = new byte[plaintext.Length + AsconAead128.TagBytes];
 
         using AsconAead128 sut = MakeInstance();
 
@@ -151,17 +151,17 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void Encrypt_AfterDecryptTagMismatch_ShouldThrowExactly()
     {
-        byte[] plaintext = new byte[8];
+        var plaintext = new byte[8];
 
         using AsconAead128 enc = MakeInstance();
-        byte[] sealed_ = new byte[plaintext.Length + AsconAead128.TagBytes];
+        var sealed_ = new byte[plaintext.Length + AsconAead128.TagBytes];
         enc.Encrypt(plaintext, sealed_);
 
         // Flip a bit in the tag to force a mismatch on Decrypt.
         sealed_[sealed_.Length - 1] ^= 0xFF;
 
         using AsconAead128 dec = MakeInstance();
-        byte[] recovered = new byte[plaintext.Length];
+        var recovered = new byte[plaintext.Length];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -201,15 +201,15 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void Encrypt_WhenInputAndOutputAlias_ShouldProduceSameResult()
     {
-        byte[] plaintext = Enumerable.Range(0, 37).Select(i => (byte)i).ToArray();
+        var plaintext = Enumerable.Range(0, 37).Select(i => (byte)i).ToArray();
 
         // Reference encryption with disjoint buffers.
-        byte[] reference = new byte[plaintext.Length + AsconAead128.TagBytes];
+        var reference = new byte[plaintext.Length + AsconAead128.TagBytes];
         using (AsconAead128 enc = MakeInstance())
             enc.Encrypt(plaintext, reference);
 
         // In-place encryption with aliased buffer.
-        byte[] aliased = new byte[plaintext.Length + AsconAead128.TagBytes];
+        var aliased = new byte[plaintext.Length + AsconAead128.TagBytes];
         Buffer.BlockCopy(plaintext, 0, aliased, 0, plaintext.Length);
         using (AsconAead128 inplace = MakeInstance())
             inplace.Encrypt(aliased.AsSpan(0, plaintext.Length), aliased);

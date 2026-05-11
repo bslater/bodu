@@ -42,10 +42,10 @@ public abstract partial class PaddingStrategyTests<TPadding>
     /// <c>blockSize</c> on <c>Pad</c>.
     /// </summary>
     [TestMethod]
-    public void Pad_WhenBlockSizeIsZero_ShouldThrowArgumentOutOfRangeException_fix()
+    public void Pad_WhenBlockSizeIsZero_ShouldThrowArgumentOutOfRangeException()
     {
         TPadding padding = CreatePadding();
-        byte[] input = new byte[BlockSize];
+        var input = new byte[BlockSize];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -65,7 +65,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
     public void Pad_WhenBlockSizeIsNegative_ShouldThrowArgumentOutOfRangeException_fix(int blockSize)
     {
         TPadding padding = CreatePadding();
-        byte[] input = new byte[BlockSize];
+        var input = new byte[BlockSize];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -80,7 +80,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
     /// expression that runs before any explicit block-size validation.
     /// </summary>
     [TestMethod]
-    public void Unpad_WhenBlockSizeIsZero_ShouldThrowArgumentOutOfRangeException_fix()
+    public void Unpad_WhenBlockSizeIsZero_ShouldThrowArgumentOutOfRangeException()
     {
         if (!ValidatesBlockSizeOnUnpad)
         {
@@ -89,7 +89,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
         }
 
         TPadding padding = CreatePadding();
-        byte[] input = new byte[BlockSize];
+        var input = new byte[BlockSize];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -115,7 +115,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
         }
 
         TPadding padding = CreatePadding();
-        byte[] input = new byte[BlockSize];
+        var input = new byte[BlockSize];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

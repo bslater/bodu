@@ -86,7 +86,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// </remarks>
     protected virtual byte[] GenerateUniqueKey(int size)
     {
-        byte[] key = new byte[size];
+        var key = new byte[size];
         CryptoHelpers.FillWithRandomNonZeroBytes(key);
         return key;
     }

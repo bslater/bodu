@@ -17,7 +17,7 @@ public abstract partial class SipHashTests<TTest, TAlgorithm>
     public void FinalizationRounds_WhenSetToValidValue_ShouldUpdateCorrectly(int size)
     {
         using TAlgorithm algorithm = CreateAlgorithm();
-        int original = algorithm.FinalizationRounds;
+        var original = algorithm.FinalizationRounds;
         algorithm.FinalizationRounds = size;
 
         Assert.AreEqual(size, algorithm.FinalizationRounds);
@@ -30,7 +30,7 @@ public abstract partial class SipHashTests<TTest, TAlgorithm>
     [TestMethod]
     public void FinalizationRounds_WhenDifferent_ShouldProduceDifferentHash()
     {
-        byte[] input = Enumerable.Range(0, 32).Select(i => (byte)i).ToArray();
+        var input = Enumerable.Range(0, 32).Select(i => (byte)i).ToArray();
         byte[] hashWithRounds4;
         byte[] hashWithRounds8;
 

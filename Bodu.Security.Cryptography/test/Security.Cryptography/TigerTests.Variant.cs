@@ -22,9 +22,9 @@ public partial class TigerTests
     {
         using Tiger algorithm = CreateAlgorithm(variant);
 
-        byte[] input = Encoding.ASCII.GetBytes("Test input");
+        var input = Encoding.ASCII.GetBytes("Test input");
 
-        byte[] result = algorithm.ComputeHash(input);
+        var result = algorithm.ComputeHash(input);
 
         Assert.IsNotNull(result, $"Result should not be null for table variant {variant}.");
         Assert.AreEqual(algorithm.HashSize / 8, result.Length, $"Hash length should match expected size for variant {variant}.");

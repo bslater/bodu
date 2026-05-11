@@ -44,14 +44,14 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
         // assumes no preliminary KEY UBI phase, so reset the key to the empty sentinel before reading the IV.
         algorithm.Key = Array.Empty<byte>();
 
-        ulong[] actual = algorithm.GetInitialChainingValueWords();
+        var actual = algorithm.GetInitialChainingValueWords();
 
         Assert.AreEqual(
             expected.Count,
             actual.Length,
             $"[{variant}] IV word count mismatch (expected {expected.Count}, got {actual.Length}).");
 
-        for (int i = 0; i < expected.Count; i++)
+        for (var i = 0; i < expected.Count; i++)
         {
             Assert.AreEqual(
                 expected[i],

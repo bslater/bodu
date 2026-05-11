@@ -27,8 +27,8 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
         HashAlgorithmSpecification specification = GetSpecification(variant);
 
         // Cover sub-block, exact-block, and multi-block boundaries deterministically.
-        int inputLength = (specification.InputBlockSize * 3) + (specification.InputBlockSize / 2) + 1;
-        byte[] input = Enumerable.Range(0, inputLength)
+        var inputLength = (specification.InputBlockSize * 3) + (specification.InputBlockSize / 2) + 1;
+        var input = Enumerable.Range(0, inputLength)
                                  .Select(i => (byte)((i * 31) + 7))
                                  .ToArray();
 
@@ -36,14 +36,14 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
         using (TAlgorithm reference = CreateAlgorithm(variant))
             expected = reference.ComputeHash(input);
 
-        foreach (int chunkSize in StreamingChunkSizes(specification))
+        foreach (var chunkSize in StreamingChunkSizes(specification))
         {
             using TAlgorithm algorithm = CreateAlgorithm(variant);
-            int offset = 0;
+            var offset = 0;
 
             while (offset < input.Length)
             {
-                int count = Math.Min(chunkSize, input.Length - offset);
+                var count = Math.Min(chunkSize, input.Length - offset);
                 algorithm.TransformBlock(input, offset, count, null, 0);
                 offset += count;
             }
@@ -77,12 +77,12 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
             expectedLength = reference.HashSize / 8;
         }
 
-        foreach (int length in UnalignedInputLengths(specification))
+        foreach (var length in UnalignedInputLengths(specification))
         {
             using TAlgorithm algorithm = CreateAlgorithm();
-            byte[] input = Enumerable.Range(0, length).Select(i => (byte)i).ToArray();
+            var input = Enumerable.Range(0, length).Select(i => (byte)i).ToArray();
 
-            byte[] hash = algorithm.ComputeHash(input);
+            var hash = algorithm.ComputeHash(input);
 
             Assert.IsNotNull(hash, $"Hash for unaligned input length {length} must not be null.");
             Assert.AreEqual(
@@ -108,9 +108,9 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
     {
         const int blockCount = 4;
         HashAlgorithmSpecification specification = GetSpecification(variant);
-        int blockSize = specification.InputBlockSize;
+        var blockSize = specification.InputBlockSize;
 
-        byte[] input = Enumerable.Range(0, blockSize * blockCount)
+        var input = Enumerable.Range(0, blockSize * blockCount)
                                  .Select(i => (byte)((i * 31) + 7))
                                  .ToArray();
 
@@ -120,7 +120,7 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
 
         using TAlgorithm algorithm = CreateAlgorithm(variant);
 
-        for (int i = 0; i < blockCount; i++)
+        for (var i = 0; i < blockCount; i++)
             algorithm.TransformBlock(input, i * blockSize, blockSize, null, 0);
 
         algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);

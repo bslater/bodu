@@ -17,14 +17,14 @@ public sealed partial class Ansix923PaddingTests
     public void Pad_WhenInputHasResidual_ShouldWriteZeroInteriorAndTrailingLength()
     {
         Ansix923Padding padding = CreatePadding();
-        byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 5);
+        var plaintext = CreatePlaintextWithResidual(BlockSize - 5);
 
-        byte[] padded = padding.Pad(plaintext, BlockSize);
+        var padded = padding.Pad(plaintext, BlockSize);
 
         Assert.AreEqual(BlockSize, padded.Length);
         Assert.AreEqual((byte)5, padded[padded.Length - 1]);
 
-        for (int i = plaintext.Length; i < padded.Length - 1; i++)
+        for (var i = plaintext.Length; i < padded.Length - 1; i++)
             Assert.AreEqual((byte)0x00, padded[i], $"Interior pad byte at index {i} must be 0x00.");
     }
 }

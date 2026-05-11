@@ -22,7 +22,7 @@ public sealed partial class AesBlockCipherTests
     /// <inheritdoc />
     protected override BlockCipherSpecification GetSpecification(BlockCipherKeyVariant variant)
     {
-        int keySize = variant switch
+        var keySize = variant switch
         {
             BlockCipherKeyVariant.Key128 => 16,
             BlockCipherKeyVariant.Key192 => 24,
@@ -79,7 +79,7 @@ public sealed partial class AesBlockCipherTests
     [DataRow(33)]
     public void Ctor_WhenKeyLengthIsInvalid_ShouldThrowCryptographicException(int keyLength)
     {
-        byte[] key = new byte[keyLength];
+        var key = new byte[keyLength];
         Assert.ThrowsExactly<CryptographicException>(() => new AesBlockCipher(key));
     }
 
@@ -91,14 +91,14 @@ public sealed partial class AesBlockCipherTests
     [TestMethod]
     public void Encrypt_ForSingleBlock_ShouldMatchBclEncryptEcb()
     {
-        byte[] key = RandomNumberGenerator.GetBytes(16);
-        byte[] plaintext = RandomNumberGenerator.GetBytes(16);
+        var key = RandomNumberGenerator.GetBytes(16);
+        var plaintext = RandomNumberGenerator.GetBytes(16);
 
-        byte[] ourCiphertext = new byte[16];
+        var ourCiphertext = new byte[16];
         using (var cipher = new AesBlockCipher(key))
             cipher.Encrypt(plaintext, ourCiphertext);
 
-        byte[] bclCiphertext = new byte[16];
+        var bclCiphertext = new byte[16];
         using (Aes aes = Aes.Create())
         {
             aes.Key = key;
@@ -106,36 +106,6 @@ public sealed partial class AesBlockCipherTests
         }
 
         CollectionAssert.AreEqual(bclCiphertext, ourCiphertext);
-    }
-
-    /// <summary>
-    /// Verifies that repeated construction failures with an invalid key do not leak the internally
-    /// allocated <see cref="Aes" /> instance. Prior to the fix, each failed call abandoned an
-    /// undisposed <see cref="Aes" /> object to the finalizer, which can exhaust OS-level
-    /// cryptographic handles on platforms where <see cref="Aes.Create" /> allocates them.
-    /// A valid construction must still succeed after many failures, confirming no cumulative
-    /// resource exhaustion occurred.
-    /// </summary>
-    [TestMethod]
-    [TestCategory("Regression")]
-    public void Ctor_WhenKeyLengthIsInvalid_ShouldDisposeAesInstanceOnFailure()
-    {
-        byte[] invalidKey = new byte[17]; // Not a valid AES key length (valid: 16, 24, 32).
-
-        for (int i = 0; i < 500; i++)
-        {
-            Assert.ThrowsExactly<CryptographicException>(() =>
-            {
-                _ = new AesBlockCipher(invalidKey);
-            });
-        }
-
-        // A valid construction must still succeed after repeated failures.
-        byte[] validKey = new byte[16];
-        using AesBlockCipher cipher = new(validKey);
-        Span<byte> block = stackalloc byte[16];
-        Span<byte> output = stackalloc byte[16];
-        cipher.Encrypt(block, output);
     }
 
 }

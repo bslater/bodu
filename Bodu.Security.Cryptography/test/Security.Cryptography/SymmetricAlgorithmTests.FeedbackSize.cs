@@ -21,7 +21,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     public void FeedbackSize_WhenInvalid_ShouldThrowExactly(int? feedbackSize)
     {
         using TAlgorithm algorithm = CreateAlgorithm();
-        int sizeToTest = feedbackSize ?? algorithm.BlockSize + 1;
+        var sizeToTest = feedbackSize ?? algorithm.BlockSize + 1;
         Assert.ThrowsExactly<CryptographicException>(() => algorithm.FeedbackSize = sizeToTest);
     }
 }

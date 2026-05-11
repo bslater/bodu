@@ -36,7 +36,7 @@ public partial class ICryptoTransformExtensionsTests
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
-        byte[] result = transform.TransformFinalBlock();
+        var result = transform.TransformFinalBlock();
 
         Assert.IsNotNull(result);
     }
@@ -82,7 +82,7 @@ public partial class ICryptoTransformExtensionsTests
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(kat);
 
-        byte[] result = transform.TransformFinalBlock(kat.Input);
+        var result = transform.TransformFinalBlock(kat.Input);
 
         CollectionAssert.AreEqual(kat.ExpectedOutput, result,
             $"[{kat.Name}] TransformFinalBlock did not produce the expected output.");
@@ -97,7 +97,7 @@ public partial class ICryptoTransformExtensionsTests
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
-        byte[] result = transform.TransformFinalBlock(Array.Empty<byte>());
+        var result = transform.TransformFinalBlock(Array.Empty<byte>());
 
         Assert.IsNotNull(result);
     }
@@ -209,7 +209,7 @@ public partial class ICryptoTransformExtensionsTests
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(kat);
 
-        byte[] result = transform.TransformFinalBlock((ReadOnlySpan<byte>)kat.Input);
+        var result = transform.TransformFinalBlock((ReadOnlySpan<byte>)kat.Input);
 
         CollectionAssert.AreEqual(kat.ExpectedOutput, result,
             $"[{kat.Name}] Span overload did not produce the expected output.");
@@ -224,7 +224,7 @@ public partial class ICryptoTransformExtensionsTests
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
-        byte[] result = transform.TransformFinalBlock(ReadOnlySpan<byte>.Empty);
+        var result = transform.TransformFinalBlock(ReadOnlySpan<byte>.Empty);
 
         Assert.IsNotNull(result);
     }
@@ -277,7 +277,7 @@ public partial class ICryptoTransformExtensionsTests
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(kat);
 
-        byte[] result = transform.TransformFinalBlock(new ReadOnlyMemory<byte>(kat.Input));
+        var result = transform.TransformFinalBlock(new ReadOnlyMemory<byte>(kat.Input));
 
         CollectionAssert.AreEqual(kat.ExpectedOutput, result,
             $"[{kat.Name}] Memory overload did not produce the expected output.");

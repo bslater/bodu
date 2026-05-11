@@ -26,9 +26,9 @@ public sealed partial class TwofishAlgorithmTests
         algorithm.KeySize = keySizeBits;
         algorithm.GenerateKey();
 
-        int blockSizeBytes = algorithm.BlockSize / 8;
-        byte[] badIv = new byte[blockSizeBytes - 1];
-        int expectedBitLength = badIv.Length * 8;
+        var blockSizeBytes = algorithm.BlockSize / 8;
+        var badIv = new byte[blockSizeBytes - 1];
+        var expectedBitLength = badIv.Length * 8;
 
         CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -56,9 +56,9 @@ public sealed partial class TwofishAlgorithmTests
         algorithm.KeySize = keySizeBits;
         algorithm.GenerateKey();
 
-        int blockSizeBytes = algorithm.BlockSize / 8;
-        byte[] badIv = new byte[blockSizeBytes - 1];
-        int expectedBitLength = badIv.Length * 8;
+        var blockSizeBytes = algorithm.BlockSize / 8;
+        var badIv = new byte[blockSizeBytes - 1];
+        var expectedBitLength = badIv.Length * 8;
 
         CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -84,8 +84,8 @@ public sealed partial class TwofishAlgorithmTests
         using Twofish algorithm = CreateAlgorithm();
         algorithm.KeySize = keySizeBits;
 
-        byte[] wrongKey = new byte[keySizeBits / 8 + 1];
-        byte[] validIv = new byte[algorithm.BlockSize / 8];
+        var wrongKey = new byte[keySizeBits / 8 + 1];
+        var validIv = new byte[algorithm.BlockSize / 8];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {

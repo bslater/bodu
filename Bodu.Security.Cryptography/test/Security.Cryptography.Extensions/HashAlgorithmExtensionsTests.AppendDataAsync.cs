@@ -121,10 +121,10 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenCalledMultipleTimes_ShouldAccumulateAllBytes()
     {
-        byte[] part1 = CryptoTestUtilities.ByteSequence64;
-        byte[] part2 = CryptoTestUtilities.ByteSequence128;
+        var part1 = CryptoTestUtilities.ByteSequence64;
+        var part2 = CryptoTestUtilities.ByteSequence128;
 
-        byte[] combined = new byte[part1.Length + part2.Length];
+        var combined = new byte[part1.Length + part2.Length];
         part1.CopyTo(combined, 0);
         part2.CopyTo(combined, part1.Length);
 
@@ -150,9 +150,9 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenMixedWithSyncAppendData_ShouldAccumulateAllBytes()
     {
-        byte[] part1 = new byte[] { 1, 2, 3, 4 };
-        byte[] part2 = new byte[] { 5, 6, 7, 8 };
-        byte[] combined = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+        var part1 = new byte[] { 1, 2, 3, 4 };
+        var part2 = new byte[] { 5, 6, 7, 8 };
+        var combined = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
 
         byte[] expected;
         using (MonitoringHashAlgorithm reference = CreateAlgorithm())
@@ -177,7 +177,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenBufferSizeSmallerThanInput_ShouldProduceCorrectHash()
     {
-        byte[] data = CryptoTestUtilities.ByteSequence128;
+        var data = CryptoTestUtilities.ByteSequence128;
 
         byte[] expected;
         using (MonitoringHashAlgorithm reference = CreateAlgorithm())

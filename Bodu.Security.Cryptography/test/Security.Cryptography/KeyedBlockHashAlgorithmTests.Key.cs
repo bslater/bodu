@@ -73,7 +73,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
 
         using TAlgorithm algorithm = CreateAlgorithm(variant);
 
-        foreach (int invalidLength in specification.GetRejectedKeyLengths())
+        foreach (var invalidLength in specification.GetRejectedKeyLengths())
         {
             // Variable-length-optional-key algorithms (EnforcesMinimumKeyLength=false) only reject lengths above
             // MaxKeyLength; they tolerate below-minimum and empty keys. Skip those rows for such algorithms.
@@ -103,7 +103,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
 
         using TAlgorithm algorithm = CreateAlgorithm(variant);
 
-        foreach (int validLength in specification.GetAcceptedKeyLengths())
+        foreach (var validLength in specification.GetAcceptedKeyLengths())
         {
             try
             {
@@ -147,12 +147,12 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
 
         using TAlgorithm algorithm = CreateAlgorithm(variant);
 
-        byte[] key = Enumerable.Range(0, specification.MinKeyLength).Select(i => (byte)i).ToArray();
+        var key = Enumerable.Range(0, specification.MinKeyLength).Select(i => (byte)i).ToArray();
         algorithm.Key = key;
         CollectionAssert.AreEqual(key, algorithm.Key);
         Assert.AreNotSame(key, algorithm.Key);
 
-        byte[] copy = algorithm.Key;
+        var copy = algorithm.Key;
         CollectionAssert.AreEqual(copy, key);
         CollectionAssert.AreEqual(copy, algorithm.Key);
         Assert.AreNotSame(copy, key);
@@ -201,9 +201,9 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
 
         using TAlgorithm algorithm = CreateAlgorithm(variant);
 
-        byte[] data = new byte[128];
-        byte[] key1 = GenerateUniqueKey(specification.MinKeyLength);
-        byte[] key2 = GenerateUniqueKey(specification.MinKeyLength);
+        var data = new byte[128];
+        var key1 = GenerateUniqueKey(specification.MinKeyLength);
+        var key2 = GenerateUniqueKey(specification.MinKeyLength);
 
         byte[] hash1, hash2;
 
@@ -231,7 +231,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
 
         using TAlgorithm algorithm = CreateAlgorithm(variant);
 
-        byte[] key = GenerateUniqueKey(specification.MinKeyLength);
+        var key = GenerateUniqueKey(specification.MinKeyLength);
 
         algorithm.Key = key;
         algorithm.Key = key; // Reassign
@@ -246,7 +246,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     public void Key_WhenInitializeCalled_ShouldNotResetKey(TVariant variant)
     {
         using TAlgorithm algorithm = CreateAlgorithm(variant);
-        byte[] originalKey = algorithm.Key;
+        var originalKey = algorithm.Key;
         algorithm.Initialize();
 
         CollectionAssert.AreEqual(originalKey, algorithm.Key);
@@ -267,15 +267,15 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
 
         using TAlgorithm algorithm = CreateAlgorithm(variant);
 
-        byte[] key = GenerateUniqueKey(specification.TestKey.Length);
+        var key = GenerateUniqueKey(specification.TestKey.Length);
         algorithm.Key = key;
 
-        byte[] input1 = (byte[])CryptoTestUtilities.ByteSequence256.Clone();
-        byte[] input2 = (byte[])CryptoTestUtilities.ByteSequence256.Clone();
+        var input1 = (byte[])CryptoTestUtilities.ByteSequence256.Clone();
+        var input2 = (byte[])CryptoTestUtilities.ByteSequence256.Clone();
         input2[0]++;
 
-        byte[] hash1 = algorithm.ComputeHash(input1);
-        byte[] hash2 = algorithm.ComputeHash(input2);
+        var hash1 = algorithm.ComputeHash(input1);
+        var hash2 = algorithm.ComputeHash(input2);
 
         Assert.AreNotEqual(Convert.ToHexString(hash1), Convert.ToHexString(hash2));
     }
@@ -296,13 +296,13 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
 
         using TAlgorithm algorithm = CreateAlgorithm(variant);
 
-        byte[] key = GenerateUniqueKey(specification.MinKeyLength);
-        byte[] data = Enumerable.Repeat((byte)0x42, 64).ToArray();
+        var key = GenerateUniqueKey(specification.MinKeyLength);
+        var data = Enumerable.Repeat((byte)0x42, 64).ToArray();
 
         algorithm.Key = key;
 
         // First hash with original key
-        byte[] hash1 = algorithm.ComputeHash(data);
+        var hash1 = algorithm.ComputeHash(data);
 
         // Mutate the original key array
         key[0] ^= 0xFF;
@@ -311,9 +311,9 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
         {
             // For one-shot MACs like Poly1305, the second hash must use a new instance and key
             using TAlgorithm algorithm2 = CreateAlgorithm();
-            byte[] newKey = GenerateUniqueKey(specification.MinKeyLength);
+            var newKey = GenerateUniqueKey(specification.MinKeyLength);
             algorithm2.Key = newKey;
-            byte[] hash2 = algorithm2.ComputeHash(data);
+            var hash2 = algorithm2.ComputeHash(data);
 
             CollectionAssert.AreNotEqual(hash1, hash2,
                 "Expected different hash from new key after modifying external key array in a one-shot MAC.");
@@ -321,7 +321,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
         else
         {
             // For reusable hash algorithms, the key should remain internally stable
-            byte[] hash2 = algorithm.ComputeHash(data);
+            var hash2 = algorithm.ComputeHash(data);
 
             CollectionAssert.AreEqual(hash1, hash2,
                 "Hash output changed after modifying external key array, suggesting internal state is not protected.");
@@ -343,10 +343,10 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
 
         using TAlgorithm algorithm = CreateAlgorithm(variant);
 
-        byte[] key = GenerateUniqueKey(specification.MinKeyLength);
+        var key = GenerateUniqueKey(specification.MinKeyLength);
         algorithm.Key = key;
 
-        byte[] snapshot = algorithm.Key.ToArray();
+        var snapshot = algorithm.Key.ToArray();
 
         key[0] ^= 0xFF;
 
@@ -368,7 +368,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
 
         using TAlgorithm algorithm = CreateAlgorithm(variant);
 
-        byte[] tooLong = new byte[specification.MaxKeyLength + 1];
+        var tooLong = new byte[specification.MaxKeyLength + 1];
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
             algorithm.Key = tooLong;
@@ -404,7 +404,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
 
         using TAlgorithm algorithm = CreateAlgorithm(variant);
 
-        byte[] tooShort = new byte[specification.MinKeyLength - 1];
+        var tooShort = new byte[specification.MinKeyLength - 1];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -427,8 +427,8 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
 
         using TAlgorithm algorithm = CreateAlgorithm(variant);
 
-        byte[] newKey = GenerateUniqueKey(specification.MinKeyLength);
-        byte[] input = new byte[1024];
+        var newKey = GenerateUniqueKey(specification.MinKeyLength);
+        var input = new byte[1024];
 
         // Begin processing
         algorithm.TransformBlock(input, 0, input.Length, null, 0);
@@ -455,9 +455,9 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
             return;
         }
 
-        byte[] key = Enumerable.Range(1, specification.MinKeyLength).Select(i => (byte)i).ToArray();
-        byte[] reversed = key.Reverse();
-        byte[] data = (byte[])CryptoTestUtilities.ByteSequence256.Clone();
+        var key = Enumerable.Range(1, specification.MinKeyLength).Select(i => (byte)i).ToArray();
+        var reversed = key.Reverse();
+        var data = (byte[])CryptoTestUtilities.ByteSequence256.Clone();
 
         byte[] hash1;
         byte[] hash2;
@@ -493,10 +493,10 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
         }
         using TAlgorithm algorithm = CreateAlgorithm(variant, specification.TestKey);
 
-        byte[] first = algorithm.Key;
+        var first = algorithm.Key;
         first[0] = 0xFF;
 
-        byte[] second = algorithm.Key;
+        var second = algorithm.Key;
 
         CollectionAssert.AreEqual(specification.TestKey, second);
     }

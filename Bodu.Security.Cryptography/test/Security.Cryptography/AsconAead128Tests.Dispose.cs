@@ -36,13 +36,13 @@ public partial class AsconAead128Tests
         sut.ProcessAssociatedData([0x01, 0x02, 0x03, 0x04]);
 
         byte[] plaintext = [0x10, 0x20, 0x30, 0x40];
-        byte[] ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
+        var ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
 
         _ = sut.Encrypt(plaintext, ciphertext);
 
         sut.Dispose();
 
-        string label = $"Field '{field.DeclaringType?.Name}.{field.Name}' was not cleared by Dispose.";
+        var label = $"Field '{field.DeclaringType?.Name}.{field.Name}' was not cleared by Dispose.";
 
         Assert.IsTrue(
             TestHelpers.AssertFieldValueIsNullOrDefault(field, sut),

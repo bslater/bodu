@@ -23,13 +23,13 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
         algorithm.GenerateKey();
 
         ICryptoTransform encryptor = algorithm.CreateEncryptor();
-        byte[] input = new byte[encryptor.InputBlockSize];
-        byte[] output = new byte[encryptor.OutputBlockSize];
+        var input = new byte[encryptor.InputBlockSize];
+        var output = new byte[encryptor.OutputBlockSize];
         encryptor.TransformBlock(input, 0, input.Length, output, 0);
 
         encryptor.Dispose();
 
-        bool threw = false;
+        var threw = false;
         try
         {
             encryptor.TransformBlock(input, 0, input.Length, output, 0);

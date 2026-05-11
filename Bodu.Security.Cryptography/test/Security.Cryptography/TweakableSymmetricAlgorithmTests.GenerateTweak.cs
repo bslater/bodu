@@ -15,7 +15,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     public void GenerateTweak_WhenCalled_ShouldInitializeTweakCorrectly()
     {
         using TAlgorithm algorithm = CreateAlgorithm();
-        int size = algorithm.LegalTweakSizes[0].MinSize;
+        var size = algorithm.LegalTweakSizes[0].MinSize;
         algorithm.TweakSize = size;
         algorithm.GenerateTweak();
 

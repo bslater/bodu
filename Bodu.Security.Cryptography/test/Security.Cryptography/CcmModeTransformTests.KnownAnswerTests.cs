@@ -92,7 +92,7 @@ public sealed partial class CcmModeTransformTests
         using var cipher = new AesBlockCipherFixture(new byte[16]);
         var transform = new CcmModeTransform(cipher, new byte[16]);
         var output = new byte[transform.TagSize];
-        int written = transform.Encrypt(ReadOnlySpan<byte>.Empty, output);
+        var written = transform.Encrypt(ReadOnlySpan<byte>.Empty, output);
         Assert.AreEqual(transform.TagSize, written, "Encrypting empty plaintext must produce a 16-byte tag.");
     }
 }

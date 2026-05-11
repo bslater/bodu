@@ -32,7 +32,7 @@ public sealed class SmokeTests
         algorithm.GenerateIV();
         algorithm.GenerateTweak();
 
-        byte[] plaintext = Encoding.UTF8.GetBytes("Smoke test for Threefish-256 in CBC + PKCS7.");
+        var plaintext = Encoding.UTF8.GetBytes("Smoke test for Threefish-256 in CBC + PKCS7.");
 
         byte[] ciphertext;
         using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
@@ -59,7 +59,7 @@ public sealed class SmokeTests
         algorithm.GenerateKey();
         algorithm.GenerateIV();
 
-        byte[] plaintext = Encoding.UTF8.GetBytes("Skipjack smoke.");
+        var plaintext = Encoding.UTF8.GetBytes("Skipjack smoke.");
 
         byte[] ciphertext;
         using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
@@ -81,7 +81,7 @@ public sealed class SmokeTests
     public void Tiger_ComputeHash_ShouldProduce192BitDigest()
     {
         using Bodu.Security.Cryptography.Tiger tiger = new();
-        byte[] digest = tiger.ComputeHash(Encoding.ASCII.GetBytes("smoke"));
+        var digest = tiger.ComputeHash(Encoding.ASCII.GetBytes("smoke"));
 
         Assert.AreEqual(24, digest.Length);
     }
@@ -94,11 +94,11 @@ public sealed class SmokeTests
     [TestCategory("Smoke")]
     public void SipHash64_ComputeHash_ShouldProduceEightByteDigest()
     {
-        byte[] key = new byte[16];
-        for (int i = 0; i < key.Length; i++) key[i] = (byte)i;
+        var key = new byte[16];
+        for (var i = 0; i < key.Length; i++) key[i] = (byte)i;
 
         using Bodu.Security.Cryptography.SipHash64 hash = new() { Key = key };
-        byte[] digest = hash.ComputeHash(Encoding.ASCII.GetBytes("smoke"));
+        var digest = hash.ComputeHash(Encoding.ASCII.GetBytes("smoke"));
 
         Assert.AreEqual(8, digest.Length);
     }

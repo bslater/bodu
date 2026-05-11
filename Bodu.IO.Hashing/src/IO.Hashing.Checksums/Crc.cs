@@ -316,17 +316,6 @@ public sealed class Crc
         return true;
     }
 
-    /// <inheritdoc />
-    public override bool Equals(object? obj)
-        => obj is Crc other && this._standard.Equals(other._standard);
-
-    /// <summary>
-    /// Not supported. <see cref="Crc" /> instances are not suitable for use as dictionary keys.
-    /// </summary>
-    /// <exception cref="NotSupportedException">Always thrown.</exception>
-    public override int GetHashCode() =>
-        throw new NotSupportedException();
-
     /// <summary>
     /// Returns the working-state representation of <see cref="CrcStandard.InitialValue" />, applying input reflection
     /// when required.

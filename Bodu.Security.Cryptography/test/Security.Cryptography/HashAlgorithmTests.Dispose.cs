@@ -150,8 +150,8 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         instance.ComputeHash(Array.Empty<byte>());
         instance.Dispose();
 
-        object? value = field.GetValue(instance);
-        string label = $"Field '{field.DeclaringType},{field.Name}'";
+        var value = field.GetValue(instance);
+        var label = $"Field '{field.DeclaringType},{field.Name}'";
 
         var result = TestHelpers.AssertFieldValueIsNullOrDefault(field, instance);
 
@@ -198,7 +198,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
                 if (def == typeof(Memory<>))
                 {
                     var memory = (Memory<byte>)value!;
-                    foreach (byte b in memory.Span)
+                    foreach (var b in memory.Span)
                     {
                         Assert.AreEqual(0, b, $"{label} contains non-zero byte.");
                     }
@@ -207,7 +207,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
                 if (def == typeof(ReadOnlyMemory<>))
                 {
                     var memory = (ReadOnlyMemory<byte>)value!;
-                    foreach (byte b in memory.Span)
+                    foreach (var b in memory.Span)
                     {
                         Assert.AreEqual(0, b, $"{label} contains non-zero byte.");
                     }
@@ -232,7 +232,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 
             case Array array when fieldType.IsArray && fieldType.GetElementType()?.IsPrimitive == true:
                 Assert.IsNotNull(array, $"{label} is null.");
-                object defaultValue = Activator.CreateInstance(fieldType.GetElementType()!)!;
+                var defaultValue = Activator.CreateInstance(fieldType.GetElementType()!)!;
                 foreach (var item in array)
                     Assert.AreEqual(defaultValue, item, $"{label} contains non-zero element '{item}'.");
                 return true;

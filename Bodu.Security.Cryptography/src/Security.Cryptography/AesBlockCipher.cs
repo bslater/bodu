@@ -68,7 +68,7 @@ public sealed class AesBlockCipher
     {
         ThrowHelper.ThrowIfNull(key);
 
-        Aes aes = Aes.Create();
+        var aes = Aes.Create();
         try
         {
             aes.Key = key; // BCL validates length and throws CryptographicException on mismatch.
@@ -96,7 +96,22 @@ public sealed class AesBlockCipher
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeBytes);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBytes);
         this.ThrowIfDisposed();
+
         this._aes.EncryptEcb(input, output, PaddingMode.None);
+    }
+
+    /// <summary>
+    /// Releases the underlying <see cref="Aes"/> instance, zeroing its expanded key schedule.
+    /// Subsequent calls to <see cref="Encrypt"/> or <see cref="Decrypt"/> throw
+    /// <see cref="ObjectDisposedException"/>.
+    /// </summary>
+    public void Dispose()
+    {
+        if (!this._disposed)
+        {
+            this._aes.Dispose();
+            this._disposed = true;
+        }
     }
 
     /// <inheritdoc />
@@ -109,6 +124,7 @@ public sealed class AesBlockCipher
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeBytes);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBytes);
         this.ThrowIfDisposed();
+
         this._aes.DecryptEcb(input, output, PaddingMode.None);
     }
 
@@ -127,19 +143,5 @@ public sealed class AesBlockCipher
         if (this._disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
-    }
-
-    /// <summary>
-    /// Releases the underlying <see cref="Aes"/> instance, zeroing its expanded key schedule.
-    /// Subsequent calls to <see cref="Encrypt"/> or <see cref="Decrypt"/> throw
-    /// <see cref="ObjectDisposedException"/>.
-    /// </summary>
-    public void Dispose()
-    {
-        if (!this._disposed)
-        {
-            this._aes.Dispose();
-            this._disposed = true;
-        }
     }
 }

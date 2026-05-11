@@ -74,9 +74,9 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
         if (keyOrSentinel is byte[] perRowKey)
             algorithm.Key = perRowKey;
 
-        byte[] actual = algorithm.ComputeHash(input);
+        var actual = algorithm.ComputeHash(input);
 
-        string label = string.IsNullOrEmpty(profile) ? vectorName : $"{vectorName} [{profile}]";
+        var label = string.IsNullOrEmpty(profile) ? vectorName : $"{vectorName} [{profile}]";
         CollectionAssert.AreEqual(
             expected,
             actual,

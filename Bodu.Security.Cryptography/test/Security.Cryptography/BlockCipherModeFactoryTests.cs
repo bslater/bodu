@@ -116,7 +116,7 @@ public sealed class BlockCipherModeFactoryTests
     public void Create_ForEachSupportedMode_ShouldReturnExpectedTransformType()
     {
         var cipher = new SkipjackBlockCipher(new byte[10]);
-        byte[] iv = new byte[8];
+        var iv = new byte[8];
 
         Assert.IsInstanceOfType<EcbModeTransform>(BlockCipherModeFactory.Create(CipherBlockMode.ECB, cipher, iv));
         Assert.IsInstanceOfType<CbcModeTransform>(BlockCipherModeFactory.Create(CipherBlockMode.CBC, cipher, iv));

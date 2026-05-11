@@ -263,10 +263,10 @@ public abstract partial class BlockCipherModeTests<TMode>
         var cipher = new MonitoringBlockCipher(1);
         TMode transform = CreateTransform(cipher, new byte[1] { 0 });
 
-        byte[] inputBlock = new byte[1];
-        byte[] outputBlock = new byte[1];
+        var inputBlock = new byte[1];
+        var outputBlock = new byte[1];
 
-        for (int i = 0; i < 256; i++)
+        for (var i = 0; i < 256; i++)
         {
             transform.Transform(inputBlock, outputBlock, encrypt: true);
         }

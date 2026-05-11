@@ -147,7 +147,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
         }
 
         var data = (byte[])CryptoTestUtilities.ByteSequence256.Clone();
-        int keyLength = Math.Max(1, specification.MinKeyLength);
+        var keyLength = Math.Max(1, specification.MinKeyLength);
 
         if (keyLength + 1 > specification.MaxKeyLength)
         {
@@ -210,7 +210,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
             specification.MaxKeyLength
         ];
 
-        int[] validLengths = lengths
+        var validLengths = lengths
             .Where(length => length >= 0)
             .Where(length => length >= specification.MinKeyLength || !EnforcesMinimumKeyLength)
             .Where(length => length <= specification.MaxKeyLength)
@@ -224,17 +224,17 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
             return;
         }
 
-        byte[] data = (byte[])CryptoTestUtilities.ByteSequence256.Clone();
+        var data = (byte[])CryptoTestUtilities.ByteSequence256.Clone();
         var hashesByLength = new Dictionary<int, string>();
 
-        foreach (int length in validLengths)
+        foreach (var length in validLengths)
         {
-            byte[] key = TestHelpers.GenerateRepeatingIncrementalByteSequence(1, length);
+            var key = TestHelpers.GenerateRepeatingIncrementalByteSequence(1, length);
 
             using TAlgorithm algorithm = CreateAlgorithm(variant);
             algorithm.Key = key;
 
-            byte[] hash = algorithm.ComputeHash(data);
+            var hash = algorithm.ComputeHash(data);
             hashesByLength.Add(length, Convert.ToHexString(hash));
         }
 

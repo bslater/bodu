@@ -44,9 +44,9 @@ public sealed partial class GcmSivModeTransformTests
 
     private static GcmSivModeTransform MakeGcmSiv(string keyHex, string nonceHex, string aadHex)
     {
-        byte[] masterKey = Convert.FromHexString(keyHex);
-        byte[] nonce12 = Convert.FromHexString(nonceHex);
-        byte[] iv = new byte[16];
+        var masterKey = Convert.FromHexString(keyHex);
+        var nonce12 = Convert.FromHexString(nonceHex);
+        var iv = new byte[16];
         nonce12.CopyTo(iv, 0);
 
         var t = new GcmSivModeTransform(
@@ -68,8 +68,8 @@ public sealed partial class GcmSivModeTransformTests
     public void Encrypt_WithRfc8452Vector_ShouldMatchExpected(
         string keyHex, string nonceHex, string aadHex, string ptHex, string expectedOutputHex)
     {
-        byte[] plaintext = Convert.FromHexString(ptHex);
-        byte[] expected = Convert.FromHexString(expectedOutputHex);
+        var plaintext = Convert.FromHexString(ptHex);
+        var expected = Convert.FromHexString(expectedOutputHex);
 
         GcmSivModeTransform transform = MakeGcmSiv(keyHex, nonceHex, aadHex);
         var output = new byte[plaintext.Length + transform.TagSize];
@@ -88,13 +88,13 @@ public sealed partial class GcmSivModeTransformTests
     public void Decrypt_WithRfc8452Vector_ShouldRecoverPlaintext(
         string keyHex, string nonceHex, string aadHex, string ptHex, string expectedOutputHex)
     {
-        byte[] expectedPt = Convert.FromHexString(ptHex);
-        byte[] ciphertextTag = Convert.FromHexString(expectedOutputHex);
+        var expectedPt = Convert.FromHexString(ptHex);
+        var ciphertextTag = Convert.FromHexString(expectedOutputHex);
 
         GcmSivModeTransform transform = MakeGcmSiv(keyHex, nonceHex, aadHex);
-        int plaintextLength = ciphertextTag.Length - transform.TagSize;
+        var plaintextLength = ciphertextTag.Length - transform.TagSize;
         var output = new byte[plaintextLength];
-        int written = transform.Decrypt(ciphertextTag, output);
+        var written = transform.Decrypt(ciphertextTag, output);
 
         Assert.AreEqual(plaintextLength, written);
         CollectionAssert.AreEqual(expectedPt, output,
@@ -110,8 +110,8 @@ public sealed partial class GcmSivModeTransformTests
     [TestCategory("Regression")]
     public void Decrypt_WhenTagIsCorrupted_ShouldThrowCryptographicException()
     {
-        byte[] masterKey = new byte[16];
-        byte[] iv = new byte[16];
+        var masterKey = new byte[16];
+        var iv = new byte[16];
 
         var enc = new GcmSivModeTransform(
             new AesBlockCipherFixture(masterKey), k => new AesBlockCipherFixture(k), iv);
@@ -136,13 +136,13 @@ public sealed partial class GcmSivModeTransformTests
     public void EncryptThenDecrypt_WithRandomKey_ShouldRoundTrip()
     {
         var rng = RandomNumberGenerator.Create();
-        byte[] key = new byte[16];
-        byte[] nonce = new byte[12];
-        byte[] iv = new byte[16];
+        var key = new byte[16];
+        var nonce = new byte[12];
+        var iv = new byte[16];
         rng.GetBytes(key); rng.GetBytes(nonce); nonce.CopyTo(iv, 0);
 
-        byte[] plaintext = new byte[60]; rng.GetBytes(plaintext);
-        byte[] aad = new byte[20]; rng.GetBytes(aad);
+        var plaintext = new byte[60]; rng.GetBytes(plaintext);
+        var aad = new byte[20]; rng.GetBytes(aad);
 
         using var mc1 = new AesBlockCipherFixture(key);
         var enc = new GcmSivModeTransform(mc1, k => new AesBlockCipherFixture(k), iv);

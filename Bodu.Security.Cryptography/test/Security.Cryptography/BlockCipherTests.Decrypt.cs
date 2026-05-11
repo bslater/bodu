@@ -36,7 +36,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     public static string GetDecryptTestDisplayName(MethodInfo methodInfo, object[] data)
     {
         TVariant variant = (TVariant)data[0];
-        string testName = (string)data[1];
+        var testName = (string)data[1];
         return $"{testName} (Variant: {variant})";
     }
 
@@ -47,9 +47,9 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     public void Decrypt_WhenCalled_ShouldNotModifyInputBuffer()
     {
         using TCipher cipher = CreateBlockCipher();
-        byte[] original = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize);
-        byte[] input = original.ToArray();
-        byte[] output = new byte[cipher.BlockSize];
+        var original = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize);
+        var input = original.ToArray();
+        var output = new byte[cipher.BlockSize];
 
         cipher.Decrypt(input, output);
 
@@ -68,10 +68,10 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         using TCipher cipher1 = CreateBlockCipher(variant);
         using TCipher cipher2 = CreateBlockCipher(variant);
 
-        byte[] input = TestHelpers.GenerateRandomNonZeroBytes(cipher1.BlockSize);
+        var input = TestHelpers.GenerateRandomNonZeroBytes(cipher1.BlockSize);
 
-        byte[] output1 = new byte[specification.BlockSize];
-        byte[] output2 = new byte[specification.BlockSize];
+        var output1 = new byte[specification.BlockSize];
+        var output2 = new byte[specification.BlockSize];
 
         cipher1.Decrypt(input, output1);
         cipher2.Decrypt(input, output2);
@@ -90,10 +90,10 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         BlockCipherSpecification specification = GetSpecification(variant);
         using TCipher cipher = CreateBlockCipher(variant);
 
-        byte[] input = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize);
+        var input = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize);
 
-        byte[] output1 = new byte[specification.BlockSize];
-        byte[] output2 = new byte[specification.BlockSize];
+        var output1 = new byte[specification.BlockSize];
+        var output2 = new byte[specification.BlockSize];
 
         cipher.Decrypt(input, output1);
         cipher.Decrypt(input, output2);
@@ -109,7 +109,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     public void Decrypt_WhenKnownInput_ShouldMatchExpected(TVariant variant, string testName, byte[] input, byte[] expected, Func<IBlockCipher>? factory)
     {
         IBlockCipher engine = factory?.Invoke() ?? CreateBlockCipher(variant);
-        byte[] actual = new byte[expected.Length];
+        var actual = new byte[expected.Length];
         engine.Decrypt(input, actual);
 
         TestHelpers.TraceWriteIfNotEqual(expected, actual);

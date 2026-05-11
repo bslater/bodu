@@ -212,7 +212,7 @@ public partial class ICryptoTransformExtensionsTests
     public async Task TransformAsync_Stream_RoundTrip_ShouldProduceOriginalPlaintext()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
-        byte[] plainText = System.Text.Encoding.UTF8.GetBytes("round-trip-test");
+        var plainText = System.Text.Encoding.UTF8.GetBytes("round-trip-test");
 
         // Encrypt
         using var sourceStream = new MemoryStream(plainText);
@@ -261,10 +261,10 @@ public partial class ICryptoTransformExtensionsTests
     public async Task TransformAsync_Memory_WhenInputIsValid_ShouldWriteTransformedBytesToDestination(
         KnownAnswerTest kat)
     {
-        byte[] dest = new byte[kat.Input.Length + 16];
+        var dest = new byte[kat.Input.Length + 16];
         using SimpleReversingCryptoTransform transform = CreateTransform(kat);
 
-        int written = await transform.TransformAsync(
+        var written = await transform.TransformAsync(
             new ReadOnlyMemory<byte>(kat.Input),
             new Memory<byte>(dest));
 
@@ -284,12 +284,12 @@ public partial class ICryptoTransformExtensionsTests
     public async Task TransformAsync_Memory_WhenComparedToSyncOverload_ShouldProduceIdenticalOutput(
         KnownAnswerTest kat)
     {
-        byte[] syncDest = new byte[kat.Input.Length + 16];
+        var syncDest = new byte[kat.Input.Length + 16];
         int syncWritten;
         using (SimpleReversingCryptoTransform syncTransform = CreateTransform(kat))
             syncWritten = syncTransform.Transform(kat.Input.AsSpan(), syncDest.AsSpan());
 
-        byte[] asyncDest = new byte[kat.Input.Length + 16];
+        var asyncDest = new byte[kat.Input.Length + 16];
         int asyncWritten;
         using (SimpleReversingCryptoTransform asyncTransform = CreateTransform(kat))
             asyncWritten = await asyncTransform.TransformAsync(

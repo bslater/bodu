@@ -30,7 +30,7 @@ public sealed partial class OcbModeTransformTests
         OcbModeTransform transform = CreateTransform(cipher, new byte[ExpectedBlockSize], tagLen);
         var output = new byte[plaintext.Length + tagLen];
 
-        int written = transform.Encrypt(plaintext, output);
+        var written = transform.Encrypt(plaintext, output);
 
         Assert.AreEqual(plaintext.Length + tagLen, written,
             $"Encrypt must return |PT| + tagLen bytes (tagLen = {tagLen}).");

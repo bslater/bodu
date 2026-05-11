@@ -19,7 +19,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         using TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Clear();
 
-        byte[] buffer = new byte[1];
+        var buffer = new byte[1];
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
             algorithm.ComputeHash(buffer);

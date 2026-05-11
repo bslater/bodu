@@ -160,7 +160,7 @@ public partial class ICryptoTransformExtensionsTests
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(kat);
 
-        byte[] actual = transform.Transform(kat.Input);
+        var actual = transform.Transform(kat.Input);
 
         CollectionAssert.AreEqual(kat.ExpectedOutput, actual, $"Test '{kat.Name}' failed.");
     }
@@ -206,7 +206,7 @@ public partial class ICryptoTransformExtensionsTests
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(kat);
 
-        byte[] actual = transform.Transform(kat.Input, 0, kat.Input.Length);
+        var actual = transform.Transform(kat.Input, 0, kat.Input.Length);
 
         CollectionAssert.AreEqual(kat.ExpectedOutput, actual, $"Test '{kat.Name}' failed.");
     }
@@ -238,7 +238,7 @@ public partial class ICryptoTransformExtensionsTests
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(kat);
 
-        byte[] actual = transform.Transform((ReadOnlySpan<byte>)kat.Input);
+        var actual = transform.Transform((ReadOnlySpan<byte>)kat.Input);
 
         CollectionAssert.AreEqual(kat.ExpectedOutput, actual, $"Test '{kat.Name}' failed.");
     }
@@ -275,7 +275,7 @@ public partial class ICryptoTransformExtensionsTests
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(kat);
 
-        byte[] actual = transform.Transform(new ReadOnlyMemory<byte>(kat.Input));
+        var actual = transform.Transform(new ReadOnlyMemory<byte>(kat.Input));
 
         CollectionAssert.AreEqual(kat.ExpectedOutput, actual, $"Test '{kat.Name}' failed.");
     }
@@ -345,9 +345,9 @@ public partial class ICryptoTransformExtensionsTests
     public void Transform_SpanToSpan_WhenValid_ShouldWriteToDestinationAndReturnByteCount(KnownAnswerTest kat)
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(kat);
-        byte[] destBuffer = new byte[kat.Input.Length + transform.OutputBlockSize];
+        var destBuffer = new byte[kat.Input.Length + transform.OutputBlockSize];
 
-        int written = transform.Transform((ReadOnlySpan<byte>)kat.Input, destBuffer.AsSpan());
+        var written = transform.Transform((ReadOnlySpan<byte>)kat.Input, destBuffer.AsSpan());
 
         Assert.AreEqual(kat.ExpectedOutput.Length, written);
         CollectionAssert.AreEqual(kat.ExpectedOutput, destBuffer[..written], $"Test '{kat.Name}' failed.");
@@ -400,9 +400,9 @@ public partial class ICryptoTransformExtensionsTests
     public void Transform_MemoryToMemory_WhenValid_ShouldWriteToDestinationAndReturnByteCount(KnownAnswerTest kat)
     {
         using SimpleReversingCryptoTransform transform = CreateTransform(kat);
-        byte[] destBuffer = new byte[kat.Input.Length + transform.OutputBlockSize];
+        var destBuffer = new byte[kat.Input.Length + transform.OutputBlockSize];
 
-        int written = transform.Transform(
+        var written = transform.Transform(
             new ReadOnlyMemory<byte>(kat.Input),
             new Memory<byte>(destBuffer));
 
@@ -418,12 +418,12 @@ public partial class ICryptoTransformExtensionsTests
     [DynamicData(nameof(GetValidTransformTestData))]
     public void Transform_MemoryToMemory_WhenComparedToSpanToSpanOverload_ShouldProduceIdenticalOutput(KnownAnswerTest kat)
     {
-        byte[] spanDest = new byte[kat.Input.Length + 32];
+        var spanDest = new byte[kat.Input.Length + 32];
         int spanWritten;
         using (SimpleReversingCryptoTransform transformA = CreateTransform(kat))
             spanWritten = transformA.Transform((ReadOnlySpan<byte>)kat.Input, spanDest.AsSpan());
 
-        byte[] memoryDest = new byte[kat.Input.Length + 32];
+        var memoryDest = new byte[kat.Input.Length + 32];
         int memoryWritten;
         using (SimpleReversingCryptoTransform transformB = CreateTransform(kat))
             memoryWritten = transformB.Transform(new ReadOnlyMemory<byte>(kat.Input), new Memory<byte>(memoryDest));
@@ -506,7 +506,7 @@ public partial class ICryptoTransformExtensionsTests
         using var target = new MemoryStream();
         using SimpleReversingCryptoTransform transform = CreateTransform(kat);
 
-        int bytesRead = transform.Transform(source, target, bufferSize: kat.Input.Length);
+        var bytesRead = transform.Transform(source, target, bufferSize: kat.Input.Length);
 
         Assert.AreEqual(kat.Input.Length, bytesRead);
         CollectionAssert.AreEqual(kat.ExpectedOutput, target.ToArray(), $"Test '{kat.Name}' failed.");
@@ -556,14 +556,14 @@ public partial class ICryptoTransformExtensionsTests
     {
         ArgumentNullException.ThrowIfNull(kat);
 
-        int blockSizeBits = kat.TryGet("BlockSize", out int bs) ? bs : 128;
+        var blockSizeBits = kat.TryGet("BlockSize", out int bs) ? bs : 128;
         PaddingMode paddingMode = kat.TryGet("Padding", out PaddingMode p) ? p : PaddingMode.None;
-        bool encrypt = !kat.TryGet("Mode", out TransformMode m) || m == TransformMode.Encrypt;
-        byte[] iv = kat.TryGet("IV", out byte[]? ivVal) ? ivVal! : new byte[blockSizeBits / 8];
-        byte[]? tweak = kat.TryGet("Tweak", out byte[]? t) ? t : null;
+        var encrypt = !kat.TryGet("Mode", out TransformMode m) || m == TransformMode.Encrypt;
+        var iv = kat.TryGet("IV", out byte[]? ivVal) ? ivVal! : new byte[blockSizeBits / 8];
+        var tweak = kat.TryGet("Tweak", out byte[]? t) ? t : null;
 
         // Key has no effect on output — use a deterministic all-zero key of the block size.
-        byte[] key = new byte[blockSizeBits / 8];
+        var key = new byte[blockSizeBits / 8];
 
         SimpleReversingBlockCipher cipher = tweak is null
             ? new SimpleReversingBlockCipher(key, blockSizeBits / 8)

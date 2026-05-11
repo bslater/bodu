@@ -54,7 +54,7 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
         {
             foreach (KnownAnswerTest kat in instance.GetKeyedTestVectors(variant))
             {
-                if (kat.TryGet<byte[]>("Key", out byte[]? key) && key is not null)
+                if (kat.TryGet<byte[]>("Key", out var key) && key is not null)
                     yield return new object[] { variant, kat.Name, kat.Input, key, kat.ExpectedOutput };
             }
         }

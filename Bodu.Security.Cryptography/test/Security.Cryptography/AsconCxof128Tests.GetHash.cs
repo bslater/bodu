@@ -21,9 +21,9 @@ public partial class AsconCxof128Tests
         using AsconCxof128 cxof = new AsconCxof128();
         cxof.Customize(ReadOnlySpan<byte>.Empty);
         cxof.Absorb(message);
-        byte[] cxofOutput = cxof.GetHash(32);
+        var cxofOutput = cxof.GetHash(32);
 
-        byte[] xofOutput = AsconXof128.HashData(message, 32);
+        var xofOutput = AsconXof128.HashData(message, 32);
 
         CollectionAssert.AreNotEqual(cxofOutput, xofOutput,
             "ASCON-CXOF128 with empty customization must produce different output than ASCON-XOF128.");
@@ -40,12 +40,12 @@ public partial class AsconCxof128Tests
         using AsconCxof128 cxof1 = new AsconCxof128();
         cxof1.Customize([0x01]);
         cxof1.Absorb(message);
-        byte[] output1 = cxof1.GetHash(32);
+        var output1 = cxof1.GetHash(32);
 
         using AsconCxof128 cxof2 = new AsconCxof128();
         cxof2.Customize([0x02]);
         cxof2.Absorb(message);
-        byte[] output2 = cxof2.GetHash(32);
+        var output2 = cxof2.GetHash(32);
 
         CollectionAssert.AreNotEqual(output1, output2,
             "Different customisation strings must produce different outputs for the same message.");
@@ -64,12 +64,12 @@ public partial class AsconCxof128Tests
         using AsconCxof128 first = new AsconCxof128();
         first.Customize(customization);
         first.Absorb(message);
-        byte[] output1 = first.GetHash(32);
+        var output1 = first.GetHash(32);
 
         using AsconCxof128 second = new AsconCxof128();
         second.Customize(customization);
         second.Absorb(message);
-        byte[] output2 = second.GetHash(32);
+        var output2 = second.GetHash(32);
 
         CollectionAssert.AreEqual(output1, output2,
             "ASCON-CXOF128 must be deterministic for the same customisation and message.");
@@ -87,12 +87,12 @@ public partial class AsconCxof128Tests
         using AsconCxof128 normal = new AsconCxof128();
         normal.Customize(bytes);
         normal.Absorb([0x44]);
-        byte[] outputNormal = normal.GetHash(32);
+        var outputNormal = normal.GetHash(32);
 
         using AsconCxof128 swapped = new AsconCxof128();
         swapped.Customize([0x44]);
         swapped.Absorb(bytes);
-        byte[] outputSwapped = swapped.GetHash(32);
+        var outputSwapped = swapped.GetHash(32);
 
         CollectionAssert.AreNotEqual(outputNormal, outputSwapped,
             "Swapping the customisation and message bytes must produce different output.");
@@ -112,12 +112,12 @@ public partial class AsconCxof128Tests
 
         using AsconCxof128 uncustomized = new AsconCxof128();
         uncustomized.Absorb(message);
-        byte[] outputUncustomized = uncustomized.GetHash(32);
+        var outputUncustomized = uncustomized.GetHash(32);
 
         using AsconCxof128 customized = new AsconCxof128();
         customized.Customize([0x01]);
         customized.Absorb(message);
-        byte[] outputCustomized = customized.GetHash(32);
+        var outputCustomized = customized.GetHash(32);
 
         Assert.IsNotNull(outputUncustomized);
         Assert.AreEqual(32, outputUncustomized.Length);

@@ -31,7 +31,7 @@ public partial class SymmetricAlgorithmExtensionTests
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
-        bool result = algorithm.TryCreateEncryptor(out ICryptoTransform? transform);
+        var result = algorithm.TryCreateEncryptor(out ICryptoTransform? transform);
 
         Assert.IsTrue(result);
         Assert.IsNotNull(transform);
@@ -46,7 +46,7 @@ public partial class SymmetricAlgorithmExtensionTests
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
-        bool result = algorithm.TryCreateEncryptor(out ICryptoTransform? transform);
+        var result = algorithm.TryCreateEncryptor(out ICryptoTransform? transform);
 
         Assert.IsTrue(result);
         Assert.IsNotNull(transform);
@@ -64,7 +64,7 @@ public partial class SymmetricAlgorithmExtensionTests
         var key = new byte[algorithm.KeySize / 8];
         var iv = new byte[algorithm.BlockSize / 8];
 
-        bool result = algorithm.TryCreateEncryptor(key, iv, out ICryptoTransform? transform);
+        var result = algorithm.TryCreateEncryptor(key, iv, out ICryptoTransform? transform);
 
         Assert.IsTrue(result);
         Assert.IsNotNull(transform);
@@ -80,7 +80,7 @@ public partial class SymmetricAlgorithmExtensionTests
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
-        bool result = algorithm.TryCreateEncryptor(null!, new byte[algorithm.BlockSize / 8], out ICryptoTransform? transform);
+        var result = algorithm.TryCreateEncryptor(null!, new byte[algorithm.BlockSize / 8], out ICryptoTransform? transform);
 
         Assert.IsFalse(result);
         Assert.IsNull(transform);
@@ -94,7 +94,7 @@ public partial class SymmetricAlgorithmExtensionTests
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
-        bool result = algorithm.TryCreateEncryptor(new byte[algorithm.KeySize / 8], null!, out ICryptoTransform? transform);
+        var result = algorithm.TryCreateEncryptor(new byte[algorithm.KeySize / 8], null!, out ICryptoTransform? transform);
 
         Assert.IsFalse(result);
         Assert.IsNull(transform);
@@ -114,7 +114,7 @@ public partial class SymmetricAlgorithmExtensionTests
         var key = new byte[algorithm.KeySize / 8];
         var iv = new byte[(algorithm.BlockSize / 8) + 1]; // one byte too long
 
-        bool result = algorithm.TryCreateEncryptor(key, iv, out ICryptoTransform? transform);
+        var result = algorithm.TryCreateEncryptor(key, iv, out ICryptoTransform? transform);
 
         Assert.IsFalse(result);
         Assert.IsNull(transform);
@@ -133,7 +133,7 @@ public partial class SymmetricAlgorithmExtensionTests
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
-        byte[]? invalidKey = CryptoTestUtilities.FindInvalidKey(algorithm.LegalKeySizes);
+        var invalidKey = CryptoTestUtilities.FindInvalidKey(algorithm.LegalKeySizes);
 
         if (invalidKey is null)
         {
@@ -143,9 +143,9 @@ public partial class SymmetricAlgorithmExtensionTests
             return;
         }
 
-        byte[] iv = new byte[algorithm.BlockSize / 8];
+        var iv = new byte[algorithm.BlockSize / 8];
 
-        bool result = algorithm.TryCreateEncryptor(invalidKey, iv, out ICryptoTransform? transform);
+        var result = algorithm.TryCreateEncryptor(invalidKey, iv, out ICryptoTransform? transform);
 
         Assert.IsFalse(result,
             $"TryCreateEncryptor must return false for a {invalidKey.Length * 8}-bit key " +
