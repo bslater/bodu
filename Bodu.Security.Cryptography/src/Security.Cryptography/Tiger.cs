@@ -60,7 +60,7 @@ public sealed partial class Tiger
 {
     private const int MaxOutputBits = 192;
 
-    private static readonly int[] s_validHashSizes = [128, 160, 192];
+    private static readonly int[] s_permittedHashSizes = [128, 160, 192];
 
     private ulong _state0 = 0x0123456789ABCDEF;
     private ulong _state1 = 0xFEDCBA9876543210;
@@ -82,9 +82,7 @@ public sealed partial class Tiger
     public Tiger(int hashSize)
         : base(64)
     {
-        if (Array.IndexOf(s_validHashSizes, hashSize) == -1)
-            throw new ArgumentOutOfRangeException(nameof(hashSize),
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", s_validHashSizes)));
+        CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
 
         this.HashSizeValue = hashSize;
     }
@@ -140,10 +138,7 @@ public sealed partial class Tiger
         {
             this.ThrowIfDisposed();
             this.ThrowIfInvalidState();
-
-            if (Array.IndexOf(s_validHashSizes, value) == -1)
-                throw new ArgumentOutOfRangeException(nameof(value),
-                    string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, value, string.Join(", ", s_validHashSizes)));
+            CryptoHelpers.ThrowIfInvalidHashSize(value, s_permittedHashSizes);
 
             this.HashSizeValue = value;
         }

@@ -88,7 +88,6 @@ public sealed class CtrModeTransform : IBlockCipherModeTransform
     public CtrModeTransform(IBlockCipher cipher, byte[] initialCounter)
     {
         ThrowHelper.ThrowIfNull(cipher);
-        ThrowHelper.ThrowIfNull(initialCounter);
         CryptoHelpers.ThrowIfIvLengthInvalid(initialCounter, cipher.BlockSize);
 
         this._cipher = cipher;

@@ -104,7 +104,7 @@ public sealed class SivModeTransform
     {
         ThrowHelper.ThrowIfNull(s2vCipher);
         ThrowHelper.ThrowIfNull(ctrCipher);
-        ThrowHelper.ThrowIfNull(iv);
+        CryptoHelpers.ThrowIfIvLengthInvalid(iv, s2vCipher.BlockSize);
 
         if (s2vCipher.BlockSize != BlockSizeBytes)
         {
@@ -119,8 +119,6 @@ public sealed class SivModeTransform
                 $"SIV requires a CTR cipher with a {BlockSizeBytes}-byte block size.",
                 nameof(ctrCipher));
         }
-
-        CryptoHelpers.ThrowIfIvLengthInvalid(iv, s2vCipher.BlockSize);
 
         this._s2vCipher = s2vCipher;
         this._ctrCipher = ctrCipher;

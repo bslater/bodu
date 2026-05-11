@@ -148,15 +148,10 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     /// </exception>
     private static int ValidateAndComputeRateBytes(int outputBits, int securityLevel)
     {
-        if (outputBits <= 0 || outputBits % 8 != 0)
-            throw new ArgumentOutOfRangeException(nameof(outputBits),
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, outputBits, "any positive multiple of 8"));
+        ThrowHelper.ThrowIfNotPositiveMultipleOf(outputBits, 8);
+        CryptoHelpers.ThrowIfInvalidHashSize(securityLevel, s_validSecurityLevels);
 
-        if (Array.IndexOf(s_validSecurityLevels, securityLevel) == -1)
-            throw new ArgumentOutOfRangeException(nameof(securityLevel),
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, securityLevel, string.Join(", ", s_validSecurityLevels)));
-
-        return (1600 - 2 * securityLevel) / 8;
+        return (1600 - (2 * securityLevel)) / 8;
     }
 
     /// <inheritdoc />
@@ -222,10 +217,7 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
         {
             this.ThrowIfDisposed();
             this.ThrowIfInvalidState();
-
-            if (value <= 0 || value % 8 != 0)
-                throw new ArgumentOutOfRangeException(nameof(value),
-                    string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, value, "any positive multiple of 8"));
+            CryptoHelpers.ThrowIfNotPositiveMultipleOf(value, 8);
 
             this.HashSizeValue = value;
         }

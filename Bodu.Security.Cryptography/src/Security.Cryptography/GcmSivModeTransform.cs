@@ -112,7 +112,6 @@ public sealed class GcmSivModeTransform
     {
         ThrowHelper.ThrowIfNull(masterCipher);
         ThrowHelper.ThrowIfNull(cipherFactory);
-        ThrowHelper.ThrowIfNull(iv);
         CryptoHelpers.ThrowIfIvLengthInvalid(iv, masterCipher.BlockSize);
 
         this._nonce = new byte[NonceLengthBytes];

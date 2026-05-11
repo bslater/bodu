@@ -89,9 +89,8 @@ public sealed class CcmModeTransform
     public CcmModeTransform(IBlockCipher cipher, byte[] iv)
     {
         ThrowHelper.ThrowIfNull(cipher);
-        this._cipher = cipher;
-        ThrowHelper.ThrowIfNull(iv);
         CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
+        this._cipher = cipher;
 
         this._nonce = new byte[NonceLengthBytes];
         iv.AsSpan(0, NonceLengthBytes).CopyTo(this._nonce);

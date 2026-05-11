@@ -87,7 +87,7 @@ public abstract class SipHash<T>
         0x7465646279746573UL,
     ];
 
-    private static readonly int[] s_validHashSizes = [64, 128];
+    private static readonly int[] s_permittedHashSizes = [64, 128];
     private int _compressionRounds;
     private int _finalizationRounds;
     private ulong _v0, _v1, _v2, _v3;
@@ -100,13 +100,7 @@ public abstract class SipHash<T>
     protected SipHash(int hashSize)
         : base(s_blockSize, KeySize)
     {
-        if (Array.IndexOf(s_validHashSizes, hashSize) == -1)
-            throw new ArgumentOutOfRangeException(
-                nameof(hashSize),
-                string.Format(
-                    CryptoResourceStrings.CryptographicException_InvalidHashSize,
-                    hashSize,
-                    string.Join(", ", s_validHashSizes)));
+        CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
 
         this.KeyValue = new byte[KeySize];
         CryptoHelpers.FillWithRandomNonZeroBytes(this.KeyValue);

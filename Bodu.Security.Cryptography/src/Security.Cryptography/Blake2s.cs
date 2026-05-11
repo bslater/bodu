@@ -66,7 +66,7 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
     /// <summary>
     /// The set of output sizes, in bits, accepted by this algorithm.
     /// </summary>
-    public static readonly int[] ValidHashSizes = [128, 160, 192, 224, 256];
+    private static readonly int[] s_permittedHashSizes = [128, 160, 192, 224, 256];
 
     /// <summary>
     /// The maximum accepted key length, in bytes, for the keyed <c>BLAKE2s-MAC</c> mode.
@@ -113,10 +113,7 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
     public Blake2s(int hashSize)
         : base(BlockSizeBytesValue, MaxKeySize)
     {
-        if (Array.IndexOf(ValidHashSizes, hashSize) < 0)
-            throw new ArgumentOutOfRangeException(
-                nameof(hashSize),
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
+        CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
 
         this.HashSizeValue = hashSize;
         this.InitializeHashState();
@@ -170,10 +167,7 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
             this.ThrowIfDisposed();
             this.ThrowIfInvalidState();
 
-            if (Array.IndexOf(ValidHashSizes, value) < 0)
-                throw new ArgumentOutOfRangeException(
-                    nameof(value),
-                    string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, value, string.Join(", ", ValidHashSizes)));
+            CryptoHelpers.ThrowIfInvalidHashSize(value, s_permittedHashSizes);
 
             this.HashSizeValue = value;
         }
