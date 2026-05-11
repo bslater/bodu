@@ -26,7 +26,12 @@ public static partial class ICryptoTransformExtensions
     /// <para>This overload is equivalent to calling <c>Transform(array, 0, array.Length)</c>.</para>
     /// </remarks>
     public static byte[] Transform(this ICryptoTransform cryptoTransform, byte[] array)
-        => cryptoTransform.Transform(array, 0, array?.Length ?? 0);
+    {
+        ThrowHelper.ThrowIfNull(cryptoTransform);
+        ThrowHelper.ThrowIfNull(array);
+
+        return cryptoTransform.Transform(array, 0, array.Length);
+    }
 
     /// <summary>
     /// Transforms a portion of the specified byte array using the given cryptographic transform.

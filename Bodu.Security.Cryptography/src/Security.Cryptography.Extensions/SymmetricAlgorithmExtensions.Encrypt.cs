@@ -25,7 +25,12 @@ public static partial class SymmetricAlgorithmExtensions
     /// </exception>
     /// <remarks>Equivalent to calling <c>Encrypt(array, 0, array.Length)</c>.</remarks>
     public static byte[] Encrypt(this SymmetricAlgorithm algorithm, byte[] array)
-        => algorithm.Encrypt(array, 0, array?.Length ?? 0);
+    {
+        ThrowHelper.ThrowIfNull(algorithm);
+        ThrowHelper.ThrowIfNull(array);
+
+        return algorithm.Encrypt(array, 0, array.Length);
+    }
 
     /// <summary>
     /// Encrypts a portion of a byte array beginning at the specified offset and continuing to the end of the array.
@@ -43,7 +48,12 @@ public static partial class SymmetricAlgorithmExtensions
     /// <paramref name="offset"/> is negative or exceeds the length of <paramref name="array"/>.
     /// </exception>
     public static byte[] Encrypt(this SymmetricAlgorithm algorithm, byte[] array, int offset)
-        => algorithm.Encrypt(array, offset, (array?.Length - offset) ?? 0);
+    {
+        ThrowHelper.ThrowIfNull(algorithm);
+        ThrowHelper.ThrowIfNull(array);
+
+        return algorithm.Encrypt(array, offset, array.Length - offset);
+    }
 
     /// <summary>
     /// Encrypts a contiguous region of a byte array using the specified symmetric algorithm.
