@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -436,14 +437,36 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
         BinaryPrimitives.WriteUInt64LittleEndian(tag[8..], this._state.S4 ^ k1);
     }
 
-    /// <summary>Throws <see cref="ObjectDisposedException"/> if this instance has been disposed.</summary>
+    /// <summary>
+    /// Validates that <paramref name="value"/> is not <see langword="null"/> and returns it as a
+    /// <see cref="ReadOnlySpan{T}"/>, enabling null-safe constructor chaining from the <c>byte[]</c> overload.
+    /// </summary>
+    /// <param name="value">The byte array to validate.</param>
+    /// <param name="paramName">The caller-visible parameter name reported in any exception.</param>
+    /// <returns>A <see cref="ReadOnlySpan{Byte}"/> over <paramref name="value"/>.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
+    private static ReadOnlySpan<byte> ValidateNotNull(byte[] value, string paramName)
+    {
+        if (value is null)
+            throw new ArgumentNullException(paramName);
+
+        return value.AsSpan();
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when any public method or property is accessed after the instance has been disposed.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
-            throw new ObjectDisposedException(nameof(AsconAead128));
+            throw new ObjectDisposedException(this.GetType().Name);
 #endif
     }
 

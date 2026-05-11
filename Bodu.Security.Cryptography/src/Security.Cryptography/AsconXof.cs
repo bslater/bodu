@@ -275,8 +275,11 @@ public abstract class AsconXof<T>
     }
 
     /// <summary>
-    /// Throws <see cref="ObjectDisposedException"/> if this instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
     /// </summary>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when any public method or property is accessed after the instance has been disposed.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfDisposed()
     {
@@ -287,6 +290,35 @@ public abstract class AsconXof<T>
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
     }
+
+    /// <summary>
+    /// Finalises a sponge absorption phase by padding the residual buffer with <c>0x01</c> at the next unused byte
+    /// position, absorbing the padded block, and applying <see cref="_absorptionRounds"/> Ascon-p rounds. Resets the
+    /// residual counter to zero so that the next call to <see cref="Absorb"/> starts from a clean state.
+    /// </summary>
+    /// <remarks>
+    /// Derived classes (specifically <see cref="AsconCxof128"/>) call this to close the customization phase before
+    /// injecting a domain-separation constant.
+    /// </remarks>
+    protected void FinalizeAbsorptionPhase()
+    {
+        Span<byte> pad = stackalloc byte[BlockSize];
+        this._residualBuffer.AsSpan(0, this._residualBytes).CopyTo(pad);
+        pad[this._residualBytes] ^= 0x01;
+        this._state.AbsorbRate64(pad);
+        this._state.Permute(this._absorptionRounds);
+        this._residualBytes = 0;
+        Array.Clear(this._residualBuffer, 0, BlockSize);
+    }
+
+    /// <summary>
+    /// XORs <paramref name="value"/> into state word 4 (<c>S4</c>). Used by <see cref="AsconCxof128"/> to inject the
+    /// customization domain-separation constant after the customization absorption phase is finalised.
+    /// </summary>
+    /// <param name="value">The value to XOR into <c>S4</c>.</param>
+    protected void XorS4(ulong value) =>
+        this._state.S4 ^= value;
+
 
     /// <summary>
     /// Accumulates <paramref name="data"/> into the residual buffer, flushing complete 8-byte blocks into the state.
