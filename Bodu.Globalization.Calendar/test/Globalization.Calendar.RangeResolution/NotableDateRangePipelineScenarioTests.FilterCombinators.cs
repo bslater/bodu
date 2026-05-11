@@ -397,9 +397,9 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that <see cref="NotableDateFilter.InDateRange" /> rejects an inverted range (end before start).
 	/// </summary>
 	[TestMethod]
-	public void Filter_InDateRange_WhenEndIsBeforeStart_ShouldThrowArgumentException()
+	public void Filter_InDateRange_WhenEndIsBeforeStart_ShouldThrowArgumentOutOfRangeException()
 	{
-		ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
+		ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
 		{
 			_ = NotableDateFilter.InDateRange(new DateTime(2026, 12, 31), new DateTime(2026, 1, 1));
 		});

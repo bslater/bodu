@@ -321,11 +321,11 @@ public sealed class Crc
         => obj is Crc other && this._standard.Equals(other._standard);
 
     /// <summary>
-    /// Returns a hash code for this <see cref="Crc" /> instance, consistent with its equality semantics.
+    /// Not supported. <see cref="Crc" /> instances are not suitable for use as dictionary keys.
     /// </summary>
-    /// <returns>A hash code derived from the configured <see cref="CrcStandard" />.</returns>
+    /// <exception cref="NotSupportedException">Always thrown.</exception>
     public override int GetHashCode() =>
-        this._standard.GetHashCode();
+        throw new NotSupportedException();
 
     /// <summary>
     /// Returns the working-state representation of <see cref="CrcStandard.InitialValue" />, applying input reflection

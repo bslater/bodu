@@ -25,6 +25,15 @@ public sealed partial class SivModeTransformTests : AeadBlockCipherModeTests<Siv
     /// </remarks>
     protected override bool NonceAffectsCiphertext => false;
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// <see cref="CreateTransform" /> does not forward the <paramref name="cipher" /> argument to the
+    /// production constructor — it uses fixed AES keys for both the S2V and CTR ciphers. Passing
+    /// <see langword="null" /> therefore never reaches the null-check in
+    /// <see cref="SivModeTransform" />, so the base-class cipher-null test is not applicable here.
+    /// </remarks>
+    protected override bool ValidatesCipherArgument => false;
+
     // Fixed keys used for all structural / tamper-detection tests.
     // Using real AES with distinct K1 and K2 prevents the degenerate authentication fixed-point
     // that arises when a simple XOR cipher is used for both S2V (K1) and CTR (K2): with any
