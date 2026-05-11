@@ -68,8 +68,18 @@ public sealed class AesBlockCipher
     {
         ThrowHelper.ThrowIfNull(key);
 
-        this._aes = Aes.Create();
-        this._aes.Key = key; // BCL validates length and throws CryptographicException on mismatch.
+        Aes aes = Aes.Create();
+        try
+        {
+            aes.Key = key; // BCL validates length and throws CryptographicException on mismatch.
+        }
+        catch
+        {
+            aes.Dispose();
+            throw;
+        }
+
+        this._aes = aes;
     }
 
     /// <inheritdoc />
