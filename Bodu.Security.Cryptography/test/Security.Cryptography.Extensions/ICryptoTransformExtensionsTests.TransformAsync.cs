@@ -204,6 +204,83 @@ public partial class ICryptoTransformExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform,Stream,Stream,int,CancellationToken)" />
+    /// writes all transformed data to the target stream exclusively via the asynchronous write path,
+    /// with no synchronous <see cref="Stream.Write(byte[],int,int)" /> calls.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(GetValidTransformTestData))]
+    public async Task TransformAsync_Stream_WhenCompleted_ShouldWriteOnlyViaAsynchronousPath(KnownAnswerTest kat)
+    {
+        using var source = new MemoryStream(kat.Input);
+        var trackingTarget = new DisposalTrackingStream(new MemoryStream());
+        using var transform = CreateTransform(kat);
+
+        await transform.TransformAsync(source, trackingTarget, bufferSize: kat.Input.Length);
+
+        Assert.IsTrue(trackingTarget.AsyncWriteCount > 0,
+            $"[{kat.Name}] Expected at least one asynchronous write to the target stream.");
+        Assert.AreEqual(0, trackingTarget.SyncWriteCount,
+            $"[{kat.Name}] No synchronous writes should be made to the target stream from an async method.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform,Stream,Stream,int,CancellationToken)" />
+    /// does not dispose the target stream — neither synchronously nor asynchronously — after a
+    /// successful transform, honouring the documented <c>leaveOpen</c> contract.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(GetValidTransformTestData))]
+    public async Task TransformAsync_Stream_WhenCompleted_ShouldNotDisposeTargetStream(KnownAnswerTest kat)
+    {
+        using var source = new MemoryStream(kat.Input);
+        var trackingTarget = new DisposalTrackingStream(new MemoryStream());
+        using var transform = CreateTransform(kat);
+
+        await transform.TransformAsync(source, trackingTarget, bufferSize: kat.Input.Length);
+
+        Assert.IsFalse(trackingTarget.SyncDisposeCalled,
+            $"[{kat.Name}] Target stream must not be synchronously disposed.");
+        Assert.IsFalse(trackingTarget.AsyncDisposeCalled,
+            $"[{kat.Name}] Target stream must not be asynchronously disposed.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform,Stream,Stream,int,CancellationToken)" />
+    /// uses <see cref="IAsyncDisposable.DisposeAsync" /> rather than <see cref="IDisposable.Dispose" />
+    /// when cleaning up the internal <see cref="CryptoStream" /> after a cancellation. This is
+    /// observable because, when the operation is cancelled before <see cref="CryptoStream.FlushFinalBlockAsync" />
+    /// runs, disposal triggers the final-block flush — writing asynchronously via <see cref="Stream.WriteAsync(ReadOnlyMemory{byte},CancellationToken)" />
+    /// rather than synchronously via <see cref="Stream.Write(byte[],int,int)" />.
+    /// </summary>
+    [TestMethod]
+    public async Task TransformAsync_Stream_WhenCancelledBeforeFlush_ShouldDisposeInternalStreamAsynchronously()
+    {
+        // Use PKCS7 padding (the default) so that disposal triggers a measurable final-block
+        // write to the target stream even when no data has been fed to the transform.
+        using var algorithm = CreateAlgorithm();
+        using var encryptor = algorithm.CreateEncryptor();
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        var trackingTarget = new DisposalTrackingStream(new MemoryStream());
+        using var source = new MemoryStream(new byte[] { 0x01 });
+
+        try
+        {
+            await encryptor.TransformAsync(source, trackingTarget, bufferSize: 16, cts.Token);
+        }
+        catch (OperationCanceledException) { }
+
+        Assert.AreEqual(0, trackingTarget.SyncWriteCount,
+            "Disposal of the internal CryptoStream must not trigger synchronous writes; DisposeAsync must be used.");
+        Assert.IsFalse(trackingTarget.SyncDisposeCalled,
+            "The target stream must not be synchronously disposed (leaveOpen: true contract).");
+        Assert.IsFalse(trackingTarget.AsyncDisposeCalled,
+            "The target stream must not be asynchronously disposed (leaveOpen: true contract).");
+    }
+
+    /// <summary>
     /// Verifies that a round-trip using <see cref="ICryptoTransformExtensions.TransformAsync" /> for
     /// encryption followed by <see cref="ICryptoTransformExtensions.TransformAsync" /> for decryption
     /// produces the original plaintext.

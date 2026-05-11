@@ -110,16 +110,16 @@ public static partial class ICryptoTransformExtensions
             {
                 if (completed)
                 {
-                    cryptoStream.Dispose();
+                    await cryptoStream.DisposeAsync().ConfigureAwait(false);
                 }
                 else
                 {
                     // Any failure before FlushFinalBlockAsync completed leaves the transform in
-                    // an incomplete state; CryptoStream.Dispose() will attempt to finalise the
-                    // block and raise a secondary CryptographicException that would mask the
-                    // original cause (cancellation or I/O failure). Swallow that secondary
-                    // exception so the primary exception propagates.
-                    try { cryptoStream.Dispose(); }
+                    // an incomplete state; DisposeAsync will attempt to finalise the block and
+                    // may raise a secondary CryptographicException that would mask the original
+                    // cause (cancellation or I/O failure). Swallow that secondary exception so
+                    // the primary exception propagates.
+                    try { await cryptoStream.DisposeAsync().ConfigureAwait(false); }
                     catch { }
                 }
             }
@@ -210,24 +210,24 @@ public static partial class ICryptoTransformExtensions
         finally
         {
             // Dispose the CryptoStream (if it was successfully constructed) first, suppressing
-            // any secondary CryptographicException from Dispose-triggered finalisation when the
-            // primary flow failed. Then always dispose the backing MemoryStream, even if
+            // any secondary CryptographicException from DisposeAsync-triggered finalisation when
+            // the primary flow failed. Then always dispose the backing MemoryStream, even if
             // construction of the CryptoStream itself threw before the using block could
             // take ownership of it.
             if (cryptoStream is not null)
             {
                 if (completed)
                 {
-                    cryptoStream.Dispose();
+                    await cryptoStream.DisposeAsync().ConfigureAwait(false);
                 }
                 else
                 {
-                    try { cryptoStream.Dispose(); }
+                    try { await cryptoStream.DisposeAsync().ConfigureAwait(false); }
                     catch { }
                 }
             }
 
-            ms.Dispose();
+            await ms.DisposeAsync().ConfigureAwait(false);
         }
     }
 }
