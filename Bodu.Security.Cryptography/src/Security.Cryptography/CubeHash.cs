@@ -140,6 +140,52 @@ public sealed class CubeHash
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="CubeHash"/> class with fully specified algorithm parameters.
+    /// </summary>
+    /// <param name="initializationRounds">
+    /// The number of initialisation rounds to run before processing input data.
+    /// Must be between <see cref="MinRounds"/> and <see cref="MaxRounds"/> inclusive.
+    /// </param>
+    /// <param name="rounds">
+    /// The number of transformation rounds applied to each full input block.
+    /// Must be between <see cref="MinRounds"/> and <see cref="MaxRounds"/> inclusive.
+    /// </param>
+    /// <param name="transformBlockSize">
+    /// The size, in bytes, of the input block used to trigger a state transformation.
+    /// Must be between <see cref="MinInputBlockSize"/> and <see cref="MaxInputBlockSize"/> inclusive.
+    /// </param>
+    /// <param name="finalizationRounds">
+    /// The number of finalisation rounds applied after all input has been processed.
+    /// Must be between <see cref="MinRounds"/> and <see cref="MaxRounds"/> inclusive.
+    /// </param>
+    /// <param name="hashSize">
+    /// The desired hash output size in bits. Must be one of: 224, 256, 384, or 512.
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <para><paramref name="initializationRounds"/>, <paramref name="rounds"/>, or <paramref name="finalizationRounds"/>
+    /// is less than <see cref="MinRounds"/> or greater than <see cref="MaxRounds"/>.</para>
+    /// <para>-or-</para>
+    /// <para><paramref name="transformBlockSize"/> is less than <see cref="MinInputBlockSize"/> or greater than <see cref="MaxInputBlockSize"/>.</para>
+    /// <para>-or-</para>
+    /// <para><paramref name="hashSize"/> is not a permitted hash size.</para>
+    /// </exception>
+    public CubeHash(int initializationRounds, int rounds, int transformBlockSize, int finalizationRounds, int hashSize)
+    {
+        ThrowHelper.ThrowIfOutOfRange(initializationRounds, MinRounds, MaxRounds);
+        ThrowHelper.ThrowIfOutOfRange(rounds, MinRounds, MaxRounds);
+        ThrowHelper.ThrowIfOutOfRange(transformBlockSize, MinInputBlockSize, MaxInputBlockSize);
+        ThrowHelper.ThrowIfOutOfRange(finalizationRounds, MinRounds, MaxRounds);
+        CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
+        this._state = new uint[32];
+        this._initializedState = new uint[32];
+        this.HashSizeValue = hashSize;
+        this._inputBlockSizeBytes = transformBlockSize;
+        this._rounds = rounds;
+        this._initializationRounds = initializationRounds;
+        this._finalizationRounds = finalizationRounds;
+    }
+
+    /// <summary>
     /// Gets the fully qualified algorithm name, including the variant and hash output size.
     /// </summary>
     /// <remarks>
