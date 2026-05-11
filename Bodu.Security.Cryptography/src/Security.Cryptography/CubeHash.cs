@@ -27,7 +27,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 ///   <item><description>State size: 1024 bits (32 × 32-bit words).</description></item>
-///   <item><description>Output size: configurable, <see cref="MinHashSize"/>–<see cref="MaxHashSize"/> bits (default 512).</description></item>
+///   <item><description>Output size: 224, 256, 384, or 512 bits (default 512); pass the desired size to <see cref="CubeHash(int)"/>.</description></item>
 ///   <item><description>Input block size: configurable, <see cref="MinInputBlockSize"/>–<see cref="MaxInputBlockSize"/> bytes (default 32).</description></item>
 ///   <item><description>Rounds: initialisation, per-block, and finalisation counts each independently configurable up to <see cref="MaxRounds"/>; defaults are 16 / 16 / 32.</description></item>
 /// </list>
@@ -68,7 +68,7 @@ public sealed class CubeHash
     /// <summary>
     /// The minimum allowable size of the computed hash, in bits.
     /// </summary>
-    public const int MinHashSize = 8;
+    public const int MinHashSize = 224;
 
     /// <summary>
     /// The minimum allowable size of the input block, in bytes.
@@ -79,6 +79,8 @@ public sealed class CubeHash
     /// The minimum number of rounds permitted for initialisation, processing, or finalization.
     /// </summary>
     public const int MinRounds = 1;
+
+    private static readonly int[] s_permittedHashSizes = [224, 256, 384, 512];
 
     private bool _disposed = false;
 
@@ -101,13 +103,36 @@ public sealed class CubeHash
 #endif
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CubeHash"/> class with default parameters.
+    /// Initializes a new instance of the <see cref="CubeHash"/> class with default parameters:
+    /// 512-bit output, 32-byte input block, and 16 / 16 / 32 initialisation / transform / finalisation rounds.
     /// </summary>
     public CubeHash()
     {
         this._state = new uint[32];
         this._initializedState = new uint[32];
         this.HashSizeValue = 512;
+        this._inputBlockSizeBytes = 32;
+        this._rounds = 16;
+        this._initializationRounds = 16;
+        this._finalizationRounds = 32;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CubeHash"/> class with the specified hash output size
+    /// and default algorithm parameters: 32-byte input block and 16 / 16 / 32 initialisation / transform / finalisation rounds.
+    /// </summary>
+    /// <param name="hashSize">
+    /// The desired hash output size in bits. Must be one of: 224, 256, 384, or 512.
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="hashSize"/> is not a permitted hash size.
+    /// </exception>
+    public CubeHash(int hashSize)
+    {
+        CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
+        this._state = new uint[32];
+        this._initializedState = new uint[32];
+        this.HashSizeValue = hashSize;
         this._inputBlockSizeBytes = 32;
         this._rounds = 16;
         this._initializationRounds = 16;
@@ -185,11 +210,12 @@ public sealed class CubeHash
     /// Gets or sets the size, in bits, of the final computed hash output.
     /// </summary>
     /// <remarks>
-    /// The hash size determines the length of the digest returned by the algorithm. Valid values must be between
-    /// <see cref="MinHashSize"/> and <see cref="MaxHashSize"/>, and divisible by 8. Larger sizes increase output strength.
+    /// The hash size determines the length of the digest returned by the algorithm.
+    /// Valid values are 224, 256, 384, and 512 bits.
     /// </remarks>
+    /// <returns>The hash output size in bits.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Value is not within range <see cref="MinHashSize"/> to <see cref="MaxHashSize"/>, or is not a multiple of 8.
+    /// Value is not one of the permitted sizes (224, 256, 384, 512).
     /// </exception>
     /// <exception cref="ObjectDisposedException">Instance has been disposed and its members are accessed.</exception>
     /// <exception cref="CryptographicUnexpectedOperationException">The hash computation has already started.</exception>
@@ -205,8 +231,7 @@ public sealed class CubeHash
         {
             this.ThrowIfDisposed();
             this.ThrowIfInvalidState();
-            ThrowHelper.ThrowIfOutOfRange(value, MinHashSize, MaxHashSize);
-            ThrowHelper.ThrowIfNotPositiveMultipleOf(value, 8);
+            CryptoHelpers.ThrowIfInvalidHashSize(value, s_permittedHashSizes);
             this.HashSizeValue = value;
             this._isInitializedStateCached = false;
         }

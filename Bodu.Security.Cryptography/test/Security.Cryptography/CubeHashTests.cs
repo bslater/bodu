@@ -25,9 +25,73 @@ public partial class CubeHashTests
     /// <inheritdoc />
     protected override CubeHash CreateAlgorithm() => new CubeHash();
 
+    /// <summary>
+    /// Verifies that constructing a <see cref="CubeHash"/> with an unsupported hash size throws
+    /// <see cref="ArgumentOutOfRangeException"/> with the correct parameter name.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenHashSizeIsUnsupported_ShouldThrowArgumentOutOfRangeException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new CubeHash(300);
+        });
+        Assert.AreEqual("hashSize", ex.ParamName);
+    }
+
     /// <inheritdoc />
     protected override HashAlgorithmSpecification GetSpecification(CubeHashVariants variant) => variant switch
     {
+        // Standard-parameter variants (i=16, r=16, b=32, f=32) exercised via the hashSize constructor.
+        // TODO: Replace empty KnownAnswers strings with computed reference vectors for 224/256/384 once generated.
+        CubeHashVariants.CubeHash_224 => BaseCubeHashSpecification with
+        {
+            HashSize = 224,
+            HashBlockSize = 32,
+            KnownAnswers = new()
+            {
+                Empty = "",
+                Abc = "",
+                Zeros16 = "",
+                QuickBrownFox = "",
+            },
+        },
+        CubeHashVariants.CubeHash_256 => BaseCubeHashSpecification with
+        {
+            HashSize = 256,
+            HashBlockSize = 32,
+            KnownAnswers = new()
+            {
+                Empty = "",
+                Abc = "",
+                Zeros16 = "",
+                QuickBrownFox = "",
+            },
+        },
+        CubeHashVariants.CubeHash_384 => BaseCubeHashSpecification with
+        {
+            HashSize = 384,
+            HashBlockSize = 32,
+            KnownAnswers = new()
+            {
+                Empty = "",
+                Abc = "",
+                Zeros16 = "",
+                QuickBrownFox = "",
+            },
+        },
+        CubeHashVariants.CubeHash_512 => BaseCubeHashSpecification with
+        {
+            HashSize = 512,
+            HashBlockSize = 32,
+            KnownAnswers = new()
+            {
+                Empty = "37045CCA405EE6FBDF815ED8B57C971BB78DAFB58F3EF676C977A716F66DBD8F376FEF59D2E0687CF5608C5DAD53BA42C8456269F3F3BCFB27D9B75CAAA26E11",
+                Abc = "0420CD7021DAA558C7CE8567BD649B4CE2E84E2ADA941173031667701B478325EA46B179DCADADE011084C635370E724B110428A0751CD9E55ADC10887AC2EBD",
+                Zeros16 = "55F429D6E744E0EF2A2C183C0F2E2C7CB8282F29532B4AE7AC027A71A8A19A9DB0734FC211520200CFF1619A445FAD25D64DC4632F71154E346141DEF27ED103",
+                QuickBrownFox = "A9BA7B8C6B4ECC6660BB3B35F076DB7FCE4930296491922744C67EF08DC1217CE5EB26BB25247E3BC8904B46D468455E6807C21410C1FB95E44824DC7D57C7FF",
+            },
+        },
         CubeHashVariants.CubeHash16_16_32_32_512 => BaseCubeHashSpecification with
         {
             HashSize = 512,
@@ -117,6 +181,10 @@ public partial class CubeHashTests
 
     public override IEnumerable<CubeHashVariants> GetHashAlgorithmVariants() => new[]
     {
+        CubeHashVariants.CubeHash_224,
+        CubeHashVariants.CubeHash_256,
+        CubeHashVariants.CubeHash_384,
+        CubeHashVariants.CubeHash_512,
         CubeHashVariants.CubeHash16_16_32_32_512,
         CubeHashVariants.CubeHash160_16_32_160_512,
         CubeHashVariants.CubeHash80_8_1_80_512,
@@ -129,6 +197,10 @@ public partial class CubeHashTests
     protected override CubeHash CreateAlgorithm(CubeHashVariants variant) =>
         variant switch
         {
+            CubeHashVariants.CubeHash_224 => new CubeHash(224),
+            CubeHashVariants.CubeHash_256 => new CubeHash(256),
+            CubeHashVariants.CubeHash_384 => new CubeHash(384),
+            CubeHashVariants.CubeHash_512 => new CubeHash(512),
             CubeHashVariants.CubeHash16_16_32_32_512 => CreateAlgorithm(),
             CubeHashVariants.CubeHash160_16_32_160_512 => new CubeHash
             {
@@ -184,6 +256,11 @@ public partial class CubeHashTests
     protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(CubeHashVariants variant) =>
         variant switch
         {
+            // TODO: Replace empty arrays with 65-entry incremental vectors once computed for 224/256/384.
+            CubeHashVariants.CubeHash_224 => Array.Empty<string>(),
+            CubeHashVariants.CubeHash_256 => Array.Empty<string>(),
+            CubeHashVariants.CubeHash_384 => Array.Empty<string>(),
+            CubeHashVariants.CubeHash_512 => this.GetExpectedHashesForIncrementalInput(CubeHashVariants.CubeHash16_16_32_32_512),
             CubeHashVariants.CubeHash16_16_32_32_512 => new[]
             {
                 "37045CCA405EE6FBDF815ED8B57C971BB78DAFB58F3EF676C977A716F66DBD8F376FEF59D2E0687CF5608C5DAD53BA42C8456269F3F3BCFB27D9B75CAAA26E11", "ACCEDE4F87A5900CDB30D6115EA4C2AB25AD8013BDC4FE93B4023F020D38CB91439B56AB2B880B3449FBA6D680F954355FD382FBC512C61919F98B2F92E3A932", "9267F92FB450ECB47201742167C8C4ECD1C9D218364C394A82B7CA9431E2CEE260F5525D2A843D716D642BA52C2EBABE8CF9713AFC652FCCAAD8DD02D0FFB7B3", "903F4F206DD67165A278106AA75FC6BC8B29BAB923DC3CBF37DA3886CFFCA86499372909FF668E9842314CDD466656897D947858875DE34241E91DA37F376CED",
