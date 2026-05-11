@@ -28,19 +28,7 @@ namespace Bodu.Security.Cryptography;
 /// possible to minimise allocations in performance-sensitive paths.
 /// </para>
 /// </remarks>
-[System.Diagnostics.CodeAnalysis.SuppressMessage(
-    "StyleCop.CSharp.ReadabilityRules",
-    "SA1117:Parameters should be on same line or separate lines",
-    Justification = "Parameter grouping is intentional: primary validation inputs are kept together, while caller-argument-expression parameters are placed on separate lines because they provide diagnostic metadata rather than caller-supplied values.")]
-[System.Diagnostics.CodeAnalysis.SuppressMessage(
-    "Style",
-    "IDE0011:Add braces",
-    Justification = "Single-statement guard clauses intentionally omit braces to match the project style; multi-line control-flow bodies remain governed by the editorconfig brace policy.")]
-[System.Diagnostics.CodeAnalysis.SuppressMessage(
-    "Roslynator",
-    "RCS1001:Add braces (when expression spans over multiple lines)",
-    Justification = "Multi-line throw expressions are used as single guard-clause bodies; omitting braces keeps validation paths compact without changing control-flow clarity.")]
-public static partial class CryptoHelpers
+internal static partial class CryptoHelpers
 {
     /// <summary>
     /// Returns a comma-separated string of valid key sizes (in bits) from the provided <see cref="KeySizes"/> array.

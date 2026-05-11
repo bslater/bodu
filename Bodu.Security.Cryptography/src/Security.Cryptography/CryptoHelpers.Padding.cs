@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
-public static partial class CryptoHelpers
+internal static partial class CryptoHelpers
 {
     /// <summary>
     /// Removes padding from a block and returns the depadded data as a newly allocated array.

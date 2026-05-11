@@ -396,19 +396,6 @@ public abstract class BlockCipherTransform : ICryptoTransform
     }
 
     /// <summary>
-    /// Throws if this transform has already completed its final block operation.
-    /// </summary>
-    /// <exception cref="InvalidOperationException">
-    /// This transform has already been finalised and cannot be reused.
-    /// </exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected void ThrowIfFinalized()
-    {
-        if (this._finalized)
-            throw new InvalidOperationException(CryptoResourceStrings.InvalidOperationException_TransformAlreadyFinalized);
-    }
-
-    /// <summary>
     /// Zeroes and clears any deferred ciphertext block retained for padded decryption.
     /// </summary>
     private void ClearDeferredInput() =>

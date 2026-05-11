@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
-public static partial class CryptoHelpers
+internal static partial class CryptoHelpers
 {
     /// <summary>
     /// Throws an <see cref="InvalidOperationException"/> if associated data has already been processed.

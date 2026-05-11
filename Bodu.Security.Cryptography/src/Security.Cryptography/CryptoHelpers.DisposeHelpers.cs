@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
-public static partial class CryptoHelpers
+internal static partial class CryptoHelpers
 {
     /// <summary>
     /// Securely zeroes the contents of a <see cref="Memory{T}"/> buffer using <see cref="CryptographicOperations.ZeroMemory"/>.
