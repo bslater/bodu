@@ -35,9 +35,9 @@ public sealed class Ean13
     /// <summary>The required full-sequence length of <c>13</c> decimal digits.</summary>
     public const int SequenceLength = 13;
 
-    private int sumEvenHypothesis;
-    private int sumOddHypothesis;
-    private int count;
+    private int _sumEvenHypothesis;
+    private int _sumOddHypothesis;
+    private int _count;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Ean13" /> class.
@@ -48,56 +48,6 @@ public sealed class Ean13
 
     /// <inheritdoc />
     public override string AlgorithmName => "EAN-13";
-
-    /// <inheritdoc />
-    public override void Append(ReadOnlySpan<char> digits)
-    {
-        int sumEven = sumEvenHypothesis;
-        int sumOdd = sumOddHypothesis;
-        int count = this.count;
-
-        for (int i = 0; i < digits.Length; i++)
-        {
-            char ch = digits[i];
-            if ((uint)(ch - '0') > 9u)
-                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
-
-            int v = ch - '0';
-            int tripled = v * 3;
-
-            if ((count & 1) == 0)
-            {
-                sumEven += v;
-                sumOdd += tripled;
-            }
-            else
-            {
-                sumEven += tripled;
-                sumOdd += v;
-            }
-
-            count++;
-        }
-
-        sumEvenHypothesis = sumEven;
-        sumOddHypothesis = sumOdd;
-        this.count = count;
-    }
-
-    /// <inheritdoc />
-    public override void Reset()
-    {
-        sumEvenHypothesis = 0;
-        sumOddHypothesis = 0;
-        count = 0;
-    }
-
-    /// <inheritdoc />
-    public override char GetCurrentCheckDigit()
-    {
-        int sum = (count & 1) == 0 ? sumEvenHypothesis : sumOddHypothesis;
-        return (char)('0' + ((10 - (sum % 10)) % 10));
-    }
 
     /// <summary>
     /// Computes the EAN-13 check digit for the supplied body of decimal digits without allocating a streaming
@@ -130,5 +80,55 @@ public sealed class Ean13
         if (digitsIncludingCheck.IsEmpty) return true;
         if (digitsIncludingCheck.Length != SequenceLength) return false;
         return WeightedMod10.IsValidIsbn13(digitsIncludingCheck);
+    }
+
+    /// <inheritdoc />
+    public override void Append(ReadOnlySpan<char> digits)
+    {
+        var sumEven = _sumEvenHypothesis;
+        var sumOdd = _sumOddHypothesis;
+        var count = this._count;
+
+        for (var i = 0; i < digits.Length; i++)
+        {
+            var ch = digits[i];
+            if ((uint)(ch - '0') > 9u)
+                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
+
+            var v = ch - '0';
+            var tripled = v * 3;
+
+            if ((count & 1) == 0)
+            {
+                sumEven += v;
+                sumOdd += tripled;
+            }
+            else
+            {
+                sumEven += tripled;
+                sumOdd += v;
+            }
+
+            count++;
+        }
+
+        _sumEvenHypothesis = sumEven;
+        _sumOddHypothesis = sumOdd;
+        this._count = count;
+    }
+
+    /// <inheritdoc />
+    public override void Reset()
+    {
+        _sumEvenHypothesis = 0;
+        _sumOddHypothesis = 0;
+        _count = 0;
+    }
+
+    /// <inheritdoc />
+    public override char GetCurrentCheckDigit()
+    {
+        var sum = (_count & 1) == 0 ? _sumEvenHypothesis : _sumOddHypothesis;
+        return (char)('0' + ((10 - (sum % 10)) % 10));
     }
 }

@@ -4,12 +4,12 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+namespace Bodu.IO.Hashing.Extensions;
+
 using System;
 using System.IO;
 using System.IO.Hashing;
 using System.Text;
-
-namespace Bodu.IO.Hashing.Extensions;
 
 public static partial class NonCryptographicHashAlgorithmExtensions
 {
@@ -43,7 +43,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         algorithm.Reset();
         algorithm.Append(input);
-        byte[] actualHash = algorithm.GetHashAndReset();
+        var actualHash = algorithm.GetHashAndReset();
 
         return actualHash.AsSpan().SequenceEqual(expectedHash);
     }
@@ -96,7 +96,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         algorithm.Reset();
         algorithm.Append(input);
-        byte[] actualHash = algorithm.GetHashAndReset();
+        var actualHash = algorithm.GetHashAndReset();
 
         return actualHash.AsSpan().SequenceEqual(expectedBytes);
     }
@@ -131,7 +131,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         algorithm.Reset();
         algorithm.AppendData(stream);
-        byte[] actualHash = algorithm.GetHashAndReset();
+        var actualHash = algorithm.GetHashAndReset();
 
         return actualHash.AsSpan().SequenceEqual(expectedHash);
     }
@@ -186,7 +186,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         algorithm.Reset();
         algorithm.AppendData(stream);
-        byte[] actualHash = algorithm.GetHashAndReset();
+        var actualHash = algorithm.GetHashAndReset();
 
         return actualHash.AsSpan().SequenceEqual(expectedBytes);
     }
@@ -219,7 +219,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         algorithm.Reset();
         algorithm.Append(input);
-        byte[] actualHash = algorithm.GetHashAndReset();
+        var actualHash = algorithm.GetHashAndReset();
 
         return actualHash.AsSpan().SequenceEqual(expectedHash);
     }
@@ -284,7 +284,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         ArgumentNullException.ThrowIfNull(encoding);
         ArgumentNullException.ThrowIfNull(expectedHash);
 
-        byte[] data = encoding.GetBytes(text);
+        var data = encoding.GetBytes(text);
 
         return algorithm.VerifyHash(data, expectedHash);
     }

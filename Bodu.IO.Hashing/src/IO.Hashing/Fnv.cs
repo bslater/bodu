@@ -65,7 +65,7 @@ public abstract class Fnv<TSelf>
     : NonCryptographicHashAlgorithm
     where TSelf : Fnv<TSelf>, new()
 {
-    private static readonly int[] s_validHashSizes = { 32, 64 };
+    private static readonly int[] s_validHashSizes = [32, 64];
 
     private readonly int _hashSizeBits;
     private readonly ulong _offsetBasis;
@@ -150,9 +150,9 @@ public abstract class Fnv<TSelf>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendFnv1(ReadOnlySpan<byte> source)
     {
-        ulong hash = this._workingHash;
-        ulong prime = this._prime;
-        for (int i = 0; i < source.Length; i++)
+        var hash = this._workingHash;
+        var prime = this._prime;
+        for (var i = 0; i < source.Length; i++)
         {
             hash *= prime;
             hash ^= source[i];
@@ -164,9 +164,9 @@ public abstract class Fnv<TSelf>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendFnv1a(ReadOnlySpan<byte> source)
     {
-        ulong hash = this._workingHash;
-        ulong prime = this._prime;
-        for (int i = 0; i < source.Length; i++)
+        var hash = this._workingHash;
+        var prime = this._prime;
+        for (var i = 0; i < source.Length; i++)
         {
             hash ^= source[i];
             hash *= prime;

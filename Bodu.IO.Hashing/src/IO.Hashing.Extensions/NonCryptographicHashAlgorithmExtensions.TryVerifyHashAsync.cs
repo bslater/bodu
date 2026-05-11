@@ -4,14 +4,14 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+namespace Bodu.IO.Hashing.Extensions;
+
 using System;
 using System.IO;
 using System.IO.Hashing;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
-namespace Bodu.IO.Hashing.Extensions;
 
 public static partial class NonCryptographicHashAlgorithmExtensions
 {
@@ -273,7 +273,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         try
         {
-            byte[] inputBytes = encoding.GetBytes(input);
+            var inputBytes = encoding.GetBytes(input);
             using MemoryStream stream = new MemoryStream(inputBytes, writable: false);
             return await algorithm.VerifyHashAsync(stream, expectedHash, cancellationToken).ConfigureAwait(false);
         }

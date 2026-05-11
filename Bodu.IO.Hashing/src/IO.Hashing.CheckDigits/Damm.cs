@@ -30,7 +30,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed partial class Damm
     : CheckDigitAlgorithm
 {
-    private byte interim;
+    private byte _interim;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Damm" /> class.
@@ -41,30 +41,6 @@ public sealed partial class Damm
 
     /// <inheritdoc />
     public override string AlgorithmName => "Damm";
-
-    /// <inheritdoc />
-    public override void Append(ReadOnlySpan<char> digits)
-    {
-        byte interim = this.interim;
-        for (int i = 0; i < digits.Length; i++)
-        {
-            char ch = digits[i];
-            if ((uint)(ch - '0') > 9u)
-                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
-
-            interim = table[interim, ch - '0'];
-        }
-
-        this.interim = interim;
-    }
-
-    /// <inheritdoc />
-    public override void Reset() =>
-        this.interim = 0;
-
-    /// <inheritdoc />
-    public override char GetCurrentCheckDigit() =>
-        (char)('0' + this.interim);
 
     /// <summary>
     /// Computes the Damm check digit for the supplied body of decimal digits without allocating a streaming
@@ -78,13 +54,13 @@ public sealed partial class Damm
     public static char Compute(ReadOnlySpan<char> digits)
     {
         byte interim = 0;
-        for (int i = 0; i < digits.Length; i++)
+        for (var i = 0; i < digits.Length; i++)
         {
-            char ch = digits[i];
+            var ch = digits[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
-            interim = table[interim, ch - '0'];
+            interim = s_table[interim, ch - '0'];
         }
 
         return (char)('0' + interim);
@@ -103,14 +79,38 @@ public sealed partial class Damm
     public static bool IsValid(ReadOnlySpan<char> digitsIncludingCheck)
     {
         byte interim = 0;
-        for (int i = 0; i < digitsIncludingCheck.Length; i++)
+        for (var i = 0; i < digitsIncludingCheck.Length; i++)
         {
-            char ch = digitsIncludingCheck[i];
+            var ch = digitsIncludingCheck[i];
             if ((uint)(ch - '0') > 9u) return false;
 
-            interim = table[interim, ch - '0'];
+            interim = s_table[interim, ch - '0'];
         }
 
         return interim == 0;
     }
+
+    /// <inheritdoc />
+    public override void Append(ReadOnlySpan<char> digits)
+    {
+        var interim = this._interim;
+        for (var i = 0; i < digits.Length; i++)
+        {
+            var ch = digits[i];
+            if ((uint)(ch - '0') > 9u)
+                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
+
+            interim = s_table[interim, ch - '0'];
+        }
+
+        this._interim = interim;
+    }
+
+    /// <inheritdoc />
+    public override void Reset() =>
+        this._interim = 0;
+
+    /// <inheritdoc />
+    public override char GetCurrentCheckDigit() =>
+        (char)('0' + this._interim);
 }

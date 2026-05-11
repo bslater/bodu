@@ -4,12 +4,12 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+namespace Bodu.IO.Hashing.Extensions;
+
 using System;
 using System.Buffers;
 using System.IO;
 using System.IO.Hashing;
-
-namespace Bodu.IO.Hashing.Extensions;
 
 public static partial class NonCryptographicHashAlgorithmExtensions
 {
@@ -89,7 +89,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
                 bufferSize,
                 "Buffer size must be greater than zero.");
 
-        byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
+        var buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         try
         {
             int bytesRead;

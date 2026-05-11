@@ -93,21 +93,21 @@ public abstract class Adler<T>
     public override void Append(ReadOnlySpan<byte> source)
     {
         const int NMAX = 5552;
-        int length = source.Length;
-        int index = 0;
+        var length = source.Length;
+        var index = 0;
         T pA = this.partA;
         T pB = this.partB;
 
         if (Vector.IsHardwareAccelerated && length >= 512)
         {
-            int width = Vector<byte>.Count;
-            int half = Vector<ushort>.Count;
+            var width = Vector<byte>.Count;
+            var half = Vector<ushort>.Count;
             T widthT = T.CreateTruncating((uint)width);
 
             while (index < length)
             {
-                int remaining = Math.Min(length - index, NMAX);
-                int chunkEnd = index + remaining;
+                var remaining = Math.Min(length - index, NMAX);
+                var chunkEnd = index + remaining;
 
                 // Per width-byte block [b_1 .. b_V] starting from accumulators (A, B), the
                 // canonical Adler recurrence yields:
@@ -122,7 +122,7 @@ public abstract class Adler<T>
 
                     T sumBytes = T.Zero;
                     T sumWeighted = T.Zero;
-                    for (int i = 0; i < half; i++)
+                    for (var i = 0; i < half; i++)
                     {
                         T loByte = T.CreateTruncating(lo[i]);
                         T hiByte = T.CreateTruncating(hi[i]);
