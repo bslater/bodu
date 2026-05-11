@@ -55,11 +55,11 @@ public abstract partial class Snefru<T>
 {
     private const int TotalWords = 16;                              // number of 32-bit words in the working buffer.
     private const int Mask = TotalWords - 1;                        // bitmask to constrain index calculations to the buffer length; inlined as an immediate by the JIT.
-    private static readonly int[] Shifts = [16, 8, 16, 24];         // fixed bitwise rotation amounts applied after each S-box round.
-    private static readonly int[] ValidHashSizes = { 128, 256 };
+    private static readonly int[] s_shifts = [16, 8, 16, 24];       // fixed bitwise rotation amounts applied after each S-box round.
+    private static readonly int[] s_validHashSizes = { 128, 256 };
 
-    private readonly uint[] _buffer = new uint[TotalWords];          // internal working buffer used for permutation and round processing.
-    private readonly uint[] _state;                                  // internal state used to accumulate the hash output across input blocks.
+    private readonly uint[] _buffer = new uint[TotalWords];         // internal working buffer used for permutation and round processing.
+    private readonly uint[] _state;                                 // internal state used to accumulate the hash output across input blocks.
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Snefru{T}"/> class with the specified output hash size.
@@ -69,9 +69,13 @@ public abstract partial class Snefru<T>
     protected Snefru(int hashSize)
         : base(64 - (hashSize >> 3)) // BlockSizeBytes = 64 - outputBytes
     {
-        if (Array.IndexOf(ValidHashSizes, hashSize) == -1)
-            throw new ArgumentOutOfRangeException(nameof(hashSize),
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
+        if (Array.IndexOf(s_validHashSizes, hashSize) == -1)
+            throw new ArgumentOutOfRangeException(
+                nameof(hashSize),
+                string.Format(
+                    CryptoResourceStrings.CryptographicException_InvalidHashSize,
+                    hashSize,
+                    string.Join(", ", s_validHashSizes)));
 
         // _state is zero-filled by `new`; Initialize re-clears it on every reset.
         this._state = new uint[hashSize >> 5];
@@ -160,7 +164,7 @@ public abstract partial class Snefru<T>
 
         for (var round = 0; round < 8; round++)
         {
-            foreach (var shift in Shifts)
+            foreach (var shift in s_shifts)
             {
                 ApplySBoxRounds(round);
                 RotateWords(shift);
@@ -230,7 +234,7 @@ public abstract partial class Snefru<T>
             // Flat array layout: each table occupies 256 consecutive entries.
             // Index = (tableIndex << 8) | byteValue, avoiding the double indirection of a jagged array.
             var sBoxIndex = ((baseBox + ((kk >> 1) & 0x01)) << 8) | (int)(this._buffer[kk] & 0xff);
-            var sboxEntry = Constants[sBoxIndex];
+            var sboxEntry = s_constants[sBoxIndex];
 
             this._buffer[next] ^= sboxEntry;
             this._buffer[last] ^= sboxEntry;

@@ -20,8 +20,8 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// XTS requires two independent ciphers keyed with different material:
 /// <list type="bullet">
-/// <item><description><paramref name="dataCipher"/> (Key₁) — encrypts or decrypts the data. Shown as <b>E_K₁</b> in the central column of the diagram.</description></item>
-/// <item><description><paramref name="tweakCipher"/> (Key₂) — encrypts the sector number (tweak). Shown as <b>E_K₂</b> on the left.</description></item>
+/// <item><description><c>dataCipher</c> (Key₁) — encrypts or decrypts the data. Shown as <b>E_K₁</b> in the central column of the diagram.</description></item>
+/// <item><description><c>tweakCipher</c> (Key₂) — encrypts the sector number (tweak). Shown as <b>E_K₂</b> on the left.</description></item>
 /// </list>
 /// Using the same key for both reduces XTS to a single-key construction and weakens security.
 /// </para>
@@ -165,21 +165,21 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Multiplies <paramref name="T"/> by α in GF(2^128) using the IEEE 1619 polynomial
+    /// Multiplies <paramref name="t1"/> by α in GF(2^128) using the IEEE 1619 polynomial
     /// x^128 + x^7 + x^2 + x + 1, with little-endian bit ordering (byte 0 = x^0..x^7).
     /// </summary>
-    /// <param name="T">The 16-byte tweak block to double in GF(2<sup>128</sup>); updated in place.</param>
-    private static void GfDouble(Span<byte> T)
+    /// <param name="t1">The 16-byte tweak block to double in GF(2<sup>128</sup>); updated in place.</param>
+    private static void GfDouble(Span<byte> t1)
     {
         // Left-shift the 128-bit little-endian value. Carry propagates from byte[0] upward.
         var carry = 0;
-        for (var i = 0; i < T.Length; i++)
+        for (var i = 0; i < t1.Length; i++)
         {
-            int t = T[i];
-            T[i] = (byte)((t << 1) | carry);
+            int t = t1[i];
+            t1[i] = (byte)((t << 1) | carry);
             carry = t >> 7;
         }
         // If the MSB of byte[15] was set (= x^127 coefficient), reduce by 0x87 (= x^7+x^2+x+1).
-        if (carry != 0) T[0] ^= 0x87;
+        if (carry != 0) t1[0] ^= 0x87;
     }
 }

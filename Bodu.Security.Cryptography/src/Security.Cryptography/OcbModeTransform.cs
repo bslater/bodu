@@ -27,7 +27,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// The nonce is derived from the first 12 bytes of the IV supplied to the constructor.
 /// The tag length defaults to 16 bytes (TAGLEN = 128) and may be set to any value from
-/// 1 to 16 bytes via the <paramref name="tagLen"/> constructor parameter.
+/// 1 to 16 bytes via the <c>tagLen</c> constructor parameter.
 /// Supported RFC 7253 values are 8, 12, and 16 bytes (64, 96, and 128 bits).
 /// </para>
 /// <para>
@@ -70,8 +70,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso cref="AesBlockCipher"/>
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions"/>
 public sealed class OcbModeTransform
-    : IAeadBlockCipherModeTransform
-    , IDisposable
+    : IAeadBlockCipherModeTransform, IDisposable
 {
     private const int BlockSizeBytes = 16;
     private const int NonceLengthBytes = 12;
@@ -691,5 +690,10 @@ public sealed class OcbModeTransform
     /// Throws <see cref="ObjectDisposedException"/> if this instance has been disposed.
     /// </summary>
     private void ThrowIfDisposed() =>
+#if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
+#else
+        if (this._disposed)
+            throw new ObjectDisposedException(nameof(Skipjack));
+#endif
 }

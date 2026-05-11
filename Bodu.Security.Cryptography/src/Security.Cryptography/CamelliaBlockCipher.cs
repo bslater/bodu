@@ -710,10 +710,10 @@ public sealed class CamelliaBlockCipher
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(CamelliaBlockCipher));
+        if (disposed)
+            throw new ObjectDisposedException(this.GetType().Name);
 #endif
     }
 }

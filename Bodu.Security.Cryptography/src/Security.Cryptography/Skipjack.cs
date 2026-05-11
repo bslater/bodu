@@ -77,10 +77,10 @@ public sealed class Skipjack
     internal const int KeySizeBits = 80;
 
     // Skipjack has a single fixed 64-bit block size; expressed as a single-entry range with skip size 0.
-    private static readonly KeySizes[] SkipjackBlockSizes = { new KeySizes(BlockSizeBits, BlockSizeBits, 0) };
+    private static readonly KeySizes[] s_skipjackBlockSizes = { new KeySizes(BlockSizeBits, BlockSizeBits, 0) };
 
     // Skipjack has a single fixed 80-bit key size; expressed as a single-entry range with skip size 0.
-    private static readonly KeySizes[] SkipjackKeySizes = { new KeySizes(KeySizeBits, KeySizeBits, 0) };
+    private static readonly KeySizes[] s_skipjackKeySizes = { new KeySizes(KeySizeBits, KeySizeBits, 0) };
 
     private bool _disposed = false;
 
@@ -98,8 +98,8 @@ public sealed class Skipjack
     public Skipjack()
     {
         // Skipjack defines a single fixed key length and block size — neither is configurable.
-        this.LegalKeySizesValue = SkipjackKeySizes;
-        this.LegalBlockSizesValue = SkipjackBlockSizes;
+        this.LegalKeySizesValue = s_skipjackKeySizes;
+        this.LegalBlockSizesValue = s_skipjackBlockSizes;
 
         this.KeySizeValue = KeySizeBits;
         this.BlockSizeValue = BlockSizeBits;
@@ -279,16 +279,18 @@ public sealed class Skipjack
         // Key length must match the fixed 80-bit key size exactly — Skipjack does not support variable-length keys.
         if (key.Length != this.KeySizeBytes)
             throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize,
-                              key.Length * 8,
-                              CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)),
+                string.Format(
+                    CryptoResourceStrings.CryptographicException_InvalidKeySize,
+                    key.Length * 8,
+                    CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)),
                 nameof(key));
 
         if (iv.Length != this.BlockSizeBytes)
             throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidIVSize,
-                              iv.Length * 8,
-                              CryptoHelpers.FormatLegalSizes(this.LegalBlockSizesValue)),
+                string.Format(
+                    CryptoResourceStrings.CryptographicException_InvalidIVSize,
+                    iv.Length * 8,
+                    CryptoHelpers.FormatLegalSizes(this.LegalBlockSizesValue)),
                 nameof(iv));
     }
 
@@ -304,8 +306,8 @@ public sealed class Skipjack
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(nameof(Skipjack));
+        if (disposed)
+            throw new ObjectDisposedException(this.GetType().Name);
 #endif
     }
 }

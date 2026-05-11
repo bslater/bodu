@@ -356,8 +356,8 @@ public sealed class Blowfish
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(nameof(Blowfish));
+        if (disposed)
+            throw new ObjectDisposedException(this.GetType().Name);
 #endif
     }
 }

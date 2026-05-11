@@ -50,7 +50,7 @@ public sealed class Skein1024
     /// <summary>
     /// The set of output sizes, in bits, permitted by <see cref="Skein1024"/>.
     /// </summary>
-    private static readonly int[] PermittedHashSizes = { 384, 512, 1024 };
+    private static readonly int[] s_permittedHashSizes = { 384, 512, 1024 };
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Skein1024"/> class that produces a 1024-bit digest.
@@ -69,6 +69,6 @@ public sealed class Skein1024
     /// <paramref name="hashSize"/> is not one of the permitted output sizes for Skein-1024.
     /// </exception>
     public Skein1024(int hashSize)
-        : base(new Threefish1024Cipher(new byte[128], new byte[16]), hashSize, PermittedHashSizes)
+        : base(new Threefish1024Cipher(new byte[128], new byte[16]), hashSize, s_permittedHashSizes)
     { }
 }

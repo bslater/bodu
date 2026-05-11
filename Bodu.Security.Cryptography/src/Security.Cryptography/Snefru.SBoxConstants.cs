@@ -12,7 +12,7 @@ public abstract partial class Snefru<T>
     // Access pattern: Constants[(tableIndex << 8) | byteValue]
     // This layout eliminates the double pointer indirection and secondary bounds check
     // that a jagged uint[][] would incur on every S-box lookup in the hot inner loop.
-    private static readonly uint[] Constants = new uint[16 * 256]
+    private static readonly uint[] s_constants = new uint[16 * 256]
     {
         // Table 0
         0x64f9001b, 0xfeddcdf6, 0x7c8ff1e2, 0x11d71514, 0x8b8c18d3,

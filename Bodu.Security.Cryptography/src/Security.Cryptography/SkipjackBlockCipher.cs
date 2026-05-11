@@ -82,11 +82,11 @@ public sealed class SkipjackBlockCipher
         0x5e, 0x6c, 0xa9, 0x13, 0x57, 0x25, 0xb5, 0xe3, 0xbd, 0xa8, 0x3a, 0x01, 0x05, 0x59, 0x2a, 0x46
     };
 
-    private readonly int[] key0, key1, key2, key3;
+    private readonly int[] _key0, _key1, _key2, _key3;
     private bool _disposed = false;
 
     /// <summary>
-    /// Creates a new <see cref="SkipjackBlockCipher"/> instance using the supplied 80-bit key.
+    /// Initializes a new instance of the <see cref="SkipjackBlockCipher"/> class using the supplied 80-bit key.
     /// </summary>
     /// <param name="keyBytes">Exactly 10 bytes of key material.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="keyBytes"/> is not exactly 10 bytes long.</exception>
@@ -95,19 +95,19 @@ public sealed class SkipjackBlockCipher
         if (keyBytes.Length != KeySize)
             throw new ArgumentException("Skipjack requires an 80-bit key (10 bytes).", nameof(keyBytes));
 
-        this.key0 = new int[32];
-        this.key1 = new int[32];
-        this.key2 = new int[32];
-        this.key3 = new int[32];
+        this._key0 = new int[32];
+        this._key1 = new int[32];
+        this._key2 = new int[32];
+        this._key3 = new int[32];
 
         //
         // expand the key to 128 bytes in 4 parts (saving us a modulo, multiply and an addition).
         for (var i = 0; i < 32; i++)
         {
-            key0[i] = keyBytes[(i * 4 + 0) % 10];
-            key1[i] = keyBytes[(i * 4 + 1) % 10];
-            key2[i] = keyBytes[(i * 4 + 2) % 10];
-            key3[i] = keyBytes[(i * 4 + 3) % 10];
+            _key0[i] = keyBytes[(i * 4 + 0) % 10];
+            _key1[i] = keyBytes[(i * 4 + 1) % 10];
+            _key2[i] = keyBytes[(i * 4 + 2) % 10];
+            _key3[i] = keyBytes[(i * 4 + 3) % 10];
         }
     }
 
@@ -176,10 +176,10 @@ public sealed class SkipjackBlockCipher
     {
         if (!this._disposed)
         {
-            CryptoHelpers.Clear(this.key0);
-            CryptoHelpers.Clear(this.key1);
-            CryptoHelpers.Clear(this.key2);
-            CryptoHelpers.Clear(this.key3);
+            CryptoHelpers.Clear(this._key0);
+            CryptoHelpers.Clear(this._key1);
+            CryptoHelpers.Clear(this._key2);
+            CryptoHelpers.Clear(this._key3);
 
             this._disposed = true;
         }
@@ -282,10 +282,10 @@ public sealed class SkipjackBlockCipher
         g1 = (w >> 8) & 0xff;
         g2 = w & 0xff;
 
-        g3 = s_ftable[g2 ^ key0[k]] ^ g1;
-        g4 = s_ftable[g3 ^ key1[k]] ^ g2;
-        g5 = s_ftable[g4 ^ key2[k]] ^ g3;
-        g6 = s_ftable[g5 ^ key3[k]] ^ g4;
+        g3 = s_ftable[g2 ^ _key0[k]] ^ g1;
+        g4 = s_ftable[g3 ^ _key1[k]] ^ g2;
+        g5 = s_ftable[g4 ^ _key2[k]] ^ g3;
+        g6 = s_ftable[g5 ^ _key3[k]] ^ g4;
 
         return ((g5 << 8) + g6);
     }
@@ -302,10 +302,10 @@ public sealed class SkipjackBlockCipher
         var h1 = w & 0xff;
         var h2 = (w >> 8) & 0xff;
 
-        var h3 = s_ftable[h2 ^ key3[k]] ^ h1;
-        var h4 = s_ftable[h3 ^ key2[k]] ^ h2;
-        var h5 = s_ftable[h4 ^ key1[k]] ^ h3;
-        var h6 = s_ftable[h5 ^ key0[k]] ^ h4;
+        var h3 = s_ftable[h2 ^ _key3[k]] ^ h1;
+        var h4 = s_ftable[h3 ^ _key2[k]] ^ h2;
+        var h5 = s_ftable[h4 ^ _key1[k]] ^ h3;
+        var h6 = s_ftable[h5 ^ _key0[k]] ^ h4;
 
         return (h6 << 8) + h5;
     }
@@ -320,7 +320,8 @@ public sealed class SkipjackBlockCipher
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
-        if (disposed) throw new ObjectDisposedException(nameof(SkipjackBlockCipher));
+        if (disposed)
+            throw new ObjectDisposedException(this.GetType().Name);
 #endif
     }
 }

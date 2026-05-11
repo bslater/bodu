@@ -76,8 +76,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso cref="AesBlockCipher"/>
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions"/>
 public sealed class SivModeTransform
-    : IAeadBlockCipherModeTransform
-    , IDisposable
+    : IAeadBlockCipherModeTransform, IDisposable
 {
     private const int BlockSizeBytes = 16;
     private const int TagLengthBytes = 16;
@@ -524,18 +523,13 @@ public sealed class SivModeTransform
     }
 
     /// <summary>
-    /// Clears <paramref name="value"/> when it is not <see langword="null"/>.
-    /// </summary>
-    /// <param name="value">The byte array to clear.</param>
-    private static void ClearIfNotNull(byte[]? value)
-    {
-        if (value is not null)
-            CryptographicOperations.ZeroMemory(value);
-    }
-
-    /// <summary>
     /// Throws <see cref="ObjectDisposedException"/> if this instance has been disposed.
     /// </summary>
     private void ThrowIfDisposed() =>
+#if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
+#else
+        if (this._disposed)
+            throw new ObjectDisposedException(nameof(Skipjack));
+#endif
 }

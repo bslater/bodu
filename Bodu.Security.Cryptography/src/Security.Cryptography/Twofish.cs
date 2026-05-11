@@ -82,10 +82,10 @@ public sealed class Twofish
     internal const int MaxKeySizeBytes = 32;
 
     // Twofish has a single fixed 128-bit block size.
-    private static readonly KeySizes[] TwofishBlockSizes = { new KeySizes(BlockSizeBits, BlockSizeBits, 0) };
+    private static readonly KeySizes[] s_twofishBlockSizes = { new KeySizes(BlockSizeBits, BlockSizeBits, 0) };
 
     // Legal key sizes are 128, 192, and 256 bits.
-    private static readonly KeySizes[] TwofishKeySizes = { new KeySizes(128, 256, 64) };
+    private static readonly KeySizes[] s_twofishKeySizes = { new KeySizes(128, 256, 64) };
 
     private bool _disposed;
     private CipherBlockMode _blockMode = CipherBlockMode.CBC;
@@ -101,10 +101,10 @@ public sealed class Twofish
     public Twofish()
     {
         this.BlockSizeValue = BlockSizeBits;
-        this.LegalBlockSizesValue = TwofishBlockSizes;
+        this.LegalBlockSizesValue = s_twofishBlockSizes;
 
         this.KeySizeValue = 256;
-        this.LegalKeySizesValue = TwofishKeySizes;
+        this.LegalKeySizesValue = s_twofishKeySizes;
 
         this.FeedbackSizeValue = BlockSizeBits;
         this.ModeValue = CipherMode.CBC;
@@ -221,8 +221,8 @@ public sealed class Twofish
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
-        if (this._disposed)
-            throw new ObjectDisposedException(nameof(Twofish));
+        if (disposed)
+            throw new ObjectDisposedException(this.GetType().Name);
 #endif
     }
 }

@@ -69,8 +69,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso cref="AesBlockCipher"/>
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions"/>
 public sealed class EaxModeTransform
-    : IAeadBlockCipherModeTransform
-    , IDisposable
+    : IAeadBlockCipherModeTransform, IDisposable
 {
     private const int DefaultTagSize = 16;
 
@@ -467,5 +466,10 @@ public sealed class EaxModeTransform
     /// Throws <see cref="ObjectDisposedException"/> if this instance has been disposed.
     /// </summary>
     private void ThrowIfDisposed() =>
+#if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
+#else
+        if (this._disposed)
+            throw new ObjectDisposedException(nameof(Skipjack));
+#endif
 }

@@ -60,7 +60,7 @@ public sealed partial class Tiger
 {
     private const int MaxOutputBits = 192;
 
-    private static readonly int[] ValidHashSizes = { 128, 160, 192 };
+    private static readonly int[] s_validHashSizes = { 128, 160, 192 };
 
     private ulong _state0 = 0x0123456789ABCDEF;
     private ulong _state1 = 0xFEDCBA9876543210;
@@ -70,8 +70,8 @@ public sealed partial class Tiger
     /// <summary>
     /// Initializes a new instance of the <see cref="Tiger"/> class with a 192-bit output hash size.
     /// </summary>
-    public Tiger() :
-        this(192)
+    public Tiger()
+        : this(192)
     { }
 
     /// <summary>
@@ -82,9 +82,9 @@ public sealed partial class Tiger
     public Tiger(int hashSize)
         : base(64)
     {
-        if (Array.IndexOf(ValidHashSizes, hashSize) == -1)
+        if (Array.IndexOf(s_validHashSizes, hashSize) == -1)
             throw new ArgumentOutOfRangeException(nameof(hashSize),
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", s_validHashSizes)));
 
         this.HashSizeValue = hashSize;
     }
@@ -141,9 +141,9 @@ public sealed partial class Tiger
             this.ThrowIfDisposed();
             this.ThrowIfInvalidState();
 
-            if (Array.IndexOf(ValidHashSizes, value) == -1)
+            if (Array.IndexOf(s_validHashSizes, value) == -1)
                 throw new ArgumentOutOfRangeException(nameof(value),
-                    string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, value, string.Join(", ", ValidHashSizes)));
+                    string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, value, string.Join(", ", s_validHashSizes)));
 
             this.HashSizeValue = value;
         }
@@ -328,16 +328,16 @@ public sealed partial class Tiger
         var tmp = c ^= x;
 
         a -=
-            SBox0[(byte)(tmp >> 0)] ^
-            SBox1[(byte)(tmp >> 16)] ^
-            SBox2[(byte)(tmp >> 32)] ^
-            SBox3[(byte)(tmp >> 48)];
+            s_sBox0[(byte)(tmp >> 0)] ^
+            s_sBox1[(byte)(tmp >> 16)] ^
+            s_sBox2[(byte)(tmp >> 32)] ^
+            s_sBox3[(byte)(tmp >> 48)];
 
         tmp = b +=
-            SBox3[(byte)(tmp >> 8)] ^
-            SBox2[(byte)(tmp >> 24)] ^
-            SBox1[(byte)(tmp >> 40)] ^
-            SBox0[(byte)(tmp >> 56)];
+            s_sBox3[(byte)(tmp >> 8)] ^
+            s_sBox2[(byte)(tmp >> 24)] ^
+            s_sBox1[(byte)(tmp >> 40)] ^
+            s_sBox0[(byte)(tmp >> 56)];
 
         b = tmp * (ulong)mul;
     }

@@ -173,7 +173,7 @@ public sealed class Serpent128Cipher
     /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
-        if (this.disposed) return;
+        if (this._disposed) return;
 
         if (disposing)
             CryptoHelpers.Clear(this._roundKeys);

@@ -83,6 +83,7 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     };
 
     // ρ (rho) rotation offsets indexed as rho[x + 5*y].
+#pragma warning disable SA1137 // Elements should have the same indentation
     private static readonly int[] s_rho =
     {
          0,  1, 62, 28, 27,
@@ -101,6 +102,7 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
         23,  8, 18,  3, 13,
         14, 24,  9, 19,  4,
     };
+#pragma warning restore SA1137 // Elements should have the same indentation
 
     private readonly ulong[] _state = new ulong[StateWords];
     private readonly int _securityLevel;

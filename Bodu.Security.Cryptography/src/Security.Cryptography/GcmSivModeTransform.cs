@@ -75,8 +75,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso cref="AesBlockCipher"/>
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions"/>
 public sealed class GcmSivModeTransform
-    : IAeadBlockCipherModeTransform
-    , IDisposable
+    : IAeadBlockCipherModeTransform, IDisposable
 {
     private const int TagLengthBytes = 16;
     private const int NonceLengthBytes = 12;
@@ -561,5 +560,10 @@ public sealed class GcmSivModeTransform
     /// Throws <see cref="ObjectDisposedException"/> if this instance has been disposed.
     /// </summary>
     private void ThrowIfDisposed() =>
+#if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
+#else
+        if (this._disposed)
+            throw new ObjectDisposedException(nameof(Skipjack));
+#endif
 }

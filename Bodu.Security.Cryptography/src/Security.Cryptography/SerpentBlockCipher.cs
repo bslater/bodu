@@ -180,7 +180,7 @@ public abstract partial class SerpentBlockCipher
     /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
-        if (this.disposed) return;
+        if (this._disposed) return;
 
         if (disposing)
         {
