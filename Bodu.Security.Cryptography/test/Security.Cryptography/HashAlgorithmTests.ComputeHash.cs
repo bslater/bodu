@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashAlgorithmTests.ComputeHash.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -7,6 +7,8 @@
 using Bodu.Extensions;
 using Bodu.Test;
 using Bodu.Test.IO;
+using Newtonsoft.Json.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using static Bodu.Security.Cryptography.AsconHashA256Tests;
 
@@ -94,6 +96,35 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         byte[] hash2 = algorithm2.ComputeHash(input);
 
         CollectionAssert.AreEqual(hash1, hash2);
+    }
+
+    /// <summary>
+    /// Verifies that all supported hash sizes produce a non-empty digest of the expected length.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(HashAlgorithmSizes), DynamicDataDisplayName = nameof(GetHashAlgorithmSizeDisplayName))]
+    public void ComputeHash_ForAllSupportedSizes_ShouldReturnCorrectLength(int? hashSize)
+    {
+        ConstructorInfo? constructor = TryGetHashSizeConstructor();
+
+        if (hashSize is null || constructor is null)
+        {
+            Assert.Inconclusive(
+                $"{typeof(TAlgorithm).Name} does not expose an instance constructor accepting a single Int32 hash-size parameter; hash-size-specific construction cannot be validated by this test.");
+
+            return;
+        }
+
+        using var algorithm = (TAlgorithm)constructor.Invoke([hashSize.Value]);
+
+        byte[] hash = algorithm.ComputeHash(Array.Empty<byte>());
+
+        Assert.AreNotEqual(0, hash.Length, "The computed digest should not be empty.");
+
+        Assert.AreEqual(
+            hashSize.Value / 8,
+            hash.Length,
+            $"Expected {hashSize.Value / 8} bytes for {hashSize.Value}-bit output.");
     }
 
     /// <summary>

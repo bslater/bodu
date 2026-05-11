@@ -47,6 +47,9 @@ public partial class Blake2bTests
         MinNonZeroBytesForLongInput = 56,
     };
 
+    /// <inheritdoc/>
+    protected override IEnumerable<int> GetHashAlgorithmSizes() => [128, 160, 192, 224, 256, 384, 512];
+
     /// <inheritdoc />
     protected override Blake2bVariant DefaultVariant => Blake2bVariant.Blake2b_512;
 
@@ -283,20 +286,6 @@ public partial class Blake2bTests
         {
             _ = new Blake2b(hashSize);
         });
-    }
-
-    /// <summary>
-    /// Verifies that all supported hash sizes produce a non-empty digest of the expected length.
-    /// </summary>
-    [TestMethod]
-    public void ComputeHash_ForAllSupportedSizes_ShouldReturnCorrectLength()
-    {
-        foreach (int size in Blake2b.s_permittedHashSizes)
-        {
-            using Blake2b sut = new(size);
-            byte[] hash = sut.ComputeHash(Array.Empty<byte>());
-            Assert.AreEqual(size / 8, hash.Length, $"Expected {size / 8} bytes for {size}-bit output.");
-        }
     }
 
     /// <summary>

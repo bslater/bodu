@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Test;
+using System.Reflection;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -72,6 +73,64 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
                 $"Expected hash for the empty input is not defined for variant '{DefaultVariant}'.");
         }
     }
+
+    /// <summary>
+    /// Gets additional hash sizes, in bits, that should be included in hash-size-driven tests.
+    /// </summary>
+    /// <returns>
+    /// A sequence of additional hash sizes, in bits.
+    /// </returns>
+    /// <remarks>
+    /// Override this method when the algorithm supports valid hash sizes that are not represented by the
+    /// default algorithm variants returned from <see cref="GetHashAlgorithmVariants" />.
+    /// </remarks>
+    protected virtual IEnumerable<int> GetHashAlgorithmSizes() =>
+        [];
+
+    /// <summary>
+    /// Returns dynamic test data containing all distinct hash sizes supported by the algorithm under test.
+    /// </summary>
+    /// <returns>
+    /// An enumerable of object arrays, each containing a single hash size in bits, or <see langword="null" />
+    /// when hash-size construction is not supported by the algorithm under test.
+    /// </returns>
+    public static IEnumerable<object[]> HashAlgorithmSizes()
+    {
+        if (TryGetHashSizeConstructor() is null)
+        {
+            yield return new object[] { null! };
+            yield break;
+        }
+
+        var test = new TTest();
+
+        foreach (int hashSize in test.GetHashAlgorithmVariants()
+            .Select(variant => test.GetSpecification(variant).HashSize)
+            .Concat(test.GetHashAlgorithmSizes())
+            .Distinct()
+            .OrderBy(size => size))
+        {
+            yield return new object[] { hashSize };
+        }
+    }
+
+    /// <summary>
+    /// Returns the display name used for hash-size-driven dynamic test data rows.
+    /// </summary>
+    /// <param name="methodInfo">
+    /// The test method for which the display name is being generated.
+    /// </param>
+    /// <param name="data">
+    /// The dynamic data row. The first value is expected to contain the hash size, in bits.
+    /// </param>
+    /// <returns>
+    /// The hash size formatted as a display name when present; otherwise, a fallback name indicating that hash-size
+    /// construction is not supported.
+    /// </returns>
+    public static string GetHashAlgorithmSizeDisplayName(MethodInfo methodInfo, object[] data) =>
+        data.Length > 0 && data[0] is int hashSize
+            ? $"{hashSize}-bit"
+            : methodInfo.Name;
 
     /// <summary>
     /// Returns test case parameters for each defined algorithm variant.
@@ -309,6 +368,19 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <param name="byteCount">The number of leading bytes from <paramref name="input" /> to hash.</param>
     /// <returns>A task producing the computed hash bytes.</returns>
     protected delegate Task<byte[]> IncrementalHashInvoker(HashAlgorithm algorithm, byte[] input, int byteCount);
+
+    /// <summary>
+    /// Attempts to get the constructor on <typeparamref name="TAlgorithm" /> that accepts a single hash-size argument.
+    /// </summary>
+    /// <returns>
+    /// The matching constructor if one exists; otherwise, <see langword="null" />.
+    /// </returns>
+    protected static ConstructorInfo? TryGetHashSizeConstructor() =>
+        typeof(TAlgorithm).GetConstructor(
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+            binder: null,
+            types: [typeof(int)],
+            modifiers: null);
 
     /// <summary>
     /// Drives the dense incremental-input verification for a single variant, asserting that the

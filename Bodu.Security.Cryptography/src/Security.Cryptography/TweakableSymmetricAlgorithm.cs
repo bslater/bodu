@@ -64,7 +64,8 @@ public abstract class TweakableSymmetricAlgorithm
         "StyleCop.CSharp.NamingRules",
         "SA1306:Field names should begin with lower-case letter",
         Justification = "The field intentionally follows the protected field naming pattern used by HashAlgorithm, such as HashSizeValue, because it forms part of the inherited algorithm-state surface for derived cryptographic types.")]
-    [MaybeNull] protected KeySizes[] LegalTweakSizesValue = null!;
+    [MaybeNull]
+    protected KeySizes[] LegalTweakSizesValue = null!;
 
     /// <summary>
     /// Stores the currently configured tweak size, in bits, for the algorithm instance.
@@ -86,7 +87,11 @@ public abstract class TweakableSymmetricAlgorithm
     /// <see cref="GenerateTweak"/>, or changes to <see cref="TweakSize"/>. Defensive copies are used when accessing or assigning
     /// through the <see cref="Tweak"/> property.
     /// </remarks>
-    protected byte[]? TweakValue = null!;
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "StyleCop.CSharp.NamingRules",
+        "SA1306:Field names should begin with lower-case letter",
+        Justification = "The field intentionally follows the protected field naming pattern used by HashAlgorithm, such as HashSizeValue, because it forms part of the inherited algorithm-state surface for derived cryptographic types.")]
+    protected byte[]? TweakValue = null;
 
     private bool _disposed = false;
 
@@ -101,7 +106,9 @@ public abstract class TweakableSymmetricAlgorithm
     /// property in derived types to define custom tweak size support for a specific algorithm.
     /// </remarks>
     public virtual KeySizes[] LegalTweakSizes =>
-        (KeySizes[])this.LegalTweakSizesValue.Clone();
+        this.LegalTweakSizesValue is null
+            ? []
+            : (KeySizes[])this.LegalTweakSizesValue.Clone();
 
     /// <summary>
     /// Gets or sets the tweak value for the symmetric algorithm.
@@ -121,10 +128,10 @@ public abstract class TweakableSymmetricAlgorithm
         {
             this.ThrowIfDisposed();
 
-            if (this.TweakValue == null)
+            if (this.TweakValue is null)
                 this.GenerateTweak();
 
-            return this.TweakValue.Copy()!; // defensive copy
+            return (byte[])this.TweakValue!.Clone();
         }
 
         set
@@ -134,7 +141,7 @@ public abstract class TweakableSymmetricAlgorithm
 
             this.ThrowIfInvalidTweakSize(value.Length * 8);
 
-            this.TweakValue = value.Copy(); // defensive copy
+            this.TweakValue = (byte[])value.Clone();
             this.TweakSizeValue = value.Length * 8;
         }
     }
@@ -169,7 +176,7 @@ public abstract class TweakableSymmetricAlgorithm
 
     /// <inheritdoc />
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV) =>
-        this.CreateDecryptor(rgbKey, rgbIV, this.Tweak);
+        this.CreateDecryptor(rgbKey, rgbIV!, this.Tweak);
 
     /// <summary>
     /// Creates a symmetric decryptor using the specified key, initialisation vector (IV), and tweak value.
@@ -192,7 +199,7 @@ public abstract class TweakableSymmetricAlgorithm
 
     /// <inheritdoc />
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV) =>
-        this.CreateEncryptor(rgbKey, rgbIV, this.Tweak);
+        this.CreateEncryptor(rgbKey, rgbIV!, this.Tweak);
 
     /// <inheritdoc />
     public override ICryptoTransform CreateEncryptor() =>
@@ -267,7 +274,7 @@ public abstract class TweakableSymmetricAlgorithm
         {
             if (disposing)
             {
-                if (this.TweakValue is not null && this.TweakValue.Length > 0)
+                if (this.TweakValue?.Length > 0)
                 {
                     CryptoHelpers.Clear(this.TweakValue);
                     this.TweakValue = [];
@@ -286,33 +293,32 @@ public abstract class TweakableSymmetricAlgorithm
     /// Throws if the specified <paramref name="tweak"/> is <see langword="null"/> or its size is not valid.
     /// </summary>
     /// <param name="tweak">The tweak value to validate.</param>
-    /// <param name="paramName">The name of the parameter, automatically inferred if not specified.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="tweak"/> is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">Thrown when <paramref name="tweak"/> is not supported by <see cref="LegalTweakSizes"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected void ThrowIfInvalidTweakSize(
-        byte[] tweak,
-        [CallerArgumentExpression("tweak")] string? paramName = null)
+    protected void ThrowIfInvalidTweakSize(byte[] tweak)
     {
-        ArgumentNullException.ThrowIfNull(tweak, paramName);
-        this.ThrowIfInvalidTweakSize(tweak.Length * 8, paramName);
+        ArgumentNullException.ThrowIfNull(tweak);
+        this.ThrowIfInvalidTweakSize(tweak.Length * 8);
     }
 
     /// <summary>
     /// Throws an exception if the specified bit length is not a valid tweak size for this algorithm.
     /// </summary>
     /// <param name="bitLength">The length of the tweak in bits.</param>
-    /// <param name="paramName">The name of the calling parameter.</param>
     /// <exception cref="CryptographicException">Thrown if the specified bit length is not among the legal sizes defined by <see cref="LegalTweakSizes"/>.</exception>
     /// <remarks>This method should be used internally to validate programmatic assignment to <see cref="TweakSize"/> or <see cref="Tweak"/>.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected void ThrowIfInvalidTweakSize(
-        int bitLength,
-        [CallerArgumentExpression("bitLength")] string? paramName = null)
+    protected void ThrowIfInvalidTweakSize(int bitLength)
     {
         if (!this.ValidTweakSize(bitLength))
+        {
             throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidTweakSize, bitLength, CryptoHelpers.FormatLegalSizes(this.LegalTweakSizes)));
+                string.Format(
+                    CryptoResourceStrings.CryptographicException_InvalidTweakSize,
+                    bitLength,
+                    CryptoHelpers.FormatLegalSizes(this.LegalTweakSizes)));
+        }
     }
 
     /// <summary>
