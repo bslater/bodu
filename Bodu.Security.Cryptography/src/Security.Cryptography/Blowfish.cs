@@ -85,10 +85,10 @@ public sealed class Blowfish
     internal const int MaxKeySizeBytes = 56;
 
     // Blowfish has a single fixed 64-bit block size; expressed as a single-entry range with skip size 0.
-    private static readonly KeySizes[] s_blowfishBlockSizes = { new KeySizes(BlockSizeBits, BlockSizeBits, 0) };
+    private static readonly KeySizes[] s_blowfishBlockSizes = [new KeySizes(BlockSizeBits, BlockSizeBits, 0)];
 
     // Legal key sizes span 32..448 bits in 8-bit (single-byte) increments.
-    private static readonly KeySizes[] s_blowfishKeySizes = { new KeySizes(MinKeySizeBytes * 8, MaxKeySizeBytes * 8, 8) };
+    private static readonly KeySizes[] s_blowfishKeySizes = [new KeySizes(MinKeySizeBytes * 8, MaxKeySizeBytes * 8, 8)];
 
     private bool _disposed = false;
 
@@ -149,7 +149,7 @@ public sealed class Blowfish
 
             // Keep the inherited Mode in sync where a direct CipherMode equivalent exists. Extended modes without a
             // mapping (e.g. CTR, OFB) intentionally leave ModeValue untouched.
-            if (Enum.TryParse<CipherMode>(value.ToString(), out var mode) &&
+            if (Enum.TryParse<CipherMode>(value.ToString(), out CipherMode mode) &&
                 Enum.IsDefined(mode))
             {
                 this.ModeValue = mode;

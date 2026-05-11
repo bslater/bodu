@@ -130,6 +130,6 @@ public sealed class Iso7816_4Padding : IPaddingStrategy
         if (terminatorSeen == 0 || valid == 0)
             throw new CryptographicException("Invalid ISO/IEC 7816-4 padding.");
 
-        return input.Slice(0, terminatorIndex).ToArray();
+        return input[..terminatorIndex].ToArray();
     }
 }

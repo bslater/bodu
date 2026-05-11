@@ -69,39 +69,39 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     private const int StateWords = 25;
     private const byte DomainSuffix = 0x1F;
 
-    private static readonly int[] s_validSecurityLevels = { 128, 256 };
+    private static readonly int[] s_validSecurityLevels = [128, 256];
 
     // Round constants for the ι (iota) step — 24 values, one per round.
     private static readonly ulong[] s_roundConstants =
-    {
+    [
         0x0000000000000001UL, 0x0000000000008082UL, 0x800000000000808AUL, 0x8000000080008000UL,
         0x000000000000808BUL, 0x0000000080000001UL, 0x8000000080008081UL, 0x8000000000008009UL,
         0x000000000000008AUL, 0x0000000000000088UL, 0x0000000080008009UL, 0x000000008000000AUL,
         0x000000008000808BUL, 0x800000000000008BUL, 0x8000000000008089UL, 0x8000000000008003UL,
         0x8000000000008002UL, 0x8000000000000080UL, 0x000000000000800AUL, 0x800000008000000AUL,
         0x8000000080008081UL, 0x8000000000008080UL, 0x0000000080000001UL, 0x8000000080008008UL,
-    };
+    ];
 
     // ρ (rho) rotation offsets indexed as rho[x + 5*y].
 #pragma warning disable SA1137 // Elements should have the same indentation
     private static readonly int[] s_rho =
-    {
+    [
          0,  1, 62, 28, 27,
         36, 44,  6, 55, 20,
          3, 10, 43, 25, 39,
         41, 45, 15, 21,  8,
         18,  2, 61, 56, 14,
-    };
+    ];
 
     // π (pi) permutation indices mapping state[i] → B[pi[i]].
     private static readonly int[] s_pi =
-    {
+    [
          0, 10, 20,  5, 15,
         16,  1, 11, 21,  6,
          7, 17,  2, 12, 22,
         23,  8, 18,  3, 13,
         14, 24,  9, 19,  4,
-    };
+    ];
 #pragma warning restore SA1137 // Elements should have the same indentation
 
     private readonly ulong[] _state = new ulong[StateWords];
@@ -275,9 +275,9 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
             var available = rateBytes - this._residualBytes;
             var take = Math.Min(available, source.Length);
 
-            source.Slice(0, take).CopyTo(rateBuffer.Slice(this._residualBytes));
+            source[..take].CopyTo(rateBuffer[this._residualBytes..]);
             this._residualBytes += take;
-            source = source.Slice(take);
+            source = source[take..];
 
             if (this._residualBytes == rateBytes)
             {

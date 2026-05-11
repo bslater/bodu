@@ -166,10 +166,10 @@ public sealed class SivModeTransform
             ctrSeed[8] &= 0x7F;
             ctrSeed[12] &= 0x7F;
 
-            CtrEncrypt(plaintext, output.Slice(0, plaintext.Length), ctrSeed);
+            CtrEncrypt(plaintext, output[..plaintext.Length], ctrSeed);
 
             // Output: ciphertext || SIV tag.
-            siv.CopyTo(output.Slice(plaintext.Length));
+            siv.CopyTo(output[plaintext.Length..]);
 
             return required;
         }
@@ -194,8 +194,8 @@ public sealed class SivModeTransform
 
         EnsureAadProcessed();
 
-        ReadOnlySpan<byte> ciphertext = ciphertextWithTag.Slice(0, plaintextLength);
-        ReadOnlySpan<byte> receivedSiv = ciphertextWithTag.Slice(plaintextLength);
+        ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..plaintextLength];
+        ReadOnlySpan<byte> receivedSiv = ciphertextWithTag[plaintextLength..];
 
         byte[]? ctrSeed = null;
         byte[]? expectedSiv = null;
@@ -207,10 +207,10 @@ public sealed class SivModeTransform
             ctrSeed[8] &= 0x7F;
             ctrSeed[12] &= 0x7F;
 
-            CtrEncrypt(ciphertext, output.Slice(0, plaintextLength), ctrSeed);
+            CtrEncrypt(ciphertext, output[..plaintextLength], ctrSeed);
 
             // Verify SIV.
-            expectedSiv = S2V(this._aad!, output.Slice(0, plaintextLength));
+            expectedSiv = S2V(this._aad!, output[..plaintextLength]);
             if (!CryptographicOperations.FixedTimeEquals(expectedSiv, receivedSiv))
             {
                 CryptoHelpers.Clear(output.Slice(0, plaintextLength));
@@ -275,7 +275,7 @@ public sealed class SivModeTransform
     {
         if (!this._aadProcessed)
         {
-            this._aad = Array.Empty<byte>();
+            this._aad = [];
             this._aadProcessed = true;
         }
     }
@@ -487,10 +487,10 @@ public sealed class SivModeTransform
         for (var i = 0; i < x.Length - 1; i++)
             x[i] = (byte)((x[i] << 1) | (x[i + 1] >> 7));
 
-        x[x.Length - 1] <<= 1;
+        x[^1] <<= 1;
 
         if (msb)
-            x[x.Length - 1] ^= 0x87;
+            x[^1] ^= 0x87;
     }
 
     /// <summary>

@@ -67,7 +67,7 @@ public sealed class Blake2b : KeyedDeferredFinalBlockHashAlgorithm<Blake2b>
     /// <summary>
     /// The set of output sizes, in bits, accepted by this algorithm.
     /// </summary>
-    public static readonly int[] ValidHashSizes = { 128, 160, 192, 224, 256, 384, 512 };
+    public static readonly int[] ValidHashSizes = [128, 160, 192, 224, 256, 384, 512];
 
     /// <summary>
     /// The maximum accepted key length, in bytes, for the keyed <c>BLAKE2b-MAC</c> mode.
@@ -82,13 +82,13 @@ public sealed class Blake2b : KeyedDeferredFinalBlockHashAlgorithm<Blake2b>
     /// <summary>
     /// The SHA-512 initialisation constants used as the BLAKE2b IV.
     /// </summary>
-    private static readonly ulong[] s_iv = new ulong[8]
-    {
+    private static readonly ulong[] s_iv =
+    [
         0x6A09E667F3BCC908UL, 0xBB67AE8584CAA73BUL,
         0x3C6EF372FE94F82BUL, 0xA54FF53A5F1D36F1UL,
         0x510E527FADE682D1UL, 0x9B05688C2B3E6C1FUL,
         0x1F83D9ABFB41BD6BUL, 0x5BE0CD19137E2179UL,
-    };
+    ];
 
     /// <summary>
     /// The eight 64-bit internal hash state words.

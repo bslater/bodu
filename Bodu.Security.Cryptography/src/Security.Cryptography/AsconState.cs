@@ -116,7 +116,7 @@ internal struct AsconState
     public void AbsorbRate128(ReadOnlySpan<byte> block)
     {
         this.S0 ^= BinaryPrimitives.ReadUInt64LittleEndian(block);
-        this.S1 ^= BinaryPrimitives.ReadUInt64LittleEndian(block.Slice(8));
+        this.S1 ^= BinaryPrimitives.ReadUInt64LittleEndian(block[8..]);
     }
 
     /// <summary>
@@ -136,7 +136,7 @@ internal struct AsconState
     public readonly void SqueezeRate128(Span<byte> destination)
     {
         BinaryPrimitives.WriteUInt64LittleEndian(destination, this.S0);
-        BinaryPrimitives.WriteUInt64LittleEndian(destination.Slice(8), this.S1);
+        BinaryPrimitives.WriteUInt64LittleEndian(destination[8..], this.S1);
     }
 
     /// <summary>

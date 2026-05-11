@@ -213,7 +213,7 @@ public sealed class OcbModeTransform
                 Xor(block, offset, block);
                 this._cipher.Encrypt(block, block);
                 Xor(block, offset, block);
-                block.CopyTo(output.Slice(src));
+                block.CopyTo(output[src..]);
 
                 Xor(checksum, plaintext.Slice(src, blockSize), checksum);
             }
@@ -231,7 +231,7 @@ public sealed class OcbModeTransform
                     Xor(block, offset, block);
                     this._cipher.Encrypt(block, block);
                     Xor(block, offset, block);
-                    block.CopyTo(output.Slice(lastSrc));
+                    block.CopyTo(output[lastSrc..]);
 
                     Xor(checksum, plaintext.Slice(lastSrc, blockSize), checksum);
                 }
@@ -271,7 +271,7 @@ public sealed class OcbModeTransform
             hashResult = ComputeHash(this._aad!);
             Xor(tagInput, hashResult, tagInput);
 
-            tagInput.AsSpan(0, this._tagLen).CopyTo(output.Slice(plaintext.Length));
+            tagInput.AsSpan(0, this._tagLen).CopyTo(output[plaintext.Length..]);
 
             return required;
         }
@@ -299,8 +299,8 @@ public sealed class OcbModeTransform
 
         EnsureAadProcessed();
 
-        ReadOnlySpan<byte> ciphertext = ciphertextWithTag.Slice(0, plaintextLength);
-        ReadOnlySpan<byte> receivedTag = ciphertextWithTag.Slice(plaintextLength);
+        ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..plaintextLength];
+        ReadOnlySpan<byte> receivedTag = ciphertextWithTag[plaintextLength..];
 
         var blockSize = this._cipher.BlockSize;
 
@@ -328,7 +328,7 @@ public sealed class OcbModeTransform
                 Xor(block, offset, block);
                 this._cipher.Decrypt(block, block);
                 Xor(block, offset, block);
-                block.CopyTo(output.Slice(src));
+                block.CopyTo(output[src..]);
 
                 Xor(checksum, output.Slice(src, blockSize), checksum);
             }
@@ -346,7 +346,7 @@ public sealed class OcbModeTransform
                     Xor(block, offset, block);
                     this._cipher.Decrypt(block, block);
                     Xor(block, offset, block);
-                    block.CopyTo(output.Slice(lastSrc));
+                    block.CopyTo(output[lastSrc..]);
 
                     Xor(checksum, output.Slice(lastSrc, blockSize), checksum);
                 }
@@ -426,6 +426,17 @@ public sealed class OcbModeTransform
     }
 
     /// <summary>
+    /// Throws <see cref="InvalidOperationException"/> if this transform has already encrypted or
+    /// decrypted a message. OCB transforms are single-use; create a fresh instance per message.
+    /// </summary>
+    private void ThrowIfCompleted()
+    {
+        if (this._completed)
+            throw new InvalidOperationException(
+                "This OCB transform has already completed and cannot be reused. Create a new instance per message.");
+    }
+
+    /// <summary>
     /// Releases the resources used by this instance.
     /// </summary>
     /// <param name="disposing">
@@ -462,7 +473,7 @@ public sealed class OcbModeTransform
     {
         if (!this._aadProcessed)
         {
-            this._aad = Array.Empty<byte>();
+            this._aad = [];
             this._aadProcessed = true;
         }
     }
@@ -618,7 +629,7 @@ public sealed class OcbModeTransform
         for (var i = 0; i < x.Length - 1; i++)
             result[i] = (byte)((x[i] << 1) | (x[i + 1] >> 7));
 
-        result[x.Length - 1] = (byte)(x[x.Length - 1] << 1);
+        result[x.Length - 1] = (byte)(x[^1] << 1);
 
         if (msb)
             result[x.Length - 1] ^= 0x87;

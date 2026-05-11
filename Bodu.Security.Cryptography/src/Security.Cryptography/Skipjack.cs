@@ -77,10 +77,10 @@ public sealed class Skipjack
     internal const int KeySizeBits = 80;
 
     // Skipjack has a single fixed 64-bit block size; expressed as a single-entry range with skip size 0.
-    private static readonly KeySizes[] s_skipjackBlockSizes = { new KeySizes(BlockSizeBits, BlockSizeBits, 0) };
+    private static readonly KeySizes[] s_skipjackBlockSizes = [new KeySizes(BlockSizeBits, BlockSizeBits, 0)];
 
     // Skipjack has a single fixed 80-bit key size; expressed as a single-entry range with skip size 0.
-    private static readonly KeySizes[] s_skipjackKeySizes = { new KeySizes(KeySizeBits, KeySizeBits, 0) };
+    private static readonly KeySizes[] s_skipjackKeySizes = [new KeySizes(KeySizeBits, KeySizeBits, 0)];
 
     private bool _disposed = false;
 

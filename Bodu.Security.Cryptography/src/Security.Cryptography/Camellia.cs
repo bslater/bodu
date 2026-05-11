@@ -79,8 +79,8 @@ public sealed class Camellia
     /// </summary>
     internal const int MaxKeySizeBytes = 32;
 
-    private static readonly KeySizes[] s_camelliaBlockSizes = { new KeySizes(BlockSizeBits, BlockSizeBits, 0) };
-    private static readonly KeySizes[] s_camelliaKeySizes = { new KeySizes(128, 256, 64) };
+    private static readonly KeySizes[] s_camelliaBlockSizes = [new KeySizes(BlockSizeBits, BlockSizeBits, 0)];
+    private static readonly KeySizes[] s_camelliaKeySizes = [new KeySizes(128, 256, 64)];
 
     private bool _disposed;
 

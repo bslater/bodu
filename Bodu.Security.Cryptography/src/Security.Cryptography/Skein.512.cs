@@ -53,7 +53,7 @@ public sealed class Skein512
     /// <summary>
     /// The set of output sizes, in bits, permitted by <see cref="Skein512"/>.
     /// </summary>
-    private static readonly int[] s_permittedHashSizes = { 128, 160, 224, 256, 384, 512 };
+    private static readonly int[] s_permittedHashSizes = [128, 160, 224, 256, 384, 512];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Skein512"/> class that produces a 512-bit digest.

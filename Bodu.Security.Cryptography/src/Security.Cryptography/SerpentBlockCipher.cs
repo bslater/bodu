@@ -96,7 +96,7 @@ public abstract partial class SerpentBlockCipher
         var w = this.BlockWords;
         var rounds = this.Rounds;
 
-        Span<uint> state = stackalloc uint[32].Slice(0, w);
+        Span<uint> state = (stackalloc uint[32])[..w];
         for (var i = 0; i < w; i++)
             state[i] = BinaryPrimitives.ReadUInt32LittleEndian(input.Slice(i * 4, 4));
 
@@ -141,7 +141,7 @@ public abstract partial class SerpentBlockCipher
         var w = this.BlockWords;
         var rounds = this.Rounds;
 
-        Span<uint> state = stackalloc uint[32].Slice(0, w);
+        Span<uint> state = (stackalloc uint[32])[..w];
         for (var i = 0; i < w; i++)
             state[i] = BinaryPrimitives.ReadUInt32LittleEndian(input.Slice(i * 4, 4));
 
@@ -282,7 +282,7 @@ public abstract partial class SerpentBlockCipher
         var first = state[0];
         for (var i = 0; i < state.Length - 1; i++)
             state[i] = state[i + 1];
-        state[state.Length - 1] = first;
+        state[^1] = first;
     }
 
     /// <summary>
@@ -293,7 +293,7 @@ public abstract partial class SerpentBlockCipher
     private static void ApplyInverseLinearLayer(Span<uint> state)
     {
         // Inverse cross-lane permutation: rotate word positions by one to the right.
-        var last = state[state.Length - 1];
+        var last = state[^1];
         for (var i = state.Length - 1; i > 0; i--)
             state[i] = state[i - 1];
         state[0] = last;
@@ -326,7 +326,7 @@ public abstract partial class SerpentBlockCipher
     /// </remarks>
     private static void BuildTweakSchedule(ReadOnlySpan<byte> tweak, uint[] schedule)
     {
-        var t0 = BinaryPrimitives.ReadUInt32LittleEndian(tweak.Slice(0, 4));
+        var t0 = BinaryPrimitives.ReadUInt32LittleEndian(tweak[..4]);
         var t1 = BinaryPrimitives.ReadUInt32LittleEndian(tweak.Slice(4, 4));
         var t2 = BinaryPrimitives.ReadUInt32LittleEndian(tweak.Slice(8, 4));
         var t3 = BinaryPrimitives.ReadUInt32LittleEndian(tweak.Slice(12, 4));
@@ -354,7 +354,7 @@ public abstract partial class SerpentBlockCipher
 
         // Seed the prekey recurrence with the key material. Serpent-1024 has the widest state (32 words = 128 bytes),
         // well within stackalloc territory.
-        Span<uint> seed = stackalloc uint[32].Slice(0, w);
+        Span<uint> seed = (stackalloc uint[32])[..w];
         for (var i = 0; i < w; i++)
             seed[i] = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(i * 4, 4));
 

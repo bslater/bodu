@@ -203,22 +203,6 @@ public sealed class GcmModeTransform
     /// <inheritdoc />
     public int TagSize => DefaultTagSize;
 
-    /// <summary>
-    /// Creates a <see cref="GcmModeTransform"/> from a precomputed 128-bit initial counter block.
-    /// Test-only entry point exposed via <c>InternalsVisibleTo</c> to support test vectors that publish
-    /// <c>J0</c> directly.
-    /// </summary>
-    /// <param name="cipher">The 128-bit block cipher used by GCM.</param>
-    /// <param name="initialCounterBlock">The precomputed 16-byte initial counter block, <c>J0</c>.</param>
-    /// <returns>A new <see cref="GcmModeTransform"/> initialised with the supplied <c>J0</c>.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="cipher"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="cipher"/> does not have a 16-byte block size, or <paramref name="initialCounterBlock"/>
-    /// is not exactly 16 bytes.
-    /// </exception>
-    internal static GcmModeTransform CreateForTesting(IBlockCipher cipher, ReadOnlySpan<byte> initialCounterBlock) =>
-        new GcmModeTransform(cipher, initialCounterBlock, nameof(initialCounterBlock), useInitialCounterBlock: true);
-
     /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="InvalidOperationException">
@@ -230,7 +214,7 @@ public sealed class GcmModeTransform
         CryptoHelpers.ThrowIfAlreadyCompleted(this._completed);
         CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(this._aadProcessed);
 
-        this._aad = associatedData.IsEmpty ? Array.Empty<byte>() : associatedData.ToArray();
+        this._aad = associatedData.IsEmpty ? [] : associatedData.ToArray();
         this._aadProcessed = true;
     }
 
@@ -249,7 +233,7 @@ public sealed class GcmModeTransform
         {
             this.EnsureAssociatedDataProcessed();
 
-            Span<byte> ciphertext = output.Slice(0, plaintext.Length);
+            Span<byte> ciphertext = output[..plaintext.Length];
             this.ApplyCtr(plaintext, ciphertext);
 
             Span<byte> tag = stackalloc byte[DefaultTagSize];
@@ -288,7 +272,7 @@ public sealed class GcmModeTransform
         {
             this.EnsureAssociatedDataProcessed();
 
-            ReadOnlySpan<byte> ciphertext = ciphertextWithTag.Slice(0, plaintextLength);
+            ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..plaintextLength];
             ReadOnlySpan<byte> receivedTag = ciphertextWithTag.Slice(plaintextLength, DefaultTagSize);
 
             Span<byte> expectedTag = stackalloc byte[DefaultTagSize];
@@ -301,12 +285,12 @@ public sealed class GcmModeTransform
                 // the destination — defence-in-depth aligned with AsconAead128.Decrypt.
                 if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
                 {
-                    CryptoHelpers.Clear(output.Slice(0, plaintextLength));
+                    CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
                     throw new CryptographicException(
                         CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
                 }
 
-                this.ApplyCtr(ciphertext, output.Slice(0, plaintextLength));
+                this.ApplyCtr(ciphertext, output[..plaintextLength]);
 
                 return plaintextLength;
             }
@@ -340,6 +324,22 @@ public sealed class GcmModeTransform
 
         GC.SuppressFinalize(this);
     }
+    /// <summary>
+    /// Creates a <see cref="GcmModeTransform"/> from a precomputed 128-bit initial counter block.
+    /// Test-only entry point exposed via <c>InternalsVisibleTo</c> to support test vectors that publish
+    /// <c>J0</c> directly.
+    /// </summary>
+    /// <param name="cipher">The 128-bit block cipher used by GCM.</param>
+    /// <param name="initialCounterBlock">The precomputed 16-byte initial counter block, <c>J0</c>.</param>
+    /// <returns>A new <see cref="GcmModeTransform"/> initialised with the supplied <c>J0</c>.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="cipher"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="cipher"/> does not have a 16-byte block size, or <paramref name="initialCounterBlock"/>
+    /// is not exactly 16 bytes.
+    /// </exception>
+    internal static GcmModeTransform CreateForTesting(IBlockCipher cipher, ReadOnlySpan<byte> initialCounterBlock) =>
+        new GcmModeTransform(cipher, initialCounterBlock, nameof(initialCounterBlock), useInitialCounterBlock: true);
+
 
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
@@ -351,7 +351,7 @@ public sealed class GcmModeTransform
     {
         if (!this._aadProcessed)
         {
-            this._aad = Array.Empty<byte>();
+            this._aad = [];
             this._aadProcessed = true;
         }
     }
@@ -406,7 +406,7 @@ public sealed class GcmModeTransform
             GhashUpdate(y, h, ciphertext);
 
             // Length block: [len(AAD)]_64 || [len(C)]_64 in bits, big-endian.
-            BinaryPrimitives.WriteUInt64BigEndian(lengthBlock.Slice(0, 8), checked((ulong)aad.Length * 8));
+            BinaryPrimitives.WriteUInt64BigEndian(lengthBlock[..8], checked((ulong)aad.Length * 8));
             BinaryPrimitives.WriteUInt64BigEndian(lengthBlock.Slice(8, 8), checked((ulong)ciphertext.Length * 8));
             GhashBlock(y, h, lengthBlock);
 

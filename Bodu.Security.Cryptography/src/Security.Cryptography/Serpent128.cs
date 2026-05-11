@@ -73,11 +73,11 @@ public sealed class Serpent128
     /// </summary>
     internal const int BlockSizeBits = 128;
 
-    private static readonly KeySizes[] s_serpentBlockSizes = { new KeySizes(BlockSizeBits, BlockSizeBits, 0) };
+    private static readonly KeySizes[] s_serpentBlockSizes = [new KeySizes(BlockSizeBits, BlockSizeBits, 0)];
 
     // Serpent permits 128-, 192-, or 256-bit keys (the three AES key sizes). The step is 64 bits so the range
     // is expressed exactly by a single KeySizes entry.
-    private static readonly KeySizes[] s_serpentKeySizes = { new KeySizes(128, 256, 64) };
+    private static readonly KeySizes[] s_serpentKeySizes = [new KeySizes(128, 256, 64)];
 
     private bool _disposed;
 
@@ -121,7 +121,7 @@ public sealed class Serpent128
         {
             this._blockMode = value;
 
-            if (Enum.TryParse<CipherMode>(value.ToString(), out var mode) && Enum.IsDefined(mode))
+            if (Enum.TryParse<CipherMode>(value.ToString(), out CipherMode mode) && Enum.IsDefined(mode))
                 this.ModeValue = mode;
         }
     }

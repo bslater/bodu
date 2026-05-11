@@ -154,7 +154,7 @@ public sealed class MerkleTreeDiagnostics
 
         var issues = new List<string>();
 
-        foreach (var node in this._nodes.Where(n => !n.IsLeaf).OrderBy(n => n.Level).ThenBy(n => n.Index))
+        foreach (MerkleTreeDiagnosticNode? node in this._nodes.Where(n => !n.IsLeaf).OrderBy(n => n.Level).ThenBy(n => n.Index))
         {
             var recomputed = CombineHashes(node.ChildHashes, algorithmFactory);
             if (!recomputed.SequenceEqual(node.Hash))
@@ -193,9 +193,9 @@ public sealed class MerkleTreeDiagnostics
     {
         ArgumentNullException.ThrowIfNull(writer);
 
-        var allNodes = this.GetAllNodes();
+        IReadOnlyList<MerkleTreeDiagnosticNode> allNodes = this.GetAllNodes();
         var levelCount = this.GetLevelCount();
-        var root = this.Root;
+        MerkleTreeDiagnosticNode? root = this.Root;
 
         // Build a reverse lookup from hex-encoded hash to node, used to annotate child
         // references in the tree display. Duplicate hashes resolve to the lowest-level match.
@@ -223,7 +223,7 @@ public sealed class MerkleTreeDiagnostics
 
         for (var level = 0; level < levelCount; level++)
         {
-            var levelNodes = this.GetLevel(level);
+            IReadOnlyList<MerkleTreeDiagnosticNode> levelNodes = this.GetLevel(level);
             var isRoot = level == levelCount - 1;
             var label = level == 0 ? "leaf" : "internal";
             var rootTag = isRoot ? "  ★  root" : string.Empty;
@@ -232,7 +232,7 @@ public sealed class MerkleTreeDiagnostics
             writer.WriteLine($"  Level {level}  —  {levelNodes.Count} {label} node{(levelNodes.Count == 1 ? string.Empty : "s")}{rootTag}");
             writer.WriteLine($"  {light}");
 
-            foreach (var node in levelNodes)
+            foreach (MerkleTreeDiagnosticNode node in levelNodes)
             {
                 if (node.ChildHashes.Count == 0)
                 {
@@ -240,11 +240,11 @@ public sealed class MerkleTreeDiagnostics
                 }
                 else
                 {
-                    var childRefs = node.ChildHashes
+                    IEnumerable<string> childRefs = node.ChildHashes
                         .Select(ch =>
                         {
                             var hex = ToHex(ch);
-                            return byHash.TryGetValue(hex, out var childNode)
+                            return byHash.TryGetValue(hex, out MerkleTreeDiagnosticNode? childNode)
                                 ? $"[{childNode.Level}:{childNode.Index}] {hex}"
                                 : hex;
                         });
@@ -259,7 +259,7 @@ public sealed class MerkleTreeDiagnostics
         // Optional validation summary.
         if (algorithmFactory is not null)
         {
-            var valid = this.Validate(algorithmFactory, out var validationErrors);
+            var valid = this.Validate(algorithmFactory, out IReadOnlyList<string>? validationErrors);
             var internalCount = allNodes.Count(n => !n.IsLeaf);
 
             writer.WriteLine(heavy);
@@ -294,7 +294,7 @@ public sealed class MerkleTreeDiagnostics
     /// <returns>The combined parent hash.</returns>
     private static byte[] CombineHashes(IReadOnlyList<byte[]> hashes, Func<HashAlgorithm> factory)
     {
-        using var hasher = factory();
+        using HashAlgorithm hasher = factory();
         for (var i = 0; i < hashes.Count - 1; i++)
             hasher.TransformBlock(hashes[i], 0, hashes[i].Length, null, 0);
         hasher.TransformFinalBlock(hashes[^1], 0, hashes[^1].Length);

@@ -237,7 +237,7 @@ public abstract class TweakableSymmetricAlgorithm
     /// </remarks>
     public bool ValidTweakSize(int length)
     {
-        foreach (var size in this.LegalTweakSizes)
+        foreach (KeySizes size in this.LegalTweakSizes)
         {
             if (length < size.MinSize || length > size.MaxSize)
                 continue;
@@ -262,7 +262,7 @@ public abstract class TweakableSymmetricAlgorithm
                 if (this.TweakValue is not null && this.TweakValue.Length > 0)
                 {
                     CryptoHelpers.Clear(this.TweakValue);
-                    this.TweakValue = Array.Empty<byte>();
+                    this.TweakValue = [];
                 }
 
                 this.TweakSizeValue = 0;

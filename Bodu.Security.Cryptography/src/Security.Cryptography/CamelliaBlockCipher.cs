@@ -67,8 +67,8 @@ public sealed class CamelliaBlockCipher
     public const int Key256SizeInBytes = 32;
 
     // SBOX1 from RFC 3713 Appendix A. SBOX2, SBOX3, and SBOX4 are derived from this table by the F function.
-    private static readonly byte[] s_sbox1 = new byte[256]
-    {
+    private static readonly byte[] s_sbox1 =
+    [
         0x70, 0x82, 0x2C, 0xEC, 0xB3, 0x27, 0xC0, 0xE5, 0xE4, 0x85, 0x57, 0x35, 0xEA, 0x0C, 0xAE, 0x41,
         0x23, 0xEF, 0x6B, 0x93, 0x45, 0x19, 0xA5, 0x21, 0xED, 0x0E, 0x4F, 0x4E, 0x1D, 0x65, 0x92, 0xBD,
         0x86, 0xB8, 0xAF, 0x8F, 0x7C, 0xEB, 0x1F, 0xCE, 0x3E, 0x30, 0xDC, 0x5F, 0x5E, 0xC5, 0x0B, 0x1A,
@@ -85,18 +85,18 @@ public sealed class CamelliaBlockCipher
         0x78, 0x98, 0x06, 0x6A, 0xE7, 0x46, 0x71, 0xBA, 0xD4, 0x25, 0xAB, 0x42, 0x88, 0xA2, 0x8D, 0xFA,
         0x72, 0x07, 0xB9, 0x55, 0xF8, 0xEE, 0xAC, 0x0A, 0x36, 0x49, 0x2A, 0x68, 0x3C, 0x38, 0xF1, 0xA4,
         0x40, 0x28, 0xD3, 0x7B, 0xBB, 0xC9, 0x43, 0xC1, 0x15, 0xE3, 0xAD, 0xF4, 0x77, 0xC7, 0x80, 0x9E,
-    };
+    ];
 
     // SIGMA1..SIGMA6 from RFC 3713 §2.4, represented as 64-bit constants.
-    private static readonly ulong[] s_sigma = new ulong[]
-    {
+    private static readonly ulong[] s_sigma =
+    [
         0xA09E667F3BCC908BUL,
         0xB67AE8584CAA73B2UL,
         0xC6EF372FE94F82BEUL,
         0x54FF53A5F1D36F1CUL,
         0x10E527FADE682D1DUL,
         0xB05688C2B3E6C1FDUL,
-    };
+    ];
 
     // Whitening keys kw1..kw4 in RFC order.
     private readonly ulong[] _kw;
@@ -155,7 +155,7 @@ public sealed class CamelliaBlockCipher
 
         // Encryption produced (right ^ kw3) || (left ^ kw4) — restore the post-rounds halves first.
         var right = BinaryPrimitives.ReadUInt64BigEndian(input) ^ _kw[2];
-        var left = BinaryPrimitives.ReadUInt64BigEndian(input.Slice(8)) ^ _kw[3];
+        var left = BinaryPrimitives.ReadUInt64BigEndian(input[8..]) ^ _kw[3];
 
         if (!_usesExtendedKeySchedule)
         {
@@ -238,7 +238,7 @@ public sealed class CamelliaBlockCipher
         right ^= _kw[1];
 
         BinaryPrimitives.WriteUInt64BigEndian(output, left);
-        BinaryPrimitives.WriteUInt64BigEndian(output.Slice(8), right);
+        BinaryPrimitives.WriteUInt64BigEndian(output[8..], right);
     }
 
     /// <summary>
@@ -272,7 +272,7 @@ public sealed class CamelliaBlockCipher
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockBytes);
 
         var left = BinaryPrimitives.ReadUInt64BigEndian(input) ^ _kw[0];
-        var right = BinaryPrimitives.ReadUInt64BigEndian(input.Slice(8)) ^ _kw[1];
+        var right = BinaryPrimitives.ReadUInt64BigEndian(input[8..]) ^ _kw[1];
 
         if (!_usesExtendedKeySchedule)
         {
@@ -355,7 +355,7 @@ public sealed class CamelliaBlockCipher
         left ^= _kw[3];
 
         BinaryPrimitives.WriteUInt64BigEndian(output, right);
-        BinaryPrimitives.WriteUInt64BigEndian(output.Slice(8), left);
+        BinaryPrimitives.WriteUInt64BigEndian(output[8..], left);
     }
 
     /// <summary>
@@ -366,7 +366,7 @@ public sealed class CamelliaBlockCipher
     private void ExpandKey(ReadOnlySpan<byte> key)
     {
         var klHi = BinaryPrimitives.ReadUInt64BigEndian(key);
-        var klLo = BinaryPrimitives.ReadUInt64BigEndian(key.Slice(8));
+        var klLo = BinaryPrimitives.ReadUInt64BigEndian(key[8..]);
 
         ulong krHi;
         ulong krLo;
@@ -378,15 +378,15 @@ public sealed class CamelliaBlockCipher
         }
         else if (key.Length == Key192SizeInBytes)
         {
-            krHi = BinaryPrimitives.ReadUInt64BigEndian(key.Slice(16));
+            krHi = BinaryPrimitives.ReadUInt64BigEndian(key[16..]);
 
             // The 64-bit pad for a 192-bit key is the bitwise complement of the first KR word (RFC 3713 §2.4).
             krLo = ~krHi;
         }
         else
         {
-            krHi = BinaryPrimitives.ReadUInt64BigEndian(key.Slice(16));
-            krLo = BinaryPrimitives.ReadUInt64BigEndian(key.Slice(24));
+            krHi = BinaryPrimitives.ReadUInt64BigEndian(key[16..]);
+            krLo = BinaryPrimitives.ReadUInt64BigEndian(key[24..]);
         }
 
         // KA derivation: four Feistel rounds keyed by SIGMA1..SIGMA4.

@@ -204,15 +204,15 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
         // Build the padded final block: P_n || E[tailBytes..blockSize].
         Span<byte> padded = stackalloc byte[blockSize];
         tail.CopyTo(padded);
-        e.Slice(tailBytes).CopyTo(padded.Slice(tailBytes));
+        e[tailBytes..].CopyTo(padded[tailBytes..]);
 
         // C_n = raw_encrypt(padded) — no CBC chain.
         Span<byte> cn = stackalloc byte[blockSize];
         this._cipher.Encrypt(padded, cn);
 
         // Output: C_n (full block) then C_{n-1} = E[0..tailBytes].
-        cn.CopyTo(output.Slice(bodyLength));
-        e.Slice(0, tailBytes).CopyTo(output.Slice(bodyLength + blockSize));
+        cn.CopyTo(output[bodyLength..]);
+        e[..tailBytes].CopyTo(output[(bodyLength + blockSize)..]);
 
         return input.Length;
     }
@@ -248,10 +248,10 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
         // E[0..tailBytes] = C_{n-1} truncated; E[tailBytes..] = rawDec[tailBytes..].
         Span<byte> e = stackalloc byte[blockSize];
         cnMinus1Trunc.CopyTo(e);
-        rawDec.Slice(tailBytes).CopyTo(e.Slice(tailBytes));
+        rawDec[tailBytes..].CopyTo(e[tailBytes..]);
 
         // Step 3: recover P_n = rawDec[0..tailBytes] (the rest was padding from E).
-        rawDec.Slice(0, tailBytes).CopyTo(output.Slice(bodyLength + blockSize));
+        rawDec[..tailBytes].CopyTo(output[(bodyLength + blockSize)..]);
 
         // Step 4: CBC-decrypt e to get P_{n-1}.
         Span<byte> block = stackalloc byte[blockSize];

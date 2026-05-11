@@ -167,7 +167,7 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
             S1 = k0,
             S2 = k1,
             S3 = BinaryPrimitives.ReadUInt64LittleEndian(nonce),
-            S4 = BinaryPrimitives.ReadUInt64LittleEndian(nonce.Slice(8)),
+            S4 = BinaryPrimitives.ReadUInt64LittleEndian(nonce[8..]),
         };
 
         this._state.Permute(Pa);
@@ -247,11 +247,11 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
 
             while (inOff + Rate <= plaintext.Length)
             {
-                var p0 = BinaryPrimitives.ReadUInt64LittleEndian(plaintext.Slice(inOff));
-                var p1 = BinaryPrimitives.ReadUInt64LittleEndian(plaintext.Slice(inOff + 8));
+                var p0 = BinaryPrimitives.ReadUInt64LittleEndian(plaintext[inOff..]);
+                var p1 = BinaryPrimitives.ReadUInt64LittleEndian(plaintext[(inOff + 8)..]);
 
-                BinaryPrimitives.WriteUInt64LittleEndian(output.Slice(outOff), this._state.S0 ^ p0);
-                BinaryPrimitives.WriteUInt64LittleEndian(output.Slice(outOff + 8), this._state.S1 ^ p1);
+                BinaryPrimitives.WriteUInt64LittleEndian(output[outOff..], this._state.S0 ^ p0);
+                BinaryPrimitives.WriteUInt64LittleEndian(output[(outOff + 8)..], this._state.S1 ^ p1);
 
                 this._state.S0 ^= p0;
                 this._state.S1 ^= p1;
@@ -268,13 +268,13 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
             padded[lastLen] ^= 0x01;
 
             var fp0 = BinaryPrimitives.ReadUInt64LittleEndian(padded);
-            var fp1 = BinaryPrimitives.ReadUInt64LittleEndian(padded.Slice(8));
+            var fp1 = BinaryPrimitives.ReadUInt64LittleEndian(padded[8..]);
 
             Span<byte> cOut = stackalloc byte[Rate];
             BinaryPrimitives.WriteUInt64LittleEndian(cOut, this._state.S0 ^ fp0);
-            BinaryPrimitives.WriteUInt64LittleEndian(cOut.Slice(8), this._state.S1 ^ fp1);
+            BinaryPrimitives.WriteUInt64LittleEndian(cOut[8..], this._state.S1 ^ fp1);
 
-            cOut.Slice(0, lastLen).CopyTo(output.Slice(outOff));
+            cOut[..lastLen].CopyTo(output[outOff..]);
 
             this._state.S0 ^= fp0;
             this._state.S1 ^= fp1;
@@ -321,19 +321,19 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
 
         try
         {
-            ReadOnlySpan<byte> ciphertext = ciphertextWithTag.Slice(0, ptLen);
-            ReadOnlySpan<byte> inTag = ciphertextWithTag.Slice(ptLen);
+            ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..ptLen];
+            ReadOnlySpan<byte> inTag = ciphertextWithTag[ptLen..];
 
             var cOff = 0;
             var pOff = 0;
 
             while (cOff + Rate <= ciphertext.Length)
             {
-                var c0 = BinaryPrimitives.ReadUInt64LittleEndian(ciphertext.Slice(cOff));
-                var c1 = BinaryPrimitives.ReadUInt64LittleEndian(ciphertext.Slice(cOff + 8));
+                var c0 = BinaryPrimitives.ReadUInt64LittleEndian(ciphertext[cOff..]);
+                var c1 = BinaryPrimitives.ReadUInt64LittleEndian(ciphertext[(cOff + 8)..]);
 
-                BinaryPrimitives.WriteUInt64LittleEndian(output.Slice(pOff), this._state.S0 ^ c0);
-                BinaryPrimitives.WriteUInt64LittleEndian(output.Slice(pOff + 8), this._state.S1 ^ c1);
+                BinaryPrimitives.WriteUInt64LittleEndian(output[pOff..], this._state.S0 ^ c0);
+                BinaryPrimitives.WriteUInt64LittleEndian(output[(pOff + 8)..], this._state.S1 ^ c1);
 
                 this._state.S0 = c0;
                 this._state.S1 = c1;
@@ -347,7 +347,7 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
 
             Span<byte> stateBytes = stackalloc byte[Rate];
             BinaryPrimitives.WriteUInt64LittleEndian(stateBytes, this._state.S0);
-            BinaryPrimitives.WriteUInt64LittleEndian(stateBytes.Slice(8), this._state.S1);
+            BinaryPrimitives.WriteUInt64LittleEndian(stateBytes[8..], this._state.S1);
 
             for (var i = 0; i < lastLen; i++)
                 output[pOff + i] = (byte)(ciphertext[cOff + i] ^ stateBytes[i]);
@@ -356,14 +356,14 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
             stateBytes[lastLen] ^= 0x01;
 
             this._state.S0 = BinaryPrimitives.ReadUInt64LittleEndian(stateBytes);
-            this._state.S1 = BinaryPrimitives.ReadUInt64LittleEndian(stateBytes.Slice(8));
+            this._state.S1 = BinaryPrimitives.ReadUInt64LittleEndian(stateBytes[8..]);
 
             Span<byte> expectedTag = stackalloc byte[TagBytes];
             this.Finalize(expectedTag);
 
             if (!CryptographicOperations.FixedTimeEquals(inTag, expectedTag))
             {
-                CryptoHelpers.Clear(output.Slice(0, ptLen));
+                CryptographicOperations.ZeroMemory(output.Slice(0, ptLen));
                 throw new CryptographicException(CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
             }
 
@@ -421,7 +421,7 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
         this._state.Permute(Pa);
 
         BinaryPrimitives.WriteUInt64LittleEndian(tag, this._state.S3 ^ k0);
-        BinaryPrimitives.WriteUInt64LittleEndian(tag.Slice(8), this._state.S4 ^ k1);
+        BinaryPrimitives.WriteUInt64LittleEndian(tag[8..], this._state.S4 ^ k1);
     }
 
     /// <summary>
@@ -482,7 +482,7 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
         public KeyMaterial128(ReadOnlySpan<byte> key)
         {
             this._k0 = BinaryPrimitives.ReadUInt64LittleEndian(key);
-            this._k1 = BinaryPrimitives.ReadUInt64LittleEndian(key.Slice(8));
+            this._k1 = BinaryPrimitives.ReadUInt64LittleEndian(key[8..]);
         }
 
         /// <summary>Gets the first 64-bit key word.</summary>

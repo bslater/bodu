@@ -66,7 +66,7 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
     /// <summary>
     /// The set of output sizes, in bits, accepted by this algorithm.
     /// </summary>
-    public static readonly int[] ValidHashSizes = { 128, 160, 192, 224, 256 };
+    public static readonly int[] ValidHashSizes = [128, 160, 192, 224, 256];
 
     /// <summary>
     /// The maximum accepted key length, in bytes, for the keyed <c>BLAKE2s-MAC</c> mode.
@@ -81,13 +81,13 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
     /// <summary>
     /// The SHA-256 initialisation constants used as the BLAKE2s IV.
     /// </summary>
-    private static readonly uint[] s_iv = new uint[8]
-    {
+    private static readonly uint[] s_iv =
+    [
         0x6A09E667U, 0xBB67AE85U,
         0x3C6EF372U, 0xA54FF53AU,
         0x510E527FU, 0x9B05688CU,
         0x1F83D9ABU, 0x5BE0CD19U,
-    };
+    ];
 
     /// <summary>
     /// The eight 32-bit internal hash state words.

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ICryptoTransformExtensions.TransformAsync.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -72,11 +72,11 @@ public static partial class ICryptoTransformExtensions
 
         // Use a pooled buffer cleared on return so plaintext read from sourceStream cannot leak
         // to a subsequent pool consumer.
-        byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
+        var buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         try
         {
             var cryptoStream = new CryptoStream(targetStream, transform, CryptoStreamMode.Write, leaveOpen: true);
-            bool completed = false;
+            var completed = false;
 
             try
             {
@@ -187,7 +187,7 @@ public static partial class ICryptoTransformExtensions
 
         MemoryStream ms = new MemoryStream(input.Length + transform.OutputBlockSize);
         CryptoStream? cryptoStream = null;
-        bool completed = false;
+        var completed = false;
 
         try
         {

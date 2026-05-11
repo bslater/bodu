@@ -68,7 +68,7 @@ public static class HashAlgorithmHelper
     {
         ThrowHelper.ThrowIfNull(factory);
 
-        using var algorithm = factory.Create();
+        using T algorithm = factory.Create();
         var hashSizeBytes = algorithm.HashSize >> 3;
         var result = new byte[hashSizeBytes];
         if (!algorithm.TryComputeHash(input, result, out var bytesWritten))
@@ -96,7 +96,7 @@ public static class HashAlgorithmHelper
         ThrowHelper.ThrowIfNull(factory);
         ThrowHelper.ThrowIfNull(stream);
 
-        using var algorithm = factory.Create();
+        using T algorithm = factory.Create();
         AppendDataFromStreamInternalAsync(algorithm, stream, isAsync: false, default).GetAwaiter().GetResult();
 
         return algorithm.Hash ?? throw new CryptographicException("Hash algorithm did not produce a value.");
@@ -121,7 +121,7 @@ public static class HashAlgorithmHelper
         ThrowHelper.ThrowIfNull(factory);
         ThrowHelper.ThrowIfNull(stream);
 
-        using var algorithm = factory.Create();
+        using T algorithm = factory.Create();
         await AppendDataFromStreamInternalAsync(algorithm, stream, isAsync: true, cancellationToken).ConfigureAwait(false);
 
         return algorithm.Hash ?? throw new CryptographicException("Hash algorithm did not produce a value.");
@@ -146,7 +146,7 @@ public static class HashAlgorithmHelper
     {
         ThrowHelper.ThrowIfNull(factory);
 
-        using var algorithm = factory.Create();
+        using T algorithm = factory.Create();
         return algorithm.TryComputeHash(input, destination, out bytesWritten);
     }
 
@@ -188,7 +188,7 @@ public static class HashAlgorithmHelper
             }
 
             // Finalize the hash to flush internal state
-            algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+            algorithm.TransformFinalBlock([], 0, 0);
         }
         finally
         {

@@ -408,8 +408,8 @@ public sealed class CubeHash
                 return;
             }
 
-            this.XorBytesIntoState(source.Slice(0, needed), this._pendingBytes);
-            source = source.Slice(needed);
+            this.XorBytesIntoState(source[..needed], this._pendingBytes);
+            source = source[needed..];
             this._pendingBytes = 0;
             this.PerformRounds(this._rounds);
         }
@@ -417,9 +417,9 @@ public sealed class CubeHash
         // Process full blocks directly
         while (source.Length >= blockSize)
         {
-            this.XorBlockIntoState(source.Slice(0, blockSize));
+            this.XorBlockIntoState(source[..blockSize]);
             this.PerformRounds(this._rounds);
-            source = source.Slice(blockSize);
+            source = source[blockSize..];
         }
 
         // Buffer any remaining partial block
@@ -498,7 +498,7 @@ public sealed class CubeHash
     private void PerformRounds(int roundCount)
     {
         Span<uint> s = this._state;
-        Span<uint> lower = s.Slice(0, 16);
+        Span<uint> lower = s[..16];
         Span<uint> upper = s.Slice(16, 16);
 
         // temp is used as a scratch permutation buffer; allocated once on the stack for the full call

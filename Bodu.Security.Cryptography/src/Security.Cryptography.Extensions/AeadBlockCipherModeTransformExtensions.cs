@@ -139,7 +139,7 @@ public static class AeadBlockCipherModeTransformExtensions
     public static byte[] Encrypt(
         this IAeadBlockCipherModeTransform transform,
         ReadOnlySpan<byte> plaintext)
-        => Encrypt(transform, plaintext, ReadOnlySpan<byte>.Empty);
+        => Encrypt(transform, plaintext, []);
 
     /// <summary>
     /// Verifies <paramref name="ciphertextWithTag"/> against <paramref name="associatedData"/>, decrypts
@@ -209,5 +209,5 @@ public static class AeadBlockCipherModeTransformExtensions
     public static byte[] Decrypt(
         this IAeadBlockCipherModeTransform transform,
         ReadOnlySpan<byte> ciphertextWithTag)
-        => Decrypt(transform, ciphertextWithTag, ReadOnlySpan<byte>.Empty);
+        => Decrypt(transform, ciphertextWithTag, []);
 }
