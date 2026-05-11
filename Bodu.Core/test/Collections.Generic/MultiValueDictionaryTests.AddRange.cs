@@ -93,7 +93,7 @@ public partial class MultiValueDictionaryTests
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("k", 1);
-        var countBefore = mvd.Count;
+        int countBefore = mvd.Count;
 
         mvd.AddRange("k", []);
 
@@ -113,7 +113,7 @@ public partial class MultiValueDictionaryTests
     public void AddRange_WhenSequenceHasVaryingLength_ShouldAppendAllInOrder(int length)
     {
         var mvd = new MultiValueDictionary<string, int>();
-        var values = Enumerable.Range(0, length).ToArray();
+        int[] values = Enumerable.Range(0, length).ToArray();
 
         mvd.AddRange("k", values);
 
@@ -137,6 +137,28 @@ public partial class MultiValueDictionaryTests
         Assert.IsTrue(enumerator.MoveNext());
         Assert.AreEqual("a", enumerator.Current.Key);
         Assert.IsFalse(enumerator.MoveNext());
+    }
+
+    /// <summary>
+    /// Verifies that adding an empty range for a missing key is a no-op and does not invalidate an active enumerator.
+    /// </summary>
+    [TestMethod]
+    public void AddRange_WhenEmptySourceForMissingKey_ShouldNotInvalidateActiveEnumerator()
+    {
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+
+        using MultiValueDictionary<string, int>.Enumerator enumerator = mvd.GetEnumerator();
+
+        mvd.AddRange("b", Array.Empty<int>());
+
+        Assert.IsTrue(enumerator.MoveNext());
+        Assert.AreEqual("a", enumerator.Current.Key);
+        Assert.IsFalse(enumerator.MoveNext());
+
+        Assert.AreEqual(1, mvd.Count);
+        Assert.AreEqual(1, mvd.KeyCount);
+        Assert.IsFalse(mvd.ContainsKey("b"));
     }
 
     /// <summary>
@@ -179,7 +201,7 @@ public partial class MultiValueDictionaryTests
     public void AddRange_WhenSourceIsDeferred_ShouldEnumerateSourceOnce()
     {
         var mvd = new MultiValueDictionary<string, int>();
-        var enumerationCount = 0;
+        int enumerationCount = 0;
 
         IEnumerable<int> Source()
         {
@@ -195,6 +217,47 @@ public partial class MultiValueDictionaryTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey, TValue}.AddRange" /> leaves the dictionary unchanged
+    /// when source enumeration fails before the add operation completes for a new key.
+    /// </summary>
+    [TestMethod]
+    public void AddRange_WhenSourceThrowsDuringEnumeration_ShouldLeaveDictionaryUnchanged()
+    {
+        var mvd = new MultiValueDictionary<string, int>();
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            mvd.AddRange("a", EnumerateOneThenThrow());
+        });
+
+        Assert.AreEqual(0, mvd.Count);
+        Assert.AreEqual(0, mvd.KeyCount);
+        Assert.IsFalse(mvd.ContainsKey("a"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey, TValue}.AddRange" /> preserves all existing state
+    /// when source enumeration fails during an add to a new key.
+    /// </summary>
+    [TestMethod]
+    public void AddRange_WhenSourceThrowsDuringEnumeration_ShouldPreserveExistingDictionaryState()
+    {
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("existing", 42);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            mvd.AddRange("new", EnumerateOneThenThrow());
+        });
+
+        Assert.AreEqual(1, mvd.Count);
+        Assert.AreEqual(1, mvd.KeyCount);
+        Assert.IsTrue(mvd.ContainsKey("existing"));
+        Assert.IsFalse(mvd.ContainsKey("new"));
+        Assert.AreEqual(42, mvd.GetValues("existing")[0]);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="MultiValueDictionary{TKey, TValue}.AddRange" /> preserves dictionary state when a deferred source throws.
     /// </summary>
     [TestMethod]
@@ -205,18 +268,11 @@ public partial class MultiValueDictionaryTests
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            mvd.AddRange("k", EnumerateOneThenThrowForAddRangeEdgeCases());
+            mvd.AddRange("k", EnumerateOneThenThrow());
         });
 
         CollectionAssert.AreEqual(new[] { 10, 20 }, mvd["k"].ToList());
         Assert.AreEqual(2, mvd.Count);
         Assert.AreEqual(1, mvd.KeyCount);
-    }
-
-    private static IEnumerable<int> EnumerateOneThenThrowForAddRangeEdgeCases()
-    {
-        yield return 99;
-
-        throw new InvalidOperationException("Simulated source enumeration failure.");
     }
 }

@@ -185,6 +185,7 @@ public partial class MultiValueDictionaryTests
         Assert.AreEqual(2, mvd.Count);
         Assert.AreEqual(2, mvd["k"].Count);
     }
+
     /// <summary>
     /// Verifies that a custom key comparer causes case-insensitively equal string keys to be merged into a
     /// single entry, accumulating their values together.
@@ -216,5 +217,34 @@ public partial class MultiValueDictionaryTests
 
         Assert.AreEqual(1, mvd.Count);
         Assert.IsNull(mvd["k"][0]);
+    }
+
+    /// <summary>
+    /// Verifies that a large number of keys and values are stored and retrieved correctly.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Add_WhenManyKeysAndValuesAdded_ShouldRetrieveAllCorrectly()
+    {
+        var mvd = new MultiValueDictionary<int, int>();
+        int keyCount = 200;
+        int valuesPerKey = 10;
+
+        for (int k = 0; k < keyCount; k++)
+        {
+            for (int v = 0; v < valuesPerKey; v++)
+                mvd.Add(k, v);
+        }
+
+        Assert.AreEqual(keyCount * valuesPerKey, mvd.Count);
+        Assert.AreEqual(keyCount, mvd.KeyCount);
+
+        for (int k = 0; k < keyCount; k++)
+        {
+            IReadOnlyList<int> values = mvd[k];
+            Assert.AreEqual(valuesPerKey, values.Count);
+            for (int v = 0; v < valuesPerKey; v++)
+                Assert.AreEqual(v, values[v]);
+        }
     }
 }

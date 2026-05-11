@@ -25,7 +25,7 @@ public partial class MultiValueDictionaryTests
         Assert.IsFalse(mvd.ContainsValue("k", new Coord(5, 7)));
     }
 
-        /// <summary>
+    /// <summary>
     /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.ContainsValue"/> uses reference equality
     /// for reference-type values with no overridden <see cref="object.Equals(object)"/>.
     /// </summary>

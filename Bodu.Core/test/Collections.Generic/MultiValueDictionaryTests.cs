@@ -15,7 +15,8 @@ namespace Bodu.Collections.Generic;
 /// </summary>
 [TestClass]
 public partial class MultiValueDictionaryTests
-{    /// <summary>Value-type key with structural (value-based) equality via record struct.</summary>
+{
+    /// <summary>Value-type key with structural (value-based) equality via record struct.</summary>
     private readonly record struct Coord(int Row, int Col);
 
     /// <summary>Reference-type value with no overridden equality — uses reference identity.</summary>
@@ -26,7 +27,11 @@ public partial class MultiValueDictionaryTests
         public Label(string text) { Text = text; }
     }
 
-    private static void AssertReadOnlyValueViewCannotBeMutatedForValueViewTests(IReadOnlyList<int> values)
+    /// <summary>
+    /// Asserts that <paramref name="values"/> is not the mutable backing <see cref="List{T}"/> and that all
+    /// mutating operations through <see cref="ICollection{T}"/> throw <see cref="NotSupportedException"/>.
+    /// </summary>
+    private static void AssertReadOnlyValueViewCannotBeMutated(IReadOnlyList<int> values)
     {
         Assert.IsFalse(values is List<int>, "The returned value view must not be the mutable backing List<T>.");
 
@@ -41,5 +46,15 @@ public partial class MultiValueDictionaryTests
                 collection.Add(999);
             });
         }
+    }
+
+    /// <summary>
+    /// Yields one value then throws <see cref="InvalidOperationException"/> to simulate a faulting source sequence.
+    /// </summary>
+    private static IEnumerable<int> EnumerateOneThenThrow()
+    {
+        yield return 1;
+
+        throw new InvalidOperationException("Simulated source enumeration failure.");
     }
 }

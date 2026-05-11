@@ -36,10 +36,6 @@ public partial class MultiValueDictionaryTests
         Assert.AreEqual(EqualityComparer<string>.Default, mvd.Comparer);
     }
 
-    // --------------------------------------------------------
-    // Constructor — with comparer
-    // --------------------------------------------------------
-
     /// <summary>
     /// Verifies that passing a null comparer to the comparer constructor defaults to the default equality comparer.
     /// </summary>

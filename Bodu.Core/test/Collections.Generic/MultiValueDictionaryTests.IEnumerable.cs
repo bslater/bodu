@@ -17,7 +17,7 @@ public partial class MultiValueDictionaryTests
     /// Verifies that the generic <see cref="IEnumerable{T}" /> implementation enumerates one row per key.
     /// </summary>
     [TestMethod]
-    public void GetEnumerator_WhenEnumeratedViaInterface_ShouldYieldOneEntryPerKey()
+    public void GetEnumerator_WhenEnumeratedViaGenericInterface_ShouldYieldOneEntryPerKey()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -34,10 +34,11 @@ public partial class MultiValueDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that the generic interface enumerator throws when accessed before it is positioned on an item.
+    /// Verifies that the generic interface enumerator throws when <see cref="IEnumerator{T}.Current" /> is
+    /// accessed before the first call to <see cref="IEnumerator.MoveNext" />.
     /// </summary>
     [TestMethod]
-    public void CurrentBeforeMoveNext_ShouldThrowInvalidOperationException()
+    public void Current_WhenAccessedBeforeMoveNext_ForGenericInterface_ShouldThrowInvalidOperationException()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -52,10 +53,11 @@ public partial class MultiValueDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that the generic interface enumerator throws when accessed after enumeration is exhausted.
+    /// Verifies that the generic interface enumerator throws when <see cref="IEnumerator{T}.Current" /> is
+    /// accessed after enumeration is exhausted.
     /// </summary>
     [TestMethod]
-    public void CurrentAfterExhaustion_ShouldThrowInvalidOperationException()
+    public void Current_WhenAccessedAfterExhaustion_ForGenericInterface_ShouldThrowInvalidOperationException()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -74,7 +76,8 @@ public partial class MultiValueDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that the generic interface enumerator detects structural modification.
+    /// Verifies that the generic interface enumerator detects structural modification and throws
+    /// <see cref="InvalidOperationException" /> on the next call to <see cref="IEnumerator.MoveNext" />.
     /// </summary>
     [TestMethod]
     public void MoveNext_WhenDictionaryModified_ShouldThrowInvalidOperationException()
@@ -97,7 +100,7 @@ public partial class MultiValueDictionaryTests
     /// Verifies that the generic interface enumerator's current value does not expose the mutable backing list.
     /// </summary>
     [TestMethod]
-    public void CurrentValue_ShouldNotExposeMutableBackingList()
+    public void Current_WhenValueReturned_ForGenericInterface_ShouldNotExposeMutableBackingList()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -107,14 +110,14 @@ public partial class MultiValueDictionaryTests
 
         Assert.IsTrue(enumerator.MoveNext());
 
-        AssertReadOnlyValueViewCannotBeMutatedForInterfaceTests(enumerator.Current.Value);
+        AssertReadOnlyValueViewCannotBeMutated(enumerator.Current.Value);
     }
 
     /// <summary>
     /// Verifies that the non-generic <see cref="IEnumerable" /> implementation enumerates boxed key-value-list entries.
     /// </summary>
     [TestMethod]
-    public void GetEnumerator_WhenEnumeratedViaInterface_ShouldYieldBoxedEntries()
+    public void GetEnumerator_WhenEnumeratedViaNonGenericInterface_ShouldYieldBoxedEntries()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -131,10 +134,11 @@ public partial class MultiValueDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that the non-generic interface enumerator throws when accessed before it is positioned on an item.
+    /// Verifies that the non-generic interface enumerator throws when <see cref="IEnumerator.Current" /> is
+    /// accessed before the first call to <see cref="IEnumerator.MoveNext" />.
     /// </summary>
     [TestMethod]
-    public void CurrentBeforeMoveNext_ShouldThrowInvalidOperationException2()
+    public void Current_WhenAccessedBeforeMoveNext_ForNonGenericInterface_ShouldThrowInvalidOperationException()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -148,10 +152,11 @@ public partial class MultiValueDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that the non-generic interface enumerator supports reset before mutation.
+    /// Verifies that the non-generic interface enumerator supports reset and allows re-enumeration when the dictionary
+    /// has not been modified.
     /// </summary>
     [TestMethod]
-    public void Reset_WhenNotModified_ShouldAllowReEnumeration()
+    public void Reset_WhenNotModified_ForNonGenericInterface_ShouldAllowReEnumeration()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -175,10 +180,11 @@ public partial class MultiValueDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that the non-generic interface enumerator detects structural modification during reset.
+    /// Verifies that the non-generic interface enumerator detects structural modification and throws
+    /// <see cref="InvalidOperationException" /> on <see cref="IEnumerator.Reset" />.
     /// </summary>
     [TestMethod]
-    public void Reset_WhenDictionaryModified_ShouldThrowInvalidOperationException()
+    public void Reset_WhenDictionaryModified_ForNonGenericInterface_ShouldThrowInvalidOperationException()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
@@ -191,22 +197,5 @@ public partial class MultiValueDictionaryTests
         {
             enumerator.Reset();
         });
-    }
-
-    private static void AssertReadOnlyValueViewCannotBeMutatedForInterfaceTests(IReadOnlyList<int> values)
-    {
-        Assert.IsFalse(values is List<int>, "The returned value view must not be the mutable backing List<T>.");
-
-        if (values is ICollection<int> collection)
-        {
-            Assert.IsTrue(
-                collection.IsReadOnly,
-                "The returned value view must not expose a mutable ICollection<T>.");
-
-            Assert.ThrowsExactly<NotSupportedException>(() =>
-            {
-                collection.Add(999);
-            });
-        }
     }
 }

@@ -13,10 +13,10 @@ namespace Bodu.Collections.Generic;
 public partial class MultiValueDictionaryTests
 {
     /// <summary>
-    /// Verifies that <see cref="IReadOnlyCollection{T}.Count" /> returns the number of distinct keys.
+    /// Verifies that <see cref="IReadOnlyCollection{T}.Count" /> accessed via the interface returns the number of distinct keys.
     /// </summary>
     [TestMethod]
-    public void IReadOnlyCollection_Count_WhenAccessedViaInterface_ShouldReturnKeyCount()
+    public void Count_WhenAccessedViaIReadOnlyCollectionInterface_ShouldReturnKeyCount()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);

@@ -94,20 +94,6 @@ public partial class MultiValueDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that returned value views are not the mutable backing <see cref="List{T}" />.
-    /// </summary>
-    [TestMethod]
-    public void GetValues_WhenValuesReturned_ShouldNotReturnListInstance()
-    {
-        var mvd = new MultiValueDictionary<string, int>();
-        mvd.Add("a", 1);
-
-        IReadOnlyList<int> values = mvd.GetValues("a");
-
-        Assert.IsFalse(values is List<int>);
-    }
-
-    /// <summary>
     /// Verifies that a value view reflects removal of a single value from the same key.
     /// </summary>
     [TestMethod]
