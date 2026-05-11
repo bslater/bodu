@@ -21,8 +21,7 @@ namespace Bodu.Security.Cryptography;
 /// The <see cref="ISO7816_4"/> value has no framework counterpart.
 /// </para>
 /// <para>
-/// Pass a <see cref="BoduPaddingMode"/> to
-/// <see cref="PaddingFactory.Create(BoduPaddingMode)"/> to obtain the matching
+/// Pass a <see cref="BoduPaddingMode"/> to <see cref="PaddingFactory"/> to obtain the matching
 /// <see cref="IPaddingStrategy"/> implementation.
 /// </para>
 /// <para>

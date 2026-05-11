@@ -64,7 +64,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>
 /// <seealso href="../guides/cryptography/padding.html">Padding</seealso>
 public sealed class Skipjack
-    : SymmetricAlgorithm, IBoduPaddingAlgorithm
+    : SymmetricAlgorithm
 {
     /// <summary>
     /// The Skipjack block size, in bits.
@@ -84,7 +84,7 @@ public sealed class Skipjack
 
     private bool _disposed = false;
 
-    private BoduPaddingMode? _boduPadding;
+    private BlockPaddingMode _blockPadding = BlockPaddingMode.PKCS7;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Skipjack"/> class with the fixed 80-bit key size and 64-bit block size, CBC
@@ -127,19 +127,42 @@ public sealed class Skipjack
     public CipherBlockMode BlockMode { get; set; } = CipherBlockMode.CBC;
 
     /// <summary>
-    /// Gets or sets the extended padding mode. When non-<see langword="null"/>, overrides
-    /// <see cref="SymmetricAlgorithm.Padding"/> during transform creation, enabling schemes such as
-    /// <see cref="BoduPaddingMode.ISO7816_4"/> that have no <see cref="PaddingMode"/> counterpart.
-    /// Set to <see langword="null"/> to revert to <see cref="SymmetricAlgorithm.Padding"/>.
+    /// Gets or sets the extended padding mode used when creating encryptors and decryptors.
     /// </summary>
     /// <value>
-    /// The <see cref="BoduPaddingMode"/> to use when creating transforms, or <see langword="null"/> to use
-    /// <see cref="SymmetricAlgorithm.Padding"/>.
+    /// One of the <see cref="BlockPaddingMode"/> values. The default is <see cref="BlockPaddingMode.PKCS7"/>.
     /// </value>
-    public BoduPaddingMode? BoduPadding
+    /// <remarks>
+    /// When the assigned value has a matching member in <see cref="PaddingMode"/> (for example, PKCS7, Zeros,
+    /// None), the inherited <see cref="SymmetricAlgorithm.Padding"/> is kept in sync. Extended modes with no
+    /// <see cref="PaddingMode"/> equivalent (such as <see cref="BlockPaddingMode.ISO7816_4"/>) leave the base
+    /// property unchanged.
+    /// </remarks>
+    public BlockPaddingMode BlockPadding
     {
-        get => this._boduPadding;
-        set => this._boduPadding = value;
+        get => this._blockPadding;
+        set
+        {
+            this._blockPadding = value;
+            if (Enum.TryParse<PaddingMode>(value.ToString(), out PaddingMode mode) && Enum.IsDefined(mode))
+                this.PaddingValue = mode;
+        }
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Also synchronises <see cref="BlockPadding"/> when the assigned value has a matching member in
+    /// <see cref="BlockPaddingMode"/>.
+    /// </remarks>
+    public override PaddingMode Padding
+    {
+        get => base.Padding;
+        set
+        {
+            base.Padding = value;
+            if (Enum.TryParse<BlockPaddingMode>(value.ToString(), out BlockPaddingMode bpm) && Enum.IsDefined(bpm))
+                this._blockPadding = bpm;
+        }
     }
 
     /// <summary>
@@ -165,9 +188,7 @@ public sealed class Skipjack
         this.Validate(rgbKey, rgbIV);
 
         IBlockCipher engine = CreateCipher(rgbKey);
-        if (this._boduPadding.HasValue)
-            return new SkipjackTransform(engine, this.BlockMode, this._boduPadding.Value, rgbIV, false);
-        return new SkipjackTransform(engine, this.BlockMode, this.Padding, rgbIV, false);
+        return new SkipjackTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, false);
     }
 
     /// <summary>
@@ -193,9 +214,7 @@ public sealed class Skipjack
         this.Validate(rgbKey, rgbIV);
 
         IBlockCipher engine = CreateCipher(rgbKey);
-        if (this._boduPadding.HasValue)
-            return new SkipjackTransform(engine, this.BlockMode, this._boduPadding.Value, rgbIV, true);
-        return new SkipjackTransform(engine, this.BlockMode, this.Padding, rgbIV, true);
+        return new SkipjackTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, true);
     }
 
     /// <summary>

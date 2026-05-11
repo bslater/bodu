@@ -49,7 +49,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso cref="TweakableSymmetricAlgorithm"/>
 /// <seealso cref="Skein{T}"/>
 public abstract class Threefish
-    : TweakableSymmetricAlgorithm, IBoduPaddingAlgorithm
+    : TweakableSymmetricAlgorithm
 {
     /// <summary>
     /// The block size in bytes.
@@ -65,7 +65,7 @@ public abstract class Threefish
 
     private bool _disposed;
 
-    private BoduPaddingMode? _boduPadding;
+    private BlockPaddingMode _blockPadding = BlockPaddingMode.PKCS7;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Threefish"/> class with the specified block and tweak sizes.
@@ -101,19 +101,42 @@ public abstract class Threefish
     public CipherBlockMode BlockMode { get; set; } = CipherBlockMode.CBC;
 
     /// <summary>
-    /// Gets or sets the extended padding mode. When non-<see langword="null"/>, overrides
-    /// <see cref="SymmetricAlgorithm.Padding"/> during transform creation, enabling schemes such as
-    /// <see cref="BoduPaddingMode.ISO7816_4"/> that have no <see cref="PaddingMode"/> counterpart.
-    /// Set to <see langword="null"/> to revert to <see cref="SymmetricAlgorithm.Padding"/>.
+    /// Gets or sets the extended padding mode used when creating encryptors and decryptors.
     /// </summary>
     /// <value>
-    /// The <see cref="BoduPaddingMode"/> to use when creating transforms, or <see langword="null"/> to use
-    /// <see cref="SymmetricAlgorithm.Padding"/>.
+    /// One of the <see cref="BlockPaddingMode"/> values. The default is <see cref="BlockPaddingMode.PKCS7"/>.
     /// </value>
-    public BoduPaddingMode? BoduPadding
+    /// <remarks>
+    /// When the assigned value has a matching member in <see cref="PaddingMode"/> (for example, PKCS7, Zeros,
+    /// None), the inherited <see cref="SymmetricAlgorithm.Padding"/> is kept in sync. Extended modes with no
+    /// <see cref="PaddingMode"/> equivalent (such as <see cref="BlockPaddingMode.ISO7816_4"/>) leave the base
+    /// property unchanged.
+    /// </remarks>
+    public BlockPaddingMode BlockPadding
     {
-        get => this._boduPadding;
-        set => this._boduPadding = value;
+        get => this._blockPadding;
+        set
+        {
+            this._blockPadding = value;
+            if (Enum.TryParse<PaddingMode>(value.ToString(), out PaddingMode mode) && Enum.IsDefined(mode))
+                this.PaddingValue = mode;
+        }
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Also synchronises <see cref="BlockPadding"/> when the assigned value has a matching member in
+    /// <see cref="BlockPaddingMode"/>.
+    /// </remarks>
+    public override PaddingMode Padding
+    {
+        get => base.Padding;
+        set
+        {
+            base.Padding = value;
+            if (Enum.TryParse<BlockPaddingMode>(value.ToString(), out BlockPaddingMode bpm) && Enum.IsDefined(bpm))
+                this._blockPadding = bpm;
+        }
     }
 
     /// <inheritdoc />
@@ -122,9 +145,7 @@ public abstract class Threefish
         this.ThrowIfDisposed();
         this.Validate(rgbKey, rgbIV, tweak);
         IBlockCipher engine = this.CreateCipher(rgbKey, tweak);
-        if (this._boduPadding.HasValue)
-            return new ThreefishTransform(engine, this.BlockMode, this._boduPadding.Value, rgbIV, false);
-        return new ThreefishTransform(engine, this.BlockMode, this.Padding, rgbIV, false);
+        return new ThreefishTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, false);
     }
 
     /// <inheritdoc />
@@ -133,9 +154,7 @@ public abstract class Threefish
         this.ThrowIfDisposed();
         this.Validate(rgbKey, rgbIV, tweak);
         IBlockCipher engine = this.CreateCipher(rgbKey, tweak);
-        if (this._boduPadding.HasValue)
-            return new ThreefishTransform(engine, this.BlockMode, this._boduPadding.Value, rgbIV, true);
-        return new ThreefishTransform(engine, this.BlockMode, this.Padding, rgbIV, true);
+        return new ThreefishTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, true);
     }
 
     /// <inheritdoc />

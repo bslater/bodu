@@ -90,13 +90,13 @@ public abstract partial class PaddingStrategyTests<TPadding>
     /// <summary>
     /// Instantiates <paramref name="algorithmType"/> via its parameterless constructor and configures it with
     /// <see cref="CipherMode.CBC"/>, the requested extended <paramref name="padding"/>, a freshly-generated key and IV,
-    /// plus a tweak when the algorithm derives from <see cref="TweakableSymmetricAlgorithm"/>. The algorithm must
-    /// implement <see cref="IBoduPaddingAlgorithm"/> to accept extended padding modes.
+    /// plus a tweak when the algorithm derives from <see cref="TweakableSymmetricAlgorithm"/>. The <c>BlockPadding</c>
+    /// property is set via reflection when the algorithm exposes it.
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm"/> type to instantiate.</param>
     /// <param name="padding">The extended padding mode to apply.</param>
     /// <returns>A ready-to-use <see cref="SymmetricAlgorithm"/> instance.</returns>
-    protected static SymmetricAlgorithm CreateConfiguredAlgorithm(Type algorithmType, BoduPaddingMode padding)
+    protected static SymmetricAlgorithm CreateConfiguredAlgorithm(Type algorithmType, BlockPaddingMode padding)
     {
         var algorithm = (SymmetricAlgorithm)Activator.CreateInstance(algorithmType)!;
         algorithm.Mode = CipherMode.CBC;
@@ -104,8 +104,8 @@ public abstract partial class PaddingStrategyTests<TPadding>
         algorithm.GenerateIV();
         if (algorithm is TweakableSymmetricAlgorithm tweakable)
             tweakable.GenerateTweak();
-        if (algorithm is IBoduPaddingAlgorithm boduAlgorithm)
-            boduAlgorithm.BoduPadding = padding;
+        System.Reflection.PropertyInfo? prop = algorithmType.GetProperty("BlockPadding");
+        prop?.SetValue(algorithm, padding);
         return algorithm;
     }
 
