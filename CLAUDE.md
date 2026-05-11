@@ -247,7 +247,12 @@ Every `.cs` file begins with the standard banner — preserve the separator line
 - Add a `<param>` for every parameter.
 - Keep descriptions concise — ideally a single line.
 - Describe the parameter in the context of the member's behaviour.
-- Use `Must not be <see langword="null" />.` style wording where applicable.
+- Use `Must not be <see langword="null" />.` style wording only for basic nullability expectations where useful.
+- Do not document validation rules, permitted ranges, allowed values, formats, or exceptional conditions in `<param>` text.
+- Put validation constraints, boundary rules, permitted values, and failure behaviour in `<remarks>` and/or `<exception>` documentation instead.
+- Avoid repeating information that is already expressed by the parameter name unless it improves clarity.
+- Prefer neutral descriptions such as “The number of transformation rounds.” over imperative descriptions such as “Specify the number of transformation rounds.”
+- For optional parameters, describe their behavioural role rather than restating the default value unless the default has semantic meaning.
 
 **`<returns>`**
 - Add `<returns>` for every non-void member.
