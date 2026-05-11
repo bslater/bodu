@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography;
 /// enumerations by name.
 /// </para>
 /// <para>
-/// The <see cref="BlockPadding"/> property on each symmetric algorithm in this library accepts a
+/// The <c>BlockPadding</c> property on each symmetric algorithm in this library accepts a
 /// <see cref="BlockPaddingMode"/> value, automatically updating the underlying
 /// <see cref="System.Security.Cryptography.SymmetricAlgorithm.Padding"/> property when the value maps to a
 /// recognised <see cref="System.Security.Cryptography.PaddingMode"/> member. Setting
